@@ -1,6 +1,6 @@
 # Shipping campaign: version 0.1
 
-Updated: 12 October 2026.
+Updated: 13 October 2026.
 
 Status: partial fixes merged into `main`. End-to-end campaign verification remains
 incomplete. No complete current-source campaign result is claimed.
@@ -55,8 +55,9 @@ failure receipt; it is not proof that a game mechanic is broken.
 
 ## Latest merged evidence
 
-The following changes are delivered to `main` through PR #413 at `a68dd0dc`,
-including the later merge of PR #401 at `58bf21cf`. Each receipt
+The following changes are delivered to `main` through PRs #416 and #417,
+merged together at `d5632100`. Earlier deliveries include PR #413 at
+`a68dd0dc` and PR #401 at `58bf21cf`. Each receipt
 has its own scope; their counts are not one complete campaign result.
 
 Recent deliveries are listed first. Earlier receipts below retain their own
@@ -64,6 +65,8 @@ tested source and limits.
 
 | PR | Change | Recorded affected checks |
 | --- | --- | --- |
+| [#417](https://github.com/fsodano/granaderos/pull/417) | Count ammunition held by actual owners once. Exclude old player-scene mirrors when a global or retained mission/garrison owner exists; preserve scene-only actors, bodies and physical stores. | Six complete affected files pass 25/25. Controls detect a real one-round loss and preserve garrison, mission-ally and scene-only ownership. The unchanged complete funded historical-loss file separately passes 1/1 on `3f62585a` in 769.746 seconds. It wins Mendoza, then uses real melee orders to kill the required engineer and preserves failure through active and settled saves. This proves the declared loss path, not a natural enemy casualty or an ordinary-start ending. |
+| [#416](https://github.com/fsodano/granaderos/pull/416) | Carry ten known Tucumán dressings to the exhausted Córdoba clinic through actual paid postas. Retain the physician, patient and paid service; finish ordinary finite treatment before Cuyo preparation. | Eight complete affected files pass 36/36. Carrier 9 pays two four-hour journeys and ten pesos per leg. Ten clinic hours consume ten dressings and restore patient 11 from 18 to 78 HP. Four actual renewals cost 768 pesos; one midnight credits 8,000. The care checkpoint is `840:3471`, with 71,063 pesos. The complete original recovery remains a separate required check. |
 | [#413](https://github.com/fsodano/granaderos/pull/413) | Keep the strongest local envoy and include only already serving, living, noncaptured northern officers who are physically local and not in transit. Use the ordinary squad order and retain the existing mission dialogue and squad limit. | The complete new handover file and eighteen scope controls pass 20/20 in 19.031 seconds, with all 628 source/shipping pins and 1,260 actual inputs unchanged. The existing two-case Salta counterattack/journey file separately passes on the same helper bytes in the retained 21/22 gate; its one new clock-oracle failure is later corrected. This is not a 22/22 aggregate. The earned party `[114,1,0,8]` completes Yatasto at `799:3471`, with 56,669 pesos and exact official saved replay. The pact costs 300 and one real midnight pays 8,000; no renewal is needed. Actor 125's preexisting expiry at `798:1150`, living wounded state and ten unique returned equipment rows remain exact. This is earned handover proof, not the complete original route. |
 | [#412](https://github.com/fsodano/granaderos/pull/412) | Retain every living, noncaptured serving returnee in the capital relief, regardless of province. Keep the commander in reserve; Santa Fe still identifies the three physical river guns. | The complete quotation file passes 7/7 after an actual four-hour posta journey reproduces the omitted survivor. New day/week quote expiries advance by those four hours; the field, candidates and budget stay exact. The complete earned twelve-person preparation separately passes 1/1 in 312.613 seconds on the same helper bytes, with all 353 actual preparation inputs unchanged after the test-only expiry correction. The retained aggregate is 7/8, not one 8/8 pass. Existing finite care, paid service, three empty guns and the official paired save remain required. This proves quotation and preparation, not a new native victory or complete fresh caller. |
 | [#411](https://github.com/fsodano/granaderos/pull/411) | Keep legal automatic movement proposals unchanged and respect occupants already visible to the squad. Use a paid reachable point on the proposed route or hold when the personal-sight chooser proposes an occupied destination. | Twelve complete affected files pass 65/65 in 14.133 seconds, with all 632 source/shipping/fixture pins and 1,320 actual consumed inputs unchanged. The exact Salta refusal first pays an eight-AP legal move, then reaches native victory at turn eight and 1,501 tactical seconds after 32 further orders. No new player death occurs; settlement is `790:3114`, with 48,969 pesos. The original crew, finite gun, official midpoint replay, controller holds and 600/80/16 limits remain exact. The regression is in campaign quick. This earned continuation does not replace the complete original recovery. |
@@ -75,6 +78,17 @@ tested source and limits.
 | [#399](https://github.com/fsodano/granaderos/pull/399) | Pay four available river veterans, recover finite ammunition and stage sixteen real arrivals through west and south approaches. Preserve the three empty physical bronze guns. | Seven complete affected files pass 32/32 in 385.511 seconds. The native river victory uses ten turns, 275 orders and 355 tactical seconds. Deaths 5, 9, 121, 127, 133 and 146 remain permanent. It settles at `1806:1057` with 198,933 pesos. Later capital recovery and victory remain separate. |
 | [#400](https://github.com/fsodano/granaderos/pull/400), [#403](https://github.com/fsodano/granaderos/pull/403) | Install pinned Pillow and NumPy in the core Actions job. Use Python 3.13 in CI and the local setup guide. | The complete eight previously failing asset files and three scope controls pass 98/98. The complete reviewed-face file and scope controls separately pass 25/25; all five previously skipped NumPy cases execute. These are affected dependency checks, not a complete core or release result. |
 | [#402](https://github.com/fsodano/granaderos/pull/402) | Assemble the actual Córdoba patients locally, quote the real return horizon and use an hourly paid journey when prepaid renewals are unaffordable. Give real finite care after the interrupted rear defense. | The final complete three-case regression and scope controls pass 21/21. Nine legacy compatibility cases also pass on the same helper. The original patients reach Buenos Aires at `681:335`, with 21,878 pesos. The real Tucumán interruption wins in 48 turns and 405 orders; deaths 116 and 104 remain permanent. This earned return does not replace the complete original recovery. |
+
+The exact combined source `d5632100` passes the normal complete local quick
+profile: **1,040/1,040 files and 7,563/7,563 tests**, with no failures, skips or
+cancellations. It uses Node 25.1.0, concurrency six, Python 3.13.5, Pillow
+11.2.1 and NumPy 2.2.6. All 15,696 recorded source/runtime/package pins remain
+unchanged. Documentation and baseline audits, the web typecheck and diff checks
+also pass. The quick profile excludes 35 extended files. This is not the full
+Node suite, either complete ending, its 48-hour continuation or a C++ result.
+The two PRs were merged with one main push after these local checks. The
+complete original recovery and both unchanged fresh ending cases are being
+checked separately; their results are pending.
 
 The complete original recovery on frozen `c6881d99` finishes with one failure,
 no skips or cancellations, in 2,003.189 seconds. All 618 static pins, including
