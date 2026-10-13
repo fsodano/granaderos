@@ -1,0 +1,213 @@
+{
+  "scope": "Accepted genuine Salta settlement after the original legal movement continuation. This fixture is an official serialization of the unaltered campaign record; no actor, health, resource, contract, position, death, inventory or RNG edits. Bounded whole Yatasto handover proof, not a complete fresh campaign or ending.",
+  "fixture": "earned-original-yatasto-party.save.json.gz",
+  "rawBytes": 2159373,
+  "rawSha256": "8b90a557d453972e54b696bdb4ef2af4737608eb6e516b315631f2977cfb8036",
+  "gzipSha256": "96e3ed66754ef4edd7af8d4e3e019eb19bbddaca793bbca239f1706a3173f1c0",
+  "source": {
+    "path": ".cache/core-campaign-2026-10-12/salta-legal-movement-verified-v2/observed/settled-campaign.json",
+    "bytes": 3875914,
+    "sha256": "a4dad3ca133844fb6a641e7e027b2b6bbf766d1e98d564db221763aa16ebbad9",
+    "acceptedGate": "salta-legal-movement-verified-v2",
+    "gateTests": 65,
+    "gateLogSha256": "4ed95c97587c1c6bb43aa5c8610901e910a618d737c863a87f5ff9af1e939b43"
+  },
+  "originalRoute": {
+    "revision": "2603c3e61cb2a56c05aff2b76e7f757c354a4f49",
+    "tests": 1,
+    "pass": 0,
+    "failure": "tests/fresh-campaign-recovery.test.mjs:170: living northern officer omitted from Yatasto party",
+    "logSha256": "49ba8617a53a4b0fd1586149e49f334f1e090a72944a4f21d26de46089146b97",
+    "recoveredHospitalRawSha256": "398ce29d95fdf8309a33d5602fe938759b12f759f5b71572a7a23ca13aa620eb",
+    "basis": "The current full original recovered646 record is byte-identical to the genuine hospital precursor of this accepted Salta continuation. The full original did not capture its direct final Salta campaign; this bounded input is the accepted earlier native continuation."
+  },
+  "diagnostic": {
+    "path": ".cache/core-campaign-2026-10-12/yatasto-party-diagnostic-v1/receipt.json",
+    "revision": "8d777d51e31066a685a29cfde80681dc75030d1e",
+    "seconds": 8.077798542,
+    "logSha256": "4ba31390114f037c7f06382971e8ce5217bd93ebbab829d8b166965cc0b2dfe8",
+    "actualMissingOfficer": 1,
+    "actualEnvoy": 114,
+    "oldParty": [
+      114,
+      0,
+      8
+    ],
+    "oldFinishClock": [
+      799,
+      3471
+    ],
+    "oldFinishTreasury": 56669
+  },
+  "clock": [
+    790,
+    3114
+  ],
+  "treasury": 48969,
+  "initialSelectedParty": [
+    10,
+    4,
+    9,
+    11,
+    1
+  ],
+  "admittedPublicParty": [
+    114,
+    1
+  ],
+  "notYetRecruited": [
+    0,
+    8
+  ],
+  "unchangedDiagnosticExpiry": {
+    "scope": "The unchanged original helper already lets this temporary contract end through ordinary march time. Its living patient and finite ground property remain in Salta. The new party correction does not dismiss him, alter his term, consume his property or create this expiry.",
+    "source": ".cache/core-campaign-2026-10-12/yatasto-party-diagnostic-v1/after.save.json",
+    "pathSha256": "c22fdb102fd06fa0538f8b47acdb820711712a985bfbc836f1b276c1ed83700e",
+    "operativeId": 125,
+    "clock": [
+      798,
+      1150
+    ],
+    "alive": true,
+    "hp": 15,
+    "maxHp": 87,
+    "bleeding": 0,
+    "bandaged": 72,
+    "location": "salta",
+    "groundRows": [
+      {
+        "item": "weapon",
+        "count": 1,
+        "weight": 4,
+        "weapon": 1800,
+        "loaded": 1,
+        "condition": 84,
+        "jammed": false,
+        "id": "service-return-3-0",
+        "type": "item",
+        "x": 43,
+        "y": 25,
+        "tacticalLevel": 0,
+        "knownToPlayer": true
+      },
+      {
+        "item": "weapon",
+        "count": 1,
+        "weight": 0.6,
+        "weapon": 1813,
+        "loaded": 0,
+        "condition": 100,
+        "jammed": false,
+        "id": "service-return-3-1",
+        "type": "item",
+        "x": 43,
+        "y": 25,
+        "tacticalLevel": 0,
+        "knownToPlayer": true
+      },
+      {
+        "item": "headwear",
+        "kind": "outfit",
+        "outfit": "hat",
+        "count": 1,
+        "weight": 0.3,
+        "condition": 100,
+        "id": "service-return-3-2",
+        "type": "item",
+        "x": 43,
+        "y": 25,
+        "tacticalLevel": 0,
+        "knownToPlayer": true
+      },
+      {
+        "item": "outfit",
+        "kind": "outfit",
+        "outfit": "poncho",
+        "count": 1,
+        "weight": 2,
+        "condition": 61,
+        "id": "service-return-3-3",
+        "type": "item",
+        "x": 43,
+        "y": 25,
+        "tacticalLevel": 0,
+        "knownToPlayer": true
+      },
+      {
+        "item": "legwear",
+        "kind": "outfit",
+        "outfit": "trousers",
+        "count": 1,
+        "weight": 0.7,
+        "condition": 100,
+        "id": "service-return-3-4",
+        "type": "item",
+        "x": 43,
+        "y": 25,
+        "tacticalLevel": 0,
+        "knownToPlayer": true
+      },
+      {
+        "kind": "ammunition",
+        "ammoType": "pistol_69",
+        "count": 7,
+        "weight": 0.04,
+        "name": "Cartuchos de pistola",
+        "item": "inventory:ammo:pistol_69",
+        "id": "service-return-3-5",
+        "type": "item",
+        "x": 43,
+        "y": 25,
+        "tacticalLevel": 0,
+        "knownToPlayer": true
+      },
+      {
+        "kind": "ammunition",
+        "ammoType": "musket_75",
+        "count": 10,
+        "weight": 0.04,
+        "name": "Cartuchos de mosquete",
+        "item": "inventory:ammo:musket_75",
+        "id": "service-return-3-6",
+        "type": "item",
+        "x": 43,
+        "y": 25,
+        "tacticalLevel": 0,
+        "knownToPlayer": true
+      },
+      {
+        "item": "rations",
+        "count": 2,
+        "weight": 0.5,
+        "id": "service-return-3-7",
+        "type": "item",
+        "x": 43,
+        "y": 25,
+        "tacticalLevel": 0,
+        "knownToPlayer": true
+      },
+      {
+        "item": "boleadoras",
+        "count": 1,
+        "weight": 0.8,
+        "id": "service-return-3-8",
+        "type": "item",
+        "x": 43,
+        "y": 25,
+        "tacticalLevel": 0,
+        "knownToPlayer": true
+      },
+      {
+        "item": "torches",
+        "count": 2,
+        "weight": 0.4,
+        "id": "service-return-3-9",
+        "type": "item",
+        "x": 43,
+        "y": 25,
+        "tacticalLevel": 0,
+        "knownToPlayer": true
+      }
+    ]
+  }
+}
