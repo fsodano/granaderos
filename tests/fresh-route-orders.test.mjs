@@ -98,12 +98,28 @@ test('the earned mountain paid stage retains the due contract before taking its 
  const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
  const meta=JSON.parse(fixture(`${name}.provenance.json`)),compressed=fixture(`${name}.campaign.json.gz`),raw=gunzipSync(compressed);
  assert.equal(sha(compressed),meta.gzipSha256);assert.equal(sha(raw),meta.rawSha256);assert.equal(raw.length,meta.rawBytes);
- const start=JSON.parse(raw),original=structuredClone(start);
+ const captured=JSON.parse(raw),original=structuredClone(captured);
+ // This earned capture predates cannon cell occupancy. Official admission adds
+ // the version marker to its ten empty-gun scenes, with no other changes.
+ const expected=structuredClone(captured),legacyScenes=[];
+ for(const key of ['sectorStates','sceneStates'])for(const [id,scene]of Object.entries(expected[key])){
+  assert.equal(scene.artilleryOccupancyVersion,undefined,`${key}.${id} is a legacy scene`);
+  assert.deepEqual(scene.artillery,[],`${key}.${id} has no gun or overlapping crew to relocate`);
+  scene.artilleryOccupancyVersion=1;legacyScenes.push(`${key}.${id}`);
+ }
+ assert.deepEqual(legacyScenes.sort(),[
+  'sceneStates.yatasto','sectorStates.buenos_aires','sectorStates.cordoba','sectorStates.ensenada',
+  'sectorStates.mendoza','sectorStates.retiro','sectorStates.salta','sectorStates.san_lorenzo',
+  'sectorStates.san_nicolas','sectorStates.tucuman',
+ ].sort());
+ const start=saved(captured);
+ assert.deepEqual(start,expected,'Legacy admission must add only the ten occupancy markers; coordinates, resources and all captured records stay exact.');
+ assert.deepEqual(captured,original,'Official admission must not mutate the retained raw campaign.');
  assert.deepEqual([start.hour,start.secondOfHour],meta.clock);assert.equal(start.resources.treasury,111836);
  assert.equal(start.pendingBattle,null);assert.equal(start.pendingEncounter,null);
  assert.ok(start.recruited.includes(133));assert.ok(!start.recruited.includes(132));
  assert.equal(contractExpiresSeconds(start.contracts[133])-start.hour*3600-start.secondOfHour,2328);
- assert.deepEqual(saved(start),start,'The unchanged raw captured campaign must pass official save admission.');
+ assert.deepEqual(saved(start),start,'The admitted captured campaign must save again without another migration.');
  const {guard,events,current}=guarded(start),renewalQuote=contractQuote(start,rosterFor(start).find(op=>op.id===133),'day');
  assert.equal(renewalQuote.available,true);assert.equal(renewalQuote.price,66);
  guard.retain();
@@ -137,7 +153,7 @@ test('the earned mountain paid stage retains the due contract before taking its 
   assert.deepEqual(end.operativeState[id],expected,`${id} native health, equipment and service records`);
  }
  for(const key of ['sectorStates','sceneStates','sectors','artilleryDepots','artilleryTransfers','artillerySelection','missions'])assert.deepEqual(end[key],start[key],key);
- assert.deepEqual(saved(end),end);assert.deepEqual(start,original);
+ assert.deepEqual(saved(end),end);assert.deepEqual(start,expected);assert.deepEqual(captured,original);
  let repeated=saved(start);
  repeated=ordinary(repeated,actions[0]);repeated=saved(repeated);
  repeated=ordinary(repeated,actions[1]);assert.deepEqual(repeated,end,'Every paid native action must replay exactly across the official midpoint save.');
