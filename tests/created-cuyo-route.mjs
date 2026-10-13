@@ -528,15 +528,22 @@ export function stabilizeStockMendozaSurvivors(start,{report=()=>{},returnSector
 }
 
 // This ledger compares the same physical owners before/after transfers. Living
-// player scene copies are historical receipts, including former contractors:
-// current serving records or their actual returned stacks own those rounds.
-// Dead bodies, loose field stacks and depots remain owners.
+// player scene copies with corresponding operative records are historical
+// receipts, including former contractors. Serving records, returned stacks
+// and retained mission allies/garrisons own their rounds. Scene-only allies
+// and militia, dead bodies, loose field stacks and depots remain owners.
 export function stockAmmunitionLedger(c){
- const total={},ids=new Set(living(c).map(String));
+ const total={},ids=new Set(living(c).map(String)),retained=new Set();
  for(const id of living(c))addAmmoCounts(total,unitAmmunitionByType(carried(c,id)));
+ for(const unit of [...Object.values(c.missionAllies??{}),...Object.values(c.garrisons??{}).flat()])if(unit.hp>0&&!ids.has(String(unit.id))){
+  const id=String(unit.id);assert.ok(!retained.has(id),'retained ammunition owners need unique identities');retained.add(id);addAmmoCounts(total,unitAmmunitionByType(unit));
+ }
  for(const scene of [...Object.values(c.sectorStates??{}),...Object.values(c.sceneStates??{})]){
   addAmmoCounts(total,fieldAmmunitionByType(scene));
-   for(const unit of scene.units??[])if(!ids.has(unit.id)&&(unit.side!=='player'||unit.hp<=0))addAmmoCounts(total,unitAmmunitionByType(unit));
+  for(const unit of scene.units??[]){
+   const id=String(unit.id),history=unit.side==='player'&&unit.hp>0&&(Object.hasOwn(c.operativeState??{},id)||retained.has(id));
+   if(!ids.has(id)&&!history)addAmmoCounts(total,unitAmmunitionByType(unit));
+  }
  }
  for(const depot of Object.values(c.ammunitionStores??{}))for(const [family,count]of Object.entries(depot))addAmmoCounts(total,{[AMMUNITION_FAMILIES[family].type]:count});
  return Object.fromEntries(Object.values(AMMUNITION_FAMILIES).map(f=>[f.type,total[f.type]??0]));
