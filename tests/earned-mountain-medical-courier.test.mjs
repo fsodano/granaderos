@@ -1,3 +1,4 @@
+import {admitEarnedArtilleryMarkers} from './earned-artillery-admission-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -15,8 +16,8 @@ test('the earned mountain clinic uses its unlocked posta and four existing Retir
  const name='earned-installed-mountain-medical-courier';
  const metadata=JSON.parse(fixture(`${name}.provenance.json`)),compressed=fixture(`${name}.campaign.json.gz`),raw=gunzipSync(compressed);
  assert.equal(sha(compressed),metadata.gzipSha256);assert.equal(sha(raw),metadata.rawSha256);assert.equal(raw.length,metadata.rawBytes);
- const input=JSON.parse(raw),before=structuredClone(input),start=decodeSave(encodeSave(input)).campaign;
- assert.deepEqual(input,before);assert.deepEqual(start,input);
+ const input=JSON.parse(raw),rawBefore=structuredClone(input),start=admitEarnedArtilleryMarkers(input,{sectors:['retiro','buenos_aires','san_nicolas','san_lorenzo','cordoba','tucuman','salta','mendoza'],scenes:{yatasto:'tucuman'},label:'earned mountain medical courier input'}),before=structuredClone(start);
+ assert.deepEqual(input,rawBefore);
  const events=[],result=collectRouteMedicalSupplies(start,metadata.physicianId,metadata.neededDressings,{mode:'posta',report:event=>events.push(event)}),end=result.campaign;
  const receipt=events.find(event=>event.event==='finiteMedicalCourier');
  assert.equal(result.collected,4);assert.equal(receipt.source,'retiro');assert.equal(receipt.mode,'posta');

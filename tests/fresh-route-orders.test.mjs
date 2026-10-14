@@ -1,5 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {gunzipSync} from 'node:zlib';
+import {createHash} from 'node:crypto';
 import {defaultContentPackage} from '../game/content-package.js';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {contractExpiresSeconds,contractQuote} from '../game/contracts.js';
@@ -88,4 +91,72 @@ test('a legal sector entry remains recorded when later route preparation stops f
  const restored=decodeSave(encodeSave(entered,battle));
  assert.deepEqual(restored.campaign,entered);assert.deepEqual(restored.battle,battle);
  assert.equal(entered.resources.treasury,start.resources.treasury);
+});
+
+test('the earned mountain paid stage retains the due contract before taking its fresh hire quote and cash baseline',t=>{
+ const fixture=name=>readFileSync(new URL(`./fixtures/${name}`,import.meta.url)),name='earned-stock-mountain-recruit-accounting';
+ const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
+ const meta=JSON.parse(fixture(`${name}.provenance.json`)),compressed=fixture(`${name}.campaign.json.gz`),raw=gunzipSync(compressed);
+ assert.equal(sha(compressed),meta.gzipSha256);assert.equal(sha(raw),meta.rawSha256);assert.equal(raw.length,meta.rawBytes);
+ const captured=JSON.parse(raw),original=structuredClone(captured);
+ // This earned capture predates cannon cell occupancy. Official admission adds
+ // the version marker to its ten empty-gun scenes, with no other changes.
+ const expected=structuredClone(captured),legacyScenes=[];
+ for(const key of ['sectorStates','sceneStates'])for(const [id,scene]of Object.entries(expected[key])){
+  assert.equal(scene.artilleryOccupancyVersion,undefined,`${key}.${id} is a legacy scene`);
+  assert.deepEqual(scene.artillery,[],`${key}.${id} has no gun or overlapping crew to relocate`);
+  scene.artilleryOccupancyVersion=1;legacyScenes.push(`${key}.${id}`);
+ }
+ assert.deepEqual(legacyScenes.sort(),[
+  'sceneStates.yatasto','sectorStates.buenos_aires','sectorStates.cordoba','sectorStates.ensenada',
+  'sectorStates.mendoza','sectorStates.retiro','sectorStates.salta','sectorStates.san_lorenzo',
+  'sectorStates.san_nicolas','sectorStates.tucuman',
+ ].sort());
+ const start=saved(captured);
+ assert.deepEqual(start,expected,'Legacy admission must add only the ten occupancy markers; coordinates, resources and all captured records stay exact.');
+ assert.deepEqual(captured,original,'Official admission must not mutate the retained raw campaign.');
+ assert.deepEqual([start.hour,start.secondOfHour],meta.clock);assert.equal(start.resources.treasury,111836);
+ assert.equal(start.pendingBattle,null);assert.equal(start.pendingEncounter,null);
+ assert.ok(start.recruited.includes(133));assert.ok(!start.recruited.includes(132));
+ assert.equal(contractExpiresSeconds(start.contracts[133])-start.hour*3600-start.secondOfHour,2328);
+ assert.deepEqual(saved(start),start,'The admitted captured campaign must save again without another migration.');
+ const {guard,events,current}=guarded(start),renewalQuote=contractQuote(start,rosterFor(start).find(op=>op.id===133),'day');
+ assert.equal(renewalQuote.available,true);assert.equal(renewalQuote.price,66);
+ guard.retain();
+ const retained=current();
+ assert.equal(retained.resources.treasury,111770);assert.deepEqual([retained.hour,retained.secondOfHour],[942,177]);
+ assert.deepEqual(retained.contracts[133],meta.actualRenewedContract);
+ assert.equal(contractExpiresSeconds(retained.contracts[133]),contractExpiresSeconds(start.contracts[133])+86400);
+ assert.deepEqual(retained.operativeState[133],{...start.operativeState[133],morale:88,lastMoralePayAt:942});
+ assert.deepEqual(saved(retained),retained);
+ const quote=contractQuote(retained,rosterFor(retained).find(op=>op.id===132),'day'),cash=retained.resources.treasury;
+ assert.equal(quote.available,true);assert.equal(quote.price,7740);assert.equal(quote.guarantee,0);
+ const retainedEvents=events.length;guard.retain();
+ assert.equal(events.length,retainedEvents,'Repeated retention at the same clock must not debit another renewal.');
+ assert.deepEqual(current(),retained);
+ guard.order({type:'recruitCivic',id:132,term:'day'});
+ const end=current(),actions=events.filter(event=>event.action).map(event=>event.action);
+ assert.deepEqual(actions,[{type:'renewContract',id:133,term:'day',expectedExpiresAt:942,expectedExpiresSecond:2505},{type:'recruitCivic',id:132,term:'day'}]);
+ assert.equal(end.resources.treasury,cash-quote.price);assert.equal(end.resources.treasury,104030);
+ assert.equal(start.resources.treasury-end.resources.treasury,66+7740);
+ assert.deepEqual([end.hour,end.secondOfHour],[942,177]);assert.deepEqual(end.contracts[132],meta.actualHiredContract);
+ assert.deepEqual(end.contracts[133],meta.actualRenewedContract);
+ for(const [id,contract]of Object.entries(start.contracts))if(id!=='133')assert.deepEqual(end.contracts[id],contract);
+ assert.deepEqual(end.recruited,[...start.recruited,132]);assert.equal(end.recruited.filter(id=>id===132).length,1);
+ assert.deepEqual(end.hiringArrivals,start.hiringArrivals,'The observed stock hire arrives immediately.');
+ assert.deepEqual(end.squad,[...start.squad,132]);assert.equal(end.activeSquadId,start.activeSquadId);
+ for(const group of start.squads)assert.deepEqual(end.squads.find(q=>q.id===group.id),group.id===start.activeSquadId?{...group,members:[...group.members,132]}:group);
+ assert.equal(end.squads.length,start.squads.length);
+ for(const [id,record]of Object.entries(start.operativeState)){
+  for(const key of ['alive','captured','hp','maxHp','bleeding','bandaged','energy','fatigue','asleep','deathMinute'])assert.deepEqual(end.operativeState[id][key],record[key],`${id} ${key}`);
+  const expected=id==='133'?{...record,morale:88,lastMoralePayAt:942}:id==='132'?{...record,...meta.actualHireRecordChanges}:record;
+  assert.deepEqual(end.operativeState[id],expected,`${id} native health, equipment and service records`);
+ }
+ for(const key of ['sectorStates','sceneStates','sectors','artilleryDepots','artilleryTransfers','artillerySelection','missions'])assert.deepEqual(end[key],start[key],key);
+ assert.deepEqual(saved(end),end);assert.deepEqual(start,expected);assert.deepEqual(captured,original);
+ let repeated=saved(start);
+ repeated=ordinary(repeated,actions[0]);repeated=saved(repeated);
+ repeated=ordinary(repeated,actions[1]);assert.deepEqual(repeated,end,'Every paid native action must replay exactly across the official midpoint save.');
+ const eventCount=events.length;guard.retain();assert.equal(events.length,eventCount);assert.deepEqual(current(),end);
+ t.diagnostic(JSON.stringify({scope:meta.scope,inputSha256:meta.rawSha256,clock:[end.hour,end.secondOfHour],renewal:66,hire:7740,treasury:[start.resources.treasury,retained.resources.treasury,end.resources.treasury],morale133:[86,88],paidOrders:actions.length,officialMidpointReplayExact:true}));
 });

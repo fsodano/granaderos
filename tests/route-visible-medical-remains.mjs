@@ -1,9 +1,15 @@
 import assert from 'node:assert/strict';
 import {operativeLocation} from '../game/squads.js';
-import {canSee,getReachable,lootSearchPreview,lootPreview,lookPreview,climbPreview} from '../game/tactical.js';
+import {canSee,getReachable,lootSearchPreview,lootPreview,lookPreview,climbPreview,knownArtillery} from '../game/tactical.js';
 import {nearbyLootOptions} from '../game/ja2-hud.js';
 import {spacePoint,sameSurface,sameCell} from '../game/tactical-space.js';
 import {order,visit,tactical,saved,leave} from './local-contract-fixture.mjs';
+
+export function visibleMedicalPatrolStep(battle,unit,target){
+ const distance=point=>Math.hypot(point.x-target.x,point.y-target.y);
+ const view={...battle,units:battle.units.filter(u=>u.side==='player'||canSee(battle,unit,u)),artillery:knownArtillery(battle,unit)};
+ return getReachable(view,unit).filter(point=>point.path.length&&sameSurface(point,target)&&distance(point)<distance(unit)).sort((a,b)=>distance(a)-distance(b)||a.cost-b.cost)[0]??null;
+}
 
 // Search the public battlefield in ordinary map bounds. A visible body can be
 // approached for inspection; its supplies are selected only from the hand UI.
@@ -44,7 +50,7 @@ export function recoverVisibleRouteDressings(start,operativeId,requested,{report
   if(waypoint>=waypoints.length)break;
   const target=waypoints[waypoint],distance=point=>Math.hypot(point.x-target.x,point.y-target.y);
   if(sameSurface(unit,target)&&distance(unit)<=1){waypoint++;continue;}
-  const view={...p.battle,units:p.battle.units.filter(u=>u.side==='player'||canSee(p.battle,unit,u))},reachable=getReachable(view,unit),step=reachable.filter(point=>point.path.length&&sameSurface(point,target)&&distance(point)<distance(unit)).sort((a,b)=>distance(a)-distance(b)||a.cost-b.cost)[0];
+  const view={...p.battle,units:p.battle.units.filter(u=>u.side==='player'||canSee(p.battle,unit,u)),artillery:knownArtillery(p.battle,unit)},reachable=getReachable(view,unit),step=visibleMedicalPatrolStep(p.battle,unit,target);
   if(!step){waypoint++;continue;}
   const before=spacePoint(unit),climb=step.path.findIndex(point=>point.kind==='climb');
   if(climb===0){const action={type:'climb',unitId,linkId:step.path[0].linkId};assert.ok(climbPreview(p.battle,unit,action).valid);perform(action);}

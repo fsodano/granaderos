@@ -12,9 +12,11 @@ import {doctorRate} from '../game/medical-care.js';
 import {collectKnownCuyoDressings} from './cuyo-known-medical-courier.mjs';
 import {createFreshRouteOrders,prepareFreshCuyoDefense} from './fresh-cuyo-route.mjs';
 import {finishFreshNorthernCampaign} from './fresh-northern-recovery.mjs';
+import {admitEarnedArtillerySave,beforeEarnedArtilleryMarkers} from './earned-artillery-admission-fixture.mjs';
 
 const sha=value=>createHash('sha256').update(value).digest('hex');
 const meta=JSON.parse(readFileSync(new URL('./fixtures/earned-original-cuyo-finite-care.provenance.json',import.meta.url)));
+const retainedSectors=['retiro','buenos_aires','san_nicolas','san_lorenzo','cordoba','tucuman','salta'];
 const clock=c=>c.hour*3600+(c.secondOfHour??0);
 const medical=(c,at,id=10)=>sectorInventoryModel(c,at,rosterFor(c),id).entries.filter(row=>JSON.parse(row.expected).item==='medkits');
 const pool=(c,at)=>medical(c,at).reduce((n,row)=>n+row.count,0);
@@ -23,7 +25,7 @@ const guns=c=>({depots:c.artilleryDepots,transfers:c.artilleryTransfers,scenes:O
 function earned(){
  const packed=readFileSync(new URL('./fixtures/'+meta.fixture,import.meta.url)),raw=gunzipSync(packed);
  assert.equal(sha(packed),meta.gzipSha256);assert.equal(sha(raw),meta.rawSha256);assert.equal(raw.length,meta.rawBytes);
- const c=decodeSave(raw.toString()).campaign;
+ const c=admitEarnedArtillerySave(raw.toString(),{sectors:retainedSectors,scenes:{yatasto:'tucuman'},label:'original Cuyo finite-care input'}).campaign;
  assert.deepEqual([c.hour,c.secondOfHour],meta.clock);assert.equal(c.resources.treasury,meta.treasury);
  assert.equal(c.location,'cordoba');assert.equal(c.pendingBattle,null);assert.equal(c.pendingEncounter,null);
  assert.equal(c.operativeState[11].hp,18);assert.equal(c.operativeState[11].maxHp,78);assert.equal(c.operativeState[11].bleeding,0);
@@ -97,9 +99,12 @@ test('an unobserved or insufficient finite supply request cannot create a courie
 test('the actual earned Yatasto caller completes all Cuyo preparation with finite courier care, native paid defender and whole official replay',t=>{
  const parent=JSON.parse(readFileSync(new URL('./fixtures/earned-original-yatasto-party.provenance.json',import.meta.url))),packed=readFileSync(new URL('./fixtures/'+parent.fixture,import.meta.url)),raw=gunzipSync(packed);
  assert.equal(sha(packed),parent.gzipSha256);assert.equal(sha(raw),parent.rawSha256);
- const yatasto=finishFreshNorthernCampaign(decodeSave(raw.toString()).campaign);
+ const admitted=admitEarnedArtillerySave(raw.toString(),{sectors:retainedSectors,label:'original Yatasto party input'});
+ const yatasto=finishFreshNorthernCampaign(admitted.campaign);
  assert.deepEqual([yatasto.hour,yatasto.secondOfHour,yatasto.resources.treasury],[799,3471,56669]);
- assert.equal(sha(JSON.stringify(yatasto)),'5ec7104f2c065cadc463ccc7dc5fcea3f47c4b094485cbf3e1782e60efd933ce');
+ // Keep the original full normalized value hash. Only the already checked
+ // version markers are removed from a copy for this dated comparison.
+ assert.equal(sha(JSON.stringify(beforeEarnedArtilleryMarkers(yatasto,{sectors:retainedSectors,scenes:{yatasto:'tucuman'},label:'original Yatasto result'}))),'5ec7104f2c065cadc463ccc7dc5fcea3f47c4b094485cbf3e1782e60efd933ce');
  const before=structuredClone(yatasto),events=[],c=prepareFreshCuyoDefense(yatasto,{report:e=>events.push(e)});
  assert.deepEqual(yatasto,before);assert.deepEqual([c.hour,c.secondOfHour,c.resources.treasury],[840,3471,63323]);
  assert.equal(c.location,'cordoba');assert.deepEqual(c.squad,[1,0,8,137,114,142]);assert.equal(c.pendingBattle,null);assert.equal(c.pendingEncounter,null);

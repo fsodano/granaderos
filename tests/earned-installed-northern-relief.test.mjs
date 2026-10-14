@@ -6,13 +6,14 @@ import {createHash} from 'node:crypto';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {enterSector} from '../game/world.js';
 import {prepareNorthernOfficerRelief} from './fresh-northern-command.mjs';
+import {admitEarnedArtilleryMarkers} from './earned-artillery-admission-fixture.mjs';
 
 test('the installed Tucumán survivors receive finite field aid before their actual northern relief trip',t=>{
  const name='earned-installed-tucuman-before-relief',fixture=suffix=>readFileSync(new URL(`./fixtures/${name}.${suffix}`,import.meta.url));
  const meta=JSON.parse(fixture('provenance.json')),gzip=fixture('campaign.json.gz'),raw=gunzipSync(gzip),sha=bytes=>createHash('sha256').update(bytes).digest('hex');
  assert.equal(sha(gzip),meta.gzipSha256);assert.equal(sha(raw),meta.rawSha256);assert.equal(raw.length,meta.rawBytes);
- const input=JSON.parse(raw),start=decodeSave(encodeSave(input)).campaign,before=structuredClone(start),events=[];
- assert.deepEqual(start,input);assert.equal(start.operativeState[122].hp,19);assert.equal(start.operativeState[122].bleeding,4);
+ const input=JSON.parse(raw),start=admitEarnedArtilleryMarkers(input,{sectors:['retiro','buenos_aires','san_nicolas','san_lorenzo','cordoba','tucuman'],label:'installed northern relief input'}),before=structuredClone(start),events=[];
+ assert.equal(start.operativeState[122].hp,19);assert.equal(start.operativeState[122].bleeding,4);
  const ready=prepareNorthernOfficerRelief(start,{routeKind:'stock',report:event=>events.push(event)});
  const aid=events.find(event=>event.event==='createdCuyoFieldAid');assert.ok(aid);assert.equal(aid.sector,'tucuman');assert.deepEqual(aid.patients,[122,121,129]);
  assert.equal(aid.campaign.hour,start.hour);assert.equal(aid.campaign.secondOfHour,start.secondOfHour+10);

@@ -7,6 +7,7 @@ import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {collectReturnedMountainKit} from './fresh-mountain-route.mjs';
+import {admitEarnedArtilleryMarkers} from './earned-artillery-admission-fixture.mjs';
 
 const sha=value=>createHash('sha256').update(value).digest('hex');
 const save=c=>decodeSave(encodeSave(c)).campaign;
@@ -19,8 +20,9 @@ function earned(){
  const c=JSON.parse(raw);assert.equal(c.location,'mendoza');assert.deepEqual([c.hour,c.secondOfHour],[630,2766]);
  assert.equal(c.resources.treasury,70443);assert.equal(c.pendingBattle,null);assert.equal(c.pendingEncounter,null);
  assert.deepEqual(Object.entries(c.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id)),provenance.deadIds);
- assert.deepEqual(save(c),c,'the raw native capture must validate and roundtrip as an official campaign save');
- return {c,provenance};
+ const retainedSectors=['retiro','buenos_aires','san_nicolas','san_lorenzo','cordoba','tucuman','salta','cell-12-8','mendoza','cell-6-24','uspallata'];
+ const admitted=admitEarnedArtilleryMarkers(c,{sectors:retainedSectors,scenes:{yatasto:'tucuman'},missingWallEdges:{sectors:retainedSectors,scenes:['yatasto']},label:'earned mountain returned kit'});
+ return {c:admitted,provenance};
 }
 const quantities=c=>Object.fromEntries(Object.entries(c.operativeState).map(([id,r])=>[id,{alive:r.alive,captured:r.captured,hp:r.hp,bleeding:r.bleeding,medkits:r.medkits,ammo:r.ammo,carriedAmmo:r.carriedAmmo,carriedLoaded:r.carriedLoaded,inventory:r.inventory,headwear:r.headwear,outfit:r.outfit,legwear:r.legwear}]));
 

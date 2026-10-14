@@ -1,3 +1,4 @@
+import {admitEarnedArtilleryMarkers} from './earned-artillery-admission-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,writeFileSync} from 'node:fs';
@@ -17,8 +18,8 @@ function earnedInput(){
  const metadata=JSON.parse(readFileSync(new URL('./fixtures/earned-convoy-tucuman-stable-care.provenance.json',import.meta.url)));
  assert.equal(createHash('sha256').update(raw).digest('hex'),metadata.sha256);assert.equal(raw.length,metadata.rawBytes);
  assert.equal(createHash('sha256').update(compressed).digest('hex'),metadata.compressedSha256);
- const input=JSON.parse(raw),before=structuredClone(input),campaign=admitted(input);
- assert.deepEqual(input,before);assert.deepEqual(campaign,input,'The earned input admits without rewriting its state.');
+ const input=JSON.parse(raw),before=structuredClone(input),campaign=admitEarnedArtilleryMarkers(input,{sectors:['retiro','buenos_aires','san_nicolas','san_lorenzo','cordoba','tucuman','salta','mendoza'],scenes:{yatasto:'tucuman'},label:'earned convoy stable-care input'});
+ assert.deepEqual(input,before);
  return {campaign,metadata};
 }
 const order=(s,action)=>{const next=dispatchCampaign(s,action);assert.equal(next.lastError,null);return next;};
