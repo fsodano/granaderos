@@ -76,6 +76,14 @@ export class WorldMaterials {
     this.materials.set(key,material);return material;
   }
   terrain(material:string){return this.get(`terrain-${material}`,{colour:'#ffffff',texture:`/art/terrain-${material}-v1.webp`});}
+  equipment(source:MeshStandardMaterial){
+    const key=`equipment:${source.uuid}`,retained=this.materials.get(key);if(retained)return retained;
+    // Keep carried assets and their textures owned by the shared asset cache.
+    // Floor meshes need their own world stencil and admitted vertex lighting.
+    const material=source.clone();material.vertexColors=true;
+    material.stencilWrite=material.opacity>=1;material.stencilRef=1;material.stencilFunc=AlwaysStencilFunc;material.stencilZPass=ReplaceStencilOp;
+    this.materials.set(key,material);return material;
+  }
   roomFloor(material:string){return material==='wood'?this.get('terrain-wood',{colour:'#ffffff',texture:'/art/terrain-wood-v1.webp',floorJoints:true}):this.terrain(material);}
   dispose(){if(this.disposed)return;this.disposed=true;for(const material of this.materials.values())material.dispose();for(const texture of this.textures.values())texture.dispose();this.materials.clear();this.textures.clear();}
 }

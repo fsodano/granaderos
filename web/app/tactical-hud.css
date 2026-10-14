@@ -53,6 +53,9 @@
 .battle-layout .ja2-equipped-help{margin:0;color:#d3d9bf;font-size:10px;line-height:1.35;flex-shrink:0}
 .battle-layout .ja2-target-preview{position:absolute;top:34px;left:12px;z-index:12;display:flex;flex-direction:column;gap:3px;max-width:min(360px,calc(100% - 24px));padding:8px 10px;background:#172a21ee;border:1px solid #b9ba85;color:#f0e7c9;font-size:11px;pointer-events:none}
 .battle-layout .ja2-target-preview.unavailable{border-color:#d28e70;color:#f1c7ad}
+.battle-layout details.ja2-target-preview{display:block;padding:0;pointer-events:auto}
+.battle-layout .ja2-target-preview>summary{padding:4px 7px;cursor:pointer;font-size:10px}
+.battle-layout .ja2-preview-details{display:flex;flex-direction:column;gap:3px;padding:6px 9px;max-height:30vh;overflow:auto}
 .battle-layout .hand-slot.medical{grid-column:1/-1;min-height:50px}
 .battle-layout .hand-slot.medical>b{font-size:20px;color:#e0cfba}
 .battle-layout .ja2-equipped-slots button:disabled:not([aria-pressed="true"]),.battle-layout .ja2-order-grid button:disabled,.battle-layout .ja2-stance-grid button:disabled{opacity:.4;cursor:default}

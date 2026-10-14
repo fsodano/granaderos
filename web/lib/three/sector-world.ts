@@ -4,6 +4,7 @@ import {buildBuilding,buildIndependentWalls,effectiveRooms,shownUpperSurfaces} f
 import {buildCannon} from './world-artillery';
 import {WorldGeometry,disposeWorldNode} from './world-geometry';
 import {buildLoot} from './world-items';
+import type {WorldEquipment} from './world-item-models';
 import {animateWorldNode,buildClimbLinks,buildLight,buildSmoke} from './world-lights';
 import {WorldMaterials,illuminationAt,worldKey} from './world-materials';
 import {activeClimbLinks,buildClimbCovers,climbOpenings,type ClimbOpening} from './world-climb-openings';
@@ -20,6 +21,7 @@ export function createSectorWorld(scene:Scene,options:WorldOptions):SectorWorld{
   const T=options.tileMetres,root=new Group(),geometry=new WorldGeometry(),materials=new WorldMaterials(options),nodes=new Map<string,WorldNode>();
   root.name='sector-world';scene.add(root);
   let disposed=false,input:WorldInput|undefined,chunks=new Map<string,WorldTile[]>(),desired=new Set<string>(),time=0;
+  let equipment:WorldEquipment|undefined,pendingModels=options.equipment?1:0;
   let openings:ClimbOpening[]=[];
   let vegetationBase=new Map<string,string>(),upperBase='',upperAlways:readonly WorldTile[]=[],upperSupported:readonly WorldTile[]=[];
   const signature=(value:unknown)=>JSON.stringify(value);
@@ -72,7 +74,7 @@ export function createSectorWorld(scene:Scene,options:WorldOptions):SectorWorld{
     }
     for(const cannon of next.cannons??[])retain(`cannon:${cannon.id}`,signature([cannon,illuminationAt(next,cannon)]),()=>buildCannon(cannon,next,T,geometry,materials));
     for(const [n,pile]of (next.loot??[]).entries()){
-      const id=pile.id??`${worldKey(pile)}:${n}`;retain(`loot:${id}`,signature([pile,illuminationAt(next,pile)]),()=>buildLoot(id,pile,next,T,geometry,materials));
+      const id=pile.id??`${worldKey(pile)}:${n}`;retain(`loot:${id}`,signature([pile,illuminationAt(next,pile),Boolean(equipment)]),()=>buildLoot(id,pile,next,T,geometry,materials,equipment));
     }
     for(const [n,source]of (next.terrain.lights??[]).entries()){
       const id=source.id??`${worldKey(source)}:${source.type??'campfire'}:${n}`;retain(`light:${id}`,signature([source,next.terrain.night,illuminationAt(next,source),n<12]),()=>buildLight(id,source,next,T,geometry,materials,n<12));
@@ -92,9 +94,10 @@ export function createSectorWorld(scene:Scene,options:WorldOptions):SectorWorld{
   const inspect=()=>{
     let objects=0,meshes=0,triangles=0;const ids=new Set<string>();
     root.traverse(object=>{objects++;if(object.userData.semanticId)ids.add(object.userData.semanticId);for(const id of object.userData.semanticIds??[])ids.add(id);if(object instanceof Mesh){meshes++;triangles+=(object.geometry.index?.count??object.geometry.getAttribute('position').count)/3;}});
-    return {objects,meshes,triangles,chunks:[...nodes.keys()].filter(key=>key.startsWith('terrain:')).length,semanticIds:[...ids].sort(),pendingTextures:materials.pending,assetErrors:[...materials.errors],disposed};
+    return {objects,meshes,triangles,chunks:[...nodes.keys()].filter(key=>key.startsWith('terrain:')).length,semanticIds:[...ids].sort(),pendingTextures:materials.pending,pendingModels,assetErrors:[...materials.errors],disposed};
   };
   const anchor=(id:string,role:string)=>{const node=nodes.get(`cannon:${id}`)??nodes.get(id),point=node?.anchors?.get(role);if(!point||disposed)return null;root.updateMatrixWorld(true);return point.getWorldPosition(new Vector3());};
   const dispose=()=>{if(disposed)return;disposed=true;for(const node of nodes.values())disposeWorldNode(node.object);nodes.clear();root.removeFromParent();materials.dispose();geometry.dispose();input=undefined;chunks.clear();};
+  void options.equipment?.then(assets=>{pendingModels=0;if(disposed)return;equipment=assets;if(input)update(input);}).catch(error=>{pendingModels=0;if(disposed)return;const failure=error instanceof Error?error:Error(String(error));materials.errors.push(failure.message);options.onAssetError?.(failure);});
   return {update,updateActors,tick,inspect,anchor,dispose};
 }

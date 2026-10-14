@@ -15,11 +15,12 @@ type Leg={thigh:Object3D;calf:Object3D;foot:Object3D;first:number;second:number;
 export class NativeGaitTransitionSupport{
  maximumAdjustment=0;maximumBodyDrop=0;rejectedFits=0;maximumReachError=0;
  private forecasts?:WeakMap<AnimationClip,Map<number,Map<string,Goal>>>;
- private body:Object3D;private bodyPosition=new Vector3();private nativeBodyPosition=new Vector3();
+ private visualScale:number;private body:Object3D;private bodyPosition=new Vector3();private nativeBodyPosition=new Vector3();
  private legs:Leg[]=[];private native=new Map<Object3D,Quaternion>();private adjusted=false;private supportSide='';private pending?:{spec:GaitClip;clip:AnimationClip;moving:boolean;initial:Map<string,Goal>};private plan?:Plan;private lastRoot=new Matrix4();private hasFrame=false;private previewRoot=new Group();private preview:Object3D;private previewMixer:AnimationMixer;private previewBones=new Map<string,Object3D>();private previewClip?:AnimationClip;private previewAction?:AnimationAction;
  private initial=new Vector3();private point=new Vector3();private scratch=new Vector3();private start=new Vector3();private joint=new Vector3();private end=new Vector3();private target=new Vector3();private direction=new Vector3();private pole=new Vector3();private knee=new Vector3();private before=new Vector3();private after=new Vector3();private rootPoint=new Vector3();
  private rotation=new Quaternion();private worldRotation=new Quaternion();private parentRotation=new Quaternion();private footRotation=new Quaternion();
  constructor(private model:Object3D,private root:Object3D,footwearName?:string){
+  this.visualScale=root.getWorldScale(new Vector3()).x;
   const containsBone=(node:Object3D):boolean=>(node as any).isBone||node.children.some(containsBone),copy=(node:Object3D):Object3D=>{const clone=node.clone(false);for(const child of node.children)if(containsBone(child))clone.add(copy(child));return clone;};
   this.preview=copy(model);this.previewRoot.add(this.preview);this.preview.traverse(node=>this.previewBones.set(node.name,node));this.previewMixer=new AnimationMixer(this.preview);
   this.body=model.getObjectByName('Root')!;model.updateWorldMatrix(true,true);const mesh=footwearName&&model.getObjectByName(footwearName);
@@ -55,23 +56,23 @@ export class NativeGaitTransitionSupport{
  private forecast(clip:AnimationClip,phase:number,delta:Vector3){
   const localPhase=((phase%clip.duration)+clip.duration)%clip.duration;
   const origin=this.root.getWorldPosition(new Vector3()),rotation=this.root.getWorldQuaternion(new Quaternion()),scale=this.root.getWorldScale(new Vector3());
-  const rigidYaw=Math.abs(rotation.x)<1e-8&&Math.abs(rotation.z)<1e-8&&scale.distanceTo(new Vector3(1,1,1))<1e-8;
+  const rigidYaw=Math.abs(rotation.x)<1e-8&&Math.abs(rotation.z)<1e-8&&scale.x>0&&Math.abs(scale.x-scale.y)<1e-8&&Math.abs(scale.x-scale.z)<1e-8;
   let cache=rigidYaw?this.forecasts?.get(clip):undefined;if(rigidYaw&&!cache)this.forecasts?.set(clip,cache=new Map());
   let local=cache?.get(localPhase);
   if(!local){
    if(this.previewClip!==clip){this.previewMixer.stopAllAction();this.previewMixer.uncacheRoot(this.preview);this.previewClip=clip;this.previewAction=this.previewMixer.clipAction(clip).reset().setLoop(LoopRepeat,Infinity).play();}
    const action=this.previewAction!;action.enabled=true;action.paused=false;action.time=localPhase;action.timeScale=0;this.previewMixer.update(0);
-   this.previewRoot.position.copy(rigidYaw?new Vector3():origin.clone().add(delta));this.previewRoot.quaternion.copy(rigidYaw?new Quaternion():rotation);this.previewRoot.updateWorldMatrix(true,true);
+   this.previewRoot.position.copy(rigidYaw?new Vector3():origin.clone().add(delta));this.previewRoot.quaternion.copy(rigidYaw?new Quaternion():rotation);this.previewRoot.scale.copy(rigidYaw?new Vector3(1,1,1):scale);this.previewRoot.updateWorldMatrix(true,true);
    local=new Map(this.legs.map(leg=>{const foot=this.previewBones.get(leg.foot.name)!;return [leg.foot.name.slice(-1),{p:foot.getWorldPosition(new Vector3()),q:foot.getWorldQuaternion(new Quaternion()),height:this.lowest(leg,true),knee:this.previewBones.get(leg.calf.name)!.getWorldPosition(new Vector3())}] as [string,Goal];}));
    if(cache){if(cache.size>=24)cache.delete(cache.keys().next().value!);cache.set(localPhase,local);}
   }
   if(!rigidYaw)return local;
-  return new Map([...local].map(([side,goal])=>[side,{p:goal.p.clone().applyQuaternion(rotation).add(origin).add(delta),q:rotation.clone().multiply(goal.q),height:goal.height!+origin.y+delta.y,knee:goal.knee!.clone().applyQuaternion(rotation).add(origin).add(delta)}]));
+  return new Map([...local].map(([side,goal])=>[side,{p:goal.p.clone().multiplyScalar(scale.x).applyQuaternion(rotation).add(origin).add(delta),q:rotation.clone().multiply(goal.q),height:goal.height!*scale.x+origin.y+delta.y,knee:goal.knee!.clone().multiplyScalar(scale.x).applyQuaternion(rotation).add(origin).add(delta)}]));
  }
  private startPlan(time:number,phase:number,speed:number){
   const pending=this.pending!;this.pending=undefined;let firstTime=.3,secondTime=.6,firstSide='';const velocity=new Vector3();
   if(pending.moving){
-   const stride=pending.spec.nativeStrideSpeed??pending.spec.locomotionSpeed,rate=stride&&stride>0?speed/stride:0;if(!(rate>0)){this.rejectedFits++;return;}
+   const stride=pending.spec.nativeStrideSpeed??pending.spec.locomotionSpeed,rate=stride&&stride>0?speed/(stride*this.visualScale):0;if(!(rate>0)){this.rejectedFits++;return;}
    const boundaries=[] as {time:number;side:string}[];
    for(const [side,range]of Object.entries(pending.spec.nativeSidewaysSupport?.supportWindows??{}))for(let turn=-2;turn<5;turn++){const at=(range[0]+turn*.5)*pending.clip.duration,wall=(at-phase)/rate;if(wall>=.15)boundaries.push({time:wall,side});}
    boundaries.sort((a,b)=>a.time-b.time);const first=boundaries[0],second=boundaries.find(b=>b.side!==first?.side&&b.time>first.time+.05);if(!first||!second||second.time>1.1){this.rejectedFits++;return;}
@@ -86,7 +87,7 @@ export class NativeGaitTransitionSupport{
  private planted(initial:Goal,side:string,fraction:number){
   const leg=this.legs.find(leg=>leg.foot.name.endsWith(side))!,plan=this.plan!;
   if(!plan.moving)return initial;
-  const u=Math.max(0,Math.min(1,fraction)),weight=u*u*(3-2*u),forward=leg.toe.clone().applyQuaternion(initial.q);forward.y=0;forward.normalize();const axis=new Vector3(0,1,0).cross(forward).normalize(),q=new Quaternion().setFromAxisAngle(axis,(plan.roll[side]??0)*weight).multiply(initial.q),anchor=leg.toe.clone().applyQuaternion(initial.q).add(initial.p),p=anchor.sub(leg.toe.clone().applyQuaternion(q));return {p,q};
+  const u=Math.max(0,Math.min(1,fraction)),weight=u*u*(3-2*u),forward=leg.toe.clone().multiplyScalar(this.visualScale).applyQuaternion(initial.q);forward.y=0;forward.normalize();const axis=new Vector3(0,1,0).cross(forward).normalize(),q=new Quaternion().setFromAxisAngle(axis,(plan.roll[side]??0)*weight).multiply(initial.q),anchor=leg.toe.clone().multiplyScalar(this.visualScale).applyQuaternion(initial.q).add(initial.p),p=anchor.sub(leg.toe.clone().multiplyScalar(this.visualScale).applyQuaternion(q));return {p,q};
  }
  private rawGoal(side:string,elapsed:number):Goal{
   const plan=this.plan!,initial=plan.initial.get(side)!,first=plan.first.get(side)!,final=plan.final.get(side)!,move=side===plan.firstSide;

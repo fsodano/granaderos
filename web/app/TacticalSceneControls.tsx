@@ -18,6 +18,7 @@ import {cloneElement,useMemo,useRef,useId,type CSSProperties,type ReactElement,t
 import './tactical-readability.css';
 import {sameCell,spaceKey,tacticalLevel,surfaceHeight} from '../../game/tactical-space.js';
 import {projectSurface,surfaceDrawDepth,surfaceRenderOffset} from '../lib/tactical-elevation';
+import {ACTOR_VISUAL_SCALE} from '../lib/three/actor-visual-scale';
 type Props={groundOverlay?:ReactNode;terrainVisible?:boolean;interactive?:boolean;viewport?:any;cursorLevel?:number;state:any;selected:any;unit:any;players:any[];units:any[];positions:any;poses:any;directions:any;hover:any;mode:string;aim:number;hitLocation?:string;reachable:any[];routesPending?:boolean;showSight:boolean;sight:Set<string>;revealed:Set<string>;project:(x:number,y:number)=>{x:number;y:number};onTile:(t:any)=>void;onHover:(t:any)=>void;onTalk:(n:any)=>void;onCannon:(id:string)=>void;cannonId:string};
 const ignoreInteraction=()=>{};
 const diamond=(x:number,y:number)=>`${x},${y-14} ${x+26},${y} ${x},${y+14} ${x-26},${y}`;
@@ -42,8 +43,8 @@ export default function TacticalSceneControls({groundOverlay,terrainVisible=true
   const posture=spriteCondition(v),collapsed=posture==='dead'||posture==='unconscious';
   const mounted=v.mounted&&!collapsed;
   const direction=collapsed||moving.moving?moving.direction:Number.isInteger(v.facing)?(v.facing+1)%8:poses[v.id]&&poses[v.id]!=='idle'?(directions[v.id]??moving.direction):moving.direction;
-  const selectedUnit=v.id===selected&&!(!npc&&v.side==='player'&&moving.moving),top=p.y-(collapsed||posture==='prone'?24:mounted?72:49);
-  const frame=targetHitFrame(v,p);
+  const selectedUnit=v.id===selected&&!(!npc&&v.side==='player'&&moving.moving),top=p.y-(collapsed||posture==='prone'?24:mounted?72:49)*ACTOR_VISUAL_SCALE;
+  const nativeFrame=targetHitFrame(v,p),frame={x:p.x+(nativeFrame.x-p.x)*ACTOR_VISUAL_SCALE,y:p.y+(nativeFrame.y-p.y)*ACTOR_VISUAL_SCALE,width:nativeFrame.width*ACTOR_VISUAL_SCALE,height:nativeFrame.height*ACTOR_VISUAL_SCALE};
   const bodyAim=!npc&&!areaThrow&&canChooseShotLocation(v);
   const medicalInteraction=npc&&Boolean(civilianMedicalInputAction(s,u,v,mode));
   const pickupInteraction=npc&&!medicalInteraction&&(mode==='loot'||(['move','useItem'].includes(mode)&&!grenadeHeld&&!(u?.activeSlot==='supply'&&u.activeSupply==='torches')&&collapsed));
@@ -58,7 +59,7 @@ export default function TacticalSceneControls({groundOverlay,terrainVisible=true
    {selectedUnit&&<ellipse cx={p.x} cy={p.y} rx="15" ry="6" fill="none" stroke="#dacb86" strokeWidth="1" pointerEvents="none"/>}
    {v.hp>0&&(selectedUnit||hovered)&&<><rect x={p.x-14} y={top} width="28" height="2" fill="#191d14"/><rect x={p.x-14} y={top} width={28*v.hp/v.maxHp} height="2" fill={v.side==='player'?'#81a866':'#bf644b'}/></>}
    {(selectedUnit||npc&&hovered)&&<text x={p.x} y={top-4} textAnchor="middle" fill="#ede6c3" fontSize="8" stroke="#11180f" strokeWidth="2" paintOrder="stroke">{v.nickname||v.name}{npc&&!collapsed&&v.ai?.activity?` · ${(NPC_ACTIVITY_LABELS as any)[v.ai.activity]}`:""}</text>}
-   {mode!=='inventory'&&hovered&&v.side==='enemy'&&v.hp>0&&!v.surrendered&&u&&hasFirearm(u)&&contextualAttack(s,u,v,{type:mode,aim}).type==='fire'&&<text x={p.x} y={top-5} textAnchor="middle" fill="#f2d5a0" fontSize="10" stroke="#11180f" strokeWidth="2" paintOrder="stroke">{chancePercent(shotChance(s,u,v,aim,hitLocation))}</text>}
+   {mode==='fire'&&hovered&&v.side==='enemy'&&v.hp>0&&!v.surrendered&&u&&hasFirearm(u)&&contextualAttack(s,u,v,{type:mode,aim}).type==='fire'&&<text x={p.x} y={top-5} textAnchor="middle" fill="#f2d5a0" fontSize="10" stroke="#11180f" strokeWidth="2" paintOrder="stroke">{chancePercent(shotChance(s,u,v,aim,hitLocation))}</text>}
   </g>;
  };
  const visiblePeople=useMemo(()=>sightAdmittedUnits.filter(v=>!v.fled&&!v.departure&&actorInteriorReadable(s,v,position(v),revealed)),[s,sightAdmittedUnits,revealed,positions]);
@@ -66,7 +67,7 @@ export default function TacticalSceneControls({groundOverlay,terrainVisible=true
  const lootPiles=useMemo(()=>groundLootPiles(s,players).filter((pile:any)=>isInteriorVisible(s,pile,revealed)),[s,players,revealed]);
  for(const v of visiblePeople){const at=position(v)??v;objects.push({key:`unit-${v.id}`,depth:surfaceDrawDepth(s,{...v,...at},.05),node:drawPerson(v)});}
  for(const npc of visibleCivilians){const at=position(npc,true)??npc;objects.push({key:`npc-${npc.id}`,depth:surfaceDrawDepth(s,{...npc,...at},.05),node:drawPerson({...npc,hp:npc.hp??100,maxHp:npc.maxHp??100,side:'player'},true)});}
- for(const a of s.artillery??[]){if(!isInteriorVisible(s,a,revealed)||!players.some(player=>canSee(s,player,a)))continue;const p=projectSurface(s,project,a);add(`gun-${a.id}`,a.x,a.y,<g role={sceneInteractive?"button":undefined} tabIndex={sceneInteractive?0:-1} aria-label={`Seleccionar ${artilleryProfile(s,a).name}`} onClick={()=>onCannon(a.id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onCannon(a.id);}}}><rect x={p.x-38} y={p.y-58} width="76" height="76" fill="transparent"/>{a.id===cannonId&&<ellipse cx={p.x} cy={p.y} rx="24" ry="10" fill="none" stroke="#d8bf7e"/>}</g>,0,tacticalLevel(a));}
+ for(const a of s.artillery??[]){if(!isInteriorVisible(s,a,revealed)||!players.some(player=>canSee(s,player,a)))continue;const p=projectSurface(s,project,a);add(`gun-${a.id}`,a.x,a.y,<g role={sceneInteractive?"button":undefined} tabIndex={sceneInteractive?0:-1} aria-label={`Seleccionar ${artilleryProfile(s,a).name}`} onClick={()=>onCannon(a.id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onCannon(a.id);}}}><ellipse data-artillery-hit-target="true" cx={p.x} cy={p.y} rx="20" ry="8" fill="transparent"/>{a.id===cannonId&&<ellipse cx={p.x} cy={p.y} rx="24" ry="10" fill="none" stroke="#d8bf7e"/>}</g>,0,tacticalLevel(a));}
  for(const pile of lootPiles){
   const p=projectSurface(s,project,pile),point={x:pile.x,y:pile.y,...(pile.tacticalLevel===undefined?{}:{tacticalLevel:pile.tacticalLevel}),loot:true};
   add(`equipment-${spaceKey(pile)}`,pile.x,pile.y,<g data-ground-equipment="true" role={sceneInteractive?"button":undefined} pointerEvents={sceneInteractive&&tacticalLevel(pile)===cursorLevel?"auto":"none"} tabIndex={sceneInteractive&&tacticalLevel(pile)===cursorLevel?0:-1} aria-label={`Equipo en ${tacticalGridLabel(pile.x,pile.y)} · ${pile.count} objeto(s)`} onMouseEnter={()=>onHover(point)} onMouseLeave={()=>onHover(null)} onFocus={()=>onHover(point)} onBlur={()=>onHover(null)} onClick={()=>onTile(point)} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();onTile(point);}}}>

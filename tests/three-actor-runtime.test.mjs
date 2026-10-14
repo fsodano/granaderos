@@ -519,3 +519,11 @@ test('mounted falls blend the saddle offset to zero by ground contact and keep t
   runtime.tick(0,1001);assert.equal(horse.visible,false);closeVector(runtime.model.position,[0,0,0]);runtime.dispose();
  }
 });
+
+test('70% scene instances scale the rider, horse, garments and held props together',()=>{
+  const f=fixture('SceneScale'),v=visual(f,{mounted:true,posture:'mounted',items:[{id:'1800',reference:'primary',socket:'handRight'}],garments:{outfit:'poncho'}}),input=structuredClone(v),full=new ActorRuntime(f.asset,v),small=new ActorRuntime(f.asset,v,undefined,undefined,.7);
+  try{full.tick(0,0);small.tick(0,0);full.root.updateMatrixWorld(true);small.root.updateMatrixWorld(true);assert.deepEqual(v,input);assert.deepEqual(small.root.position.toArray(),v.position);
+    for(const name of [f.body.name,f.garment.name,f.horseBody.name,'primary:1800']){const a=full.root.getObjectByName(name),b=small.root.getObjectByName(name);assert.ok(a&&b);assert.deepEqual(a.position.toArray(),b.position.toArray());assert.deepEqual(a.scale.toArray(),b.scale.toArray());const p=a.getWorldPosition(new Vector3()).sub(full.root.position).multiplyScalar(.7).add(full.root.position);assert.ok(b.getWorldPosition(new Vector3()).distanceTo(p)<1e-6,name+' scales around the admitted scene origin');assert.deepEqual(b.getWorldScale(new Vector3()).toArray(),a.getWorldScale(new Vector3()).multiplyScalar(.7).toArray());}
+    assert.deepEqual(small.model.position.toArray(),full.model.position.toArray(),'The actual saddle fit remains in native rig coordinates');assert.equal(small.model.getObjectByName(f.body.name).geometry,f.body.geometry);
+  }finally{full.dispose();small.dispose();}
+});

@@ -107,7 +107,9 @@ function observedShot(state,raw,known,canObserve,canObserveExterior){
  // without receiving its physical model, contact proofs or hidden endpoints.
  const clean=point=>({x:point.x,y:point.y,height:point.height,...(point.tacticalLevel===undefined?{}:{tacticalLevel:point.tacticalLevel})});
  const publicPoints=admitted.length<=256?admitted:Array.from({length:256},(_,index)=>admitted[Math.round(index*(admitted.length-1)/255)]);
- return {source:snapshot(raw.source),impact:last,points:publicPoints.map(clean),visible:true,outcome,spread:Boolean(raw.spread),shotHand:raw.shotHand==='offhand'?'offhand':'primary',...(raw.discharge===false?{discharge:false}:{}),...(outcome==='cover'&&raw.material?{material:raw.material}:{})};
+ const targetKey=typeof raw.bodyTargetKey==='string'?raw.bodyTargetKey:raw.victimId&&!hiddenVictim?bodyKey(raw.victimKind??'unit',raw.victimId):null;
+ const publicKey=key=>typeof key==='string'&&/^(unit|npc):/.test(key)&&known.has(key);
+ return {source:snapshot(raw.source),impact:last,points:publicPoints.map(clean),visible:true,outcome,spread:Boolean(raw.spread),...(complete&&end===raw.impact&&publicKey(targetKey)?{bodyTargetKey:targetKey}:{}),...(raw.discharge===false&&publicKey(raw.sourceBodyKey)?{sourceBodyKey:raw.sourceBodyKey}:{}),shotHand:raw.shotHand==='offhand'?'offhand':'primary',...(raw.discharge===false?{discharge:false}:{}),...(outcome==='cover'&&raw.material?{material:raw.material}:{})};
 }
 function observedArtilleryEdgeContact(state,point,contact,raw,canObserveExterior){
  if(!contact?.point||typeof contact.edgeId!=='string'||!['x','y','height'].every(key=>Number.isFinite(point?.[key])&&Math.abs(point[key]-contact.point[key])<1e-8)||tacticalLevel(point)!==tacticalLevel(contact.point))return false;
