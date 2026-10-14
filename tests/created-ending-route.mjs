@@ -23,9 +23,9 @@ import {fightNorthernSector} from './northern-route.mjs';
 import {recruitFreshNavalCommand,recoverFreshPort,prepareFreshBlockadeAssault} from './fresh-coastal-route.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
 import {deployInfantryLine} from './battery-deployment-driver.mjs';
-import {prepareCreatedCapitalReturn,prepareCreatedFinalCapitalReturn,createdFinalCapitalBattery} from './created-capital-return.mjs';
-import {stageActualPaidCapitalRelief,prepareCreatedFiveSurvivorCapitalReturn} from './created-ending-preparation.mjs';
-import {deployCapitalLane} from './created-capital-lane.mjs';
+import {prepareCreatedFinalCapitalReturn,createdFinalCapitalBattery} from './created-capital-return.mjs';
+import {prepareCreatedExpandedCapitalReturn} from './created-expanded-capital-return.mjs';
+import {prepareCreatedFiveSurvivorCapitalReturn} from './created-ending-preparation.mjs';
 import {finishActualCreatedNorthernReturn} from './created-live-northern-route.mjs';
 import {createdFiveSupportCapitalBattery} from './created-final-capital-battery.mjs';
 import {fightCreatedFinalCapital} from './created-final-capital-fight.mjs';
@@ -400,16 +400,9 @@ export function finishCreatedCoast(prefix,{onCheckpoint,report=()=>{},reinforcem
  // A later naval occupation can leave the city flag friendly while closing
  // the road. Clear the real blockade before moving the Retiro rear guard.
  if(campaign.blockade){
-  let capital;
-  if(prepared.roles.expeditionIds.includes(135)){
-   campaign=recoverFreshPort(campaign,{hospital:'cordoba',fieldIds:campaign.recruited.filter(id=>{const r=campaign.operativeState[id];return r.alive&&!r.captured&&r.location==='santa_fe';})});
-   const staged=stageActualPaidCapitalRelief(campaign);
-   campaign=prepareCreatedCapitalReturn(staged.campaign,{preparedFieldIds:staged.field,useStoredBattery:true});
-   capital=fightNorthernSector(campaign,'buenos_aires',{deploy:deployCapitalLane,controller:stableCrewController()});
-  }else{
-   campaign=prepareCreatedCapitalReturn(campaign);
-   capital=fightNorthernSector(campaign,'buenos_aires',{controller:coastalSearchController(enterSector(campaign.pendingBattle,campaign.sectorStates.buenos_aires))});
-  }
+  const livingField=campaign.recruited.filter(id=>{const r=campaign.operativeState[id];return id!==57&&r.alive&&!r.captured;});
+  campaign=prepareCreatedExpandedCapitalReturn(campaign,{fieldSize:Math.max(12,livingField.length),report});
+  const capital=fightNorthernSector(campaign,'buenos_aires',{report,deploy:deployInfantryLine,controller:riverInfantryOrder});
   campaign=capital.campaign;note('buenos_aires',capital.summary);
  }
  assert.equal(campaign.blockade,false);

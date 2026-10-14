@@ -1,10 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {admittedKnownFriendlyFire} from './known-friendly-fire-fixture.mjs';
 import {createBattle,firearmShotOptions} from '../game/tactical.js';
 import {northernCombatOrder} from './northern-route.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
-import {recoveryMendozaOrder} from './recovery-mendoza-driver.mjs';
 
 function selectedForecast(battle,unit,action){
  if(action?.type!=='fire')return null;
@@ -16,21 +14,6 @@ function assertSafeFire(battle,unit,action){
  const option=selectedForecast(battle,unit,action);assert.ok(option,'a selected fire order has a current public forecast');
  assert.equal(Boolean(option.interveningFriendly||option.shots?.some(shot=>shot.interveningFriendly)),false,'the order must not knowingly shoot through a friendly body');
 }
-
-test('the genuine retained Mendoza pre-shot state cannot reintroduce its known friendly-ray shot through the normal or low-chance fallback',()=>{
- const {historical,admitted,proof}=admittedKnownFriendlyFire(),original=proof.nextRecordedAction;
- const witnessed=selectedForecast(historical.battle,historical.battle.units.find(actor=>actor.id==='142'),original);
- assert.equal(witnessed.interveningFriendly,true);assert.equal(witnessed.chance,41);assert.equal(witnessed.damageFactor,.640625);
- const {battle}=admitted,before=structuredClone(battle),unit=battle.units.find(actor=>actor.id==='142');
- assert.deepEqual([battle.turn,battle.phase,battle.status],[4,'interrupt','active']);assert.equal(proof.replayedPrefixOrders,116);
- const unsafe=selectedForecast(battle,unit,original);
- assert.equal(unsafe.interveningFriendly,true);assert.equal(unsafe.chance,42);assert.equal(unsafe.damageFactor,.640625);
- // These are selection checks on the explicitly admitted state. No order is
- // applied, no body/equipment changes and no victory outcome is asserted.
- for(const controller of [northernCombatOrder,tucumanCombatOrder,recoveryMendozaOrder])assertSafeFire(battle,unit,controller(battle,unit));
- assert.deepEqual(battle,before);
-});
-
 // Declared flat geometry isolates the public firing-lane guard. It does not
 // create a campaign injury, casualty, resource stock or outcome.
 function lane({alternative=false}={}){

@@ -272,9 +272,9 @@ The earned native defense settles at `1521:492` with 53,478 pesos. The
 commander returns from the real Retiro exit before the surviving field reaches
 Ensenada at `1527:492`, with 53,448 pesos. The physical naval meeting finishes
 at `1527:692`; finite coast care finishes at `1538:692`, with 66,408 pesos.
-The new [fixture provenance](../../tests/fixtures/earned-paid-coastal-capital-defense.provenance.json)
-records the immutable installed-campaign input and the separate native, port
-and care evidence. This earned continuation does not replace a fresh default
+The dated fixture provenance recorded the installed-campaign input and the
+separate native, port and care evidence. That preproduction snapshot and its
+replay test have been removed; this account remains historical evidence. This earned continuation does not replace a fresh default
 start on the final source.
 
 The native affected-gate log hash is
@@ -337,8 +337,8 @@ requirement fails. This historical failed return is separate from the later pass
 arsenal return in PR #390. Complete ending, 48-hour continuation, full release
 regression and final production browser campaign review remain open.
 
-The PR #383 [earned preparation control](../../tests/earned-stock-coast-preparation.test.mjs)
-starts from the unchanged installed commander checkpoint at hour 1,025,
+The retired PR #383 earned preparation control
+started from the unchanged installed commander checkpoint at hour 1,025,
 second 747. Its source was pinned on execution base `de55845d` with the then-uncommitted
 eight-path change, later committed as `b8fb471a`. Current-main integration changed
 only the suite configuration within that loaded graph; its six controls passed again.

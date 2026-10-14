@@ -1,6 +1,5 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {admittedKnownFriendlyFire} from './known-friendly-fire-fixture.mjs';
 import {createBattle,actBattle,getReachable,teamCanSee,firearmShotOptions} from '../game/tactical.js';
 import {chooseEnemyAction} from '../game/tactical-ai.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
@@ -34,26 +33,6 @@ function lane({privateBodies=false}={}){
   npcs:privateBodies?[{id:'private-npc',name:'Habitante no observado',x:21,y:10,hp:100}]:[],
  });
 }
-
-test('the genuine retained blocked-shot state selects the native known-view move without executing a campaign order',t=>{
- const {historical,admitted,proof}=admittedKnownFriendlyFire();
- const oldUnit=historical.battle.units.find(actor=>actor.id==='142'),oldKnown=knownView(historical.battle,oldUnit),oldMove=chooseEnemyAction(oldKnown,oldUnit);
- assert.deepEqual(oldMove,{type:'move',unitId:'142',x:35,y:11,tacticalLevel:0},'The unchanged legacy geometry retains its witnessed chooser result.');
- const oldRoute=getReachable(oldKnown,oldUnit).find(point=>sameCell(point,oldMove));assert.equal(oldRoute.cost,39);assert.equal(oldRoute.path.length,2);
- const {campaign,battle}=admitted,before=structuredClone({campaign,battle}),unit=battle.units.find(actor=>actor.id==='142');
- const original=combatOrder(battle,unit);assert.equal(original?.type,'fire');assert.equal(friendlyRisk(forecast(battle,unit,original)),true);
- const visible=battle.units.filter(target=>target.side==='enemy'&&target.hp>=15&&!target.departure&&!target.unconscious&&!target.surrendered&&!target.routed&&teamCanSee(battle,unit.side,target));
- assert.ok(visible.length>0);
- assert.equal(visible.flatMap(target=>firearmShotOptions(battle,unit,target,4)).filter(option=>option.chance>=25&&!friendlyRisk(option)).length,0,'the ranked safe-shot path has no alternative');
- const native=chooseEnemyAction(knownView(battle,unit),unit);
- assert.deepEqual(native,{type:'move',unitId:'142',x:34,y:10,tacticalLevel:0});
- for(const controller of [northernCombatOrder,tucumanCombatOrder])assert.deepEqual(controller(battle,unit),native);
- const route=getReachable(knownView(battle,unit),unit).find(point=>sameCell(point,native));
- assert.ok(route);assert.equal(route.cost,16);assert.equal(route.path.length,1);assert.ok(route.cost<=unit.ap);
- assert.deepEqual({campaign,battle},before,'all genuine input fields remain unchanged');
- t.diagnostic(JSON.stringify({case:'retained-Mendoza-pure-selection',scope:'official paired input; zero actions executed; no outcome claim',fixtureSha256:proof.sha256,original,originalForecast:forecast(battle,unit,original),selected:native,quotedAP:route.cost,availableAP:unit.ap,path:route.path,inputUnchanged:true}));
-});
-
 test('a known friendly block admits one paid native move with finite load and exact validated JSON replay',t=>{
  const state=lane(),before=structuredClone(state),unit=actor(state),original=combatOrder(state,unit);
  assert.equal(friendlyRisk(forecast(state,unit,original)),true);

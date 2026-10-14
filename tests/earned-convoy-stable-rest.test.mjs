@@ -1,9 +1,5 @@
-import {admitEarnedArtilleryMarkers} from './earned-artillery-admission-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync,writeFileSync} from 'node:fs';
-import {gunzipSync} from 'node:zlib';
-import {createHash} from 'node:crypto';
 import {restStableRoutePatients} from './stable-route-rest.mjs';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {contractExpiresSeconds,contractRenewalQuote} from '../game/contracts.js';
@@ -11,17 +7,7 @@ import {defaultContentPackage} from '../game/content-package.js';
 import {DEFAULT_CARE_RULES} from '../game/campaign-care-rules.js';
 import {launchEnemyGroup} from '../game/enemy-groups.js';
 import {decodeSave,encodeSave} from '../game/save.js';
-
 const admitted=s=>decodeSave(encodeSave(s)).campaign;
-function earnedInput(){
- const compressed=readFileSync(new URL('./fixtures/earned-convoy-tucuman-stable-care.campaign.json.gz',import.meta.url)),raw=gunzipSync(compressed);
- const metadata=JSON.parse(readFileSync(new URL('./fixtures/earned-convoy-tucuman-stable-care.provenance.json',import.meta.url)));
- assert.equal(createHash('sha256').update(raw).digest('hex'),metadata.sha256);assert.equal(raw.length,metadata.rawBytes);
- assert.equal(createHash('sha256').update(compressed).digest('hex'),metadata.compressedSha256);
- const input=JSON.parse(raw),before=structuredClone(input),campaign=admitEarnedArtilleryMarkers(input,{sectors:['retiro','buenos_aires','san_nicolas','san_lorenzo','cordoba','tucuman','salta','mendoza'],scenes:{yatasto:'tucuman'},label:'earned convoy stable-care input'});
- assert.deepEqual(input,before);
- return {campaign,metadata};
-}
 const order=(s,action)=>{const next=dispatchCampaign(s,action);assert.equal(next.lastError,null);return next;};
 
 // Explicit authored rule controls, separate from the exact earned case above.
@@ -36,48 +22,6 @@ function policyInput({historical=false,delayedRelief=false}={}){
  if(delayedRelief)d.characters.find(c=>c.id==='person-112').arrivalHours=6;
  let s=initialCampaign(42,d);s=order(s,{type:'recruitCivic',id:110,term:'day'});s=order(s,{type:'recruitCivic',id:112,term:delayedRelief?'day':'week'});return admitted(s);
 }
-
-test('exact earned finite-care survivors recover through 59 ordinary hours, three true incomes and an official midpoint replay',t=>{
- const {campaign:start,metadata}=earnedInput(),before=structuredClone(start),events=[];
- const result=restStableRoutePatients(start,{patients:metadata.patientIds,report:event=>events.push(event)}),s=result.campaign;
- assert.deepEqual(start,before);assert.equal(result.completed,true);assert.equal(result.stoppedReason,null);
- assert.equal(result.hours,59);assert.equal(result.boundHours,60);assert.deepEqual(result.receipt.start,[1457,1310]);assert.deepEqual(result.receipt.finish,[1516,1310]);
- assert.deepEqual(result.receipt.patients,[{id:110,before:77,after:87,maxHp:87},{id:134,before:65,after:70,maxHp:70}]);
- assert.equal(result.receipt.passiveHpGained,15);assert.equal(result.receipt.elapsedSeconds,59*3600);assert.equal(result.receipt.dressingsUsed,0);
- assert.deepEqual(result.renewals,[]);assert.equal(result.receipt.renewalCost,0);assert.equal(result.receipt.cashBefore,317515);assert.equal(result.receipt.cashAfter,341515);
- assert.deepEqual(result.receipt.income.map(row=>[row.day,row.hour,row.amount,row.observedTreasuryChange]),[[61,1464,8000,8000],[62,1488,8000,8000],[63,1512,8000,8000]]);
- assert.equal(s.resources.treasury,before.resources.treasury+result.receipt.income.reduce((sum,row)=>sum+row.amount,0)-result.receipt.renewalCost);
- assert.equal(s.pendingBattle,null);assert.equal(s.pendingEncounter,null);assert.equal(s.sectors.tucuman.owner,'patriot');assert.equal(s.completed,before.completed);assert.equal(s.defeated,before.defeated);
- assert.deepEqual(s.flags,before.flags);assert.deepEqual(s.recruited,before.recruited);assert.deepEqual(s.contracts,before.contracts);
- assert.deepEqual(s.loadouts,before.loadouts);assert.deepEqual(s.armoryItems,before.armoryItems);assert.deepEqual(s.ammunitionStores,before.ammunitionStores);assert.deepEqual(s.artilleryDepots,before.artilleryDepots);assert.deepEqual(s.artilleryTransfers,before.artilleryTransfers);
- assert.deepEqual(s.sectorStates,before.sectorStates,'Passive rest cannot refill a field cache, rewrite a panic flag or mutate retained physical troops.');
- const exhausted=s.sectorStates.tucuman.groundItems.filter(row=>row.item==='medkits');assert.ok(exhausted.length>0);assert.ok(exhausted.every(row=>row.count===0));
- for(const [id,r]of Object.entries(before.operativeState)){assert.equal(s.operativeState[id].medkits,r.medkits);if(!r.alive){assert.equal(s.operativeState[id].alive,false);assert.equal(s.operativeState[id].hp,0);}}
- for(const id of metadata.patientIds){assert.equal(s.operativeState[id].alive,true);assert.equal(s.operativeState[id].hp,s.operativeState[id].maxHp);assert.equal(s.operativeState[id].bleeding,0);}
- // Replay the exact accepted orders, with an official save after hour 1487.
- let replay=start,waits=0,midpoint=false;
- for(const action of result.actions){replay=order(replay,action);if(action.type==='wait'&&++waits===30){replay=admitted(replay);midpoint=true;}}
- assert.equal(midpoint,true);assert.deepEqual(admitted(replay),s);assert.deepEqual(admitted(s),s);
- if(process.env.GRANADEROS_STABLE_REST_OUTPUT)writeFileSync(process.env.GRANADEROS_STABLE_REST_OUTPUT,encodeSave(s));
- assert.equal(events.filter(row=>row.event==='stableRouteRestFinished').length,1);
- t.diagnostic(JSON.stringify({scope:metadata.scope,inputSha256:metadata.sha256,receipt:result.receipt,actions:result.actions.length,exactOfficialMidpointReplay:true}));
-});
-
-test('acute, bleeding, captured, departed service and occupied patients are refused without modifying the earned input',()=>{
- const {campaign:start}=earnedInput();
- for(const [label,change,pattern]of [
-  ['critical',s=>{s.operativeState[110].hp=14;},/acute|bleeding/],
-  ['bleeding',s=>{s.operativeState[110].bleeding=1;},/acute|bleeding/],
-  ['custody',s=>{s.operativeState[110].captured=true;},/captive/],
-  ['unserving',s=>{s.recruited=s.recruited.filter(id=>id!==110);},/unserving/],
-  ['occupation',s=>{s.sectors.tucuman.owner='royalist';},/safe|unoccupied/],
- ]){
-  // These are rejection controls, never accepted earned outcomes.
-  const s=structuredClone(start);change(s);const before=structuredClone(s);
-  assert.throws(()=>restStableRoutePatients(s,{patients:[110,134]}),pattern,label);assert.deepEqual(s,before,label);
- }
-});
-
 test('actual paid renewals retain every serving survivor and use exact quotes and expected seconds',()=>{
  const start=policyInput(),before=structuredClone(start),result=restStableRoutePatients(start,{patients:[110]}),s=result.campaign;
  assert.equal(result.completed,true);assert.equal(result.hours,48);assert.equal(result.boundHours,48);assert.equal(result.receipt.dressingsUsed,0);
