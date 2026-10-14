@@ -312,6 +312,8 @@ const travel=at=>{const id=c.activeSquadId;order({type:'travel',sector:at,queue:
  // Ensenada holds the only swivel. The first northern assault instead uses
  // Córdoba's existing bronze piece and its real two-person provincial crew.
  const battery=prepareRouteBattery(c,['bronze4'],{destination:'tucuman',keepServing:live(),report});c=battery.campaign;
+ // Retain the original clinic selection and its real native defense context.
+ // Quiet visits may issue this finite piece into the local field.
  order({type:'configureArtillery',types:battery.selections});
  order({type:'diplomacy',kind:'partisanSupply'});
  // The Córdoba envoy meets the actual fifty-point officer contacts. A
@@ -365,7 +367,18 @@ const travel=at=>{const id=c.activeSquadId;order({type:'travel',sector:at,queue:
   resolveEncounter();for(const id of live())order({type:'assignCare',operativeId:id,assignment:c.operativeState[id].hp<c.operativeState[id].maxHp?'patient':'rest'});order({type:'wait',hours:1});
  }
  for(const id of field){assert.ok(c.operativeState[id].hp>=15);assert.equal(c.operativeState[id].bleeding,0);order({type:'assignCare',operativeId:id,assignment:'active'});}
- for(let i=0;i<field.length;i+=6){order({type:'createSquad',ids:field.slice(i,i+6),name:'Columna con oficiales',sector:'tucuman'});const p=visit(c);c=leave(sync({campaign:p.campaign,battle:equipOpeningRifles(p.battle,c.squad).battle}));c=finishReloadsBeforeMarch(c);}
+ for(let i=0;i<field.length;i+=6){
+  order({type:'createSquad',ids:field.slice(i,i+6),name:'Columna con oficiales',sector:'tucuman'});
+  const p=visit(c);c=leave(sync({campaign:p.campaign,battle:equipOpeningRifles(p.battle,c.squad).battle}));
+  const ammunitionStart=structuredClone(c),supplied=supplyRouteAmmunition(c,c.squad,{target:12,report});c=supplied.campaign;
+  report({event:'northernReliefFieldAmmunition',ids:[...c.squad],ammunitionStart,transactions:supplied.transactions,campaign:structuredClone(c)});
+  c=finishReloadsBeforeMarch(c,{report});
+ }
+ // Recover the surviving physical piece after the last quiet equipment visit.
+ // Ordinary storage preserves any actual spent charges and native losses.
+ const batteryRecoveryStart=structuredClone(c),assaultBattery=prepareRouteBattery(c,['bronze4'],{destination:'tucuman',keepServing:live(),report});c=assaultBattery.campaign;
+ report({event:'northernReliefAssaultBattery',batteryRecoveryStart,selections:assaultBattery.selections,campaign:structuredClone(c)});
+ order({type:'configureArtillery',types:assaultBattery.selections});
  return prepareFinalAssault(c,{staging:'tucuman',target:'salta',fieldIds:field});
  }catch(error){recordRouteStrategicEvidence({helper:'prepareStockNorthernOfficerRelief',stage:'preparation-failure',campaign:c,inputCapture,error});throw error;}
 }

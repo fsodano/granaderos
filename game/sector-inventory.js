@@ -7,7 +7,7 @@ import {BODY_SLOTS,outfitSlot,wornBodyItems,makeOutfit,wornOutfit,PONCHO_PRICE} 
 import {changeMerchantCash,merchantCash} from './equipment-merchants.js';
 import {handsRequired,handLayout} from './hand-layout.js';
 import {SUPPLY_ITEMS,itemQuantity,itemDescriptor,extractItemQuantity,applyItemQuantity,inventoryUsage,planPocketMove,equipmentEndpoint,equipmentFingerprint} from './tactical-inventory.js';
-import {getReachable,hasLineOfSight,planEquipLoot,planReadyMainHand,planEquipmentPlacement,planEquipmentCursorOrder,WEAPONS,BLADES} from './tactical.js';
+import {getReachable,hasLineOfSight,planEquipLoot,planReadyMainHand,planEquipmentPlacement,planEquipmentCursorOrder,knownArtillery,WEAPONS,BLADES} from './tactical.js';
 import {propBlocksAt,propCells} from './props.js';
 import {boundaryPassable} from './tactical-exits.js';
 import {operativeLocation,operativeInTransit} from './squads.js';
@@ -106,7 +106,10 @@ export function sectorInventoryModel(s,sectorId,roster,operativeId){
  if(!op||r.hp<15||r.asleep||r.energy<=0||r.unconscious||r.routed||r.surrendered){carriedReason??='Elegí un combatiente consciente, despierto y presente en el sector.';reason??=carriedReason;}
  const actor=op&&snapshot?actorAt(s,sectorId,op):null;
  if(!reason&&!actor)reason='El combatiente debe entrar al sector para encontrar un acceso.';
- const view=actor?{...snapshot,units:[actor],mode:'exploration',phase:'player',status:'active',artillery:[],npcs:[]}:null;
+ const view=actor?{...snapshot,units:[actor],mode:'exploration',phase:'player',status:'active',npcs:[]}:null;
+ // Field pieces remain physical obstacles. Use the current carrier's view,
+ // without reintroducing historical scene actors into this inventory quote.
+ if(view)view.artillery=knownArtillery(view,actor);
  const reach=!reason?getReachable(view,actor):[];
  const access=row=>{
   const cells=row.kind==='container'?propCells(row.source):row.source?[row.source]:[];

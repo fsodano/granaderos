@@ -1,9 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,stanceCost,teamCanSee} from '../game/tactical.js';
+import {createBattle,actBattle,stanceCost,teamCanSee,actionCosts} from '../game/tactical.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {spacePoint} from '../game/tactical-space.js';
 import {northernCombatOrder,northernClinicDefenseOrder} from './northern-route.mjs';
+import {stockNorthernSaltaController} from './fresh-northern-fixture.mjs';
 
 // Declared tactical arena, not a campaign victory receipt. The initial actor is
 // a conscious stable survivor already knocked down on a plain roof. This uses
@@ -84,4 +85,61 @@ test('an ordinary prone roof guard still holds through an early quiet turn',t=>{
  assert.equal(northernClinicDefenseOrder(state,guard(state)),null,'the exception admits required knockdown recovery only');
  assert.deepEqual(state,before);
  t.diagnostic(JSON.stringify({case:'ordinary-roof-hold-unchanged',knockedDown:false,turn:state.turn,nativeAction:northernCombatOrder(state,guard(state)),clinicAction:null,inputUnchanged:true}));
+});
+
+
+// Declared wounded tactical input, not an earned campaign or ending. The
+// controller must respect the same native knockdown and paid slot rules as UI.
+function woundedMedic({activeSlot='primary',ap=80}={}){
+ const state=createBattle([{
+  id:'medic',name:'Sanitario de Salta',x:2,y:2,hp:75,maxHp:100,
+  bleeding:2,bandaged:0,medical:60,medkits:1,energy:80,morale:100,
+  stance:'prone',movementMode:'prone',knockedDown:true,activeSlot,
+  weapon:1800,loaded:1,ammo:0,patrol:false,overwatch:false,
+ }],{
+  width:8,height:8,seed:45,hour:12,
+  tiles:Array.from({length:64},(_,i)=>({x:i%8,y:Math.floor(i/8),type:'grass',blocked:false,cover:0})),
+  enemies:[{id:'contact',x:7,y:7,weapon:0,activeSlot:'unarmed',loaded:0,ammo:0,patrol:false,overwatch:false}],
+ });
+ state.units.find(unit=>unit.id==='medic').ap=ap;
+ return validateBattleSnapshot(state);
+}
+const medic=state=>state.units.find(unit=>unit.id==='medic');
+
+test('the stock Salta medic pays native recovery before selecting dressings, with exact replay and finite aid',()=>{
+ const state=woundedMedic(),before=structuredClone(state),controller=stockNorthernSaltaController(state),actor=medic(state);
+ const recovery=controller(state,actor);
+ assert.deepEqual(recovery,{type:'stance',unitId:'medic',stance:'standing'});
+ assert.deepEqual(state,before,'Choosing recovery cannot change posture, wounds, AP or stock.');
+ const stood=actBattle(state,recovery);assert.equal(stood.lastError,null);
+ assert.equal(medic(stood).ap,actor.ap-stanceCost(actor,'standing'));assert.equal(medic(stood).knockedDown,false);
+ assert.deepEqual(finite(medic(stood)),finite(actor),'Standing cannot grant health or supplies.');
+ const selection=controller(stood,medic(stood));assert.deepEqual(selection,{type:'weapon',unitId:'medic',slot:'medical'});
+ const selected=actBattle(stood,selection);assert.equal(selected.lastError,null);
+ assert.equal(medic(selected).ap,medic(stood).ap-actionCosts(stood,medic(stood)).weapon);
+ assert.deepEqual(finite(medic(selected)),finite(medic(stood)));
+ const aid=controller(selected,medic(selected));assert.deepEqual(aid,{type:'useItem',unitId:'medic',targetId:'medic'});
+ const treated=actBattle(selected,aid);assert.equal(treated.lastError,null);
+ assert.equal(medic(treated).ap,medic(selected).ap-actionCosts(selected,medic(selected),medic(selected)).heal);
+ assert.equal(medic(treated).hp,actor.hp);assert.equal(medic(treated).bleeding,0);assert.equal(medic(treated).medkits,0);
+ for(const key of ['loaded','ammo','weapon','condition'])assert.equal(medic(treated)[key],actor[key]);
+ assert.ok(treated.elapsedSeconds>state.elapsedSeconds);
+ let replay=validateBattleSnapshot(JSON.parse(JSON.stringify(state)));
+ for(const action of [recovery,selection,aid]){replay=actBattle(replay,action);assert.equal(replay.lastError,null);}
+ assert.deepEqual(replay,treated,'Every paid order replays from the same validated tactical input.');
+ assert.deepEqual(state,before);
+});
+
+test('stock Salta keeps already-held adjacent aid available while unpaid recovery remains atomic',()=>{
+ const holding=woundedMedic({activeSlot:'medical'}),before=structuredClone(holding),controller=stockNorthernSaltaController(holding);
+ const aid=controller(holding,medic(holding));assert.deepEqual(aid,{type:'useItem',unitId:'medic',targetId:'medic'});
+ const treated=actBattle(holding,aid);assert.equal(treated.lastError,null);assert.equal(medic(treated).knockedDown,true);
+ assert.equal(medic(treated).hp,medic(holding).hp);assert.equal(medic(treated).bleeding,0);assert.equal(medic(treated).medkits,0);
+ assert.deepEqual(holding,before);
+ const poor=woundedMedic({ap:11}),unchanged=structuredClone(poor);
+ assert.equal(stanceCost(medic(poor),'standing'),12);
+ assert.equal(stockNorthernSaltaController(poor)(poor,medic(poor)),null);
+ assert.deepEqual(poor,unchanged);
+ const rejected=actBattle(poor,{type:'stance',unitId:'medic',stance:'standing'});assert.ok(rejected.lastError);
+ assert.deepEqual(rejected.units,poor.units);assert.equal(rejected.elapsedSeconds,poor.elapsedSeconds);
 });

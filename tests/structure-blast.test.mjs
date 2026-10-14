@@ -133,14 +133,14 @@ test('manual crowbar destruction of a previously damaged wall clears all durabil
 });
 
 test('solid cannonballs retain direct breach rules and do not gain radial structural damage',()=>{
-  const s=field({extra:{activeSlot:'primary',activeItem:undefined}});Object.assign(s.units[0],{x:3,y:3});s.artillery=[{id:'gun',type:'bronze4',side:'player',x:3,y:3,loaded:true,ammo:1}];
+  const s=field({extra:{activeSlot:'primary',activeItem:undefined}});Object.assign(s.units[0],{x:3,y:2});s.artillery=[{id:'gun',type:'bronze4',side:'player',x:3,y:3,loaded:true,ammo:1}];
   s.units.push({...structuredClone(s.units[0]),id:'crew',x:3,y:4});
   wall(s,7,'adobe',3,{structureDamage:48});wall(s,7,'wood',4);
   const next=act(s,{type:'artillery',artilleryId:'gun',x:10,y:3,mode:'solid'});assert.equal(tile(next,7).type,'rubble');assert.equal(tile(next,7).destroyed,true);assert.equal(tile(next,7).structureDamage,100);assert.equal(tile(next,7,4).type,'wall');assert.equal(tile(next,7,4).structureDamage,undefined);assert.ok(validateBattleSnapshot(next));
 });
 
 test('direct cannon breach of a previously damaged door keeps its identity and finite contents in open debris',()=>{
-  const s=field({extra:{activeSlot:'primary',activeItem:undefined}});Object.assign(s.units[0],{x:3,y:3});s.units.push({...structuredClone(s.units[0]),id:'crew',x:3,y:4});s.artillery=[{id:'gun',type:'bronze4',side:'player',x:3,y:3,loaded:true,ammo:1}];
+  const s=field({extra:{activeSlot:'primary',activeItem:undefined}});Object.assign(s.units[0],{x:3,y:2});s.units.push({...structuredClone(s.units[0]),id:'crew',x:3,y:4});s.artillery=[{id:'gun',type:'bronze4',side:'player',x:3,y:3,loaded:true,ammo:1}];
   const contents=[{item:'inventory:cloth',count:1,weight:.2,instanceId:'door-cloth'}];wall(s,7,'adobe',3,{type:'door',doorId:'partial-door',open:false,locked:true,structureDamage:35,contents,trap:{type:'injury',difficulty:30,armed:true}});
   const next=act(s,{type:'artillery',artilleryId:'gun',x:10,y:3,mode:'solid'}),door=tile(next,7);
   assert.equal(door.type,'door');assert.equal(door.doorId,'partial-door');assert.equal(door.destroyed,true);assert.equal(door.open,true);assert.equal(door.locked,false);assert.equal(door.trap.armed,false);assert.deepEqual(door.contents,contents);assert.ok(validateBattleSnapshot(next));

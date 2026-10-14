@@ -10,7 +10,7 @@ import {retainedMilitaryBodies} from './military-remains.js';
 import {placeDetainedPrisoners} from './detention.js';
 import {exteriorComponent,entryTerrainCells} from './sector-entry.js';
 import {beginSectorDeployment} from './sector-deployment.js';
-import {spaceKey,surfacesAtLevel,tacticalLevel,validateTacticalSpace} from './tactical-space.js';
+import {spaceKey,surfacesAtLevel,tacticalLevel,validateTacticalSpace,canWalkBetween} from './tactical-space.js';
 import {physicalEntryAnchor} from './sector-expansion.js';
 import {authoredEnvironment} from './environment-interactions.js';
 import {sceneAnchorFor} from './campaign-scenario.js';
@@ -24,6 +24,7 @@ import {validateQuestBeneficiaries,validateQuestBeneficiaryContext} from './ques
 import {migrateCivilianHealth,civilianMaxHp} from './civilian-health.js';
 import {civilianIncidents} from './civilian-harm.js';
 import {issueConductObservers} from './service-objections.js';
+import {artilleryCellOccupied,artillerySpaceKeys,initializeArtilleryOccupancy} from './artillery-occupancy.js';
 
 const key=spaceKey;
 const clearEncounter=unit=>{
@@ -43,7 +44,7 @@ export function enterSector(request,previous=null,{placement=false}={}){
  previous=expandCellScene(previous,request);
  if(previous&&worldCell(request.sector,request)?.anchor===false&&(previous.sectorId!==request.sector||previous.sourceMapId!==request.sector))throw Error('La escena guardada pertenece a otra celda.');
  if(request.exits!==undefined&&!validateSectorExits(request.sector,request.sceneId??null,request.exits,request))throw Error('Las salidas no corresponden a este sector.');
- if(previous)validateTacticalSpace(previous);
+ if(previous){validateTacticalSpace(previous);if(previous.artilleryOccupancyVersion!==undefined)initializeArtilleryOccupancy(previous);}
  const map=buildSectorMap({...request,compactLayout:previous?previous.width===20&&previous.height===16:request.compactLayout},{restorePrevious:Boolean(previous)});
  map.localityIds=campaignSectors(request).map(s=>s.id);
  map.sectorCode=worldCell(request.sector,request)?.grid??'';
@@ -117,10 +118,14 @@ export function enterSector(request,previous=null,{placement=false}={}){
  const issuedEnemies=new Set(map.enemies.map(u=>String(u.id)));
  const invaders=request.defenseGroupId?state.units.filter(u=>u.side==='enemy'&&u.hp>0&&!u.departure&&!u.fled&&issuedEnemies.has(u.id)):[];
  const arrivingEnemyIds=new Set(invaders.map(u=>u.id));
- const occupied=new Set(state.units.filter(u=>u.side==='enemy'&&u.hp>0&&!u.departure&&!u.fled&&!arrivingEnemyIds.has(u.id)).map(key));
+ const occupied=new Set([...artillerySpaceKeys(state),...state.units.filter(u=>u.side==='enemy'&&u.hp>0&&!u.departure&&!u.fled&&!arrivingEnemyIds.has(u.id)).map(key)]);
  const reserve=(preferred,terrain=null,ordered=false)=>{
-   const level=tacticalLevel(preferred),candidates=(terrain??surfacesAtLevel(state,level)).filter(t=>!t.blocked&&!propBlocksAt(state,t.x,t.y,level)&&!occupied.has(key(t)));
-   if(!ordered)candidates.sort((a,b)=>Math.abs(a.x-preferred.x)+Math.abs(a.y-preferred.y)-Math.abs(b.x-preferred.x)-Math.abs(b.y-preferred.y)||a.y-b.y||a.x-b.x);
+   const level=tacticalLevel(preferred),gun=state.artillery.find(piece=>key(piece)===key(preferred));
+   const candidates=(terrain??surfacesAtLevel(state,level)).filter(t=>!t.blocked&&!propBlocksAt(state,t.x,t.y,level)&&!occupied.has(key(t))&&(!gun||canWalkBetween(state,preferred,t)&&(!(t.x!==preferred.x&&t.y!==preferred.y)||[{x:t.x,y:preferred.y,tacticalLevel:level},{x:preferred.x,y:t.y,tacticalLevel:level}].every(corner=>!propBlocksAt(state,corner.x,corner.y,level)&&!artilleryCellOccupied(state,corner)))));
+   if(gun){
+     const facing=gun.facing??0,forward=point=>(point.x-preferred.x)*Math.cos(facing)+(point.y-preferred.y)*Math.sin(facing),rank=point=>forward(point)>1e-9?2:forward(point)< -1e-9?0:1;
+     candidates.sort((a,b)=>rank(a)-rank(b)||Math.abs(a.x-preferred.x)+Math.abs(a.y-preferred.y)-Math.abs(b.x-preferred.x)-Math.abs(b.y-preferred.y)||forward(a)-forward(b)||a.y-b.y||a.x-b.x);
+   }else if(!ordered)candidates.sort((a,b)=>Math.abs(a.x-preferred.x)+Math.abs(a.y-preferred.y)-Math.abs(b.x-preferred.x)-Math.abs(b.y-preferred.y)||a.y-b.y||a.x-b.x);
    if(!candidates[0])throw Error('No queda espacio libre para entrar en el sector.');
    const {x,y}=candidates[0];occupied.add(key(candidates[0]));return{x,y,...(preferred.tacticalLevel===undefined&&level===0?{}:{tacticalLevel:level})};
  };

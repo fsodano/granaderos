@@ -16,6 +16,7 @@ export class ActorAssetLibrary {
   private load(url:string){
     let load=this.loads.get(url);if(!load){load=this.loader.loadAsync(this.assetUrl(url)).then(gltf=>{if(this.released)this.disposeGltf(gltf);return gltf;});this.loads.set(url,load);}return load;
   }
+  async equipment(){const manifest=await this.manifest();return {manifest,equipment:await this.load(manifest.equipment.url)};}
   async actor(id:string,lod:number,mounted=false):Promise<LoadedActor>{
     const manifest=await this.manifest(),appearance=appearanceById(manifest,id);if(!appearance)throw Error(`Missing character appearance: ${id}`);
     const level=appearance.lods.find(level=>level.lod===lod)??appearance.lods.at(-1)!;

@@ -8,12 +8,20 @@ import {contractQuote} from '../game/contracts.js';
 import {rosterFor,civicStatus,dispatchCampaign} from '../game/campaign.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {expandedCapitalReliefPlan,prepareCreatedExpandedCapitalReturn,expandedCapitalWaitNotice} from './created-expanded-capital-return.mjs';
+import {admitEarnedArtilleryMarkers} from './earned-artillery-admission-fixture.mjs';
 
 const sha=v=>createHash('sha256').update(v).digest('hex');
 function fixture(){
  const stem='./fixtures/earned-coastal-river-victory',proof=JSON.parse(readFileSync(new URL(stem+'.provenance.json',import.meta.url))),gzip=readFileSync(new URL(stem+'.save.json.gz',import.meta.url)),raw=gunzipSync(gzip);
  assert.equal(sha(gzip),proof.gzipSha256);assert.equal(sha(raw),proof.rawSha256);assert.equal(raw.length,proof.rawBytes);
- const c=decodeSave(raw.toString()).campaign;assert.equal(sha(JSON.stringify(c)),proof.campaignSha256);
+ const c=decodeSave(raw.toString()).campaign,legacy=structuredClone(c);
+ const sectors=['retiro','buenos_aires','san_nicolas','san_lorenzo','cordoba','tucuman','salta','mendoza','ensenada','uspallata','los_patos','santa_fe'],scenes={yatasto:'tucuman'};
+ assert.deepEqual(Object.keys(legacy.sectorStates).sort(),[...sectors].sort());assert.deepEqual(Object.keys(legacy.sceneStates).sort(),Object.keys(scenes));
+ for(const state of [...Object.values(legacy.sectorStates),...Object.values(legacy.sceneStates)]){
+  assert.equal(state.artilleryOccupancyVersion,1);delete state.artilleryOccupancyVersion;
+ }
+ assert.equal(sha(JSON.stringify(legacy)),proof.campaignSha256,'The original normalized campaign hash must still match after removing only the verified new markers.');
+ assert.deepEqual(admitEarnedArtilleryMarkers(legacy,{sectors,scenes,label:'earned river victory'}),c);
  assert.deepEqual([c.hour,c.secondOfHour,c.resources.treasury],[...proof.clock,proof.treasury]);
  assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);return c;
 }

@@ -9,7 +9,7 @@ import {choosePackedGunHandover} from './tactical-ai-gun-handover.js';
 import {chooseScavengingAction} from './tactical-ai-scavenging.js';
 import {chooseOwnedFirearmRepair} from './tactical-ai-repair.js';
 import {directionTo,facingAllowsSight,turnAPCost} from './tactical-awareness.js';
-import {getReachable, hasFirearm, canSee, hasLineOfSight, shotChance, firearmShotOptions, actionCosts, stanceCost, weaponFor, bladeFor, planEquipLoot, planSwapHands, swapHandsPreview, maxActionPoints, AP_CARRY_LIMIT, movementStepCost, climbPreview,knifeThrowPreview,meleePreview} from './tactical.js';
+import {getReachable, knownArtillery, hasFirearm, canSee, hasLineOfSight, shotChance, firearmShotOptions, actionCosts, stanceCost, weaponFor, bladeFor, planEquipLoot, planSwapHands, swapHandsPreview, maxActionPoints, AP_CARRY_LIMIT, movementStepCost, climbPreview,knifeThrowPreview,meleePreview} from './tactical.js';
 import {heldThrowingKnife,knifeThrowDamage} from './thrown-knife.js';
 import {availableAmmunition} from './ammunition-types.js';
 import {planFitBayonet} from './tactical-inventory.js';
@@ -44,13 +44,13 @@ export function choosePatrolAction(state,unit) {
     const corners=[[.25,.25],[.75,.25],[.75,.75],[.25,.75]];
     const corner=corners[(Math.floor((state.turn-1)/12)+offset)%corners.length];
     const goal={...planningPoint(anchor),x:Math.floor(state.width*corner[0]),y:Math.floor(state.height*corner[1])};
-    const perceived={...state,units:state.units.filter(other=>other.side===unit.side||canSee(state,unit,other))};
+    const perceived={...state,units:state.units.filter(other=>other.side===unit.side||canSee(state,unit,other)),artillery:knownArtillery(state,unit)};
     const cells=getReachable(perceived,unit).filter(p=>sameSurface(p,anchor)&&p.cost>0&&p.cost<=24&&p.path.length<=3&&distance(p,goal)<distance(unit,goal));
     cells.sort((a,b)=>distance(a,goal)-distance(b,goal)||a.cost-b.cost||a.y-b.y||a.x-b.x);
     return cells[0]?moveOrder(state,unit,cells[0],{patrol:true}):null;
   }
   const [dx,dy]=directions[(state.turn+offset)%4],goal={...planningPoint(anchor),x:anchor.x+dx,y:anchor.y+dy};
-  const perceived={...state,units:state.units.filter(other=>other.side===unit.side||canSee(state,unit,other))};
+  const perceived={...state,units:state.units.filter(other=>other.side===unit.side||canSee(state,unit,other)),artillery:knownArtillery(state,unit)};
   const cells=getReachable(perceived,unit).filter(p=>sameSurface(p,anchor)&&p.cost>0&&p.cost<=24&&p.path.length<=3&&distance(p,anchor)<=6);
   cells.sort((a,b)=>distance(a,goal)-distance(b,goal)||a.cost-b.cost||a.y-b.y||a.x-b.x);
   const next=cells[0];
@@ -291,7 +291,7 @@ export function choosePlayerSharedSightingInvestigation(state,unit,sighting){
  const observed=point=>observers.some(observer=>canSee(state,observer,point));
  if(!observed(sighting))return null;
  const point=planningPoint(sighting,Boolean(state.upperSurfaces?.length));
- const perceived={...state,units:state.units.filter(other=>other.side===unit.side||observed(other)),npcs:(state.npcs??[]).filter(observed)};
+ const perceived={...state,units:state.units.filter(other=>other.side===unit.side||observed(other)),npcs:(state.npcs??[]).filter(observed),artillery:knownArtillery(state,unit)};
  return investigate(perceived,unit,point,actionCosts(state,unit),()=>getReachable(perceived,unit));
 }
 
@@ -304,7 +304,7 @@ function verticalPursuit(state,unit,target,costs){
  const reserve=readyGun(unit)?costs.fire:costs.melee-costs.meleeStance,budget=Math.min(24,unit.ap-standCost-reserve);
  if(budget<=0)return null;
  const upright=stand?{...unit,stance:'standing',movementMode:'walk'}:unit;
- const perceived={...state,mode:'exploration',units:state.units.filter(other=>other.side===unit.side||canSee(state,unit,other))};
+ const perceived={...state,mode:'exploration',units:state.units.filter(other=>other.side===unit.side||canSee(state,unit,other)),artillery:knownArtillery(state,unit)};
  const goal=getReachable(perceived,upright,{stopAt:point=>atHand(point,target)})[0];
  if(!goal?.path.length||!goal.path.some(step=>step.kind==='climb'))return null;
  const prefix=[];let spent=0,from=upright;
@@ -325,7 +325,7 @@ export function chooseEnemyAction(state, unit, {maintenanceContext=null}={}) {
   const targets = state.units.filter(other => other.side !== unit.side && other.hp > 0 && !other.departure && !other.surrendered && !other.unconscious && canSee(state, unit, other)).sort(compareId);
   // Share the same perceived path search across aid, pursuit and cover choices.
   let reachable;
-  const perceived={...state,units:state.units.filter(other=>other.side===unit.side||canSee(state,unit,other))};
+  const perceived={...state,units:state.units.filter(other=>other.side===unit.side||canSee(state,unit,other)),artillery:knownArtillery(state,unit)};
   const paths = () => reachable ??= getReachable(perceived, unit);
   if (unit.bleeding > 0 && unit.medkits > 0 && unit.medical > 0 && unit.activeSlot === 'medical' && unit.ap >= costs.heal) return {type: 'useItem', unitId: unit.id, targetId: unit.id};
   if (unit.knockedDown) return unit.ap >= (costs.standing ?? 12) ? {type: 'stance', unitId: unit.id, stance: 'standing'} : null;

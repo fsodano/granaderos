@@ -1,6 +1,7 @@
 import {bankRouteIncome} from './route-income-banking.mjs';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import {supplyRouteDressings} from './route-dressings.mjs';
+import {collectKnownCuyoDressings} from './cuyo-known-medical-courier.mjs';
 import {collectRouteMedicalSupplies} from './finite-route-equipment.mjs';
 import {prepareRouteBattery} from './route-battery.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
@@ -181,13 +182,26 @@ order({type:'selectSquad',id:main});
 // Budget care from actual wounds and carried dressings. A healthy party must
 // not spend 450 pesos on a fixed bulk purchase before signing its defender.
 const patients=assembled.filter(id=>{const r=c.operativeState[id];return r.alive&&(r.bleeding>0||r.hp<r.maxHp);});
+const ensurePatientDressings=(physician,patientId)=>{
+ if(c.operativeState[physician.id].medkits)return;
+ const attempted=[];
+ try{
+  const supplied=supplyRouteDressings(c,physician.id,1,{report:event=>attempted.push(event)});
+  retained.adopt(supplied,'cuyo-local-care');for(const event of attempted)report(event);
+ }catch(error){
+  if(!error.message.startsWith('No actual reachable finite dressings remain for '))throw error;
+  const patient=c.operativeState[patientId],requested=Math.ceil((patient.maxHp-patient.hp)/doctorRate(physician));
+  assert.ok(requested>0,'An actual finite courier needs an observed clinical supply requirement.');
+  collectKnownCuyoDressings(()=>c,order,physician.id,requested,{report});
+ }
+};
 for(const patientId of patients){
  const physician=rosterFor(c).filter(op=>{const r=c.operativeState[op.id];return assembled.includes(op.id)&&op.id!==patientId&&r.alive&&r.hp>=15&&op.medical>=20;}).sort((a,b)=>b.medical-a.medical)[0];
  assert.ok(physician,'a living local physician must treat the actual Cuyo patient');
 
- if(!c.operativeState[physician.id].medkits)c=supplyRouteDressings(c,physician.id,1,{report});
+ ensurePatientDressings(physician,patientId);
  order({type:'assignCare',operativeId:physician.id,assignment:'doctor'});order({type:'assignCare',operativeId:patientId,assignment:'patient'});
- for(let i=0;i<48&&(c.operativeState[patientId].bleeding>0||c.operativeState[patientId].hp<c.operativeState[patientId].maxHp);i++){assert.equal(c.pendingEncounter,null);if(!c.operativeState[physician.id].medkits)c=supplyRouteDressings(c,physician.id,1,{report});order({type:'wait',hours:1});}
+ for(let i=0;i<48&&(c.operativeState[patientId].bleeding>0||c.operativeState[patientId].hp<c.operativeState[patientId].maxHp);i++){assert.equal(c.pendingEncounter,null);ensurePatientDressings(physician,patientId);order({type:'wait',hours:1});}
  assert.equal(c.operativeState[patientId].hp,c.operativeState[patientId].maxHp);assert.equal(c.operativeState[patientId].bleeding,0);
 }
 const defender=rosterFor(c).filter(op=>{

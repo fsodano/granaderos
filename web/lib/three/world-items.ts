@@ -4,6 +4,7 @@ import {illuminationAt} from './world-materials';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 import type {WorldInput,WorldItem,WorldLoot} from './world-types';
+import {addWorldItemModel,type WorldEquipment} from './world-item-models';
 
 const equipmentKinds:Record<number,string>={1800:'brown-bess',1801:'charleville',1802:'baker-rifle',1803:'cavalry-carbine',1804:'shotgun',1805:'saddle-pistol',1806:'duelling-pistol',1807:'blunderbuss',1808:'double-pistol',1809:'curved-sabre',1810:'caroya-sabre',1811:'socket-bayonet',1812:'lance',1813:'facon'};
 export function worldItemKind(item:WorldItem){
@@ -12,9 +13,12 @@ export function worldItemKind(item:WorldItem){
   return equipmentKinds[template]??String(id).toLowerCase();
 }
 
-export function buildLoot(id:string,pile:WorldLoot,input:WorldInput,T:number,geometry:WorldGeometry,materials:WorldMaterials){
-  const batch=new WorldBatch(geometry),items=pile.items?.length?pile.items:[pile],light=illuminationAt(input,pile);
+export function buildLoot(id:string,pile:WorldLoot,input:WorldInput,T:number,geometry:WorldGeometry,materials:WorldMaterials,equipment?:WorldEquipment){
+  const batch=new WorldBatch(geometry),items=pile.items?.length?pile.items:[pile],light=illuminationAt(input,pile),modelNodes:string[]=[];
   for(const [n,item]of items.slice(0,5).entries()){
+    const angle=seeded(Math.floor(pile.x),Math.floor(pile.y),n+90)*Math.PI;
+    const model=equipment&&addWorldItemModel(batch,item,equipment,new Vector3((n%3-1)*.17,.006+Math.floor(n/3)*.035,(Math.floor(n/3)-.5)*.18),angle,materials,light);
+    if(model){modelNodes.push(model);continue;}
     const kind=worldItemKind(item),part=new WorldBatch(geometry),wood=materials.get('wood'),iron=materials.get('iron'),brass=materials.get('brass');
     if(/pistol|pistola/.test(kind)){
       const duel=kind==='duelling-pistol',double=kind==='double-pistol',barrels=double?[-.028,.028]:[0],end=duel?.21:.25;
@@ -43,10 +47,10 @@ export function buildLoot(id:string,pile:WorldLoot,input:WorldInput,T:number,geo
     }else{
       part.primitive('sphere',materials.get(/medical|bandage|vendaje|botiquin/.test(kind)?'linen':'leather'),[0,.07,0],[.17,.09,.13],undefined,light);part.box(materials.get('linen'),0,.12,0,.03,.025,.18,light);
     }
-    const built=part.finish(`item:${n}`),angle=seeded(Math.floor(pile.x),Math.floor(pile.y),n+90)*Math.PI;
+    const built=part.finish(`item:${n}`);
     let bottom=Infinity;for(const child of built.children){const mesh=child as import('three').Mesh;mesh.geometry.computeBoundingBox();bottom=Math.min(bottom,mesh.geometry.boundingBox!.min.y);}
     const offset=new Vector3((n%3-1)*.17,.006-bottom+Math.floor(n/3)*.035,(Math.floor(n/3)-.5)*.18),matrix=new Matrix4().compose(offset,new Quaternion().setFromAxisAngle(new Vector3(0,1,0),angle),new Vector3(1,1,1));
     for(const child of built.children){const mesh=child as import('three').Mesh;batch.add(mesh.geometry,mesh.material as typeof wood,matrix,1);mesh.geometry.dispose();}
   }
-  const group=batch.finish(`loot:${id}`);group.position.set(pile.x*T,pile.elevation??0,pile.y*T);group.userData.kind='loot';group.userData.semanticId=`loot:${id}`;group.userData.itemKinds=items.map(worldItemKind);return group;
+  const group=batch.finish(`loot:${id}`);group.position.set(pile.x*T,pile.elevation??0,pile.y*T);group.userData.kind='loot';group.userData.semanticId=`loot:${id}`;group.userData.itemKinds=items.map(worldItemKind);group.userData.modelNodes=modelNodes;return group;
 }

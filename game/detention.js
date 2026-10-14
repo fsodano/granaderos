@@ -5,6 +5,7 @@ import {campaignSectors,campaignDefinitions} from './campaign-definition.js';
 import {seedCivilianHealth,validateCivilianHealth} from './civilian-health.js';
 import {propBlocksAt} from './props.js';
 import {spaceKey,tacticalLevel} from './tactical-space.js';
+import {artillerySpaceKeys} from './artillery-occupancy.js';
 
 // Prison scenes receive identities and wounds, never another copy of the
 // weapons, ammunition or inventory already held in campaign custody.
@@ -33,7 +34,7 @@ export function validateDetainedPrisoner(npc,context=null){
  if(['weapon','blade','ammo','loaded','inventory','medkits','rations','priming','flints','equipmentCursor','questGifts'].some(key=>npc[key]!==undefined))throw Error('El prisionero no puede duplicar el equipo en custodia.');
 }
 export function placeDetainedPrisoners(battle,manifest){
- const result=structuredClone(battle),occupied=new Set([...result.units.filter(u=>u.hp>0&&!u.departure),...result.npcs].map(spaceKey));
+ const result=structuredClone(battle),occupied=new Set([...artillerySpaceKeys(result),...[...result.units.filter(u=>u.hp>0&&!u.departure),...result.npcs].map(spaceKey)]);
  const enemies=result.units.filter(u=>u.side==='enemy'&&u.hp>0&&!u.departure);
  const candidates=result.tiles.filter(t=>!t.blocked&&t.x>0&&t.y>0&&t.x<result.width-1&&t.y<result.height-1&&tacticalLevel(t)===0&&!occupied.has(spaceKey(t))&&!propBlocksAt(result,t.x,t.y));
  const guardDistance=t=>enemies.length?Math.min(...enemies.map(u=>Math.abs(u.x-t.x)+Math.abs(u.y-t.y))):Math.abs(t.x-result.width/2)+Math.abs(t.y-result.height/2);

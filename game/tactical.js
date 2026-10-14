@@ -22,6 +22,7 @@ import {militiaPatrolRules} from './militia-patrol-rules.js';
 import {militiaPatrolOrder} from './militia-patrol.js';
 import {holdsArtilleryPost} from './tactical-ai-artillery.js';
 import {ARTILLERY,artilleryProfile} from './artillery-definitions.js';
+import {artilleryCellOccupied,initializeArtilleryOccupancy} from './artillery-occupancy.js';
 import {WEAPONS} from './firearm-definitions.js';
 import {BLADES} from './blade-definitions.js';
 export {ARTILLERY,WEAPONS,BLADES};
@@ -222,10 +223,11 @@ export function artilleryContact(s,u,gun){return Boolean(u&&gun&&!['water','clif
 // loading step. Prefer stronger available helpers without spending other units' AP.
 export function artilleryCrewPlan(s,u,gun,cost,partial=false){
   const spec=artilleryProfile(s,gun);
-  const eligible=v=>v.side===u?.side&&Boolean(v.militia)===Boolean(u?.militia)&&!v.fled&&!v.mounted&&!v.entangled&&!v.unconscious&&!v.asleep&&v.stance!=='prone'&&
+  const eligible=v=>!sameCell(v,gun)&&v.side===u?.side&&Boolean(v.militia)===Boolean(u?.militia)&&!v.fled&&!v.mounted&&!v.entangled&&!v.unconscious&&!v.asleep&&v.stance!=='prone'&&
     !(v.side==='enemy'&&s.reactionStack?.length&&!s.reactionStack.at(-1).unitIds.includes(v.id))&&
     !inventoryOrderReason(s,v,cost)&&artilleryContact(s,v,gun);
   if(!u||!spec||gun.side!==u.side)return {crew:[],reason:'Debes estar junto a una pieza de artillería propia.'};
+  if(sameCell(u,gun))return {crew:[],reason:'El artillero debe estar en una casilla al lado del cañón.'};
   const helpers=s.units.filter(v=>v.id!==u.id&&eligible(v));
   if(partial)helpers.sort((a,b)=>b.ap-a.ap||String(a.id).localeCompare(String(b.id)));
   const assigned=eligible(u)?[u,...helpers].slice(0,spec.crew):[];
@@ -361,6 +363,7 @@ Object.assign(state,sector.conductObserverIds===undefined?issueConductObservers(
 const enemies=Array.isArray(sector.enemies)?sector.enemies:Array.from({length:sector.exploration?0:sector.enemyCount||Math.max(3,squad.length+(sector.difficulty||1)-1)},(_,i)=>({id:`enemy-${i}`,name:`Realista ${i+1}`,weapon:i%3===0?1801:1800,marksmanship:50+(sector.difficulty||1)*5,morale:60+(sector.difficulty||1)*5}));
 state.units.push(...enemies.map((u,i)=>makeUnit(u,'enemy',i,width-2-Math.floor(i/(height-2)),1+i%(height-2))));
 if(!Array.isArray(sector.artillery)&&sector.cannons>0)state.artillery=Array.from({length:Math.min(sector.cannons,3)},(_,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',x:2,y:2+i*3,loaded:artilleryProfile(sector,'bronze4').initialLoaded,ammo:artilleryProfile(sector,'bronze4').initialAmmo}));
+initializeArtilleryOccupancy(state);
 for(const u of state.units){normalizeOutfit(u);lowerWeapon(u);limitEnergy(u);if(u.side==='enemy'&&u.patrol!==false)u.patrolOrigin??=positionOf(u);normalizeUnitFittings(u);u.weaponFittings=structuredClone(u.weaponFittings);u.maxAP=maxActionPoints(state,u.routed?{...u,routed:false}:u);u.ap=u.maxAP;refreshCondition(u);}
 for(const item of state.groundItems)initializeGroundAmmunition(item);
 migrateBattleAmmunition(state);
@@ -376,7 +379,14 @@ export function initializeBattlePerception(state,firstSide){
  return resolveFirstContact(state);
 }
 function tile(s,x,y,level=0){if(level)return surfaceAt(s,{x,y,tacticalLevel:level});const at=s.tiles[y*s.width+x];return at?.x===x&&at?.y===y?at:s.tiles.find(t=>t.x===x&&t.y===y);}
-function occupied(s,x,y,except,level=0){const point={x,y,tacticalLevel:level};return propBlocksAt(s,x,y,level)||(s.npcs||[]).some(n=>onField(n)&&n.id!==except&&sameCell(n,point))||s.units.some(u=>onField(u)&&u.id!==except&&sameCell(u,point));}
+function occupied(s,x,y,except,level=0){const point={x,y,tacticalLevel:level};return artilleryCellOccupied(s,point)||propBlocksAt(s,x,y,level)||(s.npcs||[]).some(n=>onField(n)&&n.id!==except&&sameCell(n,point))||s.units.some(u=>onField(u)&&u.id!==except&&sameCell(u,point));}
+// Planning sees own and observed guns. Execution checks every physical piece.
+export function knownArtillery(s,u){return (s.artillery??[]).filter(gun=>gun.side===u?.side||u&&teamCanSee(s,u.side,gun));}
+function artilleryStepBlocked(s,from,to){
+  if(artilleryCellOccupied(s,to))return true;
+  if(!sameSurface(from,to)||from.x===to.x||from.y===to.y)return false;
+  return artilleryCellOccupied(s,{x:to.x,y:from.y,tacticalLevel:tacticalLevel(from)})||artilleryCellOccupied(s,{x:from.x,y:to.y,tacticalLevel:tacticalLevel(from)});
+}
 export function carryCapacity(u){return Math.max(10,(u.strength||50)*.5);}
 export function carriedWeight(u){const inventory=Object.values(u.inventory||{}).reduce((sum,item)=>sum+(item&&typeof item==='object'?(item.count||0)*((item.weight||0)+fittingWeight(item))+(item.count||0)*(item.loaded||0)*.04:0),0);const cursor=u.equipmentCursor?.stack;return (cursor?cursor.count*((cursor.weight??0)+fittingWeight(cursor)+(cursor.loaded??0)*.04):0)+Number(u.weight??u.carryWeight??0)+BODY_SLOTS.reduce((sum,slot)=>sum+(wornOutfit(u,slot)?.weight??0),0)+inventory+(u.loaded||0)*.04+Object.entries(SUPPLY_ITEMS).reduce((sum,[key,item])=>sum+(key==='ammo'&&u.ammunitionVersion===2?0:(u[key]??0)*item.weight),0)+(u.weaponDropped?0:(contentWeaponOf(u)?.weight??u.weaponMetadata?.weight??weaponItemWeight(u.weapon))+fittingWeight(u))+(contentWeaponOf(u,'blade')?.weight??u.bladeMetadata?.weight??weaponItemWeight(u.blade))+(u.offHand?(u.offHand.weight??weaponItemWeight(u.offHand.weapon))+fittingWeight(u.offHand)+(u.offHand.loaded??0)*.04:0);}
 function weightPenalty(u){return Math.max(1,carriedWeight(u)/carryCapacity(u));}
@@ -502,7 +512,7 @@ function climbStep(s,u,from,to){
   return {valid:!reason,reason,pa:reason?Infinity:pa,energy:Math.ceil((up?12:8)*weightPenalty(u)),seconds:up?6:4,destination:access??null};
 }
 export function climbPreview(s,u,action={}){
-  const destination=u&&accessStepsFrom(s,u).find(step=>step.linkId===action.linkId),step=destination?climbStep(s,u,u,destination):null;
+  const destination=u&&accessStepsFrom(s,u).find(step=>step.linkId===action.linkId),step=destination?climbStep({...s,artillery:knownArtillery(s,u)},u,u,destination):null;
   const reason=!u||!alive(u)||s.status!=='active'||(u.side==='player'?!interruptAvailable(s,u):s.phase!=='enemy')?'El combatiente no puede actuar ahora.':!step?'Acercate a un acceso para trepar.':step.reason||
     ((u.energy??100)<step.energy?'Falta energía para trepar.':s.mode!=='exploration'&&u.ap<step.pa?'PA insuficientes para trepar.':null);
   return {...step,valid:!reason,reason,pa:step&&Number.isFinite(step.pa)?step.pa:0,destination:step?.destination??null};
@@ -517,8 +527,8 @@ function routeStepCosts(u){
 function elevatedReachable(s,u,options,intent){
   const costFor=routeStepCosts(u);
   const cells=new Map([...s.tiles,...(s.upperSurfaces??[])].map(cell=>[spaceKey(cell),cell]));
-  const props=new Set((s.props??[]).filter(p=>p.blocksMovement!==false).flatMap(propCells).map(spaceKey));
-  const occupants=new Set([...(s.npcs??[]),...s.units].filter(v=>onField(v)&&v.id!==u.id).map(spaceKey));
+  const props=new Set([...(s.props??[]).filter(p=>p.blocksMovement!==false).flatMap(propCells),...(s.artillery??[])].map(spaceKey));
+  const occupants=new Set([...[...(s.npcs??[]),...s.units].filter(v=>onField(v)&&v.id!==u.id),...(s.artillery??[])].map(spaceKey));
   const origin={x:u.x,y:u.y,tacticalLevel:tacticalLevel(u)},start=spaceKey(origin),costs=new Map([[start,0]]),paths=new Map([[start,[]]]),queue=new RouteQueue({...origin,cost:0});
   while(queue.length){
     const from=queue.shift(),fromKey=spaceKey(from);if(from.cost!==costs.get(fromKey))continue;
@@ -537,9 +547,9 @@ function elevatedReachable(s,u,options,intent){
 export function getReachable(s,unitOrId,options={}){
   const u=typeof unitOrId==='object'?unitOrId:s.units.find(u=>u.id===String(unitOrId)),intent=options?.movementIntent===undefined?'forward':options.movementIntent;if(!u||!alive(u)||s.status!=='active'||movementIntentReason(u,intent))return [];
   if(s.upperSurfaces?.length)return elevatedReachable(s,u,options,intent);
-  const tiles=new Map(s.tiles.map(t=>[`${t.x},${t.y}`,t])),props=new Set((s.props??[]).filter(p=>p.blocksMovement!==false).flatMap(propCells).map(p=>`${p.x},${p.y}`));
+  const tiles=new Map(s.tiles.map(t=>[`${t.x},${t.y}`,t])),props=new Set([...(s.props??[]).filter(p=>p.blocksMovement!==false).flatMap(propCells),...(s.artillery??[]).filter(gun=>tacticalLevel(gun)===0)].map(p=>`${p.x},${p.y}`));
   const lookup=(x,y)=>tiles.get(`${x},${y}`),propBlocked=(x,y)=>props.has(`${x},${y}`),costFor=routeStepCosts(u);
-  const occupants=new Set([...(s.npcs??[]),...s.units].filter(v=>onField(v)&&v.id!==u.id).map(v=>`${v.x},${v.y}`));
+  const occupants=new Set([...[...(s.npcs??[]),...s.units].filter(v=>onField(v)&&v.id!==u.id),...(s.artillery??[]).filter(gun=>tacticalLevel(gun)===0)].map(v=>`${v.x},${v.y}`));
   const costs=new Map([[`${u.x},${u.y}`,0]]),paths=new Map([[`${u.x},${u.y}`,[]]]),queue=new RouteQueue({x:u.x,y:u.y,cost:0});
   while(queue.length){
     const p=queue.shift();if(p.cost!==costs.get(`${p.x},${p.y}`))continue;
@@ -717,7 +727,7 @@ function presentReflectedFirearmFlight(s,actor,flight,known,source,{pointShot,ai
  const segments=known.segments??[{source:muzzle,destination:terminal.impact,fromDistance:0,toDistance:Math.hypot(terminal.impact.x-muzzle.x,terminal.impact.y-muzzle.y),trajectoryModel:known.trajectoryModel}];
  const distanceOf=entry=>entry.distance??Math.hypot(entry.impact.x-muzzle.x,entry.impact.y-muzzle.y);
  const stopped=known.obstacles?.find(entry=>entry.stopped),terminalOutcome=terminal.termination==='body'?null:stopped?'cover':'miss';
- let origin=muzzle,progress=0,index=0,discharged=false,waiting=false,visual,sourceSurfaceContact=null;
+ let origin=muzzle,sourceBodyKey=null,progress=0,index=0,discharged=false,waiting=false,visual,sourceSurfaceContact=null;
  const surfaceContact=bounce=>({sourceId:bounce.sourceId,point:{...bounce.impact},normal:{...bounce.normal}});
  const frame=(type,shotVisual)=>recordBattleFrame(s,{unitId:source.id,action:pointShot?'firePoint':'fire',type,shotVisual});
  const projectile=()=>{
@@ -729,9 +739,9 @@ function presentReflectedFirearmFlight(s,actor,flight,known,source,{pointShot,ai
    if(segment.toDistance<=progress+1e-8||segment.fromDistance>goal+1e-8)continue;
    const end=segment.toDistance<goal-1e-8?segment.destination:impact;
    const bounce=segment.toDistance<goal-1e-8?known.ricochets?.find(entry=>Math.abs(entry.distance-segment.toDistance)<1e-8):null;
-   visual={source:{...origin},destination:{...end},impact:{...end},outcome:bounce?'cover':collision||projected?null:terminalOutcome,pointShot,spread:false,aimHit,...(segment.trajectoryModel?{trajectoryModel:segment.trajectoryModel}:{}),...(bounce?{material:'stone',impactSurfaceContact:surfaceContact(bounce)}:!collision&&!projected&&terminalOutcome==='cover'&&stopped?.material?{material:stopped.material}:{}),...(sourceSurfaceContact?{sourceSurfaceContact}:{}),...(discharged?{discharge:false}:{})};
+   visual={source:{...origin},destination:{...end},impact:{...end},outcome:bounce?'cover':collision||projected?null:terminalOutcome,pointShot,spread:false,aimHit,...(!bounce&&(collision||projected)?{bodyTargetKey:`${(collision??projected).victimKind??'unit'}:${(collision??projected).victimId}`}:{}) ,...(sourceBodyKey?{sourceBodyKey}:{}),...(segment.trajectoryModel?{trajectoryModel:segment.trajectoryModel}:{}),...(bounce?{material:'stone',impactSurfaceContact:surfaceContact(bounce)}:!collision&&!projected&&terminalOutcome==='cover'&&stopped?.material?{material:stopped.material}:{}),...(sourceSurfaceContact?{sourceSurfaceContact}:{}),...(discharged?{discharge:false}:{})};
    frame('projectile',visual);discharged=true;
-   if(bounce){frame('impact',visual);origin={...end};progress=segment.toDistance;sourceSurfaceContact=surfaceContact(bounce);}
+   if(bounce){frame('impact',visual);origin={...end};sourceBodyKey=null;progress=segment.toDistance;sourceSurfaceContact=surfaceContact(bounce);}
    else{waiting=true;break;}
   }
  };
@@ -746,7 +756,7 @@ function presentReflectedFirearmFlight(s,actor,flight,known,source,{pointShot,ai
    const body=bodyFor(entry),injury=knownHealth.some(record=>record.body===body&&record.body.hp<record.hp),redirected=entry.actualVictimId!==undefined&&(entry.actualVictimId!==entry.victimId||entry.actualVictimKind!==entry.victimKind);
    recordBattleFrame(s,{unitId:source.id,action:pointShot?'firePoint':'fire',type:'impact',...(!redirected?{shotVisual:{...visual,outcome:injury?'hit':null}}:{})});
    for(const record of knownHealth)record.hp=record.body.hp;
-   origin={...entry.impact};progress=distanceOf(entry);index++;waiting=false;sourceSurfaceContact=null;
+   origin={...entry.impact};sourceBodyKey=visual.bodyTargetKey??null;progress=distanceOf(entry);index++;waiting=false;sourceSurfaceContact=null;
    if(entry.continued!==false)projectile();
    return;
   }
@@ -772,12 +782,12 @@ function presentKineticFlight(s,actor,destination,hitLocation,source,{pointShot,
   if(!last||Math.abs(last.distance-segment.toDistance)>1e-8)endpoints.push({point:segment.destination,distance:segment.toDistance,outcome:bounce?'cover':terminal.termination==='body'?null:stopped?'cover':'miss'});
   const sourceBounce=known.ricochets?.find(entry=>Math.abs(entry.distance-segment.fromDistance)<1e-8);
   const surfaceContact=entry=>({sourceId:entry.sourceId,point:{...entry.impact},normal:{...entry.normal}});
-  let origin=segment.source,sourceSurfaceContact=sourceBounce?surfaceContact(sourceBounce):null;
+  let origin=segment.source,sourceBodyKey=null,sourceSurfaceContact=sourceBounce?surfaceContact(sourceBounce):null;
   for(const endpoint of endpoints){
    if(Math.hypot(endpoint.point.x-origin.x,endpoint.point.y-origin.y)<1e-8)continue;
    const impactBounce=bounce&&Math.abs(endpoint.distance-segment.toDistance)<1e-8?bounce:null;
-   const visual={source:{...origin},destination:{...endpoint.point},impact:{...endpoint.point},outcome:endpoint.outcome,pointShot,spread:false,aimHit,...(endpoint.outcome==='cover'?{material:impactBounce?'stone':stopped?.material}:{}),...(impactBounce?{impactSurfaceContact:surfaceContact(impactBounce)}:{}),...(sourceSurfaceContact?{sourceSurfaceContact}:{}),...(segment.trajectoryModel?{trajectoryModel:segment.trajectoryModel}:{}),...(discharged?{discharge:false}:{})};
-   schedule.push({visual,bodyKey:endpoint.bodyKey});discharged=true;origin=endpoint.point;sourceSurfaceContact=null;
+   const visual={source:{...origin},destination:{...endpoint.point},impact:{...endpoint.point},outcome:endpoint.outcome,pointShot,spread:false,aimHit,...(endpoint.bodyKey?{bodyTargetKey:endpoint.bodyKey}:{}),...(sourceBodyKey?{sourceBodyKey}:{}),...(endpoint.outcome==='cover'?{material:impactBounce?'stone':stopped?.material}:{}),...(impactBounce?{impactSurfaceContact:surfaceContact(impactBounce)}:{}),...(sourceSurfaceContact?{sourceSurfaceContact}:{}),...(segment.trajectoryModel?{trajectoryModel:segment.trajectoryModel}:{}),...(discharged?{discharge:false}:{})};
+   schedule.push({visual,bodyKey:endpoint.bodyKey});discharged=true;origin=endpoint.point;sourceBodyKey=endpoint.bodyKey;sourceSurfaceContact=null;
   }
  }
  let cursor=0,waiting=null,displayed=structuredClone(s);
@@ -829,7 +839,7 @@ function presentFirearmFlight(s,actor,destination,flight=null,hitLocation='torso
   const terminal=known.terminal??{impact:known.impact??known.destination,termination:known.termination};
   const obstacle=known.obstacles?.find(item=>item.stopped);
   const terminalOutcome=terminal.termination==='body'?null:obstacle?'cover':'miss';
-  let origin={...positionOf(actor),tacticalLevel:tacticalLevel(actor),height:absoluteBodyHeight(s,actor,'muzzle')},index=0,discharged=false,waiting=false,visual;
+  let origin={...positionOf(actor),tacticalLevel:tacticalLevel(actor),height:absoluteBodyHeight(s,actor,'muzzle')},sourceBodyKey=null,index=0,discharged=false,waiting=false,visual;
   const samePoint=(a,b)=>a&&b&&['x','y','height'].every(key=>Math.abs(a[key]-b[key])<1e-8);
   const projectile=()=>{
    const collision=observed[index]?.collision;
@@ -840,7 +850,7 @@ function presentFirearmFlight(s,actor,destination,flight=null,hitLocation='torso
    const projected=known.trajectoryModel&&hidden&&!collision?known.bodyImpacts?.find(entry=>entry.fraction>previous):null;
    const impact=collision?.impact??projected?.impact??terminal.impact;
    if(!impact||discharged&&samePoint(origin,impact)){waiting=false;return;}
-   visual={source:{...origin},destination:{...impact},impact:{...impact},outcome:collision?'hit':projected?null:terminalOutcome,pointShot,spread:false,aimHit,...(known.trajectoryModel?{trajectoryModel:known.trajectoryModel}:{}),...(!collision&&!projected&&terminalOutcome==='cover'&&obstacle?.material?{material:obstacle.material}:{}),...(discharged?{discharge:false}:{})};
+   visual={source:{...origin},destination:{...impact},impact:{...impact},outcome:collision?'hit':projected?null:terminalOutcome,pointShot,spread:false,aimHit,...(collision||projected?{bodyTargetKey:`${(collision??projected).victimKind??'unit'}:${(collision??projected).victimId}`}:{}) ,...(sourceBodyKey?{sourceBodyKey}:{}),...(known.trajectoryModel?{trajectoryModel:known.trajectoryModel}:{}),...(!collision&&!projected&&terminalOutcome==='cover'&&obstacle?.material?{material:obstacle.material}:{}),...(discharged?{discharge:false}:{})};
    waiting=true;recordBattleFrame(s,{unitId:source.id,action:pointShot?'firePoint':'fire',type:'projectile',shotVisual:visual});discharged=true;
   };
   projectile();
@@ -859,7 +869,7 @@ function presentFirearmFlight(s,actor,destination,flight=null,hitLocation='torso
     const injury=knownHealth.some(record=>record.body===entry.body&&record.body.hp<record.hp);
     recordBattleFrame(s,{unitId:source.id,action:pointShot?'firePoint':'fire',type:'impact',...(!redirected?{shotVisual:{...visual,outcome:injury?'hit':null}}:{})});
     for(const record of knownHealth)record.hp=record.body.hp;
-    origin={...collision.impact};index++;waiting=false;projectile();return;
+    origin={...collision.impact};sourceBodyKey=visual.bodyTargetKey??null;index++;waiting=false;projectile();return;
    }
    if(waiting){recordBattleFrame(s,{unitId:source.id,action:pointShot?'firePoint':'fire',type:'impact',shotVisual:visual});waiting=false;}
   };
@@ -1863,7 +1873,7 @@ function knownApproachRoute(s,u,inReach){
   const npcs=(s.npcs??[]).filter(npc=>teamCanSee(s,u.side,npc));
   // Stop Dijkstra at the cheapest usable position. Ignoring the AP cap reports
   // the true combined cost even when this turn cannot afford the whole order.
-  return getReachable({...s,units,npcs,mode:'exploration'},u,{stopAt:cell=>inReach(cell)&&
+  return getReachable({...s,units,npcs,artillery:knownArtillery(s,u),mode:'exploration'},u,{stopAt:cell=>inReach(cell)&&
     !units.some(other=>other.id!==u.id&&!other.departure&&other.hp>0&&sameCell(other,cell))})[0];
 }
 export function npcGiftPreview(s,u,npc){
@@ -2059,7 +2069,7 @@ else if(a.type==='move'||a.type==='climb'){
   // Plan from observed occupants; inspect the actual field one step at a time.
   // Hidden people must not reject a distant route or secretly divert it.
   const observed=point=>u.side==='player'?teamCanSee(s,u.side,point):canSee(s,u,point);
-  const planning={...s,units:s.units.filter(v=>v.side===u.side||observed(v)),npcs:(s.npcs??[]).filter(observed)};
+  const planning={...s,units:s.units.filter(v=>v.side===u.side||observed(v)),npcs:(s.npcs??[]).filter(observed),artillery:knownArtillery(s,u)};
   const path=climbing?{cost:climbing.pa,path:[climbing.destination]}:movementPath??getReachable(planning,u,{movementIntent,stopAt:point=>sameCell(point,destination)})[0];
   if(!path||path.cost===0)return fail('Destino inaccesible o puntos de acción insuficientes.');
   const exploring=s.mode==='exploration',setupSeconds=postureCost>0?Math.max(1,Math.ceil(postureCost*.06)):0;
@@ -2069,7 +2079,7 @@ else if(a.type==='move'||a.type==='climb'){
     if(!alive(u)||exploring&&s.mode!=='exploration')break;
     // A planned route uses known occupancy. An unseen obstruction can
     // stop that route, but cannot secretly select a different path around it.
-    if(occupied(s,p.x,p.y,u.id,tacticalLevel(p))||!Number.isFinite(movementStepCost(s,u,u,p,{movementIntent}))){
+    if(occupied(s,p.x,p.y,u.id,tacticalLevel(p))||artilleryStepBlocked(s,u,p)||!Number.isFinite(movementStepCost(s,u,u,p,{movementIntent}))){
       if(!steps)return fail('La ruta está bloqueada.');
       sayObserved(s,[u],`${u.name} se detiene: la ruta está bloqueada.`);break;
     }
@@ -2269,7 +2279,7 @@ else if(a.type==='melee'||a.type==='meleePoint'){
   }else meleeStrike(s,u,target,blade.damage*bonus);
   u.momentum=0;
 }
-else if(a.type==='charge'){if(u.stance==='prone')return fail('Primero debés levantarte para cargar.');if(tacticalLevel(u)!==0||target&&tacticalLevel(target)!==0)return fail('La carga requiere terreno al nivel del suelo.');if(['medical','tool','supply','item'].includes(u.activeSlot))return fail('Prepara un arma antes de atacar.');const blade=bladeFor(u);if(blade.usable===false)return fail('El arma blanca necesita reparación antes de atacar.');if(blade.id===-1)return fail('Prepará una hoja o una bayoneta fijada para cargar.');if(blade.id===0)return fail('Acércate al enemigo para golpear con las manos vacías.');if(!target||!targetable(target)||target.side===u.side)return fail('Selecciona un enemigo para cargar.');const dx=target.x-u.x,dy=target.y-u.y;if(dx!==0&&dy!==0&&Math.abs(dx)!==Math.abs(dy))return fail('La carga exige una línea recta.');let path=line(u,target);const contact=path.findIndex(p=>dist(p,target)<=blade.reach);path=dist(u,target)<=blade.reach?[]:path.slice(0,contact+1);if(!path.length&&dist(u,target)>blade.reach)return fail('No hay espacio para cargar.');let previous=u,cost=actionCosts(s,u).melee;for(const p of path){const t=tile(s,p.x,p.y);if(!t||t.blocked||occupied(s,p.x,p.y,u.id))return fail('La carga está bloqueada.');const step=movementStepCost(s,u,previous,p);if(!Number.isFinite(step))return fail('La carga no puede atravesar una esquina.');cost+=step;previous=p;}if(!hasLineOfSight(s,u,target))return fail('No hay un paso libre hasta el objetivo.');if(u.ap<Math.ceil(cost))return fail('Faltan puntos de acción para completar la carga.');u.lastMovePath=[];let stopped=false;for(const p of path){const stepObservation=reactionObservation(s,u);const factor=movementFactor(u,p),step=movementStepCost(s,u,u,p);if(u.ap<step){stopped=true;break;}u.ap-=step;lowerWeapon(u);u.facing=directionTo(u,p);u.x=p.x;u.y=p.y;u.lastMovePath.push({...p});investigateNoise(s,u);delete u.lastTargetId;delete u.lastShotPosition;exhaust(s,u,Math.ceil(movementEnergy({...u,movementMode:'run'},tile(s,p.x,p.y))*factor));emitNoise(s,{...u,movementMode:'run',stealthMode:false},'move');rememberContacts(s);recordBattleFrame(s,{type:'step',unitId:u.id,action:'charge'});if(!alive(u)){stopped=true;break;}const interrupted=reactionFire(s,u,stepObservation);interceptCharge(s,u,target);if(interrupted||!alive(u)||s.status!=='active'){stopped=true;break;}}if(stopped){sayObserved(s,[u],`${u.name} detiene la carga antes de alcanzar al enemigo.`);checkEnd(s);return true;}const impactObservation=reactionObservation(s,u);lowerWeapon(u);u.ap=0;if(!alive(u)){sayObserved(s,[u],`${u.name} no logra completar la carga.`);checkEnd(s);return true;}u.facing=directionTo(u,target);emitNoise(s,u,'melee');meleeStrike(s,u,target,blade.damage*(1+path.length*.1)*(u.mounted?1.25:1)*(hasCharacterAbility(u,'mounted_charge')&&u.mounted?1.2:1),{action:'charge'});if(hasCharacterAbility(u,'mounted_intimidation')&&u.mounted){for(const levy of s.units.filter(v=>v.side!==u.side&&alive(v)&&dist(v,u)<=4&&(v.militia||v.levy||v.marksmanship<60))){levy.morale=Math.max(0,levy.morale-25);if(levy.morale<15)rout(s,levy);}sayObserved(s,[u],`${u.name} aterroriza a las levas con su carga montada.`);}target.morale=Math.max(0,target.morale-15);holdMorale(s,target);if(alive(target)&&target.morale<15){rout(s,target);}u.momentum=0;sayObserved(s,[u],u.side==='player'?`${u.name} ejecuta una carga de ${path.length} casillas con ${blade.name}.`:`${u.name} ataca con ${blade.name}.`);checkEnd(s);reactionFire(s,u,impactObservation);}
+else if(a.type==='charge'){if(u.stance==='prone')return fail('Primero debés levantarte para cargar.');if(tacticalLevel(u)!==0||target&&tacticalLevel(target)!==0)return fail('La carga requiere terreno al nivel del suelo.');if(['medical','tool','supply','item'].includes(u.activeSlot))return fail('Prepara un arma antes de atacar.');const blade=bladeFor(u);if(blade.usable===false)return fail('El arma blanca necesita reparación antes de atacar.');if(blade.id===-1)return fail('Prepará una hoja o una bayoneta fijada para cargar.');if(blade.id===0)return fail('Acércate al enemigo para golpear con las manos vacías.');if(!target||!targetable(target)||target.side===u.side)return fail('Selecciona un enemigo para cargar.');const dx=target.x-u.x,dy=target.y-u.y;if(dx!==0&&dy!==0&&Math.abs(dx)!==Math.abs(dy))return fail('La carga exige una línea recta.');let path=line(u,target);const contact=path.findIndex(p=>dist(p,target)<=blade.reach);path=dist(u,target)<=blade.reach?[]:path.slice(0,contact+1);if(!path.length&&dist(u,target)>blade.reach)return fail('No hay espacio para cargar.');let previous=u,cost=actionCosts(s,u).melee;for(const p of path){const t=tile(s,p.x,p.y);if(!t||t.blocked||occupied(s,p.x,p.y,u.id)||artilleryStepBlocked(s,previous,p))return fail('La carga está bloqueada.');const step=movementStepCost(s,u,previous,p);if(!Number.isFinite(step))return fail('La carga no puede atravesar una esquina.');cost+=step;previous=p;}if(!hasLineOfSight(s,u,target))return fail('No hay un paso libre hasta el objetivo.');if(u.ap<Math.ceil(cost))return fail('Faltan puntos de acción para completar la carga.');u.lastMovePath=[];let stopped=false;for(const p of path){const stepObservation=reactionObservation(s,u);const factor=movementFactor(u,p),step=movementStepCost(s,u,u,p);if(u.ap<step){stopped=true;break;}u.ap-=step;lowerWeapon(u);u.facing=directionTo(u,p);u.x=p.x;u.y=p.y;u.lastMovePath.push({...p});investigateNoise(s,u);delete u.lastTargetId;delete u.lastShotPosition;exhaust(s,u,Math.ceil(movementEnergy({...u,movementMode:'run'},tile(s,p.x,p.y))*factor));emitNoise(s,{...u,movementMode:'run',stealthMode:false},'move');rememberContacts(s);recordBattleFrame(s,{type:'step',unitId:u.id,action:'charge'});if(!alive(u)){stopped=true;break;}const interrupted=reactionFire(s,u,stepObservation);interceptCharge(s,u,target);if(interrupted||!alive(u)||s.status!=='active'){stopped=true;break;}}if(stopped){sayObserved(s,[u],`${u.name} detiene la carga antes de alcanzar al enemigo.`);checkEnd(s);return true;}const impactObservation=reactionObservation(s,u);lowerWeapon(u);u.ap=0;if(!alive(u)){sayObserved(s,[u],`${u.name} no logra completar la carga.`);checkEnd(s);return true;}u.facing=directionTo(u,target);emitNoise(s,u,'melee');meleeStrike(s,u,target,blade.damage*(1+path.length*.1)*(u.mounted?1.25:1)*(hasCharacterAbility(u,'mounted_charge')&&u.mounted?1.2:1),{action:'charge'});if(hasCharacterAbility(u,'mounted_intimidation')&&u.mounted){for(const levy of s.units.filter(v=>v.side!==u.side&&alive(v)&&dist(v,u)<=4&&(v.militia||v.levy||v.marksmanship<60))){levy.morale=Math.max(0,levy.morale-25);if(levy.morale<15)rout(s,levy);}sayObserved(s,[u],`${u.name} aterroriza a las levas con su carga montada.`);}target.morale=Math.max(0,target.morale-15);holdMorale(s,target);if(alive(target)&&target.morale<15){rout(s,target);}u.momentum=0;sayObserved(s,[u],u.side==='player'?`${u.name} ejecuta una carga de ${path.length} casillas con ${blade.name}.`:`${u.name} ataca con ${blade.name}.`);checkEnd(s);reactionFire(s,u,impactObservation);}
 else if(['artillery','artilleryReload','artilleryMove','artilleryPivot'].includes(a.type)){
 const gun=s.artillery.find(g=>g.id===a.artilleryId),spec=artilleryProfile(s,gun);
 if(!gun||!spec||gun.side!==u.side||contactDistance(u,gun)>1.5)return fail('Debes estar junto a una pieza de artillería propia.');
@@ -2281,6 +2291,7 @@ const assigned=crew.crew.map(id=>s.units.find(v=>v.id===id));
 if(a.type==='artilleryMove'){
 const dx=a.x-gun.x,dy=a.y-gun.y;if(!Number.isInteger(a.x)||!Number.isInteger(a.y)||Math.abs(dx)+Math.abs(dy)!==1)return fail('La pieza se arrastra una casilla horizontal o vertical por orden.');
 const positions=[{x:a.x,y:a.y},...assigned.map(v=>({x:v.x+dx,y:v.y+dy}))],ids=new Set(assigned.map(v=>v.id));
+if(new Set(positions.map(spaceKey)).size!==positions.length)return fail('La pieza y su dotación necesitan casillas distintas.');
 if([{from:gun,to:positions[0]},...assigned.map((v,i)=>({from:v,to:positions[i+1]}))].some(({from,to})=>wallMovementBlocked(s,from,to)))return fail('La pieza y su dotación no pueden atravesar una pared.');
 if(positions.some(p=>propBlocksAt(s,p.x,p.y)||!tile(s,p.x,p.y)||tile(s,p.x,p.y).blocked||tile(s,p.x,p.y).type==='water'||s.units.some(v=>onField(v)&&!ids.has(v.id)&&sameCell(v,p))||(s.npcs??[]).some(v=>onField(v)&&sameCell(v,p))||s.artillery.some(g=>g!==gun&&sameCell(g,p))))return fail('La pieza y su dotación no caben en ese terreno.');
 gun.x=a.x;gun.y=a.y;for(const v of assigned){v.x+=dx;v.y+=dy;}sayObserved(s,[u],`${u.name} dirige el arrastre de ${spec.name}.`);
@@ -2617,8 +2628,8 @@ function advanceAmbientTime(s,seconds){
       const patrolState={...s,turn:(s.civilianTurns??0)+1,mode:'combat'};
       const order=holdsArtilleryPost(patrolState,u)?null:u.militia?militiaPatrolOrder(patrolState,{...u,ap:100}):choosePatrolAction(patrolState,{...u,patrolTurn:undefined,ap:24});
       if(!order)continue;
-      const step=getReachable(patrolState,{...u,ap:u.militia?100:24}).find(p=>sameCell(p,{...order,tacticalLevel:order.tacticalLevel??tacticalLevel(u)}))?.path[0];
-      if(!step)continue;
+      const step=getReachable({...patrolState,artillery:knownArtillery(s,u)},{...u,ap:u.militia?100:24}).find(p=>sameCell(p,{...order,tacticalLevel:order.tacticalLevel??tacticalLevel(u)}))?.path[0];
+      if(!step||artilleryStepBlocked(s,u,step))continue;
       const climbing=!sameSurface(u,step)?climbStep(s,u,u,step):null;
       if(climbing&&!climbing.valid)continue;
       const cost=climbing?.energy??movementEnergy(u,surfaceAt(s,step));

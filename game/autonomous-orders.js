@@ -1,7 +1,7 @@
 import {holdsArtilleryPost} from './tactical-ai-artillery.js';
 import {sameSurface,tacticalLevel,surfacesAtLevel} from './tactical-space.js';
 import {moveOrder} from './tactical-planning-space.js';
-import {canSee,getReachable,stanceCost} from './tactical.js';
+import {canSee,getReachable,knownArtillery,stanceCost} from './tactical.js';
 import {chooseEnemyAction} from './tactical-ai.js';
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const able=u=>u.hp>=15&&!u.unconscious&&!u.routed&&!u.surrendered&&!u.departure&&!u.fled;
@@ -23,7 +23,7 @@ export function searchOrder(b,u,{changeStance=true}={}){
  if(tacticalLevel(u)>0){const cells=surfacesAtLevel(b,tacticalLevel(u)).filter(p=>!p.blocked);cells.sort((a,c)=>distance(a,center)-distance(c,center)||a.y-c.y||a.x-c.x);if(!cells.length)return null;center=cells[0];}
  if(distance(u,center)<=3)return null;
  if(changeStance&&u.stance!=='standing'&&!u.mounted&&u.ap>=stanceCost(u,'standing'))return {type:'stance',unitId:u.id,stance:'standing'};
- const perceived={...b,units:b.units.filter(v=>v.side===u.side||canSee(b,u,v))};
+ const perceived={...b,units:b.units.filter(v=>v.side===u.side||canSee(b,u,v)),artillery:knownArtillery(b,u)};
  const moves=getReachable(perceived,u).filter(p=>sameSurface(p,u)&&p.cost>0&&p.cost<=Math.min(32,u.ap-20)&&distance(p,center)<distance(u,center));
  moves.sort((a,c)=>distance(a,center)-distance(c,center)||a.cost-c.cost||a.y-c.y||a.x-c.x);
  return moves[0]?moveOrder(b,u,moves[0]):null;

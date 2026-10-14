@@ -1,6 +1,6 @@
 import {sameCell} from './tactical-space.js';
 import {atHand,moveOrder,planningPoint} from './tactical-planning-space.js';
-import {actBattle, canEndCombat, CRITICAL_HEALTH, getReachable, hasLineOfSight, canSee} from './tactical.js';
+import {actBattle, canEndCombat, CRITICAL_HEALTH, getReachable, knownArtillery, hasLineOfSight, canSee} from './tactical.js';
 import {civilianBandaged,civilianMaxHp} from './civilian-harm.js';
 import {criticalFirstAidNeeded} from './first-aid.js';
 import {medicalPatientPresent,medicalPatientAvailable} from './medical-patient.js';
@@ -44,13 +44,14 @@ function plansFor(state) {
   const doctors = state.units.filter(unit => doctorReady(unit) && unit.medkits > 0);
   const plans = [];
   for (const doctor of doctors) {
-    const reachable = doctor.knockedDown || doctor.entangled ? [{...planningPoint(doctor), cost: 0, path: []}] : getReachable(state, doctor);
+    const planning={...state,artillery:knownArtillery(state,doctor)};
+    const reachable = doctor.knockedDown || doctor.entangled ? [{...planningPoint(doctor), cost: 0, path: []}] : getReachable(planning, doctor);
     for (const patient of patients) {
       if(patient.targetKind==='npc'&&!canSee(state,doctor,patient))continue;
       let destination = reachable.filter(point => atHand(point,patient) && hasLineOfSight(state, point, patient)).sort((a, b) => a.cost - b.cost || a.path.length - b.path.length)[0],stand=false;
       if(!destination&&state.climbLinks?.length&&doctor.stance!=='standing'&&!doctor.knockedDown&&!doctor.entangled&&!doctor.mounted){
         const upright={...doctor,stance:'standing',movementMode:'walk'};
-        destination=getReachable(state,upright).filter(point=>atHand(point,patient)&&hasLineOfSight(state,point,patient)&&point.path.some(step=>step.kind==='climb')).sort((a,b)=>a.cost-b.cost||a.path.length-b.path.length)[0];stand=Boolean(destination);
+        destination=getReachable(planning,upright).filter(point=>atHand(point,patient)&&hasLineOfSight(state,point,patient)&&point.path.some(step=>step.kind==='climb')).sort((a,b)=>a.cost-b.cost||a.path.length-b.path.length)[0];stand=Boolean(destination);
       }
       if (destination) plans.push({doctor, patient, destination,stand});
     }

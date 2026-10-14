@@ -74,6 +74,8 @@ La campaña comienza con Retiro bajo tu control. Sus capítulos recorren San Lor
 
 Consultá el **Manual de campaña** dentro del juego para comenzar. Los [controles tácticos](docs/gameplay/tactical/TACTICAL-HOTKEYS.md) explican los comandos de teclado y mouse. El [índice de documentación](docs/README.md) reúne las guías de los sistemas y los registros de verificación.
 
+El campo táctico muestra personajes y equipo en 3D. Las huellas indican el recorrido previsto al señalar un destino. Un símbolo pequeño junto al cursor indica la acción: labios para hablar, una mano para recoger y una mira para atacar. El objeto equipado y las teclas modificadoras conservan su función. Los artilleros trabajan desde casillas contiguas al cañón.
+
 ## Rostros de la campaña
 
 <table>

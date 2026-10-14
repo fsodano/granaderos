@@ -1,4 +1,4 @@
-import {actBattle,getReachable,movementStepCost,stanceCost,teamCanSee,approachCompleted} from './tactical.js';
+import {actBattle,getReachable,movementStepCost,stanceCost,teamCanSee,approachCompleted,knownArtillery} from './tactical.js';
 import {movementStance} from './tactical-condition.js';
 import {sameCell,tacticalLevel,surfaceAt} from './tactical-space.js';
 
@@ -27,7 +27,7 @@ export function movementStep(state,action,continuation=null){
   route=continuation;
  }else{
   const observed=p=>teamCanSee(state,unit.side,p);
-  const planning={...state,units:state.units.filter(v=>v.side===unit.side||observed(v)).map(v=>v.id===unit.id?plannedUnit:v),npcs:(state.npcs??[]).filter(observed)};
+  const planning={...state,units:state.units.filter(v=>v.side===unit.side||observed(v)).map(v=>v.id===unit.id?plannedUnit:v),npcs:(state.npcs??[]).filter(observed),artillery:knownArtillery(state,unit)};
   route=getReachable(planning,plannedUnit,{movementIntent:action.movementIntent,stopAt:p=>sameCell(p,destination)})[0]?.path;
  }
  if(!route?.length)return reject(state,'Destino inaccesible o puntos de acción insuficientes.');

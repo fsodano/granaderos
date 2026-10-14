@@ -8,9 +8,9 @@ export type EffectLanding={x:number;y:number;elevation:number;tacticalLevel?:num
 export type EffectImpact=EffectPoint&{outcome?:'hit'|'cover'|'miss'|null;material?:string};
 export type GrenadeEffectVisual={visible:boolean;source:EffectPoint;impact:EffectPoint;landing:EffectLanding;points:readonly EffectPoint[];radius:number;detonated:boolean;contacts?:readonly EffectPoint[]};
 export type KnifeEffectVisual={visible:boolean;source:EffectPoint;impact:EffectPoint;weapon?:number;landing?:EffectLanding};
-export type FirearmEffectVisual={visible:boolean;source:EffectPoint;impact:EffectPoint;points?:readonly EffectPoint[];outcome:'hit'|'cover'|'miss'|'pellets'|null;material?:string;spread?:boolean;discharge?:boolean;shotHand?:'primary'|'offhand';shotId?:string|number};
+export type FirearmEffectVisual={visible:boolean;source:EffectPoint;impact:EffectPoint;points?:readonly EffectPoint[];outcome:'hit'|'cover'|'miss'|'pellets'|null;material?:string;spread?:boolean;discharge?:boolean;shotHand?:'primary'|'offhand';shotId?:string|number;bodyTargetKey?:string;sourceBodyKey?:string};
 export type ArtilleryEffectVisual={visible:boolean;source:EffectPoint;impact?:EffectPoint;points?:readonly EffectPoint[];impacts?:readonly EffectImpact[];canister?:boolean;discharge?:boolean;cannonId?:string};
-type TimedEvent={id:string;startedAtSeconds:number;durationSeconds?:number;dischargeAnchor?:EffectPoint;actorKey?:string;cannonId?:string};
+type TimedEvent={id:string;startedAtSeconds:number;durationSeconds?:number;dischargeAnchor?:EffectPoint;actorKey?:string;cannonId?:string;renderedPath?:{source:EffectPoint;impact:EffectPoint;points:readonly EffectPoint[]}};
 export type CombatEffectEvent=TimedEvent&(
   {kind:'grenade';visual:GrenadeEffectVisual;stage?:'effect'}|
   {kind:'knife';visual:KnifeEffectVisual;stage?:'effect'}|
@@ -30,6 +30,7 @@ function validEvent(event:any):event is CombatEffectEvent{
   if(!event||typeof event.id!=='string'||!event.id||!Number.isFinite(event.startedAtSeconds)||event.startedAtSeconds<0||!event.visual?.visible)return false;
   if(event.durationSeconds!==undefined&&(!Number.isFinite(event.durationSeconds)||event.durationSeconds<.02||event.durationSeconds>60))return false;
   if(event.dischargeAnchor!==undefined&&!finitePoint(event.dischargeAnchor))return false;
+  if(event.renderedPath!==undefined){const p=event.renderedPath;if(!finitePoint(p.source)||!finitePoint(p.impact)||!validPoints(p.points,2)||!samePoint(p.points[0],p.source)||!samePoint(p.points.at(-1),p.impact))return false;}
   const v=event.visual;if(!finitePoint(v.source))return false;
   if(event.kind==='grenade')return finitePoint(v.impact)&&finiteLanding(v.landing)&&validPoints(v.points,2)&&Number.isFinite(v.radius)&&v.radius>=0&&v.radius<=20&&typeof v.detonated==='boolean'&&(v.contacts===undefined||validPoints(v.contacts));
   if(event.kind==='knife')return finitePoint(v.impact);
@@ -106,7 +107,7 @@ export function createCombatEffects(scene:Scene,options:CombatEffectsOptions){
     }else if(event.kind==='knife'){
       flight([event.visual.source,event.visual.impact],Math.min(.35,entry.duration*.65),'knife');quietMarker(event.visual.impact,0,entry.duration,'#c2c7c1');
     }else if(event.kind==='firearm'){
-      const v=event.visual;if(event.stage==='projectile'){if(v.discharge!==false)discharge(event.dischargeAnchor??v.source,v.impact);if(!v.spread)flight(v.points??[v.source,v.impact],entry.duration,'bullet');quietMarker(v.impact,0,entry.duration,'#b8b6a6');}
+      const v={...event.visual,...event.renderedPath};if(event.stage==='projectile'){if(v.discharge!==false)discharge(event.dischargeAnchor??v.source,v.impact);if(!v.spread)flight(v.points??[v.source,v.impact],entry.duration,'bullet');quietMarker(v.impact,0,entry.duration,'#b8b6a6');}
       else if(v.outcome==='miss'){
         // A range endpoint is not a surface contact. Fade the bead without
         // inventing dust, fragments, blood or a reaction at the aimed body.

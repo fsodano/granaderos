@@ -1,0 +1,53 @@
+{
+  "fixture": "earned-original-cuyo-finite-care.save.json.gz",
+  "rawSha256": "90a7b5421429769a4a7b7b43dd612fb614ebccf48494e319f2a7ba634fcadf36",
+  "gzipSha256": "ea9919e8e4a0b984c85454fe0b0a01a87e8fdb4f8a3291fad1706496e61dc78f",
+  "rawBytes": 2224653,
+  "clock": [
+    822,
+    3471
+  ],
+  "treasury": 63851,
+  "sourceRevision": "4e8abd34576d7e1dec63cb79d9a50aae1af9c62e",
+  "capturedFrom": ".cache/core-campaign-2026-10-12/cuyo-finite-care-diagnostic-v1/last-accepted.save.json",
+  "scope": "Actual last accepted caller state from unchanged prepareFreshCuyoDefense executed from the official PR413 earned Yatasto799 output. This is a deterministic suffix, not a directly captured final original full-run state. Full original a68 separately fails at same finite source seam after native Salta/Yatasto/party assertions.",
+  "parentYatasto": {
+    "rawBytes": 2222788,
+    "rawSha256": "9fccf9c7708d494f98b221236d692954c5352c25d0ebc788930a556d9e620169",
+    "clock": [
+      799,
+      3471
+    ],
+    "treasury": 56669
+  },
+  "diagnosticReceipt": ".cache/core-campaign-2026-10-12/cuyo-finite-care-diagnostic-v1/receipt.json",
+  "diagnosticLogSha256": "810e67120cd146a436376cf2e41b11e2a867c54d9d1758f588c5eaedbea49282",
+  "fullOriginal": {
+    "revision": "a68dd0dc10b52c585866e35755584e58dfaa9079",
+    "test": "tests/fresh-campaign-recovery.test.mjs",
+    "receipt": ".cache/core-campaign-2026-10-12/original-recovery-main-a68-v1/receipt.json",
+    "logSha256": "ffb5aae542394af4a311d59ce3282ab933df11b2c88fa9a84ec9bcb4e40dbc35",
+    "result": "0/1 at unchanged line174, fresh-cuyo-route188 / route-dressings21; not complete"
+  },
+  "observedFiniteSource": {
+    "site": "tucuman",
+    "sourceKey": "container:tucuman:building:chest:14:7:5",
+    "knownChestDressings": 12,
+    "otherKnownDressings": 4
+  },
+  "observedPatients": {
+    "11": {
+      "hp": 18,
+      "maxHp": 78,
+      "bleeding": 0
+    }
+  },
+  "observedPhysician": {
+    "id": 10,
+    "medical": 98,
+    "medkits": 0,
+    "doctorRate": 6
+  },
+  "unchangedOriginalAssertionsSha256": "7bc4dcf3005784d937a735ca32e44dbff5c590b78d2e9ea8f310befdb84edb0a",
+  "limits": "Earned finite courier/clinical source correction only; whole fresh recovery, Cuyo battles, both endings and 48h remain open."
+}

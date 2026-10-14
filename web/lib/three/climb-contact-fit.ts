@@ -12,13 +12,13 @@ type Limb={base:Object3D;middle:Object3D;end:Object3D;first:number;second:number
 export class NativeClimbContactFit {
  readonly adjustmentLimit=.65;
  rejectedFits=0;maximumAdjustment=0;
- private limbs=new Map<string,Limb>();
+ private nativeModelPosition?:Vector3;private visualScale:number;private limbs=new Map<string,Limb>();
  private nativeRotations=new Map<Object3D,Quaternion>();private adjusted=false;
  private start=new Vector3();private joint=new Vector3();private end=new Vector3();private direction=new Vector3();private pole=new Vector3();private elbow=new Vector3();private target=new Vector3();private origin=new Vector3();private current=new Vector3();private before=new Vector3();private after=new Vector3();
  private pelvis?:Object3D;private authoredPole=new Vector3();private sourceWeight=0;private idleRotations=new WeakMap<AnimationClip,Map<Object3D,Quaternion>>();private nativePole=new Vector3();private bendCross=new Vector3();private kneeRise=0;private footRoofWeight=0;private bodyPhase:NativeClimbBodyPhase;
  private frame=new Matrix4();private long=new Vector3();private normal=new Vector3();private across=new Vector3();private nativeWorldRotation=new Quaternion();private authoredWorldRotation=new Quaternion();private tilt=new Quaternion();private rootRotation=new Quaternion();private rotation=new Quaternion();private worldRotation=new Quaternion();private parentRotation=new Quaternion();private endRotation=new Quaternion();
  constructor(private model:Object3D,private root:Object3D){
-  model.updateWorldMatrix(true,true);this.pelvis=model.getObjectByName('pelvis');this.bodyPhase=new NativeClimbBodyPhase(model);
+  this.visualScale=root.getWorldScale(new Vector3()).x;model.updateWorldMatrix(true,true);this.pelvis=model.getObjectByName('pelvis');this.bodyPhase=new NativeClimbBodyPhase(model);
   for(const side of ['l','r'])for(const role of ['foot','hand']){
    const names=role==='foot'?['thigh','calf','foot']:['upperarm','lowerarm','hand'],nodes=names.map(name=>model.getObjectByName(`${name}_${side}`));
    if(nodes.some(node=>!node))continue;const [base,middle,end]=nodes as Object3D[];
@@ -39,6 +39,7 @@ export class NativeClimbContactFit {
  }
  /** Restore before mixing: unchanged property tracks need not write again. */
  restore(){
+  if(this.nativeModelPosition){this.model.position.copy(this.nativeModelPosition);this.nativeModelPosition=undefined;this.model.updateWorldMatrix(true,true);}
   this.bodyPhase.restore();
   if(!this.adjusted)return;
   for(const [bone,rotation]of this.nativeRotations)bone.quaternion.copy(rotation);
@@ -90,9 +91,19 @@ export class NativeClimbContactFit {
  apply(geometry:ClimbGeometry,fraction:number,spec:ClipSpec,clip?:AnimationClip,blendWeight=1){
   this.rejectedFits=0;this.maximumAdjustment=0;
   const support=spec.climbSupport;if(!support||!finiteGeometry(geometry)||!Number.isFinite(fraction)||/stair/.test(geometry.kind??''))return;
-  if(Math.abs(geometry.height-support.height)<.001&&Math.abs(geometry.span-support.span)<.001)return;
+  if(this.visualScale===1&&Math.abs(geometry.height-support.height)<.001&&Math.abs(geometry.span-support.span)<.001)return;
   for(const [bone,rotation]of this.nativeRotations)rotation.copy(bone.quaternion);this.adjusted=true;
   const actual=sampleLadderClimb({...geometry,halfWidth:.23,rungRadius:.026},fraction,support.feetRest),reference=sampleLadderClimb(ladderGeometry([0,0,0],[0,support.height,support.span],support.span),this.nativeFraction(geometry,fraction,spec),support.feetRest);
+  // Shorter bodies use closer real rungs. The ladder, paid root path and
+  // roof remain in world metres; only the hand/foot rung separation changes.
+  if(this.visualScale!==1&&fraction<.76){
+   const q=Math.max(0,Math.min(geometry.steps-2,(fraction-.12)/.64*(geometry.steps-2))),step=Math.min(geometry.steps-3,Math.floor(q)),u=q-step,moving=step%2===0?'r':'l',gap=Math.max(2,Math.floor(4*this.visualScale));
+   for(const side of ['l','r']){
+    const index=side==='l'?1+2*Math.floor(step/2):2*Math.floor((step+1)/2),advance=side===moving?phase(u,.55,.94):0,a=Math.min(geometry.steps,index+gap),b=Math.min(geometry.steps,index+gap+2),at=a+(b-a)*advance;
+    actual.hands[side].position[1]=geometry.height*at/geometry.steps+.026;
+    actual.hands[side].position[2]=(geometry.baseSpan??0)+(geometry.ladderSpan-(geometry.baseSpan??0))*at/geometry.steps;
+   }
+  }
   this.root.updateWorldMatrix(true,true);
   for(const limb of this.limbs.values())limb.end.getWorldQuaternion(limb.nativeEndRotation);
   this.kneeRise=actual.kneeRise;
@@ -109,16 +120,27 @@ export class NativeClimbContactFit {
    const hand=this.limbs.get(`hand_${side}`);if(hand?.bindHandContactRotation){this.tilt.setFromAxisAngle(this.current.set(1,0,0),-Math.PI*.5*actual.hands[side].roofWeight);this.authoredWorldRotation.copy(this.rootRotation).multiply(this.tilt).multiply(hand.bindHandContactRotation);hand.nativeEndRotation.slerp(this.authoredWorldRotation,contactWeight*actual.hands[side].weight);}
   }
 
+  if(this.visualScale!==1){
+   this.nativeModelPosition=this.model.position.clone();
+   // A shorter body settles toward the chosen physical rungs. Keep the
+   // admitted cell origin fixed and retain every joint's native dimensions.
+   for(let pass=0;pass<2;pass++)for(const side of ['l','r']){
+    const limb=this.limbs.get(`hand_${side}`),contact=actual.hands[side];if(!limb||contact.weight<.999)continue;
+    this.target.fromArray(contact.position).sub(this.origin.set(0,actual.root.height,actual.root.forward)).divideScalar(this.visualScale);this.root.localToWorld(this.target);this.target.sub(this.current.copy(limb.contact).multiplyScalar(this.visualScale).applyQuaternion(limb.nativeEndRotation));
+    limb.base.getWorldPosition(this.start);const delta=this.target.clone().sub(this.start),distance=delta.length(),limit=limb.first+limb.second-.001;
+    if(distance>limit){delta.multiplyScalar(Math.min(.12,distance-limit)/distance).applyQuaternion(this.rootRotation.clone().invert()).divideScalar(this.visualScale);this.model.position.add(delta);this.model.updateWorldMatrix(true,true);this.model.updateMatrixWorld(true);}
+   }
+  }
   for(const side of ['l','r'])for(const role of ['foot','hand']){
    const limb=this.limbs.get(`${role}_${side}`);if(!limb)continue;
    this.footRoofWeight=actual.feet[side].roofWeight;
    const desired=role==='foot'?actual.feet[side]:actual.hands[side],native=role==='foot'?reference.feet[side]:reference.hands[side],weight=role==='hand'?actual.hands[side].weight:1;
-   this.target.fromArray(desired.position).sub(this.origin.set(0,actual.root.height,actual.root.forward));
+   this.target.fromArray(desired.position).sub(this.origin.set(0,actual.root.height,actual.root.forward)).divideScalar(this.visualScale);
    if(role==='hand'&&weight<.999){
-    this.before.fromArray(native.position).sub(this.origin.set(0,reference.root.height,reference.root.forward));
+    this.before.fromArray(native.position).sub(this.origin.set(0,reference.root.height,reference.root.forward)).divideScalar(this.visualScale);
     this.target.sub(this.before).multiplyScalar(weight);this.current.copy(limb.contact);limb.end.localToWorld(this.current);this.root.worldToLocal(this.current);this.target.add(this.current);
    }
-   this.root.localToWorld(this.target);this.endRotation.copy(limb.nativeEndRotation);this.current.copy(limb.contact).applyQuaternion(this.endRotation);this.target.sub(this.current);
+   this.root.localToWorld(this.target);this.endRotation.copy(limb.nativeEndRotation);this.current.copy(limb.contact).multiplyScalar(this.visualScale).applyQuaternion(this.endRotation);this.target.sub(this.current);
    limb.end.getWorldPosition(this.current);
    const adjustment=this.target.distanceTo(this.current);
    if(!Number.isFinite(adjustment)){this.rejectedFits++;continue;}

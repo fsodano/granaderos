@@ -31,7 +31,8 @@ test('furniture detail choices create repeatable valid snapshots and keep the se
  }
  assert.deepEqual(createRendererSandboxBattle('furnishings-detail'),createFurnishingsDetailBattle());assert.deepEqual(createRendererSandboxBattle('furnishings-detail:exterior'),createFurnishingsDetailBattle('exterior'));
  assert.equal(RENDERER_SCENARIOS.find(item=>item.label==='Mobiliario').id,'furnishings-detail');
- const original=createRendererSandboxBattle('furnishings');assert.equal(createHash('sha256').update(JSON.stringify(original)).digest('hex'),'bc3c4f6682c570afefc7e63288a0ab1d4e63ff67b6724f3e11ee5c3e80fe4ec8');
+ const original=createRendererSandboxBattle('furnishings');assert.equal(original.artilleryOccupancyVersion,1);assert.deepEqual(original.artillery,[]);
+ const {artilleryOccupancyVersion,...oldBaseline}=original;assert.equal(createHash('sha256').update(JSON.stringify(oldBaseline)).digest('hex'),'bc3c4f6682c570afefc7e63288a0ab1d4e63ff67b6724f3e11ee5c3e80fe4ec8');
  assert.deepEqual(original.props.map(prop=>prop.type),['table','bench','bed','chest','barrels','hay','cart']);assert.throws(()=>createFurnishingsDetailBattle('forced'),/Unknown furniture review view/);
 });
 

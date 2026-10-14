@@ -1,6 +1,6 @@
 import {sameCell,sameSurface,spaceKey,surfaceAt,tacticalLevel} from './tactical-space.js';
 import {planningPoint,moveOrder} from './tactical-planning-space.js';
-import {actBattle,getReachable,teamCanSee} from './tactical.js';
+import {actBattle,getReachable,teamCanSee,knownArtillery} from './tactical.js';
 import {movementStance} from './tactical-condition.js';
 import {movementStep} from './movement-step.js';
 
@@ -28,7 +28,7 @@ function movementView(state,unit,movement){
  const units=state.units.filter(u=>!u.departure&&(u.side==='player'||teamCanSee(state,'player',u)));
  const record=movement?{...unit,movementMode:movement,stance:movementStance(movement)}:unit;
  const bodies=units.filter(u=>!u.departure&&u.id!==unit.id&&(u.unconscious||u.hp<=0||u.routed)).map(u=>({id:`formation-body-${u.id}`,...point(u)}));
- return {...state,units:units.map(u=>u.id===unit.id?record:u),npcs:[...(state.npcs??[]).filter(npc=>teamCanSee(state,'player',npc)),...bodies]};
+ return {...state,units:units.map(u=>u.id===unit.id?record:u),npcs:[...(state.npcs??[]).filter(npc=>teamCanSee(state,'player',npc)),...bodies],artillery:knownArtillery(state,unit)};
 }
 function destinationFor(state,unit,desired,reserved,movement){
  const view=movementView(state,unit,movement),occupied=new Set(view.units.filter(u=>u.id!==unit.id).map(key));

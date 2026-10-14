@@ -1,6 +1,8 @@
 import {DEFAULT_PHYSICAL,physicalSourcesFor,finiteArsenalsFor} from './campaign-physical.js';
 import {canonicalContent} from './content-identity.js';
 import {propBlocksAt} from './props.js';
+import {spaceKey} from './tactical-space.js';
+import {artillerySpaceKeys} from './artillery-occupancy.js';
 
 // One-time gameplay inventories, not reconstructed historical arsenal counts.
 // These pieces are discovered only during a visit to a conquered arsenal.
@@ -34,9 +36,9 @@ export function revealFiniteArsenal(battle){
  const source=validateFiniteArsenalSource(metadata,battle.sectorId,battle),chest=battle.props?.find(prop=>prop.id===source.chest&&prop.type==='chest');
  if(!chest?.open||!chest.knownToPlayer||chest.locked||chest.trap?.armed||chest.artilleryRecovered||battle.mode!=='exploration'||!battle.units.some(unit=>unit.side==='player'&&unit.hp>=15&&!unit.unconscious&&!unit.routed&&!unit.departure))return [];
  need(source.pieces.every(piece=>!(battle.artillery??[]).some(gun=>gun.id===piece.id)));
- const occupied=new Set([...(battle.artillery??[]),...battle.units.filter(unit=>unit.hp>0&&!unit.departure)].map(point=>`${point.x},${point.y}`));
+ const occupied=new Set([...artillerySpaceKeys(battle),...battle.units.filter(unit=>unit.hp>0&&!unit.departure).map(spaceKey),...(battle.npcs??[]).filter(npc=>(npc.hp??100)>0&&!npc.departure&&!npc.fled).map(spaceKey)]);
  const cells=battle.tiles.filter(tile=>!tile.blocked&&tile.type!=='water'&&!propBlocksAt(battle,tile.x,tile.y)).sort((a,b)=>Math.abs(a.x-chest.x)+Math.abs(a.y-chest.y)-Math.abs(b.x-chest.x)-Math.abs(b.y-chest.y)||a.y-b.y||a.x-b.x);
- const pieces=source.pieces.map(piece=>{const point=cells.find(cell=>!occupied.has(`${cell.x},${cell.y}`));need(point,'No queda espacio para emplazar las piezas del arsenal.');occupied.add(`${point.x},${point.y}`);return {...structuredClone(piece),x:point.x,y:point.y};});
+ const pieces=source.pieces.map(piece=>{const point=cells.find(cell=>!occupied.has(spaceKey(cell)));need(point,'No queda espacio para emplazar las piezas del arsenal.');occupied.add(spaceKey(point));return {...structuredClone(piece),x:point.x,y:point.y};});
  battle.artillery.push(...pieces);chest.artilleryRecovered=source.pieces.map(piece=>piece.id);return pieces;
 }
 export function validateFiniteArsenalScene(battle,context=battle){

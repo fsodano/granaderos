@@ -49,6 +49,8 @@ export function decodeSave(text){
   if(b&&value.campaign.ammunitionVersion!==undefined&&value.campaign.ammunitionVersion!==b.ammunitionVersion)throw Error('Las reglas de munición no corresponden al despliegue guardado.');
   if(b&&(b.exits===undefined)!==(b.exitRulesVersion===undefined))throw Error('Las reglas de salida guardadas están incompletas.');
   if(b)validateRegionalWeather(b,campaign);
+  // Retain the validated clone, including one-time legacy cannon clearance.
+  // Never rebuild an active save: its paid AP, clock and gun custody persist.
   let battle=b?validateBattleSnapshot(b,campaign):null;if(battle){battle.startSeconds??=campaign.hour*3600+(campaign.secondOfHour??0);battle.elapsedSeconds??=0;battle.syncedSeconds??=0;}
   if(battle&&((battle.sceneId??null)!==(campaign.pendingBattle.sceneId??null)||(battle.syncedSeconds??0)!==(campaign.pendingBattle.syncedSeconds??0)||(battle.elapsedSeconds??0)!==(battle.syncedSeconds??0)))throw Error('El reloj táctico guardado no coincide con la campaña.');
   if(battle&&campaign.pendingBattle.hour!==undefined&&battle.startSeconds!==campaign.pendingBattle.hour*3600+(campaign.pendingBattle.secondOfHour??0))throw Error('La hora inicial del combate no coincide con el despliegue.');

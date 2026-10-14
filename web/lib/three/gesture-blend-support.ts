@@ -30,7 +30,9 @@ export class NativeGestureBlendSupport {
  private until=-Infinity;private began=-Infinity;private adjusted=false;private legs:Leg[]=[];private native=new Map<Object3D,Quaternion>();
  private start=new Vector3();private joint=new Vector3();private end=new Vector3();private target=new Vector3();private direction=new Vector3();private pole=new Vector3();private knee=new Vector3();private before=new Vector3();private after=new Vector3();private rootPoint=new Vector3();private scale=new Vector3();
  private rotation=new Quaternion();private worldRotation=new Quaternion();private parentRotation=new Quaternion();private footRotation=new Quaternion();private ballRotation=new Quaternion();
+ private visualScale:number;
  constructor(private model:Object3D,private root:Object3D,footwearName?:string){
+  this.visualScale=root.getWorldScale(new Vector3()).x;
   const mesh=footwearName?model.getObjectByName(footwearName):undefined;
   if(!(mesh instanceof SkinnedMesh)||mesh.bindMode!=='attached'||mesh.geometry.morphAttributes.position?.length)return;
   model.updateWorldMatrix(true,true);const p=mesh.geometry.attributes.position,indices=mesh.geometry.attributes.skinIndex,weights=mesh.geometry.attributes.skinWeight;
@@ -75,7 +77,7 @@ export class NativeGestureBlendSupport {
    if(cache){if(cache.size>=24)cache.delete(cache.keys().next().value!);cache.set(at,local);}
   }
   const origin=this.root.getWorldPosition(new Vector3()),rotation=this.root.getWorldQuaternion(new Quaternion());
-  return local.map(goal=>({p:goal.p.clone().applyQuaternion(rotation).add(origin),q:rotation.clone().multiply(goal.q),ball:rotation.clone().multiply(goal.ball),toe:goal.toe.clone().applyQuaternion(rotation).add(origin),low:goal.low===undefined?undefined:goal.low+origin.y,contactToe:goal.contactToe?.clone().applyQuaternion(rotation).add(origin),bend:goal.bend?.clone().applyQuaternion(rotation)}));
+  return local.map(goal=>({p:goal.p.clone().multiplyScalar(this.visualScale).applyQuaternion(rotation).add(origin),q:rotation.clone().multiply(goal.q),ball:rotation.clone().multiply(goal.ball),toe:goal.toe.clone().multiplyScalar(this.visualScale).applyQuaternion(rotation).add(origin),low:goal.low===undefined?undefined:goal.low*this.visualScale+origin.y,contactToe:goal.contactToe?.clone().multiplyScalar(this.visualScale).applyQuaternion(rotation).add(origin),bend:goal.bend?.clone().applyQuaternion(rotation)}));
  }
  begin(previous:Spec|undefined,next:Spec,time:number,clip?:AnimationClip,previousClip?:AnimationClip,previousPhase=0){
   const old=this.plan;this.plan=undefined;this.until=-Infinity;this.began=-Infinity;if(!previous||this.legs.length!==2||!Number.isFinite(time))return;
@@ -120,7 +122,7 @@ export class NativeGestureBlendSupport {
   const plan=this.plan!;if(!Number.isFinite(time)||time<plan.started||!Number.isFinite(phase)||!Number.isFinite(rate)||rate<0){this.plan=undefined;this.until=-Infinity;return true;}
   const elapsed=time-plan.started;
   this.root.updateWorldMatrix(true,true);this.model.getWorldScale(this.scale);
-  if(!finite(this.scale)||Math.hypot(this.scale.x-1,this.scale.y-1,this.scale.z-1)>1e-6||this.root.matrixWorld.elements.some((v,i)=>Math.abs(v-plan.world.elements[i])>1e-6)){return this.rejectContact();}
+  if(!finite(this.scale)||Math.hypot(this.scale.x-this.visualScale,this.scale.y-this.visualScale,this.scale.z-this.visualScale)>1e-6||this.root.matrixWorld.elements.some((v,i)=>Math.abs(v-plan.world.elements[i])>1e-6)){return this.rejectContact();}
   if(plan.entry&&elapsed===0&&!plan.resumedStep){plan.last=this.capture();return true;}
   // Keep ordinary returns at 120 ms. A real stance change lifts and lands
   // one foot before the other, without changing the paid/mixer clock.
@@ -135,7 +137,7 @@ export class NativeGestureBlendSupport {
    else{const goal=this.forecast(plan.clip,phase);if(!goal)return this.rejectContact();toe.lerp(goal[index].toe,weight);q.slerp(goal[index].q,weight);ball.slerp(goal[index].ball,weight);}
    const forward=leg.forward.clone().applyQuaternion(q);forward.y=0;if(forward.lengthSq()<1e-8){return this.rejectContact();}forward.normalize();
    const axis=new Vector3(0,1,0).cross(forward).normalize(),hip=leg.thigh.getWorldPosition(new Vector3()),reserve=.0004+.0016*(plan.entry?weight:1-weight),limit=leg.first+leg.second-reserve;
-   const orientation=(roll:number)=>new Quaternion().setFromAxisAngle(axis,roll).multiply(q),target=(rotation:Quaternion)=>toe.clone().sub(leg.toe.clone().applyQuaternion(rotation));
+   const orientation=(roll:number)=>new Quaternion().setFromAxisAngle(axis,roll).multiply(q),target=(rotation:Quaternion)=>toe.clone().sub(leg.toe.clone().multiplyScalar(this.visualScale).applyQuaternion(rotation));
    let roll=0;const reachable=(rotation:Quaternion)=>{const distance=target(rotation).distanceTo(hip);return distance<limit&&distance>Math.abs(leg.first-leg.second)+reserve;};
    if(!reachable(q)){let low=0,high=this.contactRollLimit;if(!reachable(orientation(high))){return this.rejectContact();}for(let i=0;i<24;i++){const middle=(low+high)/2;if(reachable(orientation(middle)))high=middle;else low=middle;}roll=high+.00001;}
    const fitted=orientation(roll),delta=fitted.clone().multiply(q.clone().invert());if(plan.entry)ball.copy(initial.ball).premultiply(fitted.clone().multiply(initial.q.clone().invert()));else ball.premultiply(delta);this.footRotation.copy(fitted);this.ballRotation.copy(ball);this.target.copy(target(fitted));
@@ -161,7 +163,7 @@ export class NativeGestureBlendSupport {
   this.hasFrame=true;this.maximumAdjustment=0;this.maximumReachError=0;this.rejectedFits=0;this.processedVertices=0;this.maximumContactError=0;this.maximumHeelRoll=0;
   if(this.plan&&this.contact(time,phase,rate))return;
   if(!Number.isFinite(time)||time<this.began||time>=this.until)return;
-  this.root.updateWorldMatrix(true,true);const floor=this.root.getWorldPosition(this.rootPoint).y;this.model.getWorldScale(this.scale);if(!Number.isFinite(floor)||!finite(this.scale)||Math.hypot(this.scale.x-1,this.scale.y-1,this.scale.z-1)>1e-6){this.until=-Infinity;this.rejectedFits++;return;}
+  this.root.updateWorldMatrix(true,true);const floor=this.root.getWorldPosition(this.rootPoint).y;this.model.getWorldScale(this.scale);if(!Number.isFinite(floor)||!finite(this.scale)||Math.hypot(this.scale.x-this.visualScale,this.scale.y-this.visualScale,this.scale.z-this.visualScale)>1e-6){this.until=-Infinity;this.rejectedFits++;return;}
   for(const [bone,q]of this.native)q.copy(bone.quaternion);
   for(const leg of this.legs){
    const low=this.lowest(leg),lift=this.lift(low-floor);if(!Number.isFinite(lift)||lift<0||lift>this.adjustmentLimit){this.rejectedFits++;this.restore();this.until=-Infinity;return;}if(lift<=1e-9)continue;

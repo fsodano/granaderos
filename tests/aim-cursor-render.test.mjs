@@ -17,9 +17,9 @@ function hitFrame(s,callbacks={},hitLocation='torso'){
  const element=componentTree(TacticalScene,{state:s,selected:'p',unit:s.units[0],players:[s.units[0]],units:s.units,positions:{},poses:{},directions:{},hover:s.units[1],mode:'fire',aim:2,hitLocation,reachable:[],showSight:false,sight:new Set(),revealed:new Set(),project:(x,y)=>({x:x*26,y:y*14}),onTile:()=>{},onHover:()=>{},onTalk:()=>{},onCannon:()=>{},cannonId:'',...callbacks});
  const person=descendants(element).find(node=>node.props?.['data-unit-id']==='e');return descendants(person).find(node=>node.props?.['data-person-hit-target']);
 }
-test('reticle shows the body part, full AP cost, remaining AP and four bounded aim indicators',()=>{
+test('the compact reticle keeps one visible cost label and accessible remaining AP with four bounded aim indicators',()=>{
  const s=field(),preview=targetPreview(s,s.units[0],s.units[1],{mode:'fire',aim:2,hitLocation:'head'});const html=render(h('svg',null,h(AimCursor,{point:{x:80,y:90},aim:2,preview,target:s.units[1],scale:.5})));
- assert.match(html,/Cabeza/);assert.ok(html.includes(`${formatAP(preview.pa)} PA`));assert.ok(html.includes(`${formatAP(preview.remaining)} PA restantes`));assert.equal((html.match(/class="aim-step filled"/g)||[]).length,2);assert.equal((html.match(/class="aim-step"/g)||[]).length,2);assert.match(html,/pointer-events="none"/);assert.match(html,/scale\(0.5\)/);
+ assert.match(html,/Cabeza/);assert.ok(html.includes(`${formatAP(preview.pa)} PA`));assert.ok(html.includes(`${formatAP(preview.remaining)} PA restantes`));assert.equal((html.match(/<text /g)||[]).length,1);assert.match(html,/<circle r="9"/);assert.equal((html.match(/class="aim-step filled"/g)||[]).length,2);assert.equal((html.match(/class="aim-step"/g)||[]).length,2);assert.match(html,/pointer-events="none"/);assert.match(html,/scale\(0.5\)/);
 });
 test('actual sprite pointer handlers select and fire the point clicked instead of a stale menu setting',()=>{
  for(const stance of ['standing','crouched','prone'])for(const [fraction,part] of [[.1,'head'],[.4,'torso'],[.9,'legs']]){
@@ -39,7 +39,7 @@ test('a point shot over an ally reports a tile, not a selectable body part',()=>
 });
 
 test('cursor AP labels stay inside the right edge and above the lower combat log',()=>{
- const s=field(),preview=targetPreview(s,s.units[0],s.units[1],{mode:'fire',aim:1});const html=render(h('svg',null,h(AimCursor,{point:{x:490,y:280},aim:1,preview,target:s.units[1],scale:.5,bounds:{x:0,y:0,width:500,height:300}})));assert.match(html,/<text x="-68" y="-50"/);assert.match(html,/<text x="-68" y="-36"/);
+ const s=field(),preview=targetPreview(s,s.units[0],s.units[1],{mode:'fire',aim:1});const html=render(h('svg',null,h(AimCursor,{point:{x:490,y:280},aim:1,preview,target:s.units[1],scale:.5,bounds:{x:0,y:0,width:500,height:300}})));assert.match(html,/<text x="-36" y="-25"/);assert.equal((html.match(/<text /g)||[]).length,1,'the remaining budget is accessible without another on-screen row');
 });
 
 test('empty firearm cursor shows a reload arrow and cost, then an X when no cartridges remain',()=>{

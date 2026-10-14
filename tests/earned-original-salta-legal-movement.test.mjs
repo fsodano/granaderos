@@ -12,6 +12,7 @@ import {chooseEnemyAction} from '../game/tactical-ai.js';
 import {combatOrder,openingControlWindow} from './opening-driver.mjs';
 import {coastalBatteryController} from './coastal-command-driver.mjs';
 import {artilleryProfile} from '../game/artillery-definitions.js';
+import {admitEarnedArtilleryPair} from './earned-artillery-admission-fixture.mjs';
 
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 function earned(){
@@ -19,7 +20,7 @@ function earned(){
  const packed=readFileSync(new URL('./fixtures/'+meta.fixture,import.meta.url)),raw=gunzipSync(packed);
  assert.equal(sha(packed),meta.gzipSha256);assert.equal(sha(raw),meta.rawSha256);assert.equal(raw.length,meta.rawBytes);
  const observed=JSON.parse(raw),before=structuredClone(observed),paired=syncBattleTime(observed.campaign,observed.preActionBattle);assert.equal(paired.error,null);
- const pair=decodeSave(encodeSave(paired.campaign,paired.battle));assert.deepEqual(pair,{campaign:paired.campaign,battle:paired.battle});assert.deepEqual(observed,before);
+ const pair=admitEarnedArtilleryPair({campaign:paired.campaign,battle:paired.battle},{sectors:['retiro','buenos_aires','san_nicolas','san_lorenzo','cordoba','tucuman'],label:'original rejected Salta move pair'});assert.deepEqual(observed,before);
  assert.deepEqual([pair.battle.turn,pair.battle.elapsedSeconds,pair.battle.mode,pair.battle.phase],[7,1495,'combat','player']);
  assert.equal(observed.orders.length,339);assert.deepEqual(observed.error.crew,[{gunId:'arsenal:cordoba:2',ids:['114','124']}]);
  // Keep the original initial deployment: recomputing preferences from the

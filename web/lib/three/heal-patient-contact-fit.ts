@@ -41,6 +41,7 @@ const frame = (long: Vector3, normal: Vector3) => {
 };
 /** Fits one supported current-patient prone care path; native self-care is unchanged. */
 export class NativePatientContactFit {
+    private nativeModelPosition?:Vector3;
     private native: {
         node: Object3D;
         quaternion: Quaternion;
@@ -60,6 +61,7 @@ export class NativePatientContactFit {
         workWrist: Vector3;
         workRotation: Quaternion;
         weight: number;
+        approach?:Vector3;
         elbowUp: number;
     };
     private returning?: {
@@ -76,6 +78,7 @@ export class NativePatientContactFit {
         workWrist: Vector3;
         workRotation: Quaternion;
         weight: number;
+        approach?:Vector3;
         elbowUp: number;
     };
     private cancelled = "";
@@ -104,6 +107,7 @@ export class NativePatientContactFit {
     private skinScratch = new Vector3();
     private faces = new WeakMap<Object3D, Face[]>();
     private plan?: {
+        approach?:Vector3;
         id: string;
         model: Object3D;
         face: Face;
@@ -149,6 +153,7 @@ export class NativePatientContactFit {
         this.fingerRest = this.fingers.map(n => new Quaternion().setFromAxisAngle(fingerAxis.clone().applyQuaternion(n.parent!.getWorldQuaternion(new Quaternion()).invert()), n.name.includes('_01_') ? (n.name.startsWith('thumb_') ? -.45 : -.18) : n.name.includes('_02_') ? -.08 : -.05).multiply(n.quaternion));
     }
     restore() {
+        if(this.nativeModelPosition){this.model.position.copy(this.nativeModelPosition);this.nativeModelPosition=undefined;this.model.updateWorldMatrix(true,true);this.model.updateMatrixWorld(true);}
         for (const p of this.native)
             p.node.quaternion.copy(p.quaternion);
         this.native = [];
@@ -264,7 +269,7 @@ export class NativePatientContactFit {
             if (fraction < .35 || fraction > .78)
                 continue;
             const distance = p.distanceTo(shoulder);
-            if (distance >= best || normal.dot(shoulder.clone().sub(p)) < .05)
+            if (distance >= best || normal.dot(shoulder.clone().sub(p)) < .05*this.root.getWorldScale(new Vector3()).x)
                 continue;
             best = distance;
             face = f;
@@ -275,9 +280,29 @@ export class NativePatientContactFit {
         const bary = this.triangle(face).getBarycoord(point, new Vector3());
         if (!bary)
             return;
-        return { id: cue.id, model: target, face, bary, palm: this.palm.clone(), turn: 0, tilt: this.tilt, axis: point.clone().sub(shoulder), offset: .002, elbowUp: .5 };
+        return { id: cue.id, model: target, face, bary, palm: this.palm.clone(), turn: 0, tilt: this.tilt, axis: point.clone().sub(shoulder), offset: .002*this.root.getWorldScale(new Vector3()).x, elbowUp: .5*this.root.getWorldScale(new Vector3()).x };
+    }
+    private contactPlan(cue:ActorCue,target:{model:Object3D;root:Object3D}) {
+        const scale=this.root.getWorldScale(new Vector3()).x,saved=this.model.position.clone();
+        if(cue.care?.mode!=='patient')return;
+        const support=cue.care.support,origin=this.root.getWorldPosition(new Vector3()),between=target.root.getWorldPosition(new Vector3()).sub(origin);
+        // Search only a small supported approach, in increasing distance.
+        // This moves the whole displayed body; no joint or saved cell moves.
+        for(const fraction of scale<1?[1-scale,1-scale+.05,1-scale+.1,1-scale+.15]:[0]){
+            const delta=between.clone().multiplyScalar(fraction),point=origin.clone().add(delta);
+            if(delta.length()>TILE_METRES*.5||fraction>0&&!support.floors.some(f=>Math.abs(f.height-origin.y)<.001&&point.x>=f.minX&&point.x<=f.maxX&&point.z>=f.minZ&&point.z<=f.maxZ))continue;
+            const approach=fraction>0?delta.applyQuaternion(this.root.getWorldQuaternion(new Quaternion()).invert()).divideScalar(scale):undefined;
+            if(approach){this.model.position.copy(saved).add(approach);this.model.updateWorldMatrix(true,true);this.model.updateMatrixWorld(true);}
+            try{const plan=this.select(cue,target.model);if(plan&&this.calibrate(plan))return {...plan,approach};}
+            finally{this.model.position.copy(saved);this.model.updateWorldMatrix(true,true);this.model.updateMatrixWorld(true);}
+        }
+    }
+    private approach(plan:{approach?:Vector3},weight:number){
+        if(!plan.approach)return;
+        this.nativeModelPosition=this.model.position.clone();this.model.position.addScaledVector(plan.approach,weight);this.model.updateWorldMatrix(true,true);this.model.updateMatrixWorld(true);
     }
     private calibrate(plan: NonNullable<NativePatientContactFit['plan']>) {
+        const scale=this.root.getWorldScale(new Vector3()).x;
         const tri = this.triangle(plan.face), point = tri.a.clone().multiplyScalar(plan.bary.x).addScaledVector(tri.b, plan.bary.y).addScaledVector(tri.c, plan.bary.z), normal = tri.getNormal(new Vector3()), near: Triangle[] = [];
         plan.model.traverse(node => {
             if (!(node instanceof SkinnedMesh) || !visible(node) || !node.geometry.index)
@@ -289,7 +314,7 @@ export class NativePatientContactFit {
                     Vector3,
                     Vector3
                 ]);
-                if (face.getArea() > 1e-10 && face.closestPointToPoint(point, new Vector3()).distanceToSquared(point) < .13 * .13)
+                if (face.getArea() > 1e-10 && face.closestPointToPoint(point, new Vector3()).distanceToSquared(point) < (.13*scale)**2)
                     near.push(face);
             }
         });
@@ -297,7 +322,7 @@ export class NativePatientContactFit {
         if (across.lengthSq() < 1e-8)
             across.crossVectors(normal, new Vector3(1, 0, 0));
         across.normalize();
-        const along = normal.clone().cross(across).normalize(), cell = .025, grid = new Map<string, Triangle[]>();
+        const along = normal.clone().cross(across).normalize(), cell = .025*scale, grid = new Map<string, Triangle[]>();
         for (const face of near) {
             const xs = [face.a, face.b, face.c].map(v => v.dot(across)), ys = [face.a, face.b, face.c].map(v => v.dot(along));
             for (let x = Math.floor(Math.min(...xs) / cell); x <= Math.floor(Math.max(...xs) / cell); x++)
@@ -324,36 +349,36 @@ export class NativePatientContactFit {
                 const rotation = this.handRotation(plan.face, plan.turn, plan.tilt);
                 if (!rotation)
                     break;
-                const wrist = point.clone().addScaledVector(normal, plan.offset ?? .002).sub(plan.palm.clone().applyQuaternion(rotation));
-                if (!this.solve(wrist, rotation, .5))
+                const wrist = point.clone().addScaledVector(normal, plan.offset ?? .002).sub(plan.palm.clone().multiplyScalar(this.root.getWorldScale(new Vector3()).x).applyQuaternion(rotation));
+                if (!this.solve(wrist, rotation, plan.elbowUp??.5))
                     break;
                 let gap = Infinity, contacts = 0;
                 for (const p of this.arm) {
                     if (!visible(p.mesh))
                         continue;
-                    const v = p.mesh.getVertexPosition(p.index, new Vector3()).applyMatrix4(p.mesh.matrixWorld), origin = v.clone().addScaledVector(normal, .16), ray = new Ray(origin, direction);
-                    if (v.distanceToSquared(point) > .13 * .13)
+                    const v = p.mesh.getVertexPosition(p.index, new Vector3()).applyMatrix4(p.mesh.matrixWorld), origin = v.clone().addScaledVector(normal, .16*scale), ray = new Ray(origin, direction);
+                    if (v.distanceToSquared(point) > (.13*scale)**2)
                         continue;
                     let distance = Infinity;
                     for (const face of grid.get(Math.floor(v.dot(across) / cell) + ',' + Math.floor(v.dot(along) / cell)) ?? []) {
                         const hit = ray.intersectTriangle(face.a, face.b, face.c, false, new Vector3());
-                        if (hit && hit.distanceToSquared(point) < .13 * .13)
+                        if (hit && hit.distanceToSquared(point) < (.13*scale)**2)
                             distance = Math.min(distance, origin.distanceTo(hit));
                     }
-                    if (Number.isFinite(distance) && distance < .32) {
-                        gap = Math.min(gap, distance - .16);
+                    if (Number.isFinite(distance) && distance < .32*scale) {
+                        gap = Math.min(gap, distance - .16*scale);
                         contacts++;
                     }
                 }
                 this.debug.push({ pass, gap, offset: plan.offset, contacts, near: near.length });
                 if (!contacts || !Number.isFinite(gap))
                     break;
-                if (gap >= .0025 - 1e-6) {
+                if (gap >= .0025*scale - 1e-6) {
                     result = true;
                     break;
                 }
-                plan.offset = (plan.offset ?? .002) + (.0025 - gap) + .0001;
-                if (plan.offset > .025)
+                plan.offset = (plan.offset ?? .002) + (.0025*scale - gap) + .0001*scale;
+                if (plan.offset > .025*scale)
                     break;
             }
         }
@@ -384,7 +409,7 @@ export class NativePatientContactFit {
         if (!finite(target) || !rotation.toArray().every(Number.isFinite) || !Number.isFinite(elbowUp))
             return false;
         const { upper: u, lower: l, hand: h, a, b } = this.limb!, s = u.getWorldPosition(new Vector3()), e = l.getWorldPosition(new Vector3()), w = h.getWorldPosition(new Vector3()), direction = target.clone().sub(s), distance = direction.length();
-        if (!Number.isFinite(distance) || distance > a + b - .002 || distance < Math.abs(a - b) + .002)
+        if (!Number.isFinite(distance) || distance > a + b - .002*this.root.getWorldScale(new Vector3()).x || distance < Math.abs(a - b) + .002*this.root.getWorldScale(new Vector3()).x)
             return false;
         direction.normalize();
         const pole = poleOverride ? poleOverride.clone().sub(s) : e.clone().sub(s).add(new Vector3(0, elbowUp, 0));
@@ -451,8 +476,8 @@ export class NativePatientContactFit {
     }) {
         if (!this.limb || !this.supportedPose(cue, target) || !this.bindCompleteArm())
             return;
-        const plan = this.select(cue, target.model);
-        if (!plan || !this.calibrate(plan))
+        const plan = this.contactPlan(cue, target);
+        if (!plan)
             return;
         this.plan = plan;
         const groups = new Map<string, number[]>();
@@ -461,7 +486,7 @@ export class NativePatientContactFit {
                 groups.set(p.mesh.uuid, []);
             groups.get(p.mesh.uuid)!.push(p.index);
         }
-        return { face: { mesh: plan.face.mesh.uuid, ids: plan.face.ids, bone: plan.face.bone.name }, bary: plan.bary.toArray(), palm: plan.palm.toArray(), axis: plan.axis?.toArray(), offset: plan.offset, turn: plan.turn, tilt: plan.tilt, elbowUp: plan.elbowUp, arm: [...groups].map(([mesh, indices]) => ({ mesh, indices })) };
+        return { approach:plan.approach?.toArray(), face: { mesh: plan.face.mesh.uuid, ids: plan.face.ids, bone: plan.face.bone.name }, bary: plan.bary.toArray(), palm: plan.palm.toArray(), axis: plan.axis?.toArray(), offset: plan.offset, turn: plan.turn, tilt: plan.tilt, elbowUp: plan.elbowUp, arm: [...groups].map(([mesh, indices]) => ({ mesh, indices })) };
     }
     adopt(data: any, cue: ActorCue, target: {
         model: Object3D;
@@ -479,7 +504,7 @@ export class NativePatientContactFit {
                 arm.push({ mesh, index });
         }
         this.arm = arm;
-        this.plan = { id: cue.id, model: target.model, face: { mesh, bone, ids: data.face.ids }, bary: new Vector3().fromArray(data.bary), palm: new Vector3().fromArray(data.palm), axis: new Vector3().fromArray(data.axis), offset: data.offset, turn: data.turn, tilt: data.tilt, elbowUp: data.elbowUp };
+        this.plan = { approach:data.approach?new Vector3().fromArray(data.approach):undefined,id: cue.id, model: target.model, face: { mesh, bone, ids: data.face.ids }, bary: new Vector3().fromArray(data.bary), palm: new Vector3().fromArray(data.palm), axis: new Vector3().fromArray(data.axis), offset: data.offset, turn: data.turn, tilt: data.tilt, elbowUp: data.elbowUp };
         this.attemptedKey = this.signature(cue, target.model);
         this.attemptedModel = target.model;
         this.palm.fromArray(data.palm);
@@ -511,7 +536,7 @@ export class NativePatientContactFit {
             saved = { id, lift };
             this.supplyOffsets.set(object, saved);
         }
-        const offset = new Vector3(0, saved.lift, 0).applyQuaternion(object.parent.getWorldQuaternion(new Quaternion()).invert());
+        const offset = new Vector3(0, saved.lift, 0).applyQuaternion(object.parent.getWorldQuaternion(new Quaternion()).invert()).divide(object.parent.getWorldScale(new Vector3()));
         object.position.add(offset);
     }
     private cancel(cue: ActorCue | undefined, now: number, remaining = .56) {
@@ -536,7 +561,8 @@ export class NativePatientContactFit {
             return;
         }
         this.native = back.pose.map(({ node }) => ({ node, quaternion: node.quaternion.clone() }));
-        const limb = this.limb!, wrist = limb.hand.getWorldPosition(new Vector3()).lerp(back.workWrist, weight).add(new Vector3(0, .225 * Math.sin(Math.PI * weight), 0)), rotation = limb.hand.getWorldQuaternion(new Quaternion()).slerp(back.workRotation, weight), pole = limb.lower.getWorldPosition(new Vector3()).add(new Vector3(0, back.elbowUp * weight, 0));
+        this.approach(back,weight);
+        const limb = this.limb!, wrist = limb.hand.getWorldPosition(new Vector3()).lerp(back.workWrist, weight).add(new Vector3(0, .225*this.root.getWorldScale(new Vector3()).x * Math.sin(Math.PI * weight), 0)), rotation = limb.hand.getWorldQuaternion(new Quaternion()).slerp(back.workRotation, weight), pole = limb.lower.getWorldPosition(new Vector3()).add(new Vector3(0, back.elbowUp * weight, 0));
         for (let i = 0; i < this.fingers.length; i++)
             this.fingers[i].quaternion.slerp(this.fingerRest[i], weight);
         if (!this.solve(wrist, rotation, 0, pole)) {
@@ -546,7 +572,7 @@ export class NativePatientContactFit {
             return;
         }
         this.floor = this.lowest();
-        if (this.floor < .0015) {
+        if (this.floor < .0015*this.root.getWorldScale(new Vector3()).x) {
             this.restore();
             this.returning = undefined;
             this.rejected++;
@@ -595,8 +621,7 @@ export class NativePatientContactFit {
             }
             this.attemptedKey = signature;
             this.attemptedModel = target.model;
-            const plan = this.select(cue, target.model);
-            this.plan = plan && this.calibrate(plan) ? plan : undefined;
+            this.plan = this.contactPlan(cue,target);
         }
         if (!this.plan || !visible(this.plan.face.mesh)) {
             this.cancel(cue, now, Number.isFinite(duration - time) ? duration - time : .56);
@@ -612,14 +637,15 @@ export class NativePatientContactFit {
             this.returning = undefined;
             return;
         }
+        this.approach(this.plan,weight);
         const tri = this.triangle(this.plan.face), bary = this.plan.bary, point = tri.a.clone().multiplyScalar(bary.x).addScaledVector(tri.b, bary.y).addScaledVector(tri.c, bary.z), desired = this.handRotation(this.plan.face, this.plan.turn, this.plan.tilt);
         if (!desired)
             return;
-        const wrist = point.clone().addScaledVector(this.outward(this.plan.face, tri), this.plan.offset ?? .002).sub(this.plan.palm.clone().applyQuaternion(desired)), limb = this.limb, nativeWrist = limb.hand.getWorldPosition(new Vector3()), nativeRotation = limb.hand.getWorldQuaternion(new Quaternion()), targetWrist = nativeWrist.lerp(wrist, weight).add(new Vector3(0, .225 * Math.sin(Math.PI * weight), 0)), targetRotation = nativeRotation.slerp(desired, weight);
+        const wrist = point.clone().addScaledVector(this.outward(this.plan.face, tri), this.plan.offset ?? .002).sub(this.plan.palm.clone().multiplyScalar(this.root.getWorldScale(new Vector3()).x).applyQuaternion(desired)), limb = this.limb, nativeWrist = limb.hand.getWorldPosition(new Vector3()), nativeRotation = limb.hand.getWorldQuaternion(new Quaternion()), targetWrist = nativeWrist.lerp(wrist, weight).add(new Vector3(0, .225*this.root.getWorldScale(new Vector3()).x * Math.sin(Math.PI * weight), 0)), targetRotation = nativeRotation.slerp(desired, weight);
         this.surface = point;
-        this.reachError = Math.max(0, targetWrist.distanceTo(limb.upper.getWorldPosition(new Vector3())) - (limb.a + limb.b - .002));
+        this.reachError = Math.max(0, targetWrist.distanceTo(limb.upper.getWorldPosition(new Vector3())) - (limb.a + limb.b - .002*this.root.getWorldScale(new Vector3()).x));
         if (this.reachError > 1e-7) {
-            this.rejected++;
+            this.restore();this.rejected++;
             return;
         }
         const modified = [limb.upper, limb.lower, limb.hand, ...this.fingers];
@@ -630,14 +656,15 @@ export class NativePatientContactFit {
             limb.upper.updateWorldMatrix(false, true);
         };
         let safe = false;
-        for (const lift of [0]) {
+        const scale=this.root.getWorldScale(new Vector3()).x;
+        for (const lift of scale===1?[0]:[0,.04*scale,.08*scale,.12*scale]) {
             reset();
             for (let i = 0; i < this.fingers.length; i++)
                 this.fingers[i].quaternion.slerp(this.fingerRest[i], weight);
-            if (!this.solve(targetWrist, targetRotation, (this.plan.elbowUp ?? .35) * weight))
+            if (!this.solve(targetWrist, targetRotation, (this.plan.elbowUp ?? .35) * weight+lift*Math.sin(Math.PI*weight)))
                 continue;
             this.floor = this.lowest();
-            if (this.floor >= .0015) {
+            if (this.floor >= .0015*this.root.getWorldScale(new Vector3()).x) {
                 safe = true;
                 break;
             }
@@ -648,7 +675,7 @@ export class NativePatientContactFit {
             this.cancel(cue, now, Number.isFinite(duration - time) ? duration - time : .56);
             return;
         }
-        this.lastApplied = { id: cue.id, pose: modified.map(node => ({ node, quaternion: node.quaternion.clone() })), wrist: limb.hand.getWorldPosition(new Vector3()), rotation: limb.hand.getWorldQuaternion(new Quaternion()), elbow: limb.lower.getWorldPosition(new Vector3()), workWrist: wrist.clone(), workRotation: desired.clone(), weight, elbowUp: this.plan.elbowUp ?? .35 };
+        this.lastApplied = { approach:this.plan.approach,id: cue.id, pose: modified.map(node => ({ node, quaternion: node.quaternion.clone() })), wrist: limb.hand.getWorldPosition(new Vector3()), rotation: limb.hand.getWorldQuaternion(new Quaternion()), elbow: limb.lower.getWorldPosition(new Vector3()), workWrist: wrist.clone(), workRotation: desired.clone(), weight, elbowUp: this.plan.elbowUp ?? .35 };
         this.contactError = limb.hand.localToWorld(this.plan.palm.clone()).distanceTo(point.clone().addScaledVector(this.outward(this.plan.face, tri), this.plan.offset ?? .002));
     }
 }

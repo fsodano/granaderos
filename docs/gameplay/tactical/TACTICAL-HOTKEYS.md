@@ -8,6 +8,13 @@ Retained recognizable mappings include Space to cycle soldiers, M for the map,
 D to finish a turn, R/S/C/P movement/posture, PageUp/PageDown posture changes,
 Z stealth and Shift+R or Alt+R reload. Number keys select the six active squad members
 instead of browser-sensitive function keys. H opens the Spanish reference.
+Movement footprints appear by default when pointing to a reachable destination,
+including each selected group member. The optional group panel provides route
+details; it is not needed to see the paths. A small pointer symbol shows the
+current action: lips for conversation, a hand for pickup, a cross for first aid,
+and a simple reticle for an attack. The equipped item and keyboard modifiers
+still determine the action. Costs and blocked-action reasons use the native
+preview; moving the pointer does not issue an order.
 Additional bindings adapt existing Granaderos commands: W cycles weapons, dressings,
 tools, each available held supply, and empty hands;
 B switches the held firearm between shooting and close combat and selects its attack cursor. In close combat, click an enemy or an empty map cell to approach and strike. G or Escape returns to walking. A serviceable fitted bayonet stabs; otherwise the gun delivers a stock strike. Press B again to return to shooting. O reserves covering fire, T mounts/dismounts, V toggles sight,

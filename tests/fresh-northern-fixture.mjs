@@ -37,6 +37,8 @@ import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.m
 import {recordRouteBattleFailure} from './route-failure-evidence.mjs';
 import {bookRouteHires,finishRouteHireArrivals,assertRouteHireArrived} from './paid-route-hiring.mjs';
 import {restStableRoutePatients} from './stable-route-rest.mjs';
+import {northernReliefDefenseController} from './northern-relief-defense.mjs';
+import {careRules} from '../game/campaign-care-rules.js';
 
 const tactical=(p,a)=>{const battle=a.type==='endTurn'?endTurn(p.battle):actBattle(p.battle,a);assert.equal(battle.lastError,null,battle.lastError);return sync({campaign:p.campaign,battle});};
 const deadIds=s=>Object.entries(s.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
@@ -51,14 +53,16 @@ export function fightCreatedNorthernDefense(ready,{report=()=>{}}={}){
 
 // A real raid interrupts clinic work. Resolve it before another care hour,
 // and pay native field aid before strategic settlement resumes the clock.
-export function resolveNorthernLocalCareRaid(start,{report=()=>{}}={}){
+export function resolveNorthernLocalCareRaid(start,{physicianIds=[],report=()=>{}}={}){
  assert.ok(start.pendingEncounter,'local care defense needs an actual arriving enemy group');
  const before=structuredClone(start),encounter=structuredClone(start.pendingEncounter);
  const inputCapture=recordRouteStrategicEvidence({helper:'resolveNorthernLocalCareRaid',stage:'preparation-input',campaign:start,context:{encounter}});
  const defended=prepareHiredNorthernDefense(start),request=defended.pendingBattle,previous=defended.sectorStates[encounter.sector];let p;
  try{
-  const result=fight(request,previous,{controller:cautiousCombatOrder});
-  if(result.battle.status!=='victory')recordRouteBattleFailure({campaign:defended,request,previous,result,expectedOutcome:'victory',controller:cautiousCombatOrder,executeBattle:fight});
+  for(const id of physicianIds){const r=start.operativeState[id],op=rosterFor(start).find(op=>op.id===id);assert.ok(start.recruited.includes(id)&&r?.alive&&!r.captured&&r.location===encounter.sector&&r.hp>=15&&!r.bleeding&&op?.medical>=careRules(start).minimumSkill,'The held physician must be an actual qualified local survivor.');}
+  const nativeInputCapture=recordRouteStrategicEvidence({helper:'resolveNorthernLocalCareRaidNative',stage:'preparation-input',campaign:defended,inputCapture,context:{request,previous,physicianIds,capturePhase:'Actual arguments independently cloned before the existing native execution; no additional battle construction or orders.'}});
+  const controller=northernReliefDefenseController(physicianIds),result=fight(request,previous,{controller,sharedFallback:controller.sharedFallback});
+  if(result.battle.status!=='victory')recordRouteBattleFailure({campaign:defended,request,previous,result,expectedOutcome:'victory',controller,executeBattle:fight});
   assert.equal(result.battle.status,'victory','the actual arriving group must lose its native battle before care continues');
   p={campaign:defended,battle:enterSector(request,previous)};
   for(const [index,action]of result.orders.entries()){p=tactical(p,action);if(index===Math.floor(result.orders.length/2))p=saved(p);}
@@ -75,9 +79,11 @@ export function resolveNorthernLocalCareRaid(start,{report=()=>{}}={}){
   for(const [id,record]of Object.entries(before.operativeState))if(!record.alive)assert.equal(campaign.operativeState[id].alive,false);
   const deaths=result.battle.units.filter(unit=>unit.side==='player'&&unit.hp===0&&before.operativeState[unit.id]?.alive).map(unit=>Number(unit.id));
   for(const id of deaths){assert.equal(campaign.operativeState[id].alive,false);assert.equal(campaign.operativeState[id].hp,0);}
+  for(const id of physicianIds)assert.ok(campaign.operativeState[id].alive&&campaign.operativeState[id].hp>=15&&!campaign.operativeState[id].bleeding,'The actual clinic physician must remain available for continuing care.');
   assert.deepEqual(start,before);
-  const summary={sector:encounter.sector,status:combat.battle.status,actions:result.orders.length,turns:combat.battle.turn,elapsedSeconds:p.battle.elapsedSeconds,deaths,officialReplay:true,officialMidpoint:true};
+  const summary={sector:encounter.sector,status:combat.battle.status,actions:result.orders.length,nativeActions:result.actions,turns:combat.battle.turn,elapsedSeconds:p.battle.elapsedSeconds,deaths,officialReplay:true,officialMidpoint:true};
   const medicalOrders=result.orders.filter(action=>['heal','useItem'].includes(action.type));
+  recordRouteStrategicEvidence({helper:'resolveNorthernLocalCareRaid',stage:'route-checkpoint',campaign,inputCapture,context:{nativeInputCapture,defended,request,previous,result,combat,paidAidPair:p,fieldAid,summary,physicianIds}});
   report({event:'northernLocalCareDefense',groupId:encounter.groupId,summary,medicalOrders,fieldAid,campaign:structuredClone(campaign)});
   return campaign;
  }catch(error){recordRouteStrategicEvidence({helper:'resolveNorthernLocalCareRaid',stage:'preparation-failure',campaign:p?.campaign??defended,inputCapture,context:p?{battle:p.battle}:null,error});throw error;}
@@ -118,7 +124,7 @@ export function recoverNorthernLocalPatients(start,{report=()=>{}}={}){
  for(let hour=0;hour<48&&patients.some(id=>s.operativeState[id].hp<s.operativeState[id].maxHp);hour++){
   if(s.pendingEncounter){
    assert.equal(s.pendingEncounter.sector,sector,'local clinic work must stop for an unrelated actual encounter');
-   s=resolveNorthernLocalCareRaid(s,{report:event=>{if(event.event==='northernLocalCareDefense')defenses.push(event.summary);report(event);}});
+   s=resolveNorthernLocalCareRaid(s,{physicianIds:[doctor.id],report:event=>{if(event.event==='northernLocalCareDefense')defenses.push(event.summary);report(event);}});
    patients=local.filter(id=>s.operativeState[id].alive&&!s.operativeState[id].captured&&s.operativeState[id].location===sector&&s.operativeState[id].hp<s.operativeState[id].maxHp);
    if(!patients.length)break;
    if(!servingLocal().includes(doctor.id)||s.operativeState[doctor.id].hp<15||s.operativeState[doctor.id].bleeding)doctor=rosterFor(s).filter(op=>servingLocal().includes(op.id)&&s.operativeState[op.id].hp>=15&&!s.operativeState[op.id].bleeding&&!s.operativeState[op.id].asleep&&op.medical>=20).sort((a,b)=>b.medical-a.medical)[0];
@@ -150,6 +156,7 @@ export function recoverNorthernLocalPatients(start,{report=()=>{}}={}){
  for(const [id,record]of Object.entries(start.operativeState))if(!record.alive)assert.equal(s.operativeState[id].alive,false);
  if(servingLocal().includes(doctor.id))campaignOrder({type:'assignCare',operativeId:doctor.id,assignment:'rest'});
  report({event:'northernLocalCare',sector,doctor:doctor.id,initialPatients,patients,defenses,hour:s.hour,second:s.secondOfHour??0,elapsedSeconds:s.hour*3600+(s.secondOfHour??0)-startSeconds,paid:cash-s.resources.treasury,transfers,dressingsUsed});
+ recordRouteStrategicEvidence({helper:'recoverNorthernLocalPatients',stage:'route-checkpoint',campaign:s,inputCapture,context:{sector,doctor:doctor.id,initialPatients,patients,defenses,startSeconds,cashBefore:cash,transfers,dressingsUsed,capturePhase:'Actual completed local care after the existing full-health, bleeding, prior-death and final physician-role guards; before the unchanged official return save.'}});
  return saved({campaign:s}).campaign;
  }catch(error){recordRouteStrategicEvidence({helper:'recoverNorthernLocalPatients',stage:'preparation-failure',campaign:s,inputCapture,error});throw error;}
 }
@@ -175,7 +182,7 @@ export function stockNorthernSaltaController(initial){
   if(unit.hp>=15&&!unit.unconscious&&!unit.routed&&!unit.departure&&unit.bleeding>0&&unit.medical>0&&unit.medkits>0){
    const costs=actionCosts(battle,unit,unit);
    if(unit.activeSlot==='medical'&&unit.ap>=costs.heal)return {type:'useItem',unitId:unit.id,targetId:unit.id};
-   if(unit.activeSlot!=='medical'&&unit.ap>=costs.weapon+costs.heal)return {type:'weapon',unitId:unit.id,slot:'medical'};
+   if(unit.activeSlot!=='medical'&&!unit.knockedDown&&unit.ap>=costs.weapon+costs.heal)return {type:'weapon',unitId:unit.id,slot:'medical'};
   }
   const normal=battery(battle,unit);
   if(battle.mode==='combat'&&unit.id===medic&&!unit.knockedDown&&!unit.entangled){

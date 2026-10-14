@@ -107,7 +107,7 @@ export class NativeReadyPatientContactFit extends NativePatientContactFit {
         let parent = record.parent >= 0 ? lease.own.nodes[record.parent].id : undefined;
         if (this.suppliesStowed) {
             parent = lease.hip.uuid;
-            position.add(new Vector3(0, this.ready?.data.lift ?? 0, 0).applyQuaternion(lease.hip.getWorldQuaternion(new Quaternion()).invert()));
+            position.add(new Vector3(0, this.ready?.data.lift ?? 0, 0).applyQuaternion(lease.hip.getWorldQuaternion(new Quaternion()).invert()).divide(lease.hip.getWorldScale(new Vector3())));
         }
         return lease.stock.parent?.uuid === parent && lease.stock.position.distanceTo(position) < 1e-6 && lease.stock.quaternion.angleTo(new Quaternion().fromArray(record.quaternion)) < 1e-6 && lease.stock.scale.distanceTo(new Vector3().fromArray(record.scale)) < 1e-6;
     }
