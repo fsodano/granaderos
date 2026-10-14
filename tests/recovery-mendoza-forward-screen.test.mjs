@@ -10,6 +10,7 @@ import {enterSector} from '../game/world.js';
 import {actBattle,endTurn,firearmShotOptions} from '../game/tactical.js';
 import {fight} from './opening-driver.mjs';
 import {recoveryMendozaOrder} from './recovery-mendoza-driver.mjs';
+import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 
 const fixture=name=>readFileSync(new URL(`./fixtures/${name}`,import.meta.url));
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
@@ -31,9 +32,13 @@ test('the earned recovery assault wins with a paid forward screen and retains na
  assert.deepEqual(initial.artillery,input.battle.artillery,'the actually paid finite gun enters without replenishment');
  for(const id of proof.priorDeadIds)assert.equal(campaign.operativeState[id].alive,false);
  const result=fight(request,previous,{controller:recoveryMendozaOrder});
- assert.equal(result.battle.status,'victory');assert.ok(result.battle.elapsedSeconds>0);
+ // Exact 2026-10-13 source75079 native/replayed settlement receipt. Preserve
+ // the original raw input and dated provenance; do not force its older gun
+ // exhaustion or two-loss result onto the current native five-loss battle.
+ assert.equal(result.battle.status,'victory');assert.equal(result.battle.turn,11);assert.equal(result.actions,164);assert.equal(result.orders.length,186);assert.equal(result.battle.elapsedSeconds,306);
  const newDeaths=result.battle.units.filter(unit=>unit.side==='player'&&unit.hp<=0&&initial.units.some(old=>old.id===unit.id&&old.hp>0)).map(unit=>Number(unit.id));
  assert.ok(newDeaths.length>0,'native combat must retain its actual new casualties');
+ assert.deepEqual(newDeaths,[100,142,130,102,10]);
  for(const id of newDeaths)assert.equal(campaign.operativeState[id].alive,true,'a new casualty must have entered the earned assault alive');
  const midpoint=Math.floor(result.orders.length/2);
  let replay=structuredClone(initial),replayCampaign=campaign;
@@ -60,7 +65,13 @@ test('the earned recovery assault wins with a paid forward screen and retains na
  const settled=settle(original);assert.deepEqual(settle(replayed),settled);
  assert.equal(settled.sectors.mendoza.owner,'patriot');
  for(const id of [...proof.priorDeadIds,...newDeaths])assert.equal(settled.operativeState[id].alive,false);
- const gun=result.battle.artillery.find(gun=>gun.id==='arsenal:cordoba:1');assert.equal(gun.loaded,false);assert.equal(gun.ammo,0);
+ recordRouteStrategicEvidence({helper:'recoveryMendozaForwardScreenNative',stage:'route-checkpoint',campaign,returnedCampaign:settled,context:{scope:'Actual existing native result, replay and settlement after original death checks, before the finite gun receipt. No additional orders or synchronization.',request,previous,initial,result,original,replayed,newDeaths}});
+ const gun=result.battle.artillery.find(gun=>gun.id==='arsenal:cordoba:1'),loaded=initial.artillery.find(piece=>piece.id===gun.id),shots=result.orders.filter(action=>action.type==='artillery'&&action.artilleryId===gun.id);
+ assert.equal(loaded.loaded,true);assert.equal(loaded.ammo,1);assert.equal(shots.length,1);assert.equal(gun.loaded,true);assert.equal(gun.ammo,0);
+ assert.equal(Number(loaded.loaded)+loaded.ammo-Number(gun.loaded)-gun.ammo,shots.length,'The actual shot spends one finite charge and leaves the reloaded chamber intact.');
+ assert.deepEqual(settled.sectorStates.mendoza.artillery.find(piece=>piece.id===gun.id),gun,'The native and settled field piece retain exact physical custody and remaining charge.');
+ const owners=[...Object.values(settled.sectorStates??{}).flatMap(scene=>scene.artillery??[]),...Object.values(settled.sceneStates??{}).flatMap(scene=>scene.artillery??[]),...Object.values(settled.artilleryDepots??{}).flat(),...(settled.artilleryTransfers??[]).map(transfer=>transfer.gun)].filter(piece=>piece.id===gun.id);
+ assert.equal(owners.length,1,'The settled physical cannon has one field/depot/transfer owner.');assert.deepEqual(owners[0],gun);
  assert.deepEqual(input,before);
  t.diagnostic(JSON.stringify({orders:result.orders.length,seconds:result.battle.elapsedSeconds,turn:result.battle.turn,priorDeaths:proof.priorDeadIds.length,newDeaths,officialMidpointReplay:true,scope:'earned native Mendoza segment; not a complete recovery campaign proof'}));
 });
