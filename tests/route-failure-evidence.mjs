@@ -36,12 +36,14 @@ export function recordRouteBattleFailure({campaign,request,previous,result,expec
    inputCapturePhase:'retained arguments after execution and reporting',preExecutionInputIndependentlyCaptured:false,
    previousExists:previous!==undefined,ordersAvailable:Array.isArray(result.orders),orders:result.orders?.length??null,
    controller:controller?.name??null,deploy:deploy?.name??null,executeBattle:executeBattle?.name??null,
-   trueInitialBattleCaptured:false,officialTerminalPair:false,additionalOrders:0,settlementExecuted:false,artifacts,
+   trueInitialBattleCaptured:false,officialTerminalPair:false,additionalOrders:0,settlementExecuted:false,
+   terminalPairSource:result.pair?'actual-per-order-execution':'derived-end-only-synchronization',artifacts,
   };
   try{
    // Raw input stays separate: clock synchronization and save decoding can add
    // saved fields. Neither operation may alter the actual route result.
-   const pair=syncBattleTime(structuredClone(campaign),structuredClone(result.battle));
+   const pair=result.pair?{campaign:structuredClone(result.pair.campaign),battle:structuredClone(result.pair.battle),error:null}:syncBattleTime(structuredClone(campaign),structuredClone(result.battle));
+   if(result.pair){assert.deepEqual(pair.battle,result.battle);assert.equal(pair.campaign.pendingBattle?.id,request.id);assert.equal(pair.battle.syncedSeconds,pair.battle.elapsedSeconds);}
    assert.equal(pair.error,null);
    const save=encodeSave(pair.campaign,pair.battle),restored=decodeSave(save);
    assert.deepEqual(restored.campaign,pair.campaign);

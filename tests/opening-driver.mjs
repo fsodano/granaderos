@@ -89,7 +89,7 @@ export function sharedSightingInvestigationOrder(b,u){
  return choosePlayerSharedSightingInvestigation(b,u,target);
 }
 
-export function openingControlWindow(start,{controller,sharedFallback}={}){
+export function openingControlWindow(start,{controller,sharedFallback,executeOrder=actBattle}={}){
  let b=start;const orders=[];let sharedInvestigation=null;
  const ordinary=controller===undefined?combatOrder:controller;
  // Custom controllers opt in with their own fallback callback, including
@@ -104,7 +104,7 @@ export function openingControlWindow(start,{controller,sharedFallback}={}){
    if(b.status!=='active')break;
    const u=b.units.find(u=>u.id===id);if(!interruptAvailable(b,u)||u.ap<3)continue;
    const action=ordinary(b,u);if(!action)continue;
-   const next=actBattle(b,action);assert.equal(next.lastError,null,JSON.stringify(action));b=next;orders.push(action);acted=true;
+   const next=executeOrder(b,action);assert.equal(next.lastError,null,JSON.stringify(action));b=next;orders.push(action);acted=true;
   }
   if(!acted){
    // A complete squad pass admitted no ordinary work. Spend at most one
@@ -112,7 +112,7 @@ export function openingControlWindow(start,{controller,sharedFallback}={}){
    if(fallback&&b.status==='active')for(const id of ids){
     const u=b.units.find(u=>u.id===id);if(!interruptAvailable(b,u)||u.ap<3)continue;
     const action=fallback(b,u);if(!action)continue;
-    const next=actBattle(b,action);assert.equal(next.lastError,null,JSON.stringify(action));b=next;orders.push(action);sharedInvestigation=action;break;
+    const next=executeOrder(b,action);assert.equal(next.lastError,null,JSON.stringify(action));b=next;orders.push(action);sharedInvestigation=action;break;
    }
    break;
   }
@@ -120,13 +120,14 @@ export function openingControlWindow(start,{controller,sharedFallback}={}){
  return {battle:b,actions:orders.length,orders,sharedInvestigation};
 }
 
-export function fight(request,sectorState,{controller,sharedFallback,deploy}={}){let b=enterSector(request,sectorState,{placement:Boolean(deploy)}),actions=0;
+export function fight(request,sectorState,{controller,sharedFallback,deploy,executeOrder,admitBattle}={}){let b=enterSector(request,sectorState,{placement:Boolean(deploy)}),actions=0;
+ if(admitBattle)b=admitBattle(b);
  if(deploy)b=deploy(b);
  const orders=[];
  // Enemy movement can yield several control windows within the same round.
  for(let window=0;window<600&&b.turn<=80&&b.status==='active';window++){
-  const result=openingControlWindow(b,{controller,sharedFallback});b=result.battle;orders.push(...result.orders);actions+=result.actions;
-  if(b.status==='active'){b=endTurn(b);orders.push({type:'endTurn'});}
+  const result=openingControlWindow(b,{controller,sharedFallback,executeOrder});b=result.battle;orders.push(...result.orders);actions+=result.actions;
+  if(b.status==='active'){const action={type:'endTurn'};b=executeOrder?executeOrder(b,action):endTurn(b);orders.push(action);}
  }
  return {battle:b,actions,orders};
 }

@@ -379,7 +379,9 @@ const travel=at=>{const id=c.activeSquadId;order({type:'travel',sector:at,queue:
  const batteryRecoveryStart=structuredClone(c),assaultBattery=prepareRouteBattery(c,['bronze4'],{destination:'tucuman',keepServing:live(),report});c=assaultBattery.campaign;
  report({event:'northernReliefAssaultBattery',batteryRecoveryStart,selections:assaultBattery.selections,campaign:structuredClone(c)});
  order({type:'configureArtillery',types:assaultBattery.selections});
- return prepareFinalAssault(c,{staging:'tucuman',target:'salta',fieldIds:field});
+ const ready=prepareFinalAssault(c,{staging:'tucuman',target:'salta',fieldIds:field});
+ recordRouteStrategicEvidence({helper:'prepareStockNorthernOfficerRelief',stage:'route-checkpoint',campaign:ready,inputCapture,context:{phase:'whole-officer-preparation-return-after-unchanged-final-assault-request',staging:'tucuman',target:'salta',fieldIds:field}});
+ return ready;
  }catch(error){recordRouteStrategicEvidence({helper:'prepareStockNorthernOfficerRelief',stage:'preparation-failure',campaign:c,inputCapture,error});throw error;}
 }
 

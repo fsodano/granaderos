@@ -15,7 +15,7 @@ import {ammoTypeFor,ammoCount} from '../game/ammo-types.js';
 import {AMMUNITION_FAMILIES} from '../game/ammunition-families.js';
 import {applyItemQuantity,handRecord} from '../game/tactical-inventory.js';
 import {planEquipLoot} from '../game/tactical.js';
-import {contractQuote} from '../game/contracts.js';
+import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
 import {createFreshRouteOrders} from './fresh-cuyo-route.mjs';
 import {autoBandageBattle} from '../game/auto-bandage.js';
 import {visit,sync,leave} from './local-contract-fixture.mjs';
@@ -27,6 +27,10 @@ import {artilleryProfile} from '../game/artillery-definitions.js';
 import {worldCell} from '../game/world-cells.js';
 import {entryFromSector} from '../game/tactical-exits.js';
 import {campaignRole} from '../game/campaign-roles.js';
+import {careAssignmentReason,careAssignmentProgress} from '../game/medical-care.js';
+import {operativeLocation,operativeInTransit,canCreateSquad} from '../game/squads.js';
+import {worldOwner} from '../game/world-cells.js';
+import {previewStrategicRoute} from '../game/strategic-route.js';
 
 const capableMountainActor=(c,id)=>{const r=c.operativeState[id];return r?.alive&&!r.captured&&r.hp>=15&&!r.bleeding&&!r.asleep&&!r.unconscious&&!r.routed&&!r.surrendered&&r.energy>10;};
 
@@ -58,7 +62,8 @@ function prepareMountainBattery(c,defaults,{batteryIds,destination,keepServing,r
 // The extra native arsenal battle can leave only four unused replacements.
 // Move healthy serving reserves from their actual friendly town and pay for
 // ordinary rest. Injured clinic patients and the clinic physician stay there.
-export function prepareNativeMountainReserve(start,{count=6,report=()=>{}}={}){
+export const NATIVE_MOUNTAIN_RESERVE_BOUNDS=Object.freeze({count:6,preMarchRestHours:72,travelHours:168,readinessRestHours:600});
+export function prepareNativeMountainReserve(start,{count=NATIVE_MOUNTAIN_RESERVE_BOUNDS.count,report=()=>{}}={}){
  let c=start;
  const ready=rosterFor(c).filter(op=>{
   const r=c.operativeState[op.id],local=c.recruited.includes(op.id)&&r.location==='mendoza';
@@ -76,17 +81,17 @@ export function prepareNativeMountainReserve(start,{count=6,report=()=>{}}={}){
   for(let offset=0;offset<local.length;offset+=6){
    const ids=local.slice(offset,offset+6);order({type:'createSquad',name:'Reserva de la cordillera',ids,sector});const squadId=c.activeSquadId;columns.push(squadId);
    for(const operativeId of ids)order({type:'assignCare',operativeId,assignment:'rest'});
-   for(let hour=0;hour<72&&ids.some(id=>{const r=c.operativeState[id];return r.fatigue||r.energy<100||r.asleep;});hour++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
+   for(let hour=0;hour<NATIVE_MOUNTAIN_RESERVE_BOUNDS.preMarchRestHours&&ids.some(id=>{const r=c.operativeState[id];return r.fatigue||r.energy<100||r.asleep;});hour++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
    assert.ok(ids.every(id=>{const r=c.operativeState[id];return !r.fatigue&&r.energy===100&&!r.asleep;}),'Actual reserves must finish ordinary rest before travelling.');
    for(const operativeId of ids)order({type:'assignCare',operativeId,assignment:'active'});
    const cash=c.resources.treasury;order({type:'travel',sector:'mendoza',queue:true,mode:'posta'});
    report({event:'mountainNativeReserveTravel',ids,source:sector,squadId,bookingCost:cash-c.resources.treasury,hour:c.hour});
   }
  }
- for(let hour=0;hour<168&&columns.some(id=>c.squads.find(q=>q.id===id).journey);hour++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
+ for(let hour=0;hour<NATIVE_MOUNTAIN_RESERVE_BOUNDS.travelHours&&columns.some(id=>c.squads.find(q=>q.id===id).journey);hour++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
  assert.ok(columns.every(id=>c.squads.find(q=>q.id===id).location==='mendoza'&&!c.squads.find(q=>q.id===id).journey),'Actual reserves must arrive before mountain preparation.');
  for(const operativeId of reserves)order({type:'assignCare',operativeId,assignment:'rest'});
- for(let hour=0;hour<600&&reserves.some(id=>{const r=c.operativeState[id];return r.morale<50||r.fatigue||r.energy<100||r.asleep;});hour++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
+ for(let hour=0;hour<NATIVE_MOUNTAIN_RESERVE_BOUNDS.readinessRestHours&&reserves.some(id=>{const r=c.operativeState[id];return r.morale<50||r.fatigue||r.energy<100||r.asleep;});hour++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
  assert.ok(reserves.every(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&r.hp===r.maxHp&&!r.bleeding&&r.morale>=50&&!r.fatigue&&r.energy===100&&!r.asleep;}),'Public paid rest must restore actual reserve readiness.');
  order({type:'selectSquad',id:originalSquad});report({event:'mountainNativeReserveReady',ids:reserves,hour:c.hour,second:c.secondOfHour,treasury:c.resources.treasury});return c;
 }
@@ -234,6 +239,8 @@ export function collectReturnedMountainKit(start,ids,{report=()=>{}}={}){
   const blade=originalRoster.find(op=>op.id===operativeId)?.blade;
   const matches=record=>slot==='blade'?!!BLADES[record.weapon]&&(!blade||record.weapon===blade):record.kind==='outfit'&&record.outfit===({headwear:'hat',outfit:'poncho',legwear:'trousers'})[slot];
   const usable=row=>row.inventoryKey&&matches(JSON.parse(row.expected))&&row.equip.some(choice=>choice.slot===slot&&choice.valid);
+  // Pay due serving terms before quoting the zero-time physical collection.
+  retained.retain();
   let model=sectorInventoryModel(c,'mendoza',rosterFor(c),operativeId),carried=model.carried.find(usable),receipt=null;
   if(!carried){
    const source=model.entries.filter(row=>row.reachable&&matches(JSON.parse(row.expected))).sort((a,b)=>Number(b.key.startsWith('ground:service-return-'))-Number(a.key.startsWith('ground:service-return-')))[0];
@@ -379,6 +386,115 @@ assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
 return c;
 }
 
+const freeMountainDuty=(c,op)=>{
+ const r=c.operativeState[op.id];
+ if(r.assignment==='doctor')return careAssignmentProgress(c,op,rosterFor(c)).code==='no_patients';
+ return ['active','rest','patient'].includes(r.assignment);
+};
+const mountainFieldPool=(c,sector,exclude=[])=>rosterFor(c).filter(op=>{
+ const r=c.operativeState[op.id],local=c.recruited.includes(op.id)&&operativeLocation(c,op.id)===sector;
+ return !exclude.includes(op.id)&&r.alive&&!r.captured&&r.hp===r.maxHp&&!r.bleeding&&r.morale>=50&&
+  (local&&capableMountainActor(c,op.id)&&!operativeInTransit(c,op.id)||
+   !c.recruited.includes(op.id)&&op.id>=100&&op.id<1000&&contractQuote(c,op,'day').available);
+});
+
+// Use actual serving reserves before long local rest. Extract only the fit
+// reserve from a mixed home group; its stable patient stays at the real source.
+// Fit reserves queue their ordinary routes before native time advances.
+export function prepareMountainServingReserves(start,{sector=start.location,fieldCount=8,doctorCount=2,exclude=[],report=()=>{}}={}){
+ assert.ok(Number.isSafeInteger(fieldCount)&&fieldCount>=1&&fieldCount<=24&&Number.isSafeInteger(doctorCount)&&doctorCount>=1&&doctorCount<=4,'Use the existing bounded mountain force and doctor counts.');
+ let c=decodeSave(encodeSave(start)).campaign;
+ assert.equal(c.pendingBattle,null);assert.equal(c.pendingEncounter,null);
+ const local=mountainFieldPool(c,sector,exclude),doctors=local.filter(op=>op.medical>=60);
+ const needed=Math.max(0,fieldCount-local.length,doctorCount-doctors.length);if(!needed)return c;
+ const chosen=rosterFor(c).filter(op=>{
+  const r=c.operativeState[op.id];
+  return !exclude.includes(op.id)&&c.recruited.includes(op.id)&&r.alive&&!r.captured&&r.hp===r.maxHp&&!r.bleeding&&!r.unconscious&&!r.routed&&!r.surrendered&&operativeLocation(c,op.id)!==sector&&!operativeInTransit(c,op.id)&&freeMountainDuty(c,op)&&!careAssignmentReason(c,op,'active');
+ }).sort((a,b)=>Number(doctors.length<doctorCount&&b.medical>=60)-Number(doctors.length<doctorCount&&a.medical>=60)||Number(c.contracts[b.id]?.expiresAt===null)-Number(c.contracts[a.id]?.expiresAt===null)||b.marksmanship-a.marksmanship||b.medical-a.medical||a.id-b.id).slice(0,Math.min(needed,NATIVE_MOUNTAIN_RESERVE_BOUNDS.count)).map(op=>op.id);
+ if(!chosen.length)return c;
+ assert.equal(worldOwner(c,sector),'patriot','Serving reserves need a controlled assembly locality.');
+ const original=c.activeSquadId,events=[],emit=event=>{const {campaign,battle,...record}=event;events.push(record);},retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report:emit}),order=retained.order,groups=[];
+ const clock=s=>s.hour*3600+(s.secondOfHour??0),started=clock(c),resting=new Set();let notices=0;
+ try{
+  report({event:'mountainServingReservesStarted',sector,ids:chosen,hour:c.hour,second:c.secondOfHour??0,treasury:c.resources.treasury,campaign:c});
+  for(const op of rosterFor(c).filter(op=>c.recruited.includes(op.id)&&operativeLocation(c,op.id)===sector&&c.operativeState[op.id].hp===c.operativeState[op.id].maxHp&&!c.operativeState[op.id].bleeding&&freeMountainDuty(c,op)&&!careAssignmentReason(c,op,'rest')))order({type:'assignCare',operativeId:op.id,assignment:'rest'});
+  for(const id of chosen){
+   const from=operativeLocation(c,id),home=c.squads.find(q=>q.members.includes(id));
+   assert.ok(home&&!home.journey,'A serving reserve needs its actual uncommitted home group.');
+   if(home.members.length===1)order({type:'selectSquad',id:home.id});
+   else{assert.ok(canCreateSquad(c),'An actual vacant squad slot must remain for reserve extraction.');order({type:'createSquad',name:'Reserva de la cordillera',ids:[id],sector:from});}
+   const group=c.activeSquadId;order({type:'assignCare',operativeId:id,assignment:'active'});
+   const needsRest=()=>{const r=c.operativeState[id];return r.asleep||r.energy<100||r.fatigue>0;};
+   for(let hour=0;needsRest()&&hour<NATIVE_MOUNTAIN_RESERVE_BOUNDS.preMarchRestHours;hour++){
+    assert.equal(careAssignmentReason(c,rosterFor(c).find(op=>op.id===id),'rest'),'','An exhausted reserve needs actual safe rest before travelling.');
+    order({type:'assignCare',operativeId:id,assignment:'rest'});order({type:'wait',hours:1});order({type:'assignCare',operativeId:id,assignment:'active'});
+   }
+   assert.ok(!needsRest(),'Actual reserve rest must finish before booking its route.');
+   const quote=['posta','march'].map(mode=>previewStrategicRoute(c,group,sector,mode)).filter(q=>q.valid).sort((a,b)=>a.hours-b.hours)[0];assert.ok(quote,'A reserve needs a current admitted ordinary route, not a remote roster insertion.');
+   order(quote.action);groups.push({id:group,operativeId:id});emit({event:'mountainServingReserveQueued',operativeId:id,source:from,squadId:group,quote,hour:c.hour,second:c.secondOfHour??0});
+  }
+  while(groups.some(({id})=>c.squads.find(q=>q.id===id)?.journey)){
+   assert.ok(clock(c)-started<NATIVE_MOUNTAIN_RESERVE_BOUNDS.travelHours*3600,'Actual reserve routes reached the existing travel bound.');
+   const at=clock(c);order({type:'wait',hours:1});const elapsed=clock(c)-at;assert.ok(elapsed>=0&&elapsed<=3600);notices=elapsed===0?notices+1:0;assert.ok(notices<3,'Reserve travel stopped after repeated zero-time notices.');
+   for(const group of groups){const q=c.squads.find(q=>q.id===group.id);assert.ok(q);assert.ok(!q.journey||q.journey.status==='moving','Resolve an actual paused reserve route before more preparation time.');if(!q.journey){assert.equal(q.location,sector,'The actual reserve must arrive at its destination.');if(!resting.has(group.operativeId)){order({type:'assignCare',operativeId:group.operativeId,assignment:'rest'});resting.add(group.operativeId);}}}
+  }
+  for(const id of chosen){assert.equal(operativeLocation(c,id),sector);order({type:'assignCare',operativeId:id,assignment:'rest'});}
+  order({type:'selectSquad',id:original});retained.check();assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
+  for(const event of events)report(event);report({event:'mountainServingReservesArrived',ids:chosen,groups,hour:c.hour,second:c.secondOfHour??0,elapsedSeconds:clock(c)-started,treasury:c.resources.treasury,campaign:c});return c;
+ }catch(error){report({event:'mountainServingReservesStopped',reason:error.message,ids:chosen,attemptedReports:events,campaign:c});throw error;}
+}
+
+// A serving physician can be healthy but not ready after the last real battle.
+// Recover only local free physicians through paid ordinary rest. Existing
+// patients and working clinic duties keep their current finite care policy.
+export function prepareMountainDoctorReadiness(start,{sector=start.location,count=2,exclude=[],fieldCount=null,reservedIds=[],report=()=>{}}={}){
+ assert.ok(Number.isSafeInteger(count)&&count>0&&count<=4,'The actual mountain columns need a bounded doctor count.');
+ assert.ok(fieldCount===null||Number.isSafeInteger(fieldCount)&&fieldCount>=1&&fieldCount<=24,'Actual field readiness must keep the original force bound.');
+ let c=decodeSave(encodeSave(start)).campaign;
+ assert.equal(c.pendingBattle,null,'Return the actual tactical report before preparing physicians.');
+ assert.equal(c.pendingEncounter,null,'Resolve the actual encounter before preparing physicians.');
+ const ready=op=>{
+  const r=c.operativeState[op.id];
+  return !exclude.includes(op.id)&&op.medical>=60&&r.alive&&!r.captured&&r.hp===r.maxHp&&!r.bleeding&&r.morale>=50&&
+   (c.recruited.includes(op.id)&&operativeLocation(c,op.id)===sector&&capableMountainActor(c,op.id)&&!operativeInTransit(c,op.id)||
+    !c.recruited.includes(op.id)&&op.id>=100&&op.id<1000&&contractQuote(c,op,'day').available);
+ };
+ const available=()=>rosterFor(c).filter(ready);
+ const fieldReady=()=>fieldCount===null||mountainFieldPool(c,sector,reservedIds).length>=fieldCount;
+ if(available().length>=count&&fieldReady())return c;
+ assert.equal(worldOwner(c,sector),'patriot','Physician readiness needs a safe controlled locality.');
+ const candidates=rosterFor(c).filter(op=>{
+  const r=c.operativeState[op.id];
+  if(exclude.includes(op.id)||reservedIds.includes(op.id)||fieldCount===null&&op.medical<60||ready(op)||!c.recruited.includes(op.id)||!r.alive||r.captured||r.routed||r.unconscious||r.surrendered||r.hp!==r.maxHp||r.bleeding||operativeLocation(c,op.id)!==sector||operativeInTransit(c,op.id)||careAssignmentReason(c,op,'rest'))return false;
+  return freeMountainDuty(c,op);
+ }).sort((a,b)=>c.operativeState[b.id].morale-c.operativeState[a.id].morale||b.medical-a.medical||a.id-b.id)
+  .slice(0,fieldCount===null?count-available().length:undefined).map(op=>op.id);
+ assert.ok(candidates.filter(id=>rosterFor(c).find(op=>op.id===id).medical>=60).length>=Math.max(0,count-available().length),'Enough actual free local physicians must remain for ordinary readiness.');
+ assert.ok(fieldReady()||candidates.length,'Actual serving field bodies must remain for ordinary readiness.');
+ const events=[],emit=event=>{const {campaign,battle,...record}=event;events.push(record);};
+ const retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report:emit}),order=retained.order;
+ const clock=s=>s.hour*3600+(s.secondOfHour??0),started=clock(c),before=candidates.map(id=>({id,morale:c.operativeState[id].morale,energy:c.operativeState[id].energy,fatigue:c.operativeState[id].fatigue,medkits:c.operativeState[id].medkits}));
+ let notices=0;
+ try{
+  report({event:'mountainDoctorReadinessStarted',sector,count,ids:candidates,before,hour:c.hour,second:c.secondOfHour??0,treasury:c.resources.treasury,campaign:c});
+  for(const operativeId of candidates)order({type:'assignCare',operativeId,assignment:'rest'});
+  while(available().length<count||!fieldReady()){
+   assert.ok(clock(c)-started<NATIVE_MOUNTAIN_RESERVE_BOUNDS.readinessRestHours*3600,'Physician readiness reached the existing ordinary-rest bound.');
+   const at=clock(c);order({type:'wait',hours:1});const elapsed=clock(c)-at;
+   assert.equal(c.defeated,false,'Physician readiness cannot adopt a defeated campaign.');
+   assert.ok(elapsed>=0&&elapsed<=3600,'Ordinary physician rest cannot exceed its requested hour.');
+   notices=elapsed===0?notices+1:0;assert.ok(notices<3,'Physician readiness stopped after repeated zero-time notices.');
+   emit({event:'mountainDoctorReadinessTick',hour:c.hour,second:c.secondOfHour??0,elapsedSeconds:elapsed,doctors:candidates.map(id=>({id,morale:c.operativeState[id].morale,energy:c.operativeState[id].energy,fatigue:c.operativeState[id].fatigue}))});
+  }
+  retained.check();assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
+  for(const event of events)report(event);
+  report({event:'mountainDoctorReadinessPrepared',sector,count,ids:candidates,before,after:candidates.map(id=>({id,morale:c.operativeState[id].morale,energy:c.operativeState[id].energy,fatigue:c.operativeState[id].fatigue,medkits:c.operativeState[id].medkits})),elapsedSeconds:clock(c)-started,hour:c.hour,second:c.secondOfHour??0,treasury:c.resources.treasury,campaign:c});
+  return c;
+ }catch(error){
+  report({event:'mountainDoctorReadinessStopped',reason:error.message,sector,count,ids:candidates,attemptedReports:events,campaign:c});throw error;
+ }
+}
+
 // Bank actual port income before signing contracts and reuse finite mountain guns.
 export function prepareFreshLosPatosAssault(start,{batteryIds=null,fieldCount=8,report=()=>{}}={}){
  assert.ok(Number.isSafeInteger(fieldCount)&&fieldCount>=8&&fieldCount<=24,'The paid mountain force must fit ordinary six-person columns.');
@@ -386,6 +502,9 @@ export function prepareFreshLosPatosAssault(start,{batteryIds=null,fieldCount=8,
  const retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report});
  const order=retained.order;
  c=restorePaidMountainVeterans(c,{report});
+ const doctorCount=fieldCount>8?Math.ceil(fieldCount/6):2;
+ const reservedIds=fieldCount>8&&c.flags.foundry?[campaignRole(c,'foundryEngineer')?.id].filter(id=>id!==undefined):[];
+ c=prepareMountainServingReserves(c,{sector:'mendoza',fieldCount,doctorCount,exclude:reservedIds,report});
  const permanent=rosterFor(c).filter(op=>{const r=c.operativeState[op.id];return c.recruited.includes(op.id)&&r.alive&&!r.captured&&r.location==='mendoza'&&c.contracts[op.id]?.expiresAt===null;});
  assert.ok(permanent.length,'the real permanent survivors retain the assembly squad');
  order({type:'squad',ids:permanent.map(op=>op.id).slice(0,6)});
@@ -399,7 +518,7 @@ export function prepareFreshLosPatosAssault(start,{batteryIds=null,fieldCount=8,
  const readyLocal=op=>{const r=c.operativeState[op.id];return r.alive&&!r.captured&&r.hp===r.maxHp&&r.morale>=50;};
  const commander=rosterFor(c).filter(op=>readyLocal(op)&&op.leadership>=80&&(permanent.some(p=>p.id===op.id)||op.id>=100&&op.id<1000&&(c.recruited.includes(op.id)&&c.operativeState[op.id].location==='mendoza'||contractQuote(c,op,'day').available))).sort((a,b)=>Number(permanent.some(op=>op.id===b.id))-Number(permanent.some(op=>op.id===a.id))||contractQuote(c,a,'day').price-contractQuote(c,b,'day').price||b.marksmanship-a.marksmanship)[0];
  assert.ok(commander,'the second column needs a real ready leader');
- const doctorCount=fieldCount>8?Math.ceil(fieldCount/6):2;
+ c=prepareMountainDoctorReadiness(c,{sector:'mendoza',count:doctorCount,exclude:[commander.id],fieldCount,reservedIds,report});
  const doctors=rosterFor(c).filter(op=>op.id!==commander.id&&op.medical>=60&&
   (c.recruited.includes(op.id)&&c.operativeState[op.id].location==='mendoza'&&capableMountainActor(c,op.id)&&readyLocal(op)||
    !c.recruited.includes(op.id)&&op.id>=100&&op.id<1000&&readyLocal(op)&&contractQuote(c,op,'day').available))
@@ -454,20 +573,65 @@ assert.ok(hiringIds.every(id=>c.recruited.includes(id)),'paid replacements must 
  c=supplyFreshMountainAmmunition(c,field,{target:12,report});
  order({type:'configureArtillery',types:[]});
  for(const id of columns){order({type:'selectSquad',id});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});c=finishReloadsBeforeMarch(c);}
- for(const id of columns){order({type:'selectSquad',id});order({type:'travel',sector:'uspallata',mode:'posta'});}
+ // Finish only an already healed paid patient's unnecessary duty. Required
+ // roles, field members, real patients and current clinical work stay serving.
+ // Keep the ordinary small-column path unchanged.
+ const nextDayRetentionCost=()=>{
+  const horizon=c.hour*3600+(c.secondOfHour??0)+24*3600+1;
+  return retained.keepIds().reduce((sum,id)=>{
+   const expiry=contractExpiresSeconds(c.contracts[id]),quote=contractRenewalQuote(c,rosterFor(c).find(op=>op.id===id),'day');
+   return sum+(expiry===null||expiry>horizon?0:quote.price*Math.ceil((horizon-expiry+1)/86400));
+  },0);
+ };
+ const parallel=fieldCount>8&&columns.length>1;
+ if(parallel&&nextDayRetentionCost()>c.resources.treasury){
+  const required=new Set([...field,...['foundryEngineer','marchCommander'].map(key=>campaignRole(c,key)?.id).filter(id=>id!==undefined)]);
+  for(const op of rosterFor(c)){
+   if(nextDayRetentionCost()<=c.resources.treasury)break;
+   const prior=start.operativeState[op.id],r=c.operativeState[op.id],contract=c.contracts[op.id];
+   if(required.has(op.id)||!start.recruited.includes(op.id)||!c.recruited.includes(op.id)||contract?.kind!=='paid'||contract.guaranteeId||prior.assignment!=='patient'||prior.hp!==prior.maxHp||prior.bleeding||op.medical>=60||r.hp!==r.maxHp||r.bleeding||!r.alive||r.captured||r.unconscious||r.routed||r.surrendered||r.asleep||operativeInTransit(c,op.id)||operativeLocation(c,op.id)!=='mendoza'||!freeMountainDuty(c,op))continue;
+   assert.equal(c.pendingBattle,null);assert.equal(c.pendingEncounter,null);assert.equal(worldOwner(c,'mendoza'),'patriot');
+   // Pay any actual due term before measuring the free public dismissal.
+   retained.retain();
+   report({event:'mountainPaidDutyCompleting',operativeId:op.id,field:[...field],doctors:doctors.map(op=>op.id),dayCost:nextDayRetentionCost(),hour:c.hour,second:c.secondOfHour??0,campaign:c});
+   const cash=c.resources.treasury,at=c.hour*3600+(c.secondOfHour??0);order({type:'dismiss',id:op.id});
+   assert.equal(c.resources.treasury,cash,'Completed paid duty returns no advance or guarantee.');assert.equal(c.hour*3600+(c.secondOfHour??0),at);assert.equal(c.operativeState[op.id].alive,true);assert.equal(c.recruited.includes(op.id),false);assert.equal(c.contracts[op.id],undefined);
+   report({event:'mountainPaidDutyCompleted',operativeId:op.id,hour:c.hour,second:c.secondOfHour??0,treasury:c.resources.treasury,campaign:c});
+  }
+ }
+ if(parallel){
+  for(const id of columns){order({type:'selectSquad',id});order({type:'travel',sector:'uspallata',mode:'posta',queue:true});}
+  const began=c.hour*3600+(c.secondOfHour??0);let notices=0;
+  while(columns.some(id=>c.squads.find(q=>q.id===id)?.journey)){
+   assert.ok(c.hour*3600+(c.secondOfHour??0)-began<NATIVE_MOUNTAIN_RESERVE_BOUNDS.travelHours*3600);const at=c.hour*3600+(c.secondOfHour??0);order({type:'wait',hours:1});notices=c.hour*3600+(c.secondOfHour??0)===at?notices+1:0;assert.ok(notices<3,'Parallel mountain routes stop after repeated zero-time notices.');
+   for(const id of columns){const q=c.squads.find(q=>q.id===id);assert.ok(q);assert.ok(!q.journey||q.journey.status==='moving','Resolve the actual paused mountain route.');if(!q.journey)assert.equal(q.location,'uspallata');}
+  }
+  for(const id of columns)assert.equal(c.squads.find(q=>q.id===id).location,'uspallata','Every real column arrives before the guns are dispatched.');
+  report({event:'mountainColumnsArrived',columns:[...columns],elapsedSeconds:c.hour*3600+(c.secondOfHour??0)-began,hour:c.hour,second:c.secondOfHour??0,campaign:c});
+ }else for(const id of columns){order({type:'selectSquad',id});order({type:'travel',sector:'uspallata',mode:'posta'});}
  order({type:'selectSquad',id:main});if(batteryIds)assert.ok(mountainBatteryRecords(c,batteryIds).some(gun=>gun.loaded||gun.ammo>0),'Los Patos support needs real remaining rounds from the same finite battery.');
  const battery=prepareMountainBattery(c,['bronze4','bronze4'],{batteryIds,destination:'uspallata',keepServing:retained.keepIds(),report});c=battery.campaign;order({type:'configureArtillery',types:battery.selections});
  const destination=worldCell('los_patos',c),flanks=['uspallata',`cell-${destination.col}-${destination.row-1}`,`cell-${destination.col}-${destination.row+1}`,`cell-${destination.col-1}-${destination.row}`];
  const approaches=columns.map((id,index)=>({id,origin:fieldCount>8?flanks[index]:'uspallata',mode:fieldCount>8&&index?'march':'posta'}));
+ const queued=[];
  for(const approach of approaches){
   order({type:'selectSquad',id:approach.id});
   if(c.location!==approach.origin){
    const before={hour:c.hour,second:c.secondOfHour??0,treasury:c.resources.treasury};
-   order({type:'travel',sector:approach.origin,mode:'march'});
+   order({type:'travel',sector:approach.origin,mode:'march',...(parallel?{queue:true}:{})});
+   if(parallel){queued.push({...approach,before});continue;}
    assert.equal(c.location,approach.origin,'the flank must reach its actual neighboring rural cell');
    assert.equal(c.squads.find(q=>q.id===approach.id).journey,undefined,'finish the real flank journey before queuing its assault');
    report({event:'mountainFlankApproach',squadId:approach.id,origin:approach.origin,entry:entryFromSector(approach.origin,'los_patos',null,c),before,after:{hour:c.hour,second:c.secondOfHour??0,treasury:c.resources.treasury},members:[...c.squad]});
   }
+ }
+ if(queued.length){
+  const began=c.hour*3600+(c.secondOfHour??0);let notices=0;
+  while(queued.some(approach=>c.squads.find(q=>q.id===approach.id)?.journey)){
+   assert.ok(c.hour*3600+(c.secondOfHour??0)-began<NATIVE_MOUNTAIN_RESERVE_BOUNDS.travelHours*3600);const at=c.hour*3600+(c.secondOfHour??0);order({type:'wait',hours:1});notices=c.hour*3600+(c.secondOfHour??0)===at?notices+1:0;assert.ok(notices<3,'Parallel flank routes stop after repeated zero-time notices.');
+   for(const approach of queued){const q=c.squads.find(q=>q.id===approach.id);assert.ok(q);assert.ok(!q.journey||q.journey.status==='moving','Resolve the actual paused flank route.');if(!q.journey&&!approach.reported){assert.equal(q.location,approach.origin);report({event:'mountainFlankApproach',squadId:approach.id,origin:approach.origin,entry:entryFromSector(approach.origin,'los_patos',null,c),before:approach.before,after:{hour:c.hour,second:c.secondOfHour??0,treasury:c.resources.treasury},members:[...q.members]});approach.reported=true;}}
+  }
+  report({event:'mountainFlanksArrived',columns:queued.map(q=>q.id),elapsedSeconds:c.hour*3600+(c.secondOfHour??0)-began,hour:c.hour,second:c.secondOfHour??0,campaign:c});
  }
  for(const {id,mode}of approaches){order({type:'selectSquad',id});order({type:'attack',sector:'los_patos',queue:true,mode});}
  for(let i=0;i<16&&!columns.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');i++){order({type:'wait',hours:1});}

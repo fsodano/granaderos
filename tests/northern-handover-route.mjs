@@ -13,9 +13,11 @@ const clock=c=>c.hour*3600+(c.secondOfHour??0);
 const serving=c=>c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured);
 
 // Keep every actual retained contract through the next bounded clock step.
-export function retainNorthernHandoverService(start,{hours=2,report=()=>{}}={}){
+export function retainNorthernHandoverService(start,{hours=2,keepServing,report=()=>{}}={}){
  let c=start;assert.ok(hours>0&&hours<=24);
- for(const id of serving(c)){
+ assert.ok(keepServing===undefined||Array.isArray(keepServing)&&new Set(keepServing).size===keepServing.length&&keepServing.every(id=>Number.isSafeInteger(id)&&Object.hasOwn(c.operativeState,id)),'Retained road duty must name actual distinct recorded people; native deaths remain in that intended cohort.');
+ const keepers=keepServing===undefined?null:new Set(keepServing);
+ for(const id of serving(c).filter(id=>!keepers||keepers.has(id))){
   let expiry=contractExpiresSeconds(c.contracts[id]);
   assert.ok(c.contracts[id]&&(expiry===null||expiry>clock(c)),`The living survivor ${id} must still be serving.`);
   while(expiry!==null&&expiry<=clock(c)+hours*3600){
@@ -33,7 +35,8 @@ export function retainNorthernHandoverService(start,{hours=2,report=()=>{}}={}){
 
 // Resolve the real local raid, apply finite field care, and replay the complete
 // native order tape through an official midpoint save before settlement.
-export function resolveNorthernHandoverEncounter(start,{report=()=>{}}={}){
+export function resolveNorthernHandoverEncounter(start,{controllerFor,report=()=>{}}={}){
+ assert.ok(controllerFor===undefined||typeof controllerFor==='function');
  const before=structuredClone(start),active=start.activeSquadId,encounter=start.pendingEncounter;
  assert.ok(encounter);let c=decodeSave(encodeSave(start)).campaign;
  const order=action=>{c=dispatchCampaign(c,action);assert.equal(c.lastError,null,JSON.stringify(action)+': '+c.lastError);};
@@ -42,8 +45,9 @@ export function resolveNorthernHandoverEncounter(start,{report=()=>{}}={}){
  order({type:'selectSquad',id:guard.id});order({type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});
  const prepared=structuredClone(c),request=c.pendingBattle,previous=c.sectorStates[encounter.sector];
  assert.equal(request.defenseGroupId,encounter.groupId);
- report({event:'northernHandoverDefenseInput',campaign:structuredClone(c),battle:enterSector(request,previous)});
- const result=fight(request,previous,{controller:cautiousCombatOrder});
+ const initial=enterSector(request,previous);
+ report({event:'northernHandoverDefenseInput',campaign:structuredClone(c),battle:initial});
+ const result=fight(request,previous,{controller:controllerFor?controllerFor(initial):cautiousCombatOrder});
  assert.ok(completedTacticalVictory(result.battle),'The actual reserve must win the native counterattack.');
  const aid=autoBandageBattle(result.battle),orders=[...result.orders,...aid.steps];
  for(const unit of aid.battle.units.filter(u=>u.side==='player'&&u.hp>0&&!u.militia&&!u.surrendered&&!u.departure)){
@@ -75,17 +79,17 @@ export function resolveNorthernHandoverEncounter(start,{report=()=>{}}={}){
 
 // A remote raid pauses the clock; it does not cancel the departed envoy's
 // physical journey. Follow that same journey, restoring selection after care.
-export function continueNorthernHandoverTravel(start,{squadId=start.activeSquadId,target='tucuman',report=()=>{}}={}){
+export function continueNorthernHandoverTravel(start,{squadId=start.activeSquadId,target='tucuman',mode,keepServing,controllerFor,report=()=>{}}={}){
  const before=structuredClone(start);let c=decodeSave(encodeSave(start)).campaign;
  const order=action=>{const previous=c;c=dispatchCampaign(c,action);assert.equal(c.lastError,null,JSON.stringify(action)+': '+c.lastError);report({event:'northernHandoverOrder',action,fromSeconds:clock(previous),toSeconds:clock(c),cost:previous.resources.treasury-c.resources.treasury});};
  if(c.activeSquadId!==squadId)order({type:'selectSquad',id:squadId});
  let noProgress=0;
  for(let step=0;step<96;step++){
-  if(c.pendingEncounter){c=resolveNorthernHandoverEncounter(c,{report});assert.equal(c.activeSquadId,squadId);}
+  if(c.pendingEncounter){c=resolveNorthernHandoverEncounter(c,{controllerFor,report});assert.equal(c.activeSquadId,squadId);}
   const squad=c.squads.find(q=>q.id===squadId);assert.ok(squad&&squad.members.length,'The actual envoy party must remain available.');
   if(!squad.journey&&squad.location===target){assert.deepEqual(start,before);assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);report({event:'northernHandoverArrived',campaign:structuredClone(c)});return c;}
-  c=retainNorthernHandoverService(c,{report});
-  if(!squad.journey)order({type:'travel',sector:target,queue:true});
+  c=retainNorthernHandoverService(c,{keepServing,report});
+  if(!squad.journey)order({type:'travel',sector:target,queue:true,...(mode===undefined?{}:{mode})});
   else if(squad.journey.status==='paused')order({type:'resumeTravel'});
   else assert.equal(squad.journey.status,'moving',squad.journey.reason);
   const from=clock(c);order({type:'wait',hours:1});noProgress=clock(c)===from?noProgress+1:0;

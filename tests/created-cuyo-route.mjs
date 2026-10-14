@@ -19,7 +19,7 @@ import {addAmmoCounts,unitAmmunitionByType,fieldAmmunitionByType} from '../game/
 import {weaponSpecification} from '../game/weapon-definition.js';
 import {operativeLocation} from '../game/squads.js';
 import {previewStrategicRoute} from '../game/strategic-route.js';
-import {applyItemQuantity} from '../game/tactical-inventory.js';
+import {applyItemQuantity,itemQuantity} from '../game/tactical-inventory.js';
 import {firstAidPlan} from '../game/first-aid.js';
 import {autoBandageBattle} from '../game/auto-bandage.js';
 import {careAssignmentReason} from '../game/medical-care.js';
@@ -76,7 +76,7 @@ export function stabilizeCreatedCuyoSurvivors(start,{report=()=>{}}={}){
   for(const [index,action]of aid.steps.entries()){act(action);if(index===Math.floor(aid.steps.length/2))p=savedCarePair(p);}
   assert.deepEqual(p.battle.units,aid.battle.units);assert.deepEqual(p.battle.npcs,aid.battle.npcs);assert.equal(p.battle.seed,aid.battle.seed);assert.equal(p.battle.elapsedSeconds,aid.battle.elapsedSeconds);
   for(const id of patients){const unit=p.battle.units.find(unit=>unit.id===String(id));assert.ok(unit&&unit.hp>=15,'the actual Cuyo patient must survive finite field aid');assert.equal(unit.bleeding,0,'actual bleeding must stop before Cuyo preparation');}
-  for(const [unitId,slot]of slots)if(p.battle.units.find(unit=>unit.id===unitId).activeSlot!==slot){const action={type:'weapon',unitId,slot};act(action);steps.push(action);}
+  for(const [unitId,slot]of slots)if(p.battle.units.find(unit=>unit.id===unitId).activeSlot!==slot&&(slot!=='primary'||itemQuantity(p.battle.units.find(unit=>unit.id===unitId),'primary'))){const action={type:'weapon',unitId,slot};act(action);steps.push(action);}
   p=savedCarePair(p);c=leave(p);
   for(const {id,squadId}of membership)if(squadId&&c.squads.some(squad=>squad.id===squadId)&&!c.squads.find(squad=>squad.id===squadId).members.includes(id))order({type:'assignToSquad',operativeId:id,squadId});
   if(c.activeSquadId!==selected)order({type:'selectSquad',id:selected});

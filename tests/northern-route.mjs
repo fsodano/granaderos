@@ -35,6 +35,7 @@ import {prepareRouteBattery} from './route-battery.mjs';
 import {storedArtilleryRecord} from '../game/artillery-transport.js';
 import {stageRouteRoofDefenders} from './route-roof-defenders.mjs';
 import {recordRouteBattleFailure} from './route-failure-evidence.mjs';
+import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 
 // Both paid squads approach together in short bounds. Use authored roof
 // geometry and current shot previews, while retaining real casualties,
@@ -316,20 +317,24 @@ export function prepareNorthernSquad(start,{report=()=>{},ammunitionTarget=10}={
  return {campaign,events,dead,recovery};
 }
 
-export function fightNorthernSector(start,sector,{report=()=>{},expectedOutcome='victory',controller,deploy,executeBattle=fight,beforeSettlement}={}){
+export function fightNorthernSector(start,sector,{report=()=>{},expectedOutcome='victory',controller,sharedFallback,deploy,executeBattle=fight,beforeSettlement}={}){
  const before=structuredClone(start),prepared=start.pendingBattle?structuredClone(start):finishReloadsBeforeMarch(start,{report});
  const preparationSeconds=(prepared.hour-start.hour)*3600+(prepared.secondOfHour??0)-(start.secondOfHour??0),campaign=start.pendingBattle?prepared:dispatchCampaign(prepared,{type:'attack',sector});assert.equal(campaign.lastError,null,campaign.lastError);
  assert.deepEqual(start,before);assert.ok(campaign.pendingBattle,'the real march produces a tactical deployment');
  const request=campaign.pendingBattle;assert.equal(request.sector,sector);
  report({event:'battleStarted',sector,hour:campaign.hour,units:request.squad.map(u=>u.id)});
- const result=executeBattle(request,campaign.sectorStates[sector],{controller,deploy});
+ const result=executeBattle(request,campaign.sectorStates[sector],{controller,sharedFallback,deploy});
  const summary={sector,preparationSeconds,startSeconds:result.battle.startSeconds,elapsedSeconds:result.battle.elapsedSeconds,status:result.battle.status,turns:result.battle.turn,actions:result.actions,units:result.battle.units.map(u=>({id:u.id,side:u.side,hp:u.hp,ammo:u.ammo,loaded:u.loaded,routed:u.routed}))};
  report({event:'battleFinished',...summary});
  assert.ok(['victory','defeat','retreat'].includes(expectedOutcome));
  if(result.battle.status!==expectedOutcome)recordRouteBattleFailure({campaign,request,previous:campaign.sectorStates[sector],result,expectedOutcome,controller,deploy,executeBattle});
  assert.equal(result.battle.status,expectedOutcome,JSON.stringify(summary));
- const replay=executeBattle(request,campaign.sectorStates[sector],{controller,deploy});assert.deepEqual(replay.battle,result.battle);
- const pair=syncBattleTime(campaign,result.battle);assert.equal(pair.error,null);
+ const replay=executeBattle(request,campaign.sectorStates[sector],{controller,sharedFallback,deploy});assert.deepEqual(replay.battle,result.battle);
+ if(result.pair||replay.pair)assert.deepEqual(replay.pair,result.pair,'Both opt-in executions preserve the entire native synchronized pair.');
+ // An opt-in paired executor already confirms every real order as the public
+ // UI does. Resynchronizing the original campaign would confirm civilians late.
+ const pair=result.pair?{...result.pair,error:null}:syncBattleTime(campaign,result.battle);assert.equal(pair.error,null);
+ if(result.pair){assert.equal(pair.battle,result.battle);assert.equal(pair.campaign.pendingBattle?.id,request.id);assert.equal(pair.battle.syncedSeconds,pair.battle.elapsedSeconds);}
  const restored=decodeSave(encodeSave(pair.campaign,pair.battle));
  let settlement=restored;
  if(beforeSettlement){
@@ -374,6 +379,7 @@ export function fightNorthernSector(start,sector,{report=()=>{},expectedOutcome=
   else assert.equal(returned.operativeState[Number(u.id)].alive,false);
  }
  assert.deepEqual(decodeSave(encodeSave(returned)).campaign,returned);
+ recordRouteStrategicEvidence({helper:'fightNorthernSectorCompleted',stage:'route-checkpoint',campaign,returnedCampaign:returned,context:{scope:'Actual existing native result after all battle replay, official paired save, settlement, casualty and playable-campaign guards. No additional orders or synchronization.',request,previous:campaign.sectorStates[sector],result,replay,pair,restored,settlement,summary}});
  return {campaign:returned,summary};
 }
 

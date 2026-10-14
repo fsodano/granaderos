@@ -14,6 +14,7 @@ import {handRecord} from '../game/tactical-inventory.js';
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {expandCellScene} from '../game/cell-scene-storage.js';
+import {careAssignmentIssue} from '../game/medical-care.js';
 
 // Allocate the existing roof residents' real authored cells before departure.
 // Keep the clinical patients and reserved physician behind the firing edge;
@@ -47,7 +48,7 @@ export function stockCuyoBatteryReservePosts(state){
 // Single-person visits reuse that soldier's home slot: other squad members
 // cannot block a narrow roof, and no extra squad capacity is required.
 export function prepareStockCuyoBatteryReserve(start,posts,{report=()=>{}}={}){
- const before=structuredClone(start),ids=posts.map(post=>post.id),journal=[],positions=[],enteredPostures=[];
+ const before=structuredClone(start),ids=posts.map(post=>post.id),journal=[],positions=[],enteredPostures=[],careRestorations=[],medicalAllocations=[];
  assert.equal(new Set(ids).size,ids.length);assert.equal(new Set(posts.map(spaceKey)).size,posts.length,'Every actual reserve needs a distinct post.');assert.equal(start.pendingBattle,null);assert.equal(start.pendingEncounter,null);
  let c=decodeSave(encodeSave(start)).campaign;const active=c.activeSquadId;
  const issue=action=>{c=dispatchCampaign(c,action);assert.equal(c.lastError,null,JSON.stringify(action)+': '+c.lastError);journal.push({kind:'campaign',action:structuredClone(action)});};
@@ -104,14 +105,43 @@ export function prepareStockCuyoBatteryReserve(start,posts,{report=()=>{}}={}){
   const pair=syncBattleTime(c,battle);assert.equal(pair.error,null);c=pair.campaign;battle=pair.battle;journal.push({kind:'sync'});
   const action={type:'leaveSector',battleId:c.pendingBattle.id,sectorState:battle,survivors:battle.units.filter(unit=>unit.side==='player')};
   c=dispatchCampaign(c,action);assert.equal(c.lastError,null);journal.push({kind:'leave',battleId:action.battleId});
-  issue({type:'squad',ids:members});issue({type:'assignCare',operativeId:id,assignment});
+  issue({type:'squad',ids:members});
+  report({event:'stockCuyoCareRestoreInput',id,assignment,campaign:structuredClone(c)});
+  let restoredAssignment=assignment;
+  const medicalIssue=assignment==='doctor'?careAssignmentIssue(c,rosterFor(c).find(op=>op.id===id),assignment):null;
+  if(medicalIssue?.code==='no_medkits'){
+   const patients=c.recruited.filter(operativeId=>{
+    const record=c.operativeState[operativeId];
+    return record.alive&&!record.captured&&operativeLocation(c,operativeId)==='cordoba'&&(record.hp<record.maxHp||record.bleeding>0);
+   });
+   if(!patients.length){
+    // The real clinic has finished. An exhausted former doctor cannot be
+    // assigned that unavailable job again merely to restore an old label.
+    restoredAssignment='rest';
+   }else{
+    const model=()=>sectorInventoryModel(c,'cordoba',rosterFor(c),id),pool=()=>model().entries.filter(row=>JSON.parse(row.expected).item==='medkits').reduce((sum,row)=>sum+row.count,0);
+    const source=model().entries.find(row=>row.reachable&&row.count>0&&JSON.parse(row.expected).item==='medkits');
+    assert.ok(source,'The actual unfinished clinic needs a reachable finite dressing before restoring its doctor.');
+    const stock=c.operativeState[id].medkits,known=pool(),cash=c.resources.treasury,time=[c.hour,c.secondOfHour??0];
+    const action={type:'sectorInventory',sector:'cordoba',operativeId:id,direction:'take',sourceKey:source.key,expected:source.expected,count:1};
+    issue(action);assert.equal(c.operativeState[id].medkits,stock+1);assert.equal(pool(),known-1);
+    assert.equal(c.resources.treasury,cash);assert.deepEqual([c.hour,c.secondOfHour??0],time);
+    medicalAllocations.push({id,count:1,patients,action});
+   }
+   const restoration={event:'stockCuyoClinicalDutyRestored',id,previousAssignment:assignment,assignment:restoredAssignment,eligibility:medicalIssue.code,patients,medkits:c.operativeState[id].medkits,hour:c.hour,second:c.secondOfHour??0};
+   careRestorations.push(restoration);report(restoration);
+  }
+  issue({type:'assignCare',operativeId:id,assignment:restoredAssignment});
   assert.deepEqual(c.operativeState[id].residentPosition,destination);positions.push({id,...destination});
  }
  issue({type:'selectSquad',id:active});
  assert.equal(c.squads.length,start.squads.length);assert.deepEqual(c.squads,start.squads);
  assert.equal(c.resources.treasury,start.resources.treasury);assert.deepEqual(c.contracts,start.contracts);
- for(const [id,record]of Object.entries(start.operativeState))for(const key of ['alive','hp','bleeding','medkits','captured','morale'])assert.deepEqual(c.operativeState[id][key],record[key],`${id}.${key} only changes through later native combat/care.`);
+ for(const [id,record]of Object.entries(start.operativeState)){
+  for(const key of ['alive','hp','bleeding','captured','morale'])assert.deepEqual(c.operativeState[id][key],record[key],`${id}.${key} only changes through later native combat/care.`);
+  assert.equal(c.operativeState[id].medkits,record.medkits+medicalAllocations.filter(row=>String(row.id)===id).reduce((sum,row)=>sum+row.count,0),'Only an actual finite local pickup can add a dressing.');
+ }
  assert.deepEqual(start,before);c=decodeSave(encodeSave(c)).campaign;assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
- const preparation={event:'stockCuyoReserveReady',ids,positions,enteredPostures,journal,equipmentStart,supplyOrders,donations,equipmentReady,ammunition:ammunition.transactions,startClock:[start.hour,start.secondOfHour??0],endClock:[c.hour,c.secondOfHour??0],elapsedSeconds:(c.hour-start.hour)*3600+(c.secondOfHour??0)-(start.secondOfHour??0)};
+ const preparation={event:'stockCuyoReserveReady',ids,positions,enteredPostures,journal,equipmentStart,supplyOrders,donations,equipmentReady,medicalAllocations,careRestorations,ammunition:ammunition.transactions,startClock:[start.hour,start.secondOfHour??0],endClock:[c.hour,c.secondOfHour??0],elapsedSeconds:(c.hour-start.hour)*3600+(c.secondOfHour??0)-(start.secondOfHour??0)};
  report(preparation);return {campaign:c,preparation};
 }

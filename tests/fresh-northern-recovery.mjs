@@ -37,6 +37,7 @@ import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
 import {prepareNorthernHospitalRear} from './northern-hospital-rear-readiness.mjs';
 import {retainNorthernHandoverService,resolveNorthernHandoverEncounter,continueNorthernHandoverTravel} from './northern-handover-route.mjs';
 import {previewStrategicRoute} from '../game/strategic-route.js';
+import {coordinatedHospitalBattery} from './coordinated-hospital-battery.mjs';
 
 // A guarded roof can have a valid low-probability lane while the ordinary
 // infantry policy wants to advance. Pay for the real previewed shot first.
@@ -158,7 +159,8 @@ export function stabilizeNorthernHospitalPatients(start,patients,doctorIds,{inpu
 
 // Stabilize the actual survivors and use their controlled hospital. The
 // continued return is separate so a saved hospital boundary can be checked.
-export function recoverFreshNorthernHospital(start,{report=()=>{}}={}){
+export function recoverFreshNorthernHospital(start,{report=()=>{},coordinateDefense=false}={}){
+ assert.equal(typeof coordinateDefense,'boolean');
  const inputCapture=recordRouteStrategicEvidence({helper:'recoverFreshNorthernDoctor',stage:'preparation-input',campaign:start});
  let c=start;
  try{
@@ -237,7 +239,7 @@ export function recoverFreshNorthernHospital(start,{report=()=>{}}={}){
  const rear=escort.filter(id=>operativeLocation(c,id)!==sector);
  if(rear.length){
   const reserves=rosterFor(c).filter(op=>{const r=c.operativeState[op.id];return c.recruited.includes(op.id)&&r.alive&&!r.captured&&r.hp===r.maxHp&&!r.bleeding&&!patients.includes(op.id)&&op.id!==1000&&operativeLocation(c,op.id)===sector;}).sort((a,b)=>b.marksmanship-a.marksmanship||a.id-b.id).map(op=>op.id);
-  const prepared=prepareNorthernHospitalRear(c,rear,{applyOrder:(state,action)=>northernHospitalOrder(state,action,{inputCapture,report}),reserveIds:reserves,report});c=prepared.campaign;escort.push(...prepared.ids.filter(id=>!escort.includes(id)));
+  const prepared=prepareNorthernHospitalRear(c,rear,{applyOrder:(state,action)=>northernHospitalOrder(state,action,{inputCapture,report}),reserveIds:reserves,coordinatePhysicians:coordinateDefense,report});c=prepared.campaign;escort.push(...prepared.ids.filter(id=>!escort.includes(id)));
   for(let index=stabilizationDoctors.length-1;index>=0;index--)if(prepared.ids.includes(stabilizationDoctors[index]))stabilizationDoctors.splice(index,1);
  }
  for(const at of new Set(patients.map(id=>c.operativeState[id].location).filter(at=>at!==sector))){
@@ -285,8 +287,8 @@ export function recoverFreshNorthernHospital(start,{report=()=>{}}={}){
    const defenders=c.squads.find(q=>q.location===encounter.sector&&q.members.length);assert.ok(defenders,'a real local squad must defend the hospital');
    order({type:'selectSquad',id:defenders.id});
    order({type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});
-   const initial=enterSector(c.pendingBattle,c.sectorStates[encounter.sector]),controller=initial.artillery.some(g=>g.side==='player'&&(g.loaded||g.ammo>0))?coastalBatteryController(initial,{sharedArtillerySight:true}):northernHospitalCoverOrder;
-   c=fightNorthernSector(c,encounter.sector,{controller,report}).campaign;
+   const initial=enterSector(c.pendingBattle,c.sectorStates[encounter.sector]),controller=coordinateDefense?coordinatedHospitalBattery(initial,{coordinateSpentCrew:true,coordinatePhysicianHold:true}).controller:initial.artillery.some(g=>g.side==='player'&&(g.loaded||g.ammo>0))?coastalBatteryController(initial,{sharedArtillerySight:true}):northernHospitalCoverOrder;
+   c=fightNorthernSector(c,encounter.sector,{controller,...(coordinateDefense?{sharedFallback:controller.sharedFallback}:{}),report}).campaign;
    report({event:'hospitalDefended',campaign:structuredClone(c)});
   }
   const injured=localPatients();if(!injured.length)break;
@@ -344,7 +346,9 @@ export function recoverFreshNorthernHospital(start,{report=()=>{}}={}){
 // rural land planner may avoid an occupied town; its occupation remains for
 // the later explicit northern-road recapture.
 export function recoverFreshNorthernDoctor(start,{report=()=>{}}={}){
- return returnFreshNorthernHospital(recoverFreshNorthernHospital(start,{report}),{report});
+ // The canonical funded continuation retains paid rear roles during a raid.
+ // Direct historical hospital callers keep their established default policy.
+ return returnFreshNorthernHospital(recoverFreshNorthernHospital(start,{report,coordinateDefense:true}),{report});
 }
 
 // Keep an actual paid rifleman at the clinic before the return advances time.
@@ -523,6 +527,7 @@ function settleNorthernReturnRecapture(start,report){
  assert.equal(c.lastError,null,c.lastError);assert.equal(c.defeated,false);assert.equal(c.sectors.cordoba.owner,'patriot');assert.equal(c.pendingBattle,null);
  for(const unit of result.battle.units.filter(u=>u.side==='player'&&u.hp<=0&&!u.militia&&!u.missionAlly))assert.equal(c.operativeState[Number(unit.id)].alive,false);
  assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
+ recordRouteStrategicEvidence({helper:'settleNorthernReturnRecapture',stage:'route-checkpoint',campaign:c,context:{start,request,previous,result,played,restored,summary,scope:'Completed native road victory, exact synchronized and official midpoint replay, and the already applied unique settlement. No additional orders or settlement.'}});
  report({event:'northernReturnRecaptured',...summary,orders:result.orders.length,exactSavedReplay:true,campaign:structuredClone(c)});
  return c;
 }

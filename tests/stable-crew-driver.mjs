@@ -28,13 +28,14 @@ export function stableCrewController(){
 export function heavyContactCrewController({holdCommand=true,reserveId='57'}={}){
  const base=stableCrewController();
  return (battle,unit)=>{
+  const action=base(battle,unit);
+  if(unit.knockedDown||unit.entangled||action?.type==='useItem'||action?.slot==='medical')return action;
   const gun=!unit.knockedDown&&!unit.entangled&&battle.artillery.find(g=>g.side===unit.side&&g.type==='field8'&&(g.loaded||g.ammo>0)&&artilleryContact(battle,unit,g));
   if(gun&&unit.stance==='prone')return unit.ap>=stanceCost(unit,'crouched')?{type:'stance',unitId:unit.id,stance:'crouched'}:null;
   if(gun){
    const targets=battle.units.filter(v=>v.side!==unit.side&&v.hp>=15&&!v.routed&&!v.surrendered&&!v.unconscious&&!v.departure&&teamCanSee(battle,unit.side,v));
    const artillery=teamArtilleryOrder({...battle,artillery:[gun]},unit,targets);if(artillery)return artillery;
   }
-  const action=base(battle,unit);
   if(gun&&action?.type==='stance'&&action.stance==='prone')return null;
   return holdCommand&&unit.id===String(reserveId)&&['move','climb','charge','artilleryMove','exit'].includes(action?.type)?null:action;
  };

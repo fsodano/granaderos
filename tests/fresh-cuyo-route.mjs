@@ -7,12 +7,13 @@ import {prepareRouteBattery} from './route-battery.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {foundryFor} from '../game/campaign-foundry.js';
 import {ownedArtilleryCount} from '../game/campaign-artillery.js';
-import {artilleryTransportQuote,storedArtilleryRecord} from '../game/artillery-transport.js';
-import {contractQuote,contractExpiresSeconds} from '../game/contracts.js';
+import {artilleryProfile} from '../game/artillery-definitions.js';
+import {artilleryTransportQuote,artilleryTransportPath,storedArtilleryRecord} from '../game/artillery-transport.js';
+import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
 import {hiringTravelHours} from '../game/hiring-arrivals.js';
 import {queueSquadTravel,travelLegHours} from '../game/squad-travel.js';
-import {operativeLocation} from '../game/squads.js';
-import {careAssignmentReason,doctorRate} from '../game/medical-care.js';
+import {operativeLocation,operativeInTransit} from '../game/squads.js';
+import {careAssignmentReason,careAssignmentBusy,doctorRate} from '../game/medical-care.js';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {meetRecruits} from './campaign-recruitment-route.mjs';
 import assert from 'node:assert/strict';
@@ -103,8 +104,60 @@ export function createFreshRouteOrders(read,write,{report=()=>{},handledEncounte
  return {order,retain,adopt,check,keepIds:()=>[...intended]};
 }
 
+// Send the two actual northern pieces while their serving crews are still
+// local. Empty guns remain physical army property; transport adds no charge.
+export function secureFreshNorthernBattery(start,{report=()=>{}}={}){
+ const before=structuredClone(start);let c=decodeSave(encodeSave(start)).campaign;
+ assert.equal(c.pendingBattle,null);assert.equal(c.pendingEncounter,null);
+ const original={id:c.activeSquadId,members:[...c.squad],location:c.location},events=[],shipments=[],renewals=[],deferred=[];
+ const physical=state=>[...Object.values(state.artilleryDepots??{}).flat(),...Object.values(state.sectorStates??{}).flatMap(b=>b.artillery??[]),...(state.artilleryTransfers??[]).map(t=>t.gun)]
+  .filter(g=>g.side==='player').map(storedArtilleryRecord).sort((a,b)=>a.id.localeCompare(b.id));
+ const guns=physical(c),people=structuredClone(c.operativeState),groups=structuredClone(c.squads),cash=c.resources.treasury,clock=routeClock(c);
+ const keep=c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured);
+ const order=action=>{c=publicOrder(c,action);events.push({event:'northernBatteryOrder',action:structuredClone(action),hour:c.hour,second:c.secondOfHour??0});};
+ const capable=id=>{const r=c.operativeState[id];return keep.includes(id)&&r.hp>=15&&!r.unconscious&&!r.routed&&!r.asleep&&!operativeInTransit(c,id)&&!careAssignmentBusy(r.assignment)&&(r.energy??0)>0;};
+ for(const sector of ['tucuman','salta'])for(const gun of [...(c.sectorStates[sector]?.artillery??[])].filter(g=>g.side==='player'&&g.type==='bronze4')){
+  const required=artilleryProfile(c,gun).crew,local=keep.filter(id=>capable(id)&&operativeLocation(c,id)===sector);
+  const crew=c.squads.find(q=>q.location===sector&&!q.journey&&q.members.filter(id=>local.includes(id)).length>=required);
+  const defer=(reason,quote=null)=>{const receipt={event:'northernBatteryDeferred',id:gun.id,sector,record:structuredClone(gun),requiredCrew:required,capableLocalIds:local,reason,quote};deferred.push(receipt);events.push(receipt);};
+  if(!crew){defer(`No existing local squad supplies ${required} actual serving crew members.`);continue;}
+  order({type:'selectSquad',id:crew.id});
+  const quote=artilleryTransportQuote(c,sector,gun.id,'cordoba','carts','field');if(!quote.available){defer(quote.reason,structuredClone(quote));continue;}
+  const deadline=(c.hour+quote.hours)*3600;
+  for(const id of keep){let contract=c.contracts[id],expiry=contractExpiresSeconds(contract);
+   while(expiry!==null&&expiry<=deadline){
+    const renewal=contractRenewalQuote(c,rosterFor(c).find(op=>op.id===id),'day');assert.equal(renewal.available,true,renewal.reason);
+    const prior=structuredClone(contract),treasury=c.resources.treasury,action={type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt,expectedExpiresSecond:contract.expiresSecond??0};
+    const payFields=r=>Object.fromEntries(['morale','lastMoralePayAt','lastMoralePaySecond'].filter(key=>Object.hasOwn(r,key)).map(key=>[key,r[key]])),payBefore=payFields(c.operativeState[id]),expected=people[id];
+    // Native payment rewards a living soldier at most once per24 real hours.
+    // Predict only those three pay fields; every physical/body/role field stays exact.
+    if(expected.lastMoralePayAt==null||clock-(expected.lastMoralePayAt*3600+(expected.lastMoralePaySecond??0))>=86400){expected.morale=Math.max(0,Math.min(100,expected.morale+2));expected.lastMoralePayAt=c.hour;if(c.secondOfHour)expected.lastMoralePaySecond=c.secondOfHour;else delete expected.lastMoralePaySecond;}
+    order(action);assert.equal(c.resources.treasury,treasury-renewal.price);assert.equal(contractExpiresSeconds(c.contracts[id]),renewal.expiresAt*3600+(renewal.expiresSecond??0));
+    const payAfter=payFields(c.operativeState[id]);assert.deepEqual(payAfter,payFields(expected));
+    renewals.push({id,action,quote:structuredClone(renewal),before:prior,after:structuredClone(c.contracts[id]),paid:renewal.price,pay:{before:payBefore,after:payAfter,hour:c.hour,second:c.secondOfHour??0}});contract=c.contracts[id];expiry=contractExpiresSeconds(contract);
+   }
+  }
+  const record=storedArtilleryRecord(gun),treasury=c.resources.treasury;
+  order({type:'transportArtillery',sector,artilleryId:gun.id,to:'cordoba',mode:'carts',source:'field'});
+  assert.equal(c.resources.treasury,treasury-quote.cost);
+  const transfer=c.artilleryTransfers.find(t=>t.id===gun.id);assert.ok(transfer);assert.deepEqual(transfer.gun,record);assert.deepEqual(transfer.path,quote.path);assert.equal(transfer.dueAt,c.hour+quote.hours);
+  assert.equal(c.sectorStates[sector].artillery.some(g=>g.id===gun.id),false);assert.deepEqual(physical(c),guns);
+  const receipt={event:'northernBatteryForwarded',id:gun.id,from:sector,to:'cordoba',crewSquad:crew.id,crew:[...c.squad],quote:structuredClone(quote),record,transfer:structuredClone(transfer)};shipments.push(receipt);events.push(receipt);
+ }
+ order({type:'selectSquad',id:original.id});
+ assert.deepEqual(c.squad,original.members);assert.equal(c.location,original.location);assert.deepEqual(c.squads,groups);assert.deepEqual(c.operativeState,people);assert.deepEqual(physical(c),guns);
+ assert.equal(routeClock(c),clock);assert.equal(c.resources.treasury,cash-renewals.reduce((sum,r)=>sum+r.paid,0)-shipments.reduce((sum,r)=>sum+r.quote.cost,0));
+ for(const receipt of deferred)assert.deepEqual(c.sectorStates[receipt.sector].artillery.find(g=>g.id===receipt.id),receipt.record,'An unavailable northern piece retains its complete actual field record.');
+ for(const id of keep){assert.ok(c.recruited.includes(id)&&c.operativeState[id].alive);const expiry=contractExpiresSeconds(c.contracts[id]);assert.ok(expiry===null||expiry>Math.max(clock,...shipments.map(s=>s.transfer.dueAt*3600)));}
+ assert.deepEqual(c.enemyGroups,start.enemyGroups);assert.deepEqual(c.enemyReserves,start.enemyReserves);assert.deepEqual(c.sectors,start.sectors);assert.deepEqual(start,before);
+ const campaign=decodeSave(encodeSave(c)).campaign;assert.deepEqual(campaign,c);
+ for(const event of events)report(event);report({event:'northernBatterySecured',complete:deferred.length===0,shipments,renewals,deferred,campaign:structuredClone(campaign)});
+ return {campaign,shipments,renewals,deferred};
+}
+
 // Actual transport, finite carried care and defense after fresh Yatasto.
 export function prepareFreshCuyoDefense(start,{report=()=>{}}={}){
+ const inputCapture=recordRouteStrategicEvidence({helper:'prepareFreshCuyoDefense',stage:'preparation-input',campaign:start});
  let c=decodeSave(encodeSave(start)).campaign;
  const retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report,handledEncounters:['salta','cordoba']});
  const order=a=>{
@@ -116,19 +169,10 @@ export function prepareFreshCuyoDefense(start,{report=()=>{}}={}){
   }
   retained.order(a);
  };
- // Forward the remaining finite battery while the actual capable party is
- // still beside it. Infantry can complete its existing march and assembly
- // while the carts travel; a later crew return trip would abandon this task.
- const localBattery=[...(c.artilleryDepots.cordoba??[]),...(c.sectorStates.cordoba?.artillery??[])].some(gun=>gun.side==='player'&&gun.type==='bronze4'&&(gun.loaded||gun.ammo>0));
- const forwardable=c.location==='tucuman'&&!localBattery?(c.sectorStates.tucuman?.artillery??[]).filter(gun=>gun.side==='player'&&gun.type==='bronze4'&&(gun.loaded||gun.ammo>0)).sort((a,b)=>a.id.localeCompare(b.id)):[];
- for(const gun of forwardable){
-  const quote=artilleryTransportQuote(c,'tucuman',gun.id,'cordoba','carts','field');if(!quote.available)continue;
-  const record=storedArtilleryRecord(gun),cash=c.resources.treasury;
-  order({type:'transportArtillery',sector:'tucuman',artilleryId:gun.id,to:'cordoba',mode:'carts',source:'field'});
-  assert.equal(c.resources.treasury,cash-quote.cost);
-  const transfer=c.artilleryTransfers.find(t=>t.id===gun.id);assert.deepEqual(transfer.gun,record);
-  report({event:'cuyoBatteryForwarded',id:gun.id,from:'tucuman',to:'cordoba',cost:quote.cost,dueAt:transfer.dueAt,record,campaign:c});break;
- }
+ // Dispatch both remaining records before pulling their local guards south.
+ // The normal assembly/care clock delivers them through the controlled route.
+ const secured=secureFreshNorthernBattery(c,{report});retained.adopt(secured.campaign,'northern-battery-custody');
+ for(const shipment of secured.shipments)report({event:'cuyoBatteryForwarded',id:shipment.id,from:shipment.from,to:shipment.to,cost:shipment.quote.cost,dueAt:shipment.transfer.dueAt,record:structuredClone(shipment.record),campaign:structuredClone(c)});
 for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'rest'});
 for(let i=0;i<24&&c.squad.some(id=>c.operativeState[id].energy<100||c.operativeState[id].fatigue>0||c.operativeState[id].asleep);i++)order({type:'wait',hours:1});
 for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
@@ -254,7 +298,17 @@ for(let i=0;i<24&&(c.pendingEncounter||c.enemyGroups.some(group=>['marching','wa
  order({type:'wait',hours:1});
 }
 if(c.pendingEncounter){assert.equal(c.pendingEncounter.sector,'cordoba');order({type:'respondToEncounter',groupId:c.pendingEncounter.groupId,choice:'tactical'});}
+ recordRouteStrategicEvidence({helper:'prepareFreshCuyoDefense',stage:'route-checkpoint',campaign:c,inputCapture,context:{shipments:secured.shipments,renewals:secured.renewals,deferred:secured.deferred,assembled,field,patients,defenderId,defenderQuote,capturePhase:'Actual full preparation return after its original finite care, paid arrivals, firearm supply and encounter request orders; no additional state or actions.'}});
  return c;
+}
+
+// Known owned records are finite. Prefer actual remaining charges over the
+// convenience of a nearer piece; the normal crew/transport helper pays the trip.
+export function strongestFreshOwnedBattery(state,{type='bronze4',destination=state.location}={}){
+ const rows=[...Object.entries(state.artilleryDepots??{}).flatMap(([sector,guns])=>guns.map(gun=>({sector,source:'depot',gun}))),...Object.entries(state.sectorStates??{}).flatMap(([sector,scene])=>(scene.artillery??[]).map(gun=>({sector,source:'field',gun})))];
+ const usable=rows.filter(row=>row.gun.side==='player'&&row.gun.type===type&&row.gun.ammo+Number(row.gun.loaded)>0&&state.sectors[row.sector]?.owner==='patriot'&&(row.sector===destination||artilleryTransportPath(state,row.sector,destination,'carts')));
+ const chosen=usable.sort((a,b)=>b.gun.ammo+Number(b.gun.loaded)-a.gun.ammo-Number(a.gun.loaded)||Number(b.sector===destination)-Number(a.sector===destination)||a.gun.id.localeCompare(b.gun.id))[0];
+ return chosen?{sector:chosen.sector,source:chosen.source,record:storedArtilleryRecord(chosen.gun),charges:chosen.gun.ammo+Number(chosen.gun.loaded)}:null;
 }
 
 export function prepareFreshMendozaAssault(start,{report=()=>{}}={}){
@@ -294,7 +348,9 @@ export function prepareFreshMendozaAssault(start,{report=()=>{}}={}){
  // Custody alone is not artillery support. Keep exhausted pieces unchanged
  // and recover only a real controlled gun with a remaining finite shot.
  const exhausted=[...Object.values(c.artilleryDepots??{}).flat(),...Object.values(c.sectorStates??{}).flatMap(scene=>scene.artillery??[])].filter(gun=>gun.side==='player'&&!gun.loaded&&gun.ammo===0).map(gun=>gun.id);
- const battery=prepareRouteBattery(c,['bronze4'],{destination:'cordoba',excludeIds:exhausted,keepServing:retained.keepIds(),report});c=battery.campaign;
+ const strongest=strongestFreshOwnedBattery(c,{destination:'cordoba'}),excludeIds=strongest?[...new Set([...exhausted,...[...Object.values(c.artilleryDepots??{}).flat(),...Object.values(c.sectorStates??{}).flatMap(scene=>scene.artillery??[])].filter(gun=>gun.side==='player'&&gun.id!==strongest.record.id).map(gun=>gun.id)])]:exhausted;
+ const battery=prepareRouteBattery(c,['bronze4'],{destination:'cordoba',excludeIds,keepServing:retained.keepIds(),report});c=battery.campaign;
+ if(strongest){const actual=c.artilleryDepots.cordoba.find(gun=>gun.id===strongest.record.id);assert.ok(actual);assert.deepEqual(actual,strongest.record);assert.equal(battery.selections[0],`depot:${strongest.record.id}`);report({event:'mendozaStrongestOwnedBattery',selected:strongest,selections:battery.selections,record:structuredClone(actual),hour:c.hour,second:c.secondOfHour??0});}
  report({event:'mendozaReserveBattery',field:fieldIds,support,selections:battery.selections,cost:0,hour:c.hour});order({type:'configureArtillery',types:[]});
  c=supplyRouteAmmunition(c,[...fieldIds,...support],{target:12,report}).campaign;
  const field=columns.flatMap(id=>c.squads.find(q=>q.id===id).members);

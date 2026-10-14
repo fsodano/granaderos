@@ -9,19 +9,31 @@ import {startFreshFoundry,prepareFreshArmyFunding,completeFreshArmyFunding} from
 import {prepareFreshUspallataAssault,recoverFreshUspallata,prepareFreshLosPatosAssault,completeFreshAndesPreparation} from './fresh-mountain-route.mjs';
 import {coastalBatteryController} from './coastal-command-driver.mjs';
 import {stagedBatteryController} from './staged-battery-driver.mjs';
+import {heavyContactCrewController} from './stable-crew-driver.mjs';
 import {fightNorthernSector} from './northern-route.mjs';
 import {rosterFor} from '../game/campaign.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {extractItemQuantity} from '../game/tactical-inventory.js';
 import {createdLosPatosBattery} from './created-los-patos-battery.mjs';
 import {recordRoutePreparationEvidence} from './route-preparation-evidence.mjs';
+import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 import {recoverCreatedCuyoMountainArtillery} from './created-cuyo-artillery.mjs';
+import {createdUspallataBattery} from './created-uspallata-battery.mjs';
+import {campaignRole} from '../game/campaign-roles.js';
 
 const deaths=c=>Object.entries(c.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
 
 export function mendozaBatteryController(initial){
  const supplied=initial.artillery.filter(gun=>gun.side==='player'&&(gun.loaded||gun.ammo>0));
  return supplied.length>1?stagedBatteryController():coastalBatteryController(initial,{sharedArtillerySight:true});
+}
+
+// The recovered heavy gun needs all three contact members in a usable
+// posture. Keep finite aid first and avoid lying down between crew actions.
+// Light-only arrival batteries retain their established staging policy.
+export function mountainPassBatteryController(initial){
+ return initial.artillery.some(gun=>gun.side==='player'&&gun.type==='field8'&&(gun.loaded||gun.ammo>0))
+  ?heavyContactCrewController({holdCommand:false}):stagedBatteryController();
 }
 
 // Both ordinary routes need the remaining physical arsenal after Mendoza.
@@ -33,7 +45,7 @@ export function prepareFreshCuyoMountainArtillery(start,options={}){
 
 // Continue a real new campaign. Preparation pays for the survivors, finite
 // supplies and physical journeys; every battle is replayed and saved in full.
-export function freshCuyoRoute({onCheckpoint,northernCheckpoint,routeKind='created',coastalCheckpoint,openingCheckpoint,report=()=>{}}={}){
+export function freshCuyoRoute({onCheckpoint,onArsenalPrepared,northernCheckpoint,routeKind='created',coastalCheckpoint,openingCheckpoint,report=()=>{}}={}){
  const prefix=northernCheckpoint?{campaign:northernCheckpoint,notes:[]}:freshNorthernRoute({onCheckpoint,report,routeKind,coastalCheckpoint,openingCheckpoint});
  assert.equal(prefix.campaign.phase,3);assert.equal(prefix.campaign.missions.yatasto.completed,true);assert.equal(prefix.campaign.flags.northPact,true);
  let c=assembleCreatedCuyo(prefix.campaign,{report});const notes=[],losPatosFieldCount=16;let mountainBatteryIds=null;
@@ -45,7 +57,10 @@ export function freshCuyoRoute({onCheckpoint,northernCheckpoint,routeKind='creat
  const fight=sector=>{
   assert.ok(c.pendingBattle);assert.equal(c.pendingBattle.sector,sector);
   const initial=enterSector(c.pendingBattle,c.sectorStates[sector]);
-  const result=fightNorthernSector(c,sector,{...(sector==='los_patos'?createdLosPatosBattery({fieldCount:losPatosFieldCount,...(mountainBatteryIds?{gunTypes:['field8','swivel']}:{})}):{controller:sector==='mendoza'?mendozaBatteryController(initial):sector==='uspallata'&&mountainBatteryIds?stagedBatteryController():coastalBatteryController(initial,{sharedArtillerySight:true})}),report});
+  const engineer=campaignRole(c,'foundryEngineer'),uspallata=routeKind==='stock'&&sector==='uspallata'&&mountainBatteryIds
+   ?createdUspallataBattery(initial,{reserveIds:engineer&&initial.units.some(u=>u.id===String(engineer.id))?[engineer.id]:[],reserveDestination:c.pendingBattle.origin,report}):null;
+  if(uspallata)recordRouteStrategicEvidence({helper:'freshCuyoUspallata',stage:'preparation-input',campaign:c,context:{request:c.pendingBattle,previous:c.sectorStates[sector],initial,roles:uspallata.roles,scope:'Actual existing pending request and pre-deployment construction. Executor placement is captured inside the original deploy callback; no additional entry or order.'}});
+  const result=fightNorthernSector(c,sector,{...(sector==='los_patos'?createdLosPatosBattery({fieldCount:losPatosFieldCount,...(mountainBatteryIds?{gunTypes:['field8','swivel']}:{})}):uspallata??{controller:sector==='mendoza'?mendozaBatteryController(initial):sector==='uspallata'&&mountainBatteryIds?mountainPassBatteryController(initial):coastalBatteryController(initial,{sharedArtillerySight:true})}),report});
   c=result.campaign;assert.equal(c.defeated,false);assert.equal(c.sectors[sector].owner,'patriot');assert.equal(c.completed,false);
   checkpoint(sector,{status:result.summary.status,actions:result.summary.actions,turns:result.summary.turns});
  };
@@ -111,10 +126,15 @@ export function freshCuyoRoute({onCheckpoint,northernCheckpoint,routeKind='creat
  c=startFreshFoundry(c,{report});assert.equal(c.flags.foundry,true);assert.ok(c.recruited.includes(2)&&c.operativeState[2].alive);
  for(const id of deaths(prefix.campaign))assert.equal(c.operativeState[id].alive,false);
  c=completeFreshArmyFunding(prepareFreshArmyFunding(c,{report}),{report});assert.equal(c.flags.armyFunded,true);assert.ok(ownedArtilleryCount(c)>=3);assert.equal(c.phase,3);checkpoint('funded',{artillery:ownedArtilleryCount(c)});
- const arsenal=prepareFreshCuyoMountainArtillery(c,{report});c=arsenal.campaign;
+ // The normal stock endings opt into the public paid rear and support
+ // policy. Created/earned default callers keep their dated doctrine.
+ const arsenal=prepareFreshCuyoMountainArtillery(c,{report,...(routeKind==='stock'?{preserveMedicalReserve:true,coordinateSupportStaging:true,coordinateRearFormation:true}:{})});c=arsenal.campaign;
  const arsenalEnd=arsenal.summary.startSeconds+arsenal.summary.elapsedSeconds;
  notes.push({stage:'ensenada',hour:Math.floor(arsenalEnd/3600),second:arsenalEnd%3600,...arsenal.summary});
  mountainBatteryIds=arsenal.batteryIds;
+ // Optional observation after the complete paid arsenal return. Defaults
+ // continue to Uspallata without cloning or invoking an observer.
+ onArsenalPrepared?.(structuredClone({campaign:c,summary:arsenal.summary,batteryIds:mountainBatteryIds,notes,prefix:routeKind==='stock'?[...(prefix.prefix??[]),...prefix.notes]:prefix.notes}));
  c=prepareFreshUspallataAssault(c,{batteryIds:mountainBatteryIds,report});fight('uspallata');
  c=recoverFreshUspallata(c,{batteryIds:mountainBatteryIds,report});
  const losPatosInputCapture=recordRoutePreparationEvidence({campaign:c,stage:'los-patos-preparation-input',routeKind});

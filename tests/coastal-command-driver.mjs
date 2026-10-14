@@ -1,4 +1,6 @@
 // Keep the commander behind the battery and fire from an affordable legal stance.
+import {sameSurface} from '../game/tactical-space.js';
+import {usefulRouteFiringPosture} from './route-infantry-progress.mjs';
 import {mountainBatteryOrder} from './mountain-battery-driver.mjs';
 import {knownRouteShotSafety} from './route-fire-safety.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
@@ -33,7 +35,7 @@ export function coastalBatteryController(initial,{sharedArtillerySight=false}={}
  // A light piece may arrive ahead of a heavy one. Move the physically leading
  // gun first; purchase order must not make it wait while blocking the rear gun.
  const initialAssigned=new Set(),preferred=initial.artillery.filter(g=>g.side==='player').sort((a,b)=>distanceToApproach(a)-distanceToApproach(b)||String(a.id).localeCompare(String(b.id))).map(g=>{
-  const ids=initial.units.filter(u=>u.side==='player'&&u.id!=='57'&&u.hp>0&&!initialAssigned.has(u.id))
+  const ids=initial.units.filter(u=>u.side==='player'&&u.id!=='57'&&u.hp>0&&sameSurface(u,g)&&!initialAssigned.has(u.id))
    .sort((a,b)=>Math.hypot(a.x-g.x,a.y-g.y)-Math.hypot(b.x-g.x,b.y-g.y)||String(a.id).localeCompare(String(b.id)))
    .slice(0,artilleryProfile(initial,g).crew).map(u=>u.id);
   for(const id of ids)initialAssigned.add(id);
@@ -47,7 +49,7 @@ export function coastalBatteryController(initial,{sharedArtillerySight=false}={}
   const reserved=new Set(working.flatMap(p=>p.ids)),crews=[];
   for(const preference of working){
    const gun=b.artillery.find(g=>g.id===preference.artilleryId),required=artilleryProfile(b,gun).crew,priority=v=>preference.ids.includes(v.id)?preference.ids.indexOf(v.id):reserved.has(v.id)?required+1:required;
-   const ids=b.units.filter(v=>v.side==='player'&&v.id!=='57'&&v.hp>=15&&!v.unconscious&&!v.routed&&!v.departure&&!v.fled&&!v.surrendered&&!assigned.has(v.id))
+   const ids=b.units.filter(v=>v.side==='player'&&v.id!=='57'&&v.hp>=15&&!v.unconscious&&!v.routed&&!v.departure&&!v.fled&&!v.surrendered&&sameSurface(v,gun)&&!assigned.has(v.id))
     .sort((a,c)=>priority(a)-priority(c)||Math.hypot(a.x-gun.x,a.y-gun.y)-Math.hypot(c.x-gun.x,c.y-gun.y)||String(a.id).localeCompare(String(c.id)))
     .slice(0,required).map(v=>v.id);
    if(ids.length<required)continue;
@@ -58,7 +60,7 @@ export function coastalBatteryController(initial,{sharedArtillerySight=false}={}
   if(!crew)return tucumanCombatOrder(b,u);
   const gun=b.artillery.find(g=>g.id===crew.artilleryId);
   const action=mountainBatteryOrder(b,u,{leaderId:crew.ids[0],helperId:crew.ids[1]??'none',crewIds:crew.ids,artilleryId:crew.artilleryId,screenDistance:4,clearCrewLane:true,routeAroundObstacles:true,flankScreen:true,keepCrewTogether:true,sharedArtillerySight});
-  if(assigned.has(u.id)&&b.mode==='combat'&&b.phase==='player'&&!artilleryContact(b,u,gun)&&!u.knockedDown&&!u.entangled&&(!action||action.type==='move')){
+  if(assigned.has(u.id)&&b.mode==='combat'&&b.phase==='player'&&!artilleryContact(b,u,gun)&&!u.knockedDown&&!u.entangled&&(!action||action.type==='move'||action.type==='stance'&&action.stance==='prone'&&!usefulRouteFiringPosture(b,u,action))){
    if(u.stance==='prone')return u.ap>=stanceCost(u,'crouched')?{type:'stance',unitId:u.id,stance:'crouched'}:null;
    const view={...b,units:b.units.filter(v=>v.side===u.side||teamCanSee(b,u.side,v))};
    const route=getReachable({...view,mode:'exploration'},u).filter(p=>p.cost>0&&(p.tacticalLevel??0)===0&&artilleryContact(view,{...u,...p},gun)).sort((a,c)=>a.cost-c.cost)[0];

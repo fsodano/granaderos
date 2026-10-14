@@ -1,21 +1,54 @@
 import {coastalBatteryController} from './coastal-command-driver.mjs';
 import {mountainBatteryOrder} from './mountain-battery-driver.mjs';
 import {artilleryContact,artilleryCrewPlan,artilleryCosts} from '../game/tactical.js';
+import {sameCell} from '../game/tactical-space.js';
+
+// World arrivals reserve the connected two-cell edge apron for carriages.
+// A supplied second gun alone does not justify holding the infantry there.
+function arrivalEdges(battle,gun){
+ const arriving=new Set(battle.units.filter(u=>u.side==='player'&&u.hp>0&&u.entryReason==='arrival').map(u=>u.entryEdge));
+ return [['N',gun.y],['S',battle.height-1-gun.y],['W',gun.x],['E',battle.width-1-gun.x]]
+  .filter(([edge,distance])=>distance<=2&&(!arriving.size||arriving.has(edge))).map(([edge])=>edge);
+}
+function crowdedArrivalGuns(battle,guns){
+ const goal={x:Math.floor(battle.width*.65),y:Math.floor(battle.height*.5)},distance=p=>Math.hypot(p.x-goal.x,p.y-goal.y),crowded=new Set();
+ for(const gun of guns){
+  const edges=arrivalEdges(battle,gun);if(!edges.length)continue;
+  const others=guns.filter(other=>other!==gun&&arrivalEdges(battle,other).some(edge=>edges.includes(edge)));
+  if(!others.length)continue;
+  for(const actor of battle.units.filter(u=>u.side==='player'&&u.hp>=15&&!u.unconscious&&!u.routed&&!u.departure&&artilleryContact(battle,u,gun))){
+   const plan=artilleryCrewPlan(battle,actor,gun,artilleryCosts(battle,actor,gun).move);if(plan.reason)continue;
+   const crew=battle.units.filter(u=>plan.crew.includes(u.id));
+   for(const [dx,dy]of [[1,0],[-1,0],[0,1],[0,-1]]){
+    const destination={...gun,x:gun.x+dx,y:gun.y+dy};if(distance(destination)>=distance(gun))continue;
+    const translated=[destination,...crew.map(u=>({...u,x:u.x+dx,y:u.y+dy}))];
+    for(const other of others)if(translated.some(point=>sameCell(point,other))){crowded.add(gun.id);crowded.add(other.id);}
+   }
+  }
+ }
+ return crowded;
+}
 
 // Closely packed arrival guns share nearby soldiers. Select a legal move with
 // the engine's actual crew, rather than reserving pairs that block each other.
 // The cache is only for an immutable state; replay makes the same decisions.
 export function stagedBatteryController(){
- const plans=new WeakMap(),controllers=new WeakMap();
+ const plans=new WeakMap(),controllers=new WeakMap(),crowding=new WeakMap();
  return (battle,unit)=>{
-  // A lone gun has no arrival conflict. Let the existing coastal controller
-  // move its infantry screen before the crew advances into contact.
+  // Clear only an actual rigid-crew conflict in the arrival apron. Otherwise
+  // let the existing coastal controller move its infantry screen and doctors.
   const loadedGuns=battle.artillery.filter(g=>g.side==='player'&&(g.loaded||g.ammo>0));
-  if(battle.mode==='exploration'&&loadedGuns.length>1){
+  if(!controllers.has(battle))controllers.set(battle,coastalBatteryController(battle,{sharedArtillerySight:true}));
+  const ordinary=controllers.get(battle);
+  if(!crowding.has(battle))crowding.set(battle,battle.mode==='exploration'&&loadedGuns.length>1?crowdedArrivalGuns(battle,loadedGuns):new Set());
+  const crowded=crowding.get(battle);
+  if(crowded.size){
+   // Moving a carriage must not suppress an actual adjacent finite dressing.
+   const care=ordinary(battle,unit);if(care?.type==='useItem'||care?.slot==='medical')return care;
    if(!plans.has(battle)){
     const goal={x:Math.floor(battle.width*.65),y:Math.floor(battle.height*.5)};
     const distance=gun=>Math.hypot(gun.x-goal.x,gun.y-goal.y);
-    const guns=[...loadedGuns]
+    const guns=loadedGuns.filter(gun=>crowded.has(gun.id))
      .sort((a,b)=>distance(b)-distance(a)||a.id.localeCompare(b.id));
     let action=null;
     for(const gun of guns){
@@ -25,6 +58,7 @@ export function stagedBatteryController(){
       if(plan.reason)continue;
       const candidate=mountainBatteryOrder(battle,actor,{
        leaderId:actor.id,helperId:plan.crew.find(id=>id!==actor.id)??'none',
+       crewIds:plan.crew,
        artilleryId:gun.id,routeAroundObstacles:true,sharedArtillerySight:true,
       });
       if(candidate?.type==='artilleryMove'){action=candidate;break;}
@@ -37,7 +71,6 @@ export function stagedBatteryController(){
    if(action)return action.unitId===unit.id?action:null;
   }
   // Once the arrival lane is clear, form crews from their current positions.
-  if(!controllers.has(battle))controllers.set(battle,coastalBatteryController(battle,{sharedArtillerySight:true}));
-  return controllers.get(battle)(battle,unit);
+  return ordinary(battle,unit);
  };
 }

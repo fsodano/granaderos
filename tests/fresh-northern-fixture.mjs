@@ -450,7 +450,13 @@ function freshStockNorthernRoute({onCheckpoint,report=()=>{},routeKind='created'
   s=supplyRouteAmmunition(s,s.squad).campaign;
   notes.push({...record,fundsBeforeSettlement:before,fundsAfterReplacements:s.resources.treasury,replacements,deaths});onCheckpoint?.(sector,s,notes);report({event:'northernBattleSettled',...notes.at(-1)});
  }
- const defense=fightNorthernSector(prepareHiredNorthernDefense(s),'cordoba',{controller:cautiousCombatOrder,report});
+ const defenseReady=prepareHiredNorthernDefense(s);
+ const defense=fightNorthernSector(defenseReady,'cordoba',{controller:cautiousCombatOrder,report});
+ // Retain the already completed native raid in the canonical route journal.
+ // The request supplies its real group identity; settlement supplies its
+ // actual clock and all permanent losses, including the earlier casualties.
+ notes.push({...defense.summary,stage:'recovery-defense',groupId:defenseReady.pendingBattle.defenseGroupId,
+  hour:defense.campaign.hour,second:defense.campaign.secondOfHour,deaths:deadIds(defense.campaign)});
  onCheckpoint?.('cordoba-defense',defense.campaign,[...notes,defense.summary]);
  const recoveryReport=event=>{
   if(event.event==='tucumanRecoveryDefense'){
