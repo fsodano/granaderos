@@ -1030,7 +1030,7 @@ three deaths. Physician 135 marches two hours to the escaped defender and
 spends one dressing; the survivor keeps his wounds, zero morale and dropped
 weapon. The default Salta route is unchanged. Artillery delivery and the
 complete opening still need integration and proof. Three long earned native
-controls are registered in the extended suite.
+controls were registered in that revision's extended suite.
 
 PR [#367](https://github.com/fsodano/granaderos/pull/367) keeps all three actual
 field-gun crew members together and clears a depleted arrival piece with a

@@ -99,7 +99,7 @@ when finished.
 | `npm run test:core` | Run every core mechanic, renderer, portable editor and tooling test file. |
 | `npm run test:campaign` | Run every reviewed campaign data, scenario, earned episode and route test file. |
 | `npm run test:quick` | Run all discovered test files except the extended files listed in the suite configuration. |
-| `npm run test:extended` | Run the campaign, native replay and artwork files listed in the extended suite configuration. |
+| `npm run test:extended` | Run the long campaign and artwork files listed in the extended suite configuration. |
 | `npm test` | Run every `tests/*.test.mjs` file with automatic worker selection and a timing report. |
 | `npm run typecheck` | Check the web TypeScript project without emitting files. |
 | `npm run build` | Build and verify the static browser export, then stage it in root `dist/`. |
@@ -118,8 +118,8 @@ Core and campaign are separate file scopes. The reviewed campaign list is
 discovered files belong to core. Mixed files run intact in their assigned scope.
 Portable campaign-engine or editor tests can belong to core; the word
 "campaign" in a filename does not assign its scope. The runner rejects stale or
-duplicate manifest entries. New earned-input and full-route dependencies need
-an explicit campaign declaration or a justified core fixture review. Core and
+duplicate manifest entries. New current-state scenario and full-route dependencies need
+an explicit campaign declaration or a justified core scope review. Core and
 campaign cover the complete discovered suite once, with no overlap.
 
 Duration is a separate selection. Both semantic commands default to all files
@@ -138,8 +138,8 @@ does not change the semantic membership or the exhaustive `npm test` command.
 The quick and extended partition is defined in
 [`tools/test-suite-config.mjs`](../../tools/test-suite-config.mjs) and checked by
 [`tools/test-suites.mjs`](../../tools/test-suites.mjs). Extended files cover long
-campaign routes, earned native replay checks and full illustrated sprite
-repacking. Their assertions remain in the full suite. Small engineer and
+fresh campaign routes and full illustrated sprite repacking. Their assertions
+remain in the full suite. Small engineer and
 commander death checks, synthetic sprite packing checks and other asset checks
 remain in quick. New test files enter quick by default. Timings change execution
 order; they do not remove files from a suite. Use the runner's list commands

@@ -26,7 +26,7 @@ Abrí [Granaderos en GitHub Pages](https://fsodano.github.io/granaderos/). No re
 
 El juego guarda el progreso en el navegador. Usá **Guardar** para exportar una partida y **Importar partida** para cargarla. GitHub Pages y localhost usan espacios de almacenamiento separados. Para trasladar una campaña entre ambos, exportá la partida e importala en el otro sitio.
 
-Para probar la versión 0.1, iniciá una campaña nueva. No se garantiza que funcionen las partidas anteriores al formato de paredes compartidas entre casillas. Las partidas con la economía anterior tampoco se convierten.
+El juego está en desarrollo. Para probar una versión, iniciá una campaña nueva. Las pruebas de guardado usan partidas creadas con esa misma versión; no se mantiene compatibilidad con partidas de versiones anteriores.
 
 ## Ejecutar en tu equipo
 
