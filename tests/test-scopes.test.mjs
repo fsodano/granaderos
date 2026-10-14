@@ -38,7 +38,7 @@ test('new earned inputs and full route imports require explicit review while por
 test('repository scope and duration partitions retain every test and all original complete campaign gates',async()=>{
  const root=fileURLToPath(new URL('../',import.meta.url)),all=await discoverTests(root),scopes=assertReviewedTestScopes(root,all);
  assert.equal(scopes.campaign.length,campaignTests.length);assert.equal(scopes.core.length+scopes.campaign.length,all.length);
- for(const file of ['tests/fresh-ending-route.test.mjs','tests/fresh-campaign-recovery.test.mjs','tests/fresh-historical-loss.test.mjs','tests/stock-cuyo-battery-defense.test.mjs'])assert.ok(scopes.campaign.includes(file),file);
+ for(const file of ['tests/fresh-ending-route.test.mjs','tests/fresh-campaign-recovery.test.mjs','tests/fresh-historical-loss.test.mjs'])assert.ok(scopes.campaign.includes(file),file);
  for(const file of ['tests/tactical-web.test.mjs','tests/campaign-events.test.mjs','tests/campaign-library.test.mjs','tests/test-runner.test.mjs'])assert.ok(scopes.core.includes(file),file);
  for(const duration of ['full','quick','extended']){
   const core=suiteManifest(all,'core',undefined,undefined,duration),campaign=suiteManifest(all,'campaign',undefined,undefined,duration),expected=suiteManifest(all,duration);

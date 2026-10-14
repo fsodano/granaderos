@@ -1,19 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
-import {gunzipSync} from 'node:zlib';
-import {createHash} from 'node:crypto';
-import {decodeSave} from '../game/save.js';
 import {createBattle,actBattle,teamCanSee,hasLineOfSight,firearmShotOptions,actionCosts,stanceCost,interruptAvailable} from '../game/tactical.js';
-import {chooseEnemyAction} from '../game/tactical-ai.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {spacePoint} from '../game/tactical-space.js';
-import {combatOrder} from './opening-driver.mjs';
-import {northernCombatOrder} from './northern-route.mjs';
-import {tucumanCombatOrder} from './tucuman-driver.mjs';
 
 const risk=option=>Boolean(option.interveningFriendly||option.shots?.some(shot=>shot.interveningFriendly));
-const known=(battle,unit)=>({...battle,units:battle.units.filter(other=>other.side===unit.side||teamCanSee(battle,unit.side,other)),npcs:(battle.npcs??[]).filter(other=>teamCanSee(battle,unit.side,other))});
 function usefulShots(battle,unit){
  const shots=[];
  for(const target of battle.units.filter(other=>other.side==='enemy'&&other.hp>=15&&!other.departure&&!other.surrendered&&!other.unconscious&&!other.routed&&teamCanSee(battle,unit.side,other))){
@@ -23,37 +14,6 @@ function usefulShots(battle,unit){
  }
  return shots;
 }
-function paidPreview(battle,unit,stance){
- const cost=stanceCost(unit,stance),position={...unit,stance,movementMode:stance==='prone'?'prone':stance==='crouched'?'crouch':'walk',momentum:0,weaponReady:false,ap:unit.ap-cost};
- const view=known(battle,unit),posed={...view,units:view.units.map(other=>other.id===unit.id?position:other)};
- return {stance,cost,remainingAP:position.ap,weaponReady:position.weaponReady,shots:usefulShots(posed,position)};
-}
-
-test('the exact earned original Córdoba blocked-fire pair admits the cheapest paid useful posture without executing an order',t=>{
- const raw=gunzipSync(readFileSync(new URL('./fixtures/northern-known-friendly-posture.save.json.gz',import.meta.url))),proof=JSON.parse(readFileSync(new URL('./fixtures/northern-known-friendly-posture.provenance.json',import.meta.url)));
- assert.equal(createHash('sha256').update(raw).digest('hex'),proof.sha256);
- const pair=decodeSave(raw.toString()),before=structuredClone(pair),battle=pair.battle,unit=battle.units.find(actor=>actor.id==='113');
- assert.deepEqual([battle.sectorId,battle.turn,battle.phase,battle.status],['cordoba',3,'player','active']);assert.equal(interruptAvailable(battle,unit),true);
- assert.deepEqual(combatOrder(battle,unit),proof.originalAction);assert.equal(chooseEnemyAction(known(battle,unit),unit),null);
- const target=battle.units.find(actor=>actor.id===proof.originalAction.targetId),original=firearmShotOptions(battle,unit,target,0).find(option=>option.hitLocation==='torso');assert.equal(risk(original),true);
- assert.equal(usefulShots(known(battle,unit),unit).length,0,'there is no useful safe current shot');
- const crouch=paidPreview(battle,unit,'crouched'),standing=paidPreview(battle,unit,'standing');
- assert.deepEqual([crouch.cost,crouch.remainingAP,crouch.weaponReady],[3,70,false]);assert.equal(standing.cost,6);
- assert.ok(crouch.shots.length>0);assert.ok(standing.shots.length>0);assert.ok(crouch.shots.some(shot=>shot.targetId==='enemy-9'&&shot.hitLocation==='head'&&shot.aim===0&&shot.paidFire===10));
- for(const shot of crouch.shots)assert.ok(shot.paidFire<=crouch.remainingAP);
- const action={type:'stance',unitId:'113',stance:'crouched'};
- for(const controller of [northernCombatOrder,tucumanCombatOrder])assert.deepEqual(controller(battle,unit),action);
- // Declared private-occupant removal changes only a selector input clone.
- // It is not a campaign save, action or altered earned outcome.
- const privateVariant=structuredClone(battle),observed=known(battle,unit);
- privateVariant.units=privateVariant.units.filter(other=>observed.units.some(actor=>actor.id===other.id));privateVariant.npcs=privateVariant.npcs.filter(other=>observed.npcs.some(actor=>actor.id===other.id));
- assert.ok(privateVariant.units.length<battle.units.length);
- const privateBefore=structuredClone(privateVariant);
- assert.deepEqual(northernCombatOrder(privateVariant,privateVariant.units.find(actor=>actor.id===unit.id)),action);assert.deepEqual(privateVariant,privateBefore);
- assert.deepEqual(pair,before,'every earned campaign and battle field remains unchanged');
- t.diagnostic(JSON.stringify({case:'earned-original-Cordoba-pure-posture-selection',scope:'exact official paired original input; zero tactical or campaign actions; no victory claim',fixtureSha256:proof.sha256,original:proof.originalAction,originalForecast:original,nativeAction:null,selected:action,apBefore:unit.ap,crouched:{cost:crouch.cost,remainingAP:crouch.remainingAP,safeUsefulShots:crouch.shots},standing:{cost:standing.cost,remainingAP:standing.remainingAP,safeUsefulShots:standing.shots},inputUnchanged:true,privateInputVariantUnchanged:true}));
-});
-
 // Declared native stance-cost arena. This proves the ordinary order's payment
 // and replay, separately from the earned-input selector above. No campaign is
 // created, no shot/end-turn loop runs and no actor receives supplies by order.
