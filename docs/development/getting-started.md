@@ -234,7 +234,7 @@ Documentation link checks and `git diff --check` verify documentation structure 
 
 After each accepted merge into `main`, create a patch or minor tag for that exact merged commit. Preserve the historical `0.1` tag. The first tag after that checkpoint is `0.1.1`; later merges advance the patch or minor version. Version `1.0` requires an explicit request from the user.
 
-Before freezing the local candidate, set the same version in root `package.json`, `web/package.json` and the two root package records in `web/package-lock.json`. Keep dependency versions unchanged. Verify that the production `build-info.json` records this version and the exact source revision.
+Before freezing the local candidate, set the same version in `VERSION`, root `package.json`, `web/package.json` and the two root package records in `web/package-lock.json`. Keep dependency versions unchanged. Verify that the production `build-info.json` records this version and the exact source revision.
 
 Run the required local checks before publishing. After the reviewed merge, verify the remote `main` revision and bind the tag to it. Record the checks and remaining limits with the delivery. A development tag retains that evidence and does not establish complete campaign or release acceptance.
 
