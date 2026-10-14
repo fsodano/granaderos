@@ -65,10 +65,10 @@ Browser storage belongs to the current browser profile and site origin. A differ
 
 The save implementation is in [`game/save.js`](../../game/save.js). [`useCampaignAutosave.ts`](../../web/lib/useCampaignAutosave.ts) saves campaign and battle changes and reports storage errors through the game notice.
 
-Version 0.1 uses the shared wall-edge map format. Compatibility with campaign
-saves made before that format is not guaranteed. Keep exported backups and use
-a new campaign for version 0.1 checks. See the
-[wall verification record](../verification/wall-edges.md).
+This game is in pre-release development. Validate new campaigns and saves made
+with the current build, including export, import and browser reload. Historical
+save snapshots are not a release gate, and compatibility with earlier builds is
+not guaranteed. Do not retain obsolete campaign checkpoints as replay fixtures.
 
 ## Checks
 
