@@ -14,27 +14,36 @@ function routedBatteryAdvance(b,u,gun,destination){
  if(plan.reason)return null;
  const key=p=>`${p.x},${p.y}`,crew=new Set(plan.crew),offsets=[{x:0,y:0},...b.units.filter(v=>crew.has(v.id)).map(v=>({x:v.x-gun.x,y:v.y-gun.y}))];
  const ground=new Set(b.tiles.filter(t=>!t.blocked&&!['water','cliff'].includes(t.type)).map(key));
- const blocked=new Set((b.props??[]).filter(p=>p.blocksMovement!==false&&(p.tacticalLevel??0)===0).flatMap(propCells).map(key));
+ const fixedBlocked=new Set((b.props??[]).filter(p=>p.blocksMovement!==false&&(p.tacticalLevel??0)===0).flatMap(propCells).map(key));
+ for(const g of b.artillery)if(g.id!==gun.id)fixedBlocked.add(key(g));
+ const blocked=new Set(fixedBlocked);
  const onGround=v=>(v.tacticalLevel??0)===0&&(v.hp??100)>0&&!v.departure&&!v.fled;
  for(const v of b.units)if(onGround(v)&&!crew.has(v.id)&&(v.side===u.side||teamCanSee(b,u.side,v)))blocked.add(key(v));
  for(const v of b.npcs??[])if(onGround(v))blocked.add(key(v));
- for(const g of b.artillery)if(g.id!==gun.id)blocked.add(key(g));
  const open=p=>ground.has(key(p))&&!blocked.has(key(p));
- const fits=p=>offsets.every(o=>open({x:p.x+o.x,y:p.y+o.y})&&(!o.x||!o.y||(open({x:p.x+o.x,y:p.y})&&open({x:p.x,y:p.y+o.y}))));
- const distance=p=>Math.hypot(p.x-destination.x,p.y-destination.y),queue=[{x:gun.x,y:gun.y,first:null}],seen=new Set([key(gun)]);
- let best=queue[0];
- for(let i=0;i<queue.length;i++){
-  const at=queue[i];if(distance(at)<distance(best))best=at;
-  if(distance(at)===0)break;
-  for(const [dx,dy]of [[1,0],[0,-1],[0,1],[-1,0]]){
-   const p={x:at.x+dx,y:at.y+dy};
-   if(seen.has(key(p))||!fits(p)||offsets.some(o=>wallMovementBlocked(b,{x:at.x+o.x,y:at.y+o.y},{x:p.x+o.x,y:p.y+o.y})))continue;
-   seen.add(key(p));queue.push({...p,first:at.first??p});
+ // Every rigidly translated destination must be free. Native crew contact
+ // does not block on an unrelated corner body. Keep fixed obstacles and
+ // other cannons outside that contact corner, as in the existing route.
+ const contactOpen=p=>ground.has(key(p))&&!fixedBlocked.has(key(p));
+ const route=cornerOpen=>{
+  const fits=p=>offsets.every(o=>open({x:p.x+o.x,y:p.y+o.y})&&(!o.x||!o.y||(cornerOpen({x:p.x+o.x,y:p.y})&&cornerOpen({x:p.x,y:p.y+o.y}))));
+  const distance=p=>Math.hypot(p.x-destination.x,p.y-destination.y),queue=[{x:gun.x,y:gun.y,first:null}],seen=new Set([key(gun)]);
+  let best=queue[0];
+  for(let i=0;i<queue.length;i++){
+   const at=queue[i];if(distance(at)<distance(best))best=at;
+   if(distance(at)===0)break;
+   for(const [dx,dy]of [[1,0],[0,-1],[0,1],[-1,0]]){
+    const p={x:at.x+dx,y:at.y+dy};
+    if(seen.has(key(p))||!fits(p)||offsets.some(o=>wallMovementBlocked(b,{x:at.x+o.x,y:at.y+o.y},{x:p.x+o.x,y:p.y+o.y})))continue;
+    seen.add(key(p));queue.push({...p,first:at.first??p});
+   }
   }
- }
- if(!best.first)return null;
- const action={type:'artilleryMove',unitId:u.id,artilleryId:gun.id,...best.first};
- return actBattle(b,action).lastError?null:action;
+  if(!best.first)return null;
+  const action={type:'artilleryMove',unitId:u.id,artilleryId:gun.id,...best.first};
+  return actBattle(b,action).lastError?null:action;
+ };
+ // Preserve every admitted old route. Retry only a genuine no-progress hold.
+ return route(open)??route(contactOpen);
 }
 
 export const mountainBatteryOrder=(b,u,{screenDistance=Infinity,leaderId='7',helperId='8',crewIds=[leaderId,helperId],clearCrewLane=false,artilleryId=null,routeAroundObstacles=false,flankScreen=false,keepCrewTogether=false,sharedArtillerySight=false}={})=>{
