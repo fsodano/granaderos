@@ -21,8 +21,9 @@ import {artilleryProfile} from '../game/artillery-definitions.js';
 import {artilleryTransportQuote,storedArtilleryRecord} from '../game/artillery-transport.js';
 import {contractExpiresSeconds,contractRenewalQuote} from '../game/contracts.js';
 import {previewStrategicRoute} from '../game/strategic-route.js';
-import {continueNorthernHandoverTravel} from './northern-handover-route.mjs';
+import {continueNorthernHandoverTravel,resolveNorthernHandoverEncounter} from './northern-handover-route.mjs';
 import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
+import {prepareNorthernRoadMedicalReserve} from './northern-road-reserve-preparation.mjs';
 
 const localMembers=(c,preferred,limit=6,allowed=null)=>[...new Set([...preferred,...c.squad,...c.recruited])].filter(id=>(!allowed||allowed.has(id))&&canReassignOperative(c,id)&&operativeLocation(c,id)===c.location).slice(0,limit);
 
@@ -78,6 +79,17 @@ export function restoreNorthernRoad(start,{report=()=>{},keepServing}={}){
   const expired=before.recruited.filter(id=>before.operativeState[id].alive&&!c.recruited.includes(id)&&c.operativeState[id].alive);
   if(expired.length)report({event:'northernRoadServiceExpired',ids:expired,campaign:structuredClone(c)});
  };
+ let medicalProgress=null,medicalReady=false;
+ for(let attempt=0;attempt<4;attempt++){
+  const prepared=prepareNorthernRoadMedicalReserve(c,{progress:medicalProgress,...(keepers?{keepServing:[...keepers]}:{}),report});
+  c=prepared.campaign;medicalProgress=prepared.progress;
+  if(keepers&&prepared.reliefId!==null&&c.recruited.includes(prepared.reliefId))keepers.add(prepared.reliefId);
+  if(c.pendingEncounter){c=resolveNorthernHandoverEncounter(c,{controllerFor:northernRoadReserveController,report});continue;}
+  assert.equal(prepared.ready,true,prepared.reason);medicalReady=true;break;
+ }
+ assert.equal(medicalReady,true,'Reserve preparation must finish within its actual encounter retry bound.');
+ assert.equal(c.pendingEncounter,null,'Reserve preparation must resolve its real encounter before field work.');
+ assert.ok(!medicalProgress||medicalProgress.staging&&c.operativeState[medicalProgress.id].assignment==='rest','The paid medical reserve must finish actual staging before the field leaves.');
  {
  // Use surviving local members; a named relief physician may be dead, unpaid
  // or still treating another town and cannot be teleported into this column.
