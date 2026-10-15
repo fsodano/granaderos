@@ -10,6 +10,7 @@ import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {fightNorthernSector} from './northern-route.mjs';
 import {coastalBatteryController} from './coastal-command-driver.mjs';
+import {coordinatedHospitalBattery} from './coordinated-hospital-battery.mjs';
 import {meetRecruits} from './campaign-recruitment-route.mjs';
 import {prepareFinalAssault} from './final-campaign-route.mjs';
 import {recoverRecapturedRoad} from './recovery-road-care.mjs';
@@ -25,6 +26,16 @@ import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.m
 
 const localMembers=(c,preferred,limit=6,allowed=null)=>[...new Set([...preferred,...c.squad,...c.recruited])].filter(id=>(!allowed||allowed.has(id))&&canReassignOperative(c,id)&&operativeLocation(c,id)===c.location).slice(0,limit);
 
+// A local hospital reserve with only spent pieces keeps its paid roof posts.
+// Select once from the actual entry; a charged battery keeps its existing
+// coastal crew policy even after it spends its final round during this fight.
+export function northernRoadReserveController(initial){
+ const guns=initial.artillery.filter(g=>g.side==='player');
+ return guns.length&&guns.every(g=>!g.loaded&&!(g.ammo>0))
+  ?coordinatedHospitalBattery(initial).controller
+  :coastalBatteryController(initial,{sharedArtillerySight:true});
+}
+
 // An immediate travel order may return with a live encounter or unfinished
 // journey. Resolve it through the existing native reserve/save/finite-aid path,
 // then follow that same selected party; an order return is not an arrival.
@@ -33,7 +44,7 @@ export function completeNorthernRoadArrival(start,{target='tucuman',mode='posta'
  assert.equal(start.pendingBattle,null);
  assert.ok(keepServing===undefined||party.members.filter(id=>start.operativeState[id].alive&&!start.operativeState[id].captured).every(id=>keepServing.includes(id)),'The actual travelling party must retain road duty.');
  let defendedTarget=false;
- const campaign=continueNorthernHandoverTravel(start,{squadId,target,mode:party.journey?.mode??mode,keepServing,controllerFor:initial=>coastalBatteryController(initial,{sharedArtillerySight:true}),report:event=>{
+ const campaign=continueNorthernHandoverTravel(start,{squadId,target,mode:party.journey?.mode??mode,keepServing,controllerFor:northernRoadReserveController,report:event=>{
   if(event.event==='northernHandoverDefenseReplay'&&event.sector===target){assert.equal(event.status,'victory');assert.equal(event.exactSavedReplay,true);defendedTarget=true;}
   report(event);
  }});
