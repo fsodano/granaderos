@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,presentedActBattle,actionCosts,meleePreview,artilleryContact,artilleryCrewPlan,artilleryCosts,medicalUsePreview,getReachable,lookPreview,stanceCost} from '../game/tactical.js';
+import {createBattle,actBattle,presentedActBattle,endTurn,presentedEndTurn,actionCosts,meleePreview,artilleryContact,artilleryCrewPlan,artilleryCosts,medicalUsePreview,getReachable,lookPreview,stanceCost,teamCanSee} from '../game/tactical.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {COMBAT_ROUND_SECONDS} from '../game/time.js';
 import {defaultContentPackage} from '../game/content-package.js';
@@ -9,18 +9,18 @@ import {createdUspallataBattery} from './created-uspallata-battery.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
 
 const unit=(b,id)=>b.units.find(u=>u.id===id),piece=b=>b.artillery.find(g=>g.id==='heavy');
-function arena({medical=false,charged=false,rifle=false,physicianThreat=false,offContact=false}={}){
+function arena({medical=false,charged=false,rifle=false,physicianThreat=false,offContact=false,contact={},crewSlot='primary',otherEnemies=[],blockedRow=null}={}){
  const blade=weaponMetadata(defaultContentPackage().weapons.find(w=>w.id==='blade-1813'));
  const players=[
-  {id:'c1',x:offContact?2:5,y:4,marksmanship:0,weapon:rifle?1800:1802,ammo:rifle?0:1,strength:100,dexterity:100,...(medical?{activeSlot:'medical',medical:80,medkits:1}:{}),loaded:1},
+  {id:'c1',x:offContact?2:5,y:4,marksmanship:0,weapon:rifle?1800:1802,ammo:rifle?0:1,strength:100,dexterity:100,activeSlot:crewSlot,...(medical?{activeSlot:'medical',medical:80,medkits:1}:{}),loaded:1},
   {id:'c2',x:4,y:5,marksmanship:1},{id:'c3',x:4,y:4,marksmanship:2},{id:'small-crew',x:10,y:4,marksmanship:3},
   {id:'doctor',x:1,y:1,marksmanship:90,medical:95,medkits:3,loaded:0},
   {id:'screen1',x:6,y:4,marksmanship:91,...(medical?{hp:6,maxHp:100,bleeding:5,bandaged:80}:{})},
   {id:'screen2',x:9,y:8,marksmanship:92},{id:'screen3',x:10,y:8,marksmanship:93},
  ].map(raw=>({weapon:1800,blade:1813,bladeMetadata:structuredClone(blade),loaded:0,ammo:0,medical:0,medkits:0,stance:'crouched',hp:100,maxHp:100,morale:90,energy:100,fatigue:0,facing:charged||rifle?4:0,...raw}));
  return createBattle(players,{id:'declared-mountain-close-crew',width:16,height:14,hour:12,seed:45,
-  tiles:Array.from({length:224},(_,i)=>({x:i%16,y:Math.floor(i/16),type:'grass',blocked:false,cover:0})),
-  enemies:[{id:'contact',x:physicianThreat?1:offContact?2:5,y:physicianThreat?2:charged||rifle?10:3,hp:500,maxHp:500,weapon:0,blade:0,loaded:0,ammo:0,agility:0,dexterity:0,patrol:false,overwatch:false,facing:0}],
+  tiles:Array.from({length:224},(_,i)=>({x:i%16,y:Math.floor(i/16),type:'grass',blocked:Math.floor(i/16)===blockedRow,cover:0})),
+  enemies:[{id:'contact',x:physicianThreat?1:offContact?2:5,y:physicianThreat?2:charged||rifle?10:3,hp:500,maxHp:500,weapon:0,blade:0,loaded:0,ammo:0,agility:0,dexterity:0,patrol:false,overwatch:false,facing:0,...contact},...otherEnemies],
   artillery:[{id:'heavy',type:'field8',side:'player',x:5,y:5,loaded:charged,ammo:charged?2:0},{id:'small',type:'swivel',side:'player',x:10,y:5,loaded:false,ammo:0}],
  });
 }
@@ -85,4 +85,53 @@ test('a crew member outside contact rejoins its real piece rather than following
  const start=arena({offContact:true}),before=structuredClone(start),actor=unit(start,'c1');assert.equal(artilleryContact(start,actor,piece(start)),false);
  const action=createdUspallataBattery(start).controller(start,actor);assert.equal(action?.type,'move');const quote=getReachable(start,actor).find(p=>p.x===action.x&&p.y===action.y&&(p.tacticalLevel??0)===(action.tacticalLevel??0));assert.ok(quote&&quote.cost>0&&quote.cost<=20);
  const after=replay(start,[action]);assert.equal(unit(after,actor.id).ap,actor.ap-quote.cost);assert.ok(Math.hypot(unit(after,actor.id).x-piece(after).x,unit(after,actor.id).y-piece(after).y)<Math.hypot(actor.x-piece(start).x,actor.y-piece(start).y));assert.deepEqual(after.artillery,start.artillery);assert.deepEqual(start,before);
+});
+
+const remainingEnemy={id:'remaining',x:14,y:12,hp:500,maxHp:500,weapon:0,blade:0,ammo:0,loaded:0,patrol:false,overwatch:false};
+
+test('a living routed close opponent admits the same paid blade continuation as the Native preview',()=>{
+ const declared=arena({contact:{routed:true},otherEnemies:[remainingEnemy]}),prelude=paidWindow(declared),start=prelude.battle,before=structuredClone(start),helper=createdUspallataBattery(start),actor=unit(start,'c1'),target=unit(start,'contact');
+ assert.equal(target.routed,true);assert.equal(target.unconscious,false);assert.equal(artilleryContact(start,actor,piece(start)),true);
+ const hand=actionCosts(start,actor).weapon;assert.equal(meleePreview(start,{...actor,activeSlot:'blade',ap:actor.ap-hand},target).valid,true);
+ const switchOrder=helper.controller(start,actor);assert.deepEqual(switchOrder,{type:'weapon',unitId:actor.id,slot:'blade'});
+ const switched=replay(start,[switchOrder]),ready=unit(switched,actor.id),quote=meleePreview(switched,ready,unit(switched,target.id));assert.equal(quote.valid,true);assert.deepEqual(quote.path,[]);
+ const strike=helper.controller(switched,ready);assert.deepEqual(strike,{type:'melee',unitId:actor.id,targetId:target.id});
+ const after=replay(start,[switchOrder,strike]);assert.equal(unit(after,actor.id).activeSlot,'blade');assert.equal(unit(after,actor.id).ap,actor.ap-hand-quote.pa);assert.ok(unit(after,target.id).hp<target.hp);fixed(start,after);
+ assert.deepEqual(replay(declared,[...prelude.orders,switchOrder,strike]),after);assert.deepEqual(start,before);
+});
+
+test('a declared critical close body uses Native target admission without an invented healthy-target threshold',()=>{
+ const declared=arena({crewSlot:'blade',contact:{hp:8,maxHp:100,bleeding:0},otherEnemies:[remainingEnemy]}),prelude=paidWindow(declared),start=prelude.battle,before=structuredClone(start),helper=createdUspallataBattery(start),actor=unit(start,'c1'),target=unit(start,'contact');
+ assert.equal(target.hp,8);assert.equal(target.unconscious,true);assert.equal(artilleryContact(start,actor,piece(start)),true);
+ const quote=meleePreview(start,actor,target);assert.equal(quote.valid,true);assert.deepEqual(quote.path,[]);
+ const strike=helper.controller(start,actor);assert.deepEqual(strike,{type:'melee',unitId:actor.id,targetId:target.id});
+ const after=replay(start,[strike]);assert.equal(unit(after,actor.id).activeSlot,'blade');assert.equal(unit(after,actor.id).ap,actor.ap-quote.pa);assert.ok(unit(after,target.id).hp<target.hp);fixed(start,after);
+ assert.deepEqual(replay(declared,[...prelude.orders,strike]),after);assert.deepEqual(start,before);
+});
+
+test('Native-unavailable and unseen contacts cannot authorize a crew blade strike',()=>{
+ const declarations=[
+  {name:'dead',contact:{hp:0,maxHp:100}},
+  {name:'surrendered',contact:{surrendered:true}},
+  {name:'fled',contact:{fled:true}},
+  {name:'absent',contact:{id:'elsewhere',x:14,y:12}},
+  {name:'hidden',contact:{x:5,y:12},blockedRow:10},
+ ];
+ for(const declaration of declarations){
+  const start=arena({...declaration,crewSlot:'blade',otherEnemies:[remainingEnemy]}),before=structuredClone(start),stored=validateBattleSnapshot(JSON.parse(JSON.stringify(start))),actor=unit(start,'c1'),target=unit(start,'contact');assert.deepEqual(stored,start);
+  if(declaration.name==='hidden')assert.equal(teamCanSee(start,'player',target),false);
+  assert.equal(meleePreview(start,actor,target).valid,false,declaration.name);
+  const action=createdUspallataBattery(start).controller(start,actor);assert.notEqual(action?.type,'melee',declaration.name);assert.deepEqual(start,before);
+ }
+});
+
+test('an actual Native departure removes the routed opponent from a fixed crew blade continuation',()=>{
+ const start=arena({crewSlot:'blade',contact:{routed:true},otherEnemies:[remainingEnemy]}),before=structuredClone(start);let direct=start,shown=start,stored=validateBattleSnapshot(JSON.parse(JSON.stringify(start))),windows=0;
+ for(;windows<16&&!unit(direct,'contact').departure;windows++){
+  direct=endTurn(direct);shown=presentedEndTurn(shown).state;stored=validateBattleSnapshot(JSON.parse(JSON.stringify(endTurn(stored))));
+  assert.equal(direct.lastError,null);assert.deepEqual(shown,direct);assert.deepEqual(stored,direct);
+ }
+ assert.ok(windows>0&&windows<=16);assert.deepEqual(start,before);
+ const target=unit(direct,'contact'),actor=unit(direct,'c1');assert.ok(target.departure);assert.equal(target.fled,true);assert.equal(meleePreview(direct,actor,target).valid,false);
+ const action=createdUspallataBattery(direct).controller(direct,actor);assert.notEqual(action?.type,'melee');
 });
