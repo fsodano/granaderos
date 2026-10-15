@@ -62,22 +62,24 @@ original complete recovery, ending and historical-loss files and their battle
 limits. Every complete run starts fresh. Failed checkpoints are retained as
 passive evidence and are not resumed as diagnostic input.
 
-On reviewed head `9eee7f97`, campaign quick completes all 109 files and passes
-547/547 tests, with no failures, cancellations or skips. Core quick on its
+On reviewed head `aed2760a`, campaign quick completes all 110 files and passes
+554/554 tests, with no failures, cancellations or skips. Core quick on its
 ancestor `d0508806` completes all 924 files and passes 7,210/7,210 tests, also
 with no failures, cancellations or skips. These are separate suite results.
 
-The complete original opening on `9eee7f97` still fails: three tests pass, two
-fail and three skip. The rescue quote now counts actual Native first-aid
-strokes. The physician still has three dressings for four clinical strokes.
-Passive evidence identifies one available dressing on a living, serving local
-donor after retaining that donor's last dressing. No transfer pass is claimed.
+The complete original opening on `aed2760a` still fails: five tests pass, two
+fail and one skips. The finite donor transfer and the following complete
+medical courier/recovery stage pass. During later Salta battery preparation,
+the Tucumán reserve loses a counterattack at turn fifteen, after 109 actions
+and 183 tactical seconds. The original victory assertion remains strict.
 
 The complete original historical-loss run on `d0508806` fails its living and
 15-HP relief guard. A fresh repeat on `692cac9f`, which adds passive observations
 only, confirms that the physician has three actual dressings but reaches a
 7-HP bleeding patient too late during a walking approach. The required patient
 dies before treatment. The health and finite-supply assertions remain strict.
+A fresh complete original historical-loss run on `aed2760a`, with legal running
+preparation, remains active. Its outcome is pending.
 
 The complete original funded recovery on `d0508806` finishes 0/1 in 2,388.831
 seconds. The Tucumán reserve loses its Native counterattack at turn eight,
@@ -87,9 +89,13 @@ defenders have no dressings, and the player cannon is empty. Casualties remain
 permanent. The failure is
 in northern road reunion, before later campaign acceptance can be checked.
 
-The complete original two-ending file remains running on frozen `d0508806`
-source. No result is claimed while that file remains active. The production
-export on that source passes its nested-path audit: 1,413 files and
+The complete original two-ending file on `d0508806` finishes 0/2 in 2,595.423
+seconds. Loose seed eight retains its physician through Ensenada, then stops
+at an unavailable Uspallata battery arrival cell. Installed seed 1812 cannot
+afford the required renewal for 105 during stable recovery. Its patients and
+paid service remain required. Neither saved ending continuation is accepted.
+
+The production export on `d0508806` passes its nested-path audit: 1,413 files and
 1,045 asset references, version `0.1.5 · 3dd756ed68a8`. Browser review verifies a
 fresh installed start, paid hire, 3D tactical entry, reload/Continue and export
 and import of that same current-format game. Import closes the menu and restores
