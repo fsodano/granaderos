@@ -116,9 +116,16 @@ before prolonged care advances the clock.
 The fresh complete original recovery on frozen `15d392e6` also finishes 0/1,
 in 1,872.458 seconds. Its five living Tucumán reserve members retreat at turn
 ten after 145 actor orders and 149 seconds. The reviewed preparation changes
-the actual fight but does not satisfy the original victory assertion. The
-complete two-ending file remains active on that same frozen source; the quick
-suite is separate from whole-route acceptance.
+the actual fight but does not satisfy the original victory assertion. Its
+actual five-person entry is healthy, rested, supplied and on roof cover, but
+the reunion caller selects the ordinary infantry controller. The coordinated
+hospital controller is not reached. The correction must preserve this actual
+reserve and synchronize every public order with its campaign state.
+The complete two-ending file on that same frozen source finishes 0/2 in
+2,228.656 seconds. The loose route retreats at Uspallata; the installed route
+retreats at Los Patos at turn sixteen after 218 actor orders and 218 seconds.
+Neither ending nor its saved continuation is accepted. The quick suite is
+separate from whole-route acceptance.
 
 The complete original opening on `df62e17a` still fails: five tests pass, two
 fail and one skips, in 409.432 seconds. The finite donor transfer and the following complete
@@ -261,8 +268,9 @@ The closed loose-seed case on `15d392e6` still retreats at turn seven after
 Its physician now performs three actual aid strokes instead of one, and dies
 with twelve dressings left. The heavy gun retains one loaded charge and three
 rounds. This confirms that the approach change executes; it does not prove
-victory, cap exhaustion or complete ammunition exhaustion. The installed case
-and whole-file result remain pending.
+victory, cap exhaustion or complete ammunition exhaustion. The complete file
+finishes 0/2; the installed case reaches Uspallata victory before losing at
+Los Patos.
 
 Passive review of the complete installed Los Patos failure records 748 stance
 orders. Three surviving flank soldiers repeat crouched, prone and standing
@@ -271,7 +279,12 @@ correction rejects an otherwise useless firing posture using the existing
 paid shot forecast, and follows actual shared contacts beyond that point.
 Six complete affected files pass 32/32. Five fresh controls preserve useful
 fire and adjacent finite aid, check successive paid bounds, and exclude hidden
-enemy positions from the decision. Both complete endings remain required.
+enemy positions from the decision. The later complete installed case on
+`15d392e6` replaces the old stance loop with paid movement, but still retreats
+at turn sixteen. Its retained request starts the north flank at 26 energy and
+74 fatigue, and the south flank at 32 energy and 68 fatigue, after their real
+marches. The preparation does not sleep these arrived columns before queuing
+their attack. Both complete endings remain required.
 
 The reviewed clinic correction restores actual wounded survivors before the
 separate battery journey. Earlier and later care share one 72-hour allowance;
