@@ -147,6 +147,12 @@ below for the current file counts.
 
 Use affected extended checks when changing their campaign routes, test drivers, authored sprite sources or sprite packer. Add affected campaign checks when a shared mechanic can change a route outcome. Run the full suite before a release or a claim of complete campaign acceptance. A short result does not establish that the complete campaign passes.
 
+For browser checks of an earned ending, set `GRANADEROS_CURRENT_QA_EXPORT_DIR`
+to an existing absolute directory outside the checkout before the fresh route
+run. Existing official save calls then export current victory and defeat saves.
+Use an export only after its complete original test file passes. Keep these
+temporary outputs out of the repository; do not retain them as replay fixtures.
+
 Use `npm run test:quick -- --list` or `npm run test:extended -- --list` to inspect the selected files. The runner checks that quick and extended form the complete suite with no missing files or overlap. It fails if an excluded file is missing. The quick and extended commands print their scope before running and reject test-name filters, as the full command does.
 
 The full runner uses one process per test file. It runs up to eight files at once, limited by the available CPU count. A machine with 12 available CPUs uses eight workers; a CI runner with four CPUs uses four. Individual simulation tests remain single-threaded, so a long campaign route can still limit the total time.
