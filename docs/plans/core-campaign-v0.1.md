@@ -62,8 +62,8 @@ original complete recovery, ending and historical-loss files and their battle
 limits. Every complete run starts fresh. Failed checkpoints are retained as
 passive evidence and are not resumed as diagnostic input.
 
-On reviewed head `aed2760a`, campaign quick completes all 110 files and passes
-554/554 tests, with no failures, cancellations or skips. Core quick on its
+On reviewed head `ab82549d`, campaign quick completes all 111 files and passes
+559/559 tests, with no failures, cancellations or skips. Core quick on its
 ancestor `d0508806` completes all 924 files and passes 7,210/7,210 tests, also
 with no failures, cancellations or skips. These are separate suite results.
 
@@ -73,13 +73,12 @@ medical courier/recovery stage pass. During later Salta battery preparation,
 the Tucumán reserve loses a counterattack at turn fifteen, after 109 actions
 and 183 tactical seconds. The original victory assertion remains strict.
 
-The complete original historical-loss run on `d0508806` fails its living and
-15-HP relief guard. A fresh repeat on `692cac9f`, which adds passive observations
-only, confirms that the physician has three actual dressings but reaches a
-7-HP bleeding patient too late during a walking approach. The required patient
-dies before treatment. The health and finite-supply assertions remain strict.
-A fresh complete original historical-loss run on `aed2760a`, with legal running
-preparation, remains active. Its outcome is pending.
+The complete original historical-loss run on `aed2760a` finishes 0/1 in 615.589
+seconds. Legal running preparation passes the preceding emergency-aid boundary
+and the route wins Salta. A later relief visit fails its 15-HP guard. A nearby
+selected medic holds no dressing while farther selected medics carry four.
+The actual post-visit care tape was not retained, so its specific failed step
+is not established. Health, finite-supply and prior-death assertions stay strict.
 
 The complete original funded recovery on `d0508806` finishes 0/1 in 2,388.831
 seconds. The Tucumán reserve loses its Native counterattack at turn eight,
@@ -88,6 +87,7 @@ records, but nine are already dead and only five living defenders enter. Those
 defenders have no dressings, and the player cannon is empty. Casualties remain
 permanent. The failure is
 in northern road reunion, before later campaign acceptance can be checked.
+A fresh complete recovery run remains active on frozen `ab82549d` source.
 
 The complete original two-ending file on `d0508806` finishes 0/2 in 2,595.423
 seconds. Loose seed eight retains its physician through Ensenada, then stops
@@ -100,6 +100,14 @@ road reserve and use legal remaining Uspallata arrival cells for screens. Their
 affected controls pass 38/38 and 36/36 respectively, with independent source
 review. These are focused results; the original complete recovery and ending
 outcomes must still be verified with those corrections.
+
+Further reviewed corrections coordinate the all-covered Tucumán hospital
+encounter, carry a batch of actual owned remote dressings before prolonged
+local rest, and supply the selected fit relief medic before the mission visit.
+Their affected controls pass 53/53, 33/33 and 19/19 respectively. The courier
+checks carrying room before paid travel. The relief control covers both
+6 HP with bleeding 2 and 6 HP with bleeding 5, and records actual care before
+the unchanged caller guard. Complete original routes remain required.
 
 The production export on `d0508806` passes its nested-path audit: 1,413 files and
 1,045 asset references, version `0.1.5 · 3dd756ed68a8`. Browser review verifies a

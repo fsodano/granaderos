@@ -21,6 +21,12 @@
   player batteries are already spent. Charged-battery control is unchanged.
 - Use remaining legal arrival cells for Uspallata screens when preferred
   spacing is unavailable, while retaining Native cannon-contact exclusions.
+- Coordinate the default all-covered hospital encounter during Salta battery
+  preparation. Preserve explicit controller overrides and other encounters.
+- Fetch a batch of owned finite dressings before prolonged local rest. Check
+  carrying room before paid travel and preserve donor reserves and service.
+- Supply a fit selected relief medic before the mission visit and record actual
+  care before the existing health and bleeding checks.
 - Add current-state regressions and optional terminal save exports for browser
   checks. Saves from earlier builds remain outside the supported scope.
 - Full campaign acceptance remains open. No complete final-source victory or
