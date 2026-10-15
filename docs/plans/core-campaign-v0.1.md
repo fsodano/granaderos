@@ -86,6 +86,16 @@ in 576.996 seconds. It passes the first five stages, then exhausts available
 finite local dressings during early clinic preparation at Tucumán. The strict
 supply guard remains in place; the complete opening is not accepted.
 
+The reviewed clinic follow-up starts actual local treatment before the
+courier's discovery and travel time. It rechecks current wounds and supplies
+after encounters, uses admitted local stock before real paid relief, and keeps
+the calm physician's existing two-dressing defensive reserve. Actual arrivals,
+service, separate roof visits, partial failure state and the same absolute
+72-hour deadline remain checked. Eight complete affected files pass 39/39.
+One fresh control records four finite care strokes during preparation and four
+later strokes, with exact payment, stock, health and official-save repetition.
+A complete original opening result is still required for this follow-up.
+
 The complete original opening on `df62e17a` still fails: five tests pass, two
 fail and one skips, in 409.432 seconds. The finite donor transfer and the following complete
 medical courier/recovery stage pass. During later Salta battery preparation,

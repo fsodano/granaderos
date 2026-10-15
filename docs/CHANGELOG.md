@@ -46,6 +46,9 @@
   finite supplies, actual paid service and one shared 72-hour care allowance.
   Select the later Córdoba reserve from each soldier's current location.
   Give each additional paid relief carrier its own real visit and roof walk.
+  Start finite local treatment during courier time and replenish from current
+  wounds through actual local stock and paid relief. Keep the doctor's
+  existing defensive reserve and the same clinical deadline.
 - Budget the full parallel mountain journey, daylight staging and final service
   buffer at actual contract prices. Preserve required roles and patients, end
   only completed paid duties, and return their exact finite property. Fund any
