@@ -31,6 +31,7 @@ export const campaignTestGroups = [
   "tests/port-rear-formation.test.mjs",
   "tests/port-rear-search.test.mjs",
   "tests/arsenal-field-physician-service.test.mjs",
+  "tests/arsenal-field-physician-cover.test.mjs",
   "tests/created-cuyo-lost-primary-aid.test.mjs",
   "tests/created-cuyo-postbattle-care.test.mjs",
   "tests/coastal-battery-crew-surface.test.mjs",

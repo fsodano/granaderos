@@ -232,8 +232,8 @@ export function recoverCreatedCuyoMountainArtillery(start,{report=()=>{},onCheck
  // Every present required founder follows behind the paid infantry. Fire,
  // reload and adjacent finite aid retain their ordinary native priorities.
  const reserveIds=foundryField;
- const controller=recoveryPortSearchController(initial,{reserveIds,coordinateInfantry:initial.artillery.every(gun=>gun.side!=='player'),coordinateRifleCover:preserveMedicalReserve,coordinateSupportStaging,coordinateRearFormation});
  const rear=preserveMedicalReserve?arsenalRearServicePlan(c,prepared.field,prepared.originalMembers,{fieldPhysicians:1}):null;
+ const controller=recoveryPortSearchController(initial,{reserveIds,fieldPhysicianIds:rear?.fieldPhysicianIds??[],coordinateInfantry:initial.artillery.every(gun=>gun.side!=='player'),coordinateRifleCover:preserveMedicalReserve,coordinateSupportStaging,coordinateRearFormation});
  // Historical earned callers retain the old default. The fresh route opts
  // into real departure and reunion of its scarce qualified/paid reserves.
  const executeBattle=rear?(request,previous,options)=>{

@@ -2,7 +2,7 @@ import {publicSupportStagingPlan} from './public-support-staging.mjs';
 import {publicRearFormationFollowPlan,publicLateRearSearchEligible} from './public-rear-formation.mjs';
 import {coastalBatteryController} from './coastal-command-driver.mjs';
 import {sectorSearchOrder} from './sector-search-driver.mjs';
-import {getReachable,teamCanSee,hasLineOfSight,hasFirearm,actionCosts,knownArtillery} from '../game/tactical.js';
+import {getReachable,teamCanSee,hasLineOfSight,hasFirearm,actionCosts,knownArtillery,medicalUsePreview,stanceCost,artilleryContact} from '../game/tactical.js';
 import {choosePlayerSharedSightingInvestigation} from '../game/tactical-ai.js';
 import {firearmServiceable} from '../game/firearm-serviceability.js';
 import {medicalPatientAvailable} from '../game/medical-patient.js';
@@ -56,7 +56,7 @@ function legacyPhysicianCoverOrder(battle,unit,action,protectedIds,direction){
 
 // A qualified supplied physician follows the actual infantry, not a hidden
 // opponent. Keep the native aid approach when it already reaches a patient.
-function physicianCoverOrder(battle,unit,action,protectedIds,direction){
+function physicianCoverOrder(battle,unit,action,protectedIds,direction,careOnly=false){
  if(!fit(unit)||!(unit.medkits>0)||battle.phase!=='player'||battle.reactionStack?.length||unit.knockedDown||unit.entangled)return action;
  const patients=battle.units.filter(other=>other.side===unit.side&&other.id!==unit.id&&medicalPatientAvailable(other)&&(other.bleeding>0||criticalFirstAidNeeded(other)))
   .sort((a,b)=>Number(criticalFirstAidNeeded(b))-Number(criticalFirstAidNeeded(a))||a.hp-b.hp||distance(unit,a)-distance(unit,b)||String(a.id).localeCompare(String(b.id)));
@@ -70,6 +70,7 @@ function physicianCoverOrder(battle,unit,action,protectedIds,direction){
   const step=near??reachable.filter(point=>distance(point,patient)<distance(unit,patient)).sort((a,b)=>distance(a,patient)-distance(b,patient)||a.cost-b.cost||a.y-b.y||a.x-b.x)[0];
   if(step)return {type:'move',unitId:unit.id,...spacePoint(step)};
  }
+ if(careOnly)return null;
  const progress=point=>point.x*direction.x+point.y*direction.y;
  const screen=battle.units.filter(other=>other.side===unit.side&&!protectedIds.has(other.id)&&fit(other)&&sameSurface(unit,other))
   .sort((a,b)=>progress(b)-progress(a)||b.marksmanship-a.marksmanship||String(a.id).localeCompare(String(b.id)));
@@ -81,6 +82,30 @@ function physicianCoverOrder(battle,unit,action,protectedIds,direction){
  const score=point=>distance(point,goal)-(surfaceAt(battle,point)?.cover??0)*.02;
  candidates.sort((a,b)=>score(a)-score(b)||a.cost-b.cost||a.y-b.y||a.x-b.x);
  return candidates[0]?{type:'move',unitId:unit.id,...spacePoint(candidates[0])}:null;
+}
+
+// Only the caller's admitted field-service physician gets this medical role.
+// It spends the same Native hand, care, route and posture costs as any actor;
+// it never turns an ordinary infantry shot or pursuit into a medical duty.
+function fieldPhysicianOrder(battle,unit,protectedIds,direction){
+ if(battle.status!=='active'||battle.phase!=='player'||battle.reactionStack?.length||unit.side!=='player'||!fit(unit)||unit.captured||unit.energy<=0||unit.medical<60)return null;
+ const costs=actionCosts(battle,unit),payable=cost=>Number.isFinite(cost)&&cost>0&&(battle.mode==='exploration'||unit.ap>=cost);
+ if(unit.knockedDown&&unit.activeSlot!=='medical')return payable(stanceCost(unit,'standing'))?{type:'stance',unitId:unit.id,stance:'standing'}:null;
+ if(unit.medkits>0&&(unit.activeSlot??'primary')!=='medical')return payable(costs.weapon)?{type:'weapon',unitId:unit.id,slot:'medical'}:null;
+ const patients=battle.units.filter(other=>other.side===unit.side&&medicalPatientAvailable(other)&&(other.bleeding>0||criticalFirstAidNeeded(other)))
+  .sort((a,b)=>Number(criticalFirstAidNeeded(b))-Number(criticalFirstAidNeeded(a))||a.hp-b.hp||distance(unit,a)-distance(unit,b)||String(a.id).localeCompare(String(b.id)));
+ for(const patient of patients)if(medicalUsePreview(battle,unit,patient).allowed)return {type:'useItem',unitId:unit.id,targetId:patient.id};
+ if(unit.knockedDown)return payable(stanceCost(unit,'standing'))?{type:'stance',unitId:unit.id,stance:'standing'}:null;
+ if(unit.entangled||unit.mounted)return null;
+ // Local aid stays first, but a charged battery keeps its actual crew before
+ // any remote-patient approach, screen following or prone support posture.
+ if(knownArtillery(battle,unit).some(gun=>gun.side===unit.side&&(gun.loaded||gun.ammo>0)&&artilleryContact(battle,unit,gun)))return null;
+ const care=physicianCoverOrder(battle,unit,null,protectedIds,direction,true);if(care)return care;
+ // Do not leave an actual wounded patient to follow the healthy screen.
+ if(patients.length)return null;
+ const follow=physicianCoverOrder(battle,unit,null,protectedIds,direction);if(follow)return follow;
+ const prone=stanceCost(unit,'prone'),reserve=costs.heal+stanceCost({...unit,stance:'prone'},'standing');
+ return battle.mode==='combat'&&unit.stance!=='prone'&&payable(prone)&&unit.ap>=prone+reserve?{type:'stance',unitId:unit.id,stance:'prone'}:null;
 }
 
 function sharedInfantryOrder(battle,unit,protectedIds){
@@ -99,11 +124,12 @@ function sharedInfantryOrder(battle,unit,protectedIds){
 // Once contact is lost, a recurring crew approach must not prevent searching
 // the public map. Search before that approach; observed targets still select
 // ordinary battery orders and spend the force's real ammunition and AP.
-export function recoveryPortSearchController(initial,{reserveIds=[],coordinateInfantry=false,coordinateRifleCover=false,coordinateSupportStaging=false,coordinateRearFormation=false}={}){
+export function recoveryPortSearchController(initial,{reserveIds=[],fieldPhysicianIds=[],coordinateInfantry=false,coordinateRifleCover=false,coordinateSupportStaging=false,coordinateRearFormation=false}={}){
  const battery=coastalBatteryController(initial,{sharedArtillerySight:true});
  const reserves=new Set(reserveIds.map(String));
+ const requestedPhysicians=new Set(fieldPhysicianIds.map(String)),fieldPhysicians=new Set(initial.units.filter(unit=>requestedPhysicians.has(unit.id)&&unit.side==='player'&&fit(unit)&&!unit.captured&&unit.medical>=60&&unit.medkits>0&&unit.energy>0).map(unit=>unit.id));
  const physicians=new Set(coordinateInfantry?initial.units.filter(unit=>unit.side==='player'&&unit.medical>=60&&unit.medkits>0).map(unit=>unit.id):[]);
- const protectedIds=new Set([...reserves,...physicians]);
+ const protectedIds=new Set([...reserves,...physicians,...fieldPhysicians]);
  const own=initial.units.filter(unit=>unit.side==='player'&&fit(unit)),origin=own.reduce((point,unit)=>({x:point.x+unit.x/own.length,y:point.y+unit.y/own.length}),{x:0,y:0});
  const delta={x:initial.width*.65-origin.x,y:initial.height*.5-origin.y},length=Math.hypot(delta.x,delta.y)||1,direction={x:delta.x/length,y:delta.y/length};
  const ordinary=(battle,unit)=>{
@@ -122,6 +148,7 @@ export function recoveryPortSearchController(initial,{reserveIds=[],coordinateIn
   return {action:lateRear?cached:battery(battle,unit),rearSearch:false};
  };
  const controller=(battle,unit)=>{
+  if(fieldPhysicians.has(unit.id))return fieldPhysicianOrder(battle,unit,protectedIds,direction);
   const admitted=ordinary(battle,unit);let action=admitted.action;
   if(coordinateInfantry&&coordinateRifleCover){
    // The explicit infantry doctrine never replaces admitted fire, medicine,
@@ -161,7 +188,7 @@ export function recoveryPortSearchController(initial,{reserveIds=[],coordinateIn
  // A shared bound follows a complete ordinary squad pass. It cannot jump
  // ahead of another soldier's shot, reload or the physician's finite aid.
  controller.sharedFallback=coordinateInfantry?(coordinateRearFormation&&coordinateRifleCover&&coordinateSupportStaging?
-  (battle,unit)=>sharedInfantryOrder(battle,unit,protectedIds)??publicRearFormationFollowPlan(battle,unit,{reserveIds})?.action??null:
+  (battle,unit)=>fieldPhysicians.has(unit.id)?null:sharedInfantryOrder(battle,unit,protectedIds)??publicRearFormationFollowPlan(battle,unit,{reserveIds})?.action??null:
   (battle,unit)=>sharedInfantryOrder(battle,unit,protectedIds)):undefined;
  return controller;
 }
