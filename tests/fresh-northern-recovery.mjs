@@ -38,6 +38,7 @@ import {prepareNorthernHospitalRear} from './northern-hospital-rear-readiness.mj
 import {retainNorthernHandoverService,resolveNorthernHandoverEncounter,continueNorthernHandoverTravel} from './northern-handover-route.mjs';
 import {previewStrategicRoute} from '../game/strategic-route.js';
 import {coordinatedHospitalBattery} from './coordinated-hospital-battery.mjs';
+import {prepareNorthernHospitalReserveReadiness} from './northern-hospital-reserve-readiness.mjs';
 
 // A guarded roof can have a valid low-probability lane while the ordinary
 // infantry policy wants to advance. Pay for the real previewed shot first.
@@ -307,7 +308,7 @@ export function recoverFreshNorthernHospital(start,{report=()=>{},coordinateDefe
  c=stageRouteRoofDefenders(c,c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&r.location===sector&&r.hp>=15&&!r.bleeding&&!r.asleep;}),{report});
  for(const operativeId of escort.filter(id=>operativeLocation(c,id)===sector))order({type:'assignCare',operativeId,assignment:'rest'});
  const localPatients=()=>c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&r.location===sector&&r.hp<r.maxHp;});
- const recoveryHours=96+Math.max(...patients.map(id=>c.operativeState[id].maxHp-c.operativeState[id].hp))*careRules(c).restHealingHours;
+ const recoveryHours=96+Math.max(...patients.map(id=>c.operativeState[id].maxHp-c.operativeState[id].hp))*careRules(c).restHealingHours,careStartSeconds=c.hour*3600+(c.secondOfHour??0),careDeadlineSeconds=careStartSeconds+recoveryHours*3600;
  for(let h=0;h<recoveryHours&&localPatients().length;h++){
   if(c.pendingEncounter){
    const encounter=c.pendingEncounter;
@@ -365,7 +366,7 @@ export function recoverFreshNorthernHospital(start,{report=()=>{},coordinateDefe
  assert.deepEqual(localPatients(),[],'surviving local patients must finish recovery');
  assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
  report({event:'northernHospitalCheckpoint',stage:'recovered',sector,campaign:structuredClone(c)});
- return {campaign:c,sector,patients,escort};
+ return {campaign:c,sector,patients,escort,...(coordinateDefense?{reserveReadiness:{careStartSeconds,careDeadlineSeconds,recoveryHours}}:{})};
  }catch(error){
   recordRouteStrategicEvidence({helper:'recoverFreshNorthernDoctor',stage:'preparation-failure',campaign:c,inputCapture,error});throw error;
  }
@@ -464,11 +465,13 @@ export function settleNorthernHospitalReturnDefense(start,sector,{doctorId,repor
 export function returnFreshNorthernHospital(hospital,{report=()=>{}}={}){
  const start=hospital.campaign,inputCapture=recordRouteStrategicEvidence({helper:'recoverFreshNorthernDoctor',stage:'recovered-hospital-input',campaign:start});
  let c=decodeSave(encodeSave(start)).campaign;assert.deepEqual(c,start);
+ const originalReturnParty=hospital.reserveReadiness?c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&operativeLocation(c,id)===hospital.sector&&!hospital.escort.includes(id);}):null;
  const prepared=prepareNorthernHospitalReturnGuard(hospital,{report});c=prepared.campaign;
  const {sector,escort,returnDoctor}=prepared;
  const order=a=>{c=northernHospitalOrder(c,a,{inputCapture,report});};
  try{
- const party=c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&operativeLocation(c,id)===sector&&!escort.includes(id);});
+ const party=originalReturnParty??c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&operativeLocation(c,id)===sector&&!escort.includes(id);});
+ assert.ok(party.every(id=>c.recruited.includes(id)&&c.operativeState[id].alive&&!c.operativeState[id].captured&&operativeLocation(c,id)===sector),'Keep the actual recovered field party before reserve preparation.');
  assert.ok(party.length>0&&party.length<=6);
  if(c.location!==sector){
   const home=c.squads.find(q=>q.location===sector&&!q.journey&&q.members.includes(party[0]));assert.ok(home,'Select an actual local hospital squad before assembling its returning patients.');
@@ -497,6 +500,15 @@ export function returnFreshNorthernHospital(hospital,{report=()=>{}}={}){
    order({type:'selectSquad',id:returning});
   }
  };
+ if(hospital.reserveReadiness){
+  const {careStartSeconds,careDeadlineSeconds,recoveryHours}=hospital.reserveReadiness;assert.equal(careDeadlineSeconds,careStartSeconds+recoveryHours*3600);
+  const reserveSectors=[...new Set(escort.filter(id=>c.recruited.includes(id)&&c.operativeState[id].alive&&!c.operativeState[id].captured&&!operativeInTransit(c,id)).map(id=>operativeLocation(c,id)))].filter(at=>at!==sector);
+  for(const at of reserveSectors){
+   const ids=escort.filter(id=>c.recruited.includes(id)&&c.operativeState[id].alive&&!c.operativeState[id].captured&&!operativeInTransit(c,id)&&operativeLocation(c,id)===at);
+   const ready=prepareNorthernHospitalReserveReadiness(c,{sector:at,ids,deadlineSeconds:careDeadlineSeconds,report,resolveEncounter:state=>{c=state;resolveReturnContact();return c;}});c=ready.campaign;
+   report({event:'northernHospitalReservePrepared',receipt:ready.receipt,campaign:structuredClone(c)});
+  }
+ }
  const journey=()=>c.squads.find(q=>q.id===c.activeSquadId)?.journey;
  for(let leg=0;leg<6&&c.location!=='buenos_aires';leg++){
   resolveReturnContact();
@@ -527,7 +539,8 @@ export function returnFreshNorthernHospital(hospital,{report=()=>{}}={}){
  assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
  return c;
  }catch(error){
-  recordRouteStrategicEvidence({helper:'recoverFreshNorthernDoctor',stage:'preparation-failure',campaign:c,inputCapture,error});throw error;
+  if(error?.campaign)c=error.campaign;
+  recordRouteStrategicEvidence({helper:'recoverFreshNorthernDoctor',stage:'preparation-failure',campaign:c,inputCapture,error,context:{hospitalReserveReadiness:error?.hospitalReserveReadiness??null}});throw error;
  }
 }
 
