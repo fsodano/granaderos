@@ -30,6 +30,7 @@ import {previewStrategicRoute} from '../game/strategic-route.js';
 import {recoverVisibleRouteDressings} from './route-visible-medical-remains.mjs';
 import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 import {resolveStockNorthernReliefEncounter} from './northern-relief-defense.mjs';
+import {northernEmergencyAid} from './northern-emergency-aid.mjs';
 
 // Reinforce and position the real survivors before the arriving counterattack.
 export function prepareHiredNorthernDefense(start){
@@ -114,7 +115,7 @@ function prepareCreatedNorthernOfficerRelief(start,{report=()=>{},onCheckpoint=(
    order({type:'createSquad',ids,name:'Socorro provincial urgente',sector});for(const operativeId of ids)order({type:'assignCare',operativeId,assignment:'active'});
    onCheckpoint(`northern-officer-emergency-input-${sector}`,c);
    const emergencyInputCapture=recordRouteStrategicEvidence({helper:'prepareCreatedNorthernOfficerRelief',stage:'route-checkpoint',campaign:c,inputCapture,context:{phase:'before-existing-emergency-visit',sector,physicianId:medic.id,urgent,ids,need,scope:'Actual preparation state before the one existing visit and its finite aid; no additional entry, orders, queries or synchronization.'}});
-   const initial=visit(c),aid=autoBandageBattle(initial.battle);let paid=initial;
+   const initial=visit(c),aid=northernEmergencyAid(initial.battle,{physicianId:medic.id,urgentIds:urgent});let paid=initial;
    for(let step=0;step<aid.steps.length;step++){
     const battle=actBattle(paid.battle,aid.steps[step]);assert.equal(battle.lastError,null);paid=sync({campaign:paid.campaign,battle});
     if(step===Math.floor(aid.steps.length/2))paid=decodeSave(encodeSave(paid.campaign,paid.battle));
