@@ -26,6 +26,7 @@ import {saltaEarlyClinicCareOrders,supplySaltaClinicDoctors,clinicCareChange} fr
 import {coordinatedHospitalBattery} from './coordinated-hospital-battery.mjs';
 import {fight} from './opening-driver.mjs';
 import {createPairedRouteOrders} from './paired-route-battle.mjs';
+import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 
 const clock=c=>c.hour*3600+(c.secondOfHour??0);
 const local=(c,at)=>c.recruited.filter(id=>c.operativeState[id]?.alive&&!c.operativeState[id].captured&&!operativeInTransit(c,id)&&operativeLocation(c,id)===at);
@@ -82,6 +83,7 @@ export function saltaCordobaReserveEncounterExecutor(campaign,sector,{ready=fals
 }
 
 export function prepareSaltaCordobaReserveReadiness(start,{deadlineSeconds,report=()=>{},resolveEncounter}={}){
+ const inputCapture=recordRouteStrategicEvidence({helper:'prepareSaltaCordobaReserveReadiness',stage:'preparation-input',campaign:start,context:{deadlineSeconds}});
  assert.ok(Number.isSafeInteger(deadlineSeconds)&&deadlineSeconds>=clock(start));const before=structuredClone(start),selected=start.activeSquadId,oldGroups=structuredClone(start.squads),oldPosts=local(start,'cordoba').filter(id=>start.operativeState[id].residentPosition?.tacticalLevel>0).map(id=>({id,position:structuredClone(start.operativeState[id].residentPosition)})),originalPatients=local(start,'tucuman').filter(id=>start.operativeState[id].hp<start.operativeState[id].maxHp||start.operativeState[id].bleeding),orders=[],hires=[],meetings=[],funding=[],visits=[],care=[],renewals=[],encounters=[],transfers=[];
  let c=start,b=null,visitDeadline=null;const sector='cordoba';
  const check=()=>{assert.equal(c.defeated,false);assert.ok(clock(c)<=deadlineSeconds,'Córdoba readiness uses the same clinical deadline.');for(const id of originalPatients)assert.ok(c.recruited.includes(id)&&c.operativeState[id].alive&&!c.operativeState[id].captured,'Every original clinic patient survives actual rear preparation.');};
@@ -134,5 +136,5 @@ export function prepareSaltaCordobaReserveReadiness(start,{deadlineSeconds,repor
   const prepared=structuredClone(b),roles=coordinatedHospitalBattery(prepared).roles;if(gun){assert.equal(roles.physicianId,String(physician.id));assert.equal(roles.crews.find(row=>row.gunId===gun.id).ids.length,crew.length);}leave();for(const id of guards)order({type:'assignCare',operativeId:id,assignment:'rest'});for(const post of oldPosts)assert.deepEqual(c.operativeState[post.id].residentPosition,post.position);
   if(c.activeSquadId!==selected)order({type:'selectSquad',id:selected});for(const q of oldGroups.filter(q=>q.location!==sector&&q.members.length))assert.deepEqual(c.squads.find(row=>row.id===q.id),q,'The original field and clinical groups remain intact.');for(const [id,r]of Object.entries(before.operativeState))if(!r.alive){assert.equal(c.operativeState[id].alive,false);assert.equal(c.operativeState[id].deathMinute,r.deathMinute);}check();assert.deepEqual(start,before);
   const receipt={needed:true,ids:guards,physicianId:physician.id,crewIds:crew.map(Number),orders,hires,meetings,funding,visits,care,renewals,encounters,transfers,originalPatients,prepared,startSeconds:clock(start),endSeconds:clock(c),deadlineSeconds};report({event:'saltaCordobaReserveReady',receipt});return {campaign:c,receipt};
- }catch(error){if(error?.campaign)c=error.campaign;if(error&&typeof error==='object'){error.campaign=c;error.saltaCordobaReadiness={orders,hires,meetings,funding,visits,care,renewals,encounters,transfers,originalPatients,deadlineSeconds,...(b?{battle:b}:{})};}throw error;}
+ }catch(error){if(error?.campaign)c=error.campaign;if(error&&typeof error==='object'){error.campaign=c;error.saltaCordobaReadiness={orders,hires,meetings,funding,visits,care,renewals,encounters,transfers,originalPatients,deadlineSeconds,...(b?{battle:b}:{})};}recordRouteStrategicEvidence({helper:'prepareSaltaCordobaReserveReadiness',stage:'preparation-failure',campaign:c,inputCapture,error,context:{orders,hires,meetings,funding,visits,care,renewals,encounters,transfers,originalPatients,deadlineSeconds,...(b?{battle:b}:{})}});throw error;}
 }
