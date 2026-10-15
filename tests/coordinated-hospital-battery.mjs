@@ -272,9 +272,16 @@ export function coordinatedHospitalBattery(initial,{coordinateSpentCrew=false,co
   if(view.artillery.some(g=>g.side===u.side&&charged(g))||usefulRouteRifleShot(view,u))return null;
   if(u.medical>0&&u.medkits>0&&view.units.some(v=>v.side===u.side&&medicalPatientAvailable(v)&&(v.bleeding>0||criticalFirstAidNeeded(v))))return null;
   const seen=view.units.filter(v=>v.side!==u.side&&fit(v)&&sameSurface(u,v));if(!seen.length)return null;
+  // Native records this window's allocated AP separately from its remaining
+  // AP. All real work already paid in this turn reduces optional approach
+  // room; repeated callbacks cannot renew a per-order allowance. A genuine
+  // new Native turn resets the allocation, including its actual carryover.
+  const allocated=u.maxAP+(u.carriedAP??0),spent=allocated-u.ap;
+  if(!Number.isFinite(allocated)||!Number.isFinite(spent)||spent<0)return null;
+  const budget=Math.max(0,20-spent);if(!budget)return null;
   const nearest=p=>Math.min(...seen.map(target=>distance(p,target))),from=nearest(u),choices=[];
   for(const point of getReachable(view,u)){
-   if(!(point.cost>0&&point.cost<=20)||!point.path?.length||point.path.length>3||!sameSurface(point,u)||!point.path.every(step=>(step.kind===undefined||step.kind==='move')&&sameSurface(step,u)))continue;
+   if(!(point.cost>0&&point.cost<=budget)||!point.path?.length||point.path.length>3||!sameSurface(point,u)||!point.path.every(step=>(step.kind===undefined||step.kind==='move')&&sameSurface(step,u)))continue;
    const preview=paidHospitalRoofWalkPreview(view,u,point);if(!preview)continue;
    const shot=usefulRouteRifleShot(preview.view,preview.actor),gain=from-nearest(point);
    const target=shot?seen.find(v=>v.id===shot.targetId):seen.slice().sort((a,c)=>distance(point,a)-distance(point,c)||String(a.id).localeCompare(String(c.id)))[0];
