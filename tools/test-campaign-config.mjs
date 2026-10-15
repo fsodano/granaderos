@@ -60,6 +60,7 @@ export const campaignTestGroups = [
   "tests/local-opening-care-fixture.test.mjs",
   "tests/military-remains.test.mjs",
   "tests/northern-clinic-knockdown-recovery.test.mjs",
+  "tests/northern-emergency-aid.test.mjs",
   "tests/opening-equipment.test.mjs",
   "tests/opening-playthrough.test.mjs",
   "tests/opening-port-income.test.mjs",

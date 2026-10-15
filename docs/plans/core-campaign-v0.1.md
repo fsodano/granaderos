@@ -62,7 +62,7 @@ original complete recovery, ending and historical-loss files and their battle
 limits. Every complete run starts fresh. Failed checkpoints are retained as
 passive evidence and are not resumed as diagnostic input.
 
-On pushed head `9eee7f97`, campaign quick completes all 109 files and passes
+On reviewed head `9eee7f97`, campaign quick completes all 109 files and passes
 547/547 tests, with no failures, cancellations or skips. Core quick on its
 ancestor `d0508806` completes all 924 files and passes 7,210/7,210 tests, also
 with no failures, cancellations or skips. These are separate suite results.
@@ -79,9 +79,15 @@ only, confirms that the physician has three actual dressings but reaches a
 7-HP bleeding patient too late during a walking approach. The required patient
 dies before treatment. The health and finite-supply assertions remain strict.
 
-The complete original recovery and two-ending files are running on frozen
-`d0508806` source. No result is claimed while those files remain active. The
-production export on that source passes its nested-path audit: 1,413 files and
+The complete original funded recovery on `d0508806` finishes 0/1 in 2,388.831
+seconds. The Tucumán reserve loses its Native counterattack at turn eight,
+after 109 actions and 138 tactical seconds. Fourteen actual defenders and an
+empty player cannon are present; casualties remain permanent. The failure is
+in northern road reunion, before later campaign acceptance can be checked.
+
+The complete original two-ending file remains running on frozen `d0508806`
+source. No result is claimed while that file remains active. The production
+export on that source passes its nested-path audit: 1,413 files and
 1,045 asset references, version `0.1.5 · 3dd756ed68a8`. Browser review verifies a
 fresh installed start, paid hire, 3D tactical entry, reload/Continue and export
 and import of that same current-format game. Import closes the menu and restores
