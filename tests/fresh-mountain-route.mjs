@@ -33,6 +33,8 @@ import {worldOwner} from '../game/world-cells.js';
 import {previewStrategicRoute} from '../game/strategic-route.js';
 import {queueSquadTravel,squadTravelStatus} from '../game/squad-travel.js';
 import {quoteMountainServiceBudget} from './mountain-service-budget.mjs';
+import {sleepRecovery} from '../game/sleep-needs.js';
+import {sleepOrderReason} from '../game/sleep.js';
 
 const capableMountainActor=(c,id)=>{const r=c.operativeState[id];return r?.alive&&!r.captured&&r.hp>=15&&!r.bleeding&&!r.asleep&&!r.unconscious&&!r.routed&&!r.surrendered&&r.energy>10;};
 
@@ -432,7 +434,7 @@ export function completeMountainPaidDuties(start,{fieldIds,doctorIds=[],protecte
 
 // Forecast the complete existing parallel route from public world geometry.
 // Future-origin squad drafts are quotations only and are never adopted.
-export function mountainLosPatosDeparturePlan(c,{columns,batteryIds=null,stage='mendoza'}={}){
+export function mountainLosPatosDeparturePlan(c,{columns,batteryIds=null,stage='mendoza',sleepApproaches=false}={}){
  assert.ok(['mendoza','uspallata','flanks','assault'].includes(stage));
  const groups=columns.map(id=>{const q=c.squads.find(group=>group.id===id);assert.ok(q);return q;}),destination=worldCell('los_patos',c);
  const origins=['uspallata',`cell-${destination.col}-${destination.row-1}`,`cell-${destination.col}-${destination.row+1}`,`cell-${destination.col-1}-${destination.row}`];
@@ -453,12 +455,63 @@ export function mountainLosPatosDeparturePlan(c,{columns,batteryIds=null,stage='
  }
  if(['mendoza','uspallata'].includes(stage))hours+=Math.max(...groups.map((q,index)=>route(q,'uspallata',origins[index],'march')));
  if(stage!=='assault')hours+=Math.max(...groups.map((q,index)=>route(q,origins[index],'los_patos',index?'march':'posta','attack')));
+ const sleepHours=sleepApproaches&&stage!=='assault'?mountainApproachSleepHours(c,columns):0;
+ hours+=sleepHours;
  let horizonSeconds=c.hour*3600+(c.secondOfHour??0)+hours*3600,daylightHours=0;
  while(Math.floor(horizonSeconds/3600)%24<6||Math.floor(horizonSeconds/3600)%24>10){horizonSeconds+=3600;daylightHours++;assert.ok(daylightHours<24);}
  const assaultSeconds=horizonSeconds,retentionBufferSeconds=3600;
  // Even the final zero-time select/begin orders retain one actual route hour.
  horizonSeconds+=retentionBufferSeconds;
- return {stage,hours,daylightHours,assaultSeconds,retentionBufferSeconds,horizonSeconds,fixedCost};
+ return {stage,hours,sleepHours,daylightHours,assaultSeconds,retentionBufferSeconds,horizonSeconds,fixedCost};
+}
+
+// Quote the actual actor's Native rate against the full 0..100 capacity and
+// one fractional-clock boundary. This forecast does not perform recovery.
+export function mountainApproachSleepHours(c,columns){
+ const roster=rosterFor(c),ids=columns.flatMap(id=>{const q=c.squads.find(q=>q.id===id);assert.ok(q);return q.members;});
+ assert.ok(ids.length&&new Set(ids).size===ids.length);
+ const hours=Math.max(...ids.map(id=>{
+  const op=roster.find(op=>op.id===id),r=c.operativeState[id];assert.ok(op&&r);
+  const rate=sleepRecovery({...op,...r});
+  return Math.max(Math.ceil(100/rate.fatigue),Math.ceil(100/rate.energy))+1;
+ }));
+ assert.ok(hours<=NATIVE_MOUNTAIN_RESERVE_BOUNDS.preMarchRestHours);
+ return hours;
+}
+
+export function prepareMountainApproachSleep(start,{columns,report=()=>{}}={}){
+ assert.ok(!start.pendingBattle&&!start.pendingEncounter,'Resolve the actual battle or encounter before approach sleep.');
+ let c=decodeSave(encodeSave(start)).campaign;
+ const groups=columns.map(id=>{const q=c.squads.find(q=>q.id===id);assert.ok(q&&!q.journey,'The actual flank must arrive before sleep.');return q;});
+ const ids=groups.flatMap(q=>q.members),before=Object.fromEntries(ids.map(id=>[id,structuredClone(c.operativeState[id])])),selected=c.activeSquadId;
+ assert.ok(ids.length&&new Set(ids).size===ids.length);
+ const ready=id=>{const r=c.operativeState[id];return r.energy===100&&!r.fatigue&&!r.asleep;};
+ for(const id of ids){
+  const r=c.operativeState[id];
+  assert.ok(c.recruited.includes(id)&&r.alive&&!r.captured&&r.hp===r.maxHp&&!r.bleeding&&!r.routed&&!r.unconscious&&r.assignment==='active','Sleep staging preserves actual fit active field roles.');
+  const location=operativeLocation(c,id),locality=worldCell(location,c)?.locality;
+  assert.ok(['patriot','neutral'].includes(worldOwner(c,location))&&!c.enemyGroups.some(g=>['waiting','engaged','stationed'].includes(g.status)&&(g.target===location||g.target===locality)),'An actual stopped approach must remain safe for sleep.');
+  if(!ready(id)&&!r.asleep)assert.equal(sleepOrderReason(c,id,true),'','Every actual approach needs a safe Native sleep order.');
+ }
+ if(ids.every(ready))return c;
+ const began=c.hour*3600+(c.secondOfHour??0),hours=mountainApproachSleepHours(c,columns),deadline=began+hours*3600;
+ const retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report});
+ const budget=quoteMountainServiceBudget(c,{keepIds:retained.keepIds(),horizonSeconds:deadline+3600});
+ assert.ok(budget.available,budget.reason??'All actual sleep staging service must be funded before waiting.');
+ report({event:'mountainApproachSleepStarted',columns:[...columns],ids:[...ids],hours,budget,hour:c.hour,second:c.secondOfHour??0});
+ for(const id of ids)if(!ready(id)&&!c.operativeState[id].asleep)retained.order({type:'setSleep',operativeId:id,asleep:true});
+ let notices=0;
+ while(ids.some(id=>!ready(id))){
+  assert.ok(c.hour*3600+(c.secondOfHour??0)<deadline,'Approach sleep reached its quoted Native bound.');
+  const at=c.hour*3600+(c.secondOfHour??0);retained.order({type:'wait',hours:1});
+  const elapsed=c.hour*3600+(c.secondOfHour??0)-at;assert.ok(elapsed>=0&&elapsed<=3600);
+  notices=elapsed===0?notices+1:0;assert.ok(notices<3,'Actual sleep must advance after its attention notices.');
+  for(const id of ids){const r=c.operativeState[id];assert.ok(r.hp===before[id].hp&&r.medkits===before[id].medkits&&r.assignment==='active');}
+ }
+ assert.equal(c.activeSquadId,selected);assert.deepEqual(c.squads,start.squads);
+ for(const id of ids)for(const key of ['hp','maxHp','bleeding','bandaged','medkits','weapon','blade','inventory','location'])assert.deepEqual(c.operativeState[id][key],before[id][key]);
+ report({event:'mountainApproachSleepComplete',columns:[...columns],ids:[...ids],elapsedSeconds:c.hour*3600+(c.secondOfHour??0)-began,hour:c.hour,second:c.secondOfHour??0});
+ return c;
 }
 const mountainFieldPool=(c,sector,exclude=[])=>rosterFor(c).filter(op=>{
  const r=c.operativeState[op.id],local=c.recruited.includes(op.id)&&operativeLocation(c,op.id)===sector;
@@ -644,12 +697,12 @@ assert.ok(hiringIds.every(id=>c.recruited.includes(id)),'paid replacements must 
  order({type:'configureArtillery',types:[]});
  for(const id of columns){order({type:'selectSquad',id});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});c=finishReloadsBeforeMarch(c);}
  const parallel=fieldCount>8&&columns.length>1;
- const departureBudget=stage=>{
-  const plan=mountainLosPatosDeparturePlan(c,{columns,batteryIds,stage}),budget=quoteMountainServiceBudget(c,{keepIds:retained.keepIds(),horizonSeconds:plan.horizonSeconds,fixedCost:plan.fixedCost});
+ const departureBudget=(stage,{sleepApproaches=parallel}={})=>{
+  const plan=mountainLosPatosDeparturePlan(c,{columns,batteryIds,stage,sleepApproaches}),budget=quoteMountainServiceBudget(c,{keepIds:retained.keepIds(),horizonSeconds:plan.horizonSeconds,fixedCost:plan.fixedCost});
   report({event:'mountainDepartureBudget',plan,budget,hour:c.hour,second:c.secondOfHour??0});return {plan,budget};
  };
  if(parallel){
-  const plan=mountainLosPatosDeparturePlan(c,{columns,batteryIds});
+  const plan=mountainLosPatosDeparturePlan(c,{columns,batteryIds,sleepApproaches:true});
   const beforeServing=retained.keepIds();
   const duties=completeMountainPaidDuties(c,{fieldIds:field,doctorIds:doctors.map(op=>op.id),protectedIds:protectedDuties,horizonSeconds:plan.horizonSeconds,fixedCost:plan.fixedCost,report});
   c=duties.campaign;
@@ -699,7 +752,10 @@ assert.ok(hiringIds.every(id=>c.recruited.includes(id)),'paid replacements must 
   }
   report({event:'mountainFlanksArrived',columns:queued.map(q=>q.id),elapsedSeconds:c.hour*3600+(c.secondOfHour??0)-began,hour:c.hour,second:c.secondOfHour??0,campaign:c});
  }
- if(parallel){const {budget}=departureBudget('flanks');assert.ok(budget.available,budget.reason??'Requote actual service after every real flank arrival.');}
+ if(parallel){
+  c=prepareMountainApproachSleep(c,{columns,report});
+  const {budget}=departureBudget('flanks',{sleepApproaches:false});assert.ok(budget.available,budget.reason??'Requote actual service after paid approach sleep.');
+ }
  for(const {id,mode}of approaches){order({type:'selectSquad',id});order({type:'attack',sector:'los_patos',queue:true,mode});}
  for(let i=0;i<16&&!columns.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');i++){order({type:'wait',hours:1});}
  assert.ok(columns.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready'),'all physical approaches finish before staging');
