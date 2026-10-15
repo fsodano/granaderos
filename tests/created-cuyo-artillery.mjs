@@ -29,6 +29,7 @@ import {actBattle,endTurn} from '../game/tactical.js';
 import {sectorDeploymentAction} from '../game/sector-deployment.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
+import {operativeLocation} from '../game/squads.js';
 
 const living=c=>c.recruited.filter(id=>c.operativeState[id]?.alive&&!c.operativeState[id].captured);
 const stable=(c,id)=>{const r=c.operativeState[id];return r?.alive&&!r.captured&&r.hp>=15&&!r.bleeding&&!r.unconscious&&!r.routed;};
@@ -222,6 +223,55 @@ export function prepareCreatedCuyoArsenalAssault(start,{report=()=>{}}={}){
  }catch(error){recordRouteStrategicEvidence({helper:'prepareCreatedCuyoArsenalAssault',stage:'preparation-failure',campaign:c,inputCapture,error});throw error;}
 }
 
+// A real routed departure is not a local member of the later care party.
+// Stabilize its actual wounds first, then pay its ordinary physical return.
+export function returnCreatedCuyoArsenalField(start,field,{report=()=>{}}={}){
+ const original=structuredClone(start),destination='ensenada',clock=c=>c.hour*3600+(c.secondOfHour??0);
+ assert.equal(start.pendingBattle,null);assert.equal(start.pendingEncounter,null);assert.equal(start.location,destination);
+ assert.ok(Array.isArray(field)&&new Set(field).size===field.length);
+ const survivors=field.filter(id=>living(start).includes(id)),remote=survivors.filter(id=>operativeLocation(start,id)!==destination);
+ if(!remote.length)return start;
+ const ledger=start.sectorStates[destination]?.returnLedger;
+ for(const id of remote){
+  const arrival=start.operativeState[id].arrival,entry=ledger?.entries.find(row=>Number(row.unitId)===id&&row.kind==='departed');
+  assert.ok(entry&&entry.sector===operativeLocation(start,id)&&arrival?.fromSector===destination&&arrival.battleId===ledger.battleId&&arrival.exitId===entry.departure.exitId,'Only an actual issued field departure enters this return.');
+  assert.ok(start.squads.some(q=>q.members.includes(id)&&!q.journey),'The departed survivor needs an actual stationary local squad.');
+ }
+ const columns=[],began=clock(start),selected=start.activeSquadId;
+ // The existing finite-care helper owns its own Native failure. Do not replace
+ // an unreturned care result with the earlier input in a return-stage catch.
+ let c=stabilizeCreatedCuyoSurvivors(start,{report});
+ try{
+  const retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report}),order=retained.order;
+  for(const from of new Set(remote.map(id=>operativeLocation(c,id)))){
+   const remaining=remote.filter(id=>operativeLocation(c,id)===from);
+   while(remaining.length){
+    const home=c.squads.find(q=>q.location===from&&!q.journey&&q.members.includes(remaining[0]));assert.ok(home);
+    const ids=remaining.filter(id=>home.members.includes(id));assert.ok(ids.length&&ids.length<=6);
+    assert.ok(ids.every(id=>living(c).includes(id)&&stable(c,id)&&!c.operativeState[id].asleep&&c.operativeState[id].energy>10),'Every actual returning survivor needs finite stabilization before travel.');
+    if(home.members.every(id=>ids.includes(id)))order({type:'selectSquad',id:home.id});
+    else order({type:'createSquad',name:'Regreso del arsenal',sector:from,ids});
+    const squadId=c.activeSquadId;for(const operativeId of ids)order({type:'assignCare',operativeId,assignment:'active'});
+    const preview=structuredClone(c),group=preview.squads.find(q=>q.id===squadId),journey=queueSquadTravel(preview,group,{sector:destination,mode:'march'});
+    const hours=journey.path.slice(1).reduce((sum,to,i)=>sum+travelLegHours(journey.path[i],to,journey.mode,c),0);assert.ok(hours>0&&hours<=24,'The actual escaped field needs a bounded safe public return.');
+    retained.retain(hours*3600+1);const departure=clock(c),bodies=new Map(ids.map(id=>[id,structuredClone(c.operativeState[id])]));
+    order({type:'travel',sector:destination,mode:'march',queue:true});assert.deepEqual(c.squads.find(q=>q.id===squadId).journey,journey);
+    for(let attempt=0;attempt<48&&c.squads.find(q=>q.id===squadId).journey;attempt++){
+     assert.ok(clock(c)-departure<24*3600,'The actual return cannot exceed its public bounded clock.');
+     assert.equal(c.squads.find(q=>q.id===squadId).journey.status,'moving','A real paused return needs a new plan.');order({type:'wait',hours:1});
+    }
+    assert.equal(c.squads.find(q=>q.id===squadId).journey,undefined);assert.equal(c.location,destination);
+    for(const id of ids){assert.equal(operativeLocation(c,id),destination);assert.ok(living(c).includes(id)&&stable(c,id));for(const key of ['hp','bleeding','medkits','inventory','carriedAmmo','carriedLoaded','ammoStock','weaponDropped','condition'])assert.deepEqual(c.operativeState[id][key],bodies.get(id)[key],`The actual return preserves ${id} ${key}`);remaining.splice(remaining.indexOf(id),1);}
+    columns.push({ids,squadId,from,journey,hours,elapsedSeconds:clock(c)-departure});
+   }
+  }
+  order({type:'selectSquad',id:selected});assert.ok(survivors.every(id=>living(c).includes(id)&&operativeLocation(c,id)===destination));
+  for(const [id,r]of Object.entries(start.operativeState))if(!r.alive)assert.equal(c.operativeState[id].alive,false);
+  assert.deepEqual(start,original);assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
+  report({event:'createdCuyoEscapedFieldReturned',ids:remote,columns,elapsedSeconds:clock(c)-began,campaign:c});return c;
+ }catch(error){if(error?.campaign)c=error.campaign;if(error&&typeof error==='object')error.campaign=c;recordRouteStrategicEvidence({helper:'returnCreatedCuyoArsenalField',stage:'preparation-failure',campaign:c,error,context:{field,survivors,remote,columns}});throw error;}
+}
+
 export function recoverCreatedCuyoMountainArtillery(start,{report=()=>{},onCheckpoint=()=>{},preserveMedicalReserve=false,coordinateSupportStaging=false,coordinateRearFormation=false}={}){
  const before=structuredClone(start),oldDeaths=Object.entries(start.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
  const spent=Object.entries(start.artilleryDepots??{}).flatMap(([sector,guns])=>guns.filter(g=>!g.loaded&&!g.ammo).map(g=>({sector,gun:storedArtilleryRecord(g)})));
@@ -274,6 +324,7 @@ export function recoverCreatedCuyoMountainArtillery(start,{report=()=>{},onCheck
  const survivors=prepared.field.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured);
  assert.ok(survivors.length>=3,'The actual field gun needs three surviving available crew.');
  assert.ok(prepared.originalMembers.every(id=>c.operativeState[id].alive),'The original foundry squad must survive this side operation.');
+ if(!rear)c=returnCreatedCuyoArsenalField(c,prepared.field,{report});
  let retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report});const order=action=>retained.order(action);
  const endService=id=>{
   const cash=c.resources.treasury;c=dispatchCampaign(c,{type:'dismiss',id});assert.equal(c.lastError,null,c.lastError);assert.equal(c.resources.treasury,cash);
