@@ -3,7 +3,8 @@
 Updated: 14 October 2026.
 
 Status: `main` is released as `0.1.4`, including the save-import interface fix
-from PR #428. Campaign corrections remain in draft PR #426. End-to-end campaign
+from PR #428. Campaign corrections are the unreleased `0.1.5` candidate in draft
+PR #426, with current `main` merged normally. End-to-end campaign
 verification is incomplete. No complete current-source campaign result is claimed.
 
 The shipping campaign is `campaigns/granaderos/`, selected by the normal
@@ -75,10 +76,13 @@ On pushed head `11569f42`, campaign quick completes all 102 files and passes
 
 Further local corrections address civilian fire safety, stable rest after an
 actual finite-care shortage, the arsenal physician's medical role and return of
-existing paid Salta clinic relief. Separate focused tests pass; they do not prove
-the complete original routes. A fresh complete ending run on the isolated
-stable-rest correction remains live. Neither saved 48-hour ending continuation
-is accepted yet.
+existing paid Salta clinic relief. Remote post-defense care and unconscious
+routed patient eligibility also have focused controls. These passes do not prove
+the complete original routes. The separate complete ending run on `d2744311`
+finishes 0/2: the loose route still loses its physician; the installed route
+passes the dressing shortage but cannot afford a real renewal during recovery.
+That source predates the explicit physician-role correction. Neither saved
+48-hour ending continuation is accepted yet.
 
 The last unfiltered suite on earlier head `8b40ceae` completes all 1,028 files:
 7,699 tests pass, nine fail and one skips, with none cancelled. Seven files fail:

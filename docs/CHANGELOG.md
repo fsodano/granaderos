@@ -1,15 +1,21 @@
 # Changelog
 
 > **Release history.** Entries describe their recorded checkpoints. Read
-> [version 0.1](verification/version-0.1.md) for current scope. Earlier development
+> [shipping campaign plan](plans/core-campaign-v0.1.md) for current scope. Earlier development
 > numbers are internal checkpoints; their features and results are dated history.
 
-## Unreleased campaign validation
+## 0.1.5 — Unreleased candidate
 
 - Correct paid road duty, finite ammunition redistribution and ordered medical
   care in fresh campaign validation.
+- Preserve actual remote casualties through finite care and ordinary reserve
+  rest. Keep the arsenal physician on medical duty and retain charged gun crews.
+- Finish admitted aid for unconscious routed soldiers, avoid known civilian
+  scatter paths and return paid clinic relief before quoting new Salta hires.
 - Add current-state regressions and optional terminal save exports for browser
   checks. Saves from earlier builds remain outside the supported scope.
+- Full campaign acceptance remains open. No complete final-source victory or
+  saved 48-hour continuation is claimed by the focused checks.
 
 ## 0.1.4 — 14 October 2026
 
