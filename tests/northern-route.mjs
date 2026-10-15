@@ -37,6 +37,7 @@ import {stageRouteRoofDefenders} from './route-roof-defenders.mjs';
 import {recordRouteBattleFailure} from './route-failure-evidence.mjs';
 import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 import {quoteRescuerFirstAid} from './rescued-first-aid-quote.mjs';
+import {routeDressingDonor} from './route-dressings.mjs';
 
 // Both paid squads approach together in short bounds. Use authored roof
 // geometry and current shot previews, while retaining real casualties,
@@ -834,7 +835,7 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
 
 export function stabilizeRescued(start,{patients,report=()=>{}}={}){
  const inputCapture=recordRouteStrategicEvidence({helper:'stabilizeRescued',stage:'preparation-input',campaign:start,context:{patients}});
- let campaign=decodeSave(encodeSave(start)).campaign,battle=null;const events=[],orders=[],medicalCollections=[];
+ let campaign=decodeSave(encodeSave(start)).campaign,battle=null;const events=[],orders=[],medicalCollections=[],medicalDonations=[];
  const order=action=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;events.push({action,hour:campaign.hour,second:campaign.secondOfHour??0});orders.push({scope:'campaign',action});};
  assert.ok(patients?.length,'stabilize the actual released prisoners');
  assert.equal(campaign.sectors.tucuman.owner,'patriot');assert.equal(campaign.pendingEncounter,null);
@@ -847,9 +848,20 @@ export function stabilizeRescued(start,{patients,report=()=>{}}={}){
  // rescuers receive finite first aid before the clinic advances an hour.
  const emergencyAidQuote=quoteRescuerFirstAid({...physician,...campaign.operativeState[physician.id]},urgent.map(id=>({...local().find(op=>op.id===id),...campaign.operativeState[id],id})));
  const dressingTarget=patients.length+emergencyAidQuote.dressings;
+ const donorReserves=Object.fromEntries(campaign.recruited.map(id=>[id,1]));
  while(campaign.operativeState[physician.id].medkits<dressingTarget){
   const model=sectorInventoryModel(campaign,'tucuman',rosterFor(campaign),physician.id),row=model.entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');
-  if(!row)recordRouteStrategicEvidence({helper:'stabilizeRescued',stage:'missing-finite-dressings',campaign,inputCapture,context:{patients,urgent,physician:physician.id,dressingTarget,emergencyAidQuote,inventory:model,medicalCollections,events,orders},error:'known finite local dressings must cover the released patients and urgent rescuers'});
+  if(!row){
+   const donor=routeDressingDonor(campaign,physician.id,{reserves:donorReserves});
+   if(donor!==undefined){
+    const before=campaign.operativeState[donor].medkits,count=Math.min(before-donorReserves[donor],dressingTarget-campaign.operativeState[physician.id].medkits),cash=campaign.resources.treasury,seconds=campaign.hour*3600+(campaign.secondOfHour??0);
+    order({type:'sectorInventory',sector:'tucuman',operativeId:donor,direction:'drop',item:'medkits',count});
+    assert.equal(campaign.operativeState[donor].medkits,before-count);assert.ok(campaign.operativeState[donor].medkits>=donorReserves[donor]);
+    assert.equal(campaign.resources.treasury,cash);assert.equal(campaign.hour*3600+(campaign.secondOfHour??0),seconds);
+    medicalDonations.push({action:orders.at(-1).action,donor,recipient:physician.id,count,carriedBefore:before,carriedAfter:campaign.operativeState[donor].medkits,reserve:donorReserves[donor]});continue;
+   }
+   recordRouteStrategicEvidence({helper:'stabilizeRescued',stage:'missing-finite-dressings',campaign,inputCapture,context:{patients,urgent,physician:physician.id,dressingTarget,emergencyAidQuote,inventory:model,medicalCollections,medicalDonations,donorReserves,events,orders},error:'known finite local dressings must cover the released patients and urgent rescuers'});
+  }
   assert.ok(row,'known finite local dressings must cover the released patients and urgent rescuers');
   const count=Math.min(row.count,dressingTarget-campaign.operativeState[physician.id].medkits),carriedBefore=campaign.operativeState[physician.id].medkits,cash=campaign.resources.treasury,seconds=campaign.hour*3600+(campaign.secondOfHour??0);
   const medicalPoolBefore=model.entries.filter(row=>JSON.parse(row.expected).item==='medkits').reduce((sum,row)=>sum+row.count,0);
@@ -902,5 +914,5 @@ export function stabilizeRescued(start,{patients,report=()=>{}}={}){
  for(const [id,r] of Object.entries(before.operativeState))if(!r.alive)assert.equal(campaign.operativeState[id].alive,false);
  assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
  report({event:'rescuedStable',hour:campaign.hour,usedDressings,patients:patients.map(id=>({id,hp:campaign.operativeState[id].hp,bleeding:campaign.operativeState[id].bleeding}))});
- return {campaign,events,orders,patients,doctors,usedDressings,medicalCollections,emergencyAid,emergencyAidQuote,dressingTarget,clinicElapsedSeconds};
+ return {campaign,events,orders,patients,doctors,usedDressings,medicalCollections,medicalDonations,emergencyAid,emergencyAidQuote,dressingTarget,clinicElapsedSeconds};
 }

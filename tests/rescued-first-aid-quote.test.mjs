@@ -8,6 +8,10 @@ import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {defaultContentPackage} from '../game/content-package.js';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {encodeSave,decodeSave} from '../game/save.js';
+import {enterSector} from '../game/world.js';
+import {syncBattleTime} from '../game/time.js';
+import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {visit,leave} from './local-contract-fixture.mjs';
 import {quoteRescuerFirstAid} from './rescued-first-aid-quote.mjs';
 import {stabilizeRescued} from './northern-route.mjs';
 
@@ -51,18 +55,23 @@ test('quotation uses Native attribute fallbacks and prices one-HP, near-stable a
 
 // This declaration isolates local care. It does not claim rescue or battle
 // acceptance. All wounds, skill and finite linen exist before initialCampaign.
-function clinic({kits=3}={}){
+function clinic({kits=3,donorKits=null}={}){
  const content=defaultContentPackage();content.headquarters='tucuman';delete content.startingTerritory;
  content.rules.startingTreasury=10000;
- for(const id of [110,112,123]){
+ const ids=[110,112,123,...(donorKits===null?[]:[131,116])];
+ for(const id of ids){
   const p=content.characters.find(p=>p.id===`person-${id}`);p.arrivalHours=0;
   p.attributes={...p.attributes,maxHp:100,medical:id===110?60:0,dexterity:75};
-  p.startingSupplies={rations:2,torches:0,medkits:id===110?kits:0,boleadoras:0};
+  p.startingSupplies={rations:2,torches:0,medkits:id===110?kits:id===131?1:id===116?donorKits:0,boleadoras:0};
   p.startingCondition={hp:id===123?1:id===112?95:100,bleeding:0,bandaged:id===123?99:id===112?5:0,energy:100,fatigue:0};
  }
  const declared=structuredClone(content);let c=initialCampaign(42,content);
- for(const id of [110,112,123])c=order(c,{type:'recruitCivic',id,term:'week'});
- c=order(c,{type:'createSquad',ids:[110,112,123],name:'Clínica de rescate',sector:'tucuman'});
+ for(const id of ids)c=order(c,{type:'recruitCivic',id,term:'week'});
+ c=order(c,{type:'createSquad',ids,name:'Clínica de rescate',sector:'tucuman'});
+ if(donorKits!==null){
+  const entered=visit(c),battle=actBattle(entered.battle,{type:'explore'});assert.equal(battle.lastError,null);
+  c=leave({...entered,battle});
+ }
  assert.deepEqual(content,declared);return save(c);
 }
 
@@ -75,6 +84,40 @@ test('the actual local clinic spends two Native critical strokes and reserves th
  for(const id of [110,112,123]){assert.equal(c.operativeState[id].alive,true);assert.ok(c.recruited.includes(id));assert.equal(c.operativeState[id].location,'tucuman');}
  assert.ok(clock(c)>clock(start));assert.equal(c.resources.treasury,start.resources.treasury);assert.deepEqual(c.contracts,start.contracts);
  assert.deepEqual(save(c),c);assert.deepEqual(stabilizeRescued(save(start),{patients:[112]}),result);assert.deepEqual(start,before);
+});
+
+test('the clinic earns its missing dressing through a serving donor’s Native drop and known-row pickup while preserving every last-kit reserve',()=>{
+ const start=clinic({kits:2,donorKits:2}),before=structuredClone(start),initialPool=sectorInventoryModel(start,'tucuman',rosterFor(start),110).entries.filter(row=>JSON.parse(row.expected).item==='medkits');
+ assert.deepEqual(initialPool,[],'The extra dressing starts in a living paid pack, not in an assumed cache or body.');
+ const result=stabilizeRescued(start,{patients:[112]}),c=result.campaign;
+ assert.equal(result.medicalDonations.length,1);const donation=result.medicalDonations[0];
+ assert.equal(donation.donor,116);assert.equal(donation.recipient,110);assert.equal(donation.count,1);assert.equal(donation.reserve,1);
+ assert.equal(c.operativeState[116].medkits,1);assert.equal(c.operativeState[131].medkits,1);
+ assert.equal(result.medicalCollections.length,1);const collection=result.medicalCollections[0];
+ assert.equal(collection.sourceBefore-collection.sourceAfter,1);assert.equal(collection.medicalPoolBefore-collection.medicalPoolAfter,1);assert.equal(collection.carriedAfter-collection.carriedBefore,1);
+ assert.equal(result.usedDressings,1);assert.equal(result.emergencyAid.usedDressings,2);
+ const carried=state=>state.recruited.reduce((sum,id)=>sum+state.operativeState[id].medkits,0);
+ assert.equal(carried(start)-carried(c),3,'Redistribution conserves total stock; only the three actual treatments consume it.');
+ assert.equal(c.resources.treasury,start.resources.treasury);assert.deepEqual(c.contracts,start.contracts);assert.deepEqual(start,before);
+ let replay=save(start),battle=null,inventorySteps=0;
+ for(const row of result.orders){
+  if(row.scope==='campaign'){
+   replay=order(replay,row.action);
+   if(row.action.type==='visitSector')battle=enterSector({...replay.pendingBattle,hour:replay.hour,secondOfHour:replay.secondOfHour??0},replay.sectorStates.tucuman);
+   if(row.action.type==='sectorInventory'){
+    inventorySteps++;const pool=sectorInventoryModel(replay,'tucuman',rosterFor(replay),110).entries.filter(e=>JSON.parse(e.expected).item==='medkits').reduce((sum,e)=>sum+e.count,0);
+    assert.equal(carried(replay)+pool,carried(start),'Both the actual drop and pickup conserve finite carried plus known ground stock.');
+    if(row.action.direction==='drop'){assert.equal(pool,1);assert.equal(replay.operativeState[116].medkits,1);assert.equal(replay.operativeState[110].medkits,2);}
+    else {assert.equal(pool,0);assert.equal(replay.operativeState[110].medkits,3);}
+   }
+  }else{
+   battle=actBattle(battle,row.action);assert.equal(battle.lastError,null);const pair=syncBattleTime(replay,battle);assert.equal(pair.error,null);replay=pair.campaign;battle=pair.battle;
+   ({campaign:replay,battle}=decodeSave(encodeSave(replay,battle)));
+  }
+ }
+ assert.equal(inventorySteps,2);assert.deepEqual(save(replay),c);assert.deepEqual(stabilizeRescued(save(start),{patients:[112]}),result);
+ const lastKits=clinic({kits:2,donorKits:1}),unchanged=structuredClone(lastKits);
+ assert.throws(()=>stabilizeRescued(lastKits,{patients:[112]}),/known finite local dressings/);assert.deepEqual(lastKits,unchanged);
 });
 
 test('a genuine one-dressing shortage still refuses and passively records the exact entry and missing-stock state',()=>{

@@ -6,6 +6,13 @@ import {applyItemQuantity} from '../game/tactical-inventory.js';
 import {discoverRouteCache} from './finite-route-equipment.mjs';
 import {order,saved} from './local-contract-fixture.mjs';
 
+// Shared carried-stock selection. The Native inventory model still decides
+// whether the actual serving local donor can handle equipment here.
+export function routeDressingDonor(s,operativeId,{reserves={}}={}){
+ const sector=operativeLocation(s,operativeId);
+ return s.recruited.find(id=>{const r=s.operativeState[id];if(id===operativeId||!r.alive||r.captured||r.medkits<=(reserves[id]??0)||operativeLocation(s,id)!==sector)return false;const model=sectorInventoryModel(s,sector,rosterFor(s),id);return model.operativeId===id&&!model.reason;});
+}
+
 // Use known local dressings first, then actual carried donations or a real
 // discovered cache. No purchase, remote transfer, stock grant or refill.
 export function attemptRouteDressings(start,operativeId,target,{reserves={},report=()=>{}}={}){
@@ -20,7 +27,7 @@ export function attemptRouteDressings(start,operativeId,target,{reserves={},repo
   assert.equal(recipient.carriedReason,null,recipient.carriedReason);
   const source=sites().map(({site,model})=>({site,model,row:model.operativeId===operativeId&&model.entries.find(row=>row.reachable&&row.count>0&&JSON.parse(row.expected).item==='medkits')})).find(source=>source.row);
   if(!source){
-   const donor=s.recruited.find(id=>{const r=s.operativeState[id];if(id===operativeId||!r.alive||r.captured||r.medkits<=(reserves[id]??0)||operativeLocation(s,id)!==sector)return false;const model=sectorInventoryModel(s,sector,rosterFor(s),id);return model.operativeId===id&&!model.reason;});
+   const donor=routeDressingDonor(s,operativeId,{reserves});
    if(donor!==undefined){const count=Math.min(s.operativeState[donor].medkits-(reserves[donor]??0),target-(s.operativeState[operativeId].medkits??0));s=order(s,{type:'sectorInventory',sector,operativeId:donor,direction:'drop',item:'medkits',count});report({event:'routeDressingDonation',donor,recipient:operativeId,sector,count});continue;}
    if(!discovered){discovered=true;s=discoverRouteCache(s,operativeId);continue;}
    const quotedSites=sites().map(({site,model})=>({id:site.id,operativeId:model.operativeId,reason:model.reason,dressings:model.entries.filter(row=>JSON.parse(row.expected).item==='medkits').map(({key,count,reachable,reason})=>({key,count,reachable,reason}))}));
