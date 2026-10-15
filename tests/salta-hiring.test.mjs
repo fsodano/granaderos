@@ -48,3 +48,15 @@ test('an unaffordable complete force refuses before any Native booking',()=>{
  assert.throws(()=>quoteSaltaHires(start,[]),/No complete quoted Salta relief fits the actual budget/);
  assert.deepEqual(start,before);assert.deepEqual(start.recruited,[]);assert.deepEqual(start.hiringArrivals,[]);
 });
+
+
+test('five genuinely serving local people need only seven additional quoted Native hires and remain separate from those transactions',()=>{
+ let c=initialCampaign(45,fundedRouteContent());const ordinary=rosterFor(c).filter(op=>op.id>=100&&op.id<1000&&contractQuote(c,op,'day').available&&contractQuote(c,op,'day').total<1000).slice(0,5);
+ assert.equal(ordinary.length,5);for(const op of ordinary)c=order(c,{type:'recruitCivic',id:op.id,term:'week'});
+ const local=ordinary.map(op=>op.id),start=saved(c),before=structuredClone(start),contracts=structuredClone(start.contracts),plan=quoteSaltaHires(start,local);
+ assert.equal(plan.offers.length,7);assert.equal(new Set([...local,...plan.offers.map(o=>o.id)]).size,12);
+ for(const offer of plan.offers){assert.ok(!local.includes(offer.id));const quote=contractQuote(c,rosterFor(c).find(op=>op.id===offer.id),offer.term);assert.deepEqual(offer.quote,quote);const cash=c.resources.treasury;c=order(c,{type:'recruitCivic',id:offer.id,term:offer.term});assert.equal(c.resources.treasury,cash-quote.total);assert.equal(c.contracts[offer.id].paid,quote.price);}
+ assert.equal(c.resources.treasury,start.resources.treasury-plan.total);assert.ok(c.resources.treasury>=plan.reserve);assert.equal(c.recruited.length,12);
+ for(const id of local){assert.deepEqual(c.contracts[id],contracts[id]);assert.deepEqual(c.operativeState[id],start.operativeState[id]);}
+ assert.deepEqual(saved(c),c);assert.deepEqual(start,before);
+});

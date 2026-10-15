@@ -17,6 +17,7 @@ import {prepareRouteSupportBattery} from './route-support-battery.mjs';
 import {handRecord} from '../game/tactical-inventory.js';
 import {worldCell} from '../game/world-cells.js';
 import {quoteSaltaHires} from './salta-hiring.mjs';
+import {returnSaltaClinicRelief} from './salta-clinic-relief.mjs';
 
 export function saltaBatteryWaypoints(campaign,destination){
  if(!campaign.enemyGroups.some(group=>group.target==='buenos_aires'&&group.status==='stationed'))return [];
@@ -150,7 +151,7 @@ export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},enc
  onCheckpoint('salta-clinic-supplied',route.campaign,{receipt:clinicSupply.receipt});
  // Keep service paid while staging a daylight arrival. Replacements are hired
  // locally after the rest, with their normal equipment and real contracts.
- const earliestDeparture=route.campaign.hour+(24-route.campaign.hour%24)%24;
+ const earliestDeparture=route.campaign.hour+(24-route.campaign.hour%24)%24,clinicDeadline=(route.campaign.hour*3600+(route.campaign.secondOfHour??0))+72*3600,clinicRelief=[];
  let departure;
  const local=route.campaign.recruited.filter(id=>{const record=route.campaign.operativeState[id];return record.alive&&!record.captured&&record.location==='tucuman';});
  const patients=local.filter(id=>route.campaign.operativeState[id].hp<route.campaign.operativeState[id].maxHp),doctors=[];
@@ -159,6 +160,7 @@ export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},enc
  // A stable wounded physician can treat another patient, then receive care
  // from a recovered colleague. Their own wounds must also be restored.
  for(let i=0;i<72;i++){
+  assert.ok(route.campaign.hour*3600+(route.campaign.secondOfHour??0)<=clinicDeadline,'The actual clinic preparation must remain within 72 hours.');
   const wounded=local.filter(id=>route.campaign.operativeState[id].hp<route.campaign.operativeState[id].maxHp);
   const arrivalHour=(route.campaign.hour+12)%24;
   if(route.campaign.hour>=earliestDeparture&&arrivalHour>=6&&arrivalHour<18&&!wounded.length){departure=route.campaign.hour;break;}
@@ -176,6 +178,17 @@ export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},enc
   if(route.campaign.pendingEncounter){
    const defense=route.resolveEncounter(report,encounterController);defenses.push(defense);assert.equal(defense.status,'victory','The actual clinic raid must be won.');
    const urgent=stabilizeSaltaClinicSurvivors(route.campaign,defense.sector,{report});route.apply(()=>urgent.campaign);
+   // Actual routed clinic survivors can reach the neighbouring friendly depot.
+   // Their existing paid service is relief, not another catalogue hire or a
+   // member of the original pre-preparation reserve.returning receipt.
+   const escaped=defense.units.filter(u=>u.side==='player'&&u.hp>0).map(u=>Number(u.id)).filter(id=>{const r=route.campaign.operativeState[id];return route.campaign.recruited.includes(id)&&r.alive&&!r.captured&&r.location!==defense.sector&&r.arrival?.fromSector===defense.sector;});
+   for(const source of [...new Set(escaped.map(id=>route.campaign.operativeState[id].location))]){
+    const ids=escaped.filter(id=>route.campaign.operativeState[id].location===source),relief=returnSaltaClinicRelief(route.campaign,ids,{destination:'tucuman',deadlineSeconds:clinicDeadline,protectedTerms:{[guard]:{term:'week',paid:reservePreparation.hiringQuote.price}},report,resolveEncounter:campaign=>{
+     route.apply(()=>campaign);const next=route.resolveEncounter(report,encounterController);defenses.push(next);assert.equal(next.status,'victory','The actual clinic-relief raid must be won.');return route.campaign;
+    }});
+    route.apply(()=>relief.campaign);clinicRelief.push(relief.receipt);route.events.push(...relief.receipt.orders.map(row=>({action:row.action,hour:Math.floor(row.to/3600),second:row.to%3600})));
+    onCheckpoint('salta-clinic-relief-arrived',route.campaign,{receipt:relief.receipt});
+   }
    local.splice(0,local.length,...route.campaign.recruited.filter(id=>{const r=route.campaign.operativeState[id];return r.alive&&!r.captured&&r.location==='tucuman';}));
    onCheckpoint('salta-clinic-defense-settled',route.campaign,{defense,care:urgent.receipt});
   }
@@ -228,8 +241,8 @@ export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},enc
  assert.deepEqual(request.squad.map(u=>Number(u.id)).sort((a,b)=>a-b),[...field,...support].sort((a,b)=>a-b));
  const battle=enterSector(request,campaign.sectorStates.salta);
  assert.deepEqual(decodeSave(encodeSave(campaign,battle)),{campaign,battle});
- report({event:'jointSaltaDeployment',hour:campaign.hour,units:request.squad.map(u=>u.id),patients,usedDressings});
- return {campaign,battle,events:route.events,departure,hired,hiringCost,field,support,reservePreparation,cordobaReserve,defenses,care:{patients,doctors,usedDressings,gatheredDressings,donatedDressings,supply:clinicSupply.receipt}};
+ report({event:'jointSaltaDeployment',hour:campaign.hour,units:request.squad.map(u=>u.id),patients,usedDressings,hiringPlan:plan,clinicRelief});
+ return {campaign,battle,events:route.events,departure,hired,hiringCost,hiringPlan:plan,field,support,reservePreparation,cordobaReserve,clinicRelief,defenses,care:{patients,doctors,usedDressings,gatheredDressings,donatedDressings,supply:clinicSupply.receipt}};
 }
 
 export function completeNorthernMission(start,{report=()=>{}}={}){
