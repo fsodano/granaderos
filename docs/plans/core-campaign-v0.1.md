@@ -66,13 +66,17 @@ The combined reviewed source `ffdd3b76` completes campaign quick with all
 130 files and 684/684 tests passing, without failures, skips or cancellations.
 Runner, scope, workflow and CI-selection controls pass 29/29; shard controls
 pass 5/5. Type checking and the static export pass, with 1,413 files and 1,045
-verified asset references (`0.1.5 · 61504d277f2b`). One unfiltered local run of
-all 1,062 test files is now active on that frozen source. The complete fresh
-recovery file fails its only test in 1,895.012 seconds, and both ending tests
-fail in 2,154.343 seconds. The Cuyo file also fails. The captured loose ending
-retreats at Uspallata; recovery loses the Tucumán defence. The installed
-ending and Cuyo error details still await the full runner report. No earned
-ending export from these failed files is eligible for browser acceptance.
+verified asset references (`0.1.5 · 61504d277f2b`). The unfiltered local run
+completes all 1,062 files on that frozen source: 7,907 tests pass, six fail
+and one skips, with no cancellations. Four files fail. The loose ending
+retreats at Uspallata; the installed ending stops because the actual local
+survivors cannot yet store the mountain guns. Recovery loses the Tucumán
+defence, and Cuyo attempts to group an escaped physician before his physical
+return. The opening's Salta preparation cannot afford a quoted reserve hire
+after reserving known costs; its parent fails and the dependent Yatasto step
+skips. No earned ending export from these failed files is eligible for
+browser acceptance. A losing test controller alone does not establish a
+production mechanic defect.
 
 The reviewed finite-stock follow-up is integrated as `a31766b3` from
 `34d2d2c7`. It uses current known open containers to equip the two existing
@@ -107,6 +111,11 @@ an injury, a separate casualty and the departure through Native actions,
 then verify self-aid, real return, renewed service and official paired saves.
 The previous casualty stays dead; the original founder and protected-rear
 health guards are unchanged. Complete fresh Cuyo acceptance remains pending.
+On combined source `96c7096e`, all 133 quick campaign files complete and all
+699 tests pass, with no failures, skips or cancellations. Scope and runner
+controls pass 29/29; documentation and baseline audits pass. These results
+cover the three reviewed recovery corrections. The complete original routes,
+earned-ending browser review and final release gate still need to pass.
 
 On reviewed head `15d392e6`, campaign quick completes all 126 files and passes
 655/655 tests, with no failures, cancellations or skips. The initial isolated
