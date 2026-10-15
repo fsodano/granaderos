@@ -62,8 +62,8 @@ original complete recovery, ending and historical-loss files and their battle
 limits. Every complete run starts fresh. Failed checkpoints are retained as
 passive evidence and are not resumed as diagnostic input.
 
-On reviewed head `ba309039`, campaign quick completes all 122 files and passes
-624/624 tests, with no failures, cancellations or skips. The initial isolated
+On reviewed head `5cd6636c`, campaign quick completes all 122 files and passes
+628/628 tests, with no failures, cancellations or skips. The initial isolated
 checkout lacked web dependencies; its seven module-resolution failures were
 retained separately, then the complete rerun passed with verified dependencies.
 Runner, scope, workflow and CI-selection controls pass 34/34 across their
