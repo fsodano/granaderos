@@ -18,6 +18,7 @@ import {handRecord} from '../game/tactical-inventory.js';
 import {worldCell} from '../game/world-cells.js';
 import {quoteSaltaHires} from './salta-hiring.mjs';
 import {returnSaltaClinicRelief} from './salta-clinic-relief.mjs';
+import {saltaHospitalEncounterExecutor} from './salta-hospital-encounter.mjs';
 
 export function saltaBatteryWaypoints(campaign,destination){
  if(!campaign.enemyGroups.some(group=>group.target==='buenos_aires'&&group.status==='stationed'))return [];
@@ -27,12 +28,13 @@ export function saltaBatteryWaypoints(campaign,destination){
  return [];
 }
 
-function orders(start){
+function orders(start,hospitalOptions){
  let campaign=decodeSave(encodeSave(start)).campaign;const events=[];
  return {get campaign(){return campaign;},events,apply(transform){campaign=transform(campaign);},prepareWeapons(report){campaign=finishReloadsBeforeMarch(campaign,{report});},resolveEncounter(report,controller=northernCombatOrder){
   const encounter=structuredClone(campaign.pendingEncounter),group=structuredClone(campaign.enemyGroups.find(group=>group.id===encounter.groupId));
   const next=dispatchCampaign(campaign,{type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});assert.equal(next.lastError,null,next.lastError);assert.deepEqual(next.pendingBattle.enemies,group.units);
-  const result=fightNorthernSector(next,encounter.sector,{controller,report});campaign=result.campaign;
+  const executeBattle=saltaHospitalEncounterExecutor(hospitalOptions,encounter.sector);
+  const result=fightNorthernSector(next,encounter.sector,{controller,report,...(executeBattle?{executeBattle}:{})});campaign=result.campaign;
   return {groupId:group.id,...result.summary};
  },order(action){
   const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);
@@ -48,11 +50,11 @@ function renew(route,ids,buffer){
  }
 }
 export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},encounterController}={}){
- const route=orders(start),{order}=route;
+ const formation=openingRearFormation(start),route=orders(start,{allCovered:formation.allCovered,encounterController}),{order}=route;
  assert.equal(start.location,'tucuman');assert.equal(start.pendingBattle,null);
  // Keep the rear depot defended while the northern force marches. Its
  // actual reserves reload their own guns; a paid guard recovers finite gear.
- let selected=start.activeSquadId;const formation=openingRearFormation(start),reserves=start.recruited.filter(id=>{const r=start.operativeState[id];return r.alive&&!r.captured&&r.location==='cordoba';});
+ let selected=start.activeSquadId;const reserves=start.recruited.filter(id=>{const r=start.operativeState[id];return r.alive&&!r.captured&&r.location==='cordoba';});
  assert.ok(reserves.length<6);
  const guardRoster=rosterFor(route.campaign),preferredGuards=[113,140,144,146,108,101,102];
  const guardCandidates=guardRoster.filter(op=>op.id>=100&&op.id<1000&&civicStatus(route.campaign,op.id).available).map(op=>({op,quote:contractQuote(route.campaign,op,'week')})).filter(row=>row.quote.available&&row.quote.total<=route.campaign.resources.treasury).sort((a,b)=>a.quote.total-b.quote.total||b.op.marksmanship-a.op.marksmanship||a.op.id-b.op.id);
