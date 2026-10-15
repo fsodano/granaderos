@@ -5,7 +5,7 @@ import {propBlocksAt} from '../game/props.js';
 import {wallMovementBlocked} from '../game/wall-geometry.js';
 import {sameCell,sameSurface,spacePoint,surfaceAt} from '../game/tactical-space.js';
 import {boundaryPassable} from '../game/tactical-exits.js';
-import {getReachable,teamCanSee,hasFirearm,artilleryContact,artilleryCrewPlan,artilleryCosts,artilleryReloadPreview,stanceCost,actionCosts,exitPreview,meleePreview} from '../game/tactical.js';
+import {getReachable,teamCanSee,hasFirearm,artilleryContact,artilleryCrewPlan,artilleryCosts,artilleryReloadPreview,stanceCost,actionCosts,exitPreview,meleePreview,medicalUsePreview} from '../game/tactical.js';
 import {availableAmmunition} from '../game/ammunition-types.js';
 import {firearmServiceable} from '../game/firearm-serviceability.js';
 import {criticalFirstAidNeeded} from '../game/first-aid.js';
@@ -98,6 +98,22 @@ export function createdUspallataBattery(initial,{reserveIds=[],reserveDestinatio
   }).sort((a,c)=>gain(c)-gain(a)||a.y-c.y||a.x-c.x);
   return candidates[0]?{type:'artilleryMove',unitId:u.id,artilleryId:gun.id,x:candidates[0].x,y:candidates[0].y}:null;
  }
+ function uprightMedicalApproach(b,u,patient,budget){
+  if(u.stance!=='prone'||u.mounted||!u.medkits||!sameSurface(u,patient))return null;
+  const hand=actionCosts(b,u).weapon;
+  const quote=(stance,movementMode)=>{
+   const paid=stanceCost(u,stance),actor={...u,stance,movementMode,ap:u.ap-paid},view=publicRouteView(b,actor);
+   const points=getReachable(view,actor).filter(p=>sameSurface(p,u)&&p.path.every(step=>sameSurface(step,u)));
+   const goals=points.filter(p=>p.cost>0&&medicalUsePreview(view,{...actor,...spacePoint(p),activeSlot:'medical',ap:actor.ap-p.cost-hand},patient).allowed).sort((a,c)=>a.cost-c.cost||a.y-c.y||a.x-c.x);
+   return {paid,points,goal:goals[0]};
+  };
+  // These are public quotes, not a simulated posture or completed approach.
+  // Pay the posture inside one Native move and re-read the returned battle.
+  const crawling=quote(u.stance,u.movementMode),walking=quote('standing','walk');
+  if(!walking.goal||crawling.goal&&walking.paid+walking.goal.cost>=crawling.goal.cost)return null;
+  const point=walking.goal.path.map(step=>walking.points.find(p=>sameCell(p,step))).filter(p=>p&&p.cost>0&&walking.paid+p.cost<=budget).at(-1);
+  return point?{type:'move',unitId:u.id,...spacePoint(point),movement:'walk'}:null;
+ }
  const controller=(b,u)=>{
   if(!capable(u))return null;
   const normal=tucumanCombatOrder(b,u);
@@ -111,7 +127,7 @@ export function createdUspallataBattery(initial,{reserveIds=[],reserveDestinatio
   if(!apart)return separation(b,u);
   if(u.id===physician.id){
    const patients=b.units.filter(p=>p.side===u.side&&p.id!==u.id&&medicalPatientAvailable(p)&&(p.bleeding>0||criticalFirstAidNeeded(p))).sort((a,c)=>a.hp-c.hp||idCompare(a,c));
-   for(const patient of patients){const action=route(b,u,p=>distance(p,patient)<distance(u,patient),p=>distance(p,patient),Math.min(16,u.ap-actionCosts(b,u).weapon-actionCosts(b,u).heal));if(action)return action;}
+   for(const patient of patients){const budget=Math.min(16,u.ap-actionCosts(b,u).weapon-actionCosts(b,u).heal),upright=uprightMedicalApproach(b,u,patient,budget);if(upright)return upright;const action=route(b,u,p=>distance(p,patient)<distance(u,patient),p=>distance(p,patient),budget);if(action)return action;}
    const shot=usefulRouteRifleShot(publicRouteView(b,u),u);if(shot)return shot;
    return u.stance!=='prone'&&u.ap>=stanceCost(u,'prone')?{type:'stance',unitId:u.id,stance:'prone'}:null;
   }
