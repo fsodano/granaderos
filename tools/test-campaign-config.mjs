@@ -4,6 +4,7 @@
 export const campaignTestGroups = [
  {"id": "earned", "reason": "Genuine earned campaign input, native continuation or route-policy regression.", files:[
   "tests/cuyo-posture-readiness.test.mjs",
+  "tests/cuyo-current-controller.test.mjs",
   "tests/earned-convoy-stable-rest.test.mjs",
   "tests/earned-mendoza-ammunition-service-return.test.mjs",
   "tests/mendoza-civilian-fire-safety.test.mjs",
