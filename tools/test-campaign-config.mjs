@@ -61,6 +61,7 @@ export const campaignTestGroups = [
   "tests/opening-playthrough.test.mjs",
   "tests/opening-port-income.test.mjs",
   "tests/paid-route-hiring.test.mjs",
+  "tests/salta-hiring.test.mjs",
   "tests/prisoner-rescue-route.test.mjs",
   "tests/retiro-expansion.test.mjs",
   "tests/route-ammunition-transfer.test.mjs",

@@ -1,5 +1,4 @@
 import assert from 'node:assert/strict';
-import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {dispatchCampaign,rosterFor,civicStatus} from '../game/campaign.js';
 import {encodeSave,decodeSave} from '../game/save.js';
@@ -17,6 +16,7 @@ import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {prepareRouteSupportBattery} from './route-support-battery.mjs';
 import {handRecord} from '../game/tactical-inventory.js';
 import {worldCell} from '../game/world-cells.js';
+import {quoteSaltaHires} from './salta-hiring.mjs';
 
 export function saltaBatteryWaypoints(campaign,destination){
  if(!campaign.enemyGroups.some(group=>group.target==='buenos_aires'&&group.status==='stationed'))return [];
@@ -185,18 +185,14 @@ export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},enc
  const usedDressings=medicalStart+gatheredDressings-donatedDressings-local.reduce((sum,id)=>sum+route.campaign.operativeState[id].medkits,0);assert.ok(patients.length?usedDressings>0:usedDressings===0);
  // Pay for an available specialist and ordinary replacements. Fallen recruits
  // stay dead; a living contracted rifleman can serve in the next assault.
- const hired=[],cash=route.campaign.resources.treasury;
- const available=(id,term)=>!route.campaign.recruited.includes(id)&&route.campaign.operativeState[id].alive&&!route.campaign.operativeState[id].captured&&contractQuote(route.campaign,rosterFor(route.campaign).find(op=>op.id===id),term).available;
- const specialist=rosterFor(route.campaign).filter(op=>op.id>=100&&op.id<1000&&available(op.id,'day')&&contractQuote(route.campaign,op,'day').price<=Math.max(0,route.campaign.resources.treasury-250)).sort((a,b)=>b.marksmanship-a.marksmanship||contractQuote(route.campaign,a,'day').price-contractQuote(route.campaign,b,'day').price||a.id-b.id)[0]?.id;assert.ok(specialist,'the next paid rifleman must be available and leave funds for ordinary relief');
- order({type:'recruitCivic',id:specialist,term:'day'});hired.push(specialist);
- const replacementCount=Math.max(0,12-local.length-1);
- const replacements=rosterFor(route.campaign).filter(op=>op.id>=100&&op.id<1000&&available(op.id,'week')&&contractQuote(route.campaign,op,'week').price<=routeHiringCeiling(route.campaign,250)).sort((a,b)=>b.marksmanship-a.marksmanship||contractQuote(route.campaign,a,'week').price-contractQuote(route.campaign,b,'week').price||a.id-b.id).slice(0,replacementCount).map(op=>op.id);assert.equal(replacements.length,replacementCount);
- for(const id of replacements){order({type:'recruitCivic',id,term:'week'});hired.push(id);}
+ const hired=[],cash=route.campaign.resources.treasury,plan=quoteSaltaHires(route.campaign,local);
+ const specialist=plan.specialist.id,replacements=plan.replacements.map(offer=>offer.id);
+ for(const offer of plan.offers){order({type:'recruitCivic',id:offer.id,term:offer.term});hired.push(offer.id);assert.equal(route.campaign.contracts[offer.id].paid,offer.quote.price);}
  const present=id=>route.campaign.recruited.includes(id)&&route.campaign.operativeState[id].alive&&!route.campaign.operativeState[id].captured&&route.campaign.operativeState[id].location==='tucuman';
  const field=[...new Set([specialist,...replacements.slice(0,1),141,127,105,134,126,...local])].filter(id=>present(id)&&!doctors.includes(id)).slice(0,6);
  const support=[...new Set([...doctors,...replacements.slice(1),111,103,104,122,...local])].filter(id=>present(id)&&!field.includes(id)).slice(0,6);
  assert.equal(field.length,6);assert.equal(support.length,6);
- const hiringCost=cash-route.campaign.resources.treasury;assert.equal(hiringCost,hired.reduce((sum,id)=>sum+route.campaign.contracts[id].paid,0));
+ const hiringCost=cash-route.campaign.resources.treasury;assert.equal(hiringCost,plan.total);assert.ok(route.campaign.resources.treasury>=plan.reserve);
  for(const receiver of replacements){
   const model=id=>sectorInventoryModel(route.campaign,'tucuman',rosterFor(route.campaign),id);
   if([1800,1801,1802].includes(rosterFor(route.campaign).find(op=>op.id===receiver).weapon))continue;
