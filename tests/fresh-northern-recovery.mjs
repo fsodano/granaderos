@@ -39,6 +39,7 @@ import {retainNorthernHandoverService,resolveNorthernHandoverEncounter,continueN
 import {previewStrategicRoute} from '../game/strategic-route.js';
 import {coordinatedHospitalBattery} from './coordinated-hospital-battery.mjs';
 import {prepareNorthernHospitalReserveReadiness} from './northern-hospital-reserve-readiness.mjs';
+import {prepareNorthernHospitalReserveStock} from './northern-hospital-reserve-stock.mjs';
 import {saltaHospitalBattleOptions,saltaHospitalEncounterExecutor} from './salta-hospital-encounter.mjs';
 import {createPairedRouteOrders} from './paired-route-battle.mjs';
 
@@ -509,6 +510,8 @@ export function returnFreshNorthernHospital(hospital,{report=()=>{}}={}){
    const ids=escort.filter(id=>c.recruited.includes(id)&&c.operativeState[id].alive&&!c.operativeState[id].captured&&!operativeInTransit(c,id)&&operativeLocation(c,id)===at);
    const ready=prepareNorthernHospitalReserveReadiness(c,{sector:at,ids,deadlineSeconds:careDeadlineSeconds,report,resolveEncounter:state=>{c=state;resolveReturnContact();return c;}});c=ready.campaign;
    report({event:'northernHospitalReservePrepared',receipt:ready.receipt,campaign:structuredClone(c)});
+   const stock=prepareNorthernHospitalReserveStock(c,{sector:at,ids,deadlineSeconds:careDeadlineSeconds,report});c=stock.campaign;
+   report({event:'northernHospitalReserveStockPrepared',receipt:stock.receipt,campaign:structuredClone(c)});
   }
  }
  const journey=()=>c.squads.find(q=>q.id===c.activeSquadId)?.journey;
@@ -542,7 +545,7 @@ export function returnFreshNorthernHospital(hospital,{report=()=>{}}={}){
  return c;
  }catch(error){
   if(error?.campaign)c=error.campaign;
-  recordRouteStrategicEvidence({helper:'recoverFreshNorthernDoctor',stage:'preparation-failure',campaign:c,inputCapture,error,context:{hospitalReserveReadiness:error?.hospitalReserveReadiness??null}});throw error;
+  recordRouteStrategicEvidence({helper:'recoverFreshNorthernDoctor',stage:'preparation-failure',campaign:c,inputCapture,error,context:{hospitalReserveReadiness:error?.hospitalReserveReadiness??null,hospitalReserveStock:error?.hospitalReserveStock??null}});throw error;
  }
 }
 
