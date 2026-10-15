@@ -39,6 +39,8 @@ import {retainNorthernHandoverService,resolveNorthernHandoverEncounter,continueN
 import {previewStrategicRoute} from '../game/strategic-route.js';
 import {coordinatedHospitalBattery} from './coordinated-hospital-battery.mjs';
 import {prepareNorthernHospitalReserveReadiness} from './northern-hospital-reserve-readiness.mjs';
+import {saltaHospitalBattleOptions,saltaHospitalEncounterExecutor} from './salta-hospital-encounter.mjs';
+import {createPairedRouteOrders} from './paired-route-battle.mjs';
 
 // A guarded roof can have a valid low-probability lane while the ordinary
 // infantry policy wants to advance. Pay for the real previewed shot first.
@@ -629,6 +631,23 @@ export function northernReunionDutyKeepers(start,originalIds){
  return [...new Set([...originalIds,...start.squad,...start.recruited.filter(id=>start.contracts[id]?.kind==='patriot')])].filter(id=>start.recruited.includes(id)&&start.operativeState[id].alive&&!start.operativeState[id].captured);
 }
 
+// Use the actual encounter response after paid cover, not the earlier field
+// formation. Other sectors, mixed cover and explicit policies stay ordinary.
+export function northernReunionEncounterOptions(campaign,sector,{encounterController}={}){
+ const controller=encounterController??tucumanCombatOrder;
+ if(!saltaHospitalEncounterExecutor({campaign,encounterController},sector))return {controller};
+ function fightNorthernReunionHospital(request,previous,options){
+  // Each real execution and replay receives one Native entry, new roles and
+  // its own paired order bridge. Settlement must use this returned campaign.
+  const bridge=createPairedRouteOrders(campaign),hospital=saltaHospitalBattleOptions();
+  const result=fightOpeningBattle(request,previous,{...options,...hospital,
+   admitBattle:initial=>hospital.admitBattle(bridge.admitBattle(initial)),executeOrder:bridge.executeOrder});
+  assert.equal(result.battle,bridge.pair.battle);assert.deepEqual(result.orders,bridge.orders);
+  return {...result,pair:bridge.pair};
+ }
+ return {controller,executeBattle:fightNorthernReunionHospital};
+}
+
 export function reuniteFreshNorthernSquad(start,{report=()=>{},keepServing,mode='march'}={}){
  let c=decodeSave(encodeSave(start)).campaign;
  assert.ok(['march','posta'].includes(mode),'The actual reunion uses an ordinary land travel mode.');
@@ -657,7 +676,7 @@ export function reuniteFreshNorthernSquad(start,{report=()=>{},keepServing,mode=
    const returning=c.activeSquadId,encounter=c.pendingEncounter;
    const defenders=c.squads.find(q=>q.location===encounter.sector&&q.members.some(id=>c.operativeState[id].alive));assert.ok(defenders,'the threatened sector needs its actual garrison');
    order({type:'selectSquad',id:defenders.id});order({type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});
-   c=fightNorthernSector(c,encounter.sector,{controller:tucumanCombatOrder,report}).campaign;
+   c=fightNorthernSector(c,encounter.sector,{...northernReunionEncounterOptions(c,encounter.sector),report}).campaign;
    order({type:'selectSquad',id:returning});
   }
  };
