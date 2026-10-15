@@ -121,6 +121,12 @@ actual five-person entry is healthy, rested, supplied and on roof cover, but
 the reunion caller selects the ordinary infantry controller. The coordinated
 hospital controller is not reached. The correction must preserve this actual
 reserve and synchronize every public order with its campaign state.
+A reviewed correction now selects hospital roles from the actual covered
+Tucumán response during reunion. Every real actor order and end-turn uses the
+paired campaign/battle bridge, with new roles for each execution and replay.
+Eight complete affected files pass 52/52, including a fresh declared raid,
+paid roof staging, finite aid, ordinary fallbacks and official saved replay.
+The complete original recovery still needs a fresh passing result.
 The complete two-ending file on that same frozen source finishes 0/2 in
 2,228.656 seconds. The loose route retreats at Uspallata; the installed route
 retreats at Los Patos at turn sixteen after 218 actor orders and 218 seconds.
@@ -271,6 +277,13 @@ rounds. This confirms that the approach change executes; it does not prove
 victory, cap exhaustion or complete ammunition exhaustion. The complete file
 finishes 0/2; the installed case reaches Uspallata victory before losing at
 Los Patos.
+A reviewed same-eight follow-up moves the physician toward the current living
+infantry screen before wounds occur. It uses public route quotes, preserves
+the sixteen-point movement limit and the full hand/treatment reserve, and
+rejects loss of cover, new known enemy sight lines or cannon contact cells.
+Six complete affected files pass 42/42; ten fresh controls include the actual
+authored eight-person deployment and paid direct, presented and validated
+replay. This focused result does not establish a complete Uspallata victory.
 
 Passive review of the complete installed Los Patos failure records 748 stance
 orders. Three surviving flank soldiers repeat crouched, prone and standing
@@ -285,6 +298,16 @@ at turn sixteen. Its retained request starts the north flank at 26 energy and
 74 fatigue, and the south flank at 32 energy and 68 fatigue, after their real
 marches. The preparation does not sleep these arrived columns before queuing
 their attack. Both complete endings remain required.
+A reviewed preparation correction now sleeps the actual arrived flank groups
+at their safe neutral origins before queuing the assault. The same sixteen
+people, routes and equipment remain. The initial service/funding plan includes
+a bounded sleep forecast from their Native recovery rates; the remaining
+route is re-quoted after actual sleep. Seven complete affected files pass
+50/50, including paid neutral-cell marches, real sleep and automatic waking,
+term renewal, insufficient funds, duty/wound/travel refusal, an open visit and
+a declared raid. Exact finite kit, selection and official saved replay remain
+checked. The original eight-person preparation remains unchanged. Complete
+Los Patos victory and both saved ending continuations remain unproved.
 
 The reviewed clinic correction restores actual wounded survivors before the
 separate battery journey. Earlier and later care share one 72-hour allowance;
