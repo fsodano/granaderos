@@ -5,7 +5,7 @@ import {propBlocksAt} from '../game/props.js';
 import {wallMovementBlocked} from '../game/wall-geometry.js';
 import {sameCell,sameSurface,spacePoint,surfaceAt} from '../game/tactical-space.js';
 import {boundaryPassable} from '../game/tactical-exits.js';
-import {getReachable,teamCanSee,hasFirearm,artilleryContact,artilleryCrewPlan,artilleryCosts,artilleryReloadPreview,stanceCost,actionCosts,exitPreview} from '../game/tactical.js';
+import {getReachable,teamCanSee,hasFirearm,artilleryContact,artilleryCrewPlan,artilleryCosts,artilleryReloadPreview,stanceCost,actionCosts,exitPreview,meleePreview} from '../game/tactical.js';
 import {availableAmmunition} from '../game/ammunition-types.js';
 import {firearmServiceable} from '../game/firearm-serviceability.js';
 import {criticalFirstAidNeeded} from '../game/first-aid.js';
@@ -124,6 +124,12 @@ export function createdUspallataBattery(initial,{reserveIds=[],reserveDestinatio
     if(action?.type?.startsWith('artillery')){
      const kind={artillery:'fire',artilleryPivot:'pivot',artilleryMove:'move'}[action.type],plan=action.type==='artilleryReload'?artilleryReloadPreview(b,u,gun):artilleryCrewPlan(b,u,gun,artilleryCosts(b,u,gun)[kind]);
      if(!plan.reason&&plan.crew.every(id=>crew.ids.includes(id)&&!protectedIds.has(id)))return action;
+    }
+    // Finish an admitted close blade defence before restoring the rifle.
+    // The current Native quote permits no approach away from this gun post.
+    if(u.activeSlot==='blade'){
+     const view=publicRouteView(b,u),target=view.units.filter(v=>v.side!==u.side&&capable(v)&&meleePreview(view,u,v).valid).sort((a,c)=>a.hp-c.hp||distance(u,a)-distance(u,c)||idCompare(a,c))[0];
+     if(target)return {type:'melee',unitId:u.id,targetId:target.id};
     }
     // A carried primary needs its real activation and maintenance when the
     // finite cannon has no payable work. Keeping the crew does not remove it.
