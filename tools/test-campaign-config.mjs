@@ -10,6 +10,7 @@ export const campaignTestGroups = [
   "tests/mendoza-civilian-fire-safety.test.mjs",
   "tests/northern-clinic-public-care.test.mjs",
   "tests/northern-firearm-safety.test.mjs",
+  "tests/northern-relief-civilian-safety.test.mjs",
   "tests/northern-safe-fallback.test.mjs",
   "tests/northern-safe-posture.test.mjs",
   "tests/opening-shared-sighting-investigation.test.mjs",

@@ -3,8 +3,8 @@ import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {enterSector} from '../game/world.js';
 import {syncBattleTime} from '../game/time.js';
-import {actBattle,endTurn,completedTacticalVictory,stanceCost,canSee,teamCanSee,hasFirearm,artilleryCosts,artilleryCrewPlan,artilleryReloadPreview} from '../game/tactical.js';
-import {sameSurface} from '../game/tactical-space.js';
+import {actBattle,endTurn,completedTacticalVictory,stanceCost,canSee,teamCanSee,hasFirearm,artilleryCosts,artilleryCrewPlan,artilleryReloadPreview,actionCosts,firearmShotOptions,getReachable,movementEnergy,movementStepCost} from '../game/tactical.js';
+import {sameSurface,spacePoint,surfaceAt} from '../game/tactical-space.js';
 import {choosePlayerSharedSightingInvestigation} from '../game/tactical-ai.js';
 import {firearmServiceable} from '../game/firearm-serviceability.js';
 import {directionTo,turnAPCost} from '../game/tactical-awareness.js';
@@ -16,6 +16,58 @@ import {cautiousCombatOrder} from './cautious-driver.mjs';
 import {retainNorthernHandoverService} from './northern-handover-route.mjs';
 import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 import {recordRouteBattleFailure} from './route-failure-evidence.mjs';
+import {knownRouteCivilianShotSafety} from './route-fire-safety.mjs';
+import {publicRouteView} from './route-infantry-progress.mjs';
+import {limitEnergy} from '../game/fatigue.js';
+import {lowerWeapon} from '../game/weapon-readiness.js';
+import {isInteriorVisible} from '../game/tactical-visibility.js';
+
+function paidReliefPosition(view,unit,point){
+ const copy=structuredClone(view),actor=copy.units.find(other=>other.id===unit.id);let paid=0;
+ actor.braced=false;actor.overwatch=false;
+ for(const step of point.path){
+  const surface=surfaceAt(copy,step),cost=movementStepCost(copy,actor,actor,step);if(!surface||!Number.isFinite(cost)||cost<=0||actor.ap<cost)return null;
+  const diagonal=actor.x!==step.x&&actor.y!==step.y?1.4:1,raw=movementEnergy(actor,surface,copy.mode==='exploration')*diagonal,energy=copy.mode==='exploration'?raw:Math.ceil(raw),direction=`${step.x-actor.x},${step.y-actor.y}`,facing=directionTo(actor,step);
+  lowerWeapon(actor);limitEnergy(actor);paid+=cost;
+  Object.assign(actor,spacePoint(step),{ap:actor.ap-cost,facing,momentum:direction===actor.lastDirection?actor.momentum+1:1,lastDirection:direction,energy:Math.max(0,Math.round((actor.energy-energy)*1000)/1000)});
+  delete actor.lastTargetId;delete actor.lastShotPosition;if(actor.energy<=0)return null;
+ }
+ return paid===point.cost?{view:copy,actor}:null;
+}
+
+function safeReliefFireOrMove(battle,unit,action){
+ if(action?.type!=='fire')return action;
+ const target=battle.units.find(other=>other.id===action.targetId),aim=action.aim??0,hitLocation=action.hitLocation??'torso';
+ const requested=target&&firearmShotOptions(battle,unit,target,aim).find(option=>option.aim===aim&&option.hitLocation===hitLocation);
+ if(knownRouteCivilianShotSafety(battle,unit,target)(requested))return action;
+ const rooms=new Set(battle.revealedRooms??[]);
+ const targets=battle.units.filter(other=>other.side!==unit.side&&other.hp>0&&!other.unconscious&&!other.routed&&!other.surrendered&&!other.departure&&isInteriorVisible(battle,other,rooms)&&canSee(battle,unit,other));
+ const shots=(state,actor)=>targets.flatMap(target=>{
+  if(!canSee(state,actor,target))return [];
+  const costs=actionCosts(state,actor,target);if(actor.ap<costs.fire)return [];
+  const maxAim=Math.min(4,Math.floor((actor.ap-costs.fire)/costs.aim)),safe=knownRouteCivilianShotSafety(state,actor,target);
+  return firearmShotOptions(state,actor,target,maxAim).filter(option=>option.chance>0&&option.damageFactor>0&&safe(option)).map(option=>({
+   score:option.expectedDamage??option.chance*option.damageFactor,
+   action:{type:'fire',unitId:actor.id,targetId:target.id,aim:option.aim,hitLocation:option.hitLocation},
+  }));
+ }).sort((a,b)=>b.score-a.score||a.action.aim-b.action.aim||String(a.action.targetId).localeCompare(String(b.action.targetId))||a.action.hitLocation.localeCompare(b.action.hitLocation));
+ const alternative=shots(battle,unit)[0];if(alternative)return alternative.action;
+ if(unit.mounted||unit.knockedDown||unit.entangled)return null;
+ // Preserve all known bodies and obstacles. A short actual route may clear
+ // the firing lane; its preview reserves the next shot after paying movement,
+ // facing and gun preparation. The next callback rechecks the actual scene.
+ const publicView=publicRouteView(battle,unit),view={...publicView,units:publicView.units.filter(other=>other.side===unit.side||isInteriorVisible(battle,other,rooms)),npcs:publicView.npcs.filter(other=>isInteriorVisible(battle,other,rooms))};
+ const moves=getReachable(view,unit).filter(point=>sameSurface(point,unit)&&point.cost>0&&point.cost<=24&&point.cost<unit.ap&&point.path.length<=3&&!point.path.some(step=>step.kind==='climb'))
+  .sort((a,b)=>a.cost-b.cost||a.y-b.y||a.x-b.x).slice(0,48);
+ const choices=[];
+ for(const point of moves){
+  const paid=paidReliefPosition(view,unit,point);if(!paid)continue;
+  const shot=shots(paid.view,paid.actor)[0];
+  if(shot)choices.push({point,score:shot.score});
+ }
+ choices.sort((a,b)=>b.score-a.score||a.point.cost-b.point.cost||a.point.y-b.point.y||a.point.x-b.point.x);
+ return choices[0]?{type:'move',unitId:unit.id,...spacePoint(choices[0].point)}:null;
+}
 
 // Keep the actual clinic physicians and soldiers without usable rounds in
 // reserve. Adjacent native aid remains available; prone is a paid order.
@@ -50,7 +102,7 @@ export function northernReliefDefenseController(physicianIds,{minimumIdleRounds=
  };
  const controller=(battle,unit)=>{
   const action=cautiousCombatOrder(battle,unit);
-  if(!held(unit))return crewKeepsReserves(battle,unit,action)?action:null;
+  if(!held(unit))return crewKeepsReserves(battle,unit,action)?safeReliefFireOrMove(battle,unit,action):null;
   if(action?.type==='useItem'||action?.slot==='medical')return action;
   if(unit.stance!=='prone'&&!unit.mounted&&!unit.knockedDown&&!unit.entangled&&unit.ap>=stanceCost(unit,'prone'))return {type:'stance',unitId:unit.id,stance:'prone'};
   return null;
