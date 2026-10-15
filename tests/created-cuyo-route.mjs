@@ -24,7 +24,8 @@ import {previewStrategicRoute} from '../game/strategic-route.js';
 import {applyItemQuantity,itemQuantity} from '../game/tactical-inventory.js';
 import {firstAidPlan} from '../game/first-aid.js';
 import {medicalPatientAvailable} from '../game/medical-patient.js';
-import {careAssignmentReason} from '../game/medical-care.js';
+import {careAssignmentReason,doctorRate} from '../game/medical-care.js';
+import {knownCuyoDressingSources,collectKnownCuyoDressings} from './cuyo-known-medical-courier.mjs';
 import {strategicBleedingPercent} from '../game/campaign-care-rules.js';
 import {expandCellScene} from '../game/cell-scene-storage.js';
 import {enterSector} from '../game/world.js';
@@ -93,7 +94,7 @@ export function recoverCreatedCuyoLocalPatients(start,ids,{maxHours=144,restOnSh
  const local=kept.filter(id=>operativeLocation(c,id)===c.location),retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report}),order=retained.order;
  const injured=()=>ids.filter(id=>c.operativeState[id].hp<c.operativeState[id].maxHp);
  assert.ok(local.every(id=>c.operativeState[id].hp>=15&&!c.operativeState[id].bleeding),'Ordered finite field aid must precede local hourly care.');
- let stagnant=0;
+ let stagnant=0,courierAttempted=false;
  care: for(let attempt=0;injured().length&&attempt<maxHours*4;attempt++){
   assert.ok(c.hour*3600+(c.secondOfHour??0)-began<maxHours*3600,'Actual local care must finish within its existing bounded clock.');
   const patients=injured().sort((a,b)=>c.operativeState[a].hp/c.operativeState[a].maxHp-c.operativeState[b].hp/c.operativeState[b].maxHp||a-b),roster=rosterFor(c),doctors=roster.filter(op=>op.id!==patients[0]&&local.includes(op.id)&&op.medical>=20&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding&&!c.operativeState[op.id].asleep&&c.operativeState[op.id].energy>10)
@@ -116,6 +117,15 @@ export function recoverCreatedCuyoLocalPatients(start,ids,{maxHours=144,restOnSh
      const supply=attemptRouteDressings(c,doctor.id,1,{report});retained.adopt(supply.campaign,'actual local dressing search');
      if(!supply.supplied){
       assert.equal(supply.reason,'finite-dressing-shortage');
+      if(!courierAttempted&&c.routes.posta){
+       courierAttempted=true;
+       const rate=Math.min(...doctors.map(op=>doctorRate(op,c))),batch=injured().reduce((sum,id)=>sum+Math.ceil((c.operativeState[id].maxHp-c.operativeState[id].hp)/rate),0);
+       const sources=knownCuyoDressingSources(c,doctor.id,{ownedCarried:true,donorReserve:1}),available=Math.max(0,...sources.map(source=>source.known+source.owned));
+       if(available){
+        collectKnownCuyoDressings(()=>c,order,doctor.id,Math.min(batch,available),{ownedCarried:true,donorReserve:1,report});
+        retained.check();continue care;
+       }
+      }
       // This separate phase earns stable wounds through the Native rest
       // clock. It does not extend the existing 144-hour doctor-care cap.
       const rest=restRouteStableLocal(c,ids,{report});c=rest.campaign;
