@@ -33,7 +33,7 @@ function orders(start,hospitalOptions){
  return {get campaign(){return campaign;},events,apply(transform){campaign=transform(campaign);},prepareWeapons(report){campaign=finishReloadsBeforeMarch(campaign,{report});},resolveEncounter(report,controller=northernCombatOrder){
   const encounter=structuredClone(campaign.pendingEncounter),group=structuredClone(campaign.enemyGroups.find(group=>group.id===encounter.groupId));
   const next=dispatchCampaign(campaign,{type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});assert.equal(next.lastError,null,next.lastError);assert.deepEqual(next.pendingBattle.enemies,group.units);
-  const executeBattle=saltaHospitalEncounterExecutor(hospitalOptions,encounter.sector);
+  const executeBattle=saltaHospitalEncounterExecutor({...hospitalOptions,campaign:next},encounter.sector);
   const result=fightNorthernSector(next,encounter.sector,{controller,report,...(executeBattle?{executeBattle}:{})});campaign=result.campaign;
   return {groupId:group.id,...result.summary};
  },order(action){
@@ -50,7 +50,7 @@ function renew(route,ids,buffer){
  }
 }
 export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},encounterController}={}){
- const formation=openingRearFormation(start),route=orders(start,{allCovered:formation.allCovered,encounterController}),{order}=route;
+ const formation=openingRearFormation(start),route=orders(start,{encounterController}),{order}=route;
  assert.equal(start.location,'tucuman');assert.equal(start.pendingBattle,null);
  // Keep the rear depot defended while the northern force marches. Its
  // actual reserves reload their own guns; a paid guard recovers finite gear.

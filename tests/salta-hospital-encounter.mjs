@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {fight} from './opening-driver.mjs';
 import {coordinatedHospitalBattery} from './coordinated-hospital-battery.mjs';
+import {openingRearFormation} from './opening-rear-medical-supply.mjs';
 
 export function saltaHospitalBattleOptions(){
  let policy=null;
@@ -23,6 +24,9 @@ function fightSaltaHospitalEncounter(request,previous,options){
  return fight(request,previous,{...options,...saltaHospitalBattleOptions()});
 }
 
-export function saltaHospitalEncounterExecutor({allCovered=false,encounterController}={},sector){
- return allCovered&&encounterController==null&&sector==='tucuman'?fightSaltaHospitalEncounter:undefined;
+export function saltaHospitalEncounterExecutor({campaign,encounterController}={},sector){
+ if(encounterController!=null||sector!=='tucuman'||!campaign)return undefined;
+ // Cover can be earned after Salta preparation starts. Read the actual
+ // encounter response, not the earlier decision that triggered paid staging.
+ return openingRearFormation(campaign,sector).allCovered?fightSaltaHospitalEncounter:undefined;
 }

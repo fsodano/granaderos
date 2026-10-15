@@ -6,6 +6,11 @@ import {unitAmmunitionByType} from '../game/physical-ammunition.js';
 import {sameCell,sameSurface} from '../game/tactical-space.js';
 import {COMBAT_ROUND_SECONDS} from '../game/time.js';
 import {saltaHospitalBattleOptions,saltaHospitalEncounterExecutor} from './salta-hospital-encounter.mjs';
+import {defaultContentPackage} from '../game/content-package.js';
+import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
+import {encodeSave,decodeSave} from '../game/save.js';
+import {openingRearFormation} from './opening-rear-medical-supply.mjs';
+import {stageOpeningRearCover} from './opening-rear-guard.mjs';
 import {northernClinicDefenseOrder} from './northern-route.mjs';
 import {publicRouteView,usefulRouteRifleShot} from './route-infantry-progress.mjs';
 
@@ -32,13 +37,37 @@ function replay(start,orders){
  return ordinary;
 }
 
-test('only the default all-covered Tucuman encounter selects the hospital executor',()=>{
+test('a stale start classification cannot enable the executor without the actual current campaign',()=>{
  const explicit=()=>null;
  assert.equal(saltaHospitalEncounterExecutor(),undefined);
  for(const options of [{},{allCovered:false},{allCovered:true,encounterController:explicit}])assert.equal(saltaHospitalEncounterExecutor(options,'tucuman'),undefined);
  assert.equal(saltaHospitalEncounterExecutor({allCovered:true},'cordoba'),undefined);
- const executor=saltaHospitalEncounterExecutor({allCovered:true},'tucuman');assert.equal(typeof executor,'function');
- assert.equal(saltaHospitalEncounterExecutor({allCovered:true,encounterController:null},'tucuman'),executor);
+ assert.equal(saltaHospitalEncounterExecutor({allCovered:true},'tucuman'),undefined);
+});
+
+test('paid Native roof staging changes the real encounter selector while mixed cover and explicit overrides keep the old path',()=>{
+ const content=defaultContentPackage();content.headquarters='tucuman';delete content.startingTerritory;content.rules.startingTreasury=10000;
+ for(const id of [110,116,123])content.characters.find(c=>c.id===`person-${id}`).arrivalHours=0;
+ const declared=structuredClone(content),order=(c,action)=>{const next=dispatchCampaign(c,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);return next;},saved=c=>decodeSave(encodeSave(c)).campaign;
+ let start=initialCampaign(42,content);for(const id of [110,116])start=order(start,{type:'recruitCivic',id,term:'week'});start=saved(start);
+ const before=structuredClone(start),originalFormation=openingRearFormation(start),events=[];
+ assert.equal(originalFormation.hasCover,false);assert.equal(originalFormation.allCovered,false);
+ assert.equal(saltaHospitalEncounterExecutor({campaign:start},'tucuman'),undefined);
+ const prepared=stageOpeningRearCover(start,{report:event=>events.push(event)}),current=prepared.campaign,currentFormation=openingRearFormation(current);
+ assert.equal(currentFormation.allCovered,true);assert.equal(currentFormation.roofIds.length,2);assert.deepEqual(start,before);assert.deepEqual(content,declared);
+ const roof=events.find(event=>event.event==='routeRoofDefenders');assert.ok(roof&&roof.actions.some(action=>action.type==='move'&&action.tacticalLevel===1));assert.ok(roof.elapsedSeconds>0);
+ assert.ok(current.hour*3600+(current.secondOfHour??0)>start.hour*3600+(start.secondOfHour??0));assert.equal(current.resources.treasury,start.resources.treasury);assert.deepEqual(current.contracts,start.contracts);
+ for(const id of [110,116]){assert.equal(current.operativeState[id].hp,start.operativeState[id].hp);assert.equal(current.operativeState[id].medkits,start.operativeState[id].medkits);assert.ok(current.operativeState[id].energy<start.operativeState[id].energy);}
+ // The real orders() call supplies campaign:next from its Native encounter
+ // response. This is that same selector hook, after real paid cover changed.
+ const executor=saltaHospitalEncounterExecutor({campaign:current},'tucuman');assert.equal(typeof executor,'function');
+ assert.equal(saltaHospitalEncounterExecutor({campaign:saved(current)},'tucuman'),executor);
+ assert.deepEqual(stageOpeningRearCover(saved(start)).campaign,current,'The fresh paid staging sequence repeats exactly from its official initial save.');
+ assert.equal(saltaHospitalEncounterExecutor({campaign:current,encounterController:()=>null},'tucuman'),undefined);
+ assert.equal(saltaHospitalEncounterExecutor({campaign:current},'cordoba'),undefined);
+ const mixed=order(current,{type:'recruitCivic',id:123,term:'week'});assert.equal(openingRearFormation(mixed).allCovered,false);
+ assert.equal(saltaHospitalEncounterExecutor({campaign:mixed},'tucuman'),undefined,'An actual newly admitted ground person keeps mixed cover outside this policy.');
+ assert.deepEqual(saved(current),current);
 });
 
 test('actual admitted roof roles pay a protected physician stance and a useful rifle lane and discharge without borrowing the distant charged gun',()=>{

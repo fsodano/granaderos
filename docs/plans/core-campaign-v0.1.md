@@ -62,16 +62,24 @@ original complete recovery, ending and historical-loss files and their battle
 limits. Every complete run starts fresh. Failed checkpoints are retained as
 passive evidence and are not resumed as diagnostic input.
 
-On reviewed head `ab82549d`, campaign quick completes all 111 files and passes
-559/559 tests, with no failures, cancellations or skips. Core quick on its
+On reviewed head `89bf491c`, campaign quick completes all 114 files and passes
+574/574 tests, with no failures, cancellations or skips. Core quick on its
 ancestor `d0508806` completes all 924 files and passes 7,210/7,210 tests, also
 with no failures, cancellations or skips. These are separate suite results.
 
-The complete original opening on `aed2760a` still fails: five tests pass, two
-fail and one skips. The finite donor transfer and the following complete
+The complete original opening on `89bf491c` still fails: five tests pass, two
+fail and one skips, in 431.578 seconds. The finite donor transfer and the following complete
 medical courier/recovery stage pass. During later Salta battery preparation,
 the Tucumán reserve loses a counterattack at turn fifteen, after 109 actions
 and 183 tactical seconds. The original victory assertion remains strict.
+The hospital executor was bypassed because its selection retained the formation
+from before actual roof staging. The reviewed correction selects from the
+current encounter formation and retains explicit controller overrides. Its
+eight affected files pass 55/55 tests, including real paid staging and official
+fresh-save replay. A fresh complete opening result remains required.
+
+The original historical-loss and complete two-ending files remain active on
+frozen `89bf491c`. Their results are pending.
 
 The complete original historical-loss run on `aed2760a` finishes 0/1 in 615.589
 seconds. Legal running preparation passes the preceding emergency-aid boundary
@@ -87,7 +95,10 @@ records, but nine are already dead and only five living defenders enter. Those
 defenders have no dressings, and the player cannon is empty. Casualties remain
 permanent. The failure is
 in northern road reunion, before later campaign acceptance can be checked.
-A fresh complete recovery run remains active on frozen `ab82549d` source.
+The fresh complete recovery on `ab82549d` finishes 0/1 in 1,931.491 seconds.
+The spent-gun controller changes the actual fight to turn eleven, 39 actions
+and 152 tactical seconds, but the strict reserve-victory guard still fails.
+The focused controller pass does not resolve complete recovery.
 
 The complete original two-ending file on `d0508806` finishes 0/2 in 2,595.423
 seconds. Loose seed eight retains its physician through Ensenada, then stops
