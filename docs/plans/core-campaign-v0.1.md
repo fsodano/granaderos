@@ -113,9 +113,12 @@ after four actor orders and 181 seconds. Earlier local treatment keeps the
 original clinic patient alive through the first Tucumán raid, but the clinical
 phase remains incomplete. The controlled rear depot needs actual preparation
 before prolonged care advances the clock.
-Fresh complete original recovery and both-ending runs remain active on the
-same frozen `15d392e6` source. Their results are pending; the quick suite is
-separate from whole-route acceptance.
+The fresh complete original recovery on frozen `15d392e6` also finishes 0/1,
+in 1,872.458 seconds. Its five living Tucumán reserve members retreat at turn
+ten after 145 actor orders and 149 seconds. The reviewed preparation changes
+the actual fight but does not satisfy the original victory assertion. The
+complete two-ending file remains active on that same frozen source; the quick
+suite is separate from whole-route acceptance.
 
 The complete original opening on `df62e17a` still fails: five tests pass, two
 fail and one skips, in 409.432 seconds. The finite donor transfer and the following complete
@@ -253,6 +256,13 @@ goal before spending the same sixteen-point approach budget. Adjacent aid,
 finite stock, hand costs and other roles stay first. Five complete affected
 files pass 35/35, including seven fresh controls with paid direct, presented
 and validated battle replay. This does not establish a campaign victory.
+The closed loose-seed case on `15d392e6` still retreats at turn seven after
+99 actor orders and 105 seconds. The input is byte-identical to `5cd6636c`.
+Its physician now performs three actual aid strokes instead of one, and dies
+with twelve dressings left. The heavy gun retains one loaded charge and three
+rounds. This confirms that the approach change executes; it does not prove
+victory, cap exhaustion or complete ammunition exhaustion. The installed case
+and whole-file result remain pending.
 
 Passive review of the complete installed Los Patos failure records 748 stance
 orders. Three surviving flank soldiers repeat crouched, prone and standing
