@@ -105,9 +105,17 @@ members and the original selection. Eight complete affected files pass 40/40,
 including two real finite arrivals with all eight old groups, positions,
 duties, payments and save repetition preserved. Complete opening acceptance
 is still required.
-Fresh complete original opening, recovery and both-ending runs are active on
-the same frozen `15d392e6` source with all four reviewed follow-ups. Their
-results are pending; the quick suite is separate from whole-route acceptance.
+The complete unchanged opening on frozen `15d392e6` finishes with five tests
+passed, two failed and one skipped, in 670.882 seconds. It passes the previous
+squad-capacity boundary, then loses the Córdoba counterattack at hour 294.
+Only one living local defender enters; Native records defeat at turn one
+after four actor orders and 181 seconds. Earlier local treatment keeps the
+original clinic patient alive through the first Tucumán raid, but the clinical
+phase remains incomplete. The controlled rear depot needs actual preparation
+before prolonged care advances the clock.
+Fresh complete original recovery and both-ending runs remain active on the
+same frozen `15d392e6` source. Their results are pending; the quick suite is
+separate from whole-route acceptance.
 
 The complete original opening on `df62e17a` still fails: five tests pass, two
 fail and one skips, in 409.432 seconds. The finite donor transfer and the following complete
