@@ -4,6 +4,13 @@
 > [version 0.1](verification/version-0.1.md) for current scope. Earlier development
 > numbers are internal checkpoints; their features and results are dated history.
 
+## 0.1.5 — 15 October 2026
+
+- Keep the route confirmation quote tied to the selected destination while the
+  map previews possible additional waypoints.
+- Explain occupied district restrictions and offer the main sector for normal
+  route planning.
+
 ## 0.1.4 — 14 October 2026
 
 - Close the command menu after importing a save. Reset the previous route,
