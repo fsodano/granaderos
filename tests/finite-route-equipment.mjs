@@ -3,6 +3,7 @@ import {rosterFor} from '../game/campaign.js';
 import {operativeLocation} from '../game/squads.js';
 import {sectorInventoryModel,sectorInventorySites} from '../game/sector-inventory.js';
 import {applyItemQuantity} from '../game/tactical-inventory.js';
+import {finiteCachesFor} from '../game/campaign-physical.js';
 import {FINITE_SECTOR_CACHES} from '../game/finite-sector-caches.js';
 import {repairMaterialPoints} from '../game/repair-materials.js';
 import {WEAPONS} from '../game/data.js';
@@ -20,7 +21,7 @@ import {tooTiredToMarch} from '../game/march-fatigue.js';
 // Public collection at the actual person's location. Temporarily return a
 // local squad to service only when it must physically discover its cache.
 export function discoverRouteCache(state,operativeId){
- let s=state;const sector=operativeLocation(s,operativeId),cacheId=FINITE_SECTOR_CACHES[sector]?.chest;
+ let s=state;const sector=operativeLocation(s,operativeId),cacheId=finiteCachesFor(s)[sector]?.chest;
  if(!cacheId)return s;
  const chest=s.sectorStates[sector]?.props?.find(prop=>prop.id===cacheId);
  if(chest?.open&&chest.knownToPlayer)return s;

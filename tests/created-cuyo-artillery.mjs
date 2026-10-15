@@ -259,7 +259,16 @@ export function recoverCreatedCuyoMountainArtillery(start,{report=()=>{},onCheck
   c=reuniteArsenalRear(c,rear.withdrawalIds,{report});
   const localSurvivors=c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured&&c.operativeState[id].location==='ensenada');
   c=recoverCreatedCuyoLocalPatients(c,localSurvivors,{report});
-  assert.ok(rear.reserveIds.every(id=>living(c).includes(id)&&c.operativeState[id].location==='ensenada'&&stable(c,id)&&c.operativeState[id].hp===c.operativeState[id].maxHp));
+  const rearReady=rear.reserveIds.every(id=>living(c).includes(id)&&c.operativeState[id].location==='ensenada'&&stable(c,id)&&c.operativeState[id].hp===c.operativeState[id].maxHp);
+  if(!rearReady){
+   const now=c.hour*3600+(c.secondOfHour??0),details=rear.reserveIds.map(id=>{
+    const r=c.operativeState[id],contract=c.contracts[id],expires=contractExpiresSeconds(contract);
+    return {id,recruited:c.recruited.includes(id),alive:r?.alive,captured:r?.captured,serving:c.recruited.includes(id)&&!!contract&&(expires===null||expires>now),location:r?.location,hp:r?.hp,maxHp:r?.maxHp,bleeding:r?.bleeding,unconscious:r?.unconscious,routed:r?.routed,asleep:r?.asleep,energy:r?.energy,fatigue:r?.fatigue,assignment:r?.assignment,medkits:r?.medkits,contract,arrival:r?.arrival,squad:c.squads.find(q=>q.members.includes(id)),checks:{living:living(c).includes(id),local:r?.location==='ensenada',stable:!!stable(c,id),fullHealth:r?.hp===r?.maxHp}};
+   });
+   const error=Error('Every protected rear member must return alive, local, stable and at full health: '+JSON.stringify(details));
+   recordRouteStrategicEvidence({helper:'recoverCreatedCuyoMountainArtillery',stage:'preparation-failure',campaign:c,context:{rear,reserveDetails:details},error});
+   assert.ok(rearReady,error.message);
+  }
   report({event:'createdCuyoArsenalRearServicePreserved',...rear,hour:c.hour,second:c.secondOfHour??0,campaign:c});
  }
  const survivors=prepared.field.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured);
