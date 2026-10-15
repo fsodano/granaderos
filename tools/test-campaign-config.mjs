@@ -43,6 +43,7 @@ export const campaignTestGroups = [
   "tests/campaign-battery-driver.test.mjs",
   "tests/coastal-field-dressing-recovery.test.mjs",
   "tests/coastal-mission-reserve.test.mjs",
+  "tests/cuyo-escaped-physician-return.test.mjs",
   "tests/cuyo-owned-medical-courier.test.mjs",
   "tests/created-coastal-opening.test.mjs",
   "tests/finite-battery-driver.test.mjs",

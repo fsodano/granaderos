@@ -98,6 +98,16 @@ Missing supplies retain the actual stopped care pair. Prior casualties,
 gun records, crew requirements and original battle limits stay intact.
 This bounded result still needs complete fresh ending acceptance.
 
+The reviewed Cuyo field return is integrated as `a7b52760` from `27ab369b`.
+An actual departed physician must receive local finite first aid and complete
+the paid return before joining the Ensenada care group. The issued return
+record, current arrival, local squad, route and contract terms remain the
+admission rules. All five affected files pass 17/17 tests. Fresh controls earn
+an injury, a separate casualty and the departure through Native actions,
+then verify self-aid, real return, renewed service and official paired saves.
+The previous casualty stays dead; the original founder and protected-rear
+health guards are unchanged. Complete fresh Cuyo acceptance remains pending.
+
 On reviewed head `15d392e6`, campaign quick completes all 126 files and passes
 655/655 tests, with no failures, cancellations or skips. The initial isolated
 checkout lacked web dependencies; its seven module-resolution failures were
