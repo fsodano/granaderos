@@ -19,6 +19,9 @@
   aid only after Native admission, adjacent-care and route checks.
 - Keep coordinated hospital roof roles for a northern road reserve whose
   player batteries are already spent. Charged-battery control is unchanged.
+- Let a fit ground defender beside an initially empty cannon pay for a short
+  approach to a current team contact when ordinary work has no action. Keep
+  useful fire, medical duties, roof roles and charged crews ahead of this step.
 - Use remaining legal arrival cells for Uspallata screens when preferred
   spacing is unavailable, while retaining Native cannon-contact exclusions.
 - Coordinate the default all-covered hospital encounter during Salta battery

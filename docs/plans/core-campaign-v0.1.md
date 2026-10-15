@@ -62,8 +62,8 @@ original complete recovery, ending and historical-loss files and their battle
 limits. Every complete run starts fresh. Failed checkpoints are retained as
 passive evidence and are not resumed as diagnostic input.
 
-On reviewed head `df62e17a`, campaign quick completes all 114 files and passes
-575/575 tests, with no failures, cancellations or skips. Core quick on its
+On reviewed head `bd9bdd95`, campaign quick completes all 115 files and passes
+581/581 tests, with no failures, cancellations or skips. Core quick on its
 ancestor `d0508806` completes all 924 files and passes 7,210/7,210 tests, also
 with no failures, cancellations or skips. These are separate suite results.
 
@@ -91,6 +91,7 @@ contact corner as a blocked destination. All actual translated destinations,
 fixed obstacles, walls, crew and action costs remain checked. Eight affected
 files pass 59/59 tests, including six fresh Native geometry controls. A fresh
 complete historical-loss result remains required.
+The fresh complete historical-loss file is active on frozen `bd9bdd95`.
 
 The complete original historical-loss run on `aed2760a` finishes 0/1 in 615.589
 seconds. Legal running preparation passes the preceding emergency-aid boundary
@@ -110,6 +111,13 @@ The fresh complete recovery on `ab82549d` finishes 0/1 in 1,931.491 seconds.
 The spent-gun controller changes the actual fight to turn eleven, 39 actions
 and 152 tactical seconds, but the strict reserve-victory guard still fails.
 The focused controller pass does not resolve complete recovery.
+
+A further reviewed correction lets a fit ground defender pay for a short
+public approach beside an initially empty cannon when ordinary work holds.
+It keeps medical duties, useful fire, roof roles and charged crews ahead of
+this opt-in. Its affected files pass 57/57 tests, including five fresh Native
+controls with direct, presented and official battle-validator replay. These
+controls do not establish campaign-save or whole-recovery acceptance.
 
 The complete original two-ending file on `d0508806` finishes 0/2 in 2,595.423
 seconds. Loose seed eight retains its physician through Ensenada, then stops
