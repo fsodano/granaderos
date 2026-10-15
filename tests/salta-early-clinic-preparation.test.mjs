@@ -35,14 +35,14 @@ function setup({packs=true,cache=0,rearGuard=false}={}){
 test('earlier clinical preparation pays real finite relief arrivals and eight Native care strokes before an independent journey',()=>{
  const start=setup({rearGuard:true}),before=structuredClone(start),events=[],result=recoverSaltaClinic(start,{report:event=>events.push(event)}),c=result.campaign,r=result.receipt;
  assert.deepEqual(start,before);assert.deepEqual(r.patients,[130]);assert.equal(doctorRate(rosterFor(start).find(op=>op.id===122),start),6);
- assert.equal(r.ticks.filter(t=>t.to>t.from).length,8,JSON.stringify(r.ticks));assert.equal(r.usedDressings,8);assert.equal(c.operativeState[130].hp,66);assert.equal(c.operativeState[130].bleeding,0);
+ assert.equal(r.ticks.filter(t=>t.to>t.from).length+r.earlyCare.reduce((n,row)=>n+row.usedDressings,0),8,JSON.stringify({ticks:r.ticks,earlyCare:r.earlyCare}));assert.equal(r.usedDressings,8);assert.equal(c.operativeState[130].hp,66);assert.equal(c.operativeState[130].bleeding,0);
  assert.equal(r.supply.collectedDressings,0);assert.ok(r.supply.hires.length>1,'The declared empty cache requires real supplied paid relief.');
  for(const row of r.supply.hires){const quote=contractQuote(start,rosterFor(start).find(op=>op.id===row.id),'day');assert.equal(row.quote.price,quote.price);assert.equal(row.quote.total,quote.total);assert.equal(row.quote.available,true);assert.equal(c.contracts[row.id].paid,quote.price);assert.ok(c.recruited.includes(row.id));assert.equal(c.operativeState[row.id].location,'tucuman');assert.ok(r.supply.actions.some(action=>action.action.type==='recruitCivic'&&action.action.id===row.id));}
  assert.ok(r.supply.hires.every(row=>!start.recruited.includes(row.id)));assert.equal(r.supply.courierAlreadyServing,true);assert.equal(start.operativeState[112].medkits,0);assert.equal(r.supply.doctor,112);
  assert.ok(r.supply.hires.every(row=>(c.operativeState[row.id].residentPosition?.tacticalLevel??0)>0),'Every actual paid relief carrier reaches roof cover, including those outside the small clinical party.');
  assert.equal(openingRearFormation(c).allCovered,true);assert.equal(typeof saltaHospitalEncounterExecutor({campaign:c},'tucuman'),'function','Real relief arrivals must retain the covered hospital executor.');
  const issued=2+r.supply.hires.reduce((n,row)=>n+row.kits,0);assert.equal(c.recruited.reduce((n,id)=>n+c.operativeState[id].medkits,0),issued-8);
- assert.ok(r.ticks.filter(t=>t.to>t.from).every(t=>t.usedDressings===1&&t.to-t.from===3600));assert.ok(r.ticks.filter(t=>t.to===t.from).every(t=>t.usedDressings===0));assert.ok(r.elapsedSeconds<=72*3600);const firstPaid=r.ticks.find(t=>t.to>t.from);assert.ok(firstPaid.from>=r.supply.finish[0]*3600+r.supply.finish[1]);assert.ok(firstPaid.to>r.supply.finish[0]*3600+r.supply.finish[1]);
+ assert.ok(r.ticks.filter(t=>t.to>t.from).every(t=>t.usedDressings===1&&t.to-t.from===3600));assert.ok(r.ticks.filter(t=>t.to===t.from).every(t=>t.usedDressings===0));assert.ok(r.elapsedSeconds<=72*3600);const firstPaid=r.earlyCare.find(t=>t.usedDressings>0);assert.ok(firstPaid,'Local care must begin during actual courier time.');assert.ok(firstPaid.from<r.supply.finish[0]*3600+r.supply.finish[1]);assert.ok(firstPaid.patients.some(p=>p.id===130&&p.after>p.before));assert.equal(r.earlyCare.reduce((n,row)=>n+row.usedDressings,0),4);
  assert.equal(c.resources.treasury,start.resources.treasury+r.supply.actions.filter(row=>!row.tactical).reduce((n,row)=>n+row.treasuryChange,0)+r.orders.reduce((n,row)=>n+row.treasuryAfter-row.treasuryBefore,0));
  assert.ok(c.recruited.every(id=>contractExpiresSeconds(c.contracts[id])===null||contractExpiresSeconds(c.contracts[id])>clock(c)));assert.deepEqual(saved(c),c);
  assert.deepEqual(recoverSaltaClinic(saved(start)),result,'Official fresh input-save repetition preserves the whole actual preparation.');
@@ -57,7 +57,7 @@ test('known finite cache discovery supplies the same actual care without an unne
 });
 
 test('a genuinely empty finite source and absent supplied relief refuse without claiming recovery or mutating the fresh input',()=>{
- const start=setup({packs:false}),before=structuredClone(start);let failure;try{recoverSaltaClinic(start);}catch(error){failure=error;}assert.match(failure?.message??'',/finite clinic deficit needs a real available paid relief guard/);assert.ok(failure.campaign);assert.ok(clock(failure.campaign)>clock(start));assert.equal(failure.campaign.operativeState[130].hp,21);assert.deepEqual(start,before);
+ const start=setup({packs:false}),before=structuredClone(start);let failure;try{recoverSaltaClinic(start);}catch(error){failure=error;}assert.match(failure?.message??'',/finite clinic deficit needs a real available paid relief guard/);assert.ok(failure.campaign);assert.ok(clock(failure.campaign)>clock(start));assert.equal(failure.campaign.operativeState[130].hp,33,'The original two finite dressings pay for two real early strokes before the later shortage.');assert.deepEqual(start,before);
 });
 
 test('earlier supply and care cannot manufacture a second 72-hour allowance',()=>{
