@@ -1,7 +1,7 @@
 import {isSupplied} from './campaign.js';
 import {campaignSectors} from './campaign-definition.js';
 import {queueSquadTravel,squadTravelStatus} from './squad-travel.js';
-import {worldCell,locationId,cellTravelPlan} from './world-cells.js';
+import {worldCell,locationId,cellTravelPlan,worldOwner,cellTravelReason} from './world-cells.js';
 import {tooTiredToMarch} from './march-fatigue.js';
 
 // Preview only the small squad record. Never clone tactical sector snapshots on hover.
@@ -22,6 +22,7 @@ export function previewStrategicRoute(s,squadId,destination,mode='march',waypoin
  destination=locationId(destination,s);
  if(destination===q.location&&!waypoints.length)return reject('La escuadra ya está en este sector.');
  const target=campaignSectors(s).find(d=>d.id===destination);
+ if(!target&&cell.locality&&worldOwner(s,destination)==='royalist')return reject(cellTravelReason(s,destination));
  const intent=target&&(s.sectors[destination].owner==='royalist'||s.blockade&&target.theater==='coast')?'attack':'travel';
  if(intent==='attack'){
   if(s.completed)return reject('La campaña está ganada.');

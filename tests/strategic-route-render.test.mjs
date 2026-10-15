@@ -3,7 +3,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {createElement as h,act} from '../web/node_modules/react/index.js';import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
 import {JSDOM} from '../web/node_modules/jsdom/lib/api.js';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
-import {worldCell,campaignPlace} from '../game/world-cells.js';
+import {worldCell,worldCells,campaignPlace} from '../game/world-cells.js';
 import {previewStrategicRoute} from '../game/strategic-route.js';
 import {initialCampaign as freshCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
 const {default:Campaign}=await import('../web/app/Campaign.tsx');
@@ -80,4 +80,18 @@ test('a fixed route card quotes the actual confirmation while the map can previe
  await click(button('Cancelar trazado',card()));assert.equal(card(),null);assert.deepEqual(actions,[]);assert.deepEqual(state,original);
  await click(document.querySelector(`[data-map-cell="${destination.id}"]`));await click(button('Mover escuadra aquí'));await act(async()=>document.querySelector(`[data-map-cell="${hover.id}"]`).dispatchEvent(new dom.window.MouseEvent('mouseover',{bubbles:true})));
  assert.equal(card().querySelector('p').textContent,quote(fixed));await click(button('Confirmar ruta',card()));assert.equal(card(),null);assert.deepEqual(actions,[fixed.action]);assert.deepEqual(state.squads.find(q=>q.id===state.activeSquadId).journey.path,fixed.path);assert.equal(state.hour,original.hour);
+});
+
+
+test('a hostile district offers explicit main-sector inspection instead of an impossible attack, then opens normal anchor planning',async t=>{
+ const dom=new JSDOM('<!doctype html><div id="root"></div>',{url:'https://granaderos.test',pretendToBeVisual:true}),globals={window:dom.window,document:dom.window.document,navigator:dom.window.navigator,HTMLElement:dom.window.HTMLElement,Element:dom.window.Element,Node:dom.window.Node,Document:dom.window.Document,ShadowRoot:dom.window.ShadowRoot,MutationObserver:dom.window.MutationObserver,getComputedStyle:dom.window.getComputedStyle.bind(dom.window),requestAnimationFrame:dom.window.requestAnimationFrame.bind(dom.window),cancelAnimationFrame:dom.window.cancelAnimationFrame.bind(dom.window),IS_REACT_ACT_ENVIRONMENT:true};
+ const previous=new Map(Object.keys(globals).map(k=>[k,Object.getOwnPropertyDescriptor(globalThis,k)]));for(const[k,v]of Object.entries(globals))Object.defineProperty(globalThis,k,{configurable:true,writable:true,value:v});
+ const {createRoot}=await import('../web/node_modules/react-dom/client.js'),root=createRoot(dom.window.document.getElementById('root'));
+ t.after(async()=>{try{await act(async()=>root.unmount());}finally{dom.window.close();for(const[k,d]of previous){if(d)Object.defineProperty(globalThis,k,d);else delete globalThis[k];}}});
+ const state=dispatchCampaign(freshCampaign(42),{type:'recruitCivic',id:110,term:'week'}),before=structuredClone(state),actions=[],document=dom.window.document,district=worldCells(state).find(cell=>cell.locality==='buenos_aires'&&cell.location!==cell.locality),anchor=worldCell('buenos_aires',state);
+ assert.equal(state.lastError,null);const click=async element=>{assert.ok(element);await act(async()=>element.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));},button=(text,scope=document)=>[...scope.querySelectorAll('button')].find(e=>e.textContent===text);
+ await act(async()=>root.render(h(Campaign,{state,dispatch:a=>actions.push(a),onBattle:noop,onOpenDesk:noop})));await click(document.querySelector(`[data-map-cell="${district.id}"]`));
+ let panel=document.querySelector('[role="dialog"]');assert.ok(panel.textContent.includes('Liberá primero el sector principal de Buenos Aires'));assert.equal(button('Avanzar y combatir',panel),undefined);assert.equal(document.querySelector('[aria-label="Trazar ruta"]'),null);assert.deepEqual(actions,[]);
+ await click(button('Ver sector principal',panel));panel=document.querySelector('[role="dialog"]');assert.equal(panel.getAttribute('aria-label'),`Sector · ${campaignPlace('buenos_aires',state).name.split(' · ')[0]}`);assert.equal(document.querySelector(`[data-map-cell="${anchor.id}"]`).getAttribute('aria-pressed'),'true');assert.deepEqual(actions,[]);
+ await click(button('Avanzar y combatir',panel));const card=document.querySelector('[aria-label="Trazar ruta"]');assert.ok(card);assert.equal(card.querySelector('strong').textContent,campaignPlace('buenos_aires',state).name);assert.ok(!button('Confirmar ruta',card).disabled);assert.deepEqual(actions,[]);assert.deepEqual(state,before);
 });

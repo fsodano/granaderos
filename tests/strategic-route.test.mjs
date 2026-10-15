@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {initialCampaign as freshCampaign,dispatchCampaign} from '../game/campaign.js';
 import {previewStrategicRoute} from '../game/strategic-route.js';
+import {defaultContentPackage} from '../game/content-package.js';
+import {worldCells,cellTravelReason} from '../game/world-cells.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError,null);return next;};
 test('map preview is read-only, queues the real multi-sector route and waits for the clock',()=>{
@@ -43,4 +45,16 @@ test('an adjacent enemy destination previews an assault and arrives at the bound
 test('transport preview uses the selected transport duration and rejects unavailable transport',()=>{
  const s=initialCampaign();assert.equal(previewStrategicRoute(s,s.activeSquadId,'buenos_aires','posta').valid,false);
  s.routes.posta=true;assert.equal(previewStrategicRoute(s,s.activeSquadId,'ensenada','posta').hours,6);
+});
+
+
+test('hostile districts explain their existing main-sector restriction while anchors still admit attacks and liberated districts admit travel',()=>{
+ for(const liberated of [false,true]){
+  const content=defaultContentPackage();if(liberated)content.startingTerritory.buenos_aires.owner='patriot';
+  const s=order(freshCampaign(42,content),{type:'recruitCivic',id:110,term:'week'}),before=structuredClone(s),district=worldCells(s).find(cell=>cell.locality==='buenos_aires'&&cell.location!==cell.locality),preview=previewStrategicRoute(s,s.activeSquadId,district.location),anchor=previewStrategicRoute(s,s.activeSquadId,'buenos_aires');
+  assert.equal(anchor.valid,true);assert.equal(anchor.action.type,liberated?'travel':'attack');assert.equal(anchor.action.sector,'buenos_aires');
+  if(liberated){assert.equal(preview.valid,true);assert.equal(preview.action.type,'travel');assert.equal(preview.action.sector,district.location);}
+  else{assert.equal(preview.valid,false);assert.equal(preview.reason,cellTravelReason(s,district.location));assert.match(preview.reason,/Liberá su sector principal/);assert.equal(preview.action,null);assert.deepEqual(preview.path,[]);assert.equal(preview.hours,0);}
+  assert.deepEqual(s,before);
+ }
 });
