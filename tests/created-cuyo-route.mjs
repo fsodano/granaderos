@@ -21,7 +21,7 @@ import {operativeLocation} from '../game/squads.js';
 import {previewStrategicRoute} from '../game/strategic-route.js';
 import {applyItemQuantity,itemQuantity} from '../game/tactical-inventory.js';
 import {firstAidPlan} from '../game/first-aid.js';
-import {autoBandageBattle} from '../game/auto-bandage.js';
+import {medicalPatientAvailable} from '../game/medical-patient.js';
 import {careAssignmentReason} from '../game/medical-care.js';
 import {strategicBleedingPercent} from '../game/campaign-care-rules.js';
 import {expandCellScene} from '../game/cell-scene-storage.js';
@@ -40,6 +40,94 @@ import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {prepareFinalAssault} from './final-campaign-route.mjs';
 import {actBattle,presentedActBattle,itemUsePreview,exitPreview,getReachable} from '../game/tactical.js';
 import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
+import {createFreshRouteOrders} from './fresh-cuyo-route.mjs';
+
+// Use the actual post-combat positions before settlement can disperse the
+// doctors. Acute patients precede cosmetic bandaging and weapon restoration.
+// Every stroke and approach remains an ordinary synchronized Native order.
+export function stabilizeCreatedCuyoBattleSurvivors(start,{execute,report=()=>{}}={}){
+ let pair=start;const steps=[],kept=start.battle.units.filter(u=>u.side==='player'&&u.hp>0&&!u.departure).map(u=>u.id);
+ const acute=u=>u.hp<15||u.bleeding>0;
+ const patients=()=>pair.battle.units.filter(u=>u.side==='player'&&medicalPatientAvailable(u)&&acute(u));
+ const slots=new Map(pair.battle.units.filter(u=>kept.includes(u.id)).map(u=>[u.id,u.activeSlot]));
+ const act=action=>{
+  pair=execute(pair,action);assert.equal(pair.battle.lastError,null);steps.push(action);
+  for(const id of kept)assert.ok(pair.battle.units.find(u=>u.id===id)?.hp>0,'Every actual living Cuyo patient must survive ordered finite field aid.');
+ };
+ if(patients().length&&pair.battle.status==='victory')act({type:'explore'});
+ const limit=pair.battle.units.filter(u=>kept.includes(u.id)).reduce((sum,u)=>sum+(u.medkits??0),0)*3+kept.length+1;
+ for(let attempt=0;patients().length&&attempt<limit;attempt++){
+  const battle=pair.battle,doctors=battle.units.filter(u=>u.side==='player'&&u.hp>=15&&!u.unconscious&&!u.routed&&!u.departure&&!u.fled&&!u.surrendered&&!u.asleep&&u.energy>0&&u.medical>0&&u.medkits>0);
+  const plans=patients().flatMap(patient=>doctors.flatMap(doctor=>{
+   const prepared={...doctor,activeSlot:'medical'},view={...battle,units:battle.units.map(u=>u.id===doctor.id?prepared:u)},target=view.units.find(u=>u.id===patient.id);
+   const quote=itemUsePreview(view,prepared,target);
+   return quote?.valid?[{doctor,patient,quote}]:[];
+  })).sort((a,b)=>a.patient.hp/Math.max(1,a.patient.bleeding)-b.patient.hp/Math.max(1,b.patient.bleeding)||a.quote.movePa-b.quote.movePa||b.doctor.medical-a.doctor.medical||String(a.patient.id).localeCompare(String(b.patient.id)));
+  const plan=plans[0];assert.ok(plan,'Actual acute Cuyo patients need a reachable living physician and finite dressings.');
+  const {doctor,patient}=plan;
+  const action=doctor.activeSlot!=='medical'?{type:'weapon',unitId:doctor.id,slot:'medical'}:{type:'useItem',unitId:doctor.id,targetId:patient.id};
+  act(action);
+  const returned=pair.battle.units.find(u=>u.id===patient.id),medic=pair.battle.units.find(u=>u.id===doctor.id);
+  assert.ok(action.type==='weapon'?medic.activeSlot==='medical':medic.medkits<doctor.medkits&&(returned.hp>patient.hp||returned.bleeding<patient.bleeding),'Each acute aid order must perform actual finite work.');
+ }
+ assert.equal(patients().length,0,'Actual available acute wounds must stop before paid care or rear travel.');
+ for(const [unitId,slot]of slots){
+  const unit=pair.battle.units.find(u=>u.id===unitId);
+  if(unit.activeSlot!==slot&&(slot!=='primary'||itemQuantity(unit,'primary')))act({type:'weapon',unitId,slot});
+ }
+ if(steps.length)report({event:'createdCuyoOrderedFieldAid',steps,elapsedSeconds:pair.battle.elapsedSeconds-start.battle.elapsedSeconds,people:pair.battle.units.filter(u=>kept.includes(u.id)).map(({id,hp,bleeding,medkits})=>({id,hp,bleeding,medkits}))});
+ return pair;
+}
+
+// Full health is earned after acute first aid, with current local personnel,
+// finite dressings and the real paid campaign clock. A wounded field doctor
+// is a patient too; a different eligible local doctor must treat that wound.
+export function recoverCreatedCuyoLocalPatients(start,ids,{maxHours=144,report=()=>{}}={}){
+ assert.ok(Number.isSafeInteger(maxHours)&&maxHours>0&&maxHours<=144);
+ let c=decodeSave(encodeSave(start)).campaign;const began=c.hour*3600+(c.secondOfHour??0),kept=c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured),oldDeaths=Object.entries(c.operativeState).filter(([,r])=>!r.alive).map(([id])=>id);
+ assert.ok(ids.length&&new Set(ids).size===ids.length);
+ assert.ok(ids.every(id=>kept.includes(id)&&operativeLocation(c,id)===c.location));
+ const local=kept.filter(id=>operativeLocation(c,id)===c.location),retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report}),order=retained.order;
+ const injured=()=>ids.filter(id=>c.operativeState[id].hp<c.operativeState[id].maxHp);
+ assert.ok(local.every(id=>c.operativeState[id].hp>=15&&!c.operativeState[id].bleeding),'Ordered finite field aid must precede local hourly care.');
+ let stagnant=0;
+ for(let attempt=0;injured().length&&attempt<maxHours*4;attempt++){
+  assert.ok(c.hour*3600+(c.secondOfHour??0)-began<maxHours*3600,'Actual local care must finish within its existing bounded clock.');
+  const patients=injured().sort((a,b)=>c.operativeState[a].hp/c.operativeState[a].maxHp-c.operativeState[b].hp/c.operativeState[b].maxHp||a-b),roster=rosterFor(c),doctors=roster.filter(op=>op.id!==patients[0]&&local.includes(op.id)&&op.medical>=20&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding&&!c.operativeState[op.id].asleep&&c.operativeState[op.id].energy>10)
+   .sort((a,b)=>Number(patients.includes(a.id))-Number(patients.includes(b.id))||b.medical-a.medical||a.id-b.id).slice(0,Math.min(4,patients.length));
+  assert.ok(doctors.length,'Actual local patients need a living eligible physician.');
+  const supplied=new Set();
+  for(const doctor of doctors){
+   retained.retain(3601);
+   if(!c.operativeState[doctor.id].medkits){
+    const model=()=>sectorInventoryModel(c,c.location,rosterFor(c),doctor.id);
+    let source=model().entries.find(row=>row.reachable&&row.count>0&&JSON.parse(row.expected).item==='medkits');
+    if(!source){
+     const donor=local.find(id=>id!==doctor.id&&c.operativeState[id].medkits>(supplied.has(id)?1:0)&&!sectorInventoryModel(c,c.location,rosterFor(c),id).reason);
+     if(donor!==undefined){order({type:'sectorInventory',sector:c.location,operativeId:donor,direction:'drop',item:'medkits',count:1});source=model().entries.find(row=>row.reachable&&row.count>0&&JSON.parse(row.expected).item==='medkits');}
+    }
+    if(source)order({type:'sectorInventory',sector:c.location,operativeId:doctor.id,direction:'take',sourceKey:source.key,expected:source.expected,count:1});
+    else if(supplied.size)continue;
+    else c=supplyRouteDressings(c,doctor.id,1,{report});
+    assert.ok(c.operativeState[doctor.id].medkits>0,'A local doctor must hold an actual finite dressing before hourly care.');
+   }
+   supplied.add(doctor.id);
+  }
+  assert.ok(supplied.size,'Actual local care needs at least one simultaneously supplied doctor.');
+  assert.ok(patients.some(id=>!supplied.has(id)),'A wounded physician needs another actual doctor, not self-assigned hourly care.');
+  for(const id of local){const assignment=supplied.has(id)?'doctor':patients.includes(id)?'patient':'rest';if(c.operativeState[id].assignment!==assignment)order({type:'assignCare',operativeId:id,assignment});}
+  const beforeClock=c.hour*3600+(c.secondOfHour??0),beforeHP=ids.reduce((sum,id)=>sum+c.operativeState[id].hp,0);
+  order({type:'wait',hours:1});
+  const advanced=c.hour*3600+(c.secondOfHour??0)-beforeClock,healed=ids.reduce((sum,id)=>sum+c.operativeState[id].hp,0)-beforeHP;
+  stagnant=!advanced&&!healed?stagnant+1:0;assert.ok(stagnant<3,'Actual local care must advance its clock or heal a patient.');
+  for(const id of kept)assert.ok(c.recruited.includes(id)&&c.operativeState[id].alive&&!c.operativeState[id].captured,'Actual local care preserves every serving survivor.');
+  for(const id of oldDeaths)assert.equal(c.operativeState[id].alive,false);
+  report({event:'createdCuyoLocalCare',patients,doctors:[...supplied],seconds:advanced,healed,hour:c.hour,second:c.secondOfHour??0,campaign:c});
+ }
+ assert.equal(injured().length,0,'Every requested local survivor must earn full health through finite paid care.');
+ for(const id of local)if(c.operativeState[id].assignment!=='active')order({type:'assignCare',operativeId:id,assignment:'active'});
+ return decodeSave(encodeSave(c)).campaign;
+}
 
 // Stop actual acute wounds before meetings, travel or defensive roof walks.
 // A bleeding medic can use an owned dressing immediately; other patients
@@ -70,13 +158,12 @@ export function stabilizeCreatedCuyoSurvivors(start,{report=()=>{}}={}){
   }
   order({type:'createSquad',name:'Auxilio de Cuyo',sector,ids});
   for(const operativeId of ids)order({type:'assignCare',operativeId,assignment:'active'});
-  let p=visit(c);const before=structuredClone(p.battle),slots=new Map(p.battle.units.filter(unit=>ids.includes(Number(unit.id))).map(unit=>[unit.id,unit.activeSlot]));
-  const aid=autoBandageBattle(p.battle),steps=[...aid.steps];
-  const act=action=>{const battle=actBattle(p.battle,action);assert.equal(battle.lastError,null,JSON.stringify(action)+': '+battle.lastError);p=sync({campaign:p.campaign,battle});};
-  for(const [index,action]of aid.steps.entries()){act(action);if(index===Math.floor(aid.steps.length/2))p=savedCarePair(p);}
-  assert.deepEqual(p.battle.units,aid.battle.units);assert.deepEqual(p.battle.npcs,aid.battle.npcs);assert.equal(p.battle.seed,aid.battle.seed);assert.equal(p.battle.elapsedSeconds,aid.battle.elapsedSeconds);
+  let p=visit(c);const before=structuredClone(p.battle),steps=[];
+  p=stabilizeCreatedCuyoBattleSurvivors(p,{execute:(current,action)=>{
+   const battle=actBattle(current.battle,action);assert.equal(battle.lastError,null,JSON.stringify(action)+': '+battle.lastError);steps.push(action);
+   return savedCarePair(sync({campaign:current.campaign,battle}));
+  }});
   for(const id of patients){const unit=p.battle.units.find(unit=>unit.id===String(id));assert.ok(unit&&unit.hp>=15,'the actual Cuyo patient must survive finite field aid');assert.equal(unit.bleeding,0,'actual bleeding must stop before Cuyo preparation');}
-  for(const [unitId,slot]of slots)if(p.battle.units.find(unit=>unit.id===unitId).activeSlot!==slot&&(slot!=='primary'||itemQuantity(p.battle.units.find(unit=>unit.id===unitId),'primary'))){const action={type:'weapon',unitId,slot};act(action);steps.push(action);}
   p=savedCarePair(p);c=leave(p);
   for(const {id,squadId}of membership)if(squadId&&c.squads.some(squad=>squad.id===squadId)&&!c.squads.find(squad=>squad.id===squadId).members.includes(id))order({type:'assignToSquad',operativeId:id,squadId});
   if(c.activeSquadId!==selected)order({type:'selectSquad',id:selected});

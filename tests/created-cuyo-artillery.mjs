@@ -7,7 +7,7 @@ import {artilleryTransportQuote,artilleryTransportPath,storedArtilleryRecord} fr
 import {artilleryTransportRules} from '../game/artillery-transport-rules.js';
 import {FINITE_ARTILLERY_ARSENALS} from '../game/finite-artillery-arsenals.js';
 import {createFreshRouteOrders} from './fresh-cuyo-route.mjs';
-import {stabilizeCreatedCuyoSurvivors} from './created-cuyo-route.mjs';
+import {stabilizeCreatedCuyoSurvivors,stabilizeCreatedCuyoBattleSurvivors,recoverCreatedCuyoLocalPatients} from './created-cuyo-route.mjs';
 import {supplyFreshMountainAmmunition,NATIVE_MOUNTAIN_RESERVE_BOUNDS} from './fresh-mountain-route.mjs';
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {supplyRouteDressings} from './route-dressings.mjs';
@@ -251,11 +251,14 @@ export function recoverCreatedCuyoMountainArtillery(start,{report=()=>{},onCheck
   for(const id of rear.withdrawalIds){const actor=result.battle.units.find(unit=>unit.id===String(id));assert.ok(actor?.hp>0);assert.equal(actor.departure?.destination,'buenos_aires');}
   return {...result,actions:result.actions+rear.withdrawalIds.length,deploymentOrders,medicalRear:rear};
  }:fight;
- const victory=fightNorthernSector(c,'ensenada',{controller,sharedFallback:controller.sharedFallback,executeBattle,report});c=victory.campaign;
+ const victory=fightNorthernSector(c,'ensenada',{controller,sharedFallback:controller.sharedFallback,executeBattle,report,
+  ...(rear?{beforeSettlement:(pair,{execute})=>stabilizeCreatedCuyoBattleSurvivors(pair,{execute,report})}:{})});c=victory.campaign;
  onCheckpoint('arsenal-victory',c);
  if(rear){
   c=stabilizeCreatedCuyoSurvivors(c,{report});
-  c=reuniteArsenalRear(c,rear.reserveIds,{report});
+  c=reuniteArsenalRear(c,rear.withdrawalIds,{report});
+  const localSurvivors=c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured&&c.operativeState[id].location==='ensenada');
+  c=recoverCreatedCuyoLocalPatients(c,localSurvivors,{report});
   assert.ok(rear.reserveIds.every(id=>living(c).includes(id)&&c.operativeState[id].location==='ensenada'&&stable(c,id)&&c.operativeState[id].hp===c.operativeState[id].maxHp));
   report({event:'createdCuyoArsenalRearServicePreserved',...rear,hour:c.hour,second:c.secondOfHour??0,campaign:c});
  }
