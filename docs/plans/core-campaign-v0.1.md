@@ -117,6 +117,29 @@ controls pass 29/29; documentation and baseline audits pass. These results
 cover the three reviewed recovery corrections. The complete original routes,
 earned-ending browser review and final release gate still need to pass.
 
+PR #429 is merged and tagged `0.1.5`. Its local quick gate passes 7,549/7,549
+tests, and its automatic selector, core and campaign checks all pass. The
+campaign candidate includes that main merge and reserves version `0.1.6`.
+On combined source `46c3e3f0`, all 133 quick campaign files complete and all
+699 tests pass, without failures, skips or cancellations.
+
+A fresh complete unchanged opening on `0a0a0282` finishes with five tests
+passed, two failed and one skipped in 382.648 seconds. Passive evidence now
+retains the actual Salta funding plan before its first reserve hire: treasury
+96,611 pesos, quoted total 340,764, including 51,198 for the proposed rear,
+278,400 for clinic carriers, 1,976 for current renewals, 8,940 for the field
+hire and the existing 250-peso reserve. Four zero-time orders precede the
+refusal; no reserve hire, meeting or paid visit occurs. This corrects earlier
+dated arithmetic; the current plan remains unaffordable. No failed state is
+resumed or queried through the game engine.
+
+The released `0.1.5` UI also passes a fresh two-person browser arrival check.
+Actual hires cost 162 and 168 pesos, leaving 2,870. The real two-hour advance
+pauses at the hostile boundary. One keyboard placement persists after export,
+reload and Continue while the second remains pending. Both soldiers then take
+distinct cells and enter the paused 3D sector. These are opening and placement
+checks, not ending or saved-victory acceptance.
+
 On reviewed head `15d392e6`, campaign quick completes all 126 files and passes
 655/655 tests, with no failures, cancellations or skips. The initial isolated
 checkout lacked web dependencies; its seven module-resolution failures were
