@@ -63,6 +63,7 @@ order({type:'respondToEncounter',groupId:c.pendingEncounter.groupId,choice:'tact
 // The rear clinic and envoy use existing stock, real paid arrivals and one
 // conquered gun. Care continues while the officers and cannon travel.
 function prepareCreatedNorthernOfficerRelief(start,{report=()=>{},onCheckpoint=()=>{}}={}){
+ const inputCapture=recordRouteStrategicEvidence({helper:'prepareCreatedNorthernOfficerRelief',stage:'preparation-input',campaign:start});
  const before=structuredClone(start);let c=decodeSave(encodeSave(start)).campaign;
  onCheckpoint('northern-officer-relief-input',c);
  const live=()=>c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured);
@@ -112,13 +113,22 @@ function prepareCreatedNorthernOfficerRelief(start,{report=()=>{},onCheckpoint=(
    if(c.operativeState[medic.id].medkits<need)takeKnown(medic.id,need-c.operativeState[medic.id].medkits);
    order({type:'createSquad',ids,name:'Socorro provincial urgente',sector});for(const operativeId of ids)order({type:'assignCare',operativeId,assignment:'active'});
    onCheckpoint(`northern-officer-emergency-input-${sector}`,c);
+   const emergencyInputCapture=recordRouteStrategicEvidence({helper:'prepareCreatedNorthernOfficerRelief',stage:'route-checkpoint',campaign:c,inputCapture,context:{phase:'before-existing-emergency-visit',sector,physicianId:medic.id,urgent,ids,need,scope:'Actual preparation state before the one existing visit and its finite aid; no additional entry, orders, queries or synchronization.'}});
    const initial=visit(c),aid=autoBandageBattle(initial.battle);let paid=initial;
    for(let step=0;step<aid.steps.length;step++){
     const battle=actBattle(paid.battle,aid.steps[step]);assert.equal(battle.lastError,null);paid=sync({campaign:paid.campaign,battle});
     if(step===Math.floor(aid.steps.length/2))paid=decodeSave(encodeSave(paid.campaign,paid.battle));
    }
    assert.deepEqual(paid.battle,sync({campaign:initial.campaign,battle:aid.battle}).battle);
-   c=leave(paid);for(const id of ids.filter(id=>urgent.includes(id))){assert.ok(c.operativeState[id].alive&&c.operativeState[id].hp>=15);assert.equal(c.operativeState[id].bleeding,0);}
+   c=leave(paid);
+   if(ids.filter(id=>urgent.includes(id)).some(id=>!c.operativeState[id].alive||c.operativeState[id].hp<15||c.operativeState[id].bleeding!==0))recordRouteStrategicEvidence({
+    helper:'prepareCreatedNorthernOfficerRelief',stage:'preparation-failure',campaign:c,inputCapture:emergencyInputCapture??inputCapture,
+    context:{phase:'after-existing-emergency-aid-and-leave-before-strict-health-check',preparationInputCapture:inputCapture,sector,physicianId:medic.id,urgent,ids,need,
+     aid:{steps:aid.steps,treatedIds:aid.treatedIds,untreated:aid.untreated,stoppedReason:aid.stoppedReason,elapsedSeconds:aid.elapsedSeconds},initialBattle:initial.battle,returnedBattle:paid.battle,
+     scope:'Actual existing visit input battle, paid replay return and settled campaign before the unchanged urgent-survivor assertions; no additional Native orders, queries, synchronization or outcome changes.'},
+    error:'Actual emergency aid left an urgent survivor dead, critical or bleeding before the strict existing check.',
+   });
+   for(const id of ids.filter(id=>urgent.includes(id))){assert.ok(c.operativeState[id].alive&&c.operativeState[id].hp>=15);assert.equal(c.operativeState[id].bleeding,0);}
    report({event:'provincialEmergencyAid',sector,doctor:medic.id,steps:aid.steps,elapsedSeconds:aid.elapsedSeconds,officialMidpoint:true,patients:ids.filter(id=>urgent.includes(id)).map(id=>({id,hp:c.operativeState[id].hp,bleeding:c.operativeState[id].bleeding}))});
    onCheckpoint(`northern-officer-emergency-${sector}`,c);
   }
