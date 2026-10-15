@@ -49,6 +49,18 @@
   Start finite local treatment during courier time and replenish from current
   wounds through actual local stock and paid relief. Keep the doctor's
   existing defensive reserve and the same clinical deadline.
+- Reuse an actual local group for a relief carrier's solo roof visit when all
+  eight squad slots are occupied. Restore the group's members, old posts,
+  duties and selected field party after the paid visit.
+- Finish local northern reserve care inside the hospital's existing absolute
+  deadline before the recovered party returns. Use known finite dressings,
+  actual renewals, a recovered primary and paid roof walks in existing groups.
+- Quote an upright medical approach for a prone Uspallata physician when it
+  retains the same approach budget and actual hand-and-aid costs. Preserve
+  adjacent care, finite stock and other battery roles.
+- Keep Los Patos flank firing postures only when their paid Native forecast
+  admits useful fire. Follow actual shared contacts past the scouting point
+  with the existing movement budget and Native route checks.
 - Budget the full parallel mountain journey, daylight staging and final service
   buffer at actual contract prices. Preserve required roles and patients, end
   only completed paid duties, and return their exact finite property. Fund any

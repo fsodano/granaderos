@@ -99,6 +99,12 @@ passed, two failed and one skipped, in 652.688 seconds. Repeated paid relief
 visits leave one-person groups occupied. Staging the next actual arrival then
 hits the existing eight-squad limit. That limit remains unchanged; lawful
 local group reuse needs a focused correction and a fresh complete result.
+A reviewed correction temporarily reuses an actual stationary local group for
+the same solo visit when all slots are occupied, then restores that group's
+members and the original selection. Eight complete affected files pass 40/40,
+including two real finite arrivals with all eight old groups, positions,
+duties, payments and save repetition preserved. Complete opening acceptance
+is still required.
 
 The complete original opening on `df62e17a` still fails: five tests pass, two
 fail and one skips, in 409.432 seconds. The finite donor transfer and the following complete
@@ -169,6 +175,13 @@ reserve still loses at turn five after 42 actor orders and 122 seconds.
 Two old roof defenders enter wounded, one without its dropped primary weapon.
 The later Salta clinic changes do not alter this road reserve path. Complete
 recovery remains unaccepted.
+A reviewed follow-up prepares those actual local reserves before the recovered
+hospital party's long return, inside the hospital's original absolute care
+deadline. It uses known finite supplies, real existing service and hourly
+treatment, a recovered primary, and ground-to-roof walks in existing squads.
+Eight complete affected files pass 52/52. The selected recovered field party,
+old roof posts, strict full-health guards and permanent losses remain intact.
+A fresh complete recovery result is still required.
 
 A further reviewed correction lets a fit ground defender pay for a short
 public approach beside an initially empty cannon when ordinary work holds.
@@ -221,6 +234,23 @@ preserving the attacker, crew, aid and cannon checks. Fresh routed and
 critical controls fail before that correction; eight complete affected files
 then pass 51/51, including hidden, unavailable and actual departed targets.
 The complete ending remains required.
+
+The later Uspallata tape also records eight prone physician moves and one aid
+stroke, with fourteen dressings unused when the physician dies. A reviewed
+approach correction quotes actual upright movement and a reachable Native aid
+goal before spending the same sixteen-point approach budget. Adjacent aid,
+finite stock, hand costs and other roles stay first. Five complete affected
+files pass 35/35, including seven fresh controls with paid direct, presented
+and validated battle replay. This does not establish a campaign victory.
+
+Passive review of the complete installed Los Patos failure records 748 stance
+orders. Three surviving flank soldiers repeat crouched, prone and standing
+cycles, then stop near the scouting point while enemies remain. A reviewed
+correction rejects an otherwise useless firing posture using the existing
+paid shot forecast, and follows actual shared contacts beyond that point.
+Six complete affected files pass 32/32. Five fresh controls preserve useful
+fire and adjacent finite aid, check successive paid bounds, and exclude hidden
+enemy positions from the decision. Both complete endings remain required.
 
 The reviewed clinic correction restores actual wounded survivors before the
 separate battery journey. Earlier and later care share one 72-hour allowance;
