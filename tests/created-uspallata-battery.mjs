@@ -5,7 +5,7 @@ import {propBlocksAt} from '../game/props.js';
 import {wallMovementBlocked} from '../game/wall-geometry.js';
 import {sameCell,sameSurface,spacePoint,surfaceAt} from '../game/tactical-space.js';
 import {boundaryPassable} from '../game/tactical-exits.js';
-import {getReachable,teamCanSee,hasFirearm,artilleryContact,artilleryCrewPlan,artilleryCosts,artilleryReloadPreview,stanceCost,actionCosts,exitPreview,meleePreview,medicalUsePreview} from '../game/tactical.js';
+import {getReachable,teamCanSee,hasLineOfSight,hasFirearm,artilleryContact,artilleryCrewPlan,artilleryCosts,artilleryReloadPreview,stanceCost,actionCosts,exitPreview,meleePreview,medicalUsePreview,movementEnergy} from '../game/tactical.js';
 import {availableAmmunition} from '../game/ammunition-types.js';
 import {firearmServiceable} from '../game/firearm-serviceability.js';
 import {criticalFirstAidNeeded} from '../game/first-aid.js';
@@ -35,6 +35,7 @@ export function createdUspallataBattery(initial,{reserveIds=[],reserveDestinatio
   const ids=operators.splice(0,artilleryProfile(initial,gun).crew).map(u=>u.id);assert.equal(ids.length,artilleryProfile(initial,gun).crew);return {gunId:gun.id,ids};
  });
  const screens=new Set(operators.map(u=>u.id)),crewIds=new Set(crews.flatMap(crew=>crew.ids));
+ const arrivalDirection={N:{x:0,y:1},E:{x:-1,y:0},S:{x:0,y:-1},W:{x:1,y:0}}[physician.entryEdge];
  assert.ok(screens.size,'The real battery needs an actual remaining infantry screen.');
  const piece=(b,id)=>b.artillery.find(g=>g.id===id),protectedIds=new Set([...reserves,physician.id]);
  const emit=(event,action,battle)=>report({event,action:structuredClone(action),hour:battle.enteredHour,turn:battle.turn,elapsedSeconds:battle.elapsedSeconds});
@@ -114,6 +115,35 @@ export function createdUspallataBattery(initial,{reserveIds=[],reserveDestinatio
   const point=walking.goal.path.map(step=>walking.points.find(p=>sameCell(p,step))).filter(p=>p&&p.cost>0&&walking.paid+p.cost<=budget).at(-1);
   return point?{type:'move',unitId:u.id,...spacePoint(point),movement:'walk'}:null;
  }
+ // Follow the current second screen, using only quoted public geometry.
+ // A projected gait is a cost/safety quote, never an executed posture.
+ function physicianScreenFollow(b,u){
+  if(!arrivalDirection||!u.medkits||u.energy<=10||u.mounted||u.knockedDown||u.entangled||b.phase!=='player'||b.reactionStack?.length)return null;
+  const direction=arrivalDirection,progress=p=>p.x*direction.x+p.y*direction.y;
+  const current=b.units.filter(actor=>screens.has(actor.id)&&actor.side===u.side&&capable(actor)&&sameSurface(actor,u)).sort((a,c)=>progress(c)-progress(a)||c.marksmanship-a.marksmanship||idCompare(a,c));
+  if(!current.length)return null;
+  const lead=current[Math.min(1,current.length-1)],goal={x:lead.x-2*direction.x,y:lead.y-2*direction.y};
+  if(distance(u,goal)<=2&&progress(u)<=progress(lead))return null;
+  const view=publicRouteView(b,u),contacts=view.units.filter(actor=>actor.side!==u.side&&capable(actor)),cover=p=>surfaceAt(view,p)?.cover??0,costs=actionCosts(b,u),budget=Math.min(16,u.ap-costs.weapon-costs.heal);
+  if(budget<=0)return null;
+  const safe=(actor,p)=>sameSurface(p,u)&&progress(p)<=progress(lead)&&cover(p)>=cover(u)&&
+   view.artillery.filter(gun=>gun.side===u.side).every(gun=>!artilleryContact(view,{...actor,...spacePoint(p)},gun))&&
+   contacts.every(contact=>distance(p,contact)>2.5&&(!hasLineOfSight(view,contact,{...actor,...spacePoint(p)})||hasLineOfSight(view,contact,u)));
+  const candidates=[];
+  for(const walking of [false,true]){
+   if(walking&&u.stance==='standing'&&u.movementMode==='walk')continue;
+   const paid=walking?stanceCost(u,'standing'):0,actor=walking?{...u,stance:'standing',movementMode:'walk',ap:u.ap-paid}:u;
+   if(paid>=budget||!safe(actor,u))continue;
+   for(const point of getReachable(view,actor)){
+    if(point.cost<=0||point.cost+paid>budget||distance(point,goal)>=distance(u,goal)||!point.path.every(p=>safe(actor,p)))continue;
+    let from=u,energy=0;for(const step of point.path){const factor=from.x!==step.x&&from.y!==step.y?1.4:1,used=movementEnergy(actor,surfaceAt(view,step),b.mode==='exploration')*factor;energy+=b.mode==='exploration'?used:Math.ceil(used);from=step;}
+    if(energy>=u.energy-10)continue;
+    candidates.push({point,paid,walking});
+   }
+  }
+  candidates.sort((a,c)=>distance(a.point,goal)-distance(c.point,goal)||cover(c.point)-cover(a.point)||a.paid+a.point.cost-c.paid-c.point.cost||Number(a.walking)-Number(c.walking)||a.point.y-c.point.y||a.point.x-c.point.x);
+  const next=candidates[0];return next?{type:'move',unitId:u.id,...spacePoint(next.point),...(next.walking?{movement:'walk'}:{})}:null;
+ }
  const controller=(b,u)=>{
   if(!capable(u))return null;
   const normal=tucumanCombatOrder(b,u);
@@ -129,6 +159,7 @@ export function createdUspallataBattery(initial,{reserveIds=[],reserveDestinatio
    const patients=b.units.filter(p=>p.side===u.side&&p.id!==u.id&&medicalPatientAvailable(p)&&(p.bleeding>0||criticalFirstAidNeeded(p))).sort((a,c)=>a.hp-c.hp||idCompare(a,c));
    for(const patient of patients){const budget=Math.min(16,u.ap-actionCosts(b,u).weapon-actionCosts(b,u).heal),upright=uprightMedicalApproach(b,u,patient,budget);if(upright)return upright;const action=route(b,u,p=>distance(p,patient)<distance(u,patient),p=>distance(p,patient),budget);if(action)return action;}
    const shot=usefulRouteRifleShot(publicRouteView(b,u),u);if(shot)return shot;
+   if(!patients.length){const follow=physicianScreenFollow(b,u);if(follow)return follow;}
    return u.stance!=='prone'&&u.ap>=stanceCost(u,'prone')?{type:'stance',unitId:u.id,stance:'prone'}:null;
   }
   const crew=crews.find(c=>c.ids.includes(u.id));
