@@ -39,6 +39,7 @@ export const campaignTestGroups = [
   "tests/coastal-battery-paid-crew-progress.test.mjs",
  ]},
  {"id": "routes", "reason": "Campaign route/preparation/driver acceptance through ordinary game orders.", files:[
+  "tests/battery-rigid-route-geometry.test.mjs",
   "tests/campaign-battery-driver.test.mjs",
   "tests/coastal-field-dressing-recovery.test.mjs",
   "tests/coastal-mission-reserve.test.mjs",

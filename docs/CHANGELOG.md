@@ -28,6 +28,9 @@
   carrying room before paid travel and preserve donor reserves and service.
 - Supply a fit selected relief medic before the mission visit and record actual
   care before the existing health and bleeding checks.
+- Retry a blocked cannon route when only an unrelated body occupies a crew
+  contact corner. Preserve valid existing routes and all real destination,
+  terrain, wall, crew and action-cost checks.
 - Add current-state regressions and optional terminal save exports for browser
   checks. Saves from earlier builds remain outside the supported scope.
 - Full campaign acceptance remains open. No complete final-source victory or

@@ -62,24 +62,35 @@ original complete recovery, ending and historical-loss files and their battle
 limits. Every complete run starts fresh. Failed checkpoints are retained as
 passive evidence and are not resumed as diagnostic input.
 
-On reviewed head `89bf491c`, campaign quick completes all 114 files and passes
-574/574 tests, with no failures, cancellations or skips. Core quick on its
+On reviewed head `df62e17a`, campaign quick completes all 114 files and passes
+575/575 tests, with no failures, cancellations or skips. Core quick on its
 ancestor `d0508806` completes all 924 files and passes 7,210/7,210 tests, also
 with no failures, cancellations or skips. These are separate suite results.
 
-The complete original opening on `89bf491c` still fails: five tests pass, two
-fail and one skips, in 431.578 seconds. The finite donor transfer and the following complete
+The complete original opening on `df62e17a` still fails: five tests pass, two
+fail and one skips, in 409.432 seconds. The finite donor transfer and the following complete
 medical courier/recovery stage pass. During later Salta battery preparation,
-the Tucumán reserve loses a counterattack at turn fifteen, after 109 actions
-and 183 tactical seconds. The original victory assertion remains strict.
-The hospital executor was bypassed because its selection retained the formation
-from before actual roof staging. The reviewed correction selects from the
-current encounter formation and retains explicit controller overrides. Its
-eight affected files pass 55/55 tests, including real paid staging and official
-fresh-save replay. A fresh complete opening result remains required.
+the Tucumán reserve loses a counterattack at turn ten, after 66 actions
+and 153 tactical seconds. The original victory assertion remains strict.
+The earlier hospital executor was bypassed because its selection retained the
+formation from before actual roof staging. The reviewed correction selects
+from the current encounter formation and retains explicit controller overrides.
+Its eight affected files pass 55/55 tests, including real paid staging and
+official fresh-save replay. It changes the actual fight but does not win it.
 
-The original historical-loss and complete two-ending files remain active on
-frozen `89bf491c`. Their results are pending.
+The original historical-loss file on `89bf491c` finishes 0/1 in 1,069.733
+seconds. It passes the earlier relief-care guard, then stops because the
+Mendoza battle remains active where victory is required. Its recorded tape
+contains eight actor orders and eighty end-turn orders, with no shot, casualty
+or enemy turn. The complete two-ending file remains active on frozen
+`89bf491c`; its result is pending.
+
+The reviewed Mendoza planner correction retains each valid existing route,
+then retries a no-progress result without treating an unrelated body in a crew
+contact corner as a blocked destination. All actual translated destinations,
+fixed obstacles, walls, crew and action costs remain checked. Eight affected
+files pass 59/59 tests, including six fresh Native geometry controls. A fresh
+complete historical-loss result remains required.
 
 The complete original historical-loss run on `aed2760a` finishes 0/1 in 615.589
 seconds. Legal running preparation passes the preceding emergency-aid boundary
