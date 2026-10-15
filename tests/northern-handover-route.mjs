@@ -4,10 +4,11 @@ import {contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js'
 import {decodeSave,encodeSave} from '../game/save.js';
 import {enterSector} from '../game/world.js';
 import {syncBattleTime} from '../game/time.js';
-import {actBattle,endTurn,completedTacticalVictory} from '../game/tactical.js';
+import {actBattle,endTurn,completedTacticalVictory,teamCanSee} from '../game/tactical.js';
 import {autoBandageBattle} from '../game/auto-bandage.js';
 import {fight} from './opening-driver.mjs';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
+import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 
 const clock=c=>c.hour*3600+(c.secondOfHour??0);
 const serving=c=>c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured);
@@ -47,8 +48,18 @@ export function resolveNorthernHandoverEncounter(start,{controllerFor,report=()=
  assert.equal(request.defenseGroupId,encounter.groupId);
  const initial=enterSector(request,previous);
  report({event:'northernHandoverDefenseInput',campaign:structuredClone(c),battle:initial});
+ const inputCapture=recordRouteStrategicEvidence({helper:'resolveNorthernHandoverEncounter',stage:'route-checkpoint',campaign:c,context:{phase:'before-fight',request,previous,initial,scope:'Actual existing controller-construction entry before fight performs its unchanged own entry; no added entry, orders, synchronization or save normalization.'}});
  const result=fight(request,previous,{controller:controllerFor?controllerFor(initial):cautiousCombatOrder});
- assert.ok(completedTacticalVictory(result.battle),'The actual reserve must win the native counterattack.');
+ let failureMessage='The actual reserve must win the native counterattack.';
+ if(!completedTacticalVictory(result.battle)){
+  recordRouteStrategicEvidence({helper:'resolveNorthernHandoverEncounter',stage:'battle-outcome-failure',campaign:c,inputCapture,context:{phase:'after-fight-before-victory-assertion',result,scope:'Actual returned fight result and complete issued order tape before the unchanged victory assertion; no added orders, synchronization, settlement or save normalization.'}});
+  const b=result.battle,position=u=>({x:u.x,y:u.y,tacticalLevel:u.tacticalLevel??0});
+  const own=b.units.filter(u=>u.side==='player').map(u=>({id:u.id,...position(u),hp:u.hp,ap:u.ap,loaded:u.loaded,ammo:u.ammo,medkits:u.medkits,bleeding:u.bleeding,routed:u.routed,unconscious:u.unconscious,departure:u.departure}));
+  const knownEnemies=b.units.filter(u=>u.side==='enemy'&&teamCanSee(b,'player',u)).map(u=>({id:u.id,...position(u),hp:u.hp,stance:u.stance,routed:u.routed}));
+  const knownGuns=b.artillery.filter(g=>g.side==='player'||teamCanSee(b,'player',g)).map(g=>({id:g.id,side:g.side,...position(g),loaded:g.loaded,ammo:g.ammo}));
+  failureMessage+=' '+JSON.stringify({sector:request.sector,status:b.status,turns:b.turn,phase:b.phase,actions:result.actions,elapsedSeconds:b.elapsedSeconds,own,knownEnemies,knownGuns});
+ }
+ assert.ok(completedTacticalVictory(result.battle),failureMessage);
  const aid=autoBandageBattle(result.battle),orders=[...result.orders,...aid.steps];
  for(const unit of aid.battle.units.filter(u=>u.side==='player'&&u.hp>0&&!u.militia&&!u.surrendered&&!u.departure)){
   assert.ok(unit.hp>=15&&!unit.bleeding,`Survivor ${unit.id} needs timely finite aid before strategic time resumes.`);
