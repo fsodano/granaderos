@@ -2,8 +2,8 @@
 
 Updated: 15 October 2026.
 
-Status: `main` is released as `0.1.4`, including the save-import interface fix
-from PR #428. Campaign corrections are the unreleased `0.1.5` candidate in draft
+Status: `main` is released as `0.1.5`, including the route-confirmation and
+occupied-district guidance fixes from PR #429. Campaign corrections are the unreleased `0.1.6` candidate in draft
 PR #426, with current `main` merged normally. End-to-end campaign
 verification is incomplete. No complete current-source campaign result is claimed.
 

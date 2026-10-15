@@ -4,7 +4,7 @@
 > [shipping campaign plan](plans/core-campaign-v0.1.md) for current scope. Earlier development
 > numbers are internal checkpoints; their features and results are dated history.
 
-## 0.1.5 — Unreleased candidate
+## 0.1.6 — Unreleased candidate
 
 - Correct paid road duty, finite ammunition redistribution and ordered medical
   care in fresh campaign validation.
@@ -69,6 +69,13 @@
   checks. Saves from earlier builds remain outside the supported scope.
 - Full campaign acceptance remains open. No complete final-source victory or
   saved 48-hour continuation is claimed by the focused checks.
+
+## 0.1.5 — 15 October 2026
+
+- Keep the route confirmation quote tied to the selected destination while the
+  map previews possible additional waypoints.
+- Explain occupied district restrictions and offer the main sector for normal
+  route planning.
 
 ## 0.1.4 — 14 October 2026
 
