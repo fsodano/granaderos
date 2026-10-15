@@ -6,7 +6,7 @@ import {applyItemQuantity,SUPPLY_ITEMS} from '../game/tactical-inventory.js';
 import {isContractOperative} from '../game/content-character-ids.js';
 import {careAssignmentReason,careAssignmentIssue} from '../game/medical-care.js';
 import {hireArrivalDueSeconds} from '../game/hiring-arrivals.js';
-import {operativeInTransit,operativeLocation,canReassignOperative} from '../game/squads.js';
+import {operativeInTransit,operativeLocation,canReassignOperative,canCreateSquad} from '../game/squads.js';
 import {collectRouteItems,discoverRouteCache} from './finite-route-equipment.mjs';
 import {contractQuote,contractExpiresSeconds,contractRenewalQuote} from '../game/contracts.js';
 import {doctorRate} from '../game/medical-care.js';
@@ -198,7 +198,14 @@ export function supplySaltaClinicDoctors(start,doctors,{minimumDressings=1,reser
   if((campaign.operativeState[id].residentPosition?.tacticalLevel??0)>0)return;
   retain(clock(campaign)+3600);assert.ok(clock(campaign)+3600<=deadlineSeconds,'The actual relief visit needs its bounded retained hour inside the clinic allowance.');
   const until=clock(campaign)+3600,posts=local().filter(other=>other!==id&&campaign.operativeState[other].residentPosition).map(other=>({id:other,position:structuredClone(campaign.operativeState[other].residentPosition)}));
-  order({type:'createSquad',sector,name:'Vendas de la enfermería',ids:[id]});order({type:'assignCare',operativeId:id,assignment:'active'});order({type:'visitSector'});
+  let reusedSquad=null;
+  if(canCreateSquad(campaign))order({type:'createSquad',sector,name:'Vendas de la enfermería',ids:[id]});
+  else{
+   const home=campaign.squads.find(q=>q.location===sector&&!q.journey&&q.members.includes(id))??campaign.squads.find(q=>q.location===sector&&!q.journey&&q.members.length);
+   assert.ok(home&&home.members.every(member=>canReassignOperative(campaign,member)&&operativeLocation(campaign,member)===sector),'A supplied arrival needs an actual stationary local squad for its solo visit.');
+   reusedSquad={id:home.id,members:[...home.members]};order({type:'selectSquad',id:home.id});order({type:'squad',ids:[id]});
+  }
+  order({type:'assignCare',operativeId:id,assignment:'active'});order({type:'visitSector'});
   battle=enterSector(campaign.pendingBattle,campaign.sectorStates[sector]);const initial=structuredClone(battle),unitId=String(id),actor=()=>battle.units.find(u=>u.id===unitId),steps=[];
   const roofs=posts.filter(row=>row.position.tacticalLevel>0),destination=getReachable(battle,actor()).filter(point=>point.tacticalLevel>0&&!posts.some(row=>sameCell(row.position,point))).map(point=>({...point,neighbors:roofs.filter(row=>sameSurface(row.position,point)&&Math.hypot(row.position.x-point.x,row.position.y-point.y)<=1.5).length})).sort((a,b)=>b.neighbors-a.neighbors||a.cost-b.cost||a.y-b.y||a.x-b.x)[0];
   assert.ok(destination&&(!roofs.length||destination.neighbors>0),'The new supplied relief needs actual reachable roof cover beside the old posts.');
@@ -215,7 +222,8 @@ export function supplySaltaClinicDoctors(start,doctors,{minimumDressings=1,reser
   const returned=structuredClone(battle),action={type:'leaveSector',battleId:campaign.pendingBattle.id,sectorState:battle,survivors:battle.units.filter(u=>u.side==='player')};
   campaign=dispatchCampaign(campaign,action);assert.equal(campaign.lastError,null);actions.push({action:structuredClone(action),hour:campaign.hour,second:campaign.secondOfHour??0,treasuryChange:0});battle=null;
   for(const post of posts)assert.deepEqual(campaign.operativeState[post.id].residentPosition,post.position,'The supplied arrival preserves every old resident post.');
-  receipts.push({kind:'new-relief-cover',id,initial,steps,returned});settle();
+  receipts.push({kind:'new-relief-cover',id,initial,steps,returned,...(reusedSquad?{reusedSquad}:{})});settle();
+  if(reusedSquad){order({type:'selectSquad',id:reusedSquad.id});order({type:'squad',ids:reusedSquad.members});}
   if(campaign.activeSquadId!==previous)order({type:'selectSquad',id:previous});
  };
  const finish=reason=>{assert.deepEqual(start,before);return {campaign,doctors:[...doctors],minimumDressings,reserveDressings,gatheredDressings,donatedDressings,actions,receipts,hires,renewals,care,encounters,supplied:!reason,reason};};

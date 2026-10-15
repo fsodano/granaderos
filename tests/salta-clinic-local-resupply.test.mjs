@@ -16,7 +16,7 @@ import {supplySaltaClinicDoctors} from './salta-clinic-supply.mjs';
 const clock=c=>c.hour*3600+(c.secondOfHour??0);
 const order=(c,a)=>{const n=dispatchCampaign(c,a);assert.equal(n.lastError,null,JSON.stringify(a)+': '+n.lastError);return n;};
 const saved=c=>{const n=decodeSave(encodeSave(c)).campaign;assert.deepEqual(n,c);return n;};
-function setup({kits=2,delay=0,price=180,localKits=0,cache=0,threat=false,nearExpiry=false,healthy=false}={}){
+function setup({kits=2,delay=0,price=180,localKits=0,cache=0,threat=false,nearExpiry=false,healthy=false,fullSquads=false}={}){
  const content=defaultContentPackage();content.headquarters='cordoba';content.rules.startingTreasury=20000;content.startingTerritory.tucuman.owner='patriot';content.startingTerritory.cordoba.owner='patriot';content.world=structuredClone(DEFAULT_WORLD);
  for(const at of ['tucuman','cordoba'])content.world.physical.caches[at].contents=content.world.physical.caches[at].contents.filter(row=>row.item!=='medkits');
  if(cache)content.world.physical.caches.tucuman.contents.push({item:'medkits',count:cache,weight:.2});
@@ -26,9 +26,18 @@ function setup({kits=2,delay=0,price=180,localKits=0,cache=0,threat=false,nearEx
  const patient=content.characters.find(p=>p.id==='person-130');patient.attributes={...patient.attributes,maxHp:66};patient.startingCondition={hp:threat?20:healthy?66:54,bleeding:0,bandaged:threat?46:healthy?0:12,energy:100,fatigue:0};patient.startingSupplies.medkits=localKits;
  const doctor=content.characters.find(p=>p.id==='person-122');doctor.attributes={...doctor.attributes,medical:85};
  const relief=content.characters.find(p=>p.id==='person-100');relief.monthlyPay=price;relief.arrivalHours=delay;relief.startingSupplies.medkits=kits;relief.serviceGuarantee=17;
+ if(fullSquads){
+  for(const id of [101,102,103,104,105,106,108])content.characters.find(p=>p.id===`person-${id}`).monthlyPay=180;
+  const second=content.characters.find(p=>p.id==='person-107');second.startingSupplies.medkits=2;second.monthlyPay=720;
+ }
  assert.deepEqual(validateContentPackage(content),[]);const declared=structuredClone(content);let c=initialCampaign(42,content);
  for(const id of [122,130])c=order(c,{type:'recruitCivic',id,term:nearExpiry?'day':threat?'fortnight':'week',destination:'tucuman'});
  c=stageOpeningRearCover(c,{sector:'tucuman'}).campaign;
+ if(fullSquads){
+  for(const id of [101,102,103,104,105,106,108]){c=order(c,{type:'recruitCivic',id,term:'week',destination:'cordoba'});c=order(c,{type:'createSquad',sector:'cordoba',name:'Servicio local '+id,ids:[id]});}
+  const field=c.squads.find(q=>q.location==='cordoba'&&q.members.length&&!q.journey);assert.ok(field);c=order(c,{type:'selectSquad',id:field.id});
+  c=order(c,{type:'assignCare',operativeId:130,assignment:'patient'});assert.equal(c.squads.filter(q=>q.members.length).length,8);
+ }
  if(cache)c=discoverRouteCache(c,122);
  if(nearExpiry)for(let n=0;c.hour<23&&n<30;n++)c=order(c,{type:'wait',hours:23-c.hour});
  if(threat){for(let n=0;c.hour<120&&n<160;n++)c=order(c,{type:'wait',hours:Math.min(24,120-c.hour)});assert.equal(c.hour,120);const group=c.enemyGroups.find(g=>g.target==='tucuman'&&g.status==='marching');assert.ok(group);for(let n=0;c.hour<group.arrivalAt-1&&n<80;n++)c=order(c,{type:'wait',hours:Math.min(24,group.arrivalAt-1-c.hour)});assert.equal(c.hour,group.arrivalAt-1);assert.equal(c.pendingEncounter,null);}
@@ -111,4 +120,14 @@ test('an interrupted resolver refusal preserves its later actual accepted Native
  }});}catch(error){failure=error;}
  assert.equal(failure,refusal);assert.ok(accepted);assert.deepEqual(failure.campaign,accepted);assert.notDeepEqual(failure.campaign,callbackInput);assert.equal(failure.campaign.pendingBattle.defenseGroupId,callbackAction.groupId);assert.equal(failure.clinicLocalSupply.hires.length,1);assert.ok(failure.campaign.hiringArrivals.some(a=>a.operativeId===100));assert.deepEqual(start,before);
  replay(start,{campaign:callbackInput,actions:failure.clinicLocalSupply.actions});assert.deepEqual(order(callbackInput,callbackAction),accepted);const initial=enterSector(accepted.pendingBattle,accepted.sectorStates.tucuman),pair=decodeSave(encodeSave(accepted,initial));assert.deepEqual(pair.campaign,accepted);assert.deepEqual(pair.battle,initial);
+});
+
+test('eight occupied squads reuse a real local group for two paid solo relief visits without changing old posts or duties',()=>{
+ const start=setup({fullSquads:true}),before=structuredClone(start),blocked=dispatchCampaign(start,{type:'createSquad',sector:'tucuman',name:'Novena escuadra',ids:[122]});assert.match(blocked.lastError??'',/ocho escuadras/);
+ const result=supply(start,{minimumDressings:4,reserveDressings:4}),c=result.campaign,visits=result.receipts.filter(row=>row.kind==='new-relief-cover');
+ assert.equal(result.hires.length,2);assert.equal(visits.length,2);assert.equal(result.actions.some(row=>row.action.type==='createSquad'),false);assert.equal(c.squads.filter(q=>q.members.length).length,8);assert.deepEqual(c.squads,start.squads);assert.equal(c.activeSquadId,start.activeSquadId);assert.deepEqual(c.squad,start.squad);
+ for(const id of start.recruited){assert.equal(c.operativeState[id].assignment,start.operativeState[id].assignment);assert.deepEqual(c.operativeState[id].residentPosition,start.operativeState[id].residentPosition);assert.equal(c.operativeState[id].hp,start.operativeState[id].hp);assert.equal(c.operativeState[id].alive,true);assert.equal(c.operativeState[id].captured,false);assert.ok(contractExpiresSeconds(c.contracts[id])===null||contractExpiresSeconds(c.contracts[id])>clock(c));}
+ for(const receipt of visits){assert.deepEqual(receipt.initial.units.filter(u=>u.side==='player').map(u=>u.id),[String(receipt.id)]);assert.ok(receipt.steps.some(action=>action.type==='move'));assert.ok(c.operativeState[receipt.id].residentPosition.tacticalLevel>0);assert.equal(c.operativeState[receipt.id].location,'tucuman');}
+ assert.equal(c.operativeState[122].medkits,4);assert.equal(result.hires.reduce((n,row)=>n+row.kits,0),4);assert.equal(c.recruited.reduce((n,id)=>n+c.operativeState[id].medkits,0),4);assert.equal(c.resources.treasury,start.resources.treasury-result.hires.reduce((n,row)=>n+row.quote.total,0)-result.renewals.reduce((n,row)=>n+row.quote.price,0));
+ assert.deepEqual(start,before);replay(start,result);assert.deepEqual(supply(saved(start),{minimumDressings:4,reserveDressings:4}),result);
 });
