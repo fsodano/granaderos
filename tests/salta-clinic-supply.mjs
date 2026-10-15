@@ -46,9 +46,17 @@ export function stabilizeSaltaClinicSurvivors(start,sector,{report=()=>{}}={}){
  report(receipt);assert.deepEqual(start,before);return {campaign,receipt};
 }
 
+// Shared finite care admission. Callers must first supply this actual doctor
+// through the ordinary local inventory API; these are only Native orders.
+export function saltaEarlyClinicCareOrders(campaign,doctor,patients){
+ if(!campaign.operativeState[doctor.id].medkits)return [];
+ assert.equal(careAssignmentReason(campaign,doctor,'doctor'),'');
+ return [...patients.map(operativeId=>({type:'assignCare',operativeId,assignment:'patient'})),{type:'assignCare',operativeId:doctor.id,assignment:'doctor'}];
+}
+
 // The earned clinic has exhausted its local stock. A real Córdoba physician
 // carries known finite dressings; fresh paid guards keep their normal supplies.
-export function prepareSaltaClinicSupply(start,{report=()=>{},resolveEncounter,deadlineSeconds=Infinity}={}){
+export function prepareSaltaClinicSupply(start,{report=()=>{},resolveEncounter,deadlineSeconds=Infinity,protectedRearIds=[]}={}){
  let campaign=decodeSave(encodeSave(start)).campaign;const before=structuredClone(start),previous=campaign.activeSquadId,sector='tucuman',local=servingAt(campaign,sector);
  const actions=[],renewals=[],hires=[],events=[],encounters=[],localSupplies=[],earlyCare=[],expectedFates=new Map(Object.entries(before.operativeState).map(([id,r])=>[id,{alive:r.alive,captured:r.captured}]));
  let preparationBattle=null;
@@ -75,7 +83,7 @@ export function prepareSaltaClinicSupply(start,{report=()=>{},resolveEncounter,d
   for(const id of campaign.recruited){const r=campaign.operativeState[id];if(!r.alive||r.captured)continue;let expiry=contractExpiresSeconds(campaign.contracts[id]);assert.ok(campaign.contracts[id]&&(expiry===null||expiry>clock(campaign)),'The actual clinic duty must still be serving.');while(expiry!==null&&expiry<=clock(campaign)+hours*3600){const contract=campaign.contracts[id],quote=contractRenewalQuote(campaign,rosterFor(campaign).find(op=>op.id===id),'day'),cash=campaign.resources.treasury;assert.equal(quote.available,true,quote.reason);order({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt,expectedExpiresSecond:contract.expiresSecond??0});assert.equal(campaign.resources.treasury,cash-quote.price);renewals.push({id,quote});expiry=contractExpiresSeconds(campaign.contracts[id]);}}
  };
  const candidates=rosterFor(campaign).filter(op=>op.id>=100&&op.id<1000&&!campaign.recruited.includes(op.id)&&campaign.operativeState[op.id].alive&&!campaign.operativeState[op.id].captured&&operativeLocation(campaign,op.id)==='cordoba'&&campaign.operativeState[op.id].hp===campaign.operativeState[op.id].maxHp&&op.medical>=80&&civicStatus(campaign,op.id).available).map(op=>({op,quote:contractQuote(campaign,op,'day')})).filter(row=>row.quote.available&&row.quote.total<=campaign.resources.treasury).sort((a,b)=>a.quote.total-b.quote.total||b.op.medical-a.op.medical||a.op.id-b.op.id);
- const servingCourier=rosterFor(campaign).filter(op=>{const r=campaign.operativeState[op.id],expiry=contractExpiresSeconds(campaign.contracts[op.id]);return campaign.recruited.includes(op.id)&&canReassignOperative(campaign,op.id)&&r.alive&&!r.captured&&!operativeInTransit(campaign,op.id)&&operativeLocation(campaign,op.id)==='cordoba'&&r.hp===r.maxHp&&!r.bleeding&&!r.asleep&&r.energy>10&&op.medical>=80&&campaign.contracts[op.id]&&(expiry===null||expiry>clock(campaign));}).sort((a,b)=>b.medical-a.medical||a.id-b.id)[0];
+ const servingCourier=rosterFor(campaign).filter(op=>{const r=campaign.operativeState[op.id],expiry=contractExpiresSeconds(campaign.contracts[op.id]);return !protectedRearIds.includes(op.id)&&campaign.recruited.includes(op.id)&&canReassignOperative(campaign,op.id)&&r.alive&&!r.captured&&!operativeInTransit(campaign,op.id)&&operativeLocation(campaign,op.id)==='cordoba'&&r.hp===r.maxHp&&!r.bleeding&&!r.asleep&&r.energy>10&&op.medical>=80&&campaign.contracts[op.id]&&(expiry===null||expiry>clock(campaign));}).sort((a,b)=>b.medical-a.medical||a.id-b.id)[0];
  const courier=servingCourier?{op:servingCourier,quote:null}:candidates[0];assert.ok(courier,'An actual healthy paid Córdoba physician must carry the known linen.');const doctor=courier.op.id,courierKits=campaign.operativeState[doctor].medkits;
  if(!servingCourier){order({type:'recruitCivic',id:doctor,term:'day',destination:'cordoba'});assert.equal(campaign.operativeState[doctor].medkits,courierKits,'Returning service does not reissue dressings.');hires.push({id:doctor,quote:courier.quote,kits:courierKits});}
  assert.equal(operativeLocation(campaign,doctor),'cordoba');
@@ -93,8 +101,7 @@ export function prepareSaltaClinicSupply(start,{report=()=>{},resolveEncounter,d
  if(earlyDoctor){
   supplyEarly(1);
   if(campaign.operativeState[earlyDoctor.id].medkits){
-   for(const operativeId of patients)order({type:'assignCare',operativeId,assignment:'patient'});
-   assert.equal(careAssignmentReason(campaign,earlyDoctor,'doctor'),'');order({type:'assignCare',operativeId:earlyDoctor.id,assignment:'doctor'});
+   for(const action of saltaEarlyClinicCareOrders(campaign,earlyDoctor,patients))order(action);
    const plan=previewStrategicRoute(campaign,campaign.activeSquadId,sector,'posta');
    if(plan.valid)supplyEarly(Math.max(1,Math.min(needed,plan.hours)));
   }
@@ -156,7 +163,7 @@ export function prepareSaltaClinicSupply(start,{report=()=>{},resolveEncounter,d
 
 // Actual elapsed campaign orders can treat other local people. This records
 // the returned Native changes; it never predicts or applies a care stroke.
-const clinicCareChange=(before,after)=>({from:clock(before),to:clock(after),
+export const clinicCareChange=(before,after)=>({from:clock(before),to:clock(after),
  doctors:servingAt(before,'tucuman').filter(id=>before.operativeState[id].assignment==='doctor'),
  patients:servingAt(before,'tucuman').filter(id=>before.operativeState[id].assignment==='patient').map(id=>({id,before:before.operativeState[id].hp,after:after.operativeState[id].hp,alive:after.operativeState[id].alive})),
  usedDressings:servingAt(before,'tucuman').filter(id=>before.operativeState[id].assignment==='doctor').reduce((n,id)=>n+Math.max(0,before.operativeState[id].medkits-after.operativeState[id].medkits),0)});
@@ -164,9 +171,9 @@ const clinicCareChange=(before,after)=>({from:clock(before),to:clock(after),
 // Repeatable local resupply. Known admitted sources and actual donations come
 // first. A remaining deficit can pay for a finite supplied arrival here; it
 // never repeats the separate Córdoba courier or creates another care budget.
-export function supplySaltaClinicDoctors(start,doctors,{minimumDressings=1,reserveDressings=0,allowPartial=false,deadlineSeconds=Infinity,resolveEncounter,report=()=>{}}={}){
+export function supplySaltaClinicDoctors(start,doctors,{minimumDressings=1,reserveDressings=0,allowPartial=false,deadlineSeconds=Infinity,resolveEncounter,report=()=>{},reliefIds=null,donorReserve=0}={}){
  assert.ok(Number.isSafeInteger(minimumDressings)&&minimumDressings>0);assert.ok(Number.isSafeInteger(reserveDressings)&&reserveDressings>=0);
- assert.equal(new Set(doctors).size,doctors.length);
+ assert.equal(new Set(doctors).size,doctors.length);assert.ok(Number.isSafeInteger(donorReserve)&&donorReserve>=0);
  let campaign=start,battle=null;const before=structuredClone(start),previous=start.activeSquadId,sector='tucuman',actions=[],receipts=[],hires=[],renewals=[],care=[],encounters=[];
  let gatheredDressings=0,donatedDressings=0;
  const local=()=>servingAt(campaign,sector),inventory=(id,site=sector)=>sectorInventoryModel(campaign,site,rosterFor(campaign),id);
@@ -239,15 +246,15 @@ export function supplySaltaClinicDoctors(start,doctors,{minimumDressings=1,reser
     applyItemQuantity(model.personal,{item:'medkits',count:target()-campaign.operativeState[id].medkits,weight:SUPPLY_ITEMS.medkits.weight});
     let source=sectorInventorySites(campaign,sector).map(site=>{const current=inventory(id,site.id);return {site:site.id,row:current.operativeId===id&&!current.reason&&current.entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits'&&row.count>0)};}).find(row=>row.row);
     if(!source){
-     const donor=local().find(other=>!doctors.includes(other)&&campaign.operativeState[other].medkits>0&&inventory(other).operativeId===other&&!inventory(other).reason);
+     const donor=local().find(other=>!doctors.includes(other)&&campaign.operativeState[other].medkits>donorReserve&&inventory(other).operativeId===other&&!inventory(other).reason);
      if(donor!==undefined){
-      const count=Math.min(campaign.operativeState[donor].medkits,target()-campaign.operativeState[id].medkits),known=new Set(inventory(id).entries.map(row=>row.key));
+      const count=Math.min(campaign.operativeState[donor].medkits-donorReserve,target()-campaign.operativeState[id].medkits),known=new Set(inventory(id).entries.map(row=>row.key));
       order({type:'sectorInventory',sector,operativeId:donor,direction:'drop',item:'medkits',count});donatedDressings+=count;
       const dropped=inventory(id).entries.find(row=>!known.has(row.key)&&JSON.parse(row.expected).item==='medkits');assert.ok(dropped,'The actual donation must expose its own finite source.');
       const row=inventory(id).entries.find(row=>row.key===dropped.key&&row.reachable);assert.ok(row,'The doctor needs actual access to the donated dressing.');source={site:sector,row};receipts.push({doctor:id,kind:'donation',donor,count,sourceKey:row.key});
      }else{
       const queued=campaign.hiringArrivals?.find(a=>a.destination===sector&&campaign.operativeState[a.operativeId]?.medkits>0),roster=rosterFor(campaign);
-      const fit=op=>{const r=campaign.operativeState[op.id];return isContractOperative(campaign,op)&&!campaign.recruited.includes(op.id)&&!campaign.hiringArrivals?.some(a=>a.operativeId===op.id)&&r.alive&&!r.captured&&r.hp===r.maxHp&&!r.bleeding&&!r.asleep&&r.energy>10&&r.medkits>0&&civicStatus(campaign,op.id).available;};
+      const fit=op=>{const r=campaign.operativeState[op.id];return (reliefIds===null||reliefIds.includes(op.id))&&isContractOperative(campaign,op)&&!campaign.recruited.includes(op.id)&&!campaign.hiringArrivals?.some(a=>a.operativeId===op.id)&&r.alive&&!r.captured&&r.hp===r.maxHp&&!r.bleeding&&!r.asleep&&r.energy>10&&r.medkits>0&&civicStatus(campaign,op.id).available;};
       const chosen=roster.filter(fit).map(op=>({op,quote:contractQuote(campaign,op,'day')})).filter(row=>row.quote.available&&row.quote.total<=campaign.resources.treasury).sort((a,b)=>a.quote.total-b.quote.total||a.op.id-b.op.id)[0];
       if(!queued&&!chosen){if(allowPartial)return finish('finite-clinic-supply-shortage');assert.fail('The finite clinic deficit needs a real available paid relief guard.');}
       const relief=queued?.operativeId??chosen.op.id;
@@ -269,7 +276,7 @@ export function supplySaltaClinicDoctors(start,doctors,{minimumDressings=1,reser
 
 // One real clinical phase. The caller carries the same remaining allowance
 // across the earlier recovery and the later daylight preparation.
-export function recoverSaltaClinic(start,{deadlineSeconds=clock(start)+72*3600,daylight=false,resolveEncounter,report=()=>{}}={}){
+export function recoverSaltaClinic(start,{deadlineSeconds=clock(start)+72*3600,daylight=false,resolveEncounter,report=()=>{},protectedRearIds=[]}={}){
  assert.ok(Number.isSafeInteger(deadlineSeconds)&&deadlineSeconds>clock(start));
  let campaign=decodeSave(encodeSave(start)).campaign;const before=structuredClone(start),began=clock(campaign),patients=new Set(),doctors=new Set(),ticks=[],orders=[],localSupplies=[],earlyCare=[];
  const inputCapture=recordRouteStrategicEvidence({helper:'recoverSaltaClinic',stage:'preparation-input',campaign:start,context:{deadlineSeconds,daylight}});
@@ -283,7 +290,7 @@ export function recoverSaltaClinic(start,{deadlineSeconds=clock(start)+72*3600,d
  const order=action=>{settle();check();if(action.type==='wait')assert.ok(clock(campaign)+action.hours*3600<=deadlineSeconds,'The actual clinic preparation has no paid hour left in its shared 72-hour allowance.');const at=clock(campaign),cash=campaign.resources.treasury;campaign=dispatchCampaign(campaign,action);assert.equal(campaign.lastError,null,JSON.stringify(action)+': '+campaign.lastError);orders.push({action:structuredClone(action),from:at,to:clock(campaign),treasuryBefore:cash,treasuryAfter:campaign.resources.treasury});check();};
  const local=()=>servingAt(campaign,'tucuman'),wounded=()=>local().filter(id=>campaign.operativeState[id].hp<campaign.operativeState[id].maxHp||campaign.operativeState[id].bleeding);
  for(const id of wounded())patients.add(id);
- settle();const supply=prepareSaltaClinicSupply(campaign,{report,deadlineSeconds,resolveEncounter:state=>{campaign=state;settle();return campaign;}});campaign=supply.campaign;earlyCare.push(...(supply.receipt.earlyCare??[]));for(const row of earlyCare)for(const id of row.doctors)doctors.add(id);check();
+ settle();const supply=prepareSaltaClinicSupply(campaign,{report,deadlineSeconds,protectedRearIds,resolveEncounter:state=>{campaign=state;settle();return campaign;}});campaign=supply.campaign;earlyCare.push(...(supply.receipt.earlyCare??[]));for(const row of earlyCare)for(const id of row.doctors)doctors.add(id);check();
  const earliestDeparture=campaign.hour+(24-campaign.hour%24)%24;let departure=null,zeroTime=0,gatheredDressings=0,donatedDressings=0;
  for(let hour=0;hour<72;hour++){
   settle();check();const injured=wounded();for(const id of injured)patients.add(id);

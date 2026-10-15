@@ -19,6 +19,7 @@ import {handRecord} from '../game/tactical-inventory.js';
 import {worldCell} from '../game/world-cells.js';
 import {quoteSaltaHires} from './salta-hiring.mjs';
 import {returnSaltaClinicRelief} from './salta-clinic-relief.mjs';
+import {prepareSaltaCordobaReserveReadiness,prepareSaltaRearClinicBatch,saltaCordobaReserveEncounterExecutor} from './salta-cordoba-reserve-readiness.mjs';
 import {saltaHospitalEncounterExecutor} from './salta-hospital-encounter.mjs';
 
 export function saltaBatteryWaypoints(campaign,destination){
@@ -30,11 +31,11 @@ export function saltaBatteryWaypoints(campaign,destination){
 }
 
 function orders(start,hospitalOptions){
- let campaign=decodeSave(encodeSave(start)).campaign;const events=[];
- return {get campaign(){return campaign;},events,apply(transform){campaign=transform(campaign);},prepareWeapons(report){campaign=finishReloadsBeforeMarch(campaign,{report});},resolveEncounter(report,controller=northernCombatOrder){
+ let campaign=decodeSave(encodeSave(start)).campaign,cordobaReady=false;const events=[];
+ return {get campaign(){return campaign;},events,markCordobaReady(){cordobaReady=true;},apply(transform){campaign=transform(campaign);},prepareWeapons(report){campaign=finishReloadsBeforeMarch(campaign,{report});},resolveEncounter(report,controller=northernCombatOrder){
   const encounter=structuredClone(campaign.pendingEncounter),group=structuredClone(campaign.enemyGroups.find(group=>group.id===encounter.groupId));
   const next=dispatchCampaign(campaign,{type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});assert.equal(next.lastError,null,next.lastError);assert.deepEqual(next.pendingBattle.enemies,group.units);
-  const executeBattle=saltaHospitalEncounterExecutor({...hospitalOptions,campaign:next},encounter.sector);
+  const executeBattle=saltaCordobaReserveEncounterExecutor(next,encounter.sector,{ready:cordobaReady,encounterController:hospitalOptions?.encounterController})??saltaHospitalEncounterExecutor({...hospitalOptions,campaign:next},encounter.sector);
   const result=fightNorthernSector(next,encounter.sector,{controller,report,...(executeBattle?{executeBattle}:{})});campaign=result.campaign;
   return {groupId:group.id,...result.summary};
  },order(action){
@@ -119,7 +120,7 @@ export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},enc
  let cordobaReserve=null;
  const northernController=formation.hasCover&&!formation.allCovered?northernCombatOrder:northernClinicDefenseOrder;
  encounterController??=(battle,unit)=>cordobaReserve?.needed&&battle.sectorId==='cordoba'?northernClinicDefenseOrder(battle,unit):northernController(battle,unit);
- const clinicRelief=[],clinicalPhases=[],clinicalBudget={maximumSeconds:72*3600,usedSeconds:0};
+ const originalClinicPatients=new Set(),clinicRelief=[],clinicalPhases=[],clinicalBudget={maximumSeconds:72*3600,usedSeconds:0};
  const clinicClock=campaign=>campaign.hour*3600+(campaign.secondOfHour??0);
  const resolveClinicEncounter=(campaign,{deadlineSeconds:clinicDeadline})=>{
   route.apply(()=>campaign);
@@ -142,11 +143,24 @@ export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},enc
  const clinicalPhase=(stage,daylight)=>{
   const before=clinicClock(route.campaign),remaining=clinicalBudget.maximumSeconds-clinicalBudget.usedSeconds;
   assert.ok(remaining>0,'The early and late clinic phases share one 72-hour allowance.');
-  const care=recoverSaltaClinic(route.campaign,{deadlineSeconds:before+remaining,daylight,resolveEncounter:resolveClinicEncounter,report});route.apply(()=>care.campaign);
+  for(const id of route.campaign.recruited){const r=route.campaign.operativeState[id];if(r.alive&&!r.captured&&!operativeInTransit(route.campaign,id)&&operativeLocation(route.campaign,id)==='tucuman'&&(r.hp<r.maxHp||r.bleeding))originalClinicPatients.add(id);}
+  const deadlineSeconds=before+remaining;let rearPreparation=null;
+  if(!cordobaReserve?.ready){const prepared=prepareSaltaCordobaReserveReadiness(route.campaign,{deadlineSeconds,resolveEncounter:resolveClinicEncounter,report});route.apply(()=>prepared.campaign);rearPreparation=prepared.receipt;cordobaReserve={...prepared.receipt,ready:true};route.markCordobaReady();onCheckpoint('salta-preclinic-cordoba-reserve',route.campaign,{receipt:rearPreparation});}
+  const batch=prepareSaltaRearClinicBatch(route.campaign,{rearIds:cordobaReserve.ids,deadlineSeconds,resolveEncounter:resolveClinicEncounter,report});route.apply(()=>batch.campaign);
+  const care=recoverSaltaClinic(route.campaign,{deadlineSeconds,daylight,resolveEncounter:resolveClinicEncounter,report,protectedRearIds:cordobaReserve.ids});route.apply(()=>care.campaign);
+  for(const id of originalClinicPatients){const r=route.campaign.operativeState[id];assert.ok(route.campaign.recruited.includes(id)&&r.alive&&!r.captured,'Every original pre-hook clinic patient remains living and serving.');assert.equal(r.hp,r.maxHp);assert.equal(r.bleeding,0);}
   clinicalBudget.usedSeconds+=clinicClock(route.campaign)-before;assert.ok(clinicalBudget.usedSeconds<=clinicalBudget.maximumSeconds);
-  clinicalPhases.push({stage,...care.receipt});
-  route.events.push(...(care.receipt.supply.actions??[]).filter(row=>!row.tactical),...care.receipt.orders.map(row=>({action:row.action,hour:Math.floor(row.to/3600),second:row.to%3600})));
-  onCheckpoint(stage,route.campaign,{receipt:care.receipt,budget:clinicalBudget});return care;
+  const earlyCare=[...(rearPreparation?.care??[]),...batch.receipt.care],rearTransfers=rearPreparation?.transfers??[],rearDressings=earlyCare.reduce((n,row)=>n+row.usedDressings,0);
+  const phase={stage,...care.receipt,patients:[...new Set([...(rearPreparation?.originalPatients??[]),...batch.receipt.patients,...care.receipt.patients,...originalClinicPatients])],doctors:[...new Set([...earlyCare.flatMap(row=>row.doctors),batch.receipt.doctorId,...care.receipt.doctors])],localBatch:batch.receipt,usedDressings:care.receipt.usedDressings+rearDressings,gatheredDressings:care.receipt.gatheredDressings+batch.receipt.gatheredDressings+rearTransfers.filter(row=>JSON.parse(row.expected).item==='medkits').reduce((n,row)=>n+row.count,0),donatedDressings:care.receipt.donatedDressings+batch.receipt.donatedDressings+rearTransfers.filter(row=>row.donor!==undefined).reduce((n,row)=>n+row.count,0),...(rearPreparation?{rearPreparation}: {}),clinicalStartSeconds:care.receipt.startSeconds,startSeconds:before,elapsedSeconds:clinicClock(route.campaign)-before};
+  // Each source owns only its actual work. Nested supply traces remain in
+  // their receipt, so a paid action or care stroke is never counted twice.
+  phase.actionSources={rear:rearPreparation?.orders??[],localBatch:[...batch.receipt.actions,...batch.receipt.orders],courier:care.receipt.supply.actions??[],hourlySupply:care.receipt.localSupplies.flatMap(row=>row.actions),care:care.receipt.orders};
+  phase.hires=[...(rearPreparation?.hires??[]),...batch.receipt.hires,...(care.receipt.supply.hires??[]),...care.receipt.localSupplies.flatMap(row=>row.hires)];
+  phase.renewals=[...(rearPreparation?.renewals??[]),...batch.receipt.renewals,...(care.receipt.supply.renewals??[]),...care.receipt.localSupplies.flatMap(row=>row.renewals)];
+  phase.encounters=[...(rearPreparation?.encounters??[]),...batch.receipt.encounters,...(care.receipt.supply.encounters??[]),...care.receipt.localSupplies.flatMap(row=>row.encounters)];
+  clinicalPhases.push(phase);
+  route.events.push(...Object.values(phase.actionSources).flat().filter(row=>row.action&&!row.tactical&&row.kind!=='battle'&&row.kind!=='sandbox').map(row=>row.hour===undefined?{action:row.action,hour:Math.floor((row.to??before)/3600),second:(row.to??before)%3600}:row));
+  onCheckpoint(stage,route.campaign,{receipt:phase,budget:clinicalBudget});return care;
  };
  // Restore actual local survivors before a separate battery journey advances
  // the clock. This is the same finite clinic, not a second recovery budget.
