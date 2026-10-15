@@ -23,7 +23,7 @@ import {previewStrategicRoute} from '../game/strategic-route.js';
 import {continueNorthernHandoverTravel} from './northern-handover-route.mjs';
 import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 
-const localMembers=(c,preferred,limit=6)=>[...new Set([...preferred,...c.squad,...c.recruited])].filter(id=>canReassignOperative(c,id)&&operativeLocation(c,id)===c.location).slice(0,limit);
+const localMembers=(c,preferred,limit=6,allowed=null)=>[...new Set([...preferred,...c.squad,...c.recruited])].filter(id=>(!allowed||allowed.has(id))&&canReassignOperative(c,id)&&operativeLocation(c,id)===c.location).slice(0,limit);
 
 // An immediate travel order may return with a live encounter or unfinished
 // journey. Resolve it through the existing native reserve/save/finite-aid path,
@@ -70,7 +70,7 @@ export function restoreNorthernRoad(start,{report=()=>{},keepServing}={}){
  {
  // Use surviving local members; a named relief physician may be dead, unpaid
  // or still treating another town and cannot be teleported into this column.
- const field=localMembers(c,[9,11,1000,10,4]);assert.ok(field.length);order({type:'squad',ids:field});
+ const field=localMembers(c,[9,11,1000,10,4],6,keepers);assert.ok(field.length);order({type:'squad',ids:field});
  let p=visit(c);c=leave(sync({campaign:p.campaign,battle:equipOpeningRifles(p.battle,field).battle}));
  c=supplyRouteAmmunition(c,field,{target:12}).campaign;
  const battery=prepareRouteSupportBattery(c,{report,...(keepers?{keepServing:[...keepers]}:{})});c=battery.campaign;if(!c.routes.posta)order({type:'transport',mode:'posta'});order({type:'configureArtillery',types:[]});

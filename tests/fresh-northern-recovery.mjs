@@ -721,7 +721,11 @@ assert.equal(c.location,'cordoba');
 }
 }
 order({type:'selectSquad',id:southernColumns[0]});c=meetRecruits(c,['quiroga','paz']);
-return restoreNorthernRoad(c,{report,...(keepers?{keepServing:[...keepers]}:{})});
+// The actual meeting can add permanent local officers after the original
+// reunion duty was quoted. Retain those real recruits and the current party,
+// while leaving unrelated temporary clinic service outside road duty.
+const roadDuty=keepers?northernReunionDutyKeepers(c,[...keepers]):undefined;
+return restoreNorthernRoad(c,{report,...(roadDuty?{keepServing:roadDuty}:{})});
 }
 
 export const prepareFreshSaltaAssault=prepareRestoredSalta;
