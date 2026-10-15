@@ -62,8 +62,8 @@ original complete recovery, ending and historical-loss files and their battle
 limits. Every complete run starts fresh. Failed checkpoints are retained as
 passive evidence and are not resumed as diagnostic input.
 
-On reviewed head `f2454db7`, campaign quick completes all 123 files and passes
-636/636 tests, with no failures, cancellations or skips. The initial isolated
+On reviewed head `15d392e6`, campaign quick completes all 126 files and passes
+655/655 tests, with no failures, cancellations or skips. The initial isolated
 checkout lacked web dependencies; its seven module-resolution failures were
 retained separately, then the complete rerun passed with verified dependencies.
 Runner, scope, workflow and CI-selection controls pass 34/34 across their
@@ -105,6 +105,9 @@ members and the original selection. Eight complete affected files pass 40/40,
 including two real finite arrivals with all eight old groups, positions,
 duties, payments and save repetition preserved. Complete opening acceptance
 is still required.
+Fresh complete original opening, recovery and both-ending runs are active on
+the same frozen `15d392e6` source with all four reviewed follow-ups. Their
+results are pending; the quick suite is separate from whole-route acceptance.
 
 The complete original opening on `df62e17a` still fails: five tests pass, two
 fail and one skips, in 409.432 seconds. The finite donor transfer and the following complete
