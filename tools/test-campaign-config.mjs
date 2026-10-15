@@ -69,6 +69,7 @@ export const campaignTestGroups = [
   "tests/northern-emergency-aid.test.mjs",
   "tests/northern-mission-aid.test.mjs",
   "tests/northern-hospital-reserve-readiness.test.mjs",
+  "tests/northern-hospital-reserve-stock.test.mjs",
   "tests/northern-reunion-hospital-encounter.test.mjs",
   "tests/northern-road-reserve-controller.test.mjs",
   "tests/northern-road-reserve-preparation.test.mjs",

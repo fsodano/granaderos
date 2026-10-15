@@ -68,7 +68,22 @@ Runner, scope, workflow and CI-selection controls pass 29/29; shard controls
 pass 5/5. Type checking and the static export pass, with 1,413 files and 1,045
 verified asset references (`0.1.5 · 61504d277f2b`). One unfiltered local run of
 all 1,062 test files is now active on that frozen source. The complete fresh
-campaign routes and saved endings remain pending; no merge is accepted yet.
+recovery file fails its only test in 1,895.012 seconds, and both ending tests
+fail in 2,154.343 seconds. The Cuyo file also fails. The captured loose ending
+retreats at Uspallata; recovery loses the Tucumán defence. The installed
+ending and Cuyo error details still await the full runner report. No earned
+ending export from these failed files is eligible for browser acceptance.
+
+The reviewed finite-stock follow-up is integrated as `a31766b3` from
+`34d2d2c7`. It uses current known open containers to equip the two existing
+reserve physicians before reunion. The actual Tucumán map exposes one trapped
+roof physician, so the other doctor pays the pickup, exact roof return and
+adjacent Native handoff. The current-map control collects its twelve known
+kits in 277 seconds, preserves every post and the total supply pool, and
+passes direct, presented, validated and official paired-save replay. All eight
+affected files pass 63/63 tests, with no skips or cancellations. Capacity,
+paid renewal, the same clinical deadline and real interrupted partial state
+remain guarded. Complete fresh-route acceptance still requires a new result.
 
 On reviewed head `15d392e6`, campaign quick completes all 126 files and passes
 655/655 tests, with no failures, cancellations or skips. The initial isolated
