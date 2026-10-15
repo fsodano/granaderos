@@ -4,6 +4,8 @@ import {createBattle,actBattle,presentedActBattle} from '../game/tactical.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {autoBandageBattle} from '../game/auto-bandage.js';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {scaffoldDocuments} from '../game/campaign-scaffold.js';
+import {compileCampaignPackage} from '../game/campaign-library.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {stabilizeCreatedCuyoBattleSurvivors,recoverCreatedCuyoLocalPatients} from './created-cuyo-route.mjs';
@@ -98,4 +100,27 @@ test('one finite dressing funds one actual care hour without being swapped betwe
  const doctorOrders=actions.filter(a=>a.type==='assignCare'&&a.assignment==='doctor');assert.equal(doctorOrders.length,1);
  let replay=saved(start);for(const action of actions)replay=order(replay,action);
  assert.deepEqual(saved(replay),hour.campaign);assert.deepEqual(start,before);
+});
+
+test('explicit local shortage recovery earns full health by paid Native rest without extending the doctor-care cap',()=>{
+ const declared=scaffoldDocuments('declared-local-care-shortage'),base=declared.content.characters[0];
+ declared.content.rules.startingTreasury=1000;declared.world.physical.caches={};
+ declared.content.campaignStory.chapters[0].conditions=[{type:'day',min:100,max:null}];
+ declared.content.characters=[0,2,3].map((wound,i)=>({...structuredClone(base),id:'local-care-'+i,name:'Cuidados '+i,nickname:'Cuidados '+i,arrivalHours:0,monthlyPay:300,serviceGuarantee:31,
+  attributes:{...base.attributes,medical:60},startingSupplies:{rations:0,torches:0,medkits:0,boleadoras:0},startingCondition:{hp:base.attributes.maxHp-wound,energy:100,fatigue:0,bleeding:0,bandaged:wound}}));
+ const documents=structuredClone(declared),content=compileCampaignPackage(declared.manifest,declared);let campaign=initialCampaign(42,content);
+ const ids=rosterFor(campaign).map(op=>op.id);
+ for(const id of ids)campaign=order(campaign,{type:'recruitCivic',id,term:'day'});
+ campaign=order(campaign,{type:'wait',hours:13});const start=saved(campaign),before=structuredClone(start),events=[];
+ assert.throws(()=>recoverCreatedCuyoLocalPatients(start,ids),/No actual reachable finite dressings remain/,'The default doctor policy still refuses an actual supply shortage.');
+ const result=recoverCreatedCuyoLocalPatients(start,ids,{restOnShortage:true,report:e=>events.push(e)});
+ const rest=events.find(e=>e.event==='createdCuyoStableRest');assert.ok(rest);assert.equal(rest.ready,true);assert.equal(rest.reason,null);assert.equal(rest.boundHours,18);assert.equal(rest.elapsedSeconds,18*3600);
+ assert.equal(rest.shortage.availability,'no-reachable-stock');assert.equal(rest.shortage.inaccessibleCount,0);
+ assert.equal(events.filter(e=>e.event==='createdCuyoLocalCare').length,0,'No doctor-care hour or dressing was invented.');
+ assert.equal(clock(result)-clock(start),18*3600);
+ const renewals=events.filter(e=>e.event==='freshRouteRenewal');assert.equal(renewals.length,ids.length);assert.ok(renewals.every(e=>e.price>0));
+ assert.equal(result.resources.treasury,start.resources.treasury-renewals.reduce((sum,e)=>sum+e.price,0));
+ for(const id of ids){const r=result.operativeState[id];assert.equal(r.hp,r.maxHp);assert.equal(r.bleeding,0);assert.equal(r.medkits,0);assert.equal(r.alive,true);assert.equal(r.assignment,'active');assert.ok(result.recruited.includes(id));assert.deepEqual(r.inventory,start.operativeState[id].inventory);}
+ let replay=saved(start);for(const event of events.filter(e=>['freshRouteOrder','freshRouteRenewal'].includes(e.event)))replay=order(replay,event.action);
+ assert.deepEqual(saved(replay),result);assert.deepEqual(saved(result),result);assert.deepEqual(start,before);assert.deepEqual(declared,documents);
 });

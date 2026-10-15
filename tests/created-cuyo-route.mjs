@@ -1,5 +1,7 @@
 import {encounterDefinitions} from '../game/encounters.js';
-import {supplyRouteDressings} from './route-dressings.mjs';
+import {supplyRouteDressings,attemptRouteDressings} from './route-dressings.mjs';
+import {restRouteStableLocal} from './route-stable-local-rest.mjs';
+import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 import {prepareRouteBattery} from './route-battery.mjs';
 import {resolveStockCuyoBatteryEncounter} from './stock-cuyo-battery-defense.mjs';
 import {prepareStockCuyoBatteryReserve,stockCuyoBatteryReservePosts} from './stock-cuyo-reserve-readiness.mjs';
@@ -82,8 +84,9 @@ export function stabilizeCreatedCuyoBattleSurvivors(start,{execute,report=()=>{}
 // Full health is earned after acute first aid, with current local personnel,
 // finite dressings and the real paid campaign clock. A wounded field doctor
 // is a patient too; a different eligible local doctor must treat that wound.
-export function recoverCreatedCuyoLocalPatients(start,ids,{maxHours=144,report=()=>{}}={}){
+export function recoverCreatedCuyoLocalPatients(start,ids,{maxHours=144,restOnShortage=false,report=()=>{}}={}){
  assert.ok(Number.isSafeInteger(maxHours)&&maxHours>0&&maxHours<=144);
+ assert.equal(typeof restOnShortage,'boolean');
  let c=decodeSave(encodeSave(start)).campaign;const began=c.hour*3600+(c.secondOfHour??0),kept=c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured),oldDeaths=Object.entries(c.operativeState).filter(([,r])=>!r.alive).map(([id])=>id);
  assert.ok(ids.length&&new Set(ids).size===ids.length);
  assert.ok(ids.every(id=>kept.includes(id)&&operativeLocation(c,id)===c.location));
@@ -91,7 +94,7 @@ export function recoverCreatedCuyoLocalPatients(start,ids,{maxHours=144,report=(
  const injured=()=>ids.filter(id=>c.operativeState[id].hp<c.operativeState[id].maxHp);
  assert.ok(local.every(id=>c.operativeState[id].hp>=15&&!c.operativeState[id].bleeding),'Ordered finite field aid must precede local hourly care.');
  let stagnant=0;
- for(let attempt=0;injured().length&&attempt<maxHours*4;attempt++){
+ care: for(let attempt=0;injured().length&&attempt<maxHours*4;attempt++){
   assert.ok(c.hour*3600+(c.secondOfHour??0)-began<maxHours*3600,'Actual local care must finish within its existing bounded clock.');
   const patients=injured().sort((a,b)=>c.operativeState[a].hp/c.operativeState[a].maxHp-c.operativeState[b].hp/c.operativeState[b].maxHp||a-b),roster=rosterFor(c),doctors=roster.filter(op=>op.id!==patients[0]&&local.includes(op.id)&&op.medical>=20&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding&&!c.operativeState[op.id].asleep&&c.operativeState[op.id].energy>10)
    .sort((a,b)=>Number(patients.includes(a.id))-Number(patients.includes(b.id))||b.medical-a.medical||a.id-b.id).slice(0,Math.min(4,patients.length));
@@ -108,7 +111,23 @@ export function recoverCreatedCuyoLocalPatients(start,ids,{maxHours=144,report=(
     }
     if(source)order({type:'sectorInventory',sector:c.location,operativeId:doctor.id,direction:'take',sourceKey:source.key,expected:source.expected,count:1});
     else if(supplied.size)continue;
-    else c=supplyRouteDressings(c,doctor.id,1,{report});
+    else if(!restOnShortage)c=supplyRouteDressings(c,doctor.id,1,{report});
+    else{
+     const supply=attemptRouteDressings(c,doctor.id,1,{report});retained.adopt(supply.campaign,'actual local dressing search');
+     if(!supply.supplied){
+      assert.equal(supply.reason,'finite-dressing-shortage');
+      // This separate phase earns stable wounds through the Native rest
+      // clock. It does not extend the existing 144-hour doctor-care cap.
+      const rest=restRouteStableLocal(c,ids,{report});c=rest.campaign;
+      report({event:'createdCuyoStableRest',shortage:supply.details,ready:rest.ready,reason:rest.reason,boundHours:rest.boundHours,elapsedSeconds:rest.elapsedSeconds,campaign:c});
+      if(!rest.ready){
+       const error=Error('Actual stable local rest stopped: '+rest.reason);
+       recordRouteStrategicEvidence({helper:'recoverCreatedCuyoLocalPatients',stage:'preparation-failure',campaign:c,context:{ids,shortage:supply.details,rest:{reason:rest.reason,boundHours:rest.boundHours,elapsedSeconds:rest.elapsedSeconds,orders:rest.orders}},error});
+       assert.ok(rest.ready,error.message);
+      }
+      retained.check();break care;
+     }
+    }
     assert.ok(c.operativeState[doctor.id].medkits>0,'A local doctor must hold an actual finite dressing before hourly care.');
    }
    supplied.add(doctor.id);

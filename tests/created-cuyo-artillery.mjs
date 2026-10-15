@@ -258,7 +258,7 @@ export function recoverCreatedCuyoMountainArtillery(start,{report=()=>{},onCheck
   c=stabilizeCreatedCuyoSurvivors(c,{report});
   c=reuniteArsenalRear(c,rear.withdrawalIds,{report});
   const localSurvivors=c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured&&c.operativeState[id].location==='ensenada');
-  c=recoverCreatedCuyoLocalPatients(c,localSurvivors,{report});
+  c=recoverCreatedCuyoLocalPatients(c,localSurvivors,{restOnShortage:true,report});
   const rearReady=rear.reserveIds.every(id=>living(c).includes(id)&&c.operativeState[id].location==='ensenada'&&stable(c,id)&&c.operativeState[id].hp===c.operativeState[id].maxHp);
   if(!rearReady){
    const now=c.hour*3600+(c.secondOfHour??0),details=rear.reserveIds.map(id=>{
