@@ -44,6 +44,7 @@ export const campaignTestGroups = [
   "tests/finite-route-equipment.test.mjs",
   "tests/foundry-project.test.mjs",
   "tests/fresh-campaign-recovery.test.mjs",
+  "tests/tucuman-recovery-entry.test.mjs",
   "tests/fresh-capital-recovery.test.mjs",
   "tests/fresh-coastal-hiring.test.mjs",
   "tests/fresh-coastal-route.test.mjs",

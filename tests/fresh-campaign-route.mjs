@@ -646,7 +646,7 @@ const defendRecovery=(rest=null)=>{
  // wound-based rest bound instead of retaining the earlier clinical plan.
  return prepare(c);
 };
-if(recovery==='rest'&&c.pendingEncounter)return defendRecovery();
+if(c.pendingEncounter)return defendRecovery();
 // Stop bleeding before any rest or long march. A low-health survivor must not
 // silently die while other squads wait for their energy to recover.
 const wounded=c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&(r.bleeding>0||r.hp<15);});
