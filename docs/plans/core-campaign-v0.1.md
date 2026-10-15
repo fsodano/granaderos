@@ -62,11 +62,12 @@ original complete recovery, ending and historical-loss files and their battle
 limits. Every complete run starts fresh. Failed checkpoints are retained as
 passive evidence and are not resumed as diagnostic input.
 
-On reviewed head `9eacbd89`, campaign quick completes all 121 files and passes
-618/618 tests, with no failures, cancellations or skips. The initial isolated
+On reviewed head `ba309039`, campaign quick completes all 122 files and passes
+624/624 tests, with no failures, cancellations or skips. The initial isolated
 checkout lacked web dependencies; its seven module-resolution failures were
 retained separately, then the complete rerun passed with verified dependencies.
-Runner, scope and CI-selection controls pass 32/32. Core quick on its
+Runner, scope, workflow and CI-selection controls pass 34/34 across their
+complete files. Core quick on its
 ancestor `d0508806` completes all 924 files and passes 7,210/7,210 tests, also
 with no failures, cancellations or skips. These are separate suite results.
 
@@ -163,8 +164,11 @@ passes the earlier medical-renewal failure and wins Uspallata at hour 1044 with
 34,564 pesos, then cannot afford the required renewal for 135 before Los Patos.
 Its patients and paid service remain required. Neither saved ending
 continuation is accepted.
-The complete two-ending file on frozen `44851724` is still active; its result
-is pending.
+The complete two-ending file on frozen `44851724` also finishes 0/2, in
+2,271.201 seconds. The loose route retreats at Uspallata with the same turn,
+action and elapsed-time totals. The installed route wins Uspallata at hour
+1044, then stops at the same required 135 renewal. The newer full mountain
+funding correction still needs a complete ending result.
 
 The reviewed mountain funding correction counts current wages through the
 full parallel route, daylight staging and the existing final one-hour service
