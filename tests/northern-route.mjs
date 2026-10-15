@@ -36,6 +36,7 @@ import {storedArtilleryRecord} from '../game/artillery-transport.js';
 import {stageRouteRoofDefenders} from './route-roof-defenders.mjs';
 import {recordRouteBattleFailure} from './route-failure-evidence.mjs';
 import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
+import {quoteRescuerFirstAid} from './rescued-first-aid-quote.mjs';
 
 // Both paid squads approach together in short bounds. Use authored roof
 // geometry and current shot previews, while retaining real casualties,
@@ -832,6 +833,7 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
 }
 
 export function stabilizeRescued(start,{patients,report=()=>{}}={}){
+ const inputCapture=recordRouteStrategicEvidence({helper:'stabilizeRescued',stage:'preparation-input',campaign:start,context:{patients}});
  let campaign=decodeSave(encodeSave(start)).campaign,battle=null;const events=[],orders=[],medicalCollections=[];
  const order=action=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;events.push({action,hour:campaign.hour,second:campaign.secondOfHour??0});orders.push({scope:'campaign',action});};
  assert.ok(patients?.length,'stabilize the actual released prisoners');
@@ -843,9 +845,11 @@ export function stabilizeRescued(start,{patients,report=()=>{}}={}){
  const urgent=local().filter(op=>!patients.includes(op.id)&&op.id!==physician.id&&(campaign.operativeState[op.id].bleeding||campaign.operativeState[op.id].hp<15)).map(op=>op.id);
  // Reserve one actual clinic stroke for each released prisoner. Other local
  // rescuers receive finite first aid before the clinic advances an hour.
- const dressingTarget=patients.length+urgent.reduce((sum,id)=>sum+Math.max(Number(campaign.operativeState[id].bleeding>0),15-campaign.operativeState[id].hp),0);
+ const emergencyAidQuote=quoteRescuerFirstAid({...physician,...campaign.operativeState[physician.id]},urgent.map(id=>({...local().find(op=>op.id===id),...campaign.operativeState[id],id})));
+ const dressingTarget=patients.length+emergencyAidQuote.dressings;
  while(campaign.operativeState[physician.id].medkits<dressingTarget){
   const model=sectorInventoryModel(campaign,'tucuman',rosterFor(campaign),physician.id),row=model.entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');
+  if(!row)recordRouteStrategicEvidence({helper:'stabilizeRescued',stage:'missing-finite-dressings',campaign,inputCapture,context:{patients,urgent,physician:physician.id,dressingTarget,emergencyAidQuote,inventory:model,medicalCollections,events,orders},error:'known finite local dressings must cover the released patients and urgent rescuers'});
   assert.ok(row,'known finite local dressings must cover the released patients and urgent rescuers');
   const count=Math.min(row.count,dressingTarget-campaign.operativeState[physician.id].medkits),carriedBefore=campaign.operativeState[physician.id].medkits,cash=campaign.resources.treasury,seconds=campaign.hour*3600+(campaign.secondOfHour??0);
   const medicalPoolBefore=model.entries.filter(row=>JSON.parse(row.expected).item==='medkits').reduce((sum,row)=>sum+row.count,0);
@@ -898,5 +902,5 @@ export function stabilizeRescued(start,{patients,report=()=>{}}={}){
  for(const [id,r] of Object.entries(before.operativeState))if(!r.alive)assert.equal(campaign.operativeState[id].alive,false);
  assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
  report({event:'rescuedStable',hour:campaign.hour,usedDressings,patients:patients.map(id=>({id,hp:campaign.operativeState[id].hp,bleeding:campaign.operativeState[id].bleeding}))});
- return {campaign,events,orders,patients,doctors,usedDressings,medicalCollections,emergencyAid,dressingTarget,clinicElapsedSeconds};
+ return {campaign,events,orders,patients,doctors,usedDressings,medicalCollections,emergencyAid,emergencyAidQuote,dressingTarget,clinicElapsedSeconds};
 }

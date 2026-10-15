@@ -67,6 +67,7 @@ export const campaignTestGroups = [
   "tests/salta-hiring.test.mjs",
   "tests/salta-clinic-relief.test.mjs",
   "tests/prisoner-rescue-route.test.mjs",
+  "tests/rescued-first-aid-quote.test.mjs",
   "tests/retiro-expansion.test.mjs",
   "tests/route-ammunition-transfer.test.mjs",
   "tests/route-ammunition-field-surplus.test.mjs",
