@@ -324,8 +324,59 @@ order({type:'beginAssault',sector:'uspallata'});
 
 // Recover finite field dressings and give real first aid before the return.
 // Hire an actual available doctor and retain every intended serving survivor.
-export function recoverFreshUspallata(start,{batteryIds=null,report=()=>{}}={}){
+export function recoverFreshUspallataDepartures(start,{report=()=>{}}={}){
  let c=decodeSave(encodeSave(start)).campaign;
+ const original=structuredClone(start),selected=c.activeSquadId,selectedMembers=[...c.squad],ledger=c.sectorStates.uspallata?.returnLedger;
+ const departures=(ledger?.entries??[]).filter(entry=>{
+  const id=Number(entry.unitId),r=c.operativeState[id],arrival=r?.arrival;
+  return entry.kind==='departed'&&c.recruited.includes(id)&&r?.alive&&!r.captured&&
+   operativeLocation(c,id)===entry.sector&&arrival?.battleId===ledger.battleId&&arrival.fromSector==='uspallata'&&arrival.exitId===entry.departure.exitId;
+ });
+ if(!departures.length)return c;
+ const clock=()=>c.hour*3600+(c.secondOfHour??0),acute=id=>{const r=c.operativeState[id];return r.hp<15||r.bleeding>0;};
+ const retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report}),order=retained.order;
+ const sectors=[...new Set(departures.map(entry=>entry.sector))];
+ try{
+  assert.equal(c.pendingBattle,null);assert.equal(c.pendingEncounter,null);
+  // An unattended acute group cannot wait while another sector is treated.
+  assert.ok(sectors.filter(sector=>departures.some(entry=>entry.sector===sector&&acute(Number(entry.unitId)))).length<=1,'Separate acute escape groups need an actual immediate care plan before any recovery clock advances.');
+  sectors.sort((a,b)=>Number(departures.some(entry=>entry.sector===b&&acute(Number(entry.unitId))))-Number(departures.some(entry=>entry.sector===a&&acute(Number(entry.unitId)))));
+  for(const sector of sectors){
+   const ids=departures.filter(entry=>entry.sector===sector).map(entry=>Number(entry.unitId));
+   assert.ok(ids.length<=6&&ids.every(id=>canReassignOperative(c,id)),'The actual escaped party must fit one available recovery squad.');
+   assert.ok(['neutral','patriot'].includes(worldOwner(c,sector)),'The actual escaped party needs a currently safe visit.');
+   const home=c.squads.find(q=>q.location===sector&&!q.journey&&q.members.length&&q.members.every(id=>ids.includes(id)));
+   if(home){order({type:'selectSquad',id:home.id});order({type:'squad',ids});}
+   else order({type:'createSquad',name:'Socorro del paso',ids,sector});
+   const squadId=c.activeSquadId;
+   retained.retain(3600);
+   const opened=visit(c);c=opened.campaign;
+   report({event:'uspallataEscapeCareInput',sector,ids,...opened});
+   c=performFreshMountainFirstAid(opened,{stage:'uspallata-escaped-first-aid',report});
+   report({event:'uspallataEscapeCareReturned',sector,ids,campaign:c});retained.check();
+   assert.ok(ids.every(id=>!acute(id)&&c.operativeState[id].alive),'Every actual escapee must survive finite first aid before strategic travel.');
+   const quote=previewStrategicRoute(c,squadId,'uspallata','march');
+   assert.ok(quote.valid&&quote.action.type==='travel'&&quote.hours<=48,`The actual stabilized party needs a bounded legal march home: ${quote.reason}`);
+   const before=structuredClone(c),from=clock();order(quote.action);
+   for(let attempt=0;attempt<48&&c.squads.find(q=>q.id===squadId)?.journey;attempt++){
+    assert.equal(c.squads.find(q=>q.id===squadId).journey.status,'moving','A stopped escapee journey needs an actual response.');
+    order({type:'wait',hours:1});
+   }
+   assert.ok(!c.squads.find(q=>q.id===squadId)?.journey&&ids.every(id=>operativeLocation(c,id)==='uspallata'),'Every stabilized escapee must actually arrive back at the pass.');
+   assert.ok(clock()-from<=48*3600,'Escapee return keeps the existing finite travel bound.');
+   for(const id of ids)for(const key of ['hp','bleeding','medkits','inventory','weaponInstanceId','condition'])assert.deepEqual(c.operativeState[id][key],before.operativeState[id][key],`The actual return preserves ${id} ${key}.`);
+   report({event:'uspallataEscapePartyReturned',sector,ids,squadId,quote,elapsedSeconds:clock()-from,campaign:c});
+  }
+  order({type:'selectSquad',id:selected});assert.deepEqual(c.squad,selectedMembers,'Escapee recovery restores the original local selection.');
+  assert.deepEqual(start,original,'Escapee recovery never edits its input.');return c;
+ }catch(error){
+  if(error.pair)c=error.pair.campaign;
+  error.campaign=c;report({event:'uspallataEscapeRecoveryStopped',reason:error.message,campaign:c,battle:error.pair?.battle??null});throw error;
+ }
+}
+
+export function recoverFreshUspallata(start,{batteryIds=null,report=()=>{}}={}){
+ let c=recoverFreshUspallataDepartures(start,{report});
  const retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report});
  const order=retained.order;
 const survivors=c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&r.location==='uspallata';});
