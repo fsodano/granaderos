@@ -1,12 +1,36 @@
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createBattle} from '../game/tactical.js';
+import {beginSectorDeployment} from '../game/sector-deployment.js';
 import {mountBattlefield} from './mounted-battlefield.mjs';
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
 const {default:JA2Strip}=await import('../web/app/JA2Strip.tsx');
 const {default:AimCursor}=await import('../web/app/AimCursor.tsx');
 const {default:TacticalSceneControls}=await import('../web/app/TacticalSceneControls.tsx');
 const nodes=node=>!node||typeof node!=='object'?[]:[node,...(Array.isArray(node)?node:Array.isArray(node.props?.children)?node.props.children:[node.props?.children]).flatMap(nodes)];
+
+test('ordinary exploration immediately centers its selected off-center actor at default zoom without changing the battle',async t=>{
+ const battle=createBattle([{id:'p',name:'Observador',x:4,y:4,weapon:1800,loaded:1}],{width:64,height:48,enemies:[],exploration:true}),before=structuredClone(battle),changes=[];
+ assert.equal(battle.deployment,undefined);assert.equal(battle.deploymentComplete,undefined);
+ const mounted=await mountBattlefield(t,Battlefield,{battle,onChange:state=>{changes.push(state);return state;},onFinish(){}});
+ const tree=nodes(mounted.tree()),strip=tree.find(node=>node.type===JA2Strip),scene=tree.find(node=>node.type===TacticalSceneControls),{cameraRect,selected,zoom}=strip.props;
+ const actor=battle.units.find(unit=>unit.id===selected),point=scene.props.project(actor.x,actor.y);
+ assert.equal(zoom,2);assert.equal(selected,'p');
+ assert.equal(cameraRect.x+cameraRect.width/2,point.x);assert.equal(cameraRect.y+cameraRect.height/2,point.y);
+ assert.ok(point.x>=cameraRect.x&&point.x<=cameraRect.x+cameraRect.width&&point.y>=cameraRect.y&&point.y<=cameraRect.y+cameraRect.height,'The selected actor is visible before any camera input.');
+ assert.deepEqual(changes,[]);assert.deepEqual(battle,before);
+});
+
+test('active arrival deployment retains its map overview instead of centering the off-center actor',async t=>{
+ const squad=[{id:'p',name:'Recién llegado',x:0,y:4,weapon:1800,loaded:1,entryReason:'arrival',entryEdge:'W',entryAnchor:{x:0,y:4}}];
+ const battle=createBattle(squad,{width:64,height:48,enemies:[],exploration:true,deferContact:true});
+ assert.equal(beginSectorDeployment(battle,{squad}),true);
+ const before=structuredClone(battle),changes=[];
+ const mounted=await mountBattlefield(t,Battlefield,{battle,onChange:state=>{changes.push(state);return state;},onFinish(){}});
+ const tree=nodes(mounted.tree()),strip=tree.find(node=>node.type===JA2Strip),{cameraRect,vw,vh,zoom}=strip.props;
+ assert.equal(zoom,2);assert.equal(cameraRect.x+cameraRect.width/2,vw/2);assert.equal(cameraRect.y+cameraRect.height/2,vh/2);
+ assert.deepEqual(changes,[]);assert.deepEqual(battle,before);
+});
 
 test('camera translation retains viewport dimensions and pointer world coordinates through pan and zoom',async t=>{
  const battle=createBattle([{id:'p',name:'Observador',x:24,y:20,weapon:1800,loaded:1}],{width:64,height:48,enemies:[],exploration:true});

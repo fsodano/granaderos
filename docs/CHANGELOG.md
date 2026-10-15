@@ -4,6 +4,11 @@
 > [version 0.1](verification/version-0.1.md) for current scope. Earlier development
 > numbers are internal checkpoints; their features and results are dated history.
 
+## 0.1.3 — 14 October 2026
+
+- Center the tactical camera on the selected soldier when entering exploration
+  or resuming a sector. Arrival placement keeps its full-field overview.
+
 ## 0.1 — 10 October 2026
 
 Git tag: `0.1`. Package/build version: `0.1.0`. Playable development checkpoint.
