@@ -62,10 +62,24 @@ original complete recovery, ending and historical-loss files and their battle
 limits. Every complete run starts fresh. Failed checkpoints are retained as
 passive evidence and are not resumed as diagnostic input.
 
-On reviewed head `698de752`, campaign quick completes all 116 files and passes
-586/586 tests, with no failures, cancellations or skips. Core quick on its
+On reviewed head `44851724`, campaign quick completes all 118 files and passes
+596/596 tests, with no failures, cancellations or skips. The initial isolated
+checkout lacked web dependencies; its seven module-resolution failures were
+retained separately, then the complete rerun passed with verified dependencies.
+Runner, scope and CI-selection controls pass 32/32. Core quick on its
 ancestor `d0508806` completes all 924 files and passes 7,210/7,210 tests, also
 with no failures, cancellations or skips. These are separate suite results.
+
+The complete original opening on `44851724` finishes with five tests passed,
+two failed and one skipped, in 514.520 seconds. The early clinic raid remains
+active at turn 81 after 900 actor orders and 17,579 tactical seconds. Two new
+paid supply carriers had not entered roof cover, so the covered hospital
+executor was not selected. A reviewed follow-up gives those actual new local
+carriers their own small groups, visits and paid roof movements. It preserves
+the clinical party and other residents' positions. Seven complete affected
+files pass 39/39 tests, including finite care, persisted roof positions, actual
+executor selection and official fresh-save repetition. This focused result
+does not establish a complete opening victory.
 
 The complete original opening on `df62e17a` still fails: five tests pass, two
 fail and one skips, in 409.432 seconds. The finite donor transfer and the following complete
@@ -113,6 +127,14 @@ The fresh complete recovery on `ab82549d` finishes 0/1 in 1,931.491 seconds.
 The spent-gun controller changes the actual fight to turn eleven, 39 actions
 and 152 tactical seconds, but the strict reserve-victory guard still fails.
 The focused controller pass does not resolve complete recovery.
+The complete original recovery on `698de752` also finishes 0/1, in 1,939.488
+seconds. The reserve suffers Native defeat at turn five, after 43 actor orders
+and 122 tactical seconds. The new ground approach changed its exposure but
+did not win the defense. A reviewed follow-up shares the 20-AP optional advance
+allowance across the actual Native turn. Eight complete affected files pass
+60/60 tests, including repeated real callbacks, prior paid work, actual turn
+renewal, carryover and direct/presented/validated replay. A complete recovery
+victory remains required.
 
 A further reviewed correction lets a fit ground defender pay for a short
 public approach beside an initially empty cannon when ordinary work holds.
@@ -128,6 +150,18 @@ passes the earlier medical-renewal failure and wins Uspallata at hour 1044 with
 34,564 pesos, then cannot afford the required renewal for 135 before Los Patos.
 Its patients and paid service remain required. Neither saved ending
 continuation is accepted.
+The complete two-ending file on frozen `44851724` is still active; its result
+is pending.
+
+The reviewed mountain funding correction counts current wages through the
+full parallel route, daylight staging and the existing final one-hour service
+buffer. It preserves the required field, qualified doctors, named roles,
+patients and work in progress. Only actual completed surplus paid duties can
+end through Native dismissal, with exact finite property returned. Remaining
+funds require real positive port income. Five complete affected files pass
+22/22 tests, including a sixteen-person field, three qualified doctors,
+contract refusals, the fractional expiry edge and official save repetition.
+This is subsystem evidence; the complete endings remain required.
 
 The reviewed Uspallata correction completes a payable close blade action for
 an assigned crew member instead of repeatedly switching back to the rifle.

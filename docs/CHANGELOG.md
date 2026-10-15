@@ -22,6 +22,7 @@
 - Let a fit ground defender beside an initially empty cannon pay for a short
   approach to a current team contact when ordinary work has no action. Keep
   useful fire, medical duties, roof roles and charged crews ahead of this step.
+  Share the 20-AP optional advance allowance across the actual Native turn.
 - Use remaining legal arrival cells for Uspallata screens when preferred
   spacing is unavailable, while retaining Native cannon-contact exclusions.
 - Coordinate the default all-covered hospital encounter during Salta battery
@@ -40,6 +41,11 @@
 - Restore wounded clinic survivors before the separate battery journey. Use
   finite supplies, actual paid service and one shared 72-hour care allowance.
   Select the later Córdoba reserve from each soldier's current location.
+  Give each additional paid relief carrier its own real visit and roof walk.
+- Budget the full parallel mountain journey, daylight staging and final service
+  buffer at actual contract prices. Preserve required roles and patients, end
+  only completed paid duties, and return their exact finite property. Fund any
+  remaining reserve with actual positive port income before departure.
 - Add current-state regressions and optional terminal save exports for browser
   checks. Saves from earlier builds remain outside the supported scope.
 - Full campaign acceptance remains open. No complete final-source victory or
