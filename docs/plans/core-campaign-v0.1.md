@@ -95,6 +95,12 @@ at an unavailable Uspallata battery arrival cell. Installed seed 1812 cannot
 afford the required renewal for 105 during stable recovery. Its patients and
 paid service remain required. Neither saved ending continuation is accepted.
 
+Separate local corrections retain coordinated roof roles for the already-spent
+road reserve and use legal remaining Uspallata arrival cells for screens. Their
+affected controls pass 38/38 and 36/36 respectively, with independent source
+review. These are focused results; the original complete recovery and ending
+outcomes must still be verified with those corrections.
+
 The production export on `d0508806` passes its nested-path audit: 1,413 files and
 1,045 asset references, version `0.1.5 · 3dd756ed68a8`. Browser review verifies a
 fresh installed start, paid hire, 3D tactical entry, reload/Continue and export

@@ -19,6 +19,8 @@
   aid only after Native admission, adjacent-care and route checks.
 - Keep coordinated hospital roof roles for a northern road reserve whose
   player batteries are already spent. Charged-battery control is unchanged.
+- Use remaining legal arrival cells for Uspallata screens when preferred
+  spacing is unavailable, while retaining Native cannon-contact exclusions.
 - Add current-state regressions and optional terminal save exports for browser
   checks. Saves from earlier builds remain outside the supported scope.
 - Full campaign acceptance remains open. No complete final-source victory or
