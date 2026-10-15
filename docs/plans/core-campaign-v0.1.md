@@ -79,8 +79,11 @@ carriers their own small groups, visits and paid roof movements. It preserves
 the clinical party and other residents' positions. Seven complete affected
 files pass 39/39 tests, including finite care, persisted roof positions, actual
 executor selection and official fresh-save repetition. This focused result
-does not establish a complete opening victory. A fresh complete opening
-is active on frozen `9eacbd89`; its result is pending.
+does not establish a complete opening victory. The fresh complete opening
+on frozen `9eacbd89` finishes with five passed, two failed and one skipped,
+in 576.996 seconds. It passes the first five stages, then exhausts available
+finite local dressings during early clinic preparation at Tucumán. The strict
+supply guard remains in place; the complete opening is not accepted.
 
 The complete original opening on `df62e17a` still fails: five tests pass, two
 fail and one skips, in 409.432 seconds. The finite donor transfer and the following complete
@@ -136,6 +139,15 @@ allowance across the actual Native turn. Eight complete affected files pass
 60/60 tests, including repeated real callbacks, prior paid work, actual turn
 renewal, carryover and direct/presented/validated replay. A complete recovery
 victory remains required.
+
+The reviewed road medical preparation hires one actually available supplied
+physician at the current weekly quote, then donates one real dressing to the
+empty local physician. It retains actual local duty through arrival and a
+bounded one-hour roof visit, preserves old posts, and restores the selected
+envoy. Actual encounters stop preparation and preserve the paid booking.
+Eight complete affected files pass 30/30 tests, including finite stock,
+actual contract expiry, paid Native staging and official fresh-save replay.
+This preparation still needs a fresh complete recovery result.
 
 A further reviewed correction lets a fit ground defender pay for a short
 public approach beside an initially empty cannon when ordinary work holds.

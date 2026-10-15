@@ -23,6 +23,9 @@
   approach to a current team contact when ordinary work has no action. Keep
   useful fire, medical duties, roof roles and charged crews ahead of this step.
   Share the 20-AP optional advance allowance across the actual Native turn.
+- Prepare a threatened empty road clinic with one actual paid medical hire.
+  Donate one finite dressing, retain existing local duties through arrival,
+  and walk the new physician to a real roof post before the field leaves.
 - Use remaining legal arrival cells for Uspallata screens when preferred
   spacing is unavailable, while retaining Native cannon-contact exclusions.
 - Coordinate the default all-covered hospital encounter during Salta battery
