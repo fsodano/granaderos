@@ -7,6 +7,7 @@ import {firearmServiceable} from '../game/firearm-serviceability.js';
 import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
 import {availableAmmunition} from '../game/ammunition-types.js';
 import {criticalFirstAidNeeded} from '../game/first-aid.js';
+import {medicalPatientAvailable} from '../game/medical-patient.js';
 import {sectorSearchOrder} from './sector-search-driver.mjs';
 import {recordRouteControllerDecisionEvidence} from './route-controller-decision-evidence.mjs';
 
@@ -34,7 +35,7 @@ export function combatOrder(b,u){
  // The commander takes a firing posture at contact, but must be able to
  // stand and search when only incapacitated allies remain.
  if(visible.length&&u.missionAlly&&u.stance!=='prone'&&u.ap>=stanceCost(u,'prone'))return {type:'stance',unitId:u.id,stance:'prone'};
- const patient=b.units.filter(v=>v.side===u.side&&v.hp>0&&!v.departure&&!v.surrendered&&!v.routed&&(v.bleeding>0||criticalFirstAidNeeded(v))&&sameSurface(u,v)&&distance(u,v)<=1.5&&hasLineOfSight(b,u,v)).sort((a,b)=>a.hp-b.hp)[0];
+ const patient=b.units.filter(v=>v.side===u.side&&medicalPatientAvailable(v)&&(v.bleeding>0||criticalFirstAidNeeded(v))&&sameSurface(u,v)&&distance(u,v)<=1.5&&hasLineOfSight(b,u,v)).sort((a,b)=>a.hp-b.hp)[0];
  if(patient&&u.medkits>0&&u.medical>0){
   if(u.activeSlot==='medical'&&u.ap>=cost.heal)return {type:'useItem',unitId:u.id,targetId:patient.id};
   if(u.activeSlot!=='medical'&&u.ap>=cost.heal+cost.weapon)return {type:'weapon',unitId:u.id,slot:'medical'};
