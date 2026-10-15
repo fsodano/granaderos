@@ -12,7 +12,7 @@ Granaderos es un juego de estrategia y combate táctico por turnos para navegado
 
 La interfaz del juego y este README están en **español**. El código y la mayor parte de la documentación están en inglés.
 
-La versión 0.1 permite jugar la campaña y los combates. Todavía falta verificar una campaña completa en esta versión, el equilibrio entre distintas fuerzas y estrategias, el rendimiento en equipos registrados y la presentación gráfica, sonora e histórica para una versión final. Las pruebas de rutas anteriores conservan su fecha y alcance; no certifican estos puntos en el código actual.
+El código actual permite jugar la campaña y los combates. La verificación completa de la campaña principal sigue abierta. También faltan el equilibrio entre distintas fuerzas y estrategias, el rendimiento en equipos registrados y la revisión gráfica, sonora e histórica para una versión final. Las pruebas de rutas anteriores conservan su fecha y alcance; no certifican estos puntos en el código actual.
 
 El motor y la campaña se guardan por separado. `campaigns/granaderos/` contiene la única campaña incluida. El menú puede mostrar varias campañas instaladas, cada una con su propio progreso. La [guía de campañas](docs/development/campaign-authoring.md) explica cómo crear, verificar e instalar una carpeta local. La publicación comunitaria y las herramientas adicionales siguen en el [plan de campañas propias](docs/plans/campaign-authoring.md).
 

@@ -10,7 +10,7 @@ it does not certify final campaign balance, full JA2 parity or release performan
 [Project README](../../README.md) · [Documentation index](../README.md) ·
 [Future campaign authoring](../plans/campaign-authoring.md)
 
-## Available now
+## Available at this checkpoint
 
 - Spanish campaign and tactical controls, recruitment, paid service, independent
   squads, medical care, repair, militia and period campaign progression.
@@ -30,7 +30,7 @@ save/load do not refill spent supplies. The economy uses pesos; removed raw
 material production and horse-care systems are not requirements for this version.
 See the [finite editor scope](finite-campaign-editor-2026-10-05.md).
 
-## Campaign creation is future work
+## Campaign creation at this checkpoint
 
 The owner intends to design campaigns and allow other people to design their
 own. A complete creator and sharing workflow is future work. Existing editors
@@ -79,7 +79,9 @@ Do not treat a successful import as proof of every later continuation.
 
 ## Documentation and evidence
 
-This page is the current summary for version 0.1. The
+This page records the historical `0.1` checkpoint. Read the
+[shipping campaign plan](../plans/core-campaign-v0.1.md) for current work and
+acceptance limits. The
 [requirement register](requirements.json) and
 [generated ledger](published-progress.md) retain broad and bounded requirements
 with their recorded evidence. Their rows and old test totals overlap and are not
@@ -114,6 +116,6 @@ passing full-suite or browser campaign acceptance result is claimed for this tag
 ## Publication
 
 The requested publication is a source commit on `main` and the annotated `0.1`
-tag. GitHub Actions is manual. A source push or tag does not update GitHub Pages;
+tag. At this checkpoint, GitHub Actions was manual. A source push or tag does not update GitHub Pages;
 the live site can serve an older build. Pages deployment is a separate maintainer
 action described in [the development guide](../development/getting-started.md#github-pages).

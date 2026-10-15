@@ -1,9 +1,10 @@
 # Shipping campaign: version 0.1
 
-Updated: 13 October 2026.
+Updated: 14 October 2026.
 
-Status: partial fixes merged into `main`. End-to-end campaign verification remains
-incomplete. No complete current-source campaign result is claimed.
+Status: `main` is released as `0.1.4`, including the save-import interface fix
+from PR #428. Campaign corrections remain in draft PR #426. End-to-end campaign
+verification is incomplete. No complete current-source campaign result is claimed.
 
 The shipping campaign is `campaigns/granaderos/`, selected by the normal
 browser launcher. The launcher starts the compiled installed package at seed
@@ -23,7 +24,7 @@ created character and paid hires may be used. The loose seed-8 route and
 | Genuine failures | Headquarters and indispensable-actor loss rules | Real defeat and settlement preserve casualties and admit the official save. |
 | Save and continuation | Official save codec and campaign dispatch | Active battle save/replay, saved victory, post-victory income, real service expiry and tactical reentry. |
 | Browser playability | Production launcher, desk, strategic and tactical components | Visible start, recruitment/creation, deployment, orders, save/continue and ending/continuation paths on the final export. |
-| Release regression | Supported full runner and local gates | Complete unfiltered Node suite, docs and baseline audits, typecheck, nested export, available Python/C++ checks and clean diff. |
+| Release regression | Supported full runner and local gates | Complete unfiltered Node suite, docs and baseline audits, typecheck, nested export, applicable available Python asset checks and clean diff. Native C++ conversion has its own development checks. |
 
 All route proof must use ordinary orders and actual battle outcomes. Do not
 assign money, health, supplies, territory, random state or victories to make
@@ -53,7 +54,42 @@ failure receipt; it is not proof that a game mechanic is broken.
 - [ ] Complete the installed default-seed route and its saved continuation.
 - [ ] Complete the final production browser review and full release gate.
 
-## Reviewed changes
+## Current validation
+
+Draft [PR #426](https://github.com/fsodano/granaderos/pull/426) retains the
+original complete recovery, ending and historical-loss files and their battle
+limits. Every complete run starts fresh. Failed checkpoints are retained as
+passive evidence and are not resumed as diagnostic input.
+
+On pushed head `11569f42`, campaign quick completes all 102 files and passes
+502/502 tests. The complete original routes still fail:
+
+- Historical loss wins the created Tucumán assault, then correctly refuses to
+  recruit Quiroga after an earlier unintended player shot and untreated bleeding.
+- Opening reaches Salta preparation, where eight immediate paid hires cost
+  63,600 pesos against 60,258 available before the 250-peso reserve.
+- Funded recovery loses the Tucumán counterattack before the relief column
+  arrives. The local force has three living defenders and an empty cannon.
+- Both ending cases reach Ensenada. The loose route loses its field physician;
+  the installed route exhausts its reachable finite dressings.
+
+Further local corrections address civilian fire safety, stable rest after an
+actual finite-care shortage, the arsenal physician's medical role and return of
+existing paid Salta clinic relief. Separate focused tests pass; they do not prove
+the complete original routes. A fresh complete ending run on the isolated
+stable-rest correction remains live. Neither saved 48-hour ending continuation
+is accepted yet.
+
+The last unfiltered suite on earlier head `8b40ceae` completes all 1,028 files:
+7,699 tests pass, nine fail and one skips, with none cancelled. Seven files fail:
+fresh ending, funded recovery, opening, historical loss, Cuyo, northern and
+coastal routes. A complete final-source suite, production export and browser
+review remain required before the campaign can be accepted.
+
+## Earlier reviewed changes
+
+The receipts below describe earlier source states. They do not replace the
+current failures or establish completion on PR #426.
 
 PRs [#419](https://github.com/fsodano/granaderos/pull/419) and
 [#420](https://github.com/fsodano/granaderos/pull/420), plus the Salta
