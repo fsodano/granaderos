@@ -1,6 +1,6 @@
 # Shipping campaign: version 0.1
 
-Updated: 14 October 2026.
+Updated: 15 October 2026.
 
 Status: `main` is released as `0.1.4`, including the save-import interface fix
 from PR #428. Campaign corrections are the unreleased `0.1.5` candidate in draft
@@ -62,27 +62,37 @@ original complete recovery, ending and historical-loss files and their battle
 limits. Every complete run starts fresh. Failed checkpoints are retained as
 passive evidence and are not resumed as diagnostic input.
 
-On pushed head `11569f42`, campaign quick completes all 102 files and passes
-502/502 tests. The complete original routes still fail:
+On pushed head `9eee7f97`, campaign quick completes all 109 files and passes
+547/547 tests, with no failures, cancellations or skips. Core quick on its
+ancestor `d0508806` completes all 924 files and passes 7,210/7,210 tests, also
+with no failures, cancellations or skips. These are separate suite results.
 
-- Historical loss wins the created Tucumán assault, then correctly refuses to
-  recruit Quiroga after an earlier unintended player shot and untreated bleeding.
-- Opening reaches Salta preparation, where eight immediate paid hires cost
-  63,600 pesos against 60,258 available before the 250-peso reserve.
-- Funded recovery loses the Tucumán counterattack before the relief column
-  arrives. The local force has three living defenders and an empty cannon.
-- Both ending cases reach Ensenada. The loose route loses its field physician;
-  the installed route exhausts its reachable finite dressings.
+The complete original opening on `9eee7f97` still fails: three tests pass, two
+fail and three skip. The rescue quote now counts actual Native first-aid
+strokes. The physician still has three dressings for four clinical strokes.
+Passive evidence identifies one available dressing on a living, serving local
+donor after retaining that donor's last dressing. No transfer pass is claimed.
 
-Further local corrections address civilian fire safety, stable rest after an
-actual finite-care shortage, the arsenal physician's medical role and return of
-existing paid Salta clinic relief. Remote post-defense care and unconscious
-routed patient eligibility also have focused controls. These passes do not prove
-the complete original routes. The separate complete ending run on `d2744311`
-finishes 0/2: the loose route still loses its physician; the installed route
-passes the dressing shortage but cannot afford a real renewal during recovery.
-That source predates the explicit physician-role correction. Neither saved
-48-hour ending continuation is accepted yet.
+The complete original historical-loss run on `d0508806` fails its living and
+15-HP relief guard. A fresh repeat on `692cac9f`, which adds passive observations
+only, confirms that the physician has three actual dressings but reaches a
+7-HP bleeding patient too late during a walking approach. The required patient
+dies before treatment. The health and finite-supply assertions remain strict.
+
+The complete original recovery and two-ending files are running on frozen
+`d0508806` source. No result is claimed while those files remain active. The
+production export on that source passes its nested-path audit: 1,413 files and
+1,045 asset references, version `0.1.5 · 3dd756ed68a8`. Browser review verifies a
+fresh installed start, paid hire, 3D tactical entry, reload/Continue and export
+and import of that same current-format game. Import closes the menu and restores
+the tactical scene. This opening review does not establish a campaign ending.
+
+Earlier complete runs on `11569f42` failed in historical recruitment, Salta
+affordability, the Tucumán reserve defense and both Ensenada endings. The separate
+complete ending run on `d2744311` finishes 0/2: the loose route still loses its
+physician; the installed route passes the dressing shortage but cannot afford a
+real renewal during recovery. That source predates the explicit physician-role
+correction. Neither saved 48-hour ending continuation is accepted yet.
 
 The last unfiltered suite on earlier head `8b40ceae` completes all 1,028 files:
 7,699 tests pass, nine fail and one skips, with none cancelled. Seven files fail:

@@ -12,6 +12,8 @@
   rest. Keep the arsenal physician on medical duty and retain charged gun crews.
 - Finish admitted aid for unconscious routed soldiers, avoid known civilian
   scatter paths and return paid clinic relief before quoting new Salta hires.
+- Quote rescue dressings from actual Native first-aid strokes while retaining
+  finite clinical supplies and strict patient recovery checks.
 - Add current-state regressions and optional terminal save exports for browser
   checks. Saves from earlier builds remain outside the supported scope.
 - Full campaign acceptance remains open. No complete final-source victory or
