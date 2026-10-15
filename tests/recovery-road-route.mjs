@@ -32,7 +32,7 @@ const localMembers=(c,preferred,limit=6,allowed=null)=>[...new Set([...preferred
 export function northernRoadReserveController(initial){
  const guns=initial.artillery.filter(g=>g.side==='player');
  return guns.length&&guns.every(g=>!g.loaded&&!(g.ammo>0))
-  ?coordinatedHospitalBattery(initial).controller
+  ?coordinatedHospitalBattery(initial,{coordinateEmptyGround:true}).controller
   :coastalBatteryController(initial,{sharedArtillerySight:true});
 }
 

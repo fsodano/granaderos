@@ -48,7 +48,7 @@ export function paidHospitalRoofWalkPreview(view,unit,point){
 // The rear has already paid for its actual roof posts and battery contact.
 // Keep those roles during the raid. The supplied physician does not become
 // an automatic replacement gunner, and no body or charge is created here.
-export function coordinatedHospitalBattery(initial,{coordinateSpentCrew=false,coordinatePhysicianHold=false}={}){
+export function coordinatedHospitalBattery(initial,{coordinateSpentCrew=false,coordinatePhysicianHold=false,coordinateEmptyGround=false}={}){
  const own=initial.units.filter(u=>u.side==='player'&&fit(u));
  const physician=own.filter(u=>u.medical>=60&&u.medkits>0).sort((a,b)=>b.medical-a.medical||b.medkits-a.medkits||String(a.id).localeCompare(String(b.id)))[0];
  const assigned=new Set(),crews=initial.artillery.filter(g=>g.side==='player'&&charged(g)).map(gun=>{
@@ -61,6 +61,9 @@ export function coordinatedHospitalBattery(initial,{coordinateSpentCrew=false,co
  // Keep only the actual initial roof rifle role. The supplied physician and
  // paid contact crew keep their own existing finite-work/access branches.
  const roofDefenders=new Set(own.filter(u=>u.tacticalLevel>0&&u.id!==physician?.id&&!assigned.has(u.id)).map(u=>u.id));
+ const pieces=initial.artillery.filter(g=>g.side==='player');
+ const emptyGround=new Set(coordinateEmptyGround&&pieces.length&&pieces.every(g=>!charged(g))
+  ?own.filter(u=>(u.tacticalLevel??0)===0&&u.id!==physician?.id&&!assigned.has(u.id)).map(u=>u.id):[]);
 
  function gunWork(b,u,crew){
   const gun=b.artillery.find(g=>g.id===crew.gunId);
@@ -254,7 +257,33 @@ export function coordinatedHospitalBattery(initial,{coordinateSpentCrew=false,co
    }
    return rifleHold(b,u,normal,{holdGround:true});
   }
-  return rifleHold(b,u,normal,{holdRoof:roofDefenders.has(u.id)});
+  const held=rifleHold(b,u,normal,{holdRoof:roofDefenders.has(u.id)});
+  if(held!=null||!emptyGround.has(u.id))return held;
+  return emptyGroundProgress(b,u);
+ };
+ // Only a ground rifleman admitted beside an initially empty battery may
+ // close on a current team sighting after his ordinary work holds. Roof and
+ // clinical roles stay separate. Each callback pays one actual short move;
+ // no contact memory, future action or body is written by this quote.
+ const emptyGroundProgress=(b,u)=>{
+  if(!emptyGround.has(u.id)||b.status!=='active'||b.mode!=='combat'||b.phase!=='player'||b.reactionStack?.length||!fit(u)||(u.tacticalLevel??0)!==0||u.hp!==u.maxHp||u.bleeding||u.knockedDown||u.entangled||u.mounted||u.stealthMode||
+   (u.activeSlot??'primary')!=='primary'||u.weaponMode==='melee'||!u.loaded||u.jammed||u.weaponDropped||!hasFirearm(u)||!firearmServiceable(u)||carriedWeight(u)>carryCapacity(u))return null;
+  const view=publicRouteView(b,u);
+  if(view.artillery.some(g=>g.side===u.side&&charged(g))||usefulRouteRifleShot(view,u))return null;
+  if(u.medical>0&&u.medkits>0&&view.units.some(v=>v.side===u.side&&medicalPatientAvailable(v)&&(v.bleeding>0||criticalFirstAidNeeded(v))))return null;
+  const seen=view.units.filter(v=>v.side!==u.side&&fit(v)&&sameSurface(u,v));if(!seen.length)return null;
+  const nearest=p=>Math.min(...seen.map(target=>distance(p,target))),from=nearest(u),choices=[];
+  for(const point of getReachable(view,u)){
+   if(!(point.cost>0&&point.cost<=20)||!point.path?.length||point.path.length>3||!sameSurface(point,u)||!point.path.every(step=>(step.kind===undefined||step.kind==='move')&&sameSurface(step,u)))continue;
+   const preview=paidHospitalRoofWalkPreview(view,u,point);if(!preview)continue;
+   const shot=usefulRouteRifleShot(preview.view,preview.actor),gain=from-nearest(point);
+   const target=shot?seen.find(v=>v.id===shot.targetId):seen.slice().sort((a,c)=>distance(point,a)-distance(point,c)||String(a.id).localeCompare(String(c.id)))[0];
+   if(!target||!shot&&!(gain>0))continue;
+   const cost=actionCosts(preview.view,preview.actor,target),reserve=cost.fire+(shot?.aim??2)*cost.aim;
+   if(preview.actor.ap>=reserve)choices.push({point,shot:Boolean(shot),gain});
+  }
+  choices.sort((a,c)=>Number(c.shot)-Number(a.shot)||c.gain-a.gain||a.point.cost-c.point.cost||a.point.y-c.point.y||a.point.x-c.point.x);
+  const point=choices[0]?.point;return point?{type:'move',unitId:u.id,...spacePoint(point)}:null;
  };
  // A complete ordinary pass must hold before this opt-in can run. Only an
  // actual original contact crew whose own gun is now empty can spend a public
