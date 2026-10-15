@@ -4,6 +4,13 @@
 > [version 0.1](verification/version-0.1.md) for current scope. Earlier development
 > numbers are internal checkpoints; their features and results are dated history.
 
+## 0.1.4 — 14 October 2026
+
+- Correct paid road duty, finite ammunition redistribution and ordered medical
+  care in fresh campaign validation.
+- Add current-state regressions and optional terminal save exports for browser
+  checks. Saves from earlier builds remain outside the supported scope.
+
 ## 0.1.3 — 14 October 2026
 
 - Center the tactical camera on the selected soldier when entering exploration
