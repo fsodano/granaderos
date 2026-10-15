@@ -4,6 +4,11 @@
 > [version 0.1](verification/version-0.1.md) for current scope. Earlier development
 > numbers are internal checkpoints; their features and results are dated history.
 
+## 0.1.4 — 14 October 2026
+
+- Close the command menu after importing a save. Reset the previous route,
+  strategic clock, desk tab and arrival selection for the restored game.
+
 ## 0.1.3 — 14 October 2026
 
 - Center the tactical camera on the selected soldier when entering exploration

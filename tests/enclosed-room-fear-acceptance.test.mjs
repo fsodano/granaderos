@@ -143,16 +143,15 @@ test('earned room fear shows one temporary named notice; importing its receipt d
 
 test('the real file-import path remounts room fear receipts without a popup and accepts a new ordinary keyboard turn',async t=>{
  const earned=enterPaidRoom({crowbar:false}),before=earned.before,received=earned.pair,mounted=await mountCampaign(t,before),doc=mounted.document,popup=()=>doc.querySelector('.tactical-feedback-popup');
- assert.equal(popup(),null);await mounted.click('Menú');
+ assert.equal(popup(),null);
  async function importPair(pair){
-  await mounted.click('Importar partida');const text=encodeSave(pair.campaign,pair.battle),file=new mounted.dom.window.File([text],'partida.json',{type:'application/json'});let read=false;
+  await mounted.click('Menú');await mounted.click('Importar partida');const text=encodeSave(pair.campaign,pair.battle),file=new mounted.dom.window.File([text],'partida.json',{type:'application/json'});let read=false;
   file.text=async()=>{read=true;return text;};const input=doc.querySelector('input[type="file"]');assert.ok(input);
   Object.defineProperty(input,'files',{configurable:true,value:[file]});await act(async()=>input.dispatchEvent(new mounted.dom.window.Event('change',{bubbles:true})));
-  assert.equal(read,true);assert.equal(input.value,'');
+  assert.equal(read,true);assert.equal(input.value,'');assert.equal(doc.querySelector('[role="dialog"]'),null,'a successful import closes its menu');
  }
  await importPair(received);assert.deepEqual(mounted.saved(),received);assert.equal(popup(),null,'saved fear is not a new played event');
  await importPair(before);assert.deepEqual(mounted.saved(),before);assert.equal(popup(),null);
- const close=doc.querySelector('.dialog-close');assert.ok(close);await act(async()=>close.dispatchEvent(new mounted.dom.window.MouseEvent('click',{bubbles:true})));
  const expectedBattle=withCharacterSpeech(before.battle,actBattle(before.battle,{type:'rest'})),expected=roomSaved(roomStep(before,{kind:'action',action:{type:'rest',unitId:'126'}}));
  // Speech is an independent production wrapper. The Page applies it after
  // the same ordinary turn; compare the stored result, not a mock callback.

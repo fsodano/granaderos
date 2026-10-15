@@ -107,9 +107,8 @@ test('real Page file imports restore earned fear without backfill and a later ac
  assert.equal(before.battle.battleId,received.battle.battleId,'this is a later save of the same real deployment');
  const mounted=await mountCampaign(t,before),doc=mounted.document,visiblePopup=()=>doc.querySelector('.tactical-feedback-popup');
  assert.equal(visiblePopup(),null);assert.deepEqual(mounted.saved(),before);
- await mounted.click('Menú');
  async function importFile(text){
-  await mounted.click('Importar partida');
+  await mounted.click('Menú');await mounted.click('Importar partida');
   const file=new mounted.dom.window.File([text],'campaña.json',{type:'application/json'});let read=false;
   file.text=async()=>{read=true;return text;};
   const input=doc.querySelector('input[type="file"]');assert.ok(input);
@@ -119,11 +118,12 @@ test('real Page file imports restore earned fear without backfill and a later ac
  }
  async function closeMenu(){const close=doc.querySelector('.dialog-close');assert.ok(close);await act(async()=>close.dispatchEvent(new mounted.dom.window.MouseEvent('click',{bubbles:true})));}
  await importFile(encodeSave(received.campaign,received.battle));
+ assert.equal(doc.querySelector('[role="dialog"]'),null,'a successful import closes its menu');
  assert.deepEqual(mounted.saved(),received,'import restores the exact paid wounds, fear, clock, RNG and finite custody');
  assert.equal(visiblePopup(),null,'imported later receipts are not newly played events');
  await importFile(encodeSave(before.campaign,before.battle));
+ assert.equal(doc.querySelector('[role="dialog"]'),null,'each successful import closes its own menu');
  assert.deepEqual(mounted.saved(),before);assert.equal(visiblePopup(),null);
- await closeMenu();
  const ordinary=withCharacterSpeech(before.battle,endTurn(before.battle)),synced=syncBattleTime(before.campaign,ordinary);assert.equal(synced.error,null,synced.error);
  const expected=decodeSave(encodeSave(synced.campaign,synced.battle));
  await act(async()=>doc.body.dispatchEvent(new mounted.dom.window.KeyboardEvent('keydown',{key:'d',bubbles:true})));
@@ -131,7 +131,8 @@ test('real Page file imports restore earned fear without backfill and a later ac
  assert.deepEqual(mounted.saved(),expected,'the accepted keyboard turn still uses the ordinary saved result');
  const text=`${actor(expected.battle).name} siente temor al quedar sin apoyo.`;
  assert.equal(visiblePopup()?.textContent,text);
- await mounted.click('Menú');await importFile('{}');
+ await importFile('{}');
+ assert.ok(doc.querySelector('[role="dialog"]'),'a failed import leaves its current menu open');
  assert.deepEqual(mounted.saved(),expected,'failed import cannot replace the campaign or restart the battle');
  assert.equal(visiblePopup()?.textContent,text,'failed import does not reset an accepted transient event');
  await closeMenu();await mounted.settleUntil(()=>visiblePopup()===null);
