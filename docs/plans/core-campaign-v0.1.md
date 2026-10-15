@@ -84,6 +84,8 @@ passes direct, presented, validated and official paired-save replay. All eight
 affected files pass 63/63 tests, with no skips or cancellations. Capacity,
 paid renewal, the same clinical deadline and real interrupted partial state
 remain guarded. Complete fresh-route acceptance still requires a new result.
+On `7a344fc6`, all 131 quick campaign files pass 691/691 tests, with no
+failures, skips or cancellations. The scope and runner controls pass 29/29.
 
 On reviewed head `15d392e6`, campaign quick completes all 126 files and passes
 655/655 tests, with no failures, cancellations or skips. The initial isolated
