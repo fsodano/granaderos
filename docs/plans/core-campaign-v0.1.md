@@ -62,6 +62,14 @@ original complete recovery, ending and historical-loss files and their battle
 limits. Every complete run starts fresh. Failed checkpoints are retained as
 passive evidence and are not resumed as diagnostic input.
 
+The combined reviewed source `ffdd3b76` completes campaign quick with all
+130 files and 684/684 tests passing, without failures, skips or cancellations.
+Runner, scope, workflow and CI-selection controls pass 29/29; shard controls
+pass 5/5. Type checking and the static export pass, with 1,413 files and 1,045
+verified asset references (`0.1.5 · 61504d277f2b`). One unfiltered local run of
+all 1,062 test files is now active on that frozen source. The complete fresh
+campaign routes and saved endings remain pending; no merge is accepted yet.
+
 On reviewed head `15d392e6`, campaign quick completes all 126 files and passes
 655/655 tests, with no failures, cancellations or skips. The initial isolated
 checkout lacked web dependencies; its seven module-resolution failures were
