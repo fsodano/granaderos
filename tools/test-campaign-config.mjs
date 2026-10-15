@@ -70,6 +70,7 @@ export const campaignTestGroups = [
   "tests/route-battery.test.mjs",
   "tests/route-dressings.test.mjs",
   "tests/route-dressings-local-sites.test.mjs",
+  "tests/route-field-relief.test.mjs",
   "tests/route-income-banking.test.mjs",
   "tests/route-owned-equipment.test.mjs",
   "tests/route-roof-defenders.test.mjs",

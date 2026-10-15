@@ -366,7 +366,7 @@ function freshCreatedNorthernRoute({onCheckpoint,report=()=>{},coastalCheckpoint
  }
  const readyDefense=prepareHiredNorthernDefense(s);onCheckpoint?.('cordoba-defense-ready',readyDefense,notes);
  const defense=fightCreatedNorthernDefense(readyDefense,{report});onCheckpoint?.('cordoba-defense',defense.campaign,notes);
- const readyTucuman=prepareFreshTucumanAssault(defense.campaign,{artillerySupport:true});onCheckpoint?.('tucuman-ready',readyTucuman,notes);
+ const readyTucuman=prepareFreshTucumanAssault(defense.campaign,{artillerySupport:true,replenishField:true});onCheckpoint?.('tucuman-ready',readyTucuman,notes);
  const tucuman=fightNorthernSector(readyTucuman,'tucuman',{controller:coastalBatteryController(enterSector(readyTucuman.pendingBattle,readyTucuman.sectorStates.tucuman),{sharedArtillerySight:true})});
  s=tucuman.campaign;notes.push({...tucuman.summary,deaths:deadIds(s),defense:defense.summary});onCheckpoint?.('tucuman',s,notes);
  const readySalta=prepareNorthernOfficerRelief(s,{report}),gun=readySalta.pendingBattle.artillery.find(piece=>piece.side==='player');assert.ok(gun,'the northern crew must deploy the actually recovered and transported gun');onCheckpoint?.('salta-ready',readySalta,notes);

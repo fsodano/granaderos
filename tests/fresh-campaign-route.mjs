@@ -1,5 +1,6 @@
 import {ROUTE_STARTING_TREASURY} from './funded-route-fixture.mjs';
 import {supplyRouteAmmunition,recordRouteAmmunitionDiagnostic} from './route-ammunition.mjs';
+import {recruitRouteFieldRelief} from './route-field-relief.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {fightNorthernSector} from './northern-route.mjs';
 import {prepareCordobaMedicalRear,resolveCordobaMedicalRearEncounter} from './cordoba-medical-rear-guard.mjs';
@@ -604,9 +605,10 @@ for(let leg=0;leg<4&&c.location!=='cordoba'&&!c.pendingEncounter;leg++){
  return c;
 }
 
-export function prepareFreshTucumanAssault(start,{report=()=>{},artillerySupport=false,recovery='doctor',prepareDeparture=null,onCheckpoint=()=>{}}={}){
+export function prepareFreshTucumanAssault(start,{report=()=>{},artillerySupport=false,recovery='doctor',prepareDeparture=null,replenishField=false,onCheckpoint=()=>{}}={}){
  assert.ok(['doctor','rest'].includes(recovery),'Tucumán recovery uses real doctor work or ordinary rest');
  assert.ok(prepareDeparture===null||typeof prepareDeparture==='function','departure preparation must use an explicit native route helper');
+ assert.equal(typeof replenishField,'boolean');
  const recoveryDefenseIds=[];let recoveryDefenseBudget=null;
  return prepare(start);
  function prepare(initial){
@@ -733,6 +735,14 @@ if(!c.recruited.includes(133)&&c.operativeState[133].alive){
  // already prepared squad without its recovery and ammunition checks.
  for(let h=0;h<24&&!c.recruited.includes(133);h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
  assert.ok(c.recruited.includes(133),'the paid reinforcement must arrive before deployment');
+}
+if(replenishField){
+ const relief=recruitRouteFieldRelief(c,{minimum:12,report});c=relief.campaign;
+ if(c.pendingEncounter)return defendRecovery();
+ assert.equal(relief.ready,true,relief.reason);
+ // Paid arrivals and elapsed time change the real wounds and assignments.
+ // Re-enter urgent care before forming the next assault from those people.
+ if(relief.orders.length)return prepare(c);
 }
 const fieldIds=c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&operativeLocation(c,id)==='cordoba';});
 assert.ok(fieldIds.length>0,'Tucumán needs a living, uncaptured field force');
