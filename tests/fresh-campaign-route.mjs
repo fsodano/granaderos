@@ -876,7 +876,7 @@ if(process.env.GRANADEROS_CAMPAIGN_FAILURE_DIR){
  recordRouteAmmunitionDiagnostic('tucuman-authoritative-ammunition-input',c,{fieldIds,target:10});
 }
 try{
- c=supplyRouteAmmunition(c,fieldIds,{report,onDiagnosticCheckpoint:partial=>onCheckpoint('tucuman-authoritative-ammunition-refusal',partial)}).campaign;
+ c=supplyRouteAmmunition(c,fieldIds,{shareFieldSurplus:true,report,onDiagnosticCheckpoint:partial=>onCheckpoint('tucuman-authoritative-ammunition-refusal',partial)}).campaign;
 }catch(error){
  recordRouteAmmunitionDiagnostic('tucuman-authoritative-ammunition-stopped',c,{fieldIds,message:error.message,
   checkpointKind:'unchanged-caller-input-not-the-helper-partial-campaign'});
