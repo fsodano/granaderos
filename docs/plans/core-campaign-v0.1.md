@@ -113,6 +113,18 @@ after four actor orders and 181 seconds. Earlier local treatment keeps the
 original clinic patient alive through the first Tucumán raid, but the clinical
 phase remains incomplete. The controlled rear depot needs actual preparation
 before prolonged care advances the clock.
+A reviewed follow-up prepares one actual six-person Córdoba reserve before
+that care clock advances. It starts local treatment first, pays available
+service, recruits present officers through Native conversations, and places
+the non-physician crew beside the saved charged gun while other guards walk
+to roof cover. Funding preserves the later twelve-person Salta force and its
+existing 250-peso reserve. Clinic packs follow current wounds and retain the
+two-dressing floor. All preparation and care share the same absolute 72-hour
+deadline. Seven complete affected files pass 52/52, including eight occupied
+groups, finite supply, working-resident protection, the exact funding edge and
+a fresh raid with paired execution and official save replay. The original
+preparation patients, full recovery, actual paid terms and permanent deaths
+remain required. A complete fresh opening victory is still unproved.
 The fresh complete original recovery on frozen `15d392e6` also finishes 0/1,
 in 1,872.458 seconds. Its five living Tucumán reserve members retreat at turn
 ten after 145 actor orders and 149 seconds. The reviewed preparation changes
