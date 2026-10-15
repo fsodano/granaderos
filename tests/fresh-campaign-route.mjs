@@ -870,7 +870,7 @@ if(artillerySupport){
 // Stage the actual squads through the ordinary clock before the coordinated march.
 // Enemy movement and contract costs continue during this wait.
 order({type:'wait',hours:4});
-if(recovery==='rest'&&c.pendingEncounter)return defendRecovery();
+if(c.pendingEncounter)return defendRecovery();
 if(process.env.GRANADEROS_CAMPAIGN_FAILURE_DIR){
  observeAmmunitionCheckpoint('tucuman-authoritative-ammunition-input',c);
  recordRouteAmmunitionDiagnostic('tucuman-authoritative-ammunition-input',c,{fieldIds,target:10});
