@@ -81,8 +81,10 @@ dies before treatment. The health and finite-supply assertions remain strict.
 
 The complete original funded recovery on `d0508806` finishes 0/1 in 2,388.831
 seconds. The Tucumán reserve loses its Native counterattack at turn eight,
-after 109 actions and 138 tactical seconds. Fourteen actual defenders and an
-empty player cannon are present; casualties remain permanent. The failure is
+after 109 actions and 138 tactical seconds. The input retains fourteen player
+records, but nine are already dead and only five living defenders enter. Those
+defenders have no dressings, and the player cannon is empty. Casualties remain
+permanent. The failure is
 in northern road reunion, before later campaign acceptance can be checked.
 
 The complete original two-ending file remains running on frozen `d0508806`
