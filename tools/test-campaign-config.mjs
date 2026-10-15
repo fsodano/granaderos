@@ -19,6 +19,7 @@ export const campaignTestGroups = [
   "tests/northern-hospital-roof-medical-route.test.mjs",
   "tests/northern-hospital-spent-crew-progress.test.mjs",
   "tests/northern-hospital-physician-hold.test.mjs",
+  "tests/northern-remote-defense-rest.test.mjs",
   "tests/northern-hospital-roof-role.test.mjs",
   "tests/created-cuyo-arsenal-staffing.test.mjs",
   "tests/arsenal-medical-reserve.test.mjs",

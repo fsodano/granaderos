@@ -156,6 +156,34 @@ export function stabilizeNorthernHospitalPatients(start,patients,doctorIds,{inpu
  report({event:'northernHospitalStabilized',receipt});return {campaign:c,doctors,receipt};
 }
 
+// A distant clinic's clock still advances wounds in the town just defended.
+// Stop those actual acute wounds first, then let its surviving reserve rest
+// while the original hospital continues its own paid care.
+export function prepareNorthernRemoteDefenseRest(start,sector,{inputCapture=null,report=()=>{}}={}){
+ const before=structuredClone(start);let c=decodeSave(encodeSave(start)).campaign;
+ assert.equal(c.pendingBattle,null);assert.equal(c.pendingEncounter,null);
+ assert.equal(c.sectors[sector]?.owner,'patriot');
+ const local=()=>c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&!operativeInTransit(c,id)&&operativeLocation(c,id)===sector;});
+ const patients=local().filter(id=>c.operativeState[id].hp<15||c.operativeState[id].bleeding>0),orders=[];
+ const observe=event=>{if(event.event==='northernHospitalOrder'||event.event==='northernHospitalRenewal')orders.push(structuredClone(event.action));report(event);};
+ const order=action=>{c=northernHospitalOrder(c,action,{inputCapture,report:observe});};
+ let stabilization=null;
+ if(patients.length){
+  const doctors=rosterFor(c).filter(op=>local().includes(op.id)&&!patients.includes(op.id)&&[undefined,'no_medkits'].includes(careAssignmentIssue(c,op,'doctor')?.code))
+   .sort((a,b)=>Number(c.operativeState[b.id].medkits>0)-Number(c.operativeState[a.id].medkits>0)||b.medical-a.medical||a.id-b.id).slice(0,patients.length).map(op=>op.id);
+  assert.ok(doctors.length,'New remote casualties need an actual stable local physician before the hospital clock resumes.');
+  for(const operativeId of patients)order({type:'assignCare',operativeId,assignment:'patient'});
+  const aided=stabilizeNorthernHospitalPatients(c,patients,doctors,{inputCapture,report:observe});c=aided.campaign;stabilization=aided.receipt;
+ }
+ for(const operativeId of local()){
+  const r=c.operativeState[operativeId];assert.ok(r.hp>=15&&!r.bleeding,'Remote survivors must be stable before ordinary rest.');
+  if(r.assignment!=='rest')order({type:'assignCare',operativeId,assignment:'rest'});
+ }
+ for(const [id,r]of Object.entries(before.operativeState))if(!r.alive){assert.equal(c.operativeState[id].alive,false);assert.equal(c.operativeState[id].deathMinute,r.deathMinute);}
+ assert.deepEqual(start,before);assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
+ const receipt={sector,patients,ids:local(),orders,stabilization};report({event:'northernRemoteDefenseRestReady',receipt});return {campaign:c,receipt};
+}
+
 
 // Stabilize the actual survivors and use their controlled hospital. The
 // continued return is separate so a saved hospital boundary can be checked.
@@ -289,6 +317,7 @@ export function recoverFreshNorthernHospital(start,{report=()=>{},coordinateDefe
    order({type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});
    const initial=enterSector(c.pendingBattle,c.sectorStates[encounter.sector]),controller=coordinateDefense?coordinatedHospitalBattery(initial,{coordinateSpentCrew:true,coordinatePhysicianHold:true}).controller:initial.artillery.some(g=>g.side==='player'&&(g.loaded||g.ammo>0))?coastalBatteryController(initial,{sharedArtillerySight:true}):northernHospitalCoverOrder;
    c=fightNorthernSector(c,encounter.sector,{controller,...(coordinateDefense?{sharedFallback:controller.sharedFallback}:{}),report}).campaign;
+   if(encounter.sector!==sector)c=prepareNorthernRemoteDefenseRest(c,encounter.sector,{inputCapture,report}).campaign;
    report({event:'hospitalDefended',campaign:structuredClone(c)});
   }
   const injured=localPatients();if(!injured.length)break;
