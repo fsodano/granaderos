@@ -62,8 +62,8 @@ original complete recovery, ending and historical-loss files and their battle
 limits. Every complete run starts fresh. Failed checkpoints are retained as
 passive evidence and are not resumed as diagnostic input.
 
-On reviewed head `5cd6636c`, campaign quick completes all 122 files and passes
-628/628 tests, with no failures, cancellations or skips. The initial isolated
+On reviewed head `f2454db7`, campaign quick completes all 123 files and passes
+636/636 tests, with no failures, cancellations or skips. The initial isolated
 checkout lacked web dependencies; its seven module-resolution failures were
 retained separately, then the complete rerun passed with verified dependencies.
 Runner, scope, workflow and CI-selection controls pass 34/34 across their
@@ -94,7 +94,11 @@ service, separate roof visits, partial failure state and the same absolute
 72-hour deadline remain checked. Eight complete affected files pass 39/39.
 One fresh control records four finite care strokes during preparation and four
 later strokes, with exact payment, stock, health and official-save repetition.
-A complete original opening result is still required for this follow-up.
+The complete unchanged opening on frozen `f2454db7` finishes with five tests
+passed, two failed and one skipped, in 652.688 seconds. Repeated paid relief
+visits leave one-person groups occupied. Staging the next actual arrival then
+hits the existing eight-squad limit. That limit remains unchanged; lawful
+local group reuse needs a focused correction and a fresh complete result.
 
 The complete original opening on `df62e17a` still fails: five tests pass, two
 fail and one skips, in 409.432 seconds. The finite donor transfer and the following complete
@@ -158,7 +162,13 @@ bounded one-hour roof visit, preserves old posts, and restores the selected
 envoy. Actual encounters stop preparation and preserve the paid booking.
 Eight complete affected files pass 30/30 tests, including finite stock,
 actual contract expiry, paid Native staging and official fresh-save replay.
-This preparation still needs a fresh complete recovery result.
+The fresh complete original recovery on `ba309039` finishes 0/1 in
+1,901.911 seconds. Six living defenders enter, including the actual new
+physician. Both donated dressings are used through Native orders, but the
+reserve still loses at turn five after 42 actor orders and 122 seconds.
+Two old roof defenders enter wounded, one without its dropped primary weapon.
+The later Salta clinic changes do not alter this road reserve path. Complete
+recovery remains unaccepted.
 
 A further reviewed correction lets a fit ground defender pay for a short
 public approach beside an initially empty cannon when ordinary work holds.
@@ -177,10 +187,15 @@ continuation is accepted.
 The complete two-ending file on frozen `44851724` also finishes 0/2, in
 2,271.201 seconds. The loose route retreats at Uspallata with the same turn,
 action and elapsed-time totals. The installed route wins Uspallata at hour
-1044, then stops at the same required 135 renewal. The newer full mountain
-funding correction still needs a complete ending result. A fresh unchanged
-whole two-ending run is active on frozen `5cd6636c`, with the funding and
-Native melee-admission follow-ups included.
+1044, then stops at the same required 135 renewal. The complete unchanged
+two-ending file on frozen `5cd6636c` finishes 0/2 in 2,282.881 seconds. The loose
+route still retreats at Uspallata, now at turn seven after 88 actor orders and
+105 seconds. Its actual tape contains two melee strikes and eleven hand
+changes, so the old repeated hand-switch loop no longer recurs. The installed
+route passes the previous service-renewal boundary and reaches Los Patos, but
+that battle remains active at turn 81 after 943 actor orders and 26,144
+seconds. The original victory assertions and limits remain strict. Neither
+ending nor saved continuation is accepted.
 
 The reviewed mountain funding correction counts current wages through the
 full parallel route, daylight staging and the existing final one-hour service
