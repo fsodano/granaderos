@@ -4,6 +4,12 @@
 > [version 0.1](verification/version-0.1.md) for current scope. Earlier development
 > numbers are internal checkpoints; their features and results are dated history.
 
+## 0.1.7 — 15 October 2026
+
+- Resolve a town representative's income source from the active campaign.
+- Verify real authored conversations, campaign-specific amounts and exact
+  midnight payments through saved continuation.
+
 ## 0.1.6 — 15 October 2026
 
 - Apply resident fortification cover to the actual roof or ground surface occupied
