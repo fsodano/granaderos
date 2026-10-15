@@ -34,6 +34,12 @@
 - Retry a blocked cannon route when only an unrelated body occupies a crew
   contact corner. Preserve valid existing routes and all real destination,
   terrain, wall, crew and action-cost checks.
+- Complete a payable close blade action for an assigned cannon crew member
+  before restoring the rifle. Keep the crew beside its gun and preserve care
+  and cannon priorities.
+- Restore wounded clinic survivors before the separate battery journey. Use
+  finite supplies, actual paid service and one shared 72-hour care allowance.
+  Select the later Córdoba reserve from each soldier's current location.
 - Add current-state regressions and optional terminal save exports for browser
   checks. Saves from earlier builds remain outside the supported scope.
 - Full campaign acceptance remains open. No complete final-source victory or

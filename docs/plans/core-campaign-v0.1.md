@@ -62,8 +62,8 @@ original complete recovery, ending and historical-loss files and their battle
 limits. Every complete run starts fresh. Failed checkpoints are retained as
 passive evidence and are not resumed as diagnostic input.
 
-On reviewed head `bd9bdd95`, campaign quick completes all 115 files and passes
-581/581 tests, with no failures, cancellations or skips. Core quick on its
+On reviewed head `698de752`, campaign quick completes all 116 files and passes
+586/586 tests, with no failures, cancellations or skips. Core quick on its
 ancestor `d0508806` completes all 924 files and passes 7,210/7,210 tests, also
 with no failures, cancellations or skips. These are separate suite results.
 
@@ -82,16 +82,18 @@ The original historical-loss file on `89bf491c` finishes 0/1 in 1,069.733
 seconds. It passes the earlier relief-care guard, then stops because the
 Mendoza battle remains active where victory is required. Its recorded tape
 contains eight actor orders and eighty end-turn orders, with no shot, casualty
-or enemy turn. The complete two-ending file remains active on frozen
-`89bf491c`; its result is pending.
+or enemy turn. That failed result predates the planner correction below.
 
 The reviewed Mendoza planner correction retains each valid existing route,
 then retries a no-progress result without treating an unrelated body in a crew
 contact corner as a blocked destination. All actual translated destinations,
 fixed obstacles, walls, crew and action costs remain checked. Eight affected
 files pass 59/59 tests, including six fresh Native geometry controls. A fresh
-complete historical-loss result remains required.
-The fresh complete historical-loss file is active on frozen `bd9bdd95`.
+complete historical-loss result was required. The fresh unchanged whole file
+now passes 1/1 on frozen `bd9bdd95`, in 821.168 seconds, with no failures,
+cancellations or skips. It verifies actual Mendoza victory, the subsequent
+required-engineer death, campaign defeat, official save decoding and strategic
+refusals. This is a complete historical-loss result, not campaign victory.
 
 The complete original historical-loss run on `aed2760a` finishes 0/1 in 615.589
 seconds. Legal running preparation passes the preceding emergency-aid boundary
@@ -119,11 +121,27 @@ this opt-in. Its affected files pass 57/57 tests, including five fresh Native
 controls with direct, presented and official battle-validator replay. These
 controls do not establish campaign-save or whole-recovery acceptance.
 
-The complete original two-ending file on `d0508806` finishes 0/2 in 2,595.423
-seconds. Loose seed eight retains its physician through Ensenada, then stops
-at an unavailable Uspallata battery arrival cell. Installed seed 1812 cannot
-afford the required renewal for 105 during stable recovery. Its patients and
-paid service remain required. Neither saved ending continuation is accepted.
+The complete original two-ending file on `89bf491c` finishes 0/2 in 2,372.032
+seconds. Loose seed eight passes the arrival guard, then retreats at Uspallata
+at turn seven, after 108 actions and 105 tactical seconds. Installed seed 1812
+passes the earlier medical-renewal failure and wins Uspallata at hour 1044 with
+34,564 pesos, then cannot afford the required renewal for 135 before Los Patos.
+Its patients and paid service remain required. Neither saved ending
+continuation is accepted.
+
+The reviewed Uspallata correction completes a payable close blade action for
+an assigned crew member instead of repeatedly switching back to the rifle.
+It uses the current public Native quote without an approach away from the gun.
+Four complete affected files pass 40/40 tests, including six fresh controls.
+This result does not establish either complete ending.
+
+The reviewed clinic correction restores actual wounded survivors before the
+separate battery journey. Earlier and later care share one 72-hour allowance;
+finite supplies, real hires, paid service and strict patient recovery remain
+required. The later Córdoba cohort uses current locations after the courier's
+actual journey. Seven complete affected files pass 23/23 tests, including four
+fresh controls and official save repetition. The complete opening remains
+required on the combined source.
 
 Separate local corrections retain coordinated roof roles for the already-spent
 road reserve and use legal remaining Uspallata arrival cells for screens. Their

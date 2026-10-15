@@ -72,6 +72,7 @@ export const campaignTestGroups = [
   "tests/paid-route-hiring.test.mjs",
   "tests/salta-hiring.test.mjs",
   "tests/salta-clinic-relief.test.mjs",
+  "tests/salta-early-clinic-preparation.test.mjs",
   "tests/salta-hospital-encounter.test.mjs",
   "tests/prisoner-rescue-route.test.mjs",
   "tests/rescued-first-aid-quote.test.mjs",
@@ -94,6 +95,7 @@ export const campaignTestGroups = [
   "tests/stock-opening-service-retention.test.mjs",
   "tests/stock-port-opening.test.mjs",
   "tests/surplus-equipment-route.test.mjs",
+  "tests/uspallata-crew-melee.test.mjs",
  ]},
  {"id": "scenario", "reason": "Shipped or example campaign data, historical story/mission or default geography acceptance.", files:[
   "tests/army-funding-route.test.mjs",
