@@ -15,6 +15,7 @@ import {syncBattleTime} from '../game/time.js';
 import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
 import {stabilizeOpeningRearSurvivors} from './opening-rear-medical-supply.mjs';
 import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
+import {stageOpeningRearCover} from './opening-rear-guard.mjs';
 
 const clock=c=>c.hour*3600+(c.secondOfHour??0);
 const servingAt=(c,sector)=>c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&!operativeInTransit(c,id)&&operativeLocation(c,id)===sector;});
@@ -102,6 +103,13 @@ export function prepareSaltaClinicSupply(start,{report=()=>{},resolveEncounter,d
  const act=action=>{battle=actBattle(battle,action);preparationBattle=battle;assert.equal(battle.lastError,null,JSON.stringify(action)+': '+battle.lastError);actions.push({action,tactical:true});};
  for(const id of ids){const unitId=String(id),current=battle.units.find(unit=>unit.id===unitId);if((current.tacticalLevel??0)>0){if(current.stance!=='crouched')act({type:'stance',unitId,stance:'crouched'});positions.push({id,...spacePoint(battle.units.find(unit=>unit.id===unitId))});continue;}const roofs=getReachable(battle,battle.units.find(unit=>unit.id===unitId)).filter(point=>(point.tacticalLevel??0)>0&&!occupied.some(other=>sameCell(other,point))&&!positions.some(other=>sameCell(other,point))).map(point=>({...point,neighbors:[...posts,...positions].filter(other=>sameSurface(other,point)&&Math.hypot(other.x-point.x,other.y-point.y)<=1.5).length,distance:[...posts,...positions].reduce((n,other)=>n+Math.hypot(other.x-point.x,other.y-point.y),0)})).sort((a,b)=>b.neighbors-a.neighbors||a.distance-b.distance||a.cost-b.cost||a.y-b.y||a.x-b.x);const destination=roofs[0];assert.ok(destination&&destination.neighbors>0,'The physician and patients need real vacant reachable cover beside the guards.');act({type:'movement',unitId,movement:'walk'});for(let leg=0;!sameCell(battle.units.find(unit=>unit.id===unitId),destination)&&leg<64;leg++)act({type:'move',unitId,...spacePoint(destination)});assert.ok(sameCell(battle.units.find(unit=>unit.id===unitId),destination));act({type:'stance',unitId,stance:'crouched'});positions.push({id,...spacePoint(battle.units.find(unit=>unit.id===unitId))});}
  const synced=syncBattleTime(campaign,battle);assert.equal(synced.error,null);campaign=synced.campaign;battle=synced.battle;order({type:'leaveSector',battleId:campaign.pendingBattle.id,sectorState:battle,survivors:battle.units.filter(unit=>unit.side==='player')});
+ // Newly hired supply carriers outside the clinical squad need their own
+ // actual group and visit before roof movement can address their bodies.
+ // Stage only those new local hires; preserve other residents' earned posts.
+ const reliefIds=hires.map(row=>row.id).filter(id=>!ids.includes(id)&&servingAt(campaign,sector).includes(id)&&(campaign.operativeState[id].residentPosition?.tacticalLevel??0)===0);
+ if(reliefIds.length){
+  const cover=stageOpeningRearCover(campaign,{sector,exclude:servingAt(campaign,sector).filter(id=>!reliefIds.includes(id)),report});campaign=cover.campaign;events.push(cover.receipt);checkBudget();settle();
+ }
  for(const id of campaign.squads.filter(q=>q.location===sector&&!q.journey&&q.members.length).map(q=>q.id)){order({type:'selectSquad',id});for(const operativeId of campaign.squad)order({type:'assignCare',operativeId,assignment:'active'});campaign=finishReloadsBeforeMarch(campaign,{report});}
  order({type:'selectSquad',id:previous});assert.equal(campaign.pendingEncounter,null);assert.equal(campaign.pendingBattle,null);
  for(const [id,r]of Object.entries(before.operativeState)){assert.equal(campaign.operativeState[id].alive,expectedFates.get(id).alive);assert.equal(campaign.operativeState[id].captured,expectedFates.get(id).captured);if(!r.alive){assert.equal(campaign.operativeState[id].alive,false);assert.equal(campaign.operativeState[id].deathMinute,r.deathMinute);}}

@@ -9,6 +9,8 @@ import {doctorRate} from '../game/medical-care.js';
 import {stageOpeningRearCover} from './opening-rear-guard.mjs';
 import {recoverSaltaClinic} from './salta-clinic-supply.mjs';
 import {currentSaltaCordobaReserves} from './salta-route.mjs';
+import {openingRearFormation} from './opening-rear-medical-supply.mjs';
+import {saltaHospitalEncounterExecutor} from './salta-hospital-encounter.mjs';
 
 const clock=c=>c.hour*3600+(c.secondOfHour??0);
 const order=(c,a)=>{const n=dispatchCampaign(c,a);assert.equal(n.lastError,null,JSON.stringify(a)+': '+n.lastError);return n;};
@@ -37,6 +39,8 @@ test('earlier clinical preparation pays real finite relief arrivals and eight Na
  assert.equal(r.supply.collectedDressings,0);assert.ok(r.supply.hires.length>1,'The declared empty cache requires real supplied paid relief.');
  for(const row of r.supply.hires){const quote=contractQuote(start,rosterFor(start).find(op=>op.id===row.id),'day');assert.equal(row.quote.price,quote.price);assert.equal(row.quote.total,quote.total);assert.equal(row.quote.available,true);assert.equal(c.contracts[row.id].paid,quote.price);assert.ok(c.recruited.includes(row.id));assert.equal(c.operativeState[row.id].location,'tucuman');assert.ok(r.supply.actions.some(action=>action.action.type==='recruitCivic'&&action.action.id===row.id));}
  assert.ok(r.supply.hires.every(row=>!start.recruited.includes(row.id)));assert.equal(r.supply.courierAlreadyServing,true);assert.equal(start.operativeState[112].medkits,0);assert.equal(r.supply.doctor,112);
+ assert.ok(r.supply.hires.every(row=>(c.operativeState[row.id].residentPosition?.tacticalLevel??0)>0),'Every actual paid relief carrier reaches roof cover, including those outside the small clinical party.');
+ assert.equal(openingRearFormation(c).allCovered,true);assert.equal(typeof saltaHospitalEncounterExecutor({campaign:c},'tucuman'),'function','Real relief arrivals must retain the covered hospital executor.');
  const issued=2+r.supply.hires.reduce((n,row)=>n+row.kits,0);assert.equal(c.recruited.reduce((n,id)=>n+c.operativeState[id].medkits,0),issued-8);
  assert.ok(r.ticks.filter(t=>t.to>t.from).every(t=>t.usedDressings===1&&t.to-t.from===3600));assert.ok(r.ticks.filter(t=>t.to===t.from).every(t=>t.usedDressings===0));assert.ok(r.elapsedSeconds<=72*3600);const firstPaid=r.ticks.find(t=>t.to>t.from);assert.ok(firstPaid.from>=r.supply.finish[0]*3600+r.supply.finish[1]);assert.ok(firstPaid.to>r.supply.finish[0]*3600+r.supply.finish[1]);
  assert.equal(c.resources.treasury,start.resources.treasury+r.supply.actions.filter(row=>!row.tactical).reduce((n,row)=>n+row.treasuryChange,0)+r.orders.reduce((n,row)=>n+row.treasuryAfter-row.treasuryBefore,0));
