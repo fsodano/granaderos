@@ -10,7 +10,7 @@ import {retainedMilitaryBodies} from './military-remains.js';
 import {placeDetainedPrisoners} from './detention.js';
 import {exteriorComponent,entryTerrainCells} from './sector-entry.js';
 import {beginSectorDeployment} from './sector-deployment.js';
-import {spaceKey,surfacesAtLevel,tacticalLevel,validateTacticalSpace,canWalkBetween} from './tactical-space.js';
+import {spaceKey,surfaceAt,surfacesAtLevel,tacticalLevel,validateTacticalSpace,canWalkBetween} from './tactical-space.js';
 import {physicalEntryAnchor} from './sector-expansion.js';
 import {authoredEnvironment} from './environment-interactions.js';
 import {sceneAnchorFor} from './campaign-scenario.js';
@@ -223,7 +223,7 @@ export function enterSector(request,previous=null,{placement=false}={}){
  const selecting=placement&&!request.exploration&&beginSectorDeployment(state,request),deferred=new Set(state.deployment?.units.map(u=>u.id)??[]);
  // Residents receive their cover now; arriving defenders receive it only at
  // their committed cells, never at the unused automatic arrival positions.
- if(request.defenseGroupId&&request.defenseFort>0)for(const unit of state.units.filter(u=>u.side==='player'&&u.hp>0&&!deferred.has(u.id))){const tile=state.tiles.find(t=>t.x===unit.x&&t.y===unit.y);tile.cover=Math.max(tile.cover??0,Math.min(3,request.defenseFort)*10);}
+ if(request.defenseGroupId&&request.defenseFort>0)for(const unit of state.units.filter(u=>u.side==='player'&&u.hp>0&&!deferred.has(u.id))){const surface=surfaceAt(state,unit);surface.cover=Math.max(surface.cover??0,Math.min(3,request.defenseFort)*10);}
  // Campaign admission binds the issued choices to saved records. This scene
  // builder has only that request; use its admitted map to check local custody.
  const issuedQuests=Object.fromEntries(Object.entries(request.questBeneficiaries??{}).map(([id,beneficiaryId])=>[id,{beneficiaryId}]));

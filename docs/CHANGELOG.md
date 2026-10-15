@@ -4,6 +4,12 @@
 > [version 0.1](verification/version-0.1.md) for current scope. Earlier development
 > numbers are internal checkpoints; their features and results are dated history.
 
+## 0.1.6 — 15 October 2026
+
+- Apply resident fortification cover to the actual roof or ground surface occupied
+  by each defender. Preserve stronger cover and the existing paid fort levels.
+- Align the version file and browser package metadata with this release.
+
 ## 0.1.5 — 15 October 2026
 
 - Keep the route confirmation quote tied to the selected destination while the
