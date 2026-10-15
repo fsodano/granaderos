@@ -31,6 +31,7 @@ import {recoverVisibleRouteDressings} from './route-visible-medical-remains.mjs'
 import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 import {resolveStockNorthernReliefEncounter} from './northern-relief-defense.mjs';
 import {northernEmergencyAid} from './northern-emergency-aid.mjs';
+import {aidNorthernMissionRelief} from './northern-mission-aid.mjs';
 
 // Reinforce and position the real survivors before the arriving counterattack.
 export function prepareHiredNorthernDefense(start){
@@ -254,7 +255,7 @@ function completeCreatedNorthernMission(start,{report=()=>{}}={}){
  const relief=rosterFor(c).filter(op=>c.recruited.includes(op.id)&&c.operativeState[op.id].alive&&!c.operativeState[op.id].captured&&c.operativeState[op.id].location==='salta').sort((a,b)=>Number(b.id===11)-Number(a.id===11)||b.medical-a.medical).slice(0,6).map(op=>op.id);
  assert.ok(relief.includes(11),'the actual living envoy must remain in the relief party');
  order({type:'createSquad',ids:relief,sector:'salta',name:'Socorro de Salta'});
- const p=visit(c),aid=autoBandageBattle(p.battle);c=leave(sync({campaign:p.campaign,battle:aid.battle}));for(const id of relief){assert.ok(c.operativeState[id].hp>=15);assert.equal(c.operativeState[id].bleeding,0,'actual surviving relief receives finite first aid');}
+ c=aidNorthernMissionRelief(c,relief,{report}).campaign;for(const id of relief){assert.ok(c.operativeState[id].hp>=15);assert.equal(c.operativeState[id].bleeding,0,'actual surviving relief receives finite first aid');}
  c=retreatNorthernRear(c,{report});order({type:'diplomacy',kind:'northPact'});
  order({type:'squad',ids:[11]});
  for(let leg=0;leg<16&&c.location!=='tucuman';leg++){c=completeTestTravel(c,{sector:'tucuman',mode:'posta'});c=retreatNorthernRear(c,{report});}
