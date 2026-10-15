@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,presentedActBattle,artilleryContact,artilleryCrewPlan,artilleryCosts,artilleryReloadPreview,stanceCost,exitPreview,teamCanSee} from '../game/tactical.js';
-import {beginSectorDeployment} from '../game/sector-deployment.js';
+import {beginSectorDeployment,sectorDeploymentModel} from '../game/sector-deployment.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {unitAmmunitionByType} from '../game/physical-ammunition.js';
 import {createdUspallataBattery} from './created-uspallata-battery.mjs';
@@ -12,14 +12,16 @@ const flat=()=>Array.from({length:40*24},(_,i)=>({x:i%40,y:Math.floor(i/40),type
 const exit={id:'arena:return',edge:'E',destination:'rear',entryEdge:'W',entryAnchor:{x:0,y:7}};
 // These are declared portable formations, not an earned Uspallata force.
 // Every deployment, separation, departure, reload and dressing uses real orders.
-function arena({deployment=false,wounded=false,hidden=false,emptyGuns=false,crewSlot='primary',crewLoaded=1}={}){
+function arena({deployment=false,wounded=false,hidden=false,emptyGuns=false,crewSlot='primary',crewLoaded=1,narrowArrival=false}={}){
  const positions={founder:[39,23],med:[39,13],c1:[39,11],c2:[38,12],c3:[39,12],c4:[39,8],s1:[37,13],s2:[38,14]};
+ if(narrowArrival)Object.keys(positions).forEach((id,i)=>{positions[id]=[39,8+i];});
  const ids=Object.keys(positions),squad=ids.map((id,i)=>({id,name:id,x:positions[id][0],y:positions[id][1],facing:6,
   weapon:1800,loaded:1,ammo:11,medkits:id==='med'?3:0,medical:id==='med'?90:20,marksmanship:id.startsWith('c')?40+Number(id[1])*5:90,
   stance:id==='med'?'prone':deployment?'standing':'crouched',...(wounded&&id==='c2'?{hp:30,maxHp:100,bleeding:3}:{}),
   ...(id==='c1'?{activeSlot:crewSlot,loaded:crewLoaded}:{}),
   ...(deployment?{entryReason:'arrival',entryEdge:'E',entryAnchor:{x:19,y:7}}:{}),energy:100,fatigue:0,morale:90,inventory:{},strength:90}));
- const b=createBattle(squad,{id:'declared-mountain',width:40,height:24,tiles:flat(),exits:[exit],seed:45,
+ const tiles=flat().map(t=>narrowArrival&&t.x===39&&(t.y<8||t.y>15)?{...t,type:'stone',material:'stone',blocked:true,cover:40}:t);
+ const b=createBattle(squad,{id:'declared-mountain',width:40,height:24,tiles,exits:[exit],seed:45,
   exploration:deployment,deferContact:deployment,
   enemies:[{id:'target',x:deployment||hidden?2:24,y:deployment||hidden?2:11,weapon:0,loaded:0,ammo:0,patrol:false,overwatch:false,hp:500,maxHp:500}],
   artillery:[{id:'heavy',type:'field8',side:'player',x:38,y:11,loaded:!emptyGuns,ammo:emptyGuns?0:2},{id:'small',type:'swivel',side:'player',x:38,y:deployment?10:8,loaded:!emptyGuns,ammo:emptyGuns?0:2}],
@@ -52,6 +54,36 @@ test('native public deployment retains all eight arrivals and gives the real 3+1
  const altered=arena({deployment:true});Object.assign(unit(altered,'target'),{x:4,y:3,name:'Unseen alternative',ammoMusket:99});
  const hiddenEvents=[];factory(altered,e=>hiddenEvents.push(e)).deploy(altered);
  assert.deepEqual(hiddenEvents.filter(e=>e.action).map(e=>e.action),orders,'hidden opposing details cannot choose our roles or preferred arrival cells');
+});
+
+test('eight actual arrivals without a departing reserve fit eight legal border cells and pay for an alternative swivel separation',()=>{
+ const start=arena({deployment:true,narrowArrival:true}),before=structuredClone(start),model=sectorDeploymentModel(start),events=[],helper=createdUspallataBattery(start,{report:event=>events.push(event)});
+ assert.equal(model.entryCells.E.length,8);assert.deepEqual(model.entryCells.E.map(p=>p.y),[8,9,10,11,12,13,14,15]);
+ assert.deepEqual(helper.roles.reserves,[]);assert.equal(helper.roles.screens.length,3);
+ let b=helper.deploy(start);const orders=events.filter(e=>e.event==='uspallataDeploymentOrder').map(e=>e.action);
+ assert.equal(orders.length,9);assert.deepEqual(replay(start,orders),b);assert.deepEqual(start,before);
+ assert.deepEqual(b.artillery,start.artillery);assert.equal(b.elapsedSeconds,start.elapsedSeconds);assert.equal(b.deploymentComplete,true);
+ assert.equal(new Set(own(b).map(u=>`${u.x},${u.y}`)).size,8);
+ for(const actor of own(b))assert.ok(model.entryCells.E.some(p=>p.x===actor.x&&p.y===actor.y));
+ for(const id of helper.roles.screens)for(const gun of b.artillery)assert.equal(artilleryContact(b,unit(b,id),gun),false,'An infantry screen never supplies an implicit cannon crew.');
+ const smallRole=helper.roles.crews.find(crew=>crew.gunId==='small'),initialGuns=structuredClone(b.artillery),initialUnits=structuredClone(own(b));
+ let paid=0;
+ for(let step=0;Math.hypot(piece(b,'small').x-piece(b,'heavy').x,piece(b,'small').y-piece(b,'heavy').y)<3&&step<4;step++){
+  const actor=unit(b,smallRole.ids[0]),small=piece(b,'small'),action=helper.controller(b,actor);
+  assert.equal(action?.type,'artilleryMove');assert.equal(action.artilleryId,'small');
+  const cost=artilleryCosts(b,actor,small).move,plan=artilleryCrewPlan(b,actor,small,cost);assert.equal(plan.reason,null);assert.deepEqual(plan.crew,smallRole.ids);
+  if(step===0)assert.equal(action.x,small.x-1,'The occupied preferred north lane cannot be used; the existing public routine chooses an open west step.');
+  const elapsed=b.elapsedSeconds,ap=actor.ap;orders.push(action);b=replay(b,[action]);paid++;
+  assert.equal(b.elapsedSeconds-elapsed,Math.max(1,Math.ceil(cost*.06)));assert.equal(unit(b,actor.id).ap,ap,'Native exploration charges clock instead of invented AP.');
+ }
+ assert.ok(paid>0&&paid<=4);assert.ok(Math.hypot(piece(b,'small').x-piece(b,'heavy').x,piece(b,'small').y-piece(b,'heavy').y)>=3);
+ assert.deepEqual(piece(b,'heavy'),initialGuns.find(g=>g.id==='heavy'));
+ assert.deepEqual({...piece(b,'small'),x:initialGuns[1].x,y:initialGuns[1].y},initialGuns.find(g=>g.id==='small'));
+ for(const actor of initialUnits){assert.deepEqual(gear(unit(b,actor.id)),gear(actor));assert.equal(unit(b,actor.id).energy,actor.energy);}
+ assert.deepEqual(replay(start,orders),b);assert.deepEqual(start,before);
+ const hidden=arena({deployment:true,narrowArrival:true});Object.assign(unit(hidden,'target'),{x:3,y:2,name:'Otra fuerza no vista',ammo:99});
+ const otherEvents=[];createdUspallataBattery(hidden,{report:event=>otherEvents.push(event)}).deploy(hidden);
+ assert.deepEqual(otherEvents.filter(e=>e.event==='uspallataDeploymentOrder').map(e=>e.action),orders.filter(a=>a.type==='placeDeployment'||a.type==='confirmDeployment'));
 });
 
 test('required founder pays the real exit before the swivel separates, with finite property and complete saved replay',()=>{

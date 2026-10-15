@@ -44,8 +44,9 @@ export function createdUspallataBattery(initial,{reserveIds=[],reserveDestinatio
   let battle=start;const model=sectorDeploymentModel(battle);assert.ok(model);
   assert.deepEqual(model.units.map(u=>u.id).sort(),own.map(u=>u.id).sort());
   const occupied=new Set(guns.map(g=>`${g.x},${g.y}`)),placements=[];
-  const place=(id,accept,score)=>{
-   const row=model.units.find(u=>u.id===id),points=model.entryCells[row.edge].filter(p=>!occupied.has(`${p.x},${p.y}`)&&accept(p));
+  const place=(id,accept,score,fallback=null)=>{
+   const row=model.units.find(u=>u.id===id),available=model.entryCells[row.edge].filter(p=>!occupied.has(`${p.x},${p.y}`));
+   let points=available.filter(accept);if(!points.length&&fallback)points=available.filter(fallback);
    points.sort((a,b)=>score(a)-score(b)||a.y-b.y||a.x-b.x);const point=points[0];assert.ok(point,`A real arrival cell must supply ${id}'s battery role.`);
    const action={type:'placeDeployment',unitIds:[id],x:point.x,y:point.y};battle=sectorDeploymentAction(battle,action);assert.equal(battle.lastError,null,battle.lastError);occupied.add(`${point.x},${point.y}`);placements.push({id,...point});emit('uspallataDeploymentOrder',action,battle);
   };
@@ -64,7 +65,14 @@ export function createdUspallataBattery(initial,{reserveIds=[],reserveDestinatio
   const clearance=new Set([1,2].flatMap(step=>[small,smallPosition].map(p=>`${p.x+step*delta.x},${p.y+step*delta.y}`)));
   const outsideCrews=p=>!clearance.has(`${p.x},${p.y}`)&&guns.every(g=>distance(p,g)>(g.type==='swivel'?2.5:1.5));
   place(physician.id,outsideCrews,p=>Math.min(...placements.filter(p=>crewIds.has(p.id)).map(q=>distance(p,q))));
-  for(const id of screens)place(id,p=>outsideCrews(p)&&guns.some(g=>distance(p,g)<=5),p=>Math.min(...guns.map(g=>distance(p,g)))-(surfaceAt(start,p)?.cover??0)*.1);
+  for(const id of screens){
+   const actor=own.find(u=>u.id===id),view=publicRouteView(start,actor);
+   // A narrow real entry can need the preferred separation lane. Keep this
+   // screen outside actual cannon contact; paid separation still checks every
+   // translated gun/crew cell and can choose a different open direction.
+   place(id,p=>outsideCrews(p)&&guns.some(g=>distance(p,g)<=5),p=>Math.min(...guns.map(g=>distance(p,g)))-(surfaceAt(start,p)?.cover??0)*.1,
+    p=>guns.some(g=>distance(p,g)<=5)&&guns.every(g=>!artilleryContact(view,{...actor,...p},g)));
+  }
   const action={type:'confirmDeployment'};battle=sectorDeploymentAction(battle,action);assert.equal(battle.lastError,null,battle.lastError);emit('uspallataDeploymentOrder',action,battle);
   assert.deepEqual(battle.artillery,start.artillery);assert.equal(new Set(battle.units.filter(u=>u.side==='player').map(u=>`${u.tacticalLevel??0}:${u.x},${u.y}`)).size,own.length);
   report({event:'uspallataBatteryRoles',reserves:[...reserves],physicianId:physician.id,crews:structuredClone(crews),screens:[...screens],placements,campaignBattleId:battle.battleId});return battle;
