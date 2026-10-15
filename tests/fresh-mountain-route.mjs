@@ -322,8 +322,8 @@ order({type:'beginAssault',sector:'uspallata'});
  assert.deepEqual(c.pendingBattle.squad.map(unit=>unit.id).sort((a,b)=>a-b),field.slice().sort((a,b)=>a-b));return c;
 }
 
-// Recover finite field dressings and give real first aid before the return.
-// Hire an actual available doctor and retain every intended serving survivor.
+// Treat actual escapees where they arrived, then march them back to the pass.
+// Issued return records keep unrelated people outside this recovery party.
 export function recoverFreshUspallataDepartures(start,{report=()=>{}}={}){
  let c=decodeSave(encodeSave(start)).campaign;
  const original=structuredClone(start),selected=c.activeSquadId,selectedMembers=[...c.squad],ledger=c.sectorStates.uspallata?.returnLedger;
@@ -375,6 +375,8 @@ export function recoverFreshUspallataDepartures(start,{report=()=>{}}={}){
  }
 }
 
+// Recover finite field dressings and give real first aid before the return.
+// Hire an actual available doctor and retain every intended serving survivor.
 export function recoverFreshUspallata(start,{batteryIds=null,report=()=>{}}={}){
  let c=recoverFreshUspallataDepartures(start,{report});
  const retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report});

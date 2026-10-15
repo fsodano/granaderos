@@ -87,6 +87,17 @@ remain guarded. Complete fresh-route acceptance still requires a new result.
 On `7a344fc6`, all 131 quick campaign files pass 691/691 tests, with no
 failures, skips or cancellations. The scope and runner controls pass 29/29.
 
+The reviewed escapee recovery is integrated as `81386258` from `fdcf48d5`.
+It matches actual Uspallata return records and arrivals, treats the escaped
+party at its current safe destination, then pays normal march and service
+orders before local recovery groups are formed. All eight affected files
+pass 75/75 tests. Fresh controls earn both wounds and departures through Native
+orders, spend two finite dressings, return in four hours, and bring the real
+local crew from two people to four so the field gun and swivel can be stored.
+Missing supplies retain the actual stopped care pair. Prior casualties,
+gun records, crew requirements and original battle limits stay intact.
+This bounded result still needs complete fresh ending acceptance.
+
 On reviewed head `15d392e6`, campaign quick completes all 126 files and passes
 655/655 tests, with no failures, cancellations or skips. The initial isolated
 checkout lacked web dependencies; its seven module-resolution failures were

@@ -107,6 +107,7 @@ export const campaignTestGroups = [
   "tests/stock-port-opening.test.mjs",
   "tests/surplus-equipment-route.test.mjs",
   "tests/uspallata-crew-melee.test.mjs",
+  "tests/uspallata-escaped-survivors.test.mjs",
   "tests/uspallata-physician-approach.test.mjs",
   "tests/uspallata-physician-follow.test.mjs",
  ]},
