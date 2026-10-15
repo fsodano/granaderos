@@ -168,7 +168,9 @@ The complete two-ending file on frozen `44851724` also finishes 0/2, in
 2,271.201 seconds. The loose route retreats at Uspallata with the same turn,
 action and elapsed-time totals. The installed route wins Uspallata at hour
 1044, then stops at the same required 135 renewal. The newer full mountain
-funding correction still needs a complete ending result.
+funding correction still needs a complete ending result. A fresh unchanged
+whole two-ending run is active on frozen `5cd6636c`, with the funding and
+Native melee-admission follow-ups included.
 
 The reviewed mountain funding correction counts current wages through the
 full parallel route, daylight staging and the existing final one-hour service
@@ -185,6 +187,15 @@ an assigned crew member instead of repeatedly switching back to the rifle.
 It uses the current public Native quote without an approach away from the gun.
 Four complete affected files pass 40/40 tests, including six fresh controls.
 This result does not establish either complete ending.
+
+Passive review of the later `44851724` failure confirms that the intended
+Uspallata executor ran, but its tape contains 33 hand switches and no melee.
+The target filter excluded living routed or critical enemies that Native
+melee quotes admit. A narrow follow-up uses the public Native quote while
+preserving the attacker, crew, aid and cannon checks. Fresh routed and
+critical controls fail before that correction; eight complete affected files
+then pass 51/51, including hidden, unavailable and actual departed targets.
+The complete ending remains required.
 
 The reviewed clinic correction restores actual wounded survivors before the
 separate battery journey. Earlier and later care share one 72-hour allowance;

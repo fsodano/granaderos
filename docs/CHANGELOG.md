@@ -40,7 +40,8 @@
   terrain, wall, crew and action-cost checks.
 - Complete a payable close blade action for an assigned cannon crew member
   before restoring the rifle. Keep the crew beside its gun and preserve care
-  and cannon priorities.
+  and cannon priorities. Use Native target admission for living routed or
+  critical enemies.
 - Restore wounded clinic survivors before the separate battery journey. Use
   finite supplies, actual paid service and one shared 72-hour care allowance.
   Select the later Córdoba reserve from each soldier's current location.
