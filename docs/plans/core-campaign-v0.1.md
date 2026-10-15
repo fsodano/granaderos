@@ -62,8 +62,8 @@ original complete recovery, ending and historical-loss files and their battle
 limits. Every complete run starts fresh. Failed checkpoints are retained as
 passive evidence and are not resumed as diagnostic input.
 
-On reviewed head `44851724`, campaign quick completes all 118 files and passes
-596/596 tests, with no failures, cancellations or skips. The initial isolated
+On reviewed head `9eacbd89`, campaign quick completes all 121 files and passes
+618/618 tests, with no failures, cancellations or skips. The initial isolated
 checkout lacked web dependencies; its seven module-resolution failures were
 retained separately, then the complete rerun passed with verified dependencies.
 Runner, scope and CI-selection controls pass 32/32. Core quick on its
@@ -79,7 +79,8 @@ carriers their own small groups, visits and paid roof movements. It preserves
 the clinical party and other residents' positions. Seven complete affected
 files pass 39/39 tests, including finite care, persisted roof positions, actual
 executor selection and official fresh-save repetition. This focused result
-does not establish a complete opening victory.
+does not establish a complete opening victory. A fresh complete opening
+is active on frozen `9eacbd89`; its result is pending.
 
 The complete original opening on `df62e17a` still fails: five tests pass, two
 fail and one skips, in 409.432 seconds. The finite donor transfer and the following complete
