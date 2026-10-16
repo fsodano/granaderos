@@ -226,12 +226,12 @@ export default function JA2Inventory({campaignContext,cursorLevel=0,onCursorLeve
           {def('repair')?.detail && <small>{def('repair')?.detail}</small>}
         </div>
       </div>
-</div></details>      </div>
       {battle.upperSurfaces?.length>0&&<div className="ja2-elevation-controls" role="group" aria-label="Altura y accesos">
         {onCursorLevelChange&&<InventoryCursorLevel level={cursorLevel} onChange={onCursorLevelChange}/>}
         <span>Combatiente: {tacticalLevel(unit)===0?'Suelo':'Nivel superior'}</span>
         {accessStepsFrom(battle,unit).map((step:any)=>{const preview=climbPreview(battle,unit,{linkId:step.linkId});return <span key={step.linkId}><button className="line-button" disabled={busy||!preview.valid} title={preview.reason||undefined} onClick={()=>onOrder({type:'climb',linkId:step.linkId})}>{tacticalLevel(step)>tacticalLevel(unit)?'Subir':'Bajar'}{preview.pa>0?` · ${cost(preview.pa)}`:''}</button>{preview.reason&&<small>{preview.reason}</small>}</span>;})}
       </div>}
+</div></details>      </div>
       <div className="ja2-stats">
         {inv.stats.map((st: any) => <div key={st.id}><span>{st.label}</span><b>{st.value}</b></div>)}
         <div className="inventory-health"><span>Salud</span><b>{unit.hp<=0?'Muerto':`${Math.ceil(unit.hp)} / ${unit.maxHp}`}</b></div>

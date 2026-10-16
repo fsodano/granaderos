@@ -4,6 +4,12 @@
 > [version 0.1](verification/version-0.1.md) for current scope. Earlier development
 > numbers are internal checkpoints; their features and results are dated history.
 
+## 0.1.11 — 16 October 2026
+
+- Keep tactical inventory rows within the phone panel.
+- Group height and access controls with posture controls to preserve space for
+  the equipment grid.
+
 ## 0.1.10 — 16 October 2026
 
 - Expose nearby items, doors and containers through a separate Entorno control
