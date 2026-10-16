@@ -4,6 +4,12 @@
 > [version 0.1](verification/version-0.1.md) for current scope. Earlier development
 > numbers are internal checkpoints; their features and results are dated history.
 
+## 0.1.9 — 16 October 2026
+
+- Show remaining recruitment contract time in short hours and minutes instead of
+  raw fractional hours. Preserve exact contract timing and prices.
+- Verify the display and existing contract controls: 25 focused tests passed.
+
 ## 0.1.8 — 15 October 2026
 
 - Start the standalone San Lorenzo battle at its authored 08:00 daytime clock.
