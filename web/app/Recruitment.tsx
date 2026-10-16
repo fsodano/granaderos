@@ -10,6 +10,7 @@ import {filterMercenaries} from '../../game/mercenary-catalogue.js';
 import {isContractOperative} from '../../game/content-character-ids.js';
 import {characterProfile,characterAbilityDescriptions} from '../../game/characters.js';
 import {portraitFor} from '../lib/portraits';
+import {travelTime} from '../lib/travel-time';
 import CharacterDossier from './CharacterDossier';
 import ServiceRefusalNotice from './ServiceRefusalNotice';
 import PreferredCompanionsSummary from './PreferredCompanionsSummary';
@@ -73,7 +74,7 @@ export default function Recruitment({state:s,dispatch}:Props){
      {cancellationReason&&<small role="status">{cancellationReason}</small>}
      <button className="dossier-link" disabled={busy||Boolean(cancellationReason)} title={cancellationReason||undefined} onClick={()=>dispatch({type:'cancelHireArrival',id:o.id,...(arrival.guaranteeId?{expectedGuaranteeId:arrival.guaranteeId}:{})})}>Cancelar llegada · recuperar {arrival.paid+(guarantee?.state==='held'?guarantee.amount:0)} pesos</button>
     </>:<>
-     {hired&&<p className="contract-remaining">{contract?.remaining===null?'Servicio permanente':`${contract?.remaining??0} horas de contrato restantes`}</p>}
+     {hired&&<p className="contract-remaining">{contract?.remaining===null?'Servicio permanente':`${travelTime(contract?.remaining??0)} de contrato restantes`}</p>}
      {!hired&&<small>{hours?`Viaje previsto: ${hours} horas.`:'Llegada inmediata a un destino seguro.'}</small>}
      <ServiceObjectionNotice reason={objection}/>
      <ContractMoraleNotice status={moraleStatus}/>
