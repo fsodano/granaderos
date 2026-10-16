@@ -144,7 +144,7 @@ export default function JA2Inventory({campaignContext,cursorLevel=0,onCursorLeve
   const [managedReference, setManagedItem] = useState('');
   const [inspectedSlot,setInspectedSlot]=useState('');
   const [dressingsSelection,setDressingsSelection]=useState<{key:string;expectedSource:string}|null>(null);
-  const managedItem=inspectedSlot?equipmentEndpoint(unit,inspectedSlot).item??managedReference:managedReference;
+  const managedItem=inspectedSlot?equipmentEndpoint(unit,inspectedSlot).item??'':managedReference;
   const [quantity, setQuantity] = useState(1);
   const [recipient, setRecipient] = useState('');
   const [lootId, setLootId] = useState('');
@@ -155,7 +155,7 @@ export default function JA2Inventory({campaignContext,cursorLevel=0,onCursorLeve
   const [contentQuantity, setContentQuantity] = useState(1);
   const [contentSource,setContentSource]=useState<{targetKey:string;expectedSource:string}|null>(null);
   // An emptied inspected slot must not silently select another possession.
-  const item = inv.items.find((entry: any) => entry.item === managedItem) || (managedItem ? null : inv.items[0]);
+  const item = inv.items.find((entry: any) => entry.item === managedItem) || (managedItem || inspectedSlot ? null : inv.items[0]);
   const count = Math.min(quantity, item?.count ?? 1);
   const handling = inventoryHandlingModel(battle, unit, {item: item?.item, count, targetId: recipient, busy});
   const nearby = nearbyLootOptions(battle, unit);
