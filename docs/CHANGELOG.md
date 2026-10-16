@@ -9,6 +9,8 @@
 - Keep tactical inventory rows within the phone panel.
 - Group height and access controls with posture controls to preserve space for
   the equipment grid.
+- Let the inventory portrait shrink on short desktop panels so the posture
+  controls stay visible.
 
 ## 0.1.10 — 16 October 2026
 
