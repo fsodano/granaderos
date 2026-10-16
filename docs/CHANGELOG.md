@@ -4,7 +4,7 @@
 > [shipping campaign plan](plans/core-campaign-v0.1.md) for current scope. Earlier development
 > numbers are internal checkpoints; their features and results are dated history.
 
-## 0.1.6 — Unreleased candidate
+## Unreleased campaign validation
 
 - Correct paid road duty, finite ammunition redistribution and ordered medical
   care in fresh campaign validation.
@@ -69,6 +69,48 @@
   checks. Saves from earlier builds remain outside the supported scope.
 - Full campaign acceptance remains open. No complete final-source victory or
   saved 48-hour continuation is claimed by the focused checks.
+
+## 0.1.11 — 16 October 2026
+
+- Keep tactical inventory rows within the phone panel.
+- Group height and access controls with posture controls to preserve space for
+  the equipment grid.
+- Let the inventory portrait shrink on short desktop panels so the posture
+  controls stay visible.
+
+## 0.1.10 — 16 October 2026
+
+- Expose nearby items, doors and containers through a separate Entorno control
+  in tactical inventory. Keep its panel separate from selected-item details.
+- Keep the two panels mutually exclusive and retain normal keyboard focus
+  and scrolling without increasing HUD height.
+- Verify the existing inventory, environment and equipment controls: 33 focused
+  tests passed.
+
+## 0.1.9 — 16 October 2026
+
+- Show remaining recruitment contract time in short hours and minutes instead of
+  raw fractional hours. Preserve exact contract timing and prices.
+- Verify the display and existing contract controls: 25 focused tests passed.
+
+## 0.1.8 — 15 October 2026
+
+- Start the standalone San Lorenzo battle at its authored 08:00 daytime clock.
+  The new campaign retains its separate midnight start.
+- Verify the real launcher path, its chosen force and the absence of campaign
+  save writes when starting the standalone battle.
+
+## 0.1.7 — 15 October 2026
+
+- Resolve a town representative's income source from the active campaign.
+- Verify real authored conversations, campaign-specific amounts and exact
+  midnight payments through saved continuation.
+
+## 0.1.6 — 15 October 2026
+
+- Apply resident fortification cover to the actual roof or ground surface occupied
+  by each defender. Preserve stronger cover and the existing paid fort levels.
+- Align the version file and browser package metadata with this release.
 
 ## 0.1.5 — 15 October 2026
 

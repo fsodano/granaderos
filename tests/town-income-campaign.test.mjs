@@ -1,7 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
-import {defaultContentPackage} from '../game/content-package.js';
+import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {defaultContentPackage,validateContentPackage} from '../game/content-package.js';
+import {scaffoldDocuments} from '../game/campaign-scaffold.js';
+import {compileCampaignPackage} from '../game/campaign-library.js';
+import {contractQuote} from '../game/contracts.js';
 import {defaultStartingTerritory} from '../game/content-territory.js';
 import {enterSector} from '../game/world.js';
 import {endTurn} from '../game/tactical.js';
@@ -81,4 +84,45 @@ test('ordinary tactical rest crosses midnight and repeated synchronization canno
  campaign=order(campaign,{type:'visitSector'});const battle=endTurn(enterSector(campaign.pendingBattle));assert.equal(battle.lastError,null);
  const pair=syncBattleTime(campaign,battle);assert.equal(pair.error,null);assert.equal(pair.campaign.resources.treasury,campaign.resources.treasury+8000);assert.equal(pair.campaign.townIncome.lastPaidDay,1);
  const restored=saved(pair.campaign,pair.battle),same=syncBattleTime(restored.campaign,restored.battle);assert.equal(same.error,null);assert.deepEqual(same.campaign,restored.campaign);
+});
+
+test('an authored representative activates only the selected campaign amount through a real saved conversation and exact midnight payment',()=>{
+ const stock=structuredClone(TOWN_INCOME_SOURCES),clock=c=>c.hour*3600+(c.secondOfHour??0),results=[];
+ for(const amount of [137,911]){
+  // Both independent campaigns deliberately use the same local NPC/source
+  // identity. All resources, reception, placement and rates precede factories.
+  const d=scaffoldDocuments(`income-context-${amount}`),base=d.content.characters[0],resident={...structuredClone(base),id:'representative',name:'Representante propio',nickname:'Representante',recruitmentSource:'encounter',service:'permanent',monthlyPay:0,weapon:null,
+   encounter:{recruitable:false,greeting:'El acuerdo de esta campaña.',requiredLeadership:0,requiredLiberated:0,requiredSector:null}};
+  delete resident.arrivalHours;
+  d.content.characters=[{...structuredClone(base),id:'visitor',name:'Visitante',nickname:'Visitante',monthlyPay:30,arrivalHours:0,weapon:null},resident];
+  d.content.placements=[{id:'representative-post',character:'representative',mode:'fixed',sectors:['camp'],moveChance:100,afterDeath:null,delayMin:0,delayMax:0}];
+  d.content.rules.startingTreasury=1000;d.content.rules.deploymentCartridges=0;d.content.campaignStory.chapters[0].conditions=[{type:'day',min:100,max:null}];
+  d.world.expansion.buildingTargets.camp=0;
+  d.maps.camp.spawns=d.maps.camp.spawns.map(spawn=>spawn.side==='player'?{...spawn,x:12,y:8}:spawn);
+  const source={id:'own-income',name:'Acuerdo propio',source:'Acuerdo local',sectorId:'camp',requiredSectors:['camp'],dailyAmount:amount,representative:{npcId:'authored-representative',name:'Representante propio',sectorId:'camp'}};
+  d.world.incomeSources=[source];
+  const declaration=structuredClone(d),content=compileCampaignPackage(d.manifest,d);assert.deepEqual(validateContentPackage(content),[]);
+  let campaign=initialCampaign(42,content);assert.equal(campaign.resources.treasury,1000);assert.equal(dailyIncome(campaign),0);assert.deepEqual(campaign.townIncome.activations,{});
+  const visitor=rosterFor(campaign).find(op=>op.contentId==='visitor'),quote=contractQuote(campaign,visitor,'month');
+  campaign=order(campaign,{type:'recruitCivic',id:visitor.id,term:'month',destination:'camp'});assert.equal(campaign.resources.treasury,1000-quote.total);
+  const beforeVisit=structuredClone(campaign),cash=campaign.resources.treasury;campaign=order(campaign,{type:'visitSector'});
+  let battle=enterSector(campaign.pendingBattle);battle=approachNPC(battle,String(visitor.id),source.representative.npcId);
+  const near=syncBattleTime(campaign,battle);assert.equal(near.error,null);assert.ok(clock(near.campaign)>clock(beforeVisit),'The physical meeting consumes actual tactical time.');
+  const action={type:'talkNPC',unitId:visitor.id,npcId:source.representative.npcId,approach:'direct',sectorState:near.battle};
+  campaign=order(near.campaign,action);assert.equal(campaign.lastConversation.outcome,'incomeActivated');assert.equal(campaign.resources.treasury,cash,'Conversation records an agreement without an advance payment.');
+  assert.equal(dailyIncome(campaign),amount);assert.deepEqual(Object.keys(campaign.townIncome.activations),[source.id]);
+  const receipt=campaign.townIncome.activations[source.id];assert.equal(receipt.npcId,source.representative.npcId);assert.equal(receipt.sectorId,'camp');assert.equal(receipt.hour,campaign.hour);assert.equal(receipt.secondOfHour,campaign.secondOfHour??0);
+  assert.deepEqual(campaign.conversations[source.representative.npcId].incomeActivation,receipt);
+  const contact=saved(near.campaign,near.battle),replayed=order(contact.campaign,{...action,sectorState:contact.battle});assert.deepEqual(replayed,campaign);
+  const pair=saved(campaign,near.battle);assert.deepEqual(pair,{campaign,battle:near.battle});
+  campaign=order(pair.campaign,{type:'leaveSector',battleId:pair.campaign.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(unit=>unit.side==='player')});
+  assert.equal(campaign.resources.treasury,cash);const boundary=(Math.floor(clock(campaign)/86400)+1)*86400;
+  for(let n=0;clock(campaign)<boundary-1&&n<32;n++)campaign=order(campaign,{type:'advanceStrategicTime',seconds:Math.min(3600,boundary-1-clock(campaign))});
+  assert.equal(clock(campaign),boundary-1);assert.equal(campaign.resources.treasury,cash);
+  const beforePayment=saved(campaign).campaign,paid=order(campaign,{type:'advanceStrategicTime',seconds:1});
+  assert.equal(clock(paid),boundary);assert.equal(paid.resources.treasury,cash+amount);assert.equal(paid.townIncome.lastPaidDay,Math.floor(boundary/86400));assert.deepEqual(order(beforePayment,{type:'advanceStrategicTime',seconds:1}),paid);
+  const continued=order(saved(paid).campaign,{type:'advanceStrategicTime',seconds:1});assert.equal(continued.resources.treasury,cash+amount);assert.deepEqual(continued.townIncome.activations,campaign.townIncome.activations);
+  assert.deepEqual(d,declaration);assert.deepEqual(TOWN_INCOME_SOURCES,stock);results.push({amount,cash,paid:paid.resources.treasury});
+ }
+ assert.deepEqual(results.map(row=>row.paid-row.cash),[137,911],'The shared NPC/source IDs cannot use another campaign rate or a stock port amount.');
 });
