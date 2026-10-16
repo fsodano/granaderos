@@ -1,4 +1,4 @@
-import {canSee,teamCanSee,getReachable,actionCosts,stanceCost,firearmShotOptions} from '../game/tactical.js';
+import {canSee,teamCanSee,getReachable,actionCosts,stanceCost,firearmShotOptions,climbPreview} from '../game/tactical.js';
 import {chooseEnemyAction} from '../game/tactical-ai.js';
 import {combatOrder} from './opening-driver.mjs';
 import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
@@ -21,6 +21,9 @@ export function cautiousCombatOrder(state,unit){
  const contact=state.units.some(other=>other.side!==unit.side&&other.hp>0&&!other.departure&&!other.surrendered&&!other.unconscious&&canSee(state,unit,other));
  const known=unit.lastKnownEnemy??unit.lastHeardNoise,age=state.turn-(known?.turn??-Infinity);
  const order=contact||age>=0&&age<=3?chooseEnemyAction(state,unit):combatOrder(state,unit);
+ // The personal-sight chooser may not see an occupied landing. Match the
+ // public climb button's current Native admission before issuing that order.
+ if(order?.type==='climb')return climbPreview(state,unit,order).valid?order:null;
  if(order?.type!=='move')return order;
  // The autonomous policy uses personal sight. Player squad control must also
  // respect occupancy reported by teammates before confirming its destination.

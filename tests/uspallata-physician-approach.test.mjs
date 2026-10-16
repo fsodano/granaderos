@@ -85,7 +85,7 @@ test('one real dressing cannot fund a second critical stroke or a new posture',(
 });
 
 test('a blocked aid route does not justify an upright preparation',()=>{
- const start=arena({blocked:true}),before=structuredClone(start),doctor=unit(start,'doctor'),action=createdUspallataBattery(start).controller(start,doctor);assert.deepEqual(action,formerOrder(start,doctor));assert.notEqual(action?.movement,'walk');if(action)replay(start,[action]);assert.deepEqual(start,before);
+ const start=arena({blocked:true}),before=structuredClone(start),doctor=unit(start,'doctor'),action=createdUspallataBattery(start).controller(start,doctor);assert.equal(formerOrder(start,doctor)?.type,'move');assert.equal(action,null);assert.equal(doctor.stance,'prone');assert.notEqual(action?.movement,'walk');if(action)replay(start,[action]);assert.deepEqual(start,before);
 });
 
 test('an unaffordable aid window cannot borrow posture or approach AP',()=>{

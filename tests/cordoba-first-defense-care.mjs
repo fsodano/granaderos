@@ -13,10 +13,12 @@ const saved=s=>decodeSave(encodeSave(s)).campaign;
 
 // The first defense can wound the clinic while its courier is still away.
 // Use known finite linen and real paid staff before that journey resumes.
-export function stabilizeCordobaFirstDefense(start,{report=()=>{}}={}){
+export function stabilizeCordobaFirstDefense(start,{report=()=>{},deadlineSeconds=Infinity}={}){
  let c=saved(start);const before=structuredClone(start),orders=[],hires=[],renewals=[],linen=[],ticks=[];
  assert.equal(c.pendingEncounter,null);assert.equal(c.pendingBattle,null);assert.equal(c.sectors.cordoba.owner,'patriot');
- const order=action=>{c=dispatchCampaign(c,action);assert.equal(c.lastError,null,JSON.stringify(action)+': '+c.lastError);orders.push(structuredClone(action));};
+ const limit=(seconds=0)=>{assert.ok(deadlineSeconds===Infinity||Number.isSafeInteger(deadlineSeconds));assert.ok(clock(c)+seconds<=deadlineSeconds,'First-defence care must fit the original absolute recovery deadline.');};
+ const check=()=>{limit();if(deadlineSeconds!==Infinity){assert.equal(c.pendingEncounter,null,'Resolve the actual interruption before first-defence care continues.');assert.equal(c.pendingBattle,null);}};
+ const order=action=>{limit(action.type==='wait'?action.hours*3600:0);c=dispatchCampaign(c,action);assert.equal(c.lastError,null,JSON.stringify(action)+': '+c.lastError);orders.push(structuredClone(action));check();};
  const local=()=>c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&!operativeInTransit(c,id)&&operativeLocation(c,id)==='cordoba';});
  const urgent=()=>local().filter(id=>{const r=c.operativeState[id];return r.bleeding>0||r.hp<15;});
  const cohort=local(),patients=urgent();
@@ -28,7 +30,9 @@ export function stabilizeCordobaFirstDefense(start,{report=()=>{}}={}){
   order({type:'sectorInventory',sector:'cordoba',operativeId:doctor.id,direction:'take',sourceKey:row.key,expected:row.expected,count});
   assert.equal(c.operativeState[doctor.id].medkits,carried+count);linen.push({operativeId:doctor.id,sourceKey:row.key,expected:row.expected,count,kind:row.kind});return true;
  };
+ try{
  for(let hour=0;urgent().length&&hour<12;hour++){
+  limit(3600);
   assert.equal(c.pendingEncounter,null);assert.equal(c.pendingBattle,null);
   let doctor=physicians()[0];assert.ok(doctor,'critical clinic care requires a living stable local physician');
   if(!c.operativeState[doctor.id].medkits&&!takeKnownLinen(doctor)){
@@ -36,7 +40,7 @@ export function stabilizeCordobaFirstDefense(start,{report=()=>{}}={}){
    // A week covers treatment and the interrupted long walking courier trip.
    const replacement=rosterFor(c).filter(op=>{const r=c.operativeState[op.id],quote=contractQuote(c,op,'week');return civicStatus(c,op.id).available&&!c.recruited.includes(op.id)&&r.alive&&!r.captured&&op.medical>=20&&r.medkits>0&&hiringTravelHours(c,op.id)===0&&quote.available&&quote.total<=c.resources.treasury;}).sort((a,b)=>contractQuote(c,a,'week').total-contractQuote(c,b,'week').total||b.medical-a.medical||a.id-b.id)[0];
    assert.ok(replacement,'known finite linen or an actual supplied paid medic is required before time resumes');
-   const booked=bookRouteHires(c,[replacement.id],{term:'week',destination:'cordoba',report});c=finishRouteHireArrivals(booked.campaign,booked.hires,{minimumWaitHours:0,report});hires.push(...booked.hires);
+   const booked=bookRouteHires(c,[replacement.id],{term:'week',destination:'cordoba',report});c=booked.campaign;check();c=finishRouteHireArrivals(c,booked.hires,{minimumWaitHours:0,report});check();hires.push(...booked.hires);
    orders.push({type:'recruitCivic',id:replacement.id,term:'week',destination:'cordoba'});
    const count=c.operativeState[replacement.id].medkits;assert.ok(count>0);assert.equal(new Set(hires.map(h=>h.id)).size,hires.length);
    doctor=physicians()[0];
@@ -72,6 +76,10 @@ export function stabilizeCordobaFirstDefense(start,{report=()=>{}}={}){
  for(const id of local())order({type:'assignCare',operativeId:id,assignment:'rest'});
  for(const [id,r]of Object.entries(before.operativeState)){assert.equal(c.operativeState[id].captured,r.captured);if(!r.alive){assert.equal(c.operativeState[id].alive,false);assert.equal(c.operativeState[id].deathMinute,r.deathMinute);}}
  const otherDeaths=Object.keys(before.operativeState).filter(id=>before.operativeState[id].alive&&!c.operativeState[id].alive).map(Number);assert.ok(otherDeaths.every(id=>!before.recruited.includes(id)));
- const receipt={event:'cordobaFirstDefenseCare',cohort,patients,hires,orders,renewals,linen,ticks,otherDeaths,dressingsSpent:ticks.length,startSeconds:clock(start),endSeconds:clock(c),treasuryBefore:start.resources.treasury,treasuryAfter:c.resources.treasury};
+ const receipt={event:'cordobaFirstDefenseCare',cohort,patients,hires,orders,renewals,linen,ticks,otherDeaths,dressingsSpent:ticks.length,startSeconds:clock(start),endSeconds:clock(c),treasuryBefore:start.resources.treasury,treasuryAfter:c.resources.treasury,...(deadlineSeconds===Infinity?{}:{deadlineSeconds})};
  assert.deepEqual(start,before);c=saved(c);report(receipt);return {campaign:c,receipt};
+ }catch(error){
+  if(deadlineSeconds!==Infinity&&error&&typeof error==='object'){error.campaign??=c;error.cordobaFirstDefenseCare={cohort,patients,orders,hires,renewals,linen,ticks,deadlineSeconds,startSeconds:clock(start),endSeconds:clock(c),completed:false};}
+  throw error;
+ }
 }

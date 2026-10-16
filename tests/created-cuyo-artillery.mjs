@@ -272,7 +272,7 @@ export function returnCreatedCuyoArsenalField(start,field,{report=()=>{}}={}){
  }catch(error){if(error?.campaign)c=error.campaign;if(error&&typeof error==='object')error.campaign=c;recordRouteStrategicEvidence({helper:'returnCreatedCuyoArsenalField',stage:'preparation-failure',campaign:c,error,context:{field,survivors,remote,columns}});throw error;}
 }
 
-export function recoverCreatedCuyoMountainArtillery(start,{report=()=>{},onCheckpoint=()=>{},preserveMedicalReserve=false,coordinateSupportStaging=false,coordinateRearFormation=false}={}){
+export function recoverCreatedCuyoMountainArtillery(start,{report=()=>{},onCheckpoint=()=>{},preserveMedicalReserve=false,coordinateRifleCover=false,coordinateSupportStaging=false,coordinateRearFormation=false}={}){
  const before=structuredClone(start),oldDeaths=Object.entries(start.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
  const spent=Object.entries(start.artilleryDepots??{}).flatMap(([sector,guns])=>guns.filter(g=>!g.loaded&&!g.ammo).map(g=>({sector,gun:storedArtilleryRecord(g)})));
  const prepared=prepareCreatedCuyoArsenalAssault(start,{report});let c=prepared.campaign;
@@ -283,7 +283,7 @@ export function recoverCreatedCuyoMountainArtillery(start,{report=()=>{},onCheck
  // reload and adjacent finite aid retain their ordinary native priorities.
  const reserveIds=foundryField;
  const rear=preserveMedicalReserve?arsenalRearServicePlan(c,prepared.field,prepared.originalMembers,{fieldPhysicians:1}):null;
- const controller=recoveryPortSearchController(initial,{reserveIds,fieldPhysicianIds:rear?.fieldPhysicianIds??[],coordinateInfantry:initial.artillery.every(gun=>gun.side!=='player'),coordinateRifleCover:preserveMedicalReserve,coordinateSupportStaging,coordinateRearFormation});
+ const controller=recoveryPortSearchController(initial,{reserveIds,fieldPhysicianIds:rear?.fieldPhysicianIds??[],coordinateInfantry:initial.artillery.every(gun=>gun.side!=='player'),coordinateRifleCover:preserveMedicalReserve||coordinateRifleCover,coordinateSupportStaging,coordinateRearFormation});
  // Historical earned callers retain the old default. The fresh route opts
  // into real departure and reunion of its scarce qualified/paid reserves.
  const executeBattle=rear?(request,previous,options)=>{

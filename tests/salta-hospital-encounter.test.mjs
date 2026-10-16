@@ -13,13 +13,15 @@ import {openingRearFormation} from './opening-rear-medical-supply.mjs';
 import {stageOpeningRearCover} from './opening-rear-guard.mjs';
 import {northernClinicDefenseOrder} from './northern-route.mjs';
 import {publicRouteView,usefulRouteRifleShot} from './route-infantry-progress.mjs';
+import {knownRouteBystanderShotSafety} from './route-fire-safety.mjs';
+import {firearmBystanderRisk} from '../game/firearm-bystander-risk.js';
 
 const actor=(b,id)=>b.units.find(u=>u.id===id);
 function arena({patient=false,doctorId='doctor',hidden=false}={}){
  const upperSurfaces=Array.from({length:20},(_,i)=>({id:`clinic:${i}`,x:4+i%4,y:4+Math.floor(i/4),tacticalLevel:1,elevation:3,type:'floor',kind:'roof',blocked:false,cover:0}));
  return createBattle([
   {id:'guard',x:5,y:6,tacticalLevel:1,weapon:1800,loaded:1,ammo:5,medical:0,medkits:0,marksmanship:90,stance:'standing',facing:0,energy:100,morale:90},
-  {id:'front',x:5,y:4,tacticalLevel:1,weapon:0,loaded:0,ammo:0,medical:0,medkits:0,stance:'standing',facing:0,energy:100,morale:90,...(patient?{hp:55,maxHp:100,bleeding:3,bandaged:0}:{})},
+  {id:'front',x:patient?5:7,y:4,tacticalLevel:1,weapon:0,loaded:0,ammo:0,medical:0,medkits:0,stance:'standing',facing:0,energy:100,morale:90,...(patient?{hp:55,maxHp:100,bleeding:3,bandaged:0}:{})},
   {id:doctorId,x:patient?5:7,y:patient?5:8,tacticalLevel:1,weapon:0,weaponDropped:true,loaded:0,ammo:0,medical:94,medkits:2,hp:21,maxHp:66,bleeding:0,bandaged:45,stance:'standing',facing:0,energy:100,morale:90},
  ],{id:'declared-salta-clinic-defense',width:40,height:20,tiles:Array.from({length:800},(_,i)=>({x:i%40,y:Math.floor(i/40),type:'grass',blocked:false,cover:0})),upperSurfaces,hour:12,seed:45,
   enemies:[{id:'target',x:5,y:2,weapon:0,loaded:0,ammo:0,hp:500,maxHp:500,patrol:false,overwatch:false},
@@ -84,6 +86,7 @@ test('actual admitted roof roles pay a protected physician stance and a useful r
  const route=getReachable(publicRouteView(protectedState,guard),guard,{stopAt:p=>sameCell(p,move)})[0];assert.ok(route.cost>0&&route.cost<=20);
  const moved=replay(start,[stance,move]);assert.equal(actor(moved,'guard').ap,guard.ap-route.cost);assert.ok(actor(moved,'guard').energy<guard.energy);
  const fire=options.controller(moved,actor(moved,'guard'));assert.equal(fire?.type,'fire');assert.equal(fire.targetId,'target');
+ assert.ok(usefulRouteRifleShot(publicRouteView(moved,actor(moved,'guard')),actor(moved,'guard'),{shotSafety:knownRouteBystanderShotSafety}));assert.deepEqual(firearmBystanderRisk(moved,actor(moved,'guard'),actor(moved,fire.targetId),fire.hitLocation??'torso'),{direct:[],scatter:[]});
  const cost=actionCosts(moved,actor(moved,'guard'),actor(moved,fire.targetId)),after=replay(start,[stance,move,fire]);
  assert.equal(actor(after,'guard').ap,actor(moved,'guard').ap-cost.fire-(fire.aim??0)*cost.aim);
  assert.equal(actor(after,'guard').loaded,guard.loaded-1);assert.equal(after.elapsedSeconds,start.elapsedSeconds+COMBAT_ROUND_SECONDS);

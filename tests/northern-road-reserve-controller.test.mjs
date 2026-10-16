@@ -10,6 +10,8 @@ import {coastalBatteryController} from './coastal-command-driver.mjs';
 import {northernHospitalCoverOrder} from './fresh-northern-recovery.mjs';
 import {openingControlWindow} from './opening-driver.mjs';
 import {publicRouteView,usefulRouteRifleShot} from './route-infantry-progress.mjs';
+import {knownRouteBystanderShotSafety} from './route-fire-safety.mjs';
+import {firearmBystanderRisk} from '../game/firearm-bystander-risk.js';
 
 // Portable current declarations only. No retained campaign failure, fixed
 // outcome, returned-state edits or additional stock is an action input.
@@ -21,7 +23,7 @@ function roofArena({hold=false}={}){
   :Array.from({length:20},(_,i)=>({id:`lane:${i}`,x:4+i%4,y:4+Math.floor(i/4),tacticalLevel:1,elevation:3,type:'floor',kind:'roof',blocked:false,cover:0}));
  return createBattle([
   {id:'guard',x:hold?8:5,y:hold?5:6,tacticalLevel:1,weapon:1800,loaded:hold?0:1,ammo:hold?0:5,blade:0,medical:0,medkits:0,marksmanship:90,stance:'standing',facing:hold?4:0,energy:100,morale:90},
-  ...(!hold?[{id:'front',x:5,y:4,tacticalLevel:1,weapon:0,blade:0,loaded:0,ammo:0,medical:0,medkits:0,stance:'standing',facing:0,energy:100,morale:90}]:[]),
+  ...(!hold?[{id:'front',x:7,y:4,tacticalLevel:1,weapon:0,blade:0,loaded:0,ammo:0,medical:0,medkits:0,stance:'standing',facing:0,energy:100,morale:90}]:[]),
  ],{id:'declared-road-spent-roof',width:40,height:20,tiles:flat(),upperSurfaces,hour:12,seed:45,
   climbLinks:hold?[{id:'roof-south-access',kind:'climb',from:{x:8,y:6,tacticalLevel:0},to:{x:8,y:5,tacticalLevel:1}}]:[],
   enemies:[{id:'target',x:hold?8:5,y:hold?7:2,weapon:0,blade:0,loaded:0,ammo:0,hp:500,maxHp:500,patrol:false,overwatch:false}],
@@ -58,7 +60,7 @@ test('an initially spent reserve pays a same-roof lane and finite rifle shot ins
  const move=policy(start,guard);assert.equal(move?.type,'move');assert.ok(sameSurface(move,guard));
  const quote=getReachable(publicRouteView(start,guard),guard,{stopAt:p=>sameCell(p,move)})[0];assert.ok(quote.cost>0&&quote.cost<=20);
  const moved=replay(start,[move]),member=actor(moved,'guard');assert.equal(member.ap,guard.ap-quote.cost);assert.ok(member.energy<guard.energy);assert.equal(moved.elapsedSeconds,start.elapsedSeconds+COMBAT_ROUND_SECONDS);
- const fire=policy(moved,member);assert.equal(fire?.type,'fire');const cost=actionCosts(moved,member,actor(moved,fire.targetId));
+ const fire=policy(moved,member);assert.equal(fire?.type,'fire');assert.ok(usefulRouteRifleShot(publicRouteView(moved,member),member,{shotSafety:knownRouteBystanderShotSafety}));assert.deepEqual(firearmBystanderRisk(moved,member,actor(moved,fire.targetId),fire.hitLocation??'torso'),{direct:[],scatter:[]});const cost=actionCosts(moved,member,actor(moved,fire.targetId));
  const after=replay(start,[move,fire]);assert.equal(actor(after,'guard').ap,member.ap-cost.fire-(fire.aim??0)*cost.aim);assert.equal(actor(after,'guard').loaded,guard.loaded-1);assert.equal(after.elapsedSeconds,moved.elapsedSeconds);assert.equal(actor(after,'guard').stance,'standing');
  const total=u=>Object.values(unitAmmunitionByType(u)).reduce((a,b)=>a+b,0);assert.equal(total(actor(after,'guard')),total(guard)-1);retained(start,after);assert.deepEqual(start,before);
 });

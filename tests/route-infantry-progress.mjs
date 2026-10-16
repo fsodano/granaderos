@@ -9,20 +9,20 @@ const rifleReady=unit=>fit(unit)&&(unit.activeSlot??'primary')==='primary'&&unit
 // safety, 25-percent threshold and paid stance costs; no generic AI changes.
 export const publicRouteView=(battle,unit)=>({...battle,units:battle.units.filter(other=>other.side===unit.side||teamCanSee(battle,unit.side,other)),npcs:(battle.npcs??[]).filter(other=>teamCanSee(battle,unit.side,other)),artillery:knownArtillery(battle,unit)});
 
-export function usefulRouteRifleShot(battle,unit){
+export function usefulRouteRifleShot(battle,unit,{shotSafety=knownRouteShotSafety}={}){
  if(!rifleReady(unit))return null;
  const shots=[];
  for(const target of battle.units.filter(target=>target.side!==unit.side&&fit(target)&&teamCanSee(battle,unit.side,target)&&hasLineOfSight(battle,unit,target))){
   const cost=actionCosts(battle,unit,target);if(unit.ap<cost.fire)continue;
-  const aim=Math.min(4,Math.floor((unit.ap-cost.fire)/cost.aim)),safe=knownRouteShotSafety(battle,unit,target);
+  const aim=Math.min(4,Math.floor((unit.ap-cost.fire)/cost.aim)),safe=shotSafety(battle,unit,target);
   for(const option of firearmShotOptions(battle,unit,target,aim))if(option.chance>=25&&option.damageFactor>0&&safe(option))shots.push({score:option.chance*option.damageFactor-(cost.fire+option.aim*cost.aim)*.2,action:{type:'fire',unitId:unit.id,targetId:target.id,aim:option.aim,hitLocation:option.hitLocation}});
  }
  return shots.sort((a,b)=>b.score-a.score)[0]?.action??null;
 }
 
-export function usefulRouteFiringPosture(battle,unit,action){
+export function usefulRouteFiringPosture(battle,unit,action,{shotSafety=knownRouteShotSafety}={}){
  if(action?.type!=='stance'||!['crouched','prone'].includes(action.stance)||!rifleReady(unit)||unit.knockedDown||unit.entangled||unit.mounted)return true;
  const paid=stanceCost(unit,action.stance),position={...unit,stance:action.stance,movementMode:action.stance==='prone'?'prone':'crouch',weaponReady:false,momentum:0,ap:unit.ap-paid};
  const view=publicRouteView(battle,unit),posed={...view,units:view.units.map(other=>other.id===unit.id?position:other)};
- return paid>0&&position.ap>0&&Boolean(usefulRouteRifleShot(posed,position));
+ return paid>0&&position.ap>0&&Boolean(usefulRouteRifleShot(posed,position,{shotSafety}));
 }

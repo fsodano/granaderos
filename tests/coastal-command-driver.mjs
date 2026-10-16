@@ -1,13 +1,16 @@
 // Keep the commander behind the battery and fire from an affordable legal stance.
 import {sameSurface} from '../game/tactical-space.js';
-import {usefulRouteFiringPosture} from './route-infantry-progress.mjs';
+import {publicRouteView,usefulRouteFiringPosture} from './route-infantry-progress.mjs';
 import {mountainBatteryOrder} from './mountain-battery-driver.mjs';
 import {knownRouteShotSafety} from './route-fire-safety.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
 import {chooseEnemyAction} from '../game/tactical-ai.js';
 import {chooseGrenadeThrow} from '../game/tactical-ai-grenades.js';
 import {artilleryProfile} from '../game/artillery-definitions.js';
-import {getReachable,teamCanSee,firearmShotOptions,actionCosts,stanceCost,artilleryContact} from '../game/tactical.js';
+import {getReachable,teamCanSee,firearmShotOptions,actionCosts,stanceCost,artilleryContact,hasFirearm} from '../game/tactical.js';
+import {firearmServiceable} from '../game/firearm-serviceability.js';
+import {lowerWeapon} from '../game/weapon-readiness.js';
+import {advanceBattleClock,COMBAT_ROUND_SECONDS} from '../game/time.js';
 export const coastalCommandOrder=(b,u,{leaderId='7',helperId='8',screenDistance=Infinity,commanderDistance=3,requireCrewForCover=false}={})=>{
  const normal=mountainBatteryOrder(b,u,{leaderId,helperId,screenDistance}),gun=b.artillery.find(g=>g.side===u.side);
  const coverCommander=!requireCrewForCover||b.units.some(actor=>actor.id===leaderId&&actor.hp>=15&&!actor.routed&&!actor.unconscious&&!actor.departure);
@@ -26,6 +29,20 @@ export const coastalCommandOrder=(b,u,{leaderId='7',helperId='8',screenDistance=
 
 // Beltrán replaces the fallen gunner; a living crew is required for cover.
 export const blockadeCommandOrder=(battle,unit)=>coastalCommandOrder(battle,unit,{leaderId:'2',screenDistance:3,requireCrewForCover:true});
+
+// With no working cannon crew, an armed physician keeps the ordinary policy.
+// A paid rise must leave actual ordinary work, rather than another posture.
+// Protective lowering remains available; no quoted body is ever adopted.
+function coastalPhysicianPostureOrder(b,u){
+ const action=tucumanCombatOrder(b,u),postures=['standing','crouched','prone'];
+ if(action?.type!=='stance'||b.mode!=='combat'||u.medical<60||u.medkits<1||u.hp<15||u.bleeding||u.knockedDown||u.entangled||u.mounted||u.activeSlot!=='primary'||!u.loaded||u.jammed||!hasFirearm(u)||!firearmServiceable(u)||postures.indexOf(action.stance)>=postures.indexOf(u.stance))return action;
+ const paid=stanceCost(u,action.stance);if(!(paid>0&&paid<u.ap))return null;
+ const view=structuredClone(publicRouteView(b,u)),actor=view.units.find(other=>other.id===u.id);
+ actor.ap-=paid;actor.stance=action.stance;actor.movementMode=action.stance==='prone'?'prone':action.stance==='crouched'?'crouch':'walk';actor.momentum=0;lowerWeapon(actor);
+ if(!view.roundTimeCharged){advanceBattleClock(view,COMBAT_ROUND_SECONDS);view.roundTimeCharged=true;}
+ const follow=tucumanCombatOrder(view,actor);
+ return follow&&follow.type!=='stance'?action:null;
+}
 
 // Two coastal guns need separate crews and space for their translated bodies.
 // Infantry scouts the flanks so contact occurs before an exposed crew arrives.
@@ -57,7 +74,7 @@ export function coastalBatteryController(initial,{sharedArtillerySight=false}={}
    crews.push({...preference,ids});
   }
   const crew=crews.find(p=>p.ids.includes(u.id))??crews[0];
-  if(!crew)return tucumanCombatOrder(b,u);
+  if(!crew)return coastalPhysicianPostureOrder(b,u);
   const gun=b.artillery.find(g=>g.id===crew.artilleryId);
   const action=mountainBatteryOrder(b,u,{leaderId:crew.ids[0],helperId:crew.ids[1]??'none',crewIds:crew.ids,artilleryId:crew.artilleryId,screenDistance:4,clearCrewLane:true,routeAroundObstacles:true,flankScreen:true,keepCrewTogether:true,sharedArtillerySight});
   if(assigned.has(u.id)&&b.mode==='combat'&&b.phase==='player'&&!artilleryContact(b,u,gun)&&!u.knockedDown&&!u.entangled&&(!action||action.type==='move'||action.type==='stance'&&action.stance==='prone'&&!usefulRouteFiringPosture(b,u,action))){

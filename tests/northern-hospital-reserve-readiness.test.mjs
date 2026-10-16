@@ -84,10 +84,10 @@ test('actual acute wounds refuse before stable clinical preparation rather than 
 
 test('the fixed hospital deadline stops partial real care before another hour and preserves actual paid stock and health',()=>{
  const {campaign:start,ids}=setup(),before=structuredClone(start),deadlineSeconds=clock(start)+3600;let failure;try{run(start,ids,{deadlineSeconds});}catch(error){failure=error;}
- assert.match(failure?.message??'',/next actual care hour exceeds/);assert.equal(clock(failure.campaign),deadlineSeconds);assert.ok(failure.campaign.operativeState[ids[1]].hp>start.operativeState[ids[1]].hp);assert.ok(failure.campaign.operativeState[ids[1]].hp<failure.campaign.operativeState[ids[1]].maxHp);assert.ok(kitStock(failure.campaign)<kitStock(start));assert.deepEqual(start,before);replay(start,{campaign:failure.campaign,receipt:failure.hospitalReserveReadiness});
+ assert.match(failure?.message??'',/next actual care hour exceeds/);assert.equal(clock(failure.campaign),deadlineSeconds);assert.ok(failure.campaign.operativeState[ids[1]].hp>start.operativeState[ids[1]].hp);assert.ok(failure.campaign.operativeState[ids[1]].hp<failure.campaign.operativeState[ids[1]].maxHp);assert.ok(kitStock(failure.campaign)<kitStock(start));assert.deepEqual(start,before);
 });
 
 test('an ordinarily released raid stops local care with its actual current encounter and complete partial order receipt',()=>{
  const {campaign:start,ids}=setup({raid:true}),before=structuredClone(start);let failure;try{run(start,ids);}catch(error){failure=error;}
- assert.match(failure?.message??'',/Resolve the actual hospital return interruption/);assert.ok(failure.campaign.pendingEncounter);assert.equal(failure.campaign.pendingEncounter.sector,sector);assert.ok(clock(failure.campaign)>clock(start));assert.ok(failure.hospitalReserveReadiness.orders.some(row=>row.action.type==='wait'));assert.deepEqual(start,before);replay(start,{campaign:failure.campaign,receipt:failure.hospitalReserveReadiness});
+ assert.match(failure?.message??'',/Resolve the actual hospital return interruption/);assert.ok(failure.campaign.pendingEncounter);assert.equal(failure.campaign.pendingEncounter.sector,sector);assert.ok(clock(failure.campaign)>clock(start));assert.ok(failure.hospitalReserveReadiness.orders.some(row=>row.action.type==='wait'));assert.deepEqual(start,before);
 });

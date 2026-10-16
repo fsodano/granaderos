@@ -40,17 +40,25 @@ import {previewStrategicRoute} from '../game/strategic-route.js';
 import {coordinatedHospitalBattery} from './coordinated-hospital-battery.mjs';
 import {prepareNorthernHospitalReserveReadiness} from './northern-hospital-reserve-readiness.mjs';
 import {prepareNorthernHospitalReserveStock} from './northern-hospital-reserve-stock.mjs';
+import {prepareNorthernHospitalSixPersonReserve} from './northern-hospital-six-person-reserve.mjs';
 import {saltaHospitalBattleOptions,saltaHospitalEncounterExecutor} from './salta-hospital-encounter.mjs';
 import {createPairedRouteOrders} from './paired-route-battle.mjs';
+import {journaledHospitalFight} from './hospital-order-health-journal.mjs';
+import {knownRouteShotSafety} from './route-fire-safety.mjs';
 
 // A guarded roof can have a valid low-probability lane while the ordinary
 // infantry policy wants to advance. Pay for the real previewed shot first.
-export function northernHospitalCoverOrder(battle,unit){
- const action=northernClinicDefenseOrder(battle,unit);if(action||unit.knockedDown||unit.entangled||unit.routed||unit.unconscious||unit.hp<15||!unit.loaded||unit.jammed||!['primary','secondary'].includes(unit.activeSlot))return action;
+export function northernHospitalCoverOrder(battle,unit,{shotSafety=knownRouteShotSafety}={}){
+ const action=northernClinicDefenseOrder(battle,unit);if(action&&action.type!=='fire'||unit.knockedDown||unit.entangled||unit.routed||unit.unconscious||unit.hp<15||!unit.loaded||unit.jammed||!['primary','secondary'].includes(unit.activeSlot))return action;
+ if(action?.type==='fire'){
+  const target=battle.units.find(target=>target.id===action.targetId),option=target&&firearmShotOptions(battle,unit,target,action.aim??0).find(option=>option.aim===(action.aim??0)&&option.hitLocation===(action.hitLocation??'torso'));
+  if(shotSafety(battle,unit,target)(option))return action;
+ }
  const shots=[];
  for(const target of battle.units.filter(target=>target.side==='enemy'&&target.hp>=15&&!target.departure&&!target.unconscious&&!target.routed&&!target.surrendered&&teamCanSee(battle,unit.side,target)&&hasLineOfSight(battle,unit,target))){
   const cost=actionCosts(battle,unit,target);if(unit.ap<cost.fire)continue;
-  for(const option of firearmShotOptions(battle,unit,target,Math.min(4,Math.floor((unit.ap-cost.fire)/cost.aim))))if(option.chance>=5&&option.damageFactor>0)shots.push({score:option.chance*option.damageFactor,action:{type:'fire',unitId:unit.id,targetId:target.id,aim:option.aim,hitLocation:option.hitLocation}});
+  const safe=shotSafety(battle,unit,target);
+  for(const option of firearmShotOptions(battle,unit,target,Math.min(4,Math.floor((unit.ap-cost.fire)/cost.aim))))if(option.chance>=5&&option.damageFactor>0&&safe(option))shots.push({score:option.chance*option.damageFactor,action:{type:'fire',unitId:unit.id,targetId:target.id,aim:option.aim,hitLocation:option.hitLocation}});
  }
  return shots.sort((a,b)=>b.score-a.score)[0]?.action??null;
 }
@@ -319,8 +327,9 @@ export function recoverFreshNorthernHospital(start,{report=()=>{},coordinateDefe
    const defenders=c.squads.find(q=>q.location===encounter.sector&&q.members.length);assert.ok(defenders,'a real local squad must defend the hospital');
    order({type:'selectSquad',id:defenders.id});
    order({type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});
-   const initial=enterSector(c.pendingBattle,c.sectorStates[encounter.sector]),controller=coordinateDefense?coordinatedHospitalBattery(initial,{coordinateSpentCrew:true,coordinatePhysicianHold:true}).controller:initial.artillery.some(g=>g.side==='player'&&(g.loaded||g.ammo>0))?coastalBatteryController(initial,{sharedArtillerySight:true}):northernHospitalCoverOrder;
-   c=fightNorthernSector(c,encounter.sector,{controller,...(coordinateDefense?{sharedFallback:controller.sharedFallback}:{}),report}).campaign;
+   const initial=enterSector(c.pendingBattle,c.sectorStates[encounter.sector]),hospital=coordinateDefense?coordinatedHospitalBattery(initial,{coordinateSpentCrew:true,coordinatePhysicianHold:true}):null,controller=hospital?hospital.controller:initial.artillery.some(g=>g.side==='player'&&(g.loaded||g.ammo>0))?coastalBatteryController(initial,{sharedArtillerySight:true}):northernHospitalCoverOrder;
+   const journalDirectory=process.env.GRANADEROS_HOSPITAL_HEALTH_JOURNAL_DIR;
+   c=fightNorthernSector(c,encounter.sector,{controller,...(coordinateDefense?{sharedFallback:controller.sharedFallback}:{}),...(journalDirectory?{executeBattle:journaledHospitalFight(journalDirectory,{roles:hospital?.roles??null})}:{}),report}).campaign;
    if(encounter.sector!==sector)c=prepareNorthernRemoteDefenseRest(c,encounter.sector,{inputCapture,report}).campaign;
    report({event:'hospitalDefended',campaign:structuredClone(c)});
   }
@@ -512,6 +521,13 @@ export function returnFreshNorthernHospital(hospital,{report=()=>{}}={}){
    report({event:'northernHospitalReservePrepared',receipt:ready.receipt,campaign:structuredClone(c)});
    const stock=prepareNorthernHospitalReserveStock(c,{sector:at,ids,deadlineSeconds:careDeadlineSeconds,report});c=stock.campaign;
    report({event:'northernHospitalReserveStockPrepared',receipt:stock.receipt,campaign:structuredClone(c)});
+   if(at==='tucuman'&&ids.length===5){
+    const funding=northernHospitalReturnFunding(c),horizonSeconds=funding.untilSeconds,deadlineSeconds=Math.min(careDeadlineSeconds,horizonSeconds);
+    const reserve=prepareNorthernHospitalSixPersonReserve(c,{sector:at,ids,deadlineSeconds,horizonSeconds,report});c=reserve.campaign;
+    if(!reserve.ready)throw Object.assign(new Error('The actual hospital reserve preparation stopped: '+reserve.reason),{campaign:c,battle:reserve.battle,pair:{campaign:c,battle:reserve.battle},hospitalSixPersonReserve:reserve.receipt});
+    assert.ok(reserve.reliefId!==null);escort.push(reserve.reliefId);
+    report({event:'northernHospitalSixPersonReservePrepared',receipt:reserve.receipt,campaign:structuredClone(c)});
+   }
   }
  }
  const journey=()=>c.squads.find(q=>q.id===c.activeSquadId)?.journey;
@@ -545,7 +561,7 @@ export function returnFreshNorthernHospital(hospital,{report=()=>{}}={}){
  return c;
  }catch(error){
   if(error?.campaign)c=error.campaign;
-  recordRouteStrategicEvidence({helper:'recoverFreshNorthernDoctor',stage:'preparation-failure',campaign:c,inputCapture,error,context:{hospitalReserveReadiness:error?.hospitalReserveReadiness??null,hospitalReserveStock:error?.hospitalReserveStock??null}});throw error;
+  recordRouteStrategicEvidence({helper:'recoverFreshNorthernDoctor',stage:'preparation-failure',campaign:c,inputCapture,error,context:{hospitalReserveReadiness:error?.hospitalReserveReadiness??null,hospitalReserveStock:error?.hospitalReserveStock??null,hospitalSixPersonReserve:error?.hospitalSixPersonReserve??null,battle:error?.battle??null}});throw error;
  }
 }
 
@@ -627,11 +643,15 @@ export function prepareNorthernReunionColumns(start,{report=()=>{}}={}){
  return {campaign:c,field,groups};
 }
 
-// The original duty cohort, returning ward and permanent mission recruits stay
-// under service. Later temporary clinic hires are not silently made permanent.
+// The original cohort, returning ward, permanent recruits and actual free
+// Tucuman roof guards stay under service. Other temporary clinic work does not.
 export function northernReunionDutyKeepers(start,originalIds){
  assert.ok(Array.isArray(originalIds)&&originalIds.every(Number.isSafeInteger));
- return [...new Set([...originalIds,...start.squad,...start.recruited.filter(id=>start.contracts[id]?.kind==='patriot')])].filter(id=>start.recruited.includes(id)&&start.operativeState[id].alive&&!start.operativeState[id].captured);
+ const now=start.hour*3600+(start.secondOfHour??0),roofGuards=start.recruited.filter(id=>{
+  const body=start.operativeState[id],contract=start.contracts[id],expiry=contractExpiresSeconds(contract);
+  return body.alive&&!body.captured&&contract&&(expiry===null||expiry>now)&&!operativeInTransit(start,id)&&operativeLocation(start,id)==='tucuman'&&body.residentPosition?.tacticalLevel>0&&['active','rest'].includes(body.assignment)&&start.squads.some(group=>group.location==='tucuman'&&!group.journey&&group.members.includes(id));
+ });
+ return [...new Set([...originalIds,...start.squad,...start.recruited.filter(id=>start.contracts[id]?.kind==='patriot'),...roofGuards])].filter(id=>start.recruited.includes(id)&&start.operativeState[id].alive&&!start.operativeState[id].captured);
 }
 
 // Use the actual encounter response after paid cover, not the earlier field

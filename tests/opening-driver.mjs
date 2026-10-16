@@ -44,7 +44,7 @@ export function combatOrder(b,u){
  if(u.jammed&&hasFirearm(u)&&u.ap>=cost.reprime)return {type:'reprime',unitId:u.id};
  const target=visible.filter(t=>hasLineOfSight(b,u,t)).sort((a,c)=>shotChance(b,u,c,4)-shotChance(b,u,a,4))[0];
  if(target)cost=actionCosts(b,u,target);
- if(target&&u.loaded&&!u.jammed&&u.ap>=cost.fire){
+ if(target&&hasFirearm(u)&&u.loaded&&!u.jammed&&u.ap>=cost.fire){
    if(u.stance!=='prone'&&!u.mounted&&u.ap>=cost.fire+cost.aim*2+6)return {type:'stance',unitId:u.id,stance:'prone'};
    let aim=Math.min(4,Math.floor((u.ap-cost.fire)/cost.aim));
    // Extra aim is paid work. Stop once the previewed hit chance plateaus,

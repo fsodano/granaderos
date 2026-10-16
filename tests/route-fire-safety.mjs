@@ -38,3 +38,18 @@ export function knownRouteCivilianShotSafety(battle,unit,target){
   return !locations.get(location);
  };
 }
+
+// Hospital rifle roles also protect the known friendly posts from every
+// legal Native miss path. Other route policies retain their existing guard.
+export function knownRouteBystanderShotSafety(battle,unit,target){
+ const direct=knownRouteShotSafety(battle,unit,target),locations=new Map();
+ return option=>{
+  if(!target||!direct(option))return false;
+  const location=option.hitLocation??'torso';
+  if(!locations.has(location)){
+   const risk=firearmBystanderRisk(battle,unit,target,location);
+   locations.set(location,Boolean(risk.direct.length||risk.scatter.length));
+  }
+  return !locations.get(location);
+ };
+}

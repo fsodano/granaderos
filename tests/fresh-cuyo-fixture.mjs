@@ -20,6 +20,8 @@ import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.m
 import {recoverCreatedCuyoMountainArtillery} from './created-cuyo-artillery.mjs';
 import {createdUspallataBattery} from './created-uspallata-battery.mjs';
 import {campaignRole} from '../game/campaign-roles.js';
+import {journaledUspallataFight} from './uspallata-order-health-journal.mjs';
+import {mendozaInfantrySupportController} from './mendoza-infantry-support.mjs';
 
 const deaths=c=>Object.entries(c.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
 
@@ -57,10 +59,13 @@ export function freshCuyoRoute({onCheckpoint,onArsenalPrepared,northernCheckpoin
  const fight=sector=>{
   assert.ok(c.pendingBattle);assert.equal(c.pendingBattle.sector,sector);
   const initial=enterSector(c.pendingBattle,c.sectorStates[sector]);
-  const engineer=campaignRole(c,'foundryEngineer'),uspallata=routeKind==='stock'&&sector==='uspallata'&&mountainBatteryIds
-   ?createdUspallataBattery(initial,{reserveIds:engineer&&initial.units.some(u=>u.id===String(engineer.id))?[engineer.id]:[],reserveDestination:c.pendingBattle.origin,report}):null;
+  const mendoza=sector==='mendoza'?mendozaInfantrySupportController(mendozaBatteryController(initial)):null;
+  // Both routes use the recovered battery's public crew and physician roles.
+  const engineer=campaignRole(c,'foundryEngineer'),uspallata=sector==='uspallata'&&mountainBatteryIds
+   ?createdUspallataBattery(initial,{reserveIds:engineer&&initial.units.some(u=>u.id===String(engineer.id))?[engineer.id]:[],reserveDestination:c.pendingBattle.origin,coordinateClinicalReserve:true,report}):null;
   if(uspallata)recordRouteStrategicEvidence({helper:'freshCuyoUspallata',stage:'preparation-input',campaign:c,context:{request:c.pendingBattle,previous:c.sectorStates[sector],initial,roles:uspallata.roles,scope:'Actual existing pending request and pre-deployment construction. Executor placement is captured inside the original deploy callback; no additional entry or order.'}});
-  const result=fightNorthernSector(c,sector,{...(sector==='los_patos'?createdLosPatosBattery({fieldCount:losPatosFieldCount,...(mountainBatteryIds?{gunTypes:['field8','swivel']}:{})}):uspallata??{controller:sector==='mendoza'?mendozaBatteryController(initial):sector==='uspallata'&&mountainBatteryIds?mountainPassBatteryController(initial):coastalBatteryController(initial,{sharedArtillerySight:true})}),report});
+  const journalDirectory=sector==='uspallata'?process.env.GRANADEROS_USPALLATA_HEALTH_JOURNAL_DIR:undefined;
+  const result=fightNorthernSector(c,sector,{...(sector==='los_patos'?createdLosPatosBattery({fieldCount:losPatosFieldCount,...(mountainBatteryIds?{gunTypes:['field8','swivel']}:{})}):uspallata??{controller:mendoza??(sector==='uspallata'&&mountainBatteryIds?mountainPassBatteryController(initial):coastalBatteryController(initial,{sharedArtillerySight:true}))}),...(mendoza?{sharedFallback:mendoza.sharedFallback}:{}),...(journalDirectory?{executeBattle:journaledUspallataFight(journalDirectory)}:{}),report});
   c=result.campaign;assert.equal(c.defeated,false);assert.equal(c.sectors[sector].owner,'patriot');assert.equal(c.completed,false);
   checkpoint(sector,{status:result.summary.status,actions:result.summary.actions,turns:result.summary.turns});
  };
@@ -126,11 +131,11 @@ export function freshCuyoRoute({onCheckpoint,onArsenalPrepared,northernCheckpoin
  c=startFreshFoundry(c,{report});assert.equal(c.flags.foundry,true);assert.ok(c.recruited.includes(2)&&c.operativeState[2].alive);
  for(const id of deaths(prefix.campaign))assert.equal(c.operativeState[id].alive,false);
  c=completeFreshArmyFunding(prepareFreshArmyFunding(c,{report}),{report});assert.equal(c.flags.armyFunded,true);assert.ok(ownedArtilleryCount(c)>=3);assert.equal(c.phase,3);checkpoint('funded',{artillery:ownedArtilleryCount(c)});
- // The normal stock endings opt into the public paid rear and support
- // policy. Created/earned default callers keep their dated doctrine.
- const arsenal=prepareFreshCuyoMountainArtillery(c,{report,...(routeKind==='stock'?{preserveMedicalReserve:true,coordinateSupportStaging:true,coordinateRearFormation:true}:{})});c=arsenal.campaign;
+ // Both actual arsenal forces use the existing public paid infantry support.
+ // The stock route alone retains its separate medical withdrawal and reunion.
+ const arsenal=prepareFreshCuyoMountainArtillery(c,{report,coordinateRifleCover:true,coordinateSupportStaging:true,coordinateRearFormation:true,...(routeKind==='stock'?{preserveMedicalReserve:true}:{})});c=arsenal.campaign;
  const arsenalEnd=arsenal.summary.startSeconds+arsenal.summary.elapsedSeconds;
- notes.push({stage:'ensenada',hour:Math.floor(arsenalEnd/3600),second:arsenalEnd%3600,...arsenal.summary});
+ notes.push({stage:'ensenada',hour:Math.floor(arsenalEnd/3600),second:arsenalEnd%3600,...arsenal.summary,deaths:deaths(c)});
  mountainBatteryIds=arsenal.batteryIds;
  // Optional observation after the complete paid arsenal return. Defaults
  // continue to Uspallata without cloning or invoking an observer.

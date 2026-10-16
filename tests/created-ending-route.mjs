@@ -47,6 +47,9 @@ import {supplyCoastalAmmunition} from './coastal-ammunition.mjs';
 import {supplyCoastalDressings} from './coastal-dressings.mjs';
 import {prepareCoastalReinforcements} from './coastal-reinforcements.mjs';
 import {preparePaidCoastalColumn} from './coastal-paid-column.mjs';
+import {assertRouteEquipmentDebit as assertCoastalEquipmentDebit} from './route-equipment-inventory-receipt.mjs';
+
+export {assertCoastalEquipmentDebit};
 
 // Recover the actual mountain survivors before their paid terms end. The
 // affordable relief column waits for real arrivals, finite care and rest.
@@ -116,11 +119,11 @@ export function prepareCreatedCoastalAssault(start,{report=()=>{},reinforcementC
    if(!carried){
     const source=model.entries.filter(row=>row.reachable&&matches(JSON.parse(row.expected))).sort((a,b)=>Number(b.key.startsWith('ground:service-return-'))-Number(a.key.startsWith('ground:service-return-')))[0];
     assert.ok(source,`a finite local source must supply the coastal soldier ${operativeId}'s ${slot}`);
-    const before={hour:c.hour,second:c.secondOfHour,treasury:c.resources.treasury};
+    const before={hour:c.hour,second:c.secondOfHour,treasury:c.resources.treasury},stockBefore=model;
     order({type:'sectorInventory',sector:c.location,operativeId,direction:'take',sourceKey:source.key,expected:source.expected,count:1});
     model=sectorInventoryModel(c,c.location,rosterFor(c),operativeId);carried=model.carried.find(usable);assert.ok(carried);
     const {item,...record}=JSON.parse(source.expected);assert.deepEqual(JSON.parse(carried.expected),record,'the actual local body item retains its metadata');
-    const remaining=model.entries.find(row=>row.key===source.key)?.count??0;assert.equal(remaining,source.count-1,'the local source is consumed exactly once');
+    const remaining=assertCoastalEquipmentDebit(stockBefore,model,source);
     assert.deepEqual({hour:c.hour,second:c.secondOfHour,treasury:c.resources.treasury},before);
     report({event:'coastalReturnedKit',operativeId,slot,sourceKey:source.key,record,remaining,...before});
    }

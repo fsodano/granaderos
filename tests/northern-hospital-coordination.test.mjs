@@ -6,6 +6,8 @@ import {unitAmmunitionByType} from '../game/physical-ammunition.js';
 import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
 import {coordinatedHospitalBattery,paidHospitalRoofWalkPreview} from './coordinated-hospital-battery.mjs';
 import {publicRouteView,usefulRouteRifleShot} from './route-infantry-progress.mjs';
+import {knownRouteBystanderShotSafety} from './route-fire-safety.mjs';
+import {firearmBystanderRisk} from '../game/firearm-bystander-risk.js';
 import {initialCampaign,dispatchCampaign,rosterFor,civicStatus,contractQuote} from '../game/campaign.js';
 import {movementStep} from '../game/movement-step.js';
 import {decodeSave,encodeSave} from '../game/save.js';
@@ -160,7 +162,7 @@ function lateralRoofArena({hidden=null}={}){
  const upperSurfaces=Array.from({length:20},(_,i)=>({id:`lateral-roof:${i}`,x:4+i%4,y:4+Math.floor(i/4),tacticalLevel:1,elevation:3,type:'floor',kind:'roof',blocked:false,cover:0}));
  return createBattle([
   {id:'guard',x:5,y:6,tacticalLevel:1,weapon:1800,loaded:1,ammo:5,medical:0,medkits:0,marksmanship:90,stance:'standing',facing:0,energy:100,morale:90},
-  {id:'front',x:5,y:4,tacticalLevel:1,weapon:0,loaded:0,ammo:0,medical:0,medkits:0,stance:'standing',facing:0,energy:100,morale:90},
+  {id:'front',x:7,y:4,tacticalLevel:1,weapon:0,loaded:0,ammo:0,medical:0,medkits:0,stance:'standing',facing:0,energy:100,morale:90},
  ],{id:'declared-lateral-clinic',width:40,height:20,tiles:tiles(),upperSurfaces,hour:12,seed:45,
   enemies:[{id:'target',x:5,y:2,weapon:0,loaded:0,ammo:0,hp:500,maxHp:500,patrol:false,overwatch:false}],
   npcs:hidden?[{id:'unknown-resident',name:'Unobserved rear resident',...hidden.npc,hp:100}]:[],
@@ -174,7 +176,7 @@ function payableRoofLanes(b,guard){
    // Elevated route cells include their authored surface ID. Preserve the
    // actor identity when asking the native paid shot preview about a cell.
    const posed={...guard,...spacePoint(point),ap:guard.ap-point.cost},next={...view,units:view.units.map(u=>u.id===guard.id?posed:u)};
-   return {point,shot:usefulRouteRifleShot(next,posed)};
+   return {point,shot:usefulRouteRifleShot(next,posed,{shotSafety:knownRouteBystanderShotSafety})};
   }).filter(row=>row.shot);
 }
 
@@ -191,8 +193,9 @@ test('a blocked clinic roof lane pays one local same-roof move then one finite s
  assert.deepEqual(unitAmmunitionByType(current),unitAmmunitionByType(guard));assert.equal(current.medkits,guard.medkits);assert.deepEqual(moved.artillery,start.artillery);
  assert.equal(moved.elapsedSeconds,start.elapsedSeconds+COMBAT_ROUND_SECONDS);
  for(const key of ['x','y','tacticalLevel','ap','hp','energy','loaded','ammo','medkits','inventory'])assert.deepEqual(actor(moved,'front')[key],front[key]);
- const fire=helper.controller(moved,current),safe=usefulRouteRifleShot(publicRouteView(moved,current),current);
+ const fire=helper.controller(moved,current),safe=usefulRouteRifleShot(publicRouteView(moved,current),current,{shotSafety:knownRouteBystanderShotSafety});
  assert.equal(fire?.type,'fire');assert.equal(fire.unitId,guard.id);assert.equal(fire.targetId,target.id);assert.deepEqual(fire,safe);
+ assert.deepEqual(firearmBystanderRisk(moved,current,target,fire.hitLocation??'torso'),{direct:[],scatter:[]});
  const costs=actionCosts(moved,current,actor(moved,'target')),after=replay(start,[move,fire]);
  assert.equal(actor(after,'guard').ap,current.ap-costs.fire-(fire.aim??0)*costs.aim);assert.equal(actor(after,'guard').loaded,current.loaded-1);
  assert.deepEqual(unitAmmunitionByType(actor(after,'guard')),Object.fromEntries(Object.entries(unitAmmunitionByType(guard)).map(([type,count])=>[type,count-(type==='musket_75'?1:0)])));
@@ -242,7 +245,7 @@ function movementBodyRoofArena({marginal=false}={}){
  const upperSurfaces=Array.from({length:30},(_,i)=>({id:`movement-body-roof:${i}`,x:3+i%5,y:1+Math.floor(i/5),tacticalLevel:1,elevation:3,type:'floor',kind:'roof',blocked:false,cover:0}));
  return createBattle([
   {id:'guard',x:5,y:4,tacticalLevel:1,weapon:1805,loaded:1,ammo:5,hp:marginal?20:100,maxHp:marginal?20:100,agility:marginal?1:75,dexterity:marginal?1:75,experienceLevel:marginal?1:4,medical:0,medkits:0,marksmanship:100,stance:'standing',facing:0,energy:marginal?8:100,morale:90},
-  {id:'front',x:4,y:2,tacticalLevel:1,weapon:0,loaded:0,ammo:0,medical:0,medkits:0,stance:'standing',facing:0,energy:100,morale:90},
+  {id:'front',x:7,y:6,tacticalLevel:1,weapon:0,loaded:0,ammo:0,medical:0,medkits:0,stance:'standing',facing:0,energy:100,morale:90},
  ],{id:'declared-movement-body-clinic',width:40,height:20,tiles:tiles(),upperSurfaces,
   wallEdges:[{id:'roof-screen',x:5,y:4,axis:'x',tacticalLevel:1,type:'wall',material:'adobe',cover:40,blocksSight:true}],
   hour:12,seed:45,enemies:[{id:'target',x:5,y:2,tacticalLevel:1,weapon:0,loaded:0,ammo:0,hp:500,maxHp:500,patrol:false,overwatch:false}],
@@ -274,10 +277,11 @@ test('a payable roof lane forecasts native movement body fields before exact fin
  const start=movementBodyRoofArena(),before=structuredClone(start),guard=actor(start,'guard'),target=actor(start,'target'),view=publicRouteView(start,guard),helper=coordinatedHospitalBattery(start);
  assert.deepEqual(validateBattleSnapshot(JSON.parse(JSON.stringify(start))),start);assert.equal(hasLineOfSight(start,guard,target),false);assert.equal(usefulRouteRifleShot(view,guard),null);
  const move=helper.controller(start,guard);assert.equal(move?.type,'move');const point=getReachable(view,guard).find(p=>sameCell(p,move));assert.ok(point);assert.ok(point.path.every(p=>p.kind==='move'&&sameSurface(p,guard)));
- const paid=paidHospitalRoofWalkPreview(view,guard,point);assert.ok(paid);const quoted=usefulRouteRifleShot(paid.view,paid.actor);assert.equal(quoted?.type,'fire');
+ const paid=paidHospitalRoofWalkPreview(view,guard,point);assert.ok(paid);const quoted=usefulRouteRifleShot(paid.view,paid.actor,{shotSafety:knownRouteBystanderShotSafety});assert.equal(quoted?.type,'fire');
  const moved=replay(start,[move]),current=actor(moved,'guard');for(const key of ['x','y','tacticalLevel','ap','energy','facing','momentum','lastDirection','weaponReady','fatigue'])assert.deepEqual(current[key],paid.actor[key]);
  for(const key of ['elapsedSeconds','roundTimeCharged','night','weather','lights'])assert.deepEqual(moved[key],paid.view[key]);assert.equal(current.ap,guard.ap-point.cost);assert.ok(current.energy<guard.energy);assert.notEqual(current.facing,guard.facing);
- const fire=helper.controller(moved,current),safe=usefulRouteRifleShot(publicRouteView(moved,current),current);assert.deepEqual(fire,safe);assert.deepEqual(fire,quoted);
+ const fire=helper.controller(moved,current),safe=usefulRouteRifleShot(publicRouteView(moved,current),current,{shotSafety:knownRouteBystanderShotSafety});assert.deepEqual(fire,safe);assert.deepEqual(fire,quoted);
+ assert.deepEqual(firearmBystanderRisk(moved,current,target,fire.hitLocation??'torso'),{direct:[],scatter:[]});
  const costs=actionCosts(moved,current,actor(moved,'target')),after=replay(start,[move,fire]);assert.equal(actor(after,'guard').ap,current.ap-costs.fire-(fire.aim??0)*costs.aim);
  assert.equal(actor(after,'guard').loaded,current.loaded-1);assert.deepEqual(unitAmmunitionByType(actor(after,'guard')),Object.fromEntries(Object.entries(unitAmmunitionByType(guard)).map(([type,count])=>[type,count-(type==='pistol_69'?1:0)])));
  assert.equal(actor(after,'guard').hp,guard.hp);assert.equal(actor(after,'guard').medkits,guard.medkits);assert.deepEqual(after.artillery,start.artillery);for(const key of ['x','y','tacticalLevel','ap','energy','hp','loaded','inventory'])assert.deepEqual(actor(after,'front')[key],actor(start,'front')[key]);

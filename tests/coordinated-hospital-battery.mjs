@@ -3,7 +3,7 @@ import {firearmServiceable} from '../game/firearm-serviceability.js';
 import {criticalFirstAidNeeded} from '../game/first-aid.js';
 import {medicalPatientAvailable} from '../game/medical-patient.js';
 import {sameCell,sameSurface,spacePoint,surfaceAt} from '../game/tactical-space.js';
-import {getReachable,climbPreview,hasLineOfSight,hasFirearm,actionCosts,stanceCost,artilleryContact,artilleryCosts,artilleryCrewPlan,artilleryReloadPreview,artilleryShotTrace,movementStepCost,movementEnergy,carriedWeight,carryCapacity} from '../game/tactical.js';
+import {getReachable,climbPreview,medicalUsePreview,hasLineOfSight,hasFirearm,actionCosts,stanceCost,artilleryContact,artilleryCosts,artilleryCrewPlan,artilleryReloadPreview,artilleryShotTrace,movementStepCost,movementEnergy,carriedWeight,carryCapacity} from '../game/tactical.js';
 import {directionTo} from '../game/tactical-awareness.js';
 import {lowerWeapon} from '../game/weapon-readiness.js';
 import {limitEnergy} from '../game/fatigue.js';
@@ -11,10 +11,12 @@ import {advanceBattleClock,COMBAT_ROUND_SECONDS} from '../game/time.js';
 import {northernHospitalCoverOrder} from './fresh-northern-recovery.mjs';
 import {teamArtilleryOrder} from './team-artillery-driver.mjs';
 import {publicRouteView,usefulRouteRifleShot,usefulRouteFiringPosture} from './route-infantry-progress.mjs';
+import {knownRouteBystanderShotSafety} from './route-fire-safety.mjs';
 
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const fit=u=>u?.hp>=15&&!u.routed&&!u.unconscious&&!u.departure&&!u.fled&&!u.surrendered&&!u.asleep&&!u.captured;
 const charged=g=>g.loaded||g.ammo>0;
+const hospitalShotOptions={shotSafety:knownRouteBystanderShotSafety};
 
 // A quote on a public planning copy, never an executable battle result.
 // Ground paths can omit kind; elevated move tags are accepted on the same
@@ -48,9 +50,10 @@ export function paidHospitalRoofWalkPreview(view,unit,point){
 // The rear has already paid for its actual roof posts and battery contact.
 // Keep those roles during the raid. The supplied physician does not become
 // an automatic replacement gunner, and no body or charge is created here.
-export function coordinatedHospitalBattery(initial,{coordinateSpentCrew=false,coordinatePhysicianHold=false,coordinateEmptyGround=false}={}){
+export function coordinatedHospitalBattery(initial,{coordinateSpentCrew=false,coordinatePhysicianHold=false,coordinateEmptyGround=false,preferredPhysicianIds=[]}={}){
  const own=initial.units.filter(u=>u.side==='player'&&fit(u));
- const physician=own.filter(u=>u.medical>=60&&u.medkits>0).sort((a,b)=>b.medical-a.medical||b.medkits-a.medkits||String(a.id).localeCompare(String(b.id)))[0];
+ const preferred=new Set(preferredPhysicianIds.map(String)),physicians=own.filter(u=>u.medical>=60&&u.medkits>0).sort((a,b)=>b.medical-a.medical||b.medkits-a.medkits||String(a.id).localeCompare(String(b.id)));
+ const physician=physicians.find(u=>preferred.has(u.id))??physicians[0];
  const assigned=new Set(),crews=initial.artillery.filter(g=>g.side==='player'&&charged(g)).map(gun=>{
   const ids=own.filter(u=>u.id!==physician?.id&&!assigned.has(u.id)&&artilleryContact(initial,u,gun))
    .sort((a,b)=>distance(a,gun)-distance(b,gun)||a.marksmanship-b.marksmanship||String(a.id).localeCompare(String(b.id)))
@@ -98,7 +101,7 @@ export function coordinatedHospitalBattery(initial,{coordinateSpentCrew=false,co
   return null;
  }
 
- function rifleHold(b,u,normal,{holdGround=false,holdRoof=false}={}){
+ function rifleHold(b,u,normal,{holdGround=false,holdRoof=false,holdMedical=false}={}){
   // Only the admitted contact crew can issue battery work. The ordinary
   // infantry selector can also propose it for a nearby physician.
   if(normal?.type?.startsWith('artillery'))normal=null;
@@ -106,15 +109,16 @@ export function coordinatedHospitalBattery(initial,{coordinateSpentCrew=false,co
   // A carried loaded primary needs its real paid activation. Stance changes
   // while holding a blade cannot make that rifle available for firing.
   if(!['primary','secondary'].includes(u.activeSlot??'primary')&&u.loaded>0&&hasFirearm(u)&&!u.weaponDropped&&firearmServiceable(u)&&u.ap>=actionCosts(b,u).weapon)return {type:'weapon',unitId:u.id,slot:'primary'};
-  const shot=usefulRouteRifleShot(publicRouteView(b,u),u);if(shot)return shot;
+  const shot=usefulRouteRifleShot(publicRouteView(b,u),u,hospitalShotOptions);if(shot)return shot;
   if(!holdGround){const route=roofFiringApproach(b,u);if(route)return route;}
   if(normal?.type==='stance'&&normal.stance==='standing'){
    const paid=stanceCost(u,'standing'),posed={...u,stance:'standing',movementMode:'walk',weaponReady:false,momentum:0,ap:u.ap-paid};
    const view=publicRouteView(b,u),after={...view,units:view.units.map(v=>v.id===u.id?posed:v)};
-   return paid>0&&posed.ap>0&&usefulRouteRifleShot(after,posed)?normal:null;
+   return paid>0&&posed.ap>0&&usefulRouteRifleShot(after,posed,hospitalShotOptions)?normal:null;
   }
-  if(normal?.type==='stance'&&!usefulRouteFiringPosture(b,u,normal))return null;
+  if(normal?.type==='stance'&&!usefulRouteFiringPosture(b,u,normal,hospitalShotOptions))return null;
   if(holdGround&&['move','charge'].includes(normal?.type))return null;
+  if(holdMedical&&['climb','melee','meleePoint'].includes(normal?.type))return null;
   if(holdRoof&&!roofRoleActionAllowed(b,u,normal))return null;
   return normal;
  }
@@ -134,60 +138,83 @@ export function coordinatedHospitalBattery(initial,{coordinateSpentCrew=false,co
    const destination={x:action.x,y:action.y,tacticalLevel:action.tacticalLevel??u.tacticalLevel};
    if(!sameSurface(u,destination))return false;
    const route=getReachable(view,u,{movementIntent:action.movementIntent??'forward',stopAt:p=>sameCell(p,destination)})[0];
-   return Boolean(route?.cost>0&&route.path.every(p=>(p.kind===undefined||p.kind==='move')&&sameSurface(u,p)));
+   return Boolean(route?.cost>0&&roofPathRetainsCover(view,u,route.path));
   }
   const target=action.type==='meleePoint'?spacePoint(action)
    :action.targetKind==='npc'?view.npcs?.find(v=>v.id===String(action.targetId)):view.units.find(v=>v.id===String(action.targetId));
   return Boolean(target&&sameSurface(u,target));
  }
 
+ // Paid roof cover belongs to the current post. A useful firing endpoint
+ // does not justify crossing a lower-cover cell on the way to it. Use only
+ // the current public surfaces; Native still owns the actual paid movement.
+ function roofPathRetainsCover(view,u,path){
+  const origin=surfaceAt(view,u);if(!origin)return false;
+  const cover=origin.cover??0;
+  return path.every(point=>{
+   const surface=surfaceAt(view,point);
+   return (point.kind===undefined||point.kind==='move')&&sameSurface(u,point)&&Boolean(surface)&&(surface.cover??0)>=cover;
+  });
+ }
+
  function roofFiringApproach(b,u){
   if(!(u.tacticalLevel>0)||u.knockedDown||u.entangled||u.mounted||b.phase!=='player'||b.reactionStack?.length)return null;
   const view=publicRouteView(b,u);
-  const points=getReachable(view,u).filter(p=>p.cost>0&&p.cost<=20&&p.cost<u.ap&&sameSurface(p,u)&&distance(p,u)<=3)
+  const points=getReachable(view,u).filter(p=>p.cost>0&&p.cost<=20&&p.cost<u.ap&&sameSurface(p,u)&&distance(p,u)<=3&&roofPathRetainsCover(view,u,p.path))
    .sort((a,c)=>a.cost-c.cost||a.y-c.y||a.x-c.x);
   for(const point of points){
    // Native movement changes facing, breath, momentum and readiness. Quote
    // those paid body fields from this public route before claiming the next
    // shot is affordable. Real collisions and reactions still execute later.
    const preview=paidHospitalRoofWalkPreview(view,u,point);
-   if(preview&&usefulRouteRifleShot(preview.view,preview.actor))return {type:'move',unitId:u.id,...spacePoint(point)};
+   if(preview&&usefulRouteRifleShot(preview.view,preview.actor,hospitalShotOptions))return {type:'move',unitId:u.id,...spacePoint(point)};
   }
   return null;
  }
 
- // A medical trip through an authored access starts with its real paid
- // standing order. This copied upright actor is ONLY a native route quote;
- // every later callback queries the actual returned body and public space.
+ // Every medical prefix needs a complete current affordable aid endpoint.
+ // Keep current cover and known hostile exposure at the original paid rise
+ // and every route cell. A different floor is not melee contact; Native LOS
+ // still checks its actual height. These are quotes, never returned bodies.
+ function medicalPathQuote(view,u,patient,guns){
+  const stand=!sameSurface(u,patient)&&u.stance!=='standing'?stanceCost(u,'standing'):0;
+  if(stand&&u.mounted)return null;
+  const actor=stand?{...u,stance:'standing',movementMode:'walk',weaponReady:false,momentum:0,ap:u.ap-stand}:u;
+  const quoted={...view,units:view.units.map(other=>other.id===u.id?actor:other)},cover=surfaceAt(view,u)?.cover??0;
+  const contacts=view.units.filter(other=>other.side!==u.side&&fit(other)).map(other=>({actor:other,seesCurrent:hasLineOfSight(view,other,u)}));
+  const outsideGuns=point=>guns.every(g=>!artilleryContact(view,{...actor,...spacePoint(point)},g));
+  const safe=point=>Boolean(surfaceAt(view,point))&&(surfaceAt(view,point).cover??0)>=cover&&outsideGuns(point)&&contacts.every(contact=>
+   (!sameSurface(point,contact.actor)||distance(point,contact.actor)>2.5)&&(!hasLineOfSight(view,contact.actor,{...actor,...spacePoint(point)})||contact.seesCurrent));
+  const hand=u.activeSlot==='medical'?0:actionCosts(quoted,actor).weapon,budget=Math.min(20,actor.ap-hand-actionCosts(quoted,actor).heal);
+  if(budget<=0||!safe(u))return null;
+  const goals=getReachable(quoted,actor).filter(point=>point.cost>0&&sameSurface(point,patient)&&point.path.every(step=>[undefined,'move','climb'].includes(step.kind)&&safe(step))&&
+   medicalUsePreview(quoted,{...actor,...spacePoint(point),activeSlot:'medical',ap:actor.ap-point.cost-hand},patient).allowed)
+   .sort((a,c)=>a.cost-c.cost||a.y-c.y||a.x-c.x);
+  return goals[0]?{stand,actor,quoted,outsideGuns,safe,budget,goal:goals[0]}:null;
+ }
+
  function medicalAccessProgress(b,u,view,patient,guns){
-  if(sameSurface(u,patient)||u.mounted||u.knockedDown||u.entangled||b.phase!=='player'||b.reactionStack?.length)return null;
-  const stand=u.stance==='standing'?0:stanceCost(u,'standing'),costs=actionCosts(b,u),prepare=u.activeSlot==='medical'?0:costs.weapon;
-  const budget=Math.min(20,u.ap-stand-prepare-costs.heal);if(budget<=0)return null;
-  const upright=stand?{...u,stance:'standing',movementMode:'walk',weaponReady:false,momentum:0,ap:u.ap-stand}:u;
-  const quoted={...view,units:view.units.map(other=>other.id===u.id?upright:other)};
-  const outsideGuns=point=>guns.every(g=>!artilleryContact(view,{...upright,...spacePoint(point)},g));
-  const goal=getReachable(quoted,upright,{previewBudget:true,stopAt:point=>sameSurface(point,patient)&&distance(point,patient)<=1.5&&hasLineOfSight(view,point,patient)&&outsideGuns(point)})[0];
-  if(!goal?.path?.some(step=>step.kind==='climb'))return null;
+  const quote=medicalPathQuote(view,u,patient,guns);if(!quote)return null;
+  const {stand,actor,quoted,outsideGuns,safe,budget,goal}=quote;
   // No route can borrow a supplied gun contact or a speculative far move.
   // Walk at most three native flat cells before the next access. A climb is
   // a separate previewed public order, never an implicit free level change.
-  const prefix=[];let spent=0,from=upright;
+  const prefix=[];let spent=0,from=actor;
   for(const step of goal.path){
-   if(!['move','climb',undefined].includes(step.kind)||!outsideGuns(step))return null;
    if(prefix.length&&step.kind==='climb')break;
-   const cost=movementStepCost(quoted,upright,from,step);
+   const cost=movementStepCost(quoted,actor,from,step);
    if(!(cost>0)||!Number.isFinite(cost)||spent+cost>budget||prefix.length>=3)break;
    prefix.push(step);spent+=cost;from=step;if(step.kind==='climb')break;
   }
   if(!prefix.length)return null;
   if(prefix[0].kind==='climb'){
-   const climb=climbPreview(quoted,upright,{linkId:prefix[0].linkId});
+   const climb=climbPreview(quoted,actor,{linkId:prefix[0].linkId});
    if(!climb.valid||climb.pa>budget||!sameCell(climb.destination,prefix[0]))return null;
   }
   if(stand)return {type:'stance',unitId:u.id,stance:'standing'};
   if(prefix[0].kind==='climb')return {type:'climb',unitId:u.id,linkId:prefix[0].linkId};
   const end=prefix.at(-1),actual=getReachable(view,u,{stopAt:point=>sameCell(point,end)})[0];
-  return actual?.cost>0&&actual.cost<=budget&&actual.path.every(step=>(step.kind===undefined||step.kind==='move')&&sameSurface(step,u)&&outsideGuns(step))?{type:'move',unitId:u.id,...spacePoint(actual)}:null;
+  return actual?.cost>0&&actual.cost<=budget&&actual.path.length<=3&&actual.path.every(step=>(step.kind===undefined||step.kind==='move')&&sameSurface(step,u)&&outsideGuns(step)&&safe(step))?{type:'move',unitId:u.id,...spacePoint(actual)}:null;
  }
 
  function medicalApproach(b,u){
@@ -195,18 +222,8 @@ export function coordinatedHospitalBattery(initial,{coordinateSpentCrew=false,co
   const view=publicRouteView(b,u),patients=view.units.filter(v=>v.side===u.side&&v.id!==u.id&&medicalPatientAvailable(v)&&(v.bleeding>0||criticalFirstAidNeeded(v)))
    .sort((a,c)=>a.hp-c.hp||String(a.id).localeCompare(String(c.id)));
   const guns=view.artillery.filter(g=>g.side===u.side&&charged(g));
-  const budget=Math.min(20,u.ap-actionCosts(b,u).weapon-actionCosts(b,u).heal);
-  if(budget<=0)return null;
-  const reachable=getReachable(view,u).filter(p=>p.cost>0&&p.cost<=budget&&guns.every(g=>!artilleryContact(view,{...u,...p},g)));
   for(const patient of patients){
-   if(!sameSurface(u,patient)){
-    const access=medicalAccessProgress(b,u,view,patient,guns);if(access)return access;
-    continue;
-   }
-   const points=reachable.filter(p=>sameSurface(p,patient)&&distance(p,patient)<distance(u,patient));
-   const score=p=>Number(!(distance(p,patient)<=1.5&&hasLineOfSight(view,{...u,...p},patient)))*100+distance(p,patient);
-   points.sort((a,c)=>score(a)-score(c)||a.cost-c.cost||a.y-c.y||a.x-c.x);
-   if(points[0])return {type:'move',unitId:u.id,...spacePoint(points[0])};
+   const access=medicalAccessProgress(b,u,view,patient,guns);if(access)return access;
   }
   return null;
  }
@@ -227,11 +244,11 @@ export function coordinatedHospitalBattery(initial,{coordinateSpentCrew=false,co
 
  const controller=(b,u)=>{
   if(!fit(u))return null;
-  const normal=northernHospitalCoverOrder(b,u);
+  const normal=northernHospitalCoverOrder(b,u,hospitalShotOptions);
   if(normal?.type==='useItem'||normal?.slot==='medical'||u.knockedDown||u.entangled)return normal;
   if(u.id===physician?.id){
    const aid=medicalApproach(b,u);if(aid)return aid;
-   const held=rifleHold(b,u,normal,{holdGround:true});
+   const held=rifleHold(b,u,normal,{holdGround:true,holdMedical:true});
    return held??(coordinatePhysicianHold?physicianHoldingPosture(b,u):held);
   }
   const crew=crews.find(c=>c.ids.includes(u.id)),gun=crew&&b.artillery.find(g=>g.id===crew.gunId);
@@ -269,7 +286,7 @@ export function coordinatedHospitalBattery(initial,{coordinateSpentCrew=false,co
   if(!emptyGround.has(u.id)||b.status!=='active'||b.mode!=='combat'||b.phase!=='player'||b.reactionStack?.length||!fit(u)||(u.tacticalLevel??0)!==0||u.hp!==u.maxHp||u.bleeding||u.knockedDown||u.entangled||u.mounted||u.stealthMode||
    (u.activeSlot??'primary')!=='primary'||u.weaponMode==='melee'||!u.loaded||u.jammed||u.weaponDropped||!hasFirearm(u)||!firearmServiceable(u)||carriedWeight(u)>carryCapacity(u))return null;
   const view=publicRouteView(b,u);
-  if(view.artillery.some(g=>g.side===u.side&&charged(g))||usefulRouteRifleShot(view,u))return null;
+  if(view.artillery.some(g=>g.side===u.side&&charged(g))||usefulRouteRifleShot(view,u,hospitalShotOptions))return null;
   if(u.medical>0&&u.medkits>0&&view.units.some(v=>v.side===u.side&&medicalPatientAvailable(v)&&(v.bleeding>0||criticalFirstAidNeeded(v))))return null;
   const seen=view.units.filter(v=>v.side!==u.side&&fit(v)&&sameSurface(u,v));if(!seen.length)return null;
   // Native records this window's allocated AP separately from its remaining
@@ -283,7 +300,7 @@ export function coordinatedHospitalBattery(initial,{coordinateSpentCrew=false,co
   for(const point of getReachable(view,u)){
    if(!(point.cost>0&&point.cost<=budget)||!point.path?.length||point.path.length>3||!sameSurface(point,u)||!point.path.every(step=>(step.kind===undefined||step.kind==='move')&&sameSurface(step,u)))continue;
    const preview=paidHospitalRoofWalkPreview(view,u,point);if(!preview)continue;
-   const shot=usefulRouteRifleShot(preview.view,preview.actor),gain=from-nearest(point);
+   const shot=usefulRouteRifleShot(preview.view,preview.actor,hospitalShotOptions),gain=from-nearest(point);
    const target=shot?seen.find(v=>v.id===shot.targetId):seen.slice().sort((a,c)=>distance(point,a)-distance(point,c)||String(a.id).localeCompare(String(c.id)))[0];
    if(!target||!shot&&!(gain>0))continue;
    const cost=actionCosts(preview.view,preview.actor,target),reserve=cost.fire+(shot?.aim??2)*cost.aim;
@@ -305,21 +322,21 @@ export function coordinatedHospitalBattery(initial,{coordinateSpentCrew=false,co
   // Do not replace a real finite medical duty or a presently payable shot.
   // This is a public test of work, never another stateful controller call.
   if(u.medical>0&&u.medkits>0&&view.units.some(v=>v.side===u.side&&medicalPatientAvailable(v)&&(v.bleeding>0||criticalFirstAidNeeded(v))))return null;
-  if(usefulRouteRifleShot(view,u))return null;
+  if(usefulRouteRifleShot(view,u,hospitalShotOptions))return null;
   const seen=view.units.filter(v=>v.side!==u.side&&fit(v)&&sameSurface(u,v));if(!seen.length)return null;
   const nearest=point=>Math.min(...seen.map(target=>distance(point,target))),from=nearest(u),choices=[];
   const posedShots=[];
   for(const stance of ['crouched','prone','standing']){
    const paid=stanceCost(u,stance);if(stance===u.stance||!(paid>0)||paid>=u.ap)continue;
    const posed={...u,stance,movementMode:stance==='prone'?'prone':stance==='crouched'?'crouch':'walk',weaponReady:false,momentum:0,ap:u.ap-paid};
-   const after={...view,units:view.units.map(v=>v.id===u.id?posed:v)},shot=usefulRouteRifleShot(after,posed);
+   const after={...view,units:view.units.map(v=>v.id===u.id?posed:v)},shot=usefulRouteRifleShot(after,posed,hospitalShotOptions);
    if(shot)posedShots.push({paid,stance});
   }
   if(posedShots.length){posedShots.sort((a,c)=>a.paid-c.paid);return {type:'stance',unitId:u.id,stance:posedShots[0].stance};}
   for(const point of getReachable(view,u)){
    if(!(point.cost>0&&point.cost<=20)||!point.path?.length||point.path.length>3||!sameSurface(point,u)||!point.path.every(step=>(step.kind===undefined||step.kind==='move')&&sameSurface(step,u)))continue;
    const preview=paidHospitalRoofWalkPreview(view,u,point);if(!preview)continue;
-   const shot=usefulRouteRifleShot(preview.view,preview.actor),gain=from-nearest(point);
+   const shot=usefulRouteRifleShot(preview.view,preview.actor,hospitalShotOptions),gain=from-nearest(point);
    if(shot){
     const target=seen.find(v=>v.id===shot.targetId);if(!target)continue;
     const cost=actionCosts(preview.view,preview.actor,target),reserve=cost.fire+shot.aim*cost.aim;

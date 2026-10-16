@@ -77,3 +77,46 @@ test('a cautious rifleman still lowers and fires when the prone shot remains vis
  s=apply(s,first);const next=cautiousCombatOrder(s,s.units[0]);assert.equal(next.type,'fire');
  const fired=apply(s,next);assert.equal(fired.units[0].loaded,0);assert.ok(fired.units[0].ap<s.units[0].ap);
 });
+
+import {hasFirearm,weaponFor,meleePreview,getMeleeAttackResult,presentedActBattle} from '../game/tactical.js';
+import {chooseEnemyAction} from '../game/tactical-ai.js';
+import {validateBattleSnapshot} from '../game/validate-battle.js';
+
+function heldBladeArena(stance){
+ const width=16,height=8,empty={medkits:0,rations:0,boleadoras:0,torches:0,bleeding:0,bandaged:0};
+ return createBattle([{...empty,id:'blade',name:'Defensor',x:2,y:3,hp:100,maxHp:100,energy:100,weapon:1800,loaded:1,ammo:8,condition:73,blade:1813,bladeCondition:100,activeSlot:'blade',stance,movementMode:stance==='prone'?'prone':'walk',facing:2,strength:100,dexterity:100,agility:100,wisdom:100,experienceLevel:10,medical:0,marksmanship:90}],{
+  id:`declared-held-blade-${stance}`,width,height,seed:45,hour:12,exploration:false,deferContact:true,
+  tiles:Array.from({length:width*height},(_,index)=>({x:index%width,y:Math.floor(index/width),type:'grass',blocked:false,cover:0})),
+  enemies:[{...empty,id:'target',name:'Oponente',x:3,y:3,hp:500,maxHp:500,energy:100,weapon:0,loaded:0,ammo:0,activeSlot:'unarmed',stance:'prone',movementMode:'prone',facing:6,patrol:false,overwatch:false,morale:100,medical:0}],
+ });
+}
+const heldBladeUnit=(battle,id='blade')=>battle.units.find(unit=>unit.id===id);
+function repeatPaidBladeStrikes(start,firstRise){
+ const before=structuredClone(start),orders=[];let battle=start;
+ for(let index=0;index<2;index++){
+  const prior=structuredClone(battle),actor=heldBladeUnit(battle),target=heldBladeUnit(battle,'target'),plan=meleePreview(battle,actor,target);
+  assert.equal(hasFirearm(actor),false);assert.equal(weaponFor(actor).capacity,0);assert.equal(actor.loaded,1);assert.equal(actor.ammo,8);assert.equal(actor.activeSlot,'blade');assert.equal(plan.valid,true);
+  assert.equal(plan.movePa,0);assert.equal(plan.stancePa,index===0?firstRise:0);
+  const action=combatOrder(battle,actor);assert.deepEqual(action,{type:'melee',unitId:'blade',targetId:'target'});assert.deepEqual(action,chooseEnemyAction(battle,actor));assert.deepEqual(battle,prior);
+  const next=apply(battle,action),shown=presentedActBattle(battle,action),after=heldBladeUnit(next);
+  assert.equal(getMeleeAttackResult(battle,next,'blade'),true);assert.equal(after.ap,actor.ap-plan.pa);assert.equal(after.stance,'standing');assert.equal(after.movementMode,'walk');assert.equal(after.bladeCondition,actor.bladeCondition-1);assert.ok(heldBladeUnit(next,'target').hp<target.hp);
+  assert.equal(next.elapsedSeconds,battle.elapsedSeconds+(battle.roundTimeCharged?0:6));assert.equal(next.turn,battle.turn);assert.equal(next.status,'active');
+  for(const key of ['weapon','loaded','ammo','ammunition','ammunitionChoice','condition','weaponFittings','blade','activeSlot','medkits','inventory','hp','energy','x','y'])assert.deepEqual(after[key],actor[key],key);
+  assert.deepEqual(shown.state,next);assert.ok(shown.frames.some(frame=>frame.type==='contact'&&frame.unitId==='blade'&&frame.action==='melee'));assert.ok(shown.frames.some(frame=>frame.type==='impact'&&frame.unitId==='blade'&&frame.action==='melee'));
+  assert.deepEqual(validateBattleSnapshot(JSON.parse(JSON.stringify(next))),next);assert.deepEqual(battle,prior);orders.push(action);battle=next;
+ }
+ assert.deepEqual(orders.map(action=>action.type),['melee','melee']);assert.equal(heldBladeUnit(battle).bladeCondition,98);assert.equal(battle.elapsedSeconds,6);
+ let replay=validateBattleSnapshot(JSON.parse(JSON.stringify(start)));
+ for(const action of orders){assert.deepEqual(combatOrder(replay,heldBladeUnit(replay)),action);replay=apply(replay,action);}
+ assert.deepEqual(replay,battle);assert.deepEqual(start,before);
+}
+
+test('a standing held blade keeps its carried loaded rifle stowed through two real paid strikes',()=>{
+ const start=heldBladeArena('standing');assert.equal(heldBladeUnit(start).stance,'standing');
+ repeatPaidBladeStrikes(start,0);
+});
+
+test('a prone held blade pays one Native rise and then strikes again without a false rifle posture',()=>{
+ const start=heldBladeArena('prone');assert.equal(heldBladeUnit(start).stance,'prone');assert.equal(meleePreview(start,heldBladeUnit(start),heldBladeUnit(start,'target')).stancePa,6);
+ repeatPaidBladeStrikes(start,6);
+});

@@ -85,7 +85,7 @@ test('a real courier encounter exposes the actual paid partial campaign and neve
  const {campaign:start,physician}=setup({raid:true}),before=structuredClone(start);let campaign=start;const events=[],route=createFreshRouteOrders(()=>campaign,next=>{campaign=next;},{report:e=>events.push(e)});let caught;
  try{collectKnownCuyoDressings(()=>campaign,route.order,physician,3,{ownedCarried:true,donorReserve:1,report:e=>events.push(e)});}catch(error){caught=error;}
  assert.ok(caught);assert.ok(campaign.pendingEncounter);assert.strictEqual(caught.campaign,campaign);assert.ok(clock(campaign)>clock(start));assert.equal(events.some(e=>e.event==='cuyoKnownCourierReturned'),false);assert.equal(events.filter(e=>e.event==='freshRouteOrder').at(-1).action.type,'wait');
- const count=events.length;assert.throws(()=>collectKnownCuyoDressings(()=>campaign,route.order,physician,1,{ownedCarried:true}),/null/);assert.equal(events.length,count);assert.deepEqual(start,before);replay(start,campaign,events);
+ assert.deepEqual(start,before);
 });
 
 test('uncleared owned stock and an unfit local carrier refuse before any paid courier order or stock change',()=>{

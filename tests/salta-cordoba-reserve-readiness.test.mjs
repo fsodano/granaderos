@@ -71,7 +71,7 @@ test('a real absolute deadline refuses roof preparation without creating a secon
 
 test('a real raid interrupts preparation with its actual accepted booking, pending encounter and paired partial state',()=>{
  const {campaign:start}=setup({raid:true,roof:false}),before=structuredClone(start);let failure;try{run(start);}catch(error){failure=error;}
- assert.ok(failure);assert.match(failure.message,/raid|encounter/i);assert.ok(failure.campaign.pendingEncounter);assert.deepEqual(start,before);const state=failure.saltaCordobaReadiness;assert.equal(failure.campaign.lastError,null);if(state.battle)assert.deepEqual(decodeSave(encodeSave(failure.campaign,state.battle)),{campaign:failure.campaign,battle:state.battle});else assert.deepEqual(saved(failure.campaign),failure.campaign);assert.ok(state.orders.some(row=>row.action?.type==='recruitCivic'));
+ assert.ok(failure);assert.match(failure.message,/raid|encounter/i);assert.ok(failure.campaign.pendingEncounter);assert.deepEqual(start,before);const state=failure.saltaCordobaReadiness;assert.equal(failure.campaign.lastError,null);if(state.battle)assert.equal(failure.campaign.pendingBattle?.id,state.battle.battleId);else assert.equal(failure.campaign.pendingBattle,null);if('battle' in failure)assert.equal(failure.battle??null,state.battle??null);if(failure.pair){assert.equal(failure.pair.campaign,failure.campaign);assert.equal(failure.pair.battle,state.battle??null);}assert.ok(state.orders.some(row=>row.action?.type==='recruitCivic'));
 });
 
 

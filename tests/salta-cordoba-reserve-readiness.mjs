@@ -27,6 +27,8 @@ import {coordinatedHospitalBattery} from './coordinated-hospital-battery.mjs';
 import {fight} from './opening-driver.mjs';
 import {createPairedRouteOrders} from './paired-route-battle.mjs';
 import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
+import {searchLocalDepotDressings} from './local-depot-medical-search.mjs';
+import {courierSaltaCordobaOriginDressings} from './salta-cordoba-origin-supply.mjs';
 
 const clock=c=>c.hour*3600+(c.secondOfHour??0);
 const local=(c,at)=>c.recruited.filter(id=>c.operativeState[id]?.alive&&!c.operativeState[id].captured&&!operativeInTransit(c,id)&&operativeLocation(c,id)===at);
@@ -35,13 +37,21 @@ const freeGuard=(c,id)=>fit(c,id)&&canReassignOperative(c,id)&&['active','rest']
 const clinicDoctor=(c,town,patients)=>rosterFor(c).filter(op=>town.includes(op.id)&&!patients.includes(op.id)&&[undefined,'no_medkits'].includes(careAssignmentIssue(c,op,'doctor')?.code)).sort((a,b)=>b.medical-a.medical||a.id-b.id)[0];
 const offers=c=>rosterFor(c).filter(op=>isContractOperative(c,op)&&fit(c,op.id)&&civicStatus(c,op.id).available&&hiringTravelHours(c,op.id)===0).map(op=>({op,quote:contractQuote(c,op,'week')})).filter(row=>row.quote.available&&!row.quote.permanent&&row.quote.price>0).sort((a,b)=>a.quote.total-b.quote.total||b.op.marksmanship-a.op.marksmanship||a.op.id-b.op.id);
 
+// This is the current local wound/stock quote, before choosing how to obtain
+// any missing dressings. Unknown depot stock and future arrivals do not count.
+export function saltaRearClinicDressingQuote(c,clinic='tucuman'){
+ const town=local(c,clinic),patients=town.filter(id=>c.operativeState[id].hp<c.operativeState[id].maxHp||c.operativeState[id].bleeding),physician=clinicDoctor(c,town,patients);
+ if(patients.length&&!physician)return {available:false,reason:'The current clinic needs a fit serving colleague before its wound quote.'};
+ const demand=patients.reduce((n,id)=>n+Math.max(Number(c.operativeState[id].bleeding>0),Math.ceil((c.operativeState[id].maxHp-c.operativeState[id].hp)/doctorRate(physician,c))),0)+2,carried=town.reduce((n,id)=>n+Math.max(0,c.operativeState[id].medkits-(id===physician?.id?0:1)),0);
+ return {available:true,town,patients,physician,demand,carried,missing:Math.max(0,demand-carried)};
+}
+
 // Quote current roles, every guarantee, finite clinic packs and the later
 // twelve-person assault together. No future earnings or unadmitted NPC joins
 // reduce the reserve. Re-quote after every actual hire or meeting.
 export function quoteSaltaRearFunding(c,{rearIds,paidOffers,clinic='tucuman',deadlineSeconds}={}){
- const excluded=new Set([...rearIds,...paidOffers.map(row=>row.op.id)]),roster=rosterFor(c),town=local(c,clinic),patients=town.filter(id=>c.operativeState[id].hp<c.operativeState[id].maxHp||c.operativeState[id].bleeding),physician=clinicDoctor(c,town,patients);
- if(patients.length&&!physician)return {available:false,reason:'The current clinic needs a fit serving colleague before its wound quote.'};
- const demand=patients.reduce((n,id)=>n+Math.max(Number(c.operativeState[id].bleeding>0),Math.ceil((c.operativeState[id].maxHp-c.operativeState[id].hp)/doctorRate(physician,c))),0)+2,carried=town.reduce((n,id)=>n+Math.max(0,c.operativeState[id].medkits-(id===physician?.id?0:1)),0);
+ const clinicQuote=saltaRearClinicDressingQuote(c,clinic);if(!clinicQuote.available)return clinicQuote;
+ const {town,demand,carried}=clinicQuote,excluded=new Set([...rearIds,...paidOffers.map(row=>row.op.id)]);
  let missing=Math.max(0,demand-carried),pool=offers(c).filter(row=>!excluded.has(row.op.id)),clinicOffers=[];
  for(const row of pool.filter(row=>!excluded.has(row.op.id)&&c.operativeState[row.op.id].medkits>1).map(row=>({...row,quote:contractQuote(c,row.op,'day')})).filter(row=>row.quote.available).sort((a,b)=>a.quote.total-b.quote.total||a.op.id-b.op.id)){
   if(!missing)break;clinicOffers.push(row);excluded.add(row.op.id);missing=Math.max(0,missing-(c.operativeState[row.op.id].medkits-1));
@@ -55,6 +65,46 @@ export function quoteSaltaRearFunding(c,{rearIds,paidOffers,clinic='tucuman',dea
  if(!fieldOffers)return {available:false,reason:'The quoted rear would consume the later twelve-person Salta force.'};
  const rearCost=paidOffers.reduce((n,row)=>n+row.quote.total,0),clinicCost=clinicOffers.reduce((n,row)=>n+row.quote.total+Math.max(0,Math.floor((deadlineSeconds-clock(c)-row.quote.hours*3600)/(row.quote.hours*3600))+1)*row.quote.price,0),fieldCost=fieldOffers.reduce((n,row)=>n+row.quote.total,0),fieldReserve=250,service=quoteMountainServiceBudget(c,{keepIds:c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured),horizonSeconds:deadlineSeconds,fixedCost:rearCost+clinicCost+fieldCost+fieldReserve});
  return {...service,rearCost,clinicCost,fieldCost,fieldReserve,clinicOffers:clinicOffers.map(row=>({id:row.op.id,quote:row.quote})),fieldOffers:fieldOffers.map(row=>({id:row.op.id,quote:row.quote})),demand,carried};
+}
+
+// An unaffordable paid pack plan can first search the controlled rear depot.
+// Only a real delivered parcel changes the later local clinic funding quote.
+export function prepareSaltaExistingDepotSupply(start,{rearIds,paidOffers,deadlineSeconds,resolveEncounter,report=()=>{}}){
+ const before=structuredClone(start),funding=quoteSaltaRearFunding(start,{rearIds,paidOffers,deadlineSeconds}),clinic=saltaRearClinicDressingQuote(start),orders=[],care=[],renewals=[],encounters=[];
+ const costs=[funding.rearCost,funding.fieldCost,funding.fieldReserve],reservedPesos=costs.every(Number.isSafeInteger)?costs.reduce((sum,cost)=>sum+cost,0):null;
+ let campaign=start,battle=null,search=null,courier=null,searchStart=null;
+ const rememberSearch=()=>{orders.push(...search.orders);renewals.push(...search.renewals);if(clock(campaign)>clock(searchStart))care.push(clinicCareChange(searchStart,campaign));};
+ const rememberCourier=()=>{orders.push(...courier.orders);care.push(...courier.care);renewals.push(...courier.renewals);encounters.push(...courier.externalTransitions.map(row=>row.before.campaign.pendingEncounter).filter(Boolean));};
+ const finish=reason=>{assert.deepEqual(start,before);return {campaign,receipt:{needed:Boolean(search||courier),reason,funding,clinic,reservedPesos,search,courier,orders,care,renewals,encounters,clinicAfter:saltaRearClinicDressingQuote(campaign),startSeconds:clock(start),endSeconds:clock(campaign),deadlineSeconds}};};
+ if(funding.available||!clinic.available||!clinic.missing||!Number.isSafeInteger(reservedPesos))return finish('existing-plan');
+ // Preserve the quoted six-person rear, later field force and original250.
+ // This does not count uncollected stock or any future campaign income.
+ const service=quoteMountainServiceBudget(start,{keepIds:start.recruited.filter(id=>start.operativeState[id].alive&&!start.operativeState[id].captured),horizonSeconds:deadlineSeconds,fixedCost:reservedPesos});
+ if(!service.available)return finish('known-costs-unfunded');
+ const holderId=rearIds.filter(id=>freeGuard(start,id)&&operativeLocation(start,id)==='cordoba').sort((a,b)=>start.operativeState[b].medkits-start.operativeState[a].medkits||a-b)[0];
+ if(holderId===undefined)return finish('no-free-local-holder');
+ try{
+  const additional=Math.max(0,clinic.missing+2-campaign.operativeState[holderId].medkits);
+  if(additional){
+   searchStart=campaign;const result=searchLocalDepotDressings(campaign,{sector:'cordoba',operativeId:holderId,requested:additional,deadlineSeconds,report});campaign=result.campaign;battle=result.battle;search=result.receipt;rememberSearch();
+   assert.equal(battle,null,'Finish the actual depot visit before any supply journey.');assert.equal(search.restored,true,'The depot search must really restore its local defender.');
+  }
+  const actual=saltaRearClinicDressingQuote(campaign),quantity=Math.min(actual.missing+1,campaign.operativeState[holderId].medkits-1);
+  if(!actual.available||!actual.missing||quantity<=1)return finish('actual-depot-shortage');
+  // Search time changes the actual contract timestamps. Requote the same
+  // distinct planned rear and field identities before one real rear booking.
+  const roster=rosterFor(campaign),rearOffers=paidOffers.map(row=>{const op=roster.find(op=>op.id===row.op.id);return {op,quote:contractQuote(campaign,op,'week')};}),fieldOffers=funding.fieldOffers.map(row=>{const op=roster.find(op=>op.id===row.id);return {op,quote:contractQuote(campaign,op,'day')};});
+  const carrier=rearOffers.find(row=>{if(!fit(campaign,row.op.id)||!civicStatus(campaign,row.op.id).available||campaign.operativeState[row.op.id].medkits<1)return false;try{applyItemQuantity(structuredClone(carriedAmmunition(row.op,campaign.operativeState[row.op.id])),{item:'medkits',count:quantity,weight:SUPPLY_ITEMS.medkits.weight});return true;}catch{return false;}});
+  if(!carrier)return finish('no-current-planned-carrier');
+  const delivered=courierSaltaCordobaOriginDressings(campaign,{holderId,carrierId:carrier.op.id,requestedCount:quantity,paidOffers:rearOffers,fieldOffers,deadlineSeconds,resolveEncounter,report});campaign=delivered.campaign;courier=delivered.receipt;rememberCourier();
+  assert.equal(campaign.pendingBattle,null);assert.equal(campaign.pendingEncounter,null);assert.equal(courier.restored,true);assert.ok(clock(campaign)<=deadlineSeconds);
+  return finish('actual-parcel-delivered');
+ }catch(error){
+  if(error?.campaign)campaign=error.campaign;if(error?.battle)battle=error.battle;
+  if(!search&&error?.localDepotMedicalSearch){search=error.localDepotMedicalSearch;rememberSearch();}
+  if(!courier&&error?.saltaCordobaOriginSupply){courier=error.saltaCordobaOriginSupply;rememberCourier();}
+  if(error&&typeof error==='object'){error.campaign=campaign;error.battle=battle;error.saltaExistingDepotSupply={funding,clinic,reservedPesos,search,courier,orders,care,renewals,encounters,deadlineSeconds,restored:false};}throw error;
+ }
 }
 
 // Complete the currently quoted local wound batch before asking the older
@@ -84,7 +134,7 @@ export function saltaCordobaReserveEncounterExecutor(campaign,sector,{ready=fals
 
 export function prepareSaltaCordobaReserveReadiness(start,{deadlineSeconds,report=()=>{},resolveEncounter}={}){
  const inputCapture=recordRouteStrategicEvidence({helper:'prepareSaltaCordobaReserveReadiness',stage:'preparation-input',campaign:start,context:{deadlineSeconds}});
- assert.ok(Number.isSafeInteger(deadlineSeconds)&&deadlineSeconds>=clock(start));const before=structuredClone(start),selected=start.activeSquadId,oldGroups=structuredClone(start.squads),oldPosts=local(start,'cordoba').filter(id=>start.operativeState[id].residentPosition?.tacticalLevel>0).map(id=>({id,position:structuredClone(start.operativeState[id].residentPosition)})),originalPatients=local(start,'tucuman').filter(id=>start.operativeState[id].hp<start.operativeState[id].maxHp||start.operativeState[id].bleeding),orders=[],hires=[],meetings=[],funding=[],visits=[],care=[],renewals=[],encounters=[],transfers=[];
+ assert.ok(Number.isSafeInteger(deadlineSeconds)&&deadlineSeconds>=clock(start));const before=structuredClone(start),selected=start.activeSquadId,oldGroups=structuredClone(start.squads),oldPosts=local(start,'cordoba').filter(id=>start.operativeState[id].residentPosition?.tacticalLevel>0).map(id=>({id,position:structuredClone(start.operativeState[id].residentPosition)})),originalPatients=local(start,'tucuman').filter(id=>start.operativeState[id].hp<start.operativeState[id].maxHp||start.operativeState[id].bleeding),orders=[],hires=[],meetings=[],funding=[],visits=[],care=[],renewals=[],encounters=[],transfers=[],depotSupplies=[];
  let c=start,b=null,visitDeadline=null;const sector='cordoba';
  const check=()=>{assert.equal(c.defeated,false);assert.ok(clock(c)<=deadlineSeconds,'Córdoba readiness uses the same clinical deadline.');for(const id of originalPatients)assert.ok(c.recruited.includes(id)&&c.operativeState[id].alive&&!c.operativeState[id].captured,'Every original clinic patient survives actual rear preparation.');};
  const settle=()=>{if(!c.pendingEncounter)return;assert.equal(typeof resolveEncounter,'function','Settle the actual rear-preparation encounter.');const pending=structuredClone(c.pendingEncounter);c=resolveEncounter(c,{deadlineSeconds});encounters.push(pending);assert.equal(c.pendingEncounter,null);assert.equal(c.pendingBattle,null);check();};
@@ -107,7 +157,14 @@ export function prepareSaltaCordobaReserveReadiness(start,{deadlineSeconds,repor
   // A real qualified leader also supplies the separate physician role. Never
   // assume that a physical local officer has joined or accepts recruitment.
   let leader=rosterFor(c).filter(op=>guards.includes(op.id)&&op.medical>=60&&op.leadership>=50).sort((a,b)=>b.leadership-a.leadership)[0];
-  if(!leader){const pool=offers(c),row=pool.find(row=>row.op.medical>=60&&row.op.leadership>=50);assert.ok(row,'A real immediate qualified paid rear leader must be available.');const proposed=[row,...pool.filter(other=>other.op.id!==row.op.id).slice(0,Math.max(0,5-guards.length))];quoteAndHire(row,quoteSaltaRearFunding(c,{rearIds:guards,paidOffers:proposed,deadlineSeconds}));leader=row.op;guards=local(c,sector).filter(id=>freeGuard(c,id));}
+  if(!leader){
+   const pool=offers(c),row=pool.find(row=>row.op.medical>=60&&row.op.leadership>=50);assert.ok(row,'A real immediate qualified paid rear leader must be available.');const proposed=[row,...pool.filter(other=>other.op.id!==row.op.id).slice(0,Math.max(0,5-guards.length))];
+   const supplied=prepareSaltaExistingDepotSupply(c,{rearIds:guards,paidOffers:proposed,deadlineSeconds,resolveEncounter,report});c=supplied.campaign;orders.push(...supplied.receipt.orders);care.push(...supplied.receipt.care);renewals.push(...supplied.receipt.renewals);encounters.push(...supplied.receipt.encounters);if(supplied.receipt.needed)depotSupplies.push(supplied.receipt);if(supplied.receipt.courier?.hire)hires.push(supplied.receipt.courier.hire);check();
+   // Travel, care and actual encounters can change both availability and need.
+   // Choose and quote the current paid rear again after the real delivery.
+   guards=local(c,sector).filter(id=>freeGuard(c,id));leader=rosterFor(c).filter(op=>guards.includes(op.id)&&op.medical>=60&&op.leadership>=50).sort((a,b)=>b.leadership-a.leadership)[0];
+   if(!leader){const current=offers(c),next=current.find(row=>row.op.medical>=60&&row.op.leadership>=50);assert.ok(next,'A real immediate qualified paid rear leader must still be available.');const planned=[next,...current.filter(other=>other.op.id!==next.op.id).slice(0,Math.max(0,5-guards.length))];quoteAndHire(next,quoteSaltaRearFunding(c,{rearIds:guards,paidOffers:planned,deadlineSeconds}));leader=next.op;guards=local(c,sector).filter(id=>freeGuard(c,id));}
+  }
   order({type:'squad',ids:guards});beginVisit();
   const contacts=encounterDefinitions(c).filter(n=>canRecruitEncounter(n)&&!c.recruited.includes(n.operativeId)&&c.operativeState[n.operativeId]?.alive&&recruitmentStatus(c,n.operativeId,true).available&&!encounterRequirements(c,n,leader)&&contractQuote(c,rosterFor(c).find(op=>op.id===n.operativeId),'day').permanent&&b.npcs.some(actual=>actual.id===n.id&&actual.hp>=15&&!actual.bleeding));
   for(const npc of contacts){if(c.squad.length>=6)break;
@@ -135,6 +192,6 @@ export function prepareSaltaCordobaReserveReadiness(start,{deadlineSeconds,repor
   }
   const prepared=structuredClone(b),roles=coordinatedHospitalBattery(prepared).roles;if(gun){assert.equal(roles.physicianId,String(physician.id));assert.equal(roles.crews.find(row=>row.gunId===gun.id).ids.length,crew.length);}leave();for(const id of guards)order({type:'assignCare',operativeId:id,assignment:'rest'});for(const post of oldPosts)assert.deepEqual(c.operativeState[post.id].residentPosition,post.position);
   if(c.activeSquadId!==selected)order({type:'selectSquad',id:selected});for(const q of oldGroups.filter(q=>q.location!==sector&&q.members.length))assert.deepEqual(c.squads.find(row=>row.id===q.id),q,'The original field and clinical groups remain intact.');for(const [id,r]of Object.entries(before.operativeState))if(!r.alive){assert.equal(c.operativeState[id].alive,false);assert.equal(c.operativeState[id].deathMinute,r.deathMinute);}check();assert.deepEqual(start,before);
-  const receipt={needed:true,ids:guards,physicianId:physician.id,crewIds:crew.map(Number),orders,hires,meetings,funding,visits,care,renewals,encounters,transfers,originalPatients,prepared,startSeconds:clock(start),endSeconds:clock(c),deadlineSeconds};report({event:'saltaCordobaReserveReady',receipt});return {campaign:c,receipt};
- }catch(error){if(error?.campaign)c=error.campaign;if(error&&typeof error==='object'){error.campaign=c;error.saltaCordobaReadiness={orders,hires,meetings,funding,visits,care,renewals,encounters,transfers,originalPatients,deadlineSeconds,...(b?{battle:b}:{})};}recordRouteStrategicEvidence({helper:'prepareSaltaCordobaReserveReadiness',stage:'preparation-failure',campaign:c,inputCapture,error,context:{orders,hires,meetings,funding,visits,care,renewals,encounters,transfers,originalPatients,deadlineSeconds,...(b?{battle:b}:{})}});throw error;}
+  const receipt={needed:true,ids:guards,physicianId:physician.id,crewIds:crew.map(Number),orders,hires,meetings,funding,visits,care,renewals,encounters,transfers,depotSupplies,originalPatients,prepared,startSeconds:clock(start),endSeconds:clock(c),deadlineSeconds};report({event:'saltaCordobaReserveReady',receipt});return {campaign:c,receipt};
+ }catch(error){if(error?.campaign)c=error.campaign;if(error?.battle)b=error.battle;if(error?.saltaExistingDepotSupply){const partial=error.saltaExistingDepotSupply;depotSupplies.push(partial);orders.push(...partial.orders);care.push(...partial.care);renewals.push(...partial.renewals);encounters.push(...partial.encounters);if(partial.courier?.hire)hires.push(partial.courier.hire);}if(error&&typeof error==='object'){error.campaign=c;error.saltaCordobaReadiness={orders,hires,meetings,funding,visits,care,renewals,encounters,transfers,depotSupplies,originalPatients,deadlineSeconds,...(b?{battle:b}:{})};}recordRouteStrategicEvidence({helper:'prepareSaltaCordobaReserveReadiness',stage:'preparation-failure',campaign:c,inputCapture,error,context:{orders,hires,meetings,funding,visits,care,renewals,encounters,transfers,depotSupplies,originalPatients,deadlineSeconds,...(b?{battle:b}:{})}});throw error;}
 }

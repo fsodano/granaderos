@@ -8,6 +8,9 @@ import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {completeTestTravel} from './campaign-test-helpers.mjs';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {applyItemQuantity,SUPPLY_ITEMS} from '../game/tactical-inventory.js';
+import {campaignRole} from '../game/campaign-roles.js';
+import {operativeLocation,operativeInTransit,canReassignOperative} from '../game/squads.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {syncBattleTime} from '../game/time.js';
 import {autoBandageBattle} from '../game/auto-bandage.js';
@@ -24,6 +27,7 @@ import {ammoTypeFor,ammoCount} from '../game/ammo-types.js';
 import {AMMUNITION_FAMILIES} from '../game/ammunition-families.js';
 import {doctorRate} from '../game/medical-care.js';
 import {assignNorthernCareRoles} from './northern-care-roles.mjs';
+import {shareNorthernClinicDressing} from './northern-clinic-dressing-pool.mjs';
 import {recoverVisibleRouteDressings} from './route-visible-medical-remains.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {contractQuote,contractRenewalQuote} from '../game/contracts.js';
@@ -37,7 +41,8 @@ import {stageRouteRoofDefenders} from './route-roof-defenders.mjs';
 import {recordRouteBattleFailure} from './route-failure-evidence.mjs';
 import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 import {quoteRescuerFirstAid} from './rescued-first-aid-quote.mjs';
-import {routeDressingDonor} from './route-dressings.mjs';
+import {routeDressingDonor,attemptRouteDressings} from './route-dressings.mjs';
+import {searchLocalDepotDressings} from './local-depot-medical-search.mjs';
 
 // Both paid squads approach together in short bounds. Use authored roof
 // geometry and current shot previews, while retaining real casualties,
@@ -514,6 +519,138 @@ export function prepareTucumanSquad(start,{report=()=>{}}={}){
  const recovery={startHour,endHour:campaign.hour,doctor,patients,replacements:fieldIds,fieldIds,usedDressings,boughtDressings,donatedDressings,foundDressings:found.collected+laterFoundDressings,clinicGuards,clinicDefenses,hiringLedger,fortificationCost,initialFort,clinicArmament,clinicAmmunition:clinicAmmo.transactions,patrolMedicalReadiness:patrolMedical.receipt};report({event:'cordobaRecovery',...recovery,cash:campaign.resources.treasury});return {campaign,events,recovery};
 }
 
+export function assertNorthernMedicalTransfer(before,after,operativeId,sector='cordoba'){
+ const inventory=c=>sectorInventoryModel(c,sector,rosterFor(c),operativeId),old=inventory(before),current=inventory(after);
+ const medicalPool=model=>model.entries.filter(row=>JSON.parse(row.expected).item==='medkits').reduce((sum,row)=>sum+row.count,0);
+ // Container keys include an array index. Exhausting a stack can move an
+ // unrelated item into that key; compare current quantities and identities.
+ const otherStock=model=>model.entries.filter(row=>JSON.parse(row.expected).item!=='medkits').map(({kind,x,y,tacticalLevel,expected})=>JSON.stringify({kind,x,y,tacticalLevel,expected})).sort();
+ assert.equal(medicalPool(current),medicalPool(old)-1,'the current finite medical pool must debit one dressing');
+ assert.equal(after.operativeState[operativeId].medkits,before.operativeState[operativeId].medkits+1,'the actual physician must receive exactly one dressing');
+ assert.deepEqual(otherStock(current),otherStock(old),'unrelated finite stock must retain its location, quantity and item identity');
+ assert.equal(after.resources.treasury,before.resources.treasury);assert.equal(after.hour*3600+(after.secondOfHour??0),before.hour*3600+(before.secondOfHour??0));
+}
+
+export function supplyNorthernConvalescentDressing(start,operativeId,{deploying,patients=[],deadlineSeconds,report=()=>{}}={}){
+ const clock=c=>c.hour*3600+(c.secondOfHour??0),sector='cordoba',roster=rosterFor(start);
+ let campaign=start;
+ const receipt={operativeId,sector,deploying:structuredClone(deploying),patients:structuredClone(patients),reserves:{},orders:[],takes:[],donations:[],supplied:false};
+ const inputCapture=recordRouteStrategicEvidence({helper:'supplyNorthernConvalescentDressing',stage:'preparation-input',campaign:start,context:{operativeId,deploying,patients,deadlineSeconds}});
+ try{
+  assert.equal(start.pendingEncounter,null);assert.equal(start.pendingBattle,null);
+  assert.ok(Array.isArray(deploying)&&new Set(deploying).size===deploying.length);
+  assert.ok(Number.isSafeInteger(deadlineSeconds)&&clock(start)<deadlineSeconds,'The existing 96-hour care allowance must remain available.');
+  const physician=roster.find(op=>op.id===operativeId),record=start.operativeState[operativeId];
+  assert.ok(physician?.medical>=20&&deploying.includes(operativeId)&&record?.alive&&!record.captured&&record.location===sector&&record.hp>=15&&!record.bleeding&&!record.asleep&&record.energy>10,'A current fit local convalescence physician must receive the dressing.');
+  assert.equal(record.medkits,0,'Only a depleted convalescence physician needs this one-dressing transfer.');
+  const model=sectorInventoryModel(start,sector,roster,operativeId);
+  assert.equal(model.operativeId,operativeId);assert.equal(model.reason,null,model.reason);
+  // A full recipient must not cause another person to drop usable property.
+  applyItemQuantity(model.personal,{item:'medkits',count:1,weight:SUPPLY_ITEMS.medkits.weight});
+  const named=new Set(['foundryEngineer','marchCommander'].map(key=>campaignRole(start,key)?.id).filter(id=>id!==undefined));
+  for(const id of start.recruited){
+   const op=roster.find(op=>op.id===id),r=start.operativeState[id];
+   const patient=patients.includes(id)||r.assignment==='patient'||r.hp<15||r.bleeding>0||r.unconscious;
+   const otherWork=!['active','rest','doctor','militia_doctor'].includes(r.assignment)||start.militiaTraining.some(course=>course.trainerId===id);
+   const protectedStock=patient||otherWork||named.has(id);
+   receipt.reserves[id]=protectedStock?r.medkits:Math.max(1,!deploying.includes(id)&&op?.medical>=20?2:1);
+  }
+  const result=attemptRouteDressings(start,operativeId,1,{reserves:receipt.reserves,discover:false,report,onOrder:({campaign:accepted,action})=>{
+   const previous=campaign;campaign=accepted;receipt.orders.push(structuredClone(action));
+   if(action.direction==='drop')receipt.donations.push({donor:action.operativeId,count:action.count,internal:deploying.includes(action.operativeId),before:previous.operativeState[action.operativeId].medkits,after:campaign.operativeState[action.operativeId].medkits});
+   else receipt.takes.push({operativeId,count:action.count,sourceKey:action.sourceKey,expected:action.expected,siteId:action.sector});
+   // A successful zero-time order can release a deferred encounter. Preserve
+   // that actual prefix before making another inventory query or discovery.
+   assert.ok(!campaign.pendingEncounter&&!campaign.pendingBattle,'Resolve the actual convalescence supply interruption before another inventory quote.');
+   assert.equal(clock(campaign),clock(previous));assert.equal(campaign.resources.treasury,previous.resources.treasury);
+   if(action.direction==='drop')assert.equal(campaign.operativeState[action.operativeId].medkits,previous.operativeState[action.operativeId].medkits-action.count);
+   else assertNorthernMedicalTransfer(previous,campaign,operativeId,action.sector);
+  }});
+  campaign=result.campaign;receipt.supplied=result.supplied;receipt.details=result.details;
+  assert.equal(clock(campaign),clock(start));assert.ok(clock(campaign)<deadlineSeconds);
+  for(const id of start.recruited){
+   for(const key of ['assignment','location','residentPosition','residentSector','residentScene','hp','alive','captured'])assert.deepEqual(campaign.operativeState[id][key],start.operativeState[id][key]);
+   assert.deepEqual(campaign.contracts[id],start.contracts[id]);
+  }
+  assert.deepEqual(campaign.squads,start.squads);assert.equal(campaign.activeSquadId,start.activeSquadId);assert.deepEqual(campaign.squad,start.squad);
+  if(!result.supplied)recordRouteStrategicEvidence({helper:'supplyNorthernConvalescentDressing',stage:'local-shortage',campaign,inputCapture,context:{receipt,deadlineSeconds}});
+  report({event:'northernConvalescentDressing',receipt});return {campaign,supplied:result.supplied,receipt};
+ }catch(error){
+  error.campaign=campaign;error.northernConvalescentDressing=receipt;
+  recordRouteStrategicEvidence({helper:'supplyNorthernConvalescentDressing',stage:'preparation-failure',campaign,inputCapture,context:{receipt,deadlineSeconds},error});throw error;
+ }
+}
+
+// Exhaust remembered local stock and admitted donations before a real guard
+// searches public terrain. Search intake is not a clinical receipt until its
+// actual custodian joins the care cohort or hands over the finite parcel.
+export function searchNorthernConvalescentDressing(start,operativeId,{deploying,patients=[],deadlineSeconds,report=()=>{}}={}){
+ const clock=c=>c.hour*3600+(c.secondOfHour??0),sector='cordoba';let campaign=start,battle=null;
+ const receipt={operativeId,sector,local:null,scoutId:null,scoutReserve:null,search:null,collected:0,orders:[],takes:[],donations:[],supplied:false,reason:null};
+ const inputCapture=recordRouteStrategicEvidence({helper:'searchNorthernConvalescentDressing',stage:'preparation-input',campaign:start,context:{operativeId,deploying,patients,deadlineSeconds}});
+ const done=reason=>{receipt.reason=reason;report({event:'northernConvalescentSearch',receipt});return {campaign,supplied:receipt.supplied,receipt};};
+ const adoptLocal=local=>{
+  receipt.local=local;receipt.takes.push(...local.takes);receipt.donations.push(...local.donations);
+  receipt.orders.push(...local.orders.map(action=>({kind:'campaign',action:structuredClone(action),from:clock(start),to:clock(campaign),cost:0})));
+ };
+ try{
+  const local=supplyNorthernConvalescentDressing(campaign,operativeId,{deploying,patients,deadlineSeconds,report});campaign=local.campaign;adoptLocal(local.receipt);
+  if(local.supplied){receipt.supplied=true;return done('known-local-supply');}
+  const named=new Set(['foundryEngineer','marchCommander'].map(key=>campaignRole(campaign,key)?.id).filter(id=>id!==undefined));
+  const free=id=>{const r=campaign.operativeState[id];return id!==operativeId&&canReassignOperative(campaign,id)&&!operativeInTransit(campaign,id)&&operativeLocation(campaign,id)===sector&&!named.has(id)&&!patients.includes(id)&&r.hp>=15&&!r.bleeding&&!r.unconscious&&['active','rest'].includes(r.assignment??'active')&&!campaign.militiaTraining.some(row=>row.trainerId===id);};
+  const scout=campaign.recruited.find(id=>{
+   const r=campaign.operativeState[id],home=campaign.squads.find(q=>q.location===sector&&!q.journey&&q.members.includes(id));
+   return free(id)&&r.hp===r.maxHp&&!r.routed&&!r.surrendered&&!r.asleep&&r.energy>20&&home?.members.every(free);
+  });
+  if(scout===undefined)return done('no-free-search-home');
+  // Reuse the exact admitted donation reserve: a qualified rear clinician
+  // keeps two; another free serving scout keeps one. Existing stock is never
+  // credited as newly found linen or consumed by this parcel handover.
+  const beforeKits=campaign.operativeState[scout].medkits,reserve=local.receipt.reserves[scout],retained=Math.max(reserve,beforeKits);
+  assert.ok(Number.isSafeInteger(reserve)&&reserve>=1);receipt.scoutId=scout;receipt.scoutReserve=reserve;
+  const requested=retained-beforeKits+1;
+  const searched=searchLocalDepotDressings(campaign,{sector,operativeId:scout,requested,deadlineSeconds,report});campaign=searched.campaign;battle=searched.battle;
+  receipt.search=searched.receipt;receipt.collected=searched.collected;receipt.orders.push(...searched.receipt.orders);
+  assert.ok(!campaign.pendingEncounter&&!campaign.pendingBattle&&!battle&&searched.receipt.restored,'Resolve the actual depot-search interruption or incomplete return before clinical collection.');
+  assert.ok(clock(campaign)<=deadlineSeconds,'The depot search stays inside the original care deadline.');
+  if(!searched.collected||campaign.operativeState[scout].medkits<=retained)return done(searched.reason);
+  const recipient=sectorInventoryModel(campaign,sector,rosterFor(campaign),operativeId),donor=sectorInventoryModel(campaign,sector,rosterFor(campaign),scout);
+  assert.equal(recipient.operativeId,operativeId);assert.equal(recipient.reason,null,recipient.reason);assert.equal(campaign.operativeState[operativeId].medkits,0);
+  applyItemQuantity(recipient.personal,{item:'medkits',count:1,weight:SUPPLY_ITEMS.medkits.weight});
+  assert.equal(donor.operativeId,scout);assert.equal(donor.reason,null,donor.reason);
+  const returned=campaign,groundIds=new Set(campaign.sectorStates[sector].groundItems.map(item=>item.id));
+  const issue=action=>{
+   const previous=campaign,cash=campaign.resources.treasury;campaign=dispatchCampaign(campaign,action);
+   const row={kind:'campaign',action:structuredClone(action),from:clock(previous),to:clock(campaign),cost:cash-campaign.resources.treasury,accepted:campaign.lastError===null,error:campaign.lastError};receipt.orders.push(row);
+   assert.equal(campaign.lastError,null,JSON.stringify(action)+': '+campaign.lastError);
+   if(action.direction==='drop')receipt.donations.push({donor:scout,count:1,internal:deploying.includes(scout),before:previous.operativeState[scout].medkits,after:campaign.operativeState[scout].medkits});
+   else receipt.takes.push({operativeId,count:1,sourceKey:action.sourceKey,expected:action.expected,siteId:sector});
+   assert.ok(!campaign.pendingEncounter&&!campaign.pendingBattle,'Resolve the actual finite-parcel interruption before another quote.');
+   assert.equal(clock(campaign),clock(previous));assert.equal(campaign.resources.treasury,cash);return previous;
+  };
+  issue({type:'sectorInventory',sector,operativeId:scout,direction:'drop',item:'medkits',count:1});
+  assert.equal(campaign.operativeState[scout].medkits,beforeKits+searched.collected-1);
+  assert.ok(campaign.operativeState[scout].medkits>=retained,'The scout retains its actual protected stock after the finite handover.');
+  // Native drop creates one identified ground source. Container row indices
+  // may alias, and a newly known corpse can still own a remainder. Neither
+  // may be mistaken for this actual accepted parcel.
+  const parcels=campaign.sectorStates[sector].groundItems.filter(item=>!groundIds.has(item.id));assert.equal(parcels.length,1);
+  const parcel=parcels[0];assert.equal(parcel.type,'item');assert.equal(parcel.item,'medkits');assert.equal(parcel.count,1);assert.equal(parcel.knownToPlayer,true);
+  const row=sectorInventoryModel(campaign,sector,rosterFor(campaign),operativeId).entries.find(row=>row.kind==='ground'&&row.key==='ground:'+parcel.id);
+  assert.ok(row?.reachable,'The actual doctor must reach the newly dropped finite parcel.');assert.equal(JSON.parse(row.expected).item,'medkits');assert.equal(row.count,1);
+  const beforeTake=issue({type:'sectorInventory',sector,operativeId,direction:'take',sourceKey:row.key,expected:row.expected,count:1});assertNorthernMedicalTransfer(beforeTake,campaign,operativeId);
+  for(const id of campaign.recruited)for(const key of ['assignment','location','residentPosition','residentSector','residentScene','hp','bleeding','alive','captured','energy','fatigue'])assert.deepEqual(campaign.operativeState[id][key],returned.operativeState[id][key]);
+  assert.deepEqual(campaign.contracts,returned.contracts);assert.deepEqual(campaign.squads,returned.squads);assert.equal(campaign.activeSquadId,returned.activeSquadId);assert.deepEqual(campaign.squad,returned.squad);
+  receipt.supplied=true;return done('searched-finite-parcel');
+ }catch(error){
+  if(error?.campaign)campaign=error.campaign;if(error&&Object.hasOwn(error,'battle'))battle=error.battle;
+  if(!receipt.local&&error?.northernConvalescentDressing)adoptLocal(error.northernConvalescentDressing);
+  if(!receipt.search&&error?.localDepotMedicalSearch){receipt.search=error.localDepotMedicalSearch;receipt.collected=receipt.search.collected;receipt.orders.push(...receipt.search.orders);}
+  error.campaign=campaign;error.battle=battle;error.northernConvalescentSearch=receipt;
+  recordRouteStrategicEvidence({helper:'searchNorthernConvalescentDressing',stage:'preparation-failure',campaign,inputCapture,context:{receipt,battle,deadlineSeconds},error});throw error;
+ }
+}
+
 export function prepareRescueSquad(start,{report=()=>{}}={}){
  let campaign=decodeSave(encodeSave(start)).campaign;const events=[];
  const order=action=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;events.push({action,hour:campaign.hour,second:campaign.secondOfHour??0});};
@@ -714,7 +851,7 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
     renew();order({type:'wait',hours:1});
    }
    const convalescents=deploying.filter(id=>campaign.operativeState[id].hp<campaign.operativeState[id].maxHp);
-   const beforeRecovery=structuredClone(campaign),careHour=campaign.hour,careFound=[];
+   const beforeRecovery=structuredClone(campaign),careHour=campaign.hour,careDeadlineSeconds=campaign.hour*3600+(campaign.secondOfHour??0)+96*3600,careFound=[],careDonations=[],careSearches=[];
    // Learning and supply notices can stop a wait before its requested hour.
    // Bound actual elapsed care time, then resume through ordinary orders.
    for(let attempt=0;attempt<512&&campaign.hour<careHour+96&&convalescents.some(id=>campaign.operativeState[id].hp<campaign.operativeState[id].maxHp);attempt++){
@@ -724,26 +861,30 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
     for(const doctor of healers)if(!campaign.operativeState[doctor.id].medkits){
      const inventory=()=>sectorInventoryModel(campaign,'cordoba',rosterFor(campaign),doctor.id);
      let dressing=inventory().entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');
-     if(!dressing){
-      const donor=deploying.find(id=>id!==doctor.id&&!healers.some(op=>op.id===id)&&campaign.operativeState[id].medkits>0);
-      if(donor!==undefined){
-       const carried=campaign.operativeState[donor].medkits;
-       order({type:'sectorInventory',sector:'cordoba',operativeId:donor,direction:'drop',item:'medkits',count:1});
-       assert.equal(campaign.operativeState[donor].medkits,carried-1);
-       dressing=inventory().entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');
-      }
-     }
      if(dressing){
+      const beforeTransfer=campaign;
       order({type:'sectorInventory',sector:'cordoba',operativeId:doctor.id,direction:'take',sourceKey:dressing.key,expected:dressing.expected,count:1});
-      assert.equal(inventory().entries.find(row=>row.key===dressing.key)?.count??0,dressing.count-1);
+      assertNorthernMedicalTransfer(beforeTransfer,campaign,doctor.id);
+      const collection={operativeId:doctor.id,quantity:1,sourceKey:dressing.key};medicalCollections.push(collection);careFound.push(collection);
      }else {
-      const found=collectRouteItems(campaign,doctor.id,{item:'medkits'},1);campaign=found.campaign;const collection={operativeId:doctor.id,quantity:found.collected};medicalCollections.push(collection);careFound.push(collection);
+      const pooled=shareNorthernClinicDressing(campaign,doctor.id,{sector:'cordoba',planIds:deploying,patients:remaining,doctors:healers.map(op=>op.id),deadlineSeconds:careDeadlineSeconds,report});
+      if(pooled.deferred)continue;
+      const supplied=pooled.supplied?pooled:searchNorthernConvalescentDressing(pooled.campaign,doctor.id,{deploying,patients:remaining,deadlineSeconds:careDeadlineSeconds,report});campaign=supplied.campaign;
+      if(supplied.receipt.search){careSearches.push(supplied.receipt);if(deploying.includes(supplied.receipt.scoutId)){const intake={operativeId:supplied.receipt.scoutId,quantity:supplied.receipt.collected,sourceKind:'public-search'};medicalCollections.push(intake);careFound.push(intake);}}
+      for(const take of supplied.receipt.takes){const collection={operativeId:doctor.id,quantity:take.count,sourceKey:take.sourceKey};medicalCollections.push(collection);careFound.push(collection);}
+      careDonations.push(...supplied.receipt.donations);
+      if(!supplied.supplied){
+       recordRouteStrategicEvidence({helper:'prepareRescueSquad',stage:'convalescence-collection-input',campaign,context:{doctor:doctor.id,deploying,remaining,careHour,deadlineSeconds:careDeadlineSeconds,receipt:supplied.receipt,careFound,careDonations,careSearches,scope:'Actual current input before the existing real collection/discovery fallback; no failed result is queried.'}});
+       const found=collectRouteItems(campaign,doctor.id,{item:'medkits'},1);campaign=found.campaign;
+       assert.ok(campaign.hour*3600+(campaign.secondOfHour??0)<=careDeadlineSeconds,'Actual collection time remains inside the original care allowance.');
+       const collection={operativeId:doctor.id,quantity:found.collected};medicalCollections.push(collection);careFound.push(collection);
+      }
      }
     }
     for(const operativeId of deploying)order({type:'assignCare',operativeId,assignment:remaining.includes(operativeId)?'patient':healers.some(op=>op.id===operativeId)&&campaign.operativeState[operativeId].medkits>0?'doctor':'rest'});
     renew();order({type:'wait',hours:1});
    }
-   staging.recovery={patients:convalescents,hours:campaign.hour-careHour,usedDressings:deploying.reduce((sum,id)=>sum+beforeRecovery.operativeState[id].medkits-campaign.operativeState[id].medkits,0)+careFound.reduce((sum,collection)=>sum+collection.quantity,0)};
+   staging.recovery={patients:convalescents,hours:campaign.hour-careHour,collections:careFound,donations:careDonations,searches:careSearches,usedDressings:deploying.reduce((sum,id)=>sum+beforeRecovery.operativeState[id].medkits-campaign.operativeState[id].medkits,0)+careFound.reduce((sum,collection)=>sum+collection.quantity,0)-careDonations.filter(donation=>donation.internal).reduce((sum,donation)=>sum+donation.count,0)};
    for(const id of deploying){
     assert.equal(campaign.operativeState[id].bleeding,0);assert.equal(campaign.operativeState[id].hp,campaign.operativeState[id].maxHp,`returned defender ${id} must finish actual medical care`);
     // Critical defenders need actual care before they can handle equipment.

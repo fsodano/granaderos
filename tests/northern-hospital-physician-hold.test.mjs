@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,presentedActBattle,endTurn,presentedEndTurn,stanceCost,actionCosts,lookPreview,medicalUsePreview,climbPreview,artilleryCosts,artilleryCrewPlan,artilleryContact,teamCanSee} from '../game/tactical.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
-import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
+import {sameCell,sameSurface,spacePoint,surfaceAt} from '../game/tactical-space.js';
 import {unitAmmunitionByType} from '../game/physical-ammunition.js';
 import {COMBAT_ROUND_SECONDS} from '../game/time.js';
 import {coordinatedHospitalBattery} from './coordinated-hospital-battery.mjs';
@@ -11,7 +11,7 @@ import {publicRouteView} from './route-infantry-progress.mjs';
 // All bodies, supplies and geometry are fresh portable declarations admitted
 // by createBattle. No failed campaign, returned Native result or saved prefix
 // is an input. No returned AP, phase, position, health or clock is assigned.
-const tiles=(width=40,height=20)=>Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0}));
+const tiles=(width=40,height=20,cover=0)=>Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover}));
 function arena({patient=null,ground=false,noKits=false,stance='standing',contact=false,missingCrew=false,hidden=0,terminal=false}={}){
  const doctor={id:'doctor',x:contact?9:8,y:contact?8:ground?6:7,tacticalLevel:ground?0:1,weapon:1800,loaded:1,ammo:5,medical:90,medkits:noKits?0:3,marksmanship:0,stance,facing:2,energy:100,morale:90,patrol:false};
  const roof=Array.from({length:9},(_,i)=>({id:`clinic-roof:${i}`,x:8+i%3,y:7+Math.floor(i/3),tacticalLevel:1,elevation:3,type:'floor',kind:'roof',blocked:false,cover:20}));
@@ -19,7 +19,7 @@ function arena({patient=null,ground=false,noKits=false,stance='standing',contact
   {id:'crew1',x:contact?8:5,y:contact?9:5,...(contact?{tacticalLevel:1}:{}),weapon:0,loaded:0,ammo:0,medical:0,medkits:0,stance:'crouched',energy:100,morale:90,patrol:false},
   {id:'crew2',x:contact?8:6,y:contact?8:4,...(contact?{tacticalLevel:1}:{}),weapon:0,loaded:0,ammo:0,medical:0,medkits:0,stance:'crouched',energy:100,morale:90,patrol:false,...(missingCrew?{hp:0,maxHp:100}:{})},
   ...(patient?[{id:'patient',x:patient==='ground'?7:9,y:patient==='ground'?6:7,tacticalLevel:patient==='ground'?0:1,weapon:0,loaded:0,ammo:0,medical:0,medkits:0,hp:8,maxHp:100,bleeding:3,bandaged:89,stance:'crouched',energy:100,morale:90,patrol:false}]:[]),
- ],{id:'declared-hospital-physician-hold',width:40,height:20,tiles:tiles(),upperSurfaces:roof,
+ ],{id:'declared-hospital-physician-hold',width:40,height:20,tiles:tiles(40,20,patient==='ground'?20:0),upperSurfaces:roof,
   climbLinks:[{id:'clinic-west-access',kind:'climb',from:{x:8,y:6,tacticalLevel:0},to:{x:8,y:7,tacticalLevel:1}}],hour:12,seed:45,
   enemies:terminal?[{id:'target',x:14,y:5,weapon:0,loaded:0,ammo:0,hp:30,maxHp:30,medical:0,medkits:0,patrol:false,overwatch:false}]:[
    {id:'target',x:35,y:17,weapon:0,loaded:0,ammo:0,hp:500,maxHp:500,medical:0,medkits:0,patrol:false,overwatch:false},
@@ -73,6 +73,7 @@ test('actual adjacent medical activation and one finite dressing remain ahead of
 
 test('a critical patient on the other floor keeps the real standing and authored descent before finite aid',()=>{
  const start=arena({patient:'ground',stance:'crouched'}),before=structuredClone(start),policy=opted(start),doctor=actor(start,'doctor'),patient=actor(start,'patient');
+ assert.equal(surfaceAt(start,start.climbLinks[0].from).cover,surfaceAt(start,doctor).cover,'the positive medical landing preserves the physician current cover');
  assert.ok(!sameSurface(doctor,patient));assert.equal(climbPreview(publicRouteView(start,doctor),doctor,{linkId:'clinic-west-access'}).valid,false);
  const stand=policy.controller(start,doctor);assert.deepEqual(stand,{type:'stance',unitId:'doctor',stance:'standing'});const stood=replay(start,[stand]);assert.equal(actor(stood,'doctor').ap,doctor.ap-stanceCost(doctor,'standing'));
  const quote=climbPreview(publicRouteView(stood,actor(stood,'doctor')),actor(stood,'doctor'),{linkId:'clinic-west-access'}),climb=policy.controller(stood,actor(stood,'doctor'));assert.equal(quote.valid,true);assert.deepEqual(climb,{type:'climb',unitId:'doctor',linkId:'clinic-west-access'});

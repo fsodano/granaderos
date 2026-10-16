@@ -8,6 +8,7 @@ import {order,saved,sync} from './local-contract-fixture.mjs';
 import {freshNorthernRoute} from './fresh-northern-fixture.mjs';
 import {fight} from './opening-driver.mjs';
 import {mendozaBatteryController} from './fresh-cuyo-fixture.mjs';
+import {mendozaInfantrySupportController} from './mendoza-infantry-support.mjs';
 import {assembleCreatedCuyo,prepareCreatedMendozaAssault} from './created-cuyo-route.mjs';
 import {recordRouteBattleFailure} from './route-failure-evidence.mjs';
 
@@ -17,9 +18,9 @@ export function freshMendozaLoss({northernCheckpoint,onCheckpoint,report=()=>{}}
  let s=prepareCreatedMendozaAssault(assembleCreatedCuyo(northern,{report}),{report});
  assert.equal(s.operativeState[2].alive,true);
  const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0};
- const controller=mendozaBatteryController(enterSector(request,s.sectorStates.mendoza));
+ const controller=mendozaInfantrySupportController(mendozaBatteryController(enterSector(request,s.sectorStates.mendoza)));
  onCheckpoint?.('historical-mendoza-ready',s);
- const result=fight(request,s.sectorStates.mendoza,{controller}),{battle,orders,actions}=result;
+ const result=fight(request,s.sectorStates.mendoza,{controller,sharedFallback:controller.sharedFallback}),{battle,orders,actions}=result;
  if(battle.status!=='victory')recordRouteBattleFailure({campaign:s,request,previous:s.sectorStates.mendoza,result,expectedOutcome:'victory',controller,executeBattle:fight,failureStage:'historical-mendoza-victory'});
  assert.equal(battle.status,'victory');assert.ok(battle.npcs.find(n=>n.operativeId===2).hp>0);
  let p={campaign:s,battle:enterSector(request,s.sectorStates.mendoza)},deathCheckpoint;

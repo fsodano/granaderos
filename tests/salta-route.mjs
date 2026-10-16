@@ -20,7 +20,8 @@ import {worldCell} from '../game/world-cells.js';
 import {quoteSaltaHires} from './salta-hiring.mjs';
 import {returnSaltaClinicRelief} from './salta-clinic-relief.mjs';
 import {prepareSaltaCordobaReserveReadiness,prepareSaltaRearClinicBatch,saltaCordobaReserveEncounterExecutor} from './salta-cordoba-reserve-readiness.mjs';
-import {saltaHospitalEncounterExecutor} from './salta-hospital-encounter.mjs';
+import {saltaHospitalClinicalDoctorIds,saltaHospitalEncounterExecutor} from './salta-hospital-encounter.mjs';
+import {prepareNorthernHospitalFortification} from './northern-hospital-fortification.mjs';
 
 export function saltaBatteryWaypoints(campaign,destination){
  if(!campaign.enemyGroups.some(group=>group.target==='buenos_aires'&&group.status==='stationed'))return [];
@@ -34,8 +35,9 @@ function orders(start,hospitalOptions){
  let campaign=decodeSave(encodeSave(start)).campaign,cordobaReady=false;const events=[];
  return {get campaign(){return campaign;},events,markCordobaReady(){cordobaReady=true;},apply(transform){campaign=transform(campaign);},prepareWeapons(report){campaign=finishReloadsBeforeMarch(campaign,{report});},resolveEncounter(report,controller=northernCombatOrder){
   const encounter=structuredClone(campaign.pendingEncounter),group=structuredClone(campaign.enemyGroups.find(group=>group.id===encounter.groupId));
+  const preferredPhysicianIds=saltaHospitalClinicalDoctorIds(campaign,encounter.sector);
   const next=dispatchCampaign(campaign,{type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});assert.equal(next.lastError,null,next.lastError);assert.deepEqual(next.pendingBattle.enemies,group.units);
-  const executeBattle=saltaCordobaReserveEncounterExecutor(next,encounter.sector,{ready:cordobaReady,encounterController:hospitalOptions?.encounterController})??saltaHospitalEncounterExecutor({...hospitalOptions,campaign:next},encounter.sector);
+  const executeBattle=saltaCordobaReserveEncounterExecutor(next,encounter.sector,{ready:cordobaReady,encounterController:hospitalOptions?.encounterController})??saltaHospitalEncounterExecutor({...hospitalOptions,campaign:next,preferredPhysicianIds},encounter.sector);
   const result=fightNorthernSector(next,encounter.sector,{controller,report,...(executeBattle?{executeBattle}:{})});campaign=result.campaign;
   return {groupId:group.id,...result.summary};
  },order(action){
@@ -57,6 +59,10 @@ export function currentSaltaCordobaReserves(campaign,ids){
 export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},encounterController}={}){
  const formation=openingRearFormation(start),route=orders(start,{encounterController}),{order}=route;
  assert.equal(start.location,'tucuman');assert.equal(start.pendingBattle,null);
+ const fortification=prepareNorthernHospitalFortification(route.campaign,{report});
+ route.apply(()=>fortification.campaign);
+ route.events.push(...fortification.receipt.orders.map(row=>({action:row.action,hour:Math.floor(row.to/3600),second:row.to%3600})));
+ onCheckpoint('salta-hospital-fortification',route.campaign,{receipt:fortification.receipt});
  // Keep the rear depot defended while the northern force marches. Its
  // actual reserves reload their own guns; a paid guard recovers finite gear.
  let selected=start.activeSquadId;const reserves=start.recruited.filter(id=>{const r=start.operativeState[id];return r.alive&&!r.captured&&r.location==='cordoba';});

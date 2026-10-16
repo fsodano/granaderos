@@ -7,6 +7,8 @@ import {COMBAT_ROUND_SECONDS} from '../game/time.js';
 import {sameCell,sameSurface} from '../game/tactical-space.js';
 import {coordinatedHospitalBattery} from './coordinated-hospital-battery.mjs';
 import {publicRouteView,usefulRouteRifleShot} from './route-infantry-progress.mjs';
+import {knownRouteBystanderShotSafety} from './route-fire-safety.mjs';
+import {firearmBystanderRisk} from '../game/firearm-bystander-risk.js';
 import {northernRoadReserveController} from './recovery-road-route.mjs';
 
 const actor=(b,id)=>b.units.find(u=>u.id===id);
@@ -17,7 +19,7 @@ function arena({blocked=false,hidden=0,kits=0,patient=false,charged=false}={}){
   blocked:blocked&&Math.abs(i%40-5)<=1&&Math.abs(Math.floor(i/40)-5)<=1&&i!==205}));
  return createBattle([
   {id:'guard',x:5,y:5,weapon:1800,blade:0,loaded:1,ammo:5,medical:kits?70:0,medkits:kits,marksmanship:90,stance:'standing',facing:2,energy:100,morale:90,patrol:false},
-  {id:'observer',x:10,y:4,weapon:0,blade:0,loaded:0,ammo:0,medical:0,medkits:0,marksmanship:0,stance:'standing',facing:2,energy:100,morale:90,patrol:false},
+  {id:'observer',x:12,y:8,weapon:0,blade:0,loaded:0,ammo:0,medical:0,medkits:0,marksmanship:0,stance:'standing',facing:2,energy:100,morale:90,patrol:false},
   ...(patient?[{id:'patient',x:5,y:4,weapon:0,blade:0,loaded:0,ammo:0,medical:0,medkits:0,hp:9,maxHp:100,bleeding:2,bandaged:89,energy:100,morale:90}]:[]),
  ],{id:'declared-initial-empty-ground-reserve',width:40,height:20,tiles,hour:12,seed:45,
   wallEdges:Array.from({length:4},(_,i)=>({id:`known-wall:${i}`,x:8,y:2+i,axis:'y',type:'wall',material:'adobe',blocked:true,blocksSight:true,cover:40})),
@@ -57,7 +59,7 @@ test('only the initial-empty road opt-in pays a ground move and then its actual 
  const move=policy(start,guard);assert.equal(move?.type,'move');assert.equal(move.unitId,guard.id);
  const quote=getReachable(publicRouteView(start,guard),guard,{stopAt:p=>sameCell(p,move)})[0];assert.ok(quote.cost>0&&quote.cost<=20&&quote.path.length<=3);assert.ok(quote.path.every(p=>sameSurface(p,guard)));
  const moved=replay(start,[move]),member=actor(moved,guard.id);assert.ok(sameCell(member,move));assert.equal(member.ap,guard.ap-quote.cost);assert.ok(member.energy<guard.energy);assert.equal(moved.elapsedSeconds,COMBAT_ROUND_SECONDS);
- const fire=policy(moved,member);assert.equal(fire?.type,'fire');assert.equal(fire.targetId,'target');const cost=actionCosts(moved,member,actor(moved,'target'));
+ const fire=policy(moved,member);assert.equal(fire?.type,'fire');assert.equal(fire.targetId,'target');assert.ok(usefulRouteRifleShot(publicRouteView(moved,member),member,{shotSafety:knownRouteBystanderShotSafety}));assert.deepEqual(firearmBystanderRisk(moved,member,actor(moved,'target'),fire.hitLocation??'torso'),{direct:[],scatter:[]});const cost=actionCosts(moved,member,actor(moved,'target'));
  const after=replay(start,[move,fire]);assert.equal(actor(after,guard.id).ap,member.ap-cost.fire-fire.aim*cost.aim);assert.equal(actor(after,guard.id).loaded,0);assert.equal(actor(after,guard.id).ammo,guard.ammo);assert.equal(after.elapsedSeconds,moved.elapsedSeconds);
  for(const unit of start.units.filter(u=>u.side==='player'))for(const key of ['hp','maxHp','bleeding','medkits','weapon','blade','outfit','headwear','legwear'])assert.deepEqual(actor(after,unit.id)[key],unit[key]);
  assert.deepEqual(after.artillery,start.artillery);assert.deepEqual(after.tiles,start.tiles);assert.deepEqual(start,before);

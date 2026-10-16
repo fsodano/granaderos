@@ -6,6 +6,7 @@ import {tucumanCombatOrder} from './tucuman-driver.mjs';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
 import {coastalBatteryController} from './coastal-command-driver.mjs';
 import {prepareStockTucumanReadiness} from './stock-tucuman-readiness.mjs';
+import {stockTucumanAcuteController} from './stock-tucuman-acute-medical.mjs';
 import {mountainBatteryOrder,assignedMountainBatteryController} from './mountain-battery-driver.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {equipOpeningRifles} from './opening-equipment.mjs';
@@ -111,26 +112,32 @@ export function recoverNorthernLocalPatients(start,{report=()=>{}}={}){
  const inputCapture=recordRouteStrategicEvidence({helper:'recoverNorthernLocalPatients',stage:'preparation-input',campaign:start});
  let s=saved({campaign:start}).campaign;const sector=s.location,local=s.recruited.filter(id=>s.operativeState[id].alive&&!s.operativeState[id].captured&&s.operativeState[id].location===sector),initialPatients=local.filter(id=>s.operativeState[id].hp<s.operativeState[id].maxHp);let patients=[...initialPatients];
  const servingLocal=()=>local.filter(id=>s.recruited.includes(id)&&s.operativeState[id].alive&&!s.operativeState[id].captured&&s.operativeState[id].location===sector);
+ const chooseDoctor=ids=>rosterFor(s).filter(op=>ids.includes(op.id)&&s.operativeState[op.id].hp>=15&&!s.operativeState[op.id].bleeding&&!s.operativeState[op.id].asleep&&op.medical>=20).sort((a,b)=>Number(s.operativeState[a.id].hp<s.operativeState[a.id].maxHp)-Number(s.operativeState[b.id].hp<s.operativeState[b.id].maxHp)||b.medical-a.medical)[0];
+ let passiveBoundHours=null,passiveHours=0;
  try{
  if(!patients.length)return s;
- let doctor=rosterFor(s).filter(op=>local.includes(op.id)&&s.operativeState[op.id].hp>=15&&!s.operativeState[op.id].bleeding&&!s.operativeState[op.id].asleep&&op.medical>=20).sort((a,b)=>b.medical-a.medical)[0];assert.ok(doctor,'the real local patients need an available paid physician');
+ let doctor=chooseDoctor(local);assert.ok(doctor,'the real local patients need an available paid physician');
  const cash=s.resources.treasury,startSeconds=s.hour*3600+(s.secondOfHour??0),transfers=[],defenses=[];let individualCare=false,dressingsUsed=0;
+ const withinCareCourse=()=>assert.ok(passiveBoundHours===null||passiveHours<=passiveBoundHours,'Local care cannot restart its original passive-recovery allowance after a real interruption.');
  const campaignOrder=action=>{
   if(action.type==='wait')for(const id of s.recruited.filter(id=>s.operativeState[id].alive)){const contract=s.contracts[id];if(contract?.expiresAt!=null&&contract.expiresAt<=s.hour+action.hours){const quote=contractQuote(s,rosterFor(s).find(op=>op.id===id),'day'),before=s.resources.treasury;s=order(s,{type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});assert.equal(before-s.resources.treasury,quote.price);}}
-  const stock=local.reduce((total,id)=>total+s.operativeState[id].medkits,0);s=order(s,action);
+  const stock=local.reduce((total,id)=>total+s.operativeState[id].medkits,0);s=order(s,action);withinCareCourse();
   if(action.type==='wait')dressingsUsed+=stock-local.reduce((total,id)=>total+s.operativeState[id].medkits,0);
  };
  for(const operativeId of servingLocal())campaignOrder({type:'assignCare',operativeId,assignment:'rest'});
  for(let hour=0;hour<48&&patients.some(id=>s.operativeState[id].hp<s.operativeState[id].maxHp);hour++){
   if(s.pendingEncounter){
    assert.equal(s.pendingEncounter.sector,sector,'local clinic work must stop for an unrelated actual encounter');
-   s=resolveNorthernLocalCareRaid(s,{physicianIds:[doctor.id],report:event=>{if(event.event==='northernLocalCareDefense')defenses.push(event.summary);report(event);}});
+   s=resolveNorthernLocalCareRaid(s,{physicianIds:[doctor.id],report:event=>{if(event.event==='northernLocalCareDefense')defenses.push(event.summary);report(event);}});withinCareCourse();
    patients=local.filter(id=>s.operativeState[id].alive&&!s.operativeState[id].captured&&s.operativeState[id].location===sector&&s.operativeState[id].hp<s.operativeState[id].maxHp);
    if(!patients.length)break;
-   if(!servingLocal().includes(doctor.id)||s.operativeState[doctor.id].hp<15||s.operativeState[doctor.id].bleeding)doctor=rosterFor(s).filter(op=>servingLocal().includes(op.id)&&s.operativeState[op.id].hp>=15&&!s.operativeState[op.id].bleeding&&!s.operativeState[op.id].asleep&&op.medical>=20).sort((a,b)=>b.medical-a.medical)[0];
+   if(!servingLocal().includes(doctor.id)||s.operativeState[doctor.id].hp<15||s.operativeState[doctor.id].bleeding)doctor=chooseDoctor(servingLocal());
    assert.ok(doctor,'the surviving actual clinic patients need a living qualified physician');
   }
   assert.equal(s.pendingEncounter,null);assert.equal(s.pendingBattle,null);
+  // A wounded clinician may treat others, but cannot be their own patient.
+  // Hand over to an actual recovered colleague before scheduling that care.
+  if(s.operativeState[doctor.id].hp<s.operativeState[doctor.id].maxHp){const recovered=chooseDoctor(servingLocal());if(recovered&&s.operativeState[recovered.id].hp===s.operativeState[recovered.id].maxHp)doctor=recovered;}
   if(s.operativeState[doctor.id].asleep){campaignOrder({type:'wait',hours:1});continue;}
   if(!s.operativeState[doctor.id].medkits){
    const donor=servingLocal().find(id=>id!==doctor.id&&s.operativeState[id].medkits&&!sectorInventoryModel(s,sector,rosterFor(s),id).reason);
@@ -141,24 +148,32 @@ export function recoverNorthernLocalPatients(start,{report=()=>{}}={}){
     if(!individualCare){individualCare=true;for(const operativeId of servingLocal())campaignOrder({type:'assignCare',operativeId,assignment:'rest'});}
     const row=sectorInventoryModel(s,sector,rosterFor(s),doctor.id).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');
     if(!row){
-     const rest=restStableRoutePatients(s,{patients,sector,report});s=rest.campaign;
+     // Fix one original passive-hours allowance. Only actual rest waits spend
+     // it; a paid defense does not grant or consume another passive allowance.
+     passiveBoundHours??=Math.max(0,...patients.map(id=>Math.ceil(s.operativeState[id].maxHp-s.operativeState[id].hp)))*careRules(s).restHealingHours;
+     const rest=restStableRoutePatients(s,{patients,sector,report});s=rest.campaign;passiveHours+=rest.hours;withinCareCourse();
+     if(!rest.completed&&s.pendingEncounter){
+      assert.equal(s.pendingEncounter.sector,sector,'local clinic work must stop for an unrelated actual encounter');
+      assert.equal(rest.stoppedReason,`The actual encounter at ${sector} interrupts stable rest.`);
+      assert.equal(s.pendingBattle,null);continue;
+     }
      assert.equal(rest.completed,true,rest.stoppedReason);break;
     }
     const before=s.operativeState[doctor.id].medkits,count=Math.min(row.count,12);campaignOrder({type:'sectorInventory',sector,operativeId:doctor.id,direction:'take',sourceKey:row.key,expected:row.expected,count});assert.equal(s.operativeState[doctor.id].medkits,before+count);transfers.push({source:row.key,count});
    }
   }
   campaignOrder({type:'assignCare',operativeId:doctor.id,assignment:'doctor'});
-  const selected=patients.filter(id=>s.operativeState[id].hp<s.operativeState[id].maxHp).sort((a,b)=>s.operativeState[a].hp/s.operativeState[a].maxHp-s.operativeState[b].hp/s.operativeState[b].maxHp)[0];
-  for(const operativeId of patients)campaignOrder({type:'assignCare',operativeId,assignment:s.operativeState[operativeId].hp<s.operativeState[operativeId].maxHp&&(!individualCare||operativeId===selected)?'patient':'rest'});
+  const selected=patients.filter(id=>id!==doctor.id&&s.operativeState[id].hp<s.operativeState[id].maxHp).sort((a,b)=>s.operativeState[a].hp/s.operativeState[a].maxHp-s.operativeState[b].hp/s.operativeState[b].maxHp)[0];
+  for(const operativeId of patients)if(operativeId!==doctor.id)campaignOrder({type:'assignCare',operativeId,assignment:s.operativeState[operativeId].hp<s.operativeState[operativeId].maxHp&&(!individualCare||operativeId===selected)?'patient':'rest'});
   campaignOrder({type:'wait',hours:1});for(const id of patients)assert.ok(s.operativeState[id].alive,'the actual local patients must survive their finite paid care');
  }
  for(const id of patients){assert.equal(s.operativeState[id].hp,s.operativeState[id].maxHp);assert.equal(s.operativeState[id].bleeding,0);}
  for(const [id,record]of Object.entries(start.operativeState))if(!record.alive)assert.equal(s.operativeState[id].alive,false);
  if(servingLocal().includes(doctor.id))campaignOrder({type:'assignCare',operativeId:doctor.id,assignment:'rest'});
- report({event:'northernLocalCare',sector,doctor:doctor.id,initialPatients,patients,defenses,hour:s.hour,second:s.secondOfHour??0,elapsedSeconds:s.hour*3600+(s.secondOfHour??0)-startSeconds,paid:cash-s.resources.treasury,transfers,dressingsUsed});
- recordRouteStrategicEvidence({helper:'recoverNorthernLocalPatients',stage:'route-checkpoint',campaign:s,inputCapture,context:{sector,doctor:doctor.id,initialPatients,patients,defenses,startSeconds,cashBefore:cash,transfers,dressingsUsed,capturePhase:'Actual completed local care after the existing full-health, bleeding, prior-death and final physician-role guards; before the unchanged official return save.'}});
+ report({event:'northernLocalCare',sector,doctor:doctor.id,initialPatients,patients,defenses,hour:s.hour,second:s.secondOfHour??0,elapsedSeconds:s.hour*3600+(s.secondOfHour??0)-startSeconds,paid:cash-s.resources.treasury,transfers,dressingsUsed,passiveBoundHours,passiveHours});
+ recordRouteStrategicEvidence({helper:'recoverNorthernLocalPatients',stage:'route-checkpoint',campaign:s,inputCapture,context:{sector,doctor:doctor.id,initialPatients,patients,defenses,startSeconds,cashBefore:cash,transfers,dressingsUsed,passiveBoundHours,passiveHours,capturePhase:'Actual completed local care after the existing full-health, bleeding, prior-death and final physician-role guards; before the unchanged official return save.'}});
  return saved({campaign:s}).campaign;
- }catch(error){recordRouteStrategicEvidence({helper:'recoverNorthernLocalPatients',stage:'preparation-failure',campaign:s,inputCapture,error});throw error;}
+ }catch(error){recordRouteStrategicEvidence({helper:'recoverNorthernLocalPatients',stage:'preparation-failure',campaign:s,inputCapture,context:{passiveBoundHours,passiveHours},error});throw error;}
 }
 
 // Both real crew members lower their profile while the gun has finite charges.
@@ -469,12 +484,14 @@ function freshStockNorthernRoute({onCheckpoint,report=()=>{},routeKind='created'
   }
   report(event);
  };
+ let tucumanPhysicianIds=[];
  const ready=prepareFreshTucumanAssault(defense.campaign,{report:recoveryReport,recovery:routeKind==='stock'?'rest':'doctor',prepareDeparture:routeKind==='stock'?recovered=>{
   const prepared=prepareStockTucumanReadiness(recovered,{report}),receipt=prepared.receipt;
+  tucumanPhysicianIds=[receipt.physician,receipt.backupPhysician];
   notes.push({stage:'stock-tucuman-readiness',hour:prepared.campaign.hour,second:prepared.campaign.secondOfHour,paid:receipt.paid,rear:receipt.rear,hireCost:receipt.paidHireCost,renewalCost:receipt.renewalCost,gun:receipt.gun});
   return prepared.campaign;
  }:null});
- const controller=routeKind==='stock'?coastalBatteryController(enterSector(ready.pendingBattle,ready.sectorStates.tucuman),{sharedArtillerySight:true}):tucumanCombatOrder;
+ const controller=routeKind==='stock'?stockTucumanAcuteController(enterSector(ready.pendingBattle,ready.sectorStates.tucuman),{physicianIds:tucumanPhysicianIds}):tucumanCombatOrder;
  const tucuman=fightNorthernSector(ready,'tucuman',{controller,report});
  s=tucuman.campaign;notes.push({...tucuman.summary,deaths:deadIds(s),defense:defense.summary});onCheckpoint?.('tucuman',s,notes);
  const reliefCampaign=prepareNorthernOfficerRelief(s,{report,routeKind}),saltaInitial=enterSector({...reliefCampaign.pendingBattle,hour:reliefCampaign.hour,secondOfHour:reliefCampaign.secondOfHour??0},reliefCampaign.sectorStates.salta);

@@ -59,13 +59,13 @@ export function recaptureFoundryConvoy(start,{transferId,createOrders,recoverPat
    c=recoverPatients(c,{report});save('between-localities-care');
    if(!available(c,physicianId,c.location)||!stable(c.operativeState[physicianId]))physicianId=rosterFor(c).filter(op=>available(c,op.id,c.location)&&stable(c.operativeState[op.id])&&op.medical>=20).sort((a,b)=>b.medical-a.medical)[0]?.id;
    assert.notEqual(physicianId,undefined,'The actual surviving force needs an available physician.');
-   const missing=Math.max(0,4-c.operativeState[physicianId].medkits),hires=[];
-   for(let quantity=0;quantity<missing;){
-    const guard=unusedHires(c).filter(op=>c.operativeState[op.id].medkits>0).sort((a,b)=>b.marksmanship-a.marksmanship||a.id-b.id)[0];assert.ok(guard,'Actual unused paid guards must supply the remaining finite field dressings.');
+   const missing=Math.max(0,4-c.operativeState[physicianId].medkits),fieldMissing=Math.max(0,12-local(c.location).length),hires=[];
+   for(let quantity=0;quantity<missing||hires.length<fieldMissing;){
+    const guard=unusedHires(c).filter(op=>quantity>=missing||c.operativeState[op.id].medkits>0).sort((a,b)=>b.marksmanship-a.marksmanship||a.id-b.id)[0];assert.ok(guard,'Actual unused paid guards must supply the remaining personnel and finite field dressings.');
     const booked=bookRouteHires(c,[guard.id],{term:'week',destination:c.location,report});c=booked.campaign;hires.push(...booked.hires);quantity+=c.operativeState[guard.id].medkits;
    }
    if(hires.length){
-    c=finishRouteHireArrivals(c,hires,{minimumWaitHours:0,report});c=transferRouteSupply(c,{sector:c.location,recipientId:physicianId,donorIds:hires.map(row=>row.id),item:'medkits',count:missing,report}).campaign;
+    c=finishRouteHireArrivals(c,hires,{minimumWaitHours:0,report});if(missing)c=transferRouteSupply(c,{sector:c.location,recipientId:physicianId,donorIds:hires.map(row=>row.id),item:'medkits',count:missing,report}).campaign;
     for(const hire of hires)c=recoverRoutePrimary(c,hire.id,{report});
    }
    retained=createOrders(()=>c,next=>{c=next;},{report});field=ready(c.location);

@@ -36,7 +36,10 @@ function resolveBatteryEncounter(state,report,resolveEncounter,keepServing,stage
 function renewCrew(state,report,keepServing){
  let s=state;
  for(const id of new Set([...s.squad,...keepServing])){
-  if(!serving(s,id))fail(report,`The named serving battery participant ${id} is no longer available.`,{id});
+  if(!serving(s,id)){
+   try{fail(report,`The named serving battery participant ${id} is no longer available.`,{id});}
+   catch(error){recordRouteStrategicEvidence({helper:'prepareRouteBattery',stage:'renew-crew-unavailable',campaign:s,context:{id,keepServing,squad:s.squad},error});throw error;}
+  }
   const expiry=contractExpiresSeconds(s.contracts[id]);if(expiry===null||expiry>clock(s)+2*3600)continue;
   const quote=contractQuote(s,rosterFor(s).find(op=>op.id===id),'day');
   if(!quote.available||s.resources.treasury<quote.price)fail(report,`The real battery crew renewal for ${id} is unaffordable.`,{id,price:quote.price,treasury:s.resources.treasury});
