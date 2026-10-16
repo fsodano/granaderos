@@ -4,71 +4,25 @@
 > [shipping campaign plan](plans/core-campaign-v0.1.md) for current scope. Earlier development
 > numbers are internal checkpoints; their features and results are dated history.
 
-## Unreleased campaign validation
+## 0.1.13 — Proposed (unreleased)
 
-- Correct paid road duty, finite ammunition redistribution and ordered medical
-  care in fresh campaign validation.
-- Preserve actual remote casualties through finite care and ordinary reserve
-  rest. Keep the arsenal physician on medical duty and retain charged gun crews.
-- Finish admitted aid for unconscious routed soldiers, avoid known civilian
-  scatter paths and return paid clinic relief before quoting new Salta hires.
-- Quote rescue dressings from actual Native first-aid strokes while retaining
-  finite clinical supplies and strict patient recovery checks.
-- Transfer finite carried dressings through actual donations that preserve each
-  donor's last dressing. Prepare a legal running approach for distant critical
-  aid only after Native admission, adjacent-care and route checks.
-- Keep coordinated hospital roof roles for a northern road reserve whose
-  player batteries are already spent. Charged-battery control is unchanged.
-- Let a fit ground defender beside an initially empty cannon pay for a short
-  approach to a current team contact when ordinary work has no action. Keep
-  useful fire, medical duties, roof roles and charged crews ahead of this step.
-  Share the 20-AP optional advance allowance across the actual Native turn.
-- Prepare a threatened empty road clinic with one actual paid medical hire.
-  Donate one finite dressing, retain existing local duties through arrival,
-  and walk the new physician to a real roof post before the field leaves.
-- Use remaining legal arrival cells for Uspallata screens when preferred
-  spacing is unavailable, while retaining Native cannon-contact exclusions.
-- Coordinate the default all-covered hospital encounter during Salta battery
-  preparation from the current formation after paid roof staging. Preserve
-  explicit controller overrides and other encounters.
-- Fetch a batch of owned finite dressings before prolonged local rest. Check
-  carrying room before paid travel and preserve donor reserves and service.
-- Supply a fit selected relief medic before the mission visit and record actual
-  care before the existing health and bleeding checks.
-- Retry a blocked cannon route when only an unrelated body occupies a crew
-  contact corner. Preserve valid existing routes and all real destination,
-  terrain, wall, crew and action-cost checks.
-- Complete a payable close blade action for an assigned cannon crew member
-  before restoring the rifle. Keep the crew beside its gun and preserve care
-  and cannon priorities. Use Native target admission for living routed or
-  critical enemies.
-- Restore wounded clinic survivors before the separate battery journey. Use
-  finite supplies, actual paid service and one shared 72-hour care allowance.
-  Select the later Córdoba reserve from each soldier's current location.
-  Give each additional paid relief carrier its own real visit and roof walk.
-  Start finite local treatment during courier time and replenish from current
-  wounds through actual local stock and paid relief. Keep the doctor's
-  existing defensive reserve and the same clinical deadline.
-- Reuse an actual local group for a relief carrier's solo roof visit when all
-  eight squad slots are occupied. Restore the group's members, old posts,
-  duties and selected field party after the paid visit.
-- Finish local northern reserve care inside the hospital's existing absolute
-  deadline before the recovered party returns. Use known finite dressings,
-  actual renewals, a recovered primary and paid roof walks in existing groups.
-- Quote an upright medical approach for a prone Uspallata physician when it
-  retains the same approach budget and actual hand-and-aid costs. Preserve
-  adjacent care, finite stock and other battery roles.
-- Keep Los Patos flank firing postures only when their paid Native forecast
-  admits useful fire. Follow actual shared contacts past the scouting point
-  with the existing movement budget and Native route checks.
-- Budget the full parallel mountain journey, daylight staging and final service
-  buffer at actual contract prices. Preserve required roles and patients, end
-  only completed paid duties, and return their exact finite property. Fund any
-  remaining reserve with actual positive port income before departure.
-- Add current-state regressions and optional terminal save exports for browser
-  checks. Saves from earlier builds remain outside the supported scope.
-- Full campaign acceptance remains open. No complete final-source victory or
-  saved 48-hour continuation is claimed by the focused checks.
+- Clear a refused autonomous enemy action before a valid player interrupt.
+  Invalid player orders retain their normal atomic refusal.
+- Keep inventory details tied to the inspected pocket after an item moves to
+  the active hand. An empty pocket no longer shows the moved item's details.
+- Expand fresh campaign regressions for paid recovery, real rear defence,
+  current roof access, cannon crew contact and the actual Ensenada arsenal
+  battle. Retain ordinary orders, finite supplies and permanent losses.
+- Keep original battle and preparation limits, paid service, duties and homes.
+  Preserve the reviewed Cuyo four-battle reporting correction and every other
+  original campaign assertion.
+- Campaign acceptance remains open. The latest complete original-five run has
+  four passed, seven failed and two skipped tests (receipt `f95e27fc...`). The
+  later component gate passes 187/187 with all preservation audits, but this
+  does not replace full campaign acceptance. The final unfiltered 1,115-file
+  integration gate includes all five original campaign files; earned ending,
+  48 campaign-hour continuation and normal-browser acceptance remain PENDING.
+  Version 0.1.13 is proposed and is not published yet.
 
 ## 0.1.12 — 16 October 2026
 
