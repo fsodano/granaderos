@@ -3001,7 +3001,7 @@ function runEnemyPhase(s){
     while(queue.actionsTaken<12&&alive(u)&&u.ap>=3&&s.status==='active'){
       rememberContacts(s);const order=chooseEnemyAction(s,u);if(!order)break;
       const accepted=apply(s,order,true);if(order.patrol)u.patrolTurn=s.turn;queue.actionsTaken++;
-      if(accepted===false)break;
+      if(accepted===false){s.lastError=null;break;}
       if(s.status!=='active'){s.lastError=null;revealRooms(s);return s;}
       if(s.phase==='interrupt'){s.lastError=null;revealRooms(s);return s;}
     }
