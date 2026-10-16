@@ -114,6 +114,7 @@ passing full-suite or browser campaign acceptance result is claimed for this tag
 ## Publication
 
 The requested publication is a source commit on `main` and the annotated `0.1`
-tag. GitHub Actions is manual. A source push or tag does not update GitHub Pages;
-the live site can serve an older build. Pages deployment is a separate maintainer
-action described in [the development guide](../development/getting-started.md#github-pages).
+tag. At that checkpoint, Pages deployment required a separate manual action.
+Current `main` pushes build and publish the verified export automatically; tag
+pushes do not start a deployment. The live site serves the last successful build.
+See [the development guide](../development/getting-started.md#github-pages).

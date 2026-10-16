@@ -194,7 +194,7 @@ These workflows do not build the browser, deploy Pages or compile Windows.
 
 ### Before a release or broad gameplay change
 
-Keep small fixes local. Use focused tests and the relevant quick scope to find and fix failures during development. Routine changes do not require a complete campaign on every edit. The focused test Actions are automatic; browser builds, Pages deployment and Windows builds remain manual. Before publishing a release, run all checks below on the complete candidate:
+Keep small fixes local. Use focused tests and the relevant quick scope to find and fix failures during development. Routine changes do not require a complete campaign on every edit. The focused test Actions are automatic. Main pushes also build and publish GitHub Pages; Windows builds remain manual. Before publishing a release, run all checks below on the complete candidate:
 
 ```sh
 node --test tools/test-shard-selftest.mjs tests/test-runner.test.mjs
@@ -256,11 +256,11 @@ The hosted game is at [fsodano.github.io/granaderos](https://fsodano.github.io/g
 GitHub Pages serves the export from its last deployment; it can differ from
 current `main` or a version tag. The game needs no application server.
 
-The [web workflow](../../.github/workflows/web.yml) builds with `GRANADEROS_BASE_PATH=/granaderos`. It checks browser types, deployment paths, browser workers and the static export before publishing `dist/`. Publication runs only when a maintainer starts this workflow manually on `main`. Pushes, pull requests and tags do not start a web build.
+The [web workflow](../../.github/workflows/web.yml) builds with `GRANADEROS_BASE_PATH=/granaderos`. It checks browser types, deployment paths, browser workers and the static export before publishing `dist/`. Every push to `main` starts the verified build and publishes its successful export. Manual builds remain available through `workflow_dispatch`; manual publication also requires `main`. Pull requests, tag pushes and pushes to other branches do not start this workflow.
 
 The selected main revision publishes even if unrelated commits advance main
-during the build. A newer manual dispatch replaces an older run. The workflow
-records its selected revision in the run summary. Verify that the published
+during the build. A newer push or manual dispatch on the same branch replaces
+an older run. The workflow records its selected revision in the run summary. Verify that the published
 `/granaderos/build-info.json` revision equals that selected revision. This
 confirms the deployed source, not complete campaign acceptance. Simulation
 tests use the separate workflows above; the web workflow does not run the full
