@@ -11,8 +11,8 @@ import {discoverRouteCache} from './finite-route-equipment.mjs';
 import {stageRouteRoofDefenders} from './route-roof-defenders.mjs';
 import {cordobaClinicGroundCrew,cordobaClinicDefenseOrder} from './cordoba-clinic-combat-readiness.mjs';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {createBattle,artilleryCosts,artilleryCrewPlan,artilleryReloadPreview,stanceCost,getReachable,lookPreview,actBattle,presentedActBattle,endTurn,presentedEndTurn,climbPreview,firearmShotOptions} from '../game/tactical.js';
-import {spacePoint,sameCell,surfaceAt} from '../game/tactical-space.js';
+import {createBattle,artilleryCosts,artilleryCrewPlan,artilleryReloadPreview,stanceCost,getReachable,lookPreview,actBattle,presentedActBattle,endTurn,presentedEndTurn,climbPreview,firearmShotOptions,actionCosts,medicalUsePreview,canSee,hasLineOfSight} from '../game/tactical.js';
+import {spacePoint,sameCell,sameSurface,surfaceAt} from '../game/tactical-space.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {unitAmmunitionByType} from '../game/physical-ammunition.js';
 import {carriedAmmunition} from '../game/campaign-ammunition.js';
@@ -26,6 +26,8 @@ import {recoverVisibleRouteDressings} from './route-visible-medical-remains.mjs'
 import {handoverRescueClinicDressings,prepareRescueClinicDefense,prepareRescueCordobaRear,resolveRescueRecoveryEncounter,rescueCordobaDefenseController} from './rescue-recovery.mjs';
 
 import {publicRouteView,usefulRouteRifleShot,usefulRouteFiringPosture} from './route-infantry-progress.mjs';
+
+import {paidHospitalRoofWalkPreview} from './coordinated-hospital-battery.mjs';
 
 const clock=c=>c.hour*3600+(c.secondOfHour??0);
 
@@ -410,4 +412,65 @@ test('the exact rescue crew holds an unpayable gun quote instead of buying an or
  assert.deepEqual(replay(ready,tape),current);assert.deepEqual(ready,readyBefore);
  for(const unit of ready.units.filter(unit=>unit.side==='player')){const next=actor(current,unit.id);assert.deepEqual(unitAmmunitionByType(next),unitAmmunitionByType(unit));for(const key of ['hp','bleeding','bandaged','medkits','weapon','inventory'])assert.deepEqual(next[key],unit[key]);assert.deepEqual(spacePoint(next),spacePoint(unit));}
  for(const key of ['id','type','side','x','y'])assert.deepEqual(current.artillery[0][key],ready.artillery[0][key]);
+});
+
+// Independent public close-threat declarations. Every wound, role, body,
+// roof and finite supply exists before the Native battle factory runs.
+function rescueRoofPhysicianEscapeArena({blocked=false,lowCover=false,distant=false,adjacent=false,armed=false,doctor={},gunContact=false}={}){
+ const base={hp:100,maxHp:100,bleeding:0,bandaged:0,energy:100,fatigue:0,morale:90,agility:100,dexterity:100,strength:100,wisdom:80,experienceLevel:4,medical:0,medkits:0,marksmanship:0,weapon:0,blade:0,loaded:0,ammo:0,condition:100,stance:'crouched',movementMode:'crouch',activeSlot:'unarmed',facing:6,patrol:false,overwatch:false};
+ const players=[{...base,id:'roof-medic',x:8,y:9,tacticalLevel:1,medical:90,medkits:2,...(armed?{weapon:1805,loaded:1,ammo:3,marksmanship:90,activeSlot:'primary'}:{}),...doctor},
+  {...base,id:'declared-patient',x:adjacent?9:11,y:9,tacticalLevel:1,hp:14,bleeding:2}];
+ if(blocked)for(const [n,[x,y]]of [[8,8],[8,10],[9,8],[9,9],[9,10]].entries())players.push({...base,id:'declared-body-'+n,x,y,tacticalLevel:1});
+ if(gunContact)players.push({...base,id:'actual-gunner',x:7,y:8,tacticalLevel:1,medical:0});
+ const options={id:'declared-rescue-roof-close-threat',width:32,height:20,hour:12,seed:45,exploration:false,
+  tiles:Array.from({length:640},(_,n)=>({x:n%32,y:Math.floor(n/32),type:'grass',cover:0,blocked:false})),
+  upperSurfaces:Array.from({length:36},(_,n)=>({id:'escape-roof-'+n,x:2+n%12,y:8+Math.floor(n/12),tacticalLevel:1,elevation:3,type:'floor',kind:'roof',blocked:false,cover:lowCover&&!(2+n%12===8&&8+Math.floor(n/12)===9)?0:30})),climbLinks:[],npcs:[],
+  enemies:[{...base,id:'known-close-raider',name:'Amenaza declarada',x:distant?2:6,y:9,tacticalLevel:1,stance:'standing',movementMode:'walk',facing:2}],
+  artillery:gunContact?[{id:'declared-contact-gun',type:'bronze4',side:'player',x:8,y:8,tacticalLevel:1,loaded:true,ammo:2}]:[]};
+ const declaration=structuredClone({players,options}),battle=createBattle(players,options);assert.deepEqual({players,options},declaration);assert.deepEqual(validateBattleSnapshot(JSON.parse(JSON.stringify(battle))),battle);return battle;
+}
+
+function replayRescueRoofEscape(start,orders){
+ let direct=start,shown=start,restored=validateBattleSnapshot(JSON.parse(JSON.stringify(start)));
+ for(const action of orders){direct=actBattle(direct,action);assert.equal(direct.lastError,null,JSON.stringify(action));shown=presentedActBattle(shown,action).state;assert.deepEqual(shown,direct);const next=actBattle(restored,action);assert.equal(next.lastError,null);restored=validateBattleSnapshot(JSON.parse(JSON.stringify(next)));assert.deepEqual(restored,direct);}
+ return direct;
+}
+
+test('a supplied roof physician pays a short equal-cover escape from a current close threat then performs real finite care',()=>{
+ const start=rescueRoofPhysicianEscapeArena(),before=structuredClone(start),actor=(b,id='roof-medic')=>b.units.find(u=>u.id===id),policy=rescueCordobaDefenseController(start),doctor=actor(start),target=actor(start,'known-close-raider'),patient=actor(start,'declared-patient');
+ assert.ok(canSee(start,doctor,target));assert.ok(sameSurface(doctor,target));assert.ok(Math.hypot(doctor.x-target.x,doctor.y-target.y)<=2.5);assert.equal(medicalUsePreview(start,{...doctor,activeSlot:'medical'},patient).allowed,false);assert.deepEqual(cordobaClinicDefenseOrder(start,doctor),{type:'stance',unitId:doctor.id,stance:'prone'});
+ const move=policy(start,doctor);assert.equal(move?.type,'move');const view=publicRouteView(start,doctor),route=getReachable(view,doctor,{stopAt:p=>sameCell(p,move)})[0],quote=paidHospitalRoofWalkPreview(view,doctor,route);
+ assert.ok(route.cost>0&&route.cost<=24&&route.path.length<=3);assert.ok(route.path.every(p=>(p.kind===undefined||p.kind==='move')&&sameSurface(p,doctor)&&(surfaceAt(view,p)?.cover??0)>=(surfaceAt(view,doctor)?.cover??0)));assert.ok(quote);assert.ok(Math.hypot(move.x-target.x,move.y-target.y)>Math.hypot(doctor.x-target.x,doctor.y-target.y));
+ const arrived=replayRescueRoofEscape(start,[move]),medic=actor(arrived);assert.equal(medic.ap,doctor.ap-route.cost);assert.equal(medic.energy,quote.actor.energy);assert.equal(medic.facing,quote.actor.facing);assert.equal(medic.stance,doctor.stance);assert.equal(medic.medkits,2);assert.deepEqual(spacePoint(medic),spacePoint(move));assert.equal(arrived.elapsedSeconds,quote.view.elapsedSeconds);
+ const hand=policy(arrived,medic);assert.deepEqual(hand,{type:'weapon',unitId:medic.id,slot:'medical'});const held=replayRescueRoofEscape(arrived,[hand]),ready=actor(held),care=medicalUsePreview(held,ready,actor(held,'declared-patient'));assert.equal(care.allowed,true,care.reason);
+ const aid=policy(held,ready);assert.deepEqual(aid,{type:'useItem',unitId:ready.id,targetId:'declared-patient'});const end=replayRescueRoofEscape(start,[move,hand,aid]);assert.equal(actor(end).ap,ready.ap-care.cost);assert.equal(actor(end).medkits,2-care.treatment.dressingsUsed);assert.ok(care.treatment.dressingsUsed>0);assert.equal(actor(end,'declared-patient').hp,care.treatment.hpAfter);assert.equal(actor(end,'declared-patient').bleeding,0);assert.ok(actor(end,'declared-patient').hp>=15);
+ for(const u of start.units){const v=actor(end,u.id);assert.deepEqual(unitAmmunitionByType(v),unitAmmunitionByType(u));assert.deepEqual(v.inventory,u.inventory);if(u.id!=='declared-patient')for(const key of ['hp','bleeding','bandaged'])assert.equal(v[key],u[key]);if(u.id!=='roof-medic')assert.deepEqual(spacePoint(v),spacePoint(u));}
+ assert.deepEqual(start,before);
+});
+
+test('actual adjacent finite aid and an immediately useful safe rifle shot precede the roof physician escape',()=>{
+ const aidStart=rescueRoofPhysicianEscapeArena({adjacent:true}),aidBefore=structuredClone(aidStart),medic=aidStart.units.find(u=>u.id==='roof-medic'),aidPolicy=rescueCordobaDefenseController(aidStart),hand=aidPolicy(aidStart,medic);assert.deepEqual(hand,{type:'weapon',unitId:medic.id,slot:'medical'});
+ const held=replayRescueRoofEscape(aidStart,[hand]),ready=held.units.find(u=>u.id===medic.id),patient=held.units.find(u=>u.id==='declared-patient'),quote=medicalUsePreview(held,ready,patient),aid=aidPolicy(held,ready);assert.equal(quote.allowed,true);assert.deepEqual(aid,{type:'useItem',unitId:ready.id,targetId:patient.id});const treated=replayRescueRoofEscape(aidStart,[hand,aid]);assert.equal(treated.units.find(u=>u.id===ready.id).medkits,2-quote.treatment.dressingsUsed);assert.deepEqual(spacePoint(treated.units.find(u=>u.id===ready.id)),spacePoint(medic));assert.deepEqual(aidStart,aidBefore);
+ const shotStart=rescueRoofPhysicianEscapeArena({armed:true}),shotBefore=structuredClone(shotStart),shooter=shotStart.units.find(u=>u.id==='roof-medic'),fire=rescueCordobaDefenseController(shotStart)(shotStart,shooter);assert.equal(fire?.type,'fire');const target=shotStart.units.find(u=>u.id===fire.targetId),option=firearmShotOptions(shotStart,shooter,target,fire.aim).find(p=>p.aim===fire.aim&&p.hitLocation===fire.hitLocation);assert.ok(option.chance>=25&&knownRouteBystanderShotSafety(shotStart,shooter,target)(option));
+ const fired=replayRescueRoofEscape(shotStart,[fire]),after=fired.units.find(u=>u.id===shooter.id);assert.equal(after.loaded,0);assert.equal(after.ammo,shooter.ammo);assert.equal(after.ap,shooter.ap-actionCosts(shotStart,shooter,target).fire-fire.aim*actionCosts(shotStart,shooter,target).aim);assert.equal(after.medkits,2);assert.deepEqual(spacePoint(after),spacePoint(shooter));assert.deepEqual(shotStart,shotBefore);
+});
+
+test('blocked equal-cover space, lower-cover routes and actually exhausted AP cannot grant a physician escape',()=>{
+ for(const variant of ['blocked','lowCover','paidAP']){
+  const start=rescueRoofPhysicianEscapeArena({[variant]:true}),before=structuredClone(start),policy=rescueCordobaDefenseController(start),tape=[];let battle=start;
+  if(variant==='paidAP')for(let count=0;battle.units.find(u=>u.id==='roof-medic').ap>0&&count<128;count++){
+   const u=battle.units.find(v=>v.id==='roof-medic'),points=[[-1,-1],[0,-1],[1,-1],[-1,0],[1,0],[-1,1],[0,1],[1,1]].map(([x,y])=>({x:u.x+x,y:u.y+y})),paid=points.map(p=>({point:p,quote:lookPreview(battle,u,p)})).filter(p=>p.quote.valid&&p.quote.pa>0).sort((a,b)=>a.quote.pa-b.quote.pa)[0];assert.ok(paid);const action={type:'look',unitId:u.id,...paid.point},next=actBattle(battle,action);assert.equal(next.lastError,null);assert.equal(next.units.find(v=>v.id===u.id).ap,u.ap-paid.quote.pa);battle=next;tape.push(action);
+  }
+  const u=battle.units.find(v=>v.id==='roof-medic');if(variant==='paidAP'){assert.ok(tape.length>0);assert.equal(u.ap,0);assert.deepEqual(replayRescueRoofEscape(start,tape),battle);}
+  const untouched=structuredClone(battle),action=policy(battle,u);assert.notEqual(action?.type,'move',variant);assert.deepEqual(action,cordobaClinicDefenseOrder(battle,u));assert.deepEqual(battle,untouched);assert.deepEqual(start,before);
+ }
+});
+
+test('distant contacts, unsupplied or nonmedical roof people and actual charged gun contact keep the existing clinic policy',()=>{
+ for(const declaration of [{distant:true},{doctor:{medkits:0}},{doctor:{medical:0}},{gunContact:true}]){
+  const start=rescueRoofPhysicianEscapeArena(declaration),before=structuredClone(start),u=start.units.find(v=>v.id==='roof-medic'),ordinary=cordobaClinicDefenseOrder(start,u),policy=rescueCordobaDefenseController(start);
+  if(declaration.distant){assert.deepEqual(ordinary,{type:'stance',unitId:u.id,stance:'prone'});assert.ok(start.units.filter(v=>v.side==='enemy').every(v=>Math.hypot(v.x-u.x,v.y-u.y)>2.5));}
+  if(declaration.gunContact){const gun=start.artillery[0],gunner=start.units.find(v=>v.id==='actual-gunner'),crew=artilleryCrewPlan(start,gunner,gun,0);assert.equal(crew.reason,null);assert.ok(crew.crew.includes(u.id));}
+  assert.deepEqual(policy(start,u),ordinary);assert.deepEqual(start,before);
+ }
 });

@@ -39,12 +39,15 @@ export function replayPairedRouteOrders(campaign,request,previous,orders,{placem
 
 // Opt-in route execution reuses the unchanged ordinary policy and native
 // 600-window/80-turn/16-pass bounds. Default fight has no paired bridge.
-export function fightPairedRouteBattle(campaign,request,previous,{controller,sharedFallback,deploy,onNativeResult=()=>{},onExecution=()=>{}}={}){
+export function fightPairedRouteBattle(campaign,request,previous,{controller,sharedFallback,deploy,observeOrder=null,onNativeResult=()=>{},onExecution=()=>{}}={}){
  const before=structuredClone(campaign),oldScene=structuredClone(previous),bridge=createPairedRouteOrders(campaign);
+ const executeOrder=observeOrder?(current,action)=>{
+  const after=bridge.executeOrder(current,action);observeOrder({before:current,after,action,index:bridge.orders.length-1});return after;
+ }:bridge.executeOrder;
  const deployment=deploy?battle=>{
-  const next=deploy(battle,bridge.executeOrder);assert.equal(next,bridge.pair?.battle,'Deployment must return the actual last public order result.');return next;
+  const next=deploy(battle,executeOrder);assert.equal(next,bridge.pair?.battle,'Deployment must return the actual last public order result.');return next;
  }:undefined;
- const native=fight(request,previous,{controller,sharedFallback,deploy:deployment,executeOrder:bridge.executeOrder,admitBattle:bridge.admitBattle});
+ const native=fight(request,previous,{controller,sharedFallback,deploy:deployment,executeOrder,admitBattle:bridge.admitBattle});
  const pair=bridge.pair,result={...native,orders:bridge.orders,pair};
  // A passive opt-in can retain the COMPLETE actual result and tape before
  // any pair identity or replay assertion throws. It issues no further order.

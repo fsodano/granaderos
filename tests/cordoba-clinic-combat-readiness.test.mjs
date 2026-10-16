@@ -504,3 +504,63 @@ test('a real cannon crew notice is acknowledged before repeating paid clinic pre
  assert.ok(clock(c)>clock(start)&&clock(c)<=clock(start)+(96+40*6)*3600);assert.equal(c.resources.treasury,start.resources.treasury-450);assert.equal(c.pendingEncounter,null);assert.equal(c.pendingBattle,null);
  assert.deepEqual(start,before);saved(c);assert.deepEqual(recoverFreshCordobaSurvivors(saved(start)),c);
 });
+
+
+// All people, health, medical skill, finite linen and roof access precede the
+// factory. Native paid arrivals and ordinary squad orders earn both old homes.
+function declaredFullHomeReserve({noSeat=false}={}){
+ const d=JSON.parse(JSON.stringify(scaffoldDocuments('clinic-reserve-existing-home')).replaceAll('watch-post',sector)),base=d.content.characters[0],serving=noSeat?12:7;
+ d.content.rules.startingTreasury=20000;d.content.rules.deploymentCartridges=0;d.content.startingTerritory[sector].owner='patriot';
+ d.content.campaignStory.chapters[0].conditions=[{type:'day',min:100,max:null}];d.world.expansion.buildingTargets={camp:0,[sector]:0};
+ d.world.arrivalFacilities[sector]=['barracks'];d.content.arrivalSites.push({sector,facilities:['barracks']});
+ d.world.physical.caches={};d.world.physical.arsenals={};
+ d.content.characters=Array.from({length:serving+1},(_,i)=>({...structuredClone(base),id:'home-reserve-'+i,name:'Persona '+i,nickname:'Persona '+i,monthlyPay:300,arrivalHours:0,weapon:null,
+  attributes:{...base.attributes,maxHp:70,medical:i===serving?20:0},
+  startingSupplies:{rations:0,torches:0,boleadoras:0,medkits:i===serving?2:0},
+  startingCondition:{hp:70,bleeding:0,bandaged:0,energy:100,fatigue:0}}));
+ d.maps[sector].upperSurfaces=Array.from({length:24},(_,i)=>({id:'home-reserve-roof-'+i,x:8+i%6,y:5+Math.floor(i/6),tacticalLevel:1,elevation:3,type:'floor',kind:'roof',blocked:false,cover:25}));
+ d.maps[sector].climbLinks=[{id:'home-reserve-access',kind:'climb',from:{x:8,y:9,tacticalLevel:0},to:{x:8,y:8,tacticalLevel:1}}];
+ d.world.enemyStrategy={version:1,theaters:{frontier:{legHours:1,reserve:0,raidEveryHours:240,axis:[sector]}}};
+ const declaration=structuredClone(d),content=compileCampaignPackage(d.manifest,d);assert.deepEqual(validateContentPackage(content),[]);
+ let c=initialCampaign(42,content);const ids=rosterFor(c).map(op=>op.id),id=ids[serving];
+ for(const old of ids.slice(0,serving)){const quote=contractQuote(c,rosterFor(c).find(op=>op.id===old),'day'),cash=c.resources.treasury;c=order(c,{type:'recruitCivic',id:old,term:'day',destination:sector});assert.equal(c.resources.treasury,cash-quote.total);}
+ c=order(c,{type:'createSquad',ids:ids.slice(6,serving),sector,name:'Reserva local existente'});const home=c.activeSquadId;
+ c=order(c,{type:'createSquad',ids:ids.slice(0,6),sector,name:'Clínica completa'});const selected=c.activeSquadId;
+ c=prepareNorthernHospitalFortification(c,{sector}).campaign;
+ assert.equal(c.squad.length,6);assert.equal(c.squads.find(q=>q.id===home).members.length,noSeat?6:1);
+ assert.equal(c.recruited.includes(id),false);assert.equal(rosterFor(c).find(op=>op.id===id).medical,20);assert.equal(c.operativeState[id].medkits,2);
+ assert.equal(c.pendingBattle,null);assert.equal(c.pendingEncounter,null);assert.deepEqual(d,declaration);
+ return {campaign:saved(c),ids,serving,id,home,selected};
+}
+
+test('a paid finite reserve arriving beside a full clinic joins an actual existing local vacancy before unchanged roof restaging',()=>{
+ const s=declaredFullHomeReserve(),start=s.campaign,before=structuredClone(start),op=rosterFor(start).find(op=>op.id===s.id),quote=contractQuote(start,op,'day'),used=new Set(),deadline=clock(start)+3600;
+ const result=refreshCordobaClinicReadiness(start,null,{deadlineSeconds:deadline,allowPaidRelief:true,usedReliefIds:used}),c=result.campaign;
+ assert.equal(result.receipt.supplied,true);assert.equal(result.receipt.doctorId,s.id);assert.deepEqual(result.receipt.hires.map(h=>h.id),[s.id]);assert.equal(used.has(s.id),true);
+ assert.equal(c.resources.treasury,start.resources.treasury-quote.total);assert.equal(clock(c),clock(start));assert.equal(c.operativeState[s.id].medkits,2);assert.equal(c.operativeState[s.id].location,sector);
+ assert.equal(c.contracts[s.id].started*3600+(c.contracts[s.id].startedSecond??0),clock(start));assert.equal(contractExpiresSeconds(c.contracts[s.id]),clock(start)+quote.hours*3600);assert.equal(c.hiringArrivals.some(a=>a.operativeId===s.id),false);
+ assert.equal(c.activeSquadId,s.selected);assert.deepEqual(c.squad,start.squad);assert.equal(c.squads.length,start.squads.length);
+ assert.deepEqual(c.squads,start.squads.map(q=>q.id===s.home?{...q,members:[...q.members,s.id]}:q));assert.ok(c.squads.every(q=>q.members.length<=6));
+ assert.deepEqual(result.receipt.orders.map(row=>row.action.type),['recruitCivic','assignToSquad','selectSquad']);
+ assert.deepEqual(result.receipt.orders[1].action,{type:'assignToSquad',squadId:s.home,operativeId:s.id});
+ for(const id of start.recruited){assert.deepEqual(c.operativeState[id],start.operativeState[id]);assert.deepEqual(c.contracts[id],start.contracts[id]);}
+ assert.equal(Object.values(c.operativeState).reduce((n,r)=>n+r.medkits,0),2);assert.deepEqual(start,before);saved(c);
+ const staged=restageCordobaMedicalRear(c,{deadlineSeconds:deadline,preserveGroundCrew:true});
+ assert.equal(staged.receipt.restored,true);assert.ok(staged.receipt.ids.includes(s.id));assert.ok(staged.receipt.orders.some(row=>row.action?.type==='climb'));
+ assert.equal(staged.campaign.operativeState[s.id].residentPosition.tacticalLevel,1);assert.deepEqual(staged.campaign.squads,c.squads);assert.equal(staged.campaign.activeSquadId,s.selected);
+ assert.ok(clock(staged.campaign)>clock(c)&&clock(staged.campaign)<=deadline);assert.equal(staged.campaign.resources.treasury,c.resources.treasury);assert.equal(staged.campaign.operativeState[s.id].medkits,2);saved(staged.campaign);
+ const repeat=refreshCordobaClinicReadiness(saved(before),null,{deadlineSeconds:deadline,allowPaidRelief:true,usedReliefIds:new Set()});assert.deepEqual(repeat,result);
+ assert.deepEqual(restageCordobaMedicalRear(repeat.campaign,{deadlineSeconds:deadline,preserveGroundCrew:true}),staged);
+});
+
+test('a paid reserve with no existing local seat stops at its exact accepted hire without creating a squad or continuing preparation',()=>{
+ const s=declaredFullHomeReserve({noSeat:true}),start=s.campaign,before=structuredClone(start),quote=contractQuote(start,rosterFor(start).find(op=>op.id===s.id),'day'),used=new Set();let failure;
+ try{refreshCordobaClinicReadiness(start,null,{deadlineSeconds:clock(start)+3600,allowPaidRelief:true,usedReliefIds:used});}catch(error){failure=error;}
+ assert.match(failure?.message??'',/existing local squad seat/);const c=failure.campaign,r=failure.cordobaClinicReadiness;assert.ok(c&&r);
+ assert.equal(used.has(s.id),true);assert.deepEqual(r.hires.map(h=>h.id),[s.id]);assert.deepEqual(r.orders.map(row=>row.action.type),['recruitCivic']);
+ assert.deepEqual(c.recruited,[...start.recruited,s.id]);assert.equal(c.resources.treasury,start.resources.treasury-quote.total);assert.equal(clock(c),clock(start));
+ assert.equal(c.operativeState[s.id].medkits,2);assert.equal(c.squads.some(q=>q.members.includes(s.id)),false);assert.deepEqual(c.squads,start.squads);assert.equal(c.activeSquadId,s.selected);assert.deepEqual(c.squad,start.squad);
+ assert.equal(c.contracts[s.id].started*3600+(c.contracts[s.id].startedSecond??0),clock(start));assert.equal(contractExpiresSeconds(c.contracts[s.id]),clock(start)+quote.hours*3600);
+ assert.equal(c.pendingBattle,null);assert.equal(c.pendingEncounter,null);for(const id of start.recruited){assert.deepEqual(c.operativeState[id],start.operativeState[id]);assert.deepEqual(c.contracts[id],start.contracts[id]);}
+ assert.deepEqual(start,before);JSON.stringify({campaign:c,receipt:r});
+});

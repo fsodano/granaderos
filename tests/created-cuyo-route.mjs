@@ -483,7 +483,7 @@ export function stabilizeStockMendozaSurvivors(start,{report=()=>{},returnSector
  const captureCareEvidence=Boolean(process.env.GRANADEROS_CAMPAIGN_FAILURE_DIR);
  let latestTacticalBoundary=null,lastCareInvocation=null;
  const c=()=>pair.campaign,record=id=>c().operativeState[id],acute=r=>r.hp>0&&(r.hp<15||r.bleeding>0);
- const patients=sector=>serving.filter(id=>acute(record(id))&&(sector===undefined||operativeLocation(c(),id)===sector)).sort((a,b)=>record(a).hp-record(b).hp||record(b).bleeding-record(a).bleeding||a-b);
+ const patients=sector=>serving.filter(id=>acute(record(id))&&(sector===undefined||operativeLocation(c(),id)===sector)).sort((a,b)=>Number(record(b).bleeding>0)-Number(record(a).bleeding>0)||record(a).hp-record(b).hp||record(b).bleeding-record(a).bleeding||a-b);
  const canonical=campaign=>{
   const result=structuredClone(campaign);
   for(const key of ['sectorStates','sceneStates'])if(result[key])result[key]=Object.fromEntries(Object.entries(result[key]).map(([id,scene])=>[id,expandCellScene(scene)]));
@@ -614,6 +614,9 @@ export function stabilizeStockMendozaSurvivors(start,{report=()=>{},returnSector
   while(acute(unit(patientId))){
    const doctor=unit(doctorId),patient=unit(patientId),preview=itemUsePreview(pair.battle,doctor,patient);
    assert.ok(preview?.valid,`actual first-aid route ${doctorId} -> ${patientId}: ${preview?.reason}`);
+   // The immediate field caller pays the Native faster gait before a
+   // bleeding patient's approach; re-quote after that real clock advance.
+   if(immediateFieldAid&&patient.bleeding>0&&preview.path.length&&doctor.movementMode!=='run'){tactical({type:'movement',unitId:String(doctorId),movement:'run'});continue;}
    const before={hp:patient.hp,bleeding:patient.bleeding,medkits:doctor.medkits,elapsed:pair.battle.elapsedSeconds};
    tactical({type:'useItem',unitId:String(doctorId),targetId:String(patientId)},()=>{
    const used=before.medkits-unit(doctorId).medkits;

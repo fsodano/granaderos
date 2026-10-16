@@ -130,6 +130,15 @@ export function refreshCordobaClinicReadiness(start,treatingId=null,{deadlineSec
    assert.equal(clock(c),before);assert.equal(hire.debited,quote.total);assert.equal(arrival.travelHours,0);
    assert.ok(local(c,op.id)&&c.recruited.filter(id=>id===op.id).length===1);assert.equal(c.hiringArrivals.some(row=>row.operativeId===op.id),false);
    const contract=c.contracts[op.id];assert.equal(contract.kind,'paid');assert.equal(contract.term,'day');assert.equal(contract.paid,quote.price);assert.equal(contract.started*3600+(contract.startedSecond??0),before);assert.equal(contractExpiresSeconds(contract),before+quote.hours*3600);assert.equal(c.operativeState[op.id].medkits,kits,"Only this unused physician's actual finite carried stock is admitted.");
+   // A full selected home cannot admit the real arrival automatically.
+   // Keep that paid physician in an existing stationary local vacancy before
+   // the unchanged restaging guard requires every survivor's actual home.
+   if(!c.squads.some(q=>q.members.includes(op.id))){
+    const home=c.squads.find(q=>q.location===sector&&!q.journey&&q.members.length<6);
+    assert.ok(home,'The paid clinic reserve needs an existing local squad seat.');
+    order({type:'assignToSquad',squadId:home.id,operativeId:op.id});
+    assert.ok(c.squads.find(q=>q.id===home.id).members.includes(op.id));
+   }
    if(c.activeSquadId!==selected)order({type:'selectSquad',id:selected});
    return rosterFor(c).find(person=>person.id===op.id);
   };

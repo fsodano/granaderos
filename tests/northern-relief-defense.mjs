@@ -72,7 +72,7 @@ function safeReliefFireOrMove(battle,unit,action,shotSafety=knownRouteCivilianSh
 
 // Keep the actual clinic physicians and soldiers without usable rounds in
 // reserve. Adjacent native aid remains available; prone is a paid order.
-export function northernReliefDefenseController(physicianIds,{minimumIdleRounds=0,localCareBattle=null}={}){
+export function northernReliefDefenseController(physicianIds,{minimumIdleRounds=0,localCareBattle=null,prioritizeLocalBattery=false}={}){
  assert.ok(Number.isInteger(minimumIdleRounds)&&minimumIdleRounds>=0);
  const physicians=new Set(physicianIds.map(String));
  // Local care may start with real serving troops away from their guns. Reuse
@@ -116,6 +116,21 @@ export function northernReliefDefenseController(physicianIds,{minimumIdleRounds=
  });
  const controller=(battle,unit)=>{
   const action=cautiousCombatOrder(battle,unit),reserved=held(unit);let ordinary=null;
+  // Only the local-care caller whose actual initial battery had no complete
+  // eligible crew requests setup priority. The existing crewOnly coordinator
+  // admits its current real members; no copied body is removed or relocated.
+  if(prioritizeLocalBattery&&battery&&battle.mode==='combat'&&battle.phase==='player'&&nonclinical(unit)&&!unit.knockedDown&&!unit.entangled){
+   if(action?.type==='useItem'||action?.slot==='medical')return action;
+   const coordinated=battery(battle,unit),currentCrew=actualNonclinicalCrew(battle,unit);
+   if(coordinated||currentCrew){
+    const close=battle.units.filter(other=>other.side!==unit.side&&other.hp>=15&&!other.routed&&!other.unconscious&&!other.departure&&!other.fled&&!other.surrendered&&sameSurface(unit,other)&&canSee(battle,unit,other)&&Math.hypot(unit.x-other.x,unit.y-other.y)<=2.5);
+    if(close.length&&['fire','melee'].includes(action?.type)){const defense=crewKeepsReserves(battle,unit,action)?safeReliefFireOrMove(battle,unit,action,shotSafety):null;if(['fire','melee'].includes(defense?.type)&&close.some(target=>target.id===defense.targetId))return defense;}
+    if(coordinated)return crewKeepsReserves(battle,unit,coordinated)?safeReliefFireOrMove(battle,unit,coordinated,shotSafety):null;
+    // Do not spend the assembled gun's current AP on an optional personal
+    // rifle reload or posture when the actual finite gun work must wait.
+    return null;
+   }
+  }
   // Preserve every admitted cautious order, including current cover movement,
   // posture and look. Battery coordination is an idle fallback, not a reason
   // to replace ordinary work with a different crew route.

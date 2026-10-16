@@ -2,25 +2,28 @@ import {mkdirSync,mkdtempSync,writeFileSync} from 'node:fs';
 import {join,basename} from 'node:path';
 import {createHash} from 'node:crypto';
 
-const cap=8,observed=new Map();
+const cap=8,observed=new Map(),boundarySampling=new Set();
 const reason='shared-contact-native-no-admitted-action';
 let sequence=0;
+const scopeOf=battle=>({sectorId:battle.sectorId??null,battleId:battle.battleId??null,startSeconds:battle.startSeconds??null});
 
 // Observe an existing controller return only. The cap counts capture attempts
 // and stores at most eight small decision keys per sector/deployment/start clock.
-export function recordRouteControllerDecisionEvidence({battle,unit,sharedContacts,automatic}){
+export function recordRouteControllerDecisionEvidence({battle,unit,sharedContacts,automatic,boundary=null}){
  const directory=process.env.GRANADEROS_CAMPAIGN_FAILURE_DIR;
  if(!directory)return;
  let output;
  try{
-  const scope={sectorId:battle.sectorId??null,battleId:battle.battleId??null,startSeconds:battle.startSeconds??null};
+  const scope=scopeOf(battle);
   const scopeKey=JSON.stringify(scope);
-  const decisionKey=JSON.stringify([unit.id,battle.turn,battle.phase,unit.stance,unit.ap,unit.hp,unit.bleeding]);
+  if(boundarySampling.has(scopeKey)&&!boundary)return;
+  const decisionKey=JSON.stringify(boundary?['paired-order',boundary.orderIndex,boundary.events.map(event=>event.kind)]:[unit.id,battle.turn,battle.phase,unit.stance,unit.ap,unit.hp,unit.bleeding]);
   let decisions=observed.get(scopeKey);
   if(decisions?.has(decisionKey)||decisions?.size>=cap)return;
   if(!decisions){decisions=new Set();observed.set(scopeKey,decisions);}
   decisions.add(decisionKey);
-  const raw=structuredClone({battle,unit,sharedContacts,automatic});
+  const raw=structuredClone(boundary?{battle,unit,boundary}:{battle,unit,sharedContacts,automatic});
+  const captureReason=boundary?'first-actual-own-field-event':reason;
   mkdirSync(directory,{recursive:true});
   const sector=String(scope.sectorId??'unknown').replace(/[^\w.-]/g,'_').slice(0,120);
   output=mkdtempSync(join(directory,`${process.pid}-${++sequence}-${sector}-controller-decision-`));
@@ -30,15 +33,15 @@ export function recordRouteControllerDecisionEvidence({battle,unit,sharedContact
    testFile:basename(process.argv[1]??''),pid:process.pid,runtime:process.execPath,nodeVersion:process.version,
    sourceSnapshot:process.env.GRANADEROS_CAMPAIGN_SOURCE_SNAPSHOT??null,
    buildRevision:process.env.GRANADEROS_CAMPAIGN_BUILD_REVISION??null,
-   stage:reason,reason,phase:battle.phase,
-   capturePhase:'after the existing native chooser and priority returns; before the unchanged shared-contact null return',
+   stage:captureReason,reason:captureReason,phase:battle.phase,
+   capturePhase:boundary?'after one existing accepted Native order and its existing synchronization; actual prior and returned battles only':'after the existing native chooser and priority returns; before the unchanged shared-contact null return',
    scope,scopeKey,decisionKey,captureAttemptInScope:decisions.size,
    recordingCap:cap,capCountsAttempts:true,
-   decisionKeyFields:['unit.id','battle.turn','battle.phase','unit.stance','unit.ap','unit.hp','unit.bleeding'],
-   captureScope:'first eight distinct decision keys per sector/deployment/start clock; not a complete decision or action tape',
-   rawDecisionIndependentlyCloned:true,controllerReturnValue:null,
-   nativeResultKind:automatic===null?'null':automatic===undefined?'undefined':automatic.type??typeof automatic,
-   rawAutomaticResultPresent:automatic!==undefined,
+   decisionKeyFields:boundary?['boundary.orderIndex','boundary.events.kind']:['unit.id','battle.turn','battle.phase','unit.stance','unit.ap','unit.hp','unit.bleeding'],
+   captureScope:boundary?'first own wound, death, rout and field-physician aid boundaries within the same eight-attempt scope cap; not internal Native frames or a complete action tape':'first eight distinct decision keys per sector/deployment/start clock; not a complete decision or action tape',
+   rawDecisionIndependentlyCloned:true,
+   ...(boundary?{nativeOrderAccepted:true,existingSynchronizationCompleted:true,controllerReturnObserved:false,preExecutionInputIndependentlyCaptured:false,trueInitialBattleCaptured:false}:
+    {controllerReturnValue:null,nativeResultKind:automatic===null?'null':automatic===undefined?'undefined':automatic.type??typeof automatic,rawAutomaticResultPresent:automatic!==undefined}),
    additionalSelectors:0,additionalPreviews:0,additionalOrders:0,additionalSynchronization:0,
    saveNormalizationPerformed:false,settlementExecuted:false,
    artifacts:[{path:name,bytes:Buffer.byteLength(bytes),sha256:createHash('sha256').update(bytes).digest('hex')}],
@@ -48,4 +51,35 @@ export function recordRouteControllerDecisionEvidence({battle,unit,sharedContact
   // Diagnostics cannot replace the original controller return or gameplay error.
   try{console.error('Route controller decision evidence error:',output??directory,String(error));}catch{}
  }
+}
+
+// Opt-in sampling reuses the existing actual paired order boundary. Suppress
+// early shared-null samples only for this scope, so they cannot spend its cap.
+// No reducer, selector, preview, save operation or controller call belongs here.
+export function beginRouteControllerBoundaryEvidence({initial,fieldPhysicianIds=[]}){
+ if(!process.env.GRANADEROS_CAMPAIGN_FAILURE_DIR)return null;
+ try{
+  const scopeKey=JSON.stringify(scopeOf(initial)),ownIds=new Set(initial.units.filter(unit=>unit.side==='player').map(unit=>unit.id));
+  const physicians=new Set(fieldPhysicianIds.map(String)),seen=new Set();
+  boundarySampling.add(scopeKey);
+  return ({before,after,action,index})=>{
+   try{
+    const prior=new Map(before.units.filter(unit=>ownIds.has(unit.id)).map(unit=>[unit.id,unit]));
+    const own=after.units.filter(unit=>ownIds.has(unit.id)),events=[];
+    const add=(kind,ids)=>{if(ids.length&&!seen.has(kind))events.push({kind,unitIds:ids});};
+    add('first-own-wound',own.filter(unit=>{const old=prior.get(unit.id);return old?.hp>0&&(unit.hp<old.hp||(unit.bleeding??0)>(old.bleeding??0));}).map(unit=>unit.id));
+    add('first-own-death',own.filter(unit=>prior.get(unit.id)?.hp>0&&unit.hp<=0).map(unit=>unit.id));
+    add('first-own-rout',own.filter(unit=>prior.has(unit.id)&&!prior.get(unit.id).routed&&unit.routed).map(unit=>unit.id));
+    const physician=prior.get(String(action.unitId));
+    add('first-field-physician-aid',action.type==='useItem'&&physicians.has(String(action.unitId))&&physician?.activeSlot==='medical'?[physician.id]:[]);
+    if(!events.length)return;
+    for(const event of events)seen.add(event.kind);
+    const actor=after.units.find(unit=>unit.id===events[0].unitIds[0])??prior.get(events[0].unitIds[0]);
+    recordRouteControllerDecisionEvidence({battle:after,unit:actor,boundary:{orderIndex:index,action,events,fieldPhysicianIds:[...physicians],before,
+     boundaryScope:'One actual top-level accepted order. Internal attacks/rout steps inside endTurn are not separately observed.',
+     woundMeaning:'First newly lower own HP or higher bleeding visible at an accepted order boundary; direct death may coincide.',
+     routMeaning:'First actual own routed false-to-true transition; retained morale/log describe its Native cause.'}});
+   }catch(error){try{console.error('Route controller boundary evidence error:',String(error));}catch{}}
+  };
+ }catch(error){try{console.error('Route controller boundary evidence error:',String(error));}catch{}return null;}
 }

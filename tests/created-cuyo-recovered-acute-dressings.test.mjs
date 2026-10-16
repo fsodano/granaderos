@@ -145,3 +145,47 @@ test('final convoy care uses known finite corpses, treats both actual localities
  assert.deepEqual(saved({campaign:c}).campaign,c);assert.deepEqual(start,before);
  assert.deepEqual(stabilizeStockMendozaSurvivors(saved({campaign:before}).campaign,{stagingSector:'camp',immediateFieldAid:true,returnSector:'camp'}),c,'The complete successful finite care repeats from its fresh official source.');
 });
+
+
+// Independent triage declaration: a stable critical patient can wait without
+// blood loss, while a higher-HP bleeder needs the first finite paid approach.
+// Wounds, two dressings and all three public deployment anchors precede factory.
+function declaredBleedingPriorityCare(){
+ const d=scaffoldDocuments('declared-finite-bleeding-priority'),base=d.content.characters[0];
+ d.content.rules.startingTreasury=20000;d.content.rules.deploymentCartridges=0;
+ d.content.campaignStory.chapters[0].conditions=[{type:'day',min:100,max:null}];
+ d.world.expansion.buildingTargets.camp=0;d.world.physical.caches={};
+ d.world.deployment={camp:{playerAnchors:[{x:3,y:12},{x:18,y:1},{x:15,y:3}]}};
+ const specs=[{name:'physician',hp:80,medical:35,kits:2},{name:'nonbleeding-critical',hp:12},{name:'bleeding-patient',hp:30,bleeding:4}];
+ d.content.characters=specs.map(s=>({...structuredClone(base),id:s.name,name:s.name,nickname:s.name,monthlyPay:30,arrivalHours:0,weapon:null,
+  attributes:{...base.attributes,maxHp:80,medical:s.medical??0},
+  startingSupplies:{rations:0,torches:0,boleadoras:0,medkits:s.kits??0},
+  startingCondition:{hp:s.hp,bleeding:s.bleeding??0,bandaged:0,energy:100,fatigue:0}}));
+ const declaration=structuredClone(d),content=compileCampaignPackage(d.manifest,d);assert.deepEqual(validateContentPackage(content),[]);
+ let c=initialCampaign(42,content);const role=Object.fromEntries(rosterFor(c).map(op=>[op.name,op.id]));
+ for(const s of specs){const id=role[s.name],quote=contractQuote(c,rosterFor(c).find(op=>op.id===id),'month'),cash=c.resources.treasury;assert.equal(quote.available,true,quote.reason);c=order(c,{type:'recruitCivic',id,term:'month'});assert.equal(c.resources.treasury,cash-quote.total);}
+ c=order(c,{type:'createSquad',name:'Triage finito declarado',sector:'camp',ids:specs.map(s=>role[s.name])});
+ const at=clock(c),p=visit(c),unit=name=>p.battle.units.find(u=>u.id===String(role[name])),doctor=unit('physician'),bleeder=unit('bleeding-patient'),critical=unit('nonbleeding-critical');
+ assert.equal(p.battle.elapsedSeconds,0);assert.equal(bleeder.hp,30);assert.equal(bleeder.bleeding,4);assert.equal(critical.hp,12);assert.equal(critical.bleeding,0);assert.equal(doctor.medkits,2);
+ assert.equal(bleeder.x-doctor.x,12);assert.equal(doctor.y-bleeder.y,9);assert.equal(doctor.medical,35);
+ assert.ok(Math.hypot(doctor.x-bleeder.x,doctor.y-bleeder.y)>1.5,'The first patient requires a real long paid approach.');
+ assert.ok(Math.hypot(doctor.x-critical.x,doctor.y-critical.y)>Math.hypot(doctor.x-bleeder.x,doctor.y-bleeder.y),'The nonbleeding critical patient is the longer separate approach.');
+ c=leave(p);assert.equal(clock(c),at);for(const s of specs){const r=c.operativeState[role[s.name]];assert.equal(r.hp,s.hp);assert.equal(r.bleeding,s.bleeding??0);assert.equal(r.bandaged,0);assert.equal(r.medkits,s.kits??0);}
+ assert.deepEqual(d,declaration);return {campaign:saved({campaign:c}).campaign,role};
+}
+
+test('finite final care pays a real run to a distant bleeder before a nonbleeding critical patient and keeps both alive',()=>{
+ const {campaign:start,role}=declaredBleedingPriorityCare(),before=structuredClone(start),events=[];
+ const c=stabilizeStockMendozaSurvivors(start,{stagingSector:'camp',immediateFieldAid:true,returnSector:'camp',report:event=>events.push(event)});
+ const aid=events.filter(e=>e.event==='stockMendozaCareTreatment'&&e.dressingUsed),accepted=events.find(e=>e.event==='stockMendozaCareAccepted');
+ assert.ok(accepted);assert.equal(accepted.hourlyDressings,0);assert.equal(accepted.tacticalDressings,2);
+ assert.deepEqual(aid.map(e=>e.patientId),[role['bleeding-patient'],role['nonbleeding-critical']]);assert.ok(aid[0].routePA>0&&aid[0].seconds>0);assert.equal(aid[0].after.bleeding,0);assert.ok(aid[1].after.hp>=15);
+ const gait=events.filter(e=>e.event==='stockMendozaCareOrder'&&e.kind==='tactical'&&e.action.type==='movement');assert.equal(gait.length,1);assert.deepEqual(gait[0].action,{type:'movement',unitId:String(role.physician),movement:'run'});assert.ok(gait[0].hour*3600+gait[0].secondOfHour>gait[0].before.hour*3600+gait[0].before.secondOfHour,'The ordinary Native gait order pays its actual time.');
+ const firstAid=events.find(e=>e.event==='stockMendozaCareOrder'&&e.kind==='tactical'&&e.action.type==='useItem'&&e.action.targetId===String(role['bleeding-patient']));assert.ok(firstAid);assert.ok(firstAid.hour*3600+firstAid.secondOfHour-clock(start)<Math.ceil(30/4)*6,'Actual long-route aid must finish before the unchanged bleeding death interval.');
+ assert.ok(c.operativeState[role.physician].energy>0&&c.operativeState[role.physician].energy<start.operativeState[role.physician].energy,'The real run spends finite breath without collapse.');
+ assert.equal(events.some(e=>e.event==='stockMendozaCareOrder'&&e.action.type==='wait'),false,'No strategic hour replaces the finite field work.');
+ for(const id of Object.values(role)){const r=c.operativeState[id];assert.equal(r.alive,true);assert.ok(r.hp>=15);assert.equal(r.bleeding,0);assert.equal(r.location,'camp');assert.equal(r.maxHp,start.operativeState[id].maxHp);assert.deepEqual(r.inventory??{},start.operativeState[id].inventory??{});}
+ assert.equal(c.operativeState[role.physician].medkits+accepted.tacticalDressings,2);assert.equal(c.resources.treasury,start.resources.treasury);assert.deepEqual(c.contracts,start.contracts);assert.ok(clock(c)>clock(start));
+ assert.deepEqual(start,before);assert.deepEqual(saved({campaign:c}).campaign,c);
+ assert.deepEqual(stabilizeStockMendozaSurvivors(saved({campaign:before}).campaign,{stagingSector:'camp',immediateFieldAid:true,returnSector:'camp'}),c,'The full successful paid care repeats from its fresh official source.');
+});

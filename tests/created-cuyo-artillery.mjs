@@ -25,6 +25,7 @@ import {arsenalRearServicePlan,withdrawArsenalRear,reuniteArsenalRear,restArsena
 import {fight} from './opening-driver.mjs';
 import {fightPairedRouteBattle} from './paired-route-battle.mjs';
 import {recordRouteBattleFailure} from './route-failure-evidence.mjs';
+import {beginRouteControllerBoundaryEvidence} from './route-controller-decision-evidence.mjs';
 import {actBattle,endTurn} from '../game/tactical.js';
 import {sectorDeploymentAction} from '../game/sector-deployment.js';
 import {syncBattleTime} from '../game/time.js';
@@ -287,8 +288,8 @@ export function recoverCreatedCuyoMountainArtillery(start,{report=()=>{},onCheck
  // Historical earned callers retain the old default. The fresh route opts
  // into real departure and reunion of its scarce qualified/paid reserves.
  const executeBattle=rear?(request,previous,options)=>{
-  const deploymentOrders=[];
-  const result=fightPairedRouteBattle(c,request,previous,{...options,
+  const deploymentOrders=[],observeOrder=beginRouteControllerBoundaryEvidence({initial,fieldPhysicianIds:rear.fieldPhysicianIds});
+  const result=fightPairedRouteBattle(c,request,previous,{...options,observeOrder,
    deploy:(battle,executeOrder)=>withdrawArsenalRear(initial,rear.withdrawalIds,{executeOrder,onOrder:action=>deploymentOrders.push(action)})(battle),
    onNativeResult:({result})=>{
     recordRouteStrategicEvidence({helper:'arsenalPairedNativeResult',stage:'route-checkpoint',campaign:c,context:{scope:'Complete actual native result, full paid deployment/combat order tape and returned pair before identity or replay comparisons. No additional queries, orders, synchronization or settlement.',request,previous,result}});

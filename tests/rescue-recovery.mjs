@@ -8,7 +8,7 @@ import {collectRouteItems,discoverRouteCache} from './finite-route-equipment.mjs
 import {prepareRescueClinicGuards,restRescuePatients,resolveRescueClinicEncounter} from './rescue-clinic-readiness.mjs';
 import {prepareNorthernHospitalFortification} from './northern-hospital-fortification.mjs';
 import {recoverVisibleRouteDressings} from './route-visible-medical-remains.mjs';
-import {actBattle,hasFirearm} from '../game/tactical.js';
+import {actBattle,hasFirearm,canSee,hasLineOfSight,getReachable,artilleryContact,interruptAvailable,meleePreview} from '../game/tactical.js';
 import {enterSector} from '../game/world.js';
 import {syncBattleTime} from '../game/time.js';
 import {autoBandageBattle} from '../game/auto-bandage.js';
@@ -25,12 +25,14 @@ import {fightNorthernSector} from './northern-route.mjs';
 import {fight as openingFight} from './opening-driver.mjs';
 import {aidCordobaMedicalRear} from './cordoba-medical-rear-guard.mjs';
 import {artilleryProfile} from '../game/artillery-definitions.js';
-import {coordinatedHospitalBattery} from './coordinated-hospital-battery.mjs';
+import {coordinatedHospitalBattery,paidHospitalRoofWalkPreview} from './coordinated-hospital-battery.mjs';
+import {publicRouteView,usefulRouteRifleShot} from './route-infantry-progress.mjs';
+import {knownRouteBystanderShotSafety} from './route-fire-safety.mjs';
 import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 import {carriedAmmunition} from '../game/campaign-ammunition.js';
 import {ammoCount} from '../game/ammo-types.js';
 import {firearmServiceable} from '../game/firearm-serviceability.js';
-import {sameCell} from '../game/tactical-space.js';
+import {sameCell,sameSurface,spacePoint,surfaceAt} from '../game/tactical-space.js';
 
 const recoveryClock=c=>c.hour*3600+(c.secondOfHour??0);
 
@@ -98,12 +100,38 @@ export function prepareRescueCordobaRear(start,{courier,report=()=>{}}={}){
 // The exact complete initial nonclinical crew uses one existing coordinator.
 // Its Native aid, payable gun work and useful rifle posture keep their order.
 // Do not run the ordinary unconditional prone rise before that crew hold.
-// Everyone outside these admitted IDs keeps the same caller policy.
+// Other roles retain that policy except the supplied roof physician's
+// current close-threat escape below.
 export function rescueCordobaDefenseController(initial,ordinary=cordobaClinicDefenseOrder){
  const coordinated=coordinatedHospitalBattery(initial);
  const crews=coordinated.roles.crews.filter(crew=>crew.ids.length===artilleryProfile(initial,initial.artillery.find(gun=>gun.id===crew.gunId)).crew&&crew.ids.every(id=>{const member=initial.units.find(unit=>unit.id===id);return member.medical<60&&!['doctor','patient','militia_doctor','militia_patient'].includes(member.assignment);}));
  const crewIds=new Set(crews.flatMap(crew=>crew.ids));
- return (battle,unit)=>crewIds.has(unit.id)?coordinated.controller(battle,unit):ordinary(battle,unit);
+ const fit=u=>u?.hp>=15&&!u.routed&&!u.unconscious&&!u.departure&&!u.fled&&!u.surrendered&&!u.asleep&&!u.captured;
+ const roofPhysicians=new Set(initial.units.filter(u=>u.side==='player'&&fit(u)&&!crewIds.has(u.id)&&(u.tacticalLevel??0)>0&&u.medical>=60&&u.medkits>0).map(u=>u.id));
+ const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),safeShot={shotSafety:knownRouteBystanderShotSafety};
+ return (battle,unit)=>{
+  if(crewIds.has(unit.id))return coordinated.controller(battle,unit);
+  const normal=ordinary(battle,unit);
+  if(!roofPhysicians.has(unit.id)||!fit(unit)||!(unit.medkits>0)||(unit.tacticalLevel??0)<=0||battle.mode!=='combat'||!interruptAvailable(battle,unit)||unit.knockedDown||unit.entangled)return normal;
+  const view=publicRouteView(battle,unit),contacts=view.units.filter(other=>other.side!==unit.side&&fit(other)&&sameSurface(unit,other)&&canSee(view,unit,other));
+  const close=contacts.filter(other=>distance(unit,other)<=2.5);if(!close.length)return normal;
+  // Adjacent finite aid and an immediately useful safe defence remain first.
+  if(normal?.type==='useItem'||normal?.type==='weapon'&&normal.slot==='medical')return normal;
+  const shot=usefulRouteRifleShot(view,unit,safeShot);if(shot)return shot;
+  const target=normal?.type==='melee'&&view.units.find(other=>other.id===normal.targetId);
+  if(target&&canSee(view,unit,target)&&meleePreview(view,unit,target).valid)return normal;
+  // A supplied roof physician may leave a close threat before optional
+  // maintenance. This call-specific bound does not change other move caps.
+  // Keep every friendly body and current public obstruction in the quote;
+  // actual Native movement still owns hidden obstruction and reaction fire.
+  if(view.artillery.some(gun=>gun.side===unit.side&&(gun.loaded||gun.ammo>0)&&artilleryContact(view,unit,gun)))return normal;
+  const cover=surfaceAt(view,unit)?.cover??0,nearest=point=>Math.min(...close.map(other=>distance(point,other)));
+  const safe=point=>sameSurface(point,unit)&&Boolean(surfaceAt(view,point))&&(surfaceAt(view,point).cover??0)>=cover&&contacts.every(other=>distance(point,other)>=distance(unit,other)&&(!hasLineOfSight(view,other,{...unit,...spacePoint(point)})||hasLineOfSight(view,other,unit)));
+  const paths=getReachable(view,unit).filter(point=>point.cost>0&&point.cost<=Math.min(24,unit.ap)&&point.path.length<=3&&nearest(point)>nearest(unit)&&point.path.every(step=>(step.kind===undefined||step.kind==='move')&&safe(step)))
+   .sort((a,b)=>nearest(b)-nearest(a)||a.cost-b.cost||a.y-b.y||a.x-b.x);
+  for(const point of paths){const paid=paidHospitalRoofWalkPreview(view,unit,point);if(paid)return {type:'move',unitId:unit.id,...spacePoint(point)};}
+  return normal;
+ };
 }
 
 // Treatment in Tucumán can admit a different real rear raid. Use the actual

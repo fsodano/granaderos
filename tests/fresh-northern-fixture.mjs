@@ -74,7 +74,7 @@ export function resolveNorthernLocalCareRaid(start,{physicianIds=[],report=()=>{
   }));
   // All bodies remain in Native admission. Only an initially unstaffed
   // charged battery opts into the existing paid tactical approach policy.
-  const controller=charged.length&&!hasCrew?northernReliefDefenseController(physicianIds,{localCareBattle:initial}):northernReliefDefenseController(physicianIds);
+  const controller=charged.length&&!hasCrew?northernReliefDefenseController(physicianIds,{localCareBattle:initial,prioritizeLocalBattery:true}):northernReliefDefenseController(physicianIds);
   const result=fight(request,previous,{controller,sharedFallback:controller.sharedFallback});
   if(result.battle.status!=='victory')recordRouteBattleFailure({campaign:defended,request,previous,result,expectedOutcome:'victory',controller,executeBattle:fight});
   assert.equal(result.battle.status,'victory','the actual arriving group must lose its native battle before care continues');
