@@ -1,7 +1,9 @@
 name: Web game build and Pages
-# Browser builds and publication remain manual. Simulation tests have their
-# own core/campaign workflows and do not run as part of a deployment.
+# Main pushes build and publish Pages; manual builds remain available.
+# Simulation tests have separate core/campaign workflows.
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 concurrency:
   group: web-game-${{ github.ref }}

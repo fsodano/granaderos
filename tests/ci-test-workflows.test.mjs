@@ -40,3 +40,17 @@ test('each separate workflow keeps full and extended explicit and runs all selec
   assert.doesNotMatch(source,/pull_request:|push:|--test-name|--test-skip|--test-only|typecheck|npm run build|sccache|pages-artifact|contents: write/);
  }
 });
+
+test('Pages publishes main pushes and retains manual builds without PR, tag or other-branch deployment',()=>{
+ const source=workflow('web'),events=source.split('\non:\n')[1].split('\nconcurrency:')[0];
+ assert.match(events,/^  push:\n    branches: \[main\]\n  workflow_dispatch:\s*$/);
+ assert.doesNotMatch(events,/pull_request|tags:|branches-ignore:|paths(?:-ignore)?:/);
+ assert.match(source,/group: web-game-\$\{\{ github.ref \}\}/);assert.match(source,/cancel-in-progress: true/);
+ assert.match(source,/name: Upload GitHub Pages artifact\n        if: github.ref == 'refs\/heads\/main'/);
+ assert.match(source,/deploy:\n    name: Publish browser game\n    if: github.ref == 'refs\/heads\/main'\n    needs: web/);
+ assert.match(source,/assert.equal\(build.revision,process.env.GITHUB_SHA/);
+ assert.match(source,/uses: actions\/deploy-pages@v4/);
+ assert.doesNotMatch(source,/uses: \.\/\.github\/workflows\/test-|npm (?:test\b|run test:)|pull_request_target/);
+ const windows=workflow('build-windows').split('\non:\n')[1].split('\npermissions:')[0];
+ assert.match(windows,/workflow_dispatch:/);assert.doesNotMatch(windows,/pull_request:|push:/);
+});
