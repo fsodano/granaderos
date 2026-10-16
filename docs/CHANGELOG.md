@@ -4,6 +4,15 @@
 > [version 0.1](verification/version-0.1.md) for current scope. Earlier development
 > numbers are internal checkpoints; their features and results are dated history.
 
+## 0.1.10 — 16 October 2026
+
+- Expose nearby items, doors and containers through a separate Entorno control
+  in tactical inventory. Keep its panel separate from selected-item details.
+- Keep the two panels mutually exclusive and retain normal keyboard focus
+  and scrolling without increasing HUD height.
+- Verify the existing inventory, environment and equipment controls: 33 focused
+  tests passed.
+
 ## 0.1.9 — 16 October 2026
 
 - Show remaining recruitment contract time in short hours and minutes instead of
