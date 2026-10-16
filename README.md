@@ -104,7 +104,7 @@ npm run typecheck     # Validación de TypeScript
 npm run build         # Compilación y validación de la exportación estática en dist/
 ```
 
-Los cambios del motor usan las pruebas de `core`; los cambios de campaña usan las de `campaign`. Ambos comandos ejecutan todo su grupo. Agregá `-- --duration quick` para limitar un grupo al perfil rápido, o `-- --list` para ver su selección. Las Actions automáticas ejecutan el perfil rápido del grupo que corresponde a los archivos modificados. Las rutas completas y las compilaciones se inician de forma manual.
+Los cambios del motor usan las pruebas de `core`; los cambios de campaña usan las de `campaign`. Ambos comandos ejecutan todo su grupo. Agregá `-- --duration quick` para limitar un grupo al perfil rápido, o `-- --list` para ver su selección. Las Actions automáticas ejecutan el perfil rápido del grupo que corresponde a los archivos modificados. Cada actualización de `main` compila y publica el juego en GitHub Pages. Las rutas completas y las compilaciones de Windows se inician de forma manual.
 
 La [guía de desarrollo](docs/development/getting-started.md#checks) explica la selección, las Actions y el registro de resultados. `npm test` conserva todas las pruebas. Ejecutalo antes de declarar completa la validación de una versión o campaña.
 

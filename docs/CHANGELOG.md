@@ -70,6 +70,13 @@
 - Full campaign acceptance remains open. No complete final-source victory or
   saved 48-hour continuation is claimed by the focused checks.
 
+## 0.1.12 — 16 October 2026
+
+- Build and publish the verified GitHub Pages export after each push to `main`.
+- Retain manual builds and main-only publication. Pull requests, tags and other
+  branch pushes do not start a Pages build; simulation and Windows workflows
+  retain their existing triggers.
+
 ## 0.1.11 — 16 October 2026
 
 - Keep tactical inventory rows within the phone panel.

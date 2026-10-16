@@ -697,8 +697,9 @@ the primary checkout. They are diagnostic evidence, not shipping fixtures.
 The earlier public build was from 3 October, revision `b987d631`. The old
 deployment guard returned success while skipping publication after main
 advanced. Both the missing installed-campaign selector and the old battlefield
-came from that stale export. Later source changes still need a manual Pages
-deployment. This startup/rendering review does not replace creation, hiring,
+came from that stale export. Pages deployment was manual at that checkpoint.
+Current `main` pushes publish automatically after the web checks pass. This
+startup/rendering review does not replace creation, hiring,
 orders, save/continue or ending review on the final release export.
 
 PR #393 changes test tooling and documentation only. Its local log hash is
