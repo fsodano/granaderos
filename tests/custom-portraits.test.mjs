@@ -9,12 +9,12 @@ import {CHARACTER_PORTRAITS,SELECTABLE_CHARACTER_PORTRAITS,PORTRAIT_GENDERS,PORT
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';
 import {encodeSave,decodeSave} from '../game/save.js';
-import {portraitFor} from '../web/lib/portraits.ts';
 import {BALANCED_PORTRAITS} from '../game/portrait-expansion.js';
 import {canonicalSpriteAppearance} from '../game/sprite-appearances.js';
 import {CRITICAL_HEALTH} from '../game/actor-condition.js';
 
 register('./tactical-render-loader.mjs',import.meta.url);
+const {portraitFor}=await import('../web/lib/portraits.ts');
 const {default:CharacterCreator}=await import('../web/app/CharacterCreator.tsx');
 const {default:JA2Roster}=await import('../web/app/JA2Roster.tsx');
 const {default:StrategicRoster}=await import('../web/app/StrategicRoster.tsx');

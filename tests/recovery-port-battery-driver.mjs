@@ -1,3 +1,5 @@
+import {paidHospitalRoofWalkPreview} from './coordinated-hospital-battery.mjs';
+import {lowerWeapon} from '../game/weapon-readiness.js';
 import {publicSupportStagingPlan} from './public-support-staging.mjs';
 import {publicRearFormationFollowPlan,publicLateRearSearchEligible} from './public-rear-formation.mjs';
 import {coastalBatteryController} from './coastal-command-driver.mjs';
@@ -56,12 +58,12 @@ function legacyPhysicianCoverOrder(battle,unit,action,protectedIds,direction){
 
 // A qualified supplied physician follows the actual infantry, not a hidden
 // opponent. Keep the native aid approach when it already reaches a patient.
-function physicianCoverOrder(battle,unit,action,protectedIds,direction,careOnly=false){
+function physicianCoverOrder(battle,unit,action,protectedIds,direction,careOnly=false,preparation=0){
  if(!fit(unit)||!(unit.medkits>0)||battle.phase!=='player'||battle.reactionStack?.length||unit.knockedDown||unit.entangled)return action;
  const patients=battle.units.filter(other=>other.side===unit.side&&other.id!==unit.id&&medicalPatientAvailable(other)&&(other.bleeding>0||criticalFirstAidNeeded(other)))
   .sort((a,b)=>Number(criticalFirstAidNeeded(b))-Number(criticalFirstAidNeeded(a))||a.hp-b.hp||distance(unit,a)-distance(unit,b)||String(a.id).localeCompare(String(b.id)));
  if(action?.type==='move'&&patients.some(patient=>sameSurface(action,patient)&&distance(action,patient)<=1.5&&hasLineOfSight(battle,{...unit,...action},patient)))return action;
- const view=publicView(battle,unit),costs=actionCosts(battle,unit),budget=Math.min(16,unit.ap-costs.weapon-costs.heal);
+ const view=publicView(battle,unit),costs=actionCosts(battle,unit),budget=Math.min(16-preparation,unit.ap-costs.weapon-costs.heal);
  if(budget<=0)return null;
  const reachable=getReachable(view,unit).filter(point=>point.cost>0&&point.cost<=budget&&sameSurface(point,unit)&&point.path.every(step=>sameSurface(step,unit)));
  for(const patient of patients){
@@ -100,10 +102,23 @@ function fieldPhysicianOrder(battle,unit,protectedIds,direction){
  // Local aid stays first, but a charged battery keeps its actual crew before
  // any remote-patient approach, screen following or prone support posture.
  if(knownArtillery(battle,unit).some(gun=>gun.side===unit.side&&(gun.loaded||gun.ammo>0)&&artilleryContact(battle,unit,gun)))return null;
- const care=physicianCoverOrder(battle,unit,null,protectedIds,direction,true);if(care)return care;
+ // Only this admitted medical role can pay its real rise and walk together.
+ // Keep adjacent aid and charged gun contact first; Native revalidates the
+ // public route and can interrupt it. The original 16-AP bound includes rise.
+ const approach=careOnly=>{
+  const ordinary=physicianCoverOrder(battle,unit,null,protectedIds,direction,careOnly);
+  if(battle.mode!=='combat'||unit.stance!=='prone')return ordinary;
+  const paid=stanceCost(unit,'standing');if(!(paid>0&&paid<16&&unit.ap>paid))return ordinary;
+  const view=publicView(battle,unit),walking={...unit,stance:'standing',movementMode:'walk',ap:unit.ap-paid};lowerWeapon(walking);
+  const planning={...view,units:view.units.map(other=>other.id===unit.id?walking:other)},action=physicianCoverOrder(planning,walking,null,protectedIds,direction,careOnly,paid);
+  const point=action&&getReachable(planning,walking,{stopAt:point=>sameSurface(point,action)&&point.x===action.x&&point.y===action.y})[0];
+  const forecast=point&&paid+point.cost<=16&&paidHospitalRoofWalkPreview(planning,walking,point);
+  return forecast&&fit(forecast.actor)&&forecast.actor.energy>0?{...action,movement:'walk'}:ordinary;
+ };
+ const care=approach(true);if(care)return care;
  // Do not leave an actual wounded patient to follow the healthy screen.
  if(patients.length)return null;
- const follow=physicianCoverOrder(battle,unit,null,protectedIds,direction);if(follow)return follow;
+ const follow=approach(false);if(follow)return follow;
  const prone=stanceCost(unit,'prone'),reserve=costs.heal+stanceCost({...unit,stance:'prone'},'standing');
  return battle.mode==='combat'&&unit.stance!=='prone'&&payable(prone)&&unit.ap>=prone+reserve?{type:'stance',unitId:unit.id,stance:'prone'}:null;
 }

@@ -107,3 +107,38 @@ test('a distant acute patient cannot draw essential current charged gun crew awa
  for(const id of crew.crew){assert.equal(unit(end,id).ap,unit(start,id).ap-cost);assert.deepEqual(spacePoint(unit(end,id)),spacePoint(unit(start,id)));assert.deepEqual(unitAmmunitionByType(unit(end,id)),unitAmmunitionByType(unit(start,id)));assert.equal(unit(end,id).medkits,unit(start,id).medkits);}
  assert.equal(unit(end,'patient').hp,patient.hp);assert.equal(unit(end,'patient').bleeding,patient.bleeding);assert.deepEqual(start,before);
 });
+
+
+// Independent fresh declarations: no route capture, post-factory wound,
+// AP, equipment, geometry or resource assignment is used by these controls.
+function proneMedicalArena({adjacent=false}={}){
+ const healthy={maxHp:100,hp:100,bleeding:0,bandaged:0,energy:100,fatigue:0,shock:0,morale:90};
+ return createBattle([
+  {...healthy,id:'doctor',name:'Médica móvil',x:3,y:8,facing:2,weapon:1800,blade:0,loaded:1,ammo:5,medical:93,medkits:2,marksmanship:80,activeSlot:'medical',stance:'prone',movementMode:'prone'},
+  {...healthy,id:'front',name:'Frente',x:12,y:8,facing:2,weapon:1800,blade:0,loaded:1,ammo:5,medical:0,medkits:0,marksmanship:80},
+  {...healthy,id:'screen',name:'Apoyo',x:10,y:8,facing:2,weapon:1800,blade:0,loaded:1,ammo:5,medical:0,medkits:0,marksmanship:75},
+  {...healthy,id:'patient',name:'Paciente',x:adjacent?4:7,y:8,facing:2,weapon:0,blade:0,loaded:0,ammo:0,medical:0,medkits:0,hp:10,bleeding:3},
+ ],{id:'declared-prone-field-physician',width:40,height:18,tiles:flat(40,18),hour:12,seed:45,exploration:false,
+  enemies:[{...healthy,id:'contact',name:'Contacto distante',x:39,y:17,weapon:0,blade:0,loaded:0,ammo:0,medical:0,medkits:0,patrol:false,overwatch:false}],artillery:[],npcs:[]});
+}
+
+test('a prone field physician pays the Native rise inside its bounded walk, then reaches and treats the real patient with finite linen',()=>{
+ const start=proneMedicalArena(),before=structuredClone(start),controller=policy(start),actions=[];let battle=start;
+ for(let step=0;step<2;step++){
+  const doctor=unit(battle,'doctor'),action=controller(battle,doctor);assert.equal(action?.type,'move');assert.equal(action.movement,step===0?'walk':undefined);
+  const rise=action.movement==='walk'?stanceCost(doctor,'standing'):0,walking=action.movement==='walk'?{...doctor,stance:'standing',movementMode:'walk',ap:doctor.ap-rise}:doctor;
+  const planning={...battle,units:battle.units.map(actor=>actor.id===doctor.id?walking:actor)},route=getReachable(planning,walking,{stopAt:point=>sameCell(point,action)})[0];
+  assert.ok(route&&route.cost>0&&rise+route.cost<=16);assert.ok(route.path.every(point=>(point.kind===undefined||point.kind==='move')&&(point.tacticalLevel??0)===(doctor.tacticalLevel??0)));
+  const moved=replay(battle,[action]),actual=unit(moved,'doctor');assert.equal(actual.stance,'standing');assert.equal(actual.movementMode,'walk');assert.equal(actual.ap,doctor.ap-rise-route.cost);assert.ok(actual.energy<doctor.energy);assert.equal(actual.medkits,doctor.medkits);
+  assert.equal(actual.activeSlot,'medical');assert.deepEqual(unitAmmunitionByType(actual),unitAmmunitionByType(doctor));assert.ok(Math.hypot(actual.x-7,actual.y-8)<Math.hypot(doctor.x-7,doctor.y-8));actions.push(action);battle=moved;
+ }
+ const doctor=unit(battle,'doctor'),patient=unit(battle,'patient'),quote=medicalUsePreview(battle,doctor,patient);assert.equal(quote.allowed,true,quote.reason);const aid=controller(battle,doctor);assert.deepEqual(aid,{type:'useItem',unitId:'doctor',targetId:'patient'});
+ const end=replay(battle,[aid]);assert.equal(unit(end,'doctor').ap,doctor.ap-quote.cost);assert.equal(unit(end,'doctor').medkits,doctor.medkits-quote.treatment.dressingsUsed);assert.equal(unit(end,'patient').hp,quote.treatment.hpAfter);assert.equal(unit(end,'patient').bleeding,quote.treatment.bleedingAfter);
+ assert.equal(end.elapsedSeconds,start.elapsedSeconds+COMBAT_ROUND_SECONDS);goods(start,end);assert.deepEqual(replay(start,[...actions,aid]),end);assert.deepEqual(start,before);
+});
+
+test('actual adjacent critical aid remains first while prone and does not pay an unnecessary rise or walking step',()=>{
+ const start=proneMedicalArena({adjacent:true}),before=structuredClone(start),controller=policy(start),doctor=unit(start,'doctor'),patient=unit(start,'patient'),quote=medicalUsePreview(start,doctor,patient);assert.equal(quote.allowed,true,quote.reason);
+ const aid=controller(start,doctor);assert.deepEqual(aid,{type:'useItem',unitId:'doctor',targetId:'patient'});const end=replay(start,[aid]),actual=unit(end,'doctor');
+ assert.equal(actual.stance,'prone');assert.equal(actual.movementMode,'prone');assert.ok(sameCell(actual,doctor));assert.equal(actual.ap,doctor.ap-quote.cost);assert.equal(actual.medkits,doctor.medkits-quote.treatment.dressingsUsed);assert.equal(unit(end,'patient').hp,quote.treatment.hpAfter);assert.equal(unit(end,'patient').bleeding,quote.treatment.bleedingAfter);goods(start,end);assert.deepEqual(start,before);
+});

@@ -3,7 +3,7 @@ import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {enterSector} from '../game/world.js';
 import {syncBattleTime} from '../game/time.js';
-import {actBattle,endTurn,completedTacticalVictory,stanceCost,canSee,teamCanSee,hasFirearm,artilleryCosts,artilleryCrewPlan,artilleryReloadPreview,actionCosts,firearmShotOptions,getReachable,movementEnergy,movementStepCost} from '../game/tactical.js';
+import {actBattle,endTurn,completedTacticalVictory,stanceCost,artilleryContact,canSee,teamCanSee,hasFirearm,artilleryCosts,artilleryCrewPlan,artilleryReloadPreview,actionCosts,firearmShotOptions,getReachable,movementEnergy,movementStepCost} from '../game/tactical.js';
 import {sameSurface,spacePoint,surfaceAt} from '../game/tactical-space.js';
 import {choosePlayerSharedSightingInvestigation} from '../game/tactical-ai.js';
 import {firearmServiceable} from '../game/firearm-serviceability.js';
@@ -16,7 +16,8 @@ import {cautiousCombatOrder} from './cautious-driver.mjs';
 import {retainNorthernHandoverService} from './northern-handover-route.mjs';
 import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 import {recordRouteBattleFailure} from './route-failure-evidence.mjs';
-import {knownRouteCivilianShotSafety} from './route-fire-safety.mjs';
+import {knownRouteCivilianShotSafety,knownRouteBystanderShotSafety} from './route-fire-safety.mjs';
+import {coastalBatteryController} from './coastal-command-driver.mjs';
 import {publicRouteView} from './route-infantry-progress.mjs';
 import {limitEnergy} from '../game/fatigue.js';
 import {lowerWeapon} from '../game/weapon-readiness.js';
@@ -35,17 +36,17 @@ function paidReliefPosition(view,unit,point){
  return paid===point.cost?{view:copy,actor}:null;
 }
 
-function safeReliefFireOrMove(battle,unit,action){
+function safeReliefFireOrMove(battle,unit,action,shotSafety=knownRouteCivilianShotSafety){
  if(action?.type!=='fire')return action;
  const target=battle.units.find(other=>other.id===action.targetId),aim=action.aim??0,hitLocation=action.hitLocation??'torso';
  const requested=target&&firearmShotOptions(battle,unit,target,aim).find(option=>option.aim===aim&&option.hitLocation===hitLocation);
- if(knownRouteCivilianShotSafety(battle,unit,target)(requested))return action;
+ if(shotSafety(battle,unit,target)(requested))return action;
  const rooms=new Set(battle.revealedRooms??[]);
  const targets=battle.units.filter(other=>other.side!==unit.side&&other.hp>0&&!other.unconscious&&!other.routed&&!other.surrendered&&!other.departure&&isInteriorVisible(battle,other,rooms)&&canSee(battle,unit,other));
  const shots=(state,actor)=>targets.flatMap(target=>{
   if(!canSee(state,actor,target))return [];
   const costs=actionCosts(state,actor,target);if(actor.ap<costs.fire)return [];
-  const maxAim=Math.min(4,Math.floor((actor.ap-costs.fire)/costs.aim)),safe=knownRouteCivilianShotSafety(state,actor,target);
+  const maxAim=Math.min(4,Math.floor((actor.ap-costs.fire)/costs.aim)),safe=shotSafety(state,actor,target);
   return firearmShotOptions(state,actor,target,maxAim).filter(option=>option.chance>0&&option.damageFactor>0&&safe(option)).map(option=>({
    score:option.expectedDamage??option.chance*option.damageFactor,
    action:{type:'fire',unitId:actor.id,targetId:target.id,aim:option.aim,hitLocation:option.hitLocation},
@@ -71,9 +72,15 @@ function safeReliefFireOrMove(battle,unit,action){
 
 // Keep the actual clinic physicians and soldiers without usable rounds in
 // reserve. Adjacent native aid remains available; prone is a paid order.
-export function northernReliefDefenseController(physicianIds,{minimumIdleRounds=0}={}){
+export function northernReliefDefenseController(physicianIds,{minimumIdleRounds=0,localCareBattle=null}={}){
  assert.ok(Number.isInteger(minimumIdleRounds)&&minimumIdleRounds>=0);
  const physicians=new Set(physicianIds.map(String));
+ // Local care may start with real serving troops away from their guns. Reuse
+ // the existing paid approach and shared-sight battery policy, without giving
+ // a clinical role to the crew or removing any real body from its previews.
+ const nonclinical=unit=>Boolean(unit&&!physicians.has(unit.id)&&unit.medical<60);
+ const battery=localCareBattle?coastalBatteryController(localCareBattle,{sharedArtillerySight:true,crewEligible:nonclinical,crewOnly:true}):null;
+ const shotSafety=battery?knownRouteBystanderShotSafety:knownRouteCivilianShotSafety;
  let encounter=null,signature=null,lastTurn=null,lastElapsed=null,idleRounds=0;
  const stalled=battle=>{
   if(!minimumIdleRounds)return true;
@@ -98,12 +105,32 @@ export function northernReliefDefenseController(physicianIds,{minimumIdleRounds=
   if(!kind&&action?.type!=='artilleryReload')return true;
   const gun=battle.artillery.find(piece=>piece.id===action.artilleryId);if(!gun)return false;
   const plan=action.type==='artilleryReload'?artilleryReloadPreview(battle,unit,gun):artilleryCrewPlan(battle,unit,gun,artilleryCosts(battle,unit,gun)[kind]);
-  return !plan.reason&&plan.crew.length>0&&plan.crew.every(id=>!held(battle.units.find(member=>member.id===id)));
+  return !plan.reason&&plan.crew.length>0&&plan.crew.every(id=>{const member=battle.units.find(member=>member.id===id);return battery?nonclinical(member):!held(member);});
  };
+ // This is a Native current crew, not a reserved candidate list. A hold
+ // cannot spend AP, move a body or make an incomplete group into a crew.
+ const actualNonclinicalCrew=(battle,unit)=>nonclinical(unit)&&battle.artillery.some(gun=>{
+  if(gun.side!==unit.side||!(gun.loaded||gun.ammo>0)||!artilleryContact(battle,unit,gun))return false;
+  const plan=artilleryCrewPlan(battle,unit,gun,0);
+  return !plan.reason&&plan.crew.every(id=>nonclinical(battle.units.find(member=>member.id===id)));
+ });
  const controller=(battle,unit)=>{
-  const action=cautiousCombatOrder(battle,unit);
-  if(!held(unit))return crewKeepsReserves(battle,unit,action)?safeReliefFireOrMove(battle,unit,action):null;
-  if(action?.type==='useItem'||action?.slot==='medical')return action;
+  const action=cautiousCombatOrder(battle,unit),reserved=held(unit);let ordinary=null;
+  // Preserve every admitted cautious order, including current cover movement,
+  // posture and look. Battery coordination is an idle fallback, not a reason
+  // to replace ordinary work with a different crew route.
+  if(!reserved){
+   ordinary=crewKeepsReserves(battle,unit,action)?safeReliefFireOrMove(battle,unit,action,shotSafety):null;
+   if(!battery||ordinary)return ordinary;
+  }else if(action?.type==='useItem'||action?.slot==='medical')return action;
+  if(battery&&battle.mode==='combat'&&battle.phase==='player'&&nonclinical(unit)&&!unit.knockedDown&&!unit.entangled){
+   const coordinated=battery(battle,unit);
+   if(coordinated)return crewKeepsReserves(battle,unit,coordinated)?safeReliefFireOrMove(battle,unit,coordinated,shotSafety):null;
+   // An upright complete dry-rifle crew honors the battery's actual hold.
+   // Dropping prone here would merely require another paid rise next call.
+   if(actualNonclinicalCrew(battle,unit))return null;
+  }
+  if(!reserved)return ordinary;
   if(unit.stance!=='prone'&&!unit.mounted&&!unit.knockedDown&&!unit.entangled&&unit.ap>=stanceCost(unit,'prone'))return {type:'stance',unitId:unit.id,stance:'prone'};
   return null;
  };
@@ -112,6 +139,9 @@ export function northernReliefDefenseController(physicianIds,{minimumIdleRounds=
  // it does not create personal sight, contact memory or an artillery crew.
  controller.sharedFallback=(battle,unit)=>{
   if(!stalled(battle))return null;
+  // A current complete nonclinical crew keeps its finite piece. Personal
+  // rifle ammunition is not a requirement for Native artillery service.
+  if(battery&&actualNonclinicalCrew(battle,unit))return null;
   // Wounded support keeps ordinary shots, finite aid and maintenance; it
   // does not advance toward a contact it cannot personally see.
   if(held(unit)||unit.side!=='player'||unit.militia||unit.missionAlly||unit.hp<15||unit.hp<unit.maxHp||unit.bleeding>0||unit.energy<=0||unit.unconscious||unit.routed||unit.departure||unit.surrendered||unit.mounted||unit.knockedDown||unit.entangled||unit.jammed||unit.weaponDropped||(unit.activeSlot??'primary')!=='primary'||!hasFirearm(unit)||!firearmServiceable(unit)||!(unit.loaded>0))return null;

@@ -9,9 +9,9 @@ import {weaponSpecification} from '../game/weapon-definition.js';
 import {previewStrategicRoute} from '../game/strategic-route.js';
 import {discoverRouteCache} from './finite-route-equipment.mjs';
 import {stageRouteRoofDefenders} from './route-roof-defenders.mjs';
-import {cordobaClinicGroundCrew} from './cordoba-clinic-combat-readiness.mjs';
+import {cordobaClinicGroundCrew,cordobaClinicDefenseOrder} from './cordoba-clinic-combat-readiness.mjs';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {getReachable,lookPreview,actBattle,presentedActBattle,endTurn,presentedEndTurn,climbPreview,firearmShotOptions} from '../game/tactical.js';
+import {createBattle,artilleryCosts,artilleryCrewPlan,artilleryReloadPreview,stanceCost,getReachable,lookPreview,actBattle,presentedActBattle,endTurn,presentedEndTurn,climbPreview,firearmShotOptions} from '../game/tactical.js';
 import {spacePoint,sameCell,surfaceAt} from '../game/tactical-space.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {unitAmmunitionByType} from '../game/physical-ammunition.js';
@@ -23,7 +23,9 @@ import {order,visit,tactical,saved,leave} from './local-contract-fixture.mjs';
 import {prepareRescueClinicGuards,rescueClinicDefenseController} from './rescue-clinic-readiness.mjs';
 import {knownRouteBystanderShotSafety} from './route-fire-safety.mjs';
 import {recoverVisibleRouteDressings} from './route-visible-medical-remains.mjs';
-import {handoverRescueClinicDressings,prepareRescueClinicDefense,prepareRescueCordobaRear,resolveRescueRecoveryEncounter} from './rescue-recovery.mjs';
+import {handoverRescueClinicDressings,prepareRescueClinicDefense,prepareRescueCordobaRear,resolveRescueRecoveryEncounter,rescueCordobaDefenseController} from './rescue-recovery.mjs';
+
+import {publicRouteView,usefulRouteRifleShot,usefulRouteFiringPosture} from './route-infantry-progress.mjs';
 
 const clock=c=>c.hour*3600+(c.secondOfHour??0);
 
@@ -358,4 +360,54 @@ test('retained-roof physician staging refuses an actual clinical guard and an ex
   // Both failures stop before another Native order. Never query, encode,
   // replay or continue a failed result; each variant declares a fresh world.
  }
+});
+
+
+// Fresh portable Native declarations. Only actual paid looks exhaust the
+// helper; neither current AP nor a captured battle is assigned to the factory.
+function rescueCrewOrderArena(){
+ const base={hp:100,maxHp:100,bleeding:0,bandaged:0,energy:100,fatigue:0,morale:100,agility:100,dexterity:100,strength:100,medical:0,medkits:0,marksmanship:0,weapon:1804,blade:0,loaded:1,ammo:4,condition:100,stance:'crouched',facing:2,patrol:false,overwatch:false};
+ const players=[{...base,id:'crew-one',x:5,y:5,stance:'prone'},{...base,id:'crew-two',x:6,y:4},
+  {...base,id:'roof-physician',x:20,y:8,tacticalLevel:1,medical:90,medkits:2,weapon:0,loaded:0,ammo:0,activeSlot:'unarmed'},
+  {...base,id:'roof-guard',x:20,y:7,tacticalLevel:1,weapon:1813,loaded:0,ammo:0,activeSlot:'blade'}];
+ const options={id:'declared-rescue-exact-crew-order',width:40,height:20,hour:12,seed:45,exploration:false,
+  tiles:Array.from({length:800},(_,n)=>({x:n%40,y:Math.floor(n/40),type:'grass',cover:0,blocked:false})),
+  upperSurfaces:[7,8].map(y=>({id:'retained-roof-'+y,x:20,y,tacticalLevel:1,elevation:3,type:'floor',kind:'roof',blocked:false,cover:30})),climbLinks:[],
+  enemies:[{id:'public-raider',x:18,y:5,hp:500,maxHp:500,weapon:0,blade:0,loaded:0,ammo:0,medical:0,medkits:0,patrol:false,overwatch:false}],
+  artillery:[{id:'finite-rear-gun',type:'bronze4',side:'player',x:6,y:5,facing:0,loaded:true,ammo:2}]};
+ const declaration=structuredClone({players,options}),battle=createBattle(players,options);assert.deepEqual({players,options},declaration);assert.deepEqual(validateBattleSnapshot(JSON.parse(JSON.stringify(battle))),battle);return battle;
+}
+
+test('the exact rescue crew holds an unpayable gun quote instead of buying an ordinary rise and later pays real finite cannon work',()=>{
+ const actor=(b,id)=>b.units.find(unit=>unit.id===id),crew=['crew-one','crew-two'];
+ const replay=(start,orders)=>{let direct=start,shown=start,restored=validateBattleSnapshot(JSON.parse(JSON.stringify(start)));for(const action of orders){direct=actBattle(direct,action);assert.equal(direct.lastError,null,JSON.stringify(action));shown=presentedActBattle(shown,action).state;assert.deepEqual(shown,direct);restored=validateBattleSnapshot(JSON.parse(JSON.stringify(actBattle(restored,action))));assert.deepEqual(restored,direct);}return direct;};
+ const start=rescueCrewOrderArena(),before=structuredClone(start),policy=rescueCordobaDefenseController(start),paid=[];let battle=start;
+ // The complete initial admission is retained even when one original helper
+ // later spends his own AP. No replacement or physician is added to the job.
+ for(let count=0;actor(battle,'crew-two').ap>0&&count<128;count++){
+  const unit=actor(battle,'crew-two'),points=[[-1,-1],[0,-1],[1,-1],[-1,0],[1,0],[-1,1],[0,1],[1,1]].map(([dx,dy])=>({x:unit.x+dx,y:unit.y+dy}));
+  const quote=points.map(point=>({point,quote:lookPreview(battle,unit,point)})).filter(row=>row.quote.valid&&row.quote.pa>0).sort((a,b)=>a.quote.pa-b.quote.pa)[0];assert.ok(quote,'The actual helper must pay a current affordable look.');
+  const action={type:'look',unitId:unit.id,...quote.point},ap=unit.ap;paid.push(action);battle=actBattle(battle,action);assert.equal(battle.lastError,null);assert.equal(actor(battle,unit.id).ap,ap-quote.quote.pa);
+ }
+ assert.equal(actor(battle,'crew-two').ap,0);assert.deepEqual(replay(start,paid),battle);
+ const prone=actor(battle,'crew-one'),legacy=cordobaClinicDefenseOrder(battle,prone),held=structuredClone(battle);
+ assert.deepEqual(legacy,{type:'stance',unitId:prone.id,stance:'crouched'});assert.equal(usefulRouteRifleShot(publicRouteView(battle,prone),prone),null);assert.equal(usefulRouteFiringPosture(battle,prone,legacy),false);
+ assert.equal(policy(battle,prone),null,'The admitted crew must hold while its actual complete gun work and useful rifle work are unavailable.');assert.deepEqual(battle,held);
+ for(const id of ['roof-physician','roof-guard'])assert.deepEqual(policy(battle,actor(battle,id)),cordobaClinicDefenseOrder(battle,actor(battle,id)),'Noncrew keeps the exact ordinary clinic policy.');
+ assert.deepEqual(start,before);
+ // An independent identical fresh declaration has its actual full crew AP.
+ // It earns one useful rise, shot and reload through the real caller policy.
+ const ready=rescueCrewOrderArena(),readyBefore=structuredClone(ready),active=rescueCordobaDefenseController(ready),tape=[];let current=ready;
+ for(let count=0;count<16&&!tape.some(action=>action.type==='artilleryReload');count++){
+  const unit=actor(current,'crew-one'),action=active(current,unit);assert.ok(action);assert.ok(['stance','artillery','artilleryPivot','artilleryReload'].includes(action.type));
+  const gun=current.artillery[0],quote=action.type==='artilleryReload'?artilleryReloadPreview(current,unit,gun):action.type.startsWith('artillery')?artilleryCrewPlan(current,unit,gun,artilleryCosts(current,unit,gun)[action.type==='artillery'?'fire':'pivot']):null;
+  const cost=action.type==='stance'?stanceCost(unit,action.stance):action.type==='artilleryReload'?quote.pa:artilleryCosts(current,unit,gun)[action.type==='artillery'?'fire':'pivot'];
+  if(quote){assert.equal(quote.reason,null);assert.deepEqual(new Set(quote.crew),new Set(crew));}else {assert.equal(action.stance,'crouched');assert.equal(tape.length,0);}
+  const prior=current;current=actBattle(current,action);assert.equal(current.lastError,null);tape.push(action);
+  for(const id of quote?crew:[unit.id])assert.equal(actor(current,id).ap,actor(prior,id).ap-cost);
+ }
+ assert.ok(tape.some(action=>action.type==='artillery'));assert.ok(tape.some(action=>action.type==='artilleryReload'));assert.equal(tape.filter(action=>action.type==='stance').length,1);assert.equal(current.artillery[0].loaded,true);assert.equal(current.artillery[0].ammo,1);
+ assert.deepEqual(replay(ready,tape),current);assert.deepEqual(ready,readyBefore);
+ for(const unit of ready.units.filter(unit=>unit.side==='player')){const next=actor(current,unit.id);assert.deepEqual(unitAmmunitionByType(next),unitAmmunitionByType(unit));for(const key of ['hp','bleeding','bandaged','medkits','weapon','inventory'])assert.deepEqual(next[key],unit[key]);assert.deepEqual(spacePoint(next),spacePoint(unit));}
+ for(const key of ['id','type','side','x','y'])assert.deepEqual(current.artillery[0][key],ready.artillery[0][key]);
 });

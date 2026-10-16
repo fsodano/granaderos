@@ -537,7 +537,8 @@ export function supplyNorthernConvalescentDressing(start,operativeId,{deploying,
  const receipt={operativeId,sector,deploying:structuredClone(deploying),patients:structuredClone(patients),reserves:{},orders:[],takes:[],donations:[],supplied:false};
  const inputCapture=recordRouteStrategicEvidence({helper:'supplyNorthernConvalescentDressing',stage:'preparation-input',campaign:start,context:{operativeId,deploying,patients,deadlineSeconds}});
  try{
-  assert.equal(start.pendingEncounter,null);assert.equal(start.pendingBattle,null);
+  assert.ok(start.pendingEncounter===null,'Resolve the actual convalescence encounter before a dressing transfer.');
+  assert.ok(start.pendingBattle===null,'Finish the actual tactical visit before a dressing transfer.');
   assert.ok(Array.isArray(deploying)&&new Set(deploying).size===deploying.length);
   assert.ok(Number.isSafeInteger(deadlineSeconds)&&clock(start)<deadlineSeconds,'The existing 96-hour care allowance must remain available.');
   const physician=roster.find(op=>op.id===operativeId),record=start.operativeState[operativeId];

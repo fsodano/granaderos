@@ -23,7 +23,7 @@ import {dispatchCampaign,isSupplied,rosterFor} from '../game/campaign.js';
 import {contractQuote} from '../game/contracts.js';
 import {prepareNorthernSupport} from './northern-support-fixture.mjs';
 import {enterSector} from '../game/world.js';
-import {actBattle,endTurn,getReachable,stanceCost,firearmShotOptions,teamCanSee,actionCosts,lookPreview} from '../game/tactical.js';
+import {actBattle,endTurn,getReachable,stanceCost,firearmShotOptions,teamCanSee,actionCosts,lookPreview,artilleryCrewPlan} from '../game/tactical.js';
 import {playerKnownBattle} from '../game/player-known-state.js';
 import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
 import {wallMovementBlocked} from '../game/wall-geometry.js';
@@ -62,7 +62,20 @@ export function resolveNorthernLocalCareRaid(start,{physicianIds=[],report=()=>{
  try{
   for(const id of physicianIds){const r=start.operativeState[id],op=rosterFor(start).find(op=>op.id===id);assert.ok(start.recruited.includes(id)&&r?.alive&&!r.captured&&r.location===encounter.sector&&r.hp>=15&&!r.bleeding&&op?.medical>=careRules(start).minimumSkill,'The held physician must be an actual qualified local survivor.');}
   const nativeInputCapture=recordRouteStrategicEvidence({helper:'resolveNorthernLocalCareRaidNative',stage:'preparation-input',campaign:defended,inputCapture,context:{request,previous,physicianIds,capturePhase:'Actual arguments independently cloned before the existing native execution; no additional battle construction or orders.'}});
-  const controller=northernReliefDefenseController(physicianIds),result=fight(request,previous,{controller,sharedFallback:controller.sharedFallback});
+  // Keep an already staffed battery on the original clinic policy. An
+  // additional stored piece is not a reason to disturb its real crew.
+  const initial=enterSector(request,previous),physicians=new Set(physicianIds.map(String));
+  const nonclinical=unit=>unit.side==='player'&&!physicians.has(unit.id)&&unit.medical<60;
+  const charged=initial.artillery.filter(gun=>gun.side==='player'&&(gun.loaded||gun.ammo>0));
+  const hasCrew=charged.some(gun=>initial.units.some(unit=>{
+   if(!nonclinical(unit))return false;
+   const plan=artilleryCrewPlan(initial,unit,gun,0);
+   return !plan.reason&&plan.crew.length>0&&plan.crew.every(id=>nonclinical(initial.units.find(member=>member.id===id)));
+  }));
+  // All bodies remain in Native admission. Only an initially unstaffed
+  // charged battery opts into the existing paid tactical approach policy.
+  const controller=charged.length&&!hasCrew?northernReliefDefenseController(physicianIds,{localCareBattle:initial}):northernReliefDefenseController(physicianIds);
+  const result=fight(request,previous,{controller,sharedFallback:controller.sharedFallback});
   if(result.battle.status!=='victory')recordRouteBattleFailure({campaign:defended,request,previous,result,expectedOutcome:'victory',controller,executeBattle:fight});
   assert.equal(result.battle.status,'victory','the actual arriving group must lose its native battle before care continues');
   p={campaign:defended,battle:enterSector(request,previous)};

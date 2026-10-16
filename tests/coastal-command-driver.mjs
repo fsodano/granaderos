@@ -46,13 +46,13 @@ function coastalPhysicianPostureOrder(b,u){
 
 // Two coastal guns need separate crews and space for their translated bodies.
 // Infantry scouts the flanks so contact occurs before an exposed crew arrives.
-export function coastalBatteryController(initial,{sharedArtillerySight=false}={}){
+export function coastalBatteryController(initial,{sharedArtillerySight=false,crewEligible=()=>true,crewOnly=false}={}){
  const approach={x:Math.floor(initial.width*.65),y:Math.floor(initial.height*.5)};
  const distanceToApproach=gun=>Math.hypot(gun.x-approach.x,gun.y-approach.y);
  // A light piece may arrive ahead of a heavy one. Move the physically leading
  // gun first; purchase order must not make it wait while blocking the rear gun.
  const initialAssigned=new Set(),preferred=initial.artillery.filter(g=>g.side==='player').sort((a,b)=>distanceToApproach(a)-distanceToApproach(b)||String(a.id).localeCompare(String(b.id))).map(g=>{
-  const ids=initial.units.filter(u=>u.side==='player'&&u.id!=='57'&&u.hp>0&&sameSurface(u,g)&&!initialAssigned.has(u.id))
+  const ids=initial.units.filter(u=>u.side==='player'&&u.id!=='57'&&u.hp>0&&crewEligible(u)&&sameSurface(u,g)&&!initialAssigned.has(u.id))
    .sort((a,b)=>Math.hypot(a.x-g.x,a.y-g.y)-Math.hypot(b.x-g.x,b.y-g.y)||String(a.id).localeCompare(String(b.id)))
    .slice(0,artilleryProfile(initial,g).crew).map(u=>u.id);
   for(const id of ids)initialAssigned.add(id);
@@ -66,13 +66,16 @@ export function coastalBatteryController(initial,{sharedArtillerySight=false}={}
   const reserved=new Set(working.flatMap(p=>p.ids)),crews=[];
   for(const preference of working){
    const gun=b.artillery.find(g=>g.id===preference.artilleryId),required=artilleryProfile(b,gun).crew,priority=v=>preference.ids.includes(v.id)?preference.ids.indexOf(v.id):reserved.has(v.id)?required+1:required;
-   const ids=b.units.filter(v=>v.side==='player'&&v.id!=='57'&&v.hp>=15&&!v.unconscious&&!v.routed&&!v.departure&&!v.fled&&!v.surrendered&&sameSurface(v,gun)&&!assigned.has(v.id))
+   const ids=b.units.filter(v=>v.side==='player'&&v.id!=='57'&&crewEligible(v)&&v.hp>=15&&!v.unconscious&&!v.routed&&!v.departure&&!v.fled&&!v.surrendered&&sameSurface(v,gun)&&!assigned.has(v.id))
     .sort((a,c)=>priority(a)-priority(c)||Math.hypot(a.x-gun.x,a.y-gun.y)-Math.hypot(c.x-gun.x,c.y-gun.y)||String(a.id).localeCompare(String(c.id)))
     .slice(0,required).map(v=>v.id);
    if(ids.length<required)continue;
    for(const id of ids)assigned.add(id);
    crews.push({...preference,ids});
   }
+  // An opt-in caller may reserve only nonclinical crew work. Every real
+  // body remains in the field; this filter changes selection, not occupancy.
+  if(crewOnly&&!assigned.has(u.id))return null;
   const crew=crews.find(p=>p.ids.includes(u.id))??crews[0];
   if(!crew)return coastalPhysicianPostureOrder(b,u);
   const gun=b.artillery.find(g=>g.id===crew.artilleryId);
@@ -81,7 +84,7 @@ export function coastalBatteryController(initial,{sharedArtillerySight=false}={}
    if(u.stance==='prone')return u.ap>=stanceCost(u,'crouched')?{type:'stance',unitId:u.id,stance:'crouched'}:null;
    const view={...b,units:b.units.filter(v=>v.side===u.side||teamCanSee(b,u.side,v))};
    const route=getReachable({...view,mode:'exploration'},u).filter(p=>p.cost>0&&(p.tacticalLevel??0)===0&&artilleryContact(view,{...u,...p},gun)).sort((a,c)=>a.cost-c.cost)[0];
-   const reachable=new Map(getReachable(view,u).filter(p=>p.cost>0).map(p=>[`${p.x},${p.y},${p.tacticalLevel??0}`,p]));
+   const reachable=new Map(getReachable(view,u).filter(p=>p.cost>0&&(!crewOnly||p.cost<=24&&p.path.length<=3&&p.path.every(step=>(step.tacticalLevel??0)===0&&(!step.kind||step.kind==='move')))).map(p=>[`${p.x},${p.y},${p.tacticalLevel??0}`,p]));
    const point=route&&[...route.path].reverse().map(p=>reachable.get(`${p.x},${p.y},${p.tacticalLevel??0}`)).find(Boolean);
    return point?{type:'move',unitId:u.id,x:point.x,y:point.y,tacticalLevel:point.tacticalLevel??0}:null;
   }

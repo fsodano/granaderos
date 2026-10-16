@@ -20,23 +20,29 @@ const localStock=c=>(cache(c)?.contents??[]).filter(stack=>stack.item==='medkits
 // All wounds, skills, finite issues, prices, map supplies and the optional
 // three-person raid are declared before compilation/factory. Patients are
 // not hired until the healthy scout has completed any real cache discovery.
-function setup({initialKits=0,reliefCount=3,reliefSkills=null,knownKits=0,raid=false,stable=false}={}){
+function setup({initialKits=0,reliefCount=3,reliefSkills=null,knownKits=0,raid=false,stable=false,fullActiveGroup=false}={}){
  const d=JSON.parse(JSON.stringify(scaffoldDocuments('declared-cordoba-urgent-care')).replaceAll('watch-post',sector));
  const base=d.content.characters[0];d.content.rules.startingTreasury=20000;d.content.startingTerritory[sector].owner='patriot';
  d.content.campaignStory.chapters[0].conditions=[{type:'day',min:100,max:null}];d.world.expansion.buildingTargets={camp:0,[sector]:0};
  d.world.arrivalFacilities[sector]=['barracks'];d.content.arrivalSites.push({sector,facilities:['barracks']});
- const names=['clinic-doctor','patient-critical','patient-bleeding',...Array.from({length:reliefCount},(_,i)=>'relief-'+i)];
+ const names=['clinic-doctor','patient-critical','patient-bleeding',...Array.from({length:reliefCount},(_,i)=>'relief-'+i),...(fullActiveGroup?['guard-a','guard-b','guard-c']:[])];
  d.content.characters=names.map((id,i)=>({...structuredClone(base),id,name:id,nickname:id,monthlyPay:i<3?300:30*(i-2),serviceGuarantee:0,arrivalHours:0,weapon:null,
-  attributes:{...base.attributes,maxHp:80,medical:i===0?90:i>=3?(reliefSkills?.[i-3]??65):0},startingSupplies:{rations:0,torches:0,boleadoras:0,medkits:i===0?initialKits:i>=3?2:0},
+  attributes:{...base.attributes,maxHp:80,medical:i===0?90:i>=3&&i<3+reliefCount?(reliefSkills?.[i-3]??65):0},startingSupplies:{rations:0,torches:0,boleadoras:0,medkits:i===0?initialKits:i>=3&&i<3+reliefCount?2:0},
   startingCondition:{hp:i===1?(stable?15:5):i===2?15:80,bleeding:!stable&&(i===1||i===2)?4:0,bandaged:0,energy:100,fatigue:0}}));
  if(knownKits){d.maps[sector].props=[{id:'urgent-finite-linen',type:'chest',x:5,y:12,footprint:{width:1,height:1},blocksMovement:true}];d.world.physical.caches[sector]={chest:'urgent-finite-linen',contents:[{item:'medkits',count:knownKits,weight:.2}]};}
  d.world.enemyStrategy={version:1,theaters:{frontier:{legHours:1,reserve:raid?3:0,raidEveryHours:raid?1:240,axis:[sector]}}};
  const declaration=structuredClone(d),content=compileCampaignPackage(d.manifest,d);assert.deepEqual(validateContentPackage(content),[]);let c=initialCampaign(42,content);
- const people=rosterFor(c),id=key=>people.find(person=>person.contentId===key).id,doctor=id('clinic-doctor'),patients=[id('patient-critical'),id('patient-bleeding')],relief=names.slice(3).map(id),hires=[];
+ const people=rosterFor(c),id=key=>people.find(person=>person.contentId===key).id,doctor=id('clinic-doctor'),patients=[id('patient-critical'),id('patient-bleeding')],relief=names.slice(3,3+reliefCount).map(id),hires=[];
  const hire=person=>{const quote=contractQuote(c,rosterFor(c).find(op=>op.id===person),'week'),cash=c.resources.treasury;assert.equal(quote.available,true);c=order(c,{type:'recruitCivic',id:person,term:'week',destination:sector});assert.equal(c.resources.treasury,cash-quote.total);hires.push({id:person,quote});};
  hire(doctor);c=order(c,{type:'createSquad',sector,ids:[doctor],name:'Médico local'});
  if(knownKits){c=discoverRouteCache(c,doctor);assert.equal(cache(c).knownToPlayer,true);assert.equal(cache(c).open,true);assert.equal(localStock(c),knownKits);}
  for(const person of patients)hire(person);c=order(c,{type:'squad',ids:[doctor,...patients]});
+ if(fullActiveGroup){
+  const home=c.activeSquadId,guards=['guard-a','guard-b','guard-c'].map(id);for(const person of guards)hire(person);
+  assert.equal(c.squad.length,6);c=order(c,{type:'createSquad',sector,ids:[doctor],name:'Asiento local de relevo'});
+  c=order(c,{type:'selectSquad',id:home});c=order(c,{type:'squad',ids:[doctor,...patients,...guards]});
+  assert.equal(c.squads.find(q=>q.location===sector&&q.id!==home).members.length,0);
+ }
  assert.ok(relief.every(person=>!c.recruited.includes(person)));assert.equal(c.hiringArrivals.length,0);assert.equal(c.pendingEncounter,null);assert.equal(c.pendingBattle,null);assert.deepEqual(d,declaration);
  return {campaign:saved({campaign:c}).campaign,doctor,patients,relief,hires,declaration};
 }
@@ -129,4 +135,18 @@ test('a real zero-time sleep notice preserves finite linen before the next ordin
  assert.equal(r.attentionNotices.length,1);const notice=r.attentionNotices[0];assert.equal(notice.from,clock(start));assert.equal(notice.to,notice.from);assert.equal(notice.dressingsSpent,0);assert.deepEqual(notice.doctors,[s.doctor]);assert.ok(notice.attention.some(row=>row.kind==='assignment'&&row.notice.advancedHours===0&&row.notice.events.some(event=>event.operativeId===s.reserve&&event.code==='sleep_started')));
  assert.equal(r.orders.filter(action=>action.type==='wait').length,2);assert.equal(r.ticks.length,1);assert.equal(r.dressingsSpent,1);assert.equal(clock(c)-clock(start),3600);assert.equal(c.operativeState[s.doctor].medkits,1);assert.equal(c.operativeState[s.reserve].medkits,1);assert.equal(c.operativeState[s.reserve].hp,start.operativeState[s.reserve].hp);assert.equal(c.operativeState[s.reserve].asleep,true);assert.ok(c.operativeState[s.reserve].energy>0&&c.operativeState[s.reserve].energy<100);assert.equal(c.operativeState[s.patient].bleeding,0);assert.deepEqual(c.squads,start.squads);assert.deepEqual(c.contracts,start.contracts);assert.deepEqual(start,before);
  let replay=saved({campaign:start}).campaign;for(const action of r.orders)replay=order(replay,action);assert.deepEqual(replay,c);saved({campaign:c});assert.deepEqual(stabilizeCordobaMedicalRear(saved({campaign:start}).campaign),result);
+});
+
+
+test('paid relief arriving to a full active clinic uses an existing local seat and preserves all original members',()=>{
+ const s=setup({fullActiveGroup:true}),start=s.campaign,before=structuredClone(start),home=start.activeSquadId,originalMembers=[...start.squad];
+ const vacant=start.squads.find(q=>q.location===sector&&!q.members.length);assert.ok(vacant);assert.equal(originalMembers.length,6);
+ const result=stabilizeCordobaMedicalRear(start),c=result.campaign;verifyCare(start,result);
+ assert.deepEqual(result.receipt.hires.map(h=>h.id),s.relief);assert.equal(result.receipt.dressingsSpent,5);assert.equal(result.receipt.ticks.length,5);
+ assert.equal(c.activeSquadId,home);assert.deepEqual(c.squad,originalMembers);assert.deepEqual(c.squads.find(q=>q.id===home),start.squads.find(q=>q.id===home));
+ assert.equal(c.squads.length,start.squads.length);assert.deepEqual(c.squads.find(q=>q.id===vacant.id).members,s.relief);
+ const assignments=result.receipt.orders.filter(a=>a.type==='assignToSquad');assert.deepEqual(assignments,s.relief.map(operativeId=>({type:'assignToSquad',squadId:vacant.id,operativeId})));
+ for(const q of start.squads.filter(q=>q.id!==vacant.id))assert.deepEqual(c.squads.find(row=>row.id===q.id),q);
+ let replay=saved({campaign:start}).campaign;for(const action of result.receipt.orders)replay=order(replay,action);assert.deepEqual(replay,c);
+ assert.deepEqual(start,before);saved({campaign:c});assert.deepEqual(stabilizeCordobaMedicalRear(saved({campaign:start}).campaign),result);
 });

@@ -732,7 +732,7 @@ export function nearbyLootOptions(state, unit, point=/** @type {{x:number,y:numb
   for (const source of state.groundItems || []) {
     if (source.heldBy || source.containerId || !(source.count > 0) || !visible(source)) continue;
     const stack = source.stack || source;
-    options.push({...stack, id: `ground:${source.id}`, label: weaponSpecification(stack)?.name || OUTFITS[stack.outfit]?.name || SUPPLY_ITEMS[stack.item || stack.type]?.label || stack.name || 'Objeto', count: source.count, source: 'En el suelo', action: {type: 'loot', groundId: source.id}});
+    options.push({...stack, id: `ground:${source.id}`, label: source.type === 'money' ? 'Pesos' : weaponSpecification(stack)?.name || OUTFITS[stack.outfit]?.name || SUPPLY_ITEMS[stack.item || stack.type]?.label || stack.name || 'Objeto', count: source.count, source: 'En el suelo', action: {type: 'loot', groundId: source.id}});
   }
   return options;
 }

@@ -1,3 +1,4 @@
+import {register} from 'node:module';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {CHARACTER_PORTRAITS,SELECTABLE_CHARACTER_PORTRAITS,LEGACY_ONLY_PORTRAIT_IDS,PORTRAITS_PER_COMBINATION,PORTRAIT_GENDERS,PORTRAIT_ROLES,PORTRAIT_SKIN_TONES,characterPortrait} from '../game/character-portraits.js';
@@ -8,7 +9,8 @@ import {selectSprite} from '../game/sprite-state.js';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {prepareCampaignBattle} from '../game/battle-handoff.js';
 import {encodeSave,decodeSave} from '../game/save.js';
-import {portraitFor} from '../web/lib/portraits.ts';
+register('./tactical-render-loader.mjs',import.meta.url);
+const {portraitFor}=await import('../web/lib/portraits.ts');
 import {BALANCED_PORTRAITS} from '../game/portrait-expansion.js';
 
 const oldIds=['avatar-woman-scout','avatar-woman-civilian','avatar-man-gaucho','avatar-man-soldier',...Array.from({length:48},(_,index)=>String(100+index))];

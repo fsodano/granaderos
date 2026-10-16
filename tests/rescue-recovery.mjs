@@ -95,6 +95,17 @@ export function prepareRescueCordobaRear(start,{courier,report=()=>{}}={}){
  }catch(error){if(error&&typeof error==='object'){error.campaign??=c;error.rescueCordobaRear={courier,deadlineSeconds,hires,orders,equipment,reloads,staging,startSeconds:recoveryClock(start),endSeconds:recoveryClock(c)};}recordRouteStrategicEvidence({helper:'prepareRescueCordobaRear',stage:'preparation-failure',campaign:c,context:rearRoleContext??{initialRear,oldPosts},error});throw error;}
 }
 
+// The exact complete initial nonclinical crew uses one existing coordinator.
+// Its Native aid, payable gun work and useful rifle posture keep their order.
+// Do not run the ordinary unconditional prone rise before that crew hold.
+// Everyone outside these admitted IDs keeps the same caller policy.
+export function rescueCordobaDefenseController(initial,ordinary=cordobaClinicDefenseOrder){
+ const coordinated=coordinatedHospitalBattery(initial);
+ const crews=coordinated.roles.crews.filter(crew=>crew.ids.length===artilleryProfile(initial,initial.artillery.find(gun=>gun.id===crew.gunId)).crew&&crew.ids.every(id=>{const member=initial.units.find(unit=>unit.id===id);return member.medical<60&&!['doctor','patient','militia_doctor','militia_patient'].includes(member.assignment);}));
+ const crewIds=new Set(crews.flatMap(crew=>crew.ids));
+ return (battle,unit)=>crewIds.has(unit.id)?coordinated.controller(battle,unit):ordinary(battle,unit);
+}
+
 // Treatment in Tucumán can admit a different real rear raid. Use the actual
 // sector and actual local force; only a successful Native settlement restores
 // the selected courier. The original Tucumán policy stays exact.
@@ -104,14 +115,7 @@ export function resolveRescueRecoveryEncounter(start,{report=()=>{},onCheckpoint
  let c=start;const home=c.squads.find(q=>q.location==='cordoba'&&!q.journey&&q.members.some(id=>c.recruited.includes(id)&&c.operativeState[id].alive&&!c.operativeState[id].captured));assert.ok(home,'The actual rear force needs a living local home.');
  c=dispatchCampaign(c,{type:'selectSquad',id:home.id});assert.equal(c.lastError,null);c=dispatchCampaign(c,{type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});assert.equal(c.lastError,null);
  let actual=null;const executeBattle=(request,previous,options)=>{
-  const initial=enterSector(request,previous),coordinated=coordinatedHospitalBattery(initial);
-  const crews=coordinated.roles.crews.filter(crew=>crew.ids.length===artilleryProfile(initial,initial.artillery.find(gun=>gun.id===crew.gunId)).crew&&crew.ids.every(id=>{const member=initial.units.find(unit=>unit.id===id);return member.medical<60&&!['doctor','patient','militia_doctor','militia_patient'].includes(member.assignment);}));
-  const crewIds=new Set(crews.flatMap(crew=>crew.ids));
-  const controller=(battle,unit)=>{
-   const ordinary=options.controller(battle,unit);
-   if(ordinary!==null||!crewIds.has(unit.id))return ordinary;
-   return coordinated.controller(battle,unit);
-  };
+  const initial=enterSector(request,previous),controller=rescueCordobaDefenseController(initial,options.controller);
   const result=openingFight(request,previous,{...options,controller});actual??=result;return result;
  };
  const request=c.pendingBattle,result=fightNorthernSector(c,'cordoba',{report,controller:cordobaClinicDefenseOrder,beforeSettlement:aidCordobaMedicalRear,executeBattle});c=result.campaign;

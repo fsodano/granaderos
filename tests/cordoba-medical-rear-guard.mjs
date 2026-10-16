@@ -190,8 +190,17 @@ export function stabilizeCordobaMedicalRear(start,{report=()=>{}}={}){
   // Its real issue is finite; later exhaustion must be checked again.
   const replacement=rosterFor(c).filter(op=>{const r=c.operativeState[op.id],quote=contractQuote(c,op,'day');return civicStatus(c,op.id).available&&!c.recruited.includes(op.id)&&r.alive&&!r.captured&&op.medical>=careRules(c).minimumSkill&&r.medkits>0&&hiringTravelHours(c,op.id)===0&&quote.available&&quote.total<=c.resources.treasury;}).sort((a,b)=>contractQuote(c,a,'day').total-contractQuote(c,b,'day').total||a.id-b.id)[0];
   if(!replacement)return;
-  const notices=[],booked=bookRouteHires(c,[replacement.id],{term:'day',destination:'cordoba',report:event=>notices.push(event)});c=booked.campaign;check();
+  const notices=[],booked=bookRouteHires(c,[replacement.id],{term:'day',destination:'cordoba',report:event=>notices.push(event)});c=booked.campaign;
+  orders.push({type:'recruitCivic',id:replacement.id,term:'day',destination:'cordoba'});check();
   c=finishRouteHireArrivals(c,booked.hires,{minimumWaitHours:0,report:event=>notices.push(event)});check();hires.push(booked.hires[0]);
+  // A full active squad leaves a real arriving physician unassigned. Use
+  // an existing local seat before later paid roof staging needs that home.
+  if(!c.squads.some(q=>q.members.includes(replacement.id))){
+   const selected=c.activeSquadId,home=c.squads.find(q=>q.location==='cordoba'&&!q.journey&&q.members.length<6);
+   assert.ok(home,'A paid relief physician needs an existing local squad seat.');
+   order({type:'assignToSquad',squadId:home.id,operativeId:replacement.id});
+   if(c.activeSquadId!==selected)order({type:'selectSquad',id:selected});
+  }
   for(const event of notices)report(event);
   report({event:'cordobaMedicalRearReliefDoctor',hire:booked.hires[0],issuedDressings:c.operativeState[replacement.id].medkits,patients:urgent()});
  };

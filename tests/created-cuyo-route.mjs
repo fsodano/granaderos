@@ -477,7 +477,7 @@ function stockPreparation(start,report){
 // full-health reset: hourly doctors stop local bleeding before a long
 // approach, then a supplied doctor treats each actual local/nearby patient.
 // Only discovered reachable supplies and the map's existing exits are used.
-export function stabilizeStockMendozaSurvivors(start,{report=()=>{},returnSector}={}){
+export function stabilizeStockMendozaSurvivors(start,{report=()=>{},returnSector,stagingSector='mendoza',immediateFieldAid=false}={}){
  const original=structuredClone(start),serving=living(start),dead=Object.entries(start.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
  let pair={campaign:decodeSave(encodeSave(start)).campaign,battle:null},orders=0,hourlyDressings=0,tacticalDressings=0,clinicalPA=0,renewalCost=0;
  const captureCareEvidence=Boolean(process.env.GRANADEROS_CAMPAIGN_FAILURE_DIR);
@@ -626,20 +626,21 @@ export function stabilizeStockMendozaSurvivors(start,{report=()=>{},returnSector
   }
  };
  try{
- assert.equal(c().pendingBattle,null);assert.equal(c().location,'mendoza');safe();checkpoint('before');
+ assert.equal(typeof stagingSector,'string');assert.equal(typeof immediateFieldAid,'boolean');
+ assert.equal(c().pendingBattle,null);assert.equal(c().location,stagingSector);safe();checkpoint('before');
  // Stop all local bleeding before an approach can consume a patient's HP.
  // Enough actual doctors must work in the same authorized hour. Unattended
  // remote patients must survive that hour's exact admitted wound loss.
- const localBleeders=patients('mendoza').filter(id=>record(id).bleeding>0);
- if(localBleeders.length){
+ const localBleeders=patients(stagingSector).filter(id=>record(id).bleeding>0);
+ if(localBleeders.length&&!immediateFieldAid){
   const selected=[];
-  for(const op of doctors('mendoza',false)){
+  for(const op of doctors(stagingSector,false)){
    if(selected.length===localBleeders.length)break;
-   supplyDoctor('mendoza',op);if(!careAssignmentReason(c(),op,'doctor'))selected.push(op);
+   supplyDoctor(stagingSector,op);if(!careAssignmentReason(c(),op,'doctor'))selected.push(op);
   }
   assert.equal(selected.length,localBleeders.length,'bleeding local patients require enough actual supplied hourly doctors');
   for(const id of serving.filter(id=>!localBleeders.includes(id)&&record(id).bleeding>0))assert.ok(record(id).hp>Math.ceil(record(id).bleeding*strategicBleedingPercent(c())/100),`untreated ${id} cannot safely wait for a care hour`);
-  for(const id of serving.filter(id=>operativeLocation(c(),id)==='mendoza'&&['doctor','patient'].includes(record(id).assignment)))order({type:'assignCare',operativeId:id,assignment:'active'});
+  for(const id of serving.filter(id=>operativeLocation(c(),id)===stagingSector&&['doctor','patient'].includes(record(id).assignment)))order({type:'assignCare',operativeId:id,assignment:'active'});
   for(const op of selected)order({type:'assignCare',operativeId:op.id,assignment:'doctor'});
   for(const id of localBleeders)order({type:'assignCare',operativeId:id,assignment:'patient'});
   const before=structuredClone(c()),hour=c().hour;order({type:'wait',hours:1},()=>{
@@ -653,11 +654,11 @@ export function stabilizeStockMendozaSurvivors(start,{report=()=>{},returnSector
   checkpoint('hourly-stabilization');
  }
  if(patients().length){
-  const medic=prepareMedic('mendoza',patients('mendoza'));checkpoint('supplied');
-  while(patients('mendoza').length){const group=patients('mendoza').slice(0,5);form('mendoza',[medic,...group]);for(const id of group)treat(medic,id);leaveCare();}
+  const medic=prepareMedic(stagingSector,patients(stagingSector));checkpoint('supplied');
+  while(patients(stagingSector).length){const group=patients(stagingSector).slice(0,5);form(stagingSector,[medic,...group]);for(const id of group)treat(medic,id);leaveCare();}
   checkpoint('local-stabilized');
   while(patients().length){
-   const location=operativeLocation(c(),patients()[0]);assert.notEqual(location,'mendoza');
+   const location=operativeLocation(c(),patients()[0]);assert.notEqual(location,stagingSector);
    // A recorded neighbor exit is safer than hours of strategic travel while
    // untreated remote bleeding remains. No unobserved source is searched.
    form(operativeLocation(c(),medic),[medic]);const exit=pair.battle.exits.find(e=>e.destination===location);

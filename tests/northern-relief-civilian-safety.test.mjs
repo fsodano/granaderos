@@ -83,3 +83,155 @@ test('a current movement remains unchanged and insufficient remaining AP cannot 
  assert.equal(proposed.type,'fire');assert.equal(proposed.aim,0);assert.equal(civilianRisk(blocked,actor(blocked),proposed),true);
  assert.equal(northernReliefDefenseController([])(blocked,actor(blocked)),null);assert.deepEqual(blocked,heldBefore,'A refused lane grants no AP, movement, shot or clock.');
 });
+
+// Independent local-care declarations. The old relief controls above retain
+// their default controller, factory and complete bodies byte for byte.
+import {endTurn,presentedEndTurn,artilleryContact,artilleryCrewPlan,artilleryCosts,artilleryReloadPreview} from '../game/tactical.js';
+import {knownRouteBystanderShotSafety} from './route-fire-safety.mjs';
+
+function localCareFriendlyField(){
+ return createBattle([
+  {id:'shooter',x:1,y:4,weapon:1802,condition:100,loaded:1,ammo:8,hp:100,maxHp:100,bandaged:0,medical:0,medkits:0,stance:'prone',marksmanship:90,dexterity:90,agility:90,facing:2,energy:100,morale:90},
+  {id:'friendly-post',x:8,y:5,weapon:0,blade:0,loaded:0,ammo:0,hp:100,maxHp:100,bandaged:0,medical:0,medkits:0,stance:'standing',facing:2,energy:100,morale:90},
+ ],{id:'declared-local-care-friendly-scatter',width:20,height:12,hour:12,seed:45,
+  tiles:Array.from({length:240},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',blocked:false,cover:0})),
+  enemies:[{id:'front',x:8,y:4,hp:100,maxHp:100,bandaged:0,weapon:0,blade:0,loaded:0,ammo:0,stance:'standing',patrol:false,overwatch:false},
+   {id:'other',x:14,y:0,hp:100,maxHp:100,bandaged:0,weapon:0,blade:0,loaded:0,ammo:0,stance:'standing',patrol:false,overwatch:false}],
+ });
+}
+
+function localCareBatteryField(){
+ const width=30,height=14;
+ return createBattle([
+  {id:'crew1',x:2,y:5,weapon:1800,condition:100,blade:0,loaded:0,ammo:0,hp:100,maxHp:100,bandaged:0,medical:0,medkits:0,stance:'standing',movementMode:'walk',facing:2,energy:100,morale:90,agility:90,dexterity:90,explosives:50},
+  {id:'crew2',x:2,y:6,weapon:1800,condition:100,blade:0,loaded:0,ammo:0,hp:100,maxHp:100,bandaged:0,medical:0,medkits:0,stance:'standing',movementMode:'walk',facing:2,energy:100,morale:90,agility:90,dexterity:90,explosives:50},
+  {id:'physician',x:8,y:4,weapon:1800,condition:100,blade:0,loaded:1,ammo:2,hp:100,maxHp:100,bandaged:0,medical:80,medkits:1,stance:'prone',movementMode:'prone',facing:2,energy:100,morale:90},
+ ],{id:'declared-local-care-distant-finite-crew',width,height,hour:12,seed:45,
+  // A real clear ground lane. The target retains ordinary Native movement;
+  // no impassable water ring is also allowed to stop the cannon's solid ray.
+  tiles:Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0})),
+  enemies:[{id:'target',x:24,y:5,hp:500,maxHp:500,bandaged:0,weapon:0,blade:0,loaded:0,ammo:0,stance:'standing',patrol:false,overwatch:false}],
+  artillery:[{id:'finite-local-gun',type:'bronze4',side:'player',x:9,y:5,facing:0,loaded:true,ammo:1}],
+ });
+}
+const localMember=(battle,id)=>battle.units.find(unit=>unit.id===id);
+function localCareStep(battle,action){
+ if(action.type!=='endTurn')return actual(battle,action);
+ const before=structuredClone(battle),after=endTurn(battle);assert.equal(after.lastError,null);
+ assert.deepEqual(presentedEndTurn(battle).state,after);assert.deepEqual(validateBattleSnapshot(JSON.parse(JSON.stringify(after))),after);assert.deepEqual(battle,before);return after;
+}
+function localCareReplay(start,orders,physicianIds=[]){
+ let battle=validateBattleSnapshot(JSON.parse(JSON.stringify(start)));
+ const policy=northernReliefDefenseController(physicianIds,{localCareBattle:battle});
+ for(const action of orders){
+  if(action.type!=='endTurn')assert.deepEqual(policy(battle,localMember(battle,action.unitId)),action);
+  battle=validateBattleSnapshot(JSON.parse(JSON.stringify(localCareStep(battle,action))));
+ }
+ return battle;
+}
+
+test('only local care rejects a known friendly miss path and pays a real safe alternative rifle shot',()=>{
+ const start=localCareFriendlyField(),before=structuredClone(start),unit=actor(start),ordinary=cautiousCombatOrder(start,unit),defaultPolicy=northernReliefDefenseController([]);
+ assert.equal(ordinary?.type,'fire');assert.equal(ordinary.targetId,'front');assert.deepEqual(defaultPolicy(start,unit),ordinary);
+ const target=localMember(start,ordinary.targetId),risk=firearmBystanderRisk(start,unit,target,ordinary.hitLocation??'torso');
+ assert.equal(risk.direct.length,0);assert.ok(risk.scatter.some(body=>body.id==='friendly-post'||body.unitId==='friendly-post'),'The actual ordinary shot has a known friendly miss-path body.');
+ const ordinaryQuote=firearmShotOptions(start,unit,target,ordinary.aim??0).find(option=>option.aim===(ordinary.aim??0)&&option.hitLocation===(ordinary.hitLocation??'torso'));
+ assert.equal(knownRouteCivilianShotSafety(start,unit,target)(ordinaryQuote),true);assert.equal(knownRouteBystanderShotSafety(start,unit,target)(ordinaryQuote),false);
+ const policy=northernReliefDefenseController([],{localCareBattle:start}),action=policy(start,unit);assert.equal(action?.type,'fire');assert.equal(action.targetId,'other');
+ const selectedTarget=localMember(start,action.targetId),quote=firearmShotOptions(start,unit,selectedTarget,action.aim??0).find(option=>option.aim===(action.aim??0)&&option.hitLocation===(action.hitLocation??'torso'));
+ assert.equal(knownRouteBystanderShotSafety(start,unit,selectedTarget)(quote),true);const cost=actionCosts(start,unit,selectedTarget),after=localCareStep(start,action);
+ assert.equal(actor(after).ap,unit.ap-cost.fire-(action.aim??0)*cost.aim);assert.equal(actor(after).loaded,unit.loaded-1);assert.equal(actor(after).ammo,unit.ammo);assert.equal(localMember(after,'friendly-post').hp,localMember(start,'friendly-post').hp);
+ assert.deepEqual(localCareReplay(start,[action]),after);assert.deepEqual(start,before);
+});
+
+test('local dry riflemen pay bounded tactical approaches and a valid nonclinical crew spends only its two real cannon charges',()=>{
+ const start=localCareBatteryField(),before=structuredClone(start),policy=northernReliefDefenseController(['physician'],{localCareBattle:start}),ids=['crew1','crew2'];
+ assert.equal(policy(start,localMember(start,'physician')),null);
+ for(const id of ids){const unit=localMember(start,id);assert.ok(Math.hypot(unit.x-start.artillery[0].x,unit.y-start.artillery[0].y)>6);assert.equal(artilleryContact(start,unit,start.artillery[0]),false);assert.equal(unit.loaded+unit.ammo,0);assert.deepEqual(northernReliefDefenseController(['physician'])(start,unit),{type:'stance',unitId:id,stance:'prone'});}
+ let battle=start,moves=0,fires=0,reloads=0;const orders=[],pieceShift={x:0,y:0};
+ for(let round=0;round<8&&fires<2;round++){
+  for(let pass=0;pass<8&&fires<2;pass++){
+   let progress=false;
+   for(const id of ids){
+    const unit=localMember(battle,id),action=policy(battle,unit);if(!action)continue;
+    assert.ok(['move','stance','artillery','artilleryPivot','artilleryMove','artilleryReload'].includes(action.type),JSON.stringify(action));
+    let route,crew,pa;
+    if(action.type==='move'){
+     route=getReachable(battle,unit).find(point=>point.x===action.x&&point.y===action.y&&(point.tacticalLevel??0)===(action.tacticalLevel??0));assert.ok(route);assert.ok(route.cost>0&&route.cost<=24&&route.path.length<=3);assert.ok(route.path.every(point=>(point.tacticalLevel??0)===0&&(!point.kind||point.kind==='move')));assert.ok(!route.path.some(point=>point.x===localMember(battle,'physician').x&&point.y===localMember(battle,'physician').y));
+    }
+    if(['artillery','artilleryPivot','artilleryMove','artilleryReload'].includes(action.type)){
+     const gun=battle.artillery.find(piece=>piece.id===action.artilleryId);
+     const plan=action.type==='artilleryReload'?artilleryReloadPreview(battle,unit,gun):artilleryCrewPlan(battle,unit,gun,artilleryCosts(battle,unit,gun)[action.type==='artillery'?'fire':action.type==='artilleryMove'?'move':'pivot']);
+     assert.equal(plan.reason,null);assert.deepEqual([...plan.crew].sort(),ids);for(const memberId of plan.crew){const member=localMember(battle,memberId);assert.ok(member.medical<60);assert.equal(member.loaded+member.ammo,0);assert.equal(artilleryContact(battle,member,gun),true);}
+     crew=plan.crew;pa=action.type==='artilleryReload'?plan.pa:artilleryCosts(battle,unit,gun)[action.type==='artillery'?'fire':action.type==='artilleryMove'?'move':'pivot'];
+    }
+    const after=localCareStep(battle,action);
+    if(route){assert.equal(localMember(after,id).ap,unit.ap-route.cost);assert.ok(localMember(after,id).energy<unit.energy);moves++;}
+    if(crew)for(const memberId of crew)assert.equal(localMember(after,memberId).ap,localMember(battle,memberId).ap-pa);
+    if(action.type==='artilleryMove'){
+     const old=battle.artillery[0],moved=after.artillery[0],dx=action.x-old.x,dy=action.y-old.y;assert.equal(Math.abs(dx)+Math.abs(dy),1);assert.deepEqual([moved.x,moved.y],[action.x,action.y]);
+     for(const memberId of crew)assert.deepEqual([localMember(after,memberId).x,localMember(after,memberId).y],[localMember(battle,memberId).x+dx,localMember(battle,memberId).y+dy]);
+     for(const member of battle.units.filter(other=>other.side==='player'&&!crew.includes(other.id)))assert.deepEqual([localMember(after,member.id).x,localMember(after,member.id).y],[member.x,member.y]);
+     assert.equal(moved.loaded,old.loaded);assert.equal(moved.ammo,old.ammo);pieceShift.x+=dx;pieceShift.y+=dy;
+    }
+    if(action.type==='artillery'){assert.equal(after.artillery[0].loaded,false);assert.equal(after.artillery[0].ammo,battle.artillery[0].ammo);fires++;}
+    if(action.type==='artilleryReload'){assert.equal(after.artillery[0].ammo,battle.artillery[0].ammo-(Number(after.artillery[0].loaded)-Number(battle.artillery[0].loaded)));reloads++;}
+    orders.push(action);battle=after;progress=true;if(fires===2)break;
+   }
+   if(!progress)break;
+  }
+  if(fires<2){assert.equal(battle.status,'active');const action={type:'endTurn'};battle=localCareStep(battle,action);orders.push(action);}
+ }
+ assert.ok(moves>=2);assert.equal(fires,2);assert.ok(reloads>0);assert.equal(battle.artillery[0].loaded,false);assert.equal(battle.artillery[0].ammo,0);assert.deepEqual([battle.artillery[0].x,battle.artillery[0].y],[start.artillery[0].x+pieceShift.x,start.artillery[0].y+pieceShift.y]);
+ for(const id of ids)for(const key of ['weapon','loaded','ammo','medkits','hp','maxHp','bleeding','inventory'])assert.deepEqual(localMember(battle,id)[key],localMember(start,id)[key]);
+ for(const key of ['x','y','hp','maxHp','bleeding','medkits','loaded','ammo','stance','inventory'])assert.deepEqual(localMember(battle,'physician')[key],localMember(start,'physician')[key]);
+ assert.equal(policy.sharedFallback(battle,localMember(battle,'physician')),null);assert.deepEqual(localCareReplay(start,orders,['physician']),battle);assert.deepEqual(start,before);
+});
+
+test('local battery selection cannot replace a missing nonclinical helper with the actual Native physician or qualified clinical body',()=>{
+ for(const qualified of [false,true]){
+  const start=createBattle([
+   {id:'operator',x:5,y:5,hp:80,maxHp:80,bandaged:0,weapon:1805,loaded:1,ammo:9,medical:0,medkits:0,marksmanship:1,stance:'standing',movementMode:'walk',facing:2,energy:100,morale:90},
+   {id:'clinical',x:5,y:6,hp:80,maxHp:80,bandaged:0,weapon:1805,loaded:1,ammo:9,medical:qualified?80:36,medkits:1,marksmanship:1,stance:'standing',movementMode:'walk',facing:2,energy:100,morale:90},
+  ],{id:'declared-local-care-clinical-crew-refusal',width:24,height:14,hour:12,seed:45,tiles:Array.from({length:336},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',blocked:false,cover:0})),
+   enemies:[{id:'target',x:20,y:5,hp:300,maxHp:300,bandaged:0,weapon:0,blade:0,loaded:0,ammo:0,stance:'standing',patrol:false,overwatch:false}],artillery:[{id:'clinical-adjacent-gun',type:'bronze4',side:'player',x:6,y:5,facing:0,loaded:true,ammo:1}],
+  }),before=structuredClone(start),unit=localMember(start,'operator'),gun=start.artillery[0],plan=artilleryCrewPlan(start,unit,gun,artilleryCosts(start,unit,gun).fire),policy=northernReliefDefenseController(qualified?[]:['clinical'],{localCareBattle:start});
+  assert.equal(plan.reason,null);assert.deepEqual(plan.crew,['operator','clinical']);assert.equal(cautiousCombatOrder(start,unit)?.type,'artillery');assert.equal(policy(start,unit),null);assert.deepEqual(start.artillery,before.artillery);assert.deepEqual(start,before);
+ }
+});
+
+import {usefulRouteRifleShot,publicRouteView} from './route-infantry-progress.mjs';
+
+function localCarePriorityField({entry=false,empty=false,movement=false,noncontact=false}={}){
+ const x=movement?1:empty||noncontact?2:5,gunX=movement?10:empty||noncontact?9:6;
+ return createBattle([
+  {id:'priority',x,y:movement?4:5,weapon:empty?1805:1802,condition:100,blade:0,loaded:empty?0:1,ammo:5,hp:100,maxHp:100,bandaged:0,medical:0,medkits:0,stance:empty?'crouched':'prone',facing:2,marksmanship:90,agility:90,dexterity:90,energy:100,morale:90},
+  {id:'helper',x:movement?2:x,y:movement?5:6,weapon:0,blade:0,loaded:0,ammo:0,hp:100,maxHp:100,bandaged:0,medical:0,medkits:0,stance:'standing',facing:2,energy:100,morale:90},
+ ],{id:'declared-local-care-ordinary-priority',width:24,height:14,hour:12,seed:45,exploration:entry,deferContact:entry,
+  tiles:Array.from({length:336},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',blocked:false,cover:0})),
+  npcs:movement?[resident(4,4)]:[],
+  enemies:[{id:'target',x:movement?8:18,y:movement?4:5,hp:500,maxHp:500,bandaged:0,weapon:0,blade:0,loaded:0,ammo:0,stance:'standing',patrol:false,overwatch:false}],
+  artillery:[{id:'priority-gun',type:'bronze4',side:'player',x:gunX,y:movement?8:5,facing:0,loaded:true,ammo:1}],
+ });
+}
+
+test('local care retains actual cautious entry, then safe useful rifle fire and finite maintenance before battery movement',()=>{
+ for(const options of [{entry:true},{},{empty:true},{noncontact:true},{movement:true}]){
+  const start=localCarePriorityField(options),before=structuredClone(start),unit=localMember(start,'priority'),ordinary=cautiousCombatOrder(start,unit),policy=northernReliefDefenseController([],{localCareBattle:start}),action=policy(start,unit);
+  assert.equal(start.mode,options.entry?'exploration':'combat');assert.equal(start.phase,'player');
+  if(options.entry){assert.ok(ordinary);assert.deepEqual(action,ordinary,'No coastal proposal may replace the original cautious exploration/contact order.');assert.equal(action.type,'stance');}
+  else if(options.empty){assert.equal(ordinary?.type,'reload');assert.deepEqual(action,ordinary,'Real finite rifle maintenance stays before the optional crew approach.');}
+  else if(options.movement){assert.equal(ordinary?.type,'move');assert.deepEqual(action,ordinary,'Current admitted cautious movement stays before a different paid crew route.');}
+  else if(options.noncontact){
+   assert.ok(usefulRouteRifleShot(publicRouteView(start,unit),unit,{shotSafety:knownRouteBystanderShotSafety}));assert.equal(action?.type,'fire');
+   const target=localMember(start,action.targetId),quote=firearmShotOptions(start,unit,target,action.aim??0).find(option=>option.aim===(action.aim??0)&&option.hitLocation===(action.hitLocation??'torso'));
+   assert.ok(quote.chance>=25&&quote.damageFactor>0);assert.equal(knownRouteBystanderShotSafety(start,unit,target)(quote),true);
+  }else{assert.equal(ordinary?.type,'stance');assert.equal(ordinary.stance,'crouched');assert.deepEqual(action,ordinary,'An admitted actual cautious posture stays before optional battery work.');}
+  const after=localCareStep(start,action);assert.deepEqual(after.artillery,start.artillery);
+  if(action.type==='move'){const quote=getReachable(start,unit).find(point=>point.x===action.x&&point.y===action.y);assert.ok(quote&&quote.cost>0);assert.equal(localMember(after,'priority').ap,unit.ap-quote.cost);assert.deepEqual([localMember(after,'priority').x,localMember(after,'priority').y],[action.x,action.y]);}
+  else assert.deepEqual([localMember(after,'priority').x,localMember(after,'priority').y],[unit.x,unit.y]);
+  if(action.type==='fire'){const cost=actionCosts(start,unit,localMember(start,action.targetId));assert.equal(localMember(after,'priority').ap,unit.ap-cost.fire-(action.aim??0)*cost.aim);assert.equal(localMember(after,'priority').loaded,unit.loaded-1);assert.equal(localMember(after,'priority').ammo,unit.ammo);}
+  if(action.type==='reload'){assert.equal(localMember(after,'priority').loaded,1);assert.equal(localMember(after,'priority').ammo,unit.ammo-1);assert.ok(localMember(after,'priority').ap<unit.ap);}
+  assert.deepEqual(localCareReplay(start,[action]),after);assert.deepEqual(start,before);
+ }
+});

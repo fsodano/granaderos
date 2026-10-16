@@ -1,3 +1,4 @@
+import {stabilizeStockMendozaSurvivors} from './created-cuyo-route.mjs';
 import assert from 'node:assert/strict';
 import {rosterFor} from '../game/campaign.js';
 import {contractQuote} from '../game/contracts.js';
@@ -79,6 +80,13 @@ export function recaptureFoundryConvoy(start,{transferId,createOrders,recoverPat
   battleRecords.push(won.summary);save('recaptured-'+target);
  }
  assert.ok(transfer.path.every(sector=>c.sectors[sector].owner==='patriot'));
+ // The final cut has no following between-localities clinic. Stabilize its
+ // actual local and escaped survivors before any convoy or return wait.
+ if(c.recruited.some(id=>c.operativeState[id].alive&&(c.operativeState[id].hp<15||c.operativeState[id].bleeding))){
+  const stagingSector=c.location;
+  c=stabilizeStockMendozaSurvivors(c,{report,stagingSector,immediateFieldAid:true,returnSector:stagingSector});
+  retained=createOrders(()=>c,next=>{c=next;},{report});save('final-localities-field-aid');
+ }
  const acute=c.recruited.filter(id=>c.operativeState[id].alive&&(c.operativeState[id].hp<15||c.operativeState[id].bleeding));
  assert.deepEqual(acute,[],'The actual recapture must stabilize urgent casualties before the convoy clock resumes.');
  if(c.artilleryTransfers.some(row=>row.id===transfer.id))order({type:'wait',hours:1});
