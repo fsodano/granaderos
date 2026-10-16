@@ -4,6 +4,13 @@
 > [version 0.1](verification/version-0.1.md) for current scope. Earlier development
 > numbers are internal checkpoints; their features and results are dated history.
 
+## 0.1.8 — 15 October 2026
+
+- Start the standalone San Lorenzo battle at its authored 08:00 daytime clock.
+  The new campaign retains its separate midnight start.
+- Verify the real launcher path, its chosen force and the absence of campaign
+  save writes when starting the standalone battle.
+
 ## 0.1.7 — 15 October 2026
 
 - Resolve a town representative's income source from the active campaign.
