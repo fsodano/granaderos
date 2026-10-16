@@ -22,7 +22,7 @@ import {enclosedRoomFearStatus} from '../../game/enclosed-room-fear.js';
 import {nervousIsolationStatus} from '../../game/nervous-isolation.js';
 // MODE B: single-merc inventory panel (header / stats / stance grid / paper-doll / slot-grid / pertrechos / far-right cluster).
 // Pure read model (game/ja2-hud.js inventoryModel/orderDescriptors); all mutations are caller-provided callbacks.
-import {useEffect, useState} from 'react';
+import {useEffect, useId, useState} from 'react';
 import TacticalMinimap from './TacticalMinimap';
 import {tacticalMinimapLabel} from '../../game/tactical-minimap-label.js';
 import JA2Pockets from './JA2Pockets';
@@ -182,6 +182,7 @@ export default function JA2Inventory({campaignContext,cursorLevel=0,onCursorLeve
     setContentSource(containerTarget&&preview?.action.expectedSource?{targetKey:containerTarget.key,expectedSource:preview.action.expectedSource}:null);
   },[unit.id,containerTarget?.key,containerOpen]);
   const [itemOpen,setItemOpen]=useState(false);
+  const actionsName=useId();
   const chooseItem = (id: string,slotId='') => {
     setManagedItem(id);setInspectedSlot(slotId);setQuantity(1);setItemOpen(true);
     let selection:{key:string;expectedSource:string}|null=null;
@@ -283,7 +284,8 @@ export default function JA2Inventory({campaignContext,cursorLevel=0,onCursorLeve
         <JA2Pockets key={unit.id} battle={battle} unit={unit} layout={inv.pockets} disabled={busyDisabled} onPick={chooseItem} onOrder={onOrder}/>
 
       </div>
-      <details className="pertrechos ja2-inventory-extra" open={itemOpen} onToggle={event=>setItemOpen(event.currentTarget.open)}><summary>{item?.label || 'Objeto'} · detalles</summary><div className="ja2-inventory-popup"><button className="line-button" onClick={()=>setItemOpen(false)}>Cerrar objeto</button>{itemOpen&&<JA2ItemCard battle={battle} unit={unit} reference={item?.item??''} slotId={inspectedSlot} disabled={busyDisabled} onOrder={onOrder}/>}        {managedItem==='offhand'&&<button disabled={busyDisabled||!otherHand.valid} title={otherHand.reason||undefined} onClick={()=>{onOrder({type:'swapHands'});onMode('move');}}>Poner {item?.label} en mano · {cost(otherHand.pa)}</button>}
+      <div className="ja2-inventory-actions">
+      <details className="pertrechos ja2-inventory-extra" name={actionsName} open={itemOpen} onToggle={event=>setItemOpen(event.currentTarget.open)}><summary>{item?.label || 'Objeto'} · detalles</summary><div className="ja2-inventory-popup"><button className="line-button" onClick={()=>setItemOpen(false)}>Cerrar objeto</button>{itemOpen&&<JA2ItemCard battle={battle} unit={unit} reference={item?.item??''} slotId={inspectedSlot} disabled={busyDisabled} onOrder={onOrder}/>}        {managedItem==='offhand'&&<button disabled={busyDisabled||!otherHand.valid} title={otherHand.reason||undefined} onClick={()=>{onOrder({type:'swapHands'});onMode('move');}}>Poner {item?.label} en mano · {cost(otherHand.pa)}</button>}
         {['primary','blade'].includes(managedItem)&&equipped.filter((option:any)=>option.slot===managedItem).map((option:any)=><button key={option.slot} disabled={option.disabled||option.active} title={option.reason||undefined} onClick={()=>{onOrder(option.action);onMode('move');}}>Poner {item?.label} en mano · {cost(option.pa)}</button>)}
         {inv.backpack.filter((record:any)=>`inventory:${record.key}`===managedItem).map((item: any) => {
           const gun = (WEAPONS as any)[item.weapon];
@@ -327,6 +329,10 @@ export default function JA2Inventory({campaignContext,cursorLevel=0,onCursorLeve
           <button className="line-button" disabled={handling.drop.disabled} title={handling.drop.reason || undefined} onClick={() => onOrder({type: 'drop', item: item.item, count})}>Soltar aquí · {cost(handling.drop.pa)}</button>
         </div>
         <p className="ja2-item-feedback" aria-live="polite">{item && `${item.label} · ${item.count} disponible(s). `}{item?.condition !== undefined && `Estado ${item.condition}%. `}{item?.loaded !== undefined && `${item.loaded} carga(s). `}{item?.jammed && 'Necesita cebado. '}{recipient ? handling.transfer.reason || handling.transfer.detail : 'Elegí un aliado para entregar equipo. Soltar deja el objeto en tu casilla.'}{handling.drop.reason && ` ${handling.drop.reason}`}</p>
+      </div></details>
+      <details className="ja2-nearby-actions ja2-inventory-extra" name={actionsName}>
+        <summary aria-label="Objetos y entorno cercanos">Entorno</summary>
+        <div className="ja2-inventory-popup" role="region" aria-label="Objetos y entorno cercanos" tabIndex={0} onKeyDown={event=>{if(['Tab','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','PageUp','PageDown','Home','End',' '].includes(event.key))event.stopPropagation();}}>
         <details className="ja2-nearby-loot"><summary>Objetos cercanos · {nearby.length}</summary>{nearby.length ? <>
           <div className="ja2-item-handling">
             <label>Objeto cercano<select aria-label="Objeto cercano para recoger" disabled={busyDisabled} value={lootItem?.id || ''} onChange={event => { setLootId(event.target.value); setLootQuantity(1); }}>{nearby.map(entry => <option key={entry.id} value={entry.id}>{entry.source} · {entry.label} · {entry.count}</option>)}</select></label>
@@ -339,6 +345,7 @@ export default function JA2Inventory({campaignContext,cursorLevel=0,onCursorLeve
           onTarget={key => { setEnvironmentKey(key); setEnvironmentVerb(''); setContentIndex(0); setContentQuantity(1); }} onVerb={setEnvironmentVerb} onUse={() => environment.preview && onOrder(environment.preview.action)}
           onContent={index => { if(!containerTarget)return;const preview=containerLootPreview(battle,unit,containerTarget,index,1);setContentIndex(index);setContentQuantity(1);setContentSource(preview.action.expectedSource?{targetKey:containerTarget.key,expectedSource:preview.action.expectedSource}:null); }} onCount={setContentQuantity} onLoot={() => containerLoot?.valid && onOrder(containerLoot.action)} />
       </div></details>
+      </div>
       <div className="ja2-right">
         <InventoryRadarCluster campaignContext={campaignContext} battle={battle} units={units} selected={selected} project={project} vw={vw} vh={vh} cameraRect={cameraRect} zoom={zoom} mode={mode} missionAllies={missionAllies} localMilitia={localMilitia} onSelect={onSelect} onRetreat={onRetreat} onCameraCenter={onCameraCenter} onCameraPan={onCameraPan} onZoom={onZoom} />
         <button className="ja2-done gold-button" onClick={onCloseInventory}>Listo</button>
