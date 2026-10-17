@@ -58,6 +58,7 @@ export function paidCasualty(seed=8,{toolkit=false}={}){
   assert.equal(repairMaterialPoints(s.operativeState[120]),100);
   assert.equal(s.sectorStates.retiro.props.find(prop=>prop.id===FINITE_SECTOR_CACHES.retiro.chest).contents.some(item=>item.kind==='repair-kit'),false);
  }
+ const admissionCampaign=structuredClone(s);
  s=order(s,{type:'attack',sector:'buenos_aires'});
  const request=s.pendingBattle;assert.equal(request.squad.find(u=>u.id===110).hp,25);
  const result=fight(request,null,{controller:seed===42?retainedCasualtyOrder:coordinatedOrder}),battle=result.battle;
@@ -77,5 +78,5 @@ export function paidCasualty(seed=8,{toolkit=false}={}){
  const restored=decodeSave(encodeSave(pair.campaign,pair.battle));
  s=order(restored.campaign,{type:'battleResult',battleId:request.id,outcome:'victory',sectorState:restored.battle,survivors:restored.battle.units.filter(u=>u.side==='player')});
  for(const casualty of restored.battle.units.filter(unit=>unit.side==='player'&&unit.hp===0))assert.equal(s.operativeState[casualty.id].alive,false);
- const id=Number(victim.id);assert.equal(s.operativeState[id].alive,false);assert.equal(s.contentPresence.people[`person-${id}`].recruited,true);const checkpoint={campaign:s,id};cached.set(key,checkpoint);return structuredClone(checkpoint);
+ const id=Number(victim.id);assert.equal(s.operativeState[id].alive,false);assert.equal(s.contentPresence.people[`person-${id}`].recruited,true);const checkpoint={campaign:s,id,admissionCampaign,battle:structuredClone(battle)};cached.set(key,checkpoint);return structuredClone(checkpoint);
 }

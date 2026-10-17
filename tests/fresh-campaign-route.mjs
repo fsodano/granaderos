@@ -24,7 +24,7 @@ import {encodeSave,decodeSave} from '../game/save.js';
 import {autoBandageBattle} from '../game/auto-bandage.js';
 import {actBattle,getReachable} from '../game/tactical.js';
 import {sameCell,spacePoint,tacticalLevel} from '../game/tactical-space.js';
-import {doctorRate} from '../game/medical-care.js';
+import {doctorRate,careAssignmentIssue} from '../game/medical-care.js';
 import {careRules} from '../game/campaign-care-rules.js';
 import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
 import {operativeLocation} from '../game/squads.js';
@@ -356,6 +356,39 @@ export function prepareFreshCordobaAssault(start,doctors,{report=()=>{}}={}){
  return campaign;
 }
 
+// Admission records paid, present eligibility before rear preparation or stock
+// collection. It is not a claim that an hour of medical work has elapsed.
+export function recoveryDoctorAdmission(c,doctor,site){
+ const r=c.operativeState[doctor.id];
+ return {id:doctor.id,atSeconds:c.hour*3600+(c.secondOfHour??0),site,location:operativeLocation(c,doctor.id),recruited:c.recruited.includes(doctor.id),alive:r.alive,captured:r.captured,hp:r.hp,bleeding:r.bleeding,energy:r.energy,asleep:r.asleep,medical:doctor.medical,medkits:r.medkits,minimumMedical:careRules(c).minimumSkill,eligibilityIssue:structuredClone(careAssignmentIssue(c,doctor,'doctor')),contract:structuredClone(c.contracts[doctor.id]??null)};
+}
+
+// Historical admission survives an actual casualty's later contract expiry.
+// Living doctors still require current paid service; every fallen doctor must
+// be present in an actual victorious care battle and remain permanently dead.
+export function assertRecoveryDoctorService(c,{doctors,doctorAdmissions},careBattles){
+ assert.ok(doctors.length>0);assert.equal(new Set(doctors).size,doctors.length);
+ assert.deepEqual(doctorAdmissions.map(row=>row.id),doctors,'Every historical physician keeps its own admission, including actual casualties.');
+ const now=c.hour*3600+(c.secondOfHour??0);
+ for(const row of doctorAdmissions){
+  assert.ok(Number.isSafeInteger(row.atSeconds)&&row.atSeconds>=0&&row.atSeconds<=now);
+  assert.equal(row.recruited,true);assert.equal(row.alive,true);assert.equal(row.captured,false);assert.equal(row.location,row.site);
+  assert.ok(row.hp>=15&&row.bleeding===0&&row.energy>10&&!row.asleep&&row.medical>=row.minimumMedical);
+  assert.ok(row.eligibilityIssue===null||row.eligibilityIssue.code==='no_medkits','Only the already-handled finite dressing shortage may remain at admission.');
+  assert.ok(row.contract?.kind==='paid'&&row.contract.paid>0,'Every admitted physician needs its actual paid contract.');
+  assert.ok(row.contract.started*3600+(row.contract.startedSecond??0)<=row.atSeconds);
+  assert.ok(contractExpiresSeconds(row.contract)>row.atSeconds,'The actual paid term must cover admission.');
+  const r=c.operativeState[row.id];
+  if(r.alive){
+   assert.ok(c.recruited.includes(row.id));assert.ok(c.contracts[row.id]?.kind==='paid'&&c.contracts[row.id].paid>0,'Every surviving physician retains current paid service.');
+   assert.ok(contractExpiresSeconds(c.contracts[row.id])>now,'Every surviving physician retains an active paid term.');
+  }else{
+   assert.equal(r.hp,0);if(r.deathMinute!==undefined)assert.ok(Number.isFinite(r.deathMinute));
+   assert.ok(careBattles.some(battle=>battle.status==='victory'&&battle.units.some(unit=>unit.id===String(row.id)&&unit.side==='player'&&unit.hp<=0)),`Physician ${row.id} can die only in an actual hospital defense.`);
+  }
+ }
+}
+
 // Care continues at each survivor's actual location. The approaching royalist
 // force still has to be defeated by the paid local garrison before time resumes.
 export function recoverFreshCordobaSurvivors(start,{report=()=>{}}={}){
@@ -378,7 +411,7 @@ export function recoverFreshCordobaSurvivors(start,{report=()=>{}}={}){
  }
  assert.deepEqual(urgent(),[],'stabilize the actual critical patients before moving defenders');
  c=prepareFreshCordobaDefense(c,{stageOnly:true});
- const doctors=new Set(),medicalRearPrepared=new Set(),rearPhysicians=new Map(),dead=Object.entries(start.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
+ const doctors=new Set(),doctorAdmissions=new Map(),medicalRearPrepared=new Set(),rearPhysicians=new Map(),dead=Object.entries(start.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
  const order=action=>{c=dispatchCampaign(c,action);assert.equal(c.lastError,null,JSON.stringify(action)+': '+c.lastError);};
  const alive=()=>c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured);
  const wounded=()=>alive().filter(id=>{const r=c.operativeState[id];return r.hp<r.maxHp||r.bleeding>0;});
@@ -452,6 +485,7 @@ export function recoverFreshCordobaSurvivors(start,{report=()=>{}}={}){
    assert.ok(treating.length,'The clinic needs an actual physician in addition to its reserved defender.');
    order({type:'assignCare',operativeId:patient,assignment:'patient'});
    for(const doctor of treating){
+    if(!doctors.has(doctor.id))doctorAdmissions.set(doctor.id,recoveryDoctorAdmission(c,doctor,site));
     doctors.add(doctor.id);
     let readiness=null;
     if(site==='cordoba'){readiness=refreshRear(doctor.id);}
@@ -573,8 +607,8 @@ export function recoverFreshCordobaSurvivors(start,{report=()=>{}}={}){
  assert.equal(c.pendingEncounter,null);
  for(const id of dead)assert.equal(c.operativeState[id].alive,false);
  selectSite('cordoba');
- report({event:'cordobaCareFinished',doctors:[...doctors],hour:c.hour,treasury:c.resources.treasury});
- recordRouteStrategicEvidence({helper:'recoverFreshCordobaSurvivors',stage:'route-checkpoint',campaign:c,context:{doctors:[...doctors],careDeadlineSeconds,careHours,scope:'Actual completed care return after all existing health, encounter and permanent-death guards; passive capture only, no extra orders or state changes.'}});
+ report({event:'cordobaCareFinished',doctors:[...doctors],doctorAdmissions:structuredClone([...doctorAdmissions.values()]),hour:c.hour,treasury:c.resources.treasury});
+ recordRouteStrategicEvidence({helper:'recoverFreshCordobaSurvivors',stage:'route-checkpoint',campaign:c,context:{doctors:[...doctors],doctorAdmissions:[...doctorAdmissions.values()],careDeadlineSeconds,careHours,scope:'Actual completed care return after all existing health, encounter and permanent-death guards; passive capture only, no extra orders or state changes.'}});
  assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
  return c;
 }

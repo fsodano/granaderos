@@ -28,7 +28,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {writeFileSync} from 'node:fs';
 import {encodeSave} from '../game/save.js';
-import {beginFreshCampaign,recoverFreshCapital,prepareFreshNorthernAssault,prepareFreshSanLorenzo,prepareFreshMissionSupport,prepareFreshCordobaAssault,recoverFreshCordobaSurvivors,prepareFreshCordobaDefense,prepareFreshTucumanAssault,stabilizeFreshMissionAllies} from './fresh-campaign-route.mjs';
+import {beginFreshCampaign,recoverFreshCapital,prepareFreshNorthernAssault,prepareFreshSanLorenzo,prepareFreshMissionSupport,prepareFreshCordobaAssault,recoverFreshCordobaSurvivors,assertRecoveryDoctorService,prepareFreshCordobaDefense,prepareFreshTucumanAssault,stabilizeFreshMissionAllies} from './fresh-campaign-route.mjs';
 
 test('a funded Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo, Córdoba, Tucumán and Salta victories through Yatasto, Mendoza funding and both mountain passes, Ensenada, naval recruitment, Santa Fe, Tucumán and Salta recapture, Jujuy and Humahuaca',()=>{
  const opening=beginFreshCampaign();
@@ -116,7 +116,7 @@ test('a funded Retiro-only campaign retains paid recovery and real losses throug
  }
  for(const [id,record]of Object.entries(cordoba.campaign.operativeState))if(!record.alive)assert.equal(healed.operativeState[id].alive,false);
  assert.ok(careEvents[0].doctors.length>0);
- for(const id of careEvents[0].doctors)assert.ok(healed.contracts[id].paid>0,'every physician works under an actual paid contract');
+ assertRecoveryDoctorService(healed,careEvents[0],careBattles);
  for(const battle of careBattles){
   assert.equal(battle.status,'victory','care must resolve the real attack before strategic time resumes');
   for(const unit of battle.units.filter(unit=>unit.side==='player'&&unit.hp<=0))assert.equal(healed.operativeState[unit.id].alive,false,'defense casualties remain permanent after care');

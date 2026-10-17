@@ -23,7 +23,7 @@ import {dispatchCampaign,isSupplied,rosterFor} from '../game/campaign.js';
 import {contractQuote} from '../game/contracts.js';
 import {prepareNorthernSupport} from './northern-support-fixture.mjs';
 import {enterSector} from '../game/world.js';
-import {actBattle,endTurn,getReachable,stanceCost,firearmShotOptions,teamCanSee,actionCosts,lookPreview,artilleryCrewPlan} from '../game/tactical.js';
+import {actBattle,endTurn,getReachable,stanceCost,firearmShotOptions,teamCanSee,actionCosts,lookPreview} from '../game/tactical.js';
 import {playerKnownBattle} from '../game/player-known-state.js';
 import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
 import {wallMovementBlocked} from '../game/wall-geometry.js';
@@ -52,6 +52,14 @@ export function fightCreatedNorthernDefense(ready,{report=()=>{}}={}){
  return fightNorthernSector(ready,'cordoba',{controller:northernClinicDefenseOrder,report});
 }
 
+// A charged local battery keeps its existing paid coordinator even when a
+// complete crew is already present. Coastal gun/role selection stays exact;
+// A scene with no charged player piece keeps the old clinic controller.
+export function northernLocalCareDefenseController(initial,physicianIds=[]){
+ const charged=initial.artillery.some(gun=>gun.side==='player'&&(gun.loaded||gun.ammo>0));
+ return charged?northernReliefDefenseController(physicianIds,{localCareBattle:initial,prioritizeLocalBattery:true}):northernReliefDefenseController(physicianIds);
+}
+
 // A real raid interrupts clinic work. Resolve it before another care hour,
 // and pay native field aid before strategic settlement resumes the clock.
 export function resolveNorthernLocalCareRaid(start,{physicianIds=[],report=()=>{}}={}){
@@ -62,19 +70,9 @@ export function resolveNorthernLocalCareRaid(start,{physicianIds=[],report=()=>{
  try{
   for(const id of physicianIds){const r=start.operativeState[id],op=rosterFor(start).find(op=>op.id===id);assert.ok(start.recruited.includes(id)&&r?.alive&&!r.captured&&r.location===encounter.sector&&r.hp>=15&&!r.bleeding&&op?.medical>=careRules(start).minimumSkill,'The held physician must be an actual qualified local survivor.');}
   const nativeInputCapture=recordRouteStrategicEvidence({helper:'resolveNorthernLocalCareRaidNative',stage:'preparation-input',campaign:defended,inputCapture,context:{request,previous,physicianIds,capturePhase:'Actual arguments independently cloned before the existing native execution; no additional battle construction or orders.'}});
-  // Keep an already staffed battery on the original clinic policy. An
-  // additional stored piece is not a reason to disturb its real crew.
-  const initial=enterSector(request,previous),physicians=new Set(physicianIds.map(String));
-  const nonclinical=unit=>unit.side==='player'&&!physicians.has(unit.id)&&unit.medical<60;
-  const charged=initial.artillery.filter(gun=>gun.side==='player'&&(gun.loaded||gun.ammo>0));
-  const hasCrew=charged.some(gun=>initial.units.some(unit=>{
-   if(!nonclinical(unit))return false;
-   const plan=artilleryCrewPlan(initial,unit,gun,0);
-   return !plan.reason&&plan.crew.length>0&&plan.crew.every(id=>nonclinical(initial.units.find(member=>member.id===id)));
-  }));
-  // All bodies remain in Native admission. Only an initially unstaffed
-  // charged battery opts into the existing paid tactical approach policy.
-  const controller=charged.length&&!hasCrew?northernReliefDefenseController(physicianIds,{localCareBattle:initial,prioritizeLocalBattery:true}):northernReliefDefenseController(physicianIds);
+  // Construct this execution's existing coordinator from the actual fresh
+  // battle. Native contact, crew, costs and every real body remain authority.
+  const initial=enterSector(request,previous),controller=northernLocalCareDefenseController(initial,physicianIds);
   const result=fight(request,previous,{controller,sharedFallback:controller.sharedFallback});
   if(result.battle.status!=='victory')recordRouteBattleFailure({campaign:defended,request,previous,result,expectedOutcome:'victory',controller,executeBattle:fight});
   assert.equal(result.battle.status,'victory','the actual arriving group must lose its native battle before care continues');

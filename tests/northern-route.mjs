@@ -390,6 +390,22 @@ export function fightNorthernSector(start,sector,{report=()=>{},expectedOutcome=
  return {campaign:returned,summary};
 }
 
+// Tactical admission deliberately makes every actual local defender active.
+// Only stable survivors who were already resting resume that ordinary duty
+// after this route's real victory, replay, official save and settlement.
+export function resolveRestingNorthernClinicDefense(start,{report=()=>{}}={}){
+ const before=structuredClone(start),encounter=structuredClone(start.pendingEncounter);assert.equal(encounter?.sector,'cordoba');
+ const resting=start.recruited.filter(id=>{const r=start.operativeState[id];return r.alive&&!r.captured&&r.assignment==='rest'&&!operativeInTransit(start,id)&&operativeLocation(start,id)===encounter.sector;});
+ let campaign=start;const events=[],restoredRestIds=[];
+ const order=action=>{const cash=campaign.resources.treasury,next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;events.push({action,hour:campaign.hour,second:campaign.secondOfHour??0,cost:cash-campaign.resources.treasury});};
+ order({type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});
+ const defense=fightNorthernSector(campaign,encounter.sector,{controller:northernClinicDefenseOrder,report});campaign=defense.campaign;
+ for(const operativeId of resting){const r=campaign.operativeState[operativeId];
+  if(campaign.recruited.includes(operativeId)&&r.alive&&!r.captured&&r.hp>=15&&!r.bleeding&&!r.unconscious&&!r.routed&&!operativeInTransit(campaign,operativeId)&&operativeLocation(campaign,operativeId)===encounter.sector){order({type:'assignCare',operativeId,assignment:'rest'});restoredRestIds.push(operativeId);}
+ }
+ assert.deepEqual(start,before);return {campaign,summary:defense.summary,events,restoredRestIds,settledCampaign:defense.campaign};
+}
+
 export function prepareTucumanSquad(start,{report=()=>{}}={}){
  let campaign=decodeSave(encodeSave(start)).campaign;
  assert.equal(campaign.location,'cordoba');assert.equal(campaign.sectors.cordoba.owner,'patriot');
@@ -487,8 +503,7 @@ export function prepareTucumanSquad(start,{report=()=>{}}={}){
   order({type:'wait',hours:nightDeparture-campaign.hour});
   if(campaign.pendingEncounter){
    const encounter=structuredClone(campaign.pendingEncounter);assert.equal(encounter.sector,'cordoba');
-   order({type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});
-   const defense=fightNorthernSector(campaign,'cordoba',{controller:northernClinicDefenseOrder,report});campaign=defense.campaign;clinicDefenses.push({groupId:encounter.groupId,...defense.summary});
+   const defense=resolveRestingNorthernClinicDefense(campaign,{report});campaign=defense.campaign;events.push(...defense.events);clinicDefenses.push({groupId:encounter.groupId,...defense.summary});
    for(const id of patients){assert.ok(campaign.operativeState[id].alive,'the actual clinic patients survive its native defense');assert.equal(campaign.operativeState[id].hp,campaign.operativeState[id].maxHp);}
   }
  }

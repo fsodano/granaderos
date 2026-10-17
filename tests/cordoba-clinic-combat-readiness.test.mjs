@@ -16,7 +16,9 @@ import {stageRouteRoofDefenders} from './route-roof-defenders.mjs';
 import {prepareNorthernHospitalFortification} from './northern-hospital-fortification.mjs';
 import {prepareCordobaMedicalRear,restageCordobaMedicalRear} from './cordoba-medical-rear-guard.mjs';
 import {refreshCordobaClinicReadiness,cordobaClinicGroundCrew,cordobaClinicDefenseOrder,cordobaClinicDonationCount,collectCordobaClinicDressings} from './cordoba-clinic-combat-readiness.mjs';
-import {recoverFreshCordobaSurvivors} from './fresh-campaign-route.mjs';
+import {recoverFreshCordobaSurvivors,recoveryDoctorAdmission,assertRecoveryDoctorService} from './fresh-campaign-route.mjs';
+import {paidCasualty} from './paid-casualty-fixture.mjs';
+import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 
 const sector='cordoba',clock=c=>c.hour*3600+(c.secondOfHour??0),order=(c,a)=>{const next=dispatchCampaign(c,a);assert.equal(next.lastError,null,JSON.stringify(a)+': '+next.lastError);return next;};
 const saved=c=>{const restored=decodeSave(encodeSave(c)).campaign;assert.deepEqual(restored,c);return restored;};
@@ -563,4 +565,27 @@ test('a paid reserve with no existing local seat stops at its exact accepted hir
  assert.equal(c.contracts[s.id].started*3600+(c.contracts[s.id].startedSecond??0),clock(start));assert.equal(contractExpiresSeconds(c.contracts[s.id]),clock(start)+quote.hours*3600);
  assert.equal(c.pendingBattle,null);assert.equal(c.pendingEncounter,null);for(const id of start.recruited){assert.deepEqual(c.operativeState[id],start.operativeState[id]);assert.deepEqual(c.contracts[id],start.contracts[id]);}
  assert.deepEqual(start,before);JSON.stringify({campaign:c,receipt:r});
+});
+
+
+test('paid physician admissions retain every actual doctor through real treatment, a witnessed casualty and Native service expiry',()=>{
+ const start=recoveryRestSetup().campaign,before=structuredClone(start),events=[];
+ const healed=recoverFreshCordobaSurvivors(start,{report:event=>events.push(event)}),finished=events.filter(event=>event.event==='cordobaCareFinished');
+ assert.equal(finished.length,1);const receipt=finished[0],battles=events.filter(event=>event.event==='battleFinished');
+ assertRecoveryDoctorService(healed,receipt,battles);assert.deepEqual(receipt.doctorAdmissions.map(row=>row.id),receipt.doctors);
+ assert.ok(events.some(event=>event.event==='cordobaRecoveryCareHour'&&event.to-event.from===3600&&event.records.some(row=>receipt.doctors.includes(row.id)&&row.assignment==='doctor')),'The independent clinic also earns actual paid treatment hours.');
+ for(const row of receipt.doctorAdmissions){assert.ok(row.contract.paid>0);assert.equal(row.site,sector);assert.equal(healed.operativeState[row.id].alive,true);assert.notEqual(row.contract,healed.contracts[row.id]);}
+ assert.deepEqual(start,before);saved(healed);
+ // This unchanged fixture earns the paid hire, finite toolkit and actual
+ // casualty through its ordinary battle and exact Native replay. Its saved
+ // pre-attack state proves eligible admission, not invented treatment work.
+ const casualty=paidCasualty(8,{toolkit:true}),id=casualty.id;assert.equal(id,120);
+ const input=casualty.admissionCampaign,doctor=rosterFor(input).find(op=>op.id===id),admission=recoveryDoctorAdmission(input,doctor,input.location);
+ assert.equal(careAssignmentIssue(input,doctor,'doctor'),null);assert.ok(doctor.medical>=20);assert.equal(input.operativeState[id].alive,true);assert.ok(input.contracts[id].paid>0);
+ const historical={doctors:[id],doctorAdmissions:[admission]},death=casualty.campaign.operativeState[id].deathMinute;
+ assertRecoveryDoctorService(casualty.campaign,historical,[casualty.battle]);assert.ok(casualty.battle.units.some(unit=>unit.id===String(id)&&unit.side==='player'&&unit.hp===0));
+ const expired=advanceCampaignHours(casualty.campaign,casualty.campaign.contracts[id].expiresAt-casualty.campaign.hour);
+ assert.equal(expired.contracts[id],undefined);assert.equal(expired.recruited.includes(id),false);assert.equal(expired.operativeState[id].alive,false);assert.equal(expired.operativeState[id].hp,0);assert.equal(expired.operativeState[id].deathMinute,death);
+ assertRecoveryDoctorService(expired,historical,[casualty.battle]);assert.deepEqual(historical.doctors,[id]);assert.ok(admission.contract.paid>0);assert.deepEqual(admission.contract,input.contracts[id]);saved(expired);
+ assert.ok(dispatchCampaign(expired,{type:'recruitCivic',id,term:'week'}).lastError,'A historical paid admission never revives or rehires its actual casualty.');
 });

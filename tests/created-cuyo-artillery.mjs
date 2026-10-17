@@ -31,6 +31,9 @@ import {sectorDeploymentAction} from '../game/sector-deployment.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {operativeLocation} from '../game/squads.js';
+import {locationId} from '../game/world-cells.js';
+import {encounterContacts,encounterRequirements} from '../game/encounters.js';
+import {meetRecruits} from './campaign-recruitment-route.mjs';
 
 const living=c=>c.recruited.filter(id=>c.operativeState[id]?.alive&&!c.operativeState[id].captured);
 const stable=(c,id)=>{const r=c.operativeState[id];return r?.alive&&!r.captured&&r.hp>=15&&!r.bleeding&&!r.unconscious&&!r.routed;};
@@ -75,6 +78,48 @@ export function returnCreatedCuyoArsenalPhysician(start,{report=()=>{}}={}){
  }catch(error){recordRouteStrategicEvidence({helper:'returnCreatedCuyoArsenalPhysician',stage:'preparation-failure',campaign:c,context:{original,plan},error});throw error;}
 }
 
+// The second column keeps one real vacancy until its existing capital stop.
+// This is a physical conversation, not bulletin hiring or a reserved actor.
+export function recruitCreatedCuyoArsenalPhysician(start,{squadId,deadlineSeconds,report=()=>{}}={}){
+ const clock=c=>c.hour*3600+(c.secondOfHour??0),person=rosterFor(start).find(op=>op.id===10);
+ assert.ok(person&&person.medical>=60&&stable(start,10)&&start.operativeState[10].hp===start.operativeState[10].maxHp,'The physical arsenal physician must be alive, qualified and healthy.');
+ assert.equal(start.pendingBattle,null);assert.equal(start.pendingEncounter,null);assert.equal(start.location,'buenos_aires');
+ if(living(start).includes(10)){
+  assert.equal(operativeLocation(start,10),'buenos_aires');const expiry=contractExpiresSeconds(start.contracts[10]);
+  assert.ok(start.contracts[10]&&(expiry===null||expiry>clock(start)),'The existing physician must retain an actual current native service term.');
+  assert.ok(start.squads.some(group=>!group.journey&&group.location==='buenos_aires'&&group.members.includes(10)));
+  return {campaign:start,physician:10,recruited:false};
+ }
+ assert.ok(Number.isSafeInteger(deadlineSeconds)&&clock(start)<deadlineSeconds,'The physical meeting must fit the original arsenal arrival allowance.');
+ const home=start.squads.find(group=>group.id===squadId);
+ assert.ok(home&&!home.journey&&home.location==='buenos_aires'&&home.members.length===5,'The second actual local column must keep one vacant place for the physician.');
+ const contact=encounterContacts(start).find(npc=>npc.operativeId===10);
+ assert.ok(contact&&locationId(contact.sector,start)==='buenos_aires','The actual public contact must belong to the existing capital stop.');
+ const speaker=rosterFor(start).find(op=>home.members.includes(op.id)&&stable(start,op.id)&&!start.operativeState[op.id].asleep&&start.operativeState[op.id].energy>10&&!encounterRequirements(start,contact,op));
+ assert.ok(speaker,'A fit actual second-column member must satisfy the physical conversation requirements.');
+ let c=saved({campaign:start}).campaign;
+ const retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report});
+ retained.retain(deadlineSeconds-clock(c));retained.order({type:'selectSquad',id:squadId});
+ const beforeMembers=[...c.squad],before=clock(c),quote=contractQuote(c,rosterFor(c).find(op=>op.id===10),'day');
+ assert.equal(quote.available,true,quote.reason);assert.ok(quote.total<=c.resources.treasury,'The physical physician meeting must fit its actual quoted native service cost.');
+ const joined=meetRecruits(c,[contact.id],speaker.id);
+ assert.ok(clock(joined)<=deadlineSeconds,'The actual conversation clock must remain inside the same original arrival allowance.');
+ retained.adopt(joined,'physical-arsenal-physician');
+ assert.ok(living(c).includes(10)&&stable(c,10)&&c.operativeState[10].hp===c.operativeState[10].maxHp);
+ assert.equal(operativeLocation(c,10),'buenos_aires');assert.deepEqual(c.squad,[...beforeMembers,10]);
+ assert.deepEqual(c.squads.find(group=>group.id===squadId).members,c.squad);
+ // The actual conversation signs its own default day term after the paid
+ // approach. A legacy permanent profile stays permanent; an authored finite
+ // profile keeps its real expiry seconds and ordinary renewal costs.
+ const meetingContract=structuredClone(c.contracts[10]),signedSeconds=meetingContract.started*3600+(meetingContract.startedSecond??0);
+ assert.ok(signedSeconds>=before&&signedSeconds<=clock(c));assert.equal(meetingContract.kind,quote.permanent?'patriot':'paid');assert.equal(meetingContract.term,'day');assert.equal(meetingContract.paid,quote.price);
+ assert.equal(contractExpiresSeconds(meetingContract),quote.permanent?null:signedSeconds+quote.hours*3600);
+ retained.retain(deadlineSeconds-clock(c));assert.ok(clock(c)<=deadlineSeconds);
+ const expiry=contractExpiresSeconds(c.contracts[10]);assert.ok(expiry===null||expiry>deadlineSeconds,'The real physician term must cover the same original arsenal arrival allowance.');
+ report({event:'createdCuyoArsenalPhysicianRecruited',id:10,speaker:speaker.id,squadId,beforeMembers,seconds:clock(c)-before,deadlineSeconds,quote,meetingContract,hour:c.hour,second:c.secondOfHour??0,campaign:c});
+ return {campaign:c,physician:10,recruited:true};
+}
+
 // A native victory spent the three original bronze guns. This side operation
 // earns the remaining finite arsenal; it never refills those existing pieces.
 export function prepareCreatedCuyoArsenalAssault(start,{report=()=>{}}={}){
@@ -86,7 +131,7 @@ export function prepareCreatedCuyoArsenalAssault(start,{report=()=>{}}={}){
  assert.equal(c.sectors.ensenada.owner,'royalist');assert.equal(c.artilleryArsenalRecoveries.ensenada,undefined);
  const originalSquad=c.activeSquadId,originalMembers=[...c.squad];
  const retain=()=>createFreshRouteOrders(()=>c,next=>{c=next;},{report,handledEncounters:['tucuman','salta']});
- let retained=retain();
+ let retained=retain(),arrivalDeadline=null;
  const resolve=()=>{
   if(!c.pendingEncounter)return;
   const selected=c.activeSquadId,encounter=c.pendingEncounter;
@@ -99,7 +144,8 @@ export function prepareCreatedCuyoArsenalAssault(start,{report=()=>{}}={}){
   retained=retain();
   retained.order({type:'selectSquad',id:selected});
  };
- const order=action=>{resolve();return retained.order(action);};
+ const checkArrival=()=>{if(arrivalDeadline!==null)assert.ok(c.hour*3600+(c.secondOfHour??0)<=arrivalDeadline,'Arsenal arrival orders must stay inside the one original travel allowance.');};
+ const order=action=>{resolve();checkArrival();const next=retained.order(action);checkArrival();return next;};
  if(!healthyLocalVeterans(c).some(op=>op.medical>=60)){
   const returned=returnCreatedCuyoArsenalPhysician(c,{report});retained.adopt(returned.campaign,'arsenal-physician-arrival');
  }
@@ -115,7 +161,8 @@ export function prepareCreatedCuyoArsenalAssault(start,{report=()=>{}}={}){
  assert.ok(local.some(id=>rosterFor(c).find(op=>op.id===id).medical>=60),'The actual local column needs its existing physician.');
  const freshPhysician=rosterFor(c).find(op=>op.id>=100&&op.id<1000&&op.medical>=60&&!c.recruited.includes(op.id)&&stable(c,op.id)&&c.operativeState[op.id].hp===c.operativeState[op.id].maxHp&&c.operativeState[op.id].morale>=50&&contractQuote(c,op,'day').available);
  const servingPhysician=freshPhysician?null:veterans.filter(op=>!local.includes(op.id)&&op.medical>=60).sort((a,b)=>c.operativeState[b.id].morale-c.operativeState[a.id].morale||b.medical-a.medical||a.id-b.id)[0];
- assert.ok(freshPhysician||servingPhysician,'The second column needs an available physician or an actual serving reserve.');
+ const historicalPhysician=!freshPhysician&&!servingPhysician?rosterFor(c).find(op=>op.id===10&&!c.recruited.includes(op.id)&&op.medical>=60&&stable(c,op.id)&&c.operativeState[op.id].hp===c.operativeState[op.id].maxHp&&encounterContacts(c).some(npc=>npc.operativeId===op.id&&locationId(npc.sector,c)==='buenos_aires')):null;
+ assert.ok(freshPhysician||servingPhysician||historicalPhysician,'The second column needs an available physician, an actual serving reserve or its known living capital contact.');
  const rested=[...local,...(servingPhysician?[servingPhysician.id]:[])];
  for(const operativeId of rested)order({type:'assignCare',operativeId,assignment:'rest'});
  // Safe strategic rest earns one morale point per six actual hours. The
@@ -126,9 +173,9 @@ export function prepareCreatedCuyoArsenalAssault(start,{report=()=>{}}={}){
  assert.ok(rested.every(id=>{const r=c.operativeState[id];return r.morale>=50&&!r.fatigue&&r.energy===100&&!r.asleep;}),'Existing paid rest must finish before the actual coastal march.');
  const candidates=rosterFor(c).filter(op=>op.id>=100&&op.id<1000&&!c.recruited.includes(op.id)&&stable(c,op.id)&&c.operativeState[op.id].hp===c.operativeState[op.id].maxHp&&c.operativeState[op.id].morale>=50&&contractQuote(c,op,'day').available)
   .sort((a,b)=>b.marksmanship-a.marksmanship||contractQuote(c,a,'day').price-contractQuote(c,b,'day').price);
- const physician=servingPhysician??candidates.filter(op=>op.medical>=60).sort((a,b)=>b.medical-a.medical)[0];assert.ok(physician,'A second actual physician accompanies the second column.');
- const recruitCount=12-local.length;
- const recruits=[...candidates.filter(op=>op.id!==physician.id).slice(0,recruitCount-1),physician];assert.equal(recruits.length,recruitCount,'The actual local veterans and available paid recruits must supply the complete twelve-person arsenal force.');
+ let physician=historicalPhysician?null:(servingPhysician??candidates.filter(op=>op.medical>=60).sort((a,b)=>b.medical-a.medical)[0]);assert.ok(physician||historicalPhysician,'The second actual physician must be serving or physically recruited at the capital stop.');
+ const recruitCount=12-local.length-(historicalPhysician?1:0);
+ const recruits=[...candidates.filter(op=>op.id!==physician?.id).slice(0,recruitCount-(physician?1:0)),...(physician?[physician]:[])];assert.equal(recruits.length,recruitCount,'The actual local veterans and available paid recruits must fill every nonreserved arsenal place.');
  const hired=recruits.filter(op=>!c.recruited.includes(op.id));
  assert.ok(hired.reduce((sum,op)=>sum+contractQuote(c,op,'day').total,0)<=c.resources.treasury-30000,'The actual first paid terms must fit the treasury and return reserve.');
  for(const recruit of hired){
@@ -152,16 +199,19 @@ export function prepareCreatedCuyoArsenalAssault(start,{report=()=>{}}={}){
  c=supplyFreshMountainAmmunition(c,field,{target:12,report});
  const doctor=rosterFor(c).filter(op=>local.includes(op.id)&&op.medical>=60).sort((a,b)=>b.medical-a.medical)[0];
  const medicalReserves={};
- for(const op of [doctor,physician]){
-  const localStock=()=>c.operativeState[op.id].medkits+sectorInventoryModel(c,'mendoza',rosterFor(c),op.id).entries.filter(row=>row.reachable&&JSON.parse(row.expected).item==='medkits').reduce((sum,row)=>sum+row.count,0)+
-   c.recruited.filter(id=>id!==op.id&&c.operativeState[id].alive&&!c.operativeState[id].captured&&c.operativeState[id].location==='mendoza'&&!sectorInventoryModel(c,'mendoza',rosterFor(c),id).reason).reduce((sum,id)=>sum+Math.max(0,c.operativeState[id].medkits-(medicalReserves[id]??0)),0);
+ const supplyPhysician=op=>{
+  const at=operativeLocation(c,op.id),localStock=()=>c.operativeState[op.id].medkits+sectorInventoryModel(c,at,rosterFor(c),op.id).entries.filter(row=>row.reachable&&JSON.parse(row.expected).item==='medkits').reduce((sum,row)=>sum+row.count,0)+
+   c.recruited.filter(id=>id!==op.id&&c.operativeState[id].alive&&!c.operativeState[id].captured&&c.operativeState[id].location===at&&!sectorInventoryModel(c,at,rosterFor(c),id).reason).reduce((sum,id)=>sum+Math.max(0,c.operativeState[id].medkits-(medicalReserves[id]??0)),0);
   for(let delivery=0;localStock()<8;delivery++){
    assert.ok(delivery<8,'Finite arsenal medical couriers must make actual progress.');
-   const found=collectRouteMedicalSupplies(c,op.id,8-localStock(),{mode:c.routes.posta?'posta':'march',report});c=found.campaign;
+   const found=collectRouteMedicalSupplies(c,op.id,8-localStock(),{mode:c.routes.posta?'posta':'march',...(arrivalDeadline!==null?{deadlineSeconds:arrivalDeadline}:{}),report});c=found.campaign;
    assert.ok(found.collected>0);
   }
   c=supplyRouteDressings(c,op.id,8,{reserves:medicalReserves,report});medicalReserves[op.id]=8;
- }
+  if(arrivalDeadline!==null)assert.ok(c.hour*3600+(c.secondOfHour??0)<=arrivalDeadline,'Finite capital supply must fit the same original arrival allowance.');
+ };
+ if(!historicalPhysician)for(const op of [doctor,physician])supplyPhysician(op);
+ if(historicalPhysician)arrivalDeadline=c.hour*3600+(c.secondOfHour??0)+168*3600;
  order({type:'configureArtillery',types:[]});
  for(const id of columns){order({type:'selectSquad',id});c=finishReloadsBeforeMarch(c,{report});order({type:'travel',sector:'buenos_aires',mode:'posta',queue:true});}
  for(let hour=0;hour<168&&columns.some(id=>c.squads.find(q=>q.id===id).journey);hour++){
@@ -169,6 +219,21 @@ export function prepareCreatedCuyoArsenalAssault(start,{report=()=>{}}={}){
   order({type:'wait',hours:1});
  }
  resolve();assert.equal(c.location,'buenos_aires');assert.ok(columns.every(id=>c.squads.find(q=>q.id===id).location==='buenos_aires'&&!c.squads.find(q=>q.id===id).journey));
+ if(historicalPhysician){
+  const joined=recruitCreatedCuyoArsenalPhysician(c,{squadId:columns.at(-1),deadlineSeconds:arrivalDeadline,report});retained.adopt(joined.campaign,'capital-arsenal-physician');
+  physician=rosterFor(c).find(op=>op.id===joined.physician);field.push(physician.id);
+  assert.equal(field.length,12);assert.equal(new Set(field).size,12);
+  assert.ok(doctor.id!==physician.id&&[doctor,physician].every(op=>op.medical>=60&&living(c).includes(op.id)&&operativeLocation(c,op.id)==='buenos_aires'&&stable(c,op.id)&&c.operativeState[op.id].hp===c.operativeState[op.id].maxHp),'Both actual qualified physicians must be present before capital supply or the assault.');
+  if(c.operativeState[physician.id].weaponDropped||![1800,1801,1802,1803].includes(physician.weapon))c=recoverRoutePrimary(c,physician.id,{preferredWeapon:1801,replace:true,report});
+  assert.ok(!c.operativeState[physician.id].weaponDropped&&[1800,1801,1802,1803].includes(rosterFor(c).find(op=>op.id===physician.id).weapon));
+  c=supplyFreshMountainAmmunition(c,[physician.id],{target:12,report});
+  for(const op of [doctor,physician])supplyPhysician(op);
+  c=finishReloadsBeforeMarch(c,{report});
+  assert.ok(c.hour*3600+(c.secondOfHour??0)<=arrivalDeadline,'The completed twelve-person field must fit the original 168-hour arrival allowance.');
+  arrivalDeadline=null;
+ }
+ assert.equal(field.length,12);assert.equal(new Set(field).size,12);
+ assert.ok(doctor.id!==physician.id&&[doctor,physician].every(op=>op.medical>=60&&living(c).includes(op.id)&&operativeLocation(c,op.id)==='buenos_aires'&&stable(c,op.id)),'The completed arsenal field keeps two distinct actual serving physicians.');
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'rest'});
  for(let hour=0;hour<72&&(c.hour%24<6||c.hour%24>10||field.some(id=>{const r=c.operativeState[id];return r.fatigue||r.energy<100||r.asleep;}));hour++)order({type:'wait',hours:1});
  for(const operativeId of field){assert.ok(!c.operativeState[operativeId].fatigue&&c.operativeState[operativeId].energy===100&&!c.operativeState[operativeId].asleep);order({type:'assignCare',operativeId,assignment:'active'});}

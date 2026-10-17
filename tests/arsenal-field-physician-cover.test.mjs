@@ -266,3 +266,64 @@ test('interrupt protection preserves eligibility, supply, hand, gun contact and 
   const snapshot=structuredClone(paused);assert.equal(controller(paused,doctor),null,variant.name);assert.equal(controller.sharedFallback(paused,doctor),null,variant.name);assert.deepEqual(paused,snapshot);assert.deepEqual(interruptMedicalReplay(start,orders),paused);assert.deepEqual(start,before);
  }
 });
+
+
+// Independent current-public penetration lane. Native ordinary aid and the
+// existing paid LOOK/endTurn protocol earn the low-AP interrupt; no actor or
+// returned state is patched. The melee advance earns control before the
+// separately declared visible loaded rifle can take its ordinary turn.
+import {canSee,weaponFor,firearmKnownTerrain} from '../game/tactical.js';
+import {projectileFlight} from '../game/projectile-cover.js';
+import {sameSurface} from '../game/tactical-space.js';
+import {publicRouteView} from './route-infantry-progress.mjs';
+function incomingMedicalInterruptArena({visible=true,charged=false}={}){
+ const common={maxHp:100,hp:100,bleeding:0,bandaged:0,energy:100,fatigue:0,shock:0,morale:90,
+  weapon:1800,blade:0,loaded:1,ammo:5,condition:100,jammed:false,medical:0,medkits:0,
+  stance:'standing',movementMode:'walk',mounted:false,inventory:{},rations:0,torches:0,boleadoras:0,traits:[],abilities:[],agility:10,wisdom:10,experienceLevel:1};
+ const players=[{...common,id:'doctor',name:'Médica detrás del frente',x:1,y:4,facing:2,medical:93,medkits:3,activeSlot:'primary',traits:['field_rescuer'],agility:100,wisdom:100,dexterity:100,experienceLevel:10},
+  {...common,id:'front',name:'Frente real',x:3,y:4,facing:2},
+  {...common,id:'observer',name:'Observador distante',x:1,y:1,facing:2},
+  {...common,id:'patient',name:'Paciente adyacente',x:1,y:5,facing:2,hp:10,bleeding:3,bandaged:0,weapon:0,loaded:0,ammo:0}];
+ const options={id:'declared-current-incoming-medical-lane',width:24,height:10,tiles:flat(24,10),hour:12,seed:45,firstSide:'player',exploration:false,
+  enemies:[{...common,id:'advance',name:'Avance que gana control',x:7,y:1,facing:6,weapon:1809,loaded:0,ammo:0,agility:75,wisdom:50,experienceLevel:4,patrol:false,overwatch:false},
+   {...common,id:'rifle-threat',name:'Fusil actual visible',x:visible?9:20,y:4,facing:6,weapon:1800,loaded:1,ammo:5,agility:75,wisdom:50,experienceLevel:4,patrol:false,overwatch:false}],
+  artillery:charged?[{id:'medical-contact-gun',type:'bronze4',side:'player',x:1,y:3,loaded:true,ammo:2,facing:0}]:[],npcs:[],props:[],groundItems:[],buildings:[]};
+ const declaration=structuredClone({players,options}),battle=createBattle(players,options);assert.deepEqual({players,options},declaration);assert.deepEqual(validateBattleSnapshot(JSON.parse(JSON.stringify(battle))),battle);return battle;
+}
+function earnedIncomingMedicalWindow(start,{care=true,remaining=16}={}){
+ let battle=start;const orders=[],execute=action=>{battle=interruptMedicalReplay(battle,[action]);orders.push(action);};let spent=0;
+ if(care){
+  execute({type:'weapon',unitId:'doctor',slot:'medical'});const doctor=unit(battle,'doctor'),quote=medicalUsePreview(battle,doctor,unit(battle,'patient'));assert.equal(quote.allowed,true,quote.reason);
+  execute({type:'useItem',unitId:'doctor',targetId:'patient'});spent=quote.treatment.dressingsUsed;assert.ok(spent>0);assert.equal(unit(battle,'doctor').medkits,doctor.medkits-spent);assert.equal(unit(battle,'patient').hp,quote.treatment.hpAfter);assert.equal(unit(battle,'patient').bleeding,quote.treatment.bleedingAfter);
+  execute({type:'weapon',unitId:'doctor',slot:'primary'});
+ }
+ const earned=earnLowAPMedicalInterrupt(battle,{remaining});orders.push(...earned.orders);battle=earned.battle;
+ const doctor=unit(battle,'doctor'),point=spacePoint(unit(battle,'front')),look=lookPreview(battle,doctor,point);
+ if(look.valid){assert.ok(!look.prepare&&look.pa>0&&look.pa<=8);execute({type:'look',unitId:'doctor',...point});assert.equal(unit(battle,'doctor').ap,doctor.ap-look.pa);}
+ assert.equal(unit(battle,'doctor').facing,2);assert.equal(battle.phase,'interrupt');assert.deepEqual(battle.interrupt.unitIds,['doctor']);assert.equal(interruptAvailable(battle,unit(battle,'doctor')),true);
+ assert.ok(!sameCell(unit(battle,'advance'),unit(start,'advance')));assert.ok(unit(battle,'advance').ap<unit(start,'advance').ap);return {battle,orders,spent};
+}
+function incomingDoctorFlight(battle){
+ const doctor=unit(battle,'doctor'),view={...publicRouteView(battle,doctor),...firearmKnownTerrain(battle,doctor)},threat=view.units.find(actor=>actor.id==='rifle-threat'),front=view.units.find(actor=>actor.id==='front');
+ if(!threat)return null;return projectileFlight(view,threat,front,weaponFor(threat),'torso');
+}
+
+test('an earned supplied medical interrupt pays one lateral step to reduce a current visible penetration lane before prone',()=>{
+ const start=incomingMedicalInterruptArena(),before=structuredClone(start),controller=policy(start),{battle:paused,orders,spent}=earnedIncomingMedicalWindow(start),doctor=unit(paused,'doctor'),front=unit(paused,'front'),threat=unit(paused,'rifle-threat');
+ assert.equal(doctor.activeSlot,'medical');assert.equal(doctor.medkits,3-spent);assert.ok(doctor.medkits>0&&doctor.ap<actionCosts(paused,doctor).heal&&doctor.ap>=stanceCost(doctor,'prone'));assert.equal(canSee(paused,doctor,threat),true);assert.equal(threat.loaded,1);
+ const flight=incomingDoctorFlight(paused),impacts=flight.bodyImpacts,frontIndex=impacts.findIndex(hit=>hit.victimId==='front'),doctorIndex=impacts.findIndex(hit=>hit.victimId==='doctor');assert.ok(frontIndex>=0&&doctorIndex>frontIndex&&impacts[frontIndex].continued&&impacts[doctorIndex].damageFactor>0&&impacts[doctorIndex].reachChance>0,'The actual public Native torso quote reaches the doctor after the real front ally.');
+ const action=controller(paused,doctor);assert.equal(action?.type,'move',JSON.stringify({boundary:'fresh-medical-current-incoming-lane-action',state:{status:paused.status,mode:paused.mode,phase:paused.phase,turn:paused.turn,elapsedSeconds:paused.elapsedSeconds,seed:paused.seed,interrupt:paused.interrupt,reactionStack:paused.reactionStack},doctor,front,threat,flight,action:action??null,orders}));const route=getReachable(publicRouteView(paused,doctor),doctor).find(point=>sameCell(point,action));assert.ok(route&&route.cost>0&&route.cost<=Math.min(16,doctor.ap)&&route.path.length===1&&route.path.every(point=>(point.kind===undefined||point.kind==='move')&&sameSurface(point,doctor)));
+ const after=interruptMedicalReplay(paused,[action]),moved=unit(after,'doctor');assert.deepEqual(spacePoint(moved),spacePoint(route));assert.equal(moved.ap,doctor.ap-route.cost);assert.ok(moved.energy<doctor.energy);assert.equal(moved.stance,doctor.stance);assert.equal(moved.activeSlot,'medical');assert.equal(moved.medkits,doctor.medkits);assert.ok(!incomingDoctorFlight(after).bodyImpacts.some(hit=>hit.victimId==='doctor'&&hit.damageFactor>0&&hit.reachChance>0));
+ for(const actor of paused.units){const changed=unit(after,actor.id);if(actor.id!=='doctor')assert.deepEqual(changed,actor);for(const key of ['hp','maxHp','bleeding','bandaged','morale','medkits'])assert.equal(changed[key],actor[key],actor.id+'/'+key);}
+ assert.equal(after.elapsedSeconds,paused.elapsedSeconds);assert.equal(after.turn,paused.turn);assert.equal(after.seed,paused.seed);assert.equal(after.phase,paused.phase);assert.deepEqual(after.enemyTurn,paused.enemyTurn);assert.deepEqual(after.interrupt,paused.interrupt);assert.deepEqual(controller(after,moved),moved.ap>=stanceCost(moved,'prone')?{type:'stance',unitId:moved.id,stance:'prone'}:null);goods(start,after);assert.deepEqual(interruptMedicalReplay(start,[...orders,action]),after);assert.deepEqual(start,before);
+});
+
+test('medical lane reduction preserves current sight, affordable adjacent aid and charged-gun holds',()=>{
+ for(const kind of ['no-personal-sight','affordable-aid','charged-contact']){
+  const start=incomingMedicalInterruptArena({visible:kind!=='no-personal-sight',charged:kind==='charged-contact'}),before=structuredClone(start),controller=policy(start),{battle:paused,orders}=earnedIncomingMedicalWindow(start,{care:kind!=='affordable-aid',remaining:kind==='affordable-aid'?44:16}),doctor=unit(paused,'doctor'),action=controller(paused,doctor);
+  if(kind==='no-personal-sight'){assert.equal(canSee(paused,doctor,unit(paused,'rifle-threat')),false);assert.deepEqual(action,{type:'stance',unitId:'doctor',stance:'prone'});const after=interruptMedicalReplay(paused,[action]);assert.equal(unit(after,'doctor').ap,doctor.ap-stanceCost(doctor,'prone'));assert.ok(sameCell(unit(after,'doctor'),doctor));assert.deepEqual(interruptMedicalReplay(start,[...orders,action]),after);}
+  if(kind==='affordable-aid'){const quote=medicalUsePreview(paused,doctor,unit(paused,'patient'));assert.equal(quote.allowed,true,quote.reason);assert.deepEqual(action,{type:'useItem',unitId:'doctor',targetId:'patient'});const after=interruptMedicalReplay(paused,[action]);assert.equal(unit(after,'doctor').ap,doctor.ap-quote.cost);assert.equal(unit(after,'doctor').medkits,doctor.medkits-quote.treatment.dressingsUsed);assert.equal(unit(after,'patient').hp,quote.treatment.hpAfter);assert.equal(unit(after,'patient').bleeding,quote.treatment.bleedingAfter);assert.ok(sameCell(unit(after,'doctor'),doctor));assert.deepEqual(interruptMedicalReplay(start,[...orders,action]),after);}
+  if(kind==='charged-contact'){assert.equal(artilleryContact(paused,doctor,paused.artillery[0]),true);assert.equal(action,null);assert.equal(controller.sharedFallback(paused,doctor),null);assert.deepEqual(interruptMedicalReplay(start,orders),paused);}
+  assert.deepEqual(start,before);
+ }
+});

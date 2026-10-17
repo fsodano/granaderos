@@ -1,10 +1,11 @@
 import {paidHospitalRoofWalkPreview} from './coordinated-hospital-battery.mjs';
 import {lowerWeapon} from '../game/weapon-readiness.js';
-import {publicSupportStagingPlan} from './public-support-staging.mjs';
+import {publicSupportStagingPlan,previewPublicPaidWalk} from './public-support-staging.mjs';
+import {projectileFlight} from '../game/projectile-cover.js';
 import {publicRearFormationFollowPlan,publicLateRearSearchEligible} from './public-rear-formation.mjs';
 import {coastalBatteryController} from './coastal-command-driver.mjs';
 import {sectorSearchOrder} from './sector-search-driver.mjs';
-import {getReachable,teamCanSee,hasLineOfSight,hasFirearm,actionCosts,knownArtillery,medicalUsePreview,stanceCost,artilleryContact,interruptAvailable} from '../game/tactical.js';
+import {getReachable,teamCanSee,hasLineOfSight,hasFirearm,actionCosts,knownArtillery,medicalUsePreview,stanceCost,artilleryContact,interruptAvailable,canSee,weaponFor,firearmKnownTerrain} from '../game/tactical.js';
 import {choosePlayerSharedSightingInvestigation} from '../game/tactical-ai.js';
 import {firearmServiceable} from '../game/firearm-serviceability.js';
 import {medicalPatientAvailable} from '../game/medical-patient.js';
@@ -88,9 +89,37 @@ function physicianCoverOrder(battle,unit,action,protectedIds,direction,careOnly=
  return candidates[0]?{type:'move',unitId:unit.id,...spacePoint(candidates[0])}:null;
 }
 
+// This one-step quote is only a reduction of a CURRENT public main-hand
+// torso penetration lane through a real armed friend. It predicts neither
+// an enemy order nor a hit. All known bodies remain in every paid preview.
+function fieldPhysicianIncomingLaneMove(battle,unit){
+ if(battle.reactionStack?.length||battle.interrupt?.side!=='player')return null;
+ const publicScene=publicView(battle,unit),view={...publicScene,...firearmKnownTerrain(battle,unit)},pairs=[];
+ const threats=publicScene.units.filter(other=>other.side!==unit.side&&rifleReady(other)&&sameSurface(unit,other)&&canSee(battle,unit,other));
+ for(const threat of threats)for(const front of view.units.filter(other=>other.side===unit.side&&other.id!==unit.id&&fit(other)&&hasFirearm(other)&&sameSurface(unit,other)&&distance(threat,other)<distance(threat,unit))){pairs.push({threatId:threat.id,frontId:front.id});}
+ if(!pairs.length)return null;
+ // Keep the original public contact set while quoting movement: turning the
+ // medic away must not erase an already known incoming lane from the quote.
+ const risks=scene=>pairs.map(({threatId,frontId})=>{
+  const threat=scene.units.find(other=>other.id===threatId),front=scene.units.find(other=>other.id===frontId);
+  const impacts=projectileFlight(scene,threat,front,weaponFor(threat),'torso').bodyImpacts??[],first=impacts.findIndex(hit=>hit.victimKind==='unit'&&hit.victimId===frontId),index=impacts.findIndex(hit=>hit.victimKind==='unit'&&hit.victimId===unit.id),hit=impacts[index];
+  return first>=0&&index>first&&impacts[first].continued&&hit.damageFactor>0&&hit.reachChance>0?hit.damageFactor*hit.reachChance:0;
+ });
+ const current=risks(view);if(!current.some(value=>value>0))return null;
+ const cover=point=>surfaceAt(battle,point)?.cover??0,choices=[];
+ for(const point of getReachable(publicScene,unit).filter(point=>point.cost>0&&point.cost<=Math.min(16,unit.ap)&&point.path.length===1&&sameSurface(point,unit)&&point.path.every(step=>(step.kind===undefined||step.kind==='move')&&sameSurface(step,unit))&&canSee(battle,unit,point)&&cover(point)>=cover(unit)&&threats.every(threat=>distance(point,threat)>=distance(unit,threat)))){
+  const paid=previewPublicPaidWalk(view,unit,point,Math.min(16,unit.ap));if(!paid||!fit(paid.actor)||paid.actor.energy<=0)continue;
+  const next=risks(paid.view);if(next.some((value,index)=>value>current[index]+1e-9)||!next.some((value,index)=>value<current[index]-1e-9))continue;
+  choices.push({point,risk:next.reduce((sum,value)=>sum+value,0)});
+ }
+ choices.sort((a,b)=>a.risk-b.risk||cover(b.point)-cover(a.point)||a.point.cost-b.point.cost||a.point.y-b.point.y||a.point.x-b.point.x);
+ return choices[0]?{type:'move',unitId:unit.id,...spacePoint(choices[0].point)}:null;
+}
+
 // An actual Native interrupt preserves adjacent care first for the supplied
 // field physician. Its actual medical hand may pay for prone only when the
-// current heal budget is unaffordable; no approach, following or AP is granted.
+// current heal budget is unaffordable. A current public one-step incoming
+// lane reduction may precede prone; no patient approach, following or AP grant.
 function fieldPhysicianInterruptOrder(battle,unit){
  if(!interruptAvailable(battle,unit)||!fit(unit)||unit.captured||unit.energy<=0||unit.medical<60||!(unit.medkits>0))return null;
  const changing=(unit.activeSlot??'primary')!=='medical',cost=actionCosts(battle,unit).weapon;
@@ -107,7 +136,7 @@ function fieldPhysicianInterruptOrder(battle,unit){
  // a real protective posture. No currently payable aid budget is displaced.
  const heal=actionCosts(battle,unit).heal,prone=stanceCost(unit,'prone');
  if(battle.mode==='combat'&&battle.phase==='interrupt'&&unit.activeSlot==='medical'&&['standing','crouched'].includes(unit.stance)&&!unit.mounted&&!unit.knockedDown&&!unit.entangled&&Number.isFinite(heal)&&heal>0&&unit.ap<heal&&Number.isFinite(prone)&&prone>0&&unit.ap>=prone&&
-   !knownArtillery(battle,unit).some(gun=>gun.side===unit.side&&(gun.loaded||gun.ammo>0)&&artilleryContact(battle,unit,gun)))return {type:'stance',unitId:unit.id,stance:'prone'};
+   !knownArtillery(battle,unit).some(gun=>gun.side===unit.side&&(gun.loaded||gun.ammo>0)&&artilleryContact(battle,unit,gun)))return fieldPhysicianIncomingLaneMove(battle,unit)??{type:'stance',unitId:unit.id,stance:'prone'};
  return null;
 }
 

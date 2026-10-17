@@ -243,6 +243,9 @@
 
 /* Keep navigation in one row; detailed controls float above the map. */
 .battle-layout .tactical-notices { top: 0; }
+/* Keep the interrupt notice below the 34px quick-tool row at top:12px.
+   It remains an overlay, so contact does not resize the field. */
+.battle-layout .tactical-notices:has(>.ja2-interrupt-banner) { top: 48px; }
 .battle-layout .battle-header.tactical-map-toolbar {
   position: relative;
   display: grid;

@@ -188,7 +188,9 @@ export function prepareCreatedCoastalAssault(start,{report=()=>{},reinforcementC
  for(const id of expeditionIds)if(!retainedRoles.has(id))keep.delete(id);
  for(const id of [...supportIds,reliefId])hire(id);
  waitUntil(24,()=>[...supportIds,reliefId].every(id=>c.recruited.includes(id)));
- let field=[57,doctorId,...supportIds,reliefId];order({type:'squad',ids:field});
+ let field=[57,doctorId,...supportIds,reliefId];
+ if(c.recruited.includes(10)){assert.ok(c.operativeState[10].alive&&!c.operativeState[10].captured&&c.operativeState[10].location==='mendoza','The existing physician must be an actual local survivor before the capital march.');if(!field.includes(10))field.push(10);keep.add(10);retainedRoles.add(10);}
+ assert.ok(field.length<=6);order({type:'squad',ids:field});
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'rest'});
  waitUntil(600,()=>field.every(id=>{
   const r=c.operativeState[id];return r.morale>=65&&!r.fatigue&&!r.asleep;
@@ -213,8 +215,10 @@ export function prepareCreatedCoastalAssault(start,{report=()=>{},reinforcementC
  }
  assert.equal(c.location,'buenos_aires','The real capital journey must finish before its local squad is reorganized.');
  assert.equal(c.squads.find(q=>q.id===c.activeSquadId)?.journey,undefined);
- order({type:'squad',ids:[57,doctorId,...supportIds]});c=meetRecruits(c,['dorrego','paroissien'],57);
- field.push(4,10);keep.add(4);keep.add(10);
+ order({type:'squad',ids:[57,doctorId,...supportIds]});
+ const capitalContacts=[['dorrego',4],['paroissien',10]].filter(([,id])=>!c.recruited.includes(id)).map(([npcId])=>npcId);
+ if(capitalContacts.length)c=meetRecruits(c,capitalContacts,57);
+ for(const id of [4,10]){assert.ok(c.recruited.includes(id)&&c.operativeState[id].alive&&!c.operativeState[id].captured&&c.operativeState[id].location==='buenos_aires','Every retained capital contact must be an actual living local serving person.');if(!field.includes(id))field.push(id);keep.add(id);}
  const groups=[];
  for(let offset=0;offset<field.length;offset+=6){
   order({type:'createSquad',ids:field.slice(offset,offset+6),sector:'buenos_aires',name:'Columna del puerto'});

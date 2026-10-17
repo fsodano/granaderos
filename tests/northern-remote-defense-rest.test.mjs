@@ -68,3 +68,104 @@ test('acute guards without an actual stable local physician cannot be declared r
  const {campaign:start}=setup({medical:0}),before=structuredClone(start);
  assert.throws(()=>prepareNorthernRemoteDefenseRest(start,'watch-post'),/actual stable local physician/);assert.deepEqual(start,before);
 });
+
+
+// The existing retreat/exit protocol earns the morale deficit. Every body,
+// weapon, finite cartridge, road exit and raid is declared before the factory.
+import {validateContentPackage} from '../game/content-package.js';
+import {enterSector} from '../game/world.js';
+import {actBattle,presentedActBattle,getReachable,exitPreview} from '../game/tactical.js';
+import {boundaryPassable} from '../game/tactical-exits.js';
+import {spacePoint} from '../game/tactical-space.js';
+import {syncBattleTime} from '../game/time.js';
+import {validateBattleSnapshot} from '../game/validate-battle.js';
+import {resolveRestingNorthernClinicDefense} from './northern-route.mjs';
+import {stageRouteRoofDefenders} from './route-roof-defenders.mjs';
+
+function restingClinicRaid(){
+ const d=scaffoldDocuments('declared-clinic-duty-return'),base=d.content.characters[0],world=d.world;
+ // Keep the real camp headquarters and hostile retreat destination. Córdoba
+ // is a separate owned locality, so the ordinary scheduled raid is lawful.
+ const cell=world.cells.find(point=>point.col===17&&point.row===16),name='Córdoba';
+ Object.assign(cell,{name,anchor:true,district:true,location:'cordoba',locality:'cordoba'});
+ world.sectors.push({...structuredClone(world.sectors.find(sector=>sector.id==='watch-post')),id:'cordoba',name,grid:cell.grid,neighbors:['camp','watch-post']});
+ for(const sector of world.sectors.slice(0,2))sector.neighbors.push('cordoba');
+ world.places.cordoba={lon:17,lat:17,label:name};world.districts.cordoba=[{id:'cordoba:0',sectorId:'cordoba',col:cell.col,row:cell.row,name,x:cell.x,y:cell.y,urban:false}];
+ world.arrivalFacilities.cordoba=['barracks'];world.ruralSectors.push('cordoba');world.landscapes.cordoba='settlement';world.expansion.rural.push('cordoba');
+ d.maps.cordoba={...structuredClone(d.maps.camp),id:'cordoba',title:name};d.content.startingTerritory.cordoba={owner:'patriot',loyalty:65};d.content.arrivalSites.push({sector:'cordoba',facilities:['barracks']});
+ // This clinic has the same supported public roof/slab declaration used by
+ // existing paid staging controls. Both real climb routes remain accessible.
+ d.maps.cordoba.upperSurfaces=Array.from({length:24},(_,i)=>({id:'clinic-duty-roof-'+i,x:8+i%6,y:5+Math.floor(i/6),tacticalLevel:1,elevation:3,type:'floor',kind:'roof',blocked:false,cover:30}));
+ d.maps.cordoba.climbLinks=[{id:'clinic-duty-north-access',kind:'climb',from:{x:7,y:6,tacticalLevel:0},to:{x:8,y:6,tacticalLevel:1}},{id:'clinic-duty-west-access',kind:'climb',from:{x:7,y:8,tacticalLevel:0},to:{x:8,y:8,tacticalLevel:1}}];
+ assert.equal(d.content.headquarters,'camp');assert.equal(world.defaultHeadquarters,'camp');assert.equal(d.content.startingTerritory.camp.owner,'patriot');assert.equal(d.content.startingTerritory['watch-post'].owner,'royalist');
+ d.content.rules.startingTreasury=10000;d.content.rules.deploymentCartridges=12;d.content.rules.enemyCartridges=0;d.content.campaignStory.chapters[0].conditions=[{type:'day',min:100,max:null}];
+ d.world.expansion.buildingTargets={camp:0,cordoba:0,'watch-post':0};d.world.physical.caches={};
+ d.world.exitLinks=[['cordoba','E',19,8,'watch-post','W',0,8]];
+ d.world.deployment={'watch-post':{playerAnchors:[{x:0,y:6},{x:0,y:8},{x:0,y:10}],enemyAnchor:{x:16,y:8}}};
+ d.world.enemyStrategy={version:1,theaters:{frontier:{legHours:1,reserve:3,raidEveryHours:48,axis:['cordoba']}}};
+ assert.ok(!d.world.enemyStrategy.theaters.frontier.axis.includes(d.content.headquarters));
+ d.content.weapons.push({id:'clinic-duty-musket',template:1800,name:'Mosquete del depósito',damage:58,fireAP:12,aimAP:6,reloadAP:45,range:18,readyAP:6,capacity:1,weight:4,price:240,art:base.portrait});
+ d.content.characters=['rest-a','rest-b','active-guard'].map(name=>({...structuredClone(base),id:name,name,nickname:name,monthlyPay:30,arrivalHours:0,serviceGuarantee:0,weapon:'clinic-duty-musket',
+  attributes:{...base.attributes,maxHp:80,agility:90,dexterity:90,strength:90,wisdom:90,marksmanship:100,medical:name==='active-guard'?1:0},
+  startingSupplies:{rations:0,torches:0,boleadoras:0,medkits:name==='active-guard'?1:0},startingCondition:{hp:80,bleeding:0,bandaged:0,energy:100,fatigue:0}}));
+ const declaration=structuredClone(d),content=compileCampaignPackage(d.manifest,d);assert.deepEqual(validateContentPackage(content),[]);let c=initialCampaign(45,content);const ids=rosterFor(c).map(op=>op.id);
+ for(const id of ids){const q=contractQuote(c,rosterFor(c).find(op=>op.id===id),'month'),cash=c.resources.treasury;c=order(c,{type:'recruitCivic',id,term:'month',destination:'cordoba'});assert.equal(cash-c.resources.treasury,q.total);}
+ c=order(c,{type:'createSquad',ids,sector:'cordoba',name:'Guardia del depósito'});assert.equal(c.location,'cordoba');assert.equal(c.sectors.camp.owner,'patriot');assert.equal(c.sectors.cordoba.owner,'patriot');assert.equal(c.sectors['watch-post'].owner,'royalist');
+ for(let retreat=0;retreat<2;retreat++){
+  const morale=Object.fromEntries(ids.map(id=>[id,c.operativeState[id].morale]));c=order(c,{type:'attack',sector:'watch-post'});assert.ok(c.pendingBattle);assert.equal(c.pendingEncounter,null);
+  let campaign=c,battle=enterSector(c.pendingBattle,c.sectorStates['watch-post']);const act=action=>{
+   const direct=actBattle(battle,action);assert.equal(direct.lastError,null,JSON.stringify(action));assert.deepEqual(presentedActBattle(battle,action).state,direct);assert.deepEqual(validateBattleSnapshot(JSON.parse(JSON.stringify(direct))),direct);
+   const synced=syncBattleTime(campaign,direct);assert.equal(synced.error,null);const pair=decodeSave(encodeSave(synced.campaign,synced.battle));assert.deepEqual(pair,{campaign:synced.campaign,battle:synced.battle});campaign=pair.campaign;battle=pair.battle;
+  };
+  const exit=battle.exits.find(exit=>exit.destination==='cordoba');assert.ok(exit);
+  for(const id of ids){const actor=battle.units.find(unit=>unit.id===String(id));if(!boundaryPassable(battle,actor,exit.edge)){const goal=getReachable(battle,actor).filter(point=>boundaryPassable(battle,point,exit.edge)).sort((a,b)=>a.cost-b.cost)[0];assert.ok(goal);act({type:'move',unitId:actor.id,...spacePoint(goal)});}}
+  const action={type:'exit',unitIds:ids.map(String),exitId:exit.id},quote=exitPreview(battle,action);assert.equal(quote.available,true,quote.reason);act(action);assert.equal(battle.status,'retreat');
+  c=order(campaign,{type:'battleResult',battleId:campaign.pendingBattle.id,outcome:'retreat',sectorState:battle,survivors:battle.units.filter(unit=>unit.side==='player')});
+  assert.equal(c.location,'cordoba');assert.equal(c.pendingBattle,null);for(const id of ids){assert.equal(c.operativeState[id].morale,morale[id]-5);assert.equal(c.operativeState[id].hp,80);assert.equal(c.operativeState[id].bleeding,0);assert.equal(c.operativeState[id].assignment,'active');}
+  c=save(c);
+ }
+ assert.ok(ids.every(id=>c.operativeState[id].morale===70));
+ // Real retreat arrivals are still on the ground. Pay the clinic's normal
+ // peaceful roof preparation before waiting for the already scheduled raid.
+ // This consumes the existing staging hour, not an extra wait or raid delay.
+ const stageStart=c,stageBefore=structuredClone(c),staged=stageRouteRoofDefenders(c,ids,{bounded:{deadlineSeconds:clock(c)+3600}}),staging=staged.receipt;c=staged.campaign;
+ assert.deepEqual(stageStart,stageBefore);assert.equal(c.pendingBattle,null);assert.equal(c.pendingEncounter,null);assert.deepEqual(staging.ids,ids);
+ assert.ok(staging.steps>0&&staging.steps<=staging.maximumSteps&&staging.maximumSteps===64*ids.length);assert.ok(staging.orders.length<=staging.maximumOrders&&staging.maximumOrders<=600);
+ assert.ok(staging.orders.some(row=>row.kind==='battle'&&row.action.type==='move'));assert.ok(staging.orders.some(row=>row.kind==='battle'&&row.action.type==='climb'));
+ assert.ok(staging.endSeconds>staging.startSeconds&&staging.endSeconds<=staging.until&&staging.until===staging.startSeconds+3600);assert.equal(clock(c),staging.endSeconds);
+ assert.equal(new Set(staging.positions.map(point=>`${point.tacticalLevel}:${point.x}:${point.y}`)).size,ids.length);
+ for(const id of ids){const r=c.operativeState[id],post=staging.positions.find(point=>point.id===id),surface=c.sectorStates.cordoba.upperSurfaces.find(point=>point.x===post.x&&point.y===post.y&&point.tacticalLevel===post.tacticalLevel);
+  assert.equal(r.residentSector,'cordoba');assert.equal(r.residentScene,null);assert.equal(post.tacticalLevel,1);assert.ok(surface&&!surface.blocked&&surface.kind==='roof'&&surface.cover===30);assert.deepEqual(r.residentPosition,spacePoint(post));
+  for(const key of ['alive','hp','maxHp','bleeding','bandaged','morale','medkits','inventory','ammoStock','carriedAmmo','carriedLoaded','carriedLoading','condition','primaryWeapon','bladeWeapon'])assert.deepEqual(r[key],stageBefore.operativeState[id][key],id+' staging '+key);
+  assert.ok(r.energy<=stageBefore.operativeState[id].energy);assert.equal(r.assignment,'active');
+ }
+ assert.ok(ids.some(id=>c.operativeState[id].energy<stageBefore.operativeState[id].energy));assert.equal(c.resources.treasury,stageBefore.resources.treasury);assert.deepEqual(c.contracts,stageBefore.contracts);assert.deepEqual(c.squads,stageBefore.squads);c=save(c);
+ for(let attempt=0;!c.enemyGroups.some(group=>group.target==='cordoba'&&group.status==='marching')&&attempt<64;attempt++){assert.equal(c.pendingEncounter,null);c=order(c,{type:'wait',hours:1});}
+ const group=c.enemyGroups.find(group=>group.target==='cordoba'&&group.status==='marching');assert.ok(group);assert.equal(group.initialStrength,3);
+ for(const id of ids.slice(0,2))c=order(c,{type:'assignCare',operativeId:id,assignment:'rest'});
+ for(let attempt=0;!c.pendingEncounter&&attempt<8;attempt++)c=order(c,{type:'wait',hours:1});assert.equal(c.pendingEncounter?.groupId,group.id);assert.equal(c.pendingEncounter.sector,'cordoba');
+ for(const id of ids){assert.equal(c.operativeState[id].hp,80);assert.equal(c.operativeState[id].bleeding,0);assert.ok(c.operativeState[id].morale<80);}
+ assert.deepEqual(d,declaration);return {campaign:save(c),ids};
+}
+
+test('an actual clinic defense restores only prior local rest after victory and pays later morale recovery without a grant',()=>{
+ const {campaign:start,ids}=restingClinicRaid(),before=structuredClone(start),admitted=order(start,{type:'respondToEncounter',groupId:start.pendingEncounter.groupId,choice:'tactical'});
+ assert.deepEqual(ids.map(id=>start.operativeState[id].assignment),['rest','rest','active']);assert.ok(ids.every(id=>admitted.operativeState[id].assignment==='active'));assert.ok(ids.every(id=>admitted.operativeState[id].recoveryHours===0));
+ const result=resolveRestingNorthernClinicDefense(start),c=result.campaign,settled=result.settledCampaign;
+ assert.equal(result.summary.status,'victory');assert.ok(result.summary.turns>=1&&result.summary.actions>0&&result.summary.elapsedSeconds>0);assert.equal(c.pendingEncounter,null);assert.equal(c.pendingBattle,null);assert.equal(c.sectors.cordoba.owner,'patriot');assert.deepEqual(result.restoredRestIds,ids.slice(0,2));
+ // The active control has only one declared dressing and basic first aid.
+ // Its ordinary combat controller must actually use it before settlement.
+ assert.equal(start.operativeState[ids[2]].medkits,1);assert.equal(c.operativeState[ids[2]].medkits,0);assert.ok(c.operativeState[ids[2]].bandaged>0);
+ const journal=c.sectorStates.cordoba.log,aidAt=journal.findIndex(line=>line==='active-guard venda a active-guard y detiene la hemorragia. La salud se recupera con descanso y atención médica.'),victoryAt=journal.findIndex(line=>line.startsWith('¡Victoria!'));
+ assert.ok(aidAt>=0&&victoryAt>aidAt,'The actual Native self-bandage must precede the real victory and settlement.');assert.ok(c.operativeState[ids[2]].hp<start.operativeState[ids[2]].hp,'Finite noncritical first aid stops bleeding without restoring the actual lost health.');
+ for(const id of ids.slice(0,2)){assert.equal(start.operativeState[id].medkits,0);assert.equal(c.operativeState[id].medkits,0);}
+ assert.deepEqual(ids.map(id=>c.operativeState[id].assignment),['rest','rest','active']);assert.equal(clock(c),clock(settled));assert.equal(c.resources.treasury,settled.resources.treasury);assert.deepEqual(c.contracts,settled.contracts);assert.deepEqual(c.squads,settled.squads);assert.deepEqual(c.sectorStates,settled.sectorStates);
+ for(const id of ids){for(const key of ['alive','captured','hp','maxHp','bleeding','bandaged','energy','fatigue','morale','moraleRestHours','location','residentPosition','medkits','inventory','ammo','carriedLoaded','condition','jammed'])assert.deepEqual(c.operativeState[id][key],settled.operativeState[id][key],id+' '+key);assert.ok(c.operativeState[id].alive&&c.operativeState[id].hp>=15&&!c.operativeState[id].bleeding);}
+ assert.deepEqual(result.events,[{action:{type:'respondToEncounter',groupId:start.pendingEncounter.groupId,choice:'tactical'},hour:admitted.hour,second:admitted.secondOfHour??0,cost:0},...ids.slice(0,2).map(operativeId=>({action:{type:'assignCare',operativeId,assignment:'rest'},hour:settled.hour,second:settled.secondOfHour??0,cost:0}))]);
+ const restOrders=result.events.filter(event=>event.action.type==='assignCare');assert.deepEqual(restOrders.map(event=>event.action),ids.slice(0,2).map(operativeId=>({type:'assignCare',operativeId,assignment:'rest'})));assert.deepEqual(restOrders.reduce((campaign,event)=>order(campaign,event.action),save(settled)),c);
+ const morale=Object.fromEntries(ids.map(id=>[id,c.operativeState[id].morale]));assert.ok(ids.slice(0,2).every(id=>morale[id]<80&&c.operativeState[id].moraleRestHours===0));let rested=save(c);const waits=[],until=clock(c)+6*3600;
+ for(let attempt=0;clock(rested)<until&&attempt<12;attempt++){const action={type:'wait',hours:(until-clock(rested))/3600};waits.push(action);rested=order(rested,action);}
+ assert.equal(clock(rested),until);for(const id of ids.slice(0,2)){assert.equal(rested.operativeState[id].morale,morale[id]+1);assert.equal(rested.operativeState[id].assignment,'rest');assert.equal(rested.operativeState[id].moraleRestHours,0);}assert.equal(rested.operativeState[ids[2]].morale,morale[ids[2]]);assert.equal(rested.operativeState[ids[2]].assignment,'active');
+ for(const id of ids)for(const key of ['alive','captured','hp','bleeding','medkits','inventory','ammo','carriedLoaded','condition'])assert.deepEqual(rested.operativeState[id][key],c.operativeState[id][key],id+' '+key);assert.equal(rested.resources.treasury,c.resources.treasury);assert.deepEqual(waits.reduce(order,save(c)),save(rested));
+ assert.deepEqual(start,before);const repeated=restingClinicRaid();assert.deepEqual(repeated.campaign,start);assert.deepEqual(resolveRestingNorthernClinicDefense(repeated.campaign),result);save(rested);
+});
