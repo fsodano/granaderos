@@ -27,7 +27,7 @@ import {handoverRescueClinicDressings,prepareRescueClinicDefense,prepareRescueCo
 
 import {publicRouteView,usefulRouteRifleShot,usefulRouteFiringPosture} from './route-infantry-progress.mjs';
 
-import {paidHospitalRoofWalkPreview} from './coordinated-hospital-battery.mjs';
+import {coordinatedHospitalBattery,paidHospitalRoofWalkPreview} from './coordinated-hospital-battery.mjs';
 
 const clock=c=>c.hour*3600+(c.secondOfHour??0);
 
@@ -473,4 +473,64 @@ test('distant contacts, unsupplied or nonmedical roof people and actual charged 
   if(declaration.gunContact){const gun=start.artillery[0],gunner=start.units.find(v=>v.id==='actual-gunner'),crew=artilleryCrewPlan(start,gunner,gun,0);assert.equal(crew.reason,null);assert.ok(crew.crew.includes(u.id));}
   assert.deepEqual(policy(start,u),ordinary);assert.deepEqual(start,before);
  }
+});
+
+
+// Independent portable roof declarations reuse the existing tested hospital
+// slab/edge geometry. No retained opening actor, body or result is an input.
+function rescueRoofRifleArena({lowCover=false,medical=20,medkits=0,assignment='active',ground=false,loaded=1}={}){
+ const base={hp:100,maxHp:100,bleeding:0,bandaged:0,energy:100,fatigue:0,morale:90,agility:75,dexterity:75,strength:75,medical:0,medkits:0,weapon:0,blade:0,loaded:0,ammo:0,stance:'standing',movementMode:'walk',facing:0,activeSlot:'unarmed',patrol:false,overwatch:false};
+ const players=[{...base,id:'roof-rifle',x:5,y:6,tacticalLevel:ground?0:1,weapon:1800,loaded,ammo:5,condition:100,marksmanship:90,activeSlot:'primary',medical,medkits,assignment},
+  {...base,id:'public-observer',x:7,y:4,tacticalLevel:1}];
+ const options={id:'declared-rescue-held-roof-rifle',width:40,height:20,hour:12,seed:45,exploration:false,
+  tiles:Array.from({length:800},(_,i)=>({x:i%40,y:Math.floor(i/40),type:'grass',cover:0,blocked:false})),
+  upperSurfaces:Array.from({length:20},(_,i)=>{const x=4+i%4,y=4+Math.floor(i/4);return {id:'declared-rifle-roof:'+i,x,y,tacticalLevel:1,elevation:3,type:'floor',kind:'roof',blocked:false,cover:lowCover&&!(x===5&&y===6)?0:30};}),climbLinks:[],npcs:[],
+  enemies:[{...base,id:'public-target',x:5,y:2,hp:500,maxHp:500,weapon:0,blade:0,loaded:0,ammo:0}],
+  artillery:[{id:'untouched-declared-gun',type:'bronze4',side:'player',x:6,y:15,facing:0,loaded:true,ammo:2}]};
+ const declaration=structuredClone({players,options}),battle=createBattle(players,options);assert.deepEqual({players,options},declaration);assert.deepEqual(validateBattleSnapshot(JSON.parse(JSON.stringify(battle))),battle);return battle;
+}
+
+function replayRescueRoofRifle(start,orders){
+ let direct=start,shown=start,restored=validateBattleSnapshot(JSON.parse(JSON.stringify(start)));
+ for(const action of orders){const next=b=>action.type==='endTurn'?endTurn(b):actBattle(b,action);direct=next(direct);assert.equal(direct.lastError,null,JSON.stringify(action));shown=(action.type==='endTurn'?presentedEndTurn(shown):presentedActBattle(shown,action)).state;assert.deepEqual(shown,direct);restored=next(restored);assert.equal(restored.lastError,null);restored=validateBattleSnapshot(JSON.parse(JSON.stringify(restored)));assert.deepEqual(restored,direct);}
+ return direct;
+}
+
+test('an initial nonclinical roof rifle fills an ordinary hold with an existing paid equal-cover firing approach then finite fire and reload',()=>{
+ const start=rescueRoofRifleArena(),before=structuredClone(start),actor=b=>b.units.find(u=>u.id==='roof-rifle'),guard=actor(start),target=start.units.find(u=>u.id==='public-target'),strict={shotSafety:knownRouteBystanderShotSafety};
+ const policy=rescueCordobaDefenseController(start),coordinated=coordinatedHospitalBattery(start);
+ assert.equal(canSee(start,start.units.find(u=>u.id==='public-observer'),target),true);assert.equal(hasLineOfSight(start,guard,target),false);assert.equal(cordobaClinicDefenseOrder(start,guard),null);assert.equal(usefulRouteRifleShot(publicRouteView(start,guard),guard,strict),null);
+ const move=policy(start,guard);assert.equal(move?.type,'move');assert.deepEqual(move,coordinated.controller(start,guard));
+ const view=publicRouteView(start,guard),route=getReachable(view,guard,{stopAt:point=>sameCell(point,move)})[0],quote=paidHospitalRoofWalkPreview(view,guard,route);
+ assert.ok(route.cost>0&&route.cost<=20&&route.cost<guard.ap&&Math.hypot(move.x-guard.x,move.y-guard.y)<=3);assert.ok(route.path.every(point=>(point.kind===undefined||point.kind==='move')&&sameSurface(point,guard)&&(surfaceAt(view,point)?.cover??0)>=(surfaceAt(view,guard)?.cover??0)));assert.ok(quote);assert.equal(usefulRouteRifleShot(quote.view,quote.actor,strict)?.type,'fire');
+ const tape=[move];let current=replayRescueRoofRifle(start,tape),fired=0,reloaded=false;
+ assert.equal(actor(current).ap,guard.ap-route.cost);assert.equal(actor(current).energy,quote.actor.energy);assert.equal(actor(current).facing,quote.actor.facing);assert.equal(current.elapsedSeconds,quote.view.elapsedSeconds);
+ for(let count=0;count<16&&!reloaded;count++){
+  const unit=actor(current),ordinary=cordobaClinicDefenseOrder(current,unit),action=policy(current,unit);
+  if(ordinary!=null)assert.deepEqual(action,ordinary,'Existing non-null fire, medicine, posture and maintenance stay exact.');
+  if(!action){tape.push({type:'endTurn'});current=replayRescueRoofRifle(start,tape);continue;}
+  assert.ok(['stance','fire','reload','reprime','weapon'].includes(action.type));
+  if(action.type==='fire'){const enemy=current.units.find(u=>u.id===action.targetId),option=firearmShotOptions(current,unit,enemy,action.aim??0).find(row=>row.aim===(action.aim??0)&&row.hitLocation===(action.hitLocation??'torso'));assert.ok(option.chance>=25&&option.damageFactor>0&&knownRouteBystanderShotSafety(current,unit,enemy)(option));}
+  const old=current;tape.push(action);current=replayRescueRoofRifle(start,tape);
+  if(action.type==='fire'){fired++;assert.equal(actor(current).loaded,actor(old).loaded-1);assert.equal(actor(current).condition,actor(old).condition-1);}
+  if(action.type==='reload'){assert.equal(fired,1);assert.equal(actor(current).loaded,1);assert.equal(actor(current).ammo,guard.ammo-1);reloaded=true;}
+ }
+ assert.equal(fired,1);assert.equal(reloaded,true);assert.deepEqual(replayRescueRoofRifle(start,tape),current);assert.deepEqual(start,before);
+ const total=u=>Object.values(unitAmmunitionByType(u)).reduce((n,count)=>n+count,0);assert.equal(total(actor(current)),total(guard)-1);
+ for(const u of start.units){const next=current.units.find(v=>v.id===u.id);if(u.id!=='public-target')for(const key of ['hp','bleeding','bandaged','medkits','morale'])assert.deepEqual(next[key],u[key]);if(u.id!=='roof-rifle')assert.deepEqual(spacePoint(next),spacePoint(u));}
+ for(const key of ['tiles','upperSurfaces','climbLinks','artillery'])assert.deepEqual(current[key],start[key]);
+});
+
+test('medical and formal clinical roof roles, ground work, ordinary reload and lower-cover firing routes retain their existing bounds',()=>{
+ for(const declaration of [{medical:90,medkits:2},{assignment:'doctor'},{ground:true},{loaded:0}]){
+  const start=rescueRoofRifleArena(declaration),before=structuredClone(start),unit=start.units.find(u=>u.id==='roof-rifle'),ordinary=cordobaClinicDefenseOrder(start,unit),policy=rescueCordobaDefenseController(start);
+  assert.deepEqual(policy(start,unit),ordinary);assert.deepEqual(start,before);
+ }
+ const start=rescueRoofRifleArena({lowCover:true}),before=structuredClone(start),unit=start.units.find(u=>u.id==='roof-rifle'),ordinary=cordobaClinicDefenseOrder(start,unit),policy=rescueCordobaDefenseController(start),action=policy(start,unit);
+ assert.equal(ordinary,null);assert.equal(action,null);assert.deepEqual(start,before);
+ const held=rescueRoofRifleArena(),heldBefore=structuredClone(held),rifle=held.units.find(u=>u.id==='roof-rifle');
+ assert.equal(rescueCordobaDefenseController(held)(held,rifle)?.type,'move','The default declaration must actually admit its paid firing approach.');
+ assert.equal(rescueCordobaDefenseController(held,()=>null)(held,rifle),null,'A custom explicit hold cannot authorize a coordinator move.');
+ assert.equal(rescueCordobaDefenseController(held,()=>undefined)(held,rifle),undefined,'A custom undefined return stays exact.');
+ assert.deepEqual(held,heldBefore);
 });

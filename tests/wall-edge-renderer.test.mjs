@@ -140,3 +140,27 @@ test('door and breach changes invalidate retained terrain and Three wall geometr
  const scene=new Scene(),world=createSectorWorld(scene,{tileMetres:T,assetUrl:path=>path});world.update({terrain:battle});const before=scene.getObjectByName('building:edge-house');world.update({terrain:changed});const after=scene.getObjectByName('building:edge-house');assert.notEqual(before,after);assert.equal(after.getObjectByName('door:edge-door').userData.open,true);
  const breached={...changed,wallEdges:changed.wallEdges.map(edge=>edge.type==='wall'?{...edge,type:'rubble',destroyed:true}:edge)};world.update({terrain:breached});assert.notEqual(scene.getObjectByName('building:edge-house'),after);world.dispose();
 });
+
+
+test('solid wall pointer bands leave an overlapping visible door centre selectable',()=>{
+ const vertices=d=>{const values=d.match(/-?\d+(?:\.\d+)?/g).map(Number);return Array.from({length:values.length/2},(_,i)=>({x:values[i*2],y:values[i*2+1]}));};
+ const centre=d=>{const points=vertices(d);return {x:(Math.min(...points.map(p=>p.x))+Math.max(...points.map(p=>p.x)))/2,y:(Math.min(...points.map(p=>p.y))+Math.max(...points.map(p=>p.y)))/2};};
+ const contains=(d,p)=>{const points=vertices(d),crosses=points.map((a,i)=>{const b=points[(i+1)%points.length];return (b.x-a.x)*(p.y-a.y)-(b.y-a.y)*(p.x-a.x);});return crosses.every(value=>value>=0)||crosses.every(value=>value<=0);};
+ for(const axis of ['x','y']){
+  const door={id:`pointer-door-${axis}`,doorId:`pointer-door-${axis}`,x:3,y:6,axis,type:'door',open:false,locked:false,blocked:true,blocksSight:true,obstacleHeight:2.5},wall={id:`pointer-wall-${axis}`,x:5,y:8,axis,type:'wall',blocked:true,blocksSight:true,obstacleHeight:6};
+  const tiles=Array.from({length:144},(_,n)=>({x:n%12,y:Math.floor(n/12),type:'grass',blocked:false,cover:0}));
+  const battle=createBattle([{id:'door-observer',x:3,y:6},{id:'wall-observer',x:5,y:8}],{width:12,height:12,exploration:true,enemies:[],tiles,wallEdges:[door,wall],buildings:[],props:[],npcs:[],artillery:[]}),before=JSON.stringify(battle),calls=[];
+  const objects=wallEdgeControlObjects({state:battle,players:battle.units,revealed:new Set(),cursorLevel:0,mode:'move',interactive:true,hover:null,viewport:null,project,onTile:point=>calls.push(point),onHover(){},renderer:'three'}),doorControl=objects.find(object=>object.key===`edge-control-${door.id}`),wallControl=objects.find(object=>object.key===`edge-control-${wall.id}`);
+  assert.ok(doorControl);assert.ok(wallControl);assert.ok(wallControl.depth>doorControl.depth,'the foreground wall retains its normal painter order');
+  const doorPath=doorControl.node.props.children[0].props.d,wallPath=wallControl.node.props.children[0].props.d,doorCentre=centre(doorPath),wallCentre=centre(wallPath);
+  assert.ok(contains(controlPath(wall,wall.obstacleHeight*ELEVATION_PIXELS_PER_METRE),doorCentre),'the old full-height wall face covered this door centre');
+  assert.ok(contains(doorPath,doorCentre));assert.equal(contains(wallPath,doorCentre),false,'the later wall hit region must leave the door centre clear');
+  assert.ok(contains(wallPath,wallCentre));assert.equal(contains(doorPath,wallCentre),false,'the wall retains its own pointer target');
+  for(const control of [doorControl,wallControl]){assert.equal(control.node.props.role,'button');assert.equal(control.node.props.tabIndex,0);assert.equal(control.node.props.children[0].props.pointerEvents,'all');control.node.props.onClick();let prevented=false;control.node.props.onKeyDown({key:' ',preventDefault(){prevented=true;}});assert.ok(prevented);}
+  assert.deepEqual(calls.map(point=>point.wallEdgeId),[door.id,door.id,wall.id,wall.id]);
+  const svg=wallEdgeControlObjects({state:battle,players:battle.units,revealed:new Set(),cursorLevel:0,mode:'move',interactive:true,hover:null,viewport:null,project,onTile(){},onHover(){},renderer:'svg'}),svgDoor=svg.find(object=>object.key===`edge-control-${door.id}`),svgWall=svg.find(object=>object.key===`edge-control-${wall.id}`);
+  assert.ok(svgDoor);assert.ok(svgWall);const svgDoorPoints=vertices(svgDoor.node.props.children[0].props.d),svgHeight=svgDoorPoints[0].y-svgDoorPoints[3].y;
+  assert.ok(svgHeight>9);assert.equal(svgWall.node.props.children[0].props.d,controlPath(wall,svgHeight),'SVG retains the full default wall height shared with its door proxy');
+  assert.equal(JSON.stringify(battle),before);
+ }
+});

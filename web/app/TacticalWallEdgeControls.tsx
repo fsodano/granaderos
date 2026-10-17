@@ -34,9 +34,12 @@ export function wallEdgeControlObjects({state,players,revealed,cursorLevel,mode,
   if(!pointInViewport(viewport,wallPoint(center),150))return [];
   const [start,end]=wallEdgeEndpoints(edge),a=wallPoint(start),b=wallPoint(end),id=wallEdgeId(edge),target={...edge,wallEdgeId:id},adjacent=wallEdgeCells(edge);
   const height=controlHeight(state,edge,building,base,adjacent,known,renderer);
+  // A tall transparent wall face can cover a visible door farther back. Keep
+  // solid walls selectable at their base without intercepting that door.
+  const hitHeight=renderer==='three'&&edge.type==='wall'?Math.min(height,BUILDING_OPENINGS.cutawayHeight):height;
   const label=`${edge.type==='door'?'Puerta':edge.type==='window'?'Ventana':'Pared'} entre ${adjacent.map((at:any)=>`${at.x},${at.y}`).join(' y ')}${edge.type==='door'?edge.open?', abierta':', cerrada':''}`;
   return [{key:`edge-control-${id}`,depth:renderer==='three'?surfaceDrawDepth(state,center,.02):center.x+center.y+.02,node:<g data-wall-edge-control={id} role="button" tabIndex={0} aria-label={label} onClick={()=>onTile(target)} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();onTile(target);}}} onMouseEnter={()=>onHover(target)} onMouseLeave={()=>onHover(null)} onFocus={()=>onHover(target)} onBlur={()=>onHover(null)}>
-   <path d={`M${a.x},${a.y}L${b.x},${b.y}L${b.x},${b.y-height}L${a.x},${a.y-height}Z`} fill="transparent" pointerEvents="all"/>
+   <path d={`M${a.x},${a.y}L${b.x},${b.y}L${b.x},${b.y-hitHeight}L${a.x},${a.y-hitHeight}Z`} fill="transparent" pointerEvents="all"/>
    {hover?.wallEdgeId===id&&<path d={`M${a.x},${a.y}L${b.x},${b.y}`} fill="none" stroke="#eddda3" strokeWidth="3" pointerEvents="none"/>}
   </g>}];
  });

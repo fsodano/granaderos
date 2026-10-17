@@ -108,10 +108,18 @@ export function rescueCordobaDefenseController(initial,ordinary=cordobaClinicDef
  const crewIds=new Set(crews.flatMap(crew=>crew.ids));
  const fit=u=>u?.hp>=15&&!u.routed&&!u.unconscious&&!u.departure&&!u.fled&&!u.surrendered&&!u.asleep&&!u.captured;
  const roofPhysicians=new Set(initial.units.filter(u=>u.side==='player'&&fit(u)&&!crewIds.has(u.id)&&(u.tacticalLevel??0)>0&&u.medical>=60&&u.medkits>0).map(u=>u.id));
+ const clinical=u=>['doctor','patient','militia_doctor','militia_patient'].includes(u.assignment);
+ const held=new Set([coordinated.roles.physicianId,...coordinated.roles.crews.flatMap(crew=>crew.ids)]);
+ const roofRifles=new Set(initial.units.filter(u=>u.side==='player'&&fit(u)&&!u.militia&&!u.missionAlly&&!u.mounted&&!held.has(u.id)&&(u.tacticalLevel??0)>0&&u.medical<60&&!clinical(u)&&u.loaded>0&&hasFirearm(u)&&!u.weaponDropped&&firearmServiceable(u)).map(u=>u.id));
  const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),safeShot={shotSafety:knownRouteBystanderShotSafety};
  return (battle,unit)=>{
   if(crewIds.has(unit.id))return coordinated.controller(battle,unit);
   const normal=ordinary(battle,unit);
+  // Only an initial nonclinical roof rifle may fill an ordinary hold with
+  // the existing paid same-cover useful-shot leaf. Non-null work stays exact.
+  if(ordinary===cordobaClinicDefenseOrder&&normal==null&&roofRifles.has(unit.id)&&fit(unit)&&(unit.tacticalLevel??0)>0&&unit.medical<60&&!clinical(unit)&&!battle.artillery.some(gun=>gun.side===unit.side&&(gun.loaded||gun.ammo>0)&&artilleryContact(battle,unit,gun))){
+   const approach=coordinated.controller(battle,unit);return approach?.type==='move'?approach:normal;
+  }
   if(!roofPhysicians.has(unit.id)||!fit(unit)||!(unit.medkits>0)||(unit.tacticalLevel??0)<=0||battle.mode!=='combat'||!interruptAvailable(battle,unit)||unit.knockedDown||unit.entangled)return normal;
   const view=publicRouteView(battle,unit),contacts=view.units.filter(other=>other.side!==unit.side&&fit(other)&&sameSurface(unit,other)&&canSee(view,unit,other));
   const close=contacts.filter(other=>distance(unit,other)<=2.5);if(!close.length)return normal;
