@@ -30,7 +30,8 @@ import {actBattle,endTurn} from '../game/tactical.js';
 import {sectorDeploymentAction} from '../game/sector-deployment.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
-import {operativeLocation} from '../game/squads.js';
+import {operativeLocation,canReassignOperative} from '../game/squads.js';
+import {extractItemQuantity} from '../game/tactical-inventory.js';
 import {locationId} from '../game/world-cells.js';
 import {encounterContacts,encounterRequirements} from '../game/encounters.js';
 import {meetRecruits} from './campaign-recruitment-route.mjs';
@@ -120,9 +121,57 @@ export function recruitCreatedCuyoArsenalPhysician(start,{squadId,deadlineSecond
  return {campaign:c,physician:10,recruited:true};
 }
 
+// Only an actual completed recapture can retire its recorded temporary role.
+// A wounded survivor remains paid and rests on the existing readiness clock.
+// No provenance means no extra query, dismissal, assignment or save.
+function finishCompletedConvoyService(start,receipts,protectedIds,{report}){
+ if(!receipts.length)return {campaign:start,released:[],resting:[]};
+ const clock=s=>s.hour*3600+(s.secondOfHour??0),bodyKeys=['alive','hp','maxHp','bleeding','bandaged','energy','fatigue','morale','location','xp','trainedStats','skillPractice','practiceSeed'];
+ const body=r=>Object.fromEntries(bodyKeys.map(key=>[key,structuredClone(r[key])]));
+ const before=structuredClone(start),released=[],resting=[],seen=new Set();let c=start;
+ assert.equal(c.location,'mendoza');assert.equal(c.pendingBattle,null);assert.equal(c.pendingEncounter,null);
+ for(const receipt of receipts){
+  assert.equal(receipt.version,1);assert.equal(receipt.returnedSector,'mendoza');assert.equal(receipt.destination,'cordoba');
+  assert.ok(Number.isSafeInteger(receipt.completedSeconds)&&receipt.completedSeconds<=clock(c));
+  assert.ok(receipt.battles.length>0&&receipt.battles.every(row=>row.status==='victory'&&row.actions>0&&row.turns>0));
+  const custody=[...Object.values(c.artilleryDepots??{}).flat(),...(c.artilleryTransfers??[]).map(row=>row.gun)].filter(gun=>gun.id===receipt.transferId);
+  assert.equal(custody.length,1,'The delivered gun must still have one actual owned custodian after later normal transport.');
+  assert.deepEqual(custody[0],receipt.record,'Later normal transport keeps the exact finite delivered gun.');
+  for(const hire of receipt.hires){
+   assert.ok(!seen.has(hire.id),'A completed temporary hire must have one source receipt.');seen.add(hire.id);
+   if(hire.purpose!=='convoy-replacement-and-dressings')continue;
+   assert.equal(hire.debited,hire.quote.total);assert.equal(hire.quote.permanent,false);assert.equal(hire.arrival.term,'week');
+   const id=hire.id,r=c.operativeState[id],op=rosterFor(c).find(person=>person.id===id),contract=c.contracts[id];
+   if(id<100||id>=1000||protectedIds.includes(id)||!op||op.medical>=60||!stable(c,id)||!canReassignOperative(c,id)||operativeLocation(c,id)!=='mendoza'||r.asleep||r.energy<=10||!['active','rest'].includes(r.assignment)||r.equipmentCursor||r.toolkitPoints||contract?.kind!=='paid'||contract.guaranteeId)continue;
+   assert.ok(contractExpiresSeconds(contract)>clock(c),'The completed survivor still needs actual paid service at release or rest.');
+   if(r.hp<r.maxHp){
+    const physical=body(r),action={type:'assignCare',operativeId:id,assignment:'rest'};c=dispatchCampaign(c,action);assert.equal(c.lastError,null);
+    assert.deepEqual(body(c.operativeState[id]),physical);resting.push(id);
+    report({event:'createdCuyoConvoyWoundedRest',transferId:receipt.transferId,id,action,hour:c.hour,second:c.secondOfHour??0});continue;
+   }
+   const collector=c.recruited.find(other=>other!==id&&stable(c,other)&&!c.operativeState[other].asleep&&canReassignOperative(c,other)&&operativeLocation(c,other)==='mendoza');assert.notEqual(collector,undefined);
+   const model=sectorInventoryModel(c,'mendoza',rosterFor(c),id);assert.equal(model.operativeId,id);assert.equal(model.carriedReason,null);
+   const kit=model.carried.map(row=>extractItemQuantity(model.personal,row.item,row.count).stack),oldKeys=new Set(sectorInventoryModel(c,'mendoza',rosterFor(c),collector).entries.map(row=>row.key));
+   const physical=body(r),cash=c.resources.treasury,now=clock(c),selected=c.activeSquadId,members=[...c.squad],identity={id:op.id,name:op.name,contentId:op.contentId},action={type:'dismiss',id};
+   c=dispatchCampaign(c,action);assert.equal(c.lastError,null);assert.equal(c.recruited.includes(id),false);assert.equal(c.contracts[id],undefined);
+   assert.deepEqual(body(c.operativeState[id]),physical);assert.equal(c.resources.treasury,cash);assert.equal(clock(c),now);assert.equal(c.activeSquadId,selected);assert.deepEqual(c.squad,members);
+   const same=rosterFor(c).find(person=>person.id===id);assert.deepEqual({id:same.id,name:same.name,contentId:same.contentId},identity);
+   const returned=sectorInventoryModel(c,'mendoza',rosterFor(c),collector).entries.filter(row=>!oldKeys.has(row.key)).map(row=>JSON.parse(row.expected)),sort=stacks=>stacks.map(stack=>JSON.stringify(stack)).sort();
+   assert.deepEqual(sort(returned),sort(kit),'Every exact carried stack remains once in the actual local return.');
+   assert.equal(c.operativeState[id].startingCartridgesIssued,r.startingCartridgesIssued);
+   released.push({id,transferId:receipt.transferId,physical,returned:structuredClone(returned)});
+   report({event:'createdCuyoConvoyServiceEnded',transferId:receipt.transferId,id,action,physical,returned,hour:c.hour,second:c.secondOfHour??0});
+  }
+ }
+ assert.equal(clock(c),clock(before));assert.equal(c.resources.treasury,before.resources.treasury);
+ for(const [id,r]of Object.entries(before.operativeState))if(!r.alive)assert.deepEqual(c.operativeState[id],r);
+ assert.deepEqual(saved({campaign:c}).campaign,c);
+ return {campaign:c,released,resting};
+}
+
 // A native victory spent the three original bronze guns. This side operation
 // earns the remaining finite arsenal; it never refills those existing pieces.
-export function prepareCreatedCuyoArsenalAssault(start,{report=()=>{}}={}){
+export function prepareCreatedCuyoArsenalAssault(start,{report=()=>{},completedConvoyService=[]}={}){
  const inputCapture=recordRouteStrategicEvidence({helper:'prepareCreatedCuyoArsenalAssault',stage:'preparation-input',campaign:start});
  let c=saved({campaign:start}).campaign;
  try{
@@ -130,6 +179,7 @@ export function prepareCreatedCuyoArsenalAssault(start,{report=()=>{}}={}){
  assert.equal(c.pendingBattle,null);assert.equal(c.pendingEncounter,null);
  assert.equal(c.sectors.ensenada.owner,'royalist');assert.equal(c.artilleryArsenalRecoveries.ensenada,undefined);
  const originalSquad=c.activeSquadId,originalMembers=[...c.squad];
+ const completedService=finishCompletedConvoyService(c,completedConvoyService,originalMembers,{report});c=completedService.campaign;
  const retain=()=>createFreshRouteOrders(()=>c,next=>{c=next;},{report,handledEncounters:['tucuman','salta']});
  let retained=retain(),arrivalDeadline=null;
  const resolve=()=>{
@@ -179,8 +229,13 @@ export function prepareCreatedCuyoArsenalAssault(start,{report=()=>{}}={}){
  const hired=recruits.filter(op=>!c.recruited.includes(op.id));
  assert.ok(hired.reduce((sum,op)=>sum+contractQuote(c,op,'day').total,0)<=c.resources.treasury-30000,'The actual first paid terms must fit the treasury and return reserve.');
  for(const recruit of hired){
+  const returnedSupport=completedService.released.find(row=>row.id===recruit.id),beforeRehire=returnedSupport?structuredClone(c.operativeState[recruit.id]):null;
   retained.retain(3600);const quote=contractQuote(c,recruit,'day'),cash=c.resources.treasury;assert.equal(quote.available,true,quote.reason);
   order({type:'recruitCivic',id:recruit.id,term:'day',destination:'mendoza'});assert.equal(c.resources.treasury,cash-quote.total);
+  if(returnedSupport){
+   for(const key of ['alive','hp','maxHp','bleeding','bandaged','xp','trainedStats','startingCartridgesIssued','medkits','rations','torches','boleadoras','ammo','carriedLoaded','inventory','outfit','headwear','legwear','condition','weaponMetadata','bladeMetadata','weaponInstanceId','carriedReloadProgress'])assert.deepEqual(c.operativeState[recruit.id][key],beforeRehire[key],'Rehire keeps the actual returned person and never restores a wound, death or initial issue.');
+   report({event:'createdCuyoConvoySupportRehired',id:recruit.id,transferId:returnedSupport.transferId,quote,treasuryBefore:cash,treasuryAfter:c.resources.treasury,hour:c.hour,second:c.secondOfHour??0});
+  }
   report({event:'createdCuyoArsenalHired',id:recruit.id,quote,treasuryBefore:cash,treasuryAfter:c.resources.treasury,hour:c.hour,second:c.secondOfHour??0});
  }
  for(let hour=0;hour<24&&recruits.some(op=>!c.recruited.includes(op.id));hour++)order({type:'wait',hours:1});
@@ -338,10 +393,10 @@ export function returnCreatedCuyoArsenalField(start,field,{report=()=>{}}={}){
  }catch(error){if(error?.campaign)c=error.campaign;if(error&&typeof error==='object')error.campaign=c;recordRouteStrategicEvidence({helper:'returnCreatedCuyoArsenalField',stage:'preparation-failure',campaign:c,error,context:{field,survivors,remote,columns}});throw error;}
 }
 
-export function recoverCreatedCuyoMountainArtillery(start,{report=()=>{},onCheckpoint=()=>{},preserveMedicalReserve=false,coordinateRifleCover=false,coordinateSupportStaging=false,coordinateRearFormation=false}={}){
+export function recoverCreatedCuyoMountainArtillery(start,{report=()=>{},onCheckpoint=()=>{},preserveMedicalReserve=false,coordinateRifleCover=false,coordinateSupportStaging=false,coordinateRearFormation=false,completedConvoyService=[]}={}){
  const before=structuredClone(start),oldDeaths=Object.entries(start.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
  const spent=Object.entries(start.artilleryDepots??{}).flatMap(([sector,guns])=>guns.filter(g=>!g.loaded&&!g.ammo).map(g=>({sector,gun:storedArtilleryRecord(g)})));
- const prepared=prepareCreatedCuyoArsenalAssault(start,{report});let c=prepared.campaign;
+ const prepared=prepareCreatedCuyoArsenalAssault(start,{report,completedConvoyService});let c=prepared.campaign;
  onCheckpoint('arsenal-assault',c);
  const initial=enterSector(c.pendingBattle,c.sectorStates.ensenada),foundryField=initial.units.filter(unit=>unit.side==='player'&&unit.hp>0&&prepared.originalMembers.includes(Number(unit.id))).map(unit=>unit.id);
  recordRouteStrategicEvidence({helper:'recoverCreatedCuyoMountainArtillery',stage:'route-checkpoint',campaign:c,context:{scope:'True native pre-execution input after the one existing enterSector construction; no extra queries, entry, orders or synchronization.',request:c.pendingBattle,previous:c.sectorStates.ensenada??null,initial,originalMembers:prepared.originalMembers,field:prepared.field}});

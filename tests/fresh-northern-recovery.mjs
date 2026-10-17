@@ -384,13 +384,82 @@ export function recoverFreshNorthernHospital(start,{report=()=>{},coordinateDefe
  }
 }
 
-// Continue the recovered party to Buenos Aires through ordinary travel. The
-// rural land planner may avoid an occupied town; its occupation remains for
-// the later explicit northern-road recapture.
+// A settled victory can leave no living wounded patients. Keep that fact
+// separate from the clinical course above; no healthy person becomes a patient.
+// The existing 96-hour base bounds rear preparation, not invented treatment.
+function prepareHealthyNorthernReturn(start,{report=()=>{}}={}){
+ const before=structuredClone(start),clock=c=>c.hour*3600+(c.secondOfHour??0),began=clock(start),deadlineSeconds=began+96*3600,sector=start.location;
+ let c=decodeSave(encodeSave(start)).campaign;const orders=[];let rearVisitId=null;
+ const living=()=>c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&r.hp>0&&!r.captured;});
+ const check=(visitId=null)=>{
+  assert.equal(c.lastError,null);assert.equal(c.defeated,false);
+  assert.ok(visitId===null?c.pendingBattle===null:c.pendingBattle?.id===visitId&&c.pendingBattle.exploration===true&&c.pendingBattle.sector===sector&&c.location===sector&&c.sectors[sector].owner==='patriot','Healthy preparation permits only its matched controlled rear exploration visit.');
+  assert.ok(c.pendingEncounter===null,'Resolve the actual encounter before healthy return preparation.');
+  assert.ok(clock(c)<=deadlineSeconds,'Healthy rear preparation shares only the original 96-hour base.');
+  assert.ok(before.recruited.filter(id=>before.operativeState[id].alive&&!before.operativeState[id].captured).every(id=>c.recruited.includes(id)&&c.operativeState[id].alive&&!c.operativeState[id].captured),'Healthy preparation cannot discard an actual surviving resident.');
+  assert.ok(living().every(id=>{const r=c.operativeState[id];return r.hp===r.maxHp&&!r.bleeding;}),'A new actual wound needs the existing clinical course.');
+ };
+ const order=(action,{rear=false}={})=>{
+  const leaving=rear&&action.type==='leaveSector';
+  assert.ok(rearVisitId===null?!leaving:leaving&&action.battleId===rearVisitId,'Only the matching leave may close the current rear visit.');
+  check(leaving?rearVisitId:null);
+  if(action.type==='visitSector')assert.ok(rear&&c.location===sector&&c.sectors[sector].owner==='patriot'&&(action.sector??c.location)===sector,'Only rear staging may visit this controlled sector.');
+  c=northernHospitalOrder(c,action,{report});orders.push(structuredClone(action));
+  if(action.type==='visitSector'){
+   assert.ok(c.pendingBattle?.exploration===true&&c.pendingBattle.sector===sector&&typeof c.pendingBattle.id==='string'&&c.pendingBattle.id.length>0,'The actual rear order must open an identified exploration visit.');
+   rearVisitId=c.pendingBattle.id;
+  }else if(leaving)rearVisitId=null;
+  check(rearVisitId);
+ };
+ check();assert.equal(sector,'tucuman');assert.equal(c.sectors[sector].owner,'patriot');
+ assert.ok(completedTacticalVictory(c.sectorStates[sector]),'Healthy continuation requires the actual settled Native victory.');
+ const available=()=>rosterFor(c).filter(op=>{
+  const r=c.operativeState[op.id],contract=c.contracts[op.id],expiry=contract&&contractExpiresSeconds(contract);
+  return living().includes(op.id)&&operativeLocation(c,op.id)===sector&&!operativeInTransit(c,op.id)&&contract&&!contract.departurePending&&(expiry===null||expiry>clock(c))&&
+   r.hp>=15&&!r.routed&&!r.unconscious&&!r.surrendered&&!r.asleep&&r.energy>10&&['active','rest'].includes(r.assignment??'active');
+ });
+ const locals=available();assert.ok(locals.length,'The real healthy return needs a fit local serving party.');
+ const envoy=locals.filter(op=>op.id!==1000&&op.leadership>=40).sort((a,b)=>c.recruited.indexOf(a.id)-c.recruited.indexOf(b.id))[0];
+ assert.ok(envoy,'The physical capital meetings need an actual qualified living envoy.');
+ const party=[envoy.id,...locals.filter(op=>op.id!==envoy.id&&op.id!==1000&&c.recruited.indexOf(op.id)>c.recruited.indexOf(envoy.id)).sort((a,b)=>b.marksmanship-a.marksmanship||a.id-b.id).slice(0,4).map(op=>op.id)];
+ const kitsBefore=living().reduce((sum,id)=>sum+(c.operativeState[id].medkits??0),0),cash=c.resources.treasury;let issuedDressings=0;
+ order({type:'createSquad',name:'Supervivientes sin heridas',ids:party,sector});
+ if(!c.officer){
+  order({type:'createOfficer',name:'Oficial de socorro',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rescue'}});
+  assert.equal(cash-c.resources.treasury,300);assert.equal(c.operativeState[1000].medkits,2);issuedDressings=2;
+  report({event:'northernReliefOfficer',operativeId:1000,sector,cost:300,dressings:2,hour:c.hour});
+ }
+ assert.equal(c.contracts[1000]?.paid,300,'The original continuation retains its actual paid legacy officer.');
+ assert.ok(available().some(op=>op.id===1000),'The actual officer must be fit, local and serving.');
+ if(!c.squad.includes(1000))order({type:'squad',ids:[...party,1000]});
+ const returning=[...c.squad],returnHome=c.activeSquadId;assert.ok(returning.length>0&&returning.length<=6&&returning.includes(1000));
+ c=finishReloadsBeforeMarch(c,{deadlineSeconds,report});check();
+ const escort=living().filter(id=>operativeLocation(c,id)===sector&&!returning.includes(id));
+ assert.ok(escort.every(id=>available().some(op=>op.id===id)),'Other local clinical or unavailable residents cannot be borrowed for healthy rear work.');
+ if(escort.length){
+  const guards=rosterFor(c).filter(op=>escort.includes(op.id)).sort((a,b)=>b.marksmanship-a.marksmanship||a.id-b.id).slice(0,6).map(op=>op.id);
+  order({type:'createSquad',name:'Guardia de los supervivientes',ids:guards,sector});
+  check();c=prepareNorthernHospitalRear(c,guards,{applyOrder:(state,action)=>{c=state;order(action,{rear:true});return c;},targetCount:guards.length,coordinatePhysicians:true,report}).campaign;check();
+  assert.ok(rearVisitId===null,'Rear staging must close its actual exploration visit.');
+  for(const operativeId of escort)if(c.operativeState[operativeId].assignment!=='rest')order({type:'assignCare',operativeId,assignment:'rest'});
+ }
+ if(c.activeSquadId!==returnHome)order({type:'selectSquad',id:returnHome});
+ assert.equal(living().reduce((sum,id)=>sum+(c.operativeState[id].medkits??0),0),kitsBefore+issuedDressings,'Healthy preparation cannot invent or spend clinical linen.');
+ for(const id of returning){assert.ok(c.recruited.includes(id)&&c.operativeState[id].alive&&operativeLocation(c,id)===sector);assert.equal(c.operativeState[id].hp,c.operativeState[id].maxHp);assert.equal(c.operativeState[id].bleeding,0);}
+ for(const [id,r]of Object.entries(before.operativeState))if(!r.alive){assert.equal(c.operativeState[id].alive,false);assert.equal(c.operativeState[id].hp,r.hp);assert.equal(c.operativeState[id].deathMinute,r.deathMinute);}
+ check();assert.ok(rearVisitId===null,'The healthy return must finish with no rear visit.');
+ assert.deepEqual(start,before);assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
+ report({event:'northernHealthyReturnPrepared',sector,patients:[],returning,escort,orders,issuedDressings,dressingsSpent:0,startSeconds:began,endSeconds:clock(c),deadlineSeconds});
+ return {campaign:c,sector,patients:[],escort,reserveReadiness:{careStartSeconds:began,careDeadlineSeconds:deadlineSeconds,recoveryHours:96}};
+}
+
+// Continue either actual survivor state through the same ordinary return.
+// An occupied town remains for the later explicit northern-road recapture.
 export function recoverFreshNorthernDoctor(start,{report=()=>{}}={}){
  // The canonical funded continuation retains paid rear roles during a raid.
  // Direct historical hospital callers keep their established default policy.
- return returnFreshNorthernHospital(recoverFreshNorthernHospital(start,{report,coordinateDefense:true}),{report});
+ const patients=start.recruited.filter(id=>{const r=start.operativeState[id];return r.alive&&!r.captured&&(r.hp<r.maxHp||r.bleeding>0);});
+ return returnFreshNorthernHospital(patients.length?recoverFreshNorthernHospital(start,{report,coordinateDefense:true}):prepareHealthyNorthernReturn(start,{report}),{report});
 }
 
 // Keep an actual paid rifleman at the clinic before the return advances time.

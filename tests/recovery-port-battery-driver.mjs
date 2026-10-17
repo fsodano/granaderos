@@ -12,7 +12,7 @@ import {medicalPatientAvailable} from '../game/medical-patient.js';
 import {selectMainHand} from '../game/hand-layout.js';
 import {inventoryUsage} from '../game/tactical-inventory.js';
 import {criticalFirstAidNeeded} from '../game/first-aid.js';
-import {sameSurface,spacePoint,surfaceAt} from '../game/tactical-space.js';
+import {sameCell,sameSurface,spacePoint,surfaceAt} from '../game/tactical-space.js';
 import {directionTo,turnAPCost} from '../game/tactical-awareness.js';
 import {publicRouteView as publicView,usefulRouteRifleShot as usefulRifleShot,usefulRouteFiringPosture as usefulFiringPosture} from './route-infantry-progress.mjs';
 
@@ -72,7 +72,24 @@ function physicianCoverOrder(battle,unit,action,protectedIds,direction,careOnly=
  for(const patient of patients){
   if(!sameSurface(unit,patient))continue;
   const near=reachable.filter(point=>distance(point,patient)<=1.5&&hasLineOfSight(battle,{...unit,...point},patient)).sort((a,b)=>a.cost-b.cost||a.y-b.y||a.x-b.x)[0];
-  const step=near??reachable.filter(point=>distance(point,patient)<distance(unit,patient)).sort((a,b)=>distance(a,patient)-distance(b,patient)||a.cost-b.cost||a.y-b.y||a.x-b.x)[0];
+  if(near)return {type:'move',unitId:unit.id,...spacePoint(near)};
+  // Only the explicit field-care approach can leave direct-distance progress.
+  // Native Dijkstra must first find a complete SAME-surface aid route within
+  // the CURRENT AP window, keeping the original hand/heal reserve. Quote its
+  // actual paid walk and aid, then issue only an existing <=16-AP prefix.
+  if(careOnly&&battle.mode==='combat'&&unit.medkits>0&&!hasLineOfSight(view,unit,patient)){
+   const reserved={...unit,ap:unit.ap-costs.weapon-costs.heal};
+   const route=reserved.ap>0?getReachable(view,reserved,{stopAt:point=>sameSurface(point,unit)&&distance(point,patient)<=1.5&&hasLineOfSight(view,{...unit,...point},patient)})[0]:null;
+   if(route?.path.length&&route.path.every(point=>(point.kind===undefined||point.kind==='move')&&sameSurface(point,unit))){
+    const paid=paidHospitalRoofWalkPreview(view,unit,route),target=paid?.view.units.find(other=>other.id===patient.id);
+    if(paid&&fit(paid.actor)&&paid.actor.energy>0&&medicalUsePreview(paid.view,paid.actor,target).allowed){
+     const prefixes=reachable.filter(point=>point.path.length<=route.path.length&&point.path.every((step,index)=>sameCell(step,route.path[index])));
+     prefixes.sort((a,b)=>b.path.length-a.path.length||a.cost-b.cost||a.y-b.y||a.x-b.x);
+     if(prefixes[0])return {type:'move',unitId:unit.id,...spacePoint(prefixes[0])};
+    }
+   }
+  }
+  const step=reachable.filter(point=>distance(point,patient)<distance(unit,patient)).sort((a,b)=>distance(a,patient)-distance(b,patient)||a.cost-b.cost||a.y-b.y||a.x-b.x)[0];
   if(step)return {type:'move',unitId:unit.id,...spacePoint(step)};
  }
  if(careOnly)return null;

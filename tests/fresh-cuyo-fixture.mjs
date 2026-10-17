@@ -130,10 +130,11 @@ export function freshCuyoRoute({onCheckpoint,onArsenalPrepared,northernCheckpoin
  }
  c=startFreshFoundry(c,{report});assert.equal(c.flags.foundry,true);assert.ok(c.recruited.includes(2)&&c.operativeState[2].alive);
  for(const id of deaths(prefix.campaign))assert.equal(c.operativeState[id].alive,false);
- c=completeFreshArmyFunding(prepareFreshArmyFunding(c,{report}),{report});assert.equal(c.flags.armyFunded,true);assert.ok(ownedArtilleryCount(c)>=3);assert.equal(c.phase,3);checkpoint('funded',{artillery:ownedArtilleryCount(c)});
+ const completedConvoyService=[],fundingReport=event=>{if(event.event==='foundryConvoyRecovered'&&event.completedService)completedConvoyService.push(structuredClone(event.completedService));report(event);};
+ c=completeFreshArmyFunding(prepareFreshArmyFunding(c,{report:fundingReport}),{report:fundingReport});assert.equal(c.flags.armyFunded,true);assert.ok(ownedArtilleryCount(c)>=3);assert.equal(c.phase,3);checkpoint('funded',{artillery:ownedArtilleryCount(c)});
  // Both actual arsenal forces use the existing public paid infantry support.
  // The stock route alone retains its separate medical withdrawal and reunion.
- const arsenal=prepareFreshCuyoMountainArtillery(c,{report,coordinateRifleCover:true,coordinateSupportStaging:true,coordinateRearFormation:true,...(routeKind==='stock'?{preserveMedicalReserve:true}:{})});c=arsenal.campaign;
+ const arsenal=prepareFreshCuyoMountainArtillery(c,{report,completedConvoyService,coordinateRifleCover:true,coordinateSupportStaging:true,coordinateRearFormation:true,...(routeKind==='stock'?{preserveMedicalReserve:true}:{})});c=arsenal.campaign;
  const arsenalEnd=arsenal.summary.startSeconds+arsenal.summary.elapsedSeconds;
  notes.push({stage:'ensenada',hour:Math.floor(arsenalEnd/3600),second:arsenalEnd%3600,...arsenal.summary,deaths:deaths(c)});
  mountainBatteryIds=arsenal.batteryIds;

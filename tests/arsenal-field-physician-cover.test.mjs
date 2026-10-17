@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,presentedActBattle,endTurn,presentedEndTurn,interruptAvailable,getReachable,actionCosts,stanceCost,medicalUsePreview,artilleryContact,artilleryCrewPlan,artilleryCosts,teamCanSee} from '../game/tactical.js';
+import {createBattle,actBattle,presentedActBattle,endTurn,presentedEndTurn,interruptAvailable,getReachable,actionCosts,stanceCost,medicalUsePreview,artilleryContact,artilleryCrewPlan,artilleryCosts,teamCanSee,hasLineOfSight} from '../game/tactical.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {sameCell,spacePoint} from '../game/tactical-space.js';
 import {unitAmmunitionByType} from '../game/physical-ammunition.js';
@@ -326,4 +326,66 @@ test('medical lane reduction preserves current sight, affordable adjacent aid an
   if(kind==='charged-contact'){assert.equal(artilleryContact(paused,doctor,paused.artillery[0]),true);assert.equal(action,null);assert.equal(controller.sharedFallback(paused,doctor),null);assert.deepEqual(interruptMedicalReplay(start,orders),paused);}
   assert.deepEqual(start,before);
  }
+});
+
+
+// A separate declared wall corner, not the retained Ensenada state. The
+// medical destination needs an ordinary detour before direct distance falls.
+// Body, role, AP attributes, linen, wall and gun custody precede the factory.
+function wallDetourMedicalArena({prone=false,closed=false,charged=false,adjacent=false}={}){
+ const common={hp:100,maxHp:100,bleeding:0,bandaged:0,energy:100,fatigue:0,morale:90,agility:90,dexterity:90,wisdom:90,experienceLevel:4,
+  weapon:1800,blade:0,loaded:1,ammo:5,condition:100,medical:0,medkits:0,stance:'standing',movementMode:'walk',facing:2,inventory:{},rations:0,torches:0,boleadoras:0};
+ const players=[{...common,id:'doctor',name:'Médica ante el muro',x:6,y:4,medical:93,medkits:2,activeSlot:'medical',...(prone?{stance:'prone',movementMode:'prone'}:{})},
+  {...common,id:'front',name:'Frente distante',x:18,y:4},
+  {...common,id:'screen',name:'Apoyo distante',x:16,y:4},
+  {...common,id:'patient',name:'Paciente tras el muro',x:adjacent?7:4,y:4,hp:10,bleeding:1,weapon:0,loaded:0,ammo:0},
+  ...(charged?[{...common,id:'gunner',name:'Artillero del puesto',x:7,y:3}]:[])];
+ const width=48,height=16,options={id:'declared-payable-medical-wall-detour',width,height,hour:12,seed:45,exploration:false,
+  tiles:Array.from({length:width*height},(_,i)=>{const x=i%width,y=Math.floor(i/width),wall=x===5&&(closed||y>=3&&y<=5);return {x,y,type:wall?'wall':'grass',blocked:wall,blocksSight:wall,cover:0};}),
+  enemies:[{...common,id:'remote',name:'Oponente distante',x:47,y:15,weapon:0,loaded:0,ammo:0,patrol:false,overwatch:false}],
+  artillery:charged?[{id:'detour-contact-gun',type:'bronze4',side:'player',x:6,y:3,loaded:true,ammo:1,facing:0}]:[],npcs:[],props:[],groundItems:[],buildings:[]};
+ const declaration=structuredClone({players,options}),battle=createBattle(players,options);assert.deepEqual({players,options},declaration);assert.deepEqual(validateBattleSnapshot(JSON.parse(JSON.stringify(battle))),battle);return battle;
+}
+const wallDistance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+
+test('a declared wall detour pays bounded Native prefixes and finite aid when every direct-distance step stalls',()=>{
+ for(const prone of [false,true]){
+  const start=wallDetourMedicalArena({prone}),before=structuredClone(start),controller=policy(start),doctor=unit(start,'doctor'),patient=unit(start,'patient'),origin=spacePoint(doctor),orders=[];
+  assert.equal(medicalUsePreview(start,doctor,patient).allowed,false);assert.equal(hasLineOfSight(start,doctor,patient),false);
+  const rise=prone?stanceCost(doctor,'standing'):0,walking={...doctor,stance:'standing',movementMode:'walk',ap:doctor.ap-rise},planning={...start,units:start.units.map(actor=>actor.id===doctor.id?walking:actor)},paths=getReachable(planning,walking),budget=Math.min(16-rise,walking.ap-actionCosts(planning,walking).weapon-actionCosts(planning,walking).heal);
+  assert.ok(!paths.some(point=>point.cost>0&&point.cost<=budget&&(wallDistance(point,patient)<wallDistance(doctor,patient)||wallDistance(point,patient)<=1.5&&hasLineOfSight(planning,point,patient))),'No former direct-distance or adjacent-LOS prefix is available.');
+  const goals=paths.filter(point=>wallDistance(point,patient)<=1.5&&hasLineOfSight(planning,point,patient)).sort((a,b)=>a.cost-b.cost);assert.ok(goals.length);assert.ok(goals[0].cost>16);assert.ok(rise+goals[0].cost+actionCosts(start,doctor).heal<doctor.ap);
+  let battle=start,treated=false;
+  for(let pass=0;pass<16&&!treated;pass++){
+   const actor=unit(battle,'doctor'),action=controller(battle,actor);assert.ok(action,'The actual payable detour must continue to finite aid.');
+   if(action.type==='move'){
+    const preparation=action.movement==='walk'?stanceCost(actor,'standing'):0,posed=action.movement==='walk'?{...actor,stance:'standing',movementMode:'walk',ap:actor.ap-preparation}:actor,view={...battle,units:battle.units.map(other=>other.id===actor.id?posed:other)},route=getReachable(view,posed,{stopAt:point=>sameCell(point,action)})[0];
+    assert.ok(route&&route.cost>0&&preparation+route.cost<=16);assert.ok(route.path.every(point=>(point.kind===undefined||point.kind==='move')&&sameSurface(point,actor)));assert.ok(actor.ap-preparation-route.cost>=actionCosts(battle,actor).weapon+actionCosts(battle,actor).heal);
+    if(!orders.length)assert.ok(wallDistance(action,patient)>wallDistance(origin,patient),'The first paid prefix must go around the wall, away from the patient.');
+    const moved=replay(battle,[action]);assert.equal(unit(moved,'doctor').ap,actor.ap-preparation-route.cost);assert.ok(unit(moved,'doctor').energy<actor.energy);assert.equal(unit(moved,'doctor').medkits,actor.medkits);battle=moved;
+   }else{
+    assert.deepEqual(action,{type:'useItem',unitId:'doctor',targetId:'patient'});const quote=medicalUsePreview(battle,actor,unit(battle,'patient'));assert.equal(quote.allowed,true,quote.reason);const healed=replay(battle,[action]);assert.equal(unit(healed,'doctor').ap,actor.ap-quote.cost);assert.equal(unit(healed,'doctor').medkits,actor.medkits-quote.treatment.dressingsUsed);assert.equal(quote.treatment.dressingsUsed,1);assert.equal(unit(healed,'patient').hp,quote.treatment.hpAfter);assert.equal(unit(healed,'patient').bleeding,quote.treatment.bleedingAfter);battle=healed;treated=true;
+   }
+   orders.push(action);
+  }
+  assert.equal(treated,true);assert.ok(orders.filter(action=>action.type==='move').length>1);assert.equal(unit(battle,'patient').bleeding,0);assert.ok(unit(battle,'patient').hp>=15);assert.equal(unit(battle,'doctor').medkits,1);assert.equal(battle.turn,start.turn);assert.ok(battle.elapsedSeconds-start.elapsedSeconds<=COMBAT_ROUND_SECONDS);goods(start,battle);assert.deepEqual(replay(start,orders),battle);assert.deepEqual(start,before);
+ }
+});
+
+test('a closed wall or an actually spent aid window cannot borrow AP or start an unpayable detour',()=>{
+ for(const kind of ['closed','spent']){
+  const start=wallDetourMedicalArena({closed:kind==='closed'}),before=structuredClone(start),controller=policy(start),orders=[];let battle=start;
+  if(kind==='spent')for(let pair=0;unit(battle,'doctor').ap>actionCosts(battle,unit(battle,'doctor')).weapon+actionCosts(battle,unit(battle,'doctor')).heal+8&&pair<32;pair++){
+   for(const slot of ['primary','medical']){const action={type:'weapon',unitId:'doctor',slot};battle=replay(battle,[action]);orders.push(action);}
+  }
+  const actor=unit(battle,'doctor'),patient=unit(battle,'patient'),snapshot=structuredClone(battle);assert.equal(actor.activeSlot,'medical');assert.equal(medicalUsePreview(battle,actor,patient).allowed,false);assert.equal(hasLineOfSight(battle,actor,patient),false);
+  const goals=getReachable(battle,actor).filter(point=>wallDistance(point,patient)<=1.5&&hasLineOfSight(battle,point,patient));
+  if(kind==='closed')assert.deepEqual(goals,[]);else{assert.ok(actor.ap<=actionCosts(battle,actor).weapon+actionCosts(battle,actor).heal+8);assert.ok(goals.length===0||goals.every(point=>point.cost+actionCosts(battle,actor).heal>actor.ap));}
+  assert.equal(controller(battle,actor),null,kind);assert.equal(controller.sharedFallback(battle,actor),null);assert.deepEqual(battle,snapshot);assert.deepEqual(replay(start,orders),battle);assert.deepEqual(start,before);
+ }
+});
+
+test('actual adjacent finite aid and a charged complete crew retain priority over a payable wall detour',()=>{
+ const start=wallDetourMedicalArena({adjacent:true}),before=structuredClone(start),controller=policy(start),doctor=unit(start,'doctor'),quote=medicalUsePreview(start,doctor,unit(start,'patient'));assert.equal(quote.allowed,true);const aid=controller(start,doctor);assert.deepEqual(aid,{type:'useItem',unitId:'doctor',targetId:'patient'});const end=replay(start,[aid]);assert.equal(unit(end,'doctor').medkits,doctor.medkits-quote.treatment.dressingsUsed);assert.ok(sameCell(unit(end,'doctor'),doctor));goods(start,end);assert.deepEqual(start,before);
+ const held=wallDetourMedicalArena({charged:true}),heldBefore=structuredClone(held),medical=policy(held),actor=unit(held,'doctor'),gun=held.artillery[0],plan=artilleryCrewPlan(held,unit(held,'gunner'),gun,0);assert.equal(plan.reason,null);assert.ok(plan.crew.includes(actor.id));assert.equal(artilleryContact(held,actor,gun),true);assert.ok(getReachable(held,actor).some(point=>wallDistance(point,unit(held,'patient'))<=1.5&&hasLineOfSight(held,point,unit(held,'patient'))));assert.equal(medical(held,actor),null);assert.equal(medical.sharedFallback(held,actor),null);assert.deepEqual(held,heldBefore);
 });

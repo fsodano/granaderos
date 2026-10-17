@@ -371,3 +371,91 @@ test('physician selection keeps cardinality one and does not suspend actual pati
  for(const assignment of ['patient','doctor']){const duty=dispatchCampaign(start,{type:'assignCare',operativeId:doctorId,assignment});assert.equal(duty.lastError,null);const snapshot=structuredClone(duty);assert.deepEqual(northernHospitalRearPhysicians(duty,guards,duty.location),[]);assert.deepEqual(duty,snapshot);assert.deepEqual(decodeSave(encodeSave(duty)).campaign,duty);}
  const otherDuty=dispatchCampaign(start,{type:'assignCare',operativeId:guardId,assignment:'patient'});assert.equal(otherDuty.lastError,null);const otherBefore=structuredClone(otherDuty);assert.deepEqual(northernHospitalRearPhysicians(otherDuty,[],otherDuty.location),[],'staging does not temporarily activate a shared squad with an existing patient duty');assert.deepEqual(otherDuty,otherBefore);assert.deepEqual(start,before);
 });
+
+
+// Independent source declaration. A real early paid wound death remains
+// permanent; the later ordinary Native victory must leave only healthy people.
+// No failed campaign, post-factory health/AP/stock or synthetic result is used.
+import {scaffoldDocuments} from '../game/campaign-scaffold.js';
+import {compileCampaignPackage} from '../game/campaign-library.js';
+import {validateContentPackage} from '../game/content-package.js';
+import {contractExpiresSeconds} from '../game/contracts.js';
+import {enterSector} from '../game/world.js';
+import {recoverFreshNorthernDoctor} from './fresh-northern-recovery.mjs';
+import {fightNorthernSector,northernCombatOrder} from './northern-route.mjs';
+
+const healthyReturnClock=c=>c.hour*3600+(c.secondOfHour??0);
+function healthyNorthernVictory(){
+ const d=scaffoldDocuments('healthy-northern-return');
+ for(const key of ['content','world','maps'])d[key]=JSON.parse(JSON.stringify(d[key]).replaceAll('"camp"','"buenos_aires"').replaceAll('camp:','buenos_aires:').replaceAll('watch-post','tucuman'));
+ d.manifest.scenario='granaderos-historical-v1';d.content.includeOriginalResidents=false;
+ d.content.rules.startingTreasury=100000;d.content.rules.deploymentCartridges=24;d.content.rules.enemyCartridges=0;
+ d.content.campaignStory.chapters[0].conditions=[{type:'day',min:100,max:null}];
+ d.world.expansion.buildingTargets={buenos_aires:0,tucuman:0};d.world.physical.caches={};
+ d.world.expansion.rural=d.world.expansion.rural.filter(id=>id!=='tucuman');
+ d.world.exitLinks=[['buenos_aires','E',19,8,'tucuman','W',0,8]];
+ d.world.arrivalFacilities.tucuman=['barracks'];d.content.arrivalSites.push({sector:'tucuman',facilities:['barracks']});
+ d.world.deployment={tucuman:{playerAnchors:[{x:2,y:8},{x:2,y:10},{x:2,y:6},{x:1,y:8},{x:1,y:10},{x:1,y:6},{x:3,y:10}],enemyAnchor:{x:12,y:8}}};
+ d.maps.tucuman.upperSurfaces=Array.from({length:24},(_,i)=>({id:'healthy-rear-roof-'+i,x:5+i%6,y:3+Math.floor(i/6),tacticalLevel:1,elevation:3,type:'floor',kind:'roof',blocked:false,cover:30}));
+ d.maps.tucuman.climbLinks=[{id:'healthy-rear-west',kind:'climb',from:{x:5,y:7,tacticalLevel:0},to:{x:5,y:6,tacticalLevel:1}},{id:'healthy-rear-east',kind:'climb',from:{x:10,y:7,tacticalLevel:0},to:{x:10,y:6,tacticalLevel:1}}];
+ const base=d.content.characters[0];
+ d.content.weapons.push({id:'healthy-return-musket',template:1800,name:'Mosquete de la columna',damage:58,fireAP:12,aimAP:6,reloadAP:45,range:18,readyAP:6,capacity:1,weight:4,price:240,art:base.portrait});
+ const paid=Array.from({length:13},(_,i)=>100+i),fallen=113;
+ d.content.characters=[...paid,fallen,4,10].map(id=>{
+  const person={...structuredClone(base),id:'person-'+id,name:id===4?'Manuel Dorrego':id===10?'James Paroissien':'Personal '+id,nickname:'Personal '+id,monthlyPay:30,arrivalHours:0,serviceGuarantee:0,service:'contract',progression:'experience',traits:[],weapon:paid.includes(id)?'healthy-return-musket':null,
+   attributes:{...base.attributes,maxHp:80,agility:90,dexterity:90,strength:90,leadership:id===100?95:60,marksmanship:id===106?60:id===105?80:95,medical:id===106||id===10?80:0},
+   startingSupplies:{medkits:id===106?2:0,rations:0,torches:0,boleadoras:0},startingCondition:{hp:id===fallen?1:80,bleeding:id===fallen?1:0,bandaged:0,energy:100,fatigue:0}};
+  // Stock numeric encounter definitions retain the actual physical ids used
+  // by the production return path; they are not bulletin hires.
+  if(id===4||id===10){delete person.recruitmentSource;delete person.arrivalHours;}
+  return person;
+ });
+ d.content.placements=[4,10].map(id=>({id:'capital-contact-'+id,character:'person-'+id,mode:'fixed',sectors:['buenos_aires'],moveChance:100,afterDeath:null,delayMin:0,delayMax:0}));
+ const declaration=structuredClone(d),content=compileCampaignPackage(d.manifest,d);assert.deepEqual(validateContentPackage(content),[]);
+ let c=initialCampaign(45,content);const setup=[],prices=[];
+ const issue=action=>{const next=dispatchCampaign(c,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);c=next;setup.push(structuredClone(action));};
+ const hire=id=>{const quote=contractQuote(c,rosterFor(c).find(op=>op.id===id),'week'),cash=c.resources.treasury;assert.equal(quote.available,true,quote.reason);issue({type:'recruitCivic',id,term:'week',destination:'buenos_aires'});assert.equal(c.resources.treasury,cash-quote.total);prices.push(quote.total);};
+ // This separate declared casualty earns a real strategic bleeding death
+ // before the healthy victory; it is not a wounded-care or battle-death claim.
+ hire(fallen);issue({type:'wait',hours:1});assert.equal(c.operativeState[fallen].alive,false);assert.equal(c.operativeState[fallen].hp,0);
+ for(const id of paid)hire(id);
+ const homes=[];
+ for(let index=0;index<paid.length;index+=6){issue({type:'createSquad',name:'Columna declarada '+(homes.length+1),sector:'buenos_aires',ids:paid.slice(index,index+6)});homes.push(c.activeSquadId);}
+ assert.equal(homes.length,3);assert.deepEqual(homes.map(id=>c.squads.find(q=>q.id===id).members.length),[6,6,1]);
+ for(const id of homes){issue({type:'selectSquad',id});issue({type:'attack',sector:'tucuman',queue:true});}
+ for(let hour=0;hour<48&&!homes.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');hour++){assert.equal(c.pendingEncounter,null);issue({type:'wait',hours:1});}
+ assert.ok(homes.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready'));issue({type:'beginAssault',sector:'tucuman'});
+ assert.deepEqual(new Set(c.pendingBattle.squad.map(u=>u.id)),new Set(paid));
+ const start=decodeSave(encodeSave(c,enterSector(c.pendingBattle,null,{placement:true}))).campaign,before=structuredClone(start),won=fightNorthernSector(start,'tucuman',{controller:northernCombatOrder});
+ assert.equal(won.summary.status,'victory');assert.ok(won.summary.actions>0&&won.summary.turns>0&&won.summary.elapsedSeconds>0);
+ for(const id of paid){const r=won.campaign.operativeState[id];assert.equal(r.alive,true);assert.equal(r.hp,r.maxHp);assert.equal(r.bleeding,0);assert.equal(r.bandaged,0);}
+ assert.equal(won.campaign.operativeState[fallen].alive,false);assert.equal(won.campaign.operativeState[fallen].hp,0);
+ assert.deepEqual(won.campaign.recruited.filter(id=>{const r=won.campaign.operativeState[id];return r.alive&&!r.captured&&r.hp<r.maxHp;}),[]);
+ assert.deepEqual(start,before);assert.deepEqual(d,declaration);return {campaign:won.campaign,paid,fallen,setup,prices};
+}
+
+test('an actual healthy northern victory preserves zero care, pays its legacy officer and physically returns for both capital meetings',()=>{
+ const s=healthyNorthernVictory(),start=s.campaign,before=structuredClone(start),events=[],cash=start.resources.treasury;
+ const result=recoverFreshNorthernDoctor(start,{report:event=>events.push(event)}),prepared=events.find(event=>event.event==='northernHealthyReturnPrepared'),officer=events.find(event=>event.event==='northernReliefOfficer');
+ assert.ok(prepared&&officer);assert.deepEqual(prepared.patients,[]);assert.equal(prepared.dressingsSpent,0);assert.equal(prepared.issuedDressings,2);assert.equal(officer.cost,300);assert.equal(officer.dressings,2);assert.equal(result.contracts[1000].paid,300);
+ assert.deepEqual(prepared.returning,[100,101,102,103,104,1000]);assert.deepEqual(prepared.escort,[105,106,107,108,109,110,111,112]);assert.equal(prepared.deadlineSeconds,healthyReturnClock(start)+96*3600);assert.ok(prepared.endSeconds<=prepared.deadlineSeconds);
+ const rear=events.find(event=>event.event==='northernHospitalRearReady');assert.ok(rear);const guards=rear.receipts.flatMap(row=>row.guards),physicians=rear.receipts.flatMap(row=>row.physicians??[]),staged=new Set([...guards,...physicians]),overflow=prepared.escort.filter(id=>!staged.has(id));
+ assert.equal(guards.length,6);assert.deepEqual(physicians,[106]);assert.deepEqual(overflow,[105],'One real rear resident exceeds both the six guards and separately paid physician staging.');
+ for(const id of overflow){const home=start.squads.find(q=>q.members.includes(id)),current=result.squads.find(q=>q.id===home.id);assert.ok(current&&current.members.includes(id));assert.equal(current.location,home.location);assert.equal(current.journey,undefined);assert.deepEqual(result.operativeState[id].residentPosition,start.operativeState[id].residentPosition);
+  for(const key of ['alive','captured','hp','maxHp','bleeding','bandaged','medkits','primaryWeapon','bladeWeapon','ammoStock','carriedLoaded','carriedLoading','carriedJammed','weaponDropped','inventory'])assert.deepEqual(result.operativeState[id][key]??(key==='inventory'?{}:undefined),start.operativeState[id][key]??(key==='inventory'?{}:undefined),'Unstaged overflow '+id+'.'+key);
+ }
+ assert.ok(!events.some(event=>['northernHospitalStabilizationTick','northernHospitalCareTick','northernHospitalFiniteCare','northernReturnFiniteCare'].includes(event.event)),'No wound, clinical course or linen use is claimed for this healthy declaration.');
+ assert.ok(events.some(event=>event.event==='northernHospitalRearReady'));assert.ok(events.some(event=>event.event==='routeRoofDefenders'&&event.actions.some(action=>action.type==='move')),'The actual rear earns its physical roof posts.');
+ assert.ok(events.some(event=>event.event==='northernHospitalOrder'&&event.action.type==='travel'&&event.action.sector==='buenos_aires'));assert.ok(healthyReturnClock(result)>healthyReturnClock(start));assert.equal(result.location,'buenos_aires');
+ assert.ok(result.recruited.includes(4)&&result.recruited.includes(10)&&result.recruited.includes(1000));
+ for(const [id,npc]of [[4,'dorrego'],[10,'paroissien']]){assert.equal(result.conversations[npc].lastApproach,'recruit');assert.equal(result.conversations[npc].sector,'buenos_aires');assert.ok(result.contracts[id].paid>0);assert.ok(contractExpiresSeconds(result.contracts[id])>healthyReturnClock(result));}
+ const debits=events.filter(event=>event.event==='northernHospitalOrder').reduce((sum,event)=>sum+event.cost,0)+events.filter(event=>event.event==='northernHospitalRenewal').reduce((sum,event)=>sum+event.cost,0)+result.contracts[4].paid+result.contracts[10].paid;
+ assert.equal(result.resources.treasury,cash-debits);
+ for(const id of s.paid){assert.ok(result.recruited.includes(id)&&result.operativeState[id].alive);assert.equal(result.operativeState[id].hp,result.operativeState[id].maxHp);assert.equal(result.operativeState[id].bleeding,0);assert.ok(contractExpiresSeconds(result.contracts[id])>healthyReturnClock(result));}
+ for(const id of prepared.escort){assert.equal(result.operativeState[id].location,'tucuman');assert.ok(result.squads.some(q=>q.location==='tucuman'&&q.members.includes(id)));assert.equal(result.operativeState[id].assignment,'rest');}
+ assert.equal(result.operativeState[s.fallen].alive,false);assert.equal(result.operativeState[s.fallen].hp,0);assert.equal(result.operativeState[s.fallen].deathMinute,start.operativeState[s.fallen].deathMinute);
+ const kits=c=>c.recruited.filter(id=>c.operativeState[id].alive).reduce((sum,id)=>sum+(c.operativeState[id].medkits??0),0);assert.equal(kits(result),kits(start)+2);
+ assert.deepEqual(decodeSave(encodeSave(result)).campaign,result);assert.deepEqual(start,before);
+ assert.deepEqual(recoverFreshNorthernDoctor(decodeSave(encodeSave(start)).campaign),result,'The accepted fresh boundary has the same actual paid continuation after an official save.');
+ const repeat=healthyNorthernVictory();assert.deepEqual(repeat.campaign,start);assert.deepEqual(recoverFreshNorthernDoctor(repeat.campaign),result,'An independent fresh declaration earns and repeats the entire Native victory and continuation.');
+});

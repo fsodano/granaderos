@@ -79,7 +79,17 @@ export function northernReliefDefenseController(physicianIds,{minimumIdleRounds=
  // the existing paid approach and shared-sight battery policy, without giving
  // a clinical role to the crew or removing any real body from its previews.
  const nonclinical=unit=>Boolean(unit&&!physicians.has(unit.id)&&unit.medical<60);
- const battery=localCareBattle?coastalBatteryController(localCareBattle,{sharedArtillerySight:true,crewEligible:nonclinical,crewOnly:true,prioritizeCrewApproach:prioritizeLocalBattery}):null;
+ // Preserve actual stable patients when a real same-floor healthy cohort can
+ // fill an authored charged piece. This selects bodies; every actual Native
+ // crew/contact/AP quote still keeps all patients and clinical bodies present.
+ const fit=unit=>nonclinical(unit)&&unit.side==='player'&&unit.id!=='57'&&unit.hp>=15&&unit.hp===unit.maxHp&&!unit.bleeding&&!unit.unconscious&&!unit.routed&&!unit.departure&&!unit.fled&&!unit.surrendered&&!unit.mounted&&!unit.knockedDown&&!unit.entangled&&!unit.asleep&&unit.energy>0;
+ const fitLocalCrew=Boolean(prioritizeLocalBattery&&localCareBattle&&localCareBattle.artillery.some(gun=>{
+  if(gun.side!=='player'||!(gun.loaded||gun.ammo>0))return false;
+  const members=localCareBattle.units.filter(unit=>fit(unit)&&sameSurface(unit,gun));
+  return members.some(member=>members.filter(other=>Boolean(other.militia)===Boolean(member.militia)).length>=artilleryCosts(localCareBattle,member,gun).crew);
+ }));
+ const crewEligible=unit=>nonclinical(unit)&&(!fitLocalCrew||fit(unit));
+ const battery=localCareBattle?coastalBatteryController(localCareBattle,{sharedArtillerySight:true,crewEligible,crewOnly:true,prioritizeCrewApproach:prioritizeLocalBattery}):null;
  const shotSafety=battery?knownRouteBystanderShotSafety:knownRouteCivilianShotSafety;
  let encounter=null,signature=null,lastTurn=null,lastElapsed=null,idleRounds=0;
  const stalled=battle=>{
@@ -101,26 +111,29 @@ export function northernReliefDefenseController(physicianIds,{minimumIdleRounds=
  const held=unit=>!unit||physicians.has(unit.id)||!(unit.loaded>0||availableAmmunition(unit)>0);
  const meaningful=(unit,action)=>action&& (action.type!=='look'||turnAPCost(unit,directionTo(unit,action))>0);
  const crewKeepsReserves=(battle,unit,action)=>{
+  // A local clinic defends its current finite emplacement. Keep paid crew
+  // approaches and gun work, but do not drag it toward a generic map center.
+  if(prioritizeLocalBattery&&battery&&battle.mode==='combat'&&action?.type==='artilleryMove')return false;
   const kind={artillery:'fire',artilleryPivot:'pivot',artilleryMove:'move'}[action?.type];
   if(!kind&&action?.type!=='artilleryReload')return true;
   const gun=battle.artillery.find(piece=>piece.id===action.artilleryId);if(!gun)return false;
   const plan=action.type==='artilleryReload'?artilleryReloadPreview(battle,unit,gun):artilleryCrewPlan(battle,unit,gun,artilleryCosts(battle,unit,gun)[kind]);
-  return !plan.reason&&plan.crew.length>0&&plan.crew.every(id=>{const member=battle.units.find(member=>member.id===id);return battery?nonclinical(member):!held(member);});
+  return !plan.reason&&plan.crew.length>0&&plan.crew.every(id=>{const member=battle.units.find(member=>member.id===id);return battery?crewEligible(member):!held(member);});
  };
  // This is a Native current crew, not a reserved candidate list. A hold
  // cannot spend AP, move a body or make an incomplete group into a crew.
- const actualNonclinicalCrew=(battle,unit)=>nonclinical(unit)&&battle.artillery.some(gun=>{
+ const actualNonclinicalCrew=(battle,unit)=>crewEligible(unit)&&battle.artillery.some(gun=>{
   if(gun.side!==unit.side||!(gun.loaded||gun.ammo>0)||!artilleryContact(battle,unit,gun))return false;
   const plan=artilleryCrewPlan(battle,unit,gun,0);
-  return !plan.reason&&plan.crew.every(id=>nonclinical(battle.units.find(member=>member.id===id)));
+  return !plan.reason&&plan.crew.every(id=>crewEligible(battle.units.find(member=>member.id===id)));
  });
- const actualNonclinicalContact=(battle,unit)=>nonclinical(unit)&&battle.artillery.some(gun=>gun.side===unit.side&&(gun.loaded||gun.ammo>0)&&artilleryContact(battle,unit,gun));
+ const actualNonclinicalContact=(battle,unit)=>crewEligible(unit)&&battle.artillery.some(gun=>gun.side===unit.side&&(gun.loaded||gun.ammo>0)&&artilleryContact(battle,unit,gun));
  const controller=(battle,unit)=>{
   const action=cautiousCombatOrder(battle,unit),reserved=held(unit);let ordinary=null;
   // Only the local-care caller whose actual initial battery had no complete
   // eligible crew requests setup priority. The existing crewOnly coordinator
   // admits its current real members; no copied body is removed or relocated.
-  if(prioritizeLocalBattery&&battery&&battle.mode==='combat'&&battle.phase==='player'&&nonclinical(unit)&&!unit.knockedDown&&!unit.entangled){
+  if(prioritizeLocalBattery&&battery&&battle.mode==='combat'&&battle.phase==='player'&&crewEligible(unit)&&!unit.knockedDown&&!unit.entangled){
    if(action?.type==='useItem'||action?.slot==='medical')return action;
    const coordinated=battery(battle,unit),currentCrew=actualNonclinicalCrew(battle,unit);
    if(coordinated||currentCrew||actualNonclinicalContact(battle,unit)){
@@ -149,9 +162,12 @@ export function northernReliefDefenseController(physicianIds,{minimumIdleRounds=
    // taking an optional personal-rifle investigation away from the piece.
    // Care, attacks, maintenance and all nonpriority/default work stay exact.
    if(prioritizeLocalBattery&&battery&&battle.mode==='exploration'&&ordinary?.type==='move'&&actualNonclinicalCrew(battle,unit))return null;
+   // A stable wounded patient keeps care, safe fire and maintenance. Only
+   // optional movement is held; current close personal defence stays exact.
+   if(fitLocalCrew&&nonclinical(unit)&&(unit.hp<unit.maxHp||unit.bleeding>0)&&ordinary?.type==='move'&&!battle.units.some(other=>other.side!==unit.side&&other.hp>=15&&!other.routed&&!other.unconscious&&!other.departure&&!other.fled&&!other.surrendered&&sameSurface(unit,other)&&canSee(battle,unit,other)&&Math.hypot(unit.x-other.x,unit.y-other.y)<=2.5))return null;
    if(!battery||ordinary)return ordinary;
   }else if(action?.type==='useItem'||action?.slot==='medical')return action;
-  if(battery&&battle.mode==='combat'&&battle.phase==='player'&&nonclinical(unit)&&!unit.knockedDown&&!unit.entangled){
+  if(battery&&battle.mode==='combat'&&battle.phase==='player'&&crewEligible(unit)&&!unit.knockedDown&&!unit.entangled){
    const coordinated=battery(battle,unit);
    if(coordinated)return crewKeepsReserves(battle,unit,coordinated)?safeReliefFireOrMove(battle,unit,coordinated,shotSafety):null;
    // An upright complete dry-rifle crew honors the battery's actual hold.
