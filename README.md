@@ -2,35 +2,95 @@
 
 **Formá un ejército. Mantenelo abastecido. Conducilo a la batalla.**
 
-**Juego para navegador en desarrollo.** Consultá el [estado de la campaña principal](docs/plans/core-campaign-v0.1.md) y la [verificación de campañas separadas](docs/verification/campaign-engine-separation-2026-10-10.md) para el código actual. La [etiqueta 0.1](docs/verification/version-0.1.md) conserva el alcance de su punto de control anterior.
+Granaderos es un juego de **estrategia y combate táctico por turnos para navegador de escritorio**, ambientado en la Guerra de la Independencia argentina e inspirado en **Jagged Alliance 2**. Reclutá tu escuadra, explorá el territorio y dirigí a cada combatiente en escenarios 3D. Las decisiones de la campaña llegan al campo de batalla: importan las heridas, el cansancio, los contratos y cada cartucho que llevás.
 
-[![Vista previa del tráiler de Granaderos: La independencia se conquista](assets/video/intro/preview.gif)](assets/video/intro/granaderos-intro.mp4?raw=true)
+El juego está en desarrollo. La interfaz y el manual del juego están en español.
 
-**Presentación histórica · 56 segundos · Grabación real del juego, ilustración original, textos en español y música original.** La vista previa animada muestra fragmentos del tráiler. [Descargar el video completo](assets/video/intro/granaderos-intro.mp4?raw=true) · [Leer los textos](assets/video/intro/captions.es.srt) · [Fuentes del video](assets/video/intro/README.md)
+**[Jugar ahora](https://fsodano.github.io/granaderos/)** · [Cómo se juega](#cómo-se-juega) · [Tu propia campaña](#tu-propia-campaña) · [Ejecutar en tu equipo](#ejecutar-en-tu-equipo) · [Documentación](docs/README.md)
 
-Granaderos es un juego de estrategia y combate táctico por turnos para navegador, ambientado en la Guerra de la Independencia argentina. Reclutá combatientes, administrá fondos y alianzas, y dirigí a cada soldado en el campo de batalla. El juego toma como referencia **Jagged Alliance 2 v1.13** y adapta sus sistemas a las armas y condiciones de la época.
+[![Tráiler de Granaderos: La independencia se conquista](assets/video/intro/preview.gif)](assets/video/intro/granaderos-intro.mp4?raw=true)
 
-La interfaz del juego y este README están en **español**. El código y la mayor parte de la documentación están en inglés.
+*La independencia se conquista.* Presentación con grabación real del juego, ilustraciones y música original. [Ver el video completo](assets/video/intro/granaderos-intro.mp4?raw=true) · [Subtítulos en español](assets/video/intro/captions.es.srt)
 
-La versión 0.1 permite jugar la campaña y los combates. Todavía falta verificar una campaña completa en esta versión, el equilibrio entre distintas fuerzas y estrategias, el rendimiento en equipos registrados y la presentación gráfica, sonora e histórica para una versión final. Las pruebas de rutas anteriores conservan su fecha y alcance; no certifican estos puntos en el código actual.
+## Un ejército, dos escalas
 
-El motor y la campaña se guardan por separado. `campaigns/granaderos/` contiene la única campaña incluida. El menú puede mostrar varias campañas instaladas, cada una con su propio progreso. La [guía de campañas](docs/development/campaign-authoring.md) explica cómo crear, verificar e instalar una carpeta local. La publicación comunitaria y las herramientas adicionales siguen en el [plan de campañas propias](docs/plans/campaign-authoring.md).
+| En la campaña | En el campo de batalla |
+| --- | --- |
+| Contratá combatientes, creá tu oficial y organizá escuadras. | Dirigí a cada soldado con puntos de acción y equipo propio. |
+| Recorré rutas, coordiná llegadas y defendé el territorio. | Explorá libremente hasta entrar en combate por turnos. |
+| Administrá pesos, contratos, ingresos y suministros. | Elegí la postura, la cobertura, la línea de tiro y el momento de recargar. |
+| Entrená milicias, repará armas y atendé a los heridos. | Usá fusiles, pistolas, armas blancas, caballería y cañones con dotación. |
+| Conversá, cumplí objetivos y negociá alianzas. | Conservá las bajas, las heridas y el equipo al regresar de cada encuentro. |
 
-El [Estudio de campañas](docs/authoring/campaign-studio.md), en la ruta `/studio`, permite crear, editar, probar y descargar un paquete completo desde el navegador. La [verificación del estudio](docs/evidence/campaign-studio-2026-10-10/README.md) registra las pruebas realizadas, la exportación y los límites de la revisión del navegador.
+## Lo que hace a Granaderos
 
-[Jugar en el navegador](https://fsodano.github.io/granaderos/) · [Ejecutar en tu equipo](#ejecutar-en-tu-equipo) · [Cómo se juega](#cómo-se-juega) · [Desarrollo](#desarrollo) · [Documentación](docs/README.md)
+- **Un ejército con nombres y rostros.** Figuras históricas, voluntarios con atributos y equipo diferentes, y un personaje que podés crear con su nombre, retrato, oficio, atributos y rasgos. La contratación tiene un precio y una fecha de llegada; la paga y el tiempo de servicio forman parte de la estrategia.
+- **Combate de avancarga.** Cada disparo exige preparar la próxima carga. El tipo de munición, la condición del arma, la lluvia y el humo influyen en el combate. Podés fijar una bayoneta, usar la culata o recurrir al sable y al facón cuando la distancia se cierra.
+- **Un campo táctico en 3D.** Personajes animados, armas, equipo y edificios comparten escenarios con puertas, ventanas, interiores y desniveles. Las líneas de visión, las posturas, la iluminación y el terreno afectan tus opciones. El día, la noche y el tiempo también cuentan.
+- **Órdenes con consecuencias.** Las interrupciones permiten reaccionar durante el turno enemigo. Moverse, girar, apuntar, disparar y vendar consumen recursos. Los proyectiles pueden encontrar cobertura y otros cuerpos en su recorrido: cuidá también a los aliados y a los civiles.
+- **Artillería y caballería.** Desplegá piezas con munición finita, reuní su dotación, orientalas y dispará bala rasa o metralla. La recarga requiere tiempo; los artilleros ocupan casillas contiguas y distintas de la del cañón. Los caballos aportan movilidad y requieren cuidado y descanso.
+- **Equipo que existe en el mundo.** Revisá bolsillos, manos, peso y munición compatible. Recogé armas y suministros del suelo, los cofres y los cuerpos; repartilos entre combatientes presentes. El material que recuperás puede sostener el próximo avance.
+- **Heridas que no desaparecen al ganar.** Los vendajes detienen hemorragias y estabilizan heridas críticas. La recuperación requiere médicos, vendas y tiempo. El descanso, la fatiga y la moral afectan a la fuerza; las muertes son permanentes.
+- **Una campaña histórica para recorrer.** El Retiro, San Lorenzo, el norte, Yatasto, El Plumerillo y los pasos de los Andes conectan combates, preparativos, personajes y acuerdos. Los mapas y acontecimientos son interpretaciones históricas adaptadas al juego.
+- **Sonidos de batalla opcionales.** Activá el sonido desde la barra del juego para acompañar las acciones del combate.
+- **Herramientas para crear.** El Estudio de campañas reúne mundo, mapas, personajes, diálogos, objetivos, presentación y recursos en un proyecto que podés editar, probar y descargar.
 
-## Jugar en el navegador
+## Cómo se juega
 
-Abrí [Granaderos en GitHub Pages](https://fsodano.github.io/granaderos/). No requiere instalación. Elegí **Nueva campaña** para iniciar una campaña o **Combate de San Lorenzo** para jugar una batalla independiente. La etiqueta `0.1` identifica el código guardado en el repositorio. La versión disponible en GitHub Pages depende de su despliegue y puede ser distinta.
+### Empezá en el Retiro
 
-El juego guarda el progreso en el navegador. Usá **Guardar** para exportar una partida y **Importar partida** para cargarla. GitHub Pages y localhost usan espacios de almacenamiento separados. Para trasladar una campaña entre ambos, exportá la partida e importala en el otro sitio.
+Abrí [el juego](https://fsodano.github.io/granaderos/) en un navegador de escritorio con WebGL y elegí **Nueva campaña**. Empezás con el Retiro bajo tu control y fondos para formar tu fuerza. Podés crear tu personaje sin costo, contratar voluntarios o combinar ambas opciones. Revisá sus atributos, su equipo y el precio antes de contratar; deberán llegar para incorporarse.
 
-Para probar la versión 0.1, iniciá una campaña nueva. No se garantiza que funcionen las partidas anteriores al formato de paredes compartidas entre casillas. Las partidas con la economía anterior tampoco se convierten.
+Abrí la carta de operaciones, elegí un destino y prepará el viaje. Las escuadras conservan su posición y su equipo. Capturar y defender localidades permite extender tu control y obtener ingresos para mantener al ejército. Los pesos financian contratos y preparativos; las armas, los cartuchos y las vendas se obtienen de los combatientes y de los suministros físicos del mundo.
+
+Para entrar directamente a una batalla independiente, elegí **Combate de San Lorenzo** en el menú principal.
+
+### Dales órdenes claras
+
+Seleccioná un retrato y señalá un destino: las huellas muestran el recorrido. Un clic sobre un personaje usa el objeto equipado. El símbolo junto al cursor indica la acción, como hablar, recoger, vendar o atacar. Durante la exploración, **Mayús + clic** agrega combatientes al grupo para moverlos juntos.
+
+| Acción | Control |
+| --- | --- |
+| Seleccionar un combatiente | Clic en su retrato o teclas **1–6** |
+| Elegir el siguiente combatiente | **Espacio** |
+| Mover o usar el objeto equipado | Clic en el terreno o en el objetivo |
+| Cambiar el objeto en mano | **W** |
+| Alternar disparo y combate cercano | **B** |
+| Recargar o cebar | **Mayús + R** |
+| Caminar, agacharse o ponerse cuerpo a tierra | **S**, **C**, **P** |
+| Terminar el turno o descansar | **D** |
+| Consultar los atajos | **H** |
+| Cancelar la orden preparada | **Esc** |
+
+El **Manual de campaña** está disponible dentro del juego. La [guía de controles](docs/gameplay/tactical/TACTICAL-HOTKEYS.md) explica puntería, movimiento, equipo y órdenes de teclado y mouse.
+
+### Guardá tu campaña
+
+El progreso se guarda en el navegador. Usá **Guardar** para descargar una partida y **Importar partida** para abrirla. Para llevar tu campaña a otro navegador o equipo, exportá el archivo e importalo allí. Cada campaña instalada conserva su propio progreso.
+
+## Rostros de la campaña
+
+<table>
+  <tr>
+    <td align="center"><img src="campaigns/granaderos/assets/portrait-0.webp" width="180" alt="Retrato de Martín Miguel de Güemes"><br><strong>Martín Miguel de Güemes</strong></td>
+    <td align="center"><img src="campaigns/granaderos/assets/portrait-3.webp" width="180" alt="Retrato de Juan Bautista Cabral"><br><strong>Juan Bautista Cabral</strong></td>
+    <td align="center"><img src="campaigns/granaderos/assets/portrait-1.webp" width="180" alt="Retrato de Juana Azurduy"><br><strong>Juana Azurduy</strong></td>
+  </tr>
+</table>
+
+Los retratos son ilustraciones del juego. La [guía de arte](assets/README.md) reúne sus fuentes, referencias y archivos de trabajo.
+
+## Tu propia campaña
+
+El [Estudio de campañas](docs/authoring/campaign-studio.md), en `/studio`, permite crear un proyecto o abrir una copia de una campaña instalada. Editá el mundo, los mapas tácticos, los edificios, los personajes, el equipo, los diálogos y los objetivos. Sumá tus imágenes y la presentación, probá el contenido y descargá el proyecto editable o un paquete de campaña.
+
+El [editor de historia](docs/development/story-editor.md) y el [editor de sectores](docs/development/sector-editor.md) también están disponibles desde el inicio para la campaña seleccionada. Las pruebas del editor usan una copia del contenido y conservan aparte el progreso de la campaña instalada.
+
+La [guía de campañas](docs/development/campaign-authoring.md) explica cómo instalar un paquete en el juego. Para que aparezca en un sitio público, su responsable debe incorporarlo y publicar el sitio.
 
 ## Ejecutar en tu equipo
 
-Instalá **Node.js 22.13.0 o posterior** y npm. Estos comandos descargan la rama predeterminada del repositorio:
+Necesitás **Node.js 22.13.0 o posterior** y npm.
 
 ```sh
 git clone https://github.com/fsodano/granaderos.git
@@ -39,90 +99,19 @@ npm ci --prefix web
 npm run dev
 ```
 
-El motor separado y el Estudio de campañas están integrados en `main`.
+Abrí [localhost:3000](http://localhost:3000) o la dirección indicada por el servidor. El juego para navegador usa JavaScript y React; no requiere una instalación de Jagged Alliance 2.
 
-Para revisar el código guardado de la versión 0.1, ejecutá `git checkout 0.1` antes de instalar las dependencias. Esa etiqueta conserva su alcance y no incluye las herramientas de campañas agregadas después.
+## Desarrollo y contribuciones
 
-Abrí [localhost:3000](http://localhost:3000) o la dirección que indique el servidor de desarrollo.
-
-Seleccioná una campaña instalada. En la campaña Granaderos, elegí **Nueva campaña** para comenzar en el despacho del Retiro. Retiro es el único sector bajo tu control. Contratá combatientes o creá tu propio personaje sin costo. La primera persona que entre en servicio permite avanzar el capítulo inicial, sin un pago adicional a la academia. Las contrataciones usan el precio indicado y los combatientes deben llegar antes de incorporarse a la fuerza. **Combate de San Lorenzo** inicia una batalla independiente.
-
-El juego guarda el progreso de la campaña en el navegador. Usá **Guardar** para exportar una partida a un archivo y **Importar partida** para cargarla.
-
-La pantalla de inicio también permite abrir el [editor de historia](docs/development/story-editor.md) y el [editor de sectores](docs/development/sector-editor.md) para la campaña seleccionada. Sus borradores se guardan por separado para cada campaña. Una partida iniciada desde el editor usa una copia de su contenido y no reemplaza el progreso de la campaña instalada. El ejemplo **La ruta de las postas** sigue disponible como contenido experimental; no figura como segunda campaña instalada.
-
-Para crear una campaña local, usá `npm run campaign:new -- mi-campana ./borradores/mi-campana`. Verificá su carpeta con `npm run campaign:check -- ./borradores/mi-campana`. La [guía de campañas](docs/development/campaign-authoring.md) detalla el formato, los recursos gráficos y la instalación. Estas órdenes están en el código actual de desarrollo; la etiqueta histórica `0.1` conserva su contenido original.
-
-El juego para navegador usa JavaScript y React. No requiere el submódulo del motor ni una instalación original de JA2.
-
-## Cómo se juega
-
-La campaña conecta las decisiones estratégicas con los combates tácticos. Las heridas y el equipo de los soldados se conservan entre encuentros. Las bajas y la munición utilizada afectan las decisiones posteriores.
-
-| En el mapa de campaña | En el campo de batalla |
-| --- | --- |
-| Contratá combatientes, formá escuadras y pagá contratos. | Explorá sectores y entrá en combate por turnos al encontrar enemigos. |
-| Asegurá rutas, recuperá equipo y financiá el ejército. | Administrá puntos de acción, munición, recargas y el estado de las armas. |
-| Entrená milicias, repará equipo y atendé a los heridos. | Usá el terreno, las líneas de visión, el humo y la postura. |
-| Negociá alianzas y defendé los sectores capturados. | Combatí con armas de fuego, armas blancas, caballería y artillería con dotación. |
-
-La campaña usa pesos como único recurso estratégico. Los ingresos de las poblaciones, las misiones pagadas y el dinero recuperado permiten pagar contratos, viajes y preparativos. El comercio de equipo está desactivado. Las armas y los suministros se obtienen con los combatientes reclutados o se encuentran físicamente en los sectores. La munición y las vendas son finitas: el dinero no permite comprar su reposición en esta versión.
-
-Podés seleccionar, visitar y explorar las casillas terrestres y los distritos urbanos. Cada uno conserva su propia escena. Las casillas de aguas abiertas no permiten el desplazamiento terrestre.
-
-La campaña comienza con Retiro bajo tu control. Sus capítulos recorren San Lorenzo, la campaña del norte y Yatasto, El Plumerillo y los preparativos del Ejército de los Andes. Los mapas y los acontecimientos son interpretaciones históricas adaptadas al juego.
-
-Consultá el **Manual de campaña** dentro del juego para comenzar. Los [controles tácticos](docs/gameplay/tactical/TACTICAL-HOTKEYS.md) explican los comandos de teclado y mouse. El [índice de documentación](docs/README.md) reúne las guías de los sistemas y los registros de verificación.
-
-El campo táctico muestra personajes y equipo en 3D. Las huellas indican el recorrido previsto al señalar un destino. Un símbolo pequeño junto al cursor indica la acción: labios para hablar, una mano para recoger y una mira para atacar. El objeto equipado y las teclas modificadoras conservan su función. Los artilleros trabajan desde casillas contiguas al cañón.
-
-## Rostros de la campaña
-
-<table>
-  <tr>
-    <td align="center"><img src="campaigns/granaderos/assets/portrait-0.webp" width="180" alt="Retrato pintado de Martín Miguel de Güemes utilizado en el juego"><br><strong>Martín Miguel de Güemes</strong></td>
-    <td align="center"><img src="campaigns/granaderos/assets/portrait-3.webp" width="180" alt="Retrato pintado de Juan Bautista Cabral utilizado en el juego"><br><strong>Juan Bautista Cabral</strong></td>
-    <td align="center"><img src="campaigns/granaderos/assets/portrait-1.webp" width="180" alt="Retrato pintado de Juana Azurduy utilizado en el juego"><br><strong>Juana Azurduy</strong></td>
-  </tr>
-</table>
-
-Las figuras históricas sirven junto a voluntarios remunerados ficticios y un personaje personalizado. Sus atributos, equipo y condiciones de reclutamiento son diferentes.
-
-Las imágenes anteriores son **ilustraciones del juego, no capturas de una partida**. Se conservan las instrucciones de generación y los archivos fuente de las pinturas y los retratos creados con IA. Los rasgos de los personajes y los detalles de los uniformes son interpretaciones artísticas. Consultá la [documentación gráfica](assets/README.md) y las [referencias de los retratos](assets/portrait-references.md) para conocer sus fuentes y limitaciones.
-
-## Desarrollo
-
-Después de instalar las dependencias de la interfaz web, ejecutá estos comandos desde la raíz del repositorio. Las pruebas de recursos 3D del grupo `core` también requieren Python 3.13, Pillow y NumPy, igual que CI; la [guía de desarrollo](docs/development/getting-started.md#checks) explica cómo instalar esas dependencias en un entorno separado.
+La [guía de desarrollo](docs/development/getting-started.md) explica la instalación, la estructura y las dependencias de verificación. El motor está en `game/`, la interfaz en `web/` y las campañas en `campaigns/`.
 
 ```sh
 npm run test:core      # Reglas compartidas, renderizado y herramientas
-npm run test:campaign  # Datos, escenarios y rutas de campaña
-npm run test:quick     # Perfil rápido de ambos grupos
-npm run test:extended  # Rutas largas, repeticiones nativas y recursos del perfil extendido
-npm test              # Todas las pruebas, incluidas las rutas completas de campaña
-npm run typecheck     # Validación de TypeScript
-npm run build         # Compilación y validación de la exportación estática en dist/
+npm run test:campaign  # Contenido, escenarios y rutas de campaña
+npm run test:quick     # Comprobación rápida de ambos grupos
+npm test              # Suite completa
+npm run typecheck     # TypeScript
+npm run build         # Exportación estática en dist/
 ```
 
-Los cambios del motor usan las pruebas de `core`; los cambios de campaña usan las de `campaign`. Ambos comandos ejecutan todo su grupo. Agregá `-- --duration quick` para limitar un grupo al perfil rápido, o `-- --list` para ver su selección. Las Actions automáticas ejecutan el perfil rápido del grupo que corresponde a los archivos modificados. Cada actualización de `main` compila y publica el juego en GitHub Pages. Las rutas completas y las compilaciones de Windows se inician de forma manual.
-
-La [guía de desarrollo](docs/development/getting-started.md#checks) explica la selección, las Actions y el registro de resultados. `npm test` conserva todas las pruebas. Ejecutalo antes de declarar completa la validación de una versión o campaña.
-
-Consultá primero el [estado de la campaña principal](docs/plans/core-campaign-v0.1.md) para conocer las pruebas actuales y el trabajo pendiente. La [verificación de campañas separadas](docs/verification/campaign-engine-separation-2026-10-10.md) registra la separación del motor y del contenido. El [estado de la versión 0.1](docs/verification/version-0.1.md) conserva la evidencia del punto de control anterior. El [registro de avances publicados](docs/verification/published-progress.md) y el [índice de verificación](docs/verification/README.md) conservan pruebas de entregas anteriores. Las pruebas automáticas cubren situaciones específicas. La validación completa de la campaña también requiere pruebas de juego.
-
-| Ruta | Contenido |
-| --- | --- |
-| [web/](web/) | Interfaz para navegador, editores y recursos visuales compartidos |
-| [game/](game/) | Motor compartido, reglas tácticas y validación de partidas guardadas |
-| [campaigns/](campaigns/) | Campañas instaladas: contenido, mundo, mapas, presentación y recursos propios |
-| [assets/](assets/) | Fuentes gráficas, instrucciones de generación, referencias y exportaciones |
-| [tests/](tests/) | Pruebas de reglas e integración |
-| [tools/](tools/) | Herramientas de compilación, recursos gráficos y verificación |
-| [docs/](docs/README.md) | Guías, documentos de diseño y registros de verificación |
-| `engine/`, `native/`, `patches/`, `mod/` | Código del proyecto original y trabajo previo de conversión nativa |
-
-La [guía de desarrollo](docs/development/getting-started.md) detalla la instalación, los archivos generados y las comprobaciones. La versión para navegador es el juego principal. La conversión nativa anterior tiene requisitos de compilación y ejecución separados.
-
-Para contribuir, revisá el [estado de la campaña principal](docs/plans/core-campaign-v0.1.md), los criterios de aceptación y el [índice de documentación](docs/README.md). Presentá una solicitud de cambios con un alcance definido y pruebas de verificación. Los recursos generados deben poder reproducirse a partir de sus archivos fuente. Indicá qué comportamiento comprobaste en el navegador.
-
-[VERSION](VERSION) registra la versión del código. La etiqueta `0.1` conserva el punto de desarrollo publicado antes de la separación de campañas. La versión final requiere cerrar sus criterios de aceptación y superar la auditoría de finalización.
+Para contribuir, proponé un cambio con alcance definido, verificá el comportamiento afectado y documentá sus controles. Los [documentos del juego](docs/gameplay/README.md), la [guía de arte](docs/art/README.md) y el [índice de documentación](docs/README.md) reúnen las referencias de cada sistema.
