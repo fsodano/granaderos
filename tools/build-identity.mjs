@@ -4,7 +4,7 @@ import {readFile,readdir} from 'node:fs/promises';
 import {join,relative} from 'node:path';
 import {pathToFileURL,fileURLToPath} from 'node:url';
 
-const omitted=new Set(['node_modules','dist','.next','.vinext','.vite','.git']);
+const omitted=new Set(['node_modules','dist','.next','.vinext','.vite','.git','__pycache__']);
 // Vinext creates this declaration during a clean build. It is output, not a
 // game input; including it makes the first build identify two source versions.
 const generatedFiles=new Set(['web/next-env.d.ts']);
