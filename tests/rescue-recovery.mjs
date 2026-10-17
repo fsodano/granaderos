@@ -8,7 +8,7 @@ import {collectRouteItems,discoverRouteCache} from './finite-route-equipment.mjs
 import {prepareRescueClinicGuards,restRescuePatients,resolveRescueClinicEncounter} from './rescue-clinic-readiness.mjs';
 import {prepareNorthernHospitalFortification} from './northern-hospital-fortification.mjs';
 import {recoverVisibleRouteDressings} from './route-visible-medical-remains.mjs';
-import {actBattle,hasFirearm,canSee,hasLineOfSight,getReachable,artilleryContact,interruptAvailable,meleePreview} from '../game/tactical.js';
+import {actBattle,endTurn,hasFirearm,canSee,hasLineOfSight,getReachable,artilleryContact,interruptAvailable,meleePreview} from '../game/tactical.js';
 import {enterSector} from '../game/world.js';
 import {syncBattleTime} from '../game/time.js';
 import {autoBandageBattle} from '../game/auto-bandage.js';
@@ -33,6 +33,7 @@ import {carriedAmmunition} from '../game/campaign-ammunition.js';
 import {ammoCount} from '../game/ammo-types.js';
 import {firearmServiceable} from '../game/firearm-serviceability.js';
 import {sameCell,sameSurface,spacePoint,surfaceAt} from '../game/tactical-space.js';
+import {beginRouteControllerBoundaryEvidence,recordRouteControllerDecisionEvidence} from './route-controller-decision-evidence.mjs';
 
 const recoveryClock=c=>c.hour*3600+(c.secondOfHour??0);
 
@@ -112,13 +113,19 @@ export function rescueCordobaDefenseController(initial,ordinary=cordobaClinicDef
  const held=new Set([coordinated.roles.physicianId,...coordinated.roles.crews.flatMap(crew=>crew.ids)]);
  const roofRifles=new Set(initial.units.filter(u=>u.side==='player'&&fit(u)&&!u.militia&&!u.missionAlly&&!u.mounted&&!held.has(u.id)&&(u.tacticalLevel??0)>0&&u.medical<60&&!clinical(u)&&u.loaded>0&&hasFirearm(u)&&!u.weaponDropped&&firearmServiceable(u)).map(u=>u.id));
  const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),safeShot={shotSafety:knownRouteBystanderShotSafety};
+ let roofDecisionRecorded=false;
  return (battle,unit)=>{
   if(crewIds.has(unit.id))return coordinated.controller(battle,unit);
   const normal=ordinary(battle,unit);
   // Only an initial nonclinical roof rifle may fill an ordinary hold with
   // the existing paid same-cover useful-shot leaf. Non-null work stays exact.
   if(ordinary===cordobaClinicDefenseOrder&&normal==null&&roofRifles.has(unit.id)&&fit(unit)&&(unit.tacticalLevel??0)>0&&unit.medical<60&&!clinical(unit)&&!battle.artillery.some(gun=>gun.side===unit.side&&(gun.loaded||gun.ammo>0)&&artilleryContact(battle,unit,gun))){
-   const approach=coordinated.controller(battle,unit);return approach?.type==='move'?approach:normal;
+   const approach=coordinated.controller(battle,unit);
+   if(process.env.GRANADEROS_CAMPAIGN_FAILURE_DIR&&!roofDecisionRecorded){
+    roofDecisionRecorded=true;const returned=approach?.type==='move'?approach:normal,kind=value=>value===null?'null':value===undefined?'undefined':value.type??typeof value;
+    recordRouteControllerDecisionEvidence({battle,unit,decision:{ordinary:normal,coordinator:approach,returned,ordinaryResultKind:kind(normal),coordinatorResultKind:kind(approach),returnedResultKind:kind(returned),roles:coordinated.roles,initialRoofRifleIds:[...roofRifles],initialRoofPhysicianIds:[...roofPhysicians],initialNonclinicalCrewIds:[...crewIds]}});
+   }
+   return approach?.type==='move'?approach:normal;
   }
   if(!roofPhysicians.has(unit.id)||!fit(unit)||!(unit.medkits>0)||(unit.tacticalLevel??0)<=0||battle.mode!=='combat'||!interruptAvailable(battle,unit)||unit.knockedDown||unit.entangled)return normal;
   const view=publicRouteView(battle,unit),contacts=view.units.filter(other=>other.side!==unit.side&&fit(other)&&sameSurface(unit,other)&&canSee(view,unit,other));
@@ -152,7 +159,12 @@ export function resolveRescueRecoveryEncounter(start,{report=()=>{},onCheckpoint
  c=dispatchCampaign(c,{type:'selectSquad',id:home.id});assert.equal(c.lastError,null);c=dispatchCampaign(c,{type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});assert.equal(c.lastError,null);
  let actual=null;const executeBattle=(request,previous,options)=>{
   const initial=enterSector(request,previous),controller=rescueCordobaDefenseController(initial,options.controller);
-  const result=openingFight(request,previous,{...options,controller});actual??=result;return result;
+  const observeOrder=process.env.GRANADEROS_CAMPAIGN_FAILURE_DIR?beginRouteControllerBoundaryEvidence({initial,fieldPhysicianIds:initial.units.filter(unit=>unit.side==='player'&&unit.medical>=60&&unit.medkits>0).map(unit=>unit.id),existingSynchronizationCompleted:false}):null;
+  let orderIndex=0;const executeOrder=observeOrder?(current,action)=>{
+   const next=action.type==='endTurn'?endTurn(current):actBattle(current,action);
+   if(next.lastError===null)observeOrder({before:current,after:next,action,index:orderIndex});orderIndex++;return next;
+  }:undefined;
+  const result=openingFight(request,previous,{...options,controller,...(observeOrder?{executeOrder}:{})});actual??=result;return result;
  };
  const request=c.pendingBattle,result=fightNorthernSector(c,'cordoba',{report,controller:cordobaClinicDefenseOrder,beforeSettlement:aidCordobaMedicalRear,executeBattle});c=result.campaign;
  for(const unit of request.squad){const id=Number(unit.id),r=c.operativeState[id];if(r.alive&&!r.captured&&operativeLocation(c,id)==='cordoba'){c=dispatchCampaign(c,{type:'assignCare',operativeId:id,assignment:'rest'});assert.equal(c.lastError,null);}}

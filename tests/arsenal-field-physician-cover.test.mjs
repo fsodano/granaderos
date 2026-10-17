@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,presentedActBattle,getReachable,actionCosts,stanceCost,medicalUsePreview,artilleryContact,artilleryCrewPlan,artilleryCosts,teamCanSee} from '../game/tactical.js';
+import {createBattle,actBattle,presentedActBattle,endTurn,presentedEndTurn,interruptAvailable,getReachable,actionCosts,stanceCost,medicalUsePreview,artilleryContact,artilleryCrewPlan,artilleryCosts,teamCanSee} from '../game/tactical.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {sameCell,spacePoint} from '../game/tactical-space.js';
 import {unitAmmunitionByType} from '../game/physical-ammunition.js';
@@ -141,4 +141,65 @@ test('actual adjacent critical aid remains first while prone and does not pay an
  const start=proneMedicalArena({adjacent:true}),before=structuredClone(start),controller=policy(start),doctor=unit(start,'doctor'),patient=unit(start,'patient'),quote=medicalUsePreview(start,doctor,patient);assert.equal(quote.allowed,true,quote.reason);
  const aid=controller(start,doctor);assert.deepEqual(aid,{type:'useItem',unitId:'doctor',targetId:'patient'});const end=replay(start,[aid]),actual=unit(end,'doctor');
  assert.equal(actual.stance,'prone');assert.equal(actual.movementMode,'prone');assert.ok(sameCell(actual,doctor));assert.equal(actual.ap,doctor.ap-quote.cost);assert.equal(actual.medkits,doctor.medkits-quote.treatment.dressingsUsed);assert.equal(unit(end,'patient').hp,quote.treatment.hpAfter);assert.equal(unit(end,'patient').bleeding,quote.treatment.bleedingAfter);goods(start,end);assert.deepEqual(start,before);
+});
+
+
+// Independent declarations reuse the existing interactive-interrupts pattern:
+// a real melee-only enemy advance earns the player window through endTurn.
+// No health, AP, equipment, role or interrupt state is patched after factory.
+function interruptMedicalArena({hand='medical',eligible=true,adjacent=true}={}){
+ const common={maxHp:100,hp:100,bleeding:0,bandaged:0,energy:100,fatigue:0,shock:0,morale:90,
+  weapon:1800,blade:0,loaded:1,ammo:5,condition:100,jammed:false,medical:0,medkits:0,
+  stance:'standing',movementMode:'walk',mounted:false,inventory:{},rations:0,torches:0,boleadoras:0};
+ return createBattle([
+  {...common,id:'doctor',name:'Médica interrumpida',x:1,y:eligible?1:6,facing:2,medical:93,medkits:2,activeSlot:hand,
+   agility:eligible?100:10,wisdom:eligible?100:10,experienceLevel:eligible?10:1},
+  {...common,id:'observer',name:'Observador',x:1,y:eligible?6:1,facing:2,
+   agility:eligible?10:100,wisdom:eligible?10:100,experienceLevel:eligible?1:10},
+  {...common,id:'patient',name:'Paciente adyacente',x:adjacent?2:4,y:adjacent?(eligible?1:6):5,
+   hp:10,bleeding:3,bandaged:0,weapon:0,loaded:0,ammo:0,agility:10,wisdom:10,experienceLevel:1},
+ ],{id:'declared-field-physician-interrupt',width:12,height:8,tiles:flat(12,8),hour:12,seed:45,firstSide:'player',exploration:false,
+  enemies:[{...common,id:'advance',name:'Avance realista',x:7,y:1,facing:6,weapon:1809,loaded:0,ammo:0,
+   agility:75,wisdom:50,experienceLevel:4,patrol:false,overwatch:false}],artillery:[],npcs:[],props:[],groundItems:[],buildings:[]});
+}
+function interruptMedicalReplay(start,orders){
+ let direct=structuredClone(start),shown=structuredClone(start),stored=validateBattleSnapshot(JSON.parse(JSON.stringify(start)));
+ for(const action of orders){
+  const execute=battle=>action.type==='endTurn'?endTurn(battle):actBattle(battle,action);
+  direct=execute(direct);assert.equal(direct.lastError,null,JSON.stringify(action));
+  shown=(action.type==='endTurn'?presentedEndTurn(shown):presentedActBattle(shown,JSON.parse(JSON.stringify(action)))).state;assert.deepEqual(shown,direct);
+  stored=execute(stored);assert.equal(stored.lastError,null);stored=validateBattleSnapshot(JSON.parse(JSON.stringify(stored)));assert.deepEqual(stored,direct);
+ }
+ return direct;
+}
+
+test('an admitted field physician uses an earned Native interrupt for adjacent finite aid and its paid medical hand',()=>{
+ for(const hand of ['medical','primary']){
+  const start=interruptMedicalArena({hand}),before=structuredClone(start),controller=policy(start),end={type:'endTurn'},orders=[end];
+  const paused=interruptMedicalReplay(start,orders),doctor=unit(paused,'doctor'),patient=unit(paused,'patient');
+  assert.equal(paused.phase,'interrupt');assert.equal(paused.turn,start.turn);assert.equal(paused.elapsedSeconds,start.elapsedSeconds+COMBAT_ROUND_SECONDS);
+  assert.deepEqual(paused.interrupt.unitIds,['doctor']);assert.equal(interruptAvailable(paused,doctor),true);assert.equal(doctor.ap,unit(start,'doctor').ap);
+  assert.ok(!sameCell(unit(paused,'advance'),unit(start,'advance')));assert.ok(unit(paused,'advance').ap<unit(start,'advance').ap);
+  assert.ok(Math.hypot(doctor.x-patient.x,doctor.y-patient.y)<=1.5);let ready=paused;
+  if(hand==='primary'){
+   const change=controller(paused,doctor);assert.deepEqual(change,{type:'weapon',unitId:'doctor',slot:'medical'});orders.push(change);ready=interruptMedicalReplay(start,orders);
+   assert.equal(unit(ready,'doctor').ap,doctor.ap-actionCosts(paused,doctor).weapon);assert.equal(unit(ready,'doctor').medkits,doctor.medkits);assert.equal(unit(ready,'doctor').activeSlot,'medical');
+  }
+  const actual=unit(ready,'doctor'),quote=medicalUsePreview(ready,actual,unit(ready,'patient'));assert.equal(quote.allowed,true,quote.reason);
+  const aid=controller(ready,actual);assert.deepEqual(aid,{type:'useItem',unitId:'doctor',targetId:'patient'});orders.push(aid);
+  const treated=interruptMedicalReplay(start,orders);assert.equal(treated.phase,'interrupt');assert.equal(treated.turn,start.turn);assert.equal(treated.elapsedSeconds,paused.elapsedSeconds);assert.equal(treated.seed,paused.seed);
+  assert.equal(unit(treated,'doctor').ap,actual.ap-quote.cost);assert.equal(unit(treated,'doctor').medkits,actual.medkits-quote.treatment.dressingsUsed);assert.ok(quote.treatment.dressingsUsed>0);
+  assert.equal(unit(treated,'patient').hp,quote.treatment.hpAfter);assert.equal(unit(treated,'patient').bleeding,quote.treatment.bleedingAfter);assert.equal(unit(treated,'patient').bandaged,quote.treatment.bandagedAfter);
+  for(const actor of paused.units)assert.deepEqual(spacePoint(unit(treated,actor.id)),spacePoint(actor));goods(start,treated);assert.deepEqual(start,before);
+ }
+});
+
+test('an interrupt refuses an ineligible field physician and never starts a remote approach or premature hand change',()=>{
+ const start=interruptMedicalArena({eligible:false}),before=structuredClone(start),controller=policy(start),paused=interruptMedicalReplay(start,[{type:'endTurn'}]),doctor=unit(paused,'doctor');
+ assert.equal(paused.phase,'interrupt');assert.deepEqual(paused.interrupt.unitIds,['observer']);assert.equal(interruptAvailable(paused,doctor),false);
+ assert.equal(controller(paused,doctor),null);const rejected=actBattle(paused,{type:'useItem',unitId:'doctor',targetId:'patient'});
+ assert.ok(rejected.lastError);assert.deepEqual(rejected.units,paused.units);assert.deepEqual(rejected.enemyTurn,paused.enemyTurn);assert.deepEqual(rejected.interrupt,paused.interrupt);assert.equal(rejected.elapsedSeconds,paused.elapsedSeconds);assert.equal(rejected.seed,paused.seed);assert.deepEqual(start,before);
+ const remote=interruptMedicalArena({hand:'primary',adjacent:false}),remoteBefore=structuredClone(remote),remotePolicy=policy(remote),window=interruptMedicalReplay(remote,[{type:'endTurn'}]),medic=unit(window,'doctor');
+ assert.equal(interruptAvailable(window,medic),true);assert.ok(Math.hypot(medic.x-unit(window,'patient').x,medic.y-unit(window,'patient').y)>1.5);
+ assert.equal(remotePolicy(window,medic),null);assert.equal(remotePolicy.sharedFallback(window,medic),null);assert.equal(medic.activeSlot,'primary');assert.equal(medic.medkits,2);assert.deepEqual(remote,remoteBefore);
 });

@@ -8,10 +8,10 @@ import {encodeSave,decodeSave} from '../game/save.js';
 
 // A route controller must finish an unfinished gun through real equipment and
 // reload orders. Returning to the map cannot finish the job for the player.
-export function finishReloadsBeforeMarch(start,{report=()=>{},deadlineSeconds}={}){
+export function finishReloadsBeforeMarch(start,{report=()=>{},deadlineSeconds,readyPrimary=false}={}){
  const bounded=deadlineSeconds!==undefined,clock=s=>s.hour*3600+(s.secondOfHour??0),orders=[];let lastAction=null,refusedSync=null;
  if(bounded){assert.ok(Number.isSafeInteger(deadlineSeconds)&&deadlineSeconds>=clock(start));assert.equal(start.pendingEncounter,null);assert.equal(start.pendingBattle,null);}
- const roster=rosterFor(start),ids=start.squad.filter(id=>{const r=start.operativeState[id],capacity=WEAPONS[roster.find(u=>u.id===id)?.weapon]?.capacity??0;return !r.weaponDropped&&capacity>0&&(r.jammed||r.carriedLoaded!==undefined&&r.carriedLoaded<capacity||bounded&&(r.activeSlot??'primary')!=='primary');});
+ const roster=rosterFor(start),ids=start.squad.filter(id=>{const r=start.operativeState[id],capacity=WEAPONS[roster.find(u=>u.id===id)?.weapon]?.capacity??0;return !r.weaponDropped&&capacity>0&&(r.jammed||r.carriedLoaded!==undefined&&r.carriedLoaded<capacity||(bounded||readyPrimary)&&(r.activeSlot??'primary')!=='primary');});
  if(!ids.length)return start;
  report({event:'reloadDeployment',ammunitionCost:deploymentCost(start)});
  let campaign=dispatchCampaign(start,{type:'visitSector'});assert.equal(campaign.lastError,null,campaign.lastError);

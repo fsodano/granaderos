@@ -4,10 +4,12 @@ import {publicSupportStagingPlan} from './public-support-staging.mjs';
 import {publicRearFormationFollowPlan,publicLateRearSearchEligible} from './public-rear-formation.mjs';
 import {coastalBatteryController} from './coastal-command-driver.mjs';
 import {sectorSearchOrder} from './sector-search-driver.mjs';
-import {getReachable,teamCanSee,hasLineOfSight,hasFirearm,actionCosts,knownArtillery,medicalUsePreview,stanceCost,artilleryContact} from '../game/tactical.js';
+import {getReachable,teamCanSee,hasLineOfSight,hasFirearm,actionCosts,knownArtillery,medicalUsePreview,stanceCost,artilleryContact,interruptAvailable} from '../game/tactical.js';
 import {choosePlayerSharedSightingInvestigation} from '../game/tactical-ai.js';
 import {firearmServiceable} from '../game/firearm-serviceability.js';
 import {medicalPatientAvailable} from '../game/medical-patient.js';
+import {selectMainHand} from '../game/hand-layout.js';
+import {inventoryUsage} from '../game/tactical-inventory.js';
 import {criticalFirstAidNeeded} from '../game/first-aid.js';
 import {sameSurface,spacePoint,surfaceAt} from '../game/tactical-space.js';
 import {directionTo,turnAPCost} from '../game/tactical-awareness.js';
@@ -86,10 +88,28 @@ function physicianCoverOrder(battle,unit,action,protectedIds,direction,careOnly=
  return candidates[0]?{type:'move',unitId:unit.id,...spacePoint(candidates[0])}:null;
 }
 
+// An actual Native interrupt admits adjacent care only for the supplied field
+// physician. It grants no approach, posture, following or new AP allowance.
+function fieldPhysicianInterruptOrder(battle,unit){
+ if(!interruptAvailable(battle,unit)||!fit(unit)||unit.captured||unit.energy<=0||unit.medical<60||!(unit.medkits>0))return null;
+ const changing=(unit.activeSlot??'primary')!=='medical',cost=actionCosts(battle,unit).weapon;
+ if(changing&&(unit.knockedDown||!Number.isFinite(cost)||cost<=0||unit.ap<cost))return null;
+ // This detached hand/AP quote is never adopted. The real weapon order pays
+ // and revalidates the actual hand and inventory before any treatment.
+ const ready=changing?selectMainHand({...unit},{activeSlot:'medical'}):unit;
+ if(changing){ready.ap=unit.ap-cost;lowerWeapon(ready);if(inventoryUsage(ready).overloaded)return null;}
+ const patients=battle.units.filter(other=>other.side===unit.side&&medicalPatientAvailable(other)&&(other.bleeding>0||criticalFirstAidNeeded(other)))
+  .sort((a,b)=>Number(criticalFirstAidNeeded(b))-Number(criticalFirstAidNeeded(a))||a.hp-b.hp||distance(unit,a)-distance(unit,b)||String(a.id).localeCompare(String(b.id)));
+ for(const patient of patients)if(medicalUsePreview(battle,ready,patient).allowed)return changing?
+  {type:'weapon',unitId:unit.id,slot:'medical'}:{type:'useItem',unitId:unit.id,targetId:patient.id};
+ return null;
+}
+
 // Only the caller's admitted field-service physician gets this medical role.
 // It spends the same Native hand, care, route and posture costs as any actor;
 // it never turns an ordinary infantry shot or pursuit into a medical duty.
 function fieldPhysicianOrder(battle,unit,protectedIds,direction){
+ if(battle.phase==='interrupt')return fieldPhysicianInterruptOrder(battle,unit);
  if(battle.status!=='active'||battle.phase!=='player'||battle.reactionStack?.length||unit.side!=='player'||!fit(unit)||unit.captured||unit.energy<=0||unit.medical<60)return null;
  const costs=actionCosts(battle,unit),payable=cost=>Number.isFinite(cost)&&cost>0&&(battle.mode==='exploration'||unit.ap>=cost);
  if(unit.knockedDown&&unit.activeSlot!=='medical')return payable(stanceCost(unit,'standing'))?{type:'stance',unitId:unit.id,stance:'standing'}:null;

@@ -45,7 +45,7 @@ export function recaptureFoundryConvoy(start,{transferId,createOrders,recoverPat
   for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'rest'});
   for(let hours=0;hours<48&&field.some(id=>c.operativeState[id].energy<100||c.operativeState[id].fatigue||c.operativeState[id].asleep);hours++)order({type:'wait',hours:1});
   for(const id of field)assert.ok(c.operativeState[id].energy===100&&!c.operativeState[id].fatigue&&!c.operativeState[id].asleep);
-  for(const id of columns){order({type:'selectSquad',id});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});if(ammunition)c=supplyRouteAmmunition(c,c.squad,{target:12,report}).campaign;c=finishReloadsBeforeMarch(c,{report});}
+  for(const id of columns){order({type:'selectSquad',id});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});if(ammunition)c=supplyRouteAmmunition(c,c.squad,{target:12,report}).campaign;c=finishReloadsBeforeMarch(c,{report,readyPrimary:true});}
   order({type:'configureArtillery',types:[]});return field;
  };
  for(const id of local('mendoza')){
