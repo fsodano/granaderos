@@ -2,7 +2,7 @@
 
 **Formá un ejército. Mantenelo abastecido. Conducilo a la batalla.**
 
-**Juego para navegador en desarrollo.** Consultá el [estado de la campaña principal](docs/plans/core-campaign-v0.1.md) y la [verificación de campañas separadas](docs/verification/campaign-engine-separation-2026-10-10.md) para el código actual. La [etiqueta 0.1](docs/verification/version-0.1.md) conserva el alcance de su punto de control anterior.
+**Juego para navegador de escritorio, en desarrollo.** Consultá el [estado de la campaña principal](docs/plans/core-campaign-v0.1.md) y la [verificación de campañas separadas](docs/verification/campaign-engine-separation-2026-10-10.md) para el código actual. La [etiqueta 0.1](docs/verification/version-0.1.md) conserva el alcance de su punto de control anterior.
 
 [![Vista previa del tráiler de Granaderos: La independencia se conquista](assets/video/intro/preview.gif)](assets/video/intro/granaderos-intro.mp4?raw=true)
 
