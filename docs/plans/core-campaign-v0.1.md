@@ -2,20 +2,18 @@
 
 Updated: 17 October 2026.
 
-Public `main` is `6a5218de`, tagged `0.1.12`, with its verified Pages export
-published. Pushes to `main` build and publish automatically. Manual dispatch
-remains available; tag and pull-request updates do not publish Pages.
-The proposed next release is `0.1.13`; it is not published or accepted yet.
+The first core campaign is not accepted end to end. Public `main` is
+`6a5218de`, published as `0.1.12`. Each push to `main` builds and publishes
+GitHub Pages. Pull-request and tag updates do not publish Pages.
 
-The first core campaign is not accepted end to end. Existing
+The next release, `0.1.13`, remains proposed. Existing
 [PR #426](https://github.com/fsodano/granaderos/pull/426) will receive the fixes
-on its current branch and use a normal merge. Current candidate `305c85e3`
-differs from `main` at `6a5218de` in **232 tracked paths**: 146 added and 86
-modified, with no deletions. This includes the original PR and later
-corrections. The final fourteen-path follow-up transfer is committed. Recount
-the actual final commit before publication. Preserve current main's core,
-inventory, UI, Pages/CI changes, package graph and published release history.
-Keep the two private debug journals outside the PR.
+on its current branch and use a normal merge. Integration `fd833b82` differs
+from current `main` in **232 tracked paths**: 146 added and 86 modified, with
+no deletions. This includes the original PR and later corrections. Recount
+the final commit before publication. Preserve main's core, inventory, UI,
+Pages/CI changes, package graph and published release history. Keep the two
+private debug journals outside the PR.
 
 ## First-release requirements
 
@@ -35,181 +33,143 @@ separate regression cases.
 Use ordinary orders and finite resources. Keep the original battle and
 preparation limits, permanent losses and complete-route assertions.
 
-## Current blockers
+## Latest complete local gate
 
-The latest completed unfiltered gate ran all **1,115 files** on the earlier
-candidate `d79e71dd`: **1,109 files passed and six failed**. Its **8,383 test
-cases** contain **8,373 passes, eight failures and two dependent skips**, with
-no cancellations or TODO cases. Receipt `a59dfd44...`, log `b77be700...`,
-report `3f6989be...` and in-place preservation `3c255716...` retain the RED
-result. All five strict before/after captures match byte for byte; all 323
-retained source copies match and the owned processes are absent. The
-subsequent fourteen-path integration has not yet run the full suite. Separate
-component results do not replace complete-route proof. A lawful combat loss or
-route-helper failure alone does not prove an engine defect.
+The latest unfiltered gate ran all **1,115 files** on integration `db25cc8c`:
+**1,108 files passed and seven failed**. Its **8,391 cases** contain **8,380
+passes, nine failures and two dependent skips**, with no cancellations or
+TODO cases. It ran for 3,822 seconds. Receipt `ccefe0f9...`, log `38f3e737...`,
+report `ca5c6a6e...` and preservation `e86f4528...` retain the RED result.
+All five strict before/after comparisons match byte for byte. The preserved
+source copies match, the diff check passes and the owned processes are absent.
 
-| Route file | Latest completed evidence and remaining work |
+This run includes the fourteen-path follow-up committed before `db25cc8c`.
+The later four-path correction at `fd833b82` has separate component evidence;
+it has not passed a full gate. A lawful combat loss or route-helper failure
+alone does not prove an engine defect.
+
+| Failed route file | Latest result and remaining work |
 | --- | --- |
-| Opening | Four passes, two failures and two dependent skips. The actual Córdoba defence at H294 still retreats. |
-| Recovery | Care completes, then the original assertion reads a missing final contract for historical physician 146. Actual records retain physician 146's paid contract and H150 defence death. The final contract is absent after its paid-term expiry; removal by Native expiry is a source-supported inference. The corrected admission ledger passes its separate clinic component; the complete recovery route still needs a fresh pass. |
-| Northern route | The actual second Córdoba raid at H294 defeats the garrison. The charged, already-staffed battery controls pass within their separate component scope; complete-route victory remains unproved. |
-| Cuyo | The same H294 Córdoba defence fails before Cuyo progression. Keep the actual four-battle report, finite supplies and all later route assertions. |
-| Historical loss | The same H294 defence fails before the required engineer-loss boundary. The actual death and all later assertions remain required. |
-| Ending | Zero of two cases pass. The loose route reaches funded H1289, then lacks the second arsenal physician. The installed route retreats at Ensenada after 15 turns and 1,058 seconds; physician 135 dies despite the paid prone order. New staffing controls pass separately. No earned ending or 48-hour saved continuation is accepted. |
+| Opening | The Córdoba staging defence at H294 retreats. Staging admission left a previously resting reserve active. A separate five-case regression now verifies that stable reserves outside the deploying care cohort resume their ordered rest after the same actual victory. The full opening still needs a fresh pass. |
+| Recovery | The actual Tucumán victory leaves 16 living survivors at full health and one actual death. The driver incorrectly requires a wounded survivor. A separate healthy-return branch is under review; its new fixture has not yet reached gameplay. |
+| Northern route | The second Córdoba raid at H294 retreats. The actual two-person nonclinical crew makes no cannon orders and leaves the charged gun. A separate 23-case regression now verifies pre-contact retention, paid turning, finite fire and reload work. A full route victory remains unproved. |
+| Cuyo | The same H294 Córdoba battle fails before Cuyo progression. Keep the actual four-battle report, finite supplies and all later assertions. |
+| Historical loss | The same H294 battle fails before the required engineer-loss boundary. The actual death and all later assertions remain required. |
+| Ending | Neither case passes. Loose seed 8 reaches funded H1289, then cannot afford temporary convoy support 106's ordinary renewal at H1487. The installed campaign retreats at Ensenada on turn 16 after 1,058 seconds. Its two failure records contain the same battle, not separate attempts. Physician 135 completes the paid lane move, later takes a direct shot, routes and bleeds out. No earned ending or 48-hour continuation is accepted. |
+| Northern clinic dressing pool | An actual victory leaves two critical, bleeding survivors without dressings. The passive-rest guard correctly refuses unsafe recovery. A healthy-crew preference and protection from optional wounded advances remain under source review. |
 
-Current integration retains the opening, historical-loss and ending original
-files. Two explicit stronger baseline corrections are retained. Cuyo SHA
-`7c76c0e4...` keeps the real Ensenada encounter, requires four battles in order
-and checks victory, positive actions/turns and casualty arrays. Recovery SHA
-`239c2513...` keeps every historical doctor ID, verifies actual paid admission
-and current paid service for living physicians, and requires an actual
-victorious care-battle casualty plus permanent death for fallen physicians.
-Native death timestamps remain optional. No battle, loss, finite resource,
-deadline or endpoint is removed. The complete original routes still need to
-pass together on the new integration.
-
-Earlier component gates remain evidence within their frozen scopes:
-
-| Component cases | Retained receipt | Limit |
-| --- | --- | --- |
-| 47/47, five whole files | `8f508014...` | The old expected count of 45 remains preserved; reconciliation `04412bc5...` proves all 47 actual names once, without a rerun. |
-| 34/34, four whole files | `065f7e5e...` | Paid physician staging and finite-supply route drivers. |
-| 15/15, one whole file | `cbc5376c...` | Paid field-physician posture. |
-| 26/26, two whole files | `7173c229...` | Actual casualty service and finite battery. |
-| 30/30, two whole files | `e033282d...` | Paid infantry interrupts and field-physician aid. |
-
-Their recorded syntax and preservation audits pass. These results and the
-older 187-case gate do not establish a complete campaign or release.
+The original opening, historical-loss and ending files remain intact. Two
+reviewed stronger baseline corrections remain: Cuyo `7c76c0e4...` keeps the
+real Ensenada encounter and requires four actual battles in order; recovery
+`239c2513...` keeps every historical doctor ID, actual paid admission, current
+service for living doctors and permanent death for actual care-battle losses.
+Death timestamps remain optional. No battle, death, finite resource, deadline
+or endpoint is removed. All complete routes must pass together.
 
 ## Integrated component corrections
 
-Fourteen accepted paths from handover source `aaf5f66a` are committed in
-integration `305c85e3`. Their local evidence consists of separate results:
+Campaign corrections here affect automated acceptance-route drivers. They
+issue ordinary game orders and keep actual travel, preparation and service
+costs. They do not change player combat rules.
 
-- **83 passing cases across four whole files** from the earlier component
-  run: clinic 30, civilian safety 21, field-physician cover 17 and port infantry
-  15. Source-equivalence proof `dd3f9675...` verifies their unchanged, disjoint
-  417-file runtime-source closure. It is retained evidence, not a new run.
-- **10/10 fresh cases across two whole files**: northern rest 4 and arsenal
-  staffing 6, with three syntax checks, all four strict comparisons, HOME,
-  diff and reap checks passing. Receipt `740df438...`, log `4d17fab7...` and
-  preservation `e340ca13...` retain this result.
+Fourteen accepted paths were committed as `305c85e3`. They restore previously
+ordered rest, physically recruit and retain the second arsenal physician on
+actual quoted terms, coordinate an assembled charged battery, verify paid
+historical physician admission, add a bounded paid move out of a public
+incoming medical lane and clear the desktop interruption notice from the
+tactical toolbar. Recruitment does not assume free or permanent service.
 
-There was no single GREEN 93-case run. Transfer proof `d936ee02...` records the
-exact fourteen files and preserves the integration's release metadata. The
-next unfiltered full suite must validate the assembled candidate.
+Their retained evidence includes 83 passing cases across four whole files on
+an unchanged 417-file runtime-source closure (`dd3f9675...`) and a separate
+10/10 fresh cases across two whole files (receipt `740df438...`). These were
+separate results, not a single 93-case pass. The later full gate above is the
+current result for the assembled fourteen-path candidate.
 
-The integrated corrections restore already ordered rest, physically recruit
-and retain the second arsenal physician on the actual Native quoted terms,
-keep coordination for an assembled charged battery, and verify historical
-paid physician admission. The recruitment checks retain the actual signed
-start, finite term and renewal costs where applicable; they do not assume
-that every campaign makes the historical physician free or permanent.
-Ordinary travel, preparation and service keep their actual costs.
+Four further accepted paths are committed as `fd833b82`:
 
-A bounded paid one-cell field-physician move can reduce a current public
-incoming penetration lane before the existing prone fallback. The desktop
-interruption notice also moves clear of the tactical toolbar. The campaign
-changes affect automated acceptance-route drivers using existing game rules;
-the notice correction changes CSS. These component results do not establish
-that every earlier route loss is prevented.
+- Rescue staging restores only stable, previously resting local survivors
+  outside the deploying care cohort. The whole five-case file passes, including
+  actual six-hour morale recovery, settlement, finite resources and save replay.
+  Receipt `968c38ce...`, log `290005a6...`, preservation `ed2402f8...`.
+- A complete local battery retains its pre-contact crew instead of taking an
+  optional personal-rifle investigation move. The whole 23-case file passes,
+  including actual paid contact, finite cannon fire/reload, aid priority,
+  incomplete and clinical crew exclusions and unchanged default behavior.
+  Receipt `ae68c961...`, log `ac847a0f...`, preservation `f7930749...`.
 
-The CSS change invalidates export `6344e3a8a632` as current production evidence.
-Preserve that export, its server and old tabs, then build and review a new exact
-export. The new full suite, desktop cannon, earned ending and saved continuation
-remain open.
+Both gates pass syntax, all four strict comparisons, HOME, diff and reap checks.
+Transfer proof `ab7d2301...` records the exact four file blobs and preserves
+release metadata and the README. Separate component passes do not establish
+historical route victories.
 
-## Accepted local corrections
+The healthy-return branch remains outside integration. Its latest whole
+20-case file has 19 passes and one fixture save-validation failure before
+battle construction: the queued assault entry does not match its origin.
+Receipt `d5033f00...`, log `1f476da9...` and preservation `8dd2a698...` retain
+the result. Syntax, strict comparisons, HOME, diff and reap checks pass.
+Completed-convoy service cleanup is source-reviewed but remains unapplied and
+unvalidated; later affordability is not established. Further medical route
+planning also remains under source review.
 
-Each result applies only to its recorded component source. Separate gates are
-not one complete campaign or release result. Campaign crew, field-physician,
-staging and supply entries describe automated route drivers used by acceptance
-tests. Their orders use the existing game rules.
+## Desktop production review
 
-| Correction | Recorded scope |
-| --- | --- |
-| Enemy-turn refusal | Fresh core 9/9, source `05432dfe`. A refused autonomous action no longer leaves a stale error on a valid player interrupt. Official paired save/load and continuation pass; invalid player climbs retain their atomic refusal. |
-| Inventory details | The empty-pocket correction remains in integration. An empty pocket no longer shows an item moved to the hand. Desktop review remains limited to its recorded export. |
-| Actual Córdoba crew | 107/107, source `861f2b08`. Real crew pay through public doors, clear the entrance and can use an already-owned second gun with exclusive valid contacts. Original preparation guards remain. |
-| Finite battery defence | 39/39 plus 84/84 in separate gates, source `d0ed3d74`. Actual raid, survivor, finite aid/charges and physical delivery assertions pass within that scope. |
-| Paid roof route | 137/137, source `356df120`. Bounded steps requote actual reachable routes without changing access, crew or preparation limits. Later roof controls retain their separate evidence. |
-| Clinical rest | Actual zero-time notices are acknowledged without repeated preparation. The northern course keeps one original passive-hours ledger and measures battle time separately. Shared finite care, permanent losses and health guards remain. |
-| Courier and current crew policy | The courier keeps its finite dressings and remains outside crew/physician roles. The complete initial nonclinical crew goes directly through the existing coordinator; it does not first buy an ordinary rise. Other admitted work keeps its own role and priority guards. |
-| Field physician and march preparation | The 47-case gate covers actual interrupt admission for adjacent finite aid and paid medical-hand preparation, plus explicit convoy-only primary readiness. Default medical-hand preparation is preserved. |
+Review is **desktop only**. The current private production export is
+`0.1.13 / f1f045710544`, built from `db25cc8c`. The build, TypeScript,
+docs/baseline and diff checks pass; all eight preservation comparisons and
+HOME pass, and the owned build processes are absent. Receipt `e30a154d...`
+retains the result. Four subsequent test-only file changes do not create a
+new build revision.
 
-## Desktop review and remaining gates
+At 1280×720, normal mouse controls on this export verify that all seven
+posture and access controls clear the interruption notice. Paid lower,
+lower and raise orders change the selected soldier from standing to crouched,
+prone and crouched, spending actual AP. Other actors and campaign state remain
+unchanged; the normal export retains the result. No console errors occurred.
+Record `c0aa179b...` retains this bounded check.
 
-Review is **desktop only**. Historical private export `6344e3a8a632`, from
-source `3b415db5`, was checked at 1280×720. Record `842e28b0...` verifies
-normal mouse opening and closing of both door leaves and the wall's own
-pointer target, with no console errors. Production-input proof `5a62921d...`
-confirms the build source at `db3682f2`. Those production inputs remained
-unchanged through earlier candidate `d79e71dd`. Current integration `305c85e3`
-includes the CSS correction, so the old export does not review its new notice
-layout. A new export and a fresh desktop pointer check remain required.
-Earlier desktop evidence covers keyboard traversal, group travel,
-save/export/import, introduction controls and normal worker end-turn playback.
-These are bounded checks on their named exports, not a completed campaign or
-sustained-performance measurement.
+Historical export `6344e3a8a632`, its served copy and old tabs remain preserved.
+It verifies mouse access to both door leaves and the wall target, keyboard
+traversal, travel, save/export/import and normal worker playback within its
+recorded scope. It does not verify the newer notice layout.
 
-The existing performance UI also recorded short foreground samples in nighttime
-Retiro with two actors, on an Apple M2 Max, 96 GiB, macOS 26.6.2, at 1280×720.
-Two original campaign tests were running concurrently. The 20-second sample
-included normal door opening and a walk from 32,25 to 32,27.
+Short foreground frame samples on Apple M2 Max, 96 GiB, macOS 26.6.2 at
+1280×720 retain these limits:
 
 | Sample | Mean frame interval | 95th percentile | Maximum |
 | --- | --- | --- | --- |
-| Static, 6 seconds | 8.39 ms | 9.8 ms | 41.7 ms |
-| Door and movement, 20 seconds | 8.55 ms | 10 ms | 75.1 ms |
-| 147 moving frames within that sample | 10.03 ms | 16.8 ms | 66.3 ms |
+| Retiro, static, 6 seconds | 8.39 ms | 9.8 ms | 41.7 ms |
+| Retiro, door and movement, 20 seconds | 8.55 ms | 10 ms | 75.1 ms |
+| Six-actor San Lorenzo, first enemy turn, 20 seconds | 10.44 ms | 17 ms | 208.4 ms |
+| Six-actor San Lorenzo, resumed playback, 20 seconds | 10.38 ms | 16.9 ms | 174.9 ms |
 
-The 77 frames with position updates have a 26.1 ms 95th percentile. One 53 ms
-long task was recorded; no console errors occurred. Records `74f7f89e...` and
-`f0ecbc3d...` retain the measurements. These small-scene samples do not establish
-cold-entry, sustained or large-battle performance.
+These samples include concurrent local tests. Normal controls continued actual
+interrupts and returned to player control without console errors. Frame spikes
+remain visible. These small-scene samples do not establish cold-entry,
+sustained or large-battle performance.
 
-Later standalone San Lorenzo samples used the normal combat entry and six
-rendered actors on the same desktop. Only the ending-file test was still
-running during these samples.
+## Remaining release work
 
-| San Lorenzo sample | Mean frame interval | 95th percentile | Maximum |
-| --- | --- | --- | --- |
-| First enemy turn, 20 seconds | 10.44 ms | 17 ms | 208.4 ms |
-| Resumed enemy playback, 20 seconds | 10.38 ms | 16.9 ms | 174.9 ms |
-
-Normal controls continued two actual interrupts and returned to Turn 2, player
-control, with no console errors. Records `9223cef4...` and `8492a8a8...` retain
-these measurements. Frame spikes and long tasks remain visible; these samples
-do not establish cold-entry, sustained or large-battle performance.
-
-1. Resolve the reported complete-route failures on the integrated corrections.
-   Pass every complete original file, with only the explicitly reviewed
-   baseline corrections. Preserve finite resources, deaths, duties and limits.
-2. Pass the unfiltered full suite on one frozen final integration commit. It
-   includes all five original campaign files and their thirteen cases; no
-   separate thirteen-case rerun is required. Retain scope/shard controls,
-   docs/baseline audits, TypeScript, a private export and applicable available
-   Python/native checks. Record each check's actual scope and fixture limits.
-3. Review that exact export through normal desktop UI: start, hire/create,
+1. Resolve the seven failed whole files without weakening actual battle,
+   survival, finite-resource, care, duty, preparation or ending requirements.
+2. Pass the unfiltered suite on one frozen final integration commit. It includes
+   all five original campaign files and their thirteen cases; no separate
+   thirteen-case rerun is required. Retain shard controls, docs/baseline,
+   TypeScript, production export and applicable Python/native checks. Report
+   actual scope and unavailable fixtures.
+3. Review the final export through normal desktop UI: start, hire/create,
    travel, deployment, finite items, distinct adjacent cannon crew, man/unman,
    rifle selection, save/export/import/Continue, earned ending and 48 campaign
-   hours after the ending. The cannon, earned ending and continuation checks
-   remain open.
-4. Record bounded balance, keyboard/accessibility, hardware-performance,
-   graphics, audio and historical-review acceptance and limits. The short frame
-   samples do not replace the remaining performance review. Keep `0.1.13` proposed
-   until final validation and normal merge, then verify automatic Pages against
-   actual main and export identities.
+   hours after that ending. Cannon use, the ending and continuation remain open.
+4. Record bounded balance, keyboard/accessibility, hardware, graphics, audio
+   and historical-review acceptance. Keep `0.1.13` proposed until validation
+   and normal merge, then verify automatic Pages against actual main and
+   export identities.
 
 ## Evidence scope and deferred work
-
-Release `0.1.12` adds automatic main publication. It does not establish a
-complete campaign. Release `0.1.13` remains proposed; no passing final
-integration or release identity is assigned here.
 
 The [requirement register](../verification/requirements.json) and
 [historical 0.1 checkpoint](../verification/version-0.1.md) retain their own
 scope. Ledger totals are not a campaign-completion percentage. Studio, story
 and sector editors are available. Hosted community publishing, wider
 [campaign mechanics and distribution](campaign-authoring.md) and full JA2
-parity remain separate projects outside this first core-campaign release.
+parity remain outside this first core-campaign release.

@@ -9,45 +9,37 @@
 - Clear a refused autonomous enemy action before a valid player interrupt.
   Invalid player orders retain their normal atomic refusal.
 - Keep inventory details tied to the inspected pocket after an item moves to
-  the hand. Narrow 3D wall pointer regions so mouse clicks reach the visible
-  door. Preserve keyboard, SVG and gameplay behavior.
-- Expand campaign route checks for paid service, real casualties, rest,
-  finite cannon crew and supplies, medical aid and infantry interrupts.
-  Route drivers use existing game rules. Preserve battle and preparation
-  limits, permanent losses and the reviewed four-battle Cuyo report.
+  the hand. Narrow 3D wall pointer regions so clicks reach the visible door.
+  Clear the desktop interruption notice from the tactical toolbar.
 - Rewrite the README around the game, its features, desktop controls,
   campaign tools and local setup.
-- Local component gates pass 47, 34, 15, 26 and 30 cases within their separate
-  recorded scopes. The latest completed full gate on candidate `d79e71dd`
-  passes **1,109 of 1,115 files**: **8,373 passing cases, eight failures and two
-  dependent skips out of 8,383**, with no cancellations or TODO cases. Receipt
-  `a59dfd44...`, log `b77be700...`, report `3f6989be...` and preservation
-  `3c255716...` retain the RED result. All five strict captures match and the
-  processes are reaped; complete-route acceptance remains open.
-- Commit fourteen accepted follow-up paths from handover `aaf5f66a` into
-  integration `305c85e3`: ordered rest, actual quoted recruitment and retention
-  of the second arsenal physician, charged battery coordination, historical
-  paid physician admission, a bounded paid step out of a current public medical
-  lane, and desktop interruption-toolbar clearance. Campaign route drivers
-  keep existing game rules and actual travel, preparation and service costs.
-- Retain **83 passing cases across four whole files** on an exact, unchanged
-  417-file runtime-source closure (`dd3f9675...`), then pass **10/10 fresh cases
-  across two whole files** with three syntax checks and all strict/HOME/diff/reap
-  checks (receipt `740df438...`, preservation `e340ca13...`). These are separate
-  results, not one GREEN 93-case run. Transfer `d936ee02...` keeps the exact
-  fourteen files; the new full suite remains pending.
-- The reviewed historical-service assertion keeps every doctor ID, checks
-  actual paid admission and current service for living doctors, and requires
-  official care-battle casualties to remain dead. It is a disclosed second
-  stronger original-baseline correction; all other survival, finite-resource,
-  deadline and ending guards remain.
-- Historical desktop mouse review of build `6344e3a8a632` verifies both door
-  leaves and the wall target. Short frame samples cover Retiro and six-actor
-  San Lorenzo playback; observed frame spikes reach 208.4 ms. These samples do
-  not establish sustained or large-battle performance. The integrated CSS
-  correction requires a new export and pointer check; build `6344e3a8a632` is
-  not current production evidence. Manual cannon use, an earned ending and 48
-  campaign hours of saved continuation remain open.
+- Expand campaign route checks for actual paid service, casualties, rest,
+  finite cannon crew and supplies, medical aid and infantry interrupts.
+  Acceptance drivers issue ordinary orders and preserve battle and preparation
+  limits, permanent losses and the reviewed four-battle Cuyo report.
+- The latest full local gate on `db25cc8c` passes **1,108 of 1,115 files**:
+  **8,380 passing cases, nine failures and two dependent skips out of 8,391**.
+  There are no cancellations or TODO cases. Receipt `ccefe0f9...`, log
+  `38f3e737...`, report `ca5c6a6e...` and preservation `e86f4528...` retain the
+  RED result. All five strict comparisons match and the processes are reaped.
+  Seven failed files still prevent complete-route acceptance.
+- Integrate four further tested paths as `fd833b82`: restore stable resting
+  reserves after rescue-staging defence and keep complete local cannon crews
+  at their pre-contact posts. Separate whole-file gates pass **5/5** and
+  **23/23** cases, with syntax, all strict comparisons, HOME, diff and reap
+  checks passing. Receipts `968c38ce...` and `ae68c961...` retain those bounded
+  results; the assembled corrections still need a full pass.
+- Preserve the two stronger reviewed baseline corrections: Cuyo requires all
+  four actual battles; recovery retains historical physician identities,
+  paid admission, current living service and actual permanent care-battle
+  deaths. Other survival, finite-resource, deadline and ending guards remain.
+- Build private export `0.1.13 / f1f045710544` from `db25cc8c`; build,
+  TypeScript, docs/baseline and preservation checks pass. Normal desktop mouse
+  review verifies actual paid posture changes with all seven toolbar controls
+  clear of the interruption notice. No console errors occur. Earlier bounded
+  door and frame-sample evidence remains historical; observed frame spikes
+  reach 208.4 ms. Manual cannon use, an earned ending and 48 campaign hours of
+  saved continuation remain open.
 
 ## 0.1.12 — 16 October 2026
 
