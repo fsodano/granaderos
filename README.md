@@ -90,7 +90,7 @@ La [guía de campañas](docs/development/campaign-authoring.md) explica cómo in
 
 ## Ejecutar en tu equipo
 
-Necesitás **Node.js 22.13.0 o posterior** y npm.
+Necesitás **Node.js 22 LTS actualizado (22.18.0 o posterior)** y npm.
 
 ```sh
 git clone https://github.com/fsodano/granaderos.git

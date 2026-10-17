@@ -4,7 +4,7 @@
 > [shipping campaign plan](plans/core-campaign-v0.1.md) for current scope. Earlier development
 > numbers are internal checkpoints; their features and results are dated history.
 
-## 0.1.13 — Proposed (unreleased)
+## 0.1.14 — Proposed (unreleased)
 
 - Clear a refused autonomous enemy action before a valid player interrupt.
   Invalid player orders retain their normal atomic refusal.
@@ -40,6 +40,17 @@
   door and frame-sample evidence remains historical; observed frame spikes
   reach 208.4 ms. Manual cannon use, an earned ending and 48 campaign hours of
   saved continuation remain open.
+
+## 0.1.13 — 17 October 2026
+
+- Present the game through its strategy, 3D combat, finite equipment,
+  recruitment, medical care, artillery, cavalry and campaign tools.
+- Explain desktop controls, browser saves and local setup in the README.
+  Keep development and release history in the documentation.
+- Correct the mount guides: present horses keep a rider, condition and
+  stamina; rest restores stamina. Equipment commerce remains disabled.
+- This documentation checkpoint does not establish complete core-campaign
+  acceptance. Campaign validation continues in PR #426.
 
 ## 0.1.12 — 16 October 2026
 
