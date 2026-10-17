@@ -12,7 +12,7 @@ establish complete game acceptance.
 ## Requirements
 
 - Git, to clone the repository.
-- Node.js **22.13.0 or newer**, as required by [`web/package.json`](../../web/package.json).
+- An up-to-date **Node.js 22 LTS**, **22.18.0 or newer**, for development and tests. The [`web/package.json`](../../web/package.json) range `>=22.13.0` is the web package's engine lower bound.
 - npm and a current browser.
 - Python 3.13 and the pinned Pillow/NumPy dependencies for core and full tests, matching CI.
 
