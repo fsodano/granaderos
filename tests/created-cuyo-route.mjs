@@ -15,6 +15,7 @@ import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
 import {sectorInventoryModel,sectorInventorySites} from '../game/sector-inventory.js';
+import {transferRouteSupply} from './route-ammunition-transfer.mjs';
 import {carriedAmmunition,ammunitionOrderQuote,AMMUNITION_ORDER_LIMIT} from '../game/campaign-ammunition.js';
 import {ammoTypeFor,ammoStock,ammoCount,AMMO_KEYS} from '../game/ammo-types.js';
 import {AMMUNITION_FAMILIES} from '../game/ammunition-families.js';
@@ -598,6 +599,21 @@ export function stabilizeStockMendozaSurvivors(start,{report=()=>{},returnSector
   const model=()=>sectorInventoryModel(c(),sector,rosterFor(c()),doctor.id);
   const sources=()=>model().entries.filter(row=>row.reachable&&JSON.parse(row.expected).item==='medkits'&&row.count>0)
    .sort((a,b)=>Math.hypot(a.x-actual.x,a.y-actual.y)-Math.hypot(b.x-actual.x,b.y-actual.y)||b.count-a.count||a.key.localeCompare(b.key));
+  // Living local carriers own their finite dressings too. Share only the
+  // gap left by the known field pool; never borrow a remote or clinical reserve.
+  const sharedNeed=Math.max(0,missing-sources().reduce((n,row)=>n+row.count,0));
+  if(sharedNeed){
+   const donors=serving.filter(id=>id!==doctor.id&&operativeLocation(c(),id)===sector&&stable(id)&&!['doctor','patient','militia_doctor','militia_patient'].includes(record(id).assignment))
+    .sort((a,b)=>a-b).map(id=>({id,model:sectorInventoryModel(c(),sector,rosterFor(c()),id)}))
+    .filter(row=>row.model.operativeId===row.id&&!row.model.reason&&row.model.carried.some(item=>item.item==='medkits'&&item.count>0));
+   const available=donors.reduce((n,row)=>n+row.model.carried.filter(item=>item.item==='medkits').reduce((sum,item)=>sum+item.count,0),0);
+   if(available>=sharedNeed){
+    assert.equal(model().operativeId,doctor.id);assert.equal(model().reason,null);applyItemQuantity(model().personal,{item:'medkits',count:sharedNeed});renew();
+    const shared=transferRouteSupply(c(),{sector,recipientId:doctor.id,donorIds:donors.map(row=>row.id),item:'medkits',count:sharedNeed,report,
+     execute:(current,action)=>{assert.equal(current,c());order(action);return c();}});
+    assert.equal(shared.campaign,c());missing=Math.max(0,needed-record(doctor.id).medkits);
+   }
+  }
   assert.ok(sources().reduce((n,row)=>n+row.count,0)>=missing,'known finite local dressings cannot cover actual planned stabilization');
   while(missing){
    const row=sources()[0],n=Math.min(missing,row.count),before=record(doctor.id).medkits,sourceCount=sources().reduce((sum,s)=>sum+s.count,0),cash=c().resources.treasury;

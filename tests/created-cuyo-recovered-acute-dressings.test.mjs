@@ -189,3 +189,84 @@ test('finite final care pays a real run to a distant bleeder before a nonbleedin
  assert.deepEqual(start,before);assert.deepEqual(saved({campaign:c}).campaign,c);
  assert.deepEqual(stabilizeStockMendozaSurvivors(saved({campaign:before}).campaign,{stagingSector:'camp',immediateFieldAid:true,returnSector:'camp'}),c,'The full successful paid care repeats from its fresh official source.');
 });
+
+
+// Independent live-carrier declaration. One ordinary trap earns the known
+// two-piece corpse; a separate paid local body owns the other two dressings.
+// Every wound, role, supply quantity and locality precedes the factory.
+function declaredLocalCarriedCare({donorKits=2,donorRemote=false,donorUnavailable=false}={}){
+ const d=scaffoldDocuments('declared-local-carried-final-care'),base=d.content.characters[0];
+ d.content.rules.startingTreasury=20000;d.content.rules.deploymentCartridges=0;
+ d.content.campaignStory.chapters[0].conditions=[{type:'day',min:100,max:null}];
+ d.content.startingTerritory['watch-post'].owner='patriot';
+ d.world.arrivalFacilities['watch-post']=['barracks'];d.content.arrivalSites.push({sector:'watch-post',facilities:['barracks']});
+ d.world.expansion.buildingTargets={camp:0,'watch-post':0};d.world.physical.caches={};
+ d.world.exitLinks=[['camp','E',19,8,'watch-post','W',0,8]];
+ const specs=[{name:'fallen',kits:2},{name:'physician',medical:35},{name:'carrier',kits:donorKits,remote:donorRemote,energy:donorUnavailable?0:100},
+  {name:'local-critical',hp:12},{name:'local-bleeder',hp:30,bleeding:4},
+  {name:'escaped-a',hp:45,bleeding:2,remote:true},{name:'escaped-b',hp:50,bleeding:2,remote:true}];
+ d.content.characters=specs.map(s=>({...structuredClone(base),id:s.name,name:s.name,nickname:s.name,monthlyPay:30,arrivalHours:0,weapon:null,
+  attributes:{...base.attributes,maxHp:80,medical:s.medical??0},
+  startingSupplies:{rations:0,torches:0,boleadoras:0,medkits:s.kits??0},
+  startingCondition:{hp:s.hp??80,bleeding:s.bleeding??0,bandaged:0,energy:s.energy??100,fatigue:0}}));
+ const trap={id:'finite-carrier-trap',type:'chest',x:6,y:8,footprint:{width:1,height:1},blocksMovement:true};
+ d.maps.camp.props=[trap];d.maps.camp.spawns=d.maps.camp.spawns.map(spawn=>spawn.side==='player'?{...spawn,x:5,y:9}:spawn);
+ d.world.physical.environment.camp={doors:[],containers:[{selector:{type:'chest',id:trap.id},configuration:{type:'chest',open:false,locked:false,contents:[],trap:{type:'injury',difficulty:100,armed:true,damage:100,breathLoss:0,discoveredBy:[]}}}]};
+ const declaration=structuredClone(d),content=compileCampaignPackage(d.manifest,d);assert.deepEqual(validateContentPackage(content),[]);
+ let c=initialCampaign(42,content);const role=Object.fromEntries(rosterFor(c).map(op=>[op.name,op.id]));
+ const hire=name=>{const spec=specs.find(s=>s.name===name),id=role[name],quote=contractQuote(c,rosterFor(c).find(op=>op.id===id),'month'),cash=c.resources.treasury;
+  assert.equal(quote.available,true,quote.reason);c=order(c,{type:'recruitCivic',id,term:'month',destination:spec.remote?'watch-post':'camp'});assert.equal(c.resources.treasury,cash-quote.total);};
+ hire('fallen');hire('physician');c=order(c,{type:'createSquad',name:'Custodia de vendas',sector:'camp',ids:[role.fallen,role.physician]});
+ let p=visit(c);const actor=name=>p.battle.units.find(u=>u.id===String(role[name]));
+ const near=(name,target)=>{
+  for(let n=0;Math.hypot(actor(name).x-target.x,actor(name).y-target.y)>1.5&&n<16;n++){
+   const point=getReachable(p.battle,actor(name)).filter(point=>Math.hypot(point.x-target.x,point.y-target.y)<=1.5).sort((a,b)=>a.cost-b.cost)[0];assert.ok(point);
+   const old=spacePoint(actor(name));p=saved(tactical(p,{type:'move',unitId:String(role[name]),...spacePoint(point)}));assert.equal(sameCell(actor(name),old),false);
+  }
+  assert.ok(Math.hypot(actor(name).x-target.x,actor(name).y-target.y)<=1.5);
+  const quote=lookPreview(p.battle,actor(name),target);if(quote.valid&&quote.pa>0)p=saved(tactical(p,{type:'look',unitId:String(role[name]),...spacePoint(target)}));
+ };
+ const actualTrap=p.battle.props.find(prop=>prop.id===trap.id);assert.ok(actualTrap);
+ near('fallen',actualTrap);near('physician',actor('fallen'));assert.ok(atHand(actor('physician'),actor('fallen')));
+ p=saved(tactical(p,{type:'useItem',unitId:String(role.fallen),environment:{kind:'container',id:trap.id,verb:'open'}}));
+ assert.equal(actor('fallen').hp,0);assert.equal(actor('fallen').medkits,2);assert.equal(actor('fallen').knownToPlayer,true);c=leave(p);
+ for(const s of specs.filter(s=>!['fallen','physician'].includes(s.name)))hire(s.name);
+ const local=specs.filter(s=>s.name!=='fallen'&&!s.remote).map(s=>role[s.name]),remote=specs.filter(s=>s.remote).map(s=>role[s.name]);
+ c=order(c,{type:'createSquad',name:'Retén exterior',sector:'watch-post',ids:remote});c=order(c,{type:'createSquad',name:'Socorro con portador',sector:'camp',ids:local});
+ assert.equal(c.location,'camp');assert.equal(c.operativeState[role.fallen].alive,false);assert.equal(c.operativeState[role.carrier].medkits,donorKits);
+ assert.equal(c.operativeState[role.carrier].location,donorRemote?'watch-post':'camp');assert.equal(c.operativeState[role.carrier].energy,donorUnavailable?0:100);
+ for(const s of specs.filter(s=>s.hp!==undefined)){const r=c.operativeState[role[s.name]];assert.equal(r.hp,s.hp);assert.equal(r.bleeding,s.bleeding??0);assert.equal(r.bandaged,0);assert.equal(r.medkits,0);}
+ assert.deepEqual(d,declaration);return {campaign:saved({campaign:c}).campaign,role,local,remote};
+}
+
+test('final care shares exactly two actual local carried dressings with the known corpse and treats both localities',()=>{
+ const {campaign:start,role,local,remote}=declaredLocalCarriedCare(),before=structuredClone(start),events=[];
+ const c=stabilizeStockMendozaSurvivors(start,{stagingSector:'camp',immediateFieldAid:true,returnSector:'camp',report:event=>events.push(event)});
+ const shared=events.filter(e=>e.event==='routeFiniteSupplyShared'),accepted=events.find(e=>e.event==='stockMendozaCareAccepted');
+ assert.ok(accepted);assert.equal(accepted.hourlyDressings,0);assert.equal(accepted.tacticalDressings,4);
+ assert.equal(shared.length,1);assert.equal(shared[0].donorId,role.carrier);assert.equal(shared[0].recipientId,role.physician);assert.equal(shared[0].item,'medkits');assert.equal(shared[0].count,2);
+ assert.deepEqual(shared[0].actions.map(a=>[a.type,a.direction,a.count]),[['sectorInventory','drop',2],['sectorInventory','take',2]]);
+ const collected=events.filter(e=>e.event==='stockMendozaCareAdmissionSupply'||e.event==='stockMendozaCareSupply');assert.equal(collected.reduce((sum,e)=>sum+(e.taken??1),0),2);
+ const aid=events.filter(e=>e.event==='stockMendozaCareTreatment'&&e.dressingUsed);assert.equal(aid.length,4);
+ assert.deepEqual([...new Set(aid.map(e=>e.patientId))].sort(),['local-critical','local-bleeder','escaped-a','escaped-b'].map(name=>role[name]).sort());
+ const remoteReady=events.findIndex(e=>e.event==='stockMendozaCareCheckpoint'&&e.stage==='remote-stabilized');assert.ok(remoteReady>=0);
+ assert.equal(events.slice(0,remoteReady+1).some(e=>e.event==='stockMendozaCareOrder'&&e.action.type==='wait'),false);
+ assert.ok(events.some(e=>e.event==='stockMendozaCareOrder'&&e.kind==='tactical'&&e.action.type==='exit'));
+ for(const id of [...local,...remote]){const r=c.operativeState[id];assert.equal(r.alive,true);assert.ok(r.hp>=15);assert.equal(r.bleeding,0);assert.equal(r.location,'camp');
+  for(const key of ['maxHp','inventory','carriedLoaded','condition','weaponInstanceId','primaryWeapon','bladeWeapon'])assert.deepEqual(key==='inventory'?(r[key]??{}):r[key],key==='inventory'?(start.operativeState[id][key]??{}):start.operativeState[id][key],id+'.'+key);}
+ assert.equal(c.operativeState[role.fallen].alive,false);const body=c.sectorStates.camp.units.find(u=>u.id===String(role.fallen));assert.equal(body.hp,0);assert.equal(body.medkits,0);
+ assert.equal([...local,...remote].reduce((sum,id)=>sum+c.operativeState[id].medkits,0)+body.medkits+accepted.tacticalDressings,4);
+ assert.equal(c.operativeState[role.carrier].medkits,0);assert.equal(c.resources.treasury,start.resources.treasury);assert.deepEqual(c.contracts,start.contracts);assert.ok(clock(c)>clock(start));
+ assert.deepEqual(saved({campaign:c}).campaign,c);assert.deepEqual(start,before);
+ assert.deepEqual(stabilizeStockMendozaSurvivors(saved({campaign:before}).campaign,{stagingSector:'camp',immediateFieldAid:true,returnSector:'camp'}),c,'Successful local carried care repeats from its fresh official source.');
+});
+
+test('insufficient, remote and unavailable carried donors cannot satisfy the finite local stabilization plan',()=>{
+ for(const options of [{donorKits:1},{donorRemote:true},{donorUnavailable:true}]){
+  const {campaign:start}=declaredLocalCarriedCare(options),before=structuredClone(start),events=[];
+  assert.throws(()=>stabilizeStockMendozaSurvivors(start,{stagingSector:'camp',immediateFieldAid:true,returnSector:'camp',report:event=>events.push(event)}),/known finite local dressings cannot cover actual planned stabilization/);
+  assert.equal(events.some(e=>e.event==='routeFiniteSupplyShared'),false);assert.equal(events.some(e=>e.event==='stockMendozaCareTreatment'),false);
+  // Only plain evidence and original-input comparisons follow each refusal.
+  assert.deepEqual(start,before);
+ }
+});
