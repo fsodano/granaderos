@@ -217,9 +217,15 @@ function boundedRoofStaging(start,ids,{deadlineSeconds,report,reservedPositions,
      destination=choices[0];assert.ok(destination,'The supplied physician needs a complete reachable adjacent rifle group outside the public access apron.');
      physicianGroup={groupId,physician:{id,...spacePoint(destination)},rifles:landingGuardIds.map((rifle,index)=>({id:rifle,...spacePoint(destination.rifles[index])}))};
     }else if(id===physicianId){
-     const guard=retainedRifleBefore.post;
-     const choices=getReachable(battle,actor()).filter(point=>roofs.some(roof=>sameCell(roof,point))&&sameSurface(point,guard)&&Math.hypot(point.x-guard.x,point.y-guard.y)<=1.5&&vacant(point)&&!(battle.npcs??[]).some(npc=>(npc.hp??100)>0&&!npc.departure&&!npc.fled&&sameCell(npc,point))&&point.path.every(step=>!reserved.has(cellKey(step)))).sort((a,b)=>a.cost-b.cost||a.y-b.y||a.x-b.x);
-     destination=choices[0];assert.ok(destination,'The new physician needs a currently reachable vacant roof beside the exact retained rifle, outside every access apron.');
+     const guard=retainedRifleBefore.post,guardSurface=surfaceAt(battle,guard);
+     assert.ok(guardSurface,'The retained rifle needs its actual current roof surface.');const guardCover=guardSurface.cover??0;
+     // Protect the supplied physician from every public approach to this
+     // authored roof. A retained guard never moves to make a post available.
+     const accesses=publicAccess.filter(access=>sameSurface(access,guard)&&(guardSurface.buildingId!==undefined?surfaceAt(battle,access)?.buildingId===guardSurface.buildingId:Math.hypot(access.x-guard.x,access.y-guard.y)<=4));
+     assert.ok(accesses.length,'The retained rifle needs identifiable public access to its actual roof.');
+     const clearance=point=>Math.min(...accesses.map(access=>Math.hypot(point.x-access.x,point.y-access.y)-Math.hypot(guard.x-access.x,guard.y-access.y)));
+     const choices=getReachable(battle,actor()).filter(point=>roofs.some(roof=>sameCell(roof,point))&&sameSurface(point,guard)&&(guardSurface.buildingId===undefined||surfaceAt(battle,point)?.buildingId===guardSurface.buildingId)&&Math.hypot(point.x-guard.x,point.y-guard.y)<=1.5&&vacant(point)&&(surfaceAt(battle,point)?.cover??0)>=guardCover&&clearance(point)>0&&!(battle.npcs??[]).some(npc=>(npc.hp??100)>0&&!npc.departure&&!npc.fled&&sameCell(npc,point))&&point.path.every(step=>!reserved.has(cellKey(step)))).sort((a,b)=>clearance(b)-clearance(a)||((surfaceAt(battle,b)?.cover??0)-(surfaceAt(battle,a)?.cover??0))||a.cost-b.cost||a.y-b.y||a.x-b.x);
+     destination=choices[0];assert.ok(destination,'The new physician needs a currently reachable protected roof beside the exact retained rifle, behind every public access and outside its apron.');
      physicianGroup={groupId,physician:{id,...spacePoint(destination)},rifles:[{...guard}]};
     }else if(publicRifle&&physicianGroup){const planned=physicianGroup.rifles.find(post=>post.id===id);destination=planned&&nearAccess.find(p=>sameCell(p,planned)&&vacant(p)&&getReachable(battle,actor(),{stopAt:cell=>sameCell(cell,p)}).some(cell=>sameCell(cell,p)));}
     else destination=(publicRifle?nearAccess:roofs).find(p=>vacant(p)&&getReachable(battle,actor(),{stopAt:cell=>sameCell(cell,p)}).some(cell=>sameCell(cell,p)));
