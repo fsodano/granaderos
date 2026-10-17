@@ -43,8 +43,10 @@ The current economy uses pesos for hiring and campaign preparations. Equipment
 commerce is disabled: equipment comes with its owner or is found in a sector.
 Earlier supplier, price, import and artillery-trading records describe dated
 features; they do not enable purchases in the current development code or the 0.1 checkpoint. The game has no strategic
-material stocks, resource production chains or horse care. Physical equipment
-transport remains available. Saves from the earlier economy are rejected;
+material stocks or resource production chains. Present mounts retain their
+condition, stamina and assigned rider; rest restores stamina. Buying, hiring,
+feeding and breeding horses are disabled. Physical equipment transport remains
+available. Saves from the earlier economy are rejected;
 start a new campaign.
 
 The title screen opens the [story editor](story-editor.md) at `/story` and the

@@ -20,7 +20,7 @@ The six controls remain directly below the map, left to right:
 2. Resources: each sector's current pesos/day and a base/current income table. Current income applies control, damage, blockade modifiers. Values are gross income, not profit after expenses.
 3. Squads: soldier counts by current squad location, existing travel links, and the squad management controls.
 4. Militia: defenders per location; select a location and use its existing training orders.
-5. Horses: organize the existing postas, cart, mule, and flotilla routes; choose transport and travel with the active squad. Individual horse care belongs to the separate gameplay update.
+5. Horses: show the present, available mounts in each physical sector. Open **Administrar esta vista** to inspect condition and stamina, assign a local rider or unassign its rider. Rest restores stamina; purchases, feed and breeding are disabled. Squad travel and transport preparation use their separate controls.
 6. Items: recorded ground items in the selected sector, the existing equipment inventory and outfitting controls. Tactical ground loot still belongs to the tactical inventory.
 
 Surface and three disabled depth controls stay at the lower right. No underground simulation is available. All six view buttons expose their pressed state. Map locations support Enter and Space.
