@@ -203,3 +203,66 @@ test('an interrupt refuses an ineligible field physician and never starts a remo
  assert.equal(interruptAvailable(window,medic),true);assert.ok(Math.hypot(medic.x-unit(window,'patient').x,medic.y-unit(window,'patient').y)>1.5);
  assert.equal(remotePolicy(window,medic),null);assert.equal(remotePolicy.sharedFallback(window,medic),null);assert.equal(medic.activeSlot,'primary');assert.equal(medic.medkits,2);assert.deepEqual(remote,remoteBefore);
 });
+
+
+// Independent declared Native interrupt. Low AP is earned only by real hand,
+// posture and facing orders; no returned battle field is patched.
+import {lookPreview} from '../game/tactical.js';
+function lowAPMedicalInterruptArena({eligible=true,kits=2,mounted=false,charged=false,remote=false}={}){
+ const common={maxHp:100,hp:100,bleeding:0,bandaged:0,energy:100,fatigue:0,shock:0,morale:90,
+  weapon:1800,blade:0,loaded:1,ammo:5,condition:100,jammed:false,medical:0,medkits:0,
+  stance:'standing',movementMode:'walk',mounted:false,inventory:{},rations:0,torches:0,boleadoras:0,traits:[],abilities:[]};
+ return createBattle([
+  {...common,id:'doctor',name:'Médica con reserva real',x:1,y:eligible?1:6,facing:2,medical:93,medkits:kits,activeSlot:'primary',traits:['field_rescuer'],
+   mounted,horse:mounted,canMount:mounted,...(mounted?{mount:{id:'declared-medical-mount',stamina:100,condition:100}}:{}),agility:eligible?100:10,wisdom:eligible?100:10,dexterity:100,experienceLevel:eligible?10:1},
+  {...common,id:'observer',name:'Observador de la ventana',x:1,y:eligible?6:1,facing:2,agility:eligible?10:100,wisdom:eligible?10:100,experienceLevel:eligible?1:10},
+  {...common,id:'patient',name:'Herido declarado',x:remote?4:2,y:remote?5:(eligible?1:6),hp:10,bleeding:3,bandaged:0,weapon:0,loaded:0,ammo:0,agility:10,wisdom:10,experienceLevel:1},
+ ],{id:'declared-low-ap-field-interrupt',width:12,height:8,tiles:flat(12,8),hour:12,seed:45,firstSide:'player',exploration:false,
+  enemies:[{...common,id:'advance',name:'Avance que gana la interrupción',x:7,y:1,facing:6,weapon:1809,loaded:0,ammo:0,agility:75,wisdom:50,experienceLevel:4,patrol:false,overwatch:false}],
+  artillery:charged?[{id:'held-charged-piece',type:'bronze4',side:'player',x:1,y:2,loaded:true,ammo:2,facing:0}]:[],npcs:[],props:[],groundItems:[],buildings:[]});
+}
+function earnLowAPMedicalInterrupt(start,{remaining=12,posture='standing',hand='medical',spendKit=false}={}){
+ let battle=start;const orders=[],execute=action=>{battle=interruptMedicalReplay(battle,[action]);orders.push(action);};
+ const doctor=()=>unit(battle,'doctor');execute({type:'weapon',unitId:'doctor',slot:'medical'});
+ if(spendKit){const quote=medicalUsePreview(battle,doctor(),unit(battle,'patient'));assert.equal(quote.allowed,true,quote.reason);execute({type:'useItem',unitId:'doctor',targetId:'patient'});assert.equal(doctor().medkits,0);}
+ if(posture!=='standing')execute({type:'stance',unitId:'doctor',stance:posture});
+ const target=remaining+(hand==='medical'?0:actionCosts(battle,doctor()).weapon);
+ for(let step=0;doctor().ap>target&&step<64;step++){
+  const actor=doctor(),difference=actor.ap-target,points=[{x:0,y:actor.y},{x:2,y:actor.y},{x:actor.x,y:0},{x:actor.x,y:7}];
+  const choice=points.map(point=>({point,quote:lookPreview(battle,actor,point)})).filter(row=>row.quote.valid&&!row.quote.prepare&&row.quote.pa>0&&row.quote.pa<=difference).sort((a,b)=>b.quote.pa-a.quote.pa||a.point.y-b.point.y||a.point.x-b.point.x)[0];assert.ok(choice,'An ordinary paid facing order must earn the declared remaining AP.');
+  const oldAP=actor.ap;execute({type:'look',unitId:'doctor',...choice.point});assert.equal(doctor().ap,oldAP-choice.quote.pa);
+ }
+ assert.equal(doctor().ap,target);if(hand!=='medical')execute({type:'weapon',unitId:'doctor',slot:hand});assert.equal(doctor().ap,remaining);
+ const beforeEnd=structuredClone(battle);execute({type:'endTurn'});return {battle,orders,beforeEnd};
+}
+
+test('an earned medical interrupt spends only otherwise unusable care AP on real protective prone posture',()=>{
+ for(const posture of ['standing','crouched']){
+  const start=lowAPMedicalInterruptArena(),before=structuredClone(start),controller=policy(start),remaining=posture==='standing'?12:13,{battle:paused,orders,beforeEnd}=earnLowAPMedicalInterrupt(start,{remaining,posture}),doctor=unit(paused,'doctor'),patient=unit(paused,'patient');
+  assert.equal(paused.phase,'interrupt');assert.deepEqual(paused.interrupt.unitIds,['doctor']);assert.equal(interruptAvailable(paused,doctor),true);assert.ok(!sameCell(unit(paused,'advance'),unit(start,'advance')));assert.ok(unit(paused,'advance').ap<unit(start,'advance').ap);
+  assert.equal(doctor.ap,remaining);assert.equal(doctor.stance,posture);assert.equal(doctor.activeSlot,'medical');assert.equal(doctor.medkits,2);assert.ok(doctor.ap<actionCosts(paused,doctor).heal);assert.equal(medicalUsePreview(paused,doctor,patient).allowed,false);
+  const paid=stanceCost(doctor,'prone');assert.ok(paid>0&&paid<=doctor.ap);const action=controller(paused,doctor);assert.deepEqual(action,{type:'stance',unitId:'doctor',stance:'prone'});
+  const next=interruptMedicalReplay(paused,[action]),actual=unit(next,'doctor');assert.equal(actual.ap,doctor.ap-paid);assert.equal(actual.stance,'prone');assert.equal(actual.movementMode,'prone');assert.equal(actual.activeSlot,'medical');assert.equal(actual.medkits,doctor.medkits);
+  assert.equal(next.phase,'interrupt');assert.deepEqual(next.interrupt,paused.interrupt);assert.deepEqual(next.enemyTurn,paused.enemyTurn);assert.equal(next.turn,paused.turn);assert.equal(next.elapsedSeconds,paused.elapsedSeconds);assert.equal(next.seed,paused.seed);assert.equal(next.elapsedSeconds,start.elapsedSeconds+COMBAT_ROUND_SECONDS);assert.equal(paused.elapsedSeconds,beforeEnd.elapsedSeconds);
+  for(const actor of paused.units){const after=unit(next,actor.id);assert.deepEqual(spacePoint(after),spacePoint(actor));for(const key of ['hp','bleeding','bandaged','energy','morale','medkits'])assert.equal(after[key],actor[key],actor.id+'/'+key);}
+  assert.equal(controller(next,actual),null);goods(paused,next);assert.deepEqual(interruptMedicalReplay(start,[...orders,action]),next);assert.deepEqual(start,before);
+ }
+});
+
+test('interrupt protection preserves eligibility, supply, hand, gun contact and the actual aid and posture budgets',()=>{
+ const variants=[{name:'ineligible',declaration:{eligible:false}},{name:'empty',declaration:{kits:1},preparation:{spendKit:true}},
+  {name:'mounted',declaration:{mounted:true}},{name:'insufficient-posture',preparation:{remaining:4}},
+  {name:'primary',preparation:{hand:'primary'}},{name:'charged-contact',declaration:{charged:true}},
+  {name:'payable-care-budget',declaration:{remote:true},preparation:{remaining:20}}];
+ for(const variant of variants){
+  const start=lowAPMedicalInterruptArena(variant.declaration),before=structuredClone(start),controller=policy(start),{battle:paused,orders}=earnLowAPMedicalInterrupt(start,variant.preparation),doctor=unit(paused,'doctor');assert.equal(paused.phase,'interrupt');
+  assert.equal(interruptAvailable(paused,doctor),variant.name!=='ineligible');
+  if(variant.name==='empty')assert.equal(doctor.medkits,0);
+  if(variant.name==='mounted')assert.equal(doctor.mounted,true);
+  if(variant.name==='insufficient-posture')assert.ok(doctor.ap<stanceCost(doctor,'prone'));
+  if(variant.name==='primary')assert.equal(doctor.activeSlot,'primary');
+  if(variant.name==='charged-contact'){assert.ok(paused.artillery[0].loaded);assert.equal(artilleryContact(paused,doctor,paused.artillery[0]),true);}
+  if(variant.name==='payable-care-budget'){assert.equal(doctor.ap,actionCosts(paused,doctor).heal);assert.equal(medicalUsePreview(paused,doctor,unit(paused,'patient')).allowed,false);}
+  const snapshot=structuredClone(paused);assert.equal(controller(paused,doctor),null,variant.name);assert.equal(controller.sharedFallback(paused,doctor),null,variant.name);assert.deepEqual(paused,snapshot);assert.deepEqual(interruptMedicalReplay(start,orders),paused);assert.deepEqual(start,before);
+ }
+});

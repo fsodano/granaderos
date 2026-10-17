@@ -88,8 +88,9 @@ function physicianCoverOrder(battle,unit,action,protectedIds,direction,careOnly=
  return candidates[0]?{type:'move',unitId:unit.id,...spacePoint(candidates[0])}:null;
 }
 
-// An actual Native interrupt admits adjacent care only for the supplied field
-// physician. It grants no approach, posture, following or new AP allowance.
+// An actual Native interrupt preserves adjacent care first for the supplied
+// field physician. Its actual medical hand may pay for prone only when the
+// current heal budget is unaffordable; no approach, following or AP is granted.
 function fieldPhysicianInterruptOrder(battle,unit){
  if(!interruptAvailable(battle,unit)||!fit(unit)||unit.captured||unit.energy<=0||unit.medical<60||!(unit.medkits>0))return null;
  const changing=(unit.activeSlot??'primary')!=='medical',cost=actionCosts(battle,unit).weapon;
@@ -102,6 +103,11 @@ function fieldPhysicianInterruptOrder(battle,unit){
   .sort((a,b)=>Number(criticalFirstAidNeeded(b))-Number(criticalFirstAidNeeded(a))||a.hp-b.hp||distance(unit,a)-distance(unit,b)||String(a.id).localeCompare(String(b.id)));
  for(const patient of patients)if(medicalUsePreview(battle,ready,patient).allowed)return changing?
   {type:'weapon',unitId:unit.id,slot:'medical'}:{type:'useItem',unitId:unit.id,targetId:patient.id};
+ // Only the admitted medical hand may use otherwise unusable care AP for
+ // a real protective posture. No currently payable aid budget is displaced.
+ const heal=actionCosts(battle,unit).heal,prone=stanceCost(unit,'prone');
+ if(battle.mode==='combat'&&battle.phase==='interrupt'&&unit.activeSlot==='medical'&&['standing','crouched'].includes(unit.stance)&&!unit.mounted&&!unit.knockedDown&&!unit.entangled&&Number.isFinite(heal)&&heal>0&&unit.ap<heal&&Number.isFinite(prone)&&prone>0&&unit.ap>=prone&&
+   !knownArtillery(battle,unit).some(gun=>gun.side===unit.side&&(gun.loaded||gun.ammo>0)&&artilleryContact(battle,unit,gun)))return {type:'stance',unitId:unit.id,stance:'prone'};
  return null;
 }
 
