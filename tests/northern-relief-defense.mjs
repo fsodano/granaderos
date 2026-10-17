@@ -145,6 +145,10 @@ export function northernReliefDefenseController(physicianIds,{minimumIdleRounds=
   // to replace ordinary work with a different crew route.
   if(!reserved){
    ordinary=crewKeepsReserves(battle,unit,action)?safeReliefFireOrMove(battle,unit,action,shotSafety):null;
+   // A real complete local gun crew keeps its pre-contact post instead of
+   // taking an optional personal-rifle investigation away from the piece.
+   // Care, attacks, maintenance and all nonpriority/default work stay exact.
+   if(prioritizeLocalBattery&&battery&&battle.mode==='exploration'&&ordinary?.type==='move'&&actualNonclinicalCrew(battle,unit))return null;
    if(!battery||ordinary)return ordinary;
   }else if(action?.type==='useItem'||action?.slot==='medical')return action;
   if(battery&&battle.mode==='combat'&&battle.phase==='player'&&nonclinical(unit)&&!unit.knockedDown&&!unit.entangled){

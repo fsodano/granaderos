@@ -667,6 +667,25 @@ export function searchNorthernConvalescentDressing(start,operativeId,{deploying,
  }
 }
 
+// This is the rescue staging branch's existing real raid and recon policy.
+// Admission makes all local defenders active. Only stable local survivors
+// who were already resting and are outside the deploying care cohort resume
+// that duty after the same victory, replay, official save and settlement.
+export function resolveRescueStagingDefense(start,{deploying,report=()=>{}}={}){
+ assert.ok(Array.isArray(deploying));
+ const before=structuredClone(start),encounter=structuredClone(start.pendingEncounter),group=structuredClone(start.enemyGroups.find(group=>group.id===encounter.groupId)),careMembers=new Set(deploying);
+ const priorRestIds=start.recruited.filter(id=>{const r=start.operativeState[id];return r.alive&&!r.captured&&r.assignment==='rest'&&!operativeInTransit(start,id)&&operativeLocation(start,id)===encounter.sector;});
+ let campaign=start;const events=[],restoredRestIds=[];
+ const order=action=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;events.push({action,hour:campaign.hour,second:campaign.secondOfHour??0});};
+ order({type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});
+ assert.deepEqual(campaign.pendingBattle.enemies,group.units,'the defense uses the actual arriving group');
+ const defense=fightNorthernSector(campaign,encounter.sector,{controller:northernReconOrder,report});campaign=defense.campaign;
+ for(const operativeId of priorRestIds){const r=campaign.operativeState[operativeId];
+  if(!careMembers.has(operativeId)&&campaign.recruited.includes(operativeId)&&r.alive&&!r.captured&&r.hp>=15&&!r.bleeding&&!r.unconscious&&!r.routed&&!operativeInTransit(campaign,operativeId)&&operativeLocation(campaign,operativeId)===encounter.sector){order({type:'assignCare',operativeId,assignment:'rest'});restoredRestIds.push(operativeId);}
+ }
+ assert.deepEqual(start,before);return {campaign,groupId:group.id,summary:defense.summary,events,priorRestIds,restoredRestIds,settledCampaign:defense.campaign};
+}
+
 export function prepareRescueSquad(start,{report=()=>{}}={}){
  let campaign=decodeSave(encodeSave(start)).campaign;const events=[];
  const order=action=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;events.push({action,hour:campaign.hour,second:campaign.secondOfHour??0});};
@@ -830,11 +849,8 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
  const renew=()=>{for(const id of deploying){const contract=campaign.contracts[id];if(contract?.expiresAt!=null&&contract.expiresAt-campaign.hour<=14){const cash=campaign.resources.treasury;order({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});staging.renewals.push({id,cost:cash-campaign.resources.treasury,hour:campaign.hour});}}};
  for(let i=0;i<48;i++){
   if(campaign.pendingEncounter){
-   const encounter=structuredClone(campaign.pendingEncounter),group=structuredClone(campaign.enemyGroups.find(group=>group.id===encounter.groupId));
-   order({type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});
-   assert.deepEqual(campaign.pendingBattle.enemies,group.units,'the defense uses the actual arriving group');
-   const defense=fightNorthernSector(campaign,encounter.sector,{controller:northernReconOrder,report});campaign=defense.campaign;
-   staging.defenses.push({groupId:group.id,...defense.summary});
+   const defense=resolveRescueStagingDefense(campaign,{deploying,report});campaign=defense.campaign;events.push(...defense.events);
+   staging.defenses.push({groupId:defense.groupId,...defense.summary});
    const losses=deploying.filter(id=>!campaign.operativeState[id].alive);
    staging.losses??=[];staging.losses.push(...losses);staging.replacements??=[];let deferredFieldReplacement=null;
    for(const members of [fieldIds,supportIds]){

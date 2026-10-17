@@ -79,7 +79,7 @@ import {boundaryPassable} from '../game/tactical-exits.js';
 import {spacePoint} from '../game/tactical-space.js';
 import {syncBattleTime} from '../game/time.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
-import {resolveRestingNorthernClinicDefense} from './northern-route.mjs';
+import {resolveRestingNorthernClinicDefense,resolveRescueStagingDefense} from './northern-route.mjs';
 import {stageRouteRoofDefenders} from './route-roof-defenders.mjs';
 
 function restingClinicRaid(){
@@ -168,4 +168,30 @@ test('an actual clinic defense restores only prior local rest after victory and 
  assert.equal(clock(rested),until);for(const id of ids.slice(0,2)){assert.equal(rested.operativeState[id].morale,morale[id]+1);assert.equal(rested.operativeState[id].assignment,'rest');assert.equal(rested.operativeState[id].moraleRestHours,0);}assert.equal(rested.operativeState[ids[2]].morale,morale[ids[2]]);assert.equal(rested.operativeState[ids[2]].assignment,'active');
  for(const id of ids)for(const key of ['alive','captured','hp','bleeding','medkits','inventory','ammo','carriedLoaded','condition'])assert.deepEqual(rested.operativeState[id][key],c.operativeState[id][key],id+' '+key);assert.equal(rested.resources.treasury,c.resources.treasury);assert.deepEqual(waits.reduce(order,save(c)),save(rested));
  assert.deepEqual(start,before);const repeated=restingClinicRaid();assert.deepEqual(repeated.campaign,start);assert.deepEqual(resolveRestingNorthernClinicDefense(repeated.campaign),result);save(rested);
+});
+
+// The same paid movement, retreats and scheduled raid are earned afresh. The
+// actual staging resolver keeps its recon controller and excludes deploying
+// members from the reserve's post-settlement duty restoration.
+test('rescue staging restores a prior resting reserve outside the deploying care cohort and earns six-hour morale recovery',()=>{
+ const {campaign:start,ids}=restingClinicRaid(),before=structuredClone(start),deploying=[ids[0],ids[2]],deployingBefore=[...deploying];
+ assert.deepEqual(ids.map(id=>start.operativeState[id].assignment),['rest','rest','active']);
+ const result=resolveRescueStagingDefense(start,{deploying}),c=result.campaign,settled=result.settledCampaign,reserve=ids[1],careMember=ids[0];
+ assert.equal(result.groupId,start.pendingEncounter.groupId);assert.deepEqual(result.priorRestIds,ids.slice(0,2));assert.deepEqual(result.restoredRestIds,[reserve]);
+ assert.equal(result.summary.status,'victory');assert.ok(result.summary.turns>=1&&result.summary.actions>0&&result.summary.elapsedSeconds>0);assert.equal(c.pendingEncounter,null);assert.equal(c.pendingBattle,null);assert.equal(c.sectors.cordoba.owner,'patriot');
+ assert.ok(c.operativeState[reserve].alive&&c.operativeState[reserve].hp>=15&&!c.operativeState[reserve].bleeding);assert.ok(c.operativeState[careMember].alive);
+ assert.ok(ids.every(id=>settled.operativeState[id].assignment==='active'));assert.deepEqual(ids.map(id=>c.operativeState[id].assignment),['active','rest','active']);
+ assert.equal(clock(c),clock(settled));assert.equal(c.resources.treasury,settled.resources.treasury);assert.deepEqual(c.contracts,settled.contracts);assert.deepEqual(c.squads,settled.squads);assert.deepEqual(c.sectorStates,settled.sectorStates);
+ for(const id of ids)for(const key of ['alive','captured','hp','maxHp','bleeding','bandaged','energy','fatigue','morale','moraleRestHours','location','residentPosition','medkits','inventory','ammo','carriedLoaded','condition','jammed'])assert.deepEqual(c.operativeState[id][key],settled.operativeState[id][key],id+' '+key);
+ assert.deepEqual(result.events.map(row=>row.action),[{type:'respondToEncounter',groupId:start.pendingEncounter.groupId,choice:'tactical'},{type:'assignCare',operativeId:reserve,assignment:'rest'}]);
+ const restOrders=result.events.filter(row=>row.action.type==='assignCare');assert.deepEqual(restOrders,[{action:{type:'assignCare',operativeId:reserve,assignment:'rest'},hour:settled.hour,second:settled.secondOfHour??0}]);
+ assert.deepEqual(restOrders.reduce((campaign,row)=>order(campaign,row.action),save(settled)),c);
+ const morale=c.operativeState[reserve].morale,careMorale=c.operativeState[careMember].morale;assert.ok(morale<80&&c.operativeState[reserve].energy>=60);assert.equal(c.operativeState[reserve].moraleRestHours,0);
+ let rested=save(c);const waits=[],until=clock(c)+6*3600;
+ for(let attempt=0;clock(rested)<until&&attempt<12;attempt++){const action={type:'wait',hours:(until-clock(rested))/3600};waits.push(action);rested=order(rested,action);}
+ assert.equal(clock(rested),until);assert.equal(rested.operativeState[reserve].morale,morale+1);assert.equal(rested.operativeState[reserve].moraleRestHours,0);assert.equal(rested.operativeState[reserve].assignment,'rest');
+ assert.equal(rested.operativeState[careMember].assignment,'active');assert.equal(rested.operativeState[careMember].morale,careMorale,'A deploying care member is not silently assigned reserve rest.');
+ for(const key of ['alive','captured','hp','bleeding','medkits','inventory','ammo','carriedLoaded','condition'])assert.deepEqual(rested.operativeState[reserve][key],c.operativeState[reserve][key],key);assert.equal(rested.resources.treasury,c.resources.treasury);
+ assert.deepEqual(waits.reduce(order,save(c)),save(rested));assert.deepEqual(start,before);assert.deepEqual(deploying,deployingBefore);
+ const repeated=restingClinicRaid();assert.deepEqual(repeated.campaign,start);assert.deepEqual(resolveRescueStagingDefense(repeated.campaign,{deploying:[repeated.ids[0],repeated.ids[2]]}),result);save(rested);
 });
