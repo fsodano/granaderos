@@ -9,37 +9,31 @@
 - Clear a refused autonomous enemy action before a valid player interrupt.
   Invalid player orders retain their normal atomic refusal.
 - Keep inventory details tied to the inspected pocket after an item moves to
-  the hand. Narrow 3D wall pointer regions so clicks reach the visible door.
-  Clear the desktop interruption notice from the tactical toolbar.
-- Rewrite the README around the game, its features, desktop controls,
-  campaign tools and local setup.
-- Expand campaign route checks for actual paid service, casualties, rest,
-  finite cannon crew and supplies, medical aid and infantry interrupts.
-  Acceptance drivers issue ordinary orders and preserve battle and preparation
-  limits, permanent losses and the reviewed four-battle Cuyo report.
-- The latest full local gate on `db25cc8c` passes **1,108 of 1,115 files**:
-  **8,380 passing cases, nine failures and two dependent skips out of 8,391**.
-  There are no cancellations or TODO cases. Receipt `ccefe0f9...`, log
-  `38f3e737...`, report `ca5c6a6e...` and preservation `e86f4528...` retain the
-  RED result. All five strict comparisons match and the processes are reaped.
-  Seven failed files still prevent complete-route acceptance.
-- Integrate four further tested paths as `fd833b82`: restore stable resting
-  reserves after rescue-staging defence and keep complete local cannon crews
-  at their pre-contact posts. Separate whole-file gates pass **5/5** and
-  **23/23** cases, with syntax, all strict comparisons, HOME, diff and reap
-  checks passing. Receipts `968c38ce...` and `ae68c961...` retain those bounded
-  results; the assembled corrections still need a full pass.
-- Preserve the two stronger reviewed baseline corrections: Cuyo requires all
-  four actual battles; recovery retains historical physician identities,
-  paid admission, current living service and actual permanent care-battle
-  deaths. Other survival, finite-resource, deadline and ending guards remain.
-- Build private export `0.1.13 / f1f045710544` from `db25cc8c`; build,
-  TypeScript, docs/baseline and preservation checks pass. Normal desktop mouse
-  review verifies actual paid posture changes with all seven toolbar controls
-  clear of the interruption notice. No console errors occur. Earlier bounded
-  door and frame-sample evidence remains historical; observed frame spikes
-  reach 208.4 ms. Manual cannon use, an earned ending and 48 campaign hours of
-  saved continuation remain open.
+  the hand. Make visible 3D doors reachable by pointer and keep the desktop
+  interruption notice clear of the tactical toolbar.
+- Integrate nine reviewed route-driver paths at `ef35ee92`, after the earlier
+  fourteen-path and four-path follow-ups. Ordinary orders retain actual paid
+  service, casualties, finite stock, medical care and preparation limits.
+- Keep the latest full result RED: **1,108 of 1,115 files pass** on `db25cc8c`,
+  with **8,380 passes, nine failures and two dependent skips out of 8,391
+  cases**. Receipt `ccefe0f9...` retains all seven failed route files. The
+  later assembled source has not passed another full gate.
+- Record separate qualified component gates: healthy northern return **20/20**
+  (`4c8bb320...`), stationary local care and civilian safety **36/36**
+  (`f72bb5bf...`), and payable medical wall detours **20/20** (`73cde22a...`).
+  Earlier reserve-rest **5/5** (`968c38ce...`) and pre-contact battery **23/23**
+  (`ae68c961...`) results remain recorded. Their overlapping scopes are not
+  one aggregate result; each gate passes syntax, strict comparisons, HOME,
+  diff and reap checks.
+- Retain the source-reviewed completed-convoy service lifecycle. Its actual
+  full-route producer and later affordability remain unproved. Keep the two
+  reviewed stronger original Cuyo and historical-physician recovery oracles.
+- Merge published documentation checkpoint `0.1.13` from main `44d74757`
+  through normal merge `fcca1ecb`. Keep private export
+  `0.1.13 / f1f045710544` as recorded desktop evidence. The final campaign
+  candidate, next private build and unfiltered full result remain pending.
+  Manual cannon use, an earned ending and 48 campaign hours of saved
+  continuation remain open. This entry does not establish core acceptance.
 
 ## 0.1.13 — 17 October 2026
 
