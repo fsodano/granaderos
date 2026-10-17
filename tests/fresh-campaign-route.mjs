@@ -574,6 +574,7 @@ export function recoverFreshCordobaSurvivors(start,{report=()=>{}}={}){
  for(const id of dead)assert.equal(c.operativeState[id].alive,false);
  selectSite('cordoba');
  report({event:'cordobaCareFinished',doctors:[...doctors],hour:c.hour,treasury:c.resources.treasury});
+ recordRouteStrategicEvidence({helper:'recoverFreshCordobaSurvivors',stage:'route-checkpoint',campaign:c,context:{doctors:[...doctors],careDeadlineSeconds,careHours,scope:'Actual completed care return after all existing health, encounter and permanent-death guards; passive capture only, no extra orders or state changes.'}});
  assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
  return c;
 }

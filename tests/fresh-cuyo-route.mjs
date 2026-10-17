@@ -52,10 +52,11 @@ const routeClock=s=>s.hour*3600+(s.secondOfHour??0);
 // paid term. Explicit dismissals still return equipment through normal orders.
 // Report an accepted action before checking its resulting loss/interruption.
 export function createFreshRouteOrders(read,write,{report=()=>{},handledEncounters=[],onActionRefusal}={}){
- const intended=new Set(freshRouteServingIds(read()));
+ const intended=new Set(freshRouteServingIds(read())),battleDeaths=new Map();
  const fail=message=>{const campaign=read();recordRouteStrategicEvidence({helper:'createFreshRouteOrders',stage:'route-stopped',campaign,error:message});report({event:'freshRouteStopped',reason:message,campaign});throw Error(message);};
  const check=()=>{
   const s=read();
+  for(const [id,minute]of battleDeaths){const r=s.operativeState[id];assert.ok(r&&!r.alive&&r.hp===0&&r.deathMinute===minute,`The actual recapture casualty ${id} must remain final.`);}
   for(const id of intended){const r=s.operativeState[id],expiry=contractExpiresSeconds(s.contracts[id]);
    if(!r?.alive||r.captured||!s.recruited.includes(id)||!s.contracts[id]||expiry!==null&&expiry<=routeClock(s))fail(`The intended serving survivor ${id} is no longer available.`);
   }
@@ -115,7 +116,25 @@ export function createFreshRouteOrders(read,write,{report=()=>{},handledEncounte
   if(next.pendingEncounter&&!handledEncounters.includes(next.pendingEncounter.sector))fail(`The actual encounter at ${next.pendingEncounter.sector} interrupts ${stage}.`);
   return next;
  };
- return {order,retain,adopt,check,keepIds:()=>[...intended]};
+ // Only completed Native recapture victories may retire actual deaths from
+ // this service ledger. Every other intended survivor keeps the old checks.
+ const adoptAfterRecapture=(next,victories)=>{
+  check();const previous=read(),casualties=[];
+  assert.ok(Array.isArray(victories)&&victories.every(b=>b.status==='victory'&&Number.isFinite(b.startSeconds)&&b.startSeconds>=routeClock(previous)&&Number.isFinite(b.elapsedSeconds)&&b.elapsedSeconds>=0&&b.startSeconds+b.elapsedSeconds<=routeClock(next)&&Array.isArray(b.units)),'Recapture casualties require completed in-interval Native victory reports.');
+  for(const id of intended){
+   const old=previous.operativeState[id],record=next.operativeState[id];assert.ok(record,`The intended serving survivor ${id} is missing.`);
+   if(old.alive&&!record.alive){
+    assert.ok(record.hp===0&&!record.captured&&Number.isSafeInteger(record.deathMinute)&&victories.some(b=>b.units.some(u=>u.side==='player'&&u.id===String(id)&&u.hp===0)),`The lost serving survivor ${id} needs an actual Native recapture death report.`);
+    casualties.push(id);
+   }
+  }
+  for(const [id,record]of Object.entries(previous.operativeState))if(!record.alive)assert.equal(next.operativeState[id]?.alive,false,'Earlier casualties stay final.');
+  for(const id of casualties){intended.delete(id);battleDeaths.set(id,next.operativeState[id].deathMinute);}
+  write(next);check();
+  if(casualties.length)report({event:'freshRouteRecaptureCasualties',casualties,victories:victories.map(({sector,startSeconds,elapsedSeconds,status,turns,actions})=>({sector,startSeconds,elapsedSeconds,status,turns,actions})),campaign:next});
+  return next;
+ };
+ return {order,retain,adopt,adoptAfterRecapture,check,keepIds:()=>[...intended]};
 }
 
 // Send the two actual northern pieces while their serving crews are still
@@ -908,6 +927,23 @@ export function completeFreshArmyFunding(start,{report=()=>{}}={}){
   const next=resolveFoundryBatteryEncounter(c,{report});retained.adopt(next,'foundry-battery-encounter');
  };
  const order=action=>{resolveNorthernDefense();return retained.order(action);};
+ const recoverCannons=()=>{
+  const victories=[],next=recoverFoundryCannons(c,3,{report:event=>{
+   // Emitted only after the existing Native wins, replay/save, permanent
+   // casualty, finite care, physical delivery and return guards all pass.
+   if(event.event==='foundryConvoyRecovered'){
+    if(Object.hasOwn(event,'battles')){
+     assert.ok(Array.isArray(event.battles)&&!Object.hasOwn(event,'battle'),'Multi-cut recapture requires its actual Native victory summaries.');
+     victories.push(...event.battles);
+    }else{
+     assert.ok(Object.hasOwn(event,'battle')&&event.battle&&typeof event.battle==='object'&&!Array.isArray(event.battle),'Single-cut recapture requires its actual Native victory summary.');
+     victories.push(event.battle);
+    }
+   }
+   report(event);
+  }});
+  retained.adoptAfterRecapture(next,victories);
+ };
  const finishJourney=sector=>{
   for(let hour=0;hour<168&&c.squads.find(q=>q.id===c.activeSquadId).journey;hour++){
    resolveNorthernDefense();const journey=c.squads.find(q=>q.id===c.activeSquadId).journey;if(!journey)break;
@@ -920,7 +956,7 @@ export function completeFreshArmyFunding(start,{report=()=>{}}={}){
  c=bankRouteIncome(retained.retain(),200,{keepIds:retained.keepIds(),report});
  // Secure the existing rear piece before the course advances the clock.
  // A later occupation cannot supply a gun left in its former arsenal.
- c=recoverFoundryCannons(c,3,{report});
+ recoverCannons();
  for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
  order({type:'travel',sector:'cordoba',mode:'posta'});
  finishJourney('cordoba');
@@ -940,7 +976,7 @@ export function completeFreshArmyFunding(start,{report=()=>{}}={}){
  order({type:'travel',sector:'mendoza',mode:'posta'});
  finishJourney('mendoza');
  for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'rest'});
- c=recoverFoundryCannons(c,3,{report});
+ recoverCannons();
  for(let i=0;i<240&&c.resources.treasury<foundryFor(c).fundingCost;i++){
   resolveNorthernDefense();assert.equal(c.pendingEncounter,null);assert.equal(c.defeated,false);
   const before=c.hour;order({type:'wait',hours:1});assert.ok(c.hour>before||c.assignmentAttention.notice,'a paused wait must report its assignment notice');

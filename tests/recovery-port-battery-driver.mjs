@@ -195,6 +195,13 @@ export function recoveryPortSearchController(initial,{reserveIds=[],fieldPhysici
    // The explicit infantry doctrine never replaces admitted fire, medicine,
    // reload or maintenance. No-contact search retains the existing bounds.
    const uselessPosture=!usefulFiringPosture(battle,unit,action);
+   // An earned interrupt may hear a shot without personal sight of the squad's
+   // observed target. Quote the current paid safe shot before optional noise
+   // investigation; ordinary aid, fire, loading and all held roles stay first.
+   if(battle.mode==='combat'&&battle.phase==='interrupt'&&!battle.reactionStack?.length&&interruptAvailable(battle,unit)&&!protectedIds.has(unit.id)&&unit.medical<60&&!unit.missionAlly&&!unit.mounted&&!unit.knockedDown&&!unit.entangled&&['move','look'].includes(action?.type)&&
+     !knownArtillery(battle,unit).some(gun=>gun.side===unit.side&&(gun.loaded||gun.ammo>0)&&artilleryContact(battle,unit,gun))){
+    const shot=usefulRifleShot(publicView(battle,unit),unit);if(shot)return shot;
+   }
    if(!reserves.has(unit.id)&&physicians.has(unit.id)&&(!action||['move','charge'].includes(action.type)||uselessPosture))return physicianCoverOrder(battle,unit,action,protectedIds,direction);
    if(uselessPosture)action=usefulRifleShot(publicView(battle,unit),unit)??infantryCoverOrder(battle,unit,null);
    else if(!protectedIds.has(unit.id)&&action?.type==='move'&&battle.mode==='combat')action=infantryCoverOrder(battle,unit,action);

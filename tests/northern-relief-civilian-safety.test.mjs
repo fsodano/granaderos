@@ -300,3 +300,105 @@ test('missing-crew setup priority retains finite care, close Native melee, explo
  const entry=localCarePriorityField({entry:true}),entryBefore=structuredClone(entry),entrant=localMember(entry,'priority'),normal=cautiousCombatOrder(entry,entrant),entryPolicy=northernReliefDefenseController([],{localCareBattle:entry,prioritizeLocalBattery:true});assert.equal(entry.mode,'exploration');assert.deepEqual(entryPolicy(entry,entrant),normal);assert.deepEqual(entry,entryBefore);
  const other=loadedLocalCareSetupField({outsider:true}),otherBefore=structuredClone(other),outside=localMember(other,'outside-crew'),defaultPolicy=northernReliefDefenseController(['physician'],{localCareBattle:other}),priorityPolicy=northernReliefDefenseController(['physician'],{localCareBattle:other,prioritizeLocalBattery:true});assert.deepEqual(priorityPolicy(other,outside),defaultPolicy(other,outside));assert.deepEqual(priorityPolicy(other,localMember(other,'physician')),defaultPolicy(other,localMember(other,'physician')));assert.deepEqual(other,otherBefore);
 });
+
+
+// Fresh contact/approach declarations for the local-care-only setup priority.
+// The old15 cases and their helpers above remain an exact byte prefix.
+import {coastalBatteryController} from './coastal-command-driver.mjs';
+
+function localBatteryContactField({atGun=false,clear=false,clinical=false}={}){
+ const base={hp:100,maxHp:100,bleeding:0,bandaged:0,energy:100,fatigue:0,morale:90,agility:90,dexterity:90,strength:80,marksmanship:90,medical:0,medkits:0,weapon:1802,blade:0,condition:100,loaded:1,ammo:8,stance:'crouched',movementMode:'crouch',activeSlot:'primary',facing:2,patrol:false,overwatch:false};
+ const players=[{...base,id:'shooter',x:1,y:4},
+  {...base,id:'crew-leader',x:atGun?(clear?2:8):9,y:atGun?(clear?5:8):5,weapon:0,loaded:0,ammo:0,stance:'standing',movementMode:'walk'},
+  {...base,id:'field-physician',x:clinical?2:8,y:clinical?5:10,medical:80,medkits:1,weapon:0,loaded:0,ammo:0,stance:clinical?'standing':'prone',movementMode:clinical?'walk':'prone'}];
+ const options={id:'declared-local-battery-contact-hold',width:32,height:14,hour:12,seed:45,exploration:false,
+  tiles:Array.from({length:448},(_,i)=>({x:i%32,y:Math.floor(i/32),type:'grass',blocked:false,cover:0})),
+  enemies:[{id:'front',x:clear?14:12,y:4,hp:500,maxHp:500,bandaged:0,weapon:0,blade:0,loaded:0,ammo:0,stance:'standing',patrol:false,overwatch:false}],
+  npcs:clear?[]:[resident(5,5)],artillery:[{id:'contact-gun',type:'bronze4',side:'player',x:atGun?2:9,y:4,facing:0,loaded:true,ammo:1}]};
+ const declaration=structuredClone({players,options}),battle=createBattle(players,options);assert.deepEqual({players,options},declaration);assert.deepEqual(validateBattleSnapshot(JSON.parse(JSON.stringify(battle))),battle);return battle;
+}
+const localSetupPolicy=start=>northernReliefDefenseController(['field-physician'],{localCareBattle:start,prioritizeLocalBattery:true});
+const localSetupCoordinator=(start,priority=false)=>coastalBatteryController(start,{sharedArtillerySight:true,crewEligible:unit=>unit.id!=='field-physician'&&unit.medical<60,crewOnly:true,prioritizeCrewApproach:priority});
+
+function contactSetupReplay(start,orders){
+ let battle=validateBattleSnapshot(JSON.parse(JSON.stringify(start)));const policy=localSetupPolicy(battle);
+ for(const action of orders){if(action.type!=='endTurn')assert.deepEqual(policy(battle,localMember(battle,action.unitId)),action);battle=validateBattleSnapshot(JSON.parse(JSON.stringify(localCareStep(battle,action))));}return battle;
+}
+
+test('local setup makes an incomplete loaded rifle crew pay its actual approach before a distant personal shot',()=>{
+ const start=localBatteryContactField(),before=structuredClone(start),unit=actor(start),gun=start.artillery[0],old=localSetupCoordinator(start),coordinated=old(start,unit);
+ assert.equal(artilleryContact(start,unit,gun),false);assert.ok(artilleryCrewPlan(start,unit,gun,0).reason);assert.equal(coordinated?.type,'fire');
+ const target=localMember(start,coordinated.targetId),quote=firearmShotOptions(start,unit,target,coordinated.aim??0).find(option=>option.aim===(coordinated.aim??0)&&option.hitLocation===(coordinated.hitLocation??'torso'));
+ assert.equal(knownRouteBystanderShotSafety(start,unit,target)(quote),false,'The optional personal shot has the declared real known scatter body.');
+ const policy=localSetupPolicy(start),selected=policy(start,unit);assert.equal(selected?.type,'move');assert.deepEqual(selected,localSetupCoordinator(start,true)(start,unit));
+ const route=getReachable(start,unit).find(point=>point.x===selected.x&&point.y===selected.y&&(point.tacticalLevel??0)===(selected.tacticalLevel??0));assert.ok(route&&route.cost>0&&route.cost<=24&&route.path.length<=3);assert.ok(Math.hypot(selected.x-gun.x,selected.y-gun.y)<Math.hypot(unit.x-gun.x,unit.y-gun.y));
+ const moved=localCareStep(start,selected);assert.equal(actor(moved).ap,unit.ap-route.cost);assert.ok(actor(moved).energy<unit.energy);assert.ok(moved.elapsedSeconds>start.elapsedSeconds);
+ for(const key of ['hp','maxHp','bleeding','medkits','loaded','ammo','inventory'])assert.deepEqual(actor(moved)[key],unit[key]);assert.deepEqual(moved.artillery,start.artillery);assert.deepEqual(moved.npcs,start.npcs);assert.deepEqual(localMember(moved,'field-physician'),localMember(start,'field-physician'));
+ assert.deepEqual(contactSetupReplay(start,[selected]),moved);assert.deepEqual(start,before);
+});
+
+test('an actual solo gun-contact member does not turn an unsafe personal shot into a rifle-lane departure',()=>{
+ const start=localBatteryContactField({atGun:true}),before=structuredClone(start),unit=actor(start),gun=start.artillery[0],coordinated=localSetupCoordinator(start,true)(start,unit);
+ assert.equal(artilleryContact(start,unit,gun),true);assert.ok(artilleryCrewPlan(start,unit,gun,0).reason,'The held contact post is not a complete Native crew.');assert.equal(coordinated?.type,'fire');
+ const target=localMember(start,coordinated.targetId),quote=firearmShotOptions(start,unit,target,coordinated.aim??0).find(option=>option.aim===(coordinated.aim??0)&&option.hitLocation===(coordinated.hitLocation??'torso'));assert.equal(knownRouteBystanderShotSafety(start,unit,target)(quote),false);
+ // Independently earn an actual short safe rifle lane on a detached branch.
+ // Its existence must not authorize the waiting gun-contact member to leave.
+ let lane=null;
+ for(const point of getReachable(start,unit).filter(point=>point.cost>0&&point.cost<=24&&point.cost<unit.ap&&point.path.length<=3&&!point.path.some(step=>step.kind==='climb')).sort((a,b)=>a.cost-b.cost||a.y-b.y||a.x-b.x).slice(0,48)){
+  if(artilleryContact(start,{...unit,...point},gun))continue;
+  const move={type:'move',unitId:unit.id,x:point.x,y:point.y,tacticalLevel:point.tacticalLevel??0},moved=localCareStep(start,move),current=actor(moved),enemy=localMember(moved,'front'),cost=actionCosts(moved,current,enemy);
+  if(current.ap<cost.fire)continue;
+  const safe=knownRouteBystanderShotSafety(moved,current,enemy),maxAim=Math.min(4,Math.floor((current.ap-cost.fire)/cost.aim)),shot=firearmShotOptions(moved,current,enemy,maxAim).find(option=>option.chance>0&&option.damageFactor>0&&safe(option));
+  if(shot){lane={move,moved,point};break;}
+ }
+ assert.ok(lane,'A real affordable safe rifle lane exists away from this declared gun.');assert.equal(actor(lane.moved).ap,unit.ap-lane.point.cost);assert.ok(actor(lane.moved).energy<unit.energy);
+ const policy=localSetupPolicy(start);assert.equal(policy(start,unit),null);assert.equal(policy.sharedFallback(start,unit),null);assert.deepEqual(start,before,'A hold spends no ammunition, AP, energy or clock.');
+});
+
+test('contact holds retain two finite Native cannon shots and cannot borrow the actual adjacent physician',()=>{
+ const start=localBatteryContactField({atGun:true,clear:true}),before=structuredClone(start),policy=localSetupPolicy(start),orders=[];let battle=start,fires=0,reloads=0;
+ assert.deepEqual(artilleryCrewPlan(start,actor(start),start.artillery[0],artilleryCosts(start,actor(start),start.artillery[0]).fire).crew,['shooter','crew-leader']);
+ assert.equal(canSee(start,actor(start),localMember(start,'front')),true,'The fresh finite-cannon target is actually visible before the first order.');
+ for(let round=0;round<4&&fires<2;round++){
+  for(let pass=0;pass<4&&fires<2;pass++){
+   const unit=actor(battle),action=policy(battle,unit);if(!action)break;assert.ok(['artillery','artilleryReload','artilleryPivot'].includes(action.type)||action.type==='stance'&&action.stance==='standing',JSON.stringify({action,round,pass,fires,reloads,status:battle.status,mode:battle.mode,phase:battle.phase,turn:battle.turn,elapsedSeconds:battle.elapsedSeconds,roundTimeCharged:battle.roundTimeCharged,orders,actor:unit,gun:battle.artillery[0],target:localMember(battle,'front'),crew:battle.units.filter(other=>other.side===unit.side&&other.id!==unit.id),smoke:battle.smoke,log:battle.log.slice(-12)}));
+   if(action.type==='stance'){
+    const pa=stanceCost(unit,'standing');assert.ok(pa>0&&unit.ap>=pa);const after=localCareStep(battle,action);assert.equal(actor(after).stance,'standing');assert.equal(actor(after).ap,unit.ap-pa);
+    for(const key of ['x','y','tacticalLevel','hp','maxHp','bleeding','bandaged','medkits','weapon','loaded','ammo','inventory'])assert.deepEqual(actor(after)[key],unit[key]);
+    assert.deepEqual(after.artillery,battle.artillery);for(const other of battle.units.filter(other=>other.id!==unit.id))assert.deepEqual(localMember(after,other.id),other);
+    orders.push(action);battle=after;continue;
+   }
+   const gun=battle.artillery[0],plan=action.type==='artilleryReload'?artilleryReloadPreview(battle,unit,gun):artilleryCrewPlan(battle,unit,gun,artilleryCosts(battle,unit,gun)[action.type==='artillery'?'fire':'pivot']),pa=action.type==='artilleryReload'?plan.pa:artilleryCosts(battle,unit,gun)[action.type==='artillery'?'fire':'pivot'];
+   assert.equal(plan.reason,null);assert.deepEqual([...plan.crew].sort(),['crew-leader','shooter']);const after=localCareStep(battle,action);for(const id of plan.crew)assert.equal(localMember(after,id).ap,localMember(battle,id).ap-pa);
+   if(action.type==='artillery'){assert.equal(after.artillery[0].loaded,false);assert.equal(after.artillery[0].ammo,gun.ammo);fires++;}if(action.type==='artilleryReload'){assert.equal(after.artillery[0].ammo,gun.ammo-(Number(after.artillery[0].loaded)-Number(gun.loaded)));reloads++;}
+   orders.push(action);battle=after;
+  }
+  if(fires<2){assert.equal(battle.status,'active');const action={type:'endTurn'};battle=localCareStep(battle,action);orders.push(action);}
+ }
+ assert.equal(fires,2);assert.ok(reloads>0);assert.equal(battle.artillery[0].loaded,false);assert.equal(battle.artillery[0].ammo,0);
+ for(const id of ['shooter','crew-leader','field-physician'])for(const key of ['hp','maxHp','bleeding','medkits','loaded','ammo','inventory'])assert.deepEqual(localMember(battle,id)[key],localMember(start,id)[key]);
+ assert.deepEqual(contactSetupReplay(start,orders),battle);assert.deepEqual(start,before);
+ const clinical=localBatteryContactField({atGun:true,clinical:true}),clinicalBefore=structuredClone(clinical),native=artilleryCrewPlan(clinical,actor(clinical),clinical.artillery[0],0);assert.equal(native.reason,null);assert.deepEqual(native.crew,['shooter','field-physician']);assert.equal(localSetupPolicy(clinical)(clinical,actor(clinical)),null);assert.deepEqual(clinical,clinicalBefore,'The actual clinical body remains present and cannot supply an eligible nonclinical gun crew.');
+});
+
+
+import {canSee} from '../game/tactical.js';
+
+test('a solo actual contact post survives a null coordinator even when ordinary cautious search has a legal move',()=>{
+ // Every current body and this valid remembered point belong to the fresh
+ // declaration. The actual enemy is hidden behind the solid partition.
+ const base={hp:100,maxHp:100,bleeding:0,bandaged:0,energy:100,fatigue:0,morale:90,agility:90,dexterity:90,strength:80,medical:0,medkits:0,blade:0,condition:100,stance:'crouched',movementMode:'crouch',activeSlot:'primary',facing:2,patrol:false,overwatch:false};
+ const players=[{...base,id:'shooter',x:1,y:4,weapon:1802,loaded:1,ammo:8,marksmanship:90,lastKnownEnemy:{x:12,y:4,tacticalLevel:0,turn:1}},
+  {...base,id:'crew-leader',x:8,y:8,weapon:0,loaded:0,ammo:0,marksmanship:0,stance:'standing',movementMode:'walk'},
+  {...base,id:'field-physician',x:8,y:10,weapon:0,loaded:0,ammo:0,marksmanship:0,medical:80,medkits:1,stance:'prone',movementMode:'prone'}];
+ const options={id:'declared-local-battery-null-contact',width:32,height:14,hour:12,seed:45,exploration:false,deferContact:true,
+  tiles:Array.from({length:448},(_,i)=>i%32===16?{x:16,y:Math.floor(i/32),type:'stone',blocked:true,blocksSight:true,obstacleHeight:10,cover:40}:{x:i%32,y:Math.floor(i/32),type:'grass',blocked:false,cover:0}),
+  enemies:[{id:'front',x:24,y:4,hp:500,maxHp:500,bandaged:0,weapon:0,blade:0,loaded:0,ammo:0,stance:'standing',patrol:false,overwatch:false}],npcs:[],artillery:[{id:'contact-gun',type:'bronze4',side:'player',x:2,y:4,facing:0,loaded:true,ammo:1}]};
+ const declaration=structuredClone({players,options}),start=createBattle(players,options),before=structuredClone(start),unit=actor(start),gun=start.artillery[0],ordinary=cautiousCombatOrder(start,unit);assert.deepEqual({players,options},declaration);assert.deepEqual(validateBattleSnapshot(JSON.parse(JSON.stringify(start))),start);
+ assert.equal(artilleryContact(start,unit,gun),true);assert.ok(artilleryCrewPlan(start,unit,gun,0).reason);assert.equal(canSee(start,unit,localMember(start,'front')),false);assert.deepEqual(unit.lastKnownEnemy,{x:12,y:4,tacticalLevel:0,turn:1});assert.equal(ordinary?.type,'move');assert.equal(localSetupCoordinator(start,true)(start,unit),null,'The coordinator has already held its actual gun-contact member.');
+ const defaultPolicy=northernReliefDefenseController(['field-physician'],{localCareBattle:start});assert.deepEqual(defaultPolicy(start,unit),ordinary,'The nonpriority constructor keeps its existing ordinary work.');
+ const route=getReachable(start,unit).find(point=>point.x===ordinary.x&&point.y===ordinary.y&&(point.tacticalLevel??0)===(ordinary.tacticalLevel??0));assert.ok(route&&route.cost>0);const moved=localCareStep(start,ordinary);assert.equal(actor(moved).ap,unit.ap-route.cost);assert.ok(actor(moved).energy<unit.energy);assert.deepEqual([actor(moved).x,actor(moved).y],[ordinary.x,ordinary.y]);
+ for(const key of ['hp','maxHp','bleeding','medkits','loaded','ammo','inventory'])assert.deepEqual(actor(moved)[key],unit[key]);assert.deepEqual(moved.artillery,start.artillery);
+ const policy=localSetupPolicy(start);for(let callback=0;callback<3;callback++){assert.equal(policy(start,unit),null);assert.equal(policy.sharedFallback(start,unit),null);}
+ assert.deepEqual(start,before,'Direct and shared holds spend no actual AP, energy, time, ammunition, stock or posture.');
+});

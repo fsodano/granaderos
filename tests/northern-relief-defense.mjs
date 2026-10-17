@@ -79,7 +79,7 @@ export function northernReliefDefenseController(physicianIds,{minimumIdleRounds=
  // the existing paid approach and shared-sight battery policy, without giving
  // a clinical role to the crew or removing any real body from its previews.
  const nonclinical=unit=>Boolean(unit&&!physicians.has(unit.id)&&unit.medical<60);
- const battery=localCareBattle?coastalBatteryController(localCareBattle,{sharedArtillerySight:true,crewEligible:nonclinical,crewOnly:true}):null;
+ const battery=localCareBattle?coastalBatteryController(localCareBattle,{sharedArtillerySight:true,crewEligible:nonclinical,crewOnly:true,prioritizeCrewApproach:prioritizeLocalBattery}):null;
  const shotSafety=battery?knownRouteBystanderShotSafety:knownRouteCivilianShotSafety;
  let encounter=null,signature=null,lastTurn=null,lastElapsed=null,idleRounds=0;
  const stalled=battle=>{
@@ -114,6 +114,7 @@ export function northernReliefDefenseController(physicianIds,{minimumIdleRounds=
   const plan=artilleryCrewPlan(battle,unit,gun,0);
   return !plan.reason&&plan.crew.every(id=>nonclinical(battle.units.find(member=>member.id===id)));
  });
+ const actualNonclinicalContact=(battle,unit)=>nonclinical(unit)&&battle.artillery.some(gun=>gun.side===unit.side&&(gun.loaded||gun.ammo>0)&&artilleryContact(battle,unit,gun));
  const controller=(battle,unit)=>{
   const action=cautiousCombatOrder(battle,unit),reserved=held(unit);let ordinary=null;
   // Only the local-care caller whose actual initial battery had no complete
@@ -122,10 +123,18 @@ export function northernReliefDefenseController(physicianIds,{minimumIdleRounds=
   if(prioritizeLocalBattery&&battery&&battle.mode==='combat'&&battle.phase==='player'&&nonclinical(unit)&&!unit.knockedDown&&!unit.entangled){
    if(action?.type==='useItem'||action?.slot==='medical')return action;
    const coordinated=battery(battle,unit),currentCrew=actualNonclinicalCrew(battle,unit);
-   if(coordinated||currentCrew){
+   if(coordinated||currentCrew||actualNonclinicalContact(battle,unit)){
     const close=battle.units.filter(other=>other.side!==unit.side&&other.hp>=15&&!other.routed&&!other.unconscious&&!other.departure&&!other.fled&&!other.surrendered&&sameSurface(unit,other)&&canSee(battle,unit,other)&&Math.hypot(unit.x-other.x,unit.y-other.y)<=2.5);
     if(close.length&&['fire','melee'].includes(action?.type)){const defense=crewKeepsReserves(battle,unit,action)?safeReliefFireOrMove(battle,unit,action,shotSafety):null;if(['fire','melee'].includes(defense?.type)&&close.some(target=>target.id===defense.targetId))return defense;}
-    if(coordinated)return crewKeepsReserves(battle,unit,coordinated)?safeReliefFireOrMove(battle,unit,coordinated,shotSafety):null;
+    if(coordinated){
+     if(!crewKeepsReserves(battle,unit,coordinated))return null;
+     const safe=safeReliefFireOrMove(battle,unit,coordinated,shotSafety);
+     // The coordinator already holds a real gun-contact post. Its later
+     // personal-shot safety check cannot turn that hold into a rifle walk,
+     // even while the other actual assigned member is still approaching.
+     const convertedMove=coordinated.type==='fire'&&safe?.type==='move';
+     return convertedMove&&actualNonclinicalContact(battle,unit)?null:safe;
+    }
     // Do not spend the assembled gun's current AP on an optional personal
     // rifle reload or posture when the actual finite gun work must wait.
     return null;
@@ -156,6 +165,7 @@ export function northernReliefDefenseController(physicianIds,{minimumIdleRounds=
   if(!stalled(battle))return null;
   // A current complete nonclinical crew keeps its finite piece. Personal
   // rifle ammunition is not a requirement for Native artillery service.
+  if(prioritizeLocalBattery&&battery&&actualNonclinicalContact(battle,unit))return null;
   if(battery&&actualNonclinicalCrew(battle,unit))return null;
   // Wounded support keeps ordinary shots, finite aid and maintenance; it
   // does not advance toward a contact it cannot personally see.

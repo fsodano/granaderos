@@ -46,7 +46,7 @@ function coastalPhysicianPostureOrder(b,u){
 
 // Two coastal guns need separate crews and space for their translated bodies.
 // Infantry scouts the flanks so contact occurs before an exposed crew arrives.
-export function coastalBatteryController(initial,{sharedArtillerySight=false,crewEligible=()=>true,crewOnly=false}={}){
+export function coastalBatteryController(initial,{sharedArtillerySight=false,crewEligible=()=>true,crewOnly=false,prioritizeCrewApproach=false}={}){
  const approach={x:Math.floor(initial.width*.65),y:Math.floor(initial.height*.5)};
  const distanceToApproach=gun=>Math.hypot(gun.x-approach.x,gun.y-approach.y);
  // A light piece may arrive ahead of a heavy one. Move the physically leading
@@ -80,7 +80,10 @@ export function coastalBatteryController(initial,{sharedArtillerySight=false,cre
   if(!crew)return coastalPhysicianPostureOrder(b,u);
   const gun=b.artillery.find(g=>g.id===crew.artilleryId);
   const action=mountainBatteryOrder(b,u,{leaderId:crew.ids[0],helperId:crew.ids[1]??'none',crewIds:crew.ids,artilleryId:crew.artilleryId,screenDistance:4,clearCrewLane:true,routeAroundObstacles:true,flankScreen:true,keepCrewTogether:true,sharedArtillerySight});
-  if(assigned.has(u.id)&&b.mode==='combat'&&b.phase==='player'&&!artilleryContact(b,u,gun)&&!u.knockedDown&&!u.entangled&&(!action||action.type==='move'||action.type==='stance'&&action.stance==='prone'&&!usefulRouteFiringPosture(b,u,action))){
+  // The local-care caller keeps adjacent aid and close defense first. This
+  // opt-in puts a real paid approach before optional personal rifle work.
+  const optionalRifleWork=prioritizeCrewApproach&&['fire','reload','reprime','look','weapon','stance'].includes(action?.type)&&action.slot!=='medical';
+  if(assigned.has(u.id)&&b.mode==='combat'&&b.phase==='player'&&!artilleryContact(b,u,gun)&&!u.knockedDown&&!u.entangled&&(optionalRifleWork||!action||action.type==='move'||action.type==='stance'&&action.stance==='prone'&&!usefulRouteFiringPosture(b,u,action))){
    if(u.stance==='prone')return u.ap>=stanceCost(u,'crouched')?{type:'stance',unitId:u.id,stance:'crouched'}:null;
    const view={...b,units:b.units.filter(v=>v.side===u.side||teamCanSee(b,u.side,v))};
    const route=getReachable({...view,mode:'exploration'},u).filter(p=>p.cost>0&&(p.tacticalLevel??0)===0&&artilleryContact(view,{...u,...p},gun)).sort((a,c)=>a.cost-c.cost)[0];

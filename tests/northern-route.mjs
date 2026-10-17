@@ -674,8 +674,15 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
  const defendDepot=()=>{
   if(!campaign.pendingEncounter)return;
   const encounter=structuredClone(campaign.pendingEncounter);assert.equal(encounter.sector,'cordoba');
+  const resting=campaign.recruited.filter(id=>{const r=campaign.operativeState[id];return r.alive&&!r.captured&&r.assignment==='rest'&&!operativeInTransit(campaign,id)&&operativeLocation(campaign,id)===encounter.sector;});
   order({type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});
   const defense=fightNorthernSector(campaign,encounter.sector,{controller:northernClinicDefenseOrder,report});campaign=defense.campaign;earlyDefenses.push({groupId:encounter.groupId,...defense.summary});
+  // Tactical admission makes the local reserve active. Stable survivors
+  // resume their actual prior rest while existing care and travel spend time.
+  // No extra wait, restored counter, body, post or equipment is supplied.
+  for(const operativeId of resting){const r=campaign.operativeState[operativeId];
+   if(campaign.recruited.includes(operativeId)&&r.alive&&!r.captured&&r.hp>=15&&!r.bleeding&&!r.unconscious&&!r.routed&&!operativeInTransit(campaign,operativeId)&&operativeLocation(campaign,operativeId)===encounter.sector)order({type:'assignCare',operativeId,assignment:'rest'});
+  }
  };
  // The current strategic clock can bring the Córdoba raid forward. Resolve
  // that real defense before collecting finite equipment or assembling the rescue.

@@ -223,3 +223,100 @@ test('a blocked reserve firing posture cannot bypass its actual rear movement du
  if(action){assert.equal(action.type,'move');assert.ok(action.x<=Math.max(0,battle.units.find(actor=>actor.id==='friend').x-4));const after=actBattle(battle,action);assert.equal(after.lastError,null);for(const key of ['hp','loaded','ammo','medkits'])assert.equal(after.units.find(actor=>actor.id===unit.id)[key],unit[key]);}
  assert.deepEqual(battle,before);
 });
+
+
+// Independent declared interrupt: a normal melee advance earns the callback.
+// Low hard cover blocks the torso; a teammate observes the exposed head. No
+// captured state or post-factory body, AP, phase, equipment or map edit is used.
+import {endTurn,presentedActBattle,presentedEndTurn,interruptAvailable,shotChance,artilleryContact} from '../game/tactical.js';
+import {validateBattleSnapshot} from '../game/validate-battle.js';
+import {publicRouteView,usefulRouteRifleShot} from './route-infantry-progress.mjs';
+
+const interruptMember=(battle,id)=>battle.units.find(unit=>unit.id===id);
+function sharedInterruptField({eligible=true,visible=true,loaded=1,clinical=false,reserve=false,gun=false,aid=false}={}){
+ const common={hp:100,maxHp:100,bleeding:0,bandaged:0,energy:100,fatigue:0,shock:0,morale:90,
+  weapon:1800,blade:0,loaded:1,ammo:5,condition:100,jammed:false,medical:0,medkits:0,
+  activeSlot:'primary',stance:'standing',movementMode:'walk',mounted:false,horse:false,
+  inventory:{},rations:0,torches:0,boleadoras:0,patrol:false,overwatch:false};
+ const players=[
+  {...common,id:'reactor',name:'Fusilero interrumpido',x:3,y:3,facing:6,marksmanship:100,loaded,
+   agility:eligible?100:1,wisdom:eligible?100:1,experienceLevel:eligible?10:1,
+   medical:clinical?80:aid?30:0,medkits:clinical||aid?2:0,activeSlot:clinical||aid?'medical':'primary'},
+  {...common,id:'observer',name:'Observador',x:3,y:8,facing:visible?2:6,marksmanship:80,
+   agility:eligible?1:100,wisdom:eligible?1:100,experienceLevel:eligible?1:10},
+  ...(aid?[{...common,id:'patient',name:'Paciente adyacente',x:3,y:4,hp:10,bleeding:3,bandaged:0,weapon:0,loaded:0,ammo:0,agility:1,wisdom:1,experienceLevel:1}]:[]),
+ ];
+ const tiles=flat(16,10).map(tile=>({...tile,blocked:false,cover:0}));
+ for(const y of [2,3,4])Object.assign(tiles[y*16+6],{type:'stone',material:'stone',blocked:true,blocksSight:false,obstacleHeight:1.3,cover:40});
+ const options={id:'declared-port-shared-interrupt-rifle',width:16,height:10,tiles,hour:12,seed:45,firstSide:'player',exploration:false,
+  enemies:[{...common,id:'advance',name:'Avance realista',x:8,y:3,facing:6,weapon:1809,loaded:0,ammo:0,
+   agility:75,wisdom:50,experienceLevel:4,movementMode:'run'}],
+  artillery:gun?[{id:'held-gun',type:'bronze4',side:'player',x:3,y:2,facing:0,loaded:true,ammo:1}]:[],npcs:[],props:[],groundItems:[],buildings:[]};
+ const declared=structuredClone({players,options}),battle=createBattle(players,options);assert.deepEqual({players,options},declared);
+ // Stone is cell-wide cover; authored wall cells would migrate to thin edges.
+ assert.deepEqual(battle.tiles.filter(tile=>tile.blocked),tiles.filter(tile=>tile.blocked));assert.deepEqual(battle.wallEdges,[]);
+ return {battle,options:{reserveIds:reserve?['reactor']:[],fieldPhysicianIds:clinical?['reactor']:[],coordinateInfantry:true,coordinateRifleCover:true}};
+}
+function sharedInterruptReplay(start,orders){
+ let direct=structuredClone(start),shown=structuredClone(start),stored=validateBattleSnapshot(JSON.parse(JSON.stringify(start)));
+ for(const action of orders){
+  direct=action.type==='endTurn'?endTurn(direct):actBattle(direct,action);assert.equal(direct.lastError,null,JSON.stringify(action));
+  shown=(action.type==='endTurn'?presentedEndTurn(shown):presentedActBattle(shown,JSON.parse(JSON.stringify(action)))).state;assert.deepEqual(shown,direct);
+  stored=action.type==='endTurn'?endTurn(stored):actBattle(stored,JSON.parse(JSON.stringify(action)));assert.equal(stored.lastError,null);stored=validateBattleSnapshot(JSON.parse(JSON.stringify(stored)));assert.deepEqual(stored,direct);
+ }
+ return direct;
+}
+
+test('an earned infantry interrupt pays for a safe currently observed head shot before ordinary noise investigation',()=>{
+ const {battle:start,options}=sharedInterruptField(),before=structuredClone(start),end={type:'endTurn'},orders=[];let ready=start;
+ const {ap:initialAP,facing:initialFacing,...initialBody}=interruptMember(start,'reactor');assert.equal(initialAP,100);assert.equal(initialFacing,6);assert.equal(interruptMember(start,'reactor').lastKnownEnemy,undefined);
+ // Every paid turn faces away from the eastern enemy; the full prefix must
+ // leave only a real shot budget, without creating personal contact memory.
+ for(let pass=0;pass<16&&interruptMember(ready,'reactor').ap>20;pass++)for(const [x,y,facing,expected] of [[0,0,7,2],[0,6,5,4],[0,3,6,2]]){
+  const prior=interruptMember(ready,'reactor'),action={type:'look',unitId:prior.id,x,y},pa=turnAPCost(prior,directionTo(prior,action));assert.equal(directionTo(prior,action),facing);assert.equal(pa,expected);assert.ok(prior.ap-pa>=20);
+  orders.push(action);ready=sharedInterruptReplay(ready,[action]);const turned=interruptMember(ready,prior.id);assert.equal(turned.ap,prior.ap-pa);assert.equal(turned.facing,facing);assert.equal(turned.lastKnownEnemy,undefined);assert.equal(ready.phase,'player');
+ }
+ const {ap:preparedAP,facing:preparedFacing,...preparedBody}=interruptMember(ready,'reactor');assert.equal(preparedAP,20);assert.equal(initialAP-preparedAP,80);assert.equal(preparedFacing,initialFacing);assert.equal(orders.length,30);assert.ok(orders.length<=16*3);assert.deepEqual(preparedBody,initialBody);
+ for(const member of start.units.filter(member=>member.id!=='reactor'))assert.deepEqual(interruptMember(ready,member.id),member);
+ assert.deepEqual(ready.tiles,start.tiles);assert.deepEqual(ready.wallEdges,start.wallEdges);assert.deepEqual(ready.artillery,start.artillery);assert.equal(ready.seed,start.seed);assert.equal(ready.elapsedSeconds,start.elapsedSeconds+6);assert.equal(ready.turn,start.turn);assert.deepEqual(sharedInterruptReplay(start,orders),ready);assert.deepEqual(start,before);
+ orders.push(end);const paused=sharedInterruptReplay(start,orders);
+ const actor=interruptMember(paused,'reactor'),target=interruptMember(paused,'advance'),observer=interruptMember(paused,'observer');
+ assert.equal(paused.phase,'interrupt');assert.equal(paused.turn,start.turn);assert.deepEqual(paused.interrupt.unitIds,['reactor']);assert.equal(interruptAvailable(paused,actor),true);
+ assert.equal(actor.ap,preparedAP);assert.equal(actor.lastKnownEnemy,undefined);assert.equal(actor.hp,100);assert.equal(observer.hp,100);assert.ok(!sameCell(target,interruptMember(start,target.id)));assert.ok(target.ap<interruptMember(start,target.id).ap);assert.equal(paused.elapsedSeconds,ready.elapsedSeconds);
+ const blockers=paused.tiles.filter(tile=>tile.blocked);assert.equal(blockers.length,3);assert.deepEqual(blockers,start.tiles.filter(tile=>tile.blocked));for(const blocker of blockers)assert.equal(teamCanSee(paused,actor.side,blocker),true,'The current cell-wide stone blocker must be public before its shot forecast.');
+ assert.equal(canSee(paused,actor,target),false);assert.equal(teamCanSee(paused,actor.side,target),true);assert.ok(actor.lastHeardNoise);assert.equal(shotChance(paused,actor,target,4,'torso'),0,JSON.stringify({scope:'Actual returned endTurn before ordinary or opt-in policy consultation; no reconstructed scene.',orders,status:paused.status,mode:paused.mode,phase:paused.phase,turn:paused.turn,elapsedSeconds:paused.elapsedSeconds,roundTimeCharged:paused.roundTimeCharged,interrupt:paused.interrupt,enemyTurn:paused.enemyTurn,reactionStack:paused.reactionStack,actor,target,observer,tiles:paused.tiles,wallEdges:paused.wallEdges,upperSurfaces:paused.upperSurfaces,props:paused.props,artillery:paused.artillery,smoke:paused.smoke,log:paused.log.slice(-12)}));
+ const normalCosts=actionCosts(paused,actor,target);assert.ok(normalCosts.fire>0&&normalCosts.fire<=actor.ap);assert.ok(actor.ap<normalCosts.fire+normalCosts.aim*2+6,'The actual paid prefix must exclude the ordinary optional firing posture.');
+ const ordinary=coastalBatteryController(start,{sharedArtillerySight:true})(paused,actor);assert.ok(['move','look'].includes(ordinary?.type),JSON.stringify(ordinary));
+ const disabled=recoveryPortSearchController(start,{...options,coordinateRifleCover:false});assert.deepEqual(disabled(paused,actor),ordinary);
+ const controller=recoveryPortSearchController(start,options),action=controller(paused,actor),view=publicRouteView(paused,actor);assert.equal(action?.type,'fire');assert.equal(action.targetId,target.id);assert.equal(action.hitLocation,'head');assert.deepEqual(action,usefulRouteRifleShot(view,actor));
+ const option=firearmShotOptions(paused,actor,target,action.aim).find(option=>option.aim===action.aim&&option.hitLocation===action.hitLocation),costs=actionCosts(paused,actor,target),paid=costs.fire+action.aim*costs.aim;
+ assert.ok(option.chance>=25&&option.damageFactor>0&&knownRouteShotSafety(paused,actor,target)(option));assert.ok(costs.turn>0&&paid>0&&paid<=actor.ap);
+ const result=sharedInterruptReplay(start,[...orders,action]),fired=interruptMember(result,actor.id);assert.equal(fired.ap,actor.ap-paid);assert.equal(fired.loaded,actor.loaded-1);assert.equal(fired.ammo,actor.ammo);assert.equal(fired.condition,actor.condition-1);
+ assert.equal(result.elapsedSeconds,paused.elapsedSeconds);assert.equal(result.turn,paused.turn);assert.notEqual(result.seed,paused.seed);assert.deepEqual(result.tiles,paused.tiles);assert.deepEqual(result.artillery,paused.artillery);
+ for(const member of paused.units){assert.deepEqual(spacePoint(interruptMember(result,member.id)),spacePoint(member));assert.equal(interruptMember(result,member.id).medkits,member.medkits);assert.deepEqual(interruptMember(result,member.id).inventory,member.inventory);}
+ assert.deepEqual(interruptMember(result,'observer'),observer);const repeated=sharedInterruptField();assert.deepEqual(repeated.battle,start);assert.deepEqual(sharedInterruptReplay(repeated.battle,[...orders,action]),result);assert.deepEqual(start,before);
+});
+
+test('interrupt shot priority preserves Native eligibility finite care held roles and unpayable or unseen ordinary work',()=>{
+ for(const profile of [{eligible:false},{visible:false},{loaded:0},{clinical:true},{reserve:true},{gun:true},{aid:true},{spent:true}]){
+  const {battle:start,options}=sharedInterruptField(profile),before=structuredClone(start),orders=[];let ready=start;
+  if(profile.spent){
+   // Earn the low remainder with real turns, ending at the declared west facing.
+   for(let pass=0;pass<16&&interruptMember(ready,'reactor').ap>=11;pass++)for(const point of [{x:3,y:0},{x:0,y:3}]){
+    const action={type:'look',unitId:'reactor',...point},prior=interruptMember(ready,'reactor'),pa=turnAPCost(prior,directionTo(prior,point));assert.ok(pa>0&&prior.ap>=pa);orders.push(action);ready=sharedInterruptReplay(start,orders);assert.equal(interruptMember(ready,'reactor').ap,prior.ap-pa);
+   }
+  }
+  orders.push({type:'endTurn'});const paused=sharedInterruptReplay(start,orders),actor=interruptMember(paused,'reactor'),legacy=recoveryPortSearchController(start,{...options,coordinateRifleCover:false}),current=recoveryPortSearchController(start,options);
+  assert.equal(paused.phase,'interrupt');assert.equal(actor.ap,interruptMember(ready,'reactor').ap);assert.deepEqual(current(paused,actor),legacy(paused,actor),JSON.stringify(profile));
+  if(profile.eligible===false)assert.equal(interruptAvailable(paused,actor),false);else assert.equal(interruptAvailable(paused,actor),true);
+  if(profile.visible===false)assert.equal(teamCanSee(paused,actor.side,interruptMember(paused,'advance')),false);
+  if(profile.loaded===0)assert.equal(actor.loaded,0);
+  if(profile.gun)assert.equal(artilleryContact(paused,actor,paused.artillery[0]),true);
+  if(profile.spent){assert.ok(actor.ap>=3);assert.ok(actor.ap<actionCosts(paused,actor,interruptMember(paused,'advance')).fire);}
+  if(profile.aid){
+   const patient=interruptMember(paused,'patient'),action=current(paused,actor),quote=medicalUsePreview(paused,actor,patient);assert.equal(quote.allowed,true,quote.reason);assert.deepEqual(action,{type:'useItem',unitId:actor.id,targetId:patient.id});
+   const result=sharedInterruptReplay(start,[...orders,action]),treated=interruptMember(result,actor.id);assert.equal(treated.ap,actor.ap-quote.cost);assert.equal(treated.medkits,actor.medkits-quote.treatment.dressingsUsed);assert.equal(interruptMember(result,patient.id).bleeding,quote.treatment.bleedingAfter);
+  }
+  assert.deepEqual(start,before);
+ }
+});
