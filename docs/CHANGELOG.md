@@ -4,36 +4,23 @@
 > [shipping campaign plan](plans/core-campaign-v0.1.md) for current scope. Earlier development
 > numbers are internal checkpoints; their features and results are dated history.
 
-## 0.1.14 — Proposed (unreleased)
+## 0.1.14 — 17 October 2026
 
-- Clear a refused autonomous enemy action before a valid player interrupt.
-  Invalid player orders retain their normal atomic refusal.
-- Keep inventory details tied to the inspected pocket after an item moves to
-  the hand. Make visible 3D doors reachable by pointer and keep the desktop
-  interruption notice clear of the tactical toolbar.
-- Integrate nine reviewed route-driver paths at `ef35ee92`, after the earlier
-  fourteen-path and four-path follow-ups. Ordinary orders retain actual paid
-  service, casualties, finite stock, medical care and preparation limits.
-- Keep the latest full result RED: **1,108 of 1,115 files pass** on `db25cc8c`,
-  with **8,380 passes, nine failures and two dependent skips out of 8,391
-  cases**. Receipt `ccefe0f9...` retains all seven failed route files. The
-  later assembled source has not passed another full gate.
-- Record separate qualified component gates: healthy northern return **20/20**
-  (`4c8bb320...`), stationary local care and civilian safety **36/36**
-  (`f72bb5bf...`), and payable medical wall detours **20/20** (`73cde22a...`).
-  Earlier reserve-rest **5/5** (`968c38ce...`) and pre-contact battery **23/23**
-  (`ae68c961...`) results remain recorded. Their overlapping scopes are not
-  one aggregate result; each gate passes syntax, strict comparisons, HOME,
-  diff and reap checks.
-- Retain the source-reviewed completed-convoy service lifecycle. Its actual
-  full-route producer and later affordability remain unproved. Keep the two
-  reviewed stronger original Cuyo and historical-physician recovery oracles.
-- Merge published documentation checkpoint `0.1.13` from main `44d74757`
-  through normal merge `fcca1ecb`. Keep private export
-  `0.1.13 / f1f045710544` as recorded desktop evidence. The final campaign
-  candidate, next private build and unfiltered full result remain pending.
-  Manual cannon use, an earned ending and 48 campaign hours of saved
-  continuation remain open. This entry does not establish core acceptance.
+- Deliver the core campaign integration for manual testing at the user's
+  request. Keep paid service, finite supplies, medical care, actual losses and
+  the original route requirements.
+- Clear a refused autonomous enemy order before a valid player interruption.
+  Keep invalid player orders atomic.
+- Label ground money as Pesos. Preserve the inspected inventory slot, make
+  visible 3D doors reachable by pointer and keep the desktop interruption
+  notice clear of tactical controls.
+- Exclude generated Python cache files from the build identity. Preserve
+  identity changes for real Python and game source edits.
+- Pass documentation and baseline audits, the production build, TypeScript
+  and build-identity regressions. Stop the subsequent full local run at the
+  user's request; known Córdoba defence, recovery and funding failures remain.
+  This release does not claim complete campaign acceptance. See the
+  [manual testing handoff](plans/core-campaign-v0.1.md).
 
 ## 0.1.13 — 17 October 2026
 
