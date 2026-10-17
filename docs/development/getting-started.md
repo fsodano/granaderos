@@ -12,7 +12,7 @@ establish complete game acceptance.
 ## Requirements
 
 - Git, to clone the repository.
-- Node.js **22.13.0 or newer**, as required by [`web/package.json`](../../web/package.json).
+- An up-to-date **Node.js 22 LTS**, **22.18.0 or newer**, for development and tests. The [`web/package.json`](../../web/package.json) range `>=22.13.0` is the web package's engine lower bound.
 - npm and a current browser.
 - Python 3.13 and the pinned Pillow/NumPy dependencies for core and full tests, matching CI.
 
@@ -43,8 +43,10 @@ The current economy uses pesos for hiring and campaign preparations. Equipment
 commerce is disabled: equipment comes with its owner or is found in a sector.
 Earlier supplier, price, import and artillery-trading records describe dated
 features; they do not enable purchases in the current development code or the 0.1 checkpoint. The game has no strategic
-material stocks, resource production chains or horse care. Physical equipment
-transport remains available. Saves from the earlier economy are rejected;
+material stocks or resource production chains. Present mounts retain their
+condition, stamina and assigned rider; rest restores stamina. Buying, hiring,
+feeding and breeding horses are disabled. Physical equipment transport remains
+available. Saves from the earlier economy are rejected;
 start a new campaign.
 
 The title screen opens the [story editor](story-editor.md) at `/story` and the
