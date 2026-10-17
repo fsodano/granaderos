@@ -59,7 +59,7 @@ The one reviewed exception is Cuyo: current SHA `7c76c0e4...` replaces old
 battles in order and adds victory, positive actions/turns and casualty-array
 checks. No battle, permanent loss, resource or endpoint is removed.
 
-The latest focused component run passes **47/47 actual cases** across five
+The reconciled component run passes **47/47 actual cases** across five
 whole files, with seven syntax checks and all preservation audits passing.
 Receipt `8f508014...` keeps the original expected-count mismatch: the plan
 expected 45. Source/log reconciliation `04412bc5...` confirms all 47 names
