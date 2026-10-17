@@ -1,6 +1,6 @@
 # Shipping campaign: current release status
 
-Updated: 16 October 2026.
+Updated: 17 October 2026.
 
 Public `main` is `6a5218de`, tagged `0.1.12`, with its verified Pages export
 published. Pushes to `main` build and publish automatically. Manual dispatch
@@ -9,7 +9,7 @@ The proposed next release is `0.1.13`; it is not published or accepted yet.
 
 The first core campaign is not accepted end to end. Existing
 [PR #426](https://github.com/fsodano/granaderos/pull/426) will receive the fixes
-on its current branch and use a normal merge. Candidate `04d98013` differs from
+on its current branch and use a normal merge. Candidate `b645292e` differs from
 `main` at `6a5218de` in **228 tracked paths**: 146 added and 82 modified. This is
 the complete candidate diff, including the original PR and later corrections;
 the initial 124-path transfer is not the final PR scope. Recount the final
@@ -78,7 +78,20 @@ whole file, with two syntax checks and all preservation audits passing.
 Receipt `cbc5376c...`, log `b21e8754...` and preservation `b32c10cd...` retain
 source `8ab9f5ed`. Its tested helper and regression are committed in integration.
 This component result does not replace complete-route proof.
-No new original campaign file is running.
+
+Two later component gates are transferred into the candidate. The actual
+casualty-service and finite-battery controls pass **26/26** across two whole
+files on source `edc93087` (receipt `7173c229...`, log `31b00671...`). The
+infantry-interrupt and field-physician controls pass **30/30** across two whole
+files on source `a7260093` (receipt `e033282d...`, log `51ea357d...`). Both gates
+pass their syntax and preservation audits with no skipped or cancelled cases.
+The interrupt case pays for its complete setup, observes real cover, fires a
+safe head shot and verifies finite ammunition, AP and saved replay.
+
+The transferred route changes also restore previously ordered rest after a
+real depot defence and record completed recovery evidence. Their effect on
+the original routes still requires the next full run. Run the complete suite
+on the final integrated source before acceptance.
 
 ## Accepted local corrections
 

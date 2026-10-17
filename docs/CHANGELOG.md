@@ -9,41 +9,24 @@
 - Clear a refused autonomous enemy action before a valid player interrupt.
   Invalid player orders retain their normal atomic refusal.
 - Keep inventory details tied to the inspected pocket after an item moves to
-  the hand. Narrow 3D wall pointer regions so normal mouse clicks reach the
-  visible door; preserve SVG, keyboard and gameplay behavior.
-- Expand automated campaign route drivers and their fresh regressions for
-  paid recovery, roof access, cannon crew, finite aid and the real Ensenada
-  battle. Admitted nonclinical crews use the existing coordinator. Field
-  physicians use actual interrupts for adjacent aid; explicit convoy primary
-  preparation preserves default medical hands. These drivers use existing
-  game rules. Later staging and finite-supply corrections pass 34/34 whole-file
-  component cases (receipt `065f7e5e...`); their four-path transfer is committed.
-  Physician-posture route-driver controls also pass 15/15 across their whole
-  file (receipt `cbc5376c...`); the tested helper and regression are committed
-  in integration. Complete-route and full-suite acceptance remain open.
-- Preserve battle/preparation limits, finite supplies, permanent losses,
-  paid service, duties and homes. Keep the reviewed Cuyo four-battle report
-  and every other original campaign assertion.
-- Campaign acceptance remains open. The last completed unfiltered gate has
-  1,109 passing and six failing files out of 1,115; its 8,351 cases contain
-  8,341 passes, eight failures and two dependent skips. Later focused evidence
-  has 47 actual cases passing; receipt `8f508014...` and count reconciliation
-  `04412bc5...` preserve its original expected-count mismatch. Component
-  passes do not replace complete-route acceptance.
-- The latest completed opening file is 4 pass / 2 fail / 2 dependent skip
-  (receipt `92574b0b...`). The latest ending file is 0/2: the loose route lacks
-  finite field dressings after convoy recovery; the installed route retreats
-  at Ensenada (receipt `eed89130...`, log `b23337ef...`). No original file is
-  running. Earned ending and 48 campaign-hour continuation remain open.
-- Desktop mouse review of private build `6344e3a8a632` on source `3b415db5`
-  verifies both door leaves and the wall target (record `842e28b0...`). Short
-  desktop frame samples cover Retiro and six-actor San Lorenzo playback.
-  Normal controls continue two interrupts and return player control; observed
-  frame spikes reach 208.4 ms. These short samples do not establish cold-entry,
-  sustained or large-battle performance. Cannon,
-  earned ending, continuation and bounded final manual acceptance remain open.
-  Candidate `6c8f82bc` differs from main `6a5218de` in 228 tracked paths;
-  recount final scope before publication. Version 0.1.13 is not published.
+  the hand. Narrow 3D wall pointer regions so mouse clicks reach the visible
+  door. Preserve keyboard, SVG and gameplay behavior.
+- Expand campaign route checks for paid service, real casualties, rest,
+  finite cannon crew and supplies, medical aid and infantry interrupts.
+  Route drivers use existing game rules. Preserve battle and preparation
+  limits, permanent losses and the reviewed four-battle Cuyo report.
+- Rewrite the README around the game, its features, desktop controls,
+  campaign tools and local setup.
+- Local component gates pass 47, 34, 15, 26 and 30 cases within their separate
+  recorded scopes. The last completed full gate on source `a50adf50` passes
+  1,109 of 1,115 files: 8,363 passing cases, eight failures and two dependent
+  skips out of 8,373. Receipt `dd15e1a3...` and log `ee6f40c7...` retain that
+  result. Complete-route acceptance still requires a new full run.
+- Desktop mouse review of build `6344e3a8a632` verifies both door leaves and
+  the wall target. Short frame samples cover Retiro and six-actor San Lorenzo
+  playback; observed frame spikes reach 208.4 ms. These samples do not establish
+  sustained or large-battle performance. Manual cannon use, an earned ending
+  and 48 campaign hours of saved continuation remain open.
 
 ## 0.1.12 — 16 October 2026
 
