@@ -9,7 +9,7 @@ The proposed next release is `0.1.13`; it is not published or accepted yet.
 
 The first core campaign is not accepted end to end. Existing
 [PR #426](https://github.com/fsodano/granaderos/pull/426) will receive the fixes
-on its current branch and use a normal merge. Candidate `6c8f82bc` differs from
+on its current branch and use a normal merge. Candidate `04d98013` differs from
 `main` at `6a5218de` in **228 tracked paths**: 146 added and 82 modified. This is
 the complete candidate diff, including the original PR and later corrections;
 the initial 124-path transfer is not the final PR scope. Recount the final
@@ -38,20 +38,21 @@ preparation limits, permanent losses and complete-route assertions.
 ## Current blockers
 
 The latest completed unfiltered gate ran all **1,115 files** on source
-`80c3fe8b`: **1,109 files passed and six failed**. Its 8,351 test cases contain
-8,341 passes, eight failures and two dependent skips, with no cancellations or
-TODO cases. Receipt `d71846d1...` retains the RED result; preservation audits
-pass and the child was reaped. Later component passes do not replace it.
+`a50adf50`: **1,109 files passed and six failed**. Its 8,373 test cases contain
+8,363 passes, eight failures and two dependent skips, with no cancellations or
+TODO cases. Receipt `dd15e1a3...` and log `ee6f40c7...` retain the RED result.
+All five preservation audits pass and the processes were reaped. Later
+component passes and README changes do not replace complete-route proof.
 A lawful combat loss or route-helper failure alone does not prove an engine defect.
 
 | Route file | Latest completed evidence and remaining work |
 | --- | --- |
-| Opening | The latest whole-file run has four passes, two failures and two dependent skips; Córdoba defence still loses. Receipt `92574b0b...` retains that completed RED result. |
-| Recovery | The completed unfiltered run fails this route. Later finite-care and readiness components pass; complete recovery still requires current whole-route proof. |
+| Opening | The completed full run has four passes, two failures and two dependent skips in this file; the Córdoba defence still retreats. |
+| Recovery | The care helper returns, then the paid-physician assertion encounters a missing contract. The actual physician and removal cause still need the completed-care capture; do not infer them from an earlier checkpoint. |
 | Northern route | The completed unfiltered run fails at local Córdoba defence. Later bounded battery and care controls pass; they do not establish route victory. |
 | Cuyo | The completed unfiltered run also fails at local Córdoba defence. Keep the actual four-battle report, finite supplies and all later route assertions. |
 | Historical loss | The completed unfiltered run fails before its required ending. Keep the engineer's actual death and every later assertion. |
-| Ending | The latest whole file passes zero of two cases. The loose route stops at finite field dressings after convoy recovery; the installed route retreats at Ensenada. Receipt `eed89130...` and log `b23337ef...` retain both failures. No earned ending or 48-hour saved continuation is accepted. |
+| Ending | The completed full run passes zero of two cases. The loose route rejects a real convoy-recapture casualty through its stale service ledger; the installed route loses physician 135 at Ensenada. No earned ending or 48-hour saved continuation is accepted. |
 
 Opening, recovery, historical-loss and ending original files remain exact.
 The one reviewed exception is Cuyo: current SHA `7c76c0e4...` replaces old
@@ -104,7 +105,7 @@ Review is **desktop only**. Private export `6344e3a8a632`, from source
 opening and closing of both door leaves and the wall's own pointer target,
 with no console errors. Production-input proof `5a62921d...` confirms the
 build source at `db3682f2`. The later route-driver transfers and README edit preserve those production
-inputs on candidate `6c8f82bc`.
+inputs on candidate `04d98013`.
 Earlier desktop evidence covers keyboard traversal,
 group travel, save/export/import, introduction controls and normal worker
 end-turn playback. These are bounded checks on their named exports, not a
