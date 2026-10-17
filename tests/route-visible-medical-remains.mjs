@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {operativeLocation} from '../game/squads.js';
+import {dailyTownIncome} from '../game/town-income.js';
 import {canSee,getReachable,lootSearchPreview,lootPreview,lookPreview,climbPreview,knownArtillery} from '../game/tactical.js';
 import {nearbyLootOptions} from '../game/ja2-hud.js';
 import {spacePoint,sameSurface,sameCell} from '../game/tactical-space.js';
@@ -17,6 +18,7 @@ export function visibleMedicalPatrolStep(battle,unit,target){
 export function recoverVisibleRouteDressings(start,operativeId,requested,{report=()=>{}}={}){
  assert.ok(Number.isSafeInteger(requested)&&requested>0);
  let s=saved({campaign:start}).campaign;
+ const income=dailyTownIncome(s),agreements=structuredClone(s.townIncome.activations);
  const sector=operativeLocation(s,operativeId),previous=s.activeSquadId,home=s.squads.find(q=>q.members.includes(operativeId)&&!q.journey),assignment=s.operativeState[operativeId].assignment;
  assert.ok(s.recruited.includes(operativeId)&&s.operativeState[operativeId].alive&&!s.operativeState[operativeId].captured);
  assert.ok(!s.operativeState[operativeId].asleep&&s.operativeState[operativeId].energy>10,'visible recovery needs an actual awake carrier');
@@ -63,8 +65,12 @@ export function recoverVisibleRouteDressings(start,operativeId,requested,{report
  if(s.activeSquadId!==previous)s=order(s,{type:'selectSquad',id:previous});
  assert.equal(s.operativeState[operativeId].medkits,start.operativeState[operativeId].medkits+collected);
  for(const [id,record]of Object.entries(start.operativeState))if(!record.alive)assert.equal(s.operativeState[id].alive,false);
- assert.equal(s.resources.treasury,start.resources.treasury);
+ const incomeDays=Math.floor(s.hour/24)-Math.floor(start.hour/24),incomeReceived=incomeDays*income;
+ assert.deepEqual(s.townIncome.activations,agreements,'Inspection cannot create a port agreement.');
+ assert.equal(dailyTownIncome(s),income,'Inspection cannot change the agreed daily income.');
+ assert.equal(s.townIncome.lastPaidDay,Math.floor(s.hour/24),'The real clock must consume every crossed midnight once.');
+ assert.equal(s.resources.treasury,start.resources.treasury+incomeReceived,'Only actual daily income can change cash during inspection.');
  const elapsedSeconds=s.hour*3600+(s.secondOfHour??0)-startSeconds;assert.ok(elapsedSeconds>=0);
- const evidence={event:'visibleMedicalRemains',operativeId,sector,collected,elapsedSeconds,stopReason,receipts,actions};report(evidence);
+ const evidence={event:'visibleMedicalRemains',operativeId,sector,collected,elapsedSeconds,incomeDays,incomeReceived,stopReason,receipts,actions};report(evidence);
  return {campaign:saved({campaign:s}).campaign,collected,evidence};
 }

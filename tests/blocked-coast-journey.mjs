@@ -12,7 +12,7 @@ import {enterSector} from '../game/world.js';
 import {autoBandageBattle} from '../game/auto-bandage.js';
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
-import {supplyRouteDressings} from './route-dressings.mjs';
+import {blockedCoastDressingPlan,distributeBlockedCoastDressings} from './blocked-coast-medical-reserve.mjs';
 import {collectRouteItems} from './finite-route-equipment.mjs';
 import {prepareRouteBattery} from './route-battery.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
@@ -63,16 +63,17 @@ export function resolveBlockedCoastJourney(start,{report=()=>{}}={}){
   c=recoverRoutePrimary(c,id,{preferredWeapon:candidate?JSON.parse(candidate.expected).weapon:1802,replace:true,report:emit});
  }
  c=supplyRouteAmmunition(c,base.filter(id=>id!==57),{target:10,report:emit}).campaign;
- const localDoctor=base.filter(id=>id!==57).sort((a,b)=>rosterFor(c).find(op=>op.id===b).medical-rosterFor(c).find(op=>op.id===a).medical)[0];c=supplyRouteDressings(c,localDoctor,2,{report:emit});
+ const localDoctor=base.filter(id=>id!==57).sort((a,b)=>rosterFor(c).find(op=>op.id===b).medical-rosterFor(c).find(op=>op.id===a).medical)[0],medical=blockedCoastDressingPlan(c,{localDoctorId:localDoctor,physicianId:physician.id});emit({event:'blockedCoastMedicalPlan',...medical});
  const battery=prepareRouteBattery(c,['bronze4','bronze4'],{destination:'cordoba',keepServing:paid,report:emit});c=battery.campaign;
  retain(48);const supports=[];
  // Move the actual physician's group through the conquered pass to recover
  // reachable finite linen. Partial collection keeps its exact observed count.
  const parties=paid.length<=6?[...paid]:[physician.id,...paid.filter(id=>id!==physician.id)];
  for(let offset=0;offset<parties.length;offset+=6){const ids=parties.slice(offset,offset+6);order({type:'createSquad',ids,sector:'mendoza',name:'Veteranos del bloqueo'});supports.push(c.activeSquadId);for(const operativeId of ids)order({type:'assignCare',operativeId,assignment:'active'});
-  if(ids.includes(physician.id)){order({type:'travel',sector:'los_patos',mode:'posta'});assert.equal(c.location,'los_patos');const linen=collectRouteItems(c,physician.id,{item:'medkits'},6);c=linen.campaign;emit({event:'blockedCoastFiniteLinen',operativeId:physician.id,count:linen.collected});}
+  if(ids.includes(physician.id)){order({type:'travel',sector:'los_patos',mode:'posta'});assert.equal(c.location,'los_patos');const linen=collectRouteItems(c,physician.id,{item:'medkits'},medical.requested);c=linen.campaign;emit({event:'blockedCoastFiniteLinen',operativeId:physician.id,count:linen.collected,requested:medical.requested});}
   order({type:'travel',sector:'cordoba',mode:'posta'});assert.equal(c.location,'cordoba');
  }
+ const distributed=distributeBlockedCoastDressings(c,medical,{report:emit});c=distributed.campaign;orders.push(...distributed.receipt.orders.map(row=>row.action));
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'rest'});
  for(let h=0;h<48&&(c.hour%24<6||c.hour%24>10||field.some(id=>{const r=c.operativeState[id];return r.energy<100||r.fatigue||r.asleep;}));h++)order({type:'wait',hours:1});
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'active'});
@@ -95,5 +96,5 @@ export function resolveBlockedCoastJourney(start,{report=()=>{}}={}){
  assert.deepEqual(start,before);c=saved(c);const receipt={field,paid,physician:physician.id,orders,renewals,events,summary:result.summary,losses,startSeconds:clock(start),endSeconds:clock(c),treasuryBefore:start.resources.treasury,treasuryAfter:c.resources.treasury};
  recordRouteStrategicEvidence({helper:'resolveBlockedCoastJourney',stage:'route-checkpoint',campaign:c,inputCapture,context:{summary:result.summary,losses}});
  emit({event:'blockedCoastJourneyResolved',summary:result.summary,losses,hour:c.hour,second:c.secondOfHour??0,treasury:c.resources.treasury,campaign:c});return {campaign:c,receipt};
- }catch(error){recordRouteStrategicEvidence({helper:'resolveBlockedCoastJourney',stage:'preparation-failure',campaign:c,inputCapture,error});throw error;}
+ }catch(error){if(error.campaign)c=error.campaign;recordRouteStrategicEvidence({helper:'resolveBlockedCoastJourney',stage:'preparation-failure',campaign:c,inputCapture,error,context:{events,medicalReserve:error.blockedCoastMedicalReserve??null}});throw error;}
 }

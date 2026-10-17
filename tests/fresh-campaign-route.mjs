@@ -1,9 +1,14 @@
 import {ROUTE_STARTING_TREASURY} from './funded-route-fixture.mjs';
 import {supplyRouteAmmunition,recordRouteAmmunitionDiagnostic} from './route-ammunition.mjs';
+import {recruitRouteFieldRelief} from './route-field-relief.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
+import {stageRouteRoofDefenders} from './route-roof-defenders.mjs';
 import {fightNorthernSector} from './northern-route.mjs';
-import {prepareCordobaMedicalRear,resolveCordobaMedicalRearEncounter} from './cordoba-medical-rear-guard.mjs';
+import {prepareCordobaMedicalRear,resolveCordobaMedicalRearEncounter,restageCordobaMedicalRear} from './cordoba-medical-rear-guard.mjs';
+import {refreshCordobaClinicReadiness,cordobaClinicDonationCount,collectCordobaClinicDressings} from './cordoba-clinic-combat-readiness.mjs';
+import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 import {stabilizeCordobaFirstDefense} from './cordoba-first-defense-care.mjs';
+import {returnRoutedCordobaSurvivors} from './cordoba-routed-survivor-return.mjs';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {sellSurplusEquipment} from './surplus-equipment-route.mjs';
@@ -19,7 +24,7 @@ import {encodeSave,decodeSave} from '../game/save.js';
 import {autoBandageBattle} from '../game/auto-bandage.js';
 import {actBattle,getReachable} from '../game/tactical.js';
 import {sameCell,spacePoint,tacticalLevel} from '../game/tactical-space.js';
-import {doctorRate} from '../game/medical-care.js';
+import {doctorRate,careAssignmentIssue} from '../game/medical-care.js';
 import {careRules} from '../game/campaign-care-rules.js';
 import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
 import {operativeLocation} from '../game/squads.js';
@@ -34,6 +39,8 @@ import {collectRouteItems,collectRouteMedicalSupplies,discoverRouteCache,recover
 import {meetLocalIncomeRepresentative} from './route-town-income.mjs';
 import {travelLegHours} from '../game/squad-travel.js';
 import {recoverVisibleRouteDressings} from './route-visible-medical-remains.mjs';
+import {restNorthernSurvivors,queueNorthernSurvivorReturn} from './northern-survivor-return.mjs';
+import {prepareNorthernHospitalFortification} from './northern-hospital-fortification.mjs';
 
 // Mission allies keep their real wounds in later historical scenes. Use the
 // cleared battlefield's finite supplies before strategic travel resumes.
@@ -349,10 +356,45 @@ export function prepareFreshCordobaAssault(start,doctors,{report=()=>{}}={}){
  return campaign;
 }
 
+// Admission records paid, present eligibility before rear preparation or stock
+// collection. It is not a claim that an hour of medical work has elapsed.
+export function recoveryDoctorAdmission(c,doctor,site){
+ const r=c.operativeState[doctor.id];
+ return {id:doctor.id,atSeconds:c.hour*3600+(c.secondOfHour??0),site,location:operativeLocation(c,doctor.id),recruited:c.recruited.includes(doctor.id),alive:r.alive,captured:r.captured,hp:r.hp,bleeding:r.bleeding,energy:r.energy,asleep:r.asleep,medical:doctor.medical,medkits:r.medkits,minimumMedical:careRules(c).minimumSkill,eligibilityIssue:structuredClone(careAssignmentIssue(c,doctor,'doctor')),contract:structuredClone(c.contracts[doctor.id]??null)};
+}
+
+// Historical admission survives an actual casualty's later contract expiry.
+// Living doctors still require current paid service; every fallen doctor must
+// be present in an actual victorious care battle and remain permanently dead.
+export function assertRecoveryDoctorService(c,{doctors,doctorAdmissions},careBattles){
+ assert.ok(doctors.length>0);assert.equal(new Set(doctors).size,doctors.length);
+ assert.deepEqual(doctorAdmissions.map(row=>row.id),doctors,'Every historical physician keeps its own admission, including actual casualties.');
+ const now=c.hour*3600+(c.secondOfHour??0);
+ for(const row of doctorAdmissions){
+  assert.ok(Number.isSafeInteger(row.atSeconds)&&row.atSeconds>=0&&row.atSeconds<=now);
+  assert.equal(row.recruited,true);assert.equal(row.alive,true);assert.equal(row.captured,false);assert.equal(row.location,row.site);
+  assert.ok(row.hp>=15&&row.bleeding===0&&row.energy>10&&!row.asleep&&row.medical>=row.minimumMedical);
+  assert.ok(row.eligibilityIssue===null||row.eligibilityIssue.code==='no_medkits','Only the already-handled finite dressing shortage may remain at admission.');
+  assert.ok(row.contract?.kind==='paid'&&row.contract.paid>0,'Every admitted physician needs its actual paid contract.');
+  assert.ok(row.contract.started*3600+(row.contract.startedSecond??0)<=row.atSeconds);
+  assert.ok(contractExpiresSeconds(row.contract)>row.atSeconds,'The actual paid term must cover admission.');
+  const r=c.operativeState[row.id];
+  if(r.alive){
+   assert.ok(c.recruited.includes(row.id));assert.ok(c.contracts[row.id]?.kind==='paid'&&c.contracts[row.id].paid>0,'Every surviving physician retains current paid service.');
+   assert.ok(contractExpiresSeconds(c.contracts[row.id])>now,'Every surviving physician retains an active paid term.');
+  }else{
+   assert.equal(r.hp,0);if(r.deathMinute!==undefined)assert.ok(Number.isFinite(r.deathMinute));
+   assert.ok(careBattles.some(battle=>battle.status==='victory'&&battle.units.some(unit=>unit.id===String(row.id)&&unit.side==='player'&&unit.hp<=0)),`Physician ${row.id} can die only in an actual hospital defense.`);
+  }
+ }
+}
+
 // Care continues at each survivor's actual location. The approaching royalist
 // force still has to be defeated by the paid local garrison before time resumes.
 export function recoverFreshCordobaSurvivors(start,{report=()=>{}}={}){
  let c=decodeSave(encodeSave(start)).campaign;
+ c=prepareNorthernHospitalFortification(c,{sector:'cordoba',report}).campaign;
+ const clock=c=>c.hour*3600+(c.secondOfHour??0);let careDeadlineSeconds,defenceRecovered=false,lastRearReadiness=null;
  // Stop urgent wounds before equipment collection or walking to the roof.
  // Strategic treatment uses the same local doctors, dressings and paid time.
  const urgent=()=>c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&r.location==='cordoba'&&(r.bleeding>0||r.hp<15);});
@@ -369,7 +411,7 @@ export function recoverFreshCordobaSurvivors(start,{report=()=>{}}={}){
  }
  assert.deepEqual(urgent(),[],'stabilize the actual critical patients before moving defenders');
  c=prepareFreshCordobaDefense(c,{stageOnly:true});
- const doctors=new Set(),medicalRearPrepared=new Set(),dead=Object.entries(start.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
+ const doctors=new Set(),doctorAdmissions=new Map(),medicalRearPrepared=new Set(),rearPhysicians=new Map(),dead=Object.entries(start.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
  const order=action=>{c=dispatchCampaign(c,action);assert.equal(c.lastError,null,JSON.stringify(action)+': '+c.lastError);};
  const alive=()=>c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured);
  const wounded=()=>alive().filter(id=>{const r=c.operativeState[id];return r.hp<r.maxHp||r.bleeding>0;});
@@ -379,26 +421,47 @@ export function recoverFreshCordobaSurvivors(start,{report=()=>{}}={}){
   assert.ok(squad,`the actual survivors need a squad at ${sector}`);order({type:'selectSquad',id:squad.id});
  };
  const resolveCareEncounter=(state,{restoreSquad=false}={})=>{
-  if(state.pendingEncounter?.sector==='cordoba'&&medicalRearPrepared.has('cordoba')){c=resolveCordobaMedicalRearEncounter(state,{restoreSquad,report});return c;}
+  if(state.pendingEncounter?.sector==='cordoba'&&medicalRearPrepared.has('cordoba')){c=resolveCordobaMedicalRearEncounter(state,{restoreSquad,deadlineSeconds:careDeadlineSeconds,report});defenceRecovered=true;restOnlySites.delete('cordoba');searchedRemains.delete('cordoba');selectedPatients.delete('cordoba');refreshRear();return c;}
   c=state;const previous=c.activeSquadId,encounter=c.pendingEncounter;assert.ok(encounter);
   selectSite(encounter.sector);
   report({event:'recoveryCounterattack',sector:encounter.sector,hour:c.hour,campaign:structuredClone(c)});
   order({type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});
   c=fightNorthernSector(c,encounter.sector,{report,executeBattle:(request,previous)=>cautiousFight(request,previous,{scoutCostWeight:.01,avoidCivilians:true,fallbackOrders:true})}).campaign;
-  if(encounter.sector==='cordoba')c=stabilizeCordobaFirstDefense(c,{report}).campaign;
+  // A real defence changes wounds and can leave new finite public supplies.
+  // Neither the earlier empty-stock decision nor its patient course survives it.
+  restOnlySites.delete(encounter.sector);searchedRemains.delete(encounter.sector);selectedPatients.delete(encounter.sector);
+  if(encounter.sector==='cordoba'){c=returnRoutedCordobaSurvivors(c,{deadlineSeconds:careDeadlineSeconds,report}).campaign;c=stabilizeCordobaFirstDefense(c,{deadlineSeconds:careDeadlineSeconds,report}).campaign;c=restageCordobaMedicalRear(c,{deadlineSeconds:careDeadlineSeconds,report}).campaign;defenceRecovered=true;if(medicalRearPrepared.has('cordoba'))refreshRear();}
   if(restoreSquad&&c.activeSquadId!==previous)order({type:'selectSquad',id:previous});
   return c;
  };
- const restOnlySites=new Set(),searchedRemains=new Set(),reliefStaff=new Set(),careHours=96+Math.max(0,...alive().map(id=>c.operativeState[id].maxHp-c.operativeState[id].hp))*careRules(c).restHealingHours;
+ const restOnlySites=new Set(),searchedRemains=new Set(),reliefStaff=new Set(),selectedPatients=new Map(),careHours=96+Math.max(0,...alive().map(id=>c.operativeState[id].maxHp-c.operativeState[id].hp))*careRules(c).restHealingHours;
+ const refreshRear=(treatingId=undefined,{revalidateGroundCrew=false}={})=>{
+  // No current treatment is represented by null, never by an invented doctor.
+  if(treatingId===undefined)treatingId=alive().find(id=>operativeLocation(c,id)==='cordoba'&&['doctor','militia_doctor'].includes(c.operativeState[id].assignment))??null;
+  const result=refreshCordobaClinicReadiness(c,treatingId,{deadlineSeconds:careDeadlineSeconds,report,allowPaidRelief:true,usedReliefIds:reliefStaff,revalidateGroundCrew});c=result.campaign;lastRearReadiness=result.receipt;rearPhysicians.set('cordoba',result.receipt.doctorId);return result;
+ };
+ careDeadlineSeconds=clock(c)+careHours*3600;
  for(let hours=0;hours<careHours&&(wounded().length||c.pendingEncounter);hours++){
   if(c.pendingEncounter)c=resolveCareEncounter(c);
+  c=returnRoutedCordobaSurvivors(c,{deadlineSeconds:careDeadlineSeconds,report}).campaign;
   if(!wounded().length)break;
   // Rest the idle garrison while medical work consumes its ordinary supplies.
   for(const operativeId of alive())order({type:'assignCare',operativeId,assignment:'rest'});
   for(const site of new Set(wounded().map(id=>c.operativeState[id].location))){
    selectSite(site);
    const patients=wounded().filter(id=>c.operativeState[id].location===site);
-   if(restOnlySites.has(site)&&patients.every(id=>c.operativeState[id].hp>=15&&!c.operativeState[id].bleeding))continue;
+   if(restOnlySites.has(site)&&patients.every(id=>c.operativeState[id].hp>=15&&!c.operativeState[id].bleeding)){
+    // An exhausted visit is not a permanent ban on later actual inventory.
+    // Recheck only current Native access and finite stock; never an old cache
+    // declaration or the rear physician's last reserved dressing.
+    const usable=alive().filter(id=>c.operativeState[id].location===site).some(id=>{
+     const model=sectorInventoryModel(c,site,rosterFor(c),id);if(model.reason)return false;
+     const carried=site==='cordoba'?cordobaClinicDonationCount(c,id,rearPhysicians.get(site)):c.operativeState[id].medkits;
+     return carried>0||model.entries.some(row=>row.reachable&&row.count>0&&JSON.parse(row.expected).item==='medkits');
+    });
+    if(!usable)continue;
+    restOnlySites.delete(site);report({event:'finiteMedicalCareResumed',site,hour:c.hour,second:c.secondOfHour??0});
+   }
    let medics=rosterFor(c).filter(op=>alive().includes(op.id)&&c.operativeState[op.id].location===site&&!patients.includes(op.id)&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding&&!c.operativeState[op.id].asleep&&c.operativeState[op.id].energy>10&&op.medical>=20).sort((a,b)=>b.medical-a.medical);
    if(!medics.length){
     const replacement=rosterFor(c).filter(op=>op.id>=100&&op.id<1000&&!c.recruited.includes(op.id)&&c.operativeState[op.id].alive&&!c.operativeState[op.id].captured&&op.medical>=60&&contractQuote(c,op,'week').price<=c.resources.treasury).sort((a,b)=>b.medical-a.medical)[0];
@@ -407,29 +470,59 @@ export function recoverFreshCordobaSurvivors(start,{report=()=>{}}={}){
    }
    // One physician treats one patient per hour. Other stable patients rest
    // through that paid hour instead of losing their natural recovery clock.
-   const patient=patients.slice().sort((a,b)=>Number(c.operativeState[b].bleeding>0)-Number(c.operativeState[a].bleeding>0)||c.operativeState[a].hp/c.operativeState[a].maxHp-c.operativeState[b].hp/c.operativeState[b].maxHp)[0];
-   order({type:'assignCare',operativeId:patient,assignment:'patient'});
+   const priority=patients.filter(id=>c.operativeState[id].bleeding>0||c.operativeState[id].hp<15),previousPatient=selectedPatients.get(site);
+   const patient=!priority.length&&patients.includes(previousPatient)?previousPatient:(priority.length?priority:patients).slice().sort((a,b)=>Number(c.operativeState[b].bleeding>0)-Number(c.operativeState[a].bleeding>0)||c.operativeState[a].hp/c.operativeState[a].maxHp-c.operativeState[b].hp/c.operativeState[b].maxHp)[0];
+   selectedPatients.set(site,patient);
    // Stable recovery uses the strongest available physician. Adding every
    // helper spends more dressings for much less healing from finite stock.
-   const treating=medics.slice(0,1);
+   const treating=medics.filter(op=>op.id!==rearPhysicians.get(site)).slice(0,1);
+   if(!treating.length&&patients.every(id=>c.operativeState[id].hp>=15&&!c.operativeState[id].bleeding)&&medics.some(op=>op.id===rearPhysicians.get(site)&&c.operativeState[op.id].medkits>0)){
+    // The supplied defender keeps the actual reserve. Stable patients retain
+    // their existing rest until another real physician is fit to treat them.
+    report({event:'cordobaRecoveryReserveRest',site,reserveId:rearPhysicians.get(site),from:clock(c),patients:[...patients],records:alive().map(id=>{const r=c.operativeState[id];return {id,hp:r.hp,bleeding:r.bleeding,energy:r.energy,asleep:r.asleep,assignment:r.assignment,medkits:r.medkits};})});
+    continue;
+   }
+   assert.ok(treating.length,'The clinic needs an actual physician in addition to its reserved defender.');
+   order({type:'assignCare',operativeId:patient,assignment:'patient'});
    for(const doctor of treating){
+    if(!doctors.has(doctor.id))doctorAdmissions.set(doctor.id,recoveryDoctorAdmission(c,doctor,site));
     doctors.add(doctor.id);
-    if(!c.operativeState[doctor.id].medkits){
+    let readiness=null;
+    if(site==='cordoba'){readiness=refreshRear(doctor.id);}
+    if(!c.operativeState[doctor.id].medkits||readiness&&!readiness.receipt.supplied){
      // Share real local carried dressings before sending a doctor away. The
      // patient and idle soldiers retain their own physical inventory records.
-     const donor=alive().find(id=>id!==doctor.id&&!treating.some(op=>op.id===id)&&c.operativeState[id].location===site&&c.operativeState[id].medkits>0&&!sectorInventoryModel(c,site,rosterFor(c),id).reason);
-     if(donor!==undefined)order({type:'sectorInventory',sector:site,operativeId:donor,direction:'drop',item:'medkits',count:Math.min(c.operativeState[donor].medkits,4)});
+     const donation=id=>site==='cordoba'?cordobaClinicDonationCount(c,id,rearPhysicians.get(site)):Math.min(c.operativeState[id].medkits,4);
+     const donor=alive().find(id=>id!==doctor.id&&!treating.some(op=>op.id===id)&&c.operativeState[id].location===site&&donation(id)>0&&!sectorInventoryModel(c,site,rosterFor(c),id).reason);
+     if(donor!==undefined)order({type:'sectorInventory',sector:site,operativeId:donor,direction:'drop',item:'medkits',count:donation(donor)});
      const row=sectorInventoryModel(c,site,rosterFor(c),doctor.id).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');
      if(row)order({type:'sectorInventory',sector:site,operativeId:doctor.id,direction:'take',sourceKey:row.key,expected:row.expected,count:Math.min(row.count,4)});
      else {
       // Discover the actual local cache; patients remain at their clinic.
       // Stable patients can recover naturally during the real courier wait.
       for(const operativeId of patients)if(c.operativeState[operativeId].hp>=15&&!c.operativeState[operativeId].bleeding)order({type:'assignCare',operativeId,assignment:'rest'});
-      if(site==='cordoba'&&!medicalRearPrepared.has(site)){c=prepareCordobaMedicalRear(c,doctor.id,{report}).campaign;medicalRearPrepared.add(site);}
+      if(site==='cordoba'&&!medicalRearPrepared.has(site)){
+       c=prepareCordobaMedicalRear(c,doctor.id,{report}).campaign;medicalRearPrepared.add(site);
+       // Original survivors can still be on the ground. Pay for their cover
+       // before collection can spend time or release the first real raid.
+       c=restageCordobaMedicalRear(c,{deadlineSeconds:careDeadlineSeconds,preserveGroundCrew:true,report}).campaign;
+      }
+      if(site==='cordoba'){readiness=refreshRear(doctor.id,{revalidateGroundCrew:true});}
+      if(!c.operativeState[doctor.id].medkits||readiness&&!readiness.receipt.supplied){
       report({event:'careCollectionCheckpoint',site,doctor:doctor.id,campaign:structuredClone(c)});
-      try{c=collectRouteMedicalSupplies(c,doctor.id,12,{report,resolveEncounter:state=>resolveCareEncounter(state,{restoreSquad:true})}).campaign;}
+      let exhausted=false;
+      try{
+       const options={report,resolveEncounter:state=>resolveCareEncounter(state,{restoreSquad:true})};
+       if(site==='cordoba'){const result=collectCordobaClinicDressings(c,doctor.id,12,{...options,finalizeGroundCrew:state=>{c=state;return refreshRear(doctor.id,{revalidateGroundCrew:true}).campaign;}});c=result.campaign;exhausted=!result.supplied;}
+       else c=collectRouteMedicalSupplies(c,doctor.id,12,options).campaign;
+      }
       catch(error){
-       if(error.message!=='no controlled finite medical source remains for an actual courier')throw error;
+       // This recovery-only path never continues from a collector error or an
+       // older campaign. Other sites retain their existing shortage policy.
+       if(site==='cordoba'||error.message!=='no controlled finite medical source remains for an actual courier')throw error;
+       exhausted=true;
+      }
+      if(exhausted){
        assert.ok(patients.every(id=>c.operativeState[id].hp>=15&&!c.operativeState[id].bleeding),'critical or bleeding patients still require actual medical supplies');
        // Fixed caches can be empty while native casualties still carry
        // dressings. Search the public battlefield and inspect visible bodies
@@ -438,7 +531,7 @@ export function recoverFreshCordobaSurvivors(start,{report=()=>{}}={}){
         searchedRemains.add(site);
         c=recoverVisibleRouteDressings(c,doctor.id,Math.max(1,Math.min(4,patients.reduce((sum,id)=>sum+Math.ceil((c.operativeState[id].maxHp-c.operativeState[id].hp)/doctorRate(doctor,c)),0))),{report}).campaign;
        }
-       if(!c.operativeState[doctor.id].medkits&&!reliefStaff.has(139)&&!c.recruited.includes(139)){
+       if(!c.operativeState[doctor.id].medkits&&!reliefStaff.has(139)&&!c.recruited.includes(139)&&c.operativeState[139]&&rosterFor(c).some(op=>op.id===139)){
         // Bridget is a real additional physician, booked once at the normal
         // quoted price. Her actual issued dressings can supplement the last
         // stable wound; no dismissal/recruitment supply cycle is allowed.
@@ -468,24 +561,54 @@ export function recoverFreshCordobaSurvivors(start,{report=()=>{}}={}){
         continue;
        }
       }
-      for(const operativeId of patients){const patient=c.operativeState[operativeId];if(patient.alive&&!patient.captured&&(patient.hp<patient.maxHp||patient.bleeding))order({type:'assignCare',operativeId,assignment:'patient'});}
+      }
+      // The one supplied physician treats the selected patient. Keep the
+      // other stable wounds resting so their real recovery clock can advance.
+      const selected=c.operativeState[patient];if(selected.alive&&!selected.captured&&(selected.hp<selected.maxHp||selected.bleeding))order({type:'assignCare',operativeId:patient,assignment:'patient'});
      }
     }
+    if(site==='cordoba'){readiness=refreshRear(doctor.id);assert.equal(readiness.receipt.supplied,true,'Actual rear care needs its existing finite physician reserve before another paid hour.');}
     order({type:'assignCare',operativeId:doctor.id,assignment:'doctor'});
    }
    if(c.pendingEncounter)break;
   }
   if(c.pendingEncounter)continue;
+  if(defenceRecovered||medicalRearPrepared.has('cordoba'))c=restageCordobaMedicalRear(c,{deadlineSeconds:careDeadlineSeconds,preserveGroundCrew:true,report}).campaign;
+  if(medicalRearPrepared.has('cordoba')){
+   try{
+    // Urgent defence aid may spend the old reserve. Rest-only and remote-site
+    // care still need a freshly supplied local defender before time advances.
+    // This is the final local visit before the next care hour. Other-home
+    // staging may have admitted an NPC onto a saved nearby crew coordinate.
+    // Re-enter the real crew and pay for current contact before waiting.
+    refreshRear(undefined,{revalidateGroundCrew:true});
+    const id=rearPhysicians.get('cordoba'),r=c.operativeState[id];assert.ok(id!==undefined&&id!==null&&c.recruited.includes(id)&&r.alive&&!r.captured&&operativeLocation(c,id)==='cordoba'&&r.medkits>0,'Keep the actual finite rear physician reserve before advancing another care hour.');
+   }catch(error){recordRouteStrategicEvidence({helper:'recoverFreshCordobaSurvivors',stage:'rear-reserve-failure',campaign:c,returnedCampaign:error?.campaign,context:{rearPhysicians:[...rearPhysicians],readiness:lastRearReadiness,restOnlySites:[...restOnlySites],localRecords:c.recruited.map(id=>({id,record:c.operativeState[id]})),nestedReadiness:error?.cordobaClinicReadiness??null},error});throw error;}
+  }
   for(const id of alive()){
    const contract=c.contracts[id];if(contract?.expiresAt!=null&&contract.expiresAt<=c.hour+1)order({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});
   }
-  order({type:'wait',hours:1});
+  if(clock(c)+3600>careDeadlineSeconds)recordRouteStrategicEvidence({helper:'recoverFreshCordobaSurvivors',stage:'care-deadline-failure',campaign:c,context:{careDeadlineSeconds,careHours,restOnlySites:[...restOnlySites],rearPhysicians:[...rearPhysicians],localRecords:alive().map(id=>({id,record:c.operativeState[id]}))}});
+  assert.ok(clock(c)+3600<=careDeadlineSeconds,'Paid roof staging and care share the original recovery allowance.');
+  const beforeCareHour=clock(c);
+  // A zero-time notice needs another explicit wait. Keep the prepared duties
+  // in place while acknowledging it; re-entry can create a fresh notice.
+  for(let notice=0;notice<3;notice++){
+   order({type:'wait',hours:1});
+   report({event:'cordobaRecoveryCareHour',from:beforeCareHour,to:clock(c),records:alive().map(id=>{const r=c.operativeState[id];return {id,hp:r.hp,maxHp:r.maxHp,bleeding:r.bleeding,assignment:r.assignment,recoveryHours:r.recoveryHours,medkits:r.medkits};})});
+   assert.ok(clock(c)<=beforeCareHour+3600,'One care hour cannot spend more than its requested time.');
+   if(clock(c)>beforeCareHour||c.pendingEncounter)break;
+   assert.ok(c.assignmentAttention?.notice||c.contractAttention?.notice||c.logisticsNotice||c.travelNotice,'A zero-time care wait needs an actual notice or encounter.');
+  }
+  assert.ok(clock(c)>beforeCareHour||c.pendingEncounter,'Care cannot remain stopped after three explicit wait requests.');
  }
+ if(wounded().length)recordRouteStrategicEvidence({helper:'recoverFreshCordobaSurvivors',stage:'care-completion-failure',campaign:c,context:{careHours,careDeadlineSeconds,clock:clock(c),wounded:wounded(),restOnlySites:[...restOnlySites],selectedPatients:[...selectedPatients],rearPhysicians:[...rearPhysicians],doctors:[...doctors]}});
  assert.deepEqual(wounded(),[],'every surviving patient must finish actual medical care');
  assert.equal(c.pendingEncounter,null);
  for(const id of dead)assert.equal(c.operativeState[id].alive,false);
  selectSite('cordoba');
- report({event:'cordobaCareFinished',doctors:[...doctors],hour:c.hour,treasury:c.resources.treasury});
+ report({event:'cordobaCareFinished',doctors:[...doctors],doctorAdmissions:structuredClone([...doctorAdmissions.values()]),hour:c.hour,treasury:c.resources.treasury});
+ recordRouteStrategicEvidence({helper:'recoverFreshCordobaSurvivors',stage:'route-checkpoint',campaign:c,context:{doctors:[...doctors],doctorAdmissions:[...doctorAdmissions.values()],careDeadlineSeconds,careHours,scope:'Actual completed care return after all existing health, encounter and permanent-death guards; passive capture only, no extra orders or state changes.'}});
  assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
  return c;
 }
@@ -604,9 +727,10 @@ for(let leg=0;leg<4&&c.location!=='cordoba'&&!c.pendingEncounter;leg++){
  return c;
 }
 
-export function prepareFreshTucumanAssault(start,{report=()=>{},artillerySupport=false,recovery='doctor',prepareDeparture=null,onCheckpoint=()=>{}}={}){
+export function prepareFreshTucumanAssault(start,{report=()=>{},artillerySupport=false,recovery='doctor',prepareDeparture=null,replenishField=false,onCheckpoint=()=>{}}={}){
  assert.ok(['doctor','rest'].includes(recovery),'Tucumán recovery uses real doctor work or ordinary rest');
  assert.ok(prepareDeparture===null||typeof prepareDeparture==='function','departure preparation must use an explicit native route helper');
+ assert.equal(typeof replenishField,'boolean');
  const recoveryDefenseIds=[];let recoveryDefenseBudget=null;
  return prepare(start);
  function prepare(initial){
@@ -646,7 +770,7 @@ const defendRecovery=(rest=null)=>{
  // wound-based rest bound instead of retaining the earlier clinical plan.
  return prepare(c);
 };
-if(recovery==='rest'&&c.pendingEncounter)return defendRecovery();
+if(c.pendingEncounter)return defendRecovery();
 // Stop bleeding before any rest or long march. A low-health survivor must not
 // silently die while other squads wait for their energy to recover.
 const wounded=c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&(r.bleeding>0||r.hp<15);});
@@ -708,7 +832,8 @@ for(let h=0;h<12&&wounded.some(id=>c.operativeState[id].bleeding>0||c.operativeS
 }
 for(const id of wounded){assert.ok(c.operativeState[id].alive);assert.equal(c.operativeState[id].bleeding,0);assert.ok(c.operativeState[id].hp>=15);}
 for(const operativeId of [...wounded,...usedDoctors])order({type:'assignCare',operativeId,assignment:'active'});
-for(const operativeId of c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&!r.bleeding&&r.hp>=15&&r.hp<r.maxHp;}))order({type:'assignCare',operativeId,assignment:'rest'});
+const survivorOrder=action=>{try{order(action);return c;}catch(error){error.campaign=c;throw error;}};
+c=restNorthernSurvivors(c,c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&!r.bleeding&&r.hp>=15&&r.hp<r.maxHp;}),{issueOrder:survivorOrder}).campaign;
 // Bring every available survivor to Córdoba through ordinary travel.
 const unassigned=new Map();
 for(const id of c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured&&!c.squads.some(q=>q.members.includes(id)))){
@@ -717,11 +842,7 @@ for(const id of c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeS
 for(const [sector,ids] of unassigned)for(let offset=0;offset<ids.length;offset+=6)order({type:'createSquad',name:'Retaguardia',ids:ids.slice(offset,offset+6),sector});
 const returning=c.squads.filter(q=>q.members.length&&q.location!=='cordoba').map(q=>q.id);
 for(const id of returning){
- order({type:'selectSquad',id});const members=[...c.squad];
- for(const operativeId of members)order({type:'assignCare',operativeId,assignment:'rest'});
- for(let h=0;h<48&&members.some(id=>c.operativeState[id].fatigue>0||c.operativeState[id].energy<100||c.operativeState[id].asleep);h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
- for(const operativeId of members)order({type:'assignCare',operativeId,assignment:'active'});
- order({type:'travel',sector:'cordoba',queue:true});
+ c=queueNorthernSurvivorReturn(c,id,{issueOrder:survivorOrder}).campaign;
 }
 for(let h=0;h<48&&returning.some(id=>c.squads.find(q=>q.id===id)?.journey);h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
 assert.ok(returning.every(id=>c.squads.find(q=>q.id===id)?.location==='cordoba'));
@@ -733,6 +854,14 @@ if(!c.recruited.includes(133)&&c.operativeState[133].alive){
  // already prepared squad without its recovery and ammunition checks.
  for(let h=0;h<24&&!c.recruited.includes(133);h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
  assert.ok(c.recruited.includes(133),'the paid reinforcement must arrive before deployment');
+}
+if(replenishField){
+ const relief=recruitRouteFieldRelief(c,{minimum:12,report});c=relief.campaign;
+ if(c.pendingEncounter)return defendRecovery();
+ assert.equal(relief.ready,true,relief.reason);
+ // Paid arrivals and elapsed time change the real wounds and assignments.
+ // Re-enter urgent care before forming the next assault from those people.
+ if(relief.orders.length)return prepare(c);
 }
 const fieldIds=c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&operativeLocation(c,id)==='cordoba';});
 assert.ok(fieldIds.length>0,'Tucumán needs a living, uncaptured field force');
@@ -771,15 +900,34 @@ if(recovery==='rest'){
  while(c.sectors.cordoba.fort<3)order({type:'fortify',sector:'cordoba'});
  if(c.sectors.cordoba.fort>fortBefore)report({event:'tucumanRecoveryFortified',sector:'cordoba',before:fortBefore,after:c.sectors.cordoba.fort,cost:fortCash-c.resources.treasury,hour:c.hour,second:c.secondOfHour??0});
  const restingWounded=fieldIds.filter(id=>c.operativeState[id].hp<c.operativeState[id].maxHp),restHealingHours=careRules(c).restHealingHours;
+ const restBoundHours=Math.max(0,...restingWounded.map(id=>(c.operativeState[id].maxHp-c.operativeState[id].hp)*restHealingHours))+72;
+ // Rifle replacement above can retain the old firearm's actual cartridge
+ // family. Finish finite ammunition, paid loading and current public posts
+ // before resting for the next actual raid, rather than only at departure.
+ const rearClock=state=>state.hour*3600+(state.secondOfHour??0);
+ const rearStarted=rearClock(c),restDeadlineSeconds=rearStarted+restBoundHours*3600,rearBefore=structuredClone(c),rearOrders=[];
+ const rearCheck=()=>{assert.equal(c.defeated,false);assert.equal(c.pendingEncounter,null,'An actual encounter stops pre-rest rear preparation.');assert.equal(c.pendingBattle,null);assert.ok(rearClock(c)<=restDeadlineSeconds,'Pre-rest preparation shares the unchanged wound-based rest allowance.');};
+ rearCheck();
+ try{
+  c=supplyRouteAmmunition(c,fieldIds,{shareFieldSurplus:true,report}).campaign;rearCheck();
+  for(const homeId of assaultSquads){
+   order({type:'selectSquad',id:homeId});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
+   c=finishReloadsBeforeMarch(c,{deadlineSeconds:restDeadlineSeconds,report:event=>{rearOrders.push(event);report(event);}});rearCheck();
+  }
+  const staged=stageRouteRoofDefenders(c,fieldIds,{bounded:{deadlineSeconds:restDeadlineSeconds},report});c=staged.campaign;rearCheck();
+  for(const id of fieldIds){const r=c.operativeState[id];assert.ok(r.alive&&!r.captured&&r.hp>=15&&!r.bleeding);assert.ok(r.carriedLoaded>0,`The actual resting defender ${id} needs its paid loaded firearm.`);}
+  for(const [id,r]of Object.entries(rearBefore.operativeState))if(!r.alive)assert.equal(c.operativeState[id].alive,false);
+  report({event:'tucumanRecoveryRearPrepared',fieldIds:[...fieldIds],startSeconds:rearStarted,endSeconds:rearClock(c),restDeadlineSeconds,reloads:rearOrders,staging:staged.receipt});
+ }catch(error){recordRouteStrategicEvidence({helper:'prepareFreshTucumanAssault',stage:'pre-rest-readiness-failure',campaign:error?.campaign??c,context:{fieldIds,restBoundHours,restDeadlineSeconds,rearStarted,reloads:rearOrders,nestedRoof:error?.routeRoofDefenders??null,pair:error?.pair??null,battle:error?.battle??null},error});throw error;}
  const priorDeaths=Object.entries(c.operativeState).filter(([,r])=>!r.alive).map(([id])=>id),started={hour:c.hour,second:c.secondOfHour??0};
  const ownership=fieldIds.map(id=>{const r=c.operativeState[id];return {id,medkits:r.medkits,inventory:structuredClone(r.inventory),ammo:r.ammo,carriedLoaded:r.carriedLoaded,condition:r.condition,jammed:r.jammed};});
  const stable=()=>{for(const id of fieldIds){const r=c.operativeState[id];assert.ok(r.alive&&!r.captured&&r.hp>=15,'ordinary rest needs each actual conscious uncaptured survivor');assert.equal(r.bleeding,0,'real urgent care must stop bleeding before stable recovery');}};
- const restBoundHours=Math.max(0,...restingWounded.map(id=>(c.operativeState[id].maxHp-c.operativeState[id].hp)*restHealingHours))+72;
  let restHours=0;stable();
  for(const operativeId of fieldIds)order({type:'assignCare',operativeId,assignment:'rest'});
  while(restingWounded.some(id=>c.operativeState[id].hp<c.operativeState[id].maxHp)){
   if(c.pendingEncounter)return defendRecovery({started,restHours,restBoundHours});
   assert.ok(restHours<restBoundHours,'stable recovery must fit the actual wound deficit and ordinary sleep bound');stable();
+  assert.ok(rearClock(c)+3600<=restDeadlineSeconds,'Paid rear preparation and each real rest hour share the original recovery allowance.');
   const before=fieldIds.map(id=>({id,hp:c.operativeState[id].hp,maxHp:c.operativeState[id].maxHp,recoveryHours:c.operativeState[id].recoveryHours})),time=c.hour*3600+(c.secondOfHour??0),until=c.hour+1;
   // Request time again after a real assignment or sleep notice. Each accepted
   // wait still renews the actual serving contracts through the normal order.
@@ -870,13 +1018,13 @@ if(artillerySupport){
 // Stage the actual squads through the ordinary clock before the coordinated march.
 // Enemy movement and contract costs continue during this wait.
 order({type:'wait',hours:4});
-if(recovery==='rest'&&c.pendingEncounter)return defendRecovery();
+if(c.pendingEncounter)return defendRecovery();
 if(process.env.GRANADEROS_CAMPAIGN_FAILURE_DIR){
  observeAmmunitionCheckpoint('tucuman-authoritative-ammunition-input',c);
  recordRouteAmmunitionDiagnostic('tucuman-authoritative-ammunition-input',c,{fieldIds,target:10});
 }
 try{
- c=supplyRouteAmmunition(c,fieldIds,{report,onDiagnosticCheckpoint:partial=>onCheckpoint('tucuman-authoritative-ammunition-refusal',partial)}).campaign;
+ c=supplyRouteAmmunition(c,fieldIds,{shareFieldSurplus:true,report,onDiagnosticCheckpoint:partial=>onCheckpoint('tucuman-authoritative-ammunition-refusal',partial)}).campaign;
 }catch(error){
  recordRouteAmmunitionDiagnostic('tucuman-authoritative-ammunition-stopped',c,{fieldIds,message:error.message,
   checkpointKind:'unchanged-caller-input-not-the-helper-partial-campaign'});

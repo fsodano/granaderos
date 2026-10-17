@@ -1,3 +1,6 @@
+import {defaultContentPackage} from '../game/content-package.js';
+import {initialCampaign} from '../game/campaign.js';
+import {order,visit} from './local-contract-fixture.mjs';
 import {fillSparePockets} from './pocket-capacity-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {act} from '../web/node_modules/react/index.js';
@@ -37,4 +40,29 @@ test('the ground selector explains an overflowing whole bundle and accepts only 
  const dialog=await openPicker(m,p);await m.click('Seleccionar todos');const button=dialog.querySelector('.gold-button');assert.equal(button.disabled,true);assert.match(dialog.textContent,/bolsillo|espacio/);
  const before=savedField(m);await selectFieldItem(m,'Vendas',1);assert.equal(button.disabled,false);assert.deepEqual(savedField(m),before);await m.click('Recoger selección');
  const s=savedField(m);assert.equal(s.battle.units.find(u=>u.id==='111').medkits,5);assert.equal(s.battle.groundItems.find(g=>g.type==='medkits').count,2);
+});
+
+
+test('the mounted ground picker names actual Retiro money and collects one peso without consuming the remainder',async t=>{
+ const content=defaultContentPackage(),recruit=content.characters.find(character=>character.id==='person-110');
+ recruit.arrivalHours=0;recruit.startingCondition={hp:recruit.attributes.maxHp,energy:100,fatigue:0,bleeding:0,bandaged:0};
+ const p=visit(order(initialCampaign(42,content),{type:'recruitCivic',id:110,term:'week'})),original=structuredClone(p);
+ const cash=p.battle.groundItems.find(item=>item.id==='cash:retiro');assert.ok(cash);assert.equal(cash.type,'money');assert.equal(cash.count,110);
+ const actor=p.battle.units.find(unit=>unit.id==='110');assert.equal(actor.hp,actor.maxHp);assert.equal(actor.bleeding,0);assert.equal(actor.bandaged,0);
+ assert.equal(actor.inventory[cash.id],undefined);
+ const m=await mountCampaign(t,p),dialog=await openFieldEquipment(m,cash),before=savedField(m);
+ assert.equal(dialog.querySelector('.ja2-loot-choice strong').textContent,'Pesos · 110');
+ assert.equal(dialog.querySelector('.ja2-loot-choice input').getAttribute('aria-label'),'Recoger 1: En el suelo · Pesos');
+ assert.equal(dialog.querySelector('input[type="number"]').getAttribute('aria-label'),'Cantidad 1: En el suelo · Pesos');
+ assert.equal(dialog.querySelector('input[type="number"]').max,'110');
+ await selectFieldItem(m,'Pesos',1);assert.deepEqual(savedField(m),before);assert.equal(dialog.querySelector('.gold-button').disabled,false);
+ await m.click('Recoger selección');const actual=savedField(m),carrier=actual.battle.units.find(unit=>unit.id==='110');
+ assert.equal(actual.battle.lastError,null);assert.deepEqual(carrier.inventory[cash.id],{name:'Pesos',count:1,weight:.01});
+ assert.equal(actual.battle.groundItems.find(item=>item.id===cash.id).count,109);
+ assert.equal(actual.campaign.resources.treasury,p.campaign.resources.treasury);
+ assert.equal(actual.battle.elapsedSeconds,p.battle.elapsedSeconds+1);
+ for(const key of ['hp','bleeding','bandaged','loaded','ammo','condition'])assert.deepEqual(carrier[key],actor[key],key);
+ assert.equal(m.document.querySelector('.ja2-loot-dialog'),null);
+ assert.deepEqual(actual,saved(tactical(p,{type:'lootBatch',unitId:'110',items:[{groundId:cash.id,count:1}]})));
+ assert.deepEqual(p,original);
 });

@@ -10,6 +10,7 @@ import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {fightNorthernSector} from './northern-route.mjs';
 import {coastalBatteryController} from './coastal-command-driver.mjs';
+import {coordinatedHospitalBattery} from './coordinated-hospital-battery.mjs';
 import {meetRecruits} from './campaign-recruitment-route.mjs';
 import {prepareFinalAssault} from './final-campaign-route.mjs';
 import {recoverRecapturedRoad} from './recovery-road-care.mjs';
@@ -20,8 +21,38 @@ import {artilleryProfile} from '../game/artillery-definitions.js';
 import {artilleryTransportQuote,storedArtilleryRecord} from '../game/artillery-transport.js';
 import {contractExpiresSeconds,contractRenewalQuote} from '../game/contracts.js';
 import {previewStrategicRoute} from '../game/strategic-route.js';
+import {continueNorthernHandoverTravel,resolveNorthernHandoverEncounter} from './northern-handover-route.mjs';
+import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
+import {prepareNorthernRoadMedicalReserve} from './northern-road-reserve-preparation.mjs';
 
-const localMembers=(c,preferred,limit=6)=>[...new Set([...preferred,...c.squad,...c.recruited])].filter(id=>canReassignOperative(c,id)&&operativeLocation(c,id)===c.location).slice(0,limit);
+const localMembers=(c,preferred,limit=6,allowed=null)=>[...new Set([...preferred,...c.squad,...c.recruited])].filter(id=>(!allowed||allowed.has(id))&&canReassignOperative(c,id)&&operativeLocation(c,id)===c.location).slice(0,limit);
+
+// A local hospital reserve with only spent pieces keeps its paid roof posts.
+// Select once from the actual entry; a charged battery keeps its existing
+// coastal crew policy even after it spends its final round during this fight.
+export function northernRoadReserveController(initial){
+ const guns=initial.artillery.filter(g=>g.side==='player');
+ return guns.length&&guns.every(g=>!g.loaded&&!(g.ammo>0))
+  ?coordinatedHospitalBattery(initial,{coordinateEmptyGround:true}).controller
+  :coastalBatteryController(initial,{sharedArtillerySight:true});
+}
+
+// An immediate travel order may return with a live encounter or unfinished
+// journey. Resolve it through the existing native reserve/save/finite-aid path,
+// then follow that same selected party; an order return is not an arrival.
+export function completeNorthernRoadArrival(start,{target='tucuman',mode='posta',keepServing,report=()=>{}}={}){
+ const before=structuredClone(start),squadId=start.activeSquadId,party=start.squads.find(q=>q.id===squadId);assert.ok(party);
+ assert.equal(start.pendingBattle,null);
+ assert.ok(keepServing===undefined||party.members.filter(id=>start.operativeState[id].alive&&!start.operativeState[id].captured).every(id=>keepServing.includes(id)),'The actual travelling party must retain road duty.');
+ let defendedTarget=false;
+ const campaign=continueNorthernHandoverTravel(start,{squadId,target,mode:party.journey?.mode??mode,keepServing,controllerFor:northernRoadReserveController,report:event=>{
+  if(event.event==='northernHandoverDefenseReplay'&&event.sector===target){assert.equal(event.status,'victory');assert.equal(event.exactSavedReplay,true);defendedTarget=true;}
+  report(event);
+ }});
+ assert.deepEqual(start,before);assert.equal(campaign.location,target);assert.equal(campaign.activeSquadId,squadId);
+ assert.equal(campaign.squads.find(q=>q.id===squadId).journey,undefined);assert.equal(campaign.pendingEncounter,null);assert.equal(campaign.pendingBattle,null);
+ return {campaign,defendedTarget};
+}
 
 // Defend with a real relief column, withdraw the threatened rear guard, then
 // recapture the occupied road with both forces. Losses persist through local care.
@@ -48,10 +79,21 @@ export function restoreNorthernRoad(start,{report=()=>{},keepServing}={}){
   const expired=before.recruited.filter(id=>before.operativeState[id].alive&&!c.recruited.includes(id)&&c.operativeState[id].alive);
   if(expired.length)report({event:'northernRoadServiceExpired',ids:expired,campaign:structuredClone(c)});
  };
+ let medicalProgress=null,medicalReady=false;
+ for(let attempt=0;attempt<4;attempt++){
+  const prepared=prepareNorthernRoadMedicalReserve(c,{progress:medicalProgress,...(keepers?{keepServing:[...keepers]}:{}),report});
+  c=prepared.campaign;medicalProgress=prepared.progress;
+  if(keepers&&prepared.reliefId!==null&&c.recruited.includes(prepared.reliefId))keepers.add(prepared.reliefId);
+  if(c.pendingEncounter){c=resolveNorthernHandoverEncounter(c,{controllerFor:northernRoadReserveController,report});continue;}
+  assert.equal(prepared.ready,true,prepared.reason);medicalReady=true;break;
+ }
+ assert.equal(medicalReady,true,'Reserve preparation must finish within its actual encounter retry bound.');
+ assert.equal(c.pendingEncounter,null,'Reserve preparation must resolve its real encounter before field work.');
+ assert.ok(!medicalProgress||medicalProgress.staging&&c.operativeState[medicalProgress.id].assignment==='rest','The paid medical reserve must finish actual staging before the field leaves.');
  {
  // Use surviving local members; a named relief physician may be dead, unpaid
  // or still treating another town and cannot be teleported into this column.
- const field=localMembers(c,[9,11,1000,10,4]);assert.ok(field.length);order({type:'squad',ids:field});
+ const field=localMembers(c,[9,11,1000,10,4],6,keepers);assert.ok(field.length);order({type:'squad',ids:field});
  let p=visit(c);c=leave(sync({campaign:p.campaign,battle:equipOpeningRifles(p.battle,field).battle}));
  c=supplyRouteAmmunition(c,field,{target:12}).campaign;
  const battery=prepareRouteSupportBattery(c,{report,...(keepers?{keepServing:[...keepers]}:{})});c=battery.campaign;if(!c.routes.posta)order({type:'transport',mode:'posta'});order({type:'configureArtillery',types:[]});
@@ -59,6 +101,13 @@ export function restoreNorthernRoad(start,{report=()=>{},keepServing}={}){
  for(let h=0;h<24&&field.some(id=>c.operativeState[id].energy<100||c.operativeState[id].fatigue>0||c.operativeState[id].asleep);h++)order({type:'wait',hours:1});
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'active'});
  c=finishReloadsBeforeMarch(c);order({type:'configureArtillery',types:battery.selections});order({type:'travel',sector:'tucuman',mode:'posta'});
+ let defendedOnArrival=false;
+ if(c.pendingEncounter||c.squads.find(q=>q.id===c.activeSquadId).journey){
+  recordRouteStrategicEvidence({helper:'restoreNorthernRoad',stage:'travel-interruption-input',campaign:c,context:{target:'tucuman',squadId:c.activeSquadId,scope:'Actual returned immediate travel and its mandatory encounter/current journey; no additional orders or synchronization.'}});
+  const arrival=completeNorthernRoadArrival(c,{report,...(keepers?{keepServing:[...keepers]}:{})});c=arrival.campaign;defendedOnArrival=arrival.defendedTarget;
+ }
+ assert.equal(c.location,'tucuman');assert.equal(c.squads.find(q=>q.id===c.activeSquadId).journey,undefined);assert.equal(c.pendingEncounter,null);
+ if(!defendedOnArrival){
  for(const operativeId of c.recruited.filter(id=>c.operativeState[id].alive&&c.operativeState[id].location==='tucuman'))order({type:'assignCare',operativeId,assignment:'rest'});
  const began=c.hour*3600+(c.secondOfHour??0),maxWaitHours=keepers?168:48;let zeroTime=0;
  for(let attempt=0;attempt<maxWaitHours*3&&!c.pendingEncounter&&c.hour*3600+(c.secondOfHour??0)-began<maxWaitHours*3600;attempt++){
@@ -69,6 +118,7 @@ export function restoreNorthernRoad(start,{report=()=>{},keepServing}={}){
  assert.equal(c.pendingEncounter?.sector,'tucuman','The paid northern column must meet its actual Tucumán defense within the bounded watch.');order({type:'respondToEncounter',groupId:c.pendingEncounter.groupId,choice:'tactical'});
  c=fightNorthernSector(c,'tucuman',{controller:coastalBatteryController(enterSector(c.pendingBattle,c.sectorStates.tucuman),{sharedArtillerySight:true}),report}).campaign;
  report({event:'northernRoadDefended',campaign:decodeSave(encodeSave(c)).campaign});
+ }else report({event:'northernRoadDefended',duringArrival:true,campaign:decodeSave(encodeSave(c)).campaign});
  }
  {
  const field=c.recruited.filter(id=>c.operativeState[id].alive&&c.operativeState[id].location==='tucuman');

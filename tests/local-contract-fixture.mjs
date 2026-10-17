@@ -1,4 +1,7 @@
 import assert from 'node:assert/strict';
+import {realpathSync,writeFileSync} from 'node:fs';
+import {basename,isAbsolute,join,relative,sep} from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {defaultContentPackage} from '../game/content-package.js';
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
 import {operativeIdForCharacter} from '../game/content-character-ids.js';
@@ -9,7 +12,21 @@ import {encodeSave,decodeSave} from '../game/save.js';
 import {approachNPC} from './approach-npc.mjs';
 export const A='cell-27-27';
 export const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
-export const saved=p=>decodeSave(encodeSave(p.campaign,p.battle??null));
+let currentQAExportSequence=0;
+export const saved=p=>{
+ const encoded=encodeSave(p.campaign,p.battle??null),restored=decodeSave(encoded);
+ const requested=process.env.GRANADEROS_CURRENT_QA_EXPORT_DIR;
+ if(requested&&(restored.campaign.completed===true||restored.campaign.defeated===true)){
+  assert.ok(isAbsolute(requested),'Current QA exports require an absolute external directory.');
+  const directory=realpathSync(requested),source=realpathSync(fileURLToPath(new URL('../',import.meta.url))),location=relative(source,directory);
+  assert.ok(location==='..'||location.startsWith('..'+sep),'Current QA exports must stay outside the source checkout.');
+  const c=restored.campaign,outcome=c.completed?'victory':'defeat',testFile=basename(process.argv[1]??'unknown').replace(/[^a-zA-Z0-9._-]/g,'_');
+  // These are current-run outputs only. Use them for browser QA only after
+  // the entire unchanged original whole test file passes.
+  writeFileSync(join(directory,`current-qa-${testFile}-${process.pid}-${++currentQAExportSequence}-${outcome}-${c.hour}-${c.secondOfHour??0}.save.json`),encoded,{flag:'wx'});
+ }
+ return restored;
+};
 export const localId=s=>operativeIdForCharacter(s.contentCampaign.package,'alma-contract');
 export const localNPC=b=>b.npcs.find(n=>n.contentId==='alma-contract');
 export function localPackage({pay=300,service='contract',recruitable=true}={}){

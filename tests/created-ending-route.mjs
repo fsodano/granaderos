@@ -47,6 +47,9 @@ import {supplyCoastalAmmunition} from './coastal-ammunition.mjs';
 import {supplyCoastalDressings} from './coastal-dressings.mjs';
 import {prepareCoastalReinforcements} from './coastal-reinforcements.mjs';
 import {preparePaidCoastalColumn} from './coastal-paid-column.mjs';
+import {assertRouteEquipmentDebit as assertCoastalEquipmentDebit} from './route-equipment-inventory-receipt.mjs';
+
+export {assertCoastalEquipmentDebit};
 
 // Recover the actual mountain survivors before their paid terms end. The
 // affordable relief column waits for real arrivals, finite care and rest.
@@ -116,11 +119,11 @@ export function prepareCreatedCoastalAssault(start,{report=()=>{},reinforcementC
    if(!carried){
     const source=model.entries.filter(row=>row.reachable&&matches(JSON.parse(row.expected))).sort((a,b)=>Number(b.key.startsWith('ground:service-return-'))-Number(a.key.startsWith('ground:service-return-')))[0];
     assert.ok(source,`a finite local source must supply the coastal soldier ${operativeId}'s ${slot}`);
-    const before={hour:c.hour,second:c.secondOfHour,treasury:c.resources.treasury};
+    const before={hour:c.hour,second:c.secondOfHour,treasury:c.resources.treasury},stockBefore=model;
     order({type:'sectorInventory',sector:c.location,operativeId,direction:'take',sourceKey:source.key,expected:source.expected,count:1});
     model=sectorInventoryModel(c,c.location,rosterFor(c),operativeId);carried=model.carried.find(usable);assert.ok(carried);
     const {item,...record}=JSON.parse(source.expected);assert.deepEqual(JSON.parse(carried.expected),record,'the actual local body item retains its metadata');
-    const remaining=model.entries.find(row=>row.key===source.key)?.count??0;assert.equal(remaining,source.count-1,'the local source is consumed exactly once');
+    const remaining=assertCoastalEquipmentDebit(stockBefore,model,source);
     assert.deepEqual({hour:c.hour,second:c.secondOfHour,treasury:c.resources.treasury},before);
     report({event:'coastalReturnedKit',operativeId,slot,sourceKey:source.key,record,remaining,...before});
    }
@@ -185,7 +188,9 @@ export function prepareCreatedCoastalAssault(start,{report=()=>{},reinforcementC
  for(const id of expeditionIds)if(!retainedRoles.has(id))keep.delete(id);
  for(const id of [...supportIds,reliefId])hire(id);
  waitUntil(24,()=>[...supportIds,reliefId].every(id=>c.recruited.includes(id)));
- let field=[57,doctorId,...supportIds,reliefId];order({type:'squad',ids:field});
+ let field=[57,doctorId,...supportIds,reliefId];
+ if(c.recruited.includes(10)){assert.ok(c.operativeState[10].alive&&!c.operativeState[10].captured&&c.operativeState[10].location==='mendoza','The existing physician must be an actual local survivor before the capital march.');if(!field.includes(10))field.push(10);keep.add(10);retainedRoles.add(10);}
+ assert.ok(field.length<=6);order({type:'squad',ids:field});
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'rest'});
  waitUntil(600,()=>field.every(id=>{
   const r=c.operativeState[id];return r.morale>=65&&!r.fatigue&&!r.asleep;
@@ -210,8 +215,10 @@ export function prepareCreatedCoastalAssault(start,{report=()=>{},reinforcementC
  }
  assert.equal(c.location,'buenos_aires','The real capital journey must finish before its local squad is reorganized.');
  assert.equal(c.squads.find(q=>q.id===c.activeSquadId)?.journey,undefined);
- order({type:'squad',ids:[57,doctorId,...supportIds]});c=meetRecruits(c,['dorrego','paroissien'],57);
- field.push(4,10);keep.add(4);keep.add(10);
+ order({type:'squad',ids:[57,doctorId,...supportIds]});
+ const capitalContacts=[['dorrego',4],['paroissien',10]].filter(([,id])=>!c.recruited.includes(id)).map(([npcId])=>npcId);
+ if(capitalContacts.length)c=meetRecruits(c,capitalContacts,57);
+ for(const id of [4,10]){assert.ok(c.recruited.includes(id)&&c.operativeState[id].alive&&!c.operativeState[id].captured&&c.operativeState[id].location==='buenos_aires','Every retained capital contact must be an actual living local serving person.');if(!field.includes(id))field.push(id);keep.add(id);}
  const groups=[];
  for(let offset=0;offset<field.length;offset+=6){
   order({type:'createSquad',ids:field.slice(offset,offset+6),sector:'buenos_aires',name:'Columna del puerto'});

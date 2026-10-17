@@ -1,8 +1,26 @@
 # Changelog
 
 > **Release history.** Entries describe their recorded checkpoints. Read
-> [version 0.1](verification/version-0.1.md) for current scope. Earlier development
+> [shipping campaign plan](plans/core-campaign-v0.1.md) for current scope. Earlier development
 > numbers are internal checkpoints; their features and results are dated history.
+
+## 0.1.14 — 17 October 2026
+
+- Deliver the core campaign integration for manual testing at the user's
+  request. Keep paid service, finite supplies, medical care, actual losses and
+  the original route requirements.
+- Clear a refused autonomous enemy order before a valid player interruption.
+  Keep invalid player orders atomic.
+- Label ground money as Pesos. Preserve the inspected inventory slot, make
+  visible 3D doors reachable by pointer and keep the desktop interruption
+  notice clear of tactical controls.
+- Exclude generated Python cache files from the build identity. Preserve
+  identity changes for real Python and game source edits.
+- Pass documentation and baseline audits, the production build, TypeScript
+  and build-identity regressions. Stop the subsequent full local run at the
+  user's request; known Córdoba defence, recovery and funding failures remain.
+  This release does not claim complete campaign acceptance. See the
+  [manual testing handoff](plans/core-campaign-v0.1.md).
 
 ## 0.1.13 — 17 October 2026
 

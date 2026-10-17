@@ -63,3 +63,23 @@ test('the route controller completes actual reload orders before marching and ne
  const {c,b}=partial();const returned=leave(c,b),before=structuredClone(returned),events=[];const ready=finishReloadsBeforeMarch(returned,{report:e=>events.push(e)});
  assert.deepEqual(returned,before);assert.equal(ready.operativeState[3].carriedLoaded,1);assert.equal(ready.operativeState[3].carriedReloadProgress,undefined);assert.ok(ready.secondOfHour>returned.secondOfHour);assert.equal(stockAndCarriedAmmo(ready),stockAndCarriedAmmo(returned));assert.equal(merchantAmmo(ready),merchantAmmo(returned));assert.equal(ready.resources.treasury,returned.resources.treasury);assert.deepEqual(events[0],{event:'reloadDeployment',ammunitionCost:0});const reloads=events.filter(e=>e.event==='finishedReload');assert.deepEqual(reloads.map(e=>e.id),[3,4]);assert.equal(ready.operativeState[4].carriedLoaded,2);assert.ok(reloads[0].paidPAEquivalent>0);assert.equal(finishReloadsBeforeMarch(ready),ready);save(ready);
 });
+test('convoy opt-in readies loaded primary guns while default preparation preserves medical hands',()=>{
+ const clock=c=>c.hour*3600+(c.secondOfHour??0);
+ const fresh=()=>{
+  let c=initialCampaign(45);c.hour=12;
+  // Finite subsystem equipment is declared before the first tactical factory.
+  for(const id of c.squad){c.loadouts[id]={weapon:1801,blade:1813};c=withCarriedAmmo(c,id,'ammoMusket',9);}
+  c=order(c,{type:'visitSector'});let b=enterSector(c.pendingBattle,c.sectorStates.retiro);assert.equal(b.mode,'exploration');
+  for(const [id,slot]of [[3,'blade'],[4,'medical']]){b=act(b,{type:'weapon',unitId:String(id),slot});const unit=b.units.find(u=>u.id===String(id));assert.equal(unit.activeSlot,slot);assert.equal(unit.loaded,1);assert.equal(unit.jammed,false);}
+  c=leave(c,b);assert.equal(c.operativeState[3].activeSlot,'blade');assert.equal(c.operativeState[4].activeSlot,'medical');return save(c);
+ };
+ const before=fresh(),frozen=structuredClone(before),events=[];assert.equal(finishReloadsBeforeMarch(before),before,'Default preparation must preserve already-loaded blade and medical hands.');const ready=finishReloadsBeforeMarch(before,{readyPrimary:true,report:e=>events.push(e)});
+ assert.deepEqual(before,frozen);assert.equal(clock(ready)-clock(before),2,'Each ordinary four-AP equipment action must pay one exploration second.');
+ for(const id of [3,4]){
+  const old=before.operativeState[id],now=ready.operativeState[id];assert.equal(now.activeSlot,'primary');assert.equal(now.carriedLoaded,1);assert.equal(now.carriedReloadProgress,undefined);
+  for(const key of ['carriedAmmo','hp','bleeding','bandaged','medkits','condition'])assert.deepEqual(now[key],old[key],key+' must not be granted or spent while changing hands.');
+ }
+ assert.equal(stockAndCarriedAmmo(ready),stockAndCarriedAmmo(before));assert.equal(merchantAmmo(ready),merchantAmmo(before));assert.equal(ready.resources.treasury,before.resources.treasury);
+ assert.deepEqual(events.filter(e=>e.event==='finishedReload'),[]);assert.deepEqual(events.filter(e=>e.event==='reloadUnavailable').map(e=>e.id),[3,4]);
+ assert.deepEqual(save(ready),ready);assert.equal(finishReloadsBeforeMarch(ready,{readyPrimary:true}),ready);assert.deepEqual(finishReloadsBeforeMarch(fresh(),{readyPrimary:true}),ready);
+});

@@ -30,9 +30,15 @@ import {previewStrategicRoute} from '../game/strategic-route.js';
 import {recoverVisibleRouteDressings} from './route-visible-medical-remains.mjs';
 import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 import {resolveStockNorthernReliefEncounter} from './northern-relief-defense.mjs';
+import {northernEmergencyAid} from './northern-emergency-aid.mjs';
+import {aidNorthernMissionRelief} from './northern-mission-aid.mjs';
+import {resolveNorthernHandoverEncounter} from './northern-handover-route.mjs';
+import {stageRouteRoofDefenders} from './route-roof-defenders.mjs';
+import {northernReliefFitLocal,northernReliefReplacements,retainNorthernReliefSupport,hireNorthernReliefReplacement} from './northern-relief-service.mjs';
+import {stockNorthernRearReserve,assertStockNorthernRear,attachStockNorthernSupport,bookStockNorthernReliefHires,assertStockNorthernHiresArrived,stockNorthernReliefRestPlan} from './stock-northern-relief-staffing.mjs';
 
 // Reinforce and position the real survivors before the arriving counterattack.
-export function prepareHiredNorthernDefense(start){
+export function prepareHiredNorthernDefense(start,{report=()=>{}}={}){
  let c=structuredClone(start);
  const order=a=>{if(a.type==='wait')for(const id of c.recruited.filter(id=>c.operativeState[id].alive)){const q=c.contracts[id];if(q?.expiresAt!=null&&q.expiresAt<=c.hour+a.hours){const n=dispatchCampaign(c,{type:'renewContract',id,term:'day',expectedExpiresAt:q.expiresAt});assert.equal(n.lastError,null);c=n;}}const n=dispatchCampaign(c,a);assert.equal(n.lastError,null,JSON.stringify(a)+n.lastError);c=n;};
  const defendNow=()=>{assert.equal(c.pendingEncounter?.sector,'cordoba');order({type:'respondToEncounter',groupId:c.pendingEncounter.groupId,choice:'tactical'});return c;};
@@ -48,11 +54,10 @@ const until=c.hour+6;for(let h=0;c.hour<until&&!c.pendingEncounter&&h<20;h++)ord
 if(c.pendingEncounter)return defendNow();
 const field=rosterFor(c).filter(o=>c.recruited.includes(o.id)&&c.operativeState[o.id].alive&&!c.operativeState[o.id].captured&&c.operativeState[o.id].location==='cordoba').sort((a,b)=>b.marksmanship-a.marksmanship).map(o=>o.id),groups=[];
 for(let i=0;i<field.length;i+=6){order({type:'createSquad',ids:field.slice(i,i+6),name:'Defensa de Córdoba',sector:'cordoba'});groups.push(c.activeSquadId);for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});let p=visit(c);c=leave(sync({campaign:p.campaign,battle:equipOpeningRifles(p.battle,c.squad).battle}));c=supplyRouteAmmunition(c,c.squad,{target:12}).campaign;c=finishReloadsBeforeMarch(c);}
-order({type:'selectSquad',id:groups[0]});let p=visit(c),b=p.battle;
-const cells=b.upperSurfaces.filter(t=>!t.blocked).sort((a,d)=>Math.hypot(a.x-b.width*.5,a.y-b.height*.5)-Math.hypot(d.x-b.width*.5,d.y-b.height*.5)||a.y-d.y||a.x-d.x);
-const act=a=>{b=actBattle(b,a);assert.equal(b.lastError,null,JSON.stringify(a)+b.lastError);};
-for(const id of c.squad){let u=b.units.find(u=>u.id===String(id));act({type:'movement',unitId:u.id,movement:'walk'});u=b.units.find(u=>u.id===String(id));const dest=cells.find(p=>!b.units.some(v=>v.id!==u.id&&v.hp>0&&sameCell(v,p))&&getReachable(b,u,{stopAt:cell=>sameCell(cell,p)}).length);assert.ok(dest);act({type:'move',unitId:u.id,...spacePoint(dest)});act({type:'stance',unitId:u.id,stance:'crouched'});}
-c=leave(sync({campaign:p.campaign,battle:b}));
+order({type:'selectSquad',id:groups[0]});
+// Every existing local group receives a paid post before the same raid wait.
+// The shared helper reserves earlier posts and restores this selected group.
+c=stageRouteRoofDefenders(c,field,{report});
 order({type:'fortify',sector:'cordoba'});
 for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'rest'});
 for(let h=0;!c.pendingEncounter&&h<144;h++)order({type:'wait',hours:1});assert.equal(c.pendingEncounter?.sector,'cordoba');
@@ -63,6 +68,7 @@ order({type:'respondToEncounter',groupId:c.pendingEncounter.groupId,choice:'tact
 // The rear clinic and envoy use existing stock, real paid arrivals and one
 // conquered gun. Care continues while the officers and cannon travel.
 function prepareCreatedNorthernOfficerRelief(start,{report=()=>{},onCheckpoint=()=>{}}={}){
+ const inputCapture=recordRouteStrategicEvidence({helper:'prepareCreatedNorthernOfficerRelief',stage:'preparation-input',campaign:start});
  const before=structuredClone(start);let c=decodeSave(encodeSave(start)).campaign;
  onCheckpoint('northern-officer-relief-input',c);
  const live=()=>c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured);
@@ -112,13 +118,22 @@ function prepareCreatedNorthernOfficerRelief(start,{report=()=>{},onCheckpoint=(
    if(c.operativeState[medic.id].medkits<need)takeKnown(medic.id,need-c.operativeState[medic.id].medkits);
    order({type:'createSquad',ids,name:'Socorro provincial urgente',sector});for(const operativeId of ids)order({type:'assignCare',operativeId,assignment:'active'});
    onCheckpoint(`northern-officer-emergency-input-${sector}`,c);
-   const initial=visit(c),aid=autoBandageBattle(initial.battle);let paid=initial;
+   const emergencyInputCapture=recordRouteStrategicEvidence({helper:'prepareCreatedNorthernOfficerRelief',stage:'route-checkpoint',campaign:c,inputCapture,context:{phase:'before-existing-emergency-visit',sector,physicianId:medic.id,urgent,ids,need,scope:'Actual preparation state before the one existing visit and its finite aid; no additional entry, orders, queries or synchronization.'}});
+   const initial=visit(c),aid=northernEmergencyAid(initial.battle,{physicianId:medic.id,urgentIds:urgent});let paid=initial;
    for(let step=0;step<aid.steps.length;step++){
     const battle=actBattle(paid.battle,aid.steps[step]);assert.equal(battle.lastError,null);paid=sync({campaign:paid.campaign,battle});
     if(step===Math.floor(aid.steps.length/2))paid=decodeSave(encodeSave(paid.campaign,paid.battle));
    }
    assert.deepEqual(paid.battle,sync({campaign:initial.campaign,battle:aid.battle}).battle);
-   c=leave(paid);for(const id of ids.filter(id=>urgent.includes(id))){assert.ok(c.operativeState[id].alive&&c.operativeState[id].hp>=15);assert.equal(c.operativeState[id].bleeding,0);}
+   c=leave(paid);
+   if(ids.filter(id=>urgent.includes(id)).some(id=>!c.operativeState[id].alive||c.operativeState[id].hp<15||c.operativeState[id].bleeding!==0))recordRouteStrategicEvidence({
+    helper:'prepareCreatedNorthernOfficerRelief',stage:'preparation-failure',campaign:c,inputCapture:emergencyInputCapture??inputCapture,
+    context:{phase:'after-existing-emergency-aid-and-leave-before-strict-health-check',preparationInputCapture:inputCapture,sector,physicianId:medic.id,urgent,ids,need,
+     aid:{steps:aid.steps,treatedIds:aid.treatedIds,untreated:aid.untreated,stoppedReason:aid.stoppedReason,elapsedSeconds:aid.elapsedSeconds},initialBattle:initial.battle,returnedBattle:paid.battle,
+     scope:'Actual existing visit input battle, paid replay return and settled campaign before the unchanged urgent-survivor assertions; no additional Native orders, queries, synchronization or outcome changes.'},
+    error:'Actual emergency aid left an urgent survivor dead, critical or bleeding before the strict existing check.',
+   });
+   for(const id of ids.filter(id=>urgent.includes(id))){assert.ok(c.operativeState[id].alive&&c.operativeState[id].hp>=15);assert.equal(c.operativeState[id].bleeding,0);}
    report({event:'provincialEmergencyAid',sector,doctor:medic.id,steps:aid.steps,elapsedSeconds:aid.elapsedSeconds,officialMidpoint:true,patients:ids.filter(id=>urgent.includes(id)).map(id=>({id,hp:c.operativeState[id].hp,bleeding:c.operativeState[id].bleeding}))});
    onCheckpoint(`northern-officer-emergency-${sector}`,c);
   }
@@ -164,7 +179,25 @@ function prepareCreatedNorthernOfficerRelief(start,{report=()=>{},onCheckpoint=(
  maintainClinics();
  const courier=rosterFor(c).filter(op=>live().includes(op.id)&&op.leadership>=60&&at(op.id)==='tucuman'&&c.operativeState[op.id].hp===c.operativeState[op.id].maxHp&&!c.operativeState[op.id].bleeding&&![...doctors.values()].includes(op.id)).sort((a,b)=>Number(b.id===114)-Number(a.id===114)||c.operativeState[b.id].energy-c.operativeState[a.id].energy||b.leadership-a.leadership)[0]?.id;
  assert.ok(courier,'the envoy must be an actual fit local leader, preserving every fallen soldier');
- for(let hour=0;hour<72&&(c.operativeState[courier].fatigue||c.operativeState[courier].energy<100||c.operativeState[courier].asleep);hour++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});maintainClinics();}
+ // Healthy off-duty survivors already rest while the clinics keep working.
+ // Use the same envoy window for their actual morale, not just his energy.
+ // Planned officers and current offers inform waiting only; the later real
+ // recruitment, two-physician and eight-person guards remain authoritative.
+ const supportRestPlan=()=>{
+  assert.equal(c.pendingEncounter,null);assert.equal(c.pendingBattle,null);
+  const now=c.hour*3600+(c.secondOfHour??0),officerIds=[9,11,1],priceCeiling=routeHiringCeiling(c,200);
+  const plannedOfficers=officerIds.filter(id=>c.operativeState[id]?.alive&&!c.operativeState[id].captured);
+  const quotedCandidates=rosterFor(c).filter(op=>op.id>=100&&op.id<1000&&!c.recruited.includes(op.id)&&!c.hiringArrivals.some(row=>row.operativeId===op.id)&&c.operativeState[op.id].alive&&!c.operativeState[op.id].captured).map(op=>({id:op.id,quote:contractQuote(c,op,'week')})).filter(row=>row.quote.available&&row.quote.price<=priceCeiling).map(row=>row.id);
+  const fitPaid=live().filter(id=>{
+   const r=c.operativeState[id],contract=c.contracts[id],expiry=contractExpiresSeconds(contract);
+   return !officerIds.includes(id)&&contract?.kind==='paid'&&(expiry===null||expiry>now)&&operativeLocation(c,id)==='tucuman'&&!operativeInTransit(c,id)&&!r.captive&&!r.bound&&!r.detained&&!r.surrendered&&!r.departure&&!r.routed&&!r.unconscious&&r.hp===r.maxHp&&!r.bleeding&&r.morale>=30;
+  });
+  const target=Math.max(0,8-plannedOfficers.length-quotedCandidates.length);
+  return {target,fitPaid,plannedOfficers,quotedCandidates,priceCeiling,needsRest:fitPaid.length<target};
+ };
+ const supportRestStartSeconds=c.hour*3600+(c.secondOfHour??0);
+ for(let hour=0;hour<72&&(c.operativeState[courier].fatigue||c.operativeState[courier].energy<100||c.operativeState[courier].asleep||supportRestPlan().needsRest);hour++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});assert.equal(c.pendingEncounter,null);maintainClinics();}
+ report({event:'northernSharedRestWindow',startSeconds:supportRestStartSeconds,endSeconds:c.hour*3600+(c.secondOfHour??0),requestLimit:72,...supportRestPlan()});
  assert.equal(c.operativeState[courier].asleep,false);assert.equal(c.operativeState[courier].energy,100);
  const travel=sector=>{
   const squad=c.activeSquadId;order({type:'travel',sector,queue:true,mode:'posta'});
@@ -202,16 +235,28 @@ function prepareCreatedNorthernOfficerRelief(start,{report=()=>{},onCheckpoint=(
  const physicians=[1,...rosterFor(c).filter(op=>op.id!==1&&live().includes(op.id)&&op.medical>=20&&at(op.id)==='tucuman'&&c.operativeState[op.id].morale>=30&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding).sort((a,b)=>b.medical-a.medical).map(op=>op.id)].slice(0,2);
  assert.equal(physicians.length,2,'the column needs two actual living local doctors');
  for(const id of physicians)if(c.operativeState[id].medkits<2)c=supplyRouteDressings(c,id,2,{report});
- const fitLocal=()=>live().filter(id=>at(id)==='tucuman'&&c.operativeState[id].hp===c.operativeState[id].maxHp&&!c.operativeState[id].bleeding&&c.operativeState[id].morale>=30);
- const vacancies=Math.max(0,8-fitLocal().length),replacements=rosterFor(c).filter(op=>op.id>=100&&op.id<1000&&!c.recruited.includes(op.id)&&c.operativeState[op.id].alive&&!c.operativeState[op.id].captured&&contractQuote(c,op,'week').available&&contractQuote(c,op,'week').price<=routeHiringCeiling(c,200)).sort((a,b)=>b.marksmanship-a.marksmanship||b.strength-a.strength||a.id-b.id).slice(0,vacancies);
+ const retention=retainNorthernReliefSupport(c,{report});c=retention.campaign;
+ const fitLocal=()=>northernReliefFitLocal(c);
+ const vacancies=Math.max(0,8-fitLocal().length),replacements=northernReliefReplacements(c).slice(0,vacancies);
+ if(replacements.length!==vacancies&&process.env.GRANADEROS_CAMPAIGN_FAILURE_DIR){
+  // Observe current accepted preparation and current public quotes before
+  // the unchanged staffing guard. Failed captures never become route input.
+  try{recordRouteStrategicEvidence({helper:'prepareCreatedNorthernOfficerRelief',stage:'route-checkpoint',campaign:c,inputCapture,context:{
+   phase:'before-original-staffing-guard',requiredFit:8,vacancies,replacements:replacements.map(op=>op.id),fitLocal:fitLocal(),priceCeiling:routeHiringCeiling(c,200),
+   localPeople:live().filter(id=>at(id)==='tucuman').map(id=>({id,...Object.fromEntries(['hp','maxHp','bleeding','morale','energy','fatigue','assignment'].map(key=>[key,c.operativeState[id][key]]))})),
+   unusedCandidates:rosterFor(c).filter(op=>op.id>=100&&op.id<1000&&!c.recruited.includes(op.id)&&c.operativeState[op.id].alive&&!c.operativeState[op.id].captured).map(op=>({id:op.id,monthlyPay:op.monthlyPay,quote:contractQuote(c,op,'week')})),
+   scope:'Actual accepted preparation immediately before the original staffing guard; no added order, synchronization, care time or save normalization.'
+  }});}catch{/* Keep the original staffing assertion if observation fails. */}
+ }
  assert.equal(replacements.length,vacancies,'real available recruits must fill the existing eight-person support requirement');
- for(const recruit of replacements){const quote=contractQuote(c,recruit,'week'),cash=c.resources.treasury;order({type:'recruitCivic',id:recruit.id,term:'week',destination:'tucuman'});assert.equal(c.resources.treasury,cash-quote.price);assert.ok(!c.recruited.includes(recruit.id));report({event:'paidNorthernReplacement',id:recruit.id,quote,arrival:structuredClone(c.hiringArrivals.find(row=>row.operativeId===recruit.id))});}
+ for(const recruit of replacements)c=hireNorthernReliefReplacement(c,recruit.id,{report});
  for(let hour=0;hour<24&&replacements.some(recruit=>!c.recruited.includes(recruit.id));hour++){c=retreatNorthernRear(c,{report});order({type:'wait',hours:1});c=retreatNorthernRear(c,{report});}
  for(const recruit of replacements){assert.ok(c.recruited.includes(recruit.id));assert.equal(at(recruit.id),'tucuman');assert.equal(c.operativeState[recruit.id].hp,c.operativeState[recruit.id].maxHp);}
  for(const operativeId of live().filter(id=>at(id)==='tucuman'))order({type:'assignCare',operativeId,assignment:'rest'});
  const officers=[9,11,1],field=[...officers,...live().filter(id=>!officers.includes(id)&&at(id)==='tucuman'&&c.operativeState[id].hp===c.operativeState[id].maxHp&&c.operativeState[id].morale>=30)];
  report({event:'northernReliefField',hour:c.hour,field,people:live().map(id=>({id,at:at(id),hp:c.operativeState[id].hp,maxHp:c.operativeState[id].maxHp,morale:c.operativeState[id].morale,energy:c.operativeState[id].energy,fatigue:c.operativeState[id].fatigue,assignment:c.operativeState[id].assignment}))});
  assert.ok(field.length>=8,'the officers need actual fit survivors as support');
+ for(const id of retention.retained)assert.ok(field.includes(id),'The paid retained supporter must join the actual northern field.');
  for(let hour=0;hour<36&&field.some(id=>c.operativeState[id].fatigue||c.operativeState[id].energy<100||c.operativeState[id].asleep);hour++){c=retreatNorthernRear(c,{report});assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
  for(const id of field){assert.ok(c.operativeState[id].hp>=15);assert.equal(c.operativeState[id].bleeding,0);order({type:'assignCare',operativeId:id,assignment:'active'});}
  for(let offset=0;offset<field.length;offset+=6){order({type:'createSquad',ids:field.slice(offset,offset+6),name:'Columna con oficiales',sector:'tucuman'});const pair=visit(c);c=leave(sync({campaign:pair.campaign,battle:equipOpeningRifles(pair.battle,c.squad).battle}));c=supplyRouteAmmunition(c,c.squad,{report}).campaign;c=finishReloadsBeforeMarch(c);}
@@ -243,7 +288,7 @@ function completeCreatedNorthernMission(start,{report=()=>{}}={}){
  const relief=rosterFor(c).filter(op=>c.recruited.includes(op.id)&&c.operativeState[op.id].alive&&!c.operativeState[op.id].captured&&c.operativeState[op.id].location==='salta').sort((a,b)=>Number(b.id===11)-Number(a.id===11)||b.medical-a.medical).slice(0,6).map(op=>op.id);
  assert.ok(relief.includes(11),'the actual living envoy must remain in the relief party');
  order({type:'createSquad',ids:relief,sector:'salta',name:'Socorro de Salta'});
- const p=visit(c),aid=autoBandageBattle(p.battle);c=leave(sync({campaign:p.campaign,battle:aid.battle}));for(const id of relief){assert.ok(c.operativeState[id].hp>=15);assert.equal(c.operativeState[id].bleeding,0,'actual surviving relief receives finite first aid');}
+ c=aidNorthernMissionRelief(c,relief,{report}).campaign;for(const id of relief){assert.ok(c.operativeState[id].hp>=15);assert.equal(c.operativeState[id].bleeding,0,'actual surviving relief receives finite first aid');}
  c=retreatNorthernRear(c,{report});order({type:'diplomacy',kind:'northPact'});
  order({type:'squad',ids:[11]});
  for(let leg=0;leg<16&&c.location!=='tucuman';leg++){c=completeTestTravel(c,{sector:'tucuman',mode:'posta'});c=retreatNorthernRear(c,{report});}
@@ -283,16 +328,20 @@ function prepareStockNorthernOfficerRelief(start,{report=()=>{}}={}){
  // The settled field retains actual bleeding. Native finite aid must precede
  // the courier's rest and supply trip, including a wounded serving doctor.
  c=stabilizeCreatedCuyoSurvivors(c,{report});
+ const rear=stockNorthernRearReserve(c);
  const live=()=>c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured);
 const order=a=>{resolveEncounter();if(a.type==='assignCare'&&c.operativeState[a.operativeId].assignment===a.assignment)return;if(a.type==='wait')for(const id of live()){const q=c.contracts[id];if(q?.expiresAt!=null&&q.expiresAt<=c.hour+a.hours){c=dispatchCampaign(c,{type:'renewContract',id,term:'day',expectedExpiresAt:q.expiresAt});assert.equal(c.lastError,null);}}c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);if(a.type==='wait')resolveEncounter();};
 const travel=at=>{const id=c.activeSquadId;order({type:'travel',sector:at,queue:true,mode:'posta'});for(let h=0;h<36&&c.squads.find(q=>q.id===id).journey;h++){resolveEncounter();order({type:'wait',hours:1});}assert.equal(c.location,at);};
 
- for(const id of live())order({type:'assignCare',operativeId:id,assignment:'rest'});
+ for(const id of live().filter(id=>!rear.ids.includes(id)))order({type:'assignCare',operativeId:id,assignment:'rest'});
  const initialLeadership=Math.max(...encounterDefinitions(c).filter(n=>['quiroga','paz'].includes(n.id)).map(n=>n.requiredLeadership));
  const courier=rosterFor(c).filter(op=>live().includes(op.id)&&op.leadership>=initialLeadership&&c.operativeState[op.id].location==='tucuman'&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding).sort((a,b)=>Number(b.id===114)-Number(a.id===114)||c.operativeState[b.id].energy-c.operativeState[a.id].energy||b.leadership-a.leadership)[0]?.id;
  assert.ok(courier,'the envoy must be a living local leader, preserving every actual fallen soldier');
  report({event:'northernReliefCourier',id:courier,leadership:rosterFor(c).find(op=>op.id===courier).leadership,requiredLeadership:initialLeadership,campaign:structuredClone(c)});
- for(let h=0;h<72&&(c.operativeState[courier].fatigue||c.operativeState[courier].energy<100||c.operativeState[courier].asleep);h++){resolveEncounter();order({type:'wait',hours:1});}
+ // The envoy's existing rest window also covers the actual support's morale.
+ // Preserve the same72 requests and every casualty; no payment creates a fit
+ // replacement when the affordable living roster has already been exhausted.
+ for(let h=0;h<72&&(c.operativeState[courier].fatigue||c.operativeState[courier].energy<100||c.operativeState[courier].asleep||stockNorthernReliefRestPlan(c,{rear,plannedOfficers:[9,11,1],includeSourceSupport:true}).needsRest);h++){resolveEncounter();order({type:'wait',hours:1});}
  assert.equal(c.operativeState[courier].asleep,false);assert.equal(c.operativeState[courier].energy,100);
  order({type:'transport',mode:'posta'});
  order({type:'createSquad',ids:[courier],name:'Enlace provincial',sector:'tucuman'});order({type:'assignCare',operativeId:courier,assignment:'active'});travel('cordoba');
@@ -303,15 +352,17 @@ const travel=at=>{const id=c.activeSquadId;order({type:'travel',sector:at,queue:
  const dressingTarget=Math.max(c.operativeState[courier].medkits??0,20);
  c=discoverRouteCache(c,courier);
  const localStock=sectorInventoryModel(c,'cordoba',rosterFor(c),courier).entries.filter(row=>row.reachable&&JSON.parse(row.expected).item==='medkits').reduce((sum,row)=>sum+row.count,0);
- const donations=live().filter(id=>id!==courier&&c.operativeState[id].location==='cordoba'&&!sectorInventoryModel(c,'cordoba',rosterFor(c),id).reason).reduce((sum,id)=>sum+(c.operativeState[id].medkits??0),0);
- c=supplyRouteDressings(c,courier,Math.min(dressingTarget,(c.operativeState[courier].medkits??0)+localStock+donations),{report});
+ const donations=live().filter(id=>id!==courier&&c.operativeState[id].location==='cordoba'&&!sectorInventoryModel(c,'cordoba',rosterFor(c),id).reason).reduce((sum,id)=>sum+Math.max(0,(c.operativeState[id].medkits??0)-(rear.medkits[id]??0)),0);
+ c=supplyRouteDressings(c,courier,Math.min(dressingTarget,(c.operativeState[courier].medkits??0)+localStock+donations),{reserves:rear.medkits,report});
  for(let trip=0;trip<20&&(c.operativeState[courier].medkits??0)<dressingTarget;trip++){
   const found=collectRouteMedicalSupplies(c,courier,dressingTarget-(c.operativeState[courier].medkits??0),{report});c=found.campaign;
  }
  assert.equal(c.operativeState[courier].medkits,dressingTarget,'the courier must recover every delivered dressing from actual finite stocks');
  // Ensenada holds the only swivel. The first northern assault instead uses
  // Córdoba's existing bronze piece and its real two-person provincial crew.
+ assertStockNorthernRear(c,rear);c=attachStockNorthernSupport(c,{rear,report}).campaign;
  const battery=prepareRouteBattery(c,['bronze4'],{destination:'tucuman',keepServing:live(),report});c=battery.campaign;
+ assertStockNorthernRear(c,rear);
  // Retain the original clinic selection and its real native defense context.
  // Quiet visits may issue this finite piece into the local field.
  order({type:'configureArtillery',types:battery.selections});
@@ -333,7 +384,8 @@ const travel=at=>{const id=c.activeSquadId;order({type:'travel',sector:at,queue:
  refreshPatients();
  for(const operativeId of physicians)order({type:'assignCare',operativeId,assignment:'doctor'});
  for(const operativeId of patients())order({type:'assignCare',operativeId,assignment:'patient'});
- for(let h=0;h<48&&patients().some(id=>c.operativeState[id].hp<c.operativeState[id].maxHp||c.operativeState[id].bleeding);h++){
+ let careHours=0;
+ for(;careHours<48&&patients().some(id=>c.operativeState[id].hp<c.operativeState[id].maxHp||c.operativeState[id].bleeding);careHours++){
   resolveEncounter();
   for(const operativeId of patients())order({type:'assignCare',operativeId,assignment:'patient'});
   for(const id of physicians)if(!c.operativeState[id].medkits){
@@ -360,12 +412,19 @@ const travel=at=>{const id=c.activeSquadId;order({type:'travel',sector:at,queue:
  }
  for(const id of patients())assert.equal(c.operativeState[id].hp,c.operativeState[id].maxHp,'finite provincial care must restore the actual injured support');
  for(const operativeId of [...physicians,...patients()])order({type:'assignCare',operativeId,assignment:'rest'});
+ // Spend the original36 field-rest requests before the staffing guard. The
+ // courier can be fit while wounded comrades still need ordinary morale rest.
+ // This moves the same window; it does not add another preparation budget.
+ const restingField=()=>live().filter(id=>!rear.ids.includes(id)&&c.operativeState[id].location==='tucuman');
+ for(let h=0;h<36&&(stockNorthernReliefRestPlan(c,{remainingCareHours:48-careHours}).needsRest||restingField().some(id=>c.operativeState[id].fatigue||c.operativeState[id].energy<100||c.operativeState[id].asleep));h++){
+  resolveEncounter();for(const id of restingField())order({type:'assignCare',operativeId:id,assignment:c.operativeState[id].hp<c.operativeState[id].maxHp?'patient':'rest'});order({type:'wait',hours:1});
+ }
+ const staffing=bookStockNorthernReliefHires(c,{remainingCareHours:48-careHours,report});c=staffing.campaign;
+ for(;careHours<48&&staffing.hires.some(({id})=>!c.recruited.includes(id));careHours++)order({type:'wait',hours:1});
+ assertStockNorthernHiresArrived(c,staffing.hires);assertStockNorthernRear(c,rear);
  const officers=[9,11,1],field=[...officers,...live().filter(id=>!officers.includes(id)&&c.operativeState[id].location==='tucuman'&&c.operativeState[id].hp===c.operativeState[id].maxHp&&c.operativeState[id].morale>=30)];
  report({event:'northernReliefFormation',field,campaign:structuredClone(c)});
  assert.ok(field.length>=8,'the officers need actual fit survivors as support');
- for(let h=0;h<36&&field.some(id=>c.operativeState[id].fatigue||c.operativeState[id].energy<100||c.operativeState[id].asleep);h++){
-  resolveEncounter();for(const id of live())order({type:'assignCare',operativeId:id,assignment:c.operativeState[id].hp<c.operativeState[id].maxHp?'patient':'rest'});order({type:'wait',hours:1});
- }
  for(const id of field){assert.ok(c.operativeState[id].hp>=15);assert.equal(c.operativeState[id].bleeding,0);order({type:'assignCare',operativeId:id,assignment:'active'});}
  for(let i=0;i<field.length;i+=6){
   order({type:'createSquad',ids:field.slice(i,i+6),name:'Columna con oficiales',sector:'tucuman'});
@@ -379,7 +438,9 @@ const travel=at=>{const id=c.activeSquadId;order({type:'travel',sector:at,queue:
  const batteryRecoveryStart=structuredClone(c),assaultBattery=prepareRouteBattery(c,['bronze4'],{destination:'tucuman',keepServing:live(),report});c=assaultBattery.campaign;
  report({event:'northernReliefAssaultBattery',batteryRecoveryStart,selections:assaultBattery.selections,campaign:structuredClone(c)});
  order({type:'configureArtillery',types:assaultBattery.selections});
- return prepareFinalAssault(c,{staging:'tucuman',target:'salta',fieldIds:field});
+ const ready=prepareFinalAssault(c,{staging:'tucuman',target:'salta',fieldIds:field});
+ recordRouteStrategicEvidence({helper:'prepareStockNorthernOfficerRelief',stage:'route-checkpoint',campaign:ready,inputCapture,context:{phase:'whole-officer-preparation-return-after-unchanged-final-assault-request',staging:'tucuman',target:'salta',fieldIds:field}});
+ return ready;
  }catch(error){recordRouteStrategicEvidence({helper:'prepareStockNorthernOfficerRelief',stage:'preparation-failure',campaign:c,inputCapture,error});throw error;}
 }
 
@@ -434,6 +495,21 @@ export function relieveStockNorthernPatient(start,{patientId,doctorId,report=()=
 
 // Yatasto accepts a capable local envoy; it does not require a particular officer.
 // Stable wounds remain real wounds. Only acute survivors need finite field aid.
+export function advanceStockNorthernMissionHour(start,{report=()=>{}}={}){
+ assert.equal(start.pendingEncounter,null);assert.equal(start.pendingBattle,null);
+ const before=start.hour*3600+(start.secondOfHour??0),waited=dispatchCampaign(start,{type:'wait',hours:1});
+ assert.equal(waited.lastError,null,waited.lastError);
+ assert.ok(waited.hour*3600+(waited.secondOfHour??0)>before,'The real mission wait must advance time.');
+ let campaign=waited;
+ if(waited.pendingEncounter){
+  report({event:'northernMissionRaid',campaign:structuredClone(waited)});
+  campaign=resolveNorthernHandoverEncounter(waited,{report});
+ }
+ assert.equal(campaign.pendingEncounter,null,'An actual raid must be resolved before continuing to Yatasto.');
+ assert.equal(campaign.pendingBattle,null,'The actual mission defense must finish before continuing to Yatasto.');
+ return campaign;
+}
+
 function completeStockNorthernMission(start,{report=()=>{},onCheckpoint}={}){
  let c=structuredClone(start);const prior=structuredClone(start),now=()=>c.hour*3600+(c.secondOfHour??0);
  const live=()=>c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured);
@@ -457,8 +533,7 @@ function completeStockNorthernMission(start,{report=()=>{},onCheckpoint}={}){
  };
  const waitHour=()=>{
   assert.equal(acute().length,0,`All actual acute survivors need care before mission hours: ${acute().join(',')}.`);
-  assert.equal(c.pendingEncounter,null);keepServing();const before=now();order({type:'wait',hours:1});
-  assert.ok(now()>before,'The real mission wait must advance time.');assert.equal(c.pendingEncounter,null,'An actual raid must be resolved before continuing to Yatasto.');
+  assert.equal(c.pendingEncounter,null);keepServing();c=advanceStockNorthernMissionHour(c,{report});
  };
 
  // Inspect every owned survivor, including people left in another cell. A

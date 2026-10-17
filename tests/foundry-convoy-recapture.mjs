@@ -1,3 +1,4 @@
+import {stabilizeStockMendozaSurvivors} from './created-cuyo-route.mjs';
 import assert from 'node:assert/strict';
 import {rosterFor} from '../game/campaign.js';
 import {contractQuote} from '../game/contracts.js';
@@ -26,12 +27,13 @@ export function recaptureFoundryConvoy(start,{transferId,createOrders,recoverPat
  assert.ok(transfer);assert.equal(start.location,'mendoza');assert.equal(transfer.to,'cordoba');
  const reverse=[...transfer.path].reverse();assert.equal(reverse[0],'cordoba');assert.equal(start.sectors.cordoba.owner,'patriot');
  let c=decodeSave(encodeSave(start)).campaign;
- const checkpoints=[],battleRecords=[];
+ const checkpoints=[],battleRecords=[],temporaryHires=[];
  const save=stage=>{assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);const row={stage,campaign:structuredClone(c)};checkpoints.push(row);report({event:'foundryConvoyCheckpoint',...row});};
  const newDoctor=unusedHires(c).filter(op=>op.medical>=60).sort((a,b)=>b.medical-a.medical||a.id-b.id)[0];
  let physicianId;
  if(newDoctor){
   const booked=bookRouteHires(c,[newDoctor.id],{term:'week',destination:'mendoza',report});c=finishRouteHireArrivals(booked.campaign,booked.hires,{minimumWaitHours:0,report});physicianId=newDoctor.id;
+  temporaryHires.push(...booked.hires.map(hire=>({...structuredClone(hire),purpose:'convoy-physician'})));
  }else physicianId=rosterFor(c).filter(op=>available(c,op.id,'mendoza')&&stable(c.operativeState[op.id])&&op.medical>=60&&c.operativeState[op.id].medkits>0).sort((a,b)=>b.medical-a.medical)[0]?.id;
  assert.notEqual(physicianId,undefined,'A real supplied serving physician must accompany the convoy recovery.');
  let retained=createOrders(()=>c,next=>{c=next;},{report});const order=action=>retained.order(action);
@@ -44,7 +46,7 @@ export function recaptureFoundryConvoy(start,{transferId,createOrders,recoverPat
   for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'rest'});
   for(let hours=0;hours<48&&field.some(id=>c.operativeState[id].energy<100||c.operativeState[id].fatigue||c.operativeState[id].asleep);hours++)order({type:'wait',hours:1});
   for(const id of field)assert.ok(c.operativeState[id].energy===100&&!c.operativeState[id].fatigue&&!c.operativeState[id].asleep);
-  for(const id of columns){order({type:'selectSquad',id});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});if(ammunition)c=supplyRouteAmmunition(c,c.squad,{target:12,report}).campaign;c=finishReloadsBeforeMarch(c,{report});}
+  for(const id of columns){order({type:'selectSquad',id});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});if(ammunition)c=supplyRouteAmmunition(c,c.squad,{target:12,report}).campaign;c=finishReloadsBeforeMarch(c,{report,readyPrimary:true});}
   order({type:'configureArtillery',types:[]});return field;
  };
  for(const id of local('mendoza')){
@@ -59,13 +61,13 @@ export function recaptureFoundryConvoy(start,{transferId,createOrders,recoverPat
    c=recoverPatients(c,{report});save('between-localities-care');
    if(!available(c,physicianId,c.location)||!stable(c.operativeState[physicianId]))physicianId=rosterFor(c).filter(op=>available(c,op.id,c.location)&&stable(c.operativeState[op.id])&&op.medical>=20).sort((a,b)=>b.medical-a.medical)[0]?.id;
    assert.notEqual(physicianId,undefined,'The actual surviving force needs an available physician.');
-   const missing=Math.max(0,4-c.operativeState[physicianId].medkits),hires=[];
-   for(let quantity=0;quantity<missing;){
-    const guard=unusedHires(c).filter(op=>c.operativeState[op.id].medkits>0).sort((a,b)=>b.marksmanship-a.marksmanship||a.id-b.id)[0];assert.ok(guard,'Actual unused paid guards must supply the remaining finite field dressings.');
+   const missing=Math.max(0,4-c.operativeState[physicianId].medkits),fieldMissing=Math.max(0,12-local(c.location).length),hires=[];
+   for(let quantity=0;quantity<missing||hires.length<fieldMissing;){
+    const guard=unusedHires(c).filter(op=>quantity>=missing||c.operativeState[op.id].medkits>0).sort((a,b)=>b.marksmanship-a.marksmanship||a.id-b.id)[0];assert.ok(guard,'Actual unused paid guards must supply the remaining personnel and finite field dressings.');
     const booked=bookRouteHires(c,[guard.id],{term:'week',destination:c.location,report});c=booked.campaign;hires.push(...booked.hires);quantity+=c.operativeState[guard.id].medkits;
    }
    if(hires.length){
-    c=finishRouteHireArrivals(c,hires,{minimumWaitHours:0,report});c=transferRouteSupply(c,{sector:c.location,recipientId:physicianId,donorIds:hires.map(row=>row.id),item:'medkits',count:missing,report}).campaign;
+    c=finishRouteHireArrivals(c,hires,{minimumWaitHours:0,report});temporaryHires.push(...hires.map(hire=>({...structuredClone(hire),purpose:'convoy-replacement-and-dressings'})));if(missing)c=transferRouteSupply(c,{sector:c.location,recipientId:physicianId,donorIds:hires.map(row=>row.id),item:'medkits',count:missing,report}).campaign;
     for(const hire of hires)c=recoverRoutePrimary(c,hire.id,{report});
    }
    retained=createOrders(()=>c,next=>{c=next;},{report});field=ready(c.location);
@@ -79,6 +81,13 @@ export function recaptureFoundryConvoy(start,{transferId,createOrders,recoverPat
   battleRecords.push(won.summary);save('recaptured-'+target);
  }
  assert.ok(transfer.path.every(sector=>c.sectors[sector].owner==='patriot'));
+ // The final cut has no following between-localities clinic. Stabilize its
+ // actual local and escaped survivors before any convoy or return wait.
+ if(c.recruited.some(id=>c.operativeState[id].alive&&(c.operativeState[id].hp<15||c.operativeState[id].bleeding))){
+  const stagingSector=c.location;
+  c=stabilizeStockMendozaSurvivors(c,{report,stagingSector,immediateFieldAid:true,returnSector:stagingSector});
+  retained=createOrders(()=>c,next=>{c=next;},{report});save('final-localities-field-aid');
+ }
  const acute=c.recruited.filter(id=>c.operativeState[id].alive&&(c.operativeState[id].hp<15||c.operativeState[id].bleeding));
  assert.deepEqual(acute,[],'The actual recapture must stabilize urgent casualties before the convoy clock resumes.');
  if(c.artilleryTransfers.some(row=>row.id===transfer.id))order({type:'wait',hours:1});
@@ -95,6 +104,9 @@ export function recaptureFoundryConvoy(start,{transferId,createOrders,recoverPat
  assert.deepEqual(c.squad,originalSurvivors);
  for(const [id,record]of Object.entries(before.operativeState))if(!record.alive)assert.equal(c.operativeState[id].alive,false);
  assert.deepEqual(start,before);save('delivered-and-returned');
- report({event:'foundryConvoyRecovered',id:transfer.id,record:transfer.gun,battles:battleRecords,campaign:structuredClone(c)});
- return {campaign:c,battles:battleRecords,checkpoints};
+ // This receipt exists only after the same actual victories, finite care,
+ // physical delivery, surviving return and official save guards above.
+ const completedService={version:1,transferId:transfer.id,record:structuredClone(transfer.gun),path:[...transfer.path],destination:transfer.to,returnedSector:c.location,completedSeconds:c.hour*3600+(c.secondOfHour??0),battles:structuredClone(battleRecords),hires:temporaryHires};
+ report({event:'foundryConvoyRecovered',id:transfer.id,record:transfer.gun,battles:battleRecords,completedService,campaign:structuredClone(c)});
+ return {campaign:c,battles:battleRecords,checkpoints,completedService};
 }

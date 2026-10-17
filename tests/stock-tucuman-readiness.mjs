@@ -13,6 +13,7 @@ import {actBattle,reloadCost} from '../game/tactical.js';
 import {syncBattleTime} from '../game/time.js';
 import {captureRouteStrategicInput,recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 import {transferRouteAmmunition,transferRouteSupply} from './route-ammunition-transfer.mjs';
+import {discoverRouteCache} from './finite-route-equipment.mjs';
 
 const clock=s=>s.hour*3600+(s.secondOfHour??0);
 const compatible=(s,op)=>civicStatus(s,op.id).available&&contractQuote(s,op,'week').available&&contractQuote(s,op,'week').total<=1400;
@@ -164,6 +165,12 @@ export function prepareStockTucumanReadiness(start,{report=()=>{},onCheckpoint}=
   }
  }
  order({type:'selectSquad',id:groups[0]});
+ // Stock departure still needs the same real finite arsenal discovery.
+ if(!c.sectorStates.cordoba.artillery.some(gun=>gun.side==='player'&&gun.type==='bronze4'&&(gun.loaded||gun.ammo>0))&&!c.artilleryArsenalRecoveries.cordoba){
+  const carrier=paid[0],record=c.operativeState[carrier],contract=c.contracts[carrier];assert.ok(field.includes(carrier)&&c.recruited.includes(carrier)&&record?.alive&&!record.captured&&record.location==='cordoba'&&contract&&(contractExpiresSeconds(contract)===null||contractExpiresSeconds(contract)>clock(c)),'An actually arrived paid field carrier must retain current local service for arsenal discovery.');
+  const from=clock(c);c=discoverRouteCache(c,carrier);validate();assert.equal(c.pendingBattle,null);assert.ok(clock(c)>=from);
+  event({event:'stockReadinessFiniteArsenalDiscovery',carrier,from,to:clock(c),recovery:structuredClone(c.artilleryArsenalRecoveries.cordoba??null)});
+ }
  const gun=c.sectorStates.cordoba.artillery.filter(gun=>gun.side==='player'&&gun.type==='bronze4'&&(gun.loaded||gun.ammo>0)).sort((a,b)=>a.id.localeCompare(b.id))[0];assert.ok(gun,'A real owned supplied Córdoba bronze cannon is required.');assert.equal(artilleryProfile(c,gun).crew,2);
  const record=storedArtilleryRecord(gun);order({type:'storeArtillery',sector:'cordoba',artilleryId:gun.id});assert.deepEqual(c.artilleryDepots.cordoba.find(piece=>piece.id===gun.id),record);assert.ok(!c.sectorStates.cordoba.artillery.some(piece=>piece.id===gun.id));order({type:'configureArtillery',types:['depot:'+gun.id]});
  for(const id of groups){order({type:'selectSquad',id});reload();}

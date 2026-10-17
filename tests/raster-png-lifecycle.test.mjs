@@ -2,7 +2,7 @@ import {register} from 'node:module';
 register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {rasterizeSvgGroup} from '../web/lib/rasterize-svg.ts';
+const {rasterizeSvgGroup}=await import('../web/lib/rasterize-svg.ts');
 
 function browser(t,{pngDecode=async()=>{}}={}){
  const created=[],revoked=[],reads=[];

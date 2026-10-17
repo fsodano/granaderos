@@ -207,7 +207,7 @@ export function freshCoastalRoute(kind,{onCheckpoint,onReplayFailure,onBeforeBat
   const evidence=beginRouteCoastalEvidence({routeKind:kind,sector,battleId:request.id});
   onBeforeBattle?.(structuredClone({sector,campaign:s,request,previous}));
   evidence?.capture('before-battle-execution',{campaign:s,request,previous});
-  const nativeResult=engage(request,previous,{scoutCostWeight:.01,avoidCivilians:true,fallbackOrders:true,holdPosition:sector==='san_lorenzo'?(kind==='local'?['10','57']:['57']):[]});
+  const nativeResult=engage(request,previous,{scoutCostWeight:.01,avoidCivilians:true,fallbackOrders:true,controller:kind==='hired'&&sector==='san_nicolas'?hiredAssaultOrder:undefined,holdPosition:sector==='san_lorenzo'?(kind==='local'?['10','57']:['57']):[]});
   evidence?.capture('native-combat-result',nativeResult);
   const {battle,orders,actions}=nativeResult;onBattleFinished?.({sector,battle,orders,actions});
   if(battle.status!=='victory')recordRouteBattleFailure({campaign:s,request,previous,result:{battle,orders,actions},expectedOutcome:'victory',executeBattle:engage});

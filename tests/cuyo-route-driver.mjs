@@ -42,7 +42,7 @@ export function cuyoCrouchOrder(b,u,{avoidCivilians=false}={}){
  }
  return null;
 }
-export function fight(request,previous=null,{scoutCostWeight=.1,avoidCivilians=false,holdPosition=[],fallbackOrders=false}={}){
+export function fight(request,previous=null,{scoutCostWeight=.1,avoidCivilians=false,holdPosition=[],fallbackOrders=false,controller}={}){
  if(request.sector==='buenos_aires')return recordedFight(request,previous,{controller:(battle,unit)=>{
   // Capital contact uses the current known-state cover/aid/fire decisions,
   // including useful paid prone fire, instead of the old crouched rush.
@@ -66,6 +66,9 @@ for(let window=0;window<600&&b.turn<=80&&b.status==='active';window++){
    // Evaluate each candidate only after earlier ordinary orders refuse it.
    // A successful order ends the generator before unused path/shot previews.
    function* candidates(){
+    // A supplied current policy keeps this route's exact scheduling and paid
+    // engine orders. Its null is a hold; retain visible-civilian safety.
+    if(controller){const action=controller(b,u);if(action&&!(hold&&['move','charge','climb','exit'].includes(action.type))&&(!avoidCivilians||safeFireOrder(b,u,action)))yield action;return;}
     if(u.bleeding&&firstAidPlan(u,u).valid)yield (u.activeSlot==='medical'?{type:'heal'}:{type:'weapon',slot:'medical'});
     else if(u.activeSlot==='medical')yield ({type:'weapon',slot:'primary'});
     if(!visible.length&&u.stance==='prone')yield ({type:'stance',stance:'standing'});
@@ -104,7 +107,7 @@ for(let window=0;window<600&&b.turn<=80&&b.status==='active';window++){
     if(scored[0]&&scored[0].score>currentScore+2)yield ({type:'move',...spacePoint(scored[0].p)});
     if(hasFirearm(u)&&!u.loaded&&u.ammo)yield ({type:'reload'});
    }
-   let done=false;for(const a of candidates()){const next=actBattle(b,{...a,unitId:id});if(!next.lastError){b=next;orders.push({...a,unitId:id});actions++;done=true;break;}}if(!done&&fallbackOrders){const fallback=automaticOrder(b,u);if(fallback&&!(hold&&['move','charge','climb','exit'].includes(fallback.type))&&(!avoidCivilians||safeFireOrder(b,u,fallback))){const next=actBattle(b,{...fallback,unitId:id});if(!next.lastError){b=next;orders.push({...fallback,unitId:id});actions++;done=true;}}}if(done)acted=true;
+   let done=false;for(const a of candidates()){const next=actBattle(b,{...a,unitId:id});if(!next.lastError){b=next;orders.push({...a,unitId:id});actions++;done=true;break;}}if(!done&&fallbackOrders&&!controller){const fallback=automaticOrder(b,u);if(fallback&&!(hold&&['move','charge','climb','exit'].includes(fallback.type))&&(!avoidCivilians||safeFireOrder(b,u,fallback))){const next=actBattle(b,{...fallback,unitId:id});if(!next.lastError){b=next;orders.push({...fallback,unitId:id});actions++;done=true;}}}if(done)acted=true;
   }
   if(!acted)break;
  }

@@ -3,7 +3,8 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {JSDOM} from '../web/node_modules/jsdom/lib/api.js';
 import {createElement as h,act} from '../web/node_modules/react/index.js';
 import {createRoot} from '../web/node_modules/react-dom/client.js';
-import {createBattle,actBattle,presentedActBattle,fieldDressingsPreview} from '../game/tactical.js';
+import {createBattle,actBattle,presentedActBattle,fieldDressingsPreview,actionCosts} from '../game/tactical.js';
+import {equipmentEndpoint,itemQuantity} from '../game/tactical-inventory.js';
 import {makeOutfit} from '../game/outfits.js';
 import {fieldDressingsSource} from '../game/field-dressings.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
@@ -71,4 +72,45 @@ test('the inventory explains insufficient AP, damaged cloth and worn or held sou
   await ui.draw(s);await ui.inspect(slot);assert.ok(ui.button);assert.equal(ui.button.disabled,true);assert.match(ui.button.title,reason);
   const snapshot=structuredClone(ui.battle);await act(async()=>ui.button.click());assert.deepEqual(ui.battle,snapshot);assert.equal(ui.orders.length,0);
  }
+});
+
+
+test('an inspected pocket stays empty after putting its blade in hand until the player selects current equipment',async t=>{
+ const s=field({maxHp:100,hp:100,bleeding:0,bandaged:0,energy:100,fatigue:0,shock:0,morale:80,
+  weapon:1800,loaded:1,ammo:9,condition:100,blade:1813,bladeCondition:100,activeSlot:'primary',inventory:{},
+  priming:0,flints:0,rations:0,medkits:0,boleadoras:0,torches:0,
+  pocketOrder:[{slotId:'small-6',item:'blade',index:0,count:1}]}),before=structuredClone(s),ui=await mounted(t,s);
+ const panel=()=>ui.host.querySelector('.pertrechos'),feedback=()=>panel().querySelector('.ja2-item-feedback');
+ const putInHand=label=>[...panel().querySelectorAll('button')].find(button=>button.textContent.startsWith(`Poner ${label}`)&&button.textContent.includes(' en mano'));
+ const emptyDetails=()=>{
+  assert.equal(panel().querySelector('summary').textContent,'Objeto · detalles');
+  assert.match(panel().textContent,/Esta ranura está vacía\./);assert.equal(panel().querySelector('.ja2-item-card'),null);
+  assert.doesNotMatch(feedback().textContent,/disponible\(s\)/);
+  assert.equal(panel().querySelector('[aria-label="Objeto para dar o soltar"]').value,'');
+  assert.equal(panel().querySelector('[aria-label="Cantidad de objetos"]').disabled,true);
+  assert.ok([...panel().querySelectorAll('button')].filter(button=>/^(Dar o arrojar|Soltar aquí)/.test(button.textContent)).every(button=>button.disabled));
+  assert.equal([...panel().querySelectorAll('button')].some(button=>button.textContent.startsWith('Poner ')),false);
+ };
+ assert.equal(equipmentEndpoint(s.units[0],'small-6').item,'blade');await ui.inspect('small-6');
+ assert.match(panel().querySelector('summary').textContent,/Facón/);const blade=putInHand('Facón');assert.ok(blade);assert.equal(blade.disabled,false);
+ const bladeCost=actionCosts(ui.battle,ui.battle.units[0]).weapon;
+ await act(async()=>blade.click());assert.equal(ui.battle.lastError,null);assert.deepEqual(ui.orders,[{type:'weapon',slot:'blade'}]);
+ assert.equal(ui.battle.units[0].activeSlot,'blade');assert.equal(ui.battle.units[0].ap,s.units[0].ap-bladeCost);
+ assert.equal(equipmentEndpoint(ui.battle.units[0],'small-6').item,null);await ui.draw();emptyDetails();
+ const afterBlade=structuredClone(ui.battle);await ui.inspect('hand:right');
+ assert.match(panel().querySelector('summary').textContent,/Facón/);assert.ok(panel().querySelector('[aria-label^="Detalles de Facón"]'));
+ assert.doesNotMatch(panel().textContent,/Esta ranura está vacía/);assert.equal(ui.orders.length,1);assert.deepEqual(ui.battle,afterBlade);
+ const riflePocket=[...ui.host.querySelectorAll('.ja2-pocket')].find(button=>button.textContent.includes('Brown Bess'));assert.ok(riflePocket);
+ const rifleSlot=riflePocket.dataset.equipmentSlot;await ui.inspect(rifleSlot);const rifle=putInHand('Brown Bess');assert.ok(rifle);assert.equal(rifle.disabled,false);
+ const rifleCost=actionCosts(ui.battle,ui.battle.units[0]).weapon;
+ await act(async()=>rifle.click());assert.equal(ui.battle.lastError,null);assert.equal(ui.orders.length,2);assert.deepEqual(ui.orders[1],{type:'weapon',slot:'primary'});
+ assert.equal(ui.battle.units[0].activeSlot,'primary');assert.equal(ui.battle.units[0].ap,s.units[0].ap-bladeCost-rifleCost);
+ assert.equal(equipmentEndpoint(ui.battle.units[0],rifleSlot).item,null);await ui.draw();emptyDetails();
+ await ui.inspect('hand:right');assert.ok(panel().querySelector('[aria-label="Detalles de Brown Bess"]'));assert.doesNotMatch(panel().textContent,/Esta ranura está vacía/);
+ for(const key of ['hp','bleeding','energy','weapon','blade','loaded','ammo','condition','bladeCondition'])assert.deepEqual(ui.battle.units[0][key],s.units[0][key],key);
+ assert.equal(itemQuantity(ui.battle.units[0],'primary'),1);assert.equal(itemQuantity(ui.battle.units[0],'blade'),1);
+ const actions=ui.orders.map(action=>({...action,unitId:'p'}));let replay=s,presented=s;
+ for(const action of actions){replay=actBattle(replay,action);assert.equal(replay.lastError,null);presented=presentedActBattle(presented,action).state;assert.equal(presented.lastError,null);}
+ assert.deepEqual(replay,ui.battle);assert.deepEqual(presented,ui.battle);assert.deepEqual(validateBattleSnapshot(JSON.parse(JSON.stringify(ui.battle))),ui.battle);
+ assert.deepEqual(s,before);
 });

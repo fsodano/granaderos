@@ -1,11 +1,16 @@
 // Keep the commander behind the battery and fire from an affordable legal stance.
+import {sameSurface} from '../game/tactical-space.js';
+import {publicRouteView,usefulRouteFiringPosture} from './route-infantry-progress.mjs';
 import {mountainBatteryOrder} from './mountain-battery-driver.mjs';
 import {knownRouteShotSafety} from './route-fire-safety.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
 import {chooseEnemyAction} from '../game/tactical-ai.js';
 import {chooseGrenadeThrow} from '../game/tactical-ai-grenades.js';
 import {artilleryProfile} from '../game/artillery-definitions.js';
-import {getReachable,teamCanSee,firearmShotOptions,actionCosts,stanceCost,artilleryContact} from '../game/tactical.js';
+import {getReachable,teamCanSee,firearmShotOptions,actionCosts,stanceCost,artilleryContact,hasFirearm} from '../game/tactical.js';
+import {firearmServiceable} from '../game/firearm-serviceability.js';
+import {lowerWeapon} from '../game/weapon-readiness.js';
+import {advanceBattleClock,COMBAT_ROUND_SECONDS} from '../game/time.js';
 export const coastalCommandOrder=(b,u,{leaderId='7',helperId='8',screenDistance=Infinity,commanderDistance=3,requireCrewForCover=false}={})=>{
  const normal=mountainBatteryOrder(b,u,{leaderId,helperId,screenDistance}),gun=b.artillery.find(g=>g.side===u.side);
  const coverCommander=!requireCrewForCover||b.units.some(actor=>actor.id===leaderId&&actor.hp>=15&&!actor.routed&&!actor.unconscious&&!actor.departure);
@@ -25,15 +30,29 @@ export const coastalCommandOrder=(b,u,{leaderId='7',helperId='8',screenDistance=
 // Beltrán replaces the fallen gunner; a living crew is required for cover.
 export const blockadeCommandOrder=(battle,unit)=>coastalCommandOrder(battle,unit,{leaderId:'2',screenDistance:3,requireCrewForCover:true});
 
+// With no working cannon crew, an armed physician keeps the ordinary policy.
+// A paid rise must leave actual ordinary work, rather than another posture.
+// Protective lowering remains available; no quoted body is ever adopted.
+function coastalPhysicianPostureOrder(b,u){
+ const action=tucumanCombatOrder(b,u),postures=['standing','crouched','prone'];
+ if(action?.type!=='stance'||b.mode!=='combat'||u.medical<60||u.medkits<1||u.hp<15||u.bleeding||u.knockedDown||u.entangled||u.mounted||u.activeSlot!=='primary'||!u.loaded||u.jammed||!hasFirearm(u)||!firearmServiceable(u)||postures.indexOf(action.stance)>=postures.indexOf(u.stance))return action;
+ const paid=stanceCost(u,action.stance);if(!(paid>0&&paid<u.ap))return null;
+ const view=structuredClone(publicRouteView(b,u)),actor=view.units.find(other=>other.id===u.id);
+ actor.ap-=paid;actor.stance=action.stance;actor.movementMode=action.stance==='prone'?'prone':action.stance==='crouched'?'crouch':'walk';actor.momentum=0;lowerWeapon(actor);
+ if(!view.roundTimeCharged){advanceBattleClock(view,COMBAT_ROUND_SECONDS);view.roundTimeCharged=true;}
+ const follow=tucumanCombatOrder(view,actor);
+ return follow&&follow.type!=='stance'?action:null;
+}
+
 // Two coastal guns need separate crews and space for their translated bodies.
 // Infantry scouts the flanks so contact occurs before an exposed crew arrives.
-export function coastalBatteryController(initial,{sharedArtillerySight=false}={}){
+export function coastalBatteryController(initial,{sharedArtillerySight=false,crewEligible=()=>true,crewOnly=false,prioritizeCrewApproach=false}={}){
  const approach={x:Math.floor(initial.width*.65),y:Math.floor(initial.height*.5)};
  const distanceToApproach=gun=>Math.hypot(gun.x-approach.x,gun.y-approach.y);
  // A light piece may arrive ahead of a heavy one. Move the physically leading
  // gun first; purchase order must not make it wait while blocking the rear gun.
  const initialAssigned=new Set(),preferred=initial.artillery.filter(g=>g.side==='player').sort((a,b)=>distanceToApproach(a)-distanceToApproach(b)||String(a.id).localeCompare(String(b.id))).map(g=>{
-  const ids=initial.units.filter(u=>u.side==='player'&&u.id!=='57'&&u.hp>0&&!initialAssigned.has(u.id))
+  const ids=initial.units.filter(u=>u.side==='player'&&u.id!=='57'&&u.hp>0&&crewEligible(u)&&sameSurface(u,g)&&!initialAssigned.has(u.id))
    .sort((a,b)=>Math.hypot(a.x-g.x,a.y-g.y)-Math.hypot(b.x-g.x,b.y-g.y)||String(a.id).localeCompare(String(b.id)))
    .slice(0,artilleryProfile(initial,g).crew).map(u=>u.id);
   for(const id of ids)initialAssigned.add(id);
@@ -47,22 +66,28 @@ export function coastalBatteryController(initial,{sharedArtillerySight=false}={}
   const reserved=new Set(working.flatMap(p=>p.ids)),crews=[];
   for(const preference of working){
    const gun=b.artillery.find(g=>g.id===preference.artilleryId),required=artilleryProfile(b,gun).crew,priority=v=>preference.ids.includes(v.id)?preference.ids.indexOf(v.id):reserved.has(v.id)?required+1:required;
-   const ids=b.units.filter(v=>v.side==='player'&&v.id!=='57'&&v.hp>=15&&!v.unconscious&&!v.routed&&!v.departure&&!v.fled&&!v.surrendered&&!assigned.has(v.id))
+   const ids=b.units.filter(v=>v.side==='player'&&v.id!=='57'&&crewEligible(v)&&v.hp>=15&&!v.unconscious&&!v.routed&&!v.departure&&!v.fled&&!v.surrendered&&sameSurface(v,gun)&&!assigned.has(v.id))
     .sort((a,c)=>priority(a)-priority(c)||Math.hypot(a.x-gun.x,a.y-gun.y)-Math.hypot(c.x-gun.x,c.y-gun.y)||String(a.id).localeCompare(String(c.id)))
     .slice(0,required).map(v=>v.id);
    if(ids.length<required)continue;
    for(const id of ids)assigned.add(id);
    crews.push({...preference,ids});
   }
+  // An opt-in caller may reserve only nonclinical crew work. Every real
+  // body remains in the field; this filter changes selection, not occupancy.
+  if(crewOnly&&!assigned.has(u.id))return null;
   const crew=crews.find(p=>p.ids.includes(u.id))??crews[0];
-  if(!crew)return tucumanCombatOrder(b,u);
+  if(!crew)return coastalPhysicianPostureOrder(b,u);
   const gun=b.artillery.find(g=>g.id===crew.artilleryId);
   const action=mountainBatteryOrder(b,u,{leaderId:crew.ids[0],helperId:crew.ids[1]??'none',crewIds:crew.ids,artilleryId:crew.artilleryId,screenDistance:4,clearCrewLane:true,routeAroundObstacles:true,flankScreen:true,keepCrewTogether:true,sharedArtillerySight});
-  if(assigned.has(u.id)&&b.mode==='combat'&&b.phase==='player'&&!artilleryContact(b,u,gun)&&!u.knockedDown&&!u.entangled&&(!action||action.type==='move')){
+  // The local-care caller keeps adjacent aid and close defense first. This
+  // opt-in puts a real paid approach before optional personal rifle work.
+  const optionalRifleWork=prioritizeCrewApproach&&['fire','reload','reprime','look','weapon','stance'].includes(action?.type)&&action.slot!=='medical';
+  if(assigned.has(u.id)&&b.mode==='combat'&&b.phase==='player'&&!artilleryContact(b,u,gun)&&!u.knockedDown&&!u.entangled&&(optionalRifleWork||!action||action.type==='move'||action.type==='stance'&&action.stance==='prone'&&!usefulRouteFiringPosture(b,u,action))){
    if(u.stance==='prone')return u.ap>=stanceCost(u,'crouched')?{type:'stance',unitId:u.id,stance:'crouched'}:null;
    const view={...b,units:b.units.filter(v=>v.side===u.side||teamCanSee(b,u.side,v))};
    const route=getReachable({...view,mode:'exploration'},u).filter(p=>p.cost>0&&(p.tacticalLevel??0)===0&&artilleryContact(view,{...u,...p},gun)).sort((a,c)=>a.cost-c.cost)[0];
-   const reachable=new Map(getReachable(view,u).filter(p=>p.cost>0).map(p=>[`${p.x},${p.y},${p.tacticalLevel??0}`,p]));
+   const reachable=new Map(getReachable(view,u).filter(p=>p.cost>0&&(!crewOnly||p.cost<=24&&p.path.length<=3&&p.path.every(step=>(step.tacticalLevel??0)===0&&(!step.kind||step.kind==='move')))).map(p=>[`${p.x},${p.y},${p.tacticalLevel??0}`,p]));
    const point=route&&[...route.path].reverse().map(p=>reachable.get(`${p.x},${p.y},${p.tacticalLevel??0}`)).find(Boolean);
    return point?{type:'move',unitId:u.id,x:point.x,y:point.y,tacticalLevel:point.tacticalLevel??0}:null;
   }
