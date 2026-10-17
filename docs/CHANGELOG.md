@@ -18,15 +18,36 @@
 - Rewrite the README around the game, its features, desktop controls,
   campaign tools and local setup.
 - Local component gates pass 47, 34, 15, 26 and 30 cases within their separate
-  recorded scopes. The last completed full gate on source `a50adf50` passes
-  1,109 of 1,115 files: 8,363 passing cases, eight failures and two dependent
-  skips out of 8,373. Receipt `dd15e1a3...` and log `ee6f40c7...` retain that
-  result. Complete-route acceptance still requires a new full run.
-- Desktop mouse review of build `6344e3a8a632` verifies both door leaves and
-  the wall target. Short frame samples cover Retiro and six-actor San Lorenzo
-  playback; observed frame spikes reach 208.4 ms. These samples do not establish
-  sustained or large-battle performance. Manual cannon use, an earned ending
-  and 48 campaign hours of saved continuation remain open.
+  recorded scopes. The latest completed full gate on candidate `d79e71dd`
+  passes **1,109 of 1,115 files**: **8,373 passing cases, eight failures and two
+  dependent skips out of 8,383**, with no cancellations or TODO cases. Receipt
+  `a59dfd44...`, log `b77be700...`, report `3f6989be...` and preservation
+  `3c255716...` retain the RED result. All five strict captures match and the
+  processes are reaped; complete-route acceptance remains open.
+- Commit fourteen accepted follow-up paths from handover `aaf5f66a` into
+  integration `305c85e3`: ordered rest, actual quoted recruitment and retention
+  of the second arsenal physician, charged battery coordination, historical
+  paid physician admission, a bounded paid step out of a current public medical
+  lane, and desktop interruption-toolbar clearance. Campaign route drivers
+  keep existing game rules and actual travel, preparation and service costs.
+- Retain **83 passing cases across four whole files** on an exact, unchanged
+  417-file runtime-source closure (`dd3f9675...`), then pass **10/10 fresh cases
+  across two whole files** with three syntax checks and all strict/HOME/diff/reap
+  checks (receipt `740df438...`, preservation `e340ca13...`). These are separate
+  results, not one GREEN 93-case run. Transfer `d936ee02...` keeps the exact
+  fourteen files; the new full suite remains pending.
+- The reviewed historical-service assertion keeps every doctor ID, checks
+  actual paid admission and current service for living doctors, and requires
+  official care-battle casualties to remain dead. It is a disclosed second
+  stronger original-baseline correction; all other survival, finite-resource,
+  deadline and ending guards remain.
+- Historical desktop mouse review of build `6344e3a8a632` verifies both door
+  leaves and the wall target. Short frame samples cover Retiro and six-actor
+  San Lorenzo playback; observed frame spikes reach 208.4 ms. These samples do
+  not establish sustained or large-battle performance. The integrated CSS
+  correction requires a new export and pointer check; build `6344e3a8a632` is
+  not current production evidence. Manual cannon use, an earned ending and 48
+  campaign hours of saved continuation remain open.
 
 ## 0.1.12 — 16 October 2026
 

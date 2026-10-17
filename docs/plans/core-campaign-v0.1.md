@@ -9,13 +9,13 @@ The proposed next release is `0.1.13`; it is not published or accepted yet.
 
 The first core campaign is not accepted end to end. Existing
 [PR #426](https://github.com/fsodano/granaderos/pull/426) will receive the fixes
-on its current branch and use a normal merge. Candidate `b645292e` differs from
-`main` at `6a5218de` in **228 tracked paths**: 146 added and 82 modified. This is
-the complete candidate diff, including the original PR and later corrections;
-the initial 124-path transfer is not the final PR scope. Recount the final
-commit before publication. Preserve current main's core, inventory, UI,
-Pages/CI changes, package graph and published release history. Keep the two
-private debug journals outside the PR.
+on its current branch and use a normal merge. Current candidate `305c85e3`
+differs from `main` at `6a5218de` in **232 tracked paths**: 146 added and 86
+modified, with no deletions. This includes the original PR and later
+corrections. The final fourteen-path follow-up transfer is committed. Recount
+the actual final commit before publication. Preserve current main's core,
+inventory, UI, Pages/CI changes, package graph and published release history.
+Keep the two private debug journals outside the PR.
 
 ## First-release requirements
 
@@ -37,61 +37,87 @@ preparation limits, permanent losses and complete-route assertions.
 
 ## Current blockers
 
-The latest completed unfiltered gate ran all **1,115 files** on source
-`a50adf50`: **1,109 files passed and six failed**. Its 8,373 test cases contain
-8,363 passes, eight failures and two dependent skips, with no cancellations or
-TODO cases. Receipt `dd15e1a3...` and log `ee6f40c7...` retain the RED result.
-All five preservation audits pass and the processes were reaped. Later
-component passes and README changes do not replace complete-route proof.
-A lawful combat loss or route-helper failure alone does not prove an engine defect.
+The latest completed unfiltered gate ran all **1,115 files** on the earlier
+candidate `d79e71dd`: **1,109 files passed and six failed**. Its **8,383 test
+cases** contain **8,373 passes, eight failures and two dependent skips**, with
+no cancellations or TODO cases. Receipt `a59dfd44...`, log `b77be700...`,
+report `3f6989be...` and in-place preservation `3c255716...` retain the RED
+result. All five strict before/after captures match byte for byte; all 323
+retained source copies match and the owned processes are absent. The
+subsequent fourteen-path integration has not yet run the full suite. Separate
+component results do not replace complete-route proof. A lawful combat loss or
+route-helper failure alone does not prove an engine defect.
 
 | Route file | Latest completed evidence and remaining work |
 | --- | --- |
-| Opening | The completed full run has four passes, two failures and two dependent skips in this file; the Córdoba defence still retreats. |
-| Recovery | The care helper returns, then the paid-physician assertion encounters a missing contract. The actual physician and removal cause still need the completed-care capture; do not infer them from an earlier checkpoint. |
-| Northern route | The completed unfiltered run fails at local Córdoba defence. Later bounded battery and care controls pass; they do not establish route victory. |
-| Cuyo | The completed unfiltered run also fails at local Córdoba defence. Keep the actual four-battle report, finite supplies and all later route assertions. |
-| Historical loss | The completed unfiltered run fails before its required ending. Keep the engineer's actual death and every later assertion. |
-| Ending | The completed full run passes zero of two cases. The loose route rejects a real convoy-recapture casualty through its stale service ledger; the installed route loses physician 135 at Ensenada. No earned ending or 48-hour saved continuation is accepted. |
+| Opening | Four passes, two failures and two dependent skips. The actual Córdoba defence at H294 still retreats. |
+| Recovery | Care completes, then the original assertion reads a missing final contract for historical physician 146. Actual records retain physician 146's paid contract and H150 defence death. The final contract is absent after its paid-term expiry; removal by Native expiry is a source-supported inference. The corrected admission ledger passes its separate clinic component; the complete recovery route still needs a fresh pass. |
+| Northern route | The actual second Córdoba raid at H294 defeats the garrison. The charged, already-staffed battery controls pass within their separate component scope; complete-route victory remains unproved. |
+| Cuyo | The same H294 Córdoba defence fails before Cuyo progression. Keep the actual four-battle report, finite supplies and all later route assertions. |
+| Historical loss | The same H294 defence fails before the required engineer-loss boundary. The actual death and all later assertions remain required. |
+| Ending | Zero of two cases pass. The loose route reaches funded H1289, then lacks the second arsenal physician. The installed route retreats at Ensenada after 15 turns and 1,058 seconds; physician 135 dies despite the paid prone order. New staffing controls pass separately. No earned ending or 48-hour saved continuation is accepted. |
 
-Opening, recovery, historical-loss and ending original files remain exact.
-The one reviewed exception is Cuyo: current SHA `7c76c0e4...` replaces old
-`01c865ba...`'s three-battle report. It retains actual Ensenada, requires four
-battles in order and adds victory, positive actions/turns and casualty-array
-checks. No battle, permanent loss, resource or endpoint is removed.
+Current integration retains the opening, historical-loss and ending original
+files. Two explicit stronger baseline corrections are retained. Cuyo SHA
+`7c76c0e4...` keeps the real Ensenada encounter, requires four battles in order
+and checks victory, positive actions/turns and casualty arrays. Recovery SHA
+`239c2513...` keeps every historical doctor ID, verifies actual paid admission
+and current paid service for living physicians, and requires an actual
+victorious care-battle casualty plus permanent death for fallen physicians.
+Native death timestamps remain optional. No battle, loss, finite resource,
+deadline or endpoint is removed. The complete original routes still need to
+pass together on the new integration.
 
-The reconciled component run passes **47/47 actual cases** across five
-whole files, with seven syntax checks and all preservation audits passing.
-Receipt `8f508014...` keeps the original expected-count mismatch: the plan
-expected 45. Source/log reconciliation `04412bc5...` confirms all 47 names
-exactly once, with no missing cases or rerun. This is component evidence only.
-Earlier 187/187 evidence retains its own frozen source and scope.
+Earlier component gates remain evidence within their frozen scopes:
 
-The later physician-staging and finite-supply route-driver gate passes
-**34/34** across four whole files, with four syntax checks and all preservation
-audits passing. Receipt `065f7e5e...`, log `1b28d15e...` and preservation
-`b430019b...` retain source `3ce73e9e`; its exact four-path transfer is committed
-in integration. This does not establish complete-route acceptance.
+| Component cases | Retained receipt | Limit |
+| --- | --- | --- |
+| 47/47, five whole files | `8f508014...` | The old expected count of 45 remains preserved; reconciliation `04412bc5...` proves all 47 actual names once, without a rerun. |
+| 34/34, four whole files | `065f7e5e...` | Paid physician staging and finite-supply route drivers. |
+| 15/15, one whole file | `cbc5376c...` | Paid field-physician posture. |
+| 26/26, two whole files | `7173c229...` | Actual casualty service and finite battery. |
+| 30/30, two whole files | `e033282d...` | Paid infantry interrupts and field-physician aid. |
 
-The physician-posture route-driver gate also passes **15/15** across its
-whole file, with two syntax checks and all preservation audits passing.
-Receipt `cbc5376c...`, log `b21e8754...` and preservation `b32c10cd...` retain
-source `8ab9f5ed`. Its tested helper and regression are committed in integration.
-This component result does not replace complete-route proof.
+Their recorded syntax and preservation audits pass. These results and the
+older 187-case gate do not establish a complete campaign or release.
 
-Two later component gates are transferred into the candidate. The actual
-casualty-service and finite-battery controls pass **26/26** across two whole
-files on source `edc93087` (receipt `7173c229...`, log `31b00671...`). The
-infantry-interrupt and field-physician controls pass **30/30** across two whole
-files on source `a7260093` (receipt `e033282d...`, log `51ea357d...`). Both gates
-pass their syntax and preservation audits with no skipped or cancelled cases.
-The interrupt case pays for its complete setup, observes real cover, fires a
-safe head shot and verifies finite ammunition, AP and saved replay.
+## Integrated component corrections
 
-The transferred route changes also restore previously ordered rest after a
-real depot defence and record completed recovery evidence. Their effect on
-the original routes still requires the next full run. Run the complete suite
-on the final integrated source before acceptance.
+Fourteen accepted paths from handover source `aaf5f66a` are committed in
+integration `305c85e3`. Their local evidence consists of separate results:
+
+- **83 passing cases across four whole files** from the earlier component
+  run: clinic 30, civilian safety 21, field-physician cover 17 and port infantry
+  15. Source-equivalence proof `dd3f9675...` verifies their unchanged, disjoint
+  417-file runtime-source closure. It is retained evidence, not a new run.
+- **10/10 fresh cases across two whole files**: northern rest 4 and arsenal
+  staffing 6, with three syntax checks, all four strict comparisons, HOME,
+  diff and reap checks passing. Receipt `740df438...`, log `4d17fab7...` and
+  preservation `e340ca13...` retain this result.
+
+There was no single GREEN 93-case run. Transfer proof `d936ee02...` records the
+exact fourteen files and preserves the integration's release metadata. The
+next unfiltered full suite must validate the assembled candidate.
+
+The integrated corrections restore already ordered rest, physically recruit
+and retain the second arsenal physician on the actual Native quoted terms,
+keep coordination for an assembled charged battery, and verify historical
+paid physician admission. The recruitment checks retain the actual signed
+start, finite term and renewal costs where applicable; they do not assume
+that every campaign makes the historical physician free or permanent.
+Ordinary travel, preparation and service keep their actual costs.
+
+A bounded paid one-cell field-physician move can reduce a current public
+incoming penetration lane before the existing prone fallback. The desktop
+interruption notice also moves clear of the tactical toolbar. The campaign
+changes affect automated acceptance-route drivers using existing game rules;
+the notice correction changes CSS. These component results do not establish
+that every earlier route loss is prevented.
+
+The CSS change invalidates export `6344e3a8a632` as current production evidence.
+Preserve that export, its server and old tabs, then build and review a new exact
+export. The new full suite, desktop cannon, earned ending and saved continuation
+remain open.
 
 ## Accepted local corrections
 
@@ -113,16 +139,18 @@ tests. Their orders use the existing game rules.
 
 ## Desktop review and remaining gates
 
-Review is **desktop only**. Private export `6344e3a8a632`, from source
-`3b415db5`, was checked at 1280×720. Record `842e28b0...` verifies normal mouse
-opening and closing of both door leaves and the wall's own pointer target,
-with no console errors. Production-input proof `5a62921d...` confirms the
-build source at `db3682f2`. The later route-driver transfers and README edit preserve those production
-inputs on candidate `04d98013`.
-Earlier desktop evidence covers keyboard traversal,
-group travel, save/export/import, introduction controls and normal worker
-end-turn playback. These are bounded checks on their named exports, not a
-completed campaign or sustained-performance measurement.
+Review is **desktop only**. Historical private export `6344e3a8a632`, from
+source `3b415db5`, was checked at 1280×720. Record `842e28b0...` verifies
+normal mouse opening and closing of both door leaves and the wall's own
+pointer target, with no console errors. Production-input proof `5a62921d...`
+confirms the build source at `db3682f2`. Those production inputs remained
+unchanged through earlier candidate `d79e71dd`. Current integration `305c85e3`
+includes the CSS correction, so the old export does not review its new notice
+layout. A new export and a fresh desktop pointer check remain required.
+Earlier desktop evidence covers keyboard traversal, group travel,
+save/export/import, introduction controls and normal worker end-turn playback.
+These are bounded checks on their named exports, not a completed campaign or
+sustained-performance measurement.
 
 The existing performance UI also recorded short foreground samples in nighttime
 Retiro with two actors, on an Apple M2 Max, 96 GiB, macOS 26.6.2, at 1280×720.
@@ -154,8 +182,9 @@ control, with no console errors. Records `9223cef4...` and `8492a8a8...` retain
 these measurements. Frame spikes and long tasks remain visible; these samples
 do not establish cold-entry, sustained or large-battle performance.
 
-1. Resolve the reported route failures and pass the unchanged complete files.
-   Preserve all finite resources, deaths, duties and limits.
+1. Resolve the reported complete-route failures on the integrated corrections.
+   Pass every complete original file, with only the explicitly reviewed
+   baseline corrections. Preserve finite resources, deaths, duties and limits.
 2. Pass the unfiltered full suite on one frozen final integration commit. It
    includes all five original campaign files and their thirteen cases; no
    separate thirteen-case rerun is required. Retain scope/shard controls,
@@ -168,9 +197,9 @@ do not establish cold-entry, sustained or large-battle performance.
    remain open.
 4. Record bounded balance, keyboard/accessibility, hardware-performance,
    graphics, audio and historical-review acceptance and limits. The short frame
-   samples do not replace the remaining performance review. Keep `0.1.13` proposed until final
-   validation and normal merge, then verify automatic Pages against actual
-   main and export identities.
+   samples do not replace the remaining performance review. Keep `0.1.13` proposed
+   until final validation and normal merge, then verify automatic Pages against
+   actual main and export identities.
 
 ## Evidence scope and deferred work
 
