@@ -45,16 +45,16 @@ test('pinned paid ability uses exact personal morale, leaves hiring neutral and 
 test('atomic renewal refusal preserves precedence, exact contract and pay clock; thirty permits ordinary paid extensions once per reward day',()=>{
  const low=prepared(),expiry=contractExpiresSeconds(low.contracts[130]);
  const expected={expectedExpiresAt:low.contracts[130].expiresAt,expectedExpiresSecond:low.contracts[130].expiresSecond??0};
- assert.equal(expiry,24*3600+17,'an immediate day hire starts at its actual booking second');
+ assert.equal(expiry,(low.contracts[130].started+24)*3600+17,'an immediate day hire lasts 24 hours from its actual booking second');
  rejection(low,{type:'renewContract',id:130,term:'day',...expected,expectedExpiresSecond:expected.expectedExpiresSecond+1},/contrato cambió/);
  rejection(low,{type:'renewContract',id:130,term:'year'},/plazos de contrato/);
  rejection(low,{type:'renewContract',id:130,term:'day',...expected},/moral personal menor que 30/);
  assert.equal(low.operativeState[130].lastMoralePayAt,null);assert.equal(contractExpiresSeconds(low.contracts[130]),expiry);
- let s=prepared({morale:30}),q=contractRenewalQuote(s,person(s)),cash=s.resources.treasury;
+ let s=prepared({morale:30}),q=contractRenewalQuote(s,person(s)),cash=s.resources.treasury;const paymentHour=s.hour;
  assert.equal(lowMoraleRenewalStatus(s,person(s)).blocked,false);assert.equal(q.available,true);
  s=order(s,{type:'renewContract',id:130,term:'day',expectedExpiresAt:s.contracts[130].expiresAt,expectedExpiresSecond:s.contracts[130].expiresSecond??0});
  assert.equal(s.resources.treasury,cash-q.price);assert.equal(contractExpiresSeconds(s.contracts[130]),expiry+86400);
- assert.equal(s.operativeState[130].morale,32);assert.equal(s.operativeState[130].lastMoralePayAt,6);assert.equal(s.operativeState[130].lastMoralePaySecond,17);
+ assert.equal(s.operativeState[130].morale,32);assert.equal(s.operativeState[130].lastMoralePayAt,paymentHour);assert.equal(s.operativeState[130].lastMoralePaySecond,17);
  const record=structuredClone(s.operativeState[130]);s=order(s,{type:'renewContract',id:130,term:'day'});
  assert.equal(s.operativeState[130].morale,32);assert.deepEqual(s.operativeState[130],record);assert.equal(contractExpiresSeconds(s.contracts[130]),expiry+172800);
  // A rival refusal keeps its existing reason ahead of the reversible morale condition.
