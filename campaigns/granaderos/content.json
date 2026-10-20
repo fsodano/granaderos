@@ -142,6 +142,7 @@
   ],
   "rules": {
     "startingTreasury": 3200,
+    "startingHour": 9,
     "deploymentCartridges": 10,
     "enemyCartridges": 13,
     "militiaCartridges": 6

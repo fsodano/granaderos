@@ -59,7 +59,7 @@ test('stock authored JSON preserves its pinned factory identity and detached com
  const d=defaultContentPackage();assert.deepEqual(d,stockContent);
  // The shipped campaign retains immediate ordinary recruitment. Older saves
  // still pin the former authoring package's six-hour arrivals independently.
- assert.equal(contentIdentity(d).hash,'sha256:fe949d7835a4eb76609d3c4453029974afe26b7f04e54c07e71b7118d568b889');
+ assert.equal(contentIdentity(d).hash,'sha256:933438f768443daaa203d5d83d831d97c2f86e49fe7366c8f0fd0136d278dafa');
  assert.ok(d.characters.filter(isContractCharacter).every(c=>c.arrivalHours===0));
  assert.deepEqual(validateContentPackage(d),[]);
  for(const [actual,key]of [[OPERATIVES,'operatives'],[WEAPONS,'weapons'],[PHASES,'phases'],[CIVIC_RECRUITS,'civicRecruits'],[CHARACTER_PROFILES,'characterProfiles'],[CHARACTER_PORTRAITS,'characterPortraits'],[NPC_QUESTS,'npcQuests']]){
@@ -119,7 +119,7 @@ test('generic profile admission rejects omissions, unsupported scenarios, skin p
 });
 
 const installedStock=(manifest=stockManifest)=>compileCampaignPackage(manifest,{content:defaultContentPackage(),world:DEFAULT_WORLD,maps:DEFAULT_MAPS,presentation:DEFAULT_PRESENTATION,assets:stockAssets});
-test('ordinary and installed stock match the original main startup, every weapon profile and all service pay terms',()=>{
+test('ordinary and installed stock retain the original startup apart from the authored morning clock, every weapon profile and all service pay terms',()=>{
  const {source,...expected}=stockStartupBaseline;
  assert.equal(source.commit,'12ac2d9b0576a56f8499b70782d581b78f5fd373');
  assert.equal(expected.characters.length,61);
@@ -127,9 +127,15 @@ test('ordinary and installed stock match the original main startup, every weapon
  const engine={campaign:campaignEngine,abilities:abilityEngine,weapons:weaponEngine,ammunition:ammunitionEngine,contracts:contractEngine,tactical:{bladeFor}};
  for(const [name,content]of [['ordinary',null],['installed',installedStock()]]){
   const actual=captureStockStartup(engine,content);
-  assert.deepEqual(actual.startup,expected.startup,`${name}: startup`);
+  assert.deepEqual(actual.startup,content?{...expected.startup,hour:9}:expected.startup,`${name}: startup`);
   assert.deepEqual(actual.terms,expected.terms,`${name}: contract terms`);
-  for(let i=0;i<expected.characters.length;i++)assert.deepEqual(actual.characters[i],expected.characters[i],`${name}: operative ${expected.characters[i].stats.id}`);
+  for(let i=0;i<expected.characters.length;i++){
+   const character=structuredClone(expected.characters[i]);
+   // Initial hire quotes move with the opening hour. The separately declared
+   // later renewal checkpoint and every price, duration and profile stay exact.
+   if(content)for(const quote of Object.values(character.quotes))if(quote.expiresAt!==null)quote.expiresAt+=9;
+   assert.deepEqual(actual.characters[i],character,`${name}: operative ${character.stats.id}`);
+  }
  }
 });
 

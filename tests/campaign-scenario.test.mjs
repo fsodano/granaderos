@@ -35,6 +35,7 @@ const officer=state=>order(state,{type:'createOfficer',name:'Ana Prueba',answers
 function generic({story=true}={}){
  const content=defaultContentPackage();
  content.id='scenario-test';content.name='Puesto del río';content.scenario='generic-v1';
+ content.rules.startingHour=0;
  content.characters=[{...content.characters.find(c=>c.id==='person-3'),name:'Alex',nickname:'Alex',role:'Infantería',biography:'Custodia el puesto.',monthlyPay:30,recruitmentSource:'contract',service:'contract',progression:'experience',traits:[],abilities:[],arrivalHours:0}];
  content.placements=[];content.quests=[];content.errands=[];content.roadsideDiscoveries=[];content.includeOriginalResidents=false;content.campaignRoles={foundryEngineer:null,marchCommander:null};
  if(story)content.campaignStory={...defaultCampaignStory(),chapters:[{id:'hold',name:'Sostener el puesto',objective:'Conservar el puesto durante la campaña.',conditions:[{type:'day',min:1000,max:null}]}]};
@@ -44,7 +45,7 @@ function generic({story=true}={}){
 test('the installed historical package retains formation, mission admission, commander and victory progression',()=>{
  let state=officer(initialCampaign(1812,installed()));
  assert.equal(isHistoricalCampaign(state),true);assert.equal(state.phase,1);assert.equal(state.flags.academy,true);
- assert.deepEqual(campaignDate(state),{year:1812,month:3,day:1,hour:0});
+ assert.deepEqual(campaignDate(state),{year:1812,month:3,day:1,hour:9});
  assert.match(recruitmentStatus(state,0,true).reason,/defensa autónoma/);
  state.location='san_nicolas';state.squads[0].location=state.location;state.sectors.san_nicolas.owner='patriot';
  state=order(state,{type:'attack',sector:'san_lorenzo'});
@@ -73,7 +74,9 @@ test('the installed stock package preserves ordinary paid recruitment and actual
  const physical=unit=>Object.fromEntries(['hp','weapon','blade','loaded','ammo','rations','torches','medkits','boleadoras','condition','bladeCondition'].map(key=>[key,unit[key]]));
  const mechanics=unit=>({loads:ammunitionLoadsFor(unit),profiles:ammunitionLoadsFor(unit).map(load=>Object.fromEntries(['damage','range','fireAP','aimAP','reloadAP','readyAP','capacity','stockAP','stockDamage','stockReach','materialRangeSlope','projectileEnergy','projectileAirDrag','loadPattern'].map(key=>[key,weaponSpecification({...unit,ammunitionChoice:load.family})?.[key]])))});
  const [ordinary,pinned]=deployments;
- assert.deepEqual(pinned.resources,ordinary.resources);assert.equal(pinned.phase,ordinary.phase);assert.deepEqual(pinned.contracts,ordinary.contracts);
+ assert.deepEqual(pinned.resources,ordinary.resources);assert.equal(pinned.phase,ordinary.phase);
+ const relativeContracts=state=>Object.fromEntries(Object.entries(state.contracts).map(([id,contract])=>[id,{...contract,started:contract.started-state.hour,expiresAt:contract.expiresAt===null?null:contract.expiresAt-state.hour}]));
+ assert.deepEqual(relativeContracts(pinned),relativeContracts(ordinary));
  const [ordinaryBattle,pinnedBattle]=deployments.map(state=>enterSector(state.pendingBattle));
  for(const side of ['player','enemy']){
   const oldUnits=ordinaryBattle.units.filter(unit=>unit.side===side),newUnits=pinnedBattle.units.filter(unit=>unit.side===side);
@@ -196,7 +199,7 @@ test('clock orders share frozen definitions while copying mutable state and the 
  assert.equal(Object.isFrozen(state.contentCampaign.package),true);
  assert.equal(next.contentCampaign.package,state.contentCampaign.package);
  assert.notEqual(next.contentCampaign,state.contentCampaign);assert.notEqual(next.sectors,state.sectors);
- assert.equal(state.hour,0);assert.equal(next.hour,1);
+ assert.equal(state.hour,9);assert.equal(next.hour,10);
  const altered=structuredClone(state);altered.contentCampaign.package.name='Mutable test package';
  const copied=order(altered,{type:'wait',hours:1});
  assert.notEqual(copied.contentCampaign.package,altered.contentCampaign.package);

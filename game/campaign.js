@@ -234,6 +234,9 @@ function initializeCampaignSystems(s){
 }
 export function initialCampaign(seed=1812,content=null){
   const definitions=content===null?null:resolveContent(content),state=scenarioFor(definitions).initialState(seed,definitions);
+  // Set the authored clock before residents, timed events and service initialize.
+  // Restore never reapplies this new-campaign setting to an existing save.
+  if(definitions?.rules?.startingHour!==undefined){state.hour=definitions.rules.startingHour;for(const entry of state.log)entry.hour=state.hour;}
   if(definitions!==null)attachCampaignContent(state,definitions);
   else {state.errandDefinitions=freshDefaultErrands();state.roadsideDiscoveryDefinitions=freshDefaultRoadsideDiscoveries();}
   initializeCampaignSystems(state);if(initializeCampaignEvents(state))progress(state);return state;

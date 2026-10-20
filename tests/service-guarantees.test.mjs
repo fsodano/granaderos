@@ -16,7 +16,7 @@ const id=110;
 const op=s=>rosterFor(s).find(o=>o.id===id);
 const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError,null,`${a.type}: ${next.lastError}`);return next;};
 const saved=s=>restoreCampaign(serializeCampaign(s));
-function content(amount=101,arrivalHours=0){const d=defaultContentPackage();Object.assign(d.characters.find(c=>c.id===`person-${id}`),{serviceGuarantee:amount,arrivalHours});return d;}
+function content(amount=101,arrivalHours=0){const d=defaultContentPackage();d.rules.startingHour=0;Object.assign(d.characters.find(c=>c.id===`person-${id}`),{serviceGuarantee:amount,arrivalHours});return d;}
 const fresh=(amount=101,arrival=0)=>initialCampaign(42,content(amount,arrival));
 const hired=()=>order(fresh(),{type:'recruitCivic',id,term:'day'});
 const entry=s=>guaranteeRecord(s,s.contracts[id]??s.hiringArrivals.find(a=>a.operativeId===id));

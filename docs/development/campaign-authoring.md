@@ -65,6 +65,12 @@ Map paths are relative to the map index folder. A map document's ID must match
 its index entry. Keep stable character, quest, locality and map IDs when revising
 a campaign. The checker reports invalid references and unsupported data.
 
+Set `content.json`'s optional `rules.startingHour` to an integer from `0` to `23`
+to choose the first day's starting time. An omitted value preserves midnight.
+Granaderos starts at `9` (09:00). New contracts begin at the current time and
+retain their full duration. Loading a save preserves its saved clock. Timed
+events use absolute campaign hours and cannot precede `startingHour`.
+
 For detailed cast, equipment, dialogue and objective controls, use the story
 editor guide. Its historical examples describe the Granaderos package; a
 generic package uses its own definitions and explicit settings. New generic

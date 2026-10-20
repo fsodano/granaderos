@@ -91,7 +91,7 @@ test('real hiring and saved deployment disclose the directed preference without 
   assert.equal(m.state().resources.treasury,before.resources.treasury-quote.price);assert.deepEqual(decodeSave(encodeSave(m.state())).campaign,m.state());
  }
  for(let i=0;i<6;i++)await m.issue({type:'advanceStrategicTime',seconds:3600});
- state=decodeSave(encodeSave(m.state())).campaign;assert.equal(state.hour,6);assert.ok([107,116].every(id=>state.recruited.includes(id)));const contracts=structuredClone(state.contracts),cash=state.resources.treasury,personal=state.operativeState[107].morale;
+ state=decodeSave(encodeSave(m.state())).campaign;assert.equal(state.hour,content.rules.startingHour+6);assert.ok([107,116].every(id=>state.recruited.includes(id)));const contracts=structuredClone(state.contracts),cash=state.resources.treasury,personal=state.operativeState[107].morale;
  await m.replace(state);await m.issue({type:'visitSector'});const deployed=m.state(),issued=deployed.pendingBattle.squad.find(u=>u.id===107);assert.equal(issued.companionId,116);assert.equal(issued.companionBonus,3);assert.equal(issued.personalMorale,personal);
  assert.match(preference().textContent,/Apoyo de Petrona Lagos al inicio del despliegue: \+3 de moral/);
  const battle=enterSector(deployed.pendingBattle),pair=decodeSave(encodeSave(deployed,battle));assert.deepEqual(pair.campaign,deployed);assert.deepEqual(pair.battle,battle);assert.deepEqual(order(state,{type:'visitSector'}),deployed,'saved public-order replay preserves the same issued source and support');

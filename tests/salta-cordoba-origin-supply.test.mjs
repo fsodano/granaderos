@@ -115,6 +115,8 @@ test('a resolver refusal preserves its actually admitted later campaign and batt
 test('the current authored Tucumán map pays an alternative public climb before relaying through twelve unchanged roof posts',()=>{
  const field=[131,112,122,127,103,144,101,108,121,126,129,130],doctor=122,patient=112,holderId=102,carrierId=135,specialist=140,stock=10;
  const content=defaultContentPackage();content.headquarters='tucuman';content.startingTerritory.tucuman.owner='patriot';content.startingTerritory.cordoba.owner='patriot';content.rules.startingTreasury=500000;
+ // This fixed-post path experiment uses the original midnight resident schedule.
+ content.rules.startingHour=0;
  for(const id of [...field,holderId,carrierId,specialist])content.characters.find(person=>person.id===`person-${id}`).arrivalHours=0;
  const wounded=content.characters.find(person=>person.id===`person-${patient}`);wounded.startingCondition={hp:wounded.attributes.maxHp-30,bleeding:0,bandaged:30,energy:100,fatigue:0};
  assert.deepEqual(validateContentPackage(content),[]);const declaration=structuredClone(content);let c=initialCampaign(42,content);

@@ -31,6 +31,7 @@ export const localId=s=>operativeIdForCharacter(s.contentCampaign.package,'alma-
 export const localNPC=b=>b.npcs.find(n=>n.contentId==='alma-contract');
 export function localPackage({pay=300,service='contract',recruitable=true}={}){
  const d=defaultContentPackage(),base=structuredClone(d.characters.find(c=>c.id==='person-100'));delete base.arrivalHours;
+ d.rules.startingHour=0;
  d.characters.push({...base,id:'alma-contract',name:'Alma Contratada',nickname:'Alma',service,monthlyPay:pay,recruitmentSource:'encounter',weapon:null,attributes:{...base.attributes,maxHp:95},encounter:{recruitable,greeting:'Trabajo por un plazo acordado.',requiredLeadership:0,requiredLiberated:0,requiredSector:null}});
  d.placements.push({id:'alma-location',character:'alma-contract',mode:'fixed',sectors:[A],moveChance:100,afterDeath:null,delayMin:0,delayMax:0});
  d.characters.find(c=>c.id==='person-110').arrivalHours=0;return d;

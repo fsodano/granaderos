@@ -11,7 +11,7 @@ import {encodeSave,decodeSave} from '../game/save.js';
 import {enterSector} from '../game/world.js';
 import {order,saved,visit,sync,leave} from './local-contract-fixture.mjs';
 const rules=values=>({...DEFAULT_MILITIA_PATROL,...values}),position=u=>[u.x,u.y];
-function paid(config){const d=defaultContentPackage();d.rules.startingTreasury=20000;d.militiaPatrol=structuredClone(config);for(const at of ['buenos_aires','ensenada'])d.startingTerritory[at]={owner:'patriot',loyalty:65};let s=order(initialCampaign(42,d),{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});s=order(s,{type:'militia',trainerId:1000,rank:0});s=order(s,{type:'wait',hours:s.militiaTraining[0].remaining});return {s,d};}
+function paid(config,startingHour){const d=defaultContentPackage();if(startingHour!==undefined)d.rules.startingHour=startingHour;d.rules.startingTreasury=20000;d.militiaPatrol=structuredClone(config);for(const at of ['buenos_aires','ensenada'])d.startingTerritory[at]={owner:'patriot',loyalty:65};let s=order(initialCampaign(42,d),{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});s=order(s,{type:'militia',trainerId:1000,rank:0});s=order(s,{type:'wait',hours:s.militiaTraining[0].remaining});return {s,d};}
 const field=(config,unit={})=>createBattle([{id:'m',militia:true,x:2,y:4,hp:40,maxHp:60,bandaged:20,energy:40,ap:100,weapon:1800,loaded:1,ammo:3,...unit}],{width:32,height:12,exploration:true,militiaPatrol:config,enemies:[],tiles:Array.from({length:384},(_,i)=>({x:i%32,y:Math.floor(i/32),type:'grass',blocked:false,cover:0}))});
 
 test('patrol rules are strict optional portable data and preserve older campaign content identities',()=>{
@@ -54,7 +54,9 @@ test('campaign reports and active or retained saves reject changed, removed and 
 });
 
 test('disabling patrols keeps actual paid militia combat and finite action costs available',()=>{
- const {s}=paid(rules({enabled:false})),p=visit(s),r=p.campaign.pendingBattle;
+ // Preserve this fixed combat trace's original H21 night boundary after the
+ // paid 21-hour course. Other patrol cases retain the installed opening clock.
+ const {s}=paid(rules({enabled:false}),0),p=visit(s),r=p.campaign.pendingBattle;assert.equal(p.campaign.hour,21);assert.equal(p.battle.night,true);
  // Declared flat combat boundary using the actual issued people and weapons.
  r.enemies=createBattle([],{width:20,height:10,enemies:[{id:'raider',x:5,y:1,hp:100,maxHp:100,weapon:1800,blade:0,ammo:0,loaded:1,patrol:false}]}).units;
  let b=createBattle([...r.squad.map(u=>({...u,x:1,y:7})),...r.garrison.map((u,i)=>({...u,x:2,y:1+i}))],{...r,width:20,height:10,hour:p.campaign.hour,secondOfHour:p.campaign.secondOfHour??0,props:[],tiles:Array.from({length:200},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',blocked:false,cover:0})),enemies:r.enemies});

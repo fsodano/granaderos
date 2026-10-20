@@ -63,8 +63,8 @@ test('an already accepted paid arrival is honoured when a rival enters service b
  d.characters.find(c=>c.id==='person-107').arrivalHours=6;d.characters.find(c=>c.id==='person-112').arrivalHours=0;
  let s=order(initialCampaign(42,d),{type:'recruitCivic',id:107,term:'day'});const receipt=structuredClone(s.hiringArrivals[0]),cash=s.resources.treasury;
  s=order(s,{type:'recruitCivic',id:112,term:'day'});assert.equal(contractQuote(s,op(s,107)).available,false);s=save(s);
- const afterRival=s.resources.treasury;s=save(advanceTo(s,6*3600));assert.ok(s.recruited.includes(107));assert.equal(s.hiringArrivals.length,0);
- assert.equal(s.contracts[107].started,6);assert.equal(s.contracts[107].expiresAt,30);assert.equal(s.contracts[107].paid,receipt.paid);assert.equal(s.resources.treasury,afterRival);assert.ok(cash>afterRival);
+ const afterRival=s.resources.treasury;s=save(advanceTo(s,receipt.dueAt*3600));assert.ok(s.recruited.includes(107));assert.equal(s.hiringArrivals.length,0);
+ assert.equal(s.contracts[107].started,receipt.dueAt);assert.equal(s.contracts[107].expiresAt,receipt.dueAt+24);assert.equal(s.contracts[107].paid,receipt.paid);assert.equal(s.resources.treasury,afterRival);assert.ok(cash>afterRival);
 });
 
 test('stable authored identities carry the rule through saved content, while older packages remain neutral',()=>{
@@ -92,5 +92,5 @@ test('preferred companion definitions reject contradictory or malformed referenc
  const d=defaultContentPackage();d.characters.find(c=>c.id==='person-107').preferredCompanions=[{character:'person-3',reason:'Apoyo dramatizado por el autor.\nPuede elegir un mando permanente.'}];
  assert.deepEqual(validateContentPackage(d),[]);assert.deepEqual(campaignContentReport(d).blocked,[]);const s=save(initialCampaign(42,d));assert.equal(preferredCompanions(s,op(s,107))[0].companionId,3);
  const bad=structuredClone(s);bad.contentCampaign.package.characters.find(c=>c.id==='person-107').preferredCompanions[0].reason='Un motivo reemplazado';assert.throws(()=>save(bad),/identidad/);
- const fresh=initialCampaign(),quote=contractQuote(fresh,op(fresh,107)),empty=defaultContentPackage();delete empty.characters.find(c=>c.id==='person-107').preferredCompanions;const old=initialCampaign(42,empty);assert.deepEqual(contractQuote(old,op(old,107)),quote,'a favorable preference does not change the quoted paid service');
+ const fresh=initialCampaign(42,defaultContentPackage()),quote=contractQuote(fresh,op(fresh,107)),empty=defaultContentPackage();delete empty.characters.find(c=>c.id==='person-107').preferredCompanions;const old=initialCampaign(42,empty);assert.deepEqual(contractQuote(old,op(old,107)),quote,'a favorable preference does not change the quoted paid service');
 });

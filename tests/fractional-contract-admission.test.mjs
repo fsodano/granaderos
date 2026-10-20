@@ -11,7 +11,7 @@ const order=(state,action)=>{const next=dispatchCampaign(state,action);assert.eq
 function finalServiceSecond(){
  // Authored friendly roads isolate contract admission. The hire, its arrival,
  // paid service and the journey to San Nicolás all use the public reducer.
- const content=defaultContentPackage();
+ const content=defaultContentPackage();content.rules.startingHour=0;
  // This service-boundary experiment opts into a six-hour arrival; stock hires
  // arrive immediately unless the author sets a delay.
  content.characters.find(c=>c.id==='person-103').arrivalHours=6;

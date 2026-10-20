@@ -24,7 +24,7 @@ function servingStart({content=null,hour=22}={}){
  let c=initialCampaign(8,content??undefined);const op=rosterFor(c).find(op=>op.id===110),quote=contractQuote(c,op,'day'),cash=c.resources.treasury;
  assert.equal(quote.available,true);c=order(c,{type:'recruitCivic',id:110,term:'day'});assert.equal(c.resources.treasury,cash-quote.total);
  // Real strategic waiting and quoted prepayment cover the coming midnight.
- c=order(c,{type:'wait',hours:hour});const renewal=contractRenewalQuote(c,op,'day'),prior=structuredClone(c.contracts[110]),beforeCash=c.resources.treasury,beforeClock=clock(c);
+ c=order(c,{type:'wait',hours:hour-c.hour});const renewal=contractRenewalQuote(c,op,'day'),prior=structuredClone(c.contracts[110]),beforeCash=c.resources.treasury,beforeClock=clock(c);
  assert.equal(renewal.available,true);c=order(c,{type:'renewContract',id:110,term:'day',expectedExpiresAt:prior.expiresAt,expectedExpiresSecond:prior.expiresSecond??0});
  assert.equal(c.resources.treasury,beforeCash-renewal.price);assert.equal(clock(c),beforeClock);assert.equal(contractExpiresSeconds(c.contracts[110]),contractExpiresSeconds(prior)+renewal.hours*3600);
  for(let attempt=0;attempt<8&&clock(c)<hour*3600;attempt++){

@@ -132,7 +132,8 @@ test('sixteen actual serving bodies still reserve the real unserving physician n
 });
 
 test('the fixed deadline refuses banking before its first paid hour and keeps actual completed-duty property as a partial receipt',()=>{
- const {campaign:start,pressureIds}=setup({returned:false}),before=structuredClone(start),deadlineSeconds=clock(start),o=options(start,pressureIds,deadlineSeconds,'buenos_aires');assert.equal(quoteReturnedMountainAdmission(start,o).budget.available,false);let error;
+ // Keep this declared budget short after the ordinary route earns its income.
+ const {campaign:start,pressureIds}=setup({returned:false,treasury:14000}),before=structuredClone(start),deadlineSeconds=clock(start),o=options(start,pressureIds,deadlineSeconds,'buenos_aires');assert.equal(quoteReturnedMountainAdmission(start,o).budget.available,false);let error;
  try{prepareReturnedMountainService(start,o);}catch(e){error=e;}
  assert.match(error?.message??'',/original mountain readiness deadline/);assert.equal(clock(error.campaign),clock(start));assert.deepEqual(error.mountainReturnedService.completedDuties.map(row=>row.id),[100]);assert.equal(error.mountainReturnedService.banking.length,0);assert.ok(error.mountainReturnedService.lastBudget.budget.shortfall>0);assert.ok(error.mountainReturnedService.collected.some(row=>row.ownerId===100));assert.ok(!error.mountainReturnedService.orders.some(row=>['wait','recruitCivic'].includes(row.action.type)));assert.deepEqual(start,before);
 });

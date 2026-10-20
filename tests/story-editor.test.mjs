@@ -199,8 +199,8 @@ test('the bulletin searches and hires a new identity without showing deleted cat
  const search=m.document.querySelector('input[type="search"]');await m.input(search,'Clara Nueva');
  assert.ok(!m.document.body.textContent.includes('Rafael Sosa'));
  const card=[...m.document.querySelectorAll('article')].find(a=>a.textContent.includes('Clara Nueva'));assert.ok(card);
- const hire=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('Contratar'));assert.ok(hire);await m.click(hire);
- const id=operativeIdForCharacter(definition,'clara-nueva');assert.equal(m.campaign.hiringArrivals[0].operativeId,id);assert.equal(m.campaign.hiringArrivals[0].dueAt,2);
+ const hire=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('Contratar'));assert.ok(hire);const bookingHour=m.campaign.hour;await m.click(hire);
+ const id=operativeIdForCharacter(definition,'clara-nueva');assert.equal(m.campaign.hiringArrivals[0].operativeId,id);assert.equal(m.campaign.hiringArrivals[0].dueAt,bookingHour+2);
  assert.equal(decodeSave(encodeSave(m.campaign)).campaign.recruited.includes(id),false);
 });
 
@@ -378,9 +378,9 @@ test('mounted authoring configures travel and plausible reception sites through 
  let campaign=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY)).campaign;
  assert.ok(dispatchCampaign(campaign,{type:'recruitCivic',id:110,term:'week',destination:'ensenada'}).lastError);secureArea(campaign,'ensenada');
  campaign=dispatchCampaign(campaign,{type:'recruitCivic',id:110,term:'week',destination:'ensenada'});assert.equal(campaign.lastError,null);
- assert.equal(campaign.recruited.includes(110),false);assert.equal(campaign.hiringArrivals[0].dueAt,3);
+ assert.equal(campaign.recruited.includes(110),false);assert.equal(campaign.hiringArrivals[0].dueAt,campaign.hour+3);
  campaign=dispatchCampaign(decodeSave(encodeSave(campaign)).campaign,{type:'wait',hours:3});assert.equal(campaign.lastError,null);
- assert.equal(campaign.operativeState[110].location,'ensenada');assert.equal(campaign.contracts[110].expiresAt,171);
+ assert.equal(campaign.operativeState[110].location,'ensenada');assert.equal(campaign.contracts[110].expiresAt,campaign.hour+168);
 });
 
 test('the mounted bulletin hires to a chosen port, redirects and cancels with one refund',async t=>{
@@ -892,13 +892,13 @@ test('the finite campaign editor preserves imported commerce metadata through ac
  assert.match(m.document.body.textContent,/incorporarse por primera vez.*una sola vez/);assert.match(m.document.body.textContent,/Entrar a un sector, renovar o volver a contratar no repone cartuchos/);assert.match(m.document.body.textContent,/No hay compras ni reposición automática/);
  await m.input(m.label('Fondos iniciales (pesos)'),8000);await m.input(m.label('Cartuchos iniciales por combatiente'),7);await m.input(m.label('Salud recuperada por hora (base)'),5);
  const edited=draft();assert.equal(JSON.stringify(legacy(edited)),metadata);await m.click(m.button('Deshacer'));assert.equal(draft().careRules.baseHealing,DEFAULT_CARE_RULES.baseHealing);assert.equal(JSON.stringify(legacy(draft())),metadata);await m.click(m.button('Rehacer'));assert.deepEqual(draft(),edited);
- await m.click(m.button('Restaurar fondos y cartuchos originales'));assert.deepEqual(draft().rules,{...DEFAULT_CAMPAIGN_RULES,cartridgePrice:3});assert.equal(JSON.stringify(legacy(draft())),metadata);await m.click(m.button('Deshacer'));assert.deepEqual(draft(),edited);
+ await m.click(m.button('Restaurar fondos y cartuchos originales'));assert.deepEqual(draft().rules,{...imported.rules,...DEFAULT_CAMPAIGN_RULES});assert.equal(JSON.stringify(legacy(draft())),metadata);await m.click(m.button('Deshacer'));assert.deepEqual(draft(),edited);
  await m.click(m.button('Restaurar atención y descanso originales'));assert.deepEqual(draft().careRules,{...DEFAULT_CARE_RULES,dressingPrice:17});assert.equal(JSON.stringify(legacy(draft())),metadata);await m.click(m.button('Deshacer'));assert.deepEqual(draft(),edited);
  await m.click(m.button('Exportar contenido'));const dialog=m.document.querySelector('[role="dialog"]'),exported=dialog.querySelector('textarea[aria-label="JSON del contenido"]').value;
  assert.deepEqual(parseContentPackage(exported),edited);assert.equal(await resolveObjectURL(dialog.querySelector('a[download]').href).text(),exported);assert.equal(JSON.stringify(legacy(parseContentPackage(exported))),metadata);await m.click(m.button('Cerrar exportación'));assert.deepEqual(draft(),edited);
  await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));assert.deepEqual(campaign.contentCampaign.package,edited);assert.equal(campaign.resources.treasury,8000);
  campaign=order(campaign,{type:'recruitCivic',id:110,term:'week'});assert.equal(campaign.hiringArrivals[0].travelHours,6);assert.equal(campaign.resources.treasury,7580);assert.equal(campaign.recruited.includes(110),false);
- campaign=order(campaign,{type:'wait',hours:6});assert.equal(campaign.recruited.includes(110),true);assert.equal(campaign.hour,6);
+ campaign=order(campaign,{type:'wait',hours:6});assert.equal(campaign.recruited.includes(110),true);assert.equal(campaign.hour,edited.rules.startingHour+6);
  const op=rosterFor(campaign).find(o=>o.id===110),owned=()=>carriedAmmunition(op,campaign.operativeState[110]),rounds=()=>owned().loaded+ammoCount(owned());
  assert.equal(rounds(),7);assert.equal(campaign.operativeState[110].startingCartridgesIssued,true);assert.equal(campaign.operativeState[110].medkits,2);
  campaign=order(campaign,{type:'unloadAmmunition',operativeId:110});campaign=order(campaign,{type:'ammunition',operativeId:110,family:'ammoMusket',quantity:2,direction:'store'});assert.equal(rounds(),5);assert.equal(campaign.ammunitionStores.retiro.ammoMusket,2);

@@ -10,7 +10,7 @@ const order=(state,action)=>{const next=dispatchCampaign(state,action);assert.eq
 
 test('continuous time stops on the exact campaign victory boundary and a new postgame order can continue',()=>{
  const content=defaultContentPackage();content.includeOriginalResidents=true;content.campaignStory={...defaultCampaignStory(),chapters:[{id:'day-two',name:'Segundo día',objective:'Esperar hasta el segundo día.',conditions:[{type:'day',min:2,max:null}]}]};
- let state=initialCampaign(42,content);state=order(state,{type:'wait',hours:23});state=order(state,{type:'advanceStrategicTime',seconds:3570});
+ let state=initialCampaign(42,content);state=order(state,{type:'wait',hours:23-state.hour});state=order(state,{type:'advanceStrategicTime',seconds:3570});
  assert.equal(state.completed,false);assert.equal(state.hour*3600+state.secondOfHour,24*3600-30);
  state=order(state,{type:'advanceStrategicTime',seconds:60});
  assert.equal(state.completed,true);assert.equal(state.hour*3600+state.secondOfHour,24*3600);

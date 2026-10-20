@@ -134,14 +134,14 @@ test('new campaign waits for the introduction, can go back, and then opens recru
  await m.click('Volver');assert.equal(m.intro(),null);assert.equal(m.screen(),null);assert.equal(m.button('Continuar campaña'),undefined);assert.equal(m.jobs.length,0);
  await m.click('Nueva campaña');await m.click('Omitir introducción');
  assert.equal(m.intro(),null);assert.equal(m.screen().dataset.screen,'desk');assert.equal(m.screen().dataset.tab,'hire');assert.deepEqual(JSON.parse(m.screen().dataset.campaign).recruited,[]);assert.equal(m.jobs.length,1);
- assert.equal(JSON.parse(m.screen().dataset.campaign).hour,0,'the normal campaign retains its own initial clock');
+ assert.equal(JSON.parse(m.screen().dataset.campaign).hour,9,'the installed campaign begins at its authored 09:00 clock');
 });
 
 test('the standalone San Lorenzo battle starts in daylight without creating a campaign save',async t=>{
  const m=await mount(t,h(Home));await m.click('Combate de San Lorenzo');
  assert.equal(m.intro(),null);assert.equal(m.screen().dataset.screen,'battle');
  const battle=JSON.parse(m.screen().dataset.battle);
- assert.equal(battle.startSeconds,8*3600,'the authored battle clock must not inherit the new campaign midnight');
+ assert.equal(battle.startSeconds,8*3600,'the standalone battle keeps its authored clock independently of the campaign start');
  assert.equal(battle.night,false);assert.equal(battle.elapsedSeconds,0);
  assert.deepEqual(battle.units.filter(unit=>unit.side==='player').map(unit=>Number(unit.id)),stockPresentation.skirmish.operativeIds);
  assert.equal(m.writes.length,0,'a standalone battle does not replace a campaign save');

@@ -135,7 +135,7 @@ test('paid earned isolation persists through a clamped native shot, controlled a
   assert.equal(carriedRounds(route.pair.campaign,130),6);
   assert.equal(carriedRounds(route.pair.campaign,100),10);
   assert.equal(route.pair.campaign.operativeState[110].capturedAmmunition.ammo,9);assert.equal(route.pair.campaign.operativeState[110].medkits,0);
-  assert.equal(route.pair.campaign.contracts[130].expiresAt,54);assert.equal(route.pair.campaign.contracts[100].expiresAt,51);
+  assert.equal(route.pair.campaign.contracts[130].expiresAt,route.start.campaign.contracts[130].expiresAt+24);assert.equal(route.pair.campaign.contracts[100].expiresAt,51);
  }
  assert.deepEqual(shotReceipts[0],shotReceipts[1],'the clamped paid shot preserves exact costs and random draws');
  t.diagnostic(JSON.stringify({scenario:'declared original pre-kinetic seed42 clinical screen; actual hostile wounds/miss/capture earn43.7 morale, not a stock campaign victory',controlledForecast:{context:'pure declared nine-cell flat lane, not an executed native shot',chance:controlled},prices:[36,60,36,36],treasury:3032,strategic,shotReceipts,finalMorale:routes.map(route=>route.pair.campaign.operativeState[130].morale),orders:routes.map(route=>route.events.length),finalClock:routes.map(route=>({hour:route.pair.campaign.hour,second:route.pair.campaign.secondOfHour})),custody:[130,100,110].map(id=>({id,...Object.fromEntries(['hp','bleeding','medkits','carriedLoaded','carriedAmmo','captured'].map(key=>[key,routes[0].pair.campaign.operativeState[id][key]]))}))}));

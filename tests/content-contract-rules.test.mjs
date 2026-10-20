@@ -11,8 +11,8 @@ import {filterMercenaries} from '../game/mercenary-catalogue.js';
 import {encounterHireTerms,encountersFor} from '../game/encounters.js';
 import {A,localPackage} from './local-contract-fixture.mjs';
 const rules=()=>({days:{day:2,week:10,month:40},salaryMonthDays:20,xpStep:50,xpRaisePercent:25,warningHours:4});
-// The authored contract fixture also chooses a six-hour paid arrival.
-const authored=()=>{const content={...defaultContentPackage(),contractRules:rules()};content.characters.find(c=>c.id==='person-110').arrivalHours=6;return content;};
+// The authored contract fixture chooses midnight and a six-hour paid arrival.
+const authored=()=>{const content={...defaultContentPackage(),contractRules:rules()};content.rules.startingHour=0;content.characters.find(c=>c.id==='person-110').arrivalHours=6;return content;};
 const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError,null,next.lastError);return next;};
 const saved=s=>restoreCampaign(serializeCampaign(s));
 

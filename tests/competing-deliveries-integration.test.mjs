@@ -104,7 +104,9 @@ function rejectTrustedSync(pair,change){
  assert.match(result.error,/destino|destinos/i);assert.deepEqual(forged,before,'rejection must not advance time or consume items');
 }
 function startingCampaign(secured=false,content=defaultContentPackage()){
- // The courier experiment chooses a real six-hour arrival before any order.
+ // The courier experiment starts at midnight and chooses an hour-six arrival
+ // before any order, preserving the declared service and delivery timetable.
+ content.rules.startingHour=0;
  for(const id of IDS)content.characters.find(c=>c.id===`person-${id}`).arrivalHours=6;
  const campaign=initialCampaign(42,content);
  // Separate declared territorial boundary, before the first admitted order.
@@ -312,6 +314,7 @@ test('native paid partial delivery can be withdrawn once with exact retained cus
 
 for(const rewardChoice of [false,true])test(`declared ${rewardChoice?'cash/civic':'single-recipient'} physical errand permits a clipped withdrawal without changing old omitted behavior`,t=>{
  const content=defaultContentPackage(),definition=content.errands.find(q=>q.id===QUEST);delete definition.beneficiaries;
+ content.rules.startingHour=0;
  for(const id of IDS)content.characters.find(c=>c.id===`person-${id}`).arrivalHours=6;
  definition.reward={treasury:0,loyalty:false};definition.withdrawal={supportCost:20};if(rewardChoice)definition.rewardChoice={reimbursement:40};
  // Declared low support boundary BEFORE official admission and every paid order.

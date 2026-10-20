@@ -30,7 +30,7 @@ export function preparedConductArena({oldPinned=false,hiddenWitness=false,nearby
  }
  for(let i=0;i<6;i++)campaign=conductOrder(campaign,{type:'advanceStrategicTime',seconds:3600});
  assert.deepEqual(campaign.recruited,[107,100]);assert.equal(campaign.resources.treasury,3080);
- // The late-day witnessed event must still precede the real 30-hour expiry.
+ // The late-day witnessed event must still precede the actual paid expiry.
  campaign=conductOrder(campaign,{type:'wait',hours:18-campaign.hour-travelLegHours('retiro','buenos_aires')});
  campaign=conductOrder(campaign,{type:'attack',sector:'buenos_aires'});const request=campaign.pendingBattle,width=48,height=16;
  // Initial prepared arena only. All native people, HP, skills, finite gear,
