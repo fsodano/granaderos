@@ -14,7 +14,7 @@ import {encodeSave,decodeSave} from '../game/save.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,`${a.type}: ${n.lastError}`);return n;};
 const save=(s,b=null)=>decodeSave(encodeSave(s,b));
 const create={type:'createOfficer',name:'Isabel',profile:defaultProfile(),answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally',specialty:'teacher',temperament:'steady'}};
-function content(id='salta'){const d=defaultContentPackage();d.headquarters=id;d.startingTerritory=defaultStartingTerritory(id);return d;}
+function content(id='salta'){const d=defaultContentPackage();d.rules.startingHour=0;d.headquarters=id;d.startingTerritory=defaultStartingTerritory(id);return d;}
 
 test('headquarters validates plausible locality choices, controlled startup and older content defaults',()=>{
  for(const {id}of HEADQUARTERS_OPTIONS){const d=content(id);assert.deepEqual(validateContentPackage(d),[]);assert.deepEqual(parseContentPackage(encodeContentPackage(d)),d);const s=initialCampaign(8,d);assert.equal(s.location,id);assert.equal(s.squads[0].location,id);assert.equal(isSupplied(s,id),true);assert.equal(save(s).campaign.location,id);}

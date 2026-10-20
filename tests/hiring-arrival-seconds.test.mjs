@@ -10,7 +10,7 @@ const order=(s,action)=>{const next=dispatchCampaign(s,action);assert.equal(next
 const saved=s=>decodeSave(encodeSave(s)).campaign;
 const hire={type:'recruitCivic',id:110,term:'day',destination:'retiro'};
 function booked(second=3599,destination='retiro'){
-  const content=defaultContentPackage();content.characters.find(c=>c.id==='person-110').arrivalHours=1;
+  const content=defaultContentPackage();content.rules.startingHour=0;content.characters.find(c=>c.id==='person-110').arrivalHours=1;
   const state=initialCampaign(42,content);state.secondOfHour=second;
   if(destination!=='retiro')secureArea(state,destination);
   return order(state,{...hire,destination});

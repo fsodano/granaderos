@@ -28,7 +28,7 @@ function visitRepresentative(campaign,source){
  const pair=syncBattleTime(campaign,battle);assert.equal(pair.error,null);return pair;
 }
 const talk=(pair,source,approach='friendly')=>order(pair.campaign,{type:'talkNPC',unitId:1000,npcId:source.representative.npcId,approach,sectorState:pair.battle});
-function beforeMidnight(state){state=order(state,{type:'wait',hours:23});state=order(state,{type:'advanceStrategicTime',seconds:3599});assert.equal(state.hour,23);assert.equal(state.secondOfHour,3599);return state;}
+function beforeMidnight(state){state=order(state,{type:'wait',hours:23-state.hour});state=order(state,{type:'advanceStrategicTime',seconds:3599});assert.equal(state.hour,23);assert.equal(state.secondOfHour,3599);return state;}
 
 test('every port activates through an actual adjacent conversation and preserves the exact agreement through a full save',()=>{
  for(const source of TOWN_INCOME_SOURCES){
@@ -53,7 +53,7 @@ test('Buenos Aires cannot activate with its other required sector occupied, and 
 });
 
 test('official save migration preserves possessions without auto-activating old control or dialogue flags and rejects orphan receipts',()=>{
- const source=TOWN_INCOME_SOURCES[0],state=order(localCampaign(source),{type:'wait',hours:72});delete state.townIncome;assert.equal(state.hour,72);
+ const source=TOWN_INCOME_SOURCES[0],start=localCampaign(source),state=order(start,{type:'wait',hours:72-start.hour});delete state.townIncome;assert.equal(state.hour,72);
  const npcId=source.representative.npcId;state.conversations[npcId]={met:true,hour:0,lastApproach:'friendly',sector:'buenos_aires',text:'El puerto recibe el parte.'};
  const possessions=structuredClone({resources:state.resources,armory:state.armory,operativeState:state.operativeState,contracts:state.contracts});
  const migrated=saved(state).campaign;assert.equal(dailyIncome(migrated),0);assert.deepEqual(migrated.townIncome,{version:1,activations:{},lastPaidDay:3});

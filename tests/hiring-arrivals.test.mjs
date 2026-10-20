@@ -13,8 +13,8 @@ import {advanceBattleClock,syncBattleTime} from '../game/time.js';
 const order=(s,action)=>{const next=dispatchCampaign(s,action);assert.equal(next.lastError,null,next.lastError);return next;};
 const hire={type:'recruitCivic',id:110,term:'day',destination:'retiro'};
 const saved=s=>decodeSave(encodeSave(s)).campaign;
-// Arrival tests explicitly author their six-hour trip; stock hires are immediate.
-const delayedContent=()=>{const content=defaultContentPackage();content.characters.find(c=>c.id==='person-110').arrivalHours=6;return content;};
+// Arrival tests author midnight and their six-hour trip; stock hires are immediate.
+const delayedContent=()=>{const content=defaultContentPackage();content.rules.startingHour=0;content.characters.find(c=>c.id==='person-110').arrivalHours=6;return content;};
 
 test('hiring rejects uncontrolled, open-water and unsupported destinations without charging',()=>{
  const s=initialCampaign(42);
@@ -103,14 +103,14 @@ test('authored sites reject inland ports and allow disabling reception; legacy p
  }
  const d=defaultContentPackage();d.arrivalSites=[];let s=initialCampaign(42,d);assert.deepEqual(hiringArrivalOptions(s),[]);assert.ok(dispatchCampaign(s,hire).lastError);
  delete d.arrivalSites;for(const c of d.characters)delete c.arrivalHours;
- s=order(saved(initialCampaign(42,d)),hire);assert.ok(s.recruited.includes(110));assert.equal(s.contracts[110].started,0);
+ s=order(saved(initialCampaign(42,d)),hire);assert.ok(s.recruited.includes(110));assert.equal(s.contracts[110].started,s.hour);
 });
 test('each configured travel duration and published weekly or monthly term is respected, including elites',()=>{
  const d=defaultContentPackage(),elite=rosterFor(initialCampaign()).find(o=>o.tier==='elite');
  const c=d.characters.find(c=>c.id===`person-${elite.id}`);c.arrivalHours=2;c.monthlyPay=300;
  for(const [term,hours] of [['week',168],['month',720]]){
   let s=order(initialCampaign(42,d),{type:'recruitCivic',id:elite.id,term});s=order(s,{type:'wait',hours:2});
-  assert.equal(s.contracts[elite.id].expiresAt,2+hours);assert.equal(saved(s).contracts[elite.id].started,2);
+  assert.equal(s.contracts[elite.id].expiresAt,d.rules.startingHour+2+hours);assert.equal(saved(s).contracts[elite.id].started,d.rules.startingHour+2);
  }
  for(const invalid of [-1,169,1.5,null,'6']){c.arrivalHours=invalid;assert.ok(validateContentPackage(d).length);}
 });
