@@ -59,7 +59,7 @@ test('a real delayed paid arrival joins the retained-service ledger during passi
  const booked=structuredClone(start.hiringArrivals[0]),result=restStableRoutePatients(start,{patients:[110]}),s=result.campaign;
  assert.equal(result.completed,true);assert.equal(result.hours,48);assert.equal(result.receipt.dressingsUsed,0);
  assert.equal(s.hiringArrivals.length,0);assert.equal(s.recruited.includes(112),true);assert.equal(s.operativeState[112].alive,true);
- const renewal=result.renewals.find(row=>row.id===112);assert.ok(renewal);assert.equal(renewal.cost,renewal.quote.price);assert.equal(renewal.hour,29);
- assert.equal(booked.dueAt,6);assert.equal(s.contracts[112].expiresAt,54);assert.ok(contractExpiresSeconds(s.contracts[112])>s.hour*3600);
+ const renewal=result.renewals.find(row=>row.id===112);assert.ok(renewal);assert.equal(renewal.cost,renewal.quote.price);assert.equal(renewal.hour,start.hour+29);
+ assert.equal(booked.dueAt,start.hour+6);assert.equal(s.contracts[112].expiresAt,start.hour+54);assert.ok(contractExpiresSeconds(s.contracts[112])>s.hour*3600);
  assert.equal(s.resources.treasury,start.resources.treasury-result.receipt.renewalCost);assert.deepEqual(start,before);assert.deepEqual(admitted(s),s);
 });
