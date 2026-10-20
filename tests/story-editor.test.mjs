@@ -199,8 +199,8 @@ test('the bulletin searches and hires a new identity without showing deleted cat
  const search=m.document.querySelector('input[type="search"]');await m.input(search,'Clara Nueva');
  assert.ok(!m.document.body.textContent.includes('Rafael Sosa'));
  const card=[...m.document.querySelectorAll('article')].find(a=>a.textContent.includes('Clara Nueva'));assert.ok(card);
- const hire=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('Contratar'));assert.ok(hire);await m.click(hire);
- const id=operativeIdForCharacter(definition,'clara-nueva');assert.equal(m.campaign.hiringArrivals[0].operativeId,id);assert.equal(m.campaign.hiringArrivals[0].dueAt,2);
+ const hire=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('Contratar'));assert.ok(hire);const bookingHour=m.campaign.hour;await m.click(hire);
+ const id=operativeIdForCharacter(definition,'clara-nueva');assert.equal(m.campaign.hiringArrivals[0].operativeId,id);assert.equal(m.campaign.hiringArrivals[0].dueAt,bookingHour+2);
  assert.equal(decodeSave(encodeSave(m.campaign)).campaign.recruited.includes(id),false);
 });
 

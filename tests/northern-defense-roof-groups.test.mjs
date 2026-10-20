@@ -21,10 +21,11 @@ const rounds=(c,id)=>unitAmmunitionByType(carriedAmmunition(rosterFor(c).find(pe
 
 function setup({count=15,casualty=false}={}){
  const ids=roster.slice(0,count),content=defaultContentPackage();
+ // Midnight allows the declared six-hour arrival wait before the first raid.
  // The cast, prices, finite starting rounds and periodic raid are declared
  // before validation/factory. The current Córdoba map and roof links stay exact.
  content.includeOriginalResidents=false;content.errands=[];
- content.rules.startingTreasury=50000;content.rules.deploymentCartridges=12;
+ content.rules.startingHour=0;content.rules.startingTreasury=50000;content.rules.deploymentCartridges=12;
  content.startingTerritory.cordoba={owner:'patriot',loyalty:65};
  content.campaignStory={introduction:'Guardia local declarada.',victory:'Objetivo posterior.',defeat:'La campaña termina.',chapters:[{id:'later',name:'Objetivo posterior',objective:'Continuar después del control.',conditions:[{type:'day',min:100,max:null}]}],failureConditions:[]};
  content.world=structuredClone(DEFAULT_WORLD);content.maps=structuredClone(DEFAULT_MAPS);

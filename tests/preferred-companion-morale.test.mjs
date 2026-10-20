@@ -19,7 +19,7 @@ const saved=(s,b=null)=>decodeSave(encodeSave(s,b));
 const paidPair=(content=defaultContentPackage(),term='week')=>{
  // These issue/sleep/expiry controls deliberately schedule both arrivals at
  // hour six. Stock arrival remains immediate; no serving condition is reset.
- content=structuredClone(content);for(const id of [107,116])content.characters.find(c=>c.id===`person-${id}`).arrivalHours=6;
+ content=structuredClone(content);content.rules.startingHour=0;for(const id of [107,116])content.characters.find(c=>c.id===`person-${id}`).arrivalHours=6;
  let s=initialCampaign(42,content);for(const id of [107,116]){const quote=contractQuote(s,rosterFor(s).find(o=>o.id===id),id===116?term:'week'),cash=s.resources.treasury;s=order(s,{type:'recruitCivic',id,term:id===116?term:'week'});assert.equal(s.resources.treasury,cash-quote.price);}
  s=advanceTo(s,21600);assert.deepEqual(s.recruited,[107,116]);return saved(s).campaign;
 };
