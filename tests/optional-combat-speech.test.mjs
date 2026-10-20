@@ -58,7 +58,7 @@ test('optional combat lines use existing strict text admission without weakening
 
 test('actual paid arrivals and official deployment saves pin each optional line without changing physical issue or old omissions',()=>{
  const fresh=authoredPackage(),older=olderPackage(),pair=paidVisit(fresh),oldPair=paidVisit(older);
- assert.equal(pair.campaign.hour,6);assert.deepEqual(pair.campaign.contracts,oldPair.campaign.contracts);assert.equal(pair.campaign.resources.treasury,oldPair.campaign.resources.treasury);assert.deepEqual(pair.campaign.operativeState,oldPair.campaign.operativeState);
+ assert.equal(pair.campaign.hour,fresh.rules.startingHour+6);assert.deepEqual(pair.campaign.contracts,oldPair.campaign.contracts);assert.equal(pair.campaign.resources.treasury,oldPair.campaign.resources.treasury);assert.deepEqual(pair.campaign.operativeState,oldPair.campaign.operativeState);
  assert.equal(pair.campaign.contracts[107].paid,588);assert.equal(pair.campaign.contracts[110].paid,420);assert.equal(pair.campaign.resources.treasury,3200-588-420);
  for(const id of paidIds){
   const actual=pair.battle.units.find(u=>u.id===String(id)),old=oldPair.battle.units.find(u=>u.id===String(id));
