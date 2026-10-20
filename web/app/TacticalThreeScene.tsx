@@ -4,6 +4,7 @@ import {withActorEffectAnchors} from '../lib/three/actor-effect-anchors';
 import {useEffect,useRef,useState} from 'react';
 import {Scene,WebGLRenderer,OrthographicCamera,Color,HemisphereLight,DirectionalLight,PCFShadowMap,SRGBColorSpace,ACESFilmicToneMapping,Frustum,Matrix4,Sphere,Vector3} from 'three';
 import {createCombatEffects,type CombatEffectEvent} from '../lib/three/combat-effects';
+import {createDeathBlood} from '../lib/three/death-blood';
 import {createSectorWorld} from '../lib/three/sector-world';
 import {ActorAssetLibrary} from '../lib/three/actor-assets';
 import {ActorOcclusion,markActorMaterials} from '../lib/three/actor-occlusion';
@@ -32,7 +33,7 @@ export default function TacticalThreeScene(props:Props){
     const sun=new DirectionalLight('#ffe2b9',3.0);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.normalBias=.025;sun.shadow.bias=-.0003;sun.shadow.camera.near=.5;sun.shadow.camera.far=160;scene.add(sun,sun.target);
     let alive=true,initialReady=false,request=0,last=performance.now(),worldInput:WorldInput|undefined,actorInput:readonly ActorVisual[]|undefined,frames=0,frameStart=last,failedMessage='';
     const report=(error:unknown)=>{const message=error instanceof Error?error.message:String(error);if(message!==failedMessage){failedMessage=message;console.error('[Tactical3D]',error);element.dataset.error=message;setStatus('No se pudo cargar parte del sector.');setFailed(true);}};
-    const world=createSectorWorld(scene,{tileMetres:TILE_METRES,assetUrl:sitePath,onAssetError:report,equipment:library.equipment()}),effects=createCombatEffects(scene,{tileMetres:TILE_METRES}),occlusion=new ActorOcclusion();
+    const world=createSectorWorld(scene,{tileMetres:TILE_METRES,assetUrl:sitePath,onAssetError:report,equipment:library.equipment()}),effects=createCombatEffects(scene,{tileMetres:TILE_METRES}),blood=createDeathBlood(scene),occlusion=new ActorOcclusion();
     let effectInput:readonly CombatEffectEvent[]|undefined,lastReduced:boolean|undefined;
     const ensure=(visual:ActorVisual,lod:number)=>{
       const mounted=visual.mounted||visual.cue?.fromPosture==='mounted'||['mount','dismount'].includes(visual.action),key=`${visual.appearance}:${lod}:${mounted}`,old=actors.get(visual.key);
@@ -59,6 +60,7 @@ export default function TacticalThreeScene(props:Props){
       const centreZ=(-(input.view.x+input.view.width/2-(input.view.mapHeight*26+28))/26+(input.view.y+input.view.height/2-65)/14)/2*TILE_METRES;
       sun.position.set(centreX-18,30,centreZ-12);sun.target.position.set(centreX,0,centreZ);const span=Math.max(12,input.view.width/29.747);Object.assign(sun.shadow.camera,{left:-span,right:span,top:span,bottom:-span});sun.shadow.camera.updateProjectionMatrix();
       const visible=new Set(input.actors.map(actor=>actor.key));for(const [key,entry]of actors)if(!visible.has(key)){entry.runtime?.dispose();actors.delete(key);}
+      if(actorInput!==input.actors||lastReduced!==quiet)blood.update({actors:input.actors,timeSeconds:now/1000,reducedMotion:quiet});
       if(actorInput!==input.actors){actorInput=input.actors;world.updateActors?.(input.actors.map(actor=>({x:actor.position[0]/TILE_METRES,y:actor.position[2]/TILE_METRES,elevation:actor.position[1],tacticalLevel:actor.motion?.tacticalLevel??actor.tacticalLevel,activeClimbLink:actor.motion?.moving&&actor.motion.kind==='climb'?actor.motion.linkId:undefined})));}
       const pixelHeight=1.76*ACTOR_VISUAL_SCALE*25.0666666667*bounds.width/input.view.width,lod=characterLOD(pixelHeight);
       for(const visual of input.actors)ensure(visual,lod);
@@ -75,16 +77,16 @@ export default function TacticalThreeScene(props:Props){
         });
         effects.update({events,timeSeconds:now/1000,reducedMotion:quiet});
       }lastReduced=quiet;
-      if(!input.ambientPaused)world.tick?.(delta,now/1000);effects.tick(delta,now/1000);renderer.render(scene,camera);frames++;
+      if(!input.ambientPaused)world.tick?.(delta,now/1000);effects.tick(delta,now/1000);blood.tick(now/1000);renderer.render(scene,camera);frames++;
       if(now-frameStart>=1000){
         // Empty sectors are ready too. Wait for ground/building textures so
         // the initial loading state covers the complete admitted scene.
         if(!initialReady&&!failedMessage&&[...actors.values()].every(actor=>!actor.pending&&actor.runtime)&&world.inspect().pendingTextures===0&&world.inspect().pendingModels===0){initialReady=true;setStatus('');}
-        element.dataset.effects=String(effects.inspect().events.length);element.dataset.fps=(frames*1000/(now-frameStart)).toFixed(1);element.dataset.drawCalls=String(renderer.info.render.calls);element.dataset.triangles=String(renderer.info.render.triangles);element.dataset.actors=String(actors.size);element.dataset.loadedActors=String([...actors.values()].filter(actor=>actor.runtime).length);element.dataset.activeActors=String(activeActors);element.dataset.pendingActors=String([...actors.values()].filter(actor=>actor.pending).length);element.dataset.lod=String(lod);element.dataset.geometries=String(renderer.info.memory.geometries);element.dataset.textures=String(renderer.info.memory.textures);frames=0;frameStart=now;}
+        element.dataset.effects=String(effects.inspect().events.length);element.dataset.bloodStains=String(blood.inspect().corpses);element.dataset.bloodBursts=String(blood.inspect().emitted);element.dataset.fps=(frames*1000/(now-frameStart)).toFixed(1);element.dataset.drawCalls=String(renderer.info.render.calls);element.dataset.triangles=String(renderer.info.render.triangles);element.dataset.actors=String(actors.size);element.dataset.loadedActors=String([...actors.values()].filter(actor=>actor.runtime).length);element.dataset.activeActors=String(activeActors);element.dataset.pendingActors=String([...actors.values()].filter(actor=>actor.pending).length);element.dataset.lod=String(lod);element.dataset.geometries=String(renderer.info.memory.geometries);element.dataset.textures=String(renderer.info.memory.textures);frames=0;frameStart=now;}
     };
     request=requestAnimationFrame(tick);
     const lost=(event:Event)=>{event.preventDefault();report(Error('WebGL context lost'));},restored=()=>setAttempt(value=>value+1);element.addEventListener('webglcontextlost',lost);element.addEventListener('webglcontextrestored',restored);
-    return()=>{alive=false;cancelAnimationFrame(request);element.removeEventListener('webglcontextlost',lost);element.removeEventListener('webglcontextrestored',restored);for(const actor of actors.values())actor.runtime?.dispose();actors.clear();occlusion.dispose();effects.dispose();world.dispose();library.dispose();renderer.dispose();};
+    return()=>{alive=false;cancelAnimationFrame(request);element.removeEventListener('webglcontextlost',lost);element.removeEventListener('webglcontextrestored',restored);for(const actor of actors.values())actor.runtime?.dispose();actors.clear();occlusion.dispose();blood.dispose();effects.dispose();world.dispose();library.dispose();renderer.dispose();};
   },[props.sceneId,attempt]);
   return <><canvas key={attempt} ref={canvas} className="tactical-three-canvas" aria-hidden="true" data-sector-renderer="three"/>{status&&<div className={`tactical-three-status${failed?' failed':''}`} role="status">{status}{failed&&<button type="button" onClick={()=>setAttempt(value=>value+1)}>Volver a cargar la vista</button>}</div>}</>;
 }
