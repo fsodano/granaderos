@@ -2214,7 +2214,8 @@
         "name": "Soldado de línea",
         "description": "Mosquete y bayoneta para la infantería.",
         "weapon": "firearm-1800",
-        "blade": "blade-1811"
+        "blade": "blade-1811",
+        "bladeFittingPattern": "india_socket"
       },
       {
         "id": "baqueano",

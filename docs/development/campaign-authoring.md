@@ -160,6 +160,10 @@ terrain, scenery and 3D building resources remain engine assets.
 question labels, choice names and creation text. Stable question and choice
 IDs select the shared skill effects. This does not permit new executable
 character rules. Generic campaigns have a neutral unarmed creation fallback.
+A class can set `bladeFittingPattern: "india_socket"` when its local primary
+weapon uses template `1800` and its blade uses template `1811`. New characters
+then receive one identified, loose bayonet that fits that Brown Bess. Omitting
+the field keeps the blade unmarked. Existing saved equipment does not change.
 
 ## Forces and timed events
 

@@ -1,4 +1,5 @@
 import {DEFAULT_CONTENT,DEFAULT_PRESENTATION} from '../campaigns/default.js';
+import {FITTING_PATTERNS} from './weapon-fittings.js';
 
 const definitionsFor=value=>value?.contentCampaign?.package??value?.campaignPackage??value;
 export const usesGenericOfficerCreation=value=>{const d=definitionsFor(value);return d?.scenario==='generic-v1'||Boolean(d?.campaignStory);};
@@ -33,6 +34,19 @@ export function officerCreationWeapon(reference,context=null){
  const weapon=weapons.find(w=>w.id===reference);if(!weapon)throw Error('El equipo inicial del personaje no existe en esta campaña.');return weapon;
 }
 
+const validClassFitting=(cls,weapons)=>cls.bladeFittingPattern===undefined||
+ typeof cls.bladeFittingPattern==='string'&&Object.hasOwn(FITTING_PATTERNS,cls.bladeFittingPattern)&&
+ weapons.find(w=>w.id===cls.weapon)?.template===FITTING_PATTERNS[cls.bladeFittingPattern].host&&
+ weapons.find(w=>w.id===cls.blade)?.template===FITTING_PATTERNS[cls.bladeFittingPattern].weapon;
+// Only the new-character order issues this authored fitting. Reconstructing
+// an officer or restoring an old save must not identify an existing blade.
+export function officerStartingFitting(profile,context=null){
+ const cls=profile?.version===2&&campaignOfficerCreation(context).classes.find(c=>c.id===profile.classId);
+ if(!cls||cls.bladeFittingPattern===undefined)return null;
+ if(!validClassFitting(cls,definitionsFor(context)?.weapons??DEFAULT_CONTENT.weapons))throw Error('La bayoneta inicial no corresponde al equipo de esta clase.');
+ return cls.bladeFittingPattern;
+}
+
 export function validateOfficerCreation(value,content){
  if(value===undefined)return [];
  const errors=[],check=(ok,message)=>{if(!ok)errors.push(`Creación de personajes: ${message}`);};
@@ -40,7 +54,7 @@ export function validateOfficerCreation(value,content){
  check(Object.keys(value).every(key=>['classes','questions','commissionQuestions','traits','defaults','commission','biography','registry'].includes(key)),'opción desconocida.');
  const weaponIds=new Set((content?.weapons??[]).map(w=>w.id)),bladeIds=new Set((content?.weapons??[]).filter(w=>w.template>=1809).map(w=>w.id));
  const equipment=(reference,blade=false)=>reference===null||(blade?bladeIds:weaponIds).has(reference);
- if(value.classes!==undefined)check(Array.isArray(value.classes)&&value.classes.length>0&&value.classes.length<=CLASS_IDS.length&&new Set(value.classes.map(c=>c?.id)).size===value.classes.length&&value.classes.every(c=>object(c)&&Object.keys(c).every(k=>['id','name','description','weapon','blade'].includes(k))&&CLASS_IDS.includes(c.id)&&text(c.name,100)&&text(c.description)&&equipment(c.weapon)&&equipment(c.blade,true)),'clases o equipo local inválidos.');
+ if(value.classes!==undefined)check(Array.isArray(value.classes)&&value.classes.length>0&&value.classes.length<=CLASS_IDS.length&&new Set(value.classes.map(c=>c?.id)).size===value.classes.length&&value.classes.every(c=>object(c)&&Object.keys(c).every(k=>['id','name','description','weapon','blade','bladeFittingPattern'].includes(k))&&CLASS_IDS.includes(c.id)&&text(c.name,100)&&text(c.description)&&equipment(c.weapon)&&equipment(c.blade,true)&&validClassFitting(c,content?.weapons??[])),'clases o equipo local inválidos.');
  function questions(list,ids){return Array.isArray(list)&&list.length===ids.length&&new Set(list.map(q=>q?.id)).size===ids.length&&list.every(q=>object(q)&&Object.keys(q).every(k=>['id','label','choices'].includes(k))&&ids.includes(q.id)&&text(q.label,200)&&Array.isArray(q.choices)&&q.choices.length>0&&q.choices.length<=QUESTION_CHOICES[q.id].length&&new Set(q.choices.map(c=>c?.id)).size===q.choices.length&&q.choices.every(c=>object(c)&&Object.keys(c).length===2&&QUESTION_CHOICES[q.id].includes(c.id)&&text(c.name,200)));}
  if(value.questions!==undefined)check(questions(value.questions,['specialty','temperament']),'cuestionario personal inválido.');
  if(value.commissionQuestions!==undefined)check(questions(value.commissionQuestions,['origin','doctrine','crisis']),'cuestionario de formación inválido.');
