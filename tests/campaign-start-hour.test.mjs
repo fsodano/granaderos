@@ -69,6 +69,7 @@ test('authored start hours validate their bounds and use the same clock for init
   d.content.campaignEvents=[{id:'initial-grant',atHour:hour,conditions:[],text:'Llega la asignación inicial.',effects:[{type:'treasury',operation:'receive',amount:50}]}];
   const state=initialCampaign(42,compileCampaignPackage(d.manifest,d));
   assert.equal(state.hour,hour);assert.equal(state.resources.treasury,d.content.rules.startingTreasury+50);
+  assert.equal(state.log.find(entry=>entry.text===d.content.campaignStory.introduction)?.hour,hour);
   assert.deepEqual(state.campaignEventState.receipts,[{event:'initial-grant',hour,outcome:'applied',amount:50}]);
   assert.deepEqual(saved(state).campaign,state);
   if(hour>0){d.content.campaignEvents[0].atHour=hour-1;assert.throws(()=>compileCampaignPackage(d.manifest,d),/antes de la hora inicial/);}

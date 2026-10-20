@@ -29,7 +29,7 @@ export const storyReferences=(story,type,id)=>[...(story?.chapters??[]).flatMap(
 export function initializeCampaignStory(s){
  if(!campaignStory(s))return;
  s.campaignProgress={version:1,completed:[],outcome:null};
- s.log=[{hour:0,text:campaignStory(s).introduction}];
+ s.log=[{hour:s.hour,text:campaignStory(s).introduction}];
 }
 // Campaign objectives use settled campaign state. Do not finish an open scene.
 export function advanceCampaignStory(s,battle=null){
