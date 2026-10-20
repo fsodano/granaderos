@@ -13,6 +13,7 @@ import {NativeProneArmBlendSupport} from './prone-arm-blend-support';
 import {NativeClimbContactFit} from './climb-contact-fit';
 import {ActorIllustration} from './actor-illustration';
 import {readableHumanClip} from './readable-human-stance';
+import {idleBreathingClip,idleBreathingTiming} from './idle-breathing';
 import type {ContactActorResolver} from './melee-contact-fit';
 import {NativeReadyMeleeContactFit as NativeMeleeContactFit} from './melee-ready-contact-fit';
 import type {ActorVisual} from './presentation';
@@ -217,14 +218,16 @@ export class ActorRuntime {
     const hand=(loadingItem?.socket??visual.cue?.hand??'handRight') as HandRole,mirror=hand==='handLeft'&&visual.equipment==='short-gun'&&['aim','fire','reload'].includes(visual.action);
     if(mirror&&!this.asset.manifest.animationMirroring)throw Error(`Missing left-hand animation mapping: ${this.asset.appearance.id}`);
     const posed=readableHumanClip(sourceClip,this.asset.body.scene,this.asset.manifest.bones,semantic);
-    const clip=mirror?mirroredClip(posed,this.asset.body.scene,this.asset.manifest.animationMirroring!):posed;
-    const clipSpec=mirror?withMirroredProps(sourceSpec,this.asset.body.scene):sourceSpec;
+    const breathing=idleBreathingClip(posed,this.asset.body.scene,this.asset.manifest.bones,semantic),idleTiming=breathing!==posed?idleBreathingTiming(visual.key):undefined;
+    const clip=mirror?mirroredClip(breathing,this.asset.body.scene,this.asset.manifest.animationMirroring!):breathing;
+    const clipSpec=mirror?withMirroredProps(sourceSpec,this.asset.body.scene):idleTiming?{...sourceSpec,playbackRate:clip.duration/idleTiming.period}:sourceSpec;
     const key=`${semantic}:${hand}:${visual.cue?.id??''}`;
     if(key!==this.actionKey){
       this.gaitSupport.begin(this.clipSpec,clipSpec,this.mixer.time,clip);
       this.gestureSupport.begin(this.clipSpec,clipSpec,this.mixer.time,clip,this.action?.getClip(),this.action?.time??0);
       this.proneArmSupport.begin(this.clipSpec,clipSpec,this.mixer.time);
       const previous=this.action;this.action=this.mixer.clipAction(clip);this.action.reset();this.action.enabled=true;this.action.clampWhenFinished=!clipSpec.loop;this.action.setLoop(clipSpec.loop?LoopRepeat:LoopOnce,clipSpec.loop?Infinity:1);this.action.play();
+      if(idleTiming)this.action.time=idleTiming.phase*clip.duration;
       if(previous&&previous!==this.action){if(visual.action==='fire'&&visual.cue?.shotHand)previous.stop();else this.action.crossFadeFrom(previous,.12,false);}this.actionKey=key;this.clipSpec=clipSpec;this.cueStartedAt=visual.cue?.startedAt??now;
       if(this.horse)this.seatActions.set(this.action,{spec:clipSpec,mounted:visual.mounted||visual.cue?.fromPosture==='mounted'});
       if(this.clothMeshes.some(cloth=>cloth.boot!==undefined))this.clothActions.set(this.action,{name:sourceClip.name,mirrored:mirror});
