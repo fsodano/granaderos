@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,visibleRooms} from '../game/tactical.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
-const {Scene,Matrix4}=await import('../web/node_modules/three/build/three.module.js');
+const {Scene,Matrix4,Vector3,Box3}=await import('../web/node_modules/three/build/three.module.js');
 const {createDeathBlood,DEATH_BLOOD_SECONDS}=await import('../web/lib/three/death-blood.ts');
 const {admittedActors,presentActors,observedActorTransitions}=await import('../web/lib/three/presentation.ts');
 const actor=(key='unit:one',patch={})=>({key,position:[2,0,3],action:'idle',...patch});
@@ -37,6 +37,13 @@ test('unit and civilian corpses retain distinct stains on their own floor; uncon
  const mesh=root.getObjectByName('death-blood:stains'),matrix=new Matrix4();mesh.getMatrixAt(0,matrix);assert.ok(Math.abs(matrix.elements[13]-.012)<1e-6);mesh.getMatrixAt(4,matrix);assert.ok(Math.abs(matrix.elements[13]-3.012)<1e-6);
  assert.equal(mesh.material.depthTest,true);assert.equal(mesh.material.depthWrite,false);assert.equal(mesh.material.polygonOffset,true);assert.equal(mesh.raycast({},[]),undefined);
  const original=matrices(root,'stains');blood.update({actors:structuredClone(input),timeSeconds:500});assert.deepEqual(matrices(root,'stains'),original);blood.dispose();
+});
+
+test('the ground stain extends beyond a fallen torso at normal tactical scale',()=>{
+ const {blood,root}=setup();blood.update({actors:[actor('unit:one',{action:'dead'})]});
+ const mesh=root.getObjectByName('death-blood:stains'),bounds=new Box3(),matrix=new Matrix4(),point=new Vector3(),vertices=mesh.geometry.getAttribute('position');
+ for(let instance=0;instance<mesh.count;instance++){mesh.getMatrixAt(instance,matrix);for(let vertex=0;vertex<vertices.count;vertex++)bounds.expandByPoint(point.fromBufferAttribute(vertices,vertex).applyMatrix4(matrix));}
+ const size=bounds.getSize(new Vector3());assert.ok(size.x>=.88&&size.z>=.5,'the pool must remain visible beyond the body, not only beneath it');assert.ok(size.x<1.4&&size.z<1,'the stain remains local to the casualty');blood.dispose();
 });
 
 test('first admission, concealment, stale cues and renderer reconstruction never replay a death',()=>{

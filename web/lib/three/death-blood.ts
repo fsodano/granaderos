@@ -17,7 +17,7 @@ export function createDeathBlood(scene:Scene){
  const root=new Group();root.name='death-blood';scene.add(root);
  const poolGeometry=new CircleGeometry(1,14);poolGeometry.rotateX(-Math.PI/2);
  const dropGeometry=new IcosahedronGeometry(1,0);
- const poolMaterial=new MeshBasicMaterial({color:'#681e22',transparent:true,opacity:.78,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1});
+ const poolMaterial=new MeshBasicMaterial({color:'#84292b',transparent:true,opacity:.84,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1});
  const dropMaterial=new MeshBasicMaterial({color:'#8b292b',transparent:true,opacity:.9,depthWrite:false});
  let pools:InstancedMesh|undefined,drops:InstancedMesh|undefined,time=0,reduced=false,disposed=false;
  const corpses=new Map<string,Corpse>(),bursts=new Map<string,Burst>(),observedLiving=new Set<string>(),emitted=new Set<string>(),transform=new Object3D();
@@ -32,9 +32,9 @@ export function createDeathBlood(scene:Scene){
   if(!corpses.size){if(pools)pools.count=0;return;}
   pools=allocate(pools,corpses.size*4,'stains');let index=0;
   for(const corpse of corpses.values()){
-   const shape=corpseBloodShape(corpse.key),angle=shape.rotation*Math.PI/180,rx=shape.rx*.025,rz=shape.ry*.034;
-   // Overlapping low polygons retain the existing small, irregular blood shape.
-   for(const [x,z,sx,sz]of [[-.035,0,rx,rz],[.17,.055,.13,.085],[-.24,.075,.045,.025],[.29,-.08,.027,.018]]){
+   const shape=corpseBloodShape(corpse.key),angle=shape.rotation*Math.PI/180,rx=shape.rx*.04,rz=shape.ry*.065;
+   // Extend past the fallen torso so the ground mark remains readable at tactical zoom.
+   for(const [x,z,sx,sz]of [[-.035,0,rx,rz],[.30,.09,.20,.13],[-.46,.13,.065,.04],[.51,-.14,.04,.028]]){
     transform.position.set(corpse.position[0]+x*Math.cos(angle)-z*Math.sin(angle),corpse.position[1]+.012,corpse.position[2]+x*Math.sin(angle)+z*Math.cos(angle));
     transform.rotation.set(0,angle,0);transform.scale.set(sx,1,sz);transform.updateMatrix();pools.setMatrixAt(index++,transform.matrix);
    }
