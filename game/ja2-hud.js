@@ -4,7 +4,7 @@ import {firearmServiceable,BROKEN_FIREARM_REASON} from './firearm-serviceability
 import {CIVILIAN_SUPPLY_FIELDS} from './civilian-supplies.js';
 import {finiteArsenalsFor} from './campaign-physical.js';
 import {weaponSpecification} from './weapon-definition.js';
-import {AMMUNITION_TYPES,availableAmmunition,totalReserveAmmunition,weaponAmmoType} from './ammunition-types.js';
+import {AMMUNITION_TYPES,availableAmmunition,weaponAmmoType} from './ammunition-types.js';
 import {tacticalLevel, sameCell, sameSurface, spaceKey} from './tactical-space.js';
 import {BODY_SLOTS,OUTFITS,wornOutfit,hasPoncho} from './outfits.js';
 import {handLayout,selectMainHand} from './hand-layout.js';
@@ -143,9 +143,13 @@ function reloadLabel(plan){
 }
 function reloadNote(state,unit,plan){
   if(!plan.available)return undefined;
-  if(!plan.hands)return plan.partial?`Carga ${plan.rounds} cartuchos ahora. Faltan ${formatAP(plan.remainingPA)} PA para completar la recarga. Continuá con R o un clic de disparo con el arma vacía.`:`Carga ${plan.rounds} cartucho${plan.rounds===1?'':'s'}. Quedan ${totalReserveAmmunition(unit)-plan.rounds} de reserva. Hacé otro clic para disparar.`;
+  // Only count the selected loads in this reload. Paired guns can share a
+  // reserve or select different loads; an unrelated pocket is not usable stock.
+  const types=new Set((plan.hands??[{hand:'primary'}]).map(hand=>weaponAmmoType(hand.hand==='offhand'?secondaryPistolView(unit):unit)));
+  const reserve=[...types].reduce((sum,type)=>sum+availableAmmunition(unit,type),0)-plan.rounds;
+  if(!plan.hands)return plan.partial?`Carga ${plan.rounds} cartuchos ahora. Faltan ${formatAP(plan.remainingPA)} PA para completar la recarga. Continuá con R o un clic de disparo con el arma vacía.`:`Carga ${plan.rounds} cartucho${plan.rounds===1?'':'s'}. Quedan ${reserve} de reserva. Hacé otro clic para disparar.`;
   const hands=plan.hands.map(hand=>`${hand.hand==='primary'?'Mano principal':'Segunda mano'}: ${hand.partial?'recarga parcial, ':''}carga ${hand.rounds} cartucho${hand.rounds===1?'':'s'}${state.mode==='exploration'?'':` (${formatAP(hand.pa)} PA)`}.`);
-  return [...hands,plan.partial?`Faltan ${formatAP(plan.remainingPA)} PA para completar la recarga. Continuá con R.`:null,plan.offhandPending?'La segunda mano queda pendiente. Conservás los PA sobrantes.':null,`Quedan ${totalReserveAmmunition(unit)-plan.rounds} cartuchos de reserva.`,plan.partial?null:'Hacé otro clic para disparar.'].filter(Boolean).join(' ');
+  return [...hands,plan.partial?`Faltan ${formatAP(plan.remainingPA)} PA para completar la recarga. Continuá con R.`:null,plan.offhandPending?'La segunda mano queda pendiente. Conservás los PA sobrantes.':null,`Quedan ${reserve} cartuchos de reserva.`,plan.partial?null:'Hacé otro clic para disparar.'].filter(Boolean).join(' ');
 }
 export function emptyGunPreview(state, unit) {
   if (!unit || !hasFirearm(unit) || unit.loaded > 0) return null;
