@@ -384,7 +384,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   const recipient=state.npcs?.find(n=>!n.departure&&!n.fled&&sameCell(n,point)&&canSee(state,unit,n));
   if(recipient&&unit.activeSlot==='item'&&!heldGrenade(unit)&&['move','useItem'].includes(mode)){const gift=npcGiftPreview(state,unit,recipient);return {name:recipient.name,actionLabel:gift.label,pa:gift.pa,remaining:unit.ap,valid:gift.valid,reason:gift.reason,coverNote:[beneficiaryDeliveryNotice(gift.beneficiaryDelivery,state),'Se entrega el objeto que está en la mano. No se usa la reserva del cuartel.'].filter(Boolean).join(' ')};}
   const occupants = state.units.filter(v => sameCell(v, point) && !v.fled && !v.departure && (v.side === unit.side || state.units.some(p => p.side === unit.side && canSee(state, p, v))));
-  const target = occupants.find(v => v.id === point.id) || occupants.find(v => v.hp > 0) || occupants[0];
+  const target = cellOccupant(occupants, point);
   if(mode==='fire'&&(explicitPointShot(state,point)||!target||target.side===unit.side||target.hp<=0||target.surrendered)){
     const preview=pointFirePreview(state,unit,point,ctx.aim??0);
     const paired=pairedPistol(unit),shotLoad=weaponFor(unit).loadPattern==='cone'||paired&&weaponFor(secondaryPistolView(unit,paired)).loadPattern==='cone';
@@ -742,7 +742,9 @@ export function pickupSelection(state,unit,point,ctx={}){
   const mode=ctx.mode??'move';
   if(mode!=='loot'){
     if(!['move','useItem'].includes(mode)||ctx.movementIntent==='preserveFacing'||ctx.itemIntent!=='steal'&&unit.activeSlot==='supply'&&unit.activeSupply==='torches')return [];
-    const occupant=state.units.find(other=>!other.departure&&sameCell(other,point)&&(other.side===unit.side||canSee(state,unit,other)));
+    // Match the attack preview and click controller: an explicit identity wins,
+    // otherwise a known living occupant takes precedence over a body in its cell.
+    const occupant=cellOccupant(state.units.filter(other=>sameCell(other,point)&&(other.side===unit.side||state.units.some(observer=>observer.side===unit.side&&canSee(state,observer,other)))),point);
     if(occupant&&!point.loot&&ctx.itemIntent!=='steal'&&(occupant.hp>0||unit.activeSlot==='medical'))return [];
   }
   const preview=lootSearchPreview(state,unit,point);
