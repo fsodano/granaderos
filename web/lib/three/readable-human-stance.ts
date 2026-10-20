@@ -42,7 +42,10 @@ export function readableHumanClip(source:AnimationClip,body:Object3D,bones:Recor
  // lower body, and the mounted seat, exact while opening the elbows.
  const widenLegs=posture==='stand'&&!action.startsWith('strafe');
  const nativeLegs=legs as Limb[],nativeArms=arms as Limb[],modified=[...(widenLegs?nativeLegs:[]),...nativeArms].flatMap(limb=>[limb.upper,limb.joint,limb.end]);
- const samples=Math.max(1,Math.ceil(source.duration*60)),times=[...new Set([...Array.from({length:samples+1},(_,n)=>source.duration*n/samples),...source.tracks.flatMap(track=>Array.from(track.times))].map(Math.fround))].sort((a,b)=>a-b);
+ if(widenLegs&&nativeLegs.some(leg=>!leg.end.children.some(child=>(child as any).isBone))){variants.set(semantic,source);return source;}
+ // Running knee bends need denser quaternion samples to keep the existing
+ // sub-millimetre ankle path through interpolation between baked poses.
+ const samples=Math.max(1,Math.ceil(source.duration*(widenLegs&&action==='run'?360:60))),times=[...new Set([...Array.from({length:samples+1},(_,n)=>source.duration*n/samples),...source.tracks.flatMap(track=>Array.from(track.times))].map(Math.fround))].sort((a,b)=>a-b);
  const values=new Map(modified.map(node=>[node,[] as number[]])),positions:number[]=[];
  const native=new Map(modified.map(node=>[node,node.quaternion.clone()])),nativeRoot=root.position.clone();
  const mixer=new AnimationMixer(model),playing=mixer.clipAction(source).setLoop(LoopOnce,1);playing.clampWhenFinished=true;playing.play();
@@ -54,7 +57,19 @@ export function readableHumanClip(source:AnimationClip,body:Object3D,bones:Recor
   // transition; their foot spread is smaller than the relaxed unarmed pose.
   const centre=world(hips).x,shoulders=nativeArms.map(arm=>world(arm.upper)),halfWidth=Math.abs(shoulders[0].x-shoulders[1].x)*(equipment==='unarmed'?.48:.34);
   if(widenLegs){
-   const goals=nativeLegs.map(leg=>{const target=world(leg.end),orientation=leg.end.getWorldQuaternion(new Quaternion()),pole=world(leg.joint);target.x=centre+leg.side*Math.max(halfWidth,leg.side*(target.x-centre));pole.x=centre+leg.side*Math.max(halfWidth*.7,leg.side*(pole.x-centre));return {leg,target,orientation,pole};});
+   const goals=nativeLegs.map(leg=>{
+    const target=world(leg.end),orientation=leg.end.getWorldQuaternion(new Quaternion());
+    target.x=centre+leg.side*Math.max(halfWidth,leg.side*(target.x-centre));
+    const toe=leg.end.children.find(child=>(child as any).isBone)!,forward=world(toe).sub(world(leg.end));
+    // Native feet face +Z. A preserved inward yaw becomes conspicuous once
+    // the ankles spread; turn only that yaw out, retaining pitch and roll.
+    const heading=Math.atan2(forward.x,forward.z),outward=leg.side*Math.max(leg.side*heading,Math.PI/180),yaw=new Quaternion().setFromAxisAngle(new Vector3(0,1,0),outward-heading);
+    orientation.premultiply(yaw);forward.applyQuaternion(yaw);forward.y=0;forward.normalize();
+    // A knee target at an absolute X can sit inside the hip-to-ankle axis.
+    // Place its bend direction in the same forward plane as the toe instead.
+    const pole=world(leg.upper).add(forward);
+    return {leg,target,orientation,pole};
+   });
    let drop=0;for(const {leg,target}of goals){const start=world(leg.upper),middle=world(leg.joint),reach=(start.distanceTo(middle)+middle.distanceTo(world(leg.end)))*.9995,horizontal=(start.x-target.x)**2+(start.z-target.z)**2;drop=Math.max(drop,start.y-target.y-Math.sqrt(Math.max(0,reach*reach-horizontal)));}
    if(drop<=.018){
     if(drop>0){const point=world(root);point.y-=drop;root.position.copy(root.parent!.worldToLocal(point));root.updateWorldMatrix(false,true);}
