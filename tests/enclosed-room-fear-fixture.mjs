@@ -48,7 +48,7 @@ export function roomReplay(start,history){let pair=roomSaved(start);for(const ev
 // hiring, marches and discovery. Only the later combat arena is prepared;
 // this acquisition has no assigned gear or outcomes.
 export function paidRoomArrival({oldPinned=false,crowbar=true}={}){
- const content=defaultContentPackage();
+ const content=defaultContentPackage();content.rules.startingHour=0;
  const godoy=content.characters.find(person=>person.id==='person-126');
  godoy.abilities=['enclosed_room_fear'];godoy.arrivalHours=6;
  if(oldPinned){const godoy=content.characters.find(person=>person.id==='person-126');godoy.abilities=godoy.abilities.filter(id=>id!=='enclosed_room_fear');}
