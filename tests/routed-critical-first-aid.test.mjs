@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,medicalUsePreview,getReachable,hasLineOfSight} from '../game/tactical.js';
+import {createBattle,actBattle,medicalUsePreview,itemUsePreview,getReachable,hasLineOfSight} from '../game/tactical.js';
+import {targetPreview} from '../game/ja2-hud.js';
 import {autoBandageBattle,autoBandageStatus} from '../game/auto-bandage.js';
 import {refreshMilitaryCondition} from '../game/actor-condition.js';
 import {medicalPatientAvailable} from '../game/medical-patient.js';
@@ -48,6 +49,18 @@ test('conscious panic, departure, surrender and custody remain hard refusals, in
   assert.deepEqual(n.units,s.units);assert.equal(n.elapsedSeconds,s.elapsedSeconds);assert.deepEqual(s,before);
  }
  for(const patch of [{routed:true},{hp:10},{energy:0}]){const s=field(patch),n=aid(s);assert.ok(n.lastError);assert.deepEqual(n.units,s.units);}
+});
+
+test('medical previews explain a conscious routed ally refusal without spending care or movement',()=>{
+ for(const staleFlag of [false,true]){
+  const s=field({}, {hp:28,bleeding:4});patient(s).unconscious=staleFlag;
+  const before=structuredClone(s),medical=medicalUsePreview(s,doctor(s),patient(s)),item=itemUsePreview(s,doctor(s),patient(s)),hud=targetPreview(s,doctor(s),patient(s),{mode:'useItem'});
+  assert.equal(medical.allowed,false);assert.match(medical.reason,/en pánico.*rechaza la atención.*consciente/);
+  assert.equal(item.valid,false);assert.equal(item.reason,medical.reason);assert.equal(item.movePa,0);
+  assert.equal(hud.valid,false);assert.equal(hud.reason,medical.reason);
+  const refused=aid(s);assert.equal(refused.lastError,medical.reason);
+  assert.deepEqual(refused.units,s.units);assert.equal(refused.elapsedSeconds,s.elapsedSeconds);assert.equal(refused.seed,s.seed);assert.deepEqual(s,before);
+ }
 });
 
 test('unconscious routing does not bypass team, floor, distance, sight or paid medical work',()=>{
