@@ -31,6 +31,7 @@ import {fixedBayonetFor, fittingLabel, weaponItemWeight} from './weapon-fittings
 import {firearmBystanderRisk,firearmBystanderWarning} from './firearm-bystander-risk.js';
 import {environmentContainerVisible} from './tactical.js';
 import {campaignSectors} from './campaign-definition.js';
+import {campaignPlace} from './world-cells.js';
 import {campaignFactionName} from './campaign-faction-presentation.js';
 import {CITY_LOYALTY_REWARDS} from './cities.js';
 
@@ -992,10 +993,10 @@ export function orderAction(state, unit, ctx = {}, id) {
 export function fieldUnits(state) { return state.units.filter(unit => !unit.departure && !unit.fled); }
 export function fieldState(state) { return {...state, units: fieldUnits(state)}; }
 
-export function exitModel(state, {unitIds = /** @type {string[]} */ ([]), exitId = ''} = {}) {
+export function exitModel(state, {unitIds = /** @type {string[]} */ ([]), exitId = ''} = {}, context = state) {
   const units = fieldUnits(state).filter(unit => unit.side === 'player' && unit.hp > 0);
   const ids = [...new Set(unitIds)].filter(id => units.some(unit => unit.id === id));
-  const exits = (state.exits || []).map(exit => ({...exit, label: `${({N: 'Norte', E: 'Este', S: 'Sur', W: 'Oeste'})[exit.edge] || exit.edge} · ${String(exit.destination).replaceAll('_', ' ')}`}));
+  const exits = (state.exits || []).map(exit => ({...exit, label: `${({N: 'Norte', E: 'Este', S: 'Sur', W: 'Oeste'})[exit.edge] || exit.edge} · ${campaignPlace(exit.destination,context)?.name ?? String(exit.destination).replaceAll('_', ' ')}`}));
   const selectedExit = exits.find(exit => exit.id === exitId) || exits[0];
   const preview = exitPreview(state, {unitIds: ids, exitId: selectedExit?.id});
   const action = {type: 'exit', unitIds: ids, exitId: selectedExit?.id};

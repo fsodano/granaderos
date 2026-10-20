@@ -176,7 +176,7 @@ function BattlefieldContents({battle:committed,campaignContext,onPlaybackBusy,on
   const enemies=useMemo(()=>visibleEnemies(s),[s]);
   const sight=useMemo(()=>new Set<string>(showSight&&u?visibleTiles(s,u).map(spaceKey):[]),[s,u,showSight]);
   const {hiredPlayers,missionAllies,localMilitia}=useMemo(()=>({hiredPlayers:players.filter((p:any)=>!p.militia&&!p.missionAlly),missionAllies:players.filter((p:any)=>p.missionAlly),localMilitia:players.filter((p:any)=>p.militia)}),[players]);
-  const withdrawal=useMemo(()=>exitModel(s,{unitIds:exitUnitIds,exitId}),[s,exitUnitIds,exitId]);
+  const withdrawal=useMemo(()=>exitModel(s,{unitIds:exitUnitIds,exitId},campaignContext??s),[s,exitUnitIds,exitId,campaignContext]);
   const readyPlayers=useMemo(()=>players.filter((p:any)=>unitCanAct(s,p)),[s,players]);const turn=useMemo(()=>turnModel(s,campaignContext??s),[s,campaignContext]);
   // Search once per actor/state/intent in a background worker. Pointer changes
   // reuse the result; stale snapshots never supply a destination or approach.
