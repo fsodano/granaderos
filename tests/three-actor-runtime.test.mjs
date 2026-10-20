@@ -3,9 +3,9 @@ register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  AnimationClip,Bone,BoxGeometry,Color,Float32BufferAttribute,Group,Mesh,
+  AnimationClip,BackSide,Bone,BoxGeometry,Color,Float32BufferAttribute,Group,Mesh,
   MeshStandardMaterial,NumberKeyframeTrack,Object3D,Skeleton,SkinnedMesh,
-  Uint16BufferAttribute,Vector3,VectorKeyframeTrack,
+  Texture,Uint16BufferAttribute,Vector3,VectorKeyframeTrack,
 } from '../web/node_modules/three/build/three.module.js';
 const {ActorRuntime}=await import('../web/lib/three/actor-runtime.ts');
 const {TILE_METRES}=await import('../web/lib/three/projection.ts');
@@ -132,6 +132,38 @@ test('instances share geometry but have independent palettes, bones and garment 
   assert.equal(a.model.getObjectByName(f.headwear.name).visible,true,'empty inventory slot retains declared base attire');
   let disposed=0,sourceDisposed=0;aBody.material.addEventListener('dispose',()=>disposed++);f.skin.addEventListener('dispose',()=>sourceDisposed++);
   a.dispose();assert.equal(disposed,1);assert.equal(sourceDisposed,0);assert.equal(bBody.material.color.getHexString(),'603b29');b.dispose();
+});
+
+test('illustrated actors share their own material copies across clothing and props without changing source assets',()=>{
+  const f=fixture('Illustrated'),pigment=new Texture(),surface=new Texture();
+  f.cloth.map=pigment;f.cloth.roughnessMap=surface;f.cloth.metalnessMap=surface;
+  f.cloth.roughness=.4;f.cloth.metalness=.8;f.cloth.normalScale.set(1,.5);
+  f.coat.morphTargetInfluences=[0,.6];f.coat.morphTargetDictionary={cloth_prone:0,cloth_crouched:1};
+  const items=[{id:'1800',reference:'primary',socket:'handRight'}],v=visual(f,{equipment:'long-gun',items,garments:{headwear:null,outfit:'poncho',legwear:null}});
+  const runtime=new ActorRuntime(f.asset,v),other=new ActorRuntime(f.asset,visual(f));
+  const material=runtime.model.getObjectByName(f.coat.name).material;
+  const coat=runtime.model.getObjectByName(f.coat.name),draws=[],renderer={getViewport:vector=>vector.set(0,0,640,480),renderBufferDirect:(...args)=>draws.push(args)};
+  coat.morphTargetInfluences[0]=.4;coat.onAfterRender(renderer,{}, {},coat.geometry,coat.material,null);
+  assert.equal(draws.length,1);assert.equal(draws[0][2],coat.geometry);assert.equal(draws[0][4],coat,'the same skinned object supplies the current skeleton and cloth morphs');
+  assert.equal(draws[0][4].morphTargetInfluences[0],.4);assert.equal(coat.children.length,0,'outlines cannot enter native body or contact scans');
+  const outline=draws[0][3];assert.equal(outline.side,BackSide);assert.equal(outline.depthTest,true);assert.equal(outline.depthWrite,true);
+  assert.notEqual(material,f.cloth);assert.notEqual(material,other.model.getObjectByName(f.coat.name).material);
+  assert.equal(material.map,pigment,'authored colours and cloth details stay shared');
+  assert.equal(material.roughnessMap,null);assert.equal(material.metalnessMap,null);
+  assert.equal(material.roughness,1);assert.equal(material.metalness,0);
+  assert.equal(material.userData.actorIllustration,true);
+  assert.equal(runtime.model.getObjectByName(f.garment.name).material,material);
+  assert.equal(attached(runtime,'primary','1800').children[0].material,material);
+  assert.equal(runtime.root.getObjectByName(f.horseBody.name).material,material);
+  runtime.update(visual(f),10);runtime.update(v,20);
+  assert.equal(attached(runtime,'primary','1800').children[0].material,material,'re-equipping reuses the owned material');
+  assert.equal(f.cloth.roughness,.4);assert.equal(f.cloth.metalness,.8);
+  assert.equal(f.cloth.roughnessMap,surface);assert.equal(f.cloth.metalnessMap,surface);
+  assert.deepEqual(f.cloth.normalScale.toArray(),[1,.5]);assert.equal(f.cloth.userData.actorIllustration,undefined);
+  let ownedDisposed=0,sourceDisposed=0,textureDisposed=0;
+  material.addEventListener('dispose',()=>ownedDisposed++);f.cloth.addEventListener('dispose',()=>sourceDisposed++);pigment.addEventListener('dispose',()=>textureDisposed++);
+  runtime.dispose();assert.equal(ownedDisposed,1);assert.equal(sourceDisposed,0);assert.equal(textureDisposed,0);
+  assert.equal(other.model.getObjectByName(f.coat.name).material.map,pigment);other.dispose();
 });
 
 test('left, right and stowed items attach to their declared sockets and remove without mutating shared assets',()=>{
@@ -355,7 +387,8 @@ test('a timed ramrod claims only its declared hand and restores displaced equipm
   const pistol=attached(runtime,'offhand','1805'),rifle=attached(runtime,'primary','1800');
   runtime.tick(0,100);assert.equal(pistol.parent.name,f.sockets.handLeft_pistol.node);
   runtime.tick(0,300);assert.equal(pistol.parent.name,f.sockets.hipRight.node);assert.equal(rifle.parent.name,f.sockets.handRight_rifle.node);
-  assert.ok(runtime.model.getObjectByName(f.sockets.handLeft_tool.node).getObjectByName(f.asset.manifest.equipment.items.ramrod.node));
+  const ramrod=runtime.model.getObjectByName(f.sockets.handLeft_tool.node).getObjectByName(f.asset.manifest.equipment.items.ramrod.node);
+  assert.ok(ramrod);assert.equal(ramrod.children[0].material,rifle.children[0].material,'timed props retain the same illustrated material treatment');
   runtime.tick(0,800);assert.equal(pistol.parent.name,f.sockets.handLeft_pistol.node);assert.equal(attached(runtime,'offhand','1805'),pistol);runtime.dispose();
 });
 

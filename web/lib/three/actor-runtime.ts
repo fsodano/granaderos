@@ -11,6 +11,7 @@ import {NativeGestureBlendSupport} from './gesture-blend-support';
 import {NativeReadyPatientContactFit as NativePatientContactFit} from './heal-patient-ready-fit';
 import {NativeProneArmBlendSupport} from './prone-arm-blend-support';
 import {NativeClimbContactFit} from './climb-contact-fit';
+import {ActorIllustration} from './actor-illustration';
 import type {ContactActorResolver} from './melee-contact-fit';
 import {NativeReadyMeleeContactFit as NativeMeleeContactFit} from './melee-ready-contact-fit';
 import type {ActorVisual} from './presentation';
@@ -51,6 +52,7 @@ export class ActorRuntime {
   private actionHand:HandRole='handRight';private actionBarrel=0;
   private seatActions=new Map<AnimationAction,{spec:ClipSpec;mounted:boolean}>();private saddlePosition=new Vector3();
   readonly root=new Group();readonly model:Object3D;private mixer:AnimationMixer;private action:AnimationAction|null=null;private actionKey='';private clipSpec:any;private ownedMaterials=new Set<Material>();private equipment=new Group();private equipmentKey='';private clothesKey='';private colorKey='';private horse?:Object3D;private horseMixer?:AnimationMixer;private horseAction?:AnimationAction;private horseClip='';private visual:ActorVisual;private bones=new Map<string,Object3D>();private clothing?:Object3D;private ghost?:Group;private cueStartedAt=0;private temporaryProps=new Map<string,Object3D>();private completedCues=new Set<string>();
+  private illustration=new ActorIllustration(this.ownedMaterials);
   constructor(readonly asset:LoadedActor,visual:ActorVisual,private onCueComplete?:(key:string,id:string)=>void,private contactActor?:ContactActorResolver,readonly visualScale=1){
     if(!Number.isFinite(visualScale)||visualScale<=0)throw Error('Invalid actor visual scale');
     this.visual=visual;this.model=clone(asset.body.scene);this.root.scale.setScalar(visualScale);this.root.add(this.model);this.root.name=visual.key;
@@ -75,6 +77,7 @@ export class ActorRuntime {
     }
     if(asset.horse){this.horse=clone(asset.horse.scene);this.root.add(this.horse);this.horse.traverse(node=>{if(node instanceof Mesh){node.castShadow=true;node.receiveShadow=true;node.frustumCulled=false;}});this.horseMixer=new AnimationMixer(this.horse);}
     shareSkeletons(this.root);
+    this.illustration.apply(this.root);
     this.update(visual,performance.now());
   }
   private socket(role:string,grip?:string){
@@ -128,6 +131,7 @@ export class ActorRuntime {
         const attachment=source.clone(true);attachment.name=`fitting:${fitting.fittingPattern}`;attachment.position.fromArray(fit.position??[0,0,0]);attachment.rotation.fromArray([...(fit.rotation??[0,0,0]),'XYZ'] as any);attachment.scale.setScalar(fit.scale??1);object.add(attachment);
       }
       object.userData.hand=item.socket;object.userData.reference=item.reference;object.userData.itemId=item.id;
+      this.illustration.apply(object);
       object.traverse(node=>{if(node instanceof Mesh){node.castShadow=true;node.receiveShadow=true;}});
       socket.add(object);this.equipment.userData.attached.push(object);
     }
@@ -241,7 +245,7 @@ export class ActorRuntime {
       const spec=this.asset.manifest.equipment.items[cue.item],source=spec&&this.asset.equipment.scene.getObjectByName(spec.node),socket=this.model.getObjectByName(cue.socket);
       if(!source||!socket)throw Error(`Missing timed prop or socket: ${key}`);
       if(cue.scale!==undefined&&!(Number.isFinite(cue.scale)&&cue.scale>0))throw Error(`Invalid timed prop scale: ${key}`);
-      let object=this.temporaryProps.get(key);if(!object){object=source.clone(true);socket.add(object);this.temporaryProps.set(key,object);}
+      let object=this.temporaryProps.get(key);if(!object){object=source.clone(true);this.illustration.apply(object);socket.add(object);this.temporaryProps.set(key,object);}
       object.position.fromArray(cue.position??spec.position??[0,0,0]);object.rotation.fromArray([...(cue.rotation??spec.rotation??[0,0,0]),'XYZ'] as any);object.scale.setScalar((spec.scale??1)*(cue.scale??1));
     }
     for(const [key,object]of this.temporaryProps)if(!desired.has(key)){object.removeFromParent();this.temporaryProps.delete(key);}
