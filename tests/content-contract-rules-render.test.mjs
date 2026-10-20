@@ -30,7 +30,7 @@ test('renewal notices show authored labels and submit the corresponding stable t
  let s=dispatchCampaign(initialCampaign(42,draft),{type:'recruitCivic',id:110,term:'day'});s=dispatchCampaign(s,{type:'wait',hours:24});assert.equal(s.lastError,null);
  let sent;const props={state:s,roster:rosterFor(s),dispatch:a=>sent=a};const html=render(h(ContractAttention,props));assert.match(html,/10 días/);assert.match(html,/termina en 4 horas/);
  const button=nodes(ContractAttention(props)).find(n=>n.type==='button'&&n.key==='week');assert.ok(button);button.props.onClick();assert.equal(sent.term,'week');
- const renewed=dispatchCampaign(s,sent);assert.equal(renewed.lastError,null);assert.equal(renewed.contracts[110].expiresAt,264);
+ const renewed=dispatchCampaign(s,sent);assert.equal(renewed.lastError,null);assert.equal(renewed.contracts[110].expiresAt,s.contracts[110].expiresAt+240);
 });
 
 test('local character preview shows authored prices and contract labels',async()=>{
@@ -51,10 +51,10 @@ test('hired cards show short remaining time after real seconds without changing 
  const draft=defaultContentPackage();draft.characters.find(c=>c.id==='person-110').arrivalHours=0;assert.deepEqual(validateContentPackage(draft),[]);
  let state=initialCampaign(42,draft);const op=rosterFor(state).find(o=>o.id===110),quote=contractQuote(state,op,'day'),cash=state.resources.treasury;
  state=dispatchCampaign(state,{type:'recruitCivic',id:110,term:'day'});assert.equal(state.lastError,null);assert.equal(state.resources.treasury,cash-quote.total);assert.equal(state.contracts[110].paid,quote.price);
- const contract=structuredClone(state.contracts[110]),clock=s=>s.hour*3600+(s.secondOfHour??0);assert.equal(quote.hours,24);assert.equal(contractExpiresSeconds(contract),86400);
+ const contract=structuredClone(state.contracts[110]),clock=s=>s.hour*3600+(s.secondOfHour??0),started=clock(state);assert.equal(quote.hours,24);assert.equal(contractExpiresSeconds(contract),started+86400);
  for(const [elapsed,label]of [[0,'24 h'],[374,'23 h 54 min'],[86370,'1 min']]){
-  for(let n=0;clock(state)<elapsed&&n<40;n++){state=dispatchCampaign(state,{type:'advanceStrategicTime',seconds:Math.min(3600,elapsed-clock(state))});assert.equal(state.lastError,null);}
-  assert.equal(clock(state),elapsed);assert.equal(contractStatus(state,110).remaining,(86400-elapsed)/3600);assert.equal(contractStatus(state,110).active,true);assert.deepEqual(state.contracts[110],contract);assert.equal(state.resources.treasury,cash-quote.total);
+  for(let n=0;clock(state)<started+elapsed&&n<40;n++){state=dispatchCampaign(state,{type:'advanceStrategicTime',seconds:Math.min(3600,started+elapsed-clock(state))});assert.equal(state.lastError,null);}
+  assert.equal(clock(state),started+elapsed);assert.equal(contractStatus(state,110).remaining,(86400-elapsed)/3600);assert.equal(contractStatus(state,110).active,true);assert.deepEqual(state.contracts[110],contract);assert.equal(state.resources.treasury,cash-quote.total);
   const before=structuredClone(state),sent=[],html=render(h(Recruitment,{state,dispatch:action=>sent.push(action)})),card=html.match(/<article[^>]*data-operative-id="110"[^>]*>([\s\S]*?)<\/article>/)?.[1];assert.ok(card);
   assert.equal(card.match(/<p class="contract-remaining">([^<]*)<\/p>/)?.[1],`${label} de contrato restantes`);assert.doesNotMatch(card,/\d+\.\d+ horas de contrato restantes/);assert.deepEqual(sent,[]);assert.deepEqual(state,before,'Rendering cannot round or mutate Native contract time, prices or campaign state.');
  }

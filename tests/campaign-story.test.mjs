@@ -12,7 +12,7 @@ const day=min=>({type:'day',min,max:null});
 const story=()=>({...defaultCampaignStory(),introduction:'Cuidá el puesto de la ribera.',victory:'El parte llegó a destino.',defeat:'Se perdió el parte.'});
 // Chapter mechanics are tested over an explicit reuse of the stock cast and
 // its ambient errands, rather than an implicit generic resident fallback.
-const content=()=>({...defaultContentPackage(),includeOriginalResidents:true,campaignStory:story()});
+const content=()=>{const d=defaultContentPackage();d.rules.startingHour=0;return {...d,includeOriginalResidents:true,campaignStory:story()};};
 const choose=(p,node,id)=>({...p,campaign:order(p.campaign,{...talk(p,undefined,'dialogue'),dialogueNode:node,dialogueChoice:id})});
 const fixture=()=>{const d=questPackage();d.includeOriginalResidents=true;d.campaignStory=story();d.campaignStory.chapters=[chapter('service',[{type:'character',character:'person-110',state:'serving'}]),chapter('report',[{type:'quest',quest:'river-post',status:'completed'}])];return d;};
 
