@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import manifest from '../campaigns/granaderos/manifest.json' with {type:'json'};
 import assets from '../campaigns/granaderos/assets.json' with {type:'json'};
 import {DEFAULT_WORLD,DEFAULT_MAPS,DEFAULT_PRESENTATION} from '../campaigns/default.js';
-import {defaultContentPackage} from '../game/content-package.js';
+import {defaultContentPackage,validateContentPackage} from '../game/content-package.js';
 import {compileCampaignPackage} from '../game/campaign-library.js';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {defaultProfile} from '../game/character-profile.js';
@@ -76,4 +76,16 @@ test('authored starting patterns require the correct blade and host and do not w
  officer(battle).weapon=1802;syncUnitAmmunition(officer(battle));
  const denied=actBattle(battle,{type:'fitBayonet',unitId:'1000',item:'blade'});
  assert.match(denied.lastError,/no corresponde/);assert.deepEqual(denied.units,battle.units);
+});
+
+test('loose authored packages can remap default weapon IDs without inheriting a stock fitting',()=>{
+ for(const presentation of [undefined,{version:1,title:'Equipo propio',officerCreation:{registry:'Mis combatientes'}}]){
+  const content=defaultContentPackage();if(presentation)content.presentation=presentation;else delete content.presentation;
+  content.weapons.find(w=>w.id==='firearm-1800').template=1801;
+  assert.deepEqual(validateContentPackage(content),[]);
+  const campaign=create(content),record=campaign.operativeState[1000];
+  assert.equal(rosterFor(campaign).find(unit=>unit.id===1000).weapon,1801);
+  assert.equal(record.bladeFittingPattern,null);assert.equal(record.bladeInstanceId,undefined);
+  assert.equal(campaign.nextEquipmentInstanceId,1);assert.doesNotThrow(()=>decodeSave(encodeSave(campaign)));
+ }
 });

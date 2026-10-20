@@ -40,10 +40,12 @@ const validClassFitting=(cls,weapons)=>cls.bladeFittingPattern===undefined||
  weapons.find(w=>w.id===cls.blade)?.template===FITTING_PATTERNS[cls.bladeFittingPattern].weapon;
 // Only the new-character order issues this authored fitting. Reconstructing
 // an officer or restoring an old save must not identify an existing blade.
+// A package must declare its own pattern; its local weapon IDs may be remapped.
 export function officerStartingFitting(profile,context=null){
- const cls=profile?.version===2&&campaignOfficerCreation(context).classes.find(c=>c.id===profile.classId);
+ const definitions=definitionsFor(context),classes=definitions?.weapons?definitions.presentation?.officerCreation?.classes??[]:campaignOfficerCreation(context).classes;
+ const cls=profile?.version===2&&classes.find(c=>c.id===profile.classId);
  if(!cls||cls.bladeFittingPattern===undefined)return null;
- if(!validClassFitting(cls,definitionsFor(context)?.weapons??DEFAULT_CONTENT.weapons))throw Error('La bayoneta inicial no corresponde al equipo de esta clase.');
+ if(!validClassFitting(cls,definitions?.weapons??DEFAULT_CONTENT.weapons))throw Error('La bayoneta inicial no corresponde al equipo de esta clase.');
  return cls.bladeFittingPattern;
 }
 
