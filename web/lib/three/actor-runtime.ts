@@ -12,6 +12,7 @@ import {NativeReadyPatientContactFit as NativePatientContactFit} from './heal-pa
 import {NativeProneArmBlendSupport} from './prone-arm-blend-support';
 import {NativeClimbContactFit} from './climb-contact-fit';
 import {ActorIllustration} from './actor-illustration';
+import {readableHumanClip} from './readable-human-stance';
 import type {ContactActorResolver} from './melee-contact-fit';
 import {NativeReadyMeleeContactFit as NativeMeleeContactFit} from './melee-ready-contact-fit';
 import type {ActorVisual} from './presentation';
@@ -215,7 +216,8 @@ export class ActorRuntime {
     const {spec:sourceSpec,clip:sourceClip}=boundClip(this.asset.clips,this.asset.animation.animations,semantic);
     const hand=(loadingItem?.socket??visual.cue?.hand??'handRight') as HandRole,mirror=hand==='handLeft'&&visual.equipment==='short-gun'&&['aim','fire','reload'].includes(visual.action);
     if(mirror&&!this.asset.manifest.animationMirroring)throw Error(`Missing left-hand animation mapping: ${this.asset.appearance.id}`);
-    const clip=mirror?mirroredClip(sourceClip,this.asset.body.scene,this.asset.manifest.animationMirroring!):sourceClip;
+    const posed=readableHumanClip(sourceClip,this.asset.body.scene,this.asset.manifest.bones,semantic);
+    const clip=mirror?mirroredClip(posed,this.asset.body.scene,this.asset.manifest.animationMirroring!):posed;
     const clipSpec=mirror?withMirroredProps(sourceSpec,this.asset.body.scene):sourceSpec;
     const key=`${semantic}:${hand}:${visual.cue?.id??''}`;
     if(key!==this.actionKey){
