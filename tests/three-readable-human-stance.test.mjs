@@ -29,8 +29,25 @@ for(const appearance of ['granadero','woman-scout'])test(`${appearance} idle and
    assert.ok(footWidth>=shoulderWidth*.91,`${action} ${phase}: feet ${footWidth}, shoulders ${shoulderWidth}`);
    assert.ok(Math.abs(bootFloor(after)-bootFloor(before))<.003,`${action} ${phase}: complete boot floor`);
    for(const side of ['l','r']){
-    const oldFoot=point(before,'foot_'+side),foot=point(after,'foot_'+side);assert.ok(Math.abs(foot.y-oldFoot.y)<.0002);assert.ok(Math.abs(foot.z-oldFoot.z)<.0002);assert.ok(orientation(before,'foot_'+side).angleTo(orientation(after,'foot_'+side))<.001);
+    const oldFoot=point(before,'foot_'+side),foot=point(after,'foot_'+side);assert.ok(Math.abs(foot.y-oldFoot.y)<.0002);assert.ok(Math.abs(foot.z-oldFoot.z)<.0002,`${action} ${phase} ${side}: forward ankle error ${foot.z-oldFoot.z}`);const yaw=orientation(after,'foot_'+side).multiply(orientation(before,'foot_'+side).invert());assert.ok(2*Math.asin(Math.min(1,Math.hypot(yaw.x,yaw.z)))<.001,`${action} ${phase} ${side}: foot pitch/roll error ${2*Math.asin(Math.min(1,Math.hypot(yaw.x,yaw.z)))}`);
     for(const [a,b]of [['thigh','calf'],['calf','foot'],['upperarm','lowerarm'],['lowerarm','hand']])assert.ok(Math.abs(point(before,a+'_'+side).distanceTo(point(before,b+'_'+side))-point(after,a+'_'+side).distanceTo(point(after,b+'_'+side)))<.00001,'bone lengths do not stretch');
+   }
+  }}finally{f.dispose();}
+ }
+});
+
+for(const appearance of ['granadero','woman-scout','gaucho'])test(`${appearance} widened knees follow the outward toe plane through idle and forward locomotion`,async()=>{
+ const asset=await assetFor(appearance);
+ for(const action of ['idle','walk','run'])for(const equipment of ['unarmed','long-gun','short-gun','blade','knife','lance']){
+  const f=pair(asset,`stand.${action}.${equipment}`);
+  try{for(const phase of [0,.11,.25,.37,.5,.625,.75,.875]){
+   f.sample(phase);const model=f.after.model;
+   for(const [side,sign]of [['l',1],['r',-1]]){
+    const hip=point(model,'thigh_'+side),knee=point(model,'calf_'+side),ankle=point(model,'foot_'+side),toe=point(model,'ball_'+side).sub(ankle),axis=ankle.clone().sub(hip).normalize();
+    const heading=Math.atan2(toe.x,toe.z);assert.ok(sign*heading>=.8*Math.PI/180,`${action}.${equipment} ${phase} ${side}: outward toes ${heading*180/Math.PI}`);
+    const forward=new Vector3(toe.x,0,toe.z).normalize();forward.addScaledVector(axis,-forward.dot(axis)).normalize();
+    const bend=knee.sub(hip);bend.addScaledVector(axis,-bend.dot(axis)).normalize();
+    assert.ok(bend.dot(forward)>.995,`${action}.${equipment} ${phase} ${side}: knee bend follows toe plane ${bend.dot(forward)}`);
    }
   }}finally{f.dispose();}
  }
