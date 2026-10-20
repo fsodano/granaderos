@@ -15,6 +15,7 @@ import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
 import {freshDefaultErrands} from '../game/quest-definitions.js';
 import {handSlots,firearmLoadingProgress} from '../game/ja2-hud.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
+import {campaignWorld} from '../game/campaign-definition.js';
 const tiles=()=>Array.from({length:80},(_,i)=>({x:i%10,y:Math.floor(i/10),type:'grass',blocked:false,cover:0}));
 const merc=(id,extra={})=>({...OPERATIVES[id],...extra});
 function battle(units=[merc(0)],extra={}){return createBattle(units,{width:10,height:8,tiles:tiles(),enemies:[{id:'enemy-0',x:5,y:1,hp:100,weapon:1800,condition:63}],seed:45,...extra});}
@@ -768,10 +769,28 @@ test('Alt movement shows shared mounted and running errors and never consumes a 
 
 test('exit HUD uses shared all-member admission and explicitly selects an eligible subset',()=>{
  const s=battle([{id:'p',name:'En el borde',x:0,y:2},{id:'q',name:'En el centro',x:3,y:2}],{exploration:true,enemies:[],exits:[{id:'west',edge:'W',destination:'retiro',entryEdge:'E',entryAnchor:{x:19,y:3}}]});
- const model=exitModel(s,{unitIds:['p','q'],exitId:'west'});assert.equal(model.preview.available,false);assert.deepEqual(model.preview.eligibleIds,['p']);assert.match(model.preview.blocked[0].reason,/borde/);assert.equal(model.selectedExit.label,'Oeste · retiro');
+ const model=exitModel(s,{unitIds:['p','q'],exitId:'west'});assert.equal(model.preview.available,false);assert.deepEqual(model.preview.eligibleIds,['p']);assert.match(model.preview.blocked[0].reason,/borde/);assert.equal(model.selectedExit.label,'Oeste · Buenos Aires · Fuerte y Retiro');
  const subset=exitModel(s,{unitIds:model.preview.eligibleIds,exitId:'west'});assert.equal(subset.preview.available,true);assert.deepEqual(subset.action,{type:'exit',unitIds:['p'],exitId:'west'});
  const next=actBattle(s,subset.action);assert.equal(next.lastError,null);assert.equal(next.status,'active');const after=exitModel(next,{unitIds:['p','q'],exitId:'west'});assert.deepEqual(after.unitIds,['q']);assert.equal(after.departures.length,1);
  next.phase='interrupt';next.interrupt={side:'player',unitIds:['q'],enemyId:'e'};assert.match(exitModel(next,{unitIds:['q']}).preview.reason,/turno normal/);
+});
+
+test('exit HUD uses campaign map names for rural cells and the active campaign',()=>{
+ const s=battle([{id:'p',x:0,y:2}],{exploration:true,enemies:[],exits:[
+  {id:'north',edge:'N',destination:'cell-27-27',entryEdge:'S',entryAnchor:{x:2,y:15}},
+  {id:'east',edge:'E',destination:'cell-28-28',entryEdge:'W',entryAnchor:{x:0,y:8}},
+  {id:'west',edge:'W',destination:'retiro',entryEdge:'E',entryAnchor:{x:19,y:3}}
+ ]}),before=structuredClone(s);
+ const model=exitModel(s,{unitIds:['p'],exitId:'north'});
+ assert.deepEqual(model.exits.map(exit=>exit.label),['Norte · Celda 28,28','Este · Celda 29,29','Oeste · Buenos Aires · Fuerte y Retiro']);
+ const world=structuredClone(campaignWorld());
+ world.cells.find(cell=>cell.id==='cell-27-27').name='Paso del arroyo';
+ world.sectors.find(sector=>sector.id==='retiro').name='Campamento del río';
+ const custom=exitModel(s,{unitIds:['p'],exitId:'north'},{contentCampaign:{package:{world}}});
+ assert.equal(custom.exits[0].label,'Norte · Paso del arroyo');
+ assert.equal(custom.exits[2].label,'Oeste · Campamento del río');
+ assert.deepEqual(custom.action,model.action);assert.deepEqual(custom.preview,model.preview);
+ assert.deepEqual(s,before,'destination labels do not change the encounter or travel action');
 });
 
 test('departed receipts never become field units, roster portraits, hover or item recipients',()=>{
