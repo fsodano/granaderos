@@ -129,6 +129,23 @@ test('disclosed front and interior edge controls match visible cutaway wall heig
  const r=render(state);assert.ok(hasFabricPlane(r.building.getObjectByName(`building-fabric:${b.id}`),1.2+9/ELEVATION_PIXELS_PER_METRE),'Three fabric uses the same cutaway plane');r.dispose();assert.equal(JSON.stringify(state),before);
 });
 
+test('Three cutaways retain full-height wall and opening outlines without new pointer targets',()=>{
+ const state=simple(),closed=render(state);assert.equal(closed.building.getObjectByName('wall-cutaway-outlines:edge-house').children.length,0);closed.dispose();
+ state.revealedRooms=state.buildings[0].rooms.map(room=>room.id);const before=JSON.stringify(state),r=render(state),outlines=r.building.getObjectByName('wall-cutaway-outlines:edge-house'),walls=outlines.getObjectByName('wall-cutaway-walls:edge-house'),openings=outlines.getObjectByName('wall-cutaway-openings:edge-house');
+ assert.ok(walls?.isLineSegments);assert.ok(openings?.isLineSegments);assert.ok(walls.material.isLineDashedMaterial);assert.equal(walls.material.depthWrite,false);assert.equal(walls.material.depthTest,true);
+ const front=state.wallEdges.filter(edge=>edge.axis==='x'?edge.y===6:edge.x===6);assert.deepEqual(new Set(outlines.userData.edgeIds),new Set(front.map(edge=>edge.id)));
+ const bounds=new Box3().setFromObject(walls);assert.ok(Math.abs(bounds.max.y-r.building.userData.height)<1e-5);assert.ok(Math.abs(bounds.min.y-9/ELEVATION_PIXELS_PER_METRE)<1e-5);
+ assert.ok(walls.geometry.getAttribute('lineDistance').count>0);assert.equal(new Raycaster(new Vector3(3*T,3,7*T),new Vector3(0,0,-1)).intersectObject(outlines,true).length,0);
+ let geometryDisposed=0,materialDisposed=0;for(const line of outlines.children){line.geometry.addEventListener('dispose',()=>geometryDisposed++);line.material.addEventListener('dispose',()=>materialDisposed++);}r.dispose();assert.equal(geometryDisposed,2);assert.equal(materialDisposed,2);assert.equal(JSON.stringify(state),before);
+});
+
+test('cutaway outlines follow raised walls and disappear for the roof view and destroyed edges',()=>{
+ const state=createVariedRoofClimbBattle('tall-cardinal'),b=state.buildings[0];state.revealedRooms=b.rooms.map(room=>room.id);const before=JSON.stringify(state),r=render(state),lines=r.building.getObjectByName(`wall-cutaway-walls:${b.id}`),roof=Math.min(...state.upperSurfaces.filter(surface=>surface.kind==='roof').map(surface=>surface.elevation));
+ const bounds=new Box3().setFromObject(lines);assert.ok(Math.abs(bounds.min.y-(1.2+9/ELEVATION_PIXELS_PER_METRE))<1e-5);assert.ok(Math.abs(bounds.max.y-roof)<1e-5);r.dispose();
+ const upper=render(state,1);assert.equal(upper.building.getObjectByName(`wall-cutaway-outlines:${b.id}`).children.length,0);upper.dispose();assert.equal(JSON.stringify(state),before);
+ const edge=state.wallEdges.find(edge=>edge.axis==='x'&&edge.y===b.y+b.height);Object.assign(edge,{type:'rubble',destroyed:true});const broken=render(state);assert.ok(!broken.building.getObjectByName(`wall-cutaway-outlines:${b.id}`).userData.edgeIds.includes(edge.id));broken.dispose();
+});
+
 test('editor selects every side of a cell and accepts outer footprint boundaries',()=>{
  const box={left:0,top:0,width:1040,height:560},camera={x:0,y:0,width:1040,height:560},origin={x:500,y:40},bounds={width:10,height:10};
  for(const [point,expected]of [[{x:4,y:3.5},{x:4,y:4,axis:'x'}],[{x:4,y:4.5},{x:4,y:5,axis:'x'}],[{x:3.5,y:4},{x:4,y:4,axis:'y'}],[{x:4.5,y:4},{x:5,y:4,axis:'y'}],[{x:9.5,y:4},{x:10,y:4,axis:'y'}]]){const p=project(point.x,point.y);assert.deepEqual(isometricWallEdge({x:p.x+origin.x,y:p.y+origin.y},box,camera,origin,bounds),expected);}

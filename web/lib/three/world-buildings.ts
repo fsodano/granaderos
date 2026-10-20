@@ -1,4 +1,5 @@
 import {worldWallRecords,wallFrameRecords} from './world-wall-records';
+import {WallCutawayOutlines} from './world-wall-outlines';
 import {Group,Vector3} from 'three';
 import {entranceFrame} from '../../../game/building-profile.js';
 import {buildingStyle} from '../../../game/building-types.js';
@@ -99,6 +100,7 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
   const wallMat=materials.get(appearance.wallFinish,legacy&&b.wallFinish===undefined?{colour:buildingStyle(b).wall}:{architectureRole:'wall'}),trim=materials.get('trim',legacy?{colour:buildingStyle(b).trim}:{}),wood=materials.get('wood'),iron=materials.get('iron');
   const doorHeight=BUILDING_OPENINGS.doorHeight/V,doorWidth=T*.60,thickness=.18,cutaway=BUILDING_OPENINGS.cutawayHeight/V;
   const openingRecords:{id:string;type:string;open:boolean;axis:Axis;height:number;width:number}[]=[];
+  const outlines=new WallCutawayOutlines();
   for(const tile of walls){
     const edge=Boolean(tile.axis),onX=edge?tile.axis==='y'&&(tile.x===b.x-.5||tile.x===b.x+b.width-.5):tile.x===b.x||tile.x===b.x+b.width-1,onY=edge?tile.axis==='x'&&(tile.y===b.y-.5||tile.y===b.y+b.height-.5):tile.y===b.y||tile.y===b.y+b.height-1,corner=!edge&&onX&&onY;
     const roomOpen=allOpen||groundRooms.some(room=>known.has(room.id)&&room.cells.some(cell=>corner?Math.abs(cell.x-tile.x)<=1&&Math.abs(cell.y-tile.y)<=1:Math.abs(cell.x-tile.x)+Math.abs(cell.y-tile.y)===(edge?.5:1)));
@@ -110,6 +112,9 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
       const mid=(first+last)*.5,len=last-first,cross=((axis==='x'?tile.y:tile.x)+wallInset)*T;
       const box=(u:number,y:number,w:number,hi:number,d:number,material=wallMat)=>axis==='x'?wallBatch.box(material,u,tileBase+y,cross,w,hi,d,light):wallBatch.box(material,cross,tileBase+y,u,d,hi,w,light);
       const opening=tile.type!=='wall'&&index===0,ow=Math.min(doorWidth,len*.65),top=Math.min(h-.12,tile.type==='door'?doorHeight:BUILDING_OPENINGS.windowTop/V),sill=tile.type==='window'?Math.min(top-.25,BUILDING_OPENINGS.windowSill/V):0;
+      if(cut){const originalHeight=onX||onY?height:floorHeight;
+        outlines.add({id:tile.id??`${tile.x},${tile.y}:${axis}`,axis,first,last,cross,base:tileBase,low:h,high:originalHeight,opening:opening?{width:ow,bottom:tile.type==='window'?BUILDING_OPENINGS.windowSill/V:0,top:Math.min(originalHeight-.12,tile.type==='door'?doorHeight:BUILDING_OPENINGS.windowTop/V)}:undefined});
+      }
       const windowPaint=opening&&tile.type==='window'&&!cut?(selected&&b.wallFinish===undefined?selected.trim:(!legacy||b.wallFinish!==undefined)?architectureTrimColour(appearance.wallFinish):undefined):undefined;
       const openingTrim=windowPaint?materials.get(`window-trim-${appearance.wallFinish}`,{colour:windowPaint}):trim;
       if(!opening){box(mid,h*.5,len,h,thickness);}
@@ -175,7 +180,7 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
     if(whole)group.add(roofEdgeDetails(b.id,panels,eaveHeight,geometry,roofMat,materials.get(terrace?'stone':'darkwood'),illuminationAt(input,b),terrace));
   }
   if(!someOpen)group.add(architecturalDetails(b,input,T,height,base,geometry,materials,legacy));
-  group.add(surfaces.finish(`building-surfaces:${b.id}`),batch.finish(`building-fabric:${b.id}`),sills.finish(`window-sills:${b.id}`));group.userData.kind='building';group.userData.openings=openingRecords;group.userData.cutawayRooms=groundRooms.filter(room=>known.has(room.id)).map(room=>room.id);group.userData.height=height;return group;
+  group.add(surfaces.finish(`building-surfaces:${b.id}`),batch.finish(`building-fabric:${b.id}`),sills.finish(`window-sills:${b.id}`),outlines.finish(b.id));group.userData.kind='building';group.userData.openings=openingRecords;group.userData.cutawayRooms=groundRooms.filter(room=>known.has(room.id)).map(room=>room.id);group.userData.height=height;return group;
 }
 
 export function buildIndependentWalls(input:WorldInput,T:number,geometry:WorldGeometry,materials:WorldMaterials){
