@@ -88,7 +88,7 @@ export function advanceNpc(s,n,budget=24,atTime=now(s)) {
   const ai=n.ai;n.lastMovePath=[];
   if(n.escort&&(n.entangled||n.knockedDown)){ai.activity='waiting';delete ai.destination;return;}
   const danger=ai.threat&&atTime<ai.safeAfter;
-  if(!danger&&!n.scriptedMove&&!n.escort&&s.approachingNpcIds?.includes(n.id))return;
+  if(s.mode==='exploration'&&!danger&&!n.scriptedMove&&!n.escort&&s.approachingNpcIds?.includes(n.id))return;
   if(!danger&&n.scriptedMove&&sameCell(n,n.scriptedMove.target)){
     ai.destination=point(n.scriptedMove.target);ai.activity='meeting';ai.wait=0;n.stance='standing';n.movementMode='walk';return;
   }
