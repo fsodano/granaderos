@@ -70,7 +70,7 @@ test('paid native observed conduct objection survives replay and serves its full
   assert.deepEqual(letters(campaign),[letter]);assert.deepEqual(campaign.contracts,terms);assert.equal(campaign.operativeState[107].hp,72);assert.equal(campaign.operativeState[100].hp,70);
  }
  const expectedGear=packets([...gear(campaign,107),...gear(campaign,100)]),expiry=contractExpiresSeconds(campaign.contracts[107]),beforeWaiting=saveConductPair({campaign}).campaign,clockOrders=[];
- assert.equal(expiry,30*3600);assert.equal(returnedGear(campaign).length,0);
+ assert.equal(expiry,(terms[107].started+24)*3600+(terms[107].startedSecond??0));assert.equal(returnedGear(campaign).length,0);
  campaign=advanceTo(campaign,expiry-1,clockOrders);assert.ok(campaign.recruited.includes(107));assert.deepEqual(campaign.contracts[107],terms[107]);assert.equal(returnedGear(campaign).length,0);
  const lastSecond={type:'advanceStrategicTime',seconds:1};campaign=conductOrder(campaign,lastSecond);clockOrders.push(lastSecond);campaign=saveConductPair({campaign}).campaign;
  assert.equal(now(campaign),expiry);assert.equal(campaign.recruited.includes(107),false);assert.equal(campaign.recruited.includes(100),false);assert.equal(campaign.contracts[107],undefined);
@@ -80,7 +80,7 @@ test('paid native observed conduct objection survives replay and serves its full
  assert.equal(recruitmentStatus(campaign,107).available,false);assert.match(reject(campaign,{type:'recruitCivic',id:107,term:'day'}),/presenciar|civil/);
  let clockReplay=beforeWaiting;for(const action of clockOrders)clockReplay=saveConductPair({campaign:conductOrder(clockReplay,action)}).campaign;assert.deepEqual(clockReplay,campaign,'warning and exact expiry replay without an early discharge');
  const stocks=structuredClone(returnedGear(campaign));campaign=conductOrder(campaign,{type:'advanceStrategicTime',seconds:1});assert.deepEqual(returnedGear(campaign),stocks);assert.deepEqual(letters(campaign),[letter]);assert.deepEqual(saveConductPair({campaign}).campaign,campaign);
- t.diagnostic(JSON.stringify({scenario:'Declared flat BA observation arena; native force and port resident, not an opening victory',prices:setup.prices,treasury:campaign.resources.treasury,arrivalHour:6,arenaHour:18,orders:history.length,actionSeconds:pair.battle.elapsedSeconds,seed:pair.battle.seed,HP:{107:72,100:70},rounds:{107:rounds(conductWitness(pair.battle)),100:rounds(conductActor(pair.battle))},civilian:death,paidExpiry:expiry,clockOrders:clockOrders.length,returnedStacks:stocks.length,complaints:complaints(pair.battle).length,letters:letters(campaign).length}));
+ t.diagnostic(JSON.stringify({scenario:'Declared flat BA observation arena; native force and port resident, not an opening victory',prices:setup.prices,treasury:campaign.resources.treasury,arrivalHour:terms[107].started,arenaHour:18,orders:history.length,actionSeconds:pair.battle.elapsedSeconds,seed:pair.battle.seed,HP:{107:72,100:70},rounds:{107:rounds(conductWitness(pair.battle)),100:rounds(conductActor(pair.battle))},civilian:death,paidExpiry:expiry,clockOrders:clockOrders.length,returnedStacks:stocks.length,complaints:complaints(pair.battle).length,letters:letters(campaign).length}));
 });
 
 test('old pinned omission and a physically unobserved killing remain neutral through real saved orders',t=>{

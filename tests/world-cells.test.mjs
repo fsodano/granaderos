@@ -100,8 +100,8 @@ test('a contract expiring between cells retains its traveler until the next real
 });
 test('safe arrivals during a cell march stay at their destination, without joining or moving into a nearby district',()=>{
  const d=defaultContentPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=0;d.characters.find(c=>c.id==='person-111').arrivalHours=2;
- let s=order(initialCampaign(42,d),{type:'recruitCivic',id:110,term:'week'});s=order(s,{type:'recruitCivic',id:111,term:'week',destination:'retiro'});
- s=travel(s,'cell-26-27');assert.deepEqual(s.squad,[110]);assert.equal(s.operativeState[111].location,'retiro');assert.equal(s.contracts[111].started,2);
+ let s=order(initialCampaign(42,d),{type:'recruitCivic',id:110,term:'week'});const bookingHour=s.hour;s=order(s,{type:'recruitCivic',id:111,term:'week',destination:'retiro'});
+ s=travel(s,'cell-26-27');assert.deepEqual(s.squad,[110]);assert.equal(s.operativeState[111].location,'retiro');assert.equal(s.contracts[111].started,bookingHour+2);
  assert.equal(saved(s).campaign.operativeState[111].location,'retiro');
  assert.ok(hiringArrivalReason(s,'cell-26-28'));assert.ok(hiringArrivalReason(s,'cell-27-27'));
 });

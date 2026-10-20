@@ -87,7 +87,7 @@ function replay(initial,history){
 test('fresh authored paid squads discover one finite roadside cache and retain its worn items through official replay, return and shared reentry',t=>{
  // The authored package declares delayed arrivals before admission. No territory, actor, equipment,
  // health, placement, time, seed or outcome is assigned after admission.
- const initial=saved({campaign:initialCampaign(45,authoredEditorPackage())}),history=[];
+ const initial=saved({campaign:initialCampaign(45,authoredEditorPackage())}),history=[],arrivalHour=initial.campaign.hour+6;
  let pair=initial;const cash=pair.campaign.resources.treasury;
  const quotes=[CARRIER,OTHER].map(id=>({id,...contractQuote(pair.campaign,rosterFor(pair.campaign).find(op=>op.id===id),'week')}));
  for(const quote of quotes){
@@ -95,11 +95,11 @@ test('fresh authored paid squads discover one finite roadside cache and retain i
   pair=campaignOrder(pair,{type:'recruitCivic',id:quote.id,term:'week',destination:'retiro'},history);
  }
  assert.equal(pair.campaign.resources.treasury,cash-quotes.reduce((n,quote)=>n+quote.price,0));
- assert.deepEqual(pair.campaign.hiringArrivals.map(arrival=>[arrival.operativeId,arrival.dueAt]),[[CARRIER,6],[OTHER,6]]);
+ assert.deepEqual(pair.campaign.hiringArrivals.map(arrival=>[arrival.operativeId,arrival.dueAt]),[[CARRIER,arrivalHour],[OTHER,arrivalHour]]);
  pair=campaignOrder(pair,{type:'wait',hours:6},history);
  assert.ok([CARRIER,OTHER].every(id=>pair.campaign.recruited.includes(id)));
  const paidCash=pair.campaign.resources.treasury,contracts=structuredClone(pair.campaign.contracts);
- for(const id of [CARRIER,OTHER])assert.equal(pair.campaign.contracts[id].started,6);
+ for(const id of [CARRIER,OTHER])assert.equal(pair.campaign.contracts[id].started,arrivalHour);
  const plan=cellTravelPlan(pair.campaign,CELL),departed=stamp(pair.campaign);
  assert.equal(plan.reason,null);assert.ok(plan.hours>0);assert.ok(plan.path.every(id=>id!==null));
  pair=campaignOrder(pair,{type:'travel',sector:CELL},history);
@@ -188,7 +188,7 @@ test('fresh authored paid squads discover one finite roadside cache and retain i
  assert.deepEqual(replay(initial,history),pair,'all ordinary paid orders reproduce the full saved campaign and current scene');
  assert.deepEqual(replay(initial,acquiredHistory),acquired);
  t.diagnostic(JSON.stringify({scenario:'fresh pinned authored campaign; actual paid arrival and field marches; no granted resources or outcomes',
-  hires:quotes.map(({id,price})=>({id,price})),treasury:paidCash,arrivalHour:6,outboundHours:plan.hours,returnHours:returnPlan.hours,
+  hires:quotes.map(({id,price})=>({id,price})),treasury:paidCash,arrivalHour,outboundHours:plan.hours,returnHours:returnPlan.hours,
   finalHour:pair.campaign.hour,finalSecond:pair.campaign.secondOfHour,orderCount:history.length,actionSeconds:stamp(pair.campaign)-stamp(initial.campaign),
   sleepSeconds,sleepHours:sleepSeconds/3600,healthBeforeRest,healthAfterRest,
   rounds:[{id:CARRIER,count:actor(pair).loaded+ammoCount(actor(pair))},{id:OTHER,count:otherKit.rounds}],hp:health(pair),
