@@ -8,12 +8,13 @@ import {useState} from 'react';
 import Recruitment from './Recruitment';
 import CharacterCreator from './CharacterCreator';
 import ReceivedCorrespondence from './ReceivedCorrespondence';
+import Logistics from './Logistics';
 import {incomeSummary} from '../../game/economy.js';
 import {campaignChapters} from '../../game/campaign-headquarters.js';
 import {rosterFor} from '../../game/campaign.js';
 import {portraitFor} from '../lib/portraits';
 import './desk.css';
-const tabs=[['overview','Resumen'],['create','Tu personaje'],['hire','Contrataciones'],['contacts','Correspondencia']];
+const tabs=[['overview','Resumen'],['create','Tu personaje'],['hire','Contrataciones'],['contacts','Correspondencia'],['transport','Transportes']];
 export default function Desk({state:s,dispatch,onClose,initialTab='overview'}:{state:any;dispatch:(action:any)=>void;onClose:()=>void;initialTab?:string}){
  const income=incomeSummary(s),presentation=campaignPresentation(s),ui=campaignUI(s),{DeskBriefing,DeskObjective}=ui;
  const serving=s.recruited.filter((id:number)=>{const r=s.operativeState[id];return r?.alive&&r.hp>0&&!r.captured;}).length;
@@ -24,5 +25,6 @@ export default function Desk({state:s,dispatch,onClose,initialTab='overview'}:{s
  {tab==='create'&&(s.officer&&own?<section className="creator-finished">{portraitFor((own as any).portrait??(own as any).portraitId??own.id,s)&&<img src={sitePath(portraitFor((own as any).portrait??(own as any).portraitId??own.id,s)!)} alt={own.name}/>}<h3>{own.name}</h3><p>{own.role}</p><p>Tu personaje ya está creado. Su hoja de servicio y su progreso se consultan desde la carta de operaciones.</p><button className="gold-button" onClick={onClose}>Ver mi personaje en la carta</button></section>:<CharacterCreator state={s} onCreate={(name,answers,profile)=>dispatch({type:'createOfficer',name,answers,profile})}/>)}
  {tab==='hire'&&<Recruitment state={s} dispatch={dispatch}/>}
  {tab==='contacts'&&<ReceivedCorrespondence state={s}/>}
+ {tab==='transport'&&<Logistics state={s} dispatch={dispatch}/>}
  </main></div>;
 }

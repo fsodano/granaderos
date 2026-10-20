@@ -9,7 +9,7 @@ export default function Logistics({state:s,dispatch}:Props){
  const title=(id:string)=>campaignPlace(id,s)?.name??id;
  const disabled=Boolean(s.defeated||s.pendingBattle||s.pendingEncounter);
  return <section className="logistics-section" aria-labelledby="logistics-title">
-  <div className="section-intro"><p className="eyebrow">TRANSPORTE Y DEPÓSITOS</p><h2 id="logistics-title">Rutas de campaña</h2><p>Organizá el transporte para las escuadras y la artillería. Elegí las piezas y su destino desde la armería.</p></div>
+  <div className="section-intro"><p className="eyebrow">TRANSPORTE Y DEPÓSITOS</p><h2 id="logistics-title">Rutas de campaña</h2><p>Organizá el transporte para las escuadras y la artillería. Elegí las piezas y su destino desde Sector → Preparativos del sector → Artillería.</p></div>
   <div className="logistics-routes">{TRANSPORT_NETWORKS.map(o=><article key={o.id}><h3>{o.name}</h3><p>{o.description}</p><small>{o.cost} pesos</small><button type="button" className="line-button" disabled={disabled||s.routes[o.id]||s.resources.treasury<o.cost} onClick={()=>dispatch({type:'transport',mode:o.id})}>{s.routes[o.id]?'✓ Red organizada':'Organizar transporte'}</button></article>)}</div>
   <div className="logistics-convoys"><h3>Piezas en camino</h3>{!s.artilleryTransfers?.length?<p className="muted">No hay piezas en tránsito.</p>:s.artilleryTransfers.map((t:any)=>{
    const reason=artilleryTransferDelay(s,t),remaining=Math.max(0,t.dueAt-s.hour);
