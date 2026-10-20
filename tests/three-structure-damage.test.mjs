@@ -32,14 +32,18 @@ test('partial blast damage darkens local wear while retaining the exact prop geo
 });
 test('partial wall and window damage shades only that tile while retaining shape, materials, UVs and room cutaways',()=>{
  const vertices=group=>{
-  const records=[];group.traverse(mesh=>{if(!mesh.geometry)return;const p=mesh.geometry.getAttribute('position'),normal=mesh.geometry.getAttribute('normal'),uv=mesh.geometry.getAttribute('uv'),colour=mesh.geometry.getAttribute('color');
+  const records=[];group.traverse(mesh=>{if(!mesh.isMesh)return;const p=mesh.geometry.getAttribute('position'),normal=mesh.geometry.getAttribute('normal'),uv=mesh.geometry.getAttribute('uv'),colour=mesh.geometry.getAttribute('color');
    for(let n=0;n<p.count;n++)records.push({key:[mesh.material.uuid,...[p.getX(n),p.getY(n),p.getZ(n),normal.getX(n),normal.getY(n),normal.getZ(n),uv.getX(n),uv.getY(n)].map(value=>value.toFixed(5))].join(':'),x:p.getX(n),z:p.getZ(n),colour:colour.getX(n)});
   });return records.sort((a,b)=>a.key.localeCompare(b.key)||a.colour-b.colour);
+ };
+ const outlines=group=>{
+  const records=[];group.traverse(line=>{if(!line.isLineSegments)return;records.push({name:line.name,positions:Array.from(line.geometry.getAttribute('position').array),distances:Array.from(line.geometry.getAttribute('lineDistance').array),material:line.material.type,colour:line.material.color.getHex(),opacity:line.material.opacity,depthTest:line.material.depthTest,depthWrite:line.material.depthWrite});});return records;
  };
  for(const type of ['wall','window'])for(const independent of [false,true])for(const cutaway of [false,true]){
   const geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path}),building={id:'house',x:1,y:1,width:5,height:5,kind:'house',rooms:[{id:'room',cells:[{x:3,y:4},{x:4,y:3}]}]},near={x:3,y:5,type,blocked:type==='wall',material:'adobe',elevation:3,...(independent?{}:{buildingId:'house'})},far={x:5,y:3,type:'wall',blocked:true,material:'adobe',elevation:3,...(independent?{}:{buildingId:'house'})},input={terrain:{width:8,height:8,tiles:[near,far],buildings:independent?[]:[building],night:true},revealedRooms:cutaway?['room']:[],illumination:{'0:3,5':.25,'0:5,3':.8}},before=structuredClone(input);
   const build=source=>independent?buildIndependentWalls(source,T,geometry,materials):buildBuilding(building,source,T,geometry,materials),original=build(input),damaged=build({...input,terrain:{...input.terrain,tiles:[{...near,structureDamage:60},far]}}),a=vertices(original),b=vertices(damaged);
   assert.deepEqual(b.map(record=>record.key),a.map(record=>record.key),`${type}: geometry, normals, UVs and shared materials remain unchanged`);
+  const originalOutlines=outlines(original);assert.equal(originalOutlines.length>0,!independent&&cutaway);assert.deepEqual(outlines(damaged),originalOutlines,`${type}: partial wear retains cutaway wall and opening outlines`);
   let worn=0,unaffected=0;
   for(let n=0;n<b.length;n++){
    assert.ok(b[n].colour<=a[n].colour+eps&&b[n].colour>=a[n].colour*.81-eps,'wear retains the admitted night illumination within a restrained shade');
