@@ -61,7 +61,7 @@ export function createMovementController({execute,commit,canMove}){
   observe(next,visual){battle=next;positions=visual;pump();},
   request(action){
    if(!enabled||!battle||!canMove(battle,action.unitId,action))return false;
-   const same=intent&&intent.action.type===action.type&&intent.action.unitId===action.unitId&&JSON.stringify(intent.action.unitIds)===JSON.stringify(action.unitIds)&&sameCell(intent.action,action)&&intent.action.movement===action.movement&&intent.action.movementIntent===action.movementIntent;
+   const same=intent&&intent.action.type===action.type&&intent.action.unitId===action.unitId&&JSON.stringify(intent.action.unitIds)===JSON.stringify(action.unitIds)&&sameCell(intent.action,action)&&intent.action.movement===action.movement&&intent.action.movementIntent===action.movementIntent&&intent.action.conversationTargetId===action.conversationTargetId;
    if(same)return true;
    revision++;prepared=null;intent={action:{...action},movingUnitId:waiting?.unitId??action.unitId,continuation:null,finishing:false};notify();pump();return true;
   },
