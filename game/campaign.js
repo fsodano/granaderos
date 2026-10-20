@@ -110,7 +110,7 @@ import {hasWorkshop} from './campaign-headquarters.js';
 import {TRANSPORT_NETWORKS} from './transport-network.js';
 import {oppositionFor,campaignEnemyCount} from './narrative.js';
 import {rosterFor as baseRosterFor,CIVIC_RECRUITS,civicStatus as baseCivicStatus,createOfficerRecord} from './recruitment.js';
-import {campaignOfficerCreation} from './campaign-officer-creation.js';
+import {campaignOfficerCreation,officerStartingFitting} from './campaign-officer-creation.js';
 import {validateOfficerCreationHealth} from './character-profile.js';
 import {OPERATIVES,WEAPONS,CAMPAIGN_SECTORS,FACTIONS,PHASES,RESOURCE_NAMES} from './data.js';
 export {MISSION_SCENES,missionStatus} from './missions.js';
@@ -858,7 +858,10 @@ export function dispatchCampaign(previous,action){
       }
       case 'createOfficer':{
         requireThat(!s.officer,'El Cabildo ya ha designado a tu oficial.');requireThat(s.sectors[headquartersFor(s)].owner==='patriot',`El cuartel de ${headquartersName(s)} está ocupado.`);
-        const op=createOfficerRecord(action.name,action.answers,action.profile,s);validateOfficerCreationHealth(action.profile);const creationCost=action.profile?.version===2?0:300;pay(s,{treasury:creationCost});s.officer={name:op.name,answers:clone(action.answers),...(action.profile?{profile:clone(action.profile)}:{})};s.contracts[op.id]={kind:'patriot',term:'month',started:s.hour,expiresAt:null,paid:creationCost};s.operativeState[op.id]={hp:op.maxHp,fatigue:0,alive:true,xp:0,rations:2,torches:2,condition:100,startingCartridgesIssued:false};s.recruited.push(op.id);issueStartingCartridges(s,op);issueInitialOutfit(s,op.id);s.operativeState[op.id].location=s.location;if(s.squad.length<6)s.squad.push(op.id);note(s,`${op.name} ${campaignOfficerCreation(s).commission.statusText}`);break;
+        const op=createOfficerRecord(action.name,action.answers,action.profile,s);validateOfficerCreationHealth(action.profile);const creationCost=action.profile?.version===2?0:300;pay(s,{treasury:creationCost});s.officer={name:op.name,answers:clone(action.answers),...(action.profile?{profile:clone(action.profile)}:{})};s.contracts[op.id]={kind:'patriot',term:'month',started:s.hour,expiresAt:null,paid:creationCost};s.operativeState[op.id]={hp:op.maxHp,fatigue:0,alive:true,xp:0,rations:2,torches:2,condition:100,startingCartridgesIssued:false};
+        const fittingPattern=officerStartingFitting(action.profile,s);
+        if(fittingPattern)Object.assign(s.operativeState[op.id],{bladeFittingPattern:fittingPattern,bladeInstanceId:`equipment-${s.nextEquipmentInstanceId++}`});
+        s.recruited.push(op.id);issueStartingCartridges(s,op);issueInitialOutfit(s,op.id);s.operativeState[op.id].location=s.location;if(s.squad.length<6)s.squad.push(op.id);note(s,`${op.name} ${campaignOfficerCreation(s).commission.statusText}`);break;
       }
       case 'recruitCivic':{
         const id=Number(action.id),status=civicStatus(s,id);requireThat(status.available,status.reason);
