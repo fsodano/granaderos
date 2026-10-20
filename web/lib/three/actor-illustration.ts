@@ -1,16 +1,20 @@
 import {AlwaysStencilFunc,BackSide,Material,Mesh,MeshBasicMaterial,MeshPhysicalMaterial,MeshStandardMaterial,Object3D,ReplaceStencilOp,Vector2,Vector4} from 'three';
 
+type ActorPaintProfile='base'|'human';
+
 /** Keep the authored pigment and folds, but give native actors the restrained
  * highlights and dark contours of the retained illustrated sprite library.
  * The separate silhouette pass below supplies the visible outer ink contour. */
-export function illustrateActorMaterial(material:MeshStandardMaterial){
+export function illustrateActorMaterial(material:MeshStandardMaterial,profile:ActorPaintProfile='base'){
+  const human=profile==='human';
   material.roughness=1;
   material.roughnessMap=null;
   material.metalness=0;
   material.metalnessMap=null;
-  material.normalScale.multiplyScalar(.4);
+  material.normalScale.multiplyScalar(human?1:.4);
   if(material instanceof MeshPhysicalMaterial){material.specularIntensity=.12;material.clearcoat=0;material.sheen=0;}
   material.userData.actorIllustration=true;
+  material.userData.actorPaintProfile=profile;
   material.onBeforeCompile=shader=>{
     shader.fragmentShader=shader.fragmentShader.replace('#include <shadowmap_pars_fragment>', '#include <shadowmap_pars_fragment>\n#include <shadowmask_pars_fragment>');
     shader.fragmentShader=shader.fragmentShader.replace(
@@ -28,23 +32,28 @@ export function illustrateActorMaterial(material:MeshStandardMaterial){
         for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {
           float actorKey = dot( nonPerturbedNormal, directionalLights[i].direction );
           float actorShade = mix( 0.24, 0.86, smoothstep( 0.02, 0.18, actorKey ) );
+          ${human?`// Retain the authored normal-map seams and folds inside each broad colour region.
+          actorShade *= clamp( 1.0 + ( dot( normal, directionalLights[i].direction ) - actorKey ) * 1.45, 0.58, 1.42 );`:''}
           actorPaintLight += directionalLights[i].color * actorShade * actorShadow * RECIPROCAL_PI;
         }
       #endif
-      vec3 actorPigment = mix( totalDiffuse, diffuseColor.rgb * actorPaintLight, 0.88 );
+      ${human?`// Lift dark cloth pigment so straps, seams and facial features survive gameplay scale.
+      // This changes pigment only: scene shadows and night lighting still apply.
+      vec3 actorColour = mix( diffuseColor.rgb, sqrt( max( diffuseColor.rgb, vec3( 0.0 ) ) ), 0.42 );`:'vec3 actorColour = diffuseColor.rgb;'}
+      vec3 actorPigment = mix( totalDiffuse, actorColour * actorPaintLight, 0.88 );
       // A dark inner contour reads like ink without expanding the body or
       // changing which world pixels cover it.
-      float actorContour = mix( 0.10, 1.0, smoothstep( 0.02, 0.42, abs( dot( nonPerturbedNormal, geometryViewDir ) ) ) );
+      float actorContour = mix( ${human?'0.28':'0.10'}, 1.0, smoothstep( 0.02, ${human?'0.28':'0.42'}, abs( dot( nonPerturbedNormal, geometryViewDir ) ) ) );
       vec3 outgoingLight = ( actorPigment + totalSpecular * 0.06 ) * actorContour + totalEmissiveRadiance;`
     );
   };
-  material.customProgramCacheKey=()=> 'actor-illustration-v1';
+  material.customProgramCacheKey=()=> human?'actor-illustration-human-detail-v1':'actor-illustration-v1';
 }
 
 /** An actor owns its copies. Shared GLTF materials, maps and other actors are
  * untouched, including when a skin palette or an equipped item changes. */
 export class ActorIllustration {
-  private copies=new Map<Material,Material>();
+  private copies=new Map<Material,Map<ActorPaintProfile,Material>>();
   private outline:MeshBasicMaterial;
   private cutoutOutlines=new Map<Material,MeshBasicMaterial>();
   private outlined=new WeakSet<Mesh>();
@@ -74,13 +83,14 @@ export class ActorIllustration {
     }
     return outline;
   }
-  apply(root:Object3D){
+  apply(root:Object3D,profile:ActorPaintProfile='base'){
     root.traverse(node=>{
       if(!(node instanceof Mesh)||node.userData.occlusionOverlay)return;
       const copy=(source:Material)=>{
         if(!(source instanceof MeshStandardMaterial)||this.owned.has(source))return source;
-        let material=this.copies.get(source);
-        if(!material){material=source.clone();illustrateActorMaterial(material as MeshStandardMaterial);this.copies.set(source,material);this.owned.add(material);}
+        let profiles=this.copies.get(source);if(!profiles){profiles=new Map();this.copies.set(source,profiles);}
+        let material=profiles.get(profile);
+        if(!material){material=source.clone();illustrateActorMaterial(material as MeshStandardMaterial,profile);profiles.set(profile,material);this.owned.add(material);}
         return material;
       };
       node.material=Array.isArray(node.material)?node.material.map(copy):copy(node.material);

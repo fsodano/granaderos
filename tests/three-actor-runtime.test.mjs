@@ -134,7 +134,7 @@ test('instances share geometry but have independent palettes, bones and garment 
   a.dispose();assert.equal(disposed,1);assert.equal(sourceDisposed,0);assert.equal(bBody.material.color.getHexString(),'603b29');b.dispose();
 });
 
-test('illustrated actors share their own material copies across clothing and props without changing source assets',()=>{
+test('human cloth details are isolated from the accepted horse and equipment finish without changing source assets',()=>{
   const f=fixture('Illustrated'),pigment=new Texture(),surface=new Texture();
   f.cloth.map=pigment;f.cloth.roughnessMap=surface;f.cloth.metalnessMap=surface;
   f.cloth.roughness=.4;f.cloth.metalness=.8;f.cloth.normalScale.set(1,.5);
@@ -153,16 +153,25 @@ test('illustrated actors share their own material copies across clothing and pro
   assert.equal(material.roughness,1);assert.equal(material.metalness,0);
   assert.equal(material.userData.actorIllustration,true);
   assert.equal(runtime.model.getObjectByName(f.garment.name).material,material);
-  assert.equal(attached(runtime,'primary','1800').children[0].material,material);
-  assert.equal(runtime.root.getObjectByName(f.horseBody.name).material,material);
+  const equipment=attached(runtime,'primary','1800').children[0].material,horse=runtime.root.getObjectByName(f.horseBody.name).material;
+  assert.notEqual(equipment,material,'a shared source cannot leak human shading into equipment');
+  assert.equal(horse,equipment,'horse and equipment keep the original shared finish');
+  assert.equal(material.userData.actorPaintProfile,'human');assert.equal(horse.userData.actorPaintProfile,'base');
+  assert.deepEqual(material.normalScale.toArray(),[1,.5],'human cloth keeps authored seam and fold strength');
+  assert.deepEqual(horse.normalScale.toArray(),[.4,.2],'horse normal detail stays at its accepted strength');
+  assert.equal(horse.map,pigment);assert.equal(horse.roughness,1);assert.equal(horse.metalness,0);
+  const shader=source=>{const shader={fragmentShader:'vec3 outgoingLight = totalDiffuse + totalSpecular + totalEmissiveRadiance;'};source.onBeforeCompile(shader);return shader.fragmentShader;};
+  assert.match(shader(material),/actorColour = mix/);assert.doesNotMatch(shader(horse),/actorColour = mix/);
+  assert.equal(horse.customProgramCacheKey(),'actor-illustration-v1');
+  assert.notEqual(material.customProgramCacheKey(),horse.customProgramCacheKey(),'separate compiled programs prevent one finish from replacing the other');
   runtime.update(visual(f),10);runtime.update(v,20);
-  assert.equal(attached(runtime,'primary','1800').children[0].material,material,'re-equipping reuses the owned material');
+  assert.equal(attached(runtime,'primary','1800').children[0].material,equipment,'re-equipping reuses the owned equipment finish');
   assert.equal(f.cloth.roughness,.4);assert.equal(f.cloth.metalness,.8);
   assert.equal(f.cloth.roughnessMap,surface);assert.equal(f.cloth.metalnessMap,surface);
   assert.deepEqual(f.cloth.normalScale.toArray(),[1,.5]);assert.equal(f.cloth.userData.actorIllustration,undefined);
-  let ownedDisposed=0,sourceDisposed=0,textureDisposed=0;
-  material.addEventListener('dispose',()=>ownedDisposed++);f.cloth.addEventListener('dispose',()=>sourceDisposed++);pigment.addEventListener('dispose',()=>textureDisposed++);
-  runtime.dispose();assert.equal(ownedDisposed,1);assert.equal(sourceDisposed,0);assert.equal(textureDisposed,0);
+  let ownedDisposed=0,horseDisposed=0,sourceDisposed=0,textureDisposed=0;
+  material.addEventListener('dispose',()=>ownedDisposed++);horse.addEventListener('dispose',()=>horseDisposed++);f.cloth.addEventListener('dispose',()=>sourceDisposed++);pigment.addEventListener('dispose',()=>textureDisposed++);
+  runtime.dispose();assert.equal(ownedDisposed,1);assert.equal(horseDisposed,1);assert.equal(sourceDisposed,0);assert.equal(textureDisposed,0);
   assert.equal(other.model.getObjectByName(f.coat.name).material.map,pigment);other.dispose();
 });
 
