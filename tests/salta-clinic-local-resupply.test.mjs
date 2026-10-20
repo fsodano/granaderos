@@ -39,7 +39,7 @@ function setup({kits=2,delay=0,price=180,localKits=0,cache=0,threat=false,nearEx
   c=order(c,{type:'assignCare',operativeId:130,assignment:'patient'});assert.equal(c.squads.filter(q=>q.members.length).length,8);
  }
  if(cache)c=discoverRouteCache(c,122);
- if(nearExpiry)for(let n=0;c.hour<23&&n<30;n++)c=order(c,{type:'wait',hours:23-c.hour});
+ if(nearExpiry){const until=Math.min(...[122,130].map(id=>c.contracts[id].expiresAt))-1;for(let n=0;c.hour<until&&n<30;n++)c=order(c,{type:'wait',hours:until-c.hour});}
  if(threat){for(let n=0;c.hour<120&&n<160;n++)c=order(c,{type:'wait',hours:Math.min(24,120-c.hour)});assert.equal(c.hour,120);const group=c.enemyGroups.find(g=>g.target==='tucuman'&&g.status==='marching');assert.ok(group);for(let n=0;c.hour<group.arrivalAt-1&&n<80;n++)c=order(c,{type:'wait',hours:Math.min(24,group.arrivalAt-1-c.hour)});assert.equal(c.hour,group.arrivalAt-1);assert.equal(c.pendingEncounter,null);}
  assert.deepEqual(content,declared);return saved(c);
 }

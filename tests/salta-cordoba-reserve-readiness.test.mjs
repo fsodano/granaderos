@@ -25,6 +25,8 @@ const clock=c=>c.hour*3600+(c.secondOfHour??0),order=(c,a)=>{const n=dispatchCam
 const saved=c=>{const n=decodeSave(encodeSave(c)).campaign;assert.deepEqual(n,c);return n;};
 function setup({cash=200000,nearExpiry=false,roof=true,raid=false,ammo=200,workingDoctor=false}={}){
  const d=defaultContentPackage();d.headquarters='cordoba';d.scenario='generic-v1';d.includeOriginalResidents=false;d.world=structuredClone(DEFAULT_WORLD);d.rules.startingTreasury=cash;d.errands=[];d.quests=[];d.roadsideDiscoveries=[];d.campaignRoles={foundryEngineer:null,marchCommander:null};d.characters=d.characters.filter(op=>!/^person-(?:[0-8]|10|57)$/.test(op.id));d.placements=d.placements.filter(p=>['person-9','person-11'].includes(p.character));d.rules.deploymentCartridges=1;d.startingTerritory.tucuman.owner='patriot';d.startingTerritory.cordoba.owner='patriot';d.startingTerritory.retiro.owner='patriot';d.campaignStory={introduction:'Guardia de la posta.',victory:'Listo.',defeat:'Fin.',chapters:[{id:'later',name:'Más adelante',objective:'Continuar.',conditions:[{type:'day',min:100,max:null}]}],failureConditions:[]};
+ // The raid control begins ten seconds before hour two of a midnight schedule.
+ d.rules.startingHour=0;
  const theater=d.world.sectors.find(s=>s.id==='tucuman').theater;d.world.enemyStrategy={version:1,theaters:{[theater]:{legHours:1,reserve:3,raidEveryHours:raid?1:240,axis:['tucuman']}}};
  for(const op of d.characters){if(op.service==='contract')op.arrivalHours=0;op.startingSupplies={rations:0,torches:0,medkits:0,boleadoras:0};}
  for(const id of [100,101,103,105,108,110,113,114,115,116,117,118,119,120,123,125,128,131,134,135,136,138,140,142,144,145,146,147]){const op=d.characters.find(p=>p.id==='person-'+id);if(op)op.startingSupplies.medkits=2;}
