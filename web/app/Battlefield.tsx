@@ -267,7 +267,8 @@ function BattlefieldContents({battle:committed,campaignContext,onPlaybackBusy,on
     if(busy||!u)return;
     if(grenadeTargetingMode(u,mode)){order(grenadeThrowInputAction(s,u,target));return;}
     const actual=(s.npcs??[]).find((n:any)=>n.id===target.id)??renderedUnits.find((n:any)=>n.id===target.id&&n.side==='enemy');
-    if(!actual||!canSee(s,u,actual))return;
+    if(!actual)return;
+    if(!canSee(s,u,actual)){showFeedback('El combatiente seleccionado no ve a esta persona. Usá Mirar o acercá al combatiente.');return;}
     if(mode==='fire'){order(pointFireInputAction(actual,{aim}));return;}
     const civilianAid=civilianMedicalInputAction(s,u,actual,mode);if(civilianAid){order(civilianAid);return;}
     if(['move','useItem'].includes(mode)&&u.activeSlot==='item'&&!heldGrenade(u)&&(s.npcs??[]).some((n:any)=>n.id===actual.id)){order({type:'useItem',targetId:actual.id});return;}
