@@ -1,7 +1,8 @@
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';import assert from 'node:assert/strict';
-import {Group,Mesh,BoxGeometry,MeshStandardMaterial,Bone,Skeleton,SkinnedMesh,GreaterDepth,EqualStencilFunc,KeepStencilOp} from '../web/node_modules/three/build/three.module.js';
+import {Group,Mesh,BoxGeometry,MeshStandardMaterial,Bone,Skeleton,SkinnedMesh,Texture,GreaterDepth,EqualStencilFunc,KeepStencilOp} from '../web/node_modules/three/build/three.module.js';
 const {ActorOcclusion,markActorMaterials}=await import('../web/lib/three/actor-occlusion.ts');
+const {ActorIllustration}=await import('../web/lib/three/actor-illustration.ts');
 const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
 test('selected actor occlusion uses world stencil pixels and shares the existing geometry and bones',()=>{
  const root=new Group(),bone=new Bone(),geometry=new BoxGeometry(),material=new MeshStandardMaterial(),body=new SkinnedMesh(geometry,material);root.add(bone,body);body.bind(new Skeleton([bone]));
@@ -17,4 +18,22 @@ test('selection changes and removed equipment remove every previous silhouette',
 test('opaque world pixels mark occlusion; transparent smoke and glass do not erase the actor mask',()=>{
  const materials=new WorldMaterials({tileMetres:1,assetUrl:p=>p}),wall=materials.get('adobe'),smoke=materials.get('smoke',{opacity:.2}),glass=materials.get('glass',{opacity:.3});
  assert.equal(wall.stencilWrite,true);assert.equal(wall.stencilRef,1);assert.equal(smoke.stencilWrite,false);assert.equal(glass.stencilWrite,false);materials.dispose();
+});
+test('illustrated contours retain cutout alpha and do not create additional selected-body overlays',()=>{
+ const root=new Group(),texture=new Texture(),source=new MeshStandardMaterial({map:texture,alphaTest:.5}),plain=new MeshStandardMaterial(),hair=new Mesh(new BoxGeometry(),[plain,source]),owned=new Set();root.add(hair);
+ let previousCalls=0;hair.onAfterRender=()=>previousCalls++;
+ const illustration=new ActorIllustration(owned);illustration.apply(root);illustration.apply(root);
+ const draws=[],renderer={getViewport:vector=>vector.set(0,0,640,480),renderBufferDirect:(...args)=>draws.push(args)},group={start:0,count:6,materialIndex:1};
+ hair.onAfterRender(renderer,{}, {},hair.geometry,hair.material[1],group);
+ assert.equal(previousCalls,1);assert.equal(draws.length,1,'repeat updates install one nonrecursive draw callback');
+ const outline=draws[0][3];assert.equal(outline.map,texture);assert.equal(outline.alphaTest,.5);assert.equal(draws[0][4],hair);assert.equal(draws[0][5],group,'only the admitted material group is drawn');
+ assert.notEqual(hair.material[1],source);assert.equal(hair.children.length,0);
+ hair.material[1].colorWrite=false;hair.onAfterRender(renderer,{}, {},hair.geometry,hair.material[1],group);hair.material[1].colorWrite=true;
+ hair.onAfterRender(renderer,{}, {},hair.geometry,new MeshStandardMaterial(),group);
+ assert.equal(draws.length,1,'depth-only and override passes cannot emit an ink draw');
+ const view=new ActorOcclusion();view.setActor(root);view.sync();view.sync();
+ assert.equal(hair.children.filter(node=>node.userData.occlusionOverlay).length,1);assert.equal(hair.children[0].children.length,0,'ink passes cannot create a second ghost contour');
+ assert.equal(outline.stencilRef,0);assert.equal(outline.stencilWrite,true,'visible ink remains part of the selected actor mask');
+ view.dispose();assert.equal(hair.children.length,0);
+ for(const material of owned)material.dispose();
 });
