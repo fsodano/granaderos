@@ -1,11 +1,12 @@
 import {AlwaysStencilFunc,BackSide,Material,Mesh,MeshBasicMaterial,MeshPhysicalMaterial,MeshStandardMaterial,Object3D,ReplaceStencilOp,Vector2,Vector4} from 'three';
+import {clothingPaint,paintClothingShader,type ClothingPaint} from './illustrated-clothing';
 
 type ActorPaintProfile='base'|'human';
 
 /** Keep the authored pigment and folds, but give native actors the restrained
  * highlights and dark contours of the retained illustrated sprite library.
  * The separate silhouette pass below supplies the visible outer ink contour. */
-export function illustrateActorMaterial(material:MeshStandardMaterial,profile:ActorPaintProfile='base'){
+export function illustrateActorMaterial(material:MeshStandardMaterial,profile:ActorPaintProfile='base',clothing?:ClothingPaint){
   const human=profile==='human';
   material.roughness=1;
   material.roughnessMap=null;
@@ -16,6 +17,7 @@ export function illustrateActorMaterial(material:MeshStandardMaterial,profile:Ac
   material.userData.actorIllustration=true;
   material.userData.actorPaintProfile=profile;
   material.onBeforeCompile=shader=>{
+    if(clothing)paintClothingShader(shader,clothing);
     shader.fragmentShader=shader.fragmentShader.replace('#include <shadowmap_pars_fragment>', '#include <shadowmap_pars_fragment>\n#include <shadowmask_pars_fragment>');
     shader.fragmentShader=shader.fragmentShader.replace(
       'vec3 outgoingLight = totalDiffuse + totalSpecular + totalEmissiveRadiance;',
@@ -47,13 +49,13 @@ export function illustrateActorMaterial(material:MeshStandardMaterial,profile:Ac
       vec3 outgoingLight = ( actorPigment + totalSpecular * 0.06 ) * actorContour + totalEmissiveRadiance;`
     );
   };
-  material.customProgramCacheKey=()=> human?'actor-illustration-human-detail-v1':'actor-illustration-v1';
+  material.customProgramCacheKey=()=> (human?'actor-illustration-human-detail-v1':'actor-illustration-v1')+(clothing?`:clothing-v1:${clothing.key}`:'');
 }
 
 /** An actor owns its copies. Shared GLTF materials, maps and other actors are
  * untouched, including when a skin palette or an equipped item changes. */
 export class ActorIllustration {
-  private copies=new Map<Material,Map<ActorPaintProfile,Material>>();
+  private copies=new Map<Material,Map<string,Material>>();
   private outline:MeshBasicMaterial;
   private cutoutOutlines=new Map<Material,MeshBasicMaterial>();
   private outlined=new WeakSet<Mesh>();
@@ -83,14 +85,15 @@ export class ActorIllustration {
     }
     return outline;
   }
-  apply(root:Object3D,profile:ActorPaintProfile='base'){
+  apply(root:Object3D,profile:ActorPaintProfile='base',appearance?:string){
     root.traverse(node=>{
       if(!(node instanceof Mesh)||node.userData.occlusionOverlay)return;
       const copy=(source:Material)=>{
         if(!(source instanceof MeshStandardMaterial)||this.owned.has(source))return source;
+        const clothing=profile==='human'?clothingPaint(node,source,appearance):undefined,key=profile+':'+(clothing?.key??'');
         let profiles=this.copies.get(source);if(!profiles){profiles=new Map();this.copies.set(source,profiles);}
-        let material=profiles.get(profile);
-        if(!material){material=source.clone();illustrateActorMaterial(material as MeshStandardMaterial,profile);profiles.set(profile,material);this.owned.add(material);}
+        let material=profiles.get(key);
+        if(!material){material=source.clone();illustrateActorMaterial(material as MeshStandardMaterial,profile,clothing);profiles.set(key,material);this.owned.add(material);}
         return material;
       };
       node.material=Array.isArray(node.material)?node.material.map(copy):copy(node.material);

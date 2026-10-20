@@ -80,7 +80,7 @@ export class ActorRuntime {
     if(asset.horse){this.horse=clone(asset.horse.scene);this.root.add(this.horse);this.horse.traverse(node=>{if(node instanceof Mesh){node.castShadow=true;node.receiveShadow=true;node.frustumCulled=false;}});this.horseMixer=new AnimationMixer(this.horse);}
     shareSkeletons(this.root);
     // Human detail is separate from the accepted horse and equipment finish.
-    this.illustration.apply(this.model,'human');
+    this.illustration.apply(this.model,'human',asset.appearance.id);
     this.illustration.apply(this.root);
     this.update(visual,performance.now());
   }
