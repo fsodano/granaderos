@@ -1,4 +1,4 @@
-import {BoxGeometry,BufferAttribute,BufferGeometry,ConeGeometry,CylinderGeometry,Group,IcosahedronGeometry,LatheGeometry,Matrix4,Mesh,MeshStandardMaterial,Quaternion,Shape,ShapeGeometry,TorusGeometry,Vector2,Vector3} from 'three';
+import {BoxGeometry,BufferAttribute,BufferGeometry,ConeGeometry,CylinderGeometry,Group,IcosahedronGeometry,LatheGeometry,Line,Matrix4,Mesh,MeshStandardMaterial,Quaternion,Shape,ShapeGeometry,TorusGeometry,Vector2,Vector3} from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
 import {rockForm} from './world-rock-forms';
@@ -198,7 +198,7 @@ export class WorldBatch {
     this.parts.clear();return group;
   }
 }
-export function disposeWorldNode(object:Group|Mesh|import('three').Object3D){object.traverse(child=>{if(child instanceof Mesh)child.geometry.dispose();});object.removeFromParent();}
+export function disposeWorldNode(object:Group|Mesh|import('three').Object3D){object.traverse(child=>{if(child instanceof Mesh||child instanceof Line)child.geometry.dispose();if(child instanceof Line)for(const material of Array.isArray(child.material)?child.material:[child.material])material.dispose();});object.removeFromParent();}
 export function lathe(points:readonly (readonly [number,number])[],segments=12){return new LatheGeometry(points.map(point=>new Vector2(point[0],point[1])),segments);}
 export function planarShape(points:readonly (readonly [number,number])[]){const shape=new Shape(points.map(point=>new Vector2(point[0],point[1])));return new ShapeGeometry(shape);}
 export const seeded=(x:number,y:number,salt=0)=>((Math.imul(x+salt+71,374761393)^Math.imul(y-salt+97,668265263))>>>0)/0xffffffff;
