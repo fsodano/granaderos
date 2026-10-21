@@ -17,6 +17,7 @@ test('unused AP grants a player decision window without a cover button or forced
  const n=endTurn(s);
  assert.equal(n.phase,'interrupt');assert.equal(n.turn,1);assert.equal(n.elapsedSeconds,6);
  assert.deepEqual(n.interrupt,{side:'player',unitIds:['p'],enemyId:'e'});
+ assert.ok(n.log.includes(`¡Interrupción! ${n.units[0].name} puede actuar con sus PA restantes.`));
  assert.equal(n.units[0].ap,20);assert.equal(n.units[0].loaded,1);
  assert.equal(n.units[1].x,6);assert.equal(n.units[1].ap,92);
  assert.equal(interruptAvailable(n,n.units[0]),true);assert.equal(interruptAvailable(n,n.units[1]),false);
@@ -60,6 +61,8 @@ test('paused enemy decisions survive full campaign save/load and resume determin
  const request=c.pendingBattle;
  let b=battle(request.squad.map((u,i)=>({...u,x:1,y:1+i,agility:95})),{...request,width:12,height:8,tiles:tiles(),enemies:[{id:'e',x:7,y:1,weapon:1813}],hour:c.hour});
  b=endTurn(b);assert.equal(b.phase,'interrupt');
+ assert.ok(b.interrupt.unitIds.length>1);
+ assert.match(b.log.find(line=>line.startsWith('¡Interrupción! ')),/ pueden actuar con sus PA restantes\.$/);
  const pair=syncBattleTime(c,b);assert.equal(pair.error,null);
  const saved=decodeSave(encodeSave(pair.campaign,pair.battle));
  assert.deepEqual(saved.battle.interrupt,b.interrupt);
