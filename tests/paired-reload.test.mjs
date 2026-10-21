@@ -85,7 +85,8 @@ test('pocketed, failed, broken and nonpistol second weapons never consume reload
 test('zero AP, blocked actors, absent ammunition and failed primary reject the whole reload',()=>{
  for(const patch of [{ap:0},{ammo:0},{jammed:true},{activeSlot:'blade',blade:1813},{knockedDown:true},{energy:0,unconscious:true}]){
   const s=field();Object.assign(s.units[0],patch);if(patch.ammo===0)setTestAmmunition(s.units[0],0);const n=actBattle(s,{type:'reload',unitId:'p'});assert.ok(n.lastError);
-  assert.deepEqual({...n,log:[],lastError:null},{...s,log:[],lastError:null});
+  assert.deepEqual(n.publicJournal,{version:1,entries:[...s.publicJournal.entries,{turn:s.turn,text:n.lastError}].slice(-80)});
+  assert.deepEqual({...n,log:[],publicJournal:undefined,lastError:null},{...s,log:[],publicJournal:undefined,lastError:null});
  }
 });
 

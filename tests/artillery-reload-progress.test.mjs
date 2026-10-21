@@ -11,8 +11,8 @@ const tiles=()=>Array.from({length:320},(_,i)=>({x:i%40,y:Math.floor(i/40),type:
 const field=(type='field8',wounded=false,exploration=false)=>createBattle([{id:20,x:1,y:2},{id:21,x:2,y:2},{id:22,x:1,y:3}].map(u=>({...u,...(wounded?{hp:20,maxHp:100,bandaged:80,energy:30,fatigue:90,medical:0}:{})})),{width:40,height:8,tiles:tiles(),seed:45,exploration,enemies:exploration?[]:[{id:'e',x:38,y:6,weapon:1813,ammo:0,loaded:0,patrol:false}],artillery:[{id:'gun',type,side:'player',x:2,y:3,loaded:false,ammo:3}]});
 const preview=s=>artilleryReloadPreview(s,s.units[0],s.artillery[0]);
 const order=(s,a={type:'artilleryReload'})=>actBattle(s,{unitId:'20',artilleryId:'gun',...a});
-const physical=s=>({...s,log:[],lastError:null});
-const rejected=(s,a)=>{const n=order(s,a);assert.ok(n.lastError);assert.deepEqual(physical(n),physical(s));};
+const physical=s=>({...s,log:[],publicJournal:undefined,lastError:null});
+const rejected=(s,a)=>{const n=order(s,a);assert.ok(n.lastError);assert.deepEqual(n.publicJournal,{version:1,entries:[...s.publicJournal.entries,{turn:s.turn,text:n.lastError}].slice(-80)});assert.deepEqual(physical(n),physical(s));};
 
 test('wounded crews complete a heavy cannon load over real turns and spend 75 AP each in total',()=>{
  let s=field('field8',true),turns=0;const spent=[0,0,0];

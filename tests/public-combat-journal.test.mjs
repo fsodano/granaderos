@@ -54,12 +54,12 @@ test('visible enemy reload and missed shot summaries omit ammunition, AP and cha
  assert.ok(next.log.some(text=>text.includes('Atacante recarga')&&text.includes('PA')));
  const reload=journal(next).filter(text=>text.includes('Atacante'));
  assert.ok(reload.includes('Atacante recarga su arma.'));assert.ok(reload.every(text=>!/%|\bPA\b|cartuchos|faltan|\d/.test(text)));
- let missed;
- for(let seed=1;seed<=30&&!missed;seed++){
-  const s=rearAttack({visible:true});s.seed=seed;s.units[1].marksmanship=0;const n=endTurn(s);
-  if(n.log.some(text=>text.includes('Atacante dispara sin acertar')))missed=n;
- }
- assert.ok(missed,'a real resolved enemy miss must exercise the private chance message');
+ // This declared seed and viable aim make the real AI spend its 12 AP on a
+ // shot. A zero-skill actor may decline to shoot, so it cannot prove redaction.
+ const firing=rearAttack({visible:true});firing.seed=6;firing.units[1].marksmanship=85;
+ assert.equal(teamCanSee(firing,'player',firing.units[1]),true);
+ const missed=endTurn(firing);assert.equal(firing.units[1].loaded,1);assert.equal(missed.units[1].loaded,0);assert.equal(missed.units[1].ap,0);assert.equal(missed.units[1].ammo,firing.units[1].ammo);assert.equal(missed.units[0].hp,firing.units[0].hp);
+ assert.ok(missed.log.includes('Atacante dispara sin acertar al punto elegido (82%).'));
  assert.ok(journal(missed).includes('Atacante dispara sin acertar al punto elegido.'));
  assert.ok(journal(missed).filter(text=>text.includes('Atacante')).every(text=>!/%|\bPA\b|cartuchos/.test(text)));
 });

@@ -86,7 +86,9 @@ test('actual new player turn applies ordinary shock after recovery, changes real
  assert.equal(actor(next).enclosedRoomFearWarned,true);assert.deepEqual(presentedEndTurn(before).state,next);assert.deepEqual(runBattleJob({kind:'turn',battle:before}),next);
  assert.deepEqual(endTurn(validateBattleSnapshot(JSON.parse(JSON.stringify(before)))),next);assert.deepEqual(before,original);
  assert.ok(shotChance(next,actor(next),next.units.find(u=>u.id==='e'))<shotChance(plain,actor(plain),plain.units.find(u=>u.id==='e')));
- const comparable=structuredClone(next);actor(comparable).abilities=[];actor(comparable).shock=actor(plain).shock;delete actor(comparable).enclosedRoomFearWarned;comparable.log=comparable.log.filter(l=>!l.includes('siente temor dentro de una habitación cerrada.'));
+ const notice='Teresa Godoy siente temor dentro de una habitación cerrada. Tensión +2.';
+ assert.deepEqual(next.publicJournal.entries.filter(entry=>entry.text===notice),[{turn:next.turn,text:notice}]);
+ const comparable=structuredClone(next);actor(comparable).abilities=[];actor(comparable).shock=actor(plain).shock;delete actor(comparable).enclosedRoomFearWarned;comparable.log=comparable.log.filter(line=>line!==notice);comparable.publicJournal.entries=comparable.publicJournal.entries.filter(entry=>entry.text!==notice);
  assert.deepEqual(comparable,plain,'paid time, AP, HP, kit, ammunition and RNG are unchanged by this authored shock consequence');
  let again=endTurn(next),resumes=0;
  while(again.phase==='interrupt'&&resumes++<12){assert.equal(again.turn,next.turn);assert.equal(actor(again).shock,actor(next).shock,'interrupt resumes do not charge another fear turn');again=endTurn(again);}

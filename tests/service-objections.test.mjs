@@ -40,10 +40,12 @@ test('a real intentional lethal contact records one complaint without another he
  const before=field(),older=field({abilities:[]}),original=structuredClone(before),next=actBattle(before,strike),control=actBattle(older,strike);
  assert.equal(next.lastError,null);assert.equal(next.npcs[0].hp,0);assert.deepEqual(civilianIncidents(next.npcs[0]),civilianIncidents(control.npcs[0]));
  assert.deepEqual(witness(next).serviceObjection,{kind:'civilian-killing',civilianKey:'npc-civil',attackerId:'100'});
- const normalized=structuredClone(next);delete normalized.units[0].serviceObjection;normalized.units[0].abilities=[];delete normalized.conductObserverIds;normalized.log=normalized.log.filter(line=>!line.includes('no aceptaré otro contrato'));
+ const notice='Inés: No acepto la muerte de Vecina. Cumpliré el plazo pagado, pero no aceptaré otro contrato.';
+ assert.deepEqual(next.publicJournal.entries.filter(entry=>entry.text===notice),[{turn:next.turn,text:notice}]);
+ const normalized=structuredClone(next);delete normalized.units[0].serviceObjection;normalized.units[0].abilities=[];delete normalized.conductObserverIds;normalized.log=normalized.log.filter(line=>line!==notice);normalized.publicJournal.entries=normalized.publicJournal.entries.filter(entry=>entry.text!==notice);
  assert.deepEqual(normalized,control);assert.deepEqual(before,original);assert.deepEqual(presentedActBattle(before,strike).state,next);
  assert.deepEqual(actBattle(validateBattleSnapshot(JSON.parse(JSON.stringify(before))),strike),next);
- const repeated=actBattle(next,strike);assert.ok(repeated.lastError);assert.deepEqual({...repeated,lastError:null,log:next.log},next);assert.equal(repeated.log.at(-1),repeated.lastError);
+ const repeated=actBattle(next,strike);assert.ok(repeated.lastError);assert.deepEqual(repeated.publicJournal,{version:1,entries:[...next.publicJournal.entries,{turn:next.turn,text:repeated.lastError}].slice(-80)});assert.deepEqual({...repeated,lastError:null,log:next.log,publicJournal:next.publicJournal},next);assert.equal(repeated.log.at(-1),repeated.lastError);
 });
 
 test('witness capability, facing, smoke, walls and undiscovered NPC interiors are required before death',()=>{

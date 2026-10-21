@@ -74,7 +74,9 @@ test('a real new combat turn applies fear after decay and preserves exact costs,
  assert.equal(actor(b).shock,6);assert.equal(actor(b).nervousIsolationWarned,undefined);
  const after=endTurn(b),plain=endTurn(legacy);assert.equal(after.lastError,null);assert.equal(after.turn,2);assert.equal(after.elapsedSeconds,6);
  assert.equal(actor(after).shock,5);assert.equal(actor(plain).shock,3);assert.equal(actor(after).nervousIsolationWarned,true);assert.equal(notices(after).length,1);
- const comparable=structuredClone(after);delete actor(comparable).abilities;delete actor(comparable).nervousIsolationWarned;actor(comparable).shock=actor(plain).shock;comparable.log=comparable.log.filter(line=>!line.includes('siente temor al quedar sin apoyo.'));
+ const notice='Ángela Cejas siente temor al quedar sin apoyo. Tensión +2.';
+ assert.deepEqual(after.publicJournal.entries.filter(entry=>entry.text===notice),[{turn:after.turn,text:notice}]);
+ const comparable=structuredClone(after);delete actor(comparable).abilities;delete actor(comparable).nervousIsolationWarned;actor(comparable).shock=actor(plain).shock;comparable.log=comparable.log.filter(line=>line!==notice);comparable.publicJournal.entries=comparable.publicJournal.entries.filter(entry=>entry.text!==notice);
  assert.deepEqual(comparable,plain,'only the authored shock and named informational notice differ');
  const plainChance=shotChance(plain,actor(plain),plain.units.find(u=>u.id==='e')),fearChance=shotChance(after,actor(after),after.units.find(u=>u.id==='e'));
  assert.equal(plainChance,53);assert.equal(fearChance,43);assert.equal(plainChance-fearChance,10,'both actual forecasts are clear of the1/95 clamps');

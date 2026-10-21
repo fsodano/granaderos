@@ -17,7 +17,8 @@ test('prone operators cannot fire, reload, pivot or drag a gun, and rejection sp
   if(type==='artilleryReload')b.artillery[0].loaded=false;
   const before=structuredClone(b),n=actBattle(b,{type,unitId:20,artilleryId:'gun',x:type==='artilleryMove'?3:10,y:3});
   assert.match(n.lastError,/de pie o agachados/);
-  assert.deepEqual({...n,lastError:before.lastError,log:before.log},before);
+  assert.deepEqual(n.publicJournal,{version:1,entries:[...before.publicJournal.entries,{turn:before.turn,text:n.lastError}].slice(-80)});
+  assert.deepEqual({...n,lastError:before.lastError,log:before.log,publicJournal:before.publicJournal},before);
  }
 });
 test('prone helpers cannot satisfy a crew requirement but crouched helpers can',()=>{
