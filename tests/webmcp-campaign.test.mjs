@@ -60,12 +60,14 @@ test('registered orders keep consecutive tactical actions, midnight, UI orders a
  const m=await mount(t,fixture({late:true}));let want=structuredClone(pair(m.saved()));const unitId=want.battle.units.find(u=>u.side==='player').id;
  const actions=Array.from({length:7},()=>({type:'rest',unitId}));
  // No React render between executions: each call must see the last accepted pair.
- await act(async()=>{for(const action of actions){want=expected(want,action);const result=m.issue(action);assert.equal(result.turn,want.battle.turn);observed(m,want);}});
+ await act(async()=>{for(const action of actions){want=expected(want,action);const result=m.issue(action),known=playerKnownBattle(want.battle);assert.deepEqual(result,{turn:want.battle.turn,status:want.battle.status,phase:want.battle.phase,units:known.units,interrupt:'interrupt' in known?known.interrupt:null});observed(m,want);}});
  assert.ok(want.campaign.hour>=24);assert.equal(want.battle.syncedSeconds,want.battle.elapsedSeconds);assert.deepEqual(m.saved(),want);
  want=expected(want,{type:'endTurn'});await act(async()=>m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'d',bubbles:true})));await m.settleUntil(()=>m.saved().battle.turn===want.battle.turn);
  assert.deepEqual(pair(m.saved()),want);assert.deepEqual(m.saved(),want);
  await m.click('Volver a la campaña');
- await act(async()=>assert.throws(()=>m.issue({type:'rest',unitId}),/No hay batalla activa/));
+ const inactive=structuredClone(m.read()),inactiveSave=structuredClone(m.saved());
+ await act(async()=>assert.deepEqual(m.issue({type:'rest',unitId}),{ok:false,error:'No hay batalla activa.'}));
+ assert.deepEqual(m.read(),inactive);assert.deepEqual(m.saved(),inactiveSave);
 });
 
 test('registered civilian attack and aid persist finite supplies, death and a delayed successor',async t=>{
@@ -93,11 +95,40 @@ test('registered civilian attack and aid persist finite supplies, death and a de
 
 test('rejected tool and UI orders leave both simulation states and the saved campaign intact',async t=>{
  const m=await mount(t,fixture()),before=structuredClone(pair(m.saved())),wire=m.dom.window.localStorage.getItem(CONTENT_SAVE_KEY),unitId=before.battle.units.find(u=>u.side==='player').id;
- await act(async()=>{assert.throws(()=>m.issue({type:'bogus',unitId}),/Orden no válida/);assert.throws(()=>m.issue({type:'move',unitId,x:-100,y:-100}));assert.throws(()=>m.issue({type:'fire',unitId:'missing',targetId:'missing'}));});
+ await act(async()=>{
+  for(const [action,reason]of [[{type:'bogus',unitId},'Orden no válida.'],[{type:'move',unitId,x:-100,y:-100},'Destino inaccesible o puntos de acción insuficientes.'],[{type:'fire',unitId:'missing',targetId:'missing'},'El soldado no puede actuar.']]){
+   const result=m.issue(action);
+   assert.deepEqual(result,{ok:false,error:reason});
+   assert.deepEqual(JSON.parse(JSON.stringify(result)),result,'the refusal must survive the browser tool result transport');
+  }
+ });
  assert.deepEqual(pair(m.saved()),before);assert.equal(m.dom.window.localStorage.getItem(CONTENT_SAVE_KEY),wire);
  // A full, primed weapon cannot be reloaded from the normal keyboard controls.
  await act(async()=>m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'r',altKey:true,bubbles:true})));
  assert.ok(m.document.querySelector('[role="status"]'));assert.deepEqual(pair(m.saved()),before);assert.equal(m.dom.window.localStorage.getItem(CONTENT_SAVE_KEY),wire);
+});
+
+test('an unaffordable tool move returns its reason and permits a later valid order',async t=>{
+ const p=fixture(),unit=p.battle.units.find(u=>u.side==='player'),destination=getReachable(p.battle,unit).find(point=>point.path.length===1);
+ assert.ok(destination);p.battle.mode='combat';unit.ap=0;
+ const m=await mount(t,p),before=structuredClone(pair(m.saved())),wire=m.dom.window.localStorage.getItem(CONTENT_SAVE_KEY);
+ await act(async()=>assert.deepEqual(m.issue({type:'move',unitId:unit.id,x:destination.x,y:destination.y}),{ok:false,error:'Destino inaccesible o puntos de acción insuficientes.'}));
+ assert.deepEqual(pair(m.saved()),before);assert.equal(m.dom.window.localStorage.getItem(CONTENT_SAVE_KEY),wire);
+ const action={type:'movement',unitId:unit.id,movement:'run'},want=expected(before,action);
+ await act(async()=>assert.equal(m.issue(action).turn,want.battle.turn));
+ assert.deepEqual(m.saved(),want);
+});
+
+test('unexpected tactical faults still throw instead of becoming ordinary refusal results',async t=>{
+ const m=await mount(t,fixture()),before=structuredClone(pair(m.saved())),wire=m.dom.window.localStorage.getItem(CONTENT_SAVE_KEY),unitId=before.battle.units.find(u=>u.side==='player').id;
+ const clone=globalThis.structuredClone;
+ await act(async()=>{
+  try{
+   globalThis.structuredClone=()=>{throw new TypeError('Unexpected tactical clone failure');};
+   assert.throws(()=>m.issue({type:'movement',unitId,movement:'run'}),/Unexpected tactical clone failure/);
+  }finally{globalThis.structuredClone=clone;}
+ });
+ assert.deepEqual(pair(m.saved()),before);assert.equal(m.dom.window.localStorage.getItem(CONTENT_SAVE_KEY),wire);
 });
 
 test('registered orders retain standalone combat and unregister when the game unmounts',async t=>{
@@ -117,7 +148,7 @@ test('registered orders retain standalone combat and unregister when the game un
 test('a pending visible UI turn rejects competing tool orders and commits one synchronized save',async t=>{
  const m=await mount(t,fixture()),source=m.saved().battle,before=structuredClone(pair(m.saved()));const unitId=before.battle.units.find(u=>u.side==='player').id;
  const action={type:'movement',unitId,movement:'crouch'},turn=expected(before,{type:'endTurn'});
- await act(async()=>{m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'d',bubbles:true}));assert.throws(()=>m.issue(action),/termine el movimiento/);assert.deepEqual(pair(m.saved()),before);assert.deepEqual(m.saved(),before);});
+ await act(async()=>{m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'d',bubbles:true}));assert.deepEqual(m.issue(action),{ok:false,error:'Esperá a que termine el movimiento.'});assert.deepEqual(pair(m.saved()),before);assert.deepEqual(m.saved(),before);});
  await m.settleUntil(()=>m.saved().battle.turn===turn.battle.turn);
  assert.deepEqual(pair(m.saved()),turn);assert.deepEqual(m.saved(),turn);
  const want=expected(turn,action);await act(async()=>m.issue(action));assert.deepEqual(pair(m.saved()),want);assert.deepEqual(m.saved(),want);
