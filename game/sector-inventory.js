@@ -156,6 +156,16 @@ export function sectorInventoryModel(s,sectorId,roster,operativeId){
  return {personal,outfitStock,outfitPrice:PONCHO_PRICE,outfitIssueReason,sectorId,operativeId:op?.id??null,candidates:candidates.map(op=>({id:op.id,name:op.nickname??op.name})),reason,carriedReason,entries,repairReserves,carried,usage:personal?inventoryUsage(personal):null};
 }
 
+// Preview the selected amount with the same immutable inventory planner used
+// by pickup. A row's source receipt already contains only discovered equipment.
+export function sectorPickupReason(personal,entry,count){
+ if(!entry?.reachable)return entry?.reason??'El equipo ya no está disponible.';
+ if(!Number.isSafeInteger(count)||count<1||count>entry.count)return `Elegí una cantidad entre 1 y ${entry.count}.`;
+ if(!personal)return 'Elegí un combatiente presente.';
+ try{applyItemQuantity(personal,{...JSON.parse(entry.expected),count});return null;}
+ catch(error){return error.message;}
+}
+
 function modelStoreReason(s,location,reason,actor){
  return reason??(s.location!==location?'La escuadra activa debe estar en este sector.':!workshopSectorsFor(s).includes(location)?'Llevá el arma a una maestranza.':actor?.equipmentCursor?'Colocá primero el objeto del cursor.':(s.armoryItems?.length??0)>=10000?'La armería está llena.':null);
 }

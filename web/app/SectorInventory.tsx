@@ -1,8 +1,8 @@
 'use client';
-import {useState} from 'react';
+import {useId,useState} from 'react';
 import CampaignPockets from './CampaignPockets';
 import {rosterFor} from '../../game/campaign.js';
-import {sectorInventoryModel,sectorInventorySites} from '../../game/sector-inventory.js';
+import {sectorInventoryModel,sectorInventorySites,sectorPickupReason} from '../../game/sector-inventory.js';
 import {tacticalGridLabel} from '../../game/tactical-grid.js';
 import {repairMaterialPoints} from '../../game/repair-materials.js';
 import './sector-inventory.css';
@@ -22,17 +22,18 @@ export default function SectorInventory({state,sectorId,dispatch}:{state:any;sec
   {model.usage&&<p>Mochila: {model.usage.used}/{model.usage.capacity} espacios. Las cargas permanecen en el arma; los cartuchos sueltos se usan en el próximo despliegue.</p>}
   {model.personal&&<p aria-label="Materiales de reparación del combatiente">Materiales de reparación: {repairMaterialPoints(model.personal)} puntos</p>}
   {model.personal&&<CampaignPockets key={`${siteId}:${model.operativeId}`} unit={model.personal} disabled={Boolean(model.carriedReason)} onOrder={action=>order(action)}/>}
-  <div className="sector-inventory-columns"><section aria-label="Equipo descubierto"><h4>En el terreno</h4>{model.reason&&<p role="status">{model.reason}</p>}{model.entries.length?model.entries.map((row:any,index:number)=><ItemRow key={`${siteId}:${row.key}:${row.expected}`} label={row.label} count={row.count} number={index+1} disabled={!row.reachable} verb="Recoger" onConfirm={(count:number)=>order({direction:'take',sourceKey:row.key,expected:row.expected,count})}>
+  <div className="sector-inventory-columns"><section aria-label="Equipo descubierto"><h4>En el terreno</h4>{model.reason&&<p role="status">{model.reason}</p>}{model.entries.length?model.entries.map((row:any,index:number)=><ItemRow key={`${siteId}:${row.key}:${row.expected}`} label={row.label} count={row.count} number={index+1} disabled={!row.reachable} verb="Recoger" quantityReason={count=>sectorPickupReason(model.personal,row,count)} onConfirm={(count:number)=>order({direction:'take',sourceKey:row.key,expected:row.expected,count})}>
    <p>{inventoryLocation(row)} · {row.condition!==undefined&&`Estado ${row.condition}%. `}{row.loaded!==undefined&&`${row.loaded} carga(s). `}{row.jammed&&'Necesita cebado. '}{row.reason}</p>
   </ItemRow>):<p>No hay equipo descubierto en este sector.</p>}{model.repairReserves.length>0&&<section aria-label="Materiales de reparación"><h4>Materiales de reparación</h4>{model.repairReserves.map((row:RepairReserveRow,index:number)=><RepairReserve key={`${siteId}:${row.key}:${row.expected}`} row={row} number={index+1} onConfirm={count=>order({direction:'takeRepairPoints',sourceKey:row.key,expected:row.expected,count})}/>)}</section>}</section>
   <section aria-label="Equipo llevado"><h4>Con el combatiente</h4>{model.carriedReason&&model.carriedReason!==model.reason&&<p role="status">{model.carriedReason}</p>}{model.carried.length?model.carried.map((row:any,index:number)=><ItemRow key={`${row.item}:${row.count}`} label={row.label} count={row.count} number={index+1} disabled={Boolean(model.reason)} verb="Dejar" onConfirm={(count:number)=>order({direction:'drop',item:row.item,count})}><EquipCarriedItem row={row} onEquip={(slot:string)=>order({direction:'equip',inventoryKey:row.inventoryKey,expected:row.expected,slot})}/><PrepareCarriedHands row={row} onPrepare={action=>order({direction:'equip',...action})}/></ItemRow>):<p>No hay equipo disponible.</p>}</section></div>
  </section>;
 }
 function inventoryLocation(row:{x?:number;y?:number}){return row.x!==undefined&&row.y!==undefined?tacticalGridLabel(row.x,row.y):'Lugar por reconocer';}
-function ItemRow({label,count,maximum=count,number,disabled,verb,onConfirm,children}:{label:string;count:number;maximum?:number;number:number;disabled:boolean;verb:string;onConfirm:(count:number)=>void;children?:React.ReactNode}){
- const [quantity,setQuantity]=useState(1);
+function ItemRow({label,count,maximum=count,number,disabled,verb,quantityReason,onConfirm,children}:{label:string;count:number;maximum?:number;number:number;disabled:boolean;verb:string;quantityReason?:(count:number)=>string|null;onConfirm:(count:number)=>void;children?:React.ReactNode}){
+ const [quantity,setQuantity]=useState(1),reasonId=useId();
  const valid=Number.isSafeInteger(quantity)&&quantity>0&&quantity<=maximum;
- return <div className="sector-inventory-row"><div><strong>{label} · {count}</strong>{children}</div><label>Cantidad<input type="number" min="1" max={maximum} step="1" value={quantity} disabled={disabled} aria-label={`${verb} ${number}: cantidad de ${label}`} onChange={event=>setQuantity(Number(event.target.value))}/></label><button className="line-button" disabled={disabled||!valid} aria-label={`${verb} ${number}: ${label}`} onClick={()=>onConfirm(quantity)}>{verb}</button></div>;
+ const reason=!disabled?quantityReason?.(quantity):null;
+ return <div className="sector-inventory-row"><div><strong>{label} · {count}</strong>{children}{reason&&<p id={reasonId} role="status">{reason}</p>}</div><label>Cantidad<input type="number" min="1" max={maximum} step="1" value={quantity} disabled={disabled} aria-label={`${verb} ${number}: cantidad de ${label}`} aria-describedby={reason?reasonId:undefined} aria-invalid={reason?true:undefined} onChange={event=>setQuantity(Number(event.target.value))}/></label><button className="line-button" disabled={disabled||!valid||Boolean(reason)} aria-label={`${verb} ${number}: ${label}`} aria-describedby={reason?reasonId:undefined} onClick={()=>onConfirm(quantity)}>{verb}</button></div>;
 }
 
 type RepairReserveRow={key:string;label:string;repairPoints:number;capacity:number;expected:string;reachable:boolean;reason?:string|null;x?:number;y?:number};
