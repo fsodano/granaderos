@@ -15,6 +15,7 @@ import {ActorIllustration} from './actor-illustration';
 import {readableHumanClip} from './readable-human-stance';
 import {boundLocomotionClip} from './locomotion-clip';
 import {idleBreathingClip,idleBreathingTiming} from './idle-breathing';
+import {idleArmGesturesClip} from './idle-arm-gestures';
 import {relaxedStandingIdle} from './relaxed-standing-idle';
 import type {ContactActorResolver} from './melee-contact-fit';
 import {NativeReadyMeleeContactFit as NativeMeleeContactFit} from './melee-ready-contact-fit';
@@ -231,15 +232,24 @@ export class ActorRuntime {
     }
     const posed=readableHumanClip(resting,this.asset.body.scene,this.asset.manifest.bones,semantic,{plantFeet:Boolean(visual.relaxedIdle),footwearName:this.asset.appearance.parts?.footwear?.replace('{lod}',String(this.asset.lod))});
     const breathing=idleBreathingClip(posed,this.asset.body.scene,this.asset.manifest.bones,semantic),idleTiming=breathing!==posed?idleBreathingTiming(visual.key):undefined;
-    const clip=mirror?mirroredClip(breathing,this.asset.body.scene,this.asset.manifest.animationMirroring!):breathing;
+    // A long gun or lance uses the supporting hand even without a second
+    // inventory record. Every other held item reserves its actual hand.
+    const twoHandedIdle=visual.equipment==='long-gun'||semantic==='stand.idle.lance';
+    const freeHands={handLeft:!twoHandedIdle&&!visual.items.some(item=>item.socket==='handLeft'),handRight:!twoHandedIdle&&!visual.items.some(item=>item.socket==='handRight')};
+    // Keep the accepted breathing clock; the gesture only replaces free-arm
+    // rotations within that same cycle and never admits a combat guard.
+    const gesturing=visual.relaxedIdle&&idleTiming?idleArmGesturesClip(breathing,this.asset.body.scene,this.asset.manifest.bones,freeHands):breathing;
+    const clip=mirror?mirroredClip(gesturing,this.asset.body.scene,this.asset.manifest.animationMirroring!):gesturing;
     const clipSpec=mirror?withMirroredProps(sourceSpec,this.asset.body.scene):idleTiming?{...sourceSpec,playbackRate:clip.duration/idleTiming.period}:sourceSpec;
     const key=`${semantic}:${hand}:${visual.cue?.id??''}:${clip.uuid}`;
     if(key!==this.actionKey){
       this.gaitSupport.begin(this.clipSpec,clipSpec,this.mixer.time,clip);
       this.gestureSupport.begin(this.clipSpec,clipSpec,this.mixer.time,clip,this.action?.getClip(),this.action?.time??0);
       this.proneArmSupport.begin(this.clipSpec,clipSpec,this.mixer.time);
-      const previous=this.action;this.action=this.mixer.clipAction(clip);this.action.reset();this.action.enabled=true;this.action.clampWhenFinished=!clipSpec.loop;this.action.setLoop(clipSpec.loop?LoopRepeat:LoopOnce,clipSpec.loop?Infinity:1);this.action.play();
-      if(idleTiming)this.action.time=idleTiming.phase*clip.duration;
+      // Changing which hand is free must not restart the breathing cycle.
+      const previous=this.action,continuedIdlePhase=idleTiming&&this.actionKey.startsWith(`${semantic}:`)&&previous?previous.time/previous.getClip().duration:undefined;
+      this.action=this.mixer.clipAction(clip);this.action.reset();this.action.enabled=true;this.action.clampWhenFinished=!clipSpec.loop;this.action.setLoop(clipSpec.loop?LoopRepeat:LoopOnce,clipSpec.loop?Infinity:1);this.action.play();
+      if(idleTiming)this.action.time=(continuedIdlePhase??idleTiming.phase)*clip.duration;
       if(previous&&previous!==this.action){if(visual.action==='fire'&&visual.cue?.shotHand)previous.stop();else this.action.crossFadeFrom(previous,.12,false);}this.actionKey=key;this.clipSpec=clipSpec;this.cueStartedAt=visual.cue?.startedAt??now;
       if(this.horse)this.seatActions.set(this.action,{spec:clipSpec,mounted:visual.mounted||visual.cue?.fromPosture==='mounted'});
       if(this.clothMeshes.some(cloth=>cloth.boot!==undefined))this.clothActions.set(this.action,{name:sourceClip.name,mirrored:mirror});
