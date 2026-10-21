@@ -1,6 +1,6 @@
 name: Web game build and Pages
 # Main pushes build and publish Pages; manual builds remain available.
-# Simulation tests have separate core/campaign workflows.
+# Main validates the same minimal tests as pull requests before publishing.
 on:
   push:
     branches: [main]
@@ -31,8 +31,8 @@ jobs:
         run: npm run audit:baseline
       - name: Check browser types
         run: npm run typecheck
-      - name: Check deployment paths and browser workers
-        run: node --test tests/site-path.test.mjs tests/project-path-render.test.mjs tests/static-export-path.test.mjs tests/stage-static-deployment.test.mjs tests/browser-worker-export.test.mjs
+      - name: Run minimal tests
+        run: npm test
       - name: Build and verify static game export
         run: npm run build
       - name: Record verified build revision

@@ -2,7 +2,7 @@
 
 <!-- Generated from requirements.json by npm run docs:progress. Edit the register, not this view. -->
 
-Updated 2026-10-10. **This wider register is not the version 0.1 completion checklist.**
+Updated 2026-10-21. **This wider register is not the version 0.1 completion checklist.**
 
 Read [version 0.1 scope and validation](version-0.1.md) for this checkpoint. [Community campaign creation and sharing](../plans/campaign-authoring.md) are future work. Broader unaccepted rows remain visible without becoming checkpoint release conditions.
 
@@ -34,6 +34,9 @@ The check table retains exact historical totals: PR139 published verification, S
 
 The register retains 275 entries: 131 VERIFIED, 110 PARTIAL, 30 LOCAL_ONLY, 1 MISSING, 0 FAILED, 2 UNVERIFIED, 1 SUPERSEDED.
 Rows overlap in scope. Neither these counts nor test totals are a completion percentage.
+
+`testFiles` identifies test sources retained in the current tree. It does not record a current test pass. `historicalTestFiles` preserves earlier test and helper source references with an exact revision and repository-relative path. These records retain earlier evidence; they are not current automated coverage. VERIFIED rows retain their accepted historical scope. The check table above remains unchanged.
+Historical test sources remain available in Git at [`fc584dd4878be2b777c6ce1aa7c7f28f07e80d69`](https://github.com/fsodano/granaderos/tree/fc584dd4878be2b777c6ce1aa7c7f28f07e80d69). The documentation audit validates the record shape, revision and safe path; it does not execute those tests or verify archived Git objects. See [the current test gate](../../tests/README.md) for the retained routine checks.
 
 Edit [requirements.json](requirements.json), record exact source/checks and remaining gaps, then run `npm run docs:progress` and `npm run audit:docs`. Update the design for policy changes. A dated audit stays an evidence snapshot. Do not mark a local branch as published or close a broad row from one passing fixture.
 
