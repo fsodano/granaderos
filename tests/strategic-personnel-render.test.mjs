@@ -8,9 +8,12 @@ import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {strategicSquadSlots,strategicSquadAssignments,strategicNewSquadAssignment} from '../game/strategic-squad-assignments.js';
 import {contractQuote} from '../game/contracts.js';
+import {playerKnownCampaign} from '../game/player-known-state.js';
 const {default:StrategicRoster}=await import('../web/app/StrategicRoster.tsx');
 const {default:StrategicPersonnelMenu}=await import('../web/app/StrategicPersonnelMenu.tsx');
 const {default:Campaign}=await import('../web/app/Campaign.tsx');
+const {default:MedicalCare}=await import('../web/app/MedicalCare.tsx');
+const {DossierEquipment}=await import('../web/app/CharacterDossier.tsx');
 const noop=()=>{},order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const unchanged=s=>({...s,lastError:null});
 
@@ -193,6 +196,25 @@ async function mountCampaignMenus(t,{narrow=false}={}){
  const fire=async(element,event)=>{assert.ok(element);await act(async()=>element.dispatchEvent(event));return event;};
  return{doc:dom.window.document,state:()=>current,actions,click:element=>fire(element,new dom.window.MouseEvent('click',{bubbles:true})),key:(element,key,shiftKey=false)=>fire(element,new dom.window.KeyboardEvent('keydown',{key,shiftKey,bubbles:true,cancelable:true}))};
 }
+
+test('personnel, dossiers and public campaign state distinguish carried, jammed and dropped primary guns without changing equipment',()=>{
+ const state=initialCampaign(),cases=[{id:3,weaponDropped:false,jammed:false},{id:4,weaponDropped:false,jammed:true},{id:10,weaponDropped:true,jammed:true}];
+ // Declared equipment states isolate display. A dropped gun may retain its ID,
+ // condition and jam flag; those fields alone do not mean it is still carried.
+ for(const {id,...flags}of cases){state.loadouts[id]={...state.loadouts[id],weapon:1801};Object.assign(state.operativeState[id],flags,{condition:98});if(flags.weaponDropped)state.operativeState[id].carriedLoaded=0;}
+ const before=structuredClone(state),roster=rosterFor(state),publicState=playerKnownCampaign(state),care=new JSDOM(render(h(MedicalCare,{state,dispatch:noop}))).window.document;
+ assert.deepEqual(publicState.operatives.map(op=>op.id),state.recruited);
+ for(const {id,weaponDropped,jammed}of cases){
+  const visible=publicState.operatives.find(op=>op.id===id),summary=care.querySelector(`[data-care-id="${id}"] [aria-label="Arma principal"]`);
+  assert.equal(visible.weaponDropped,weaponDropped);assert.equal(visible.jammed,jammed);
+  const dossier=new JSDOM(render(h(DossierEquipment,{operative:roster.find(op=>op.id===id),record:state.operativeState[id]}))).window.document,equipment=dossier.querySelector('.dossier-equipment'),primary=equipment.querySelector('[data-equipment-slot="primary"]');
+  assert.ok(equipment.querySelector('[data-equipment-slot="blade"] img'),'the secondary weapon stays visible');
+  if(weaponDropped){for(const node of [summary,primary]){assert.match(node.textContent,/Arma abandonada/);assert.match(node.textContent,/Sin arma principal/);assert.doesNotMatch(node.textContent,/98%|Fallo de chispa/);}assert.equal(primary.querySelector('img'),null);}
+  else{assert.ok(primary.querySelector('img'));assert.match(summary.textContent,/Condición 98%/);for(const node of [summary,primary]){assert.doesNotMatch(node.textContent,/Arma abandonada/);assert.equal(node.textContent.includes('Fallo de chispa. No puede disparar.'),jammed);}}
+  dossier.defaultView.close();
+ }
+ assert.deepEqual(state,before);care.defaultView.close();
+});
 
 for(const kind of ['assignment','contract'])test(`${kind} menu traps Tab in both directions and Escape restores the desktop person button`,async t=>{
  const m=await mountCampaignMenus(t),state=structuredClone(m.state()),label=kind==='assignment'?'Asignación: Cabral':'Fin contrato: Cabral',trigger=m.doc.querySelector(`.strategy-layout button[aria-label="${label}"]`);

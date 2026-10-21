@@ -15,6 +15,7 @@ import StudyForecast from './StudyForecast';
 import MilitiaCare from './MilitiaCare';
 import {weaponSpecification} from '../../game/weapon-definition.js';
 import {campaignPlace} from '../../game/world-cells.js';
+import CampaignWeaponSummary from './CampaignWeaponSummary';
 
 export function MedicalSupplyPurchase({s,op}:{s:any;op:any}){
   return <div className="care-supplies"><span>{s.operativeState[op.id].medkits??0} vendas llevadas</span></div>;
@@ -55,7 +56,7 @@ function PersonnelCard({s,op,roster,blocked,dispatch}:{s:any;op:any;roster:any[]
     <MedicalSupplyPurchase s={s} op={op}/>
     <p className="care-condition">Mochila: {usage.used}/{usage.capacity} espacios con la reserva de cartuchos.</p>
     <div className="care-supplies"><span>{repairMaterialPoints(record)} puntos de herramientas llevadas</span></div>
-    <p className="care-condition">{weaponSpecification(op)?.name??'Arma equipada'} · Condición {record.condition}%</p>
+    <p className="care-condition" aria-label="Arma principal"><CampaignWeaponSummary operative={op} record={record} showCondition/></p>
   </article>;
 }
 
