@@ -2,12 +2,24 @@ import {holdsArtilleryPost} from './tactical-ai-artillery.js';
 import {sameSurface,tacticalLevel,surfacesAtLevel} from './tactical-space.js';
 import {moveOrder} from './tactical-planning-space.js';
 import {canSee,getReachable,knownArtillery,stanceCost} from './tactical.js';
-import {chooseEnemyAction} from './tactical-ai.js';
+import {chooseEnemyAction,choosePlayerSharedSightingInvestigation} from './tactical-ai.js';
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const able=u=>u.hp>=15&&!u.unconscious&&!u.routed&&!u.surrendered&&!u.departure&&!u.fled;
 
 export function automaticOrder(b,u,options){
  const action=chooseEnemyAction(b,u,options);if(action)return action;
+ // A teammate's current sighting can guide a bounded militia search. It does
+ // not become personal memory or permission to fire through an obstruction.
+ if(u.side==='player'&&u.militia&&b.mode==='combat'&&b.phase==='player'&&!b.reactionStack?.length&&
+    able(u)&&u.energy>0&&!u.knockedDown&&!u.entangled&&!holdsArtilleryPost(b,u)&&
+    !b.units.some(v=>v.side!==u.side&&v.hp>0&&!v.departure&&!v.surrendered&&!v.unconscious&&canSee(b,u,v))){
+  const observers=b.units.filter(p=>p.side===u.side&&able(p));
+  const sightings=b.units.filter(v=>v.side==='enemy'&&able(v)&&observers.some(p=>canSee(b,p,v)))
+   .sort((a,c)=>distance(u,a)-distance(u,c)||(String(a.id)<String(c.id)?-1:String(a.id)>String(c.id)?1:0));
+  for(const sighting of sightings){
+   const search=choosePlayerSharedSightingInvestigation(b,u,sighting);if(search)return search;
+  }
+ }
  return searchOrder(b,u);
 }
 
