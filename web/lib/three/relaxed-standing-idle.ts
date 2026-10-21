@@ -39,7 +39,8 @@ export function relaxedStandingIdle(source:AnimationClip,body:Object3D,bones:Rec
  const upperBody:Object3D[]=[];let ancestor:Object3D|undefined=chest;for(;ancestor&&ancestor!==hips;ancestor=ancestor.parent??undefined)upperBody.unshift(ancestor);
  if(ancestor!==hips||upperBody.some(node=>!(node as any).isBone)){variants.set(key,source);return source;}
  for(const role of ['neck','head']){const node=model.getObjectByName(bones[role]);if(!node){variants.set(key,source);return source;}upperBody.push(node);}
- const modified=[...new Set([...upperBody,...[right,left].flatMap(arm=>[arm.upper.parent!,arm.upper,arm.elbow,arm.hand])])];
+ const offhandFingers:Object3D[]=[];if(semantic==='stand.idle.short-gun'&&offhandPistol)left.hand.traverse(node=>{if(node!==left.hand&&(node as any).isBone)offhandFingers.push(node);});
+ const modified=[...new Set([...upperBody,...[right,left].flatMap(arm=>[arm.upper.parent!,arm.upper,arm.elbow,arm.hand]),...offhandFingers])];
  if(modified.some(node=>!(node as any).isBone)){variants.set(key,source);return source;}
  const twins=modified.map(node=>donor.getObjectByName(node.name));if(twins.some(node=>!node)){variants.set(key,source);return source;}
  const rest=new Map<Object3D,{p:Vector3;q:Quaternion}>();for(const root of [model,donor])root.traverse(node=>rest.set(node,{p:node.position.clone(),q:node.quaternion.clone()}));
@@ -48,14 +49,16 @@ export function relaxedStandingIdle(source:AnimationClip,body:Object3D,bones:Rec
  const sample=(root:Object3D,mixer:AnimationMixer,clip:AnimationClip,time:number)=>{reset(root);mixer.stopAllAction();const action=mixer.clipAction(clip).reset().setLoop(LoopOnce,1);action.clampWhenFinished=true;action.play();action.timeScale=0;action.time=time;mixer.update(0);root.updateMatrixWorld(true);};
  const grip=(arm:Arm):Grip=>({position:donorChest.worldToLocal(point(arm.hand)),rotation:rotation(donorChest).invert().multiply(rotation(arm.hand)),pole:donorChest.worldToLocal(point(arm.elbow))});
  sample(donor,donorMixer,carry,0);const rightGrip=grip(donorRight),leftGrip=grip(donorLeft),longGun=semantic==='stand.idle.long-gun';
+ const offhandGrip=new Map<Object3D,Quaternion>();
  if(!longGun&&offhandPistol){
   sample(donor,donorMixer,mirroredClip(carry,body,mirroring!),0);Object.assign(leftGrip,grip(donorLeft));
+  for(const node of offhandFingers)offhandGrip.set(node,donor.getObjectByName(node.name)!.quaternion.clone());
  }
  const count=Math.max(1,Math.ceil(source.duration*60)),times=[...new Set([...Array.from({length:count+1},(_,i)=>source.duration*i/count),...source.tracks.flatMap(track=>Array.from(track.times))].map(Math.fround))].sort((a,b)=>a-b);
  const values=new Map(modified.map(node=>[node,[] as number[]]));let valid=true;
  for(const time of times){
   sample(model,mixer,source,time);sample(donor,donorMixer,neutral,time/source.duration*neutral.duration);
-  for(let i=0;i<modified.length;i++)modified[i].quaternion.copy(twins[i]!.quaternion);model.updateMatrixWorld(true);
+  for(let i=0;i<modified.length;i++)modified[i].quaternion.copy(offhandGrip.get(modified[i])??twins[i]!.quaternion);model.updateMatrixWorld(true);
   const pivot=chest.localToWorld(rightGrip.position.clone()),pitch=new Quaternion().setFromAxisAngle(new Vector3(1,0,0),longGun?.55:.60);
   const placed=(grip:Grip):Grip=>{
    const position=chest.localToWorld(grip.position.clone()),orientation=rotation(chest).multiply(grip.rotation),pole=chest.localToWorld(grip.pole.clone());
