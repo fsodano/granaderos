@@ -6,10 +6,12 @@ import {movementStepDuration} from './three/movement-timing';
 import {surfaceMotionPoint} from './tactical-elevation';
 import {admittedReloadWork,admittedThrownRelease,admittedHealingIntervals,nativeActionFrameDuration} from './three/action-timing';
 import {admittedMountTransitions,mountFrameDuration} from './three/mount-presentation';
+import {actionPresentationDuration} from './three/action-pace';
 import enemyWorkerUrl from './enemy-turn-worker.ts?worker&url';
 const stepMs=BATTLE_PLAYBACK.step;
 export function presentedFrameDuration(frame:any,previous:any){
- if(frame.type!=='step'||!frame.unitId)return mountFrameDuration(frame,nativeActionFrameDuration(frame,battleFrameDuration(frame)));
+ if(frame.type!=='step')return actionPresentationDuration(mountFrameDuration(frame,nativeActionFrameDuration(frame,battleFrameDuration(frame))));
+ if(!frame.unitId)return stepMs;
  const actor=frame.state.units.find((unit:any)=>unit.id===frame.unitId),before=previous.units.find((unit:any)=>unit.id===frame.unitId);
  if(!actor||!before)return stepMs;
  // Each observed step is adjacent. Reappearing actors do not expose the
