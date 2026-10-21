@@ -21,3 +21,15 @@ test('artillery requires actual crew AP and breaches walls',()=>{const s=battle(
 test('authored firearm and blade values retain explicit loose-bayonet tuning',async()=>{const {WEAPONS,BLADES,bladeFor}=await import('../game/tactical.js');for(const[id,damage,fireAP,aimAP,reloadAP,range]of[[1804,48,10,4,35,10],[1805,42,7,3,32,8],[1806,38,6,2,28,12],[1807,75,12,5,40,6],[1808,40,8,3,55,9]])assert.deepEqual([WEAPONS[id].damage,WEAPONS[id].fireAP,WEAPONS[id].aimAP,WEAPONS[id].reloadAP,WEAPONS[id].range],[damage,fireAP,aimAP,reloadAP,range]);for(const[id,ap,damage]of[[1809,12,46],[1810,14,42],[1811,16,50],[1812,18,56],[1813,8,32]])assert.deepEqual([BLADES[id].ap,BLADES[id].damage],[ap,damage]);assert.equal(bladeFor({activeSlot:'blade',blade:1811}).damage,24);});
 test('enemy reaction interrupts an exposed charge and death prevents melee damage',()=>{const s=battle();Object.assign(s.units[0],{hp:20,blade:1809,activeSlot:'blade'});s.units[1].marksmanship=100;s.seed=45;const n=actBattle(s,{type:'charge',unitId:0,targetId:'e'});assert.equal(n.units[0].hp,0);assert.equal(n.units[1].hp,100);assert.equal(n.units[1].loaded,0);assert.ok(n.log.includes(`${s.units[1].name} interrumpe con sus PA restantes.`));assert.equal(n.status,'defeat');});
 test('smoke and quiet movement prevent reaction; enemy AP is not replenished twice',()=>{const s=battle();s.units[0].stealthMode=true;s.units[0].stealth=100;s.units[0].movementMode='prone';s.units[0].stance='prone';s.units[1].x=8;s.smoke=[{x:4,y:1,radius:4,turns:3}];const n=actBattle(s,{type:'move',unitId:0,x:2,y:1});assert.equal(n.units[1].loaded,1);assert.ok(!n.log.some(t=>/interrumpe(?:n)? con sus PA restantes/.test(t)));const e=endTurn(battle());assert.ok(e.units.find(u=>u.side==='enemy').ap<100);});
+test('exploration rests a ready firearm visually while deliberate aiming and combat stay ready',async()=>{
+ const {register}=await import('node:module');register('./tactical-render-loader.mjs',import.meta.url);
+ const {presentActors}=await import('../web/lib/three/presentation.ts');
+ const s=battle(),actor=s.units[0],key=`unit:${actor.id}`;s.mode='exploration';actor.weaponReady=true;
+ const present=(options={})=>{const before=structuredClone(s),visual=presentActors(s,[{key,kind:'unit',actor}],{},new Set(),options)[0];assert.deepEqual(s,before);return visual;};
+ assert.equal(present().action,'idle');assert.equal(present().idleAction,'idle');assert.equal(actor.weaponReady,true);
+ assert.equal(present({selected:actor.id,mode:'fire'}).action,'aim');
+ assert.equal(present({cues:{[key]:{id:'deliberate-aim',action:'aim',startedAt:0}}}).action,'aim');
+ s.mode='combat';assert.equal(present().action,'aim');assert.equal(present().idleAction,'aim');
+ s.status='victory';assert.equal(present().action,'idle');assert.equal(present({selected:actor.id,mode:'fire'}).action,'aim');
+ delete s.status;assert.equal(present().action,'aim');
+});

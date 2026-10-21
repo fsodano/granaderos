@@ -15,6 +15,7 @@ import {ActorIllustration} from './actor-illustration';
 import {readableHumanClip} from './readable-human-stance';
 import {boundLocomotionClip} from './locomotion-clip';
 import {idleBreathingClip,idleBreathingTiming} from './idle-breathing';
+import {relaxedStandingIdle} from './relaxed-standing-idle';
 import type {ContactActorResolver} from './melee-contact-fit';
 import {NativeReadyMeleeContactFit as NativeMeleeContactFit} from './melee-ready-contact-fit';
 import type {ActorVisual} from './presentation';
@@ -218,11 +219,17 @@ export class ActorRuntime {
     const {spec:sourceSpec,clip:sourceClip}=boundLocomotionClip(this.asset,semantic);
     const hand=(loadingItem?.socket??visual.cue?.hand??'handRight') as HandRole,mirror=hand==='handLeft'&&visual.equipment==='short-gun'&&['aim','fire','reload'].includes(visual.action);
     if(mirror&&!this.asset.manifest.animationMirroring)throw Error(`Missing left-hand animation mapping: ${this.asset.appearance.id}`);
-    const posed=readableHumanClip(sourceClip,this.asset.body.scene,this.asset.manifest.bones,semantic);
+    let resting=sourceClip;
+    if(semantic==='stand.idle.long-gun'||semantic==='stand.idle.short-gun'){
+      const neutral=boundClip(this.asset.clips,this.asset.animation.animations,'stand.idle.unarmed').clip,carry=boundClip(this.asset.clips,this.asset.animation.animations,semantic.replace('.idle.','.walk.')).clip;
+      const offhandPistol=visual.items.some(item=>item.socket==='handLeft'&&this.itemSpec(item.id)?.category==='pistol');
+      resting=relaxedStandingIdle(sourceClip,this.asset.body.scene,this.asset.manifest.bones,semantic,neutral,carry,offhandPistol,this.asset.manifest.animationMirroring);
+    }
+    const posed=readableHumanClip(resting,this.asset.body.scene,this.asset.manifest.bones,semantic);
     const breathing=idleBreathingClip(posed,this.asset.body.scene,this.asset.manifest.bones,semantic),idleTiming=breathing!==posed?idleBreathingTiming(visual.key):undefined;
     const clip=mirror?mirroredClip(breathing,this.asset.body.scene,this.asset.manifest.animationMirroring!):breathing;
     const clipSpec=mirror?withMirroredProps(sourceSpec,this.asset.body.scene):idleTiming?{...sourceSpec,playbackRate:clip.duration/idleTiming.period}:sourceSpec;
-    const key=`${semantic}:${hand}:${visual.cue?.id??''}`;
+    const key=`${semantic}:${hand}:${visual.cue?.id??''}:${clip.uuid}`;
     if(key!==this.actionKey){
       this.gaitSupport.begin(this.clipSpec,clipSpec,this.mixer.time,clip);
       this.gestureSupport.begin(this.clipSpec,clipSpec,this.mixer.time,clip,this.action?.getClip(),this.action?.time??0);
