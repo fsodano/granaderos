@@ -6,7 +6,7 @@ import {JSDOM} from '../web/node_modules/jsdom/lib/api.js';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {encodeSave,decodeSave} from '../game/save.js';
-import {strategicSquadSlots,strategicSquadAssignments} from '../game/strategic-squad-assignments.js';
+import {strategicSquadSlots,strategicSquadAssignments,strategicNewSquadAssignment} from '../game/strategic-squad-assignments.js';
 import {contractQuote} from '../game/contracts.js';
 const {default:StrategicRoster}=await import('../web/app/StrategicRoster.tsx');
 const {default:StrategicPersonnelMenu}=await import('../web/app/StrategicPersonnelMenu.tsx');
@@ -78,6 +78,92 @@ async function mountMenu(t,state,id,kind='assignment'){
  t.after(async()=>{try{await act(async()=>root.unmount());}finally{dom.window.close();for(const[k,d]of previous){if(d)Object.defineProperty(globalThis,k,d);else delete globalThis[k];}}});
  await act(async()=>root.render(h(Screen)));return{doc:dom.window.document,state:()=>current,actions,closed:()=>closed,async click(label){const b=[...dom.window.document.querySelectorAll('button')].find(b=>b.textContent.trim()===label);assert.ok(b,label);assert.equal(b.disabled,false);await act(async()=>b.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));}};
 }
+
+// Six saved numbered slots and a detached seventh group reproduce the public
+// menu after a retreat. The new local officer is not assigned to any squad.
+function sevenSquadArmy(){
+ const state=existingArmy(),ids=state.recruited;
+ state.sectors.cordoba.owner='patriot';
+ state.squads=Array.from({length:6},(_,i)=>({id:`squad-${i+1}`,name:`Escuadra ${i+1}`,members:[],location:i===2?'santa_fe':'retiro'}));
+ Object.assign(state.squads[4],{members:ids.slice(0,6),location:'cordoba'});
+ Object.assign(state.squads[5],{members:ids.slice(6,10),location:'cordoba'});
+ state.squads.push({id:'squad-7',name:'Destacamento de Buenos Aires',members:[ids[10]],location:'buenos_aires'});
+ state.activeSquadId='squad-5';state.squad=[...state.squads[4].members];state.location='cordoba';
+ for(const id of ids)state.operativeState[id].location=state.squads.find(q=>q.members.includes(id))?.location??'cordoba';
+ state.operativeState[ids[11]].assignment='rest';
+ return state;
+}
+
+test('the assignment menu forms an eighth local squad when all six numbered slots already exist',async t=>{
+ const state=sevenSquadArmy(),id=state.recruited[11],before=structuredClone(state),m=await mountMenu(t,state,id);
+ await m.click('Escuadra ›');
+ const remote=[...m.doc.querySelectorAll('.strategic-squad-options button')].find(b=>b.textContent==='Escuadra 3');
+ assert.equal(remote.disabled,true);assert.match(remote.title,/mismo sector/);
+ await m.click('Nueva escuadra');
+ const after=m.state(),created=after.squads.find(q=>!before.squads.some(old=>old.id===q.id));
+ assert.equal(after.lastError,null);assert.equal(after.squads.length,8);assert.ok(created);
+ assert.deepEqual(created.members,[id]);assert.equal(created.location,'cordoba');assert.equal(after.activeSquadId,created.id);
+ assert.equal(after.operativeState[id].assignment,'active');assert.equal(m.closed(),1);assert.equal(m.actions.length,1);
+ for(const old of before.squads)assert.deepEqual(after.squads.find(q=>q.id===old.id),old,'existing groups stay in their actual locations');
+ assert.equal(after.hour,before.hour);assert.equal(after.secondOfHour,before.secondOfHour);assert.deepEqual(after.resources,before.resources);
+ for(const member of before.recruited)assert.deepEqual(after.operativeState[member],{...before.operativeState[member],...(member===id?{assignment:'active'}:{})});
+ assert.deepEqual(decodeSave(encodeSave(after)).campaign,after);assert.deepEqual(state,before);
+});
+
+function eightOccupiedSquads(){
+ const state=sevenSquadArmy(),ids=state.recruited;
+ state.squads.push({id:'squad-8',name:'Escuadra 7',members:[],location:'cordoba'});
+ for(const squad of state.squads)squad.members=[];
+ for(const [index,id]of ids.entries()){const squad=state.squads[index%8];squad.members.push(id);state.operativeState[id].location=squad.location;}
+ state.squad=[...state.squads.find(q=>q.id===state.activeSquadId).members];
+ return state;
+}
+
+test('the new-squad button explains the occupied eight-squad limit and cannot dispatch',async t=>{
+ const state=eightOccupiedSquads(),id=state.recruited[11],before=structuredClone(state),m=await mountMenu(t,state,id);
+ await m.click('Escuadra ›');
+ const button=[...m.doc.querySelectorAll('.strategic-squad-options button')].find(b=>b.textContent==='Nueva escuadra');
+ assert.ok(button);assert.equal(button.disabled,true);assert.match(button.title,/ocho escuadras ocupadas/);
+ await act(async()=>button.dispatchEvent(new m.doc.defaultView.MouseEvent('click',{bubbles:true})));
+ assert.deepEqual(m.actions,[]);assert.equal(m.closed(),0);assert.deepEqual(m.state(),before);
+ const rejected=dispatchCampaign(state,strategicNewSquadAssignment(state,id,rosterFor(state).find(op=>op.id===id)).action);
+ assert.match(rejected.lastError,/ocho escuadras ocupadas/);assert.deepEqual(unchanged(rejected),unchanged(before));
+});
+
+test('a new local squad can reuse an empty remote slot without moving the remaining hospital group',()=>{
+ const state=eightOccupiedSquads(),[patient,doctor]=state.squads[2].members,id=state.squads[4].members[0];
+ state.squads[4].members.push(patient,doctor);state.squads[2].members=[];
+ for(const member of [patient,doctor])state.operativeState[member].location='cordoba';
+ state.squad=[...state.squads[4].members];state.operativeState[patient].assignment='patient';state.operativeState[doctor].assignment='doctor';state.operativeState[id].assignment='rest';
+ const before=structuredClone(state),choice=strategicNewSquadAssignment(state,id,rosterFor(state).find(op=>op.id===id));
+ assert.equal(choice.reason,null);assert.equal(choice.action.name,'Escuadra 8');assert.equal(choice.action.sector,'cordoba');
+ const after=order(state,choice.action),created=after.squads.find(q=>q.id==='squad-9');
+ assert.equal(after.squads.length,8);assert.equal(after.squads.find(q=>q.id==='squad-3'),undefined);assert.deepEqual(created,{id:'squad-9',name:'Escuadra 8',members:[id],location:'cordoba'});
+ for(const old of before.squads.filter(q=>q.id!=='squad-3'))assert.deepEqual(after.squads.find(q=>q.id===old.id),{...old,members:old.members.filter(member=>member!==id)});
+ for(const member of before.recruited)assert.deepEqual(after.operativeState[member],{...before.operativeState[member],...(member===id?{assignment:'active'}:{})});
+ assert.deepEqual(after.resources,before.resources);assert.equal(after.hour,before.hour);assert.equal(after.secondOfHour,before.secondOfHour);
+ assert.deepEqual(after.squads.flatMap(q=>q.members).sort((a,b)=>a-b),[...state.recruited].sort((a,b)=>a-b));
+ assert.deepEqual(decodeSave(encodeSave(after)).campaign,after);assert.deepEqual(state,before);
+});
+
+test('new-squad creation shares encounter, service, travel and training eligibility with existing choices',()=>{
+ assert.equal(strategicNewSquadAssignment(initialCampaign(),3),null,'empty numbered UI slots already create squads');
+ const cases=[
+  ['battle',s=>{s.pendingBattle={};},/encuentro/],
+  ['encounter',s=>{s.pendingEncounter={};},/encuentro/],
+  ['defeat',s=>{s.defeated=true;},/encuentro/],
+  ['not hired',(s,id)=>{s.recruited=s.recruited.filter(member=>member!==id);},/disponible/],
+  ['dead',(s,id)=>{s.operativeState[id].alive=false;s.operativeState[id].hp=0;},/disponible/],
+  ['captured',(s,id)=>{s.operativeState[id].captured=true;},/disponible/],
+  ['zero health',(s,id)=>{s.operativeState[id].hp=0;},/disponible/],
+  ['training',(s,id)=>{s.militiaTraining=[{trainerId:id}];},/instrucción/],
+  ...['moving','ready','paused'].map(status=>[status,(s,id)=>{s.squads[5].members.push(id);s.squads[5].journey={status};},/ruta pendiente/]),
+ ];
+ for(const [label,change,message]of cases){
+  const state=sevenSquadArmy(),id=state.recruited[11],op=rosterFor(state).find(op=>op.id===id);change(state,id);const before=structuredClone(state);
+  assert.match(strategicNewSquadAssignment(state,id,op).reason,message,label);assert.deepEqual(state,before,label);
+ }
+});
 
 test('assignment opens six numbered buttons and a click forms an actual saved squad in active service',async t=>{
  const state=order(initialCampaign(),{type:'assignCare',operativeId:3,assignment:'rest'}),m=await mountMenu(t,state,3);
