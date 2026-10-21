@@ -4,6 +4,7 @@ import {spriteEquipment} from '../../../game/sprite-equipment.js';
 import {resolveActorAction} from '../../../game/actor-action-contract.js';
 import {actorItems,actorPosture} from './presentation';
 import {TILE_METRES,actorYaw} from './projection';
+import {locomotionReference,footMovementPace} from './locomotion-reference';
 
 type Point={x:number;y:number;kind?:string;renderedHeight?:number};
 // A supported ladder ascent raises the feet about 65 cm each second.
@@ -33,11 +34,12 @@ export function movementStepDuration(unit:any,from:Point,to:Point,requested?:num
     if(!capability)throw Error(`Unsupported movement gait: ${action}:${posture}:${equipment}`);
     const held=actorItems(unit).find(item=>item.socket==='handRight'),id=held&&(profile.itemAliases[held.id as keyof typeof profile.itemAliases]??held.id);
     const overrides=id?profile.itemClips[id as keyof typeof profile.itemClips]:undefined;
-    const semantic=overrides?.[capability.clip as keyof typeof overrides]??capability.clip;
+    const semantic=locomotionReference(overrides?.[capability.clip as keyof typeof overrides]??capability.clip);
     const clips=profile.banks[bank as keyof typeof profile.banks]?.clips;
     gait=clips?.[semantic as keyof typeof clips];
   }
   if(!gait)throw Error(`Missing movement profile: ${appearance}:${action}`);
   const distance=Math.hypot(to.x-from.x,to.y-from.y)*TILE_METRES;
-  return Math.max(fallback,distance/(gait.nativeStrideSpeed*gait.playbackRate)*1000)*(preserveFacing?1.25:1);
+  const pace=footMovementPace(action,posture,Boolean(unit.mounted));
+  return Math.max(fallback,distance/(gait.nativeStrideSpeed*gait.playbackRate*pace)*1000)*(preserveFacing?1.25:1);
 }

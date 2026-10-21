@@ -13,6 +13,7 @@ import {NativeProneArmBlendSupport} from './prone-arm-blend-support';
 import {NativeClimbContactFit} from './climb-contact-fit';
 import {ActorIllustration} from './actor-illustration';
 import {readableHumanClip} from './readable-human-stance';
+import {boundLocomotionClip} from './locomotion-clip';
 import {idleBreathingClip,idleBreathingTiming} from './idle-breathing';
 import type {ContactActorResolver} from './melee-contact-fit';
 import {NativeReadyMeleeContactFit as NativeMeleeContactFit} from './melee-ready-contact-fit';
@@ -214,7 +215,7 @@ export class ActorRuntime {
     const barrel=loadingItem?visual.cue?.work?.[workIndex??0]?.barrel??0:0,barrelClips=this.asset.clips.find(clip=>clip.name===itemSemantic)?.barrelClips;
     if(barrelClips&&!barrelClips[barrel])throw Error(`Missing admitted loading barrel: ${visual.key}:${barrel}`);
     const semantic=selectActorClipVariant(barrelClips?.[barrel]??itemSemantic,visual.cue?.id);
-    const {spec:sourceSpec,clip:sourceClip}=boundClip(this.asset.clips,this.asset.animation.animations,semantic);
+    const {spec:sourceSpec,clip:sourceClip}=boundLocomotionClip(this.asset,semantic);
     const hand=(loadingItem?.socket??visual.cue?.hand??'handRight') as HandRole,mirror=hand==='handLeft'&&visual.equipment==='short-gun'&&['aim','fire','reload'].includes(visual.action);
     if(mirror&&!this.asset.manifest.animationMirroring)throw Error(`Missing left-hand animation mapping: ${this.asset.appearance.id}`);
     const posed=readableHumanClip(sourceClip,this.asset.body.scene,this.asset.manifest.bones,semantic);

@@ -30,6 +30,9 @@ function solve(limb:Limb,target:Vector3,pole:Vector3,orientation:Quaternion){
 export function readableHumanClip(source:AnimationClip,body:Object3D,bones:Record<string,string>,semantic:string){
  const [posture,action,equipment]=semantic.split('.');
  if(!['stand','mounted'].includes(posture)||!['idle','walk','run','backwalk','strafeLeft','strafeRight'].includes(action))return source;
+ // The wide relaxed stance is a rest pose. Preserve native foot crossings,
+ // knee planes and arm swing while walking or running.
+ if(posture==='stand'&&action!=='idle')return source;
  let clips=cache.get(body);if(!clips){clips=new WeakMap();cache.set(body,clips);}
  let variants=clips.get(source);if(!variants){variants=new Map();clips.set(source,variants);}
  const cached=variants.get(semantic);if(cached)return cached;
@@ -38,14 +41,11 @@ export function readableHumanClip(source:AnimationClip,body:Object3D,bones:Recor
  const legs=[limb('footLeft',1),limb('footRight',-1)],arms=[limb('handLeft',1),limb('handRight',-1)];
  // Replacement rigs without the native two-joint chains retain their own pose.
  if(!root||!hips||legs.some(leg=>!leg||leg.upper.parent!==hips)||arms.some(arm=>!arm)){variants.set(semantic,source);return source;}
- // Side steps already have measured crossing/contact phases. Keep their
- // lower body, and the mounted seat, exact while opening the elbows.
- const widenLegs=posture==='stand'&&!action.startsWith('strafe');
+ // Keep the mounted seat exact while opening the elbows.
+ const widenLegs=posture==='stand';
  const nativeLegs=legs as Limb[],nativeArms=arms as Limb[],modified=[...(widenLegs?nativeLegs:[]),...nativeArms].flatMap(limb=>[limb.upper,limb.joint,limb.end]);
  if(widenLegs&&nativeLegs.some(leg=>!leg.end.children.some(child=>(child as any).isBone))){variants.set(semantic,source);return source;}
- // Running knee bends need denser quaternion samples to keep the existing
- // sub-millimetre ankle path through interpolation between baked poses.
- const samples=Math.max(1,Math.ceil(source.duration*(widenLegs&&action==='run'?360:60))),times=[...new Set([...Array.from({length:samples+1},(_,n)=>source.duration*n/samples),...source.tracks.flatMap(track=>Array.from(track.times))].map(Math.fround))].sort((a,b)=>a-b);
+ const samples=Math.max(1,Math.ceil(source.duration*60)),times=[...new Set([...Array.from({length:samples+1},(_,n)=>source.duration*n/samples),...source.tracks.flatMap(track=>Array.from(track.times))].map(Math.fround))].sort((a,b)=>a-b);
  const values=new Map(modified.map(node=>[node,[] as number[]])),positions:number[]=[];
  const native=new Map(modified.map(node=>[node,node.quaternion.clone()])),nativeRoot=root.position.clone();
  const mixer=new AnimationMixer(model),playing=mixer.clipAction(source).setLoop(LoopOnce,1);playing.clampWhenFinished=true;playing.play();
