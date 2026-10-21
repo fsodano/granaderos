@@ -13,6 +13,8 @@ import {JSDOM} from '../web/node_modules/jsdom/lib/api.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {rosterFor} from '../game/campaign.js';
+import {AMMUNITION_TYPES,ammunitionByType} from '../game/ammunition-types.js';
+import {syncCarriedAmmunition} from '../game/physical-ammunition.js';
 const {default:SectorInventory}=await import('../web/app/SectorInventory.tsx');
 function ready(){let s=dispatchCampaign(initialCampaign(45),{type:'visitSector'});let b=enterSector(s.pendingBattle);b=actBattle(b,{type:'drop',unitId:'4',item:'medkits',count:2});assert.equal(b.lastError,null);s=dispatchCampaign(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});assert.equal(s.lastError,null);return s;}
 const draw=s=>render(h(SectorInventory,{state:s,sectorId:'retiro',dispatch:()=>{}}));
@@ -83,4 +85,39 @@ test('mounted repair collection sends the exact normal inventory order, refreshe
  assert.deepEqual(actions[1],{type:'sectorInventory',sector:'retiro',operativeId:3,direction:'takeRepairPoints',sourceKey:before.key,expected:JSON.stringify({repairPoints:65}),count:65});
  assert.equal(state.operativeState[3].toolkitPoints,points+100);assert.equal(carried(),'Materiales de reparación: 100 puntos');assert.deepEqual(state.operativeState[3].inventory,inventory);assert.equal(dom.window.document.querySelector('[aria-label="Materiales de reparación"]'),null);
  state=decodeSave(encodeSave(state)).campaign;await act(async()=>renderState());assert.equal(carried(),'Materiales de reparación: 100 puntos');assert.equal(sectorInventoryModel(state,'retiro',rosterFor(state),3).repairReserves.length,0);
+});
+
+test('pickup controls explain a rejected 23-round quantity and allow 10 without losing the remaining source',async t=>{
+ const dom=new JSDOM('<!doctype html><div id="root"></div>',{url:'https://granaderos.test',pretendToBeVisual:true});
+ const globals={window:dom.window,document:dom.window.document,navigator:dom.window.navigator,HTMLElement:dom.window.HTMLElement,Element:dom.window.Element,Node:dom.window.Node,IS_REACT_ACT_ENVIRONMENT:true};
+ const previous=new Map(Object.keys(globals).map(key=>[key,Object.getOwnPropertyDescriptor(globalThis,key)]));
+ for(const [key,value]of Object.entries(globals))Object.defineProperty(globalThis,key,{configurable:true,writable:true,value});
+ const {createRoot}=await import('../web/node_modules/react-dom/client.js'),root=createRoot(dom.window.document.getElementById('root'));
+ t.after(async()=>{try{await act(async()=>root.unmount());}finally{dom.window.close();for(const [key,descriptor]of previous){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}}});
+ let state=ready();const record=state.operativeState[3];
+ // Prepared finite return and nearly full pack isolate the observed quantity
+ // failure; the mounted control sends the ordinary campaign pickup order.
+ state.loadouts[3]={weapon:0,blade:0};
+ Object.assign(record,{inventory:Object.fromEntries(Array.from({length:11},(_,i)=>[`key-${i}`,{kind:'tool',toolKey:'key',keyId:`pickup-key-${i}`,count:1,weight:.1,condition:100}])),rations:0,medkits:0,boleadoras:0,torches:0,carriedLoaded:0,weaponDropped:false,activeSlot:'unarmed'});
+ for(const key of ['pocketOrder','offHand','leftHandItem','activeItem','activeTool','activeSupply','equipmentCursor','weaponInstanceId','bladeInstanceId','weaponMetadata','bladeMetadata','contentWeapon','ammunitionChoice','carriedReloadProgress'])delete record[key];
+ syncCarriedAmmunition(record,0);
+ const stack={item:'inventory:ammo:rifle_62',kind:'ammunition',ammoType:'rifle_62',name:AMMUNITION_TYPES.rifle_62.name,count:23,weight:.04};
+ state.serviceEquipmentReturns={version:1,nextId:2,entries:[{id:'service-return-1',siteId:'retiro',sectorId:'retiro',entryEdge:'S',entryAnchor:{x:10,y:15},operativeId:4,items:[{selection:'inventory:ammo:rifle_62',stack}],repairPoints:0}]};
+ const model=sectorInventoryModel(state,'retiro',rosterFor(state),3),source=model.entries.find(row=>row.kind==='serviceReturn');
+ assert.equal(model.usage.used,11);assert.equal(source.reachable,true);
+ const actions=[],before=structuredClone(state),doc=dom.window.document;
+ const renderState=()=>root.render(h(SectorInventory,{state,sectorId:'retiro',dispatch:action=>{actions.push(action);state=dispatchCampaign(state,action);assert.equal(state.lastError,null);renderState();}}));
+ const row=()=>[...doc.querySelectorAll('[aria-label="Equipo descubierto"] .sector-inventory-row')].find(row=>row.querySelector('strong').textContent.startsWith(AMMUNITION_TYPES.rifle_62.name));
+ const quantity=async count=>{const input=row().querySelector('input');Object.getOwnPropertyDescriptor(dom.window.HTMLInputElement.prototype,'value').set.call(input,String(count));await act(async()=>input.dispatchEvent(new dom.window.Event('input',{bubbles:true})));};
+ await act(async()=>renderState());await quantity(23);
+ const input=row().querySelector('input'),button=row().querySelector('button'),description=input.getAttribute('aria-describedby');
+ assert.ok(description);assert.equal(button.getAttribute('aria-describedby'),description);assert.equal(input.getAttribute('aria-invalid'),'true');
+ assert.match(doc.getElementById(description).textContent,/No queda espacio/);assert.equal(button.disabled,true);
+ await act(async()=>button.click());assert.equal(actions.length,0);assert.deepEqual(state,before);
+ await quantity(10);assert.equal(row().querySelector('button').disabled,false);assert.equal(row().querySelector('input').getAttribute('aria-describedby'),null);assert.equal(row().querySelector('[role="status"]'),null);
+ await act(async()=>row().querySelector('button').click());
+ assert.deepEqual(actions,[{type:'sectorInventory',sector:'retiro',operativeId:3,direction:'take',sourceKey:source.key,expected:source.expected,count:10}]);
+ assert.equal(ammunitionByType(state.operativeState[3]).rifle_62,10);
+ const after=sectorInventoryModel(state,'retiro',rosterFor(state),3);assert.equal(after.entries.find(row=>row.kind==='serviceReturn').count,13);assert.equal(after.usage.used,12);
+ assert.equal(state.hour,before.hour);assert.equal(state.secondOfHour,before.secondOfHour);assert.equal(state.resources.treasury,before.resources.treasury);
 });

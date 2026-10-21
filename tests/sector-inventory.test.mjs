@@ -9,7 +9,8 @@ import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {dispatchCampaign as dispatch,rosterFor,restoreCampaign,serializeCampaign} from '../game/campaign.js';
 import {createBattle,actBattle} from '../game/tactical.js';
 import {discoverInventory} from '../game/inventory-discovery.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {sectorInventoryModel,sectorPickupReason} from '../game/sector-inventory.js';
+import {applyItemQuantity,inventoryUsage} from '../game/tactical-inventory.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {enterSector} from '../game/world.js';
@@ -27,6 +28,25 @@ function prepared(item='medkits',count=1){let {s,b}=entered();b=act(b,{type:'dro
 const model=(s,id=4)=>sectorInventoryModel(s,'retiro',rosterFor(s),id);
 const take=(s,row,count=1,id=4)=>order(s,{type:'sectorInventory',sector:'retiro',operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected,count});
 const reject=(s,action)=>{const next=dispatch(s,action);assert.ok(next.lastError);assert.deepEqual({...next,lastError:null},{...s,lastError:null});};
+
+test('pickup quantity previews match the inventory planner including partial ammunition stacks',()=>{
+ const keys=count=>Object.fromEntries(Array.from({length:count},(_,i)=>[`key-${i}`,{kind:'tool',toolKey:'key',keyId:`pickup-key-${i}`,count:1,weight:.1,condition:100}]));
+ const actor={weapon:0,blade:0,ammunitionVersion:2,inventory:keys(11)};
+ const stack={item:'inventory:ammo:rifle_62',kind:'ammunition',ammoType:'rifle_62',name:AMMUNITION_TYPES.rifle_62.name,count:23,weight:.04};
+ const row={reachable:true,count:23,expected:JSON.stringify(stack)},before=structuredClone({actor,row});
+ assert.equal(inventoryUsage(actor).used,11);
+ const reason=sectorPickupReason(actor,row,23);assert.match(reason,/No queda espacio/);
+ assert.throws(()=>applyItemQuantity(actor,stack),{message:reason});
+ assert.equal(sectorPickupReason(actor,row,10),null);
+ assert.equal(inventoryUsage(applyItemQuantity(actor,{...stack,count:10})).used,12);
+ assert.deepEqual({actor,row},before);
+ // An existing partial stack can absorb some rounds without a new pocket.
+ const partial={...actor,inventory:keys(10)};addAmmunition(partial,'rifle_62',10);
+ assert.equal(inventoryUsage(partial).used,11);assert.equal(sectorPickupReason(partial,row,23),null);
+ assert.equal(inventoryUsage(applyItemQuantity(partial,stack)).used,12);
+ assert.match(sectorPickupReason(actor,row,24),/cantidad entre 1 y 23/);
+ assert.equal(sectorPickupReason(actor,{...row,reachable:false,reason:'No hay un camino abierto hasta este equipo.'},10),'No hay un camino abierto hasta este equipo.');
+});
 
 test('a carried weapon enters storage once with its load and identity while public sale stays closed',()=>{
  let {s,b}=entered({4:1800});
