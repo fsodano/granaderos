@@ -6,27 +6,39 @@ import {operativeInTransit,operativeLocation} from './squads.js';
 import {careAssignmentBusy} from './medical-care.js';
 import {validateArtilleryInventory} from './campaign-artillery.js';
 import {flotillaSectorAllowed} from './logistics.js';
+import {enemyIntelligenceReports} from './enemy-intelligence.js';
 const parent=(s,id)=>sceneAnchorFor(s,id);
 const place=(s,id)=>campaignSectors(s).find(place=>place.id===id);
 const need=(ok,message)=>{if(!ok)throw Error(message);};
 const capable=u=>u.hp>=15&&(u.energy??100)>0&&!u.routed&&!u.surrendered&&!u.departure&&!u.fled&&!u.asleep&&!u.unconscious;
 const availableCrew=(s,at)=>(s.squad??[]).filter(id=>{const r=s.operativeState[id];return r?.alive&&capable(r)&&!r.captured&&!operativeInTransit(s,id)&&!careAssignmentBusy(r.assignment)&&!s.militiaTraining?.some(c=>c.trainerId===id)&&operativeLocation(s,id)===at;});
 const hostile=(s,at)=>s.enemyGroups?.some(g=>g.target===at&&['waiting','engaged','stationed'].includes(g.status))||Object.entries(s.sectorStates??{}).some(([key,b])=>parent(s,key)===at&&b.units?.some(u=>u.side==='enemy'&&capable(u)));
+// Stationed occupations already appear on the strategic map. Other route
+// threats need a current report; retained tactical snapshots are not scouting.
+const knownHostileSectors=s=>new Set([
+ ...(s.enemyGroups??[]).filter(g=>g.status==='stationed').map(g=>g.target),
+ ...enemyIntelligenceReports(s).filter(r=>!r.stale&&r.status==='present').map(r=>r.sector),
+]);
 const accepts=(s,id,mode)=>mode==='flotilla'?flotillaSectorAllowed(s,id):place(s,id)?.biome!=='mountain';
 const hours=(s,path,mode)=>(path.length-1)*(artilleryTransportRules(s)[`${mode}Hours`]??0);
 export function artilleryTransportPath(s,from,to,mode,{ignoreControl=false}={}){
  if(!place(s,from)||!place(s,to)||!accepts(s,from,mode)||!accepts(s,to,mode))return null;
- const queue=[[from]],seen=new Set([from]);while(queue.length){const path=queue.shift(),last=path.at(-1);if(last===to)return path;for(const id of place(s,last).neighbors)if(!seen.has(id)&&(ignoreControl||s.sectors[id]?.owner==='patriot')&&accepts(s,id,mode)){seen.add(id);queue.push([...path,id]);}}return null;
+ const occupied=ignoreControl?new Set():knownHostileSectors(s);
+ const queue=[[from]],seen=new Set([from]);while(queue.length){const path=queue.shift(),last=path.at(-1);if(last===to)return path;for(const id of place(s,last).neighbors)if(!seen.has(id)&&(ignoreControl||s.sectors[id]?.owner==='patriot'&&(id===to||!occupied.has(id)))&&accepts(s,id,mode)){seen.add(id);queue.push([...path,id]);}}return null;
 }
 export const ARTILLERY_DELIVERY_ISSUES=Object.freeze({route_cut:'Una ocupación corta la ruta de la pieza.',blockade:'La flotilla espera el fin del bloqueo.',hostile:'La entrega espera que el destino quede despejado.',depot_full:'El depósito de destino está lleno.'});
-export function artilleryTransferDelayCode(s,transfer){
+export function artilleryTransferDelayCode(s,transfer,{knownOnly=false}={}){
  if(transfer.path.some(id=>s.sectors[id]?.owner!=='patriot'))return 'route_cut';
+ const intermediate=transfer.path.slice(1,-1),occupied=knownOnly?knownHostileSectors(s):null;
+ if(intermediate.some(id=>knownOnly?occupied.has(id):hostile(s,id)))return 'route_cut';
  if(transfer.mode==='flotilla'&&s.blockade)return 'blockade';
  if(hostile(s,transfer.to))return 'hostile';
  if((s.artilleryDepots?.[transfer.to]?.length??0)>=2000)return 'depot_full';
  return null;
 }
-export function artilleryTransferDelay(s,transfer){return ARTILLERY_DELIVERY_ISSUES[artilleryTransferDelayCode(s,transfer)]??'';}
+// Before the delivery attempt, the UI must not scout hidden intermediate
+// survivors. Once due, the convoy can report its own generic obstruction.
+export function artilleryTransferDelay(s,transfer){return ARTILLERY_DELIVERY_ISSUES[artilleryTransferDelayCode(s,transfer,{knownOnly:transfer.dueAt>s.hour})]??'';}
 export function artilleryTransportQuote(s,sector,gunId,to,mode,source='field'){
  const rules=artilleryTransportRules(s),cost=rules[`${mode}Fee`]??0,from=parent(s,sector),gun=(source==='depot'?s.artilleryDepots?.[sector]:s.sectorStates?.[sector]?.artillery)?.find(g=>g.id===gunId),spec=gun&&artilleryProfile(s,gun),path=artilleryTransportPath(s,from,to,mode);
  const crew=availableCrew(s,from);
@@ -60,7 +72,7 @@ export function dispatchArtilleryTransport(s,action){
 }
 export function deliverArtilleryTransfers(s){
  const delivered=[];
- for(const t of [...(s.artilleryTransfers??[])])if(t.dueAt<=s.hour&&!artilleryTransferDelay(s,t)){
+ for(const t of [...(s.artilleryTransfers??[])])if(t.dueAt<=s.hour&&!artilleryTransferDelayCode(s,t)){
   s.artilleryDepots??={};s.artilleryDepots[t.to]??=[];s.artilleryDepots[t.to].push(structuredClone(t.gun));s.artilleryTransfers=s.artilleryTransfers.filter(v=>v.id!==t.id);
   delivered.push({kind:'artillery',sector:t.to,id:t.id,quantity:1});
   s.log.unshift({hour:s.hour,text:`La pieza ${artilleryProfile(s,t.gun).name} llega al depósito de ${place(s,t.to).name} con su munición restante.`});s.log=s.log.slice(0,80);
