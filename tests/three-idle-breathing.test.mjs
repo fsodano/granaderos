@@ -5,6 +5,7 @@ import {createHash} from 'node:crypto';
 import {AnimationMixer,LoopOnce,Object3D,Quaternion,Vector3} from '../web/node_modules/three/build/three.module.js';
 import {clone} from '../web/node_modules/three/examples/jsm/utils/SkeletonUtils.js';
 import {publishedActor} from './published-actor-fixture.mjs';
+import {nativeRigOffsets,assertNativeRigOffsets} from './native-rig-offsets-fixture.mjs';
 const {idleBreathingClip,idleBreathingTiming}=await import('../web/lib/three/idle-breathing.ts');
 const {readableHumanClip}=await import('../web/lib/three/readable-human-stance.ts');
 const {ActorRuntime}=await import('../web/lib/three/actor-runtime.ts');
@@ -79,5 +80,25 @@ test('leaving breathing retains paid action timing and returning uses the same c
   assert.equal(actor.action.getClip(),asset.animation.animations.find(clip=>clip.name==='stand.fire.long-gun'));assert.equal(actor.action.time,actor.action.getClip().duration*.5);
   actor.update(v,1700);for(let i=0;i<12;i++)actor.tick(1/60,1700+i*1000/60);assert.equal(actor.action.getClip(),idle);
   actor.update({...v,mounted:true},2000);assert.equal(actor.action.getClip(),readableHumanClip(asset.animation.animations.find(clip=>clip.name==='mounted.idle.long-gun'),asset.body.scene,asset.manifest.bones,'mounted.idle.long-gun'));
+ }finally{actor.dispose();}
+});
+
+test('the attack rig checks reject joint drift, chest drift, scaling and oversized or paid breathing channels',async()=>{
+ const asset=await publishedActor('granadero',2),actor=new ActorRuntime(asset,visual('unit:rig-contract')),native=nativeRigOffsets(asset.body.scene);
+ try{
+  actor.tick(0,0);actor.root.updateMatrixWorld(true);assertNativeRigOffsets(actor,native);
+  for(const name of ['calf_l','upperarm_r','spine_03']){
+   const bone=actor.model.getObjectByName(name),saved=bone.position.clone();bone.position.x+=.0001;
+   assert.throws(()=>assertNativeRigOffsets(actor,native),/native offset or exact mixed breath/,name+' cannot drift even within the breathing envelope');bone.position.copy(saved);
+  }
+  const chest=actor.model.getObjectByName('spine_03');chest.scale.x+=.001;assert.throws(()=>assertNativeRigOffsets(actor,native),/native scale/);chest.scale.copy(native.get('spine_03').scale);
+  const idle=actor.action.getClip();
+  for(const [name,extra,reason]of [['stand.idle.long-gun',.008,/bounded standing chest breath/],['stand.fire.long-gun',.001,/paid\/non-idle chest offset stays native/]]){
+   // Corrupt a private clip copy, keeping the actual mixer and skeleton path.
+   // The fixture must reject a bad authored channel as well as a bad live pose.
+   const clip=idle.clone();clip.name=name;const track=clip.tracks.find(track=>track.name==='spine_03.position');for(let i=2;i<track.values.length;i+=3)track.values[i]+=extra;
+   actor.mixer.stopAllAction();actor.mixer.clipAction(clip).play();actor.mixer.update(0);actor.root.updateMatrixWorld(true);
+   assert.throws(()=>assertNativeRigOffsets(actor,native),reason);
+  }
  }finally{actor.dispose();}
 });
