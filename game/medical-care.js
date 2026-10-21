@@ -10,7 +10,7 @@ import {CARE_ASSIGNMENTS,ALL_ASSIGNMENTS} from './assignment-labels.js';
 export {CARE_ASSIGNMENTS,ALL_ASSIGNMENTS} from './assignment-labels.js';
 import {sleepStatus} from './sleep.js';
 import {baseMorale} from './morale.js';
-import {refreshCondition} from './tactical-condition.js';
+import {refreshCondition,isUnconscious} from './tactical-condition.js';
 import {fieldPractice} from './skill-training.js';
 
 export const MEDICAL_SUPPLY_PRICE=DEFAULT_CARE_RULES.dressingPrice;
@@ -34,6 +34,8 @@ export function migrateMedicalCare(s,roster){
     if(record.bleeding===undefined)record.bleeding=0;
     if(record.bandaged===undefined)record.bandaged=record.bleeding?0:Math.max(0,record.maxHp-record.hp);
     if(record.energy===undefined)record.energy=100;
+    // Detention records can retain this derived flag after the person recovers.
+    if(record.unconscious!==undefined)record.unconscious=isUnconscious(record);
     if(record.asleep===undefined)record.asleep=false;
     if(record.sleepCollapsed===undefined)record.sleepCollapsed=false;
     if(record.medkits===undefined)record.medkits=2;
@@ -164,6 +166,7 @@ export function advanceMedicalCare(s,roster,context={}){
       const heal=record.assignment==='rest'||record.asleep&&record.assignment!=='patient';
       recoverAtRest(record,op,{heal,state:s,recover:!record.asleep||['patient','rest'].includes(record.assignment)});
     }else record.recoveryHours=0;
+    if(record.unconscious!==undefined)record.unconscious=isUnconscious(record);
   }
   return [...treated];
 }
@@ -179,6 +182,8 @@ export function returnMedicalCare(s,id,report,op){
   requireThat(Number.isFinite(bandaged)&&bandaged>=0&&bandaged<=maxHp-report.hp,'Las vendas del parte son inválidas.');
   if(report.medkits!==undefined)requireThat(Number.isInteger(report.medkits)&&report.medkits>=0&&report.medkits<=100000,'Los vendas del parte son inválidos.');
   Object.assign(record,{maxHp,hp:report.hp,bleeding,bandaged,alive:report.hp>0,recoveryHours:0});
+  // The caller copies returned energy after applying this medical report.
+  record.unconscious=isUnconscious({...record,energy:report.energy??record.energy});
   if(report.medkits!==undefined)record.medkits=report.medkits;
   if(!record.alive){record.assignment='active';record.asleep=false;record.sleepCollapsed=false;}
 }
