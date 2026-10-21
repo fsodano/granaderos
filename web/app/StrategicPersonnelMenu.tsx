@@ -6,7 +6,7 @@ import {WORK_ASSIGNMENTS,STUDY_SKILLS,workAssignmentReason} from '../../game/ass
 import {guaranteeRecord,serviceGuaranteeRefund,guaranteeDepartureReason} from '../../game/service-guarantees.js';
 import {operativeInTransit,operativeLocation} from '../../game/squads.js';
 import {mountForOperative,MATURITY_HOURS} from '../../game/horses.js';
-import {strategicSquadAssignments} from '../../game/strategic-squad-assignments.js';
+import {strategicSquadAssignments,strategicNewSquadAssignment} from '../../game/strategic-squad-assignments.js';
 import {squadTravelStatus} from '../../game/squad-travel.js';
 import {campaignPlace} from '../../game/world-cells.js';
 import {travelTime} from '../lib/travel-time';
@@ -50,6 +50,7 @@ export default function StrategicPersonnelMenu({state:s,roster,id,kind,onClose,d
  const options={skill,targetId:Number(target),instructorId:teacher?Number(teacher):undefined,repairScope:'equipment'};
  const mount=mountForOperative(s.horseState,id)?.mount;
  const squad=s.squads.find((q:any)=>q.members.includes(id)),journey=squad?squadTravelStatus(squad,s):null,title=kind==='contract'?'Contrato':kind==='destination'?'Destino':'Asignación';
+ const newSquad=strategicNewSquadAssignment(s,id,op);
  const place=(sector:string)=>campaignPlace(sector,s)?.name??sector;
  return <div className="strategic-menu-backdrop" onClick={onClose}><section ref={dialog} tabIndex={-1} className="strategic-person-menu" role="dialog" aria-modal="true" aria-label={`${title} de ${op.nickname}`} onClick={e=>e.stopPropagation()} onKeyDown={e=>{
   if(e.key==='Escape'){e.preventDefault();e.stopPropagation();onClose();}
@@ -85,7 +86,7 @@ export default function StrategicPersonnelMenu({state:s,roster,id,kind,onClose,d
   </>:<>
    <PreferredCompanionsSummary state={s} operative={op}/>
    <button type="button" className="line-button" aria-expanded={squadMenu} aria-controls={`personnel-squads-${id}`} disabled={blocked||!record.alive||record.captured} onClick={()=>setSquadMenu(open=>!open)}>Escuadra ›</button>
-   {squadMenu&&<div id={`personnel-squads-${id}`} className="strategic-menu-actions strategic-squad-options" aria-label={`Escuadra de ${op.nickname}`}>{strategicSquadAssignments(s,id,op).map(choice=><button type="button" key={choice.number??choice.squad!.id} className="line-button" aria-pressed={Boolean(choice.squad?.members.includes(id))} title={choice.reason??choice.squad?.name} disabled={Boolean(choice.reason)} onClick={()=>order(choice.action)}>{choice.label}</button>)}</div>}
+   {squadMenu&&<div id={`personnel-squads-${id}`} className="strategic-menu-actions strategic-squad-options" aria-label={`Escuadra de ${op.nickname}`}>{strategicSquadAssignments(s,id,op).map(choice=><button type="button" key={choice.number??choice.squad!.id} className="line-button" aria-pressed={Boolean(choice.squad?.members.includes(id))} title={choice.reason??choice.squad?.name} disabled={Boolean(choice.reason)} onClick={()=>order(choice.action)}>{choice.label}</button>)}{newSquad&&<button type="button" className="line-button" title={newSquad.reason??`Formar ${newSquad.action.name} en ${place(newSquad.action.sector)}.`} disabled={Boolean(newSquad.reason)} onClick={()=>order(newSquad.action)}>Nueva escuadra</button>}</div>}
    <div className="strategic-menu-actions">{Object.entries(CARE_ASSIGNMENTS).map(([assignment,label])=>{const why=careAssignmentReason(s,op,assignment);return <button key={assignment} className="line-button" title={why||undefined} disabled={blocked||Boolean(why)} onClick={()=>order({type:'assignCare',operativeId:id,assignment})}>{String(label)}</button>;})}</div>
    <label>Materia de práctica<select aria-label={`Materia de ${op.nickname}`} value={skill} onChange={e=>setSkill(e.target.value)}>{Object.entries(STUDY_SKILLS).map(([value,label])=><option value={value} key={value}>{String(label)} · {op[value]??0}</option>)}</select></label>
    {(op[skill]??0)<35&&<small>Esta habilidad necesita un valor de 35 para mejorar con la práctica.</small>}

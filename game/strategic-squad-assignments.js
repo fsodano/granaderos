@@ -17,12 +17,23 @@ export function strategicSquadSlots(state){
 
 export function strategicSquadLabel(state,squadId){return strategicSquadSlots(state).find(slot=>slot.squad?.id===squadId)?.label??'En servicio';}
 
+const assignmentIssue=(state,operativeId,operative)=>state.pendingBattle||state.pendingEncounter||state.defeated?'Terminá el encuentro antes de cambiar de escuadra.':!canReassignOperative(state,operativeId)?'El combatiente debe estar disponible y sin una ruta pendiente.':operative?careAssignmentReason(state,operative,'active')||null:null;
+
 export function strategicSquadAssignments(state,operativeId,operative=null){
- const at=operativeLocation(state,operativeId),unavailable=state.pendingBattle||state.pendingEncounter||state.defeated?'Terminá el encuentro antes de cambiar de escuadra.':!canReassignOperative(state,operativeId)?'El combatiente debe estar disponible y sin una ruta pendiente.':operative?careAssignmentReason(state,operative,'active')||null:null;
+ const at=operativeLocation(state,operativeId),unavailable=assignmentIssue(state,operativeId,operative);
  return strategicSquadSlots(state).map(slot=>{
   const squad=slot.squad;
   const reason=unavailable??(squad?.journey?'La escuadra tiene una ruta pendiente.':squad&&squad.location!==at?'Los combatientes deben reunirse en el mismo sector.':squad&&squad.members.length>=6&&!squad.members.includes(operativeId)?'La escuadra ya tiene seis combatientes.':!squad&&!canCreateSquad(state)?'No hay otra escuadra disponible.':null);
   const action=squad?{type:'assignToSquad',operativeId,squadId:squad.id,returnToService:true}:{type:'createSquad',name:slot.label,ids:[operativeId],sector:at,returnToService:true};
   return {...slot,reason,action};
  });
+}
+
+export function strategicNewSquadAssignment(state,operativeId,operative=null){
+ // Empty numbered slots already form squads. Once all six refer to saved
+ // groups, retain access to the engine's remaining capacity and vacant reuse.
+ if(strategicSquadSlots(state).some(slot=>!slot.squad))return null;
+ let number=7;while(state.squads.some(squad=>squad.name===`Escuadra ${number}`))number++;
+ const reason=assignmentIssue(state,operativeId,operative)??(!canCreateSquad(state)?'El ejército ya tiene ocho escuadras ocupadas.':null);
+ return {reason,action:{type:'createSquad',name:`Escuadra ${number}`,ids:[operativeId],sector:operativeLocation(state,operativeId),returnToService:true}};
 }
