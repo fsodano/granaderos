@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {rosterFor} from '../game/campaign.js';
 import {synchronizeCampaignPresence} from '../game/campaign-presence.js';
-import {advanceMedicalCare,doctorRate} from '../game/medical-care.js';
+import {advanceMedicalCare,doctorRate,returnMedicalCare} from '../game/medical-care.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {getReachable} from '../game/tactical.js';
 import {preparedCare,DOCTOR,PATIENT} from './medical-care-fixture.mjs';
@@ -43,6 +43,16 @@ test('paid tactical stabilization returns a conscious operative who can collect 
  s=order(s,{type:'sectorInventory',sector:'retiro',operativeId:PATIENT,direction:'take',sourceKey:row.key,expected:row.expected,count:1});
  assert.equal(record(s).rations,rations);assert.equal(record(s).hp,15);assert.equal(record(s).unconscious,false);
  assert.deepEqual(saved({campaign:s}).campaign,s);
+});
+
+for(const [campaignEnergy,returnedEnergy]of [[0,70],[70,0]])test(`medical return uses reported energy ${returnedEnergy} before replacing campaign energy ${campaignEnergy}`,()=>{
+ const s=wounded({hp:18,energy:campaignEnergy}),before=structuredClone(s);
+ const report=Object.freeze({hp:18,energy:returnedEnergy});
+ returnMedicalCare(s,PATIENT,report,rosterFor(s).find(op=>op.id===PATIENT));
+ assert.equal(record(s).unconscious,returnedEnergy===0);
+ assert.equal(record(s).energy,campaignEnergy,'the caller copies returned energy after the medical report');
+ const expected=structuredClone(before);record(expected).unconscious=returnedEnergy===0;
+ assert.deepEqual(s,expected,'only the derived consciousness flag changes at this helper boundary');
 });
 
 test('a strategic doctor clears the critical flag only after finite treatment crosses fifteen health',()=>{
