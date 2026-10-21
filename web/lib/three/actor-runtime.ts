@@ -220,12 +220,16 @@ export class ActorRuntime {
     const hand=(loadingItem?.socket??visual.cue?.hand??'handRight') as HandRole,mirror=hand==='handLeft'&&visual.equipment==='short-gun'&&['aim','fire','reload'].includes(visual.action);
     if(mirror&&!this.asset.manifest.animationMirroring)throw Error(`Missing left-hand animation mapping: ${this.asset.appearance.id}`);
     let resting=sourceClip;
-    if(semantic==='stand.idle.long-gun'||semantic==='stand.idle.short-gun'){
+    const leftItem=visual.items.find(item=>item.socket==='handLeft'),leftBlade=leftItem&&['sabre','knife'].includes(this.itemSpec(leftItem.id)?.category??'');
+    const relaxedBlade=visual.relaxedIdle&&(semantic==='stand.idle.blade'||semantic==='stand.idle.knife')&&(!leftItem||leftBlade);
+    if(semantic==='stand.idle.long-gun'||semantic==='stand.idle.short-gun'||relaxedBlade){
       const neutral=boundClip(this.asset.clips,this.asset.animation.animations,'stand.idle.unarmed').clip,carry=boundClip(this.asset.clips,this.asset.animation.animations,semantic.replace('.idle.','.walk.')).clip;
       const offhandPistol=visual.items.some(item=>item.socket==='handLeft'&&this.itemSpec(item.id)?.category==='pistol');
-      resting=relaxedStandingIdle(sourceClip,this.asset.body.scene,this.asset.manifest.bones,semantic,neutral,carry,offhandPistol,this.asset.manifest.animationMirroring);
+      const bladeSocket=relaxedBlade&&mainItem?this.socket('handRight',this.itemSpec(mainItem.id)?.grip)?.name:undefined;
+      const offhandBladeSocket=relaxedBlade&&leftBlade?this.socket('handLeft',this.itemSpec(leftItem!.id)?.grip)?.name:undefined;
+      resting=relaxedStandingIdle(sourceClip,this.asset.body.scene,this.asset.manifest.bones,semantic,neutral,carry,offhandPistol,this.asset.manifest.animationMirroring,bladeSocket,offhandBladeSocket,Boolean(visual.relaxedIdle));
     }
-    const posed=readableHumanClip(resting,this.asset.body.scene,this.asset.manifest.bones,semantic);
+    const posed=readableHumanClip(resting,this.asset.body.scene,this.asset.manifest.bones,semantic,{plantFeet:Boolean(visual.relaxedIdle),footwearName:this.asset.appearance.parts?.footwear?.replace('{lod}',String(this.asset.lod))});
     const breathing=idleBreathingClip(posed,this.asset.body.scene,this.asset.manifest.bones,semantic),idleTiming=breathing!==posed?idleBreathingTiming(visual.key):undefined;
     const clip=mirror?mirroredClip(breathing,this.asset.body.scene,this.asset.manifest.animationMirroring!):breathing;
     const clipSpec=mirror?withMirroredProps(sourceSpec,this.asset.body.scene):idleTiming?{...sourceSpec,playbackRate:clip.duration/idleTiming.period}:sourceSpec;

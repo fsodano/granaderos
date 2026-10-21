@@ -30,7 +30,7 @@ export type ContactSupport={floors:readonly {minX:number;maxX:number;minZ:number
 export type CareCue={mode:'self'}|{mode:'patient';target:ContactTarget;support:ContactSupport};
 export type ActorCue={id:string;action:string;shotHand?:'primary'|'offhand';hand?:'handRight'|'handLeft';startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;fromPosture?:string;toPosture?:string;work?:readonly AnimationWork[];contactTurn?:{fromYaw:number;toYaw:number};contactTarget?:ContactTarget;contactSupport?:ContactSupport;care?:CareCue;healInterval?:true};
 export type VisualItem={id:string;reference:string;socket:'handRight'|'handLeft'|'back'|'hip';fittings?:any};
-export type ActorVisual={key:string;id:string;kind:ActorKind;appearance:string;skin:string;side:string;tacticalLevel:number;position:[number,number,number];yaw:number;posture:string;mounted:boolean;action:string;idleAction:string;equipment:string;items:VisualItem[];garments:Record<string,string|null>;cue?:ActorCue;careWarm?:{targets:ContactTarget[];support:ContactSupport};contactWarm?:{targets:ContactTarget[];support:ContactSupport};motion?:Motion;selected:boolean;bodyHeights:Record<string,number>};
+export type ActorVisual={key:string;id:string;kind:ActorKind;appearance:string;skin:string;side:string;tacticalLevel:number;position:[number,number,number];yaw:number;posture:string;mounted:boolean;action:string;idleAction:string;relaxedIdle?:boolean;equipment:string;items:VisualItem[];garments:Record<string,string|null>;cue?:ActorCue;careWarm?:{targets:ContactTarget[];support:ContactSupport};contactWarm?:{targets:ContactTarget[];support:ContactSupport};motion?:Motion;selected:boolean;bodyHeights:Record<string,number>};
 export const actorKey=(kind:ActorKind,id:string)=>`${kind}:${id}`;
 export function admittedActors(state:any,players:any[],revealed:ReadonlySet<string>):ActorEntry[]{
   const result:ActorEntry[]=[];
@@ -119,7 +119,7 @@ export function presentActors(state:any,entries:readonly ActorEntry[],positions:
     const motion=positions[key];if(!actorInteriorReadable(state,actor,motion,revealed))continue;
     const posture=actorPosture(actor),dead=actor.hp<=0,unconscious=Boolean(actor.unconscious),mounted=Boolean(actor.mounted&&!dead&&!unconscious);
     const equipment=spriteEquipment(actor),items=actorItems(actor),at=motion??actor;
-    const readyInCombat=state.mode!=='exploration'&&(state.status===undefined||state.status==='active')&&actor.weaponReady;
+    const activeCombat=state.mode!=='exploration'&&(state.status===undefined||state.status==='active'),readyInCombat=activeCombat&&actor.weaponReady;
     const idleAction=actor.braced&&equipment==='long-gun'?'brace':(readyInCombat||options.selected===actor.id&&kind==='unit'&&options.mode==='fire')&&['long-gun','short-gun'].includes(equipment)?'aim':'idle';
     let cue=options.cues?.[key],action=idleAction;
     const frame=options.frame;
@@ -151,7 +151,9 @@ export function presentActors(state:any,entries:readonly ActorEntry[],positions:
       const yaw=actorYaw(direction),x=motion.travelX??0,y=motion.travelY??0,forward=x*Math.sin(yaw)+y*Math.cos(yaw),left=x*Math.cos(yaw)-y*Math.sin(yaw);
       if(Math.abs(left)>Math.abs(forward)+.01)action=left>0?'strafeLeft':'strafeRight';
     }
-    result.push({key,id:actor.id,kind,appearance:spriteAppearance(actor,kind==='npc'?'civilian':'soldier'),skin:spriteSkinTone(actor),side:actor.side??'civilian',tacticalLevel:tacticalLevel(actor),position:[at.x*TILE_METRES,renderedSurfaceHeight(state,at),at.y*TILE_METRES],yaw:actorYaw(direction),posture,mounted,action,idleAction,equipment,items,garments:Object.fromEntries(['headwear','outfit','legwear'].map(slot=>[slot,wornOutfit(actor,slot)?.outfit??null])),cue,motion,selected:kind==='unit'&&actor.id===options.selected,bodyHeights:Object.fromEntries(['head','torso','legs','muzzle'].map(part=>[part,relativeBodyHeight(actor,part)]))});
+    const selected=kind==='unit'&&actor.id===options.selected;
+    const relaxedIdle=!activeCombat&&action==='idle'&&!cue&&!motion?.moving&&posture==='standing'&&!mounted&&!dead&&!unconscious&&!actor.knockedDown;
+    result.push({key,id:actor.id,kind,appearance:spriteAppearance(actor,kind==='npc'?'civilian':'soldier'),skin:spriteSkinTone(actor),side:actor.side??'civilian',tacticalLevel:tacticalLevel(actor),position:[at.x*TILE_METRES,renderedSurfaceHeight(state,at),at.y*TILE_METRES],yaw:actorYaw(direction),posture,mounted,action,idleAction,relaxedIdle,equipment,items,garments:Object.fromEntries(['headwear','outfit','legwear'].map(slot=>[slot,wornOutfit(actor,slot)?.outfit??null])),cue,motion,selected,bodyHeights:Object.fromEntries(['head','torso','legs','muzzle'].map(part=>[part,relativeBodyHeight(actor,part)]))});
   }
   // Contact fitting uses the bodies that passed both admission and room
   // readability. A frame's target coordinates cannot admit another body.
