@@ -20,7 +20,7 @@ test('the rehire notice uses the fixed departure location and remaining repair m
 
 test('mission and rural returns name the actual site instead of the recruit current location',()=>{
  const mission=serviceEquipmentReturnReason(state(marker('tucuman','yatasto')),110);
- assert.match(mission,/Conferencia de Yatasto \(Tucumán\)/);
+ assert.match(mission,/Conferencia de Yatasto \(San Miguel de Tucumán · La Ciudadela\)/);
  assert.match(mission,/En «Lugar», elegí «Conferencia de Yatasto»/);
  const rural=serviceEquipmentReturnReason(state(marker('cell-27-27')),110);
  assert.match(rural,/Celda 28,28/);

@@ -15,7 +15,7 @@ test('a blocked hiring card shows its recorded return site and repair pickup ins
  const before=structuredClone(s),dom=new JSDOM(render(h(Recruitment,{state:s,dispatch(){assert.fail('Rendering cannot issue orders');}})));
  try{
   const card=dom.window.document.querySelector('[data-operative-id="110"]');
-  assert.match(card.textContent,/Conferencia de Yatasto \(Tucumán\)/);
+  assert.match(card.textContent,/Conferencia de Yatasto \(San Miguel de Tucumán · La Ciudadela\)/);
   assert.match(card.textContent,/En «Lugar», elegí «Conferencia de Yatasto»/);
   assert.match(card.textContent,/1 punto de «Materiales de reparación»/);
   assert.equal([...card.querySelectorAll('button')].find(button=>button.textContent.startsWith('Contratar')).disabled,true);
