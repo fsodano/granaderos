@@ -4,7 +4,7 @@ import {createElement as h,act,useState} from '../web/node_modules/react/index.j
 import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
 import {JSDOM} from '../web/node_modules/jsdom/lib/api.js';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {dispatchCampaign,rosterFor,civicStatus} from '../game/campaign.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {strategicSquadSlots,strategicSquadAssignments,strategicNewSquadAssignment} from '../game/strategic-squad-assignments.js';
 import {contractQuote} from '../game/contracts.js';
@@ -17,8 +17,27 @@ const {default:Campaign}=await import('../web/app/Campaign.tsx');
 const {default:MedicalCare}=await import('../web/app/MedicalCare.tsx');
 const {DossierEquipment}=await import('../web/app/CharacterDossier.tsx');
 const {default:SectorInventory}=await import('../web/app/SectorInventory.tsx');
+const {default:Recruitment}=await import('../web/app/Recruitment.tsx');
 const noop=()=>{},order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const unchanged=s=>({...s,lastError:null});
+
+test('recruitment explains captivity without an arrival estimate and retains the available hiring card',()=>{
+ const state=initialCampaign(),id=100;state.resources.treasury=100000;
+ // Declared captivity isolates the card from price, route and service refusals.
+ Object.assign(state.operativeState[id],{captured:true,location:'uspallata'});
+ const before=structuredClone(state),quote=contractQuote(state,rosterFor(state).find(op=>op.id===id));
+ assert.equal(quote.available,true);assert.equal(civicStatus(state,id).available,false);
+ const doc=new JSDOM(render(h(Recruitment,{state,dispatch:noop}))).window.document,card=doc.querySelector(`[data-operative-id="${id}"]`),button=card.querySelector('.gold-button');
+ assert.equal(button.disabled,true);assert.equal(button.textContent,'En cautiverio');
+ const reason=doc.getElementById(button.getAttribute('aria-describedby'));
+ assert.ok(card.contains(reason));assert.equal(reason.textContent,civicStatus(state,id).reason);assert.match(reason.textContent,/cautivo/);
+ assert.doesNotMatch(card.textContent,/Llegada inmediata|Viaje previsto/);assert.deepEqual(state,before);doc.defaultView.close();
+ const available=structuredClone(state);available.operativeState[id].captured=false;
+ const availableBefore=structuredClone(available),controlDoc=new JSDOM(render(h(Recruitment,{state:available,dispatch:noop}))).window.document,control=controlDoc.querySelector(`[data-operative-id="${id}"]`),hire=control.querySelector('.gold-button');
+ assert.equal(civicStatus(available,id).available,true);assert.equal(hire.disabled,false);assert.equal(hire.textContent,`Contratar · ${quote.total} pesos`);
+ assert.match(control.textContent,/Llegada inmediata|Viaje previsto/);assert.doesNotMatch(control.textContent,/En cautiverio|está cautivo/);assert.equal(hire.hasAttribute('aria-describedby'),false);
+ assert.deepEqual(available,availableBefore);controlDoc.defaultView.close();
+});
 
 // An explicit existing twelve-person army isolates the roster display and
 // reassignment capacity. It is not a fresh-player campaign or a route proof.
