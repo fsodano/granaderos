@@ -1,4 +1,5 @@
 /** Pure visual time mapping. No animation event is a gameplay command. */
+import {ACTION_PRESENTATION_DURATION_SCALE,actionPresentationDuration} from './action-pace';
 export type AnimationClockClip={duration:number;loop:boolean;playbackRate?:number;locomotionSpeed?:number;nativeStrideSpeed?:number;markers?:Record<string,number>};
 export type AnimationWork={from:number;to:number;hand?:'primary'|'offhand';barrel?:number};
 export type AnimationClockCue={action:string;startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;work?:readonly AnimationWork[];healInterval?:true};
@@ -72,7 +73,11 @@ export function sampleAnimationTime({clip,action,cue,motion,now,reducedMotion=fa
   if(controls&&cue){
     const phase=cue.phase??'',hasPhase=Boolean(phase);
     const start=cue.phaseStartedAt??cue.startedAt;
-    const span=Math.max(.001,(cue.phaseDurationMs??cue.durationMs??duration*1000)/1000);
+    // Recorded spans already include presentation pace. Only direct cues
+    // without an explicit span use the shortened native-duration fallback.
+    const paced=action!=='idle'&&!locomotion.has(action)&&action!=='climbUp'&&action!=='climbDown';
+    const fallback=paced?actionPresentationDuration(duration*1000):duration*1000;
+    const span=Math.max(.001,(cue.phaseDurationMs??cue.durationMs??fallback)/1000);
     const elapsed=Math.max(0,(now-start)/1000),fraction=clamp(elapsed/span,0,1);
     const ranges=animationPhaseRanges(clip,action,phase,cue.work,cue.healInterval);
     const length=ranges.reduce((sum,[begin,end])=>sum+end-begin,0);
@@ -90,8 +95,10 @@ export function sampleAnimationTime({clip,action,cue,motion,now,reducedMotion=fa
   // Accessibility suppresses idle breathing only. Gaits, recovery, weapon use,
   // reactions and stance changes keep their real visual timing.
   if(reducedMotion&&action==='idle')return {...result,time:0,rate:0};
-  // Reviewed free playback has its own pace. Paid cue phases and travelled
-  // distance above remain authoritative and never receive this multiplier.
+  // Unframed finite actions use the same pace. Idle loops and distance-driven
+  // locomotion retain their clocks; explicit cue spans were handled above.
   const playbackRate=clip.playbackRate??1;
-  return {...result,rate:Number.isFinite(playbackRate)&&playbackRate>0?playbackRate:1};
+  const rate=Number.isFinite(playbackRate)&&playbackRate>0?playbackRate:1;
+  const paced=!clip.loop&&action!=='idle'&&!locomotion.has(action)&&action!=='climbUp'&&action!=='climbDown';
+  return {...result,rate:paced?rate/ACTION_PRESENTATION_DURATION_SCALE:rate};
 }
