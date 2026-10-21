@@ -24,7 +24,7 @@ function keepContact(arm:Limb,target:Vector3,pole:Vector3,rotation:Quaternion){
 export function idleBreathingTiming(key:string){
  let hash=2166136261;for(let i=0;i<key.length;i++)hash=Math.imul(hash^key.charCodeAt(i),16777619);
  hash=Math.imul(hash^(hash>>>16),0x7feb352d);hash=Math.imul(hash^(hash>>>15),0x846ca68b);hash=(hash^(hash>>>16))>>>0;
- return {phase:hash/4294967296,period:breathsPerCycle*(4.2+((hash>>>8)&65535)/65535*.8)};
+ return {phase:hash/4294967296,period:breathsPerCycle*(3.6+((hash>>>8)&65535)/65535*.8)};
 }
 
 /** Bake breathing into standing rest only. The existing mixer then blends the
@@ -54,19 +54,20 @@ export function idleBreathingClip(source:AnimationClip,body:Object3D,bones:Recor
   const feet=nativeLegs.map(leg=>({leg,target:world(leg.hand),pole:world(leg.elbow),rotation:orientation(leg.hand)}));
   // A slow transfer of weight spans three breaths. Only the skeleton moves;
   // the actor's cell, facing and planted foot contacts remain unchanged.
-  const shift=.028*Math.pow(Math.sin(2*Math.PI*time/duration),3),offset=new Vector3(shift,0,0),hipPoint=world(hips).add(offset);
-  let drop=.002*Math.abs(shift)/.028;
+  const shift=.038*Math.sin(2*Math.PI*time/duration),offset=new Vector3(shift,0,0),hipPoint=world(hips).add(offset);
+  let drop=.002*Math.abs(shift)/.038;
   for(const {leg,target}of feet){const start=world(leg.upper).add(offset),reach=(world(leg.upper).distanceTo(world(leg.elbow))+world(leg.elbow).distanceTo(target))*.9999,horizontal=(start.x-target.x)**2+(start.z-target.z)**2;drop=Math.max(drop,start.y-target.y-Math.sqrt(Math.max(0,reach*reach-horizontal)));}
   hipPoint.y-=drop;hips.position.copy(hips.parent!.worldToLocal(hipPoint));hips.updateWorldMatrix(false,true);
   for(const {leg,target,pole,rotation}of feet)if(!keepContact(leg,target,pole.add(offset),rotation)){mixer.stopAllAction();mixer.uncacheRoot(model);clips.set(source,source);return source;}
   // A smooth chest rise and slower release, with a short quiet end to each
-  // breath. Shoulder movement follows the ribs; the head keeps a steady gaze.
+  // breath. The chest/shoulder range remains readable at tactical scale;
+  // the smaller head motion keeps a steady gaze instead of a repeated nod.
   const phase=(time/source.duration)%1,cycle=phase<.4?phase/.8:.5+(phase-.4)/1.2,breath=Math.pow((1-Math.cos(2*Math.PI*cycle))/2,1.4);
-  worldRotation(spine,new Quaternion().setFromAxisAngle(new Vector3(1,0,0),-.014*breath).multiply(orientation(spine)));
-  const lifted=world(chest).add(new Vector3(0,.012*breath,.014*breath));chest.position.copy(chest.parent!.worldToLocal(lifted));chest.updateWorldMatrix(false,true);
+  worldRotation(spine,new Quaternion().setFromAxisAngle(new Vector3(1,0,0),-.022*breath).multiply(orientation(spine)));
+  const lifted=world(chest).add(new Vector3(0,.026*breath,.022*breath));chest.position.copy(chest.parent!.worldToLocal(lifted));chest.updateWorldMatrix(false,true);
   // Two-hand grips follow the chest as one rigid pair. Opening each shoulder
   // separately can overextend a straight lance arm and break its held grip.
-  if(!semantic.endsWith('.long-gun')&&!semantic.endsWith('.lance'))for(const arm of nativeArms)worldRotation(arm.shoulder,new Quaternion().setFromAxisAngle(new Vector3(0,0,1),arm.side*.035*breath).multiply(orientation(arm.shoulder)));
+  if(!semantic.endsWith('.long-gun')&&!semantic.endsWith('.lance'))for(const arm of nativeArms)worldRotation(arm.shoulder,new Quaternion().setFromAxisAngle(new Vector3(0,0,1),arm.side*.05*breath).multiply(orientation(arm.shoulder)));
   const headTarget=referenceHead.clone().lerp(nativeHead,.2).add(new Vector3(shift*.75,.006*breath-drop,.003*breath));
   turn(neck,world(head).sub(world(neck)),headTarget.sub(world(neck)));worldRotation(head,referenceHeadRotation.clone().slerp(nativeHeadRotation,.2));
   for(const node of modified){const row=rotations.get(node)!,q=node.quaternion;if(row.length&&row.slice(-4).reduce((sum,value,index)=>sum+value*q.toArray()[index],0)<0)row.push(-q.x,-q.y,-q.z,-q.w);else row.push(q.x,q.y,q.z,q.w);}
