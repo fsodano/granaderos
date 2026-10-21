@@ -23,7 +23,9 @@ export function previewStrategicRoute(s,squadId,destination,mode='march',waypoin
  if(destination===q.location&&!waypoints.length)return reject('La escuadra ya está en este sector.');
  const target=campaignSectors(s).find(d=>d.id===destination);
  if(!target&&cell.locality&&worldOwner(s,destination)==='royalist')return reject(cellTravelReason(s,destination));
- const intent=target&&(s.sectors[destination].owner==='royalist'||s.blockade&&target.theater==='coast')?'attack':'travel';
+ // A naval blockade restricts flotillas, not land travel to an empty friendly port.
+ const occupied=s.enemyGroups?.some(group=>group.target===destination&&group.status==='stationed');
+ const intent=target&&(s.sectors[destination].owner==='royalist'||occupied)?'attack':'travel';
  if(intent==='attack'){
   if(s.completed)return reject('La campaña está ganada.');
   if(!target.neighbors.some(id=>s.sectors[id].owner==='patriot'&&isSupplied(s,id)))return reject('Debes abrir una ruta hasta el frente.');
