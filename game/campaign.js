@@ -104,7 +104,7 @@ import {migrateMorale,deploymentMorale,returnMorale,payMoraleRewardEligible,reco
 import {migrateEnemyGroups,launchEnemyGroup,advanceEnemyGroups,delayCrossingEnemyGroups,haltEnemyGroupsAt,queueEnemyEncounter,localDefenderIds,localDefenderCount,retreatDestinations,occupyingGroups,recordEnemyGroupResult,validateEnemyGroups} from './enemy-groups.js';
 import {setSleep,prepareSleep,finishSleepHour,SLEEP_ISSUE_TEXT} from './sleep.js';
 import {autoResolve} from './auto-resolve.js';
-import {canCreateSquad,vacantSquad,canReassignOperative,migrateSquads,activeSquad,operativeLocation,operativeInTransit,travelingOperatives,synchronizeSquad,validateSectorSnapshot,validatePersonalInventory} from './squads.js';
+import {canCreateSquad,vacantSquad,canReassignOperative,migrateSquads,activeSquad,squadReorganizationReason,operativeLocation,operativeInTransit,travelingOperatives,synchronizeSquad,validateSectorSnapshot,validatePersonalInventory} from './squads.js';
 import {FITTING_RULES_VERSION} from './weapon-fittings.js';
 import {hasWorkshop} from './campaign-headquarters.js';
 import {TRANSPORT_NETWORKS} from './transport-network.js';
@@ -698,7 +698,7 @@ export function dispatchCampaign(previous,action){
     if(['travel','attack','visitSector','visitMission'].includes(action.type))requireThat(!activeSquad(s).journey,'Terminá o cancelá la ruta antes de entrar en un sector.');
     const targetId=Number(action.operativeId??action.trainerId??(action.type==='dismiss'?action.id:NaN));
     if(Number.isFinite(targetId))requireThat(!operativeInTransit(s,targetId),'El combatiente está en camino. Esperá su llegada.');
-    if(['squad','recruitCivic','createOfficer'].includes(action.type))requireThat(!activeSquad(s).journey,'Esperá la llegada o cancelá la ruta antes de reorganizar la escuadra.');
+    if(['squad','recruitCivic','createOfficer'].includes(action.type)){const reason=squadReorganizationReason(s);requireThat(!reason,reason);}
     switch(action.type){
       case 'sectorInventory':note(s,moveSectorItem(s,action,rosterFor(s)));break;
       case 'respondToEncounter':{
