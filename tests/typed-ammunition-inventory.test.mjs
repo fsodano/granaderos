@@ -10,7 +10,7 @@ import {playerKnownBattle} from '../game/player-known-state.js';
 const grid=Array.from({length:80},(_,i)=>({x:i%10,y:Math.floor(i/10),type:'grass',blocked:false,cover:0}));
 const field=(patch={})=>createBattle([{id:'p',x:2,y:2,weapon:1800,loaded:0,ammo:3,blade:0,priming:20,flints:0,rations:0,medkits:0,torches:0,boleadoras:0,...patch}],{width:10,height:8,tiles:grid,exploration:true,enemies:[]});
 const act=(s,a)=>{const n=actBattle(s,{unitId:'p',...a});assert.equal(n.lastError,null,n.lastError);return n;};
-const physical=s=>({...s,log:[],lastError:null});
+const physical=s=>({...s,log:[],publicJournal:undefined,lastError:null});
 const pistol=weapon=>({weapon,loaded:0,condition:100,jammed:false,weight:1.2,count:1});
 
 test('swapping to a rifle preserves musket rounds and the empty cursor names the missing load',()=>{
@@ -18,7 +18,7 @@ test('swapping to a rifle preserves musket rounds and the empty cursor names the
  const before=ammunitionByType(b.units[0]);b=act(b,{type:'equipLoot',inventoryKey:'baker'});
  assert.deepEqual(ammunitionByType(b.units[0]),before);assert.equal(availableAmmunition(b.units[0]),0);
  const p=targetPreview(b,b.units[0],null,{mode:'fire'});assert.equal(p.cursor,'empty');assert.equal(p.valid,false);assert.match(p.reason,/fusil/);
- const rejected=actBattle(b,{type:'reload',unitId:'p'});assert.ok(rejected.lastError);assert.deepEqual(physical(rejected),physical(b));
+ const rejected=actBattle(b,{type:'reload',unitId:'p'});assert.ok(rejected.lastError);assert.deepEqual(rejected.publicJournal,{version:1,entries:[...b.publicJournal.entries,{turn:b.turn,text:rejected.lastError}].slice(-80)});assert.deepEqual(physical(rejected),physical(b));
  const saved=validateBattleSnapshot(JSON.parse(JSON.stringify(b)));assert.deepEqual(ammunitionByType(saved.units[0]),before);assert.equal(reloadPlan(saved.units[0],saved).available,0);
  const key=Object.keys(saved.units[0].inventory).find(k=>saved.units[0].inventory[k].weapon===1800);
  b=act(saved,{type:'equipLoot',inventoryKey:key});b=act(b,{type:'reload'});assert.equal(b.units[0].loaded,1);assert.deepEqual(ammunitionByType(b.units[0]),{musket_75:2});
@@ -62,7 +62,7 @@ test('canonical cursor admission rejects an old untyped stack before placement c
  // unsupported custody record rather than an unrelated stale selection.
  const legacyOwner={...u,ammunitionVersion:undefined},order={type:'placeEquipment',unitId:u.id,destinationId:'small-8',expectedSource:equipmentFingerprint(legacyOwner,'cursor'),expectedDestination:equipmentFingerprint(legacyOwner,'small-8')},before=structuredClone(b);
  assert.throws(()=>validateBattleSnapshot(b),/munición del cursor/);
- const rejected=actBattle(b,order);assert.match(rejected.lastError,/munición del cursor/);assert.deepEqual(physical(rejected),physical(b));assert.deepEqual(b,before);
+ const rejected=actBattle(b,order);assert.match(rejected.lastError,/munición del cursor/);assert.deepEqual(rejected.publicJournal,{version:1,entries:[...b.publicJournal.entries,{turn:b.turn,text:rejected.lastError}].slice(-80)});assert.deepEqual(physical(rejected),physical(b));assert.deepEqual(b,before);
 });
 
 test('a genuine legacy cursor migrates once and places the same finite musket cartridge lot',()=>{
