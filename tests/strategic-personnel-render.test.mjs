@@ -21,7 +21,7 @@ const {default:Recruitment}=await import('../web/app/Recruitment.tsx');
 const noop=()=>{},order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const unchanged=s=>({...s,lastError:null});
 
-test('recruitment explains captivity without an arrival estimate and retains the available hiring card',()=>{
+test('recruitment omits arrival estimates for captive and fallen recruits and retains the available hiring card',()=>{
  const state=initialCampaign(),id=100;state.resources.treasury=100000;
  // Declared captivity isolates the card from price, route and service refusals.
  Object.assign(state.operativeState[id],{captured:true,location:'uspallata'});
@@ -37,6 +37,11 @@ test('recruitment explains captivity without an arrival estimate and retains the
  assert.equal(civicStatus(available,id).available,true);assert.equal(hire.disabled,false);assert.equal(hire.textContent,`Contratar · ${quote.total} pesos`);
  assert.match(control.textContent,/Llegada inmediata|Viaje previsto/);assert.doesNotMatch(control.textContent,/En cautiverio|está cautivo/);assert.equal(hire.hasAttribute('aria-describedby'),false);
  assert.deepEqual(available,availableBefore);controlDoc.defaultView.close();
+ const fallen=structuredClone(available);Object.assign(fallen.operativeState[id],{alive:false,hp:0});
+ const fallenBefore=structuredClone(fallen),fallenDoc=new JSDOM(render(h(Recruitment,{state:fallen,dispatch:noop}))).window.document,fallenCard=fallenDoc.querySelector(`[data-operative-id="${id}"]`),fallenButton=fallenCard.querySelector('.gold-button');
+ assert.equal(civicStatus(fallen,id).available,false);assert.equal(fallenButton.disabled,true);assert.equal(fallenButton.textContent,'Caído en combate');
+ assert.ok(fallenCard.textContent.includes('Un combatiente fallecido no puede volver a contratarse.'));assert.doesNotMatch(fallenCard.textContent,/Llegada inmediata|Viaje previsto/);
+ assert.deepEqual(fallen,fallenBefore);fallenDoc.defaultView.close();
 });
 
 // An explicit existing twelve-person army isolates the roster display and
