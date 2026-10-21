@@ -79,7 +79,7 @@ export default function Recruitment({state:s,dispatch}:Props){
      <button className="dossier-link" disabled={busy||Boolean(cancellationReason)} title={cancellationReason||undefined} onClick={()=>dispatch({type:'cancelHireArrival',id:o.id,...(arrival.guaranteeId?{expectedGuaranteeId:arrival.guaranteeId}:{})})}>Cancelar llegada · recuperar {arrival.paid+(guarantee?.state==='held'?guarantee.amount:0)} pesos</button>
     </>:<>
      {hired&&<p className="contract-remaining">{contract?.remaining===null?'Servicio permanente':`${travelTime(contract?.remaining??0)} de contrato restantes`}</p>}
-     {!hired&&!captive&&<small>{hours?`Viaje previsto: ${hours} horas.`:'Llegada inmediata a un destino seguro.'}</small>}
+     {!hired&&!captive&&record?.alive!==false&&<small>{hours?`Viaje previsto: ${hours} horas.`:'Llegada inmediata a un destino seguro.'}</small>}
      <ServiceObjectionNotice reason={objection}/>
      <ContractMoraleNotice status={moraleStatus}/>
      {quote.serviceRefusal?<ServiceRefusalNotice state={s} refusal={quote.serviceRefusal} disabled={busy} dispatch={dispatch}/>:quote.reason&&quote.reason!==objection&&quote.reason!==moraleStatus.reason&&<small>{quote.reason}</small>}
