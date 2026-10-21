@@ -22,6 +22,7 @@ import {serviceReturnSources,serviceReturnSites,consumeServiceReturn} from './se
 const copy=value=>structuredClone(value);
 const need=(ok,message)=>{if(!ok)throw Error(message);};
 const fields=['inventory','condition','rations','medkits','boleadoras','torches','pocketOrder','toolkitPoints'];
+const returnedOwner=row=>row.operativeId===undefined?{}:{operativeId:row.operativeId,...(row.operativeName?{operativeName:row.operativeName}:{})};
 function stackLabel(stack){
  if(SUPPLY_ITEMS[stack.item])return SUPPLY_ITEMS[stack.item].label;
  const key=stack.item==='weapon'?'weapon':stack.item.replace(/^inventory:/,'');
@@ -58,7 +59,7 @@ function siteSources(s,siteId,snapshot){
  return [...poolSources(snapshot,s),...serviceReturnSources(s,siteId,snapshot).filter(row=>row.stack).map(row=>({...row,source:row.placement,label:stackLabel(row.stack)}))];
 }
 function knownSiteEquipment(s,site){
- return siteSources(s,site.id,site.snapshot).map(row=>({key:row.key,label:row.label,count:row.stack.count,...(row.source?planningPoint(row.source):{}),kind:row.kind,
+ return siteSources(s,site.id,site.snapshot).map(row=>({key:row.key,label:row.label,count:row.stack.count,...(row.source?planningPoint(row.source):{}),kind:row.kind,...returnedOwner(row),
   ...(row.stack.condition!==undefined?{condition:row.stack.condition}:{}),...(row.stack.loaded!==undefined?{loaded:row.stack.loaded,jammed:row.stack.jammed??false}:{})}));
 }
 function inventorySite(s,id){
@@ -77,7 +78,7 @@ export function knownCampaignSectorEquipment(s,sectorId){
  return sectorInventorySites(s,sectorId).flatMap(site=>knownSiteEquipment(s,inventorySite(s,site.id)).map(row=>({...row,key:JSON.stringify([site.id,row.key]),siteId:site.id,siteName:site.name})));
 }
 export function knownCampaignRepairReserves(s,sectorId){
- return sectorInventorySites(s,sectorId).flatMap(site=>serviceReturnSources(s,site.id,inventorySite(s,site.id).snapshot).filter(row=>row.repairPoints>0).map(row=>({key:JSON.stringify([site.id,row.key]),siteId:site.id,siteName:site.name,label:'Materiales de reparación',repairPoints:row.repairPoints,...(row.placement?planningPoint(row.placement):{})})));
+ return sectorInventorySites(s,sectorId).flatMap(site=>serviceReturnSources(s,site.id,inventorySite(s,site.id).snapshot).filter(row=>row.repairPoints>0).map(row=>({key:JSON.stringify([site.id,row.key]),siteId:site.id,siteName:site.name,label:'Materiales de reparación',repairPoints:row.repairPoints,...returnedOwner(row),...(row.placement?planningPoint(row.placement):{})})));
 }
 function carriedActor(s,op){const r=s.operativeState[op.id];return syncUnitAmmunition({...op,...r,id:String(op.id),side:'player',loaded:r.carriedLoaded??0,...(r.carriedReloadProgress?{reloadProgress:r.carriedReloadProgress}:{}),ap:100,energy:r.energy??100,unconscious:false,movementMode:'walk',stance:'standing'});}
 function actorAt(s,sectorId,op){
@@ -117,9 +118,9 @@ export function sectorInventoryModel(s,sectorId,roster,operativeId){
   return {...(row.source?planningPoint(row.source):{}),reachable,reason:reason??(!reachable?'No hay un camino abierto hasta este equipo.':null)};
  };
  const entries=siteSources(s,sectorId,snapshot).map(row=>{
-  return {key:row.key,label:row.label,count:row.stack.count,...access(row),kind:row.kind,expected:JSON.stringify(row.stack),condition:row.stack.condition,loaded:row.stack.loaded,jammed:row.stack.jammed,fittingPattern:row.stack.fittingPattern};
+  return {key:row.key,label:row.label,count:row.stack.count,...access(row),kind:row.kind,...returnedOwner(row),expected:JSON.stringify(row.stack),condition:row.stack.condition,loaded:row.stack.loaded,jammed:row.stack.jammed,fittingPattern:row.stack.fittingPattern};
  });
- const repairReserves=serviceReturnSources(s,sectorId,snapshot).filter(row=>row.repairPoints>0).map(row=>({key:row.key,label:'Materiales de reparación',repairPoints:row.repairPoints,capacity:Math.max(0,100000-(r?.toolkitPoints??0)),expected:JSON.stringify({repairPoints:row.repairPoints}),...access({...row,source:row.placement})}));
+ const repairReserves=serviceReturnSources(s,sectorId,snapshot).filter(row=>row.repairPoints>0).map(row=>({key:row.key,label:'Materiales de reparación',repairPoints:row.repairPoints,...returnedOwner(row),capacity:Math.max(0,100000-(r?.toolkitPoints??0)),expected:JSON.stringify({repairPoints:row.repairPoints}),...access({...row,source:row.placement})}));
  const personal=op?carriedActor(s,op):null;
  const carried=personal?[...Object.keys(SUPPLY_ITEMS).filter(key=>key!=='ammo'||personal.ammunitionVersion!==2),...(!personal.weaponDropped&&personal.weapon?['primary']:[]),...(personal.blade?['blade']:[]),...(personal.offHand?['offhand']:[]),...wornBodyItems(personal),...Object.keys(personal.inventory??{}).map(key=>`inventory:${key}`)].filter(item=>itemQuantity(personal,item)>0).map(item=>{
   const row={item,label:itemDescriptor(personal,item).label,count:itemQuantity(personal,item)};
