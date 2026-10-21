@@ -18,6 +18,7 @@ import {publicAssignmentNotice} from './assignment-attention.js';
 import {spaceKey} from './tactical-space.js';
 import {heldGrenade,grenadeThrowCosts,grenadeThrowRange,GRENADE_THROW} from './grenade-throw.js';
 import {CARE_COMPOSURE_RELIEF} from './care-composure.js';
+import {publicCombatJournal} from './combat-journal.js';
 
 // Explicit allowlists: new simulation fields remain private until reviewed here.
 const scalar=value=>value===null||['string','number','boolean'].includes(typeof value);
@@ -63,7 +64,7 @@ export function playerKnownBattle(state){
   if(!state)return null;
   if(state.deployment){
     const deployment=sectorDeploymentModel(state);
-    return {...pick(state,['sectorId','sectorName','sceneId','missionId','width','height','turn','status','elapsedSeconds']),phase:'deployment',mode:'deployment',deployment,
+    return {...pick(state,['sectorId','sectorName','sceneId','missionId','width','height','turn','status','elapsedSeconds']),phase:'deployment',mode:'deployment',deployment,journal:publicCombatJournal(state),
       units:deployment.units.map(({position,...unit})=>({...unit,side:'player',...(position??{})})),orders:[],npcs:[],contacts:[],tiles:deployment.cells,artillery:[],groundItems:[]};
   }
   const players=state.units.filter(unit=>unit.side==='player'&&onField(unit));
@@ -117,7 +118,7 @@ export function playerKnownBattle(state){
     ...(state.upperSurfaces?{upperSurfaces:surfaces.map(surface=>pick(surface,['id',...POSITION,'elevation','type','kind','blocked','cover','slabThickness','material','buildingId','roomId',...STRUCTURE]))}:{}),
     ...(state.climbLinks?{climbLinks:state.climbLinks.filter(link=>knownCells.has(spaceKey(link.from))&&knownCells.has(spaceKey(link.to))).map(link=>({...pick(link,['id','kind']),from:pick(link.from,POSITION),to:pick(link.to,POSITION)}))}:{}),
     props:(state.props??[]).filter(seen).map(prop=>({...pick(prop,['id','type',...POSITION,'blocksMovement',...STRUCTURE]),...(prop.footprint?{footprint:pick(prop.footprint,['width','height'])}:{})})),
-    environment,contacts,orders,
+    environment,contacts,orders,journal:publicCombatJournal(state),
     artillery:(state.artillery??[]).filter(gun=>gun.side==='player'||seen(gun)).map(gun=>pick(gun,gun.side==='player'?['id','side','type',...POSITION,'loaded','ammo','facing','reloadProgress']:['id','side','type',...POSITION,'facing'])),
     groundItems:(state.groundItems??[]).filter(ground=>!ground.heldBy&&ground.count>0&&seen(ground)).map(ground=>({...pick(ground,['id',...POSITION,'type']),...item(ground.stack??ground)})),
     droppedWeapons:(state.droppedWeapons??[]).flatMap((ground,dropIndex)=>!ground.taken&&seen(ground)?[{dropIndex,...pick(ground,POSITION),...item(ground)}]:[]),

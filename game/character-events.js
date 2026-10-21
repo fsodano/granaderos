@@ -1,4 +1,5 @@
 import {speechFor} from './characters.js';
+import {recordPublicCombatMessage} from './combat-journal.js';
 import {visibleEnemies} from './tactical.js';
 
 // Presentation events follow authoritative state transitions; no extra game state
@@ -18,5 +19,8 @@ export function characterEventLines(before,after){
 }
 export function withCharacterSpeech(before,after){
  const lines=characterEventLines(before,after);
- return lines.length?{...after,log:[...after.log,...lines].slice(-80)}:after;
+ if(!lines.length)return after;
+ const next={...after,log:[...after.log,...lines].slice(-80)};
+ for(const line of lines)recordPublicCombatMessage(next,line);
+ return next;
 }
