@@ -12,6 +12,8 @@ import {unitAmmunitionByType,stackAmmunitionByType,addAmmoCounts,syncCarriedAmmu
 import {validateEquipmentOwnership} from '../game/equipment.js';
 import {serviceReturnSources,serviceReturnCacheBytes,consumeServiceReturn,MAX_SERVICE_RETURN_STACKS,MAX_SERVICE_RETURN_BYTES} from '../game/service-equipment-return.js';
 import {contractQuote} from '../game/contracts.js';
+import {civicStatus} from '../game/recruitment.js';
+import {serviceEquipmentReturnReason} from '../game/service-equipment-notice.js';
 import {defaultContentPackage} from '../game/content-package.js';
 import {compileWeaponDefinition} from '../game/weapon-definition.js';
 import {encodeSave,decodeSave} from '../game/save.js';
@@ -94,9 +96,10 @@ test('hourly contract expiry advances at the notice boundary and keeps its unvis
 
 test('full ground and a full bounded cache retain one fixed former-carrier owner and block paid rehire until the last stack and repair point leave',()=>{
  let s=fullCache(fullGround(leave(compactVisit(rich())))),actual=expectedGear(s),ammo=unitAmmunitionByType(personal(s));s=order(s,{type:'dismiss',id:110});const marker=structuredClone(s.operativeState[110].serviceEquipmentReturn);assert.ok(marker);assert.equal(s.sectorStates.retiro.groundItems.length,2000);assert.equal(s.serviceEquipmentReturns.entries.length,1);assert.deepEqual(packets(rows(s).filter(row=>row.stack).map(row=>row.stack)),packets(actual));assert.deepEqual(ammunition(rows(s).map(row=>row.stack)),ammo);assert.deepEqual(saved(s),s);
- assert.equal(contractQuote(s,rosterFor(s).find(o=>o.id===110),'day').available,false);assert.equal(recruitmentStatus(s,110).available,false);reject(s,{type:'recruitCivic',id:110,term:'day'});
+ const reason=serviceEquipmentReturnReason(s,110);assert.match(reason,/equipo que dejó en Buenos Aires · Fuerte y Retiro/);assert.match(reason,/100 puntos de «Materiales de reparación»/);
+ assert.equal(contractQuote(s,rosterFor(s).find(o=>o.id===110),'day').reason,reason);assert.equal(recruitmentStatus(s,110).reason,reason);assert.equal(civicStatus(s,110).reason,reason);assert.equal(reject(s,{type:'recruitCivic',id:110,term:'day'}).lastError,reason);
  const stale=rows(s).find(row=>row.stack?.item==='medkits');s=order(s,take(stale,1));assert.equal(s.operativeState[110].medkits,1);reject(s,take(stale,1));
- let reserve=rows(s).find(row=>row.kind==='repairPoints');s=order(s,repair(reserve,35));assert.equal(s.operativeState[110].toolkitPoints,65);reject(s,repair(reserve,1));reserve=rows(s).find(row=>row.kind==='repairPoints');s=order(s,repair(reserve,65));assert.ok(s.operativeState[110].serviceEquipmentReturn);reject(s,{type:'recruitCivic',id:110,term:'day'});
+ let reserve=rows(s).find(row=>row.kind==='repairPoints');s=order(s,repair(reserve,35));assert.equal(s.operativeState[110].toolkitPoints,65);assert.match(serviceEquipmentReturnReason(s,110),/65 puntos de «Materiales de reparación»/);reject(s,repair(reserve,1));reserve=rows(s).find(row=>row.kind==='repairPoints');s=order(s,repair(reserve,65));assert.ok(s.operativeState[110].serviceEquipmentReturn);assert.doesNotMatch(serviceEquipmentReturnReason(s,110),/Materiales de reparación/);reject(s,{type:'recruitCivic',id:110,term:'day'});
  // Collect each ordinary remaining stack through local actors. Leave the
  // primary until last to cover finishOwner after its current loadout changes.
  for(const original of rows(s).filter(row=>row.stack?.instanceId!=='retired-rifle')){
@@ -104,7 +107,8 @@ test('full ground and a full bounded cache retain one fixed former-carrier owner
   for(const id of [10,3,4]){const n=dispatchCampaign(s,take(row,row.stack.count,id));if(!n.lastError){s=n;collected=true;break;}}assert.ok(collected,original.key);
  }
  const last=rows(s)[0];assert.equal(last.stack.instanceId,'retired-rifle');s=order(s,take(last,1,4));assert.equal(s.operativeState[110].serviceEquipmentReturn,undefined);empty(s);assert.equal(rows(s).length,0);assert.equal(s.serviceEquipmentReturns.entries[0].items.length,1024);assert.equal(s.serviceEquipmentReturns.nextId,3);assert.equal(marker.siteId,'retiro');assert.deepEqual(saved(s),s);
- const cash=s.resources.treasury,quote=contractQuote(s,rosterFor(s).find(o=>o.id===110),'day');s=order(s,{type:'recruitCivic',id:110,term:'day'});assert.equal(s.resources.treasury,cash-quote.price);empty(s);assert.deepEqual(saved(s),s);
+ assert.equal(serviceEquipmentReturnReason(s,110),null);assert.equal(civicStatus(s,110).available,true);
+ const cash=s.resources.treasury,quote=contractQuote(s,rosterFor(s).find(o=>o.id===110),'day');assert.equal(quote.available,true);s=order(s,{type:'recruitCivic',id:110,term:'day'});assert.equal(s.resources.treasury,cash-quote.price);empty(s);assert.deepEqual(saved(s),s);
 });
 
 test('canonical UTF8 cache ceiling uses the bounded fallback without losing equipment or stopping time',()=>{

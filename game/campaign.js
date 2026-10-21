@@ -13,6 +13,7 @@ import {AMMUNITION_FAMILIES} from './ammunition-families.js';
 import {changeMerchantCash} from './equipment-merchants.js';
 import {equipmentKey} from './equipment-catalog.js';
 import {migrateServiceEquipmentReturns,validateServiceEquipmentReturns,returnServiceEquipment} from './service-equipment-return.js';
+import {serviceEquipmentReturnReason} from './service-equipment-notice.js';
 import {unloadOwnedCampaignAmmunition,selectCampaignAmmunitionLoad,migrateAmmunitionCustody,validateAmmunitionCustody,prepareCampaignAmmunition,issueStartingCartridges,migrateStartingCartridges,retainReturnedAmmunition,moveCampaignAmmunition,unloadCampaignWeapon,carriedAmmunition,ammoResourceKey,initialAmmunitionStock,migrateCampaignAmmunition,syncCampaignAmmunition,validateCampaignAmmunition,syncCarriedAmmunition} from './campaign-ammunition.js';
 import {removeIgnitionSupplies,validateStoredAmmo} from './ammo-types.js';
 import {personalPockets,pocketChangeReason,POCKET_FULL} from './personal-pockets.js';
@@ -171,7 +172,7 @@ function signContract(s,op,term){
 }
 function receiveHire(s,arrival,joinSquad=true){
   const id=arrival.operativeId,op=rosterFor(s).find(o=>o.id===id);
-  requireThat(!s.operativeState[id]?.serviceEquipmentReturn,'Recogé todo el equipo que dejó esta persona antes de volver a contratarla.');
+  const returnReason=serviceEquipmentReturnReason(s,id);requireThat(!returnReason,returnReason);
   s.contracts[id]={...(arrival.guaranteeId?{guaranteeId:arrival.guaranteeId}:{}),kind:arrival.permanent?'patriot':'paid',term:arrival.term,...contractStartedFields(s,arrival.permanent?null:s.secondOfHour??0),expiresAt:arrival.permanent?null:s.hour+arrival.serviceHours,paid:arrival.paid};
   s.recruited.push(id);issueStartingCartridges(s,op);issueInitialOutfit(s,id);Object.assign(s.operativeState[id],{location:arrival.destination,arrival:null,residentSector:null,residentScene:null});delete s.operativeState[id].residentPosition;
   if(joinSquad&&!s.pendingBattle&&s.location===arrival.destination&&s.squad.length<6)s.squad.push(id);
@@ -246,7 +247,7 @@ export function recruitmentStatus(s,id,local=false){
   if(s.recruited.includes(id))return {available:false,reason:'Ya se encuentra en tus filas.'};
   if(!s.operativeState[id]?.alive)return {available:false,reason:'Ha caído en combate.'};
   if(s.operativeState[id]?.captured)return {available:false,reason:'Está prisionero. Liberá el sector donde está detenido.'};
-  if(s.operativeState[id]?.serviceEquipmentReturn)return {available:false,reason:'Recogé todo el equipo que dejó esta persona antes de volver a contratarla.'};
+  const returnReason=serviceEquipmentReturnReason(s,id);if(returnReason)return {available:false,reason:returnReason};
   const character=characterForOperative(s,id);
   if(character&&isWorldCharacter(character)){
     const reason=!character.encounter.recruitable?'Este habitante no es un recluta.':s.operativeState[id].captured?'Este habitante está cautivo.':!local?'Buscá a este habitante en el mapa y hablá con él o ella.':null;
