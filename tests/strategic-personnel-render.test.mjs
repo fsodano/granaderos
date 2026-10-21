@@ -216,6 +216,16 @@ test('personnel, dossiers and public campaign state distinguish carried, jammed 
  assert.deepEqual(state,before);care.defaultView.close();
 });
 
+test('personnel energy text and meter respect fatigue capacity without changing raw service records',()=>{
+ const state=initialCampaign(),cases=[{id:3,energy:100,fatigue:2,shown:98,max:98},{id:4,energy:100,fatigue:4,shown:96,max:96},{id:10,energy:37.5,fatigue:24,shown:37.5,max:76}];
+ // Captive recovery can leave raw energy above the retained military fatigue
+ // limit. Rendering must not rewrite that record or its public projection.
+ for(const {id,energy,fatigue}of cases)Object.assign(state.operativeState[id],{energy,fatigue});
+ const before=structuredClone(state),publicBefore=playerKnownCampaign(state),doc=new JSDOM(render(h(MedicalCare,{state,dispatch:noop}))).window.document;
+ for(const {id,shown,max}of cases){const label=doc.querySelector(`[data-care-id="${id}"] .care-vitals label:last-child`),meter=label.querySelector('meter');assert.equal(label.querySelector('strong').textContent,`${Math.round(shown)}/${max}`);assert.equal(meter.getAttribute('value'),String(shown));assert.equal(meter.getAttribute('max'),String(max));}
+ assert.deepEqual(state,before);assert.deepEqual(playerKnownCampaign(state),publicBefore);doc.defaultView.close();
+});
+
 for(const kind of ['assignment','contract'])test(`${kind} menu traps Tab in both directions and Escape restores the desktop person button`,async t=>{
  const m=await mountCampaignMenus(t),state=structuredClone(m.state()),label=kind==='assignment'?'Asignación: Cabral':'Fin contrato: Cabral',trigger=m.doc.querySelector(`.strategy-layout button[aria-label="${label}"]`);
  trigger.focus();await m.click(trigger);const dialog=m.doc.querySelector('.strategic-person-menu'),first=dialog.querySelector('button[aria-label="Cerrar"]'),last=[...dialog.querySelectorAll('button')].find(b=>b.textContent==='Cancelar');
