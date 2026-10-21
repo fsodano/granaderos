@@ -44,6 +44,7 @@ export default function StrategicPersonnelMenu({state:s,roster,id,kind,onClose,d
  const [skill,setSkill]=useState('marksmanship'),[target,setTarget]=useState(String(id)),[teacher,setTeacher]=useState('');
  const [squadMenu,setSquadMenu]=useState(false);
  const blocked=Boolean(s.pendingBattle||s.pendingEncounter||s.defeated),contract=contractStatus(s,id),departureReason=guaranteeDepartureReason(s,contract,op);
+ const contractDays=Math.ceil((contract?.remaining??0)/24);
  const contractRefusal=kind==='contract'?contractRenewalQuote(s,op,'day').serviceRefusal:null;
  const local=roster.filter(o=>s.recruited.includes(o.id)&&s.operativeState[o.id]?.alive&&operativeLocation(s,o.id)===operativeLocation(s,id));
  const order=(action:any)=>{dispatch(action);onClose();};
@@ -76,7 +77,7 @@ export default function StrategicPersonnelMenu({state:s,roster,id,kind,onClose,d
    <PreferredCompanionsSummary state={s} operative={op}/>
    <ServiceObjectionNotice reason={serviceObjectionReason(s,op)}/>
    <ContractMoraleNotice status={lowMoraleRenewalStatus(s,op)}/>
-   <p>{contract?.remaining===null?'Servicio permanente':`${Math.ceil((contract?.remaining??0)/24)} días hasta la salida`}</p>
+   <p>{contract?.remaining===null?'Servicio permanente':`${contractDays} ${contractDays===1?'día':'días'} hasta la salida`}</p>
    <ServiceRefusalNotice state={s} refusal={contractRefusal} disabled={blocked} dispatch={dispatch}/>
    {contract?.remaining!==null&&['day','week','fortnight'].map(term=>{const q=contractRenewalQuote(s,op,term),reason=blocked?'Resolvé el encuentro antes de renovar.':!q.available?q.reason:q.price>s.resources.treasury?'No hay suficientes pesos.':null;return <button key={term} className="line-button" disabled={Boolean(reason)} title={reason||undefined} onClick={()=>order({type:'renewContract',id,term,...(s.contracts[id]?.guaranteeId?{expectedGuaranteeId:s.contracts[id].guaranteeId}:{}),expectedExpiresAt:s.contracts[id]?.expiresAt,expectedExpiresSecond:s.contracts[id]?.expiresSecond??0})}>{term==='day'?'Un día':term==='week'?'Una semana':'Dos semanas'} · {q.price.toLocaleString('es-AR')} pesos</button>;})}
    {guaranteeRecord(s,contract)&&<p>Garantía: {guaranteeRecord(s,contract).amount} pesos. Devolución actual al salir: {serviceGuaranteeRefund(s,contract,op)} pesos. La paga no se devuelve.</p>}

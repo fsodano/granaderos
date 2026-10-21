@@ -176,8 +176,10 @@ test('assignment opens six numbered buttons and a click forms an actual saved sq
 test('the contract menu renews with the displayed exact second deadline and charges the current quote',async t=>{
  let state=order(initialCampaign(),{type:'advanceStrategicTime',seconds:121});state=order(state,{type:'recruitCivic',id:103,term:'day'});state=decodeSave(encodeSave(state)).campaign;
  const quote=contractQuote(state,rosterFor(state).find(op=>op.id===103),'day'),m=await mountMenu(t,state,103,'contract');
+ assert.match(m.doc.body.textContent,/1 día hasta la salida/);
  await m.click(`Un día · ${quote.price.toLocaleString('es-AR')} pesos`);assert.equal(m.actions[0].expectedExpiresAt,24);assert.equal(m.actions[0].expectedExpiresSecond,121);
  assert.equal(m.state().lastError,null);assert.equal(m.state().resources.treasury,state.resources.treasury-quote.price);assert.equal(m.state().contracts[103].expiresAt,48);assert.equal(m.state().contracts[103].expiresSecond,121);
+ assert.match(m.doc.body.textContent,/2 días hasta la salida/);
 });
 
 async function mountCampaignMenus(t,{narrow=false}={}){
