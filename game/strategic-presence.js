@@ -72,9 +72,9 @@ export function strategicPresenceLabel(row,context=null){
  if(!row)return '';
  const enemyName=campaignFactions(context).find(faction=>['royalist','royalists'].includes(faction.id))?.name??'la oposición';
  const parts=[];
- if(row.players.length)parts.push(`${row.players.length} combatientes propios`);
- if(row.militia)parts.push(`${row.militia} milicianos`);
- if(row.enemies)parts.push(`${row.enemies} combatientes de ${enemyName} observados`);
+ if(row.players.length)parts.push(`${row.players.length} ${row.players.length===1?'combatiente propio':'combatientes propios'}`);
+ if(row.militia)parts.push(`${row.militia} ${row.militia===1?'miliciano':'milicianos'}`);
+ if(row.enemies)parts.push(`${row.enemies} ${row.enemies===1?'combatiente':'combatientes'} de ${enemyName} ${row.enemies===1?'observado':'observados'}`);
  if(row.unknownEnemy)parts.push(row.staleEnemy?`Último parte hace ${row.enemyAgeHours} h; presencia actual sin confirmar`:`Fuerza de ${enemyName} sin confirmar`);
  return parts.join(' · ');
 }
