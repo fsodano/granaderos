@@ -119,7 +119,8 @@ export function presentActors(state:any,entries:readonly ActorEntry[],positions:
     const motion=positions[key];if(!actorInteriorReadable(state,actor,motion,revealed))continue;
     const posture=actorPosture(actor),dead=actor.hp<=0,unconscious=Boolean(actor.unconscious),mounted=Boolean(actor.mounted&&!dead&&!unconscious);
     const equipment=spriteEquipment(actor),items=actorItems(actor),at=motion??actor;
-    const idleAction=actor.braced&&equipment==='long-gun'?'brace':(actor.weaponReady||options.selected===actor.id&&kind==='unit'&&options.mode==='fire')&&['long-gun','short-gun'].includes(equipment)?'aim':'idle';
+    const readyInCombat=state.mode!=='exploration'&&(state.status===undefined||state.status==='active')&&actor.weaponReady;
+    const idleAction=actor.braced&&equipment==='long-gun'?'brace':(readyInCombat||options.selected===actor.id&&kind==='unit'&&options.mode==='fire')&&['long-gun','short-gun'].includes(equipment)?'aim':'idle';
     let cue=options.cues?.[key],action=idleAction;
     const frame=options.frame;
     const assignedCrew=frame&&['artillery','artilleryReload','artilleryMove','artilleryPivot'].includes(frame.action)&&frame.crewIds?.includes(actor.id);

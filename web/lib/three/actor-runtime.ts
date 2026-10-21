@@ -15,6 +15,7 @@ import {ActorIllustration} from './actor-illustration';
 import {readableHumanClip} from './readable-human-stance';
 import {boundLocomotionClip} from './locomotion-clip';
 import {idleBreathingClip,idleBreathingTiming} from './idle-breathing';
+import {relaxedStandingIdle} from './relaxed-standing-idle';
 import type {ContactActorResolver} from './melee-contact-fit';
 import {NativeReadyMeleeContactFit as NativeMeleeContactFit} from './melee-ready-contact-fit';
 import type {ActorVisual} from './presentation';
@@ -218,11 +219,17 @@ export class ActorRuntime {
     const {spec:sourceSpec,clip:sourceClip}=boundLocomotionClip(this.asset,semantic);
     const hand=(loadingItem?.socket??visual.cue?.hand??'handRight') as HandRole,mirror=hand==='handLeft'&&visual.equipment==='short-gun'&&['aim','fire','reload'].includes(visual.action);
     if(mirror&&!this.asset.manifest.animationMirroring)throw Error(`Missing left-hand animation mapping: ${this.asset.appearance.id}`);
-    const posed=readableHumanClip(sourceClip,this.asset.body.scene,this.asset.manifest.bones,semantic);
+    let resting=sourceClip;
+    if(semantic==='stand.idle.long-gun'||semantic==='stand.idle.short-gun'){
+      const neutral=boundClip(this.asset.clips,this.asset.animation.animations,'stand.idle.unarmed').clip,carry=boundClip(this.asset.clips,this.asset.animation.animations,semantic.replace('.idle.','.walk.')).clip;
+      const offhandPistol=visual.items.some(item=>item.socket==='handLeft'&&this.itemSpec(item.id)?.category==='pistol');
+      resting=relaxedStandingIdle(sourceClip,this.asset.body.scene,this.asset.manifest.bones,semantic,neutral,carry,offhandPistol,this.asset.manifest.animationMirroring);
+    }
+    const posed=readableHumanClip(resting,this.asset.body.scene,this.asset.manifest.bones,semantic);
     const breathing=idleBreathingClip(posed,this.asset.body.scene,this.asset.manifest.bones,semantic),idleTiming=breathing!==posed?idleBreathingTiming(visual.key):undefined;
     const clip=mirror?mirroredClip(breathing,this.asset.body.scene,this.asset.manifest.animationMirroring!):breathing;
     const clipSpec=mirror?withMirroredProps(sourceSpec,this.asset.body.scene):idleTiming?{...sourceSpec,playbackRate:clip.duration/idleTiming.period}:sourceSpec;
-    const key=`${semantic}:${hand}:${visual.cue?.id??''}`;
+    const key=`${semantic}:${hand}:${visual.cue?.id??''}:${clip.uuid}`;
     if(key!==this.actionKey){
       this.gaitSupport.begin(this.clipSpec,clipSpec,this.mixer.time,clip);
       this.gestureSupport.begin(this.clipSpec,clipSpec,this.mixer.time,clip,this.action?.getClip(),this.action?.time??0);
@@ -308,14 +315,14 @@ export class ActorRuntime {
     // body coordinates. Switching their offsets before the pose caused a jump.
     if(totalWeight>1)this.model.position.divideScalar(totalWeight);
   }
-  tick(delta:number,now:number,reducedMotion=false){
+  tick(delta:number,now:number,reducedMotion=false,ambientPaused=false){
     if(!this.action)return;
     this.patientFit.restore();this.proneArmSupport.restore();
     this.gestureSupport.restore();
     this.gaitSupport.restore();
     this.meleeFit.restore();this.root.rotation.y=this.visual.yaw;
     this.climbFit?.restore();
-    const visual=this.visual,clip=this.action.getClip(),motion=visual.motion;
+    const visual=this.visual,clip=this.action.getClip(),motion=visual.motion,idlePaused=ambientPaused&&visual.action==='idle';
     const projected=(x=0,y=0)=>x*Math.sin(visual.yaw)+y*Math.cos(visual.yaw);
     const strafe=visual.action==='strafeLeft'||visual.action==='strafeRight';
     const direction=strafe?1:projected(motion?.travelX,motion?.travelY)<0?-1:1;
@@ -326,13 +333,15 @@ export class ActorRuntime {
     const timing=sampleAnimationTime({clip:{...this.clipSpec,duration:clip.duration},action:visual.action,cue:visual.cue,motion:clipMotion,now,reducedMotion});
     const loadingItem=this.loadingItem(visual,timing.workIndex);
     const barrel=visual.cue?.work?.[timing.workIndex??0]?.barrel??0;
-    if(loadingItem&&(loadingItem.socket!==this.actionHand||barrel!==this.actionBarrel)){this.update(visual,now);this.tick(0,now,reducedMotion);return;}
+    if(loadingItem&&(loadingItem.socket!==this.actionHand||barrel!==this.actionBarrel)){this.update(visual,now);this.tick(0,now,reducedMotion,ambientPaused);return;}
     if(timing.complete&&visual.cue&&!this.clipSpec.loop){
       // Retain the exact terminal pose while it blends to the resting clip.
       this.action.time=timing.time??clip.duration;this.action.timeScale=0;this.mixer.update(0);
-      const id=visual.cue.id;this.completedCues.add(`${id}:${visual.cue.phase??''}`);this.update(this.restVisual(visual),now);this.onCueComplete?.(visual.key,id);this.tick(0,now,reducedMotion);return;
+      const id=visual.cue.id;this.completedCues.add(`${id}:${visual.cue.phase??''}`);this.update(this.restVisual(visual),now);this.onCueComplete?.(visual.key,id);this.tick(0,now,reducedMotion,ambientPaused);return;
     }
-    this.action.timeScale=timing.rate;if(timing.time!==undefined)this.action.time=timing.time;
+    // Pause the ambient clip, not the mixer clock: an explicit aim-to-rest
+    // crossfade must still finish while campaign time is paused.
+    this.action.timeScale=idlePaused?0:timing.rate;if(timing.time!==undefined)this.action.time=timing.time;
     if(motion?.moving&&motion.climbGeometry&&this.clipSpec.climbSupport){const down=visual.action==='climbDown',fraction=this.climbFit!.nativeFraction(motion.climbGeometry,down?1-(motion.segmentFraction??0):motion.segmentFraction??0,this.clipSpec);this.action.time=clip.duration*(down?1-fraction:fraction);}
     this.mixer.update(Math.min(delta,.1));
     if(motion?.moving&&motion.climbGeometry&&this.clipSpec.climbSupport)this.climbFit?.apply(motion.climbGeometry,visual.action==='climbDown'?1-(motion.segmentFraction??0):motion.segmentFraction??0,this.clipSpec,clip,this.action.getEffectiveWeight());
@@ -348,7 +357,7 @@ export class ActorRuntime {
     if(this.horse&&this.horseMixer){
       const visibility=this.clipSpec.horseVisibility;
       if(visibility)this.horse.visible=this.action.time>=visibility.start&&this.action.time<=visibility.end;
-      if(this.horseAction){const horseSpec=this.asset.manifest.horse?.clips?.find(clip=>clip.name===this.horseClip),horseTime=sampleAnimationTime({clip:{duration:this.horseAction.getClip().duration,loop:true,locomotionSpeed:horseSpec?.locomotionSpeed},action:visual.action,motion:clipMotion,now});this.horseAction.timeScale=horseTime.rate;if(horseTime.time!==undefined)this.horseAction.time=horseTime.time;}
+      if(this.horseAction){const horseSpec=this.asset.manifest.horse?.clips?.find(clip=>clip.name===this.horseClip),horseTime=sampleAnimationTime({clip:{duration:this.horseAction.getClip().duration,loop:true,locomotionSpeed:horseSpec?.locomotionSpeed},action:visual.action,motion:clipMotion,now});this.horseAction.timeScale=idlePaused?0:horseTime.rate;if(horseTime.time!==undefined)this.horseAction.time=horseTime.time;}
       this.horseMixer.update(Math.min(delta,.1));
       const saddleSpec=this.asset.manifest.horse?.saddle;
       const socket=saddleSpec&&this.horse.getObjectByName(saddleSpec.node);
