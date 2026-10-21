@@ -77,7 +77,7 @@ test('a hidden enemy interruption has no name, while an observed interrupter can
   Object.assign(s.units[1],{x:7,facing:6,ap:3,experienceLevel:10,agility:100,overwatch:true});
   const n=actBattle(s,{type:'reload',unitId:'p'});
   assert.equal(n.units[1].reactionTurn,1);
-  assert.ok(n.log.some(line=>visible?line.includes('Atacante oculto interrumpen'):line==='El enemigo interrumpe.'));
+  assert.ok(n.log.includes(visible?'Atacante oculto interrumpe con sus PA restantes.':'El enemigo interrumpe.'));
   if(!visible)assert.ok(!n.log.some(line=>line.includes('Atacante oculto')));
  }
 });

@@ -14,6 +14,8 @@ test('movement worker commits one cell and only reached cells cost energy and ti
  const before=field(),original=structuredClone(before),result=runBattleJob({battle:before,action:move,kind:'movement-step'});
  assert.equal(result.status,'moving');assert.equal(actor(result.state).x,2);assert.equal(actor(result.state).energy,99.95);assert.equal(result.state.elapsedSeconds,3);
  assert.equal(result.continuation.length,10);assert.equal(result.continuation.at(-1).x,12);assert.equal(actor(result.state).lastMovePath.length,1);
+ assert.equal(result.state.log.at(-1),`${actor(before).name} avanza 1 casilla.`);
+ assert.equal(result.state.publicJournal.entries.at(-1).text,result.state.log.at(-1));
  assert.deepEqual(before,original);assert.doesNotThrow(()=>validateBattleSnapshot(result.state));
  // Cancelling this plan does not charge any of its remaining ten cells.
  assert.equal(actor(before).energy-actor(result.state).energy<.051,true);
@@ -24,11 +26,26 @@ test('completed incremental walk retains the ordinary route costs and a coherent
  do{result=movementStep(current,move,continuation);current=validateBattleSnapshot(JSON.parse(JSON.stringify(result.state)));continuation=result.continuation;count++;}while(result.status==='moving'&&count<30);
  assert.equal(result.status,'completed');assert.equal(count,11);assert.deepEqual(physical(current),physical(whole));
  assert.equal(current.log.at(-1),whole.log.at(-1));
+ assert.equal(current.log.at(-1),`${actor(before).name} avanza 11 casillas.`);
+ assert.deepEqual(current.publicJournal,whole.publicJournal);
+});
+
+test('legacy plural movement text compacts without reconstructing a missing public history',()=>{
+ for(const hasPublicHistory of [true,false]){
+  const first=movementStep(field(),move),legacy=structuredClone(first.state),previous=`${actor(legacy).name} avanza 1 casillas.`;
+  legacy.log[legacy.log.length-1]=previous;
+  if(hasPublicHistory)legacy.publicJournal.entries.at(-1).text=previous;
+  else delete legacy.publicJournal;
+  const restored=validateBattleSnapshot(JSON.parse(JSON.stringify(legacy))),second=movementStep(restored,move,first.continuation);
+  assert.equal(second.state.log.at(-1),`${actor(legacy).name} avanza 2 casillas.`);
+  assert.equal(second.state.publicJournal.entries.at(-1).text,`${actor(legacy).name} avanza ${hasPublicHistory?'2 casillas':'1 casilla'}.`);
+ }
 });
 
 test('a new destination discards the old remainder and running charges only later reached cells',()=>{
  const first=movementStep(field(),move),second=movementStep(first.state,move,first.continuation);
  assert.equal(actor(second.state).x,3);
+ assert.equal(second.state.log.at(-1),`${actor(second.state).name} avanza 2 casillas.`);
  const changed={...move,x:3,y:6,movement:'run'};let result=movementStep(second.state,changed);
  assert.equal(actor(result.state).x,3);assert.equal(actor(result.state).y,3);assert.equal(actor(result.state).movementMode,'run');
  while(result.status==='moving')result=movementStep(result.state,changed,result.continuation);

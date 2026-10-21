@@ -56,8 +56,9 @@ export function movementStep(state,action,continuation=null){
  // civilian, contact or other events retain their original journal entries.
  if(continuation&&state.mode==='exploration'){
   const prefix=`${unit.name} avanza `,suffix=' casillas.',previous=state.log.at(-1),line=next.log.at(-1);
-  if(previous?.startsWith(prefix)&&previous.endsWith(suffix)&&line===`${prefix}1${suffix}`){
-   const count=Number(previous.slice(prefix.length,-suffix.length)),index=next.log.length-2;
+  const match=previous?.startsWith(prefix)?/^(\d+) casillas?\.$/.exec(previous.slice(prefix.length)):null;
+  if(match&&line===`${prefix}1 casilla.`){
+   const count=Number(match[1]),index=next.log.length-2;
    if(Number.isInteger(count)&&next.log[index]===previous){
     next.log.splice(index,2,`${prefix}${count+1}${suffix}`);
     const entries=publicCombatJournal(next),prior=entries.at(-2),latest=entries.at(-1);

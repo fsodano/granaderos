@@ -1089,7 +1089,7 @@ function reactionFire(s,actor,before){
     if(s.phase!=='enemy'||!s.enemyTurn&&!s.reactionStack?.length)return false;
     for(const u of qualified)u.reactionTurn=s.turn;
     s.phase='interrupt';s.interrupt={side:'player',unitIds:qualified.map(u=>u.id),enemyId:actor.id,...(s.reactionStack?.length?{returnTo:'reaction'}:{})};
-    sayPublic(s,`¡Interrupción! ${qualified.map(u=>u.name).join(', ')} pueden actuar con sus PA restantes.`);
+    sayPublic(s,`¡Interrupción! ${qualified.map(u=>u.name).join(', ')} ${qualified.length===1?'puede':'pueden'} actuar con sus PA restantes.`);
   }else{
     if(!['player','interrupt'].includes(s.phase))return false;
     for(const u of qualified)u.reactionTurn=s.turn;
@@ -1097,7 +1097,7 @@ function reactionFire(s,actor,before){
     s.reactionStack.push({unitIds:qualified.map(u=>u.id),unitIndex:0,actionsTaken:0,resumePhase:s.phase,...(s.interrupt?{resumeInterrupt:structuredClone(s.interrupt)}:{})});
     s.phase='enemy';delete s.interrupt;
     const seen=qualified.filter(u=>journalVisible(s,u));
-    say(s,seen.length?`${seen.map(u=>u.name).join(', ')} interrumpen con sus PA restantes.`:'El enemigo interrumpe.');recordPublicCombatMessage(s,'El enemigo interrumpe.');
+    say(s,seen.length?`${seen.map(u=>u.name).join(', ')} ${seen.length===1?'interrumpe':'interrumpen'} con sus PA restantes.`:'El enemigo interrumpe.');recordPublicCombatMessage(s,'El enemigo interrumpe.');
   }
   return true;
 }
@@ -2115,7 +2115,7 @@ else if(a.type==='move'||a.type==='climb'){
     if(!alive(u)||s.status!=='active')break;
   }
 
-  sayObserved(s,[u],u.side==='player'?`${u.name} ${movementIntent==='preserveFacing'?'se desplaza sin girar':'avanza'} ${steps} casillas${exploring?'':` (${formatAP(spent)} PA)`}.`:`${u.name} avanza.`,`${u.name} avanza.`);
+  sayObserved(s,[u],u.side==='player'?`${u.name} ${movementIntent==='preserveFacing'?'se desplaza sin girar':'avanza'} ${steps} ${steps===1?'casilla':'casillas'}${exploring?'':` (${formatAP(spent)} PA)`}.`:`${u.name} avanza.`,`${u.name} avanza.`);
 }
 else if(a.type==='throwGrenade'){
   const point=positionOf(a),preview=grenadeThrowPreview(s,u,point,a);
