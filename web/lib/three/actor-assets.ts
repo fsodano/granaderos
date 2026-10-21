@@ -1,6 +1,7 @@
 import {AnimationClip,Material,Mesh,Texture} from 'three';
 import type {AnimationMirroring} from './clip-mirroring';
 import {GLTFLoader,type GLTF} from 'three/addons/loaders/GLTFLoader.js';
+import {fitGauchoPoncho} from './gaucho-poncho-fit';
 export type SocketSpec={node:string;bone?:string;position?:number[];rotation?:number[];scale?:number;mirror?:{socket:string;localAxis:'x'|'y'|'z'}};
 export type ClipSpec={name:string;semantic?:string;barrelClips?:string[];gesture?:string;variant?:string;playbackRate?:number;reviewedPose?:{name:string;origin:string;sourceSha256:string};freeHands?:('handRight'|'handLeft')[];handProps?:{hand:'handRight'|'handLeft';categories:string[];untilMarker?:string}[];gripOffsets?:{hand:'handRight'|'handLeft';keys:{time:number;position:number[]}[]}[];duration?:number;durationSeconds?:number;loop:boolean;seatAnchor?:number[];seatWeight?:{time:number;weight:number}[];horseVisibility?:{start:number;end:number};climbSupport?:{height:number;span:number;feetRest:Record<'l'|'r',number[]>};stowItems?:{categories:string[];socket:string;position?:number[];rotation?:number[]}[];propCues?:{item:string;socket:string;start:number;end:number;scale?:number;position?:number[];rotation?:number[]}[];markers?:Record<string,number>;locomotionSpeed?:number;nativeStrideSpeed?:number;strideDistance?:number;strideMeasurement?:{method:string;bones:string[];maximumContactHeight:number;sampleCount:number}};
 export type AppearanceSpec={id:string;gender:string;height:number;animationLibrary:string;lods:{lod:number;url:string;triangles:number;bytes?:number}[];parts?:Record<string,string>;lodPixelThresholds?:number[];materials?:Record<string,string>;sockets?:Record<string,SocketSpec>};
@@ -23,6 +24,7 @@ export class ActorAssetLibrary {
     const library=manifest.animationLibraries[appearance.animationLibrary];if(!library)throw Error(`Missing animation library: ${appearance.animationLibrary}`);
     const garment=manifest.garments?.[appearance.gender],horse=mounted?manifest.horse?.lods.find(item=>item.lod===lod)??manifest.horse?.lods.at(-1):undefined;
     const [body,animation,equipment,garments,horseFile]=await Promise.all([this.load(level.url),this.load(library.url),this.load(manifest.equipment.url),garment?this.load(garment.url):undefined,horse?this.load(horse.url):undefined]);
+    fitGauchoPoncho(body.scene,appearance.id);
     return {manifest,appearance,body,animation,clips:library.clips,equipment,garments,horse:horseFile,lod:level.lod};
   }
   private disposedGeometry=new Set<unknown>();private disposedMaterial=new Set<Material>();private disposedTexture=new Set<Texture>();
