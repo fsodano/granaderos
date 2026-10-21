@@ -351,6 +351,7 @@ if(sector.upperSurfaces!==undefined)state.upperSurfaces=structuredClone(sector.u
 if(sector.climbLinks!==undefined)state.climbLinks=structuredClone(sector.climbLinks);
 if(sector.regionalWeather){state.regionalWeather=true;state.regionalWeatherDefinition=structuredClone(sector.regionalWeatherDefinition??regionalWeatherSource(state.sectorId,sector));state.weather=regionalWeatherAt(state.sectorId,state.startSeconds/3600,state);}
 if(sector.localityIds!==undefined)state.localityIds=structuredClone(sector.localityIds);
+if(sector.adjacentExitIds!==undefined)state.adjacentExitIds=structuredClone(sector.adjacentExitIds);
 if(sector.sectorCode!==undefined)state.sectorCode=sector.sectorCode;
 state.weather.rain=typeof state.weather.rain==='boolean'?(state.weather.rain?40:0):state.weather.rain;state.weather.humidity=state.weather.humidity>0&&state.weather.humidity<=1?state.weather.humidity*10:state.weather.humidity;
 for(let y=0;y<height;y++)for(let x=0;x<width;x++){const edge=x===Math.floor(width*.56)&&y>1&&y<height-2&&y!==Math.floor(height/2);state.tiles.push({x,y,type:edge?'wall':sector.biome==='wetland'&&x>3&&x<width-3&&y%3===0?'mud':sector.biome==='mountain'||sector.biome==='foothills'?'stone':'grass',blocked:edge,cover:edge?40:sector.biome==='forest'&&x>3&&x<width-3&&y%3===0?20:0});}
@@ -2734,7 +2735,14 @@ function processRout(s,u){
   const proxy={...u,routed:false},routes=getReachable({...s,mode:'exploration'},proxy).filter(point=>tacticalLevel(point)===0).flatMap(point=>exits.filter(exit=>boundaryPassable(s,point,exit.edge)).map(exit=>({...point,exit})));
   routes.sort((a,b)=>a.cost-b.cost||a.exit.id.localeCompare(b.exit.id)||a.y-b.y||a.x-b.x);
   if(!routes.length){lowerWeapon(u);u.surrendered=true;u.ap=0;sayObserved(s,[u],`${u.name} se rinde: no encuentra un paso de salida.`);checkEnd(s);return;}
-  const route=routes[0];
+  // Keep the cheapest physical escape, including its existing edge/point tie.
+  // Only player operatives prefer a neighbouring destination on that same path;
+  // legacy snapshots without campaign-derived adjacency keep their old order.
+  let route=routes[0];
+  if(u.side==='player'&&!u.militia&&!u.missionAlly&&s.adjacentExitIds?.length){
+    const adjacent=new Set(s.adjacentExitIds);
+    route=routes.find(candidate=>candidate.cost===route.cost&&candidate.exit.edge===route.exit.edge&&sameCell(candidate,route)&&adjacent.has(candidate.exit.id))??route;
+  }
   if(route.path.length){
     const reachable=getReachable(s,proxy),step=[...route.path].reverse().map(p=>reachable.find(v=>sameCell(v,p))).find(Boolean);
     if(!step)return;

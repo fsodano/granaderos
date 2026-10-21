@@ -17,7 +17,7 @@ import {sceneAnchorFor} from './campaign-scenario.js';
 import {propBlocksAt} from './props.js';
 import {buildSectorMap} from './maps.js';
 import {createBattle,initializeBattlePerception} from './tactical.js';
-import {validEntry,validateSectorExits} from './tactical-exits.js';
+import {validEntry,validateSectorExits,adjacentExitIdsFor} from './tactical-exits.js';
 import {validateBattleSnapshot} from './validate-battle.js';
 import {validateQuestGifts} from './quests.js';
 import {validateQuestBeneficiaries,validateQuestBeneficiaryContext} from './quest-beneficiaries.js';
@@ -48,6 +48,7 @@ export function enterSector(request,previous=null,{placement=false}={}){
  const map=buildSectorMap({...request,compactLayout:previous?previous.width===20&&previous.height===16:request.compactLayout},{restorePrevious:Boolean(previous)});
  map.localityIds=campaignSectors(request).map(s=>s.id);
  map.sectorCode=worldCell(request.sector,request)?.grid??'';
+ map.adjacentExitIds=adjacentExitIdsFor(request.sector,request.sceneId??null,map.exits??[],request);
  if(!previous){
    const metadata=authoredEnvironment(request.sceneId??request.sector,map,request);
    for(const patch of metadata.doors){const door=map.wallEdges.find(t=>t.doorId===patch.id);if(door)Object.assign(door,patch,{blocked:!patch.open,blocksSight:!patch.open});}
