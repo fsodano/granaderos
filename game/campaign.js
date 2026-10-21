@@ -183,7 +183,7 @@ function receiveHire(s,arrival,joinSquad=true){
   s.recruited.push(id);issueStartingCartridges(s,op);issueInitialOutfit(s,id);Object.assign(s.operativeState[id],{location:arrival.destination,arrival:null,residentSector:null,residentScene:null});delete s.operativeState[id].residentPosition;
   if(joinSquad&&!s.pendingBattle&&s.location===arrival.destination&&s.squad.length<6)s.squad.push(id);
   note(s,`${op.name} llega a ${sector(arrival.destination,s).name} y comienza su servicio.`);
-  receiveCorrespondence(s,{id:`arrival-${id}-${s.hour}`,sender:`Cuartel de ${sector(arrival.destination,s).name}`,subject:`Llegada de ${op.nickname}`,text:`${op.name} llegó y comenzó su servicio. ${arrival.permanent?'Su servicio es permanente.':`El contrato cubre ${arrival.serviceHours/24} días.`}`});
+  receiveCorrespondence(s,{id:`arrival-${id}-${s.hour}`,sender:`Cuartel de ${sector(arrival.destination,s).name}`,subject:`Llegada de ${op.nickname}`,text:`${op.name} llegó y comenzó su servicio. ${arrival.permanent?'Su servicio es permanente.':`El contrato cubre ${arrival.serviceHours/24} ${arrival.serviceHours===24?'día':'días'}.`}`});
   if(s.contentCampaign){const line=speechFor(op,'hired');if(line?.trim())note(s,`${op.name}: «${line}»`);}
 }
 function receiveDueHires(s,joinSquad=true){advanceHireArrivals(s,arrival=>receiveHire(s,arrival,joinSquad));}
@@ -896,7 +896,7 @@ export function dispatchCampaign(previous,action){
         renewPendingCompanionLossService(s,id);
         // Scenario rewards use the saved pay clock to cap repeated renewals.
         if(op.foreign&&quote.price>0&&payMoraleRewardEligible(s,id))scenarioFor(s).paidService(s,scenarioContext(s));
-        recordPayMorale(s,[id],true);note(s,`${op.name} renueva su servicio por ${quote.hours/24} días.`);break;
+        recordPayMorale(s,[id],true);note(s,`${op.name} renueva su servicio por ${quote.hours/24} ${quote.hours===24?'día':'días'}.`);break;
       }
       case 'dismiss':{const id=Number(action.id);requireThat(action.expectedGuaranteeId===undefined||s.contracts[id]?.guaranteeId===action.expectedGuaranteeId,'El contrato cambió. Revisá la garantía antes de finalizar.');requireThat(s.recruited.includes(id),'El combatiente no está contratado.');requireThat(id!==1000,'Tu oficial dirige la campaña y no puede ser despedido.');const op=rosterFor(s).find(o=>o.id===id),refundReason=guaranteeDepartureReason(s,s.contracts[id],op);requireThat(!refundReason,refundReason);const funded=Boolean(s.contracts[id]?.guaranteeId);endOperativeService(s,id,true);note(s,funded?'El combatiente deja el servicio. La paga no se devuelve; la garantía conserva su recibo de liquidación.':'El combatiente deja el servicio sin devolución del anticipo.');break;}
       case 'createSquad':case 'squad':{

@@ -68,7 +68,7 @@ export default function Recruitment({state:s,dispatch}:Props){
     {quote.topTier&&<small className="elite-contract">Especialista de élite</small>}
     {arrival?<>
      <p className="contract-remaining">{remaining?`En viaje · faltan ${remaining} horas`:'Llegada pendiente'} · {CAMPAIGN_SECTORS.find(d=>d.id===arrival.destination)?.name}</p>
-     <small>{arrival.serviceHours===null?'Servicio permanente':`${arrival.serviceHours/24} días de servicio al llegar`} · Paga: {arrival.paid} pesos. {guarantee&&<>Garantía financiada: {guarantee.amount} pesos. Total pagado: {arrival.paid+guarantee.amount} pesos.</>}</small>
+     <small>{arrival.serviceHours===null?'Servicio permanente':`${arrival.serviceHours/24} ${arrival.serviceHours===24?'día':'días'} de servicio al llegar`} · Paga: {arrival.paid} pesos. {guarantee&&<>Garantía financiada: {guarantee.amount} pesos. Total pagado: {arrival.paid+guarantee.amount} pesos.</>}</small>
      {held&&<p role="status">{held}</p>}
      <label>Cambiar destino<select aria-label={`Cambiar destino de ${o.name}`} value={arrival.destination} disabled={busy} onChange={e=>dispatch({type:'redirectHire',id:o.id,destination:e.target.value})}>
       {!options.some(d=>d.id===arrival.destination)&&<option value={arrival.destination}>{CAMPAIGN_SECTORS.find(d=>d.id===arrival.destination)?.name} · No disponible</option>}
