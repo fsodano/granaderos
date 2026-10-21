@@ -1,7 +1,9 @@
 import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,endTurn,getReachable,reloadCost,shotChance,misfireChance,actionCosts} from '../game/tactical.js';
+import {createBattle,actBattle,endTurn,getReachable,reloadCost,shotChance,misfireChance,actionCosts,canSee} from '../game/tactical.js';
+import {automaticOrder,searchOrder} from '../game/autonomous-orders.js';
+import {chooseEnemyAction} from '../game/tactical-ai.js';
 const flat=()=>Array.from({length:80},(_,i)=>({x:i%10,y:Math.floor(i/10),type:'grass',blocked:false,cover:0}));
 const battle=()=>createBattle([{id:0,name:'Cabral',x:1,y:1}],{width:10,height:8,tiles:flat(),enemies:[{id:'e',x:6,y:1}],seed:45});
 test('movement spends AP and never mutates source',()=>{const s=battle();s.units[1].overwatch=false;const n=actBattle(s,{type:'move',unitId:0,x:3,y:1});assert.equal(n.units[0].ap,84);assert.equal(s.units[0].x,1);assert.equal(n.units[0].momentum,2);});
@@ -13,6 +15,30 @@ test('powder smoke reduces accuracy and walls block shooting',()=>{const s=battl
 test('healing pays for holding the kit, stops bleeding and consumes field supplies',()=>{const s=battle();s.units[0].hp=50;s.units[0].bleeding=4;const held=actBattle(s,{type:'weapon',unitId:0,slot:'medical'});assert.equal(held.lastError,null);assert.equal(held.units[0].ap,s.units[0].ap-4);const n=actBattle(held,{type:'useItem',unitId:0,targetId:0});assert.equal(n.lastError,null);assert.equal(n.units[0].ap,held.units[0].ap-25);assert.equal(n.units[0].bleeding,0);assert.equal(n.units[0].hp,50);assert.equal(n.units[0].medkits,1);});
 test('straight movement increases melee damage and wins battle',()=>{let s=battle();s.units[0].blade=1811;s=actBattle(s,{type:'weapon',unitId:0,slot:'blade'});s.units[1].x=4;s.units[1].hp=20;s.units[1].overwatch=false;s=actBattle(s,{type:'move',unitId:0,x:3,y:1});s=actBattle(s,{type:'melee',unitId:0,targetId:'e'});assert.equal(s.status,'victory');assert.equal(s.units[1].hp,0);});
 test('enemy turn is deterministic and serializable',()=>{const s=battle();s.units[1].weapon=1806;s.units[1].ap=actionCosts(s,s.units[1]).fire;const a=endTurn(s),b=endTurn(JSON.parse(JSON.stringify(s)));assert.deepEqual(a,b);assert.equal(a.turn,2);assert.equal(a.phase,'player');assert.ok(a.log.length>s.log.length);assert.equal(s.turn,1);});
+test('militia investigate current allied sightings without gaining personal sight or bypassing guards',()=>{
+ const width=14,height=9,tiles=Array.from({length:width*height},(_,i)=>{const x=i%width,y=Math.floor(i/width),wall=x===4&&y>0&&y<7;return {x,y,type:wall?'wall':'grass',blocked:wall,blocksSight:wall,cover:wall?40:0};});
+ const s=createBattle([{id:'m',militia:true,x:2,y:4,facing:2,morale:100},{id:'observer',x:7,y:3,facing:2,morale:100}],{width,height,tiles,hour:12,seed:45,enemies:[{id:'enemy',x:10,y:3,facing:2,morale:100,patrol:false}]}),[m,observer,enemy]=s.units,before=structuredClone(s);
+ assert.equal(canSee(s,m,enemy),false);assert.equal(canSee(s,observer,enemy),true);assert.equal(chooseEnemyAction(s,m),null);assert.equal(searchOrder(s,m),null);
+ const order=automaticOrder(s,m);assert.equal(order.type,'move');assert.ok(!('targetId' in order));
+ const route=getReachable(s,m).find(p=>p.x===order.x&&p.y===order.y);assert.ok(route.cost>0&&route.cost<=24&&route.path.length<=3);
+ assert.equal(m.lastKnownEnemy,undefined);assert.equal(m.lastHeardNoise,undefined);assert.deepEqual(s,before);
+ const next=endTurn(s);assert.equal(next.lastError,null);assert.notDeepEqual([next.units[0].x,next.units[0].y],[m.x,m.y]);assert.deepEqual(s,before);
+ const originalFallback=(b,u)=>chooseEnemyAction(b,u)??searchOrder(b,u);
+ for(const change of [b=>{b.units[0].militia=false;},b=>{b.phase='interrupt';},b=>{b.reactionStack=[{}];},b=>{b.mode='exploration';},
+   b=>{b.units[0].routed=true;},b=>{b.units[0].unconscious=true;},b=>{b.units[0].knockedDown=true;},b=>{b.units[0].entangled=true;},
+   b=>{b.units[0].hp=14;},b=>{b.units[0].energy=0;},b=>{b.units[2].side='player';},b=>{b.units[2].side='neutral';},b=>{b.units[2].routed=true;},
+   b=>{b.units.push({...structuredClone(b.units[0]),id:'crew',x:3,y:4});b.artillery=[{id:'post',type:'bronze4',side:'player',x:2,y:5,loaded:true,ammo:3}];}]){
+  const guarded=structuredClone(s);change(guarded);const snapshot=structuredClone(guarded);
+  assert.deepEqual(automaticOrder(guarded,guarded.units[0]),originalFallback(guarded,guarded.units[0]));assert.deepEqual(guarded,snapshot);
+ }
+ const unseen=structuredClone(s);unseen.units[1].facing=6;assert.equal(canSee(unseen,unseen.units[1],unseen.units[2]),false);
+ const sweep=automaticOrder(unseen,unseen.units[0]);assert.deepEqual(sweep,searchOrder(unseen,unseen.units[0]));
+ unseen.units[2].x=11;unseen.units[2].y=7;assert.deepEqual(automaticOrder(unseen,unseen.units[0]),sweep,'hidden enemy position does not guide the search');
+ const personal=structuredClone(s);personal.units[0].x=6;personal.units[0].y=3;assert.equal(canSee(personal,personal.units[0],personal.units[2]),true);
+ const own=chooseEnemyAction(personal,personal.units[0]);assert.ok(own);assert.deepEqual(automaticOrder(personal,personal.units[0]),own);
+ const blocked=structuredClone(s);for(const tile of blocked.tiles)if(Math.max(Math.abs(tile.x-m.x),Math.abs(tile.y-m.y))===1)tile.blocked=true;
+ assert.equal(automaticOrder(blocked,blocked.units[0]),null);
+});
 test('outnumbered depleted player can lose to enemy melee',()=>{const s=battle();s.units[0].hp=1;s.units[1].x=2;assert.equal(endTurn(s).status,'defeat');});
 test('lance units cannot fire an imaginary musket',()=>{const s=battle();s.units[0].weapon=1812;assert.ok(actBattle(s,{type:'fire',unitId:0,targetId:'e'}).lastError);assert.ok(actBattle(s,{type:'reload',unitId:0}).lastError);});
 test('charge consumes remaining AP and requires a clear straight approach',()=>{let s=battle();s.units[1].overwatch=false;s.units[0].blade=1809;s.units[1].hp=100;s=actBattle(s,{type:'weapon',unitId:0,slot:'blade'});const n=actBattle(s,{type:'charge',unitId:0,targetId:'e'});assert.equal(n.units[0].ap,0);assert.equal(n.units[0].x,5);assert.ok(n.units[1].hp<54);s.units[1].y=3;assert.ok(actBattle(s,{type:'charge',unitId:0,targetId:'e'}).lastError);});
