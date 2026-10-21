@@ -23,6 +23,7 @@ export function MedicalSupplyPurchase({s,op}:{s:any;op:any}){
 
 function PersonnelCard({s,op,roster,blocked,dispatch}:{s:any;op:any;roster:any[];blocked:boolean;dispatch:(action:any)=>void}){
   const record=s.operativeState[op.id],maxHp=record.maxHp??op.maxHp;
+  const energyLimit=maximumEnergy(record),shownEnergy=Math.min(record.energy??100,energyLimit);
   const [skill,setSkill]=useState(record.trainingSkill??'marksmanship'),[teacherId,setTeacherId]=useState(String(record.instructorId??'')),[targetId,setTargetId]=useState(String(record.repairTargetId??op.id)),[repairScope,setRepairScope]=useState(record.repairScope??(record.assignment==='repair'?'primary':'equipment'));
   const instructors=roster.filter(o=>o.id!==op.id&&s.recruited.includes(o.id)&&s.operativeState[o.id]?.alive&&!operativeInTransit(s,o.id)&&operativeLocation(s,o.id)===operativeLocation(s,op.id)&&s.operativeState[o.id].assignment==='instructor'&&s.operativeState[o.id].trainingSkill===skill&&o[skill]>op[skill]);
   const teacher=instructors.find(o=>String(o.id)===teacherId)??instructors[0];
@@ -36,7 +37,7 @@ function PersonnelCard({s,op,roster,blocked,dispatch}:{s:any;op:any;roster:any[]
   const assign=(assignment:string)=>dispatch(Object.hasOwn(CARE_ASSIGNMENTS,assignment)?{type:'assignCare',operativeId:op.id,assignment}:{type:'assignWork',operativeId:op.id,assignment,...options});
   return <article data-care-id={op.id} className={`care-record${record.bleeding>0?' care-bleeding':''}`}>
     <div className="care-name"><h3>{op.nickname}</h3><span>Medicina {op.medical} · Mecánica {op.mechanical}</span></div>
-    <div className="care-vitals"><label>Salud <strong>{record.hp}/{maxHp}</strong><meter aria-label={`Salud de ${op.nickname}`} min={0} max={maxHp} value={record.hp}/></label><label>Energía <strong>{Math.round(record.energy??100)}/{maximumEnergy(record)}</strong><meter aria-label={`Energía de ${op.nickname}`} min={0} max={maximumEnergy(record)} value={record.energy??100}/></label></div>
+    <div className="care-vitals"><label>Salud <strong>{record.hp}/{maxHp}</strong><meter aria-label={`Salud de ${op.nickname}`} min={0} max={maxHp} value={record.hp}/></label><label>Energía <strong>{Math.round(shownEnergy)}/{energyLimit}</strong><meter aria-label={`Energía de ${op.nickname}`} min={0} max={energyLimit} value={shownEnergy}/></label></div>
     <p className="care-condition">{!record.alive?'Caído':record.bleeding>0?`Hemorragia ${record.bleeding} · necesita atención`:record.hp<15?'Estado crítico · necesita un médico':record.bandaged>0?`${record.bandaged} puntos de herida vendada`:'Sin hemorragia'} · Fatiga {record.fatigue}</p>
     <p className="care-condition">{sleepNeedStatus({...op,...record})}</p>
     <p className="care-condition">{moraleStatus(s,op.id)}</p>
