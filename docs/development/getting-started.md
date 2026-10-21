@@ -150,7 +150,7 @@ it does not certify a complete playthrough.
 
 ### Tags after each main merge
 
-After each accepted merge into `main`, create a patch or minor tag for that exact merged commit. Preserve the historical `0.1` tag. The first tag after that checkpoint is `0.1.1`; later merges advance the patch or minor version. Version `1.0` requires an explicit request from the user.
+After each accepted merge into `main`, create a patch or minor tag for that exact merged commit. Preserve the historical `0.1` tag. The first tag after that checkpoint is `0.1.1`; later merges advance the patch or minor version. The agent chooses patch or minor versions; only the user can authorize a major version, including `1.0`.
 
 Before freezing the local candidate, set the same version in `VERSION`, root `package.json`, `web/package.json` and the two root package records in `web/package-lock.json`. Keep dependency versions unchanged. Verify that the production `build-info.json` records this version and the exact source revision.
 

@@ -12,7 +12,17 @@ test('genuine new game creates exactly one custom officer then hires explores Re
 });
 test('contracts pay upfront, renew at current experience price, expire safely without duplicating gear',()=>{
  let s=order(initialCampaign(),create);s=order(s,{type:'recruitCivic',id:100,term:'day'});const op=rosterFor(s).find(o=>o.id===100),cash=s.resources.treasury;s.operativeState[100].xp=200;const q=contractQuote(s,op,'week');assert.ok(q.price>Math.ceil(op.monthlyPay/30)*7);s=order(s,{type:'renewContract',id:100,term:'week'});assert.equal(s.resources.treasury,cash-q.price);assert.equal(s.contracts[100].expiresAt,192);s.operativeState[100].rations=1;s=order(s,{type:'wait',hours:192});assert.equal(s.hour,190);s=order(s,{type:'wait',hours:2});assert.ok(!s.recruited.includes(100));assert.ok(!s.squads[0].members.includes(100));assert.equal(s.defeated,false);
+ assert.equal(s.operativeState[100].alive,true);assert.ok(s.log.some(entry=>entry.text===`${op.name} concluye su contrato y deja el destacamento. Su hoja de servicio queda disponible.`));
  const returned=serviceReturnSources(s,'retiro').filter(row=>row.operativeId===100&&row.stack?.item==='rations');assert.equal(returned.reduce((sum,row)=>sum+row.stack.count,0),1);const rehireCash=s.resources.treasury,rehireQuote=contractQuote(s,rosterFor(s).find(o=>o.id===100),'day');s=order(s,{type:'recruitCivic',id:100,term:'day'});assert.equal(s.resources.treasury,rehireCash-rehireQuote.price);assert.equal(s.operativeState[100].rations,0);assert.deepEqual(serviceReturnSources(s,'retiro').filter(row=>row.operativeId===100&&row.stack?.item==='rations'),returned);s=order(s,{type:'dismiss',id:100});assert.ok(!s.contracts[100]);
+});
+test('a fallen soldier contract expires once without a departure claim or returned equipment',()=>{
+ let s=order(order(initialCampaign(),create),{type:'recruitCivic',id:100,term:'day'});const name=rosterFor(s).find(o=>o.id===100).name;
+ // Declare the casualty to isolate expiry wording; this does not simulate combat.
+ Object.assign(s.operativeState[100],{alive:false,hp:0,deathMinute:0,rations:1});
+ s=order(s,{type:'wait',hours:24});assert.equal(s.contracts[100],undefined);assert.ok(!s.recruited.includes(100));
+ assert.equal(s.log.filter(entry=>entry.text===`Vence el contrato de ${name}, que murió en servicio. Su hoja de servicio queda disponible.`).length,1);assert.ok(!s.log.some(entry=>entry.text.startsWith(`${name} concluye su contrato`)));
+ assert.deepEqual(serviceReturnSources(s,'retiro').filter(row=>row.operativeId===100),[]);assert.equal(s.operativeState[100].rations,1);
+ s=decodeSave(encodeSave(s)).campaign;assert.equal(s.operativeState[100].alive,false);assert.equal(s.operativeState[100].hp,0);assert.equal(s.operativeState[100].deathMinute,0);
 });
 test('elite terms are limited only by funds and historical figures cannot be bought',()=>{
  let s=initialCampaign();const elite=rosterFor(s).find(o=>o.tier==='elite');assert.ok(elite);

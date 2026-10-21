@@ -166,6 +166,12 @@ function endOperativeService(s,id,fullCredit=false){
  if(settlement)note(s,settlement.creditedRefund<settlement.refund?`${op.name}: garantía liquidada, ${settlement.creditedRefund} pesos abonados y ${settlement.refund-settlement.creditedRefund} pendientes de ${settlement.amount}. La paga no se devuelve.`:`${op.name}: garantía liquidada, ${settlement.refund} de ${settlement.amount} pesos devueltos. La paga no se devuelve.`);
  if(returned)note(s,`El equipo queda en ${missionScenesFor(s)[returned.siteId]?.name??campaignPlace(returned.sectorId,s).name}, disponible para un combatiente presente.${returned.fallback?' Recogé todo el equipo antes de volver a contratar a esta persona.':''}`);
 }
+function endExpiredService(s,id){
+ const name=rosterFor(s).find(o=>o.id===id)?.name??'Un combatiente',alive=s.operativeState[id].alive;
+ endOperativeService(s,id);
+ const text=alive?`${name} concluye su contrato y deja el destacamento.`:`Vence el contrato de ${name}, que murió en servicio.`;
+ note(s,`${text} Su hoja de servicio queda disponible.`);
+}
 function signContract(s,op,term){
   requireThat(!s.operativeState[op.id]?.captured,'El combatiente está prisionero; primero liberá su sector.');const quote=contractQuote(s,op,term??'day');requireThat(quote.available,quote.reason);pay(s,{treasury:quote.total});const guarantee=fundServiceGuarantee(s,op,quote.guarantee);s.contracts[op.id]={...guarantee,kind:quote.permanent?'patriot':'paid',term:term??'day',...contractStartedFields(s,quote.expiresSecond),expiresAt:quote.expiresAt,paid:quote.price};
   const contact=encounterDefinitions(s).find(n=>n.operativeId===op.id);if(contact){transferCivilian(s,contact);s.operativeState[op.id].startingCartridgesIssued=true;}
@@ -189,7 +195,7 @@ function expireDueContracts(s){
   cancelPendingCompanionLoss(s,id);
   if(s.operativeState[id]?.alive&&!s.operativeState[id].captured)events.push({operativeId:id,expiresAt:contract.expiresAt,...(contract.expiresSecond?{expiresSecond:contract.expiresSecond}:{}),code:'expired'});
   if(deployed(s,id)||operativeInTransit(s,id)){contract.departurePending=true;continue;}
-  const name=rosterFor(s).find(o=>o.id===id)?.name??'Un combatiente';endOperativeService(s,id);note(s,`${name} concluye su contrato y deja el destacamento. Su hoja de servicio queda disponible.`);
+  endExpiredService(s,id);
  }
  return events;
 }
@@ -542,7 +548,7 @@ function advanceCampaignHorses(s){
  s.horseState=applyHorseAction(s.horseState,{type:'advance',hour:s.hour});
  for(const h of held){const next=s.horseState.horses.find(v=>v.id===h.id);Object.assign(next,{stamina:h.stamina,condition:Math.min(h.condition,next.condition),assignedTo:h.assignedTo,returned:Boolean(h.returned)});}
 }
-function releaseDeferred(s){if(s.pendingBattle)return;if(s.horseState.horses.some(h=>h.hired&&!h.returned&&h.hireUntil<=s.hour))advanceCampaignHorses(s);for(const id of [...s.recruited])if(s.contracts?.[id]?.departurePending&&!operativeInTransit(s,id)){endOperativeService(s,id);note(s,'Un voluntario cumple su contrato y deja el destacamento.');}const raids=s.deferredRaids??[];s.deferredRaids=[];for(const r of raids)launchEnemyGroup(s,r.theater,r.target,{immediate:true});settleEnemyEncounters(s);}
+function releaseDeferred(s){if(s.pendingBattle)return;if(s.horseState.horses.some(h=>h.hired&&!h.returned&&h.hireUntil<=s.hour))advanceCampaignHorses(s);for(const id of [...s.recruited])if(s.contracts?.[id]?.departurePending&&!operativeInTransit(s,id))endExpiredService(s,id);const raids=s.deferredRaids??[];s.deferredRaids=[];for(const r of raids)launchEnemyGroup(s,r.theater,r.target,{immediate:true});settleEnemyEncounters(s);}
 function assignmentContext(s,options={}){
   const unsafe=s.recruited.filter(id=>s.enemyGroups.some(g=>['waiting','engaged','stationed'].includes(g.status)&&g.target===operativeLocation(s,id)));
   return {...options,isSupplied,unsafe,traveling:[...(options.traveling??[]),...travelingOperatives(s),...unsafe]};
@@ -593,7 +599,7 @@ function advanceOffscreenTime(s,seconds){
  return contractEvents;
 }
 function advanceQueuedTravel(s,seconds,stopAtEveryArrival=false){
- return advanceSquadTravel(s,rosterFor(s),{seconds,note,stopAtEveryArrival,onArrival:q=>meetEnemyGroups(s,q.location),releaseAtArrival:q=>{for(const id of [...q.members])if(s.contracts[id]?.departurePending){endOperativeService(s,id);note(s,'Un voluntario cumple su contrato y deja la escuadra al llegar.');}}});
+ return advanceSquadTravel(s,rosterFor(s),{seconds,note,stopAtEveryArrival,onArrival:q=>meetEnemyGroups(s,q.location),releaseAtArrival:q=>{for(const id of [...q.members])if(s.contracts[id]?.departurePending)endExpiredService(s,id);}});
 }
 function advanceFractionalSystems(s,seconds,continuousClock=false){
  const expired=[...advanceOffscreenTime(s,seconds),...expireDueContracts(s)];
