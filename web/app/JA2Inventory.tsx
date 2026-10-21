@@ -74,7 +74,7 @@ export function RadarCluster({campaignContext,equipmentScope,battle, units, sele
         <p className="eyebrow">OPERACIÓN TERRESTRE · {battle.night ? 'NOCHE' : 'DÍA'} · {battle.weather?.rain ? 'LLUVIA' : 'CIELO DESPEJADO'}</p>
         <h3 title={`Sector ${radarLabel.sectorCode}`}>{battle.sectorName}</h3>
         <p>{turnModel(battle,campaignContext).label}</p>
-        <p>{enemies.length} avistados</p>
+        <p>{enemies.length} {enemies.length===1?'avistado':'avistados'}</p>
         <p>{targetingHelp(mode, battle.units.find((u: any) => u.id === selected))}</p>
       </div>
       {missionAllies.length > 0 && <details className="ja2-garrison-toggle" aria-label="Aliados de la misión"><summary>Oficiales aliados · {missionAllies.length} temporales</summary><div className="squad-strip">{missionAllies.map((p: any) => <button key={p.id} className={`squad-card ${p.id === selected ? 'active' : ''} ${alive(p) ? '' : 'fallen'}`} disabled={!selectable(p)} aria-label={`Seleccionar aliado ${p.name}`} onClick={event => onSelect(p.id, event.shiftKey)}><div><strong>{p.name}</strong><span>{alive(p) ? `${Math.ceil(p.hp)} SALUD · ${battle.mode === 'exploration' ? 'Exploración' : `${formatAP(p.ap)} PA`}` : 'Fuera de combate'}</span></div></button>)}</div></details>}

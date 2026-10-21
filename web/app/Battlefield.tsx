@@ -547,7 +547,7 @@ function BattlefieldContents({battle:committed,campaignContext,onPlaybackBusy,on
     <header className="battle-header tactical-map-toolbar" aria-label="Órdenes y cámara del campo">
       <JA2CampaignReturn battle={s} peacefulVisit={peacefulVisit} busy={busy} onFinish={onFinish} compact/>
       <h1 className="battle-heading" title={s.sectorName}>{s.sectorName}</h1>
-      <div className="battle-status"><span className="battle-phase"><span className="turn-dot"/>{busy?'Procesando órdenes':turn.label}</span><span className="enemy-count" title={`${enemies.length} enemigos avistados`}>{enemies.length} avistados</span></div>
+      <div className="battle-status"><span className="battle-phase"><span className="turn-dot"/>{busy?'Procesando órdenes':turn.label}</span><span className="enemy-count" title={`${enemies.length} ${enemies.length===1?'enemigo avistado':'enemigos avistados'}`}>{enemies.length} {enemies.length===1?'avistado':'avistados'}</span></div>
       <div className="map-toolbar-actions">
         <CombatJournal battle={s}/>
         <span className="map-order-mode" title={orderHelp}>{orderLabel}</span>
