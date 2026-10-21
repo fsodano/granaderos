@@ -32,7 +32,7 @@ test('local paid residents offer all terms and begin service in place without be
 test('insufficient money and invalid terms cannot charge or transfer a local resident',()=>{
  const p=readyLocal({pay:1000000}),id=localId(p.campaign),cash=p.campaign.resources.treasury;
  const quotes=encounterHireTerms(p.campaign,localNPC(p.battle));assert.equal(quotes.every(q=>!q.available),true);
- const direct=directReply(p);assert.equal(direct.campaign.lastConversation.text,quotes[0].reason);assert.ok(!direct.campaign.lastConversation.text.includes('Estoy dispuesto a servir'));
+ const direct=directReply(p);assert.equal(direct.campaign.lastConversation.text,quotes[0].reason);assert.ok(!direct.campaign.lastConversation.text.includes('Quiero servir'));
  for(const term of ['day','year']){const before=structuredClone(direct.campaign),n=dispatchCampaign(direct.campaign,talk(direct,term));assert.ok(n.lastError);if(term==='day')assert.match(n.lastError,/Faltan recursos.*200000/);assert.deepEqual({...n,lastError:null},before);assert.equal(n.resources.treasury,cash);assert.ok(!n.recruited.includes(id));assert.equal(n.contracts[id],undefined);assert.ok(saved({campaign:n,battle:p.battle}));}
 });
 
@@ -40,7 +40,7 @@ test('the direct paid offer lists affordable terms and preserves an actual local
  const content=localPackage();content.rules.startingTreasury=2400;
  let p=readyLocal(undefined,content);assert.equal(p.campaign.resources.treasury,600,'the guide actually costs 1800 pesos');
  const quotes=encounterHireTerms(p.campaign,localNPC(p.battle));assert.deepEqual(quotes.map(q=>[q.term,q.available]),[['day',true],['week',true],['month',false],['fortnight',false]]);
- p=directReply(p);assert.equal(p.campaign.lastConversation.text,'Estoy dispuesto a servir. Puedo incorporarme por contrato: un día, 60 pesos; una semana, 420 pesos.');
+ p=directReply(p);assert.equal(p.campaign.lastConversation.text,'Quiero servir. Puedo incorporarme por contrato: un día, 60 pesos; una semana, 420 pesos.');
  const before=structuredClone(p.campaign),rejected=dispatchCampaign(p.campaign,talk(p,'month'));assert.match(rejected.lastError,/Faltan recursos.*1800/);assert.deepEqual({...rejected,lastError:null},before);
  p=hireLocal(p,'day');assert.equal(p.campaign.resources.treasury,540);assert.equal(p.campaign.contracts[localId(p.campaign)].paid,60);assert.equal(p.campaign.hiringArrivals.length,0);assert.ok(saved(p));
 });
@@ -52,12 +52,12 @@ test('a pinned rival refusal governs direct local replies and paid or permanent 
   // The running package keeps the relationship that was declared before admission.
   delete content.characters.find(c=>c.id==='alma-contract').serviceRefusals;
   p=directReply(p);const reason=p.campaign.lastConversation.text;
-  assert.match(reason,/Alma Contratada.*Baltasar Acosta.*No quiere compartir el mando con Acosta/);assert.ok(!reason.includes('Estoy dispuesto a servir'));
+  assert.match(reason,/Alma Contratada.*Baltasar Acosta.*No quiere compartir el mando con Acosta/);assert.ok(!reason.includes('Quiero servir'));
   const quotes=encounterHireTerms(p.campaign,localNPC(p.battle));if(service==='contract'){assert.equal(quotes.length,4);assert.ok(quotes.every(q=>!q.available&&q.reason===reason));assert.equal(quotes[0].price,60);}else assert.deepEqual(quotes,[]);
   const before=structuredClone(p.campaign),rejected=dispatchCampaign(p.campaign,talk(p));assert.equal(rejected.lastError,reason);assert.deepEqual({...rejected,lastError:null},before);assert.deepEqual(p.campaign,before);assert.deepEqual(saved({campaign:rejected,battle:p.battle}).battle,p.battle);
  }
  // Omitted refusal stays neutral and the same affordable day service succeeds.
- let control=directReply(readyLocal());assert.match(control.campaign.lastConversation.text,/Estoy dispuesto a servir.*un día, 60 pesos/);assert.ok(!control.campaign.lastConversation.text.includes('un mes, 1800 pesos'));
+ let control=directReply(readyLocal());assert.match(control.campaign.lastConversation.text,/Quiero servir.*un día, 60 pesos/);assert.ok(!control.campaign.lastConversation.text.includes('un mes, 1800 pesos'));
  control=hireLocal(control);assert.equal(control.campaign.resources.treasury,1340);assert.equal(control.campaign.contracts[localId(control.campaign)].paid,60);
 });
 
@@ -88,7 +88,7 @@ test('renewal and dismissal preserve paid local identity and reject permanent-co
 test('zero-price local contracts still expire and unpaid permanent service remains explicit',()=>{
  let p=hireLocal(readyLocal({pay:0})),id=localId(p.campaign),s=leave(p);assert.equal(s.contracts[id].kind,'paid');assert.equal(s.contracts[id].paid,0);assert.ok(Number.isInteger(s.contracts[id].expiresAt));
  const expires=s.contracts[id].expiresAt;while(s.hour<expires){const before=s.hour;s=order(s,{type:'wait',hours:expires-s.hour});assert.ok(s.hour>before,'time must advance after each notice');}assert.ok(!s.recruited.includes(id));assert.ok(saved({campaign:s}));
- p=directReply(readyLocal({pay:0,service:'permanent'}));assert.deepEqual(encounterHireTerms(p.campaign,localNPC(p.battle)),[]);assert.equal(p.campaign.lastConversation.text,'Estoy dispuesto a servir. Puedo incorporarme sin paga.');p=hireLocal(p);assert.equal(p.campaign.contracts[localId(p.campaign)].expiresAt,null);
+ p=directReply(readyLocal({pay:0,service:'permanent'}));assert.deepEqual(encounterHireTerms(p.campaign,localNPC(p.battle)),[]);assert.equal(p.campaign.lastConversation.text,'Quiero servir. Puedo incorporarme sin paga.');p=hireLocal(p);assert.equal(p.campaign.contracts[localId(p.campaign)].expiresAt,null);
  p=directReply(readyLocal({pay:0,service:'permanent',recruitable:false}));assert.equal(p.campaign.lastConversation.text,localNPC(p.battle).greeting);
  const bad=localPackage({pay:10,service:'permanent'});assert.throws(()=>initialCampaign(42,bad));
 });

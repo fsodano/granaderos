@@ -944,7 +944,7 @@ export function dispatchCampaign(previous,action){
           const serviceReason=hireTerms.length?(availableTerms.length?null:hireTerms[0].reason):canRecruitEncounter(npc)?contractQuote(s,rosterFor(s).find(op=>op.id===npc.operativeId)).reason:null;
           const reason=encounterRequirements(s,npc,actor)||(!gate.available?gate.reason:null)||serviceReason;
           const service=hireTerms.length?`Puedo incorporarme por contrato: ${availableTerms.map(q=>`${q.name.toLowerCase()}, ${q.guarantee?`${q.total} pesos (paga ${q.price} + garantía ${q.guarantee})`:`${q.price} pesos`}`).join('; ')}.`:'Puedo incorporarme sin paga.';
-          text=!canRecruitEncounter(npc)?npc.greeting:reason??`Estoy dispuesto a servir. ${service}`;
+          text=!canRecruitEncounter(npc)?npc.greeting:reason??`Quiero servir. ${service}`;
         }
         if(action.approach==='mission'){text=scenarioFor(s).missionConversation(s,npc.id,scenarioContext(s));outcome='mission';}
         if(['escortFollow','escortWait'].includes(action.approach)){
