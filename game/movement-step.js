@@ -2,11 +2,12 @@ import {actBattle,getReachable,movementStepCost,stanceCost,teamCanSee,canSee,app
 import {movementStance} from './tactical-condition.js';
 import {sameCell,sameSurface,tacticalLevel,surfaceAt} from './tactical-space.js';
 import {dialogueAvailability} from './npc-dialogue.js';
+import {recordPublicCombatMessage,publicCombatJournal} from './combat-journal.js';
 
 const point=p=>({x:p.x,y:p.y,...(p.tacticalLevel===undefined?{}:{tacticalLevel:p.tacticalLevel}),...(p.kind?{kind:p.kind}:{}),...(p.linkId?{linkId:p.linkId}:{})});
 const ready=u=>u&&u.side==='player'&&!u.militia&&!u.departure&&!u.routed&&!u.surrendered&&!u.unconscious&&u.hp>=15&&u.energy>0;
 const stopped=state=>({state,continuation:null,status:'stopped'});
-function reject(state,reason){const next=structuredClone(state);next.lastError=reason;next.log=[...(next.log??[]),reason].slice(-80);return stopped(next);}
+function reject(state,reason){const next=structuredClone(state);next.lastError=reason;next.log=[...(next.log??[]),reason].slice(-80);recordPublicCombatMessage(next,reason);return stopped(next);}
 
 /** Commit one reached cell. The remaining route is a plan, never paid state.
  * Every step still passes through the ordinary movement/visibility/clock rules.
@@ -57,7 +58,13 @@ export function movementStep(state,action,continuation=null){
   const prefix=`${unit.name} avanza `,suffix=' casillas.',previous=state.log.at(-1),line=next.log.at(-1);
   if(previous?.startsWith(prefix)&&previous.endsWith(suffix)&&line===`${prefix}1${suffix}`){
    const count=Number(previous.slice(prefix.length,-suffix.length)),index=next.log.length-2;
-   if(Number.isInteger(count)&&next.log[index]===previous){next.log.splice(index,2,`${prefix}${count+1}${suffix}`);}
+   if(Number.isInteger(count)&&next.log[index]===previous){
+    next.log.splice(index,2,`${prefix}${count+1}${suffix}`);
+    const entries=publicCombatJournal(next),prior=entries.at(-2),latest=entries.at(-1);
+    if(prior?.text===previous&&latest?.text===line&&prior.turn===latest.turn){
+     entries.splice(-2,2,{turn:latest.turn,text:`${prefix}${count+1}${suffix}`});next.publicJournal={version:1,entries};
+    }
+   }
   }
  }
  if(!ready(actor)||!approachCompleted(state,next,unit.id,{destination:first})||next.turn!==state.turn||next.status!=='active')return stopped(next);

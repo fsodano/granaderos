@@ -7,7 +7,7 @@ const exits=[{id:'west',edge:'W',destination:'retiro',entryEdge:'S',entryAnchor:
 const ground=(width=10,height=8)=>Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0}));
 const fixture=(players=[{id:'p',x:0,y:2},{id:'q',x:1,y:5}],extra={})=>createBattle(players,{id:'exit-test',width:10,height:8,exits,tiles:ground(),enemies:[{id:'e',x:8,y:6,weapon:1813,overwatch:false,facing:2}],...extra});
 const request={type:'exit',unitIds:['p'],exitId:'west'};
-function unchanged(before,order){const after=actBattle(before,order);assert.ok(after.lastError);const clean=s=>{const r=structuredClone(s);delete r.lastError;delete r.log;return r;};assert.deepEqual(clean(after),clean(before));return after;}
+function unchanged(before,order){const after=actBattle(before,order);assert.ok(after.lastError);assert.deepEqual(after.publicJournal,{version:1,entries:[...before.publicJournal.entries,{turn:before.turn,text:after.lastError}].slice(-80)});const clean=s=>{const r=structuredClone(s);delete r.lastError;delete r.log;delete r.publicJournal;return r;};assert.deepEqual(clean(after),clean(before));return after;}
 test('exit preview and paid crossing retain a complete receipt and leave other troops on field',()=>{
  const b=fixture(),preview=exitPreview(b,request);assert.equal(preview.available,true);assert.equal(preview.costById.p,8);
  const n=actBattle(b,request),u=n.units[0];assert.equal(n.lastError,null);assert.equal(n.status,'active');assert.equal(u.ap,b.units[0].ap-8);assert.equal(u.energy,99);

@@ -3,6 +3,7 @@ import {campaignUI} from '../lib/campaign-ui';
 import {formatAP} from '../../game/action-points.js';
 
 import BattlePerformance from './BattlePerformance';
+import CombatJournal from './CombatJournal';
 import {useEnemyPlayback} from '../lib/useEnemyPlayback';
 import {firearmMaintenanceAction,chancePercent,beneficiaryDeliveryNotice} from '../../game/ja2-hud.js';
 import {useBattleExecutor} from '../lib/useBattleExecutor';
@@ -548,6 +549,7 @@ function BattlefieldContents({battle:committed,campaignContext,onPlaybackBusy,on
       <h1 className="battle-heading" title={s.sectorName}>{s.sectorName}</h1>
       <div className="battle-status"><span className="battle-phase"><span className="turn-dot"/>{busy?'Procesando órdenes':turn.label}</span><span className="enemy-count" title={`${enemies.length} enemigos avistados`}>{enemies.length} avistados</span></div>
       <div className="map-toolbar-actions">
+        <CombatJournal battle={s}/>
         <span className="map-order-mode" title={orderHelp}>{orderLabel}</span>
         <div className="map-camera-menu" ref={cameraMenu}>
           <button className="line-button" aria-expanded={cameraOpen} aria-controls="tactical-camera-panel" onClick={()=>{setCameraOpen(v=>!v);setKeyHelp(false);}}>Cámara</button>

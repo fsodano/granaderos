@@ -1,3 +1,4 @@
+import {recordPublicCombatMessage} from './combat-journal.js';
 import {migrateWallGeometry,wallEdgeId,wallEdgeCenter,wallEdgeCells,wallEdgesBetween,wallMovementBlocked,wallEdgeBlocksMovement} from './wall-geometry.js';
 import {formatAP} from './action-points.js';
 import {hasProjectileEnergy} from './projectile-energy.js';
@@ -125,10 +126,18 @@ const alive=u=>present(u)&&!isUnconscious(u);
 const clone=s=>{const copy=removeIgnitionSupplies(structuredClone(s));copy.fittingRulesVersion??=FITTING_RULES_VERSION;migrateBattleAmmunition(copy);copy.conditionVersion=1;for(const u of copy.units){if(u.side==='enemy'&&u.patrol!==false)u.patrolOrigin??=positionOf(u);normalizeUnitFittings(u);u.activeSlot??='primary';u.facing??=u.side==='enemy'?6:2;u.stealthMode??=false;u.reactionSpent??=0;u.reactionTurn??=0;u.interceptTurn??=0;u.fatigue??=0;u.rations??=2;u.parryTurn??=0;u.counterTurn??=0;u.braceTurn??=0;u.knockedDown??=false;u.braced??=false;u.energy??=100;if(s.conditionVersion!==1)refreshCondition(u);u.movementMode??='walk';u.inventory??={};u.boleadoras??=1;u.torches??=2;u.strengthTraining??=0;u.bandaged??=u.bleeding?0:Math.max(0,u.maxHp-u.hp);u.shock??=0;u.experienceLevel??=4;u.carriedAP??=0;}copy.artillery??=[];copy.mode??='combat';copy.groundItems??=[];copy.lights??=[];copy.buildings??=[];copy.revealedRooms??=[];copy.sectorCleared??=false;copy.enemyTurns??=copy.mode==='combat'?Math.max(0,copy.turn-1):0;copy.droppedWeapons??=[];return copy;};
 function random(s){s.seed=(Math.imul(s.seed,1664525)+1013904223)>>>0;return s.seed/4294967296;}
 function say(s,text){s.log.push(text);s.log=s.log.slice(-80);}
+function sayPublic(s,text){say(s,text);recordPublicCombatMessage(s,text);}
 // Record names only while the squad can observe the event. Later contact must
 // not reveal earlier hidden actions through the saved journal.
 function journalVisible(s,unit){return unit.side!=='enemy'||teamCanSee(s,'player',unit)&&isInteriorVisible(s,unit,new Set(s.revealedRooms??[]));}
-function sayObserved(s,subjects,text){if(subjects.every(unit=>journalVisible(s,unit)))say(s,text);}
+function sayObserved(s,subjects,text,enemyText=null){
+ if(!subjects.every(unit=>journalVisible(s,unit)))return;
+ say(s,text);
+ // Owned actions can report costs and supplies. Other actors require a
+ // separately reviewed message, admitted before later contact can reveal it.
+ const publicText=subjects.every(unit=>unit.side==='player')?text:enemyText;
+ if(publicText&&subjects.every(unit=>playerObservedBody(s,unit)))recordPublicCombatMessage(s,publicText);
+}
 export function hasFirearm(unit){if(unit.weaponDropped)return false;if(unit.activeSlot&&unit.activeSlot!=='primary')return false;return typeof unit.weapon==='object'?unit.weapon.capacity>0:Boolean(WEAPONS[unit.weapon]);}
 export function weaponFor(unit){if(unit.activeSlot==='item')return {id:'item',name:carriedObject(unit)?.label??'Objeto',damage:0,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:0};if(unit.activeSlot==='supply'){const supply=heldSupply(unit);return {id:supply?.key??'supply',name:supply?.name??'Pertrecho',damage:0,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:supply?.range??0};}if(unit.activeSlot==='tool'){const tool=heldTool(unit);return {id:tool?.toolKey??'tool',name:tool?.label??'Herramienta',damage:0,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:1.5};}if(unit.activeSlot==='unarmed')return {...FISTS,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:FISTS.reach};if(unit.activeSlot==='medical')return {id:'medical',name:'Equipo de curación',damage:0,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:1.5};if(unit.activeSlot==='blade')return {...bladeFor(unit),fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:bladeFor(unit).reach};if(unit.weaponDropped)return {...FISTS,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:FISTS.reach};return typeof unit.weapon==='object'?weaponSpecification(unit)??{...unit.weapon,loadPattern:unit.weapon.loadPattern??'single'}:WEAPONS[unit.weapon]?weaponSpecification(unit):{...bladeFor(unit),fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:bladeFor(unit).reach};}
 export function misfireChance(condition=100,rain=0,humidity=0){return clamp(Math.round(2+(100-clamp(condition,0,100))*.2+clamp(rain,0,100)*.5+clamp(humidity,0,100)),0,95);}
@@ -368,7 +377,7 @@ initializeArtilleryOccupancy(state);
 for(const u of state.units){normalizeOutfit(u);lowerWeapon(u);limitEnergy(u);if(u.side==='enemy'&&u.patrol!==false)u.patrolOrigin??=positionOf(u);normalizeUnitFittings(u);u.weaponFittings=structuredClone(u.weaponFittings);u.maxAP=maxActionPoints(state,u.routed?{...u,routed:false}:u);u.ap=u.maxAP;refreshCondition(u);}
 for(const item of state.groundItems)initializeGroundAmmunition(item);
 migrateBattleAmmunition(state);
-const entered=sector.deferContact?state:initializeBattlePerception(state,sector.firstSide);say(entered,entered.mode==='exploration'?`Exploración de ${entered.sectorName}.`:`Combate en ${entered.sectorName}. Puedes conservar hasta 5 PA entre turnos.`);return removeIgnitionSupplies(entered);}
+const entered=sector.deferContact?state:initializeBattlePerception(state,sector.firstSide);sayPublic(entered,entered.mode==='exploration'?`Exploración de ${entered.sectorName}.`:`Combate en ${entered.sectorName}. Puedes conservar hasta 5 PA entre turnos.`);return removeIgnitionSupplies(entered);}
 export function initializeBattlePerception(state,firstSide){
  if(state.deployment)return state;
  checkEnd(state);detectContact(state);rememberContacts(state);revealRooms(state);
@@ -401,7 +410,7 @@ export function movementEnergy(u,t,exploring=false){
  return exploring?Math.max(.001,Math.round(cost*1000)/1000):Math.max(1,Math.ceil(cost));
 }
 function movementStepEnergy(s,u,t,factor=1){const exploring=s.mode==='exploration',cost=movementEnergy(u,t,exploring)*factor;return exploring?cost:Math.ceil(cost);}
-function exhaust(s,u,cost){limitEnergy(u);if(u.mounted&&u.mount){u.mount.stamina=Math.max(0,u.mount.stamina-Math.max(1,Math.ceil(cost*(1-Math.min(100,u.ridingSkill||0)*.005))));if(u.mount.stamina===0){u.mounted=false;sayObserved(s,[u],`${u.name} desmonta: su caballo está agotado.`);}}u.energy=Math.max(0,Math.round(((u.energy??100)-cost)*1000)/1000);if(u.energy===0){lowerWeapon(u);u.unconscious=true;u.ap=0;u.mounted=false;sayObserved(s,[u],`${u.name} cae inconsciente por agotamiento.`);}}
+function exhaust(s,u,cost){limitEnergy(u);if(u.mounted&&u.mount){u.mount.stamina=Math.max(0,u.mount.stamina-Math.max(1,Math.ceil(cost*(1-Math.min(100,u.ridingSkill||0)*.005))));if(u.mount.stamina===0){u.mounted=false;sayObserved(s,[u],`${u.name} desmonta: su caballo está agotado.`);}}u.energy=Math.max(0,Math.round(((u.energy??100)-cost)*1000)/1000);if(u.energy===0){lowerWeapon(u);u.unconscious=true;u.ap=0;u.mounted=false;sayObserved(s,[u],`${u.name} cae inconsciente por agotamiento.`,`${u.name} cae inconsciente.`);}}
 export function tileIllumination(s,x,y,level=0){if(!s.night)return 1;let light=.08;for(const lamp of s.lights||[]){if(lamp.turns===0||lamp.extinguished)continue;const point={x,y,tacticalLevel:level},distance=Math.hypot(lamp.x-x,lamp.y-y,(surfaceHeight(s,lamp)??0)-(surfaceHeight(s,point)??0));if(distance>lamp.radius||!hasLineOfSight(s,lamp,point))continue;light=Math.max(light,(lamp.intensity??1)*(1-distance/(lamp.radius+1)));}return clamp(light,0,1);}
 const nightSightBonus=u=>hasTrait(u,'night_vision')||hasCharacterAbility(u,'night_scout')?2:hasTrait(u,'night_vision_basic')?1:0;
 export function visibleDistance(s,u,target){
@@ -412,7 +421,7 @@ export function visibleDistance(s,u,target){
 export function canSee(s,u,target){target=edgePoint(target,s);if(s.deployment||!alive(u)||target.departure||!facingAllowsSight(u,target)||dist(u,target)>visibleDistance(s,u,target)||!hasLineOfSight(s,u,target))return false;const smoke=smokeBetween(s,u,target);return smoke<5;}
 export function teamCanSee(s,side,target){return s.units.some(u=>u.side===side&&alive(u)&&canSee(s,u,target));}
 export function visibleRooms(s){const ids=new Set();for(const t of [...s.tiles,...(s.upperSurfaces??[])]){if(t.roomId&&s.units.some(u=>u.side==='player'&&alive(u)&&canSee(s,u,t)))ids.add(t.roomId);}return [...ids];}
-function revealRooms(s){s.revealedRooms=[...new Set([...(s.revealedRooms||[]),...visibleRooms(s)])];discoverInventory(s);const pieces=revealFiniteArsenal(s);if(pieces.length)say(s,`Se recuperan ${pieces.length} piezas del arsenal. Conservan su carga y su munición de reserva.`);}
+function revealRooms(s){s.revealedRooms=[...new Set([...(s.revealedRooms||[]),...visibleRooms(s)])];discoverInventory(s);const pieces=revealFiniteArsenal(s);if(pieces.length)sayPublic(s,`Se recuperan ${pieces.length} piezas del arsenal. Conservan su carga y su munición de reserva.`);}
 export function visibleTiles(s,u){return [...s.tiles,...(s.upperSurfaces??[])].filter(t=>canSee(s,u,t)).map(t=>({x:t.x,y:t.y,...(t.tacticalLevel!==undefined?{tacticalLevel:t.tacticalLevel}:{}),illumination:tileIllumination(s,t.x,t.y,tacticalLevel(t))}));}
 export function visibleHostiles(s,u){return s.units.filter(v=>v.side!==u.side&&onField(v)&&canSee(s,u,v));}
 // Test each enemy directly. Building a complete hostile list for every pair
@@ -452,7 +461,7 @@ export function canEndCombat(s){
 function resumeExploration(s){
   s.mode='exploration';s.status='active';s.phase='player';s.roundTimeCharged=false;s.contactThisRound=false;s.quietCombatTurns=2;
   delete s.enemyFirstAwaitingPlayer;delete s.roundFirstSide;
-  say(s,s.sectorCleared?'El sector está despejado. Puedes explorar y recoger equipo.':'Dos turnos sin contacto visual. La escuadra vuelve a explorar.');
+  sayPublic(s,s.sectorCleared?'El sector está despejado. Puedes explorar y recoger equipo.':'Dos turnos sin contacto visual. La escuadra vuelve a explorar.');
   return s;
 }
 function resolveFirstContact(s){
@@ -469,7 +478,7 @@ function detectContact(s){
   s.roundFirstSide=playerAware?'player':'enemy';delete s.enemyFirstAwaitingPlayer;
   for(const u of s.units.filter(alive)){u.maxAP=maxActionPoints(s,u);u.ap=u.maxAP;}
   if(!playerAware)s.contactInitiative='enemy';
-  say(s,playerAware?'¡Contacto visual con el enemigo! Comienza el combate por turnos.':'¡El enemigo descubre a la escuadra y toma la iniciativa!');
+  sayPublic(s,playerAware?'¡Contacto visual con el enemigo! Comienza el combate por turnos.':'¡El enemigo descubre a la escuadra y toma la iniciativa!');
   return true;
 }
 function stepCost(u,t){const rough=['mud','forest','stone','scrub'].includes(t?.type),base=(u.mounted?(hasTrait(u,'cavalry_commander')?3:4):u.stance==='prone'?16:hasCharacterAbility(u,'quick_movement')?6:8)*(t?.type==='mud'?(u.mounted?(hasCharacterAbility(u,'mud_rider')?1.25:2):1.5):1);return Math.max(2,Math.ceil(base*(u.mounted?1-Math.min(100,u.ridingSkill||0)*.005:1)*(u.movementMode==='run'?.7:u.movementMode==='crouch'?1.25:1)*weightPenalty(u)*stealthAPMultiplier(u)*(rough&&hasTrait(u,'guerrilla_tactician')?.75:1)));}
@@ -709,8 +718,8 @@ function physicalImpact(s,target,amount,source,{kind='firearm',projectile=true,h
  const impact=shotLocationEffects(projectile?hitLocation:'torso',Math.max(0,amount),{...target,hp:target.hp??100}),observed=report&&observedBody(s,target);
  const objection=captureServiceObjection(s,target,source,{intentional,canObserve:(actor,body)=>(actor===body||canSee(s,actor,body))&&isInteriorVisible(s,body,new Set(s.revealedRooms??[]))});
  applyCivilianHarm(s,target,{source,damage:impact.damage,breathLoss:impact.breathLoss+extraBreath,hitLocation,kind,observed,knockedDown:impact.knockedDown,intentional});
- for(const reaction of applyServiceObjection(s,objection))say(s,reaction.text);
- if(observed)say(s,`${target.name} ${target.hp>0?'queda herido por el impacto.':'muere por el impacto.'}`);
+ for(const reaction of applyServiceObjection(s,objection))sayPublic(s,reaction.text);
+ if(observed)sayPublic(s,`${target.name} ${target.hp>0?'queda herido por el impacto.':'muere por el impacto.'}`);
  return target;
 }
 function scatteredShotDestination(s,u,target){
@@ -919,7 +928,7 @@ function shotLoadFireImpact(s,attacker,target,aim,hitLocation,source=attacker,pr
   if(actual&&!isCivilianBody(s,actual)&&eligible.has(actual.id)&&actual.hp<before.get(actual.id))learned.add(actual.id);
  }
  for(const id of learned)practice(source,'marksmanship',2);
- sayObserved(s,[source],`${source.name} dispara una carga de perdigones con ${weapon.name}.`);
+ sayObserved(s,[source],`${source.name} dispara una carga de perdigones con ${weapon.name}.`,`${source.name} dispara.`);
  finishFlight();
  const damagedBodies=new Set(s.units.filter(unit=>unit.hp<beforeHealth.get(unit.id)).map(unit=>`unit:${unit.id}`));
  firearmNearMissFeedback(s,{attacker,source,weapon,flight,damagedBodies});
@@ -954,7 +963,7 @@ function applyFirearmBodyImpacts(s,flight,amount,source,finishFlight,{intended=n
   const victim=flightVictim(s,entry),key=`${entry.victimKind??'unit'}:${entry.victimId}`;
   if(!victim||processed.has(key)){finishFlight(entry);continue;}
   if(entry.coverDamageFactor<1&&observedBody(s,victim)&&flight.obstacles.some(obstacle=>obstacle.fraction<=entry.fraction&&observedProjectileObstacle(s,obstacle)))say(s,'El disparo atraviesa la cobertura y pierde fuerza.');
-  if(entry.bodyDamageReduction>0&&knownPassage&&knownBodies.has(key))say(s,'La bala atraviesa un cuerpo y llega con menos fuerza.');
+  if(entry.bodyDamageReduction>0&&knownPassage&&knownBodies.has(key))sayPublic(s,'La bala atraviesa un cuerpo y llega con menos fuerza.');
   const injury=penetratingFirearmDamage(amount,entry,undefined,weapon);
   if(hasProjectileEnergy(weapon)&&shotLocationEffects(entry.hitLocation,injury*COMBAT_BALANCE.firearmDamageMultiplier,victim).damage===0){processed.add(key);finishFlight(entry);continue;}
   const actual=physicalImpact(s,victim,injury,source,{hitLocation:entry.hitLocation,report:!observeOnly||observedBody(s,victim),intentional:victim===intended,excludedBodyguards:processed});
@@ -972,8 +981,8 @@ function applyFirearmBodyImpacts(s,flight,amount,source,finishFlight,{intended=n
 function checkEnd(s){
   for(const unit of s.units)refreshCondition(unit);
   const able=side=>s.units.some(u=>u.side===side&&fieldCapable(u));
-  if(!able('player')){const status=s.units.some(u=>u.side==='player'&&u.departure)?'retreat':'defeat';if(s.status!==status)say(s,status==='retreat'?'La última fuerza capaz salió del sector.':'La escuadra quedó fuera de combate.');s.status=status;s.phase='player';delete s.interrupt;delete s.enemyTurn;delete s.reactionStack;delete s.alliedTurn;}
-  else if(!able('enemy')){s.sectorCleared=true;if(s.mode==='exploration')return;if(s.status!=='victory')say(s,'¡Victoria! El enemigo quedó fuera de combate.');s.status='victory';s.phase='player';delete s.interrupt;delete s.enemyTurn;delete s.reactionStack;delete s.alliedTurn;}
+  if(!able('player')){const status=s.units.some(u=>u.side==='player'&&u.departure)?'retreat':'defeat';if(s.status!==status)sayPublic(s,status==='retreat'?'La última fuerza capaz salió del sector.':'La escuadra quedó fuera de combate.');s.status=status;s.phase='player';delete s.interrupt;delete s.enemyTurn;delete s.reactionStack;delete s.alliedTurn;}
+  else if(!able('enemy')){s.sectorCleared=true;if(s.mode==='exploration')return;if(s.status!=='victory')sayPublic(s,'¡Victoria! El enemigo quedó fuera de combate.');s.status='victory';s.phase='player';delete s.interrupt;delete s.enemyTurn;delete s.reactionStack;delete s.alliedTurn;}
 }
 function rout(s,u,report=true){
   if(u.routed||!onField(u)||holdMorale(s,u))return;
@@ -982,7 +991,7 @@ function rout(s,u,report=true){
     u.weaponDropped=true;u.droppedWeapon=typeof u.weapon==='object'?u.weapon.id:u.weapon;
     s.droppedWeapons??=[];s.droppedWeapons.push({unitId:u.id,...positionOf(u),weapon:u.droppedWeapon,...(u.ammunitionChoice!==undefined?{ammunitionChoice:u.ammunitionChoice}:{}),weight:contentWeaponOf(u)?.weight??u.weaponMetadata?.weight??weaponItemWeight(u.weapon),...(u.weaponMetadata?{weaponMetadata:structuredClone(u.weaponMetadata)}:{}),loaded:u.loaded,...(u.reloadProgress?{reloadProgress:u.reloadProgress}:{}),condition:u.condition,...(u.jammed?{jammed:true}:{}),...(u.weaponInstanceId?{instanceId:u.weaponInstanceId}:{}),...(u.weaponFittings?.bayonet?{fittings:structuredClone(u.weaponFittings)}:{}),...(u.weaponFittingPattern!=null?{fittingPattern:u.weaponFittingPattern}:{})});u.loaded=0;delete u.reloadProgress;u.weaponFittings={};u.weaponFittingPattern=null;delete u.weaponInstanceId;delete u.weaponMetadata;delete u.contentWeapon;delete u.ammunitionChoice;
   }
-  if(report)sayObserved(s,[u],`${u.name} pierde la disciplina y abandona su arma. Intentará alcanzar una salida en su turno.`);
+  if(report)sayObserved(s,[u],`${u.name} pierde la disciplina y abandona su arma. Intentará alcanzar una salida en su turno.`,`${u.name} abandona su arma y huye.`);
 }
 function wearBayonet(unit){const fitting=fixedBayonetFor(unit);if(fitting){fitting.condition=Math.max(0,fitting.condition-1);if(fitting.condition===0)unit.braced=false;}}
 function wearMeleeBlade(unit){
@@ -1041,13 +1050,13 @@ function damage(s,target,amount,source,projectile=false,hitLocation='torso',extr
   if(projectile){
     target.lastHitLocation=hitLocation;
     if(impact.balanceLoss)target.ap=Math.max(0,target.ap-impact.balanceLoss);
-    if(impact.knockedDown){target.knockedDown=true;target.stance='prone';target.movementMode='prone';target.mounted=false;if(report)say(s,`${target.name} cae por el impacto en las piernas.`);}
+    if(impact.knockedDown){target.knockedDown=true;target.stance='prone';target.movementMode='prone';target.mounted=false;if(report)sayPublic(s,`${target.name} cae por el impacto en las piernas.`);}
   }
   refreshCondition(target);
   target.bleeding=target.hp>0?Math.min(10,target.bleeding+Math.ceil(impact.damage/15)):0;
   target.morale=Math.max(0,target.morale-impact.damage*.45);
-  if(report)say(s,`${sourceKnown?source.name+' hiere a': 'Un ataque alcanza a'} ${target.name}${projectile&&hitLocation!=='torso'?` (${getHitLocationProfile(hitLocation).label.toLowerCase()})`:''}: ${impact.damage} de daño.`);
-  if(target.hp===0){if(report)say(s,`${target.name} cayó en combate.`);for(const u of s.units.filter(u=>u.side===target.side&&alive(u)))u.morale=Math.max(0,u.morale-18);}
+  if(report)sayPublic(s,`${sourceKnown?source.name+' hiere a': 'Un ataque alcanza a'} ${target.name}${projectile&&hitLocation!=='torso'?` (${getHitLocationProfile(hitLocation).label.toLowerCase()})`:''}: ${impact.damage} de daño.`);
+  if(target.hp===0){if(report)sayPublic(s,`${target.name} cayó en combate.`);for(const u of s.units.filter(u=>u.side===target.side&&alive(u)))u.morale=Math.max(0,u.morale-18);}
   reportCompanionGrief(s,grief);
   holdMorale(s,target);if(alive(target)&&target.morale<15)rout(s,target,report);
   return target;
@@ -1080,7 +1089,7 @@ function reactionFire(s,actor,before){
     if(s.phase!=='enemy'||!s.enemyTurn&&!s.reactionStack?.length)return false;
     for(const u of qualified)u.reactionTurn=s.turn;
     s.phase='interrupt';s.interrupt={side:'player',unitIds:qualified.map(u=>u.id),enemyId:actor.id,...(s.reactionStack?.length?{returnTo:'reaction'}:{})};
-    say(s,`¡Interrupción! ${qualified.map(u=>u.name).join(', ')} pueden actuar con sus PA restantes.`);
+    sayPublic(s,`¡Interrupción! ${qualified.map(u=>u.name).join(', ')} pueden actuar con sus PA restantes.`);
   }else{
     if(!['player','interrupt'].includes(s.phase))return false;
     for(const u of qualified)u.reactionTurn=s.turn;
@@ -1088,7 +1097,7 @@ function reactionFire(s,actor,before){
     s.reactionStack.push({unitIds:qualified.map(u=>u.id),unitIndex:0,actionsTaken:0,resumePhase:s.phase,...(s.interrupt?{resumeInterrupt:structuredClone(s.interrupt)}:{})});
     s.phase='enemy';delete s.interrupt;
     const seen=qualified.filter(u=>journalVisible(s,u));
-    say(s,seen.length?`${seen.map(u=>u.name).join(', ')} interrumpen con sus PA restantes.`:'El enemigo interrumpe.');
+    say(s,seen.length?`${seen.map(u=>u.name).join(', ')} interrumpen con sus PA restantes.`:'El enemigo interrumpe.');recordPublicCombatMessage(s,'El enemigo interrumpe.');
   }
   return true;
 }
@@ -1143,11 +1152,11 @@ function grenadeBlast(s,source,origin,intended){
   for(const npc of (s.npcs??[]).filter(n=>(n.hp??100)>0&&!n.departure&&!n.fled)){
     const {multiplier}=grenadeBlastExposure(s,origin,npc,GRENADE_THROW.radius);
     if(multiplier<=0)continue;
-    const visible=teamCanSee(s,'player',npc);
+    const visible=teamCanSee(s,'player',npc),publiclyObserved=playerObservedBody(s,npc);
     const objection=captureServiceObjection(s,npc,source,{intentional:npc===intended,canObserve:(actor,body)=>(actor===body||canSee(s,actor,body))&&isInteriorVisible(s,body,new Set(s.revealedRooms??[]))});
     applyCivilianHarm(s,npc,{source,damage:Math.round(GRENADE_THROW.damage*multiplier),breathLoss:Math.round(GRENADE_THROW.energyDamage*multiplier),hitLocation:'torso',kind:'grenade',observed:visible,intentional:npc===intended});
-    for(const reaction of applyServiceObjection(s,objection))say(s,reaction.text);
-    if(visible)say(s,`${npc.name} ${npc.hp>0?'queda herido por la explosión.':'muere por la explosión.'}`);
+    for(const reaction of applyServiceObjection(s,objection))sayPublic(s,reaction.text);
+    if(visible){const message=`${npc.name} ${npc.hp>0?'queda herido por la explosión.':'muere por la explosión.'}`;say(s,message);if(publiclyObserved)recordPublicCombatMessage(s,message);}
   }
   // Sound can make survivors take cover only after this blast is resolved.
   applyStructureBlast(s,origin,GRENADE_THROW.radius);
@@ -2106,7 +2115,7 @@ else if(a.type==='move'||a.type==='climb'){
     if(!alive(u)||s.status!=='active')break;
   }
 
-  sayObserved(s,[u],u.side==='player'?`${u.name} ${movementIntent==='preserveFacing'?'se desplaza sin girar':'avanza'} ${steps} casillas${exploring?'':` (${formatAP(spent)} PA)`}.`:`${u.name} avanza.`);
+  sayObserved(s,[u],u.side==='player'?`${u.name} ${movementIntent==='preserveFacing'?'se desplaza sin girar':'avanza'} ${steps} casillas${exploring?'':` (${formatAP(spent)} PA)`}.`:`${u.name} avanza.`,`${u.name} avanza.`);
 }
 else if(a.type==='throwGrenade'){
   const point=positionOf(a),preview=grenadeThrowPreview(s,u,point,a);
@@ -2181,9 +2190,9 @@ else if(['fire','firePoint'].includes(a.type)&&pairedPistol(u)){
   if(!pay(costs.fire+aim*costs.aim))return fail('Faltan puntos de acción para disparar ambas pistolas.');
   u.weaponReady=true;u.momentum=0;u.facing=directionTo(u,point);
   if(pointShot){delete u.lastTargetId;delete u.lastShotPosition;}else{u.lastTargetId=target.id;u.lastShotPosition=positionOf(u);}
-  sayObserved(s,[u],`${u.name} dispara ambas pistolas.`);
+  sayObserved(s,[u],`${u.name} dispara ambas pistolas.`,`${u.name} dispara.`);
   for(const shot of shots){
-    if(random(s)*100<shot.risk){shot.record.jammed=true;sayObserved(s,[u],`${u.name}: fallo de chispa en la mano ${shot.hand}. La carga se conserva.`);continue;}
+    if(random(s)*100<shot.risk){shot.record.jammed=true;sayObserved(s,[u],`${u.name}: fallo de chispa en la mano ${shot.hand}. La carga se conserva.`,`${u.name}: fallo de chispa.`);continue;}
     shot.record.loaded--;shot.record.condition=Math.max(0,(shot.record.condition??100)-1);
     const notifyCivilians=emitNoise(s,u,'fire',u,{deferCivilians:true});
     withBattleShotHand(shot.hand==='secundaria'?'offhand':'primary',()=>{
@@ -2193,7 +2202,7 @@ else if(['fire','firePoint'].includes(a.type)&&pairedPistol(u)){
       if(isShotLoad(weaponFor(shot.view)))shotLoadFireImpact(s,shot.view,target,aim,hitLocation,u,shot.chance,intent);
       else {
        const hit=random(s)*100<shot.chance;directedFireImpact(s,shot.view,target,hitLocation,hit,u,intent);
-       if(!hit&&!isCivilianBody(s,target)){target.morale=Math.max(0,target.morale-4);sayObserved(s,[u],`${u.name} falla con la mano ${shot.hand} (${shot.chance}%).`);}
+       if(!hit&&!isCivilianBody(s,target)){target.morale=Math.max(0,target.morale-4);sayObserved(s,[u],`${u.name} falla con la mano ${shot.hand} (${shot.chance}%).`,`${u.name} dispara sin acertar al punto elegido.`);}
       }
     }
     });
@@ -2207,13 +2216,13 @@ else if(a.type==='firePoint'){
   if(a.hitLocation!==undefined&&a.hitLocation!=='torso')return fail('El disparo a una casilla apunta a una altura fija.');
   if(!pay(preview.pa))return fail('PA insuficientes.');
   u.weaponReady=true;u.momentum=0;u.facing=directionTo(u,a);delete u.lastTargetId;delete u.lastShotPosition;
-  if(random(s)*100<ignitionRisk(s,u)){u.jammed=true;sayObserved(s,[u],`${u.name}: fallo de chispa. La carga se conserva${s.mode==='exploration'?'. Volvé a cebar la cazoleta.':`; cebar cuesta ${formatAP(actionCosts(s,u).reprime)} PA.`}`);}
+  if(random(s)*100<ignitionRisk(s,u)){u.jammed=true;sayObserved(s,[u],`${u.name}: fallo de chispa. La carga se conserva${s.mode==='exploration'?'. Volvé a cebar la cazoleta.':`; cebar cuesta ${formatAP(actionCosts(s,u).reprime)} PA.`}`,`${u.name}: fallo de chispa.`);}
   else{
     u.loaded--;const notifyCivilians=emitNoise(s,u,'fire',u,{deferCivilians:true});pointFireImpact(s,u,a,preview.aim);notifyCivilians();u.condition=Math.max(0,u.condition-1);s.smoke.push({...positionOf(u),radius:1,turns:3});
     sayObserved(s,[u],`${u.name} dispara hacia ${a.x+1}, ${a.y+1}. El disparo puede alcanzar a cualquiera en su trayectoria.`);
   }
 }
-else if(a.type==='fire'){const hitLocation=a.hitLocation??'torso';if(!HIT_LOCATIONS.includes(hitLocation))return fail('Selecciona torso, cabeza o piernas.');if(!target||target.side===u.side||!targetable(target))return fail('Selecciona un enemigo activo.');if(!hasFirearm(u))return fail('Este soldado lleva un arma blanca: acércate para atacar.');if(!teamCanSee(s,u.side,target))return fail('Ningún compañero puede ver ese objetivo.');if(!shotLocationsFor(target).includes(hitLocation))return fail('Un objetivo cuerpo a tierra tiene una sola zona de tiro.');if(u.jammed)return fail('La cazoleta falló: vuelve a cebar el arma.');if(u.loaded<1)return fail('El arma está descargada.');if(!hasLineOfSight(s,u,target))return fail('No hay línea de tiro.');const aim=clamp(Math.floor(Number.isFinite(a.aim)?a.aim:0),0,4),w=weaponFor(u),chance=shotAccuracy(s,u,target,aim,hitLocation);if(!pay(actionCosts(s,u,target).fire+aim*actionCosts(s,u,target).aim))return fail('Faltan puntos de acción para disparar.');u.weaponReady=true;u.momentum=0;u.facing=directionTo(u,target);u.lastTargetId=target.id;u.lastShotPosition=positionOf(u);const risk=ignitionRisk(s,u);if(random(s)*100<risk){u.jammed=true;sayObserved(s,[u],`${u.name}: fallo de chispa. La carga se conserva${s.mode==='exploration'?'. Volvé a cebar la cazoleta.':`; cebar cuesta ${formatAP(actionCosts(s,u).reprime)} PA.`}`);}else{u.loaded--;const notifyCivilians=emitNoise(s,u,'fire',u,{deferCivilians:true});practice(u,'marksmanship',2);u.condition=Math.max(0,u.condition-1);s.smoke.push({...positionOf(u),radius:1,turns:3});if(isShotLoad(w)){shotLoadFireImpact(s,u,target,aim,hitLocation,u,chance);}else{const hit=random(s)*100<chance;directedFireImpact(s,u,target,hitLocation,hit);if(!hit&&!isCivilianBody(s,target)){target.morale=Math.max(0,target.morale-4);sayObserved(s,[u],`${u.name} dispara sin acertar al punto elegido (${chance}%).`);}}notifyCivilians(); }}
+else if(a.type==='fire'){const hitLocation=a.hitLocation??'torso';if(!HIT_LOCATIONS.includes(hitLocation))return fail('Selecciona torso, cabeza o piernas.');if(!target||target.side===u.side||!targetable(target))return fail('Selecciona un enemigo activo.');if(!hasFirearm(u))return fail('Este soldado lleva un arma blanca: acércate para atacar.');if(!teamCanSee(s,u.side,target))return fail('Ningún compañero puede ver ese objetivo.');if(!shotLocationsFor(target).includes(hitLocation))return fail('Un objetivo cuerpo a tierra tiene una sola zona de tiro.');if(u.jammed)return fail('La cazoleta falló: vuelve a cebar el arma.');if(u.loaded<1)return fail('El arma está descargada.');if(!hasLineOfSight(s,u,target))return fail('No hay línea de tiro.');const aim=clamp(Math.floor(Number.isFinite(a.aim)?a.aim:0),0,4),w=weaponFor(u),chance=shotAccuracy(s,u,target,aim,hitLocation);if(!pay(actionCosts(s,u,target).fire+aim*actionCosts(s,u,target).aim))return fail('Faltan puntos de acción para disparar.');u.weaponReady=true;u.momentum=0;u.facing=directionTo(u,target);u.lastTargetId=target.id;u.lastShotPosition=positionOf(u);const risk=ignitionRisk(s,u);if(random(s)*100<risk){u.jammed=true;sayObserved(s,[u],`${u.name}: fallo de chispa. La carga se conserva${s.mode==='exploration'?'. Volvé a cebar la cazoleta.':`; cebar cuesta ${formatAP(actionCosts(s,u).reprime)} PA.`}`,`${u.name}: fallo de chispa.`);}else{u.loaded--;const notifyCivilians=emitNoise(s,u,'fire',u,{deferCivilians:true});practice(u,'marksmanship',2);u.condition=Math.max(0,u.condition-1);s.smoke.push({...positionOf(u),radius:1,turns:3});if(isShotLoad(w)){shotLoadFireImpact(s,u,target,aim,hitLocation,u,chance);}else{const hit=random(s)*100<chance;directedFireImpact(s,u,target,hitLocation,hit);if(!hit&&!isCivilianBody(s,target)){target.morale=Math.max(0,target.morale-4);sayObserved(s,[u],`${u.name} dispara sin acertar al punto elegido (${chance}%).`,`${u.name} dispara sin acertar al punto elegido.`);}}notifyCivilians(); }}
 else if(a.type==='swapHands'){
   let next;try{next=planSwapHands(u);}catch(error){return fail(error.message);}
   if(!pay(4))return fail('Cambiar de mano requiere 1 PA.');next.ap=u.ap;replaceUnit(u,next);sayObserved(s,[u],`${u.name} prepara el arma de la otra mano.`);
@@ -2236,8 +2245,8 @@ else if(a.type==='reload'){
   if(!exploring)applyReloadPlan(u,plan);
   emitNoise(s,u,'reload');u.momentum=0;
   const subject=plan.hands?.length===2?' ambas pistolas':plan.hands?.[0]?.hand==='offhand'?' la pistola de la segunda mano':'';
-  if(exploring)sayObserved(s,[u],`${u.name} ${completed.partial?'interrumpe la recarga':'recarga'}${subject} (${completed.seconds} s).${completed.partial?' Conserva el trabajo realizado.':''}`);
-  else sayObserved(s,[u],plan.partial?`${u.name} avanza la recarga${subject?' de'+subject:''} (${formatAP(plan.pa)} PA). Carga ${plan.rounds} cartuchos; faltan ${formatAP(plan.remainingPA)} PA para completar la recarga.`:`${u.name} recarga${subject} (${formatAP(plan.pa)} PA).${plan.offhandPending?' La segunda pistola espera: faltan PA para completar su recarga.':''}`);
+  if(exploring)sayObserved(s,[u],`${u.name} ${completed.partial?'interrumpe la recarga':'recarga'}${subject} (${completed.seconds} s).${completed.partial?' Conserva el trabajo realizado.':''}`,`${u.name} recarga su arma.`);
+  else sayObserved(s,[u],plan.partial?`${u.name} avanza la recarga${subject?' de'+subject:''} (${formatAP(plan.pa)} PA). Carga ${plan.rounds} cartuchos; faltan ${formatAP(plan.remainingPA)} PA para completar la recarga.`:`${u.name} recarga${subject} (${formatAP(plan.pa)} PA).${plan.offhandPending?' La segunda pistola espera: faltan PA para completar su recarga.':''}`,`${u.name} recarga su arma.`);
 }
 else if(a.type==='reprime'){
   const plan=reprimePlan(u,s);if(plan.reason)return fail(plan.reason);
@@ -2275,7 +2284,7 @@ else if(a.type==='melee'||a.type==='meleePoint'){
     else{
       const chance=unarmedChance(u,target,{aware:canSee(s,target,u)});
       if(random(s)*100<chance){const impact=unarmedImpact(u);damage(s,target,impact.damage,u,false,'torso',Math.max(0,impact.breathLoss-Math.ceil(impact.damage/2)));practice(u,'agility');if(target.unconscious)sayObserved(s,[target],`${target.name} queda inconsciente por el golpe.`);}
-      else sayObserved(s,[u],`${u.name} falla el golpe (${chance}%).`);
+      else sayObserved(s,[u],`${u.name} falla el golpe (${chance}%).`,`${u.name} falla el golpe.`);
     }
     finishContact();
   }else meleeStrike(s,u,target,blade.damage*bonus);
@@ -2298,12 +2307,12 @@ if([{from:gun,to:positions[0]},...assigned.map((v,i)=>({from:v,to:positions[i+1]
 if(positions.some(p=>propBlocksAt(s,p.x,p.y)||!tile(s,p.x,p.y)||tile(s,p.x,p.y).blocked||tile(s,p.x,p.y).type==='water'||s.units.some(v=>onField(v)&&!ids.has(v.id)&&sameCell(v,p))||(s.npcs??[]).some(v=>onField(v)&&sameCell(v,p))||s.artillery.some(g=>g!==gun&&sameCell(g,p))))return fail('La pieza y su dotación no caben en ese terreno.');
 gun.x=a.x;gun.y=a.y;for(const v of assigned){v.x+=dx;v.y+=dy;}sayObserved(s,[u],`${u.name} dirige el arrastre de ${spec.name}.`);
 }else if(a.type==='artilleryPivot'){
-if(!Number.isInteger(a.x)||!Number.isInteger(a.y)||!tile(s,a.x,a.y)||dist(gun,a)<1)return fail('Indica una casilla hacia la cual orientar la pieza.');gun.facing=Math.atan2(a.y-gun.y,a.x-gun.x);sayObserved(s,[u],`${spec.name} gira hacia la nueva línea de tiro.`);
+if(!Number.isInteger(a.x)||!Number.isInteger(a.y)||!tile(s,a.x,a.y)||dist(gun,a)<1)return fail('Indica una casilla hacia la cual orientar la pieza.');gun.facing=Math.atan2(a.y-gun.y,a.x-gun.x);sayObserved(s,[u],`${spec.name} gira hacia la nueva línea de tiro.`,`${u.name} gira la pieza de artillería.`);
 }else if(a.type==='artilleryReload'){
 if(loading.rounds){gun.loaded=true;gun.ammo--;delete gun.reloadProgress;}
 else if(loading.progress>0)gun.reloadProgress=loading.progress;
 emitNoise(s,u,'reload',gun);
-sayObserved(s,[u],loading.partial?`${u.name} dirige la recarga de ${spec.name}: ${formatAP(cost)} PA por artillero; faltan ${formatAP(loading.remainingPA)} PA por artillero.`:`${u.name} completa la recarga de ${spec.name}${s.mode==='exploration'?'':` (${formatAP(cost)} PA por artillero)`}.`);
+sayObserved(s,[u],loading.partial?`${u.name} dirige la recarga de ${spec.name}: ${formatAP(cost)} PA por artillero; faltan ${formatAP(loading.remainingPA)} PA por artillero.`:`${u.name} completa la recarga de ${spec.name}${s.mode==='exploration'?'':` (${formatAP(cost)} PA por artillero)`}.`,`${u.name} trabaja en la recarga de la pieza de artillería.`);
 }else{
 if(!gun.loaded)return fail('Primero hay que recargar la pieza.');const point=target||{x:a.x,y:a.y};
 if(!Number.isInteger(point.x)||!Number.isInteger(point.y)||!tile(s,point.x,point.y)||dist(gun,point)<1||dist(gun,point)>spec.range)return fail(`Objetivo fuera del alcance de ${spec.range} casillas o no válido.`);
@@ -2325,6 +2334,10 @@ const terminal=displayEnd&&displayState.tiles.find(t=>t.x===displayEnd.x&&t.y===
 if(displayContact){const edge=displayState.wallEdges.find(edge=>wallEdgeId(edge)===displayStop.edgeId);artilleryVisual.impacts.push({...displayContact.point,outcome:'cover',material:edge.material??'adobe',surfaceContact:displayContact});}
 else if(displayTrace.events.some(event=>event.type==='stop')||terminal?.blocked&&['water','cliff'].includes(terminal.type))artilleryVisual.impacts.push({...displayPoint(displayEnd),outcome:'cover',material:terminal?.material??(terminal?.type==='cliff'?'stone':terminal?.type)});
 recordBattleFrame(s,{type:'projectile',unitId:u.id,action:'artillery',artilleryVisual});
+const observedStructures=new Set(trace.events.filter(event=>{
+ const ground=event.edgeId?(s.wallEdges??[]).find(edge=>wallEdgeId(edge)===event.edgeId):tile(s,event.x,event.y);
+ return ground&&(event.edgeId?teamCanSee(s,'player',ground):playerObservedBody(s,ground));
+}));
 for(const event of trace.events){
  if(event.type==='impact'){
   const victim=flightVictim(s,{...event,victimId:event.unitId}),contact=displayPoint(victim),hp=victim.hp;physicalImpact(s,victim,event.damage,u,{kind:'artillery',projectile:false,intentional:victim===intended});
@@ -2333,11 +2346,11 @@ for(const event of trace.events){
  }else if(event.type==='breach'){
   const ground=event.edgeId?(s.wallEdges??[]).find(edge=>wallEdgeId(edge)===event.edgeId):tile(s,event.x,event.y),contact=event.edgeId?event:displayPoint(ground),material=ground.material??(event.stone?'stone':'adobe');if(event.edgeId||ground.structureDamage!==undefined)destroyStructure(ground,event.edgeId?'edge':'surface');else{ground.blocked=false;ground.blocksSight=false;ground.type='rubble';ground.cover=20;delete ground.obstacleHeight;delete ground.projectileResistance;}
   artilleryVisual.impacts.push({...contact,outcome:'cover',material});
-  say(s,`La bala abre una brecha en ${event.stone?'la piedra':'el adobe'}.`);
- }else say(s,'La bala se detiene contra la fortificación.');
+  const message=`La bala abre una brecha en ${event.stone?'la piedra':'el adobe'}.`;say(s,message);if(observedStructures.has(event))recordPublicCombatMessage(s,message);
+ }else {const message='La bala se detiene contra la fortificación.';say(s,message);if(observedStructures.has(event))recordPublicCombatMessage(s,message);}
 }
 recordBattleFrame(s,{type:'impact',unitId:u.id,action:'artillery',artilleryVisual});
-notifyCivilians();sayObserved(s,[u],a.mode==='canister'?`${spec.name} barre el frente con metralla.`:`${spec.name} dispara una bala rasa que atraviesa su línea de tiro.`);
+notifyCivilians();sayObserved(s,[u],a.mode==='canister'?`${spec.name} barre el frente con metralla.`:`${spec.name} dispara una bala rasa que atraviesa su línea de tiro.`,`${u.name} dispara la pieza de artillería.`);
 }
 // Metadata enriches this successful action's existing frames. It creates no
 // extra playback step and does not issue orders or spend another crew budget.
@@ -2554,7 +2567,7 @@ else if(a.type==='heal'){
   }
   else refreshCondition(t);
   const progress=[treatment.hpGain>0?`recupera ${treatment.hpGain} de salud crítica`:null,bleedReduced>0?`reduce la hemorragia en ${bleedReduced}`:null].filter(Boolean).join(' y ');
-  sayObserved(s,[u,t],treatment.critical?`${u.name} venda a ${t.name}: ${progress}${treatment.partial?'; necesita más primeros auxilios.':'; estabilizado. La recuperación restante requiere descanso y atención médica.'}`:`${u.name} venda a ${t.name} y detiene la hemorragia. La salud se recupera con descanso y atención médica.`);
+  sayObserved(s,[u,t],treatment.critical?`${u.name} venda a ${t.name}: ${progress}${treatment.partial?'; necesita más primeros auxilios.':'; estabilizado. La recuperación restante requiere descanso y atención médica.'}`:`${u.name} venda a ${t.name} y detiene la hemorragia. La salud se recupera con descanso y atención médica.`,`${u.name} presta primeros auxilios a ${t.name}.`);
   const line=t!==u&&!isUnconscious(t)?speechFor(t,'treated'):null;if(line?.trim())sayObserved(s,[t],`${t.nickname||t.name}: «${line}»`);
 }
 else if(a.type==='stance'){
@@ -2564,7 +2577,7 @@ else if(a.type==='stance'){
   const cost=stanceCost(u,a.stance);if(!pay(cost))return fail(`Cambiar de postura requiere ${formatAP(cost)} PA.`);
   u.stance=a.stance;u.movementMode=a.stance==='prone'?'prone':a.stance==='crouched'?'crouch':'walk';
   if(a.stance==='standing')u.knockedDown=false;u.momentum=0;
-  sayObserved(s,[u],`${u.name} ${a.stance==='prone'?'se tiende cuerpo a tierra':a.stance==='crouched'?'se agacha':'se pone de pie'}.`);
+  sayObserved(s,[u],`${u.name} ${a.stance==='prone'?'se tiende cuerpo a tierra':a.stance==='crouched'?'se agacha':'se pone de pie'}.`,`${u.name} cambia de postura.`);
 }
 else return fail('Orden desconocida.');if(lowersWeapon(a.type)&&a.type!=='movement')lowerWeapon(u);checkEnd(s);if(!['move','climb','charge'].includes(a.type))reactionFire(s,u,observation);return true;}
 function captureObservedCompanionGrief(s,target){
@@ -2572,21 +2585,24 @@ function captureObservedCompanionGrief(s,target){
  return captureCompanionGrief(s,target,(witness,companion)=>isInteriorVisible(s,companion,rooms)&&canSee(s,witness,companion));
 }
 function reportCompanionGrief(s,captured){
- for(const {unit,companion,loss} of applyCompanionGrief(s,captured))say(s,`${unit.name} lamenta la muerte de ${companion.name}. ${loss?`Moral −${loss}.`:'Moral sin cambio.'}`);
+ for(const {unit,companion,loss} of applyCompanionGrief(s,captured))sayPublic(s,`${unit.name} lamenta la muerte de ${companion.name}. ${loss?`Moral −${loss}.`:'Moral sin cambio.'}`);
 }
 function advanceWounds(s,seconds){
   s.bleedSeconds=(s.bleedSeconds??0)+seconds;
   const ticks=Math.floor(s.bleedSeconds/COMBAT_ROUND_SECONDS);s.bleedSeconds%=COMBAT_ROUND_SECONDS;
   for(const u of s.units.filter(u=>u.hp>0)){
     const grief=u.bleeding&&ticks>0?captureObservedCompanionGrief(s,u):null;
-    if(u.bleeding){const loss=Math.min(u.hp,u.bleeding*ticks);u.hp-=loss;u.bandaged=Math.min(u.bandaged??0,u.maxHp-u.hp);if(u.side==='player'||teamCanSee(s,'player',u))sayObserved(s,[u],`${u.name} pierde ${loss} de salud por hemorragia.`);}
+    if(u.bleeding){const loss=Math.min(u.hp,u.bleeding*ticks);u.hp-=loss;u.bandaged=Math.min(u.bandaged??0,u.maxHp-u.hp);if(u.side==='player'||teamCanSee(s,'player',u))sayObserved(s,[u],`${u.name} pierde ${loss} de salud por hemorragia.`,`${u.name} pierde ${loss} de salud por hemorragia.`);}
     refreshCondition(u);
     reportCompanionGrief(s,grief);
   }
   for(const npc of s.npcs??[]){
-    const before=npc.hp??100,visible=teamCanSee(s,'player',npc);
+    const before=npc.hp??100,visible=teamCanSee(s,'player',npc),publiclyObserved=playerObservedBody(s,npc);
     advanceCivilianWoundTime(s,npc,seconds);
-    if((npc.hp??100)<before&&visible){say(s,`${npc.name} pierde ${before-npc.hp} de salud por hemorragia.`);if(npc.hp===0)say(s,`${npc.name} muere por sus heridas.`);}
+    if((npc.hp??100)<before&&visible){
+     const messages=[`${npc.name} pierde ${before-npc.hp} de salud por hemorragia.`,...(npc.hp===0?[`${npc.name} muere por sus heridas.`]:[])];
+     for(const message of messages){say(s,message);if(publiclyObserved)recordPublicCombatMessage(s,message);}
+    }
   }
 }
 // Apply exploration time at the end of each completed movement step. This lets
@@ -2702,13 +2718,13 @@ function crossBoundary(s,u,exit){
 }
 function applyExit(s,a){
   const preview=exitPreview(s,a);
-  if(!preview.available){s.lastError=preview.reason;say(s,s.lastError);return false;}
+  if(!preview.available){s.lastError=preview.reason;sayPublic(s,s.lastError);return false;}
   const exit=s.exits.find(v=>v.id===a.exitId);s.actionDurationSeconds=0;
   for(const id of preview.eligibleIds){
     const u=s.units.find(v=>v.id===id),reason=exitUnitReason(s,u,exit);
     if(reason){sayObserved(s,[u],`${u.name}: ${reason}`);break;}
     if(!crossBoundary(s,u,exit))break;
-    for(const npc of crossPrisonerEscorts(s,u,exit))say(s,`${npc.name} cruza la salida junto a ${u.name}. Su equipo queda en el lugar de cautiverio.`);
+    for(const npc of crossPrisonerEscorts(s,u,exit))sayPublic(s,`${npc.name} cruza la salida junto a ${u.name}. Su equipo queda en el lugar de cautiverio.`);
     checkEnd(s);if(s.status!=='active')break;
   }
   return true;
@@ -2734,7 +2750,7 @@ function processRout(s,u){
   const exits=u.side==='player'?(s.exits??[]).filter(exit=>!u.militia||(s.localityIds?s.localityIds.includes(exit.destination):worldCell(exit.destination)?.anchor)):s.enemyExits??['N','E','S','W'].map(edge=>({id:`enemy:${edge}`,edge,destination:'__offmap_enemy__'}));
   const proxy={...u,routed:false},routes=getReachable({...s,mode:'exploration'},proxy).filter(point=>tacticalLevel(point)===0).flatMap(point=>exits.filter(exit=>boundaryPassable(s,point,exit.edge)).map(exit=>({...point,exit})));
   routes.sort((a,b)=>a.cost-b.cost||a.exit.id.localeCompare(b.exit.id)||a.y-b.y||a.x-b.x);
-  if(!routes.length){lowerWeapon(u);u.surrendered=true;u.ap=0;sayObserved(s,[u],`${u.name} se rinde: no encuentra un paso de salida.`);checkEnd(s);return;}
+  if(!routes.length){lowerWeapon(u);u.surrendered=true;u.ap=0;sayObserved(s,[u],`${u.name} se rinde: no encuentra un paso de salida.`,`${u.name} se rinde.`);checkEnd(s);return;}
   // Keep the cheapest physical escape, including its existing edge/point tie.
   // Only player operatives prefer a neighbouring destination on that same path;
   // legacy snapshots without campaign-derived adjacency keep their old order.
@@ -2761,7 +2777,7 @@ function actBattleResolved(state,action,movementPath=null){
   if(state.deployment)return sectorDeploymentAction(state,action);
   const ids=[action.unitId,...(Array.isArray(action.unitIds)?action.unitIds:[])].filter(id=>id!==undefined).map(String);
   if(state.units.some(u=>u.militia&&ids.includes(u.id))||state.alliedTurn&&state.phase!=='interrupt'){
-    const rejected=clone(state);rejected.lastError='La milicia actúa por su cuenta. Da órdenes a los combatientes de tu escuadra.';say(rejected,rejected.lastError);return rejected;
+    const rejected=clone(state);rejected.lastError='La milicia actúa por su cuenta. Da órdenes a los combatientes de tu escuadra.';sayPublic(rejected,rejected.lastError);return rejected;
   }
   const next=actBattleInput(state,action,movementPath);
   if(next!==state&&!next.lastError)for(const unit of next.units)syncUnitAmmunition(unit);
@@ -2784,18 +2800,18 @@ function actBattleInput(state,action,movementPath=null){
 
   if(action.type==='meleePoint'){
     const unit=state.units.find(u=>u.id===String(action.unitId)),plan=meleePointPreview(state,unit,action);
-    if(unit?.side!=='player'||!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason??'No puedes dar órdenes a ese soldado.';say(rejected,rejected.lastError);return rejected;}
+    if(unit?.side!=='player'||!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason??'No puedes dar órdenes a ese soldado.';sayPublic(rejected,rejected.lastError);return rejected;}
     if(plan.path.length)return approachAndUse(state,action,plan);
     return actBattleOrder(state,action);
   }
   if(action.type==='useItem'&&heldGrenade(state.units.find(u=>u.id===String(action.unitId))))action=grenadeUseOrder(state,action);
   if(action.type==='throwGrenade'){
     const unit=state.units.find(u=>u.id===String(action.unitId)),plan=grenadeThrowPreview(state,unit,action,action);
-    if(!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason;say(rejected,plan.reason);return rejected;}
+    if(!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason;sayPublic(rejected,plan.reason);return rejected;}
     if(plan.costs.stance){
       const prepared=actBattleOrder(state,{type:'stance',unitId:unit.id,stance:'standing'}),ready=prepared.units.find(u=>u.id===unit.id);
       if(!approachCompleted(state,prepared,unit.id,{destination:positionOf(unit)})||!grenadeThrowPreview(prepared,ready,action,action).valid){
-        if(!prepared.lastError)say(prepared,'La preparación se detuvo antes del lanzamiento. Revisá la situación y apuntá de nuevo.');
+        if(!prepared.lastError)sayPublic(prepared,'La preparación se detuvo antes del lanzamiento. Revisá la situación y apuntá de nuevo.');
         return prepared;
       }
       return actBattleOrder(prepared,action);
@@ -2804,7 +2820,7 @@ function actBattleInput(state,action,movementPath=null){
   }
   if(cursorOrders.has(action.type)){
     const unit=state.units.find(u=>u.id===String(action.unitId)),preview=equipmentCursorPreview(state,unit,action),next=clone(state);
-    if(!preview.valid){next.lastError=preview.reason;say(next,preview.reason);return next;}
+    if(!preview.valid){next.lastError=preview.reason;sayPublic(next,preview.reason);return next;}
     if(preview.operation==='reload')return cleanActionTime(settleAutonomous(actBattleOrder(state,action)));
     const plan=planEquipmentCursorOrder(unit,action,state),actor=next.units.find(u=>u.id===unit.id);
     replaceUnit(actor,plan.unit);if(plan.dropped)addGroundStack(next,plan.dropped,actor);
@@ -2812,14 +2828,14 @@ function actBattleInput(state,action,movementPath=null){
   }
   if(action.type==='inventoryMap'){
     const unit=state.units.find(u=>u.id===String(action.unitId)),plan=inventoryMapPreview(state,unit,action);
-    if(!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason;say(rejected,plan.reason);return rejected;}
+    if(!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason;sayPublic(rejected,plan.reason);return rejected;}
     if(plan.kind==='gift'&&plan.path.length)return approachAndUse(state,plan.action,plan);
     return actBattleOrder(state,plan.action);
   }
   if(action.type==='throwKnife'){
     const unit=state.units.find(u=>u.id===String(action.unitId)),target=action.targetId===undefined?action:state.units.find(u=>u.id===String(action.targetId));
     const plan=knifeThrowPreview(state,unit,target,action);
-    if(!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason;say(rejected,plan.reason);return rejected;}
+    if(!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason;sayPublic(rejected,plan.reason);return rejected;}
     let prepared=state;
     for(const type of ['stance','look']){
       const current=prepared.units.find(u=>u.id===String(action.unitId)),costs=knifeThrowCosts(current,target,action.aim);
@@ -2828,7 +2844,7 @@ function actBattleInput(state,action,movementPath=null){
       const next=actBattleOrder(prepared,order);
       const ready=next.units.find(u=>u.id===current.id);
       if(!approachCompleted(prepared,next,current.id,{destination:positionOf(current)})||!knifeThrowPreview(next,ready,action.targetId===undefined?action:next.units.find(v=>v.id===String(action.targetId)),action).valid){
-        if(!next.lastError)say(next,'La preparación se detuvo antes del lanzamiento. Revisá la situación y apuntá de nuevo.');
+        if(!next.lastError)sayPublic(next,'La preparación se detuvo antes del lanzamiento. Revisá la situación y apuntá de nuevo.');
         return next;
       }
       prepared=next;
@@ -2837,14 +2853,14 @@ function actBattleInput(state,action,movementPath=null){
   }
   if(action.type==='approachLoot'){
     const unit=state.units.find(u=>u.id===String(action.unitId)),plan=lootSearchPreview(state,unit,action);
-    if(unit?.side!=='player'||!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason??'No puedes dar órdenes a ese soldado.';say(rejected,rejected.lastError);return rejected;}
+    if(unit?.side!=='player'||!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason??'No puedes dar órdenes a ese soldado.';sayPublic(rejected,rejected.lastError);return rejected;}
     if(!plan.path.length){const next=clone(state);next.lastError=null;return next;}
     return actBattleOrder(state,{type:'move',unitId:action.unitId,...plan.destination},{...plan.destination,cost:plan.movePa,path:plan.path});
   }
   if(action.type==='useItem'||action.type==='loot'){
     const unit=state.units.find(u=>u.id===String(action.unitId));
     const plan=unit?.side==='player'?contextualUsePlan(state,unit,action):null;
-    if(plan&&!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason;say(rejected,plan.reason);return rejected;}
+    if(plan&&!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason;sayPublic(rejected,plan.reason);return rejected;}
     if(plan?.path.length)return approachAndUse(state,action,plan);
   }
   return actBattleOrder(state,action,action.type==='move'?movementPath:null);
@@ -2874,7 +2890,7 @@ function approachAndUse(state,action,plan){
   const current=contextualUsePlan(moved,unit,pending);
   if(!approachCompleted(state,moved,action.unitId,plan)||!current?.valid||current.path.length){
     interruptedGift();
-    say(moved,'El desplazamiento terminó antes de usar el objeto. Revisá la situación y seleccioná el objetivo de nuevo.');return moved;
+    sayPublic(moved,'El desplazamiento terminó antes de usar el objeto. Revisá la situación y seleccioná el objetivo de nuevo.');return moved;
   }
   return actBattleOrder(moved,plan.type==='environment'?plan.action:{...action,type:plan.type});
 }
@@ -2890,11 +2906,11 @@ function actBattleOrder(state,action,movementPath=null){
     if(s.status==='victory'||s.status==='active'&&(s.sectorCleared||canEndCombat(s))){
       return resumeExploration(s);
     }
-    s.lastError='Deben pasar dos turnos completos sin contacto visual con el enemigo.';say(s,s.lastError);return s;
+    s.lastError='Deben pasar dos turnos completos sin contacto visual con el enemigo.';sayPublic(s,s.lastError);return s;
   }
   const oldMode=s.mode;delete s.actionDurationSeconds;delete s.actionTimeAppliedSeconds;
   const success=action.type==='exit'?applyExit(s,action):apply(s,action,false,movementPath);
-  if(success===false||s.lastError){const rejected=clone(state);rejected.lastError=s.lastError;say(rejected,s.lastError);return rejected;}
+  if(success===false||s.lastError){const rejected=clone(state);rejected.lastError=s.lastError;sayPublic(rejected,s.lastError);return rejected;}
   if(action.type==='weaponMode')return cleanActionTime(s);
   if(oldMode==='exploration'){
     const seconds=Math.max(0,(s.actionDurationSeconds??6)-(s.actionTimeAppliedSeconds??0));if(seconds){advanceBattleClock(s,seconds);advanceWounds(s,seconds);advanceAmbientTime(s,seconds);}
@@ -2909,7 +2925,7 @@ function finishEnemyRound(s){
 function beginAlliedTurn(s,startEnemyAfter=false){
   s.phase='player';
   s.alliedTurn={unitIds:s.units.filter(u=>u.side==='player'&&u.militia&&fieldCapable(u)).map(u=>u.id),unitIndex:0,actionsTaken:0,startEnemyAfter};
-  if(s.alliedTurn.unitIds.length)say(s,`Turno ${s.turn}: actúa la guarnición local.`);
+  if(s.alliedTurn.unitIds.length)sayPublic(s,`Turno ${s.turn}: actúa la guarnición local.`);
   return runAlliedTurn(s);
 }
 // Militia use their existing AP, equipment and awareness. This queue survives
@@ -2975,17 +2991,17 @@ function finishCombatRound(s){
       const fear=applyNervousIsolation(s,u);
       if(fear>0&&!u.nervousIsolationWarned){
         u.nervousIsolationWarned=true;
-        say(s,`${u.name} siente temor al quedar sin apoyo. Tensión +${fear}.`);
+        sayPublic(s,`${u.name} siente temor al quedar sin apoyo. Tensión +${fear}.`);
       }
     }
     for(const u of s.units){
       const fear=applyEnclosedRoomFear(s,u);
       if(fear>0&&!u.enclosedRoomFearWarned){
         u.enclosedRoomFearWarned=true;
-        say(s,`${u.name} siente temor dentro de una habitación cerrada. Tensión +${fear}.`);
+        sayPublic(s,`${u.name} siente temor dentro de una habitación cerrada. Tensión +${fear}.`);
       }
     }
-    say(s,`Turno ${s.turn}: ¡órdenes, comandante!`);
+    sayPublic(s,`Turno ${s.turn}: ¡órdenes, comandante!`);
   }
   s.lastError=null;return s;
 }
@@ -3064,7 +3080,7 @@ function endTurnResolved(state){
  if(state.deployment)return sectorDeploymentAction(state,{type:'endTurn'});
  const ready=clone(state);
  for(const unit of ready.units)if(!returnBattleEquipmentCursor(ready,unit)){
-  const rejected=clone(state);rejected.lastError='Colocá el objeto del cursor antes de terminar el turno.';say(rejected,rejected.lastError);return rejected;
+  const rejected=clone(state);rejected.lastError='Colocá el objeto del cursor antes de terminar el turno.';sayPublic(rejected,rejected.lastError);return rejected;
  }
  return cleanActionTime(settleAutonomous(endTurnState(ready)));
 }
@@ -3073,7 +3089,7 @@ function endTurnState(state){
   if(s.phase==='interrupt'){
     const reaction=s.interrupt?.returnTo==='reaction';
     if(reaction?!s.reactionStack?.length:!s.enemyTurn){s.lastError='Falta el turno enemigo que debe continuar.';return s;}
-    delete s.interrupt;s.phase='enemy';say(s,'Continúa el turno enemigo.');return reaction?runEnemyReactions(s):runEnemyPhase(s);
+    delete s.interrupt;s.phase='enemy';sayPublic(s,'Continúa el turno enemigo.');return reaction?runEnemyReactions(s):runEnemyPhase(s);
   }
   if(s.mode==='exploration'){
     const startedAt=s.elapsedSeconds??0;
