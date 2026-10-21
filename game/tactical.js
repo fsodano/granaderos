@@ -2592,7 +2592,7 @@ function advanceWounds(s,seconds){
   const ticks=Math.floor(s.bleedSeconds/COMBAT_ROUND_SECONDS);s.bleedSeconds%=COMBAT_ROUND_SECONDS;
   for(const u of s.units.filter(u=>u.hp>0)){
     const grief=u.bleeding&&ticks>0?captureObservedCompanionGrief(s,u):null;
-    if(u.bleeding){const loss=Math.min(u.hp,u.bleeding*ticks);u.hp-=loss;u.bandaged=Math.min(u.bandaged??0,u.maxHp-u.hp);if(u.side==='player'||teamCanSee(s,'player',u))sayObserved(s,[u],`${u.name} pierde ${loss} de salud por hemorragia.`,`${u.name} pierde ${loss} de salud por hemorragia.`);}
+    if(u.bleeding){const loss=Math.min(u.hp,u.bleeding*ticks);u.hp-=loss;u.bandaged=Math.min(u.bandaged??0,u.maxHp-u.hp);if(loss>0&&(u.side==='player'||teamCanSee(s,'player',u)))sayObserved(s,[u],`${u.name} pierde ${loss} de salud por hemorragia.`,`${u.name} pierde ${loss} de salud por hemorragia.`);}
     refreshCondition(u);
     reportCompanionGrief(s,grief);
   }

@@ -12,15 +12,22 @@ export function validCombatJournal(journal,turn){
   Array.isArray(journal.entries)&&journal.entries.length<=COMBAT_JOURNAL_LIMIT&&journal.entries.every(entry=>validEntry(entry,turn)));
 }
 
-/** Read the same certified entries for the visible journal and WebMCP. */
-export function publicCombatJournal(state){
+/** Copy certified stored entries without rewriting historical presentation. */
+export function storedCombatJournal(state){
  const journal=state?.publicJournal;
  return journal&&validCombatJournal(journal,state.turn)?journal.entries.map(({turn,text})=>({turn,text})):[];
 }
 
+/** Read the same certified entries for the visible journal and WebMCP. */
+export function publicCombatJournal(state){
+ // Older partial wound steps recorded a loss even when no full tick elapsed.
+ // Hide only that false report; stored entries remain intact for later writes.
+ return storedCombatJournal(state).filter(entry=>!/^.+ pierde 0 de salud por hemorragia\.$/.test(entry.text));
+}
+
 /** Mutates presentation metadata only; the admission belongs to the caller. */
 export function recordPublicCombatMessage(state,text){
- const entries=publicCombatJournal(state);
+ const entries=storedCombatJournal(state);
  const entry={turn:state.turn,text};
  if(!validEntry(entry,state.turn))return;
  state.publicJournal={version:1,entries:[...entries,entry].slice(-COMBAT_JOURNAL_LIMIT)};
