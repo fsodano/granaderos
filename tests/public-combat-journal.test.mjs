@@ -6,6 +6,7 @@ import {playerKnownBattle} from '../game/player-known-state.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {validateSectorSnapshot} from '../game/squads.js';
 import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
+import {movementStep} from '../game/movement-step.js';
 
 const tiles=(width=20,height=8)=>Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,blocksSight:false,cover:0}));
 const journal=state=>publicCombatJournal(state).map(entry=>entry.text);
@@ -26,6 +27,25 @@ test('legacy saves start empty and never reconstruct private log text',()=>{
   assert.equal(next.lastError,null);assert.ok(journal(next).some(text=>text==='Centinela se agacha.'));
   assert.ok(next.log.includes(legacy.log[0]));assert.ok(!JSON.stringify(publicCombatJournal(next)).includes('PRIVATE'));
  }
+});
+
+test('partial exploration wound steps omit zero-loss reports without changing ticks or stored history',()=>{
+ const state=createBattle([{id:'p',name:'Herido',x:1,y:3,hp:50,maxHp:100,bleeding:3}],{width:8,height:8,seed:45,tiles:tiles(8,8),exploration:true,enemies:[]});
+ const zero='Herido pierde 0 de salud por hemorragia.',loss='Herido pierde 3 de salud por hemorragia.';
+ // Declare a historical false entry; reading and later journal writes must
+ // preserve it in storage while the public view omits it.
+ state.publicJournal={version:1,entries:[{turn:state.turn,text:zero}]};state.log.push(zero);
+ const before=structuredClone(state);assert.deepEqual(journal(state),[]);assert.deepEqual(playerKnownBattle(state).journal,[]);assert.deepEqual(state,before);
+ let next=state,continuation;
+ for(const [index,hp]of [50,47,47].entries()){
+  const result=movementStep(next,{type:'move',unitId:'p',x:4,y:3},continuation);next=result.state;continuation=result.continuation;
+  assert.equal(next.lastError,null);assert.equal(result.status,index===2?'completed':'moving');
+  assert.equal(next.elapsedSeconds,3*(index+1));assert.equal(next.bleedSeconds,index===1?0:3);assert.equal(next.units[0].hp,hp);assert.equal(next.units[0].bleeding,3);
+  assert.equal(next.log.filter(text=>text===zero).length,1);assert.equal(next.publicJournal.entries.filter(entry=>entry.text===zero).length,1);
+  assert.ok(!journal(next).includes(zero));assert.equal(journal(next).filter(text=>text===loss).length,index===0?0:1);
+ }
+ assert.ok(journal(next).includes('Herido avanza 2 casillas.'),'movement message consolidation retains stored history too');
+ const restored=validateBattleSnapshot(JSON.parse(JSON.stringify(next)));assert.deepEqual(restored.publicJournal,next.publicJournal);assert.deepEqual(playerKnownBattle(restored).journal,publicCombatJournal(next));assert.deepEqual(state,before);
 });
 
 test('the observed last casualty and attacker remain readable after defeat and save',()=>{

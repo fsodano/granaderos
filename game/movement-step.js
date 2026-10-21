@@ -2,7 +2,7 @@ import {actBattle,getReachable,movementStepCost,stanceCost,teamCanSee,canSee,app
 import {movementStance} from './tactical-condition.js';
 import {sameCell,sameSurface,tacticalLevel,surfaceAt} from './tactical-space.js';
 import {dialogueAvailability} from './npc-dialogue.js';
-import {recordPublicCombatMessage,publicCombatJournal} from './combat-journal.js';
+import {recordPublicCombatMessage,storedCombatJournal} from './combat-journal.js';
 
 const point=p=>({x:p.x,y:p.y,...(p.tacticalLevel===undefined?{}:{tacticalLevel:p.tacticalLevel}),...(p.kind?{kind:p.kind}:{}),...(p.linkId?{linkId:p.linkId}:{})});
 const ready=u=>u&&u.side==='player'&&!u.militia&&!u.departure&&!u.routed&&!u.surrendered&&!u.unconscious&&u.hp>=15&&u.energy>0;
@@ -61,7 +61,7 @@ export function movementStep(state,action,continuation=null){
    const count=Number(match[1]),index=next.log.length-2;
    if(Number.isInteger(count)&&next.log[index]===previous){
     next.log.splice(index,2,`${prefix}${count+1}${suffix}`);
-    const entries=publicCombatJournal(next),prior=entries.at(-2),latest=entries.at(-1);
+    const entries=storedCombatJournal(next),prior=entries.at(-2),latest=entries.at(-1);
     if(prior?.text===previous&&latest?.text===line&&prior.turn===latest.turn){
      entries.splice(-2,2,{turn:latest.turn,text:`${prefix}${count+1}${suffix}`});next.publicJournal={version:1,entries};
     }
