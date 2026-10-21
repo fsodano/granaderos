@@ -9,11 +9,14 @@ import {encodeSave,decodeSave} from '../game/save.js';
 import {strategicSquadSlots,strategicSquadAssignments,strategicNewSquadAssignment} from '../game/strategic-squad-assignments.js';
 import {contractQuote} from '../game/contracts.js';
 import {playerKnownCampaign} from '../game/player-known-state.js';
+import {createBattle} from '../game/tactical.js';
+import {sectorInventoryModel} from '../game/sector-inventory.js';
 const {default:StrategicRoster}=await import('../web/app/StrategicRoster.tsx');
 const {default:StrategicPersonnelMenu}=await import('../web/app/StrategicPersonnelMenu.tsx');
 const {default:Campaign}=await import('../web/app/Campaign.tsx');
 const {default:MedicalCare}=await import('../web/app/MedicalCare.tsx');
 const {DossierEquipment}=await import('../web/app/CharacterDossier.tsx');
+const {default:SectorInventory}=await import('../web/app/SectorInventory.tsx');
 const noop=()=>{},order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const unchanged=s=>({...s,lastError:null});
 
@@ -224,6 +227,33 @@ test('personnel energy text and meter respect fatigue capacity without changing 
  const before=structuredClone(state),publicBefore=playerKnownCampaign(state),doc=new JSDOM(render(h(MedicalCare,{state,dispatch:noop}))).window.document;
  for(const {id,shown,max}of cases){const label=doc.querySelector(`[data-care-id="${id}"] .care-vitals label:last-child`),meter=label.querySelector('meter');assert.equal(label.querySelector('strong').textContent,`${Math.round(shown)}/${max}`);assert.equal(meter.getAttribute('value'),String(shown));assert.equal(meter.getAttribute('max'),String(max));}
  assert.deepEqual(state,before);assert.deepEqual(playerKnownCampaign(state),publicBefore);doc.defaultView.close();
+});
+
+test('returned equipment and repair reserves show their known former owner without changing custody or hiring gates',()=>{
+ const state=initialCampaign(),roster=rosterFor(state),names=new Map(roster.map(op=>[op.id,op.name??op.nickname]));
+ // Declared prior returns include two caches from one person and one overflow
+ // marker. Ordinary discovered ground stock has no asserted former owner.
+ const marker=id=>({id:`service-return-${id}`,siteId:'retiro',sectorId:'retiro',entryEdge:'S',entryAnchor:{x:10,y:15},point:{x:2,y:2}});
+ state.serviceEquipmentReturns={version:1,nextId:10,entries:[7,8].map((id,index)=>({...marker(id),operativeId:100,items:[{selection:'rations',stack:{item:'rations',count:index+2,weight:1}}],repairPoints:index?0:7}))};
+ Object.assign(state.operativeState[101],{serviceEquipmentReturn:marker(9),rations:4,toolkitPoints:11});
+ state.sectorStates.retiro={...createBattle([],{id:'retiro',width:8,height:8,enemies:[],tiles:Array.from({length:64},(_,i)=>({x:i%8,y:Math.floor(i/8),type:'grass',blocked:false,cover:0})),groundItems:[{id:'ordinary',type:'rations',count:1,x:2,y:2,knownToPlayer:true}]}),sectorCleared:true};
+ const before=structuredClone(state),gate=contractQuote(state,roster.find(op=>op.id===101),'day').reason;
+ assert.match(gate,/Recogé todo el equipo/);
+ const model=sectorInventoryModel(state,'retiro',roster,3),publicSector=playerKnownCampaign(state).sectors.find(sector=>sector.id==='retiro');
+ const doc=new JSDOM(render(h(SectorInventory,{state,sectorId:'retiro',dispatch:noop}))).window.document,rows=[...doc.querySelectorAll('[aria-label="Equipo descubierto"] > .sector-inventory-row')];
+ assert.equal(rows.length,model.entries.length);
+ for(const [index,row]of model.entries.entries()){
+  const visible=publicSector.equipment.find(entry=>JSON.parse(entry.key)[1]===row.key);assert.ok(visible);
+  if(row.kind==='serviceReturn'){assert.equal(row.operativeName,names.get(row.operativeId));assert.equal(visible.operativeId,row.operativeId);assert.equal(visible.operativeName,row.operativeName);assert.ok(rows[index].textContent.includes(`Devuelto por ${row.operativeName}`));}
+  else{assert.equal(row.operativeId,undefined);assert.equal(visible.operativeName,undefined);assert.doesNotMatch(rows[index].textContent,/Devuelto por/);}
+ }
+ assert.deepEqual(model.entries.filter(row=>row.operativeId===100).map(row=>row.count),[2,3]);
+ const repairRows=[...doc.querySelectorAll('[aria-label="Materiales de reparación"] .sector-inventory-row')];assert.equal(repairRows.length,2);
+ for(const [index,row]of model.repairReserves.entries()){
+  assert.equal(row.operativeName,names.get(row.operativeId));assert.ok(repairRows[index].textContent.includes(`Devuelto por ${row.operativeName}`));
+  const visible=publicSector.repairReserves.find(entry=>JSON.parse(entry.key)[1]===row.key);assert.equal(visible.operativeId,row.operativeId);assert.equal(visible.operativeName,row.operativeName);assert.equal(visible.repairPoints,row.repairPoints);
+ }
+ assert.equal(contractQuote(state,roster.find(op=>op.id===101),'day').reason,gate);assert.deepEqual(state,before);doc.defaultView.close();
 });
 
 for(const kind of ['assignment','contract'])test(`${kind} menu traps Tab in both directions and Escape restores the desktop person button`,async t=>{

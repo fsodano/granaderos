@@ -149,7 +149,8 @@ export function serviceReturnSources(s,siteId,snapshot=null,roster=null){
  const rows=[],scene=snapshot??snapshotAt(s,siteId);
  const add=(marker,id,selection,stack,repairPoints)=>{
   const placement=returnPlacement(marker,scene),key=sourceKey(marker.id,selection);
-  rows.push({kind:repairPoints===undefined?'serviceReturn':'repairPoints',sourceKey:key,key,siteId,sectorId:marker.sectorId,operativeId:id,placement,...(placement??{}),...(repairPoints===undefined?{stack:copy(stack),expected:JSON.stringify(stack)}:{repairPoints,expected:JSON.stringify({repairPoints})})});
+  roster??=equipmentRoster(s);const op=roster.find(o=>Number(o.id)===Number(id)),operativeName=op?.name??op?.nickname;
+  rows.push({kind:repairPoints===undefined?'serviceReturn':'repairPoints',sourceKey:key,key,siteId,sectorId:marker.sectorId,operativeId:id,...(operativeName?{operativeName}:{}),placement,...(placement??{}),...(repairPoints===undefined?{stack:copy(stack),expected:JSON.stringify(stack)}:{repairPoints,expected:JSON.stringify({repairPoints})})});
  };
  for(const entry of s.serviceEquipmentReturns?.entries??[])if(entry.siteId===siteId){for(const item of entry.items)add(entry,entry.operativeId,item.selection,item.stack);if(entry.repairPoints)add(entry,entry.operativeId,'repairPoints',null,entry.repairPoints);}
  for(const [id,r]of Object.entries(s.operativeState??{}))if(r.serviceEquipmentReturn?.siteId===siteId){
