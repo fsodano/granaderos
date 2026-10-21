@@ -195,12 +195,25 @@ test('new-squad creation shares encounter, service, travel and training eligibil
  }
 });
 
-test('assignment opens six numbered buttons and a click forms an actual saved squad in active service',async t=>{
+test('assignment preserves saved squad labels and a vacant numbered slot forms an actual squad in active service',async t=>{
  const state=order(initialCampaign(),{type:'assignCare',operativeId:3,assignment:'rest'}),m=await mountMenu(t,state,3);
  assert.equal(m.doc.querySelector('.strategic-squad-options'),null);await m.click('Escuadra ›');
- assert.deepEqual([...m.doc.querySelectorAll('.strategic-squad-options button')].map(b=>b.textContent),Array.from({length:6},(_,i)=>`Escuadra ${i+1}`));
+ assert.deepEqual([...m.doc.querySelectorAll('.strategic-squad-options button')].map(b=>b.textContent),['Primera escuadra',...Array.from({length:5},(_,i)=>`Escuadra ${i+2}`)]);
  await m.click('Escuadra 6');assert.equal(m.actions.length,1);assert.equal(m.actions[0].returnToService,true);assert.equal(m.closed(),1);assert.equal(m.state().lastError,null);assert.equal(m.state().operativeState[3].assignment,'active');
  const loaded=decodeSave(encodeSave(m.state())).campaign;assert.deepEqual(strategicSquadSlots(loaded)[5].squad.members,[3]);
+ // Vacant numbered names can disappear when an eight-squad army reuses a slot.
+ const sparse=existingArmy(),ids=sparse.recruited,group=(id,name,members=[])=>({id,name,members,location:'retiro'});
+ sparse.squads=[group('squad-1','Reserva médica',ids.slice(0,2)),...Array.from({length:4},(_,i)=>group(`squad-${i+3}`,`Escuadra ${i+3}`)),group('squad-8','Escuadra 7',ids.slice(2,6)),group('squad-9','Reserva del puerto',ids.slice(6)),group('squad-10','Escuadra 8')];
+ sparse.activeSquadId='squad-8';sparse.squad=[...sparse.squads.find(q=>q.id===sparse.activeSquadId).members];
+ const before=structuredClone(sparse),choices=strategicSquadAssignments(sparse,ids[0],rosterFor(sparse).find(op=>op.id===ids[0])),seventh=choices.find(slot=>slot.number===2);
+ assert.equal(seventh.label,'Escuadra 7');assert.equal(seventh.action.squadId,'squad-8');assert.equal(seventh.reason,null);
+ for(const choice of choices){assert.equal(choice.label,choice.squad.name);assert.equal(choice.action.squadId,choice.squad.id);}
+ const doc=new JSDOM(render(h(StrategicRoster,{state:sparse,roster:rosterFor(sparse),onDossier:noop,onOpenDesk:noop,onAssignment:noop,onContract:noop,onDestination:noop,dispatch:noop}))).window.document;
+ for(const id of ids){const button=doc.querySelector(`[data-operative-id="${id}"] [aria-label^="Asignación:"]`),squad=sparse.squads.find(q=>q.members.includes(id));assert.equal(button.textContent,squad.name);assert.equal(button.title,squad.name);}
+ doc.defaultView.close();assert.deepEqual(sparse,before);
+ const reassigned=order(sparse,seventh.action);
+ for(const squad of before.squads)assert.deepEqual(reassigned.squads.find(q=>q.id===squad.id),{...squad,members:squad.id==='squad-8'?[...squad.members,ids[0]]:squad.members.filter(id=>id!==ids[0])});
+ assert.equal(reassigned.activeSquadId,'squad-8');assert.equal(reassigned.hour,before.hour);assert.deepEqual(reassigned.resources,before.resources);assert.deepEqual(sparse,before);
 });
 
 test('the contract menu renews with the displayed exact second deadline and charges the current quote',async t=>{
