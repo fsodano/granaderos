@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {register} from 'node:module';
 import test from 'node:test';
+import {nativeRigOffsets,assertNativeRigOffsets} from './native-rig-offsets-fixture.mjs';
 register('./tactical-render-loader.mjs',import.meta.url);
 const {advanceSceneActors}=await import('../web/lib/three/scene-actors.ts');
 const {ActorRuntime}=await import('../web/lib/three/actor-runtime.ts');
@@ -56,7 +57,7 @@ function wristPath(runtime,native){
 for(const hz of [24,60,240])test(`ordinary paid rifle preparation/contact stays supported through idle crossfade and refreshed13actor arrays at${hz}Hz`,async()=>{
  for(const posture of ['standing','crouched'])for(const appearance of ['granadero','woman-scout'])for(const diagonal of [false,true]){
   const f=await combat(posture,appearance,diagonal),before=JSON.stringify(f.result.state),original=JSON.stringify(f.state),initial=f.attacker.visual,native=new ActorRuntime(f.attacker.asset,initial);native.tick(.1,-100);native.tick(.1,0);let startedAt=0,previous,contactPlan,preparePlan,complete=0,maxSpeed=0;
-  const sourceOffsets=new Map();native.model.traverse(node=>{if(node.isBone)sourceOffsets.set(node.name,{position:node.position.clone(),scale:node.scale.clone()});});
+  const sourceOffsets=nativeRigOffsets(f.attacker.asset.body.scene);
   f.attacker.onCueComplete=()=>complete++;
   for(let index=0;index<f.result.frames.length;index++){
    const shownFrame=frame(f,index,startedAt),state={...shownFrame.state,presentationVisibleIds:shownFrame.state.visibleIds};f.latest=f.show(state,shownFrame,startedAt);const duration=f.durationMs[index],stop=startedAt+duration;
@@ -69,7 +70,7 @@ for(const hz of [24,60,240])test(`ordinary paid rifle preparation/contact stays 
     if(['prepare','contact'].includes(shownFrame.type)){
      assert.ok(actor.meleeFit.plan,'The actual first refreshed array admits the native supported plan');wristPath(actor,native);assert.ok(actor.meleeFit.footReachError<.001);if(shownFrame.type==='prepare')preparePlan=actor.meleeFit.plan;else{contactPlan=actor.meleeFit.plan;assert.deepEqual(contactPlan.body.toArray(),preparePlan.body.toArray(),'Contact retains the admitted paid wind-up body');assert.deepEqual(contactPlan.step.toArray(),preparePlan.step.toArray());assert.deepEqual(contactPlan.rearStep.toArray(),preparePlan.rearStep.toArray());}
     }
-    actor.model.traverse(node=>{const source=sourceOffsets.get(node.name);if(!source)return;if(node.name!=='Root')assert.ok(node.position.distanceTo(source.position)<1e-6,`${node.name} keeps its native segment offset`);assert.ok(node.scale.distanceTo(source.scale)<1e-6);});assert.deepEqual(actor.root.position.toArray(),actor.visual.position,'The gameplay cell transform stays authoritative');
+    assertNativeRigOffsets(actor,sourceOffsets,`${appearance}/${posture}/${diagonal}/${now} ms`);assert.deepEqual(actor.root.position.toArray(),actor.visual.position,'The gameplay cell transform stays authoritative');
     const boot=actor.model.getObjectByName(actor.asset.appearance.parts.footwear.replace('{lod}','0'));let minimum=Infinity;for(let vertex=0;vertex<boot.geometry.attributes.position.count;vertex++)minimum=Math.min(minimum,boot.localToWorld(boot.getVertexPosition(vertex,new Vector3())).y-actor.visual.position[1]);assert.ok(minimum>=-.001&&minimum<=.008,`Complete native boot support (${minimum})`);
     if(shownFrame.type==='contact'&&Math.abs(time-marker)<.001)assert.ok(capGap(actor,f.target)<.004,'Current target breathing retains the admitted actual brass contact surface tolerance');
     previous={now,root};

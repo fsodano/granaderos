@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {register} from 'node:module';
 import test from 'node:test';
+import {nativeRigOffsets,assertNativeRigOffsets} from './native-rig-offsets-fixture.mjs';
 register('./tactical-render-loader.mjs',import.meta.url);
 const {ActorRuntime}=await import('../web/lib/three/actor-runtime.ts');
 const {presentActors}=await import('../web/lib/three/presentation.ts');
@@ -32,12 +33,11 @@ function sampleBoots(g,height){
   return [side,{points,minimum,top,span:top-(Math.min(...outline.map(p=>p.y))-height)}];
  }));
 }
-function boneOffsets(model){const result=new Map();model.traverse(bone=>{if(bone.isBone)result.set(bone.name,{position:bone.position.clone(),scale:bone.scale.clone()});});return result;}
 function segmentLengths(model){return ['l','r'].flatMap(side=>[['thigh','calf'],['calf','foot'],['upperarm','lowerarm'],['lowerarm','hand']].map(([from,to])=>[`${from}_${side}`,`${to}_${side}`])).map(([from,to])=>({from,to,length:model.getObjectByName(from).getWorldPosition(new Vector3()).distanceTo(model.getObjectByName(to).getWorldPosition(new Vector3()))}));}
 
 for(const appearance of ['granadero','woman-scout'])for(const cadence of [24,60,240])test(`${appearance} native rifle idle↔butt crossfade keeps complete boot support at ${cadence} Hz`,async()=>{
  const f=await paidVisual(appearance),asset=await publishedActor(appearance,0),saved=JSON.stringify(f.result),idle={...f.visual,action:f.visual.idleAction,cue:undefined},completed=[],runtime=new ActorRuntime(asset,idle,(key,id)=>completed.push({key,id})),guard=new ActorRuntime(asset,idle),dt=1/cadence;
- const g=boots(asset,runtime.model),native=boneOffsets(asset.body.scene),lengths=segmentLengths(runtime.model);
+ const g=boots(asset,runtime.model),native=nativeRigOffsets(asset.body.scene),lengths=segmentLengths(runtime.model);
  const spec=asset.clips.find(clip=>clip.name==='stand.butt.long-gun');assert.equal(spec.playbackRate,1.25);assert.equal(spec.markers.contact,.42);assert.equal(runtime.action.getClip().name,'stand.idle.long-gun');
  // Hold the admitted cardinal contact heading to isolate source support. This
  // test keeps the runtime's ordinary .12 s fades and full finite native clock;
@@ -54,7 +54,7 @@ for(const appearance of ['granadero','woman-scout'])for(const cadence of [24,60,
     if(previous)for(let j=0;j<feet[side].points.length;j++){const speed=feet[side].points[j].distanceTo(previous[side].points[j])/dt;maximumSpeed=Math.max(maximumSpeed,speed);assert.ok(speed<2,label+' '+side+' actual boot point moves continuously below 2 m/s');}
    }
    const supporting=feet.l.minimum<=feet.r.minimum?'l':'r';assert.ok(feet[supporting].minimum<.00225,label+' keeps a complete supporting boot at the 2 mm floor baseline');assert.ok(feet[supporting].top<.009,label+' supporting heel stays below 9 mm');
-   runtime.model.traverse(bone=>{if(!bone.isBone)return;const original=native.get(bone.name);if(bone.name!=='Root')assert.ok(bone.position.distanceTo(original.position)<1e-5,label+' '+bone.name+' native offset');assert.ok(bone.scale.distanceTo(original.scale)<1e-5,label+' '+bone.name+' native scale');assert.ok(bone.matrixWorld.elements.every(Number.isFinite));});
+   assertNativeRigOffsets(runtime,native,label,1e-5);
    for(const segment of lengths)assert.ok(Math.abs(runtime.model.getObjectByName(segment.from).getWorldPosition(new Vector3()).distanceTo(runtime.model.getObjectByName(segment.to).getWorldPosition(new Vector3()))-segment.length)<1e-6,label+' native '+segment.from+' segment length');
    for(const side of ['l','r']){
     const hip=runtime.model.getObjectByName(`thigh_${side}`).getWorldPosition(new Vector3()),knee=runtime.model.getObjectByName(`calf_${side}`).getWorldPosition(new Vector3()),ankle=runtime.model.getObjectByName(`foot_${side}`).getWorldPosition(new Vector3());
