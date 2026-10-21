@@ -7,7 +7,7 @@ missed the bonus from actual roof cover. The existing ground rule and its
 twelve-point accuracy adjustment are unchanged. This is a Granaderos specialty
 correction for V05/V08, not a new ballistic or historical protection claim.
 
-The existing [trait test](../../tests/custom-traits.test.mjs) now includes a
+The existing [trait test](https://github.com/fsodano/granaderos/blob/fc584dd4878be2b777c6ce1aa7c7f28f07e80d69/tests/custom-traits.test.mjs) now includes a
 declared roof arena after Acosta's real 420-peso weekly hire and six-hour arrival.
 His native health, skills and ten issued rounds remain intact. The opposing
 defender and roof geometry are declared before the first official save; this

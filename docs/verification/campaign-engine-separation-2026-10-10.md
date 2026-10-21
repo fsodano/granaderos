@@ -72,7 +72,7 @@ the installed definitions and historical quote hook were corrected. The
 affected catalogue, contract and blade batch passed 23 tests, with no failures
 or skips, in 2.854 seconds. This result was captured in the tool terminal;
 there is no saved raw log for that batch. The retained regression is in
-[`campaign-catalogue.test.mjs`](../../tests/campaign-catalogue.test.mjs) and
+[`campaign-catalogue.test.mjs`](https://github.com/fsodano/granaderos/blob/fc584dd4878be2b777c6ce1aa7c7f28f07e80d69/tests/campaign-catalogue.test.mjs) and
 [`stock-startup-baseline.json`](../../tests/stock-startup-baseline.json).
 
 The building regression renders actual mesh geometry and material pigments.

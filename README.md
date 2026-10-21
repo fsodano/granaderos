@@ -106,10 +106,8 @@ Abrí [localhost:3000](http://localhost:3000) o la dirección indicada por el se
 La [guía de desarrollo](docs/development/getting-started.md) explica la instalación, la estructura y las dependencias de verificación. El motor está en `game/`, la interfaz en `web/` y las campañas en `campaigns/`.
 
 ```sh
-npm run test:core      # Reglas compartidas, renderizado y herramientas
-npm run test:campaign  # Contenido, escenarios y rutas de campaña
-npm run test:quick     # Comprobación rápida de ambos grupos
-npm test              # Suite completa
+npm test              # Conjunto mínimo: 12 archivos, dos procesos
+npm run test:quick     # Alias del mismo conjunto mínimo
 npm run typecheck     # TypeScript
 npm run build         # Exportación estática en dist/
 ```

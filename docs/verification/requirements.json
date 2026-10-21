@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updated": "2026-10-10",
+  "updated": "2026-10-21",
   "baseline": "64ddf5156e0192e628d972f3700c010675c472b7",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
@@ -892,10 +892,20 @@
         "STORY-06",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/authored-artillery-trading.test.mjs",
-        "tests/artillery-trading-render.test.mjs",
-        "tests/story-editor.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/authored-artillery-trading.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-trading-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/110",
       "historicalAssessment": {
@@ -920,11 +930,24 @@
         "ITEM-02",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/artillery-depot-transport.test.mjs",
-        "tests/artillery-depot-transport-render.test.mjs",
-        "tests/artillery-transport.test.mjs",
-        "tests/artillery-trading.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-depot-transport.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-depot-transport-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-transport.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-trading.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/109"
     },
@@ -947,11 +970,24 @@
         "ITEM-02",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/artillery-trading.test.mjs",
-        "tests/artillery-trading-render.test.mjs",
-        "tests/artillery-transport.test.mjs",
-        "tests/stationed-artillery.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-trading.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-trading-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-transport.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/stationed-artillery.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/108",
       "historicalAssessment": {
@@ -977,10 +1013,20 @@
         "STORY-06",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/authored-artillery-transport.test.mjs",
-        "tests/artillery-transport-render.test.mjs",
-        "tests/story-editor.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/authored-artillery-transport.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-transport-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/107"
     },
@@ -1002,11 +1048,24 @@
         "ITEM-02",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/artillery-transport.test.mjs",
-        "tests/artillery-transport-render.test.mjs",
-        "tests/artillery-selection.test.mjs",
-        "tests/stationed-artillery.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-transport.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-transport-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-selection.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/stationed-artillery.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/106"
     },
@@ -1029,11 +1088,24 @@
         "STORY-06",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/artillery-profiles.test.mjs",
-        "tests/artillery-profiles-render.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/stationed-artillery-render.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-profiles.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-profiles-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/stationed-artillery-render.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/105"
     },
@@ -1056,13 +1128,32 @@
         "JA2-S05",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/artillery-autonomy.test.mjs",
-        "tests/artillery-autonomy-render.test.mjs",
-        "tests/stationed-artillery.test.mjs",
-        "tests/artillery-crew-loading.test.mjs",
-        "tests/militia-autonomy.test.mjs",
-        "tests/militia-exploration.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-autonomy.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-autonomy-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/stationed-artillery.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-crew-loading.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-autonomy.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-exploration.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/103"
     },
@@ -1086,11 +1177,24 @@
         "STORY-06",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/artillery-supply.test.mjs",
-        "tests/artillery-supply-render.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/artillery-crew-loading.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-supply.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-supply-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-crew-loading.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/102",
       "historicalAssessment": {
@@ -1115,11 +1219,24 @@
         "ITEM-02",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/artillery-crew-loading.test.mjs",
-        "tests/artillery-crew-render.test.mjs",
-        "tests/content-abilities.test.mjs",
-        "tests/artillery.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-crew-loading.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-crew-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-abilities.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/101"
     },
@@ -1141,11 +1258,24 @@
         "ITEM-02",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/stationed-artillery.test.mjs",
-        "tests/stationed-artillery-render.test.mjs",
-        "tests/artillery.test.mjs",
-        "tests/artillery-selection.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/stationed-artillery.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/stationed-artillery-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-selection.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/100"
     },
@@ -1166,12 +1296,28 @@
         "INTEGRATION-01",
         "ITEM-01"
       ],
-      "testFiles": [
-        "tests/artillery-selection.test.mjs",
-        "tests/artillery-selection-render.test.mjs",
-        "tests/equipment-web.test.mjs",
-        "tests/artillery.test.mjs",
-        "tests/workshop-service-render.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-selection.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-selection-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/equipment-web.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/workshop-service-render.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/99"
     },
@@ -1194,12 +1340,28 @@
         "JA2-S05",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/authored-militia-patrol.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/militia-exploration.test.mjs",
-        "tests/militia-exploration-render.test.mjs",
-        "tests/militia-autonomy.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/authored-militia-patrol.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-exploration.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-exploration-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-autonomy.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/98"
     },
@@ -1221,11 +1383,24 @@
         "JA2-S05",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/militia-distribution.test.mjs",
-        "tests/militia-distribution-render.test.mjs",
-        "tests/militia-training-identities.test.mjs",
-        "tests/garrison-web.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-distribution.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-distribution-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-training-identities.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/garrison-web.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/97"
     },
@@ -1247,11 +1422,24 @@
         "JA2-S05",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/militia-exploration.test.mjs",
-        "tests/militia-exploration-render.test.mjs",
-        "tests/exploration.test.mjs",
-        "tests/npc-ai.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-exploration.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-exploration-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/exploration.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/npc-ai.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/96"
     },
@@ -1273,13 +1461,32 @@
         "JA2-S05",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/militia-autonomy.test.mjs",
-        "tests/militia-autonomy-render.test.mjs",
-        "tests/militia-combat-progression.test.mjs",
-        "tests/content-force-equipment.test.mjs",
-        "tests/force-blades.test.mjs",
-        "tests/campaign-rules.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-autonomy.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-autonomy-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-combat-progression.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-force-equipment.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/force-blades.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-rules.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/95"
     },
@@ -1300,10 +1507,20 @@
         "MIL-01",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/militia-course-choice.test.mjs",
-        "tests/militia-training-identities-render.test.mjs",
-        "tests/militia-web.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-course-choice.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-training-identities-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-web.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/94"
     },
@@ -1326,11 +1543,24 @@
         "JA2-S04",
         "STORY-05"
       ],
-      "testFiles": [
-        "tests/authored-militia-progression.test.mjs",
-        "tests/authored-militia-progression-render.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/militia-combat-fixture.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/authored-militia-progression.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/authored-militia-progression-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-combat-fixture.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/93"
     },
@@ -1352,12 +1582,28 @@
         "MIL-01",
         "JA2-S04"
       ],
-      "testFiles": [
-        "tests/militia-combat-progression.test.mjs",
-        "tests/militia-combat-progression-render.test.mjs",
-        "tests/militia-combat-fixture.mjs",
-        "tests/militia-training-identities.test.mjs",
-        "tests/content-force-equipment.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-combat-progression.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-combat-progression-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-combat-fixture.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-training-identities.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-force-equipment.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/92"
     },
@@ -1379,13 +1625,32 @@
         "MIL-01",
         "JA2-A01"
       ],
-      "testFiles": [
-        "tests/unloaded-militia-wounds.test.mjs",
-        "tests/unloaded-militia-wounds-render.test.mjs",
-        "tests/militia-care-fixture.mjs",
-        "tests/strategic-militia-care.test.mjs",
-        "tests/military-remains.test.mjs",
-        "tests/missions-web.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/unloaded-militia-wounds.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/unloaded-militia-wounds-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-care-fixture.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/strategic-militia-care.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/military-remains.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/missions-web.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/91"
     },
@@ -1406,13 +1671,32 @@
         "INTEGRATION-01",
         "MIL-01"
       ],
-      "testFiles": [
-        "tests/militia-training-identities.test.mjs",
-        "tests/militia-training-identities-render.test.mjs",
-        "tests/militia-care-fixture.mjs",
-        "tests/garrison-web.test.mjs",
-        "tests/militia-web.test.mjs",
-        "tests/content-force-equipment.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-training-identities.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-training-identities-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-care-fixture.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/garrison-web.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-web.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-force-equipment.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/90"
     },
@@ -1434,12 +1718,28 @@
         "MIL-01",
         "JA2-A01"
       ],
-      "testFiles": [
-        "tests/strategic-militia-care.test.mjs",
-        "tests/strategic-militia-care-render.test.mjs",
-        "tests/militia-care-fixture.mjs",
-        "tests/garrison-web.test.mjs",
-        "tests/medical-care.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/strategic-militia-care.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/strategic-militia-care-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-care-fixture.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/garrison-web.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/medical-care.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/89"
     },
@@ -1461,12 +1761,28 @@
         "JA2-C06",
         "JA2-A01"
       ],
-      "testFiles": [
-        "tests/strategic-military-wounds.test.mjs",
-        "tests/civilian-service-fixture.mjs",
-        "tests/medical-care.test.mjs",
-        "tests/strategic-rest.test.mjs",
-        "tests/story-editor.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/strategic-military-wounds.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/civilian-service-fixture.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/medical-care.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/strategic-rest.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/88"
     },
@@ -1487,11 +1803,24 @@
         "STORY-02",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/civilian-service-return.test.mjs",
-        "tests/civilian-state.test.mjs",
-        "tests/civilian-supplies.test.mjs",
-        "tests/contract-casualty-presence.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/civilian-service-return.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/civilian-state.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/civilian-supplies.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/contract-casualty-presence.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/87"
     },
@@ -1512,11 +1841,24 @@
         "STORY-02",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/unloaded-civilian-bleeding.test.mjs",
-        "tests/civilian-state.test.mjs",
-        "tests/death-successors.test.mjs",
-        "tests/time-bridge.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/unloaded-civilian-bleeding.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/civilian-state.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/death-successors.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/time-bridge.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/86"
     },
@@ -1539,10 +1881,20 @@
         "STORY-06",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/authored-cartridge-price.test.mjs",
-        "tests/campaign-rules-ui.test.mjs",
-        "tests/story-editor.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/authored-cartridge-price.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-rules-ui.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/85",
       "historicalAssessment": {
@@ -1569,10 +1921,20 @@
         "INTEGRATION-01",
         "JA2-I09"
       ],
-      "testFiles": [
-        "tests/authored-weapon-readiness.test.mjs",
-        "tests/weapon-readiness-controls.test.mjs",
-        "tests/story-editor.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/authored-weapon-readiness.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/weapon-readiness-controls.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/84"
     },
@@ -1597,13 +1959,33 @@
         "JA2-I09"
       ],
       "testFiles": [
-        "tests/partial-firearm-reloads.test.mjs",
-        "tests/partial-reload-controls.test.mjs",
-        "tests/tactical-web.test.mjs",
-        "tests/content-weapons.test.mjs",
-        "tests/fresh-coastal-route.test.mjs",
-        "tests/fresh-cuyo-route.test.mjs",
-        "tests/fresh-ending-route.test.mjs"
+        "tests/tactical-web.test.mjs"
+      ],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/partial-firearm-reloads.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/partial-reload-controls.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-weapons.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-coastal-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-cuyo-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-ending-route.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/83"
     },
@@ -1626,9 +2008,16 @@
         "STORY-06",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/story-supply-conditions.test.mjs",
-        "tests/story-editor.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-supply-conditions.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/82"
     },
@@ -1651,11 +2040,24 @@
         "JA2-C06",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/civilian-supplies.test.mjs",
-        "tests/civilian-interaction.test.mjs",
-        "tests/character-supplies.test.mjs",
-        "tests/civilian-state.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/civilian-supplies.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/civilian-interaction.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/character-supplies.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/civilian-state.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/81"
     },
@@ -1676,8 +2078,12 @@
         "START-01",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/fresh-coastal-route.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-coastal-route.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/80"
     },
@@ -1700,10 +2106,20 @@
         "JA2-C06",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/treatment-speech.test.mjs",
-        "tests/content-presentation.test.mjs",
-        "tests/story-editor.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/treatment-speech.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-presentation.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/79"
     },
@@ -1727,10 +2143,20 @@
         "JA2-C06",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/story-health-conditions.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/campaign-story.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-health-conditions.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-story.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/78"
     },
@@ -1753,10 +2179,20 @@
         "JA2-C05",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/civilian-breath-recovery.test.mjs",
-        "tests/npc-ai.test.mjs",
-        "tests/character-condition.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/civilian-breath-recovery.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/npc-ai.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/character-condition.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/77"
     },
@@ -1779,13 +2215,32 @@
         "STORY-02",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/critical-military-condition.test.mjs",
-        "tests/first-aid-render.test.mjs",
-        "tests/content-presentation.test.mjs",
-        "tests/fresh-ending-route.test.mjs",
-        "tests/historical-loss.test.mjs",
-        "tests/post-campaign.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/critical-military-condition.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/first-aid-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-presentation.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-ending-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/historical-loss.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/post-campaign.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/76"
     },
@@ -1807,9 +2262,16 @@
         "STORY-08",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/character-condition.test.mjs",
-        "tests/story-editor.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/character-condition.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/75"
     },
@@ -1830,13 +2292,32 @@
         "JA2-C06",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/first-aid-plan.test.mjs",
-        "tests/critical-first-aid.test.mjs",
-        "tests/first-aid-render.test.mjs",
-        "tests/civilian-state.test.mjs",
-        "tests/fresh-ending-route.test.mjs",
-        "tests/post-campaign.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/first-aid-plan.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/critical-first-aid.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/first-aid-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/civilian-state.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-ending-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/post-campaign.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/74"
     },
@@ -1857,10 +2338,20 @@
         "LOSS-01",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/civilian-loss-log.test.mjs",
-        "tests/civilian-state.test.mjs",
-        "tests/historical-loss.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/civilian-loss-log.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/civilian-state.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/historical-loss.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/73"
     },
@@ -1884,9 +2375,16 @@
         "JA2-A02",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/authored-care-rules.test.mjs",
-        "tests/story-editor.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/authored-care-rules.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/72"
     },
@@ -1908,10 +2406,20 @@
         "JA2-A02",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/strategic-rest.test.mjs",
-        "tests/medical-care.test.mjs",
-        "tests/medical-care-render.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/strategic-rest.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/medical-care.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/medical-care-render.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/71"
     },
@@ -1934,9 +2442,16 @@
         "JA2-I07",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/workshop-service.test.mjs",
-        "tests/workshop-service-render.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/workshop-service.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/workshop-service-render.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/70",
       "historicalAssessment": {
@@ -1960,9 +2475,16 @@
         "JA2-A01",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/medical-care.test.mjs",
-        "tests/medical-care-render.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/medical-care.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/medical-care-render.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/69"
     },
@@ -1986,9 +2508,16 @@
         "INTEGRATION-01",
         "QA-01"
       ],
-      "testFiles": [
-        "tests/post-campaign.test.mjs",
-        "tests/story-editor.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/post-campaign.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/68"
     },
@@ -2009,8 +2538,12 @@
         "STORY-05",
         "STORY-08"
       ],
-      "testFiles": [
-        "tests/authored-cartridge-save.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/authored-cartridge-save.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/67"
     },
@@ -2032,9 +2565,16 @@
         "STORY-05",
         "STORY-06"
       ],
-      "testFiles": [
-        "tests/character-supplies.test.mjs",
-        "tests/story-editor.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/character-supplies.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        }
       ]
     },
     {
@@ -2056,12 +2596,28 @@
         "INTEGRATION-01",
         "QA-01"
       ],
-      "testFiles": [
-        "tests/fresh-ending-route.test.mjs",
-        "tests/fresh-cuyo-route.test.mjs",
-        "tests/fresh-northern-route.test.mjs",
-        "tests/fresh-coastal-route.test.mjs",
-        "tests/historical-loss.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-ending-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-cuyo-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-northern-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-coastal-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/historical-loss.test.mjs"
+        }
       ]
     },
     {
@@ -2084,10 +2640,20 @@
         "NAR-06",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/fresh-cuyo-route.test.mjs",
-        "tests/historical-loss.test.mjs",
-        "tests/foundry-project.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-cuyo-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/historical-loss.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/foundry-project.test.mjs"
+        }
       ]
     },
     {
@@ -2109,11 +2675,24 @@
         "NAR-06",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/historical-loss.test.mjs",
-        "tests/historical-loss-render.test.mjs",
-        "tests/campaign-roles.test.mjs",
-        "tests/missions-web.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/historical-loss.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/historical-loss-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-roles.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/missions-web.test.mjs"
+        }
       ]
     },
     {
@@ -2133,10 +2712,20 @@
         "STORY-03",
         "STORY-04"
       ],
-      "testFiles": [
-        "tests/meeting-release.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/meeting-release-ui.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/meeting-release.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/meeting-release-ui.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/46"
     },
@@ -2157,11 +2746,24 @@
         "ITEM-01",
         "STORY-06"
       ],
-      "testFiles": [
-        "tests/content-blades.test.mjs",
-        "tests/content-blades-ui.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/ja2-hud.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-blades.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-blades-ui.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/ja2-hud.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/47"
     },
@@ -2182,12 +2784,28 @@
         "ITEM-01",
         "STORY-06"
       ],
-      "testFiles": [
-        "tests/force-blades.test.mjs",
-        "tests/content-force-equipment.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/content-blades-ui.test.mjs",
-        "tests/ja2-hud.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/force-blades.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-force-equipment.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-blades-ui.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/ja2-hud.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/48"
     },
@@ -2208,10 +2826,20 @@
         "STORY-05",
         "STORY-06"
       ],
-      "testFiles": [
-        "tests/campaign-rules.test.mjs",
-        "tests/campaign-rules-ui.test.mjs",
-        "tests/story-editor.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-rules.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-rules-ui.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/49"
     },
@@ -2232,11 +2860,24 @@
         "STORY-05",
         "STORY-07"
       ],
-      "testFiles": [
-        "tests/starting-territory.test.mjs",
-        "tests/starting-territory-render.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/retiro-start-render.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/starting-territory.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/starting-territory-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/retiro-start-render.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/50"
     },
@@ -2257,11 +2898,24 @@
         "STORY-05",
         "STORY-07"
       ],
-      "testFiles": [
-        "tests/campaign-headquarters.test.mjs",
-        "tests/campaign-headquarters-render.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/retiro-start.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-headquarters.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-headquarters-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/retiro-start.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/51"
     },
@@ -2284,11 +2938,24 @@
         "STORY-06",
         "ECO-01"
       ],
-      "testFiles": [
-        "tests/import-supply-rules.test.mjs",
-        "tests/equipment-imports.test.mjs",
-        "tests/hiring-arrivals.test.mjs",
-        "tests/story-editor.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/import-supply-rules.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/equipment-imports.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/hiring-arrivals.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/52",
       "historicalAssessment": {
@@ -2312,12 +2979,28 @@
         "STORY-05",
         "STORY-07"
       ],
-      "testFiles": [
-        "tests/campaign-story.test.mjs",
-        "tests/campaign-story-render.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/civilian-state.test.mjs",
-        "tests/quest-deadlines.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-story.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-story-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/civilian-state.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/quest-deadlines.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/53"
     },
@@ -2339,12 +3022,28 @@
         "STORY-05",
         "STORY-07"
       ],
-      "testFiles": [
-        "tests/campaign-cast.test.mjs",
-        "tests/campaign-cast-render.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/content-roster.test.mjs",
-        "tests/authored-residents.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-cast.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-cast-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-roster.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/authored-residents.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/54"
     },
@@ -2365,11 +3064,24 @@
         "STORY-05",
         "STORY-07"
       ],
-      "testFiles": [
-        "tests/campaign-roles.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/campaign-cast-render.test.mjs",
-        "tests/campaign-web.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-roles.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-cast-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-web.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/55"
     },
@@ -2391,12 +3103,28 @@
         "STORY-07",
         "ECO-01"
       ],
-      "testFiles": [
-        "tests/foundry-project.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/campaign-roles.test.mjs",
-        "tests/campaign-headquarters.test.mjs",
-        "tests/campaign-web.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/foundry-project.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-roles.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-headquarters.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-web.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/56"
     },
@@ -2418,11 +3146,24 @@
         "STORY-05",
         "STORY-07"
       ],
-      "testFiles": [
-        "tests/project-conditions.test.mjs",
-        "tests/dialogue-conditions.test.mjs",
-        "tests/campaign-story.test.mjs",
-        "tests/story-editor.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/project-conditions.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/dialogue-conditions.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-story.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/57"
     },
@@ -2444,10 +3185,20 @@
         "NAR-04",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/fresh-northern-route.test.mjs",
-        "tests/fresh-coastal-route.test.mjs",
-        "tests/missions-web.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-northern-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-coastal-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/missions-web.test.mjs"
+        }
       ]
     },
     {
@@ -2470,11 +3221,24 @@
         "NAR-03",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/fresh-coastal-route.test.mjs",
-        "tests/retiro-start.test.mjs",
-        "tests/retiro-resume.test.mjs",
-        "tests/post-victory-mission.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-coastal-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/retiro-start.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/retiro-resume.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/post-victory-mission.test.mjs"
+        }
       ]
     },
     {
@@ -2494,10 +3258,20 @@
         "NAR-03",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/post-victory-mission.test.mjs",
-        "tests/missions-web.test.mjs",
-        "tests/campaign-story.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/post-victory-mission.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/missions-web.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-story.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/60"
     },
@@ -2518,10 +3292,20 @@
         "INTEGRATION-01",
         "STORY-02"
       ],
-      "testFiles": [
-        "tests/contract-casualty-presence.test.mjs",
-        "tests/campaign-presence.test.mjs",
-        "tests/local-contracts.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/contract-casualty-presence.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-presence.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/local-contracts.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/58"
     },
@@ -2542,10 +3326,20 @@
         "STORY-03",
         "STORY-04"
       ],
-      "testFiles": [
-        "tests/meeting-arrivals.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/meeting-arrivals-ui.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/meeting-arrivals.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/meeting-arrivals-ui.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/45"
     },
@@ -2566,11 +3360,24 @@
         "STORY-03",
         "STORY-04"
       ],
-      "testFiles": [
-        "tests/dialogue-movements.test.mjs",
-        "tests/npc-ai.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/webmcp-campaign.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/dialogue-movements.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/npc-ai.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/webmcp-campaign.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/44"
     },
@@ -2590,11 +3397,24 @@
       "parents": [
         "STORY-03"
       ],
-      "testFiles": [
-        "tests/quest-survival.test.mjs",
-        "tests/death-successors.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/webmcp-campaign.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/quest-survival.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/death-successors.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/webmcp-campaign.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/43"
     },
@@ -2614,10 +3434,20 @@
       "parents": [
         "STORY-03"
       ],
-      "testFiles": [
-        "tests/quest-deadlines.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/webmcp-campaign.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/quest-deadlines.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/webmcp-campaign.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/42"
     },
@@ -2637,10 +3467,20 @@
       "parents": [
         "STORY-03"
       ],
-      "testFiles": [
-        "tests/content-quests.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/webmcp-campaign.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-quests.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/webmcp-campaign.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/41"
     },
@@ -2660,10 +3500,20 @@
       "parents": [
         "STORY-03"
       ],
-      "testFiles": [
-        "tests/dialogue-payments.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/webmcp-campaign.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/dialogue-payments.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/webmcp-campaign.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/40"
     },
@@ -2683,10 +3533,20 @@
       "parents": [
         "STORY-03"
       ],
-      "testFiles": [
-        "tests/dialogue-conditions.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/webmcp-campaign.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/dialogue-conditions.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/webmcp-campaign.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/39"
     },
@@ -2706,10 +3566,20 @@
       "parents": [
         "STORY-03"
       ],
-      "testFiles": [
-        "tests/content-dialogue.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/webmcp-campaign.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-dialogue.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/webmcp-campaign.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/38"
     },
@@ -2731,11 +3601,25 @@
         "REC-02"
       ],
       "testFiles": [
-        "tests/local-contracts.test.mjs",
-        "tests/authored-residents.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/webmcp-campaign.test.mjs",
         "tests/contracts-web.test.mjs"
+      ],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/local-contracts.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/authored-residents.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/webmcp-campaign.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/37"
     },
@@ -2756,10 +3640,20 @@
         "INTEGRATION-01",
         "ENG-03"
       ],
-      "testFiles": [
-        "tests/webmcp-campaign.test.mjs",
-        "tests/time-bridge.test.mjs",
-        "tests/death-successors.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/webmcp-campaign.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/time-bridge.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/death-successors.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/36"
     },
@@ -2779,11 +3673,24 @@
       "parents": [
         "STORY-02"
       ],
-      "testFiles": [
-        "tests/death-successors.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/content-system.test.mjs",
-        "tests/time-bridge.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/death-successors.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-system.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/time-bridge.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/35"
     },
@@ -2804,11 +3711,24 @@
         "STORY-01",
         "STORY-02"
       ],
-      "testFiles": [
-        "tests/authored-residents.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/civilian-interaction.test.mjs",
-        "tests/campaign-presence.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/authored-residents.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/civilian-interaction.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-presence.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/34"
     },
@@ -2829,11 +3749,24 @@
         "STORY-02",
         "JA2-S09"
       ],
-      "testFiles": [
-        "tests/civilian-state.test.mjs",
-        "tests/civilian-interaction.test.mjs",
-        "tests/campaign-presence.test.mjs",
-        "tests/missions-web.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/civilian-state.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/civilian-interaction.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-presence.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/missions-web.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/33"
     },
@@ -2855,11 +3788,24 @@
         "NAR-02",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/retiro-start.test.mjs",
-        "tests/retiro-start-render.test.mjs",
-        "tests/retiro-expansion.test.mjs",
-        "tests/retiro-resume.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/retiro-start.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/retiro-start-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/retiro-expansion.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/retiro-resume.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/32"
     },
@@ -2881,8 +3827,12 @@
         "ART-02"
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/19",
-      "testFiles": [
-        "tests/custom-portraits.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/custom-portraits.test.mjs"
+        }
       ]
     },
     {
@@ -2903,9 +3853,16 @@
         "ROST-01"
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/20",
-      "testFiles": [
-        "tests/campaign-content.test.mjs",
-        "tests/story-editor.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-content.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        }
       ]
     },
     {
@@ -2927,8 +3884,12 @@
         "LOG-01"
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/21",
-      "testFiles": [
-        "tests/hiring-arrivals.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/hiring-arrivals.test.mjs"
+        }
       ]
     },
     {
@@ -2949,8 +3910,12 @@
         "ITEM-02"
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/22",
-      "testFiles": [
-        "tests/content-weapons.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-weapons.test.mjs"
+        }
       ]
     },
     {
@@ -2971,8 +3936,12 @@
         "AI-01"
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/23",
-      "testFiles": [
-        "tests/content-force-equipment.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-force-equipment.test.mjs"
+        }
       ]
     },
     {
@@ -2993,8 +3962,12 @@
         "ROST-01"
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/24",
-      "testFiles": [
-        "tests/content-roster.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-roster.test.mjs"
+        }
       ]
     },
     {
@@ -3017,8 +3990,12 @@
         "NAR-01"
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/25",
-      "testFiles": [
-        "tests/content-presentation.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-presentation.test.mjs"
+        }
       ]
     },
     {
@@ -3038,8 +4015,12 @@
         "ROST-02"
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/26",
-      "testFiles": [
-        "tests/content-abilities.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-abilities.test.mjs"
+        }
       ]
     },
     {
@@ -3061,9 +4042,16 @@
         "ENG-03"
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/27",
-      "testFiles": [
-        "tests/world-cells.test.mjs",
-        "tests/world-cells-render.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/world-cells.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/world-cells-render.test.mjs"
+        }
       ]
     },
     {
@@ -3104,10 +4092,20 @@
         "ENG-03",
         "ROST-01"
       ],
-      "testFiles": [
-        "tests/campaign-presence.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/content-system.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-presence.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-system.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/31"
     },
@@ -3203,10 +4201,20 @@
         "E-MISSION-SETTLEMENT",
         "E-FRESH-COASTAL"
       ],
-      "testFiles": [
-        "tests/fresh-coastal-route.test.mjs",
-        "tests/missions-web.test.mjs",
-        "tests/post-victory-mission.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-coastal-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/missions-web.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/post-victory-mission.test.mjs"
+        }
       ]
     },
     {
@@ -3224,9 +4232,16 @@
         "E-CONFLICTS",
         "E-FRESH-NORTHERN"
       ],
-      "testFiles": [
-        "tests/fresh-northern-route.test.mjs",
-        "tests/missions-web.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-northern-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/missions-web.test.mjs"
+        }
       ]
     },
     {
@@ -3245,9 +4260,16 @@
         "E-HISTORICAL-LOSS",
         "E-FRESH-CUYO"
       ],
-      "testFiles": [
-        "tests/fresh-cuyo-route.test.mjs",
-        "tests/foundry-project.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-cuyo-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/foundry-project.test.mjs"
+        }
       ]
     },
     {
@@ -3266,9 +4288,16 @@
         "E-HISTORICAL-LOSS",
         "E-FRESH-CUYO"
       ],
-      "testFiles": [
-        "tests/fresh-cuyo-route.test.mjs",
-        "tests/missions-web.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-cuyo-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/missions-web.test.mjs"
+        }
       ]
     },
     {
@@ -3316,13 +4345,32 @@
         "E-AUTHORED-RESIDENTS",
         "E-LOCAL-CONTRACTS"
       ],
-      "testFiles": [
-        "tests/recruitment-web.test.mjs",
-        "tests/mercenary-roster.test.mjs",
-        "tests/content-roster.test.mjs",
-        "tests/hiring-arrivals.test.mjs",
-        "tests/local-contracts.test.mjs",
-        "tests/story-editor.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/recruitment-web.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/mercenary-roster.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-roster.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/hiring-arrivals.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/local-contracts.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        }
       ]
     },
     {
@@ -3975,11 +5023,24 @@
         "E-CIVILIAN-STATE",
         "E-AUTHORED-RESIDENTS"
       ],
-      "testFiles": [
-        "tests/campaign-presence.test.mjs",
-        "tests/civilian-state.test.mjs",
-        "tests/authored-residents.test.mjs",
-        "tests/story-editor.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-presence.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/civilian-state.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/authored-residents.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        }
       ]
     },
     {
@@ -4228,14 +5289,36 @@
         "E-CONSOLIDATION-FINAL-LOCAL",
         "E-CONSOLIDATION-PR139"
       ],
-      "testFiles": [
-        "tests/fresh-campaign-recovery.test.mjs",
-        "tests/fresh-ending-route.test.mjs",
-        "tests/opening-playthrough.test.mjs",
-        "tests/prisoner-rescue-route.test.mjs",
-        "tests/historical-loss.test.mjs",
-        "tests/post-campaign.test.mjs",
-        "tests/story-editor.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-campaign-recovery.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-ending-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/opening-playthrough.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/prisoner-rescue-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/historical-loss.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/post-campaign.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/139"
     },
@@ -4256,11 +5339,24 @@
         "E-FRESH-COASTAL",
         "E-LOCAL-OPENING"
       ],
-      "testFiles": [
-        "tests/retiro-start.test.mjs",
-        "tests/retiro-expansion.test.mjs",
-        "tests/retiro-resume.test.mjs",
-        "tests/fresh-coastal-route.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/retiro-start.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/retiro-expansion.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/retiro-resume.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-coastal-route.test.mjs"
+        }
       ]
     },
     {
@@ -4399,24 +5495,76 @@
       ],
       "sourceRow": "JA2-T07",
       "sourceNotes": "Three-step/24-AP normal searches and the protected interrupt-step policy are game tuning. Paid finite orders and saved reactions do not establish every enemy action, exact classic AI parity or a complete loadout policy.",
-      "testFiles": [
-        "tests/tactical-ai-care.test.mjs",
-        "tests/tactical-ai-equipment.test.mjs",
-        "tests/tactical-ai-targeting.test.mjs",
-        "tests/tactical-ai-scavenging.test.mjs",
-        "tests/tactical-ai-sharing.test.mjs",
-        "tests/enemy-turn-presentation.test.mjs",
-        "tests/tactical-ai-other-hand-backup.test.mjs",
-        "tests/paired-pistols-ai.test.mjs",
-        "tests/paired-pistol-fire.test.mjs",
-        "tests/paired-reload-ai.test.mjs",
-        "tests/firearm-serviceability.test.mjs",
-        "tests/tactical-ai-packed-gun-handover.test.mjs",
-        "tests/tactical-ai-serviceable-sharing.test.mjs",
-        "tests/tactical-ai-serviceable-scavenging.test.mjs",
-        "tests/tactical-ai-ground-dressing-recovery.test.mjs",
-        "tests/tactical-ai-owned-repair-kit.test.mjs",
-        "tests/militia-owned-firearm-maintenance.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/tactical-ai-care.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/tactical-ai-equipment.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/tactical-ai-targeting.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/tactical-ai-scavenging.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/tactical-ai-sharing.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/enemy-turn-presentation.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/tactical-ai-other-hand-backup.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/paired-pistols-ai.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/paired-pistol-fire.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/paired-reload-ai.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/firearm-serviceability.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/tactical-ai-packed-gun-handover.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/tactical-ai-serviceable-sharing.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/tactical-ai-serviceable-scavenging.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/tactical-ai-ground-dressing-recovery.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/tactical-ai-owned-repair-kit.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-owned-firearm-maintenance.test.mjs"
+        }
       ]
     },
     {
@@ -4879,13 +6027,32 @@
       ],
       "sourceRow": "JA2-V09",
       "sourceNotes": "The old claim that dedicated climb poses are absent is superseded by the merged native climbing receipts. Diagonal links remain outside the gameplay schema; offline diagonal stress samples are not paid-route acceptance. Continuity and a fingertip floor correction do not establish complete natural climbing or palm/slab support.",
-      "testFiles": [
-        "tests/elevation-interface.test.mjs",
-        "tests/climb-playback-timing.test.mjs",
-        "tests/characters-climbing-support.test.mjs",
-        "tests/characters-climb-phase-continuity.test.mjs",
-        "tests/characters-climb-crest-continuity.test.mjs",
-        "tests/characters-climb-roof-fingers.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/elevation-interface.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/climb-playback-timing.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/characters-climbing-support.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/characters-climb-phase-continuity.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/characters-climb-crest-continuity.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/characters-climb-roof-fingers.test.mjs"
+        }
       ]
     },
     {
@@ -5149,10 +6316,20 @@
       ],
       "sourceRow": "JA2-I07",
       "sourceNotes": "Carried tools, fitted bayonets and valid worn/packed garments have timed finite queued repair. Actual regional garment wear and repair do not establish ballistic protection. Dealer buyback/preferences, artillery resale and complete live inventory/merchant acceptance remain partial. Numerical condition and price formulas are Granaderos tuning. Loose-blade impact/wear correction is a separate reproduced finding in the 9 October review. See current-rule-reconciliation-2026-10-09.md.",
-      "testFiles": [
-        "tests/equipment-repair.test.mjs",
-        "tests/equipment-repair-render.test.mjs",
-        "tests/outfit-equipment.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/equipment-repair.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/equipment-repair-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/outfit-equipment.test.mjs"
+        }
       ]
     },
     {
@@ -5371,10 +6548,20 @@
       ],
       "sourceRow": "JA2-A03",
       "sourceNotes": "The selected local owner has a finite continuing carried-equipment queue, including ruined owned clothing. Shared sector-ground/armory, artillery and vehicle repair queues remain absent. Ordinary garment repair is supported; ballistic protection is not established by that repair. Mechanical-only rate, one-point jam clearing, finite materials and wear costs are declared Granaderos tuning. See current-rule-reconciliation-2026-10-09.md.",
-      "testFiles": [
-        "tests/equipment-repair.test.mjs",
-        "tests/equipment-repair-render.test.mjs",
-        "tests/outfit-equipment.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/equipment-repair.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/equipment-repair-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/outfit-equipment.test.mjs"
+        }
       ]
     },
     {
@@ -5485,9 +6672,16 @@
       ],
       "sourceRow": "JA2-R02",
       "sourceNotes": "Renewal and expiry pause explicit waits with persisted notices and paid renewal controls. Authored relationship refusals and saved civilian-conscience objections guard future service. An explicitly authored paid character with low_morale_refusal also refuses renewal below 30 personal morale, preserving the actual paid term and allowing ordinary recovery. These bounded rules exist; profile-dependent tolerances, buddy overrides and complete live contract acceptance remain separate. See current-rule-reconciliation-2026-10-09.md.",
-      "testFiles": [
-        "tests/low-morale-renewal.test.mjs",
-        "tests/morale-renewal-integration.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/low-morale-renewal.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/morale-renewal-integration.test.mjs"
+        }
       ]
     },
     {
@@ -5509,11 +6703,24 @@
       ],
       "sourceRow": "JA2-R03",
       "sourceNotes": "If retaining this classic choice, present a period contract guarantee/compensation equivalent and real claim/refund conditions. It is not inherently a modern technology exception.",
-      "testFiles": [
-        "tests/service-guarantees.test.mjs",
-        "tests/service-guarantees-render.test.mjs",
-        "tests/service-guarantee-treasury-cap.test.mjs",
-        "tests/service-guarantee-treasury-cap-render.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/service-guarantees.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/service-guarantees-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/service-guarantee-treasury-cap.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/service-guarantee-treasury-cap-render.test.mjs"
+        }
       ]
     },
     {
@@ -5534,9 +6741,16 @@
       ],
       "sourceRow": "JA2-R04",
       "sourceNotes": "Fatigue-specific morale events and broader civilian-conduct morale effects remain open. A directly witnessed intentional killing of an explicitly authored noncombatant can already create a saved service objection; that rule adds no individual morale loss. Numerical event weights and recovery rates are Granaderos tuning; complete live personnel acceptance remains pending. See current-rule-reconciliation-2026-10-09.md.",
-      "testFiles": [
-        "tests/service-objections.test.mjs",
-        "tests/service-objections-context.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/service-objections.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/service-objections-context.test.mjs"
+        }
       ]
     },
     {
@@ -5557,8 +6771,12 @@
       ],
       "sourceRow": "JA2-R05",
       "sourceNotes": "Optional stable-ID relationships already affect future paid service and issued deployment morale. Current witnessed preferred-companion loss has a saved bounded consequence. Older pinned packages without the fields remain neutral. No historical friendship or hostility is inferred; timed tolerance, learned opinions and forced early departure remain separate. See current-rule-reconciliation-2026-10-09.md.",
-      "testFiles": [
-        "tests/service-relationships.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/service-relationships.test.mjs"
+        }
       ]
     },
     {
@@ -5698,14 +6916,36 @@
       ],
       "sourceRow": "JA2-S04",
       "sourceNotes": "Thresholds and attribute gains are explicit Granaderos tuning. Previously paid legacy top-rank courses retain their count contract. Autonomous militia combat is covered by S05. Strategic medical assignments now treat retained garrison wounds with local doctors and finite supplies; see [militia medical care](militia-medical-care.md).",
-      "testFiles": [
-        "tests/militia-combat-progression.test.mjs",
-        "tests/militia-combat-progression-render.test.mjs",
-        "tests/authored-militia-progression.test.mjs",
-        "tests/authored-militia-progression-render.test.mjs",
-        "tests/militia-training-identities.test.mjs",
-        "tests/strategic-militia-care.test.mjs",
-        "tests/story-editor.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-combat-progression.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-combat-progression-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/authored-militia-progression.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/authored-militia-progression-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-training-identities.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/strategic-militia-care.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/93"
     },
@@ -5954,8 +7194,12 @@
       ],
       "sourceRow": "JA2-W08",
       "sourceNotes": "Physical detainees now retain tactical wounds, first aid, death and save receipts. Able guards can provide finite care using confiscated dressings during elapsed strategic time; both sector-recapture rescue routes pass. See [detention care](detention-gameplay.md). Paid physical release, finite following, adjacent wait/follow orders, replacement leadership, saved failed attempts and distinct recapture identities now pass focused and live control checks. Joint safe-exit rescue now restores remaining service at the actual destination and leaves confiscated equipment for later physical pickup. Controlled live exit/return/reload and simulation checks pass. An unaided rescue approach, self-directed escape, detention choices and their narrative consequences remain open. Coastal defense victory now releases prisoners after the last local enemy group is defeated, including sectors that retained patriot ownership. A returning-squad regression covers actual capture, travel reversal and encounter entry, then a scripted victory report isolates settlement. It verifies retained wounds, ammunition, saves, duplicate-report rejection and no release while another local group remains. This does not establish a playable prison scene or combat balance.",
-      "testFiles": [
-        "tests/prisoner-rescue-route.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/prisoner-rescue-route.test.mjs"
+        }
       ]
     },
     {
@@ -5998,12 +7242,28 @@
       ],
       "sourceRow": "JA2-W10",
       "sourceNotes": "The 27 September failed medical-relief, recapture, prisoner-rescue and San Lorenzo snapshots are superseded for their bounded routes by verified FIX-01 through FIX-04. WIN-01, POST-01 and REL-02 remain separate scope authorities. Cleared-field evacuation is not stealth rescue, and scripted victory reports alone do not prove playability or balance.",
-      "testFiles": [
-        "tests/fresh-ending-route.test.mjs",
-        "tests/fresh-campaign-recovery.test.mjs",
-        "tests/opening-playthrough.test.mjs",
-        "tests/prisoner-rescue-route.test.mjs",
-        "tests/post-campaign.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-ending-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-campaign-recovery.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/opening-playthrough.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/prisoner-rescue-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/post-campaign.test.mjs"
+        }
       ]
     },
     {
@@ -6082,10 +7342,20 @@
         "E-PUBLISHED",
         "E-CONFLICTS"
       ],
-      "testFiles": [
-        "tests/story-editor.test.mjs",
-        "tests/content-weapons.test.mjs",
-        "tests/world-cells-render.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-weapons.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/world-cells-render.test.mjs"
+        }
       ]
     },
     {
@@ -6137,9 +7407,16 @@
         "E-CONSOLIDATION-FINAL-LOCAL",
         "E-CONSOLIDATION-PR139"
       ],
-      "testFiles": [
-        "tests/fresh-campaign-recovery.test.mjs",
-        "tests/fresh-northern-route.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-campaign-recovery.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-northern-route.test.mjs"
+        }
       ]
     },
     {
@@ -6157,8 +7434,12 @@
         "E-CONSOLIDATION-FINAL-LOCAL",
         "E-CONSOLIDATION-PR139"
       ],
-      "testFiles": [
-        "tests/opening-playthrough.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/opening-playthrough.test.mjs"
+        }
       ]
     },
     {
@@ -6176,8 +7457,12 @@
         "E-CONSOLIDATION-FINAL-LOCAL",
         "E-CONSOLIDATION-PR139"
       ],
-      "testFiles": [
-        "tests/prisoner-rescue-route.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/prisoner-rescue-route.test.mjs"
+        }
       ]
     },
     {
@@ -6196,9 +7481,16 @@
         "E-CONSOLIDATION-FINAL-LOCAL",
         "E-CONSOLIDATION-PR139"
       ],
-      "testFiles": [
-        "tests/fresh-campaign-recovery.test.mjs",
-        "tests/fresh-coastal-route.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-campaign-recovery.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-coastal-route.test.mjs"
+        }
       ]
     },
     {
@@ -6218,11 +7510,24 @@
         "INTEGRATION-01",
         "STORY-02"
       ],
-      "testFiles": [
-        "tests/military-remains.test.mjs",
-        "tests/world-web.test.mjs",
-        "tests/ammunition-web.test.mjs",
-        "tests/contract-casualty-presence.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/military-remains.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/world-web.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/ammunition-web.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/contract-casualty-presence.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/59"
     },
@@ -6243,8 +7548,12 @@
         "QA-01",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tools/test-shard-selftest.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tools/test-shard-selftest.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/104"
     },
@@ -6265,11 +7574,24 @@
         "STORY-02",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/unseen-resident-wounds.test.mjs",
-        "tests/character-condition.test.mjs",
-        "tests/unloaded-civilian-bleeding.test.mjs",
-        "tests/campaign-presence.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/unseen-resident-wounds.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/character-condition.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/unloaded-civilian-bleeding.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-presence.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/111"
     },
@@ -6291,11 +7613,24 @@
         "JA2-I10",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/secondary-loot.test.mjs",
-        "tests/secondary-loot-render.test.mjs",
-        "tests/content-blades.test.mjs",
-        "tests/equip-loot.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/secondary-loot.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/secondary-loot-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/content-blades.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/equip-loot.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/112"
     },
@@ -6318,11 +7653,24 @@
         "JA2-I10",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/drop-recovered-weapons.test.mjs",
-        "tests/drop-recovered-weapons-render.test.mjs",
-        "tests/secondary-loot.test.mjs",
-        "tests/equip-loot.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/drop-recovered-weapons.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/drop-recovered-weapons-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/secondary-loot.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/equip-loot.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/113"
     },
@@ -6344,11 +7692,24 @@
         "JA2-I02",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/adjacent-weapon-transfer.test.mjs",
-        "tests/adjacent-weapon-transfer-render.test.mjs",
-        "tests/drop-recovered-weapons.test.mjs",
-        "tests/secondary-loot.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/adjacent-weapon-transfer.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/adjacent-weapon-transfer-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/drop-recovered-weapons.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/secondary-loot.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/114"
     },
@@ -6370,11 +7731,24 @@
         "JA2-C08",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/empty-hand-melee.test.mjs",
-        "tests/empty-hand-melee-render.test.mjs",
-        "tests/secondary-loot.test.mjs",
-        "tests/critical-military-condition.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/empty-hand-melee.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/empty-hand-melee-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/secondary-loot.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/critical-military-condition.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/115"
     },
@@ -6397,11 +7771,24 @@
         "JA2-I10",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/drop-held-weapons.test.mjs",
-        "tests/drop-held-weapons-render.test.mjs",
-        "tests/drop-recovered-weapons.test.mjs",
-        "tests/empty-hand-melee.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/drop-held-weapons.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/drop-held-weapons-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/drop-recovered-weapons.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/empty-hand-melee.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/116"
     },
@@ -6423,11 +7810,24 @@
         "JA2-I02",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/held-weapon-transfer.test.mjs",
-        "tests/held-weapon-transfer-render.test.mjs",
-        "tests/adjacent-weapon-transfer.test.mjs",
-        "tests/drop-held-weapons.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/held-weapon-transfer.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/held-weapon-transfer-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/adjacent-weapon-transfer.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/drop-held-weapons.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/117"
     },
@@ -6449,11 +7849,24 @@
         "JA2-I02",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/adjacent-supply-transfer.test.mjs",
-        "tests/adjacent-supply-transfer-render.test.mjs",
-        "tests/character-supplies.test.mjs",
-        "tests/ja2-hud.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/adjacent-supply-transfer.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/adjacent-supply-transfer-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/character-supplies.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/ja2-hud.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/118"
     },
@@ -6475,11 +7888,24 @@
         "JA2-I03",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/drop-personal-supplies.test.mjs",
-        "tests/drop-personal-supplies-render.test.mjs",
-        "tests/adjacent-supply-transfer.test.mjs",
-        "tests/drop-held-weapons.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/drop-personal-supplies.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/drop-personal-supplies-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/adjacent-supply-transfer.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/drop-held-weapons.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/119"
     },
@@ -6502,12 +7928,28 @@
         "JA2-I08",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/adjacent-cartridge-transfer.test.mjs",
-        "tests/adjacent-cartridge-transfer-render.test.mjs",
-        "tests/ammunition-web.test.mjs",
-        "tests/authored-cartridge-price.test.mjs",
-        "tests/military-remains.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/adjacent-cartridge-transfer.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/adjacent-cartridge-transfer-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/ammunition-web.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/authored-cartridge-price.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/military-remains.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/120"
     },
@@ -6529,11 +7971,24 @@
         "JA2-I03",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/partial-ground-supply-pickup.test.mjs",
-        "tests/partial-ground-supply-pickup-render.test.mjs",
-        "tests/drop-personal-supplies.test.mjs",
-        "tests/drop-personal-supplies-render.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/partial-ground-supply-pickup.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/partial-ground-supply-pickup-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/drop-personal-supplies.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/drop-personal-supplies-render.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/121"
     },
@@ -6556,11 +8011,24 @@
         "JA2-I10",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/occupied-ground-collection-render.test.mjs",
-        "tests/drop-personal-supplies-render.test.mjs",
-        "tests/drop-held-weapons-render.test.mjs",
-        "tests/partial-ground-supply-pickup-render.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/occupied-ground-collection-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/drop-personal-supplies-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/drop-held-weapons-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/partial-ground-supply-pickup-render.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/122"
     },
@@ -6582,12 +8050,28 @@
         "JA2-C08",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/held-firearm-buttstock.test.mjs",
-        "tests/held-firearm-buttstock-render.test.mjs",
-        "tests/cold-steel.test.mjs",
-        "tests/fresh-ending-route.test.mjs",
-        "tests/fresh-coastal-route.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/held-firearm-buttstock.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/held-firearm-buttstock-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/cold-steel.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-ending-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-coastal-route.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/123"
     },
@@ -6609,10 +8093,20 @@
         "JA2-C08",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/authored-firearm-melee.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/held-firearm-buttstock.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/authored-firearm-melee.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/held-firearm-buttstock.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/124"
     },
@@ -6638,14 +8132,37 @@
         "INTEGRATION-01"
       ],
       "testFiles": [
-        "tests/enemy-turn-presentation.test.mjs",
-        "tests/enemy-playback-mounted.test.mjs",
-        "tests/enemy-motion-gait.test.mjs",
-        "tests/static-scene-content.test.mjs",
-        "tests/artillery-autonomy-render.test.mjs",
-        "tests/militia-autonomy-render.test.mjs",
-        "tests/webmcp-campaign.test.mjs",
         "tests/browser-worker-export.test.mjs"
+      ],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/enemy-turn-presentation.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/enemy-playback-mounted.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/enemy-motion-gait.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/static-scene-content.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/artillery-autonomy-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/militia-autonomy-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/webmcp-campaign.test.mjs"
+        }
       ]
     },
     {
@@ -6667,8 +8184,13 @@
         "INTEGRATION-01"
       ],
       "testFiles": [
-        "tests/browser-worker-export.test.mjs",
-        "tests/enemy-playback-mounted.test.mjs"
+        "tests/browser-worker-export.test.mjs"
+      ],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/enemy-playback-mounted.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/126"
     },
@@ -6690,10 +8212,20 @@
         "UX-02",
         "VISIBLETURNS-01"
       ],
-      "testFiles": [
-        "tests/enemy-motion-gait.test.mjs",
-        "tests/illustrated-sprite-runtime.test.mjs",
-        "tests/tactical-render.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/enemy-motion-gait.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/illustrated-sprite-runtime.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/tactical-render.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/127"
     },
@@ -6716,11 +8248,24 @@
         "STORY-06",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/shared-personal-pockets.test.mjs",
-        "tests/shared-pockets-render.test.mjs",
-        "tests/pocket-partitions.test.mjs",
-        "tests/adjacent-weapon-transfer.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/shared-personal-pockets.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/shared-pockets-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/pocket-partitions.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/adjacent-weapon-transfer.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/128"
     },
@@ -6737,11 +8282,24 @@
       "evidence": [
         "E-TYPED-AMMUNITION"
       ],
-      "testFiles": [
-        "tests/typed-ammunition.test.mjs",
-        "tests/fresh-ending-route.test.mjs",
-        "tests/dropped-cartridges.test.mjs",
-        "tests/dropped-cartridges-render.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/typed-ammunition.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-ending-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/dropped-cartridges.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/dropped-cartridges-render.test.mjs"
+        }
       ],
       "parents": [
         "ITEM-01",
@@ -6764,10 +8322,20 @@
       "evidence": [
         "E-AMMO-AUTHOR"
       ],
-      "testFiles": [
-        "tests/authored-ammunition-family.test.mjs",
-        "tests/story-editor.test.mjs",
-        "tests/campaign-ammunition-admission.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/authored-ammunition-family.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-ammunition-admission.test.mjs"
+        }
       ],
       "parents": [
         "ITEM-01",
@@ -6790,9 +8358,16 @@
       "evidence": [
         "E-IGNITION-MIGRATION"
       ],
-      "testFiles": [
-        "tests/ignition-kit.test.mjs",
-        "tests/ignition-kit-save.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/ignition-kit.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/ignition-kit-save.test.mjs"
+        }
       ],
       "parents": [
         "ITEM-01",
@@ -6817,12 +8392,28 @@
         "E-CONSOLIDATION-FINAL-LOCAL",
         "E-CONSOLIDATION-PR139"
       ],
-      "testFiles": [
-        "tests/ammunition-families.test.mjs",
-        "tests/typed-ammunition.test.mjs",
-        "tests/authored-ammunition-family.test.mjs",
-        "tests/fresh-ending-route.test.mjs",
-        "tests/dropped-cartridges.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/ammunition-families.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/typed-ammunition.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/authored-ammunition-family.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-ending-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/dropped-cartridges.test.mjs"
+        }
       ],
       "parents": [
         "ITEM-01",
@@ -6851,12 +8442,28 @@
         "STORY-06",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/campaign-ammunition-custody.test.mjs",
-        "tests/campaign-ammunition-render.test.mjs",
-        "tests/fresh-coastal-route.test.mjs",
-        "tests/fresh-cuyo-route.test.mjs",
-        "tests/fresh-ending-route.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-ammunition-custody.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/campaign-ammunition-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-coastal-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-cuyo-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-ending-route.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/135"
     },
@@ -6880,9 +8487,16 @@
         "JA2-I08",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/ammunition-market-rules.test.mjs",
-        "tests/story-editor.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/ammunition-market-rules.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/136",
       "historicalAssessment": {
@@ -6908,10 +8522,20 @@
         "JA2-I08",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/alternate-firearm-loads.test.mjs",
-        "tests/alternate-firearm-loads-render.test.mjs",
-        "tests/story-editor.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/alternate-firearm-loads.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/alternate-firearm-loads-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/story-editor.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/137"
     },
@@ -6934,10 +8558,20 @@
         "ITEM-01",
         "INTEGRATION-01"
       ],
-      "testFiles": [
-        "tests/civilian-weapons.test.mjs",
-        "tests/civilian-weapons-render.test.mjs",
-        "tests/civilian-supplies.test.mjs"
+      "testFiles": [],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/civilian-weapons.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/civilian-weapons-render.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/civilian-supplies.test.mjs"
+        }
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/138"
     },
@@ -6962,13 +8596,33 @@
         "QA-01"
       ],
       "testFiles": [
-        "tests/service-equipment-return.test.mjs",
-        "tests/service-return-inventory.test.mjs",
-        "tests/civilian-service-return.test.mjs",
-        "tests/civilian-weapons.test.mjs",
-        "tests/contracts-web.test.mjs",
-        "tests/fresh-ending-route.test.mjs",
-        "tests/fresh-campaign-recovery.test.mjs"
+        "tests/contracts-web.test.mjs"
+      ],
+      "historicalTestFiles": [
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/service-equipment-return.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/service-return-inventory.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/civilian-service-return.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/civilian-weapons.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-ending-route.test.mjs"
+        },
+        {
+          "revision": "fc584dd4878be2b777c6ce1aa7c7f28f07e80d69",
+          "path": "tests/fresh-campaign-recovery.test.mjs"
+        }
       ],
       "historicalAssessment": {
         "published": "Included in this alpha PR; accepted locally at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702 through the complete unchanged-source suite and exact-source browser checks. This dated record asserts no alpha CI result or merge. PR139 remains the latest recorded publication snapshot."

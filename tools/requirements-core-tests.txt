@@ -1,3 +1,0 @@
-# Image reconstruction and integrity checks used by the core Node test suite.
-Pillow==11.2.1
-numpy==2.2.6

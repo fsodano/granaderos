@@ -1,23 +1,18 @@
+import {readdirSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
-import {assertFullTestSelection,discoverTests,runnerOptions,runTests} from './test-runner-lib.mjs';
-import {suiteOptions,suiteManifest} from './test-suites.mjs';
-import {assertReviewedTestScopes} from './test-scopes.mjs';
+import {spawnSync} from 'node:child_process';
 
+if(process.argv.length>2)throw Error('Usage: npm test (the minimal suite always uses two workers).');
+const inherited=(process.env.NODE_OPTIONS??'').replaceAll('_','-');
+if(/(?:^|[\s"'])--test-(?:name-pattern|skip-pattern|only|shard)(?=$|[\s="'])/.test(inherited))
+ throw Error('Remove test-selection flags from NODE_OPTIONS to run the complete minimum.');
+if(process.env.NODE_TEST_CONTEXT!==undefined)
+ throw Error('Run the minimal suite outside another Node test process.');
 const root=fileURLToPath(new URL('../',import.meta.url));
-let options,profile;
-try{
- profile=suiteOptions(process.argv.slice(2));
- options=runnerOptions(profile.runnerArgs);
- assertFullTestSelection();
-}
-catch(error){console.error(error.message);options=undefined;process.exitCode=2;}
-if(options){
- const all=await discoverTests(root);assertReviewedTestScopes(root,all);const selection=suiteManifest(all,profile.suite,undefined,undefined,profile.duration);
- if(profile.list)console.log(JSON.stringify(selection,null,2));
- else{
-  console.log(`${selection.suite.toUpperCase()} suite${selection.durationProfile?` (${selection.durationProfile} duration)`:''}: ${selection.selectedFiles.length}/${selection.totalFiles} files selected; ${selection.excludedFiles.length} excluded.`);
-  if(selection.suite==='quick')for(const entry of selection.excludedFiles)console.log(`EXCLUDED ${entry.file}: ${entry.reason}`);
-  if(selection.suite==='extended')for(const file of selection.selectedFiles)console.log(`SELECTED ${file}`);
-  process.exitCode=await runTests({root,files:selection.selectedFiles,...options,selection,reportName:selection.durationProfile&&selection.durationProfile!=='full'?`${selection.suite}-${selection.durationProfile}`:selection.suite});
- }
-}
+const files=readdirSync(new URL('../tests/',import.meta.url))
+ .filter(name=>name.endsWith('.test.mjs')).sort().map(name=>`tests/${name}`);
+if(!files.length)throw Error('No test files found.');
+console.log(`Minimal suite: ${files.length} files, two workers.`);
+const result=spawnSync(process.execPath,['--test','--test-concurrency=2',...files],{cwd:root,stdio:'inherit'});
+if(result.error)throw result.error;
+process.exitCode=result.status??1;

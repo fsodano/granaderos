@@ -15,6 +15,12 @@ const file=(path,label)=>{
  const target=resolve(root,path),rel=relative(root,target);
  need(!rel.startsWith('..'+sep)&&!rel.startsWith(sep)&&existsSync(target),`${label}: missing or external path ${path}`);
 };
+const historicalTestFile=(entry,label)=>{
+ if(!entry||typeof entry!=='object'||Array.isArray(entry)){need(false,`${label}: invalid historical test record`);return;}
+ need(Object.keys(entry).length===2&&Object.keys(entry).every(key=>['revision','path'].includes(key)),`${label}: historical test record needs only revision and path`);
+ need(typeof entry.revision==='string'&&/^[0-9a-f]{40}$/.test(entry.revision),`${label}: historical test needs an exact revision`);
+ need(typeof entry.path==='string'&&/^(?:tests|tools)\/(?:[A-Za-z0-9_-]+\/)*[A-Za-z0-9_.-]+\.mjs$/.test(entry.path),`${label}: historical test needs a safe repository-relative source path`);
+};
 need(data.schema===1,'Unsupported requirement schema');
 need(/^\d{4}-\d{2}-\d{2}$/.test(data.updated),'Invalid update date');
 need(/^[0-9a-f]{40}$/.test(data.baseline),'Baseline must identify an exact commit');
@@ -38,8 +44,17 @@ for(const r of data.requirements??[]){
  need(Array.isArray(r.evidence)&&r.evidence.length>0,`${r.id}: missing evidence`);
  for(const id of r.evidence??[])need(evidence.has(id),`${r.id}: unknown evidence ${id}`);
  for(const path of r.testFiles??[])file(path,r.id);
+ const historical=r.historicalTestFiles===undefined?[]:r.historicalTestFiles;
+ need(Array.isArray(historical),`${r.id}: historicalTestFiles must be an array`);
+ if(Array.isArray(historical)){
+  const seen=new Set();
+  for(const entry of historical){
+   historicalTestFile(entry,r.id);
+   const key=`${entry?.revision}:${entry?.path}`;need(!seen.has(key),`${r.id}: repeated historical test record`);seen.add(key);
+  }
+ }
  if(r.pr)need(/^https:\/\/github\.com\/fsodano\/granaderos\/pull\/\d+$/.test(r.pr),`${r.id}: invalid PR`);
- if(r.status==='VERIFIED')need(r.testFiles?.length>0||r.id==='DATA-01',`${r.id}: verified scope needs specific tests`);
+ if(r.status==='VERIFIED')need(r.testFiles?.length>0||(Array.isArray(historical)&&historical.length>0)||r.id==='DATA-01',`${r.id}: verified scope needs specific current or historical test sources`);
 }
 for(const r of data.requirements??[])for(const id of r.parents??[])need(ids.has(id),`${r.id}: unknown parent ${id}`);
 const source=JSON.parse(read('docs/evidence/formal-audit-2026-09-27/parity-source.json'));
@@ -79,6 +94,7 @@ if(errors.length){console.error(errors.join('\n'));process.exit(1);}
 const cell=text=>String(text??'').replaceAll('|','&#124;').replaceAll('\n',' ').replace(/\[([^\]]+)\]\([^)]+\)/g,'$1');
 const link=path=>relative(resolve(root,'docs/verification'),resolve(root,path)).split(sep).join('/');
 const counts=Object.fromEntries(statuses.map(s=>[s,data.requirements.filter(r=>r.status===s).length]));
+const historicalRevisions=[...new Set(data.requirements.flatMap(r=>(r.historicalTestFiles??[]).map(entry=>entry.revision)))];
 const checkLabel=name=>data.latestLocalCheck&&['original','prototype','presence'].includes(name)?`${name} (2026-09-27 snapshot)`:name;
 const out=[
  '# Granaderos implementation and verification ledger','',
@@ -103,6 +119,8 @@ const out=[
  '- SUPERSEDED: an explicit design change replaced the old requirement.','',
  `The register retains ${data.requirements.length} entries: ${Object.entries(counts).map(([s,n])=>`${n} ${s}`).join(', ')}.`,
  'Rows overlap in scope. Neither these counts nor test totals are a completion percentage.','',
+ '`testFiles` identifies test sources retained in the current tree. It does not record a current test pass. `historicalTestFiles` preserves earlier test and helper source references with an exact revision and repository-relative path. These records retain earlier evidence; they are not current automated coverage. VERIFIED rows retain their accepted historical scope. The check table above remains unchanged.',
+ ...(historicalRevisions.length?[`Historical test sources remain available in Git at ${historicalRevisions.map(revision=>`[\`${revision}\`](https://github.com/fsodano/granaderos/tree/${revision})`).join(', ')}. The documentation audit validates the record shape, revision and safe path; it does not execute those tests or verify archived Git objects. See [the current test gate](../../tests/README.md) for the retained routine checks.`,'']:['']),
  'Edit [requirements.json](requirements.json), record exact source/checks and remaining gaps, then run `npm run docs:progress` and `npm run audit:docs`. Update the design for policy changes. A dated audit stays an evidence snapshot. Do not mark a local branch as published or close a broad row from one passing fixture.','',
  '## Scope changes that override the original specification','',
  '[Current design decisions](../specification/game-design.md#decisions-that-override-earlier-documents) preserve the pesos-only economy, all elite contract terms, hire-only candidates and the approved opening. Old material-production and horse-care requirements do not override those decisions.',
