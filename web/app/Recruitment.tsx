@@ -4,7 +4,7 @@ import {useState} from 'react';
 import {CAMPAIGN_SECTORS,rosterFor,contractQuote,contractStatus,civicStatus} from '../../game/campaign.js';
 import {hiringArrivalOptions,hiringArrivalReason,hiringTravelHours,pendingHire,hireCancellationReason} from '../../game/hiring-arrivals.js';
 import {guaranteeRecord,serviceGuaranteeRefund,guaranteeDepartureReason} from '../../game/service-guarantees.js';
-import {operativeInTransit} from '../../game/squads.js';
+import {operativeInTransit,squadReorganizationReason} from '../../game/squads.js';
 import {contractTermsFor,contractRenewalQuote} from '../../game/contracts.js';
 import {filterMercenaries} from '../../game/mercenary-catalogue.js';
 import {isContractOperative} from '../../game/content-character-ids.js';
@@ -31,6 +31,7 @@ export default function Recruitment({state:s,dispatch}:Props){
  const destination=options.some(o=>o.id===chosenDestination)?chosenDestination:options.find(o=>o.id===s.location)?.id??options[0]?.id??'';
  const visible:typeof roster=filterMercenaries(roster,s,{query,specialty,availability,sort});
  const busy=Boolean(s.pendingBattle||s.pendingEncounter)||s.defeated;
+ const hiringRouteReason=squadReorganizationReason(s);
  return <section className="roster-section">
   <p>Cada contrato se paga por adelantado y comienza cuando llega el personaje. Hasta entonces, el contratado permanece fuera del mapa.</p>
   <label className="arrival-destination">Destino de nuevos contratados
@@ -53,6 +54,7 @@ export default function Recruitment({state:s,dispatch}:Props){
    const hired=s.recruited.includes(o.id),arrival=pendingHire(s,o.id),term=periods[o.id]||'day',quote=hired?contractRenewalQuote(s,o,term):contractQuote(s,o,term),contract=contractStatus(s,o.id),profile=characterProfile(o),record=s.operativeState[o.id],guarantee=guaranteeRecord(s,arrival??contract),inTransit=operativeInTransit(s,o.id);
    const hours=hiringTravelHours(s,o.id),remaining=arrival?Math.max(0,arrival.dueAt-s.hour):0,objection=serviceObjectionReason(s,o),moraleStatus=lowMoraleRenewalStatus(s,o);
    const cancellationReason=arrival?hireCancellationReason(s,o.id):null,departureReason=hired?guaranteeDepartureReason(s,contract,o):null;
+   const hireReason=!hired?hiringRouteReason:null;
    const held=arrival&&(hiringArrivalReason(s,arrival.destination)||(s.pendingBattle?.sector===arrival.destination?'La llegada espera a que salgas del sector.':null));
    return <article key={o.id} className="contract-card" data-operative-id={o.id}>
     <button className="candidate-face" onClick={()=>setSelected(o.id)} aria-label={`Ver hoja de servicio de ${o.name}`}>{portraitFor((o as any).portrait??(o as any).portraitId??o.id,s)?<img src={sitePath(portraitFor((o as any).portrait??(o as any).portraitId??o.id,s)!)} alt={o.name} loading="lazy"/>:<span>{o.nickname.slice(0,2).toUpperCase()}</span>}<span>{o.name}</span></button>
@@ -83,7 +85,8 @@ export default function Recruitment({state:s,dispatch}:Props){
      {(quote.guarantee>0||guarantee)&&<small>Paga: {quote.price} pesos · Garantía a financiar: {quote.guarantee} pesos · Total: {quote.total} pesos.</small>}
      {hired&&guarantee&&<small>Garantía {guarantee.state==='held'?`retenida: ${guarantee.amount} pesos. Al finalizar ahora: ${serviceGuaranteeRefund(s,contract,o)} pesos de devolución según la salud actual.`:`liquidada: ${guarantee.refund} pesos devueltos.`} La paga no se devuelve.</small>}
      {hired&&inTransit&&<small>Está en camino. Esperá su llegada para finalizar el servicio. Si vence durante el viaje, la garantía queda retenida hasta la salida efectiva.</small>}
-     <button className="gold-button" disabled={!quote.available||s.resources.treasury<quote.total||record?.alive===false||busy||(!hired&&(!destination||!civicStatus(s,o.id).available))} onClick={()=>dispatch(hired?{type:'renewContract',id:o.id,term,...(contract?.guaranteeId?{expectedGuaranteeId:contract.guaranteeId}:{})}:{type:'recruitCivic',id:o.id,term,destination})}>{record?.alive===false?'Caído en combate':`${hired?'Renovar':'Contratar'} · ${quote.total} pesos`}</button>
+     {hireReason&&<small id={`hire-route-reason-${o.id}`}>{hireReason}</small>}
+     <button className="gold-button" aria-describedby={hireReason?`hire-route-reason-${o.id}`:undefined} disabled={!quote.available||s.resources.treasury<quote.total||record?.alive===false||busy||Boolean(hireReason)||(!hired&&(!destination||!civicStatus(s,o.id).available))} onClick={()=>dispatch(hired?{type:'renewContract',id:o.id,term,...(contract?.guaranteeId?{expectedGuaranteeId:contract.guaranteeId}:{})}:{type:'recruitCivic',id:o.id,term,destination})}>{record?.alive===false?'Caído en combate':`${hired?'Renovar':'Contratar'} · ${quote.total} pesos`}</button>
      {hired&&departureReason&&!inTransit&&<small role="status">{departureReason}</small>}
      {hired&&<button className="dossier-link" disabled={busy||inTransit||Boolean(departureReason)} title={departureReason||undefined} onClick={()=>dispatch({type:'dismiss',id:o.id,...(contract?.guaranteeId?{expectedGuaranteeId:contract.guaranteeId}:{})})}>Finalizar servicio</button>}
     </>}

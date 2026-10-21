@@ -8,6 +8,7 @@ export function migrateSquads(s){
  return s;
 }
 export function activeSquad(s){return (s.squads??[]).find(q=>q.id===s.activeSquadId)??{id:'squad-1',name:'Primera escuadra',members:s.squad,location:s.location};}
+export function squadReorganizationReason(s){return activeSquad(s).journey?'Esperá la llegada o cancelá la ruta antes de reorganizar la escuadra.':null;}
 export function operativeLocation(s,id){return s.squads?.find(q=>q.members.includes(id))?.location??s.operativeState[id]?.location??s.location;}
 export function operativeInTransit(s,id){return Boolean(s.squads?.some(q=>q.members.includes(id)&&['moving','ready'].includes(q.journey?.status)));}
 export function canReassignOperative(s,id){return s.recruited.includes(id)&&s.operativeState[id]?.alive&&!s.operativeState[id]?.captured&&!s.squads?.some(q=>q.journey&&q.members.includes(id));}
