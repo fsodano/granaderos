@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {writeFileSync} from 'node:fs';
 import {register} from 'node:module';
 import test from 'node:test';
+import {nativeRigOffsets,assertNativeRigOffsets} from './native-rig-offsets-fixture.mjs';
 register('./tactical-render-loader.mjs',import.meta.url);
 const {ActorRuntime}=await import('../web/lib/three/actor-runtime.ts');
 const {advanceSceneActors}=await import('../web/lib/three/scene-actors.ts');
@@ -48,7 +49,7 @@ for(const appearance of ['granadero','woman-scout']){
       const striking=attacker.visual.cue?.action==='strike';
       assert.equal(attacker.action.getClip().name,striking?`${semantic}.thrust`:`stand.idle.${equipment}`,'One ordinary cue keeps its variant until gameplay returns to its native idle');
       assert.deepEqual(attacker.root.position.toArray(),rootPosition,'Saved cells retain the wrapper position');
-      attacker.model.traverse(node=>{if(!node.isBone)return;const source=native.model.getObjectByName(node.name);assert.ok(node.scale.distanceTo(source.scale)<1e-8);if(node.name!=='Root')assert.ok(node.position.distanceTo(source.position)<1e-8,`${node.name}: native joint offsets`);});
+      assertNativeRigOffsets(attacker,nativeRigOffsets(native.model),`${appearance}/${lod}/${now} ms`,1e-8);
       const a=grip(attacker,unit.weapon).elements,b=grip(native,unit.weapon).elements;assert.ok(a.every((value,i)=>Math.abs(value-b[i])<1e-8),'The owned weapon retains its native hand/socket transform');
       const pose=wrist(attacker);row.samples++;if(striking)row.maxWristBendDegrees=Math.max(row.maxWristBendDegrees,pose.bend);
       if(previous&&now>previous.now){const dt=(now-previous.now)/1000,distance=pose.point.distanceTo(previous.point);if(dt>.001)row.maxWristSpeedMetresPerSecond=Math.max(row.maxWristSpeedMetresPerSecond,distance/dt);else if(frame.type!==previous.phase&&distance>row.maxPhaseEdgeWristJumpMetres){row.maxPhaseEdgeWristJumpMetres=distance;row.maxPhaseEdge={from:previous.phase,to:frame.type,now,clipTime:attacker.action.time,root:attacker.root.position.toArray(),yaw:attacker.root.rotation.y};}}previous={now,point:pose.point,phase:frame.type};
