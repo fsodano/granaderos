@@ -11,7 +11,7 @@ export function strategicSquadSlots(state){
   else remaining.push(squad);
  }
  const extra=[];
- for(const squad of remaining){const slot=slots.find(slot=>!slot.squad);if(slot)slot.squad=squad;else extra.push({number:null,label:squad.name,squad});}
+ for(const squad of remaining){const slot=slots.find(slot=>!slot.squad);if(slot){slot.squad=squad;slot.label=squad.name;}else extra.push({number:null,label:squad.name,squad});}
  return [...slots,...extra];
 }
 
