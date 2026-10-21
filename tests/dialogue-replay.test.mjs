@@ -33,10 +33,18 @@ test('replay uses the last reply from that NPC and never reoffers or repays a qu
  b=approachNPC(b,'1000',npc.id);s=repeatUnchanged(s,b,npc.id,delivered);assert.equal(s.resources.treasury,cash);assert.deepEqual(b.npcs.find(n=>n.id===npc.id).questGifts,gifts);
 });
 
-test('fresh campaign dialogue can recruit Cabral, Dorrego and Paroissien after their local gates pass',()=>{
- for(const [npcId,id,sector] of [['cabral',3,'retiro'],['dorrego',4,'buenos_aires'],['paroissien',10,'buenos_aires']]){
-  let {s,b}=meet(npcId,sector);assert.equal(recruitmentStatus(s,id).available,false,'remote recruitment still requires a meeting');
-  s=talk(s,b,npcId,'direct');assert.match(s.lastConversation.text,/Estoy dispuesto/);assert.ok(!s.recruited.includes(id));const reply=s.lastConversation.text;s=repeatUnchanged(s,b,npcId,reply);
+test('neutral recruitment replies replay and recruit Juana, Cabral, Dorrego and Paroissien after their local gates pass',()=>{
+ for(const [npcId,id,sector] of [['cabral',3,'retiro'],['dorrego',4,'buenos_aires'],['paroissien',10,'buenos_aires'],['azurduy',1,'tucuman']]){
+  let campaign=officer();
+  if(npcId==='azurduy'){
+   // Admit Juana's actual Tucumán encounter through a secured test corridor.
+   secureArea(campaign,['buenos_aires','ensenada','san_nicolas','cordoba','tucuman']);
+   campaign=order(campaign,{type:'diplomacy',kind:'partisanSupply'});
+   campaign=order(campaign,{type:'transport',mode:'posta'});
+   campaign=completeTestTravel(campaign,{sector,mode:'posta'});
+  }
+  let {s,b}=meet(npcId,sector,campaign);assert.equal(recruitmentStatus(s,id).available,false,'remote recruitment still requires a meeting');
+  s=talk(s,b,npcId,'direct');assert.equal(s.lastConversation.text,'Quiero servir. Puedo incorporarme sin paga.');assert.ok(!s.recruited.includes(id));const reply=s.lastConversation.text;s=repeatUnchanged(s,b,npcId,reply);
   s=talk(s,b,npcId,'recruit');assert.ok(s.recruited.includes(id));assert.ok(s.pendingBattle.squad.some(u=>u.id===id));assert.equal(s.lastConversation.outcome,'recruited');assert.ok(!s.lastConversation.options.includes('recruit'));
   const record=s.pendingBattle.squad.find(u=>u.id===id),npc=b.npcs.find(n=>n.id===npcId);const unit=createBattle([record],{width:b.width,height:b.height,enemies:[],exploration:true}).units.find(u=>u.side==='player');b.units.push({...unit,x:npc.x,y:npc.y});b.npcs=b.npcs.filter(n=>n.id!==npcId);({campaign:s,battle:b}=fullSave(s,b));const rejected=dispatchCampaign(s,{type:'talkNPC',unitId:1000,npcId,approach:'repeat',sectorState:b});assert.ok(rejected.lastError);assert.deepEqual({...rejected,lastError:null},s);assert.equal(s.recruited.filter(value=>value===id).length,1);
  }
@@ -48,7 +56,7 @@ test('direct questions report the current leadership, territorial or regional re
  direct(3);assert.match(s.lastConversation.text,/65.*liderazgo/);assert.ok(!s.recruited.includes(5));
  b=approachNPC(b,'4','brown');s.sectors.san_nicolas.owner='royalist';direct(4);assert.match(s.lastConversation.text,/3 localidades/);
  s.sectors.san_nicolas.owner='patriot';s.reputation.foreign=0;direct(4);assert.match(s.lastConversation.text,/comercio.*30.*extranjeros/);
- s.reputation.foreign=30;direct(4);assert.match(s.lastConversation.text,/Estoy dispuesto/);assert.ok(!s.recruited.includes(5));
+ s.reputation.foreign=30;direct(4);assert.match(s.lastConversation.text,/Quiero servir/);assert.ok(!s.recruited.includes(5));
 });
 
 test('replaying a mission report cannot advance the conference a second time',()=>{
