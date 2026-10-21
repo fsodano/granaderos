@@ -18,7 +18,7 @@ test('the actual page prevents competing orders and saves only the completed ene
  const finalBattle=withCharacterSpeech(before.battle,endTurn(before.battle)),want=syncBattleTime(before.campaign,finalBattle);assert.equal(want.error,null);
  await act(async()=>{
   m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'d',bubbles:true}));
-  assert.throws(()=>m.issue({type:'movement',unitId,movement:'crouch'}),/termine el movimiento/);
+  assert.deepEqual(m.issue({type:'movement',unitId,movement:'crouch'}),{ok:false,error:'Esperá a que termine el movimiento.'});
   assert.deepEqual(m.saved(),before);
  });
  let observed=false;
