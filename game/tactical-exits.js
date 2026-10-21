@@ -1,5 +1,5 @@
 import {campaignWorld} from './campaign-definition.js';
-import {validWorldLocation,worldCell} from './world-cells.js';
+import {validWorldLocation,worldCell,adjacentCells} from './world-cells.js';
 import {wallMovementBlocked} from './wall-geometry.js';
 
 export const EXIT_EDGES = ['N', 'E', 'S', 'W'];
@@ -28,6 +28,13 @@ export function sectorExits(sectorId, sceneId = null,context=null) {
 
 export function findSectorExit(sectorId, sceneId, exitId,context=null) {
   return sectorExits(sectorId, sceneId,context).find(exit => exit.id === exitId) ?? null;
+}
+
+// Resolve adjacency before the tactical snapshot drops its campaign package.
+// Mission scenes retain their explicit exits instead of inheriting parent roads.
+export function adjacentExitIdsFor(sectorId,sceneId,exits,context=null){
+ if(sceneId!=null||campaignWorld(context).sceneExits?.[sectorId]?.sector===sectorId)return [];
+ return exits.filter(exit=>adjacentCells(sectorId,exit.destination,context)).map(exit=>exit.id);
 }
 
 export function entryFromSector(fromSector,toSector,sceneId=null,context=null){

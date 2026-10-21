@@ -98,6 +98,7 @@ for(const key of ['exits','enemyExits'])if(s[key]!==undefined){
   else need(validEntry(exit.entryEdge,exit.entryAnchor),'llegada de salida');
  }
 }
+if(s.adjacentExitIds!==undefined)need(Array.isArray(s.adjacentExitIds)&&s.adjacentExitIds.length<=(s.exits?.length??0)&&new Set(s.adjacentExitIds).size===s.adjacentExitIds.length&&s.adjacentExitIds.every(id=>typeof id==='string'&&s.exits?.some(exit=>exit.id===id)),'destinos de salida adyacentes');
 if(s.griefParticipantIds!==undefined)need(s.griefParticipantIds.every(id=>s.units.some(u=>u.side==='player'&&u.id===String(id))),'participantes del duelo');
 for(const npc of s.npcs??[])need(npc.griefCompanionIds===undefined&&npc.companionGrief===undefined,'duelo de civiles');
 for(const npc of s.npcs??[])need(npc.serviceObjection===undefined,'objeciones de civiles');
