@@ -1,4 +1,5 @@
-import {encounterDefinitions} from '../game/encounters.js';
+import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
+import {encounterDefinitions} from '../packages/game/encounters.js';
 import {supplyRouteDressings,attemptRouteDressings} from './route-dressings.mjs';
 import {restRouteStableLocal} from './route-stable-local-rest.mjs';
 import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
@@ -7,32 +8,32 @@ import {resolveStockCuyoBatteryEncounter} from './stock-cuyo-battery-defense.mjs
 import {prepareStockCuyoBatteryReserve,stockCuyoBatteryReservePosts} from './stock-cuyo-reserve-readiness.mjs';
 import {prefetchStockCuyoReserveAmmunition} from './stock-cuyo-reserve-ammunition.mjs';
 import {relieveStockCuyoService} from './stock-cuyo-service-relief.mjs';
-import {ownedArtilleryCount} from '../game/campaign-artillery.js';
-import {artilleryTransportPath,artilleryTransportQuote,storedArtilleryRecord} from '../game/artillery-transport.js';
+import {ownedArtilleryCount} from '../packages/game/campaign-artillery.js';
+import {artilleryTransportPath,artilleryTransportQuote,storedArtilleryRecord} from '../packages/game/artillery-transport.js';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {decodeSave,encodeSave} from '../game/save.js';
-import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
-import {sectorInventoryModel,sectorInventorySites} from '../game/sector-inventory.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
+import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../packages/game/contracts.js';
+import {sectorInventoryModel,sectorInventorySites} from '../packages/game/sector-inventory.js';
 import {transferRouteSupply} from './route-ammunition-transfer.mjs';
-import {carriedAmmunition,ammunitionOrderQuote,AMMUNITION_ORDER_LIMIT} from '../game/campaign-ammunition.js';
-import {ammoTypeFor,ammoStock,ammoCount,AMMO_KEYS} from '../game/ammo-types.js';
-import {AMMUNITION_FAMILIES} from '../game/ammunition-families.js';
-import {addAmmoCounts,unitAmmunitionByType,fieldAmmunitionByType} from '../game/physical-ammunition.js';
-import {weaponSpecification} from '../game/weapon-definition.js';
-import {operativeLocation,canCreateSquad} from '../game/squads.js';
-import {previewStrategicRoute} from '../game/strategic-route.js';
-import {applyItemQuantity,itemQuantity} from '../game/tactical-inventory.js';
-import {firstAidPlan} from '../game/first-aid.js';
-import {medicalPatientAvailable} from '../game/medical-patient.js';
-import {careAssignmentReason,doctorRate} from '../game/medical-care.js';
+import {carriedAmmunition,ammunitionOrderQuote,AMMUNITION_ORDER_LIMIT} from '../packages/game/campaign-ammunition.js';
+import {ammoTypeFor,ammoStock,ammoCount,AMMO_KEYS} from '../packages/game/ammo-types.js';
+import {AMMUNITION_FAMILIES} from '../packages/game/ammunition-families.js';
+import {addAmmoCounts,unitAmmunitionByType,fieldAmmunitionByType} from '../packages/game/physical-ammunition.js';
+import {weaponSpecification} from '../packages/game/weapon-definition.js';
+import {operativeLocation,canCreateSquad} from '../packages/game/squads.js';
+import {previewStrategicRoute} from '../packages/game/strategic-route.js';
+import {applyItemQuantity,itemQuantity} from '../packages/game/tactical-inventory.js';
+import {firstAidPlan} from '../packages/game/first-aid.js';
+import {medicalPatientAvailable} from '../packages/game/medical-patient.js';
+import {careAssignmentReason,doctorRate} from '../packages/game/medical-care.js';
 import {knownCuyoDressingSources,collectKnownCuyoDressings} from './cuyo-known-medical-courier.mjs';
-import {strategicBleedingPercent} from '../game/campaign-care-rules.js';
-import {expandCellScene} from '../game/cell-scene-storage.js';
-import {enterSector} from '../game/world.js';
-import {syncBattleTime} from '../game/time.js';
-import {boundaryMatches} from '../game/tactical-exits.js';
+import {strategicBleedingPercent} from '../packages/game/campaign-care-rules.js';
+import {expandCellScene} from '../packages/game/cell-scene-storage.js';
+import {enterSector} from '../packages/game/world.js';
+import {syncBattleTime} from '../packages/game/time.js';
+import {boundaryMatches} from '../packages/game/tactical-exits.js';
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {fightNorthernSector} from './northern-route.mjs';
 import {recordRouteCareFailure,createRouteAcuteAidFailureObserver} from './route-care-failure-evidence.mjs';
@@ -43,8 +44,8 @@ import {visit,sync,leave} from './local-contract-fixture.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {prepareFinalAssault} from './final-campaign-route.mjs';
-import {actBattle,presentedActBattle,itemUsePreview,exitPreview,getReachable} from '../game/tactical.js';
-import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
+import {actBattle,presentedActBattle,itemUsePreview,exitPreview,getReachable} from '../packages/game/tactical.js';
+import {sameCell,sameSurface,spacePoint} from '../packages/game/tactical-space.js';
 import {createFreshRouteOrders} from './fresh-cuyo-route.mjs';
 
 // Use the actual post-combat positions before settlement can disperse the
@@ -867,11 +868,11 @@ export function finishStockMendozaAssault(start,fieldIds,selections,{report=()=>
  for(let h=0;h<72&&(p.campaign.hour%24!==6||field.some(id=>{const r=p.campaign.operativeState[id];return r.fatigue||r.energy<100||r.asleep;}));h++)p.order({type:'wait',hours:1});
  assert.equal(p.campaign.hour%24,6);for(const id of field){const r=p.campaign.operativeState[id];assert.equal(r.fatigue,0);assert.equal(r.energy,100);assert.equal(r.asleep,false);p.order({type:'assignCare',operativeId:id,assignment:'active'});}
  p.order({type:'configureArtillery',types:selections});const groups=[];
- for(let offset=0;offset<field.length;offset+=6){p.order({type:'createSquad',name:'Columna final de Cuyo',ids:field.slice(offset,offset+6),sector:'cordoba'});groups.push(p.campaign.activeSquadId);p.order({type:'attack',sector:'mendoza',queue:true,mode:'posta'});}
- for(let h=0;h<24&&!groups.every(id=>p.campaign.squads.find(q=>q.id===id).journey?.status==='ready');h++)p.order({type:'wait',hours:1});
- assert.ok(groups.every(id=>p.campaign.squads.find(q=>q.id===id).journey?.status==='ready'));
- for(let h=0;h<24&&(p.campaign.hour%24<6||p.campaign.hour%24>10);h++)p.order({type:'wait',hours:1});
- p.renew();const c=dispatchCampaign(p.campaign,{type:'beginAssault',sector:'mendoza'});assert.equal(c.lastError,null,c.lastError);assert.equal(c.pendingBattle.sector,'mendoza');
+ for(let offset=0;offset<field.length;offset+=6){p.order({type:'createSquad',name:'Columna final de Cuyo',ids:field.slice(offset,offset+6),sector:'cordoba'});groups.push(p.campaign.activeSquadId);}
+ stageAssaultDeparture(p.campaign,groups.map(id=>({id,mode:'posta'})),'mendoza',{execute:request=>{p.order(request);return p.campaign;}});
+ p.renew();for(const id of groups){p.order({type:'selectSquad',id});p.order({type:'attack',sector:'mendoza',queue:true,mode:'posta'});}
+ const c=completeQueuedAssault(p.campaign,groups,'mendoza',{execute:request=>{p.order(request);return p.campaign;}});
+ assert.equal(c.pendingBattle.sector,'mendoza');
  assert.deepEqual(c.pendingBattle.squad.map(u=>u.id).sort((a,b)=>a-b),[...field].sort((a,b)=>a-b));
  for(const [id,r]of Object.entries(start.operativeState))if(!r.alive)assert.equal(c.operativeState[id].alive,false);
  report({event:'stockMendozaAssaultPrepared',field,selections,hour:c.hour,secondOfHour:c.secondOfHour??0,treasury:c.resources.treasury,campaign:structuredClone(c)});return c;

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {wonBattery,fireStationed} from './stationed-artillery-fixture.mjs';
 import {visit,saved,sync,leave} from './local-contract-fixture.mjs';
-import {actBattle} from '../game/tactical.js';
+import {actBattle} from '../packages/game/tactical.js';
 export function reloadPiece(p){const gun=p.battle.artillery[0],actor=p.battle.units.find(u=>u.side==='player'&&u.hp>=15&&!u.routed&&Math.hypot(u.x-gun.x,u.y-gun.y)<=1.5),battle=actBattle(p.battle,{type:'artilleryReload',unitId:actor.id,artilleryId:gun.id});assert.equal(battle.lastError,null);return saved(sync({campaign:p.campaign,battle}));}
 let empty;
 export function emptyBattery(){

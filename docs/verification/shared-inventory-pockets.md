@@ -39,7 +39,7 @@ civilian weapon ownership and the advanced checkout integration remain separate.
 
 Supply-art update on source `d46f28385ee81d124cb9e2418717984f9bff20dd` adds seven distinct transparent
 images and Spanish item descriptions. The built-in image generator produced the
-artwork; [prompts and asset paths](../../web/public/art/supplies/prompts.json) are saved.
+artwork; [prompts and asset paths](../../apps/web/public/art/supplies/prompts.json) are saved.
 The images total 134,870 bytes after WebP compression. All seven load in the
 1280 x 720 desktop inventory; selected priming and flint details show correctly,
 with no console errors. The ten focused pocket tests, type check and production

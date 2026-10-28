@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {rosterFor} from '../game/campaign.js';
+import {rosterFor} from '../packages/game/campaign.js';
 import {order,saved} from './local-contract-fixture.mjs';
 import {collectPhysicalCacheItems} from './finite-care-cache.mjs';
 import {freshCuyoRoute} from './fresh-cuyo-fixture.mjs';

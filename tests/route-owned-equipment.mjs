@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {rosterFor} from '../game/campaign.js';
-import {WEAPONS} from '../game/data.js';
-import {operativeLocation} from '../game/squads.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {handRecord,applyItemQuantity} from '../game/tactical-inventory.js';
+import {rosterFor} from '../packages/game/campaign.js';
+import {WEAPONS} from '../packages/game/data.js';
+import {operativeLocation} from '../packages/game/squads.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {handRecord,applyItemQuantity} from '../packages/game/tactical-inventory.js';
 import {discoverRouteCache} from './finite-route-equipment.mjs';
 import {order,saved} from './local-contract-fixture.mjs';
 

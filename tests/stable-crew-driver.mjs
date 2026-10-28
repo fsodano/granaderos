@@ -1,7 +1,7 @@
 import {stagedBatteryController} from './staged-battery-driver.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
 import {teamArtilleryOrder} from './team-artillery-driver.mjs';
-import {artilleryContact,artilleryCrewPlan,teamCanSee,stanceCost} from '../game/tactical.js';
+import {artilleryContact,artilleryCrewPlan,teamCanSee,stanceCost} from '../packages/game/tactical.js';
 // A nearby gun uses the engine's current crew. Keep that crew crouched and
 // together while firing; do not spend its turn alternating prone and crouched.
 export function stableCrewController(){

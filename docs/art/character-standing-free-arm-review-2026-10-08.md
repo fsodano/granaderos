@@ -94,7 +94,7 @@ not counted. Native verification also passes for 24 appearance LODs, 334 clips
 per anatomy, 26 equipment items and three horse LODs. The docs audit, 127
 relative record links and staged diff check pass.
 Hashes, motion limits, browser metrics and equivalence proofs are in the
-[review receipt](../../artifacts/standing-free-arm/review-receipt.json).
+[review receipt](../evidence/artifacts/standing-free-arm/review-receipt.json).
 
 ```sh
 node --test tests/characters-standing-free-arm-rest.test.mjs tests/characters-reviewed-motion.test.mjs tests/renderer-sandbox-fixtures.test.mjs

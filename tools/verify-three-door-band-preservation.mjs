@@ -8,9 +8,9 @@ register('../tests/tactical-render-loader.mjs',import.meta.url);
 assert.ok(process.argv[2],'Pass the unchanged predecessor checkout as the first argument');
 const beforeRoot=resolve(process.argv[2]),currentRoot=resolve(process.argv[3]??'.');
 const moduleAt=async(root,file)=>import(pathToFileURL(resolve(root,file)).href);
-const before=await moduleAt(beforeRoot,'web/lib/three/world-buildings.ts'),current=await moduleAt(currentRoot,'web/lib/three/world-buildings.ts');
-const {WorldGeometry,disposeWorldNode}=await moduleAt(currentRoot,'web/lib/three/world-geometry.ts'),{WorldMaterials}=await moduleAt(currentRoot,'web/lib/three/world-materials.ts');
-const {ARCHITECTURE_REVIEW_TEMPLATES,createArchitectureReviewBattle}=await moduleAt(currentRoot,'web/app/renderer-sandbox/architecture-fixtures.js');
+const before=await moduleAt(beforeRoot,'apps/web/lib/three/world-buildings.ts'),current=await moduleAt(currentRoot,'apps/web/lib/three/world-buildings.ts');
+const {WorldGeometry,disposeWorldNode}=await moduleAt(currentRoot,'apps/web/lib/three/world-geometry.ts'),{WorldMaterials}=await moduleAt(currentRoot,'apps/web/lib/three/world-materials.ts');
+const {ARCHITECTURE_REVIEW_TEMPLATES,createArchitectureReviewBattle}=await moduleAt(currentRoot,'apps/web/app/renderer-sandbox/architecture-fixtures.js');
 const T=1.2360585147470482,hash=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 function shape(building,old){
  const nodes=[],meshes=[],bands=[];building.updateMatrixWorld(true);

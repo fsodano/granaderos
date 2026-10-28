@@ -1,8 +1,8 @@
 // Historical renderer regressions keep their original cell-centred reference
 // geometry. Native edge geometry is tested in wall-edge-renderer.test.mjs.
-import {BUILDING_TEMPLATES} from '../game/map-templates.js';
-import {BUILDING_TYPES} from '../game/building-types.js';
-import {buildTerrace} from '../game/buildings.js';
+import {BUILDING_TEMPLATES} from '../packages/game/map-templates.js';
+import {BUILDING_TYPES} from '../packages/game/building-types.js';
+import {buildTerrace} from '../packages/game/buildings.js';
 
 export function buildBuilding({id,x,y,width,height,name=id,doors=[],windows=[],material='adobe',architecture='house',roof=BUILDING_TYPES[architecture]?.roof??'tile'}){
  const roomId=`${id}:interior`,tiles=[],cells=[];

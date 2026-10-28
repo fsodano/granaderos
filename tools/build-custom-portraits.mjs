@@ -7,9 +7,9 @@ import { fileURLToPath } from 'node:url';
 import { resolve, dirname } from 'node:path';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const require = createRequire(resolve(root, 'web/package.json'));
+const require = createRequire(resolve(root, 'apps/web/package.json'));
 const sharp = require('sharp');
-const portraits = JSON.parse(await readFile(resolve(root, 'assets/prompts/custom-portraits.json'), 'utf8'));
+const portraits = JSON.parse(await readFile(resolve(root, 'content/assets/prompts/custom-portraits.json'), 'utf8'));
 const manifest = [];
 
 for (const portrait of portraits) {
@@ -19,7 +19,7 @@ for (const portrait of portraits) {
     .webp({ quality: 86 })
     .toBuffer();
 
-  for (const base of ['assets/web', 'campaigns/granaderos/assets']) {
+  for (const base of ['content/assets/web', 'content/campaigns/granaderos/assets']) {
     await mkdir(resolve(root, base), { recursive: true });
     await writeFile(resolve(root, base, filename), output);
   }
@@ -36,7 +36,7 @@ for (const portrait of portraits) {
   });
 }
 
-for (const base of ['assets/web', 'campaigns/granaderos/assets']) {
+for (const base of ['content/assets/web', 'content/campaigns/granaderos/assets']) {
   await writeFile(resolve(root, base, 'custom-portraits.json'), `${JSON.stringify(manifest, null, 2)}\n`);
 }
 

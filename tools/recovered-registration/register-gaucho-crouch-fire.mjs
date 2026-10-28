@@ -1,10 +1,10 @@
 import fs from 'node:fs/promises';
-import sharp from '/Users/fsodano/fibradev/games/granaderos/web/node_modules/sharp/lib/index.js';
+import sharp from '../../apps/web/node_modules/sharp/lib/index.js';
 import {removeExportKey,boundsOf,packIllustratedSources} from '/Users/fsodano/fibradev/games/granaderos/tools/pack-illustrated-sprites.mjs';
 const root='/Users/fsodano/fibradev/games/granaderos';process.chdir(root);
-const dir='assets/source/illustrated-sprites/complete-actions';
-const manifestPath='assets/source/illustrated-sprites/sources.json';
-const existing=JSON.parse(await fs.readFile('assets/previews/illustrated-sprites/packed/manifest.json','utf8'));
+const dir='content/assets/source/illustrated-sprites/complete-actions';
+const manifestPath='content/assets/source/illustrated-sprites/sources.json';
+const existing=JSON.parse(await fs.readFile('content/assets/previews/illustrated-sprites/packed/manifest.json','utf8'));
 const idle=existing.atlases['gaucho-crouch-idle'];
 const directions=['n','ne','e','se','s','sw','w','nw'];
 const specs=[['north-v1',4,[[0,'n'],[1,'ne'],[2,'e'],[3,'se']]],['south-v1',4,[[1,'sw'],[2,'w'],[3,'nw']]],['south-v2',4,[[0,'s']]]];
@@ -23,7 +23,7 @@ for(const [suffix,rows,rowDirections]of specs){
   }
   const ref=idle.records.find(r=>r.direction===direction),targetHeight=ref.bounds[3]-ref.bounds[1];
   const scale=Number((targetHeight/(cells[0].bounds[3]-cells[0].bounds[1])).toFixed(8));
-  const old=await sharp('assets/previews/illustrated-sprites/packed/gaucho-crouch-idle.png').extract({left:directions.indexOf(direction)*156,top:0,width:156,height:156}).ensureAlpha().raw().toBuffer();
+  const old=await sharp('content/assets/previews/illustrated-sprites/packed/gaucho-crouch-idle.png').extract({left:directions.indexOf(direction)*156,top:0,width:156,height:156}).ensureAlpha().raw().toBuffer();
   const delta=feet(old,156,ref.bounds)-idle.anchor[0];
   for(const cell of cells)sheet.slots.push({direction,frame:cell.col,col:cell.col,row,rect:cell.rect,scale,anchor:[Number((feet(cell.pixels,cell.rect[2],cell.bounds)-delta/scale).toFixed(5)),cell.bounds[3]],sourceBounds:cell.bounds,anchorMethod:'boot alignment to approved crouch idle; per-direction scale from no-effect frame zero',calibration:{targetBodyHeight:targetHeight,bodyScaleSourceFrame:0,review:'pending packed visual check'}});
  }
@@ -31,12 +31,12 @@ for(const [suffix,rows,rowDirections]of specs){
 }
 const registration={version:1,directions,sheets};
 await fs.writeFile(`${dir}/gaucho-crouch-fire.registration.json`,JSON.stringify(registration,null,2)+'\n');
-const packed=await packIllustratedSources({manifestPath:`${dir}/gaucho-crouch-fire.registration.json`,destination:'assets/previews/illustrated-sprites/family-actions/gaucho-crouch-fire'});
+const packed=await packIllustratedSources({manifestPath:`${dir}/gaucho-crouch-fire.registration.json`,destination:'content/assets/previews/illustrated-sprites/family-actions/gaucho-crouch-fire'});
 const entry=packed.atlases['gaucho-crouch-fire'];if(new Set(entry.records.map(r=>r.sha256)).size!==32)throw Error('Repeated new frame');
 const layers=[];
 for(let row=0;row<8;row++){
- layers.push({input:await sharp('assets/previews/illustrated-sprites/packed/gaucho-crouch-idle.png').extract({left:row*156,top:0,width:156,height:156}).png().toBuffer(),left:27,top:row*210+48});
- for(let col=0;col<4;col++)layers.push({input:await sharp('assets/previews/illustrated-sprites/family-actions/gaucho-crouch-fire/gaucho-crouch-fire.png').extract({left:col*210,top:row*210,width:210,height:210}).png().toBuffer(),left:(col+1)*210,top:row*210});
+ layers.push({input:await sharp('content/assets/previews/illustrated-sprites/packed/gaucho-crouch-idle.png').extract({left:row*156,top:0,width:156,height:156}).png().toBuffer(),left:27,top:row*210+48});
+ for(let col=0;col<4;col++)layers.push({input:await sharp('content/assets/previews/illustrated-sprites/family-actions/gaucho-crouch-fire/gaucho-crouch-fire.png').extract({left:col*210,top:row*210,width:210,height:210}).png().toBuffer(),left:(col+1)*210,top:row*210});
 }
-await sharp({create:{width:1050,height:1680,channels:4,background:'#676658'}}).composite(layers).png().toFile('assets/previews/illustrated-sprites/family-actions/gaucho-crouch-fire/gaucho-crouch-fire-review.png');
-console.log(JSON.stringify({frames:entry.records.length,distinct:new Set(entry.records.map(r=>r.sha256)).size,directions:8,sourceRegistration:`${dir}/gaucho-crouch-fire.registration.json`,review:'assets/previews/illustrated-sprites/family-actions/gaucho-crouch-fire/gaucho-crouch-fire-review.png'}));
+await sharp({create:{width:1050,height:1680,channels:4,background:'#676658'}}).composite(layers).png().toFile('content/assets/previews/illustrated-sprites/family-actions/gaucho-crouch-fire/gaucho-crouch-fire-review.png');
+console.log(JSON.stringify({frames:entry.records.length,distinct:new Set(entry.records.map(r=>r.sha256)).size,directions:8,sourceRegistration:`${dir}/gaucho-crouch-fire.registration.json`,review:'content/assets/previews/illustrated-sprites/family-actions/gaucho-crouch-fire/gaucho-crouch-fire-review.png'}));

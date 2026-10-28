@@ -1,3 +1,5 @@
+import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
+import {fightOnArrival} from './assault-fixture.mjs';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import {prepareHiredNorthernDefense,prepareNorthernOfficerRelief,completeHiredNorthernMission} from './fresh-northern-command.mjs';
 import {prepareFreshTucumanAssault} from './fresh-campaign-route.mjs';
@@ -14,22 +16,22 @@ import {prepareLocalOpening} from './local-opening-care-fixture.mjs';
 import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {marchToFront,completeTestTravel} from './campaign-test-helpers.mjs';
-import {firstAidPlan} from '../game/first-aid.js';
-import {autoBandageBattle} from '../game/auto-bandage.js';
+import {firstAidPlan} from '../packages/game/first-aid.js';
+import {autoBandageBattle} from '../packages/game/auto-bandage.js';
 import {collectRouteItems} from './finite-route-equipment.mjs';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
 import assert from 'node:assert/strict';
-import {dispatchCampaign,isSupplied,rosterFor} from '../game/campaign.js';
-import {contractQuote} from '../game/contracts.js';
+import {dispatchCampaign,isSupplied,rosterFor} from '../packages/game/campaign.js';
+import {contractQuote} from '../packages/game/contracts.js';
 import {prepareNorthernSupport} from './northern-support-fixture.mjs';
-import {enterSector} from '../game/world.js';
-import {actBattle,endTurn,getReachable,stanceCost,firearmShotOptions,teamCanSee,actionCosts,lookPreview} from '../game/tactical.js';
-import {playerKnownBattle} from '../game/player-known-state.js';
-import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
-import {wallMovementBlocked} from '../game/wall-geometry.js';
-import {townIncomeSources} from '../game/town-income.js';
-import {hasWorkshop} from '../game/campaign-headquarters.js';
-import {hiringArrivalOptions} from '../game/hiring-arrivals.js';
+import {enterSector} from '../packages/game/world.js';
+import {actBattle,endTurn,getReachable,stanceCost,firearmShotOptions,teamCanSee,actionCosts,lookPreview} from '../packages/game/tactical.js';
+import {playerKnownBattle} from '../packages/game/player-known-state.js';
+import {sameCell,sameSurface,spacePoint} from '../packages/game/tactical-space.js';
+import {wallMovementBlocked} from '../packages/game/wall-geometry.js';
+import {townIncomeSources} from '../packages/game/town-income.js';
+import {hasWorkshop} from '../packages/game/campaign-headquarters.js';
+import {hiringArrivalOptions} from '../packages/game/hiring-arrivals.js';
 import {freshCoastalRoute} from './fresh-coastal-fixture.mjs';
 import {fight} from './opening-driver.mjs';
 import {hiredAssaultOrder} from './hired-assault-driver.mjs';
@@ -39,7 +41,7 @@ import {recordRouteBattleFailure} from './route-failure-evidence.mjs';
 import {bookRouteHires,finishRouteHireArrivals,assertRouteHireArrived} from './paid-route-hiring.mjs';
 import {restStableRoutePatients} from './stable-route-rest.mjs';
 import {northernReliefDefenseController} from './northern-relief-defense.mjs';
-import {careRules} from '../game/campaign-care-rules.js';
+import {careRules} from '../packages/game/campaign-care-rules.js';
 
 const tactical=(p,a)=>{const battle=a.type==='endTurn'?endTurn(p.battle):actBattle(p.battle,a);assert.equal(battle.lastError,null,battle.lastError);return sync({campaign:p.campaign,battle});};
 const deadIds=s=>Object.entries(s.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
@@ -340,18 +342,16 @@ function freshCreatedNorthernRoute({onCheckpoint,report=()=>{},coastalCheckpoint
  // from Córdoba. Book the rear clinic before the columns start their march.
  const rearPhysician=[146,...rosterFor(s).filter(op=>op.medical>=70).sort((a,b)=>b.medical-a.medical).map(op=>op.id)].find(id=>s.operativeState[id].alive&&!s.operativeState[id].captured&&!s.recruited.includes(id)&&!s.hiringArrivals.some(arrival=>arrival.operativeId===id)&&contractQuote(s,rosterFor(s).find(op=>op.id===id),'week').available);assert.ok(rearPhysician,'the rear clinic needs an available paid physician');
  const rearBooking=bookRouteHires(s,[rearPhysician],{destination:'buenos_aires',report});s=rearBooking.campaign;const rearHire=rearBooking.hires[0],rearArrival=rearHire.arrival;
+ assertRouteHireArrived(s,rearHire);
+ s=order(s,{type:'assignCare',operativeId:rearPhysician,assignment:'doctor'});
  report({event:'rearClinicBooked',id:rearPhysician,cost:rearHire.debited,bookedAt:rearArrival.bookedAt,dueAt:rearArrival.dueAt,travelHours:rearArrival.travelHours,destination:rearArrival.destination});
  report({event:'columnsLoaded',hour:s.hour,squads:s.squads,units:stagingUnits([...s.squads.find(q=>q.id===field).members,...supportIds])});
  for(const id of [field,support]){s=order(s,{type:'selectSquad',id});s=order(s,{type:'attack',sector:'cordoba',queue:true});}
- for(let hour=0;hour<24&&![field,support].every(id=>s.squads.find(q=>q.id===id)?.journey?.status==='ready');hour++)s=order(s,{type:'wait',hours:1});
- assertRouteHireArrived(s,rearHire);
- s=order(s,{type:'assignCare',operativeId:rearPhysician,assignment:'doctor'});
- report({event:'columnsArrived',hour:s.hour,squads:s.squads,units:stagingUnits([...s.squads.find(q=>q.id===field).members,...supportIds])});
- s=order(s,{type:'beginAssault',sector:'cordoba'});assert.equal(s.pendingBattle.squad.length,12);onCheckpoint?.('cordoba-ready',s,notes);
+ s=completeQueuedAssault(s,[field,support],'cordoba');assert.equal(s.pendingBattle.squad.length,12);onCheckpoint?.('cordoba-ready',s,notes);
  for(const sector of ['cordoba']){
   const support=sector==='tucuman'?prepareNorthernSupport(s,sector):null;
   if(support)s=support.campaign;
-  if(!s.pendingBattle){s=finishReloadsBeforeMarch(s);s=marchToFront(s,{type:'attack',sector});s=order(s,{type:'attack',sector});}assert.ok(s.pendingBattle);const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous=s.sectorStates[sector];
+  if(!s.pendingBattle){s=finishReloadsBeforeMarch(s);s=marchToFront(s,{type:'attack',sector});s=fightOnArrival(order(s,{type:'attack',sector}));}assert.ok(s.pendingBattle);const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous=s.sectorStates[sector];
   // Use the shared floor-aware squad controller and record every order for
   // replay. Interruptions retain their actual participants and AP budgets.
   const {battle,orders,actions}=fight(request,previous,{controller:northernClearShotOrder});assert.equal(battle.status,'victory',sector);
@@ -439,13 +439,11 @@ function freshStockNorthernRoute({onCheckpoint,report=()=>{},routeKind='created'
  for(const id of [field,support]){s=order(s,{type:'selectSquad',id});s=finishReloadsBeforeMarch(s);}
  report({event:'columnsLoaded',hour:s.hour,squads:s.squads,units:stagingUnits([...s.squads.find(q=>q.id===field).members,...supportIds])});
  for(const id of [field,support]){s=order(s,{type:'selectSquad',id});s=marchToFront(s,{type:'attack',sector:'cordoba'});s=order(s,{type:'attack',sector:'cordoba',queue:true});}
- for(let hour=0;hour<24&&![field,support].every(id=>s.squads.find(q=>q.id===id)?.journey?.status==='ready');hour++)s=order(s,{type:'wait',hours:1});
- report({event:'columnsArrived',hour:s.hour,squads:s.squads,units:stagingUnits([...s.squads.find(q=>q.id===field).members,...supportIds])});
- s=order(s,{type:'beginAssault',sector:'cordoba'});assert.equal(s.pendingBattle.squad.length,12);
+ s=completeQueuedAssault(s,[field,support],'cordoba');assert.equal(s.pendingBattle.squad.length,12);
  for(const sector of ['cordoba']){
   const support=sector==='tucuman'?prepareNorthernSupport(s,sector):null;
   if(support)s=support.campaign;
-  if(!s.pendingBattle){s=finishReloadsBeforeMarch(s);s=marchToFront(s,{type:'attack',sector});s=order(s,{type:'attack',sector});}assert.ok(s.pendingBattle);const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous=s.sectorStates[sector];
+  if(!s.pendingBattle){s=finishReloadsBeforeMarch(s);s=marchToFront(s,{type:'attack',sector});s=fightOnArrival(order(s,{type:'attack',sector}));}assert.ok(s.pendingBattle);const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous=s.sectorStates[sector];
   // Use the shared floor-aware squad controller and record every order for
   // replay. Interruptions retain their actual participants and AP budgets.
   const {battle,orders,actions}=fight(request,previous,{controller:hiredAssaultOrder});assert.equal(battle.status,'victory',sector);

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {enterSector} from '../game/world.js';
-import {actBattle,getReachable,artilleryContact,teamCanSee} from '../game/tactical.js';
+import {enterSector} from '../packages/game/world.js';
+import {actBattle,getReachable,artilleryContact,teamCanSee} from '../packages/game/tactical.js';
 import {coastalSearchController} from './coastal-search-driver.mjs';
 import {northernCombatOrder} from './northern-route.mjs';
 

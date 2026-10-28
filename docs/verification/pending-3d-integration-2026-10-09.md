@@ -39,7 +39,7 @@ branches would overwrite later changes; only their ancestry needs integration.
 
 ## Human library and private studies
 
-The [review-source archive](../../assets/source/characters-3d/review-variants/2026-10-09-native-library/README.md)
+The [review-source archive](../../content/assets/source/characters-3d/review-variants/2026-10-09-native-library/README.md)
 contains all 1,788 unique source/art/test/receipt blobs from the four human
 checkpoint histories, selected private studies, and available temporary authored
 source/art referenced by their receipts. Its manifest records exact

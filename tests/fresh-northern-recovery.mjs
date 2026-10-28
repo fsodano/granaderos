@@ -1,42 +1,43 @@
+import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import {restoreNorthernRoad,returnNorthernOfficers,prepareRestoredSalta} from './recovery-road-route.mjs';
-import {operativeLocation,operativeInTransit} from '../game/squads.js';
-import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
+import {operativeLocation,operativeInTransit} from '../packages/game/squads.js';
+import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../packages/game/contracts.js';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
-import {autoBandageBattle} from '../game/auto-bandage.js';
+import {autoBandageBattle} from '../packages/game/auto-bandage.js';
 import {fightNorthernSector,northernCombatOrder,northernClinicDefenseOrder} from './northern-route.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
 import {meetRecruits} from './campaign-recruitment-route.mjs';
-import {weaponAmmoType,availableAmmunition} from '../game/ammunition-types.js';
+import {weaponAmmoType,availableAmmunition} from '../packages/game/ammunition-types.js';
 import assert from 'node:assert/strict';
-import {decodeSave,encodeSave} from '../game/save.js';
-import {dispatchCampaign,rosterFor,civicStatus} from '../game/campaign.js';
-import {careAssignmentIssue} from '../game/medical-care.js';
-import {hiringTravelHours} from '../game/hiring-arrivals.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {enterSector} from '../game/world.js';
-import {syncBattleTime} from '../game/time.js';
-import {createBattle,actBattle,endTurn,teamCanSee,hasLineOfSight,firearmShotOptions,actionCosts,getReachable,interruptAvailable,completedTacticalVictory} from '../game/tactical.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
+import {dispatchCampaign,rosterFor,civicStatus} from '../packages/game/campaign.js';
+import {careAssignmentIssue} from '../packages/game/medical-care.js';
+
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {enterSector} from '../packages/game/world.js';
+import {syncBattleTime} from '../packages/game/time.js';
+import {createBattle,actBattle,endTurn,teamCanSee,hasLineOfSight,firearmShotOptions,actionCosts,getReachable,interruptAvailable,completedTacticalVictory} from '../packages/game/tactical.js';
 import {approachNPC} from './approach-npc.mjs';
 import {collectRouteItems} from './finite-route-equipment.mjs';
-import {careRules} from '../game/campaign-care-rules.js';
+import {careRules} from '../packages/game/campaign-care-rules.js';
 import {stageRouteRoofDefenders} from './route-roof-defenders.mjs';
 import {prepareRouteBattery} from './route-battery.mjs';
 import {coastalBatteryController} from './coastal-command-driver.mjs';
 import {fight as fightOpeningBattle} from './opening-driver.mjs';
-import {artilleryProfile} from '../game/artillery-definitions.js';
+import {artilleryProfile} from '../packages/game/artillery-definitions.js';
 import {recoverRecapturedRoad} from './recovery-road-care.mjs';
 import {captureRouteStrategicInput,recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
-import {campaignSectors} from '../game/campaign-definition.js';
-import {cellTravelPlan} from '../game/world-cells.js';
-import {baseMorale} from '../game/morale.js';
+import {campaignSectors} from '../packages/game/campaign-definition.js';
+import {cellTravelPlan} from '../packages/game/world-cells.js';
+import {baseMorale} from '../packages/game/morale.js';
 import {bookRouteHires,assertRouteHireArrived} from './paid-route-hiring.mjs';
-import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
+import {sameCell,sameSurface,spacePoint} from '../packages/game/tactical-space.js';
 import {prepareNorthernHospitalRear} from './northern-hospital-rear-readiness.mjs';
 import {retainNorthernHandoverService,resolveNorthernHandoverEncounter,continueNorthernHandoverTravel} from './northern-handover-route.mjs';
-import {previewStrategicRoute} from '../game/strategic-route.js';
+import {previewStrategicRoute} from '../packages/game/strategic-route.js';
 import {coordinatedHospitalBattery} from './coordinated-hospital-battery.mjs';
 import {prepareNorthernHospitalReserveReadiness} from './northern-hospital-reserve-readiness.mjs';
 import {prepareNorthernHospitalReserveStock} from './northern-hospital-reserve-stock.mjs';
@@ -135,7 +136,7 @@ export function stabilizeNorthernHospitalPatients(start,patients,doctorIds,{inpu
    if(donor===undefined){
     const candidate=rosterFor(c).filter(op=>{
      const record=c.operativeState[op.id],quote=contractQuote(c,op,'day');
-     return civicStatus(c,op.id).available&&!c.recruited.includes(op.id)&&!c.hiringArrivals.some(arrival=>arrival.operativeId===op.id)&&record.alive&&!record.captured&&record.medkits>0&&op.medical>=careRules(c).minimumSkill&&hiringTravelHours(c,op.id)===0&&quote.available&&quote.total<=c.resources.treasury;
+     return civicStatus(c,op.id).available&&!c.recruited.includes(op.id)&&!c.hiringArrivals.some(arrival=>arrival.operativeId===op.id)&&record.alive&&!record.captured&&record.medkits>0&&op.medical>=careRules(c).minimumSkill&&quote.available&&quote.total<=c.resources.treasury;
     }).sort((a,b)=>b.medical-a.medical||contractQuote(c,a,'day').total-contractQuote(c,b,'day').total||a.id-b.id)[0];
     assert.ok(candidate,'critical hospital care needs known finite linen or an actual supplied immediate paid medic');
     const booked=bookRouteHires(c,[candidate.id],{term:'day',destination:at,report});c=booked.campaign;hires.push(...booked.hires);assertRouteHireArrived(c,booked.hires[0]);
@@ -821,8 +822,7 @@ if(lostCordoba){
  // currently selected. Both real approaches join the same assault afterward.
  order({type:'selectSquad',id:southern});order({type:'configureArtillery',types:battery.selections});retainFor(36);
  const groups=[...southernColumns,...northern];for(const id of groups){order({type:'selectSquad',id});order({type:'attack',sector:'cordoba',queue:true});}
- for(let h=0;h<36&&!groups.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');h++)order({type:'wait',hours:1});
- assert.ok(groups.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready'),'both actual recapture approaches must finish');order({type:'beginAssault',sector:'cordoba'});
+ c=completeQueuedAssault(c,groups,'cordoba',{execute:request=>{order(request);return c;}});
  assert.deepEqual(c.pendingBattle.squad.map(u=>u.id).sort((a,b)=>a-b),[...field,...guard].sort((a,b)=>a-b));
  report({event:'northernReturnRecaptureReady',campaign:structuredClone(c),occupations});c=settleNorthernReturnRecapture(c,report);
  for(const id of occupations)assert.equal(c.enemyGroups.find(group=>group.id===id).status,'defeated','the actual road occupation must be defeated, not skipped');

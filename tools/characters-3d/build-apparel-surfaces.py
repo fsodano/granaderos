@@ -8,6 +8,7 @@ Normal maps, UVs, source maps/materials and preceding receipts remain exact.
 content-addressed destinations are checked before installation starts.
 """
 from pathlib import Path
+from source_provenance import published_source_reference, published_source_sha256, published_source_digests, source_path
 import argparse, copy, hashlib, importlib.util, io, json, os, struct, subprocess, tempfile
 from PIL import Image
 
@@ -83,13 +84,13 @@ def restore_body(doc, binary, metadata):
 
 
 def recipe_for(root):
-    path = root / 'assets/source/characters-3d/authoring/apparel_surfaces.py'
+    path = root / 'content/assets/source/characters-3d/authoring/apparel_surfaces.py'
     source = module('apparel_surface_recipe', path)
-    dependencies = {name: sha((root / 'assets/source/characters-3d/authoring' / name).read_bytes())
+    dependencies = {name: sha((root / 'content/assets/source/characters-3d/authoring' / name).read_bytes())
                     for name in ('cloth_depth.py', 'family_cloth_depth.py')}
     return source, {'method': 'broad-apparel-pigment-boot-wear-and-matte-equipment-v1',
-                    'source': str(path.relative_to(root)), 'sourceSha256': sha(path.read_bytes()),
-                    'installerSha256': sha((root / 'tools/characters-3d/build-apparel-surfaces.py').read_bytes()),
+                    'source': published_source_reference(str(path.relative_to(root))), 'sourceSha256': published_source_sha256(root, str(path.relative_to(root))),
+                    'installerSha256': published_source_sha256(root, 'tools/characters-3d/build-apparel-surfaces.py'),
                     'foldSourceSha256': dependencies, 'clothFactorBounds': list(source.CLOTH_FACTOR_BOUNDS),
                     'bootFactorBounds': list(source.BOOT_FACTOR_BOUNDS), 'bootRoughnessBounds': list(source.BOOT_ROUGHNESS_BOUNDS),
                     'metalRoughness': source.METAL_ROUGHNESS,
@@ -239,18 +240,19 @@ def build_candidate(root, assets, record, doc, binary, source, recipe, pilot, fa
 
 def prepare(root, presets=None, completed_only=False, include_equipment=True, allow_stale_donor=False):
     source, recipe = recipe_for(root)
-    pilot = module('surface_pilot_recipe', root / 'assets/source/characters-3d/authoring/cloth_depth.py')
-    family = module('surface_family_recipe', root / 'assets/source/characters-3d/authoring/family_cloth_depth.py')
+    pilot = module('surface_pilot_recipe', root / 'content/assets/source/characters-3d/authoring/cloth_depth.py')
+    family = module('surface_family_recipe', root / 'content/assets/source/characters-3d/authoring/family_cloth_depth.py')
     merge = module('surface_glb', root / 'tools/characters-3d/merge-animation-bank.py')
     presets = list(source.PRESETS if presets is None else presets)
     assert len(presets) == len(set(presets)) and set(presets) <= set(source.PRESETS)
-    assets = root / 'web/public/models/characters'; mp = assets / 'manifest.json'
+    assets = root / 'apps/web/public/models/characters'; mp = assets / 'manifest.json'
     manifest_bytes = mp.read_bytes(); manifest = json.loads(manifest_bytes); old_manifest = copy.deepcopy(manifest)
     pins, pending, textures, rows = {}, [], {}, []
-    recipe_path = root / recipe['source']; pins[recipe_path] = recipe['sourceSha256']
-    pins[root / 'tools/characters-3d/build-apparel-surfaces.py'] = recipe['installerSha256']
+    recipe_path = source_path(root, recipe['source']); pins[recipe_path] = sha(recipe_path.read_bytes())
+    installer_path = root / 'tools/characters-3d/build-apparel-surfaces.py'
+    pins[installer_path] = sha(installer_path.read_bytes())
     for name, pin in recipe['foldSourceSha256'].items():
-        pins[root / 'assets/source/characters-3d/authoring' / name] = pin
+        pins[root / 'content/assets/source/characters-3d/authoring' / name] = pin
 
     def read_image(uri):
         assert uri.startswith('textures/') and '..' not in Path(uri).parts, 'Unexpected apparel image URI'
@@ -316,7 +318,7 @@ def verify_completed(root, presets=None, allow_stale_donor=False):
 
 def verify_equipment(root):
     root = Path(root).resolve()
-    record = json.loads((root / 'web/public/models/characters/manifest.json').read_bytes())['equipment']
+    record = json.loads((root / 'apps/web/public/models/characters/manifest.json').read_bytes())['equipment']
     if FIELD not in record: return None
     return prepare(root, [], completed_only=True, include_equipment=True)
 

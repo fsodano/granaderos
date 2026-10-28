@@ -1,10 +1,10 @@
 // Merge the complete family library into the existing staging manifest.
 import fs from 'node:fs/promises';
 import {createHash} from 'node:crypto';
-import sharp from '../web/node_modules/sharp/lib/index.js';
-import {SPRITE_APPEARANCES} from '../game/sprite-appearances.js';
-import {FAMILY_SPRITE_SEQUENCES} from '../game/sprite-family-sequences.js';
-const root='assets/previews/illustrated-sprites',destination=`${root}/packed`;
+import sharp from '../apps/web/node_modules/sharp/lib/index.js';
+import {SPRITE_APPEARANCES} from '../packages/game/sprite-appearances.js';
+import {FAMILY_SPRITE_SEQUENCES} from '../packages/game/sprite-family-sequences.js';
+const root='content/assets/previews/illustrated-sprites',destination=`${root}/packed`;
 const manifest=JSON.parse(await fs.readFile(`${destination}/manifest.json`));
 const additions=[];
 for(const appearance of Object.keys(SPRITE_APPEARANCES))for(const sequence of [...FAMILY_SPRITE_SEQUENCES,'dead-idle']){

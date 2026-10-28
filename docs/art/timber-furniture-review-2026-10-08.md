@@ -59,7 +59,7 @@ input, engine gitlink, dependency file and production source identity
 npm 11.6.2 and Python 3.9.6. A read-only proof uses those same pinned executables;
 the default root shell has Node 25.9.0 and npm 11.12.1. No gate was repeated for
 that shell difference. Private and root Git revision metadata differ.
-Root docs, links and staged diff checks pass separately. The [review receipt](../../artifacts/timber-furniture/review-receipt.json)
+Root docs, links and staged diff checks pass separately. The [review receipt](../evidence/artifacts/timber-furniture/review-receipt.json)
 links the geometry, counters, source proof and final gate results.
 
 ```sh

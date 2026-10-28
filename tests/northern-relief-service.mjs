@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
-import {hireArrivalOrder,hireArrivalDueSeconds,pendingHire} from '../game/hiring-arrivals.js';
-import {payMoraleRewardEligible} from '../game/morale.js';
-import {operativeLocation,operativeInTransit,canReassignOperative} from '../game/squads.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../packages/game/contracts.js';
+import {hireArrivalDueSeconds,pendingHire} from '../packages/game/hiring-arrivals.js';
+import {immediateRecruitmentExpectation} from './immediate-recruitment-fixture.mjs';
+import {payMoraleRewardEligible} from '../packages/game/morale.js';
+import {operativeLocation,operativeInTransit,canReassignOperative} from '../packages/game/squads.js';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
 
 const seconds=c=>c.hour*3600+(c.secondOfHour??0),sector='tucuman';
@@ -53,25 +54,21 @@ export function retainNorthernReliefSupport(start,{report=()=>{}}={}){
  }catch(error){throw preserveFailure(error,c,receipt);}
 }
 
-// The same public booking may arrive now or have an authored journey. Keep
-// its actual receipt and exact service clock instead of assuming a delay.
+// Recruitment grants control and starts paid service at the accepted game instant.
 export function hireNorthernReliefReplacement(start,id,{report=()=>{}}={}){
  let c=start;const receipt={id};
  try{
  ready(c);
  const op=rosterFor(start).find(row=>row.id===id);assert.ok(op);assert.ok(!start.recruited.includes(id));assert.equal(pendingHire(start,id),undefined);
- const quote=contractQuote(start,op,'week'),arrival=hireArrivalOrder(start,op,'week',quote,sector),cash=start.resources.treasury,now=seconds(start);
+ const quote=contractQuote(start,op,'week'),arrival=immediateRecruitmentExpectation(start,op,'week',quote,sector),cash=start.resources.treasury,now=seconds(start);
  assert.equal(quote.available,true,quote.reason);assert.ok(quote.price<=routeHiringCeiling(start,200));
  const action={type:'recruitCivic',id,term:'week',destination:sector};Object.assign(receipt,{action,quote,arrival,treasuryBefore:cash});
  c=dispatchCampaign(c,action);ready(c);assert.equal(seconds(c),now);assert.equal(c.resources.treasury,cash-quote.total);
- if(arrival.travelHours===0){
+
   const contract=c.contracts[id],r=c.operativeState[id];assert.equal(c.recruited.filter(value=>value===id).length,1);assert.equal(operativeLocation(c,id),sector);assert.equal(operativeInTransit(c,id),false);
   assert.equal(r.alive,true);assert.equal(r.captured,false);assert.equal(r.hp,r.maxHp);assert.equal(r.bleeding,0);assert.equal(contract.started*3600+(contract.startedSecond??0),now);
   assert.equal(contractExpiresSeconds(contract),hireArrivalDueSeconds(arrival)+quote.hours*3600);assert.equal(contract.paid,quote.price);assert.equal(pendingHire(c,id),undefined);
- }else{
-  const actual=pendingHire(c,id);assert.ok(actual);assert.equal(c.recruited.includes(id),false);assert.equal(c.contracts[id],undefined);
-  for(const key of ['operativeId','destination','bookedAt','bookedSecond','departedAt','departedSecond','dueAt','dueSecond','travelHours','term','priceScale','paid','permanent','serviceHours'])assert.equal(actual[key],arrival[key]);
- }
+
  receipt.treasury=c.resources.treasury;report({event:'paidNorthernReplacement',id,quote,arrival:structuredClone(arrival)});return c;
  }catch(error){throw preserveFailure(error,c,receipt);}
 }

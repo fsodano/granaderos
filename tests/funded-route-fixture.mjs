@@ -1,5 +1,5 @@
-import {hiringPriceMultiplier} from '../game/economy-balance.js';
-import {defaultContentPackage} from '../game/content-package.js';
+import {hiringPriceMultiplier} from '../packages/game/economy-balance.js';
+import {defaultContentPackage} from '../packages/game/content-package.js';
 // Long campaign routes verify combat, custody, paid recovery and history. Their
 // declared army fund and midnight clock cover staged support squads at the
 // current hiring prices and preserve the route's authored timetable.

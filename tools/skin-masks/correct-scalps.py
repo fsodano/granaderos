@@ -6,8 +6,8 @@ from pathlib import Path
 from PIL import Image
 import numpy as np,json
 ROOT=Path(__file__).resolve().parents[2]
-base=ROOT/'web/public/art/illustrated';out=ROOT/'web/public/art/skin'
-manifest=json.loads((ROOT/'assets/previews/illustrated-sprites/packed/manifest.json').read_text())
+base=ROOT/'apps/web/public/art/illustrated';out=ROOT/'apps/web/public/art/skin'
+manifest=json.loads((ROOT/'content/assets/previews/illustrated-sprites/packed/manifest.json').read_text())
 prone=[(.5,.12),(.80,.18),(.84,.28),(.83,.53),(.5,.66),(.17,.53),(.16,.28),(.20,.18)]
 fallen=[(.5,.14),(.84,.20),(.84,.45),(.83,.74),(.5,.78),(.17,.74),(.16,.45),(.16,.20)]
 fall={1:[(.5,.12),(.2,.15),(.2,.17),(.18,.20),(.5,.12)],2:[(.5,.12),(.19,.30),(.17,.33),(.18,.27),(.5,.10)],3:[(.5,.77),(.25,.68),(.20,.38),(.20,.23),(.5,.16)]}

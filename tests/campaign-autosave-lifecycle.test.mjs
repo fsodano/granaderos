@@ -1,13 +1,13 @@
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {JSDOM} from '../web/node_modules/jsdom/lib/api.js';
-import {createElement as h,StrictMode,act} from '../web/node_modules/react/index.js';
-import {createRoot} from '../web/node_modules/react-dom/client.js';
-import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
-import {prepareCampaignBattle} from '../game/battle-handoff.js';
-import {encodeSave,decodeSave} from '../game/save.js';
-const {useCampaignAutosave}=await import('../web/lib/useCampaignAutosave.ts');
+import {JSDOM} from '../apps/web/node_modules/jsdom/lib/api.js';
+import {createElement as h,StrictMode,act} from '../apps/web/node_modules/react/index.js';
+import {createRoot} from '../apps/web/node_modules/react-dom/client.js';
+import {initialCampaign,dispatchCampaign} from '../packages/game/campaign.js';
+import {prepareCampaignBattle} from '../packages/game/battle-handoff.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
+const {useCampaignAutosave}=await import('../apps/web/lib/useCampaignAutosave.ts');
 
 function deployed(seed){
  let campaign=dispatchCampaign(initialCampaign(seed),{type:'recruitCivic',id:110,term:'week'});
@@ -20,6 +20,7 @@ function deployed(seed){
 async function mountAutosave(t,snapshot,{strict=false,workerAvailable=true}={}){
  const dom=new JSDOM('<!doctype html><div id="root"></div>',{url:'https://granaderos.test',pretendToBeVisual:true});
  const workers=[],jobs=[],writes=[],saved=[],errors=[],listeners={pagehide:new Set(),visibilitychange:new Set()};
+ Object.defineProperty(dom.window.navigator,'locks',{value:{request:(_name,_options,callback)=>Promise.resolve(callback({name:_name}))}});
  class Worker{
   constructor(){if(!workerAvailable)throw Error('workers unavailable');this.terminations=0;workers.push(this);}
   postMessage(job){jobs.push({worker:this,...structuredClone(job)});}
@@ -41,7 +42,7 @@ async function mountAutosave(t,snapshot,{strict=false,workerAvailable=true}={}){
  t.after(async()=>{try{await unmount();}finally{dom.window.close();for(const [key,descriptor] of previous){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}}});
  await render(snapshot);
  return {workers,jobs,writes,saved,errors,listeners,render,unmount,
-  async reply(job){await act(async()=>job.worker.onmessage({data:{id:job.id,text:encodeSave(job.campaign,job.battle)}}));},
+  async reply(job){await act(async()=>job.worker.onmessage({data:{id:job.id,sessionId:job.sessionId,revision:job.revision,requestId:job.requestId,text:encodeSave(job.campaign,job.battle)}}));},
   async fail(job,event='onmessageerror'){await act(async()=>job.worker[event]());},
   async pagehide(){await act(async()=>dom.window.dispatchEvent(new dom.window.Event('pagehide')));},
   async visibility(hidden){Object.defineProperty(dom.window.document,'hidden',{configurable:true,value:hidden});await act(async()=>dom.window.document.dispatchEvent(new dom.window.Event('visibilitychange')));},

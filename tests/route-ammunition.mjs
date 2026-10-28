@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {join} from 'node:path';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {carriedAmmunition,ammunitionOrderQuote,AMMUNITION_ORDER_LIMIT} from '../game/campaign-ammunition.js';
-import {ammoTypeFor,ammoCount} from '../game/ammo-types.js';
-import {AMMUNITION_FAMILIES} from '../game/ammunition-families.js';
-import {sectorInventoryModel,sectorInventorySites} from '../game/sector-inventory.js';
-import {operativeLocation,operativeInTransit} from '../game/squads.js';
-import {applyItemQuantity} from '../game/tactical-inventory.js';
-import {finiteCachesFor} from '../game/campaign-physical.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {carriedAmmunition,ammunitionOrderQuote,AMMUNITION_ORDER_LIMIT} from '../packages/game/campaign-ammunition.js';
+import {ammoTypeFor,ammoCount} from '../packages/game/ammo-types.js';
+import {AMMUNITION_FAMILIES} from '../packages/game/ammunition-families.js';
+import {sectorInventoryModel,sectorInventorySites} from '../packages/game/sector-inventory.js';
+import {operativeLocation,operativeInTransit} from '../packages/game/squads.js';
+import {applyItemQuantity} from '../packages/game/tactical-inventory.js';
+import {finiteCachesFor} from '../packages/game/campaign-physical.js';
 import {discoverRouteCache} from './finite-route-equipment.mjs';
 
 let diagnosticSequence=0;

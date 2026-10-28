@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {decodeSave,encodeSave} from '../game/save.js';
-import {operativeLocation} from '../game/squads.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
+import {operativeLocation} from '../packages/game/squads.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
 
 // Complete missing worn protection from the person's real pockets or known
 // local loot. Each ordinary pickup/equip keeps the complete physical record.

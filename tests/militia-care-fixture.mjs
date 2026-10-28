@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {defaultContentPackage} from '../game/content-package.js';
-import {initialCampaign} from '../game/campaign.js';
-import {createBattle,actBattle} from '../game/tactical.js';
+import {defaultContentPackage} from '../packages/game/content-package.js';
+import {initialCampaign} from '../packages/game/campaign.js';
+import {createBattle,actBattle} from '../packages/game/tactical.js';
 import {order,saved,sync,leave} from './local-contract-fixture.mjs';
-import {COMBAT_BALANCE} from '../game/combat-balance.js';
+import {COMBAT_BALANCE} from '../packages/game/combat-balance.js';
 import {withStoredGear,withCarriedAmmo} from './commerce-gear-fixture.mjs';
 export const MILITIA_DOCTOR=112,SECOND_MILITIA_DOCTOR=137;
 export function woundedGarrison({twoDoctors=false,casualty=false,careRules,injuryDamage=44,passage=false,headquarters='retiro',medicalKits=2,configure=()=>{}}={}){

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
 
 // Empty an actual local former-carrier return before rehiring. Public
 // collection and drop retain every stack; no item is issued a second time.

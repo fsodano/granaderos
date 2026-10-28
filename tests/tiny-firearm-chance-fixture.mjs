@@ -1,6 +1,6 @@
-import {createBattle} from '../game/tactical.js';
-import {compileWeaponDefinition} from '../game/weapon-definition.js';
-import {defaultContentPackage} from '../game/content-package.js';
+import {createBattle} from '../packages/game/tactical.js';
+import {compileWeaponDefinition} from '../packages/game/weapon-definition.js';
+import {defaultContentPackage} from '../packages/game/content-package.js';
 
 // Explicit authored subsystem field. Six real head intersections leave ten
 // physical force and less than one percent conditional reach to the target.

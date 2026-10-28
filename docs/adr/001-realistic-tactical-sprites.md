@@ -125,10 +125,10 @@ incorrect anchors, and changed idle pixels. Camera tests cover 375px, 768px, and
 
 Review files are generated with the actual React sprite and scene components:
 
-- [Previous sprites](../../assets/previews/tactical-pixel-art/before.png).
-- [Current direction sheet](../../assets/previews/tactical-pixel-art/directions.png).
-- [San Lorenzo outdoor scene](../../assets/previews/tactical-pixel-art/san_lorenzo.png).
-- [Yatasto furnished interior](../../assets/previews/tactical-pixel-art/yatasto.png).
+- [Previous sprites](../../content/assets/previews/tactical-pixel-art/before.png).
+- [Current direction sheet](../../content/assets/previews/tactical-pixel-art/directions.png).
+- [San Lorenzo outdoor scene](../../content/assets/previews/tactical-pixel-art/san_lorenzo.png).
+- [Yatasto furnished interior](../../content/assets/previews/tactical-pixel-art/yatasto.png).
 - Native animation previews: `assets/web/pixel/*-preview.webp`.
 
 These are offline renders, not browser screenshots. Inspect movement, input,

@@ -2,8 +2,8 @@ import assert from 'node:assert/strict';
 import {mkdirSync,mkdtempSync,writeFileSync} from 'node:fs';
 import {join,basename} from 'node:path';
 import {createHash} from 'node:crypto';
-import {syncBattleTime} from '../game/time.js';
-import {encodeSave,decodeSave} from '../game/save.js';
+import {syncBattleTime} from '../packages/game/time.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
 
 let sequence=0;
 

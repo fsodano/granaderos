@@ -1,8 +1,8 @@
 import fs from 'node:fs/promises';
-import {SPRITE_APPEARANCES} from '../game/sprite-appearances.js';
-import {FAMILY_SPRITE_SEQUENCES} from '../game/sprite-family-sequences.js';
-const root='assets/previews/illustrated-sprites/family-actions';
-const base=JSON.parse(await fs.readFile('assets/previews/illustrated-sprites/packed/manifest.json'));
+import {SPRITE_APPEARANCES} from '../packages/game/sprite-appearances.js';
+import {FAMILY_SPRITE_SEQUENCES} from '../packages/game/sprite-family-sequences.js';
+const root='content/assets/previews/illustrated-sprites/family-actions';
+const base=JSON.parse(await fs.readFile('content/assets/previews/illustrated-sprites/packed/manifest.json'));
 const entries=[];
 for(const appearance of Object.keys(SPRITE_APPEARANCES))for(const sequence of [...FAMILY_SPRITE_SEQUENCES,'dead-idle']){
  const name=`${appearance}-${sequence}`;let entry=base.atlases[name],url=`../packed/${entry?.file}`,staged=false;

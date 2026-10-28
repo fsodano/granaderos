@@ -1,25 +1,26 @@
+import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
 import {prepareRouteBattery} from './route-battery.mjs';
 import {ensureRouteTownIncome,meetLocalIncomeRepresentative} from './route-town-income.mjs';
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {collectRouteItems,repairRouteFirearms} from './finite-route-equipment.mjs';
 import {supplyRouteDressings} from './route-dressings.mjs';
 import {recoverVisibleRouteDressings} from './route-visible-medical-remains.mjs';
-import {doctorRate} from '../game/medical-care.js';
+import {doctorRate} from '../packages/game/medical-care.js';
 import {prepareSantaFePaidColumn} from './santa-fe-paid-column.mjs';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
 import {prepareFinalAssault,restoreFinalMorale} from './final-campaign-route.mjs';
-import {contractQuote} from '../game/contracts.js';
-import {payMoraleRewardEligible} from '../game/morale.js';
+import {contractQuote} from '../packages/game/contracts.js';
+import {payMoraleRewardEligible} from '../packages/game/morale.js';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
-import {autoBandageBattle} from '../game/auto-bandage.js';
-import {enterSector} from '../game/world.js';
-import {syncBattleTime} from '../game/time.js';
+import {autoBandageBattle} from '../packages/game/auto-bandage.js';
+import {enterSector} from '../packages/game/world.js';
+import {syncBattleTime} from '../packages/game/time.js';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {primaryAmmoTypeFor} from '../game/ammo-types.js';
-import {decodeSave,encodeSave} from '../game/save.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {primaryAmmoTypeFor} from '../packages/game/ammo-types.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
 import {meetRecruits} from './campaign-recruitment-route.mjs';
 
 // Collection preserves the real sector, person, finite record and care roles.
@@ -160,10 +161,9 @@ if(target==='buenos_aires'){
 if(prepareAffordableSupport)report({event:'earlyPaidReadiness',hour:c.hour,second:c.secondOfHour,treasury:c.resources.treasury,field:field.map(id=>({id,morale:c.operativeState[id].morale,energy:c.operativeState[id].energy,fatigue:c.operativeState[id].fatigue,quote:contractQuote(c,rosterFor(c).find(op=>op.id===id),'day').price})),support:recruits});
 order({type:'configureArtillery',types:finiteBattery.selections});
 if(target==='ensenada')for(const id of [main,support]){order({type:'selectSquad',id});order({type:'travel',sector:'buenos_aires',mode:'posta'});}
+c=stageAssaultDeparture(c,[main,support].map(id=>({id,mode:'posta'})),target,{earliestHour:6,latestHour:6,execute:request=>{order(request);return c;}});
 for(const id of [main,support]){order({type:'selectSquad',id});order({type:'attack',sector:target,queue:true,mode:'posta'});}
-for(let h=0;h<24&&![main,support].every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');h++)order({type:'wait',hours:1});
-for(let h=0;h<24&&c.hour%24!==6;h++){for(const id of recruits){const contract=c.contracts[id];if(contract?.expiresAt<=c.hour+1)order({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});}order({type:'wait',hours:1});}
-order({type:'beginAssault',sector:target});assert.equal(c.pendingBattle.squad.length,field.length);const battle=enterSector(c.pendingBattle,c.sectorStates[target]);assert.deepEqual(decodeSave(encodeSave(c,battle)),{campaign:c,battle});
+c=completeQueuedAssault(c,[main,support],target,{execute:request=>{order(request);return c;}});assert.equal(c.pendingBattle.squad.length,field.length);const battle=enterSector(c.pendingBattle,c.sectorStates[target]);assert.deepEqual(decodeSave(encodeSave(c,battle)),{campaign:c,battle});
  return c;
 }
 

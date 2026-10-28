@@ -1,0 +1,29 @@
+'use client';
+import {prisonerStatus} from '../../../packages/game/prisoner-custody.js';
+import {useState} from 'react';
+import {rosterFor} from '../../../packages/game/campaign.js';
+import {localDefenderIds,retreatDestinations} from '../../../packages/game/enemy-groups.js';
+import {enemyIntelligenceReports,INTELLIGENCE_LIFETIME} from '../../../packages/game/enemy-intelligence.js';
+import './enemy-encounters.css';
+import {campaignSectors} from '../../../packages/game/campaign-definition.js';
+import {campaignFactionName} from '../lib/campaign-labels';
+
+const duration=(hours:number)=>{const seconds=Math.round(Math.max(0,hours)*3600),h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),s=seconds%60;return [h?`${h} h`:'',m?`${m} min`:'',s?`${s} s`:''].filter(Boolean).join(' ')||'0 h';};
+const captureClock=(hour:number,second:number)=>`${hour%24}:${String(Math.floor(second/60)).padStart(2,'0')}${second%60?`:${String(second%60).padStart(2,'0')}`:''}`;
+export default function EnemyEncounters({state:s,dispatch}:{state:any;dispatch:(a:any)=>void}){
+ const enemyName=campaignFactionName(s,'royalist');
+ const place=(id:string)=>campaignSectors(s).find(sector=>sector.id===id)?.name??id;
+ const [destination,setDestination]=useState('');
+ const reports=enemyIntelligenceReports(s);
+ const encounter=s.pendingEncounter,group=(s.enemyGroups??[]).find((g:any)=>g.id===encounter?.groupId),exits=group?retreatDestinations(s,group.target):[],target=exits.includes(destination)?destination:exits[0]??'';
+ const contactStrength=reports.find((r:any)=>r.id===group?.id)?.strength;
+ const captives=rosterFor(s).filter(o=>s.operativeState[o.id]?.captured),report=s.encounterHistory?.[0];
+ return <section className="enemy-encounters" aria-label="Movimientos y encuentros enemigos"><h2>Partes del frente</h2>
+ {group&&<div className="encounter-decision" role="region" aria-label="Respuesta al encuentro"><h3>Contacto en {place(group.target)}</h3><p>{contactStrength==null?'Fuerza enemiga por confirmar':`${contactStrength} combatientes observados · ${enemyName}`} · {localDefenderIds(s,group.target).length} combatientes y {s.sectors[group.target].militia.reduce((a:number,b:number)=>a+b,0)} milicianos presentes.</p><p>El reloj está detenido. La resolución automática usa sus armas, municiones y salud. Los milicianos permanecen para defender el sector si los combatientes se retiran.</p><div className="encounter-actions"><button className="gold-button" onClick={()=>dispatch({type:'respondToEncounter',groupId:group.id,choice:'tactical'})}>Defensa táctica</button><button className="line-button" onClick={()=>dispatch({type:'respondToEncounter',groupId:group.id,choice:'auto'})}>Resolver automáticamente</button></div>{exits.length>0&&localDefenderIds(s,group.target).length>0?<div className="encounter-retreat"><label>Destino de retirada<select value={target} onChange={e=>setDestination(e.target.value)}>{exits.map((id:string)=><option key={id} value={id}>{place(id)}</option>)}</select></label><button className="line-button" onClick={()=>dispatch({type:'respondToEncounter',groupId:group.id,choice:'retreat',destination:target})}>Retirar combatientes</button></div>:<p>Sin ruta de retirada para los combatientes. Si sobreviven a una derrota sin salida, quedarán prisioneros.</p>}</div>}
+ <p>Los combatientes despiertos y aptos observan su sector; las milicias también informan sobre sectores vecinos. Los partes se conservan hasta {INTELLIGENCE_LIFETIME} horas. Una guarnición enemiga puede ocultar su número.</p>
+ {reports.length===0?<p>Sin partes recientes. No se conocen las rutas ni los horarios del enemigo.</p>:<ul className="enemy-movements">{reports.map((r:any)=><li key={r.id}><strong>{r.location}</strong><span>{r.strength===null?`Presencia de ${enemyName}; cantidad sin confirmar`:`${r.strength} combatientes observados · ${enemyName}`}</span><span>{r.stale?`Último avistamiento hace ${r.ageHours} h; posición actual sin confirmar`:r.status==='moving'?'Columna observada en marcha':'Presencia confirmada'}</span><span>{r.source==='militia'?'Parte de milicias':r.source==='scouts'?'Exploración local':r.source==='occupation'?'Aviso de ocupación':'Contacto'} · Día {1+Math.floor(r.observedAt/24)}, {r.observedAt%24}:00</span></li>)}</ul>}
+
+ {captives.length>0&&<div className="encounter-prisoners"><h3>Prisioneros</h3><p>Liberá el sector para recuperar a los combatientes. Sus contratos quedan suspendidos durante el cautiverio. La atención en cautiverio consume vendas incautadas.</p><ul>{captives.map(o=>{const p=prisonerStatus(s,o)!;return <li key={o.id}><strong>{p.name}</strong> · {place(p.sector)} · {p.hp}/{p.maxHp} salud<p>Prisionero desde el día {1+Math.floor(p.capturedAt/24)}, {captureClock(p.capturedAt,p.capturedAtSecond)} · {duration(p.heldHours)} en cautiverio.</p><p>{p.serviceHours===undefined?'Servicio por confirmar.':p.serviceHours===null?'Servicio sin vencimiento.':p.serviceHours===0?'El contrato había terminado. Requiere una nueva contratación tras la liberación.':`Contrato suspendido: quedan ${duration(p.serviceHours)} de servicio al ser liberado.`}</p><p>El equipo capturado no está disponible.{p.needsCare?` ${p.critical?'Estado crítico. ':''}Necesita atención médica.`:''}</p>{p.careDressings>0&&<p>Atención en cautiverio: {p.careDressings} venda(s) usadas. Última atención: día {1+Math.floor(p.lastCareHour!/24)}, {p.lastCareHour!%24}:00.</p>}</li>;})}</ul></div>}
+ {report&&<p className="encounter-report">Último parte · Día {Math.floor(report.hour/24)+1}: {report.text}</p>}
+ </section>;
+}

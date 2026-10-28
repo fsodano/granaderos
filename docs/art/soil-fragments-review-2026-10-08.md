@@ -51,7 +51,7 @@ Static export verifies 1,377 files and 1,045 asset references. The final quick
 gate passes all 6,788 checks in 889 files, with no failures or skipped checks
 (885.5 seconds). The docs audit, eight local record links and staged diff check
 also pass. Local metrics and the geometry receipt are in
-[soil-fragments evidence](../../artifacts/soil-fragments/review-receipt.json).
+[soil-fragments evidence](../evidence/artifacts/soil-fragments/review-receipt.json).
 
 ```sh
 node --test tests/three-soil-fragments.test.mjs tests/three-terrain-boundaries.test.mjs tests/three-sector-world.test.mjs tests/renderer-sandbox-fixtures.test.mjs

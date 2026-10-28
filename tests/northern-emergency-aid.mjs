@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
-import {actBattle,getReachable,medicalUsePreview} from '../game/tactical.js';
-import {autoBandageBattle,autoBandageStatus} from '../game/auto-bandage.js';
-import {criticalFirstAidNeeded} from '../game/first-aid.js';
-import {medicalPatientAvailable} from '../game/medical-patient.js';
+import {actBattle,getReachable,medicalUsePreview} from '../packages/game/tactical.js';
+import {autoBandageBattle,autoBandageStatus} from '../packages/game/auto-bandage.js';
+import {criticalFirstAidNeeded} from '../packages/game/first-aid.js';
+import {medicalPatientAvailable} from '../packages/game/medical-patient.js';
 import {publicRouteView} from './route-infantry-progress.mjs';
 
 // A critical patient's bleeding clock runs during every exploration step.

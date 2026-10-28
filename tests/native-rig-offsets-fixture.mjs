@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {Vector3} from '../web/node_modules/three/build/three.module.js';
+import {Vector3} from '../apps/web/node_modules/three/build/three.module.js';
 
 const interpolants=new WeakMap();
 export function nativeRigOffsets(model){

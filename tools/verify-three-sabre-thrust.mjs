@@ -3,19 +3,19 @@ import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
-import {selectActorClipVariant} from '../game/actor-action-contract.js';
+import {selectActorClipVariant} from '../packages/game/actor-action-contract.js';
 const {chromium}=await import(process.env.PLAYWRIGHT_MODULE||'playwright');
 const url=process.env.GRANADEROS_REVIEW_URL||'http://127.0.0.1:3151/renderer-sandbox';
-const output=resolve(process.env.GRANADEROS_REVIEW_OUTPUT||'artifacts/three-paid-sabre-thrust-review');
+const output=resolve(process.env.GRANADEROS_REVIEW_OUTPUT||'.output/artifacts/three-paid-sabre-thrust-review');
 const sourceRoot=resolve(process.env.GRANADEROS_SOURCE_ROOT||process.cwd());
 const expected={
- 'web/app/Battlefield.tsx':'e67d67e31c7ef6245dd34fe759ea9bf29e0a046b3536b6c7e8bb208f90fe54ea',
- 'web/lib/three/melee-contact-fit.ts':'fe9ff8aee5557219da3ae2bf65d1663fc33615839fe63ca6c4c3b4fd90ca65e5',
- 'web/lib/three/actor-runtime.ts':'61274ee9ff78f1f0dd76ee5732e089466d81f7fe56553df39c484c5b59d83f1a',
- 'web/lib/three/presentation.ts':'c78f1984a7684717b8b8a17255a1b27daa39a1f4d1c4b75343f603287b0cf44d',
- 'web/lib/three/scene-actors.ts':'5a9106b793a55c0a2bb5bb9c24b920496560ee4d91f97b8c62a84ea8df129b83',
+ 'apps/web/app/Battlefield.tsx':'e67d67e31c7ef6245dd34fe759ea9bf29e0a046b3536b6c7e8bb208f90fe54ea',
+ 'apps/web/lib/three/melee-contact-fit.ts':'fe9ff8aee5557219da3ae2bf65d1663fc33615839fe63ca6c4c3b4fd90ca65e5',
+ 'apps/web/lib/three/actor-runtime.ts':'61274ee9ff78f1f0dd76ee5732e089466d81f7fe56553df39c484c5b59d83f1a',
+ 'apps/web/lib/three/presentation.ts':'c78f1984a7684717b8b8a17255a1b27daa39a1f4d1c4b75343f603287b0cf44d',
+ 'apps/web/lib/three/scene-actors.ts':'5a9106b793a55c0a2bb5bb9c24b920496560ee4d91f97b8c62a84ea8df129b83',
 };
-const sourceFiles=[...Object.keys(expected),'web/public/models/characters/manifest.json','web/public/models/characters/equipment.glb','web/public/models/characters/male-animations.glb','web/public/models/characters/female-animations.glb','web/public/models/characters/granadero-lod0.glb','web/public/models/characters/woman-scout-lod0.glb','web/public/models/characters/royalist-lod0.glb'];
+const sourceFiles=[...Object.keys(expected),'apps/web/public/models/characters/manifest.json','apps/web/public/models/characters/equipment.glb','apps/web/public/models/characters/male-animations.glb','apps/web/public/models/characters/female-animations.glb','apps/web/public/models/characters/granadero-lod0.glb','apps/web/public/models/characters/woman-scout-lod0.glb','apps/web/public/models/characters/royalist-lod0.glb'];
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 async function sourceReceipt(){const hashes={};for(const file of sourceFiles)hashes[file]=sha(await readFile(resolve(sourceRoot,file)));return {root:sourceRoot,commit:execFileSync('git',['rev-parse','HEAD'],{cwd:sourceRoot,encoding:'utf8'}).trim(),hashes};}
 const beforeSource=await sourceReceipt();for(const [file,hash]of Object.entries(expected))assert.equal(beforeSource.hashes[file],hash,`Review the exact frozen source: ${file}`);
@@ -72,7 +72,7 @@ try{
   assert.equal(await page.locator('.tactical-field').getAttribute('data-enemy-frame'),null,'The paid action completes');
   const phases=new Set(frames.map(frame=>frame.frame?.split(':')[2]).filter(Boolean));assert.ok(phases.has('prepare')&&phases.has('contact')&&phases.has('impact'),'The visible finite paid strike presents all three phases');assert.ok(frames.filter(frame=>frame.frame).every(frame=>frame.frame.endsWith(':melee')),'The sequence contains only the paid melee action');
   const healthLabels=frames.map(frame=>frame.target).filter((label,index,array)=>index===0||label!==array[index-1]);assert.ok(healthLabels.length<=2,'Damage cannot be committed twice');
-  await page.screenshot({path:resolve(output,`${scenario.anatomy}-complete.png`)});await Promise.allSettled(pending);assert.deepEqual(errors,[]);for(const response of network){const match=new URL(response.url).pathname.match(/\/models\/characters\/(.+)$/);if(match&&beforeSource.hashes[`web/public/models/characters/${match[1]}`])assert.equal(response.sha256,beforeSource.hashes[`web/public/models/characters/${match[1]}`],'Served native model bytes match the source capture receipt');}
+  await page.screenshot({path:resolve(output,`${scenario.anatomy}-complete.png`)});await Promise.allSettled(pending);assert.deepEqual(errors,[]);for(const response of network){const match=new URL(response.url).pathname.match(/\/models\/characters\/(.+)$/);if(match&&beforeSource.hashes[`apps/web/public/models/characters/${match[1]}`])assert.equal(response.sha256,beforeSource.hashes[`apps/web/public/models/characters/${match[1]}`],'Served native model bytes match the source capture receipt');}
   report.cases.push({...scenario,paidPreparation,strikeSequence,strikeActionId,cueId,selectedClip,moveBefore,moveAfter,before,after,frames,healthLabels,network,errors});await page.close();
  }
  report.sourceAfter=await sourceReceipt();assert.deepEqual(report.sourceAfter,beforeSource,'Source and native asset hashes remain exact throughout capture');

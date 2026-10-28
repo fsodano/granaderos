@@ -1,10 +1,11 @@
+import {fightOnArrivalOrder} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign,rosterFor,contractQuote} from '../game/campaign.js';
-import {defaultContentPackage} from '../game/content-package.js';
-import {prepareCampaignBattle} from '../game/battle-handoff.js';
-import {createBattle,actBattle,presentedActBattle,endTurn,presentedEndTurn,weaponFor} from '../game/tactical.js';
-import {syncBattleTime} from '../game/time.js';
-import {encodeSave,decodeSave} from '../game/save.js';
+import {initialCampaign,dispatchCampaign,rosterFor,contractQuote} from '../packages/game/campaign.js';
+import {defaultContentPackage} from '../packages/game/content-package.js';
+import {prepareCampaignBattle} from '../packages/game/battle-handoff.js';
+import {createBattle,actBattle,presentedActBattle,endTurn,presentedEndTurn,weaponFor} from '../packages/game/tactical.js';
+import {syncBattleTime} from '../packages/game/time.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
 
 export const physicalNearMissActor=(battle,id='110')=>battle.units.find(unit=>unit.id===id);
 export const physicalNearMissSaved=pair=>decodeSave(encodeSave(pair.campaign,pair.battle??null));
@@ -35,13 +36,14 @@ export function preparedPhysicalNearMiss({control='near',omittedSpeech=false}={}
  for(const id of [110,107]){
   const quote=contractQuote(pair.campaign,rosterFor(pair.campaign).find(unit=>unit.id===id),'week');
   assert.ok(quote.available&&quote.price>0);quotes.push({id,price:quote.price});
-  const action={type:'recruitCivic',id,term:'week'};pair=campaignOrder(pair,action);paidHistory.push(action);
+  const action={type:'recruitCombatant',id,term:'week'};pair=campaignOrder(pair,action);paidHistory.push(action);
  }
  for(const action of [{type:'wait',hours:6},{type:'attack',sector:'buenos_aires'}]){
   if(action.type==='attack'){
-   const campaign=dispatchCampaign(pair.campaign,action);assert.equal(campaign.lastError,null,campaign.lastError);
-   const handed=prepareCampaignBattle(campaign);assert.equal(handed.error,null,handed.error);
-   pair=physicalNearMissSaved(handed);
+   pair=campaignOrder(pair,action);paidHistory.push(action);
+   const decision=fightOnArrivalOrder(pair.campaign),campaign=dispatchCampaign(pair.campaign,decision);assert.equal(campaign.lastError,null,campaign.lastError);pair={campaign};paidHistory.push(decision);
+   const handed=prepareCampaignBattle(pair.campaign);assert.equal(handed.error,null,handed.error);
+   pair=physicalNearMissSaved(handed);continue;
   }else pair=campaignOrder(pair,action);
   paidHistory.push(action);
  }
@@ -77,7 +79,7 @@ export function preparedPhysicalNearMiss({control='near',omittedSpeech=false}={}
 export function replayPhysicalNearMissPaidPrefix(preparation){
  let pair=physicalNearMissSaved(preparation.paidInitial);
  for(const action of preparation.paidHistory){
-  if(action.type==='attack'){
+  if(action.type==='fightOnArrival'){
    const campaign=dispatchCampaign(pair.campaign,action);assert.equal(campaign.lastError,null,campaign.lastError);
    const handed=prepareCampaignBattle(campaign);assert.equal(handed.error,null,handed.error);pair=physicalNearMissSaved(handed);
   }else pair=campaignOrder(pair,action);

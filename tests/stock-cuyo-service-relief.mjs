@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {contractExpiresSeconds,contractQuote,contractRenewalQuote} from '../game/contracts.js';
-import {lowMoraleRenewalStatus} from '../game/morale-renewal.js';
-import {hiringTravelHours} from '../game/hiring-arrivals.js';
-import {operativeLocation,operativeInTransit} from '../game/squads.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {extractItemQuantity,handRecord} from '../game/tactical-inventory.js';
-import {availableAmmunition,weaponAmmoType} from '../game/ammunition-types.js';
-import {WEAPONS} from '../game/data.js';
-import {decodeSave,encodeSave} from '../game/save.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {contractExpiresSeconds,contractQuote,contractRenewalQuote} from '../packages/game/contracts.js';
+import {lowMoraleRenewalStatus} from '../packages/game/morale-renewal.js';
+
+import {operativeLocation,operativeInTransit} from '../packages/game/squads.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {extractItemQuantity,handRecord} from '../packages/game/tactical-inventory.js';
+import {availableAmmunition,weaponAmmoType} from '../packages/game/ammunition-types.js';
+import {WEAPONS} from '../packages/game/data.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
 
 const conditionKeys=['hp','maxHp','alive','bleeding','bandaged','energy','fatigue','morale','location','residentPosition','residentSector','residentScene','asleep'];
 const condition=r=>Object.fromEntries(conditionKeys.filter(key=>Object.hasOwn(r,key)).map(key=>[key,structuredClone(r[key])]));
@@ -42,7 +42,7 @@ export function relieveStockCuyoService(start,fieldIds,{horizonHours=96,report=(
   const returned=sectorInventoryModel(c,'cordoba',rosterFor(c),collector).entries.filter(row=>!oldKeys.has(row.key));assert.deepEqual(sorted(returned.map(row=>JSON.parse(row.expected))),sorted(kit),'Ordinary dismissal returns every exact stack once.');
   const replacement=rosterFor(c).filter(op=>{const r=c.operativeState[op.id],q=contractQuote(c,op,'week');return op.id>=100&&op.id<1000&&op.id!==id&&!c.recruited.includes(op.id)&&!c.hiringArrivals.some(arrival=>arrival.operativeId===op.id)&&r.alive&&!r.captured&&r.hp===r.maxHp&&!r.bleeding&&r.morale>=50&&!q.permanent&&q.available&&q.total<=c.resources.treasury-2000;})
    .sort((a,b)=>contractQuote(c,a,'week').total-contractQuote(c,b,'week').total||b.marksmanship-a.marksmanship||a.id-b.id)[0];assert.ok(replacement,'The actual treasury and current availability must fund a paid relief.');
-  const quote=contractQuote(c,replacement,'week'),booked=clock(),arrivalHours=hiringTravelHours(c,replacement.id),paid=c.resources.treasury;
+  const quote=contractQuote(c,replacement,'week'),booked=clock(),arrivalHours=0,paid=c.resources.treasury;
   order({type:'recruitCivic',id:replacement.id,term:'week',destination:'cordoba'});assert.equal(c.resources.treasury,paid-quote.total);
   for(let h=0;!c.recruited.includes(replacement.id)&&h<=arrivalHours;h++){retain();order({type:'wait',hours:1});assert.equal(c.pendingEncounter,null);}
   assert.ok(c.recruited.includes(replacement.id));assert.equal(operativeLocation(c,replacement.id),'cordoba');assert.equal(clock()-booked,arrivalHours*3600);assert.equal(c.contracts[replacement.id].started*3600+(c.contracts[replacement.id].startedSecond??0),clock());

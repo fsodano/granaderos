@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
 import {fightNorthernSector} from './northern-route.mjs';
 import {stableCrewController} from './stable-crew-driver.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
-import {actBattle,getReachable,artilleryContact,artilleryReloadPreview} from '../game/tactical.js';
-import {syncBattleTime} from '../game/time.js';
-import {enterSector} from '../game/world.js';
+import {actBattle,getReachable,artilleryContact,artilleryReloadPreview} from '../packages/game/tactical.js';
+import {syncBattleTime} from '../packages/game/time.js';
+import {enterSector} from '../packages/game/world.js';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
-import {contractQuote} from '../game/contracts.js';
-import {decodeSave,encodeSave} from '../game/save.js';
+import {contractQuote} from '../packages/game/contracts.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
 
 // A supplied front needs real relief and local care before a new enemy column.
 // Hiring, movement, loading, fortification and battle settlement use public orders.

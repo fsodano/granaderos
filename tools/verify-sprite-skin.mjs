@@ -1,6 +1,6 @@
 import {readFile} from 'node:fs/promises';import {resolve} from 'node:path';import {createHash} from 'node:crypto';
-import {SPRITE_SKIN_MASKS} from '../game/sprite-skin-masks.js';
-import {SPRITE_APPEARANCES} from '../game/sprite-appearances.js';import {SPRITE_SEQUENCES} from '../game/sprite-state.js';
+import {SPRITE_SKIN_MASKS} from '../packages/game/sprite-skin-masks.js';
+import {SPRITE_APPEARANCES} from '../packages/game/sprite-appearances.js';import {SPRITE_SEQUENCES} from '../packages/game/sprite-state.js';
 export async function verifySpriteSkin(directory,requireAsset=()=>{}){
  const root=resolve(directory,'art/skin');requireAsset('/art/skin/manifest.json','skin-mask manifest');
  const manifest=JSON.parse(await readFile(resolve(root,'manifest.json'))),base=JSON.parse(await readFile(resolve(directory,'art/illustrated/manifest.json')));

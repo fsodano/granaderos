@@ -55,7 +55,7 @@ seconds. Typecheck and production build pass, with 1,377 export files and
 gitlink pin and production source identity `6ed8a6fbe679` match the ordered
 root candidate exactly. Private and root Git revision metadata differ.
 Root docs, links, visual records and diff checks pass separately. The
-[review receipt](../../artifacts/rock-forms/review-receipt.json)
+[review receipt](../evidence/artifacts/rock-forms/review-receipt.json)
 records final input hashes, source identity and gate results.
 
 ```sh

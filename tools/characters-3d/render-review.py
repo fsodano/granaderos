@@ -13,9 +13,9 @@ from pathlib import Path
 import argparse, hashlib, html, json, math, os, subprocess, sys
 
 ROOT = Path(__file__).resolve().parents[2]
-PUBLIC = ROOT / 'web/public'
+PUBLIC = ROOT / 'apps/web/public'
 LIBRARY = PUBLIC / 'models/characters'
-DEFAULT_OUTPUT = ROOT / 'artifacts/character-anatomy-review/baseline'
+DEFAULT_OUTPUT = ROOT / '.output/artifacts/character-anatomy-review/baseline'
 REVIEW_LIGHTING = {'world': {'colorLinear': [.20,.22,.20], 'strength': .45},
     'areas': [{'position': [2,-4,6], 'power':650, 'size':4},
               {'position': [-3,-1,4], 'power':220, 'size':4},
@@ -166,7 +166,7 @@ def worker(args):
         'renderSettings':{'size':args.size,'samples':args.samples,'denoise':True,'viewTransform':'AgX','look':'AgX - Medium High Contrast','fps':30},
         'lighting':REVIEW_LIGHTING,'floor':REVIEW_FLOOR,
         'tool':{'path':str(Path(__file__).relative_to(ROOT)),'sha256':digest(__file__)},
-        'runtimeClothSource':{'path':'web/lib/three/actor-runtime.ts','sha256':digest(ROOT/'web/lib/three/actor-runtime.ts')},
+        'runtimeClothSource':{'path':'apps/web/lib/three/actor-runtime.ts','sha256':digest(ROOT/'apps/web/lib/three/actor-runtime.ts')},
         'camera':{'projection':'orthographic','position':[5,-5,5.2],'target':[0,0,1.0],'scale':3.0},
         'skin':{'palette':args.skin,'hexSRGB':manifest['skinTones'][args.skin]} if args.skin else 'exported material base color; no runtime palette override',
         'cloth':'exported morph targets with settled runtime posture weights; no crossfade smoothing',

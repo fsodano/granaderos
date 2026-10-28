@@ -1,4 +1,4 @@
-import {detentionId} from '../game/capture-identity.js';
+import {detentionId} from '../packages/game/capture-identity.js';
 import assert from 'node:assert/strict';
 // Prove changes during strategic custody came from finite recorded care.
 export function assertCustodyCare(beforeCampaign,afterCampaign,id){

@@ -4,23 +4,23 @@ register('../tests/tactical-render-loader.mjs',import.meta.url);
 import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {existsSync} from 'node:fs';
-import {createElement as h} from '../web/node_modules/react/index.js';
-import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
-import ts from '../web/node_modules/typescript/lib/typescript.js';
-import sharp from '../web/node_modules/sharp/lib/index.js';
-const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
-const {buildBuildingObjects}=await import('../web/app/TacticalBuildings.tsx');
-const destination=resolve(process.argv[2]??'assets/previews/buildings/wall-alignment');
+import {createElement as h} from '../apps/web/node_modules/react/index.js';
+import {renderToStaticMarkup as render} from '../apps/web/node_modules/react-dom/server.node.js';
+import ts from '../apps/web/node_modules/typescript/lib/typescript.js';
+import sharp from '../apps/web/node_modules/sharp/lib/index.js';
+const {default:TacticalScene}=await import('../apps/web/app/TacticalScene.tsx');
+const {buildBuildingObjects}=await import('../apps/web/app/TacticalBuildings.tsx');
+const destination=resolve(process.argv[2]??'content/assets/previews/buildings/wall-alignment');
 await mkdir(destination,{recursive:true});
 
 // Reconstruct the former center placement without changing the working renderer.
-const source=await readFile(new URL('../web/app/TacticalBuildings.tsx',import.meta.url),'utf8');
+const source=await readFile(new URL('../apps/web/app/TacticalBuildings.tsx',import.meta.url),'utf8');
 if(!source.includes('const wallInset=.4;'))throw Error('Wall placement changed; update the reference comparison.');
 const reference=ts.transpileModule(source.replace('const wallInset=.4;','const wallInset=0;'),{
  compilerOptions:{jsx:ts.JsxEmit.ReactJSX,module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022},
-}).outputText.replaceAll('"react/jsx-runtime"',JSON.stringify(new URL('../web/node_modules/react/jsx-runtime.js',import.meta.url).href))
+}).outputText.replaceAll('"react/jsx-runtime"',JSON.stringify(new URL('../apps/web/node_modules/react/jsx-runtime.js',import.meta.url).href))
  .replace(/from (['"])(\.[^'"]+)\1/g,(_,quote,specifier)=>{
-  const url=new URL(specifier,new URL('../web/app/TacticalBuildings.tsx',import.meta.url));
+  const url=new URL(specifier,new URL('../apps/web/app/TacticalBuildings.tsx',import.meta.url));
   const path=['','.tsx','.ts','.js'].map(ext=>`${url.href}${ext}`).find(path=>existsSync(new URL(path)));
   if(!path)throw Error(`Cannot resolve ${specifier}`);
   return `from ${JSON.stringify(path)}`;
@@ -63,7 +63,7 @@ for(const axis of ['y','x'])for(const centered of [true,false]){
   h('g',null,edge)));
  let svg=`<svg xmlns="http://www.w3.org/2000/svg" width="832" height="680" viewBox="0 0 416 340"><rect width="416" height="340" fill="#17271f"/>${scene}${labels}</svg>`;
  for(const url of new Set([...svg.matchAll(/href="(\/art\/[^\"]+)"/g)].map(m=>m[1]))){
-  const image=await sharp(await readFile(resolve('web/public',`.${url}`))).png().toBuffer();
+  const image=await sharp(await readFile(resolve('apps/web/public',`.${url}`))).png().toBuffer();
   svg=svg.replaceAll(`href="${url}"`,`href="data:image/png;base64,${image.toString('base64')}"`);
  }
  const name=`${axis}-${centered?'center':'current'}`;

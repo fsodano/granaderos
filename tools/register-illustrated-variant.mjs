@@ -2,18 +2,18 @@
 // Match the corresponding reviewed pose bounds after the authoring tool moves
 // or resizes a figure inside its cell. This changes extraction only, not art.
 import {readFile,writeFile} from 'node:fs/promises';
-import sharp from '../web/node_modules/sharp/lib/index.js';
+import sharp from '../apps/web/node_modules/sharp/lib/index.js';
 import {removeExportKey,boundsOf,sheetRectangles} from './pack-illustrated-sprites.mjs';
-import {SPRITE_APPEARANCES} from '../game/sprite-appearances.js';
+import {SPRITE_APPEARANCES} from '../packages/game/sprite-appearances.js';
 
 const exportKey=process.argv.includes('--white-key')?'white':'magenta';
 const [source,name,referenceName,half='all',regionFile]=process.argv.slice(2).filter(a=>a!=='--white-key');
 if(!source||!name||!referenceName||!['all','north','south'].includes(half))
  throw Error('Usage: node tools/register-illustrated-variant.mjs SOURCE NAME REVIEWED_ATLAS [all|north|south] [REGIONS_JSON]');
-const staged=JSON.parse(await readFile('assets/previews/illustrated-sprites/packed/manifest.json'));
+const staged=JSON.parse(await readFile('content/assets/previews/illustrated-sprites/packed/manifest.json'));
 const reference=staged.atlases[referenceName];
 if(!reference)throw Error(`Missing reviewed atlas ${referenceName}`);
-const referencePath=`assets/source/illustrated-sprites/${referenceName}${half==='all'?'':`-${half}`}-reviewed-reference.png`;
+const referencePath=`content/assets/source/illustrated-sprites/${referenceName}${half==='all'?'':`-${half}`}-reviewed-reference.png`;
 const provenance=JSON.parse(await readFile(referencePath.replace(/\.png$/,'.provenance.json')));
 const frames=reference.framesPerDirection,rows=frames===1?2:4;
 if((frames===1&&half!=='all')||(frames!==1&&half==='all'))throw Error('Direction half does not match reference layout');
@@ -72,7 +72,7 @@ for(const slot of slots){
  slot.anchor=[2+(reference.anchor[0]-pose.bounds[0])/basePoseScale,2+(reference.anchor[1]-pose.bounds[1])/basePoseScale].map(v=>Number(v.toFixed(3)));
  slot.anchorMethod='aligned to corresponding reviewed pose bounds; one scale per direction; inspect identity and motion';
 }
-const path='assets/source/illustrated-sprites/sources.json',manifest=JSON.parse(await readFile(path));
+const path='content/assets/source/illustrated-sprites/sources.json',manifest=JSON.parse(await readFile(path));
 const job={name,source,prompt:source.replace(/\.png$/,'.prompt.txt'),columns:4,rows,frames,fps:reference.fps,
  cell:reference.cell,logicalCell:reference.logicalCell,anchor:reference.anchor,scale,
  poseReference:{name:referenceName,file:referencePath,sha256:provenance.sha256,half},slots};

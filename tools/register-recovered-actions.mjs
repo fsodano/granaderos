@@ -1,12 +1,12 @@
 import fs from 'node:fs/promises';
-import sharp from '../web/node_modules/sharp/lib/index.js';
+import sharp from '../apps/web/node_modules/sharp/lib/index.js';
 import {removeExportKey,boundsOf,sheetRectangles,packIllustratedSources} from './pack-illustrated-sprites.mjs';
 const [appearance,sequence,north,south]=process.argv.slice(2);
 if(!south)throw Error('Usage: APPEARANCE SEQUENCE NORTH_SUFFIX SOUTH_SUFFIX');
 const local=process.argv.includes('--local');
-const root=local?'assets/source/illustrated-sprites/family-actions':'/Users/fsodano/fibradev/games/granaderos-sprite-recovery/assets/source/illustrated-sprites/complete-actions';
-const dir=local?'assets/source/illustrated-sprites/family-actions':'assets/source/illustrated-sprites/complete-actions';await fs.mkdir(dir,{recursive:true});
-const baseline=JSON.parse(await fs.readFile('assets/previews/illustrated-sprites/packed/manifest.json'));
+const root=local?'content/assets/source/illustrated-sprites/family-actions':'/Users/fsodano/fibradev/games/granaderos-sprite-recovery/assets/source/illustrated-sprites/complete-actions';
+const dir=local?'content/assets/source/illustrated-sprites/family-actions':'content/assets/source/illustrated-sprites/complete-actions';await fs.mkdir(dir,{recursive:true});
+const baseline=JSON.parse(await fs.readFile('content/assets/previews/illustrated-sprites/packed/manifest.json'));
 const reference=process.argv.find(a=>a.startsWith('--reference='))?.split('=')[1]??'crouch-idle';
 const idle=baseline.atlases[`${appearance}-${reference}`],directions=['n','ne','e','se','s','sw','w','nw'];
 const name=`${appearance}-${sequence}`,sheets=[];
@@ -40,5 +40,5 @@ for(const [suffix,ds] of [[north,directions.slice(0,4)],[south,directions.slice(
  sheets.push(sheet);
 }
 const path=`${dir}/${name}.registration.json`;await fs.writeFile(path,JSON.stringify({version:1,directions,sheets},null,2)+'\n');
-const destination=`assets/previews/illustrated-sprites/family-actions/${name}`;
+const destination=`content/assets/previews/illustrated-sprites/family-actions/${name}`;
 const result=await packIllustratedSources({manifestPath:path,destination});console.log(name,result.atlases[name].records.length);

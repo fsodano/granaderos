@@ -1,18 +1,18 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {decodeSave,encodeSave} from '../game/save.js';
-import {actBattle,getReachable,climbPreview,artilleryContact,hasFirearm} from '../game/tactical.js';
-import {sameCell,sameSurface,spacePoint,surfaceAt} from '../game/tactical-space.js';
-import {operativeLocation,operativeInTransit} from '../game/squads.js';
-import {enterSector} from '../game/world.js';
-import {syncBattleTime,COMBAT_ROUND_SECONDS} from '../game/time.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
+import {actBattle,getReachable,climbPreview,artilleryContact,hasFirearm} from '../packages/game/tactical.js';
+import {sameCell,sameSurface,spacePoint,surfaceAt} from '../packages/game/tactical-space.js';
+import {operativeLocation,operativeInTransit} from '../packages/game/squads.js';
+import {enterSector} from '../packages/game/world.js';
+import {syncBattleTime,COMBAT_ROUND_SECONDS} from '../packages/game/time.js';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
-import {dailyTownIncome,townIncomeSources} from '../game/town-income.js';
-import {careRules} from '../game/campaign-care-rules.js';
-import {carriedAmmunition,unitAmmunitionByType} from '../game/campaign-ammunition.js';
-import {ammoCount} from '../game/ammo-types.js';
-import {firearmServiceable} from '../game/firearm-serviceability.js';
-import {contractExpiresSeconds} from '../game/contracts.js';
+import {dailyTownIncome,townIncomeSources} from '../packages/game/town-income.js';
+import {careRules} from '../packages/game/campaign-care-rules.js';
+import {carriedAmmunition,unitAmmunitionByType} from '../packages/game/campaign-ammunition.js';
+import {ammoCount} from '../packages/game/ammo-types.js';
+import {firearmServiceable} from '../packages/game/firearm-serviceability.js';
+import {contractExpiresSeconds} from '../packages/game/contracts.js';
 
 // Prepare actual local defenders before a raid. Roof cells are authored public
 // map geometry; movement, climbing, reloads and the clock use ordinary orders.

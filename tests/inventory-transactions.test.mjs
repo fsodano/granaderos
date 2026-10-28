@@ -1,15 +1,16 @@
+import { enterAssault } from './assault-fixture.mjs';
 import test from 'node:test';
 const AMMO='inventory:ammo:musket_75';
 import assert from 'node:assert/strict';
-import {createBattle, actBattle, transferPreview, dropPreview, lootPreview, lootBatchPreview} from '../game/tactical.js';
-import {inventoryUsage} from '../game/tactical-inventory.js';
-import {validatePersonalInventory} from '../game/squads.js';
-import {validateBattleSnapshot} from '../game/validate-battle.js';
+import {createBattle, actBattle, transferPreview, dropPreview, lootPreview, lootBatchPreview} from '../packages/game/tactical.js';
+import {inventoryUsage} from '../packages/game/tactical-inventory.js';
+import {validatePersonalInventory} from '../packages/game/squads.js';
+import {validateBattleSnapshot} from '../packages/game/validate-battle.js';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
-import {dispatchCampaign} from '../game/campaign.js';
-import {syncBattleTime} from '../game/time.js';
-import {encodeSave, decodeSave} from '../game/save.js';
-import {enterSector} from '../game/world.js';
+import {dispatchCampaign} from '../packages/game/campaign.js';
+import {syncBattleTime} from '../packages/game/time.js';
+import {encodeSave, decodeSave} from '../packages/game/save.js';
+import {enterSector} from '../packages/game/world.js';
 
 const tiles = () => Array.from({length: 216}, (_, i) => ({x: i % 24, y: Math.floor(i / 24), type: 'grass', blocked: false, cover: 0}));
 const field = (first = {}, second = {}, enemies = []) => createBattle([
@@ -136,7 +137,7 @@ test('a valid legacy overload can be reduced by dropping a large stack and remai
 
 test('a full campaign save preserves a dropped weapon and permits exactly one later pickup', () => {
   let campaign = dispatchCampaign(initialCampaign(), {type: 'travel', sector: 'buenos_aires'});
-  campaign = dispatchCampaign(campaign, {type: 'attack', sector: 'san_nicolas'});
+  campaign = enterAssault(campaign, 'san_nicolas');
   assert.equal(campaign.lastError, null);
   const request = campaign.pendingBattle;
   let battle = createBattle(request.squad.map((unit, index) => ({...unit, x: 1 + index, y: 1})), {...request, width: 24, height: 9, tiles: tiles(), seed: 45, enemies: [{id: 'guard', x: 22, y: 7, overwatch: false}]});

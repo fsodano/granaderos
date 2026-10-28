@@ -1,0 +1,257 @@
+import { advanceSectorWorldEvents } from './military-remains.js';
+import { collectResidentSuppliesThrough } from './resident-scavenging.js';
+import {wallEdgesBetween,wallMovementBlocked} from './wall-geometry.js';
+import {recoverCivilianBreath} from './civilian-health.js';
+import {accessStepsFrom,sameCell,sameSurface,spaceKey,surfaceHeight,tacticalLevel} from './tactical-space.js';
+import {atHand,planningPoint} from './tactical-planning-space.js';
+import {propCells} from './props.js';
+import {directionTo, approximateHeardPosition} from './tactical-awareness.js';
+import {applyCivilianHarm, advanceCivilianWoundTime} from './civilian-harm.js';
+import {HealthRules} from './domain/personnel/health.ts';
+import {Corpse} from './domain/world/corpse.ts';
+import {requireGameSecond} from './domain/world/world-timeline.ts';
+import {recoverEnergy} from './fatigue.js';
+import {artillerySpaceKeys} from './artillery-occupancy.js';
+import {ResidentRoutine, RESIDENT_ROUTINE_INTERVAL_SECONDS} from './domain/world/resident-routine.ts';
+
+// Local, deterministic state machines. No network, hidden enemy positions or RNG.
+export const NPC_ACTIVITIES = ['roaming','home','working','socializing','meeting','hiding','fleeing','following','waiting'];
+export const NPC_ACTIVITY_LABELS = {meeting:'en un encuentro',roaming:'paseando',home:'en casa',working:'trabajando',socializing:'en la pulpería',hiding:'a cubierto',fleeing:'buscando refugio',following:'siguiendo a la escolta',waiting:'esperando a la escolta'};
+const key = p => tacticalLevel(p)===0?`${p.x},${p.y}`:spaceKey(p);
+const point = planningPoint;
+const distance = (a,b) => Math.abs(a.x-b.x)+Math.abs(a.y-b.y);
+const hash = value => [...String(value)].reduce((h,c)=>(Math.imul(h,31)+c.charCodeAt(0))>>>0,17);
+const mobile = n => (n.hp??100)>0&&!n.unconscious&&!n.departure&&!n.surrendered;
+const now = s => s.elapsedSeconds??0;
+
+// Cardinal routes cannot cut corners. Unlocked doors are usable, but opening
+// one is a separate paid step. Occupancy is rebuilt for each actor.
+export function npcRoutes(s,n,{stopWhen}={}) {
+  const tiles=new Map([...s.tiles,...(s.upperSurfaces??[])].map(t=>[key(t),t]));
+  const occupied=new Set([...(s.npcs??[]).filter(v=>v!==n&&v.id!==n.id&&(v.hp??100)>0&&!v.departure&&!v.fled),...s.units.filter(v=>v.id!==n.id&&v.hp>0&&!v.departure&&!v.fled)].map(key));
+  for(const p of s.props??[])if(p.blocksMovement!==false)for(const cell of propCells(p))occupied.add(key(cell));
+  const artillery=artillerySpaceKeys(s);
+  const usable=t=>t&&!occupied.has(key(t))&&!artillery.has(spaceKey(t))&&(!t.blocked||t.type==='door'&&!t.locked&&!t.jammed);
+  const records=new Map([[key(n),{...point(n),path:[]}]]),queue=[point(n)];
+  for(let i=0;i<queue.length;i++){
+    const from=queue[i],record=records.get(key(from));
+    if(stopWhen?.(from,tiles.get(key(from))))break;
+    for(const [dx,dy] of [[1,0],[0,1],[-1,0],[0,-1]]){
+      const at={...point(from),x:from.x+dx,y:from.y+dy},id=key(at);
+      if(records.has(id)||!usable(tiles.get(id))||surfaceHeight(s,from)!==surfaceHeight(s,at)||wallMovementBlocked(s,from,at,{openDoors:true}))continue;
+      records.set(id,{...at,path:[...record.path,at]});queue.push(at);
+    }
+    if((n.stance??'standing')==='standing'&&!n.mounted&&!n.entangled&&!n.knockedDown)for(const at of accessStepsFrom(s,from)){
+      const id=key(at);if(records.has(id)||!usable(tiles.get(id))||tiles.get(id).blocked)continue;
+      records.set(id,{...point(at),path:[...record.path,at]});queue.push(point(at));
+    }
+  }
+  return {records,tiles};
+}
+
+function destinations(s,n,routes) {
+  const cells=[...routes.records.values()].filter(p=>routes.tiles.get(key(p))?.type!=='door');
+  const inside=id=>cells.filter(p=>routes.tiles.get(key(p))?.buildingId===id&&routes.tiles.get(key(p))?.roomId);
+  const houses=(s.buildings??[]).filter(b=>b.purpose!=='bar'&&inside(b.id).length);
+  const bars=(s.buildings??[]).filter(b=>b.purpose==='bar'&&inside(b.id).length);
+  n.ai.homeId??=houses.length?houses[hash(n.id)%houses.length].id:null;
+  const home=inside(n.ai.homeId),bar=bars.flatMap(b=>inside(b.id));
+  const work=inside(n.workBuildingId??n.ai.homeId);
+  const outside=cells.filter(p=>!routes.tiles.get(key(p))?.buildingId);
+  return {home,bar,work,outside,cells};
+}
+
+export function hearNpcNoise(s,position,kind,radius,obstructions=()=>0) {
+  if(!['fire','explosion','alarm'].includes(kind))return;
+  for(const n of s.npcs??[]){
+    if(!mobile(n))continue;
+    const heard=approximateHeardPosition(n,position,{kind,radius,turn:s.turn,width:s.width,height:s.height,obstructions:obstructions(n),night:s.night});
+    if(!heard)continue;
+    n.ai??={cycle:0,homeId:null,activity:'roaming',wait:0};
+    n.ai.threat=heard;n.ai.safeAfter=now(s)+24+hash(n.id)%19;
+    n.ai.activity='hiding';n.ai.wait=0;delete n.ai.destination;
+    n.stance=distance(n,position)<=7||kind==='explosion'?'prone':'crouched';
+    n.movementMode=n.stance==='prone'?'prone':'crouch';
+  }
+}
+
+function shelterScore(s,p,threat,tiles) {
+  const t=tiles.get(key(p));
+  let walls=0;
+  // Trace only the remembered sound area, never a shooter's live position.
+  const count=Math.max(Math.abs(p.x-threat.x),Math.abs(p.y-threat.y));
+  for(let i=1;i<count;i++){
+    const cell=tiles.get(key({...point(p),x:Math.round(p.x+(threat.x-p.x)*i/count),y:Math.round(p.y+(threat.y-p.y)*i/count)}));
+    if(cell?.blocksSight??cell?.blocked)walls++;
+  }
+  return Math.min(walls,2)*24+(t?.roomId?14:0)+(t?.cover??0)*.4+Math.min(20,distance(p,threat))*2-p.path.length*1.5;
+}
+
+export function advanceNpc(s,n,budget=24,atTime=now(s)) {
+  if(!mobile(n))return;
+  if(n.detention&&!n.detention.freed){n.lastMovePath=[];return;}
+  n.ai??={cycle:0,homeId:null,activity:'roaming',wait:0};
+  const ai=n.ai;n.lastMovePath=[];
+  if(n.escort&&(n.entangled||n.knockedDown)){ai.activity='waiting';delete ai.destination;return;}
+  const danger=ai.threat&&atTime<ai.safeAfter;
+  if(s.mode==='exploration'&&!danger&&!n.scriptedMove&&!n.escort&&s.approachingNpcIds?.includes(n.id))return;
+  if(!danger&&n.scriptedMove&&sameCell(n,n.scriptedMove.target)){
+    ai.destination=point(n.scriptedMove.target);ai.activity='meeting';ai.wait=0;n.stance='standing';n.movementMode='walk';return;
+  }
+  if(!danger&&ai.threat){delete ai.threat;delete ai.safeAfter;delete ai.destination;ai.wait=0;}
+  // Conference speakers remain available at their meeting while it is safe.
+  // They still take shelter through the ordinary danger branch.
+  if(n.mission&&!n.escort&&!n.scriptedMove&&!danger){
+    ai.activity='working';delete ai.destination;n.stance='standing';n.movementMode='walk';
+    const visitor=s.units.find(u=>u.side==='player'&&u.hp>0&&!u.departure&&!u.unconscious&&atHand(u,n,1));
+    if(visitor)n.facing=directionTo(n,visitor);
+    return;
+  }
+  if(!danger&&!n.escort&&!n.scriptedMove){
+    n.stance='standing';n.movementMode='walk';
+    const visitor=s.units.find(u=>u.side==='player'&&u.hp>0&&!u.departure&&!u.unconscious&&atHand(u,n,1));
+    if(visitor){n.facing=directionTo(n,visitor);return;}
+    if(ai.wait>0){ai.wait--;return;}
+  }
+  const routes=npcRoutes(s,n),places=destinations(s,n,routes);
+  if(danger){
+    const choices=places.cells.filter(p=>p.path.length<=8).sort((a,b)=>shelterScore(s,b,ai.threat,routes.tiles)-shelterScore(s,a,ai.threat,routes.tiles)||a.y-b.y||a.x-b.x);
+    ai.destination=point(choices[0]??n);ai.activity=sameCell(n,ai.destination)?'hiding':'fleeing';
+    n.stance??='crouched';n.movementMode=n.stance==='prone'?'prone':'crouch';
+  }else if(n.scriptedMove){
+    ai.destination=point(n.scriptedMove.target);ai.activity='meeting';ai.wait=0;n.stance='standing';n.movementMode='walk';
+  }else if(n.escort){
+    // Escort movement uses the same occupied-cell, door and climbing routes as
+    // other civilians. An absent or incapacitated leader cannot pull an escort.
+    const leader=s.units.find(u=>u.id===n.escort.leaderId&&u.side==='player'&&u.hp>=15&&!u.unconscious&&!u.departure&&!u.fled&&!u.routed&&!u.surrendered&&u.energy>0);
+    n.stance='standing';n.movementMode='walk';ai.wait=0;delete ai.destination;
+    if(n.escort.waiting||!leader||atHand(n,leader,1)){ai.activity='waiting';if(leader)n.facing=directionTo(n,leader);return;}
+    const choices=places.cells.filter(p=>atHand(p,leader,1)).sort((a,b)=>a.path.length-b.path.length||a.y-b.y||a.x-b.x);
+    if(!choices.length){ai.activity='waiting';return;}
+    ai.destination=point(choices[0]);ai.activity='following';
+  }else{
+    if(!ai.destination||!routes.records.has(key(ai.destination))){
+      const hour=((s.startSeconds??43200)+atTime)/3600%24;
+      const activity=hour<6||hour>=22?'home':['roaming','working','socializing','home'][(ai.cycle+hash(n.id))%4];
+      let choices=activity==='home'?places.home:activity==='socializing'?places.bar:activity==='working'?places.work:places.outside;
+      if(!choices.length)choices=places.outside.length?places.outside:places.cells;
+      const other=choices.filter(p=>!sameCell(n,p));if(other.length)choices=other;
+      const target=choices[(hash(n.id)+ai.cycle*7)%choices.length];
+      ai.activity=activity==='socializing'&&!places.bar.length?'roaming':activity;
+      if(!target)return;ai.destination=point(target);
+    }
+  }
+  const route=routes.records.get(key(ai.destination));
+  if(!route){if(!n.scriptedMove)delete ai.destination;return;}
+  for(const p of route.path){
+    const t=routes.tiles.get(key(p)),climbing=!sameSurface(n,p),up=climbing&&surfaceHeight(s,p)>surfaceHeight(s,n),cost=climbing?(up?20:15):n.stance==='prone'?16:n.stance==='crouched'?10:8;
+    if(climbing&&(n.stance??'standing')!=='standing')break;
+    const leaf=wallEdgesBetween(s,n,p).find(edge=>edge.type==='door'&&!edge.open)??(t.type==='door'&&!t.open?t:null);
+    if(leaf){
+      if(budget<6)break;
+      if(leaf.trap&&leaf.trap.armed!==false){
+        leaf.trap.armed=false;
+        if(leaf.trap.type==='alarm')hearNpcNoise(s,n,'alarm',20);
+        else applyCivilianHarm(s,n,{damage:leaf.trap.damage??18,breathLoss:leaf.trap.breathLoss??25});
+        // Triggering a trap spends this attempt; it never silently opens a door
+        // or discloses the trap to either combat faction.
+        break;
+      }
+      leaf.open=true;leaf.blocked=false;leaf.blocksSight=false;budget-=6;
+    }
+    if(budget<cost)break;
+    // Spend this civilian phase resting before a climb would exhaust the
+    // resident. Do not keep walking with zero breath and an awake flag.
+    if(climbing&&(n.energy??100)<=(up?12:8)){recoverEnergy(n,10);break;}
+    budget-=cost;if(climbing)n.energy=Math.max(0,(n.energy??100)-(up?12:8));if(n.x!==p.x||n.y!==p.y)n.facing=directionTo(n,p);Object.assign(n,point(p));n.lastMovePath.push(climbing?{...p}:point(p));
+  }
+  // An alarm can clear the walking destination while this route is in progress.
+  if(ai.destination&&sameCell(n,ai.destination)){
+    if(danger)ai.activity='hiding';
+    else if(n.scriptedMove)ai.activity='meeting';
+    else if(n.escort){ai.activity='waiting';delete ai.destination;}
+    else {ai.cycle++;ai.wait=2+hash(n.id+ai.cycle)%4;delete ai.destination;}
+  }
+}
+
+function performCivilianPhase(s,atTime) {
+  // Atomic third phase: it cannot grant combat AP or create an interrupt.
+  const phase=s.phase;s.phase='civilian';
+  s.civilianTurns=(s.civilianTurns??0)+1;
+  const npcs=s.npcs??[],offset=s.civilianTurns%Math.max(1,npcs.length);
+  for(let i=0;i<npcs.length;i++){
+    const npc=npcs[(i+offset)%npcs.length];advanceNpc(s,npc,24,atTime);
+    recoverCivilianBreath(npc);
+  }
+  s.phase=phase;
+}
+
+export function advanceResidentWoundClock(s, targetSecond, { initialSecond, afterWound = () => {} } = {}) {
+  requireGameSecond(targetSecond);
+  const previousSecond = s.residentConditionSecond ?? initialSecond ?? s.startSeconds ?? targetSecond;
+  requireGameSecond(previousSecond);
+  if (targetSecond < previousSecond) throw new Error('Resident wound time cannot move backwards.');
+  const seconds = targetSecond - previousSecond;
+  for (const resident of s.npcs ?? []) {
+    const previousHealth = resident.hp ?? 100;
+    const bleeding = resident.bleeding ?? 0;
+    const woundRemainder = resident.civilianWoundSeconds ?? 0;
+    advanceCivilianWoundTime(s, resident, seconds);
+    if (previousHealth > 0 && resident.hp === 0 && (s.sceneId ?? s.sectorId)) {
+      const diedAtSecond = previousSecond + Math.ceil(previousHealth / bleeding) * HealthRules.BleedingIntervalSeconds - woundRemainder;
+      resident.corpse = Corpse.recordDeath(String(resident.id), s.sceneId ?? s.sectorId, diedAtSecond).toSnapshot();
+    }
+    if ((resident.hp ?? 100) < previousHealth) afterWound(resident, previousHealth);
+  }
+  s.residentConditionSecond = targetSecond;
+}
+
+export function advanceResidentRoutine(s, targetSecond, {
+  beforePhase = () => {}, afterPhase = () => {},
+  beforeCollection = () => {}, afterCollection = () => {}, afterWound = () => {}, beforeConditions = () => {}, advanceWorldEvents = atSecond => advanceSectorWorldEvents(s, atSecond),
+} = {}) {
+  const startedAtSecond = s.startSeconds ?? 0;
+  const routine = new ResidentRoutine(s.residentRoutine ?? { startedAtSecond, advancedThroughSecond: startedAtSecond });
+  const initialSecond = routine.toSnapshot().advancedThroughSecond;
+  const advanceConditions = atSecond => {
+    beforeConditions(atSecond);
+    advanceResidentWoundClock(s, atSecond, { initialSecond, afterWound });
+    advanceWorldEvents(atSecond);
+  };
+  routine.advanceTo(targetSecond, atSecond => {
+    const movementAllowed = beforePhase(atSecond) !== false;
+    advanceConditions(atSecond);
+    if (movementAllowed) performCivilianPhase(s, atSecond - startedAtSecond);
+    afterPhase(atSecond);
+  }, atSecond => {
+    beforeCollection(atSecond);
+    advanceConditions(atSecond);
+    collectResidentSuppliesThrough(s, atSecond);
+    afterCollection(atSecond);
+  });
+  advanceConditions(targetSecond);
+  s.residentRoutine = routine.toSnapshot();
+}
+
+export function runCivilianPhase(s, atTime = now(s), options = {}) {
+  advanceResidentRoutine(s, (s.startSeconds ?? 0) + atTime, options);
+}
+
+export function advanceCivilianTime(s, seconds, beforeCivilians = () => true, options = {}) {
+  requireGameSecond(seconds);
+  const targetSecond = (s.startSeconds ?? 0) + now(s);
+  s.residentConditionSecond ??= targetSecond - seconds;
+  s.residentRoutine ??= { startedAtSecond: s.startSeconds ?? 0, advancedThroughSecond: targetSecond - seconds };
+  s.civilianSeconds = ((s.civilianSeconds ?? 0) + seconds) % RESIDENT_ROUTINE_INTERVAL_SECONDS;
+  let movementAllowed = true;
+  advanceResidentRoutine(s, targetSecond, {
+    ...options,
+    beforePhase(atSecond) {
+      if (movementAllowed && beforeCivilians(atSecond) === false) {
+        movementAllowed = false;
+        s.civilianSeconds = 0;
+      }
+      return movementAllowed;
+    },
+  });
+}

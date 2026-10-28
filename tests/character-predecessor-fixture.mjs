@@ -19,7 +19,7 @@ root=Path.cwd();sys.path.insert(0,str(root/'tools/characters-3d'))
 from standing_arm_context import create_historical_snapshot
 print(json.dumps(create_historical_snapshot(root,Path(sys.argv[1]),stage=sys.argv[2],link_assets=True)))
 `,join(folder,'root'),stage],{cwd:new URL('..',import.meta.url),encoding:'utf8',maxBuffer:1024*1024}));
- const publicRoot=pathToFileURL(join(receipt.root,'web/public')+'/'),assets=new URL('models/characters/',publicRoot);
+ const publicRoot=pathToFileURL(join(receipt.root,'apps/web/public')+'/'),assets=new URL('models/characters/',publicRoot);
  return{receipt,publicRoot,assets,manifest:JSON.parse(readFileSync(new URL('manifest.json',assets),'utf8')),readGlb:url=>readPublishedGlb(url,publicRoot)};
 }
 const folds=view('folds');

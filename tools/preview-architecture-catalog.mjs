@@ -5,15 +5,15 @@ register("../tests/tactical-render-loader.mjs", import.meta.url);
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createElement as h } from "../web/node_modules/react/index.js";
-import { renderToStaticMarkup } from "../web/node_modules/react-dom/server.node.js";
-import sharp from "../web/node_modules/sharp/lib/index.js";
-import { BUILDING_TEMPLATES } from "../game/map-templates.js";
-import { blankMap, serializeMap, validateMap } from "../game/map-schema.js";
-import { applyMapCommands } from "../game/map-commands.js";
-import { compileMap, reachableMap } from "../game/compile-map.js";
-import { propBlocksAt } from "../game/props.js";
-const { default: TacticalScene } = await import("../web/app/TacticalScene.tsx");
+import { createElement as h } from "../apps/web/node_modules/react/index.js";
+import { renderToStaticMarkup } from "../apps/web/node_modules/react-dom/server.node.js";
+import sharp from "../apps/web/node_modules/sharp/lib/index.js";
+import { BUILDING_TEMPLATES } from "../packages/game/map-templates.js";
+import { blankMap, serializeMap, validateMap } from "../packages/game/map-schema.js";
+import { editSectorMapDocument } from "../apps/campaign-editor/public/map-editing-api.js";
+import { compileMap, reachableMap } from "../packages/game/compile-map.js";
+import { propBlocksAt } from "../packages/game/props.js";
+const { default: TacticalScene } = await import("../apps/web/app/TacticalScene.tsx");
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const overviewOnly = process.argv.includes("--overview-only");
 const interiorOnly = process.argv.includes("--interior-only");
@@ -31,7 +31,7 @@ if (selectedMode && (overviewOnly || interiorOnly))
 if (overviewOnly && interiorOnly) throw Error("Choose either --overview-only or --interior-only.");
 const output = resolve(
   process.argv.slice(2).find((arg) => !arg.startsWith("--")) ??
-    resolve(root, "artifacts/architecture-catalog"),
+    resolve(root, ".output/artifacts/architecture-catalog"),
 );
 const rotations = overviewOnly ? [0] : [0, 90, 180, 270],
   modes = selectedMode
@@ -63,7 +63,7 @@ const css = `:root{color-scheme:dark;font:16px/1.5 system-ui;background:#20231f;
 const html = (title, body) =>
   `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(title)}</title><style>${css}</style>${body}</html>`;
 function apply(document, commands) {
-  const result = applyMapCommands(document, commands);
+  const result = editSectorMapDocument(document, commands);
   if (result.errors.length) throw Error(result.errors.join("\n"));
   return result.document;
 }
@@ -88,7 +88,7 @@ function createDocument(id, template) {
 async function embeddedSvg(markup) {
   for (const url of new Set([...markup.matchAll(/href="(\/art\/[^\"]+)"/g)].map((m) => m[1]))) {
     if (!rasterCache.has(url)) {
-      const png = await sharp(await readFile(resolve(root, "web/public", `.${url}`)))
+      const png = await sharp(await readFile(resolve(root, "apps/web/public", `.${url}`)))
         .png()
         .toBuffer();
       rasterCache.set(url, `data:image/png;base64,${png.toString("base64")}`);
@@ -268,7 +268,7 @@ await writeFile(
   JSON.stringify(
     {
       schemaVersion: 1,
-      renderer: "web/app/TacticalScene.tsx",
+      renderer: "apps/web/app/TacticalScene.tsx",
       projection: { tileWidth: 52, tileHeight: 28 },
       buildings: review,
     },

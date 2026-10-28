@@ -11,6 +11,10 @@ Player-facing text is Spanish. Code and documentation are English.
 
 | Task | Read |
 | --- | --- |
+| Find source files and understand the repository layout | [Repository map](development/repository-layout.md) |
+| Understand how the browser game fits together | [Progressive architecture guide](architecture/README.md) and [C4 levels 1–3](architecture/c4.md) |
+| Explore player and campaign-author capabilities | [Use-case catalogue](architecture/use-cases/README.md) |
+| Verify the domain architecture implementation | [28 October architecture evidence](verification/domain-architecture-2026-10-28.md) |
 | Install, run, build or test the browser game | [Development setup](development/getting-started.md) |
 | Read the current game design | [Game design](specification/game-design.md) |
 | Check version 0.1 scope and remaining work | [Version 0.1 status](verification/version-0.1.md) |
@@ -19,7 +23,7 @@ Player-facing text is Spanish. Code and documentation are English.
 | Find requirement history and feature evidence | [Published progress ledger](verification/published-progress.md) |
 | Review the historical cross-branch verification | [27 September audit](verification/formal-audit-2026-09-27.md) |
 | Review ammunition ownership and current limits | [Persistent ammunition](verification/strategic-ammunition-custody.md) |
-| Create a campaign in the browser | [Campaign studio](authoring/campaign-studio.md) and [studio acceptance evidence](evidence/campaign-studio-2026-10-10/README.md) |
+| Create a campaign in the browser | [Campaign editor](authoring/campaign-studio.md) and [studio acceptance evidence](evidence/campaign-studio-2026-10-10/README.md) |
 | Extend or improve the editing tools | [Editor development](development/editor-development.md) and [editor experience plan](plans/editor-experience.md) |
 | Create, check and install local campaign folders | [Campaign authoring](development/campaign-authoring.md) |
 | Use the experimental content editor | [Story editor](development/story-editor.md) |
@@ -41,6 +45,7 @@ Studio; community hosting and sharing services are
 
 | Folder | Contents |
 | --- | --- |
+| [Architecture](architecture/README.md) | Progressive system overview, sequence diagrams, and subsystem deep dives |
 | [Gameplay](gameplay/README.md) | Campaign, combat, equipment, characters and controls |
 | [Authoring](authoring/README.md) | Campaign studio workflow, portable projects and installable packages |
 | [Development](development/README.md) | Browser setup, editors, system notes and performance work |
@@ -48,7 +53,7 @@ Studio; community hosting and sharing services are
 | [Evidence](evidence/README.md) | Saved workspace route results and performance measurements |
 | [Art](art/README.md) | Buildings, portraits, sprite families and render quality |
 | [Architecture decisions](adr/README.md) | Visual decisions and reference images |
-| [Plans](plans/README.md) | Implementation proposals and acceptance criteria |
+| [Plans](plans/README.md) | Accepted architecture, ubiquitous language, feature proposals, and acceptance criteria |
 | [Specifications](specification/README.md) | Original design and later gameplay requirements |
 | [JA2 engine reference](web-port/README.md) | Source analysis and browser adaptation notes |
 | [Other references](reference/README.md) | Period equipment evidence and the earlier native build |
@@ -58,8 +63,8 @@ The [changelog](CHANGELOG.md) records release checkpoints.
 
 ## Current design and tracking
 
-[Version 0.1 status](verification/version-0.1.md) records the current release
-scope. [Game design](specification/game-design.md) records the product design.
+[Version 0.1 status](verification/version-0.1.md) records the historical 0.1
+checkpoint. [Game design](specification/game-design.md) records the product design.
 [Published progress](verification/published-progress.md) is generated from
 [the requirement register](verification/requirements.json). It separates published
 work, local-only code, failed acceptance, missing behavior and unverified claims.
@@ -100,7 +105,7 @@ its implementation or acceptance on a later source.
 
 - Put a new note in the matching folder and add it to that folder's index.
 - Use relative Markdown links between documents. Code-formatted source paths
-  such as `game/tactical.js` start at the repository root.
+  such as `packages/game/tactical.js` start at the repository root.
 - State the checkout or source commit, date, tested scope, result and limits of
   verification. Keep raw measurements in `evidence/` and link their record.
 - Update the published progress ledger when an implementation is merged.

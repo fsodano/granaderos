@@ -1,9 +1,9 @@
 import {register} from 'node:module';
 import assert from 'node:assert/strict';
-import {JSDOM,VirtualConsole} from '../web/node_modules/jsdom/lib/api.js';
-import {createElement as h,act} from '../web/node_modules/react/index.js';
-import {CONTENT_SAVE_KEY,campaignStorageKey} from '../game/content-launch.js';
-import {encodeSave,decodeSave} from '../game/save.js';
+import {JSDOM,VirtualConsole} from '../apps/web/node_modules/jsdom/lib/api.js';
+import {createElement as h,act} from '../apps/web/node_modules/react/index.js';
+import {CONTENT_SAVE_KEY,campaignStorageKey} from '../packages/game/content-launch.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
 import {battleTimers} from './battle-timers-fixture.mjs';
 import {campaignFetch} from './campaign-library-fixture.mjs';
 register('./tactical-render-loader.mjs',import.meta.url);
@@ -14,7 +14,7 @@ export async function mountCampaign(t,saved){
  const registrations=[];dom.window.document.modelContext={registerTool(tool,{signal}){registrations.push({...tool,signal});}};
  const globals={fetch:campaignFetch,window:dom.window,document:dom.window.document,navigator:dom.window.navigator,localStorage:dom.window.localStorage,sessionStorage:dom.window.sessionStorage,HTMLElement:dom.window.HTMLElement,Element:dom.window.Element,Node:dom.window.Node,Document:dom.window.Document,ShadowRoot:dom.window.ShadowRoot,MutationObserver:dom.window.MutationObserver,getComputedStyle:dom.window.getComputedStyle.bind(dom.window),requestAnimationFrame:dom.window.requestAnimationFrame.bind(dom.window),cancelAnimationFrame:dom.window.cancelAnimationFrame.bind(dom.window),ResizeObserver:class{observe(){}disconnect(){}},IS_REACT_ACT_ENVIRONMENT:true};
  const previous=new Map(Object.keys(globals).map(key=>[key,Object.getOwnPropertyDescriptor(globalThis,key)]));for(const [key,value]of Object.entries(globals))Object.defineProperty(globalThis,key,{configurable:true,writable:true,value});
- const {default:Home}=await import('../web/app/page.tsx'),{createRoot}=await import('../web/node_modules/react-dom/client.js');const timers=battleTimers(act),root=createRoot(dom.window.document.getElementById('root'));let mounted=true;
+ const {default:Home}=await import('../apps/web/app/page.tsx'),{createRoot}=await import('../apps/web/node_modules/react-dom/client.js');const timers=battleTimers(act),root=createRoot(dom.window.document.getElementById('root'));let mounted=true;
  const unmount=async()=>{if(mounted){await act(async()=>root.unmount());mounted=false;}};
  t.after(async()=>{try{await unmount();}finally{timers.restore();dom.window.close();for(const [key,descriptor]of previous){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}}});
  await act(async()=>root.render(h(Home)));const document=dom.window.document;

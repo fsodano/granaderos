@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,endTurn,artilleryReloadPreview} from '../game/tactical.js';
-import {enterSector} from '../game/world.js';
+import {createBattle,actBattle,endTurn,artilleryReloadPreview} from '../packages/game/tactical.js';
+import {enterSector} from '../packages/game/world.js';
 import {issuedBattery} from './stationed-artillery-fixture.mjs';
 import {saved,sync} from './local-contract-fixture.mjs';
 

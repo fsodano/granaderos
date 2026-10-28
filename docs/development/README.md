@@ -14,6 +14,8 @@ bounded experimental workflows.
 
 | Area | Read |
 | --- | --- |
+| Repository folders and source navigation | [Repository map](repository-layout.md) |
+| Current browser architecture and runtime sequences | [Architecture guide](../architecture/README.md) |
 | Setup, commands and source layout | [Getting started](getting-started.md) |
 | Browser campaign studio workflow and verified scope | [Campaign studio](../authoring/campaign-studio.md) |
 | Extend editor fields, panels and controlled adapters | [Editor development](editor-development.md) |
@@ -30,7 +32,7 @@ bounded experimental workflows.
 | Source-engine behavior and adaptation | [JA2 engine reference](../web-port/README.md) |
 | Current gaps and evidence | [Verification](../verification/README.md) |
 
-The browser implementation lives in `game/` and `web/`. The earlier native build
+The browser implementation lives in `packages/game/` and `apps/web/`. The earlier native build
 is documented separately in [native build reference](../reference/native-build.md).
 The engine submodule is not required for the browser setup.
 

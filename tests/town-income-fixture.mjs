@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {activateTownIncome,TOWN_INCOME_SOURCES} from '../game/town-income.js';
+import {activateTownIncome,TOWN_INCOME_SOURCES} from '../packages/game/town-income.js';
 
 // A declared established agreement for subsystem scenarios. This is saved
 // fixture history; actual spoken activation is proved in town-income-campaign.

@@ -1,13 +1,14 @@
+import {fightOnArrival} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {defaultContentPackage} from '../game/content-package.js';
-import {contractQuote} from '../game/contracts.js';
-import {enterSector} from '../game/world.js';
-import {createBattle,actBattle,endTurn,presentedActBattle,presentedEndTurn,getReachable,lookPreview,containerLootPreview} from '../game/tactical.js';
-import {placeBuilding} from '../game/buildings.js';
-import {syncBattleTime} from '../game/time.js';
-import {encodeSave,decodeSave} from '../game/save.js';
-import {ROADSIDE_DISCOVERY_CHEST,ROADSIDE_CROWBAR_ID} from '../game/roadside-discoveries.js';
+import {initialCampaign,dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {defaultContentPackage} from '../packages/game/content-package.js';
+import {contractQuote} from '../packages/game/contracts.js';
+import {enterSector} from '../packages/game/world.js';
+import {createBattle,actBattle,endTurn,presentedActBattle,presentedEndTurn,getReachable,lookPreview,containerLootPreview} from '../packages/game/tactical.js';
+import {placeBuilding} from '../packages/game/buildings.js';
+import {syncBattleTime} from '../packages/game/time.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
+import {ROADSIDE_DISCOVERY_CHEST,ROADSIDE_CROWBAR_ID} from '../packages/game/roadside-discoveries.js';
 
 export const ROOM_ACTOR=126;
 export const roomActor=pair=>pair.battle.units.find(unit=>unit.id===String(ROOM_ACTOR));
@@ -87,7 +88,7 @@ export function paidRoomArrival({oldPinned=false,crowbar=true}={}){
 }
 
 export function preparedRoomArena(options={}){
- const paid=paidRoomArrival(options),campaign=roomCampaignOrder(paid.pair.campaign,{type:'attack',sector:'buenos_aires'}),request=campaign.pendingBattle,width=28,height=18;
+ const paid=paidRoomArrival(options),campaign=fightOnArrival(roomCampaignOrder(paid.pair.campaign,{type:'attack',sector:'buenos_aires'})),request=campaign.pendingBattle,width=28,height=18;
  const ground=Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0}));
  const built=placeBuilding(ground,{id:'fear-room',x:4,y:4,width:6,height:6,roof:'tile',doors:[{id:'fear-door',x:6,y:4}],windows:[{x:9,y:6}]});
  // Declared initial geometry. A full-height screen separates the unchanged

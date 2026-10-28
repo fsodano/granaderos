@@ -5,7 +5,7 @@ import {join} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
 import {asset,visual} from './climb-native-fixture.mjs';
-const {ActorRuntime}=await import('../../web/lib/three/actor-runtime.ts');
+const {ActorRuntime}=await import('../../apps/web/lib/three/actor-runtime.ts');
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const beforeText=readFileSync(new URL('../../docs/art/reviews/climb-crest-phase/before-climb-contact-fit.ts.txt',import.meta.url),'utf8');
 const oldGeometry=readFileSync(new URL('../../docs/art/reviews/climb-crest-phase/before-climb-geometry.js.txt',import.meta.url),'utf8');
@@ -15,7 +15,7 @@ const scratch=mkdtempSync(join(tmpdir(),'granaderos-crest-test-before-'));
 let BeforeFit;
 try {
  writeFileSync(join(scratch,'geometry.mjs'),oldGeometry);
- writeFileSync(join(scratch,'before.ts'),beforeText.replace("'../../../game/climb-geometry.js'",JSON.stringify(pathToFileURL(join(scratch,'geometry.mjs')).href)).replace("'three'",JSON.stringify(new URL('../../web/node_modules/three/build/three.module.js',import.meta.url).href)).replace("'./climb-body-phase'",JSON.stringify(new URL('../../web/lib/three/climb-body-phase.ts',import.meta.url).href)));
+ writeFileSync(join(scratch,'before.ts'),beforeText.replace("'../../../game/climb-geometry.js'",JSON.stringify(pathToFileURL(join(scratch,'geometry.mjs')).href)).replace("'three'",JSON.stringify(new URL('../../apps/web/node_modules/three/build/three.module.js',import.meta.url).href)).replace("'./climb-body-phase'",JSON.stringify(new URL('../../apps/web/lib/three/climb-body-phase.ts',import.meta.url).href)));
  ({NativeClimbContactFit:BeforeFit}=await import(pathToFileURL(join(scratch,'before.ts')).href));
 } finally {rmSync(scratch,{recursive:true,force:true});}
 function predecessorActor(source,id,action,extra={}) {

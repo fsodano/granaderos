@@ -11,10 +11,10 @@ import hashlib
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / 'assets/source/tactical-materials-v1.png'
+SOURCE = ROOT / 'content/assets/source/tactical-materials-v1.png'
 NAMES = ('dry-grass', 'dirt', 'cobble', 'green-grass', 'mud', 'floor',
          'plaster', 'roof', 'wood')
-DESTINATIONS = (ROOT / 'assets/web', ROOT / 'web/public/art')
+DESTINATIONS = (ROOT / 'content/assets/web', ROOT / 'apps/web/public/art')
 
 
 def compile_materials(check=False):

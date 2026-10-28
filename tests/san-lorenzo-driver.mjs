@@ -1,6 +1,6 @@
 import {cautiousCombatOrder} from './cautious-driver.mjs';
-import {getReachable,teamCanSee} from '../game/tactical.js';
-import {spacePoint} from '../game/tactical-space.js';
+import {getReachable,teamCanSee} from '../packages/game/tactical.js';
+import {spacePoint} from '../packages/game/tactical-space.js';
 
 // This route uses a reserve commander, not the usual test policy that keeps
 // mission allies fixed in the firing line. The waypoint is west of the authored

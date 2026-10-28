@@ -1,4 +1,4 @@
-import {artilleryContact} from '../game/tactical.js';
+import {artilleryContact} from '../packages/game/tactical.js';
 import {recoveryMendozaDressingOrder} from './recovery-mendoza-driver.mjs';
 import {northernReliefDefenseController} from './northern-relief-defense.mjs';
 

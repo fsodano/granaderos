@@ -1,7 +1,7 @@
-import {actBattle,getReachable,endTurn,canSee} from '../game/tactical.js';
-import {wallEdgeCells,wallMovementBlocked} from '../game/wall-geometry.js';
-import {sameSurface,spaceKey} from '../game/tactical-space.js';
-import {dialogueApproach} from '../game/npc-dialogue.js';
+import {actBattle,getReachable,endTurn,canSee} from '../packages/game/tactical.js';
+import {wallEdgeCells,wallMovementBlocked} from '../packages/game/wall-geometry.js';
+import {sameSurface,spaceKey} from '../packages/game/tactical-space.js';
+import {dialogueApproach} from '../packages/game/npc-dialogue.js';
 import {beginNPCApproachEvidence,observeNPCApproachAction,recordNPCApproachFailure} from './npc-approach-evidence.mjs';
 // Civilian routines advance during movement. Replan short, legal steps rather
 // than walking toward an obsolete NPC coordinate on a larger sector.

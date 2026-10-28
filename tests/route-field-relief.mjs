@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor,civicStatus} from '../game/campaign.js';
-import {isContractOperative} from '../game/content-character-ids.js';
-import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
-import {hireArrivalOrder,hireArrivalDueSeconds,hiringArrivalReason} from '../game/hiring-arrivals.js';
-import {operativeLocation,operativeInTransit} from '../game/squads.js';
+import {dispatchCampaign,rosterFor,civicStatus} from '../packages/game/campaign.js';
+import {isContractOperative} from '../packages/game/content-character-ids.js';
+import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../packages/game/contracts.js';
+import {hireArrivalDueSeconds,hiringArrivalReason} from '../packages/game/hiring-arrivals.js';
+import {immediateRecruitmentExpectation} from './immediate-recruitment-fixture.mjs';
+import {operativeLocation,operativeInTransit} from '../packages/game/squads.js';
 
 const clock=c=>c.hour*3600+(c.secondOfHour??0);
 
@@ -62,7 +63,7 @@ export function recruitRouteFieldRelief(start,{minimum=12,report=()=>{}}={}){
    .sort((a,b)=>a.quote.total-b.quote.total||b.person.marksmanship-a.person.marksmanship||a.person.id-b.person.id);
   const chosen=candidates[0];if(!chosen)return finish('No available paid catalogue relief.');
   const {person,quote}=chosen;if(quote.total>campaign.resources.treasury)return finish('Insufficient treasury for paid local relief.');
-  const arrival=hireArrivalOrder(campaign,person,'week',quote,sector),cash=campaign.resources.treasury;
+  const arrival=immediateRecruitmentExpectation(campaign,person,'week',quote,sector),cash=campaign.resources.treasury;
   execute({type:'recruitCivic',id:person.id,term:'week',destination:sector});assert.equal(campaign.resources.treasury,cash-quote.total);
   const reference=campaign.hiringArrivals.find(a=>a.operativeId===person.id)??campaign.contracts[person.id];
   const hire={id:person.id,quote:structuredClone(quote),arrival:structuredClone(arrival),guaranteeId:reference.guaranteeId??null,debited:cash-campaign.resources.treasury};hires.push(hire);

@@ -4,12 +4,12 @@ Run Blender --background --python tests/characters-3d/horse-gait.py.
 from pathlib import Path
 import bpy,json,math
 root=Path(__file__).resolve().parents[2]
-manifest=json.loads((root/'web/public/models/characters/manifest.json').read_text())
+manifest=json.loads((root/'apps/web/public/models/characters/manifest.json').read_text())
 for entry in manifest['horse']['lods']:
  bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
  for action in list(bpy.data.actions):bpy.data.actions.remove(action)
  bpy.context.scene.render.fps=30
- bpy.ops.import_scene.gltf(filepath=str(root/'web/public'/entry['url'].lstrip('/')))
+ bpy.ops.import_scene.gltf(filepath=str(root/'apps/web/public'/entry['url'].lstrip('/')))
  rig=next(o for o in bpy.data.objects if o.type=='ARMATURE')
  body=next(o for o in bpy.data.objects if o.type=='MESH' and o.name.startswith('Horse_Body'))
  assert len(rig.data.bones)==19

@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,endTurn,teamCanSee} from '../game/tactical.js';
-import {publicCombatJournal,COMBAT_JOURNAL_LIMIT} from '../game/combat-journal.js';
-import {playerKnownBattle} from '../game/player-known-state.js';
-import {validateBattleSnapshot} from '../game/validate-battle.js';
-import {validateSectorSnapshot} from '../game/squads.js';
+import {createBattle,actBattle,endTurn,teamCanSee} from '../packages/game/tactical.js';
+import {publicCombatJournal,COMBAT_JOURNAL_LIMIT} from '../packages/game/combat-journal.js';
+import {playerKnownBattle} from '../packages/game/player-known-state.js';
+import {validateBattleSnapshot} from '../packages/game/validate-battle.js';
+import {validateSectorSnapshot} from '../packages/game/squads.js';
 import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
-import {movementStep} from '../game/movement-step.js';
+import {movementStep} from '../packages/game/movement-step.js';
 
 const tiles=(width=20,height=8)=>Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,blocksSight:false,cover:0}));
 const journal=state=>publicCombatJournal(state).map(entry=>entry.text);

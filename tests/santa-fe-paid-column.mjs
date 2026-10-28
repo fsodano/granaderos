@@ -1,8 +1,8 @@
 import {collectReturnedServiceKit} from './returned-service-kit.mjs';
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {contractQuote} from '../game/contracts.js';
-import {baseMorale} from '../game/morale.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {contractQuote} from '../packages/game/contracts.js';
+import {baseMorale} from '../packages/game/morale.js';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
 
 // Pay for the actual available survivors before resting a replacement column.

@@ -1,6 +1,6 @@
 // Keep the crew at its battery after contact; use only shared visible targets.
-import {chooseArtilleryAction} from '../game/tactical-ai-artillery.js';
-import {teamCanSee,getReachable,stanceCost} from '../game/tactical.js';
+import {chooseArtilleryAction} from '../packages/game/tactical-ai-artillery.js';
+import {teamCanSee,getReachable,stanceCost} from '../packages/game/tactical.js';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
 import {batteryOrder} from './advancing-battery-driver.mjs';
 export function holdBatteryOrder(b,u){

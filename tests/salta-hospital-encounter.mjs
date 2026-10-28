@@ -2,8 +2,8 @@ import assert from 'node:assert/strict';
 import {fight} from './opening-driver.mjs';
 import {coordinatedHospitalBattery} from './coordinated-hospital-battery.mjs';
 import {openingRearFormation} from './opening-rear-medical-supply.mjs';
-import {operativeLocation,operativeInTransit} from '../game/squads.js';
-import {contractExpiresSeconds} from '../game/contracts.js';
+import {operativeLocation,operativeInTransit} from '../packages/game/squads.js';
+import {contractExpiresSeconds} from '../packages/game/contracts.js';
 
 const localServing=(campaign,id,sector)=>{
  const body=campaign.operativeState[id],contract=campaign.contracts[id],expiry=contractExpiresSeconds(contract),now=campaign.hour*3600+(campaign.secondOfHour??0);

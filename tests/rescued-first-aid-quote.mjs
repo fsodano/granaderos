@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {criticalFirstAidNeeded,firstAidPlan} from '../game/first-aid.js';
+import {criticalFirstAidNeeded,firstAidPlan} from '../packages/game/first-aid.js';
 
 // Quote only wound work. One prospective dressing lets the Native pure plan
 // price each stroke; it never adds a dressing or applies care to an operative.

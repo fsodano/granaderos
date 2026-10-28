@@ -7,7 +7,7 @@ import {prepareNorthernSquad,prepareTucumanSquad,prepareRescueSquad,stabilizeRes
 import {recoverRescueForce} from '../tests/rescue-recovery.mjs';
 import {prepareSaltaAssault,completeNorthernMission} from '../tests/salta-route.mjs';
 import {cautiousCombatOrder} from '../tests/cautious-driver.mjs';
-import {encodeSave,decodeSave} from '../game/save.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
 
 const args=process.argv.slice(2);
 if(args.length&&!(args.length===2&&args[0]==='--output'))throw Error('Usage: node tools/verify-northern-route.mjs [--output directory]');

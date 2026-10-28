@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign} from '../game/campaign.js';
-import {decodeSave,encodeSave} from '../game/save.js';
-import {operativeLocation,operativeInTransit} from '../game/squads.js';
+import {dispatchCampaign} from '../packages/game/campaign.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
+import {operativeLocation,operativeInTransit} from '../packages/game/squads.js';
 import {stageRouteRoofDefenders} from './route-roof-defenders.mjs';
 
 // Released prisoners can be serving locally without belonging to a squad.

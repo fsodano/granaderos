@@ -80,7 +80,7 @@ saved scene.
 
 The new rifle, pistol and shot images were generated with the built-in image
 generator and saved as transparent 256-pixel WebP files. The existing musket
-image is reused. See the [prompts and asset paths](../../web/public/art/supplies/ammunition-prompts.json).
+image is reused. See the [prompts and asset paths](../../apps/web/public/art/supplies/ammunition-prompts.json).
 
 This does not establish advanced-checkout integration, full JA2 ammunition variants,
 individual historical calibers or sustained combat frame rate.

@@ -1,8 +1,9 @@
+import {fightOnArrival} from './assault-fixture.mjs';
 import {scriptedWithdrawal} from './scripted-battle-report.mjs';
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {enterSector} from '../game/world.js';
-import {actBattle,endTurn} from '../game/tactical.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {enterSector} from '../packages/game/world.js';
+import {actBattle,endTurn} from '../packages/game/tactical.js';
 import {approachNPC} from './approach-npc.mjs';
 import {order,saved,sync} from './local-contract-fixture.mjs';
 import {freshNorthernRoute} from './fresh-northern-fixture.mjs';
@@ -57,14 +58,14 @@ export function freshMendozaLoss({northernCheckpoint,onCheckpoint,report=()=>{}}
 // Authored starting control and a compact engagement isolate the role/death
 // boundary. Hiring, project payment, enemy fire and settlement are real actions.
 export async function servingEngineerLoss({built=false,custom=false}={}){
- const {initialCampaign}=await import('../game/campaign.js');const {defaultContentPackage}=await import('../game/content-package.js');const {defaultCampaignStory}=await import('../game/campaign-story.js');const {createBattle}=await import('../game/tactical.js');
+ const {initialCampaign}=await import('../packages/game/campaign.js');const {defaultContentPackage}=await import('../packages/game/content-package.js');const {defaultCampaignStory}=await import('../packages/game/campaign-story.js');const {createBattle}=await import('../packages/game/tactical.js');
  const d=defaultContentPackage();d.startingTerritory.buenos_aires.owner='patriot';d.campaignRoles={foundryEngineer:'person-110',marchCommander:'person-57'};d.foundry={sector:'retiro',name:'Taller del Retiro',armyName:'Ejército de Prueba',setupCost:137,fundingCost:809};
  for(const id of ['person-110','person-136'])d.characters.find(c=>c.id===id).arrivalHours=0;
  d.characters.find(c=>c.id==='person-110').attributes.maxHp=30;
  if(custom){d.errands=[];d.includeOriginalResidents=false;d.campaignStory=defaultCampaignStory();d.campaignStory.chapters[0].conditions=[{type:'day',min:100,max:null}];}
  let s=order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'week'});s=order(s,{type:'recruitCivic',id:136,term:'week'});
  if(built){const money=s.resources.treasury;s=order(s,{type:'foundry'});assert.equal(s.resources.treasury,money-137);}
- s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});const r=s.pendingBattle;
+ s=order(s,{type:'travel',sector:'buenos_aires'});s=fightOnArrival(order(s,{type:'attack',sector:'san_nicolas'}));const r=s.pendingBattle;
  let battle=createBattle(r.squad.map(u=>({...u,x:u.id===110?5:1,y:u.id===110?1:6})),{...r,width:12,height:8,seed:45,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:Math.floor(i/12)===4?'wall':'grass',blocked:Math.floor(i/12)===4,blocksSight:Math.floor(i/12)===4,cover:0})),enemies:r.enemies.map((u,i)=>({...u,x:7,y:i%8,...(i?{hp:0,bleeding:0,bandaged:0}:{y:1,marksmanship:100})}))});
  const preInjury={campaign:structuredClone(s),battle:structuredClone(battle)};
  battle=endTurn(battle);assert.equal(battle.units.find(u=>u.id==='110').hp,0);const active=saved(sync({campaign:s,battle}));

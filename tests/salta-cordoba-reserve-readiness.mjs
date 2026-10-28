@@ -1,26 +1,26 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor,civicStatus,recruitmentStatus} from '../game/campaign.js';
-import {isContractOperative} from '../game/content-character-ids.js';
-import {contractQuote,contractExpiresSeconds} from '../game/contracts.js';
-import {hiringArrivalReason,hiringTravelHours} from '../game/hiring-arrivals.js';
-import {operativeLocation,operativeInTransit,canReassignOperative} from '../game/squads.js';
-import {careAssignmentIssue,doctorRate} from '../game/medical-care.js';
-import {sectorInventoryModel,sectorInventorySites} from '../game/sector-inventory.js';
-import {applyItemQuantity,SUPPLY_ITEMS} from '../game/tactical-inventory.js';
-import {carriedAmmunition,ammunitionOrderQuote} from '../game/campaign-ammunition.js';
-import {ammoTypeFor,ammoCount} from '../game/ammo-types.js';
-import {AMMUNITION_FAMILIES} from '../game/ammunition-families.js';
-import {WEAPONS} from '../game/data.js';
-import {encounterDefinitions,encounterRequirements,canRecruitEncounter} from '../game/encounters.js';
-import {enterSector} from '../game/world.js';
-import {actBattle,getReachable,canSee,lookPreview,artilleryContact} from '../game/tactical.js';
-import {dispatchCampaignSandbox} from '../game/campaign-editor-sandbox.js';
-import {dialogueApproach} from '../game/npc-dialogue.js';
-import {wallMovementBlocked} from '../game/wall-geometry.js';
-import {spacePoint,sameCell,sameSurface} from '../game/tactical-space.js';
-import {surfaceAt} from '../game/tactical-space.js';
-import {syncBattleTime} from '../game/time.js';
-import {artilleryProfile} from '../game/artillery-definitions.js';
+import {dispatchCampaign,rosterFor,civicStatus,recruitmentStatus} from '../packages/game/campaign.js';
+import {isContractOperative} from '../packages/game/content-character-ids.js';
+import {contractQuote,contractExpiresSeconds} from '../packages/game/contracts.js';
+import {hiringArrivalReason} from '../packages/game/hiring-arrivals.js';
+import {operativeLocation,operativeInTransit,canReassignOperative} from '../packages/game/squads.js';
+import {careAssignmentIssue,doctorRate} from '../packages/game/medical-care.js';
+import {sectorInventoryModel,sectorInventorySites} from '../packages/game/sector-inventory.js';
+import {applyItemQuantity,SUPPLY_ITEMS} from '../packages/game/tactical-inventory.js';
+import {carriedAmmunition,ammunitionOrderQuote} from '../packages/game/campaign-ammunition.js';
+import {ammoTypeFor,ammoCount} from '../packages/game/ammo-types.js';
+import {AMMUNITION_FAMILIES} from '../packages/game/ammunition-families.js';
+import {WEAPONS} from '../packages/game/data.js';
+import {encounterDefinitions,encounterRequirements,canRecruitEncounter} from '../packages/game/encounters.js';
+import {enterSector} from '../packages/game/world.js';
+import {actBattle,getReachable,canSee,lookPreview,artilleryContact} from '../packages/game/tactical.js';
+import {dispatchCampaignSandbox} from '../packages/game/public/campaign-playtest-api.js';
+import {dialogueApproach} from '../packages/game/npc-dialogue.js';
+import {wallMovementBlocked} from '../packages/game/wall-geometry.js';
+import {spacePoint,sameCell,sameSurface} from '../packages/game/tactical-space.js';
+import {surfaceAt} from '../packages/game/tactical-space.js';
+import {syncBattleTime} from '../packages/game/time.js';
+import {artilleryProfile} from '../packages/game/artillery-definitions.js';
 import {quoteMountainServiceBudget} from './mountain-service-budget.mjs';
 import {saltaEarlyClinicCareOrders,supplySaltaClinicDoctors,clinicCareChange} from './salta-clinic-supply.mjs';
 import {coordinatedHospitalBattery} from './coordinated-hospital-battery.mjs';
@@ -35,7 +35,7 @@ const local=(c,at)=>c.recruited.filter(id=>c.operativeState[id]?.alive&&!c.opera
 const fit=(c,id)=>{const r=c.operativeState[id];return r.alive&&!r.captured&&r.hp===r.maxHp&&!r.bleeding&&!r.asleep&&!r.routed&&!r.unconscious&&r.energy>10;};
 const freeGuard=(c,id)=>fit(c,id)&&canReassignOperative(c,id)&&['active','rest'].includes(c.operativeState[id].assignment??'active');
 const clinicDoctor=(c,town,patients)=>rosterFor(c).filter(op=>town.includes(op.id)&&!patients.includes(op.id)&&[undefined,'no_medkits'].includes(careAssignmentIssue(c,op,'doctor')?.code)).sort((a,b)=>b.medical-a.medical||a.id-b.id)[0];
-const offers=c=>rosterFor(c).filter(op=>isContractOperative(c,op)&&fit(c,op.id)&&civicStatus(c,op.id).available&&hiringTravelHours(c,op.id)===0).map(op=>({op,quote:contractQuote(c,op,'week')})).filter(row=>row.quote.available&&!row.quote.permanent&&row.quote.price>0).sort((a,b)=>a.quote.total-b.quote.total||b.op.marksmanship-a.op.marksmanship||a.op.id-b.op.id);
+const offers=c=>rosterFor(c).filter(op=>isContractOperative(c,op)&&fit(c,op.id)&&civicStatus(c,op.id).available).map(op=>({op,quote:contractQuote(c,op,'week')})).filter(row=>row.quote.available&&!row.quote.permanent&&row.quote.price>0).sort((a,b)=>a.quote.total-b.quote.total||b.op.marksmanship-a.op.marksmanship||a.op.id-b.op.id);
 
 // This is the current local wound/stock quote, before choosing how to obtain
 // any missing dressings. Unknown depot stock and future arrivals do not count.

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {rosterFor,dailyIncome} from '../game/campaign.js';
-import {contractQuote,contractExpiresSeconds} from '../game/contracts.js';
+import {rosterFor,dailyIncome} from '../packages/game/campaign.js';
+import {contractQuote,contractExpiresSeconds} from '../packages/game/contracts.js';
 import {ensureRouteTownIncome} from './route-town-income.mjs';
 import {order,saved} from './local-contract-fixture.mjs';
 

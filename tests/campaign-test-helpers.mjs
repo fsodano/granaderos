@@ -1,9 +1,9 @@
 import {approachNPC} from './approach-npc.mjs';
-import {worldOwner} from '../game/world-cells.js';
-import {tooTiredToMarch} from '../game/march-fatigue.js';
-import {dispatchCampaign} from '../game/campaign.js';
-import {CAMPAIGN_SECTORS} from '../game/data.js';
-import {transportPath} from '../game/logistics.js';
+import {worldOwner} from '../packages/game/world-cells.js';
+import {tooTiredToMarch} from '../packages/game/march-fatigue.js';
+import {dispatchCampaign} from '../packages/game/campaign.js';
+import {CAMPAIGN_SECTORS} from '../packages/game/data.js';
+import {transportPath} from '../packages/game/logistics.js';
 // Follow real recovery and movement orders when test journeys cross exhaustion.
 export function restForMarch(state){
  if(state.pendingEncounter||!['patriot','neutral'].includes(worldOwner(state,state.location)))return state;
@@ -41,9 +41,9 @@ export function marchToFront(state,action){
  return destination?completeTestTravel(s,{sector:destination}):s;
 }
 
-import {encounterForOperative} from '../game/encounters.js';
-import {enterSector} from '../game/world.js';
-import {createBattle} from '../game/tactical.js';
+import {encounterForOperative} from '../packages/game/encounters.js';
+import {enterSector} from '../packages/game/world.js';
+import {createBattle} from '../packages/game/tactical.js';
 export function meetLocalRecruit(state,action){
  if(action.type!=='recruit')return null;
  const npc=encounterForOperative(action.id);if(!npc)return null;

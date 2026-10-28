@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {Ray,Triangle,Vector3} from '../web/node_modules/three/build/three.module.js';
+import {Ray,Triangle,Vector3} from '../apps/web/node_modules/three/build/three.module.js';
 
 // Use the exported triangles and their native skin weights. A head pivot or
 // a nearest vertex can miss the nose, jaw, or centre of a broad triangle.

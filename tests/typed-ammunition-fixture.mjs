@@ -1,5 +1,5 @@
-import {addAmmunition,isAmmunitionStack,weaponAmmoType} from '../game/ammunition-types.js';
-import {syncUnitAmmunition} from '../game/tactical-ammunition.js';
+import {addAmmunition,isAmmunitionStack,weaponAmmoType} from '../packages/game/ammunition-types.js';
+import {syncUnitAmmunition} from '../packages/game/tactical-ammunition.js';
 
 // Explicit test setup only. Replace physical loose stock, then derive the HUD
 // total; changing unit.ammo after creation cannot provision a weapon.

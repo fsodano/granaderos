@@ -2,10 +2,10 @@
 // A valid partial atlas set is useful progress but never a completed migration.
 import {readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
-import {SPRITE_APPEARANCES} from '../game/sprite-appearances.js';
-import {REQUIRED_SPRITE_SEQUENCES} from '../game/sprite-action-requirements.js';
+import {SPRITE_APPEARANCES} from '../packages/game/sprite-appearances.js';
+import {REQUIRED_SPRITE_SEQUENCES} from '../packages/game/sprite-action-requirements.js';
 
-const directory='assets/previews/illustrated-sprites/packed';
+const directory='content/assets/previews/illustrated-sprites/packed';
 const manifest=JSON.parse(await readFile(`${directory}/manifest.json`,'utf8'));
 const missing=[],invalid=[];
 let expected=0;

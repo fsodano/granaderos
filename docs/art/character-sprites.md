@@ -10,11 +10,11 @@ from this library. The six custom portrait choices also select shared bodies.
 An explicit saved `spriteAppearance` takes priority and stays stable through
 movement, combat, changes of stance, and loading a save.
 
-The [roster comparison](../../assets/previews/illustrated-sprites/roster.png)
+The [roster comparison](../../content/assets/previews/illustrated-sprites/roster.png)
 pairs all 61 portraits with their assigned body. Six assignments were refined
 after this review to better match age, skin tone, build, or general clothing.
 
-![Shared appearance library](../../assets/previews/illustrated-sprites/variety.png)
+![Shared appearance library](../../content/assets/previews/illustrated-sprites/variety.png)
 
 ## Coverage
 
@@ -43,7 +43,7 @@ hair, body, and clothing layers.
 ## Source and export process
 
 The approved visual reference is
-[approved-style.png](../../assets/source/illustrated-sprites/approved-style.png).
+[approved-style.png](../../content/assets/source/illustrated-sprites/approved-style.png).
 Authored sources and exact generation prompts are in
 `assets/source/illustrated-sprites/`. The source package includes selected sheets,
 their prompts, required pose references, and final calibration records. Rejected
@@ -86,7 +86,7 @@ node tools/preview-tactical-sprites.mjs assets/previews/illustrated-sprites/batt
 ```
 
 The interactive review is
-[assets/previews/illustrated-sprites/index.html](../../assets/previews/illustrated-sprites/index.html).
+[assets/previews/illustrated-sprites/index.html](../../content/assets/previews/illustrated-sprites/index.html).
 It has appearance, action, direction, zoom, pause, and frame controls. The tactical
 preview tool renders the actual React scene and the currently selected atlas.
 
@@ -99,7 +99,7 @@ frames, validating the published files, and checking runtime selection and timin
 TypeScript and the production build passed. The static export contains 619 files
 and 530 verified asset references.
 
-The [final browser report](../../assets/previews/illustrated-sprites/browser/final-sprite-qa.json)
+The [final browser report](../../content/assets/previews/illustrated-sprites/browser/final-sprite-qa.json)
 records 39 passing checks against the complete 328-atlas build. These cover all
 18 states on the shawl appearance, all 19 shared idle appearances, appearance and
 stance retention through save import and reload, and six visible appearances at
@@ -108,7 +108,7 @@ changes breathing frames. No browser errors or failed requests were recorded.
 The checks used a fresh, isolated browser context and did not access the user's
 saved game.
 
-The [300% battlefield screenshot](../../assets/previews/illustrated-sprites/browser/variety-3x.png)
+The [300% battlefield screenshot](../../content/assets/previews/illustrated-sprites/browser/variety-3x.png)
 shows the shared bodies in the game. The browser report lists additional action
 screenshots.
 

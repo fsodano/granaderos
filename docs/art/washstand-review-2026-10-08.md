@@ -17,7 +17,7 @@ Fine lip and handle edges need close scale. There are no after console errors.
 | 44 px | [Photo](tactical-reference-2026-10-08/washstand-before-44.jpg) | [Photo](tactical-reference-2026-10-08/washstand-after-44.jpg) |
 | 88 px | [Photo](tactical-reference-2026-10-08/washstand-before-88.jpg) | [Photo](tactical-reference-2026-10-08/washstand-after-88.jpg) |
 
-The [native cost](../../artifacts/washstand/native-cost.json) is 276 to 864
+The [native cost](../evidence/artifacts/washstand/native-cost.json) is 276 to 864
 triangles and four to five combined material batches for a default washstand.
 It adds 588 triangles and one existing water material batch. Its calculated
 projection sizes are offline facts; the four photos above are root live captures.
@@ -29,8 +29,8 @@ projection sizes are offline facts; the four photos above are root live captures
 | Geometries | 108 → 109 | 101 → 102 |
 | Textures | 43 → 43 | 28 → 28 |
 
-The [before metrics](../../artifacts/washstand/before-metrics.json) and
-[after metrics](../../artifacts/washstand/after-metrics.json) have one loaded
+The [before metrics](../evidence/artifacts/washstand/before-metrics.json) and
+[after metrics](../evidence/artifacts/washstand/after-metrics.json) have one loaded
 actor, none pending, and no effects. The counters include resources retained
 after zoom changes. Short FPS readings are near 120; they do not prove sustained
 performance.
@@ -41,22 +41,22 @@ passes in 12.635 seconds and production build in 19.613 seconds. The build has
 passes 6,838 tests in all 898 selected files, with four workers and no test name
 filters, in 2,653.436 seconds. No tests fail, skip or cancel. Eight extended files
 are outside the standard quick selection. Node 25.9.0, npm 11.12.1 and the actual
-generic Python 3.9.6 subprocess are pinned in the [gate receipt](../../artifacts/washstand/gate-receipt.json).
+generic Python 3.9.6 subprocess are pinned in the [gate receipt](../evidence/artifacts/washstand/gate-receipt.json).
 The old piece 14 quick was stopped when its bedding prerequisite was rejected.
 That stopped run is preserved and is not this final gate.
 
-The [input seal](../../artifacts/washstand/input-seal.json) proves exact source,
+The [input seal](../evidence/artifacts/washstand/input-seal.json) proves exact source,
 assets, dependencies, engine state and production source. Final source:
 `6d2c831742b358edcec58e70468c2d271a10cd17b1580c6c9a9288ffbf78ed77`.
-The [root comparison](../../artifacts/washstand/root-equivalence-proof.json)
+The [root comparison](../evidence/artifacts/washstand/root-equivalence-proof.json)
 passes for all 10,418 regular runtime, test, asset and configuration inputs plus
 the engine gitlink, with strict dependency equality. The
-[portable helper](../../artifacts/washstand/verify-equivalence.py) supports
+[portable helper](../evidence/artifacts/washstand/verify-equivalence.py) supports
 `--root PATH --include-dependencies` and an optional production build-info path.
 Root docs, photos and revision labels receive separate checks.
 
-The [review receipt](../../artifacts/washstand/review-receipt.json) records live
-acceptance and limits. The [fixed source proof](../../artifacts/washstand/fixed-washstand-source-proof.json)
+The [review receipt](../evidence/artifacts/washstand/review-receipt.json) records live
+acceptance and limits. The [fixed source proof](../evidence/artifacts/washstand/fixed-washstand-source-proof.json)
 keeps the accepted washstand body exact. The three-file patch follows corrected
-piece 13; its [UTF-8 wrapper](../../artifacts/washstand/piece14-washstand.patch.json)
+piece 13; its [UTF-8 wrapper](../evidence/artifacts/washstand/piece14-washstand.patch.json)
 preserves decoded bytes and SHA. The [delivery plan](../plans/tactical-reference-graphics.md) records the PR and merge state.

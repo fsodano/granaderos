@@ -57,8 +57,8 @@ def retained_before(doc,data,recipe):
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[2]);p.add_argument('--receipt',type=Path);a=p.parse_args();root=a.root.resolve()
-    authoring=root/'assets/source/characters-3d/authoring';recipe=module('climb_palm_recipe',authoring/'climb_palm_support.py');merge=module('climb_palm_glb',root/'tools/characters-3d/merge-animation-bank.py');gesture=module('climb_palm_channels',root/'tools/characters-3d/build-gesture-support.py')
-    out=root/'web/public/models/characters';manifest_path=out/'manifest.json';assert not manifest_path.is_symlink(),'Use private or owned manifest output';manifest=json.loads(manifest_path.read_text());before_manifest=copy.deepcopy(manifest);receipt={};pending=[]
+    authoring=root/'content/assets/source/characters-3d/authoring';recipe=module('climb_palm_recipe',authoring/'climb_palm_support.py');merge=module('climb_palm_glb',root/'tools/characters-3d/merge-animation-bank.py');gesture=module('climb_palm_channels',root/'tools/characters-3d/build-gesture-support.py')
+    out=root/'apps/web/public/models/characters';manifest_path=out/'manifest.json';assert not manifest_path.is_symlink(),'Use private or owned manifest output';manifest=json.loads(manifest_path.read_text());before_manifest=copy.deepcopy(manifest);receipt={};pending=[]
     source=hashlib.sha256((authoring/'climb_palm_support.py').read_bytes()).hexdigest()
     for gender in('male','female'):
         bank=manifest['animationLibraries'][gender];path=out/Path(bank['url']).name;assert not path.is_symlink(),'Use private or owned bank output';assert hashlib.sha256(path.read_bytes()).hexdigest()==bank['sha256'],'Bank does not match current manifest'

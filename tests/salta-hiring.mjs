@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import {rosterFor} from '../game/campaign.js';
-import {contractQuote} from '../game/contracts.js';
-import {hiringTravelHours} from '../game/hiring-arrivals.js';
+import {rosterFor} from '../packages/game/campaign.js';
+import {contractQuote} from '../packages/game/contracts.js';
+
 
 // This daylight departure uses personnel who can enter local service now.
 // Price the complete force, including guarantees, before spending its budget.
@@ -10,7 +10,7 @@ export function quoteSaltaHires(campaign,local,{reserve=250}={}){
  assert.ok(local.every(id=>campaign.recruited.includes(id)&&campaign.operativeState[id].alive&&!campaign.operativeState[id].captured));
  assert.ok(Number.isSafeInteger(reserve)&&reserve>=0);
  const count=Math.max(0,12-local.length-1),budget=campaign.resources.treasury-reserve;
- const roster=rosterFor(campaign).filter(op=>op.id>=100&&op.id<1000&&!campaign.recruited.includes(op.id)&&!campaign.hiringArrivals.some(hire=>hire.operativeId===op.id)&&campaign.operativeState[op.id].alive&&!campaign.operativeState[op.id].captured&&hiringTravelHours(campaign,op.id)===0);
+ const roster=rosterFor(campaign).filter(op=>op.id>=100&&op.id<1000&&!campaign.recruited.includes(op.id)&&!campaign.hiringArrivals.some(hire=>hire.operativeId===op.id)&&campaign.operativeState[op.id].alive&&!campaign.operativeState[op.id].captured);
  const offer=(op,term)=>({id:op.id,term,quote:contractQuote(campaign,op,term),marksmanship:op.marksmanship});
  const specialists=roster.map(op=>offer(op,'day')).filter(row=>row.quote.available&&!row.quote.permanent).sort((a,b)=>b.marksmanship-a.marksmanship||a.quote.total-b.quote.total||a.id-b.id);
  for(const specialist of specialists)for(const term of ['week','day']){

@@ -1,8 +1,8 @@
-import {refreshMilitaryCondition} from '../game/actor-condition.js';
-import {enterSector} from '../game/world.js';
-import {actBattle} from '../game/tactical.js';
-import {boundaryMatches} from '../game/tactical-exits.js';
-import {propBlocksAt} from '../game/props.js';
+import {refreshMilitaryCondition} from '../packages/game/actor-condition.js';
+import {enterSector} from '../packages/game/world.js';
+import {actBattle} from '../packages/game/tactical.js';
+import {boundaryMatches} from '../packages/game/tactical-exits.js';
+import {propBlocksAt} from '../packages/game/props.js';
 // Subsystem-only boundary fixture: place each able participant on an open
 // authorized boundary, then pay the real reducer's exit cost. This does not
 // claim to test the approach route or replace the real opening playthrough.

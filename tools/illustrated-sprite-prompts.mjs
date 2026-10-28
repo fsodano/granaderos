@@ -3,7 +3,7 @@
 // exact prompt in assets/source/illustrated-sprites before packing.
 import {resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {SPRITE_APPEARANCES} from '../game/sprite-appearances.js';
+import {SPRITE_APPEARANCES} from '../packages/game/sprite-appearances.js';
 
 const details={
  royalist:'Off-white coat and trousers, muted crimson collar and cuffs, black shako with small red plume, ivory crossed straps, compact brown pack. Long flintlock musket in both hands at low ready.',
@@ -70,5 +70,5 @@ export function sequencePrompt(id,sequence,half='north'){
 
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){
  const ids=process.argv.slice(2);
- console.log(JSON.stringify(ids.map(id=>({name:`${id}-idle-v1`,prompt:idlePrompt(id),reference:'assets/source/illustrated-sprites/granadero-idle-v1.png'}))));
+ console.log(JSON.stringify(ids.map(id=>({name:`${id}-idle-v1`,prompt:idlePrompt(id),reference:'content/assets/source/illustrated-sprites/granadero-idle-v1.png'}))));
 }

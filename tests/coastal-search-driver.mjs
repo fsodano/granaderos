@@ -1,5 +1,5 @@
 import {coastalBatteryController} from './coastal-command-driver.mjs';
-import {getReachable,teamCanSee,stanceCost} from '../game/tactical.js';
+import {getReachable,teamCanSee,stanceCost} from '../packages/game/tactical.js';
 
 // A quiet battlefield can still contain an unseen enemy. Search known map
 // quadrants when the battery has no order, without reading hidden positions.

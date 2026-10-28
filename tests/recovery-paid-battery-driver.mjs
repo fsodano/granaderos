@@ -5,9 +5,9 @@ import {tucumanCombatOrder} from './tucuman-driver.mjs';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
 import {teamArtilleryOrder} from './team-artillery-driver.mjs';
 import {mountainBatteryOrder} from './mountain-battery-driver.mjs';
-import {sectorDeploymentModel,sectorDeploymentAction} from '../game/sector-deployment.js';
-import {playerKnownBattle} from '../game/player-known-state.js';
-import {actBattle,getReachable,exitPreview,teamCanSee,artilleryContact,artilleryCrewPlan,artilleryCosts,stanceCost} from '../game/tactical.js';
+import {sectorDeploymentModel,sectorDeploymentAction} from '../packages/game/sector-deployment.js';
+import {playerKnownBattle} from '../packages/game/player-known-state.js';
+import {actBattle,getReachable,exitPreview,teamCanSee,artilleryContact,artilleryCrewPlan,artilleryCosts,stanceCost} from '../packages/game/tactical.js';
 
 
 const knownGroundRoutes=(b,u)=>{

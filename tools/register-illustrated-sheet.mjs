@@ -2,7 +2,7 @@
 // manifest is reviewable and is the packer's input, not an implicit heuristic
 // applied afresh whenever the game builds.
 import {readFile,writeFile} from 'node:fs/promises';
-import sharp from '../web/node_modules/sharp/lib/index.js';
+import sharp from '../apps/web/node_modules/sharp/lib/index.js';
 import {removeExportKey,sheetRectangles,boundsOf} from './pack-illustrated-sprites.mjs';
 
 const [source,name,directionList,framesText='1',scaleText='.29',logicalCellText='52',pivotMethod='upright']=process.argv.slice(2);
@@ -39,7 +39,7 @@ for(const {row,col,rect} of rects){
  }
  slots.push(slot);
 }
-const manifestPath='assets/source/illustrated-sprites/sources.json';
+const manifestPath='content/assets/source/illustrated-sprites/sources.json';
 const manifest=JSON.parse(await readFile(manifestPath,'utf8'));
 const sheet={name,source,prompt:source.replace(/\.png$/,'.prompt.txt'),columns,rows,frames,fps:frames===1?0:name.includes('unconscious')?1:5,cell:logicalCell*3,logicalCell,anchor:anchors[logicalCell],scale,slots};
 const existing=manifest.sheets.findIndex(item=>item.source===source);

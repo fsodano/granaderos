@@ -2,13 +2,13 @@ import {prepareRouteBattery,prepareRouteMixedBattery} from './route-battery.mjs'
 import {supplyRouteDressings} from './route-dressings.mjs';
 import {repairRouteFirearms,discoverRouteCache} from './finite-route-equipment.mjs';
 import assert from 'node:assert/strict';
-import {decodeSave,encodeSave} from '../game/save.js';
-import {dispatchCampaign,rosterFor,dailyIncome} from '../game/campaign.js';
-import {contractQuote} from '../game/contracts.js';
-import {baseMorale} from '../game/morale.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {BLADES} from '../game/tactical.js';
-import {squadTravelStatus} from '../game/squad-travel.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
+import {dispatchCampaign,rosterFor,dailyIncome} from '../packages/game/campaign.js';
+import {contractQuote} from '../packages/game/contracts.js';
+import {baseMorale} from '../packages/game/morale.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {BLADES} from '../packages/game/tactical.js';
+import {squadTravelStatus} from '../packages/game/squad-travel.js';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {prepareFinalAssault} from './final-campaign-route.mjs';
 

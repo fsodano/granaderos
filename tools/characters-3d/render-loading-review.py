@@ -10,7 +10,7 @@ import bpy
 from mathutils import Matrix,Vector
 
 ROOT=Path(__file__).resolve().parents[2]
-sys.path.insert(0,str(ROOT/'assets/source/characters-3d/authoring'))
+sys.path.insert(0,str(ROOT/'content/assets/source/characters-3d/authoring'))
 from character import create_character
 from equipment_library import create_library
 from equipment_dimensions import PISTOL_STRETCH,RIFLE_STRETCH

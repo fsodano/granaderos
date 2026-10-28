@@ -2,6 +2,23 @@
 
 [Documentation index](../README.md)
 
+## Accepted architecture
+
+Read both accepted documents before architecture work or changes to domain terminology.
+The [repository instructions](../../AGENTS.md) require their use.
+
+| Document | Purpose |
+| --- | --- |
+| [Domain architecture and implementation plan](accepted/domain-architecture.md) | Domain model, use cases, repositories, world behavior, package boundaries, and implementation gates |
+| [Ubiquitous language](accepted/ubiquitous-language.md) | Canonical terms, ownership, naming rules, and consistency checks |
+
+Accepted plans define required architecture and behavior. Source and dated
+verification establish implementation. The [architecture guide](../architecture/README.md)
+explains the current code. The [repository map](../development/repository-layout.md)
+shows where its applications, packages, content, and tools live.
+
+## Feature plans
+
 These documents record proposals, implementation steps and delivered editor scope.
 Some steps have later implementation notes. A plan is not evidence that its
 requirements are complete. Check the [version 0.1 status](../verification/version-0.1.md),

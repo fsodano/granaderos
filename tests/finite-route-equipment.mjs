@@ -1,21 +1,21 @@
 import assert from 'node:assert/strict';
-import {rosterFor} from '../game/campaign.js';
-import {operativeLocation} from '../game/squads.js';
-import {sectorInventoryModel,sectorInventorySites} from '../game/sector-inventory.js';
-import {applyItemQuantity} from '../game/tactical-inventory.js';
-import {finiteCachesFor} from '../game/campaign-physical.js';
-import {repairMaterialPoints} from '../game/repair-materials.js';
-import {WEAPONS} from '../game/data.js';
+import {rosterFor} from '../packages/game/campaign.js';
+import {operativeLocation} from '../packages/game/squads.js';
+import {sectorInventoryModel,sectorInventorySites} from '../packages/game/sector-inventory.js';
+import {applyItemQuantity} from '../packages/game/tactical-inventory.js';
+import {finiteCachesFor} from '../packages/game/campaign-physical.js';
+import {repairMaterialPoints} from '../packages/game/repair-materials.js';
+import {WEAPONS} from '../packages/game/data.js';
 import {order,visit,saved} from './local-contract-fixture.mjs';
 import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 import {takeFiniteCache,leaveFiniteCache} from './finite-cache-driver.mjs';
-import {transportPath} from '../game/logistics.js';
-import {contractExpiresSeconds,contractRenewalQuote} from '../game/contracts.js';
+import {transportPath} from '../packages/game/logistics.js';
+import {contractExpiresSeconds,contractRenewalQuote} from '../packages/game/contracts.js';
 import {completeTestTravel} from './campaign-test-helpers.mjs';
-import {workAssignmentReason} from '../game/assignments.js';
-import {previewStrategicRoute} from '../game/strategic-route.js';
-import {cellTravelPlan} from '../game/world-cells.js';
-import {tooTiredToMarch} from '../game/march-fatigue.js';
+import {workAssignmentReason} from '../packages/game/assignments.js';
+import {previewStrategicRoute} from '../packages/game/strategic-route.js';
+import {cellTravelPlan} from '../packages/game/world-cells.js';
+import {tooTiredToMarch} from '../packages/game/march-fatigue.js';
 
 // Public collection at the actual person's location. Temporarily return a
 // local squad to service only when it must physically discover its cache.

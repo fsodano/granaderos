@@ -1,5 +1,5 @@
-import {makeOutfit} from '../game/outfits.js';
-import {initialHorseState,MATURITY_HOURS} from '../game/horses.js';
+import {makeOutfit} from '../packages/game/outfits.js';
+import {initialHorseState,MATURITY_HOURS} from '../packages/game/horses.js';
 
 // Finite preexisting property for isolated custody tests. These helpers do not
 // buy stock, grant a route reward, or change a new-player campaign constructor.

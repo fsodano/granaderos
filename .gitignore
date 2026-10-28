@@ -9,6 +9,7 @@ output/
 .cache/
 *.log
 .omo/
+.output/
 
 # Local dependencies and generated development-server files are not source.
 node_modules/
@@ -22,4 +23,4 @@ node_modules/
 /artifacts/
 
 # Blender creates numbered backup copies beside the source rig.
-/assets/rig/*.blend[0-9]*
+/content/assets/rig/*.blend[0-9]*

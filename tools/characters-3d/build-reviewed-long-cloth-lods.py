@@ -33,8 +33,8 @@ def main():
     proof = module('cloth_topology_proof', root / 'tools/characters-3d/build-long-cloth-support.py')
     merge = module('cloth_topology_merge', root / 'tools/characters-3d/merge-animation-bank.py')
     sparse = module('cloth_topology_sparse', root / 'tools/characters-3d/build-close-long-cloth-boot-support.py')
-    pack = module('cloth_topology_pack', root / 'assets/source/characters-3d/authoring/gltf_pack.py')
-    assets = root / 'web/public/models/characters'
+    pack = module('cloth_topology_pack', root / 'content/assets/source/characters-3d/authoring/gltf_pack.py')
+    assets = root / 'apps/web/public/models/characters'
     manifest_path = assets / 'manifest.json'
     manifest_before = manifest_path.read_bytes()
     manifest = json.loads(manifest_before)
@@ -45,7 +45,7 @@ def main():
         proposal = json.loads(proposal_path.read_text())
         rows = proposal['rows']
         assert {(r['id'], r['lod']) for r in rows} == {(p, l) for p in ('friar', 'woman-shawl') for l in (1, 2)}
-        source_pins = {root / ('web/public/.' + url): pin for url, pin in proposal['sourcePins'].items()}
+        source_pins = {root / ('apps/web/public/.' + url): pin for url, pin in proposal['sourcePins'].items()}
         assert all(digest(path.read_bytes()) == pin for path, pin in source_pins.items())
         for row in rows:
             assert row['maximumNativeOffsetLength'] < .15 and row['maximumExtraWorldDisplacement'] <= .005

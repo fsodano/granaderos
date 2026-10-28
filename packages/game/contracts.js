@@ -1,0 +1,48 @@
+import { ServicePricingPolicy } from './domain/personnel/service-pricing-policy.ts';
+import { Money } from './domain/finance/money.ts';
+import {guaranteeAmount,guaranteeRecord} from './service-guarantees.js';
+import {hiringPriceMultiplier} from './economy-balance.js';
+import {contractRules} from './contract-rules.js';
+import {serviceRelationshipRefusal} from './service-relationships.js';
+import {serviceObjectionReason} from './service-objections.js';
+import {lowMoraleRenewalReason} from './morale-renewal.js';
+import {serviceEquipmentReturnReason} from './service-equipment-notice.js';
+const termName=days=>days===1?'Un día':days===7?'Una semana':days===14?'Dos semanas':days===30?'Un mes':`${days} días`;
+export function contractTermsFor(state){return Object.fromEntries(Object.entries({...contractRules(state).days,fortnight:14}).map(([id,days])=>[id,{name:termName(days),hours:days*24,days}]));}
+export const CONTRACT_TERMS=Object.freeze(Object.fromEntries(Object.entries(contractTermsFor()).map(([id,period])=>[id,Object.freeze(period)])));
+const campaignSeconds=state=>(Number.isFinite(state.hour)?state.hour:0)*3600+(state.secondOfHour??0);
+export function contractExpiresSeconds(contract){return contract?.expiresAt===null||contract?.expiresAt===undefined?null:contract.expiresAt*3600+(contract.expiresSecond??0);}
+// Keep old whole-hour save records unchanged; preserve seconds when they matter.
+export function contractStartedFields(state,expiresSecond=state.secondOfHour??0){
+ const second=state.secondOfHour??0;
+ return {started:state.hour,...(second?{startedSecond:second}:{}),...(expiresSecond?{expiresSecond}: {})};
+}
+export function contractQuote(state,operative,term='day'){
+ const rules=contractRules(state),terms=contractTermsFor(state),period=Object.hasOwn(terms,term)?terms[term]:undefined;const xp=state.operativeState?.[operative.id]?.xp??0;
+ const topTier=operative.tier==='elite'||operative.marksmanship>=90||(operative.level??1)>=5;
+ const permanent=operative.service===undefined?(operative.id<100||operative.id===1000||operative.monthlyPay===0):operative.service==='permanent';
+ const refusal=serviceRelationshipRefusal(state,operative),objection=serviceObjectionReason(state,operative);
+ const reason=state.operativeState?.[operative.id]?.alive===false?'Un combatiente fallecido no puede volver a contratarse.':serviceEquipmentReturnReason(state,operative.id)??(!period?'Elegí uno de los plazos de contrato disponibles.':objection??refusal?.reason??null);
+ const pricing = new ServicePricingPolicy({
+  salaryMonthDays: rules.salaryMonthDays,
+  experienceStep: rules.xpStep,
+  raisePercent: rules.xpRaisePercent,
+  priceMultiplier: hiringPriceMultiplier(state),
+ });
+ const daily = pricing.dailyPay(Money.pesos(operative.monthlyPay ?? 0), xp,
+  Money.pesos(operative.service === 'contract' ? 0 : 1)).pesos;
+ const now=campaignSeconds(state),expiry=Math.max(now,contractExpiresSeconds(state.contracts?.[operative.id])??now)+(period?.hours??0)*3600;
+ const price=permanent?0:daily*(period?.days??0),held=guaranteeRecord(state,state.contracts?.[operative.id]),guarantee=permanent||held?0:guaranteeAmount(operative);
+ return {guarantee,total:price+guarantee,heldGuarantee:held?.state==='held'?held.amount:0,expiresAt:permanent?null:Math.floor(expiry/3600),expiresSecond:permanent?null:expiry%3600,available:!reason,reason,...(reason===refusal?.reason?{serviceRefusal:refusal}:{}),topTier,permanent,term,hours:permanent?null:period?.hours??0,price:permanent?0:daily*(period?.days??0),daily:permanent?0:daily};
+}
+// Hiring and re-hiring retain their existing admission. Only a requested
+// extension consults the authored morale rule, after existing refusal reasons.
+export function contractRenewalQuote(state,operative,term='day'){
+ const initial=contractQuote(state,operative,term),quote={...initial,guarantee:0,total:initial.price},reason=quote.reason??lowMoraleRenewalReason(state,operative);
+ return {...quote,available:!reason,reason};
+}
+export function contractStatus(state,id){const c=state.contracts?.[id],expiry=contractExpiresSeconds(c),now=campaignSeconds(state);return c?{...c,remaining:expiry===null?null:Math.max(0,(expiry-now)/3600),active:expiry===null||expiry>now}:null;}
+export function migrateContracts(state){
+ if(!state.contracts)state.contracts=Object.fromEntries(state.recruited.map(id=>[id,{kind:id===1000?'patriot':'legacy',term:'month',started:state.hour,expiresAt:null,paid:0}]));
+ return state;
+}

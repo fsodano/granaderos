@@ -1,12 +1,12 @@
 import {register} from 'node:module';register('../tactical-render-loader.mjs',import.meta.url);
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Vector3,Plane} from '../../web/node_modules/three/build/three.module.js';
-import {GLTFLoader} from '../../web/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
-const {ActorRuntime}=await import('../../web/lib/three/actor-runtime.ts');
-const {TILE_METRES}=await import('../../web/lib/three/projection.ts');
-import {ladderGeometry,sampleLadderClimb,referenceClimbFraction} from '../../game/climb-geometry.js';
-const publicRoot=new URL('../../web/public/',import.meta.url),manifest=JSON.parse(readFileSync(new URL('models/characters/manifest.json',publicRoot))),loaded=new Map();
+import {Vector3,Plane} from '../../apps/web/node_modules/three/build/three.module.js';
+import {GLTFLoader} from '../../apps/web/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+const {ActorRuntime}=await import('../../apps/web/lib/three/actor-runtime.ts');
+const {TILE_METRES}=await import('../../apps/web/lib/three/projection.ts');
+import {ladderGeometry,sampleLadderClimb,referenceClimbFraction} from '../../packages/game/climb-geometry.js';
+const publicRoot=new URL('../../apps/web/public/',import.meta.url),manifest=JSON.parse(readFileSync(new URL('models/characters/manifest.json',publicRoot))),loaded=new Map();
 function load(url){
  if(loaded.has(url))return loaded.get(url);
  // Keep published buffers, rig, and animation tracks. Browser image decoding

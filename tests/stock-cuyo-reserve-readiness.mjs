@@ -1,20 +1,20 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {decodeSave,encodeSave} from '../game/save.js';
-import {enterSector} from '../game/world.js';
-import {actBattle,getReachable} from '../game/tactical.js';
-import {syncBattleTime} from '../game/time.js';
-import {sameCell,spaceKey,spacePoint} from '../game/tactical-space.js';
-import {operativeLocation} from '../game/squads.js';
-import {carriedAmmunition} from '../game/campaign-ammunition.js';
-import {ammoTypeFor,ammoCount} from '../game/ammo-types.js';
-import {AMMUNITION_FAMILIES} from '../game/ammunition-families.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {handRecord} from '../game/tactical-inventory.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
+import {enterSector} from '../packages/game/world.js';
+import {actBattle,getReachable} from '../packages/game/tactical.js';
+import {syncBattleTime} from '../packages/game/time.js';
+import {sameCell,spaceKey,spacePoint} from '../packages/game/tactical-space.js';
+import {operativeLocation} from '../packages/game/squads.js';
+import {carriedAmmunition} from '../packages/game/campaign-ammunition.js';
+import {ammoTypeFor,ammoCount} from '../packages/game/ammo-types.js';
+import {AMMUNITION_FAMILIES} from '../packages/game/ammunition-families.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {handRecord} from '../packages/game/tactical-inventory.js';
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
-import {expandCellScene} from '../game/cell-scene-storage.js';
-import {careAssignmentIssue} from '../game/medical-care.js';
+import {expandCellScene} from '../packages/game/cell-scene-storage.js';
+import {careAssignmentIssue} from '../packages/game/medical-care.js';
 
 // Allocate the existing roof residents' real authored cells before departure.
 // Keep the clinical patients and reserved physician behind the firing edge;

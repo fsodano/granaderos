@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
-import {defaultContentPackage} from '../game/content-package.js';
-import {operativeIdForCharacter} from '../game/content-character-ids.js';
-import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
-import {createBattle,actBattle} from '../game/tactical.js';
-import {applyCivilianHarm} from '../game/civilian-harm.js';
-import {syncBattleTime} from '../game/time.js';
-import {encodeSave,decodeSave} from '../game/save.js';
+import {defaultContentPackage} from '../packages/game/content-package.js';
+import {operativeIdForCharacter} from '../packages/game/content-character-ids.js';
+import {initialCampaign,dispatchCampaign} from '../packages/game/campaign.js';
+import {createBattle,actBattle} from '../packages/game/tactical.js';
+import {applyCivilianHarm} from '../packages/game/civilian-harm.js';
+import {syncBattleTime} from '../packages/game/time.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
 import {approachNPC} from './approach-npc.mjs';
 
 const content=defaultContentPackage(),base=structuredClone(content.characters.find(c=>c.id==='person-100'));

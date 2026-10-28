@@ -2,7 +2,7 @@
 // Low-probability shots still spend real ammunition and AP.
 import {northernCombatOrder} from './northern-route.mjs';
 import {knownRouteShotSafety} from './route-fire-safety.mjs';
-import {teamCanSee,firearmShotOptions,actionCosts,hasLineOfSight} from '../game/tactical.js';
+import {teamCanSee,firearmShotOptions,actionCosts,hasLineOfSight} from '../packages/game/tactical.js';
 export function tucumanCombatOrder(b,u){
  const action=northernCombatOrder(b,u);if(action||!u.loaded||u.jammed)return action;
  const shots=[];

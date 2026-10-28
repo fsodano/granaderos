@@ -8,16 +8,16 @@
 // holdPosition keeps selected actors at their actual entry cells. They can still
 // fire, reload and bandage, and retain the same risks and costs. When only
 // reserves remain, they must advance; they cannot keep each other waiting.
-import {automaticOrder} from '../game/autonomous-orders.js';
-import {enterSector} from '../game/world.js';
-import {actBattle,endTurn,reloadPlan,getReachable,bladeFor,weaponFor,actionCosts,hasFirearm,shotChance,teamCanSee,interruptAvailable,firearmShotOptions,stanceCost} from '../game/tactical.js';
-import {spacePoint,spaceKey,sameSurface,surfaceAt} from '../game/tactical-space.js';
-import {shotLocationEffects} from '../game/targeted-combat.js';
+import {automaticOrder} from '../packages/game/autonomous-orders.js';
+import {enterSector} from '../packages/game/world.js';
+import {actBattle,endTurn,reloadPlan,getReachable,bladeFor,weaponFor,actionCosts,hasFirearm,shotChance,teamCanSee,interruptAvailable,firearmShotOptions,stanceCost} from '../packages/game/tactical.js';
+import {spacePoint,spaceKey,sameSurface,surfaceAt} from '../packages/game/tactical-space.js';
+import {shotLocationEffects} from '../packages/game/targeted-combat.js';
 import {sectorSearchOrder} from './sector-search-driver.mjs';
 import {fight as recordedFight} from './opening-driver.mjs';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
 import {knownRouteShotSafety} from './route-fire-safety.mjs';
-import {firstAidPlan} from '../game/first-aid.js';
+import {firstAidPlan} from '../packages/game/first-aid.js';
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),live=u=>u.hp>0&&!u.routed&&!u.unconscious;
 const safeFireOrder=(b,u,action)=>{
  if(action?.type!=='fire')return true;

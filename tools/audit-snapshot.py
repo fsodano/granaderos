@@ -1,7 +1,7 @@
 import hashlib,json,subprocess,sys,pathlib,datetime
 root=pathlib.Path(sys.argv[1]);out=pathlib.Path(sys.argv[2])
 def git(*args):return subprocess.check_output(['git',*args],cwd=root).decode()
-paths=sorted(set(git('ls-files','--cached','--others','--exclude-standard','game','web','tests','docs','tools','package.json','package-lock.json','.github').splitlines()))
+paths=sorted(set(git('ls-files','--cached','--others','--exclude-standard','packages/game','packages/campaign-format','apps/web','apps/campaign-editor','content/campaigns','tests','docs','tools','package.json','package-lock.json','.github').splitlines()))
 records=[]
 for name in paths:
  p=root/name

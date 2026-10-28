@@ -1,6 +1,6 @@
 import {readFile,writeFile} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
-const base='assets/source/illustrated-sprites/', path=base+'sources.json';
+const base='content/assets/source/illustrated-sprites/', path=base+'sources.json';
 const manifest=JSON.parse(await readFile(path));
 const old=manifest.sheets.filter(j=>j.name==='woman-headscarf-run').flatMap(j=>j.slots).find(s=>s.direction==='se'&&s.frame===2);
 const runSource=base+'woman-headscarf-run-se-2-fix-v2.png';

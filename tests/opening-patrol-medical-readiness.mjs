@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {decodeSave,encodeSave} from '../game/save.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
 
 export const OPENING_PATROL_DRESSINGS=2;
 // Two actual linen dressings permit an initial first-aid stroke and one further

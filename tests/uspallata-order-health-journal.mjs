@@ -1,6 +1,6 @@
 import {mkdirSync,mkdtempSync,appendFileSync} from 'node:fs';
 import {join,isAbsolute} from 'node:path';
-import {actBattle,endTurn} from '../game/tactical.js';
+import {actBattle,endTurn} from '../packages/game/tactical.js';
 import {fight} from './opening-driver.mjs';
 
 const bodyKeys=['id','name','side','hp','maxHp','bleeding','bandaged','ap','maxAP','carriedAP','morale','energy','fatigue','stance','movementMode','activeSlot','x','y','tacticalLevel','medkits','loaded','ammo','routed','unconscious','knockedDown','asleep','weaponDropped','surrendered','fled','departure'];

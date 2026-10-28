@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor,civicStatus} from '../game/campaign.js';
-import {decodeSave,encodeSave} from '../game/save.js';
-import {operativeLocation,operativeInTransit} from '../game/squads.js';
-import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
-import {careAssignmentReason,careAssignmentIssue} from '../game/medical-care.js';
-import {careRules} from '../game/campaign-care-rules.js';
-import {hiringTravelHours} from '../game/hiring-arrivals.js';
-import {previewStrategicRoute} from '../game/strategic-route.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {autoBandageBattle} from '../game/auto-bandage.js';
+import {dispatchCampaign,rosterFor,civicStatus} from '../packages/game/campaign.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
+import {operativeLocation,operativeInTransit} from '../packages/game/squads.js';
+import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../packages/game/contracts.js';
+import {careAssignmentReason,careAssignmentIssue} from '../packages/game/medical-care.js';
+import {careRules} from '../packages/game/campaign-care-rules.js';
+
+import {previewStrategicRoute} from '../packages/game/strategic-route.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {autoBandageBattle} from '../packages/game/auto-bandage.js';
 import {bookRouteHires,finishRouteHireArrivals} from './paid-route-hiring.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {stageRouteRoofDefenders} from './route-roof-defenders.mjs';
@@ -188,7 +188,7 @@ export function stabilizeCordobaMedicalRear(start,{report=()=>{}}={}){
   }
   // At most one distinct paid profile is booked for this needed care hour.
   // Its real issue is finite; later exhaustion must be checked again.
-  const replacement=rosterFor(c).filter(op=>{const r=c.operativeState[op.id],quote=contractQuote(c,op,'day');return civicStatus(c,op.id).available&&!c.recruited.includes(op.id)&&r.alive&&!r.captured&&op.medical>=careRules(c).minimumSkill&&r.medkits>0&&hiringTravelHours(c,op.id)===0&&quote.available&&quote.total<=c.resources.treasury;}).sort((a,b)=>contractQuote(c,a,'day').total-contractQuote(c,b,'day').total||a.id-b.id)[0];
+  const replacement=rosterFor(c).filter(op=>{const r=c.operativeState[op.id],quote=contractQuote(c,op,'day');return civicStatus(c,op.id).available&&!c.recruited.includes(op.id)&&r.alive&&!r.captured&&op.medical>=careRules(c).minimumSkill&&r.medkits>0&&quote.available&&quote.total<=c.resources.treasury;}).sort((a,b)=>contractQuote(c,a,'day').total-contractQuote(c,b,'day').total||a.id-b.id)[0];
   if(!replacement)return;
   const notices=[],booked=bookRouteHires(c,[replacement.id],{term:'day',destination:'cordoba',report:event=>notices.push(event)});c=booked.campaign;
   orders.push({type:'recruitCivic',id:replacement.id,term:'day',destination:'cordoba'});check();

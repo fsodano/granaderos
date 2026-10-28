@@ -1,20 +1,21 @@
+import {fightOnArrivalOrder} from './assault-fixture.mjs';
 import {ROUTE_STARTING_TREASURY} from './funded-route-fixture.mjs';
-import {sameSurface,spacePoint} from '../game/tactical-space.js';
+import {sameSurface,spacePoint} from '../packages/game/tactical-space.js';
 import {secureArea} from './secured-area-fixture.mjs';
 import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign as dispatch,rosterFor} from '../game/campaign.js';
-import {enterSector} from '../game/world.js';
-import {actBattle,getReachable,hasLineOfSight} from '../game/tactical.js';
+import {initialCampaign,dispatchCampaign as dispatch,rosterFor} from '../packages/game/campaign.js';
+import {enterSector} from '../packages/game/world.js';
+import {actBattle,getReachable,hasLineOfSight} from '../packages/game/tactical.js';
 import {fight as cautiousFight} from './cuyo-route-driver.mjs';
 import {equipOpeningRifles} from './opening-equipment.mjs';
-import {autoBandageBattle} from '../game/auto-bandage.js';
-import {syncBattleTime} from '../game/time.js';
-import {encodeSave,decodeSave} from '../game/save.js';
-import {ammunitionByType,totalReserveAmmunition} from '../game/ammunition-types.js';
-import {unitAmmunitionByType,fieldAmmunitionByType,totalAmmoCounts} from '../game/physical-ammunition.js';
+import {autoBandageBattle} from '../packages/game/auto-bandage.js';
+import {syncBattleTime} from '../packages/game/time.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
+import {ammunitionByType,totalReserveAmmunition} from '../packages/game/ammunition-types.js';
+import {unitAmmunitionByType,fieldAmmunitionByType,totalAmmoCounts} from '../packages/game/physical-ammunition.js';
 import {collectRouteItems} from './finite-route-equipment.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
-import {travelLegHours} from '../game/squad-travel.js';
+import {travelLegHours} from '../packages/game/squad-travel.js';
 import {meetLocalIncomeRepresentative} from './route-town-income.mjs';
 
 const distance=(a,b)=>sameSurface(a,b)?Math.hypot(a.x-b.x,a.y-b.y):Infinity;
@@ -125,7 +126,7 @@ export function runOpeningCampaign({report=()=>{},onCheckpoint=()=>{}}={}){
   }
   // San Lorenzo is local. Wait through darkness before starting its assault.
   if(sector==='san_lorenzo'&&(c.hour%24<6||c.hour%24>=20))waitFor((30-c.hour%24)%24);
-  order({type:'attack',sector});const request=c.pendingBattle;
+  order({type:'attack',sector});order(fightOnArrivalOrder(c));const request=c.pendingBattle;
   const entry=enterSector(request);
   assert.equal(entry.startSeconds,c.hour*3600+(c.secondOfHour??0),'combat starts at the actual arrival time');
   assert.equal(entry.night,false,'ordinary departure and wait orders schedule daylight assaults');

@@ -1,11 +1,11 @@
 import {readFile,readdir} from 'node:fs/promises';
-import {blankMap} from '../game/map-schema.js';
+import {blankMap} from '../packages/game/map-schema.js';
 import {discoverCampaigns} from '../tools/campaign-export.mjs';
-const root=new URL('..',import.meta.url),registry=await discoverCampaigns(root.pathname),documents=new Map([['/campaigns/index.json',registry]]);
-async function collect(directory){for(const entry of await readdir(directory,{withFileTypes:true})){const path=new URL(entry.name+(entry.isDirectory()?'/':''),directory);if(entry.isDirectory())await collect(path);else if(entry.name.endsWith('.json'))documents.set(path.pathname.slice(root.pathname.length-1),JSON.parse(await readFile(path,'utf8')));}}
-for(const entry of registry.campaigns)await collect(new URL(`campaigns/${entry.id}/`,root));
+const root=new URL('..',import.meta.url),contentRoot=new URL('content/',root),registry=await discoverCampaigns(root.pathname),documents=new Map([['/campaigns/index.json',registry]]);
+async function collect(directory){for(const entry of await readdir(directory,{withFileTypes:true})){const path=new URL(entry.name+(entry.isDirectory()?'/':''),directory);if(entry.isDirectory())await collect(path);else if(entry.name.endsWith('.json'))documents.set(path.pathname.slice(contentRoot.pathname.length-1),JSON.parse(await readFile(path,'utf8')));}}
+for(const entry of registry.campaigns)await collect(new URL(`campaigns/${entry.id}/`,contentRoot));
 const resourceBytes=new Map();
-for(const entry of registry.campaigns)for(const asset of documents.get(`/campaigns/${entry.id}/assets.json`).assets)resourceBytes.set(`/campaigns/${entry.id}/${asset.path}`,await readFile(new URL(`campaigns/${entry.id}/${asset.path}`,root)));
+for(const entry of registry.campaigns)for(const asset of documents.get(`/campaigns/${entry.id}/assets.json`).assets)resourceBytes.set(`/campaigns/${entry.id}/${asset.path}`,await readFile(new URL(`campaigns/${entry.id}/${asset.path}`,contentRoot)));
 export function campaignResponse(docs,path,overrides=new Map()){
  const key=String(path).replace(/^https?:\/\/[^/]+/,'').replace(/^\/granaderos(?=\/campaigns\/)/,''),value=docs.get(key),bytes=overrides.get(key)??resourceBytes.get(key)??resourceBytes.get(key.replace(/^\/campaigns\/[^/]+\//,'/campaigns/granaderos/')),ok=value!==undefined||bytes!==undefined;
  return {ok,status:ok?200:404,json:async()=>structuredClone(value),arrayBuffer:async()=>bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength)};

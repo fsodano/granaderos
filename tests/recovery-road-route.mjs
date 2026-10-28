@@ -1,9 +1,10 @@
+import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {enterSector} from '../game/world.js';
-import {decodeSave,encodeSave} from '../game/save.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {depotSelection} from '../game/artillery-depots.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {enterSector} from '../packages/game/world.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {depotSelection} from '../packages/game/artillery-depots.js';
 import {visit,sync,leave} from './local-contract-fixture.mjs';
 import {equipOpeningRifles} from './opening-equipment.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
@@ -14,13 +15,13 @@ import {coordinatedHospitalBattery} from './coordinated-hospital-battery.mjs';
 import {meetRecruits} from './campaign-recruitment-route.mjs';
 import {prepareFinalAssault} from './final-campaign-route.mjs';
 import {recoverRecapturedRoad} from './recovery-road-care.mjs';
-import {canReassignOperative,operativeLocation} from '../game/squads.js';
+import {canReassignOperative,operativeLocation} from '../packages/game/squads.js';
 import {prepareRouteSupportBattery} from './route-support-battery.mjs';
 import {collectRouteItems} from './finite-route-equipment.mjs';
-import {artilleryProfile} from '../game/artillery-definitions.js';
-import {artilleryTransportQuote,storedArtilleryRecord} from '../game/artillery-transport.js';
-import {contractExpiresSeconds,contractRenewalQuote} from '../game/contracts.js';
-import {previewStrategicRoute} from '../game/strategic-route.js';
+import {artilleryProfile} from '../packages/game/artillery-definitions.js';
+import {artilleryTransportQuote,storedArtilleryRecord} from '../packages/game/artillery-transport.js';
+import {contractExpiresSeconds,contractRenewalQuote} from '../packages/game/contracts.js';
+import {previewStrategicRoute} from '../packages/game/strategic-route.js';
 import {continueNorthernHandoverTravel,resolveNorthernHandoverEncounter} from './northern-handover-route.mjs';
 import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 import {prepareNorthernRoadMedicalReserve} from './northern-road-reserve-preparation.mjs';
@@ -152,8 +153,7 @@ export function restoreNorthernRoad(start,{report=()=>{},keepServing}={}){
  for(const at of ['tucuman','san_nicolas']){const ids=field.filter(id=>c.operativeState[id].location===at);for(let i=0;i<ids.length;i+=6){order({type:'createSquad',ids:ids.slice(i,i+6),sector:at,name:'Recuperación del camino'});groups.push(c.activeSquadId);for(const id of c.squad)order({type:'assignCare',operativeId:id,assignment:'active'});c=finishReloadsBeforeMarch(c);}}
  order({type:'configureArtillery',types:['swivel']});
  for(const id of groups){order({type:'selectSquad',id});order({type:'attack',sector:'cordoba',queue:true,mode:'posta'});}
- for(let h=0;h<36&&!groups.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');h++)order({type:'wait',hours:1});
- order({type:'beginAssault',sector:'cordoba'});
+ c=completeQueuedAssault(c,groups,'cordoba',{execute:request=>{order(request);return c;}});
  c=fightNorthernSector(c,'cordoba',{controller:coastalBatteryController(enterSector(c.pendingBattle,c.sectorStates.cordoba),{sharedArtillerySight:true}),report}).campaign;
  }
  report({event:'roadRecaptured',campaign:decodeSave(encodeSave(c)).campaign});

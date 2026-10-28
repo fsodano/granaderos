@@ -3,11 +3,11 @@
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
-import {RENDERER_SCENARIOS} from '../web/app/renderer-sandbox/fixtures.js';
+import {RENDERER_SCENARIOS} from '../apps/web/app/renderer-sandbox/fixtures.js';
 
 const {chromium}=await import(process.env.PLAYWRIGHT_MODULE||'playwright');
 const url=process.env.GRANADEROS_REVIEW_URL||'http://127.0.0.1:3150/renderer-sandbox';
-const output=resolve(process.env.GRANADEROS_REVIEW_OUTPUT||'artifacts/three-gameplay-review');
+const output=resolve(process.env.GRANADEROS_REVIEW_OUTPUT||'.output/artifacts/three-gameplay-review');
 const requested=process.argv.slice(2);
 const scenarios=requested.length?RENDERER_SCENARIOS.filter(item=>requested.includes(item.id)):RENDERER_SCENARIOS.filter(item=>!['performance24','performance60'].includes(item.id));
 assert.ok(scenarios.length,'No review scenario selected');

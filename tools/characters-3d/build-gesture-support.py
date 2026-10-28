@@ -71,7 +71,7 @@ def prove_preserved(before,after):
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[2]);parser.add_argument('--blender',default='/Applications/Blender.app/Contents/MacOS/Blender');parser.add_argument('--receipt',type=Path);args=parser.parse_args()
-    root=args.root.resolve();authoring=root/'assets/source/characters-3d/authoring';out=root/'web/public/models/characters'
+    root=args.root.resolve();authoring=root/'content/assets/source/characters-3d/authoring';out=root/'apps/web/public/models/characters'
     merger=module('gesture_merge',root/'tools/characters-3d/merge-animation-bank.py');packer=module('gesture_pack',authoring/'gltf_pack.py');manifest_path=out/'manifest.json';manifest=json.loads(manifest_path.read_text());source=hashlib.sha256((authoring/'gesture_support.py').read_bytes()).hexdigest();receipt={}
     with tempfile.TemporaryDirectory(prefix='granaderos-native-gesture-')as scratch:
         def export(gender):

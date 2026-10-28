@@ -1,8 +1,8 @@
-import {artilleryProfile} from '../game/artillery-definitions.js';
-import {criticalFirstAidNeeded} from '../game/first-aid.js';
-import {medicalPatientAvailable} from '../game/medical-patient.js';
-import {actionCosts,artilleryContact,getReachable,hasLineOfSight,interruptAvailable,medicalUsePreview,stanceCost} from '../game/tactical.js';
-import {sameCell,sameSurface,spacePoint,surfaceAt} from '../game/tactical-space.js';
+import {artilleryProfile} from '../packages/game/artillery-definitions.js';
+import {criticalFirstAidNeeded} from '../packages/game/first-aid.js';
+import {medicalPatientAvailable} from '../packages/game/medical-patient.js';
+import {actionCosts,artilleryContact,getReachable,hasLineOfSight,interruptAvailable,medicalUsePreview,stanceCost} from '../packages/game/tactical.js';
+import {sameCell,sameSurface,spacePoint,surfaceAt} from '../packages/game/tactical-space.js';
 import {coastalBatteryController} from './coastal-command-driver.mjs';
 import {publicRouteView,usefulRouteFiringPosture} from './route-infantry-progress.mjs';
 

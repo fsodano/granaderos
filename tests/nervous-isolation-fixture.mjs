@@ -1,11 +1,12 @@
+import {fightOnArrivalOrder} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {initialCampaign,dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
 import {authoredEditorPackage} from './authored-editor-fixture.mjs';
-import {contractQuote} from '../game/contracts.js';
-import {createBattle,actBattle,endTurn,presentedActBattle,presentedEndTurn,weaponFor} from '../game/tactical.js';
-import {encodeSave,decodeSave} from '../game/save.js';
-import {syncBattleTime} from '../game/time.js';
-import {travelLegHours} from '../game/squad-travel.js';
+import {contractQuote} from '../packages/game/contracts.js';
+import {createBattle,actBattle,endTurn,presentedActBattle,presentedEndTurn,weaponFor} from '../packages/game/tactical.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
+import {syncBattleTime} from '../packages/game/time.js';
+import {travelLegHours} from '../packages/game/squad-travel.js';
 
 export const nervousActor=(battle,id)=>battle.units.find(unit=>unit.id===String(id));
 export const nervousSaved=pair=>decodeSave(encodeSave(pair.campaign,pair.battle??null));
@@ -39,7 +40,7 @@ export function preparedNervousArena({oldPinned=false,oldRenewal=false,term='day
  // Preserve the declared daylight clinical contact after the shorter city road.
  // The paid wait is part of the official campaign replay and contract clock.
  campaignStep({type:'wait',hours:18-campaign.hour-travelLegHours('retiro','buenos_aires')});
- campaignStep({type:'attack',sector:'buenos_aires'});
+ campaignStep({type:'attack',sector:'buenos_aires'});campaignStep(fightOnArrivalOrder(campaign));
  const request=campaign.pendingBattle,width=48,height=16;
  // Prepared initial observation arena, not a native opening victory. Positions,
  // passive hostile posts and seed42 are fixed before the first official save.

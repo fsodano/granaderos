@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {defaultContentPackage} from '../game/content-package.js';
-import {initialCampaign} from '../game/campaign.js';
+import {defaultContentPackage} from '../packages/game/content-package.js';
+import {initialCampaign} from '../packages/game/campaign.js';
 import {order,visit,tactical,saved} from './local-contract-fixture.mjs';
 export function disarmedArrival({secondary=true}={}){
  const d=defaultContentPackage();for(const id of [110,111])d.characters.find(c=>c.id===`person-${id}`).arrivalHours=0;

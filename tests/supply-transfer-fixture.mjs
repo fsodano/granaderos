@@ -1,6 +1,6 @@
-import {defaultContentPackage} from '../game/content-package.js';
-import {DEFAULT_CHARACTER_SUPPLIES} from '../game/character-supplies.js';
-import {initialCampaign} from '../game/campaign.js';
+import {defaultContentPackage} from '../packages/game/content-package.js';
+import {DEFAULT_CHARACTER_SUPPLIES} from '../packages/game/character-supplies.js';
+import {initialCampaign} from '../packages/game/campaign.js';
 import {order,visit} from './local-contract-fixture.mjs';
 // Declared carried dressings and one-time service cartridges isolate finite
 // physical transfers; no workshop, refill or purchase supplies this scenario.

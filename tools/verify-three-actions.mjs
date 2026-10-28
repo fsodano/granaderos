@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
-import {BUILDING_TYPES} from '../game/building-types.js';
+import {BUILDING_TYPES} from '../packages/game/building-types.js';
 const {chromium}=await import(process.env.PLAYWRIGHT_MODULE||'playwright');
 const url=process.env.GRANADEROS_REVIEW_URL||'http://127.0.0.1:3150/renderer-sandbox';
-const output=resolve(process.env.GRANADEROS_REVIEW_OUTPUT||'artifacts/three-gameplay-review');
+const output=resolve(process.env.GRANADEROS_REVIEW_OUTPUT||'.output/artifacts/three-gameplay-review');
 await mkdir(output,{recursive:true});
 const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_EXECUTABLE?{executablePath:process.env.CHROMIUM_EXECUTABLE}:{})});
 const errors=[],checks=[];

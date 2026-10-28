@@ -1,10 +1,10 @@
 // Prepared artillery custody tests coordinate the actual crew and infantry.
 // A working owned gun uses the existing battery policy and ordinary paid
 // movement, pivot, fire and reload orders. No outcome or equipment is assigned.
-import {automaticOrder} from '../game/autonomous-orders.js';
-import {enterSector} from '../game/world.js';
-import {actBattle,endTurn,reloadPlan,getReachable,bladeFor,weaponFor,actionCosts,hasFirearm,shotChance,teamCanSee,interruptAvailable} from '../game/tactical.js';
-import {spacePoint,spaceKey,sameSurface} from '../game/tactical-space.js';
+import {automaticOrder} from '../packages/game/autonomous-orders.js';
+import {enterSector} from '../packages/game/world.js';
+import {actBattle,endTurn,reloadPlan,getReachable,bladeFor,weaponFor,actionCosts,hasFirearm,shotChance,teamCanSee,interruptAvailable} from '../packages/game/tactical.js';
+import {spacePoint,spaceKey,sameSurface} from '../packages/game/tactical-space.js';
 import {coastalBatteryController} from './coastal-command-driver.mjs';
 import {fight as coordinatedFight} from './opening-driver.mjs';
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),live=u=>u.hp>0&&!u.routed&&!u.unconscious;

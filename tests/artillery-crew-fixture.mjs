@@ -1,4 +1,4 @@
-import {createBattle} from '../game/tactical.js';
+import {createBattle} from '../packages/game/tactical.js';
 export const flatTiles=()=>Array.from({length:320},(_,i)=>({x:i%40,y:Math.floor(i/40),type:'grass',cover:0,blocked:false}));
 export function crewField(type='field8',{wounded=false,exploration=false}={}){
  const tiles=flatTiles();if(!exploration)for(const t of tiles)if(Math.abs(t.x-12)<=1&&Math.abs(t.y-6)<=1&&(t.x!==12||t.y!==6)){t.blocked=true;t.blocksSight=false;}

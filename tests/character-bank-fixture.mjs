@@ -1,7 +1,7 @@
 import {readFileSync} from 'node:fs';
 import assert from 'node:assert/strict';
-import {AnimationClip,AnimationMixer,Group,InterpolateDiscrete,InterpolateLinear,LoopOnce,Object3D,QuaternionKeyframeTrack,Vector3,VectorKeyframeTrack} from '../web/node_modules/three/build/three.module.js';
-const publicRoot=new URL('../web/public/',import.meta.url);
+import {AnimationClip,AnimationMixer,Group,InterpolateDiscrete,InterpolateLinear,LoopOnce,Object3D,QuaternionKeyframeTrack,Vector3,VectorKeyframeTrack} from '../apps/web/node_modules/three/build/three.module.js';
+const publicRoot=new URL('../apps/web/public/',import.meta.url);
 export const manifest=JSON.parse(readFileSync(new URL('models/characters/manifest.json',publicRoot),'utf8'));
 const formats={5121:['readUInt8',1,255],5123:['readUInt16LE',2,65535],5125:['readUInt32LE',4,4294967295],5126:['readFloatLE',4]},widths={SCALAR:1,VEC2:2,VEC3:3,VEC4:4,MAT4:16};
 export function readGlb(url,publicDirectory=publicRoot){

@@ -7,6 +7,7 @@ indices and attribute rows. The original complete body and record are exactly
 recoverable. Source patches never replace a complete outfit or body.
 """
 from pathlib import Path
+from source_provenance import published_source_reference, published_source_sha256, published_source_digests, source_path
 import argparse
 import copy
 import hashlib
@@ -136,10 +137,10 @@ def _norm(a): return math.sqrt(_dot(a,a))
 
 
 def recipe_for(root):
-    paths = ['assets/source/characters-3d/authoring/coarse_garment_surfaces.py',
+    paths = ['content/assets/source/characters-3d/authoring/coarse_garment_surfaces.py',
              'tools/characters-3d/build-coarse-garment-surfaces.py',
              'tools/characters-3d/coarse_garment_context.py', 'tools/characters-3d/family_fold_context.py']
-    return {'method':'bounded-native-outfit-graft-v1', 'sourceSha256':{path:sha((root/path).read_bytes()) for path in paths},
+    return {'method':'bounded-native-outfit-graft-v1', 'sourceSha256':published_source_digests(root, paths),
             'targets':[{'preset':preset,'lod':lod,**limits} for (preset,lod),limits in TARGETS.items()],
             'retainedOriginalBinaryAndUnownedTriangles':True}
 
@@ -173,7 +174,7 @@ def _verify_native(doc,binary,record,recipe,root=None):
     meta=record[FIELD]; assert meta['recipe']==recipe, 'Changed coarse garment source recipe'
     assert (meta['preset'],record['lod']) in TARGETS and meta['lod']==record['lod'] and Path(record['url']).name==f"{meta['preset']}-lod{meta['lod']}.glb", 'Completed correction identity differs from its selected body'
     assert meta['role']==TARGETS[(meta['preset'],record['lod'])]['role'], 'Completed correction garment role differs'
-    assert meta['sourceProof']['sourceSha256']==recipe['sourceSha256']['assets/source/characters-3d/authoring/coarse_garment_surfaces.py'], 'Completed correction export source differs from its recipe'
+    assert meta['sourceProof']['sourceSha256']==recipe['sourceSha256'][published_source_reference('content/assets/source/characters-3d/authoring/coarse_garment_surfaces.py')], 'Completed correction export source differs from its recipe'
     assert doc.get('extras',{}).get(FIELD)==meta, 'Inconsistent completed coarse garment metadata'
     assert not set(record).intersection(('clothDepth','familyClothDepth','apparelSurface')), 'Verify correction on the explicitly unwrapped native body'
     assert type(meta['primitive']['primitive']) is int and meta['primitive']['primitive']==0, 'Completed correction names an unowned primitive'
@@ -225,7 +226,7 @@ def prepare_body(root,doc,binary,record,patch_path,proposal_path,*,recorded_sour
     preset,lod=proposal['preset'],proposal['lod']; assert (preset,lod) in TARGETS and record['lod']==lod and Path(record['url']).name==f'{preset}-lod{lod}.glb', 'Wrong selected correction identity'
     assert not set(record).intersection((FIELD,'clothDepth','familyClothDepth','apparelSurface')), 'Graft requires an explicitly restored native predecessor'
     limits=TARGETS[(preset,lod)]; assert proposal['role']==limits['role'] and _near(proposal['atlasAnchor'],limits['anchor'],1e-7), 'Source changes original garment role'
-    assert proposal['sourceSha256']==recipe['sourceSha256']['assets/source/characters-3d/authoring/coarse_garment_surfaces.py'], 'Source patch recipe changed after export'
+    assert proposal['sourceSha256']==recipe['sourceSha256'][published_source_reference('content/assets/source/characters-3d/authoring/coarse_garment_surfaces.py')], 'Source patch recipe changed after export'
     if not recorded_source:
         source_fact=proposal['patch'];raw_patch=Path(patch_path).read_bytes()
         assert source_fact['sha256']==sha(raw_patch) and source_fact['bytes']==len(raw_patch), 'Source patch bytes differ from export proof'
@@ -234,7 +235,7 @@ def prepare_body(root,doc,binary,record,patch_path,proposal_path,*,recorded_sour
     assert pose==patch_pose and hierarchy==patch_hierarchy and all(_near(binds[name],patch_binds[name]) for name in names), 'Patch rig, rest transforms or bind matrices differ'
     mesh,primitive=primitive_for(doc,lod); roles=module('coarse_patch_roles',root/'tools/characters-3d/cloth_material_roles.py')
     assert roles.material_signature(doc,doc['materials'][primitive['material']])==roles.material_signature(patch_doc,patch_doc['materials'][patch['material']]), 'Patch changes original outfit material or map roles'
-    assets=root/'web/public/models/characters'
+    assets=root/'apps/web/public/models/characters'
     for image in patch_doc.get('images',[]):
         uri=image['uri']; assert (assets/uri).read_bytes()==(Path(patch_path).parent/uri).read_bytes(), 'Patch changes original colour/MR/normal map bytes'
     old_mask=owned_mask(doc,binary,primitive,limits['anchor']); assert len(old_mask)==limits['oldTriangles'], 'Original owned role mask differs from approved source'
@@ -314,7 +315,7 @@ def prepare_body(root,doc,binary,record,patch_path,proposal_path,*,recorded_sour
 
 
 def verify_completed(root,presets=None):
-    root=Path(root).resolve();assets=root/'web/public/models/characters';manifest=json.loads((assets/'manifest.json').read_bytes());recipe=recipe_for(root)
+    root=Path(root).resolve();assets=root/'apps/web/public/models/characters';manifest=json.loads((assets/'manifest.json').read_bytes());recipe=recipe_for(root)
     glb=module('coarse_completed_glb',root/'tools/characters-3d/merge-animation-bank.py');verified=[]
     for preset,appearance in manifest['appearances'].items():
         if presets is not None and preset not in presets:continue
@@ -372,11 +373,11 @@ def prepare_selected_jobs(root,jobs,patch_dir):
     selected=[(preset,lod) for kind,preset,lod in jobs if kind=='appearance' and (preset,lod) in TARGETS]
     assert len(selected)==len(set(selected)), 'Duplicate selected garment correction job'
     if not selected:return {},{}, {'selected':[],'changedFiles':[],'exactNoOp':True}
-    pins=_pins(root);assets=root/'web/public/models/characters';before=json.loads((assets/'manifest.json').read_bytes())
+    pins=_pins(root);assets=root/'apps/web/public/models/characters';before=json.loads((assets/'manifest.json').read_bytes())
     with tempfile.TemporaryDirectory(prefix='granaderos-coarse-graft-') as folder:
         source_batch=Path(folder)/'source';source_pins=_snapshot_source_inputs(root,selected,patch_dir,source_batch)
         private=Path(folder)/'root';create_native_snapshot(root,private)
-        private_assets=private/'web/public/models/characters';mp=private_assets/'manifest.json';manifest=json.loads(mp.read_bytes())
+        private_assets=private/'apps/web/public/models/characters';mp=private_assets/'manifest.json';manifest=json.loads(mp.read_bytes())
         glb=module('coarse_candidate_glb',root/'tools/characters-3d/merge-animation-bank.py')
         for preset,lod in selected:
             patch=source_batch/f'{preset}-lod{lod}-coarse-patch.glb';proposal=source_batch/f'{preset}-lod{lod}-coarse-patch.json'
@@ -408,7 +409,7 @@ def main():
             native=Path(folder)/'root';create_native_snapshot(root,native);result=verify_completed(native,args.presets)
     else:
         from family_surface_context import _pins,_check_pins,_install
-        pins=_pins(root);assets=root/'web/public/models/characters';mp=assets/'manifest.json';manifest=json.loads(mp.read_bytes())
+        pins=_pins(root);assets=root/'apps/web/public/models/characters';mp=assets/'manifest.json';manifest=json.loads(mp.read_bytes())
         selected=[('appearance',preset,lod) for preset,lod in TARGETS if (not args.presets or preset in args.presets)
                   and (args.patch_dir/f'{preset}-lod{lod}-coarse-patch.glb').is_file()]
         assert selected,'No selected source correction patches'

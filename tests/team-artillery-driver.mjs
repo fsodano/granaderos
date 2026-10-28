@@ -1,10 +1,10 @@
 // Player test orders can use a teammate's current sighting. Enemy autonomy
 // retains personal sight. Every crew, shot, pivot and reload uses engine rules.
-import {artilleryProfile} from '../game/artillery-definitions.js';
-import {isUnconscious} from '../game/actor-condition.js';
-import {artilleryCosts,artilleryContact,artilleryCrewPlan,artilleryReloadPreview,artilleryShotTrace,artilleryCanisterContains,teamCanSee,hasLineOfSight,getReachable,stanceCost} from '../game/tactical.js';
-import {sameSurface,tacticalLevel} from '../game/tactical-space.js';
-import {moveOrder} from '../game/tactical-planning-space.js';
+import {artilleryProfile} from '../packages/game/artillery-definitions.js';
+import {isUnconscious} from '../packages/game/actor-condition.js';
+import {artilleryCosts,artilleryContact,artilleryCrewPlan,artilleryReloadPreview,artilleryShotTrace,artilleryCanisterContains,teamCanSee,hasLineOfSight,getReachable,stanceCost} from '../packages/game/tactical.js';
+import {sameSurface,tacticalLevel} from '../packages/game/tactical-space.js';
+import {moveOrder} from '../packages/game/tactical-planning-space.js';
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const available=u=>u.hp>=15&&!u.unconscious&&!isUnconscious(u)&&!u.departure&&!u.fled&&!u.routed&&!u.surrendered&&!u.knockedDown&&!u.entangled&&!u.mounted&&tacticalLevel(u)===0;
 const compareId=(a,b)=>String(a.id).localeCompare(String(b.id));

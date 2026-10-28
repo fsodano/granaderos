@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {normalizeBasePath} from '../tools/deployment-path.mjs';
-import {sitePath,pagePath} from '../web/lib/site-path.js';
+import {sitePath,pagePath} from '../apps/web/lib/site-path.js';
 
 test('deployment paths support the site root and nested project paths',()=>{
  for(const value of ['','/'])assert.equal(normalizeBasePath(value),'');

@@ -7,6 +7,7 @@ depend on Pillow's bundled zlib. The frozen installer still checks every GLB,
 material, map, predecessor receipt and destination collision byte for byte.
 """
 from pathlib import Path
+from source_provenance import published_source_reference, published_source_sha256, published_source_digests, source_path
 import argparse
 import base64
 import hashlib
@@ -17,7 +18,7 @@ import struct
 import zlib
 from PIL import Image
 
-CATALOG = 'assets/source/characters-3d/authoring/apparel_png_replay_v1.json'
+CATALOG = 'content/assets/source/characters-3d/authoring/apparel_png_replay_v1.json'
 CATALOG_SHA256 = '731b580c37b8f8b9a4465a05971c2e48748c5284dccccb5d537279039b149916'
 FROZEN_COARSE_CONTEXT_SHA256 = 'b018629d072044a121550c9925d987dbf1095470b9aec56588c91de27ebe28bd'
 ADAPTER_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
@@ -62,9 +63,9 @@ def approved_images(root):
     catalog = json.loads(raw)
     assert catalog['format'] == 'granaderos-apparel-png-replay' and catalog['version'] == 1
     installer = root / 'tools/characters-3d/build-apparel-surfaces.py'
-    assert sha(installer.read_bytes()) == catalog['legacyInstallerSha256'], 'Changed frozen apparel installer'
+    assert published_source_sha256(root, str(installer.relative_to(root))) == catalog['legacyInstallerSha256'], 'Changed frozen apparel installer'
     for name, pin in catalog['recipeSourceSha256'].items():
-        assert sha((root / 'assets/source/characters-3d/authoring' / name).read_bytes()) == pin, 'Changed apparel surface recipe'
+        assert sha((root / 'content/assets/source/characters-3d/authoring' / name).read_bytes()) == pin, 'Changed apparel surface recipe'
     images = {}
     for row in catalog['images']:
         png = base64.b64decode(row['pngBase64'], validate=True)
@@ -104,11 +105,9 @@ def portable_replay_command(command):
 
 
 def bind_frozen_replay_commands():
-    # The coarse receipt pins its context file. Keep that file byte-exact and
-    # bind its narrow command runner externally after layer admission, just as
-    # the frozen apparel module retains all code except the PNG serializer.
+    # Published receipts keep their source identity after checked path relocation.
     import coarse_garment_context as context
-    assert sha(Path(context.__file__).read_bytes()) == FROZEN_COARSE_CONTEXT_SHA256, 'Changed frozen coarse replay context'
+    assert published_source_sha256(Path(context.__file__).resolve().parents[2], 'tools/characters-3d/coarse_garment_context.py') == FROZEN_COARSE_CONTEXT_SHA256, 'Changed frozen coarse replay context'
     if getattr(context._run_frozen, 'portable_apparel_replay', False):
         return
     original = context._run_frozen

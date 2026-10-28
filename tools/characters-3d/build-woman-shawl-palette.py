@@ -41,8 +41,8 @@ def main():
     if family_surface_context(__file__, root, args.receipt):
         return
     merge = load_module('shawl_palette_glb', root / 'tools/characters-3d/merge-animation-bank.py')
-    palette = load_module('shawl_palette_values', root / 'assets/source/characters-3d/authoring/appearance_palette.py')
-    assets = root / 'web/public/models/characters'
+    palette = load_module('shawl_palette_values', root / 'content/assets/source/characters-3d/authoring/appearance_palette.py')
+    assets = root / 'apps/web/public/models/characters'
     manifest_path = assets / 'manifest.json'
     manifest_bytes = manifest_path.read_bytes()
     manifest = json.loads(manifest_bytes)

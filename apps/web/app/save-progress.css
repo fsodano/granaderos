@@ -1,0 +1,18 @@
+.save-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.save-progress {
+  color: #a8b4a6;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.save-progress[data-save-state='blocked'],
+.save-progress[data-save-state='failed'] {
+  color: #efc1a8;
+}

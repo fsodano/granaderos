@@ -1,0 +1,66 @@
+{
+  "format": "granaderos-source-relocation",
+  "version": 1,
+  "sources": {
+    "assets/source/characters-3d/authoring/apparel_surfaces.py": {
+      "path": "content/assets/source/characters-3d/authoring/apparel_surfaces.py",
+      "publishedSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+      "relocatedSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486"
+    },
+    "assets/source/characters-3d/authoring/cloth_depth.py": {
+      "path": "content/assets/source/characters-3d/authoring/cloth_depth.py",
+      "publishedSha256": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+      "relocatedSha256": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe"
+    },
+    "assets/source/characters-3d/authoring/coarse_garment_surfaces.py": {
+      "path": "content/assets/source/characters-3d/authoring/coarse_garment_surfaces.py",
+      "publishedSha256": "6acb6412a10b5ecad0c40724e3fa35df43a7e07acb739b0049619f2fff114655",
+      "relocatedSha256": "6acb6412a10b5ecad0c40724e3fa35df43a7e07acb739b0049619f2fff114655"
+    },
+    "assets/source/characters-3d/authoring/family_cloth_depth.py": {
+      "path": "content/assets/source/characters-3d/authoring/family_cloth_depth.py",
+      "publishedSha256": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2",
+      "relocatedSha256": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+    },
+    "assets/source/characters-3d/authoring/standing_free_arm_rest.py": {
+      "path": "content/assets/source/characters-3d/authoring/standing_free_arm_rest.py",
+      "publishedSha256": "e78f1054ee2f8ef0b8fe4e6d734fdc743ec09755db49fc17a96a6ca8ce4c0364",
+      "relocatedSha256": "e78f1054ee2f8ef0b8fe4e6d734fdc743ec09755db49fc17a96a6ca8ce4c0364"
+    },
+    "tools/characters-3d/build-apparel-surfaces.py": {
+      "path": "tools/characters-3d/build-apparel-surfaces.py",
+      "publishedSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+      "relocatedSha256": "29d0597e6e4380f90da9ac5284d2993abf5849f8e1d7d70550aa4aabcd92dcce"
+    },
+    "tools/characters-3d/build-family-cloth-depth.py": {
+      "path": "tools/characters-3d/build-family-cloth-depth.py",
+      "publishedSha256": "536dfa4fb0b4b4c05323ff656be831e7755aefaa4e4870f84186e510a7de6d10",
+      "relocatedSha256": "e83c64a1049a986273c91c71fbd19d334dc3dedb709c58a25da7db6b7b464991"
+    },
+    "tools/characters-3d/build-coarse-garment-surfaces.py": {
+      "path": "tools/characters-3d/build-coarse-garment-surfaces.py",
+      "publishedSha256": "399d41fbc3817d278210c506d16b06b791ff494c9a38e8a794d4aa3a0f0305c6",
+      "relocatedSha256": "c8336c16f3e400ff210379b0ba57dca57c85abd0b9751b7b57a9565512f253d2"
+    },
+    "tools/characters-3d/coarse_garment_context.py": {
+      "path": "tools/characters-3d/coarse_garment_context.py",
+      "publishedSha256": "b018629d072044a121550c9925d987dbf1095470b9aec56588c91de27ebe28bd",
+      "relocatedSha256": "c65b3d6b18f9edf216cbc6644bea489ee6d5edf66efabcd71e2cc57888eb846e"
+    },
+    "tools/characters-3d/family_fold_context.py": {
+      "path": "tools/characters-3d/family_fold_context.py",
+      "publishedSha256": "c37558ddf89695d0c47755b9fccb82d338117e10de6dfd0e49f9c0068b37b2bf",
+      "relocatedSha256": "6bf42ad6877a6f5cc90359babee44f925f25dc1b2016e29cce86d138c710d699"
+    },
+    "tools/characters-3d/build-standing-free-arm-rest.py": {
+      "path": "tools/characters-3d/build-standing-free-arm-rest.py",
+      "publishedSha256": "746c905563f74993bac40fb8c293b30cbd21d7c02c06092d17f6cbde53fe32e7",
+      "relocatedSha256": "2623e4aa0230d3ef661680c0ebe4a863195ab100e67f26a707378fc61590dca9"
+    },
+    "tools/characters-3d/standing_arm_context.py": {
+      "path": "tools/characters-3d/standing_arm_context.py",
+      "publishedSha256": "7513b422aab2b95ce9a4eb60bb1a2ab4e0d6388157dfe462a120e3fc727c9b2d",
+      "relocatedSha256": "585bb4ebd19dbdd24fac1f7623cf1222f3cecd94bfecd55563d577597cdffd38"
+    }
+  }
+}

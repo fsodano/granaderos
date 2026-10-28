@@ -1,9 +1,9 @@
 import {readFileSync,writeFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
-import {AnimationClip,AnimationMixer,Group,InterpolateDiscrete,InterpolateLinear,LoopOnce,Object3D,QuaternionKeyframeTrack,Vector3,VectorKeyframeTrack} from '../../web/node_modules/three/build/three.module.js';
-import {GLTFLoader} from '../../web/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+import {AnimationClip,AnimationMixer,Group,InterpolateDiscrete,InterpolateLinear,LoopOnce,Object3D,QuaternionKeyframeTrack,Vector3,VectorKeyframeTrack} from '../../apps/web/node_modules/three/build/three.module.js';
+import {GLTFLoader} from '../../apps/web/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 
-const root=new URL('../../',import.meta.url),publicRoot=new URL('web/public/',root);
+const root=new URL('../../',import.meta.url),publicRoot=new URL('apps/web/public/',root);
 const manifestPath=new URL('models/characters/manifest.json',publicRoot);
 const manifest=JSON.parse(readFileSync(manifestPath,'utf8'));
 const widths={SCALAR:1,VEC2:2,VEC3:3,VEC4:4,MAT4:16};
@@ -90,8 +90,8 @@ const horse=Object.fromEntries(['walk','run'].map(action=>{
  return [action,{nativeStrideSpeed:clip.nativeStrideSpeed??clip.locomotionSpeed,duration:clip.duration,playbackRate:clip.playbackRate??1}];
 }));
 const itemClips=Object.fromEntries(Object.entries(manifest.equipment.items).filter(([,item])=>item.clipOverrides).map(([id,item])=>[id,item.clipOverrides]));
-const profile={version:1,source:'web/public/models/characters/manifest.json',appearances:Object.fromEntries(Object.entries(manifest.appearances).map(([id,appearance])=>[id,appearance.animationLibrary])),banks,horse,itemClips,itemAliases:manifest.equipment.aliases};
-const path=fileURLToPath(new URL('web/lib/three/locomotion-profile.json',root)),text=JSON.stringify(profile,null,2)+'\n',manifestText=JSON.stringify(manifest,null,2)+'\n';
+const profile={version:1,source:'apps/web/public/models/characters/manifest.json',appearances:Object.fromEntries(Object.entries(manifest.appearances).map(([id,appearance])=>[id,appearance.animationLibrary])),banks,horse,itemClips,itemAliases:manifest.equipment.aliases};
+const path=fileURLToPath(new URL('apps/web/lib/three/locomotion-profile.json',root)),text=JSON.stringify(profile,null,2)+'\n',manifestText=JSON.stringify(manifest,null,2)+'\n';
 if(process.argv.includes('--check')){
  if(readFileSync(path,'utf8')!==text||readFileSync(manifestPath,'utf8')!==manifestText)throw Error('Character locomotion calibration is stale. Run tools/characters-3d/compile-locomotion-profile.mjs.');
 }else{writeFileSync(manifestPath,manifestText);writeFileSync(path,text);}

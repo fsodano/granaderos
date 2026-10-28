@@ -4,7 +4,7 @@ import {createHash} from 'node:crypto';
 
 // Generation tools update the campaign's one production asset manifest.
 export async function refreshCampaignAssets(root,id='granaderos'){
- return refreshCampaignAssetFolder(join(root,'campaigns',id));
+ return refreshCampaignAssetFolder(join(root,'content/campaigns',id));
 }
 export async function refreshCampaignAssetFolder(directory,manifestFile='assets.json'){
  const assets=[],ids=new Set();

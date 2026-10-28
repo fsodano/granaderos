@@ -14,5 +14,5 @@ root=Path.cwd();sys.path.insert(0,str(root/'tools/characters-3d'))
 from standing_arm_context import create_bank_predecessor_snapshot
 print(json.dumps(create_bank_predecessor_snapshot(root,Path(sys.argv[1]))))
 `,join(folder,'root')],{cwd:root,encoding:'utf8',maxBuffer:1024*1024}));
- const assets=pathToFileURL(join(receipt.root,'web/public/models/characters')+'/'),result={receipt,assets,manifest:JSON.parse(readFileSync(new URL('manifest.json',assets),'utf8'))};views.set(key,result);return result;
+ const assets=pathToFileURL(join(receipt.root,'apps/web/public/models/characters')+'/'),result={receipt,assets,manifest:JSON.parse(readFileSync(new URL('manifest.json',assets),'utf8'))};views.set(key,result);return result;
 }

@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
-import {rosterFor} from '../game/campaign.js';
-import {townIncomeSources} from '../game/town-income.js';
-import {contractExpiresSeconds,contractQuote} from '../game/contracts.js';
-import {tooTiredToMarch} from '../game/march-fatigue.js';
+import {rosterFor} from '../packages/game/campaign.js';
+import {townIncomeSources} from '../packages/game/town-income.js';
+import {contractExpiresSeconds,contractQuote} from '../packages/game/contracts.js';
+import {tooTiredToMarch} from '../packages/game/march-fatigue.js';
 import {approachNPC} from './approach-npc.mjs';
 import {order,visit,sync,leave,saved} from './local-contract-fixture.mjs';
 

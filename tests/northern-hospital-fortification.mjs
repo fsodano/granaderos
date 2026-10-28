@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign} from '../game/campaign.js';
+import {dispatchCampaign} from '../packages/game/campaign.js';
 
 const clock=c=>c.hour*3600+(c.secondOfHour??0);
 

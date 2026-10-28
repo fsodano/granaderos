@@ -1,33 +1,33 @@
 import assert from 'node:assert/strict';
 import {isDeepStrictEqual} from 'node:util';
-import {rosterFor,civicStatus,dailyIncome,dispatchCampaign} from '../game/campaign.js';
-import {sectorInventoryModel,sectorInventorySites} from '../game/sector-inventory.js';
-import {applyItemQuantity,extractItemQuantity} from '../game/tactical-inventory.js';
-import {operativeLocation,operativeInTransit,canReassignOperative} from '../game/squads.js';
-import {careAssignmentProgress,careAssignmentReason,doctorRate} from '../game/medical-care.js';
-import {careRules} from '../game/campaign-care-rules.js';
-import {contractQuote,contractRenewalQuote} from '../game/contracts.js';
-import {hiringTravelHours} from '../game/hiring-arrivals.js';
-import {baseMorale} from '../game/morale.js';
-import {campaignRole} from '../game/campaign-roles.js';
-import {worldOwner} from '../game/world-cells.js';
+import {rosterFor,civicStatus,dailyIncome,dispatchCampaign} from '../packages/game/campaign.js';
+import {sectorInventoryModel,sectorInventorySites} from '../packages/game/sector-inventory.js';
+import {applyItemQuantity,extractItemQuantity} from '../packages/game/tactical-inventory.js';
+import {operativeLocation,operativeInTransit,canReassignOperative} from '../packages/game/squads.js';
+import {careAssignmentProgress,careAssignmentReason,doctorRate} from '../packages/game/medical-care.js';
+import {careRules} from '../packages/game/campaign-care-rules.js';
+import {contractQuote,contractRenewalQuote} from '../packages/game/contracts.js';
+
+import {baseMorale} from '../packages/game/morale.js';
+import {campaignRole} from '../packages/game/campaign-roles.js';
+import {worldOwner} from '../packages/game/world-cells.js';
 import {createFreshRouteOrders} from './fresh-cuyo-route.mjs';
 import {quoteMountainServiceBudget} from './mountain-service-budget.mjs';
 import {mountainCommandRolePlan} from './mountain-command-role-plan.mjs';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
-import {restRecovery} from '../game/strategic-rest.js';
+import {restRecovery} from '../packages/game/strategic-rest.js';
 import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 import {knownRouteMedicalSources,authoredRouteMedicalDiscoveries,attemptCollectRouteItems} from './finite-route-equipment.mjs';
 import {takeFiniteCache} from './finite-cache-driver.mjs';
 import {assertRouteEquipmentDebit} from './route-equipment-inventory-receipt.mjs';
 import {attemptRouteDressings} from './route-dressings.mjs';
-import {finiteCachesFor} from '../game/campaign-physical.js';
-import {transportPath} from '../game/logistics.js';
-import {travelLegHours} from '../game/squad-travel.js';
-import {previewStrategicRoute} from '../game/strategic-route.js';
-import {enterSector} from '../game/world.js';
-import {syncBattleTime} from '../game/time.js';
-import {getReachable,lookPreview,environmentPreview,stanceCost} from '../game/tactical.js';
+import {finiteCachesFor} from '../packages/game/campaign-physical.js';
+import {transportPath} from '../packages/game/logistics.js';
+import {travelLegHours} from '../packages/game/squad-travel.js';
+import {previewStrategicRoute} from '../packages/game/strategic-route.js';
+import {enterSector} from '../packages/game/world.js';
+import {syncBattleTime} from '../packages/game/time.js';
+import {getReachable,lookPreview,environmentPreview,stanceCost} from '../packages/game/tactical.js';
 import {tactical as cacheTactical} from './local-contract-fixture.mjs';
 
 const clock=c=>c.hour*3600+(c.secondOfHour??0);
@@ -62,7 +62,7 @@ export function mountainReturnedAdmissionPlan(c,{sector,fieldCount,doctorCount,e
  const roster=rosterFor(c),serving=roster.filter(op=>fit(c,op,sector,exclude)&&c.recruited.includes(op.id)&&(free(c,op)||op.id===careDoctorId&&c.operativeState[op.id].assignment==='doctor')&&canReassignOperative(c,op.id)&&!careAssignmentReason(c,op,'rest')&&baseMorale(op)>=50);
  const preparing=roster.filter(op=>preparingIds.includes(op.id)&&!fit(c,op,sector,exclude)&&stableReturned(c,op,sector,exclude)&&c.recruited.includes(op.id)&&free(c,op)&&canReassignOperative(c,op.id)&&!careAssignmentReason(c,op,'patient'));
  const booked=new Set((c.hiringArrivals??[]).map(row=>row.operativeId)),late=fieldPool(c).filter(op=>!c.recruited.includes(op.id)&&!booked.has(op.id));
- const early=roster.filter(op=>stableReturned(c,op,sector,exclude)&&!c.recruited.includes(op.id)&&op.id>=100&&op.id<1000&&c.operativeState[op.id].morale<50&&baseMorale(op)>=50&&contractQuote(c,op,'day').available&&civicStatus(c,op.id).available&&hiringTravelHours(c,op.id)<=24&&(fit(c,op,sector,exclude)||hiringTravelHours(c,op.id)===0&&c.operativeState[op.id].location===sector))
+ const early=roster.filter(op=>stableReturned(c,op,sector,exclude)&&!c.recruited.includes(op.id)&&op.id>=100&&op.id<1000&&c.operativeState[op.id].morale<50&&baseMorale(op)>=50&&contractQuote(c,op,'day').available&&civicStatus(c,op.id).available&&(fit(c,op,sector,exclude)||c.operativeState[op.id].location===sector))
   .sort((a,b)=>contractQuote(c,a,'day').total-contractQuote(c,b,'day').total||c.operativeState[b.id].morale-c.operativeState[a.id].morale||a.id-b.id);
  const pending=(c.hiringArrivals??[]).filter(row=>row.destination===sector&&!exclude.includes(row.operativeId)).map(row=>roster.find(op=>op.id===row.operativeId)).filter(op=>op&&fit(c,op,sector,exclude));
  const pool=[...serving,...preparing,...pending,...late],chosen=[];
@@ -118,14 +118,14 @@ function careCollectionPlan(c,sector,shortfall,exclude){
 // Reserve the next real step and the complete current public departure. No
 // future income, hypothetical parcel or already paid hire is credited twice.
 export function quoteReturnedMountainAdmission(c,{sector,fieldCount,doctorCount,exclude=[],fieldPool,departurePlan,nextSeconds=0,supplyReserve=2000,preparingIds=[],careReserves=null,careDoctorId=null}){
- const plan=mountainReturnedAdmissionPlan(c,{sector,fieldCount,doctorCount,exclude,fieldPool,preparingIds,careDoctorId}),now=clock(c),roster=rosterFor(c),care=returnedCarePlan(c,plan,sector,careReserves,careDoctorId),paidCare=Boolean(care||preparingIds.length),collection=careCollectionPlan(c,sector,care?.shortfall??0,exclude),arrivalSeconds=Math.max(0,...plan.earlyIds.map(id=>hiringTravelHours(c,id)*3600),...plan.pendingIds.map(id=>{const row=c.hiringArrivals.find(row=>row.operativeId===id);return row.dueAt*3600+(row.dueSecond??0)-now;}),...plan.lateIds.map(id=>hiringTravelHours(c,id)*3600)),restSeconds=Math.max(0,...[...plan.servingIds,...plan.earlyIds,...plan.preparingIds,...plan.pendingIds].map(id=>restHours(c,roster.find(op=>op.id===id),paidCare,care?.doctorId===id?care.hours:0)*3600));
+ const plan=mountainReturnedAdmissionPlan(c,{sector,fieldCount,doctorCount,exclude,fieldPool,preparingIds,careDoctorId}),now=clock(c),roster=rosterFor(c),care=returnedCarePlan(c,plan,sector,careReserves,careDoctorId),paidCare=Boolean(care||preparingIds.length),collection=careCollectionPlan(c,sector,care?.shortfall??0,exclude),arrivalSeconds=Math.max(0,...plan.pendingIds.map(id=>{const row=c.hiringArrivals.find(row=>row.operativeId===id);return row.dueAt*3600+(row.dueSecond??0)-now;})),restSeconds=Math.max(0,...[...plan.servingIds,...plan.earlyIds,...plan.preparingIds,...plan.pendingIds].map(id=>restHours(c,roster.find(op=>op.id===id),paidCare,care?.doctorId===id?care.hours:0)*3600));
  // The cheap keepers rest during the real courier waits. Expensive former
  // hires sign only after collection AND current keeper readiness are complete.
  const beforeHireSeconds=care&&!preparingIds.length?Math.max(collection.seconds,...plan.servingIds.map(id=>restHours(c,roster.find(op=>op.id===id),true)*3600)):collection.seconds;
  const newHireRest=Math.max(0,...[...plan.earlyIds,...plan.pendingIds].map(id=>restHours(c,roster.find(op=>op.id===id),paidCare)*3600));
  const preparationSeconds=care&&!preparingIds.length?beforeHireSeconds+Math.max(nextSeconds,arrivalSeconds+newHireRest,care.hours*3600):Math.max(nextSeconds,arrivalSeconds+restSeconds,(care?.hours??0)*3600),departure=departurePlan(c,plan.fieldIds,now+preparationSeconds);
  assert.ok(departure.horizonSeconds>=now+nextSeconds&&Number.isSafeInteger(departure.fixedCost));
- const early=plan.earlyIds.map(id=>{const op=roster.find(op=>op.id===id),quote=contractQuote(c,op,'day'),arrivalHours=hiringTravelHours(c,id),days=Math.max(1,Math.floor((departure.horizonSeconds-now-beforeHireSeconds-arrivalHours*3600)/(quote.hours*3600))+1);return {id,quote,arrivalHours,days,cost:quote.guarantee+days*quote.price};});
+ const early=plan.earlyIds.map(id=>{const op=roster.find(op=>op.id===id),quote=contractQuote(c,op,'day'),arrivalHours=0,days=Math.max(1,Math.floor((departure.horizonSeconds-now-beforeHireSeconds-arrivalHours*3600)/(quote.hours*3600))+1);return {id,quote,arrivalHours,days,cost:quote.guarantee+days*quote.price};});
  const pending=plan.pendingIds.map(id=>{const row=c.hiringArrivals.find(row=>row.operativeId===id),quote=contractQuote(c,roster.find(op=>op.id===id),'day'),expiry=row.dueAt*3600+(row.dueSecond??0)+row.serviceHours*3600,renewals=Math.max(0,Math.floor((departure.horizonSeconds-expiry)/(quote.hours*3600))+1);return {id,quote,expiry,renewals,cost:renewals*quote.price};});
  const needed=Math.max(0,fieldCount-plan.servingIds.length-plan.preparingIds.length-early.length-pending.length),mandatory=plan.fieldIds.filter(id=>plan.lateIds.includes(id)&&[plan.commanderId,...plan.doctorIds].includes(id));
  // The later selector retains its own skill ordering. Reserve the largest
@@ -315,7 +315,7 @@ export function prepareReturnedMountainService(start,options){
    const doctorAssignment=careDoctorId===null?null:c.operativeState[careDoctorId].assignment;
    const home=c.squads.find(q=>q.location===sector&&!q.journey&&!q.members.length);assert.ok(home,'An actual empty local squad must hold the newly paid reserve.');
    for(const id of plan.earlyIds){
-    assert.ok(clock(c)+hiringTravelHours(c,id)*3600<=deadlineSeconds,'The actual arrival must fit the original mountain readiness deadline.');funded(0);order({type:'selectSquad',id:home.id});const op=rosterFor(c).find(op=>op.id===id),hire=contractQuote(c,op,'day'),cash=c.resources.treasury;
+    assert.ok(clock(c)<=deadlineSeconds,'The actual arrival must fit the original mountain readiness deadline.');funded(0);order({type:'selectSquad',id:home.id});const op=rosterFor(c).find(op=>op.id===id),hire=contractQuote(c,op,'day'),cash=c.resources.treasury;
     assert.equal(hire.available,true,hire.reason);order({type:'recruitCivic',id,term:'day',destination:sector});assert.equal(c.resources.treasury,cash-hire.total);receipt.hires.push({id,quote:hire,at:clock(c)});if(medical)preparingIds.push(id);
     for(let hour=0;!c.recruited.includes(id)&&hour<24;hour++){funded(3600);order({type:'wait',hours:1});}
     assert.ok(c.recruited.includes(id)&&operativeLocation(c,id)===sector,'The actual paid reserve must arrive before local rest.');order({type:'assignCare',operativeId:id,assignment:medical&&c.operativeState[id].hp<c.operativeState[id].maxHp?'patient':'rest'});

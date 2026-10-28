@@ -1,19 +1,20 @@
+import {fightOnArrival} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
-import {initialCampaign} from '../game/campaign.js';
-import {defaultContentPackage} from '../game/content-package.js';
-import {encodeSave,decodeSave} from '../game/save.js';
-import {syncBattleTime} from '../game/time.js';
+import {initialCampaign} from '../packages/game/campaign.js';
+import {defaultContentPackage} from '../packages/game/content-package.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
+import {syncBattleTime} from '../packages/game/time.js';
 import {fight} from './opening-driver.mjs';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
 import {northernClearShotOrder} from './fresh-northern-fixture.mjs';
-import {getReachable,teamCanSee,actBattle,endTurn,actionCosts,meleePreview} from '../game/tactical.js';
-import {enterSector} from '../game/world.js';
-import {sameCell,spacePoint} from '../game/tactical-space.js';
-import {validateBattleSnapshot} from '../game/validate-battle.js';
+import {getReachable,teamCanSee,actBattle,endTurn,actionCosts,meleePreview} from '../packages/game/tactical.js';
+import {enterSector} from '../packages/game/world.js';
+import {sameCell,spacePoint} from '../packages/game/tactical-space.js';
+import {validateBattleSnapshot} from '../packages/game/validate-battle.js';
 import {order,visit} from './local-contract-fixture.mjs';
 import {takeFiniteCache,leaveFiniteCache} from './finite-cache-driver.mjs';
-import {repairMaterialPoints} from '../game/repair-materials.js';
-import {FINITE_SECTOR_CACHES} from '../game/finite-sector-caches.js';
+import {repairMaterialPoints} from '../packages/game/repair-materials.js';
+import {FINITE_SECTOR_CACHES} from '../packages/game/finite-sector-caches.js';
 const cached=new Map();
 function coordinatedOrder(battle,unit){
  const action=cautiousCombatOrder(battle,unit);
@@ -59,7 +60,7 @@ export function paidCasualty(seed=8,{toolkit=false}={}){
   assert.equal(s.sectorStates.retiro.props.find(prop=>prop.id===FINITE_SECTOR_CACHES.retiro.chest).contents.some(item=>item.kind==='repair-kit'),false);
  }
  const admissionCampaign=structuredClone(s);
- s=order(s,{type:'attack',sector:'buenos_aires'});
+ s=fightOnArrival(order(s,{type:'attack',sector:'buenos_aires'}));
  const request=s.pendingBattle;assert.equal(request.squad.find(u=>u.id===110).hp,25);
  const result=fight(request,null,{controller:seed===42?retainedCasualtyOrder:coordinatedOrder}),battle=result.battle;
  assert.equal(battle.status,'victory');

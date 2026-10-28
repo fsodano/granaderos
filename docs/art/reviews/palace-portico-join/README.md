@@ -37,7 +37,7 @@ Portable preservation check, run once against each source root and compare the o
 node tools/verify-three-palace-portico-preservation.mjs <source-root> <output.json>
 ```
 
-The source point records and all 24 actual roof measurements are in [source-bounds.json](source-bounds.json). The source recipe is [palacePortico in TacticalBuildingDetails](../../../../web/app/TacticalBuildingDetails.tsx). The implementation is [world-palace-portico](../../../../web/lib/three/world-palace-portico.ts) with a narrow call in [world-palace-facade](../../../../web/lib/three/world-palace-facade.ts).
+The source point records and all 24 actual roof measurements are in [source-bounds.json](source-bounds.json). The source recipe is [palacePortico in TacticalBuildingDetails](../../../../apps/web/app/TacticalBuildingDetails.tsx). The implementation is [world-palace-portico](../../../../apps/web/lib/three/world-palace-portico.ts) with a narrow call in [world-palace-facade](../../../../apps/web/lib/three/world-palace-facade.ts).
 
 Remaining limits: the source/native ground-window aperture adaptation remains disclosed elsewhere; this cut does not change it. Tall explicit terraces and edited/legacy geometry retain the literal rear gable. The supplied JA2 screenshots guide readable structure and interiors, but do not provide a period palace roof reconstruction. This bounded join does not establish complete architectural polish.
 

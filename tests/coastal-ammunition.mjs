@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
 import {isDeepStrictEqual} from 'node:util';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {carriedAmmunition} from '../game/campaign-ammunition.js';
-import {ammoTypeFor,ammoCount} from '../game/ammo-types.js';
-import {AMMUNITION_FAMILIES} from '../game/ammunition-families.js';
-import {WEAPONS} from '../game/data.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {handRecord,applyItemQuantity} from '../game/tactical-inventory.js';
-import {decodeSave,encodeSave} from '../game/save.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {carriedAmmunition} from '../packages/game/campaign-ammunition.js';
+import {ammoTypeFor,ammoCount} from '../packages/game/ammo-types.js';
+import {AMMUNITION_FAMILIES} from '../packages/game/ammunition-families.js';
+import {WEAPONS} from '../packages/game/data.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {handRecord,applyItemQuantity} from '../packages/game/tactical-inventory.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 
 // Keep the existing firearm when its actual finite family can meet the target.

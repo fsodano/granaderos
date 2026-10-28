@@ -3,14 +3,14 @@ import {register} from 'node:module';
 register('../tests/tactical-render-loader.mjs',import.meta.url);
 import {mkdir,readFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
-import {createElement as h} from '../web/node_modules/react/index.js';
-import {renderToStaticMarkup} from '../web/node_modules/react-dom/server.node.js';
-import sharp from '../web/node_modules/sharp/lib/index.js';
-import {BUILDING_TYPES,BUILDING_FOOTPRINTS} from '../game/building-types.js';
-import {placePulperiaCart} from '../game/props.js';
-import {placeBuilding} from '../game/buildings.js';
-const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
-const output=resolve(process.argv[2]??'assets/previews/buildings');
+import {createElement as h} from '../apps/web/node_modules/react/index.js';
+import {renderToStaticMarkup} from '../apps/web/node_modules/react-dom/server.node.js';
+import sharp from '../apps/web/node_modules/sharp/lib/index.js';
+import {BUILDING_TYPES,BUILDING_FOOTPRINTS} from '../packages/game/building-types.js';
+import {placePulperiaCart} from '../packages/game/props.js';
+import {placeBuilding} from '../packages/game/buildings.js';
+const {default:TacticalScene}=await import('../apps/web/app/TacticalScene.tsx');
+const output=resolve(process.argv[2]??'content/assets/previews/buildings');
 await mkdir(output,{recursive:true});
 const requested=process.argv.slice(3);
 for(const architecture of requested)if(!BUILDING_TYPES[architecture])throw new Error(`Unknown building type: ${architecture}`);
@@ -45,7 +45,7 @@ for(const inside of [false,true]){
   h(TacticalScene,{state:sceneState,players:units,units,positions:{},poses:{},directions:{},reachable:[],sight:new Set(),revealed:new Set(inside?[roomId]:[]),project}),
   h('text',{x:24,y:frameHeight-16,fill:'#b9b89a',fontSize:11,fontFamily:'sans-serif'},architecture==='pulperia'?'Carreta y granadero conservan su tamaño.':'Misma escala en todos los edificios.')));
  for(const url of new Set([...svg.matchAll(/href="(\/art\/[^\"]+)"/g)].map(m=>m[1]))){
-  if(!imageCache.has(url))imageCache.set(url,(await sharp(await readFile(resolve('web/public',`.${url}`))).png().toBuffer()).toString('base64'));
+  if(!imageCache.has(url))imageCache.set(url,(await sharp(await readFile(resolve('apps/web/public',`.${url}`))).png().toBuffer()).toString('base64'));
   svg=svg.replaceAll(`href="${url}"`,`href="data:image/png;base64,${imageCache.get(url)}"`);
  }
  const file=resolve(output,`${architecture}-${inside?'interior':'exterior'}.png`);

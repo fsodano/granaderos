@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {sectorDeploymentAction,sectorDeploymentModel} from '../game/sector-deployment.js';
-import {actBattle,artilleryContact,artilleryCrewPlan} from '../game/tactical.js';
+import {sectorDeploymentAction,sectorDeploymentModel} from '../packages/game/sector-deployment.js';
+import {actBattle,artilleryContact,artilleryCrewPlan} from '../packages/game/tactical.js';
 import {recoveryBronzeContactController} from './recovery-paid-battery-driver.mjs';
 import {losPatosFlankOrder} from './los-patos-flank-driver.mjs';
 

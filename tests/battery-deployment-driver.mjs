@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {sectorDeploymentAction,sectorDeploymentModel} from '../game/sector-deployment.js';
+import {sectorDeploymentAction,sectorDeploymentModel} from '../packages/game/sector-deployment.js';
 
 // Spread the arriving infantry with the same public command as the player.
 // Existing guns stay at their issued arrival positions.

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {actBattle,artilleryContact,artilleryCrewPlan,artilleryCosts} from '../game/tactical.js';
-import {sectorDeploymentAction,sectorDeploymentModel} from '../game/sector-deployment.js';
+import {actBattle,artilleryContact,artilleryCrewPlan,artilleryCosts} from '../packages/game/tactical.js';
+import {sectorDeploymentAction,sectorDeploymentModel} from '../packages/game/sector-deployment.js';
 export function deployCapitalLane(start,{report=()=>{}}={}){
  let b=start;const model=sectorDeploymentModel(b);assert.ok(model);assert.equal(model.units.length,6);
  for(const row of model.units){const u=b.units.find(u=>u.id===row.id);b=sectorDeploymentAction(b,{type:'placeDeployment',unitIds:[u.id],x:u.x,y:u.y});assert.equal(b.lastError,null);}

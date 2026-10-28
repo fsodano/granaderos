@@ -1,9 +1,9 @@
 import {completeTestTravel} from './campaign-test-helpers.mjs';
 import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
-import {dispatchCampaign} from '../game/campaign.js';
-import {enterSector} from '../game/world.js';
-import {actBattle} from '../game/tactical.js';
+import {dispatchCampaign} from '../packages/game/campaign.js';
+import {enterSector} from '../packages/game/world.js';
+import {actBattle} from '../packages/game/tactical.js';
 import {attendYatasto} from './mission-helpers.mjs';
 export const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 export function completedConferenceStock(){

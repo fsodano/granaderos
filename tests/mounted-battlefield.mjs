@@ -1,8 +1,8 @@
-import {JSDOM} from '../web/node_modules/jsdom/lib/api.js';
-import {createElement as h,act} from '../web/node_modules/react/index.js';
-import {createRoot} from '../web/node_modules/react-dom/client.js';
-import {presentedEndTurn} from '../game/tactical.js';
-import {runBattleJob} from '../game/battle-job.js';
+import {JSDOM} from '../apps/web/node_modules/jsdom/lib/api.js';
+import {createElement as h,act} from '../apps/web/node_modules/react/index.js';
+import {createRoot} from '../apps/web/node_modules/react-dom/client.js';
+import {presentedEndTurn} from '../packages/game/tactical.js';
+import {runBattleJob} from '../packages/game/battle-job.js';
 
 // Mount the real Battlefield controller and provider, including effects and
 // cleanup. Child scene markup has separate rendering tests. Worker delivery is

@@ -3,7 +3,7 @@ from pathlib import Path
 import copy,json,sys,tempfile
 import numpy as np
 ROOT=Path(__file__).resolve().parents[1]
-AUTHOR=ROOT/'assets/source/characters-3d/authoring'
+AUTHOR=ROOT/'content/assets/source/characters-3d/authoring'
 sys.path.insert(0,str(AUTHOR))
 from accepted_faces import Writer,load,compose_accepted_face,digest
 SOURCE=AUTHOR/'vendor/reviewed-faces/granadero-lod2.glb'

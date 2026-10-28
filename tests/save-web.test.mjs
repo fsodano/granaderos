@@ -1,12 +1,13 @@
-import {syncBattleTime} from '../game/time.js';
+import { enterAssault } from './assault-fixture.mjs';
+import {syncBattleTime} from '../packages/game/time.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {dispatchCampaign} from '../game/campaign.js';
+import {dispatchCampaign} from '../packages/game/campaign.js';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
-import {buildSectorMap} from '../game/maps.js';
-import {createBattle,actBattle,endTurn,getReachable} from '../game/tactical.js';
-import {encodeSave,decodeSave} from '../game/save.js';
-function deployed(){const campaign=dispatchCampaign(dispatchCampaign(initialCampaign(),{type:'travel',sector:'buenos_aires'}),{type:'attack',sector:'san_nicolas'});const map=buildSectorMap(campaign.pendingBattle);return {campaign,battle:createBattle(map.squad,map)};}
+import {buildSectorMap} from '../packages/game/maps.js';
+import {createBattle,actBattle,endTurn,getReachable} from '../packages/game/tactical.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
+function deployed(){const campaign=enterAssault(dispatchCampaign(initialCampaign(),{type:'travel',sector:'buenos_aires'}),'san_nicolas');const map=buildSectorMap(campaign.pendingBattle);return {campaign,battle:createBattle(map.squad,map)};}
 
 test('campaign and authored battle save round-trip keeps the next enemy turn deterministic',()=>{
  const {campaign,battle}=deployed();const u=battle.units.find(u=>u.side==='player');const p=getReachable(battle,u).find(p=>p.cost===8);

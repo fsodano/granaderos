@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {careRules} from '../game/campaign-care-rules.js';
-import {careAssignmentReason} from '../game/medical-care.js';
-import {contractExpiresSeconds,contractRenewalQuote} from '../game/contracts.js';
-import {operativeLocation,operativeInTransit} from '../game/squads.js';
-import {worldOwner} from '../game/world-cells.js';
-import {dailyTownIncome} from '../game/town-income.js';
-import {decodeSave,encodeSave} from '../game/save.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {careRules} from '../packages/game/campaign-care-rules.js';
+import {careAssignmentReason} from '../packages/game/medical-care.js';
+import {contractExpiresSeconds,contractRenewalQuote} from '../packages/game/contracts.js';
+import {operativeLocation,operativeInTransit} from '../packages/game/squads.js';
+import {worldOwner} from '../packages/game/world-cells.js';
+import {dailyTownIncome} from '../packages/game/town-income.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
 
 const clock=s=>s.hour*3600+(s.secondOfHour??0);
 const custody=r=>r?.captured||r?.captive||r?.surrendered||r?.detention&&!r.detention.freed;

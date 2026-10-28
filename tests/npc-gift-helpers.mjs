@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {actBattle} from '../game/tactical.js';
+import {actBattle} from '../packages/game/tactical.js';
 import {approachNPC} from './approach-npc.mjs';
 export function deliverPonchos(b,count=2,unitId='1000'){
  for(let i=0;i<count;i++){

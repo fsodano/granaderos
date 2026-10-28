@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {artilleryProfile} from '../game/artillery-definitions.js';
-import {storedArtilleryRecord} from '../game/artillery-transport.js';
+import {artilleryProfile} from '../packages/game/artillery-definitions.js';
+import {storedArtilleryRecord} from '../packages/game/artillery-transport.js';
 
 // Declare old-save merchant custody from one existing finite owner. There is
 // no sale, purchase, payment or new-player-route grant in this fixture.

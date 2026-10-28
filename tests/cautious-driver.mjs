@@ -1,7 +1,7 @@
-import {canSee,teamCanSee,getReachable,actionCosts,stanceCost,firearmShotOptions,climbPreview} from '../game/tactical.js';
-import {chooseEnemyAction} from '../game/tactical-ai.js';
+import {canSee,teamCanSee,getReachable,actionCosts,stanceCost,firearmShotOptions,climbPreview} from '../packages/game/tactical.js';
+import {chooseEnemyAction} from '../packages/game/tactical-ai.js';
 import {combatOrder} from './opening-driver.mjs';
-import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
+import {sameCell,sameSurface,spacePoint} from '../packages/game/tactical-space.js';
 
 // After contact, use the game's existing shot, cover, medical aid and memory
 // evaluation. Retain opening reconnaissance only while no current or recent

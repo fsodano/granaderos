@@ -4,7 +4,7 @@ import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {resolve,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
-import sharp from '../web/node_modules/sharp/lib/index.js';
+import sharp from '../apps/web/node_modules/sharp/lib/index.js';
 
 const ROOT=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
@@ -133,7 +133,7 @@ export function sheetRectangles(data,width,height,columns,rows){
  return result;
 }
 
-export async function packIllustratedSources({manifestPath='assets/source/illustrated-sprites/sources.json',destination='assets/previews/illustrated-sprites/packed'}={}){
+export async function packIllustratedSources({manifestPath='content/assets/source/illustrated-sprites/sources.json',destination='content/assets/previews/illustrated-sprites/packed'}={}){
  const sourceManifest=JSON.parse(await readFile(resolve(ROOT,manifestPath),'utf8'));
  const atlases={};
  for(const job of sourceManifest.sheets){

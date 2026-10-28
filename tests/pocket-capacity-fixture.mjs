@@ -1,4 +1,4 @@
-import {personalPockets} from '../game/personal-pockets.js';
+import {personalPockets} from '../packages/game/personal-pockets.js';
 // Declared full-pack boundary: fill free slots with finite unequipped pieces.
 export function fillSparePockets(unit){
  unit.inventory??={};

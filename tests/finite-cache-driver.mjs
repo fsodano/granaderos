@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
-import {FINITE_SECTOR_CACHES} from '../game/finite-sector-caches.js';
-import {getReachable,lookPreview} from '../game/tactical.js';
-import {sameSurface,spacePoint} from '../game/tactical-space.js';
-import {wallEdgeCells,wallEdgeId,wallMovementBlocked} from '../game/wall-geometry.js';
+import {FINITE_SECTOR_CACHES} from '../packages/game/finite-sector-caches.js';
+import {getReachable,lookPreview} from '../packages/game/tactical.js';
+import {sameSurface,spacePoint} from '../packages/game/tactical-space.js';
+import {wallEdgeCells,wallEdgeId,wallMovementBlocked} from '../packages/game/wall-geometry.js';
 import {tactical,saved,leave} from './local-contract-fixture.mjs';
 
 // Choose a physical opener before committing to a carrier. A healthy soldier

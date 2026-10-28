@@ -1,8 +1,8 @@
 import {register} from 'node:module';register('../../tests/tactical-render-loader.mjs',import.meta.url);
 import {writeFileSync} from 'node:fs';import assert from 'node:assert/strict';
-import {BATTLE_PLAYBACK} from '../../game/battle-playback.js';
+import {BATTLE_PLAYBACK} from '../../packages/game/battle-playback.js';
 import {publishedActor} from '../../tests/published-actor-fixture.mjs';
-const {ActorRuntime}=await import('../../web/lib/three/actor-runtime.ts');
+const {ActorRuntime}=await import('../../apps/web/lib/three/actor-runtime.ts');
 const assets=await Promise.all(['granadero','woman-scout'].map(name=>publishedActor(name,1)));
 const held={unarmed:null,'long-gun':1800,'short-gun':1805,blade:1810,knife:1813,lance:1812};
 const guards=['idle.unarmed','idle.long-gun','idle.short-gun','idle.blade','idle.knife','idle.lance','aim.long-gun','aim.short-gun','brace.long-gun'];

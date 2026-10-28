@@ -58,7 +58,7 @@ All 10,409 runtime, test, asset and configuration inputs match the root candidat
 exactly, including production source identity `744d77cc5983`. Git revision metadata
 differs between the private copy and the ordered root branch. Root docs, links,
 visual records and diff checks pass separately.
-The [review receipt](../../artifacts/dry-weeds/review-receipt.json) records the
+The [review receipt](../evidence/artifacts/dry-weeds/review-receipt.json) records the
 source hashes, geometry probe, browser counters and final gate status.
 
 ```sh

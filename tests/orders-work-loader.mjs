@@ -1,5 +1,5 @@
 // Test-only counters at real read-model entry points. No production hooks or mocks.
-import ts from '../web/node_modules/typescript/lib/typescript.js';
+import ts from '../apps/web/node_modules/typescript/lib/typescript.js';
 const names=new Set(['orderDescriptors','equipmentSlots','handSlots','equippedItemHelp','heardNoiseModel','medicalUsePreview','itemUsePreview','supplyUsePreview','artilleryReloadPreview']);
 export async function load(url,context,next){
  const result=await next(url,context);

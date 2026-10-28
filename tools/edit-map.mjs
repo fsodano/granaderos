@@ -1,6 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
-import { parseMap, serializeMap, validateMap, blankMap } from "../game/map-schema.js";
-import { applyMapCommands } from "../game/map-commands.js";
+import { parseMap, serializeMap, validateMap, blankMap } from "../packages/game/map-schema.js";
+import { editSectorMapDocument } from "../apps/campaign-editor/public/map-editing-api.js";
 const [action, input, commandFile, output] = process.argv.slice(2);
 try {
   if (action === "new") {
@@ -14,7 +14,7 @@ try {
   } else if (action === "apply") {
     const doc = parseMap(await readFile(input, "utf8")),
       batch = JSON.parse(await readFile(commandFile, "utf8")),
-      result = applyMapCommands(doc, batch.commands ?? batch, {
+      result = editSectorMapDocument(doc, batch.commands ?? batch, {
         expectedRevision: batch.expectedRevision ?? doc.revision,
       });
     if (result.errors.length) throw Error(result.errors.join("\n"));

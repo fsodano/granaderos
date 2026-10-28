@@ -1,6 +1,6 @@
 # Zero-condition firearm admission
 
-A firearm at mechanical condition zero is owned equipment, but cannot fire, reload or receive ignition work. The engine, point-fire preview, target and empty-gun HUD, paired-hand plans and owned AI decisions use the same [`firearmServiceable`](../../game/firearm-serviceability.js) predicate. The rejection occurs before AP, elapsed time, random seed, charge, supply or item state changes. No condition tuning or save schema changed.
+A firearm at mechanical condition zero is owned equipment, but cannot fire, reload or receive ignition work. The engine, point-fire preview, target and empty-gun HUD, paired-hand plans and owned AI decisions use the same [`firearmServiceable`](../../packages/game/firearm-serviceability.js) predicate. The rejection occurs before AP, elapsed time, random seed, charge, supply or item state changes. No condition tuning or save schema changed.
 
 The predicate does not replace `hasFirearm`. A broken gun retains its capacity, identity, load, partial reload, fittings, authored data and ownership. Paid repair, swapping, dropping, unloading and gun-stock melee remain available. A healthy held secondary can receive its own reload or ignition work without spending AP or cartridges on the broken primary. The AI can then pay for the existing swap and a separate useful shot.
 

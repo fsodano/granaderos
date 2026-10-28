@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import {mkdirSync,readFileSync,writeFileSync} from 'node:fs';
 import {resolve,join} from 'node:path';
-import {decodeSave,encodeSave} from '../game/save.js';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
 
 const args=process.argv.slice(2);
 if(args.length!==4||args[0]!=='--input'||args[2]!=='--output')throw Error('Usage: node tools/verify-cuyo-recovery.mjs --input yatasto.save.json --output directory');

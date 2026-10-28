@@ -1,8 +1,8 @@
 # Church 3D detail review — 7 October 2026
 
 The visual references are the retained
-[church exterior](../../assets/previews/buildings/church-exterior.png), the
-[building catalogue](../../assets/previews/buildings/catalogue.png), and the
+[church exterior](../../content/assets/previews/buildings/church-exterior.png), the
+[building catalogue](../../content/assets/previews/buildings/catalogue.png), and the
 town-parish direction recorded in [the building art guide](buildings.md).
 The catalogue renderer's curved masonry pediment is in
 `web/app/TacticalBuildingDetails.tsx`. The retained exterior shows a round oculus,

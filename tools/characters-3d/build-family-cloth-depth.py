@@ -6,6 +6,7 @@ a prefix; only garment COLOR_0, owned colour resources, and coarse cloth donor
 identity links may change. --verify-only checks completed records without writes.
 """
 from pathlib import Path
+from source_provenance import published_source_reference, published_source_sha256, published_source_digests, source_path
 import argparse, copy, hashlib, importlib.util, io, json, math, struct, subprocess, tempfile
 from PIL import Image
 
@@ -62,11 +63,11 @@ def restore_body(doc, binary, metadata):
 
 
 def recipe_for(root):
-    path = root / 'assets/source/characters-3d/authoring/family_cloth_depth.py'
+    path = root / 'content/assets/source/characters-3d/authoring/family_cloth_depth.py'
     source = module('family_cloth_recipe', path)
     return source, {'method': 'family-rest-space-cloth-fold-colours-v1',
-                    'source': str(path.relative_to(root)), 'sourceSha256': sha(path.read_bytes()),
-                    'installerSha256': sha((root / 'tools/characters-3d/build-family-cloth-depth.py').read_bytes()),
+                    'source': published_source_reference(str(path.relative_to(root))), 'sourceSha256': published_source_sha256(root, str(path.relative_to(root))),
+                    'installerSha256': published_source_sha256(root, 'tools/characters-3d/build-family-cloth-depth.py'),
                     'factorBounds': [source.MIN_FACTOR, source.MAX_FACTOR], 'albedoHeadroom': source.HEADROOM,
                     'retainedGeometryRigClipsMaps': True, 'hemProtection': 'UV1-stripe-crossing-triangles-plus-adjacent-ring'}
 
@@ -77,7 +78,7 @@ def prepare(root, presets=None, completed_only=False, allow_stale_donor=False):
     merge = module('family_cloth_glb', root / 'tools/characters-3d/merge-animation-bank.py')
     presets = list(presets or source.PRESETS)
     assert len(presets) == len(set(presets)) and set(presets) <= set(source.PRESETS), 'Unknown or duplicate family preset'
-    assets = root / 'web/public/models/characters'; mp = assets / 'manifest.json'
+    assets = root / 'apps/web/public/models/characters'; mp = assets / 'manifest.json'
     manifest_bytes = mp.read_bytes(); manifest = json.loads(manifest_bytes); old_manifest = copy.deepcopy(manifest)
     pending, textures, pins, rows = [], {}, {}, []
     for preset in presets:

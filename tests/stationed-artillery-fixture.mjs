@@ -1,13 +1,14 @@
+import {fightOnArrival} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
-import {initialCampaign} from '../game/campaign.js';
-import {defaultContentPackage} from '../game/content-package.js';
-import {enterSector} from '../game/world.js';
-import {actBattle,getReachable} from '../game/tactical.js';
+import {initialCampaign} from '../packages/game/campaign.js';
+import {defaultContentPackage} from '../packages/game/content-package.js';
+import {enterSector} from '../packages/game/world.js';
+import {actBattle,getReachable} from '../packages/game/tactical.js';
 import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
-import {needsCollapseRecovery} from '../game/fatigue.js';
-import {tooTiredToMarch} from '../game/march-fatigue.js';
-import {previewStrategicRoute} from '../game/strategic-route.js';
-import {travelLegHours} from '../game/squad-travel.js';
+import {needsCollapseRecovery} from '../packages/game/fatigue.js';
+import {tooTiredToMarch} from '../packages/game/march-fatigue.js';
+import {previewStrategicRoute} from '../packages/game/strategic-route.js';
+import {travelLegHours} from '../packages/game/squad-travel.js';
 import {completeTestTravel} from './campaign-test-helpers.mjs';
 import {fight} from './battery-field-driver.mjs';
 import {order,saved,sync,leave} from './local-contract-fixture.mjs';
@@ -27,7 +28,7 @@ export function issuedBattery(content){
  s=completeTestTravel(s,{sector:'buenos_aires'});
  // Stage for two hours after the march. Recovery, light, casualties and the
  // victory below all follow ordinary orders; no combat result is fabricated.
- s=advanceCampaignHours(s,stagingHours);s=order(s,{type:'attack',sector:'san_nicolas'});assert.equal(s.hour%24,8);return s;
+ s=advanceCampaignHours(s,stagingHours);s=fightOnArrival(order(s,{type:'attack',sector:'san_nicolas'}));assert.equal(s.hour%24,8);return s;
 }
 const victoryWithReserve=reserveCharges=>contentFixtureCache(content=>{
  const s=issuedBattery(content),result=fight({...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},null,{scoutCostWeight:.01,avoidCivilians:true,reserveCharges});assert.equal(result.battle.status,'victory');assert.ok(result.actions>0);

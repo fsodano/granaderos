@@ -22,9 +22,17 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-          cache-dependency-path: web/package-lock.json
+          cache-dependency-path: |
+            apps/web/package-lock.json
+            apps/campaign-editor/package-lock.json
       - name: Install browser dependencies
-        run: npm ci --prefix web
+        run: npm ci --prefix apps/web
+      - name: Install editor dependencies
+        run: npm ci --prefix apps/campaign-editor
+      - name: Check architecture boundaries
+        run: npm run check:architecture
+      - name: Check architecture formatting
+        run: npm run check:format
       - name: Check design and progress records
         run: npm run audit:docs
       - name: Check reference gameplay values
@@ -40,14 +48,14 @@ jobs:
           node --input-type=module <<'NODE'
           import assert from 'node:assert/strict';
           import {readFileSync,appendFileSync} from 'node:fs';
-          const build=JSON.parse(readFileSync('dist/build-info.json','utf8'));
+          const build=JSON.parse(readFileSync('.output/dist/build-info.json','utf8'));
           assert.equal(build.revision,process.env.GITHUB_SHA,'The export must match the selected revision.');
           appendFileSync(process.env.GITHUB_STEP_SUMMARY,`Verified static export: ${build.version} · ${build.id}\n\nRevision: ${build.revision}\n`);
           NODE
       - uses: actions/upload-artifact@v4
         with:
           name: Granaderos-web
-          path: dist/
+          path: .output/dist/
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 14
@@ -55,7 +63,7 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v4
         with:
-          path: dist/
+          path: .output/dist/
   deploy:
     name: Publish browser game
     if: github.ref == 'refs/heads/main'

@@ -1,6 +1,6 @@
 # Extend the campaign editors
 
-Updated: 11 October 2026.
+Updated: 27 October 2026.
 
 [Development index](README.md) · [Author workflow](../authoring/campaign-studio.md) · [Editor experience plan](../plans/editor-experience.md)
 
@@ -11,48 +11,56 @@ acceptance; it does not certify changes that are still being implemented.
 
 ## Start the tools
 
-Install Node.js 22.13.0 or later. From the repository root, run:
+Use a Node.js version that supports native TypeScript type stripping. From the
+repository root, install both browser packages and start the independent editor:
 
 ```sh
-npm ci --prefix web
-npm run dev
+npm ci --prefix apps/web
+npm ci --prefix apps/campaign-editor
+npm --prefix apps/campaign-editor run dev
 ```
 
-Use the address printed by the server. `/studio` edits a complete project.
-`/story?campaign=<installed-id>` and `/editor?campaign=<installed-id>` open
-standalone content and map drafts for an installed campaign. If the server
-uses a deployment prefix, include it before the route. Generate UI links
-with `pagePath` from `web/lib/site-path.js`; use `sitePath` for installed
-resources. Do not hardcode `/granaderos` in authored image references.
+Open the printed address at `/campaign-editor/`. The default workspace edits a
+complete project. `?workspace=story&campaign=<installed-id>` and
+`?workspace=sector&campaign=<installed-id>` open focused content and map drafts.
+The game routes `/studio`, `/story`, and `/editor` link to this application.
+
+`pagePath` and `sitePath` apply the editor deployment prefix to pages and assets.
+`gamePath` in `apps/campaign-editor/web/lib/game-path.ts` applies the game prefix for
+player launch and return links. Do not hardcode a deployment prefix in authored
+image references.
 
 ## Find the owner of a change
 
 | Responsibility | Source |
 | --- | --- |
-| Master project lifecycle, selection, validation and panel routing | `web/app/studio/page.tsx` |
-| Named workspace groups, navigation and section metadata | `web/app/studio/StudioNavigation.tsx` |
-| Shared structured fields and optional JSON document view | `web/app/studio/FieldEditor.tsx` |
-| In-memory staged text, document keys and close warning | `web/app/studio/DocumentDrafts.tsx` |
-| Shared author theme, focus, actions and status tokens | `web/app/editor-tools.css`; route styles in each editor folder |
-| World, map, building, content, presentation and resource panels | Named `*Workspace.tsx` modules in `web/app/studio/` |
-| Reusable content editor and its standalone adapter | `web/app/story/ContentEditor.tsx`; `/story/page.tsx` mounts it |
-| Reusable map editor and its standalone adapter | `web/app/editor/SectorEditor.tsx`; `/editor/page.tsx` mounts it |
-| Pure project creation, content split, identity rewrite and admission | `game/campaign-editor-project.js`, `game/campaign-scaffold.js` |
-| Linked world/map changes and building templates | `game/campaign-editor-world.js` |
-| Browser folder/ZIP import, export and installed-package reading | `web/lib/campaign-studio-files.ts` |
-| Durable project bytes | `web/lib/campaign-studio-storage.ts` |
-| Master undo/redo | `web/lib/campaign-studio-history.ts` |
-| Project resource preview resolution | `web/lib/campaign-studio-assets.ts` |
-| Standalone campaign selection and draft keys | `web/lib/editor-campaign.ts` |
-| Compiler and runtime package contracts | `game/campaign-library.js`, `game/content-package.js` and their validators |
+| Master project lifecycle, selection, validation and panel routing | `apps/campaign-editor/web/app/studio/page.tsx` |
+| Named workspace groups, navigation and section metadata | `apps/campaign-editor/web/app/studio/StudioNavigation.tsx` |
+| Shared structured fields and optional JSON document view | `apps/campaign-editor/web/app/studio/FieldEditor.tsx` |
+| In-memory staged text, document keys and close warning | `apps/campaign-editor/web/app/studio/DocumentDrafts.tsx` |
+| Shared author theme, focus, actions and status tokens | `apps/campaign-editor/web/app/editor-tools.css`; route styles in each editor folder |
+| World, map, building, content, presentation and resource panels | Named `*Workspace.tsx` modules in `apps/campaign-editor/web/app/studio/` |
+| Reusable content editor and its standalone adapter | `apps/campaign-editor/web/app/story/ContentEditor.tsx`; `apps/campaign-editor/web/main.tsx` selects its workspace |
+| Reusable map editor and its standalone adapter | `apps/campaign-editor/web/app/editor/SectorEditor.tsx`; `apps/campaign-editor/web/main.tsx` selects its workspace |
+| Project mutations and envelope admission | `apps/campaign-editor/domain/campaign-project.ts` |
+| Generic project creation | `apps/campaign-editor/infrastructure/create-project.js`, `apps/campaign-editor/infrastructure/project-scaffold.js` |
+| Linked world/map changes and building templates | `apps/campaign-editor/infrastructure/world-editing.js` |
+| Browser folder/ZIP import, export and installed-package reading | `apps/campaign-editor/web/lib/campaign-studio-files.ts` |
+| Durable project bytes | `apps/campaign-editor/web/lib/campaign-studio-storage.ts` |
+| Master undo/redo | `apps/campaign-editor/domain/campaign-project-history.ts`; browser adapter in `apps/campaign-editor/web/lib/campaign-studio-history.ts` |
+| Project resource preview resolution | `apps/campaign-editor/web/lib/campaign-studio-assets.ts` |
+| Standalone campaign selection and draft keys | `apps/campaign-editor/web/lib/editor-campaign.ts` |
+| Compiler and runtime package contracts | `packages/game/campaign-library.js`, `packages/game/content-package.js` and their validators |
 
-Pure helpers in `game/` must not read the DOM, browser storage or a selected
-route. The CLI and browser use the same scaffold and package validators.
-Keep browser file I/O, IndexedDB, object URLs and UI focus in the web layer.
+Editor domain and application code must not read the DOM, browser storage, or
+a selected route. Game imports use declared public application APIs. The
+`campaign-format` package owns pure published file contracts. The CLI and browser
+use the same scaffold and validators. Keep file I/O, IndexedDB, object URLs, and
+UI focus in browser adapters.
 
 ## Project documents and immutable changes
 
-`CampaignEditorProject` is exported by `web/lib/campaign-studio-files.ts`.
+`CampaignProjectDocument` is defined in `apps/campaign-editor/domain/campaign-project.ts`.
 Its version-1 envelope contains raw `manifest`, `content`, `world`,
 `presentation`, `maps`, `mapIndex`, `assets` and `resources`. The optional
 `editor` group holds editor-only metadata such as building templates. It does
@@ -74,7 +82,7 @@ Use these existing pure operations:
 | `renameCampaignProject(project, id, name?)` | Rewrites the project's own campaign URLs with its identity. A historical copy requires generic-rule repair. |
 | `validateCampaignProject(project)` | Asynchronously checks compiler admission, map/index references and actual resource hashes. |
 
-Prefer the linked operations in `campaign-editor-world.js` for locality and
+Prefer the linked operations in `apps/campaign-editor/infrastructure/world-editing.js` for locality and
 map edits. Changing only one side of an ID reference can leave an invalid
 draft. Semantic invalidity can be retained for repair; the compiler controls
 test launch and installable export.
@@ -184,27 +192,23 @@ actual selected context and callback, not only the rendered labels.
 Run these commands from the repository root. They are command examples, not
 claims that the current working changes passed.
 
-| Change | Existing focused checks |
+| Change | Focused check |
 | --- | --- |
-| Master shell, validation, recovery or keyboard | `node --test tests/campaign-studio-mounted.test.mjs` |
-| Structured field edits or staged JSON ownership | `node --test tests/editor-fields-experience.test.mjs` |
-| Embedded content editor or character preview | `node --test tests/campaign-studio-content.test.mjs` plus affected story cases |
-| Embedded world/map/building controls or history | `node --test tests/campaign-editor-world-mounted.test.mjs tests/campaign-editor-world.test.mjs` |
-| Project model, archive or storage | `node --test tests/campaign-studio-project.test.mjs tests/campaign-studio-files.test.mjs tests/campaign-studio-storage.test.mjs tests/campaign-studio-history-assets.test.mjs` |
-| Standalone content or map behavior | `node --test tests/story-editor.test.mjs tests/sector-editor-experience.test.mjs`; add affected map-engine cases from `tests/map-editor.test.mjs` when geometry changes |
-| Author CLI or shared scaffold | `node --test tests/campaign-authoring.test.mjs` |
-| Types and documentation | `npm run typecheck`; `npm run audit:docs` |
-| Final nested-path export | `GRANADEROS_BASE_PATH=/granaderos npm run build` |
+| Project model, revisions, history, publication and playtest isolation | `npm --prefix apps/campaign-editor test` |
+| Published package contract | `npm --prefix packages/campaign-format test` |
+| Shared live/editor conversation | `node --test tests/talk-to-character.test.mjs` |
+| Editor types | `npm --prefix apps/campaign-editor run typecheck` |
+| Independent editor bundle and boundaries | `npm --prefix apps/campaign-editor run build` |
+| Complete nested-path export | `GRANADEROS_BASE_PATH=/granaderos npm run build` |
+| Documentation | `npm run audit:docs` |
 
-The mounted fixtures use the existing `tests/tactical-render-loader.mjs`
-for TSX imports, JSDOM for controls and `fake-indexeddb` for durable project
-storage. Restore globals and unmount roots after each fixture. A JSDOM pass
-does not establish real WebGL rendering or a visible browser layout.
+Use an actual browser for field behavior, focus, narrow layouts, file pickers,
+and WebGL previews. Model tests and a successful build do not establish these
+visible behaviors.
 
 The general [development setup](getting-started.md#checks) describes the
-repository suites. For this editor-experience goal, full historical campaign
-routes are outside the authorized check scope. Use affected editor checks and
-record their exact results. Do not call a selected file list a full game gate.
+repository suites. Use affected editor checks and record their exact results. A
+complete campaign run is a separate verification scope. Do not call a selected file list a full game gate.
 
 Record the final source, commands, failures/skips, tested routes and viewports.
 Use actual browser screenshots for hierarchy and narrow layouts. Report a
@@ -212,5 +216,5 @@ blocked file picker or untested route directly. Keep historical receipts
 unchanged; a later source needs its own acceptance evidence.
 
 The [11 October editor evidence](../evidence/editor-experience-2026-10-11/README.md)
-records this implementation's checks and visible scope separately from the
-earlier complete-studio delivery.
+records a dated editor check. Current independent-package browser evidence is
+listed in the [editor README](../../apps/campaign-editor/README.md#browser-evidence).

@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import {actBattle,getReachable,artilleryContact,teamCanSee,stanceCost,interruptInitiative} from '../game/tactical.js';
-import {playerKnownBattle} from '../game/player-known-state.js';
-import {targetPreview} from '../game/ja2-hud.js';
-import {hasCharacterAbility} from '../game/character-abilities.js';
-import {syncBattleTime} from '../game/time.js';
-import {decodeSave,encodeSave} from '../game/save.js';
+import {actBattle,getReachable,artilleryContact,teamCanSee,stanceCost,interruptInitiative} from '../packages/game/tactical.js';
+import {playerKnownBattle} from '../packages/game/player-known-state.js';
+import {targetPreview} from '../packages/game/ja2-hud.js';
+import {hasCharacterAbility} from '../packages/game/character-abilities.js';
+import {syncBattleTime} from '../packages/game/time.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
 import {stableCrewController} from './stable-crew-driver.mjs';
 
 // Pay for local command support, keep actual gun crews, and resolve the

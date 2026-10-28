@@ -69,24 +69,24 @@ their before/after views, cost bounds, controls and source proofs.
 
 ## Final delivery evidence
 
-The [fresh remote PR snapshot](../../artifacts/tactical-reference-completion/merged-pr-snapshot.json)
-confirms the 17 accepted improvement merges. The [final preservation audit](../../artifacts/tactical-reference-completion/final-preservation-audit.json)
-checks the frozen character bodies, game/public files and the exact floor/fixture delta. The [final four merge receipts](../../artifacts/tactical-reference-completion/pieces15-18-merges.json)
+The [fresh remote PR snapshot](../evidence/artifacts/tactical-reference-completion/merged-pr-snapshot.json)
+confirms the 17 accepted improvement merges. The [final preservation audit](../evidence/artifacts/tactical-reference-completion/final-preservation-audit.json)
+checks the frozen character bodies, game/public files and the exact floor/fixture delta. The [final four merge receipts](../evidence/artifacts/tactical-reference-completion/pieces15-18-merges.json)
 pin each head and merge revision. Earlier bounded completion audits cover
-[pieces 1–6](../../artifacts/tactical-reference-completion/pieces01-06-audit.json),
-[7–11](../../artifacts/tactical-reference-completion/pieces07-11-audit.json) and
-[12–14](../../artifacts/tactical-reference-completion/pieces12-14-audit.json).
+[pieces 1–6](../evidence/artifacts/tactical-reference-completion/pieces01-06-audit.json),
+[7–11](../evidence/artifacts/tactical-reference-completion/pieces07-11-audit.json) and
+[12–14](../evidence/artifacts/tactical-reference-completion/pieces12-14-audit.json).
 
-The [final isolated-root proof](../../artifacts/tactical-reference-completion/final-root-proof.json)
+The [final isolated-root proof](../evidence/artifacts/tactical-reference-completion/final-root-proof.json)
 verifies all 10,427 regular source inputs, production identity, dependencies,
-runtime and the uninitialized engine state. [Primary main source audit](../../artifacts/tactical-reference-completion/primary-source-audit.json)
+runtime and the uninitialized engine state. [Primary main source audit](../evidence/artifacts/tactical-reference-completion/primary-source-audit.json)
 verifies the same regular source bytes and a clean initialized engine at the
-same pin. The [raw primary strict comparison](../../artifacts/tactical-reference-completion/primary-strict-comparison.json)
+same pin. The [raw primary strict comparison](../evidence/artifacts/tactical-reference-completion/primary-strict-comparison.json)
 retains its failed exact-engine-initialization result. The primary runtime and
 dependencies were not claimed equal. All 25 untracked playtest references were
 preserved during synchronization.
 
-The [phone image proof](../../artifacts/tactical-reference-completion/phone-pictures-proof.json)
+The [phone image proof](../evidence/artifacts/tactical-reference-completion/phone-pictures-proof.json)
 records HTTP 200 responses with byte-exact hashes for every gallery picture.
 Documentation links and audits passed before push. No code gate or render was
 repeated for this handover. The [plan](../plans/tactical-reference-graphics.md)

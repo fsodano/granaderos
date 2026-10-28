@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Bind the existing relaxed free left arm to three standing weapon idles."""
 from pathlib import Path
+from source_provenance import published_source_reference, published_source_sha256, published_source_digests, source_path
 import argparse,copy,hashlib,importlib.util,json,struct,subprocess
 FIELD='standingFreeArmRest'
-SOURCE='assets/source/characters-3d/authoring/standing_free_arm_rest.py'
+SOURCE='content/assets/source/characters-3d/authoring/standing_free_arm_rest.py'
 
 
 def module(name,path):
@@ -26,7 +27,7 @@ def encode(doc,binary):
 
 def recipe(root):
     paths=(SOURCE,'tools/characters-3d/build-standing-free-arm-rest.py','tools/characters-3d/standing_arm_context.py')
-    return {'method':'native-relaxed-arm-with-bounded-chest-forward-forearm','sourceSha256':{path:sha((root/path).read_bytes())for path in paths},'donor':'stand.idle.unarmed','targets':['stand.idle.short-gun','stand.idle.blade','stand.idle.knife'],'rotationBones':['upperarm_l','lowerarm_l','hand_l'],'outwardForearmDegrees':{'male':4,'female':12},'retainInputClocksAndOtherChannels':True}
+    return {'method':'native-relaxed-arm-with-bounded-chest-forward-forearm','sourceSha256':published_source_digests(root, paths),'donor':'stand.idle.unarmed','targets':['stand.idle.short-gun','stand.idle.blade','stand.idle.knife'],'rotationBones':['upperarm_l','lowerarm_l','hand_l'],'outwardForearmDegrees':{'male':4,'female':12},'retainInputClocksAndOtherChannels':True}
 
 
 def restore_bank(doc,binary,meta):
@@ -68,7 +69,7 @@ def verify(root,doc,binary,record):
 
 
 def main():
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[2]);parser.add_argument('--receipt',type=Path);parser.add_argument('--verify-only',action='store_true');args=parser.parse_args();root=args.root.resolve();assets=root/'web/public/models/characters';mp=assets/'manifest.json';initial=mp.read_bytes();manifest=json.loads(initial);source_recipe=recipe(root);glb=module('standing_free_arm_glb',root/'tools/characters-3d/merge-animation-bank.py');pending=[];rows={}
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[2]);parser.add_argument('--receipt',type=Path);parser.add_argument('--verify-only',action='store_true');args=parser.parse_args();root=args.root.resolve();assets=root/'apps/web/public/models/characters';mp=assets/'manifest.json';initial=mp.read_bytes();manifest=json.loads(initial);source_recipe=recipe(root);glb=module('standing_free_arm_glb',root/'tools/characters-3d/merge-animation-bank.py');pending=[];rows={}
     assert set(manifest['animationLibraries'])=={'male','female'},'Standing free arm needs both native anatomy banks'
     for gender,record in manifest['animationLibraries'].items():
         assert record['url']==f'/models/characters/{gender}-animations.glb','Unowned standing free arm bank URL'

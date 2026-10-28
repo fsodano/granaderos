@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor,civicStatus} from '../game/campaign.js';
-import {decodeSave,encodeSave} from '../game/save.js';
-import {careAssignmentIssue} from '../game/medical-care.js';
-import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
-import {hiringTravelHours} from '../game/hiring-arrivals.js';
-import {operativeLocation,operativeInTransit} from '../game/squads.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {dispatchCampaign,rosterFor,civicStatus} from '../packages/game/campaign.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
+import {careAssignmentIssue} from '../packages/game/medical-care.js';
+import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../packages/game/contracts.js';
+
+import {operativeLocation,operativeInTransit} from '../packages/game/squads.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
 import {bookRouteHires,finishRouteHireArrivals} from './paid-route-hiring.mjs';
 
 const clock=s=>s.hour*3600+(s.secondOfHour??0);
@@ -38,7 +38,7 @@ export function stabilizeCordobaFirstDefense(start,{report=()=>{},deadlineSecond
   if(!c.operativeState[doctor.id].medkits&&!takeKnownLinen(doctor)){
    // Each profile is booked once. Its existing carried linen is finite.
    // A week covers treatment and the interrupted long walking courier trip.
-   const replacement=rosterFor(c).filter(op=>{const r=c.operativeState[op.id],quote=contractQuote(c,op,'week');return civicStatus(c,op.id).available&&!c.recruited.includes(op.id)&&r.alive&&!r.captured&&op.medical>=20&&r.medkits>0&&hiringTravelHours(c,op.id)===0&&quote.available&&quote.total<=c.resources.treasury;}).sort((a,b)=>contractQuote(c,a,'week').total-contractQuote(c,b,'week').total||b.medical-a.medical||a.id-b.id)[0];
+   const replacement=rosterFor(c).filter(op=>{const r=c.operativeState[op.id],quote=contractQuote(c,op,'week');return civicStatus(c,op.id).available&&!c.recruited.includes(op.id)&&r.alive&&!r.captured&&op.medical>=20&&r.medkits>0&&quote.available&&quote.total<=c.resources.treasury;}).sort((a,b)=>contractQuote(c,a,'week').total-contractQuote(c,b,'week').total||b.medical-a.medical||a.id-b.id)[0];
    assert.ok(replacement,'known finite linen or an actual supplied paid medic is required before time resumes');
    const booked=bookRouteHires(c,[replacement.id],{term:'week',destination:'cordoba',report});c=booked.campaign;check();c=finishRouteHireArrivals(c,booked.hires,{minimumWaitHours:0,report});check();hires.push(...booked.hires);
    orders.push({type:'recruitCivic',id:replacement.id,term:'week',destination:'cordoba'});

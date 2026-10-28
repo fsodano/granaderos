@@ -1,6 +1,6 @@
 import {dialoguePackage} from './dialogue-fixture.mjs';
 import {A,order,talk} from './local-contract-fixture.mjs';
-import {projectDialogueMovements} from '../game/dialogue-movement.js';
+import {projectDialogueMovements} from '../packages/game/dialogue-movement.js';
 export function movementPackage(){
  const d=dialoguePackage(),speaker=d.characters.find(c=>c.id==='alma-contract'),guest=structuredClone(speaker);guest.id='pablo';guest.name='Pablo';guest.nickname='Pablo';delete guest.encounter.dialogue;
  d.characters.push(guest);d.placements.push({id:'pablo-location',character:'pablo',mode:'fixed',sectors:[A],moveChance:100,afterDeath:null,delayMin:0,delayMax:0});

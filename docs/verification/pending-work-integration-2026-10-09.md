@@ -23,7 +23,7 @@ Duplicate bytes reuse their Git blob objects.
 
 The later authorized cleanup audit found 97 additional historical source files
 inside ignored caches and review directories. Their exact bytes are preserved
-in the [inactive diagnostic archive](../../assets/source/worktree-diagnostics/2026-10-09/README.md).
+in the [inactive diagnostic archive](../../content/assets/source/worktree-diagnostics/2026-10-09/README.md).
 They are historical scripts and notes, not active runtime changes. All 17 old
 worktrees were removed after source verification. The main checkout and active
 test worktree remain. Shared runtime files remain in a separate local preview

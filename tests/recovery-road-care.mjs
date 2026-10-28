@@ -1,16 +1,16 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor,civicStatus} from '../game/campaign.js';
-import {contractQuote,contractExpiresSeconds,contractRenewalQuote} from '../game/contracts.js';
-import {hiringArrivalReason,hiringTravelHours} from '../game/hiring-arrivals.js';
-import {careRules,strategicBleedingPercent} from '../game/campaign-care-rules.js';
-import {operativeLocation,operativeInTransit} from '../game/squads.js';
-import {sleepOrderReason} from '../game/sleep.js';
+import {dispatchCampaign,rosterFor,civicStatus} from '../packages/game/campaign.js';
+import {contractQuote,contractExpiresSeconds,contractRenewalQuote} from '../packages/game/contracts.js';
+import {hiringArrivalReason} from '../packages/game/hiring-arrivals.js';
+import {careRules,strategicBleedingPercent} from '../packages/game/campaign-care-rules.js';
+import {operativeLocation,operativeInTransit} from '../packages/game/squads.js';
+import {sleepOrderReason} from '../packages/game/sleep.js';
 import {collectRouteItems,discoverRouteCache} from './finite-route-equipment.mjs';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {encodeSave,decodeSave} from '../game/save.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
 import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 import {recoverVisibleRouteDressings} from './route-visible-medical-remains.mjs';
-import {doctorRate} from '../game/medical-care.js';
+import {doctorRate} from '../packages/game/medical-care.js';
 
 // Continue from actual recapture survivors. Local qualified doctors work first;
 // a paid medic is booked only where the real patients have no available doctor.
@@ -90,7 +90,7 @@ export function recoverRecapturedRoad(start){
     let arrival=c.hiringArrivals.find(a=>a.destination===at&&rosterFor(c).find(op=>op.id===a.operativeId)?.medical>=careRules(c).minimumSkill);
     if(!arrival){
      assert.equal(hiringArrivalReason(c,at),null,`a doctor needs a legal arrival at ${at}`);
-     const candidate=rosterFor(c).filter(op=>op.medical>=careRules(c).minimumSkill&&civicStatus(c,op.id).available&&contractQuote(c,op,'day').price<=c.resources.treasury).sort((a,b)=>hiringTravelHours(c,a.id)-hiringTravelHours(c,b.id)||b.medical-a.medical)[0];
+     const candidate=rosterFor(c).filter(op=>op.medical>=careRules(c).minimumSkill&&civicStatus(c,op.id).available&&contractQuote(c,op,'day').price<=c.resources.treasury).sort((a,b)=>0-0||b.medical-a.medical)[0];
      assert.ok(candidate,`a paid available doctor must reach ${at}`);order({type:'recruitCivic',id:candidate.id,term:'day',destination:at});arrival=c.hiringArrivals.find(a=>a.operativeId===candidate.id);
     }
     if(arrival)for(const id of patients){const r=c.operativeState[id],hours=Math.max(0,arrival.dueAt-c.hour);assert.ok(r.hp>Math.ceil(r.bleeding*strategicBleedingPercent(c)/100)*hours,`patient ${id} needs immediate first aid before waiting for a hire`);}

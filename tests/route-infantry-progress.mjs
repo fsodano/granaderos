@@ -1,5 +1,5 @@
-import {teamCanSee,hasLineOfSight,hasFirearm,actionCosts,knownArtillery,stanceCost,firearmShotOptions} from '../game/tactical.js';
-import {firearmServiceable} from '../game/firearm-serviceability.js';
+import {teamCanSee,hasLineOfSight,hasFirearm,actionCosts,knownArtillery,stanceCost,firearmShotOptions} from '../packages/game/tactical.js';
+import {firearmServiceable} from '../packages/game/firearm-serviceability.js';
 import {knownRouteShotSafety} from './route-fire-safety.mjs';
 
 const fit=unit=>unit.hp>=15&&!unit.departure&&!unit.routed&&!unit.unconscious&&!unit.surrendered&&!unit.fled&&!unit.asleep;

@@ -1,7 +1,7 @@
-import {defaultContentPackage} from '../game/content-package.js';
-import {DEFAULT_FOUNDRY} from '../game/campaign-foundry.js';
-import {DEFAULT_ALTERNATIVE_LOADS} from '../game/firearm-loads.js';
-import {DEFAULT_MATERIAL_RANGE_SLOPE} from '../game/material-range-penetration.js';
+import {defaultContentPackage} from '../packages/game/content-package.js';
+import {DEFAULT_FOUNDRY} from '../packages/game/campaign-foundry.js';
+import {DEFAULT_ALTERNATIVE_LOADS} from '../packages/game/firearm-loads.js';
+import {DEFAULT_MATERIAL_RANGE_SLOPE} from '../packages/game/material-range-penetration.js';
 
 // Explicit authoring options used by editor capability tests. These are not
 // the installed campaign's starting rules or a shipped gameplay baseline.

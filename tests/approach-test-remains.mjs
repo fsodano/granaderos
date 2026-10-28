@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {actBattle,endTurn,getReachable,canSee} from '../game/tactical.js';
+import {actBattle,endTurn,getReachable,canSee} from '../packages/game/tactical.js';
 
 // Reach a retained body through ordinary movement before checking its custody.
 // The declared source fixture supplies its location, not visibility or free loot.

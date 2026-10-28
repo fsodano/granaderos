@@ -1,8 +1,8 @@
 import fs from 'node:fs/promises';
-import {SPRITE_APPEARANCES} from '../game/sprite-appearances.js';
-import {FAMILY_SPRITE_SEQUENCES,FAMILY_SPRITE_DIRECTIONS} from '../game/sprite-family-sequences.js';
-const baseline=JSON.parse(await fs.readFile('assets/previews/illustrated-sprites/packed/manifest.json'));
-const candidateRoot='assets/previews/illustrated-sprites/family-actions';
+import {SPRITE_APPEARANCES} from '../packages/game/sprite-appearances.js';
+import {FAMILY_SPRITE_SEQUENCES,FAMILY_SPRITE_DIRECTIONS} from '../packages/game/sprite-family-sequences.js';
+const baseline=JSON.parse(await fs.readFile('content/assets/previews/illustrated-sprites/packed/manifest.json'));
+const candidateRoot='content/assets/previews/illustrated-sprites/family-actions';
 const candidates={};
 for(const d of await fs.readdir(candidateRoot,{withFileTypes:true}))if(d.isDirectory()){
  try{Object.assign(candidates,JSON.parse(await fs.readFile(`${candidateRoot}/${d.name}/manifest.json`)).atlases);}catch(e){if(e.code!=='ENOENT')throw e;}

@@ -4,20 +4,20 @@ import {register} from 'node:module';
 register('../tests/tactical-render-loader.mjs',import.meta.url);
 import {mkdir,readFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
-import {createElement as h} from '../web/node_modules/react/index.js';
-import {renderToStaticMarkup} from '../web/node_modules/react-dom/server.node.js';
-import sharp from '../web/node_modules/sharp/lib/index.js';
-import {createBattle} from '../game/tactical.js';
-import {buildSectorMap} from '../game/maps.js';
-import {spriteRender} from '../game/sprite-render.js';
-const {default:SpriteFigure}=await import('../web/app/SpriteFigure.tsx');
-const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
-const destination=resolve(process.argv[2]??'assets/previews/tactical-pixel-art');
+import {createElement as h} from '../apps/web/node_modules/react/index.js';
+import {renderToStaticMarkup} from '../apps/web/node_modules/react-dom/server.node.js';
+import sharp from '../apps/web/node_modules/sharp/lib/index.js';
+import {createBattle} from '../packages/game/tactical.js';
+import {buildSectorMap} from '../packages/game/maps.js';
+import {spriteRender} from '../packages/game/sprite-render.js';
+const {default:SpriteFigure}=await import('../apps/web/app/SpriteFigure.tsx');
+const {default:TacticalScene}=await import('../apps/web/app/TacticalScene.tsx');
+const destination=resolve(process.argv[2]??'content/assets/previews/tactical-pixel-art');
 await mkdir(destination,{recursive:true});
 async function save(name,node,width,height){
  let svg=renderToStaticMarkup(h('svg',{xmlns:'http://www.w3.org/2000/svg',width,height,viewBox:`0 0 ${width} ${height}`},node));
  for(const url of new Set([...svg.matchAll(/href="(\/art\/[^\"]+)"/g)].map(m=>m[1]))){
-  const file=await sharp(await readFile(resolve('web/public',`.${url}`))).png().toBuffer();
+  const file=await sharp(await readFile(resolve('apps/web/public',`.${url}`))).png().toBuffer();
   svg=svg.replaceAll(`href="${url}"`,`href="data:image/png;base64,${file.toString('base64')}"`);
  }
  await sharp(Buffer.from(svg)).png().toFile(resolve(destination,`${name}.png`));
@@ -46,7 +46,7 @@ for(const [name,unit,pose] of [
 ]){
  const sprite=spriteRender({side:'player',...unit},{direction:3,frame:0,moving:false},pose);
  const frames=[];
- for(let frame=0;frame<sprite.frames;frame++)frames.push(await sharp(resolve('web/public',`.${sprite.href}`))
+ for(let frame=0;frame<sprite.frames;frame++)frames.push(await sharp(resolve('apps/web/public',`.${sprite.href}`))
   .extract({left:frame*sprite.cell,top:3*sprite.cell,width:sprite.cell,height:sprite.cell})
   .resize(320,320,{kernel:'nearest'}).png().toBuffer());
  await sharp(frames,{join:{animated:true}}).webp({lossless:true,loop:0,delay:frames.map(()=>Math.round(1000/sprite.fps))})

@@ -1,7 +1,7 @@
 from PIL import Image,ImageDraw
 from pathlib import Path
 import json
-root=Path('web/public/art/illustrated');m=json.load(open('assets/previews/illustrated-sprites/packed/manifest.json'))
+root=Path('apps/web/public/art/illustrated');m=json.load(open('content/assets/previews/illustrated-sprites/packed/manifest.json'))
 for family in ['granadero','royalist','worker','surgeon','gaucho','friar','woman-scout','woman-shawl']:
  names=[n for n in m['atlases'] if n.startswith(family+'-') and (root/(n+'.png')).exists()]
  for page in range((len(names)+9)//10):
@@ -15,4 +15,4 @@ for family in ['granadero','royalist','worker','surgeon','gaucho','friar','woman
     # Anchor all frames to a shared floor and horizontal centre.
     px=140+d*155+77-round(e['anchor'][0]*factor);py=row*170+145-round(e['anchor'][1]*factor)
     out.paste(crop,(px,py),crop)
-  out.save(f'assets/previews/sprite-consistency/{family}-{page+1}.png')
+  out.save(f'content/assets/previews/sprite-consistency/{family}-{page+1}.png')

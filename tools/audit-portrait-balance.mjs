@@ -4,12 +4,12 @@ import {createHash} from 'node:crypto';
 import {createRequire} from 'node:module';
 import {fileURLToPath} from 'node:url';
 import {resolve,dirname} from 'node:path';
-import {CHARACTER_PORTRAITS,SELECTABLE_CHARACTER_PORTRAITS,PORTRAIT_GENDERS,PORTRAIT_ROLES,PORTRAIT_SKIN_TONES,PORTRAITS_PER_COMBINATION,LEGACY_ONLY_PORTRAIT_IDS} from '../game/character-portraits.js';
+import {CHARACTER_PORTRAITS,SELECTABLE_CHARACTER_PORTRAITS,PORTRAIT_GENDERS,PORTRAIT_ROLES,PORTRAIT_SKIN_TONES,PORTRAITS_PER_COMBINATION,LEGACY_ONLY_PORTRAIT_IDS} from '../packages/game/character-portraits.js';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
-const require=createRequire(resolve(root,'web/package.json')),sharp=require('sharp');
-const before=JSON.parse(await readFile(resolve(root,'assets/prompts/portrait-expansion/audit-before.json'),'utf8'));
-const out=resolve(root,'assets/previews/portrait-balance');
+const require=createRequire(resolve(root,'apps/web/package.json')),sharp=require('sharp');
+const before=JSON.parse(await readFile(resolve(root,'content/assets/prompts/portrait-expansion/audit-before.json'),'utf8'));
+const out=resolve(root,'content/assets/previews/portrait-balance');
 const reports=[],hashes=new Set(),images=new Map();
 assert.equal(SELECTABLE_CHARACTER_PORTRAITS.length,180);
 for(const p of SELECTABLE_CHARACTER_PORTRAITS){
@@ -19,7 +19,7 @@ for(const p of SELECTABLE_CHARACTER_PORTRAITS){
  if(p.id==='103'){
   const metadata=await sharp(bytes).metadata();
   assert.equal(metadata.width,384);assert.equal(metadata.height,384);
- }else assert.ok(bytes.equals(await readFile(resolve(root,`assets/web/${p.src.split('/').at(-1)}`))),`Production copies differ: ${p.id}`);
+ }else assert.ok(bytes.equals(await readFile(resolve(root,`content/assets/web/${p.src.split('/').at(-1)}`))),`Production copies differ: ${p.id}`);
  const sha256=createHash('sha256').update(bytes).digest('hex');
  assert.ok(!hashes.has(sha256),`Duplicate artwork: ${p.id}`);hashes.add(sha256);
  images.set(p.id,{bytes,sha256});
