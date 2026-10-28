@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor,civicStatus} from '../game/campaign.js';
 import {isContractOperative} from '../game/content-character-ids.js';
 import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
-import {hiringArrivalReason,hireArrivalOrder,hireArrivalDueSeconds} from '../game/hiring-arrivals.js';
+import {hiringArrivalReason,hireArrivalDueSeconds} from '../game/hiring-arrivals.js';
+import {immediateRecruitmentExpectation} from './immediate-recruitment-fixture.mjs';
 import {canReassignOperative,operativeLocation} from '../game/squads.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {applyItemQuantity,SUPPLY_ITEMS} from '../game/tactical-inventory.js';
@@ -68,7 +69,7 @@ export function prepareNorthernRoadMedicalReserve(start,{sector='tucuman',keepSe
     .sort((a,b)=>a.quote.total-b.quote.total||b.op.medical-a.op.medical||a.op.id-b.op.id);
    const chosen=candidates.find(row=>row.quote.total<=c.resources.treasury);
    if(!chosen)return finish(candidates.length?'Insufficient treasury for paid reserve medicine.':'No available healthy supplied paid reserve physician.');
-   const {op,quote}=chosen,arrival=hireArrivalOrder(c,op,'week',quote,sector);
+   const {op,quote}=chosen,arrival=immediateRecruitmentExpectation(c,op,'week',quote,sector);
    plan={id:op.id,recipientId:recipient.id,selectedSquadId:selected,hire:{quote:structuredClone(quote),arrival},donation:null,staging:null};
    execute({type:'recruitCivic',id:op.id,term:'week',destination:sector});
    assert.equal(orders.at(-1).cost,quote.total);

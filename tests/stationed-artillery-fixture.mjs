@@ -1,3 +1,4 @@
+import {fightOnArrival} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
 import {initialCampaign} from '../game/campaign.js';
 import {defaultContentPackage} from '../game/content-package.js';
@@ -27,7 +28,7 @@ export function issuedBattery(content){
  s=completeTestTravel(s,{sector:'buenos_aires'});
  // Stage for two hours after the march. Recovery, light, casualties and the
  // victory below all follow ordinary orders; no combat result is fabricated.
- s=advanceCampaignHours(s,stagingHours);s=order(s,{type:'attack',sector:'san_nicolas'});assert.equal(s.hour%24,8);return s;
+ s=advanceCampaignHours(s,stagingHours);s=fightOnArrival(order(s,{type:'attack',sector:'san_nicolas'}));assert.equal(s.hour%24,8);return s;
 }
 const victoryWithReserve=reserveCharges=>contentFixtureCache(content=>{
  const s=issuedBattery(content),result=fight({...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},null,{scoutCostWeight:.01,avoidCivilians:true,reserveCharges});assert.equal(result.battle.status,'victory');assert.ok(result.actions>0);

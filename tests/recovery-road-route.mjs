@@ -1,3 +1,4 @@
+import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';
@@ -152,8 +153,7 @@ export function restoreNorthernRoad(start,{report=()=>{},keepServing}={}){
  for(const at of ['tucuman','san_nicolas']){const ids=field.filter(id=>c.operativeState[id].location===at);for(let i=0;i<ids.length;i+=6){order({type:'createSquad',ids:ids.slice(i,i+6),sector:at,name:'Recuperación del camino'});groups.push(c.activeSquadId);for(const id of c.squad)order({type:'assignCare',operativeId:id,assignment:'active'});c=finishReloadsBeforeMarch(c);}}
  order({type:'configureArtillery',types:['swivel']});
  for(const id of groups){order({type:'selectSquad',id});order({type:'attack',sector:'cordoba',queue:true,mode:'posta'});}
- for(let h=0;h<36&&!groups.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');h++)order({type:'wait',hours:1});
- order({type:'beginAssault',sector:'cordoba'});
+ c=completeQueuedAssault(c,groups,'cordoba',{execute:request=>{order(request);return c;}});
  c=fightNorthernSector(c,'cordoba',{controller:coastalBatteryController(enterSector(c.pendingBattle,c.sectorStates.cordoba),{sharedArtillerySight:true}),report}).campaign;
  }
  report({event:'roadRecaptured',campaign:decodeSave(encodeSave(c)).campaign});

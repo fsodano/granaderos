@@ -93,7 +93,8 @@ The normal editor grid is drawn below buildings. Use **Obstáculos** or
 
 ## Script editing
 
-Browser tools and Node scripts share `applyMapCommands`. A command batch either
+Browser tools and Node scripts call `EditSectorMap` through the public
+`editSectorMapDocument` adapter. A command batch either
 passes validation in full or returns the original document. IDs remain stable.
 An optional expected revision rejects stale writes. Undo and redo also advance
 revisions.
@@ -120,9 +121,11 @@ Example `commands.json`:
 
 Other commands include `moveObject`, `rotateObject`, `transformSelection`,
 `duplicateObject`, `deleteObject`, `setObject`, `setMetadata`, `resizeBuilding`,
-`setWall`, `setDoor`, `setOpeningStyle` and `stampTemplate`. See `game/map-commands.js` and
-`tests/map-editor.test.mjs` for argument examples. `seededTerrainCommands` in
-`game/map-editor-tools.js` provides deterministic generation.
+`setWall`, `setDoor`, `setOpeningStyle` and `stampTemplate`. See `campaign-editor/domain/sector-map.js` and
+[editor policy tests](../../campaign-editor/tests/editor-policy.test.mjs) for
+argument examples. `seededTerrainCommands` in the
+[map brush tools](../../campaign-editor/domain/map-editor-tools.js) provides
+deterministic generation.
 
 ## Format and runtime boundary
 

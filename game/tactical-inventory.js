@@ -1,3 +1,7 @@
+import { SnapshotTransferStoredItemRepository } from './infrastructure/inventory/snapshot-transfer-stored-item.repository.js';
+import { TransferItemUseCase } from './application/inventory/transfer-item/transfer-item.use-case.ts';
+import { SnapshotTransferItemRepository } from './infrastructure/inventory/snapshot-transfer-item.repository.js';
+import { readTacticalInventory, readTransferredItem, readIncomingPlacement, writeStoredInventory, withInventoryRefusals } from './infrastructure/inventory/tactical-inventory-mapper.js';
 import {weaponSpecification,validateWeaponCarrier,contentWeaponOf} from './weapon-definition.js';
 import {SUPPLY_PRESENTATION} from './supply-presentation.js';
 import {AMMUNITION_TYPES,validateAmmunitionStack,isAmmunitionStack} from './ammunition-types.js';
@@ -245,14 +249,16 @@ function stackFromEntry(unit,entry,count){
 export function extractItemQuantity(unit, item, count = 1, {keepOtherHand=true}={}) {
   quantity(count, 1);
   const entry = resolve(unit, item);
-  if (itemQuantity(unit, item) < count) fail('No queda esa cantidad del objeto.');
+  const inventory = withInventoryRefusals(() => readTacticalInventory(unit));
+  withInventoryRefusals(() => inventory.take(entry.item, count));
+  const remainingQuantity = inventory.quantityOf(entry.item);
   const next = structuredClone(unit);
   let stack;
   if(entry.kind==='cursor'){
     stack=structuredClone(entry.record);stack.count=count;
-    if(entry.record.count===count)delete next.equipmentCursor;else next.equipmentCursor.stack.count-=count;
+    if(entry.record.count===count)delete next.equipmentCursor;else next.equipmentCursor.stack.count=remainingQuantity;
   } else if (entry.kind === 'supply') {
-    next[item] = entry.count - count;
+    next[item] = remainingQuantity;
     clearEmptySupply(next);
     stack = {item, count, weight: SUPPLY_ITEMS[item].weight};
   } else if(entry.kind==='outfit'){stack={item:entry.item,...entry.record,count:1};next[entry.item]=null;if(entry.item==='outfit')delete next.poncho;
@@ -266,7 +272,7 @@ export function extractItemQuantity(unit, item, count = 1, {keepOtherHand=true}=
     delete next.lastTargetId; delete next.lastShotPosition;
   } else {
     stack = {...structuredClone(entry.record), item: entry.item, count};
-    const remaining = entry.record.count - count;
+    const remaining = remainingQuantity;
     if (!remaining) delete next.inventory[entry.key];
     else if (typeof unit.inventory[entry.key] === 'number') next.inventory[entry.key] = remaining;
     else next.inventory[entry.key].count = remaining;
@@ -318,6 +324,7 @@ function incoming(stack) {
 // Validate a ground/transfer payload without assuming it already fits a pack.
 // Depleted ground entries can be checked by the caller with count: 1.
 export function validateItemStack(stack) {incoming(stack); return true;}
+export function normalizeItemStack(stack) { return { item: stack.item, ...incoming(stack).value }; }
 export function itemStackDescriptor(stack){
  const value=incoming(stack);return value.kind==='supply'?SUPPLY_ITEMS[value.key]:recordDescriptor(stack.item,value.value);
 }
@@ -354,36 +361,13 @@ function sameMetadata(left, right) {
 }
 // Deferred checks are only for atomic equipment planners, which validate the final layout.
 export function applyItemQuantity(unit, stack, {deferCapacity=false}={}) {
-  if (stack.item==='ammo'&&unit.ammunitionVersion===2) fail('La munición necesita un tipo de carga definido.');
-  const entry = incoming(stack), usage = inventoryUsage(unit);
-  if (!deferCapacity && usage.overloaded) fail('El inventario está sobrecargado. Retirá objetos antes de recibir más.');
-  const next = structuredClone(unit); next.inventory ??= {};
-  if (entry.kind === 'supply') next[entry.key] = quantity((next[entry.key] ?? 0) + entry.value.count);
-  else {
-    const value = entry.value;
-    const owned=new Set([...heldItemIds(unit),...Object.values(pack(unit)).filter(item=>object(item)&&item.count>0).flatMap(fittingItemIds)]);
-    if (fittingItemIds(value).some(id=>owned.has(id))) fail('Ese objeto identificado ya está en el inventario.');
-    if (value.weapon !== undefined || isTool(value)) {
-      // Legacy stacked weapons all retain their contents; split only when moved.
-      // Bound allocation before generating individual destination records.
-      if (value.count > (deferCapacity ? INVENTORY_CAPACITY : INVENTORY_CAPACITY - usage.used)) fail('No queda espacio para esa cantidad de objetos.');
-      for (let i = 0; i < value.count; i++) next.inventory[uniqueKey(next.inventory, entry.key)] = {...structuredClone(value), count: 1};
-    } else {
-      const previous = own(next.inventory, entry.key) ? record(next.inventory[entry.key]) : null;
-      if (previous && sameMetadata(previous, value)) next.inventory[entry.key] = {...previous, count: quantity(previous.count + value.count)};
-      else next.inventory[uniqueKey(next.inventory, entry.key)] = structuredClone(value);
-    }
-  }
-  if(unit.pocketOrder?.some(slot=>slot.count!==undefined)){
-    const slots=structuredClone(usage.slots);
-    for(const item of new Set(slots.flatMap(slot=>slot.entry?[slot.entry.item]:[]))){
-      let added=itemQuantity(next,item)-itemQuantity(unit,item);
-      for(const slot of slots){if(added<=0)break;if(slot.entry?.item!==item)continue;const amount=Math.min(added,slot.entry.stackLimit-slot.entry.count);slot.entry.count+=amount;added-=amount;}
-    }
-    next.pocketOrder=pocketOrderFromSlots(slots);
-  }
-  if (!deferCapacity && inventoryUsage(next).overloaded) fail('No queda espacio en el inventario.');
-  return next;
+  if (stack.item === 'ammo' && unit.ammunitionVersion === 2) fail('La munición necesita un tipo de carga definido.');
+  incoming(stack);
+  return withInventoryRefusals(() => {
+    const inventory = readTacticalInventory(unit);
+    inventory.receive(readTransferredItem(stack), readIncomingPlacement(stack), { deferCapacity });
+    return writeStoredInventory(unit, inventory);
+  });
 }
 export function canCarryTransfer(unit, stack) {
   try {applyItemQuantity(unit, stack); return true;} catch {return false;}
@@ -404,8 +388,36 @@ export function incomingItemRoom(unit, stack) {
 }
 export function transferItemQuantity(source, target, item, count = 1) {
   if (source === target || source.id !== undefined && target.id !== undefined && String(source.id) === String(target.id)) fail('Elegí otro combatiente para recibir el objeto.');
-  const extracted = extractItemQuantity(source, item, count), received = applyItemQuantity(target, extracted.stack);
-  return {source: extracted.unit, target: received, stack: extracted.stack};
+  const stack = readItemStack(source, item, count);
+  const repository = new SnapshotTransferItemRepository(source, target, stack, () => extractItemQuantity(source, item, count));
+  const useCase = new TransferItemUseCase(repository);
+  withInventoryRefusals(() => useCase.execute({
+    sourceId: `character:${source.id ?? 'source'}`,
+    destinationId: `character:${target.id ?? 'destination'}`,
+    selectionId: resolve(source, item).item,
+    quantity: count,
+  }));
+  return repository.result();
+}
+
+export function transferStoredItemQuantity(stack, target, count = 1, sourceId = 'ground:unattended') {
+  const repository = new SnapshotTransferStoredItemRepository(stack, target);
+  const useCase = new TransferItemUseCase(repository);
+  withInventoryRefusals(() => useCase.execute({
+    sourceId,
+    destinationId: `character:${target.id ?? 'destination'}`,
+    selectionId: 'stored-item',
+    quantity: count,
+  }));
+  return repository.result();
+}
+
+export function takeStoredItemQuantity(stack, count = 1) {
+  return withInventoryRefusals(() => {
+    const item = readTransferredItem(stack);
+    const taken = item.take(count);
+    return { stack: { ...structuredClone(stack), count: taken.quantity }, remaining: item.quantity };
+  });
 }
 
 function fittingHost(unit) {

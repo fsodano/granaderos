@@ -11,6 +11,9 @@ Player-facing text is Spanish. Code and documentation are English.
 
 | Task | Read |
 | --- | --- |
+| Understand how the browser game fits together | [Progressive architecture guide](architecture/README.md) and [C4 levels 1–3](architecture/c4.md) |
+| Explore player and campaign-author capabilities | [Use-case catalogue](architecture/use-cases/README.md) |
+| Verify the domain architecture implementation | [28 October architecture evidence](verification/domain-architecture-2026-10-28.md) |
 | Install, run, build or test the browser game | [Development setup](development/getting-started.md) |
 | Read the current game design | [Game design](specification/game-design.md) |
 | Check version 0.1 scope and remaining work | [Version 0.1 status](verification/version-0.1.md) |
@@ -19,7 +22,7 @@ Player-facing text is Spanish. Code and documentation are English.
 | Find requirement history and feature evidence | [Published progress ledger](verification/published-progress.md) |
 | Review the historical cross-branch verification | [27 September audit](verification/formal-audit-2026-09-27.md) |
 | Review ammunition ownership and current limits | [Persistent ammunition](verification/strategic-ammunition-custody.md) |
-| Create a campaign in the browser | [Campaign studio](authoring/campaign-studio.md) and [studio acceptance evidence](evidence/campaign-studio-2026-10-10/README.md) |
+| Create a campaign in the browser | [Campaign editor](authoring/campaign-studio.md) and [studio acceptance evidence](evidence/campaign-studio-2026-10-10/README.md) |
 | Extend or improve the editing tools | [Editor development](development/editor-development.md) and [editor experience plan](plans/editor-experience.md) |
 | Create, check and install local campaign folders | [Campaign authoring](development/campaign-authoring.md) |
 | Use the experimental content editor | [Story editor](development/story-editor.md) |
@@ -41,6 +44,7 @@ Studio; community hosting and sharing services are
 
 | Folder | Contents |
 | --- | --- |
+| [Architecture](architecture/README.md) | Progressive system overview, sequence diagrams, and subsystem deep dives |
 | [Gameplay](gameplay/README.md) | Campaign, combat, equipment, characters and controls |
 | [Authoring](authoring/README.md) | Campaign studio workflow, portable projects and installable packages |
 | [Development](development/README.md) | Browser setup, editors, system notes and performance work |

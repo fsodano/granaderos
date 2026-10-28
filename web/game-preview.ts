@@ -1,0 +1,8 @@
+import './app/globals.css';
+export { default as Battlefield } from './app/Battlefield';
+export { default as TacticalScene } from './app/TacticalScene';
+export { default as TacticalThreeScene } from './app/TacticalThreeScene';
+export { default as BuildIdentity } from './app/BuildIdentity';
+export { PREFERRED_COMPANION_EXPLANATION } from './app/PreferredCompanionsSummary';
+export { presentActors, presentWorld } from './lib/three/presentation';
+export { sectorProject } from './lib/three/projection';

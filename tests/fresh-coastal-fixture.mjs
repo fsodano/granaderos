@@ -1,3 +1,4 @@
+import {fightOnArrival} from './assault-fixture.mjs';
 import {takeFiniteCache,leaveFiniteCache} from './finite-cache-driver.mjs';
 import {fundedRouteContent,ROUTE_STARTING_TREASURY} from './funded-route-fixture.mjs';
 import {travelLegHours} from '../game/squad-travel.js';
@@ -16,7 +17,8 @@ import {defaultProfile} from '../game/character-profile.js';
 import {createBattle,actBattle,endTurn,getReachable,hasLineOfSight,lookPreview} from '../game/tactical.js';
 import {sameSurface,spacePoint} from '../game/tactical-space.js';
 import {enterSector} from '../game/world.js';
-import {hiringArrivalOptions,hireArrivalDueSeconds,hireArrivalOrder} from '../game/hiring-arrivals.js';
+import {hiringArrivalOptions,hireArrivalDueSeconds} from '../game/hiring-arrivals.js';
+import {immediateRecruitmentExpectation} from './immediate-recruitment-fixture.mjs';
 import {contractQuote,contractExpiresSeconds} from '../game/contracts.js';
 import {operativeLocation} from '../game/squads.js';
 import {cellTravelPlan} from '../game/world-cells.js';
@@ -102,8 +104,7 @@ function recruitLocal(s,id=3){
  return saved({campaign:leave(saved({campaign:s,battle:p.battle}))}).campaign;
 }
 
-// Use each quoted arrival, including immediate stock hires. The preparation
-// still waits six real hours; authored longer journeys retain their full delay.
+// Recruitment grants immediate control. Preparation then spends its requested readiness time.
 export function prepareFreshCoastalHires(start,ids,{term='week',minimumWaitHours=6,report=()=>{}}={}){
  assert.ok(Array.isArray(ids)&&new Set(ids).size===ids.length,'Opening hires must have unique identities.');
  assert.ok(Number.isSafeInteger(minimumWaitHours)&&minimumWaitHours>=0&&minimumWaitHours<=720);
@@ -119,7 +120,7 @@ export function prepareFreshCoastalHires(start,ids,{term='week',minimumWaitHours
   assert.equal(s.hiringArrivals.some(a=>a.operativeId===hire.id),false);
   assert.equal(s.operativeState[hire.id].location,hire.arrival.destination);
   assert.equal(contract.kind,hire.quote.permanent?'patriot':'paid');assert.equal(contract.term,term);assert.equal(contract.paid,hire.quote.price);
-  assert.equal(contract.started*3600+(contract.startedSecond??0),due,'Service starts at the quoted arrival, including its booked second.');
+  assert.equal(contract.started*3600+(contract.startedSecond??0),due,'Service starts at the accepted recruitment instant.');
   assert.equal(contractExpiresSeconds(contract),hire.quote.permanent?null:due+hire.quote.hours*3600);
  };
  for(const id of ids){
@@ -127,17 +128,13 @@ export function prepareFreshCoastalHires(start,ids,{term='week',minimumWaitHours
   const op=rosterFor(s).find(op=>op.id===id);assert.ok(op,`Opening hire ${id} must exist.`);
   const destination=s.location;assert.ok(hiringArrivalOptions(s).some(site=>site.id===destination),'The opening destination must admit actual arrivals.');
   const quote=contractQuote(s,op,term);assert.equal(quote.available,true,quote.reason);
-  const arrival=hireArrivalOrder(s,op,term,quote,destination),cash=s.resources.treasury;
-  execute({type:'recruitCivic',id,term,destination});assert.equal(s.resources.treasury,cash-quote.total,'Hiring pays the current service quote and any guarantee once.');
+  const arrival=immediateRecruitmentExpectation(s,op,term,quote,destination),cash=s.resources.treasury;
+  execute({type:'recruitCombatant',id,term,destination});assert.equal(s.resources.treasury,cash-quote.total,'Hiring pays the current service quote and any guarantee once.');
   const hire={id,quote:structuredClone(quote),arrival:structuredClone(arrival),debited:cash-s.resources.treasury};hires.push(hire);
-  if(arrival.travelHours){
-   assert.equal(s.recruited.includes(id),false);assert.equal(s.contracts[id],undefined);
-   const pending=s.hiringArrivals.filter(a=>a.operativeId===id);assert.equal(pending.length,1);
-   for(const [key,value]of Object.entries(arrival))assert.deepEqual(pending[0][key],value);
-  }else arrived(hire);
+  arrived(hire);
  }
  s=saved({campaign:s}).campaign;
- const until=Math.max(started+minimumWaitHours*3600,...hires.map(hire=>hireArrivalDueSeconds(hire.arrival)));
+ const until=started+minimumWaitHours*3600;
  for(let attempts=0;clock(s)<until;attempts++){
   assert.ok(attempts<240,'Opening readiness must finish through bounded real wait orders.');
   assert.ok(!s.pendingBattle&&!s.pendingEncounter,'Resolve an actual encounter before the opening hiring wait.');
@@ -202,7 +199,7 @@ export function freshCoastalRoute(kind,{onCheckpoint,onReplayFailure,onBeforeBat
    const wait=(12-travelLegHours(s.location,sector)-s.hour%24+48)%24;if(wait)s=advanceCampaignHours(s,wait);
   }
   if(kind==='stock'||sector!=='buenos_aires')s=finishReloadsBeforeMarch(s,{report});
-  s=order(s,{type:'attack',sector});assert.ok(s.pendingBattle);const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous=s.sectorStates[sector];
+  s=fightOnArrival(order(s,{type:'attack',sector}));assert.ok(s.pendingBattle);const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous=s.sectorStates[sector];
   const engage=sector==='buenos_aires'?(fightOpening??(kind==='created'?createdOpeningFight:kind==='local'?localOpeningFight:cautiousFight)):sector==='san_lorenzo'?(fightFinal??(kind==='stock'?stockCoastalFight:coastalFinalFight)):kind==='stock'?stockCoastalFight:kind==='local'?localOpeningFight:cautiousFight;
   const evidence=beginRouteCoastalEvidence({routeKind:kind,sector,battleId:request.id});
   onBeforeBattle?.(structuredClone({sector,campaign:s,request,previous}));
@@ -255,7 +252,7 @@ export function freshCoastalRoute(kind,{onCheckpoint,onReplayFailure,onBeforeBat
   evidence?.capture('before-existing-settlement',{pair:p,resultReport});
   const settledCampaign=order(p.campaign,resultReport);evidence?.capture('native-returned-campaign-after-settlement',{campaign:settledCampaign});
   s=saved({campaign:settledCampaign}).campaign;evidence?.capture('saved-campaign-before-defeated-assertion',{campaign:s});assert.equal(s.defeated,false);assert.ok(dispatchCampaign(s,resultReport).lastError);
-  for(const id of dead){assert.equal(s.operativeState[id].alive,false);assert.equal(s.operativeState[id].hp,0);assert.ok(!s.squad.includes(id));assert.ok(dispatchCampaign(s,{type:'recruitCivic',id,term:'week'}).lastError);}
+  for(const id of dead){assert.equal(s.operativeState[id].alive,false);assert.equal(s.operativeState[id].hp,0);assert.ok(!s.squad.includes(id));assert.ok(dispatchCampaign(s,{type:'recruitCombatant',id,term:'week'}).lastError);}
   notes.push({...battleNotes,settledFunds:s.resources.treasury,phase:s.phase,deaths:[...dead]});onCheckpoint?.(sector,s,notes);report({event:'coastalBattleSettled',...notes.at(-1)});
   if(kind==='local'&&sector==='buenos_aires'){
    s=recruitLocal(s,4);s=recruitLocal(s,10);const recovery=prepareLocalOpening(s);s=recovery.campaign;
@@ -283,13 +280,12 @@ export function freshCoastalRoute(kind,{onCheckpoint,onReplayFailure,onBeforeBat
    const auxiliary=kind==='hired'?(relief!==undefined&&!replacements.includes(relief)?relief:localPhysician?.id):undefined,hires=[...replacements,...(auxiliary===relief&&relief!==undefined?[relief]:[])],cash=s.resources.treasury;
    assert.ok(hiringArrivalOptions(s).some(o=>o.id===s.location));const location=s.location;
    const quotes=hires.map(id=>({id,...contractQuote(s,rosterFor(s).find(op=>op.id===id),'week')}));
-   const arrivals=hires.map((id,index)=>hireArrivalOrder(s,rosterFor(s).find(op=>op.id===id),'week',quotes[index],location));
+   const arrivals=hires.map((id,index)=>immediateRecruitmentExpectation(s,rosterFor(s).find(op=>op.id===id),'week',quotes[index],location));
    evidence?.capture('before-clinic-hire-orders',{campaign:s,field,hires,replacements,auxiliary,relief,clinic,fieldSquad,quotes});
-   for(const id of hires)s=order(s,{type:'recruitCivic',id,term:'week',destination:location});
+   for(const id of hires)s=order(s,{type:'recruitCombatant',id,term:'week',destination:location});
    if(hires.length){
     for(const arrival of arrivals){
-     if(arrival.travelHours){assert.equal(s.recruited.includes(arrival.operativeId),false);const pending=s.hiringArrivals.filter(hire=>hire.operativeId===arrival.operativeId);assert.equal(pending.length,1);for(const [key,value]of Object.entries(arrival))assert.deepEqual(pending[0][key],value);}
-     else assert.equal(s.recruited.filter(id=>id===arrival.operativeId).length,1);
+     assert.equal(s.recruited.filter(id=>id===arrival.operativeId).length,1);assert.ok(!s.hiringArrivals.some(record=>record.operativeId===arrival.operativeId));
     }
     const due=Math.max(...arrivals.map(hireArrivalDueSeconds));
     if(auxiliary!==undefined&&s.hour*3600+(s.secondOfHour??0)<due){for(const id of field){assert.ok(s.operativeState[id].hp>=15&&!s.operativeState[id].bleeding,'stabilize the actual clinic patients before waiting for a physician');s=order(s,{type:'assignCare',id,assignment:'rest'});}}

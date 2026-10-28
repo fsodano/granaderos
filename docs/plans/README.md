@@ -2,6 +2,11 @@
 
 [Documentation index](../README.md)
 
+The [accepted architecture plan](../../plans/accepted/domain-architecture.md)
+and [ubiquitous language](../../plans/accepted/ubiquitous-language.md) define the
+target domain model, behavior, naming, and implementation sequence. Start there
+for architecture work. Their acceptance does not establish implementation.
+
 These documents record proposals, implementation steps and delivered editor scope.
 Some steps have later implementation notes. A plan is not evidence that its
 requirements are complete. Check the [version 0.1 status](../verification/version-0.1.md),

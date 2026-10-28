@@ -1,3 +1,4 @@
+import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {decodeSave,encodeSave} from '../game/save.js';
@@ -27,13 +28,9 @@ export function prepareCreatedRiverApproaches(start,field,{report=()=>{}}={}){
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'rest'});
  for(let h=0;h<48&&field.some(id=>{const u=c.operativeState[id];return u.energy<100||u.fatigue||u.asleep;});h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
  for(const operativeId of field){const u=c.operativeState[operativeId];assert.ok(u.hp===u.maxHp&&!u.bleeding&&u.energy===100&&!u.fatigue&&!u.asleep);order({type:'assignCare',operativeId,assignment:'active'});}
+c=stageAssaultDeparture(c,groups.map(group=>group.id).map(id=>({id,mode:'posta'})),'santa_fe',{earliestHour:6,latestHour:10,execute:request=>{order(request);return c;}});
  for(const g of groups){order({type:'selectSquad',id:g.id});order({type:'attack',sector:'santa_fe',queue:true,mode:'posta'});}
- for(let h=0;h<24&&!groups.every(g=>c.squads.find(q=>q.id===g.id).journey?.status==='ready');h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
- assert.ok(groups.every(g=>c.squads.find(q=>q.id===g.id).journey?.status==='ready'));
- for(let h=0;h<24&&(c.hour%24<6||c.hour%24>10);h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
- assert.ok(c.hour%24>=6&&c.hour%24<=10);
- assert.equal(c.squads.find(q=>groups.some(g=>g.id===q.id)).location,'cordoba');
- order({type:'beginAssault',sector:'santa_fe'});
+ c=completeQueuedAssault(c,groups.map(group=>group.id),'santa_fe',{execute:request=>{order(request);return c;}});
  assert.equal(c.pendingBattle.origin,'cordoba');assert.deepEqual(c.pendingBattle.squad.map(u=>u.id).sort((a,b)=>a-b),field.slice().sort((a,b)=>a-b));
  assert.deepEqual([...new Set(c.pendingBattle.squad.map(u=>u.entryEdge))].sort(),['S','W']);
  report({event:'createdRiverApproachesReady',west,south,groups,hour:c.hour,secondOfHour:c.secondOfHour,campaign:c});

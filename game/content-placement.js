@@ -2,6 +2,7 @@ import {isContractCharacter} from './content-character-ids.js';
 import {contentCellIds} from './content-map.js';
 import {campaignSectors,campaignWorld} from './campaign-definition.js';
 import { resolveContent, CONTENT_LIMIT } from "./content-package.js";
+import { ResidentPresence, ResidentMovementPolicy } from './domain/world/resident-presence.ts';
 const need = (ok, message) => {
   if (!ok) throw Error(message);
 };
@@ -13,12 +14,11 @@ function choose(s, values) {
   return values[Math.floor(draw(s) * values.length)];
 }
 function spawn(s, p, destination = undefined) {
-  const person = s.people[p.character];
+  const person = new ResidentPresence(s.people[p.character]);
   if (isContractCharacter(s.content.characters.find(c=>c.id===p.character)))return;
-  if (!person.alive || person.recruited || person.suspended) return;
-  person.sector = destination ?? (p.mode === "fixed" ? p.sectors[0] : choose(s, p.sectors));
-  person.appeared = true;
-  person.revision++;
+  if (!person.canAppear) return;
+  person.arriveAt(destination ?? (p.mode === "fixed" ? p.sectors[0] : choose(s, p.sectors)));
+  s.people[p.character] = person.toSnapshot();
 }
 export function createContentSession(content, seed = 18130203) {
   need(Number.isInteger(seed) && seed >= 0 && seed <= 0xffffffff, "Semilla inválida.");
@@ -55,9 +55,7 @@ export function advancePlacementState(state, minute, loadedSector = null, maximu
     "La prueba admite hasta un año de campaña.",
   );
   const s = structuredClone(state);
-  const blocked = event => event.destination !== undefined && (
-    s.people[s.content.placements.find(p=>p.id===event.placement).character].suspended ||
-    loadedSector !== null && contentCellIds([event.destination],s.content)[0] === contentCellIds([loadedSector],s.content)[0]);
+  const blocked = event => s.people[s.content.placements.find(p=>p.id===event.placement).character].suspended;
   while (true) {
     const due = s.events.reduce((n, e) => blocked(e) ? n : Math.min(n, Math.max(s.minute,e.at)), Infinity);
     const next = Math.min(due, s.nextDaily);
@@ -69,30 +67,26 @@ export function advancePlacementState(state, minute, loadedSector = null, maximu
       const p = s.content.placements.find((p) => p.id === event.placement);
       const person=s.people[p.character];
       if(!person.alive || person.recruited)continue;
-      // Choose once when due; waiting for the scene to close must not reroll.
       event.destination ??= p.mode === 'fixed' ? p.sectors[0] : choose(s,p.sectors);
       if(blocked(event))s.events.push(event);
       else spawn(s,p,event.destination);
     }
     if (next === s.nextDaily) {
       for (const p of s.content.placements) {
-        const person = s.people[p.character];
+        const person = new ResidentPresence(s.people[p.character]);
         if (
           isContractCharacter(s.content.characters.find(c=>c.id===p.character)) ||
           p.mode !== "daily" ||
-          !person.appeared ||
-          !person.alive ||
-          person.recruited ||
-          person.suspended ||
-          (loadedSector !== null && contentCellIds(p.loadedGuard === 'range' ? p.sectors : [person.sector],s.content).includes(contentCellIds([loadedSector],s.content)[0]))
+          !person.canMove
         )
           continue;
-        if (draw(s) * 100 >= p.moveChance) continue;
-        const destination = p.selection === 'alternate'
-          ? p.sectors.find(id=>contentCellIds([id],s.content)[0]!==contentCellIds([person.sector],s.content)[0])
-          : choose(s,p.sectors);
-        // A protected destination cancels this day's move, without a redraw.
-        if (destination !== undefined && contentCellIds([destination],s.content)[0] !== contentCellIds([person.sector],s.content)[0] && (loadedSector === null || contentCellIds([destination],s.content)[0] !== contentCellIds([loadedSector],s.content)[0])) {person.sector = destination;person.revision++;}
+        const normalized = new ResidentPresence({ ...person.toSnapshot(), sector: contentCellIds([person.sector], s.content)[0] });
+        const destination = new ResidentMovementPolicy().chooseDestination(normalized, contentCellIds(p.sectors, s.content), p.moveChance, p.selection, () => draw(s));
+        if (destination !== null) {
+          const configuredDestination = p.sectors.find(sector => contentCellIds([sector], s.content)[0] === destination);
+          person.moveTo(configuredDestination);
+          s.people[p.character] = person.toSnapshot();
+        }
       }
       s.nextDaily += 1440;
     }
@@ -104,12 +98,11 @@ export function changePlacementStatus(state, id, status, loadedSector = null) {
   need(Object.hasOwn(state.people, id), "El personaje no existe.");
   need(["dead", "recruited", "released"].includes(status), "Estado inválido.");
   const s = structuredClone(state),
-    person = s.people[id];
+    person = new ResidentPresence(s.people[id]);
   if (status === "dead") {
-    if (!person.alive) return s;
-    person.alive = false;
-    person.hp = 0;
-    person.sector = null;
+    if (!person.toSnapshot().alive) return s;
+    person.recordDeath();
+    s.people[id] = person.toSnapshot();
     for (const p of s.content.placements.filter((p) => p.afterDeath === id)) {
       if (s.receipts.some(receipt=>receipt.placement===p.id)) continue;
       const delay = p.delayMin + Math.floor(draw(s) * (p.delayMax - p.delayMin + 1));
@@ -117,8 +110,8 @@ export function changePlacementStatus(state, id, status, loadedSector = null) {
       s.events.push({ placement: p.id, at: s.minute + delay });
     }
   } else {
-    need(person.alive, "Un personaje muerto no puede cambiar de servicio.");
-    person.recruited = status === "recruited";
+    person.changeService(status === "recruited");
+    s.people[id] = person.toSnapshot();
   }
   return advancePlacementState(s, s.minute, loadedSector, 52560000);
 }

@@ -1,3 +1,5 @@
+import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
+import {fightOnArrival,fightOnArrivalOrder} from './assault-fixture.mjs';
 import {northernFieldSurvivors} from './northern-field-survivors.mjs';
 import {knownRouteShotSafety} from './route-fire-safety.mjs';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
@@ -31,7 +33,7 @@ import {shareNorthernClinicDressing} from './northern-clinic-dressing-pool.mjs';
 import {recoverVisibleRouteDressings} from './route-visible-medical-remains.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {contractQuote,contractRenewalQuote} from '../game/contracts.js';
-import {hiringTravelHours,pendingHire,hireArrivalDueSeconds} from '../game/hiring-arrivals.js';
+import {pendingHire,hireArrivalDueSeconds} from '../game/hiring-arrivals.js';
 import {collectRouteItems,collectRouteMedicalSupplies} from './finite-route-equipment.mjs';
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {prepareRouteSupportBattery} from './route-support-battery.mjs';
@@ -326,7 +328,7 @@ export function prepareNorthernSquad(start,{report=()=>{},ammunitionTarget=10}={
 
 export function fightNorthernSector(start,sector,{report=()=>{},expectedOutcome='victory',controller,sharedFallback,deploy,executeBattle=fight,beforeSettlement}={}){
  const before=structuredClone(start),prepared=start.pendingBattle?structuredClone(start):finishReloadsBeforeMarch(start,{report});
- const preparationSeconds=(prepared.hour-start.hour)*3600+(prepared.secondOfHour??0)-(start.secondOfHour??0),campaign=start.pendingBattle?prepared:dispatchCampaign(prepared,{type:'attack',sector});assert.equal(campaign.lastError,null,campaign.lastError);
+ const preparationSeconds=(prepared.hour-start.hour)*3600+(prepared.secondOfHour??0)-(start.secondOfHour??0),campaign=start.pendingBattle?prepared:fightOnArrival(dispatchCampaign(prepared,{type:'attack',sector}));assert.equal(campaign.lastError,null,campaign.lastError);
  assert.deepEqual(start,before);assert.ok(campaign.pendingBattle,'the real march produces a tactical deployment');
  const request=campaign.pendingBattle;assert.equal(request.sector,sector);
  report({event:'battleStarted',sector,hour:campaign.hour,units:request.squad.map(u=>u.id)});
@@ -816,7 +818,7 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
   order({type:'createSquad',name:'Asegurar el camino del sur',ids:fieldIds});reliefSquad=campaign.activeSquadId;
   for(const operativeId of fieldIds)order({type:'assignCare',operativeId,assignment:'active'});
   campaign=finishReloadsBeforeMarch(campaign,{report});
-  order({type:'attack',sector:'buenos_aires'});assert.ok(campaign.pendingBattle);
+  order({type:'attack',sector:'buenos_aires'});order(fightOnArrivalOrder(campaign));assert.ok(campaign.pendingBattle);
   const coastalCaptives=Object.entries(campaign.operativeState).filter(([,r])=>r.captured&&r.capturedSector==='buenos_aires').map(([id,r])=>({id:Number(id),hp:r.hp,bleeding:r.bleeding}));
   const recapture=fightNorthernSector(campaign,'buenos_aires',{controller:northernCombatOrder,report});campaign=recapture.campaign;corridor.recapture=recapture.summary;
   for(const id of [...fieldIds,...supportIds]){const contract=campaign.contracts[id];if(contract?.expiresAt!==null&&contract.expiresAt-campaign.hour<=28){const cash=campaign.resources.treasury;order({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});earlyRenewals.push({id,cost:cash-campaign.resources.treasury,hour:campaign.hour});}}
@@ -935,9 +937,9 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
     // A weekly quote above the treasury does not justify a free replacement.
     const candidate=rosterFor(campaign).filter(op=>{const r=campaign.operativeState[op.id],q=contractQuote(campaign,op,'day');return op.id>=100&&op.id<1000&&!campaign.recruited.includes(op.id)&&r.alive&&!r.captured&&r.hp===r.maxHp&&q.available&&q.price<=campaign.resources.treasury;}).sort((a,b)=>contractQuote(campaign,a,'day').price-contractQuote(campaign,b,'day').price||b.marksmanship-a.marksmanship)[0];assert.ok(candidate,'finite care must leave an affordable real sixth field soldier');
     // Keep the survivors resting and book the short term close to a night
-    // approach. The native arrival delay and four hours of local preparation
-    // fit before departure; every additional hour still advances the campaign.
-    const travelHours=hiringTravelHours(campaign,candidate.id),leadHours=travelHours+4;
+    // approach. Four hours of local preparation fit before departure; each
+    // additional hour advances the campaign.
+    const travelHours=0,leadHours=travelHours+4;
     earliestDeparture=campaign.hour+(8-campaign.hour%24+24)%24;
     if(earliestDeparture<campaign.hour+leadHours)earliestDeparture+=24;
     const bookingHour=earliestDeparture-leadHours;
@@ -1006,8 +1008,7 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
  order({type:'selectSquad',id:field});campaign=finishReloadsBeforeMarch(campaign,{report});
  order({type:'selectSquad',id:support});staging.departureHour=campaign.hour;staging.departureSecond=campaign.secondOfHour??0;
  order({type:'attack',sector:'tucuman',queue:true});order({type:'selectSquad',id:field});order({type:'attack',sector:'tucuman',queue:true});
- for(let i=0;i<24&&![field,support].every(id=>campaign.squads.find(q=>q.id===id).journey?.status==='ready');i++){assert.equal(campaign.pendingEncounter,null);order({type:'wait',hours:1});}
- order({type:'beginAssault',sector:'tucuman'});
+ campaign=completeQueuedAssault(campaign,[field,support],'tucuman',{execute:request=>{order(request);return campaign;}});
  for(const captive of captives){captive.custodyCare=assertCustodyCare(custodyStart,campaign,captive.id);captive.beforeCare=captive.record;captive.record=structuredClone(campaign.operativeState[captive.id]);}
  const battle=enterSector(campaign.pendingBattle,campaign.sectorStates.tucuman);assert.deepEqual(decodeSave(encodeSave(campaign,battle)),{campaign,battle});
  report({event:'rescuePrepared',hour:campaign.hour,units:campaign.pendingBattle.squad.map(u=>u.id),cash:campaign.resources.treasury,hired,hiringCost,medicalPurchases,medicalCollections,medicalHandovers,medicalReturns,ammunitionTransactions:supplied.transactions,fieldIds,supportIds,staging});return {campaign,events,captives,hired:hired.filter(id=>campaign.operativeState[id].alive),hiringLedger,hiringCost,medicalPurchases,medicalCollections,medicalHandovers,medicalReturns,ammunitionTransactions:supplied.transactions,fieldIds,supportIds,supportHires,staging};

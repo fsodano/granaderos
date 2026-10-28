@@ -1,3 +1,6 @@
+import { restoreSector } from './infrastructure/world/sector-mapper.js';
+import {EnterSectorUseCase} from './application/sector-sessions/enter-sector/enter-sector.use-case.ts';
+import {SnapshotEnterSectorRepository} from './infrastructure/sector-sessions/sector-entry-repository.js';
 import {validateQuestWithdrawals} from './quest-withdrawal.js';
 import {militiaArrivalTerrain} from './militia-arrival.js';
 import {revealFiniteArsenal} from './finite-artillery-arsenals.js';
@@ -6,7 +9,7 @@ import {sectorCash} from './economy.js';
 import {worldCell} from './world-cells.js';
 import {campaignSectors} from './campaign-definition.js';
 import {expandCellScene} from './cell-scene-storage.js';
-import {retainedMilitaryBodies} from './military-remains.js';
+import {retainedMilitaryBodies,advanceSectorWorld} from './military-remains.js';
 import {placeDetainedPrisoners} from './detention.js';
 import {exteriorComponent,entryTerrainCells} from './sector-entry.js';
 import {beginSectorDeployment} from './sector-deployment.js';
@@ -40,8 +43,15 @@ const sourceRecord=(previous,unit,sector,context)=>{
 };
 
 // Re-enter a persistent sector with the current squad, retaining terrain and ground gear.
-export function enterSector(request,previous=null,{placement=false}={}){
+export function enterSector(request, previous = null, options = {}) {
+ const repository = new SnapshotEnterSectorRepository(request, previous, options, buildSectorEntrySnapshot, initializeBattlePerception);
+ return new EnterSectorUseCase(repository).execute().snapshot;
+}
+
+function buildSectorEntrySnapshot(request,previous=null,{placement=false}={}){
  previous=expandCellScene(previous,request);
+ const entrySecond=request.hour!==undefined?request.hour*3600+(request.secondOfHour??0):previous?.worldTimeline?.currentSecond??(previous?.savedHour??previous?.enteredHour??12)*3600+(previous?.savedSecond??0);
+ if(previous){previous=structuredClone(previous);advanceSectorWorld(previous,entrySecond);}
  if(previous&&worldCell(request.sector,request)?.anchor===false&&(previous.sectorId!==request.sector||previous.sourceMapId!==request.sector))throw Error('La escena guardada pertenece a otra celda.');
  if(request.exits!==undefined&&!validateSectorExits(request.sector,request.sceneId??null,request.exits,request))throw Error('Las salidas no corresponden a este sector.');
  if(previous){validateTacticalSpace(previous);if(previous.artilleryOccupancyVersion!==undefined)initializeArtilleryOccupancy(previous);}
@@ -92,6 +102,7 @@ export function enterSector(request,previous=null,{placement=false}={}){
    // from the current request and can have advanced in another sector.
    for(const unit of state.units.filter(u=>u.side==='player'&&u.hp>0)){const old=previous.units.find(u=>u.id===unit.id&&u.side==='player');for(const key of ['practiceTiles','ridingPracticeTiles'])if(old?.[key]!==undefined)unit[key]=structuredClone(old[key]);}
    for(const key of ['groundItems','droppedWeapons','revealedRooms'])state[key]=structuredClone(previous[key]??[]);
+   for(const key of ['deathHistory','worldTimeline','worldItemAvailability','residentScavengingSecond','residentScavengingReceipts','residentRoutine','residentConditionSecond','militaryConditionSecond','civilianTurns','civilianSeconds'])if(previous[key]!==undefined)state[key]=structuredClone(previous[key]);
    const elapsed=Math.max(0,(request.hour??0)-(previous.savedHour??previous.enteredHour??request.hour??0));
    // One strategic hour advances six ten-minute tactical light intervals.
    const elapsedSeconds=Math.max(0,elapsed*3600+(request.secondOfHour??0)-(previous.savedSecond??0));const ticks=Math.floor(elapsedSeconds/600);
@@ -217,6 +228,7 @@ export function enterSector(request,previous=null,{placement=false}={}){
  // state so the final scene receives their positions and patrol origins.
  placeInvaders(state,state.units.filter(u=>arrivingEnemyIds.has(u.id)),request,occupied);
  state.enteredHour=request.hour??0;
+ advanceSectorWorld(state,entrySecond);
  for(const unit of state.units)if(unit.side==='enemy'){
    if(request.defenseGroupId&&unit.hp>0)unit.assaultPatrol=true;
    else delete unit.assaultPatrol; // A later occupation is a guard post again.
@@ -230,6 +242,6 @@ export function enterSector(request,previous=null,{placement=false}={}){
  const issuedQuests=Object.fromEntries(Object.entries(request.questBeneficiaries??{}).map(([id,beneficiaryId])=>[id,{beneficiaryId}]));
  for(const [id,deliveredCount]of Object.entries(request.questWithdrawals??{}))issuedQuests[id]={...issuedQuests[id],status:'withdrawn',withdrawal:{deliveredCount}};
  validateQuestBeneficiaryContext({errandDefinitions:request.errandDefinitions,quests:issuedQuests},state,{request});
- if(selecting)return validateBattleSnapshot(state,request);
- return initializeBattlePerception(validateBattleSnapshot(state,request));
+ restoreSector(state);
+ return validateBattleSnapshot(state,request);
 }

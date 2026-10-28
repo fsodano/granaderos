@@ -1,3 +1,4 @@
+import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
 import {rosterFor,civicStatus,dispatchCampaign} from '../game/campaign.js';
 import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
@@ -264,10 +265,8 @@ export function prepareCreatedExpandedCapitalReturn(start,{report=()=>{},fieldSi
   for(const group of groups)move(group,staging);rest([...keepers],{limit:48,daylight:true});
   for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'active'});
   order({type:'selectSquad',id:groups[0]});order({type:'configureArtillery',types:selections});
-  phase='coordinated-assault';for(const group of groups){order({type:'selectSquad',id:group});order({type:'attack',sector:target,queue:true,mode:'posta'});}
-  for(let h=0;h<24&&!groups.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');h++)order({type:'wait',hours:1});
-  assert.ok(groups.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready'),'Every actual six-person column must finish its real approach.');
-  retain(24*3600+1);order({type:'beginAssault',sector:target});assert.equal(c.pendingBattle.squad.length,fieldSize);
+  retain(48*3600+1);phase='coordinated-assault';for(const group of groups){order({type:'selectSquad',id:group});order({type:'attack',sector:target,queue:true,mode:'posta'});}
+  c=completeQueuedAssault(c,groups,target,{execute:request=>{order(request);return c;}});assert.equal(c.pendingBattle.squad.length,fieldSize);
   assert.deepEqual(c.pendingBattle.squad.map(u=>u.id).sort((a,b)=>a-b),field.slice().sort((a,b)=>a-b));assert.ok(c.pendingBattle.assaultSquads.every(q=>q.members.length<=6));
   const artillery=c.pendingBattle.artillery.filter(g=>!g.stationed);assert.equal(artillery.length,3);assert.deepEqual(artillery.map(g=>g.id).sort(),[...gunRecords.keys()].sort());assert.ok(artillery.every(g=>g.type==='bronze4'&&!g.loaded&&g.ammo===0));
   for(const id of field){const r=c.operativeState[id],op=rosterFor(c).find(op=>op.id===id),personal=carriedAmmunition(op,r);assert.ok(healthy(c,id));assert.equal(r.energy,100);assert.equal(r.fatigue,0);assert.equal(r.asleep,false);assert.ok(r.morale>=baseMorale(op));assert.ok(!r.weaponDropped&&[1800,1801,1802].includes(op.weapon));assert.equal(r.activeSlot,'primary');assert.ok(personal.loaded+ammoCount(personal)>=16);assert.ok(r.medkits>=5);for(const slot of ['headwear','outfit','legwear'])assert.ok(r[slot].condition>0);}

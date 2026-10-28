@@ -22,9 +22,17 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-          cache-dependency-path: web/package-lock.json
+          cache-dependency-path: |
+            web/package-lock.json
+            campaign-editor/package-lock.json
       - name: Install browser dependencies
         run: npm ci --prefix web
+      - name: Install editor dependencies
+        run: npm ci --prefix campaign-editor
+      - name: Check architecture boundaries
+        run: npm run check:architecture
+      - name: Check architecture formatting
+        run: npm run check:format
       - name: Check design and progress records
         run: npm run audit:docs
       - name: Check reference gameplay values

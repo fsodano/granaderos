@@ -14,6 +14,7 @@ bounded experimental workflows.
 
 | Area | Read |
 | --- | --- |
+| Current browser architecture and runtime sequences | [Architecture guide](../architecture/README.md) |
 | Setup, commands and source layout | [Getting started](getting-started.md) |
 | Browser campaign studio workflow and verified scope | [Campaign studio](../authoring/campaign-studio.md) |
 | Extend editor fields, panels and controlled adapters | [Editor development](editor-development.md) |

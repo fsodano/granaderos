@@ -1,3 +1,4 @@
+import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
 import {prepareRouteBattery,prepareRouteMixedBattery} from './route-battery.mjs';
 import {finiteBatteryDriver} from './finite-battery-driver.mjs';
 import {supplyRouteDressings} from './route-dressings.mjs';
@@ -89,8 +90,7 @@ export function prepareCreatedCapitalReturn(start,{report=()=>{},fieldSize=6,pre
  for(let h=0;h<48&&c.squads.find(q=>q.id===main).journey;h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
  const assaults=[main,...(support?[support]:[])];
  for(const id of assaults){order({type:'selectSquad',id});order({type:'attack',sector:'buenos_aires',queue:true,mode:'posta'});}
- for(let h=0;h<24&&!assaults.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');h++)order({type:'wait',hours:1});
- order({type:'beginAssault',sector:'buenos_aires'});
+ c=completeQueuedAssault(c,assaults,'buenos_aires',{execute:request=>{order(request);return c;}});
  assert.equal(c.pendingBattle.squad.length,fieldSize);assert.equal(c.operativeState[57].location,'cordoba');
  assert.deepEqual(c.pendingBattle.artillery.filter(g=>!g.stationed).map(g=>g.type),Array(batterySize).fill('bronze4'));
  report({event:'capitalReliefReady',hour:c.hour,fieldSize,batterySize,field,rear});

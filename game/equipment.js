@@ -249,7 +249,12 @@ export function validateEquipment(s,roster=[]){
 // Saved requests and returned unit records are historical mirrors. Claim an
 // item's current custodian once, including inaccessible captives and field gear.
 export function validateEquipmentOwnership(s,roster=[],battle=null){
- const active=battle??s.pendingBattle?.resumeSnapshot??null,identities=new Set(),activePlayers=new Set((active?.units??[]).filter(u=>u.side==='player').map(u=>String(u.id))),activeEnemies=new Set((active?.units??[]).filter(u=>u.side==='enemy').map(u=>String(u.id)));
+ const active = battle ?? s.pendingBattle?.resumeSnapshot ?? null;
+ const currentFields = [...(active ? [active] : []), ...(s.suspendedSectorSessions ?? []).map(session => session.snapshot)];
+ const currentActors = currentFields.flatMap(snapshot => [...(snapshot.units ?? []), ...(snapshot.deathHistory ?? []).filter(death => death.kind === 'combatant').map(death => death.actor)]);
+ const identities = new Set();
+ const activePlayers = new Set(currentActors.filter(actor => actor.side === 'player').map(actor => String(actor.id)));
+ const activeEnemies = new Set(currentActors.filter(actor => actor.side === 'enemy').map(actor => String(actor.id)));
  const snapshots=[...Object.values(s.sectorStates??{}),...Object.values(s.sceneStates??{})],allies=new Set();
  const retainedOnField=(snapshot,u)=>{const disposition=snapshot.returnLedger?.entries?.find(e=>e.unitId===u.id),owner=sceneAnchorFor(s,snapshot.sectorId);return !u.departure&&(!disposition||['resident','dead'].includes(disposition.kind)&&disposition.sector===owner);};
  const claim=id=>{need(validItemIdentity(id)&&!identities.has(id),'La identidad del equipo está duplicada o es inválida.');const number=generatedIdentityNumber(id);if(number!==null)need(number<s.nextEquipmentInstanceId,'La secuencia del equipo reutiliza una identidad existente.');identities.add(id);};
@@ -263,7 +268,7 @@ export function validateEquipmentOwnership(s,roster=[],battle=null){
  // A strategic death can precede any physical corpse snapshot. Its cursor is
  // still finite property; once a body exists, that body supersedes this record.
  for(const op of roster){const r=s.operativeState[op.id];if(!r?.equipmentCursor||r.serviceEquipmentReturn||r.alive&&r.hp>0||activePlayers.has(String(op.id)))continue;
-  const body=snapshots.some(snapshot=>(snapshot.units??[]).some(u=>String(u.id)===String(op.id)&&u.side==='player'&&u.hp<=0&&retainedOnField(snapshot,u)))||Object.values(s.sectorRemains??{}).some(records=>records.some(record=>String(record.unitId)===String(op.id)));
+  const body=snapshots.some(snapshot=>[...(snapshot.units??[]),...(snapshot.deathHistory??[]).map(record=>record.actor)].some(u=>String(u.id)===String(op.id)&&u.side==='player'&&u.hp<=0&&retainedOnField(snapshot,u)))||Object.values(s.sectorRemains??{}).some(records=>records.some(record=>String(record.unitId)===String(op.id)));
   if(!body){validateEquipmentCursor(personalHandState(s,op,r));record(r.equipmentCursor.stack);}
  }
  for(const group of [...Object.values(s.garrisons??{}),...(s.militiaTraining??[]).map(course=>course.trainees??[])])for(const u of group){livingPlayers.add(String(u.id));if(!activePlayers.has(String(u.id)))unit(u);}
@@ -273,7 +278,7 @@ export function validateEquipmentOwnership(s,roster=[],battle=null){
   validateUnitFittings(ally);const id=String(ally.id);allies.add(id);
   // The retained ally is the next mission's source. Once dead, its physical
   // body (including a looted body) owns the gear; the cache is only history.
-  const body=snapshots.some(snapshot=>(snapshot.units??[]).some(u=>String(u.id)===id&&u.missionAlly&&u.hp<=0&&retainedOnField(snapshot,u)))||Object.values(s.sectorRemains??{}).some(records=>records.some(r=>String(r.unitId)===id&&r.unit.missionAlly&&r.unit.hp<=0));
+  const body=snapshots.some(snapshot=>[...(snapshot.units??[]),...(snapshot.deathHistory??[]).map(record=>record.actor)].some(u=>String(u.id)===id&&u.missionAlly&&u.hp<=0&&retainedOnField(snapshot,u)))||Object.values(s.sectorRemains??{}).some(records=>records.some(r=>String(r.unitId)===id&&r.unit.missionAlly&&r.unit.hp<=0));
   if(!activePlayers.has(id)&&!body)unit(ally);
  }
  for(const r of s.armoryItems??[])record(r);
@@ -292,9 +297,9 @@ export function validateEquipmentOwnership(s,roster=[],battle=null){
   for(const container of [...(expandCellScene(snapshot,s).tiles??[]),...(snapshot.props??[])])for(const r of container.contents??[])record(r);
   for(const npc of snapshot.npcs??[])for(const gift of npc.questGifts??[])record(gift);
  };
- for(const snapshot of snapshots)if(!active||snapshot.sectorId!==active.sectorId||(snapshot.sceneId??null)!==(active.sceneId??null))field(snapshot);
+ for(const snapshot of snapshots)if(!currentFields.some(current => current.sectorId === snapshot.sectorId && (current.sceneId ?? null) === (snapshot.sceneId ?? null)))field(snapshot);
  for(const records of Object.values(s.sectorRemains??{}))for(const r of records)if(!activePlayers.has(String(r.unitId)))unit(r.unit);
- if(active)field(active,true);
+ for (const snapshot of currentFields) field(snapshot, true);
  return true;
 }
 

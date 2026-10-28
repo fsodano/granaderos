@@ -10,7 +10,7 @@ import { renderToStaticMarkup } from "../web/node_modules/react-dom/server.node.
 import sharp from "../web/node_modules/sharp/lib/index.js";
 import { BUILDING_TEMPLATES } from "../game/map-templates.js";
 import { blankMap, serializeMap, validateMap } from "../game/map-schema.js";
-import { applyMapCommands } from "../game/map-commands.js";
+import { editSectorMapDocument } from "../campaign-editor/public/map-editing-api.js";
 import { compileMap, reachableMap } from "../game/compile-map.js";
 import { propBlocksAt } from "../game/props.js";
 const { default: TacticalScene } = await import("../web/app/TacticalScene.tsx");
@@ -63,7 +63,7 @@ const css = `:root{color-scheme:dark;font:16px/1.5 system-ui;background:#20231f;
 const html = (title, body) =>
   `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(title)}</title><style>${css}</style>${body}</html>`;
 function apply(document, commands) {
-  const result = applyMapCommands(document, commands);
+  const result = editSectorMapDocument(document, commands);
   if (result.errors.length) throw Error(result.errors.join("\n"));
   return result.document;
 }

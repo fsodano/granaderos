@@ -1,3 +1,4 @@
+import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {dispatchCampaign,rosterFor,civicStatus} from '../game/campaign.js';
@@ -242,17 +243,9 @@ export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},enc
  order({type:'configureArtillery',types:battery.selections});
  order({type:'attack',sector:'salta',queue:true});order({type:'selectSquad',id:fieldSquad});order({type:'attack',sector:'salta',queue:true});
  const deploying=[fieldSquad,supportSquad];
- for(let i=0;i<24&&!deploying.every(id=>route.campaign.squads.find(s=>s.id===id)?.journey?.status==='ready');i++){
-  assert.equal(route.campaign.pendingEncounter,null);order({type:'wait',hours:1});
- }
+ completeQueuedAssault(route.campaign,deploying,'salta',{execute:request=>{order(request);return route.campaign;},resolveEncounter:()=>{defenses.push(route.resolveEncounter(report,encounterController));return route.campaign;}});
  assert.equal(route.campaign.hour,departure+12);
- assert.ok(deploying.every(id=>route.campaign.squads.find(s=>s.id===id)?.journey?.status==='ready'));
- while(route.campaign.pendingEncounter){
-  const queued=structuredClone(route.campaign.squads.filter(s=>deploying.includes(s.id)).map(s=>s.journey));
-  defenses.push(route.resolveEncounter(report,encounterController));
-  assert.deepEqual(route.campaign.squads.filter(s=>deploying.includes(s.id)).map(s=>s.journey),queued,'a remote defense preserves both waiting assault routes');
- }
- order({type:'beginAssault',sector:'salta'});
+
  const campaign=route.campaign,request=campaign.pendingBattle;
  assert.deepEqual(request.squad.map(u=>Number(u.id)).sort((a,b)=>a-b),[...field,...support].sort((a,b)=>a-b));
  const battle=enterSector(request,campaign.sectorStates.salta);

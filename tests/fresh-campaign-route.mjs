@@ -1,3 +1,5 @@
+import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
+import {fightOnArrivalOrder} from './assault-fixture.mjs';
 import {ROUTE_STARTING_TREASURY} from './funded-route-fixture.mjs';
 import {supplyRouteAmmunition,recordRouteAmmunitionDiagnostic} from './route-ammunition.mjs';
 import {recruitRouteFieldRelief} from './route-field-relief.mjs';
@@ -81,7 +83,7 @@ export function beginFreshCampaign({seed=8,report=()=>{}}={}){
   if(remaining>=3600)order({type:'wait',hours:Math.floor(remaining/3600)});
   else order({type:'advanceStrategicTime',seconds:remaining});
  }
- order({type:'attack',sector:'buenos_aires'});
+ order({type:'attack',sector:'buenos_aires'});order(fightOnArrivalOrder(campaign));
  assert.equal(campaign.hour*3600+(campaign.secondOfHour??0),12*3600);
  const request=structuredClone(campaign.pendingBattle);
  report({event:'battleStarted',sector:request.sector,hour:campaign.hour,treasury:campaign.resources.treasury});
@@ -221,10 +223,7 @@ export function prepareFreshNorthernAssault(prepared,{report=()=>{}}={}){
  const departureDelay=(6-((campaign.hour+12)%24)+24)%24;
  for(let i=0;i<departureDelay;i++)order({type:'wait',hours:1});
  for(const id of squads){order({type:'selectSquad',id});order({type:'attack',sector:'san_nicolas',queue:true});}
- const ready=()=>squads.every(id=>campaign.squads.find(q=>q.id===id)?.journey?.status==='ready');
- for(let i=0;i<24&&!ready();i++)order({type:'wait',hours:1});
- assert.ok(ready());assert.equal(campaign.pendingEncounter,null);
- order({type:'beginAssault',sector:'san_nicolas'});
+ campaign=completeQueuedAssault(campaign,squads,'san_nicolas',{execute:request=>{order(request);return campaign;}});
  assert.equal(campaign.pendingBattle.squad.length,12);
  report({event:'freshJointAssault',hour:campaign.hour,sector:campaign.pendingBattle.sector,treasury:campaign.resources.treasury});
  return campaign;
@@ -347,10 +346,7 @@ export function prepareFreshCordobaAssault(start,doctors,{report=()=>{}}={}){
  }
  for(const id of squads){order({type:'selectSquad',id});campaign=finishReloadsBeforeMarch(campaign);}
  for(const id of squads){order({type:'selectSquad',id});order({type:'attack',sector:'cordoba',queue:true});}
- const ready=()=>squads.every(id=>campaign.squads.find(s=>s.id===id)?.journey?.status==='ready');
- for(let i=0;i<24&&!ready();i++)order({type:'wait',hours:1});
- assert.ok(ready());assert.equal(campaign.pendingEncounter,null);
- order({type:'beginAssault',sector:'cordoba'});
+ campaign=completeQueuedAssault(campaign,squads,'cordoba',{execute:request=>{order(request);return campaign;}});
  assert.equal(campaign.pendingBattle.squad.length,12);
  for(const unit of campaign.pendingBattle.squad){assert.ok(!unit.weaponDropped,`soldier ${unit.id} must recover a firearm before departure`);assert.ok(unit.loaded>0&&unit.ammo>0,`soldier ${unit.id} needs a loaded firearm and compatible reserve ammunition`);}
  return campaign;
@@ -1030,11 +1026,8 @@ try{
   checkpointKind:'unchanged-caller-input-not-the-helper-partial-campaign'});
  throw error;
 }
-for(const id of assaultSquads){order({type:'selectSquad',id});c=finishReloadsBeforeMarch(c,{report});order({type:'attack',sector:'tucuman',queue:true});}for(let i=0;i<24&&!assaultSquads.every(id=>c.squads.find(s=>s.id===id)?.journey?.status==='ready');i++)order({type:'wait',hours:1});
-// The musketeers wait for daylight instead of crossing the citadel approaches
-// at night without lamps. Strategic time, contracts and enemy movement continue.
-for(let h=0;h<24&&(c.hour%24<8||c.hour%24>16);h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
-order({type:'beginAssault',sector:'tucuman'});
+c=stageAssaultDeparture(c,assaultSquads.map(id=>({id,mode:'march'})),'tucuman',{earliestHour:8,latestHour:16,execute:request=>{order(request);return c;}});
+for(const id of assaultSquads){order({type:'selectSquad',id});c=finishReloadsBeforeMarch(c,{report});order({type:'attack',sector:'tucuman',queue:true});}c=completeQueuedAssault(c,assaultSquads,'tucuman',{execute:request=>{order(request);return c;}});
  assert.equal(c.pendingBattle.squad.length,fieldIds.length);
  const battle=enterSector(c.pendingBattle,c.sectorStates.tucuman);
  assert.deepEqual(decodeSave(encodeSave(c,battle)),{campaign:c,battle});

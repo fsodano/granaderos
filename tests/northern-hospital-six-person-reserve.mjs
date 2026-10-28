@@ -1,8 +1,10 @@
+import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor,civicStatus} from '../game/campaign.js';
 import {isContractOperative} from '../game/content-character-ids.js';
 import {contractQuote,contractRenewalQuote,contractExpiresSeconds,contractTermsFor} from '../game/contracts.js';
-import {hiringArrivalReason,hireArrivalOrder,hireArrivalDueSeconds,hiringTravelHours} from '../game/hiring-arrivals.js';
+import {hiringArrivalReason,hireArrivalDueSeconds} from '../game/hiring-arrivals.js';
+import {immediateRecruitmentExpectation} from './immediate-recruitment-fixture.mjs';
 import {operativeLocation,operativeInTransit,canReassignOperative} from '../game/squads.js';
 import {carriedAmmunition} from '../game/campaign-ammunition.js';
 import {ammoTypeFor,ammoCount} from '../game/ammo-types.js';
@@ -77,23 +79,19 @@ export function prepareNorthernHospitalSixPersonReserve(start,{sector,ids,deadli
    // the real hire below must later return those actual finite cartridges.
    const allowance=body.startingCartridgesIssued===false?Math.min(campaignRules(c).deploymentCartridges,supplyRoom(unit,family,campaignRules(c).deploymentCartridges)):0;
    const cartridges=(unit.loaded??0)+ammoCount(unit,family)+allowance;if(!cartridges)return [];
-   const due=now+hiringTravelHours(c,op.id)*3600;if(due+3600>deadlineSeconds)return [];
+   const due=now;if(due+3600>deadlineSeconds)return [];
    const choices=terms.map(term=>({term,quote:contractQuote(c,op,term)})).filter(({quote})=>quote.available&&!quote.permanent&&quote.hours>0&&due+quote.hours*3600>horizonSeconds).sort((a,b)=>a.quote.total-b.quote.total||a.quote.hours-b.quote.hours);
    if(!choices.length)return [];
    const {term,quote}=choices[0],budget=quoteMountainServiceBudget(c,{keepIds:originalServing,horizonSeconds,fixedCost:reservedPesos+quote.total});
-   const row={id:op.id,marksmanship:op.marksmanship,weapon:unit.weapon,family,cartridges,allowance,term,quote:structuredClone(quote),arrival:hireArrivalOrder(c,op,term,quote,sector),budget};quotes.push(row);return [row];
+   const row={id:op.id,marksmanship:op.marksmanship,weapon:unit.weapon,family,cartridges,allowance,term,quote:structuredClone(quote),arrival:immediateRecruitmentExpectation(c,op,term,quote,sector),budget};quotes.push(row);return [row];
   }).sort((a,b)=>b.marksmanship-a.marksmanship||a.quote.total-b.quote.total||a.id-b.id);
   const chosen=candidates.find(row=>row.budget.available);if(!chosen)return finish(candidates.length?'insufficient-joint-service-budget':'no-current-supplied-rifleman-within-deadline');
   plannedHireCost=chosen.quote.total;const stop=retain(horizonSeconds);if(stop)return finish(stop);
   const op=rosterFor(c).find(row=>row.id===chosen.id),currentQuote=contractQuote(c,op,chosen.term);assert.deepEqual(currentQuote,chosen.quote,'Requote the actual hire after retaining the original service.');
   const budget=quoteMountainServiceBudget(c,{keepIds:originalServing,horizonSeconds,fixedCost:reservedPesos+currentQuote.total});assert.equal(budget.available,true,budget.reason);
-  hire={id:op.id,term:chosen.term,quote:structuredClone(currentQuote),arrival:hireArrivalOrder(c,op,chosen.term,currentQuote,sector)};
+  hire={id:op.id,term:chosen.term,quote:structuredClone(currentQuote),arrival:immediateRecruitmentExpectation(c,op,chosen.term,currentQuote,sector)};
   if(order({type:'recruitCivic',id:op.id,term:chosen.term,destination:sector}))return finish(interrupted());assert.equal(orders.at(-1).cost,currentQuote.total);
-  let zeroTime=0;
-  for(let pass=0;!c.recruited.includes(op.id);pass++){
-   const queued=c.hiringArrivals.find(row=>row.operativeId===op.id);assert.ok(queued&&queued.destination===sector,'The booked rifleman needs its actual local arrival.');assert.ok(pass<172&&hireArrivalDueSeconds(queued)-clock(c)<=168*3600);
-   const from=clock(c);if(order({type:'wait',hours:1}))return finish(interrupted());zeroTime=clock(c)===from?zeroTime+1:0;assert.ok(zeroTime<3,'A paid reserve arrival cannot loop on zero-time attention.');
-  }
+  assert.ok(c.recruited.includes(op.id));assert.equal(c.hiringArrivals.some(row=>row.operativeId===op.id),false);
   assert.ok(local(op.id)&&fit(c.operativeState[op.id]));assert.ok(contractExpiresSeconds(c.contracts[op.id])>horizonSeconds);
   const issued=carriedAmmunition(rosterFor(c).find(row=>row.id===op.id),c.operativeState[op.id]);hire.issued={cartridges:(issued.loaded??0)+ammoCount(issued,ammoTypeFor(issued)),medkits:c.operativeState[op.id].medkits};assert.ok(hire.issued.cartridges>0,'The paid arrival must actually own its finite compatible cartridges.');
   const until=Math.min(deadlineSeconds,clock(c)+3600),assignments=Object.fromEntries(ids.map(id=>[id,c.operativeState[id].assignment]));

@@ -1,3 +1,4 @@
+import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
 import {bankRouteIncome} from './route-income-banking.mjs';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import {supplyRouteDressings} from './route-dressings.mjs';
@@ -11,7 +12,7 @@ import {ownedArtilleryCount} from '../game/campaign-artillery.js';
 import {artilleryProfile} from '../game/artillery-definitions.js';
 import {artilleryTransportQuote,artilleryTransportPath,storedArtilleryRecord} from '../game/artillery-transport.js';
 import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
-import {hiringTravelHours} from '../game/hiring-arrivals.js';
+
 import {queueSquadTravel,travelLegHours} from '../game/squad-travel.js';
 import {canReassignOperative,operativeLocation,operativeInTransit} from '../game/squads.js';
 import {careAssignmentReason,careAssignmentBusy,doctorRate} from '../game/medical-care.js';
@@ -237,7 +238,7 @@ while(assembled.length<6){
   return op.id>=100&&op.id<1000&&!c.recruited.includes(op.id)&&!c.hiringArrivals?.some(arrival=>arrival.operativeId===op.id)&&r.alive&&!r.captured&&r.hp===r.maxHp&&!r.bleeding&&quote.available&&!quote.topTier;
  }).sort((a,b)=>contractQuote(c,a,'week').price-contractQuote(c,b,'week').price||a.id-b.id)[0];
  assert.ok(relief,'actual serving losses need an available regular replacement before Cuyo');
- const quote=contractQuote(c,relief,'week'),cash=c.resources.treasury,booked=routeClock(c),travelHours=hiringTravelHours(c,relief.id);
+ const quote=contractQuote(c,relief,'week'),cash=c.resources.treasury,booked=routeClock(c),travelHours=0;
  assert.ok(cash>=quote.price,'the actual treasury must pay the quoted Cuyo replacement');
  order({type:'recruitCivic',id:relief.id,term:'week',destination:'cordoba'});
  assert.equal(c.resources.treasury,cash-quote.price);
@@ -309,7 +310,7 @@ const regulars=rosterFor(c).filter(op=>{
 for(const op of regulars){
  const week=contractQuote(c,op,'week'),cash=c.resources.treasury;
  if(!week.available||week.total>cash)continue;
- const booked=routeClock(c),travelHours=hiringTravelHours(c,op.id);
+ const booked=routeClock(c),travelHours=0;
  order({type:'recruitCivic',id:op.id,term:'week',destination:'cordoba'});
  assert.equal(c.resources.treasury,cash-week.total);
  for(let h=0;!c.recruited.includes(op.id)&&h<=travelHours;h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
@@ -398,12 +399,9 @@ export function prepareFreshMendozaAssault(start,{report=()=>{}}={}){
   c=finishReloadsBeforeMarch(c,{report});
  }
  order({type:'configureArtillery',types:battery.selections});
+c=stageAssaultDeparture(c,columns.map(id=>({id,mode:'posta'})),'mendoza',{earliestHour:6,latestHour:10,execute:request=>{order(request);return c;}});
  for(const id of columns){order({type:'selectSquad',id});order({type:'attack',sector:'mendoza',queue:true,mode:'posta'});}
- for(let i=0;i<24&&columns.some(id=>c.squads.find(q=>q.id===id).journey?.status!=='ready');i++)order({type:'wait',hours:1});
- assert.ok(columns.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready'));
- // Hold at the assembly point until the troops can approach in daylight.
- for(let h=0;h<24&&(c.hour%24<8||c.hour%24>16);h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
- order({type:'beginAssault',sector:'mendoza'});
+ c=completeQueuedAssault(c,columns,'mendoza',{execute:request=>{order(request);return c;}});
  assert.deepEqual(c.pendingBattle.squad.map(unit=>unit.id).sort((a,b)=>a-b),[...field].sort((a,b)=>a-b));
  for(const [id,record]of Object.entries(start.operativeState))if(!record.alive)assert.equal(c.operativeState[id].alive,false);
  return c;
@@ -497,7 +495,7 @@ export function prepareFoundryConvoyVeterans(start,{report=()=>{}}={}){
   const replacement=rosterFor(c).filter(op=>{
    const r=c.operativeState[op.id],quote=contractQuote(c,op,'day');
    return op.id!==engineer&&civicStatus(c,op.id).available&&r.alive&&!r.captured&&r.hp>=15&&!r.bleeding&&!r.unconscious&&!r.routed&&
-    ['active','rest'].includes(r.assignment??'active')&&hiringTravelHours(c,op.id)===0&&quote.available&&quote.total<=c.resources.treasury;
+    ['active','rest'].includes(r.assignment??'active')&&quote.available&&quote.total<=c.resources.treasury;
   }).sort((a,b)=>contractQuote(c,a,'day').total-contractQuote(c,b,'day').total||b.marksmanship-a.marksmanship||a.id-b.id)[0];
   assert.ok(replacement,'the earned convoy recapture needs an affordable immediate paid replacement for its twelve-person force');
   const count=availableFoundryConvoyVeterans(c).length,booked=bookRouteHires(c,[replacement.id],{term:'day',destination:'mendoza',report});
@@ -738,19 +736,13 @@ export function prepareFoundryConvoyAssault(start,{field,report=()=>{}}={}){
    if(!home.journey){order({type:'selectSquad',id});order({type:'attack',sector:'salta',queue:true,mode:'posta'});}
   }
  };
- const ready=()=>columns.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');
- const daylight=()=>c.hour%24>=6&&c.hour%24<=10;
- queueApproach();let approachRequests=0,daylightWaits=0;
- for(;approachRequests<72&&(!ready()||!daylight());approachRequests++){
-  if(ready()&&!daylight())daylightWaits++;
-  const fought=defenses.length;order({type:'wait',hours:1});settle();
-  // A local defense cancels only its deployed homes' journeys. Re-arm the
-  // uncommitted columns and requeue only missing approaches within this loop.
-  if(defenses.length!==fought){prepareArms('tucuman');queueApproach();}
- }
- assert.ok(ready());assert.ok(daylight(),'The original approach budget must earn an actual daylight assault.');
+ let approachRequests=0,daylightWaits=0;
+ const resolveApproachEncounter=()=>{settle();prepareArms('tucuman');return c;};
+ c=stageAssaultDeparture(c,columns.map(id=>({id,mode:'posta'})),'salta',{execute:request=>{daylightWaits++;order(request);return c;},resolveEncounter:resolveApproachEncounter});
+ queueApproach();
+ c=completeQueuedAssault(c,columns,'salta',{execute:request=>{approachRequests++;order(request);return c;},resolveEncounter:()=>{resolveApproachEncounter();queueApproach();return c;}});
  retained.check();assert.deepEqual(physical(c),guns);for(const id of dead)assert.equal(c.operativeState[id].alive,false);
- order({type:'beginAssault',sector:'salta'});assert.equal(c.pendingBattle.sector,'salta');
+ assert.equal(c.pendingBattle.sector,'salta');
  assert.deepEqual(new Set(c.pendingBattle.squad.map(op=>Number(op.id))),new Set(ids));
  for(const op of c.pendingBattle.squad)assert.ok(!op.weaponDropped&&['ammoMusket','ammoRifle'].includes(ammoTypeFor(op))&&op.loaded>0&&op.loaded+availableAmmunition(op)>=12);
  assert.deepEqual(start,before);

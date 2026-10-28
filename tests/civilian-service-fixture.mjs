@@ -1,3 +1,4 @@
+import {fightOnArrival} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
 import {secondaryRetreat} from './secondary-loot-fixture.mjs';
 import {initializeUnitAmmunition} from '../game/tactical-ammunition.js';
@@ -17,7 +18,7 @@ export function woundedService({medical=18,casualty=false,term='day',careRules,c
   assert.ok(Number.isSafeInteger(hours)&&hours>=0,'the contact schedule must follow the actual return march');
   if(hours)s=order(s,{type:'wait',hours});
  }
- s=order(s,{type:'attack',sector:'buenos_aires'});
+ s=fightOnArrival(order(s,{type:'attack',sector:'buenos_aires'}));
  if(contactHour!==undefined)assert.equal(s.hour,contactHour,'the paid approach must reach the scheduled combat hour');
  const id=localId(s),r=s.pendingBattle;
  // Paid deployment with compact barrier geometry to isolate a real enemy shot.

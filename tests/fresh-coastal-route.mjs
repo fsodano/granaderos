@@ -1,3 +1,4 @@
+import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
 import {prepareRouteBattery} from './route-battery.mjs';
 import {ensureRouteTownIncome,meetLocalIncomeRepresentative} from './route-town-income.mjs';
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
@@ -160,10 +161,9 @@ if(target==='buenos_aires'){
 if(prepareAffordableSupport)report({event:'earlyPaidReadiness',hour:c.hour,second:c.secondOfHour,treasury:c.resources.treasury,field:field.map(id=>({id,morale:c.operativeState[id].morale,energy:c.operativeState[id].energy,fatigue:c.operativeState[id].fatigue,quote:contractQuote(c,rosterFor(c).find(op=>op.id===id),'day').price})),support:recruits});
 order({type:'configureArtillery',types:finiteBattery.selections});
 if(target==='ensenada')for(const id of [main,support]){order({type:'selectSquad',id});order({type:'travel',sector:'buenos_aires',mode:'posta'});}
+c=stageAssaultDeparture(c,[main,support].map(id=>({id,mode:'posta'})),target,{earliestHour:6,latestHour:6,execute:request=>{order(request);return c;}});
 for(const id of [main,support]){order({type:'selectSquad',id});order({type:'attack',sector:target,queue:true,mode:'posta'});}
-for(let h=0;h<24&&![main,support].every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');h++)order({type:'wait',hours:1});
-for(let h=0;h<24&&c.hour%24!==6;h++){for(const id of recruits){const contract=c.contracts[id];if(contract?.expiresAt<=c.hour+1)order({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});}order({type:'wait',hours:1});}
-order({type:'beginAssault',sector:target});assert.equal(c.pendingBattle.squad.length,field.length);const battle=enterSector(c.pendingBattle,c.sectorStates[target]);assert.deepEqual(decodeSave(encodeSave(c,battle)),{campaign:c,battle});
+c=completeQueuedAssault(c,[main,support],target,{execute:request=>{order(request);return c;}});assert.equal(c.pendingBattle.squad.length,field.length);const battle=enterSector(c.pendingBattle,c.sectorStates[target]);assert.deepEqual(decodeSave(encodeSave(c,battle)),{campaign:c,battle});
  return c;
 }
 

@@ -1,3 +1,4 @@
+const recordedActors = battle => [...(battle.units ?? []), ...(battle.deathHistory ?? []).filter(record => record.kind === 'combatant').map(record => record.actor)];
 // A carried toolkit is a finite large-pocket item. The old numeric reserve is
 // retained for saved campaigns and service-return custody, without issuing it.
 export const REPAIR_KIT_WEIGHT=2;
@@ -12,7 +13,7 @@ export function validateRepairReserve(record){
 // last accepted deployment record is the upper bound; maintenance spends them.
 export function validateRepairReserveContext(request,battle){
  for(const issued of request.squad??[]){
-  const unit=battle.units?.find(u=>u.side==='player'&&String(u.id)===String(issued.id));
+  const unit=recordedActors(battle).find(u=>u.side==='player'&&String(u.id)===String(issued.id));
   const maximum=validateRepairReserve(issued),remaining=validateRepairReserve(unit??{});
   if(!unit||remaining>maximum||maximum>0&&unit.toolkitPoints===undefined)throw Error('Los materiales de reparación no corresponden al despliegue.');
  }
@@ -20,7 +21,7 @@ export function validateRepairReserveContext(request,battle){
 export function retainRepairReserves(request,battle){
  validateRepairReserveContext(request,battle);
  request.squad=(request.squad??[]).map(issued=>{
-  const unit=battle.units.find(u=>u.side==='player'&&String(u.id)===String(issued.id));
+  const unit=recordedActors(battle).find(u=>u.side==='player'&&String(u.id)===String(issued.id));
   return issued.toolkitPoints===undefined&&unit.toolkitPoints===undefined?issued:{...issued,toolkitPoints:validateRepairReserve(unit)};
  });
 }

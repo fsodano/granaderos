@@ -1,3 +1,4 @@
+import { isCharacterDeployed } from './infrastructure/session/campaign-session-access.js';
 import {campaignSectors} from './campaign-definition.js';
 import {operativeInTransit,operativeLocation} from './squads.js';
 
@@ -22,7 +23,7 @@ function observers(s,{traveling=[]}={}){
   const available=unrecorded||militia.some(u=>able(u)&&!deployedMilitia.has(String(u.id)));
   if(s.sectors[sector.id]?.owner==='patriot'&&available)for(const at of [sector.id,...sector.neighbors])seen.set(at,'militia');
  }
- for(const id of s.recruited??[])if(s.operativeState[id]?.alive&&able(s.operativeState[id])&&!operativeInTransit(s,id)&&!traveling.includes(id)&&!s.pendingBattle?.squad?.some(u=>Number(u.id)===id))seen.set(operativeLocation(s,id),'scouts');
+ for(const id of s.recruited??[])if(s.operativeState[id]?.alive&&able(s.operativeState[id])&&!operativeInTransit(s,id)&&!traveling.includes(id)&&!isCharacterDeployed(s,id))seen.set(operativeLocation(s,id),'scouts');
  return seen;
 }
 function observation(s,g,source){

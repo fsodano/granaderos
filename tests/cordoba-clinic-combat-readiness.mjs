@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor,civicStatus} from '../game/campaign.js';
 import {canReassignOperative,operativeLocation,operativeInTransit} from '../game/squads.js';
 import {contractQuote,contractExpiresSeconds,contractRenewalQuote} from '../game/contracts.js';
-import {hiringTravelHours,hiringArrivalReason,hireArrivalOrder} from '../game/hiring-arrivals.js';
+import {hiringArrivalReason} from '../game/hiring-arrivals.js';
+import {immediateRecruitmentExpectation} from './immediate-recruitment-fixture.mjs';
 import {careRules} from '../game/campaign-care-rules.js';
 import {sectorInventoryModel,sectorInventorySites} from '../game/sector-inventory.js';
 import {WEAPONS} from '../game/data.js';
@@ -118,13 +119,13 @@ export function refreshCordobaClinicReadiness(start,treatingId=null,{deadlineSec
    .sort((a,b)=>Number(c.operativeState[b.id].medkits>0)-Number(c.operativeState[a.id].medkits>0)||b.medical-a.medical||a.id-b.id)[0];
   const hireUnusedReserve=()=>{
    if(!allowPaidRelief||hiringArrivalReason(c,sector))return null;
-   const candidate=rosterFor(c).map(op=>({op,r:c.operativeState[op.id],quote:contractQuote(c,op,'day')})).filter(({op,r,quote})=>!usedReliefIds.has(op.id)&&!c.recruited.includes(op.id)&&!c.contracts[op.id]&&!c.hiringArrivals.some(arrival=>arrival.operativeId===op.id)&&r.alive&&!r.captured&&!r.serviceEquipmentReturn&&r.hp>=15&&!r.bleeding&&!r.asleep&&r.energy>10&&!r.routed&&!r.surrendered&&r.medkits>0&&op.medical>=careRules(c).minimumSkill&&['active','rest'].includes(r.assignment)&&!quote.permanent&&quote.available&&quote.total<=c.resources.treasury&&civicStatus(c,op.id).available&&hiringTravelHours(c,op.id)===0)
+   const candidate=rosterFor(c).map(op=>({op,r:c.operativeState[op.id],quote:contractQuote(c,op,'day')})).filter(({op,r,quote})=>!usedReliefIds.has(op.id)&&!c.recruited.includes(op.id)&&!c.contracts[op.id]&&!c.hiringArrivals.some(arrival=>arrival.operativeId===op.id)&&r.alive&&!r.captured&&!r.serviceEquipmentReturn&&r.hp>=15&&!r.bleeding&&!r.asleep&&r.energy>10&&!r.routed&&!r.surrendered&&r.medkits>0&&op.medical>=careRules(c).minimumSkill&&['active','rest'].includes(r.assignment)&&!quote.permanent&&quote.available&&quote.total<=c.resources.treasury&&civicStatus(c,op.id).available)
     .sort((a,b)=>a.quote.total-b.quote.total||b.op.medical-a.op.medical||a.op.id-b.op.id)[0];
    if(!candidate)return null;
    // Select a real stationary home if the selected courier is already away.
    // The Native arrival may join that home's existing vacancy; do not rewrite it.
    if(c.squads.find(q=>q.id===c.activeSquadId)?.journey){const home=c.squads.find(q=>q.location===sector&&!q.journey&&q.members.length);if(!home)return null;order({type:'selectSquad',id:home.id});}
-   const {op,quote}=candidate,arrival=hireArrivalOrder(c,op,'day',quote,sector),before=clock(c),cash=c.resources.treasury,kits=c.operativeState[op.id].medkits;
+   const {op,quote}=candidate,arrival=immediateRecruitmentExpectation(c,op,'day',quote,sector),before=clock(c),cash=c.resources.treasury,kits=c.operativeState[op.id].medkits;
    order({type:'recruitCivic',id:op.id,term:'day',destination:sector});usedReliefIds.add(op.id);
    const hire={id:op.id,quote:structuredClone(quote),arrival,debited:cash-c.resources.treasury};hires.push(hire);
    assert.equal(clock(c),before);assert.equal(hire.debited,quote.total);assert.equal(arrival.travelHours,0);

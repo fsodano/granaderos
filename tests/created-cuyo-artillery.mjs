@@ -1,3 +1,4 @@
+import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
@@ -292,14 +293,12 @@ export function prepareCreatedCuyoArsenalAssault(start,{report=()=>{},completedC
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'rest'});
  for(let hour=0;hour<72&&(c.hour%24<6||c.hour%24>10||field.some(id=>{const r=c.operativeState[id];return r.fatigue||r.energy<100||r.asleep;}));hour++)order({type:'wait',hours:1});
  for(const operativeId of field){assert.ok(!c.operativeState[operativeId].fatigue&&c.operativeState[operativeId].energy===100&&!c.operativeState[operativeId].asleep);order({type:'assignCare',operativeId,assignment:'active'});}
- for(const id of columns){order({type:'selectSquad',id});order({type:'attack',sector:'ensenada',queue:true,mode:'posta'});}
- for(let hour=0;hour<24&&columns.some(id=>c.squads.find(q=>q.id===id).journey?.status!=='ready');hour++)order({type:'wait',hours:1});
- assert.ok(columns.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready'));retained.retain(8*3600);
+ const approachHours=Math.max(...columns.map(id=>travelLegHours(c.squads.find(group=>group.id===id).location,'ensenada','posta',c)));retained.retain((8+approachHours)*3600);
  // Existing serving veterans stay after the temporary recruits return.
  // Pay their actual terms before combat can make a renewal unavailable.
  // The cart route is a public plan; only a real victory can ship the guns.
  const cartPath=artilleryTransportPath(c,'ensenada','mendoza','carts');assert.ok(c.routes.carts&&cartPath,'The finite arsenal needs its controlled public return route.');
- const cartHours=(cartPath.length-1)*artilleryTransportRules(c).cartsHours,deadline=c.hour*3600+(c.secondOfHour??0)+(8+cartHours)*3600;
+ const cartHours=(cartPath.length-1)*artilleryTransportRules(c).cartsHours,deadline=c.hour*3600+(c.secondOfHour??0)+(8+cartHours+approachHours)*3600;
  const temporary=new Set(hired.map(op=>op.id));
  for(const id of living(c).filter(id=>!temporary.has(id))){
   let contract=c.contracts[id],expiry=contractExpiresSeconds(contract);
@@ -324,7 +323,7 @@ export function prepareCreatedCuyoArsenalAssault(start,{report=()=>{},completedC
    return {from,path,ids,hours,columns:Math.ceil(ids.length/6)};
   });
   const infantryReturnHours=cartPath.slice(1).reduce((sum,to,i)=>sum+travelLegHours(cartPath[i],to,'posta',c),0),preMarchRestHours=routes.reduce((sum,route)=>sum+route.columns,0)*NATIVE_MOUNTAIN_RESERVE_BOUNDS.preMarchRestHours,reserveTravelHours=Math.max(0,...routes.map(route=>route.hours));
-  const hours=8+Math.max(cartHours,infantryReturnHours)+preMarchRestHours+reserveTravelHours+NATIVE_MOUNTAIN_RESERVE_BOUNDS.readinessRestHours,clock=c.hour*3600+(c.secondOfHour??0),reserveDeadline=clock+hours*3600;
+  const hours=8+approachHours+Math.max(cartHours,infantryReturnHours)+preMarchRestHours+reserveTravelHours+NATIVE_MOUNTAIN_RESERVE_BOUNDS.readinessRestHours,clock=c.hour*3600+(c.secondOfHour??0),reserveDeadline=clock+hours*3600;
   const quotes=reserveKeepers.map(id=>{const quote=contractRenewalQuote(c,roster.find(op=>op.id===id),'day'),expiry=contractExpiresSeconds(c.contracts[id]);assert.equal(quote.available,true,quote.reason);const renewals=Math.max(0,Math.floor((reserveDeadline-expiry)/(quote.hours*3600))+1);return {id,quote,renewals,cost:renewals*quote.price};}),cost=quotes.reduce((sum,row)=>sum+row.cost,0),cash=c.resources.treasury;
   assert.ok(cost<=cash,'The actual next reserve service must fit the current treasury without projected income.');
   report({event:'createdCuyoArsenalReserveRetentionPlan',ids:reserveKeepers,routes,cartHours,infantryReturnHours,preMarchRestHours,reserveTravelHours,readinessRestHours:NATIVE_MOUNTAIN_RESERVE_BOUNDS.readinessRestHours,hours,deadline:reserveDeadline,quotes,cost,treasury:cash,hour:c.hour,second:c.secondOfHour??0});
@@ -338,7 +337,8 @@ export function prepareCreatedCuyoArsenalAssault(start,{report=()=>{},completedC
   }
   assert.equal(c.resources.treasury,cash-cost);assert.ok(reserveKeepers.every(id=>contractExpiresSeconds(c.contracts[id])>reserveDeadline));
  }
- order({type:'beginAssault',sector:'ensenada'});assert.deepEqual(c.pendingBattle.squad.map(op=>op.id),field);assert.deepEqual(c.pendingBattle.artillery,[]);
+ for(const id of columns){order({type:'selectSquad',id});order({type:'attack',sector:'ensenada',queue:true,mode:'posta'});}
+ c=completeQueuedAssault(c,columns,'ensenada',{execute:request=>{order(request);return c;}});assert.deepEqual(c.pendingBattle.squad.map(op=>op.id),field);assert.deepEqual(c.pendingBattle.artillery,[]);
  report({event:'createdCuyoArsenalAssaultReady',field,doctors:[doctor.id,physician.id],reinforcements:hired.map(op=>op.id),hour:c.hour,second:c.secondOfHour,campaign:c});
  return {campaign:c,originalSquad,originalMembers,field,recruits:hired.map(op=>op.id)};
  }catch(error){recordRouteStrategicEvidence({helper:'prepareCreatedCuyoArsenalAssault',stage:'preparation-failure',campaign:c,inputCapture,error});throw error;}

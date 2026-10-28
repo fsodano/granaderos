@@ -1,3 +1,4 @@
+import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
 import {prepareFinalAssault} from './final-campaign-route.mjs';
 import {autoBandageBattle} from '../game/auto-bandage.js';
 import {enterSector} from '../game/world.js';
@@ -46,8 +47,7 @@ export function prepareFreshTucumanRecapture(start){
  }
  order({type:'purchaseEquipment',item:'swivel'});order({type:'configureArtillery',types:['swivel']});
  for(const id of [main,support]){order({type:'selectSquad',id});order({type:'attack',sector:'tucuman',queue:true,mode:'posta'});}
- for(let h=0;h<24&&![main,support].every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');h++)order({type:'wait',hours:1});
- order({type:'beginAssault',sector:'tucuman'});
+ c=completeQueuedAssault(c,[main,support],'tucuman',{execute:request=>{order(request);return c;}});
  assert.equal(c.pendingBattle.squad.length,field.length);assert.equal(c.pendingBattle.artillery.filter(g=>!g.stationed).length,1);
  for(const [id,record]of Object.entries(start.operativeState))if(!record.alive)assert.equal(c.operativeState[id].alive,false);
  return c;
@@ -75,8 +75,7 @@ function prepareNorthernReturnMarch(start,{from,target,reserveGun=false}){
  for(const id of groups){order({type:'selectSquad',id});order({type:'travel',sector:from,queue:true,mode:'posta'});}
  for(let h=0;h<24&&groups.some(id=>c.squads.find(q=>q.id===id).journey);h++)order({type:'wait',hours:1});
  for(const id of groups){order({type:'selectSquad',id});order({type:'attack',sector:target,queue:true,mode:'posta'});}
- for(let h=0;h<24&&!groups.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');h++)order({type:'wait',hours:1});
- order({type:'beginAssault',sector:target});
+ c=completeQueuedAssault(c,groups,target,{execute:request=>{order(request);return c;}});
  assert.equal(c.pendingBattle.squad.length,field.length);assert.equal(c.pendingBattle.artillery.filter(g=>!g.stationed).length,1);
  for(const [id,record]of Object.entries(start.operativeState))if(!record.alive)assert.equal(c.operativeState[id].alive,false);
  return c;

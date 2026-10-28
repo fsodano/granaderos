@@ -8,12 +8,16 @@
     "test:quick": "npm test",
     "dev": "npm --prefix web run dev",
     "build": "node tools/build-web.mjs",
-    "typecheck": "node web/node_modules/typescript/bin/tsc --project web/tsconfig.typecheck.json --noEmit",
+    "typecheck": "node web/node_modules/typescript/bin/tsc --project game/tsconfig.json --noEmit && node web/node_modules/typescript/bin/tsc --project web/tsconfig.typecheck.json --noEmit && npm --prefix campaign-editor run typecheck",
     "audit:docs": "node tools/audit-docs.mjs",
     "docs:progress": "node tools/audit-docs.mjs --write",
     "audit:baseline": "node tools/audit-baseline.mjs",
     "campaign:new": "node tools/campaign-authoring.mjs scaffold",
     "campaign:check": "node tools/campaign-authoring.mjs check",
-    "campaign:assets": "node tools/campaign-authoring.mjs assets"
+    "campaign:assets": "node tools/campaign-authoring.mjs assets",
+    "check:architecture": "node tools/check-architecture.mjs",
+    "build:editor": "npm --prefix campaign-format run build && npm --prefix campaign-editor run build",
+    "format:architecture": "node web/node_modules/oxfmt/bin/oxfmt --config .oxfmtrc.json --disable-nested-config game/domain game/application game/infrastructure game/public campaign-editor/domain campaign-editor/application campaign-editor/infrastructure campaign-editor/public campaign-format",
+    "check:format": "node web/node_modules/oxfmt/bin/oxfmt --check --config .oxfmtrc.json --disable-nested-config game/domain game/application game/infrastructure game/public campaign-editor/domain campaign-editor/application campaign-editor/infrastructure campaign-editor/public campaign-format"
   }
 }

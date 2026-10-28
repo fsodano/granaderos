@@ -1,3 +1,4 @@
+import {fightOnArrival} from './assault-fixture.mjs';
 import {scriptedWithdrawal} from './scripted-battle-report.mjs';
 import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
@@ -64,7 +65,7 @@ export async function servingEngineerLoss({built=false,custom=false}={}){
  if(custom){d.errands=[];d.includeOriginalResidents=false;d.campaignStory=defaultCampaignStory();d.campaignStory.chapters[0].conditions=[{type:'day',min:100,max:null}];}
  let s=order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'week'});s=order(s,{type:'recruitCivic',id:136,term:'week'});
  if(built){const money=s.resources.treasury;s=order(s,{type:'foundry'});assert.equal(s.resources.treasury,money-137);}
- s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});const r=s.pendingBattle;
+ s=order(s,{type:'travel',sector:'buenos_aires'});s=fightOnArrival(order(s,{type:'attack',sector:'san_nicolas'}));const r=s.pendingBattle;
  let battle=createBattle(r.squad.map(u=>({...u,x:u.id===110?5:1,y:u.id===110?1:6})),{...r,width:12,height:8,seed:45,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:Math.floor(i/12)===4?'wall':'grass',blocked:Math.floor(i/12)===4,blocksSight:Math.floor(i/12)===4,cover:0})),enemies:r.enemies.map((u,i)=>({...u,x:7,y:i%8,...(i?{hp:0,bleeding:0,bandaged:0}:{y:1,marksmanship:100})}))});
  const preInjury={campaign:structuredClone(s),battle:structuredClone(battle)};
  battle=endTurn(battle);assert.equal(battle.units.find(u=>u.id==='110').hp,0);const active=saved(sync({campaign:s,battle}));

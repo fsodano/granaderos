@@ -1,4 +1,5 @@
 import {initializeUnitAmmunition} from './tactical-ammunition.js';
+import {removedSectorCharacters} from './military-remains.js';
 import {validMilitiaArrival} from './militia-arrival.js';
 import {militiaProgression} from './militia-progression-rules.js';
 import {validMilitiaExperience,earnedMilitiaRank,promoteMilitia} from './militia-experience.js';
@@ -43,8 +44,9 @@ export function returnGarrison(s,request,snapshot,dispositions=[]){
  if(!snapshot)throw Error('El parte de la guarnición necesita el estado del sector.');
  s.garrisons??={};
  const survivors=(s.garrisons?.[request.sector]??[]).filter(u=>!request.garrison.some(v=>String(v.id)===String(u.id)));
+ const actors=[...snapshot.units,...removedSectorCharacters(snapshot)];
  for(const issued of request.garrison){
-  const actual=snapshot.units.find(u=>u.side==='player'&&String(u.id)===String(issued.id)),entry=dispositions.find(e=>e.unitId===String(issued.id));
+  const actual=actors.find(u=>u.side==='player'&&String(u.id)===String(issued.id)),entry=dispositions.find(e=>e.unitId===String(issued.id));
   if(!actual||!actual.militia||actual.militiaRank!==issued.militiaRank)throw Error('El parte de la guarnición es incompleto.');
   if(actual.hp<=0||entry&&['dispersed','departed'].includes(entry.kind))s.sectors[request.sector].militia[issued.militiaRank]=Math.max(0,s.sectors[request.sector].militia[issued.militiaRank]-1);
   if(actual.hp<=0||entry?.kind==='dispersed')continue;

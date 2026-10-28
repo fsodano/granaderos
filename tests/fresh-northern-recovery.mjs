@@ -1,3 +1,4 @@
+import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import {restoreNorthernRoad,returnNorthernOfficers,prepareRestoredSalta} from './recovery-road-route.mjs';
 import {operativeLocation,operativeInTransit} from '../game/squads.js';
@@ -14,7 +15,7 @@ import assert from 'node:assert/strict';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {dispatchCampaign,rosterFor,civicStatus} from '../game/campaign.js';
 import {careAssignmentIssue} from '../game/medical-care.js';
-import {hiringTravelHours} from '../game/hiring-arrivals.js';
+
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {enterSector} from '../game/world.js';
 import {syncBattleTime} from '../game/time.js';
@@ -135,7 +136,7 @@ export function stabilizeNorthernHospitalPatients(start,patients,doctorIds,{inpu
    if(donor===undefined){
     const candidate=rosterFor(c).filter(op=>{
      const record=c.operativeState[op.id],quote=contractQuote(c,op,'day');
-     return civicStatus(c,op.id).available&&!c.recruited.includes(op.id)&&!c.hiringArrivals.some(arrival=>arrival.operativeId===op.id)&&record.alive&&!record.captured&&record.medkits>0&&op.medical>=careRules(c).minimumSkill&&hiringTravelHours(c,op.id)===0&&quote.available&&quote.total<=c.resources.treasury;
+     return civicStatus(c,op.id).available&&!c.recruited.includes(op.id)&&!c.hiringArrivals.some(arrival=>arrival.operativeId===op.id)&&record.alive&&!record.captured&&record.medkits>0&&op.medical>=careRules(c).minimumSkill&&quote.available&&quote.total<=c.resources.treasury;
     }).sort((a,b)=>b.medical-a.medical||contractQuote(c,a,'day').total-contractQuote(c,b,'day').total||a.id-b.id)[0];
     assert.ok(candidate,'critical hospital care needs known finite linen or an actual supplied immediate paid medic');
     const booked=bookRouteHires(c,[candidate.id],{term:'day',destination:at,report});c=booked.campaign;hires.push(...booked.hires);assertRouteHireArrived(c,booked.hires[0]);
@@ -821,8 +822,7 @@ if(lostCordoba){
  // currently selected. Both real approaches join the same assault afterward.
  order({type:'selectSquad',id:southern});order({type:'configureArtillery',types:battery.selections});retainFor(36);
  const groups=[...southernColumns,...northern];for(const id of groups){order({type:'selectSquad',id});order({type:'attack',sector:'cordoba',queue:true});}
- for(let h=0;h<36&&!groups.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');h++)order({type:'wait',hours:1});
- assert.ok(groups.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready'),'both actual recapture approaches must finish');order({type:'beginAssault',sector:'cordoba'});
+ c=completeQueuedAssault(c,groups,'cordoba',{execute:request=>{order(request);return c;}});
  assert.deepEqual(c.pendingBattle.squad.map(u=>u.id).sort((a,b)=>a-b),[...field,...guard].sort((a,b)=>a-b));
  report({event:'northernReturnRecaptureReady',campaign:structuredClone(c),occupations});c=settleNorthernReturnRecapture(c,report);
  for(const id of occupations)assert.equal(c.enemyGroups.find(group=>group.id===id).status,'defeated','the actual road occupation must be defeated, not skipped');

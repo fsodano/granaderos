@@ -1,3 +1,4 @@
+import {fightOnArrivalOrder} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {authoredEditorPackage} from './authored-editor-fixture.mjs';
@@ -39,7 +40,7 @@ export function preparedNervousArena({oldPinned=false,oldRenewal=false,term='day
  // Preserve the declared daylight clinical contact after the shorter city road.
  // The paid wait is part of the official campaign replay and contract clock.
  campaignStep({type:'wait',hours:18-campaign.hour-travelLegHours('retiro','buenos_aires')});
- campaignStep({type:'attack',sector:'buenos_aires'});
+ campaignStep({type:'attack',sector:'buenos_aires'});campaignStep(fightOnArrivalOrder(campaign));
  const request=campaign.pendingBattle,width=48,height=16;
  // Prepared initial observation arena, not a native opening victory. Positions,
  // passive hostile posts and seed42 are fixed before the first official save.

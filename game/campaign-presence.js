@@ -1,6 +1,10 @@
+import { restoreSector, sectorCharacterReference } from './infrastructure/world/sector-mapper.js';
 import {historicalRequiredActors} from './historical-loss.js';
 import {civilianDiedHere,resumeCivilianServiceReturns,synchronizeResidentWounds} from './campaign-civilians.js';
-import {encounterDefinitions} from './encounters.js';
+import {encounterDefinitions,encountersFor} from './encounters.js';
+import {propBlocksAt} from './props.js';
+import {expandCellScene} from './cell-scene-storage.js';
+import {spaceKey} from './tactical-space.js';
 import {createContentSession,advancePlacementState,changePlacementStatus} from './content-placement.js';
 import {isContractCharacter,operativeIdForCharacter,characterForOperative} from './content-character-ids.js';
 import {contentCellIds} from './content-map.js';
@@ -17,6 +21,42 @@ export function initializeCampaignPresence(state){
 export function characterPresentInSector(state,characterId,sector){
   const person=state.contentPresence?.people[characterId];
   return Boolean(person?.alive&&!person.recruited&&!person.suspended&&person.appeared&&locationId(person.sector,state)===locationId(sector,state));
+}
+
+export function reconcileSectorResidents(campaign, snapshot) {
+ if (!campaign.contentPresence || snapshot.sceneId) return snapshot;
+ const current = new Map((snapshot.npcs ?? []).map(resident => [resident.id, resident]));
+ const removedResidentIds = new Set((snapshot.deathHistory ?? []).filter(record => record.kind === 'resident').map(record => record.actor.id));
+ const canonical = encountersFor(campaign, snapshot.sectorId ?? snapshot.sector).filter(resident => !removedResidentIds.has(resident.id));
+ const retainedDetention = (snapshot.npcs ?? []).filter(resident => resident.detention !== undefined);
+ const residents = canonical.map(resident => {
+  const existing = current.get(resident.id);
+  if (existing?.presenceRevision === resident.presenceRevision) return { ...existing, ...resident, x: existing.x, y: existing.y, ...(existing.tacticalLevel === undefined ? {} : { tacticalLevel: existing.tacticalLevel }), ...(existing.ai ? { ai: existing.ai } : {}) };
+  return { ...resident };
+ });
+ const occupied = new Set([...(snapshot.units ?? []).filter(actor => actor.hp > 0 && !actor.departure), ...retainedDetention].map(spaceKey));
+ for (const resident of residents) {
+  if (resident.hp === 0) continue;
+  const existing = current.get(resident.id);
+  if (existing?.presenceRevision === resident.presenceRevision && !occupied.has(spaceKey(resident))) {
+   occupied.add(spaceKey(resident));
+   continue;
+  }
+  if (snapshot.tiles === undefined) continue;
+  const expanded = expandCellScene(snapshot, campaign);
+  const positions = expanded.tiles.filter(tile => !tile.blocked && !occupied.has(spaceKey(tile)) && !propBlocksAt(expanded, tile.x, tile.y));
+  positions.sort((left, right) => Math.abs(left.x - resident.x) + Math.abs(left.y - resident.y) - Math.abs(right.x - resident.x) - Math.abs(right.y - resident.y) || left.y - right.y || left.x - right.x);
+  if (!positions.length) throw new Error('The arriving resident has no free position in the sector.');
+  resident.x = positions[0].x;
+  resident.y = positions[0].y;
+  occupied.add(spaceKey(resident));
+ }
+ const sector = restoreSector(snapshot);
+ const nextResidents = [...residents, ...retainedDetention];
+ sector.replaceResidents(nextResidents.filter(resident => !resident.departure && !resident.fled).map(sectorCharacterReference));
+ const admittedIds = new Set(sector.toSnapshot().residents.map(resident => resident.localId));
+ snapshot.npcs = nextResidents.filter(resident => admittedIds.has(String(resident.id)) || resident.departure || resident.fled);
+ return snapshot;
 }
 function currentResident(state,npc,sector){
   if(npc.detention!==undefined){
@@ -68,10 +108,12 @@ export function synchronizeCampaignPresence(state){
   state.contentPresence=strip(runtime);
   resumeCivilianServiceReturns(state);
   synchronizeResidentWounds(state);
-  for(const [sector,scene] of Object.entries(state.sectorStates))
-    scene.npcs=(scene.npcs??[]).filter(n=>currentResident(state,n,sector));
-  if(state.pendingBattle&&!state.pendingBattle.sceneId)
-    state.pendingBattle.npcs=(state.pendingBattle.npcs??[]).filter(n=>currentResident(state,n,state.pendingBattle.sector));
+  for(const scene of Object.values(state.sectorStates)) reconcileSectorResidents(state, scene);
+  if(state.pendingBattle&&!state.pendingBattle.sceneId) reconcileSectorResidents(state, state.pendingBattle);
+  for (const session of state.suspendedSectorSessions ?? []) {
+    reconcileSectorResidents(state, session.snapshot);
+    reconcileSectorResidents(state, session.request);
+  }
 }
 // Split the physical clock at placement deadlines. An unseen successor starts
 // bleeding at its actual appearance, and daily movement precedes later deaths.
@@ -83,7 +125,7 @@ export function nextCampaignPresenceChange(state){
 function successionActors(state,snapshot){
  const content=state.contentCampaign?.package??{placements:[]},storyConditions=[...(content.campaignStory?.chapters??[]).flatMap(c=>c.conditions),...(content.campaignStory?.failureConditions??[])],sources=new Set([...storyConditions.filter(c=>c.type==='character').map(c=>c.character),...content.placements.filter(p=>p.afterDeath!==null).map(p=>p.afterDeath),...(content.quests??[]).flatMap(q=>q.requiredAlive??[])].map(id=>operativeIdForCharacter(content,id)));
  for(const actor of historicalRequiredActors(state))sources.add(actor.id);
- return snapshot.units.filter(u=>u.side==='player'&&!u.militia&&sources.has(Number(u.id))&&state.pendingBattle?.squad.some(o=>o.id===Number(u.id)));
+ return [...snapshot.units,...(snapshot.deathHistory??[]).filter(record=>record.kind==='combatant').map(record=>record.actor)].filter(u=>u.side==='player'&&!u.militia&&sources.has(Number(u.id))&&state.pendingBattle?.squad.some(o=>o.id===Number(u.id)));
 }
 export function acknowledgeSuccessionDeaths(state,snapshot){
  for(const unit of successionActors(state,snapshot)){

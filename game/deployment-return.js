@@ -1,4 +1,5 @@
 import {initializeQuestWithdrawals} from './quest-withdrawal.js';
+import {removedSectorCharacters} from './military-remains.js';
 import {completedTacticalVictory} from './battle-outcome.js';
 import {expandCellScene} from './cell-scene-storage.js';
 import {surfaceAt} from './tactical-space.js';
@@ -90,7 +91,7 @@ export function planDeploymentReturn(s,request,snapshot,outcome){
   need(validateSectorExits(request.sector,request.sceneId??null,request.exits,s),'Las rutas del despliegue son inválidas.');
   need(validateSectorExits(request.sector,request.sceneId??null,snapshot.exits,s),'Las rutas tácticas son inválidas.');
   need(JSON.stringify(request.exits)===JSON.stringify(snapshot.exits),'Las rutas tácticas no corresponden al despliegue.');
-  const sourceSector=strategicSector(request,s),players=snapshot.units.filter(u=>u.side==='player');
+  const sourceSector=strategicSector(request,s),players=[...snapshot.units,...removedSectorCharacters(snapshot)].filter(u=>u.side==='player');
   const departed=players.filter(u=>u.departure);
   if(request.exploration&&snapshot.status==='active')need(!snapshot.units.some(u=>u.side==='enemy'&&fieldCapable(u)),'La visita tiene un combate pendiente.');
   if(outcome==='retreat')need(snapshot.status==='retreat'&&departed.length>0&&!players.some(fieldCapable),'La retirada necesita salidas físicas y el cierre del combate.');
@@ -131,8 +132,9 @@ export function planSquadPartition(s,entries){
 
 export function planMountReturn(s,request,snapshot,entries){
   const changes=[];
+  const actors=[...snapshot.units,...removedSectorCharacters(snapshot)];
   for(const entry of entries){
-    const id=Number(entry.unitId),issued=request.squad.find(u=>Number(u.id)===id),actual=snapshot.units.find(u=>u.side==='player'&&String(u.id)===entry.unitId);
+    const id=Number(entry.unitId),issued=request.squad.find(u=>Number(u.id)===id),actual=actors.find(u=>u.side==='player'&&String(u.id)===entry.unitId);
     if(!issued.mount){need(!actual.mount,'La montura no pertenece al despliegue.');continue;}
     const horse=s.horseState.horses.find(h=>h.id===issued.mount.id&&!h.returned&&h.assignedTo===id);
     need(horse&&actual.mount?.id===horse.id,'Falta la montura del combatiente en el parte.');
@@ -165,10 +167,11 @@ function remainsGeometry(s,exit){
 }
 function validateReturnLedger(snapshot,s){
   if(snapshot.returnLedger===undefined)return;
+  const actors=[...snapshot.units,...removedSectorCharacters(snapshot)];
   const ledger=snapshot.returnLedger,seen=new Set(),friendly=snapshot.status==='victory'||snapshot.mode==='exploration'&&!snapshot.units.some(u=>u.side==='enemy'&&fieldCapable(u));
-  need(ledger&&ledger.battleId===snapshot.battleId&&Array.isArray(ledger.entries)&&ledger.entries.length<=snapshot.units.length&&Number.isSafeInteger(ledger.creditedCartridges)&&ledger.creditedCartridges>=0&&ledger.creditedCartridges<=1000000,'El registro del parte es inválido.');
+  need(ledger&&ledger.battleId===snapshot.battleId&&Array.isArray(ledger.entries)&&ledger.entries.length<=actors.length&&Number.isSafeInteger(ledger.creditedCartridges)&&ledger.creditedCartridges>=0&&ledger.creditedCartridges<=1000000,'El registro del parte es inválido.');
   for(const e of ledger.entries){
-    const u=snapshot.units.find(u=>u.id===e?.unitId),source=sceneAnchorFor(s,snapshot.sectorId);
+    const u=actors.find(u=>u.id===e?.unitId),source=sceneAnchorFor(s,snapshot.sectorId);
     need(u?.side==='player'&&!seen.has(e.unitId)&&['dead','resident','departed','captured','dispersed'].includes(e.kind)&&sector(e.sector,s),'La distribución del parte es inválida.');seen.add(e.unitId);
     need(e.kind==='dead'?u.hp===0:u.hp>0,'La salud y el destino del parte no coinciden.');
     if(e.kind==='resident')need(friendly,'El parte declara residentes en un campo perdido.');

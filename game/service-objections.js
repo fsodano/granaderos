@@ -12,6 +12,8 @@ const idOf=actor=>Number.isSafeInteger(Number(actor?.id))&&Number(actor.id)>=0&&
 const explicit=actor=>Array.isArray(actor?.abilities)&&actor.abilities.includes(CIVILIAN_CONSCIENCE);
 const keyOf=npc=>npc.operativeId===undefined?`npc-${npc.id}`:`person-${npc.operativeId}`;
 const same=(a,b)=>a===undefined&&b===undefined||a!==undefined&&b!==undefined&&JSON.stringify(a)===JSON.stringify(b);
+const recordedActors=snapshot=>[...(snapshot.units??[]),...(snapshot.deathHistory??[]).filter(record=>record.kind==='combatant').map(record=>record.actor)];
+const recordedResidents=snapshot=>[...(snapshot.npcs??[]),...(snapshot.deathHistory??[]).filter(record=>record.kind==='resident').map(record=>record.actor)];
 const capable=actor=>actor?.side==='player'&&!actor.militia&&actor.hp>=CRITICAL_HEALTH&&!isUnconscious(actor)&&!actor.unconscious&&!actor.asleep&&!actor.sleepCollapsed&&!actor.captured&&!actor.departure&&!actor.fled&&!actor.surrendered&&!actor.routed;
 const unarmed=npc=>!npc.weapon&&!npc.blade&&!npc.civilianWeapons?.primary&&!npc.civilianWeapons?.blade;
 export const conductObserverDefinition=character=>Boolean(character&&character.service==='contract'&&(isContractCharacter(character)||isWorldCharacter(character)));
@@ -40,7 +42,8 @@ export function validateConductObservers(snapshot){
  if(snapshot.conductObserverIds===undefined)return;
  const ids=snapshot.conductObserverIds;
  need(Array.isArray(ids)&&Object.keys(ids).length===ids.length&&ids.length>0&&ids.length<=200&&new Set(ids).size===ids.length&&[...ids].every(id=>Number.isSafeInteger(id)&&id>=0));
- need(ids.every(id=>snapshot.units?.some(actor=>idOf(actor)===id&&actor.side==='player'&&!actor.militia&&explicit(actor))));
+ const actors=[...(snapshot.units??[]),...(snapshot.deathHistory??[]).map(record=>record.actor)];
+ need(ids.every(id=>actors.some(actor=>idOf(actor)===id&&actor.side==='player'&&!actor.militia&&explicit(actor))));
 }
 export function validateServiceObjection(record){
  need(object(record));
@@ -82,11 +85,11 @@ function acknowledgedDeath(state,receipt){
  return Boolean(person&&definition&&person.npcId===definition.id&&isConductNoncombatant(definition)&&deathMatches({...definition,...person.health},receipt));
 }
 function deathProof(state,snapshot,receipt,request,{acknowledged=false}={}){
- const initial=request.npcs?.find(npc=>keyOf(npc)===receipt.civilianKey),dead=snapshot.npcs?.find(npc=>keyOf(npc)===receipt.civilianKey);
+ const initial=request.npcs?.find(npc=>keyOf(npc)===receipt.civilianKey),dead=recordedResidents(snapshot).find(npc=>keyOf(npc)===receipt.civilianKey);
  const definition=definitionFor(state,receipt);
  need(definition&&isConductNoncombatant(definition)&&initial&&initial.id===definition.id&&initial.operativeId===definition.operativeId&&initial.contentId===definition.contentId&&isConductNoncombatant(initial)&&isConductNoncombatant(dead)&&deathMatches(dead,receipt));
  need(acknowledged?acknowledgedDeath(state,receipt):(initial.hp??100)>0);
- const original=[...(request.squad??[]),...(request.garrison??[]),...(request.missionAllies??[])].find(actor=>String(actor.id)===receipt.attackerId),actual=snapshot.units?.find(actor=>String(actor.id)===receipt.attackerId);
+ const original=[...(request.squad??[]),...(request.garrison??[]),...(request.missionAllies??[])].find(actor=>String(actor.id)===receipt.attackerId),actual=recordedActors(snapshot).find(actor=>String(actor.id)===receipt.attackerId);
  need(original?.hp>0&&!original.militia&&original.side!=='enemy'&&actual?.side==='player'&&!actual.militia);
 }
 function validateSnapshot(state,snapshot,roster,request,authority){
@@ -95,19 +98,19 @@ function validateSnapshot(state,snapshot,roster,request,authority){
  if(snapshot.conductObserverIds!==undefined){
   const definitions=encounterDefinitions(state);
   for(const initial of request.npcs??[]){
-   const definition=definitions.find(npc=>npc.id===initial.id),actual=snapshot.npcs?.find(npc=>npc.id===initial.id);
+   const definition=definitions.find(npc=>npc.id===initial.id),actual=recordedResidents(snapshot).find(npc=>npc.id===initial.id);
    // Prisoners and mission contacts cannot be noncombatants for this rule.
    const expected=definition?.noncombatant;
    need(initial.noncombatant===expected&&actual&&actual.noncombatant===expected);
   }
  }
  for(const issued of request.squad??[]){
-  const actor=snapshot.units.find(unit=>unit.side==='player'&&String(unit.id)===String(issued.id)),operative=roster.find(op=>op.id===Number(issued.id));need(actor&&operative);pinned(operative,actor);
+  const actor=recordedActors(snapshot).find(unit=>unit.side==='player'&&String(unit.id)===String(issued.id)),operative=roster.find(op=>op.id===Number(issued.id));need(actor&&operative);pinned(operative,actor);
   retains(state.operativeState?.[operative.id],actor);retains(issued,actor);
   retains(authority?.units?.find(unit=>unit.side==='player'&&String(unit.id)===String(issued.id)),actor);
   if(actor.serviceObjection!==undefined&&state.operativeState?.[operative.id]?.serviceObjection===undefined){need(snapshot.conductObserverIds?.includes(operative.id));deathProof(state,snapshot,actor.serviceObjection,request,{acknowledged:issued.serviceObjection!==undefined});}
  }
- for(const actor of snapshot.units.filter(unit=>!request.squad?.some(issued=>String(issued.id)===String(unit.id)))){
+ for(const actor of recordedActors(snapshot).filter(unit=>!request.squad?.some(issued=>String(issued.id)===String(unit.id)))){
   validateServiceObjection(actor);if(actor.serviceObjection===undefined)continue;
   const operative=roster.find(op=>op.id===idOf(actor));need(operative&&actor.side==='player'&&!actor.militia);pinned(operative,actor);need(same(actor.serviceObjection,state.operativeState?.[operative.id]?.serviceObjection));
  }
@@ -142,7 +145,7 @@ export function validateCampaignServiceObjections(state,roster){
  if(request?.resumeSnapshot)validateSnapshot(state,request.resumeSnapshot,roster,request,null);
 }
 export function retainServiceObjections(request,snapshot){
- for(const issued of request.squad??[]){const actual=snapshot.units.find(actor=>actor.side==='player'&&String(actor.id)===String(issued.id));if(actual?.serviceObjection!==undefined)issued.serviceObjection=structuredClone(actual.serviceObjection);}
+ for(const issued of request.squad??[]){const actual=recordedActors(snapshot).find(actor=>actor.side==='player'&&String(actor.id)===String(issued.id));if(actual?.serviceObjection!==undefined)issued.serviceObjection=structuredClone(actual.serviceObjection);}
 }
 export function returnServiceObjection(state,id,report){
  const personal=state.operativeState[id];retains(personal,report);if(report.serviceObjection!==undefined)personal.serviceObjection=structuredClone(report.serviceObjection);

@@ -1,3 +1,4 @@
+import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
 import {bankRouteIncome} from './route-income-banking.mjs';
 import {supplyRouteDressings} from './route-dressings.mjs';
 import {supplyKnownRouteDressings} from './route-known-medical-courier.mjs';
@@ -469,8 +470,7 @@ order({type:'selectSquad',id:main});if(batteryIds){assert.equal(batteryIds.lengt
 const battery=prepareMountainBattery(c,Array.from({length:guns},()=> 'bronze4'),{batteryIds,destination:'mendoza',keepServing:retained.keepIds(),report});c=battery.campaign;order({type:'configureArtillery',types:battery.selections});
 if(batteryIds)({leader,physician}=currentMountainServingRoles(c,{...roleIds,requiredDressings:15}));
 for(const id of columns){order({type:'selectSquad',id});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});order({type:'attack',sector:'uspallata',queue:true,mode:'posta'});}
-for(let i=0;i<16&&!columns.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');i++)order({type:'wait',hours:1});
-order({type:'beginAssault',sector:'uspallata'});
+ c=completeQueuedAssault(c,columns,'uspallata',{execute:request=>{order(request);return c;}});
  assert.deepEqual(c.pendingBattle.squad.map(unit=>unit.id).sort((a,b)=>a-b),field.slice().sort((a,b)=>a-b));return c;
 }
 
@@ -1067,18 +1067,10 @@ assert.ok(hiringIds.every(id=>c.recruited.includes(id)),'paid replacements must 
   c=prepareMountainApproachSleep(c,{columns,report});
   const {budget}=departureBudget('flanks',{sleepApproaches:false});assert.ok(budget.available,budget.reason??'Requote actual service after paid approach sleep.');
  }
+ if(parallel){const {budget}=departureBudget('assault');assert.ok(budget.available,budget.reason);}
+ c=stageAssaultDeparture(c,approaches,'los_patos',{execute:request=>{order(request);return c;}});
  for(const {id,mode}of approaches){order({type:'selectSquad',id});order({type:'attack',sector:'los_patos',queue:true,mode});}
- for(let i=0;i<16&&!columns.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');i++){order({type:'wait',hours:1});}
- assert.ok(columns.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready'),'all physical approaches finish before staging');
- if(parallel){const {budget}=departureBudget('assault');assert.ok(budget.available,budget.reason??'Actual daylight staging must retain its remaining service.');}
- // Sequential journeys and the assault approach can arrive after dark.
- // Stage the real arrived squads until daylight, retaining their paid terms.
- const arrivalHour=c.hour;
- for(let i=0;i<24&&(c.hour%24<6||c.hour%24>10);i++){order({type:'wait',hours:1});}
- assert.ok(c.hour%24>=6&&c.hour%24<=10,'the mountain assault starts in daylight');
- report({event:'mountainDaylightStaging',arrivalHour,hour:c.hour,second:c.secondOfHour,treasury:c.resources.treasury,field:[...field]});
- assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
- order({type:'beginAssault',sector:'los_patos'});
+ c=completeQueuedAssault(c,columns,'los_patos',{execute:request=>{order(request);return c;}});
  assert.equal(c.pendingBattle.squad.length,field.length);
  for(const approach of approaches){
   const group=c.pendingBattle.assaultSquads.find(q=>q.id===approach.id),entry=entryFromSector(approach.origin,'los_patos',null,c);assert.ok(group);assert.equal(group.origin,approach.origin);

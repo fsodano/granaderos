@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor,civicStatus} from '../game/campaign.js';
 import {contractQuote,contractExpiresSeconds,contractRenewalQuote} from '../game/contracts.js';
-import {hiringArrivalReason,hiringTravelHours} from '../game/hiring-arrivals.js';
+import {hiringArrivalReason} from '../game/hiring-arrivals.js';
 import {careRules,strategicBleedingPercent} from '../game/campaign-care-rules.js';
 import {operativeLocation,operativeInTransit} from '../game/squads.js';
 import {sleepOrderReason} from '../game/sleep.js';
@@ -90,7 +90,7 @@ export function recoverRecapturedRoad(start){
     let arrival=c.hiringArrivals.find(a=>a.destination===at&&rosterFor(c).find(op=>op.id===a.operativeId)?.medical>=careRules(c).minimumSkill);
     if(!arrival){
      assert.equal(hiringArrivalReason(c,at),null,`a doctor needs a legal arrival at ${at}`);
-     const candidate=rosterFor(c).filter(op=>op.medical>=careRules(c).minimumSkill&&civicStatus(c,op.id).available&&contractQuote(c,op,'day').price<=c.resources.treasury).sort((a,b)=>hiringTravelHours(c,a.id)-hiringTravelHours(c,b.id)||b.medical-a.medical)[0];
+     const candidate=rosterFor(c).filter(op=>op.medical>=careRules(c).minimumSkill&&civicStatus(c,op.id).available&&contractQuote(c,op,'day').price<=c.resources.treasury).sort((a,b)=>0-0||b.medical-a.medical)[0];
      assert.ok(candidate,`a paid available doctor must reach ${at}`);order({type:'recruitCivic',id:candidate.id,term:'day',destination:at});arrival=c.hiringArrivals.find(a=>a.operativeId===candidate.id);
     }
     if(arrival)for(const id of patients){const r=c.operativeState[id],hours=Math.max(0,arrival.dueAt-c.hour);assert.ok(r.hp>Math.ceil(r.bleeding*strategicBleedingPercent(c)/100)*hours,`patient ${id} needs immediate first aid before waiting for a hire`);}

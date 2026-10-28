@@ -6,7 +6,7 @@ Granaderos es un juego de **estrategia y combate táctico por turnos para navega
 
 El juego está en desarrollo. La interfaz y el manual del juego están en español.
 
-**[Jugar ahora](https://fsodano.github.io/granaderos/)** · [Cómo se juega](#cómo-se-juega) · [Tu propia campaña](#tu-propia-campaña) · [Ejecutar en tu equipo](#ejecutar-en-tu-equipo) · [Documentación](docs/README.md)
+**[Jugar ahora](https://fsodano.github.io/granaderos/)** · [Cómo se juega](#cómo-se-juega) · [Tu propia campaña](#tu-propia-campaña) · [Ejecutar en tu equipo](#ejecutar-en-tu-equipo) · [Documentación](docs/README.md) · [Arquitectura C4](docs/architecture/c4.md)
 
 [![Tráiler de Granaderos: La independencia se conquista](assets/video/intro/preview.gif)](assets/video/intro/granaderos-intro.mp4?raw=true)
 
@@ -24,7 +24,7 @@ El juego está en desarrollo. La interfaz y el manual del juego están en españ
 
 ## Lo que hace a Granaderos
 
-- **Un ejército con nombres y rostros.** Figuras históricas, voluntarios con atributos y equipo diferentes, y un personaje que podés crear con su nombre, retrato, oficio, atributos y rasgos. La contratación tiene un precio y una fecha de llegada; la paga y el tiempo de servicio forman parte de la estrategia.
+- **Un ejército con nombres y rostros.** Figuras históricas, voluntarios con atributos y equipo diferentes, y un personaje que podés crear con su nombre, retrato, oficio, atributos y rasgos. El reclutamiento da control inmediato del combatiente en el lugar elegido. La paga, el plazo de servicio y el lugar de incorporación forman parte de la estrategia.
 - **Combate de avancarga.** Cada disparo exige preparar la próxima carga. El tipo de munición, la condición del arma, la lluvia y el humo influyen en el combate. Podés fijar una bayoneta, usar la culata o recurrir al sable y al facón cuando la distancia se cierra.
 - **Un campo táctico en 3D.** Personajes animados, armas, equipo y edificios comparten escenarios con puertas, ventanas, interiores y desniveles. Las líneas de visión, las posturas, la iluminación y el terreno afectan tus opciones. El día, la noche y el tiempo también cuentan.
 - **Órdenes con consecuencias.** Las interrupciones permiten reaccionar durante el turno enemigo. Moverse, girar, apuntar, disparar y vendar consumen recursos. Los proyectiles pueden encontrar cobertura y otros cuerpos en su recorrido: cuidá también a los aliados y a los civiles.
@@ -33,13 +33,13 @@ El juego está en desarrollo. La interfaz y el manual del juego están en españ
 - **Heridas que no desaparecen al ganar.** Los vendajes detienen hemorragias y estabilizan heridas críticas. La recuperación requiere médicos, vendas y tiempo. El descanso, la fatiga y la moral afectan a la fuerza; las muertes son permanentes.
 - **Una campaña histórica para recorrer.** El Retiro, San Lorenzo, el norte, Yatasto, El Plumerillo y los pasos de los Andes conectan combates, preparativos, personajes y acuerdos. Los mapas y acontecimientos son interpretaciones históricas adaptadas al juego.
 - **Sonidos de batalla opcionales.** Activá el sonido desde la barra del juego para acompañar las acciones del combate.
-- **Herramientas para crear.** El Estudio de campañas reúne mundo, mapas, personajes, diálogos, objetivos, presentación y recursos en un proyecto que podés editar, probar y descargar.
+- **Herramientas para crear.** El Editor de campañas reúne mundo, mapas, personajes, diálogos, objetivos, presentación y recursos en un proyecto que podés editar, probar y descargar.
 
 ## Cómo se juega
 
 ### Empezá en el Retiro
 
-Abrí [el juego](https://fsodano.github.io/granaderos/) en un navegador de escritorio con WebGL y elegí **Nueva campaña**. Empezás con el Retiro bajo tu control y fondos para formar tu fuerza. Podés crear tu personaje sin costo, contratar voluntarios o combinar ambas opciones. Revisá sus atributos, su equipo y el precio antes de contratar; deberán llegar para incorporarse.
+Abrí [el juego](https://fsodano.github.io/granaderos/) en un navegador de escritorio con WebGL y elegí **Nueva campaña**. Empezás con el Retiro bajo tu control y fondos para formar tu fuerza. Podés crear tu personaje sin costo, reclutar combatientes o combinar ambas opciones. Revisá sus atributos, su equipo y el precio. Cada recluta se incorpora de inmediato a la escuadra local si hay lugar; en caso contrario, queda en la reserva del lugar elegido.
 
 Abrí la carta de operaciones, elegí un destino y prepará el viaje. Las escuadras conservan su posición y su equipo. Capturar y defender localidades permite extender tu control y obtener ingresos para mantener al ejército. Los pesos financian contratos y preparativos; las armas, los cartuchos y las vendas se obtienen de los combatientes y de los suministros físicos del mundo.
 
@@ -82,7 +82,7 @@ Los retratos son ilustraciones del juego. La [guía de arte](assets/README.md) r
 
 ## Tu propia campaña
 
-El [Estudio de campañas](docs/authoring/campaign-studio.md), en `/studio`, permite crear un proyecto o abrir una copia de una campaña instalada. Editá el mundo, los mapas tácticos, los edificios, los personajes, el equipo, los diálogos y los objetivos. Sumá tus imágenes y la presentación, probá el contenido y descargá el proyecto editable o un paquete de campaña.
+El [Editor de campañas](docs/authoring/campaign-studio.md), en `/campaign-editor/`, permite crear un proyecto o abrir una copia de una campaña instalada. Editá el mundo, los mapas tácticos, los edificios, los personajes, el equipo, los diálogos y los objetivos. Sumá tus imágenes y la presentación, probá el contenido y descargá el proyecto editable o un paquete de campaña.
 
 El [editor de historia](docs/development/story-editor.md) y el [editor de sectores](docs/development/sector-editor.md) también están disponibles desde el inicio para la campaña seleccionada. Las pruebas del editor usan una copia del contenido y conservan aparte el progreso de la campaña instalada.
 
@@ -105,11 +105,21 @@ Abrí [localhost:3000](http://localhost:3000) o la dirección indicada por el se
 
 La [guía de desarrollo](docs/development/getting-started.md) explica la instalación, la estructura y las dependencias de verificación. El motor está en `game/`, la interfaz en `web/` y las campañas en `campaigns/`.
 
+El [plan de arquitectura aceptado](plans/accepted/domain-architecture.md) define
+la estructura y el comportamiento objetivo. El [lenguaje del dominio](plans/accepted/ubiquitous-language.md)
+fija los términos para código, pruebas y documentación. Leé las
+[instrucciones del repositorio](AGENTS.md) antes de modificar estos contratos.
+La [guía progresiva de arquitectura](docs/architecture/README.md) explica la
+implementación, los casos de uso y los límites de cada paquete.
+
 ```sh
-npm test              # Conjunto mínimo: 12 archivos, dos procesos
-npm run test:quick     # Alias del mismo conjunto mínimo
-npm run typecheck     # TypeScript
-npm run build         # Exportación estática en dist/
+npm ci --prefix campaign-editor
+npm test                    # Pruebas de dominio e integración, dos procesos
+npm run test:quick          # Alias del mismo conjunto
+npm run check:architecture  # Límites de capas y paquetes
+npm run check:format        # Formato del código de arquitectura
+npm run typecheck           # Tipos del juego, interfaz y editor
+npm run build               # Juego y editor en dist/
 ```
 
 Para contribuir, proponé un cambio con alcance definido, verificá el comportamiento afectado y documentá sus controles. Los [documentos del juego](docs/gameplay/README.md), la [guía de arte](docs/art/README.md) y el [índice de documentación](docs/README.md) reúnen las referencias de cada sistema.

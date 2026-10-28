@@ -1,12 +1,18 @@
+import { advanceSectorWorldEvents } from './military-remains.js';
+import { collectResidentSuppliesThrough } from './resident-scavenging.js';
 import {wallEdgesBetween,wallMovementBlocked} from './wall-geometry.js';
 import {recoverCivilianBreath} from './civilian-health.js';
 import {accessStepsFrom,sameCell,sameSurface,spaceKey,surfaceHeight,tacticalLevel} from './tactical-space.js';
 import {atHand,planningPoint} from './tactical-planning-space.js';
 import {propCells} from './props.js';
 import {directionTo, approximateHeardPosition} from './tactical-awareness.js';
-import {applyCivilianHarm} from './civilian-harm.js';
+import {applyCivilianHarm, advanceCivilianWoundTime} from './civilian-harm.js';
+import {HealthRules} from './domain/personnel/health.ts';
+import {Corpse} from './domain/world/corpse.ts';
+import {requireGameSecond} from './domain/world/world-timeline.ts';
 import {recoverEnergy} from './fatigue.js';
 import {artillerySpaceKeys} from './artillery-occupancy.js';
+import {ResidentRoutine, RESIDENT_ROUTINE_INTERVAL_SECONDS} from './domain/world/resident-routine.ts';
 
 // Local, deterministic state machines. No network, hidden enemy positions or RNG.
 export const NPC_ACTIVITIES = ['roaming','home','working','socializing','meeting','hiding','fleeing','following','waiting'];
@@ -168,7 +174,7 @@ export function advanceNpc(s,n,budget=24,atTime=now(s)) {
   }
 }
 
-export function runCivilianPhase(s,atTime=now(s)) {
+function performCivilianPhase(s,atTime) {
   // Atomic third phase: it cannot grant combat AP or create an interrupt.
   const phase=s.phase;s.phase='civilian';
   s.civilianTurns=(s.civilianTurns??0)+1;
@@ -180,8 +186,72 @@ export function runCivilianPhase(s,atTime=now(s)) {
   s.phase=phase;
 }
 
-export function advanceCivilianTime(s,seconds,beforeCivilians=()=>true) {
-  s.civilianSeconds=(s.civilianSeconds??0)+seconds;
-  // The same six-second cadence is used for one long walk or separate steps.
-  while(s.civilianSeconds>=6){s.civilianSeconds-=6;if(beforeCivilians()===false){s.civilianSeconds=0;break;}runCivilianPhase(s,now(s)-s.civilianSeconds);}
+export function advanceResidentWoundClock(s, targetSecond, { initialSecond, afterWound = () => {} } = {}) {
+  requireGameSecond(targetSecond);
+  const previousSecond = s.residentConditionSecond ?? initialSecond ?? s.startSeconds ?? targetSecond;
+  requireGameSecond(previousSecond);
+  if (targetSecond < previousSecond) throw new Error('Resident wound time cannot move backwards.');
+  const seconds = targetSecond - previousSecond;
+  for (const resident of s.npcs ?? []) {
+    const previousHealth = resident.hp ?? 100;
+    const bleeding = resident.bleeding ?? 0;
+    const woundRemainder = resident.civilianWoundSeconds ?? 0;
+    advanceCivilianWoundTime(s, resident, seconds);
+    if (previousHealth > 0 && resident.hp === 0 && (s.sceneId ?? s.sectorId)) {
+      const diedAtSecond = previousSecond + Math.ceil(previousHealth / bleeding) * HealthRules.BleedingIntervalSeconds - woundRemainder;
+      resident.corpse = Corpse.recordDeath(String(resident.id), s.sceneId ?? s.sectorId, diedAtSecond).toSnapshot();
+    }
+    if ((resident.hp ?? 100) < previousHealth) afterWound(resident, previousHealth);
+  }
+  s.residentConditionSecond = targetSecond;
+}
+
+export function advanceResidentRoutine(s, targetSecond, {
+  beforePhase = () => {}, afterPhase = () => {},
+  beforeCollection = () => {}, afterCollection = () => {}, afterWound = () => {}, beforeConditions = () => {}, advanceWorldEvents = atSecond => advanceSectorWorldEvents(s, atSecond),
+} = {}) {
+  const startedAtSecond = s.startSeconds ?? 0;
+  const routine = new ResidentRoutine(s.residentRoutine ?? { startedAtSecond, advancedThroughSecond: startedAtSecond });
+  const initialSecond = routine.toSnapshot().advancedThroughSecond;
+  const advanceConditions = atSecond => {
+    beforeConditions(atSecond);
+    advanceResidentWoundClock(s, atSecond, { initialSecond, afterWound });
+    advanceWorldEvents(atSecond);
+  };
+  routine.advanceTo(targetSecond, atSecond => {
+    const movementAllowed = beforePhase(atSecond) !== false;
+    advanceConditions(atSecond);
+    if (movementAllowed) performCivilianPhase(s, atSecond - startedAtSecond);
+    afterPhase(atSecond);
+  }, atSecond => {
+    beforeCollection(atSecond);
+    advanceConditions(atSecond);
+    collectResidentSuppliesThrough(s, atSecond);
+    afterCollection(atSecond);
+  });
+  advanceConditions(targetSecond);
+  s.residentRoutine = routine.toSnapshot();
+}
+
+export function runCivilianPhase(s, atTime = now(s), options = {}) {
+  advanceResidentRoutine(s, (s.startSeconds ?? 0) + atTime, options);
+}
+
+export function advanceCivilianTime(s, seconds, beforeCivilians = () => true, options = {}) {
+  requireGameSecond(seconds);
+  const targetSecond = (s.startSeconds ?? 0) + now(s);
+  s.residentConditionSecond ??= targetSecond - seconds;
+  s.residentRoutine ??= { startedAtSecond: s.startSeconds ?? 0, advancedThroughSecond: targetSecond - seconds };
+  s.civilianSeconds = ((s.civilianSeconds ?? 0) + seconds) % RESIDENT_ROUTINE_INTERVAL_SECONDS;
+  let movementAllowed = true;
+  advanceResidentRoutine(s, targetSecond, {
+    ...options,
+    beforePhase(atSecond) {
+      if (movementAllowed && beforeCivilians(atSecond) === false) {
+        movementAllowed = false;
+        s.civilianSeconds = 0;
+      }
+      return movementAllowed;
+    },
+  });
 }

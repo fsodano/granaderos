@@ -6,7 +6,7 @@ import {atHand,planningPoint} from './tactical-planning-space.js';
 import {BODY_SLOTS,outfitSlot,wornBodyItems,makeOutfit,wornOutfit,PONCHO_PRICE} from './outfits.js';
 import {changeMerchantCash,merchantCash} from './equipment-merchants.js';
 import {handsRequired,handLayout} from './hand-layout.js';
-import {SUPPLY_ITEMS,itemQuantity,itemDescriptor,extractItemQuantity,applyItemQuantity,inventoryUsage,planPocketMove,equipmentEndpoint,equipmentFingerprint} from './tactical-inventory.js';
+import {transferItemQuantity,transferStoredItemQuantity,SUPPLY_ITEMS,itemQuantity,itemDescriptor,extractItemQuantity,applyItemQuantity,inventoryUsage,planPocketMove,equipmentEndpoint,equipmentFingerprint} from './tactical-inventory.js';
 import {getReachable,hasLineOfSight,planEquipLoot,planReadyMainHand,planEquipmentPlacement,planEquipmentCursorOrder,knownArtillery,WEAPONS,BLADES} from './tactical.js';
 import {propBlocksAt,propCells} from './props.js';
 import {boundaryPassable} from './tactical-exits.js';
@@ -233,13 +233,16 @@ export function moveSectorItem(s,action,roster){
  }else if(direction==='take'){
   const row=siteSources(s,sectorId,snapshot).find(row=>row.key===action.sourceKey),entry=model.entries.find(row=>row.key===action.sourceKey);
   need(row&&entry?.reachable,entry?.reason??'El equipo ya no está disponible.');need(action.expected===JSON.stringify(row.stack),'El equipo cambió. Revisá la lista antes de recogerlo.');need(count<=row.stack.count,'No queda esa cantidad del objeto.');
-  stack={...row.stack,count};next=applyItemQuantity(actor,stack);
+  const transfer = row.kind === 'body'
+   ? transferItemQuantity(row.source, actor, row.item, count)
+   : transferStoredItemQuantity(row.stack, actor, count, `sector:${sectorId}:${row.key}`);
+  stack = transfer.stack; next = transfer.target;
   if(row.kind==='serviceReturn'){
    const consumed=consumeServiceReturn(s,row.sourceKey,action.expected,count);need(JSON.stringify(consumed.stack)===JSON.stringify(stack),'El equipo cambió. Revisá la lista.');
-  }else if(row.kind==='body'){const extraction=extractItemQuantity(row.source,row.item,count);syncUnitAmmunition(extraction.unit);Object.keys(row.source).forEach(key=>delete row.source[key]);Object.assign(row.source,extraction.unit);}
+  }else if(row.kind==='body'){syncUnitAmmunition(transfer.source);Object.keys(row.source).forEach(key=>delete row.source[key]);Object.assign(row.source,transfer.source);}
   else if(row.kind==='drop')row.source.taken=true;
-  else if(row.kind==='container'){row.source.contents[row.index].count-=count;if(!row.source.contents[row.index].count)row.source.contents.splice(row.index,1);}
-  else row.source.count-=count;
+  else if(row.kind==='container'){row.source.contents[row.index].count=transfer.remaining;if(!row.source.contents[row.index].count)row.source.contents.splice(row.index,1);}
+  else row.source.count=transfer.remaining;
  }else if(direction==='store'){
   const row=model.carried.find(row=>row.item===action.item);
   need(count===1&&row?.store?.valid,row?.store?.reason??'Elegí un arma para guardar.');

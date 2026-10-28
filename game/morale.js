@@ -1,3 +1,4 @@
+import { isCharacterDeployed as deployed } from './infrastructure/session/campaign-session-access.js';
 import {operativeLocation} from './squads.js';
 import {OPERATIVES} from './data.js';
 import {CIVIC_RECRUITS} from './civic-recruits.js';
@@ -7,7 +8,6 @@ import {issueCompanionGrief} from './companion-grief.js';
 import {advanceStrategicIsolation,validateStrategicIsolation} from './strategic-isolation.js';
 
 const clamp=n=>Math.max(0,Math.min(100,n));
-const deployed=(s,id)=>Boolean(s.pendingBattle?.squad?.some(u=>Number(u.id)===Number(id)));
 const pairKey=(a,b)=>[Number(a),Number(b)].sort((x,y)=>x-y).join(':');
 const need=(ok,message)=>{if(!ok)throw Error(message);};
 const originals=new Map([...OPERATIVES,...CIVIC_RECRUITS].map(o=>[o.id,o]));

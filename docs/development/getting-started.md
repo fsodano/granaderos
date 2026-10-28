@@ -12,9 +12,8 @@ establish complete game acceptance.
 ## Requirements
 
 - Git, to clone the repository.
-- An up-to-date **Node.js 22 LTS**, **22.18.0 or newer**, for development and tests. The [`web/package.json`](../../web/package.json) range `>=22.13.0` is the web package's engine lower bound.
+- An up-to-date **Node.js 22 LTS**, **22.18.0 or newer**, for development and native TypeScript tests.
 - npm and a current browser.
-- Python 3.13 and the pinned Pillow/NumPy dependencies for core and full tests, matching CI.
 
 The browser game does not require the `engine/` submodule, a C++ toolchain or an original JA2 installation.
 
@@ -37,7 +36,7 @@ Run subsequent commands from the repository root. Dependencies are installed in 
 
 `npm run dev` starts the web package's Vinext development server. Open [localhost:3000](http://localhost:3000), or the address printed by the server if its port changes. Stop the server with Ctrl+C.
 
-Select an installed campaign. In the Granaderos campaign, choose **Nueva campaña** to begin at the Retiro desk. Retiro is the only controlled sector. Hire combatants or create a free character. The first person in service advances the opening chapter without an extra academy payment; wait for a pending hire to arrive. **Combate de San Lorenzo** starts a separate battle.
+Select an installed campaign. In the Granaderos campaign, choose **Nueva campaña** to begin at the Retiro desk. Retiro is the only controlled sector. Recruit combatants or create a free character. Recruitment gives immediate control at the selected safe site. The first person in service advances the opening chapter. **Combate de San Lorenzo** starts a separate battle.
 
 The current economy uses pesos for hiring and campaign preparations. Equipment
 commerce is disabled: equipment comes with its owner or is found in a sector.
@@ -49,11 +48,13 @@ feeding and breeding horses are disabled. Physical equipment transport remains
 available. Saves from the earlier economy are rejected;
 start a new campaign.
 
-The title screen opens the [story editor](story-editor.md) at `/story` and the
-[sector editor](sector-editor.md) at `/editor`. These are experimental tools.
+The title screen links to the separate `campaign-editor` application. The
+compatibility routes `/studio`, `/story`, and `/editor` open its corresponding
+workspaces in a production build. For development, install its dependencies with
+`npm ci --prefix campaign-editor` and start it with `npm --prefix campaign-editor run dev`.
 The story editor supports validated characters, weapons, abilities, dialogue
 choices, quests and bounded campaign definitions, including a separate example.
-Use the [campaign studio](../authoring/campaign-studio.md) at `/studio` to create,
+Use the [campaign studio](../authoring/campaign-studio.md) at `/campaign-editor/` to create,
 edit, test and export a complete campaign package. The
 [campaign folder guide](campaign-authoring.md) describes local installation.
 The editors open the selected package and keep its drafts separate. Community
@@ -67,48 +68,43 @@ Browser storage belongs to the current browser profile and site origin. A differ
 
 The save implementation is in [`game/save.js`](../../game/save.js). [`useCampaignAutosave.ts`](../../web/lib/useCampaignAutosave.ts) saves campaign and battle changes and reports storage errors through the game notice.
 
-This game is in pre-release development. Validate new campaigns and saves made
-with the current build, including export, import and browser reload. Historical
-save snapshots are not a release gate, and compatibility with earlier builds is
-not guaranteed. Do not retain obsolete campaign checkpoints as replay fixtures.
+Validate current saves through export, import, and browser reload. The supported
+save schemas and explicit migrations are described in the
+[persistence guide](../architecture/persistence.md). Keep focused migration
+fixtures for those contracts; a save from an unsupported economy is rejected.
 
 ## Checks
 
-The owner requested a minimal test set on 2026-10-21. A broader testing
-strategy is deferred. The current set contains 12 files covering campaign
-creation and contracts, travel, combat, finite inventory, battle settlement,
-workers, saves, autosave, public combat information, personnel controls and
-browser deployment paths. See [the test baseline](../../tests/README.md).
+The test runner includes domain invariants, application contracts, persistence,
+editor operations, and game integration checks. It discovers the current tests
+and uses two workers. See [the test guide](../../tests/README.md).
 
-Install dependencies with `npm ci --prefix web`, then run:
+Install dependencies with `npm ci --prefix web` and
+`npm ci --prefix campaign-editor`, then run:
 
 | Command | Purpose |
 | --- | --- |
 | `npm test` | Run the complete current minimum with two worker processes. |
 | `npm run test:quick` | Run the same minimum; this is an alias. |
-| `npm run typecheck` | Check the web TypeScript project without emitting files. |
+| `npm run typecheck` | Check game, web, and editor types without emitting files. |
+| `npm run check:architecture` | Enforce layer, package, browser, and public API dependencies. |
+| `npm run check:format` | Check formatting of migrated architecture source. |
 | `npm run audit:docs` | Check the documentation register and generated view. |
 | `npm run audit:baseline` | Check the reference gameplay values. |
 | `npm run build` | Build and verify the static browser export in root `dist/`. |
 
-Tests do not require Python, regenerate artwork or run long campaign routes.
-Failures still fail the command. No assertions in the retained test files were
-removed to obtain a passing result. The old core/campaign, quick/extended and
-shard configuration has been removed. Git tag `0.1.27` retains the previous
-suite if individual checks are needed later. Historical evidence and pinned
-test references remain in the verification ledger; they are not coverage for
-the current minimum.
-
-Keep this set small. Use a focused check when a change affects behavior that
-it does not cover. Do not restore large automatic suites without a new testing
-decision from the owner. For editor work, the [editor development guide](editor-development.md)
-provides context for selecting a relevant local check or browser action.
+The standard suite does not require Python, regenerate artwork, or run complete
+campaign routes. Failures fail the command. Tests use real domain objects with
+deterministic inputs. Add focused checks for new invariants, refusals, identity,
+time, persistence, and worker admission. Use browser checks to verify visible
+flows. A passing suite does not certify campaign completion or visual quality.
 
 ### GitHub Actions
 
 [Minimal tests](../../.github/workflows/tests.yml) runs `npm test` on non-draft
 pull requests and manual requests. A newer commit cancels the older run for
-that pull request. It uses a shallow checkout and one dependency install.
+that pull request. It installs both application dependency sets and checks
+architecture boundaries and formatting before tests.
 
 On `main`, the [Web game build and Pages workflow](../../.github/workflows/web.yml)
 runs the same minimum, the documentation and baseline audits, the type check,

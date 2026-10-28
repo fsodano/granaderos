@@ -1,3 +1,4 @@
+import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
 import {baseMorale} from '../game/morale.js';
 import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
@@ -21,17 +22,12 @@ export function prepareFinalAssault(start,{staging,target,fieldIds=start.squad,d
   if(origin!==staging)order({type:'travel',sector:staging,queue:true,mode:'posta'});
  }
  for(let h=0;h<48&&groups.some(id=>c.squads.find(q=>q.id===id).journey);h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
+ if(daylight)c=stageAssaultDeparture(c,groups.map(id=>({id,mode:'posta'})),target,{earliestHour:6,latestHour:10,execute:request=>{order(request);return c;}});
  for(const id of groups){
   order({type:'selectSquad',id});assert.equal(c.location,staging);
   order({type:'attack',sector:target,queue:true,mode:'posta'});
  }
- for(let h=0;h<24&&!groups.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');h++)order({type:'wait',hours:1});
- if(daylight){
-  assert.ok(groups.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready'),'each actual approach must finish before daylight staging');
-  for(let h=0;h<24&&(c.hour%24<6||c.hour%24>10);h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
-  assert.ok(c.hour%24>=6&&c.hour%24<=10);
- }
- order({type:'beginAssault',sector:target});
+ c=completeQueuedAssault(c,groups,target,{execute:request=>{order(request);return c;}});
  assert.equal(c.pendingBattle.sector,target);assert.equal(c.pendingBattle.squad.length,field.length);
  for(const [id,record]of Object.entries(start.operativeState))if(!record.alive)assert.equal(c.operativeState[id].alive,false);
  return c;

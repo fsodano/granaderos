@@ -7,6 +7,7 @@ const need=(ok)=>{if(!ok)throw Error('El duelo guardado no corresponde a los com
 const numericId=id=>Number.isSafeInteger(id)&&id>=0;
 const unitId=unit=>numericId(Number(unit?.id))&&String(Number(unit.id))===String(unit.id)?Number(unit.id):null;
 const entries=record=>record?.companionGrief??[];
+const recordedActors=snapshot=>[...snapshot.units,...(snapshot.deathHistory??[]).filter(record=>record.kind==='combatant').map(record=>record.actor)];
 const sameIds=(a,b)=>a===undefined&&b===undefined||Array.isArray(a)&&Array.isArray(b)&&a.length===b.length&&a.every((id,i)=>id===b[i]);
 const receiptFor=(record,id)=>entries(record).find(entry=>entry.companionId===id);
 const capable=unit=>unit?.side==='player'&&unit.hp>=CRITICAL_HEALTH&&!isUnconscious(unit)&&!unit.unconscious&&!unit.asleep&&!unit.sleepCollapsed&&!unit.captured&&!unit.departure&&!unit.fled&&!unit.surrendered&&!unit.routed;
@@ -109,27 +110,27 @@ export function validateCompanionGriefContext(state,snapshot,roster,request=stat
  const participants=[...request.squad,...(request.garrison??[]),...(request.missionAllies??[])];
  validateGriefParticipants(snapshot);need(sameIds(snapshot.griefParticipantIds,issueGriefParticipants(participants).griefParticipantIds));
  for(const issued of request.squad){
-  const actor=snapshot.units.find(unit=>unit.side==='player'&&String(unit.id)===String(issued.id)),operative=roster.find(op=>op.id===Number(issued.id));need(actor&&operative);
+  const actor=recordedActors(snapshot).find(unit=>unit.side==='player'&&String(unit.id)===String(issued.id)),operative=roster.find(op=>op.id===Number(issued.id));need(actor&&operative);
   pinnedActor(state,operative,actor);need(sameIds(actor.griefCompanionIds,issued.griefCompanionIds));retainsReceipts(issued,actor);
-  retainsReceipts(request.resumeSnapshot?.units?.find(unit=>unit.side==='player'&&String(unit.id)===String(issued.id)),actor);
+  retainsReceipts(request.resumeSnapshot&&recordedActors(request.resumeSnapshot).find(unit=>unit.side==='player'&&String(unit.id)===String(issued.id)),actor);
   for(const receipt of entries(actor).filter(receipt=>!receiptFor(issued,receipt.companionId))){
-   const original=participants.find(unit=>unitId(unit)===receipt.companionId),dead=snapshot.units.find(unit=>unit.side==='player'&&unitId(unit)===receipt.companionId);
+   const original=participants.find(unit=>unitId(unit)===receipt.companionId),dead=recordedActors(snapshot).find(unit=>unit.side==='player'&&unitId(unit)===receipt.companionId);
    need(issued.griefCompanionIds?.includes(receipt.companionId)&&original?.hp>0&&dead?.hp===0);
   }
   // Synced receipts are already retained on the issue, but their confirmed
   // dead bodies must still be present until this deployment's actual return.
   for(const receipt of entries(actor).filter(receipt=>!receiptFor(state.operativeState[operative.id],receipt.companionId))){
-   need(issued.griefCompanionIds?.includes(receipt.companionId)&&participants.some(unit=>unitId(unit)===receipt.companionId&&unit.hp>0)&&snapshot.units.some(unit=>unit.side==='player'&&unitId(unit)===receipt.companionId&&unit.hp===0));
+   need(issued.griefCompanionIds?.includes(receipt.companionId)&&participants.some(unit=>unitId(unit)===receipt.companionId&&unit.hp>0)&&recordedActors(snapshot).some(unit=>unit.side==='player'&&unitId(unit)===receipt.companionId&&unit.hp===0));
   }
  }
- for(const actor of snapshot.units.filter(unit=>unit.side==='player'&&!request.squad.some(issued=>String(issued.id)===String(unit.id)))){
+ for(const actor of recordedActors(snapshot).filter(unit=>unit.side==='player'&&!request.squad.some(issued=>String(issued.id)===String(unit.id)))){
   if(actor.griefCompanionIds===undefined&&actor.companionGrief===undefined)continue;
   const operative=roster.find(op=>op.id===unitId(actor));need(operative&&!actor.militia);pinnedActor(state,operative,actor);
   need(entries(actor).every(receipt=>receiptFor(state.operativeState[operative.id],receipt.companionId)?.loss===receipt.loss));
  }
 }
 export function retainCompanionGrief(request,snapshot){
- for(const issued of request.squad){const actual=snapshot.units.find(unit=>unit.side==='player'&&String(unit.id)===String(issued.id));if(actual?.companionGrief!==undefined)issued.companionGrief=structuredClone(actual.companionGrief);}
+ for(const issued of request.squad){const actual=recordedActors(snapshot).find(unit=>unit.side==='player'&&String(unit.id)===String(issued.id));if(actual?.companionGrief!==undefined)issued.companionGrief=structuredClone(actual.companionGrief);}
 }
 export function returnCompanionGrief(state,id,report){
  const personal=state.operativeState[id];retainsReceipts(personal,report);

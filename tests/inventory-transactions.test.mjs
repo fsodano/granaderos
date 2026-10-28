@@ -1,3 +1,4 @@
+import { enterAssault } from './assault-fixture.mjs';
 import test from 'node:test';
 const AMMO='inventory:ammo:musket_75';
 import assert from 'node:assert/strict';
@@ -136,7 +137,7 @@ test('a valid legacy overload can be reduced by dropping a large stack and remai
 
 test('a full campaign save preserves a dropped weapon and permits exactly one later pickup', () => {
   let campaign = dispatchCampaign(initialCampaign(), {type: 'travel', sector: 'buenos_aires'});
-  campaign = dispatchCampaign(campaign, {type: 'attack', sector: 'san_nicolas'});
+  campaign = enterAssault(campaign, 'san_nicolas');
   assert.equal(campaign.lastError, null);
   const request = campaign.pendingBattle;
   let battle = createBattle(request.squad.map((unit, index) => ({...unit, x: 1 + index, y: 1})), {...request, width: 24, height: 9, tiles: tiles(), seed: 45, enemies: [{id: 'guard', x: 22, y: 7, overwatch: false}]});

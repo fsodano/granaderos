@@ -1,3 +1,4 @@
+import { isCharacterDeployed as deployed } from './infrastructure/session/campaign-session-access.js';
 import {studyRate} from './study-training.js';
 export {studyRate,studyForecast} from './study-training.js';
 import {gainFatigue} from './fatigue.js';
@@ -16,7 +17,6 @@ export const STUDY_SKILLS=TRAINING_LABELS;
 export const TOOLKIT_PRICE=120;
 export const TOOLKIT_POINTS=100;
 const need=(condition,message)=>{if(!condition)throw Error(message);};
-const deployed=(s,id)=>Boolean(s.pendingBattle?.squad?.some(u=>Number(u.id)===Number(id)));
 const firearm=op=>(WEAPONS[op.weapon]?.capacity??0)>0;
 const trainingRoles=['practice','instructor','student'];
 

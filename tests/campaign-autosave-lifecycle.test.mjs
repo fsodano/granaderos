@@ -20,6 +20,7 @@ function deployed(seed){
 async function mountAutosave(t,snapshot,{strict=false,workerAvailable=true}={}){
  const dom=new JSDOM('<!doctype html><div id="root"></div>',{url:'https://granaderos.test',pretendToBeVisual:true});
  const workers=[],jobs=[],writes=[],saved=[],errors=[],listeners={pagehide:new Set(),visibilitychange:new Set()};
+ Object.defineProperty(dom.window.navigator,'locks',{value:{request:(_name,_options,callback)=>Promise.resolve(callback({name:_name}))}});
  class Worker{
   constructor(){if(!workerAvailable)throw Error('workers unavailable');this.terminations=0;workers.push(this);}
   postMessage(job){jobs.push({worker:this,...structuredClone(job)});}
@@ -41,7 +42,7 @@ async function mountAutosave(t,snapshot,{strict=false,workerAvailable=true}={}){
  t.after(async()=>{try{await unmount();}finally{dom.window.close();for(const [key,descriptor] of previous){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}}});
  await render(snapshot);
  return {workers,jobs,writes,saved,errors,listeners,render,unmount,
-  async reply(job){await act(async()=>job.worker.onmessage({data:{id:job.id,text:encodeSave(job.campaign,job.battle)}}));},
+  async reply(job){await act(async()=>job.worker.onmessage({data:{id:job.id,sessionId:job.sessionId,revision:job.revision,requestId:job.requestId,text:encodeSave(job.campaign,job.battle)}}));},
   async fail(job,event='onmessageerror'){await act(async()=>job.worker[event]());},
   async pagehide(){await act(async()=>dom.window.dispatchEvent(new dom.window.Event('pagehide')));},
   async visibility(hidden){Object.defineProperty(dom.window.document,'hidden',{configurable:true,value:hidden});await act(async()=>dom.window.document.dispatchEvent(new dom.window.Event('visibilitychange')));},

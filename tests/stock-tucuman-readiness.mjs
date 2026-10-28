@@ -1,3 +1,4 @@
+import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor,civicStatus,contractQuote,contractRenewalQuote} from '../game/campaign.js';
 import {decodeSave,encodeSave} from '../game/save.js';
@@ -180,11 +181,9 @@ export function prepareStockTucumanReadiness(start,{report=()=>{},onCheckpoint}=
   if(field.every(id=>c.operativeState[id].energy>=100&&!c.operativeState[id].fatigue&&!c.operativeState[id].asleep))break;wait();
  }
  for(const id of field){const r=c.operativeState[id];assert.equal(r.hp,r.maxHp);assert.equal(r.bleeding,0);assert.equal(r.energy,100);assert.equal(r.fatigue,0);assert.equal(r.asleep,false);assert.ok(r.morale>=30,'The public low-morale warning must be resolved before deployment.');order({type:'assignCare',operativeId:id,assignment:'active'});}checkpoint('stock-readiness-local-ready');
+c=stageAssaultDeparture(c,groups.map(id=>({id,mode:c.routes.posta?'posta':'march'})),'tucuman',{earliestHour:8,latestHour:16,execute:request=>{order(request);return c;}});
  for(const id of groups){order({type:'selectSquad',id});order({type:'attack',sector:'tucuman',queue:true,mode:c.routes.posta?'posta':'march'});}
- for(let h=0;h<48&&!groups.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');h++)wait();
- assert.ok(groups.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready'),'Both actual approach journeys must finish.');
- for(let h=0;h<24&&(c.hour%24<8||c.hour%24>16);h++)wait();assert.ok(c.hour%24>=8&&c.hour%24<=16);
- order({type:'beginAssault',sector:'tucuman'});assert.equal(c.pendingBattle.squad.length,12);assert.deepEqual(new Set(c.pendingBattle.squad.map(op=>op.id)),new Set(field));
+c=completeQueuedAssault(c,groups,'tucuman',{execute:request=>{order(request);return c;}});assert.equal(c.pendingBattle.squad.length,12);assert.deepEqual(new Set(c.pendingBattle.squad.map(op=>op.id)),new Set(field));
  const deployed=c.pendingBattle.artillery.filter(gun=>gun.side==='player');assert.equal(deployed.length,1);for(const key of ['id','type','side','loaded','ammo'])assert.deepEqual(deployed[0][key],record[key]);
  for(const id of rear){assert.equal(c.operativeState[id].location,'cordoba');assert.equal(c.operativeState[id].assignment,'rest');assert.ok(!c.pendingBattle.squad.some(op=>op.id===id));}
  checkpoint('stock-readiness-assault');

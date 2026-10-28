@@ -21,17 +21,18 @@ const recoveredEquipmentAmmunition=(request,snapshot)=>{
 
 import {cartridgePrice} from './campaign-rules.js';
 import {weaponSpecification} from './weapon-definition.js';
-import {retainedMilitaryBodies} from './military-remains.js';
+import {retainedMilitaryBodies,removedSectorCharacters} from './military-remains.js';
 import {AMMO_TYPES,migrateAmmoGround} from './ammo-types.js';
 export function returnAmmunition(request,reports,snapshot,previous=null){
  let looted=0;
  if(snapshot){
+  const reportedActors=[...snapshot.units,...removedSectorCharacters(snapshot)];
   const enemies=request.exploration?[]:previous&&!previous.sectorCleared?previous.units.filter(u=>u.side==='enemy'):request.enemies??[];
   const bodies=retainedMilitaryBodies(previous,[...(request.squad??[]),...(request.garrison??[]),...(request.missionAllies??[]),...enemies],request.sector),counted=new Set();
   const count=(current,ammo,loaded)=>{if(!current||counted.has(current.id))return;counted.add(current.id);if(current.hp<=0||current.unconscious||current.routed)looted+=Math.max(0,ammo+loaded-(current.ammo??0)-(current.loaded??0));};
-  for(const body of bodies)count(snapshot.units.find(u=>u.id===body.id&&(u.hp===0||u.unconscious)),body.ammo??0,body.loaded??0);
-  for(const source of [...(request.garrison??[]),...(request.garrisonLootSources??[]),...(request.missionAllies??[])])count(snapshot.units.find(u=>(u.militia||u.missionAlly)&&String(u.id)===String(source.id)),source.ammo??0,source.loaded??0);
-  for(const source of request.ammunitionSources??request.enemies??[])count(snapshot.units.find(u=>u.side==='enemy'&&String(u.id)===String(source.id)),source.ammo??12,source.loaded??weaponSpecification(source)?.capacity??0);
+  for(const body of bodies)count(reportedActors.find(u=>u.id===body.id&&(u.hp===0||u.unconscious)),body.ammo??0,body.loaded??0);
+  for(const source of [...(request.garrison??[]),...(request.garrisonLootSources??[]),...(request.missionAllies??[])])count(reportedActors.find(u=>(u.militia||u.missionAlly)&&String(u.id)===String(source.id)),source.ammo??0,source.loaded??0);
+  for(const source of request.ammunitionSources??request.enemies??[])count(reportedActors.find(u=>u.side==='enemy'&&String(u.id)===String(source.id)),source.ammo??12,source.loaded??weaponSpecification(source)?.capacity??0);
   // Retained bundles were not refunded when left behind. Credit only rounds
   // removed from an earlier finite source, once per identity and family.
   const groundIds=new Set(),ground=migrateAmmoGround(snapshot.groundItems);
@@ -69,6 +70,7 @@ export function ammunitionRefund(state,request,reports,snapshot,previous=null){
 // Each prepared load has one budget across every destination and field owner.
 // Captive ammunition stays with its owner and never also credits shared stock.
 export function planReturnAmmunition(request,snapshot,entries){
+ const reportedActors=[...snapshot.units,...removedSectorCharacters(snapshot)];
  const allowance={};
  for(const issued of request.squad??[])addAmmoCounts(allowance,unitAmmunitionByType(issued));
  addAmmoCounts(allowance,request.fieldAmmunition??{});addAmmoCounts(allowance,fieldAmmunitionByType(snapshot),-1);
@@ -76,13 +78,13 @@ export function planReturnAmmunition(request,snapshot,entries){
  for(const source of sources){
   const side=source.side??((request.enemies??[]).includes(source)||(request.ammunitionSources??[]).includes(source)?'enemy':'player'),key=`${side}:${source.id}`;
   if(seen.has(key))continue;seen.add(key);
-  const actual=snapshot.units.find(u=>u.side===side&&String(u.id)===String(source.id));
+  const actual=reportedActors.find(u=>u.side===side&&String(u.id)===String(source.id));
   if(actual){addAmmoCounts(allowance,source.ammunitionByType??unitAmmunitionByType(source));addAmmoCounts(allowance,unitAmmunitionByType(actual),-1);}
  }
  for(const receipt of request.civilianWeaponRecoveries??[])addAmmoCounts(allowance,stackAmmunitionByType(receipt.gun));
  const custody={},carried={},retained={};
  for(const entry of entries){
-  const unit=snapshot.units.find(u=>u.side==='player'&&String(u.id)===entry.unitId);
+  const unit=reportedActors.find(u=>u.side==='player'&&String(u.id)===entry.unitId);
   if(!unit)throw Error('Falta el combatiente en el parte de munición.');
   // A corpse or dispersed soldier remains a physical custodian. Its rounds
   // cannot also return in another survivor's inventory.

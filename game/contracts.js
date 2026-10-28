@@ -1,3 +1,5 @@
+import { ServicePricingPolicy } from './domain/personnel/service-pricing-policy.ts';
+import { Money } from './domain/finance/money.ts';
 import {guaranteeAmount,guaranteeRecord} from './service-guarantees.js';
 import {hiringPriceMultiplier} from './economy-balance.js';
 import {contractRules} from './contract-rules.js';
@@ -21,8 +23,14 @@ export function contractQuote(state,operative,term='day'){
  const permanent=operative.service===undefined?(operative.id<100||operative.id===1000||operative.monthlyPay===0):operative.service==='permanent';
  const refusal=serviceRelationshipRefusal(state,operative),objection=serviceObjectionReason(state,operative);
  const reason=state.operativeState?.[operative.id]?.alive===false?'Un combatiente fallecido no puede volver a contratarse.':serviceEquipmentReturnReason(state,operative.id)??(!period?'Elegí uno de los plazos de contrato disponibles.':objection??refusal?.reason??null);
- const salaryPercent=100+Math.floor(xp/rules.xpStep)*rules.xpRaisePercent;
- const daily=Math.max(operative.service==='contract'?0:1,Math.ceil((operative.monthlyPay??0)*hiringPriceMultiplier(state)*salaryPercent/(rules.salaryMonthDays*100)));
+ const pricing = new ServicePricingPolicy({
+  salaryMonthDays: rules.salaryMonthDays,
+  experienceStep: rules.xpStep,
+  raisePercent: rules.xpRaisePercent,
+  priceMultiplier: hiringPriceMultiplier(state),
+ });
+ const daily = pricing.dailyPay(Money.pesos(operative.monthlyPay ?? 0), xp,
+  Money.pesos(operative.service === 'contract' ? 0 : 1)).pesos;
  const now=campaignSeconds(state),expiry=Math.max(now,contractExpiresSeconds(state.contracts?.[operative.id])??now)+(period?.hours??0)*3600;
  const price=permanent?0:daily*(period?.days??0),held=guaranteeRecord(state,state.contracts?.[operative.id]),guarantee=permanent||held?0:guaranteeAmount(operative);
  return {guarantee,total:price+guarantee,heldGuarantee:held?.state==='held'?held.amount:0,expiresAt:permanent?null:Math.floor(expiry/3600),expiresSecond:permanent?null:expiry%3600,available:!reason,reason,...(reason===refusal?.reason?{serviceRefusal:refusal}:{}),topTier,permanent,term,hours:permanent?null:period?.hours??0,price:permanent?0:daily*(period?.days??0),daily:permanent?0:daily};

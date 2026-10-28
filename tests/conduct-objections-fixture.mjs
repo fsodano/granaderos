@@ -1,3 +1,4 @@
+import {fightOnArrival} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {authoredEditorPackage} from './authored-editor-fixture.mjs';
@@ -32,7 +33,7 @@ export function preparedConductArena({oldPinned=false,hiddenWitness=false,nearby
  assert.deepEqual(campaign.recruited,[107,100]);assert.equal(campaign.resources.treasury,3080);
  // The late-day witnessed event must still precede the actual paid expiry.
  campaign=conductOrder(campaign,{type:'wait',hours:18-campaign.hour-travelLegHours('retiro','buenos_aires')});
- campaign=conductOrder(campaign,{type:'attack',sector:'buenos_aires'});const request=campaign.pendingBattle,width=48,height=16;
+ campaign=fightOnArrival(conductOrder(campaign,{type:'attack',sector:'buenos_aires'}));const request=campaign.pendingBattle,width=48,height=16;
  // Initial prepared arena only. All native people, HP, skills, finite gear,
  // terms and hostile force are retained. This is not an opening victory.
  const tiles=Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0}));

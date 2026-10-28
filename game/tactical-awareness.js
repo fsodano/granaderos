@@ -1,3 +1,4 @@
+import { FieldOfView } from './domain/perception/field-of-view.ts';
 import {fittingWeight,weaponItemWeight} from './weapon-fittings.js';
 import {SUPPLY_ITEMS} from './tactical-inventory.js';
 // Source rules: JA2 manual pp. 18–20 describes movement, facing, and an
@@ -37,16 +38,7 @@ export function directionTo(from, to, fallback = facingOf(from)) {
 // This is only the facing gate. The caller must still check range, walls,
 // smoke, illumination, and whether the observer is able to see.
 export function facingAllowsSight(observer, target, {peripheralRange = 2, halfArc = 2} = {}) {
-  point(observer); point(target);
-  finite(peripheralRange, 'Peripheral range', 0);
-  finite(halfArc, 'Half arc', 0);
-  if (halfArc > 4) throw new RangeError('Half arc cannot exceed four compass steps.');
-  const angle = facingOf(observer) * Math.PI / 4;
-  const dx = target.x - observer.x, dy = target.y - observer.y;
-  const distance = Math.hypot(dx, dy);
-  if (distance <= peripheralRange) return true;
-  const alignment = (dx * Math.sin(angle) - dy * Math.cos(angle)) / distance;
-  return alignment + 1e-12 >= Math.cos(halfArc * Math.PI / 4);
+  return new FieldOfView(facingOf(observer), peripheralRange, halfArc).includes(observer, target);
 }
 
 export function turnAPCost(unit, newFacing) {

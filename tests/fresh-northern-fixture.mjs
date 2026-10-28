@@ -1,3 +1,5 @@
+import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
+import {fightOnArrival} from './assault-fixture.mjs';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import {prepareHiredNorthernDefense,prepareNorthernOfficerRelief,completeHiredNorthernMission} from './fresh-northern-command.mjs';
 import {prepareFreshTucumanAssault} from './fresh-campaign-route.mjs';
@@ -340,18 +342,16 @@ function freshCreatedNorthernRoute({onCheckpoint,report=()=>{},coastalCheckpoint
  // from Córdoba. Book the rear clinic before the columns start their march.
  const rearPhysician=[146,...rosterFor(s).filter(op=>op.medical>=70).sort((a,b)=>b.medical-a.medical).map(op=>op.id)].find(id=>s.operativeState[id].alive&&!s.operativeState[id].captured&&!s.recruited.includes(id)&&!s.hiringArrivals.some(arrival=>arrival.operativeId===id)&&contractQuote(s,rosterFor(s).find(op=>op.id===id),'week').available);assert.ok(rearPhysician,'the rear clinic needs an available paid physician');
  const rearBooking=bookRouteHires(s,[rearPhysician],{destination:'buenos_aires',report});s=rearBooking.campaign;const rearHire=rearBooking.hires[0],rearArrival=rearHire.arrival;
+ assertRouteHireArrived(s,rearHire);
+ s=order(s,{type:'assignCare',operativeId:rearPhysician,assignment:'doctor'});
  report({event:'rearClinicBooked',id:rearPhysician,cost:rearHire.debited,bookedAt:rearArrival.bookedAt,dueAt:rearArrival.dueAt,travelHours:rearArrival.travelHours,destination:rearArrival.destination});
  report({event:'columnsLoaded',hour:s.hour,squads:s.squads,units:stagingUnits([...s.squads.find(q=>q.id===field).members,...supportIds])});
  for(const id of [field,support]){s=order(s,{type:'selectSquad',id});s=order(s,{type:'attack',sector:'cordoba',queue:true});}
- for(let hour=0;hour<24&&![field,support].every(id=>s.squads.find(q=>q.id===id)?.journey?.status==='ready');hour++)s=order(s,{type:'wait',hours:1});
- assertRouteHireArrived(s,rearHire);
- s=order(s,{type:'assignCare',operativeId:rearPhysician,assignment:'doctor'});
- report({event:'columnsArrived',hour:s.hour,squads:s.squads,units:stagingUnits([...s.squads.find(q=>q.id===field).members,...supportIds])});
- s=order(s,{type:'beginAssault',sector:'cordoba'});assert.equal(s.pendingBattle.squad.length,12);onCheckpoint?.('cordoba-ready',s,notes);
+ s=completeQueuedAssault(s,[field,support],'cordoba');assert.equal(s.pendingBattle.squad.length,12);onCheckpoint?.('cordoba-ready',s,notes);
  for(const sector of ['cordoba']){
   const support=sector==='tucuman'?prepareNorthernSupport(s,sector):null;
   if(support)s=support.campaign;
-  if(!s.pendingBattle){s=finishReloadsBeforeMarch(s);s=marchToFront(s,{type:'attack',sector});s=order(s,{type:'attack',sector});}assert.ok(s.pendingBattle);const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous=s.sectorStates[sector];
+  if(!s.pendingBattle){s=finishReloadsBeforeMarch(s);s=marchToFront(s,{type:'attack',sector});s=fightOnArrival(order(s,{type:'attack',sector}));}assert.ok(s.pendingBattle);const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous=s.sectorStates[sector];
   // Use the shared floor-aware squad controller and record every order for
   // replay. Interruptions retain their actual participants and AP budgets.
   const {battle,orders,actions}=fight(request,previous,{controller:northernClearShotOrder});assert.equal(battle.status,'victory',sector);
@@ -439,13 +439,11 @@ function freshStockNorthernRoute({onCheckpoint,report=()=>{},routeKind='created'
  for(const id of [field,support]){s=order(s,{type:'selectSquad',id});s=finishReloadsBeforeMarch(s);}
  report({event:'columnsLoaded',hour:s.hour,squads:s.squads,units:stagingUnits([...s.squads.find(q=>q.id===field).members,...supportIds])});
  for(const id of [field,support]){s=order(s,{type:'selectSquad',id});s=marchToFront(s,{type:'attack',sector:'cordoba'});s=order(s,{type:'attack',sector:'cordoba',queue:true});}
- for(let hour=0;hour<24&&![field,support].every(id=>s.squads.find(q=>q.id===id)?.journey?.status==='ready');hour++)s=order(s,{type:'wait',hours:1});
- report({event:'columnsArrived',hour:s.hour,squads:s.squads,units:stagingUnits([...s.squads.find(q=>q.id===field).members,...supportIds])});
- s=order(s,{type:'beginAssault',sector:'cordoba'});assert.equal(s.pendingBattle.squad.length,12);
+ s=completeQueuedAssault(s,[field,support],'cordoba');assert.equal(s.pendingBattle.squad.length,12);
  for(const sector of ['cordoba']){
   const support=sector==='tucuman'?prepareNorthernSupport(s,sector):null;
   if(support)s=support.campaign;
-  if(!s.pendingBattle){s=finishReloadsBeforeMarch(s);s=marchToFront(s,{type:'attack',sector});s=order(s,{type:'attack',sector});}assert.ok(s.pendingBattle);const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous=s.sectorStates[sector];
+  if(!s.pendingBattle){s=finishReloadsBeforeMarch(s);s=marchToFront(s,{type:'attack',sector});s=fightOnArrival(order(s,{type:'attack',sector}));}assert.ok(s.pendingBattle);const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous=s.sectorStates[sector];
   // Use the shared floor-aware squad controller and record every order for
   // replay. Interruptions retain their actual participants and AP budgets.
   const {battle,orders,actions}=fight(request,previous,{controller:hiredAssaultOrder});assert.equal(battle.status,'victory',sector);

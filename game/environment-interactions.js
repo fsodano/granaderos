@@ -1,3 +1,5 @@
+import { validateEnvironmentRecord } from '../campaign-format/environment-record-schema.js';
+import { takeStoredItemQuantity } from './tactical-inventory.js';
 import {validateItemStack} from './tactical-inventory.js';
 import {finiteSectorCache} from './finite-sector-caches.js';
 import {finiteEnvironmentFor} from './campaign-physical.js';
@@ -40,30 +42,8 @@ export const breachableWall = target => Boolean(target?.type === 'wall' && (targ
   ['adobe', 'wood'].includes(target.material) && (target.tacticalLevel ?? 0) === 0 && !['floor', 'roof'].includes(target.kind));
 
 export function validateEnvironment(target) {
-  if (!object(target) || !['door', 'chest', 'container'].includes(target.type)) fail('El objeto del entorno no es válido.');
-  for (const key of ['open', 'locked', 'broken']) if (target[key] !== undefined && typeof target[key] !== 'boolean') fail('El estado del cierre no es válido.');
-  for (const key of ['keyId']) if (target[key] !== undefined && !safeKey(target[key])) fail('La identificación de la llave no es válida.');
-  for (const key of ['lockDifficulty', 'lockIntegrity']) if (target[key] !== undefined) number(target[key], 0, 100, 'La resistencia del cierre no es válida.');
-  if (target.open && target.locked || target.broken && target.locked) fail('El cierre tiene estados incompatibles.');
-  if (target.trap !== undefined) {
-    const trap = target.trap;
-    if (!object(trap) || !['alarm', 'injury'].includes(trap.type)) fail('La trampa no es válida.');
-    number(trap.difficulty, 0, 100, 'La dificultad de la trampa no es válida.');
-    if (trap.armed !== undefined && typeof trap.armed !== 'boolean') fail('El estado de la trampa no es válido.');
-    if (trap.discoveredBy !== undefined && (!Array.isArray(trap.discoveredBy) || new Set(trap.discoveredBy).size !== trap.discoveredBy.length || trap.discoveredBy.some(side => !SIDES.includes(side)))) fail('El conocimiento de la trampa no es válido.');
-    for (const key of ['damage', 'breathLoss']) if (trap[key] !== undefined) number(trap[key], 0, 100, 'El efecto de la trampa no es válido.');
-  }
-  if (target.contents !== undefined) {
-    if (!Array.isArray(target.contents) || target.contents.length > 1000) fail('El contenido del recipiente no es válido.');
-    const identities = new Set();
-    for (const stack of target.contents) {
-      validateItemStack(stack);
-      if (stack.instanceId !== undefined) {
-        if (identities.has(stack.instanceId)) fail('El recipiente contiene un objeto identificado repetido.');
-        identities.add(stack.instanceId);
-      }
-    }
-  }
+  validateEnvironmentRecord(target);
+  for (const stack of target.contents ?? []) validateItemStack(stack);
   return true;
 }
 
@@ -223,8 +203,9 @@ export function extractContainerItem(target, index, count = 1) {
   if (!target.open) fail('Abrí el recipiente antes de retirar objetos.');
   if (!Number.isSafeInteger(index) || index < 0 || index >= (target.contents?.length ?? 0)) fail('Ese objeto ya no está en el recipiente.');
   if (!Number.isSafeInteger(count) || count < 1 || count > target.contents[index].count) fail('No queda esa cantidad en el recipiente.');
-  const next = structuredClone(target), stack = {...structuredClone(next.contents[index]), count};
-  next.contents[index].count -= count;
+  const next = structuredClone(target);
+  const { stack, remaining } = takeStoredItemQuantity(next.contents[index], count);
+  next.contents[index].count = remaining;
   if (!next.contents[index].count) next.contents.splice(index, 1);
   return {target: next, stack};
 }

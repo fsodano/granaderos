@@ -1,3 +1,4 @@
+import { advanceResidentWoundClock } from './npc-ai.js';
 import {hasPendingDetentionHealth,acknowledgeDetentionHealth,validateCampaignDetention} from './campaign-detention.js';
 import {civilianWeaponsFor,acknowledgeCivilianWeapons,validateCivilianWeaponRecoveries} from './civilian-weapons.js';
 import {validateMovementScene} from './dialogue-movement.js';
@@ -12,6 +13,52 @@ import {civilianIncidents,validateCivilianWounds,advanceCivilianWoundTime} from 
 import {recordCityLoyalty,cityForSector,validCityLoyaltyEvents} from './cities.js';
 import {failQuestsForDeadContact} from './quests.js';
 import {CIVILIAN_SUPPLY_FIELDS,civilianSuppliesFor,validCivilianSupplies} from './civilian-supplies.js';
+import { collectResidentSuppliesThrough } from './resident-scavenging.js';
+
+function unacknowledgedSupplyReceipts(campaign, scene, resident) {
+ const accepted = campaign.civilianState?.people?.[civilianKey(resident)]?.scavengingReceiptIds ?? [];
+ return (scene.residentScavengingReceipts ?? []).filter(receipt => receipt.characterId === String(operativeId(resident, campaign)) && !accepted.includes(receipt.id));
+}
+
+export function advanceResidentScavenging(campaign, scene, targetSecond) {
+ collectResidentSuppliesThrough(scene, targetSecond);
+ if (!campaign.civilianState) return;
+ for (const resident of scene.npcs ?? []) {
+  const id = operativeId(resident, campaign);
+  if (!campaign.operativeState?.[id] || campaign.recruited.includes(id) || !unacknowledgedSupplyReceipts(campaign, scene, resident).length) continue;
+  remember(campaign, resident, scene);
+  for (const projection of residentScenes(campaign)) {
+   for (const actor of projection.npcs ?? []) if (operativeId(actor, campaign) === id) actor.civilianSupplies = structuredClone(resident.civilianSupplies);
+  }
+ }
+}
+
+export function acknowledgeRemovedResidents(campaign, snapshot) {
+ for (const death of snapshot.deathHistory ?? []) {
+  if (death.kind !== 'resident') continue;
+  const actor = death.actor;
+  const record = campaign.civilianState?.people?.[civilianKey(actor)];
+  if (!record || record.corpseRemovedAtSecond !== undefined) continue;
+  need(record.health.hp === 0, 'No se puede retirar el cuerpo de un habitante vivo.');
+  record.corpseRemovedAtSecond = death.corpse.removedAtSecond;
+  const id = operativeId(actor, campaign);
+  if (campaign.operativeState?.[id]) {
+   for (const field of CIVILIAN_SUPPLY_FIELDS) campaign.operativeState[id][field] = actor.civilianSupplies?.[field] ?? 0;
+   if (campaign.loadouts?.[id]) campaign.loadouts[id] = { ...campaign.loadouts[id], weapon: 0, blade: 0 };
+   campaign.operativeState[id].carriedLoaded = 0;
+   delete campaign.operativeState[id].carriedReloadProgress;
+  }
+ }
+}
+
+function residentScenes(campaign) {
+ return [...Object.values(campaign.sectorStates ?? {}), ...Object.values(campaign.sceneStates ?? {}), campaign.pendingBattle, ...(campaign.suspendedSectorSessions ?? []).flatMap(session => [session.request, session.snapshot])].filter(Boolean);
+}
+
+function reportedResidents(snapshot, expected) {
+ const historical = (snapshot.deathHistory ?? []).filter(death => death.kind === 'resident' && expected.some(resident => resident.id === death.actor.id)).map(death => death.actor);
+ return [...(snapshot.npcs ?? []), ...historical].filter(resident => resident.detention === undefined);
+}
 
 const need=(ok,message='El estado de los habitantes no coincide con la campaña.')=>{if(!ok)throw Error(message);};
 const fields=['civilianHealthVersion','maxHp','hp','energy','unconscious','civilianWoundVersion','civilianWoundSeconds','bleeding','bandaged','bleedSource','civilianHarm','civilianFirstAid'];
@@ -73,7 +120,7 @@ export function campaignCivilian(s,n,{fromService=false}={}){
 }
 export function civilianDiedHere(s,n,sector,sceneId=null){
  const record=s.civilianState?.people[civilianKey(n)];
- return Boolean(record?.health.hp===0&&!record.inService&&record.sector===sector&&record.sceneId===sceneId&&record.npcId===n.id);
+ return Boolean(record?.health.hp===0&&record.corpseRemovedAtSecond===undefined&&!record.inService&&record.sector===sector&&record.sceneId===sceneId&&record.npcId===n.id);
 }
 function applyDeath(s,n,record,atHour=s.hour){
  const death=civilianIncidents(n).find(e=>e.kind==='death');
@@ -92,7 +139,9 @@ function applyDeath(s,n,record,atHour=s.hour){
 }
 function remember(s,n,scene,deathSecond){
  const key=civilianKey(n),before=s.civilianState.people[key];
- const record={npcId:n.id,sector:scene.sectorId??scene.sector,sceneId:scene.sceneId??null,health:physical(n)};
+ const removedAt=n.corpseRemovedAtSecond??before?.corpseRemovedAtSecond;
+ const receiptIds = [...new Set([...(before?.scavengingReceiptIds ?? []), ...unacknowledgedSupplyReceipts(s, scene, n).map(receipt => receipt.id)])];
+ const record={npcId:n.id,sector:scene.sectorId??scene.sector,sceneId:scene.sceneId??null,health:physical(n),...(removedAt===undefined?{}:{corpseRemovedAtSecond:removedAt}),...(receiptIds.length ? {scavengingReceiptIds:receiptIds} : {})};
  s.civilianState.people[key]=record;
  const id=operativeId(n,s);
  if(id!==undefined&&!s.recruited.includes(id)){
@@ -116,7 +165,7 @@ function civilianReport(s,snapshot){
  const request=s.pendingBattle;
  need(request&&snapshot.sectorId===request.sector&&(snapshot.sceneId??null)===(request.sceneId??null)&&(!snapshot.battleId||snapshot.battleId===request.id));
  validateMovementScene(s,snapshot);
- const expected=request.npcs??[],residents=(snapshot.npcs??[]).filter(n=>n.detention===undefined),seen=new Set(),plans=[];
+ const expected=request.npcs??[],residents=reportedResidents(snapshot,expected),seen=new Set(),plans=[];
  need(residents.length===expected.length,'Faltan habitantes en el parte del sector.');
  hasPendingDetentionHealth(s,snapshot);
  for(const n of residents){
@@ -127,9 +176,10 @@ function civilianReport(s,snapshot){
   const previous=campaignCivilian(s,prior);compareHistory(previous,n);
   // Validate the report before changing campaign custody or health.
   const carried=n.civilianSupplies??previous.civilianSupplies;
-  need(validCivilianSupplies(carried)&&CIVILIAN_SUPPLY_FIELDS.every(k=>carried[k]<=previous.civilianSupplies[k]),'Los suministros del habitante aumentaron sin una entrega.');
+  const collected = unacknowledgedSupplyReceipts(s, snapshot, n);
+  need(validCivilianSupplies(carried)&&CIVILIAN_SUPPLY_FIELDS.every(k=>carried[k]<=previous.civilianSupplies[k]+collected.filter(receipt=>receipt.kind===k).length),'Los suministros del habitante aumentaron sin una entrega.');
   for(const e of civilianIncidents(n).slice(civilianIncidents(previous).length))if(e.side!=='unknown'){
-   const actor=snapshot.units.find(u=>String(u.id)===e.attackerId),source=previous.bleedSource;
+   const actor=[...snapshot.units,...(snapshot.deathHistory??[]).filter(record=>record.kind==='combatant').map(record=>record.actor)].find(u=>String(u.id)===e.attackerId),source=previous.bleedSource;
    need(actor&&actor.side===e.side&&Boolean(actor.militia)===e.militia||e.kind==='death'&&source&&['attackerId','side','militia','intentional'].every(k=>source[k]===e[k]),'El responsable de la nueva herida no está en el sector.');
   }
   plans.push({n,previous,carried});
@@ -149,7 +199,8 @@ export function acknowledgeCivilians(s,snapshot){
   n.civilianSupplies??=structuredClone(carried);
   remember(s,n,snapshot);
  }
- for(const ally of snapshot.units.filter(u=>u.missionAlly)){
+ acknowledgeRemovedResidents(s,snapshot);
+ for(const ally of [...snapshot.units,...(snapshot.deathHistory??[]).filter(record=>record.kind==='combatant').map(record=>record.actor)].filter(u=>u.missionAlly)){
   const id=Number(ally.id);if(!request.missionAllies?.some(u=>Number(u.id)===id))continue;
   need(s.operativeState[id],'Falta la hoja de servicio del aliado.');
   Object.assign(s.operativeState[id],{hp:Math.ceil(ally.hp),alive:ally.hp>0,energy:ally.energy,bleeding:ally.bleeding??0,bandaged:ally.bandaged??0});
@@ -164,12 +215,12 @@ function refreshCivilianScenes(s){
  const request=s.pendingBattle;
  // A retained tactical scene is only a cache. Keep its physical state in step
  // with the single identity, including the currently loaded request.
- for(const scene of [...Object.values(s.sectorStates),...Object.values(s.sceneStates),...(request?[request]:[])])for(const n of scene.npcs??[]){
+ for(const scene of residentScenes(s))for(const n of scene.npcs??[]){
   if(n.detention!==undefined)continue;
   const record=s.civilianState.people[civilianKey(n)];
   if((record||scenarioFor(s).missionNPCs.some(original=>original.id===n.id))&&!s.recruited.includes(operativeId(n,s))){const actor=campaignCivilian(s,n),current=physical(actor);if(!same(physical(n),current)){for(const k of fields)delete n[k];Object.assign(n,current);}n.civilianSupplies=actor.civilianSupplies;n.civilianWeapons=actor.civilianWeapons;}
  }
- for(const scene of [...Object.values(s.sectorStates),...Object.values(s.sceneStates),...(request?[request]:[])])scene.npcs=(scene.npcs??[]).filter(n=>n.detention!==undefined||n.hp>0||civilianDiedHere(s,n,scene.sectorId??scene.sector,scene.sceneId??null));
+ for(const scene of residentScenes(s))scene.npcs=(scene.npcs??[]).filter(n=>n.detention!==undefined||n.hp>0||civilianDiedHere(s,n,scene.sectorId??scene.sector,scene.sceneId??null));
 }
 // Start authored wounds when a living resident actually enters the world.
 // Bulletin candidates and dormant successors have no physical clock here.
@@ -217,6 +268,7 @@ export function advanceUnloadedCivilians(s,seconds){
   const original=encounterDefinitions(s).find(n=>n.id===record.npcId)??scenarioFor(s).missionNPCs.find(n=>n.id===record.npcId);
   need(original,'El habitante no pertenece a este mundo.');
   if(s.recruited.includes(operativeId(original,s)))continue;
+  if(residentScenes(s).some(scene => scene !== s.pendingBattle && (scene.sectorId ?? scene.sector) === record.sector && (scene.sceneId ?? null) === record.sceneId && scene.npcs?.some(resident => resident.id === record.npcId)))continue;
   const n={...original,...structuredClone(record.health)};
   const deathSecond=start+Math.ceil(n.hp/n.bleeding)*6-(n.civilianWoundSeconds??0);
   advanceCivilianWoundTime({},n,seconds);
@@ -224,6 +276,21 @@ export function advanceUnloadedCivilians(s,seconds){
   if(n.hp===0){s.log.unshift({hour:Math.floor(deathSecond/3600),text:`${n.name} murió por sus heridas mientras la escuadra estaba fuera del sector.`});s.log=s.log.slice(0,80);}
  }
  if(changed)refreshCivilianScenes(s);
+}
+
+export function acknowledgeResidentConditions(campaign, scene, atSecond) {
+ if (!campaign.civilianState) return;
+ for (const resident of scene.npcs ?? []) {
+  if (resident.detention || campaign.recruited.includes(operativeId(resident, campaign))) continue;
+  const canonical = campaignCivilian(campaign, resident);
+  if (!same(physical(resident), physical(canonical))) remember(campaign, resident, scene, resident.hp === 0 ? resident.corpse?.diedAtSecond ?? atSecond : undefined);
+ }
+}
+
+export function advanceResidentConditions(campaign, scene, seconds, atSecond) {
+ need(Number.isSafeInteger(seconds) && seconds >= 0 && Number.isSafeInteger(atSecond) && atSecond >= seconds, 'El tiempo de los habitantes no es válido.');
+ advanceResidentWoundClock(scene, atSecond, { initialSecond: atSecond - seconds });
+ acknowledgeResidentConditions(campaign, scene, atSecond);
 }
 
 // The service sheet is authoritative until departure. Resume a previously
@@ -249,11 +316,11 @@ export function resumeCivilianServiceReturns(s){
 export function transferCivilian(s,n){
  const key=civilianKey(n);
  if(s.civilianState?.people[key])s.civilianState.people[key].inService=true;
- for(const scene of [...Object.values(s.sectorStates),...Object.values(s.sceneStates),s.pendingBattle])if(scene)
+ for(const scene of residentScenes(s))
   scene.npcs=(scene.npcs??[]).filter(v=>civilianKey(v)!==key);
 }
 export function validateCivilianScene(s,scene,{active=false}={}){
- if(active)need(scene.npcs.filter(n=>n.detention===undefined).length===(s.pendingBattle.npcs??[]).length&&(s.pendingBattle.npcs??[]).every(n=>scene.npcs.some(v=>v.id===n.id)),'Faltan habitantes en el sector guardado.');
+ if(active){const residents=reportedResidents(scene,s.pendingBattle.npcs??[]);need(residents.length===(s.pendingBattle.npcs??[]).length&&(s.pendingBattle.npcs??[]).every(n=>residents.some(v=>v.id===n.id)),'Faltan habitantes en el sector guardado.');}
  for(const n of scene.npcs??[]){
   if(n.detention!==undefined)continue;
   definition(s,n);validateCivilianWounds(n,scene);
@@ -274,11 +341,13 @@ export function validateCampaignCivilians(s){
  need(Object.keys(ledger).length===2&&Object.keys(ledger.people).length<=encounterDefinitions(s).length+scenarioFor(s).missionNPCs.length);
  for(const [key,r]of Object.entries(ledger.people)){
   const n=definition(s,{id:r.npcId,operativeId:encounterDefinitions(s).find(n=>n.id===r.npcId)?.operativeId});
-  need(civilianKey(n)===key&&Object.keys(r).every(k=>['npcId','sector','sceneId','health','inService'].includes(k)));
+  need(civilianKey(n)===key&&Object.keys(r).every(k=>['npcId','sector','sceneId','health','inService','corpseRemovedAtSecond','scavengingReceiptIds'].includes(k)));
+  if(r.corpseRemovedAtSecond!==undefined)need(r.health.hp===0&&Number.isSafeInteger(r.corpseRemovedAtSecond)&&r.corpseRemovedAtSecond>=0&&r.corpseRemovedAtSecond<=s.hour*3600+(s.secondOfHour??0));
   need((validWorldLocation(r.sector,s)||isCampaignScene(s,r.sector))&&(r.sceneId===null||isCampaignScene(s,r.sceneId)&&sceneAnchorFor(s,r.sceneId)===r.sector)&&r.health&&Object.keys(r.health).every(k=>fields.includes(k)));
   validateCivilianWounds(r.health);
   const id=operativeId(n,s);
   need(r.inService===undefined||r.inService===true&&id!==undefined);
+  if (r.scavengingReceiptIds !== undefined) need(Array.isArray(r.scavengingReceiptIds) && new Set(r.scavengingReceiptIds).size === r.scavengingReceiptIds.length && r.scavengingReceiptIds.every(id => typeof id === 'string' && id.startsWith('scavenging:')));
   need(!r.inService||r.health.hp>0,'Un habitante muerto no puede trasladarse al servicio.');
   if(id!==undefined&&!r.inService&&!s.recruited.includes(id))need(s.operativeState[id].hp===r.health.hp&&s.operativeState[id].alive===(r.health.hp>0));
  }

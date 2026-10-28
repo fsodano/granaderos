@@ -1,3 +1,4 @@
+import {fightOnArrival} from './assault-fixture.mjs';
 import {withStoredGear} from './commerce-gear-fixture.mjs';
 // Established northern front and scripted capture fixture. Paid rescue hiring
 // and the subsequent tactical approach are real; this is not a fresh campaign.
@@ -20,7 +21,7 @@ function captured({custodySupplies=2}={}){
  for(const id of ['cordoba','tucuman','salta','jujuy'])s.sectors[id].owner='patriot';s.location='jujuy';s.squad=[112,123,115,110,114,113];s.squads[0].members=[...s.squad];s.squads[0].location=s.location;
  // The already-owned reserve gun remains outside the captured patrol. Issue it
  // to the relief force through the normal deployment selection.
- s=order(s,{type:'configureArtillery',types:['swivel','bronze4']});return order(s,{type:'attack',sector:'humahuaca'});
+ s=order(s,{type:'configureArtillery',types:['swivel','bronze4']});return fightOnArrival(order(s,{type:'attack',sector:'humahuaca'}));
 }
 function start(options){const next=prepareCampaignBattle(captured(options));assert.equal(next.error,null,next.error);return next;}
 function sync(campaign,battle){const next=syncBattleTime(campaign,battle);assert.equal(next.error,null,next.error);return next;}

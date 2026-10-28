@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor,civicStatus} from '../game/campaign.js';
 import {contractQuote,contractExpiresSeconds} from '../game/contracts.js';
-import {hiringArrivalReason,hireArrivalOrder,hireArrivalDueSeconds} from '../game/hiring-arrivals.js';
+import {hiringArrivalReason,hireArrivalDueSeconds} from '../game/hiring-arrivals.js';
+import {immediateRecruitmentExpectation} from './immediate-recruitment-fixture.mjs';
 import {operativeLocation,operativeInTransit,canReassignOperative} from '../game/squads.js';
 import {northernReliefFitLocal,northernReliefReplacements,hireNorthernReliefReplacement} from './northern-relief-service.mjs';
 
@@ -36,13 +37,12 @@ export function assertStockNorthernRear(c,rear){
  }
 }
 
-// Planning and booking use the same remaining arrival window and current
-// joint cash budget. A separately affordable offer cannot fund another hire.
+// Recruitment quotes share one current cash budget for the remaining care period.
 function affordableReliefHires(c,remainingCareHours,missing){
  assert.ok(Number.isSafeInteger(remainingCareHours)&&remainingCareHours>=0&&remainingCareHours<=48);
  if(!missing||hiringArrivalReason(c,destination))return [];
  const candidates=northernReliefReplacements(c).filter(op=>{
-  const r=c.operativeState[op.id],quote=contractQuote(c,op,'week'),arrival=hireArrivalOrder(c,op,'week',quote,destination);
+  const r=c.operativeState[op.id],quote=contractQuote(c,op,'week'),arrival=immediateRecruitmentExpectation(c,op,'week',quote,destination);
   return r.hp===r.maxHp&&!r.bleeding&&r.morale>=30&&!r.asleep&&r.energy>10&&civicStatus(c,op.id).available&&quote.price>0&&arrival.travelHours<=remainingCareHours;
  });
  let availableCash=c.resources.treasury;const selected=[];
@@ -82,9 +82,8 @@ export function attachStockNorthernSupport(start,{rear,report=()=>{}}={}){
  return {campaign:c,ids,orders,rear};
 }
 
-// Use only the unused part of the existing48 hourly-care requests. Booking
-// never advances time. The caller must earn each arrival and then recheck the
-// original eight-person field before any finite equipment or assault orders.
+// Recruitment is immediate. The caller checks the actual eight-person field
+// before finite equipment work or assault departure.
 export function bookStockNorthernReliefHires(start,{remainingCareHours,report=()=>{}}={}){
  assert.ok(Number.isSafeInteger(remainingCareHours)&&remainingCareHours>=0&&remainingCareHours<=48);
  let c=start;const hires=[],missing=Math.max(0,8-northernReliefFitLocal(c).length),now=clock(c);
@@ -93,7 +92,7 @@ export function bookStockNorthernReliefHires(start,{remainingCareHours,report=()
  const selected=affordableReliefHires(c,remainingCareHours,missing);
  assert.ok(!missing||selected.length===missing,'Eight fit northern soldiers need actual affordable hires arriving inside the remaining48-hour care budget.');
  for(const op of selected.slice(0,missing)){
-  const quote=contractQuote(c,op,'week'),arrival=hireArrivalOrder(c,op,'week',quote,destination),cash=c.resources.treasury;
+  const quote=contractQuote(c,op,'week'),arrival=immediateRecruitmentExpectation(c,op,'week',quote,destination),cash=c.resources.treasury;
   c=hireNorthernReliefReplacement(c,op.id,{report});assert.equal(clock(c),now);assert.equal(c.resources.treasury,cash-quote.total);
   assert.ok(hireArrivalDueSeconds(arrival)<=now+remainingCareHours*3600);
   hires.push({id:op.id,quote,arrival,deadlineSeconds:now+remainingCareHours*3600,treasuryBefore:cash,treasury:c.resources.treasury});
@@ -105,7 +104,7 @@ export function assertStockNorthernHiresArrived(c,hires){
  for(const {id,quote,arrival,deadlineSeconds}of hires){
   assert.ok(northernReliefFitLocal(c).includes(id),'A booked soldier must actually arrive fit before joining the northern field.');
   const contract=c.contracts[id],actualStart=contract.started*3600+(contract.startedSecond??0);assert.equal(contract.paid,quote.price);
-  assert.ok(actualStart>=hireArrivalDueSeconds(arrival)&&actualStart<=deadlineSeconds,'Actual Native service starts after its scheduled due and inside the original booking deadline.');
+  assert.equal(actualStart,hireArrivalDueSeconds(arrival),'Service starts at the accepted recruitment instant.');assert.ok(actualStart<=deadlineSeconds);
   assert.equal(contractExpiresSeconds(contract),actualStart+quote.hours*3600);
  }
 }

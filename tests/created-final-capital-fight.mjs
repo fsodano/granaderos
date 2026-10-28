@@ -1,3 +1,4 @@
+import {fightOnArrival} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
 import {actBattle,endTurn,interruptAvailable} from '../game/tactical.js';
 import {enterSector} from '../game/world.js';
@@ -31,7 +32,7 @@ function fight(request,sectorState,{controller=combatOrder,deploy,observe=()=>{}
 
 export function fightCreatedFinalCapital(start,sector,{report=()=>{},expectedOutcome='victory',controller,deploy,observe=()=>{},maxElapsedSeconds=Infinity}={}){
  const before=structuredClone(start),prepared=start.pendingBattle?structuredClone(start):finishReloadsBeforeMarch(start,{report});
- const preparationSeconds=(prepared.hour-start.hour)*3600+(prepared.secondOfHour??0)-(start.secondOfHour??0),campaign=start.pendingBattle?prepared:dispatchCampaign(prepared,{type:'attack',sector});assert.equal(campaign.lastError,null,campaign.lastError);
+ const preparationSeconds=(prepared.hour-start.hour)*3600+(prepared.secondOfHour??0)-(start.secondOfHour??0),campaign=start.pendingBattle?prepared:fightOnArrival(dispatchCampaign(prepared,{type:'attack',sector}));assert.equal(campaign.lastError,null,campaign.lastError);
  assert.deepEqual(start,before);assert.ok(campaign.pendingBattle,'the real march produces a tactical deployment');
  const request=campaign.pendingBattle;assert.equal(request.sector,sector);
  report({event:'battleStarted',sector,hour:campaign.hour,units:request.squad.map(u=>u.id)});

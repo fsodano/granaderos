@@ -1,3 +1,4 @@
+import {fightOnArrivalOrder} from './assault-fixture.mjs';
 import {ROUTE_STARTING_TREASURY} from './funded-route-fixture.mjs';
 import {sameSurface,spacePoint} from '../game/tactical-space.js';
 import {secureArea} from './secured-area-fixture.mjs';
@@ -125,7 +126,7 @@ export function runOpeningCampaign({report=()=>{},onCheckpoint=()=>{}}={}){
   }
   // San Lorenzo is local. Wait through darkness before starting its assault.
   if(sector==='san_lorenzo'&&(c.hour%24<6||c.hour%24>=20))waitFor((30-c.hour%24)%24);
-  order({type:'attack',sector});const request=c.pendingBattle;
+  order({type:'attack',sector});order(fightOnArrivalOrder(c));const request=c.pendingBattle;
   const entry=enterSector(request);
   assert.equal(entry.startSeconds,c.hour*3600+(c.secondOfHour??0),'combat starts at the actual arrival time');
   assert.equal(entry.night,false,'ordinary departure and wait orders schedule daylight assaults');

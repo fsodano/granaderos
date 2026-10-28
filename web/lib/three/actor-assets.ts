@@ -13,7 +13,7 @@ export type LoadedActor={manifest:CharacterManifest;appearance:AppearanceSpec;bo
 export class ActorAssetLibrary {
   private loader=new GLTFLoader();private loads=new Map<string,Promise<GLTF>>();private manifestPromise:Promise<CharacterManifest>|null=null;private released=false;
   constructor(private assetUrl:(path:string)=>string,private manifestPath='/models/characters/manifest.json'){}
-  manifest(){return this.manifestPromise??=fetch(this.assetUrl(this.manifestPath)).then(response=>{if(!response.ok)throw Error(`Character manifest: ${response.status}`);return response.json();});}
+  manifest():Promise<CharacterManifest>{return this.manifestPromise??=fetch(this.assetUrl(this.manifestPath)).then(response=>{if(!response.ok)throw Error(`Character manifest: ${response.status}`);return response.json();});}
   private load(url:string){
     let load=this.loads.get(url);if(!load){load=this.loader.loadAsync(this.assetUrl(url)).then(gltf=>{if(this.released)this.disposeGltf(gltf);return gltf;});this.loads.set(url,load);}return load;
   }

@@ -14,7 +14,7 @@ import {syncBattleTime} from '../game/time.js';
 import {autoBandageBattle} from '../game/auto-bandage.js';
 import {previewStrategicRoute} from '../game/strategic-route.js';
 import {canReassignOperative,operativeLocation,operativeInTransit} from '../game/squads.js';
-import {hiringTravelHours,hiringArrivalReason} from '../game/hiring-arrivals.js';
+import {hiringArrivalReason} from '../game/hiring-arrivals.js';
 import {bookRouteHires} from './paid-route-hiring.mjs';
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
@@ -53,7 +53,7 @@ export function prepareRescueCordobaRear(start,{courier,report=()=>{}}={}){
  const crew=()=>people().filter(op=>local(op.id)&&fit(op.id)&&op.medical<60&&c.operativeState[op.id].morale>=30).sort((a,b)=>a.marksmanship-b.marksmanship||a.id-b.id);
  const hire=predicate=>{
   assert.ok(rear().length<5,'No legal rear vacancy remains.');assert.equal(hiringArrivalReason(c,sector),null);
-  const candidate=people().map(op=>({op,r:c.operativeState[op.id],quote:contractQuote(c,op,'day')})).filter(({op,r,quote})=>!c.recruited.includes(op.id)&&!c.contracts[op.id]&&!c.hiringArrivals.some(row=>row.operativeId===op.id)&&r.alive&&!r.captured&&!r.serviceEquipmentReturn&&fit(op.id)&&civicStatus(c,op.id).available&&hiringTravelHours(c,op.id)===0&&quote.available&&!quote.permanent&&quote.total<=c.resources.treasury&&predicate(op,r))
+  const candidate=people().map(op=>({op,r:c.operativeState[op.id],quote:contractQuote(c,op,'day')})).filter(({op,r,quote})=>!c.recruited.includes(op.id)&&!c.contracts[op.id]&&!c.hiringArrivals.some(row=>row.operativeId===op.id)&&r.alive&&!r.captured&&!r.serviceEquipmentReturn&&fit(op.id)&&civicStatus(c,op.id).available&&quote.available&&!quote.permanent&&quote.total<=c.resources.treasury&&predicate(op,r))
    .sort((a,b)=>a.quote.total-b.quote.total||a.op.marksmanship-b.op.marksmanship||a.op.id-b.op.id)[0];
   assert.ok(candidate,'The rear needs an actually quoted affordable immediate local hire.');
   const booked=bookRouteHires(c,[candidate.op.id],{term:'day',destination:sector,report});c=booked.campaign;hires.push(...booked.hires);check();

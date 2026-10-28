@@ -1,3 +1,4 @@
+import { isCharacterDeployed as deployed } from './infrastructure/session/campaign-session-access.js';
 import {CRITICAL_HEALTH,isUnconscious} from './actor-condition.js';
 import {contractExpiresSeconds} from './contracts.js';
 import {operativeLocation} from './squads.js';
@@ -6,7 +7,6 @@ import {operativeLocation} from './squads.js';
 export const STRATEGIC_ISOLATION_LOSS=1;
 export const STRATEGIC_ISOLATION_LIMIT=20;
 const now=s=>s.hour*3600+(s.secondOfHour??0);
-const deployed=(s,id)=>s.pendingBattle?.squad?.some(unit=>Number(unit.id)===id);
 const capable=(s,id)=>{
  const r=s.operativeState?.[id],contract=s.contracts?.[id],expiry=contractExpiresSeconds(contract);
  return Boolean(s.recruited?.includes(id)&&contract&&(expiry===null||expiry>now(s))&&r?.alive&&

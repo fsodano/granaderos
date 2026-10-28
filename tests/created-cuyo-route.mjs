@@ -1,3 +1,4 @@
+import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
 import {encounterDefinitions} from '../game/encounters.js';
 import {supplyRouteDressings,attemptRouteDressings} from './route-dressings.mjs';
 import {restRouteStableLocal} from './route-stable-local-rest.mjs';
@@ -867,11 +868,11 @@ export function finishStockMendozaAssault(start,fieldIds,selections,{report=()=>
  for(let h=0;h<72&&(p.campaign.hour%24!==6||field.some(id=>{const r=p.campaign.operativeState[id];return r.fatigue||r.energy<100||r.asleep;}));h++)p.order({type:'wait',hours:1});
  assert.equal(p.campaign.hour%24,6);for(const id of field){const r=p.campaign.operativeState[id];assert.equal(r.fatigue,0);assert.equal(r.energy,100);assert.equal(r.asleep,false);p.order({type:'assignCare',operativeId:id,assignment:'active'});}
  p.order({type:'configureArtillery',types:selections});const groups=[];
- for(let offset=0;offset<field.length;offset+=6){p.order({type:'createSquad',name:'Columna final de Cuyo',ids:field.slice(offset,offset+6),sector:'cordoba'});groups.push(p.campaign.activeSquadId);p.order({type:'attack',sector:'mendoza',queue:true,mode:'posta'});}
- for(let h=0;h<24&&!groups.every(id=>p.campaign.squads.find(q=>q.id===id).journey?.status==='ready');h++)p.order({type:'wait',hours:1});
- assert.ok(groups.every(id=>p.campaign.squads.find(q=>q.id===id).journey?.status==='ready'));
- for(let h=0;h<24&&(p.campaign.hour%24<6||p.campaign.hour%24>10);h++)p.order({type:'wait',hours:1});
- p.renew();const c=dispatchCampaign(p.campaign,{type:'beginAssault',sector:'mendoza'});assert.equal(c.lastError,null,c.lastError);assert.equal(c.pendingBattle.sector,'mendoza');
+ for(let offset=0;offset<field.length;offset+=6){p.order({type:'createSquad',name:'Columna final de Cuyo',ids:field.slice(offset,offset+6),sector:'cordoba'});groups.push(p.campaign.activeSquadId);}
+ stageAssaultDeparture(p.campaign,groups.map(id=>({id,mode:'posta'})),'mendoza',{execute:request=>{p.order(request);return p.campaign;}});
+ p.renew();for(const id of groups){p.order({type:'selectSquad',id});p.order({type:'attack',sector:'mendoza',queue:true,mode:'posta'});}
+ const c=completeQueuedAssault(p.campaign,groups,'mendoza',{execute:request=>{p.order(request);return p.campaign;}});
+ assert.equal(c.pendingBattle.sector,'mendoza');
  assert.deepEqual(c.pendingBattle.squad.map(u=>u.id).sort((a,b)=>a-b),[...field].sort((a,b)=>a-b));
  for(const [id,r]of Object.entries(start.operativeState))if(!r.alive)assert.equal(c.operativeState[id].alive,false);
  report({event:'stockMendozaAssaultPrepared',field,selections,hour:c.hour,secondOfHour:c.secondOfHour??0,treasury:c.resources.treasury,campaign:structuredClone(c)});return c;

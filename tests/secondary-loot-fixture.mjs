@@ -1,3 +1,4 @@
+import {fightOnArrival} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
 import {defaultContentPackage} from '../game/content-package.js';
 import {initialCampaign} from '../game/campaign.js';
@@ -10,7 +11,7 @@ export function secondaryLootField({companion=false,sameFirearm=false}={}){
  const own=d.weapons.find(w=>w.id==='blade-1812');Object.assign(own,{damage:100,ap:8,reach:3});d.oppositionBlades={officer:'blade-1809',line:'blade-1809',veteran:'blade-1809'};
  const c=d.characters.find(c=>c.id==='person-110');c.arrivalHours=0;c.blade='blade-1812';
  if(companion){const second=d.characters.find(c=>c.id==='person-111');second.arrivalHours=0;if(sameFirearm)second.weapon=c.weapon;}
- let s=order(initialCampaign(45,d),{type:'recruitCivic',id:110,term:'week'});if(companion)s=order(s,{type:'recruitCivic',id:111,term:'week'});s=order(s,{type:'attack',sector:'buenos_aires'});const request=s.pendingBattle,field=enterSector(request),enemies=field.units.filter(u=>u.side==='enemy');
+ let s=order(initialCampaign(45,d),{type:'recruitCivic',id:110,term:'week'});if(companion)s=order(s,{type:'recruitCivic',id:111,term:'week'});s=fightOnArrival(order(s,{type:'attack',sector:'buenos_aires'}));const request=s.pendingBattle,field=enterSector(request),enemies=field.units.filter(u=>u.side==='enemy');
  // Actual paid attack and issued troop equipment, in declared compact geometry.
  // Keep one distant opponent so looting spends combat AP after the real kill.
  const tiles=Array.from({length:400},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',blocked:false,cover:0}));

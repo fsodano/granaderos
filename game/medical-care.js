@@ -1,3 +1,4 @@
+import { isCharacterDeployed as deployed } from './infrastructure/session/campaign-session-access.js';
 import {careRules,DEFAULT_CARE_RULES,strategicBleedingPercent} from './campaign-care-rules.js';
 import {restRecovery,recoverAtRest} from './strategic-rest.js';
 import {worldOwner} from './world-cells.js';
@@ -18,7 +19,6 @@ export const MEDICAL_KIT_PRICE=MEDICAL_SUPPLY_PRICE;
 export const careAssignmentBusy=value=>value!=='active'&&Object.hasOwn(ALL_ASSIGNMENTS,value);
 export const REST_HEALING_HOURS=6;
 const requireThat=(value,message)=>{if(!value)throw Error(message);};
-const deployed=(s,id)=>Boolean(s.pendingBattle?.squad?.some(u=>Number(u.id)===Number(id)));
 const training=(s,id)=>Boolean(s.militiaTraining?.some(t=>t.trainerId===id));
 const safe=(s,id)=>worldOwner(s,operativeLocation(s,id))==='patriot'&&(s.pendingBattle?.sector!==operativeLocation(s,id)||Boolean(s.pendingBattle?.sceneId));
 export const doctorRate=(op,s)=>careRules(s).baseHealing+Math.floor((op.medical??0)/careRules(s).skillStep);

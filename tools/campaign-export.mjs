@@ -57,6 +57,9 @@ export async function stageCampaigns(root,destination){
   if(entry.isDirectory())await rm(join(target,entry.name),{recursive:true,force:true});
   else if(entry.isSymbolicLink())throw Error(`Campaign export cannot contain a symbolic link: ${join(target,entry.name)}`);
  }
+ for(const entry of await readdir(join(root,'campaigns'),{withFileTypes:true})){
+  if(entry.isFile()&&entry.name.endsWith('.json'))await copyFile(join(root,'campaigns',entry.name),join(target,entry.name));
+ }
  for(const entry of registry.campaigns){
   const source=join(root,'campaigns',entry.id);await verifyCampaignFolder(source);
   await stageFolder(source,join(target,entry.id));

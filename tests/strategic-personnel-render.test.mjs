@@ -22,7 +22,7 @@ const {default:Recruitment}=await import('../web/app/Recruitment.tsx');
 const noop=()=>{},order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const unchanged=s=>({...s,lastError:null});
 
-test('recruitment omits arrival estimates for captive and fallen recruits and retains the available hiring card',()=>{
+test('recruitment shows immediate availability only for eligible candidates',()=>{
  const state=initialCampaign(),id=100;state.resources.treasury=100000;
  // Declared captivity isolates the card from price, route and service refusals.
  Object.assign(state.operativeState[id],{captured:true,location:'uspallata'});
@@ -32,16 +32,16 @@ test('recruitment omits arrival estimates for captive and fallen recruits and re
  assert.equal(button.disabled,true);assert.equal(button.textContent,'En cautiverio');
  const reason=doc.getElementById(button.getAttribute('aria-describedby'));
  assert.ok(card.contains(reason));assert.equal(reason.textContent,civicStatus(state,id).reason);assert.match(reason.textContent,/cautivo/);
- assert.doesNotMatch(card.textContent,/Llegada inmediata|Viaje previsto/);assert.deepEqual(state,before);doc.defaultView.close();
+ assert.doesNotMatch(card.textContent,/Disponible de inmediato/);assert.deepEqual(state,before);doc.defaultView.close();
  const available=structuredClone(state);available.operativeState[id].captured=false;
  const availableBefore=structuredClone(available),controlDoc=new JSDOM(render(h(Recruitment,{state:available,dispatch:noop}))).window.document,control=controlDoc.querySelector(`[data-operative-id="${id}"]`),hire=control.querySelector('.gold-button');
- assert.equal(civicStatus(available,id).available,true);assert.equal(hire.disabled,false);assert.equal(hire.textContent,`Contratar · ${quote.total} pesos`);
- assert.match(control.textContent,/Llegada inmediata|Viaje previsto/);assert.doesNotMatch(control.textContent,/En cautiverio|está cautivo/);assert.equal(hire.hasAttribute('aria-describedby'),false);
+ assert.equal(civicStatus(available,id).available,true);assert.equal(hire.disabled,false);assert.equal(hire.textContent,`Reclutar · ${quote.total} pesos`);
+ assert.match(control.textContent,/Disponible de inmediato/);assert.doesNotMatch(control.textContent,/En cautiverio|está cautivo/);assert.equal(hire.hasAttribute('aria-describedby'),false);
  assert.deepEqual(available,availableBefore);controlDoc.defaultView.close();
  const fallen=structuredClone(available);Object.assign(fallen.operativeState[id],{alive:false,hp:0});
  const fallenBefore=structuredClone(fallen),fallenDoc=new JSDOM(render(h(Recruitment,{state:fallen,dispatch:noop}))).window.document,fallenCard=fallenDoc.querySelector(`[data-operative-id="${id}"]`),fallenButton=fallenCard.querySelector('.gold-button');
  assert.equal(civicStatus(fallen,id).available,false);assert.equal(fallenButton.disabled,true);assert.equal(fallenButton.textContent,'Caído en combate');
- assert.ok(fallenCard.textContent.includes('Un combatiente fallecido no puede volver a contratarse.'));assert.doesNotMatch(fallenCard.textContent,/Llegada inmediata|Viaje previsto/);
+ assert.ok(fallenCard.textContent.includes('Un combatiente fallecido no puede volver a contratarse.'));assert.doesNotMatch(fallenCard.textContent,/Disponible de inmediato/);
  assert.deepEqual(fallen,fallenBefore);fallenDoc.defaultView.close();
 });
 

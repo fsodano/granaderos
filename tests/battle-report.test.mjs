@@ -1,3 +1,4 @@
+import { enterAssault } from './assault-fixture.mjs';
 import {totalReserveAmmunition} from '../game/ammunition-types.js';
 import {stockAndCarriedAmmo,stockAmmo} from './ammunition-balance.mjs';
 import test from 'node:test';
@@ -10,7 +11,7 @@ import {autoBandageBattle} from '../game/auto-bandage.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {scriptedBattleReport,scriptedWithdrawal} from './scripted-battle-report.mjs';
 const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError,null,next.lastError);return next;};
-const deployed=()=>order(order(initialCampaign(),{type:'travel',sector:'buenos_aires'}),{type:'attack',sector:'san_nicolas'});
+const deployed=()=>enterAssault(order(initialCampaign(),{type:'travel',sector:'buenos_aires'}),'san_nicolas');
 const receipt=(s,b,outcome='retreat')=>({type:'battleResult',battleId:s.pendingBattle.id,outcome,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});
 function rejected(s,a){const before=serializeCampaign(s),next=dispatchCampaign(s,a);assert.ok(next.lastError);assert.equal(serializeCampaign(s),before);assert.deepEqual({...next,lastError:null},JSON.parse(before));}
 

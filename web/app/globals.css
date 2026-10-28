@@ -40,3 +40,8 @@
 .field-supplies > div .line-button {margin:.25rem .25rem .25rem 0;}
 
 .campaign-picker{display:grid;gap:7px;margin:0 0 15px;color:#e5dbc5;font-size:12px;letter-spacing:1px}.campaign-picker select{width:100%;padding:10px;background:#162527;color:#e5dbc5;border:1px solid #938466;font:inherit}.campaign-picker select:focus-visible{outline:2px solid #f2d289;outline-offset:3px}
+
+.sector-continuation {display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:.75rem;padding:.75rem 1rem;background:#263a37;color:#eee5ce;border-block:1px solid #7c8f79;}
+.sector-continuation button {padding:.5rem .8rem;border:1px solid #bda777;background:#172a29;color:inherit;cursor:pointer;}
+.sector-continuation button:disabled {opacity:.55;cursor:default;}
+.sector-continuation button:focus-visible {outline:2px solid #f2d289;outline-offset:3px;}

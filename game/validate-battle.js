@@ -1,4 +1,6 @@
+import {validateSectorOperationSnapshot} from './infrastructure/sector-sessions/sector-operation-validation.js';
 import {wallEdgeKey,wallEdgeCells,WALL_GEOMETRY_VERSION} from './wall-geometry.js';
+import {validateSectorWorld,removedSectorCharacters} from './military-remains.js';
 import {validCombatJournal} from './combat-journal.js';
 import {validateQuestWithdrawals} from './quest-withdrawal.js';
 import {validateCivilianWeapons} from './civilian-weapons.js';
@@ -54,6 +56,8 @@ const text=x=>typeof x==='string'&&x.length<=1000;
 function need(ok,label){if(!ok)throw Error(`La partida contiene ${label} inválidos.`);}
 function safeTree(value,depth=0){need(depth<=20,'objetos anidados');if(typeof value==='number')need(Number.isFinite(value),'números');if(value&&typeof value==='object'){need(Object.keys(value).length<=10000,'colecciones');for(const[k,v]of Object.entries(value)){need(!['__proto__','constructor','prototype'].includes(k),'claves');safeTree(v,depth+1);}}}
 export function validateBattleSnapshot(value,context=null){
+ validateSectorOperationSnapshot(value);
+ validateSectorWorld(value);
  validateQuestWithdrawals(value?.questWithdrawals,value??{});
  validateQuestBeneficiaries(value?.questBeneficiaries,value??{});
 need(object(value),'datos tácticos');validateGriefParticipants(value);validateConductObservers(value);safeTree(value);need(JSON.stringify(value).length<=3000000,'tamaño táctico');const s=removeIgnitionSupplies(structuredClone(value));if(s.errandDefinitions!==undefined)need(validateQuestDefinitions(s.errandDefinitions,context??s).length===0,'encargos del despliegue');for(const u of s.units??[]){if(u.ammo!==undefined)need(integer(u.ammo,0,1000000),'suministros');validateHands(u.ammunitionVersion===1?groupUnitAmmunition(u):u);}migrateBattleAmmunition(s);validateRegionalWeather(s);if(s.bleedSeconds!==undefined)need(number(s.bleedSeconds,0,6)&&s.bleedSeconds<6,'reloj de hemorragia');for(const key of ['elapsedSeconds','syncedSeconds','startSeconds'])if(s[key]!==undefined)need(Number.isSafeInteger(s[key])&&s[key]>=0,'reloj táctico');if(s.roundTimeCharged!==undefined)need(typeof s.roundTimeCharged==='boolean','turno del reloj');for(const l of s.lights??[])if(l.remainingSeconds!==undefined)need(Number.isFinite(l.remainingSeconds)&&l.remainingSeconds>=0,'duración de luz');for(const u of s.units??[])validateTraining(u);
@@ -150,7 +154,7 @@ for(const u of s.units)if(u.departure!==undefined){
  if(u.mounted&&u.mount?.id)need(receipt.mountId===u.mount.id,'montura que cruzó la salida');
 }
 if(s.status==='retreat')need(s.units.some(u=>u.side==='player'&&u.departure)&&!s.units.some(u=>u.side==='player'&&fieldCapable(u)),'resultado de retirada');
-if(s.returnLedger!==undefined){const ledger=s.returnLedger;need(object(ledger)&&ledger.battleId===s.battleId&&integer(ledger.creditedCartridges,0,100000000)&&Array.isArray(ledger.entries)&&new Set(ledger.entries.map(e=>e.unitId)).size===ledger.entries.length&&ledger.entries.every(e=>object(e)&&ids.has(e.unitId)&&['departed','resident','captured','dead','dispersed'].includes(e.kind)&&text(e.sector)),'registro de devolución');}
+if(s.returnLedger!==undefined){const ledger=s.returnLedger;const historicalIds=new Set(removedSectorCharacters(s).map(actor=>actor.id));need(object(ledger)&&ledger.battleId===s.battleId&&integer(ledger.creditedCartridges,0,100000000)&&Array.isArray(ledger.entries)&&new Set(ledger.entries.map(e=>e.unitId)).size===ledger.entries.length&&ledger.entries.every(e=>object(e)&&(ids.has(e.unitId)||e.kind==='dead'&&historicalIds.has(e.unitId))&&['departed','resident','captured','dead','dispersed'].includes(e.kind)&&text(e.sector)),'registro de devolución');}
 if(s.enemyTurn!==undefined){
  const q=s.enemyTurn;need(object(q)&&Array.isArray(q.unitIds)&&q.unitIds.length<=200&&new Set(q.unitIds).size===q.unitIds.length&&q.unitIds.every(id=>s.units.some(u=>u.id===id&&!u.departure&&u.side==='enemy')),'continuación enemiga');
  need(integer(q.unitIndex,0,q.unitIds.length)&&integer(q.actionsTaken,0,12)&&typeof q.started==='boolean','avance enemigo');

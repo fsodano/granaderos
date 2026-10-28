@@ -1,3 +1,4 @@
+import {fightOnArrival} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
 import {initialCampaign,dailyIncome,rosterFor} from '../game/campaign.js';
 import {defaultContentPackage} from '../game/content-package.js';
@@ -12,7 +13,8 @@ import {takeFiniteCache,leaveFiniteCache} from './finite-cache-driver.mjs';
 import {order,visit,leave,saved,sync} from './local-contract-fixture.mjs';
 import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
-import {hireArrivalOrder,hireArrivalDueSeconds,hiringArrivalOptions} from '../game/hiring-arrivals.js';
+import {hireArrivalDueSeconds,hiringArrivalOptions} from '../game/hiring-arrivals.js';
+import {immediateRecruitmentExpectation} from './immediate-recruitment-fixture.mjs';
 const clock=s=>s.hour*3600+(s.secondOfHour??0);
 function tactical(pair,action){
  const battle=action.type==='endTurn'?endTurn(pair.battle):actBattle(pair.battle,action);
@@ -60,7 +62,7 @@ export function stockPortOpening({seed=8,content=defaultContentPackage()}={}){
  const hires=[];
  for(const id of [123,115,114,131,120]){
   const destination=state.location,op=rosterFor(state).find(op=>op.id===id),quote=contractQuote(state,op,'day');assert.equal(quote.available,true,quote.reason);
-  assert.ok(hiringArrivalOptions(state).some(site=>site.id===destination));const arrival=hireArrivalOrder(state,op,'day',quote,destination);
+  assert.ok(hiringArrivalOptions(state).some(site=>site.id===destination));const arrival=immediateRecruitmentExpectation(state,op,'day',quote,destination);
   const money=state.resources.treasury;state=order(state,{type:'recruitCivic',id,term:'day',destination});assert.equal(state.resources.treasury,money-quote.total);
   hires.push({id,quote:structuredClone(quote),arrival:structuredClone(arrival),debited:money-state.resources.treasury});
  }
@@ -76,7 +78,7 @@ export function stockPortOpening({seed=8,content=defaultContentPackage()}={}){
  const armed=p.battle.units.find(u=>u.id==='120');
  notes.push({stage:'finite-cache',operativeId:120,rifle,weapon:armed.weapon,loaded:armed.loaded,ammunition:unitAmmunitionByType(armed)});
  state=leaveFiniteCache(p);
- state=order(state,{type:'attack',sector:'buenos_aires'});const request=structuredClone(state.pendingBattle),result=fight(request,null,{scoutCostWeight:.01,avoidCivilians:true,fallbackOrders:true});
+ state=fightOnArrival(order(state,{type:'attack',sector:'buenos_aires'}));const request=structuredClone(state.pendingBattle),result=fight(request,null,{scoutCostWeight:.01,avoidCivilians:true,fallbackOrders:true});
  assert.equal(result.battle.status,'victory',JSON.stringify(result.battle.units.map(({id,hp,side})=>({id,hp,side}))));
  p={campaign:state,battle:enterSector(request)};
  for(const [index,action]of result.orders.entries()){p=tactical(p,action);if(index===Math.floor(result.orders.length/2))p=saved(p);}
