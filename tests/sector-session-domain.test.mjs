@@ -1,22 +1,22 @@
-import { EnterSectorUseCase } from '../game/application/sector-sessions/enter-sector/enter-sector.use-case.ts';
+import { EnterSectorUseCase } from '../packages/game/application/sector-sessions/enter-sector/enter-sector.use-case.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { SectorSession, SectorSessionMode } from '../game/domain/sector-sessions/sector-session.ts';
-import { CombatSession, CombatPhase, CombatOutcome } from '../game/domain/combat/combat-session.ts';
+import { SectorSession, SectorSessionMode } from '../packages/game/domain/sector-sessions/sector-session.ts';
+import { CombatSession, CombatPhase, CombatOutcome } from '../packages/game/domain/combat/combat-session.ts';
 import {
   ActionPoints,
   ActionPointPolicy,
   CombatRefusalCode,
-} from '../game/domain/combat/action-points.ts';
-import { SectorParticipant } from '../game/domain/sector-sessions/sector-participant.ts';
+} from '../packages/game/domain/combat/action-points.ts';
+import { SectorParticipant } from '../packages/game/domain/sector-sessions/sector-participant.ts';
 import {
   SectorDeployment,
   DeploymentRefusalCode,
-} from '../game/domain/sector-sessions/sector-deployment.ts';
-import { SectorTimeBudget } from '../game/domain/sector-sessions/sector-time-budget.ts';
-import { SectorTimeLimitReached } from '../game/domain/sector-sessions/sector-time-limit-reached.ts';
-import { SectorOperationRunner } from '../game/application/sector-sessions/sector-operation-runner.ts';
-import { ExecuteSectorOrderUseCase } from '../game/application/sector-sessions/execute-sector-order/execute-sector-order.use-case.ts';
+} from '../packages/game/domain/sector-sessions/sector-deployment.ts';
+import { SectorTimeBudget } from '../packages/game/domain/sector-sessions/sector-time-budget.ts';
+import { SectorTimeLimitReached } from '../packages/game/domain/sector-sessions/sector-time-limit-reached.ts';
+import { SectorOperationRunner } from '../packages/game/application/sector-sessions/sector-operation-runner.ts';
+import { ExecuteSectorOrderUseCase } from '../packages/game/application/sector-sessions/execute-sector-order/execute-sector-order.use-case.ts';
 
 const clear = { visualContact: false, automaticActionsPending: false, routedParticipants: false };
 test('one sector visit owns several bounded combat episodes with stable identities', () => {

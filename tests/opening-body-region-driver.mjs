@@ -1,5 +1,5 @@
 import {combatOrder} from './opening-driver.mjs';
-import {actionCosts,canSee,firearmShotOptions,stanceCost} from '../game/tactical.js';
+import {actionCosts,canSee,firearmShotOptions,stanceCost} from '../packages/game/tactical.js';
 
 // An observed window target can expose the head while blocking the torso.
 // Use the actual cursor previews and pay the current order's full action cost.

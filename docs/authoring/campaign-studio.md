@@ -257,7 +257,7 @@ for supported profiles and limits.
 ## Include images and other resources
 
 A resource is part of the project, rather than a reference to an author machine.
-Its portable path starts with `assets/`. Authored image references use
+Its portable path starts with `assets/` inside the campaign package. Authored image references use
 `/campaigns/my-campaign/assets/<path>`. Do not insert a deployment prefix such as
 `/granaderos` into that reference.
 
@@ -269,7 +269,7 @@ references; those references must be reassigned or repaired.
 Live browser previews resolve project resources from their bytes. Temporary
 data or Blob URLs belong only to the preview. They must not enter stored definitions
 or the installable package. JSON metadata resources remain files inside
-`assets/`; they are not executable code.
+the package’s `assets/` directory; they are not executable code.
 
 ## Validate and repair
 
@@ -352,8 +352,8 @@ Map buildings already placed from templates remain in the runtime maps. The
 template catalogue itself survives project JSON and browser persistence; it is
 not a runtime campaign dependency.
 
-Extract a valid campaign ZIP under `campaigns/` in a compatible engine checkout,
-so the resulting path is `campaigns/<id>/manifest.json`. The development server
+Extract a valid campaign ZIP under `content/campaigns/` in a compatible engine checkout,
+so the resulting path is `content/campaigns/<id>/manifest.json`. The development server
 and build discover its manifest. The existing CLI command remains available:
 
 ```sh

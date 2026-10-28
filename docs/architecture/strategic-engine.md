@@ -25,7 +25,7 @@ boundaries for visible, retained, and suspended sectors.
 
 The serialized names `pendingBattle`, `recruited`, and `operativeState` remain at
 the compatibility boundary. New domain and application code uses the canonical
-[glossary](../../plans/accepted/ubiquitous-language.md).
+[glossary](../plans/accepted/ubiquitous-language.md).
 
 ## Ownership and state boundary
 
@@ -112,4 +112,4 @@ stateDiagram-v2
 
 Orders can fail because an actor is absent, dead, captured, in transit, assigned incompatibly, asleep, on a journey, insufficiently supplied, short of resources, or blocked by a pending encounter/battle or completed/defeated state. Helpers generally surface localized `lastError` strings; battle-time sync instead returns an `error` field. Pending request identity and report context are validated to prevent stale/mismatched settlement. Resource payment checks affordability before subtracting; finite stocks are allocated and reconciled explicitly. Avoid assuming strict global DAG routing, a universal catalog, or that every order is processed by a worker.
 
-Extension points are scenario definitions and hooks (`initialState`, progression, raid/attack definition, attack preparation, occupation, recruitment gates), plus focused subsystem modules imported by the dispatcher. Add or change a strategic order by preserving clone/validation/rollback semantics and accounting for interaction with clock, pending handoffs, finite custody, and state migrations. Source anchors: [`campaign.js`](../../game/campaign.js), [`time.js`](../../game/time.js), [`battle-handoff.js`](../../game/battle-handoff.js), [`world.js`](../../game/world.js), [`battle-outcome.js`](../../game/battle-outcome.js), [`campaign-scenario.js`](../../game/campaign-scenario.js).
+Extension points are scenario definitions and hooks (`initialState`, progression, raid/attack definition, attack preparation, occupation, recruitment gates), plus focused subsystem modules imported by the dispatcher. Add or change a strategic order by preserving clone/validation/rollback semantics and accounting for interaction with clock, pending handoffs, finite custody, and state migrations. Source anchors: [`campaign.js`](../../packages/game/campaign.js), [`time.js`](../../packages/game/time.js), [`battle-handoff.js`](../../packages/game/battle-handoff.js), [`world.js`](../../packages/game/world.js), [`battle-outcome.js`](../../packages/game/battle-outcome.js), [`campaign-scenario.js`](../../packages/game/campaign-scenario.js).

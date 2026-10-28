@@ -1,10 +1,10 @@
 // Mirrors the live dialogue handler when a campaign-issued recruit joins the field.
 import assert from 'node:assert/strict';
-import {dispatchCampaign} from '../game/campaign.js';
-import {enterSector} from '../game/world.js';
-import {createBattle} from '../game/tactical.js';
-import {addIssuedGriefParticipant} from '../game/companion-grief.js';
-import {syncBattleTime} from '../game/time.js';
+import {dispatchCampaign} from '../packages/game/campaign.js';
+import {enterSector} from '../packages/game/world.js';
+import {createBattle} from '../packages/game/tactical.js';
+import {addIssuedGriefParticipant} from '../packages/game/companion-grief.js';
+import {syncBattleTime} from '../packages/game/time.js';
 import {approachNPC} from './approach-npc.mjs';
 export function meetRecruits(start,npcIds,actor=4,{optionalHistoricalContacts=false}={}){let c=structuredClone(start);const order=a=>{c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);};order({type:'visitSector'});let b=enterSector(c.pendingBattle,c.sectorStates[c.location]);
 for(const npcId of npcIds){

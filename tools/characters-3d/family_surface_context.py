@@ -84,14 +84,14 @@ def _files(directory, excluded=()):
 
 
 def _input_paths(root):
-    paths = _files(root / 'web/public/models/characters')
-    for relative in ('tools/characters-3d', 'web/lib', 'game', 'campaigns'):
+    paths = _files(root / 'apps/web/public/models/characters')
+    for relative in ('tools/characters-3d', 'apps/web/lib', 'packages/game', 'packages/campaign-format', 'content/campaigns'):
         paths.extend(_files(root / relative, ('__pycache__', '.build', 'node_modules', 'assets')))
     # Native surface postpasses need source modules, not the large authoring
     # vendor bodies. Keep every top-level source module available for recipes.
-    paths.extend(path for path in (root / 'assets/source/characters-3d/authoring').iterdir()
+    paths.extend(path for path in (root / 'content/assets/source/characters-3d/authoring').iterdir()
                  if path.is_file() and path.suffix in ('.py', '.json'))
-    for relative in ('package.json', 'package-lock.json', 'web/package.json', 'web/package-lock.json',
+    for relative in ('package.json', 'package-lock.json', 'apps/web/package.json', 'apps/web/package-lock.json',
                      'tests/published-actor-fixture.mjs', 'tests/tactical-render-loader.mjs'):
         path = root / relative
         if path.is_file():
@@ -114,16 +114,16 @@ def _copy_inputs(root, private, pins):
         target = private / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(raw)
-    dependencies = root / 'web/node_modules'
+    dependencies = root / 'apps/web/node_modules'
     assert dependencies.is_dir(), 'Native surface review needs the current web dependencies'
-    (private / 'web/node_modules').symlink_to(dependencies.resolve(), target_is_directory=True)
+    (private / 'apps/web/node_modules').symlink_to(dependencies.resolve(), target_is_directory=True)
     _check_pins(root, pins)
 
 
 def _restore_library(private, manifest, presets, installer):
     restored = copy.deepcopy(manifest)
     originals = []
-    assets = private / 'web/public/models/characters'
+    assets = private / 'apps/web/public/models/characters'
     glb = _module('family_surface_glb', private / 'tools/characters-3d/merge-animation-bank.py')
     for preset in presets:
         for index, record in enumerate(restored['appearances'][preset]['lods']):
@@ -144,7 +144,7 @@ def _restore_library(private, manifest, presets, installer):
 
 def _retain_unchanged_native(private, originals):
     """Keep exact native bytes when a legacy pack only reindexes unused data."""
-    assets = private / 'web/public/models/characters'
+    assets = private / 'apps/web/public/models/characters'
     manifest_path = assets / 'manifest.json'
     manifest = json.loads(manifest_path.read_bytes())
     glb = _module('family_surface_compare_glb', private / 'tools/characters-3d/merge-animation-bank.py')
@@ -251,14 +251,14 @@ def family_surface_context(tool, root, receipt=None):
         return True
     tool = Path(tool).name
     assert tool in NATIVE_BODIES, 'Unknown native surface postpass'
-    assets = root / 'web/public/models/characters'
+    assets = root / 'apps/web/public/models/characters'
     manifest_bytes = (assets / 'manifest.json').read_bytes()
     manifest = json.loads(manifest_bytes)
     presets = _completed_presets(manifest, assets, tool)
     if not presets:
         return False
     pins = _pins(root)
-    assert pins['web/public/models/characters/manifest.json'] == _sha(manifest_bytes), 'Concurrent family surface manifest change'
+    assert pins['apps/web/public/models/characters/manifest.json'] == _sha(manifest_bytes), 'Concurrent family surface manifest change'
     installer = _module('family_surface_installer', root / 'tools/characters-3d/build-family-cloth-depth.py')
     # A selected fresh LOD0 legitimately leaves the old completed coarse
     # links stale until this native topology pass rebuilds them privately.
@@ -279,7 +279,7 @@ def family_surface_context(tool, root, receipt=None):
                         '--root', str(private), '--presets', *presets, '--receipt', str(family_receipt)],
                        cwd=private, env=environment, check=True)
         installer.verify_completed(private, presets)
-        private_assets = private / 'web/public/models/characters'
+        private_assets = private / 'apps/web/public/models/characters'
         next_manifest = json.loads((private_assets / 'manifest.json').read_bytes())
         allowed_bodies = NATIVE_BODIES[tool] | {
             Path(record['url']).name for preset in presets

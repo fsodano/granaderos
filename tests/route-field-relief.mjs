@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor,civicStatus} from '../game/campaign.js';
-import {isContractOperative} from '../game/content-character-ids.js';
-import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
-import {hireArrivalDueSeconds,hiringArrivalReason} from '../game/hiring-arrivals.js';
+import {dispatchCampaign,rosterFor,civicStatus} from '../packages/game/campaign.js';
+import {isContractOperative} from '../packages/game/content-character-ids.js';
+import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../packages/game/contracts.js';
+import {hireArrivalDueSeconds,hiringArrivalReason} from '../packages/game/hiring-arrivals.js';
 import {immediateRecruitmentExpectation} from './immediate-recruitment-fixture.mjs';
-import {operativeLocation,operativeInTransit} from '../game/squads.js';
+import {operativeLocation,operativeInTransit} from '../packages/game/squads.js';
 
 const clock=c=>c.hour*3600+(c.secondOfHour??0);
 

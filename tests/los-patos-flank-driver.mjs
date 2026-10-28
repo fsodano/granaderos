@@ -1,6 +1,6 @@
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
-import {actBattle,getReachable,teamCanSee,stanceCost} from '../game/tactical.js';
-import {sameSurface,spacePoint,spaceKey} from '../game/tactical-space.js';
+import {actBattle,getReachable,teamCanSee,stanceCost} from '../packages/game/tactical.js';
+import {sameSurface,spacePoint,spaceKey} from '../packages/game/tactical-space.js';
 import {usefulRouteFiringPosture} from './route-infantry-progress.mjs';
 
 // A flanking column must follow the road around a cliff rather than require

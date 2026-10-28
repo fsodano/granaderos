@@ -1,14 +1,14 @@
 import { completeTestTravel } from './campaign-test-helpers.mjs';
 import { advanceCampaignHours } from './campaign-wait-fixture.mjs';
 import { approachNPC } from './approach-npc.mjs';
-import { firstAidPlan } from '../game/first-aid.js';
-import { doctorRate, careAssignmentReason } from '../game/medical-care.js';
+import { firstAidPlan } from '../packages/game/first-aid.js';
+import { doctorRate, careAssignmentReason } from '../packages/game/medical-care.js';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { parseContentPackage } from '../game/content-package.js';
-import { initialCampaign, dispatchCampaign, rosterFor } from '../game/campaign.js';
-import { operativeIdForCharacter } from '../game/content-character-ids.js';
-import { contentQuestStatus } from '../game/content-quests.js';
+import { parseContentPackage } from '../packages/game/content-package.js';
+import { initialCampaign, dispatchCampaign, rosterFor } from '../packages/game/campaign.js';
+import { operativeIdForCharacter } from '../packages/game/content-character-ids.js';
+import { contentQuestStatus } from '../packages/game/content-quests.js';
 import {
   actBattle,
   endTurn,
@@ -17,21 +17,21 @@ import {
   hasLineOfSight,
   canSee,
   firearmShotOptions,
-} from '../game/tactical.js';
-import { sameSurface, spacePoint } from '../game/tactical-space.js';
-import { contractQuote } from '../game/contracts.js';
-import { enterSector } from '../game/world.js';
+} from '../packages/game/tactical.js';
+import { sameSurface, spacePoint } from '../packages/game/tactical-space.js';
+import { contractQuote } from '../packages/game/contracts.js';
+import { enterSector } from '../packages/game/world.js';
 import { fight } from './opening-driver.mjs';
 import { hiredAssaultOrder } from './hired-assault-driver.mjs';
 import { order, saved, visit, leave, sync } from './local-contract-fixture.mjs';
 import { collectPhysicalCacheItems } from './finite-care-cache.mjs';
-import { repairMaterialPoints } from '../game/repair-materials.js';
-import { weaponAmmoType, availableAmmunition } from '../game/ammunition-types.js';
-import { firearmBystanderRisk } from '../game/firearm-bystander-risk.js';
+import { repairMaterialPoints } from '../packages/game/repair-materials.js';
+import { weaponAmmoType, availableAmmunition } from '../packages/game/ammunition-types.js';
+import { firearmBystanderRisk } from '../packages/game/firearm-bystander-risk.js';
 import { fightOnArrival } from './assault-fixture.mjs';
 export const postContent = () =>
   parseContentPackage(
-    readFileSync(new URL('../campaigns/la-ruta-de-las-postas.json', import.meta.url), 'utf8'),
+    readFileSync(new URL('../content/campaigns/la-ruta-de-las-postas.json', import.meta.url), 'utf8'),
   );
 const tactical = (p, a) => {
   const battle = a.type === 'endTurn' ? endTurn(p.battle) : actBattle(p.battle, a);

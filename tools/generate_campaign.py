@@ -10,8 +10,8 @@ from pathlib import Path
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / 'engine/gamedir/Data-1.13/TableData'
-DEST = ROOT / 'mod/Data-Granaderos/TableData'
+SOURCE = ROOT / 'reference/native/engine/gamedir/Data-1.13/TableData'
+DEST = ROOT / 'reference/native/mod/Data-Granaderos/TableData'
 # HEA AGI DEX STR LEA WIS MRK MEC EXP MED. EXP here is explosives, NOT level.
 ROSTER = [
 (0,'Martín Miguel de Güemes','Güemes', [82,90,85,78,95,88,81,35,40,30],400,[7,4,19],1803,1813),
@@ -109,7 +109,7 @@ def generate(dest=DEST):
     for k,v in {'NotBuyable':1,'BR_NewInventory':0,'NotInEditor':1,'ubCoolness':0}.items():setv(x,k,v)
     write('Items/Explosives.xml',explosives,dest)
     for name,r in [('Items/Items.xml',items),('Items/Weapons.xml',weapons),('Items/Magazines.xml',mags),('Items/AmmoStrings.xml',ammo)]:write(name,r,dest)
-    biographies=json.loads((ROOT/'mod/biographies.es.json').read_text(encoding='utf-8'))
+    biographies=json.loads((ROOT/'reference/native/mod/biographies.es.json').read_text(encoding='utf-8'))
     records=bytearray()
     for n in range(255):
         bio,extra=biographies.get(str(n),['',''])
@@ -154,7 +154,7 @@ def generate(dest=DEST):
                     i=int(field.tag[7:])-1;field.text=str(choices[i] if i<len(choices) else 0)
         write('Inventory/'+path.name,r,dest)
     # Full INI prevents omitted upstream keys silently reverting to compiled defaults.
-    options=(ROOT/'engine/gamedir/Base/Ja2_Options.INI').read_text(encoding='utf-8-sig')
+    options=(ROOT/'reference/native/engine/gamedir/Base/Ja2_Options.INI').read_text(encoding='utf-8-sig')
     for key in ['ASD_ACTIVE','ASD_ASSIGNS_TANKS','ASD_ASSIGNS_JEEPS','ASD_ASSIGNS_ROBOTS','ROBOT_UPGRADEABLE']:
         options=re.sub(r'(?m)^'+key+r'\s*=.*$',key+' = FALSE',options)
     (dest.parent/'Ja2_Options.INI').write_text(options,encoding='utf-8')

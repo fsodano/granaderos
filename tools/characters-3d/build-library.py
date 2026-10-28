@@ -9,7 +9,7 @@ import argparse,subprocess,sys,json,os,struct,concurrent.futures,hashlib,tempfil
 from library_manifest import checked_job_records, merge_job_manifest, strict_json
 from library_jobs import current_job_pins, prepared_job_files, install_job_files
 from importlib.util import spec_from_file_location, module_from_spec
-ROOT=Path(__file__).resolve().parents[2];HERE=ROOT/'assets/source/characters-3d/authoring';OUT=ROOT/'web/public/models/characters';META=HERE/'.build'
+ROOT=Path(__file__).resolve().parents[2];HERE=ROOT/'content/assets/source/characters-3d/authoring';OUT=ROOT/'apps/web/public/models/characters';META=HERE/'.build'
 PRESETS=['granadero','royalist','worker','surgeon','gaucho','friar','woman-scout','woman-shawl']
 p=argparse.ArgumentParser();p.add_argument('--blender',default='/Applications/Blender.app/Contents/MacOS/Blender');p.add_argument('--only',choices=['appearance','garments','equipment','horse','animations']);p.add_argument('--preset',choices=PRESETS);p.add_argument('--lod',type=int,choices=[0,1,2]);p.add_argument('--review',action='store_true');p.add_argument('--jobs',type=int,default=2);p.add_argument('--manifest-only',action='store_true');a=p.parse_args()
 previous_manifest=strict_json((OUT/'manifest.json').read_text())if(OUT/'manifest.json').exists()else{}
@@ -52,7 +52,7 @@ if any(kind=='appearance' and preset=='gaucho' and lod in (1,2) for kind,preset,
  if coarse_records:(JOB_META/'coarse-garment-graft-receipt.json').write_text(json.dumps(coarse_receipt,indent=2)+'\n')
 job_files=prepared_job_files(JOB_OUT,byname)if jobs else{}
 bones={'root':'Root','hips':'pelvis','spine':'spine_02','chest':'spine_03','neck':'neck_01','head':'head','handRight':'hand_r','handLeft':'hand_l','footRight':'foot_r','footLeft':'foot_l'}
-manifest={'version':1,'units':'metres','up':'+Y','forward':'+Z','bodyHeight':1.76,'bones':bones,'skinTones':{'light':'#d5a07d','brown':'#9d6844','dark':'#623c29'},'appearances':{},'animationLibraries':{},'equipment':{'url':'/models/characters/equipment.glb','items':{}},'garments':{},'horse':{},'provenance':'assets/source/characters-3d/README.md'}
+manifest={'version':1,'units':'metres','up':'+Y','forward':'+Z','bodyHeight':1.76,'bones':bones,'skinTones':{'light':'#d5a07d','brown':'#9d6844','dark':'#623c29'},'appearances':{},'animationLibraries':{},'equipment':{'url':'/models/characters/equipment.glb','items':{}},'garments':{},'horse':{},'provenance':'content/assets/source/characters-3d/README.md'}
 native_path=JOB_OUT/'granadero-lod0.glb'if(JOB_OUT/'granadero-lod0.glb').exists()else OUT/'granadero-lod0.glb'
 if native_path.exists():
  raw=native_path.read_bytes();document=json.loads(raw[20:20+struct.unpack_from('<I',raw,12)[0]])
@@ -81,7 +81,7 @@ for gender in ('male','female'):
  name=gender+'-garments.glb'
  if name in byname:manifest['garments'][gender]={'url':byname[name]['url'],'items':{'poncho':{'node':'garment_poncho','slot':'outfit','hideAppearanceParts':[]},'linen_shirt':{'node':'garment_linen_shirt','slot':'outfit','hideAppearanceParts':['outfit']},'trousers':{'node':'garment_trousers','slot':'legwear','hideAppearanceParts':['legwear']},'hat':{'node':'garment_hat','slot':'headwear','hideAppearanceParts':['headwear']}}}
 if 'equipment.glb'in byname:manifest['equipment'].update({k:byname['equipment.glb'][k]for k in ('bytes','sha256','items')})
-item_overrides=json.loads(subprocess.check_output(['node','--input-type=module','-e',"import {ACTOR_ITEM_CLIP_OVERRIDES} from './game/actor-action-contract.js';console.log(JSON.stringify(ACTOR_ITEM_CLIP_OVERRIDES));"],cwd=ROOT,text=True))
+item_overrides=json.loads(subprocess.check_output(['node','--input-type=module','-e',"import {ACTOR_ITEM_CLIP_OVERRIDES} from './packages/game/actor-action-contract.js';console.log(JSON.stringify(ACTOR_ITEM_CLIP_OVERRIDES));"],cwd=ROOT,text=True))
 for item,binding in item_overrides.items():
  if item in manifest['equipment']['items']:manifest['equipment']['items'][item]['clipOverrides']=binding
 manifest['equipment']['aliases']={'medical':'medkits','medkit':'medkits','torch':'torches','bolas':'boleadoras','ration':'rations','ammo':'ammunition','inventory:key':'key','inventory:lockpick':'lockpick','inventory:crowbar':'crowbar','inventory:pliers':'pliers'}

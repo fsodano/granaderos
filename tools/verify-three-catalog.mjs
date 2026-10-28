@@ -2,12 +2,12 @@
 import assert from 'node:assert/strict';
 import {mkdir,rm,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
-import {ARCHITECTURE_REVIEW_TEMPLATES,ARCHITECTURE_REVIEW_ROOFS,createArchitectureReviewBattle} from '../web/app/renderer-sandbox/architecture-fixtures.js';
-import {getBuildingProfile} from '../game/building-profile.js';
+import {ARCHITECTURE_REVIEW_TEMPLATES,ARCHITECTURE_REVIEW_ROOFS,createArchitectureReviewBattle} from '../apps/web/app/renderer-sandbox/architecture-fixtures.js';
+import {getBuildingProfile} from '../packages/game/building-profile.js';
 
 const {chromium}=await import(process.env.PLAYWRIGHT_MODULE||'playwright');
 const url=process.env.GRANADEROS_REVIEW_URL||'http://127.0.0.1:3150/renderer-sandbox';
-const output=resolve(process.env.GRANADEROS_REVIEW_OUTPUT||'artifacts/three-gameplay-review/catalog');
+const output=resolve(process.env.GRANADEROS_REVIEW_OUTPUT||'.output/artifacts/three-gameplay-review/catalog');
 const full=process.argv.includes('--full');
 const roof=process.argv.find(value=>value.startsWith('--roof='))?.slice(7)??'original';
 assert.ok(ARCHITECTURE_REVIEW_ROOFS.some(option=>option.id===roof),`Unknown building roof: ${roof}`);

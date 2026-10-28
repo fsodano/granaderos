@@ -1,30 +1,30 @@
-import { advanceMilitaryWoundClock } from '../game/military-health.js';
+import { advanceMilitaryWoundClock } from '../packages/game/military-health.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   Corpse,
   CorpseRemovalPolicy,
   DEFAULT_CORPSE_LIFETIME_SECONDS,
-} from '../game/domain/world/corpse.ts';
-import { ItemCustody, ItemCustodianKind } from '../game/domain/world/item-custody.ts';
-import { WorldTimeline } from '../game/domain/world/world-timeline.ts';
+} from '../packages/game/domain/world/corpse.ts';
+import { ItemCustody, ItemCustodianKind } from '../packages/game/domain/world/item-custody.ts';
+import { WorldTimeline } from '../packages/game/domain/world/world-timeline.ts';
 import {
   advanceSectorWorld,
   advanceCampaignWorld,
   validateSectorWorld,
-} from '../game/military-remains.js';
-import { createBattle } from '../game/tactical.js';
-import { validateBattleSnapshot } from '../game/validate-battle.js';
-import { extractItemQuantity } from '../game/tactical-inventory.js';
-import { makeOutfit } from '../game/outfits.js';
-import { advanceResidentScavenging } from '../game/campaign-civilians.js';
+} from '../packages/game/military-remains.js';
+import { createBattle } from '../packages/game/tactical.js';
+import { validateBattleSnapshot } from '../packages/game/validate-battle.js';
+import { extractItemQuantity } from '../packages/game/tactical-inventory.js';
+import { makeOutfit } from '../packages/game/outfits.js';
+import { advanceResidentScavenging } from '../packages/game/campaign-civilians.js';
 import { initialCampaign } from './legacy-campaign-fixture.mjs';
-import { dispatchCampaign } from '../game/campaign.js';
-import { enterSector } from '../game/world.js';
-import { syncBattleTime } from '../game/time.js';
-import { encodeSave, decodeSave } from '../game/save.js';
-import { refreshMilitaryCondition } from '../game/actor-condition.js';
-import { advanceResidentRoutine } from '../game/npc-ai.js';
+import { dispatchCampaign } from '../packages/game/campaign.js';
+import { enterSector } from '../packages/game/world.js';
+import { syncBattleTime } from '../packages/game/time.js';
+import { encodeSave, decodeSave } from '../packages/game/save.js';
+import { refreshMilitaryCondition } from '../packages/game/actor-condition.js';
+import { advanceResidentRoutine } from '../packages/game/npc-ai.js';
 
 const START_SECOND = 8 * 3600;
 const REMOVAL_SECOND = START_SECOND + DEFAULT_CORPSE_LIFETIME_SECONDS;

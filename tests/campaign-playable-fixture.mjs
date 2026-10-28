@@ -1,5 +1,5 @@
-import {compileMap,reachableMap} from '../game/compile-map.js';
-import {propBlocksAt} from '../game/props.js';
+import {compileMap,reachableMap} from '../packages/game/compile-map.js';
+import {propBlocksAt} from '../packages/game/props.js';
 
 // Stock maps use configured deployment. Copies used as generic authored maps
 // need their own explicit entry points in the same reachable walking area.

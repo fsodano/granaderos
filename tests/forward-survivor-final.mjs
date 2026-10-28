@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor,isSupplied} from '../game/campaign.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {carriedAmmunition} from '../game/campaign-ammunition.js';
-import {ammoTypeFor,ammoCount} from '../game/ammo-types.js';
-import {doctorRate,medicalSupplyQuote} from '../game/medical-care.js';
+import {dispatchCampaign,rosterFor,isSupplied} from '../packages/game/campaign.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {carriedAmmunition} from '../packages/game/campaign-ammunition.js';
+import {ammoTypeFor,ammoCount} from '../packages/game/ammo-types.js';
+import {doctorRate,medicalSupplyQuote} from '../packages/game/medical-care.js';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {prepareFinalAssault} from './final-campaign-route.mjs';
-import {enterSector} from '../game/world.js';
-import {encodeSave,decodeSave} from '../game/save.js';
+import {enterSector} from '../packages/game/world.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
 
 // Keep the actual Jujuy survivors at their hospital. A paid physical courier
 // purchases the still-unused high-pass battery and delivers finite dressings.

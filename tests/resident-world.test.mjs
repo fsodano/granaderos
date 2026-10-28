@@ -1,24 +1,24 @@
-import { advanceMilitaryWoundClock } from '../game/military-health.js';
+import { advanceMilitaryWoundClock } from '../packages/game/military-health.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { ResidentPresence } from '../game/domain/world/resident-presence.ts';
+import { ResidentPresence } from '../packages/game/domain/world/resident-presence.ts';
 import {
   GroundSupply,
   ResidentSupplies,
   ScavengingPolicy,
-} from '../game/domain/world/resident-supplies.ts';
+} from '../packages/game/domain/world/resident-supplies.ts';
 import {
   createContentSession,
   advancePlacementState,
   changePlacementStatus,
-} from '../game/content-placement.js';
-import { defaultContentPackage } from '../game/content-package.js';
-import { initialCampaign } from '../game/campaign.js';
-import { encountersFor } from '../game/encounters.js';
+} from '../packages/game/content-placement.js';
+import { defaultContentPackage } from '../packages/game/content-package.js';
+import { initialCampaign } from '../packages/game/campaign.js';
+import { encountersFor } from '../packages/game/encounters.js';
 import {
   synchronizeCampaignPresence,
   reconcileSectorResidents,
-} from '../game/campaign-presence.js';
+} from '../packages/game/campaign-presence.js';
 import {
   advanceResidentScavenging,
   acknowledgeRemovedResidents,
@@ -26,15 +26,15 @@ import {
   acknowledgeResidentConditions,
   advanceUnloadedCivilians,
   acknowledgeCivilians,
-} from '../game/campaign-civilians.js';
+} from '../packages/game/campaign-civilians.js';
 import {
   advanceSectorWorld,
   advanceCampaignWorld,
   validateSectorWorld,
-} from '../game/military-remains.js';
-import { advanceCivilianTime } from '../game/npc-ai.js';
-import { createBattle } from '../game/tactical.js';
-import { Corpse, DEFAULT_CORPSE_LIFETIME_SECONDS } from '../game/domain/world/corpse.ts';
+} from '../packages/game/military-remains.js';
+import { advanceCivilianTime } from '../packages/game/npc-ai.js';
+import { createBattle } from '../packages/game/tactical.js';
+import { Corpse, DEFAULT_CORPSE_LIFETIME_SECONDS } from '../packages/game/domain/world/corpse.ts';
 
 function movingContent() {
   const content = defaultContentPackage();

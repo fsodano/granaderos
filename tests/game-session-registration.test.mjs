@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   restoreGameSession,
   sectorSessionRegistration,
-} from '../game/infrastructure/session/campaign-game-session-mapper.js';
+} from '../packages/game/infrastructure/session/campaign-game-session-mapper.js';
 
 const request = (id, sector, characterId, overrides = {}) => ({
   id,

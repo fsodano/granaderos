@@ -6,7 +6,7 @@ import argparse
 ROOT=Path(__file__).resolve().parents[2]
 parser=argparse.ArgumentParser();parser.add_argument('--candidate',required=True);args=parser.parse_args()
 candidate=Image.open(args.candidate).convert('RGB')
-source=Image.open(ROOT/'web/public/art/illustrated/granadero-idle.png').convert('RGBA')
+source=Image.open(ROOT/'apps/web/public/art/illustrated/granadero-idle.png').convert('RGBA')
 review=Image.new('RGB',(8*312,2*334),(88,94,80));draw=ImageDraw.Draw(review)
 for d in range(8):
  original=source.crop((d*156,0,(d+1)*156,156));a=np.array(original)
@@ -29,4 +29,4 @@ for d in range(8):
  for row,im in enumerate([original,out]):
   im=im.resize((312,312),Image.Resampling.NEAREST);review.paste(im,(d*312,row*334+22),im)
  draw.text((d*312+4,4),['N','NE','E','SE','S','SW','W','NW'][d],fill='white')
-review.save(ROOT/'assets/previews/equipped-sprites/hybrid-torso-candidate.png')
+review.save(ROOT/'content/assets/previews/equipped-sprites/hybrid-torso-candidate.png')

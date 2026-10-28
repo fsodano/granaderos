@@ -5,12 +5,12 @@ import {execFileSync} from 'node:child_process';
 const root=resolve(process.argv[2]??dirname(fileURLToPath(import.meta.url))+'/..');
 const load=path=>import(pathToFileURL(resolve(root,path)));
 const spec=readFileSync(resolve(root,'docs/specification/original.txt'),'utf8');
-const {OPERATIVES,CAMPAIGN_SECTORS}=await load('game/data.js');
-const {WEAPONS,BLADES,ARTILLERY,bladeFor}=await load('game/tactical.js');
-const {defaultContentPackage}=await load('game/content-package.js');
-const {weaponMetadata}=await load('game/weapon-definition.js');
-const {initialCampaign,contractQuote}=await load('game/campaign.js');
-const {CIVIC_RECRUITS}=await load('game/recruitment.js');
+const {OPERATIVES,CAMPAIGN_SECTORS}=await load('packages/game/data.js');
+const {WEAPONS,BLADES,ARTILLERY,bladeFor}=await load('packages/game/tactical.js');
+const {defaultContentPackage}=await load('packages/game/content-package.js');
+const {weaponMetadata}=await load('packages/game/weapon-definition.js');
+const {initialCampaign,contractQuote}=await load('packages/game/campaign.js');
+const {CIVIC_RECRUITS}=await load('packages/game/recruitment.js');
 const tables=spec.split('\n').map(line=>line.split('\t'));
 const checks=[],adaptations=[],compare=(id,source,actual)=>checks.push({id,passed:JSON.stringify(source)===JSON.stringify(actual),expected:source,actual});
 const attributes=['maxHp','agility','dexterity','strength','leadership','wisdom','marksmanship','mechanical','explosives','medical'];
@@ -32,8 +32,8 @@ for(const[i,c]of blades.entries()){
  const id=1809+i,w=BLADES[id];
  // The later model separates the loose bayonet from the fixed weapon in the
  // source table. Verify its real fixed profile; never waive a mismatch.
- if(id===1811&&existsSync(resolve(root,'game/weapon-fittings.js'))){
-  const {fixedBayonetProfile}=await load('game/weapon-fittings.js');
+ if(id===1811&&existsSync(resolve(root,'packages/game/weapon-fittings.js'))){
+  const {fixedBayonetProfile}=await load('packages/game/weapon-fittings.js');
   const fixed=fixedBayonetProfile({weapon:1800,activeSlot:'primary',weaponFittings:{bayonet:{weapon:1811,fittingPattern:'india_socket',instanceId:'audit-bayonet',condition:100}}});
   compare(`blade-${id}`,[Number(c[3]),Number(c[4])],[fixed?.ap,fixed?.damage]);
   const loose=bladeFor({weapon:1800,blade:1811,activeSlot:'blade'});
@@ -58,6 +58,6 @@ compare('named-sector-count',13,CAMPAIGN_SECTORS.length);compare('theater-count'
 const state=initialCampaign(42),funded=structuredClone(state);funded.resources.treasury=1e9;
 const elite=CIVIC_RECRUITS.find(o=>o.tier==='elite')??CIVIC_RECRUITS.find(o=>o.marksmanship>=90);
 const source=execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim();
-const result={schema:1,source,checkedAt:new Date().toISOString(),method:'Compare runtime baseline values against the supplied specification tables; inspect a new campaign and funded elite quotes. This is not historical research or a campaign playthrough.',checks,adaptations,passed:checks.filter(c=>c.passed).length,failed:checks.filter(c=>!c.passed).length,opening:{economyVersion:state.economyVersion??null,resourceKeys:Object.keys(state.resources),treasury:state.resources.treasury,controlled:Object.entries(state.sectors).filter(([id,s])=>s.owner==='patriot').map(([id])=>id),recruited:state.recruited,location:state.location},eliteTerms:elite?Object.fromEntries(['day','week','month'].map(term=>{const q=contractQuote(funded,elite,term);return[term,{available:q.available,reason:q.reason??null,price:q.price}]})):null,storyEditorModules:existsSync(resolve(root,'game/content-package.js'))};
+const result={schema:1,source,checkedAt:new Date().toISOString(),method:'Compare runtime baseline values against the supplied specification tables; inspect a new campaign and funded elite quotes. This is not historical research or a campaign playthrough.',checks,adaptations,passed:checks.filter(c=>c.passed).length,failed:checks.filter(c=>!c.passed).length,opening:{economyVersion:state.economyVersion??null,resourceKeys:Object.keys(state.resources),treasury:state.resources.treasury,controlled:Object.entries(state.sectors).filter(([id,s])=>s.owner==='patriot').map(([id])=>id),recruited:state.recruited,location:state.location},eliteTerms:elite?Object.fromEntries(['day','week','month'].map(term=>{const q=contractQuote(funded,elite,term);return[term,{available:q.available,reason:q.reason??null,price:q.price}]})):null,storyEditorModules:existsSync(resolve(root,'packages/game/content-package.js'))};
 console.log(JSON.stringify(result,null,2));
 if(result.failed)process.exitCode=1;

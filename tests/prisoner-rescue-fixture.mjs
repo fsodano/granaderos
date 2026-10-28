@@ -4,12 +4,12 @@ import {withStoredGear} from './commerce-gear-fixture.mjs';
 // and the subsequent tactical approach are real; this is not a fresh campaign.
 import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
-import {dispatchCampaign} from '../game/campaign.js';
-import {launchEnemyGroup} from '../game/enemy-groups.js';
-import {enterSector} from '../game/world.js';
-import {prepareCampaignBattle} from '../game/battle-handoff.js';
-import {syncBattleTime} from '../game/time.js';
-import {refreshMilitaryCondition} from '../game/actor-condition.js';
+import {dispatchCampaign} from '../packages/game/campaign.js';
+import {launchEnemyGroup} from '../packages/game/enemy-groups.js';
+import {enterSector} from '../packages/game/world.js';
+import {prepareCampaignBattle} from '../packages/game/battle-handoff.js';
+import {syncBattleTime} from '../packages/game/time.js';
+import {refreshMilitaryCondition} from '../packages/game/actor-condition.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 function captured({custodySupplies=2}={}){
  // The declared established relief fund pays six weekly hires; two reserve guns are already owned.

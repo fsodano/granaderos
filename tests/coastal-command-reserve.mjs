@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {actBattle,exitPreview} from '../game/tactical.js';
-import {sectorDeploymentAction,sectorDeploymentModel} from '../game/sector-deployment.js';
+import {actBattle,exitPreview} from '../packages/game/tactical.js';
+import {sectorDeploymentAction,sectorDeploymentModel} from '../packages/game/sector-deployment.js';
 
 // A commander arriving on the west edge cannot immediately take a north exit
 // from the middle of that edge. Use only the authorized intersection of the

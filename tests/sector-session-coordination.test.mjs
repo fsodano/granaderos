@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { initialCampaign } from './legacy-campaign-fixture.mjs';
-import { dispatchCampaign } from '../game/campaign.js';
-import { pendingArrivalDecisions } from '../game/squad-travel.js';
-import { prepareCampaignBattle } from '../game/battle-handoff.js';
-import { endTurn } from '../game/tactical.js';
-import { syncBattleTime } from '../game/time.js';
-import { encodeSave, decodeSave } from '../game/save.js';
+import { dispatchCampaign } from '../packages/game/campaign.js';
+import { pendingArrivalDecisions } from '../packages/game/squad-travel.js';
+import { prepareCampaignBattle } from '../packages/game/battle-handoff.js';
+import { endTurn } from '../packages/game/tactical.js';
+import { syncBattleTime } from '../packages/game/time.js';
+import { encodeSave, decodeSave } from '../packages/game/save.js';
 
 function order(campaign, action) {
   const result = dispatchCampaign(campaign, action);

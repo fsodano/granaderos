@@ -1,8 +1,8 @@
 import {approachNPC} from './approach-npc.mjs';
 import {completeTestTravel} from './campaign-test-helpers.mjs';
-import {dispatchCampaign} from '../game/campaign.js';
-import {enterSector} from '../game/world.js';
-import {actBattle,endTurn,getReachable,visibleHostiles,bladeFor} from '../game/tactical.js';
+import {dispatchCampaign} from '../packages/game/campaign.js';
+import {enterSector} from '../packages/game/world.js';
+import {actBattle,endTurn,getReachable,visibleHostiles,bladeFor} from '../packages/game/tactical.js';
 const step=(s,a)=>{const n=dispatchCampaign(s,a);if(n.lastError)throw Error(n.lastError);return n;};
 export function attendYatasto(s){
  if(s.location!=='tucuman')s=completeTestTravel(s,{sector:'tucuman'});

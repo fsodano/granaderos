@@ -5,15 +5,15 @@ import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 const {chromium}=await import(process.env.PLAYWRIGHT_MODULE||'playwright');
 const url=process.env.GRANADEROS_REVIEW_URL||'http://127.0.0.1:3151/renderer-sandbox';
-const output=resolve(process.env.GRANADEROS_REVIEW_OUTPUT||'artifacts/three-paid-melee-facing-review');
+const output=resolve(process.env.GRANADEROS_REVIEW_OUTPUT||'.output/artifacts/three-paid-melee-facing-review');
 const sourceRoot=resolve(process.env.GRANADEROS_SOURCE_ROOT||process.cwd());
 const expected={
- 'web/lib/three/melee-contact-fit.ts':'8538bdae294f464a49bb651dd2c9f8bbaf9f7e4a9be512530f04c7cebaae70f2',
- 'web/lib/three/actor-runtime.ts':'6b821e10ec06a3792d94501ea86b21ffd540e06c56b4e4725177241301355272',
- 'web/lib/three/presentation.ts':'6aa16eac91610ce55c1b7374cb8e2caeb1a94dd22ee20703137c312e9332c958',
- 'web/lib/three/scene-actors.ts':'84c627e42344201f043b893e74ec6ac9f49a0e94d9f4f5e990a4ec2194abf9fd',
+ 'apps/web/lib/three/melee-contact-fit.ts':'8538bdae294f464a49bb651dd2c9f8bbaf9f7e4a9be512530f04c7cebaae70f2',
+ 'apps/web/lib/three/actor-runtime.ts':'6b821e10ec06a3792d94501ea86b21ffd540e06c56b4e4725177241301355272',
+ 'apps/web/lib/three/presentation.ts':'6aa16eac91610ce55c1b7374cb8e2caeb1a94dd22ee20703137c312e9332c958',
+ 'apps/web/lib/three/scene-actors.ts':'84c627e42344201f043b893e74ec6ac9f49a0e94d9f4f5e990a4ec2194abf9fd',
 };
-const sourceFiles=[...Object.keys(expected),'web/public/models/characters/manifest.json','web/public/models/characters/equipment.glb','web/public/models/characters/male-animations.glb','web/public/models/characters/female-animations.glb','web/public/models/characters/granadero-lod0.glb','web/public/models/characters/woman-scout-lod0.glb','web/public/models/characters/royalist-lod0.glb'];
+const sourceFiles=[...Object.keys(expected),'apps/web/public/models/characters/manifest.json','apps/web/public/models/characters/equipment.glb','apps/web/public/models/characters/male-animations.glb','apps/web/public/models/characters/female-animations.glb','apps/web/public/models/characters/granadero-lod0.glb','apps/web/public/models/characters/woman-scout-lod0.glb','apps/web/public/models/characters/royalist-lod0.glb'];
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 async function sourceReceipt(){const hashes={};for(const file of sourceFiles)hashes[file]=sha(await readFile(resolve(sourceRoot,file)));return {root:sourceRoot,commit:execFileSync('git',['rev-parse','HEAD'],{cwd:sourceRoot,encoding:'utf8'}).trim(),hashes};}
 const beforeSource=await sourceReceipt();for(const [file,hash]of Object.entries(expected))assert.equal(beforeSource.hashes[file],hash,`Review the exact frozen source: ${file}`);
@@ -60,7 +60,7 @@ try{
   assert.equal(await page.locator('.tactical-field').getAttribute('data-enemy-frame'),null,'The paid action completes');
   const phases=new Set(frames.map(frame=>frame.frame?.split(':')[2]).filter(Boolean));assert.ok(phases.has('prepare')&&phases.has('contact')&&phases.has('impact'),'The visible finite paid strike presents all three phases');assert.ok(frames.filter(frame=>frame.frame).every(frame=>frame.frame.endsWith(':melee')),'The sequence contains only the paid melee action');
   const healthLabels=frames.map(frame=>frame.target).filter((label,index,array)=>index===0||label!==array[index-1]);assert.ok(healthLabels.length<=2,'Damage cannot be committed twice');
-  await page.screenshot({path:resolve(output,`${scenario.anatomy}-complete.png`)});await Promise.allSettled(pending);assert.deepEqual(errors,[]);for(const response of network){const match=new URL(response.url).pathname.match(/\/models\/characters\/(.+)$/);if(match&&beforeSource.hashes[`web/public/models/characters/${match[1]}`])assert.equal(response.sha256,beforeSource.hashes[`web/public/models/characters/${match[1]}`],'Served native model bytes match the source capture receipt');}
+  await page.screenshot({path:resolve(output,`${scenario.anatomy}-complete.png`)});await Promise.allSettled(pending);assert.deepEqual(errors,[]);for(const response of network){const match=new URL(response.url).pathname.match(/\/models\/characters\/(.+)$/);if(match&&beforeSource.hashes[`apps/web/public/models/characters/${match[1]}`])assert.equal(response.sha256,beforeSource.hashes[`apps/web/public/models/characters/${match[1]}`],'Served native model bytes match the source capture receipt');}
   report.cases.push({...scenario,moveBefore,moveAfter,before,after,frames,healthLabels,network,errors});await page.close();
  }
  report.sourceAfter=await sourceReceipt();assert.deepEqual(report.sourceAfter,beforeSource,'Source and native asset hashes remain exact throughout capture');

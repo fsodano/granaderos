@@ -1,12 +1,12 @@
 // Acceptance controller: ordinary orders from actual stock-route survivors.
 // This is one reproducible strategy, not the game AI or a balance guarantee.
 import {fight as recordedFight} from './opening-driver.mjs';
-import {automaticOrder} from '../game/autonomous-orders.js';
-import {actBattle,teamCanSee,meleePreview,getReachable,shotChance,actionCosts,stanceCost,hasFirearm,firearmShotOptions,weaponFor,reloadPlan,hasLineOfSight} from '../game/tactical.js';
-import {spacePoint,sameSurface} from '../game/tactical-space.js';
-import {shotLocationEffects} from '../game/targeted-combat.js';
+import {automaticOrder} from '../packages/game/autonomous-orders.js';
+import {actBattle,teamCanSee,meleePreview,getReachable,shotChance,actionCosts,stanceCost,hasFirearm,firearmShotOptions,weaponFor,reloadPlan,hasLineOfSight} from '../packages/game/tactical.js';
+import {spacePoint,sameSurface} from '../packages/game/tactical-space.js';
+import {shotLocationEffects} from '../packages/game/targeted-combat.js';
 import {sectorSearchOrder} from './sector-search-driver.mjs';
-import {firstAidPlan,criticalFirstAidNeeded} from '../game/first-aid.js';
+import {firstAidPlan,criticalFirstAidNeeded} from '../packages/game/first-aid.js';
 import {knownCivilianFireRisk} from './route-fire-safety.mjs';
 const live=u=>u.hp>0&&!u.departure&&!u.surrendered&&!u.unconscious&&!u.routed;
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);

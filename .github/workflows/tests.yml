@@ -24,12 +24,12 @@ jobs:
           node-version: '22'
           cache: npm
           cache-dependency-path: |
-            web/package-lock.json
-            campaign-editor/package-lock.json
+            apps/web/package-lock.json
+            apps/campaign-editor/package-lock.json
       - name: Install test dependencies
-        run: npm ci --prefix web
+        run: npm ci --prefix apps/web
       - name: Install editor dependencies
-        run: npm ci --prefix campaign-editor
+        run: npm ci --prefix apps/campaign-editor
       - name: Check architecture boundaries
         run: npm run check:architecture
       - name: Check architecture formatting

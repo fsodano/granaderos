@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {rosterFor} from '../game/campaign.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {rosterFor} from '../packages/game/campaign.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
 import {order,visit,tactical,leave,saved} from './local-contract-fixture.mjs';
 
 // Move a declared, finite carried reserve into actual local ground custody.

@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {decodeSave,encodeSave} from '../game/save.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {operativeLocation} from '../game/squads.js';
-import {contractExpiresSeconds,contractRenewalQuote} from '../game/contracts.js';
-import {previewStrategicRoute} from '../game/strategic-route.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {operativeLocation} from '../packages/game/squads.js';
+import {contractExpiresSeconds,contractRenewalQuote} from '../packages/game/contracts.js';
+import {previewStrategicRoute} from '../packages/game/strategic-route.js';
 import {controlledPortAvailable} from './controlled-port-handover.mjs';
 import {supplyRouteDressings} from './route-dressings.mjs';
 

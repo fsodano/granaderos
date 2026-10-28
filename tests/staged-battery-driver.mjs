@@ -1,7 +1,7 @@
 import {coastalBatteryController} from './coastal-command-driver.mjs';
 import {mountainBatteryOrder} from './mountain-battery-driver.mjs';
-import {artilleryContact,artilleryCrewPlan,artilleryCosts} from '../game/tactical.js';
-import {sameCell} from '../game/tactical-space.js';
+import {artilleryContact,artilleryCrewPlan,artilleryCosts} from '../packages/game/tactical.js';
+import {sameCell} from '../packages/game/tactical-space.js';
 
 // World arrivals reserve the connected two-cell edge apron for carriages.
 // A supplied second gun alone does not justify holding the infantry there.

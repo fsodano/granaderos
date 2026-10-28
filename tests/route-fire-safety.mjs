@@ -1,6 +1,6 @@
-import {firearmFlightPreview} from '../game/tactical.js';
-import {pairedPistol,secondaryPistolView} from '../game/paired-fire.js';
-import {firearmBystanderRisk} from '../game/firearm-bystander-risk.js';
+import {firearmFlightPreview} from '../packages/game/tactical.js';
+import {pairedPistol,secondaryPistolView} from '../packages/game/paired-fire.js';
+import {firearmBystanderRisk} from '../packages/game/firearm-bystander-risk.js';
 
 // Public geometry only. Actual misses can still hit an unknown or off-ray body.
 export function knownCivilianFireRisk(battle,unit,target,hitLocation='torso'){

@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { initialCampaign, dispatchCampaign, rosterFor, contractQuote } from '../game/campaign.js';
-import { defaultContentPackage } from '../game/content-package.js';
-import { encodeSave, decodeSave } from '../game/save.js';
+import { initialCampaign, dispatchCampaign, rosterFor, contractQuote } from '../packages/game/campaign.js';
+import { defaultContentPackage } from '../packages/game/content-package.js';
+import { encodeSave, decodeSave } from '../packages/game/save.js';
 
 test('an authored arrival delay does not postpone control or contract start', () => {
   const definition = defaultContentPackage();

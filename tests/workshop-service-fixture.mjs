@@ -1,5 +1,5 @@
-import {defaultContentPackage} from '../game/content-package.js';
-import {initialCampaign} from '../game/campaign.js';
+import {defaultContentPackage} from '../packages/game/content-package.js';
+import {initialCampaign} from '../packages/game/campaign.js';
 import {order,saved} from './local-contract-fixture.mjs';
 export const REMOTE=110,LOCAL=112;
 export function separatedWorkshop(){

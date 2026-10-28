@@ -38,7 +38,7 @@ This catalogue describes player-facing business intentions in the current browse
 * **Request:** Select an entry from the title-screen campaign selector, or open the game with a campaign query parameter.
 * **Result / state:** Registry entry is resolved; manifest and documents are loaded and compiled; resource bytes are checked; selected identity is reflected in the URL and the title presentation comes from that campaign.
 * **Guards / refusal:** Registry fetch, manifest identity mismatch, unsupported content, missing asset, or hash mismatch yields an error; campaign load sequencing ignores stale concurrent responses. The chooser contains installed registry campaigns, not arbitrary filesystem packages.
-* **UI / implementation:** [`web/app/page.tsx`](../../../web/app/page.tsx) (`loadCampaignRegistry`, `chooseCampaign`, `selectCampaignURL`); [`web/lib/campaign-library.ts`](../../../web/lib/campaign-library.ts); package contract [content and campaigns](../content-and-campaigns.md).
+* **UI / implementation:** [`apps/web/app/page.tsx`](../../../apps/web/app/page.tsx) (`loadCampaignRegistry`, `chooseCampaign`, `selectCampaignURL`); [`apps/web/lib/campaign-library.ts`](../../../apps/web/lib/campaign-library.ts); package contract [content and campaigns](../content-and-campaigns.md).
 * **Availability:** Playable, current.
 
 #### SES-002 — start-new-campaign
@@ -47,7 +47,7 @@ This catalogue describes player-facing business intentions in the current browse
 * **Request:** Choose “Nueva campaña”; if a save/session is already available, confirm the replacement warning. On first use, the app takes the player directly to its opening path.
 * **Result / state:** `initialCampaign` creates fresh progress from the selected campaign definitions; a campaign launch identity is placed in the URL and the app opens the desk or introduction flow. The previous auto-save is flushed/replaced; export first if it must be retained.
 * **Guards / refusal:** Requires installed/loaded campaign content, except the content-editor handoff path. Invalid setup/content is reported as a notice. Intro choice may lead to “hire” or “create” based on campaign presentation.
-* **UI / implementation:** [`web/app/page.tsx`](../../../web/app/page.tsx) (`newCampaign`, `startCampaign`, `completeIntro`); [`game/campaign.js`](../../../game/campaign.js) (`initialCampaign`).
+* **UI / implementation:** [`apps/web/app/page.tsx`](../../../apps/web/app/page.tsx) (`newCampaign`, `startCampaign`, `completeIntro`); [`packages/game/campaign.js`](../../../packages/game/campaign.js) (`initialCampaign`).
 * **Availability:** Playable, current.
 
 #### SES-003 — review-campaign-introduction
@@ -56,7 +56,7 @@ This catalogue describes player-facing business intentions in the current browse
 * **Request:** Start a campaign with configured scenes; move through scenes, select a scene marker, pause/resume automatic progression, skip, or return. Replay is available from the title flow when an introduction is present.
 * **Result / state:** A first-run introduction completes into campaign setup (hire/create); replay returns to the prior screen without starting a new campaign. Reduced-motion preference changes progression to manual; hidden document state pauses progression.
 * **Guards / refusal:** No configured scenes means this use case is absent; new campaign goes directly to its setup destination. Replay does not start or reset campaign progress.
-* **UI / implementation:** [`web/app/CampaignIntro.tsx`](../../../web/app/CampaignIntro.tsx), [`web/app/page.tsx`](../../../web/app/page.tsx), and authored `presentation.introduction` in the Studio [presentation workspace](../../../campaign-editor/web/app/studio/PresentationWorkspace.tsx).
+* **UI / implementation:** [`apps/web/app/CampaignIntro.tsx`](../../../apps/web/app/CampaignIntro.tsx), [`apps/web/app/page.tsx`](../../../apps/web/app/page.tsx), and authored `presentation.introduction` in the Studio [presentation workspace](../../../apps/campaign-editor/web/app/studio/PresentationWorkspace.tsx).
 * **Availability:** Conditional on campaign presentation.
 
 #### SES-007 — launch-configured-sample-skirmish
@@ -65,7 +65,7 @@ This catalogue describes player-facing business intentions in the current browse
 * **Request:** Activate the presentation-provided skirmish action on the title screen.
 * **Result / state:** A temporary seeded campaign context supplies selected operatives and squad configuration to `battleFromRequest`; battle becomes active and no strategic campaign is retained as the skirmish's normal progress session.
 * **Guards / refusal:** The action is rendered only when `presentation.skirmish` exists. Empty/invalid configuration can prevent meaningful launch; the menu action is not a generic arbitrary-map browser.
-* **UI / implementation:** [`web/app/page.tsx`](../../../web/app/page.tsx) (`skirmish`); [`game/battle-handoff.js`](../../../game/battle-handoff.js); configuration authored by [`campaign-editor/web/app/studio/PresentationWorkspace.tsx`](../../../campaign-editor/web/app/studio/PresentationWorkspace.tsx).
+* **UI / implementation:** [`apps/web/app/page.tsx`](../../../apps/web/app/page.tsx) (`skirmish`); [`packages/game/battle-handoff.js`](../../../packages/game/battle-handoff.js); configuration authored by [`apps/campaign-editor/web/app/studio/PresentationWorkspace.tsx`](../../../apps/campaign-editor/web/app/studio/PresentationWorkspace.tsx).
 * **Availability:** Conditional on authored content.
 
 ### Continue and preserve progress
@@ -76,7 +76,7 @@ This catalogue describes player-facing business intentions in the current browse
 * **Request:** Choose “Continuar campaña” from title; the available source is the current in-memory session when present, otherwise an encoded save discovered under campaign storage candidates.
 * **Result / state:** Save decoding and campaign-resource re-verification precede state restoration. Route resumes to battle, campaign map, or desk according to decoded state; a battle save restores the battle as well as campaign.
 * **Guards / refusal:** Refuses malformed saves, campaign identity mismatch with selected campaign, or missing/changed package assets. A loading sequence prevents a stale campaign load from overwriting the restore.
-* **UI / implementation:** [`web/app/page.tsx`](../../../web/app/page.tsx) (`resume`); [`game/save.js`](../../../game/save.js); [`game/content-launch.js`](../../../game/content-launch.js); [`web/lib/campaign-library.ts`](../../../web/lib/campaign-library.ts) (`verifyCampaignResources`).
+* **UI / implementation:** [`apps/web/app/page.tsx`](../../../apps/web/app/page.tsx) (`resume`); [`packages/game/save.js`](../../../packages/game/save.js); [`packages/game/content-launch.js`](../../../packages/game/content-launch.js); [`apps/web/lib/campaign-library.ts`](../../../apps/web/lib/campaign-library.ts) (`verifyCampaignResources`).
 * **Availability:** Playable, current when progress exists.
 
 #### SES-005 — export-session-save
@@ -85,7 +85,7 @@ This catalogue describes player-facing business intentions in the current browse
 * **Request:** Use the save/export action while a campaign state exists.
 * **Result / state:** `encodeSave(campaign,battle)` produces JSON downloaded as a campaign/day-named file. Export is deliberate; browser auto-save remains a separate mechanism.
 * **Guards / refusal:** Requires active campaign state. Encoding errors are surfaced; tactical-only sample skirmishes do not have campaign export through this control.
-* **UI / implementation:** [`web/app/page.tsx`](../../../web/app/page.tsx) (`exportSave`); [`game/save.js`](../../../game/save.js); save byte limits in [`game/save-limits.js`](../../../game/save-limits.js).
+* **UI / implementation:** [`apps/web/app/page.tsx`](../../../apps/web/app/page.tsx) (`exportSave`); [`packages/game/save.js`](../../../packages/game/save.js); save byte limits in [`packages/game/save-limits.js`](../../../packages/game/save-limits.js).
 * **Availability:** Playable, current for campaign sessions.
 
 #### SES-006 — import-session-save
@@ -94,7 +94,7 @@ This catalogue describes player-facing business intentions in the current browse
 * **Request:** Select a save file from the title/session controls.
 * **Result / state:** App enforces the 5 MB limit, decodes the save, verifies campaign resources with refresh, replaces current in-memory campaign/battle and browser save context, then routes to the saved state. Import also advances the battle session key so the battle view is recreated for restored state.
 * **Guards / refusal:** Invalid JSON/save, size overflow, missing or changed campaign resource, or failed validation leaves the current session intact and reports an error. Input is reset after handling.
-* **UI / implementation:** [`web/app/page.tsx`](../../../web/app/page.tsx) (`importSave`); [`game/save.js`](../../../game/save.js); [`game/save-limits.js`](../../../game/save-limits.js).
+* **UI / implementation:** [`apps/web/app/page.tsx`](../../../apps/web/app/page.tsx) (`importSave`); [`packages/game/save.js`](../../../packages/game/save.js); [`packages/game/save-limits.js`](../../../packages/game/save-limits.js).
 * **Availability:** Playable, current.
 
 #### SES-011 — retain-progress-in-browser
@@ -103,7 +103,7 @@ This catalogue describes player-facing business intentions in the current browse
 * **Request:** No explicit command; the autosave hook observes session changes.
 * **Result / state:** Encoded progress is written to browser local storage using campaign-aware keys. It supports SES-004, but is not cloud sync, a versioned export, or Studio project storage.
 * **Guards / refusal:** Browser storage may be unavailable/quota-limited; failure displays a warning instructing export. Changing campaign/new-game paths flush or replace relevant current storage. Cross-device portability requires SES-005/006.
-* **UI / implementation:** [`web/lib/useCampaignAutosave.ts`](../../../web/lib/useCampaignAutosave.ts), key selection in [`game/content-launch.js`](../../../game/content-launch.js), call site [`web/app/page.tsx`](../../../web/app/page.tsx).
+* **UI / implementation:** [`apps/web/lib/useCampaignAutosave.ts`](../../../apps/web/lib/useCampaignAutosave.ts), key selection in [`packages/game/content-launch.js`](../../../packages/game/content-launch.js), call site [`apps/web/app/page.tsx`](../../../apps/web/app/page.tsx).
 * **Availability:** Supporting/internal process.
 
 ### Connect an authoring session
@@ -114,7 +114,7 @@ This catalogue describes player-facing business intentions in the current browse
 * **Request:** Use the Story Editor's campaign launch action. It stores an encoded clean initial campaign save in `sessionStorage` and navigates to the game with `content=1&launch=1`.
 * **Result / state:** Player page decodes the one-time payload, requires campaign content and no active battle, refresh-verifies resources, installs the state in memory and enters the desk; it removes the launch key after consumption. This does not import editor draft into the installed registry or replace Studio project persistence.
 * **Guards / refusal:** Missing/stale payload, battle included, absent content, or asset verification failure displays a notice. The handoff relies on same-tab session storage.
-* **UI / implementation:** [`campaign-editor/web/app/story/ContentEditor.tsx`](../../../campaign-editor/web/app/story/ContentEditor.tsx), [`game/content-launch.js`](../../../game/content-launch.js), [`web/app/page.tsx`](../../../web/app/page.tsx). For authoring-side tests and save separation see [authoring use cases](authoring.md).
+* **UI / implementation:** [`apps/campaign-editor/web/app/story/ContentEditor.tsx`](../../../apps/campaign-editor/web/app/story/ContentEditor.tsx), [`packages/game/content-launch.js`](../../../packages/game/content-launch.js), [`apps/web/app/page.tsx`](../../../apps/web/app/page.tsx). For authoring-side tests and save separation see [authoring use cases](authoring.md).
 * **Availability:** Supporting authoring handoff.
 
 ### Supporting controls and integrations
@@ -125,7 +125,7 @@ This catalogue describes player-facing business intentions in the current browse
 * **Request:** Open/close help from game controls or toggle sound.
 * **Result / state:** Manual text is campaign-presentation-aware with fallback guidance; audio toggles through `BattleAudio`, and unsupported browser activation reports a notice. These operations do not change strategic/tactical game state.
 * **Guards / refusal:** Sound activation may fail due to browser policy; player may retry after interaction. No global settings persistence is claimed by this flow.
-* **UI / implementation:** [`web/app/page.tsx`](../../../web/app/page.tsx), [`web/lib/battle-audio.ts`](../../../web/lib/battle-audio.ts).
+* **UI / implementation:** [`apps/web/app/page.tsx`](../../../apps/web/app/page.tsx), [`apps/web/lib/battle-audio.ts`](../../../apps/web/lib/battle-audio.ts).
 * **Availability:** Supporting presentation controls.
 
 #### SES-010 — query-player-known-state-or-issue-tactical-order
@@ -134,7 +134,7 @@ This catalogue describes player-facing business intentions in the current browse
 * **Request:** If `document.modelContext.registerTool` exists, page registers `read_granaderos_state` (read-only) and `issue_granaderos_tactical_order` (allowlisted tactical order schema).
 * **Result / state:** Query returns player-known campaign/battle projection; accepted order commits through tactical game functions and returns turn/status/units/deployment data. Refusals return `{ok:false,error}` using player-known error projection and do not commit the order.
 * **Guards / refusal:** Not registered in ordinary browsers without the host API; an active battle is required for orders, playback can temporarily block them, and accepted order types are allowlisted. This catalogue does not duplicate their tactical semantics.
-* **UI / implementation:** Registration and execution in [`web/app/page.tsx`](../../../web/app/page.tsx); privacy projection in [`game/player-known-state.js`](../../../game/player-known-state.js). See [tactical engine](../tactical-engine.md) for game action boundaries.
+* **UI / implementation:** Registration and execution in [`apps/web/app/page.tsx`](../../../apps/web/app/page.tsx); privacy projection in [`packages/game/player-known-state.js`](../../../packages/game/player-known-state.js). See [tactical engine](../tactical-engine.md) for game action boundaries.
 * **Availability:** Conditional integration; query is read-only, order tool mutates only through normal game rules.
 
 ## Worked use case: restore a campaign safely

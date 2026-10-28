@@ -1,12 +1,12 @@
 import {fightOnArrival} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
-import {actBattle,endTurn,interruptAvailable} from '../game/tactical.js';
-import {enterSector} from '../game/world.js';
+import {actBattle,endTurn,interruptAvailable} from '../packages/game/tactical.js';
+import {enterSector} from '../packages/game/world.js';
 import {combatOrder} from './opening-driver.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
-import {dispatchCampaign} from '../game/campaign.js';
-import {syncBattleTime} from '../game/time.js';
-import {decodeSave,encodeSave} from '../game/save.js';
+import {dispatchCampaign} from '../packages/game/campaign.js';
+import {syncBattleTime} from '../packages/game/time.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
 function fight(request,sectorState,{controller=combatOrder,deploy,observe=()=>{},maxElapsedSeconds=Infinity}={}){let b=enterSector(request,sectorState,{placement:Boolean(deploy)}),actions=0;
  if(deploy)b=deploy(b);observe(b);assert.ok(b.elapsedSeconds<maxElapsedSeconds,'every actual deployment must retain the absolute launch margin');
  const orders=[];

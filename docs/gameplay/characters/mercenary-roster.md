@@ -69,7 +69,7 @@ Search by name, nickname, or occupation. Filter by specialty or service status. 
 
 ## Artwork
 
-![All 48 paid mercenaries](../../../assets/previews/mercenary-roster-48.webp)
+![All 48 paid mercenaries](../../../content/assets/previews/mercenary-roster-48.webp)
 
 The 41 new portraits were generated individually with the built-in image_gen tool. Exact prompts are in `assets/prompts/mercenary-portraits.json`. Sources are listed individually in the prompt manifest. The ten replacement officer portraits use `-v2.png` sources; previous sources are retained. Production files are 384 × 384 WebP images, mirrored in `assets/web/` and `web/public/art/`. Rebuild them with `node tools/build-mercenary-portraits.mjs`. The portrait manifest records dimensions and SHA-256 checksums.
 

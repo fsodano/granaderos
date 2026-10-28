@@ -2,12 +2,12 @@
 // its predecessor in memory; no second public bank or private asset is needed.
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {GLTFLoader} from '../../web/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+import {GLTFLoader} from '../../apps/web/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 const libraries=new Map();
 export function palmBefore(source){
  const url=source.manifest.animationLibraries[source.appearance.gender].url;
  if(libraries.has(url))return libraries.get(url);
- const raw=readFileSync(new URL('../../web/public'+url,import.meta.url)),size=raw.readUInt32LE(12),doc=JSON.parse(raw.subarray(20,20+size));let restored=0;
+ const raw=readFileSync(new URL('../../apps/web/public'+url,import.meta.url)),size=raw.readUInt32LE(12),doc=JSON.parse(raw.subarray(20,20+size));let restored=0;
  for(const animation of doc.animations){
   if(!['life.climbUp','life.climbDown'].includes(animation.name))continue;
   for(const channel of animation.channels){const sampler=animation.samplers[channel.sampler],old=sampler.extras?.nativeRoofFingerBeforeSampler;if(old===undefined)continue;assert.ok(Number.isInteger(old)&&old>=0&&old<channel.sampler);const prior=animation.samplers[old];assert.equal(prior.input,sampler.input);assert.equal(prior.interpolation,sampler.interpolation);channel.sampler=old;restored++;}

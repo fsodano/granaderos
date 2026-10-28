@@ -1,10 +1,10 @@
 // A held aim is the authored pre-shot frame, not a fabricated animation.
 import fs from 'node:fs/promises';
-import sharp from '../web/node_modules/sharp/lib/index.js';
+import sharp from '../apps/web/node_modules/sharp/lib/index.js';
 import {createHash} from 'node:crypto';
-import {SPRITE_APPEARANCES} from '../game/sprite-appearances.js';
-const root='assets/previews/illustrated-sprites/family-actions';
-const baseRoot='assets/previews/illustrated-sprites/packed';
+import {SPRITE_APPEARANCES} from '../packages/game/sprite-appearances.js';
+const root='content/assets/previews/illustrated-sprites/family-actions';
+const baseRoot='content/assets/previews/illustrated-sprites/packed';
 const base=JSON.parse(await fs.readFile(`${baseRoot}/manifest.json`));
 const sha=b=>createHash('sha256').update(b).digest('hex');
 for(const appearance of Object.keys(SPRITE_APPEARANCES))for(const [aim,fire] of [['aim-idle','fire'],['crouch-aim-idle','crouch-fire'],['prone-aim-idle','prone-armed-fire']]){

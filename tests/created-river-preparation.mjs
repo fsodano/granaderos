@@ -2,9 +2,9 @@ import {prepareRouteMixedBattery} from './route-battery.mjs';
 import {supplyRouteDressings} from './route-dressings.mjs';
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {contractQuote,contractExpiresSeconds} from '../game/contracts.js';
-import {artilleryTransportQuote,storedArtilleryRecord} from '../game/artillery-transport.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {contractQuote,contractExpiresSeconds} from '../packages/game/contracts.js';
+import {artilleryTransportQuote,storedArtilleryRecord} from '../packages/game/artillery-transport.js';
 import {recoverFreshPort} from './fresh-coastal-route.mjs';
 import {prepareCreatedRiverApproaches} from './created-river-approaches.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
@@ -13,9 +13,9 @@ import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 import {recoverRouteBodywear} from './route-owned-bodywear.mjs';
 import {preparePaidCoastalColumn} from './coastal-paid-column.mjs';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {carriedAmmunition} from '../game/campaign-ammunition.js';
-import {ammoCount} from '../game/ammo-types.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {carriedAmmunition} from '../packages/game/campaign-ammunition.js';
+import {ammoCount} from '../packages/game/ammo-types.js';
 
 // Reunite the real rear guard with the navy, then pay for available surviving
 // local support. Every gun, rifle, dressing, arrival and renewal uses ordinary

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { contractExpiresSeconds } from '../game/contracts.js';
+import { contractExpiresSeconds } from '../packages/game/contracts.js';
 
 export function immediateRecruitmentExpectation(campaign, combatant, term, quote, destination) {
   const second = campaign.secondOfHour ?? 0;

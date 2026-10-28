@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign} from '../game/campaign.js';
+import {dispatchCampaign} from '../packages/game/campaign.js';
 const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError,null,next.lastError);return next;};
 
 // A user must request time again after an assignment/sleep notice. Fixtures

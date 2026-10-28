@@ -1,6 +1,6 @@
 # Firearm fitting review — 2026-10-07
 
-The supplied [Escopeta Criolla reference](../../web/public/art/weapon-1804.png) shows one barrel. Its existing [firearm definition](../../game/firearm-definitions.js) has capacity one. The 1804 equipment mesh now follows both authorities. This does not add a second charge or alter loading work.
+The supplied [Escopeta Criolla reference](../../apps/web/public/art/weapon-1804.png) shows one barrel. Its existing [firearm definition](../../packages/game/firearm-definitions.js) has capacity one. The 1804 equipment mesh now follows both authorities. This does not add a second charge or alter loading work.
 
 The first selected export removed the extra barrel and fitted the 1804 part centres to its existing length. A wider exported mesh check then found the same location error on the other stretched guns: local mesh vertices were scaled, but the separate centres of sights, bands and lock plates were not.
 
@@ -18,6 +18,6 @@ These source views show the actual timed ramrod at **2.784 seconds** in the sing
 
 | Standing rod stroke | Prone rod stroke |
 | --- | --- |
-| ![Escopeta Criolla standing loading stroke with its timed ramrod](../../assets/previews/characters-3d/firearm-fitting/granadero-1804-standing-ramrod.png) | ![Escopeta Criolla prone loading stroke with its timed ramrod](../../assets/previews/characters-3d/firearm-fitting/granadero-1804-prone-ramrod.png) |
+| ![Escopeta Criolla standing loading stroke with its timed ramrod](../../content/assets/previews/characters-3d/firearm-fitting/granadero-1804-standing-ramrod.png) | ![Escopeta Criolla prone loading stroke with its timed ramrod](../../content/assets/previews/characters-3d/firearm-fitting/granadero-1804-prone-ramrod.png) |
 
 The loading interval, markers, AP costs, capacity, ammunition consumption, finite supplies and item ownership stay unchanged. **23 focused firearm/contact checks pass**, native asset verification passes with 334 clips per anatomy, and the whitespace check passes. The fitted equipment bank is 600676 bytes with SHA256 `237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5`.

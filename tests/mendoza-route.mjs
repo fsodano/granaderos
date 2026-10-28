@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import {decodeSave,encodeSave} from '../game/save.js';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {enterSector} from '../game/world.js';
-import {actBattle} from '../game/tactical.js';
-import {syncBattleTime} from '../game/time.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {enterSector} from '../packages/game/world.js';
+import {actBattle} from '../packages/game/tactical.js';
+import {syncBattleTime} from '../packages/game/time.js';
 import {meetLocalRecruit} from './campaign-test-helpers.mjs';
 
 export function prepareMendozaAssault(start){

@@ -75,10 +75,10 @@ Runtime pin scope is explicit; system macOS libraries are outside the package
 manifest. Root docs, links and ordered source equivalence receive separate
 checks before publication after pieces 15–17.
 
-The [review receipt](../../artifacts/room-floors/review-receipt.json) links the
+The [review receipt](../evidence/artifacts/room-floors/review-receipt.json) links the
 saved live evidence, material-plane proof, cost, final gate and portable source
-proof. The [read-only helper](../../artifacts/room-floors/verify-final-equivalence.py)
+proof. The [read-only helper](../evidence/artifacts/room-floors/verify-final-equivalence.py)
 checks future root source, engine and production identity. Its strict option
 also checks pinned dependencies and runtime inputs.
 
-The installed root passed the [final equivalence proof](../../artifacts/room-floors/root-final-equivalence.json) and separate [engine-state proof](../../artifacts/room-floors/root-engine-state-proof.json) before publication. See the [delivery plan](../plans/tactical-reference-graphics.md) for its PR and merge state.
+The installed root passed the [final equivalence proof](../evidence/artifacts/room-floors/root-final-equivalence.json) and separate [engine-state proof](../evidence/artifacts/room-floors/root-engine-state-proof.json) before publication. See the [delivery plan](../plans/tactical-reference-graphics.md) for its PR and merge state.

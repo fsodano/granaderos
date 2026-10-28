@@ -71,7 +71,7 @@ def _completed(manifest, assets):
 def verify_layer(root, *, allow_stale_donor=False):
     """Verify the active top layer before exposing any predecessor state."""
     root = Path(root).resolve()
-    assets = root / 'web/public/models/characters'
+    assets = root / 'apps/web/public/models/characters'
     manifest = json.loads((assets / 'manifest.json').read_bytes())
     presets, equipment = _completed(manifest, assets)
     if presets or equipment:
@@ -85,7 +85,7 @@ def verify_layer(root, *, allow_stale_donor=False):
 def _restore_library(target, manifest, presets, equipment, installer, source_root):
     """Replace private files with exact retained raw predecessors and records."""
     restored = copy.deepcopy(manifest)
-    assets = target / 'web/public/models/characters'
+    assets = target / 'apps/web/public/models/characters'
     glb = _module('apparel_predecessor_glb', source_root / 'tools/characters-3d/merge-animation-bank.py')
     originals = []
     records = [(restored['appearances'][preset]['lods'], index)
@@ -116,7 +116,7 @@ def _restore_library(target, manifest, presets, equipment, installer, source_roo
 def unwrap_body_and_record(root, preset, lod, *, allow_stale_donor=False):
     """Return a verified predecessor body/record without writing any files."""
     root = Path(root).resolve()
-    assets = root / 'web/public/models/characters'
+    assets = root / 'apps/web/public/models/characters'
     manifest = json.loads((assets / 'manifest.json').read_bytes())
     record = next(row for row in manifest['appearances'][preset]['lods'] if row['lod'] == lod)
     glb = _module('apparel_predecessor_selected_glb', root / 'tools/characters-3d/merge-animation-bank.py')
@@ -143,13 +143,13 @@ def create_predecessor_snapshot(root, target, *, allow_stale_donor=False, link_a
         assert _sha(source.read_bytes()) == digest, 'Concurrent apparel snapshot input change'
         destination = target / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
-        if link_assets and relative.startswith('web/public/models/characters/'):
+        if link_assets and relative.startswith('apps/web/public/models/characters/'):
             os.link(source, destination)
         else:
             shutil.copy2(source, destination)
-    dependencies = root / 'web/node_modules'
+    dependencies = root / 'apps/web/node_modules'
     if dependencies.is_dir():
-        (target / 'web/node_modules').symlink_to(dependencies.resolve(), target_is_directory=True)
+        (target / 'apps/web/node_modules').symlink_to(dependencies.resolve(), target_is_directory=True)
     _check_pins(root, pins)
     if presets or equipment:
         _restore_library(target, manifest, presets, equipment, _installer(root), root)
@@ -178,7 +178,7 @@ def apparel_surface_context(tool, root, receipt=None, *, selected_presets=None):
     # block their native body inputs or require a material replay.
     if not presets:
         return False
-    assets = root / 'web/public/models/characters'
+    assets = root / 'apps/web/public/models/characters'
     with tempfile.TemporaryDirectory(prefix='granaderos-apparel-surface-') as folder:
         private = Path(folder).resolve()
         _copy_inputs(root, private, pins)
@@ -199,7 +199,7 @@ def apparel_surface_context(tool, root, receipt=None, *, selected_presets=None):
         installer.verify_completed(private, presets)
         if equipment:
             installer.verify_equipment(private)
-        private_assets = private / 'web/public/models/characters'
+        private_assets = private / 'apps/web/public/models/characters'
         next_manifest = json.loads((private_assets / 'manifest.json').read_bytes())
         owned = OWNED_PASSES[tool]
         if selected_presets:

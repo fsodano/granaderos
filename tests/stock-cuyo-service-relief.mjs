@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {contractExpiresSeconds,contractQuote,contractRenewalQuote} from '../game/contracts.js';
-import {lowMoraleRenewalStatus} from '../game/morale-renewal.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {contractExpiresSeconds,contractQuote,contractRenewalQuote} from '../packages/game/contracts.js';
+import {lowMoraleRenewalStatus} from '../packages/game/morale-renewal.js';
 
-import {operativeLocation,operativeInTransit} from '../game/squads.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {extractItemQuantity,handRecord} from '../game/tactical-inventory.js';
-import {availableAmmunition,weaponAmmoType} from '../game/ammunition-types.js';
-import {WEAPONS} from '../game/data.js';
-import {decodeSave,encodeSave} from '../game/save.js';
+import {operativeLocation,operativeInTransit} from '../packages/game/squads.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {extractItemQuantity,handRecord} from '../packages/game/tactical-inventory.js';
+import {availableAmmunition,weaponAmmoType} from '../packages/game/ammunition-types.js';
+import {WEAPONS} from '../packages/game/data.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
 
 const conditionKeys=['hp','maxHp','alive','bleeding','bandaged','energy','fatigue','morale','location','residentPosition','residentSector','residentScene','asleep'];
 const condition=r=>Object.fromEntries(conditionKeys.filter(key=>Object.hasOwn(r,key)).map(key=>[key,structuredClone(r[key])]));

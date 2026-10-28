@@ -2,7 +2,7 @@
 
 [Documentation index](../README.md)
 
-Start with [asset sources and build instructions](../../assets/README.md) for
+Start with [asset sources and build instructions](../../content/assets/README.md) for
 provenance and reproducible exports. The notes below describe the browser art
 systems and their recorded scope.
 
@@ -37,6 +37,6 @@ systems and their recorded scope.
 - [Historical shared-action recovery record](archive/action-completion.md) *(archive)*
 
 See [visual decision records](../adr/README.md) for accepted direction and
-[portrait references](../../assets/portrait-references.md) for historical limits.
+[portrait references](../../content/assets/portrait-references.md) for historical limits.
 Sprite coverage counts describe the specific sequence set that was checked;
 current runtime coverage does not prove every required animation is complete.

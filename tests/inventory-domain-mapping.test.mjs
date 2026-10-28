@@ -1,15 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createBattle } from '../game/tactical.js';
+import { createBattle } from '../packages/game/tactical.js';
 import {
   readTacticalInventory,
   writeTacticalInventory,
   readIncomingPlacement,
-} from '../game/infrastructure/inventory/tactical-inventory-mapper.js';
-import { ItemTransferService } from '../game/domain/inventory/item-transfer-service.ts';
-import { readItemStack } from '../game/tactical-inventory.js';
-import { makeOutfit } from '../game/outfits.js';
-import { validateBattleSnapshot } from '../game/validate-battle.js';
+} from '../packages/game/infrastructure/inventory/tactical-inventory-mapper.js';
+import { ItemTransferService } from '../packages/game/domain/inventory/item-transfer-service.ts';
+import { readItemStack } from '../packages/game/tactical-inventory.js';
+import { makeOutfit } from '../packages/game/outfits.js';
+import { validateBattleSnapshot } from '../packages/game/validate-battle.js';
 
 function fixture() {
   return createBattle(

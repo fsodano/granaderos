@@ -5,9 +5,14 @@
 > [setup instructions](https://github.com/fsodano/granaderos#ejecutar-en-tu-equipo) and does
 > not require the engine submodule or original JA2 data.
 
+The native sources live together under `reference/native`: `engine` is the pinned
+upstream Git submodule, `overlay` supplies local C++ code, `patches` holds engine
+patches, and `mod` holds conversion data. Native tools use `.output/build` and
+`.output/dist` for generated files.
+
 ## Supported build
 
-The pinned 1dot13 engine produces **32-bit Windows executables**. Its supported upstream build uses MSVC and Ninja. The Granaderos workflow builds the game (`JA2.exe`) and map editor (`JA2MAPEDITOR.exe`) independently and packages both with the pinned 1.13 game directory and the `mod/` overlay.
+The pinned 1dot13 engine produces **32-bit Windows executables**. Its supported upstream build uses MSVC and Ninja. The Granaderos workflow builds the game (`JA2.exe`) and map editor (`JA2MAPEDITOR.exe`) independently and packages both with the pinned 1.13 game directory and the `reference/native/mod/` overlay.
 
 Requirements: Windows, Visual Studio 2022 with Desktop development with C++, Windows SDK, CMake 3.20 or newer, Ninja, Git, Python 3.12 or newer, and PowerShell 7. Use the **x86 Native Tools Command Prompt for VS 2022**, then run:
 
@@ -17,8 +22,8 @@ cd granaderos
 pwsh
 ./tools/build-windows.ps1 -Application JA2
 ./tools/build-windows.ps1 -Application JA2MAPEDITOR
-New-Item -ItemType Directory build/binaries -Force
-Copy-Item build/JA2/JA2.exe, build/JA2MAPEDITOR/JA2MAPEDITOR.exe build/binaries/
+New-Item -ItemType Directory .output/build/binaries -Force
+Copy-Item .output/build/JA2/JA2.exe, .output/build/JA2MAPEDITOR/JA2MAPEDITOR.exe .output/build/binaries/
 python tools/generate_campaign.py
 python -m unittest discover -s tests -v
 ./tools/build-package.ps1

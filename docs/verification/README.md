@@ -15,6 +15,11 @@ of each check when assessing the current version.
 
 ## Current version and recent evidence
 
+- [Repository layout, 28 October](repository-layout-2026-10-28.md)
+  — source navigation, current directory responsibilities, and documentation link checks.
+- [Domain architecture, 28 October](domain-architecture-2026-10-28.md)
+  — implemented domain, use-case, editor, persistence, and browser checks with explicit limits.
+
 - [Shipping campaign status, 12 October](../plans/core-campaign-v0.1.md)
   — merged fixes, scoped regression receipts, published 3D startup and open ending/release checks.
 - [Editor experience, 11 October](../evidence/editor-experience-2026-10-11/README.md)

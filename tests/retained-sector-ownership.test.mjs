@@ -1,14 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { initialCampaign, dispatchCampaign } from '../game/campaign.js';
-import { prepareCampaignBattle } from '../game/battle-handoff.js';
-import { encodeSave } from '../game/save.js';
-import { GameSnapshotMapper } from '../game/infrastructure/persistence/game-snapshot-mapper.js';
+import { initialCampaign, dispatchCampaign } from '../packages/game/campaign.js';
+import { prepareCampaignBattle } from '../packages/game/battle-handoff.js';
+import { encodeSave } from '../packages/game/save.js';
+import { GameSnapshotMapper } from '../packages/game/infrastructure/persistence/game-snapshot-mapper.js';
 import { enterAssault } from './assault-fixture.mjs';
 import { visit, leave } from './local-contract-fixture.mjs';
 import { initialCampaign as legacyCampaign } from './legacy-campaign-fixture.mjs';
 import { scriptedBattleReport } from './scripted-battle-report.mjs';
-import { RetainedSectorPresence } from '../game/infrastructure/world/retained-sector-presence.js';
+import { RetainedSectorPresence } from '../packages/game/infrastructure/world/retained-sector-presence.js';
 
 function order(campaign, action) {
   const next = dispatchCampaign(campaign, action);

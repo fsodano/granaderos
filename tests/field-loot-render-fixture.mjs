@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import {act} from '../web/node_modules/react/index.js';
-import {tacticalGridLabel} from '../game/tactical-grid.js';
-import {playerKnownBattle,playerKnownCampaign} from '../game/player-known-state.js';
+import {act} from '../apps/web/node_modules/react/index.js';
+import {tacticalGridLabel} from '../packages/game/tactical-grid.js';
+import {playerKnownBattle,playerKnownCampaign} from '../packages/game/player-known-state.js';
 
 export function savedField(m){
  const state=m.saved(),view=m.read();

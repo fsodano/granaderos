@@ -6,7 +6,7 @@ Example: python3 tools/characters-3d/build-motion-increment.py --gesture reload 
 from pathlib import Path
 import argparse,concurrent.futures,hashlib,json,subprocess,tempfile
 from importlib.util import spec_from_file_location,module_from_spec
-ROOT=Path(__file__).resolve().parents[2];HERE=ROOT/'assets/source/characters-3d/authoring';OUT=ROOT/'web/public/models/characters'
+ROOT=Path(__file__).resolve().parents[2];HERE=ROOT/'content/assets/source/characters-3d/authoring';OUT=ROOT/'apps/web/public/models/characters'
 p=argparse.ArgumentParser();p.add_argument('--gesture',action='append',required=True);p.add_argument('--equipment',required=True);p.add_argument('--posture');p.add_argument('--bone',action='append');p.add_argument('--metadata-field',action='append');p.add_argument('--existing-only',action='store_true');p.add_argument('--blender',default='/Applications/Blender.app/Contents/MacOS/Blender');a=p.parse_args()
 loader=spec_from_file_location('merge_animation_bank',Path(__file__).with_name('merge-animation-bank.py'));merger=module_from_spec(loader);loader.loader.exec_module(merger)
 loader=spec_from_file_location('gltf_pack',HERE/'gltf_pack.py');packer=module_from_spec(loader);loader.loader.exec_module(packer)
@@ -35,7 +35,7 @@ with tempfile.TemporaryDirectory(prefix='granaderos-motion-')as scratch:
                         if field in replacement:clip[field]=replacement[field]
         else:bank['clips']=[clips.pop(clip['name'],clip)for clip in bank['clips']]+([]if a.existing_only else list(clips.values()))
         bank['bytes']=len(raw);bank['sha256']=hashlib.sha256(raw).hexdigest()
-    overrides=json.loads(subprocess.check_output(['node','--input-type=module','-e',"import{ACTOR_ITEM_CLIP_OVERRIDES}from './game/actor-action-contract.js';console.log(JSON.stringify(ACTOR_ITEM_CLIP_OVERRIDES));"],cwd=ROOT,text=True))
+    overrides=json.loads(subprocess.check_output(['node','--input-type=module','-e',"import{ACTOR_ITEM_CLIP_OVERRIDES}from './packages/game/actor-action-contract.js';console.log(JSON.stringify(ACTOR_ITEM_CLIP_OVERRIDES));"],cwd=ROOT,text=True))
     if not a.existing_only:
         for item,binding in overrides.items():manifest['equipment']['items'][item]['clipOverrides']=binding
     manifest_path.write_text(json.dumps(manifest,indent=2)+'\n')

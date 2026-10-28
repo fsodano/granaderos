@@ -2,23 +2,23 @@ import {prepareRouteBattery,prepareRouteMixedBattery} from './route-battery.mjs'
 import {supplyRouteDressings} from './route-dressings.mjs';
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
 import {recoverFreshPort} from './fresh-coastal-route.mjs';
 import {prepareFinalAssault} from './final-campaign-route.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
-import {decodeSave,encodeSave} from '../game/save.js';
-import {depotSelection} from '../game/artillery-depots.js';
-import {artilleryProfile} from '../game/artillery-definitions.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {carriedAmmunition} from '../game/campaign-ammunition.js';
-import {ammoTypeFor,ammoCount} from '../game/ammo-types.js';
-import {doctorRate} from '../game/medical-care.js';
-import {contractQuote} from '../game/contracts.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
+import {depotSelection} from '../packages/game/artillery-depots.js';
+import {artilleryProfile} from '../packages/game/artillery-definitions.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {carriedAmmunition} from '../packages/game/campaign-ammunition.js';
+import {ammoTypeFor,ammoCount} from '../packages/game/ammo-types.js';
+import {doctorRate} from '../packages/game/medical-care.js';
+import {contractQuote} from '../packages/game/contracts.js';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
-import {enterSector} from '../game/world.js';
-import {actBattle,getReachable,artilleryContact,artilleryReloadPreview,artilleryCrewPlan} from '../game/tactical.js';
-import {syncBattleTime} from '../game/time.js';
+import {enterSector} from '../packages/game/world.js';
+import {actBattle,getReachable,artilleryContact,artilleryReloadPreview,artilleryCrewPlan} from '../packages/game/tactical.js';
+import {syncBattleTime} from '../packages/game/time.js';
 // Recover the real capital survivors and pay for the remaining living relief.
 // The commander stays at the hospital while the field column returns north.
 export function prepareCreatedNorthernRelief(start,{report=()=>{},continuationDays=0}={}){

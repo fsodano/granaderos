@@ -1,7 +1,7 @@
 // Independent decoded-stream and oriented-corner checks for native garments.
 // No installer/source verdict decides whether the published data stays exact.
 import {readFileSync} from 'node:fs';
-import {Vector3} from '../web/node_modules/three/build/three.module.js';
+import {Vector3} from '../apps/web/node_modules/three/build/three.module.js';
 
 const widths={SCALAR:1,VEC2:2,VEC3:3,VEC4:4,MAT2:4,MAT3:9,MAT4:16};
 const formats={5120:['readInt8',1,127],5121:['readUInt8',1,255],5122:['readInt16LE',2,32767],5123:['readUInt16LE',2,65535],5125:['readUInt32LE',4,4294967295],5126:['readFloatLE',4,1]};

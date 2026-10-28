@@ -16,7 +16,7 @@ FIELD='coarseGarmentSurface'
 
 
 def _selection_rows(root,original):
-    root=Path(root).resolve();assets=root/'web/public/models/characters';manifest=json.loads((assets/'manifest.json').read_bytes())
+    root=Path(root).resolve();assets=root/'apps/web/public/models/characters';manifest=json.loads((assets/'manifest.json').read_bytes())
     correction=_module('family_selection_correction',root/'tools/characters-3d/build-coarse-garment-surfaces.py')
     family=_module('family_selection_frozen',root/'tools/characters-3d/build-family-cloth-depth.py')
     glb=_module('family_selection_glb',root/'tools/characters-3d/merge-animation-bank.py');views=[]

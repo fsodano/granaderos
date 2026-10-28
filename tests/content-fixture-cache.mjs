@@ -1,5 +1,5 @@
-import {canonicalContent} from '../game/content-identity.js';
-import {defaultContentPackage} from '../game/content-package.js';
+import {canonicalContent} from '../packages/game/content-identity.js';
+import {defaultContentPackage} from '../packages/game/content-package.js';
 
 // Each distinct authored package still earns its fixture through real orders.
 // Repeated consumers receive independent copies of that exact completed setup.

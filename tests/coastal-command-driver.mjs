@@ -1,16 +1,16 @@
 // Keep the commander behind the battery and fire from an affordable legal stance.
-import {sameSurface} from '../game/tactical-space.js';
+import {sameSurface} from '../packages/game/tactical-space.js';
 import {publicRouteView,usefulRouteFiringPosture} from './route-infantry-progress.mjs';
 import {mountainBatteryOrder} from './mountain-battery-driver.mjs';
 import {knownRouteShotSafety} from './route-fire-safety.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
-import {chooseEnemyAction} from '../game/tactical-ai.js';
-import {chooseGrenadeThrow} from '../game/tactical-ai-grenades.js';
-import {artilleryProfile} from '../game/artillery-definitions.js';
-import {getReachable,teamCanSee,firearmShotOptions,actionCosts,stanceCost,artilleryContact,hasFirearm} from '../game/tactical.js';
-import {firearmServiceable} from '../game/firearm-serviceability.js';
-import {lowerWeapon} from '../game/weapon-readiness.js';
-import {advanceBattleClock,COMBAT_ROUND_SECONDS} from '../game/time.js';
+import {chooseEnemyAction} from '../packages/game/tactical-ai.js';
+import {chooseGrenadeThrow} from '../packages/game/tactical-ai-grenades.js';
+import {artilleryProfile} from '../packages/game/artillery-definitions.js';
+import {getReachable,teamCanSee,firearmShotOptions,actionCosts,stanceCost,artilleryContact,hasFirearm} from '../packages/game/tactical.js';
+import {firearmServiceable} from '../packages/game/firearm-serviceability.js';
+import {lowerWeapon} from '../packages/game/weapon-readiness.js';
+import {advanceBattleClock,COMBAT_ROUND_SECONDS} from '../packages/game/time.js';
 export const coastalCommandOrder=(b,u,{leaderId='7',helperId='8',screenDistance=Infinity,commanderDistance=3,requireCrewForCover=false}={})=>{
  const normal=mountainBatteryOrder(b,u,{leaderId,helperId,screenDistance}),gun=b.artillery.find(g=>g.side===u.side);
  const coverCommander=!requireCrewForCover||b.units.some(actor=>actor.id===leaderId&&actor.hp>=15&&!actor.routed&&!actor.unconscious&&!actor.departure);

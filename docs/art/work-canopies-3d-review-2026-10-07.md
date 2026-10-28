@@ -2,8 +2,8 @@
 
 The current 2D building renderer defines the posta masonry veranda, warehouse
 loading porch and smithy forge porch in `web/app/TacticalBuildingDetails.tsx`.
-The retained [warehouse exterior](../../assets/previews/buildings/warehouse-exterior.png)
-and [catalogue](../../assets/previews/buildings/catalogue.png) provide the broader
+The retained [warehouse exterior](../../content/assets/previews/buildings/warehouse-exterior.png)
+and [catalogue](../../content/assets/previews/buildings/catalogue.png) provide the broader
 roof, timber and masonry reference. They do not establish measured historic
 dimensions for these canopies.
 

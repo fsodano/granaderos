@@ -1,8 +1,8 @@
 import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {decodeSave,encodeSave} from '../game/save.js';
-import {contractExpiresSeconds} from '../game/contracts.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
+import {contractExpiresSeconds} from '../packages/game/contracts.js';
 
 // A later infantry squad uses the real friendly southern road. The first
 // ready squad remains at the western gun depot when the attack is issued.

@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import {rosterFor} from '../game/campaign.js';
-import {contractQuote} from '../game/contracts.js';
-import {actBattle,exitPreview} from '../game/tactical.js';
-import {sectorDeploymentAction,sectorDeploymentModel} from '../game/sector-deployment.js';
-import {queueSquadTravel,travelLegHours} from '../game/squad-travel.js';
-import {decodeSave,encodeSave} from '../game/save.js';
+import {rosterFor} from '../packages/game/campaign.js';
+import {contractQuote} from '../packages/game/contracts.js';
+import {actBattle,exitPreview} from '../packages/game/tactical.js';
+import {sectorDeploymentAction,sectorDeploymentModel} from '../packages/game/sector-deployment.js';
+import {queueSquadTravel,travelLegHours} from '../packages/game/squad-travel.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
 import {createFreshRouteOrders} from './fresh-cuyo-route.mjs';
 import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 

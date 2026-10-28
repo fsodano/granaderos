@@ -63,7 +63,7 @@ def prove_preserved(before,after,names=DEFAULT_NAMES):
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[2]);parser.add_argument('--blender',default='/Applications/Blender.app/Contents/MacOS/Blender');parser.add_argument('--receipt',type=Path);parser.add_argument('--clip',action='append',choices=sorted(SUPPORTED_NAMES));args=parser.parse_args()
     names=set(args.clip)if args.clip else DEFAULT_NAMES
-    root=args.root.resolve();authoring=root/'assets/source/characters-3d/authoring';out=root/'web/public/models/characters'
+    root=args.root.resolve();authoring=root/'content/assets/source/characters-3d/authoring';out=root/'apps/web/public/models/characters'
     merger=module('guard_merge',root/'tools/characters-3d/merge-animation-bank.py');packer=module('guard_pack',authoring/'gltf_pack.py');manifest_path=out/'manifest.json';manifest=json.loads(manifest_path.read_text());source=hashlib.sha256((authoring/'guard_support.py').read_bytes()).hexdigest();receipt={}
     with tempfile.TemporaryDirectory(prefix='granaderos-native-guard-')as scratch:
         def export(gender):

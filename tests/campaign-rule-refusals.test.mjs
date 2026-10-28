@@ -1,17 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { initialCampaign, dispatchCampaign, rosterFor } from '../game/campaign.js';
-import { GameUnitOfWork } from '../game/infrastructure/persistence/game-unit-of-work.ts';
-import { DomainRefusal, DomainRefusalCode } from '../game/domain/shared/domain-refusal.ts';
-import { CampaignRuleRefusal } from '../game/infrastructure/shared/campaign-rule-refusal.ts';
-import { domainRefusalMessage } from '../game/infrastructure/shared/domain-refusal-message.js';
-import { CampaignRecruitCombatantRepository } from '../game/infrastructure/personnel/campaign-recruit-combatant.repository.js';
-import { CampaignRecruitmentMapper } from '../game/infrastructure/personnel/campaign-recruitment-mapper.js';
-import { CampaignRenewServiceContractRepository } from '../game/infrastructure/personnel/campaign-renew-service-contract.repository.js';
-import { CampaignTalkToCharacterRepository } from '../game/infrastructure/session/talk-to-character-repository.js';
-import { CreateGameSessionUseCase } from '../game/application/create-game-session/create-game-session.use-case.ts';
-import { RestoreGameUseCase } from '../game/application/restore-game/restore-game.use-case.ts';
-import { SaveGameUseCase } from '../game/application/save-game/save-game.use-case.ts';
+import { initialCampaign, dispatchCampaign, rosterFor } from '../packages/game/campaign.js';
+import { GameUnitOfWork } from '../packages/game/infrastructure/persistence/game-unit-of-work.ts';
+import { DomainRefusal, DomainRefusalCode } from '../packages/game/domain/shared/domain-refusal.ts';
+import { CampaignRuleRefusal } from '../packages/game/infrastructure/shared/campaign-rule-refusal.ts';
+import { domainRefusalMessage } from '../packages/game/infrastructure/shared/domain-refusal-message.js';
+import { CampaignRecruitCombatantRepository } from '../packages/game/infrastructure/personnel/campaign-recruit-combatant.repository.js';
+import { CampaignRecruitmentMapper } from '../packages/game/infrastructure/personnel/campaign-recruitment-mapper.js';
+import { CampaignRenewServiceContractRepository } from '../packages/game/infrastructure/personnel/campaign-renew-service-contract.repository.js';
+import { CampaignTalkToCharacterRepository } from '../packages/game/infrastructure/session/talk-to-character-repository.js';
+import { CreateGameSessionUseCase } from '../packages/game/application/create-game-session/create-game-session.use-case.ts';
+import { RestoreGameUseCase } from '../packages/game/application/restore-game/restore-game.use-case.ts';
+import { SaveGameUseCase } from '../packages/game/application/save-game/save-game.use-case.ts';
 import { readyLocal } from './local-contract-fixture.mjs';
 
 function expectCampaignRefusal(action, code) {

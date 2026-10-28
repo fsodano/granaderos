@@ -1,16 +1,16 @@
 import {readFile,writeFile} from 'node:fs/promises';
-import sharp from '../web/node_modules/sharp/lib/index.js';
-import {SPRITE_APPEARANCES} from '../game/sprite-appearances.js';
-import {REQUIRED_SPRITE_SEQUENCES,requiredSpriteAtlases} from '../game/sprite-action-requirements.js';
+import sharp from '../apps/web/node_modules/sharp/lib/index.js';
+import {SPRITE_APPEARANCES} from '../packages/game/sprite-appearances.js';
+import {REQUIRED_SPRITE_SEQUENCES,requiredSpriteAtlases} from '../packages/game/sprite-action-requirements.js';
 
-const root='assets/previews/illustrated-sprites';
+const root='content/assets/previews/illustrated-sprites';
 const manifest=JSON.parse(await readFile(`${root}/packed/manifest.json`,'utf8'));
 const directions=manifest.directions;
 const names=Object.keys(SPRITE_APPEARANCES).map(id=>`${id}-idle`).filter(name=>manifest.atlases[name]);
 const tiles=[];
 const label=(text,width=1248,height=30)=>Buffer.from(`<svg width="${width}" height="${height}"><text x="12" y="22" fill="#ece4d6" font-family="sans-serif" font-size="16">${text}</text></svg>`);
 tiles.push({input:label('Legacy sprites — 3× zoom'),left:0,top:0});
-tiles.push({input:await sharp('web/public/art/pixel/granadero-idle-atlas.png').resize(1248,156,{kernel:'nearest'}).png().toBuffer(),left:0,top:30});
+tiles.push({input:await sharp('apps/web/public/art/pixel/granadero-idle-atlas.png').resize(1248,156,{kernel:'nearest'}).png().toBuffer(),left:0,top:30});
 for(const [i,name] of names.entries()){
  const top=186*(i+1);
  tiles.push({input:label(`${name} — new source at the same map scale`),left:0,top});

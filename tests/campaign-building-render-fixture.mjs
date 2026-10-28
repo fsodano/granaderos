@@ -1,9 +1,9 @@
 import {register} from 'node:module';
 import {createHash} from 'node:crypto';
 register('./tactical-render-loader.mjs',import.meta.url);
-const {WorldGeometry,disposeWorldNode}=await import('../web/lib/three/world-geometry.ts');
-const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
-const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
+const {WorldGeometry,disposeWorldNode}=await import('../apps/web/lib/three/world-geometry.ts');
+const {WorldMaterials}=await import('../apps/web/lib/three/world-materials.ts');
+const {buildBuilding}=await import('../apps/web/lib/three/world-buildings.ts');
 export const tileMetres=1.2360585147470482;
 
 export function renderBuilding(map,building){

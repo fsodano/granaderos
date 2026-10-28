@@ -1,8 +1,8 @@
 # DESIGN.md — Tactical HUD: JA2 Bottom-Strip Disposition
 
-**Scope:** Restructure the tactical battle HUD (`web/app/Battlefield.tsx` + `web/app/tactical-hud.css`) into Jagged Alliance 2's bottom-strip disposition. This document is the **implementation contract**: a later CSS task styles the classes below verbatim, and later components use them verbatim. **Class names are FROZEN — exact spelling matters.** No new visual tokens are introduced; everything reuses the existing Granaderos palette, fonts, and primitives.
+**Scope:** Restructure the tactical battle HUD (`apps/web/app/Battlefield.tsx` + `apps/web/app/tactical-hud.css`) into Jagged Alliance 2's bottom-strip disposition. This document is the **implementation contract**: a later CSS task styles the classes below verbatim, and later components use them verbatim. **Class names are FROZEN — exact spelling matters.** No new visual tokens are introduced; everything reuses the existing Granaderos palette, fonts, and primitives.
 
-**Out of scope:** field rendering (`TacticalScene`), game rules (`game/tactical.js`), campaign screens, save/menu chrome. The field (`svg.tactical-field`), `battle-error`, and `battle-result` overlays remain as-is above the strip.
+**Out of scope:** field rendering (`TacticalScene`), game rules (`packages/game/tactical.js`), campaign screens, save/menu chrome. The field (`svg.tactical-field`), `battle-error`, and `battle-result` overlays remain as-is above the strip.
 
 ---
 
@@ -23,7 +23,7 @@ Observed from authentic Jagged Alliance 2 tactical screenshots, **disposition on
 
 ### 1.2 Source B — current Granaderos tokens
 
-Read in full: `web/app/globals.css` (35 lines), `web/app/tactical-hud.css` (19 lines), `web/app/Battlefield.tsx` (89 lines), `web/app/TacticalMinimap.tsx` (11 lines), `web/app/RecoveredInventory.tsx` (8 lines), `web/app/TrainingProgress.tsx` (3 lines). Exact values cited in §2.
+Read in full: `apps/web/app/globals.css` (35 lines), `apps/web/app/tactical-hud.css` (19 lines), `apps/web/app/Battlefield.tsx` (89 lines), `apps/web/app/TacticalMinimap.tsx` (11 lines), `apps/web/app/RecoveredInventory.tsx` (8 lines), `apps/web/app/TrainingProgress.tsx` (3 lines). Exact values cited in §2.
 
 ---
 

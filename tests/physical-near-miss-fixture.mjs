@@ -1,11 +1,11 @@
 import {fightOnArrivalOrder} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign,rosterFor,contractQuote} from '../game/campaign.js';
-import {defaultContentPackage} from '../game/content-package.js';
-import {prepareCampaignBattle} from '../game/battle-handoff.js';
-import {createBattle,actBattle,presentedActBattle,endTurn,presentedEndTurn,weaponFor} from '../game/tactical.js';
-import {syncBattleTime} from '../game/time.js';
-import {encodeSave,decodeSave} from '../game/save.js';
+import {initialCampaign,dispatchCampaign,rosterFor,contractQuote} from '../packages/game/campaign.js';
+import {defaultContentPackage} from '../packages/game/content-package.js';
+import {prepareCampaignBattle} from '../packages/game/battle-handoff.js';
+import {createBattle,actBattle,presentedActBattle,endTurn,presentedEndTurn,weaponFor} from '../packages/game/tactical.js';
+import {syncBattleTime} from '../packages/game/time.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
 
 export const physicalNearMissActor=(battle,id='110')=>battle.units.find(unit=>unit.id===id);
 export const physicalNearMissSaved=pair=>decodeSave(encodeSave(pair.campaign,pair.battle??null));

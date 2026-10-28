@@ -2,11 +2,11 @@ import { mkdir, writeFile, rename, rm, readFile } from "node:fs/promises";
 import { resolve, dirname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 import { randomUUID } from "node:crypto";
-import { validateMap } from "../game/public/campaign-editor-api.js";
-import { scaffoldDocuments } from "../campaign-editor/infrastructure/project-scaffold.js";
-export { scaffoldDocuments } from "../campaign-editor/infrastructure/project-scaffold.js";
+import { validateMap } from "../packages/game/public/campaign-editor-api.js";
+import { scaffoldDocuments } from "../apps/campaign-editor/infrastructure/project-scaffold.js";
+export { scaffoldDocuments } from "../apps/campaign-editor/infrastructure/project-scaffold.js";
 import { verifyCampaignFolder } from "./campaign-export.mjs";
-import { validateCampaignManifest } from "../campaign-format/campaign-manifest.js";
+import { validateCampaignManifest } from "../packages/campaign-format/campaign-manifest.js";
 import { refreshCampaignAssetFolder } from "./refresh-campaign-assets.mjs";
 
 const json = (value) => JSON.stringify(value, null, 2) + "\n";
@@ -32,7 +32,7 @@ export async function scaffoldCampaign(id, destination) {
       if (!result.valid) throw Error(result.errors.join("\n"));
       await writeFile(resolve(temporary, `maps/${id}.json`), json(map));
     }
-    await writeFile(resolve(temporary, "assets/guide.png"), documents.image);
+    await writeFile(resolve(temporary, "content/assets/guide.png"), documents.image);
     await verifyCampaignFolder(temporary);
     // mkdir is exclusive: an existing campaign is never overwritten.
     await mkdir(folder);

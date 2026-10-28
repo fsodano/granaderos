@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {artilleryProfile} from '../game/artillery-definitions.js';
-import {sectorDeploymentModel,sectorDeploymentAction} from '../game/sector-deployment.js';
+import {artilleryProfile} from '../packages/game/artillery-definitions.js';
+import {sectorDeploymentModel,sectorDeploymentAction} from '../packages/game/sector-deployment.js';
 import {coastalBatteryController} from './coastal-command-driver.mjs';
 
 // Place real arrivals beside owned pieces. Existing crew-aware orders choose

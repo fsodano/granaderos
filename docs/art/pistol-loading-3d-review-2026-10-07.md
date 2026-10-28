@@ -8,11 +8,11 @@ The face check now uses the actual published, deformed skin triangles, including
 
 The rod uses the existing mesh at the actual 25–28.25 cm pistol barrel length. A second reflection preserves its proper rotation and positive dimensions when the other hand works. Native meshes, bone positions, skin bindings and anatomy remain unchanged.
 
-The current [Granadero reload sprite](../../web/public/art/illustrated/granadero-reload.png) and [woman scout reload sprite](../../web/public/art/illustrated/woman-scout-reload.png) show the shared rifle sequence: cartridge reach, muzzle contact, rod strokes, then ready recovery. They guide the sequence and bent arm support. Their long rifle does not supply pistol dimensions. The new source views use the actual 1806 equipment geometry:
+The current [Granadero reload sprite](../../apps/web/public/art/illustrated/granadero-reload.png) and [woman scout reload sprite](../../apps/web/public/art/illustrated/woman-scout-reload.png) show the shared rifle sequence: cartridge reach, muzzle contact, rod strokes, then ready recovery. They guide the sequence and bent arm support. Their long rifle does not supply pistol dimensions. The new source views use the actual 1806 equipment geometry:
 
 | Muzzle contact | Standing rod stroke | Crouched rod stroke | Prone rod stroke |
 | --- | --- | --- | --- |
-| ![Standing pistol muzzle contact](../../assets/previews/characters-3d/pistol-loading/woman-scout-standing-muzzle.png) | ![Standing pistol ramrod stroke](../../assets/previews/characters-3d/pistol-loading/woman-scout-standing-ramrod.png) | ![Crouched pistol ramrod stroke](../../assets/previews/characters-3d/pistol-loading/woman-scout-crouched-ramrod.png) | ![Prone pistol ramrod stroke](../../assets/previews/characters-3d/pistol-loading/woman-scout-prone-ramrod.png) |
+| ![Standing pistol muzzle contact](../../content/assets/previews/characters-3d/pistol-loading/woman-scout-standing-muzzle.png) | ![Standing pistol ramrod stroke](../../content/assets/previews/characters-3d/pistol-loading/woman-scout-standing-ramrod.png) | ![Crouched pistol ramrod stroke](../../content/assets/previews/characters-3d/pistol-loading/woman-scout-crouched-ramrod.png) | ![Prone pistol ramrod stroke](../../content/assets/previews/characters-3d/pistol-loading/woman-scout-prone-ramrod.png) |
 
 These are source renders. The contact and mirrored-hand checks also use the published GLB bodies, equipment and animation banks in the actual actor runtime. The live UI check on the committed pistol bank confirmed one cartridge per loaded pistol, one final state commit, and input blocking during both charges. The separate four-bore exploration scene loaded both 1808 guns from eight to four reserve cartridges and loaded the offhand alone from eight to six. Screenshots of all four rod strokes and the female offhand were viewed. The source previews have now been rebuilt with the actual timed rod at **2.784 seconds**. The review renderer explicitly changes the prop from bone parenting to object parenting when it attaches to an empty socket, then checks its visible rod axis and muzzle fit. That source-render defect did not affect the published runtime tool.
 
@@ -20,7 +20,7 @@ The close views make the actual short rod visible outside the sleeve. They use t
 
 | Standing tool detail | Prone tool detail |
 | --- | --- |
-| ![Standing short rod entering the muzzle](../../assets/previews/characters-3d/pistol-loading/woman-scout-standing-ramrod-detail.png) | ![Prone short rod entering the muzzle](../../assets/previews/characters-3d/pistol-loading/woman-scout-prone-ramrod-detail.png) |
+| ![Standing short rod entering the muzzle](../../content/assets/previews/characters-3d/pistol-loading/woman-scout-standing-ramrod-detail.png) | ![Prone short rod entering the muzzle](../../content/assets/previews/characters-3d/pistol-loading/woman-scout-prone-ramrod-detail.png) |
 
 The 4.8-second native loading interval, phase boundaries, AP costs, ammunition consumption and finite supplies stay unchanged. Tests use real reload orders for all four pistol bores and for partial second-barrel work. Hidden, replaced and pocketed guns cannot establish loading evidence.
 

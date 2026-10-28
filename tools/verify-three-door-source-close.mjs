@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
-import {createArchitectureReviewBattle} from '../web/app/renderer-sandbox/architecture-fixtures.js';
-import {entranceFrame} from '../game/building-profile.js';
+import {createArchitectureReviewBattle} from '../apps/web/app/renderer-sandbox/architecture-fixtures.js';
+import {entranceFrame} from '../packages/game/building-profile.js';
 const {chromium}=await import(process.env.PLAYWRIGHT_MODULE||'playwright');
-const url=process.env.GRANADEROS_REVIEW_URL??'http://127.0.0.1:3150/renderer-sandbox',output=resolve(process.env.GRANADEROS_REVIEW_OUTPUT??'artifacts/door-source-review/current-close-ui');await mkdir(output,{recursive:true});
+const url=process.env.GRANADEROS_REVIEW_URL??'http://127.0.0.1:3150/renderer-sandbox',output=resolve(process.env.GRANADEROS_REVIEW_OUTPUT??'.output/artifacts/door-source-review/current-close-ui');await mkdir(output,{recursive:true});
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE}),errors=[],views=[];
 try{const page=await browser.newPage({viewport:{width:1440,height:1000}});page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error'&&!m.location().url.endsWith('/favicon.ico'))errors.push(m.text());});
  const ready=()=>page.waitForFunction(()=>{const c=document.querySelector('canvas[data-sector-renderer="three"]');return c?.dataset.actors&&c.dataset.actors===c.dataset.loadedActors&&!document.querySelector('.tactical-three-status');});

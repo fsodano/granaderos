@@ -36,7 +36,7 @@ class STCITest(unittest.TestCase):
         with self.assertRaises(ValueError): decode(bytes(corrupt))
 
     def test_independent_upstream_rgb_fixture_header(self):
-        path = ROOT/'engine/gamedir/Data-UB/loadscreens/LS_TUNNELS.STI'
+        path = ROOT/'reference/native/engine/gamedir/Data-UB/loadscreens/LS_TUNNELS.STI'
         if not path.exists(): self.skipTest('Recursive upstream gamedir checkout unavailable')
         fixture = path.read_bytes()
         w,h,rgba = decode(fixture)
@@ -46,7 +46,7 @@ class STCITest(unittest.TestCase):
         self.assertEqual(ours[:64], fixture[:64])
 
     def test_independent_upstream_multiframe_portrait(self):
-        path = ROOT/'engine/gamedir/Base/faces/167.STI'
+        path = ROOT/'reference/native/engine/gamedir/Base/faces/167.STI'
         if not path.exists(): self.skipTest('Recursive upstream gamedir checkout unavailable')
         fixture = path.read_bytes()
         self.assertEqual(decode(fixture)[:2], (48,43))
@@ -55,14 +55,14 @@ class STCITest(unittest.TestCase):
             self.assertEqual(len(rgba), w*h*4)
 
     def test_shipped_assets_are_decodable(self):
-        paths = list((ROOT/'assets/engine').glob('*.sti'))
+        paths = list((ROOT/'content/assets/engine').glob('*.sti'))
         self.assertGreaterEqual(len(paths), 4)
         for path in paths:
             w,h,rgba = decode(path.read_bytes())
             self.assertEqual(len(rgba), w*h*4, path)
 
     def test_installed_assets_match_recorded_source_and_output(self):
-        manifest = json.loads((ROOT/'assets/manifest.json').read_text())
+        manifest = json.loads((ROOT/'content/assets/manifest.json').read_text())
         for asset in manifest['assets']:
             source = (ROOT/asset['source']).read_bytes()
             output = (ROOT/asset['output']).read_bytes()

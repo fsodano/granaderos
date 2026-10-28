@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { initialCampaign } from './legacy-campaign-fixture.mjs';
-import { dispatchCampaign } from '../game/campaign.js';
-import { advanceCampaignWorld } from '../game/military-remains.js';
+import { dispatchCampaign } from '../packages/game/campaign.js';
+import { advanceCampaignWorld } from '../packages/game/military-remains.js';
 import { visit, leave } from './local-contract-fixture.mjs';
 
 test('a transferred auxiliary does not suffer condition changes in its archived departure sector', () => {

@@ -2,7 +2,7 @@
 
 Date: 28 October 2026.
 
-[Accepted plan](../../plans/accepted/domain-architecture.md) ·
+[Accepted plan](../plans/accepted/domain-architecture.md) ·
 [Architecture guide](../architecture/README.md) ·
 [C4 levels 1–3](../architecture/c4.md)
 
@@ -35,8 +35,8 @@ and the documented saved-field and command aliases.
 
 ## Representative executable evidence
 
-- [Recruitment domain](../../game/domain/personnel/recruitment-service.test.ts),
-  [character abilities](../../game/domain/personnel/character-abilities.test.ts),
+- [Recruitment domain](../../packages/game/domain/personnel/recruitment-service.test.ts),
+  [character abilities](../../packages/game/domain/personnel/character-abilities.test.ts),
   [ability mapping](../../tests/character-abilities-mapping.test.mjs),
   [immediate recruitment](../../tests/immediate-recruitment.test.mjs),
   [authored equipment](../../tests/recruitment-equipment.test.mjs), and
@@ -55,13 +55,13 @@ and the documented saved-field and command aliases.
   [worker admission](../../tests/battle-worker.test.mjs).
 - [Canonical persistence](../../tests/game-persistence.test.mjs),
   [retained-sector ownership](../../tests/retained-sector-ownership.test.mjs),
-  [transaction rules](../../game/infrastructure/persistence/game-unit-of-work.test.ts),
+  [transaction rules](../../packages/game/infrastructure/persistence/game-unit-of-work.test.ts),
   [browser writer ownership](../../tests/browser-save-writer.test.mjs),
   [autosave identity](../../tests/campaign-autosave-identity.test.mjs), and
   [visible save status](../../tests/save-progress.test.mjs).
-- [Editor policy](../../campaign-editor/tests/editor-policy.test.mjs),
-  [editor project](../../campaign-editor/tests/campaign-project.test.mjs), and
-  [public integration](../../campaign-editor/tests/public-integration.test.mjs).
+- [Editor policy](../../apps/campaign-editor/tests/editor-policy.test.mjs),
+  [editor project](../../apps/campaign-editor/tests/campaign-project.test.mjs), and
+  [public integration](../../apps/campaign-editor/tests/public-integration.test.mjs).
 
 ## Browser checks
 

@@ -14,7 +14,7 @@ its complete tactical HUD fit the review viewport.
 Facade windows, tower faces and trim now follow the entrance direction. Civic
 cupolas rest above the facade instead of filling the entrance. Static clock
 faces, church bells, gallery braces, a pulpería trade sign and a capped rural
-chimney restore detail visible in the [existing building catalogue](../../assets/previews/buildings/catalogue.png).
+chimney restore detail visible in the [existing building catalogue](../../content/assets/previews/buildings/catalogue.png).
 Pitched roofs have fascia, thickness and rounded ridge joins. Default flat
 terraces use masonry and retain explicit authored roof finishes.
 
@@ -559,7 +559,7 @@ The low-ceiling headwear limit, broader posture bank, braking steps and the
 remaining paired melee actions still need review. The broader published bank
 audit also found floor penetration in sideways steps, prone motion and lance
 locomotion; native boot grounding remains under correction. Warehouse buttresses and the posta porch remain under source comparison. The
-[character review](../../assets/source/characters-3d/REVIEW.md) records the
+[character review](../../content/assets/source/characters-3d/REVIEW.md) records the
 accepted standing reference and the retained motion bank separately.
 
 The inspected sprites provide anatomy, clothing, grips and silhouette targets;

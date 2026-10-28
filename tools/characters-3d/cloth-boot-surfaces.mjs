@@ -1,5 +1,5 @@
 // Exact weighted garment/boot surfaces and conservative triangle broad phase.
-import {Vector3,Box3,Ray} from '../../web/node_modules/three/build/three.module.js';
+import {Vector3,Box3,Ray} from '../../apps/web/node_modules/three/build/three.module.js';
 export function surface(mesh){const p=mesh.geometry.attributes.position,ix=mesh.geometry.index,points=Array.from({length:p.count},(_,i)=>mesh.getVertexPosition(i,new Vector3()).applyMatrix4(mesh.matrixWorld)),tris=[];for(let n=0;n<ix.count;n+=3){const indices=[ix.getX(n),ix.getX(n+1),ix.getX(n+2)];const vertices=indices.map(i=>points[i]);tris.push({indices,vertices,box:new Box3().setFromPoints(vertices)});}return tris;}
 export function tree(tris){const box=new Box3();for(const t of tris)box.union(t.box);if(tris.length<=8)return {box,tris};const size=box.getSize(new Vector3()),axis=size.x>size.y&&size.x>size.z?'x':size.y>size.z?'y':'z';tris.sort((a,b)=>(a.box.min[axis]+a.box.max[axis])-(b.box.min[axis]+b.box.max[axis]));const mid=Math.floor(tris.length/2);return {box,left:tree(tris.slice(0,mid)),right:tree(tris.slice(mid))};}
 export function candidates(node,box,result){if(!node.box.intersectsBox(box))return;if(node.tris){for(const t of node.tris)if(t.box.intersectsBox(box))result.push(t)}else{candidates(node.left,box,result);candidates(node.right,box,result)}}

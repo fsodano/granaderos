@@ -30,9 +30,9 @@ def main():
     if family_surface_context(__file__, root, args.receipt):
         return
     merge = module('hem_glb', root / 'tools/characters-3d/merge-animation-bank.py')
-    source = module('hem_source', root / 'assets/source/characters-3d/authoring/appearance_palette.py')
+    source = module('hem_source', root / 'content/assets/source/characters-3d/authoring/appearance_palette.py')
     decoded = module('hem_attributes', root / 'tools/characters-3d/build-long-cloth-support.py').decoded
-    assets = root / 'web/public/models/characters'
+    assets = root / 'apps/web/public/models/characters'
     manifest_path = assets / 'manifest.json'
     manifest_before = manifest_path.read_bytes()
     manifest = json.loads(manifest_before)

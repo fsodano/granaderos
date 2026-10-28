@@ -5,18 +5,18 @@ import {
   FirearmDischarge,
   FirearmRefusalCode,
   IgnitionPolicy,
-} from '../game/domain/combat/firearm.ts';
-import { ReloadWork } from '../game/domain/combat/reload-work.ts';
-import { ReprimeWork } from '../game/domain/combat/reprime-work.ts';
-import { BodyRegion } from '../game/domain/combat/body-region.ts';
-import { CombatInjury } from '../game/domain/combat/combat-injury.ts';
-import { CombatTurn, MaximumAutomaticActionsPerTurn } from '../game/domain/combat/combat-turn.ts';
-import { ReactionPolicy } from '../game/domain/combat/reaction-policy.ts';
-import { ReactionWindow, ReactionReturn } from '../game/domain/combat/reaction-window.ts';
-import { ReactionStack } from '../game/domain/combat/reaction-stack.ts';
-import { SectorParticipant } from '../game/domain/sector-sessions/sector-participant.ts';
-import { MeleeExchange } from '../game/domain/combat/melee-exchange.ts';
-import { CombatOutcomePolicy } from '../game/domain/combat/combat-outcome-policy.ts';
+} from '../packages/game/domain/combat/firearm.ts';
+import { ReloadWork } from '../packages/game/domain/combat/reload-work.ts';
+import { ReprimeWork } from '../packages/game/domain/combat/reprime-work.ts';
+import { BodyRegion } from '../packages/game/domain/combat/body-region.ts';
+import { CombatInjury } from '../packages/game/domain/combat/combat-injury.ts';
+import { CombatTurn, MaximumAutomaticActionsPerTurn } from '../packages/game/domain/combat/combat-turn.ts';
+import { ReactionPolicy } from '../packages/game/domain/combat/reaction-policy.ts';
+import { ReactionWindow, ReactionReturn } from '../packages/game/domain/combat/reaction-window.ts';
+import { ReactionStack } from '../packages/game/domain/combat/reaction-stack.ts';
+import { SectorParticipant } from '../packages/game/domain/sector-sessions/sector-participant.ts';
+import { MeleeExchange } from '../packages/game/domain/combat/melee-exchange.ts';
+import { CombatOutcomePolicy } from '../packages/game/domain/combat/combat-outcome-policy.ts';
 test('a misfire preserves its physical charge and a successful discharge consumes it exactly once', () => {
   const gun = new Firearm({ loaded: 1, condition: 70, jammed: false });
   assert.equal(gun.tryDischarge(30, 0.2), FirearmDischarge.Misfire);

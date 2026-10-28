@@ -81,7 +81,7 @@ recovery, scene integration, frame coverage, and source pixel changes across eac
 breathing direction. Packers check alpha and unclipped bounds before installing
 any output.
 
-[Direction and state sheet](../../assets/previews/tactical-pixel-art/directions.png).
+[Direction and state sheet](../../content/assets/previews/tactical-pixel-art/directions.png).
 Animated previews are in `assets/web/pixel/`, including
 `granadero-unconscious-breathe-se-preview.webp` and
 `granadero-prone-armed-fire-se-preview.webp`.
@@ -91,8 +91,8 @@ The build verified 236 exported files and 148 asset references. All 47 recorded
 portrait hashes still match.
 
 Enlarged animated previews:
-[breathing](../../assets/previews/tactical-pixel-art/granadero-unconscious-breathe-se.webp)
-and [prone firing](../../assets/previews/tactical-pixel-art/granadero-prone-armed-fire-se.webp).
+[breathing](../../content/assets/previews/tactical-pixel-art/granadero-unconscious-breathe-se.webp)
+and [prone firing](../../content/assets/previews/tactical-pixel-art/granadero-prone-armed-fire-se.webp).
 
 These previews are offline renders. Browser interaction has not been tested in
 this change. Melee-weapon-specific prone art and full fall-to-ground transitions

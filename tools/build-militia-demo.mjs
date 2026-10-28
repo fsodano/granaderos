@@ -2,14 +2,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import {initialCampaign} from '../tests/legacy-campaign-fixture.mjs';
-import {dispatchCampaign} from '../game/campaign.js';
-import {launchEnemyGroup} from '../game/enemy-groups.js';
-import {createBattle,endTurn} from '../game/tactical.js';
-import {encodeSave,decodeSave} from '../game/save.js';
+import {dispatchCampaign} from '../packages/game/campaign.js';
+import {launchEnemyGroup} from '../packages/game/enemy-groups.js';
+import {createBattle,endTurn} from '../packages/game/tactical.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
 
 // Controlled demonstration, not a record of a new-player campaign. The explicit
 // legacy squad fixture supplies three hired soldiers and a veteran garrison.
-const output=path.resolve(process.argv[2]??'artifacts/militia-defense-demo.json');
+const output=path.resolve(process.argv[2]??'.output/artifacts/militia-defense-demo.json');
 let campaign=initialCampaign(45);
 campaign.hour=12;campaign.sectors.retiro.militia=[0,0,3];
 launchEnemyGroup(campaign,'coast','retiro',{immediate:true});

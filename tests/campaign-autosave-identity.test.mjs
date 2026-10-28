@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createCampaignAutosave } from '../web/lib/campaign-autosave.js';
+import { createCampaignAutosave } from '../apps/web/lib/campaign-autosave.js';
 
 function harness(write = () => {}) {
   const jobs = [];

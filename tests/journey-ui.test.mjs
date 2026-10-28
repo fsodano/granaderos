@@ -2,12 +2,12 @@ import { register } from 'node:module';
 register('./tactical-render-loader.mjs', import.meta.url);
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createElement as element, act, useState } from '../web/node_modules/react/index.js';
-import { JSDOM } from '../web/node_modules/jsdom/lib/api.js';
+import { createElement as element, act, useState } from '../apps/web/node_modules/react/index.js';
+import { JSDOM } from '../apps/web/node_modules/jsdom/lib/api.js';
 import { initialCampaign } from './legacy-campaign-fixture.mjs';
-import { dispatchCampaign } from '../game/campaign.js';
-import { pendingArrivalDecisions } from '../game/squad-travel.js';
-const { default: Campaign } = await import('../web/app/Campaign.tsx');
+import { dispatchCampaign } from '../packages/game/campaign.js';
+import { pendingArrivalDecisions } from '../packages/game/squad-travel.js';
+const { default: Campaign } = await import('../apps/web/app/Campaign.tsx');
 
 function arrivalCampaign() {
   let campaign = initialCampaign();
@@ -37,7 +37,7 @@ test('arrival buttons withdraw and redirect immediately through the real campaig
   );
   for (const [key, value] of Object.entries(globals))
     Object.defineProperty(globalThis, key, { configurable: true, writable: true, value });
-  const { createRoot } = await import('../web/node_modules/react-dom/client.js');
+  const { createRoot } = await import('../apps/web/node_modules/react-dom/client.js');
   const root = createRoot(dom.window.document.getElementById('root'));
   let current;
   const actions = [];

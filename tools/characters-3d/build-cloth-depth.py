@@ -8,6 +8,7 @@ require a fresh source build. Repeated runs verify the delivered colours and
 write nothing. --presets limits review or a selected source rebuild.
 """
 from pathlib import Path
+from source_provenance import published_source_reference, published_source_sha256, published_source_digests, source_path
 import argparse, copy, hashlib, importlib.util, io, json, math, struct, subprocess, tempfile
 from PIL import Image
 
@@ -53,18 +54,18 @@ def main():
     parser.add_argument('--receipt', type=Path)
     args = parser.parse_args()
     root = args.root.resolve()
-    source_path = root / 'assets/source/characters-3d/authoring/cloth_depth.py'
+    source_path = root / 'content/assets/source/characters-3d/authoring/cloth_depth.py'
     source = module('cloth_depth_source', source_path)
     merge = module('cloth_depth_glb', root / 'tools/characters-3d/merge-animation-bank.py')
     presets = args.presets or source.PRESETS
     assert len(presets) == len(set(presets)) and set(presets) <= set(source.PRESETS), 'Unknown or duplicate pilot preset'
-    assets = root / 'web/public/models/characters'
+    assets = root / 'apps/web/public/models/characters'
     manifest_path = assets / 'manifest.json'
     manifest_before = manifest_path.read_bytes()
     manifest = json.loads(manifest_before)
     old_manifest = copy.deepcopy(manifest)
     recipe = {'method': 'broad-rest-space-cloth-fold-colours-v2',
-              'source': str(source_path.relative_to(root)), 'sourceSha256': sha(source_path.read_bytes()),
+              'source': published_source_reference(str(source_path.relative_to(root))), 'sourceSha256': published_source_sha256(root, str(source_path.relative_to(root))),
               'factorBounds': [source.MIN_FACTOR, source.MAX_FACTOR],
               'navyAlbedoHeadroom': source.NAVY_ALBEDO_HEADROOM,
               'retainedGeometryRigClipsMaps': True}

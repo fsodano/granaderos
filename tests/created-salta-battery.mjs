@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
-import {actBattle,getReachable,artilleryContact} from '../game/tactical.js';
-import {dispatchCampaign} from '../game/campaign.js';
-import {enterSector} from '../game/world.js';
-import {spacePoint} from '../game/tactical-space.js';
-import {syncBattleTime} from '../game/time.js';
-import {encodeSave,decodeSave} from '../game/save.js';
+import {actBattle,getReachable,artilleryContact} from '../packages/game/tactical.js';
+import {dispatchCampaign} from '../packages/game/campaign.js';
+import {enterSector} from '../packages/game/world.js';
+import {spacePoint} from '../packages/game/tactical-space.js';
+import {syncBattleTime} from '../packages/game/time.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
 import {withdrawCommandToRear} from './command-reserve-driver.mjs';
-import {artilleryProfile} from '../game/artillery-definitions.js';
+import {artilleryProfile} from '../packages/game/artillery-definitions.js';
 
 // The actual gun crews fight while the living commander and
 // physician pay for their issued boundary exits to the friendly rear sector.

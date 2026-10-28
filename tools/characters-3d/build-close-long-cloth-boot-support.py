@@ -65,8 +65,8 @@ def main():
     root = args.root.resolve()
     cloth = module('native_cloth_proof', root / 'tools/characters-3d/build-long-cloth-support.py')
     merge = module('boot_cloth_merge', root / 'tools/characters-3d/merge-animation-bank.py')
-    pack = module('boot_cloth_pack', root / 'assets/source/characters-3d/authoring/gltf_pack.py')
-    assets = root / 'web/public/models/characters'
+    pack = module('boot_cloth_pack', root / 'content/assets/source/characters-3d/authoring/gltf_pack.py')
+    assets = root / 'apps/web/public/models/characters'
     manifest_path = assets / 'manifest.json'
     manifest_before = manifest_path.read_bytes()
     manifest = json.loads(manifest_before)

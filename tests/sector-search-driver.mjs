@@ -1,5 +1,5 @@
-import {getReachable,teamCanSee,stanceCost,lookPreview} from '../game/tactical.js';
-import {sameSurface,spacePoint,spaceKey} from '../game/tactical-space.js';
+import {getReachable,teamCanSee,stanceCost,lookPreview} from '../packages/game/tactical.js';
+import {sameSurface,spacePoint,spaceKey} from '../packages/game/tactical-space.js';
 
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 // Search public map quadrants after the initial reconnaissance. A quiet enemy

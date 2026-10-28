@@ -1,11 +1,11 @@
 // Register a reviewed 8-direction, 4-phase sheet without altering its source.
 import fs from 'node:fs/promises';
-import sharp from '../web/node_modules/sharp/lib/index.js';
+import sharp from '../apps/web/node_modules/sharp/lib/index.js';
 import {removeExportKey,boundsOf,sheetRectangles,packIllustratedSources} from './pack-illustrated-sprites.mjs';
 const [appearance,sequence,source,referenceSequence='mounted-idle']=process.argv.slice(2);
 if(!source)throw Error('Usage: APPEARANCE SEQUENCE SOURCE [REFERENCE_SEQUENCE]');
 const directions=['n','ne','e','se','s','sw','w','nw'];
-const manifest=JSON.parse(await fs.readFile('assets/previews/illustrated-sprites/packed/manifest.json'));
+const manifest=JSON.parse(await fs.readFile('content/assets/previews/illustrated-sprites/packed/manifest.json'));
 const reference=manifest.atlases[`${appearance}-${referenceSequence}`];
 if(!reference)throw Error('Missing scale reference');
 const {data,info}=await sharp(source).ensureAlpha().raw().toBuffer({resolveWithObject:true});
@@ -31,8 +31,8 @@ for(let row=0;row<8;row++){
  for(const c of cells)sheet.slots.push({direction:directions[row],frame:c.col,row,col:c.col,rect:c.rect,scale,anchor:[sequence==='mounted-run'?(c.bounds[0]+c.bounds[2])/2:c.footCentre,ground],sourceBounds:c.bounds,anchorMethod:'shared row ground; silhouette centre; scale matched to approved idle',calibration:{review:'pending'}});
 }
 const registration={version:1,directions,sheets:[sheet]};
-const path=`assets/source/illustrated-sprites/family-actions/${name}.registration.json`;
+const path=`content/assets/source/illustrated-sprites/family-actions/${name}.registration.json`;
 await fs.writeFile(path,JSON.stringify(registration,null,2)+'\n');
-const output=`assets/previews/illustrated-sprites/family-actions/${name}`;
+const output=`content/assets/previews/illustrated-sprites/family-actions/${name}`;
 const packed=await packIllustratedSources({manifestPath:path,destination:output});
 console.log(JSON.stringify({name,frames:packed.atlases[name].records.length,output}));

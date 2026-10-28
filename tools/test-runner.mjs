@@ -24,11 +24,11 @@ function collect(directory) {
   }
 }
 for (const directory of [
-  'game/domain',
-  'game/application',
-  'game/infrastructure',
-  'campaign-editor/tests',
-  'campaign-format/tests',
+  'packages/game/domain',
+  'packages/game/application',
+  'packages/game/infrastructure',
+  'apps/campaign-editor/tests',
+  'packages/campaign-format/tests',
 ])
   collect(directory);
 files.sort();

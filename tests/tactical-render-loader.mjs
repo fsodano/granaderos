@@ -1,11 +1,11 @@
 // Render TSX in tests with the existing compiler; no extra test dependencies.
 import {readFileSync,existsSync} from 'node:fs';
-import ts from '../web/node_modules/typescript/lib/typescript.js';
+import ts from '../apps/web/node_modules/typescript/lib/typescript.js';
 export function resolve(specifier,context,next){
- if(context.parentURL?.includes('/campaigns/')&&(specifier==='react'||specifier.startsWith('react/')))return next(specifier,{...context,parentURL:new URL('../web/app/page.tsx',import.meta.url).href});
+ if(context.parentURL?.includes('/campaigns/')&&(specifier==='react'||specifier.startsWith('react/')))return next(specifier,{...context,parentURL:new URL('../apps/web/app/page.tsx',import.meta.url).href});
  if(specifier.endsWith('?worker&url'))return {url:new URL(specifier,context.parentURL).href,shortCircuit:true};
  if(specifier.startsWith('@/')){
-  const base=new URL(`../web/${specifier.slice(2)}`,import.meta.url);
+  const base=new URL(`../apps/web/${specifier.slice(2)}`,import.meta.url);
   const extension=['','.tsx','.ts','.js'].find(ext=>existsSync(new URL(`${base.href}${ext}`)));
   if(extension!==undefined)return next(`${base.href}${extension}`,context);
  }

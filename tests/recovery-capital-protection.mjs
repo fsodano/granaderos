@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {outfitSlot} from '../game/outfits.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {outfitSlot} from '../packages/game/outfits.js';
 
 export function equipRecoveryCapitalProtection(start,field,{report=()=>{}}={}){
  let c=start;

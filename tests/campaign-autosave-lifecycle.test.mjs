@@ -1,13 +1,13 @@
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {JSDOM} from '../web/node_modules/jsdom/lib/api.js';
-import {createElement as h,StrictMode,act} from '../web/node_modules/react/index.js';
-import {createRoot} from '../web/node_modules/react-dom/client.js';
-import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
-import {prepareCampaignBattle} from '../game/battle-handoff.js';
-import {encodeSave,decodeSave} from '../game/save.js';
-const {useCampaignAutosave}=await import('../web/lib/useCampaignAutosave.ts');
+import {JSDOM} from '../apps/web/node_modules/jsdom/lib/api.js';
+import {createElement as h,StrictMode,act} from '../apps/web/node_modules/react/index.js';
+import {createRoot} from '../apps/web/node_modules/react-dom/client.js';
+import {initialCampaign,dispatchCampaign} from '../packages/game/campaign.js';
+import {prepareCampaignBattle} from '../packages/game/battle-handoff.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
+const {useCampaignAutosave}=await import('../apps/web/lib/useCampaignAutosave.ts');
 
 function deployed(seed){
  let campaign=dispatchCampaign(initialCampaign(seed),{type:'recruitCivic',id:110,term:'week'});

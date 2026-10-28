@@ -1,7 +1,7 @@
 import {mountainBatteryOrder} from './mountain-battery-driver.mjs';
 import {northernReconOrder} from './northern-route.mjs';
-import {tacticalLevel} from '../game/tactical-space.js';
-import {artilleryCrewPlan,stanceCost,teamCanSee,transferPreview} from '../game/tactical.js';
+import {tacticalLevel} from '../packages/game/tactical-space.js';
+import {artilleryCrewPlan,stanceCost,teamCanSee,transferPreview} from '../packages/game/tactical.js';
 
 // Give only carried linen to a qualified local physician before contact.
 // An adjacent relay is deterministic; a throw or hidden source is not a

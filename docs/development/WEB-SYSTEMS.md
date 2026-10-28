@@ -4,7 +4,7 @@
 > Current published scope and approved changes are in the
 > [progress ledger](../verification/published-progress.md).
 
-The requested delivery target is now a browser game. `game/campaign.js` is the strategic reducer; `game/data.js` contains authored Spanish game content. Source code and these documents remain English. This implementation reuses the requested historical structure and JA2-inspired data/mechanics; it does not execute the Windows JA2 binary in a browser.
+The requested delivery target is now a browser game. `packages/game/campaign.js` is the strategic reducer; `packages/game/data.js` contains authored Spanish game content. Source code and these documents remain English. This implementation reuses the requested historical structure and JA2-inspired data/mechanics; it does not execute the Windows JA2 binary in a browser.
 
 > The approved ammunition change removes separate priming and flint inventory.
 > References to finite ignition supplies below describe earlier checkpoints.
@@ -17,7 +17,7 @@ For current item controls, wounds and assignments, see [JA2 gameplay](../gamepla
 
 - User-provided **GRANADEROS: Jagged Alliance 2 Engine Historical Conversion Specification**, sections 1 (five-phase San Martín arc and six factions), 2 (recruitment, stipends, transports, foundries, economy and militia), 4 (thirteen sector table, supply routes, biomes and strategic AI), 5 (thirteen operatives), and 6 (weapons and equipment). The original supplied attachment is the authoritative requested design. Map grid labels are the specification's campaign references, not real geographic coordinates.
 - Pinned [JA2 v1.13 source](https://github.com/1dot13/source/tree/ddb691318eb3dd0cdc6eab42139739b6d498c645): `gamedir/Data-1.13/TableData/Items/Weapons.xml`, `Items.xml`, `Magazines.xml`, `MercProfiles.xml`, and `Inventory/MercStartingGear.xml` informed weapon/profile field separation and ammunition capacity semantics. The `EXP` specification attribute means explosives skill, not experience level.
-- The prior native data conversion and generator remain in `mod/` and `tools/generate_campaign.py` as historical work. They are not required for the browser game. Native engine language tables lack Spanish; browser strings are authored directly in Spanish.
+- The prior native data conversion and generator remain in `reference/native/mod/` and `tools/generate_campaign.py` as historical work. They are not required for the browser game. Native engine language tables lack Spanish; browser strings are authored directly in Spanish.
 
 ## Strategic state and commands
 
@@ -57,7 +57,7 @@ The campaign is an abstraction of the specification. Attack deployment currently
 
 ## Cabildo examination and civic bulletin
 
-`game/recruitment.js` exports `OFFICER_QUESTIONS`, `OFFICER_TRAITS`, `CIVIC_RECRUITS`, `civicStatus(state,id)` and `rosterFor(state)`. UI consumers must resolve soldiers through `rosterFor`, not the immutable historical `OPERATIVES` array. The returned roster includes the thirteen unchanged historical profiles, three civic volunteers, and an optional custom officer. Dynamic roster IDs remain numeric: civic100–102; officer1000.
+`packages/game/recruitment.js` exports `OFFICER_QUESTIONS`, `OFFICER_TRAITS`, `CIVIC_RECRUITS`, `civicStatus(state,id)` and `rosterFor(state)`. UI consumers must resolve soldiers through `rosterFor`, not the immutable historical `OPERATIVES` array. The returned roster includes the thirteen unchanged historical profiles, three civic volunteers, and an optional custom officer. Dynamic roster IDs remain numeric: civic100–102; officer1000.
 
 `createOfficer` accepts `{name, answers:{origin,doctrine,crisis}}`. Question definitions enumerate all permitted answers. The examination charges300 pesos and can create one officer. Origin and crisis answers affect bounded attributes; doctrine selects one of four implemented trait identifiers: `cavalry_commander`, `guerrilla_tactician`, `gunsmith_artillerist`, `line_marksman`. Names reject markup/control characters and are limited to30 characters. The stored examination answers reconstruct the custom profile deterministically.
 
@@ -69,7 +69,7 @@ Version1 saves without these fields migrate with no historical stat changes. Rel
 
 ## Royalist commands and narrative intelligence
 
-`game/narrative.js` implements the antagonist hierarchy from specification sections1 and4. The Crown council names Elío and Vigodet; Pezuela directs the Northern Army with Tristán's vanguard; Romarate directs the river flotilla; local Loyalist cadres direct interior sabotage. These figures command formations rather than appearing as repeatedly resurrected combat casualties.
+`packages/game/narrative.js` implements the antagonist hierarchy from specification sections1 and4. The Crown council names Elío and Vigodet; Pezuela directs the Northern Army with Tristán's vanguard; Romarate directs the river flotilla; local Loyalist cadres direct interior sabotage. These figures command formations rather than appearing as repeatedly resurrected combat casualties.
 
 `royalistIntel(state)` returns command definitions with current target, objective, doctrine, activation and hours until the next strategic action. `mentorDispatch(state)` returns San Martín's phase-specific advisory text and deployability. These messages are original dramatic game dialogue, not documented historical quotations. The Yatasto transition sets the persistent mentoring flag and redirects strategic preparation to Cuyo.
 
@@ -79,13 +79,13 @@ Battle requests carry `enemyCommand`, `enemyCommander`, `enemyObjective` and aut
 
 ## Cargo transport and depots
 
-`game/logistics.js` exports `TRANSPORT_OPTIONS`, `transferOptions(state,source,destination)`, `inventoryAt(state,id)`, `cargoWeight(goods)` and `convoyStatus(state,convoy)`. Sources/destinations are sector IDs or `reserve`, the existing global inventory represented at Buenos Aires. `supplyTransfer` accepts `{source,destination,mode,goods:{resource:quantity}}`. Cargo is removed exactly once when dispatched, retained in `state.convoys` in transit, and added to the destination depot only after its travel time and an open controlled path. A blockade or captured route suspends delivery. Reversing a shipment returns existing inventory; it does not create resources.
+`packages/game/logistics.js` exports `TRANSPORT_OPTIONS`, `transferOptions(state,source,destination)`, `inventoryAt(state,id)`, `cargoWeight(goods)` and `convoyStatus(state,convoy)`. Sources/destinations are sector IDs or `reserve`, the existing global inventory represented at Buenos Aires. `supplyTransfer` accepts `{source,destination,mode,goods:{resource:quantity}}`. Cargo is removed exactly once when dispatched, retained in `state.convoys` in transit, and added to the destination depot only after its travel time and an open controlled path. A blockade or captured route suspends delivery. Reversing a shipment returns existing inventory; it does not create resources.
 
 Postas carry30kg and consume a remount per leg. Carts carry1000kg; the flotilla carries4000kg and requires an open coastal route. Cannons weigh500kg in the strategic cargo model and require carts or ships. Mules with a6kg pack saddle have40kg base capacity plus the specified40kg extra. High Andean paths reject carts and close during winter. `transport` accepts the additional `mules` mode for120 pesos and two animals from the campaign mount pool.
 
 `state.depots[sectorId]` stores delivered goods. Local depot ammunition and artillery are available in battle requests from the current location. Returned tactical ammunition joins the campaign reserve; the global inventory abstraction still covers ordinary production and ongoing upkeep. Horses and infantry move through their own campaign systems and cannot be shipped as cargo. Cargo weights other than the specified saddle extension are gameplay balancing values, not detailed historical wagon manifests.
 
-Version1 saves migrate missing depots, convoy queues and mule routes. The logistics tests verify finite removal/delivery, return transfers without duplication, blocked routes, weight limits, remount consumption, cannon restrictions, mule capacity, high-pass constraints, fluvial blockades, local tactical stock and save migration. `web/app/Logistics.tsx` is an independent Spanish UI with source/destination selectors, live cargo weights, route organization, depot inventory and convoy status.
+Version1 saves migrate missing depots, convoy queues and mule routes. The logistics tests verify finite removal/delivery, return transfers without duplication, blocked routes, weight limits, remount consumption, cannon restrictions, mule capacity, high-pass constraints, fluvial blockades, local tactical stock and save migration. `apps/web/app/Logistics.tsx` is an independent Spanish UI with source/destination selectors, live cargo weights, route organization, depot inventory and convoy status.
 
 ## Armory and camp maintenance
 
@@ -105,7 +105,7 @@ An attack now requires the active unit to occupy a neighboring sector; direct re
 
 ## Local encounters and important leaders
 
-`game/encounters.js` defines separate tactical NPCs, not enemy units. Every strategic sector has a local interlocutor; Beltrán, Paz, Brown, Macacha, Güemes, Azurduy, San Martín and the civic volunteer Sosa have personal recruitment encounters. Important leaders cannot be hired through the desk catalog. San Martín appears as a mentor in Mendoza and will join only after the existing El Plumerillo gate is complete, the interlocutor meets the leadership threshold and enough distinct localities are secure. Buenos Aires/Retiro count as one locality for these thresholds.
+`packages/game/encounters.js` defines separate tactical NPCs, not enemy units. Every strategic sector has a local interlocutor; Beltrán, Paz, Brown, Macacha, Güemes, Azurduy, San Martín and the civic volunteer Sosa have personal recruitment encounters. Important leaders cannot be hired through the desk catalog. San Martín appears as a mentor in Mendoza and will join only after the existing El Plumerillo gate is complete, the interlocutor meets the leadership threshold and enough distinct localities are secure. Buenos Aires/Retiro count as one locality for these thresholds.
 
 `talkNPC` requires an active visit or cleared field, a valid tactical snapshot, a living player interlocutor, physical adjacency, and a known local NPC. Friendly/direct approaches expose authored dialogue and conditions. Recruitment checks the actor's real campaign leadership, municipal control and distinct-locality count plus the operative's pre-existing faction/quest gate. Pay is charged once; the recruit enters the current squad if space is available or remains at that locality in reserve. `lastConversation` exposes speaker, text, available approaches and outcome for the UI. Recruited figures disappear from subsequent encounter lists. The complete-campaign integration test now physically travels to Mendoza, moves a tactical actor adjacent to San Martín and talks to recruit him; it has no registry bypass.
 
@@ -113,7 +113,7 @@ Friendly visits issue cartridges from finite reserve/local stock and return unus
 
 ## Individual mounts
 
-`horseAction` adapts `game/horses.js` into the campaign using `{order:{type,horseId?,operativeId?,name?,sex?,days?,sireId?}}`. Funds and location come from authoritative campaign state, not caller claims. Buying, hiring, feeding and breeding deduct actual silver; assignment requires co-located horse and rider. Named mounts are distinct from the aggregate `resources.horses` remount pool used by transport logistics and strategic agreements.
+`horseAction` adapts `packages/game/horses.js` into the campaign using `{order:{type,horseId?,operativeId?,name?,sex?,days?,sireId?}}`. Funds and location come from authoritative campaign state, not caller claims. Buying, hiring, feeding and breeding deduct actual silver; assignment requires co-located horse and rider. Named mounts are distinct from the aggregate `resources.horses` remount pool used by transport logistics and strategic agreements.
 
 The campaign clock advances feed, condition, rental expiry, gestation and maturity. Assigned mounts follow their squad when marching and spend stamina. Only individually assigned horses enter tactical loadouts; survivor mount stamina/condition return to the same persistent horse. Gestation takes330 days and maturity three years, preserving real temporal progression rather than creating instant adults. Older saves migrate without inventing individually owned mounts. Horse ownership, bounded health, calendar values and unique IDs are validated at load time.
 

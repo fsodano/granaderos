@@ -1,9 +1,9 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign,contractQuote,rosterFor,restoreCampaign,serializeCampaign} from '../game/campaign.js';
-import {defaultProfile} from '../game/character-profile.js';
-import {enterSector} from '../game/world.js';
-import {encodeSave,decodeSave} from '../game/save.js';
-import {serviceReturnSources} from '../game/service-equipment-return.js';
+import {initialCampaign,dispatchCampaign,contractQuote,rosterFor,restoreCampaign,serializeCampaign} from '../packages/game/campaign.js';
+import {defaultProfile} from '../packages/game/character-profile.js';
+import {enterSector} from '../packages/game/world.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
+import {serviceReturnSources} from '../packages/game/service-equipment-return.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const create={type:'createOfficer',name:'Elena del Sur',profile:defaultProfile(),answers:{origin:'cabildo',doctrine:'guerrilla_tactician',crisis:'rally',specialty:'teacher',temperament:'optimistic'}};
 test('genuine new game creates exactly one custom officer then hires explores Retiro and saves',()=>{

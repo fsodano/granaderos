@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises';
-const measurements=JSON.parse(await fs.readFile('assets/previews/sprite-consistency/measurements.json'));
+const measurements=JSON.parse(await fs.readFile('content/assets/previews/sprite-consistency/measurements.json'));
 const families=['granadero','royalist','worker','surgeon','gaucho','friar','woman-scout','woman-shawl'];
 const directions=['n','ne','e','se','s','sw','w','nw'];
 const table={};
@@ -12,4 +12,4 @@ for(const family of families){
   return [Number(Math.max(.85,Math.min(1.15,width)).toFixed(4)),Number(height.toFixed(4))];
  });
 }
-await fs.writeFile('game/sprite-display-calibration.js','// Direction-specific walking display scale relative to approved idle.\n// One transform per directional cycle preserves gait motion and ground anchors.\nexport const SPRITE_DISPLAY_CALIBRATION='+JSON.stringify(table,null,2)+';\n');
+await fs.writeFile('packages/game/sprite-display-calibration.js','// Direction-specific walking display scale relative to approved idle.\n// One transform per directional cycle preserves gait motion and ground anchors.\nexport const SPRITE_DISPLAY_CALIBRATION='+JSON.stringify(table,null,2)+';\n');

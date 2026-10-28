@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
-import { dispatchCampaign } from '../game/campaign.js';
-import { battleFromRequest } from '../game/battle-handoff.js';
-import { actBattle, endTurn } from '../game/tactical.js';
-import { runBattleJob } from '../game/battle-job.js';
-import { syncBattleTime } from '../game/time.js';
-import { travelLegHours } from '../game/squad-travel.js';
-import { pendingArrivalDecisions } from '../game/squad-travel.js';
+import { dispatchCampaign } from '../packages/game/campaign.js';
+import { battleFromRequest } from '../packages/game/battle-handoff.js';
+import { actBattle, endTurn } from '../packages/game/tactical.js';
+import { runBattleJob } from '../packages/game/battle-job.js';
+import { syncBattleTime } from '../packages/game/time.js';
+import { travelLegHours } from '../packages/game/squad-travel.js';
+import { pendingArrivalDecisions } from '../packages/game/squad-travel.js';
 
 export function fightOnArrivalOrder(campaign) {
   const decision = pendingArrivalDecisions(campaign).find(

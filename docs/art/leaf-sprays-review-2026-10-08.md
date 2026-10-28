@@ -58,7 +58,7 @@ seconds. Typecheck and production build pass, with 1,377 export files and
 gitlink state, dependency files and production source identity `1be6fd7e6d96`
 match the ordered root candidate. Private and root Git revision metadata differ.
 Root docs, links, live records and diff checks pass separately. The
-[review receipt](../../artifacts/leaf-sprays/review-receipt.json)
+[review receipt](../evidence/artifacts/leaf-sprays/review-receipt.json)
 records source identity, exact inputs and final results.
 
 ```sh

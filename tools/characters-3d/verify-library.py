@@ -2,8 +2,8 @@
 """Validate published mesh, rig, texture and clip contracts with no Blender."""
 from pathlib import Path
 import json,struct,math,hashlib,subprocess
-ROOT=Path(__file__).resolve().parents[2];OUT=ROOT/'web/public/models/characters';m=json.loads((OUT/'manifest.json').read_text());assert m['complete'],'Library incomplete'
-contract=json.loads(subprocess.check_output(['node','--input-type=module','-e',"import {ACTOR_CLIP_SPECS,ACTOR_ITEM_CLIP_OVERRIDES} from './game/actor-action-contract.js';console.log(JSON.stringify({clips:ACTOR_CLIP_SPECS,overrides:ACTOR_ITEM_CLIP_OVERRIDES}));"],cwd=ROOT,text=True))
+ROOT=Path(__file__).resolve().parents[2];OUT=ROOT/'apps/web/public/models/characters';m=json.loads((OUT/'manifest.json').read_text());assert m['complete'],'Library incomplete'
+contract=json.loads(subprocess.check_output(['node','--input-type=module','-e',"import {ACTOR_CLIP_SPECS,ACTOR_ITEM_CLIP_OVERRIDES} from './packages/game/actor-action-contract.js';console.log(JSON.stringify({clips:ACTOR_CLIP_SPECS,overrides:ACTOR_ITEM_CLIP_OVERRIDES}));"],cwd=ROOT,text=True))
 required={c['name']for c in contract['clips']}
 
 def glb(url):

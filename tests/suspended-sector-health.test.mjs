@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { Health } from '../game/domain/personnel/health.ts';
-import { advanceMilitaryWoundTime } from '../game/military-health.js';
-import { advanceBattleClock } from '../game/time.js';
-import { advanceSectorWorld, advanceSuspendedSectorConditions } from '../game/military-remains.js';
+import { Health } from '../packages/game/domain/personnel/health.ts';
+import { advanceMilitaryWoundTime } from '../packages/game/military-health.js';
+import { advanceBattleClock } from '../packages/game/time.js';
+import { advanceSectorWorld, advanceSuspendedSectorConditions } from '../packages/game/military-remains.js';
 import { initialCampaign } from './legacy-campaign-fixture.mjs';
-import { dispatchCampaign } from '../game/campaign.js';
-import { enterSector } from '../game/world.js';
-import { validateEquipmentOwnership } from '../game/equipment.js';
-import { rosterFor } from '../game/recruitment.js';
-import { DEFAULT_CORPSE_LIFETIME_SECONDS } from '../game/domain/world/corpse.ts';
+import { dispatchCampaign } from '../packages/game/campaign.js';
+import { enterSector } from '../packages/game/world.js';
+import { validateEquipmentOwnership } from '../packages/game/equipment.js';
+import { rosterFor } from '../packages/game/recruitment.js';
+import { DEFAULT_CORPSE_LIFETIME_SECONDS } from '../packages/game/domain/world/corpse.ts';
 
 function suspendedVisit() {
   const campaign = dispatchCampaign(initialCampaign(), { type: 'visitSector' });

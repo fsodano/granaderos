@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {operativeLocation} from '../game/squads.js';
-import {worldOwner} from '../game/world-cells.js';
+import {operativeLocation} from '../packages/game/squads.js';
+import {worldOwner} from '../packages/game/world-cells.js';
 
 // The caller supplies its existing Native order/paid-service closure. A rural
 // departure is a real location, but neutral ground does not admit clinical rest.

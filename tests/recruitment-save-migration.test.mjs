@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { initialCampaign, rosterFor } from '../game/campaign.js';
-import { defaultContentPackage } from '../game/content-package.js';
-import { contractQuote } from '../game/contracts.js';
-import { hireArrivalOrder } from '../game/hiring-arrivals.js';
-import { fundServiceGuarantee } from '../game/service-guarantees.js';
-import { encodeSave, decodeSave } from '../game/save.js';
+import { initialCampaign, rosterFor } from '../packages/game/campaign.js';
+import { defaultContentPackage } from '../packages/game/content-package.js';
+import { contractQuote } from '../packages/game/contracts.js';
+import { hireArrivalOrder } from '../packages/game/hiring-arrivals.js';
+import { fundServiceGuarantee } from '../packages/game/service-guarantees.js';
+import { encodeSave, decodeSave } from '../packages/game/save.js';
 
 function prepaidRecruitment() {
   const definition = defaultContentPackage();

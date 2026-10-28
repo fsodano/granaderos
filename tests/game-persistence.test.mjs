@@ -1,15 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { initialCampaign, dispatchCampaign } from '../game/campaign.js';
-import { prepareCampaignBattle } from '../game/battle-handoff.js';
-import { encodeSave, decodeSave } from '../game/save.js';
-import { Money } from '../game/domain/finance/money.ts';
-import { Character } from '../game/domain/personnel/character.ts';
-import { ServiceContract } from '../game/domain/personnel/service-contract.ts';
-import { GameSnapshotMapper } from '../game/infrastructure/persistence/game-snapshot-mapper.js';
-import { RestoreGameUseCase } from '../game/application/restore-game/restore-game.use-case.ts';
-import { SerializedRestoreGameRepository } from '../game/infrastructure/persistence/restore-game.repository.js';
-import { createNewGameSession, restoreGameSnapshot } from '../game/public/game-persistence-api.js';
+import { initialCampaign, dispatchCampaign } from '../packages/game/campaign.js';
+import { prepareCampaignBattle } from '../packages/game/battle-handoff.js';
+import { encodeSave, decodeSave } from '../packages/game/save.js';
+import { Money } from '../packages/game/domain/finance/money.ts';
+import { Character } from '../packages/game/domain/personnel/character.ts';
+import { ServiceContract } from '../packages/game/domain/personnel/service-contract.ts';
+import { GameSnapshotMapper } from '../packages/game/infrastructure/persistence/game-snapshot-mapper.js';
+import { RestoreGameUseCase } from '../packages/game/application/restore-game/restore-game.use-case.ts';
+import { SerializedRestoreGameRepository } from '../packages/game/infrastructure/persistence/restore-game.repository.js';
+import { createNewGameSession, restoreGameSnapshot } from '../packages/game/public/game-persistence-api.js';
 
 function recruited() {
   const campaign = dispatchCampaign(initialCampaign(12), {

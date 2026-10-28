@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import {rosterFor} from '../game/campaign.js';
-import {careAssignmentIssue} from '../game/medical-care.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {rosterFor} from '../packages/game/campaign.js';
+import {careAssignmentIssue} from '../packages/game/medical-care.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
 
 // A selected doctor who needs care must be a patient of another real doctor.
 // Restore the pair in order; stable other patients can rest during this rotation.

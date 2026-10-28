@@ -3,8 +3,8 @@
 // This is one reproducible strategy, not the game AI or a general balance proof.
 // Prefer cover to unfinished loading; complete an affordable charge first and
 // spend otherwise unused AP on the remaining partial work.
-import {enterSector} from '../game/world.js';
-import {actBattle,endTurn,reloadPlan,getReachable,bladeFor,weaponFor,actionCosts,hasFirearm,shotChance,teamCanSee} from '../game/tactical.js';
+import {enterSector} from '../packages/game/world.js';
+import {actBattle,endTurn,reloadPlan,getReachable,bladeFor,weaponFor,actionCosts,hasFirearm,shotChance,teamCanSee} from '../packages/game/tactical.js';
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),live=u=>u.hp>0&&!u.routed&&!u.unconscious;
 export function fight(request,previous=null,{scoutCostWeight=.1}={}){let b=enterSector(request,previous),actions=0;const orders=[];let known=[];
 for(let round=0;round<80&&b.status==='active';round++){

@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
-import {rosterFor} from '../game/campaign.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {applyItemQuantity} from '../game/tactical-inventory.js';
-import {FINITE_SECTOR_CACHES} from '../game/finite-sector-caches.js';
+import {rosterFor} from '../packages/game/campaign.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {applyItemQuantity} from '../packages/game/tactical-inventory.js';
+import {FINITE_SECTOR_CACHES} from '../packages/game/finite-sector-caches.js';
 import {order,saved,visit} from './local-contract-fixture.mjs';
 import {takeFiniteCache,leaveFiniteCache} from './finite-cache-driver.mjs';
 

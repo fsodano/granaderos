@@ -86,13 +86,13 @@ or require a separate query database.
 
 | Role | Source |
 | --- | --- |
-| Domain entities, value objects and services | [`game/domain`](../../game/domain/) |
-| Use cases and narrow repository contracts | [`game/application`](../../game/application/) |
-| Repository adapters, transactions and snapshot mapping | [`game/infrastructure`](../../game/infrastructure/) |
-| Player UI and browser composition | [`web/app/page.tsx`](../../web/app/page.tsx), [`web/lib`](../../web/lib/) |
-| Independent editor application and model | [`campaign-editor`](../../campaign-editor/README.md) |
-| Published campaign-file contract | [`campaign-format`](../../campaign-format/README.md) |
-| Installed definitions, resources and trusted scenario implementations | [`campaigns`](../../campaigns/) |
+| Domain entities, value objects and services | [`packages/game/domain`](../../packages/game/domain/) |
+| Use cases and narrow repository contracts | [`packages/game/application`](../../packages/game/application/) |
+| Repository adapters, transactions and snapshot mapping | [`packages/game/infrastructure`](../../packages/game/infrastructure/) |
+| Player UI and browser composition | [`apps/web/app/page.tsx`](../../apps/web/app/page.tsx), [`apps/web/lib`](../../apps/web/lib/) |
+| Independent editor application and model | [`apps/campaign-editor`](../../apps/campaign-editor/README.md) |
+| Published campaign-file contract | [`packages/campaign-format`](../../packages/campaign-format/README.md) |
+| Installed definitions, resources and trusted scenario implementations | [`content/campaigns`](../../content/campaigns/) |
 
 `campaign.js`, `tactical.js`, `world.js`, `time.js`, and `save.js` remain important
 compatibility entry points. Migrated paths call domain classes and use cases;
@@ -111,7 +111,7 @@ failure or another writer leaves the accepted game available for play and manual
 download. A late worker reply cannot replace a newer session or snapshot.
 
 The browser game and editor are static applications. HTTP supplies code and
-resources; game rules execute in the browser and its workers. The C++ `engine/`
+resources; game rules execute in the browser and its workers. The C++ `reference/native/engine/`
 submodule belongs to the separate native implementation.
 
 Continue with [C4 levels 1–3](c4.md), then use the [source map](system-map.md) to

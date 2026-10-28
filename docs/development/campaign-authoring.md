@@ -2,7 +2,7 @@
 
 This guide describes the campaign implementation published in `main` through
 [PR #334](https://github.com/fsodano/granaderos/pull/334). The historical `0.1` tag
-retains its original checkpoint. Only `campaigns/granaderos/` is
+retains its original checkpoint. Only `content/campaigns/granaderos/` is
 installed in this repository. The engine can discover and select additional
 campaign folders without adding a title or character to engine code.
 
@@ -121,7 +121,7 @@ engine development.
 
 ## Images and character appearance
 
-Put campaign images in `assets/`. Reference them as
+Put campaign images in the campaign package’s `assets/` directory. Reference them as
 `/campaigns/my-campaign/assets/<path>`, including nested folders when needed.
 Do not copy the hosting prefix, such as `/granaderos`, into stored references.
 The browser adds it when serving the package.
@@ -243,7 +243,7 @@ has no scheduled invasions.
 ## Install and test
 
 After a draft passes the check, copy its complete folder into
-`campaigns/my-campaign/`. Its folder name must match `manifest.id`. Start
+`content/campaigns/my-campaign/`. Its folder name must match `manifest.id`. Start
 `npm run dev`, then select it in the menu. The development server and production
 build generate the registry from installed manifests. Do not maintain a second
 handwritten registry. The production build validates JSON and resource hashes
@@ -277,7 +277,7 @@ historical accuracy, complete route acceptance or release quality.
 ## Share a folder
 
 Distribute the complete folder, including local assets and all referenced maps.
-The recipient checks it and installs it under `campaigns/<id>/` in a compatible
+The recipient checks it and installs it under `content/campaigns/<id>/` in a compatible
 engine checkout, then rebuilds or starts the development server. Browser save
 files transfer progress; they are not an installation package or an asset archive.
 

@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { validateCampaignPresentation as validatePresentationSchema } from '../campaign-format/presentation-schema.js';
-import { validateCampaignPresentation } from '../game/campaign-presentation-validation.js';
-import { defaultContentPackage, validateContentPackage } from '../game/content-package.js';
-import { DEFAULT_PRESENTATION, DEFAULT_WORLD, DEFAULT_MAPS } from '../campaigns/default.js';
-import { compileCampaignPackage } from '../game/campaign-library.js';
+import { validateCampaignPresentation as validatePresentationSchema } from '../packages/campaign-format/presentation-schema.js';
+import { validateCampaignPresentation } from '../packages/game/campaign-presentation-validation.js';
+import { defaultContentPackage, validateContentPackage } from '../packages/game/content-package.js';
+import { DEFAULT_PRESENTATION, DEFAULT_WORLD, DEFAULT_MAPS } from '../content/campaigns/default.js';
+import { compileCampaignPackage } from '../packages/game/campaign-library.js';
 import { campaignDocuments, alternateCampaignDocuments } from './campaign-library-fixture.mjs';
 
 function compile(documents, id) {

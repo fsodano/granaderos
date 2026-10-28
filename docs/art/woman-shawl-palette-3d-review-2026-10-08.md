@@ -9,7 +9,7 @@ exact. Gameplay rules and action clocks do not change.
 ## Retained reference
 
 The retained full-body front identity is
-[`woman-shawl-s-identity-reference.png`](../../assets/source/illustrated-sprites/woman-shawl-s-identity-reference.png).
+[`woman-shawl-s-identity-reference.png`](../../content/assets/source/illustrated-sprites/woman-shawl-s-identity-reference.png).
 Its provenance records the crop from `woman-shawl-idle-v1.png`. The three
 `assets/previews/sprite-consistency/woman-shawl-{1,2,3}.png` pages retain the
 same general colour roles. These are full-body references; skin face/hand

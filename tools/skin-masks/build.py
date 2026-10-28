@@ -12,8 +12,8 @@ ROOT=Path(__file__).resolve().parents[2]
 MODEL='mattmdjaga/segformer_b2_clothes'
 REVISION='584abc1e1d260e23c0fc627c5217a09b2b461046'
 p=argparse.ArgumentParser();p.add_argument('--only',default='');p.add_argument('--force',action='store_true');args=p.parse_args()
-source=ROOT/'assets/previews/illustrated-sprites/packed'
-out=ROOT/'web/public/art/skin';out.mkdir(parents=True,exist_ok=True)
+source=ROOT/'content/assets/previews/illustrated-sprites/packed'
+out=ROOT/'apps/web/public/art/skin';out.mkdir(parents=True,exist_ok=True)
 manifest=json.loads((source/'manifest.json').read_text())
 variants=['granadero','royalist','worker','surgeon','gaucho','friar','woman-scout','woman-shawl']
 sequences=['idle','walk','run','crouch-idle','crouch-walk','prone-armed-idle','prone-armed-walk','mounted-idle','mounted-walk','mounted-run','aim-idle','crouch-aim-idle','prone-aim-idle','fire','crouch-fire','prone-armed-fire','reload','crouch-reload','prone-armed-reload','strike','mounted-strike','interact','crouch-interact','collapse','unconscious-breathe','mounted-fire','mounted-reload','prone-unarmed-idle','prone-unarmed-walk','dead-idle']
@@ -50,7 +50,7 @@ def candidate(im,mounted):
  lum=np.clip(.2126*r+.7152*g+.0722*b,0,255).astype('uint8')
  result=np.zeros_like(arr);result[:,:,:3]=lum[:,:,None];result[:,:,3]=np.where(mask,arr[:,:,3],0)
  return Image.fromarray(result)
-metadata=ROOT/'assets/source/skin-masks/candidates';metadata.mkdir(parents=True,exist_ok=True)
+metadata=ROOT/'content/assets/source/skin-masks/candidates';metadata.mkdir(parents=True,exist_ok=True)
 index={};start=time.time()
 for a in variants:
  for seq in sequences:

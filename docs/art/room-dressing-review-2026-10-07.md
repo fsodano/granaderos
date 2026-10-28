@@ -1,6 +1,6 @@
 # Room dressing review — 7 October 2026
 
-The fourteen [building templates](../../game/map-templates.js) define furnished
+The fourteen [building templates](../../packages/game/map-templates.js) define furnished
 rooms. Their retained names provide the reference for room use. The municipal
 archive previously received washroom items, the governor's reception room
 received a kitchen hearth, and the family bedroom received kitchen dressing.

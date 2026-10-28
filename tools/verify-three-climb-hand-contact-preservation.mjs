@@ -2,12 +2,12 @@ import {register} from 'node:module';register('../tests/tactical-render-loader.m
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Vector3,Plane} from '../web/node_modules/three/build/three.module.js';
-import {GLTFLoader} from '../web/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
-const {ActorRuntime}=await import('../web/lib/three/actor-runtime.ts');
-const {TILE_METRES}=await import('../web/lib/three/projection.ts');
-import {ladderGeometry,sampleLadderClimb,referenceClimbFraction} from '../game/climb-geometry.js';
-const publicRoot=new URL('../web/public/',import.meta.url),manifest=JSON.parse(readFileSync(new URL('models/characters/manifest.json',publicRoot))),loaded=new Map();
+import {Vector3,Plane} from '../apps/web/node_modules/three/build/three.module.js';
+import {GLTFLoader} from '../apps/web/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+const {ActorRuntime}=await import('../apps/web/lib/three/actor-runtime.ts');
+const {TILE_METRES}=await import('../apps/web/lib/three/projection.ts');
+import {ladderGeometry,sampleLadderClimb,referenceClimbFraction} from '../packages/game/climb-geometry.js';
+const publicRoot=new URL('../apps/web/public/',import.meta.url),manifest=JSON.parse(readFileSync(new URL('models/characters/manifest.json',publicRoot))),loaded=new Map();
 function load(url){
  if(loaded.has(url))return loaded.get(url);
  // Keep published buffers, rig, and animation tracks. Browser image decoding
@@ -56,7 +56,7 @@ function lowestSurface(actor,vertices){
 
 
 const {mkdtempSync,writeFileSync,mkdirSync,rmSync}=await import('node:fs');const {tmpdir}=await import('node:os');const {join,resolve}=await import('node:path');const {pathToFileURL}=await import('node:url');
-const oldPath=process.argv.find(a=>a.startsWith('--before-helper='))?.slice(16);assert.ok(oldPath,'Pass --before-helper=<exact predecessor helper>');const oldSource=readFileSync(resolve(oldPath),'utf8'),scratch=mkdtempSync(join(tmpdir(),'granaderos-climb-contact-before-'));const beforeModule=join(scratch,'before.ts');writeFileSync(beforeModule,oldSource.replace("'../../../game/climb-geometry.js'",JSON.stringify(new URL('../game/climb-geometry.js',import.meta.url).href)).replace("'three'",JSON.stringify(new URL('../web/node_modules/three/build/three.module.js',import.meta.url).href)));
+const oldPath=process.argv.find(a=>a.startsWith('--before-helper='))?.slice(16);assert.ok(oldPath,'Pass --before-helper=<exact predecessor helper>');const oldSource=readFileSync(resolve(oldPath),'utf8'),scratch=mkdtempSync(join(tmpdir(),'granaderos-climb-contact-before-'));const beforeModule=join(scratch,'before.ts');writeFileSync(beforeModule,oldSource.replace("'../../../game/climb-geometry.js'",JSON.stringify(new URL('../packages/game/climb-geometry.js',import.meta.url).href)).replace("'three'",JSON.stringify(new URL('../apps/web/node_modules/three/build/three.module.js',import.meta.url).href)));
 const {NativeClimbContactFit:BeforeFit}=await import(pathToFileURL(beforeModule).href);
 function fullArm(actor){const out=[];actor.model.traverse(mesh=>{if(!mesh.isSkinnedMesh)return;const p=mesh.geometry.attributes.position,si=mesh.geometry.attributes.skinIndex,sw=mesh.geometry.attributes.skinWeight;for(let i=0;i<p.count;i++){let w=0;for(let j=0;j<4;j++)if(/^(upperarm|lowerarm|hand|thumb|index|middle|ring|pinky)_/.test(mesh.skeleton.bones[si.getComponent(i,j)].name))w+=sw.getComponent(i,j);if(w>.5)out.push({mesh,index:i});}});return out;}
 function vertices(list){for(const m of new Set(list.map(v=>v.mesh)))m.skeleton.update();return list.map(({mesh,index})=>mesh.getVertexPosition(index,new Vector3()).applyMatrix4(mesh.matrixWorld));}
@@ -76,7 +76,7 @@ for(const center of [edge,.099,.1,.91,.911,.912,.913,.98]){tick(current,id,actio
 }
 const skin=supportSkin(current);for(const up of [.82,.84,.86,.88,.9,.91]){const p=tick(current,id,action,g,spec,up);tick(old,id,action,g,spec,up);for(const side of ['l','r']){const c=p.hands[side];if(c.planted&&c.roofWeight>.999&&c.weight>.999){const y=lowestSurface(current,skin.hands[side])+p.root.height-H;if(y<-.004){assert.deepEqual(pose(current),pose(old),'Broader palm failure remains exact');broadPalm.push({id,lod,action,height:H,up,side,minimumMm:y*1000,unchangedFromBefore:true});}}}}
 current.dispose();old.dispose();}}
-const report={cases,edges,broadPalm,wraps,scope:'48 cases; all non-hand bones, native offsets/scales, root, paid clock and untouched ordinary routes exact. Dense gate and fade edges. Separate remapped phase wrap is outside continuous-edge claim.'};const output=process.argv.find(a=>a.startsWith('--output='))?.slice(9)??'artifacts/varied-climb-preservation.json';mkdirSync(resolve(output,'..'),{recursive:true});writeFileSync(output,JSON.stringify(report,null,2)+'\n');rmSync(scratch,{recursive:true,force:true});console.log(JSON.stringify({cases:cases.length,edges:edges.length,maxGateSkinSpeed:Math.max(...edges.map(e=>e.skinSpeed)),maxGateWristSpeed:Math.max(...edges.map(e=>e.wristSpeed)),maxGatePalmSpeed:Math.max(...edges.map(e=>e.palmSpeed)),broadPalm},null,2));
+const report={cases,edges,broadPalm,wraps,scope:'48 cases; all non-hand bones, native offsets/scales, root, paid clock and untouched ordinary routes exact. Dense gate and fade edges. Separate remapped phase wrap is outside continuous-edge claim.'};const output=process.argv.find(a=>a.startsWith('--output='))?.slice(9)??'.output/artifacts/varied-climb-preservation.json';mkdirSync(resolve(output,'..'),{recursive:true});writeFileSync(output,JSON.stringify(report,null,2)+'\n');rmSync(scratch,{recursive:true,force:true});console.log(JSON.stringify({cases:cases.length,edges:edges.length,maxGateSkinSpeed:Math.max(...edges.map(e=>e.skinSpeed)),maxGateWristSpeed:Math.max(...edges.map(e=>e.wristSpeed)),maxGatePalmSpeed:Math.max(...edges.map(e=>e.palmSpeed)),broadPalm},null,2));
 
 if(process.argv.includes('--require-full-palm-clearance'))assert.equal(broadPalm.length,0,'Broader published palm roof clearance remains outside this contact cut');
 if(process.argv.includes('--require-continuous-native-wrap'))assert.ok(wraps.every(w=>w.armShiftMm<1),'Broader remapped native phase wrap remains discontinuous');

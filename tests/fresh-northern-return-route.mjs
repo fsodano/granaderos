@@ -1,14 +1,14 @@
 import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
 import {prepareFinalAssault} from './final-campaign-route.mjs';
-import {autoBandageBattle} from '../game/auto-bandage.js';
-import {enterSector} from '../game/world.js';
-import {syncBattleTime} from '../game/time.js';
+import {autoBandageBattle} from '../packages/game/auto-bandage.js';
+import {enterSector} from '../packages/game/world.js';
+import {syncBattleTime} from '../packages/game/time.js';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
-import {weaponAmmoType,availableAmmunition} from '../game/ammunition-types.js';
-import {ammoResourceKey} from '../game/campaign-ammunition.js';
+import {weaponAmmoType,availableAmmunition} from '../packages/game/ammunition-types.js';
+import {ammoResourceKey} from '../packages/game/campaign-ammunition.js';
 import assert from 'node:assert/strict';
-import {decodeSave,encodeSave} from '../game/save.js';
-import {dispatchCampaign,rosterFor,refillCost,firearmRepairCost} from '../game/campaign.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
+import {dispatchCampaign,rosterFor,refillCost,firearmRepairCost} from '../packages/game/campaign.js';
 
 export function prepareFreshTucumanRecapture(start){
  let c=decodeSave(encodeSave(start)).campaign;

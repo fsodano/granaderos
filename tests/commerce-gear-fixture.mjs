@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {addEquipment} from '../game/stored-equipment.js';
-import {equipmentKey} from '../game/equipment-catalog.js';
-import {changeAmmo,AMMO_TYPES} from '../game/ammo-types.js';
-import {makeGrenadeStack,isGrenadeStack} from '../game/grenades.js';
-import {syncCarriedAmmunition} from '../game/physical-ammunition.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {addEquipment} from '../packages/game/stored-equipment.js';
+import {equipmentKey} from '../packages/game/equipment-catalog.js';
+import {changeAmmo,AMMO_TYPES} from '../packages/game/ammo-types.js';
+import {makeGrenadeStack,isGrenadeStack} from '../packages/game/grenades.js';
+import {syncCarriedAmmunition} from '../packages/game/physical-ammunition.js';
 
 // Authored finite property for isolated custody/equipment scenarios. These
 // helpers do not execute a purchase or alter a new-player route constructor.

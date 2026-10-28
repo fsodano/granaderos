@@ -1,6 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
-import { parseMap, serializeMap, validateMap, blankMap } from "../game/map-schema.js";
-import { editSectorMapDocument } from "../campaign-editor/public/map-editing-api.js";
+import { parseMap, serializeMap, validateMap, blankMap } from "../packages/game/map-schema.js";
+import { editSectorMapDocument } from "../apps/campaign-editor/public/map-editing-api.js";
 const [action, input, commandFile, output] = process.argv.slice(2);
 try {
   if (action === "new") {

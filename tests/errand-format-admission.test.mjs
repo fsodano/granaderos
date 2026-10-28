@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { validateErrandDefinitions } from '../campaign-format/errand-schema.js';
-import { validateRoadsideDiscoveries as validateRoadsideFormat } from '../campaign-format/roadside-discovery-schema.js';
-import { validateQuestDefinitions, freshDefaultErrands } from '../game/quest-definitions.js';
+import { validateErrandDefinitions } from '../packages/campaign-format/errand-schema.js';
+import { validateRoadsideDiscoveries as validateRoadsideFormat } from '../packages/campaign-format/roadside-discovery-schema.js';
+import { validateQuestDefinitions, freshDefaultErrands } from '../packages/game/quest-definitions.js';
 import {
   validateRoadsideDiscoveries,
   freshDefaultRoadsideDiscoveries,
-} from '../game/roadside-discoveries.js';
-import { DEFAULT_WORLD } from '../campaigns/default.js';
+} from '../packages/game/roadside-discoveries.js';
+import { DEFAULT_WORLD } from '../content/campaigns/default.js';
 
 test('published errands and roadside discoveries share format validation without changing their documents', () => {
   const errands = freshDefaultErrands();

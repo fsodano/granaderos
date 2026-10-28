@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([string]$BinariesDirectory = 'build/binaries', [string]$OutputDirectory = 'dist')
+param([string]$BinariesDirectory = '.output/build/binaries', [string]$OutputDirectory = '.output/dist')
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 $root = Split-Path $PSScriptRoot -Parent
@@ -19,14 +19,14 @@ if (Test-Path $package) { throw "Output exists; remove it explicitly before repa
 New-Item -ItemType Directory -Path $package -Force | Out-Null
 # The pinned upstream's freely distributed 1.13 gamedir is the runtime base.
 # Original commercial JA2 Data/ archives are deliberately not bundled.
-Get-ChildItem (Join-Path $root 'engine/gamedir') -Force |
+Get-ChildItem (Join-Path $root 'reference/native/engine/gamedir') -Force |
     Where-Object { $_.Name -notlike '.*' } |
     Copy-Item -Destination $package -Recurse -Force
-Get-ChildItem (Join-Path $root 'mod') -Force | Copy-Item -Destination $package -Recurse -Force
+Get-ChildItem (Join-Path $root 'reference/native/mod') -Force | Copy-Item -Destination $package -Recurse -Force
 foreach ($app in @('JA2', 'JA2MAPEDITOR')) { Copy-Item (Join-Path $BinariesDirectory "$app.exe") $package }
 $sourceCommit = (& git -C $root rev-parse HEAD).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Cannot read source revision.' }
-$engineCommit = (& git -C (Join-Path $root 'engine') rev-parse HEAD).Trim()
+$engineCommit = (& git -C (Join-Path $root 'reference/native/engine') rev-parse HEAD).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Cannot read engine revision.' }
 @{
     version = $version

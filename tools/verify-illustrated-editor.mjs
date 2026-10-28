@@ -4,16 +4,16 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
 import {resolve} from 'node:path';
-import {SPRITE_APPEARANCES} from '../game/sprite-appearances.js';
-import {REQUIRED_SPRITE_SEQUENCES} from '../game/sprite-action-requirements.js';
+import {SPRITE_APPEARANCES} from '../packages/game/sprite-appearances.js';
+import {REQUIRED_SPRITE_SEQUENCES} from '../packages/game/sprite-action-requirements.js';
 
 const {chromium}=await import(process.env.PLAYWRIGHT_MODULE||'playwright');
-const manifest=JSON.parse(await readFile('assets/previews/illustrated-sprites/packed/manifest.json','utf8'));
+const manifest=JSON.parse(await readFile('content/assets/previews/illustrated-sprites/packed/manifest.json','utf8'));
 const expected=Object.keys(SPRITE_APPEARANCES).flatMap(appearance=>REQUIRED_SPRITE_SEQUENCES.map(sequence=>({appearance,sequence,name:`${appearance}-${sequence}`})));
 const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_EXECUTABLE?{executablePath:process.env.CHROMIUM_EXECUTABLE}:{})});
 try{
  const page=await browser.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto(pathToFileURL(resolve('assets/previews/illustrated-sprites/index.html')).href);
+ await page.goto(pathToFileURL(resolve('content/assets/previews/illustrated-sprites/index.html')).href);
  await page.click('#play');
  const result=await page.evaluate(({expected,atlases})=>{
   const cards=[...document.querySelectorAll('.card')],failures=[];

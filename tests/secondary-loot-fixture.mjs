@@ -1,9 +1,9 @@
 import {fightOnArrival} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
-import {defaultContentPackage} from '../game/content-package.js';
-import {initialCampaign} from '../game/campaign.js';
-import {enterSector} from '../game/world.js';
-import {createBattle,actBattle,getReachable} from '../game/tactical.js';
+import {defaultContentPackage} from '../packages/game/content-package.js';
+import {initialCampaign} from '../packages/game/campaign.js';
+import {enterSector} from '../packages/game/world.js';
+import {createBattle,actBattle,getReachable} from '../packages/game/tactical.js';
 import {order,saved,sync} from './local-contract-fixture.mjs';
 export const secondaryName='Sable del Regimiento';
 export function secondaryLootField({companion=false,sameFirearm=false}={}){

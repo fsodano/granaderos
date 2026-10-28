@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {contractExpiresSeconds,contractQuote} from '../game/contracts.js';
-import {decodeSave,encodeSave} from '../game/save.js';
-import {operativeLocation,operativeInTransit} from '../game/squads.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {contractExpiresSeconds,contractQuote} from '../packages/game/contracts.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
+import {operativeLocation,operativeInTransit} from '../packages/game/squads.js';
 import {fightNorthernSector,northernClinicDefenseOrder} from './northern-route.mjs';
 import {relieveStockNorthernPatient} from './fresh-northern-command.mjs';
-import {autoBandageBattle} from '../game/auto-bandage.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {autoBandageBattle} from '../packages/game/auto-bandage.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
 import {visit,sync,leave} from './local-contract-fixture.mjs';
-import {careAssignmentReason} from '../game/medical-care.js';
-import {expandCellScene} from '../game/cell-scene-storage.js';
+import {careAssignmentReason} from '../packages/game/medical-care.js';
+import {expandCellScene} from '../packages/game/cell-scene-storage.js';
 import {bookRouteHires} from './paid-route-hiring.mjs';
 
 const expandedDefenseState=state=>{

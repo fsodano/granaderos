@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { initialCampaign, dispatchCampaign, rosterFor } from '../game/campaign.js';
-import { defaultContentPackage } from '../game/content-package.js';
-import { GetRecruitmentCandidatesUseCase } from '../game/application/personnel/get-recruitment-candidates/get-recruitment-candidates.use-case.ts';
-import { CampaignGetRecruitmentCandidatesRepository } from '../game/infrastructure/personnel/campaign-get-recruitment-candidates.repository.js';
+import { initialCampaign, dispatchCampaign, rosterFor } from '../packages/game/campaign.js';
+import { defaultContentPackage } from '../packages/game/content-package.js';
+import { GetRecruitmentCandidatesUseCase } from '../packages/game/application/personnel/get-recruitment-candidates/get-recruitment-candidates.use-case.ts';
+import { CampaignGetRecruitmentCandidatesRepository } from '../packages/game/infrastructure/personnel/campaign-get-recruitment-candidates.repository.js';
 
 function candidates(campaign, availability) {
   const repository = new CampaignGetRecruitmentCandidatesRepository(campaign, rosterFor(campaign));

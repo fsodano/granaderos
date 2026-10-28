@@ -26,7 +26,7 @@ def tracks(doc,binary,clip):
  return result
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[2]);p.add_argument('--receipt',type=Path);a=p.parse_args();root=a.root.resolve();assets=root/'web/public/models/characters';mp=assets/'manifest.json';original_manifest=mp.read_bytes();manifest=json.loads(original_manifest);merge=module('equipped_crouch_merge',root/'tools/characters-3d/merge-animation-bank.py');pack=module('equipped_crouch_pack',root/'assets/source/characters-3d/authoring/gltf_pack.py');pending=[];receipt={}
+ p=argparse.ArgumentParser();p.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[2]);p.add_argument('--receipt',type=Path);a=p.parse_args();root=a.root.resolve();assets=root/'apps/web/public/models/characters';mp=assets/'manifest.json';original_manifest=mp.read_bytes();manifest=json.loads(original_manifest);merge=module('equipped_crouch_merge',root/'tools/characters-3d/merge-animation-bank.py');pack=module('equipped_crouch_pack',root/'content/assets/source/characters-3d/authoring/gltf_pack.py');pending=[];receipt={}
  for gender in('male','female'):
   bank=manifest['animationLibraries'][gender];path=assets/Path(bank['url']).name;old_bytes=path.read_bytes();doc,binary=merge.read_glb(path);native_doc={k:copy.deepcopy(v)for k,v in doc.items()if k not in('animations','buffers','bufferViews','accessors')};clips={c['name']:c for c in doc['animations']};before={name:tracks(doc,binary,clip)for name,clip in clips.items()};metadata={c['name']:c for c in bank['clips']};selected=set();changed=[]
   for direction in('Left','Right'):

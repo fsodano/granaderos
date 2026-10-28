@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
-import {rosterFor} from '../game/campaign.js';
-import {operativeLocation,operativeInTransit} from '../game/squads.js';
-import {sectorInventoryModel,sectorInventorySites} from '../game/sector-inventory.js';
-import {previewStrategicRoute} from '../game/strategic-route.js';
-import {applyItemQuantity,SUPPLY_ITEMS} from '../game/tactical-inventory.js';
-import {careAssignmentReason} from '../game/medical-care.js';
-import {contractExpiresSeconds} from '../game/contracts.js';
-import {tooTiredToMarch} from '../game/march-fatigue.js';
+import {rosterFor} from '../packages/game/campaign.js';
+import {operativeLocation,operativeInTransit} from '../packages/game/squads.js';
+import {sectorInventoryModel,sectorInventorySites} from '../packages/game/sector-inventory.js';
+import {previewStrategicRoute} from '../packages/game/strategic-route.js';
+import {applyItemQuantity,SUPPLY_ITEMS} from '../packages/game/tactical-inventory.js';
+import {careAssignmentReason} from '../packages/game/medical-care.js';
+import {contractExpiresSeconds} from '../packages/game/contracts.js';
+import {tooTiredToMarch} from '../packages/game/march-fatigue.js';
 
 const clock=s=>s.hour*3600+(s.secondOfHour??0);
 const medicalRows=(s,sector,id)=>sectorInventorySites(s,sector).flatMap(site=>

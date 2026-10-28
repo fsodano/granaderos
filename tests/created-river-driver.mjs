@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import {actBattle,hasFirearm,canSee,teamCanSee,exitPreview} from '../game/tactical.js';
-import {sectorDeploymentAction,sectorDeploymentModel} from '../game/sector-deployment.js';
-import {choosePlayerSharedSightingInvestigation} from '../game/tactical-ai.js';
+import {actBattle,hasFirearm,canSee,teamCanSee,exitPreview} from '../packages/game/tactical.js';
+import {sectorDeploymentAction,sectorDeploymentModel} from '../packages/game/sector-deployment.js';
+import {choosePlayerSharedSightingInvestigation} from '../packages/game/tactical-ai.js';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
 export function deployRiverInfantry(start){
  let b=sectorDeploymentAction(start,{type:'spreadDeployment'});assert.equal(b.lastError,null);

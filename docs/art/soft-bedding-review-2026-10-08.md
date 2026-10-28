@@ -59,16 +59,16 @@ selection excludes eight of 905 discovered files. Corrected typecheck passes in
 retained without repeat. The build verifies 1,377 output files and 1,045 asset
 references. Node v25.1.0, npm 11.6.2 and Python 3.9.6 are pinned.
 
-The [input seal](../../artifacts/soft-bedding/input-seal.json) proves unchanged
+The [input seal](../evidence/artifacts/soft-bedding/input-seal.json) proves unchanged
 paths and bytes for all 10,417 regular non-document source, test, runtime and asset
 files plus one engine gitlink: 10,418 input entries. It also verifies the engine
 initialization state, 42,461 installed dependency files, runtime files and
 production output. The build source is
 `88ad57daef746bcdb71fd596f4512079bbc09dbd8c07ca8c7e69e45afa33c094`.
-The [read-only comparison helper](../../artifacts/soft-bedding/verify-final-equivalence.py)
+The [read-only comparison helper](../evidence/artifacts/soft-bedding/verify-final-equivalence.py)
 supports an optional strict dependency and runtime check. The
-[root comparison](../../artifacts/soft-bedding/root-equivalence-proof.json) passes
+[root comparison](../evidence/artifacts/soft-bedding/root-equivalence-proof.json) passes
 with that strict check. Root docs, photos and revision labels receive separate checks.
 
-The [review receipt](../../artifacts/soft-bedding/review-receipt.json) links
+The [review receipt](../evidence/artifacts/soft-bedding/review-receipt.json) links
 geometry, full overlap checks, counters, source proof and final gate results.

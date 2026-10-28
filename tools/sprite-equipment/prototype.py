@@ -4,8 +4,8 @@ from PIL import Image,ImageDraw
 import numpy as np
 import cv2
 ROOT=Path(__file__).resolve().parents[2]
-source=Image.open(ROOT/'web/public/art/illustrated/granadero-idle.png').convert('RGBA').crop((4*156,0,5*156,156))
-skin=Image.open(ROOT/'web/public/art/skin/granadero-idle.png').convert('RGBA').crop((4*156,0,5*156,156))
+source=Image.open(ROOT/'apps/web/public/art/illustrated/granadero-idle.png').convert('RGBA').crop((4*156,0,5*156,156))
+skin=Image.open(ROOT/'apps/web/public/art/skin/granadero-idle.png').convert('RGBA').crop((4*156,0,5*156,156))
 a=np.array(source);mask=Image.new('L',source.size);d=ImageDraw.Draw(mask)
 d.polygon([(52,95),(60,83),(114,53),(117,52),(117,55),(90,76),(70,90),(56,99)],fill=255)
 m=cv2.dilate(np.array(mask),np.ones((3,3),np.uint8))
@@ -45,4 +45,4 @@ for kind in ['pistol','sabre']:
 review=Image.new('RGB',(4*468,490),(88,94,80));draw=ImageDraw.Draw(review)
 for i,(label,im) in enumerate(zip(['Original','Bare hands candidate','Pistol candidate','Sabre candidate'],variants)):
  im=im.resize((468,468),Image.Resampling.NEAREST);review.paste(im,(i*468,22),im);draw.text((i*468+10,4),label,fill='white')
-review.save(ROOT/'assets/previews/equipped-sprites/weapon-separation-candidate.png')
+review.save(ROOT/'content/assets/previews/equipped-sprites/weapon-separation-candidate.png')

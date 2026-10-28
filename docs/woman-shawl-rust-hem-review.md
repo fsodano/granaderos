@@ -4,7 +4,7 @@ The current full-body sprite reference has a narrow rust stripe above the skirt 
 
 ## Reference and scope
 
-The review used all three [sprite consistency pages](../assets/previews/sprite-consistency/woman-shawl-1.png), [page two](../assets/previews/sprite-consistency/woman-shawl-2.png), [page three](../assets/previews/sprite-consistency/woman-shawl-3.png), the retained [full-body identity reference](../assets/source/illustrated-sprites/woman-shawl-s-identity-reference.png), and its existing prompts. The face/hand skin maps are not full-body references. This is a source-derived detail correction; it does not record new user approval or establish a historically measured fabric colour.
+The review used all three [sprite consistency pages](../content/assets/previews/sprite-consistency/woman-shawl-1.png), [page two](../content/assets/previews/sprite-consistency/woman-shawl-2.png), [page three](../content/assets/previews/sprite-consistency/woman-shawl-3.png), the retained [full-body identity reference](../content/assets/source/illustrated-sprites/woman-shawl-s-identity-reference.png), and its existing prompts. The face/hand skin maps are not full-body references. This is a source-derived detail correction; it does not record new user approval or establish a historically measured fabric colour.
 
 In the 444 × 443 identity reference, the non-magenta figure is 367 pixels tall. A restricted skirt region supplies 484 rust pixels, with median shaded RGB `(105,50,39.5)`, rounded to `#693228`. The median visible stripe is four pixels wide, with a two-to-six-pixel range. Central columns clear of the boots put its centre about 16 pixels above the skirt edge. At the retained 1.76 m native body height, these ratios imply approximately 19 mm width and 77 mm centre inset. The image contains lighting and curved edges, so these are an appearance recipe, not historical dimensions or an unlit material measurement.
 
@@ -32,10 +32,10 @@ The subject is unselected through ordinary roster controls so the selection ring
 
 | Retained charcoal skirt | Inset rust trim |
 | --- | --- |
-| ![Before, front](../artifacts/three-woman-shawl-rust-hem-review/baseline-standing-angle0-detail.png) | ![After, front](../artifacts/three-woman-shawl-rust-hem-review/candidate-standing-angle0-detail.png) |
-| ![Before, side](../artifacts/three-woman-shawl-rust-hem-review/baseline-standing-angle2-detail.png) | ![After, side](../artifacts/three-woman-shawl-rust-hem-review/candidate-standing-angle2-detail.png) |
+| ![Before, front](evidence/artifacts/three-woman-shawl-rust-hem-review/baseline-standing-angle0-detail.png) | ![After, front](evidence/artifacts/three-woman-shawl-rust-hem-review/candidate-standing-angle0-detail.png) |
+| ![Before, side](evidence/artifacts/three-woman-shawl-rust-hem-review/baseline-standing-angle2-detail.png) | ![After, side](evidence/artifacts/three-woman-shawl-rust-hem-review/candidate-standing-angle2-detail.png) |
 
-Full HUD: [before](../artifacts/three-woman-shawl-rust-hem-review/baseline-standing-lod0.png), [after](../artifacts/three-woman-shawl-rust-hem-review/candidate-standing-lod0.png).
+Full HUD: [before](evidence/artifacts/three-woman-shawl-rust-hem-review/baseline-standing-lod0.png), [after](evidence/artifacts/three-woman-shawl-rust-hem-review/candidate-standing-lod0.png).
 
 The first angle helper tried an unavailable fourth zoom step and failed before capture. That failed report, the earlier 81.9 mm inset trial, and the all-legwear height-chart trial are retained in the private review evidence. The accepted helper uses enabled normal controls and the sewn-only chart.
 

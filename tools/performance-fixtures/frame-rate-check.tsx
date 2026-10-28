@@ -2,10 +2,10 @@
 // Read only the status while sampling: a full DOM/AX snapshot disturbs frame timing.
 // Inspect the full page before starting or after the eight-second result.
 import {Profiler,useEffect,useRef,useState} from 'react';
-import Battlefield from '../Battlefield';
-import {useBattleExecutor} from '../../lib/useBattleExecutor';
-import {enterSector} from '../../../game/world.js';
-import {getReachable,initializeBattlePerception,visibleEnemies} from '../../../game/tactical.js';
+import Battlefield from '../../apps/web/app/Battlefield';
+import {useBattleExecutor} from '../../apps/web/lib/useBattleExecutor';
+import {enterSector} from '../../packages/game/world.js';
+import {getReachable,initializeBattlePerception,visibleEnemies} from '../../packages/game/tactical.js';
 export default function Gameplay(){
  const [battle,setBattle]=useState(()=>enterSector({sector:'buenos_aires',squad:[{id:3},{id:4},{id:5}],enemies:[],exploration:true,hour:0,seed:8}));
  const calculation=useBattleExecutor(battle);

@@ -2,10 +2,10 @@ import {verifySpriteSkin} from './verify-sprite-skin.mjs';
 import {readFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {createHash} from 'node:crypto';
-import {spriteLayout,SPRITE_DIRECTIONS,SPRITE_FRAMES,SPRITE_FPS} from '../game/sprite-layouts.js';
-import {ILLUSTRATED_SPRITE_ATLASES} from '../game/illustrated-sprite-atlases.js';
-import {SPRITE_APPEARANCES} from '../game/sprite-appearances.js';
-import {SPRITE_SEQUENCES} from '../game/sprite-state.js';
+import {spriteLayout,SPRITE_DIRECTIONS,SPRITE_FRAMES,SPRITE_FPS} from '../packages/game/sprite-layouts.js';
+import {ILLUSTRATED_SPRITE_ATLASES} from '../packages/game/illustrated-sprite-atlases.js';
+import {SPRITE_APPEARANCES} from '../packages/game/sprite-appearances.js';
+import {SPRITE_SEQUENCES} from '../packages/game/sprite-state.js';
 export const TERRAIN_MATERIALS=['dry-grass','dirt','cobble','green-grass','mud','floor','plaster','roof','wood'];
 export const SCENERY_OBJECTS=['tree','poplar','shrub','rocks','barrels','hay'];
 // A staged publication may supply its own runtime index. Active coverage still

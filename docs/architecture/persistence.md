@@ -2,7 +2,7 @@
 
 [Architecture guide](README.md)
 
-Persistence has two related but distinct jobs: `game/save.js` encodes/decodes portable campaign saves, while the browser autosave queue stores the latest campaign/battle pair under a campaign-specific `localStorage` key. A portable save is not just raw JSON state: it carries format/schema metadata, applies reference-aware serialization and terrain compaction, expands/migrates on decode, then validates campaign and tactical consistency before returning the pair. Installed campaign assets are external resources verified separately from the save bytes. For screen-level resume/import behavior see [runtime flows](runtime-flows.md); for campaign and battle state semantics see [strategic engine](strategic-engine.md) and [tactical engine](tactical-engine.md).
+Persistence has two related but distinct jobs: `packages/game/save.js` encodes/decodes portable campaign saves, while the browser autosave queue stores the latest campaign/battle pair under a campaign-specific `localStorage` key. A portable save is not just raw JSON state: it carries format/schema metadata, applies reference-aware serialization and terrain compaction, expands/migrates on decode, then validates campaign and tactical consistency before returning the pair. Installed campaign assets are external resources verified separately from the save bytes. For screen-level resume/import behavior see [runtime flows](runtime-flows.md); for campaign and battle state semantics see [strategic engine](strategic-engine.md) and [tactical engine](tactical-engine.md).
 
 ## Portable save envelope and byte limits
 
@@ -50,11 +50,11 @@ The result is `{campaign, battle}` where `battle` may be null. Decode can throw 
 
 ## Application contracts and restored objects
 
-[`CreateGameSession`](../../game/application/create-game-session/README.md)
+[`CreateGameSession`](../../packages/game/application/create-game-session/README.md)
 assigns a new identity to a fresh campaign.
-[`RestoreGame`](../../game/application/restore-game/README.md) validates serialized
+[`RestoreGame`](../../packages/game/application/restore-game/README.md) validates serialized
 state and restores canonical domain behavior through
-[`GameSnapshotMapper`](../../game/infrastructure/persistence/game-snapshot-mapper.js).
+[`GameSnapshotMapper`](../../packages/game/infrastructure/persistence/game-snapshot-mapper.js).
 Its identity map shares each character between personnel and active sector
 participation. The mapper retains restored objects and projects their accepted
 changes back into the same logical snapshot. It does not issue starting equipment,
@@ -83,14 +83,14 @@ visits to select physical participants. `PhysicalSectorProjection` keeps archiva
 records during persistence while mapping only current presence into the domain.
 Only open visits restore `SectorSession` objects.
 
-[`SaveGame`](../../game/application/save-game/README.md) checks session, revision,
-and request identity before persistence. [`GetSaveStatus`](../../game/application/get-save-status/README.md)
+[`SaveGame`](../../packages/game/application/save-game/README.md) checks session, revision,
+and request identity before persistence. [`GetSaveStatus`](../../packages/game/application/get-save-status/README.md)
 reports accepted and persisted progress separately. Its states are `unsaved`,
 `saving`, `saved`, `blocked`, and `failed`. The game header displays the status
 beside the export button. It shows `Guardado` only for the current game identity
 and revision; a failed or blocked save remains visible.
 
-The [`browser writer`](../../web/lib/browser-save-writer.ts) uses an exclusive Web
+The [`browser writer`](../../apps/web/lib/browser-save-writer.ts) uses an exclusive Web
 Lock per save key. A second tab cannot write that key. A browser without Web Locks
 cannot autosave. Both cases keep accepted in-memory progress and manual download
 available. Focus, a new snapshot, or an explicit flush retries ownership. The
@@ -168,7 +168,7 @@ The diagram is conceptual: stale successful results can be discarded and `pump` 
 
 ## Load, hash verification, and recovery paths
 
-Installed campaign boot first loads `/campaigns/index.json`, validates the registry, and loads a chosen manifest plus its content/world/map index/presentation/assets and maps. It validates registry/manifest ID/name/revision consistency and compiles the package. `verifyCampaignResources` fetches listed asset bytes in batches of four, checks safe `assets/`-relative paths and SHA-256 hashes, caching successful/in-flight checks per reader/descriptor unless `refresh` is requested. `loadInstalledCampaign` does this verification before returning the installed package, so boot does not treat an unverified package as loaded.
+Installed campaign boot first loads `/campaigns/index.json`, validates the registry, and loads a chosen manifest plus its content/world/map index/presentation/assets and maps. It validates registry/manifest ID/name/revision consistency and compiles the package. `verifyCampaignResources` fetches listed asset bytes in batches of four, checks safe package-relative `assets/` paths and SHA-256 hashes, caching successful/in-flight checks per reader/descriptor unless `refresh` is requested. `loadInstalledCampaign` does this verification before returning the installed package, so boot does not treat an unverified package as loaded.
 
 Save resume/import sequencing differs: `page.tsx` first obtains an in-memory pair or decodes save text/file, then checks selected campaign origin as applicable, then verifies referenced campaign resources with `refresh:true` before applying the restored pair. If decode or resource verification fails, page keeps current session and reports an error. Resume can use the current in-memory campaign/battle without decoding a saved string, though it still refresh-verifies its resources. Autosave can fail independently and is not a migration/validation step; users are offered export when local persistence fails.
 
@@ -199,4 +199,4 @@ Export calls `encodeSave(campaign,battle)`, downloads JSON with filename based o
 
 ## Source anchors
 
-[`save.js`](../../game/save.js), [`save-limits.js`](../../game/save-limits.js), [`save-terrain.js`](../../game/save-terrain.js), [`cell-scene-storage.js`](../../game/cell-scene-storage.js), [`content-launch.js`](../../game/content-launch.js), [`campaign-package-storage.js`](../../game/campaign-package-storage.js), [`campaign.js`](../../game/campaign.js), [`validate-battle.js`](../../game/validate-battle.js), [`useCampaignAutosave.ts`](../../web/lib/useCampaignAutosave.ts), [`campaign-autosave.js`](../../web/lib/campaign-autosave.js), [`campaign-save-worker.ts`](../../web/lib/campaign-save-worker.ts), [`campaign-library.ts`](../../web/lib/campaign-library.ts), [`page.tsx`](../../web/app/page.tsx), [`ContentEditor.tsx`](../../campaign-editor/web/app/story/ContentEditor.tsx).
+[`save.js`](../../packages/game/save.js), [`save-limits.js`](../../packages/game/save-limits.js), [`save-terrain.js`](../../packages/game/save-terrain.js), [`cell-scene-storage.js`](../../packages/game/cell-scene-storage.js), [`content-launch.js`](../../packages/game/content-launch.js), [`campaign-package-storage.js`](../../packages/game/campaign-package-storage.js), [`campaign.js`](../../packages/game/campaign.js), [`validate-battle.js`](../../packages/game/validate-battle.js), [`useCampaignAutosave.ts`](../../apps/web/lib/useCampaignAutosave.ts), [`campaign-autosave.js`](../../apps/web/lib/campaign-autosave.js), [`campaign-save-worker.ts`](../../apps/web/lib/campaign-save-worker.ts), [`campaign-library.ts`](../../apps/web/lib/campaign-library.ts), [`page.tsx`](../../apps/web/app/page.tsx), [`ContentEditor.tsx`](../../apps/campaign-editor/web/app/story/ContentEditor.tsx).

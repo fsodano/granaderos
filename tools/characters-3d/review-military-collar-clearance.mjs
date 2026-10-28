@@ -3,12 +3,12 @@
 import assert from 'node:assert/strict';
 import {readFileSync, writeFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
-import sharp from '../../web/node_modules/sharp/lib/index.js';
-import {AnimationMixer, LoopOnce, Ray, Triangle, Vector3, Box3} from '../../web/node_modules/three/build/three.module.js';
-import {clone} from '../../web/node_modules/three/examples/jsm/utils/SkeletonUtils.js';
+import sharp from '../../apps/web/node_modules/sharp/lib/index.js';
+import {AnimationMixer, LoopOnce, Ray, Triangle, Vector3, Box3} from '../../apps/web/node_modules/three/build/three.module.js';
+import {clone} from '../../apps/web/node_modules/three/examples/jsm/utils/SkeletonUtils.js';
 import {publishedActor, manifest} from '../../tests/published-actor-fixture.mjs';
 
-const library = new URL('../../web/public/models/characters/', import.meta.url);
+const library = new URL('../../apps/web/public/models/characters/', import.meta.url);
 const names = ['stand.idle.unarmed', 'stand.aim.short-gun', 'stand.aim.long-gun',
   'stand.run.long-gun', 'stand.slash.blade.backhand', 'stand.punch.unarmed',
   'crouch.idle.unarmed', 'crouch.aim.long-gun', 'prone.idle.unarmed', 'prone.aim.long-gun'];

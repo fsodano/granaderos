@@ -3,8 +3,8 @@ from pathlib import Path
 from PIL import Image,ImageDraw
 import numpy as np,cv2,json
 ROOT=Path(__file__).resolve().parents[2]
-source=Image.open(ROOT/'web/public/art/illustrated/granadero-idle.png').convert('RGBA')
-skins=Image.open(ROOT/'web/public/art/skin/granadero-idle.png').convert('RGBA')
+source=Image.open(ROOT/'apps/web/public/art/illustrated/granadero-idle.png').convert('RGBA')
+skins=Image.open(ROOT/'apps/web/public/art/skin/granadero-idle.png').convert('RGBA')
 # Rifle segments exclude portions hidden behind the body. Coordinates are local
 # raster pixels; no direction is mirrored, because straps and packs are asymmetric.
 rows=[
@@ -51,5 +51,5 @@ for d,row in enumerate(rows):
   draw.text((d*312+4,r*334+4),['Original','Bare hands candidate','Short gun candidate','Blade candidate'][r]+' '+['N','NE','E','SE','S','SW','W','NW'][d],fill='white')
  # Nothing outside the authored weapon-edit area changes.
  for im in variants[1:]:assert np.array_equal(np.array(im)[:35],a[:35])
-review.save(ROOT/'assets/previews/equipped-sprites/granadero-idle-four-styles-candidate.png')
-(ROOT/'assets/previews/equipped-sprites/review.json').write_text(json.dumps({'status':'in-progress','published':False,'appearance':'granadero','sequence':'idle','directions':8,'equipmentStyles':4,'allActionsReviewed':False,'issue':'Weapon masks and grips require further visual correction before runtime use.'},indent=2)+'\n')
+review.save(ROOT/'content/assets/previews/equipped-sprites/granadero-idle-four-styles-candidate.png')
+(ROOT/'content/assets/previews/equipped-sprites/review.json').write_text(json.dumps({'status':'in-progress','published':False,'appearance':'granadero','sequence':'idle','directions':8,'equipmentStyles':4,'allActionsReviewed':False,'issue':'Weapon masks and grips require further visual correction before runtime use.'},indent=2)+'\n')

@@ -1,6 +1,6 @@
 // Keep the commander behind the battery and fire from an affordable legal stance.
 import {mountainBatteryOrder} from './mountain-battery-driver.mjs';
-import {getReachable,teamCanSee,firearmShotOptions,actionCosts} from '../game/tactical.js';
+import {getReachable,teamCanSee,firearmShotOptions,actionCosts} from '../packages/game/tactical.js';
 export const threePersonBatteryOrder=(b,u)=>{
  const normal=mountainBatteryOrder(b,u),gun=b.artillery.find(g=>g.side===u.side);
  if(['57','5'].includes(u.id)&&gun&&b.mode==='exploration'&&normal?.type==='move'){

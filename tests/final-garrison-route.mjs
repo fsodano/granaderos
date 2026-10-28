@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign} from '../game/campaign.js';
-import {decodeSave,encodeSave} from '../game/save.js';
+import {dispatchCampaign} from '../packages/game/campaign.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
 import {collectRouteItems} from './finite-route-equipment.mjs';
 
 // Rebuild an actual local defense while the wounded veteran receives paid

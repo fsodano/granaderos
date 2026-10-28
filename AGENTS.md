@@ -16,8 +16,8 @@ before delivery and remove sentences that require conversation history.
 Before architecture work, domain/application changes, or terminology changes,
 read:
 
-- [Accepted domain architecture](plans/accepted/domain-architecture.md).
-- [Ubiquitous language](plans/accepted/ubiquitous-language.md).
+- [Accepted domain architecture](docs/plans/accepted/domain-architecture.md).
+- [Ubiquitous language](docs/plans/accepted/ubiquitous-language.md).
 
 These documents define the target architecture. Source and dated evidence define
 current implementation. Preserve that distinction in plans, documentation, and
@@ -41,8 +41,8 @@ decisions in the accepted documents as part of the authorized work.
 
 ## Implementation direction
 
-- Use `game/domain`, `game/application`, and `game/infrastructure` inside the game
-  package, with an independently packaged `campaign-editor`.
+- Use `packages/game/domain`, `packages/game/application`, and `packages/game/infrastructure` inside the game
+  package, with the independent editor in `apps/campaign-editor`.
 - Give domain classes behavior and invariant ownership. Avoid public mutable
   state bags, unexplained constants, magic domain strings, and compressed source.
 - Give each use case its own narrow repository interface over one logical game
@@ -55,6 +55,19 @@ decisions in the accepted documents as part of the authorized work.
   remains redirectable travel, including immediate reversal at zero elapsed time.
 - Make names, types, structure, and methods carry intent. Comments may explain a
   necessary rationale or external rule source; they do not replace readable code.
+
+## Repository layout
+
+- Runnable applications belong in `apps/`; reusable game and file-contract packages
+  belong in `packages/`.
+- Authored campaigns and art sources belong in `content/`. Prepared browser media
+  lives in `apps/web/public` and campaign package assets.
+- Plans and evidence belong in `docs/plans` and `docs/evidence`. New local build,
+  cache, and diagnostic output belongs in ignored `.output/`.
+- The separate native build belongs in `reference/native`. Review applications
+  belong in `tools/playgrounds`; they are not production game dependencies.
+- Keep filesystem paths distinct from public browser URLs. Use the
+  [repository map](docs/development/repository-layout.md) when adding a source or tool.
 
 ## Scope and verification
 

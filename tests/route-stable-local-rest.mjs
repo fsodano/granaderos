@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
-import {rosterFor} from '../game/campaign.js';
-import {careRules} from '../game/campaign-care-rules.js';
-import {contractExpiresSeconds} from '../game/contracts.js';
-import {restRecovery} from '../game/strategic-rest.js';
-import {careAssignmentReason} from '../game/medical-care.js';
-import {operativeLocation,operativeInTransit} from '../game/squads.js';
-import {worldOwner} from '../game/world-cells.js';
+import {rosterFor} from '../packages/game/campaign.js';
+import {careRules} from '../packages/game/campaign-care-rules.js';
+import {contractExpiresSeconds} from '../packages/game/contracts.js';
+import {restRecovery} from '../packages/game/strategic-rest.js';
+import {careAssignmentReason} from '../packages/game/medical-care.js';
+import {operativeLocation,operativeInTransit} from '../packages/game/squads.js';
+import {worldOwner} from '../packages/game/world-cells.js';
 import {createFreshRouteOrders,freshRouteServingIds} from './fresh-cuyo-route.mjs';
 
 const clock=c=>c.hour*3600+(c.secondOfHour??0);

@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import {woundedGarrison,MILITIA_DOCTOR as D} from './militia-care-fixture.mjs';
 import {order,saved,sync,leave} from './local-contract-fixture.mjs';
-import {createBattle,endTurn} from '../game/tactical.js';
-import {previousDeploymentScene,retainedMilitaryBodies} from '../game/military-remains.js';
+import {createBattle,endTurn} from '../packages/game/tactical.js';
+import {previousDeploymentScene,retainedMilitaryBodies} from '../packages/game/military-remains.js';
 export function combatMilitia(customize=()=>{}){
  const configure=d=>{d.weapons.push({...structuredClone(d.weapons.find(w=>w.id==='firearm-1805')),id:'militia-test-pistol',name:'Pistola de instrucción',damage:100,capacity:3,fireAP:8,range:24});d.militiaEquipment.green='militia-test-pistol';customize(d);};
  let {campaign:s,patientId:id}=woundedGarrison({configure,injuryDamage:38,medicalKits:5});s=order(s,{type:'assignCare',id:D,assignment:'militia_doctor'});s=order(s,{type:'wait',hours:2});s=order(s,{type:'wait',hours:3});s=order(s,{type:'assignCare',id:D,assignment:'active'});assert.equal(s.garrisons.retiro.find(u=>u.id===id).hp,44);if(s.hour%24<6)s=order(s,{type:'wait',hours:6-s.hour%24});return {s:saved({campaign:s}).campaign,id};

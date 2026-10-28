@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import { rosterFor } from '../game/campaign.js';
-import { contractQuote, contractExpiresSeconds } from '../game/contracts.js';
-import { hireArrivalDueSeconds } from '../game/hiring-arrivals.js';
+import { rosterFor } from '../packages/game/campaign.js';
+import { contractQuote, contractExpiresSeconds } from '../packages/game/contracts.js';
+import { hireArrivalDueSeconds } from '../packages/game/hiring-arrivals.js';
 import { immediateRecruitmentExpectation } from './immediate-recruitment-fixture.mjs';
 import { order, saved } from './local-contract-fixture.mjs';
 import { advanceCampaignHours } from './campaign-wait-fixture.mjs';

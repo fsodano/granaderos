@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {act} from '../web/node_modules/react/index.js';
+import {act} from '../apps/web/node_modules/react/index.js';
 export async function selectPocket(m,name){
  const cell=[...m.document.querySelectorAll('.ja2-pocket,.ja2-hands button')].find(e=>e.textContent.includes(name));
  assert.ok(cell,`Pocket containing ${name}`);

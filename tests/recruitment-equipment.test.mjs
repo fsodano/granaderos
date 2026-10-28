@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { initialCampaign, dispatchCampaign, rosterFor } from '../game/campaign.js';
-import { rosterFor as characterDefinitions } from '../game/recruitment.js';
-import { campaignRules } from '../game/campaign-rules.js';
-import { ammunitionByType, weaponAmmoType } from '../game/ammunition-types.js';
-import { CampaignCharacterEquipmentMapper } from '../game/infrastructure/personnel/campaign-character-equipment-mapper.js';
-import { encodeSave, decodeSave } from '../game/save.js';
+import { initialCampaign, dispatchCampaign, rosterFor } from '../packages/game/campaign.js';
+import { rosterFor as characterDefinitions } from '../packages/game/recruitment.js';
+import { campaignRules } from '../packages/game/campaign-rules.js';
+import { ammunitionByType, weaponAmmoType } from '../packages/game/ammunition-types.js';
+import { CampaignCharacterEquipmentMapper } from '../packages/game/infrastructure/personnel/campaign-character-equipment-mapper.js';
+import { encodeSave, decodeSave } from '../packages/game/save.js';
 import { postContent } from './post-campaign-fixture.mjs';
 import { visit, leave } from './local-contract-fixture.mjs';
 

@@ -157,7 +157,7 @@ and first-load cost need further work alongside frame-time spikes.
   lighting changes, room reveals, furniture, and camera tracking.
 - The temporary browser test route was removed after measurement. The fixture
   remains in `tools/performance-fixtures/frame-rate-check.tsx`. To repeat, copy it
-  to `web/app/performance-check/page.tsx`, run the development server, select
+  to `apps/web/app/performance-check/page.tsx`, run the development server, select
   100% zoom and the camera-centering control, wait for cache preparation, and
   select Prepare route, then Measure walk. Forest scene selects the six-soldier woodland check; Measure scene captures zoom input without issuing a move. It uses an isolated battle and does not write campaign
   saves. Remove the temporary route before publishing.

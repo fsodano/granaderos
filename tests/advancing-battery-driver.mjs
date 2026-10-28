@@ -1,7 +1,7 @@
 // Tactical test orders: move a purchased battery toward the known sector centre,
 // then use visible targets, finite ammunition, actual crew AP and personal weapons.
-import {chooseArtilleryAction} from '../game/tactical-ai-artillery.js';
-import {actBattle,teamCanSee,getReachable} from '../game/tactical.js';
+import {chooseArtilleryAction} from '../packages/game/tactical-ai-artillery.js';
+import {actBattle,teamCanSee,getReachable} from '../packages/game/tactical.js';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
 export function batteryOrder(b,u){
  const visible=b.units.filter(t=>t.side==='enemy'&&t.hp>=15&&!t.routed&&!t.surrendered&&!t.unconscious&&!t.departure&&teamCanSee(b,u.side,t));

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { DomainIdentityMap } from '../game/infrastructure/persistence/domain-identity-map.ts';
-import { CanonicalSectorMapper } from '../game/infrastructure/persistence/canonical-sector-mapper.js';
+import { DomainIdentityMap } from '../packages/game/infrastructure/persistence/domain-identity-map.ts';
+import { CanonicalSectorMapper } from '../packages/game/infrastructure/persistence/canonical-sector-mapper.js';
 
 function field(id, residents = [], participants = []) {
   return {

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import {rosterFor} from '../game/campaign.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {AMMUNITION_FAMILIES} from '../game/ammunition-families.js';
+import {rosterFor} from '../packages/game/campaign.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {AMMUNITION_FAMILIES} from '../packages/game/ammunition-families.js';
 import {order} from './local-contract-fixture.mjs';
 
 // Share existing carried reserve through visible drop and pickup controls.

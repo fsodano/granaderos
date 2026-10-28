@@ -1,7 +1,7 @@
-import assert from'node:assert/strict';import{dispatchCampaign,rosterFor}from'../game/campaign.js';import{sectorInventoryModel}from'../game/sector-inventory.js';import{finishReloadsBeforeMarch}from'./pre-march-reload.mjs';import{prepareFinalAssault}from'./final-campaign-route.mjs';import{fightNorthernSector}from'./northern-route.mjs';import{stableCrewController}from'./stable-crew-driver.mjs';import{carriedAmmunition}from'../game/campaign-ammunition.js';import{ammoTypeFor,ammoCount}from'../game/ammo-types.js';
-import {contractQuote} from '../game/contracts.js';
-import {encodeSave,decodeSave} from '../game/save.js';
-import {enterSector} from '../game/world.js';
+import assert from'node:assert/strict';import{dispatchCampaign,rosterFor}from'../packages/game/campaign.js';import{sectorInventoryModel}from'../packages/game/sector-inventory.js';import{finishReloadsBeforeMarch}from'./pre-march-reload.mjs';import{prepareFinalAssault}from'./final-campaign-route.mjs';import{fightNorthernSector}from'./northern-route.mjs';import{stableCrewController}from'./stable-crew-driver.mjs';import{carriedAmmunition}from'../packages/game/campaign-ammunition.js';import{ammoTypeFor,ammoCount}from'../packages/game/ammo-types.js';
+import {contractQuote} from '../packages/game/contracts.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
+import {enterSector} from '../packages/game/world.js';
 
 // The field stays at its actual hospital while a real courier buys unused guns.
 // Finite battlefield supplies and affordable living recruits replace past losses.

@@ -1,19 +1,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { initialCampaign, dispatchCampaign, rosterFor } from '../game/campaign.js';
-import { rosterFor as characterDefinitions } from '../game/recruitment.js';
-import { legacyCharacterAbilities } from '../game/character-abilities.js';
-import { operativeIdForCharacter } from '../game/content-character-ids.js';
+import { initialCampaign, dispatchCampaign, rosterFor } from '../packages/game/campaign.js';
+import { rosterFor as characterDefinitions } from '../packages/game/recruitment.js';
+import { legacyCharacterAbilities } from '../packages/game/character-abilities.js';
+import { operativeIdForCharacter } from '../packages/game/content-character-ids.js';
 import {
   CharacterAbilities,
   CharacterRating,
-} from '../game/domain/personnel/character-abilities.ts';
+} from '../packages/game/domain/personnel/character-abilities.ts';
 import {
   RecruitmentCandidate,
   RecruitmentAvailability,
-} from '../game/domain/personnel/recruitment-candidate.ts';
-import { GameSnapshotMapper } from '../game/infrastructure/persistence/game-snapshot-mapper.js';
-import { encodeSave, decodeSave } from '../game/save.js';
+} from '../packages/game/domain/personnel/recruitment-candidate.ts';
+import { GameSnapshotMapper } from '../packages/game/infrastructure/persistence/game-snapshot-mapper.js';
+import { encodeSave, decodeSave } from '../packages/game/save.js';
 import { postContent } from './post-campaign-fixture.mjs';
 import { visit } from './local-contract-fixture.mjs';
 

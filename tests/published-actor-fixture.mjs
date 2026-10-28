@@ -1,6 +1,6 @@
 import {readFileSync} from 'node:fs';
-import {GLTFLoader} from '../web/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
-const publicRoot=new URL('../web/public/',import.meta.url);
+import {GLTFLoader} from '../apps/web/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+const publicRoot=new URL('../apps/web/public/',import.meta.url);
 export const manifest=JSON.parse(readFileSync(new URL('models/characters/manifest.json',publicRoot))),loads=new Map();
 function load(url){
  if(loads.has(url))return loads.get(url);

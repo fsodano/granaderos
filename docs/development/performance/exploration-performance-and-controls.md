@@ -55,7 +55,7 @@ Exploration rest raised energy from 20 to 80; a ten-tile walk then used 2.5 ener
 The runtime still uses the existing family artwork for blades. New candidates
 failed visual review: wrong row counts, duplicated directions, changed grips,
 or missing blades. They are retained under
-`assets/previews/equipped-sprites/rejected-blades/`, with prompts and rejection
+`content/assets/previews/equipped-sprites/rejected-blades/`, with prompts and rejection
 records in `blade-generation-review.json`. None was registered or published.
 Standing, crouched, mounted and applicable attack variants still need correct
 art and runtime integration. Classification tests alone do not prove this work.

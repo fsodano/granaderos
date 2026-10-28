@@ -2,10 +2,10 @@ import { register } from 'node:module';
 register('./tactical-render-loader.mjs', import.meta.url);
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createElement } from '../web/node_modules/react/index.js';
-import { renderToStaticMarkup } from '../web/node_modules/react-dom/server.node.js';
-import { createCampaignAutosave } from '../web/lib/campaign-autosave.js';
-const { default: SaveProgress } = await import('../web/app/SaveProgress.tsx');
+import { createElement } from '../apps/web/node_modules/react/index.js';
+import { renderToStaticMarkup } from '../apps/web/node_modules/react-dom/server.node.js';
+import { createCampaignAutosave } from '../apps/web/lib/campaign-autosave.js';
+const { default: SaveProgress } = await import('../apps/web/app/SaveProgress.tsx');
 
 function render(status, sessionId = 'campaign-one', revision = 1) {
   return renderToStaticMarkup(createElement(SaveProgress, { status, sessionId, revision }));

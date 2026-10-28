@@ -32,7 +32,7 @@ review fixture; it is not a populated town map.
 
 ![Casa de estancia](exteriors-2026-10-09/estancia.jpg)
 
-[Capture record](../../artifacts/building-exteriors-2026-10-09/capture.json) pins the
+[Capture record](../evidence/artifacts/building-exteriors-2026-10-09/capture.json) pins the
 image bytes and source. These are screenshots, with no generated image edits.
 Only the capture framing changed. Building assets, renderer and gameplay remain
 unchanged. This picture-only delivery adds no test or build run.

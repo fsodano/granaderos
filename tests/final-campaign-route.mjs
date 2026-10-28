@@ -1,9 +1,9 @@
 import {completeQueuedAssault,stageAssaultDeparture} from './assault-fixture.mjs';
-import {baseMorale} from '../game/morale.js';
+import {baseMorale} from '../packages/game/morale.js';
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
-import {decodeSave,encodeSave} from '../game/save.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {collectRouteItems,recoverRouteFirearm,repairRouteFirearms} from './finite-route-equipment.mjs';
 

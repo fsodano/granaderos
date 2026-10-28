@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {operativeLocation,operativeInTransit} from '../game/squads.js';
-import {careAssignmentIssue} from '../game/medical-care.js';
-import {contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
-import {sectorInventoryModel,sectorInventorySites} from '../game/sector-inventory.js';
-import {applyItemQuantity,SUPPLY_ITEMS} from '../game/tactical-inventory.js';
-import {WEAPONS} from '../game/data.js';
-import {enterSector} from '../game/world.js';
-import {actBattle,getReachable} from '../game/tactical.js';
-import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
-import {syncBattleTime} from '../game/time.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {operativeLocation,operativeInTransit} from '../packages/game/squads.js';
+import {careAssignmentIssue} from '../packages/game/medical-care.js';
+import {contractRenewalQuote,contractExpiresSeconds} from '../packages/game/contracts.js';
+import {sectorInventoryModel,sectorInventorySites} from '../packages/game/sector-inventory.js';
+import {applyItemQuantity,SUPPLY_ITEMS} from '../packages/game/tactical-inventory.js';
+import {WEAPONS} from '../packages/game/data.js';
+import {enterSector} from '../packages/game/world.js';
+import {actBattle,getReachable} from '../packages/game/tactical.js';
+import {sameCell,sameSurface,spacePoint} from '../packages/game/tactical-space.js';
+import {syncBattleTime} from '../packages/game/time.js';
 
 const clock=c=>c.hour*3600+(c.secondOfHour??0);
 

@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {actBattle,endTurn} from '../game/tactical.js';
-import {sectorDeploymentAction} from '../game/sector-deployment.js';
-import {enterSector} from '../game/world.js';
-import {syncBattleTime} from '../game/time.js';
-import {encodeSave,decodeSave} from '../game/save.js';
+import {actBattle,endTurn} from '../packages/game/tactical.js';
+import {sectorDeploymentAction} from '../packages/game/sector-deployment.js';
+import {enterSector} from '../packages/game/world.js';
+import {syncBattleTime} from '../packages/game/time.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
 import {fight} from './opening-driver.mjs';
 
 const nativeOrder=(battle,action)=>['placeDeployment','confirmDeployment'].includes(action.type)?sectorDeploymentAction(battle,action):action.type==='endTurn'?endTurn(battle):actBattle(battle,action);

@@ -1,18 +1,33 @@
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { resolve, relative, dirname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import ts from '../web/node_modules/typescript/lib/typescript.js';
+import ts from '../apps/web/node_modules/typescript/lib/typescript.js';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const failures = [];
 const publicGameEntries = new Set([
-  'game/public/campaign-editor-api.js',
-  'game/public/campaign-playtest-api.js',
-  'game/public/game-persistence-api.js',
+  'packages/game/public/campaign-editor-api.js',
+  'packages/game/public/campaign-playtest-api.js',
+  'packages/game/public/game-persistence-api.js',
 ]);
-const publicPreviewEntries = new Set(['web/game-preview.ts', 'web/game-preview-assets.js']);
+const publicPreviewEntries = new Set([
+  'apps/web/game-preview.ts',
+  'apps/web/game-preview-assets.js',
+]);
 const sourceExtension = /\.(?:ts|tsx|js|mjs)$/;
 const excludedDirectories = new Set(['node_modules', 'dist', '.next', 'out']);
+const sourceDirectories = [
+  'packages/game',
+  'apps/campaign-editor',
+  'packages/campaign-format',
+  'apps/web',
+];
+
+for (const directory of sourceDirectories) {
+  if (!existsSync(resolve(root, directory))) {
+    throw new Error(`Architecture source directory is missing: ${directory}`);
+  }
+}
 
 function sourceFiles(directory) {
   if (!existsSync(directory)) return [];
@@ -32,10 +47,10 @@ function fail(file, dependency, rule) {
 }
 
 const browserBoundaryFiles = [
-  'game/domain',
-  'game/application',
-  'campaign-editor/domain',
-  'campaign-editor/application',
+  'packages/game/domain',
+  'packages/game/application',
+  'apps/campaign-editor/domain',
+  'apps/campaign-editor/application',
 ].flatMap((directory) => sourceFiles(resolve(root, directory)));
 const boundaryProgram = ts.createProgram(browserBoundaryFiles, {
   allowJs: true,
@@ -45,7 +60,7 @@ const boundaryProgram = ts.createProgram(browserBoundaryFiles, {
 const boundaryTypes = boundaryProgram.getTypeChecker();
 
 let checked = 0;
-for (const directory of ['game', 'campaign-editor', 'campaign-format', 'web']) {
+for (const directory of sourceDirectories) {
   for (const filename of sourceFiles(resolve(root, directory))) {
     const file = relative(root, filename).split(sep).join('/');
     const text = readFileSync(filename, 'utf8');
@@ -58,34 +73,38 @@ for (const directory of ['game', 'campaign-editor', 'campaign-format', 'web']) {
             .split(sep)
             .join('/')
         : dependency;
-      if (file.startsWith('game/') && pathWithin(target, 'campaign-editor')) {
+      if (file.startsWith('packages/game/') && pathWithin(target, 'apps/campaign-editor')) {
         fail(file, dependency, 'Game runtime cannot import campaign-editor.');
       }
-      if (file.startsWith('game/domain/') && !isTest && !pathWithin(target, 'game/domain')) {
+      if (
+        file.startsWith('packages/game/domain/') &&
+        !isTest &&
+        !pathWithin(target, 'packages/game/domain')
+      ) {
         fail(file, dependency, 'Domain code depends only on domain code.');
       }
       if (
-        file.startsWith('game/application/') &&
+        file.startsWith('packages/game/application/') &&
         !isTest &&
-        !pathWithin(target, 'game/application') &&
-        !pathWithin(target, 'game/domain')
+        !pathWithin(target, 'packages/game/application') &&
+        !pathWithin(target, 'packages/game/domain')
       ) {
         fail(file, dependency, 'Application code depends on its contracts and the domain.');
       }
       if (
-        file.startsWith('campaign-editor/domain/') &&
+        file.startsWith('apps/campaign-editor/domain/') &&
         !isTest &&
-        !pathWithin(target, 'campaign-editor/domain') &&
-        !pathWithin(target, 'campaign-format')
+        !pathWithin(target, 'apps/campaign-editor/domain') &&
+        !pathWithin(target, 'packages/campaign-format')
       ) {
         fail(file, dependency, 'Editor domain depends only on its domain and the shared format.');
       }
       if (
-        file.startsWith('campaign-editor/application/') &&
+        file.startsWith('apps/campaign-editor/application/') &&
         !isTest &&
-        !pathWithin(target, 'campaign-editor/application') &&
-        !pathWithin(target, 'campaign-editor/domain') &&
-        !pathWithin(target, 'campaign-format')
+        !pathWithin(target, 'apps/campaign-editor/application') &&
+        !pathWithin(target, 'apps/campaign-editor/domain') &&
+        !pathWithin(target, 'packages/campaign-format')
       ) {
         fail(
           file,
@@ -94,24 +113,24 @@ for (const directory of ['game', 'campaign-editor', 'campaign-format', 'web']) {
         );
       }
       if (
-        file.startsWith('campaign-format/') &&
-        (pathWithin(target, 'game') ||
-          pathWithin(target, 'web') ||
-          pathWithin(target, 'campaign-editor'))
+        file.startsWith('packages/campaign-format/') &&
+        (pathWithin(target, 'packages/game') ||
+          pathWithin(target, 'apps/web') ||
+          pathWithin(target, 'apps/campaign-editor'))
       ) {
         fail(file, dependency, 'Campaign format must remain independent of its consumers.');
       }
       if (
-        file.startsWith('campaign-editor/') &&
+        file.startsWith('apps/campaign-editor/') &&
         !file.includes('/tools/') &&
-        pathWithin(target, 'game') &&
+        pathWithin(target, 'packages/game') &&
         !publicGameEntries.has(target)
       ) {
         fail(file, dependency, 'Editor integration must use a declared game public entry.');
       }
       if (
-        file.startsWith('campaign-editor/') &&
-        pathWithin(target, 'web') &&
+        file.startsWith('apps/campaign-editor/') &&
+        pathWithin(target, 'apps/web') &&
         !publicPreviewEntries.has(target)
       ) {
         fail(file, dependency, 'Editor previews must use the declared preview entry.');
@@ -119,10 +138,10 @@ for (const directory of ['game', 'campaign-editor', 'campaign-format', 'web']) {
     }
     const checksBrowserBoundary =
       !isTest &&
-      (file.startsWith('game/domain/') ||
-        file.startsWith('game/application/') ||
-        file.startsWith('campaign-editor/domain/') ||
-        file.startsWith('campaign-editor/application/'));
+      (file.startsWith('packages/game/domain/') ||
+        file.startsWith('packages/game/application/') ||
+        file.startsWith('apps/campaign-editor/domain/') ||
+        file.startsWith('apps/campaign-editor/application/'));
     if (checksBrowserBoundary) {
       const syntax = boundaryProgram.getSourceFile(filename);
       const browserGlobals = new Set([

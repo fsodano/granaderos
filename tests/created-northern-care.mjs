@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
 import {supplyRouteDressings} from './route-dressings.mjs';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {BLADES} from '../game/tactical.js';
-import {decodeSave,encodeSave} from '../game/save.js';
-import {enterSector} from '../game/world.js';
-import {syncBattleTime} from '../game/time.js';
-import {autoBandageBattle} from '../game/auto-bandage.js';
-import {doctorRate} from '../game/medical-care.js';
-import {contractQuote} from '../game/contracts.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {BLADES} from '../packages/game/tactical.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
+import {enterSector} from '../packages/game/world.js';
+import {syncBattleTime} from '../packages/game/time.js';
+import {autoBandageBattle} from '../packages/game/auto-bandage.js';
+import {doctorRate} from '../packages/game/medical-care.js';
+import {contractQuote} from '../packages/game/contracts.js';
 
 export function recoverNorthernLocalKit(start,{doctorId=135,report=()=>{}}={}){
  let c=start;const clock={hour:c.hour,second:c.secondOfHour,treasury:c.resources.treasury},contracts=structuredClone(c.contracts),before142=structuredClone(c.operativeState[142]);

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {rosterFor} from '../game/campaign.js';
-import {contractExpiresSeconds,contractRenewalQuote} from '../game/contracts.js';
+import {rosterFor} from '../packages/game/campaign.js';
+import {contractExpiresSeconds,contractRenewalQuote} from '../packages/game/contracts.js';
 
 // This is a current cash quote, not an order or a forecast of future income.
 // A raid, changed service objection or later XP can require a new quote.

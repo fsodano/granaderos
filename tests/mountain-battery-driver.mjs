@@ -1,10 +1,10 @@
 // Advance one gun with Barcala and Paroissien; infantry screens the crew.
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
-import {chooseArtilleryAction} from '../game/tactical-ai-artillery.js';
+import {chooseArtilleryAction} from '../packages/game/tactical-ai-artillery.js';
 import {teamArtilleryOrder} from './team-artillery-driver.mjs';
-import {actBattle,teamCanSee,getReachable,stanceCost,artilleryContact,artilleryCrewPlan,artilleryCosts} from '../game/tactical.js';
-import {propCells} from '../game/props.js';
-import {wallMovementBlocked} from '../game/wall-geometry.js';
+import {actBattle,teamCanSee,getReachable,stanceCost,artilleryContact,artilleryCrewPlan,artilleryCosts} from '../packages/game/tactical.js';
+import {propCells} from '../packages/game/props.js';
+import {wallMovementBlocked} from '../packages/game/wall-geometry.js';
 
 // Plan a rigid crew route across known ground, then execute only its first
 // step through the engine. A sideways detour must not become a back-and-forth

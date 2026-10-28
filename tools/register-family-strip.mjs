@@ -1,11 +1,11 @@
 import fs from 'node:fs/promises';
-import sharp from '../web/node_modules/sharp/lib/index.js';
+import sharp from '../apps/web/node_modules/sharp/lib/index.js';
 import {removeExportKey,boundsOf,sheetRectangles,packIllustratedSources} from './pack-illustrated-sprites.mjs';
 const [appearance,sequence,direction,source,reference='idle']=process.argv.slice(2);
 if(!source)throw Error('APPEARANCE SEQUENCE DIRECTION SOURCE [REFERENCE]');
-const name=`${appearance}-${sequence}`,path=`assets/source/illustrated-sprites/family-actions/${name}.registration.json`;
+const name=`${appearance}-${sequence}`,path=`content/assets/source/illustrated-sprites/family-actions/${name}.registration.json`;
 let manifest;try{manifest=JSON.parse(await fs.readFile(path));}catch(e){if(e.code!=='ENOENT')throw e;manifest={version:1,directions:['n','ne','e','se','s','sw','w','nw'],sheets:[]};}
-const base=JSON.parse(await fs.readFile('assets/previews/illustrated-sprites/packed/manifest.json'));
+const base=JSON.parse(await fs.readFile('content/assets/previews/illustrated-sprites/packed/manifest.json'));
 const ref=base.atlases[`${appearance}-${reference}`].records.find(r=>r.direction===direction);
 const {data,info}=await sharp(source).ensureAlpha().raw().toBuffer({resolveWithObject:true}),clean=removeExportKey(data,info.width);
 const rectangles=sheetRectangles(clean,info.width,info.height,4,1),cells=[];
@@ -15,4 +15,4 @@ const sheet={name,source,columns:4,rows:1,frames:4,fps:5,cell:288,logicalCell:96
 manifest.sheets=manifest.sheets.map(s=>({...s,slots:s.slots.filter(s=>s.direction!==direction)})).filter(s=>s.slots.length);manifest.sheets.push(sheet);
 await fs.writeFile(path,JSON.stringify(manifest,null,2)+'\n');
 const directions=new Set(manifest.sheets.flatMap(s=>s.slots.map(s=>s.direction)));
-if(directions.size===8){await packIllustratedSources({manifestPath:path,destination:`assets/previews/illustrated-sprites/family-actions/${name}`});console.log(name,'packed');}else console.log(name,directions.size,'directions registered');
+if(directions.size===8){await packIllustratedSources({manifestPath:path,destination:`content/assets/previews/illustrated-sprites/family-actions/${name}`});console.log(name,'packed');}else console.log(name,directions.size,'directions registered');

@@ -1,19 +1,19 @@
-import {contractExpiresSeconds} from '../game/contracts.js';
+import {contractExpiresSeconds} from '../packages/game/contracts.js';
 import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 import assert from 'node:assert/strict';
-import {rosterFor} from '../game/campaign.js';
-import {doctorRate,careAssignmentReason} from '../game/medical-care.js';
+import {rosterFor} from '../packages/game/campaign.js';
+import {doctorRate,careAssignmentReason} from '../packages/game/medical-care.js';
 import {order,saved,visit,tactical} from './local-contract-fixture.mjs';
 import {takeFiniteCache,leaveFiniteCache,finiteCacheCarrier} from './finite-cache-driver.mjs';
 import {collectRouteItems,collectRouteMedicalSupplies} from './finite-route-equipment.mjs';
-import {FINITE_SECTOR_CACHES} from '../game/finite-sector-caches.js';
-import {repairMaterialPoints,REPAIR_KIT_POINTS} from '../game/repair-materials.js';
-import {sectorInventoryModel,sectorInventorySites} from '../game/sector-inventory.js';
-import {transportPath} from '../game/logistics.js';
-import {workAssignmentReason} from '../game/assignments.js';
+import {FINITE_SECTOR_CACHES} from '../packages/game/finite-sector-caches.js';
+import {repairMaterialPoints,REPAIR_KIT_POINTS} from '../packages/game/repair-materials.js';
+import {sectorInventoryModel,sectorInventorySites} from '../packages/game/sector-inventory.js';
+import {transportPath} from '../packages/game/logistics.js';
+import {workAssignmentReason} from '../packages/game/assignments.js';
 import {completeTestTravel} from './campaign-test-helpers.mjs';
-import {careRules} from '../game/campaign-care-rules.js';
-import {operativeLocation} from '../game/squads.js';
+import {careRules} from '../packages/game/campaign-care-rules.js';
+import {operativeLocation} from '../packages/game/squads.js';
 
 // Actual finite found equipment and doctor/patient/repair/rest orders only.
 // Select roles from current survivors; preserve all real wounds and casualties.

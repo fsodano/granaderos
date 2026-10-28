@@ -1,7 +1,7 @@
 # Farmhouse gallery and chimney review — 7 October 2026
 
-The retained [estancia exterior](../../assets/previews/buildings/estancia-exterior.png)
-and [building catalogue](../../assets/previews/buildings/catalogue.png) provide
+The retained [estancia exterior](../../content/assets/previews/buildings/estancia-exterior.png)
+and [building catalogue](../../content/assets/previews/buildings/catalogue.png) provide
 the rural roof and chimney reference. The current 2D building renderer defines
 the front and return galleries and paired side-wall chimneys in
 `web/app/TacticalBuildingDetails.tsx`. These are art references, not measured

@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {operativeLocation,operativeInTransit} from '../game/squads.js';
-import {contractExpiresSeconds} from '../game/contracts.js';
-import {careRules} from '../game/campaign-care-rules.js';
-import {doctorRate} from '../game/medical-care.js';
-import {applyItemQuantity,SUPPLY_ITEMS} from '../game/tactical-inventory.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {operativeLocation,operativeInTransit} from '../packages/game/squads.js';
+import {contractExpiresSeconds} from '../packages/game/contracts.js';
+import {careRules} from '../packages/game/campaign-care-rules.js';
+import {doctorRate} from '../packages/game/medical-care.js';
+import {applyItemQuantity,SUPPLY_ITEMS} from '../packages/game/tactical-inventory.js';
 
 const clock=c=>c.hour*3600+(c.secondOfHour??0);
 const stable=r=>r?.alive&&!r.captured&&r.hp>=15&&!r.bleeding&&!r.unconscious&&!r.routed&&!r.surrendered&&!r.asleep&&r.energy>10;

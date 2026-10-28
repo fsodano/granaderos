@@ -15,7 +15,7 @@ const omitted = new Set([
 ]);
 // Vinext creates this declaration during a clean build. It is output, not a
 // game input; including it makes the first build identify two source versions.
-const generatedFiles = new Set(['web/next-env.d.ts']);
+const generatedFiles = new Set(['apps/web/next-env.d.ts']);
 async function sourceFiles(root, directory) {
   const files = [];
   let entries;
@@ -49,7 +49,7 @@ export async function buildIdentity(root) {
     'package.json',
     ...(
       await Promise.all(
-        ['game', 'web', 'tools', 'campaigns', 'campaign-editor', 'campaign-format'].map((dir) =>
+        ['packages/game', 'apps/web', 'tools', 'content/campaigns', 'apps/campaign-editor', 'packages/campaign-format'].map((dir) =>
           sourceFiles(root, join(root, dir)),
         ),
       )

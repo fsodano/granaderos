@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { BrowserSaveWriter, SaveWriterMessages } from '../web/lib/browser-save-writer.ts';
+import { BrowserSaveWriter, SaveWriterMessages } from '../apps/web/lib/browser-save-writer.ts';
 
 function lockManager() {
   const owners = new Set();

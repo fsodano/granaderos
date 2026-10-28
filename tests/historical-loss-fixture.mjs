@@ -1,9 +1,9 @@
 import {fightOnArrival} from './assault-fixture.mjs';
 import {scriptedWithdrawal} from './scripted-battle-report.mjs';
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {enterSector} from '../game/world.js';
-import {actBattle,endTurn} from '../game/tactical.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {enterSector} from '../packages/game/world.js';
+import {actBattle,endTurn} from '../packages/game/tactical.js';
 import {approachNPC} from './approach-npc.mjs';
 import {order,saved,sync} from './local-contract-fixture.mjs';
 import {freshNorthernRoute} from './fresh-northern-fixture.mjs';
@@ -58,7 +58,7 @@ export function freshMendozaLoss({northernCheckpoint,onCheckpoint,report=()=>{}}
 // Authored starting control and a compact engagement isolate the role/death
 // boundary. Hiring, project payment, enemy fire and settlement are real actions.
 export async function servingEngineerLoss({built=false,custom=false}={}){
- const {initialCampaign}=await import('../game/campaign.js');const {defaultContentPackage}=await import('../game/content-package.js');const {defaultCampaignStory}=await import('../game/campaign-story.js');const {createBattle}=await import('../game/tactical.js');
+ const {initialCampaign}=await import('../packages/game/campaign.js');const {defaultContentPackage}=await import('../packages/game/content-package.js');const {defaultCampaignStory}=await import('../packages/game/campaign-story.js');const {createBattle}=await import('../packages/game/tactical.js');
  const d=defaultContentPackage();d.startingTerritory.buenos_aires.owner='patriot';d.campaignRoles={foundryEngineer:'person-110',marchCommander:'person-57'};d.foundry={sector:'retiro',name:'Taller del Retiro',armyName:'Ejército de Prueba',setupCost:137,fundingCost:809};
  for(const id of ['person-110','person-136'])d.characters.find(c=>c.id===id).arrivalHours=0;
  d.characters.find(c=>c.id==='person-110').attributes.maxHp=30;

@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
-import {actBattle} from '../game/tactical.js';
-import {sectorDeploymentAction,sectorDeploymentModel} from '../game/sector-deployment.js';
-import {dispatchCampaign} from '../game/campaign.js';
-import {encodeSave,decodeSave} from '../game/save.js';
+import {actBattle} from '../packages/game/tactical.js';
+import {sectorDeploymentAction,sectorDeploymentModel} from '../packages/game/sector-deployment.js';
+import {dispatchCampaign} from '../packages/game/campaign.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
 
 // Place the arriving force at its normal issued positions, then pay for one
 // actor's actual boundary exit. Settlement must retain the departure record.

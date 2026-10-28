@@ -8,9 +8,9 @@ El juego está en desarrollo. La interfaz y el manual del juego están en españ
 
 **[Jugar ahora](https://fsodano.github.io/granaderos/)** · [Cómo se juega](#cómo-se-juega) · [Tu propia campaña](#tu-propia-campaña) · [Ejecutar en tu equipo](#ejecutar-en-tu-equipo) · [Documentación](docs/README.md) · [Arquitectura C4](docs/architecture/c4.md)
 
-[![Tráiler de Granaderos: La independencia se conquista](assets/video/intro/preview.gif)](assets/video/intro/granaderos-intro.mp4?raw=true)
+[![Tráiler de Granaderos: La independencia se conquista](content/assets/video/intro/preview.gif)](content/assets/video/intro/granaderos-intro.mp4?raw=true)
 
-*La independencia se conquista.* Presentación con grabación real del juego, ilustraciones y música original. [Ver el video completo](assets/video/intro/granaderos-intro.mp4?raw=true) · [Subtítulos en español](assets/video/intro/captions.es.srt)
+*La independencia se conquista.* Presentación con grabación real del juego, ilustraciones y música original. [Ver el video completo](content/assets/video/intro/granaderos-intro.mp4?raw=true) · [Subtítulos en español](content/assets/video/intro/captions.es.srt)
 
 ## Un ejército, dos escalas
 
@@ -72,13 +72,13 @@ El progreso se guarda en el navegador. Usá **Guardar** para descargar una parti
 
 <table>
   <tr>
-    <td align="center"><img src="campaigns/granaderos/assets/portrait-0.webp" width="180" alt="Retrato de Martín Miguel de Güemes"><br><strong>Martín Miguel de Güemes</strong></td>
-    <td align="center"><img src="campaigns/granaderos/assets/portrait-3.webp" width="180" alt="Retrato de Juan Bautista Cabral"><br><strong>Juan Bautista Cabral</strong></td>
-    <td align="center"><img src="campaigns/granaderos/assets/portrait-1.webp" width="180" alt="Retrato de Juana Azurduy"><br><strong>Juana Azurduy</strong></td>
+    <td align="center"><img src="content/campaigns/granaderos/assets/portrait-0.webp" width="180" alt="Retrato de Martín Miguel de Güemes"><br><strong>Martín Miguel de Güemes</strong></td>
+    <td align="center"><img src="content/campaigns/granaderos/assets/portrait-3.webp" width="180" alt="Retrato de Juan Bautista Cabral"><br><strong>Juan Bautista Cabral</strong></td>
+    <td align="center"><img src="content/campaigns/granaderos/assets/portrait-1.webp" width="180" alt="Retrato de Juana Azurduy"><br><strong>Juana Azurduy</strong></td>
   </tr>
 </table>
 
-Los retratos son ilustraciones del juego. La [guía de arte](assets/README.md) reúne sus fuentes, referencias y archivos de trabajo.
+Los retratos son ilustraciones del juego. La [guía de arte](content/assets/README.md) reúne sus fuentes, referencias y archivos de trabajo.
 
 ## Tu propia campaña
 
@@ -95,31 +95,46 @@ Necesitás **Node.js 22 LTS actualizado (22.18.0 o posterior)** y npm.
 ```sh
 git clone https://github.com/fsodano/granaderos.git
 cd granaderos
-npm ci --prefix web
+npm ci --prefix apps/web
 npm run dev
 ```
 
 Abrí [localhost:3000](http://localhost:3000) o la dirección indicada por el servidor. El juego para navegador usa JavaScript y React; no requiere una instalación de Jagged Alliance 2.
 
+## Dónde está cada parte
+
+Abrí la carpeta raíz de Granaderos en tu IDE. La [guía del repositorio](docs/development/repository-layout.md)
+explica cómo seguir una acción desde la pantalla hasta sus reglas y su guardado.
+
+| Carpeta | Contenido |
+| --- | --- |
+| `apps/` | El juego para navegador y el editor de campañas |
+| `packages/` | Reglas del juego, casos de uso y formato compartido de campañas |
+| `content/` | Campañas, recursos publicados y fuentes de arte |
+| `docs/` | Arquitectura, planes aceptados, guías y evidencias |
+| `tests/` y `tools/` | Pruebas, compilación, producción de recursos y laboratorios |
+| `reference/native/` | Motor y conversión nativa de Windows |
+| `.output/` | Archivos generados por compilación, caché y diagnósticos locales |
+
 ## Desarrollo y contribuciones
 
-La [guía de desarrollo](docs/development/getting-started.md) explica la instalación, la estructura y las dependencias de verificación. El motor está en `game/`, la interfaz en `web/` y las campañas en `campaigns/`.
+La [guía de desarrollo](docs/development/getting-started.md) explica la instalación, la estructura y las dependencias de verificación. El motor está en `packages/game/`, la interfaz en `apps/web/` y las campañas en `content/campaigns/`.
 
-El [plan de arquitectura aceptado](plans/accepted/domain-architecture.md) define
-la estructura y el comportamiento objetivo. El [lenguaje del dominio](plans/accepted/ubiquitous-language.md)
+El [plan de arquitectura aceptado](docs/plans/accepted/domain-architecture.md) define
+la estructura y el comportamiento objetivo. El [lenguaje del dominio](docs/plans/accepted/ubiquitous-language.md)
 fija los términos para código, pruebas y documentación. Leé las
 [instrucciones del repositorio](AGENTS.md) antes de modificar estos contratos.
 La [guía progresiva de arquitectura](docs/architecture/README.md) explica la
 implementación, los casos de uso y los límites de cada paquete.
 
 ```sh
-npm ci --prefix campaign-editor
+npm ci --prefix apps/campaign-editor
 npm test                    # Pruebas de dominio e integración, dos procesos
 npm run test:quick          # Alias del mismo conjunto
 npm run check:architecture  # Límites de capas y paquetes
 npm run check:format        # Formato del código de arquitectura
 npm run typecheck           # Tipos del juego, interfaz y editor
-npm run build               # Juego y editor en dist/
+npm run build               # Juego y editor en .output/dist/
 ```
 
 Para contribuir, proponé un cambio con alcance definido, verificá el comportamiento afectado y documentá sus controles. Los [documentos del juego](docs/gameplay/README.md), la [guía de arte](docs/art/README.md) y el [índice de documentación](docs/README.md) reúnen las referencias de cada sistema.

@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {decodeSave,encodeSave} from '../game/save.js';
-import {operativeLocation,operativeInTransit} from '../game/squads.js';
-import {contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
-import {occupyingGroups} from '../game/enemy-groups.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
+import {operativeLocation,operativeInTransit} from '../packages/game/squads.js';
+import {contractRenewalQuote,contractExpiresSeconds} from '../packages/game/contracts.js';
+import {occupyingGroups} from '../packages/game/enemy-groups.js';
 
 const clock=c=>c.hour*3600+(c.secondOfHour??0);
 export const controlledPortAvailable=(c,port='ensenada')=>c.sectors[port]?.owner==='patriot'&&!c.blockade&&!occupyingGroups(c,port).length;

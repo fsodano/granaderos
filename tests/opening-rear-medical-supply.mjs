@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {contractExpiresSeconds,contractRenewalQuote} from '../game/contracts.js';
-import {decodeSave,encodeSave} from '../game/save.js';
-import {operativeLocation,operativeInTransit} from '../game/squads.js';
-import {previewStrategicRoute} from '../game/strategic-route.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {careAssignmentReason} from '../game/medical-care.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {contractExpiresSeconds,contractRenewalQuote} from '../packages/game/contracts.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
+import {operativeLocation,operativeInTransit} from '../packages/game/squads.js';
+import {previewStrategicRoute} from '../packages/game/strategic-route.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {careAssignmentReason} from '../packages/game/medical-care.js';
 import {recoverVisibleRouteDressings} from './route-visible-medical-remains.mjs';
 
 const clock=c=>c.hour*3600+(c.secondOfHour??0);

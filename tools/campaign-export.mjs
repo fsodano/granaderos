@@ -1,8 +1,8 @@
 import {readFile,readdir,copyFile,mkdir,stat,rm,writeFile} from 'node:fs/promises';
 import {resolve,join,relative,dirname} from 'node:path';
 import {createHash} from 'node:crypto';
-import {campaignRelativePath,validateCampaignManifest,validateCampaignRegistry,compileCampaignPackage} from '../game/campaign-library.js';
-import {campaignContentReport} from '../game/campaign-content.js';
+import {campaignRelativePath,validateCampaignManifest,validateCampaignRegistry,compileCampaignPackage} from '../packages/game/campaign-library.js';
+import {campaignContentReport} from '../packages/game/campaign-content.js';
 
 function child(root,path){
  if(!campaignRelativePath(path))throw Error(`Invalid campaign file path: ${path}`);
@@ -19,7 +19,7 @@ async function plainFolder(directory){
  }
 }
 export async function discoverCampaigns(root){
- const directory=join(root,'campaigns'),campaigns=[];
+ const directory=join(root,'content/campaigns'),campaigns=[];
  for(const entry of (await readdir(directory,{withFileTypes:true})).sort((a,b)=>a.name.localeCompare(b.name))){
   if(!entry.isDirectory())continue;
   const manifestFile=join(directory,entry.name,'manifest.json');
@@ -57,11 +57,11 @@ export async function stageCampaigns(root,destination){
   if(entry.isDirectory())await rm(join(target,entry.name),{recursive:true,force:true});
   else if(entry.isSymbolicLink())throw Error(`Campaign export cannot contain a symbolic link: ${join(target,entry.name)}`);
  }
- for(const entry of await readdir(join(root,'campaigns'),{withFileTypes:true})){
-  if(entry.isFile()&&entry.name.endsWith('.json'))await copyFile(join(root,'campaigns',entry.name),join(target,entry.name));
+ for(const entry of await readdir(join(root,'content/campaigns'),{withFileTypes:true})){
+  if(entry.isFile()&&entry.name.endsWith('.json'))await copyFile(join(root,'content/campaigns',entry.name),join(target,entry.name));
  }
  for(const entry of registry.campaigns){
-  const source=join(root,'campaigns',entry.id);await verifyCampaignFolder(source);
+  const source=join(root,'content/campaigns',entry.id);await verifyCampaignFolder(source);
   await stageFolder(source,join(target,entry.id));
  }
  await writeFile(join(target,'index.json'),JSON.stringify(registry,null,2)+'\n');
@@ -81,7 +81,7 @@ export function campaignFilesPlugin(root,basePath=''){
    try{
     const path=decodeURIComponent((request.url??'').split('?')[0]).replace(/^\//,'');
     if(path==='index.json'){response.setHeader('Content-Type','application/json');response.setHeader('Cache-Control','no-store');response.end(JSON.stringify(await discoverCampaigns(root)));return;}
-    const file=child(join(root,'campaigns'),path);
+    const file=child(join(root,'content/campaigns'),path);
     const info=await stat(file);if(!info.isFile()){next();return;}
     const type=file.endsWith('.json')?'application/json':file.endsWith('.webp')?'image/webp':file.endsWith('.png')?'image/png':/\.jpe?g$/.test(file)?'image/jpeg':'application/octet-stream';
     response.setHeader('Content-Type',type);response.setHeader('Cache-Control','no-store');response.end(await readFile(file));

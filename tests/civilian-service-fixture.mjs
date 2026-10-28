@@ -1,9 +1,9 @@
 import {fightOnArrival} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
 import {secondaryRetreat} from './secondary-loot-fixture.mjs';
-import {initializeUnitAmmunition} from '../game/tactical-ammunition.js';
-import {createBattle,actBattle,endTurn} from '../game/tactical.js';
-import {travelLegHours} from '../game/squad-travel.js';
+import {initializeUnitAmmunition} from '../packages/game/tactical-ammunition.js';
+import {createBattle,actBattle,endTurn} from '../packages/game/tactical.js';
+import {travelLegHours} from '../packages/game/squad-travel.js';
 import {order,saved,sync,localId,readyLocal,leave,hireLocal,localPackage} from './local-contract-fixture.mjs';
 const ledger=s=>s.civilianState.people[`person-${localId(s)}`];
 

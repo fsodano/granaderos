@@ -40,7 +40,7 @@ def proof(doc,binary,mesh_index):
  return value
 
 def main():
- p=argparse.ArgumentParser(description=__doc__);p.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[2]);p.add_argument('--receipt',type=Path);args=p.parse_args();root=args.root.resolve();assets=root/'web/public/models/characters';mp=assets/'manifest.json';manifest_before=mp.read_bytes();manifest=json.loads(manifest_before);merge=module('cloth_merge',root/'tools/characters-3d/merge-animation-bank.py');pack=module('cloth_pack',root/'assets/source/characters-3d/authoring/gltf_pack.py')
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[2]);p.add_argument('--receipt',type=Path);args=p.parse_args();root=args.root.resolve();assets=root/'apps/web/public/models/characters';mp=assets/'manifest.json';manifest_before=mp.read_bytes();manifest=json.loads(manifest_before);merge=module('cloth_merge',root/'tools/characters-3d/merge-animation-bank.py');pack=module('cloth_pack',root/'content/assets/source/characters-3d/authoring/gltf_pack.py')
  bank_hashes={assets/Path(bank['url']).name:bank['sha256']for bank in manifest['animationLibraries'].values()}
  assert all(digest(path.read_bytes())==sha for path,sha in bank_hashes.items()),'Native bank differs from its manifest'
  with tempfile.TemporaryDirectory(prefix='granaderos-long-cloth-')as folder:

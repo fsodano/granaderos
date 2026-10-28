@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
 import {start,sync,order} from './prisoner-rescue-fixture.mjs';
-import {actBattle,endTurn,getReachable,teamCanSee,prisonerReleasePreview,exitPreview,interruptAvailable,stanceCost,firearmShotOptions,actionCosts} from '../game/tactical.js';
-import {firearmBystanderRisk} from '../game/firearm-bystander-risk.js';
+import {actBattle,endTurn,getReachable,teamCanSee,prisonerReleasePreview,exitPreview,interruptAvailable,stanceCost,firearmShotOptions,actionCosts} from '../packages/game/tactical.js';
+import {firearmBystanderRisk} from '../packages/game/firearm-bystander-risk.js';
 import {combatOrder} from './opening-driver.mjs';
 import {coastalBatteryController} from './coastal-command-driver.mjs';
-import {encodeSave,decodeSave} from '../game/save.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 export function runPrisonerRescue(){
 let {campaign,battle}=start({custodySupplies:2}),orders=[],seen=new Map(),savedDepartures=0;

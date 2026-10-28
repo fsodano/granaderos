@@ -1,4 +1,4 @@
-import {createBattle,ARTILLERY} from '../game/tactical.js';
+import {createBattle,ARTILLERY} from '../packages/game/tactical.js';
 // Declared flat tactical boundaries. Campaign purchase/capture is covered by the
 // unchanged stationed-artillery tests; these cases do not assign an outcome.
 export function artilleryField({type='field8',side='enemy',loaded=true,ammo=2,hidden=false,exploration=false,crew={}}={}){

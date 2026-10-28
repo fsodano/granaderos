@@ -1,8 +1,8 @@
-import {sameSurface,spacePoint} from '../game/tactical-space.js';
+import {sameSurface,spacePoint} from '../packages/game/tactical-space.js';
 import assert from 'node:assert/strict';
-import {actBattle,getReachable,canSee,hasLineOfSight,equipLootPreview,lookPreview} from '../game/tactical.js';
-import {handRecord} from '../game/tactical-inventory.js';
-import {ammunitionByType} from '../game/ammunition-types.js';
+import {actBattle,getReachable,canSee,hasLineOfSight,equipLootPreview,lookPreview} from '../packages/game/tactical.js';
+import {handRecord} from '../packages/game/tactical-inventory.js';
+import {ammunitionByType} from '../packages/game/ammunition-types.js';
 
 const rifles=new Set([1800,1801,1802]);
 const contact=(a,b)=>sameSurface(a,b)&&Math.abs(a.x-b.x)+Math.abs(a.y-b.y)===1;

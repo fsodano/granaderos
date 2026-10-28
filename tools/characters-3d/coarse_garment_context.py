@@ -58,13 +58,13 @@ def restore_pilot(doc, binary, record, root):
 
 def _verify_pilot(root, manifest):
     """Run the unmodified pilot verifier on only its completed records."""
-    completed = {preset: [copy.deepcopy(record) for record in appearance['lods'] if 'clothDepth' in record and (root/'web/public/models/characters'/Path(record['url']).name).is_file()]
+    completed = {preset: [copy.deepcopy(record) for record in appearance['lods'] if 'clothDepth' in record and (root/'apps/web/public/models/characters'/Path(record['url']).name).is_file()]
                  for preset, appearance in manifest['appearances'].items()}
     completed = {preset: records for preset, records in completed.items() if records}
     if not completed: return
-    assets = root / 'web/public/models/characters'
+    assets = root / 'apps/web/public/models/characters'
     with tempfile.TemporaryDirectory(prefix='granaderos-pilot-lineage-') as folder:
-        private = Path(folder); target = private / 'web/public/models/characters'; target.mkdir(parents=True)
+        private = Path(folder); target = private / 'apps/web/public/models/characters'; target.mkdir(parents=True)
         for source in assets.rglob('*'):
             if source.is_file() and source.name != 'manifest.json':
                 destination = target / source.relative_to(assets); destination.parent.mkdir(parents=True, exist_ok=True)
@@ -75,10 +75,10 @@ def _verify_pilot(root, manifest):
         reduced = copy.deepcopy(manifest)
         for preset, appearance in reduced['appearances'].items(): appearance['lods'] = completed.get(preset, [])
         mp = target / 'manifest.json'; mp.write_text(json.dumps(reduced))
-        authoring = private / 'assets/source/characters-3d/authoring'; authoring.mkdir(parents=True)
-        shutil.copy2(root / 'assets/source/characters-3d/authoring/cloth_depth.py', authoring / 'cloth_depth.py')
+        authoring = private / 'content/assets/source/characters-3d/authoring'; authoring.mkdir(parents=True)
+        shutil.copy2(root / 'content/assets/source/characters-3d/authoring/cloth_depth.py', authoring / 'cloth_depth.py')
         tools = private / 'tools/characters-3d'; tools.mkdir(parents=True)
-        for name in ('build-cloth-depth.py', 'merge-animation-bank.py'):
+        for name in ('build-cloth-depth.py', 'merge-animation-bank.py', 'source_provenance.py', 'source-relocation-v1.json'):
             shutil.copy2(root / 'tools/characters-3d' / name, tools / name)
         before = {str(path.relative_to(target)): _sha(path.read_bytes()) for path in target.rglob('*') if path.is_file()}
         subprocess.run([sys.executable, str(tools / 'build-cloth-depth.py'), '--root', str(private), '--presets', *completed], check=True, capture_output=True, text=True)
@@ -88,7 +88,7 @@ def _verify_pilot(root, manifest):
 
 def unwrap_folds(root, *, allow_stale_donor=False):
     """Verify and remove existing folds from an already private apparel view."""
-    root = Path(root).resolve(); assets = root / 'web/public/models/characters'; mp = assets / 'manifest.json'
+    root = Path(root).resolve(); assets = root / 'apps/web/public/models/characters'; mp = assets / 'manifest.json'
     manifest = json.loads(mp.read_bytes()); glb = _glb(root)
     family = _module('coarse_context_family', root / 'tools/characters-3d/build-family-cloth-depth.py')
     presets = [preset for preset, appearance in manifest['appearances'].items()
@@ -130,7 +130,7 @@ def restore_corrections(root):
     """Verify and restore every completed correction in a private native view."""
     root = Path(root).resolve(); correction = _module('coarse_context_restore', root / 'tools/characters-3d/build-coarse-garment-surfaces.py')
     correction.verify_completed(root)
-    assets = root / 'web/public/models/characters'; mp = assets / 'manifest.json'; manifest = json.loads(mp.read_bytes()); restored = []
+    assets = root / 'apps/web/public/models/characters'; mp = assets / 'manifest.json'; manifest = json.loads(mp.read_bytes()); restored = []
     glb = _glb(root)
     for appearance in manifest['appearances'].values():
         for index, record in enumerate(appearance['lods']):
@@ -156,7 +156,7 @@ def replay_colours(root, *, stage='apparel', presets=None):
     root = Path(root).resolve()
     # Historical snapshots can link already-native fresh bodies that had no
     # colour layer to detach. Frozen installers may write those bodies now.
-    assets=root/'web/public/models/characters';manifest=json.loads((assets/'manifest.json').read_bytes())
+    assets=root/'apps/web/public/models/characters';manifest=json.loads((assets/'manifest.json').read_bytes())
     records=[row for preset,appearance in manifest['appearances'].items() if presets is None or preset in presets for row in appearance['lods']]
     if stage=='apparel' and presets is None:records.append(manifest.get('equipment',{}))
     for record in records:
@@ -225,7 +225,7 @@ def _recorded_patch(root, active_doc, active_binary, active_record, doc, binary,
         folder=Path(folder);path=folder/'patch.glb';path.write_bytes(correction.encode_glb(patch_doc,patch_binary))
         for image in patch_doc.get('images',[]):
             destination=folder/image['uri'];destination.parent.mkdir(parents=True,exist_ok=True)
-            destination.symlink_to((root/'web/public/models/characters'/image['uri']).resolve())
+            destination.symlink_to((root/'apps/web/public/models/characters'/image['uri']).resolve())
         sidecar=folder/'patch.json';sidecar.write_text(json.dumps(proposal))
         raw,rebased=correction.prepare_body(root,doc,binary,record,path,sidecar,recorded_source=True)
     # This replay reuses the recorded source patch. Preserve its source facts,
@@ -245,12 +245,12 @@ def coarse_garment_context(tool,root,receipt=None,*,selected_presets=None):
     root=Path(root).resolve();tool=Path(tool).name
     if os.environ.get(PRIVATE_ENV)==str(root):return False
     assert tool in OWNED_PASSES, 'Unknown coarse garment predecessor pass'
-    assets=root/'web/public/models/characters';manifest=json.loads((assets/'manifest.json').read_bytes())
+    assets=root/'apps/web/public/models/characters';manifest=json.loads((assets/'manifest.json').read_bytes())
     if not any(FIELD in row and _asset_path(assets,row['url']).is_file() for appearance in manifest['appearances'].values() for row in appearance['lods']):return False
     pins=_pins(root)
     with tempfile.TemporaryDirectory(prefix='granaderos-coarse-native-replay-') as folder:
         private=Path(folder)/'root';create_native_snapshot(root,private,allow_stale_donor=True)
-        private_assets=private/'web/public/models/characters';mp=private_assets/'manifest.json';native_manifest=json.loads(mp.read_bytes())
+        private_assets=private/'apps/web/public/models/characters';mp=private_assets/'manifest.json';native_manifest=json.loads(mp.read_bytes())
         active={};glb=_glb(private);correction=_module('coarse_context_replay',private/'tools/characters-3d/build-coarse-garment-surfaces.py')
         for preset,appearance in native_manifest['appearances'].items():
             for index,row in enumerate(appearance['lods']):

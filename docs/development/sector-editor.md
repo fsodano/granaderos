@@ -1,7 +1,7 @@
 # Web sector editor
 
 Open `/editor` from **Constructor de sectores** on the title screen. Run the app
-with `npm ci --prefix web` and `npm run dev`. The editor runs in the browser;
+with `npm ci --prefix apps/web` and `npm run dev`. The editor runs in the browser;
 there is no desktop editor or account requirement.
 
 ## Create a sector
@@ -64,7 +64,7 @@ abstraction; no second-floor navigation is implied.
 The browser stores a recovery draft for each selected installed campaign. Recovery is explicit after reload.
 Export important work to a file; local storage is not a project database. Opening
 another sector does not save it into the repository. To change a shipped sector,
-replace its JSON file under `campaigns/<campaign-id>/maps/`, validate the campaign
+replace its JSON file under `content/campaigns/<campaign-id>/maps/`, validate the campaign
 folder, and rebuild the game. See [campaign authoring](campaign-authoring.md).
 
 ## Building finishes and openings
@@ -121,10 +121,10 @@ Example `commands.json`:
 
 Other commands include `moveObject`, `rotateObject`, `transformSelection`,
 `duplicateObject`, `deleteObject`, `setObject`, `setMetadata`, `resizeBuilding`,
-`setWall`, `setDoor`, `setOpeningStyle` and `stampTemplate`. See `campaign-editor/domain/sector-map.js` and
-[editor policy tests](../../campaign-editor/tests/editor-policy.test.mjs) for
+`setWall`, `setDoor`, `setOpeningStyle` and `stampTemplate`. See `apps/campaign-editor/domain/sector-map.js` and
+[editor policy tests](../../apps/campaign-editor/tests/editor-policy.test.mjs) for
 argument examples. `seededTerrainCommands` in the
-[map brush tools](../../campaign-editor/domain/map-editor-tools.js) provides
+[map brush tools](../../apps/campaign-editor/domain/map-editor-tools.js) provides
 deterministic generation.
 
 ## Format and runtime boundary

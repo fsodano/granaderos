@@ -1,11 +1,11 @@
 import {fightOnArrival} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {initialCampaign,dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
 import {authoredEditorPackage} from './authored-editor-fixture.mjs';
-import {contractQuote} from '../game/contracts.js';
-import {createBattle,actBattle,presentedActBattle,canSee} from '../game/tactical.js';
-import {encodeSave,decodeSave} from '../game/save.js';
-import {travelLegHours} from '../game/squad-travel.js';
+import {contractQuote} from '../packages/game/contracts.js';
+import {createBattle,actBattle,presentedActBattle,canSee} from '../packages/game/tactical.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
+import {travelLegHours} from '../packages/game/squad-travel.js';
 
 export const conductActor=b=>b.units.find(unit=>unit.id==='100');
 export const conductWitness=b=>b.units.find(unit=>unit.id==='107');

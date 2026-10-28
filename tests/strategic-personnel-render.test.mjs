@@ -1,24 +1,24 @@
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createElement as h,act,useState} from '../web/node_modules/react/index.js';
-import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
-import {JSDOM} from '../web/node_modules/jsdom/lib/api.js';
+import {createElement as h,act,useState} from '../apps/web/node_modules/react/index.js';
+import {renderToStaticMarkup as render} from '../apps/web/node_modules/react-dom/server.node.js';
+import {JSDOM} from '../apps/web/node_modules/jsdom/lib/api.js';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
-import {dispatchCampaign,rosterFor,civicStatus} from '../game/campaign.js';
-import {encodeSave,decodeSave} from '../game/save.js';
-import {strategicSquadSlots,strategicSquadAssignments,strategicNewSquadAssignment} from '../game/strategic-squad-assignments.js';
-import {strategicPresenceLabel} from '../game/strategic-presence.js';
-import {contractQuote} from '../game/contracts.js';
-import {playerKnownCampaign} from '../game/player-known-state.js';
-import {createBattle} from '../game/tactical.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-const {default:StrategicRoster}=await import('../web/app/StrategicRoster.tsx');
-const {default:StrategicPersonnelMenu}=await import('../web/app/StrategicPersonnelMenu.tsx');
-const {default:Campaign}=await import('../web/app/Campaign.tsx');
-const {default:MedicalCare}=await import('../web/app/MedicalCare.tsx');
-const {DossierEquipment}=await import('../web/app/CharacterDossier.tsx');
-const {default:SectorInventory}=await import('../web/app/SectorInventory.tsx');
-const {default:Recruitment}=await import('../web/app/Recruitment.tsx');
+import {dispatchCampaign,rosterFor,civicStatus} from '../packages/game/campaign.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
+import {strategicSquadSlots,strategicSquadAssignments,strategicNewSquadAssignment} from '../packages/game/strategic-squad-assignments.js';
+import {strategicPresenceLabel} from '../packages/game/strategic-presence.js';
+import {contractQuote} from '../packages/game/contracts.js';
+import {playerKnownCampaign} from '../packages/game/player-known-state.js';
+import {createBattle} from '../packages/game/tactical.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+const {default:StrategicRoster}=await import('../apps/web/app/StrategicRoster.tsx');
+const {default:StrategicPersonnelMenu}=await import('../apps/web/app/StrategicPersonnelMenu.tsx');
+const {default:Campaign}=await import('../apps/web/app/Campaign.tsx');
+const {default:MedicalCare}=await import('../apps/web/app/MedicalCare.tsx');
+const {DossierEquipment}=await import('../apps/web/app/CharacterDossier.tsx');
+const {default:SectorInventory}=await import('../apps/web/app/SectorInventory.tsx');
+const {default:Recruitment}=await import('../apps/web/app/Recruitment.tsx');
 const noop=()=>{},order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const unchanged=s=>({...s,lastError:null});
 
@@ -104,7 +104,7 @@ test('full, remote, traveling and militia-training slots are unavailable while o
 async function mountMenu(t,state,id,kind='assignment'){
  const dom=new JSDOM('<!doctype html><div id="root"></div>',{url:'https://granaderos.test'}),globals={window:dom.window,document:dom.window.document,navigator:dom.window.navigator,IS_REACT_ACT_ENVIRONMENT:true},previous=new Map(Object.keys(globals).map(k=>[k,Object.getOwnPropertyDescriptor(globalThis,k)]));
  for(const[k,v]of Object.entries(globals))Object.defineProperty(globalThis,k,{configurable:true,writable:true,value:v});
- const {createRoot}=await import('../web/node_modules/react-dom/client.js'),root=createRoot(dom.window.document.getElementById('root'));let current,closed=0;const actions=[];
+ const {createRoot}=await import('../apps/web/node_modules/react-dom/client.js'),root=createRoot(dom.window.document.getElementById('root'));let current,closed=0;const actions=[];
  function Screen(){const[s,set]=useState(state);current=s;return h(StrategicPersonnelMenu,{state:s,roster:rosterFor(s),id,kind,onClose(){closed++;},dispatch:a=>{actions.push(a);set(s=>dispatchCampaign(s,a));}});}
  t.after(async()=>{try{await act(async()=>root.unmount());}finally{dom.window.close();for(const[k,d]of previous){if(d)Object.defineProperty(globalThis,k,d);else delete globalThis[k];}}});
  await act(async()=>root.render(h(Screen)));return{doc:dom.window.document,state:()=>current,actions,closed:()=>closed,async click(label){const b=[...dom.window.document.querySelectorAll('button')].find(b=>b.textContent.trim()===label);assert.ok(b,label);assert.equal(b.disabled,false);await act(async()=>b.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));}};
@@ -230,7 +230,7 @@ async function mountCampaignMenus(t,{narrow=false}={}){
  const dom=new JSDOM('<!doctype html><div id="root"></div>',{url:'https://granaderos.test',pretendToBeVisual:true}),globals={window:dom.window,document:dom.window.document,navigator:dom.window.navigator,requestAnimationFrame:dom.window.requestAnimationFrame.bind(dom.window),cancelAnimationFrame:dom.window.cancelAnimationFrame.bind(dom.window),IS_REACT_ACT_ENVIRONMENT:true},previous=new Map(Object.keys(globals).map(k=>[k,Object.getOwnPropertyDescriptor(globalThis,k)]));
  for(const[k,v]of Object.entries(globals))Object.defineProperty(globalThis,k,{configurable:true,writable:true,value:v});
  if(narrow){const style=dom.window.document.createElement('style');style.textContent='.strategy-layout > .strategy-personnel { display: none; }';dom.window.document.head.append(style);}
- const {createRoot}=await import('../web/node_modules/react-dom/client.js'),root=createRoot(dom.window.document.getElementById('root'));let current;const actions=[];
+ const {createRoot}=await import('../apps/web/node_modules/react-dom/client.js'),root=createRoot(dom.window.document.getElementById('root'));let current;const actions=[];
  function Screen(){const[s,set]=useState(initialCampaign());current=s;return h(Campaign,{state:s,dispatch:a=>{actions.push(a);set(s=>dispatchCampaign(s,a));},onBattle:noop,onOpenDesk:noop});}
  t.after(async()=>{try{await act(async()=>root.unmount());}finally{dom.window.close();for(const[k,d]of previous){if(d)Object.defineProperty(globalThis,k,d);else delete globalThis[k];}}});
  await act(async()=>root.render(h(Screen)));

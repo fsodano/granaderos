@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {rosterFor} from '../game/campaign.js';
-import {contractQuote} from '../game/contracts.js';
+import {rosterFor} from '../packages/game/campaign.js';
+import {contractQuote} from '../packages/game/contracts.js';
 
 
 // This daylight departure uses personnel who can enter local service now.

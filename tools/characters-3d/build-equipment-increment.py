@@ -4,8 +4,8 @@ from pathlib import Path
 import argparse,copy,hashlib,importlib.util,json,subprocess,tempfile
 
 ROOT=Path(__file__).resolve().parents[2]
-HERE=ROOT/'assets/source/characters-3d/authoring'
-OUT=ROOT/'web/public/models/characters'
+HERE=ROOT/'content/assets/source/characters-3d/authoring'
+OUT=ROOT/'apps/web/public/models/characters'
 parser=argparse.ArgumentParser()
 parser.add_argument('--item',action='append',required=True)
 parser.add_argument('--allow-mesh-node-transforms',action='store_true',help='Allow selected leaf mesh origins to change; roots and named markers must retain their native attachment')

@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
-import {hireArrivalDueSeconds,pendingHire} from '../game/hiring-arrivals.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../packages/game/contracts.js';
+import {hireArrivalDueSeconds,pendingHire} from '../packages/game/hiring-arrivals.js';
 import {immediateRecruitmentExpectation} from './immediate-recruitment-fixture.mjs';
-import {payMoraleRewardEligible} from '../game/morale.js';
-import {operativeLocation,operativeInTransit,canReassignOperative} from '../game/squads.js';
+import {payMoraleRewardEligible} from '../packages/game/morale.js';
+import {operativeLocation,operativeInTransit,canReassignOperative} from '../packages/game/squads.js';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
 
 const seconds=c=>c.hour*3600+(c.secondOfHour??0),sector='tucuman';

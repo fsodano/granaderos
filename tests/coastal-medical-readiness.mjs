@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
-import {rosterFor} from '../game/campaign.js';
-import {operativeLocation} from '../game/squads.js';
-import {contractExpiresSeconds} from '../game/contracts.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {rosterFor} from '../packages/game/campaign.js';
+import {operativeLocation} from '../packages/game/squads.js';
+import {contractExpiresSeconds} from '../packages/game/contracts.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
 import {collectRouteMedicalSupplies} from './finite-route-equipment.mjs';
 import {order,saved} from './local-contract-fixture.mjs';
 

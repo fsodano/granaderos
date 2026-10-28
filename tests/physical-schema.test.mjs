@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { validateCampaignPhysical as validatePhysicalSchema } from '../campaign-format/physical-schema.js';
-import { validateCampaignPhysical } from '../game/campaign-physical-validation.js';
-import { validateEnvironmentRecord } from '../campaign-format/environment-record-schema.js';
-import { validateEnvironment } from '../game/environment-interactions.js';
-import { DEFAULT_WORLD } from '../campaigns/default.js';
+import { validateCampaignPhysical as validatePhysicalSchema } from '../packages/campaign-format/physical-schema.js';
+import { validateCampaignPhysical } from '../packages/game/campaign-physical-validation.js';
+import { validateEnvironmentRecord } from '../packages/campaign-format/environment-record-schema.js';
+import { validateEnvironment } from '../packages/game/environment-interactions.js';
+import { DEFAULT_WORLD } from '../content/campaigns/default.js';
 
 const source = () => ({ version: 1, caches: {}, arsenals: {}, environment: {} });
 

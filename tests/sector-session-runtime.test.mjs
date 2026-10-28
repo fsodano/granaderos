@@ -1,6 +1,6 @@
-import { DomainRefusal, DomainRefusalCode } from '../game/domain/shared/domain-refusal.ts';
-import { SectorOperationTransaction } from '../game/infrastructure/sector-sessions/sector-operation-repositories.js';
-import { validateBattleSnapshot } from '../game/validate-battle.js';
+import { DomainRefusal, DomainRefusalCode } from '../packages/game/domain/shared/domain-refusal.ts';
+import { SectorOperationTransaction } from '../packages/game/infrastructure/sector-sessions/sector-operation-repositories.js';
+import { validateBattleSnapshot } from '../packages/game/validate-battle.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
@@ -9,11 +9,11 @@ import {
   endTurn,
   resumeSectorOperation,
   presentedActBattle,
-} from '../game/tactical.js';
-import { runBattleJob } from '../game/battle-job.js';
-import { admitSectorReinforcements } from '../game/battle-handoff.js';
-import { movementStep } from '../game/movement-step.js';
-import { groupMovementStep } from '../game/group-movement.js';
+} from '../packages/game/tactical.js';
+import { runBattleJob } from '../packages/game/battle-job.js';
+import { admitSectorReinforcements } from '../packages/game/battle-handoff.js';
+import { movementStep } from '../packages/game/movement-step.js';
+import { groupMovementStep } from '../packages/game/group-movement.js';
 const flat = (width = 10, height = 8) =>
   Array.from({ length: width * height }, (_, index) => ({
     x: index % width,

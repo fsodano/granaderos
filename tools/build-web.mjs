@@ -2,8 +2,8 @@
 import { verifyBrowserWorkers } from './verify-browser-workers.mjs';
 import { buildIdentity } from './build-identity.mjs';
 import { verifyTacticalAssets } from './verify-tactical-assets.mjs';
-import { DEFAULT_CONTENT } from '../campaigns/default.js';
-import { CHARACTER_PORTRAITS } from '../game/character-profile.js';
+import { DEFAULT_CONTENT } from '../content/campaigns/default.js';
+import { CHARACTER_PORTRAITS } from '../packages/game/character-profile.js';
 import { spawnSync } from 'node:child_process';
 import { readFile, readdir, stat, cp } from 'node:fs/promises';
 import { resolve, dirname, relative, extname } from 'node:path';
@@ -15,21 +15,21 @@ import { stageStaticDeployment } from './stage-static-deployment.mjs';
 import { stageCampaigns } from './campaign-export.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const basePath = normalizeBasePath();
-const buildSource = resolve(root, 'web/dist/client'),
-  destination = resolve(root, 'dist');
+const buildSource = resolve(root, 'apps/web/dist/client'),
+  destination = resolve(root, '.output/dist');
 const source = destination;
 if (!process.argv.includes('--stage-only')) {
   await import('./generate-architecture-fixtures.mjs');
   const build = spawnSync(
     process.platform === 'win32' ? 'npm.cmd' : 'npm',
-    ['--prefix', resolve(root, 'web'), 'run', 'build'],
+    ['--prefix', resolve(root, 'apps/web'), 'run', 'build'],
     { stdio: 'inherit', shell: process.platform === 'win32' },
   );
   if (build.error) throw build.error;
   if (build.status !== 0) process.exit(build.status ?? 1);
   const editorBuild = spawnSync(
     process.platform === 'win32' ? 'npm.cmd' : 'npm',
-    ['--prefix', resolve(root, 'campaign-editor'), 'run', 'build'],
+    ['--prefix', resolve(root, 'apps/campaign-editor'), 'run', 'build'],
     { stdio: 'inherit', shell: process.platform === 'win32' },
   );
   if (editorBuild.error) throw editorBuild.error;
@@ -37,7 +37,7 @@ if (!process.argv.includes('--stage-only')) {
 }
 await stageStaticDeployment(buildSource, destination, basePath);
 await stageCampaigns(root, destination);
-await cp(resolve(root, 'campaign-editor/dist'), resolve(destination, 'campaign-editor'), {
+await cp(resolve(root, 'apps/campaign-editor/dist'), resolve(destination, 'campaign-editor'), {
   recursive: true,
 });
 async function filesAt(directory) {
@@ -138,6 +138,6 @@ const identity = JSON.parse(await readFile(resolve(source, 'build-info.json'), '
 if (identity.source !== (await buildIdentity(root)).source)
   throw Error('Source changed during the build. Build again before publishing.');
 console.log(
-  `Static export verified: ${sourceFiles.length} files, ${checked.size} asset references, staged in dist/.`,
+  `Static export verified: ${sourceFiles.length} files, ${checked.size} asset references, staged in .output/dist/.`,
 );
 console.log(`Game and editor build: ${identity.version} · ${identity.id}`);

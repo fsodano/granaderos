@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { initialCampaign, dispatchCampaign } from '../game/campaign.js';
-import { pendingArrivalDecisions } from '../game/squad-travel.js';
+import { initialCampaign, dispatchCampaign } from '../packages/game/campaign.js';
+import { pendingArrivalDecisions } from '../packages/game/squad-travel.js';
 import { fundedRouteContent } from './funded-route-fixture.mjs';
 import { bookRouteHires, finishRouteHireArrivals } from './paid-route-hiring.mjs';
 import { prepareFreshCoastalHires } from './fresh-coastal-fixture.mjs';

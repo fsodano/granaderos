@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {enterSector} from '../game/world.js';
+import {enterSector} from '../packages/game/world.js';
 import {earnNervousIsolation,nervousActor,nervousSaved,nervousOrder,nervousStep} from './nervous-isolation-fixture.mjs';
 
 export {nervousActor as renewalActor};

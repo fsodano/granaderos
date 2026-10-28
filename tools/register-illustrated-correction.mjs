@@ -1,16 +1,16 @@
 // Replace selected source frames with visually reviewed imagegen corrections.
 // The region file records the exact cells selected from a correction sheet.
 import {readFile,writeFile} from 'node:fs/promises';
-import sharp from '../web/node_modules/sharp/lib/index.js';
+import sharp from '../apps/web/node_modules/sharp/lib/index.js';
 import {removeExportKey,boundsOf,sheetRectangles} from './pack-illustrated-sprites.mjs';
-import {SPRITE_APPEARANCES} from '../game/sprite-appearances.js';
+import {SPRITE_APPEARANCES} from '../packages/game/sprite-appearances.js';
 
 const exportKey=process.argv.includes('--white-key')?'white':'magenta';
 const [source,name,referenceName,regionFile]=process.argv.slice(2).filter(a=>a!=='--white-key');
 if(!regionFile)throw Error('Usage: node tools/register-illustrated-correction.mjs SOURCE NAME REVIEWED_ATLAS REGIONS_JSON');
-const path='assets/source/illustrated-sprites/sources.json';
+const path='content/assets/source/illustrated-sprites/sources.json';
 const manifest=JSON.parse(await readFile(path));
-const staged=JSON.parse(await readFile('assets/previews/illustrated-sprites/packed/manifest.json'));
+const staged=JSON.parse(await readFile('content/assets/previews/illustrated-sprites/packed/manifest.json'));
 const spec=JSON.parse(await readFile(regionFile)),reference=staged.atlases[referenceName];
 if(!reference||!spec.slots?.length||new Set(spec.slots.map(r=>`${r.direction}:${r.frame}`)).size!==spec.slots.length)throw Error('Invalid correction specification');
 const appearance=Object.keys(SPRITE_APPEARANCES).find(id=>name.startsWith(id+'-'));

@@ -1,8 +1,8 @@
 // Package approved generated material art at native game texture density.
-import sharp from '../web/node_modules/sharp/lib/index.js';
+import sharp from '../apps/web/node_modules/sharp/lib/index.js';
 import {mkdir} from 'node:fs/promises';
-import {BUILDING_TYPES} from '../game/building-types.js';
-const source='assets/source/building-materials',out='web/public/art/buildings';
+import {BUILDING_TYPES} from '../packages/game/building-types.js';
+const source='content/assets/source/building-materials',out='apps/web/public/art/buildings';
 await mkdir(out,{recursive:true});
 for(const material of ['plaster','clay','brick','timber','thatch'])await sharp(`${source}/${material}-v1.png`).resize(256,256).webp({quality:94}).toFile(`${out}/${material}-v1.webp`);
 for(const [name,style] of Object.entries(BUILDING_TYPES)){

@@ -1,6 +1,6 @@
-import {getReachable,hasFirearm,interruptAvailable,artilleryContact,actionCosts,carriedWeight,carryCapacity} from '../game/tactical.js';
-import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
-import {firearmServiceable} from '../game/firearm-serviceability.js';
+import {getReachable,hasFirearm,interruptAvailable,artilleryContact,actionCosts,carriedWeight,carryCapacity} from '../packages/game/tactical.js';
+import {sameCell,sameSurface,spacePoint} from '../packages/game/tactical-space.js';
+import {firearmServiceable} from '../packages/game/firearm-serviceability.js';
 import {publicRouteView} from './route-infantry-progress.mjs';
 import {previewPublicPaidWalk,previewPublicRifleReserve} from './public-support-staging.mjs';
 

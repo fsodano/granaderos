@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor,civicStatus} from '../game/campaign.js';
-import {decodeSave,encodeSave} from '../game/save.js';
-import {careAssignmentIssue} from '../game/medical-care.js';
-import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
+import {dispatchCampaign,rosterFor,civicStatus} from '../packages/game/campaign.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
+import {careAssignmentIssue} from '../packages/game/medical-care.js';
+import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../packages/game/contracts.js';
 
-import {operativeLocation,operativeInTransit} from '../game/squads.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {operativeLocation,operativeInTransit} from '../packages/game/squads.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
 import {bookRouteHires,finishRouteHireArrivals} from './paid-route-hiring.mjs';
 
 const clock=s=>s.hour*3600+(s.secondOfHour??0);

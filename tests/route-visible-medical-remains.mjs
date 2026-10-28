@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {operativeLocation} from '../game/squads.js';
-import {dailyTownIncome} from '../game/town-income.js';
-import {canSee,getReachable,lootSearchPreview,lootPreview,lookPreview,climbPreview,knownArtillery} from '../game/tactical.js';
-import {nearbyLootOptions} from '../game/ja2-hud.js';
-import {spacePoint,sameSurface,sameCell} from '../game/tactical-space.js';
+import {operativeLocation} from '../packages/game/squads.js';
+import {dailyTownIncome} from '../packages/game/town-income.js';
+import {canSee,getReachable,lootSearchPreview,lootPreview,lookPreview,climbPreview,knownArtillery} from '../packages/game/tactical.js';
+import {nearbyLootOptions} from '../packages/game/ja2-hud.js';
+import {spacePoint,sameSurface,sameCell} from '../packages/game/tactical-space.js';
 import {order,visit,tactical,saved,leave} from './local-contract-fixture.mjs';
 
 export function visibleMedicalPatrolStep(battle,unit,target){

@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readyLocal, localNPC, localId } from './local-contract-fixture.mjs';
-import { TalkToCharacterUseCase } from '../game/application/talk-to-character/talk-to-character.use-case.ts';
-import { CampaignTalkToCharacterRepository } from '../game/infrastructure/session/talk-to-character-repository.js';
-import { ConversationParticipantProjection } from '../game/infrastructure/session/conversation-participant-projection.js';
-import { encodeSave, decodeSave } from '../game/save.js';
-import { dispatchCampaignSandbox } from '../game/public/campaign-playtest-api.js';
+import { TalkToCharacterUseCase } from '../packages/game/application/talk-to-character/talk-to-character.use-case.ts';
+import { CampaignTalkToCharacterRepository } from '../packages/game/infrastructure/session/talk-to-character-repository.js';
+import { ConversationParticipantProjection } from '../packages/game/infrastructure/session/conversation-participant-projection.js';
+import { encodeSave, decodeSave } from '../packages/game/save.js';
+import { dispatchCampaignSandbox } from '../packages/game/public/campaign-playtest-api.js';
 
 function conversationRequest(pair) {
   return {

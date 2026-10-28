@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import {WEAPONS} from '../game/data.js';
-import {dispatchCampaign,rosterFor,deploymentCost} from '../game/campaign.js';
-import {enterSector} from '../game/world.js';
-import {actBattle,reloadCost,reloadPlan,reprimePlan} from '../game/tactical.js';
-import {syncBattleTime,COMBAT_ROUND_SECONDS} from '../game/time.js';
-import {encodeSave,decodeSave} from '../game/save.js';
+import {WEAPONS} from '../packages/game/data.js';
+import {dispatchCampaign,rosterFor,deploymentCost} from '../packages/game/campaign.js';
+import {enterSector} from '../packages/game/world.js';
+import {actBattle,reloadCost,reloadPlan,reprimePlan} from '../packages/game/tactical.js';
+import {syncBattleTime,COMBAT_ROUND_SECONDS} from '../packages/game/time.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
 
 // A route controller must finish an unfinished gun through real equipment and
 // reload orders. Returning to the map cannot finish the job for the player.

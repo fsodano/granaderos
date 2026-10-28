@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { FieldOfView } from '../game/domain/perception/field-of-view.ts';
-import { VisionObserver } from '../game/domain/perception/vision-observer.ts';
-import { VisibilityPolicy } from '../game/domain/perception/visibility-policy.ts';
-import { IlluminationPolicy } from '../game/domain/perception/illumination-policy.ts';
-import { KnownSectorPolicy } from '../game/domain/perception/known-sector-policy.ts';
-import { GetVisibleCharactersUseCase } from '../game/application/perception/get-visible-characters/get-visible-characters.use-case.ts';
-import { SectorGetVisibleCharactersRepository } from '../game/infrastructure/perception/get-visible-characters.repository.js';
+import { FieldOfView } from '../packages/game/domain/perception/field-of-view.ts';
+import { VisionObserver } from '../packages/game/domain/perception/vision-observer.ts';
+import { VisibilityPolicy } from '../packages/game/domain/perception/visibility-policy.ts';
+import { IlluminationPolicy } from '../packages/game/domain/perception/illumination-policy.ts';
+import { KnownSectorPolicy } from '../packages/game/domain/perception/known-sector-policy.ts';
+import { GetVisibleCharactersUseCase } from '../packages/game/application/perception/get-visible-characters/get-visible-characters.use-case.ts';
+import { SectorGetVisibleCharactersRepository } from '../packages/game/infrastructure/perception/get-visible-characters.repository.js';
 import {
   createBattle,
   canSee,
@@ -14,7 +14,7 @@ import {
   visibleEnemies,
   firearmKnownTerrain,
   shotChance,
-} from '../game/tactical.js';
+} from '../packages/game/tactical.js';
 
 const origin = { x: 2, y: 3 };
 const conditions = {

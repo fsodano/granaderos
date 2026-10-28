@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor,civicStatus,contractQuote} from '../game/campaign.js';
-import {decodeSave,encodeSave} from '../game/save.js';
-import {operativeLocation} from '../game/squads.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {extractItemQuantity} from '../game/tactical-inventory.js';
+import {dispatchCampaign,rosterFor,civicStatus,contractQuote} from '../packages/game/campaign.js';
+import {decodeSave,encodeSave} from '../packages/game/save.js';
+import {operativeLocation} from '../packages/game/squads.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {extractItemQuantity} from '../packages/game/tactical-inventory.js';
 
 // A former serving veteran may be hired again only after a real local actor
 // collects all the equipment that veteran left behind. Never clear the marker.

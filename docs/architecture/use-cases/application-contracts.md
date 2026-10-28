@@ -2,8 +2,8 @@
 
 [Use-case catalogue](README.md) · [Architecture guide](../README.md)
 
-The [accepted architecture plan](../../../plans/accepted/domain-architecture.md)
-and [ubiquitous language](../../../plans/accepted/ubiquitous-language.md) define the naming and ownership rules. The contracts below explain the implemented
+The [accepted architecture plan](../../plans/accepted/domain-architecture.md)
+and [ubiquitous language](../../plans/accepted/ubiquitous-language.md) define the naming and ownership rules. The contracts below explain the implemented
 application boundary through representative operations. The [runtime flows](../runtime-flows.md) trace their integration.
 
 ## Responsibilities
@@ -14,7 +14,7 @@ services own game decisions and protect invariants. UI, browser tools, and
 editor playtests invoke the same application contracts.
 
 Each use case receives dependencies through its constructor and exposes an
-`execute()` method. Its folder under `game/application` contains its class,
+`execute()` method. Its folder under `packages/game/application` contains its class,
 request and result contracts, repository interface, and README. Small contracts
 can be declared in the use-case module. Domain tests sit beside their objects;
 integration tests live in `tests/`. Names follow the canonical stem or an
@@ -77,7 +77,7 @@ A dialogue workflow can invoke `RecruitmentService` inside its own transaction.
 It must not make a second independent commit for the same recruitment.
 
 The live browser routes recruitment through
-[`RecruitCombatantUseCase`](../../../game/application/personnel/recruit-combatant/recruit-combatant.use-case.ts).
+[`RecruitCombatantUseCase`](../../../packages/game/application/personnel/recruit-combatant/recruit-combatant.use-case.ts).
 Local conversations use `RecruitmentService` within `TalkToCharacter`.
 The compatibility input `recruitCivic` maps to the same recruitment use case.
 New input code uses `recruitCombatant`.
@@ -107,7 +107,7 @@ Restoration must not repeat recruitment payments, initial equipment, or
 completed world events. A resource failure leaves the accepted session intact.
 Snapshot mappers distinguish restoration from new-object creation.
 
-[`RestoreGameUseCase`](../../../game/application/restore-game/restore-game.use-case.ts)
+[`RestoreGameUseCase`](../../../packages/game/application/restore-game/restore-game.use-case.ts)
 loads through a specialized repository and `GameSnapshotMapper`. Browser
 composition verifies resources before it installs the restored result.
 
@@ -153,7 +153,7 @@ presentation responsibilities.
 ## Verification
 
 Follow the stages and completion gates in the
-[accepted implementation plan](../../../plans/accepted/domain-architecture.md#implementation-sequence).
+[accepted implementation plan](../../plans/accepted/domain-architecture.md#implementation-sequence).
 Recruitment is the reference slice for domain behavior, transaction boundaries,
 persistence mapping, and test tooling. Journey, world, sector, and editor slices
 use the same separation of responsibilities.

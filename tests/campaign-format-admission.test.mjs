@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CampaignContentSchema } from '../campaign-format/content-schema.js';
-import { validateMapDocument } from '../campaign-format/map-schema.js';
-import { validateWorldData as validateWorldSchema } from '../campaign-format/world-schema.js';
-import { DEFAULT_CONTENT, DEFAULT_WORLD, DEFAULT_MAPS } from '../campaigns/default.js';
-import { validateContentPackage } from '../game/content-package.js';
-import { validateMap } from '../game/map-schema.js';
-import { validateWorldData } from '../game/campaign-world-validation.js';
+import { CampaignContentSchema } from '../packages/campaign-format/content-schema.js';
+import { validateMapDocument } from '../packages/campaign-format/map-schema.js';
+import { validateWorldData as validateWorldSchema } from '../packages/campaign-format/world-schema.js';
+import { DEFAULT_CONTENT, DEFAULT_WORLD, DEFAULT_MAPS } from '../content/campaigns/default.js';
+import { validateContentPackage } from '../packages/game/content-package.js';
+import { validateMap } from '../packages/game/map-schema.js';
+import { validateWorldData } from '../packages/game/campaign-world-validation.js';
 import { dialoguePackage } from './dialogue-fixture.mjs';
 import { questPackage } from './content-quest-fixture.mjs';
 

@@ -1,15 +1,15 @@
-import { DomainRefusal, DomainRefusalCode } from '../game/domain/shared/domain-refusal.ts';
-import { CampaignJourneyTransaction } from '../game/infrastructure/journeys/campaign-journey-repositories.js';
-import { advanceSquadTravel, withdrawOnArrival } from '../game/squad-travel.js';
-import { rosterFor } from '../game/campaign.js';
+import { DomainRefusal, DomainRefusalCode } from '../packages/game/domain/shared/domain-refusal.ts';
+import { CampaignJourneyTransaction } from '../packages/game/infrastructure/journeys/campaign-journey-repositories.js';
+import { advanceSquadTravel, withdrawOnArrival } from '../packages/game/squad-travel.js';
+import { rosterFor } from '../packages/game/campaign.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { initialCampaign } from './legacy-campaign-fixture.mjs';
-import { dispatchCampaign } from '../game/campaign.js';
-import { pendingArrivalDecisions, squadTravelStatus } from '../game/squad-travel.js';
-import { strategicClockInterrupt } from '../game/strategic-clock.js';
-import { previewStrategicRoute } from '../game/strategic-route.js';
-import { encodeSave, decodeSave } from '../game/save.js';
+import { dispatchCampaign } from '../packages/game/campaign.js';
+import { pendingArrivalDecisions, squadTravelStatus } from '../packages/game/squad-travel.js';
+import { strategicClockInterrupt } from '../packages/game/strategic-clock.js';
+import { previewStrategicRoute } from '../packages/game/strategic-route.js';
+import { encodeSave, decodeSave } from '../packages/game/save.js';
 
 const seconds = (campaign) => campaign.hour * 3600 + (campaign.secondOfHour ?? 0);
 const order = (campaign, command) => {

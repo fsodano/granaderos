@@ -2,7 +2,7 @@
 
 [Architecture guide](README.md) · [Application contracts](use-cases/application-contracts.md)
 
-The game accepts a campaign and sector snapshot together. `web/app/page.tsx`
+The game accepts a campaign and sector snapshot together. `apps/web/app/page.tsx`
 connects the browser to the use cases and compatibility entry points. Domain
 objects decide game rules. The UI selects screens and shows accepted results.
 
@@ -184,8 +184,8 @@ history. Export produces a `campaign-format` package. A playtest invokes the
 public game API with an isolated game session. Project state and playtest progress
 remain separate.
 
-Source entry points: [browser composition](../../web/app/page.tsx),
-[campaign adapter](../../game/campaign.js), [sector adapter](../../game/tactical.js),
-[time synchronization](../../game/time.js), [worker jobs](../../game/battle-job.js),
-[snapshot mapping](../../game/infrastructure/persistence/game-snapshot-mapper.js),
-and [editor package](../../campaign-editor/README.md).
+Source entry points: [browser composition](../../apps/web/app/page.tsx),
+[campaign adapter](../../packages/game/campaign.js), [sector adapter](../../packages/game/tactical.js),
+[time synchronization](../../packages/game/time.js), [worker jobs](../../packages/game/battle-job.js),
+[snapshot mapping](../../packages/game/infrastructure/persistence/game-snapshot-mapper.js),
+and [editor package](../../apps/campaign-editor/README.md).

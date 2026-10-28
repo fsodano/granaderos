@@ -1,7 +1,7 @@
 {
-  "$schema": "./web/node_modules/oxfmt/configuration_schema.json",
+  "$schema": "./apps/web/node_modules/oxfmt/configuration_schema.json",
   "singleQuote": true,
   "printWidth": 100,
   "sortPackageJson": false,
-  "ignorePatterns": ["**/package-lock.json", "**/node_modules/**", "**/dist/**", "web/out/**"]
+  "ignorePatterns": ["**/package-lock.json", "**/node_modules/**", "**/dist/**", "apps/web/out/**"]
 }

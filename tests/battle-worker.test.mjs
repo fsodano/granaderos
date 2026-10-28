@@ -9,11 +9,11 @@ import {
   canSee,
   teamCanSee,
   knownArtillery,
-} from '../game/tactical.js';
-import { createBattleExecutor } from '../web/lib/battle-executor.js';
-import { executeGroupMove, planGroupMove } from '../game/group-movement.js';
-import { movementGroupModel } from '../game/ja2-hud.js';
-import { movementStep } from '../game/movement-step.js';
+} from '../packages/game/tactical.js';
+import { createBattleExecutor } from '../apps/web/lib/battle-executor.js';
+import { executeGroupMove, planGroupMove } from '../packages/game/group-movement.js';
+import { movementGroupModel } from '../packages/game/ja2-hud.js';
+import { movementStep } from '../packages/game/movement-step.js';
 const fixture = () =>
   createBattle([{ id: 'p', x: 1, y: 2, weapon: 1800 }], {
     width: 8,
@@ -22,7 +22,7 @@ const fixture = () =>
     seed: 8,
   });
 async function withExecutor(check) {
-  const url = new URL('../game/battle-job.js', import.meta.url).href;
+  const url = new URL('../packages/game/battle-job.js', import.meta.url).href;
   const worker = new Worker(
     `const {parentPort}=require('node:worker_threads');import(${JSON.stringify(url)}).then(({runBattleJob})=>parentPort.on('message',({id,job,context})=>{try{parentPort.postMessage({id,context,battle:runBattleJob(job)});}catch(e){parentPort.postMessage({id,context,error:e.message});}}));`,
     { eval: true },

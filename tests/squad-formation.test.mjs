@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { initialCampaign } from './legacy-campaign-fixture.mjs';
-import { dispatchCampaign } from '../game/campaign.js';
-import { encodeSave, decodeSave } from '../game/save.js';
+import { dispatchCampaign } from '../packages/game/campaign.js';
+import { encodeSave, decodeSave } from '../packages/game/save.js';
 
 test('assigning a combatant to a squad commits one revision and restores without duplicate membership', () => {
   const initial = initialCampaign();

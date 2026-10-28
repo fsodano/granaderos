@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {heavyContactCrewController} from './stable-crew-driver.mjs';
 import {stagedBatteryController} from './staged-battery-driver.mjs';
-import {artilleryContact,stanceCost} from '../game/tactical.js';
+import {artilleryContact,stanceCost} from '../packages/game/tactical.js';
 
 // Adjacent arriving pieces can otherwise take each other's nearest crew.
 // Keep the real three-person heavy crew together through the paid approach;

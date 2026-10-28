@@ -1,16 +1,16 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor,civicStatus} from '../game/campaign.js';
-import {isContractOperative} from '../game/content-character-ids.js';
-import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
-import {hiringArrivalReason,hireArrivalDueSeconds} from '../game/hiring-arrivals.js';
+import {dispatchCampaign,rosterFor,civicStatus} from '../packages/game/campaign.js';
+import {isContractOperative} from '../packages/game/content-character-ids.js';
+import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../packages/game/contracts.js';
+import {hiringArrivalReason,hireArrivalDueSeconds} from '../packages/game/hiring-arrivals.js';
 import {immediateRecruitmentExpectation} from './immediate-recruitment-fixture.mjs';
-import {canReassignOperative,operativeLocation} from '../game/squads.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {applyItemQuantity,SUPPLY_ITEMS} from '../game/tactical-inventory.js';
-import {enterSector} from '../game/world.js';
-import {actBattle,getReachable} from '../game/tactical.js';
-import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
-import {syncBattleTime} from '../game/time.js';
+import {canReassignOperative,operativeLocation} from '../packages/game/squads.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {applyItemQuantity,SUPPLY_ITEMS} from '../packages/game/tactical-inventory.js';
+import {enterSector} from '../packages/game/world.js';
+import {actBattle,getReachable} from '../packages/game/tactical.js';
+import {sameCell,sameSurface,spacePoint} from '../packages/game/tactical-space.js';
+import {syncBattleTime} from '../packages/game/time.js';
 
 const clock=c=>c.hour*3600+(c.secondOfHour??0);
 

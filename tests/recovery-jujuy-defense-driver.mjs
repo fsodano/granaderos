@@ -1,7 +1,7 @@
 import {stableCrewController} from './stable-crew-driver.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
-import {playerKnownBattle} from '../game/player-known-state.js';
-import {actBattle,getReachable,actionCosts,hasLineOfSight,artilleryContact,stanceCost,teamCanSee} from '../game/tactical.js';
+import {playerKnownBattle} from '../packages/game/player-known-state.js';
+import {actBattle,getReachable,actionCosts,hasLineOfSight,artilleryContact,stanceCost,teamCanSee} from '../packages/game/tactical.js';
 
 // The actual raid keeps its accepted shared-sight battery policy. Only the
 // critical medic approach and normal-null public quiet search add orders.

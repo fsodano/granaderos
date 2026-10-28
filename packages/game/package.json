@@ -1,0 +1,14 @@
+{
+  "name": "@granaderos/game",
+  "version": "0.1.49",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./campaign-editor-api": "./public/campaign-editor-api.js",
+    "./campaign-playtest-api": "./public/campaign-playtest-api.js",
+    "./game-persistence-api": "./public/game-persistence-api.js"
+  },
+  "scripts": {
+    "typecheck": "node ../../apps/web/node_modules/typescript/bin/tsc --project tsconfig.json --noEmit"
+  }
+}

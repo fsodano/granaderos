@@ -22,7 +22,7 @@ oposición del juego; su elenco no necesita personajes históricos.
 4. Elegí **Iniciar campaña con estas fichas**. El juego conserva una copia de ese
    contenido en la partida. Editar luego el borrador no cambia la campaña iniciada.
 
-También podés descargar el [paquete de contenido](../../campaigns/la-ruta-de-las-postas.json)
+También podés descargar el [paquete de contenido](../../content/campaigns/la-ruta-de-las-postas.json)
 e importarlo. Usa las imágenes incluidas en Granaderos. **Exportar contenido**
 guarda tus cambios como otro archivo.
 

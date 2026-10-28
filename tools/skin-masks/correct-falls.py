@@ -5,7 +5,7 @@ Coordinates are normalized to each frame's visible bounds, not its padded cell.
 from pathlib import Path
 from PIL import Image
 import numpy as np,json
-ROOT=Path(__file__).resolve().parents[2];base=ROOT/'assets/previews/illustrated-sprites/packed';out=ROOT/'web/public/art/skin';m=json.loads((base/'manifest.json').read_text())
+ROOT=Path(__file__).resolve().parents[2];base=ROOT/'content/assets/previews/illustrated-sprites/packed';out=ROOT/'apps/web/public/art/skin';m=json.loads((base/'manifest.json').read_text())
 # Each tuple is face centre, then visible hand centres. North shows the back of the head.
 points={
  (0,1):[(.03,.55),(.97,.53)],(0,2):[(.04,.92),(.96,.92)],(0,3):[(.04,.69),(.96,.69)],

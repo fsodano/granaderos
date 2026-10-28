@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { Journey, JourneyPurpose, JourneyStatus } from '../game/domain/journeys/journey.ts';
+import { Journey, JourneyPurpose, JourneyStatus } from '../packages/game/domain/journeys/journey.ts';
 import {
   ArrivalDecision,
   ArrivalDecisionStatus,
-} from '../game/domain/journeys/arrival-decision.ts';
-import { WithdrawOnArrivalUseCase } from '../game/application/journeys/withdraw-on-arrival/withdraw-on-arrival.use-case.ts';
-import { FightOnArrivalUseCase } from '../game/application/journeys/fight-on-arrival/fight-on-arrival.use-case.ts';
-import { RedirectJourneyUseCase } from '../game/application/journeys/redirect-journey/redirect-journey.use-case.ts';
+} from '../packages/game/domain/journeys/arrival-decision.ts';
+import { WithdrawOnArrivalUseCase } from '../packages/game/application/journeys/withdraw-on-arrival/withdraw-on-arrival.use-case.ts';
+import { FightOnArrivalUseCase } from '../packages/game/application/journeys/fight-on-arrival/fight-on-arrival.use-case.ts';
+import { RedirectJourneyUseCase } from '../packages/game/application/journeys/redirect-journey/redirect-journey.use-case.ts';
 
 const legSeconds = 7200;
 const approach = () =>

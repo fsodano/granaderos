@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { validateCampaignStory, defaultCampaignStory } from '../game/campaign-story.js';
-import { validateCampaignEvents } from '../game/campaign-events.js';
-import { defaultContentPackage, validateContentPackage } from '../game/content-package.js';
-import { DEFAULT_WORLD } from '../campaigns/default.js';
+import { validateCampaignStory, defaultCampaignStory } from '../packages/game/campaign-story.js';
+import { validateCampaignEvents } from '../packages/game/campaign-events.js';
+import { defaultContentPackage, validateContentPackage } from '../packages/game/content-package.js';
+import { DEFAULT_WORLD } from '../content/campaigns/default.js';
 
 function authoredContent() {
   const content = defaultContentPackage();

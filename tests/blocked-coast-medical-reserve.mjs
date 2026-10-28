@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {operativeLocation,operativeInTransit} from '../game/squads.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {applyItemQuantity} from '../game/tactical-inventory.js';
+import {dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {operativeLocation,operativeInTransit} from '../packages/game/squads.js';
+import {sectorInventoryModel} from '../packages/game/sector-inventory.js';
+import {applyItemQuantity} from '../packages/game/tactical-inventory.js';
 
 const clock=c=>c.hour*3600+(c.secondOfHour??0);
 const stable=(c,id)=>c.recruited.includes(id)&&c.operativeState[id]?.alive&&!c.operativeState[id].captured&&!operativeInTransit(c,id)&&c.operativeState[id].hp===c.operativeState[id].maxHp&&!c.operativeState[id].bleeding&&!c.operativeState[id].asleep&&c.operativeState[id].energy>0;

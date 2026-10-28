@@ -23,7 +23,7 @@ def main():
     parser.add_argument('--receipt', type=Path)
     args = parser.parse_args()
     root = args.root.resolve()
-    donor_path = root / 'assets/source/characters-3d/authoring/standing_blade_wrist_donor.json'
+    donor_path = root / 'content/assets/source/characters-3d/authoring/standing_blade_wrist_donor.json'
     source_hash = hashlib.sha256(donor_path.read_bytes()).hexdigest()
     donor = json.loads(donor_path.read_text())
     assert donor['version'] == 1
@@ -32,7 +32,7 @@ def main():
     assert bones == {'upperarm_r', 'lowerarm_r', 'hand_r', 'thumb_01_r', 'thumb_02_r', 'thumb_03_r'}
     merger = module('blade_wrist_glb', root / 'tools/characters-3d/merge-animation-bank.py')
     decoded = module('blade_wrist_channels', root / 'tools/characters-3d/build-gesture-support.py')
-    out = root / 'web/public/models/characters'
+    out = root / 'apps/web/public/models/characters'
     manifest_path = out / 'manifest.json'
     assert not manifest_path.is_symlink()
     original_manifest_bytes = manifest_path.read_bytes()

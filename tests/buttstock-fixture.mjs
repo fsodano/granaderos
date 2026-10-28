@@ -1,8 +1,8 @@
 import {fightOnArrival} from './assault-fixture.mjs';
-import {defaultContentPackage} from '../game/content-package.js';
-import {initialCampaign} from '../game/campaign.js';
-import {enterSector} from '../game/world.js';
-import {createBattle} from '../game/tactical.js';
+import {defaultContentPackage} from '../packages/game/content-package.js';
+import {initialCampaign} from '../packages/game/campaign.js';
+import {enterSector} from '../packages/game/world.js';
+import {createBattle} from '../packages/game/tactical.js';
 import {order,saved,sync} from './local-contract-fixture.mjs';
 
 export function buttstockField({stock={}}={}){

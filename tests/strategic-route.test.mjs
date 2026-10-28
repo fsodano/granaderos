@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { initialCampaign } from './legacy-campaign-fixture.mjs';
-import { initialCampaign as freshCampaign, dispatchCampaign } from '../game/campaign.js';
-import { previewStrategicRoute } from '../game/strategic-route.js';
-import { defaultContentPackage } from '../game/content-package.js';
-import { worldCells, cellTravelReason } from '../game/world-cells.js';
-import { encodeSave, decodeSave } from '../game/save.js';
-import { launchEnemyGroup } from '../game/enemy-groups.js';
+import { initialCampaign as freshCampaign, dispatchCampaign } from '../packages/game/campaign.js';
+import { previewStrategicRoute } from '../packages/game/strategic-route.js';
+import { defaultContentPackage } from '../packages/game/content-package.js';
+import { worldCells, cellTravelReason } from '../packages/game/world-cells.js';
+import { encodeSave, decodeSave } from '../packages/game/save.js';
+import { launchEnemyGroup } from '../packages/game/enemy-groups.js';
 const order = (s, a) => {
   const next = dispatchCampaign(s, a);
   assert.equal(next.lastError, null);

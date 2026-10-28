@@ -7,7 +7,7 @@ def _module(name,path):
     spec=importlib.util.spec_from_file_location(name,path);result=importlib.util.module_from_spec(spec);spec.loader.exec_module(result);return result
 
 def verify_banks(root):
-    root=Path(root).resolve();assets=root/'web/public/models/characters';manifest=json.loads((assets/'manifest.json').read_bytes());tool=_module('standing_bank_context_tool',root/'tools/characters-3d/build-standing-free-arm-rest.py');glb=_module('standing_bank_context_glb',root/'tools/characters-3d/merge-animation-bank.py');rows={}
+    root=Path(root).resolve();assets=root/'apps/web/public/models/characters';manifest=json.loads((assets/'manifest.json').read_bytes());tool=_module('standing_bank_context_tool',root/'tools/characters-3d/build-standing-free-arm-rest.py');glb=_module('standing_bank_context_glb',root/'tools/characters-3d/merge-animation-bank.py');rows={}
     for gender,record in manifest.get('animationLibraries',{}).items():
         if FIELD not in record:continue
         assert gender in ('male','female')and record['url']==f'/models/characters/{gender}-animations.glb','Unowned standing bank layer'
@@ -17,7 +17,7 @@ def verify_banks(root):
 
 def _unwrap_banks(private,source):
     """Write exact predecessors only in a copied private view after verification."""
-    private=Path(private).resolve();assert private!=Path(source).resolve(),'Cannot unwrap a published bank in place';rows=verify_banks(private);assets=private/'web/public/models/characters';mp=assets/'manifest.json';manifest=json.loads(mp.read_bytes());tool=_module('standing_bank_context_restore',private/'tools/characters-3d/build-standing-free-arm-rest.py');glb=_module('standing_bank_context_restore_glb',private/'tools/characters-3d/merge-animation-bank.py')
+    private=Path(private).resolve();assert private!=Path(source).resolve(),'Cannot unwrap a published bank in place';rows=verify_banks(private);assets=private/'apps/web/public/models/characters';mp=assets/'manifest.json';manifest=json.loads(mp.read_bytes());tool=_module('standing_bank_context_restore',private/'tools/characters-3d/build-standing-free-arm-rest.py');glb=_module('standing_bank_context_restore_glb',private/'tools/characters-3d/merge-animation-bank.py')
     for gender in rows:
         record=manifest['animationLibraries'][gender];path=assets/Path(record['url']).name;doc,binary=glb.read_glb(path);before,old_binary=tool.restore_bank(doc,binary,record[FIELD]);restored=tool.restore_record(record);raw=tool.encode(before,old_binary);assert tool.sha(raw)==restored['sha256']and len(raw)==restored['bytes'];path.unlink();path.write_bytes(raw);manifest['animationLibraries'][gender]=restored
     if rows:mp.write_text(json.dumps(manifest,indent=2)+'\n')
@@ -48,7 +48,7 @@ def verify_native_bank_repeat(root,name):
     from family_surface_context import _pins,_check_pins
     assert name in ('build-prone-pistol-forearm-support.py','build-standing-blade-wrists.py'),'Unowned native standing bank repeat'
     root=Path(root).resolve();pins=_pins(root);assert len(verify_banks(root))==2,'Native repeat needs both verified standing bank layers'
-    assets=root/'web/public/models/characters';manifest=json.loads((assets/'manifest.json').read_bytes());tool=_module('standing_native_restore',root/'tools/characters-3d/build-standing-free-arm-rest.py');glb=_module('standing_native_restore_glb',root/'tools/characters-3d/merge-animation-bank.py');rows={}
+    assets=root/'apps/web/public/models/characters';manifest=json.loads((assets/'manifest.json').read_bytes());tool=_module('standing_native_restore',root/'tools/characters-3d/build-standing-free-arm-rest.py');glb=_module('standing_native_restore_glb',root/'tools/characters-3d/merge-animation-bank.py');rows={}
     for gender,active in manifest['animationLibraries'].items():
         doc,binary=glb.read_glb(assets/Path(active['url']).name);doc,binary=tool.restore_bank(doc,binary,active[FIELD]);record=tool.restore_record(active);metadata={clip['name']:clip for clip in record['clips']}
         if name=='build-prone-pistol-forearm-support.py':
@@ -66,7 +66,7 @@ def verify_native_bank_repeat(root,name):
                     if key[0].endswith('_l')and key[0].startswith(('thumb_','index_','middle_','ring_','pinky_')):assert track[2][0]==source[key][2][0],'Native prone donor finger differs'
             rows[gender]={'nativeRotationsVerified':len(changed),'sourceClip':'prone.idle.unarmed','completedMetadataExact':True}
         else:
-            donor_path=root/'assets/source/characters-3d/authoring/standing_blade_wrist_donor.json';donor=json.loads(donor_path.read_bytes());assert donor['version']==1 and set(donor['clipNames'])=={'stand.slash.blade.thrust'} and set(donor['rotationBones'])=={'upperarm_r','lowerarm_r','hand_r','thumb_01_r','thumb_02_r','thumb_03_r'},'Native blade donor scope differs';source=donor['banks'][gender];nodes={node['name']:node for node in doc['nodes']if'name'in node};assert len(source['nativeSkeletonRest'])==53
+            donor_path=root/'content/assets/source/characters-3d/authoring/standing_blade_wrist_donor.json';donor=json.loads(donor_path.read_bytes());assert donor['version']==1 and set(donor['clipNames'])=={'stand.slash.blade.thrust'} and set(donor['rotationBones'])=={'upperarm_r','lowerarm_r','hand_r','thumb_01_r','thumb_02_r','thumb_03_r'},'Native blade donor scope differs';source=donor['banks'][gender];nodes={node['name']:node for node in doc['nodes']if'name'in node};assert len(source['nativeSkeletonRest'])==53
             for bone,rest in source['nativeSkeletonRest'].items():assert {key:nodes[bone][key]for key in ('translation','rotation','scale','matrix')if key in nodes[bone]}==rest,'Native blade donor bind differs'
             decoder=_module('standing_blade_channels',root/'tools/characters-3d/build-gesture-support.py');tracks=decoder.channels(doc,binary);clip_name='stand.slash.blade.thrust';spec=metadata[clip_name];source_clip=source['clips'][clip_name]
             expected={'method':'reviewed-six-native-rotation-donor','sourceSha256':tool.sha(donor_path.read_bytes()),'sourceCommit':donor['sourceCommit'],'sourceBankSha256':source['sourceBankSha256'],'bones':donor['rotationBones'],'preservedNativeClocksAndOtherChannels':True};assert spec['nativeBladeWrist']==expected,'Native blade donor metadata differs';assert spec['duration']==source_clip['duration']and spec['markers']==source_clip['markers'],'Native blade donor clock differs'

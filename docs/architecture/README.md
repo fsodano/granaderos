@@ -3,14 +3,18 @@
 [Documentation index](../README.md) · [Development setup](../development/getting-started.md)
 
 This guide describes the reviewed source. For the target architecture and naming
-contract, read the [accepted plan](../../plans/accepted/domain-architecture.md)
-and [ubiquitous language](../../plans/accepted/ubiquitous-language.md).
+contract, read the [accepted plan](../plans/accepted/domain-architecture.md)
+and [ubiquitous language](../plans/accepted/ubiquitous-language.md).
 The [28 October verification record](../verification/domain-architecture-2026-10-28.md)
 connects the accepted stages to executable tests and browser evidence.
 
 Start with the overview. Each subsequent level explains the same system at a
 smaller scale: first its boundaries, then its interactions, then its internals.
 You do not need to read every deep dive to understand a particular subsystem.
+
+The [repository map](../development/repository-layout.md) explains the `apps`,
+`packages`, `content`, `docs`, `tools`, and `reference` directories and where to
+start in the IDE.
 
 ## Reading ladder
 
@@ -63,7 +67,7 @@ reflect the working source on **28 October 2026**. Detailed compatibility-engine
 traces identify the older modules that remain in use. The package version alone
 does not identify which local architecture changes have been published.
 
-The locally modified native `engine/` submodule is outside this browser work.
+The locally modified native `reference/native/engine/` submodule is outside this browser work.
 Evidence is source tracing of the named entry points and their collaborators,
 not a full campaign playthrough, a performance certification, or proof that every
 historical feature is available. The architecture is not a strict dependency DAG:

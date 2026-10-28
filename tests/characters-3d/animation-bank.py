@@ -6,7 +6,7 @@ Checks actual generated action data, native joint lengths, and finite poses.
 """
 import sys,json,math,bpy
 from pathlib import Path
-root=Path(__file__).resolve().parents[2];sys.path.insert(0,str(root/'assets/source/characters-3d/authoring'))
+root=Path(__file__).resolve().parents[2];sys.path.insert(0,str(root/'content/assets/source/characters-3d/authoring'))
 from character import create_character
 from equipment import create_equipment
 from motion import apply_animations,_semantic_specs

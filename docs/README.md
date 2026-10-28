@@ -11,6 +11,7 @@ Player-facing text is Spanish. Code and documentation are English.
 
 | Task | Read |
 | --- | --- |
+| Find source files and understand the repository layout | [Repository map](development/repository-layout.md) |
 | Understand how the browser game fits together | [Progressive architecture guide](architecture/README.md) and [C4 levels 1–3](architecture/c4.md) |
 | Explore player and campaign-author capabilities | [Use-case catalogue](architecture/use-cases/README.md) |
 | Verify the domain architecture implementation | [28 October architecture evidence](verification/domain-architecture-2026-10-28.md) |
@@ -52,7 +53,7 @@ Studio; community hosting and sharing services are
 | [Evidence](evidence/README.md) | Saved workspace route results and performance measurements |
 | [Art](art/README.md) | Buildings, portraits, sprite families and render quality |
 | [Architecture decisions](adr/README.md) | Visual decisions and reference images |
-| [Plans](plans/README.md) | Implementation proposals and acceptance criteria |
+| [Plans](plans/README.md) | Accepted architecture, ubiquitous language, feature proposals, and acceptance criteria |
 | [Specifications](specification/README.md) | Original design and later gameplay requirements |
 | [JA2 engine reference](web-port/README.md) | Source analysis and browser adaptation notes |
 | [Other references](reference/README.md) | Period equipment evidence and the earlier native build |
@@ -104,7 +105,7 @@ its implementation or acceptance on a later source.
 
 - Put a new note in the matching folder and add it to that folder's index.
 - Use relative Markdown links between documents. Code-formatted source paths
-  such as `game/tactical.js` start at the repository root.
+  such as `packages/game/tactical.js` start at the repository root.
 - State the checkout or source commit, date, tested scope, result and limits of
   verification. Keep raw measurements in `evidence/` and link their record.
 - Update the published progress ledger when an implementation is merged.

@@ -2,7 +2,7 @@
 
 [Documentation index](../README.md) · [Development index](README.md) · [Project overview](../../README.md)
 
-The browser implementation in `game/` and `web/` is the primary game. Its interface is Spanish. Code and documentation are English.
+The browser implementation in `packages/game/` and `apps/web/` is the primary game. Its interface is Spanish. Code and documentation are English.
 
 Read the [campaign separation record](../verification/campaign-engine-separation-2026-10-10.md)
 for current scope and known limits. The [version 0.1 status](../verification/version-0.1.md)
@@ -15,7 +15,7 @@ establish complete game acceptance.
 - An up-to-date **Node.js 22 LTS**, **22.18.0 or newer**, for development and native TypeScript tests.
 - npm and a current browser.
 
-The browser game does not require the `engine/` submodule, a C++ toolchain or an original JA2 installation.
+The browser game does not require the `reference/native/engine/` submodule, a C++ toolchain or an original JA2 installation.
 
 To play without a local installation, open [Granaderos on GitHub Pages](https://fsodano.github.io/granaderos/).
 
@@ -26,13 +26,13 @@ Run these commands in a terminal:
 ```sh
 git clone https://github.com/fsodano/granaderos.git
 cd granaderos
-npm ci --prefix web
+npm ci --prefix apps/web
 npm run dev
 ```
 
-The `main` branch includes the campaign folder tools and `/studio`. To inspect the earlier checkpoint, use `git checkout 0.1` instead.
+The repository includes campaign folder tools and the independent editor in `apps/campaign-editor`. The [repository map](repository-layout.md) explains the source boundaries.
 
-Run subsequent commands from the repository root. Dependencies are installed in `web/node_modules`; the committed `web/package-lock.json` fixes their versions.
+Run subsequent commands from the repository root. Dependencies are installed in `apps/web/node_modules`; the committed `apps/web/package-lock.json` fixes their versions.
 
 `npm run dev` starts the web package's Vinext development server. Open [localhost:3000](http://localhost:3000), or the address printed by the server if its port changes. Stop the server with Ctrl+C.
 
@@ -51,7 +51,7 @@ start a new campaign.
 The title screen links to the separate `campaign-editor` application. The
 compatibility routes `/studio`, `/story`, and `/editor` open its corresponding
 workspaces in a production build. For development, install its dependencies with
-`npm ci --prefix campaign-editor` and start it with `npm --prefix campaign-editor run dev`.
+`npm ci --prefix apps/campaign-editor` and start it with `npm --prefix apps/campaign-editor run dev`.
 The story editor supports validated characters, weapons, abilities, dialogue
 choices, quests and bounded campaign definitions, including a separate example.
 Use the [campaign studio](../authoring/campaign-studio.md) at `/campaign-editor/` to create,
@@ -66,7 +66,7 @@ Campaign progress and its active battle are saved in browser storage. Installed 
 
 Browser storage belongs to the current browser profile and site origin. A different protocol, hostname or port has separate storage. GitHub Pages and localhost have separate storage. Export a save before moving between origins or clearing browser data, then import it at the destination. The export is the portable copy.
 
-The save implementation is in [`game/save.js`](../../game/save.js). [`useCampaignAutosave.ts`](../../web/lib/useCampaignAutosave.ts) saves campaign and battle changes and reports storage errors through the game notice.
+The save implementation is in [`packages/game/save.js`](../../packages/game/save.js). [`useCampaignAutosave.ts`](../../apps/web/lib/useCampaignAutosave.ts) saves campaign and battle changes and reports storage errors through the game notice.
 
 Validate current saves through export, import, and browser reload. The supported
 save schemas and explicit migrations are described in the
@@ -79,8 +79,8 @@ The test runner includes domain invariants, application contracts, persistence,
 editor operations, and game integration checks. It discovers the current tests
 and uses two workers. See [the test guide](../../tests/README.md).
 
-Install dependencies with `npm ci --prefix web` and
-`npm ci --prefix campaign-editor`, then run:
+Install dependencies with `npm ci --prefix apps/web` and
+`npm ci --prefix apps/campaign-editor`, then run:
 
 | Command | Purpose |
 | --- | --- |
@@ -91,7 +91,7 @@ Install dependencies with `npm ci --prefix web` and
 | `npm run check:format` | Check formatting of migrated architecture source. |
 | `npm run audit:docs` | Check the documentation register and generated view. |
 | `npm run audit:baseline` | Check the reference gameplay values. |
-| `npm run build` | Build and verify the static browser export in root `dist/`. |
+| `npm run build` | Build and verify the static browser export in root `.output/dist/`. |
 
 The standard suite does not require Python, regenerate artwork, or run complete
 campaign routes. Failures fail the command. Tests use real domain objects with
@@ -133,7 +133,7 @@ locally before pushing once. A passing minimum does not establish complete
 campaign acceptance, visual quality or sustained performance.
 
 Build in a separate candidate checkout when the browser preview serves another
-checkout. The build replaces `web/dist/` and root `dist/`. Preserve the preview
+checkout. The build replaces `apps/web/dist/` and root `.output/dist/`. Preserve the preview
 origin and saved progress. Check the affected controls in the browser before
 delivery; the tests do not replace that review.
 
@@ -148,7 +148,7 @@ it does not certify a complete playthrough.
 
 After each accepted merge into `main`, create a patch or minor tag for that exact merged commit. Preserve the historical `0.1` tag. The first tag after that checkpoint is `0.1.1`; later merges advance the patch or minor version. The agent chooses patch or minor versions; only the user can authorize a major version, including `1.0`.
 
-Before freezing the local candidate, set the same version in `VERSION`, root `package.json`, `web/package.json` and the two root package records in `web/package-lock.json`. Keep dependency versions unchanged. Verify that the production `build-info.json` records this version and the exact source revision.
+Before freezing the local candidate, set the same version in `VERSION`, root `package.json`, `apps/web/package.json` and the two root package records in `apps/web/package-lock.json`. Keep dependency versions unchanged. Verify that the production `build-info.json` records this version and the exact source revision.
 
 Run the required local checks before publishing. After the reviewed merge, verify the remote `main` revision and bind the tag to it. Record the checks and remaining limits with the delivery. A development tag retains that evidence and does not establish complete campaign or release acceptance.
 
@@ -158,9 +158,9 @@ Run the required local checks before publishing. After the reviewed merge, verif
 npm run build
 ```
 
-[`web/next.config.ts`](../../web/next.config.ts) configures a static export. The web build writes its client output to `web/dist/client/`. [`tools/build-web.mjs`](../../tools/build-web.mjs) copies this output to root `dist/`, checks the copied bytes, and adapts the file layout for project hosting. It then validates asset references, manifests, artwork checksums and browser worker URLs in the staged export.
+[`apps/web/next.config.ts`](../../apps/web/next.config.ts) configures a static export. The web build writes its client output to `apps/web/dist/client/`. [`tools/build-web.mjs`](../../tools/build-web.mjs) copies this output to root `.output/dist/`, checks the copied bytes, and adapts the file layout for project hosting. It then validates asset references, manifests, artwork checksums and browser worker URLs in the staged export.
 
-Serve the root `dist/` directory through an HTTP server for production review. The repository has no dedicated root preview command. The web package's `start` script targets a Wrangler server configuration; it is separate from the root static-export workflow.
+Serve the root `.output/dist/` directory through an HTTP server for production review. The repository has no dedicated root preview command. The web package's `start` script targets a Wrangler server configuration; it is separate from the root static-export workflow.
 
 Build success establishes that the export and its checked assets were produced. Browser checks must still cover the changed controls, rendering and save behavior.
 
@@ -170,7 +170,7 @@ The hosted game is at [fsodano.github.io/granaderos](https://fsodano.github.io/g
 GitHub Pages serves the export from its last deployment; it can differ from
 current `main` or a version tag. The game needs no application server.
 
-The [web workflow](../../.github/workflows/web.yml) builds with `GRANADEROS_BASE_PATH=/granaderos`. It checks browser types, deployment paths, browser workers and the static export before publishing `dist/`. Every push to `main` starts the verified build and publishes its successful export. Manual builds remain available through `workflow_dispatch`; manual publication also requires `main`. Pull requests, tag pushes and pushes to other branches do not start this workflow.
+The [web workflow](../../.github/workflows/web.yml) builds with `GRANADEROS_BASE_PATH=/granaderos`. It checks browser types, deployment paths, browser workers and the static export before publishing `.output/dist/`. Every push to `main` starts the verified build and publishes its successful export. Manual builds remain available through `workflow_dispatch`; manual publication also requires `main`. Pull requests, tag pushes and pushes to other branches do not start this workflow.
 
 The selected main revision publishes even if unrelated commits advance main
 during the build. A newer push or manual dispatch on the same branch replaces
@@ -191,18 +191,24 @@ Serve this export at `/granaderos/` for browser review. Root-path exports use `n
 
 ## Source layout
 
+Use the [repository map](repository-layout.md) for the complete directory tree,
+package boundaries, output locations, and reading paths.
+
 | Path | Contents |
 | --- | --- |
-| [`game/`](../../game/) | Campaign and tactical rules, maps, data and save validation |
-| [`web/app/`](../../web/app/) | React screens, controls and styles |
-| [`web/lib/`](../../web/lib/) | Shared browser helpers |
-| [`web/public/art/`](../../web/public/art/) | Artwork installed in the browser game |
+| [`apps/campaign-editor/`](../../apps/campaign-editor/README.md) | Independent editor application and domain model |
+| [`packages/campaign-format/`](../../packages/campaign-format/README.md) | Shared published file contracts |
+| [`content/campaigns/`](../../content/campaigns/) | Authored campaigns and packaged media |
+| [`packages/game/`](../../packages/game/) | Campaign and tactical rules, maps, data and save validation |
+| [`apps/web/app/`](../../apps/web/app/) | React screens, controls and styles |
+| [`apps/web/lib/`](../../apps/web/lib/) | Shared browser helpers |
+| [`apps/web/public/art/`](../../apps/web/public/art/) | Artwork installed in the browser game |
 | [`tests/`](../../tests/) | Node tests and supporting fixtures |
 | [`tools/`](../../tools/) | Build, artwork and verification utilities |
-| [`assets/`](../../assets/) | Artwork sources, prompts, references and exports |
+| [`content/assets/`](../../content/assets/) | Artwork sources, prompts, references and exports |
 | [`docs/`](../README.md) | Guides, specifications and verification records |
 
-Earlier native conversion work remains in `engine/`, `native/`, `patches/` and `mod/`. Its Windows toolchain, packaging and original JA2 data requirements are described in the [native build reference](../reference/native-build.md). Those instructions apply to that separate implementation.
+Earlier native conversion work remains in `reference/native/engine/`, `reference/native/overlay/`, `reference/native/patches/` and `reference/native/mod/`. Its Windows toolchain, packaging and original JA2 data requirements are described in the [native build reference](../reference/native-build.md). Those instructions apply to that separate implementation.
 
 The game, story editor and sector editor show the same source build ID.
 `/build-info.json` exposes its source digest. Compare that identity with the

@@ -35,19 +35,19 @@ The accepted piece 18 view shows timber construction, soft bedding and ground-fl
 
 ## Hearth and cookware
 
-![Hearth and cookware](../../artifacts/hearth/hearth-after-88px.jpg)
+![Hearth and cookware](../evidence/artifacts/hearth/hearth-after-88px.jpg)
 
 The inward hearth opening keeps the pot visible. Its rim and bail are clearer at 88 pixels; the bail stays quiet at 44.
 
-[Before, 88](../../artifacts/hearth/hearth-before-88px.jpg) · [After, 88](../../artifacts/hearth/hearth-after-88px.jpg) · [After, 44](../../artifacts/hearth/hearth-after-44px.jpg) · [Review](hearth-review-2026-10-08.md)
+[Before, 88](../evidence/artifacts/hearth/hearth-before-88px.jpg) · [After, 88](../evidence/artifacts/hearth/hearth-after-88px.jpg) · [After, 44](../evidence/artifacts/hearth/hearth-after-44px.jpg) · [Review](hearth-review-2026-10-08.md)
 
 ## Shelf vessels
 
-![Shelf vessels](../../artifacts/shelf-vessels/after-store-88px.jpg)
+![Shelf vessels](../evidence/artifacts/shelf-vessels/after-store-88px.jpg)
 
 The store shelves show jar, bottle and bowl profiles with open mouths. Office and archive ledgers remain unchanged. Store clocks match; kitchen clocks differ.
 
-[Before, 88](../../artifacts/shelf-vessels/before-store-88px.jpg) · [After, 88](../../artifacts/shelf-vessels/after-store-88px.jpg) · [After, 44](../../artifacts/shelf-vessels/after-store-44px.jpg) · [Review](shelf-vessels-review-2026-10-08.md)
+[Before, 88](../evidence/artifacts/shelf-vessels/before-store-88px.jpg) · [After, 88](../evidence/artifacts/shelf-vessels/after-store-88px.jpg) · [After, 44](../evidence/artifacts/shelf-vessels/after-store-44px.jpg) · [Review](shelf-vessels-review-2026-10-08.md)
 
 ## Gathered sacks
 

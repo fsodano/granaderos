@@ -1,10 +1,10 @@
 import {register} from 'node:module';
 import assert from 'node:assert/strict';
-import {JSDOM,VirtualConsole} from '../web/node_modules/jsdom/lib/api.js';
-import {createElement as h,act} from '../web/node_modules/react/index.js';
-import {SAVE_KEY as CONTENT_SAVE_KEY} from '../game/save.js';
-import {campaignStorageKey} from '../game/content-launch.js';
-import {encodeSave,decodeSave} from '../game/save.js';
+import {JSDOM,VirtualConsole} from '../apps/web/node_modules/jsdom/lib/api.js';
+import {createElement as h,act} from '../apps/web/node_modules/react/index.js';
+import {SAVE_KEY as CONTENT_SAVE_KEY} from '../packages/game/save.js';
+import {campaignStorageKey} from '../packages/game/content-launch.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
 import {campaignFetch} from './campaign-library-fixture.mjs';
 import {campaignUIReady} from './mounted-campaign-ready.mjs';
 register('./tactical-render-loader.mjs',import.meta.url);
@@ -18,7 +18,7 @@ export async function mountCampaign(t,saved,{virtualTimers=false}={}){
  const globals={fetch:campaignFetch,window:dom.window,document:dom.window.document,navigator:dom.window.navigator,localStorage:dom.window.localStorage,sessionStorage:dom.window.sessionStorage,HTMLElement:dom.window.HTMLElement,Element:dom.window.Element,Node:dom.window.Node,Document:dom.window.Document,ShadowRoot:dom.window.ShadowRoot,MutationObserver:dom.window.MutationObserver,getComputedStyle:dom.window.getComputedStyle.bind(dom.window),requestAnimationFrame:dom.window.requestAnimationFrame.bind(dom.window),cancelAnimationFrame:dom.window.cancelAnimationFrame.bind(dom.window),ResizeObserver:class{observe(){}disconnect(){}},IS_REACT_ACT_ENVIRONMENT:true,
   ...(virtualTimers?{setTimeout:schedule,clearTimeout:id=>timers.delete(id),requestAnimationFrame:fn=>schedule(()=>fn(timerClock),1000/60),cancelAnimationFrame:id=>timers.delete(id),performance:new Proxy(performance,{get(target,key){if(key==='now')return()=>timerClock;const value=Reflect.get(target,key,target);return typeof value==='function'?value.bind(target):value;}})}:{})};
  const previous=new Map(Object.keys(globals).map(key=>[key,Object.getOwnPropertyDescriptor(globalThis,key)]));for(const [key,value]of Object.entries(globals))Object.defineProperty(globalThis,key,{configurable:true,writable:true,value});
- const {default:Home}=await import('../web/app/page.tsx'),{createRoot}=await import('../web/node_modules/react-dom/client.js');const root=createRoot(dom.window.document.getElementById('root'));let mounted=true;
+ const {default:Home}=await import('../apps/web/app/page.tsx'),{createRoot}=await import('../apps/web/node_modules/react-dom/client.js');const root=createRoot(dom.window.document.getElementById('root'));let mounted=true;
  const unmount=async()=>{if(mounted){await act(async()=>root.unmount());mounted=false;}};
  t.after(async()=>{try{await unmount();}finally{dom.window.close();for(const [key,descriptor]of previous){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}}});
  await act(async()=>root.render(h(Home)));const document=dom.window.document;await campaignUIReady(document);

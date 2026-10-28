@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor,civicStatus} from '../game/campaign.js';
-import {contractQuote,contractExpiresSeconds} from '../game/contracts.js';
-import {hiringArrivalReason,hireArrivalDueSeconds} from '../game/hiring-arrivals.js';
+import {dispatchCampaign,rosterFor,civicStatus} from '../packages/game/campaign.js';
+import {contractQuote,contractExpiresSeconds} from '../packages/game/contracts.js';
+import {hiringArrivalReason,hireArrivalDueSeconds} from '../packages/game/hiring-arrivals.js';
 import {immediateRecruitmentExpectation} from './immediate-recruitment-fixture.mjs';
-import {operativeLocation,operativeInTransit,canReassignOperative} from '../game/squads.js';
+import {operativeLocation,operativeInTransit,canReassignOperative} from '../packages/game/squads.js';
 import {northernReliefFitLocal,northernReliefReplacements,hireNorthernReliefReplacement} from './northern-relief-service.mjs';
 
 const source='cordoba',destination='tucuman',clock=c=>c.hour*3600+(c.secondOfHour??0);

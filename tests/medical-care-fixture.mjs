@@ -1,6 +1,6 @@
-import {synchronizeCampaignPresence} from '../game/campaign-presence.js';
-import {defaultContentPackage} from '../game/content-package.js';
-import {initialCampaign} from '../game/campaign.js';
+import {synchronizeCampaignPresence} from '../packages/game/campaign-presence.js';
+import {defaultContentPackage} from '../packages/game/content-package.js';
+import {initialCampaign} from '../packages/game/campaign.js';
 import {order,saved} from './local-contract-fixture.mjs';
 import {stageFiniteDressings} from './care-supply-source.mjs';
 export const DOCTOR=112,PATIENT=110,OTHER_DOCTOR=137,OTHER_PATIENT=123;

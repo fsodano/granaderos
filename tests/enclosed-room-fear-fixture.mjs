@@ -1,14 +1,14 @@
 import {fightOnArrival} from './assault-fixture.mjs';
 import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {defaultContentPackage} from '../game/content-package.js';
-import {contractQuote} from '../game/contracts.js';
-import {enterSector} from '../game/world.js';
-import {createBattle,actBattle,endTurn,presentedActBattle,presentedEndTurn,getReachable,lookPreview,containerLootPreview} from '../game/tactical.js';
-import {placeBuilding} from '../game/buildings.js';
-import {syncBattleTime} from '../game/time.js';
-import {encodeSave,decodeSave} from '../game/save.js';
-import {ROADSIDE_DISCOVERY_CHEST,ROADSIDE_CROWBAR_ID} from '../game/roadside-discoveries.js';
+import {initialCampaign,dispatchCampaign,rosterFor} from '../packages/game/campaign.js';
+import {defaultContentPackage} from '../packages/game/content-package.js';
+import {contractQuote} from '../packages/game/contracts.js';
+import {enterSector} from '../packages/game/world.js';
+import {createBattle,actBattle,endTurn,presentedActBattle,presentedEndTurn,getReachable,lookPreview,containerLootPreview} from '../packages/game/tactical.js';
+import {placeBuilding} from '../packages/game/buildings.js';
+import {syncBattleTime} from '../packages/game/time.js';
+import {encodeSave,decodeSave} from '../packages/game/save.js';
+import {ROADSIDE_DISCOVERY_CHEST,ROADSIDE_CROWBAR_ID} from '../packages/game/roadside-discoveries.js';
 
 export const ROOM_ACTOR=126;
 export const roomActor=pair=>pair.battle.units.find(unit=>unit.id===String(ROOM_ACTOR));

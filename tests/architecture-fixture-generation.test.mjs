@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { BUILDING_TEMPLATES } from '../game/map-templates.js';
-import { blankMap } from '../game/map-schema.js';
-import { editSectorMapDocument } from '../campaign-editor/public/map-editing-api.js';
+import { BUILDING_TEMPLATES } from '../packages/game/map-templates.js';
+import { blankMap } from '../packages/game/map-schema.js';
+import { editSectorMapDocument } from '../apps/campaign-editor/public/map-editing-api.js';
 
 const fixtures = JSON.parse(
   readFileSync(
-    new URL('../web/app/renderer-sandbox/generated-architecture-documents.json', import.meta.url),
+    new URL('../apps/web/app/renderer-sandbox/generated-architecture-documents.json', import.meta.url),
     'utf8',
   ),
 );
