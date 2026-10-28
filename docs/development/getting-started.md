@@ -148,7 +148,7 @@ it does not certify a complete playthrough.
 
 After each accepted merge into `main`, create a patch or minor tag for that exact merged commit. Preserve the historical `0.1` tag. The first tag after that checkpoint is `0.1.1`; later merges advance the patch or minor version. The agent chooses patch or minor versions; only the user can authorize a major version, including `1.0`.
 
-Before freezing the local candidate, set the same version in `VERSION`, root `package.json`, `apps/web/package.json` and the two root package records in `apps/web/package-lock.json`. Keep dependency versions unchanged. Verify that the production `build-info.json` records this version and the exact source revision.
+Before freezing the local candidate, set the same version in `VERSION`, root `package.json`, `packages/game/package.json`, `apps/web/package.json` and the two root package records in `apps/web/package-lock.json`. Keep dependency versions unchanged. Verify that the production `build-info.json` records this version and the exact source revision.
 
 Run the required local checks before publishing. After the reviewed merge, verify the remote `main` revision and bind the tag to it. Record the checks and remaining limits with the delivery. A development tag retains that evidence and does not establish complete campaign or release acceptance.
 
