@@ -63,8 +63,8 @@ The [changelog](CHANGELOG.md) records release checkpoints.
 
 ## Current design and tracking
 
-[Version 0.1 status](verification/version-0.1.md) records the current release
-scope. [Game design](specification/game-design.md) records the product design.
+[Version 0.1 status](verification/version-0.1.md) records the historical 0.1
+checkpoint. [Game design](specification/game-design.md) records the product design.
 [Published progress](verification/published-progress.md) is generated from
 [the requirement register](verification/requirements.json). It separates published
 work, local-only code, failed acceptance, missing behavior and unverified claims.

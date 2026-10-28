@@ -4,6 +4,28 @@
 > [shipping campaign plan](plans/core-campaign-v0.1.md) for current scope. Earlier development
 > numbers are internal checkpoints; their features and results are dated history.
 
+## 0.2.0 — 28 October 2026
+
+- Organize game behavior into domain classes, named use cases, narrow repository
+  contracts, and shared identity, transaction, and persistence infrastructure.
+- Make recruited combatants available immediately. Pause campaign time for a
+  hostile-arrival fight or withdrawal decision. Allow withdrawal to reverse
+  immediately or after travel.
+- Coordinate sector visits, combat, inventory custody, resident activity, and
+  72-hour corpse removal through tested domain behavior. Preserve supported saves.
+- Run the campaign editor as an independent application with its own domain
+  model, editing history, persistence, validation, and playtests. Share published
+  campaign contracts through `packages/campaign-format`.
+- Group source into applications, packages, content, documentation, tests, tools,
+  and native reference code. Preserve artwork, model bytes, and the native-engine
+  pin. Add a [repository guide](development/repository-layout.md).
+- Require Node 22.18 or newer for native TypeScript loading.
+- Pass the main 347-test suite, type checks, architecture checks, and the
+  production browser/editor build. The [architecture](verification/domain-architecture-2026-10-28.md)
+  and [layout](verification/repository-layout-2026-10-28.md) records describe
+  additional tests, browser checks, and their limits. Full campaign acceptance
+  and Windows native compilation are outside this verification.
+
 ## 0.1.14 — 17 October 2026
 
 - Deliver the core campaign integration for manual testing at the user's
