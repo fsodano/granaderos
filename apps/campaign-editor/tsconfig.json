@@ -12,7 +12,7 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "jsx": "react-jsx",
-    "types": ["node"],
+    "types": ["node", "vite/client"],
     "paths": {
       "@/*": ["../web/*"],
       "react": ["./node_modules/@types/react"],

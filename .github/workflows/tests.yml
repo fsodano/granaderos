@@ -34,5 +34,7 @@ jobs:
         run: npm run check:architecture
       - name: Check architecture formatting
         run: npm run check:format
+      - name: Check types
+        run: npm run typecheck
       - name: Run minimal tests
         run: npm test
