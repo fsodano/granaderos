@@ -17,6 +17,7 @@ import { CampaignResumeSectorSessionRepository } from './infrastructure/session/
 import { ResumeSectorSessionUseCase } from './application/sector-sessions/resume-sector-session/resume-sector-session.use-case.ts';
 import { RecruitmentService } from './domain/personnel/recruitment-service.ts';
 import { RecruitmentAssignment } from './domain/personnel/force-roster.ts';
+import {refreshCampaignResidentPositions,validateResidentPositionContext} from './infrastructure/world/campaign-resident-positions.js';
 import {
   CampaignRecruitmentMapper,
   RecruitmentEquipmentSource,
@@ -1278,6 +1279,7 @@ function deploymentCharacters(snapshot, request) {
 function validatedInteractionSnapshot(s, raw) {
   const snapshot = validateSectorSnapshot(raw, s),
     request = s.pendingBattle;
+  validateResidentPositionContext(s, snapshot);
   validateCampaignSceneDefinitions(s, snapshot);
   validateQuestContext(s, snapshot);
   validateRoadsideDiscoveryContext(s, snapshot);
@@ -1472,6 +1474,7 @@ function completeDeploymentReport(s, request, action) {
   const raw = action.sectorState,
     snapshot = validateSectorSnapshot(raw, s),
     ids = request.squad.map((u) => String(u.id));
+  validateResidentPositionContext(s, snapshot);
   validateCampaignSceneDefinitions(s, snapshot);
   validateRepairReserveContext(request, snapshot);
   validateAbilityReferences(s, snapshot);
@@ -4264,6 +4267,7 @@ export function dispatchCampaign(previous, action) {
     reconcileLogisticsAttention(s, { isSupplied });
     refreshEnemyIntelligence(s);
     removeIgnitionSupplies(s);
+    refreshCampaignResidentPositions(s);
     restoreGameSession(s);
     return transaction.commit();
   } catch (error) {

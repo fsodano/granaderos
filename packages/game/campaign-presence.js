@@ -1,10 +1,11 @@
 import { restoreSector, sectorCharacterReference } from './infrastructure/world/sector-mapper.js';
+import {residentPositionsFor,residentPositionPoints} from './infrastructure/world/campaign-resident-positions.js';
 import {historicalRequiredActors} from './historical-loss.js';
 import {civilianDiedHere,resumeCivilianServiceReturns,synchronizeResidentWounds} from './campaign-civilians.js';
 import {encounterDefinitions,encountersFor} from './encounters.js';
 import {propBlocksAt} from './props.js';
 import {expandCellScene} from './cell-scene-storage.js';
-import {spaceKey} from './tactical-space.js';
+import {spaceKey,surfacesAtLevel,tacticalLevel} from './tactical-space.js';
 import {createContentSession,advancePlacementState,changePlacementStatus} from './content-placement.js';
 import {isContractCharacter,operativeIdForCharacter,characterForOperative} from './content-character-ids.js';
 import {contentCellIds} from './content-map.js';
@@ -35,6 +36,7 @@ export function reconcileSectorResidents(campaign, snapshot) {
   return { ...resident };
  });
  const occupied = new Set([...(snapshot.units ?? []).filter(actor => actor.hp > 0 && !actor.departure), ...retainedDetention].map(spaceKey));
+ for(const position of residentPositionPoints({residentPositions:residentPositionsFor(campaign,snapshot)}))occupied.add(spaceKey(position));
  for (const resident of residents) {
   if (resident.hp === 0) continue;
   const existing = current.get(resident.id);
@@ -44,7 +46,8 @@ export function reconcileSectorResidents(campaign, snapshot) {
   }
   if (snapshot.tiles === undefined) continue;
   const expanded = expandCellScene(snapshot, campaign);
-  const positions = expanded.tiles.filter(tile => !tile.blocked && !occupied.has(spaceKey(tile)) && !propBlocksAt(expanded, tile.x, tile.y));
+  const level=tacticalLevel(resident);
+  const positions = surfacesAtLevel(expanded,level).filter(tile => !tile.blocked && !occupied.has(spaceKey(tile)) && !propBlocksAt(expanded, tile.x, tile.y,level));
   positions.sort((left, right) => Math.abs(left.x - resident.x) + Math.abs(left.y - resident.y) - Math.abs(right.x - resident.x) - Math.abs(right.y - resident.y) || left.y - right.y || left.x - right.x);
   if (!positions.length) throw new Error('The arriving resident has no free position in the sector.');
   resident.x = positions[0].x;

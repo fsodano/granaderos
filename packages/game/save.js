@@ -1,4 +1,5 @@
 import { validateSuspendedSectorSessions } from './infrastructure/session/validate-suspended-sector-sessions.js';
+import {refreshResidentPositions,validateResidentPositionContext} from './infrastructure/world/campaign-resident-positions.js';
 import {
   gameSaveMetadata,
   validateGameSaveMetadata,
@@ -113,6 +114,10 @@ function decodeGameSave(text, validateOpenVisits) {
   // Retain the validated clone, including one-time legacy cannon clearance.
   // Never rebuild an active save: its paid AP, clock and gun custody persist.
   let battle = b ? validateBattleSnapshot(b, campaign) : null;
+  if (battle) {
+    validateResidentPositionContext(campaign, battle, { allowLegacyOmission: true });
+    refreshResidentPositions(campaign, battle);
+  }
   if (battle) {
     battle.startSeconds ??= campaign.hour * 3600 + (campaign.secondOfHour ?? 0);
     battle.elapsedSeconds ??= 0;

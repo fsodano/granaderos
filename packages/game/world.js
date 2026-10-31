@@ -1,4 +1,5 @@
 import { restoreSector } from './infrastructure/world/sector-mapper.js';
+import {residentPositionPoints} from './infrastructure/world/campaign-resident-positions.js';
 import {EnterSectorUseCase} from './application/sector-sessions/enter-sector/enter-sector.use-case.ts';
 import {SnapshotEnterSectorRepository} from './infrastructure/sector-sessions/sector-entry-repository.js';
 import {validateQuestWithdrawals} from './quest-withdrawal.js';
@@ -84,6 +85,7 @@ function buildSectorEntrySnapshot(request,previous=null,{placement=false}={}){
  });
  // Deployment intent does not establish contact. Resolve sight only after final placement.
  let state=createBattle([...map.squad,...(map.garrison??[]),...(map.missionAllies??[])],{...map,exploration:true,deferContact:true});
+ if(request.residentPositions!==undefined)state.residentPositions=structuredClone(request.residentPositions);
  // Only the owned issued squad carries this service consequence. Auxiliary
  // actors and retained bodies do not gain authority from scene membership.
  delete state.conductObserverIds;Object.assign(state,issueConductObservers(request.squad??[]));
@@ -130,7 +132,7 @@ function buildSectorEntrySnapshot(request,previous=null,{placement=false}={}){
  const issuedEnemies=new Set(map.enemies.map(u=>String(u.id)));
  const invaders=request.defenseGroupId?state.units.filter(u=>u.side==='enemy'&&u.hp>0&&!u.departure&&!u.fled&&issuedEnemies.has(u.id)):[];
  const arrivingEnemyIds=new Set(invaders.map(u=>u.id));
- const occupied=new Set([...artillerySpaceKeys(state),...state.units.filter(u=>u.side==='enemy'&&u.hp>0&&!u.departure&&!u.fled&&!arrivingEnemyIds.has(u.id)).map(key)]);
+ const occupied=new Set([...artillerySpaceKeys(state),...residentPositionPoints(state).map(key),...state.units.filter(u=>u.side==='enemy'&&u.hp>0&&!u.departure&&!u.fled&&!arrivingEnemyIds.has(u.id)).map(key)]);
  const reserve=(preferred,terrain=null,ordered=false)=>{
    const level=tacticalLevel(preferred),gun=state.artillery.find(piece=>key(piece)===key(preferred));
    const candidates=(terrain??surfacesAtLevel(state,level)).filter(t=>!t.blocked&&!propBlocksAt(state,t.x,t.y,level)&&!occupied.has(key(t))&&(!gun||canWalkBetween(state,preferred,t)&&(!(t.x!==preferred.x&&t.y!==preferred.y)||[{x:t.x,y:preferred.y,tacticalLevel:level},{x:preferred.x,y:t.y,tacticalLevel:level}].every(corner=>!propBlocksAt(state,corner.x,corner.y,level)&&!artilleryCellOccupied(state,corner)))));
@@ -141,6 +143,10 @@ function buildSectorEntrySnapshot(request,previous=null,{placement=false}={}){
    if(!candidates[0])throw Error('No queda espacio libre para entrar en el sector.');
    const {x,y}=candidates[0];occupied.add(key(candidates[0]));return{x,y,...(preferred.tacticalLevel===undefined&&level===0?{}:{tacticalLevel:level})};
  };
+ const placedResidents=new Set();
+ for(const unit of state.units.filter(unit=>unit.side==='player'&&unit.hp>0&&unit.entryReason==='resident'&&unit.residentPosition)){
+   Object.assign(unit,reserve(unit.residentPosition));delete unit.residentPosition;placedResidents.add(unit.id);
+ }
  // Keep residents and their routines when the squad returns. Rebase temporary
  // fear reports to the new encounter clock; recruitment still controls presence.
  const residents=[...(map.npcs??[])];
@@ -179,6 +185,7 @@ function buildSectorEntrySnapshot(request,previous=null,{placement=false}={}){
      arriving.push(unit);continue;
    }
    if(unit.entryEdge!==undefined||unit.entryAnchor!==undefined)throw Error('La posición de entrada necesita un traslado explícito.');
+   if(placedResidents.has(unit.id))continue;
    const prior=unit.entryReason==='resident'?(unit.residentPosition??previous?.units.find(v=>v.side==='player'&&v.id===unit.id&&sourceRecord(previous,v,request.sector,request))):null;
    delete unit.residentPosition;
    Object.assign(unit,reserve(prior??unit));

@@ -25,6 +25,12 @@ retained, and suspended sectors. Authored daily moves use the same deterministic
 placement policy in each mode. Resident and military wounds advance before each local event. Due corpse
 removals precede movement and collection at that second. Trap injuries and supply receipts update the persistent character record.
 
+Inactive and suspended routines derive saved resident posts from current campaign
+presence. A living serving character outside a visit keeps its local post
+occupied. Journey departure releases that post even when a retained snapshot
+still contains the character's historical unit record. Active participants use
+their current session positions, so their former posts do not block movement.
+
 Retained enemy and auxiliary combatants keep their wound clock. Controlled
 service characters in retained caches use campaign health authority. Suspended
 sector sessions continue their military wound clock, fatigue, light,

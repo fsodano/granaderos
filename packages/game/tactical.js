@@ -1,4 +1,5 @@
 import { advanceSectorWorldEvents } from './military-remains.js';
+import {residentPositionPoints} from './infrastructure/world/campaign-resident-positions.js';
 import { MeleeExchange, MeleeRules } from './domain/combat/melee-exchange.ts';
 import { CombatOutcomePolicy } from './domain/combat/combat-outcome-policy.ts';
 import {
@@ -1495,6 +1496,7 @@ function occupied(s, x, y, except, level = 0) {
   const point = { x, y, tacticalLevel: level };
   return (
     artilleryCellOccupied(s, point) ||
+    residentPositionPoints(s).some((position) => sameCell(position, point)) ||
     propBlocksAt(s, x, y, level) ||
     (s.npcs || []).some((n) => onField(n) && n.id !== except && sameCell(n, point)) ||
     s.units.some((u) => onField(u) && u.id !== except && sameCell(u, point))
@@ -2034,6 +2036,7 @@ function elevatedReachable(s, u, options, intent) {
   const occupants = new Set(
     [
       ...[...(s.npcs ?? []), ...s.units].filter((v) => onField(v) && v.id !== u.id),
+      ...residentPositionPoints(s),
       ...(s.artillery ?? []),
     ].map(spaceKey),
   );
@@ -2107,6 +2110,7 @@ export function getReachable(s, unitOrId, options = {}) {
   const occupants = new Set(
     [
       ...[...(s.npcs ?? []), ...s.units].filter((v) => onField(v) && v.id !== u.id),
+      ...residentPositionPoints(s).filter((position) => tacticalLevel(position) === 0),
       ...(s.artillery ?? []).filter((gun) => tacticalLevel(gun) === 0),
     ].map((v) => `${v.x},${v.y}`),
   );
@@ -7375,6 +7379,7 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
             tile(s, p.x, p.y).type === 'water' ||
             s.units.some((v) => onField(v) && !ids.has(v.id) && sameCell(v, p)) ||
             (s.npcs ?? []).some((v) => onField(v) && sameCell(v, p)) ||
+            residentPositionPoints(s).some((position) => sameCell(position, p)) ||
             s.artillery.some((g) => g !== gun && sameCell(g, p)),
         )
       )

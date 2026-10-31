@@ -43,6 +43,7 @@ names to players.
 | `FightOnArrival` | Resolve an arrival decision by committing to sector entry and deployment. | Combatir |
 | `WithdrawOnArrival` | Resolve an arrival decision by starting a withdrawal journey. | Retirarse |
 | `Sector` | A persistent world location that owns environment bounds and current character, corpse, and object references. Admission, movement, and removal preserve identity and item custody. Character health and inventory retain their canonical owners. | Sector |
+| `ResidentPositionReference` | A campaign-adapter projection of one serving character's saved local post while that character does not participate in the current visit. It contains the canonical character identity and physical position only. Entry, synchronization, restoration, and inactive-world progression derive it from current character presence. A travelling, absent, captured, dead, or participating character does not reserve a post through this projection. | Referencia de puesto residente |
 | `EnterSector` | The application use case that admits a valid sector-entry request and opens the sector visit. | Entrar al sector |
 | `SectorEntryRequest` | Input to `EnterSector`. It identifies the sector, participants, and required entry authority. It is not an active visit. | Solicitud de entrada al sector |
 | `SectorSession` | The active visit to one sector, including deployment, exploration, and any combat sessions. | Sesión de sector |
@@ -131,6 +132,11 @@ names to players.
 | `campaign-editor` | The independently packaged subsystem for editing, validating, testing, and exporting campaign projects. | Editor de campañas |
 
 ## Naming decisions
+
+`ResidentPositionReference` names a derived reference to a saved local position.
+It does not create another participant, character, inventory, or health record.
+The snapshot field `residentPositions` carries these references for physical
+placement and movement. Campaign character records remain authoritative.
 
 `SectorEntryRequest` and `SectorSession` share the sector concept. The request
 describes an intention; the session describes the admitted, active visit.
