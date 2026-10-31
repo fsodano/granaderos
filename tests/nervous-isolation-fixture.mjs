@@ -1,7 +1,7 @@
 import { fightOnArrivalOrder } from './assault-fixture.ts';
 import assert from 'node:assert/strict';
 import { initialCampaign, dispatchCampaign, rosterFor } from '../packages/game/campaign.js';
-import { authoredEditorPackage } from './authored-editor-fixture.mjs';
+import { authoredEditorPackage } from './authored-editor-fixture.ts';
 import { contractQuote } from '../packages/game/contracts.js';
 import {
   createBattle,

@@ -1,6 +1,6 @@
 import { validateDialogueConditions as validateConditionDocuments } from '../campaign-format/dialogue-schema.js';
 export { DIALOGUE_PERSON_STATES } from '../campaign-format/dialogue-schema.js';
-import './character-supplies.js';
+import './character-supplies.ts';
 import { isUnconscious } from './actor-condition.js';
 import { rosterFor } from './recruitment.ts';
 import { CAMPAIGN_PROJECT_LABELS, campaignProjectComplete } from './campaign-projects.js';

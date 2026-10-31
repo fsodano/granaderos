@@ -5,7 +5,7 @@ import { dispatchCampaign, rosterFor, civicStatus } from '../packages/game/campa
 import { encodeSave, decodeSave } from '../packages/game/save.ts';
 import { enterSector } from '../packages/game/world.js';
 import { sectorInventoryModel } from '../packages/game/sector-inventory.js';
-import { attendYatasto } from './mission-helpers.mjs';
+import { attendYatasto } from './mission-helpers.ts';
 import { contractQuote } from '../packages/game/contracts.js';
 import {
   operativeInTransit,

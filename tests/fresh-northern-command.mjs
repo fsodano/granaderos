@@ -18,7 +18,7 @@ import { sectorInventoryModel } from '../packages/game/sector-inventory.js';
 import { prepareFinalAssault } from './final-campaign-route.mjs';
 import { autoBandageBattle } from '../packages/game/auto-bandage.js';
 import { decodeSave, encodeSave } from '../packages/game/save.ts';
-import { attendYatasto } from './mission-helpers.mjs';
+import { attendYatasto } from './mission-helpers.ts';
 import {
   collectRouteItems,
   collectRouteMedicalSupplies,

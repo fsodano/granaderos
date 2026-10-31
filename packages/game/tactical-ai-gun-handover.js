@@ -13,7 +13,7 @@ import { transferItemQuantity } from './tactical-inventory.js';
 import { ammunitionLoadsFor, ammoCount } from './ammo-types.js';
 import { firearmServiceable } from './firearm-serviceability.js';
 import { chooseSupplySharingAction } from './tactical-ai-sharing.js';
-import { isGrenadeStack } from './grenades.js';
+import { isGrenadeStack } from './grenades.ts';
 import { sameSurface } from './tactical-space.js';
 
 const available = (u) =>

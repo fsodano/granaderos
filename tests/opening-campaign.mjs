@@ -1,7 +1,7 @@
 import { fightOnArrivalOrder } from './assault-fixture.ts';
 import { ROUTE_STARTING_TREASURY } from './funded-route-fixture.ts';
 import { sameSurface, spacePoint } from '../packages/game/tactical-space.js';
-import { secureArea } from './secured-area-fixture.mjs';
+import { secureArea } from './secured-area-fixture.ts';
 import assert from 'node:assert/strict';
 import {
   initialCampaign,

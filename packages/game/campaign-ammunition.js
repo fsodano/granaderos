@@ -29,7 +29,7 @@ import { arrivalFacilityOptions } from './arrival-sites.js';
 import { operativeLocation } from './squads.js';
 import { worldOwner, validWorldLocation } from './world-cells.ts';
 import { weaponSpecification } from './weapon-definition.ts';
-import { supplyRoom, pocketChangeReason } from './personal-pockets.js';
+import { supplyRoom, pocketChangeReason } from './personal-pockets.ts';
 import { retainedMilitaryBodies } from './military-remains.js';
 
 const need = (ok, message) => {

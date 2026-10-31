@@ -1,4 +1,4 @@
-import { DEFAULT_CHARACTER_SUPPLIES } from './character-supplies.js';
+import { DEFAULT_CHARACTER_SUPPLIES } from './character-supplies.ts';
 import { isUnconscious } from './actor-condition.js';
 
 /** @type {readonly ['rations','torches','medkits','boleadoras']} */

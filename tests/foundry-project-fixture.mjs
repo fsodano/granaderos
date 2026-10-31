@@ -1,4 +1,4 @@
-import { rolePackage } from './campaign-roles-fixture.mjs';
+import { rolePackage } from './campaign-roles-fixture.ts';
 import { defaultStartingTerritory } from '../packages/game/content-territory.js';
 export function foundryPackage() {
   const d = rolePackage();

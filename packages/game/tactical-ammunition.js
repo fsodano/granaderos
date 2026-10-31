@@ -11,7 +11,7 @@ import {
   ammunitionByType,
   availableAmmunition,
 } from './ammunition-types.js';
-import { validatePocketOrder } from './inventory-pockets.js';
+import { validatePocketOrder } from './inventory-pockets.ts';
 import { handLayout } from './hand-layout.ts';
 
 export const AMMUNITION_VERSION = 2;

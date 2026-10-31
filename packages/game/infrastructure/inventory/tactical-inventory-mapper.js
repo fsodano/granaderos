@@ -1,6 +1,6 @@
 import { syncUnitAmmunition } from '../../tactical-ammunition.js';
 import { HELD_SUPPLIES } from '../../held-supplies.js';
-import { withPocketRefusals } from '../../inventory-pockets.js';
+import { withPocketRefusals } from '../../inventory-pockets.ts';
 import { Item, InventoryRefusal, InventoryRefusalCode } from '../../domain/inventory/item.ts';
 import { Inventory } from '../../domain/inventory/inventory.ts';
 import { BODY_SLOTS } from '../../outfits.ts';

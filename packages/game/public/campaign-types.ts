@@ -723,14 +723,14 @@ type CampaignOrder =
   | { type: 'resumeSectorSession'; sectorSessionId: string; sectorState?: BattleSnapshot | null }
   | { type: 'visitMission'; id?: string; missionId?: string; mission?: string }
   | {
-      type: 'finishMission' | 'battleResult';
+      type: 'battleResult';
       battleId: string;
       outcome: string;
       sectorState: BattleSnapshot;
       survivors: Array<Omit<BattleUnit, 'id'> & { id: string | number }>;
     }
   | {
-      type: 'leaveSector';
+      type: 'leaveSector' | 'finishMission';
       battleId: string;
       outcome?: string;
       sectorState: BattleSnapshot;

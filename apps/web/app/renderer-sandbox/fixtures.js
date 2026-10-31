@@ -7,7 +7,7 @@ import { createBattle, actBattle } from '../../../../packages/game/tactical.js';
 import { buildSectorMap } from '../../../../packages/game/maps.js';
 import { OPERATIVES } from '../../../../packages/game/data.js';
 import { placeBuilding, buildTerrace } from '../../../../packages/game/buildings.js';
-import { makeGrenadeStack } from '../../../../packages/game/grenades.js';
+import { makeGrenadeStack } from '../../../../packages/game/grenades.ts';
 import { BUILDING_TYPES, BUILDING_FOOTPRINTS } from '../../../../packages/game/building-types.ts';
 import { CLIMB_HATCH_SCENARIO, createClimbHatchBattle } from './climb-hatch-fixture.js';
 import { createArchitectureReviewBattle } from './architecture-fixtures.js';

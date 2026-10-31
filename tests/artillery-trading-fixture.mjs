@@ -6,7 +6,7 @@ import { DEFAULT_FOUNDRY } from '../packages/game/campaign-foundry.js';
 import { ORIGINAL_CAMPAIGN_ROLES } from '../packages/game/campaign-roles.js';
 import { fieldGun } from './artillery-transport-fixture.mjs';
 import { order, saved } from './local-contract-fixture.ts';
-import { contentFixtureCache } from './content-fixture-cache.mjs';
+import { contentFixtureCache } from './content-fixture-cache.ts';
 // Real narrative foundry organization creates no stock or ammunition.
 // These isolated legacy widget fixtures retain that historical campaign step.
 // The declared engineer is Silva; this story role must survive the real battle.

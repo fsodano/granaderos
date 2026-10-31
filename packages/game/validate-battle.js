@@ -37,7 +37,7 @@ import { validateCompanionGrief, validateGriefParticipants } from './companion-g
 import { validateServiceObjection, validateConductObservers } from './service-objections.js';
 import { validateQuestGifts } from './quests.js';
 import { validateQuestBeneficiaries } from './quest-beneficiaries.js';
-import { validatePocketOrder } from './inventory-pockets.js';
+import { validatePocketOrder } from './inventory-pockets.ts';
 import { validateWeaponReadiness } from './weapon-readiness.js';
 import { validateReloadProgress } from './weapon-reload.js';
 import { validMilitiaExperience } from './militia-experience.js';

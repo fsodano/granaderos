@@ -95,7 +95,7 @@ import {
   syncCarriedAmmunition,
 } from './campaign-ammunition.js';
 import { removeIgnitionSupplies, validateStoredAmmo } from './ammo-types.js';
-import { personalPockets, pocketChangeReason, POCKET_FULL } from './personal-pockets.js';
+import { personalPockets, pocketChangeReason, POCKET_FULL } from './personal-pockets.ts';
 import { repurchaseArtillery, validateArtilleryMerchants } from './artillery-trading.js';
 import {
   deliverArtilleryTransfers,
@@ -275,7 +275,7 @@ import {
   ambientReply,
   contextualThreatReply,
 } from './npc-dialogue.ts';
-import { validatePocketOrder } from './inventory-pockets.js';
+import { validatePocketOrder } from './inventory-pockets.ts';
 import {
   recordLogisticsNotice,
   validateLogisticsNotice,

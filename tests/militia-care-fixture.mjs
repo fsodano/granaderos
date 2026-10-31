@@ -4,7 +4,7 @@ import { initialCampaign } from '../packages/game/campaign.js';
 import { createBattle, actBattle } from '../packages/game/tactical.js';
 import { order, saved, sync, leave } from './local-contract-fixture.ts';
 import { COMBAT_BALANCE } from '../packages/game/combat-balance.js';
-import { withStoredGear, withCarriedAmmo } from './commerce-gear-fixture.mjs';
+import { withStoredGear, withCarriedAmmo } from './commerce-gear-fixture.ts';
 export const MILITIA_DOCTOR = 112,
   SECOND_MILITIA_DOCTOR = 137;
 export function woundedGarrison({

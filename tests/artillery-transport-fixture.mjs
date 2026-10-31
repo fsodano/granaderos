@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { wonBattery, fireStationed } from './stationed-artillery-fixture.mjs';
 import { order, saved, visit, leave } from './local-contract-fixture.ts';
-import { contentFixtureCache } from './content-fixture-cache.mjs';
+import { contentFixtureCache } from './content-fixture-cache.ts';
 export const fieldGun = contentFixtureCache((content) => {
   let s = wonBattery(content);
   const cash = s.resources.treasury;

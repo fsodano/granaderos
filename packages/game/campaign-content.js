@@ -1,5 +1,5 @@
 import { initializeCampaignStory } from './campaign-story.js';
-import { startingCharacterSupplies } from './character-supplies.js';
+import { startingCharacterSupplies } from './character-supplies.ts';
 import { startingCharacterCondition } from './character-condition.js';
 import { applyStartingTerritory } from './content-territory.js';
 import { campaignRules } from './campaign-rules.js';

@@ -3,7 +3,7 @@ import { advanceCampaignHours } from './campaign-wait-fixture.ts';
 import assert from 'node:assert/strict';
 import { fieldGun } from './artillery-transport-fixture.mjs';
 import { order, saved } from './local-contract-fixture.ts';
-import { contentFixtureCache } from './content-fixture-cache.mjs';
+import { contentFixtureCache } from './content-fixture-cache.ts';
 export const homeDepotGun = contentFixtureCache((content) => {
   let s = fieldGun(content);
   const gun = s.sectorStates.san_nicolas.artillery[0];

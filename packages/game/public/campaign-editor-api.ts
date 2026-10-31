@@ -52,7 +52,7 @@ export {
   startingCharacterSupplies,
   CHARACTER_SUPPLY_LIMIT,
   CHARACTER_SUPPLY_LABELS,
-} from '../character-supplies.js';
+} from '../character-supplies.ts';
 export { AUTHORABLE_SPEECH_EVENTS, OPTIONAL_SPEECH_EVENTS, SPEECH_EVENTS } from '../characters.js';
 export { cityForSector } from '../cities.js';
 export { compileMap, compileBuilding, reachableMap } from '../compile-map.js';

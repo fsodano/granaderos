@@ -71,7 +71,7 @@ import { hasCharacterAbility } from './character-abilities.js';
 import { speechFor } from './characters.js';
 import { initializeCivilianHealth } from './civilian-health.js';
 import { civilianSupplyLoot } from './civilian-supplies.js';
-import { supplyRoom, POCKET_FULL } from './personal-pockets.js';
+import { supplyRoom, POCKET_FULL } from './personal-pockets.ts';
 import { militiaPatrolRules } from './militia-patrol-rules.js';
 import { militiaPatrolOrder } from './militia-patrol.js';
 import { holdsArtilleryPost } from './tactical-ai-artillery.js';
@@ -107,7 +107,7 @@ import {
   secondaryPistolView,
 } from './paired-fire.js';
 import { firearmServiceable, BROKEN_FIREARM_REASON } from './firearm-serviceability.js';
-import { pocketOrderFromSlots } from './inventory-pockets.js';
+import { pocketOrderFromSlots } from './inventory-pockets.ts';
 import {
   planEquipmentUnload,
   planEquipmentAttachment,

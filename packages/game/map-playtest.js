@@ -7,7 +7,7 @@ import { campaignDefinitions, campaignWorld, campaignFactions } from './campaign
 import { authoredPresentation } from './content-character-presentation.ts';
 import { hasGenericCharacterDefinitions } from './content-character-ids.ts';
 import { startingCharacterCondition } from './character-condition.js';
-import { startingCharacterSupplies } from './character-supplies.js';
+import { startingCharacterSupplies } from './character-supplies.ts';
 import { authoredForceEquipment } from './content-force-equipment.js';
 import { weaponMetadata, weaponSpecification } from './weapon-definition.ts';
 import { regionalConditions } from './regional-weather.js';
