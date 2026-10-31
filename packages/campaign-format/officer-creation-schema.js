@@ -3,6 +3,7 @@ const text = (value, max = 800) =>
   typeof value === 'string' &&
   value.trim().length > 0 &&
   value.length <= max &&
+  // eslint-disable-next-line no-control-regex -- Reject control characters in authored text/IDs.
   !/[<>\x00-\x1f]/u.test(value);
 const TRAIT_IDS = [
   'cavalry_commander',

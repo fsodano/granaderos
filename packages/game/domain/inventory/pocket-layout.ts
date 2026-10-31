@@ -91,6 +91,7 @@ export class PocketLayout {
         typeof entry.item !== 'string' ||
         !entry.item.length ||
         entry.item.length > 110 ||
+        // eslint-disable-next-line no-control-regex -- Reject control characters in authored text/IDs.
         /[<>\x00-\x1f]/.test(entry.item) ||
         !Number.isSafeInteger(entry.index) ||
         entry.index < 0 ||

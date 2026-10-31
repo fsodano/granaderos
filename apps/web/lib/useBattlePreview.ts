@@ -9,6 +9,7 @@ import {
   type BattlePreviewRequestByKind,
   type BattlePreviewResultByKind,
 } from './battle-preview.ts';
+// eslint-disable-next-line import/default -- Vite generates the worker URL module's default export.
 import battleWorkerUrl from './battle-worker.ts?worker&url';
 
 export interface BattlePreviewState<Preview> {

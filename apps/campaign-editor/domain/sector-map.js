@@ -52,7 +52,7 @@ export class SectorMap {
       height > MAP_EDIT_LIMITS.maximumBuildingSize
     )
       throw new CampaignEditorRefusal(CampaignEditorRefusalCode.InvalidBuildingDimensions);
-    const { building, tiles } = buildBuilding({
+    const { building } = buildBuilding({
       id,
       x,
       y,

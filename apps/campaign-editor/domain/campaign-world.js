@@ -50,7 +50,7 @@ function resetCell(cell) {
 function place(world, sector, cell) {
   const projection = world.projection ?? DEFAULT_WORLD_PROJECTION;
   world.places[sector.id] = {
-    ...(world.places[sector.id] ?? {}),
+    ...world.places[sector.id],
     lon: projection.minLongitude + (cell.x - WORLD_PROJECTION_ORIGIN) / projection.longitudeScale,
     lat: projection.maxLatitude - (cell.y - WORLD_PROJECTION_ORIGIN) / projection.latitudeScale,
     label: sector.name,

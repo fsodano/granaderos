@@ -87,6 +87,47 @@ compatibility package. This follows Microsoft's
 Both dependency lockfiles include the platform packages needed by local development
 and CI. The editor includes Vite's browser asset declarations for CSS imports.
 
+## Lint and format tools
+
+The browser development dependencies pin Oxlint **1.90.0**, Oxfmt **0.75.0**,
+and the type-aware lint companion `oxlint-tsgolint` **7.0.2005**. The root
+[lint configuration](../../.oxlintrc.json) enables correctness rules, recommended
+React compiler checks, and explicit TypeScript safety rules. Type-aware lint
+checks use the companion; `npm run typecheck` runs the TypeScript compiler.
+
+The checked source list is in [`tools/code-quality.mjs`](../../tools/code-quality.mjs):
+
+- The `domain`, `application`, `infrastructure`, and `public` folders in
+  `packages/game` and `apps/campaign-editor`.
+- The shared `packages/campaign-format` package.
+- The browser worker transport, executor, worker entry point, preview result
+  admission, preview queue, `useBattlePreview`, and `useGroupMovePreview`.
+- The code-quality command runner itself.
+
+Lint checks production source in this list and fails on errors or warnings.
+Test files and generated files are excluded from lint. Intentional authored-text
+control-character checks have local rule exceptions with their validation
+rationale. The preview hook's Vite worker URL import has a local exception for
+its generated default export. Formatting checks the same source list, including
+architecture test files, with the root [Oxfmt configuration](../../.oxfmtrc.json).
+
+`npm run lint:audit` checks production source throughout `packages/game`,
+`packages/campaign-format`, `apps/web`, and `apps/campaign-editor` with the same
+rules. This wider audit exposes existing work outside the CI lint gate, including
+legacy game modules, editor UI, browser UI, and `useBattleExecutor`. It returns a
+failure while findings remain. The 2026-10-31 audit found 2,305 errors in 285 files;
+most concern explicit `any`, unused bindings, accessibility, and React usage.
+Expand the checked source list as each bounded source area passes the rules.
+
+Use `npm run lint:fix` for supported automatic lint fixes and `npm run format`
+to format the checked source list. Review the changes before committing.
+`npm run format:architecture` is an alias for `npm run format`. The browser
+package's local `lint` command uses the root rules for its broader source tree.
+See the official [Oxlint guide](https://oxc.rs/docs/guide/usage/linter.html),
+[type-aware lint guide](https://oxc.rs/docs/guide/usage/linter/type-aware.html),
+[React compiler rule guide](https://oxc.rs/blog/2026-08-18-react-compiler-support.html),
+and [Oxfmt guide](https://oxc.rs/docs/guide/usage/formatter.html).
+
 ## Checks
 
 The test runner includes domain invariants, application contracts, persistence,
@@ -101,8 +142,10 @@ Install dependencies with `npm ci --prefix apps/web` and
 | `npm test` | Run the complete current minimum with two worker processes. |
 | `npm run test:quick` | Run the same minimum; this is an alias. |
 | `npm run typecheck` | Check game, web, and editor types without emitting files. |
+| `npm run lint` | Check architecture production source and typed browser worker/preview boundaries. |
+| `npm run lint:audit` | Report lint findings across game, browser, editor, and file-contract production source. |
 | `npm run check:architecture` | Enforce layer, package, browser, and public API dependencies. |
-| `npm run check:format` | Check formatting of migrated architecture source. |
+| `npm run check:format` | Check formatting of architecture source and typed browser worker/preview boundaries. |
 | `npm run audit:docs` | Check the documentation register and generated view. |
 | `npm run audit:baseline` | Check the reference gameplay values. |
 | `npm run build` | Build and verify the static browser export in root `.output/dist/`. |
@@ -118,7 +161,7 @@ flows. A passing suite does not certify campaign completion or visual quality.
 [Minimal tests](../../.github/workflows/tests.yml) runs `npm test` on non-draft
 pull requests and manual requests. A newer commit cancels the older run for
 that pull request. It installs both application dependency sets and checks
-architecture boundaries, formatting, and types before tests.
+lint, architecture boundaries, formatting, and types before tests.
 
 On `main`, the [Web game build and Pages workflow](../../.github/workflows/web.yml)
 runs the same minimum, the documentation and baseline audits, the type check,
@@ -135,6 +178,8 @@ version, use the following on the final candidate:
 
 ```sh
 npm test
+npm run lint
+npm run check:format
 npm run audit:docs
 npm run audit:baseline
 npm run typecheck

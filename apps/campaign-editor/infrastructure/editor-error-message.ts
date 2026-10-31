@@ -61,14 +61,14 @@ const translations = {
   OpeningRequiresWall: () => 'Las aberturas deben ocupar una pared.',
   UnsupportedTemplateVersion: () => 'Versión de plantilla no válida.',
   InvalidTemplateDimensions: () => 'Dimensiones de plantilla no válidas.',
-  ObjectNotFound: (details) => `Objeto desconocido: ${details.id}`,
-  UnsupportedMapCommand: (details) => `Comando desconocido: ${details.command}`,
+  ObjectNotFound: (details) => `Objeto desconocido: ${String(details.id)}`,
+  UnsupportedMapCommand: (details) => `Comando desconocido: ${String(details.command)}`,
   LocalitiesDisconnected: (details) =>
-    `El camino ${details.origin} / ${details.destination} no tiene conexión terrestre.`,
+    `El camino ${String(details.origin)} / ${String(details.destination)} no tiene conexión terrestre.`,
   LocalityInUse: (details) =>
     `Reasigná las referencias antes de eliminar: ${Array.isArray(details.references) ? details.references.join(', ') : ''}.`,
-  ResourceNotFound: (details) => `Falta el recurso ${details.path}.`,
-  InvalidProjectResource: (details) => `Recurso de proyecto inválido: ${details.path}.`,
+  ResourceNotFound: (details) => `Falta el recurso ${String(details.path)}.`,
+  InvalidProjectResource: (details) => `Recurso de proyecto inválido: ${String(details.path)}.`,
 } satisfies Record<CampaignEditorRefusalCode, RefusalTranslation>;
 
 function isEditorRefusal(value: unknown): value is CampaignEditorRefusalSnapshot {
