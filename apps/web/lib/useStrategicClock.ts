@@ -1,73 +1,88 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useState } from 'react';
+import type {
+  CampaignSnapshot,
+  CampaignAction,
+} from '../../../packages/game/public/campaign-types.ts';
 import { hasPendingArrivalDecision } from '../../../packages/game/squad-travel.js';
-import { strategicClockInterrupt } from '../../../packages/game/strategic-clock.js';
-export function useStrategicClock(state: any, dispatch: (action: any) => void) {
-  const [running, setRunning] = useState(false),
-    [speed, setSpeed] = useState(300),
-    [cause, setCause] = useState('');
-  const current = useRef(state),
-    send = useRef(dispatch),
-    pending = useRef<any>(null),
-    arrivalWasPending = useRef(hasPendingArrivalDecision(state));
-  current.current = state;
-  send.current = dispatch;
-  useEffect(() => {
-    const arrivalPending = hasPendingArrivalDecision(state);
-    if (arrivalWasPending.current && !arrivalPending) setCause('');
-    arrivalWasPending.current = arrivalPending;
-    if (pending.current && pending.current !== state) {
-      const reason = strategicClockInterrupt(pending.current, state);
-      pending.current = null;
-      if (reason) {
-        setRunning(false);
-        setCause(reason);
-      }
-    }
-    if (
-      state.pendingBattle ||
-      state.pendingEncounter ||
-      state.defeated ||
-      hasPendingArrivalDecision(state)
-    )
-      setRunning(false);
-  }, [state]);
-  useEffect(() => {
-    if (!running) return;
-    const timer = setInterval(() => {
-      if (pending.current || document.hidden) return;
-      const before = current.current;
-      if (
-        before.pendingBattle ||
-        before.pendingEncounter ||
-        before.defeated ||
-        hasPendingArrivalDecision(before)
-      ) {
-        setRunning(false);
-        return;
-      }
-      pending.current = before;
-      send.current({
-        type: 'advanceStrategicTime',
-        seconds: Math.max(1, Math.round(speed / 4)),
-      });
-    }, 250);
-    return () => clearInterval(timer);
-  }, [running, speed]);
-  const blocked =
+import { strategicClockInterrupt } from '../../../packages/game/strategic-clock.ts';
+
+type ClockControl = {
+  campaign: CampaignSnapshot;
+  running: boolean;
+  cause: string;
+  pending: CampaignSnapshot | null;
+  arrivalPending: boolean;
+};
+
+export function useStrategicClock(
+  state: CampaignSnapshot,
+  dispatch: (action: CampaignAction) => void,
+) {
+  const [speed, setSpeed] = useState(300);
+  const [control, setControl] = useState<ClockControl>(() => ({
+    campaign: state,
+    running: false,
+    cause: '',
+    pending: null,
+    arrivalPending: hasPendingArrivalDecision(state),
+  }));
+  const arrivalPending = hasPendingArrivalDecision(state);
+  const blocked = Boolean(
     state.pendingBattle ||
     state.pendingEncounter ||
     state.defeated ||
-    hasPendingArrivalDecision(state);
+    arrivalPending,
+  );
+  let current = control;
+  if (control.campaign !== state) {
+    const reason = control.pending
+      ? strategicClockInterrupt(control.pending, state)
+      : null;
+    current = {
+      campaign: state,
+      running: control.running && !blocked && !reason,
+      cause:
+        reason ??
+        (control.arrivalPending && !arrivalPending ? '' : control.cause),
+      pending: null,
+      arrivalPending,
+    };
+    setControl(current);
+  }
+  const advance = useEffectEvent(() => {
+    if (current.pending || blocked || document.hidden) {
+      return;
+    }
+    setControl((previous) => ({ ...previous, pending: state }));
+    dispatch({
+      type: 'advanceStrategicTime',
+      seconds: Math.max(1, Math.round(speed / 4)),
+    });
+  });
+  useEffect(() => {
+    if (!current.running) {
+      return;
+    }
+    const timer = setInterval(advance, 250);
+    return () => {
+      clearInterval(timer);
+    };
+  }, [current.running]);
   return {
-    running,
+    running: current.running,
     speed,
-    cause: blocked ? strategicClockInterrupt(state, state) : cause,
+    cause: blocked ? strategicClockInterrupt(state, state) : current.cause,
     setSpeed,
     toggle: () => {
-      setCause('');
-      setRunning((value) => !value);
+      setControl((previous) => ({
+        ...previous,
+        cause: '',
+        running: !blocked && !previous.running,
+      }));
     },
-    pause: () => setRunning(false),
+    pause: () => {
+      setControl((previous) => ({ ...previous, running: false }));
+    },
   };
 }

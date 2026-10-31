@@ -1,17 +1,14 @@
-import { encodeSave } from '../../../packages/game/save.js';
+import { encodeSave } from '../../../packages/game/save.ts';
+import {
+  readCampaignSaveRequest,
+  readSaveRequestIdentity,
+} from './campaign-save-values';
 
-self.onmessage = (event: MessageEvent) => {
-  const { id, sessionId, revision, requestId, campaign, battle } = event.data;
-  const identity = { id, sessionId, revision, requestId };
+self.onmessage = (event: MessageEvent<unknown>) => {
+  // Replies can be correlated only after the transport identity is admitted.
+  const identity = readSaveRequestIdentity(event.data);
   try {
-    if (
-      (campaign.gameSessionId && campaign.gameSessionId !== sessionId) ||
-      (campaign.gameRevision ?? 0) !== revision
-    ) {
-      throw new Error(
-        'La revisión enviada al guardado no coincide con la partida.',
-      );
-    }
+    const { campaign, battle } = readCampaignSaveRequest(event.data);
     self.postMessage({ ...identity, text: encodeSave(campaign, battle) });
   } catch (error) {
     self.postMessage({

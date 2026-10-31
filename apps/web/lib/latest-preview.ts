@@ -1,4 +1,6 @@
-export type PreviewCompletion<Result> = { ok: true; value: Result } | { ok: false; error: unknown };
+export type PreviewCompletion<Result> =
+  | { ok: true; value: Result }
+  | { ok: false; error: unknown };
 
 export interface LatestPreviewQueue<Job> {
   request(job: Job | null): void;
@@ -28,7 +30,9 @@ export function createLatestPreview<Job, Result>(
         } catch (error) {
           completion = { ok: false, error };
         }
-        if (!closed && revision === current.revision) receive(current.job, completion);
+        if (!closed && revision === current.revision) {
+          receive(current.job, completion);
+        }
       }
     } finally {
       active = false;
@@ -37,10 +41,14 @@ export function createLatestPreview<Job, Result>(
 
   return {
     request(job) {
-      if (closed) return;
+      if (closed) {
+        return;
+      }
       revision++;
       pending = job === null ? null : { job, revision };
-      if (pending !== null && !active) void drain();
+      if (pending !== null && !active) {
+        void drain();
+      }
     },
     close() {
       closed = true;

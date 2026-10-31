@@ -29,12 +29,16 @@ export class BrowserSaveWriter {
     onReady: () => void,
     onRefused: (message: string) => void,
   ): void {
-    if (this.#closed) return;
+    if (this.#closed) {
+      return;
+    }
     if (this.#ownedKey === key) {
       onReady();
       return;
     }
-    if (this.#key === key) return;
+    if (this.#key === key) {
+      return;
+    }
     this.#release?.();
     this.#release = null;
     this.#ownedKey = null;
@@ -50,7 +54,9 @@ export class BrowserSaveWriter {
         `granaderos-save:${key}`,
         { mode: 'exclusive', ifAvailable: true },
         async (lock) => {
-          if (this.#closed || generation !== this.#generation) return;
+          if (this.#closed || generation !== this.#generation) {
+            return;
+          }
           if (!lock) {
             this.#key = null;
             onRefused(SaveWriterMessages.occupied);
@@ -69,7 +75,9 @@ export class BrowserSaveWriter {
         },
       )
       .catch((error) => {
-        if (this.#closed || generation !== this.#generation) return;
+        if (this.#closed || generation !== this.#generation) {
+          return;
+        }
         this.#key = null;
         onRefused(
           error instanceof Error
@@ -84,7 +92,9 @@ export class BrowserSaveWriter {
   }
 
   write(key: string, text: string): void {
-    if (!this.owns(key)) throw new Error(SaveWriterMessages.occupied);
+    if (!this.owns(key)) {
+      throw new Error(SaveWriterMessages.occupied);
+    }
     this.#write(key, text);
   }
 
