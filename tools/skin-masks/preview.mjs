@@ -1,9 +1,9 @@
 import fs from 'node:fs/promises';
-import {SKIN_PALETTES} from '../../packages/game/sprite-skin.js';
-import {ILLUSTRATED_SPRITE_ATLASES} from '../../packages/game/illustrated-sprite-atlases.js';
-import {SPRITE_APPEARANCES} from '../../packages/game/sprite-appearances.js';
-import {SPRITE_SEQUENCES} from '../../packages/game/sprite-state.js';
-const html=`<!doctype html><html lang="en"><meta charset="utf-8"><title>Skin tone review</title><style>body{background:#16271e;color:#eee6cc;font:16px system-ui;margin:24px}header{position:sticky;top:0;background:#16271ef5;padding:12px;z-index:1}h1{font-size:24px}button,select,input{font:inherit;padding:8px;margin:6px}main{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:12px}article{background:#314936;padding:12px;border:1px solid #8d8055}h2{font-size:17px}svg{background:#737b64;image-rendering:pixelated}.tones{display:flex;gap:4px}.tone{text-align:center}p{font-size:13px}</style>
+import { SKIN_PALETTES } from '../../packages/game/sprite-skin.js';
+import { ILLUSTRATED_SPRITE_ATLASES } from '../../packages/game/illustrated-sprite-atlases.js';
+import { SPRITE_APPEARANCES } from '../../packages/game/sprite-appearances.ts';
+import { SPRITE_SEQUENCES } from '../../packages/game/sprite-state.js';
+const html = `<!doctype html><html lang="en"><meta charset="utf-8"><title>Skin tone review</title><style>body{background:#16271e;color:#eee6cc;font:16px system-ui;margin:24px}header{position:sticky;top:0;background:#16271ef5;padding:12px;z-index:1}h1{font-size:24px}button,select,input{font:inherit;padding:8px;margin:6px}main{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:12px}article{background:#314936;padding:12px;border:1px solid #8d8055}h2{font-size:17px}svg{background:#737b64;image-rendering:pixelated}.tones{display:flex;gap:4px}.tone{text-align:center}p{font-size:13px}</style>
 <header><h1>Shared animations · three skin tones</h1><label>Action <select id="action"></select></label><label>Direction <select id="direction"></select></label><button id="play">Pause</button><label>Frame <input type="range" id="frame" min="0" max="3" value="0"></label><label><input type="checkbox" id="mask"> Show masks</label><p>The same uniforms, equipment, and animation frames are used for all three tones.</p></header><main></main>
 <script>
 const palettes=${JSON.stringify(SKIN_PALETTES)},atlases=${JSON.stringify(ILLUSTRATED_SPRITE_ATLASES)},families=${JSON.stringify(Object.keys(SPRITE_APPEARANCES))},sequences=${JSON.stringify(SPRITE_SEQUENCES)},dirs=['N','NE','E','SE','S','SW','W','NW'];
@@ -13,4 +13,5 @@ function render(){document.querySelector('main').innerHTML=families.map(family=>
 for(const el of [action,mask])el.onchange=render;play.onclick=()=>{paused=!paused;play.textContent=paused?'Play':'Pause';};frame.oninput=()=>{paused=true;play.textContent='Play';};
 function tick(now){for(const el of document.querySelectorAll('svg[data-atlas]')){const e=atlases[el.dataset.atlas],d=+direction.value,f=e.framesPerDirection===1?0:(paused?+frame.value:Math.floor(now*e.fps/1000))%e.framesPerDirection;el.setAttribute('viewBox',[(e.framesPerDirection===1?d:f)*e.cell,(e.framesPerDirection===1?0:d)*e.cell,e.cell,e.cell].join(' '));}requestAnimationFrame(tick);}render();requestAnimationFrame(tick);
 </script></html>`;
-await fs.mkdir('content/assets/previews/skin-tones',{recursive:true});await fs.writeFile('content/assets/previews/skin-tones/index.html',html);
+await fs.mkdir('content/assets/previews/skin-tones', { recursive: true });
+await fs.writeFile('content/assets/previews/skin-tones/index.html', html);

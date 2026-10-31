@@ -1,4 +1,4 @@
-import {refreshCampaignAssets} from './refresh-campaign-assets.mjs';
+import { refreshCampaignAssets } from './refresh-campaign-assets.mjs';
 // Rebuild production custom portraits from the checked-in generated originals.
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { createRequire } from 'node:module';
@@ -9,7 +9,9 @@ import { resolve, dirname } from 'node:path';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const require = createRequire(resolve(root, 'apps/web/package.json'));
 const sharp = require('sharp');
-const portraits = JSON.parse(await readFile(resolve(root, 'content/assets/prompts/custom-portraits.json'), 'utf8'));
+const portraits = JSON.parse(
+  await readFile(resolve(root, 'content/assets/prompts/custom-portraits.json'), 'utf8'),
+);
 const manifest = [];
 
 for (const portrait of portraits) {
@@ -37,7 +39,10 @@ for (const portrait of portraits) {
 }
 
 for (const base of ['content/assets/web', 'content/campaigns/granaderos/assets']) {
-  await writeFile(resolve(root, base, 'custom-portraits.json'), `${JSON.stringify(manifest, null, 2)}\n`);
+  await writeFile(
+    resolve(root, base, 'custom-portraits.json'),
+    `${JSON.stringify(manifest, null, 2)}\n`,
+  );
 }
 
 console.log(`Built ${manifest.length} custom portraits.`);

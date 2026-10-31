@@ -82,7 +82,7 @@ for (const mode of ['development', 'production']) {
     const mainUrl = base + '/src/main.js';
     const mainSource = await (await fetch(mainUrl)).text();
     const paletteImport = mainSource.match(
-      /import\s*\{applySkinPalette\}\s*from\s*['"]([^'"]+)['"]/,
+      /import\s*\{\s*applySkinPalette\s*\}\s*from\s*['"]([^'"]+)['"]/,
     );
     assert.ok(paletteImport, 'The browser entry imports its shared palette');
     const importedPalette = await fetch(new URL(present(paletteImport[1]), mainUrl));

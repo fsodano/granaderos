@@ -23,7 +23,9 @@ for (const [identifier, template] of Object.entries(BUILDING_TEMPLATES)) {
         })),
       ],
     );
-    if (result.errors.length) throw new Error(result.errors.join('; '));
+    if (result.errors.length) {
+      throw new Error(result.errors.join('; '));
+    }
     documents[`${identifier}:${rotation}`] = result.document;
   }
 }
@@ -34,10 +36,15 @@ const roof = editSectorMapDocument(
     { type: 'setObject', id: 'climb-house', values: { roof: 'terrace' } },
   ],
 );
-if (roof.errors.length) throw new Error(roof.errors.join('; '));
+if (roof.errors.length) {
+  throw new Error(roof.errors.join('; '));
+}
 documents['roof-climb'] = roof.document;
 const output = fileURLToPath(
-  new URL('../apps/web/app/renderer-sandbox/generated-architecture-documents.json', import.meta.url),
+  new URL(
+    '../apps/web/app/renderer-sandbox/generated-architecture-documents.json',
+    import.meta.url,
+  ),
 );
 await writeFile(output, JSON.stringify(documents));
 console.log(`Generated ${Object.keys(documents).length} architecture fixture documents.`);
