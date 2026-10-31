@@ -26,8 +26,9 @@ export class EditCampaignProjectUseCase {
 
   execute(request: EditCampaignProjectRequest): EditCampaignProjectResponse {
     const { project, revision } = this.#repository.load(request.projectId);
-    if (revision !== request.revision)
+    if (revision !== request.revision) {
       throw new CampaignEditorRefusal(CampaignEditorRefusalCode.StaleProjectRevision);
+    }
     const edit = request.edit;
     switch (edit.kind) {
       case 'rename':

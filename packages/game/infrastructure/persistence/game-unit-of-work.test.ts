@@ -1,9 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { GameUnitOfWork } from './game-unit-of-work.ts';
+import { Character } from '../../domain/personnel/character.ts';
 import { DomainRefusalCode } from '../../domain/shared/domain-refusal.ts';
 
-test('a transaction publishes its owned draft once and keeps source state unchanged', () => {
+void test('a transaction publishes its owned draft once and keeps source state unchanged', () => {
   const source = { gameRevision: 4, funds: 100, members: ['ana'] };
   const transaction = new GameUnitOfWork(source, structuredClone);
   transaction.draft.funds -= 20;
@@ -14,7 +15,7 @@ test('a transaction publishes its owned draft once and keeps source state unchan
   assert.throws(() => transaction.commit(), { code: DomainRefusalCode.TransactionClosed });
 });
 
-test('a failed validation or stale source never publishes transaction changes', () => {
+void test('a failed validation or stale source never publishes transaction changes', () => {
   const source = { gameRevision: 4, funds: 100 };
   const invalid = new GameUnitOfWork(source, structuredClone);
   invalid.draft.funds = -10;
@@ -31,17 +32,27 @@ test('a failed validation or stale source never publishes transaction changes', 
   assert.equal(source.funds, 100);
 });
 
-test('all repositories in a transaction obtain the same identified domain object', () => {
+void test('all repositories in a transaction obtain the same identified domain object', () => {
   const transaction = new GameUnitOfWork({ gameRevision: 0 }, structuredClone);
   let restored = 0;
-  const restore = () => ({ identity: 'ana', restored: ++restored });
+  const restore = () => {
+    restored++;
+    return Character.restore({
+      id: 'ana',
+      health: 70,
+      maximumHealth: 80,
+      alive: true,
+      captured: false,
+      locationId: 'retiro',
+    });
+  };
   const first = transaction.identities.obtain('Character', 'ana', restore);
   const second = transaction.identities.obtain('Character', 'ana', restore);
   assert.equal(first, second);
   assert.equal(restored, 1);
 });
 
-test('revision exhaustion refuses before validation or publication and closes the transaction', () => {
+void test('revision exhaustion refuses before validation or publication and closes the transaction', () => {
   const source = { gameRevision: Number.MAX_SAFE_INTEGER, funds: 100 };
   const transaction = new GameUnitOfWork(source, structuredClone);
   transaction.draft.funds = 20;

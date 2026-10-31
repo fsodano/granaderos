@@ -24,23 +24,30 @@ const environmentFields = [
   'contents',
 ];
 export function validateCampaignPhysical(value, world = {}) {
-  if (value === undefined) return [];
+  if (value === undefined) {
+    return [];
+  }
   const errors = [],
     check = (valid, message) => {
-      if (!valid) errors.push(`Fuentes físicas: ${message}`);
+      if (!valid) {
+        errors.push(`Fuentes físicas: ${message}`);
+      }
     };
   if (
     !fields(value, ['version', 'caches', 'arsenals', 'environment']) ||
     value.version !== 1 ||
     !['caches', 'arsenals', 'environment'].every((k) => object(value[k]))
-  )
+  ) {
     return ['Fuentes físicas: definición o versión inválida.'];
+  }
   const places = new Set([
     ...(world.sectors ?? []).map((s) => s.id),
     ...(world.cells ?? []).map((c) => c.location),
   ]);
   // A scene can have its own map without being a strategic locality.
-  for (const scene of Object.keys(value.environment)) places.add(scene);
+  for (const scene of Object.keys(value.environment)) {
+    places.add(scene);
+  }
   const identities = new Set(),
     checkEnvironment = (target) => {
       try {
@@ -51,8 +58,9 @@ export function validateCampaignPhysical(value, world = {}) {
     };
   for (const kind of ['caches', 'arsenals', 'environment']) {
     check(Object.keys(value[kind]).length <= 2000, 'demasiados lugares.');
-    for (const place of Object.keys(value[kind]))
+    for (const place of Object.keys(value[kind])) {
       check(key(place) && places.has(place), `lugar inválido: ${place}.`);
+    }
   }
   for (const [place, cache] of Object.entries(value.caches)) {
     if (!fields(cache, ['chest', 'contents']) || !key(cache.chest)) {
@@ -66,11 +74,12 @@ export function validateCampaignPhysical(value, world = {}) {
       locked: false,
       contents: cache.contents,
     });
-    for (const stack of Array.isArray(cache.contents) ? cache.contents : [])
+    for (const stack of Array.isArray(cache.contents) ? cache.contents : []) {
       if (stack?.instanceId !== undefined) {
         check(!identities.has(stack.instanceId), 'identidad de equipo repetida.');
         identities.add(stack.instanceId);
       }
+    }
   }
   const pieceIds = new Set();
   for (const [place, source] of Object.entries(value.arsenals)) {
@@ -136,11 +145,12 @@ export function validateCampaignPhysical(value, world = {}) {
       checkEnvironment(entry.configuration);
       for (const stack of Array.isArray(entry.configuration.contents)
         ? entry.configuration.contents
-        : [])
+        : []) {
         if (stack?.instanceId !== undefined) {
           check(!identities.has(stack.instanceId), 'identidad de equipo repetida.');
           identities.add(stack.instanceId);
         }
+      }
     }
   }
   return errors;

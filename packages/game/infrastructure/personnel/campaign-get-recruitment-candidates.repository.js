@@ -5,7 +5,7 @@ import {
 import { RecruitmentCatalogue } from '../../domain/personnel/recruitment-catalogue.ts';
 import { contractQuote } from '../../contracts.js';
 import { pendingHire } from '../../hiring-arrivals.js';
-import { civicStatus } from '../../recruitment.js';
+import { civicStatus } from '../../recruitment.ts';
 import { CanonicalPersonnelMapper } from '../persistence/canonical-personnel-mapper.ts';
 import { DomainIdentityMap } from '../persistence/domain-identity-map.ts';
 export class CampaignGetRecruitmentCandidatesRepository {
@@ -36,10 +36,18 @@ export class CampaignGetRecruitmentCandidatesRepository {
   }
 
   candidateAvailability(characterId, condition, quote) {
-    if (condition?.alive === false) return RecruitmentAvailability.Fallen;
-    if (this.#campaign.recruited.includes(characterId)) return RecruitmentAvailability.Serving;
-    if (pendingHire(this.#campaign, characterId)) return RecruitmentAvailability.Pending;
-    if (condition?.captured) return RecruitmentAvailability.Captured;
+    if (condition?.alive === false) {
+      return RecruitmentAvailability.Fallen;
+    }
+    if (this.#campaign.recruited.includes(characterId)) {
+      return RecruitmentAvailability.Serving;
+    }
+    if (pendingHire(this.#campaign, characterId)) {
+      return RecruitmentAvailability.Pending;
+    }
+    if (condition?.captured) {
+      return RecruitmentAvailability.Captured;
+    }
     if (!quote.available || !civicStatus(this.#campaign, characterId).available) {
       return RecruitmentAvailability.Unavailable;
     }

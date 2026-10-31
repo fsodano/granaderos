@@ -1,12 +1,9 @@
-import {
-  validateArtilleryTradingRules as validateSchema,
-  ARTILLERY_TRADING_FIELDS,
-} from '../campaign-format/campaign-location-schema.js';
+import { validateArtilleryTradingRules as validateSchema } from '../campaign-format/campaign-location-schema.js';
 export { ARTILLERY_TRADING_FIELDS } from '../campaign-format/campaign-location-schema.js';
 export function validateArtilleryTradingRules(value, context = null) {
   return validateSchema(value, { world: campaignWorld(context) });
 }
-import { campaignSectors, campaignWorld } from './campaign-definition.js';
+import { campaignWorld } from './campaign-definition.js';
 import { DEFAULT_WORLD } from '../../content/campaigns/default.js';
 export const DEFAULT_ARTILLERY_TRADING = Object.freeze(DEFAULT_WORLD.artilleryTrading);
 const genericDefaults = Object.freeze({
@@ -17,6 +14,7 @@ const genericDefaults = Object.freeze({
   buyingOverrides: Object.freeze({}),
 });
 
+/** @returns {import('../campaign-format/types.ts').ArtilleryTradingRules} */
 export const artilleryTradingRules = (s) =>
   s?.contentCampaign?.package.artilleryTrading ??
   campaignWorld(s).artilleryTrading ??

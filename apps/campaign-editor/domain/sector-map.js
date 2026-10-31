@@ -10,6 +10,7 @@ export class SectorMap {
   #document;
   #geometry;
 
+  /** @param {import("../../../packages/campaign-format/types.ts").PhysicalMap} document */
   constructor(document, geometry) {
     this.#document = geometry.migrateMapDocument(document);
     this.#geometry = geometry;
@@ -21,6 +22,7 @@ export class SectorMap {
   get revision() {
     return this.#document.revision;
   }
+  /** @returns {import("../../../packages/campaign-format/types.ts").PhysicalMap} */
   snapshot() {
     return structuredClone(this.#document);
   }
@@ -50,8 +52,9 @@ export class SectorMap {
       height < MAP_EDIT_LIMITS.minimumBuildingSize ||
       width > MAP_EDIT_LIMITS.maximumBuildingSize ||
       height > MAP_EDIT_LIMITS.maximumBuildingSize
-    )
+    ) {
       throw new CampaignEditorRefusal(CampaignEditorRefusalCode.InvalidBuildingDimensions);
+    }
     const { building } = buildBuilding({
       id,
       x,
@@ -66,7 +69,9 @@ export class SectorMap {
     });
     // A template without an architecture uses its authored kind and profile.
     // Do not let the gameplay helper's default house override that choice.
-    if (architecture === undefined) delete building.architecture;
+    if (architecture === undefined) {
+      delete building.architecture;
+    }
     return {
       ...building,
       ...Object.fromEntries(
@@ -79,13 +84,25 @@ export class SectorMap {
   }
   #commandEdge(building, command) {
     const { x, y, axis } = command;
-    if (axis !== undefined) return { x, y, axis };
+    if (axis !== undefined) {
+      return { x, y, axis };
+    }
     const existing = building.walls.filter((wall) => wall.x === x && wall.y === y);
-    if (existing.length === 1) return { x, y, axis: existing[0].axis };
-    if (y === building.y + building.height - 1) return { x, y: y + 1, axis: 'x' };
-    if (y === building.y) return { x, y, axis: 'x' };
-    if (x === building.x) return { x, y, axis: 'y' };
-    if (x === building.x + building.width - 1) return { x: x + 1, y, axis: 'y' };
+    if (existing.length === 1) {
+      return { x, y, axis: existing[0].axis };
+    }
+    if (y === building.y + building.height - 1) {
+      return { x, y: y + 1, axis: 'x' };
+    }
+    if (y === building.y) {
+      return { x, y, axis: 'x' };
+    }
+    if (x === building.x) {
+      return { x, y, axis: 'y' };
+    }
+    if (x === building.x + building.width - 1) {
+      return { x: x + 1, y, axis: 'y' };
+    }
     const horizontal = building.walls.some(
       (wall) => wall.axis === 'x' && wall.y === y && Math.abs(wall.x - x) === 1,
     );
@@ -95,7 +112,9 @@ export class SectorMap {
     const { LAYERS } = this.#geometry;
     for (const layer of LAYERS) {
       const index = document[layer].findIndex((entity) => entity.id === id);
-      if (index >= 0) return { layer, index, object: document[layer][index] };
+      if (index >= 0) {
+        return { layer, index, object: document[layer][index] };
+      }
     }
     throw new CampaignEditorRefusal(CampaignEditorRefusalCode.ObjectNotFound, { id });
   }
@@ -174,7 +193,9 @@ export class SectorMap {
     };
     for (const child of inside) {
       const at = point(child);
-      if (rotate && child.footprint) at.x -= child.footprint.height - 1;
+      if (rotate && child.footprint) {
+        at.x -= child.footprint.height - 1;
+      }
       Object.assign(child, at);
       if (rotate && child.footprint) {
         [child.footprint.width, child.footprint.height] = [
@@ -182,7 +203,9 @@ export class SectorMap {
           child.footprint.width,
         ];
         child.rotation = ((child.rotation ?? 0) + 90) % 360;
-        if (!child.rotation) delete child.rotation;
+        if (!child.rotation) {
+          delete child.rotation;
+        }
       }
     }
     for (const item of document.items.filter((item) => item.containerId)) {
@@ -194,7 +217,9 @@ export class SectorMap {
     }
     if (layer === 'buildings') {
       const levels = this.#buildingLevels(document, entity);
-      for (const surface of levels.surfaces) Object.assign(surface, point(surface));
+      for (const surface of levels.surfaces) {
+        Object.assign(surface, point(surface));
+      }
       for (const link of levels.links) {
         link.from = { ...link.from, ...point(link.from) };
         link.to = { ...link.to, ...point(link.to) };
@@ -210,8 +235,9 @@ export class SectorMap {
           : { ...wall, ...point(wall) },
       );
       entity.rooms = entity.rooms.map((room) => ({ ...room, cells: room.cells.map(point) }));
-      if (rotate) [entity.width, entity.height] = [entity.height, entity.width];
-      else {
+      if (rotate) {
+        [entity.width, entity.height] = [entity.height, entity.width];
+      } else {
         entity.x = x;
         entity.y = y;
       }
@@ -222,7 +248,9 @@ export class SectorMap {
           entity.footprint.width,
         ];
         entity.rotation = ((entity.rotation ?? 0) + 90) % 360;
-        if (!entity.rotation) delete entity.rotation;
+        if (!entity.rotation) {
+          delete entity.rotation;
+        }
       }
       if (!rotate) {
         const horizontalOffset = x - entity.x,
@@ -236,6 +264,7 @@ export class SectorMap {
       }
     }
   }
+  /** @param {readonly string[]} ids @returns {import("./sector-map-command.ts").MapSelection[]} */
   selectionRoots(ids, document = this.#document) {
     const { LAYERS } = this.#geometry;
     const selected = LAYERS.flatMap((layer) =>
@@ -256,34 +285,46 @@ export class SectorMap {
         ),
     );
   }
+  /** @param {readonly import("./sector-map-command.ts").SectorMapCommand[]} commands @returns {import("./sector-map-command.ts").SectorMapEditResult} */
   edit(commands, { expectedRevision = this.#document.revision } = {}) {
     const original = this.#document;
     const { migrateMapDocument, validateMap, compileBuilding } = this.#geometry;
-    if (expectedRevision !== original.revision)
+    if (expectedRevision !== original.revision) {
       return {
         document: this.snapshot(),
         errors: [],
         refusal: new CampaignEditorRefusal(CampaignEditorRefusalCode.StaleMapRevision).snapshot(),
         warnings: [],
       };
+    }
     const document = migrateMapDocument(original);
     try {
-      if (!Array.isArray(commands) || commands.length > MAP_EDIT_LIMITS.commands)
+      if (!Array.isArray(commands) || commands.length > MAP_EDIT_LIMITS.commands) {
         throw new CampaignEditorRefusal(CampaignEditorRefusalCode.InvalidMapCommandBatch);
-      for (const command of commands) this.#applyCommand(document, command);
+      }
+      for (const command of commands) {
+        this.#applyCommand(document, command);
+      }
       const preflight = validateMap(document);
-      if (!preflight.valid) return { document: this.snapshot(), ...preflight };
+      if (!preflight.valid) {
+        return { document: this.snapshot(), ...preflight };
+      }
       document.buildings = document.buildings.map((building) => compileBuilding(building).building);
       document.revision++;
       const checked = validateMap(document);
-      if (!checked.valid) return { document: this.snapshot(), ...checked };
+      if (!checked.valid) {
+        return { document: this.snapshot(), ...checked };
+      }
       this.#document = document;
       return { document: this.snapshot(), errors: [], warnings: checked.warnings };
     } catch (error) {
-      if (!(error instanceof CampaignEditorRefusal)) throw error;
+      if (!(error instanceof CampaignEditorRefusal)) {
+        throw error;
+      }
       return { document: this.snapshot(), errors: [], warnings: [], refusal: error.snapshot() };
     }
   }
+  /** @param {string} id @returns {import("./sector-map-command.ts").MapBuildingTemplate} */
   buildingTemplate(id) {
     const document = this.#document;
     const { LAYERS } = this.#geometry;
@@ -308,8 +349,9 @@ export class SectorMap {
     };
   }
   #applyCommand(document, command) {
-    if (!command || typeof command !== 'object')
+    if (!command || typeof command !== 'object') {
       throw new CampaignEditorRefusal(CampaignEditorRefusalCode.InvalidMapCommandBatch);
+    }
     switch (command.type) {
       case 'transformSelection':
         return this.#transformSelection(document, command);
@@ -349,8 +391,9 @@ export class SectorMap {
   }
 
   #transformSelection(document, command) {
-    if (!Array.isArray(command.ids))
+    if (!Array.isArray(command.ids)) {
       throw new CampaignEditorRefusal(CampaignEditorRefusalCode.InvalidMapSelection);
+    }
     const roots = this.selectionRoots(command.ids, document);
     const left = Math.min(...roots.map((entity) => entity.x)),
       top = Math.min(...roots.map((entity) => entity.y));
@@ -365,11 +408,12 @@ export class SectorMap {
           x: left + height - (entity.y - top) - (entity.height ?? entity.footprint?.height ?? 1),
           y: top + entity.x - left,
         });
-      } else
+      } else {
         this.#transform(document, entity.id, {
           x: entity.x + (command.dx ?? 0),
           y: entity.y + (command.dy ?? 0),
         });
+      }
     }
   }
 
@@ -380,11 +424,14 @@ export class SectorMap {
       !Object.hasOwn(TERRAIN, command.terrain) ||
       !Array.isArray(command.cells) ||
       command.cells.length > MAP_EDIT_LIMITS.brushCells
-    )
+    ) {
       throw new CampaignEditorRefusal(CampaignEditorRefusalCode.InvalidTerrainBrush);
+    }
     for (const point of command.cells) {
       const index = document.terrain.findIndex((t) => cellKey(t) === cellKey(point));
-      if (index < 0) throw new CampaignEditorRefusal(CampaignEditorRefusalCode.CellOutsideMap);
+      if (index < 0) {
+        throw new CampaignEditorRefusal(CampaignEditorRefusalCode.CellOutsideMap);
+      }
       document.terrain[index] = ground(point.x, point.y, command.terrain);
     }
   }
@@ -396,12 +443,15 @@ export class SectorMap {
   #addObject(document, command) {
     const { FURNITURE, LAYERS } = this.#geometry;
 
-    if (!LAYERS.includes(command.layer) || command.layer === 'buildings')
+    if (!LAYERS.includes(command.layer) || command.layer === 'buildings') {
       throw new CampaignEditorRefusal(CampaignEditorRefusalCode.InvalidMapLayer);
+    }
     const object = structuredClone(command.object);
     if (command.layer === 'props') {
       const spec = FURNITURE[object.type];
-      if (!spec) throw new CampaignEditorRefusal(CampaignEditorRefusalCode.FurnitureNotFound);
+      if (!spec) {
+        throw new CampaignEditorRefusal(CampaignEditorRefusalCode.FurnitureNotFound);
+      }
       object.footprint ??= { width: spec.width, height: spec.height };
       object.blocksMovement ??= true;
     }
@@ -422,14 +472,18 @@ export class SectorMap {
     const { layer, index, object } = this.#entity(document, command.id);
     if (layer === 'buildings') {
       const levels = this.#buildingLevels(document, object);
-      if (document.upperSurfaces)
+      if (document.upperSurfaces) {
         document.upperSurfaces = document.upperSurfaces.filter((s) => !levels.surfaces.includes(s));
-      if (document.climbLinks)
+      }
+      if (document.climbLinks) {
         document.climbLinks = document.climbLinks.filter((layer) => !levels.links.includes(layer));
+      }
       const ids = new Set(this.#children(document, object).map((entity) => entity.id));
-      for (const layer of LAYERS)
-        if (layer !== 'buildings')
+      for (const layer of LAYERS) {
+        if (layer !== 'buildings') {
           document[layer] = document[layer].filter((entity) => !ids.has(entity.id));
+        }
+      }
     }
     document[layer].splice(index, 1);
     document.items = document.items.filter((item) => item.containerId !== command.id);
@@ -443,28 +497,38 @@ export class SectorMap {
       ['id', 'x', 'y', 'walls', 'rooms', 'width', 'height', 'footprint'].some(
         (k) => k in command.values,
       )
-    )
+    ) {
       throw new CampaignEditorRefusal(CampaignEditorRefusalCode.MapGeometryOperationRequired);
+    }
     if (layer === 'buildings' && 'kind' in command.values && !('architecture' in command.values)) {
       // A new editor type must not leave the former campaign silhouette.
       const previous = BUILDING_TYPES[object.architecture];
       if (previous) {
         const next = BUILDING_TYPES[command.values.kind];
-        if (next) object.architecture = command.values.kind;
-        else delete object.architecture;
-        if (!('roof' in command.values) && object.roof === previous.roof)
+        if (next) {
+          object.architecture = command.values.kind;
+        } else {
+          delete object.architecture;
+        }
+        if (!('roof' in command.values) && object.roof === previous.roof) {
           object.roof = next?.roof ?? 'tile';
+        }
       }
     }
     Object.assign(object, structuredClone(command.values));
-    for (const key of ['wallFinish', 'roofFinish', 'doorStyle', 'windowStyle'])
-      if (command.values[key] === null) delete object[key];
+    for (const key of ['wallFinish', 'roofFinish', 'doorStyle', 'windowStyle']) {
+      if (command.values[key] === null) {
+        delete object[key];
+      }
+    }
     if ('containerId' in command.values && object.containerId) {
       const container = this.#entity(document, object.containerId).object;
       object.x = container.x;
       object.y = container.y;
     }
-    if (command.values.containerId === null) delete object.containerId;
+    if (command.values.containerId === null) {
+      delete object.containerId;
+    }
   }
 
   #setMetadata(document, command) {
@@ -475,9 +539,15 @@ export class SectorMap {
     const door = document.buildings
       .flatMap((building) => building.walls)
       .find((wall) => wall.doorId === command.id);
-    if (!door) throw new CampaignEditorRefusal(CampaignEditorRefusalCode.DoorNotFound);
-    if (command.open !== undefined) door.open = command.open;
-    if (command.locked !== undefined) door.locked = command.locked;
+    if (!door) {
+      throw new CampaignEditorRefusal(CampaignEditorRefusalCode.DoorNotFound);
+    }
+    if (command.open !== undefined) {
+      door.open = command.open;
+    }
+    if (command.locked !== undefined) {
+      door.locked = command.locked;
+    }
   }
 
   #setOpeningStyle(document, command) {
@@ -488,9 +558,14 @@ export class SectorMap {
     const opening = building.walls?.find(
       (wall) => wallEdgeKey(wall) === wallEdgeKey(at) && ['door', 'window'].includes(wall.type),
     );
-    if (!opening) throw new CampaignEditorRefusal(CampaignEditorRefusalCode.OpeningRequired);
-    if (command.style === null) delete opening.style;
-    else opening.style = command.style;
+    if (!opening) {
+      throw new CampaignEditorRefusal(CampaignEditorRefusalCode.OpeningRequired);
+    }
+    if (command.style === null) {
+      delete opening.style;
+    } else {
+      opening.style = command.style;
+    }
   }
 
   #setWall(document, command) {
@@ -507,13 +582,15 @@ export class SectorMap {
       at.y > building.y + building.height ||
       (at.axis === 'x' && at.x >= building.x + building.width) ||
       (at.axis === 'y' && at.y >= building.y + building.height)
-    )
+    ) {
       throw new CampaignEditorRefusal(CampaignEditorRefusalCode.InvalidWallEdge);
+    }
     const previous = building.walls.find((wall) => wallEdgeKey(wall) === wallEdgeKey(at));
-    if (['door', 'window'].includes(command.wallType) && !previous)
+    if (['door', 'window'].includes(command.wallType) && !previous) {
       throw new CampaignEditorRefusal(CampaignEditorRefusalCode.OpeningRequiresWall);
+    }
     building.walls = building.walls.filter((wall) => wallEdgeKey(wall) !== wallEdgeKey(at));
-    if (command.wallType !== 'floor')
+    if (command.wallType !== 'floor') {
       building.walls.push({
         id: previous?.id ?? `${building.id}:wall:${at.axis}:${at.x}:${at.y}`,
         ...at,
@@ -530,6 +607,7 @@ export class SectorMap {
             }
           : {}),
       });
+    }
   }
 
   #resizeBuilding(document, command) {
@@ -547,22 +625,26 @@ export class SectorMap {
           ? wall.y === building.y || wall.y === building.y + building.height
           : wall.x === building.x || wall.x === building.x + building.width;
       const at = { ...wall };
-      if (wall.axis === 'x' && wall.y === building.y + building.height)
+      if (wall.axis === 'x' && wall.y === building.y + building.height) {
         at.y = building.y + command.height;
-      if (wall.axis === 'y' && wall.x === building.x + building.width)
+      }
+      if (wall.axis === 'y' && wall.x === building.x + building.width) {
         at.x = building.x + command.width;
+      }
       const target = fresh.walls.find(
         (candidateWall) => wallEdgeKey(candidateWall) === wallEdgeKey(at),
       );
-      if (perimeter && target && wall.type !== 'wall') Object.assign(target, at);
-      else if (
+      if (perimeter && target && wall.type !== 'wall') {
+        Object.assign(target, at);
+      } else if (
         !perimeter &&
         at.x >= building.x &&
         at.x < building.x + command.width &&
         at.y >= building.y &&
         at.y < building.y + command.height
-      )
+      ) {
         fresh.walls.push(at);
+      }
     }
     Object.assign(building, fresh, { rooms: building.rooms });
   }
@@ -612,7 +694,9 @@ export class SectorMap {
         entity.id = `${copy.id}:${entity.id}`;
         entity.x += horizontalOffset;
         entity.y += verticalOffset;
-        if (entity.containerId) entity.containerId = `${copy.id}:${entity.containerId}`;
+        if (entity.containerId) {
+          entity.containerId = `${copy.id}:${entity.containerId}`;
+        }
         delete entity.roomId;
         delete entity.buildingId;
         document[entry.layer].push(entity);
@@ -620,7 +704,7 @@ export class SectorMap {
     } else {
       copy.x = command.x;
       copy.y = command.y;
-      for (const item of document.items.filter((item) => item.containerId === oldId))
+      for (const item of document.items.filter((item) => item.containerId === oldId)) {
         document.items.push({
           ...item,
           id: `${copy.id}:${item.id}`,
@@ -628,6 +712,7 @@ export class SectorMap {
           x: command.x,
           y: command.y,
         });
+      }
     }
     document[layer].push(copy);
   }
@@ -636,8 +721,9 @@ export class SectorMap {
     const { compileBuilding, LAYERS } = this.#geometry;
 
     const template = structuredClone(command.template);
-    if (template.version !== 1)
+    if (template.version !== 1) {
       throw new CampaignEditorRefusal(CampaignEditorRefusalCode.UnsupportedTemplateVersion);
+    }
     const shape = template.building;
     if (
       !shape ||
@@ -648,8 +734,9 @@ export class SectorMap {
       shape.height > MAP_EDIT_LIMITS.maximumBuildingSize ||
       !Array.isArray(shape.walls) ||
       !Array.isArray(shape.rooms)
-    )
+    ) {
       throw new CampaignEditorRefusal(CampaignEditorRefusalCode.InvalidTemplateDimensions);
+    }
     const root = compileBuilding(shape).building,
       horizontalOffset = command.x - root.x,
       verticalOffset = command.y - root.y,
@@ -671,8 +758,8 @@ export class SectorMap {
     }));
     document.buildings.push(building);
     this.#appendLevels(document, template, command.id, horizontalOffset, verticalOffset);
-    for (const layer of LAYERS.filter((layer) => layer !== 'buildings'))
-      for (const entity of template[layer] ?? [])
+    for (const layer of LAYERS.filter((layer) => layer !== 'buildings')) {
+      for (const entity of template[layer] ?? []) {
         document[layer].push({
           ...entity,
           id: `${command.id}:${entity.id}`,
@@ -680,5 +767,7 @@ export class SectorMap {
           y: entity.y + verticalOffset,
           ...(entity.containerId ? { containerId: `${command.id}:${entity.containerId}` } : {}),
         });
+      }
+    }
   }
 }

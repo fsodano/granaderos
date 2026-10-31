@@ -1,4 +1,6 @@
 'use client';
+import type { JsonValue } from '../../../../../packages/campaign-format/types.ts';
+import { parseEditorJson, documentFieldLabel } from '../../lib/editor-documents.ts';
 import { editorErrorMessage } from '../../../infrastructure/editor-error-message.ts';
 import { useEffect, useId, useState } from 'react';
 import {
@@ -189,8 +191,8 @@ const valueFor = (type: string) =>
 export const fieldLabel = (key: string) =>
   FIELD_LABELS[key] ?? key.replace(/([a-z])([A-Z])/g, '$1 $2').replaceAll('_', ' ');
 export type FieldEditorProps = {
-  value: any;
-  onChange: (next: any) => void;
+  value: JsonValue | undefined;
+  onChange: (next: JsonValue) => void;
   label?: string;
   path?: string;
   depth?: number;
@@ -223,15 +225,10 @@ function NumericField({
   label: string;
   path: string;
 }) {
-  const [raw, setRaw] = useState(String(value));
-  const [error, setError] = useState('');
+  const [entry, setEntry] = useState({ base: value, text: String(value), error: '' });
+  const raw = entry.base === value ? entry.text : String(value);
+  const error = entry.base === value ? entry.error : '';
   const errorId = useId();
-  useEffect(() => {
-    setRaw((current) =>
-      current.trim() && Number(current.replace(',', '.')) === value ? current : String(value),
-    );
-    setError('');
-  }, [value]);
   return (
     <label className="studio-value-field" title={path}>
       {label}
@@ -243,20 +240,26 @@ function NumericField({
         aria-describedby={error ? errorId : undefined}
         onChange={(event) => {
           const next = event.target.value;
-          setRaw(next);
-          setError('');
           const parsed = Number(next.replace(',', '.'));
-          if (next.trim() && !/[.,]$/.test(next) && Number.isFinite(parsed) && parsed !== value)
+          const complete = Boolean(next.trim() && !/[.,]$/.test(next) && Number.isFinite(parsed));
+          setEntry({ base: complete ? parsed : value, text: next, error: '' });
+          if (complete && parsed !== value) {
             onChange(parsed);
+          }
         }}
         onBlur={() => {
           const parsed = Number(raw.replace(',', '.'));
           if (!raw.trim() || !Number.isFinite(parsed)) {
-            setRaw(String(value));
-            setError('Ingresá un número. Se conservó el último valor aplicado.');
+            setEntry({
+              base: value,
+              text: String(value),
+              error: 'Ingresá un número. Se conservó el último valor aplicado.',
+            });
           } else {
-            if (parsed !== value) onChange(parsed);
-            setRaw(String(parsed));
+            if (parsed !== value) {
+              onChange(parsed);
+            }
+            setEntry({ base: parsed, text: String(parsed), error: '' });
           }
         }}
       />
@@ -285,31 +288,31 @@ export default function FieldEditor({
     [newType, setNewType] = useState('string'),
     [page, setPage] = useState(0),
     [query, setQuery] = useState('');
-  const array = Array.isArray(value),
-    object = value !== null && typeof value === 'object' && !array;
-  if (array || object) {
+  const array = Array.isArray(value);
+  if (value !== null && typeof value === 'object') {
     const entries = array
-      ? value.map((entry: any, index: number) => [String(index), entry] as const)
+      ? value.map((entry, index) => [String(index), entry] as const)
       : Object.entries(value);
     const filtered = entries.filter(
       ([key, entry]) =>
         !query ||
-        normalized(
-          `${key} ${fieldLabel(key)} ${entry?.id ?? ''} ${entry?.name ?? ''} ${entry?.title ?? ''}`,
-        ).includes(normalized(query)),
+        normalized(`${key} ${fieldLabel(key)} ${documentFieldLabel(entry)} `).includes(
+          normalized(query),
+        ),
     );
     const pages = Math.max(1, Math.ceil(filtered.length / 20)),
       current = Math.min(page, pages - 1),
       shown = filtered.slice(current * 20, current * 20 + 20);
-    const patch = (key: string, next: any) =>
+    const patch = (key: string, next: JsonValue) =>
       onChange(
         array
-          ? value.map((entry: any, index: number) => (String(index) === key ? next : entry))
+          ? value.map((entry, index) => (String(index) === key ? next : entry))
           : { ...value, [key]: next },
       );
     const remove = (key: string) => {
-      if (array) onChange(value.filter((_: any, index: number) => String(index) !== key));
-      else {
+      if (array) {
+        onChange(value.filter((_, index) => String(index) !== key));
+      } else {
         const next = { ...value };
         delete next[key];
         onChange(next);
@@ -322,8 +325,13 @@ export default function FieldEditor({
         setPage(Math.floor(value.length / 20));
         return;
       }
+      if (!value || typeof value !== 'object' || Array.isArray(value)) {
+        return;
+      }
       const key = newKey.trim();
-      if (!key || forbidden.has(key) || Object.hasOwn(value, key)) return;
+      if (!key || forbidden.has(key) || Object.hasOwn(value, key)) {
+        return;
+      }
       onChange({ ...value, [key]: valueFor(newType) });
       setNewKey('');
       setPage(Math.floor(entries.length / 20));
@@ -393,7 +401,7 @@ export default function FieldEditor({
                   onChange={(next) => patch(key, next)}
                   label={
                     array
-                      ? `${Number(key) + 1}. ${entry?.name ?? entry?.title ?? entry?.id ?? 'Elemento'}`
+                      ? `${Number(key) + 1}. ${documentFieldLabel(entry) || 'Elemento'}`
                       : fieldLabel(key)
                   }
                   path={path ? `${path}.${key}` : key}
@@ -410,7 +418,13 @@ export default function FieldEditor({
                         onClick={() => {
                           const next = [...value],
                             index = Number(key);
-                          [next[index - 1], next[index]] = [next[index], next[index - 1]];
+                          const previous = next[index - 1],
+                            currentValue = next[index];
+                          if (previous === undefined || currentValue === undefined) {
+                            return;
+                          }
+                          next[index - 1] = currentValue;
+                          next[index] = previous;
                           onChange(next);
                         }}
                       >
@@ -424,7 +438,13 @@ export default function FieldEditor({
                         onClick={() => {
                           const next = [...value],
                             index = Number(key);
-                          [next[index], next[index + 1]] = [next[index + 1], next[index]];
+                          const currentValue = next[index],
+                            following = next[index + 1];
+                          if (currentValue === undefined || following === undefined) {
+                            return;
+                          }
+                          next[index] = following;
+                          next[index + 1] = currentValue;
                           onChange(next);
                         }}
                       >
@@ -462,9 +482,9 @@ export default function FieldEditor({
               </p>
             )}
             {entries.length > 0 && !filtered.length && (
-              <p className="studio-muted" role="status">
+              <output className="studio-muted">
                 No hay resultados para “{query}”. Cambiá la búsqueda o limpiá el filtro.
-              </p>
+              </output>
             )}
             <div className="studio-add-field">
               {!array && (
@@ -516,16 +536,18 @@ export default function FieldEditor({
       </section>
     );
   }
-  if (typeof value === 'boolean')
+  if (typeof value === 'boolean') {
     return (
       <label className="studio-check-field" title={path}>
         <input type="checkbox" checked={value} onChange={(e) => onChange(e.target.checked)} />
         <span>{label}</span>
       </label>
     );
-  if (typeof value === 'number')
+  }
+  if (typeof value === 'number') {
     return <NumericField value={value} onChange={onChange} label={label} path={path} />;
-  if (value === null || value === undefined)
+  }
+  if (value === null || value === undefined) {
     return (
       <div className="studio-null-field">
         <span>{label}</span>
@@ -546,6 +568,7 @@ export default function FieldEditor({
         </button>
       </div>
     );
+  }
   const choices = enumerated[path.split('.').at(-1) ?? ''];
   return (
     <label className="studio-value-field" title={path}>
@@ -586,50 +609,52 @@ export default function FieldEditor({
 export function DocumentEditor(props: FieldEditorProps) {
   const store = useDocumentDraftStore();
   return store ? (
-    <StagedDocumentEditor {...props} />
+    <StagedDocumentEditor
+      key={`${store?.scope ?? 'document-editor'}:${props.path ?? props.label ?? 'document'}`}
+      {...props}
+    />
   ) : (
     <DocumentDraftProvider scope="document-editor">
-      <StagedDocumentEditor {...props} />
+      <StagedDocumentEditor
+        key={`document-editor:${props.path ?? props.label ?? 'document'}`}
+        {...props}
+      />
     </DocumentDraftProvider>
   );
 }
 
 function StagedDocumentEditor(props: FieldEditorProps) {
-  const store = useDocumentDraftStore()!;
+  const store = useDocumentDraftStore();
+  if (!store) {
+    throw new Error('El editor necesita un almacén de borradores.');
+  }
+  const { setDrafts } = store;
   const key = documentDraftKey(store.scope, props.path ?? props.label ?? 'document');
   const applied = JSON.stringify(props.value, null, 2);
   const staged = store.drafts[key];
   const text = staged?.text ?? applied;
   const [mode, setMode] = useState(staged ? 'json' : 'fields');
   const [error, setError] = useState('');
-  const [replace, setReplace] = useState(false);
+  const [replacementFor, setReplacementFor] = useState<string | null>(null);
+  const replacementKey = `${key}:${applied}`;
+  const replace = replacementFor === replacementKey;
   const [pending, setPending] = useState<{ key: string; text: string } | null>(null);
   const conflict = Boolean(staged && staged.base !== applied);
-  useEffect(() => {
-    setReplace(false);
-  }, [applied]);
-  useEffect(() => {
-    setReplace(false);
-    setError('');
-    setPending(null);
-  }, [key]);
   const discard = () =>
-    store.setDrafts((current) => {
+    setDrafts((current) => {
       const next = { ...current };
       delete next[key];
       return next;
     });
   useEffect(() => {
     if (pending?.key === key && pending.text === applied) {
-      store.setDrafts((current) => {
+      setDrafts((current) => {
         const next = { ...current };
         delete next[key];
         return next;
       });
-      setPending(null);
-      setReplace(false);
     }
-  }, [pending, applied, key, store.setDrafts]);
+  }, [pending, applied, key, setDrafts]);
   return (
     <section className="studio-document">
       <div className="studio-document-mode">
@@ -671,15 +696,17 @@ function StagedDocumentEditor(props: FieldEditorProps) {
                 const nextText = event.target.value;
                 setError('');
                 setPending(null);
-                setReplace(false);
-                store.setDrafts((current) => {
+                setReplacementFor(null);
+                setDrafts((current) => {
                   const next = { ...current };
-                  if (nextText === applied) delete next[key];
-                  else
+                  if (nextText === applied) {
+                    delete next[key];
+                  } else {
                     next[key] = {
                       text: nextText,
                       base: current[key]?.base ?? applied,
                     };
+                  }
                   return next;
                 });
               }}
@@ -695,7 +722,9 @@ function StagedDocumentEditor(props: FieldEditorProps) {
                 <input
                   type="checkbox"
                   checked={replace}
-                  onChange={(event) => setReplace(event.target.checked)}
+                  onChange={(event) =>
+                    setReplacementFor(event.target.checked ? replacementKey : null)
+                  }
                 />
                 Reemplazar los datos actuales con este texto
               </label>
@@ -709,11 +738,11 @@ function StagedDocumentEditor(props: FieldEditorProps) {
               disabled={!staged || (conflict && !replace)}
               onClick={() => {
                 try {
-                  const next = JSON.parse(text);
+                  const next = parseEditorJson(text);
                   setPending({ key, text: JSON.stringify(next, null, 2) });
                   props.onChange(next);
                   setError('');
-                } catch (error: any) {
+                } catch (error) {
                   setError(`No se pudo aplicar el documento: ${editorErrorMessage(error)}`);
                 }
               }}
@@ -727,7 +756,7 @@ function StagedDocumentEditor(props: FieldEditorProps) {
                 discard();
                 setError('');
                 setPending(null);
-                setReplace(false);
+                setReplacementFor(null);
               }}
             >
               Descartar texto

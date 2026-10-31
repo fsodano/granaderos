@@ -1,10 +1,19 @@
 'use client';
+import type {
+  CampaignContent,
+  CharacterDefinition,
+  Dialogue,
+  DialogueNode,
+  QuestDefinition,
+} from '../../../../../packages/campaign-format/types.ts';
 import DialogueConditions from './DialogueConditions.tsx';
 import DialogueEffects from './DialogueEffects.tsx';
 import { useState } from 'react';
-const nextId = (prefix: string, items: any[]) => {
+const nextId = (prefix: string, items: { id: string }[]) => {
   let n = 1;
-  while (items.some((i) => i.id === `${prefix}-${n}`)) n++;
+  while (items.some((i) => i.id === `${prefix}-${n}`)) {
+    n++;
+  }
   return `${prefix}-${n}`;
 };
 export default function DialogueEditor({
@@ -16,22 +25,29 @@ export default function DialogueEditor({
   onChange,
   content,
 }: {
-  content?: any;
-  value: any;
+  content?: CampaignContent;
+  value: Dialogue | undefined;
   greeting: string;
-  characters: any[];
-  quests: any[];
+  characters: CharacterDefinition[];
+  quests: QuestDefinition[];
   ownerId: string;
-  onChange: (value: any) => void;
+  onChange: (value: Dialogue | undefined) => void;
 }) {
   const [selected, setSelected] = useState(value?.entry ?? 'start');
-  const node = value?.nodes.find((n: any) => n.id === selected) ?? value?.nodes[0];
-  const changeNode = (patch: any) =>
+  const node = value?.nodes.find((n) => n.id === selected) ?? value?.nodes[0];
+  const changeNode = (patch: Partial<DialogueNode>) => {
+    if (!value || !node) {
+      return;
+    }
     onChange({
       ...value,
-      nodes: value.nodes.map((n: any) => (n.id === node.id ? { ...n, ...patch } : n)),
+      nodes: value.nodes.map((n) => (n.id === node.id ? { ...n, ...patch } : n)),
     });
+  };
   const addNode = () => {
+    if (!value) {
+      return;
+    }
     const id = nextId('node', value.nodes);
     onChange({
       ...value,
@@ -49,7 +65,7 @@ export default function DialogueEditor({
   };
   const referenced =
     value?.entry === node?.id ||
-    value?.nodes.some((n: any) => n.choices.some((c: any) => c.next === node?.id));
+    value?.nodes.some((n) => n.choices.some((c) => c.next === node?.id));
   return (
     <fieldset aria-label="Diálogo con opciones">
       <legend>Diálogo con opciones</legend>
@@ -86,7 +102,7 @@ export default function DialogueEditor({
               value={value.entry}
               onChange={(e) => onChange({ ...value, entry: e.target.value })}
             >
-              {value.nodes.map((n: any) => (
+              {value.nodes.map((n) => (
                 <option key={n.id} value={n.id}>
                   {n.title}
                 </option>
@@ -96,7 +112,7 @@ export default function DialogueEditor({
           <label>
             Pasaje que estás editando
             <select value={node.id} onChange={(e) => setSelected(e.target.value)}>
-              {value.nodes.map((n: any) => (
+              {value.nodes.map((n) => (
                 <option key={n.id} value={n.id}>
                   {n.title}
                 </option>
@@ -111,7 +127,7 @@ export default function DialogueEditor({
               type="button"
               disabled={referenced}
               onClick={() => {
-                onChange({ ...value, nodes: value.nodes.filter((n: any) => n.id !== node.id) });
+                onChange({ ...value, nodes: value.nodes.filter((n) => n.id !== node.id) });
                 setSelected(value.entry);
               }}
             >
@@ -148,7 +164,7 @@ export default function DialogueEditor({
               onChange={(e) => changeNode({ text: e.target.value })}
             />
           </label>
-          {node.choices.map((choice: any, i: number) => (
+          {node.choices.map((choice, i: number) => (
             <fieldset key={choice.id} aria-label={`Opción ${i + 1}`}>
               <legend>Opción {i + 1}</legend>
               <label>
@@ -158,7 +174,7 @@ export default function DialogueEditor({
                   value={choice.label}
                   onChange={(e) =>
                     changeNode({
-                      choices: node.choices.map((c: any) =>
+                      choices: node.choices.map((c) =>
                         c.id === choice.id ? { ...c, label: e.target.value } : c,
                       ),
                     })
@@ -171,13 +187,13 @@ export default function DialogueEditor({
                   value={choice.next}
                   onChange={(e) =>
                     changeNode({
-                      choices: node.choices.map((c: any) =>
+                      choices: node.choices.map((c) =>
                         c.id === choice.id ? { ...c, next: e.target.value } : c,
                       ),
                     })
                   }
                 >
-                  {value.nodes.map((n: any) => (
+                  {value.nodes.map((n) => (
                     <option key={n.id} value={n.id}>
                       {n.title}
                     </option>
@@ -191,7 +207,7 @@ export default function DialogueEditor({
                 quests={quests}
                 onChange={(conditions) =>
                   changeNode({
-                    choices: node.choices.map((c: any) =>
+                    choices: node.choices.map((c) =>
                       c.id === choice.id ? { ...c, conditions } : c,
                     ),
                   })
@@ -204,16 +220,14 @@ export default function DialogueEditor({
                 effects={choice.effects}
                 onChange={(effects) =>
                   changeNode({
-                    choices: node.choices.map((c: any) =>
-                      c.id === choice.id ? { ...c, effects } : c,
-                    ),
+                    choices: node.choices.map((c) => (c.id === choice.id ? { ...c, effects } : c)),
                   })
                 }
               />
               <button
                 type="button"
                 onClick={() =>
-                  changeNode({ choices: node.choices.filter((c: any) => c.id !== choice.id) })
+                  changeNode({ choices: node.choices.filter((c) => c.id !== choice.id) })
                 }
               >
                 Quitar opción {i + 1}
@@ -230,7 +244,7 @@ export default function DialogueEditor({
                   {
                     id: nextId('choice', node.choices),
                     label: 'Continuar',
-                    next: value.nodes.find((n: any) => n.id !== node.id)?.id ?? node.id,
+                    next: value.nodes.find((n) => n.id !== node.id)?.id ?? node.id,
                   },
                 ],
               })

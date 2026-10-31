@@ -61,8 +61,9 @@ export class ReactionPolicy {
           observer.actionPoints < ReactionRules.MinimumActionPoints ||
           (!observer.playerControlled && !observer.overwatchEnabled) ||
           observer.initiative < trigger.initiative
-        )
+        ) {
           return false;
+        }
         const range = observer.strategicCommand
           ? ReactionRules.StrategicCommandRange
           : observer.tacticalCommand

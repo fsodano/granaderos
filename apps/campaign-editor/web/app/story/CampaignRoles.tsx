@@ -1,11 +1,12 @@
 'use client';
-import { rolesForContent } from '../../../../../packages/game/public/campaign-editor-api.js';
+import type { CampaignContent } from '../../../../../packages/campaign-format/types.ts';
+import { rolesForContent } from '../../../../../packages/game/public/campaign-editor-api.ts';
 export default function CampaignRoles({
   draft,
   onChange,
 }: {
-  draft: any;
-  onChange: (value: any) => void;
+  draft: CampaignContent;
+  onChange: (value: CampaignContent) => void;
 }) {
   const roles = rolesForContent(draft);
   return (
@@ -30,7 +31,7 @@ export default function CampaignRoles({
             }
           >
             <option value="">Ninguno</option>
-            {draft.characters.map((c: any) => (
+            {draft.characters.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
               </option>

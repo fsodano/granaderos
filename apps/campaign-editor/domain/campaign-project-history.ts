@@ -15,8 +15,9 @@ export class CampaignProjectHistory {
   #limit: number;
 
   constructor(limit = DEFAULT_HISTORY_LIMIT) {
-    if (!Number.isSafeInteger(limit) || limit < 1)
+    if (!Number.isSafeInteger(limit) || limit < 1) {
       throw new CampaignEditorRefusal(CampaignEditorRefusalCode.InvalidHistoryCapacity);
+    }
     this.#limit = limit;
   }
 
@@ -47,23 +48,29 @@ export class CampaignProjectHistory {
   }
 
   record(project: CampaignProject): void {
-    if (this.#current) this.#past = [...this.#past, this.#current].slice(-this.#limit);
+    if (this.#current) {
+      this.#past = [...this.#past, this.#current].slice(-this.#limit);
+    }
     this.#current = project.snapshot();
     this.#future = [];
   }
 
   undo(): CampaignProject | null {
-    if (this.#current && this.canUndo) {
+    const previous = this.#past.at(-1);
+    if (this.#current && previous) {
       this.#future = [this.#current, ...this.#future].slice(0, this.#limit);
-      this.#current = this.#past.pop()!;
+      this.#past.pop();
+      this.#current = previous;
     }
     return this.current();
   }
 
   redo(): CampaignProject | null {
-    if (this.#current && this.canRedo) {
+    const next = this.#future[0];
+    if (this.#current && next) {
       this.#past = [...this.#past, this.#current].slice(-this.#limit);
-      this.#current = this.#future.shift()!;
+      this.#future.shift();
+      this.#current = next;
     }
     return this.current();
   }

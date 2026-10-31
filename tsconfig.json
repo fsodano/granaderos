@@ -1,0 +1,39 @@
+{
+  "extends": "./tsconfig.strict.json",
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "allowImportingTsExtensions": true,
+    "allowJs": true,
+    "jsx": "react-jsx",
+    "types": ["node", "react", "react-dom"],
+    "typeRoots": ["./apps/web/node_modules/@types"],
+    "paths": {
+      "react": ["./apps/web/node_modules/@types/react"],
+      "react/*": ["./apps/web/node_modules/@types/react/*"],
+      "react-dom": ["./apps/web/node_modules/@types/react-dom"],
+      "react-dom/*": ["./apps/web/node_modules/@types/react-dom/*"],
+      "three": ["./apps/web/node_modules/@types/three"],
+      "three/*": ["./apps/web/node_modules/@types/three/*"],
+      "vite/client": ["./apps/web/node_modules/vite/client.d.ts"],
+      "three/addons/*": ["./apps/web/node_modules/@types/three/examples/jsm/*"],
+      "jsdom": ["./apps/web/node_modules/@types/jsdom"],
+      "fake-indexeddb": ["./apps/web/node_modules/fake-indexeddb/types.d.ts"],
+      "fake-indexeddb/*": ["./apps/web/node_modules/fake-indexeddb/*"],
+      "@/*": ["./apps/web/*"]
+    }
+  },
+  "include": [
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "tools/**/*.ts",
+    "tools/**/*.tsx",
+    "content/**/*.ts",
+    "content/**/*.tsx",
+    "apps/web/vite-env.d.ts",
+    "packages/campaign-format/tests/**/*.ts"
+  ],
+  "exclude": ["node_modules", "**/node_modules", ".output", "**/dist"]
+}

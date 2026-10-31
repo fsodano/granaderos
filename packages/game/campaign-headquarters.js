@@ -7,6 +7,7 @@ import { scenarioFor, workshopSectorsFor } from './campaign-scenario.js';
 import { campaignWorld, campaignSectors } from './campaign-definition.js';
 import { arrivalFacilityOptions } from './arrival-sites.js';
 
+/** @param {import('./public/compatibility-types.ts').CampaignContext | null} [context] */
 export const headquartersOptions = (context) =>
   campaignSectors(context).filter((s) =>
     arrivalFacilityOptions(s.id, context).includes('barracks'),

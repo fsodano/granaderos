@@ -1,0 +1,345 @@
+import type {
+  CampaignManifest,
+  CampaignContent,
+  WorldDefinition,
+  CampaignPresentation,
+  PhysicalMap,
+  CampaignAssets,
+  CampaignStory,
+  WorldCell,
+} from '../../../packages/campaign-format/types.ts';
+export type ScaffoldContent = CampaignContent &
+  Required<
+    Pick<
+      CampaignContent,
+      'rules' | 'startingTerritory' | 'arrivalSites' | 'quests' | 'errands' | 'roadsideDiscoveries'
+    >
+  > & { campaignStory: CampaignStory };
+export type ScaffoldWorld = WorldDefinition &
+  Required<Pick<WorldDefinition, 'physical'>> & {
+    expansion: WorldDefinition['expansion'] & { buildingTargets: Record<string, number> };
+  };
+export type CampaignScaffoldDocuments = {
+  manifest: CampaignManifest;
+  content: ScaffoldContent;
+  world: ScaffoldWorld;
+  presentation: CampaignPresentation;
+  maps: Record<string, PhysicalMap>;
+  assets: CampaignAssets;
+  image: Uint8Array;
+};
+import {
+  CampaignEditorRefusal,
+  CampaignEditorRefusalCode,
+} from '../domain/campaign-editor-refusal.ts';
+import { blankMap } from '../../../packages/game/public/campaign-editor-api.ts';
+import { decodeBase64 } from '../../../packages/campaign-format/campaign-resources.js';
+const validId = (id: string) =>
+  typeof id === 'string' &&
+  /^[a-z][a-z0-9-]{0,79}$/.test(id) &&
+  !['constructor', 'prototype', 'granaderos'].includes(id);
+const architecture = [
+  'house',
+  'farmhouse',
+  'estancia',
+  'church',
+  'mansion',
+  'cabildo',
+  'pulperia',
+  'warehouse',
+  'barracks',
+];
+const NEUTRAL_PNG =
+  'iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAABdElEQVR4nO3YsZEUQRBE0XULD4jAc2QCd+5cWNiZyayuJ6Te9Z/Wrz9/f39Zbq/0A7YPAIDdAwBg9wAA2D0AAHYPAIDdAwBg9wAA2D0AAN7fj5+/3l76rUcB/Ev4aRD1AJ/En4BQDXBF/HaEWoAr4zcjVALcEb8VoQ7gzviNCAAAPBu/DQEAAADxRwAoGQAAAAAAAAAAAAAAByOkbwRQcGctwN0I6dtGANyFkL5pFMDVCOlbRgJchZC+YTTApwjptx8B8D8Q6bceCXDiAADYPQAAdg8AgN0DAGD3RgD4ihgWfRJGHcAd4ZshagCeCN8IUQGQiN+CEAVIhm+BiAGkg7cgRADSoZsQHgdIB25DeBQgHbYR4TGAdNBWBAAbANIhmxFuB0gHbEcAcDJAOtwEBACnAqSDTUEAcCJAOtQkBACnAaQDTUMAAGDeAADYG/9qBAAAZg4AAAAAAAAAAAAAAAAAAAAAAABAPgyAJQMAYC/Clb2+AUOuTQdNCZXZAAAAAElFTkSuQmCC';
+const NEUTRAL_SHA256 = '63f3a344addd5f0c6db71924fa235fbd1f240805077dd68a2dcc4c3243ff6f7f';
+
+/** Shared scaffold used by the browser studio and the folder CLI. */
+export function scaffoldDocuments(id: string, displayName?: string): CampaignScaffoldDocuments {
+  if (!validId(id)) {
+    throw new CampaignEditorRefusal(CampaignEditorRefusalCode.InvalidProjectIdentity);
+  }
+  const name =
+      displayName ??
+      id
+        .split('-')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' '),
+    portrait = `/campaigns/${id}/assets/guide.png`;
+  const positions: Record<string, [number, number]> = { camp: [15, 16], 'watch-post': [19, 16] },
+    names: Record<string, string> = { camp: 'Campamento', 'watch-post': 'Puesto de guardia' };
+  const nameFor = (id: string) => names[id] ?? id;
+  const cells = Array.from({ length: 36 * 33 }, (_, i) => {
+    const col = i % 36,
+      row = Math.floor(i / 36),
+      anchor = Object.entries(positions).find(
+        ([, position]) => position[0] === col && position[1] === row,
+      )?.[0],
+      land = col >= 12 && col <= 22 && row >= 13 && row <= 19;
+    return {
+      id: `cell-${col}-${row}`,
+      col,
+      row,
+      grid: `${col + 1},${row + 1}`,
+      name: anchor ? nameFor(anchor) : `Celda ${col + 1},${row + 1}`,
+      x: 36 + col * 18,
+      y: 36 + row * 18,
+      district: Boolean(anchor),
+      location: anchor ?? `cell-${col}-${row}`,
+      locality: anchor ?? null,
+      anchor: Boolean(anchor),
+      land,
+      biome: land ? 'plains' : 'water',
+      theater: 'frontier',
+    };
+  });
+  const geo = (x: number, y: number): [number, number] => [(x - 36) / 18, 33 - (y - 36) / 18];
+  const landRing = [
+    [12, 20],
+    [23, 20],
+    [23, 13],
+    [12, 13],
+    [12, 20],
+  ];
+  const cellFor = (location: string): WorldCell => {
+    const cell = cells.find((value) => value.location === location);
+    if (!cell) {
+      throw new Error(`No se encuentra la celda inicial: ${location}.`);
+    }
+    return cell;
+  };
+  const sectors = Object.keys(positions).map((id) => ({
+    id,
+    grid: cellFor(id).grid,
+    name: nameFor(id),
+    theater: 'frontier',
+    biome: 'plains',
+    x: 50,
+    y: 50,
+    income: 0,
+    asset: 'Territorio',
+    neighbors: Object.keys(positions).filter((other) => other !== id),
+  }));
+  const foundry = {
+    sector: 'camp',
+    name: 'Taller del campamento',
+    armyName: 'Escuadra',
+    setupCost: 100,
+    fundingCost: 200,
+  };
+  const world: ScaffoldWorld = {
+    version: 1,
+    columns: 36,
+    rows: 33,
+    projection: { minLongitude: 0, maxLatitude: 33, longitudeScale: 18, latitudeScale: 18 },
+    sectors,
+    theaters: [{ id: 'frontier', name: 'Frontera' }],
+    factions: [
+      { id: 'patriot', name: 'La escuadra' },
+      { id: 'royalist', name: 'La oposición' },
+      { id: 'foreign', name: 'Visitantes' },
+    ],
+    cells,
+    places: Object.fromEntries(
+      sectors.map((s) => {
+        const c = cellFor(s.id),
+          [lon, lat] = geo(c.x, c.y);
+        return [s.id, { lon, lat, label: s.name, dx: 12, dy: 0 }];
+      }),
+    ),
+    districts: Object.fromEntries(
+      sectors.map((s) => {
+        const c = cellFor(s.id);
+        return [
+          s.id,
+          [
+            {
+              id: `${s.id}:0`,
+              sectorId: s.id,
+              col: c.col,
+              row: c.row,
+              name: s.name,
+              x: c.x,
+              y: c.y,
+              urban: false,
+            },
+          ],
+        ];
+      }),
+    ),
+    cities: [],
+    ruralSectors: ['camp', 'watch-post'],
+    geography: { land: [{ type: 'Polygon', coordinates: [landRing] }], rivers: [] },
+    incomeSources: [],
+    buildings: {
+      types: Object.fromEntries(
+        architecture.map((kind) => [
+          kind,
+          { name: 'Construcción', roof: 'tile', wall: '#b5ac91', trim: '#d8cfb9', height: 64 },
+        ]),
+      ),
+      footprints: Object.fromEntries(architecture.map((kind) => [kind, [6, 5]])),
+    },
+    arrivalFacilities: { camp: ['barracks'], 'watch-post': [] },
+    defaultHeadquarters: 'camp',
+    defaultFoundry: foundry,
+    defaultRoles: { foundryEngineer: null, marchCommander: null },
+    exitLinks: [],
+    sceneExits: {},
+    sceneEntries: [],
+    sceneExitAnchors: {},
+    landscapes: { camp: 'settlement', 'watch-post': 'settlement' },
+    expansion: {
+      rural: ['camp', 'watch-post'],
+      coast: [],
+      waterOffsets: {},
+      buildingTargets: { camp: 1, 'watch-post': 1 },
+      buildingLandmarks: { camp: 'house', 'watch-post': 'house' },
+      buildingSelections: {},
+      defaultBuildingSelection: ['house'],
+    },
+    sectorCash: {},
+    physical: { version: 1, caches: {}, arsenals: {}, environment: {} },
+  };
+  const content: ScaffoldContent = {
+    format: 'granaderos-content',
+    version: 1,
+    id,
+    name,
+    includeOriginalResidents: false,
+    quests: [],
+    errands: [],
+    roadsideDiscoveries: [],
+    campaignRoles: { foundryEngineer: null, marchCommander: null },
+    rules: {
+      startingTreasury: 1000,
+      deploymentCartridges: 0,
+      enemyCartridges: 0,
+      militiaCartridges: 0,
+    },
+    headquarters: 'camp',
+    startingTerritory: {
+      camp: { owner: 'patriot', loyalty: 65 },
+      'watch-post': { owner: 'royalist', loyalty: 25 },
+    },
+    foundry,
+    imports: { port: null, minHours: 72, maxHours: 120 },
+    arrivalSites: [{ sector: 'camp', facilities: ['barracks'] }],
+    oppositionEquipment: { officer: null, line: null, veteran: null },
+    militiaEquipment: { green: null, regular: null, veteran: null },
+    oppositionBlades: { officer: 'field-tool', line: 'field-tool', veteran: 'field-tool' },
+    militiaBlades: { green: 'field-tool', regular: 'field-tool', veteran: 'field-tool' },
+    characters: [
+      {
+        id: 'guide',
+        name: 'Guía del campamento',
+        nickname: 'Guía',
+        role: 'Exploración',
+        biography: 'Un personaje de ejemplo. Cambiá su identidad y sus atributos para tu campaña.',
+        portrait,
+        recruitmentSource: 'contract',
+        service: 'contract',
+        progression: 'experience',
+        traits: [],
+        spriteAppearance: 'surgeon',
+        skinTone: 'brown',
+        monthlyPay: 300,
+        arrivalHours: 0,
+        weapon: null,
+        blade: 'field-tool',
+        attributes: {
+          maxHp: 70,
+          agility: 60,
+          dexterity: 60,
+          strength: 60,
+          leadership: 60,
+          wisdom: 60,
+          marksmanship: 40,
+          mechanical: 30,
+          explosives: 20,
+          medical: 30,
+        },
+      },
+    ],
+    weapons: [
+      {
+        id: 'field-tool',
+        template: 1813,
+        name: 'Herramienta de campo',
+        damage: 20,
+        ap: 8,
+        reach: 1.5,
+        weight: 1,
+        price: 0,
+        art: portrait,
+      },
+    ],
+    placements: [],
+    campaignStory: {
+      introduction: 'Reuní una escuadra y explorá la frontera.',
+      victory: 'El primer objetivo está cumplido.',
+      defeat: 'La escuadra no pudo continuar.',
+      chapters: [
+        {
+          id: 'first-day',
+          name: 'Una jornada en la frontera',
+          objective: 'Llegá al segundo día de campaña.',
+          conditions: [{ type: 'day', min: 2, max: null }],
+        },
+      ],
+      failureConditions: [],
+    },
+  };
+  const presentation: CampaignPresentation = {
+    version: 1,
+    title: name,
+    subtitle: 'Campaña propia',
+    eyebrow: 'JUEGO TÁCTICO',
+    caption: 'Reuní tu escuadra y comenzá la campaña.',
+    calendar: { year: 1, month: 1, day: 1 },
+    footer: 'ESTRATEGIA · TÁCTICA',
+    characterPortraits: [
+      {
+        id: 'guide-face',
+        name: 'Guía',
+        src: portrait,
+        gender: 'man',
+        role: 'scout',
+        skinTone: 'brown',
+        spriteSkinTone: 'brown',
+        spriteAppearance: 'surgeon',
+        selectable: true,
+      },
+    ],
+  };
+  const maps = Object.fromEntries(
+    sectors.map((s) => {
+      const map = blankMap({ id: s.id, title: s.name });
+      map.spawns = [
+        { id: 'entry', x: 3, y: 8, side: 'player' },
+        { id: 'opposition', x: 16, y: 8, side: 'enemy' },
+      ];
+      return [s.id, map];
+    }),
+  );
+  const image = decodeBase64(NEUTRAL_PNG),
+    assets = {
+      version: 1,
+      assets: [
+        { id: 'guide', path: 'assets/guide.png', sha256: NEUTRAL_SHA256, type: 'image/png' },
+      ],
+    };
+  const manifest = {
+    format: 'granaderos-campaign',
+    version: 1,
+    id,
+    name,
+    revision: '1',
+    scenario: 'generic-v1',
+    content: 'content.json',
+    world: 'world.json',
+    maps: 'maps/index.json',
+    presentation: 'presentation.json',
+    assets: 'assets.json',
+  };
+  return { manifest, content, world, presentation, maps, assets, image };
+}

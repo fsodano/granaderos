@@ -1,14 +1,14 @@
 import { validateDialogueConditions as validateConditionDocuments } from '../campaign-format/dialogue-schema.js';
 export { DIALOGUE_PERSON_STATES } from '../campaign-format/dialogue-schema.js';
-import { CHARACTER_SUPPLY_LABELS } from './character-supplies.js';
+import './character-supplies.js';
 import { isUnconscious } from './actor-condition.js';
-import { rosterFor } from './recruitment.js';
+import { rosterFor } from './recruitment.ts';
 import { CAMPAIGN_PROJECT_LABELS, campaignProjectComplete } from './campaign-projects.js';
 import { atDialogueMeeting } from './dialogue-movement.js';
 import { contentQuestStatus } from './content-quests.js';
 import { campaignSectors } from './campaign-definition.js';
 import { scenarioFor } from './campaign-scenario.js';
-import { operativeIdForCharacter } from './content-character-ids.js';
+import { operativeIdForCharacter } from './content-character-ids.ts';
 export const DIALOGUE_PERSON_STATE_LABELS = Object.freeze({
   alive: 'Vivo',
   dead: 'Muerto',
@@ -89,10 +89,15 @@ function characterState(s, character, battle, state) {
     healthy: stable && physical.hp === maxHp,
   };
 }
+/** @param {import('./public/campaign-types.ts').CampaignSnapshot} s
+ * @param {import('../campaign-format/types.ts').DialogueCondition[]} conditions
+ * @param {import('./public/compatibility-types.ts').BattleSnapshot|null} [battle]
+ * @returns {boolean} */
 export function dialogueConditionsMet(s, conditions, battle = null) {
   return (conditions ?? []).every((c) => {
-    if (c.type === 'character')
+    if (c.type === 'character') {
       return characterState(s, c.character, battle, c.state)[c.state] === true;
+    }
     if (c.type === 'supply') {
       // Legacy stories see a complete implicit kit; it is no longer consumed.
       if (['priming', 'flints'].includes(c.item)) {
@@ -101,19 +106,30 @@ export function dialogueConditionsMet(s, conditions, battle = null) {
       }
       const { record, deployed, unit, resident } = characterPhysical(s, c.character, battle);
       // Deployed stock lives in the open scene; the service sheet is a stale snapshot.
-      if (deployed && !unit) return false;
+      if (deployed && !unit) {
+        return false;
+      }
       const value = (unit ?? resident?.civilianSupplies ?? record)?.[c.item];
       return Number.isSafeInteger(value) && value >= c.min && (c.max === null || value <= c.max);
     }
-    if (c.type === 'meeting') return atDialogueMeeting(s, c.character, battle);
-    if (c.type === 'quest') return contentQuestStatus(s, c.quest) === c.status;
-    if (c.type === 'project')
+    if (c.type === 'meeting') {
+      return atDialogueMeeting(s, c.character, battle);
+    }
+    if (c.type === 'quest') {
+      return contentQuestStatus(s, c.quest) === c.status;
+    }
+    if (c.type === 'project') {
       return (
         Object.hasOwn(CAMPAIGN_PROJECT_LABELS, c.project) &&
         campaignProjectComplete(s, c.project) === c.completed
       );
-    if (c.type === 'sector') return s.sectors[c.sector]?.owner === c.owner;
-    if (!['day', 'treasury'].includes(c.type)) return false;
+    }
+    if (c.type === 'sector') {
+      return s.sectors[c.sector]?.owner === c.owner;
+    }
+    if (!['day', 'treasury'].includes(c.type)) {
+      return false;
+    }
     const value = c.type === 'day' ? Math.floor(s.hour / 24) + 1 : s.resources.treasury;
     return value >= c.min && (c.max === null || value <= c.max);
   });

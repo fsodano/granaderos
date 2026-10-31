@@ -1,4 +1,9 @@
 'use client';
+
+import type {
+  CampaignSnapshot,
+  CampaignAction,
+} from '../../../packages/game/public/campaign-types.ts';
 import { sitePath } from '../lib/site-path.js';
 import { useState } from 'react';
 import {
@@ -23,8 +28,11 @@ import { operativeInTransit, squadReorganizationReason } from '../../../packages
 import { contractTermsFor, contractRenewalQuote } from '../../../packages/game/contracts.js';
 import { GetRecruitmentCandidatesUseCase } from '../../../packages/game/application/personnel/get-recruitment-candidates/get-recruitment-candidates.use-case.ts';
 import { CampaignGetRecruitmentCandidatesRepository } from '../../../packages/game/infrastructure/personnel/campaign-get-recruitment-candidates.repository.js';
-import { isContractOperative } from '../../../packages/game/content-character-ids.js';
-import { characterProfile, characterAbilityDescriptions } from '../../../packages/game/characters.js';
+import { isContractOperative } from '../../../packages/game/content-character-ids.ts';
+import {
+  characterProfile,
+  characterAbilityDescriptions,
+} from '../../../packages/game/characters.js';
 import { portraitFor } from '../lib/portraits';
 import { travelTime } from '../lib/travel-time';
 import CharacterDossier from './CharacterDossier';
@@ -35,7 +43,7 @@ import ServiceObjectionNotice from './ServiceObjectionNotice';
 import { lowMoraleRenewalStatus } from '../../../packages/game/morale-renewal.js';
 import ContractMoraleNotice from './ContractMoraleNotice';
 import './recruitment.css';
-type Props = { state: any; dispatch: (a: any) => void };
+type Props = { state: CampaignSnapshot; dispatch: (a: CampaignAction) => void };
 export default function Recruitment({ state: s, dispatch }: Props) {
   const [selected, setSelected] = useState<number | null>(null),
     [periods, setPeriods] = useState<Record<number, string>>({});
@@ -64,9 +72,12 @@ export default function Recruitment({ state: s, dispatch }: Props) {
     availability,
     sort,
   });
-  const visible = candidates.characterIds.map((id) =>
-    roster.find((character) => String(character.id) === id)!,
-  );
+  const visible = candidates.characterIds.flatMap((id) => {
+    const candidate = roster.find((character) => String(character.id) === id);
+    return candidate ? [candidate] : [];
+  });
+  const selectedOperative = roster.find((o) => o.id === selected);
+  const selectedRecord = selected === null ? undefined : s.operativeState[selected];
   const busy = Boolean(s.pendingBattle || s.pendingEncounter) || s.defeated;
   const hiringRouteReason = squadReorganizationReason(s);
   return (
@@ -95,8 +106,10 @@ export default function Recruitment({ state: s, dispatch }: Props) {
         embarcadero habilitado. Un bloqueo impide la llegada por agua.
       </p>
       {!options.length && (
-        <p role="status">
-          No hay un punto seguro para recibir contratados. Podés renovar los contratos vigentes.
+        <p>
+          <output>
+            No hay un punto seguro para recibir contratados. Podés renovar los contratos vigentes.
+          </output>
         </p>
       )}
       <div className="catalogue-tools">
@@ -149,9 +162,11 @@ export default function Recruitment({ state: s, dispatch }: Props) {
           </select>
         </label>
       </div>
-      <p className="catalogue-count" role="status">
-        {visible.length} de {roster.length} combatientes · {serving} en tus filas ·{' '}
-        {(s.hiringArrivals ?? []).length} pendientes de incorporación
+      <p className="catalogue-count">
+        <output>
+          {visible.length} de {roster.length} combatientes · {serving} en tus filas ·{' '}
+          {(s.hiringArrivals ?? []).length} pendientes de incorporación
+        </output>
       </p>
       {!visible.length && (
         <p className="catalogue-empty">
@@ -170,6 +185,7 @@ export default function Recruitment({ state: s, dispatch }: Props) {
       )}
       <div className="recruit-catalogue">
         {visible.map((o) => {
+          const portrait = portraitFor(o.portrait ?? o.portraitId ?? o.id, s);
           const hired = s.recruited.includes(o.id),
             arrival = pendingHire(s, o.id),
             term = periods[o.id] || 'day',
@@ -207,21 +223,15 @@ export default function Recruitment({ state: s, dispatch }: Props) {
                 onClick={() => setSelected(o.id)}
                 aria-label={`Ver hoja de servicio de ${o.name}`}
               >
-                {portraitFor((o as any).portrait ?? (o as any).portraitId ?? o.id, s) ? (
-                  <img
-                    src={sitePath(
-                      portraitFor((o as any).portrait ?? (o as any).portraitId ?? o.id, s)!,
-                    )}
-                    alt={o.name}
-                    loading="lazy"
-                  />
+                {portrait ? (
+                  <img src={sitePath(portrait)} alt={o.name} loading="lazy" />
                 ) : (
-                  <span>{o.nickname.slice(0, 2).toUpperCase()}</span>
+                  <span>{(o.nickname ?? o.name).slice(0, 2).toUpperCase()}</span>
                 )}
                 <span>{o.name}</span>
               </button>
               <p className="eyebrow">{o.role}</p>
-              <p className="candidate-greeting">«{profile.speech.hired}»</p>
+              <p className="candidate-greeting">«{profile.speech['hired']}»</p>
               <p className="candidate-specialties">{profile.skills.join(' · ')}</p>
               {characterAbilityDescriptions(o).map(
                 (ability: { id: string; description: string }) => (
@@ -262,7 +272,11 @@ export default function Recruitment({ state: s, dispatch }: Props) {
                       </>
                     )}
                   </small>
-                  {held && <p role="status">{held}</p>}
+                  {held && (
+                    <p>
+                      <output>{held}</output>
+                    </p>
+                  )}
                   <label>
                     Cambiar destino
                     <select
@@ -270,7 +284,11 @@ export default function Recruitment({ state: s, dispatch }: Props) {
                       value={arrival.destination}
                       disabled={busy}
                       onChange={(e) =>
-                        dispatch({ type: 'redirectHire', id: o.id, destination: e.target.value })
+                        dispatch({
+                          type: 'redirectHire',
+                          id: o.id,
+                          destination: e.target.value,
+                        })
                       }
                     >
                       {!options.some((d) => d.id === arrival.destination) && (
@@ -290,7 +308,7 @@ export default function Recruitment({ state: s, dispatch }: Props) {
                     La incorporación es inmediata cuando hay un destino seguro. El pago ya está
                     registrado.
                   </small>
-                  {cancellationReason && <small role="status">{cancellationReason}</small>}
+                  {cancellationReason && <small aria-live="polite">{cancellationReason}</small>}
                   <button
                     className="dossier-link"
                     disabled={busy || Boolean(cancellationReason)}
@@ -412,7 +430,7 @@ export default function Recruitment({ state: s, dispatch }: Props) {
                         : `${hired ? 'Renovar' : 'Reclutar'} · ${quote.total} pesos`}
                   </button>
                   {hired && departureReason && !inTransit && (
-                    <small role="status">{departureReason}</small>
+                    <small aria-live="polite">{departureReason}</small>
                   )}
                   {hired && (
                     <button
@@ -439,12 +457,14 @@ export default function Recruitment({ state: s, dispatch }: Props) {
           );
         })}
       </div>
-      <CharacterDossier
-        state={s}
-        operative={roster.find((o) => o.id === selected)}
-        record={s.operativeState[selected ?? -1]}
-        onClose={() => setSelected(null)}
-      />
+      {selectedOperative && selectedRecord && (
+        <CharacterDossier
+          state={s}
+          operative={selectedOperative}
+          record={selectedRecord}
+          onClose={() => setSelected(null)}
+        />
+      )}
     </section>
   );
 }

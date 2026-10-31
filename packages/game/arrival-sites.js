@@ -2,7 +2,7 @@ import { validateArrivalSites as validateSchema } from '../campaign-format/campa
 export function validateArrivalSites(sites, context = null) {
   return validateSchema(sites, { world: campaignWorld(context) });
 }
-import { campaignWorld, campaignSectors } from './campaign-definition.js';
+import { campaignWorld } from './campaign-definition.js';
 import { DEFAULT_CONTENT } from '../../content/campaigns/default.js';
 
 export const ARRIVAL_FACILITIES = Object.freeze({
@@ -11,6 +11,7 @@ export const ARRIVAL_FACILITIES = Object.freeze({
   port: 'Puerto',
   landing: 'Embarcadero',
 });
+/** @param {string} sector @param {import('./public/compatibility-types.ts').CampaignContext | null} [context] */
 export function arrivalFacilityOptions(sector, context = null) {
   const world = campaignWorld(context);
   return world.arrivalFacilities?.[sector] ?? [];

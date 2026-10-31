@@ -1,14 +1,15 @@
 'use client';
+import type { CampaignContent } from '../../../../../packages/campaign-format/types.ts';
 import {
   DEFAULT_ARTILLERY_TRANSPORT,
   ARTILLERY_TRANSPORT_FIELDS,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 export default function ArtilleryTransportRules({
   draft,
   onChange,
 }: {
-  draft: any;
-  onChange: (value: any) => void;
+  draft: CampaignContent;
+  onChange: (value: CampaignContent) => void;
 }) {
   const rules = draft.artilleryTransport ?? DEFAULT_ARTILLERY_TRANSPORT;
   return (
@@ -25,7 +26,7 @@ export default function ArtilleryTransportRules({
         />
       </label>
       <div className="fields">
-        {ARTILLERY_TRANSPORT_FIELDS.map(([key, label, min, max]: any) => (
+        {ARTILLERY_TRANSPORT_FIELDS.map(([key, label, min, max]) => (
           <label key={key}>
             {label}
             <input

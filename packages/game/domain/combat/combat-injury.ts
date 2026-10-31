@@ -22,8 +22,9 @@ export class CombatInjury {
       ![impact.damage, impact.breathLoss, impact.balanceLoss, additionalBreathLoss].every(
         (value) => Number.isFinite(value) && value >= 0,
       )
-    )
+    ) {
       throw new RangeError('invalid-combat-injury');
+    }
     this.#impact = { ...impact };
     this.#additionalBreathLoss = additionalBreathLoss;
   }

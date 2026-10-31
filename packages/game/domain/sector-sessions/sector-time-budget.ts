@@ -37,19 +37,24 @@ export class SectorTimeBudget {
   }
 
   assertCanAdvance(seconds: number): void {
-    if (!Number.isSafeInteger(seconds) || seconds < 0)
+    if (!Number.isSafeInteger(seconds) || seconds < 0) {
       throw new RangeError('invalid-sector-duration');
-    if (seconds > this.remainingSeconds)
+    }
+    if (seconds > this.remainingSeconds) {
       throw new SectorTimeLimitReached(this.#limitSecond, this.remainingSeconds);
+    }
   }
 
   assertCanStartOperation(): void {
-    if (this.reached) throw new SectorTimeLimitReached(this.#limitSecond, 0);
+    if (this.reached) {
+      throw new SectorTimeLimitReached(this.#limitSecond, 0);
+    }
   }
 
   permittedSeconds(requestedSeconds: number): number {
-    if (!Number.isSafeInteger(requestedSeconds) || requestedSeconds < 0)
+    if (!Number.isSafeInteger(requestedSeconds) || requestedSeconds < 0) {
       throw new RangeError('invalid-sector-duration');
+    }
     return Math.min(requestedSeconds, this.remainingSeconds);
   }
 }

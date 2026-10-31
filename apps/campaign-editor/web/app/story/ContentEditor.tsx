@@ -1,11 +1,24 @@
 'use client';
+import type {
+  CampaignContent,
+  CharacterDefinition,
+  WeaponDefinition,
+  PlacementDefinition,
+  DraftPatch,
+} from '../../../../../packages/campaign-format/types.ts';
+import type {
+  ContentPlacementSession,
+  BattleSnapshot,
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
+import type { LoadedCampaign } from '../../lib/campaign-library.ts';
+import { applyDraftPatch, selectValue } from '../../lib/editor-values.ts';
 import { editorErrorMessage } from '../../../infrastructure/editor-error-message.ts';
 import {
   formatAP,
   displayedAP,
   storedAP,
   isAPField,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 
 import { gamePath } from '../../lib/game-path.ts';
 import { pagePath, sitePath } from '../../../../web/game-preview-assets.js';
@@ -17,25 +30,26 @@ import {
 } from '../../lib/editor-campaign.ts';
 import { loadInstalledCampaign, type CampaignEntry } from '../../lib/campaign-library.ts';
 import { contentIdentity } from '../../../../../packages/campaign-format/content-identity.js';
-import { campaignLaunchSearch } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { campaignSectors } from '../../../../../packages/game/public/campaign-editor-api.js';
+import { campaignLaunchSearch } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { campaignSectors } from '../../../../../packages/game/public/campaign-editor-api.ts';
 import { BuildIdentity } from '../../../../web/game-preview.ts';
 import AlternativeLoads from './AlternativeLoads.tsx';
-import { storyReferences } from '../../../../../packages/game/public/campaign-editor-api.js';
+import { storyReferences } from '../../../../../packages/game/public/campaign-editor-api.ts';
 import DialogueEditor from './DialogueEditor.tsx';
 import QuestEditor from './QuestEditor.tsx';
 import ErrandEditor from './ErrandEditor.tsx';
-import { errandContacts } from '../../../../../packages/game/public/campaign-editor-api.js';
+import { errandContacts } from '../../../../../packages/game/public/campaign-editor-api.ts';
 import CampaignRules from './CampaignRules.tsx';
 import ContractPricePreview from './ContractPricePreview.tsx';
 import {
   useEffect,
+  useEffectEvent,
   useId,
   useRef,
   useState,
   type KeyboardEvent as ReactKeyboardEvent,
 } from 'react';
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import EditorDialog from '../EditorDialog.tsx';
 import {
   ATTRIBUTE_FIELDS,
   FIREARM_TEMPLATES,
@@ -45,64 +59,64 @@ import {
   validateContentPackage,
   parseContentPackage,
   encodeContentPackage,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 import {
   createContentSession,
   advanceContentSession,
   setContentPersonStatus,
   encodeContentSession,
   decodeContentSession,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 import {
   createContentTestRange,
   contentShotPreview,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 import ArtilleryProfiles from './ArtilleryProfiles.tsx';
 import {
   actBattle,
   endTurn,
   weaponFor,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
-import { initialCampaign } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { encodeSave } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { campaignContentReport } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { CONTENT_LAUNCH_KEY } from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { initialCampaign } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { encodeSave } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { campaignContentReport } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { CONTENT_LAUNCH_KEY } from '../../../../../packages/game/public/campaign-editor-api.ts';
 import './editor.css';
 import '../editor-tools.css';
 import {
   CHARACTER_ABILITIES,
   legacyCharacterAbilities,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 import {
   isContractCharacter,
   isHistoricalCharacter,
   isWorldCharacter,
   legacyOperativeId,
   hasGenericCharacterDefinitions,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 import {
   conductObserverDefinition,
   conductNoncombatantDefinition,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 import CharacterPresentation from './CharacterPresentation.tsx';
 import CharacterSupplies from './CharacterSupplies.tsx';
 import CharacterCondition from './CharacterCondition.tsx';
 import postCampaign from '../../../../../content/campaigns/la-ruta-de-las-postas.json';
-import { SPEECH_EVENTS } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { characterPresentationDefaults } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { CONTENT_TRAITS } from '../../../../../packages/game/public/campaign-editor-api.js';
+import { SPEECH_EVENTS } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { characterPresentationDefaults } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { CONTENT_TRAITS } from '../../../../../packages/game/public/campaign-editor-api.ts';
 import {
   FIREARM_PRICES,
   BLADE_PRICES,
   isBladeDefinition,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 import {
   AMMO_TYPES,
   ammunitionForWeapon,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
-import { BUTTSTOCK } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { BASE_FIREARMS } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { BASE_ITEMS } from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { BUTTSTOCK } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { BASE_FIREARMS } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { BASE_ITEMS } from '../../../../../packages/game/public/campaign-editor-api.ts';
 import PlacementMap from './PlacementMap.tsx';
 import ArrivalSites from './ArrivalSites.tsx';
 import ForceEquipment from './ForceEquipment.tsx';
@@ -110,7 +124,7 @@ import AdvancedContent from './AdvancedContent.tsx';
 import CharacterPreview from '../studio/CharacterPreview.tsx';
 import QuestSandbox from '../studio/QuestSandbox.tsx';
 import { DocumentDraftProvider, DocumentDraftStatus } from '../studio/DocumentDrafts.tsx';
-import { forceWeaponUsers } from '../../../../../packages/game/public/campaign-editor-api.js';
+import { forceWeaponUsers } from '../../../../../packages/game/public/campaign-editor-api.ts';
 const labels: Record<string, string> = {
   maxHp: 'Salud',
   agility: 'Agilidad',
@@ -139,18 +153,19 @@ const labels: Record<string, string> = {
 };
 const clock = (minute: number) =>
   `Día ${Math.floor(minute / 1440) + 1} · ${String(Math.floor((minute % 1440) / 60)).padStart(2, '0')}:${String(minute % 60).padStart(2, '0')}`;
-function nextId(prefix: string, items: any[]) {
+function nextId(prefix: string, items: { id: string }[]) {
   let n = 1;
   while (
     items.some((i) => i.id === `${prefix}-${n}`) ||
     (prefix === 'person' && legacyOperativeId(`${prefix}-${n}`) !== undefined)
-  )
+  ) {
     n++;
+  }
   return `${prefix}-${n}`;
 }
 export type ContentEditorProps = {
-  content?: any;
-  onContentChange?: (next: any) => void;
+  content?: CampaignContent;
+  onContentChange?: (next: CampaignContent) => void;
   embedded?: boolean;
   initialTab?: string;
   resolveAsset?: (reference: string) => string;
@@ -211,32 +226,34 @@ export default function ContentEditor({
 }: ContentEditorProps = {}) {
   const editorId = `content-editor-${useId().replace(/:/g, '')}`;
   const EditorRoot = embedded ? 'section' : 'main';
-  const [exportFile, setExportFile] = useState<{ text: string; name: string } | null>(null);
+  const [exportFile, setExportFile] = useState<{ text: string; name: string; url: string } | null>(
+    null,
+  );
   const [exportStatus, setExportStatus] = useState('');
-  const [exportUrl, setExportUrl] = useState<string>();
+  const exportUrl = exportFile?.url;
   useEffect(() => {
-    if (!exportFile) {
-      setExportUrl(undefined);
-      return;
+    if (exportFile) {
+      return () => URL.revokeObjectURL(exportFile.url);
     }
-    const url = URL.createObjectURL(new Blob([exportFile.text], { type: 'application/json' }));
-    setExportUrl(url);
-    return () => URL.revokeObjectURL(url);
+    return undefined;
   }, [exportFile]);
   function download(text: string, name: string) {
     setExportStatus('');
-    setExportFile({ text, name });
+    const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+    setExportFile({ text, name, url });
   }
-  const [localDraft, setDraft] = useState<any>(() => content ?? defaultContentPackage());
+  const [localDraft, setDraft] = useState<CampaignContent>(
+    () => content ?? defaultContentPackage(),
+  );
   const draft = embedded && content ? content : localDraft;
-  const [baseContent, setBaseContent] = useState<any>(() => defaultContentPackage()),
+  const [baseContent, setBaseContent] = useState<CampaignContent>(() => defaultContentPackage()),
     [campaigns, setCampaigns] = useState<CampaignEntry[]>([]),
     [campaignId, setCampaignId] = useState('granaderos'),
     [draftKey, setDraftKey] = useState(editorDraftKey('story', 'granaderos'));
   const [loadingCampaign, setLoadingCampaign] = useState(!embedded);
   const loadingSequence = useRef(0);
-  const [past, setPast] = useState<any[]>([]);
-  const [future, setFuture] = useState<any[]>([]);
+  const [past, setPast] = useState<CampaignContent[]>([]);
+  const [future, setFuture] = useState<CampaignContent[]>([]);
   const [tab, setTab] = useState(
     editorSections.some((section) => section.id === initialTab) ? initialTab : 'characters',
   );
@@ -245,42 +262,23 @@ export default function ContentEditor({
   const [searches, setSearches] = useState<Record<string, string>>({});
   const [notice, setNotice] = useState('');
   const [ready, setReady] = useState(embedded);
-  const [session, setSession] = useState<any>(null);
-  const [battle, setBattle] = useState<any>(null);
+  const [placementPreview, setPlacementPreview] = useState<{
+    content: CampaignContent;
+    value: ContentPlacementSession | null;
+  } | null>(null);
+  const session = placementPreview?.content === draft ? placementPreview.value : null;
+  const [battlePreview, setBattlePreview] = useState<{
+    content: CampaignContent;
+    value: BattleSnapshot | null;
+  } | null>(null);
+  const battle = battlePreview?.content === draft ? battlePreview.value : null;
   const [seed, setSeed] = useState(18130203);
   const [loaded, setLoaded] = useState('');
-  useEffect(() => {
-    if (embedded) {
-      setSession(null);
-      setBattle(null);
-    }
-  }, [embedded, content]);
   const testImportRef = useRef<HTMLInputElement>(null);
   const importRef = useRef<HTMLInputElement>(null);
   const portraitRef = useRef<HTMLInputElement>(null);
   const weaponArtRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    if (embedded) return;
-    let active = true;
-    editorCampaignBase()
-      .then(({ entries, loaded }) => {
-        if (active) {
-          setCampaigns(entries);
-          openBase(loaded);
-        }
-      })
-      .catch((error: any) => {
-        if (active) setNotice(editorErrorMessage(error));
-      })
-      .finally(() => {
-        if (active) setLoadingCampaign(false);
-      });
-    return () => {
-      active = false;
-      loadingSequence.current++;
-    };
-  }, []);
-  function openBase(loaded: any) {
+  function openBase(loaded: LoadedCampaign) {
     const base = editorCampaignContent(loaded.content),
       key = editorDraftKey('story', loaded.entry.id);
     setBaseContent(base);
@@ -290,8 +288,8 @@ export default function ContentEditor({
     editorCampaignURL(loaded.entry);
     setPast([]);
     setFuture([]);
-    setSession(null);
-    setBattle(null);
+    setPlacementPreview({ content: draft, value: null });
+    setBattlePreview({ content: draft, value: null });
     try {
       const saved =
           localStorage.getItem(key) ??
@@ -309,6 +307,33 @@ export default function ContentEditor({
       setReady(false);
     }
   }
+  const openInitialBase = useEffectEvent(openBase);
+  useEffect(() => {
+    if (embedded) {
+      return;
+    }
+    let active = true;
+    editorCampaignBase()
+      .then(({ entries, loaded }) => {
+        if (active) {
+          setCampaigns(entries);
+          openInitialBase(loaded);
+        }
+      })
+      .catch((error: unknown) => {
+        if (active) {
+          setNotice(editorErrorMessage(error));
+        }
+      })
+      .finally(() => {
+        if (active) {
+          setLoadingCampaign(false);
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, [embedded]);
   async function chooseBase(entry: CampaignEntry) {
     const sequence = ++loadingSequence.current;
     setReady(false);
@@ -319,22 +344,27 @@ export default function ContentEditor({
         openBase(loaded);
         setNotice('Campaña abierta.');
       }
-    } catch (error: any) {
-      if (sequence === loadingSequence.current) setNotice(editorErrorMessage(error));
+    } catch (error) {
+      if (sequence === loadingSequence.current) {
+        setNotice(editorErrorMessage(error));
+      }
     } finally {
-      if (sequence === loadingSequence.current) setLoadingCampaign(false);
+      if (sequence === loadingSequence.current) {
+        setLoadingCampaign(false);
+      }
     }
   }
-  useEffect(() => {
-    if (embedded || !ready) return;
+  function persistDraft(value: CampaignContent) {
     try {
-      const text = JSON.stringify(draft);
-      if (new TextEncoder().encode(text).length > CONTENT_LIMIT) throw Error();
+      const text = JSON.stringify(value);
+      if (new TextEncoder().encode(text).length > CONTENT_LIMIT) {
+        throw Error();
+      }
       localStorage.setItem(draftKey, text);
     } catch {
       setNotice('No se pudo guardar el borrador. Exportá una copia antes de salir.');
     }
-  }, [draft, ready, draftKey, embedded]);
+  }
   const CAMPAIGN_SECTORS = campaignSectors(draft),
     CONTENT_SECTORS = CAMPAIGN_SECTORS;
   const errors = validateContentPackage(draft);
@@ -351,77 +381,113 @@ export default function ContentEditor({
   const query = normalizeSearch(search.trim());
   const visibleItems =
     searchable && query
-      ? items.filter((entry: any) =>
+      ? items.filter((entry) =>
           normalizeSearch(
-            [entry.name, entry.nickname, entry.id].filter(Boolean).join(' '),
+            [entry.name, 'nickname' in entry ? entry.nickname : '', entry.id]
+              .filter(Boolean)
+              .join(' '),
           ).includes(query),
         )
       : items;
-  const item = items.find((i: any) => i.id === selected) ?? items[0];
-  const activeSection = editorSections.find((section) => section.id === tab)!;
+  const character = draft.characters.find((entry) => entry.id === selected) ?? draft.characters[0];
+  const weapon = draft.weapons.find((entry) => entry.id === selected) ?? draft.weapons[0];
+  const item = collection === 'characters' ? character : weapon;
+  const encounter = character?.encounter;
+  const weaponEnergy = weapon?.projectileEnergy;
+  const weaponDrag = weapon?.projectileAirDrag;
+  const baseWeapon = Object.entries(BASE_ITEMS).find(
+    ([id]) => id === String(weapon?.template),
+  )?.[1];
+  const activeSection = editorSections.find((section) => section.id === tab) ?? {
+    id: 'characters',
+    name: 'Personajes',
+    help: '',
+  };
   const selectionFiltered = Boolean(
-    searchable && query && item && !visibleItems.some((entry: any) => entry.id === item.id),
+    searchable && query && item && !visibleItems.some((entry) => entry.id === item.id),
   );
   const clearSearch = () => setSearches((current) => ({ ...current, [collection]: '' }));
   const contractDefaults =
     tab === 'characters'
-      ? (embedded ? draft : baseContent).characters.find((c: any) => c.id === item?.id)
+      ? (embedded ? draft : baseContent).characters.find((c) => c.id === item?.id)
       : null;
-  const characterTraits = item?.traits ?? contractDefaults?.traits ?? [];
-  const ridingSkill = item?.ridingSkill ?? contractDefaults?.ridingSkill ?? 0;
-  const placement = draft.placements.find((p: any) => p.character === item?.id);
-  function omitOptionalFields(value: any): any {
-    if (!value || typeof value !== 'object') return value;
-    if (Array.isArray(value)) return value.map(omitOptionalFields);
-    return Object.fromEntries(
-      Object.entries(value)
-        .filter(([, entry]) => entry !== undefined)
-        .map(([key, entry]) => [key, omitOptionalFields(entry)]),
-    );
-  }
-  function change(next: any) {
-    next = omitOptionalFields(next);
-    if (next.campaignOrigin) next = editorCampaignContent(next);
+  const characterTraits = character?.traits ?? contractDefaults?.traits ?? [];
+  const legacyId = character ? legacyOperativeId(character.id) : undefined;
+  const characterAbilities =
+    character?.abilities ??
+    (hasGenericCharacterDefinitions(draft) || legacyId === undefined
+      ? []
+      : legacyCharacterAbilities(legacyId));
+  const ridingSkill = character?.ridingSkill ?? contractDefaults?.ridingSkill ?? 0;
+  const placement = draft.placements.find((p) => p.character === item?.id);
+  function change(next: CampaignContent) {
+    if (next.campaignOrigin) {
+      next = editorCampaignContent(next);
+    }
     setReady(true);
     if (embedded) {
       onContentChange?.(next);
-      setSession(null);
-      setBattle(null);
+      setPlacementPreview({ content: draft, value: null });
+      setBattlePreview({ content: draft, value: null });
       return;
     }
     setPast((p) => [...p.slice(-29), draft]);
     setFuture([]);
+    persistDraft(next);
     setDraft(next);
-    setSession(null);
-    setBattle(null);
+    setPlacementPreview({ content: draft, value: null });
+    setBattlePreview({ content: draft, value: null });
   }
-  function update(patch: any) {
+  function updateCharacter(patch: DraftPatch<CharacterDefinition>) {
+    if (!character) {
+      return;
+    }
     change({
       ...draft,
-      [collection]: items.map((i: any) => (i.id === item.id ? { ...i, ...patch } : i)),
+      characters: draft.characters.map((entry) =>
+        entry.id === character.id ? applyDraftPatch(entry, patch) : entry,
+      ),
     });
   }
-  function updatePlacement(patch: any) {
-    const next = { ...placement, ...patch };
-    if (next.selection === 'alternate' && (next.mode !== 'daily' || next.sectors.length !== 2))
-      patch = { ...patch, selection: 'random' };
+  function updateWeapon(patch: DraftPatch<WeaponDefinition>) {
+    if (!weapon) {
+      return;
+    }
     change({
       ...draft,
-      placements: draft.placements.map((p: any) =>
-        p.id === placement.id ? { ...p, ...patch } : p,
+      weapons: draft.weapons.map((entry) =>
+        entry.id === weapon.id ? applyDraftPatch(entry, patch) : entry,
+      ),
+    });
+  }
+  function updatePlacement(patch: DraftPatch<PlacementDefinition>) {
+    if (!placement) {
+      return;
+    }
+    const next = applyDraftPatch(placement, patch);
+    if (next.selection === 'alternate' && (next.mode !== 'daily' || next.sectors.length !== 2)) {
+      patch = { ...patch, selection: 'random' };
+    }
+    change({
+      ...draft,
+      placements: draft.placements.map((p) =>
+        p.id === placement.id ? applyDraftPatch(p, patch) : p,
       ),
     });
   }
   function addPlacement() {
+    if (!character) {
+      return;
+    }
     change({
       ...draft,
       placements: [
         ...draft.placements,
         {
           id: nextId('placement', draft.placements),
-          character: item.id,
+          character: character.id,
           mode: 'fixed',
-          sectors: [draft.headquarters ?? CAMPAIGN_SECTORS[0]?.id],
+          sectors: [draft.headquarters ?? CAMPAIGN_SECTORS[0]?.id ?? ''],
           moveChance: 100,
           afterDeath: null,
           delayMin: 0,
@@ -431,50 +497,65 @@ export default function ContentEditor({
     });
   }
   function undo() {
-    if (!past.length) return;
+    const previous = past.at(-1);
+    if (!previous) {
+      return;
+    }
     setFuture((f) => [draft, ...f]);
-    setDraft(past[past.length - 1]);
+    persistDraft(previous);
+    setDraft(previous);
     setPast((p) => p.slice(0, -1));
-    setSession(null);
-    setBattle(null);
+    setPlacementPreview({ content: draft, value: null });
+    setBattlePreview({ content: draft, value: null });
   }
   function redo() {
-    if (!future.length) return;
+    const following = future[0];
+    if (!following) {
+      return;
+    }
     setPast((p) => [...p, draft]);
-    setDraft(future[0]);
+    persistDraft(following);
+    setDraft(following);
     setFuture((f) => f.slice(1));
-    setSession(null);
-    setBattle(null);
+    setPlacementPreview({ content: draft, value: null });
+    setBattlePreview({ content: draft, value: null });
   }
   function safely(action: () => void) {
     try {
       action();
-    } catch (e: any) {
+    } catch (e) {
       setNotice(editorErrorMessage(e));
     }
   }
+  const undoFromKeyboard = useEffectEvent(undo);
+  const redoFromKeyboard = useEffectEvent(redo);
   useEffect(() => {
-    if (embedded) return;
+    if (embedded) {
+      return;
+    }
     function onHistoryKey(event: KeyboardEvent) {
-      if (!(event.ctrlKey || event.metaKey) || event.altKey || event.defaultPrevented) return;
+      if (!(event.ctrlKey || event.metaKey) || event.altKey || event.defaultPrevented) {
+        return;
+      }
       const target = event.target;
       if (
         target instanceof Element &&
         target.closest(
           'input, textarea, select, [contenteditable="true"], [role="textbox"], [role="dialog"]',
         )
-      )
+      ) {
         return;
+      }
       const key = event.key.toLowerCase(),
         back = key === 'z' && !event.shiftKey,
         forward = key === 'y' || (key === 'z' && event.shiftKey);
       if (back && past.length) {
         event.preventDefault();
-        undo();
+        undoFromKeyboard();
       }
       if (forward && future.length) {
         event.preventDefault();
-        redo();
+        redoFromKeyboard();
       }
     }
     window.addEventListener('keydown', onHistoryKey);
@@ -487,109 +568,136 @@ export default function ContentEditor({
   function onSectionKey(event: ReactKeyboardEvent<HTMLButtonElement>, index: number) {
     const offsets: Record<string, number> = { ArrowRight: 1, ArrowLeft: -1 };
     let next = index;
-    if (event.key === 'Home') next = 0;
-    else if (event.key === 'End') next = editorSections.length - 1;
-    else if (event.key in offsets)
-      next = (index + offsets[event.key] + editorSections.length) % editorSections.length;
-    else return;
+    if (event.key === 'Home') {
+      next = 0;
+    } else if (event.key === 'End') {
+      next = editorSections.length - 1;
+    } else if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+      next = (index + (offsets[event.key] ?? 0) + editorSections.length) % editorSections.length;
+    } else {
+      return;
+    }
     event.preventDefault();
-    navigateSection(editorSections[next].id);
+    const section = editorSections[next];
+    if (!section) {
+      return;
+    }
+    navigateSection(section.id);
     event.currentTarget.parentElement
       ?.querySelectorAll<HTMLButtonElement>('[role="tab"]')
       [next]?.focus();
   }
   function onEntityKey(event: ReactKeyboardEvent<HTMLButtonElement>, index: number) {
     let next = index;
-    if (event.key === 'ArrowDown') next = Math.min(index + 1, visibleItems.length - 1);
-    else if (event.key === 'ArrowUp') next = Math.max(index - 1, 0);
-    else if (event.key === 'Home') next = 0;
-    else if (event.key === 'End') next = visibleItems.length - 1;
-    else return;
+    if (event.key === 'ArrowDown') {
+      next = Math.min(index + 1, visibleItems.length - 1);
+    } else if (event.key === 'ArrowUp') {
+      next = Math.max(index - 1, 0);
+    } else if (event.key === 'Home') {
+      next = 0;
+    } else if (event.key === 'End') {
+      next = visibleItems.length - 1;
+    } else {
+      return;
+    }
     event.preventDefault();
-    setSelected(visibleItems[next].id);
+    const nextItem = visibleItems[next];
+    if (!nextItem) {
+      return;
+    }
+    setSelected(nextItem.id);
     event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('button')[next]?.focus();
   }
   function add(kind = 'contract') {
-    let added: any;
-    if (collection === 'characters')
-      added = {
-        ...structuredClone(
-          draft.characters.find(isContractCharacter) ??
-            baseContent.characters.find(isContractCharacter) ??
-            defaultContentPackage().characters.find(isContractCharacter)!,
-        ),
-        id: nextId('person', draft.characters),
-        name: 'Nuevo personaje',
-        nickname: 'Nuevo',
-        role: '',
-        biography: '',
-        traits: [],
-        ridingSkill: 0,
-        abilities: [],
-        personality: '',
-        speech: Object.fromEntries(SPEECH_EVENTS.map((event) => [event, ''])),
-        spriteAppearance: hasGenericCharacterDefinitions(draft) ? 'worker' : 'granadero',
-        weapon: draft.weapons[0]?.id ?? null,
-        blade: draft.weapons.find(isBladeDefinition)?.id,
-      };
-    else if (collection === 'weapons')
-      added = {
-        ...structuredClone(
-          draft.weapons.find((w: any) => isBladeDefinition(w) === (kind === 'blade')) ??
-            baseContent.weapons.find((w: any) => isBladeDefinition(w) === (kind === 'blade')) ??
-            defaultContentPackage().weapons.find(
-              (w) => isBladeDefinition(w) === (kind === 'blade'),
-            )!,
-        ),
-        id: nextId(kind === 'blade' ? 'blade' : 'firearm', draft.weapons),
-        name: 'Nueva arma',
-      };
-    if (collection === 'characters' && kind === 'encounter') {
-      delete added.arrivalHours;
-      Object.assign(added, {
-        name: 'Nuevo habitante',
-        nickname: 'Habitante',
-        role: 'Habitante',
-        recruitmentSource: 'encounter',
-        service: 'permanent',
-        monthlyPay: 0,
-        serviceGuarantee: 0,
-        weapon: null,
-        spriteAppearance: 'worker',
-        encounter: {
+    if (collection === 'characters') {
+      const template =
+        draft.characters.find(isContractCharacter) ??
+        baseContent.characters.find(isContractCharacter) ??
+        defaultContentPackage().characters.find(isContractCharacter);
+      if (!template) {
+        return;
+      }
+      const blade = draft.weapons.find(isBladeDefinition)?.id;
+      const added: CharacterDefinition = applyDraftPatch(
+        {
+          ...structuredClone(template),
+          id: nextId('person', draft.characters),
+          name: 'Nuevo personaje',
+          nickname: 'Nuevo',
+          role: '',
+          biography: '',
+          traits: [],
+          ridingSkill: 0,
+          abilities: [],
+          personality: '',
+          speech: Object.fromEntries(SPEECH_EVENTS.map((event) => [event, ''])),
+          spriteAppearance: hasGenericCharacterDefinitions(draft) ? 'worker' : 'granadero',
+          weapon: draft.weapons[0]?.id ?? null,
+        },
+        { blade },
+      );
+      if (kind === 'encounter') {
+        delete added.arrivalHours;
+        added.name = 'Nuevo habitante';
+        added.nickname = 'Habitante';
+        added.role = 'Habitante';
+        added.recruitmentSource = 'encounter';
+        added.service = 'permanent';
+        added.monthlyPay = 0;
+        added.serviceGuarantee = 0;
+        added.weapon = null;
+        added.spriteAppearance = 'worker';
+        added.encounter = {
           recruitable: false,
           greeting: 'Buen día.',
           requiredLeadership: 0,
           requiredLiberated: 0,
           requiredSector: null,
-        },
-      });
+        };
+      }
+      change({ ...draft, characters: [...draft.characters, added] });
+      setSelected(added.id);
+    } else {
+      const template =
+        draft.weapons.find((entry) => isBladeDefinition(entry) === (kind === 'blade')) ??
+        baseContent.weapons.find((entry) => isBladeDefinition(entry) === (kind === 'blade')) ??
+        defaultContentPackage().weapons.find(
+          (entry) => isBladeDefinition(entry) === (kind === 'blade'),
+        );
+      if (!template) {
+        return;
+      }
+      const added: WeaponDefinition = {
+        ...structuredClone(template),
+        id: nextId(kind === 'blade' ? 'blade' : 'firearm', draft.weapons),
+        name: 'Nueva arma',
+      };
+      change({ ...draft, weapons: [...draft.weapons, added] });
+      setSelected(added.id);
     }
-    change({ ...draft, [collection]: [...items, added] });
-    setSelected(added.id);
     setSearches((current) => ({ ...current, [collection]: '' }));
   }
   function duplicateCharacter() {
-    if (collection !== 'characters' || (isHistoricalCharacter(item, draft) && !draft.campaignStory))
+    if (
+      !character ||
+      collection !== 'characters' ||
+      (isHistoricalCharacter(character, draft) && !draft.campaignStory)
+    ) {
       return;
-    const added = {
-      ...structuredClone(item),
-      ...structuredClone(characterPresentationDefaults(item, draft)),
-      abilities: [
-        ...(item.abilities ??
-          (hasGenericCharacterDefinitions(draft)
-            ? []
-            : legacyCharacterAbilities(legacyOperativeId(item.id)))),
-      ],
-      recruitmentSource: item.recruitmentSource ?? 'contract',
-      service: item.service ?? 'contract',
-      progression: item.progression ?? 'experience',
+    }
+    const added: CharacterDefinition = {
+      ...structuredClone(character),
+      ...structuredClone(characterPresentationDefaults(character, draft)),
+      abilities: [...characterAbilities],
+      recruitmentSource: character.recruitmentSource ?? 'contract',
+      service: character.service ?? 'contract',
+      progression: character.progression ?? 'experience',
       traits: [...characterTraits],
       ridingSkill,
       id: nextId('person', draft.characters),
-      name: `${item.name.slice(0, 92)} (copia)`,
+      name: `${character.name.slice(0, 92)} (copia)`,
     };
-    if (isHistoricalCharacter(item, draft))
+    if (isHistoricalCharacter(character, draft)) {
       Object.assign(added, {
         recruitmentSource: 'encounter',
         service: 'permanent',
@@ -604,6 +712,7 @@ export default function ContentEditor({
           requiredSector: null,
         },
       });
+    }
     change({
       ...draft,
       characters: [...draft.characters, added],
@@ -622,6 +731,9 @@ export default function ContentEditor({
     setSearches((current) => ({ ...current, characters: '' }));
   }
   function remove() {
+    if (!item) {
+      return;
+    }
     if (collection === 'characters' && isHistoricalCharacter(item, draft) && !draft.campaignStory) {
       setNotice(
         'El avance histórico necesita sus mandos. Elegí capítulos propios en Reglas para quitar este personaje.',
@@ -640,12 +752,10 @@ export default function ContentEditor({
     }
     if (collection === 'characters') {
       const owner = draft.characters.find(
-        (c: any) =>
+        (c) =>
           c.id !== item.id &&
-          ['serviceRefusals', 'preferredCompanions'].some(
-            (field) =>
-              Array.isArray(c[field]) &&
-              c[field].some((relationship: any) => relationship.character === item.id),
+          (['serviceRefusals', 'preferredCompanions'] as const).some((field) =>
+            c[field]?.some((relationship) => relationship.character === item.id),
           ),
       );
       if (owner) {
@@ -658,34 +768,33 @@ export default function ContentEditor({
 
     if (
       collection === 'characters' &&
-      ((draft.errands ?? []).some((q: any) =>
-        [q.npcId, ...(q.beneficiaries ?? []).map((recipient: any) => recipient.npcId)].some(
+      ((draft.errands ?? []).some((q) =>
+        [q.npcId, ...(q.beneficiaries ?? []).map((recipient) => recipient.npcId)].some(
           (id) => errandContacts(draft).find((c) => c.id === id)?.characterId === item.id,
         ),
       ) ||
         storyReferences(draft.campaignStory, 'character', item.id) ||
-        (draft.campaignEvents ?? []).some((event: any) =>
+        (draft.campaignEvents ?? []).some((event) =>
           event.conditions.some(
-            (condition: any) =>
-              ['character', 'supply'].includes(condition.type) && condition.character === item.id,
+            (condition) =>
+              (condition.type === 'character' || condition.type === 'supply') &&
+              condition.character === item.id,
           ),
         ) ||
-        (draft.quests ?? []).some((q: any) => q.requiredAlive?.includes(item.id)) ||
-        draft.placements.some((p: any) => p.afterDeath === item.id) ||
+        (draft.quests ?? []).some((q) => q.requiredAlive?.includes(item.id)) ||
+        draft.placements.some((p) => p.afterDeath === item.id) ||
         draft.characters.some(
-          (owner: any) =>
+          (owner) =>
             owner.id !== item.id &&
-            owner.encounter?.dialogue?.nodes.some((n: any) =>
+            owner.encounter?.dialogue?.nodes.some((n) =>
               n.choices.some(
-                (choice: any) =>
+                (choice) =>
                   choice.conditions?.some(
-                    (c: any) =>
-                      ['character', 'meeting', 'supply'].includes(c.type) &&
+                    (c) =>
+                      (c.type === 'character' || c.type === 'meeting' || c.type === 'supply') &&
                       c.character === item.id,
                   ) ||
-                  choice.effects?.some(
-                    (e: any) => e.type === 'movement' && e.character === item.id,
-                  ),
+                  choice.effects?.some((e) => e.type === 'movement' && e.character === item.id),
               ),
             ),
         ))
@@ -697,31 +806,35 @@ export default function ContentEditor({
     }
     if (
       collection === 'weapons' &&
-      draft.characters.some((c: any) => c.weapon === item.id || c.blade === item.id)
+      draft.characters.some((c) => c.weapon === item.id || c.blade === item.id)
     ) {
       setNotice('Asigná otra arma a los personajes que la usan.');
       return;
     }
     change({
       ...draft,
-      [collection]: items.filter((i: any) => i.id !== item.id),
+      [collection]: items.filter((i) => i.id !== item.id),
       placements:
         collection === 'characters'
-          ? draft.placements.filter((p: any) => p.character !== item.id)
+          ? draft.placements.filter((p) => p.character !== item.id)
           : draft.placements,
     });
     setSelected('');
     setSearches((current) => ({ ...current, [collection]: '' }));
   }
   async function importFile(file: File | undefined) {
-    if (!file) return;
+    if (!file) {
+      return;
+    }
     try {
-      if (file.size > CONTENT_LIMIT) throw Error('El archivo supera 2 MB.');
+      if (file.size > CONTENT_LIMIT) {
+        throw Error('El archivo supera 2 MB.');
+      }
       const value = parseContentPackage(await file.text());
       change(value);
       setSelected(value.characters[0]?.id ?? '');
       setNotice('Contenido importado. Podés deshacer para volver al borrador anterior.');
-    } catch (e: any) {
+    } catch (e) {
       setNotice(editorErrorMessage(e));
     }
   }
@@ -730,28 +843,35 @@ export default function ContentEditor({
     collection: 'characters' | 'weapons',
     field: 'portrait' | 'art',
   ) {
-    if (!file || !item) return;
+    if (!file || !item) {
+      return;
+    }
     const target = item.id;
     try {
-      if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type) || file.size > 250000)
+      if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type) || file.size > 250000) {
         throw Error('Usá una imagen PNG, JPEG o WebP de hasta 250 KB.');
+      }
       const data = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = () => resolve(String(reader.result));
+        reader.onload = () => {
+          if (typeof reader.result === 'string') {
+            resolve(reader.result);
+          } else {
+            reject(new Error('No se pudo leer la imagen.'));
+          }
+        };
         reader.onerror = reject;
         reader.readAsDataURL(file);
       });
       change({
         ...draft,
-        [collection]: draft[collection].map((c: any) =>
-          c.id === target ? { ...c, [field]: data } : c,
-        ),
+        [collection]: draft[collection].map((c) => (c.id === target ? { ...c, [field]: data } : c)),
       });
-    } catch (e: any) {
+    } catch (e) {
       setNotice(editorErrorMessage(e) || 'No se pudo leer la imagen.');
     }
   }
-  function numeric(key: string, value: number, attributes = false) {
+  function numeric(key: string, value: number | undefined, attributes = false) {
     const actionPoints = !attributes && isAPField(key);
     const display = (value: number) => (actionPoints ? displayedAP(value) : value);
     return (
@@ -759,7 +879,7 @@ export default function ContentEditor({
         {labels[key] ?? key}
         <input
           type="number"
-          value={Number.isFinite(value) ? display(value) : ''}
+          value={typeof value === 'number' && Number.isFinite(value) ? display(value) : ''}
           min={display(key === 'maxHp' ? 15 : key.startsWith('stock') ? 1 : 0)}
           max={display(
             key === 'stockReach'
@@ -783,27 +903,27 @@ export default function ContentEditor({
                 ? 0.1
                 : 1
           }
-          onChange={(e) =>
-            update(
-              attributes
-                ? {
-                    attributes: {
-                      ...item.attributes,
-                      [key]: e.target.valueAsNumber,
-                    },
-                  }
-                : {
-                    [key]: actionPoints ? storedAP(e.target.valueAsNumber) : e.target.valueAsNumber,
-                  },
-            )
-          }
+          onChange={(e) => {
+            if (attributes) {
+              if (!character || !Object.hasOwn(character.attributes, key)) {
+                return;
+              }
+              updateCharacter({
+                attributes: { ...character.attributes, [key]: e.target.valueAsNumber },
+              });
+            } else {
+              updateWeapon({
+                [key]: actionPoints ? storedAP(e.target.valueAsNumber) : e.target.valueAsNumber,
+              });
+            }
+          }}
         />
       </label>
     );
   }
-  const player = battle?.units.find((u: any) => u.side === 'player');
-  const target = battle?.units.find((u: any) => u.side === 'enemy');
-  const shot = player && target ? contentShotPreview(battle, player, target) : null;
+  const player = battle?.units.find((u) => u.side === 'player');
+  const target = battle?.units.find((u) => u.side === 'enemy');
+  const shot = battle && player && target ? contentShotPreview(battle, player, target) : null;
   return (
     <DocumentDraftProvider scope={`story:${draft.id}`}>
       <EditorRoot
@@ -885,7 +1005,7 @@ export default function ContentEditor({
                     const value = parseContentPackage(JSON.stringify(postCampaign));
                     change(value);
                     setTab('characters');
-                    setSelected(value.characters[0].id);
+                    setSelected(value.characters[0]?.id ?? '');
                     setSeed(8);
                     setSearches((current) => ({ ...current, characters: '' }));
                     setNotice(
@@ -914,14 +1034,18 @@ export default function ContentEditor({
           onChange={async (e) => {
             const file = e.target.files?.[0];
             e.target.value = '';
-            if (!file) return;
+            if (!file) {
+              return;
+            }
             try {
-              if (file.size > CONTENT_LIMIT) throw Error('El archivo supera 2 MB.');
+              if (file.size > CONTENT_LIMIT) {
+                throw Error('El archivo supera 2 MB.');
+              }
               const restored = decodeContentSession(await file.text());
               change(restored.content);
-              setSession(restored);
+              setPlacementPreview({ content: draft, value: restored });
               setNotice('Prueba recuperada, con su contenido y sus decisiones.');
-            } catch (e: any) {
+            } catch (e) {
               setNotice(editorErrorMessage(e));
             }
           }}
@@ -958,12 +1082,12 @@ export default function ContentEditor({
           }}
         />
         {notice && (
-          <div role="status" className="notice">
+          <output className="notice">
             {notice}
             <button onClick={() => setNotice('')} aria-label="Cerrar aviso">
               ×
             </button>
-          </div>
+          </output>
         )}
         {!embedded && (
           <>
@@ -976,7 +1100,9 @@ export default function ContentEditor({
                   disabled={loadingCampaign}
                   onChange={(event) => {
                     const entry = campaigns.find((item) => item.id === event.target.value);
-                    if (entry) void chooseBase(entry);
+                    if (entry) {
+                      void chooseBase(entry);
+                    }
                   }}
                 >
                   {campaigns.map((entry) => (
@@ -1046,7 +1172,7 @@ export default function ContentEditor({
             </section>
           </>
         )}
-        <nav className="content-section-tabs" role="tablist" aria-label="Secciones del editor">
+        <div className="content-section-tabs" role="tablist" aria-label="Secciones del editor">
           {editorSections.map(({ id, name }, index) => (
             <button
               key={id}
@@ -1063,7 +1189,7 @@ export default function ContentEditor({
               {name}
             </button>
           ))}
-        </nav>
+        </div>
         {!embedded && <DocumentDraftStatus onOpen={() => navigateSection('advanced')} />}
         <section
           id={`${editorId}-panel`}
@@ -1164,10 +1290,10 @@ export default function ContentEditor({
                   </label>
                 )}
                 <div className="content-list-feedback">
-                  <span role="status" aria-live="polite">
+                  <output aria-live="polite">
                     {visibleItems.length} de {items.length}{' '}
                     {tab === 'characters' ? 'personajes' : 'armas'}
-                  </span>
+                  </output>
                   {search && (
                     <button type="button" onClick={clearSearch}>
                       Limpiar búsqueda
@@ -1179,13 +1305,13 @@ export default function ContentEditor({
                   aria-label={tab === 'characters' ? 'Personajes disponibles' : 'Armas disponibles'}
                 >
                   {visibleItems.length === 0 && (
-                    <p className="content-empty" role="status">
+                    <output className="content-empty">
                       {query
                         ? 'No hay resultados para esta búsqueda.'
                         : 'El catálogo está vacío. Creá una ficha para comenzar.'}
-                    </p>
+                    </output>
                   )}
-                  {visibleItems.map((i: any, index: number) => (
+                  {visibleItems.map((i, index: number) => (
                     <button
                       key={i.id}
                       aria-pressed={i.id === item?.id}
@@ -1198,13 +1324,13 @@ export default function ContentEditor({
                       {tab === 'weapons' && (
                         <img
                           className="weapon-thumbnail"
-                          src={resolveAsset(i.art ?? `/art/weapon-${i.template}.png`)}
+                          src={resolveAsset(
+                            'template' in i ? (i.art ?? `/art/weapon-${i.template}.png`) : '',
+                          )}
                           alt=""
                         />
                       )}
-                      {i.name ??
-                        draft.characters.find((c: any) => c.id === i.character)?.name ??
-                        i.id}
+                      {i.name}
                       <small>{i.id}</small>
                     </button>
                   ))}
@@ -1212,10 +1338,10 @@ export default function ContentEditor({
               </aside>
               <section className="form-panel" aria-label="Ficha seleccionada">
                 {selectionFiltered && (
-                  <p className="content-selection-note" role="status">
+                  <output className="content-selection-note">
                     La ficha seleccionada no aparece en los resultados. El filtro conserva la ficha
                     que estás editando.
-                  </p>
+                  </output>
                 )}
                 {item ? (
                   <>
@@ -1238,25 +1364,28 @@ export default function ContentEditor({
                         </button>
                       </div>
                     </div>
-                    {tab === 'characters' && (
+                    {tab === 'characters' && character && (
                       <>
                         <div className="identity">
-                          <img src={resolveAsset(item.portrait)} alt={`Retrato de ${item.name}`} />
+                          <img
+                            src={resolveAsset(character.portrait)}
+                            alt={`Retrato de ${character.name}`}
+                          />
                           <div>
                             <label>
                               Nombre
                               <input
-                                value={item.name}
+                                value={character.name}
                                 maxLength={100}
-                                onChange={(e) => update({ name: e.target.value })}
+                                onChange={(e) => updateCharacter({ name: e.target.value })}
                               />
                             </label>
                             <label>
                               Apodo
                               <input
-                                value={item.nickname}
+                                value={character.nickname}
                                 maxLength={100}
-                                onChange={(e) => update({ nickname: e.target.value })}
+                                onChange={(e) => updateCharacter({ nickname: e.target.value })}
                               />
                             </label>
                             <button onClick={() => portraitRef.current?.click()}>
@@ -1268,16 +1397,16 @@ export default function ContentEditor({
                         <label>
                           Función
                           <input
-                            value={item.role}
-                            onChange={(e) => update({ role: e.target.value })}
+                            value={character.role}
+                            onChange={(e) => updateCharacter({ role: e.target.value })}
                           />
                         </label>
                         <label>
                           Biografía
                           <textarea
                             rows={4}
-                            value={item.biography}
-                            onChange={(e) => update({ biography: e.target.value })}
+                            value={character.biography}
+                            onChange={(e) => updateCharacter({ biography: e.target.value })}
                           />
                         </label>
                         <div className="fields">
@@ -1287,17 +1416,19 @@ export default function ContentEditor({
                               type="number"
                               min={0}
                               max={1000000}
-                              value={item.monthlyPay}
+                              value={character.monthlyPay}
                               disabled={
-                                !isContractCharacter(item) &&
-                                !(isWorldCharacter(item) && item.service === 'contract')
+                                !isContractCharacter(character) &&
+                                !(isWorldCharacter(character) && character.service === 'contract')
                               }
                               title={
-                                !isContractCharacter(item) && item.service !== 'contract'
+                                !isContractCharacter(character) && character.service !== 'contract'
                                   ? 'Servicio permanente'
                                   : undefined
                               }
-                              onChange={(e) => update({ monthlyPay: e.target.valueAsNumber })}
+                              onChange={(e) =>
+                                updateCharacter({ monthlyPay: e.target.valueAsNumber })
+                              }
                             />
                           </label>
                           <label>
@@ -1306,11 +1437,14 @@ export default function ContentEditor({
                               type="number"
                               min={0}
                               max={1000000}
-                              value={item.serviceGuarantee ?? 0}
+                              value={character.serviceGuarantee ?? 0}
                               disabled={
-                                isHistoricalCharacter(item, draft) || item.service !== 'contract'
+                                isHistoricalCharacter(character, draft) ||
+                                character.service !== 'contract'
                               }
-                              onChange={(e) => update({ serviceGuarantee: e.target.valueAsNumber })}
+                              onChange={(e) =>
+                                updateCharacter({ serviceGuarantee: e.target.valueAsNumber })
+                              }
                             />
                             <small>
                               Opcional; 0 conserva el costo original. Se paga aparte de la paga y se
@@ -1321,11 +1455,11 @@ export default function ContentEditor({
                           <label>
                             Arma principal
                             <select
-                              value={item.weapon ?? ''}
-                              onChange={(e) => update({ weapon: e.target.value || null })}
+                              value={character.weapon ?? ''}
+                              onChange={(e) => updateCharacter({ weapon: e.target.value || null })}
                             >
                               <option value="">Sin arma principal</option>
-                              {draft.weapons.map((w: any) => (
+                              {draft.weapons.map((w) => (
                                 <option key={w.id} value={w.id}>
                                   {w.name}
                                 </option>
@@ -1335,11 +1469,13 @@ export default function ContentEditor({
                           <label>
                             Arma blanca
                             <select
-                              value={item.blade ?? ''}
-                              onChange={(e) => update({ blade: e.target.value || undefined })}
+                              value={character.blade ?? ''}
+                              onChange={(e) =>
+                                updateCharacter({ blade: e.target.value || undefined })
+                              }
                             >
                               <option value="">Equipo original del personaje</option>
-                              {draft.weapons.filter(isBladeDefinition).map((w: any) => (
+                              {draft.weapons.filter(isBladeDefinition).map((w) => (
                                 <option key={w.id} value={w.id}>
                                   {w.name}
                                 </option>
@@ -1347,22 +1483,24 @@ export default function ContentEditor({
                             </select>
                           </label>
                         </div>
-                        {isContractCharacter(item) && (
+                        {isContractCharacter(character) && (
                           <ContractPricePreview
                             draft={draft}
-                            monthlyPay={item.monthlyPay}
-                            serviceGuarantee={item.serviceGuarantee ?? 0}
+                            monthlyPay={character.monthlyPay}
+                            serviceGuarantee={character.serviceGuarantee ?? 0}
                           />
                         )}
-                        {isContractCharacter(item) && (
+                        {isContractCharacter(character) && (
                           <label>
                             Tiempo de viaje (horas)
                             <input
                               type="number"
                               min={0}
                               max={168}
-                              value={item.arrivalHours ?? 0}
-                              onChange={(e) => update({ arrivalHours: e.target.valueAsNumber })}
+                              value={character.arrivalHours ?? 0}
+                              onChange={(e) =>
+                                updateCharacter({ arrivalHours: e.target.valueAsNumber })
+                              }
                             />
                             <small>
                               El contrato comienza al llegar. Con 0, la llegada es inmediata si el
@@ -1370,14 +1508,21 @@ export default function ContentEditor({
                             </small>
                           </label>
                         )}
-                        {!isHistoricalCharacter(item, draft) && (
+                        {!isHistoricalCharacter(character, draft) && (
                           <fieldset>
                             <legend>Formación y progreso</legend>
                             <label>
                               Progreso por combate
                               <select
-                                value={item.progression ?? 'experience'}
-                                onChange={(e) => update({ progression: e.target.value })}
+                                value={character.progression ?? 'experience'}
+                                onChange={(e) =>
+                                  updateCharacter({
+                                    progression: selectValue(e.target.value, [
+                                      'experience',
+                                      'fixed',
+                                    ]),
+                                  })
+                                }
                               >
                                 <option value="experience">Gana experiencia y niveles</option>
                                 <option value="fixed">Conserva el nivel inicial</option>
@@ -1393,7 +1538,9 @@ export default function ContentEditor({
                                 min={0}
                                 max={100}
                                 value={ridingSkill}
-                                onChange={(e) => update({ ridingSkill: e.target.valueAsNumber })}
+                                onChange={(e) =>
+                                  updateCharacter({ ridingSkill: e.target.valueAsNumber })
+                                }
                               />
                               <small>
                                 Reduce el esfuerzo y el coste de moverse a caballo. Equitación
@@ -1407,7 +1554,7 @@ export default function ContentEditor({
                                     type="checkbox"
                                     checked={characterTraits.includes(trait.id)}
                                     onChange={(e) =>
-                                      update({
+                                      updateCharacter({
                                         traits: e.target.checked
                                           ? [...characterTraits, trait.id]
                                           : characterTraits.filter((id: string) => id !== trait.id),
@@ -1420,7 +1567,7 @@ export default function ContentEditor({
                             </div>
                           </fieldset>
                         )}
-                        {isWorldCharacter(item) && (
+                        {isWorldCharacter(character) && encounter && (
                           <fieldset aria-label="Encuentro del habitante">
                             <legend>Encuentro</legend>
                             <label>
@@ -1428,10 +1575,10 @@ export default function ContentEditor({
                               <textarea
                                 rows={3}
                                 maxLength={1000}
-                                value={item.encounter.greeting}
+                                value={encounter.greeting}
                                 onChange={(e) =>
-                                  update({
-                                    encounter: { ...item.encounter, greeting: e.target.value },
+                                  updateCharacter({
+                                    encounter: { ...encounter, greeting: e.target.value },
                                   })
                                 }
                               />
@@ -1439,10 +1586,10 @@ export default function ContentEditor({
                             <label>
                               <input
                                 type="checkbox"
-                                checked={item.encounter.recruitable}
+                                checked={encounter.recruitable}
                                 onChange={(e) =>
-                                  update({
-                                    encounter: { ...item.encounter, recruitable: e.target.checked },
+                                  updateCharacter({
+                                    encounter: { ...encounter, recruitable: e.target.checked },
                                   })
                                 }
                               />
@@ -1451,16 +1598,17 @@ export default function ContentEditor({
                             <label>
                               <input
                                 type="checkbox"
-                                checked={item.encounter.noncombatant === true}
+                                checked={encounter.noncombatant === true}
                                 disabled={
-                                  !conductNoncombatantDefinition(item, placement) &&
-                                  item.encounter.noncombatant !== true
+                                  !conductNoncombatantDefinition(character, placement) &&
+                                  encounter.noncombatant !== true
                                 }
                                 onChange={(e) => {
-                                  const encounter = { ...item.encounter };
-                                  if (e.target.checked) encounter.noncombatant = true;
-                                  else delete encounter.noncombatant;
-                                  update({ encounter });
+                                  updateCharacter({
+                                    encounter: applyDraftPatch(encounter, {
+                                      noncombatant: e.target.checked ? true : undefined,
+                                    }),
+                                  });
                                 }}
                               />
                               Civil no combatiente
@@ -1469,15 +1617,18 @@ export default function ContentEditor({
                                 Esta condición no impide que reciba daño.
                               </small>
                             </label>
-                            {item.encounter.recruitable && (
+                            {encounter.recruitable && (
                               <>
                                 <label>
                                   Tipo de servicio
                                   <select
-                                    value={item.service}
+                                    value={character.service}
                                     onChange={(e) =>
-                                      update({
-                                        service: e.target.value,
+                                      updateCharacter({
+                                        service: selectValue(e.target.value, [
+                                          'contract',
+                                          'permanent',
+                                        ]),
                                         ...(e.target.value === 'permanent'
                                           ? { monthlyPay: 0, serviceGuarantee: 0 }
                                           : {}),
@@ -1492,15 +1643,15 @@ export default function ContentEditor({
                                 </label>
                                 <p>
                                   Se incorpora donde lo encontrás y conserva sus heridas.{' '}
-                                  {item.service === 'contract'
+                                  {character.service === 'contract'
                                     ? 'La paga mensual define el precio de cada plazo. El jugador elige y paga antes de incorporarlo.'
                                     : 'Sirve sin paga y sin fecha de vencimiento.'}
                                 </p>
-                                {item.service === 'contract' && (
+                                {character.service === 'contract' && (
                                   <ContractPricePreview
                                     draft={draft}
-                                    monthlyPay={item.monthlyPay}
-                                    serviceGuarantee={item.serviceGuarantee ?? 0}
+                                    monthlyPay={character.monthlyPay}
+                                    serviceGuarantee={character.serviceGuarantee ?? 0}
                                   />
                                 )}
                                 <label>
@@ -1509,11 +1660,11 @@ export default function ContentEditor({
                                     type="number"
                                     min={0}
                                     max={100}
-                                    value={item.encounter.requiredLeadership}
+                                    value={encounter.requiredLeadership}
                                     onChange={(e) =>
-                                      update({
+                                      updateCharacter({
                                         encounter: {
-                                          ...item.encounter,
+                                          ...encounter,
                                           requiredLeadership: e.target.valueAsNumber,
                                         },
                                       })
@@ -1526,11 +1677,11 @@ export default function ContentEditor({
                                     type="number"
                                     min={0}
                                     max={12}
-                                    value={item.encounter.requiredLiberated}
+                                    value={encounter.requiredLiberated}
                                     onChange={(e) =>
-                                      update({
+                                      updateCharacter({
                                         encounter: {
-                                          ...item.encounter,
+                                          ...encounter,
                                           requiredLiberated: e.target.valueAsNumber,
                                         },
                                       })
@@ -1540,18 +1691,18 @@ export default function ContentEditor({
                                 <label>
                                   Localidad que debe estar liberada
                                   <select
-                                    value={item.encounter.requiredSector ?? ''}
+                                    value={encounter.requiredSector ?? ''}
                                     onChange={(e) =>
-                                      update({
+                                      updateCharacter({
                                         encounter: {
-                                          ...item.encounter,
+                                          ...encounter,
                                           requiredSector: e.target.value || null,
                                         },
                                       })
                                     }
                                   >
                                     <option value="">Ninguna</option>
-                                    {CAMPAIGN_SECTORS.map((s: any) => (
+                                    {CAMPAIGN_SECTORS.map((s) => (
                                       <option key={s.id} value={s.id}>
                                         {s.name}
                                       </option>
@@ -1562,17 +1713,19 @@ export default function ContentEditor({
                             )}
                           </fieldset>
                         )}
-                        {isWorldCharacter(item) && (
+                        {isWorldCharacter(character) && encounter && (
                           <DialogueEditor
                             content={draft}
-                            key={item.id}
-                            ownerId={item.id}
+                            key={character.id}
+                            ownerId={character.id}
                             characters={draft.characters}
                             quests={draft.quests ?? []}
-                            value={item.encounter.dialogue}
-                            greeting={item.encounter.greeting}
+                            value={encounter.dialogue}
+                            greeting={encounter.greeting}
                             onChange={(dialogue) =>
-                              update({ encounter: { ...item.encounter, dialogue } })
+                              updateCharacter({
+                                encounter: applyDraftPatch(encounter, { dialogue }),
+                              })
                             }
                           />
                         )}
@@ -1585,13 +1738,9 @@ export default function ContentEditor({
                           </p>
                           <div className="fields">
                             {CHARACTER_ABILITIES.map((ability) => {
-                              const abilities =
-                                item.abilities ??
-                                (hasGenericCharacterDefinitions(draft)
-                                  ? []
-                                  : legacyCharacterAbilities(legacyOperativeId(item.id)));
+                              const abilities = characterAbilities;
                               const incompatible =
-                                ability.contractOnly && !conductObserverDefinition(item);
+                                ability.contractOnly && !conductObserverDefinition(character);
                               return (
                                 <label key={ability.id}>
                                   <input
@@ -1604,7 +1753,7 @@ export default function ContentEditor({
                                         : undefined
                                     }
                                     onChange={(e) =>
-                                      update({
+                                      updateCharacter({
                                         abilities: e.target.checked
                                           ? [...abilities, ability.id]
                                           : abilities.filter((id: string) => id !== ability.id),
@@ -1618,60 +1767,63 @@ export default function ContentEditor({
                             })}
                           </div>
                         </fieldset>
-                        <CharacterSupplies character={item} onChange={update} />
-                        <CharacterCondition character={item} onChange={update} />
+                        <CharacterSupplies character={character} onChange={updateCharacter} />
+                        <CharacterCondition character={character} onChange={updateCharacter} />
                         {embedded && (
                           <CharacterPreview
                             content={draft}
-                            character={item}
+                            character={character}
                             resolveAsset={resolveAsset}
                           />
                         )}
                         <CharacterPresentation
                           content={draft}
-                          character={item}
+                          character={character}
                           portraits={(embedded ? draft : baseContent).characters}
                           characters={draft.characters}
                           weapon={
-                            draft.weapons.find((w: any) => w.id === item.weapon)?.template ?? 0
+                            draft.weapons.find((w) => w.id === character.weapon)?.template ?? 0
                           }
                           resolveAsset={resolveAsset}
-                          onChange={update}
+                          onChange={updateCharacter}
                         />
                         <h3>Atributos</h3>
                         <div className="fields">
-                          {ATTRIBUTE_FIELDS.map((k) => numeric(k, item.attributes[k], true))}
+                          {ATTRIBUTE_FIELDS.map((k) => numeric(k, character.attributes[k], true))}
                         </div>
                       </>
                     )}
-                    {tab === 'weapons' && (
+                    {tab === 'weapons' && weapon && (
                       <>
                         <img
                           className="weapon-preview"
-                          src={resolveAsset(item.art ?? `/art/weapon-${item.template}.png`)}
-                          alt={item.name}
+                          src={resolveAsset(weapon.art ?? `/art/weapon-${weapon.template}.png`)}
+                          alt={weapon.name}
                         />
                         <button onClick={() => weaponArtRef.current?.click()}>
                           Cambiar imagen del arma
                         </button>
-                        <button disabled={!item.art} onClick={() => update({ art: undefined })}>
+                        <button
+                          disabled={!weapon.art}
+                          onClick={() => updateWeapon({ art: undefined })}
+                        >
                           Usar imagen de la familia
                         </button>
                         <small>PNG, JPEG o WebP · hasta 250 KB</small>
                         <label>
                           Nombre
                           <input
-                            value={item.name}
-                            onChange={(e) => update({ name: e.target.value })}
+                            value={weapon.name}
+                            onChange={(e) => updateWeapon({ name: e.target.value })}
                           />
                         </label>
                         <label>
                           Familia de funcionamiento
                           <select
-                            value={item.template}
-                            onChange={(e) => update({ template: Number(e.target.value) })}
+                            value={weapon.template}
+                            onChange={(e) => updateWeapon({ template: Number(e.target.value) })}
                           >
-                            {(isBladeDefinition(item) ? BLADE_TEMPLATES : FIREARM_TEMPLATES).map(
+                            {(isBladeDefinition(weapon) ? BLADE_TEMPLATES : FIREARM_TEMPLATES).map(
                               (t) => (
                                 <option key={t.id} value={t.id}>
                                   {t.name}
@@ -1680,22 +1832,22 @@ export default function ContentEditor({
                             )}
                           </select>
                         </label>
-                        {!isBladeDefinition(item) && (
+                        {!isBladeDefinition(weapon) && (
                           <fieldset>
                             <legend>Munición compatible</legend>
                             <label>
                               Familia de munición
                               <select
-                                value={item.ammunitionFamily ?? ''}
+                                value={weapon.ammunitionFamily ?? ''}
                                 onChange={(e) =>
-                                  update({
+                                  updateWeapon({
                                     ammunitionFamily: e.target.value || undefined,
                                     alternativeLoads: undefined,
                                   })
                                 }
                               >
                                 <option value="">
-                                  Original · {ammunitionForWeapon(item.template)?.name}
+                                  Original · {ammunitionForWeapon(weapon.template)?.name}
                                 </option>
                                 {Object.entries(AMMO_TYPES).map(([id, ammo]) => (
                                   <option key={id} value={id}>
@@ -1711,10 +1863,10 @@ export default function ContentEditor({
                             </p>
                           </fieldset>
                         )}
-                        {!isBladeDefinition(item) && (
-                          <AlternativeLoads weapon={item} onChange={update} />
+                        {!isBladeDefinition(weapon) && (
+                          <AlternativeLoads weapon={weapon} onChange={updateWeapon} />
                         )}
-                        {!isBladeDefinition(item) && (
+                        {!isBladeDefinition(weapon) && (
                           <fieldset>
                             <legend>Penetración de la carga principal</legend>
                             <label>
@@ -1724,9 +1876,9 @@ export default function ContentEditor({
                                 min={0}
                                 max={1}
                                 step={0.05}
-                                value={item.materialRangeSlope ?? ''}
+                                value={weapon.materialRangeSlope ?? ''}
                                 onChange={(e) =>
-                                  update({
+                                  updateWeapon({
                                     materialRangeSlope:
                                       e.target.value === '' ? undefined : e.target.valueAsNumber,
                                   })
@@ -1742,15 +1894,15 @@ export default function ContentEditor({
                             </p>
                           </fieldset>
                         )}
-                        {!isBladeDefinition(item) && (
+                        {!isBladeDefinition(weapon) && (
                           <fieldset>
                             <legend>Energía de la carga principal</legend>
                             <label>
                               <input
                                 type="checkbox"
-                                checked={item.projectileEnergy !== undefined}
+                                checked={weaponEnergy !== undefined}
                                 onChange={(e) =>
-                                  update(
+                                  updateWeapon(
                                     e.target.checked
                                       ? {
                                           projectileEnergy: {
@@ -1768,7 +1920,7 @@ export default function ContentEditor({
                               />
                               Usar masa y velocidad para el impacto
                             </label>
-                            {item.projectileEnergy && (
+                            {weaponEnergy && (
                               <>
                                 <label>
                                   Masa total de la carga principal (g)
@@ -1777,11 +1929,11 @@ export default function ContentEditor({
                                     min={0.1}
                                     max={40}
                                     step={0.1}
-                                    value={item.projectileEnergy.massGrams}
+                                    value={weaponEnergy.massGrams}
                                     onChange={(e) =>
-                                      update({
+                                      updateWeapon({
                                         projectileEnergy: {
-                                          ...item.projectileEnergy,
+                                          ...weaponEnergy,
                                           massGrams: e.target.valueAsNumber,
                                         },
                                       })
@@ -1795,11 +1947,11 @@ export default function ContentEditor({
                                     min={25}
                                     max={600}
                                     step={1}
-                                    value={item.projectileEnergy.muzzleVelocityMps}
+                                    value={weaponEnergy.muzzleVelocityMps}
                                     onChange={(e) =>
-                                      update({
+                                      updateWeapon({
                                         projectileEnergy: {
-                                          ...item.projectileEnergy,
+                                          ...weaponEnergy,
                                           muzzleVelocityMps: e.target.valueAsNumber,
                                         },
                                       })
@@ -1820,10 +1972,10 @@ export default function ContentEditor({
                             <label>
                               <input
                                 type="checkbox"
-                                checked={item.projectileAirDrag !== undefined}
-                                disabled={!item.projectileEnergy}
+                                checked={weaponDrag !== undefined}
+                                disabled={!weaponEnergy}
                                 onChange={(e) =>
-                                  update({
+                                  updateWeapon({
                                     projectileAirDrag: e.target.checked
                                       ? {
                                           model: 'range-energy-retention-v1',
@@ -1835,7 +1987,7 @@ export default function ContentEditor({
                               />
                               Pérdida de energía en el aire de la carga principal
                             </label>
-                            {item.projectileAirDrag && (
+                            {weaponDrag && (
                               <label>
                                 Energía restante al alcance principal (%)
                                 <input
@@ -1844,12 +1996,12 @@ export default function ContentEditor({
                                   max={100}
                                   step={1}
                                   value={Number(
-                                    (item.projectileAirDrag.retentionAtRange * 100).toPrecision(15),
+                                    (weaponDrag.retentionAtRange * 100).toPrecision(15),
                                   )}
                                   onChange={(e) =>
-                                    update({
+                                    updateWeapon({
                                       projectileAirDrag: {
-                                        ...item.projectileAirDrag,
+                                        ...weaponDrag,
                                         retentionAtRange: e.target.valueAsNumber / 100,
                                       },
                                     })
@@ -1873,7 +2025,7 @@ export default function ContentEditor({
                           valores se usan en la campaña, la armería y el equipo recuperado. La
                           prueba de tiro admite armas de fuego.
                         </p>
-                        {!isBladeDefinition(item) && (
+                        {!isBladeDefinition(weapon) && (
                           <p>
                             Los PA para levantar el arma están incluidos en el primer disparo.
                             Mientras el soldado conserve la posición de tiro, los siguientes
@@ -1882,11 +2034,18 @@ export default function ContentEditor({
                           </p>
                         )}
                         <div className="fields">
-                          {(isBladeDefinition(item)
-                            ? ['damage', 'ap', 'reach']
-                            : ['damage', 'fireAP', 'readyAP', 'aimAP', 'reloadAP', 'range']
-                          ).map((k) => numeric(k, item[k]))}
-                          {!isBladeDefinition(item) && (
+                          {(isBladeDefinition(weapon)
+                            ? (['damage', 'ap', 'reach'] as const)
+                            : ([
+                                'damage',
+                                'fireAP',
+                                'readyAP',
+                                'aimAP',
+                                'reloadAP',
+                                'range',
+                              ] as const)
+                          ).map((k) => numeric(k, weapon[k]))}
+                          {!isBladeDefinition(weapon) && (
                             <fieldset>
                               <legend>Golpe con la culata</legend>
                               <p>
@@ -1894,26 +2053,32 @@ export default function ContentEditor({
                                 cartuchos. Su alcance máximo es una casilla contigua, incluidas las
                                 diagonales. Para cargar, seleccioná un arma blanca.
                               </p>
-                              {numeric('stockAP', item.stockAP ?? BUTTSTOCK.ap)}
-                              {numeric('stockDamage', item.stockDamage ?? BUTTSTOCK.damage)}
-                              {numeric('stockReach', item.stockReach ?? BUTTSTOCK.reach)}
+                              {numeric('stockAP', weapon.stockAP ?? BUTTSTOCK.ap)}
+                              {numeric('stockDamage', weapon.stockDamage ?? BUTTSTOCK.damage)}
+                              {numeric('stockReach', weapon.stockReach ?? BUTTSTOCK.reach)}
                             </fieldset>
                           )}
-                          {!isBladeDefinition(item) &&
+                          {!isBladeDefinition(weapon) &&
                             numeric(
                               'capacity',
-                              item.capacity ??
-                                BASE_FIREARMS[item.template as keyof typeof BASE_FIREARMS]
-                                  ?.capacity,
+                              weapon.capacity ??
+                                Object.entries(BASE_FIREARMS).find(
+                                  ([id]) => id === String(weapon.template),
+                                )?.[1].capacity,
                             )}
                           {numeric(
                             'weight',
-                            item.weight ?? (BASE_ITEMS as any)[item.template]?.weight,
+                            weapon.weight ??
+                              (baseWeapon && 'weight' in baseWeapon
+                                ? baseWeapon.weight
+                                : undefined),
                           )}
                           {numeric(
                             'price',
-                            item.price ??
-                              ({ ...FIREARM_PRICES, ...BLADE_PRICES } as any)[item.template],
+                            weapon.price ??
+                              Object.entries({ ...FIREARM_PRICES, ...BLADE_PRICES }).find(
+                                ([id]) => id === String(weapon.template),
+                              )?.[1],
                           )}
                         </div>
                       </>
@@ -1932,9 +2097,7 @@ export default function ContentEditor({
                               onClick={() =>
                                 change({
                                   ...draft,
-                                  placements: draft.placements.filter(
-                                    (p: any) => p.id !== placement.id,
-                                  ),
+                                  placements: draft.placements.filter((p) => p.id !== placement.id),
                                 })
                               }
                             >
@@ -1946,7 +2109,7 @@ export default function ContentEditor({
                                 value={placement.mode}
                                 onChange={(e) =>
                                   updatePlacement({
-                                    mode: e.target.value,
+                                    mode: selectValue(e.target.value, ['fixed', 'once', 'daily']),
                                     sectors:
                                       e.target.value === 'fixed'
                                         ? placement.sectors.slice(0, 1)
@@ -1979,9 +2142,9 @@ export default function ContentEditor({
                               <ul>
                                 {placement.sectors.map((id: string) => (
                                   <li key={id}>
-                                    {CONTENT_SECTORS.find((s: any) => s.id === id)?.name ?? id}{' '}
+                                    {CONTENT_SECTORS.find((s) => s.id === id)?.name ?? id}{' '}
                                     <button
-                                      aria-label={`Quitar ${CONTENT_SECTORS.find((s: any) => s.id === id)?.name ?? id}`}
+                                      aria-label={`Quitar ${CONTENT_SECTORS.find((s) => s.id === id)?.name ?? id}`}
                                       onClick={() =>
                                         updatePlacement({
                                           sectors: placement.sectors.filter(
@@ -2014,7 +2177,14 @@ export default function ContentEditor({
                                   Elección diaria
                                   <select
                                     value={placement.selection ?? 'random'}
-                                    onChange={(e) => updatePlacement({ selection: e.target.value })}
+                                    onChange={(e) =>
+                                      updatePlacement({
+                                        selection: selectValue(e.target.value, [
+                                          'random',
+                                          'alternate',
+                                        ]),
+                                      })
+                                    }
                                   >
                                     <option value="random">
                                       Sortear entre las celdas marcadas
@@ -2032,7 +2202,12 @@ export default function ContentEditor({
                                   <select
                                     value={placement.loadedGuard ?? 'current'}
                                     onChange={(e) =>
-                                      updatePlacement({ loadedGuard: e.target.value })
+                                      updatePlacement({
+                                        loadedGuard: selectValue(e.target.value, [
+                                          'current',
+                                          'range',
+                                        ]),
+                                      })
                                     }
                                   >
                                     <option value="current">
@@ -2051,7 +2226,8 @@ export default function ContentEditor({
                             </p>
                             <label>
                               Aparece después de la muerte de
-                              {!isWorldCharacter(item) && ' (solo simulación)'}
+                              {!('attributes' in item && isWorldCharacter(item)) &&
+                                ' (solo simulación)'}
                               <select
                                 value={placement.afterDeath ?? ''}
                                 onChange={(e) =>
@@ -2062,8 +2238,8 @@ export default function ContentEditor({
                               >
                                 <option value="">Nadie: disponible desde el inicio</option>
                                 {draft.characters
-                                  .filter((c: any) => c.id !== placement.character)
-                                  .map((c: any) => (
+                                  .filter((c) => c.id !== placement.character)
+                                  .map((c) => (
                                     <option value={c.id} key={c.id}>
                                       {c.name}
                                     </option>
@@ -2144,7 +2320,7 @@ export default function ContentEditor({
                   Sector abierto durante el avance
                   <select value={loaded} onChange={(e) => setLoaded(e.target.value)}>
                     <option value="">Ninguno</option>
-                    {CONTENT_SECTORS.map((s: any) => (
+                    {CONTENT_SECTORS.map((s) => (
                       <option key={s.id} value={s.id}>
                         {s.name}
                       </option>
@@ -2157,8 +2333,11 @@ export default function ContentEditor({
                 disabled={!!errors.length}
                 onClick={() =>
                   safely(() => {
-                    setSession(createContentSession(draft, seed));
-                    setBattle(null);
+                    setPlacementPreview({
+                      content: draft,
+                      value: createContentSession(draft, seed),
+                    });
+                    setBattlePreview({ content: draft, value: null });
                   })
                 }
               >
@@ -2182,9 +2361,14 @@ export default function ContentEditor({
                       <button
                         onClick={() =>
                           safely(() =>
-                            setSession(
-                              advanceContentSession(session, session.minute + 60, loaded || null),
-                            ),
+                            setPlacementPreview({
+                              content: draft,
+                              value: advanceContentSession(
+                                session,
+                                session.minute + 60,
+                                loaded || null,
+                              ),
+                            }),
                           )
                         }
                       >
@@ -2193,9 +2377,14 @@ export default function ContentEditor({
                       <button
                         onClick={() =>
                           safely(() =>
-                            setSession(
-                              advanceContentSession(session, session.nextDaily, loaded || null),
-                            ),
+                            setPlacementPreview({
+                              content: draft,
+                              value: advanceContentSession(
+                                session,
+                                session.nextDaily,
+                                loaded || null,
+                              ),
+                            }),
                           )
                         }
                       >
@@ -2214,14 +2403,15 @@ export default function ContentEditor({
                         </tr>
                       </thead>
                       <tbody>
-                        {draft.characters.map((c: any) => {
+                        {draft.characters.map((c) => {
                           const s = session.people[c.id];
+                          if (!s) {
+                            return null;
+                          }
                           return (
                             <tr key={c.id}>
                               <td>{c.name}</td>
-                              <td>
-                                {CONTENT_SECTORS.find((d: any) => d.id === s.sector)?.name ?? '—'}
-                              </td>
+                              <td>{CONTENT_SECTORS.find((d) => d.id === s.sector)?.name ?? '—'}</td>
                               <td>
                                 {!s.alive
                                   ? 'Muerto'
@@ -2236,7 +2426,10 @@ export default function ContentEditor({
                                   disabled={!s.alive}
                                   onClick={() =>
                                     safely(() =>
-                                      setSession(setContentPersonStatus(session, c.id, 'dead')),
+                                      setPlacementPreview({
+                                        content: draft,
+                                        value: setContentPersonStatus(session, c.id, 'dead'),
+                                      }),
                                     )
                                   }
                                 >
@@ -2246,13 +2439,14 @@ export default function ContentEditor({
                                   disabled={!s.alive || !s.appeared}
                                   onClick={() =>
                                     safely(() =>
-                                      setSession(
-                                        setContentPersonStatus(
+                                      setPlacementPreview({
+                                        content: draft,
+                                        value: setContentPersonStatus(
                                           session,
                                           c.id,
                                           s.recruited ? 'released' : 'recruited',
                                         ),
-                                      ),
+                                      }),
                                     )
                                   }
                                 >
@@ -2270,8 +2464,8 @@ export default function ContentEditor({
                       Llegadas pendientes:{' '}
                       {session.events
                         .map(
-                          (e: any) =>
-                            `${draft.characters.find((c: any) => c.id === draft.placements.find((p: any) => p.id === e.placement).character)?.name} (${clock(e.at)})`,
+                          (e) =>
+                            `${draft.characters.find((c) => c.id === draft.placements.find((p) => p.id === e.placement)?.character)?.name} (${clock(e.at)})`,
                         )
                         .join(', ')}
                     </p>
@@ -2290,7 +2484,7 @@ export default function ContentEditor({
                   value={selected || draft.characters[0]?.id || ''}
                   onChange={(e) => setSelected(e.target.value)}
                 >
-                  {draft.characters.map((c: any) => (
+                  {draft.characters.map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.name}
                     </option>
@@ -2301,15 +2495,20 @@ export default function ContentEditor({
                 disabled={!!errors.length || !draft.characters.length}
                 onClick={() =>
                   safely(() =>
-                    setBattle(
-                      createContentTestRange(draft, selected || draft.characters[0].id, seed),
-                    ),
+                    setBattlePreview({
+                      content: draft,
+                      value: createContentTestRange(
+                        draft,
+                        selected || draft.characters[0]?.id || '',
+                        seed,
+                      ),
+                    }),
                   )
                 }
               >
                 Iniciar prueba de tiro
               </button>
-              {battle && (
+              {battle && player && target && (
                 <div className="range">
                   <h3>
                     {player.name} · {weaponFor(player).name}
@@ -2320,20 +2519,21 @@ export default function ContentEditor({
                   </p>
                   <p>
                     {shot?.reason ??
-                      `Probabilidad de impacto: ${Math.round(shot?.chance ?? 0)}% · Coste: ${formatAP(shot?.pa ?? '—')} PA`}
+                      `Probabilidad de impacto: ${Math.round(shot?.chance ?? 0)}% · Coste: ${shot ? formatAP(shot.pa) : '—'} PA`}
                   </p>
                   <div className="toolbar">
                     <button
                       disabled={target.hp <= 0 || battle.phase !== 'player'}
                       onClick={() =>
                         safely(() =>
-                          setBattle(
-                            actBattle(battle, {
+                          setBattlePreview({
+                            content: draft,
+                            value: actBattle(battle, {
                               type: 'fire',
                               unitId: player.id,
                               targetId: target.id,
                             }),
-                          ),
+                          }),
                         )
                       }
                     >
@@ -2343,12 +2543,13 @@ export default function ContentEditor({
                       disabled={battle.phase !== 'player'}
                       onClick={() =>
                         safely(() =>
-                          setBattle(
-                            actBattle(battle, {
+                          setBattlePreview({
+                            content: draft,
+                            value: actBattle(battle, {
                               type: 'reload',
                               unitId: player.id,
                             }),
-                          ),
+                          }),
                         )
                       }
                     >
@@ -2358,18 +2559,23 @@ export default function ContentEditor({
                       disabled={!player.jammed}
                       onClick={() =>
                         safely(() =>
-                          setBattle(
-                            actBattle(battle, {
+                          setBattlePreview({
+                            content: draft,
+                            value: actBattle(battle, {
                               type: 'reprime',
                               unitId: player.id,
                             }),
-                          ),
+                          }),
                         )
                       }
                     >
                       Resolver fallo
                     </button>
-                    <button onClick={() => safely(() => setBattle(endTurn(battle)))}>
+                    <button
+                      onClick={() =>
+                        safely(() => setBattlePreview({ content: draft, value: endTurn(battle) }))
+                      }
+                    >
                       Pasar turno del oponente
                     </button>
                   </div>
@@ -2403,41 +2609,34 @@ export default function ContentEditor({
             </ul>
           )}
         </footer>
-        <Dialog
+        <EditorDialog
           open={Boolean(exportFile)}
-          onOpenChange={(open) => {
-            if (!open) setExportFile(null);
-          }}
+          onClose={() => setExportFile(null)}
+          className="content-export-dialog"
+          title={`Exportar ${exportFile?.name ?? ''}`}
+          description="Guardá el archivo o copiá el JSON para conservar una copia de tu contenido."
         >
-          <DialogContent className="content-export-dialog">
-            <DialogTitle>Exportar {exportFile?.name}</DialogTitle>
-            <DialogDescription>
-              Guardá el archivo o copiá el JSON para conservar una copia de tu contenido.
-            </DialogDescription>
-            <div role="status" aria-live="polite">
-              {exportStatus}
-            </div>
-            <textarea aria-label="JSON del contenido" readOnly value={exportFile?.text ?? ''} />
-            <div className="content-export-actions">
-              <a href={exportUrl} download={exportFile?.name}>
-                Descargar JSON
-              </a>
-              <button
-                onClick={async () => {
-                  try {
-                    await navigator.clipboard.writeText(exportFile?.text ?? '');
-                    setExportStatus('JSON copiado.');
-                  } catch {
-                    setExportStatus('Seleccioná el texto y copialo con el teclado.');
-                  }
-                }}
-              >
-                Copiar JSON
-              </button>
-              <button onClick={() => setExportFile(null)}>Cerrar exportación</button>
-            </div>
-          </DialogContent>
-        </Dialog>
+          <output aria-live="polite">{exportStatus}</output>
+          <textarea aria-label="JSON del contenido" readOnly value={exportFile?.text ?? ''} />
+          <div className="content-export-actions">
+            <a href={exportUrl} download={exportFile?.name}>
+              Descargar JSON
+            </a>
+            <button
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(exportFile?.text ?? '');
+                  setExportStatus('JSON copiado.');
+                } catch {
+                  setExportStatus('Seleccioná el texto y copialo con el teclado.');
+                }
+              }}
+            >
+              Copiar JSON
+            </button>
+            <button onClick={() => setExportFile(null)}>Cerrar exportación</button>
+          </div>
+        </EditorDialog>
       </EditorRoot>
     </DocumentDraftProvider>
   );

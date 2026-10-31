@@ -3,7 +3,7 @@ import { verifyBrowserWorkers } from './verify-browser-workers.mjs';
 import { buildIdentity } from './build-identity.mjs';
 import { verifyTacticalAssets } from './verify-tactical-assets.mjs';
 import { DEFAULT_CONTENT } from '../content/campaigns/default.js';
-import { CHARACTER_PORTRAITS } from '../packages/game/character-profile.js';
+import { CHARACTER_PORTRAITS } from '../packages/game/character-profile.ts';
 import { spawnSync } from 'node:child_process';
 import { readFile, readdir, stat, cp } from 'node:fs/promises';
 import { resolve, dirname, relative, extname } from 'node:path';
@@ -25,15 +25,23 @@ if (!process.argv.includes('--stage-only')) {
     ['--prefix', resolve(root, 'apps/web'), 'run', 'build'],
     { stdio: 'inherit', shell: process.platform === 'win32' },
   );
-  if (build.error) throw build.error;
-  if (build.status !== 0) process.exit(build.status ?? 1);
+  if (build.error) {
+    throw build.error;
+  }
+  if (build.status !== 0) {
+    process.exit(build.status ?? 1);
+  }
   const editorBuild = spawnSync(
     process.platform === 'win32' ? 'npm.cmd' : 'npm',
     ['--prefix', resolve(root, 'apps/campaign-editor'), 'run', 'build'],
     { stdio: 'inherit', shell: process.platform === 'win32' },
   );
-  if (editorBuild.error) throw editorBuild.error;
-  if (editorBuild.status !== 0) process.exit(editorBuild.status ?? 1);
+  if (editorBuild.error) {
+    throw editorBuild.error;
+  }
+  if (editorBuild.status !== 0) {
+    process.exit(editorBuild.status ?? 1);
+  }
 }
 await stageStaticDeployment(buildSource, destination, basePath);
 await stageCampaigns(root, destination);
@@ -44,20 +52,27 @@ async function filesAt(directory) {
   const files = [];
   for (const entry of await readdir(directory, { withFileTypes: true })) {
     const path = resolve(directory, entry.name);
-    if (entry.isDirectory()) files.push(...(await filesAt(path)));
-    else if (entry.isFile()) files.push(path);
-    else throw Error(`Unexpected non-file export entry: ${path}`);
+    if (entry.isDirectory()) {
+      files.push(...(await filesAt(path)));
+    } else if (entry.isFile()) {
+      files.push(path);
+    } else {
+      throw Error(`Unexpected non-file export entry: ${path}`);
+    }
   }
   return files;
 }
 const sourceFiles = await filesAt(source);
-if (!(await stat(resolve(source, 'index.html'))).isFile())
+if (!(await stat(resolve(source, 'index.html'))).isFile()) {
   throw Error('Static export has no index.html.');
+}
 const known = new Set(sourceFiles.map((file) => relative(source, file).replaceAll('\\', '/')));
 const checked = new Set();
 function requireAsset(reference, from = 'index.html', options = {}) {
   const name = staticExportPath(reference, from, basePath, options);
-  if (name === null) return;
+  if (name === null) {
+    return;
+  }
   if (!name) {
     checked.add('index.html');
     return;
@@ -71,72 +86,99 @@ function requireAsset(reference, from = 'index.html', options = {}) {
       : !extname(page) && known.has(`${page}.html`)
         ? `${page}.html`
         : null;
-  if (!match) throw Error(`Missing exported asset: ${reference} (referenced by ${from})`);
+  if (!match) {
+    throw Error(`Missing exported asset: ${reference} (referenced by ${from})`);
+  }
   checked.add(match);
 }
 for (const file of sourceFiles) {
   const name = relative(source, file).replaceAll('\\', '/');
   if (extname(file) === '.html') {
     const html = await readFile(file, 'utf8');
-    for (const match of html.matchAll(/(?:src|href)=["']([^"']+)["']/g))
+    for (const match of html.matchAll(/(?:src|href)=["']([^"']+)["']/g)) {
       requireAsset(match[1].replaceAll('&amp;', '&'), name, { deployed: true });
+    }
   }
   if (extname(file) === '.js') {
     const javascript = await readFile(file, 'utf8');
     verifyBrowserWorkers(javascript, name, (reference) =>
       requireAsset(reference, name, { deployed: true }),
     );
-    for (const match of javascript.matchAll(/[\"'`]((?:\/[^\"'`$?#]+)?\/art\/[^\"'`$?#]+)[\"'`]/g))
+    for (const match of javascript.matchAll(/["'`]((?:\/[^"'`$?#]+)?\/art\/[^"'`$?#]+)["'`]/g)) {
       requireAsset(match[1], name);
+    }
   }
   if (extname(file) === '.css') {
     const css = await readFile(file, 'utf8');
-    for (const match of css.matchAll(/url\(\s*["']?([^"')\s]+)["']?\s*\)/g))
+    for (const match of css.matchAll(/url\(\s*["']?([^"')\s]+)["']?\s*\)/g)) {
       requireAsset(match[1], name, { deployed: true });
+    }
   }
 }
 
-for (const portrait of CHARACTER_PORTRAITS) requireAsset(portrait.src, 'custom portrait catalog');
+for (const portrait of CHARACTER_PORTRAITS) {
+  requireAsset(portrait.src, 'custom portrait catalog');
+}
 // Dynamic portrait and action-frame URLs are not visible to literal URL scans.
-for (const character of DEFAULT_CONTENT.characters)
-  if (character.portrait) requireAsset(character.portrait, 'installed roster');
-for (let id = 1800; id <= 1813; id++) requireAsset(`/art/weapon-${id}.png`, 'armory');
-for (const direction of ['se', 'sw'])
-  for (const pose of ['idle', 'fire', 'reload', 'strike'])
+for (const character of DEFAULT_CONTENT.characters) {
+  if (character.portrait) {
+    requireAsset(character.portrait, 'installed roster');
+  }
+}
+for (let id = 1800; id <= 1813; id++) {
+  requireAsset(`/art/weapon-${id}.png`, 'armory');
+}
+for (const direction of ['se', 'sw']) {
+  for (const pose of ['idle', 'fire', 'reload', 'strike']) {
     requireAsset(`/art/granadero-${direction}-${pose}.png`, 'tactical sprites');
+  }
+}
 const artwork = JSON.parse(await readFile(resolve(source, 'art/manifest.json'), 'utf8'));
 for (const asset of artwork.assets) {
   requireAsset(`/art/${asset.path}`, 'art manifest');
   const actual = createHash('sha256')
     .update(await readFile(resolve(source, 'art', asset.path)))
     .digest('hex');
-  if (actual !== asset.sha256) throw Error(`Artwork checksum mismatch: ${asset.path}`);
+  if (actual !== asset.sha256) {
+    throw Error(`Artwork checksum mismatch: ${asset.path}`);
+  }
 }
 const manifest = JSON.parse(await readFile(resolve(source, '.vite/manifest.json'), 'utf8'));
 for (const [key, entry] of Object.entries(manifest)) {
-  if (entry.file) requireAsset(`/${entry.file}`, `manifest:${key}`);
-  for (const file of [...(entry.css || []), ...(entry.assets || [])])
+  if (entry.file) {
+    requireAsset(`/${entry.file}`, `manifest:${key}`);
+  }
+  for (const file of [...(entry.css || []), ...(entry.assets || [])]) {
     requireAsset(`/${file}`, `manifest:${key}`);
+  }
   for (const dependency of [...(entry.imports || []), ...(entry.dynamicImports || [])]) {
-    if (!manifest[dependency])
+    if (!manifest[dependency]) {
       throw Error(`Missing manifest dependency: ${dependency} from ${key}`);
+    }
   }
 }
-for (const faction of ['granadero', 'royalist'])
-  for (const action of ['idle', 'walk'])
+for (const faction of ['granadero', 'royalist']) {
+  for (const action of ['idle', 'walk']) {
     requireAsset(`/art/${faction}-${action}-atlas.png`, 'infantry animation');
-for (const action of ['idle', 'walk'])
+  }
+}
+for (const action of ['idle', 'walk']) {
   requireAsset(`/art/cavalry-${action}-atlas.png`, 'cavalry animation');
+}
 requireAsset('/art/cavalry-animation.json', 'cavalry animation metadata');
-for (const faction of ['granadero', 'royalist'])
-  for (const stance of ['crouch', 'prone'])
-    for (const action of ['idle', 'walk'])
+for (const faction of ['granadero', 'royalist']) {
+  for (const stance of ['crouch', 'prone']) {
+    for (const action of ['idle', 'walk']) {
       requireAsset(`/art/${faction}-${stance}-${action}-atlas.png`, 'low stance animation');
+    }
+  }
+}
 requireAsset('/art/stance-animation.json', 'stance animation metadata');
 await verifyTacticalAssets(source, requireAsset);
 const identity = JSON.parse(await readFile(resolve(source, 'build-info.json'), 'utf8'));
-if (identity.source !== (await buildIdentity(root)).source)
+if (identity.source !== (await buildIdentity(root)).source) {
   throw Error('Source changed during the build. Build again before publishing.');
+}
 console.log(
   `Static export verified: ${sourceFiles.length} files, ${checked.size} asset references, staged in .output/dist/.`,
 );

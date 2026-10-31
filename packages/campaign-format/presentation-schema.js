@@ -1,6 +1,6 @@
 import { isContentImageReference } from './campaign-assets.js';
 import { validateOfficerCreation } from './officer-creation-schema.js';
-import { validateCampaignData } from './campaign-data-validation.js';
+import { validateCampaignData } from './campaign-data-validation.ts';
 
 const object = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 const text = (v, max = 1000) => typeof v === 'string' && v.trim().length > 0 && v.length <= max;
@@ -19,7 +19,9 @@ const label = (v) =>
   (v.className === undefined ||
     (typeof v.className === 'string' && /^[a-zA-Z0-9_ -]{1,100}$/.test(v.className)));
 export function validateCampaignPresentation(value, content) {
-  if (value === undefined) return [];
+  if (value === undefined) {
+    return [];
+  }
   try {
     const errors = validateCampaignData(value);
     return errors.length
@@ -30,10 +32,14 @@ export function validateCampaignPresentation(value, content) {
   }
 }
 function validatePresentationRecords(value, content) {
-  if (!object(value)) return ['Presentación de campaña: definición inválida.'];
+  if (!object(value)) {
+    return ['Presentación de campaña: definición inválida.'];
+  }
   const errors = [],
     check = (ok, message) => {
-      if (!ok) errors.push(`Presentación de campaña: ${message}`);
+      if (!ok) {
+        errors.push(`Presentación de campaña: ${message}`);
+      }
     };
   check(value.version === 1 && text(value.title, 200), 'versión o título inválido.');
   for (const key of [
@@ -45,10 +51,15 @@ function validatePresentationRecords(value, content) {
     'caption',
     'footer',
     'deskSeal',
-  ])
-    if (value[key] !== undefined) check(text(value[key]), `${key}: texto inválido.`);
+  ]) {
+    if (value[key] !== undefined) {
+      check(text(value[key]), `${key}: texto inválido.`);
+    }
+  }
   const image = (v) => isContentImageReference(v) && (!v.startsWith('data:') || v.length < 350000);
-  if (value.menuArt !== undefined) check(image(value.menuArt), 'imagen de inicio inválida.');
+  if (value.menuArt !== undefined) {
+    check(image(value.menuArt), 'imagen de inicio inválida.');
+  }
   if (value.calendar !== undefined) {
     const d = value.calendar;
     check(
@@ -61,9 +72,9 @@ function validatePresentationRecords(value, content) {
     );
   }
   if (value.characterPortraits !== undefined) {
-    if (!Array.isArray(value.characterPortraits) || value.characterPortraits.length > 500)
+    if (!Array.isArray(value.characterPortraits) || value.characterPortraits.length > 500) {
       check(false, 'catálogo de rostros inválido.');
-    else {
+    } else {
       const ids = new Set();
       for (const portrait of value.characterPortraits) {
         const valid =
@@ -98,23 +109,30 @@ function validatePresentationRecords(value, content) {
       'introducción inválida.',
     );
     if (object(intro)) {
-      if (intro.version !== undefined)
+      if (intro.version !== undefined) {
         check(intro.version === 1, 'versión de introducción inválida.');
-      for (const key of ['id', 'title', 'wordmark', 'period', 'createLabel'])
-        if (intro[key] !== undefined)
+      }
+      for (const key of ['id', 'title', 'wordmark', 'period', 'createLabel']) {
+        if (intro[key] !== undefined) {
           check(text(intro[key], 200), `${key}: introducción inválida.`);
+        }
+      }
       if (intro.chart !== undefined) {
         const c = intro.chart;
         check(object(c), 'carta de introducción inválida.');
         if (object(c)) {
-          for (const key of ['land', 'river', 'mountains', 'route'])
-            if (c[key] !== undefined) check(path(c[key]), `${key}: trazado inválido.`);
-          if (c.labels !== undefined)
+          for (const key of ['land', 'river', 'mountains', 'route']) {
+            if (c[key] !== undefined) {
+              check(path(c[key]), `${key}: trazado inválido.`);
+            }
+          }
+          if (c.labels !== undefined) {
             check(
               Array.isArray(c.labels) && c.labels.length <= 200 && c.labels.every(label),
               'etiquetas de introducción inválidas.',
             );
-          if (c.towns !== undefined)
+          }
+          if (c.towns !== undefined) {
             check(
               Array.isArray(c.towns) &&
                 c.towns.length <= 200 &&
@@ -128,7 +146,10 @@ function validatePresentationRecords(value, content) {
                 ),
               'localidades de introducción inválidas.',
             );
-          if (c.beacon !== undefined) check(point(c.beacon), 'marca de introducción inválida.');
+          }
+          if (c.beacon !== undefined) {
+            check(point(c.beacon), 'marca de introducción inválida.');
+          }
         }
       }
     }
@@ -163,20 +184,22 @@ function validatePresentationRecords(value, content) {
       (content?.scenario === 'generic-v1' || content?.campaignStory
         ? (content?.characters ?? []).map((c) => ({ id: `portrait-${c.id}`, selectable: true }))
         : undefined);
-    if (portraits !== undefined)
+    if (portraits !== undefined) {
       check(
         Array.isArray(portraits) &&
           portraits.some((p) => p?.id === defaultPortrait && p.selectable !== false),
         'el rostro inicial no está disponible en esta campaña.',
       );
+    }
   }
-  if (value.manual !== undefined)
+  if (value.manual !== undefined) {
     check(
       object(value.manual) &&
         Object.keys(value.manual).every((k) => ['campaign', 'goals', 'note'].includes(k)) &&
         Object.values(value.manual).every((v) => text(v, 4000)),
       'manual inválido.',
     );
+  }
   const world = content?.world,
     sectors = new Set((Array.isArray(world?.sectors) ? world.sectors : []).map((s) => s?.id));
   const atlas = value.atlas;
@@ -191,13 +214,16 @@ function validatePresentationRecords(value, content) {
         'legend',
         'enemyLabel',
         'friendlyLabel',
-      ])
-        if (atlas[key] !== undefined) check(text(atlas[key], 200), `${key}: atlas inválido.`);
+      ]) {
+        if (atlas[key] !== undefined) {
+          check(text(atlas[key], 200), `${key}: atlas inválido.`);
+        }
+      }
       for (const [key, min, max] of [
         ['longitudes', -180, 180],
         ['latitudes', -90, 90],
-      ])
-        if (atlas[key] !== undefined)
+      ]) {
+        if (atlas[key] !== undefined) {
           check(
             Array.isArray(atlas[key]) &&
               atlas[key].length <= 100 &&
@@ -205,12 +231,15 @@ function validatePresentationRecords(value, content) {
               atlas[key].every((n) => finite(n, min, max)),
             `${key}: coordenadas inválidas.`,
           );
-      if (atlas.labels !== undefined)
+        }
+      }
+      if (atlas.labels !== undefined) {
         check(
           Array.isArray(atlas.labels) && atlas.labels.length <= 200 && atlas.labels.every(label),
           'etiquetas del atlas inválidas.',
         );
-      if (atlas.sites !== undefined)
+      }
+      if (atlas.sites !== undefined) {
         check(
           Array.isArray(atlas.sites) &&
             atlas.sites.length <= 200 &&
@@ -226,9 +255,11 @@ function validatePresentationRecords(value, content) {
             ),
           'sitios del atlas inválidos.',
         );
-      if (atlas.mountains !== undefined)
+      }
+      if (atlas.mountains !== undefined) {
         check(path(atlas.mountains), 'trazado del atlas inválido.');
-      if (atlas.labelPositions !== undefined)
+      }
+      if (atlas.labelPositions !== undefined) {
         check(
           object(atlas.labelPositions) &&
             Object.entries(atlas.labelPositions).every(
@@ -241,6 +272,7 @@ function validatePresentationRecords(value, content) {
             ),
           'posición de etiquetas inválida.',
         );
+      }
     }
   }
   const skirmish = value.skirmish;

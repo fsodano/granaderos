@@ -4,23 +4,44 @@ import { useMemo, useState } from 'react';
 import { TacticalThreeScene } from '../../../../web/game-preview.ts';
 import { presentActors, presentWorld } from '../../../../web/game-preview.ts';
 import { sectorProject } from '../../../../web/game-preview.ts';
-import { createBattle } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { createSceneTerrainCache } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { weaponMetadata } from '../../../../../packages/game/public/campaign-editor-api.js';
+import { createBattle } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { createSceneTerrainCache } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { weaponMetadata } from '../../../../../packages/game/public/campaign-editor-api.ts';
 import {
   characterPresentationDefaults,
   authoredPresentation,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
-import { startingCharacterSupplies } from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { startingCharacterSupplies } from '../../../../../packages/game/public/campaign-editor-api.ts';
 import { sitePath } from '../../../../web/game-preview-assets.js';
+import type {
+  CampaignContent,
+  CharacterDefinition,
+} from '../../../../../packages/campaign-format/types.ts';
+import type { ActorEntry, Motion } from '../../../../web/game-preview.ts';
+import { selectValue } from '../../lib/editor-values.ts';
+
+const motions = ['idle', 'walk', 'run', 'aim'] as const;
+const postures = ['standing', 'crouched', 'prone'] as const;
+const equipmentSlots = ['primary', 'blade', 'none'] as const;
+interface PreviewOptions {
+  direction?: number;
+  motion?: (typeof motions)[number];
+  posture?: (typeof postures)[number];
+  equipment?: (typeof equipmentSlots)[number];
+}
 
 export function characterPreviewScene(
-  content: any,
-  character: any,
-  { direction = 3, motion = 'idle', posture = 'standing', equipment = 'primary' }: any = {},
+  content: CampaignContent,
+  character: CharacterDefinition,
+  {
+    direction = 3,
+    motion = 'idle',
+    posture = 'standing',
+    equipment = 'primary',
+  }: PreviewOptions = {},
 ) {
-  const primary = content.weapons.find((w: any) => w.id === character.weapon),
-    blade = content.weapons.find((w: any) => w.id === character.blade),
+  const primary = content.weapons.find((w) => w.id === character.weapon),
+    blade = content.weapons.find((w) => w.id === character.blade),
     presentation = characterPresentationDefaults(character, content);
   const actor = {
     ...character.attributes,
@@ -66,11 +87,14 @@ export function characterPreviewScene(
     campaignPackage: content,
   });
   battle.campaignPackage = content;
-  const unit = battle.units[0],
-    entries = [{ key: 'unit:preview', kind: 'unit' as const, actor: unit }],
+  const unit = battle.units[0];
+  if (!unit) {
+    throw new Error('La vista necesita un personaje válido.');
+  }
+  const entries: ActorEntry[] = [{ key: 'unit:preview', kind: 'unit', actor: unit }],
     rooms = new Set<string>(),
     yaw = ((5 - direction) * Math.PI) / 4;
-  const positions: any =
+  const positions: Record<string, Motion> =
     motion === 'walk' || motion === 'run'
       ? {
           'unit:preview': {
@@ -102,27 +126,28 @@ export default function CharacterPreview({
   character,
   resolveAsset = sitePath,
 }: {
-  content: any;
-  character: any;
+  content: CampaignContent;
+  character: CharacterDefinition;
   resolveAsset?: (reference: string) => string;
 }) {
   const [direction, setDirection] = useState(3),
-    [motion, setMotion] = useState('idle'),
-    [posture, setPosture] = useState('standing'),
-    [equipment, setEquipment] = useState('primary');
+    [motion, setMotion] = useState<(typeof motions)[number]>('idle'),
+    [posture, setPosture] = useState<(typeof postures)[number]>('standing'),
+    [equipment, setEquipment] = useState<(typeof equipmentSlots)[number]>('primary');
   const preview = useMemo(() => {
     try {
       return characterPreviewScene(content, character, { direction, motion, posture, equipment });
-    } catch (error: any) {
+    } catch (error) {
       return { error: editorErrorMessage(error) };
     }
   }, [content, character, direction, motion, posture, equipment]);
-  if ('error' in preview)
+  if ('error' in preview) {
     return (
       <section aria-label="Vista 3D del personaje">
         <p role="alert">Completá una ficha válida para abrir la vista: {preview.error}</p>
       </section>
     );
+  }
   return (
     <section className="studio-character-preview" aria-label={`Vista 3D de ${character.name}`}>
       <h3>Vista 3D del personaje</h3>
@@ -150,7 +175,7 @@ export default function CharacterPreview({
         </label>
         <label>
           Movimiento de la vista
-          <select value={motion} onChange={(e) => setMotion(e.target.value)}>
+          <select value={motion} onChange={(e) => setMotion(selectValue(e.target.value, motions))}>
             <option value="idle">Reposo</option>
             <option value="walk">Caminar</option>
             <option value="run">Correr</option>
@@ -159,7 +184,10 @@ export default function CharacterPreview({
         </label>
         <label>
           Postura de la vista
-          <select value={posture} onChange={(e) => setPosture(e.target.value)}>
+          <select
+            value={posture}
+            onChange={(e) => setPosture(selectValue(e.target.value, postures))}
+          >
             <option value="standing">De pie</option>
             <option value="crouched">Agachado</option>
             <option value="prone">Tendido</option>
@@ -167,7 +195,10 @@ export default function CharacterPreview({
         </label>
         <label>
           Equipo en la vista
-          <select value={equipment} onChange={(e) => setEquipment(e.target.value)}>
+          <select
+            value={equipment}
+            onChange={(e) => setEquipment(selectValue(e.target.value, equipmentSlots))}
+          >
             <option value="primary">Arma principal</option>
             <option value="blade">Arma blanca</option>
             <option value="none">Manos libres</option>

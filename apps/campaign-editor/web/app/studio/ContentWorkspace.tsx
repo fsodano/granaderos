@@ -1,4 +1,7 @@
 'use client';
+import type { CampaignProjectDocument } from '../../../domain/campaign-project.ts';
+import { assertCampaignContent, requireJsonDocument } from '../../lib/editor-documents.ts';
+import { editorErrorMessage } from '../../../infrastructure/editor-error-message.ts';
 import {
   projectContent,
   updateProjectContent,
@@ -11,19 +14,32 @@ export default function ContentWorkspace({
   project,
   onChange,
 }: {
-  project: any;
-  onChange: (next: any) => void;
+  project: CampaignProjectDocument;
+  onChange: (next: CampaignProjectDocument) => void;
 }) {
   const resolveAsset = useStudioAssetResolver(project);
+  const content = projectContent(project);
+  let contentError = '';
+  let validContent = null;
+  try {
+    assertCampaignContent(content);
+    validContent = content;
+  } catch (error) {
+    contentError = editorErrorMessage(error);
+  }
   return (
     <>
-      <ContentEditor
-        embedded
-        content={projectContent(project)}
-        onContentChange={(next) => onChange(updateProjectContent(project, next))}
-        resolveAsset={resolveAsset}
-      />
-      <details>
+      {validContent ? (
+        <ContentEditor
+          embedded
+          content={validContent}
+          onContentChange={(next) => onChange(updateProjectContent(project, next))}
+          resolveAsset={resolveAsset}
+        />
+      ) : (
+        <p role="alert">Corregí los campos del contenido para abrir las fichas: {contentError}</p>
+      )}
+      <details open={!validContent}>
         <summary>Todos los campos del contenido</summary>
         <p>
           Los cambios pertenecen al mismo proyecto. La validación del taller comprueba las
@@ -33,7 +49,7 @@ export default function ContentWorkspace({
           label="Contenido de campaña"
           path="content"
           value={project.content}
-          onChange={(content) => onChange({ ...project, content })}
+          onChange={(content) => onChange({ ...project, content: requireJsonDocument(content) })}
         />
       </details>
     </>

@@ -12,7 +12,9 @@ const exact = (v, keys) =>
   object(v) && Object.keys(v).length === keys.length && keys.every((k) => Object.hasOwn(v, k));
 const integer = (v, min, max) => Number.isSafeInteger(v) && v >= min && v <= max;
 const need = (ok, message) => {
-  if (!ok) throw Error(message);
+  if (!ok) {
+    throw Error(message);
+  }
 };
 const message = 'El registro de eventos de campaña es inválido.';
 const order = (a, b) => a.atHour - b.atHour || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
@@ -57,12 +59,14 @@ function validateReceipts(s, { complete = true } = {}) {
     );
   }
   const due = definitions.filter((event) => event.atHour <= s.hour);
-  if (complete) need(state.receipts.length === due.length, message);
-  else
+  if (complete) {
+    need(state.receipts.length === due.length, message);
+  } else {
     need(
       !definitions[state.receipts.length] || definitions[state.receipts.length].atHour >= s.hour,
       message,
     );
+  }
   return definitions;
 }
 export function validateCampaignEventState(s) {
@@ -70,7 +74,9 @@ export function validateCampaignEventState(s) {
 }
 
 export function initializeCampaignEvents(s) {
-  if (!eventsFor(s).length) return;
+  if (!eventsFor(s).length) {
+    return;
+  }
   need(s.campaignEventState === undefined, message);
   s.campaignEventState = { version: 1, receipts: [] };
   advanceCampaignEvents(s);
@@ -94,7 +100,9 @@ const logEvent = (s, text) => {
 // scheduled instant never cause a later reward when the player returns.
 export function advanceCampaignEvents(s, { note = logEvent } = {}) {
   const definitions = validateReceipts(s, { complete: false });
-  if (!definitions.length) return;
+  if (!definitions.length) {
+    return;
+  }
   const receipts = s.campaignEventState.receipts;
   const due = definitions.slice(receipts.length).filter((event) => event.atHour <= s.hour);
   if (due.length) {
@@ -113,7 +121,9 @@ export function advanceCampaignEvents(s, { note = logEvent } = {}) {
       s.resources.treasury + amount <= 1000000000 &&
       (!quest || questTransitionQuote(s, quest).available);
     if (eligible) {
-      if (quest) applyQuestTransition(s, quest, { campaignEvent: event.id });
+      if (quest) {
+        applyQuestTransition(s, quest, { campaignEvent: event.id });
+      }
       s.resources.treasury += amount;
       note(s, event.text);
     }

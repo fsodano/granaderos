@@ -1,4 +1,5 @@
 {
+  "extends": "../../tsconfig.strict.json",
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["ES2022"],
@@ -6,11 +7,15 @@
     "moduleResolution": "NodeNext",
     "allowImportingTsExtensions": true,
     "erasableSyntaxOnly": true,
-    "strict": true,
-    "noEmit": true,
-    "skipLibCheck": true,
     "types": ["node"],
-    "typeRoots": ["../../apps/web/node_modules/@types"]
+    "typeRoots": ["../../apps/web/node_modules/@types"],
+    "allowJs": true
   },
-  "include": ["domain/**/*.ts", "application/**/*.ts", "infrastructure/**/*.ts"]
+  "include": [
+    "domain/**/*.ts",
+    "application/**/*.ts",
+    "infrastructure/**/*.ts",
+    "public/**/*.ts",
+    "*.ts"
+  ]
 }

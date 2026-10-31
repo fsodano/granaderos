@@ -2,9 +2,12 @@ import { CampaignRuleRefusal } from './campaign-rule-refusal.ts';
 import { DomainRefusal, DomainRefusalCode } from '../../domain/shared/domain-refusal.ts';
 
 export function domainRefusalMessage(error) {
-  if (error instanceof CampaignRuleRefusal) return error.messageForPlayer();
-  if (!(error instanceof DomainRefusal))
+  if (error instanceof CampaignRuleRefusal) {
+    return error.messageForPlayer();
+  }
+  if (!(error instanceof DomainRefusal)) {
     return error instanceof Error ? error.message : String(error);
+  }
   const messages = {
     [DomainRefusalCode.ServiceTermsUnavailable]: 'Los términos de servicio no están disponibles.',
     [DomainRefusalCode.ConversationUnavailable]: 'No se puede conversar en este momento.',

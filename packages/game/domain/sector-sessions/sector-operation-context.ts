@@ -40,7 +40,9 @@ export class SectorOperationContext {
   }
 
   assertMatches(other: SectorOperationContextSnapshot): void {
-    if (!this.matches(other)) throw new Error(SectorOperationContextRefusal.StaleResult);
+    if (!this.matches(other)) {
+      throw new Error(SectorOperationContextRefusal.StaleResult);
+    }
   }
 
   snapshot(): SectorOperationContextSnapshot {

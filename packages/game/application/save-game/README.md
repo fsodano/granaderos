@@ -14,8 +14,8 @@ claim; focus, a new accepted snapshot, or an explicit flush retries the claim.
 The encoding worker echoes session, revision, and request identities. Workers
 never write storage. Stale responses cannot overwrite newer accepted progress.
 
-Verification: `node --test tests/browser-save-writer.test.mjs
-tests/campaign-autosave-identity.test.mjs tests/campaign-autosave-lifecycle.test.mjs`.
+Verification: `node --test tests/browser-save-writer.test.ts
+tests/campaign-autosave-identity.test.ts tests/campaign-autosave-lifecycle.test.ts`.
 
 A changed save request is refused with `DomainRefusalCode.RevisionConflict`. The
 browser adapter translates the code and keeps accepted progress available.

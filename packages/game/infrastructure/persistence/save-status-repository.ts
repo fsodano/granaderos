@@ -31,8 +31,9 @@ export class SaveStatusRepository implements GetSaveStatusRepository {
       identity.requestId !== this.#accepted?.requestId ||
       identity.sessionId !== this.#accepted.sessionId ||
       identity.revision !== this.#accepted.revision
-    )
+    ) {
       throw new Error('La respuesta de guardado ya no corresponde a la partida.');
+    }
     this.#persisted = {
       sessionId: identity.sessionId,
       revision: identity.revision,

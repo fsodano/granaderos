@@ -1,15 +1,16 @@
 'use client';
+import type { CampaignContent } from '../../../../../packages/campaign-format/types.ts';
 import {
   DEFAULT_FOUNDRY,
   foundryLocations,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
-import { campaignWorld } from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { campaignWorld } from '../../../../../packages/game/public/campaign-editor-api.ts';
 export default function FoundryRules({
   draft,
   onChange,
 }: {
-  draft: any;
-  onChange: (value: any) => void;
+  draft: CampaignContent;
+  onChange: (value: CampaignContent) => void;
 }) {
   const original = campaignWorld(draft).defaultFoundry ?? DEFAULT_FOUNDRY,
     foundry = draft.foundry ?? original;

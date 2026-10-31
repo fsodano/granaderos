@@ -1,4 +1,10 @@
 'use client';
+
+import type {
+  CampaignSnapshot,
+  CampaignAction,
+} from '../../../packages/game/public/campaign-types.ts';
+import type { BattleSnapshot } from '../../../packages/game/public/compatibility-types.ts';
 import type { ArrivalDecisionSnapshot } from '../../../packages/game/domain/journeys/arrival-decision.ts';
 import SectorPreparation from './SectorPreparation';
 import MilitiaDistribution from './MilitiaDistribution';
@@ -15,14 +21,14 @@ import StrategicPanel from './StrategicPanel';
 import LogisticsAttention from './LogisticsAttention';
 import SectorIncome from './SectorIncome';
 import SectorEnvironment from './SectorEnvironment';
-import { useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { useStrategicClock } from '../lib/useStrategicClock';
-import { STRATEGIC_CLOCK_SPEEDS } from '../../../packages/game/strategic-clock.js';
+import { STRATEGIC_CLOCK_SPEEDS } from '../../../packages/game/strategic-clock.ts';
 import { pendingArrivalDecisions, squadHasHorses } from '../../../packages/game/squad-travel.js';
 import StrategicPersonnelMenu from './StrategicPersonnelMenu';
 import { rosterFor, campaignObjectives } from '../../../packages/game/campaign.js';
 import { getCityStatus } from '../../../packages/game/cities.js';
-import { campaignPlace, worldCell, worldOwner } from '../../../packages/game/world-cells.js';
+import { campaignPlace, worldCell, worldOwner } from '../../../packages/game/world-cells.ts';
 import CharacterDossier from './CharacterDossier';
 import { activeSquad } from '../../../packages/game/squads.js';
 import MedicalCare from './MedicalCare';
@@ -32,7 +38,10 @@ import ContractAttention from './ContractAttention';
 import './strategy.css';
 import StrategicRoster from './StrategicRoster';
 import { previewStrategicRoute } from '../../../packages/game/strategic-route.js';
-import { travelTime } from '../lib/travel-time';
+import {
+  JourneyMode,
+  type JourneyModeValue,
+} from '../../../packages/game/domain/journeys/journey.ts';
 import TransientNotice from './TransientNotice';
 export default function Campaign({
   state: s,
@@ -41,9 +50,9 @@ export default function Campaign({
   onBattle,
   onOpenDesk,
 }: {
-  state: any;
-  battle?: any;
-  dispatch: (a: any) => void;
+  state: CampaignSnapshot;
+  battle?: BattleSnapshot | null;
+  dispatch: (a: CampaignAction) => void;
   onBattle: () => void;
   onOpenDesk: () => void;
 }) {
@@ -59,23 +68,25 @@ export default function Campaign({
     ui = campaignUI(s),
     { SectorBriefing } = ui;
   const roster = rosterFor(s),
-    hired = s.recruited.map((id: number) => roster.find((o) => o.id === id)).filter(Boolean),
-    def = place(selected)!,
+    hired = s.recruited
+      .map((id: number) => roster.find((o) => o.id === id))
+      .filter((operative) => operative !== undefined),
+    def = place(selected),
     sector = s.sectors[selected],
-    physical = worldCell(selected, s)!,
+    physical = worldCell(selected, s),
     owner = worldOwner(s, selected),
-    city = getCityStatus(s, physical.locality);
+    city = getCityStatus(s, physical?.locality);
   const hostileDistrict =
-    owner === 'royalist' && physical.locality && selected !== physical.locality;
-  const objective = campaignStory(s) ? campaignObjectives(s).find((c: any) => c.active) : null;
+    owner === 'royalist' && physical?.locality && selected !== physical.locality;
+  const objective = campaignStory(s) ? campaignObjectives(s).find((c) => c.active) : null;
   const careBusy = s.squad.some((id: number) =>
-    careAssignmentBusy(s.operativeState[id].assignment),
+    careAssignmentBusy(s.operativeState[id]?.assignment),
   );
   const [panel, setPanel] = useState<string | null>(null);
   const [plot, setPlot] = useState<{
     squadId: string;
     destination: string;
-    mode: string;
+    mode: JourneyModeValue;
     waypoints: string[];
   } | null>(null);
   const [hover, setHover] = useState('');
@@ -96,7 +107,7 @@ export default function Campaign({
     !arrivalPending
       ? plot
       : null;
-  const candidate = plotting && (hover || plotting.destination);
+  const candidate = plotting ? hover || plotting.destination : '';
   const selectedPreview = plotting
     ? previewStrategicRoute(
         s,
@@ -117,6 +128,39 @@ export default function Campaign({
           : plotting.waypoints,
       )
     : null;
+  const clockCauseId = useId();
+  const commandScreen = useRef<HTMLElement>(null);
+  const plottingActive = Boolean(plotting);
+  useEffect(() => {
+    const cancel = () => {
+      setPlot(null);
+      setHover('');
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (!(event.target instanceof Node) || !commandScreen.current?.contains(event.target)) {
+        return;
+      }
+      if (event.key === 'Escape') {
+        cancel();
+        setPanel(null);
+      }
+    };
+    const onContextMenu = (event: MouseEvent) => {
+      if (!(event.target instanceof Node) || !commandScreen.current?.contains(event.target)) {
+        return;
+      }
+      if (plottingActive) {
+        event.preventDefault();
+        cancel();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('contextmenu', onContextMenu);
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('contextmenu', onContextMenu);
+    };
+  }, [plottingActive]);
   const cardPreview = plotting?.destination ? selectedPreview : preview;
   const cancelPlot = () => {
     setPlot(null);
@@ -124,21 +168,32 @@ export default function Campaign({
   };
   const selectSquad = (id: string, operativeId?: number) => {
     clock.pause();
-    if (s.pendingBattle || s.pendingEncounter || s.defeated) return;
-    const q = s.squads.find((q: any) => q.id === id);
-    if (!q) return;
+    if (s.pendingBattle || s.pendingEncounter || s.defeated) {
+      return;
+    }
+    const q = s.squads.find((q) => q.id === id);
+    if (!q) {
+      return;
+    }
     setPanel(null);
     setHover('');
     setSelected(q.location);
     if (arrivalPending) {
       cancelPlot();
-      if (q.id !== s.activeSquadId) dispatch({ type: 'selectSquad', id });
+      if (q.id !== s.activeSquadId) {
+        dispatch({ type: 'selectSquad', id });
+      }
       return;
     }
     if (q.journey?.status === 'paused') {
       cancelPlot();
-      if (q.id !== s.activeSquadId) dispatch({ type: 'selectSquad', id });
-      setPersonMenu({ id: operativeId ?? q.members[0], kind: 'destination' });
+      if (q.id !== s.activeSquadId) {
+        dispatch({ type: 'selectSquad', id });
+      }
+      const personId = operativeId ?? q.members[0];
+      if (personId !== undefined) {
+        setPersonMenu({ id: personId, kind: 'destination' });
+      }
       return;
     }
     dispatch({ type: 'selectSquad', id });
@@ -154,7 +209,9 @@ export default function Campaign({
     );
   };
   const confirmRoute = () => {
-    if (!plotting?.destination || !selectedPreview?.valid || !selectedPreview.action) return;
+    if (!plotting?.destination || !selectedPreview?.valid || !selectedPreview.action) {
+      return;
+    }
     clock.pause();
     dispatch(selectedPreview.action);
     cancelPlot();
@@ -163,8 +220,9 @@ export default function Campaign({
   const selectSector = (id: string) => {
     setSelected(id);
     if (plotting) {
-      if (plotting.destination === id && selectedPreview?.valid) confirmRoute();
-      else if (
+      if (plotting.destination === id && selectedPreview?.valid) {
+        confirmRoute();
+      } else if (
         (activeSquad(s).journey ||
           id !== activeSquad(s).location ||
           plotting.destination ||
@@ -195,6 +253,11 @@ export default function Campaign({
       openPanel('sector');
     }
   };
+  const dossierOperative = hired.find((operative) => operative.id === dossier);
+  const dossierRecord = dossier === null ? undefined : s.operativeState[dossier];
+  if (!def || !physical) {
+    return null;
+  }
   const rosterPanel = () => (
     <StrategicRoster
       state={s}
@@ -220,21 +283,7 @@ export default function Campaign({
     />
   );
   return (
-    <section
-      className="strategy-screen strategy-command-screen"
-      onKeyDown={(e) => {
-        if (e.key === 'Escape') {
-          cancelPlot();
-          setPanel(null);
-        }
-      }}
-      onContextMenu={(e) => {
-        if (plotting) {
-          e.preventDefault();
-          cancelPlot();
-        }
-      }}
-    >
+    <section ref={commandScreen} className="strategy-screen strategy-command-screen">
       <header className="strategy-top">
         <h1>{presentation.eyebrow ?? presentation.title ?? 'Campaña'}</h1>
         <div className="strategy-funds" aria-label="Fondos disponibles">
@@ -333,7 +382,7 @@ export default function Campaign({
         {rosterPanel()}
         <StrategicMap
           state={s}
-          battle={battle}
+          {...(battle ? { battle } : {})}
           selected={selected}
           onSelect={selectSector}
           onInspect={inspectSector}
@@ -347,11 +396,13 @@ export default function Campaign({
       </div>
       <footer className="strategy-bottom-controls">
         <nav className="strategy-tools" aria-label="Órdenes de campaña">
-          {[
-            ['roster', 'Nómina'],
-            ['sector', 'Sector'],
-            ['care', 'Personal'],
-          ].map(([id, label]) => (
+          {(
+            [
+              ['roster', 'Nómina'],
+              ['sector', 'Sector'],
+              ['care', 'Personal'],
+            ] as const
+          ).map(([id, label]) => (
             <button
               key={id}
               className={`line-button${id === 'roster' ? ' strategy-roster-open' : ''}`}
@@ -372,7 +423,7 @@ export default function Campaign({
             className="line-button"
             aria-pressed={clock.running}
             title={clock.cause || undefined}
-            aria-description={clock.cause || undefined}
+            aria-describedby={clock.cause ? clockCauseId : undefined}
             disabled={
               Boolean(s.pendingBattle || s.pendingEncounter) || s.defeated || arrivalPending
             }
@@ -391,8 +442,8 @@ export default function Campaign({
               </option>
             ))}
           </select>
-          <span className="sr-only" role="status" aria-live="polite">
-            {clock.cause}
+          <span className="sr-only" aria-live="polite">
+            <output id={clockCauseId}>{clock.cause}</output>
           </span>
         </div>
       </footer>
@@ -407,7 +458,10 @@ export default function Campaign({
               onClick={() => {
                 const squad = activeSquad(s);
                 cancelPlot();
-                setPersonMenu({ id: squad.members[0], kind: 'destination' });
+                const firstMember = squad.members[0];
+                if (firstMember !== undefined) {
+                  setPersonMenu({ id: firstMember, kind: 'destination' });
+                }
               }}
             >
               Ver órdenes del viaje
@@ -419,7 +473,12 @@ export default function Campaign({
               disabled={moving}
               aria-label="Transporte de la ruta"
               value={plotting.mode}
-              onChange={(e) => setPlot({ ...plotting, mode: e.target.value })}
+              onChange={(e) => {
+                const mode = Object.values(JourneyMode).find((value) => value === e.target.value);
+                if (mode) {
+                  setPlot({ ...plotting, mode });
+                }
+              }}
             >
               <option value="march">A pie · caminos</option>
               <option value="horse" disabled={!squadHasHorses(s, activeSquad(s))}>
@@ -467,10 +526,12 @@ export default function Campaign({
         >
           <div className="strategy-orders">
             <nav className="strategy-panel-tabs" aria-label="Panel de campaña">
-              {[
-                ['sector', 'Sector'],
-                ['care', 'Personal'],
-              ].map(([id, label]) => (
+              {(
+                [
+                  ['sector', 'Sector'],
+                  ['care', 'Personal'],
+                ] as const
+              ).map(([id, label]) => (
                 <button key={id} aria-pressed={panel === id} onClick={() => setPanel(id)}>
                   {label}
                 </button>
@@ -512,20 +573,23 @@ export default function Campaign({
                     <>
                       <p className="notice">
                         Liberá primero el sector principal de{' '}
-                        {place(physical.locality)?.name.split(' · ')[0]} para recorrer sus barrios.
+                        {place(physical.locality ?? selected)?.name.split(' · ')[0]} para recorrer
+                        sus barrios.
                       </p>
                       <button
                         className="line-button"
                         onClick={() => {
                           cancelPlot();
-                          setSelected(physical.locality);
+                          if (physical.locality) {
+                            setSelected(physical.locality);
+                          }
                         }}
                       >
                         Ver sector principal
                       </button>
                     </>
                   ) : (s.enemyGroups ?? []).some(
-                      (g: any) => g.target === selected && g.status === 'stationed',
+                      (g) => g.target === selected && g.status === 'stationed',
                     ) ? (
                     <button
                       className="gold-button"
@@ -666,12 +730,14 @@ export default function Campaign({
           dispatch={dispatch}
         />
       )}
-      <CharacterDossier
-        state={s}
-        operative={hired.find((o: any) => o.id === dossier)}
-        record={s.operativeState[dossier ?? -1]}
-        onClose={() => setDossier(null)}
-      />
+      {dossierOperative && dossierRecord && (
+        <CharacterDossier
+          state={s}
+          operative={dossierOperative}
+          record={dossierRecord}
+          onClose={() => setDossier(null)}
+        />
+      )}
     </section>
   );
 }

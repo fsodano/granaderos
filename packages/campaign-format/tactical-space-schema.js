@@ -1,5 +1,6 @@
 export const MAX_TACTICAL_LEVEL = 8;
 export const DEFAULT_SLAB_THICKNESS = 0.2;
+/** @returns {number} */
 export const tacticalLevel = (point) =>
   point?.tacticalLevel === undefined ? 0 : point.tacticalLevel;
 export const validTacticalLevel = (level) =>
@@ -14,7 +15,9 @@ const identifier = (value) =>
   !['__proto__', 'constructor', 'prototype'].includes(value);
 const spaceKey = (point) => `${tacticalLevel(point)}:${point.x},${point.y}`;
 const need = (condition, label) => {
-  if (!condition) throw new Error(`El espacio táctico contiene ${label} inválidos.`);
+  if (!condition) {
+    throw new Error(`El espacio táctico contiene ${label} inválidos.`);
+  }
 };
 
 export function validateTacticalSpaceRecords(state) {
@@ -38,7 +41,9 @@ export function validateTacticalSpaceRecords(state) {
   );
   for (const tile of state.tiles ?? []) {
     need(tacticalLevel(tile) === 0, 'niveles del terreno');
-    if (tile.elevation !== undefined) need(finite(tile.elevation, 0, 100), 'alturas del terreno');
+    if (tile.elevation !== undefined) {
+      need(finite(tile.elevation, 0, 100), 'alturas del terreno');
+    }
   }
   const identifiers = new Set(),
     cells = new Set();
@@ -64,29 +69,35 @@ export function validateTacticalSpaceRecords(state) {
     const thickness =
       surface.slabThickness === undefined ? DEFAULT_SLAB_THICKNESS : surface.slabThickness;
     need(finite(thickness, 0, 10) && thickness > 0 && thickness <= surface.elevation, 'espesores');
-    if (surface.blocksSight !== undefined)
+    if (surface.blocksSight !== undefined) {
       need(typeof surface.blocksSight === 'boolean', 'visibilidad');
-    if (surface.material !== undefined)
+    }
+    if (surface.material !== undefined) {
       need(['wood', 'adobe', 'stone', 'hay'].includes(surface.material), 'materiales');
+    }
     for (const [field, maximum] of [
       ['obstacleHeight', 10],
       ['projectileResistance', 1000],
       ['concealment', 100],
     ]) {
-      if (surface[field] !== undefined) need(finite(surface[field], 0, maximum), 'cobertura');
+      if (surface[field] !== undefined) {
+        need(finite(surface[field], 0, maximum), 'cobertura');
+      }
     }
-    if (surface.buildingId !== undefined)
+    if (surface.buildingId !== undefined) {
       need(
         (state.buildings ?? []).some((building) => building.id === surface.buildingId),
         'pertenencia al edificio',
       );
-    if (surface.roomId !== undefined)
+    }
+    if (surface.roomId !== undefined) {
       need(
         (state.buildings ?? [])
           .flatMap((building) => building.rooms ?? [])
           .some((room) => room.id === surface.roomId),
         'pertenencia a la habitación',
       );
+    }
   }
   const endpoint = (point) =>
     coordinate(point) &&

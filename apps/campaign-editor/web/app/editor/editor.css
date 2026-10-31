@@ -568,7 +568,7 @@
   cursor: pointer;
   text-decoration: none;
 }
-.editor-export-actions a {
+.editor-export-dialog .editor-export-actions a {
   background: var(--editor-accent, #69dcc5);
   color: #082823;
   font-weight: 650;
@@ -735,4 +735,12 @@
   .sector-editor button {
     transition: none;
   }
+}
+
+.sector-editor fieldset.editor-toolbar-group,
+.sector-editor fieldset.editor-tool-group {
+  border: 0;
+  margin-inline: 0;
+  padding: 0;
+  min-width: 0;
 }

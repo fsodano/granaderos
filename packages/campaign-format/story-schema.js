@@ -1,6 +1,8 @@
 import { validateDialogueConditions } from './dialogue-schema.js';
 const need = (ok, message) => {
-  if (!ok) throw Error(message);
+  if (!ok) {
+    throw Error(message);
+  }
 };
 const object = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 const exact = (v, keys) =>
@@ -8,7 +10,9 @@ const exact = (v, keys) =>
 const text = (v, max) => typeof v === 'string' && v.trim().length > 0 && v.length <= max;
 
 export function validateCampaignStory(value, characters, quests, sectorIds = new Set()) {
-  if (value == null) return;
+  if (value == null) {
+    return;
+  }
   need(
     exact(value, ['introduction', 'victory', 'defeat', 'chapters', 'failureConditions']) &&
       ['introduction', 'victory', 'defeat'].every((k) => text(value[k], 1000)),

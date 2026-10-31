@@ -19,8 +19,9 @@ export class CanonicalInventoryMapper {
       const canonicalCharacter =
         unit.side === 'player' || unit.operativeId !== undefined || /^\d+$/.test(characterId);
       const identityKey = canonicalCharacter ? custodianId : `${ownerId}:${custodianId}`;
-      if (this.#entries.has(identityKey))
+      if (this.#entries.has(identityKey)) {
         throw Error('El personaje tiene dos inventarios físicos en el contexto cargado.');
+      }
       const inventory = this.#identities.obtain('Inventory', identityKey, () =>
         readTacticalInventory(unit, custodianId),
       );
@@ -30,14 +31,17 @@ export class CanonicalInventoryMapper {
         original: JSON.stringify(inventory.toSnapshot()),
       });
       this.#participants.set(`${ownerId}:${characterId}`, inventory);
-      if (field.sectorSession)
+      if (field.sectorSession) {
         this.#participants.set(`${field.sectorSession.id}:${characterId}`, inventory);
+      }
     }
   }
 
   inventory(ownerId, characterId) {
     const inventory = this.#participants.get(`${ownerId}:${characterId}`);
-    if (!inventory) throw Error('El personaje no tiene un inventario táctico en esta sesión.');
+    if (!inventory) {
+      throw Error('El personaje no tiene un inventario táctico en esta sesión.');
+    }
     return inventory;
   }
 
@@ -48,11 +52,17 @@ export class CanonicalInventoryMapper {
   apply() {
     const projections = [];
     for (const { inventory, unit, original } of this.#entries.values()) {
-      if (JSON.stringify(inventory.toSnapshot()) === original) continue;
+      if (JSON.stringify(inventory.toSnapshot()) === original) {
+        continue;
+      }
       projections.push({ unit, projected: writeTacticalInventory(unit, inventory) });
     }
     for (const { unit, projected } of projections) {
-      for (const key of Object.keys(unit)) if (!Object.hasOwn(projected, key)) delete unit[key];
+      for (const key of Object.keys(unit)) {
+        if (!Object.hasOwn(projected, key)) {
+          delete unit[key];
+        }
+      }
       Object.assign(unit, projected);
     }
   }

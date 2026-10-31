@@ -1,10 +1,10 @@
-import { buildingAppearance } from '../../../packages/game/building-appearance.js';
-import {
-  entranceFrame,
-  getBuildingProfile,
-} from '../../../packages/game/building-profile.js';
-import { worldWallRecords, buildingWallAtPoint } from '../lib/three/world-wall-records';
-import { Opening, WALL_COLOURS } from './TacticalArchitectureMaterials';
+import type { ReactNode } from 'react';
+import { buildingAppearance } from '../../../packages/game/building-appearance.ts';
+import { entranceFrame, getBuildingProfile } from '../../../packages/game/building-profile.ts';
+import type { BattleBuilding } from '../../../packages/game/public/compatibility-types.ts';
+import { buildingWallAtPoint, worldWallRecords } from '../lib/three/world-wall-records';
+import { Opening, wallColours } from './TacticalArchitectureMaterials';
+import type { ElevatedPoint, Project } from './TacticalBuildingVolumes';
 import {
   ArchitectureVolume,
   ProjectedRoofSurface,
@@ -13,8 +13,6 @@ import {
   pointList,
   screenPoint,
 } from './TacticalBuildingVolumes';
-import type { ElevatedPoint, Project } from './TacticalBuildingVolumes';
-import type { ReactNode } from 'react';
 
 type SceneObject = { key: string; depth: number; node: ReactNode };
 const stone = { base: '#a99a79', trim: '#c7b795', shadow: '#776d54' };
@@ -26,27 +24,43 @@ const brick = { base: '#9b6849', trim: '#bd8b61', shadow: '#6f4a35' };
  * with the roof, so it cannot obscure actors in a revealed interior.
  */
 export function buildingDetails(
-  b: any,
+  b: BattleBuilding,
   revealed: Set<string>,
   project: Project,
 ): SceneObject[] {
-  if (!b.kind || b.rooms?.some((r: any) => revealed.has(r.id))) return [];
+  if (!b.kind || b.rooms?.some((r) => revealed.has(r.id))) {
+    return [];
+  }
   const f = entranceFrame(b),
     profile = getBuildingProfile(b),
     h = profile.groundFloorHeight ?? profile.wallHeight;
-  const palette = WALL_COLOURS[buildingAppearance(b).wallFinish];
-  const nativeEdges = b.walls?.some((wall: any) => wall.axis);
-  const walls = nativeEdges ? worldWallRecords({ terrain: { width: b.width, height: b.height, tiles: [], wallEdges: b.walls } } as any) : b.walls ?? [];
+  const palette = wallColours(buildingAppearance(b).wallFinish);
+  const nativeEdges = b.walls?.some((wall) => wall.axis);
+  const walls = nativeEdges
+    ? worldWallRecords({
+        terrain: {
+          width: b.width,
+          height: b.height,
+          tiles: [],
+          wallEdges: b.walls ?? [],
+        },
+      })
+    : (b.walls ?? []);
   const nodes: ReactNode[] = [];
   const backNodes: ReactNode[] = [];
   const frontVisible = -f.v.x - f.v.y > 0;
   const at = (u: number, v: number) => f.at(u, v);
-  const quad = (u0: number, v0: number, u1: number, v1: number) => [
-    at(u0, v0),
-    at(u1, v0),
-    at(u1, v1),
-    at(u0, v1),
-  ];
+  const quad = (
+    u0: number,
+    v0: number,
+    u1: number,
+    v1: number,
+  ): [
+    ReturnType<typeof at>,
+    ReturnType<typeof at>,
+    ReturnType<typeof at>,
+    ReturnType<typeof at>,
+  ] => [at(u0, v0), at(u1, v0), at(u1, v1), at(u0, v1)];
   const point = (u: number, v: number, z: number) => ({ ...at(u, v), z });
   const polygon = (points: ElevatedPoint[]) => pointList(points, project);
   const solid = (
@@ -75,9 +89,9 @@ export function buildingDetails(
   );
   const wallAt = (u: number, v: number) => {
     const p = at(u, v);
-    return nativeEdges ? buildingWallAtPoint(walls, p, b) : walls.find(
-      (w: any) => w.x === Math.round(p.x) && w.y === Math.round(p.y),
-    );
+    return nativeEdges
+      ? buildingWallAtPoint(walls, p, b)
+      : walls.find((w) => w.x === Math.round(p.x) && w.y === Math.round(p.y));
   };
   const line = (a: ElevatedPoint, c: ElevatedPoint) => {
     const p = screenPoint(a, project),
@@ -85,15 +99,10 @@ export function buildingDetails(
     return `M${p.x},${p.y}L${q.x},${q.y}`;
   };
 
-  function pier(
-    u: number,
-    v: number,
-    width = 0.3,
-    height = h,
-    label = 'pilaster',
-    depth = 0.34,
-  ) {
-    if (wallAt(u, v)?.type !== 'wall') return;
+  function pier(u: number, v: number, width = 0.3, height = h, label = 'pilaster', depth = 0.34) {
+    if (wallAt(u, v)?.type !== 'wall') {
+      return;
+    }
     nodes.push(
       solid(
         `${label}-${u}-${v}-shaft`,
@@ -145,20 +154,10 @@ export function buildingDetails(
     pedimentNodes.push(
       <g key="shaped-pediment" data-architectural-volume="shaped-pediment">
         <g transform={back}>
-          <path
-            d={curve}
-            fill={palette.shadow}
-            stroke={palette.shadow}
-            strokeWidth="3"
-          />
+          <path d={curve} fill={palette.shadow} stroke={palette.shadow} strokeWidth="3" />
         </g>
         <g transform={frontVisible ? faceMatrix(a, c, project, z0) : back}>
-          <path
-            d={curve}
-            fill={palette.base}
-            stroke={palette.shadow}
-            strokeWidth=".8"
-          />
+          <path d={curve} fill={palette.base} stroke={palette.shadow} strokeWidth=".8" />
           <path d={curve} fill="url(#architecture-plaster)" opacity=".3" />
           <path d={curve} fill="none" stroke={palette.trim} strokeWidth="2.8" />
           <path d={curve} fill="none" stroke="#a99873" strokeWidth=".6" />
@@ -171,22 +170,13 @@ export function buildingDetails(
             />
           )}
           {frontVisible && (
-            <path
-              d={`M20,-${12 * scale}V-${22 * scale}`}
-              stroke="#c5b590"
-              strokeWidth="1.6"
-            />
+            <path d={`M20,-${12 * scale}V-${22 * scale}`} stroke="#c5b590" strokeWidth="1.6" />
           )}
         </g>
       </g>,
     );
-    pedimentNodes.push(
-      solid('pediment-cornice', u0 - 0.08, -0.34, u1 + 0.08, 0.2, h - 3, h + 3),
-    );
-    const cross = screenPoint(
-      point((u0 + u1) / 2, -0.08, z0 + rise * 1.06),
-      project,
-    );
+    pedimentNodes.push(solid('pediment-cornice', u0 - 0.08, -0.34, u1 + 0.08, 0.2, h - 3, h + 3));
+    const cross = screenPoint(point((u0 + u1) / 2, -0.08, z0 + rise * 1.06), project);
     pedimentNodes.push(
       <g
         key="pediment-cross"
@@ -221,6 +211,9 @@ export function buildingDetails(
         c = base[(i + 1) % 4],
         d = base[j],
         e = base[(j + 1) % 4];
+      if (!a || !c || !d || !e) {
+        return 0;
+      }
       return a.x + a.y + c.x + c.y - d.x - d.y - e.x - e.y;
     });
     // A low hip can expose parts of all four roof planes. Vertical-wall
@@ -228,12 +221,16 @@ export function buildingDetails(
     for (const i of faces) {
       const a = base[i],
         c = base[(i + 1) % base.length];
+      if (!a || !c) {
+        continue;
+      }
       const pa = screenPoint({ ...a, z }, project),
         pc = screenPoint({ ...c, z }, project),
         peak = screenPoint(apex, project);
-      const projectedArea =
-        (pc.x - pa.x) * (peak.y - pa.y) - (pc.y - pa.y) * (peak.x - pa.x);
-      if (projectedArea <= 0.0001) continue;
+      const projectedArea = (pc.x - pa.x) * (peak.y - pa.y) - (pc.y - pa.y) * (peak.x - pa.x);
+      if (projectedArea <= 0.0001) {
+        continue;
+      }
       pieces.push(
         <ProjectedRoofSurface
           key={i}
@@ -258,17 +255,9 @@ export function buildingDetails(
           end = at((step + 0.95) / steps);
         pieces.push(
           <g key={`hip-${i}-${step}`}>
+            <path d={line(start, end)} stroke="#865735" strokeWidth="3" strokeLinecap="round" />
             <path
-              d={line(start, end)}
-              stroke="#865735"
-              strokeWidth="3"
-              strokeLinecap="round"
-            />
-            <path
-              d={line(
-                { ...start, z: start.z + 0.5 },
-                { ...end, z: end.z + 0.5 },
-              )}
+              d={line({ ...start, z: start.z + 0.5 }, { ...end, z: end.z + 0.5 })}
               stroke="#b48157"
               strokeWidth="1.1"
               strokeLinecap="round"
@@ -287,16 +276,15 @@ export function buildingDetails(
   function tower() {
     const towerNodes = frontVisible ? nodes : backNodes;
     const reserve = (end: boolean) =>
-      [0, 1].every((u) =>
-        [0, 1].every((v) => wallAt(end ? f.width - u : u, v)?.type === 'wall'),
-      );
+      [0, 1].every((u) => [0, 1].every((v) => wallAt(end ? f.width - u : u, v)?.type === 'wall'));
     const corners = [true, false];
     const end =
-      corners.find(reserve) ??
-      corners.find((end) => wallAt(end ? f.width : 0, 0)?.type === 'wall');
+      corners.find(reserve) ?? corners.find((end) => wallAt(end ? f.width : 0, 0)?.type === 'wall');
     // A custom church may have openings on either corner. A smaller tower
     // still requires a solid bearing cell; never cover an authored opening.
-    if (end === undefined) return;
+    if (end === undefined) {
+      return;
+    }
     const wide = reserve(end),
       u0 = end ? f.width - (wide ? 1.4 : 0.4) : -0.4,
       u1 = end ? f.width + 0.4 : wide ? 1.4 : 0.4;
@@ -305,7 +293,7 @@ export function buildingDetails(
       z = h + (wide ? 73 : 60);
     const base = 0;
     towerNodes.push(solid('square-bell-tower', u0, v0, u1, v1, base, z));
-    if (base === 0)
+    if (base === 0) {
       towerNodes.push(
         solid(
           'tower-stone-base',
@@ -320,7 +308,8 @@ export function buildingDetails(
           false,
         ),
       );
-    for (const [i, altitude] of [h - 2, h + 7, z - 4, z + 2].entries())
+    }
+    for (const [i, altitude] of [h - 2, h + 7, z - 4, z + 2].entries()) {
       towerNodes.push(
         solid(
           `tower-cornice-${i}`,
@@ -335,10 +324,13 @@ export function buildingDetails(
           false,
         ),
       );
+    }
     const p = quad(u0, v0, u1, v1);
     p.forEach((a, i) => {
       const c = p[(i + 1) % 4];
-      if (!faceIsVisible(a, c)) return;
+      if (!c || !faceIsVisible(a, c)) {
+        return;
+      }
       towerNodes.push(
         <g key={`belfry-${i}`} transform={faceMatrix(a, c, project, h + 16)}>
           <path
@@ -347,12 +339,7 @@ export function buildingDetails(
             stroke={palette.trim}
             strokeWidth="2.5"
           />
-          <path
-            d="M12,-1V-27a8,8 0 0 1 16,0"
-            fill="none"
-            stroke="#8c7852"
-            strokeWidth="1.3"
-          />
+          <path d="M12,-1V-27a8,8 0 0 1 16,0" fill="none" stroke="#8c7852" strokeWidth="1.3" />
           <path d="M13,-26H27M20,-26V-17" stroke="#59472d" strokeWidth="2" />
           <path
             d="M16,-7Q18,-11 18,-18H22Q22,-11 24,-7Z"
@@ -366,19 +353,8 @@ export function buildingDetails(
         </g>,
       );
     });
-    pyramid(
-      'church-tower-roof',
-      u0 - 0.1,
-      v0 - 0.1,
-      u1 + 0.1,
-      v1 + 0.1,
-      z + 6,
-      wide ? 21 : 15,
-    );
-    const q = screenPoint(
-      point((u0 + u1) / 2, (v0 + v1) / 2, z + (wide ? 29 : 23)),
-      project,
-    );
+    pyramid('church-tower-roof', u0 - 0.1, v0 - 0.1, u1 + 0.1, v1 + 0.1, z + 6, wide ? 21 : 15);
+    const q = screenPoint(point((u0 + u1) / 2, (v0 + v1) / 2, z + (wide ? 29 : 23)), project);
     towerNodes.push(
       <path
         key="tower-cross"
@@ -392,15 +368,23 @@ export function buildingDetails(
 
   function sideButtresses(kind: string) {
     for (const w of walls) {
-      if (w.type !== 'wall') continue;
-      const xEnd = w.x === b.x + b.width - (nativeEdges ? .5 : 1),
-        yEnd = w.y === b.y + b.height - (nativeEdges ? .5 : 1);
-      if ((!xEnd && !yEnd) || w.x === b.x || w.y === b.y) continue;
+      if (w.type !== 'wall') {
+        continue;
+      }
+      const xEnd = w.x === b.x + b.width - (nativeEdges ? 0.5 : 1),
+        yEnd = w.y === b.y + b.height - (nativeEdges ? 0.5 : 1);
+      if ((!xEnd && !yEnd) || w.x === b.x || w.y === b.y) {
+        continue;
+      }
       const along = xEnd ? w.y - b.y : w.x - b.x;
-      if (along % 3 !== 2) continue;
+      if (along % 3 !== 2) {
+        continue;
+      }
       const u = (w.x - f.origin.x) * f.u.x + (w.y - f.origin.y) * f.u.y;
       const v = (w.x - f.origin.x) * f.v.x + (w.y - f.origin.y) * f.v.y;
-      if (v < 1 || v > f.depth - 1) continue;
+      if (v < 1 || v > f.depth - 1) {
+        continue;
+      }
       const dx = xEnd ? 0.39 : 0.19,
         dy = xEnd ? 0.19 : 0.39;
       const points = [
@@ -413,18 +397,13 @@ export function buildingDetails(
         ? [h - 12, h * 0.59, h * 0.59, h - 12]
         : [h - 12, h - 12, h * 0.59, h * 0.59];
       nodes.push(
-        <g
-          key={`buttress-${u}-${v}`}
-          data-architectural-volume={`${kind}-buttress`}
-        >
+        <g key={`buttress-${u}-${v}`} data-architectural-volume={`${kind}-buttress`}>
           <ArchitectureVolume
             points={points}
             top={top}
             palette={palette}
             project={project}
-            texture={
-              buildingAppearance(b).wallFinish === 'stone' ? 'stone' : 'plaster'
-            }
+            texture={buildingAppearance(b).wallFinish === 'stone' ? 'stone' : 'plaster'}
           />
           <ArchitectureVolume
             points={points}
@@ -440,7 +419,9 @@ export function buildingDetails(
   }
 
   function porch(label: string, u0: number, u1: number, masonry = false) {
-    if (!frontVisible) return;
+    if (!frontVisible) {
+      return;
+    }
     const roofLow = h * 0.72,
       roofHigh = h * 0.89;
     const v0 = -0.42,
@@ -456,9 +437,7 @@ export function buildingDetails(
         ]}
         project={project}
         finish={
-          buildingAppearance(b).roofFinish === 'thatch'
-            ? 'clay'
-            : buildingAppearance(b).roofFinish
+          buildingAppearance(b).roofFinish === 'thatch' ? 'clay' : buildingAppearance(b).roofFinish
         }
       />
     );
@@ -466,12 +445,9 @@ export function buildingDetails(
       { length: Math.max(1, Math.ceil(u1 - u0)) },
       (_, i) => Math.round(u0) + i,
     )) {
-      if (
-        u > u1 ||
-        wallAt(u, 0)?.type !== 'wall' ||
-        (u > u0 + 0.7 && u < u1 - 0.7 && u % 2)
-      )
+      if (u > u1 || wallAt(u, 0)?.type !== 'wall' || (u > u0 + 0.7 && u < u1 - 0.7 && u % 2)) {
         continue;
+      }
       nodes.push(
         solid(
           `${label}-post-${u}`,
@@ -485,7 +461,7 @@ export function buildingDetails(
           masonry ? 'plaster' : 'wood',
         ),
       );
-      if (!masonry)
+      if (!masonry) {
         nodes.push(
           <path
             key={`bracket-${u}`}
@@ -495,6 +471,7 @@ export function buildingDetails(
             fill="none"
           />,
         );
+      }
     }
     nodes.push(
       solid(
@@ -519,15 +496,12 @@ export function buildingDetails(
   function chimney(industrial: boolean) {
     const chimneyNodes = f.u.x + f.u.y > 0 ? nodes : backNodes;
     const u = f.width;
-    const v = Array.from(
-      { length: Math.max(0, Math.floor(f.depth) - 1) },
-      (_, i) => i + 1,
-    )
+    const v = Array.from({ length: Math.max(0, Math.floor(f.depth) - 1) }, (_, i) => i + 1)
       .filter((candidate) => wallAt(u, candidate)?.type === 'wall')
-      .sort(
-        (a, c) => Math.abs(a - f.depth * 0.66) - Math.abs(c - f.depth * 0.66),
-      )[0];
-    if (v === undefined) return;
+      .sort((a, c) => Math.abs(a - f.depth * 0.66) - Math.abs(c - f.depth * 0.66))[0];
+    if (v === undefined) {
+      return;
+    }
     const half = industrial ? 0.29 : 0.19,
       bottom = h - 1,
       top = h + profile.roofRise + (industrial ? 38 : 16);
@@ -561,12 +535,10 @@ export function buildingDetails(
       <polygon
         key="chimney-flue"
         points={polygon(
-          quad(
-            u - half + 0.06,
-            v - half + 0.06,
-            u + half - 0.06,
-            v + half - 0.06,
-          ).map((p) => ({ ...p, z: top + 2.3 })),
+          quad(u - half + 0.06, v - half + 0.06, u + half - 0.06, v + half - 0.06).map((p) => ({
+            ...p,
+            z: top + 2.3,
+          })),
         )}
         fill="#40382b"
       />,
@@ -576,18 +548,18 @@ export function buildingDetails(
   function formalSupports(offsets: number[]) {
     return [
       ...new Set(
-        offsets.map((offset) =>
-          Math.max(0, Math.min(f.width, Math.round(f.doorU + offset))),
-        ),
+        offsets.map((offset) => Math.max(0, Math.min(f.width, Math.round(f.doorU + offset)))),
       ),
     ].filter((u) => wallAt(u, 0)?.type === 'wall');
   }
 
   function depotLoadingFront() {
-    if (!frontVisible) return;
-    const supports = [
-      ...new Set([1 / 6, 1 / 2, 5 / 6].map((r) => Math.round(f.width * r))),
-    ].filter((u) => wallAt(u, 0)?.type === 'wall');
+    if (!frontVisible) {
+      return;
+    }
+    const supports = [...new Set([1 / 6, 1 / 2, 5 / 6].map((r) => Math.round(f.width * r)))].filter(
+      (u) => wallAt(u, 0)?.type === 'wall',
+    );
     const low = h - 3,
       high = h + 6;
     if (supports.length >= 2) {
@@ -645,10 +617,7 @@ export function buildingDetails(
         ),
       );
       nodes.push(
-        <g
-          key="depot-loading-canopy"
-          data-architectural-volume="depot-loading-canopy"
-        >
+        <g key="depot-loading-canopy" data-architectural-volume="depot-loading-canopy">
           <ProjectedRoofSurface
             id={`${b.id}-depot-loading`}
             points={[
@@ -666,7 +635,9 @@ export function buildingDetails(
     // A small storage hatch sits in the gable. It is a roof-space detail, not
     // a second playable floor. Its hoist bears on the central solid wall cell.
     const u = Math.round(f.width / 2);
-    if (wallAt(u, 0)?.type !== 'wall' || f.width < 4) return;
+    if (wallAt(u, 0)?.type !== 'wall' || f.width < 4) {
+      return;
+    }
     const hatchBase = h + 7,
       hatchTop = h + profile.roofRise - 7;
     nodes.push(
@@ -685,12 +656,7 @@ export function buildingDetails(
     nodes.push(
       <g
         key="depot-loft-hatch-straps"
-        transform={faceMatrix(
-          at(u - 0.46, -0.08),
-          at(u + 0.46, -0.08),
-          project,
-          hatchBase,
-        )}
+        transform={faceMatrix(at(u - 0.46, -0.08), at(u + 0.46, -0.08), project, hatchBase)}
       >
         <path
           d={`M0,-3H40M0,-${hatchTop - hatchBase - 3}H40M20,0V-${hatchTop - hatchBase}`}
@@ -698,11 +664,7 @@ export function buildingDetails(
           strokeWidth="1.1"
           fill="none"
         />
-        <path
-          d={`M3,-3L37,-${hatchTop - hatchBase - 3}`}
-          stroke={timber.trim}
-          strokeWidth="1.5"
-        />
+        <path d={`M3,-3L37,-${hatchTop - hatchBase - 3}`} stroke={timber.trim} strokeWidth="1.5" />
       </g>,
     );
     const boom = hatchTop + 3;
@@ -746,30 +708,21 @@ export function buildingDetails(
 
   function depotPiers() {
     for (const wall of walls) {
-      if (wall.type !== 'wall') continue;
+      if (wall.type !== 'wall') {
+        continue;
+      }
       const u = (wall.x - f.origin.x) * f.u.x + (wall.y - f.origin.y) * f.u.y;
       const v = (wall.x - f.origin.x) * f.v.x + (wall.y - f.origin.y) * f.v.y;
       const end = u === 0 || u === f.width;
       const sideVisible = u === 0 ? -f.u.x - f.u.y > 0 : f.u.x + f.u.y > 0;
-      if (!end || !sideVisible || (v !== 0 && v !== f.depth && v % 3 !== 0))
+      if (!end || !sideVisible || (v !== 0 && v !== f.depth && v % 3 !== 0)) {
         continue;
+      }
       const u0 = u - 0.29,
         u1 = u + 0.29,
         v0 = v - 0.19,
         v1 = v + 0.19;
-      nodes.push(
-        solid(
-          `depot-masonry-pier-${u}-${v}`,
-          u0,
-          v0,
-          u1,
-          v1,
-          0,
-          h - 3,
-          stone,
-          'stone',
-        ),
-      );
+      nodes.push(solid(`depot-masonry-pier-${u}-${v}`, u0, v0, u1, v1, 0, h - 3, stone, 'stone'));
       nodes.push(
         solid(
           `depot-masonry-foot-${u}-${v}`,
@@ -801,13 +754,11 @@ export function buildingDetails(
   }
 
   function farmhouseGalleries() {
-    const frontSupports = [
-      ...new Set([0, 0.3, 0.7, 1].map((r) => Math.round(f.width * r))),
-    ].filter((u) => wallAt(u, 0)?.type === 'wall');
-    const returnLength = Math.max(1, Math.round(f.depth * 0.57));
-    const sideSupports = [0, returnLength].filter(
-      (v) => wallAt(0, v)?.type === 'wall',
+    const frontSupports = [...new Set([0, 0.3, 0.7, 1].map((r) => Math.round(f.width * r)))].filter(
+      (u) => wallAt(u, 0)?.type === 'wall',
     );
+    const returnLength = Math.max(1, Math.round(f.depth * 0.57));
+    const sideSupports = [0, returnLength].filter((v) => wallAt(0, v)?.type === 'wall');
     const hasFront = frontSupports.length >= 2,
       hasSide = sideSupports.length >= 2;
     const joint = hasFront && hasSide && frontSupports[0] === 0;
@@ -825,38 +776,19 @@ export function buildingDetails(
     );
     const post = (u: number, v: number, label: string) => {
       nodes.push(
-        solid(
-          `${label}-post`,
-          u - 0.075,
-          v - 0.075,
-          u + 0.075,
-          v + 0.075,
-          0,
-          low,
-          timber,
-          'wood',
-        ),
+        solid(`${label}-post`, u - 0.075, v - 0.075, u + 0.075, v + 0.075, 0, low, timber, 'wood'),
       );
       nodes.push(
-        solid(
-          `${label}-foot`,
-          u - 0.13,
-          v - 0.13,
-          u + 0.13,
-          v + 0.13,
-          0,
-          4,
-          stone,
-          'stone',
-          false,
-        ),
+        solid(`${label}-foot`, u - 0.13, v - 0.13, u + 0.13, v + 0.13, 0, 4, stone, 'stone', false),
       );
     };
     if (hasSide && -f.u.x - f.u.y > 0) {
       // Both roof planes meet at a mitred corner. The gallery is shallow;
       // posts remain in solid wall cells instead of occupying the yard.
       for (const v of sideSupports) {
-        if (v === 0 && frontVisible && joint) continue;
+        if (v === 0 && frontVisible && joint) {
+          continue;
+        }
         post(-0.3, v === 0 && joint ? -0.3 : v, `farmhouse-return-${v}`);
       }
       nodes.push(
@@ -922,17 +854,13 @@ export function buildingDetails(
 
   function farmhouseChimneys() {
     for (const u of [0, f.width]) {
-      const v = Array.from(
-        { length: Math.max(0, Math.floor(f.depth) - 1) },
-        (_, i) => i + 1,
-      )
+      const v = Array.from({ length: Math.max(0, Math.floor(f.depth) - 1) }, (_, i) => i + 1)
         .filter((candidate) => wallAt(u, candidate)?.type === 'wall')
-        .sort(
-          (a, c) => Math.abs(a - (f.depth - 1)) - Math.abs(c - (f.depth - 1)),
-        )[0];
-      if (v === undefined) continue;
-      const target =
-        (u === 0 ? -f.u.x - f.u.y : f.u.x + f.u.y) > 0 ? nodes : backNodes;
+        .sort((a, c) => Math.abs(a - (f.depth - 1)) - Math.abs(c - (f.depth - 1)))[0];
+      if (v === undefined) {
+        continue;
+      }
+      const target = (u === 0 ? -f.u.x - f.u.y : f.u.x + f.u.y) > 0 ? nodes : backNodes;
       const top = h + profile.roofRise + 17;
       target.push(
         solid(
@@ -980,19 +908,11 @@ export function buildingDetails(
   }
 
   function stoneColumn(u: number, height: number, label: string) {
-    if (wallAt(u, 0)?.type !== 'wall') return;
+    if (wallAt(u, 0)?.type !== 'wall') {
+      return;
+    }
     nodes.push(
-      solid(
-        `${label}-shaft-${u}`,
-        u - 0.14,
-        -0.34,
-        u + 0.14,
-        0.16,
-        0,
-        height,
-        stone,
-        'stone',
-      ),
+      solid(`${label}-shaft-${u}`, u - 0.14, -0.34, u + 0.14, 0.16, 0, height, stone, 'stone'),
     );
     nodes.push(
       solid(
@@ -1025,19 +945,16 @@ export function buildingDetails(
 
   function formalSidePilasters(label: string) {
     for (const wall of walls) {
-      const onX = wall.x === b.x + b.width - (nativeEdges ? .5 : 1),
-        onY = wall.y === b.y + b.height - (nativeEdges ? .5 : 1);
-      const localV =
-        (wall.x - f.origin.x) * f.v.x + (wall.y - f.origin.y) * f.v.y;
-      if (
-        wall.type !== 'wall' ||
-        (!onX && !onY) ||
-        localV < 1 ||
-        localV > f.depth - 1
-      )
+      const onX = wall.x === b.x + b.width - (nativeEdges ? 0.5 : 1),
+        onY = wall.y === b.y + b.height - (nativeEdges ? 0.5 : 1);
+      const localV = (wall.x - f.origin.x) * f.v.x + (wall.y - f.origin.y) * f.v.y;
+      if (wall.type !== 'wall' || (!onX && !onY) || localV < 1 || localV > f.depth - 1) {
         continue;
+      }
       const along = onX ? wall.y - b.y : wall.x - b.x;
-      if (along % 4 !== 2) continue;
+      if (along % 4 !== 2) {
+        continue;
+      }
       const dx = onX ? 0.25 : 0.15,
         dy = onX ? 0.15 : 0.25;
       const points = [
@@ -1047,16 +964,8 @@ export function buildingDetails(
         { x: wall.x - dx, y: wall.y + dy },
       ];
       nodes.push(
-        <g
-          key={`${label}-${wall.x}-${wall.y}`}
-          data-architectural-volume={label}
-        >
-          <ArchitectureVolume
-            points={points}
-            top={h - 5}
-            palette={palette}
-            project={project}
-          />
+        <g key={`${label}-${wall.x}-${wall.y}`} data-architectural-volume={label}>
+          <ArchitectureVolume points={points} top={h - 5} palette={palette} project={project} />
           <ArchitectureVolume
             points={points}
             top={profile.plinthHeight + 1}
@@ -1071,7 +980,9 @@ export function buildingDetails(
   }
 
   function civicUpperStorey(balconySupports: number[] = []) {
-    if (profile.floors !== 2) return;
+    if (profile.floors !== 2) {
+      return;
+    }
     const upper: ReactNode[] = [];
     const total = profile.wallHeight;
     const appearance = buildingAppearance(b);
@@ -1152,18 +1063,19 @@ export function buildingDetails(
       // walls, room cells and pathfinding remain the authored tile geometry.
       const parity = side.label === 'front' ? Math.round(f.doorU) % 2 : 1;
       const windowPositions: number[] = [];
-      for (let along = parity || 2; along < side.length; along += 2)
+      for (let along = parity || 2; along < side.length; along += 2) {
         windowPositions.push(along);
-      if (!windowPositions.length && side.length >= 2)
+      }
+      if (!windowPositions.length && side.length >= 2) {
         windowPositions.push(Math.round(side.length / 2));
+      }
       for (const along of windowPositions) {
-        if (!side.wall(along)) continue;
-        if (
-          side.label === 'front' &&
-          hasBalcony &&
-          Math.abs(along - f.doorU) < 0.8
-        )
+        if (!side.wall(along)) {
           continue;
+        }
+        if (side.label === 'front' && hasBalcony && Math.abs(along - f.doorU) < 0.8) {
+          continue;
+        }
         const left = side.p(along - 0.62, 0.055),
           right = side.p(along + 0.62, 0.055);
         upper.push(
@@ -1189,10 +1101,14 @@ export function buildingDetails(
       [f.width, 0],
       [0, f.depth],
       [f.width, f.depth],
-    ]) {
-      if (wallAt(u, v)?.type !== 'wall') continue;
+    ] as const) {
+      if (wallAt(u, v)?.type !== 'wall') {
+        continue;
+      }
       const p = at(u, v);
-      if (p.x !== b.x + b.width - 1 && p.y !== b.y + b.height - 1) continue;
+      if (p.x !== b.x + b.width - 1 && p.y !== b.y + b.height - 1) {
+        continue;
+      }
       upper.push(
         solid(
           `${b.kind}-upper-corner-${u}-${v}`,
@@ -1212,22 +1128,14 @@ export function buildingDetails(
         {upper}
       </g>,
     );
-    if (!hasBalcony || !frontVisible) return;
+    if (!hasBalcony || !frontVisible) {
+      return;
+    }
     const u0 = Math.min(...balconySupports),
       u1 = Math.max(...balconySupports),
       floor = h + 6;
     const balcony: ReactNode[] = [
-      solid(
-        'palace-balcony-slab',
-        u0 - 0.12,
-        -0.46,
-        u1 + 0.12,
-        0.3,
-        h + 1,
-        floor,
-        stone,
-        'stone',
-      ),
+      solid('palace-balcony-slab', u0 - 0.12, -0.46, u1 + 0.12, 0.3, h + 1, floor, stone, 'stone'),
     ];
     // A shallow wrought-iron balcony rests on the ground entrance columns.
     // The two upper pilasters form a separate storey beneath the pediment.
@@ -1259,8 +1167,7 @@ export function buildingDetails(
         ),
       );
     }
-    const rail = (z: number) =>
-      line(point(u0, -0.425, z), point(u1, -0.425, z));
+    const rail = (z: number) => line(point(u0, -0.425, z), point(u1, -0.425, z));
     const rods = Math.max(2, Math.ceil((u1 - u0) / 0.23));
     balcony.push(
       <g key="palace-balcony-railing" stroke="#454436" fill="none">
@@ -1270,10 +1177,7 @@ export function buildingDetails(
           return (
             <path
               key={i}
-              d={line(
-                point(u, -0.425, floor + 2),
-                point(u, -0.425, floor + 13),
-              )}
+              d={line(point(u, -0.425, floor + 2), point(u, -0.425, floor + 13))}
               strokeWidth=".85"
             />
           );
@@ -1285,20 +1189,10 @@ export function buildingDetails(
       <g
         key="palace-balcony-door"
         data-upper-window="front:balcony"
-        transform={faceMatrix(
-          at(f.doorU - 0.66, -0.06),
-          at(f.doorU + 0.66, -0.06),
-          project,
-          floor,
-        )}
+        transform={faceMatrix(at(f.doorU - 0.66, -0.06), at(f.doorU + 0.66, -0.06), project, floor)}
       >
         <g transform="scale(1 1.13)">
-          <Opening
-            type="door"
-            style={appearance.doorStyle}
-            open={false}
-            trim={palette.trim}
-          />
+          <Opening type="door" style={appearance.doorStyle} open={false} trim={palette.trim} />
         </g>
       </g>,
     );
@@ -1318,38 +1212,18 @@ export function buildingDetails(
       face = frontVisible ? -0.31 : 0.22;
     const crown = `M0,0V-${7 * scale}H9V-${14 * scale}Q9,-${21 * scale} 14,-${25 * scale}V-${32 * scale}C14,-${48 * scale} 26,-${48 * scale} 26,-${32 * scale}V-${25 * scale}Q31,-${21 * scale} 31,-${14 * scale}V-${7 * scale}H40V0Z`;
     target.push(
-      <g
-        key="townhall-clock-pediment"
-        data-architectural-volume="townhall-clock-pediment"
-      >
+      <g key="townhall-clock-pediment" data-architectural-volume="townhall-clock-pediment">
         <g transform={faceMatrix(at(u0, 0.22), at(u1, 0.22), project, z0)}>
-          <path
-            d={crown}
-            fill={palette.shadow}
-            stroke={palette.shadow}
-            strokeWidth="3"
-          />
+          <path d={crown} fill={palette.shadow} stroke={palette.shadow} strokeWidth="3" />
         </g>
         <g transform={faceMatrix(at(u0, face), at(u1, face), project, z0)}>
-          <path
-            d={crown}
-            fill={palette.base}
-            stroke={stone.shadow}
-            strokeWidth=".7"
-          />
+          <path d={crown} fill={palette.base} stroke={stone.shadow} strokeWidth=".7" />
           <path d={crown} fill="url(#architecture-plaster)" opacity=".28" />
           <path d={crown} fill="none" stroke={stone.trim} strokeWidth="2.8" />
           <path d={crown} fill="none" stroke={stone.shadow} strokeWidth=".5" />
           {frontVisible && (
-            <g
-              transform={`translate(20 ${-29 * scale}) scale(${40 / (width * 30)} 1)`}
-            >
-              <circle
-                r="7.5"
-                fill="#e2d5b7"
-                stroke="#8e7b58"
-                strokeWidth=".75"
-              />
+            <g transform={`translate(20 ${-29 * scale}) scale(${40 / (width * 30)} 1)`}>
+              <circle r="7.5" fill="#e2d5b7" stroke="#8e7b58" strokeWidth=".75" />
               {Array.from({ length: 12 }, (_, i) => (
                 <path
                   key={i}
@@ -1359,12 +1233,7 @@ export function buildingDetails(
                   strokeWidth=".55"
                 />
               ))}
-              <path
-                d="M0,-4V0L3.7,1.3"
-                fill="none"
-                stroke="#4e4230"
-                strokeWidth=".9"
-              />
+              <path d="M0,-4V0L3.7,1.3" fill="none" stroke="#4e4230" strokeWidth=".9" />
               <circle r=".75" fill="#6a583b" />
             </g>
           )}
@@ -1430,21 +1299,14 @@ export function buildingDetails(
     ];
     const face = frontVisible ? front : back;
     const pedimentFace = (
-      <g
-        key="palace-portico-pediment"
-        data-architectural-volume="palace-portico-pediment"
-      >
+      <g key="palace-portico-pediment" data-architectural-volume="palace-portico-pediment">
         <polygon
           points={polygon(triangle(face))}
           fill={palette.base}
           stroke={stone.shadow}
           strokeWidth=".7"
         />
-        <polygon
-          points={polygon(triangle(face))}
-          fill="url(#architecture-plaster)"
-          opacity=".32"
-        />
+        <polygon points={polygon(triangle(face))} fill="url(#architecture-plaster)" opacity=".32" />
         <path
           d={`${line(point(u0, face, eave), point(middle, face, peak))}${line(point(middle, face, peak), point(u1, face, eave))}`}
           fill="none"
@@ -1466,11 +1328,7 @@ export function buildingDetails(
               stroke="#867451"
               strokeWidth="1"
             />
-            <path
-              d="M14,-8H26M20,-9V4M15,0H25"
-              stroke="#8d7650"
-              strokeWidth="1"
-            />
+            <path d="M14,-8H26M20,-9V4M15,0H25" stroke="#8d7650" strokeWidth="1" />
             <path
               d="M6,0Q0,-6 5,-11M34,0Q40,-6 35,-11"
               fill="none"
@@ -1481,7 +1339,9 @@ export function buildingDetails(
         )}
       </g>
     );
-    if (!frontVisible) target.push(pedimentFace);
+    if (!frontVisible) {
+      target.push(pedimentFace);
+    }
     target.push(
       solid(
         'palace-portico-entablature',
@@ -1510,11 +1370,15 @@ export function buildingDetails(
         point(middle, front, peak + 1),
         point(middle, back, peak + 1),
       ],
-    ].sort(
-      (a, c) =>
-        a[0].x + a[0].y + a[1].x + a[1].y - c[0].x - c[0].y - c[1].x - c[1].y,
-    );
-    for (const [i, plane] of planes.entries())
+    ].sort((a, c) => {
+      const [a0, a1] = a,
+        [c0, c1] = c;
+      if (!a0 || !a1 || !c0 || !c1) {
+        return 0;
+      }
+      return a0.x + a0.y + a1.x + a1.y - c0.x - c0.y - c1.x - c1.y;
+    });
+    for (const [i, plane] of planes.entries()) {
       target.push(
         <ProjectedRoofSurface
           key={`palace-portico-roof-${i}`}
@@ -1524,13 +1388,11 @@ export function buildingDetails(
           finish={buildingAppearance(b).roofFinish}
         />,
       );
+    }
     target.push(
       <path
         key="palace-portico-ridge"
-        d={line(
-          point(middle, front, peak + 1.4),
-          point(middle, back, peak + 1.4),
-        )}
+        d={line(point(middle, front, peak + 1.4), point(middle, back, peak + 1.4))}
         stroke="#b38259"
         strokeWidth="2.4"
         strokeLinecap="round"
@@ -1538,9 +1400,11 @@ export function buildingDetails(
     );
     // The forward tympanum is nearer than the roof slopes and cornice cap.
     // Paint it last so those horizontal planes cannot cut across its crest.
-    if (frontVisible) target.push(pedimentFace);
+    if (frontVisible) {
+      target.push(pedimentFace);
+    }
     // Near mouldings sit in front of the roof surface, with a narrow return.
-    if (frontVisible)
+    if (frontVisible) {
       target.push(
         <path
           key="palace-portico-front-coping"
@@ -1550,6 +1414,7 @@ export function buildingDetails(
           strokeWidth="2.4"
         />,
       );
+    }
   }
 
   if (b.kind === 'church') {
@@ -1559,10 +1424,7 @@ export function buildingDetails(
       pier(f.width, 0, 0.37, h + 7, 'church-facade');
     }
     const span = Math.min(f.width - 1.8, 5.2),
-      centre = Math.max(
-        span / 2 + 0.15,
-        Math.min(f.width - span / 2 - 0.15, f.doorU),
-      );
+      centre = Math.max(span / 2 + 0.15, Math.min(f.width - span / 2 - 0.15, f.doorU));
     pediment(centre - span / 2, centre + span / 2, profile.roofRise + 12);
     tower();
   } else if (b.kind === 'chapel') {
@@ -1628,21 +1490,20 @@ export function buildingDetails(
     if (frontVisible) {
       const columns = [
         0,
-        ...Array.from(
-          { length: Math.max(0, Math.floor(f.width / 2) - 1) },
-          (_, i) => (i + 1) * 2,
-        ),
+        ...Array.from({ length: Math.max(0, Math.floor(f.width / 2) - 1) }, (_, i) => (i + 1) * 2),
         f.width,
       ];
       columns.forEach((u) => pier(u, 0, 0.26, h - 7, 'arcade-pier'));
       for (let i = 1; i < columns.length; i++) {
-        const a = columns[i - 1] + 0.14,
-          c = columns[i] - 0.14;
+        const previous = columns[i - 1],
+          current = columns[i];
+        if (previous === undefined || current === undefined) {
+          continue;
+        }
+        const a = previous + 0.14,
+          c = current - 0.14;
         nodes.push(
-          <g
-            key={`arcade-${i}`}
-            transform={faceMatrix(at(a, -0.35), at(c, -0.35), project)}
-          >
+          <g key={`arcade-${i}`} transform={faceMatrix(at(a, -0.35), at(c, -0.35), project)}>
             <path
               d={`M0,-3V-${h - 24}a20,17 0 0 1 40,0V-3`}
               fill="none"
@@ -1659,15 +1520,7 @@ export function buildingDetails(
         );
       }
       nodes.push(
-        solid(
-          'cabildo-arcade-entablature',
-          -0.12,
-          -0.4,
-          f.width + 0.12,
-          0.21,
-          h - 9,
-          h - 3,
-        ),
+        solid('cabildo-arcade-entablature', -0.12, -0.4, f.width + 0.12, 0.21, h - 9, h - 3),
       );
     }
     // A compact civic cupola starts on the facade bearing wall. It is an
@@ -1676,45 +1529,16 @@ export function buildingDetails(
     const u = f.width / 2,
       bottom = h - 3,
       top = h + 55;
-    nodes.push(
-      solid('cabildo-clock-tower', u - 0.7, -0.27, u + 0.7, 0.4, bottom, top),
-    );
-    nodes.push(
-      solid(
-        'cabildo-tower-cornice',
-        u - 0.78,
-        -0.35,
-        u + 0.78,
-        0.47,
-        top - 2,
-        top + 3,
-      ),
-    );
-    if (frontVisible)
+    nodes.push(solid('cabildo-clock-tower', u - 0.7, -0.27, u + 0.7, 0.4, bottom, top));
+    nodes.push(solid('cabildo-tower-cornice', u - 0.78, -0.35, u + 0.78, 0.47, top - 2, top + 3));
+    if (frontVisible) {
       nodes.push(
         <g
           key="cabildo-clock"
-          transform={faceMatrix(
-            at(u - 0.7, -0.28),
-            at(u + 0.7, -0.28),
-            project,
-            bottom,
-          )}
+          transform={faceMatrix(at(u - 0.7, -0.28), at(u + 0.7, -0.28), project, bottom)}
         >
-          <circle
-            cx="20"
-            cy="-23"
-            r="10"
-            fill="#ddd0aa"
-            stroke="#9b8964"
-            strokeWidth="1.3"
-          />
-          <path
-            d="M20,-30V-23L26,-21"
-            stroke="#554931"
-            strokeWidth="1.1"
-            fill="none"
-          />
+          <circle cx="20" cy="-23" r="10" fill="#ddd0aa" stroke="#9b8964" strokeWidth="1.3" />
+          <path d="M20,-30V-23L26,-21" stroke="#554931" strokeWidth="1.1" fill="none" />
           {Array.from({ length: 12 }, (_, i) => (
             <path
               key={i}
@@ -1726,31 +1550,45 @@ export function buildingDetails(
           ))}
         </g>,
       );
+    }
     pyramid('civic-cupola', u - 0.81, -0.4, u + 0.81, 0.51, top + 3, 17);
-    if (!frontVisible) backNodes.push(...nodes.splice(cupolaStart));
+    if (!frontVisible) {
+      backNodes.push(...nodes.splice(cupolaStart));
+    }
   } else if (b.kind === 'townhall') {
     civicUpperStorey();
     formalSidePilasters('townhall-wall-pilaster');
     const supports = formalSupports([-2, 2]);
     if (frontVisible) {
-      for (const u of supports)
+      for (const u of supports) {
         stoneColumn(u, h + 1, 'townhall-entrance-column');
-      for (const u of [0, f.width])
-        if (!supports.includes(u)) pier(u, 0, 0.27, h - 2, 'townhall-corner');
+      }
+      for (const u of [0, f.width]) {
+        if (!supports.includes(u)) {
+          pier(u, 0, 0.27, h - 2, 'townhall-corner');
+        }
+      }
     }
-    if (supports.length >= 2)
+    if (supports.length >= 2) {
       clockPediment(Math.min(...supports), Math.max(...supports));
+    }
   } else if (b.kind === 'palace') {
     const supports = formalSupports([-3, -1, 1, 3]);
     civicUpperStorey(supports);
     formalSidePilasters('palace-wall-pilaster');
     if (frontVisible) {
-      for (const u of supports) stoneColumn(u, h + 3, 'palace-portico-column');
-      for (const u of [0, f.width])
-        if (!supports.includes(u)) pier(u, 0, 0.31, h - 2, 'palace-corner');
+      for (const u of supports) {
+        stoneColumn(u, h + 3, 'palace-portico-column');
+      }
+      for (const u of [0, f.width]) {
+        if (!supports.includes(u)) {
+          pier(u, 0, 0.31, h - 2, 'palace-corner');
+        }
+      }
     }
-    if (supports.length >= 2)
+    if (supports.length >= 2) {
       palacePortico(Math.min(...supports), Math.max(...supports));
+    }
   } else if (b.kind === 'posta') {
     porch('posta-veranda', 0.15, f.width - 0.15, true);
     if (frontVisible) {
@@ -1759,8 +1597,9 @@ export function buildingDetails(
     }
   } else if (b.kind === 'barracks') {
     if (frontVisible) {
-      for (const u of [Math.round(f.doorU - 1), Math.round(f.doorU + 1)])
+      for (const u of [Math.round(f.doorU - 1), Math.round(f.doorU + 1)]) {
         pier(u, 0, 0.35, h + 3, 'gate-pilaster');
+      }
       nodes.push(
         solid(
           'barracks-gate-entablature',
@@ -1775,29 +1614,15 @@ export function buildingDetails(
       nodes.push(
         <g
           key="barracks-masonry-plaque"
-          transform={faceMatrix(
-            at(f.doorU - 0.5, -0.32),
-            at(f.doorU + 0.5, -0.32),
-            project,
-            h - 8,
-          )}
+          transform={faceMatrix(at(f.doorU - 0.5, -0.32), at(f.doorU + 0.5, -0.32), project, h - 8)}
         >
-          <path
-            d="M12,0V-13H28V0L20,5Z"
-            fill="#c9bc93"
-            stroke="#998660"
-            strokeWidth=".8"
-          />
+          <path d="M12,0V-13H28V0L20,5Z" fill="#c9bc93" stroke="#998660" strokeWidth=".8" />
           <path d="M16,-8L24,0M24,-8L16,0" stroke="#7b6945" strokeWidth="1.2" />
         </g>,
       );
     }
   } else if (b.kind === 'pulperia') {
-    porch(
-      'shop-porch',
-      Math.max(0.15, f.doorU - 2),
-      Math.min(f.width - 0.15, f.doorU + 2),
-    );
+    porch('shop-porch', Math.max(0.15, f.doorU - 2), Math.min(f.width - 0.15, f.doorU + 2));
     if (frontVisible) {
       const u = Math.max(0.4, f.doorU - 1.35),
         p = screenPoint(point(u, -0.42, h - 5), project);
@@ -1814,21 +1639,13 @@ export function buildingDetails(
             stroke="#c1a676"
             strokeWidth=".7"
           />
-          <path
-            d="M-17,14h6m-5,-3v6m4,-6v6"
-            stroke="#d5c096"
-            strokeWidth=".9"
-          />
+          <path d="M-17,14h6m-5,-3v6m4,-6v6" stroke="#d5c096" strokeWidth=".9" />
         </g>,
       );
     }
   } else if (b.kind === 'warehouse') {
     sideButtresses('storehouse');
-    porch(
-      'loading',
-      Math.max(0.15, f.doorU - 1.35),
-      Math.min(f.width - 0.15, f.doorU + 1.35),
-    );
+    porch('loading', Math.max(0.15, f.doorU - 1.35), Math.min(f.width - 0.15, f.doorU + 1.35));
   } else if (b.kind === 'depot') {
     depotPiers();
     depotLoadingFront();
@@ -1837,63 +1654,32 @@ export function buildingDetails(
     farmhouseChimneys();
   } else if (b.kind === 'smithy') {
     chimney(true);
-    porch(
-      'forge',
-      Math.max(0.15, f.doorU - 1.25),
-      Math.min(f.width - 0.15, f.doorU + 1.25),
-    );
+    porch('forge', Math.max(0.15, f.doorU - 1.25), Math.min(f.width - 0.15, f.doorU + 1.25));
   } else if (b.kind === 'stable') {
     if (frontVisible) {
       const z = h * 0.89;
       nodes.push(
-        solid(
-          'stable-timber-header',
-          0.02,
-          -0.28,
-          f.width - 0.02,
-          0.1,
-          z - 4,
-          z,
-          timber,
-          'wood',
-        ),
+        solid('stable-timber-header', 0.02, -0.28, f.width - 0.02, 0.1, z - 4, z, timber, 'wood'),
       );
-      for (let u = 0; u <= f.width; u += 2)
+      for (let u = 0; u <= f.width; u += 2) {
         if (wallAt(u, 0)?.type === 'wall') {
           nodes.push(
-            solid(
-              `stable-post-${u}`,
-              u - 0.095,
-              -0.3,
-              u + 0.095,
-              0.12,
-              0,
-              z,
-              timber,
-              'wood',
-            ),
+            solid(`stable-post-${u}`, u - 0.095, -0.3, u + 0.095, 0.12, 0, z, timber, 'wood'),
           );
           nodes.push(
             <path
               key={`stable-tie-${u}`}
-              d={line(
-                point(u, -0.31, z - 13),
-                point(Math.min(f.width, u + 0.6), -0.31, z - 2),
-              )}
+              d={line(point(u, -0.31, z - 13), point(Math.min(f.width, u + 0.6), -0.31, z - 2))}
               stroke={timber.base}
               strokeWidth="3"
             />,
           );
         }
+      }
       nodes.push(
         <g
           key="stable-ventilation"
-          transform={faceMatrix(
-            at(0.4, -0.03),
-            at(f.width - 0.4, -0.03),
-            project,
-            h + 2,
-          )}
+          transform={faceMatrix(at(0.4, -0.03), at(f.width - 0.4, -0.03), project, h + 2)}
         >
           <path
             d={`M2,0L20,-${profile.roofRise - 5}L38,0Z`}
@@ -1918,20 +1704,11 @@ export function buildingDetails(
       const u0 = Math.max(0.1, f.doorU - 0.72),
         u1 = Math.min(f.width - 0.1, f.doorU + 0.72);
       nodes.push(
-        solid(
-          'domestic-door-lintel',
-          u0,
-          -0.22,
-          u1,
-          0.13,
-          h * 0.87,
-          h * 0.87 + 3,
-          timber,
-          'wood',
-        ),
+        solid('domestic-door-lintel', u0, -0.22, u1, 0.13, h * 0.87, h * 0.87 + 3, timber, 'wood'),
       );
-      for (const u of [0, f.width])
+      for (const u of [0, f.width]) {
         pier(u, 0, 0.19, h - 2, 'house-corner', 0.22);
+      }
     }
   }
 
@@ -1953,11 +1730,7 @@ export function buildingDetails(
       key: `architecture-detail-${b.id}`,
       depth: b.x + b.y + b.width + b.height + 0.3,
       node: (
-        <g
-          data-building-kind={b.kind}
-          data-architecture-front={f.side}
-          pointerEvents="none"
-        >
+        <g data-building-kind={b.kind} data-architecture-front={f.side} pointerEvents="none">
           {nodes}
         </g>
       ),

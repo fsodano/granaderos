@@ -17,15 +17,18 @@ export class CampaignMap {
       document.id !== this.#document.id ||
       document.width !== CAMPAIGN_MAP_DIMENSIONS.width ||
       document.height !== CAMPAIGN_MAP_DIMENSIONS.height
-    )
+    ) {
       throw new CampaignEditorRefusal(CampaignEditorRefusalCode.IncompatibleCampaignMap);
+    }
     this.#document = structuredClone(document);
   }
 
   setBuildingSlab(buildingId, geometry, terraceGeometry) {
     const document = this.snapshot();
     const building = document.buildings.find((candidate) => candidate.id === buildingId);
-    if (!building) throw new CampaignEditorRefusal(CampaignEditorRefusalCode.BuildingNotFound);
+    if (!building) {
+      throw new CampaignEditorRefusal(CampaignEditorRefusalCode.BuildingNotFound);
+    }
     const previous = (document.upperSurfaces ?? []).filter(
       (surface) => surface.buildingId === buildingId,
     );
@@ -56,7 +59,9 @@ export class CampaignMap {
       const access = candidates.find((candidate) =>
         terraceGeometry.isClear(document, candidate.from),
       );
-      if (!access) throw new CampaignEditorRefusal(CampaignEditorRefusalCode.RoofAccessUnavailable);
+      if (!access) {
+        throw new CampaignEditorRefusal(CampaignEditorRefusalCode.RoofAccessUnavailable);
+      }
       building.roof = 'terrace';
       const roof = terraceGeometry.build(building, {
         ...geometry,

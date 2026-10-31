@@ -18,13 +18,17 @@ export class AdvanceWorldTimeUseCase {
     const context = this.#repository.load();
     const removedCorpseIds: string[] = [];
     const corpses = new Map(context.corpses.map((corpse) => [corpse.id, corpse]));
-    if (corpses.size !== context.corpses.length)
+    if (corpses.size !== context.corpses.length) {
       throw new Error('A corpse identity cannot be duplicated.');
+    }
     context.timeline.advanceTo(request.targetSecond, (event) => {
-      if (event.kind !== CORPSE_REMOVAL_EVENT)
+      if (event.kind !== CORPSE_REMOVAL_EVENT) {
         throw new Error('The world event kind has no registered domain handler.');
+      }
       const corpse = corpses.get(event.subjectId);
-      if (!corpse) throw new Error('The world event refers to an unknown corpse.');
+      if (!corpse) {
+        throw new Error('The world event refers to an unknown corpse.');
+      }
       corpse.removeAt(event.atSecond, context.corpseEquipment.get(corpse.id) ?? []);
       removedCorpseIds.push(corpse.id);
       return 'continue';

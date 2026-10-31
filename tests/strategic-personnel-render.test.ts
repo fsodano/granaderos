@@ -1,0 +1,1273 @@
+import { register } from 'node:module';
+register('../tools/test-render-loader.ts', import.meta.url);
+import test, { type TestContext } from 'node:test';
+import assert from 'node:assert/strict';
+import { createElement as h, act, useState, useEffect } from 'react';
+import { renderToStaticMarkup as render } from 'react-dom/server';
+import { JSDOM } from 'jsdom';
+import { initialCampaign } from './legacy-campaign-fixture.ts';
+import { dispatchCampaign, rosterFor, civicStatus } from '../packages/game/campaign.js';
+import { encodeSave, decodeSave } from '../packages/game/save.ts';
+import {
+  strategicSquadSlots,
+  strategicSquadAssignments,
+  strategicNewSquadAssignment,
+} from '../packages/game/strategic-squad-assignments.js';
+import { strategicPresenceLabel } from '../packages/game/strategic-presence.ts';
+import { contractQuote } from '../packages/game/contracts.js';
+import { playerKnownCampaign } from '../packages/game/player-known-state.ts';
+import { createBattle } from '../packages/game/tactical.js';
+import { sectorInventoryModel } from '../packages/game/sector-inventory.js';
+const { default: StrategicRoster } = await import('../apps/web/app/StrategicRoster.tsx');
+const { default: StrategicPersonnelMenu } =
+  await import('../apps/web/app/StrategicPersonnelMenu.tsx');
+const { default: Campaign } = await import('../apps/web/app/Campaign.tsx');
+const { default: MedicalCare } = await import('../apps/web/app/MedicalCare.tsx');
+const { DossierEquipment } = await import('../apps/web/app/CharacterDossier.tsx');
+const { default: SectorInventory } = await import('../apps/web/app/SectorInventory.tsx');
+const { default: Recruitment } = await import('../apps/web/app/Recruitment.tsx');
+import type {
+  CampaignAction,
+  CampaignSnapshot,
+  CampaignSquad,
+  CampaignServiceContract,
+  CampaignMilitiaCourse,
+  CampaignJourney,
+} from '../packages/game/public/campaign-types.ts';
+import { campaignWorld } from '../packages/game/campaign-definition.js';
+import type { StrategicSectorPresence } from '../packages/game/strategic-presence.ts';
+function inventorySourceKey(key: string): string {
+  const decoded: unknown = JSON.parse(key);
+  assert.ok(Array.isArray(decoded));
+  const source: unknown = decoded[1];
+  assert.equal(typeof source, 'string');
+  assert.ok(typeof source === 'string');
+  return source;
+}
+function present<T>(value: T | null | undefined, message = 'Expected fixture value'): T {
+  assert.ok(value !== null && value !== undefined, message);
+  return value;
+}
+const noop = () => {};
+function order(s: CampaignSnapshot, a: CampaignAction): CampaignSnapshot {
+  const n = dispatchCampaign(s, a);
+  assert.equal(n.lastError, null, n.lastError ?? undefined);
+  return n;
+}
+const unchanged = (s: CampaignSnapshot) => ({ ...s, lastError: null });
+function course(trainerId: number): CampaignMilitiaCourse {
+  return {
+    trainerId,
+    sector: 'retiro',
+    rank: 0,
+    count: 3,
+    remaining: 48,
+    duration: 48,
+    started: 0,
+  };
+}
+
+void test('recruitment shows immediate availability only for eligible candidates', () => {
+  const state = initialCampaign(),
+    id = 100;
+  state.resources.treasury = 100000;
+  // Declared captivity isolates the card from price, route and service refusals.
+  Object.assign(present(state.operativeState[id]), { captured: true, location: 'uspallata' });
+  const before = structuredClone(state),
+    quote = contractQuote(state, present(rosterFor(state).find((op) => op.id === id)));
+  assert.equal(quote.available, true);
+  assert.equal(civicStatus(state, id).available, false);
+  const doc = new JSDOM(render(h(Recruitment, { state, dispatch: noop }))).window.document,
+    card = present(doc.querySelector<HTMLElement>(`[data-operative-id="${id}"]`)),
+    button = present(card.querySelector<HTMLButtonElement>('.gold-button'));
+  assert.equal(button.disabled, true);
+  assert.equal(button.textContent, 'En cautiverio');
+  const reason = present(doc.getElementById(present(button.getAttribute('aria-describedby'))));
+  assert.ok(card.contains(reason));
+  assert.equal(reason.textContent, civicStatus(state, id).reason);
+  assert.match(present(reason.textContent), /cautivo/);
+  assert.doesNotMatch(card.textContent, /Disponible de inmediato/);
+  assert.deepEqual(state, before);
+  present(doc.defaultView).close();
+  const available = structuredClone(state);
+  present(available.operativeState[id]).captured = false;
+  const availableBefore = structuredClone(available),
+    controlDoc = new JSDOM(render(h(Recruitment, { state: available, dispatch: noop }))).window
+      .document,
+    control = present(controlDoc.querySelector<HTMLElement>(`[data-operative-id="${id}"]`)),
+    hire = present(control.querySelector<HTMLButtonElement>('.gold-button'));
+  assert.equal(civicStatus(available, id).available, true);
+  assert.equal(hire.disabled, false);
+  assert.equal(hire.textContent, `Reclutar · ${quote.total} pesos`);
+  assert.match(present(control.textContent), /Disponible de inmediato/);
+  assert.doesNotMatch(control.textContent, /En cautiverio|está cautivo/);
+  assert.equal(hire.hasAttribute('aria-describedby'), false);
+  assert.deepEqual(available, availableBefore);
+  present(controlDoc.defaultView).close();
+  const fallen = structuredClone(available);
+  Object.assign(present(fallen.operativeState[id]), { alive: false, hp: 0 });
+  const fallenBefore = structuredClone(fallen),
+    fallenDoc = new JSDOM(render(h(Recruitment, { state: fallen, dispatch: noop }))).window
+      .document,
+    fallenCard = present(fallenDoc.querySelector<HTMLElement>(`[data-operative-id="${id}"]`)),
+    fallenButton = present(fallenCard.querySelector<HTMLButtonElement>('.gold-button'));
+  assert.equal(civicStatus(fallen, id).available, false);
+  assert.equal(fallenButton.disabled, true);
+  assert.equal(fallenButton.textContent, 'Caído en combate');
+  assert.ok(
+    fallenCard.textContent.includes('Un combatiente fallecido no puede volver a contratarse.'),
+  );
+  assert.doesNotMatch(fallenCard.textContent, /Disponible de inmediato/);
+  assert.deepEqual(fallen, fallenBefore);
+  present(fallenDoc.defaultView).close();
+});
+
+// An explicit existing twelve-person army isolates the roster display and
+// reassignment capacity. It is not a fresh-player campaign or a route proof.
+function existingArmy() {
+  const s = initialCampaign(),
+    ids = rosterFor(s)
+      .slice(0, 12)
+      .map((op) => op.id);
+  s.recruited = ids;
+  s.squad = ids.slice(0, 6);
+  s.squads = [
+    { id: 'squad-1', name: 'Primera escuadra', members: [...s.squad], location: 'retiro' },
+    { id: 'squad-2', name: 'Reserva del puerto', members: ids.slice(6), location: 'retiro' },
+  ];
+  s.contracts = Object.fromEntries(
+    ids.map((id): [number, CampaignServiceContract] => [
+      id,
+      { kind: 'legacy', term: 'month', started: 0, expiresAt: null, paid: 0 },
+    ]),
+  );
+  return order(s, { type: 'selectSquad', id: s.activeSquadId });
+}
+
+void test('the dense roster renders twelve person rows with six columns and no squad table or duplicate funds', () => {
+  const state = existingArmy(),
+    before = structuredClone(state),
+    html = render(
+      h(StrategicRoster, {
+        state,
+        roster: rosterFor(state),
+        onDossier: noop,
+        onOpenDesk: noop,
+        onAssignment: noop,
+        onContract: noop,
+        onDestination: noop,
+        dispatch: noop,
+      }),
+    ),
+    doc = new JSDOM(html).window.document;
+  assert.equal(
+    present(doc.querySelector<HTMLElement>('.personnel-title h2')).textContent,
+    'Nómina',
+  );
+  assert.equal(doc.querySelectorAll<HTMLElement>('table').length, 1);
+  assert.equal(doc.querySelectorAll<HTMLElement>('.merc-map-table tbody tr').length, 12);
+  assert.equal(doc.querySelectorAll<HTMLElement>('.merc-map-table thead th').length, 6);
+  assert.equal(
+    present(doc.querySelector<HTMLElement>('.merc-map-table thead th:last-child')).textContent,
+    'Fin contrato',
+  );
+  assert.equal(doc.querySelector<HTMLElement>('.squad-map-table'), null);
+  assert.ok(!doc.body.textContent.includes('Organizar escuadras'));
+  assert.ok(!doc.querySelector<HTMLElement>('.roster-footer'));
+  assert.ok(!doc.body.textContent.includes('pesos'));
+  assert.deepEqual(
+    [...doc.querySelectorAll<HTMLElement>('[data-operative-id]')].map((row) =>
+      Number(row.dataset['operativeId']),
+    ),
+    state.recruited,
+  );
+  assert.deepEqual(state, before);
+});
+
+void test('forming numbered slot six first preserves named squads, duty, inventory and the saved slot identity', () => {
+  let state = order(initialCampaign(), { type: 'assignCare', operativeId: 3, assignment: 'rest' });
+  state = order(state, { type: 'assignCare', operativeId: 10, assignment: 'doctor' });
+  const before = structuredClone(state),
+    choice = present(
+      strategicSquadAssignments(state, 3, present(rosterFor(state).find((op) => op.id === 3))).find(
+        (slot) => slot.number === 6,
+      ),
+    );
+  assert.equal(choice.reason, null);
+  assert.deepEqual(state, before);
+  const assigned = order(state, choice.action),
+    created = present(assigned.squads.find((q) => q.name === 'Escuadra 6'));
+  assert.ok(created);
+  assert.deepEqual(created.members, [3]);
+  assert.equal(present(assigned.operativeState[3]).assignment, 'active');
+  assert.equal(present(assigned.operativeState[10]).assignment, 'doctor');
+  assert.deepEqual(present(assigned.squads[0]), { ...present(before.squads[0]), members: [4, 10] });
+  for (const id of state.recruited) {
+    const changed = present(assigned.operativeState[id]),
+      previous = present(before.operativeState[id]);
+    assert.deepEqual(changed.inventory, previous.inventory);
+    assert.equal(changed.hp, previous.hp);
+    assert.equal(changed.medkits, previous.medkits);
+  }
+  assert.equal(assigned.hour, before.hour);
+  assert.deepEqual(assigned.resources, before.resources);
+  assert.deepEqual(state, before);
+  const loaded = decodeSave(encodeSave(assigned)).campaign;
+  assert.equal(present(present(strategicSquadSlots(loaded)[5]).squad).id, created.id);
+  assert.equal(present(strategicSquadSlots(loaded)[1]).squad, null);
+});
+
+void test('failed squad and duty changes preserve the complete campaign, and ordinary callers keep their previous duty', () => {
+  let state = order(initialCampaign(), { type: 'assignCare', operativeId: 10, assignment: 'rest' });
+  state = order(state, { type: 'createSquad', name: 'Reserva', ids: [10] });
+  assert.equal(present(state.operativeState[10]).assignment, 'rest');
+  state = order(state, { type: 'selectSquad', id: 'squad-1' });
+  state = order(state, { type: 'travel', sector: 'buenos_aires' });
+  const before = structuredClone(state),
+    action = {
+      type: 'assignToSquad',
+      operativeId: 10,
+      squadId: 'squad-1',
+      returnToService: true,
+    } satisfies CampaignAction;
+  const rejected = dispatchCampaign(state, action);
+  assert.match(present(rejected.lastError), /mismo sector/);
+  assert.deepEqual(unchanged(rejected), unchanged(state));
+  assert.deepEqual(state, before);
+  const create = dispatchCampaign(state, {
+    type: 'createSquad',
+    name: 'Escuadra 6',
+    ids: [10],
+    sector: 'buenos_aires',
+    returnToService: true,
+  });
+  assert.ok(create.lastError);
+  assert.deepEqual(unchanged(create), unchanged(state));
+  const own = order(state, {
+    ...action,
+    squadId: present(state.squads.find((q) => q.members.includes(10))).id,
+  });
+  assert.equal(present(own.operativeState[10]).assignment, 'active');
+});
+
+void test('joining an existing named squad returns only the chosen person to duty, with no missing or duplicated members', () => {
+  let state = order(initialCampaign(), { type: 'createSquad', name: 'Reserva médica', ids: [10] });
+  state = order(state, { type: 'assignCare', operativeId: 3, assignment: 'rest' });
+  state = order(state, { type: 'assignCare', operativeId: 10, assignment: 'doctor' });
+  const choice = present(
+      strategicSquadAssignments(state, 3, present(rosterFor(state).find((op) => op.id === 3))).find(
+        (slot) => slot.number === 2,
+      ),
+    ),
+    assigned = order(state, choice.action);
+  assert.deepEqual(
+    assigned.squads.map((q) => q.members),
+    [[4], [10, 3]],
+  );
+  assert.equal(present(assigned.squads[1]).name, 'Reserva médica');
+  assert.equal(present(assigned.operativeState[3]).assignment, 'active');
+  assert.equal(present(assigned.operativeState[10]).assignment, 'doctor');
+  assert.deepEqual(
+    assigned.squads.flatMap((q) => q.members).sort((a, b) => a - b),
+    [3, 4, 10],
+  );
+  assert.deepEqual(decodeSave(encodeSave(assigned)).campaign, assigned);
+});
+
+void test('full, remote, traveling and militia-training slots are unavailable while old seventh/eighth squads remain reachable', () => {
+  const state = existingArmy(),
+    id = present(state.squad[0]);
+  assert.match(
+    present(present(strategicSquadAssignments(state, id).find((slot) => slot.number === 2)).reason),
+    /seis combatientes/,
+  );
+  const before = structuredClone(state),
+    rejected = dispatchCampaign(state, {
+      type: 'assignToSquad',
+      operativeId: id,
+      squadId: 'squad-2',
+      returnToService: true,
+    });
+  assert.ok(rejected.lastError);
+  assert.deepEqual(unchanged(rejected), unchanged(before));
+  present(state.squads[1]).members.pop();
+  present(state.squads[1]).location = 'buenos_aires';
+  assert.match(
+    present(present(strategicSquadAssignments(state, id).find((slot) => slot.number === 2)).reason),
+    /mismo sector/,
+  );
+  const traveler = order(initialCampaign(), {
+    type: 'travel',
+    sector: 'buenos_aires',
+    queue: true,
+  });
+  assert.ok(strategicSquadAssignments(traveler, 3).every((slot) => slot.reason));
+  const training = initialCampaign();
+  training.militiaTraining = [course(10)];
+  assert.match(
+    present(
+      present(
+        strategicSquadAssignments(
+          training,
+          10,
+          present(rosterFor(training).find((op) => op.id === 10)),
+        )[5],
+      ).reason,
+    ),
+    /instrucción/,
+  );
+  const trainingRejected = dispatchCampaign(training, {
+    type: 'createSquad',
+    name: 'Escuadra 6',
+    ids: [10],
+    sector: 'retiro',
+    returnToService: true,
+  });
+  assert.match(present(trainingRejected.lastError), /instrucción/);
+  assert.deepEqual(
+    unchanged(trainingRejected),
+    unchanged(training),
+    'the duty guard also rolls back a squad already formed in the working copy',
+  );
+  const old = initialCampaign();
+  old.squads.push(
+    ...Array.from({ length: 7 }, (_, i) => ({
+      id: `squad-${i + 2}`,
+      name: `Guardia histórica ${i + 2}`,
+      members: [],
+      location: 'retiro',
+    })),
+  );
+  const slots = strategicSquadAssignments(old, 3);
+  assert.equal(slots.length, 8);
+  assert.equal(present(slots[6]).label, 'Guardia histórica 7');
+  assert.ok(present(slots[7]).action.type === 'assignToSquad');
+  const eighthAction = present(slots[7]).action;
+  assert.ok(eighthAction.type === 'assignToSquad');
+  assert.equal(eighthAction.squadId, 'squad-8');
+  assert.equal(present(slots[7]).reason, null);
+});
+
+async function mountMenu(
+  t: TestContext,
+  state: CampaignSnapshot,
+  id: number,
+  kind: 'assignment' | 'contract' | 'destination' = 'assignment',
+) {
+  const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://granaderos.test' }),
+    globals = {
+      window: dom.window,
+      document: dom.window.document,
+      navigator: dom.window.navigator,
+      HTMLElement: dom.window.HTMLElement,
+      Node: dom.window.Node,
+      IS_REACT_ACT_ENVIRONMENT: true,
+    },
+    previous = new Map(
+      Object.keys(globals).map((k) => [k, Object.getOwnPropertyDescriptor(globalThis, k)]),
+    );
+  for (const [k, v] of Object.entries(globals)) {
+    Object.defineProperty(globalThis, k, { configurable: true, writable: true, value: v });
+  }
+  const { createRoot } = await import('react-dom/client'),
+    root = createRoot(present(dom.window.document.getElementById('root')));
+  let current = state,
+    closed = 0;
+  const actions: CampaignAction[] = [];
+  function Screen() {
+    const [s, set] = useState(state);
+    useEffect(() => {
+      current = s;
+    }, [s]);
+    return h(StrategicPersonnelMenu, {
+      state: s,
+      roster: rosterFor(s),
+      id,
+      kind,
+      onClose() {
+        closed++;
+      },
+      dispatch: (a) => {
+        actions.push(a);
+        set((s) => dispatchCampaign(s, a));
+      },
+    });
+  }
+  t.after(async () => {
+    try {
+      await act(async () => root.unmount());
+    } finally {
+      dom.window.close();
+      for (const [k, d] of previous) {
+        if (d) {
+          Object.defineProperty(globalThis, k, d);
+        } else {
+          Reflect.deleteProperty(globalThis, k);
+        }
+      }
+    }
+  });
+  await act(async () => root.render(h(Screen)));
+  return {
+    doc: dom.window.document,
+    state: () => current,
+    actions,
+    closed: () => closed,
+    async click(label: string) {
+      const b = present(
+        [...dom.window.document.querySelectorAll<HTMLButtonElement>('button')].find(
+          (b) => b.textContent.trim() === label,
+        ),
+      );
+      assert.ok(b, label);
+      assert.equal(b.disabled, false);
+      await act(async () => b.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true })));
+    },
+  };
+}
+
+// Six saved numbered slots and a detached seventh group reproduce the public
+// menu after a retreat. The new local officer is not assigned to any squad.
+function sevenSquadArmy() {
+  const state = existingArmy(),
+    ids = state.recruited;
+  present(state.sectors['cordoba']).owner = 'patriot';
+  state.squads = Array.from({ length: 6 }, (_, i) => ({
+    id: `squad-${i + 1}`,
+    name: `Escuadra ${i + 1}`,
+    members: [],
+    location: i === 2 ? 'santa_fe' : 'retiro',
+  }));
+  Object.assign(present(state.squads[4]), { members: ids.slice(0, 6), location: 'cordoba' });
+  Object.assign(present(state.squads[5]), { members: ids.slice(6, 10), location: 'cordoba' });
+  state.squads.push({
+    id: 'squad-7',
+    name: 'Destacamento de Buenos Aires',
+    members: [present(ids[10])],
+    location: 'buenos_aires',
+  });
+  state.activeSquadId = 'squad-5';
+  state.squad = [...present(state.squads[4]).members];
+  state.location = 'cordoba';
+  for (const id of ids) {
+    present(state.operativeState[id]).location =
+      state.squads.find((q) => q.members.includes(id))?.location ?? 'cordoba';
+  }
+  present(state.operativeState[present(ids[11])]).assignment = 'rest';
+  return state;
+}
+
+void test('the assignment menu forms an eighth local squad when all six numbered slots already exist', async (t) => {
+  const state = sevenSquadArmy(),
+    id = present(state.recruited[11]),
+    before = structuredClone(state),
+    m = await mountMenu(t, state, id);
+  await m.click('Escuadra ›');
+  const remote = present(
+    [...m.doc.querySelectorAll<HTMLButtonElement>('.strategic-squad-options button')].find(
+      (b) => b.textContent === 'Escuadra 3',
+    ),
+  );
+  assert.equal(remote.disabled, true);
+  assert.match(present(remote.title), /mismo sector/);
+  await m.click('Nueva escuadra');
+  const after = m.state(),
+    created = present(after.squads.find((q) => !before.squads.some((old) => old.id === q.id)));
+  assert.equal(after.lastError, null);
+  assert.equal(after.squads.length, 8);
+  assert.ok(created);
+  assert.deepEqual(created.members, [id]);
+  assert.equal(created.location, 'cordoba');
+  assert.equal(after.activeSquadId, created.id);
+  assert.equal(present(after.operativeState[id]).assignment, 'active');
+  assert.equal(m.closed(), 1);
+  assert.equal(m.actions.length, 1);
+  for (const old of before.squads) {
+    assert.deepEqual(
+      present(after.squads.find((q) => q.id === old.id)),
+      old,
+      'existing groups stay in their actual locations',
+    );
+  }
+  assert.equal(after.hour, before.hour);
+  assert.equal(after.secondOfHour, before.secondOfHour);
+  assert.deepEqual(after.resources, before.resources);
+  for (const member of before.recruited) {
+    assert.deepEqual(present(after.operativeState[member]), {
+      ...present(before.operativeState[member]),
+      ...(member === id ? { assignment: 'active' } : {}),
+    });
+  }
+  assert.deepEqual(decodeSave(encodeSave(after)).campaign, after);
+  assert.deepEqual(state, before);
+});
+
+function eightOccupiedSquads() {
+  const state = sevenSquadArmy(),
+    ids = state.recruited;
+  state.squads.push({ id: 'squad-8', name: 'Escuadra 7', members: [], location: 'cordoba' });
+  for (const squad of state.squads) {
+    squad.members = [];
+  }
+  for (const [index, id] of ids.entries()) {
+    const squad = present(state.squads[index % 8]);
+    squad.members.push(id);
+    present(state.operativeState[id]).location = squad.location;
+  }
+  state.squad = [...present(state.squads.find((q) => q.id === state.activeSquadId)).members];
+  return state;
+}
+
+void test('the new-squad button explains the occupied eight-squad limit and cannot dispatch', async (t) => {
+  const state = eightOccupiedSquads(),
+    id = present(state.recruited[11]),
+    before = structuredClone(state),
+    m = await mountMenu(t, state, id);
+  await m.click('Escuadra ›');
+  const button = present(
+    [...m.doc.querySelectorAll<HTMLButtonElement>('.strategic-squad-options button')].find(
+      (b) => b.textContent === 'Nueva escuadra',
+    ),
+  );
+  assert.ok(button);
+  assert.equal(button.disabled, true);
+  assert.match(present(button.title), /ocho escuadras ocupadas/);
+  await act(async () =>
+    button.dispatchEvent(new (present(m.doc.defaultView).MouseEvent)('click', { bubbles: true })),
+  );
+  assert.deepEqual(m.actions, []);
+  assert.equal(m.closed(), 0);
+  assert.deepEqual(m.state(), before);
+  const rejected = dispatchCampaign(
+    state,
+    present(
+      strategicNewSquadAssignment(state, id, present(rosterFor(state).find((op) => op.id === id))),
+    ).action,
+  );
+  assert.match(present(rejected.lastError), /ocho escuadras ocupadas/);
+  assert.deepEqual(unchanged(rejected), unchanged(before));
+});
+
+void test('a new local squad can reuse an empty remote slot without moving the remaining hospital group', () => {
+  const state = eightOccupiedSquads(),
+    hospital = present(state.squads[2]),
+    patient = present(hospital.members[0]),
+    doctor = present(hospital.members[1]),
+    id = present(present(state.squads[4]).members[0]);
+  present(state.squads[4]).members.push(patient, doctor);
+  present(state.squads[2]).members = [];
+  for (const member of [patient, doctor]) {
+    present(state.operativeState[member]).location = 'cordoba';
+  }
+  state.squad = [...present(state.squads[4]).members];
+  present(state.operativeState[patient]).assignment = 'patient';
+  present(state.operativeState[doctor]).assignment = 'doctor';
+  present(state.operativeState[id]).assignment = 'rest';
+  const before = structuredClone(state),
+    choice = present(
+      strategicNewSquadAssignment(state, id, present(rosterFor(state).find((op) => op.id === id))),
+    );
+  assert.equal(choice.reason, null);
+  assert.equal(choice.action.name, 'Escuadra 8');
+  assert.equal(choice.action.sector, 'cordoba');
+  const after = order(state, choice.action),
+    created = present(after.squads.find((q) => q.id === 'squad-9'));
+  assert.equal(after.squads.length, 8);
+  assert.equal(
+    after.squads.find((q) => q.id === 'squad-3'),
+    undefined,
+  );
+  assert.deepEqual(created, {
+    id: 'squad-9',
+    name: 'Escuadra 8',
+    members: [id],
+    location: 'cordoba',
+  });
+  for (const old of before.squads.filter((q) => q.id !== 'squad-3')) {
+    assert.deepEqual(present(after.squads.find((q) => q.id === old.id)), {
+      ...old,
+      members: old.members.filter((member) => member !== id),
+    });
+  }
+  for (const member of before.recruited) {
+    assert.deepEqual(present(after.operativeState[member]), {
+      ...present(before.operativeState[member]),
+      ...(member === id ? { assignment: 'active' } : {}),
+    });
+  }
+  assert.deepEqual(after.resources, before.resources);
+  assert.equal(after.hour, before.hour);
+  assert.equal(after.secondOfHour, before.secondOfHour);
+  assert.deepEqual(
+    after.squads.flatMap((q) => q.members).sort((a, b) => a - b),
+    [...state.recruited].sort((a, b) => a - b),
+  );
+  assert.deepEqual(decodeSave(encodeSave(after)).campaign, after);
+  assert.deepEqual(state, before);
+});
+
+void test('new-squad creation shares encounter, service, travel and training eligibility with existing choices', () => {
+  assert.equal(
+    strategicNewSquadAssignment(initialCampaign(), 3),
+    null,
+    'empty numbered UI slots already create squads',
+  );
+  const cases: Array<[string, (state: CampaignSnapshot, id: number) => void, RegExp]> = [
+    [
+      'battle',
+      (s) => {
+        s.pendingBattle = { id: 'assignment-test', sector: s.location, squad: [] };
+      },
+      /encuentro/,
+    ],
+    [
+      'encounter',
+      (s) => {
+        s.pendingEncounter = { id: 'assignment-test' };
+      },
+      /encuentro/,
+    ],
+    [
+      'defeat',
+      (s) => {
+        s.defeated = true;
+      },
+      /encuentro/,
+    ],
+    [
+      'not hired',
+      (s, id) => {
+        s.recruited = s.recruited.filter((member) => member !== id);
+      },
+      /disponible/,
+    ],
+    [
+      'dead',
+      (s, id) => {
+        present(s.operativeState[id]).alive = false;
+        present(s.operativeState[id]).hp = 0;
+      },
+      /disponible/,
+    ],
+    [
+      'captured',
+      (s, id) => {
+        present(s.operativeState[id]).captured = true;
+      },
+      /disponible/,
+    ],
+    [
+      'zero health',
+      (s, id) => {
+        present(s.operativeState[id]).hp = 0;
+      },
+      /disponible/,
+    ],
+    [
+      'training',
+      (s, id) => {
+        s.militiaTraining = [course(id)];
+      },
+      /instrucción/,
+    ],
+    ...(['moving', 'ready', 'paused'] as const).map(
+      (status): [string, (state: CampaignSnapshot, id: number) => void, RegExp] => [
+        status,
+        (s, id) => {
+          present(s.squads[5]).members.push(id);
+          present(s.squads[5]).journey = {
+            version: 1,
+            path: ['cordoba', 'santa_fe'],
+            mode: 'march',
+            startedAt: s.hour,
+            legHours: 1,
+            elapsed: 0,
+            status,
+            returning: false,
+            reason: null,
+          } satisfies CampaignJourney;
+        },
+        /ruta pendiente/,
+      ],
+    ),
+  ];
+  for (const [label, change, message] of cases) {
+    const state = sevenSquadArmy(),
+      id = present(state.recruited[11]),
+      op = present(rosterFor(state).find((op) => op.id === id));
+    change(state, id);
+    const before = structuredClone(state);
+    assert.match(
+      present(present(strategicNewSquadAssignment(state, id, op)).reason),
+      message,
+      label,
+    );
+    assert.deepEqual(state, before, label);
+  }
+});
+
+void test('assignment preserves saved squad labels and a vacant numbered slot forms an actual squad in active service', async (t) => {
+  const state = order(initialCampaign(), {
+      type: 'assignCare',
+      operativeId: 3,
+      assignment: 'rest',
+    }),
+    m = await mountMenu(t, state, 3);
+  assert.equal(m.doc.querySelector<HTMLElement>('.strategic-squad-options'), null);
+  await m.click('Escuadra ›');
+  assert.deepEqual(
+    [...m.doc.querySelectorAll<HTMLButtonElement>('.strategic-squad-options button')].map(
+      (b) => b.textContent,
+    ),
+    ['Primera escuadra', ...Array.from({ length: 5 }, (_, i) => `Escuadra ${i + 2}`)],
+  );
+  await m.click('Escuadra 6');
+  assert.equal(m.actions.length, 1);
+  const action = present(m.actions[0]);
+  assert.ok(action.type === 'createSquad');
+  assert.equal(action.returnToService, true);
+  assert.equal(m.closed(), 1);
+  assert.equal(m.state().lastError, null);
+  assert.equal(present(m.state().operativeState[3]).assignment, 'active');
+  const loaded = decodeSave(encodeSave(m.state())).campaign;
+  assert.deepEqual(present(present(strategicSquadSlots(loaded)[5]).squad).members, [3]);
+  // Vacant numbered names can disappear when an eight-squad army reuses a slot.
+  const sparse = existingArmy(),
+    ids = sparse.recruited,
+    group = (id: string, name: string, members: number[] = []): CampaignSquad => ({
+      id,
+      name,
+      members,
+      location: 'retiro',
+    });
+  sparse.squads = [
+    group('squad-1', 'Reserva médica', ids.slice(0, 2)),
+    ...Array.from({ length: 4 }, (_, i) => group(`squad-${i + 3}`, `Escuadra ${i + 3}`)),
+    group('squad-8', 'Escuadra 7', ids.slice(2, 6)),
+    group('squad-9', 'Reserva del puerto', ids.slice(6)),
+    group('squad-10', 'Escuadra 8'),
+  ];
+  sparse.activeSquadId = 'squad-8';
+  sparse.squad = [...present(sparse.squads.find((q) => q.id === sparse.activeSquadId)).members];
+  const before = structuredClone(sparse),
+    choices = strategicSquadAssignments(
+      sparse,
+      present(ids[0]),
+      present(rosterFor(sparse).find((op) => op.id === present(ids[0]))),
+    ),
+    seventh = present(choices.find((slot) => slot.number === 2));
+  assert.equal(seventh.label, 'Escuadra 7');
+  assert.ok(seventh.action.type === 'assignToSquad');
+  assert.equal(seventh.action.squadId, 'squad-8');
+  assert.equal(seventh.reason, null);
+  for (const choice of choices) {
+    assert.ok(choice.squad);
+    assert.ok(choice.action.type === 'assignToSquad');
+    assert.equal(choice.label, present(choice.squad).name);
+    assert.equal(choice.action.squadId, present(choice.squad).id);
+  }
+  const doc = new JSDOM(
+    render(
+      h(StrategicRoster, {
+        state: sparse,
+        roster: rosterFor(sparse),
+        onDossier: noop,
+        onOpenDesk: noop,
+        onAssignment: noop,
+        onContract: noop,
+        onDestination: noop,
+        dispatch: noop,
+      }),
+    ),
+  ).window.document;
+  for (const id of ids) {
+    const button = present(
+        doc.querySelector<HTMLElement>(`[data-operative-id="${id}"] [aria-label^="Asignación:"]`),
+      ),
+      squad = present(sparse.squads.find((q) => q.members.includes(id)));
+    assert.equal(button.textContent, squad.name);
+    assert.equal(button.title, squad.name);
+  }
+  present(doc.defaultView).close();
+  assert.deepEqual(sparse, before);
+  const reassigned = order(sparse, seventh.action);
+  for (const squad of before.squads) {
+    assert.deepEqual(present(reassigned.squads.find((q) => q.id === squad.id)), {
+      ...squad,
+      members:
+        squad.id === 'squad-8'
+          ? [...squad.members, present(ids[0])]
+          : squad.members.filter((id) => id !== present(ids[0])),
+    });
+  }
+  assert.equal(reassigned.activeSquadId, 'squad-8');
+  assert.equal(reassigned.hour, before.hour);
+  assert.deepEqual(reassigned.resources, before.resources);
+  assert.deepEqual(sparse, before);
+});
+
+void test('the contract menu renews with the displayed exact second deadline and charges the current quote', async (t) => {
+  let state = order(initialCampaign(), { type: 'advanceStrategicTime', seconds: 121 });
+  state = order(state, { type: 'recruitCivic', id: 103, term: 'day' });
+  state = decodeSave(encodeSave(state)).campaign;
+  const quote = contractQuote(state, present(rosterFor(state).find((op) => op.id === 103)), 'day'),
+    m = await mountMenu(t, state, 103, 'contract');
+  assert.match(present(m.doc.body.textContent), /1 día hasta la salida/);
+  await m.click(`Un día · ${quote.price.toLocaleString('es-AR')} pesos`);
+  const renewal = present(m.actions[0]);
+  assert.ok(renewal.type === 'renewContract');
+  assert.equal(renewal.expectedExpiresAt, 24);
+  assert.equal(renewal.expectedExpiresSecond, 121);
+  assert.equal(m.state().lastError, null);
+  assert.equal(m.state().resources.treasury, state.resources.treasury - quote.price);
+  assert.equal(present(m.state().contracts[103]).expiresAt, 48);
+  assert.equal(present(m.state().contracts[103]).expiresSecond, 121);
+  assert.match(present(m.doc.body.textContent), /2 días hasta la salida/);
+});
+
+// JSDOM lacks native dialog methods. These tests cover application focus restoration;
+// native modal focus trapping is supplied by the browser.
+function installDialogState(dom: JSDOM): void {
+  Object.assign(dom.window.HTMLDialogElement.prototype, {
+    showModal(this: HTMLDialogElement) {
+      this.open = true;
+    },
+    close(this: HTMLDialogElement) {
+      this.open = false;
+    },
+  });
+}
+
+async function mountCampaignMenus(t: TestContext, { narrow = false } = {}) {
+  const dom = new JSDOM('<!doctype html><div id="root"></div>', {
+      url: 'https://granaderos.test',
+      pretendToBeVisual: true,
+    }),
+    globals = {
+      window: dom.window,
+      document: dom.window.document,
+      navigator: dom.window.navigator,
+      HTMLElement: dom.window.HTMLElement,
+      Node: dom.window.Node,
+      requestAnimationFrame: dom.window.requestAnimationFrame.bind(dom.window),
+      cancelAnimationFrame: dom.window.cancelAnimationFrame.bind(dom.window),
+      IS_REACT_ACT_ENVIRONMENT: true,
+    },
+    previous = new Map(
+      Object.keys(globals).map((k) => [k, Object.getOwnPropertyDescriptor(globalThis, k)]),
+    );
+  for (const [k, v] of Object.entries(globals)) {
+    Object.defineProperty(globalThis, k, { configurable: true, writable: true, value: v });
+  }
+  installDialogState(dom);
+  if (narrow) {
+    const style = dom.window.document.createElement('style');
+    style.textContent = '.strategy-layout > .strategy-personnel { display: none; }';
+    dom.window.document.head.append(style);
+  }
+  const { createRoot } = await import('react-dom/client'),
+    root = createRoot(present(dom.window.document.getElementById('root')));
+  let current = initialCampaign();
+  const actions: CampaignAction[] = [];
+  function Screen() {
+    const [s, set] = useState(initialCampaign());
+    useEffect(() => {
+      current = s;
+    }, [s]);
+    return h(Campaign, {
+      state: s,
+      dispatch: (a) => {
+        actions.push(a);
+        set((s) => dispatchCampaign(s, a));
+      },
+      onBattle: noop,
+      onOpenDesk: noop,
+    });
+  }
+  t.after(async () => {
+    try {
+      await act(async () => root.unmount());
+    } finally {
+      dom.window.close();
+      for (const [k, d] of previous) {
+        if (d) {
+          Object.defineProperty(globalThis, k, d);
+        } else {
+          Reflect.deleteProperty(globalThis, k);
+        }
+      }
+    }
+  });
+  await act(async () => root.render(h(Screen)));
+  const fire = async (element: Element | null | undefined, event: Event) => {
+    assert.ok(element);
+    await act(async () => element.dispatchEvent(event));
+    return event;
+  };
+  return {
+    doc: dom.window.document,
+    state: () => current,
+    actions,
+    click: (element: Element | null | undefined) =>
+      fire(element, new dom.window.MouseEvent('click', { bubbles: true })),
+    key: (element: Element | null | undefined, key: string, shiftKey = false) =>
+      fire(
+        element,
+        new dom.window.KeyboardEvent('keydown', { key, shiftKey, bubbles: true, cancelable: true }),
+      ),
+  };
+}
+
+void test('personnel, dossiers and public campaign state distinguish carried, jammed and dropped primary guns without changing equipment', () => {
+  const state = initialCampaign(),
+    cases = [
+      { id: 3, weaponDropped: false, jammed: false },
+      { id: 4, weaponDropped: false, jammed: true },
+      { id: 10, weaponDropped: true, jammed: true },
+    ];
+  // Declared equipment states isolate display. A dropped gun may retain its ID,
+  // condition and jam flag; those fields alone do not mean it is still carried.
+  for (const { id, ...flags } of cases) {
+    state.loadouts[id] = { ...state.loadouts[id], weapon: 1801 };
+    Object.assign(present(state.operativeState[id]), flags, { condition: 98 });
+    if (flags.weaponDropped) {
+      present(state.operativeState[id]).carriedLoaded = 0;
+    }
+  }
+  const before = structuredClone(state),
+    roster = rosterFor(state),
+    publicState = present(playerKnownCampaign(state)),
+    care = new JSDOM(render(h(MedicalCare, { state, dispatch: noop }))).window.document;
+  assert.deepEqual(
+    publicState.operatives.map((op) => op.id),
+    state.recruited,
+  );
+  for (const { id, weaponDropped, jammed } of cases) {
+    const visible = present(publicState.operatives.find((op) => op.id === id)),
+      summary = present(
+        care.querySelector<HTMLElement>(`[data-care-id="${id}"] [aria-label="Arma principal"]`),
+      );
+    assert.equal(visible.weaponDropped, weaponDropped);
+    assert.equal(visible.jammed, jammed);
+    const dossier = new JSDOM(
+        render(
+          h(DossierEquipment, {
+            operative: present(roster.find((op) => op.id === id)),
+            record: present(state.operativeState[id]),
+          }),
+        ),
+      ).window.document,
+      equipment = present(dossier.querySelector<HTMLElement>('.dossier-equipment')),
+      primary = present(equipment.querySelector<HTMLElement>('[data-equipment-slot="primary"]'));
+    assert.ok(
+      equipment.querySelector<HTMLElement>('[data-equipment-slot="blade"] img'),
+      'the secondary weapon stays visible',
+    );
+    if (weaponDropped) {
+      for (const node of [summary, primary]) {
+        assert.match(present(node.textContent), /Arma abandonada/);
+        assert.match(present(node.textContent), /Sin arma principal/);
+        assert.doesNotMatch(node.textContent, /98%|Fallo de chispa/);
+      }
+      assert.equal(primary.querySelector<HTMLElement>('img'), null);
+    } else {
+      assert.ok(primary.querySelector<HTMLElement>('img'));
+      assert.match(present(summary.textContent), /Condición 98%/);
+      for (const node of [summary, primary]) {
+        assert.doesNotMatch(node.textContent, /Arma abandonada/);
+        assert.equal(node.textContent.includes('Fallo de chispa. No puede disparar.'), jammed);
+      }
+    }
+    present(dossier.defaultView).close();
+  }
+  assert.deepEqual(state, before);
+  present(care.defaultView).close();
+});
+
+void test('personnel energy text and meter respect fatigue capacity without changing raw service records', () => {
+  const state = initialCampaign(),
+    cases = [
+      { id: 3, energy: 100, fatigue: 2, shown: 98, max: 98 },
+      { id: 4, energy: 100, fatigue: 4, shown: 96, max: 96 },
+      { id: 10, energy: 37.5, fatigue: 24, shown: 37.5, max: 76 },
+    ];
+  // Captive recovery can leave raw energy above the retained military fatigue
+  // limit. Rendering must not rewrite that record or its public projection.
+  for (const { id, energy, fatigue } of cases) {
+    Object.assign(present(state.operativeState[id]), { energy, fatigue });
+  }
+  const before = structuredClone(state),
+    publicBefore = playerKnownCampaign(state),
+    doc = new JSDOM(render(h(MedicalCare, { state, dispatch: noop }))).window.document;
+  for (const { id, shown, max } of cases) {
+    const label = present(
+        doc.querySelector<HTMLElement>(`[data-care-id="${id}"] .care-vitals label:last-child`),
+      ),
+      meter = present(label.querySelector<HTMLElement>('meter'));
+    assert.equal(
+      present(label.querySelector<HTMLElement>('strong')).textContent,
+      `${Math.round(shown)}/${max}`,
+    );
+    assert.equal(meter.getAttribute('value'), String(shown));
+    assert.equal(meter.getAttribute('max'), String(max));
+  }
+  assert.deepEqual(state, before);
+  assert.deepEqual(playerKnownCampaign(state), publicBefore);
+  present(doc.defaultView).close();
+});
+
+void test('returned equipment and repair reserves show their known former owner without changing custody or hiring gates', () => {
+  const state = initialCampaign(),
+    roster = rosterFor(state),
+    names = new Map(roster.map((op) => [op.id, op.name ?? op.nickname]));
+  // Declared prior returns include two caches from one person and one overflow
+  // marker. Ordinary discovered ground stock has no asserted former owner.
+  const marker = (id: number) => ({
+    id: `service-return-${id}`,
+    siteId: 'retiro',
+    sectorId: 'retiro',
+    entryEdge: 'S' as const,
+    entryAnchor: { x: 10, y: 15 },
+    point: { x: 2, y: 2 },
+  });
+  state.serviceEquipmentReturns = {
+    version: 1,
+    nextId: 10,
+    entries: [7, 8].map((id, index) => ({
+      ...marker(id),
+      operativeId: 100,
+      items: [{ selection: 'rations', stack: { item: 'rations', count: index + 2, weight: 1 } }],
+      repairPoints: index ? 0 : 7,
+    })),
+  };
+  Object.assign(present(state.operativeState[101]), {
+    serviceEquipmentReturn: marker(9),
+    rations: 4,
+    toolkitPoints: 11,
+  });
+  state.sectorStates['retiro'] = {
+    ...createBattle([], {
+      id: 'retiro',
+      width: 8,
+      height: 8,
+      enemies: [],
+      tiles: Array.from({ length: 64 }, (_, i) => ({
+        x: i % 8,
+        y: Math.floor(i / 8),
+        type: 'grass',
+        blocked: false,
+        cover: 0,
+      })),
+      groundItems: [{ id: 'ordinary', type: 'rations', count: 1, x: 2, y: 2, knownToPlayer: true }],
+    }),
+    sectorCleared: true,
+  };
+  const before = structuredClone(state),
+    gate = contractQuote(state, present(roster.find((op) => op.id === 101)), 'day').reason;
+  assert.match(present(gate), /Recogé todo el equipo/);
+  const model = sectorInventoryModel(state, 'retiro', roster, 3),
+    publicSector = present(
+      present(playerKnownCampaign(state)).sectors.find((sector) => sector.id === 'retiro'),
+    );
+  const doc = new JSDOM(render(h(SectorInventory, { state, sectorId: 'retiro', dispatch: noop })))
+      .window.document,
+    rows = [
+      ...doc.querySelectorAll<HTMLElement>(
+        '[aria-label="Equipo descubierto"] > .sector-inventory-row',
+      ),
+    ];
+  assert.equal(rows.length, model.entries.length);
+  for (const [index, row] of model.entries.entries()) {
+    const visible = present(
+      publicSector.equipment.find((entry) => inventorySourceKey(entry.key) === row.key),
+    );
+    assert.ok(visible);
+    if (row.kind === 'serviceReturn') {
+      assert.equal(row.operativeName, names.get(present(row.operativeId)));
+      assert.equal(visible.operativeId, row.operativeId);
+      assert.equal(visible.operativeName, row.operativeName);
+      assert.ok(present(rows[index]).textContent.includes(`Devuelto por ${row.operativeName}`));
+    } else {
+      assert.equal(row.operativeId, undefined);
+      assert.equal(visible.operativeName, undefined);
+      assert.doesNotMatch(present(rows[index]).textContent, /Devuelto por/);
+    }
+  }
+  assert.deepEqual(
+    model.entries.filter((row) => row.operativeId === 100).map((row) => row.count),
+    [2, 3],
+  );
+  const repairRows = [
+    ...doc.querySelectorAll<HTMLElement>(
+      '[aria-label="Materiales de reparación"] .sector-inventory-row',
+    ),
+  ];
+  assert.equal(repairRows.length, 2);
+  for (const [index, row] of model.repairReserves.entries()) {
+    assert.equal(row.operativeName, names.get(present(row.operativeId)));
+    assert.ok(present(repairRows[index]).textContent.includes(`Devuelto por ${row.operativeName}`));
+    const visible = present(
+      publicSector.repairReserves.find((entry) => inventorySourceKey(entry.key) === row.key),
+    );
+    assert.equal(visible.operativeId, row.operativeId);
+    assert.equal(visible.operativeName, row.operativeName);
+    assert.equal(visible.repairPoints, row.repairPoints);
+  }
+  assert.equal(
+    contractQuote(state, present(roster.find((op) => op.id === 101)), 'day').reason,
+    gate,
+  );
+  assert.deepEqual(state, before);
+  present(doc.defaultView).close();
+});
+
+for (const kind of ['assignment', 'contract']) {
+  void test(`${kind} menu traps Tab in both directions and Escape restores the desktop person button`, async (t) => {
+    const m = await mountCampaignMenus(t),
+      state = structuredClone(m.state()),
+      label = kind === 'assignment' ? 'Asignación: Cabral' : 'Fin contrato: Cabral',
+      trigger = present(
+        m.doc.querySelector<HTMLButtonElement>(`.strategy-layout button[aria-label="${label}"]`),
+      );
+    trigger.focus();
+    await m.click(trigger);
+    const dialog = present(m.doc.querySelector<HTMLElement>('.strategic-person-menu')),
+      first = present(dialog.querySelector<HTMLButtonElement>('button[aria-label="Cerrar"]')),
+      last = present(
+        [...dialog.querySelectorAll<HTMLButtonElement>('button')].find(
+          (b) => b.textContent === 'Cancelar',
+        ),
+      );
+    assert.equal(m.doc.activeElement, first);
+    last.focus();
+    assert.equal(m.doc.activeElement, last);
+    assert.equal((await m.key(last, 'Tab')).defaultPrevented, true);
+    assert.equal(m.doc.activeElement, first);
+    assert.equal((await m.key(first, 'Tab', true)).defaultPrevented, true);
+    assert.equal(m.doc.activeElement, last);
+    assert.equal((await m.key(last, 'Escape')).defaultPrevented, true);
+    assert.equal(m.doc.querySelector<HTMLElement>('.strategic-person-menu'), null);
+    assert.equal(m.doc.activeElement, trigger);
+    assert.deepEqual(m.actions, []);
+    assert.deepEqual(m.state(), state);
+  });
+}
+
+for (const dismissal of ['cancel', 'close button']) {
+  void test(`campaign panel ${dismissal} closes the native dialog before removing it`, async (t) => {
+    const m = await mountCampaignMenus(t, { narrow: true }),
+      opener = present(m.doc.querySelector<HTMLButtonElement>('.strategy-roster-open'));
+    opener.focus();
+    await m.click(opener);
+    const panel = present(m.doc.querySelector<HTMLDialogElement>('.strategic-panel-dialog')),
+      nativeClose = panel.close.bind(panel),
+      close = t.mock.method(panel, 'close', () => {
+        assert.ok(
+          panel.isConnected,
+          'native close must restore focus before the dialog is detached',
+        );
+        nativeClose();
+      });
+    if (dismissal === 'cancel') {
+      await act(async () =>
+        panel.dispatchEvent(new (present(m.doc.defaultView).Event)('cancel', { cancelable: true })),
+      );
+    } else {
+      await m.click(panel.querySelector('button[aria-label="Cerrar panel de campaña"]'));
+    }
+    assert.equal(close.mock.callCount(), 1);
+    assert.equal(panel.open, false);
+    assert.equal(panel.isConnected, false);
+    assert.deepEqual(m.actions, []);
+  });
+}
+
+void test('closing the person menu after the narrow roster unmounts restores the visible Nómina button', async (t) => {
+  const m = await mountCampaignMenus(t, { narrow: true }),
+    nomina = present(m.doc.querySelector<HTMLElement>('.strategy-roster-open')),
+    state = structuredClone(m.state());
+  nomina.focus();
+  await m.click(nomina);
+  const panel = present(m.doc.querySelector<HTMLElement>('.strategic-panel-dialog')),
+    trigger = present(
+      panel.querySelector<HTMLButtonElement>('button[aria-label="Asignación: Cabral"]'),
+    );
+  trigger.focus();
+  await m.click(trigger);
+  assert.equal(trigger.isConnected, false);
+  assert.equal(m.doc.querySelector<HTMLElement>('.strategic-panel-dialog'), null);
+  const close = present(
+    m.doc.querySelector<HTMLButtonElement>('.strategic-person-menu button[aria-label="Cerrar"]'),
+  );
+  assert.equal(m.doc.activeElement, close);
+  await m.key(close, 'Escape');
+  assert.equal(m.doc.querySelector<HTMLElement>('.strategic-person-menu'), null);
+  assert.equal(m.doc.activeElement, nomina);
+  assert.deepEqual(m.actions, []);
+  assert.deepEqual(m.state(), state);
+});
+
+void test('a squad action closes the modal and restores its actual assignment trigger after the roster updates', async (t) => {
+  const m = await mountCampaignMenus(t),
+    trigger = present(
+      m.doc.querySelector<HTMLButtonElement>(
+        '.strategy-layout button[aria-label="Asignación: Cabral"]',
+      ),
+    );
+  trigger.focus();
+  await m.click(trigger);
+  await m.click(
+    present(
+      [...m.doc.querySelectorAll<HTMLButtonElement>('.strategic-person-menu button')].find(
+        (b) => b.textContent === 'Escuadra ›',
+      ),
+    ),
+  );
+  await m.click(
+    present(
+      [...m.doc.querySelectorAll<HTMLButtonElement>('.strategic-squad-options button')].find(
+        (b) => b.textContent === 'Escuadra 6',
+      ),
+    ),
+  );
+  assert.equal(m.doc.querySelector<HTMLElement>('.strategic-person-menu'), null);
+  assert.equal(m.doc.activeElement, trigger);
+  assert.equal(m.state().lastError, null);
+  assert.deepEqual(present(m.state().squads.find((q) => q.name === 'Escuadra 6')).members, [3]);
+  assert.equal(m.actions.length, 1);
+  const cell = present(m.doc.querySelector<HTMLElement>('[data-map-sector="retiro"]'));
+  assert.match(present(cell.getAttribute('aria-label')), /3 combatientes propios/);
+  assert.equal(
+    present(cell.querySelector<HTMLElement>('title')).textContent,
+    cell.getAttribute('aria-label'),
+  );
+  const context = {
+      world: {
+        ...campaignWorld(),
+        factions: [{ id: 'royalist', name: 'la Guardia', description: '' }],
+      },
+    },
+    row: StrategicSectorPresence = {
+      sector: 'retiro',
+      players: [3],
+      militia: 1,
+      enemies: 1,
+      unknownEnemy: false,
+      staleEnemy: false,
+      enemyAgeHours: 0,
+    };
+  assert.equal(
+    strategicPresenceLabel(row, context),
+    '1 combatiente propio · 1 miliciano · 1 combatiente de la Guardia observado',
+  );
+  assert.equal(
+    strategicPresenceLabel({ ...row, players: [3, 4], militia: 2, enemies: 2 }, context),
+    '2 combatientes propios · 2 milicianos · 2 combatientes de la Guardia observados',
+  );
+  const unknown = { ...row, players: [], militia: 0, enemies: 0, unknownEnemy: true };
+  assert.equal(strategicPresenceLabel(unknown, context), 'Fuerza de la Guardia sin confirmar');
+  assert.equal(
+    strategicPresenceLabel({ ...unknown, staleEnemy: true, enemyAgeHours: 7 }, context),
+    'Último parte hace 7 h; presencia actual sin confirmar',
+  );
+});

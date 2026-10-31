@@ -14,7 +14,9 @@ export class IlluminationPolicy {
   night(sources: Iterable<VisibleLightSource>): number {
     let illumination: number = IlluminationRules.nightAmbient;
     for (const source of sources) {
-      if (source.distance > source.radius) continue;
+      if (source.distance > source.radius) {
+        continue;
+      }
       const received = source.intensity * (1 - source.distance / (source.radius + 1));
       illumination = Math.max(illumination, received);
     }

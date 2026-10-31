@@ -83,7 +83,7 @@ export class CampaignEditorRefusal extends Error {
       Object.fromEntries(
         Object.entries(details).map(([key, value]) => [
           key,
-          Array.isArray(value) ? Object.freeze([...value]) : value,
+          typeof value === 'object' ? Object.freeze([...value]) : value,
         ]),
       ),
     );

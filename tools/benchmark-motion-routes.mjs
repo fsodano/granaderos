@@ -5,7 +5,7 @@ import { performance } from 'node:perf_hooks';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 const root = process.env.PROFILE_ROOT ?? fileURLToPath(new URL('..', import.meta.url));
-register(`${root}/tests/tactical-render-loader.mjs`, import.meta.url);
+register(`${root}/tools/test-render-loader.ts`, import.meta.url);
 const { movementRoute } = await import(`${root}/web/app/useUnitMotion.ts`);
 const { initialCampaign, dispatchCampaign } = await import(`${root}/game/campaign.js`);
 const { enterSector } = await import(`${root}/game/world.js`);
@@ -13,8 +13,9 @@ const { actBattle, getReachable } = await import(`${root}/game/tactical.js`);
 const { sameCell, tacticalLevel } = await import(`${root}/game/tactical-space.js`);
 
 let campaign = initialCampaign(8);
-for (const id of [128, 142, 123, 115, 131, 110])
+for (const id of [128, 142, 123, 115, 131, 110]) {
   campaign = dispatchCampaign(campaign, { type: 'recruitCombatant', id, term: 'day' });
+}
 campaign = dispatchCampaign(campaign, { type: 'attack', sector: 'buenos_aires' });
 let state = { ...enterSector(campaign.pendingBattle), night: true };
 const ambient = [];
@@ -35,8 +36,9 @@ const moved = actBattle(initial, {
   y: destination.y,
   tacticalLevel: tacticalLevel(destination),
 });
-if (moved.lastError || !sameCell(moved.units[0], destination))
+if (moved.lastError || !sameCell(moved.units[0], destination)) {
   throw Error('The fixture must complete its ordinary seventeen-cell move.');
+}
 
 const summary = [];
 for (const [name, pairs] of [
@@ -46,7 +48,7 @@ for (const [name, pairs] of [
   const timings = [],
     hashes = [],
     changedActors = [];
-  for (let iteration = 0; iteration < 13; iteration++)
+  for (let iteration = 0; iteration < 13; iteration++) {
     for (const [before, after] of pairs) {
       const old = [...before.units, ...before.npcs];
       const actors = [...after.units, ...after.npcs].filter((actor) =>
@@ -70,6 +72,7 @@ for (const [name, pairs] of [
         changedActors.push(actors.length);
       }
     }
+  }
   timings.sort((a, b) => a - b);
   summary.push({
     name,

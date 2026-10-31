@@ -1,14 +1,15 @@
 'use client';
+import type { CampaignContent } from '../../../../../packages/campaign-format/types.ts';
 import {
   DEFAULT_MILITIA_PATROL,
   MILITIA_PATROL_FIELDS,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 export default function MilitiaPatrolRules({
   draft,
   onChange,
 }: {
-  draft: any;
-  onChange: (value: any) => void;
+  draft: CampaignContent;
+  onChange: (value: CampaignContent) => void;
 }) {
   const rules = draft.militiaPatrol ?? DEFAULT_MILITIA_PATROL;
   return (
@@ -30,7 +31,7 @@ export default function MilitiaPatrolRules({
         su puesto cuando no ven enemigos; pueden seguir combatiendo y reaccionando.
       </p>
       <div className="fields">
-        {MILITIA_PATROL_FIELDS.map(([key, label, min, max]: any) => (
+        {MILITIA_PATROL_FIELDS.map(([key, label, min, max]) => (
           <label key={key}>
             {label}
             <input

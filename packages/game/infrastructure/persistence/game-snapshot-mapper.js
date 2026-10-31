@@ -1,5 +1,5 @@
-import { decodeSave, encodeSave } from '../../save.js';
-import { rosterFor } from '../../recruitment.js';
+import { decodeSave, encodeSave } from '../../save.ts';
+import { rosterFor } from '../../recruitment.ts';
 import { restoreGameSession, projectGameSession } from '../session/campaign-game-session-mapper.js';
 import { DomainIdentityMap } from './domain-identity-map.ts';
 import { CanonicalPersonnelMapper } from './canonical-personnel-mapper.ts';
@@ -27,6 +27,8 @@ export class RestoredGame {
   #world;
   #session;
 
+  /** @param {import('../../public/campaign-types.ts').CampaignSnapshot} campaign
+   * @param {import('../../public/compatibility-types.ts').BattleSnapshot|null} battle */
   constructor(campaign, battle, identities = new DomainIdentityMap()) {
     this.#campaign = campaign;
     this.#battle = battle;
@@ -44,11 +46,14 @@ export class RestoredGame {
         field.units.filter((unit) => unit.side === 'player').map((unit) => [String(unit.id), unit]),
       ),
     );
-    for (const definition of rosterFor(campaign))
+    for (const definition of rosterFor(campaign)) {
       this.#personnel.restoreCharacter(definition, activeCharacters.get(String(definition.id)));
+    }
     const now = campaign.hour * 3600 + (campaign.secondOfHour ?? 0);
     for (const squad of campaign.squads ?? []) {
-      if (!squad.journey) continue;
+      if (!squad.journey) {
+        continue;
+      }
       const restored = this.#journeyMapper.restore(squad, now);
       const journey = identities.obtain('Journey', restored.snapshot().id, () => restored);
       this.#journeys.set(squad.id, {
@@ -93,7 +98,9 @@ export class RestoredGame {
         id,
         (unit) => active || retainedPresence.includes(unit, field),
       );
-      if (!active || !field.sectorSession) continue;
+      if (!active || !field.sectorSession) {
+        continue;
+      }
       const restored = readSectorSession(field);
       const sectorSession = identities.obtain('SectorSession', restored.id, () => restored);
       this.#sectorSessions.set(restored.id, {
@@ -102,7 +109,9 @@ export class RestoredGame {
         original: JSON.stringify(sectorSession.snapshot()),
       });
       for (const unit of field.units ?? []) {
-        if (unit.side !== 'player' || !activeFields.includes(field)) continue;
+        if (unit.side !== 'player' || !activeFields.includes(field)) {
+          continue;
+        }
         const key = `${restored.id}:${unit.id}`;
         const participant = identities.obtain('SectorParticipant', key, () => participantOf(unit));
         const character = activeCharactersMapper.restore(unit, field.sectorId);
@@ -130,25 +139,39 @@ export class RestoredGame {
     return this.#world;
   }
 
+  /** @param {string} sectorSessionId
+   * @param {string} characterId
+   * @returns {import('../../domain/inventory/inventory.ts').Inventory} */
   inventory(sectorSessionId, characterId) {
     return this.#world.inventory(sectorSessionId, characterId);
   }
 
   journey(squadId) {
     const entry = this.#journeys.get(squadId);
-    if (!entry) throw new Error('La escuadra no tiene un viaje cargado.');
+    if (!entry) {
+      throw new Error('La escuadra no tiene un viaje cargado.');
+    }
     return entry.journey;
   }
 
+  /** @param {string} id
+   * @returns {import('../../domain/sector-sessions/sector-session.ts').SectorSession} */
   sectorSession(id) {
     const entry = this.#sectorSessions.get(id);
-    if (!entry) throw new Error('El sector no tiene una sesión cargada.');
+    if (!entry) {
+      throw new Error('El sector no tiene una sesión cargada.');
+    }
     return entry.sectorSession;
   }
 
+  /** @param {string} sectorSessionId
+   * @param {string} characterId
+   * @returns {Readonly<{character: import('../../domain/personnel/character.ts').Character, participant: import('../../domain/sector-sessions/sector-participant.ts').SectorParticipant}>} */
   participant(sectorSessionId, characterId) {
     const entry = this.#participants.get(`${sectorSessionId}:${characterId}`);
-    if (!entry) throw new Error('El personaje no participa en esta visita.');
+    if (!entry) {
+      throw new Error('El personaje no participa en esta visita.');
+    }
     return Object.freeze({ character: entry.character, participant: entry.participant });
   }
 
@@ -157,12 +180,14 @@ export class RestoredGame {
     this.#world.apply();
     projectGameSession(this.#campaign, this.#session);
     for (const { squad, journey, original } of this.#journeys.values()) {
-      if (JSON.stringify(journey.snapshot()) !== original)
+      if (JSON.stringify(journey.snapshot()) !== original) {
         squad.journey = this.#journeyMapper.serialize(journey);
+      }
     }
     for (const { field, sectorSession, original } of this.#sectorSessions.values()) {
-      if (JSON.stringify(sectorSession.snapshot()) !== original)
+      if (JSON.stringify(sectorSession.snapshot()) !== original) {
         writeSectorSession(field, sectorSession);
+      }
     }
     for (const {
       unit,
@@ -171,7 +196,9 @@ export class RestoredGame {
       original,
       originalHealth,
     } of this.#participants.values()) {
-      if (JSON.stringify(participant.snapshot()) !== original) writeParticipant(unit, participant);
+      if (JSON.stringify(participant.snapshot()) !== original) {
+        writeParticipant(unit, participant);
+      }
       const health = character.health.toSnapshot();
       if (JSON.stringify(health) !== originalHealth) {
         unit.hp = health.current;
@@ -187,6 +214,7 @@ export class RestoredGame {
 export class GameSnapshotMapper {
   #newSessionId;
 
+  /** @param {() => string} [newSessionId] */
   constructor(newSessionId = createGameSessionId) {
     this.#newSessionId = newSessionId;
   }

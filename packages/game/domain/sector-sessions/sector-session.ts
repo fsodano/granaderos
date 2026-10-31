@@ -57,10 +57,15 @@ export class SectorSession {
     if (
       participantIds.some((id) => typeof id !== 'string' || !id) ||
       new Set(participantIds).size !== participantIds.length
-    )
+    ) {
       throw new CombatRefusal(CombatRefusalCode.InvalidParticipant);
-    if (snapshot.termination !== undefined && !['defeat', 'retreat'].includes(snapshot.termination))
+    }
+    if (
+      snapshot.termination !== undefined &&
+      !['defeat', 'retreat'].includes(snapshot.termination)
+    ) {
       throw new CombatRefusal(CombatRefusalCode.InvalidCombatSession);
+    }
     this.#termination = snapshot.termination;
     this.#participantIds = new Set(participantIds);
     this.#id = snapshot.id;
@@ -96,14 +101,16 @@ export class SectorSession {
   }
 
   confirmDeployment(): void {
-    if (this.#mode !== SectorSessionMode.Deployment)
+    if (this.#mode !== SectorSessionMode.Deployment) {
       throw new CombatRefusal(CombatRefusalCode.InvalidCombatPhase);
+    }
     this.#mode = SectorSessionMode.Exploration;
   }
 
   startCombat(firstSide: CombatSide, round: number): CombatSession {
-    if (this.#termination || this.#mode !== SectorSessionMode.Exploration || this.#combat)
+    if (this.#termination || this.#mode !== SectorSessionMode.Exploration || this.#combat) {
       throw new CombatRefusal(CombatRefusalCode.InvalidCombatPhase);
+    }
     this.#combatSequence++;
     this.#combat = CombatSession.begin(
       `${this.#id}:combat:${this.#combatSequence}`,
@@ -115,9 +122,12 @@ export class SectorSession {
   }
 
   resumeExploration(eligibility: ExplorationEligibility): void {
-    if (!this.#combat || !this.#combat.allowsExploration(eligibility))
+    if (!this.#combat || !this.#combat.allowsExploration(eligibility)) {
       throw new CombatRefusal(CombatRefusalCode.ContactPreventsExploration);
-    if (this.#combat.active) this.#combat.finish(CombatOutcome.Disengaged);
+    }
+    if (this.#combat.active) {
+      this.#combat.finish(CombatOutcome.Disengaged);
+    }
     const completed = this.#combat.snapshot();
     this.#completedCombatSessions.push({
       id: completed.id,
@@ -129,9 +139,12 @@ export class SectorSession {
   }
 
   conclude(outcome: 'defeat' | 'retreat'): void {
-    if (this.#termination && this.#termination !== outcome)
+    if (this.#termination && this.#termination !== outcome) {
       throw new CombatRefusal(CombatRefusalCode.CombatAlreadyCompleted);
-    if (this.#combat) this.#combat.finish(outcome);
+    }
+    if (this.#combat) {
+      this.#combat.finish(outcome);
+    }
     this.#termination = outcome;
   }
 
@@ -143,7 +156,9 @@ export class SectorSession {
     ) {
       throw new CombatRefusal(CombatRefusalCode.InvalidParticipant);
     }
-    for (const id of characterIds) this.#participantIds.add(id);
+    for (const id of characterIds) {
+      this.#participantIds.add(id);
+    }
   }
 
   snapshot(): SectorSessionSnapshot {

@@ -1,36 +1,85 @@
-import {Mesh,MeshStandardMaterial} from 'three';
+import { required } from './required';
+import { Mesh, MeshStandardMaterial } from 'three';
 
-export type ClothingPaint={key:string;part:'outfit'|'legwear';appearance:string;lod:number};
+export type ClothingPaint = {
+  key: string;
+  part: 'outfit' | 'legwear';
+  appearance: string;
+  lod: number;
+};
 
 /** These roles belong to the retained native apparel atlas. Replacement
  * models, equipped garments, skin, equipment and horse materials opt out. */
-export function clothingPaint(mesh:Mesh,material:MeshStandardMaterial,appearance?:string):ClothingPaint|undefined{
-  if(!['worker','surgeon','woman-scout','woman-shawl'].includes(appearance??''))return;
-  const match=/^Human_(outfit|legwear)_LOD([012])$/.exec(mesh.name);
-  const part=match?.[1] as ClothingPaint['part']|undefined,lod=Number(match?.[2]);
-  if(!part||!material.name.startsWith('Apparel_Atlas')||material.map?.name!=='Broad_Apparel_Pigment'||material.map.channel!==0)return;
-  return {key:`${appearance}:${part}:lod${lod}`,part,appearance:appearance!,lod};
+export function clothingPaint(
+  mesh: Mesh,
+  material: MeshStandardMaterial,
+  appearance?: string,
+): ClothingPaint | undefined {
+  if (!['worker', 'surgeon', 'woman-scout', 'woman-shawl'].includes(appearance ?? '')) {
+    return;
+  }
+  const match = /^Human_(outfit|legwear)_LOD([012])$/.exec(mesh.name);
+  const part = match?.[1],
+    lod = Number(match?.[2]);
+  if (
+    !appearance ||
+    (part !== 'outfit' && part !== 'legwear') ||
+    !material.name.startsWith('Apparel_Atlas') ||
+    material.map?.name !== 'Broad_Apparel_Pigment' ||
+    material.map.channel !== 0
+  ) {
+    return;
+  }
+  return { key: `${appearance}:${part}:lod${lod}`, part, appearance, lod };
 }
 
-const vec=(values:number[])=>`vec3(${values.map(value=>value.toFixed(3)).join(', ')})`;
-const colours:Record<string,number[][]>={
-  'worker:outfit':[[1.20,1.22,1.25],[.55,.48,.40]],
-  'worker:legwear':[[1,1,1],[.24,.31,.43]],
-  'surgeon:outfit':[[.92,.88,.82],[1,1,1]],
-  'surgeon:legwear':[[1,1,1],[.72,.75,.78]],
-  'woman-scout:outfit':[[.78,.74,.70],[1,1,1]],
-  'woman-scout:legwear':[[1,1,1],[.23,.18,.14]],
-  'woman-shawl:outfit':[[1.16,1.18,1.20],[.94,.76,.76]],
+const vec = (values: number[]) => `vec3(${values.map((value) => value.toFixed(3)).join(', ')})`;
+const colours: Record<string, number[][]> = {
+  'worker:outfit': [
+    [1.2, 1.22, 1.25],
+    [0.55, 0.48, 0.4],
+  ],
+  'worker:legwear': [
+    [1, 1, 1],
+    [0.24, 0.31, 0.43],
+  ],
+  'surgeon:outfit': [
+    [0.92, 0.88, 0.82],
+    [1, 1, 1],
+  ],
+  'surgeon:legwear': [
+    [1, 1, 1],
+    [0.72, 0.75, 0.78],
+  ],
+  'woman-scout:outfit': [
+    [0.78, 0.74, 0.7],
+    [1, 1, 1],
+  ],
+  'woman-scout:legwear': [
+    [1, 1, 1],
+    [0.23, 0.18, 0.14],
+  ],
+  'woman-shawl:outfit': [
+    [1.16, 1.18, 1.2],
+    [0.94, 0.76, 0.76],
+  ],
 };
 
-function garmentDetails(paint:ClothingPaint){
-  const key=`${paint.appearance}:${paint.part}`;
+function garmentDetails(paint: ClothingPaint) {
+  const key = `${paint.appearance}:${paint.part}`;
   // LOD0/1 retain a seam-strip palette entry absent from LOD2. Main cloth
   // tiles stay fixed, but later collar/belt tiles shift by one.
-  const workerCollar=paint.lod===2?'clothTile.x == 3.0 && clothTile.y == 3.0':'clothTile.x == 0.0 && clothTile.y == 2.0';
-  const scoutBelt=workerCollar;
-  const scoutCollar=paint.lod===2?'clothTile.x == 0.0 && clothTile.y == 2.0':'clothTile.x == 1.0 && clothTile.y == 2.0';
-  if(key==='worker:outfit')return `
+  const workerCollar =
+    paint.lod === 2
+      ? 'clothTile.x == 3.0 && clothTile.y == 3.0'
+      : 'clothTile.x == 0.0 && clothTile.y == 2.0';
+  const scoutBelt = workerCollar;
+  const scoutCollar =
+    paint.lod === 2
+      ? 'clothTile.x == 0.0 && clothTile.y == 2.0'
+      : 'clothTile.x == 1.0 && clothTile.y == 2.0';
+  if (key === 'worker:outfit') {
+    return `
     float front = smoothstep(0.07, 0.13, p.z);
     float openingWidth = max(0.0, p.y - 1.275) * 0.53;
     float opening = (1.0 - smoothstep(openingWidth - 0.004, openingWidth + 0.004, abs(p.x))) * smoothstep(1.275, 1.295, p.y) * front * secondCloth;
@@ -56,7 +105,9 @@ function garmentDetails(paint:ClothingPaint){
     float collar = float(${workerCollar}) * step(1.46, p.y);
     diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.54, 0.47, 0.35), collar);
   `;
-  if(key==='woman-scout:outfit')return `
+  }
+  if (key === 'woman-scout:outfit') {
+    return `
     float front = smoothstep(0.07, 0.13, p.z);
     float openingWidth = 0.027 + 0.055 * smoothstep(1.28, 1.47, p.y);
     float frontHeight = smoothstep(1.075, 1.095, p.y) * (1.0 - smoothstep(1.47, 1.50, p.y));
@@ -75,7 +126,9 @@ function garmentDetails(paint:ClothingPaint){
     float collar = float(${scoutCollar}) * step(1.46, p.y);
     diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.54, 0.47, 0.35), collar);
   `;
-  if(key==='woman-shawl:outfit')return `
+  }
+  if (key === 'woman-shawl:outfit') {
+    return `
     float cloth = max(firstCloth, secondCloth);
     float front = smoothstep(0.035, 0.10, p.z);
     float torso = 1.0 - smoothstep(0.19, 0.23, abs(p.x));
@@ -93,23 +146,37 @@ function garmentDetails(paint:ClothingPaint){
     float overlap = exp(-pow((p.y - 1.29 - 0.85 * p.x) / 0.008, 2.0)) * front;
     diffuseColor.rgb *= 1.0 - cloth * wrap * (0.32 * border + 0.28 * overlap);
   `;
+  }
   return '';
 }
 
 /** Pigment follows bind-space cloth coordinates, so it moves with the existing
  * skin and morphs. It does not move vertices or bake a camera/light direction. */
-export function paintClothingShader(shader:{vertexShader:string;fragmentShader:string},paint:ClothingPaint){
-  const colour=colours[`${paint.appearance}:${paint.part}`];if(!colour)return;
-  shader.vertexShader=shader.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vClothingRest;')
-    .replace('#include <begin_vertex>','#include <begin_vertex>\nvClothingRest = position;');
-  shader.fragmentShader=shader.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vClothingRest;');
-  const detail=paint.part==='legwear'?`
+export function paintClothingShader(
+  shader: { vertexShader: string; fragmentShader: string },
+  paint: ClothingPaint,
+) {
+  const colour = colours[`${paint.appearance}:${paint.part}`];
+  if (!colour) {
+    return;
+  }
+  shader.vertexShader = shader.vertexShader
+    .replace('#include <common>', '#include <common>\nvarying vec3 vClothingRest;')
+    .replace('#include <begin_vertex>', '#include <begin_vertex>\nvClothingRest = position;');
+  shader.fragmentShader = shader.fragmentShader.replace(
+    '#include <common>',
+    '#include <common>\nvarying vec3 vClothingRest;',
+  );
+  const detail =
+    paint.part === 'legwear'
+      ? `
     // Broad knee and hip compression, with a quiet seam along the outside leg.
     float foldArea = exp(-pow((p.y - 0.55) / 0.11, 2.0)) + 0.45 * exp(-pow((p.y - 0.86) / 0.10, 2.0));
     float fold = sin(p.y * 69.0 + abs(p.x) * 29.0 + p.z * 15.0);
     float seam = exp(-pow((abs(p.x) - 0.135) / 0.009, 2.0)) * smoothstep(0.50, 0.70, p.y);
     float clothForm = 1.0 - 0.27 * max(0.0, fold) * foldArea + 0.08 * max(0.0, -fold) * foldArea - 0.16 * seam;
-  `:`
+  `
+      : `
     // Folds gather at the waist and elbows. Front plackets stay narrow, and
     // do not darken the face, belt hardware or other atlas palette tiles.
     float waist = exp(-pow((p.y - 1.08) / 0.075, 2.0));
@@ -118,7 +185,9 @@ export function paintClothingShader(shader:{vertexShader:string;fragmentShader:s
     float placket = exp(-pow(p.x / 0.007, 2.0)) * smoothstep(0.08, 0.14, p.z) * smoothstep(1.04, 1.10, p.y) * (1.0 - smoothstep(1.39, 1.46, p.y));
     float clothForm = 1.0 - (0.23 * waist + 0.22 * elbow) * max(0.0, fold) + 0.06 * max(0.0, -fold) * (waist + elbow) - 0.23 * placket;
   `;
-  shader.fragmentShader=shader.fragmentShader.replace('#include <map_fragment>',`#include <map_fragment>
+  shader.fragmentShader = shader.fragmentShader.replace(
+    '#include <map_fragment>',
+    `#include <map_fragment>
   #ifdef USE_MAP
     // Four-by-four source palette: folds and broad pigment use only the two
     // cloth tiles. Explicit collar/belt masks below admit their native trim
@@ -129,9 +198,10 @@ export function paintClothingShader(shader:{vertexShader:string;fragmentShader:s
     vec3 p = vClothingRest;
     vec3 sourceCloth = diffuseColor.rgb;
     ${detail}
-    vec3 clothPigment = mix(vec3(1.0), ${vec(colour[0])}, firstCloth);
-    clothPigment *= mix(vec3(1.0), ${vec(colour[1])}, secondCloth);
+    vec3 clothPigment = mix(vec3(1.0), ${vec(required(colour[0]))}, firstCloth);
+    clothPigment *= mix(vec3(1.0), ${vec(required(colour[1]))}, secondCloth);
     diffuseColor.rgb *= clothPigment * mix(1.0, clamp(clothForm, 0.57, 1.15), max(firstCloth, secondCloth));
     ${garmentDetails(paint)}
-  #endif`);
+  #endif`,
+  );
 }

@@ -17,11 +17,15 @@ export type ServiceRenewalContext = Readonly<{
 export class ServiceRenewalService {
   renew(context: ServiceRenewalContext): ServiceContract {
     const current = context.character.service;
-    if (!current) throw new DomainRefusal(DomainRefusalCode.NotServing);
-    if (!context.character.health.alive)
+    if (!current) {
+      throw new DomainRefusal(DomainRefusalCode.NotServing);
+    }
+    if (!context.character.health.alive) {
       throw new DomainRefusal(DomainRefusalCode.CharacterUnavailable);
-    if (!context.treasury.canPay(context.payment))
+    }
+    if (!context.treasury.canPay(context.payment)) {
       throw new DomainRefusal(DomainRefusalCode.InsufficientFunds);
+    }
     const renewed = current.renew(
       context.now,
       context.term,

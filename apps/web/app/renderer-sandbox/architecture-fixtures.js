@@ -6,7 +6,7 @@ import {
 import { BUILDING_TEMPLATES } from '../../../../packages/game/map-templates.js';
 import fixtureDocuments from './generated-architecture-documents.json' with { type: 'json' };
 import { compileMap } from '../../../../packages/game/compile-map.js';
-import { entranceFrame } from '../../../../packages/game/building-profile.js';
+import { entranceFrame } from '../../../../packages/game/building-profile.ts';
 import { createBattle, actBattle } from '../../../../packages/game/tactical.js';
 import { directionTo } from '../../../../packages/game/tactical-awareness.js';
 import { propBlocksAt } from '../../../../packages/game/props.js';
@@ -17,11 +17,7 @@ export const ARCHITECTURE_REVIEW_TEMPLATES = Object.freeze(
     Object.freeze({ id, label: template.name }),
   ),
 );
-export const ARCHITECTURE_REVIEW_VIEWS = Object.freeze([
-  'exterior',
-  'partial',
-  'interior',
-]);
+export const ARCHITECTURE_REVIEW_VIEWS = Object.freeze(['exterior', 'partial', 'interior']);
 export const ARCHITECTURE_REVIEW_ROOFS = Object.freeze([
   { id: 'original', label: 'Tejado original' },
   { id: 'terrace', label: 'Terraza plana' },
@@ -34,12 +30,10 @@ const key = (point) => `${point.x},${point.y}`;
  * revealedRooms or override the renderer's ordinary disclosure rules. */
 function visit(battle, room) {
   const unit = battle.units[0],
-    goals = new Set(
-      room.cells
-        .filter((cell) => !propBlocksAt(battle, cell.x, cell.y))
-        .map(key),
-    );
-  if (goals.has(key(unit))) return battle;
+    goals = new Set(room.cells.filter((cell) => !propBlocksAt(battle, cell.x, cell.y)).map(key));
+  if (goals.has(key(unit))) {
+    return battle;
+  }
   const tiles = new Map(battle.tiles.map((tile) => [key(tile), tile])),
     queue = [{ x: unit.x, y: unit.y }],
     previous = new Map([[key(unit), null]]);
@@ -61,8 +55,9 @@ function visit(battle, room) {
         propBlocksAt(battle, next.x, next.y) ||
         wallMovementBlocked(battle, point, next, { openDoors: true }) ||
         (tile.blocked && (tile.type !== 'door' || tile.locked))
-      )
+      ) {
         continue;
+      }
       previous.set(cell, point);
       queue.push(next);
       if (goals.has(cell)) {
@@ -71,14 +66,13 @@ function visit(battle, room) {
       }
     }
   }
-  if (!destination) throw Error(`No legal review route to ${room.id}`);
+  if (!destination) {
+    throw Error(`No legal review route to ${room.id}`);
+  }
   const path = [];
-  for (
-    let point = destination;
-    previous.get(key(point));
-    point = previous.get(key(point))
-  )
+  for (let point = destination; previous.get(key(point)); point = previous.get(key(point))) {
     path.unshift(point);
+  }
   for (const point of path) {
     const door =
       wallEdgesBetween(
@@ -86,25 +80,24 @@ function visit(battle, room) {
         battle.units.find((actor) => actor.id === unit.id),
         point,
       ).find((edge) => edge.type === 'door') ??
-      battle.tiles.find(
-        (tile) =>
-          tile.x === point.x && tile.y === point.y && tile.type === 'door',
-      );
-    if (door && !door.open)
+      battle.tiles.find((tile) => tile.x === point.x && tile.y === point.y && tile.type === 'door');
+    if (door && !door.open) {
       battle = order(battle, {
         type: 'door',
         unitId: unit.id,
         doorId: door.doorId,
         open: true,
       });
+    }
     battle = order(battle, { type: 'move', unitId: unit.id, ...point });
   }
   return battle;
 }
 function order(battle, action) {
   const next = actBattle(battle, action);
-  if (next.lastError)
+  if (next.lastError) {
     throw Error(`Architecture review ${action.type}: ${next.lastError}`);
+  }
   return next;
 }
 
@@ -114,26 +107,27 @@ export function createArchitectureReviewBattle(
   view = 'exterior',
   roof = 'original',
 ) {
-  if (!Object.hasOwn(BUILDING_TEMPLATES, templateId))
+  if (!Object.hasOwn(BUILDING_TEMPLATES, templateId)) {
     throw Error(`Unknown building template: ${templateId}`);
-  if (![0, 90, 180, 270].includes(rotation))
+  }
+  if (![0, 90, 180, 270].includes(rotation)) {
     throw Error(`Unknown building rotation: ${rotation}`);
-  if (!ARCHITECTURE_REVIEW_VIEWS.includes(view))
+  }
+  if (!ARCHITECTURE_REVIEW_VIEWS.includes(view)) {
     throw Error(`Unknown building view: ${view}`);
-  if (!ARCHITECTURE_REVIEW_ROOFS.some((option) => option.id === roof))
+  }
+  if (!ARCHITECTURE_REVIEW_ROOFS.some((option) => option.id === roof)) {
     throw Error(`Unknown building roof: ${roof}`);
+  }
   const template = BUILDING_TEMPLATES[templateId];
-  const document = structuredClone(
-    fixtureDocuments[`${templateId}:${rotation}`],
-  );
-  if (roof === 'terrace' || roof === 'roof-route')
+  const document = structuredClone(fixtureDocuments[`${templateId}:${rotation}`]);
+  if (roof === 'terrace' || roof === 'roof-route') {
     document.buildings[0].roof = 'terrace';
+  }
   const map = compileMap(document),
     building = map.buildings[0],
     frame = entranceFrame(building);
-  const entry = map.wallEdges.find(
-      (edge) => edge.doorId === frame.door?.doorId,
-    ),
+  const entry = map.wallEdges.find((edge) => edge.doorId === frame.door?.doorId),
     adjacent = entry ? wallEdgeCells(entry) : [],
     inside = adjacent.find(
       (cell) =>
@@ -167,12 +161,13 @@ export function createArchitectureReviewBattle(
       : {};
   // A closed authored slab keeps the template's original roof metadata. Its
   // real metric upper cells, rather than an artwork override, set the height.
-  if (roof === 'slab')
+  if (roof === 'slab') {
     upper.upperSurfaces = upper.upperSurfaces.map((surface) => ({
       ...surface,
       blocked: true,
       obstacleHeight: 0,
     }));
+  }
   const guard = {
     id: 'architecture-guard',
     name: template.name,
@@ -215,21 +210,18 @@ export function createArchitectureReviewBattle(
       rooms = [...building.rooms].sort(
         (a, b) =>
           Math.min(
-            ...a.cells.map(
-              (cell) => Math.abs(cell.x - door.x) + Math.abs(cell.y - door.y),
-            ),
+            ...a.cells.map((cell) => Math.abs(cell.x - door.x) + Math.abs(cell.y - door.y)),
           ) -
-          Math.min(
-            ...b.cells.map(
-              (cell) => Math.abs(cell.x - door.x) + Math.abs(cell.y - door.y),
-            ),
-          ),
+          Math.min(...b.cells.map((cell) => Math.abs(cell.x - door.x) + Math.abs(cell.y - door.y))),
       );
     battle = visit(battle, rooms[0]);
-    if (view === 'interior')
-      for (const room of rooms)
-        if (!battle.revealedRooms.includes(room.id))
+    if (view === 'interior') {
+      for (const room of rooms) {
+        if (!battle.revealedRooms.includes(room.id)) {
           battle = visit(battle, room);
+        }
+      }
+    }
   }
   return { ...battle, deploymentComplete: true };
 }

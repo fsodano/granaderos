@@ -52,6 +52,8 @@ export class GameUnitOfWork<T extends RevisionedGameSnapshot> {
   }
 
   #assertOpen(): void {
-    if (this.#closed) throw new DomainRefusal(DomainRefusalCode.TransactionClosed);
+    if (this.#closed) {
+      throw new DomainRefusal(DomainRefusalCode.TransactionClosed);
+    }
   }
 }

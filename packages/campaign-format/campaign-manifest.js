@@ -1,4 +1,4 @@
-import { validateCampaignData } from './campaign-data-validation.js';
+import { validateCampaignData } from './campaign-data-validation.ts';
 import { campaignRelativePath } from './campaign-assets.js';
 const object = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 const identifier = (value) =>
@@ -8,7 +8,9 @@ const identifier = (value) =>
 const text = (value, max = 100) =>
   typeof value === 'string' && value.trim().length > 0 && value.length <= max;
 const need = (ok, message) => {
-  if (!ok) throw Error(message);
+  if (!ok) {
+    throw Error(message);
+  }
 };
 export function validateCampaignManifest(manifest) {
   const dataErrors = validateCampaignData(manifest);
@@ -25,11 +27,12 @@ export function validateCampaignManifest(manifest) {
     ['generic-v1', 'granaderos-historical-v1'].includes(manifest.scenario),
     'El escenario de campaña no es compatible.',
   );
-  for (const key of ['content', 'world', 'maps', 'presentation', 'assets'])
+  for (const key of ['content', 'world', 'maps', 'presentation', 'assets']) {
     need(
       campaignRelativePath(manifest[key]) && manifest[key].endsWith('.json'),
       `La referencia ${key} no es válida.`,
     );
+  }
   return manifest;
 }
 export function validateCampaignRegistry(value) {

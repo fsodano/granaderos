@@ -1,9 +1,17 @@
 'use client';
+import type { CampaignProjectValidation } from '../../../application/validate-campaign-project/validate-campaign-project.use-case.ts';
+import {
+  assertCampaignContent,
+  requireJsonDocument,
+  documentString,
+} from '../../lib/editor-documents.ts';
+import { assertCampaignProjectEnvelope } from '../../../domain/project-document.ts';
 import { editorErrorMessage } from '../../../infrastructure/editor-error-message.ts';
 import {
   Component,
   useCallback,
   useEffect,
+  useEffectEvent,
   useMemo,
   useRef,
   useState,
@@ -76,23 +84,23 @@ const sections = [
 ] as const;
 type Section = StudioSection;
 class PanelBoundary extends Component<
-  { children: ReactNode; onRecover: () => void; resetKey: any },
+  { children: ReactNode; onRecover: () => void; resetKey: CampaignProjectDocument },
   { error: string }
 > {
-  state = { error: '' };
+  override state: { error: string; resetKey: CampaignProjectDocument | null } = {
+    error: '',
+    resetKey: null,
+  };
   static getDerivedStateFromError(error: Error) {
     return { error: editorErrorMessage(error) };
   }
-  componentDidUpdate(
-    previous: Readonly<{
-      children: ReactNode;
-      onRecover: () => void;
-      resetKey: any;
-    }>,
+  static getDerivedStateFromProps(
+    props: { resetKey: CampaignProjectDocument },
+    state: { resetKey: CampaignProjectDocument | null },
   ) {
-    if (previous.resetKey !== this.props.resetKey && this.state.error) this.setState({ error: '' });
+    return props.resetKey === state.resetKey ? null : { error: '', resetKey: props.resetKey };
   }
-  render() {
+  override render() {
     return this.state.error ? (
       <section role="alert">
         <h2>Este panel necesita datos válidos</h2>
@@ -122,9 +130,7 @@ function issueSection(section: string): Section {
     ? 'project'
     : section === 'package'
       ? 'package'
-      : sections.some(([key]) => key === section)
-        ? (section as Section)
-        : 'package';
+      : (sections.find(([key]) => key === section)?.[0] ?? 'package');
 }
 
 export default function CampaignStudio() {
@@ -155,8 +161,10 @@ export default function CampaignStudio() {
     [notice, setNotice] = useState(''),
     [managerOpen, setManagerOpen] = useState(true),
     [saved, setSaved] = useState(''),
-    [report, setReport] = useState<any>(null),
-    [checking, setChecking] = useState(false),
+    [validation, setValidation] = useState<{
+      project: CampaignProjectDocument;
+      report: CampaignProjectValidation;
+    } | null>(null),
     [newId, setNewId] = useState('my-campaign'),
     [newName, setNewName] = useState('Mi campaña'),
     [createId, setCreateId] = useState('my-campaign'),
@@ -170,9 +178,9 @@ export default function CampaignStudio() {
     saveSequence = useRef(0),
     validationSequence = useRef(0),
     fileRef = useRef<HTMLInputElement>(null),
-    folderRef = useRef<HTMLInputElement>(null),
-    [checkedProject, setCheckedProject] = useState<CampaignProjectDocument | null>(null);
-  currentRef.current = project;
+    folderRef = useRef<HTMLInputElement>(null);
+  const report = validation?.project === project ? validation.report : null;
+  const checking = project !== null && validation?.project !== project;
   const resolveAsset = useStudioAssetResolver(project);
   const publishEdit = useCallback(() => {
     const accepted = editingRepository.snapshot();
@@ -182,7 +190,9 @@ export default function CampaignStudio() {
   }, [editingRepository]);
   const change = useCallback(
     (document: CampaignProjectDocument) => {
-      if (!project) return;
+      if (!project) {
+        return;
+      }
       try {
         editProject.execute({
           projectId: project.manifest.id,
@@ -198,13 +208,17 @@ export default function CampaignStudio() {
   );
   const undo = useCallback(() => {
     const current = editingRepository.snapshot();
-    if (!current.current) return;
+    if (!current.current) {
+      return;
+    }
     undoProject.execute({ projectId: current.current.manifest.id, revision: current.revision });
     publishEdit();
   }, [editingRepository, undoProject, publishEdit]);
   const redo = useCallback(() => {
     const current = editingRepository.snapshot();
-    if (!current.current) return;
+    if (!current.current) {
+      return;
+    }
     redoProject.execute({ projectId: current.current.manifest.id, revision: current.revision });
     publishEdit();
   }, [editingRepository, redoProject, publishEdit]);
@@ -219,37 +233,40 @@ export default function CampaignStudio() {
     setManagerOpen(false);
     editingRepository.open(new CampaignProject(next));
     publishEdit();
-    setReport(null);
+    setValidation(null);
     setSaved('Cambios pendientes');
     setSection('project');
     setNewId(next.manifest.id);
-    setNewName(String(next.manifest.name ?? ''));
+    setNewName(documentString(next.manifest['name']));
     setForkId(`${next.manifest.id}-copy`.slice(0, 80));
-    setForkName(`${next.manifest.name} — copia`.slice(0, 100));
+    setForkName(`${documentString(next.manifest['name'])} — copia`.slice(0, 100));
   }
+  const openRecoveredProject = useEffectEvent(open);
   useEffect(() => {
     let active = true;
     void (async () => {
       const results = await Promise.allSettled([loadStudioProjects(), loadCampaignRegistry()]);
-      if (!active) return;
+      if (!active) {
+        return;
+      }
       const drafts = results[0].status === 'fulfilled' ? results[0].value : [];
       setProjects(drafts);
-      if (results[1].status === 'fulfilled') setLibrary(results[1].value);
+      if (results[1].status === 'fulfilled') {
+        setLibrary(results[1].value);
+      }
       const errors = results
         .filter((r) => r.status === 'rejected')
-        .map(
-          (r) =>
-            (r as PromiseRejectedResult).reason?.message ??
-            'No se pudo cargar una fuente de campañas.',
-        );
-      if (errors.length) setNotice(errors.join(' '));
+        .map((r) => editorErrorMessage(r.reason));
+      if (errors.length) {
+        setNotice(errors.join(' '));
+      }
       let last = '';
       try {
         last = localStorage.getItem(LAST_PROJECT) ?? '';
       } catch {}
       const previous = drafts.find((p) => p.manifest.id === last);
       if (previous) {
-        open(previous);
+        openRecoveredProject(previous);
         setNotice('Borrador recuperado con sus documentos y recursos.');
       }
       setReady(true);
@@ -259,22 +276,26 @@ export default function CampaignStudio() {
     };
   }, []);
   useEffect(() => {
-    if (!project) return;
+    if (!project) {
+      return;
+    }
     const sequence = ++saveSequence.current;
-    setSaved('Cambios pendientes');
     const timer = setTimeout(() => {
       void saveStudioProject(project)
         .then(() => {
           remember(project);
-          if (sequence !== saveSequence.current) return;
+          if (sequence !== saveSequence.current) {
+            return;
+          }
           setSaved('Guardado en este navegador');
           try {
             localStorage.setItem(LAST_PROJECT, project.manifest.id);
           } catch {}
         })
         .catch((error) => {
-          if (sequence === saveSequence.current)
+          if (sequence === saveSequence.current) {
             setSaved(`Error de guardado: ${editorErrorMessage(error)}`);
+          }
         });
     }, 400);
     return () => clearTimeout(timer);
@@ -282,28 +303,25 @@ export default function CampaignStudio() {
   useEffect(() => {
     const sequence = ++validationSequence.current;
     if (!project) {
-      setReport(null);
       return;
     }
-    setChecking(true);
     const timer = setTimeout(() => {
       void validateProject
         .execute({ projectId: project.manifest.id })
         .then((result) => {
           if (sequence === validationSequence.current && result.revision === history.revision) {
-            setReport(result);
-            setCheckedProject(project);
-            setChecking(false);
+            setValidation({ project, report: result });
           }
         })
         .catch((error) => {
           if (sequence === validationSequence.current) {
-            setReport({
-              valid: false,
-              issues: [{ section: 'project', message: editorErrorMessage(error) }],
+            setValidation({
+              project,
+              report: {
+                valid: false,
+                issues: [{ section: 'project', message: editorErrorMessage(error) }],
+              },
             });
-            setCheckedProject(project);
-            setChecking(false);
           }
         });
     }, 250);
@@ -311,21 +329,30 @@ export default function CampaignStudio() {
   }, [project, history.revision, validateProject]);
   useEffect(() => {
     const keydown = (e: KeyboardEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.matches('input,textarea,select') || target.isContentEditable) return;
+      const target = e.target;
+      if (
+        target instanceof HTMLElement &&
+        (target.matches('input,textarea,select') || target.isContentEditable)
+      ) {
+        return;
+      }
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
         e.preventDefault();
-        if (e.shiftKey) redo();
-        else undo();
+        if (e.shiftKey) {
+          redo();
+        } else {
+          undo();
+        }
       }
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
         e.preventDefault();
-        if (currentRef.current)
+        if (currentRef.current) {
           download(
             JSON.stringify(currentRef.current, null, 2),
             `${currentRef.current.manifest.id}.project.json`,
             'application/json',
           );
+        }
       }
     };
     window.addEventListener('keydown', keydown);
@@ -335,7 +362,6 @@ export default function CampaignStudio() {
     const guard = (e: BeforeUnloadEvent) => {
       if (saved === 'Cambios pendientes' || saved.startsWith('Error')) {
         e.preventDefault();
-        e.returnValue = '';
       }
     };
     window.addEventListener('beforeunload', guard);
@@ -345,9 +371,11 @@ export default function CampaignStudio() {
     setBusy(label);
     setNotice('');
     try {
-      if (currentRef.current) await saveStudioProject(currentRef.current);
+      if (currentRef.current) {
+        await saveStudioProject(currentRef.current);
+      }
       await operation();
-    } catch (error: any) {
+    } catch (error) {
       setNotice(editorErrorMessage(error));
     } finally {
       setBusy('');
@@ -357,7 +385,7 @@ export default function CampaignStudio() {
     if (projects.some((p) => p.manifest.id === next.manifest.id)) {
       setPendingImport(next);
       setForkId(`${next.manifest.id}-copy`.slice(0, 80));
-      setForkName(String(next.manifest.name ?? ''));
+      setForkName(documentString(next.manifest['name']));
       setNotice('Esta identidad ya tiene un borrador. Importá una copia con otra identidad.');
     } else {
       open(next);
@@ -377,30 +405,41 @@ export default function CampaignStudio() {
         await acceptImport(await importCampaignFiles(records));
       } else {
         const file = files[0];
-        if (!file) return;
-        if (file.size > 268435456) throw Error('El archivo supera el límite del estudio.');
+        if (!file) {
+          return;
+        }
+        if (file.size > 268435456) {
+          throw Error('El archivo supera el límite del estudio.');
+        }
         await acceptImport(
           file.name.toLowerCase().endsWith('.zip')
             ? await importCampaignArchive(new Uint8Array(await file.arrayBuffer()))
-            : (decodeCampaignProject(await file.text()) as CampaignProjectDocument),
+            : decodeCampaignProject(await file.text()),
         );
       }
     });
   }
   const compiled = useMemo(() => {
-    if (!project) return null;
+    if (!project) {
+      return null;
+    }
     try {
-      return report?.valid && checkedProject === project ? report.content : projectContent(project);
+      if (report?.valid && report.content) {
+        return report.content;
+      }
+      const content = projectContent(project);
+      assertCampaignContent(content);
+      return content;
     } catch {
       return null;
     }
-  }, [project, report, checkedProject]);
-  const valid = Boolean(report?.valid && !checking && checkedProject === project),
-    panelProps = project ? { project, onChange: change } : null;
+  }, [project, report]);
+  const valid = Boolean(report?.valid && !checking);
   function fork(source: CampaignProjectDocument) {
-    if (projects.some((p) => p.manifest.id === forkId) || forkId === 'granaderos')
+    if (projects.some((p) => p.manifest.id === forkId) || forkId === 'granaderos') {
       throw Error('Usá una identidad nueva para la copia.');
-    const historical = source.manifest.scenario === 'granaderos-historical-v1';
+    }
+    const historical = source.manifest['scenario'] === 'granaderos-historical-v1';
     open(renameCampaignProject(source, forkId, forkName));
     setPendingImport(null);
     setNotice(
@@ -410,12 +449,16 @@ export default function CampaignStudio() {
     );
   }
   function rename() {
-    if (!project) return;
+    if (!project) {
+      return;
+    }
     try {
-      if (newId !== project.manifest.id && projects.some((p) => p.manifest.id === newId))
+      if (newId !== project.manifest.id && projects.some((p) => p.manifest.id === newId)) {
         throw Error('Esta identidad ya tiene un borrador.');
-      if (newId === 'granaderos' && project.manifest.id !== 'granaderos')
+      }
+      if (newId === 'granaderos' && project.manifest.id !== 'granaderos') {
         throw Error('Granaderos es una identidad reservada.');
+      }
       editProject.execute({
         projectId: project.manifest.id,
         revision: history.revision,
@@ -423,7 +466,7 @@ export default function CampaignStudio() {
       });
       publishEdit();
       setNotice('Identidad actualizada. El borrador anterior se conserva.');
-    } catch (error: any) {
+    } catch (error) {
       setNotice(editorErrorMessage(error));
     }
   }
@@ -436,7 +479,9 @@ export default function CampaignStudio() {
       </p>
       <div className="studio-overview" aria-label="Contenido del proyecto">
         <div>
-          <strong>{Array.isArray(project.world.sectors) ? project.world.sectors.length : 0}</strong>
+          <strong>
+            {Array.isArray(project.world['sectors']) ? project.world['sectors'].length : 0}
+          </strong>
           <span>Localidades</span>
         </div>
         <div>
@@ -445,7 +490,9 @@ export default function CampaignStudio() {
         </div>
         <div>
           <strong>
-            {Array.isArray(project.content.characters) ? project.content.characters.length : 0}
+            {Array.isArray(project.content['characters'])
+              ? project.content['characters'].length
+              : 0}
           </strong>
           <span>Personajes</span>
         </div>
@@ -456,7 +503,10 @@ export default function CampaignStudio() {
       </div>
       <div className="studio-next-steps" aria-label="Etapas de creación">
         {(['world', 'content', 'presentation', 'package'] as const).map((id, index) => {
-          const item = STUDIO_SECTIONS.find((item) => item.id === id)!;
+          const item = STUDIO_SECTIONS.find((item) => item.id === id);
+          if (!item) {
+            return null;
+          }
           return (
             <button type="button" key={id} onClick={() => setSection(id)}>
               <span className="studio-step-number">0{index + 1}</span>
@@ -491,7 +541,7 @@ export default function CampaignStudio() {
             value={project.manifest}
             label="Manifiesto y revisión"
             path="manifest"
-            onChange={(manifest) => change({ ...project, manifest })}
+            onChange={(manifest) => change(assertCampaignProjectEnvelope({ ...project, manifest }))}
           />
         </details>
       </section>
@@ -510,7 +560,7 @@ export default function CampaignStudio() {
             onClick={() => {
               try {
                 fork(project);
-              } catch (error: any) {
+              } catch (error) {
                 setNotice(editorErrorMessage(error));
               }
             }}
@@ -583,8 +633,9 @@ export default function CampaignStudio() {
                   className="editor-action-primary"
                   onClick={() =>
                     void run('Creando proyecto', async () => {
-                      if (projects.some((p) => p.manifest.id === createId))
+                      if (projects.some((p) => p.manifest.id === createId)) {
                         throw Error('Esta identidad ya tiene un borrador.');
+                      }
                       open(await createCampaignProject(createId, createName));
                     })
                   }
@@ -606,13 +657,15 @@ export default function CampaignStudio() {
                     value={project?.manifest.id ?? ''}
                     onChange={(e) => {
                       const next = projects.find((p) => p.manifest.id === e.target.value);
-                      if (next) void run('Abriendo borrador', async () => open(next));
+                      if (next) {
+                        void run('Abriendo borrador', async () => open(next));
+                      }
                     }}
                   >
                     <option value="">Elegí un proyecto</option>
                     {projects.map((p) => (
                       <option key={p.manifest.id} value={p.manifest.id}>
-                        {p.manifest.name} · {p.manifest.id}
+                        {documentString(p.manifest['name'])} · {p.manifest.id}
                       </option>
                     ))}
                   </select>
@@ -624,10 +677,11 @@ export default function CampaignStudio() {
                     onChange={(e) => {
                       const entry = library.find((p) => p.id === e.target.value);
                       e.target.value = '';
-                      if (entry)
+                      if (entry) {
                         void run('Leyendo documentos y recursos', async () => {
                           await acceptImport(await loadInstalledCampaignProject(entry));
                         });
+                      }
                     }}
                   >
                     <option value="">Abrir paquete instalado</option>
@@ -661,27 +715,29 @@ export default function CampaignStudio() {
           onChange={(e) => {
             const files = Array.from(e.target.files ?? []);
             e.target.value = '';
-            if (files.length) void importFiles(files);
+            if (files.length) {
+              void importFiles(files);
+            }
           }}
         />
         <input
           hidden
           type="file"
-          ref={folderRef}
-          {...({ webkitdirectory: '', directory: '' } as any)}
+          ref={(input) => {
+            folderRef.current = input;
+            input?.setAttribute('webkitdirectory', '');
+          }}
           multiple
           onChange={(e) => {
             const files = Array.from(e.target.files ?? []);
             e.target.value = '';
-            if (files.length) void importFiles(files, true);
+            if (files.length) {
+              void importFiles(files, true);
+            }
           }}
         />
-        {(busy || !ready) && <p role="status">{busy || 'Cargando proyectos…'}</p>}
-        {notice && (
-          <p role="status" className="studio-notice">
-            {notice}
-          </p>
-        )}
+        {(busy || !ready) && <output>{busy || 'Cargando proyectos…'}</output>}
+        {notice && <output className="studio-notice">{notice}</output>}
         {pendingImport && (
           <section className="studio-card">
             <h2>Importar con identidad nueva</h2>
@@ -698,7 +754,7 @@ export default function CampaignStudio() {
               onClick={() => {
                 try {
                   fork(pendingImport);
-                } catch (error: any) {
+                } catch (error) {
                   setNotice(editorErrorMessage(error));
                 }
               }}
@@ -726,12 +782,12 @@ export default function CampaignStudio() {
           <>
             <div className="studio-project-bar">
               <div>
-                <strong>{String(project.manifest.name ?? 'Sin nombre')}</strong>
+                <strong>{documentString(project.manifest['name'], 'Sin nombre')}</strong>
                 <span>
-                  {project.manifest.id} · revisión {String(project.manifest.revision)}
+                  {project.manifest.id} · revisión{' '}
+                  {documentString(project.manifest['revision'], '—')}
                 </span>
-                <small
-                  role="status"
+                <output
                   className="editor-status"
                   data-state={
                     saved.startsWith('Error')
@@ -742,7 +798,7 @@ export default function CampaignStudio() {
                   }
                 >
                   {saved}
-                </small>
+                </output>
               </div>
               <div className="studio-toolbar">
                 <button
@@ -782,7 +838,7 @@ export default function CampaignStudio() {
                     void run('Verificando y creando ZIP', async () => {
                       download(
                         await exportCampaignArchive(project),
-                        `${project.manifest.id}-${String(project.manifest.revision)}.zip`,
+                        `${project.manifest.id}-${documentString(project.manifest['revision'], '—')}.zip`,
                         'application/zip',
                       );
                       setNotice('Paquete verificado y descargado.');
@@ -825,13 +881,17 @@ export default function CampaignStudio() {
               )}
             </div>
             <div className="studio-layout">
-              <StudioNavigation section={section} onSelect={setSection} issues={report?.issues} />
+              <StudioNavigation
+                section={section}
+                onSelect={setSection}
+                issues={report?.issues ?? []}
+              />
               <fieldset disabled={Boolean(busy)} className="studio-panel" id="studio-panel">
                 <legend className="sr-only">
                   {sections.find(([key]) => key === section)?.[1]}
                 </legend>
                 <div className="studio-panel-context">
-                  <span>{String(project.manifest.name ?? 'Campaña')}</span>
+                  <span>{String(documentString(project.manifest['name']) ?? 'Campaña')}</span>
                   <ChevronDown size={12} aria-hidden="true" />
                   <strong>{sections.find(([key]) => key === section)?.[1]}</strong>
                 </div>
@@ -843,17 +903,17 @@ export default function CampaignStudio() {
                   {section === 'project' ? (
                     projectPanel
                   ) : section === 'world' ? (
-                    <WorldWorkspace {...panelProps!} />
+                    <WorldWorkspace {...{ project, onChange: change }} />
                   ) : section === 'maps' ? (
-                    <MapWorkspace {...panelProps!} />
+                    <MapWorkspace {...{ project, onChange: change }} />
                   ) : section === 'buildings' ? (
-                    <BuildingWorkspace {...panelProps!} />
+                    <BuildingWorkspace {...{ project, onChange: change }} />
                   ) : section === 'content' ? (
-                    <ContentWorkspace {...panelProps!} />
+                    <ContentWorkspace {...{ project, onChange: change }} />
                   ) : section === 'presentation' ? (
-                    <PresentationWorkspace {...panelProps!} />
+                    <PresentationWorkspace {...{ project, onChange: change }} />
                   ) : section === 'assets' ? (
-                    <AssetsWorkspace {...panelProps!} />
+                    <AssetsWorkspace {...{ project, onChange: change }} />
                   ) : section === 'tests' ? (
                     <>
                       <h2>Pruebas del proyecto</h2>
@@ -899,13 +959,13 @@ export default function CampaignStudio() {
                         referencias de los recursos. Los proyectos con problemas se pueden guardar
                         como borradores. El ZIP requiere un paquete válido.
                       </p>
-                      <p role="status">
+                      <output>
                         {checking
                           ? 'Validando el proyecto…'
                           : report?.valid
                             ? 'El paquete es válido.'
                             : `${report?.issues?.length ?? 0} problemas requieren corrección.`}
-                      </p>
+                      </output>
                       {report?.checks && (
                         <dl className="studio-checks">
                           <dt>Mapas</dt>
@@ -917,7 +977,7 @@ export default function CampaignStudio() {
                         </dl>
                       )}
                       <ul className="studio-issues">
-                        {report?.issues?.map((issue: any, index: number) => (
+                        {report?.issues?.map((issue, index: number) => (
                           <li key={index}>
                             <button onClick={() => setSection(issueSection(issue.section))}>
                               Revisar{' '}
@@ -973,7 +1033,14 @@ export default function CampaignStudio() {
                           <DocumentEditor
                             value={project[key] ?? {}}
                             path={key}
-                            onChange={(value) => change({ ...project, [key]: value })}
+                            onChange={(value) =>
+                              change(
+                                assertCampaignProjectEnvelope({
+                                  ...project,
+                                  [key]: requireJsonDocument(value),
+                                }),
+                              )
+                            }
                           />
                         </details>
                       ))}
@@ -998,8 +1065,9 @@ export default function CampaignStudio() {
                   !window.confirm(
                     `Eliminar el borrador local ${project.manifest.id}? Descargá una copia antes de eliminarlo.`,
                   )
-                )
+                ) {
                   return;
+                }
                 void run('Eliminando borrador', async () => {
                   await deleteStudioProject(project.manifest.id);
                   setProjects((current) =>

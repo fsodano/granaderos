@@ -1,4 +1,3 @@
-import { validateCampaignRules } from '../campaign-format/campaign-rules-schema.js';
 export { validateCampaignRules } from '../campaign-format/campaign-rules-schema.js';
 // Defaults preserve campaigns created before rule authoring was available.
 export const DEFAULT_CAMPAIGN_RULES = Object.freeze({
@@ -12,5 +11,6 @@ export const DEFAULT_CARTRIDGE_PRICE = 1;
 export const cartridgePrice = (state) =>
   state?.contentCampaign?.package.rules?.cartridgePrice ?? DEFAULT_CARTRIDGE_PRICE;
 
+/** @returns {import('../campaign-format/types.ts').CampaignRules} */
 export const campaignRules = (state) =>
   state?.contentCampaign?.package.rules ?? DEFAULT_CAMPAIGN_RULES;

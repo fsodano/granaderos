@@ -1,4 +1,8 @@
 'use client';
+// eslint-disable-next-line import/default -- Vite supplies this virtual worker URL; native URL workers break the static export.
+import battleWorkerUrl from './battle-worker.ts?worker&url';
+
+import type { BattleSnapshot } from '../../../packages/game/public/compatibility-types.ts';
 import { useEffect, useRef, useState } from 'react';
 import { createBattleExecutor } from './battle-executor.ts';
 import { createLatestPreview, type LatestPreviewQueue } from './latest-preview.ts';
@@ -6,11 +10,8 @@ import {
   readBattlePreview,
   type BattlePreviewJob,
   type BattlePreviewKind,
-  type BattlePreviewRequestByKind,
   type BattlePreviewResultByKind,
 } from './battle-preview.ts';
-// eslint-disable-next-line import/default -- Vite generates the worker URL module's default export.
-import battleWorkerUrl from './battle-worker.ts?worker&url';
 
 export interface BattlePreviewState<Preview> {
   preview: Preview | null;
@@ -19,8 +20,8 @@ export interface BattlePreviewState<Preview> {
 }
 
 export function useBattlePreview<Kind extends BattlePreviewKind>(
-  battle: unknown,
-  request: BattlePreviewRequestByKind[NoInfer<Kind>] | null,
+  battle: BattleSnapshot,
+  request: import('./battle-worker-contracts.ts').BattleWorkerActionByKind[NoInfer<Kind>] | null,
   kind: Kind,
 ): BattlePreviewState<BattlePreviewResultByKind[Kind]> {
   type Job = BattlePreviewJob<Kind>;
@@ -44,7 +45,9 @@ export function useBattlePreview<Kind extends BattlePreviewKind>(
           // A failed worker stays closed. Release it so a later request can
           // recover while the player remains in the same sector view.
           running.close();
-          if (executor === running) executor = null;
+          if (executor === running) {
+            executor = null;
+          }
           throw error;
         }
       },

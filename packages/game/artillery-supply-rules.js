@@ -1,7 +1,3 @@
-import {
-  ARTILLERY_SUPPLY_FIELDS,
-  validateArtillerySupply,
-} from '../campaign-format/campaign-rules-schema.js';
 export {
   ARTILLERY_SUPPLY_FIELDS,
   validateArtillerySupply,

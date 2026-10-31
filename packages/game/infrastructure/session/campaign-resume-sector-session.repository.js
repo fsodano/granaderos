@@ -19,12 +19,16 @@ export class CampaignResumeSectorSessionRepository {
   }
 
   load(sectorSessionId) {
-    if (this.#closed || this.#game) throw new DomainRefusal(DomainRefusalCode.TransactionClosed);
+    if (this.#closed || this.#game) {
+      throw new DomainRefusal(DomainRefusalCode.TransactionClosed);
+    }
     const campaign = this.#transaction.draft;
     const target = campaign.suspendedSectorSessions?.find(
       (record) => record.request.id === sectorSessionId,
     );
-    if (!target) throw new Error('La visita suspendida no existe.');
+    if (!target) {
+      throw new Error('La visita suspendida no existe.');
+    }
     this.#game = restoreGameSession(campaign);
     this.#targetId = sectorSessionId;
     return { game: this.#game, registration: sectorSessionRegistration(target.request) };
@@ -36,7 +40,9 @@ export class CampaignResumeSectorSessionRepository {
     }
     const campaign = this.#transaction.draft;
     const coordinator = new CampaignSectorSessionCoordinator(campaign);
-    if (campaign.pendingBattle) coordinator.suspendActive(this.#activeSnapshot);
+    if (campaign.pendingBattle) {
+      coordinator.suspendActive(this.#activeSnapshot);
+    }
     coordinator.resume(this.#targetId);
     projectGameSession(campaign, game);
     this.#closed = true;

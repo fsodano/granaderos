@@ -12,7 +12,7 @@ produces one serializable game snapshot. Restoration does not advance time, pay
 contracts, issue equipment, or repeat recruitment. Resource-byte verification
 remains a browser admission step before the candidate replaces the live game.
 
-Verification: `node --test tests/game-persistence.test.mjs`.
+Verification: `node --test tests/game-persistence.test.ts`.
 
 An absent save is refused with `DomainRefusalCode.SavedGameUnavailable`. Browser
 adapters translate the code. Format validation returns its existing diagnostics.

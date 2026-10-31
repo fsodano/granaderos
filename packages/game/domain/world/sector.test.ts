@@ -21,7 +21,7 @@ const empty = (id = 'retirement'): SectorSnapshot => ({
   removedCharacterIds: [],
 });
 
-test('sector admission protects character identity, custodian identity, and local bounds', () => {
+void test('sector admission protects character identity, custodian identity, and local bounds', () => {
   const sector = new Sector(empty());
   sector.admitResident(resident());
   const before = sector.toSnapshot();
@@ -38,7 +38,7 @@ test('sector admission protects character identity, custodian identity, and loca
   assert.equal(sector.toSnapshot().environment.width, 8);
 });
 
-test('local movement and cross-sector transfer preserve canonical custody and refuse atomically', () => {
+void test('local movement and cross-sector transfer preserve canonical custody and refuse atomically', () => {
   const origin = new Sector({ ...empty(), residents: [resident()] });
   const destination = new Sector(empty('san-lorenzo'));
   origin.moveResident('character:1', { x: 3, y: 4, level: 1 }, 'character:1');
@@ -56,7 +56,7 @@ test('local movement and cross-sector transfer preserve canonical custody and re
   ]);
 });
 
-test('corpse removal requires complete ground custody and permanently removes its physical reference', () => {
+void test('corpse removal requires complete ground custody and permanently removes its physical reference', () => {
   const actor = { ...resident(), alive: false };
   const corpse = {
     id: 'body:1',
@@ -75,12 +75,15 @@ test('corpse removal requires complete ground custody and permanently removes it
   const equipment = corpse.itemIds.map(
     (id) => new ItemCustody(id, { kind: ItemCustodianKind.Ground, id: sector.id }),
   );
+  const [firstGroundObject, secondGroundObject] = groundObjects;
+  assert.ok(firstGroundObject);
+  assert.ok(secondGroundObject);
   const before = sector.toSnapshot();
   assert.throws(() => sector.removeCorpse(corpse.id, equipment.slice(0, 1), groundObjects));
   assert.throws(() =>
     sector.removeCorpse(corpse.id, equipment, [
-      groundObjects[0],
-      { ...groundObjects[1], itemIds: ['musket:1'] },
+      firstGroundObject,
+      { ...secondGroundObject, itemIds: ['musket:1'] },
     ]),
   );
   assert.deepEqual(sector.toSnapshot(), before);
@@ -94,7 +97,7 @@ test('corpse removal requires complete ground custody and permanently removes it
   assert.throws(() => sector.removeCorpse(corpse.id, equipment, groundObjects));
 });
 
-test('resident reconciliation cannot drop a retained corpse or duplicate an object identity', () => {
+void test('resident reconciliation cannot drop a retained corpse or duplicate an object identity', () => {
   const actor = { ...resident(), alive: false };
   const sector = new Sector({
     ...empty(),

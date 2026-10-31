@@ -76,7 +76,9 @@ export class SectorDeployment {
     return this.#participants.every((participant) => this.#placements[participant.characterId]);
   }
 
-  #select(characterIds: readonly string[]): readonly DeploymentParticipant[] {
+  #select(
+    characterIds: readonly string[],
+  ): readonly [DeploymentParticipant, ...DeploymentParticipant[]] {
     if (
       !characterIds.length ||
       new Set(characterIds).size !== characterIds.length ||
@@ -86,19 +88,29 @@ export class SectorDeployment {
     ) {
       throw new DeploymentRefusal(DeploymentRefusalCode.InvalidSelection);
     }
-    return characterIds.map((id) =>
-      this.#participants.find((participant) => participant.characterId === id)!,
-    );
+    const selected = characterIds.map((id) => {
+      const participant = this.#participants.find((candidate) => candidate.characterId === id);
+      if (!participant) {
+        throw new DeploymentRefusal(DeploymentRefusalCode.InvalidSelection);
+      }
+      return participant;
+    });
+    const [first, ...remaining] = selected;
+    if (!first) {
+      throw new DeploymentRefusal(DeploymentRefusalCode.InvalidSelection);
+    }
+    return [first, ...remaining];
   }
 
   clear(characterIds: readonly string[]): void {
-    for (const participant of this.#select(characterIds))
+    for (const participant of this.#select(characterIds)) {
       delete this.#placements[participant.characterId];
+    }
   }
 
   place(characterIds: readonly string[], preferredPoint: DeploymentPoint): void {
     const selected = this.#select(characterIds);
-    const edge = selected[0]!.entryEdge;
+    const edge = selected[0].entryEdge;
     if (
       selected.some((participant) => participant.entryEdge !== edge) ||
       !this.#cells[edge].some((point) => samePoint(point, preferredPoint))
@@ -113,7 +125,9 @@ export class SectorDeployment {
     );
     for (const participant of selected) {
       const point = this.#nearest(this.#cells[edge], preferredPoint, occupied);
-      if (!point) throw new DeploymentRefusal(DeploymentRefusalCode.EntryFull);
+      if (!point) {
+        throw new DeploymentRefusal(DeploymentRefusalCode.EntryFull);
+      }
       next[participant.characterId] = point;
       occupied.add(pointKey(point));
     }
@@ -122,9 +136,11 @@ export class SectorDeployment {
 
   placeNear(characterIds: readonly string[], anchor: DeploymentPoint): void {
     const selected = this.#select(characterIds),
-      edge = selected[0]!.entryEdge;
+      edge = selected[0].entryEdge;
     const preferred = this.#nearest(this.#cells[edge], anchor, new Set<string>());
-    if (!preferred) throw new DeploymentRefusal(DeploymentRefusalCode.EntryFull);
+    if (!preferred) {
+      throw new DeploymentRefusal(DeploymentRefusalCode.EntryFull);
+    }
     this.place(characterIds, preferred);
   }
 
@@ -142,7 +158,9 @@ export class SectorDeployment {
       for (const [index, participant] of participants.entries()) {
         const preferred = cells[Math.floor(((index + 0.5) * cells.length) / participants.length)];
         const point = preferred && this.#nearest(cells, preferred, occupied);
-        if (!point) throw new DeploymentRefusal(DeploymentRefusalCode.EntryFull);
+        if (!point) {
+          throw new DeploymentRefusal(DeploymentRefusalCode.EntryFull);
+        }
         next[participant.characterId] = point;
         occupied.add(pointKey(point));
       }
@@ -151,16 +169,20 @@ export class SectorDeployment {
   }
 
   confirm(occupiedPoints: readonly DeploymentPoint[]): Readonly<Record<string, DeploymentPoint>> {
-    if (!this.ready) throw new DeploymentRefusal(DeploymentRefusalCode.Incomplete);
+    if (!this.ready) {
+      throw new DeploymentRefusal(DeploymentRefusalCode.Incomplete);
+    }
     const occupied = new Set(occupiedPoints.map(pointKey));
     const committed: Record<string, DeploymentPoint> = {};
     for (const participant of this.#participants) {
-      const point = this.#nearest(
-        this.#cells[participant.entryEdge],
-        this.#placements[participant.characterId]!,
-        occupied,
-      );
-      if (!point) throw new DeploymentRefusal(DeploymentRefusalCode.EntryBlocked);
+      const placement = this.#placements[participant.characterId];
+      if (!placement) {
+        throw new DeploymentRefusal(DeploymentRefusalCode.Incomplete);
+      }
+      const point = this.#nearest(this.#cells[participant.entryEdge], placement, occupied);
+      if (!point) {
+        throw new DeploymentRefusal(DeploymentRefusalCode.EntryBlocked);
+      }
       committed[participant.characterId] = point;
       occupied.add(pointKey(point));
     }

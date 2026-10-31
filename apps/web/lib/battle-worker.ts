@@ -1,11 +1,11 @@
-import { runBattleJob } from '../../../packages/game/battle-job.js';
+import { runBattleJob } from '../../../packages/game/battle-job.ts';
 import { executeBattleWorkerRequest } from './battle-worker-transport.ts';
 
 self.onmessage = (event: MessageEvent<unknown>) => {
-  const response = executeBattleWorkerRequest(event.data, (job) =>
-    runBattleJob({ ...job, action: job.action }),
-  );
-  if (!response) return;
+  const response = executeBattleWorkerRequest(event.data, (job) => runBattleJob(job));
+  if (!response) {
+    return;
+  }
   try {
     self.postMessage(response);
   } catch (error) {

@@ -1,19 +1,24 @@
+import type {
+  CampaignContent,
+  CharacterDefinition,
+  DraftPatch,
+} from '../../../../../packages/campaign-format/types.ts';
 import { sitePath } from '../../../../web/game-preview-assets.js';
 import {
   AUTHORABLE_SPEECH_EVENTS,
   OPTIONAL_SPEECH_EVENTS,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
-import { campaignCharacterPortraits } from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { campaignCharacterPortraits } from '../../../../../packages/game/public/campaign-editor-api.ts';
 import {
   APPEARANCE_LABELS,
   SPEECH_LABELS,
   SPEECH_LINE_LIMIT,
   characterPresentationDefaults,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 import {
   spriteRender,
   spriteViewport,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 import ServiceRelationshipsEditor from './ServiceRelationshipsEditor.tsx';
 
 export default function CharacterPresentation({
@@ -26,12 +31,12 @@ export default function CharacterPresentation({
   resolveAsset = sitePath,
 }: {
   resolveAsset?: (reference: string) => string;
-  content?: any;
-  character: any;
-  portraits: any[];
-  characters?: any[];
-  weapon: number;
-  onChange: (patch: any) => void;
+  content?: CampaignContent;
+  character: CharacterDefinition;
+  portraits: CharacterDefinition[];
+  characters?: CharacterDefinition[];
+  weapon: number | string;
+  onChange: (patch: DraftPatch<CharacterDefinition>) => void;
 }) {
   const values = characterPresentationDefaults(character, content);
   const choices = [
@@ -78,8 +83,9 @@ export default function CharacterPresentation({
           viewBox={viewport.viewBox}
           width="112"
           height="112"
+          // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- SVG crops the sprite atlas; an HTML image cannot preserve this viewport.
           role="img"
-          aria-label={`Apariencia: ${APPEARANCE_LABELS[values.spriteAppearance as keyof typeof APPEARANCE_LABELS]}`}
+          aria-label={`Apariencia: ${Object.entries(APPEARANCE_LABELS).find(([id]) => id === values.spriteAppearance)?.[1] ?? values.spriteAppearance}`}
         >
           <image
             href={resolveAsset(sprite.href)}
@@ -144,14 +150,16 @@ export default function CharacterPresentation({
       </p>
       {AUTHORABLE_SPEECH_EVENTS.map((event) => (
         <label key={event}>
-          {SPEECH_LABELS[event as keyof typeof SPEECH_LABELS]}
+          {Object.entries(SPEECH_LABELS).find(([id]) => id === event)?.[1] ?? event}
           <textarea
             rows={2}
             maxLength={SPEECH_LINE_LIMIT}
             value={values.speech[event] ?? ''}
             onChange={(e) => {
               const speech = { ...values.speech, [event]: e.target.value };
-              if (OPTIONAL_SPEECH_EVENTS.includes(event) && !e.target.value) delete speech[event];
+              if (OPTIONAL_SPEECH_EVENTS.includes(event) && !e.target.value) {
+                delete speech[event];
+              }
               onChange({ speech });
             }}
           />

@@ -22,7 +22,9 @@ const messages = Object.freeze({
 });
 
 export function journeyRefusalMessage(error) {
-  if (error?.name !== 'JourneyRefusal') return error?.message ?? String(error);
+  if (error?.name !== 'JourneyRefusal') {
+    return error?.message ?? String(error);
+  }
   return messages[error.code] ?? 'El estado del viaje es inválido.';
 }
 
@@ -30,7 +32,9 @@ export function executeJourneyCommand(execute) {
   try {
     return execute();
   } catch (error) {
-    if (error?.name === 'JourneyRefusal') error.message = journeyRefusalMessage(error);
+    if (error?.name === 'JourneyRefusal') {
+      error.message = journeyRefusalMessage(error);
+    }
     throw error;
   }
 }

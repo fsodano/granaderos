@@ -1,17 +1,21 @@
 'use client';
+import type {
+  CampaignContent,
+  GeoGeometry,
+} from '../../../../../packages/campaign-format/types.ts';
 import { useId, useState } from 'react';
-import { campaignWorld } from '../../../../../packages/game/public/campaign-editor-api.js';
+import { campaignWorld } from '../../../../../packages/game/public/campaign-editor-api.ts';
 import {
   project,
   mapTilesForSector,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 import {
   contentCells,
   CONTENT_MAP,
   contentCellIds,
   toggleContentCell,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
-function path(geometry: any, content: any): string {
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
+function path(geometry: GeoGeometry, content: CampaignContent | undefined): string {
   const lines =
     geometry.type === 'MultiPolygon'
       ? geometry.coordinates.flat()
@@ -23,6 +27,9 @@ function path(geometry: any, content: any): string {
       (ring: number[][]) =>
         ring
           .map(([lon, lat], i) => {
+            if (lon === undefined || lat === undefined) {
+              return '';
+            }
             const p = project(lon, lat, content);
             return `${i ? 'L' : 'M'}${p.x},${p.y}`;
           })
@@ -36,7 +43,7 @@ export default function PlacementMap({
   content,
 }: {
   selected: string[];
-  content?: any;
+  content?: CampaignContent;
   onChange: (ids: string[]) => void;
 }) {
   const clip = useId();
@@ -62,6 +69,7 @@ export default function PlacementMap({
         </button>
       </div>
       <div className="placement-map-scroll">
+        {/* oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- SVG groups interactive map geometry in one accessible control. */}
         <svg viewBox="0 0 720 655" role="group" aria-label="Elegir celdas de aparición en el mapa">
           <defs>
             <clipPath id={clip}>
@@ -71,15 +79,16 @@ export default function PlacementMap({
           <rect width="720" height="655" fill="#18211e" />
           <g clipPath={`url(#${clip})`}>
             <rect x="36" y="36" width="648" height="588" fill="#25454d" />
-            {geography.land.map((g: any, i: number) => (
+            {geography.land.map((g, i: number) => (
               <path key={i} d={path(g, content)} fill="#69704c" />
             ))}
-            {geography.rivers.map((g: any, i: number) => (
+            {geography.rivers.map((g, i: number) => (
               <path key={i} d={path(g, content)} fill="none" stroke="#80b1b6" strokeWidth="2" />
             ))}
             {cells.map((cell) => (
               <g
                 key={cell.id}
+                // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- SVG cell geometry retains keyboard activation and button semantics.
                 role="button"
                 aria-label={cell.name}
                 aria-pressed={chosen.has(cell.id)}
@@ -99,15 +108,16 @@ export default function PlacementMap({
                     toggle(cell.id);
                     return;
                   }
-                  const step: Record<string, number[]> = {
+                  const step: Record<string, readonly [number, number]> = {
                     ArrowLeft: [-1, 0],
                     ArrowRight: [1, 0],
                     ArrowUp: [0, -1],
                     ArrowDown: [0, 1],
                   };
-                  if (step[e.key]) {
+                  const direction = step[e.key];
+                  if (direction) {
                     e.preventDefault();
-                    const [dx, dy] = step[e.key];
+                    const [dx, dy] = direction;
                     const col = Math.max(0, Math.min(35, cell.col + dx)),
                       row = Math.max(0, Math.min(32, cell.row + dy));
                     const next = `cell-${col}-${row}`;
@@ -151,7 +161,9 @@ export default function PlacementMap({
               {Object.entries(world.places as Record<string, { label: string }>).map(
                 ([id, place]) => {
                   const tile = mapTilesForSector(id, content)[0];
-                  if (!tile) return null;
+                  if (!tile) {
+                    return null;
+                  }
                   return (
                     <text key={id} x={tile.x} y={tile.y - 4}>
                       {place.label}
@@ -180,7 +192,7 @@ export default function PlacementMap({
           ))}
         </svg>
       </div>
-      <p role="status">{hovered || 'Columnas y filas de la cuadrícula del mapa.'}</p>
+      <output>{hovered || 'Columnas y filas de la cuadrícula del mapa.'}</output>
       <small>
         Teclado: flechas para recorrer las celdas; espacio para marcar. Las apariciones usan estas
         celdas en la campaña. Elegí tierra firme; las celdas de agua todavía no admiten encuentros.

@@ -1,7 +1,9 @@
 export const GameMappingVersion = 1;
 
 export function gameSaveMetadata(campaign) {
-  if (campaign.gameSessionId === undefined) return undefined;
+  if (campaign.gameSessionId === undefined) {
+    return undefined;
+  }
   const metadata = {
     version: GameMappingVersion,
     sessionId: campaign.gameSessionId,
@@ -13,8 +15,9 @@ export function gameSaveMetadata(campaign) {
 
 export function validateGameSaveMetadata(metadata, campaign) {
   if (metadata === undefined) {
-    if (campaign?.gameSessionId !== undefined)
+    if (campaign?.gameSessionId !== undefined) {
       throw new Error('Falta la versión del modelo de partida.');
+    }
     return;
   }
   if (metadata === null || metadata.version !== GameMappingVersion) {

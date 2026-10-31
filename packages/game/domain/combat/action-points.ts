@@ -40,8 +40,9 @@ export class CombatRefusal extends Error {
 export class ActionPoints {
   readonly #amount: number;
   private constructor(amount: number) {
-    if (!Number.isSafeInteger(amount) || amount < 0)
+    if (!Number.isSafeInteger(amount) || amount < 0) {
       throw new CombatRefusal(CombatRefusalCode.InvalidActionPoints);
+    }
     this.#amount = amount;
   }
   static of(amount: number): ActionPoints {
@@ -54,12 +55,15 @@ export class ActionPoints {
     return Number.isSafeInteger(cost) && cost >= 0 && cost <= this.#amount;
   }
   spend(cost: number): ActionPoints {
-    if (!this.canSpend(cost)) throw new CombatRefusal(CombatRefusalCode.InsufficientActionPoints);
+    if (!this.canSpend(cost)) {
+      throw new CombatRefusal(CombatRefusalCode.InsufficientActionPoints);
+    }
     return ActionPoints.of(this.#amount - cost);
   }
   lose(amount: number): ActionPoints {
-    if (!Number.isSafeInteger(amount) || amount < 0)
+    if (!Number.isSafeInteger(amount) || amount < 0) {
       throw new CombatRefusal(CombatRefusalCode.InvalidActionPoints);
+    }
     return ActionPoints.of(Math.max(0, this.#amount - amount));
   }
   carryToNextTurn(): number {
@@ -102,8 +106,9 @@ export class ActionPointPolicy {
       condition.surrendered ||
       condition.routed ||
       condition.energy <= 0
-    )
+    ) {
       return 0;
+    }
     const statBase = Math.round(
       ActionPointRules.StoredUnitsPerPoint *
         (ActionPointRules.BaseStatOffset +

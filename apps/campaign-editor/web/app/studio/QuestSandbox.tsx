@@ -10,27 +10,37 @@ import {
   campaignSandboxActors,
   encodeCampaignSandbox,
   decodeCampaignSandbox,
-} from '../../../../../packages/game/public/campaign-playtest-api.js';
-import { campaignSectors } from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-playtest-api.ts';
+import { campaignSectors } from '../../../../../packages/game/public/campaign-editor-api.ts';
 import { contentIdentity } from '../../../../../packages/campaign-format/content-identity.js';
 import {
   contentQuestJournal,
   contentQuestStatus,
   QUEST_STATE_LABELS,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
-import { encounterHireTerms } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { questForNPC, questJournal } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { campaignObjectives } from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { encounterHireTerms } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import {
+  questForNPC,
+  questJournal,
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { campaignObjectives } from '../../../../../packages/game/public/campaign-editor-api.ts';
 import { sitePath } from '../../../../web/game-preview-assets.js';
+import type { CampaignContent } from '../../../../../packages/campaign-format/types.ts';
+import type {
+  CampaignSandbox,
+  CampaignSandboxAction,
+  CampaignSandboxDialogue,
+} from '../../../../../packages/game/public/campaign-playtest-api.ts';
+import type { ConversationChoice } from '../../../../web/game-preview.ts';
 
 export default function QuestSandbox({
   content,
   resolveAsset = sitePath,
 }: {
-  content: any;
+  content: CampaignContent;
   resolveAsset?: (reference: string) => string;
 }) {
-  const [sandbox, setSandbox] = useState<any>(null),
+  const [sandbox, setSandbox] = useState<CampaignSandbox | null>(null),
     [seed, setSeed] = useState(18130203),
     [treasury, setTreasury] = useState(''),
     [hire, setHire] = useState(''),
@@ -46,36 +56,35 @@ export default function QuestSandbox({
   const stale = sandbox && sandbox.sourceIdentity.hash !== identity.hash,
     sectors = campaignSectors(content),
     roster = sandbox ? campaignSandboxActors(sandbox) : [],
-    candidates = roster.filter((op: any) => op.recruitmentSource === 'contract'),
-    selectedHire = candidates.find((op: any) => String(op.id) === hire) ?? candidates[0],
-    players = sandbox?.battle?.units.filter((u: any) => u.side === 'player') ?? [],
-    unit = players.find((u: any) => u.id === actor) ?? players[0];
-  let dialogues: any[] = [],
+    candidates = roster.filter((op) => op.recruitmentSource === 'contract'),
+    selectedHire = candidates.find((op) => String(op.id) === hire) ?? candidates[0],
+    players = sandbox?.battle?.units.filter((u) => u.side === 'player') ?? [],
+    unit = players.find((u) => u.id === actor) ?? players[0];
+  let dialogues: CampaignSandboxDialogue[] = [],
     dialogueError = '';
   try {
-    if (sandbox) dialogues = campaignSandboxDialogues(sandbox);
-  } catch (error: any) {
+    if (sandbox) {
+      dialogues = campaignSandboxDialogues(sandbox);
+    }
+  } catch (error) {
     dialogueError = editorErrorMessage(error);
   }
-  const command = (action: any) => {
-    if (playbackBusy) return;
-    setSandbox((current: any) => dispatchCampaignSandbox(current, action));
+  const command = (action: CampaignSandboxAction) => {
+    if (playbackBusy) {
+      return;
+    }
+    setSandbox((current) => (current ? dispatchCampaignSandbox(current, action) : current));
     setSaveText('');
   };
-  const npcDialogues = Object.fromEntries(
-    dialogues.map(({ npc, dialogue }: any) => [npc.id, dialogue]),
-  );
+  const npcDialogues = Object.fromEntries(dialogues.map(({ npc, dialogue }) => [npc.id, dialogue]));
   const quests = sandbox
     ? Object.fromEntries(
-        (sandbox.battle?.npcs ?? []).map((npc: any) => [
-          npc.id,
-          questForNPC(sandbox.campaign, npc.id),
-        ]),
+        (sandbox.battle?.npcs ?? []).map((npc) => [npc.id, questForNPC(sandbox.campaign, npc.id)]),
       )
     : {};
   const terms = sandbox
     ? Object.fromEntries(
-        (sandbox.battle?.npcs ?? []).map((npc: any) => [
+        (sandbox.battle?.npcs ?? []).map((npc) => [
           npc.id,
           encounterHireTerms(sandbox.campaign, npc),
         ]),
@@ -86,7 +95,7 @@ export default function QuestSandbox({
     approach: string,
     unitId: string,
     contractTerm?: string,
-    choice?: any,
+    choice?: ConversationChoice,
   ) =>
     command({
       type: 'talk',
@@ -94,7 +103,8 @@ export default function QuestSandbox({
       approach,
       unitId,
       ...(contractTerm ? { term: contractTerm } : {}),
-      ...(choice?.id ? { choice: choice.id, node: choice.node } : {}),
+      ...(choice?.id ? { choice: choice.id } : {}),
+      ...(choice?.node ? { node: choice.node } : {}),
       ...(choice?.questResolution ? { questResolution: choice.questResolution } : {}),
       ...(choice?.questWithdrawal ? { questWithdrawal: choice.questWithdrawal } : {}),
     });
@@ -141,7 +151,7 @@ export default function QuestSandbox({
               );
               setNotice('Prueba iniciada desde las condiciones iniciales.');
               setSaveText('');
-            } catch (error: any) {
+            } catch (error) {
               setNotice(editorErrorMessage(error));
             }
           }}
@@ -149,7 +159,7 @@ export default function QuestSandbox({
           {sandbox ? 'Reiniciar prueba' : 'Iniciar prueba'}
         </button>
       </fieldset>
-      {notice && <p role="status">{notice}</p>}
+      {notice && <output>{notice}</output>}
       {stale && (
         <p role="alert">El proyecto cambió. Reiniciá la prueba para usar sus nuevos datos.</p>
       )}
@@ -172,7 +182,7 @@ export default function QuestSandbox({
                 value={String(selectedHire?.id ?? '')}
                 onChange={(e) => setHire(e.target.value)}
               >
-                {candidates.map((op: any) => (
+                {candidates.map((op) => (
                   <option value={op.id} key={op.id}>
                     {op.name}
                   </option>
@@ -192,7 +202,8 @@ export default function QuestSandbox({
               type="button"
               disabled={!selectedHire || Boolean(sandbox.battle)}
               onClick={() =>
-                command({ type: 'recruitCombatant', characterId: selectedHire.id, term })
+                selectedHire &&
+                command({ type: 'recruitCombatant', characterId: String(selectedHire.id), term })
               }
             >
               Reclutar candidato
@@ -203,7 +214,7 @@ export default function QuestSandbox({
                 value={sector || sandbox.campaign.location}
                 onChange={(e) => setSector(e.target.value)}
               >
-                {sectors.map((s: any) => (
+                {sectors.map((s) => (
                   <option key={s.id} value={s.id}>
                     {s.name}
                   </option>
@@ -257,7 +268,7 @@ export default function QuestSandbox({
                 <label>
                   Combatiente de prueba
                   <select value={unit?.id ?? ''} onChange={(e) => setActor(e.target.value)}>
-                    {players.map((u: any) => (
+                    {players.map((u) => (
                       <option value={u.id} key={u.id}>
                         {u.name}
                       </option>
@@ -273,7 +284,7 @@ export default function QuestSandbox({
               </>
             )}
           </fieldset>
-          {dialogues.map(({ npc, dialogue, choices }: any) => (
+          {dialogues.map(({ npc, dialogue, choices }) => (
             <fieldset key={npc.id} disabled={Boolean(stale) || playbackBusy}>
               <legend>
                 {npc.name} · {dialogue.node}
@@ -285,21 +296,23 @@ export default function QuestSandbox({
               <button
                 type="button"
                 disabled={!unit}
-                onClick={() => command({ type: 'approach', unitId: unit.id, npcId: npc.id })}
+                onClick={() =>
+                  unit && command({ type: 'approach', unitId: unit.id, npcId: npc.id })
+                }
               >
                 Acercarse a {npc.name}
               </button>
               <button
                 type="button"
                 disabled={!unit}
-                onClick={() => talk(npc.id, 'dialogue', unit.id)}
+                onClick={() => unit && talk(npc.id, 'dialogue', unit.id)}
               >
                 Hablar con {npc.name}
               </button>
-              {choices.map(({ choice, conditions, available }: any) => (
+              {choices.map(({ choice, conditions, available }) => (
                 <div key={choice.id}>
                   <p>{choice.label}</p>
-                  {conditions.map(({ condition, met }: any, index: number) => (
+                  {conditions.map(({ condition, met }, index: number) => (
                     <p key={index}>
                       Condición {index + 1}: {met ? 'Cumplida' : 'No cumplida'} ·{' '}
                       {JSON.stringify(condition)}
@@ -311,6 +324,7 @@ export default function QuestSandbox({
                     type="button"
                     disabled={!unit || !available || available.available === false}
                     onClick={() =>
+                      unit &&
                       command({
                         type: 'talk',
                         unitId: unit.id,
@@ -328,33 +342,25 @@ export default function QuestSandbox({
           ))}
           <section aria-label="Estado de encargos de la prueba">
             <h3>Encargos</h3>
-            {(content.quests ?? []).map((quest: any) => (
+            {(content.quests ?? []).map((quest) => (
               <p key={quest.id}>
-                {quest.title}:{' '}
-                {
-                  QUEST_STATE_LABELS[
-                    contentQuestStatus(
-                      sandbox.campaign,
-                      quest.id,
-                    ) as keyof typeof QUEST_STATE_LABELS
-                  ]
-                }
+                {quest.title}: {QUEST_STATE_LABELS[contentQuestStatus(sandbox.campaign, quest.id)]}
               </p>
             ))}
             {contentQuestJournal(sandbox.campaign)
-              .filter((q: any) => q.remainingMinutes !== null)
-              .map((q: any) => (
+              .filter((q) => q.remainingMinutes !== null)
+              .map((q) => (
                 <p key={q.id}>
                   {q.title}:{' '}
                   {q.expired ? 'Plazo vencido' : `${q.remainingMinutes} minutos hasta el plazo`}
                 </p>
               ))}
-            {questJournal(sandbox.campaign).map((q: any) => (
+            {questJournal(sandbox.campaign).map((q) => (
               <p key={q.id}>
                 {q.title ?? q.id}: {q.status}
               </p>
             ))}
-            {campaignObjectives(sandbox.campaign).map((chapter: any, index: number) => (
+            {campaignObjectives(sandbox.campaign).map((chapter, index: number) => (
               <p key={index}>
                 {chapter.name}: {chapter.objective} ·{' '}
                 {chapter.complete ? 'Cumplido' : chapter.active ? 'Actual' : 'Pendiente'}
@@ -375,9 +381,11 @@ export default function QuestSandbox({
                 return true;
               }}
               peacefulVisit={Boolean(sandbox.campaign.pendingBattle?.exploration)}
-              onChange={(battle) =>
-                setSandbox((current: any) => adoptCampaignSandboxBattle(current, battle))
-              }
+              onChange={(battle) => {
+                const next = adoptCampaignSandboxBattle(sandbox, battle);
+                setSandbox(next);
+                return next.lastError ? null : next.battle;
+              }}
               onFinish={() => command({ type: 'finish' })}
               conversation={sandbox.campaign.lastConversation}
               dialogues={npcDialogues}
@@ -412,7 +420,7 @@ export default function QuestSandbox({
                   decodeCampaignSandbox(text, content);
                   setSaveText(text);
                   setNotice('Prueba guardada y comprobada con el lector de partidas.');
-                } catch (error: any) {
+                } catch (error) {
                   setNotice(editorErrorMessage(error));
                 }
               }}
@@ -447,12 +455,16 @@ export default function QuestSandbox({
         onChange={async (e) => {
           const file = e.target.files?.[0];
           e.target.value = '';
-          if (!file) return;
+          if (!file) {
+            return;
+          }
           try {
-            if (file.size > 50000000) throw Error('La prueba supera 50 MB.');
+            if (file.size > 50000000) {
+              throw Error('La prueba supera 50 MB.');
+            }
             setSandbox(decodeCampaignSandbox(await file.text(), content));
             setNotice('Prueba recuperada con sus recibos.');
-          } catch (error: any) {
+          } catch (error) {
             setNotice(editorErrorMessage(error));
           }
         }}

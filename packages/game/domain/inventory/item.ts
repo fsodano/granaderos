@@ -1,3 +1,4 @@
+import { isArrayValue } from '../shared/array-value.ts';
 export const ItemRules = Object.freeze({ MaximumQuantity: 1_000_000 });
 
 export const InventoryRefusalCode = Object.freeze({
@@ -27,7 +28,9 @@ export type ItemSnapshot = Readonly<{
 }>;
 
 function canonicalValue(value: unknown): unknown {
-  if (Array.isArray(value)) return value.map(canonicalValue);
+  if (isArrayValue(value)) {
+    return value.map(canonicalValue);
+  }
   if (value && typeof value === 'object') {
     return Object.fromEntries(
       Object.entries(value)
@@ -50,11 +53,11 @@ export class Item {
       !Number.isSafeInteger(snapshot.quantity) ||
       snapshot.quantity < 0 ||
       snapshot.quantity > ItemRules.MaximumQuantity ||
-      !Array.isArray(snapshot.instanceIds) ||
+      !isArrayValue(snapshot.instanceIds) ||
       snapshot.instanceIds.some((id) => typeof id !== 'string' || !id) ||
       !snapshot.metadata ||
       typeof snapshot.metadata !== 'object' ||
-      Array.isArray(snapshot.metadata)
+      isArrayValue(snapshot.metadata)
     ) {
       throw new InventoryRefusal(InventoryRefusalCode.InvalidItem);
     }
@@ -100,8 +103,9 @@ export class Item {
   }
 
   merge(other: Item): void {
-    if (!this.canMerge(other) || this.#quantity + other.#quantity > ItemRules.MaximumQuantity)
+    if (!this.canMerge(other) || this.#quantity + other.#quantity > ItemRules.MaximumQuantity) {
       throw new InventoryRefusal(InventoryRefusalCode.InvalidItem);
+    }
     this.#quantity += other.#quantity;
   }
 

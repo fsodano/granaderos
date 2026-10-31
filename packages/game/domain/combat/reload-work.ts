@@ -45,8 +45,9 @@ export class ReloadWork {
       (progress > 0 && loaded === capacity) ||
       !Number.isFinite(roundCost) ||
       roundCost < 0
-    )
+    ) {
       throw new FirearmRefusal(FirearmRefusalCode.InvalidWork);
+    }
     this.#loaded = loaded;
     this.#reserve = reserve;
     this.#capacity = capacity;
@@ -54,10 +55,11 @@ export class ReloadWork {
     this.#roundCost = roundCost;
   }
   plan(budget: number): ReloadPlan {
-    if (budget !== Infinity && (!Number.isFinite(budget) || budget < 0))
+    if (budget !== Infinity && (!Number.isFinite(budget) || budget < 0)) {
       throw new FirearmRefusal(FirearmRefusalCode.InvalidWork);
+    }
     const available = Math.max(0, Math.min(this.#capacity - this.#loaded, this.#reserve));
-    if (!available || this.#roundCost === 0)
+    if (!available || this.#roundCost === 0) {
       return {
         pa: 0,
         totalPA: 0,
@@ -67,6 +69,7 @@ export class ReloadWork {
         partial: false,
         remainingPA: 0,
       };
+    }
     const totalPA = Math.ceil(
       (available - this.#progress) * this.#roundCost - ReloadRules.CompletionTolerance,
     );

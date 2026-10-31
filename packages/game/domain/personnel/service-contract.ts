@@ -83,7 +83,9 @@ export class ServiceContract {
   }
 
   renew(now: GameTime, term: string, durationSeconds: number, payment: Money): ServiceContract {
-    if (this.permanent) throw new DomainRefusal(DomainRefusalCode.PermanentService);
+    if (this.#expiresAt === null) {
+      throw new DomainRefusal(DomainRefusalCode.PermanentService);
+    }
     if (
       now.seconds < this.#startedAt.seconds ||
       !Number.isSafeInteger(durationSeconds) ||
@@ -91,7 +93,7 @@ export class ServiceContract {
     ) {
       throw new DomainRefusal(DomainRefusalCode.InvalidValue);
     }
-    const remainingUntil = Math.max(now.seconds, this.#expiresAt!.seconds);
+    const remainingUntil = Math.max(now.seconds, this.#expiresAt.seconds);
     return ServiceContract.restore({
       characterId: this.#characterId,
       term,

@@ -65,7 +65,9 @@ export class Squad {
   }
 
   assertCanReorganize(): void {
-    if (this.#membershipLocked) throw new DomainRefusal(DomainRefusalCode.SquadUnavailable);
+    if (this.#membershipLocked) {
+      throw new DomainRefusal(DomainRefusalCode.SquadUnavailable);
+    }
   }
 
   replaceMembers(memberIds: readonly string[]): void {

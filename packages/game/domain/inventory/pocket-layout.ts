@@ -1,3 +1,4 @@
+import { isArrayValue } from '../shared/array-value.ts';
 export const PocketRefusalCode = Object.freeze({
   InvalidOrder: 'invalid-pocket-order',
   StackLimit: 'pocket-stack-limit',
@@ -55,8 +56,8 @@ export class PocketLayout {
 
   private constructor(snapshot: PocketLayoutSnapshot) {
     if (
-      !Array.isArray(snapshot.slots) ||
-      !Array.isArray(snapshot.overflow) ||
+      !isArrayValue(snapshot.slots) ||
+      !isArrayValue(snapshot.overflow) ||
       snapshot.slots.length !== PocketRules.Capacity ||
       new Set(snapshot.slots.map((slot) => slot.id)).size !== PocketRules.Capacity ||
       snapshot.slots.some((slot) => {
@@ -79,9 +80,12 @@ export class PocketLayout {
   }
 
   static validateOrder(order?: readonly PocketOrderEntry[]): void {
-    if (order === undefined) return;
-    if (!Array.isArray(order) || order.length > PocketRules.Capacity)
+    if (order === undefined) {
+      return;
+    }
+    if (!isArrayValue(order) || order.length > PocketRules.Capacity) {
       throw new PocketRefusal(PocketRefusalCode.InvalidOrder);
+    }
     const slots = new Set<string>();
     const items = new Set<string>();
     for (const entry of order) {
@@ -115,9 +119,13 @@ export class PocketLayout {
     const limits = new Map(items.map((item) => [item.item, item.stackLimit]));
     const partitions = new Map<string, number>();
     for (const entry of order ?? []) {
-      if (entry.count === undefined) continue;
-      if (limits.has(entry.item) && entry.count > limits.get(entry.item)!)
+      if (entry.count === undefined) {
+        continue;
+      }
+      const limit = limits.get(entry.item);
+      if (limit !== undefined && entry.count > limit) {
         throw new PocketRefusal(PocketRefusalCode.StackLimit);
+      }
       partitions.set(partitionKey(entry), entry.count);
     }
     for (const item of items) {
@@ -126,8 +134,9 @@ export class PocketLayout {
         item.count < 0 ||
         !Number.isSafeInteger(item.stackLimit) ||
         item.stackLimit <= 0
-      )
+      ) {
         throw new PocketRefusal(PocketRefusalCode.InvalidStack);
+      }
       let remaining = item.count;
       for (let index = 0; index < PocketRules.Capacity && remaining > 0; index++) {
         const count = Math.min(
@@ -158,7 +167,9 @@ export class PocketLayout {
         const slot = slots
           .filter((pocket) => !pocket.entry && fits(entry, pocket))
           .sort((left, right) => Number(left.size === 'large') - Number(right.size === 'large'))[0];
-        if (slot) slot.entry = entry;
+        if (slot) {
+          slot.entry = entry;
+        }
       }
     }
     for (const item of items) {
@@ -166,7 +177,9 @@ export class PocketLayout {
         (total, pocket) => total + (pocket.entry?.item === item.item ? pocket.entry.count : 0),
         0,
       );
-      if (count < item.count) overflow.push({ ...item, count: item.count - count });
+      if (count < item.count) {
+        overflow.push({ ...item, count: item.count - count });
+      }
     }
     return new PocketLayout({ slots, overflow });
   }
@@ -182,10 +195,15 @@ export class PocketLayout {
   exchange(sourceId: string, destinationId: string): void {
     const source = this.#slots.find((pocket) => pocket.id === sourceId);
     const destination = this.#slots.find((pocket) => pocket.id === destinationId);
-    if (!source?.entry || !destination || source === destination)
+    if (!source?.entry || !destination || source === destination) {
       throw new PocketRefusal(PocketRefusalCode.InvalidExchange);
-    if (!fits(source.entry, destination) || (destination.entry && !fits(destination.entry, source)))
+    }
+    if (
+      !fits(source.entry, destination) ||
+      (destination.entry && !fits(destination.entry, source))
+    ) {
       throw new PocketRefusal(PocketRefusalCode.NeedsLargePocket);
+    }
     const displaced = destination.entry;
     destination.entry = source.entry;
     source.entry = displaced;
@@ -194,7 +212,9 @@ export class PocketLayout {
   toOrder(): PocketOrderEntry[] {
     const indices = new Map<string, number>();
     const order = this.#slots.flatMap((slot) => {
-      if (!slot.entry) return [];
+      if (!slot.entry) {
+        return [];
+      }
       const { item, count } = slot.entry;
       const index = indices.get(item) ?? 0;
       indices.set(item, index + 1);

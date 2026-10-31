@@ -16,25 +16,22 @@ export class BrowserSaveWriter {
   #generation = 0;
   #closed = false;
 
-  constructor(
-    locks: LockManagerPort | undefined,
-    write: (key: string, text: string) => void,
-  ) {
+  constructor(locks: LockManagerPort | undefined, write: (key: string, text: string) => void) {
     this.#locks = locks;
     this.#write = write;
   }
 
-  claim(
-    key: string,
-    onReady: () => void,
-    onRefused: (message: string) => void,
-  ): void {
-    if (this.#closed) return;
+  claim(key: string, onReady: () => void, onRefused: (message: string) => void): void {
+    if (this.#closed) {
+      return;
+    }
     if (this.#ownedKey === key) {
       onReady();
       return;
     }
-    if (this.#key === key) return;
+    if (this.#key === key) {
+      return;
+    }
     this.#release?.();
     this.#release = null;
     this.#ownedKey = null;
@@ -46,36 +43,32 @@ export class BrowserSaveWriter {
       return;
     }
     void this.#locks
-      .request(
-        `granaderos-save:${key}`,
-        { mode: 'exclusive', ifAvailable: true },
-        async (lock) => {
-          if (this.#closed || generation !== this.#generation) return;
-          if (!lock) {
-            this.#key = null;
-            onRefused(SaveWriterMessages.occupied);
-            return;
-          }
-          this.#ownedKey = key;
-          const held = new Promise<void>((release) => {
-            this.#release = release;
-          });
-          onReady();
-          await held;
-          if (generation === this.#generation) {
-            this.#ownedKey = null;
-            this.#key = null;
-          }
-        },
-      )
+      .request(`granaderos-save:${key}`, { mode: 'exclusive', ifAvailable: true }, async (lock) => {
+        if (this.#closed || generation !== this.#generation) {
+          return;
+        }
+        if (!lock) {
+          this.#key = null;
+          onRefused(SaveWriterMessages.occupied);
+          return;
+        }
+        this.#ownedKey = key;
+        const held = new Promise<void>((release) => {
+          this.#release = release;
+        });
+        onReady();
+        await held;
+        if (generation === this.#generation) {
+          this.#ownedKey = null;
+          this.#key = null;
+        }
+      })
       .catch((error) => {
-        if (this.#closed || generation !== this.#generation) return;
+        if (this.#closed || generation !== this.#generation) {
+          return;
+        }
         this.#key = null;
-        onRefused(
-          error instanceof Error
-            ? error.message
-            : SaveWriterMessages.unavailable,
-        );
+        onRefused(error instanceof Error ? error.message : SaveWriterMessages.unavailable);
       });
   }
 
@@ -84,7 +77,9 @@ export class BrowserSaveWriter {
   }
 
   write(key: string, text: string): void {
-    if (!this.owns(key)) throw new Error(SaveWriterMessages.occupied);
+    if (!this.owns(key)) {
+      throw new Error(SaveWriterMessages.occupied);
+    }
     this.#write(key, text);
   }
 

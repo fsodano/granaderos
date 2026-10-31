@@ -12,7 +12,9 @@ export class CampaignJourneyTransaction {
 
   loadJourney(squadId) {
     const squad = this.#campaign.squads.find((candidate) => candidate.id === squadId);
-    if (!squad?.journey) throw new JourneyRefusal(JourneyRefusalCode.JourneyNotFound);
+    if (!squad?.journey) {
+      throw new JourneyRefusal(JourneyRefusalCode.JourneyNotFound);
+    }
     nextRevision(squad.journeyRevision ?? 0);
     const nowSeconds = this.#campaign.hour * 3600 + (this.#campaign.secondOfHour ?? 0);
     return {
@@ -24,8 +26,9 @@ export class CampaignJourneyTransaction {
 
   commitJourney(squadId, journey, expectedRevision) {
     const squad = this.#campaign.squads.find((candidate) => candidate.id === squadId);
-    if (!squad?.journey || (squad.journeyRevision ?? 0) !== expectedRevision)
+    if (!squad?.journey || (squad.journeyRevision ?? 0) !== expectedRevision) {
       throw new JourneyRefusal(JourneyRefusalCode.JourneyRevisionConflict);
+    }
     const acceptedRevision = nextRevision(expectedRevision);
     squad.journey = this.#mapper.serialize(journey);
     squad.journeyRevision = acceptedRevision;

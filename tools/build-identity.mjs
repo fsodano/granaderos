@@ -22,7 +22,9 @@ async function sourceFiles(root, directory) {
   try {
     entries = await readdir(directory, { withFileTypes: true });
   } catch (error) {
-    if (error.code === 'ENOENT') return files;
+    if (error.code === 'ENOENT') {
+      return files;
+    }
     throw error;
   }
   for (const entry of entries) {
@@ -30,13 +32,17 @@ async function sourceFiles(root, directory) {
       omitted.has(entry.name) ||
       entry.name.endsWith('.tsbuildinfo') ||
       entry.name === '.DS_Store'
-    )
+    ) {
       continue;
+    }
     const path = join(directory, entry.name);
-    if (entry.isDirectory()) files.push(...(await sourceFiles(root, path)));
-    else if (entry.isFile()) {
+    if (entry.isDirectory()) {
+      files.push(...(await sourceFiles(root, path)));
+    } else if (entry.isFile()) {
       const name = relative(root, path).replaceAll('\\', '/');
-      if (!generatedFiles.has(name)) files.push(name);
+      if (!generatedFiles.has(name)) {
+        files.push(name);
+      }
     }
   }
   return files;
@@ -49,12 +55,17 @@ export async function buildIdentity(root) {
     'package.json',
     ...(
       await Promise.all(
-        ['packages/game', 'apps/web', 'tools', 'content/campaigns', 'apps/campaign-editor', 'packages/campaign-format'].map((dir) =>
-          sourceFiles(root, join(root, dir)),
-        ),
+        [
+          'packages/game',
+          'apps/web',
+          'tools',
+          'content/campaigns',
+          'apps/campaign-editor',
+          'packages/campaign-format',
+        ].map((dir) => sourceFiles(root, join(root, dir))),
       )
     ).flat(),
-  ].sort();
+  ].sort((left, right) => (left < right ? -1 : left > right ? 1 : 0));
   const hash = createHash('sha256');
   for (const path of paths) {
     hash.update(path);
@@ -73,7 +84,8 @@ export async function buildIdentity(root) {
   } catch {}
   return { version: pkg.version, id: source.slice(0, 12), source, revision };
 }
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href)
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   console.log(
     JSON.stringify(await buildIdentity(fileURLToPath(new URL('..', import.meta.url))), null, 2),
   );
+}

@@ -19,7 +19,9 @@ export class CorpseRemovalPolicy {
 
   constructor(lifetimeSeconds = DEFAULT_CORPSE_LIFETIME_SECONDS) {
     requireGameSecond(lifetimeSeconds);
-    if (lifetimeSeconds === 0) throw new Error('Corpse lifetime must be positive.');
+    if (lifetimeSeconds === 0) {
+      throw new Error('Corpse lifetime must be positive.');
+    }
     this.#lifetimeSeconds = lifetimeSeconds;
   }
 
@@ -40,16 +42,19 @@ export class Corpse {
       ![snapshot.id, snapshot.characterId, snapshot.sectorId].every(
         (value) => typeof value === 'string' && value.length > 0,
       )
-    )
+    ) {
       throw new Error('A corpse needs an identity, character, and sector.');
+    }
     requireGameSecond(snapshot.diedAtSecond);
     requireGameSecond(snapshot.removalAtSecond);
-    if (snapshot.removalAtSecond <= snapshot.diedAtSecond)
+    if (snapshot.removalAtSecond <= snapshot.diedAtSecond) {
       throw new Error('Corpse removal must follow death.');
+    }
     if (snapshot.removedAtSecond !== null) {
       requireGameSecond(snapshot.removedAtSecond);
-      if (snapshot.removedAtSecond !== snapshot.removalAtSecond)
+      if (snapshot.removedAtSecond !== snapshot.removalAtSecond) {
         throw new Error('Corpse removal must retain the scheduled time.');
+      }
     }
     this.#snapshot = Object.freeze({ ...snapshot });
   }
@@ -91,16 +96,20 @@ export class Corpse {
 
   removeAt(currentSecond: number, equipment: readonly ItemCustody[]): readonly string[] {
     requireGameSecond(currentSecond);
-    if (!this.isPresent) throw new Error('A corpse cannot be removed twice.');
-    if (currentSecond < this.#snapshot.removalAtSecond)
+    if (!this.isPresent) {
+      throw new Error('A corpse cannot be removed twice.');
+    }
+    if (currentSecond < this.#snapshot.removalAtSecond) {
       throw new Error('The corpse removal time has not been reached.');
+    }
     const owner = { kind: ItemCustodianKind.Corpse, id: this.id };
     const identities = new Set(equipment.map((item) => item.itemId));
     if (identities.size !== equipment.length || equipment.some((item) => !item.heldBy(owner))) {
       throw new Error('Corpse equipment must have unique and current custody.');
     }
-    for (const item of equipment)
+    for (const item of equipment) {
       item.transferFrom(owner, { kind: ItemCustodianKind.Ground, id: this.#snapshot.sectorId });
+    }
     this.#snapshot = Object.freeze({
       ...this.#snapshot,
       removedAtSecond: this.#snapshot.removalAtSecond,

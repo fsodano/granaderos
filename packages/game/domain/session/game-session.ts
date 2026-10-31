@@ -37,7 +37,9 @@ export class GameSession {
     ) {
       throw new DomainRefusal(DomainRefusalCode.InvalidValue);
     }
-    for (const registration of snapshot.sectorSessions) this.#register(registration);
+    for (const registration of snapshot.sectorSessions) {
+      this.#register(registration);
+    }
     const registeredIds = [...this.#sectorSessions.keys()];
     const expectedIds = [
       ...this.#suspendedSectorSessionIds,
@@ -98,17 +100,23 @@ export class GameSession {
   }
 
   closeSectorSession(id: string): void {
-    if (!this.#sectorSessions.has(id)) throw new DomainRefusal(DomainRefusalCode.InvalidValue);
-    if (this.#activeSectorSessionId === id) this.#activeSectorSessionId = null;
+    if (!this.#sectorSessions.has(id)) {
+      throw new DomainRefusal(DomainRefusalCode.InvalidValue);
+    }
+    if (this.#activeSectorSessionId === id) {
+      this.#activeSectorSessionId = null;
+    }
     this.#suspendedSectorSessionIds.delete(id);
     this.#sectorSessions.delete(id);
   }
 
   acceptRevision(expectedRevision: number): void {
-    if (this.#revision !== expectedRevision)
+    if (this.#revision !== expectedRevision) {
       throw new DomainRefusal(DomainRefusalCode.RevisionConflict);
-    if (!Number.isSafeInteger(this.#revision + 1))
+    }
+    if (!Number.isSafeInteger(this.#revision + 1)) {
       throw new DomainRefusal(DomainRefusalCode.InvalidValue);
+    }
     this.#revision++;
   }
 

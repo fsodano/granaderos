@@ -8,7 +8,7 @@
     "test:quick": "npm test",
     "dev": "npm --prefix apps/web run dev",
     "build": "node tools/build-web.mjs",
-    "typecheck": "npm --prefix packages/game run typecheck && npm --prefix apps/web run typecheck && npm --prefix apps/campaign-editor run typecheck",
+    "typecheck": "npm --prefix packages/game run typecheck && npm --prefix apps/web run typecheck && npm --prefix apps/campaign-editor run typecheck && npm run typecheck:tools",
     "audit:docs": "node tools/audit-docs.mjs",
     "docs:progress": "node tools/audit-docs.mjs --write",
     "audit:baseline": "node tools/audit-baseline.mjs",
@@ -22,6 +22,17 @@
     "lint": "node tools/code-quality.mjs lint",
     "lint:fix": "node tools/code-quality.mjs lint --fix",
     "lint:audit": "node tools/code-quality.mjs lint:audit",
-    "format": "node tools/code-quality.mjs format"
+    "format": "node tools/code-quality.mjs format",
+    "setup": "node tools/setup.mjs",
+    "hooks:install": "node tools/install-hooks.mjs",
+    "verify": "node tools/verify.mjs full",
+    "verify:quick": "node tools/verify.mjs push",
+    "verify:commit": "node tools/verify.mjs commit",
+    "check:dependencies": "node tools/check-dependencies.mjs",
+    "typecheck:tools": "apps/web/node_modules/.bin/tsc --project tsconfig.json",
+    "audit:dependencies": "node tools/audit-dependencies.ts"
+  },
+  "engines": {
+    "node": "22.23.4"
   }
 }

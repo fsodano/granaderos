@@ -1,59 +1,70 @@
 'use client';
-import { storyReferences } from '../../../../../packages/game/public/campaign-editor-api.js';
+import type {
+  CampaignContent,
+  QuestDefinition,
+} from '../../../../../packages/campaign-format/types.ts';
+import { storyReferences } from '../../../../../packages/game/public/campaign-editor-api.ts';
 import { useState } from 'react';
 export default function QuestEditor({
   draft,
   onChange,
 }: {
-  draft: any;
-  onChange: (draft: any) => void;
+  draft: CampaignContent;
+  onChange: (draft: CampaignContent) => void;
 }) {
   const quests = draft.quests ?? [],
     [selected, setSelected] = useState(''),
     [query, setQuery] = useState(''),
     [person, setPerson] = useState('');
-  const quest = quests.find((q: any) => q.id === selected) ?? quests[0];
+  const quest = quests.find((q) => q.id === selected) ?? quests[0];
   const norm = (value: string) =>
     value
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
       .toLocaleLowerCase();
-  const filtered = quests.filter((q: any) =>
-    norm(`${q.title} ${q.id}`).includes(norm(query.trim())),
-  );
+  const filtered = quests.filter((q) => norm(`${q.title} ${q.id}`).includes(norm(query.trim())));
   const survivors = quest?.requiredAlive ?? [],
-    available = draft.characters.filter((c: any) => !survivors.includes(c.id)),
-    candidate = available.find((c: any) => c.id === person) ?? available[0];
-  const update = (patch: any) =>
+    available = draft.characters.filter((c) => !survivors.includes(c.id)),
+    candidate = available.find((c) => c.id === person) ?? available[0];
+  const update = (patch: Partial<QuestDefinition>) => {
+    if (!quest) {
+      return;
+    }
     onChange({
       ...draft,
-      quests: quests.map((q: any) => (q.id === quest.id ? { ...q, ...patch } : q)),
+      quests: quests.map((q) => (q.id === quest.id ? { ...q, ...patch } : q)),
     });
+  };
   const add = (copy = false) => {
+    if (copy && !quest) {
+      return;
+    }
     let n = 1;
-    while (quests.some((q: any) => q.id === `quest-${n}`)) n++;
+    while (quests.some((q) => q.id === `quest-${n}`)) {
+      n++;
+    }
     const id = `quest-${n}`;
     onChange({
       ...draft,
       quests: [
         ...quests,
-        copy
+        copy && quest
           ? { ...quest, id, title: `${quest.title.slice(0, 94)} copia` }
           : { id, title: `Encargo ${n}`, description: 'Escribí el objetivo que verá el jugador.' },
       ],
     });
     setSelected(id);
   };
-  const eventUsers = (draft.campaignEvents ?? []).filter((e: any) =>
+  const eventUsers = (draft.campaignEvents ?? []).filter((e) =>
     [...(e.conditions ?? []), ...(e.effects ?? [])].some(
-      (v: any) => v.type === 'quest' && v.quest === quest?.id,
+      (v) => v.type === 'quest' && v.quest === quest?.id,
     ),
   );
   const storyUser = quest && storyReferences(draft.campaignStory, 'quest', quest.id);
   const users = quest
-    ? draft.characters.filter((c: any) =>
-        c.encounter?.dialogue?.nodes.some((n: any) =>
-          n.choices.some((choice: any) =>
+    ? draft.characters.filter((c) =>
+        c.encounter?.dialogue?.nodes.some((n) =>
+          n.choices.some((choice) =>
             [...(choice.conditions ?? []), ...(choice.effects ?? [])].some(
               (e) => e.type === 'quest' && e.quest === quest.id,
             ),
@@ -92,14 +103,16 @@ export default function QuestEditor({
               placeholder="Título o ID"
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === 'Escape') setQuery('');
+                if (e.key === 'Escape') {
+                  setQuery('');
+                }
               }}
             />
           </label>
           <div className="content-list-feedback">
-            <span role="status">
+            <output>
               {filtered.length} de {quests.length} encargos
-            </span>
+            </output>
             {query && (
               <button type="button" onClick={() => setQuery('')}>
                 Limpiar búsqueda
@@ -107,7 +120,7 @@ export default function QuestEditor({
             )}
           </div>
           <div className="entry-list">
-            {filtered.map((q: any) => (
+            {filtered.map((q) => (
               <button
                 type="button"
                 key={q.id}
@@ -119,18 +132,18 @@ export default function QuestEditor({
               </button>
             ))}
             {filtered.length === 0 && (
-              <p role="status" className="content-empty">
+              <output className="content-empty">
                 {query
                   ? 'No hay resultados para esta búsqueda.'
                   : 'No hay encargos. Creá uno para comenzar.'}
-              </p>
+              </output>
             )}
           </div>
         </aside>
         {quest ? (
           <fieldset>
             <legend>{quest.title}</legend>
-            {query && !filtered.some((q: any) => q.id === quest.id) && (
+            {query && !filtered.some((q) => q.id === quest.id) && (
               <p className="content-selection-note">
                 El filtro conserva el encargo que estás editando.
               </p>
@@ -179,7 +192,7 @@ export default function QuestEditor({
               <label>
                 Personaje que debe sobrevivir
                 <select value={candidate?.id ?? ''} onChange={(e) => setPerson(e.target.value)}>
-                  {available.map((c: any) => (
+                  {available.map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.name}
                     </option>
@@ -189,20 +202,24 @@ export default function QuestEditor({
               <button
                 type="button"
                 disabled={!candidate || survivors.length >= 6}
-                onClick={() => update({ requiredAlive: [...survivors, candidate.id] })}
+                onClick={() => {
+                  if (candidate) {
+                    update({ requiredAlive: [...survivors, candidate.id] });
+                  }
+                }}
               >
                 Agregar personaje necesario
               </button>
               {survivors.map((id: string) => (
                 <div key={id}>
-                  <span>{draft.characters.find((c: any) => c.id === id)?.name ?? id}</span>
+                  <span>{draft.characters.find((c) => c.id === id)?.name ?? id}</span>
                   <button
                     type="button"
                     onClick={() =>
                       update({ requiredAlive: survivors.filter((v: string) => v !== id) })
                     }
                   >
-                    Quitar requisito de {draft.characters.find((c: any) => c.id === id)?.name ?? id}
+                    Quitar requisito de {draft.characters.find((c) => c.id === id)?.name ?? id}
                   </button>
                 </div>
               ))}
@@ -215,7 +232,7 @@ export default function QuestEditor({
               className="content-danger"
               disabled={users.length > 0 || storyUser || eventUsers.length > 0}
               onClick={() => {
-                onChange({ ...draft, quests: quests.filter((q: any) => q.id !== quest.id) });
+                onChange({ ...draft, quests: quests.filter((q) => q.id !== quest.id) });
                 setSelected('');
               }}
             >
@@ -223,8 +240,8 @@ export default function QuestEditor({
             </button>
             {eventUsers.length > 0 && (
               <p>
-                Usado por eventos: {eventUsers.map((e: any) => e.id).join(', ')}. Quitá esas
-                referencias antes de eliminarlo.
+                Usado por eventos: {eventUsers.map((e) => e.id).join(', ')}. Quitá esas referencias
+                antes de eliminarlo.
               </p>
             )}
             {storyUser && (
@@ -235,8 +252,8 @@ export default function QuestEditor({
             )}
             {users.length > 0 && (
               <p>
-                Usado por: {users.map((c: any) => c.name).join(', ')}. Quitá esas referencias antes
-                de eliminarlo.
+                Usado por: {users.map((c) => c.name).join(', ')}. Quitá esas referencias antes de
+                eliminarlo.
               </p>
             )}
             <p>

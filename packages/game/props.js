@@ -11,6 +11,7 @@ import {
 } from './tactical-space.js';
 // Serializable tile footprints. Legacy props retain their original one-cell size.
 export const PROP_TYPES = ['table', 'bench', 'bed', 'chest', 'barrels', 'hay', 'cart'];
+/** @returns {boolean} */
 export function propBlocksAt(state, x, y, level = 0) {
   return (state.props ?? []).some((p) => {
     const { width, height } = propSize(p);
@@ -47,9 +48,12 @@ export function propPlacementError(state, prop) {
     size.height < 1 ||
     size.width > 8 ||
     size.height > 8
-  )
+  ) {
     return 'Invalid furniture footprint.';
-  if ((state.props ?? []).some((p) => p.id === prop.id)) return 'Duplicate furniture ID.';
+  }
+  if ((state.props ?? []).some((p) => p.id === prop.id)) {
+    return 'Duplicate furniture ID.';
+  }
   const cells = propCells(prop),
     tiles = new Map(surfacesAtLevel(state, tacticalLevel(prop)).map((t) => [key(t), t]));
   const occupied = new Set((state.props ?? []).flatMap(propCells).map(key));
@@ -62,20 +66,28 @@ export function propPlacementError(state, prop) {
         occupied.has(key(c)) ||
         surfaceHeight(state, c) !== surfaceHeight(state, prop),
     )
-  )
+  ) {
     return 'Furniture overlaps an obstacle or another object.';
+  }
   const room = (state.buildings ?? [])
     .flatMap((b) => b.rooms ?? [])
     .find((r) => r.id === prop.roomId);
-  if (prop.roomId && !room) return 'Unknown room.';
-  if (room && !cells.every((c) => room.cells.some((t) => key(c) === key(t))))
+  if (prop.roomId && !room) {
+    return 'Unknown room.';
+  }
+  if (room && !cells.every((c) => room.cells.some((t) => key(c) === key(t)))) {
     return 'Furniture must fit inside its room.';
-  if (!room || prop.blocksMovement === false) return null;
+  }
+  if (!room || prop.blocksMovement === false) {
+    return null;
+  }
   const proposed = { ...state, props: [...(state.props ?? []), prop] };
   const free = room.cells.filter(
     (c) => !tiles.get(key(c))?.blocked && !propBlocksAt(proposed, c.x, c.y, tacticalLevel(c)),
   );
-  if (!free.length) return 'Furniture leaves no walking space.';
+  if (!free.length) {
+    return 'Furniture leaves no walking space.';
+  }
   const entrances = [
     ...geometry.wallEdges
       .filter((t) => t.type === 'door')
@@ -84,12 +96,13 @@ export function propPlacementError(state, prop) {
       .filter((t) => t.type === 'door' && room.cells.some((c) => adjacent(c, t)))
       .map((d) => room.cells.filter((c) => adjacent(c, d))),
   ].filter((cells) => cells.length);
-  if (entrances.some((approach) => !approach.some((c) => free.some((f) => sameCell(c, f)))))
+  if (entrances.some((approach) => !approach.some((c) => free.some((f) => sameCell(c, f))))) {
     return 'Furniture blocks a door approach.';
+  }
   const reached = new Set([key(free[0])]),
     queue = [free[0]],
     available = new Map(free.map((c) => [key(c), c]));
-  for (let i = 0; i < queue.length; i++)
+  for (let i = 0; i < queue.length; i++) {
     for (const [dx, dy] of [
       [1, 0],
       [-1, 0],
@@ -106,7 +119,10 @@ export function propPlacementError(state, prop) {
         queue.push(next);
       }
     }
-  if (reached.size !== free.length) return 'Furniture separates the walking space.';
+  }
+  if (reached.size !== free.length) {
+    return 'Furniture separates the walking space.';
+  }
   const roomProps = proposed.props.filter((p) => p.roomId === room.id);
   if (
     roomProps.some(
@@ -117,8 +133,9 @@ export function propPlacementError(state, prop) {
           ),
         ),
     )
-  )
+  ) {
     return 'Furniture has no accessible side.';
+  }
   return null;
 }
 
@@ -127,8 +144,9 @@ export function placePulperiaCart(state, building) {
   if (
     building.architecture !== 'pulperia' ||
     state.props.some((p) => p.id === `${building.id}:cart`)
-  )
+  ) {
     return false;
+  }
   const doorCells = (state.wallEdges ?? []).filter((t) => t.type === 'door').flatMap(wallEdgeCells);
   const doors = state.tiles.filter((t) => t.type === 'door');
   const people = [
@@ -159,9 +177,12 @@ export function placePulperiaCart(state, building) {
           people.some((p) => sameCell(p, c)) ||
           state.tiles.some((t) => t.x === c.x && t.y === c.y && t.buildingId),
       )
-    )
+    ) {
       continue;
-    if (propPlacementError(state, prop)) continue;
+    }
+    if (propPlacementError(state, prop)) {
+      continue;
+    }
     state.props.push(prop);
     return true;
   }

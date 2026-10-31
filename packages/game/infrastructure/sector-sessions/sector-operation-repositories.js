@@ -13,13 +13,18 @@ export class SectorOperationTransaction {
     return { snapshot: structuredClone(this.#snapshot), revision: this.#revision };
   }
   commit(snapshot, expectedRevision) {
-    if (this.#revision !== expectedRevision)
+    if (this.#revision !== expectedRevision) {
       throw new DomainRefusal(DomainRefusalCode.RevisionConflict);
+    }
     const acceptedRevision = nextRevision(this.#revision);
-    if (snapshot.lastError) return;
+    if (snapshot.lastError) {
+      return;
+    }
     const gameplay = (value) =>
       JSON.stringify(value, (key, field) => (key === 'lastError' ? undefined : field));
-    if (gameplay(snapshot) === gameplay(this.#snapshot)) return;
+    if (gameplay(snapshot) === gameplay(this.#snapshot)) {
+      return;
+    }
     this.#revision = acceptedRevision;
     snapshot.sectorRevision = this.#revision;
     this.#snapshot = snapshot;

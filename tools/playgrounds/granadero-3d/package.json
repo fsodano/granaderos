@@ -7,7 +7,7 @@
     "dev": "node server.mjs",
     "build": "node build.mjs",
     "preview": "node server.mjs --dist",
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --import ../../../tools/register-test-loader.ts --test tests/*.test.ts"
   },
   "dependencies": {
     "three": "0.184.0"

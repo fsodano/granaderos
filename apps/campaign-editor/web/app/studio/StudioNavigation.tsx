@@ -143,7 +143,9 @@ export default function StudioNavigation({ section, onSelect, issues = [] }: Pro
                   data-section={item.id}
                   data-issues={count || undefined}
                   aria-current={section === item.id ? 'page' : undefined}
-                  aria-description={count ? `${count} problemas en esta sección` : undefined}
+                  aria-label={
+                    count ? `${item.label}: ${count} problemas en esta sección` : undefined
+                  }
                   title={item.description}
                   onClick={() => onSelect(item.id)}
                 >

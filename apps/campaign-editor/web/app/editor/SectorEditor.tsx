@@ -1,4 +1,24 @@
 'use client';
+import type {
+  PhysicalMap,
+  CampaignContent,
+} from '../../../../../packages/campaign-format/types.ts';
+import type { BattleSnapshot } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import type {
+  MapLayer,
+  MapSelection,
+  MapBuildingTemplate,
+  MapTerrain,
+  SectorMapCommand,
+  SectorMapHistorySnapshot,
+  MapObjectValues,
+} from '../../../domain/sector-map-command.ts';
+import { selectValue } from '../../lib/editor-values.ts';
+import {
+  parseEditorJson,
+  documentObject,
+  readBuildingTemplate,
+} from '../../lib/editor-documents.ts';
 import { editorErrorMessage } from '../../../infrastructure/editor-error-message.ts';
 import { gamePath } from '../../lib/game-path.ts';
 import { pagePath } from '../../../../web/game-preview-assets.js';
@@ -7,19 +27,18 @@ import { isometricWallEdge } from '../../lib/editor-wall-edge.js';
 import {
   wallEdgeCells,
   wallEdgeEndpoints,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 import {
-  buildingAppearance,
   WALL_FINISHES,
   ROOF_FINISHES,
   DOOR_STYLES,
   WINDOW_STYLES,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
-import { BUILDING_KINDS } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { useEffect, useId, useMemo, useRef, useState } from 'react';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { BUILDING_KINDS } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { useEffect, useEffectEvent, useId, useMemo, useRef, useState } from 'react';
 import { TacticalScene } from '../../../../web/game-preview.ts';
 import { Battlefield } from '../../../../web/game-preview.ts';
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import EditorDialog from '../EditorDialog.tsx';
 import {
   editorCampaignBase,
   editorCampaignURL,
@@ -30,18 +49,18 @@ import {
   type CampaignEntry,
   type LoadedCampaign,
 } from '../../lib/campaign-library.ts';
-import { campaignPresentation } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { campaignFactionName } from '../../../../../packages/game/public/campaign-editor-api.js';
+import { campaignPresentation } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { campaignFactionName } from '../../../../../packages/game/public/campaign-editor-api.ts';
 import {
   blankMap,
   parseMap,
   serializeMap,
   validateMap,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 import {
   compileMap,
   reachableMap,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 import {
   editSectorMapDocument,
   selectionRoots,
@@ -58,16 +77,19 @@ import {
   ITEM_TYPES,
   LAYERS,
   cellKey,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
-import { createMapPlaytest } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { propBlocksAt } from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
+import {
+  createMapPlaytest,
+  createBattle,
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { propBlocksAt } from '../../../../../packages/game/public/campaign-editor-api.ts';
 import {
   rectangleCells,
   lineCells,
   isometricCell,
   seededTerrainCommands,
 } from '../../../domain/map-editor-tools.js';
-import { BUILDING_TEMPLATES } from '../../../../../packages/game/public/campaign-editor-api.js';
+import { BUILDING_TEMPLATES } from '../../../../../packages/game/public/campaign-editor-api.ts';
 import '../editor-tools.css';
 import './editor.css';
 type Point = { x: number; y: number; axis?: 'x' | 'y' };
@@ -81,7 +103,7 @@ const labels: Record<string, string> = {
   lights: 'Luces',
 };
 const uid = (kind: string) => `${kind}-${crypto.randomUUID()}`;
-const toolGroups = [
+const toolGroups: { name: string; tools: [string, string][] }[] = [
   {
     name: 'Navegar',
     tools: [
@@ -114,16 +136,53 @@ const toolHints: Record<string, string> = {
   floor: 'Hacé clic en un borde del edificio para quitar su pared.',
   place: 'Hacé clic en una casilla libre o arrastrá un elemento desde el catálogo.',
 };
-type LibraryMap = { id: string; metadata: { title: string }; [key: string]: any };
+type LibraryMap = PhysicalMap;
+type PaletteAsset = { layer: MapLayer; type: string };
+type EditorGesture =
+  | { kind: 'pan'; scale: number; client: Point; pan: Point }
+  | { kind: 'palette'; asset: PaletteAsset }
+  | { kind: 'move'; start: Point; end: Point; ids: string[] }
+  | { kind: 'paint' | 'building' | 'wall'; start: Point; end: Point; cells: Point[] };
+type EditorFields = {
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  name?: string;
+  material?: string;
+  kind?: string;
+  roof?: string;
+  wallFinish?: string | null;
+  roofFinish?: string | null;
+  doorStyle?: string | null;
+  windowStyle?: string | null;
+  count?: number;
+  radius?: number;
+  intensity?: number;
+  target?: string;
+  side?: string;
+  containerId?: string | null;
+};
+function entityWidth(entity: MapSelection) {
+  return entity.layer === 'buildings'
+    ? entity.width
+    : (entity.width ?? entity.footprint?.width ?? 1);
+}
+function entityHeight(entity: MapSelection) {
+  return entity.layer === 'buildings'
+    ? entity.height
+    : (entity.height ?? entity.footprint?.height ?? 1);
+}
+
 const diamond = (p: Point) =>
   `${p.x},${p.y - 14} ${p.x + 26},${p.y} ${p.x},${p.y + 14} ${p.x - 26},${p.y}`;
 type SectorEditorProps = {
-  document?: any;
-  campaign?: any;
-  onDocumentChange?: (next: any) => void;
+  document?: PhysicalMap;
+  campaign?: CampaignContent;
+  onDocumentChange?: (next: PhysicalMap) => void;
   embedded?: boolean;
-  templates?: any[];
-  onSaveTemplate?: (template: any) => void;
+  templates?: MapBuildingTemplate[];
+  onSaveTemplate?: (template: MapBuildingTemplate) => void;
 };
 export default function SectorEditor({
   document: controlledDocument,
@@ -141,46 +200,45 @@ export default function SectorEditor({
   const validationPanel = useRef<HTMLElement>(null);
   const templateLibrary = useMemo(
     () => ({
-      ...BUILDING_TEMPLATES,
+      ...Object.fromEntries(
+        Object.entries(BUILDING_TEMPLATES).map(([id, value]) => [id, readBuildingTemplate(value)]),
+      ),
       ...Object.fromEntries(templates.map((t, i) => [`project-${i}`, t])),
     }),
     [templates],
   );
-  const changeCallback = useRef(onDocumentChange);
-  changeCallback.current = onDocumentChange;
-  const emittedDocument = useRef(controlledDocument);
-  const adoptedDocument = useRef(controlledDocument);
   const [wallSide, setWallSide] = useState('north');
   const [exportFile, setExportFile] = useState<{
     name: string;
     text: string;
+    url: string;
   } | null>(null);
-  const exportUrl = useMemo(
-    () =>
-      exportFile
-        ? URL.createObjectURL(new Blob([exportFile.text], { type: 'application/json' }))
-        : '',
-    [exportFile],
-  );
+  const exportUrl = exportFile?.url;
   useEffect(
     () => () => {
-      if (exportUrl) URL.revokeObjectURL(exportUrl);
+      if (exportUrl) {
+        URL.revokeObjectURL(exportUrl);
+      }
     },
     [exportUrl],
   );
   function download(name: string, text: string) {
-    setExportFile({ name, text });
+    setExportFile({
+      name,
+      text,
+      url: URL.createObjectURL(new Blob([text], { type: 'application/json' })),
+    });
   }
 
-  const [history, setHistory] = useState<any>(() =>
+  const [history, setHistory] = useState<SectorMapHistorySnapshot>(() =>
       createSectorMapHistory(controlledDocument ?? blankMap()),
     ),
-    doc = history.document;
+    doc = embedded && controlledDocument ? controlledDocument : history.document;
   const [notice, setNotice] = useState('Elige una herramienta o arrastra un elemento al mapa.');
   const [tool, setTool] = useState('select'),
-    [terrain, setTerrain] = useState('grass'),
+    [terrain, setTerrain] = useState<MapTerrain>('grass'),
     [brush, setBrush] = useState('brush');
-  const [asset, setAsset] = useState<any>({ layer: 'props', type: 'table' }),
+  const [asset, setAsset] = useState<PaletteAsset>({ layer: 'props', type: 'table' }),
     [selected, setSelected] = useState<string[]>([]);
   const [hover, setHover] = useState<Point | null>(null),
     [zoom, setZoom] = useState(1),
@@ -191,40 +249,56 @@ export default function SectorEditor({
     [routeStart, setRouteStart] = useState<Point | null>(null);
   const [hidden, setHidden] = useState<string[]>([]),
     [locked, setLocked] = useState<string[]>([]),
-    [battle, setBattle] = useState<any>(null);
-  const [template, setTemplate] = useState<any>(null),
+    [battle, setBattle] = useState<BattleSnapshot | null>(null);
+  const [template, setTemplate] = useState<MapBuildingTemplate | null>(null),
     [ready, setReady] = useState(embedded),
     [recover, setRecover] = useState<string | null>(null);
   const [size, setSize] = useState({ width: 20, height: 16 }),
     [buildingSize, setBuildingSize] = useState({ width: 5, height: 5 });
   const [seed, setSeed] = useState(1810);
   const [sector, setSector] = useState(''),
-    [fields, setFields] = useState<any>({});
+    [fieldEdits, setFieldEdits] = useState<{ selectionKey: string; fields: EditorFields } | null>(
+      null,
+    );
   const [library, setLibrary] = useState<Record<string, LibraryMap>>({}),
     [campaigns, setCampaigns] = useState<CampaignEntry[]>([]),
     [campaignId, setCampaignId] = useState('granaderos'),
     [draftKey, setDraftKey] = useState(editorDraftKey('sector', 'granaderos'));
-  const [campaignContent, setCampaignContent] = useState<LoadedCampaign['content'] | null>(
+  const [loadedCampaignContent, setCampaignContent] = useState<CampaignContent | null>(
     campaign ?? null,
   );
+  const campaignContent = embedded ? (campaign ?? null) : loadedCampaignContent;
   const [loadingCampaign, setLoadingCampaign] = useState(!embedded);
   const loadingSequence = useRef(0);
   const svg = useRef<SVGSVGElement>(null),
-    file = useRef<HTMLInputElement>(null),
-    gesture = useRef<any>(null),
-    current = useRef<any>(null);
+    file = useRef<HTMLInputElement>(null);
+  const [gesture, setGesture] = useState<EditorGesture | null>(null);
   const map = useMemo(() => compileMap(doc), [doc]),
     report = useMemo(() => validateMap(doc), [doc]),
     playtestReport = useMemo(() => validateMap(doc, { playable: true }), [doc]);
-  const all = LAYERS.flatMap((layer) => doc[layer].map((e: any) => ({ ...e, layer }))),
-    chosen = all.find((e: any) => e.id === selected[0]);
+  const all: MapSelection[] = [];
+  for (const layer of LAYERS) {
+    if (layer === 'buildings') {
+      all.push(...doc.buildings.map((entry) => ({ ...entry, layer })));
+    } else {
+      all.push(...doc[layer].map((entry) => ({ ...entry, layer })));
+    }
+  }
+  const chosen = all.find((entry) => entry.id === selected[0]);
+  const selectionKey = `${doc.id}:${doc.revision}:${selected.join(',')}`;
+  const fields: EditorFields =
+    fieldEdits?.selectionKey === selectionKey
+      ? fieldEdits.fields
+      : chosen
+        ? { ...chosen, width: entityWidth(chosen), height: entityHeight(chosen) }
+        : {};
   const placedName =
     asset.layer === 'features'
-      ? (FEATURES as any)[asset.type]?.name
+      ? Object.entries(FEATURES).find(([id]) => id === asset.type)?.[1]?.name
       : asset.layer === 'props'
-        ? (FURNITURE as any)[asset.type]?.name
+        ? Object.entries(FURNITURE).find(([id]) => id === asset.type)?.[1]?.name
         : asset.layer === 'items'
-          ? (ITEM_TYPES as any)[asset.type]
+          ? Object.entries(ITEM_TYPES).find(([id]) => id === asset.type)?.[1]
           : asset.layer === 'buildings'
             ? (template?.name ?? 'Casa colonial')
             : asset.layer === 'spawns'
@@ -276,15 +350,15 @@ export default function SectorEditor({
     height: world.height / zoom,
   };
   const reached = useMemo(
-    () => reachableMap(map, routeStart ?? doc.spawns.find((s: any) => s.side === 'player')),
+    () => reachableMap(map, routeStart ?? doc.spawns.find((s) => s.side === 'player')),
     [map, routeStart, doc.spawns],
   );
   const doorApproaches = useMemo(
     () =>
       new Set(
         (map.wallEdges ?? map.tiles)
-          .filter((t: any) => t.type === 'door')
-          .flatMap((t: any) =>
+          .filter((t) => t.type === 'door')
+          .flatMap((t) =>
             (t.axis
               ? wallEdgeCells(t)
               : [
@@ -294,18 +368,18 @@ export default function SectorEditor({
                   { x: t.x, y: t.y + 1 },
                 ]
             )
-              .filter((p) => !map.tiles.find((v: any) => v.x === p.x && v.y === p.y)?.blocked)
+              .filter((p) => !map.tiles.find((v) => v.x === p.x && v.y === p.y)?.blocked)
               .map(cellKey),
           ),
       ),
     [map],
   );
-  const allRooms = map.buildings.flatMap((b: any) => b.rooms.map((r: any) => r.id));
+  const allRooms = map.buildings.flatMap((b) => b.rooms.map((r) => r.id));
   const activeBuilding =
     chosen?.layer === 'buildings'
       ? chosen
       : map.buildings.find(
-          (b: any) =>
+          (b) =>
             chosen &&
             chosen.x > b.x &&
             chosen.x < b.x + b.width - 1 &&
@@ -323,30 +397,44 @@ export default function SectorEditor({
             : []
         : allRooms,
   );
-  const visualMap = hidden.includes('features') ? compileMap({ ...doc, features: [] }) : map;
-  const scene = {
-    ...visualMap,
-    campaignPackage: campaignContent,
-    tiles: visualMap.tiles.map((t: any) =>
-      hidden.includes('buildings') && t.buildingId
-        ? doc.terrain.find((v: any) => cellKey(v) === cellKey(t))
-        : t,
-    ),
-    buildings: hidden.includes('buildings') ? [] : map.buildings,
-    wallEdges: hidden.includes('buildings') ? [] : visualMap.wallEdges,
-    props: hidden.includes('props') ? [] : map.props,
-    lights: hidden.includes('lights') ? [] : map.lights,
-    units: [],
-    npcs: [],
-    artillery: [],
-    smoke: [],
-  };
-  const drag = gesture.current;
-  const preview = useMemo(() => {
-    if (!hover) return [];
-    if (drag?.kind === 'building' || (drag?.kind === 'paint' && brush === 'rectangle'))
+  const visualMap = useMemo(
+    () => (hidden.includes('features') ? compileMap({ ...doc, features: [] }) : map),
+    [doc, hidden, map],
+  );
+  const scene = useMemo(
+    () =>
+      createBattle([], {
+        ...visualMap,
+        ...(campaignContent ? { campaignPackage: campaignContent } : {}),
+        tiles: visualMap.tiles.map((t) =>
+          hidden.includes('buildings') && t.buildingId
+            ? (doc.terrain.find((v) => cellKey(v) === cellKey(t)) ?? t)
+            : t,
+        ),
+        buildings: hidden.includes('buildings') ? [] : map.buildings,
+        wallEdges: hidden.includes('buildings') ? [] : visualMap.wallEdges,
+        props: hidden.includes('props') ? [] : map.props,
+        lights: hidden.includes('lights') ? [] : map.lights,
+        units: [],
+        enemies: [],
+        exploration: true,
+        npcs: [],
+        artillery: [],
+        smoke: [],
+      }),
+    [visualMap, campaignContent, hidden, doc.terrain, map],
+  );
+  const drag = gesture;
+  const preview = (() => {
+    if (!hover) {
+      return [];
+    }
+    if (drag?.kind === 'building' || (drag?.kind === 'paint' && brush === 'rectangle')) {
       return rectangleCells(drag.start, hover);
-    if (drag?.kind === 'paint') return drag.cells;
+    }
+    if (drag?.kind === 'paint') {
+      return drag.cells;
+    }
     if (drag?.kind === 'wall') {
       const axis = drag.start.axis ?? 'x',
         length = Math.abs(axis === 'x' ? hover.x - drag.start.x : hover.y - drag.start.y),
@@ -357,32 +445,36 @@ export default function SectorEditor({
         axis,
       }));
     }
-    const choice = drag?.asset ?? asset;
+    const choice = drag?.kind === 'palette' ? drag.asset : asset;
     if (tool === 'place' || drag?.kind === 'palette') {
       const size =
         choice.layer === 'buildings'
           ? (template?.building ?? buildingSize)
           : choice.layer === 'props'
-            ? (FURNITURE as any)[choice.type]
+            ? (Object.entries(FURNITURE).find(([id]) => id === choice.type)?.[1] ?? {
+                width: 1,
+                height: 1,
+              })
             : { width: 1, height: 1 };
       return Array.from({ length: Math.min(4096, size.width * size.height) }, (_, i) => ({
         x: hover.x + (i % size.width),
         y: hover.y + Math.floor(i / size.width),
       }));
     }
-    if (drag?.kind === 'move')
+    if (drag?.kind === 'move') {
       return all
-        .filter((e: any) => drag.ids.includes(e.id))
-        .flatMap((e: any) => {
-          const w = e.width ?? e.footprint?.width ?? 1,
-            h = e.height ?? e.footprint?.height ?? 1;
+        .filter((e) => drag.ids.includes(e.id))
+        .flatMap((e) => {
+          const w = entityWidth(e),
+            h = entityHeight(e);
           return Array.from({ length: w * h }, (_, i) => ({
             x: e.x + (i % w) + hover.x - drag.start.x,
             y: e.y + Math.floor(i / w) + hover.y - drag.start.y,
           }));
         });
+    }
     return [hover];
-  }, [hover, tool, asset, buildingSize, template, brush, selected]);
+  })();
   const previewBlocked = preview.some(
     (p: Point) =>
       p.x < 0 ||
@@ -390,55 +482,59 @@ export default function SectorEditor({
       p.x >= doc.width + (p.axis === 'y' ? 1 : 0) ||
       p.y >= doc.height + (p.axis === 'x' ? 1 : 0) ||
       ((tool === 'place' || drag?.kind === 'palette') &&
-        ['props', 'buildings', 'features', 'spawns'].includes((drag?.asset ?? asset).layer) &&
-        (map.tiles.find((t: any) => cellKey(t) === cellKey(p))?.blocked ||
-          propBlocksAt(map, p.x, p.y))),
+        ['props', 'buildings', 'features', 'spawns'].includes(
+          (drag?.kind === 'palette' ? drag.asset : asset).layer,
+        ) &&
+        (map.tiles.find((t) => cellKey(t) === cellKey(p))?.blocked || propBlocksAt(map, p.x, p.y))),
   );
-  function edit(commands: any[]) {
+  function edit(commands: readonly SectorMapCommand[]) {
     if (
       commands.some((c) => {
         const e = all.find(
-          (e: any) =>
-            e.id === (c.id ?? c.buildingId) ||
+          (e) =>
+            e.id === ('id' in c ? c.id : 'buildingId' in c ? c.buildingId : undefined) ||
             (c.type === 'setDoor' &&
               e.layer === 'buildings' &&
-              e.walls.some((w: any) => w.doorId === c.id)),
+              e.walls.some((w) => w.doorId === c.id)),
         );
         if (
-          c.ids?.some((id: string) =>
+          c.type === 'transformSelection' &&
+          c.ids.some((id: string) =>
             (() => {
-              const root = all.find((o: any) => o.id === id);
+              const root = all.find((o) => o.id === id);
               return (
-                locked.includes(root?.layer) ||
+                (root && locked.includes(root.layer)) ||
                 (root?.layer === 'buildings' &&
                   all.some(
-                    (child: any) =>
+                    (child) =>
                       locked.includes(child.layer) &&
                       child.x >= root.x &&
                       child.x < root.x + root.width &&
                       child.y >= root.y &&
                       child.y < root.y + root.height,
                   )) ||
-                (root?.type === 'chest' &&
+                (root?.layer !== 'buildings' &&
+                  root?.type === 'chest' &&
                   locked.includes('items') &&
-                  doc.items.some((item: any) => item.containerId === root.id))
+                  doc.items.some((item) => item.containerId === root.id))
               );
             })(),
           )
-        )
+        ) {
           return true;
+        }
         return (
           (e && locked.includes(e.layer)) ||
           (e?.layer === 'buildings' &&
             all.some(
-              (child: any) =>
+              (child) =>
                 locked.includes(child.layer) &&
                 child.x >= e.x &&
                 child.x < e.x + e.width &&
                 child.y >= e.y &&
                 child.y < e.y + e.height,
             )) ||
-          (c.layer && locked.includes(c.layer)) ||
+          (c.type === 'addObject' && locked.includes(c.layer)) ||
           (c.type === 'paintTerrain' && locked.includes('terrain')) ||
           (['addBuilding', 'stampTemplate'].includes(c.type) && locked.includes('buildings'))
         );
@@ -447,16 +543,16 @@ export default function SectorEditor({
       setNotice('La capa está bloqueada.');
       return false;
     }
-    const next = editSectorMap(current.current?.history ?? history, commands);
+    const next = editSectorMap(embedded ? createSectorMapHistory(doc) : history, commands);
     if (next.errors?.length) {
       setNotice(next.errors.join(' '));
       return false;
     }
-    setHistory(next);
+    applyHistory(next);
     setNotice('Cambio aplicado.');
     return true;
   }
-  function replace(next: any) {
+  function replace(next: PhysicalMap) {
     if (embedded && (next.width !== 20 || next.height !== 16 || next.id !== doc.id)) {
       setNotice('El mapa debe conservar su identidad y medir 20 × 16.');
       return;
@@ -465,10 +561,11 @@ export default function SectorEditor({
       !embedded &&
       history.past.length &&
       !window.confirm('¿Abrir otro mapa? Exporta primero los cambios que quieras conservar.')
-    )
+    ) {
       return;
+    }
     setRecover(null);
-    setHistory(createSectorMapHistory(next));
+    applyHistory(createSectorMapHistory(next));
     setSelected([]);
     setPan({ x: 0, y: 0 });
     setZoom(1);
@@ -476,8 +573,10 @@ export default function SectorEditor({
     setNotice('Mapa abierto.');
   }
   function openBase(loaded: LoadedCampaign) {
-    const maps = loaded.content.maps as Record<string, LibraryMap>,
-      first = maps[loaded.content.headquarters] ?? Object.values(maps)[0],
+    const maps = loaded.content.maps ?? {},
+      first =
+        (loaded.content.headquarters ? maps[loaded.content.headquarters] : undefined) ??
+        Object.values(maps)[0],
       key = editorDraftKey('sector', loaded.entry.id);
     setLibrary(maps);
     setCampaignContent(loaded.content);
@@ -498,33 +597,41 @@ export default function SectorEditor({
         (loaded.entry.id === 'granaderos'
           ? localStorage.getItem('granaderos-sector-editor-v1')
           : null);
-      if (stored) setRecover(stored);
+      if (stored) {
+        setRecover(stored);
+      }
     } catch {
       setNotice('La recuperación local no está disponible. Exporta tus cambios.');
     }
     setReady(true);
   }
+  const openInitialBase = useEffectEvent(openBase);
   useEffect(() => {
-    if (embedded) return;
+    if (embedded) {
+      return;
+    }
     let active = true;
     editorCampaignBase()
       .then(({ entries, loaded }) => {
         if (active) {
           setCampaigns(entries);
-          openBase(loaded);
+          openInitialBase(loaded);
         }
       })
       .catch((error: Error) => {
-        if (active) setNotice(editorErrorMessage(error));
+        if (active) {
+          setNotice(editorErrorMessage(error));
+        }
       })
       .finally(() => {
-        if (active) setLoadingCampaign(false);
+        if (active) {
+          setLoadingCampaign(false);
+        }
       });
     return () => {
       active = false;
-      loadingSequence.current++;
     };
-  }, []);
+  }, [embedded]);
   async function chooseBase(entry: CampaignEntry) {
     const sequence = ++loadingSequence.current;
     setReady(false);
@@ -536,48 +643,33 @@ export default function SectorEditor({
         setNotice('Campaña abierta.');
       }
     } catch (error) {
-      if (sequence === loadingSequence.current)
+      if (sequence === loadingSequence.current) {
         setNotice(
           error instanceof Error ? editorErrorMessage(error) : 'No se pudo abrir la campaña.',
         );
+      }
     } finally {
-      if (sequence === loadingSequence.current) setLoadingCampaign(false);
+      if (sequence === loadingSequence.current) {
+        setLoadingCampaign(false);
+      }
     }
   }
-  useEffect(() => {
-    if (embedded || !ready || recover) return;
-    try {
-      localStorage.setItem(draftKey, serializeMap(doc));
-      setDraftStatus('saved');
-    } catch {
-      setDraftStatus('error');
-      setNotice('No se pudo guardar el borrador. Exporta el mapa.');
-    }
-  }, [doc, ready, recover, draftKey]);
-  useEffect(() => {
-    if (embedded) setCampaignContent(campaign ?? null);
-  }, [campaign, embedded]);
-  useEffect(() => {
-    if (!embedded) return;
-    const sameDocument = (left: unknown, right: unknown) =>
-      left === right || JSON.stringify(left) === JSON.stringify(right);
-    if (controlledDocument && controlledDocument !== adoptedDocument.current) {
-      adoptedDocument.current = controlledDocument;
-      emittedDocument.current = controlledDocument;
-      if (!sameDocument(controlledDocument, doc)) {
-        setHistory(createSectorMapHistory(controlledDocument));
-        setSelected([]);
-        setBattle(null);
+  function applyHistory(next: SectorMapHistorySnapshot) {
+    if (embedded) {
+      onDocumentChange?.(next.document);
+    } else {
+      setHistory(next);
+      if (ready) {
+        try {
+          localStorage.setItem(draftKey, serializeMap(next.document));
+          setDraftStatus('saved');
+        } catch {
+          setDraftStatus('error');
+          setNotice('No se pudo guardar el borrador. Exporta el mapa.');
+        }
       }
-      return;
     }
-    if (sameDocument(doc, emittedDocument.current)) return;
-    emittedDocument.current = doc;
-    changeCallback.current?.(doc);
-  }, [controlledDocument, doc, embedded]);
-  useEffect(() => {
-    setFields(chosen ? { ...chosen, width: chosen.width ?? 1, height: chosen.height ?? 1 } : {});
-  }, [selected.join(','), doc.revision]);
+  }
   function at(clientX: number, clientY: number) {
     const box = svg.current?.getBoundingClientRect();
     return box
@@ -594,30 +686,27 @@ export default function SectorEditor({
     return [...all]
       .reverse()
       .find(
-        (e: any) =>
+        (e) =>
           !hidden.includes(e.layer) &&
           !locked.includes(e.layer) &&
           p.x >= e.x &&
-          p.x < e.x + (e.width ?? e.footprint?.width ?? 1) &&
+          p.x < e.x + entityWidth(e) &&
           p.y >= e.y &&
-          p.y < e.y + (e.height ?? e.footprint?.height ?? 1),
+          p.y < e.y + entityHeight(e),
       );
   }
-  function commandFor(p: Point, choice = asset) {
-    if (choice.layer === 'buildings')
-      return {
-        type: template ? 'stampTemplate' : 'addBuilding',
-        ...(template
-          ? { template, id: uid('building'), ...p }
-          : {
-              building: {
-                id: uid('building'),
-                ...p,
-                ...buildingSize,
-                name: 'Casa colonial',
-              },
-            }),
-      };
+  function commandFor(p: Point, choice = asset): SectorMapCommand {
+    if (choice.layer === 'buildings') {
+      return template
+        ? { type: 'stampTemplate', template, id: uid('building'), ...p }
+        : {
+            type: 'addBuilding',
+            building: { id: uid('building'), ...p, ...buildingSize, name: 'Casa colonial' },
+          };
+    }
+    const chest = doc.props.find(
+      (entry) => entry.type === 'chest' && entry.x === p.x && entry.y === p.y,
+    );
     return {
       type: 'addObject',
       layer: choice.layer,
@@ -639,13 +728,7 @@ export default function SectorEditor({
         ...(choice.layer === 'items'
           ? {
               count: 10,
-              ...(doc.props.find((v: any) => v.type === 'chest' && v.x === p.x && v.y === p.y)
-                ? {
-                    containerId: doc.props.find(
-                      (v: any) => v.type === 'chest' && v.x === p.x && v.y === p.y,
-                    ).id,
-                  }
-                : {}),
+              ...(chest ? { containerId: chest.id } : {}),
             }
           : {}),
         ...(choice.layer === 'exits'
@@ -663,15 +746,17 @@ export default function SectorEditor({
     };
   }
   function edgeBuilding(p: Point) {
-    return map.buildings.find((b: any) =>
+    return map.buildings.find((b) =>
       p.axis === 'x'
         ? p.x >= b.x && p.x < b.x + b.width && p.y >= b.y && p.y <= b.y + b.height
         : p.x >= b.x && p.x <= b.x + b.width && p.y >= b.y && p.y < b.y + b.height,
     );
   }
   function click(p: Point) {
-    const room = map.tiles.find((t: any) => cellKey(t) === cellKey(p))?.roomId;
-    if (room) setActiveRoomId(room);
+    const room = map.tiles.find((t) => cellKey(t) === cellKey(p))?.roomId;
+    if (room) {
+      setActiveRoomId(room);
+    }
     if (tool === 'route') {
       setRouteStart(p);
       setOverlay('routes');
@@ -685,7 +770,7 @@ export default function SectorEditor({
       edit([commandFor(p)]);
       return;
     }
-    if (['door', 'window', 'wall', 'floor'].includes(tool)) {
+    if (tool === 'door' || tool === 'window' || tool === 'wall' || tool === 'floor') {
       p = p.axis ? p : keyboardEdge(p);
       const b = edgeBuilding(p);
       if (!b || locked.includes('buildings')) {
@@ -700,23 +785,30 @@ export default function SectorEditor({
   }
   function start(e: React.PointerEvent) {
     if (e.button === 1 || e.altKey || tool === 'pan') {
-      const box = svg.current!.getBoundingClientRect();
-      gesture.current = {
+      const box = svg.current?.getBoundingClientRect();
+      if (!box) {
+        return;
+      }
+      setGesture({
         kind: 'pan',
         scale: Math.min(box.width / camera.width, box.height / camera.height),
         client: { x: e.clientX, y: e.clientY },
         pan,
-      };
+      });
       e.currentTarget.setPointerCapture(e.pointerId);
       return;
     }
-    if (e.button !== 0) return;
+    if (e.button !== 0) {
+      return;
+    }
     const p = at(e.clientX, e.clientY);
-    if (!p) return;
+    if (!p) {
+      return;
+    }
     e.preventDefault();
     e.currentTarget.setPointerCapture(e.pointerId);
     if (tool === 'paint' || tool === 'building' || tool === 'wall') {
-      gesture.current = { kind: tool, start: p, end: p, cells: [p] };
+      setGesture({ kind: tool, start: p, end: p, cells: [p] });
       setHover(p);
       return;
     }
@@ -729,14 +821,20 @@ export default function SectorEditor({
             ? selected
             : [object.id];
         setSelected(ids);
-        gesture.current = { kind: 'move', start: p, end: p, ids };
-      } else setSelected([]);
-    } else click(p);
+        setGesture({ kind: 'move', start: p, end: p, ids });
+      } else {
+        setSelected([]);
+      }
+    } else {
+      click(p);
+    }
   }
   function finish(p: Point | null) {
-    const g = gesture.current;
-    gesture.current = null;
-    if (!g || g.kind === 'pan') return;
+    const g = gesture;
+    setGesture(null);
+    if (!g || g.kind === 'pan') {
+      return;
+    }
     if (!p) {
       setNotice(
         g.kind === 'palette'
@@ -752,7 +850,9 @@ export default function SectorEditor({
     if (g.kind === 'move') {
       const dx = p.x - g.start.x,
         dy = p.y - g.start.y;
-      if (!dx && !dy) return;
+      if (!dx && !dy) {
+        return;
+      }
       edit([{ type: 'transformSelection', ids: g.ids, dx, dy }]);
       return;
     }
@@ -776,7 +876,9 @@ export default function SectorEditor({
     }
     if (g.kind === 'wall') {
       const b = edgeBuilding(g.start);
-      if (!b) return;
+      if (!b) {
+        return;
+      }
       const axis = g.start.axis ?? 'x',
         length = Math.abs(axis === 'x' ? p.x - g.start.x : p.y - g.start.y),
         sign = Math.sign(axis === 'x' ? p.x - g.start.x : p.y - g.start.y);
@@ -794,7 +896,7 @@ export default function SectorEditor({
     }
     if (g.kind === 'paint') {
       let cells = g.cells;
-      if (brush === 'rectangle')
+      if (brush === 'rectangle') {
         cells = Array.from(
           {
             length: (Math.abs(p.x - g.start.x) + 1) * (Math.abs(p.y - g.start.y) + 1),
@@ -804,55 +906,68 @@ export default function SectorEditor({
             y: Math.min(p.y, g.start.y) + Math.floor(i / (Math.abs(p.x - g.start.x) + 1)),
           }),
         );
+      }
       if (brush === 'fill') {
-        const base = doc.terrain.find((t: any) => cellKey(t) === cellKey(p)).type,
+        const base = doc.terrain.find((t) => cellKey(t) === cellKey(p))?.type,
           seen = new Set([cellKey(p)]);
         cells = [p];
-        for (let i = 0; i < cells.length; i++)
+        for (let i = 0; i < cells.length; i++) {
           for (const [dx, dy] of [
             [1, 0],
             [-1, 0],
             [0, 1],
             [0, -1],
-          ]) {
+          ] as const) {
+            const currentCell = cells[i];
+            if (!currentCell) {
+              continue;
+            }
             const t = doc.terrain.find(
-              (t: any) => t.x === cells[i].x + dx && t.y === cells[i].y + dy,
+              (t) => t.x === currentCell.x + dx && t.y === currentCell.y + dy,
             );
             if (t && t.type === base && !seen.has(cellKey(t))) {
               seen.add(cellKey(t));
               cells.push({ x: t.x, y: t.y });
             }
           }
+        }
       }
       edit([{ type: 'paintTerrain', cells, terrain }]);
     }
   }
-  current.current = { history, at, finish };
-  useEffect(() => {
-    const move = (e: PointerEvent) => {
-      const p = current.current.at(e.clientX, e.clientY);
-      setHover(p);
-      const g = gesture.current;
-      if (!g) return;
-      if (g.kind === 'pan') {
-        setPan({
-          x: g.pan.x - (e.clientX - g.client.x) / g.scale,
-          y: g.pan.y - (e.clientY - g.client.y) / g.scale,
-        });
-        return;
-      }
-      if (p) {
-        g.end = p;
-        if (g.kind === 'paint') {
-          for (const c of lineCells(g.cells.at(-1), p))
-            if (!g.cells.some((v: Point) => cellKey(c) === cellKey(v))) g.cells.push(c);
+  const movePointer = useEffectEvent((event: PointerEvent) => {
+    const point = at(event.clientX, event.clientY);
+    setHover(point);
+    if (!gesture) {
+      return;
+    }
+    if (gesture.kind === 'pan') {
+      setPan({
+        x: gesture.pan.x - (event.clientX - gesture.client.x) / gesture.scale,
+        y: gesture.pan.y - (event.clientY - gesture.client.y) / gesture.scale,
+      });
+    } else if (point && gesture.kind !== 'palette') {
+      if (gesture.kind === 'paint') {
+        const cells = [...gesture.cells];
+        for (const cell of lineCells(cells.at(-1) ?? gesture.start, point)) {
+          if (!cells.some((existing) => cellKey(existing) === cellKey(cell))) {
+            cells.push(cell);
+          }
         }
+        setGesture({ ...gesture, end: point, cells });
+      } else {
+        setGesture({ ...gesture, end: point });
       }
-    };
-    const up = (e: PointerEvent) =>
-      current.current.finish(current.current.at(e.clientX, e.clientY));
+    }
+  });
+  const releasePointer = useEffectEvent((event: PointerEvent) =>
+    finish(at(event.clientX, event.clientY)),
+  );
+  useEffect(() => {
+    const move = (event: PointerEvent) => movePointer(event);
+    const up = (event: PointerEvent) => releasePointer(event);
     const cancel = () => {
-      gesture.current = null;
+      setGesture(null);
       setHover(null);
     };
     window.addEventListener('pointercancel', cancel);
@@ -863,26 +978,32 @@ export default function SectorEditor({
       window.removeEventListener('pointermove', move);
       window.removeEventListener('pointerup', up);
     };
-  }, [zoom]);
+  }, []);
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
-      if (battle || exportFile) return;
-      if ((e.target as HTMLElement).closest('input,select,textarea')) return;
+      if (battle || exportFile) {
+        return;
+      }
+      if (e.target instanceof Element && e.target.closest('input,select,textarea')) {
+        return;
+      }
       if (e.key === 'Escape') {
-        gesture.current = null;
+        setGesture(null);
         setHover(null);
         return;
       }
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
-        if (embedded) return;
+        if (embedded) {
+          return;
+        }
         e.preventDefault();
-        setHistory((h: any) => (e.shiftKey ? redoSectorMapEdit(h) : undoSectorMapEdit(h)));
+        applyHistory(e.shiftKey ? redoSectorMapEdit(history) : undoSectorMapEdit(history));
         return;
       }
       if (e.key === 'Delete' || e.key === 'Backspace') {
         e.preventDefault();
         edit(
-          selectionRoots(doc, selected).map((e: any) => ({
+          selectionRoots(doc, selected).map((e) => ({
             type: 'deleteObject',
             id: e.id,
           })),
@@ -904,8 +1025,10 @@ export default function SectorEditor({
     window.addEventListener('keydown', key);
     return () => window.removeEventListener('keydown', key);
   });
-  function palette(layer: string, type: string, name: string) {
-    if (!matchesCatalogue(name)) return null;
+  function palette(layer: MapLayer, type: string, name: string) {
+    if (!matchesCatalogue(name)) {
+      return null;
+    }
     return (
       <button
         key={type}
@@ -917,10 +1040,12 @@ export default function SectorEditor({
           setTool('place');
         }}
         onPointerDown={(e) => {
-          if (locked.includes(layer) || hidden.includes(layer)) return;
+          if (locked.includes(layer) || hidden.includes(layer)) {
+            return;
+          }
           setAsset({ layer, type });
           setTool('place');
-          gesture.current = { kind: 'palette', asset: { layer, type } };
+          setGesture({ kind: 'palette', asset: { layer, type } });
           e.currentTarget.setPointerCapture(e.pointerId);
         }}
       >
@@ -931,10 +1056,13 @@ export default function SectorEditor({
   async function importFile(e: React.ChangeEvent<HTMLInputElement>) {
     try {
       const f = e.target.files?.[0];
-      if (!f) return;
-      const text = await f.text(),
-        value = JSON.parse(text);
-      if (value.version === 1 && value.building) {
+      if (!f) {
+        return;
+      }
+      const text = await f.text();
+      const raw = parseEditorJson(text);
+      if (documentObject(raw)['version'] === 1 && documentObject(raw)['building']) {
+        const value = readBuildingTemplate(raw);
         const check = editSectorMapDocument(blankMap({ width: 64, height: 64 }), [
           {
             type: 'stampTemplate',
@@ -944,60 +1072,71 @@ export default function SectorEditor({
             y: value.building.y,
           },
         ]);
-        if (check.errors.length) throw Error(check.errors.join(' '));
+        if (check.errors.length) {
+          throw Error(check.errors.join(' '));
+        }
         setTemplate(value);
         setTool('place');
         setAsset({ layer: 'buildings', type: 'template' });
         setNotice('Plantilla lista para colocar.');
-      } else replace(parseMap(text));
-    } catch (error: any) {
+      } else {
+        replace(parseMap(text));
+      }
+    } catch (error) {
       setNotice(editorErrorMessage(error));
     }
     e.target.value = '';
   }
   function applyFields() {
-    if (!chosen) return;
-    const cmds: any[] = [];
-    if (fields.x !== chosen.x || fields.y !== chosen.y)
+    if (!chosen) {
+      return;
+    }
+    const cmds: SectorMapCommand[] = [];
+    if (fields.x !== chosen.x || fields.y !== chosen.y) {
       cmds.push({
         type: 'moveObject',
         id: chosen.id,
         x: Number(fields.x),
         y: Number(fields.y),
       });
+    }
     if (
       chosen.layer === 'buildings' &&
       (fields.width !== chosen.width || fields.height !== chosen.height)
-    )
+    ) {
       cmds.push({
         type: 'resizeBuilding',
         id: chosen.id,
         width: Number(fields.width),
         height: Number(fields.height),
       });
-    const values: any = {};
-    for (const key of [
-      'name',
-      'material',
-      'kind',
-      'roof',
-      'wallFinish',
-      'roofFinish',
-      'doorStyle',
-      'windowStyle',
-      'count',
-      'radius',
-      'intensity',
-      'target',
-      'side',
-      'containerId',
-    ])
-      if (fields[key] !== undefined) values[key] = fields[key];
-    if (chosen.layer === 'items') values.containerId = fields.containerId ?? null;
+    }
+    const values: MapObjectValues = {};
+    for (const key of ['name', 'material', 'kind', 'roof', 'target', 'side'] as const) {
+      const value = fields[key];
+      if (value !== undefined) {
+        values[key] = value;
+      }
+    }
+    for (const key of ['wallFinish', 'roofFinish', 'doorStyle', 'windowStyle'] as const) {
+      const value = fields[key];
+      if (value !== undefined) {
+        values[key] = value;
+      }
+    }
+    for (const key of ['count', 'radius', 'intensity'] as const) {
+      const value = fields[key];
+      if (value !== undefined) {
+        values[key] = value;
+      }
+    }
+    if (chosen.layer === 'items') {
+      values.containerId = fields.containerId ?? null;
+    }
     cmds.push({ type: 'setObject', id: chosen.id, values });
     edit(cmds);
   }
-  if (battle)
+  if (battle) {
     return (
       <EditorRoot className={`sector-editor playtest${embedded ? ' embedded' : ''}`}>
         <header className="editor-header">
@@ -1008,12 +1147,16 @@ export default function SectorEditor({
         <Battlefield
           battle={battle}
           campaignContext={campaignContent}
-          onChange={setBattle}
+          onChange={(next) => {
+            setBattle(next);
+            return next;
+          }}
           onFinish={() => setBattle(null)}
           onMap={() => setBattle(null)}
         />
       </EditorRoot>
     );
+  }
   return (
     <EditorRoot
       aria-busy={loadingCampaign}
@@ -1054,24 +1197,24 @@ export default function SectorEditor({
           />
         </label>
         {!embedded && (
-          <div className="editor-toolbar-group" role="group" aria-label="Historial del mapa">
+          <fieldset className="editor-toolbar-group" aria-label="Historial del mapa">
             <button
               title="Deshacer el último cambio (Ctrl o ⌘ + Z)"
-              onClick={() => setHistory((h: any) => undoSectorMapEdit(h))}
+              onClick={() => applyHistory(undoSectorMapEdit(history))}
               disabled={!history.past.length}
             >
               Deshacer
             </button>
             <button
               title="Rehacer el último cambio (Ctrl o ⌘ + Mayús + Z)"
-              onClick={() => setHistory((h: any) => redoSectorMapEdit(h))}
+              onClick={() => applyHistory(redoSectorMapEdit(history))}
               disabled={!history.future.length}
             >
               Rehacer
             </button>
-          </div>
+          </fieldset>
         )}
-        <div className="editor-toolbar-group" role="group" aria-label="Archivos del mapa">
+        <fieldset className="editor-toolbar-group" aria-label="Archivos del mapa">
           <button title="Abrir un mapa o una plantilla JSON" onClick={() => file.current?.click()}>
             Importar
           </button>
@@ -1080,15 +1223,15 @@ export default function SectorEditor({
               try {
                 download(`${doc.id}.json`, serializeMap(doc));
                 setNotice('Exportación lista. Guarda el archivo o copia el JSON.');
-              } catch (e: any) {
+              } catch (e) {
                 setNotice(editorErrorMessage(e));
               }
             }}
           >
             Exportar
           </button>
-        </div>
-        <div className="editor-toolbar-group" role="group" aria-label="Pruebas del mapa">
+        </fieldset>
+        <fieldset className="editor-toolbar-group" aria-label="Pruebas del mapa">
           <button
             className="primary"
             disabled={loadingCampaign || !playtestReport.valid}
@@ -1100,7 +1243,7 @@ export default function SectorEditor({
             onClick={() => {
               try {
                 setBattle(createMapPlaytest(doc, campaignContent));
-              } catch (e: any) {
+              } catch (e) {
                 setNotice(editorErrorMessage(e));
               }
             }}
@@ -1113,7 +1256,7 @@ export default function SectorEditor({
               onClick={() => {
                 try {
                   setBattle(createMapPlaytest(doc, campaignContent, { expanded: true }));
-                } catch (e: any) {
+                } catch (e) {
                   setNotice(editorErrorMessage(e));
                 }
               }}
@@ -1121,7 +1264,7 @@ export default function SectorEditor({
               Probar escena expandida
             </button>
           )}
-        </div>
+        </fieldset>
         <input
           ref={file}
           type="file"
@@ -1175,7 +1318,7 @@ export default function SectorEditor({
               try {
                 replace(parseMap(recover));
                 setRecover(null);
-              } catch (e: any) {
+              } catch (e) {
                 setNotice(editorErrorMessage(e));
               }
             }}
@@ -1186,11 +1329,13 @@ export default function SectorEditor({
         </div>
       )}
       <nav className="editor-panel-tabs" aria-label="Paneles del mapa">
-        {[
-          ['tools', 'Herramientas'],
-          ['map', 'Mapa'],
-          ['properties', selected.length ? `Propiedades (${selected.length})` : 'Propiedades'],
-        ].map(([id, name]) => (
+        {(
+          [
+            ['tools', 'Herramientas'],
+            ['map', 'Mapa'],
+            ['properties', selected.length ? `Propiedades (${selected.length})` : 'Propiedades'],
+          ] as const
+        ).map(([id, name]) => (
           <button
             key={id}
             aria-pressed={mobilePanel === id}
@@ -1216,7 +1361,9 @@ export default function SectorEditor({
                   disabled={loadingCampaign}
                   onChange={(event) => {
                     const entry = campaigns.find((item) => item.id === event.target.value);
-                    if (entry) void chooseBase(entry);
+                    if (entry) {
+                      void chooseBase(entry);
+                    }
                   }}
                 >
                   {campaigns.map((entry) => (
@@ -1265,8 +1412,9 @@ export default function SectorEditor({
               </div>
               <button
                 onClick={() => {
-                  if (size.width < 4 || size.width > 64 || size.height < 4 || size.height > 64)
+                  if (size.width < 4 || size.width > 64 || size.height < 4 || size.height > 64) {
                     return;
+                  }
                   replace(blankMap({ id: uid('sector'), ...size }));
                 }}
               >
@@ -1276,9 +1424,9 @@ export default function SectorEditor({
           )}
           <h2>Herramientas</h2>
           {toolGroups.map((group) => (
-            <div
+            <fieldset
               className="editor-tool-group"
-              role="group"
+
               aria-label={group.name}
               key={group.name}
             >
@@ -1296,7 +1444,7 @@ export default function SectorEditor({
                   </button>
                 ))}
               </div>
-            </div>
+            </fieldset>
           ))}
           {['wall', 'door', 'window', 'floor'].includes(tool) && (
             <label>
@@ -1318,7 +1466,14 @@ export default function SectorEditor({
             aria-label="Tipo de terreno"
             value={terrain}
             onChange={(e) => {
-              setTerrain(e.target.value);
+              setTerrain(
+                selectValue(
+                  e.target.value,
+                  Object.keys(TERRAIN).filter((value): value is MapTerrain =>
+                    Object.hasOwn(TERRAIN, value),
+                  ),
+                ),
+              );
               setTool('paint');
             }}
           >
@@ -1359,11 +1514,11 @@ export default function SectorEditor({
             />
           </label>
           {catalogueQuery.trim() && (
-            <p className="editor-help" role="status">
+            <output className="editor-help">
               {catalogueMatches
                 ? `${catalogueMatches} elementos encontrados.`
                 : 'No hay elementos con ese nombre. Probá otra búsqueda.'}
-            </p>
+            </output>
           )}
           <details className="editor-catalogue-group" open>
             <summary>Naturaleza</summary>
@@ -1384,7 +1539,10 @@ export default function SectorEditor({
                     : 'basic'
                 }
                 onChange={(e) => {
-                  setTemplate((templateLibrary as any)[e.target.value] ?? null);
+                  setTemplate(
+                    Object.entries(templateLibrary).find(([id]) => id === e.target.value)?.[1] ??
+                      null,
+                  );
                   setAsset({ layer: 'buildings', type: 'house' });
                   setTool('place');
                 }}
@@ -1488,8 +1646,8 @@ export default function SectorEditor({
                 onChange={(e) => setActiveRoomId(e.target.value)}
               >
                 <option value="">Seleccionar habitación</option>
-                {map.buildings.flatMap((b: any) =>
-                  b.rooms.map((r: any, i: number) => (
+                {map.buildings.flatMap((b) =>
+                  b.rooms.map((r, i: number) => (
                     <option key={r.id} value={r.id}>
                       {b.name ?? 'Edificio'} · {i + 1}
                     </option>
@@ -1542,6 +1700,7 @@ export default function SectorEditor({
               </span>
             </div>
           )}
+          {/* oxlint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- This SVG application supports drag and pan, with keyboard-accessible cells below. */}
           <svg
             ref={svg}
             className="editor-map"
@@ -1555,7 +1714,7 @@ export default function SectorEditor({
               groundOverlay={
                 overlay === 'grid' ? (
                   <g data-editor-ground-grid="true" pointerEvents="none">
-                    {map.tiles.map((t: any) => (
+                    {map.tiles.map((t) => (
                       <polygon
                         key={cellKey(t)}
                         points={diamond(project(t.x, t.y))}
@@ -1573,8 +1732,8 @@ export default function SectorEditor({
               state={scene}
               players={[]}
               units={[]}
-              selected={null}
-              unit={null}
+              selected={undefined}
+              unit={undefined}
               positions={{}}
               poses={{}}
               directions={{}}
@@ -1593,7 +1752,7 @@ export default function SectorEditor({
               cannonId=""
             />
             <g>
-              {map.tiles.map((t: any) => {
+              {map.tiles.map((t) => {
                 const p = project(t.x, t.y),
                   blocked = t.blocked || propBlocksAt(map, t.x, t.y);
                 return (
@@ -1615,13 +1774,17 @@ export default function SectorEditor({
                     stroke={['none', 'grid'].includes(overlay) ? 'transparent' : '#e8dbb4'}
                     strokeOpacity=".19"
                     strokeWidth=".6"
+                    // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- SVG cells preserve accessible keyboard activation within the map geometry.
                     role="button"
                     tabIndex={0}
                     aria-label={`Casilla ${t.x},${t.y}`}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
-                        if (tool === 'paint') edit([{ type: 'paintTerrain', cells: [t], terrain }]);
-                        else click(t);
+                        if (tool === 'paint') {
+                          edit([{ type: 'paintTerrain', cells: [t], terrain }]);
+                        } else {
+                          click(t);
+                        }
                       }
                     }}
                   />
@@ -1630,9 +1793,12 @@ export default function SectorEditor({
             </g>
             {overlay === 'blocked' &&
               !hidden.includes('buildings') &&
-              (map.wallEdges ?? []).map((edge: any) => {
-                const [a, b] = wallEdgeEndpoints(edge),
-                  start = project(a.x, a.y),
+              (map.wallEdges ?? []).map((edge) => {
+                const [a, b] = wallEdgeEndpoints(edge);
+                if (!a || !b) {
+                  return null;
+                }
+                const start = project(a.x, a.y),
                   end = project(b.x, b.y);
                 return (
                   <path
@@ -1648,11 +1814,11 @@ export default function SectorEditor({
               })}
             {all
               .filter(
-                (e: any) =>
+                (e) =>
                   !hidden.includes(e.layer) &&
                   ['spawns', 'items', 'lights', 'exits', 'features'].includes(e.layer),
               )
-              .map((e: any) => {
+              .map((e) => {
                 const p = project(e.x, e.y);
                 return (
                   <g key={e.id} pointerEvents="none">
@@ -1684,15 +1850,14 @@ export default function SectorEditor({
                 );
               })}
             {all
-              .filter((e: any) => selected.includes(e.id))
-              .flatMap((e: any) =>
+              .filter((e) => selected.includes(e.id))
+              .flatMap((e) =>
                 Array.from(
                   {
-                    length:
-                      (e.width ?? e.footprint?.width ?? 1) * (e.height ?? e.footprint?.height ?? 1),
+                    length: entityWidth(e) * entityHeight(e),
                   },
                   (_, i) => {
-                    const w = e.width ?? e.footprint?.width ?? 1;
+                    const w = entityWidth(e);
                     return (
                       <polygon
                         key={`${e.id}-${i}`}
@@ -1710,8 +1875,11 @@ export default function SectorEditor({
             {preview.map((p: Point, i: number) =>
               p.axis ? (
                 (() => {
-                  const [a, b] = wallEdgeEndpoints(p),
-                    start = project(a.x, a.y),
+                  const [a, b] = wallEdgeEndpoints(p);
+                  if (!a || !b) {
+                    return null;
+                  }
+                  const start = project(a.x, a.y),
                     end = project(b.x, b.y);
                   return (
                     <path
@@ -1765,7 +1933,7 @@ export default function SectorEditor({
                     {labels[chosen.layer]} ·{' '}
                     {selected.length > 1
                       ? `${selected.length} seleccionados`
-                      : (chosen.type ?? 'Edificio')}
+                      : ((chosen.layer === 'buildings' ? 'building' : chosen.type) ?? 'Edificio')}
                   </p>
                 </div>
                 {selected.length > 1 && (
@@ -1783,17 +1951,24 @@ export default function SectorEditor({
                   Nombre
                   <input
                     value={fields.name ?? ''}
-                    onChange={(e) => setFields({ ...fields, name: e.target.value })}
+                    onChange={(e) =>
+                      setFieldEdits({ selectionKey, fields: { ...fields, name: e.target.value } })
+                    }
                   />
                 </label>
                 <div className="editor-pair">
-                  {['x', 'y'].map((k) => (
+                  {(['x', 'y'] as const).map((k) => (
                     <label key={k}>
                       {k.toUpperCase()}
                       <input
                         type="number"
                         value={fields[k] ?? 0}
-                        onChange={(e) => setFields({ ...fields, [k]: Number(e.target.value) })}
+                        onChange={(e) =>
+                          setFieldEdits({
+                            selectionKey,
+                            fields: { ...fields, [k]: Number(e.target.value) },
+                          })
+                        }
                       />
                     </label>
                   ))}
@@ -1801,7 +1976,7 @@ export default function SectorEditor({
                 {chosen.layer === 'buildings' && (
                   <>
                     <div className="editor-pair">
-                      {['width', 'height'].map((k) => (
+                      {(['width', 'height'] as const).map((k) => (
                         <label key={k}>
                           {k === 'width' ? 'Ancho' : 'Alto'}
                           <input
@@ -1809,9 +1984,12 @@ export default function SectorEditor({
                             min="3"
                             value={fields[k]}
                             onChange={(e) =>
-                              setFields({
-                                ...fields,
-                                [k]: Number(e.target.value),
+                              setFieldEdits({
+                                selectionKey,
+                                fields: {
+                                  ...fields,
+                                  [k]: Number(e.target.value),
+                                },
                               })
                             }
                           />
@@ -1823,7 +2001,12 @@ export default function SectorEditor({
                       <select
                         aria-label="Tipo de edificio"
                         value={fields.kind ?? 'house'}
-                        onChange={(e) => setFields({ ...fields, kind: e.target.value })}
+                        onChange={(e) =>
+                          setFieldEdits({
+                            selectionKey,
+                            fields: { ...fields, kind: e.target.value },
+                          })
+                        }
                       >
                         {Object.entries(BUILDING_KINDS).map(([id, name]) => (
                           <option key={id} value={id}>
@@ -1836,7 +2019,12 @@ export default function SectorEditor({
                       Forma del techo
                       <select
                         value={fields.roof ?? chosen.roof}
-                        onChange={(e) => setFields({ ...fields, roof: e.target.value })}
+                        onChange={(e) =>
+                          setFieldEdits({
+                            selectionKey,
+                            fields: { ...fields, roof: e.target.value },
+                          })
+                        }
                       >
                         {['tile', 'thatch', 'terrace'].map((value) => (
                           <option key={value}>{value}</option>
@@ -1848,34 +2036,47 @@ export default function SectorEditor({
                       roofFinish: ROOF_FINISHES,
                       doorStyle: DOOR_STYLES,
                       windowStyle: WINDOW_STYLES,
-                    }).map(([key, catalog]) => (
-                      <label key={key}>
-                        {
-                          (
-                            {
-                              wallFinish: 'Acabado de paredes',
-                              roofFinish: 'Cubierta',
-                              doorStyle: 'Puertas del edificio',
-                              windowStyle: 'Ventanas del edificio',
-                            } as Record<string, string>
-                          )[key]
-                        }
-                        <select
-                          value={fields[key] ?? ''}
-                          onChange={(e) => setFields({ ...fields, [key]: e.target.value || null })}
-                        >
-                          <option value="">Heredar estilo de campaña</option>
-                          {Object.entries(catalog).map(([id, name]) => (
-                            <option key={id} value={id}>
-                              {name}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-                    ))}
+                    }).map(([field, catalog]) => {
+                      const key = selectValue(field, [
+                        'wallFinish',
+                        'roofFinish',
+                        'doorStyle',
+                        'windowStyle',
+                      ]);
+                      return (
+                        <label key={key}>
+                          {
+                            (
+                              {
+                                wallFinish: 'Acabado de paredes',
+                                roofFinish: 'Cubierta',
+                                doorStyle: 'Puertas del edificio',
+                                windowStyle: 'Ventanas del edificio',
+                              } as Record<string, string>
+                            )[key]
+                          }
+                          <select
+                            value={fields[key] ?? ''}
+                            onChange={(e) =>
+                              setFieldEdits({
+                                selectionKey,
+                                fields: { ...fields, [key]: e.target.value || null },
+                              })
+                            }
+                          >
+                            <option value="">Heredar estilo de campaña</option>
+                            {Object.entries(catalog).map(([id, name]) => (
+                              <option key={id} value={id}>
+                                {name}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      );
+                    })}
                   </>
                 )}
-                {['count', 'radius', 'intensity', 'target']
+                {(['count', 'radius', 'intensity', 'target'] as const)
                   .filter((k) => fields[k] !== undefined)
                   .map((k) => (
                     <label key={k}>
@@ -1886,7 +2087,7 @@ export default function SectorEditor({
                             radius: 'Radio',
                             intensity: 'Intensidad',
                             target: 'Destino',
-                          } as any
+                          } as const
                         )[k]
                       }
                       <input
@@ -1894,9 +2095,12 @@ export default function SectorEditor({
                         step={k === 'intensity' ? '.1' : '1'}
                         value={fields[k]}
                         onChange={(e) =>
-                          setFields({
-                            ...fields,
-                            [k]: k === 'target' ? e.target.value : Number(e.target.value),
+                          setFieldEdits({
+                            selectionKey,
+                            fields: {
+                              ...fields,
+                              [k]: k === 'target' ? e.target.value : Number(e.target.value),
+                            },
                           })
                         }
                       />
@@ -1908,16 +2112,19 @@ export default function SectorEditor({
                     <select
                       value={fields.containerId ?? ''}
                       onChange={(e) =>
-                        setFields({
-                          ...fields,
-                          containerId: e.target.value || undefined,
+                        setFieldEdits({
+                          selectionKey,
+                          fields: {
+                            ...fields,
+                            containerId: e.target.value || null,
+                          },
                         })
                       }
                     >
                       <option value="">En el suelo</option>
                       {doc.props
-                        .filter((p: any) => p.type === 'chest')
-                        .map((p: any) => (
+                        .filter((p) => p.type === 'chest')
+                        .map((p) => (
                           <option key={p.id} value={p.id}>
                             {p.name ?? 'Baúl'} ({p.x}, {p.y})
                           </option>
@@ -1946,17 +2153,18 @@ export default function SectorEditor({
                     onClick={() => {
                       const roots = selectionRoots(doc, selected);
                       const offset =
-                        Math.max(
-                          ...roots.map((e: any) => e.x + (e.width ?? e.footprint?.width ?? 1)),
-                        ) - Math.min(...roots.map((e: any) => e.x));
-                      const commands = roots.map((e: any) => ({
-                        type: 'duplicateObject',
+                        Math.max(...roots.map((e) => e.x + entityWidth(e))) -
+                        Math.min(...roots.map((e) => e.x));
+                      const commands = roots.map((e) => ({
+                        type: 'duplicateObject' as const,
                         id: e.id,
                         newId: uid(e.layer),
                         x: e.x + offset,
                         y: e.y,
                       }));
-                      if (edit(commands)) setSelected(commands.map((c: any) => c.newId));
+                      if (edit(commands)) {
+                        setSelected(commands.map((c) => c.newId));
+                      }
                     }}
                   >
                     Duplicar
@@ -1964,7 +2172,7 @@ export default function SectorEditor({
                   <button
                     onClick={() => {
                       edit(
-                        selectionRoots(doc, selected).map((e: any) => ({
+                        selectionRoots(doc, selected).map((e) => ({
                           type: 'deleteObject',
                           id: e.id,
                         })),
@@ -1982,16 +2190,17 @@ export default function SectorEditor({
                         const t = buildingTemplate(doc, chosen.id);
                         setTemplate(t);
                         onSaveTemplate?.(t);
-                        if (!embedded)
+                        if (!embedded) {
                           download(`${chosen.id}-template.json`, JSON.stringify(t, null, 2));
+                        }
                       }}
                     >
                       Guardar plantilla
                     </button>
                     <h3>Estilos de aberturas</h3>
                     {chosen.walls
-                      .filter((w: any) => ['door', 'window'].includes(w.type))
-                      .map((w: any) => (
+                      .filter((w) => ['door', 'window'].includes(w.type))
+                      .map((w) => (
                         <label key={`${w.axis ?? 'cell'}:${w.x},${w.y}`}>
                           {w.type === 'door' ? 'Puerta' : 'Ventana'} ({w.x}, {w.y})
                           <select
@@ -2023,8 +2232,8 @@ export default function SectorEditor({
                       ))}
                     <h3>Puertas</h3>
                     {chosen.walls
-                      .filter((w: any) => w.type === 'door')
-                      .map((w: any) => (
+                      .filter((w) => w.type === 'door')
+                      .map((w) => (
                         <div key={w.doorId}>
                           <span>
                             {w.x}, {w.y}
@@ -2037,7 +2246,7 @@ export default function SectorEditor({
                                 edit([
                                   {
                                     type: 'setDoor',
-                                    id: w.doorId,
+                                    id: w.doorId ?? w.id ?? '',
                                     open: e.target.checked,
                                   },
                                 ])
@@ -2053,7 +2262,7 @@ export default function SectorEditor({
                                 edit([
                                   {
                                     type: 'setDoor',
-                                    id: w.doorId,
+                                    id: w.doorId ?? w.id ?? '',
                                     locked: e.target.checked,
                                   },
                                 ])
@@ -2193,46 +2402,41 @@ export default function SectorEditor({
           </details>
         </aside>
       </div>
-      <div className="editor-status" role="status" aria-live="polite">
+      <output className="editor-status" aria-live="polite">
         <span>{notice}</span>
         <span className="editor-selection-count">
           {selected.length
             ? `${selected.length} ${selected.length === 1 ? 'elemento seleccionado' : 'elementos seleccionados'}`
             : 'Sin selección'}
         </span>
-      </div>
-      <Dialog
+      </output>
+      <EditorDialog
         open={Boolean(exportFile)}
-        onOpenChange={(open) => {
-          if (!open) setExportFile(null);
-        }}
+        onClose={() => setExportFile(null)}
+        className="editor-export-dialog"
+        title={`Exportar ${exportFile?.name ?? ''}`}
+        description="Guarda el archivo para abrirlo en el editor o modificarlo con un script."
       >
-        <DialogContent className="editor-export-dialog">
-          <DialogTitle>Exportar {exportFile?.name}</DialogTitle>
-          <DialogDescription>
-            Guarda el archivo para abrirlo en el editor o modificarlo con un script.
-          </DialogDescription>
-          <textarea aria-label="JSON del mapa" readOnly value={exportFile?.text ?? ''} />
-          <div className="editor-export-actions">
-            <a href={exportUrl} download={exportFile?.name}>
-              Descargar JSON
-            </a>
-            <button
-              onClick={async () => {
-                try {
-                  await navigator.clipboard.writeText(exportFile?.text ?? '');
-                  setNotice('JSON copiado.');
-                } catch {
-                  setNotice('Selecciona el texto y cópialo con el teclado.');
-                }
-              }}
-            >
-              Copiar JSON
-            </button>
-            <button onClick={() => setExportFile(null)}>Cerrar exportación</button>
-          </div>
-        </DialogContent>
-      </Dialog>
+        <textarea aria-label="JSON del mapa" readOnly value={exportFile?.text ?? ''} />
+        <div className="editor-export-actions">
+          <a href={exportUrl} download={exportFile?.name}>
+            Descargar JSON
+          </a>
+          <button
+            onClick={async () => {
+              try {
+                await navigator.clipboard.writeText(exportFile?.text ?? '');
+                setNotice('JSON copiado.');
+              } catch {
+                setNotice('Selecciona el texto y cópialo con el teclado.');
+              }
+            }}
+          >
+            Copiar JSON
+          </button>
+          <button onClick={() => setExportFile(null)}>Cerrar exportación</button>
+        </div>
+      </EditorDialog>
     </EditorRoot>
   );
 }

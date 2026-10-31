@@ -1,4 +1,4 @@
-import { hasPoncho } from './outfits.js';
+import { hasPoncho } from './outfits.ts';
 import { lowerWeapon } from './weapon-readiness.js';
 import { COMBAT_BALANCE } from './combat-balance.js';
 import {
@@ -59,16 +59,24 @@ export function actionPointBudget(s, u) {
 }
 export const STANCES = ['standing', 'crouched', 'prone'];
 export function stanceCost(u, stance) {
-  if (!STANCES.includes(stance)) return 0;
-  if (u.knockedDown && stance === 'standing') return 12;
+  if (!STANCES.includes(stance)) {
+    return 0;
+  }
+  if (u.knockedDown && stance === 'standing') {
+    return 12;
+  }
   return Math.abs(STANCES.indexOf(u.stance ?? 'standing') - STANCES.indexOf(stance)) * 3;
 }
+/** @param {import('./public/compatibility-types.ts').MovementMode} mode
+ * @returns {import('./public/compatibility-types.ts').BattleStance} */
 export const movementStance = (mode) =>
   mode === 'prone' ? 'prone' : mode === 'crouch' ? 'crouched' : 'standing';
 export function refreshCondition(u) {
   u.bandaged = clamp(u.bandaged ?? 0, 0, Math.max(0, u.maxHp - u.hp));
   u.unconscious = isUnconscious(u);
-  if (u.hp <= 0 || u.unconscious || u.knockedDown) lowerWeapon(u);
+  if (u.hp <= 0 || u.unconscious || u.knockedDown) {
+    lowerWeapon(u);
+  }
   if (u.hp <= 0 || u.unconscious) {
     const participant = participantOf(u);
     participant.becomeUnableToAct();
@@ -77,5 +85,7 @@ export function refreshCondition(u) {
     u.mounted = false;
     u.braced = false;
   }
-  if (u.hp <= 0) u.bleeding = 0;
+  if (u.hp <= 0) {
+    u.bleeding = 0;
+  }
 }

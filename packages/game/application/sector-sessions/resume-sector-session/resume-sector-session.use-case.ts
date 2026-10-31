@@ -11,7 +11,9 @@ export class ResumeSectorSessionUseCase {
   }
 
   execute(request: ResumeSectorSessionRequest): ResumeSectorSessionResponse {
-    if (!request.sectorSessionId) throw new DomainRefusal(DomainRefusalCode.InvalidValue);
+    if (!request.sectorSessionId) {
+      throw new DomainRefusal(DomainRefusalCode.InvalidValue);
+    }
     const { game, registration } = this.#repository.load(request.sectorSessionId);
     game.activateSectorSession(registration);
     this.#repository.commit(game);

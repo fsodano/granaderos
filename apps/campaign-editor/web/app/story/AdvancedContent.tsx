@@ -1,39 +1,49 @@
 'use client';
+import { replaceCampaignContentField } from '../../lib/editor-documents.ts';
+import type {
+  CampaignContent,
+  CampaignEvent,
+} from '../../../../../packages/campaign-format/types.ts';
 import { useState } from 'react';
 import DialogueConditions from './DialogueConditions.tsx';
 import DialogueEffects from './DialogueEffects.tsx';
 import { DocumentEditor } from '../studio/FieldEditor.tsx';
-import { DEFAULT_AMMUNITION_MARKET } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { DEFAULT_ARTILLERY_SUPPLY } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { freshDefaultRoadsideDiscoveries } from '../../../../../packages/game/public/campaign-editor-api.js';
+import { DEFAULT_AMMUNITION_MARKET } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { DEFAULT_ARTILLERY_SUPPLY } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { freshDefaultRoadsideDiscoveries } from '../../../../../packages/game/public/campaign-editor-api.ts';
 
 export default function AdvancedContent({
   draft,
   onChange,
 }: {
-  draft: any;
-  onChange: (next: any) => void;
+  draft: CampaignContent;
+  onChange: (next: CampaignContent) => void;
 }) {
   const [selected, setSelected] = useState(''),
     [search, setSearch] = useState(''),
     events = draft.campaignEvents ?? [],
-    event = events.find((e: any) => e.id === selected) ?? events[0];
+    event = events.find((e) => e.id === selected) ?? events[0];
   const norm = (value: string) =>
     value
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
       .toLocaleLowerCase();
-  const filtered = events.filter((e: any) =>
-    norm(`${e.id} ${e.text}`).includes(norm(search.trim())),
-  );
-  const changeEvents = (next: any[]) => onChange({ ...draft, campaignEvents: next });
-  const update = (patch: any) => {
-    changeEvents(events.map((e: any) => (e.id === event.id ? { ...e, ...patch } : e)));
-    if (patch.id !== undefined) setSelected(patch.id);
+  const filtered = events.filter((e) => norm(`${e.id} ${e.text}`).includes(norm(search.trim())));
+  const changeEvents = (next: CampaignEvent[]) => onChange({ ...draft, campaignEvents: next });
+  const update = (patch: Partial<CampaignEvent>) => {
+    if (!event) {
+      return;
+    }
+    changeEvents(events.map((e) => (e.id === event.id ? { ...e, ...patch } : e)));
+    if (patch.id !== undefined) {
+      setSelected(patch.id);
+    }
   };
   const add = () => {
     let n = 1;
-    while (events.some((e: any) => e.id === `event-${n}`)) n++;
+    while (events.some((e) => e.id === `event-${n}`)) {
+      n++;
+    }
     const id = `event-${n}`;
     changeEvents([
       ...events,
@@ -84,14 +94,16 @@ export default function AdvancedContent({
               placeholder="Texto o ID"
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === 'Escape') setSearch('');
+                if (e.key === 'Escape') {
+                  setSearch('');
+                }
               }}
             />
           </label>
           <div className="content-list-feedback">
-            <span role="status">
+            <output>
               {filtered.length} de {events.length} eventos
-            </span>
+            </output>
             {search && (
               <button type="button" onClick={() => setSearch('')}>
                 Limpiar búsqueda
@@ -99,7 +111,7 @@ export default function AdvancedContent({
             )}
           </div>
           <div className="entry-list">
-            {filtered.map((e: any) => (
+            {filtered.map((e) => (
               <button
                 type="button"
                 key={e.id}
@@ -113,16 +125,16 @@ export default function AdvancedContent({
               </button>
             ))}
             {filtered.length === 0 && (
-              <p role="status" className="content-empty">
+              <output className="content-empty">
                 {search ? 'No hay resultados para esta búsqueda.' : 'No hay eventos programados.'}
-              </p>
+              </output>
             )}
           </div>
         </aside>
         {event ? (
           <fieldset>
             <legend>{event.id}</legend>
-            {search && !filtered.some((e: any) => e.id === event.id) && (
+            {search && !filtered.some((e) => e.id === event.id) && (
               <p className="content-selection-note">
                 El filtro conserva el evento que estás editando.
               </p>
@@ -169,7 +181,7 @@ export default function AdvancedContent({
             <button
               type="button"
               className="content-danger"
-              onClick={() => changeEvents(events.filter((e: any) => e.id !== event.id))}
+              onClick={() => changeEvents(events.filter((e) => e.id !== event.id))}
             >
               Eliminar evento
             </button>
@@ -194,26 +206,28 @@ export default function AdvancedContent({
             const defaults = freshDefaultRoadsideDiscoveries(),
               cell =
                 draft.world?.cells.find(
-                  (c: any) =>
+                  (c) =>
                     c.land &&
                     c.location === (draft.headquarters ?? draft.world?.defaultHeadquarters),
-                ) ?? draft.world?.cells.find((c: any) => c.land);
+                ) ?? draft.world?.cells.find((c) => c.land);
             onChange({
               ...draft,
               roadsideDiscoveries: e.target.checked
-                ? defaults.map((d: any) => (cell ? { ...d, id: 'field-cache', cell: cell.id } : d))
+                ? defaults.map((d) => (cell ? { ...d, id: 'field-cache', cell: cell.id } : d))
                 : [],
             });
           }}
         />
         Colocar hallazgo de herramientas y ropa
       </label>
-      {draft.roadsideDiscoveries?.length > 0 && (
+      {(draft.roadsideDiscoveries?.length ?? 0) > 0 && (
         <DocumentEditor
           label="Hallazgo"
           path="roadsideDiscoveries"
           value={draft.roadsideDiscoveries}
-          onChange={(roadsideDiscoveries) => onChange({ ...draft, roadsideDiscoveries })}
+          onChange={(value) =>
+            onChange(replaceCampaignContentField(draft, 'roadsideDiscoveries', value))
+          }
         />
       )}
       <h2>Reglas de suministro</h2>
@@ -236,7 +250,7 @@ export default function AdvancedContent({
                 label={label}
                 path={field}
                 value={draft[field]}
-                onChange={(value) => onChange({ ...draft, [field]: value })}
+                onChange={(value) => onChange(replaceCampaignContentField(draft, field, value))}
               />
               <button
                 type="button"

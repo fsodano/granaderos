@@ -5,7 +5,7 @@ import { GameSession } from './game-session.ts';
 const first = { id: 'visit-a', sectorId: 'a', characterIds: ['1', '2'] };
 const second = { id: 'visit-b', sectorId: 'b', characterIds: ['3'] };
 
-test('activating another sector suspends the previous visit and preserves registrations through restoration', () => {
+void test('activating another sector suspends the previous visit and preserves registrations through restoration', () => {
   const game = GameSession.create('game-1');
   game.activateSectorSession(first);
   game.activateSectorSession(second);
@@ -20,7 +20,7 @@ test('activating another sector suspends the previous visit and preserves regist
   assert.deepEqual(restored.suspendedSectorSessionIds, [second.id]);
 });
 
-test('a person and a sector each participate in one open visit and rejected activation is atomic', () => {
+void test('a person and a sector each participate in one open visit and rejected activation is atomic', () => {
   const game = GameSession.create('game-1');
   game.activateSectorSession(first);
   const before = game.snapshot();
@@ -39,7 +39,7 @@ test('a person and a sector each participate in one open visit and rejected acti
   assert.deepEqual(game.snapshot(), before);
 });
 
-test('revision admission refuses stale input and serialized references cannot fabricate visits', () => {
+void test('revision admission refuses stale input and serialized references cannot fabricate visits', () => {
   const game = GameSession.create('game-1');
   game.acceptRevision(0);
   assert.throws(() => game.acceptRevision(0), /revision-conflict/);

@@ -6,33 +6,10 @@ import {
   updateProjectContent,
   removeProjectResource,
   setProjectResource,
-} from './project-document.js';
+} from './project-document.ts';
 
-export type JsonValue = string | number | boolean | null | JsonValue[] | JsonDocument;
-export type JsonDocument = { [field: string]: JsonValue };
-export type CampaignProjectDocument = {
-  format: 'granaderos-editor-project';
-  version: 1;
-  manifest: JsonDocument & {
-    id: string;
-    name: string;
-    scenario: string;
-    revision: string;
-    content: string;
-    world: string;
-    maps: string;
-    presentation: string;
-    assets: string;
-  };
-  content: JsonDocument;
-  world: JsonDocument;
-  presentation: JsonDocument;
-  maps: Record<string, JsonDocument>;
-  mapIndex: { maps: Array<{ id: string; path: string }> };
-  assets: JsonDocument;
-  resources: Record<string, { type: string; base64: string }>;
-  editor?: JsonDocument;
-};
+import type { CampaignProjectDocument, JsonDocument } from './project-document.ts';
+export type { CampaignProjectDocument, JsonDocument, JsonValue } from './project-document.ts';
 
 export class CampaignProject {
   #document: CampaignProjectDocument;
@@ -55,8 +32,9 @@ export class CampaignProject {
   }
 
   rename(identifier: string, name?: string): void {
-    if (identifier === 'granaderos' && this.id !== 'granaderos')
+    if (identifier === 'granaderos' && this.id !== 'granaderos') {
       throw new CampaignEditorRefusal(CampaignEditorRefusalCode.ReservedProjectIdentity);
+    }
     this.#admit(renameCampaignProject(this.#document, identifier, name));
   }
 

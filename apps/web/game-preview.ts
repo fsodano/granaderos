@@ -6,3 +6,6 @@ export { default as BuildIdentity } from './app/BuildIdentity';
 export { PREFERRED_COMPANION_EXPLANATION } from './app/PreferredCompanionsSummary';
 export { presentActors, presentWorld } from './lib/three/presentation';
 export { sectorProject } from './lib/three/projection';
+export type { Motion } from './app/useUnitMotion';
+export type { ActorEntry } from './lib/three/presentation';
+export type { ConversationChoice } from './app/JA2Conversation';

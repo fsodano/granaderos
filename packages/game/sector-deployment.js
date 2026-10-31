@@ -1,4 +1,4 @@
-import {residentPositionPoints} from './infrastructure/world/campaign-resident-positions.js';
+import { residentPositionPoints } from './infrastructure/world/campaign-resident-positions.js';
 import {
   SectorDeployment,
   DeploymentRefusal,
@@ -39,7 +39,9 @@ const EDGES = ['N', 'E', 'S', 'W'];
 const key = (p) => `${p.x},${p.y}`;
 const object = (x) => x !== null && typeof x === 'object' && !Array.isArray(x);
 const need = (ok, message = 'La colocación de llegada no es válida.') => {
-  if (!ok) throw Error(message);
+  if (!ok) {
+    throw Error(message);
+  }
 };
 const arrival = (u) =>
   u.side === 'player' &&
@@ -66,9 +68,13 @@ function rows(state, request) {
 
 // Called only during a new world handoff, before sight or initiative runs.
 export function beginSectorDeployment(state, request) {
-  if (request.exploration || request.resumeSnapshot || state.deploymentComplete) return false;
+  if (request.exploration || request.resumeSnapshot || state.deploymentComplete) {
+    return false;
+  }
   const units = rows(state, request);
-  if (!units.length) return false;
+  if (!units.length) {
+    return false;
+  }
   state.deployment = {
     version: 1,
     units,
@@ -94,9 +100,13 @@ function entryMap(state) {
 }
 
 export function validateSectorDeployment(state, request) {
-  if (state.deploymentComplete !== undefined) need(state.deploymentComplete === true);
+  if (state.deploymentComplete !== undefined) {
+    need(state.deploymentComplete === true);
+  }
   const d = state.deployment;
-  if (d === undefined) return;
+  if (d === undefined) {
+    return;
+  }
   need(
     !state.deploymentComplete &&
       object(d) &&
@@ -106,8 +116,9 @@ export function validateSectorDeployment(state, request) {
         .sort()
         .join(',') === 'placements,units,version',
   );
-  if (Object.hasOwn(d, 'defenseFort'))
+  if (Object.hasOwn(d, 'defenseFort')) {
     need(Number.isInteger(d.defenseFort) && d.defenseFort >= 1 && d.defenseFort <= 3);
+  }
   need(
     state.turn === 1 &&
       state.phase === 'player' &&
@@ -189,9 +200,13 @@ export function validateSectorDeployment(state, request) {
 }
 
 // This model deliberately reads no opposing positions, contents or current sight.
+/** @param {import('./public/compatibility-types.ts').BattleSnapshot} state
+ * @returns {import('./public/player-known-types.ts').KnownDeployment|null} */
 export function sectorDeploymentModel(state) {
   const d = state.deployment;
-  if (!d) return null;
+  if (!d) {
+    return null;
+  }
   const units = d.units.map((row) => {
     const u = state.units.find((u) => u.id === row.id);
     return {
@@ -251,7 +266,9 @@ export function sectorDeploymentAction(state, action) {
       next.deploymentComplete = true;
       writeSectorSession(next, session);
       return initializeBattlePerception(next);
-    } else throw Error('Terminá de colocar el destacamento antes de dar órdenes tácticas.');
+    } else {
+      throw Error('Terminá de colocar el destacamento antes de dar órdenes tácticas.');
+    }
     d.placements = deployment.snapshot().placements;
     validateSectorDeployment(next);
     return next;

@@ -50,7 +50,9 @@ export class ForceRoster {
   }
 
   assertCanAdmit(characterId: string): void {
-    if (this.#members.has(characterId)) throw new DomainRefusal(DomainRefusalCode.AlreadyServing);
+    if (this.#members.has(characterId)) {
+      throw new DomainRefusal(DomainRefusalCode.AlreadyServing);
+    }
   }
 
   admit(characterId: string, locationId: string, joinSquad = true): RecruitmentAssignmentValue {
@@ -69,7 +71,9 @@ export class ForceRoster {
   }
 
   release(characterId: string): void {
-    if (!this.#members.has(characterId)) throw new DomainRefusal(DomainRefusalCode.NotServing);
+    if (!this.#members.has(characterId)) {
+      throw new DomainRefusal(DomainRefusalCode.NotServing);
+    }
     this.#members.delete(characterId);
     this.#squad.releaseMember(characterId);
   }

@@ -36,7 +36,9 @@ export class SectorOperation<Snapshot extends SectorClockSnapshot> {
     const previousSecond =
       (this.#accepted.startSeconds ?? 0) + (this.#accepted.elapsedSeconds ?? 0);
     const nextSecond = (snapshot.startSeconds ?? 0) + (snapshot.elapsedSeconds ?? 0);
-    if (nextSecond < previousSecond) throw new RangeError('sector-operation-time-reversed');
+    if (nextSecond < previousSecond) {
+      throw new RangeError('sector-operation-time-reversed');
+    }
     SectorTimeBudget.restore(this.#accepted).assertCanAdvance(nextSecond - previousSecond);
     this.#accepted = structuredClone(snapshot);
   }
@@ -51,7 +53,9 @@ export class SectorOperation<Snapshot extends SectorClockSnapshot> {
   }
 
   remainingRestSeconds(snapshot: Snapshot): number | undefined {
-    if (this.#restSeconds === undefined) return undefined;
+    if (this.#restSeconds === undefined) {
+      return undefined;
+    }
     const elapsed =
       (snapshot.startSeconds ?? 0) + (snapshot.elapsedSeconds ?? 0) - this.#startedAtSecond;
     return Math.max(0, this.#restSeconds - elapsed);

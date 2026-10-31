@@ -2,13 +2,16 @@ const fields = ['version', 'id', 'cell', 'x', 'y', 'crowbarCondition', 'linenShi
 const validCondition = (value) => Number.isSafeInteger(value) && value >= 1 && value <= 100;
 
 export function validateRoadsideDiscoveries(definitions, context = {}) {
-  if (definitions === undefined) return [];
+  if (definitions === undefined) {
+    return [];
+  }
   if (
     !Array.isArray(definitions) ||
     definitions.length > 1 ||
     Object.keys(definitions).length !== definitions.length
-  )
+  ) {
     return ['Hallazgos de camino: se necesita una lista de hasta un hallazgo.'];
+  }
   const errors = [];
   for (const definition of definitions) {
     const validRecord =
@@ -37,8 +40,9 @@ export function validateRoadsideDiscoveries(definitions, context = {}) {
       definition.y >= 16 ||
       !validCondition(definition.crowbarCondition) ||
       !validCondition(definition.linenShirtCondition)
-    )
+    ) {
       errors.push('Hallazgo de camino: definición o versión inválida.');
+    }
   }
   return errors;
 }

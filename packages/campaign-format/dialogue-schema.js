@@ -1,6 +1,8 @@
 import { CONTENT_QUEST_STATES } from './quest-schema.js';
 const need = (condition, message) => {
-  if (!condition) throw new Error(message);
+  if (!condition) {
+    throw new Error(message);
+  }
 };
 const object = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 const exact = (value, keys) =>
@@ -38,21 +40,23 @@ export const DIALOGUE_SUPPLY_IDS = Object.freeze([
 ]);
 export const DIALOGUE_PROJECT_IDS = Object.freeze(['foundry', 'army']);
 export function validateDialogueConditions(conditions, characters, quests, sectorIds = new Set()) {
-  if (conditions === undefined) return;
+  if (conditions === undefined) {
+    return;
+  }
   need(
     Array.isArray(conditions) && conditions.length <= 6,
     'Cada opción admite hasta seis condiciones.',
   );
   for (const condition of conditions) {
     need(object(condition), 'La condición del diálogo no es válida.');
-    if (condition.type === 'character')
+    if (condition.type === 'character') {
       need(
         exact(condition, ['type', 'character', 'state']) &&
           characters?.has(condition.character) &&
           DIALOGUE_PERSON_STATES.includes(condition.state),
         'La condición necesita un personaje y un estado válidos.',
       );
-    else if (condition.type === 'supply')
+    } else if (condition.type === 'supply') {
       need(
         exact(condition, ['type', 'character', 'item', 'min', 'max']) &&
           characters?.has(condition.character) &&
@@ -62,44 +66,48 @@ export function validateDialogueConditions(conditions, characters, quests, secto
             integer(condition.max, condition.min, condition.item === 'medkits' ? 1000000 : 100000)),
         'La condición necesita un personaje, un suministro y un intervalo válidos.',
       );
-    else if (condition.type === 'meeting')
+    } else if (condition.type === 'meeting') {
       need(
         exact(condition, ['type', 'character']) && characters?.has(condition.character),
         'La condición del encuentro necesita un personaje válido.',
       );
-    else if (condition.type === 'quest')
+    } else if (condition.type === 'quest') {
       need(
         exact(condition, ['type', 'quest', 'status']) &&
           quests?.has(condition.quest) &&
           CONTENT_QUEST_STATES.includes(condition.status),
         'La condición necesita un encargo y un estado válidos.',
       );
-    else if (condition.type === 'project')
+    } else if (condition.type === 'project') {
       need(
         exact(condition, ['type', 'project', 'completed']) &&
           DIALOGUE_PROJECT_IDS.includes(condition.project) &&
           typeof condition.completed === 'boolean',
         'La condición necesita un proyecto y un estado válidos.',
       );
-    else if (condition.type === 'sector')
+    } else if (condition.type === 'sector') {
       need(
         exact(condition, ['type', 'sector', 'owner']) &&
           sectorIds.has(condition.sector) &&
           ['patriot', 'royalist'].includes(condition.owner),
         'La condición necesita una localidad y un control válidos.',
       );
-    else if (condition.type === 'day' || condition.type === 'treasury')
+    } else if (condition.type === 'day' || condition.type === 'treasury') {
       need(
         exact(condition, ['type', 'min', 'max']) &&
           integer(condition.min, condition.type === 'day' ? 1 : 0, 1000000000) &&
           (condition.max === null || integer(condition.max, condition.min, 1000000000)),
         'La condición necesita un intervalo válido.',
       );
-    else need(false, 'El tipo de condición del diálogo no está disponible.');
+    } else {
+      need(false, 'El tipo de condición del diálogo no está disponible.');
+    }
   }
 }
 export function validateDialogueEffects(effects, quests, characters) {
-  if (effects === undefined) return;
+  if (effects === undefined) {
+    return;
+  }
   need(
     Array.isArray(effects) && effects.length <= 3,
     'Cada opción admite pesos, un encargo y un movimiento.',
@@ -111,7 +119,7 @@ export function validateDialogueEffects(effects, quests, characters) {
       'Las operaciones del diálogo no pueden repetirse.',
     );
     types.add(effect.type);
-    if (effect.type === 'treasury')
+    if (effect.type === 'treasury') {
       need(
         exact(effect, ['type', 'operation', 'amount']) &&
           ['pay', 'receive'].includes(effect.operation) &&
@@ -120,14 +128,14 @@ export function validateDialogueEffects(effects, quests, characters) {
           effect.amount <= 1000000,
         'La operación necesita un importe entre 1 y 1000000 pesos.',
       );
-    else if (effect.type === 'movement')
+    } else if (effect.type === 'movement') {
       need(
         exact(effect, ['type', 'character', 'destination']) &&
           characters?.has(effect.character) &&
           ['speaker', 'routine'].includes(effect.destination),
         'El movimiento necesita un personaje y el destino del encuentro.',
       );
-    else
+    } else {
       need(
         effect.type === 'quest' &&
           exact(effect, ['type', 'quest', 'status']) &&
@@ -135,6 +143,7 @@ export function validateDialogueEffects(effects, quests, characters) {
           ['active', 'completed', 'failed'].includes(effect.status),
         'La operación necesita un encargo y un estado válidos.',
       );
+    }
   }
 }
 export function validateDialogue(graph, characters, quests, sectorIds = new Set()) {

@@ -15,8 +15,9 @@ export class MeleeExchange {
   readonly #baseDamage: number;
   #counterResolved = false;
   constructor(baseDamage: number) {
-    if (!Number.isFinite(baseDamage) || baseDamage < 0)
+    if (!Number.isFinite(baseDamage) || baseDamage < 0) {
       throw new RangeError('invalid-melee-damage');
+    }
     this.#baseDamage = baseDamage;
   }
   defend(
@@ -28,7 +29,9 @@ export class MeleeExchange {
     }: { canParry: boolean; alreadyParried: boolean; protectedFromBlow: boolean },
   ): Readonly<{ damage: number; parried: boolean }> {
     const parried = canParry && !alreadyParried && defender.canSpend(MeleeRules.ParryCost);
-    if (parried) defender.spend(MeleeRules.ParryCost);
+    if (parried) {
+      defender.spend(MeleeRules.ParryCost);
+    }
     return {
       damage:
         this.#baseDamage *
@@ -63,8 +66,9 @@ export class MeleeExchange {
       context.alreadyCountered ||
       !context.withinReach ||
       !defender.canSpend(context.cost)
-    )
+    ) {
       return null;
+    }
     defender.spend(context.cost);
     this.#counterResolved = true;
     return { damage: context.damage * MeleeRules.CounterDamageFactor };

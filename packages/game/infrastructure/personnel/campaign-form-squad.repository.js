@@ -14,7 +14,9 @@ export class CampaignFormSquadRepository {
   }
 
   load(request) {
-    if (this.#closed || this.#context) throw new DomainRefusal(DomainRefusalCode.TransactionClosed);
+    if (this.#closed || this.#context) {
+      throw new DomainRefusal(DomainRefusalCode.TransactionClosed);
+    }
     const campaign = this.#campaign;
     const squads = campaign.squads.map((record) =>
       this.#identities.obtain(
@@ -36,7 +38,9 @@ export class CampaignFormSquadRepository {
     const target = request.squadId
       ? squads.find((squad) => squad.id === request.squadId)
       : Squad.form(nextId, request.name ?? '', request.locationId ?? campaign.location);
-    if (!target) throw new DomainRefusal(DomainRefusalCode.SquadUnavailable);
+    if (!target) {
+      throw new DomainRefusal(DomainRefusalCode.SquadUnavailable);
+    }
     this.#context = {
       squads,
       target,
@@ -50,11 +54,14 @@ export class CampaignFormSquadRepository {
   }
 
   commit(formation) {
-    if (this.#closed || formation.target !== this.#context?.target)
+    if (this.#closed || formation.target !== this.#context?.target) {
       throw new DomainRefusal(DomainRefusalCode.TransactionClosed);
+    }
     const campaign = this.#campaign;
     for (const record of campaign.squads) {
-      for (const id of record.members) campaign.operativeState[id].location = record.location;
+      for (const id of record.members) {
+        campaign.operativeState[id].location = record.location;
+      }
     }
     campaign.squads = formation.squads.map((squad) => {
       const snapshot = squad.toSnapshot();
@@ -66,7 +73,9 @@ export class CampaignFormSquadRepository {
         location: snapshot.locationId,
         members: snapshot.memberIds.map(Number),
       };
-      if (!projected.members.length) delete projected.journey;
+      if (!projected.members.length) {
+        delete projected.journey;
+      }
       return projected;
     });
     if (formation.discardedSquadId && campaign.travelNotice) {

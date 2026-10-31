@@ -11,12 +11,13 @@ export function freshDefaultRoadsideDiscoveries() {
   return structuredClone(DEFAULT_CATALOGUE.roadsideDiscoveries);
 }
 export function roadsideDiscoveryIds(definition) {
-  if (definition.id === 'roadside-clothing-tools' && definition.cell === 'cell-24-27')
+  if (definition.id === 'roadside-clothing-tools' && definition.cell === 'cell-24-27') {
     return {
       chest: ROADSIDE_DISCOVERY_CHEST,
       crowbar: ROADSIDE_CROWBAR_ID,
       shirt: ROADSIDE_SHIRT_ID,
     };
+  }
   return {
     chest: `roadside:${definition.cell}:${definition.id}`,
     crowbar: `cache:${definition.cell}:${definition.id}:crowbar`,
@@ -36,12 +37,14 @@ export function validateRoadsideDiscoveryContext(campaign, scene) {
     validateRoadsideDiscoveries(definitions).length ||
     validateRoadsideDiscoveries(scene.roadsideDiscoveryDefinitions).length ||
     canonicalContent(scene.roadsideDiscoveryDefinitions ?? []) !== canonicalContent(definitions)
-  )
+  ) {
     throw Error('Los hallazgos de camino del despliegue no coinciden con la campaña.');
+  }
 }
 export function roadsideDiscoveryProps(cell, definitions) {
-  if (validateRoadsideDiscoveries(definitions).length)
+  if (validateRoadsideDiscoveries(definitions).length) {
     throw Error('Los hallazgos de camino no son válidos.');
+  }
   return (definitions ?? [])
     .filter((d) => d.cell === cell)
     .map((d) => ({
@@ -54,8 +57,9 @@ export function roadsideDiscoveryProps(cell, definitions) {
 }
 export function roadsideDiscoveryForMap(cell, map) {
   const definitions = map.roadsideDiscoveryDefinitions;
-  if (validateRoadsideDiscoveries(definitions).length)
+  if (validateRoadsideDiscoveries(definitions).length) {
     throw Error('Los hallazgos de camino no son válidos.');
+  }
   // The admitted prop identifies the selected physical cell, including a
   // named locality whose map is keyed by its locality ID.
   return (

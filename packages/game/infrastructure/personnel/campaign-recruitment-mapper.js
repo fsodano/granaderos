@@ -6,8 +6,8 @@ import { GameTime, TimeUnits } from '../../domain/shared/game-time.ts';
 import { contractQuote } from '../../contracts.js';
 import { fundServiceGuarantee } from '../../service-guarantees.js';
 import { issueStartingCartridges } from '../../campaign-ammunition.js';
-import { issueInitialOutfit } from '../../outfits.js';
-import { CampaignCharacterEquipmentMapper } from './campaign-character-equipment-mapper.js';
+import { issueInitialOutfit } from '../../outfits.ts';
+import { CampaignCharacterEquipmentMapper } from './campaign-character-equipment-mapper.ts';
 
 export const RecruitmentEquipmentSource = Object.freeze({
   InitialIssue: 'initial-issue',
@@ -24,8 +24,9 @@ export class CampaignRecruitmentMapper {
   restore(candidate, term, allowedLocations) {
     const campaign = this.#transaction.draft;
     const quote = contractQuote(campaign, candidate, term);
-    if (!quote.available)
+    if (!quote.available) {
       throw new CampaignRuleRefusal(DomainRefusalCode.ServiceTermsUnavailable, quote.reason);
+    }
     const personnel = new CanonicalPersonnelMapper(campaign, this.#transaction.identities);
     const character = personnel.restoreCharacter(candidate);
     const { roster, treasury } = personnel;

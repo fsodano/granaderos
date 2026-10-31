@@ -46,9 +46,9 @@ creates the archive. Archive output excludes editor metadata.
 
 The editor imports game rules through two declared public composition APIs:
 
-- `packages/game/public/campaign-editor-api.js` supplies rule validation,
+- `packages/game/public/campaign-editor-api.ts` supplies rule validation,
   authoring choices, and map/equipment previews.
-- `packages/game/public/campaign-playtest-api.js` executes an isolated game
+- `packages/game/public/campaign-playtest-api.ts` executes an isolated game
   session and produces a save-backed playtest record.
 
 `apps/web/game-preview.ts` is the declared UI preview entry, including preview styles.

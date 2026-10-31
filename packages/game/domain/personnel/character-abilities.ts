@@ -1,3 +1,4 @@
+import { isArrayValue } from '../shared/array-value.ts';
 import { DomainRefusal, DomainRefusalCode } from '../shared/domain-refusal.ts';
 
 export const CharacterRating = Object.freeze({
@@ -14,6 +15,9 @@ export const CharacterRating = Object.freeze({
   Riding: 'ridingSkill',
 } as const);
 export type CharacterRatingName = (typeof CharacterRating)[keyof typeof CharacterRating];
+function isCharacterRating(name: string): name is CharacterRatingName {
+  return Object.values(CharacterRating).some((rating) => rating === name);
+}
 export const TrainableCharacterRatings = Object.freeze(
   Object.values(CharacterRating).filter((name) => name !== CharacterRating.Wisdom),
 );
@@ -73,13 +77,15 @@ function requireRating(value: number): void {
     !Number.isInteger(value) ||
     value < CharacterAbilityRules.MinimumRating ||
     value > CharacterAbilityRules.MaximumRating
-  )
+  ) {
     throw new DomainRefusal(DomainRefusalCode.InvalidValue);
+  }
 }
 
 function namedValues(values: readonly string[], supported: readonly string[]): readonly string[] {
-  if (!Array.isArray(values) || !values.every((value) => supported.includes(value)))
+  if (!isArrayValue(values) || !values.every((value) => supported.includes(value))) {
     throw new DomainRefusal(DomainRefusalCode.InvalidValue);
+  }
   return Object.freeze([...new Set(values)]);
 }
 
@@ -92,12 +98,14 @@ export class CharacterAbilities {
     if (
       !snapshot.ratings ||
       typeof snapshot.ratings !== 'object' ||
-      Array.isArray(snapshot.ratings)
-    )
+      isArrayValue(snapshot.ratings)
+    ) {
       throw new DomainRefusal(DomainRefusalCode.InvalidValue);
+    }
     for (const [name, value] of Object.entries(snapshot.ratings)) {
-      if (!(Object.values(CharacterRating) as string[]).includes(name))
+      if (!isCharacterRating(name)) {
         throw new DomainRefusal(DomainRefusalCode.InvalidValue);
+      }
       requireRating(value);
     }
     this.#ratings = Object.freeze({ ...snapshot.ratings });
@@ -116,14 +124,15 @@ export class CharacterAbilities {
     const ratings = { ...this.#ratings };
     for (const [name, gain] of Object.entries(gains)) {
       if (
-        !(TrainableCharacterRatings as readonly string[]).includes(name) ||
+        !isCharacterRating(name) ||
+        !TrainableCharacterRatings.some((rating) => rating === name) ||
         !Number.isInteger(gain) ||
         gain < 0 ||
         gain > CharacterAbilityRules.MaximumTrainingGain
-      )
+      ) {
         throw new DomainRefusal(DomainRefusalCode.InvalidValue);
-      const rating = name as CharacterRatingName;
-      ratings[rating] = Math.min(CharacterAbilityRules.MaximumRating, this.rating(rating) + gain);
+      }
+      ratings[name] = Math.min(CharacterAbilityRules.MaximumRating, this.rating(name) + gain);
     }
     if (strengthFloor !== undefined) {
       requireRating(strengthFloor);
@@ -137,7 +146,7 @@ export class CharacterAbilities {
   }
 
   rating(name: string): number {
-    return this.#ratings[name as CharacterRatingName] ?? 0;
+    return isCharacterRating(name) ? (this.#ratings[name] ?? 0) : 0;
   }
   meetsRating(name: CharacterRatingName, minimum: number): boolean {
     requireRating(minimum);

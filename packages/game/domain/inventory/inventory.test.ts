@@ -40,7 +40,7 @@ function weapon(selectionId: string, identity: string): InventoryEntrySnapshot {
   };
 }
 
-test('an item refuses invalid quantities and preserves identity and nested metadata through a transfer', () => {
+void test('an item refuses invalid quantities and preserves identity and nested metadata through a transfer', () => {
   const value = new Item(weapon('musket', 'one').item);
   assert.throws(() => value.take(2));
   assert.equal(value.quantity, 1);
@@ -48,15 +48,18 @@ test('an item refuses invalid quantities and preserves identity and nested metad
   assert.equal(value.quantity, 0);
   assert.deepEqual(moved.instanceIds, ['one', 'one:bayonet']);
   const changed = moved.toSnapshot();
-  (changed.metadata.fittings as { bayonet: { condition: number } }).bayonet.condition = 0;
-  assert.equal(
-    (moved.toSnapshot().metadata.fittings as { bayonet: { condition: number } }).bayonet.condition,
-    63,
-  );
+  const fittings = changed.metadata['fittings'];
+  assert.ok(fittings && typeof fittings === 'object' && 'bayonet' in fittings);
+  const bayonet = fittings.bayonet;
+  assert.ok(bayonet && typeof bayonet === 'object' && 'condition' in bayonet);
+  bayonet.condition = 0;
+  assert.deepEqual(moved.toSnapshot().metadata['fittings'], {
+    bayonet: { instanceId: 'one:bayonet', condition: 63 },
+  });
   assert.throws(() => new Item({ ...weapon('musket', 'one').item, quantity: 2 }));
 });
 
-test('an inventory rejects duplicate custody across hands, clothing, and packed items', () => {
+void test('an inventory rejects duplicate custody across hands, clothing, and packed items', () => {
   const first = weapon('primary', 'same');
   assert.throws(
     () =>
@@ -73,7 +76,7 @@ test('an inventory rejects duplicate custody across hands, clothing, and packed 
   assert.deepEqual(inventory.toSnapshot(), original);
 });
 
-test('pocket capacity distinguishes large objects, hand custody, and explicit partial stacks', () => {
+void test('pocket capacity distinguishes large objects, hand custody, and explicit partial stacks', () => {
   const large = Array.from({ length: 4 }, (_, index) =>
     supply(`large-${index}`, 1, { stackLimit: 1, slotSize: 2 }),
   );
@@ -108,7 +111,7 @@ test('pocket capacity distinguishes large objects, hand custody, and explicit pa
   ]);
 });
 
-test('the transfer service stages both custodians and refuses stale or over-capacity requests atomically', () => {
+void test('the transfer service stages both custodians and refuses stale or over-capacity requests atomically', () => {
   const source = new Inventory({
     custodianId: 'ground:one',
     unlimitedCapacity: true,
@@ -138,12 +141,12 @@ test('the transfer service stages both custodians and refuses stale or over-capa
   );
   assert.equal(transfer.source.quantityOf('musket'), 0);
   assert.equal(transfer.destination.quantityOf('musket'), 1);
-  assert.equal(transfer.item.metadata.loaded, 1);
+  assert.equal(transfer.item.metadata['loaded'], 1);
   assert.equal(source.quantityOf('musket'), 1);
   assert.equal(empty.quantityOf('musket'), 0);
 });
 
-test('an overloaded saved inventory can reduce quantities but cannot add more items', () => {
+void test('an overloaded saved inventory can reduce quantities but cannot add more items', () => {
   const inventory = new Inventory({ custodianId: 'legacy', entries: [supply('rations', 100)] });
   assert.equal(inventory.overloaded, true);
   assert.throws(() =>
@@ -157,11 +160,13 @@ test('an overloaded saved inventory can reduce quantities but cannot add more it
   assert.equal(inventory.overloaded, false);
 });
 
-test('pocket movement owns slot size and partition uniqueness', () => {
+void test('pocket movement owns slot size and partition uniqueness', () => {
   const pockets = PocketLayout.allocate([{ item: 'musket', count: 1, stackLimit: 1, slotSize: 2 }]);
   assert.throws(() => pockets.exchange('large-1', 'small-1'));
   pockets.exchange('large-1', 'large-4');
-  assert.equal(pockets.toOrder()[0].slotId, 'large-4');
+  const [firstPocket] = pockets.toOrder();
+  assert.ok(firstPocket);
+  assert.equal(firstPocket.slotId, 'large-4');
   assert.throws(() =>
     PocketLayout.allocate(
       [{ item: 'rations', count: 1, stackLimit: 2, slotSize: 1 }],

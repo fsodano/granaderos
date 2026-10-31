@@ -12,7 +12,10 @@ export class CampaignBuildingTemplates {
     const name = template.name ?? 'Edificio';
     const index = this.#templates.findIndex((candidate) => candidate.name === name);
     const owned = structuredClone({ ...template, name });
-    if (index < 0) this.#templates.push(owned);
-    else this.#templates[index] = owned;
+    if (index < 0) {
+      this.#templates.push(owned);
+    } else {
+      this.#templates[index] = owned;
+    }
   }
 }

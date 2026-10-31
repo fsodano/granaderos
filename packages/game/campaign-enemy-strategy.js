@@ -41,19 +41,27 @@ export function authoredEnemyRaid(
   { headquarters, launchEnemyGroup, note },
 ) {
   const policy = enemyStrategiesFor(world)[theater];
-  if (!policy || s.completed || s.defeated) return null;
+  if (!policy || s.completed || s.defeated) {
+    return null;
+  }
   const target =
     forcedTarget ??
     policy.axis.find((id) => id !== headquarters && s.sectors[id]?.owner === 'patriot');
-  if (!target || target === headquarters || !policy.axis.includes(target)) return null;
+  if (!target || target === headquarters || !policy.axis.includes(target)) {
+    return null;
+  }
   const group = launchEnemyGroup(s, theater, target);
-  if (group) note(s, 'Un grupo enemigo inicia su avance por el territorio.');
+  if (group) {
+    note(s, 'Un grupo enemigo inicia su avance por el territorio.');
+  }
   return group;
 }
 export function authoredEnemyHourlyEvents(s, world, context) {
   for (const [theater, policy] of Object.entries(enemyStrategiesFor(world)).sort(([a], [b]) =>
     a < b ? -1 : a > b ? 1 : 0,
-  ))
-    if (s.hour > 0 && s.hour % policy.raidEveryHours === 0)
+  )) {
+    if (s.hour > 0 && s.hour % policy.raidEveryHours === 0) {
       authoredEnemyRaid(s, world, theater, null, context);
+    }
+  }
 }

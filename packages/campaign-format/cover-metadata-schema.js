@@ -7,7 +7,8 @@ export function validateCoverMetadata(value) {
     if (
       value[key] !== undefined &&
       (!Number.isFinite(value[key]) || value[key] < 0 || value[key] > max)
-    )
+    ) {
       throw Error('La cobertura guardada no es válida.');
+    }
   }
 }

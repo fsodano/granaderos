@@ -1,4 +1,7 @@
 'use client';
+import type { CampaignProjectDocument, JsonValue } from '../../../domain/campaign-project.ts';
+import type { WorldDefinition, WorldCell } from '../../../../../packages/campaign-format/types.ts';
+import { assertCampaignWorld, requireJsonDocument } from '../../lib/editor-documents.ts';
 import { editorErrorMessage } from '../../../infrastructure/editor-error-message.ts';
 import { useId, useMemo, useRef, useState, type KeyboardEvent } from 'react';
 import FieldEditor, { DocumentEditor } from './FieldEditor';
@@ -51,56 +54,61 @@ const groups: Record<string, string[]> = {
   'Viajes, clima e invasiones': ['travel', 'weather', 'enemyStrategy'],
   'Construcciones y generación': ['buildings', 'expansion'],
 };
-export default function WorldWorkspace({
+function WorldFields({
   project,
   onChange,
+  world,
 }: {
-  project: any;
-  onChange: (next: any) => void;
+  world: WorldDefinition;
+  project: CampaignProjectDocument;
+  onChange: (next: CampaignProjectDocument) => void;
 }) {
-  const [selected, setSelected] = useState(
-      project.world.cells.find((c: any) => c.anchor)?.id ?? 'cell-0-0',
-    ),
-    [locality, setLocality] = useState(project.world.sectors[0]?.id ?? ''),
+  const [selected, setSelected] = useState(world.cells.find((c) => c.anchor)?.id ?? 'cell-0-0'),
+    [locality, setLocality] = useState(world.sectors[0]?.id ?? ''),
     [name, setName] = useState('Nueva localidad'),
     [id, setId] = useState('new-locality'),
     [error, setError] = useState('');
-  const world = project.world,
-    cell =
-      world.cells.find((c: any) => c.id === selected) ??
-      world.cells.find((c: any) => c.anchor) ??
+  const cell =
+      world.cells.find((c) => c.id === selected) ??
+      world.cells.find((c) => c.anchor) ??
       world.cells[0],
-    sector = world.sectors.find((s: any) => s.id === locality) ?? world.sectors[0];
+    sector = world.sectors.find((s) => s.id === locality) ?? world.sectors[0];
   const gridHelpId = useId(),
     gridContextId = useId(),
     cellButtons = useRef(new Map<string, HTMLButtonElement>());
   const rows = useMemo(
     () =>
       Array.from({ length: 33 }, (_, row) =>
-        world.cells.filter((c: any) => c.row === row).sort((a: any, b: any) => a.col - b.col),
+        world.cells.filter((c) => c.row === row).sort((a, b) => a.col - b.col),
       ),
     [world.cells],
   );
   const cellsByPosition = useMemo(
-    () => new Map<string, any>(world.cells.map((c: any) => [`${c.col},${c.row}`, c])),
+    () => new Map<string, WorldCell>(world.cells.map((c) => [`${c.col},${c.row}`, c])),
     [world.cells],
   );
   const regionName = (theater: string) =>
-    world.theaters.find((t: any) => t.id === theater)?.name ?? theater;
-  const selectedLocality = world.sectors.find((s: any) => s.id === cell?.locality);
-  const anchor = world.cells.find((c: any) => c.anchor && c.locality === sector?.id);
-  function selectCell(next: any, focus = false) {
-    if (!next) return;
+    world.theaters.find((t) => t.id === theater)?.name ?? theater;
+  const selectedLocality = world.sectors.find((s) => s.id === cell?.locality);
+  const anchor = world.cells.find((c) => c.anchor && c.locality === sector?.id);
+  function selectCell(next: WorldCell | undefined, focus = false) {
+    if (!next) {
+      return;
+    }
     setSelected(next.id);
-    if (next.locality) setLocality(next.locality);
+    if (next.locality) {
+      setLocality(next.locality);
+    }
     if (focus) {
       const button = cellButtons.current.get(next.id);
       button?.focus({ preventScroll: true });
       button?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
     }
   }
-  function navigateGrid(event: KeyboardEvent<HTMLButtonElement>, from: any) {
-    if (event.altKey) return;
+  function navigateGrid(event: KeyboardEvent<HTMLButtonElement>, from: WorldCell) {
+    if (event.altKey) {
+      return;
+    }
     let col = from.col,
       row = from.row;
     switch (event.key) {
@@ -118,11 +126,15 @@ export default function WorldWorkspace({
         break;
       case 'Home':
         col = 0;
-        if (event.ctrlKey || event.metaKey) row = 0;
+        if (event.ctrlKey || event.metaKey) {
+          row = 0;
+        }
         break;
       case 'End':
         col = 35;
-        if (event.ctrlKey || event.metaKey) row = 32;
+        if (event.ctrlKey || event.metaKey) {
+          row = 32;
+        }
         break;
       default:
         return;
@@ -132,17 +144,17 @@ export default function WorldWorkspace({
   }
   function chooseLocality(next: string) {
     setLocality(next);
-    selectCell(world.cells.find((c: any) => c.anchor && c.locality === next));
+    selectCell(world.cells.find((c) => c.anchor && c.locality === next));
   }
-  function act(fn: () => any) {
+  function act(fn: () => CampaignProjectDocument) {
     try {
       onChange(fn());
       setError('');
-    } catch (e: any) {
+    } catch (e) {
       setError(editorErrorMessage(e));
     }
   }
-  function worldField(key: string, value: any) {
+  function worldField(key: string, value: JsonValue) {
     onChange({ ...project, world: { ...world, [key]: value } });
   }
   return (
@@ -166,7 +178,7 @@ export default function WorldWorkspace({
         <span data-cell-kind="water">Agua</span>
       </div>
       {cell && (
-        <div id={gridContextId} className="studio-grid-context" role="status" aria-live="polite">
+        <output id={gridContextId} className="studio-grid-context" aria-live="polite">
           <strong>
             Casilla {cell.grid} · {cell.name}
           </strong>
@@ -175,7 +187,7 @@ export default function WorldWorkspace({
             · {regionName(cell.theater)}
             {selectedLocality ? ` · ${selectedLocality.name}` : ' · Sin localidad'}
           </span>
-        </div>
+        </output>
       )}
       <div
         className="studio-grid-scroll"
@@ -196,17 +208,22 @@ export default function WorldWorkspace({
             maxWidth: 1000,
           }}
         >
-          {rows.map((row: any[], rowIndex: number) => (
+          {rows.map((row: WorldCell[], rowIndex: number) => (
+            // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Roving grid navigation uses button cells in a CSS grid.
             <div key={rowIndex} role="row" style={{ display: 'contents' }}>
-              {row.map((c: any) => (
+              {row.map((c) => (
                 <button
                   key={c.id}
                   ref={(button) => {
-                    if (button) cellButtons.current.set(c.id, button);
-                    else cellButtons.current.delete(c.id);
+                    if (button) {
+                      cellButtons.current.set(c.id, button);
+                    } else {
+                      cellButtons.current.delete(c.id);
+                    }
                   }}
                   className="studio-grid-cell"
                   type="button"
+                  // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Interactive grid cells retain native button activation and arrow navigation.
                   role="gridcell"
                   aria-rowindex={c.row + 1}
                   aria-colindex={c.col + 1}
@@ -277,7 +294,7 @@ export default function WorldWorkspace({
                 act(() => updateProjectCell(project, cell.id, { theater: e.target.value }))
               }
             >
-              {world.theaters.map((t: any) => (
+              {world.theaters.map((t) => (
                 <option key={t.id} value={t.id}>
                   {t.name}
                 </option>
@@ -294,7 +311,7 @@ export default function WorldWorkspace({
               }
             >
               <option value="">Sin distrito</option>
-              {world.sectors.map((s: any) => (
+              {world.sectors.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
                 </option>
@@ -331,11 +348,11 @@ export default function WorldWorkspace({
           <label>
             Localidad
             <select value={sector?.id ?? ''} onChange={(e) => chooseLocality(e.target.value)}>
-              {world.theaters.map((t: any) => {
-                const sectors = world.sectors.filter((s: any) => s.theater === t.id);
+              {world.theaters.map((t) => {
+                const sectors = world.sectors.filter((s) => s.theater === t.id);
                 return sectors.length ? (
                   <optgroup key={t.id} label={t.name}>
-                    {sectors.map((s: any) => (
+                    {sectors.map((s) => (
                       <option key={s.id} value={s.id}>
                         {s.name}
                       </option>
@@ -344,8 +361,8 @@ export default function WorldWorkspace({
                 ) : null;
               })}
               {world.sectors
-                .filter((s: any) => !world.theaters.some((t: any) => t.id === s.theater))
-                .map((s: any) => (
+                .filter((s) => !world.theaters.some((t) => t.id === s.theater))
+                .map((s) => (
                   <option key={s.id} value={s.id}>
                     {s.name}
                   </option>
@@ -417,8 +434,8 @@ export default function WorldWorkspace({
             </p>
             <div className="studio-row">
               {world.sectors
-                .filter((s: any) => s.id !== sector.id)
-                .map((s: any) => (
+                .filter((s) => s.id !== sector.id)
+                .map((s) => (
                   <label key={s.id}>
                     <input
                       type="checkbox"
@@ -455,7 +472,7 @@ export default function WorldWorkspace({
             {keys.map((key) => (
               <FieldEditor
                 key={key}
-                value={world[key]}
+                value={project.world[key]}
                 label={key}
                 path={`world.${key}`}
                 onChange={(value) => worldField(key, value)}
@@ -472,10 +489,41 @@ export default function WorldWorkspace({
         </p>
         <DocumentEditor
           value={world}
-          onChange={(value) => onChange({ ...project, world: value })}
+          onChange={(value) => onChange({ ...project, world: requireJsonDocument(value) })}
           path="world"
         />
       </details>
+    </section>
+  );
+}
+
+export default function WorldWorkspace({
+  project,
+  onChange,
+}: {
+  project: CampaignProjectDocument;
+  onChange: (next: CampaignProjectDocument) => void;
+}) {
+  const world = project.world;
+  let invalid = '';
+  let validatedWorld = null;
+  try {
+    assertCampaignWorld(world);
+    validatedWorld = world;
+  } catch (error) {
+    invalid = editorErrorMessage(error);
+  }
+  return validatedWorld ? (
+    <WorldFields project={project} world={validatedWorld} onChange={onChange} />
+  ) : (
+    <section className="studio-body">
+      <h2>Mundo estratégico</h2>
+      <p role="alert">Corregí el documento para abrir el mapa: {invalid}</p>
+      <DocumentEditor
+        value={world}
+        path="world"
+        onChange={(value) => onChange({ ...project, world: requireJsonDocument(value) })}
+      />
     </section>
   );
 }

@@ -1,1 +1,7 @@
-export { sitePath, pagePath, registerPreviewAssets } from "./lib/site-path.js";
+export {
+  sitePath,
+  pagePath,
+  registerPreviewAssets,
+  subscribePreviewAssets,
+  getPreviewAssetsRevision,
+} from './lib/site-path.js';

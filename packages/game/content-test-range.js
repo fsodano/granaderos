@@ -1,19 +1,29 @@
-import {authoredRoster} from './content-roster.js';
-import {OPERATIVES} from './data.js';
-import {CIVIC_RECRUITS} from './civic-recruits.js';
-import {weaponMetadata} from './weapon-definition.js';
-import { resolveContent } from "./content-package.js";
-import { createBattle, WEAPONS, actBattle, shotChance, actionCosts } from "./tactical.js";
+import { authoredRoster } from './content-roster.ts';
+import { OPERATIVES } from './data.js';
+import { CIVIC_RECRUITS } from './civic-recruits.js';
+import { weaponMetadata } from './weapon-definition.ts';
+import { resolveContent } from './content-package.js';
+import { createBattle, WEAPONS, actBattle, shotChance, actionCosts } from './tactical.js';
 // The first adapter reuses a verified firearm family for ammunition/handling.
 // Authored IDs remain distinct; it never replaces the global weapon catalog.
+/** @param {unknown} content @param {string} characterId @param {number} [seed] @returns {import("./public/compatibility-types.ts").BattleSnapshot} */
 export function createContentTestRange(content, characterId, seed = 18130203) {
-  if (!Number.isInteger(seed) || seed < 0 || seed > 0xffffffff) throw Error("Semilla inválida.");
+  if (!Number.isInteger(seed) || seed < 0 || seed > 0xffffffff) {
+    throw Error('Semilla inválida.');
+  }
   const definitions = resolveContent(content),
     character = definitions.characters.find((c) => c.id === characterId);
-  if (!character) throw Error("Seleccioná un personaje.");
+  if (!character) {
+    throw Error('Seleccioná un personaje.');
+  }
   const weapon = definitions.weapons.find((w) => w.id === character.weapon);
-  if (!weapon || !WEAPONS[weapon.template]) throw Error("Asigná un arma de fuego para probar el tiro.");
-  const operative=authoredRoster({contentCampaign:{package:definitions}},[...OPERATIVES,...CIVIC_RECRUITS]).find(o=>o.contentId===characterId);
+  if (!weapon || !WEAPONS[weapon.template]) {
+    throw Error('Asigná un arma de fuego para probar el tiro.');
+  }
+  const operative = authoredRoster({ contentCampaign: { package: definitions } }, [
+    ...OPERATIVES,
+    ...CIVIC_RECRUITS,
+  ]).find((o) => o.contentId === characterId);
   const unit = {
     ...operative,
     ...character.attributes,
@@ -30,15 +40,15 @@ export function createContentTestRange(content, characterId, seed = 18130203) {
     facing: 2,
   };
   const battle = createBattle([unit], {
-    id: "content-test-range",
-    name: "Prueba de contenido",
+    id: 'content-test-range',
+    name: 'Prueba de contenido',
     seed,
     width: 16,
     height: 12,
     enemies: [
       {
-        id: "target",
-        name: "Oponente de prueba",
+        id: 'target',
+        name: 'Oponente de prueba',
         x: 8,
         y: 5,
         hp: 100,
@@ -52,19 +62,24 @@ export function createContentTestRange(content, characterId, seed = 18130203) {
     tiles: Array.from({ length: 16 * 12 }, (_, i) => ({
       x: i % 16,
       y: Math.floor(i / 16),
-      type: "grass",
+      type: 'grass',
       cover: 0,
       blocked: false,
     })),
   });
   // A clear range isolates weapon and character values from map generation.
-  battle.tiles = battle.tiles.map((t) => ({ ...t, type: "grass", cover: 0, blocked: false }));
+  battle.tiles = battle.tiles.map((t) => ({ ...t, type: 'grass', cover: 0, blocked: false }));
   battle.contentTest = { characterId, weaponId: weapon.id };
   return battle;
 }
 
 // A disposable trial uses the same admission rules as an actual firing order.
-export function contentShotPreview(battle,unit,target){
- const attempt=actBattle(battle,{type:'fire',unitId:unit.id,targetId:target.id,aim:0});
- return {reason:attempt.lastError??null,chance:shotChance(battle,unit,target,0),pa:actionCosts(battle,unit).fire};
+/** @param {import("./public/compatibility-types.ts").BattleSnapshot} battle @param {import("./public/compatibility-types.ts").BattleUnit} unit @param {import("./public/compatibility-types.ts").BattleUnit} target @returns {{reason:string|null,chance:number,pa:number}} */
+export function contentShotPreview(battle, unit, target) {
+  const attempt = actBattle(battle, { type: 'fire', unitId: unit.id, targetId: target.id, aim: 0 });
+  return {
+    reason: attempt.lastError ?? null,
+    chance: shotChance(battle, unit, target, 0),
+    pa: actionCosts(battle, unit).fire,
+  };
 }

@@ -40,6 +40,8 @@ export function projectGameSession(campaign, session) {
   ) {
     throw new Error('Las visitas abiertas no corresponden a la partida.');
   }
-  if (campaign.gameSessionId) campaign.gameSessionId = snapshot.id;
+  if (campaign.gameSessionId) {
+    campaign.gameSessionId = snapshot.id;
+  }
   campaign.gameRevision = snapshot.revision;
 }

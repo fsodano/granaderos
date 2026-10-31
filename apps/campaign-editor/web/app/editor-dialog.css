@@ -1,0 +1,16 @@
+.campaign-editor-dialog {
+  width: min(800px, 94vw);
+  max-height: 94vh;
+  margin: auto;
+  overflow: auto;
+  border-radius: 10px;
+}
+
+.campaign-editor-dialog::backdrop {
+  background: rgb(0 0 0 / 55%);
+}
+
+.campaign-editor-dialog h2,
+.campaign-editor-dialog p {
+  margin: 0 0 16px;
+}

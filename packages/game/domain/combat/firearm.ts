@@ -34,8 +34,9 @@ export class Firearm {
       snapshot.condition < 0 ||
       snapshot.condition > IgnitionRules.FullCondition ||
       typeof snapshot.jammed !== 'boolean'
-    )
+    ) {
       throw new FirearmRefusal(FirearmRefusalCode.InvalidState);
+    }
     this.#loaded = snapshot.loaded;
     this.#condition = snapshot.condition;
     this.#jammed = snapshot.jammed;
@@ -44,8 +45,12 @@ export class Firearm {
     misfirePercent: number,
     roll: number,
   ): (typeof FirearmDischarge)[keyof typeof FirearmDischarge] {
-    if (this.#jammed) throw new FirearmRefusal(FirearmRefusalCode.Jammed);
-    if (this.#loaded < 1) throw new FirearmRefusal(FirearmRefusalCode.Unloaded);
+    if (this.#jammed) {
+      throw new FirearmRefusal(FirearmRefusalCode.Jammed);
+    }
+    if (this.#loaded < 1) {
+      throw new FirearmRefusal(FirearmRefusalCode.Unloaded);
+    }
     if (
       !Number.isFinite(misfirePercent) ||
       misfirePercent < 0 ||
@@ -53,8 +58,9 @@ export class Firearm {
       !Number.isFinite(roll) ||
       roll < 0 ||
       roll >= 1
-    )
+    ) {
       throw new FirearmRefusal(FirearmRefusalCode.InvalidState);
+    }
     if (roll * 100 < misfirePercent) {
       this.#jammed = true;
       return FirearmDischarge.Misfire;
@@ -64,7 +70,9 @@ export class Firearm {
     return FirearmDischarge.Fired;
   }
   reprime(): void {
-    if (!this.#jammed) throw new FirearmRefusal(FirearmRefusalCode.InvalidWork);
+    if (!this.#jammed) {
+      throw new FirearmRefusal(FirearmRefusalCode.InvalidWork);
+    }
     this.#jammed = false;
   }
   snapshot(): FirearmSnapshot {

@@ -1,7 +1,7 @@
 import { DEFAULT_CATALOGUE } from '../../content/campaigns/default.js';
 import { campaignSectors, campaignDefinitions, campaignWorld } from './campaign-definition.js';
 import { SUPPLY_ITEMS } from './tactical-inventory.js';
-import { OUTFITS } from './outfits.js';
+import { OUTFITS } from './outfits.ts';
 import { sectorExits } from './tactical-exits.js';
 import { canonicalContent } from './content-identity.js';
 import { ENCOUNTERS } from './encounters.js';
@@ -11,7 +11,7 @@ import {
   hasGenericCharacterIds,
   hasGenericCharacterDefinitions,
   includesOriginalResidents,
-} from './content-character-ids.js';
+} from './content-character-ids.ts';
 import { contentCellIds } from './content-map.js';
 import { NPC_QUESTS } from './quests.js';
 import { questContactIds } from './quest-beneficiaries.js';
@@ -21,7 +21,9 @@ import { validateErrandDefinitions } from '../campaign-format/errand-schema.js';
 
 export function validateQuestDefinitions(quests, context) {
   const errors = validateErrandDefinitions(quests, { world: campaignWorld(context) });
-  if (errors.length) return errors;
+  if (errors.length) {
+    return errors;
+  }
   for (const quest of quests) {
     const carried = quest.carried;
     if (
@@ -32,16 +34,18 @@ export function validateQuestDefinitions(quests, context) {
           carried.outfit === undefined) ||
         (Object.hasOwn(OUTFITS, carried.outfit) && carried.item === undefined)
       )
-    )
+    ) {
       errors.push(`Encargo ${quest.id}: objeto de entrega inválido.`);
+    }
     const escort = quest.escort;
     if (
       escort &&
       !sectorExits(quest.sector, null, context).some(
         (exit) => exit.destination === escort.destination && exit.edge === escort.edge,
       )
-    )
+    ) {
       errors.push(`Encargo ${quest.id}: la escolta necesita una salida existente.`);
+    }
   }
   return errors;
 }
@@ -52,16 +56,24 @@ export function validateQuestContext(campaign, battle) {
   const content = campaign.contentCampaign?.package;
   const definitions =
     content?.errands ?? (hasGenericCharacterDefinitions(content) ? [] : campaign.errandDefinitions);
-  if (!battle || canonicalContent(battle.errandDefinitions) !== canonicalContent(definitions))
+  if (!battle || canonicalContent(battle.errandDefinitions) !== canonicalContent(definitions)) {
     throw Error('Los encargos del despliegue no coinciden con la campaña.');
+  }
 }
 
 // Pinned errands are authoritative. Generic campaigns never inherit historical
 // deliveries when the collection is omitted; old stock callers retain defaults.
+/** @param {import('./public/compatibility-types.ts').CampaignContext | null} [context]
+ * @returns {import('../campaign-format/types.ts').ErrandDefinition[]}
+ */
 export function defaultErrands(context = null) {
   const content = campaignDefinitions(context);
-  if (content?.errands !== undefined) return structuredClone(content.errands);
-  if (content?.scenario === 'generic-v1' || content?.campaignStory) return [];
+  if (content?.errands !== undefined) {
+    return structuredClone(content.errands);
+  }
+  if (content?.scenario === 'generic-v1' || content?.campaignStory) {
+    return [];
+  }
   return structuredClone(NPC_QUESTS).map((q) => ({
     ...q,
     cost: q.cost ?? {},
@@ -100,7 +112,9 @@ export function errandContacts(content) {
   }));
   for (const c of characters.filter((c) => c && isWorldCharacter(c))) {
     const p = placements.find((p) => p?.character === c.id);
-    if (!p) continue;
+    if (!p) {
+      continue;
+    }
     const locality =
       campaignSectors(content).find(
         (s) =>
@@ -119,10 +133,12 @@ export function errandContacts(content) {
   return contacts;
 }
 export function validateErrandContacts(content) {
-  if (content.errands === undefined) return [];
+  if (content.errands === undefined) {
+    return [];
+  }
   const contacts = errandContacts(content),
     errors = [];
-  for (const q of content.errands)
+  for (const q of content.errands) {
     for (const npcId of questContactIds(q)) {
       const at = q.beneficiaries?.find((b) => b.npcId === npcId)?.sector ?? q.sector;
       const c = contacts.find((c) => c.id === npcId);
@@ -130,11 +146,14 @@ export function validateErrandContacts(content) {
         errors.push(`Encargo ${q.id}: el contacto no existe o no aparece en el mapa.`);
         continue;
       }
-      if (!q.carried && !q.escort) continue;
-      if (c.canRecruit)
+      if (!q.carried && !q.escort) {
+        continue;
+      }
+      if (c.canRecruit) {
         errors.push(
           `Encargo ${q.id}: la entrega física o escolta necesita un contacto que no se incorpore a la escuadra.`,
         );
+      }
       const p = c.characterId && content.placements.find((p) => p?.character === c.characterId);
       if (
         c.characterId
@@ -144,10 +163,12 @@ export function validateErrandContacts(content) {
               contentCellIds(p.sectors, content)[0] === contentCellIds([at], content)[0]
             )
           : c.sector !== at
-      )
+      ) {
         errors.push(
           `Encargo ${q.id}: la entrega física o escolta necesita un contacto fijo en esa localidad.`,
         );
+      }
     }
+  }
   return errors;
 }

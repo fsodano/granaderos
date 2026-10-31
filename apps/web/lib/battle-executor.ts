@@ -4,13 +4,19 @@ import {
   assertSectorOperationContext,
 } from '../../../packages/game/infrastructure/sector-sessions/sector-operation-context.js';
 import { battleWorkerMessageId, readBattleWorkerResponse } from './battle-worker-transport.ts';
-import type { BattleWorkerJob, BattleWorkerRequest } from './battle-worker-transport.ts';
+import type {
+  BattleWorkerJob,
+  BattleWorkerRequest,
+  BattleWorkerResultByKind,
+  BattleJobKind,
+} from './battle-worker-contracts.ts';
+import { readBattleWorkerResult } from './battle-worker-values.ts';
 
 export interface BattleWorkerPort {
   postMessage(message: BattleWorkerRequest): void;
   terminate(): void;
   onmessage: ((event: MessageEvent<unknown>) => void) | null;
-  onerror: ((event: ErrorEvent) => unknown) | null;
+  onerror: ((event: ErrorEvent) => void) | null;
   onmessageerror: ((event: MessageEvent<unknown>) => void) | null;
 }
 
@@ -21,7 +27,9 @@ type PendingRequest = Readonly<{
 }>;
 
 export interface BattleExecutor {
-  run(job: BattleWorkerJob): Promise<unknown>;
+  run<Kind extends BattleJobKind>(
+    job: BattleWorkerJob<Kind>,
+  ): Promise<BattleWorkerResultByKind[Kind]>;
   close(): void;
 }
 
@@ -30,26 +38,36 @@ export function createBattleExecutor(worker: BattleWorkerPort): BattleExecutor {
   let closed = false;
   const pending = new Map<number, PendingRequest>();
   const rejectAll = (error: Error) => {
-    for (const request of pending.values()) request.reject(error);
+    for (const request of pending.values()) {
+      request.reject(error);
+    }
     pending.clear();
   };
   worker.onmessage = ({ data }: MessageEvent<unknown>) => {
     const id = battleWorkerMessageId(data);
-    if (id === undefined) return;
+    if (id === undefined) {
+      return;
+    }
     const request = pending.get(id);
-    if (!request) return;
+    if (!request) {
+      return;
+    }
     pending.delete(id);
     try {
       const response = readBattleWorkerResponse(data);
       request.context.assertMatches(response.context);
-      if ('error' in response) throw new Error(response.error);
+      if ('error' in response) {
+        throw new Error(response.error);
+      }
       request.resolve(response.battle);
     } catch (error) {
       request.reject(error);
     }
   };
   const fail = () => {
-    if (closed) return;
+    if (closed) {
+      return;
+    }
     closed = true;
     rejectAll(new Error('Battle worker failed'));
     worker.terminate();
@@ -57,8 +75,12 @@ export function createBattleExecutor(worker: BattleWorkerPort): BattleExecutor {
   worker.onerror = fail;
   worker.onmessageerror = fail;
   return {
-    run(job: BattleWorkerJob): Promise<unknown> {
-      if (closed) return Promise.reject(new Error('Battle worker closed'));
+    run<Kind extends BattleJobKind>(
+      job: BattleWorkerJob<Kind>,
+    ): Promise<BattleWorkerResultByKind[Kind]> {
+      if (closed) {
+        return Promise.reject(new Error('Battle worker closed'));
+      }
       const id = ++sequence;
       let context: SectorOperationContext;
       try {
@@ -69,8 +91,12 @@ export function createBattleExecutor(worker: BattleWorkerPort): BattleExecutor {
       } catch (error) {
         return Promise.reject(error);
       }
-      return new Promise<unknown>((resolve, reject) => {
-        pending.set(id, { resolve, reject, context });
+      return new Promise<BattleWorkerResultByKind[Kind]>((resolve, reject) => {
+        pending.set(id, {
+          resolve: (value) => resolve(readBattleWorkerResult(job.kind, value)),
+          reject,
+          context,
+        });
         try {
           worker.postMessage({
             id,
@@ -84,7 +110,9 @@ export function createBattleExecutor(worker: BattleWorkerPort): BattleExecutor {
       });
     },
     close() {
-      if (closed) return;
+      if (closed) {
+        return;
+      }
       closed = true;
       rejectAll(new Error('Battle worker closed'));
       worker.terminate();

@@ -18,7 +18,7 @@ const candidates = ['one', 'two', 'three'].map((characterId) => ({
   available: true,
 }));
 
-test('forming a squad transfers only selected members and preserves physical locations', () => {
+void test('forming a squad transfers only selected members and preserves physical locations', () => {
   const first = squad('first', ['one', 'two']);
   const second = squad('second', ['three']);
   const formed = Squad.form('third', 'Nueva escuadra', 'retiro');
@@ -37,7 +37,7 @@ test('forming a squad transfers only selected members and preserves physical loc
   assert.deepEqual(formed.memberIds, ['one', 'three']);
 });
 
-test('locked source, duplicate selection, absent candidate and location mismatch refuse before membership changes', () => {
+void test('locked source, duplicate selection, absent candidate and location mismatch refuse before membership changes', () => {
   for (const failure of ['locked', 'duplicate', 'absent', 'location']) {
     const first = squad('first', ['one'], failure === 'locked');
     const target = squad('target', ['two']);
@@ -58,7 +58,7 @@ test('locked source, duplicate selection, absent candidate and location mismatch
   }
 });
 
-test('a full force can replace a vacant squad, but cannot exceed its squad count', () => {
+void test('a full force can replace a vacant squad, but cannot exceed its squad count', () => {
   const squads = Array.from({ length: 8 }, (_, index) => squad(String(index), [String(index)]));
   const target = Squad.form('new', 'Reserva', 'retiro');
   const available = [{ characterId: '0', locationId: 'retiro', available: true }];
@@ -66,7 +66,9 @@ test('a full force can replace a vacant squad, but cannot exceed its squad count
     () => new SquadFormationService().form(squads, target, ['0'], available),
     /too-many-squads/,
   );
-  squads[7].replaceMembers([]);
+  const vacantSquad = squads[7];
+  assert.ok(vacantSquad);
+  vacantSquad.replaceMembers([]);
   const formed = new SquadFormationService().form(squads, target, ['0'], available);
   assert.equal(formed.squads.length, 8);
   assert.equal(formed.discardedSquadId, '7');

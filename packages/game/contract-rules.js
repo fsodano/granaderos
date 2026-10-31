@@ -1,7 +1,3 @@
-import {
-  CONTRACT_RULE_FIELDS,
-  validateContractRules,
-} from '../campaign-format/campaign-rules-schema.js';
 export {
   CONTRACT_RULE_FIELDS,
   validateContractRules,

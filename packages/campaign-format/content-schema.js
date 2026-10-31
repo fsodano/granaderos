@@ -48,6 +48,7 @@ import { validStartingCondition, validStartingSupplies } from './character-start
 
 export const CONTENT_FORMAT = 'granaderos-content';
 export const CONTENT_LIMIT = 2_000_000;
+/** @type {readonly (keyof import('./types.ts').CharacterAttributes)[]} */
 export const ATTRIBUTE_FIELDS = Object.freeze([
   'maxHp',
   'agility',
@@ -75,9 +76,12 @@ export class CampaignContentSchema {
   #world;
   #identities;
 
+  /** @returns {string[]} */
   validate(content, world = content?.world) {
     this.#errors = [];
-    if (!record(content)) return ['Contenido: se necesita un objeto.'];
+    if (!record(content)) {
+      return ['Contenido: se necesita un objeto.'];
+    }
     this.#content = content;
     this.#world = world;
     this.#check(
@@ -93,13 +97,16 @@ export class CampaignContentSchema {
       'Habitantes originales',
       'elegí si se incluyen los habitantes genéricos del mapa.',
     );
-    for (const field of ['characters', 'weapons', 'placements'])
+    for (const field of ['characters', 'weapons', 'placements']) {
       this.#check(
         Array.isArray(content[field]) && content[field].length <= CATALOGUE_LIMIT,
         field,
         'se necesita una lista de hasta 500 elementos.',
       );
-    if (this.#errors.length) return [...this.#errors];
+    }
+    if (this.#errors.length) {
+      return [...this.#errors];
+    }
     this.#identities = {
       quests: new Set(
         (Array.isArray(content.quests) ? content.quests : []).map((quest) => quest?.id),
@@ -120,16 +127,24 @@ export class CampaignContentSchema {
         identifiers.add(entry.id);
       }
     }
-    if (this.#errors.length) return [...this.#errors];
+    if (this.#errors.length) {
+      return [...this.#errors];
+    }
     try {
       validateContentQuests(content.quests, this.#identities.characters);
     } catch (error) {
       this.#errors.push(error.message);
     }
     this.#campaignOptions();
-    for (const character of content.characters) this.#character(character);
-    for (const weapon of content.weapons) this.#weapon(weapon);
-    for (const placement of content.placements) this.#placement(placement);
+    for (const character of content.characters) {
+      this.#character(character);
+    }
+    for (const weapon of content.weapons) {
+      this.#weapon(weapon);
+    }
+    for (const placement of content.placements) {
+      this.#placement(placement);
+    }
     this.#placementCycles();
     return [...this.#errors];
   }
@@ -169,24 +184,31 @@ export class CampaignContentSchema {
     );
     if (content.errands !== undefined) {
       this.#errors.push(...validateErrandDefinitions(content.errands, context));
-      if (!this.#errors.length) this.#errors.push(...validateErrandContactReferences(context));
+      if (!this.#errors.length) {
+        this.#errors.push(...validateErrandContactReferences(context));
+      }
     }
-    if (content.arrivalSites !== undefined)
+    if (content.arrivalSites !== undefined) {
       this.#errors.push(...validateArrivalSites(content.arrivalSites, context));
+    }
     for (const [field, group] of Object.entries(FORCE_EQUIPMENT_GROUPS)) {
       for (const equipmentField of [field, group.bladeField]) {
-        if (content[equipmentField] !== undefined)
+        if (content[equipmentField] !== undefined) {
           this.#errors.push(
             ...validateForceEquipment(field, content[equipmentField], this.#identities.weapons),
           );
+        }
       }
-      if (content[group.appearanceField] !== undefined)
+      if (content[group.appearanceField] !== undefined) {
         this.#errors.push(...validateForceAppearance(field, content[group.appearanceField]));
+      }
     }
   }
 
   #check(condition, path, message) {
-    if (!condition) this.#errors.push(`${path}: ${message}`);
+    if (!condition) {
+      this.#errors.push(`${path}: ${message}`);
+    }
   }
 
   #text(value, path, maximum, allowEmpty = false) {
@@ -209,8 +231,9 @@ export class CampaignContentSchema {
     this.#text(character.nickname, `${character.id}.nickname`, 100);
     this.#text(character.role, `${character.id}.role`, 200, true);
     this.#text(character.biography, `${character.id}.biography`, 5000, true);
-    if (character.personality !== undefined)
+    if (character.personality !== undefined) {
       this.#text(character.personality, `${character.id}.personality`, 2000, true);
+    }
     this.#check(
       isContentImageReference(character.portrait) &&
         (!character.portrait.startsWith('data:') || character.portrait.length < 350000),
@@ -227,12 +250,13 @@ export class CampaignContentSchema {
       `${character.id}.weapon`,
       'el arma no existe.',
     );
-    if (character.blade !== undefined)
+    if (character.blade !== undefined) {
       this.#check(
         identities.weapons.has(character.blade),
         `${character.id}.blade`,
         'el arma blanca no existe.',
       );
+    }
     this.#check(
       record(character.attributes) &&
         Object.keys(character.attributes).length === ATTRIBUTE_FIELDS.length &&
@@ -240,33 +264,38 @@ export class CampaignContentSchema {
       `${character.id}.attributes`,
       'la lista de atributos no es válida.',
     );
-    for (const field of ATTRIBUTE_FIELDS)
+    for (const field of ATTRIBUTE_FIELDS) {
       this.#check(
         integer(character.attributes?.[field], field === 'maxHp' ? 15 : 0, 100),
         `${character.id}.${field}`,
         'atributo fuera de rango.',
       );
-    if (character.arrivalHours !== undefined)
+    }
+    if (character.arrivalHours !== undefined) {
       this.#check(
         integer(character.arrivalHours, 0, 168),
         `${character.id}.arrivalHours`,
         'el viaje debe durar de 0 a 168 horas.',
       );
-    if (character.ridingSkill !== undefined)
+    }
+    if (character.ridingSkill !== undefined) {
       this.#check(
         integer(character.ridingSkill, 0, 100),
         character.id,
         'equitación fuera de rango.',
       );
+    }
     for (const [field, allowed, message] of [
       ['recruitmentSource', ['contract', 'encounter'], 'origen de contratación inválido.'],
       ['service', ['contract', 'permanent'], 'servicio inválido.'],
       ['progression', ['experience', 'fixed'], 'progreso inválido.'],
-    ])
-      if (character[field] !== undefined)
+    ]) {
+      if (character[field] !== undefined) {
         this.#check(allowed.includes(character[field]), character.id, message);
+      }
+    }
     for (const field of ['traits', 'abilities']) {
-      if (character[field] !== undefined)
+      if (character[field] !== undefined) {
         this.#check(
           Array.isArray(character[field]) &&
             new Set(character[field]).size === character[field].length &&
@@ -276,6 +305,7 @@ export class CampaignContentSchema {
           character.id,
           field === 'traits' ? 'especialidades inválidas.' : 'habilidades no válidas.',
         );
+      }
     }
     if (character.speech !== undefined) {
       this.#check(
@@ -285,35 +315,43 @@ export class CampaignContentSchema {
         character.id,
         'la lista de frases no es válida.',
       );
-      if (record(character.speech))
-        for (const [event, line] of Object.entries(character.speech))
+      if (record(character.speech)) {
+        for (const [event, line] of Object.entries(character.speech)) {
           this.#text(line, `${character.id}.speech.${event}`, SPEECH_LINE_LIMIT, true);
+        }
+      }
     }
-    if (character.skinTone !== undefined)
+    if (character.skinTone !== undefined) {
       this.#check(
         ['light', 'brown', 'dark'].includes(character.skinTone),
         character.id,
         'paleta de piel no válida.',
       );
-    if (character.serviceGuarantee !== undefined)
+    }
+    if (character.serviceGuarantee !== undefined) {
       this.#check(
         integer(character.serviceGuarantee, 0, 1000000),
         `${character.id}.serviceGuarantee`,
         'garantía inválida; solo un servicio por contrato admite fondos.',
       );
-    if (character.startingSupplies !== undefined)
+    }
+    if (character.startingSupplies !== undefined) {
       this.#check(
         validStartingSupplies(character.startingSupplies),
         `${character.id}.startingSupplies`,
         'los seis suministros iniciales necesitan cantidades enteras de 0 a 1000.',
       );
-    if (character.startingCondition !== undefined)
+    }
+    if (character.startingCondition !== undefined) {
       this.#check(
         validStartingCondition(character.startingCondition, character.attributes?.maxHp),
         `${character.id}.startingCondition`,
         'el estado inicial necesita cinco valores enteros: salud de 1 al máximo, energía y fatiga de 0 a 100, sangrado de 0 a 10 y heridas vendadas dentro de la salud perdida. El sangrado necesita una herida sin vendar.',
       );
-    if (character.encounter !== undefined) this.#encounter(character);
+    }
+    if (character.encounter !== undefined) {
+      this.#encounter(character);
+    }
     const dialogue = character.encounter?.dialogue;
     if (dialogue !== undefined) {
       try {
@@ -354,7 +392,9 @@ export class CampaignContentSchema {
       character.id,
       'la configuración del encuentro no es válida.',
     );
-    if (!record(encounter)) return;
+    if (!record(encounter)) {
+      return;
+    }
     this.#check(
       typeof encounter.recruitable === 'boolean',
       character.id,
@@ -402,7 +442,9 @@ export class CampaignContentSchema {
       'stockAP',
       'stockDamage',
     ]) {
-      if (weapon[field] === undefined) continue;
+      if (weapon[field] === undefined) {
+        continue;
+      }
       this.#check(
         Number.isSafeInteger(weapon[field]) && weapon[field] >= 0,
         `${weapon.id}.${field}`,
@@ -410,26 +452,29 @@ export class CampaignContentSchema {
       );
     }
     for (const field of ['weight', 'reach', 'stockReach', 'materialRangeSlope']) {
-      if (weapon[field] !== undefined)
+      if (weapon[field] !== undefined) {
         this.#check(
           Number.isFinite(weapon[field]),
           `${weapon.id}.${field}`,
           'valor fuera de rango.',
         );
+      }
     }
-    if (weapon.art !== undefined)
+    if (weapon.art !== undefined) {
       this.#check(
         isContentImageReference(weapon.art) &&
           (!weapon.art.startsWith('data:') || weapon.art.length < 350000),
         `${weapon.id}.art`,
         'la imagen del arma no es válida.',
       );
-    if (weapon.ammunitionFamily !== undefined)
+    }
+    if (weapon.ammunitionFamily !== undefined) {
       this.#check(
         typeof weapon.ammunitionFamily === 'string',
         `${weapon.id}.ammunitionFamily`,
         'la familia de munición no es válida.',
       );
+    }
     this.#projectileProfile(weapon, weapon.id);
     if (weapon.alternativeLoads !== undefined) {
       const loads = weapon.alternativeLoads;
@@ -462,31 +507,39 @@ export class CampaignContentSchema {
         `${weapon.id}.alternativeLoads`,
         'las cargas alternativas no son válidas.',
       );
-      if (Array.isArray(loads))
-        for (const load of loads) if (record(load)) this.#projectileProfile(load, weapon.id);
+      if (Array.isArray(loads)) {
+        for (const load of loads) {
+          if (record(load)) {
+            this.#projectileProfile(load, weapon.id);
+          }
+        }
+      }
     }
   }
 
   #projectileProfile(profile, identifier) {
-    if (profile.projectileEnergy !== undefined)
+    if (profile.projectileEnergy !== undefined) {
       this.#check(
         isProjectileEnergyRecord(profile.projectileEnergy),
         identifier,
         'El perfil de energía del proyectil no es válido.',
       );
-    if (profile.projectileAirDrag !== undefined)
+    }
+    if (profile.projectileAirDrag !== undefined) {
       this.#check(
         isProjectileAirDragRecord(profile.projectileAirDrag) &&
           isProjectileEnergyRecord(profile.projectileEnergy),
         identifier,
         'La pérdida de energía en el aire no es válida.',
       );
-    if (profile.materialRangeSlope !== undefined)
+    }
+    if (profile.materialRangeSlope !== undefined) {
       this.#check(
         validMaterialRangeSlope(profile.materialRangeSlope),
         identifier,
         'La pérdida de penetración por distancia no es válida.',
       );
+    }
   }
 
   #placement(placement) {
@@ -521,7 +574,7 @@ export class CampaignContentSchema {
       placement.id,
       'seleccioná sectores válidos; la ubicación fija necesita uno.',
     );
-    if (placement.selection !== undefined)
+    if (placement.selection !== undefined) {
       this.#check(
         ['random', 'alternate'].includes(placement.selection) &&
           (placement.selection !== 'alternate' ||
@@ -529,12 +582,14 @@ export class CampaignContentSchema {
         placement.id,
         'la alternancia diaria necesita dos celdas.',
       );
-    if (placement.loadedGuard !== undefined)
+    }
+    if (placement.loadedGuard !== undefined) {
       this.#check(
         ['current', 'range'].includes(placement.loadedGuard),
         placement.id,
         'protección de escena inválida.',
       );
+    }
     this.#check(
       integer(placement.moveChance, 0, 100),
       placement.id,

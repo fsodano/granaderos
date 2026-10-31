@@ -30,12 +30,16 @@ const contacted = (flight, id) =>
   );
 
 export function captureFirearmNearMissFeedback(before, execute) {
-  if (collecting) return execute();
+  if (collecting) {
+    return execute();
+  }
   const current = { before, ids: new Set(), presented: false, consumed: false };
   collecting = current;
   try {
     const after = execute();
-    if (current.ids.size && after !== before) results.set(after, current);
+    if (current.ids.size && after !== before) {
+      results.set(after, current);
+    }
     return after;
   } finally {
     collecting = null;
@@ -45,7 +49,9 @@ export function captureFirearmNearMissCheckpoint() {
   return collecting ? new Set(collecting.ids) : null;
 }
 export function restoreFirearmNearMissCheckpoint(checkpoint) {
-  if (collecting && checkpoint) collecting.ids = new Set(checkpoint);
+  if (collecting && checkpoint) {
+    collecting.ids = new Set(checkpoint);
+  }
 }
 export function recordFirearmNearMissFeedback(
   state,
@@ -62,14 +68,17 @@ export function recordFirearmNearMissFeedback(
       (value) => Number.isFinite(value) && value > 0,
     ) ||
     !(damagedBodies instanceof Set)
-  )
+  ) {
     return [];
+  }
   const flights = flight?.shotLoad
     ? flight.pellets?.map((pellet) => pellet.flight)
     : flight
       ? [flight]
       : [];
-  if (!flights?.length) return [];
+  if (!flights?.length) {
+    return [];
+  }
   const ids = state.units
     .filter(
       (unit) =>
@@ -80,8 +89,12 @@ export function recordFirearmNearMissFeedback(
         flights.some((ray) => firearmPassesNear(state, attacker, unit, ray)),
     )
     .map((unit) => unit.id);
-  for (const id of ids) collecting?.ids.add(id);
-  if (ids.length) emit?.(ids);
+  for (const id of ids) {
+    collecting?.ids.add(id);
+  }
+  if (ids.length) {
+    emit?.(ids);
+  }
   return ids;
 }
 export function getFirearmNearMissFeedback(before, after) {
@@ -90,7 +103,9 @@ export function getFirearmNearMissFeedback(before, after) {
 }
 export function markFirearmNearMissPresented(after) {
   const receipt = results.get(after);
-  if (receipt) receipt.presented = true;
+  if (receipt) {
+    receipt.presented = true;
+  }
 }
 export function consumeFirearmNearMissFeedback(before, after, frame) {
   if (frame) {
@@ -101,8 +116,9 @@ export function consumeFirearmNearMissFeedback(before, after, frame) {
       frame.state?.units !== after.units ||
       !Array.isArray(frame.nearMissIds) ||
       consumedFrames.has(frame)
-    )
+    ) {
       return [];
+    }
     consumedFrames.add(frame);
     return [...new Set(frame.nearMissIds)].filter(
       (id) => typeof id === 'string' && after.units.some((unit) => unit.id === id && capable(unit)),
@@ -115,8 +131,9 @@ export function consumeFirearmNearMissFeedback(before, after, frame) {
     receipt.presented ||
     receipt.consumed ||
     before === after
-  )
+  ) {
     return [];
+  }
   receipt.consumed = true;
   return [...receipt.ids];
 }

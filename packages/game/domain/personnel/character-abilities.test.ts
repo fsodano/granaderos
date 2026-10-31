@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { jsonRoundTrip } from '../../../../tests/json-round-trip.ts';
 import {
   CharacterAbilities,
   CharacterCapability,
@@ -8,7 +9,7 @@ import {
 } from './character-abilities.ts';
 import { Character } from './character.ts';
 
-test('ability ratings retain zero aptitude and the full authored range', () => {
+void test('ability ratings retain zero aptitude and the full authored range', () => {
   const abilities = new CharacterAbilities({
     ratings: { medical: 0, marksmanship: 100 },
     traits: [],
@@ -18,17 +19,18 @@ test('ability ratings retain zero aptitude and the full authored range', () => {
   assert.equal(abilities.meetsRating(CharacterRating.Marksmanship, 100), true);
   assert.equal(abilities.meetsRating(CharacterRating.Medical, 1), false);
   assert.equal(abilities.rating(CharacterRating.Stealth), 0);
-  for (const value of [-1, 101, 1.5, NaN, Infinity])
+  for (const value of [-1, 101, 1.5, NaN, Infinity]) {
     assert.throws(
       () => new CharacterAbilities({ ratings: { medical: value }, traits: [], capabilities: [] }),
     );
+  }
+  const invalidRatings = { medical: 50, invalid: 50 };
   assert.throws(
-    () =>
-      new CharacterAbilities({ ratings: { invalid: 50 } as never, traits: [], capabilities: [] }),
+    () => new CharacterAbilities({ ratings: invalidRatings, traits: [], capabilities: [] }),
   );
 });
 
-test('training respects the lifetime gain and rating limits without changing the source value', () => {
+void test('training respects the lifetime gain and rating limits without changing the source value', () => {
   const abilities = new CharacterAbilities({
     ratings: { strength: 65, medical: 98 },
     traits: [],
@@ -39,12 +41,14 @@ test('training respects the lifetime gain and rating limits without changing the
   assert.equal(trained.rating(CharacterRating.Strength), 75);
   assert.equal(abilities.rating(CharacterRating.Medical), 98);
   assert.equal(abilities.rating(CharacterRating.Strength), 65);
-  for (const gain of [-1, 11, 0.5]) assert.throws(() => abilities.withTraining({ medical: gain }));
+  for (const gain of [-1, 11, 0.5]) {
+    assert.throws(() => abilities.withTraining({ medical: gain }));
+  }
   assert.throws(() => abilities.withTraining({}, 101));
   assert.throws(() => abilities.withTraining({ wisdom: 1 }));
 });
 
-test('named abilities are immutable and repeated officer traits have one meaning', () => {
+void test('named abilities are immutable and repeated officer traits have one meaning', () => {
   const input = {
     ratings: { medical: 80 },
     traits: [CharacterTrait.Teacher, CharacterTrait.Teacher],
@@ -55,7 +59,7 @@ test('named abilities are immutable and repeated officer traits have one meaning
   input.traits.length = 0;
   input.capabilities.length = 0;
   const snapshot = abilities.toSnapshot();
-  (snapshot.ratings as { medical: number }).medical = 1;
+  Object.assign(snapshot.ratings, { medical: 1 });
   assert.equal(abilities.rating(CharacterRating.Medical), 80);
   assert.equal(abilities.hasTrait(CharacterTrait.Teacher), true);
   assert.equal(abilities.hasCapability(CharacterCapability.RapidFirstAid), true);
@@ -68,7 +72,7 @@ test('named abilities are immutable and repeated officer traits have one meaning
   );
 });
 
-test('character restoration owns one ability value and preserves its behavior', () => {
+void test('character restoration owns one ability value and preserves its behavior', () => {
   const character = Character.restore({
     id: 'medic',
     health: 70,
@@ -83,7 +87,7 @@ test('character restoration owns one ability value and preserves its behavior', 
     },
   });
   assert.equal(character.abilities, character.abilities);
-  const restored = Character.restore(JSON.parse(JSON.stringify(character.snapshot())));
+  const restored = Character.restore(jsonRoundTrip(character.snapshot()));
   assert.equal(restored.abilities.meetsRating(CharacterRating.Medical, 80), true);
   assert.equal(restored.abilities.hasTrait(CharacterTrait.FieldRescuer), true);
   assert.equal(restored.abilities.hasCapability(CharacterCapability.RapidFirstAid), true);

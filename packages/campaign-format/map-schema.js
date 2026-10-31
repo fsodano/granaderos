@@ -21,24 +21,35 @@ export const MAP_SCHEMA_VERSION = 2;
 const obj = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 const str = (v) => typeof v === 'string' && v.length > 0 && v.length <= 200;
 function guard(v, depth = 0) {
-  if (depth > 15) throw Error('Documento demasiado anidado.');
-  if (typeof v === 'number' && !Number.isFinite(v)) throw Error('Número no válido.');
-  if (v && typeof v === 'object')
+  if (depth > 15) {
+    throw Error('Documento demasiado anidado.');
+  }
+  if (typeof v === 'number' && !Number.isFinite(v)) {
+    throw Error('Número no válido.');
+  }
+  if (v && typeof v === 'object') {
     for (const [k, x] of Object.entries(v)) {
-      if (['__proto__', 'constructor', 'prototype'].includes(k)) throw Error('Clave no permitida.');
+      if (['__proto__', 'constructor', 'prototype'].includes(k)) {
+        throw Error('Clave no permitida.');
+      }
       guard(x, depth + 1);
     }
+  }
 }
+/** @returns {{valid: boolean, errors: string[], warnings: string[]}} */
 export function validateMapDocument(input) {
   const errors = [],
     warnings = [];
   try {
-    if (!obj(input) || JSON.stringify(input).length > 3000000)
+    if (!obj(input) || JSON.stringify(input).length > 3000000) {
       throw Error('Documento no válido o demasiado grande.');
+    }
     guard(input);
     const d = input,
       need = (ok, message) => {
-        if (!ok) throw Error(message);
+        if (!ok) {
+          throw Error(message);
+        }
       };
     const wallMetadata = (wall, { runtime = false } = {}) => {
       // Authored wall edges belong to the ground floor. Upper floors and
@@ -48,11 +59,12 @@ export function validateMapDocument(input) {
           (wall.elevation === undefined || wall.elevation === 0),
         'La pared debe estar al nivel del suelo.',
       );
-      for (const field of ['blocked', 'blocksSight', 'open', 'locked'])
+      for (const field of ['blocked', 'blocksSight', 'open', 'locked']) {
         need(
           wall[field] === undefined || typeof wall[field] === 'boolean',
           'Estado de pared no válido.',
         );
+      }
       need(
         wall.cover === undefined ||
           (Number.isFinite(wall.cover) && wall.cover >= 0 && wall.cover <= 100),
@@ -122,14 +134,18 @@ export function validateMapDocument(input) {
           ].includes(t.type),
         'Terreno no válido o duplicado.',
       );
-      for (const field of ['blocksSight', 'locked', 'open'])
-        if (t[field] !== undefined)
+      for (const field of ['blocksSight', 'locked', 'open']) {
+        if (t[field] !== undefined) {
           need(typeof t[field] === 'boolean', 'Propiedad de terreno no válida.');
+        }
+      }
       need(
         t.buildingId == null && t.roomId == null,
         'La estructura debe estar en la capa de edificios.',
       );
-      if (['wall', 'door', 'window'].includes(t.type)) wallMetadata(t);
+      if (['wall', 'door', 'window'].includes(t.type)) {
+        wallMetadata(t);
+      }
       keys.add(cellKey(t));
     }
     if (d.boundaryRoads !== undefined) {
@@ -198,7 +214,9 @@ export function validateMapDocument(input) {
         ids.add(e.id);
       }
     }
-    for (const f of d.features) need(Boolean(FEATURES[f.type]), 'Accidente del terreno no válido.');
+    for (const f of d.features) {
+      need(Boolean(FEATURES[f.type]), 'Accidente del terreno no válido.');
+    }
     const occupied = new Set(),
       roomIds = new Set();
     for (const b of d.buildings) {
@@ -207,11 +225,12 @@ export function validateMapDocument(input) {
         roofFinish: ROOF_FINISHES,
         doorStyle: DOOR_STYLES,
         windowStyle: WINDOW_STYLES,
-      }))
+      })) {
         need(
           b[key] === undefined || Object.hasOwn(catalog, b[key]),
           'Acabado de edificio no válido.',
         );
+      }
       need(
         Number.isInteger(b.width) &&
           Number.isInteger(b.height) &&
@@ -227,11 +246,12 @@ export function validateMapDocument(input) {
           Array.isArray(b.rooms),
         'Edificio no válido.',
       );
-      for (let y = b.y; y < b.y + b.height; y++)
+      for (let y = b.y; y < b.y + b.height; y++) {
         for (let x = b.x; x < b.x + b.width; x++) {
           need(!occupied.has(`${x},${y}`), 'Los edificios se superponen.');
           occupied.add(`${x},${y}`);
         }
+      }
       need(
         !(d.wallEdges ?? []).some((edge) =>
           wallEdgeCells(edge).every(
@@ -278,7 +298,7 @@ export function validateMapDocument(input) {
           'Estilo de abertura no válido.',
         );
         wallKeys.add(edge ? wallEdgeKey(w) : cellKey(w));
-        if (w.type === 'door')
+        if (w.type === 'door') {
           need(
             str(w.doorId) &&
               (!ids.has(w.doorId) || w.doorId === w.id) &&
@@ -286,7 +306,10 @@ export function validateMapDocument(input) {
               typeof w.locked === 'boolean',
             'Puerta no válida.',
           );
-        if (w.doorId) ids.add(w.doorId);
+        }
+        if (w.doorId) {
+          ids.add(w.doorId);
+        }
       }
       for (const r of b.rooms) {
         need(
@@ -315,10 +338,11 @@ export function validateMapDocument(input) {
         'Mueble no válido.',
       );
       need(propCells(p).every(coord), 'Mueble fuera del mapa.');
-      if (p.rotation !== undefined)
+      if (p.rotation !== undefined) {
         need([0, 90, 180, 270].includes(p.rotation), 'Rotación no válida.');
+      }
     }
-    for (const i of d.items)
+    for (const i of d.items) {
       need(
         Boolean(ITEM_TYPES[i.type]) &&
           Number.isInteger(i.count) &&
@@ -330,9 +354,11 @@ export function validateMapDocument(input) {
             )),
         'Objeto o contenedor no válido.',
       );
-    for (const s of d.spawns)
+    }
+    for (const s of d.spawns) {
       need(['player', 'enemy', 'civilian'].includes(s.side), 'Punto de aparición no válido.');
-    for (const l of d.lights)
+    }
+    for (const l of d.lights) {
       need(
         Number.isFinite(l.radius) &&
           l.radius > 0 &&
@@ -342,7 +368,10 @@ export function validateMapDocument(input) {
           l.intensity <= 1,
         'Luz no válida.',
       );
-    for (const e of d.exits) need(str(e.target), 'Destino de salida no válido.');
+    }
+    for (const e of d.exits) {
+      need(str(e.target), 'Destino de salida no válido.');
+    }
     validateTacticalSpaceRecords({ ...d, tiles: d.terrain });
   } catch (error) {
     errors.push(error.message);

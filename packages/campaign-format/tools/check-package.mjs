@@ -13,6 +13,8 @@ for (const name of readdirSync(root).filter((name) => name.endsWith('.js'))) {
     }
   }
   const result = spawnSync(process.execPath, ['--check', file], { stdio: 'inherit' });
-  if (result.status !== 0) process.exit(result.status ?? 1);
+  if (result.status !== 0) {
+    process.exit(result.status ?? 1);
+  }
 }
 console.log('Campaign format source and package boundary verified.');

@@ -36,17 +36,18 @@ function context(funds = 100, permanent = false) {
   };
 }
 
-test('renewal banks all remaining service seconds and pays once through the same character', () => {
+void test('renewal banks all remaining service seconds and pays once through the same character', () => {
   const renewal = context();
   const character = renewal.character;
   const contract = new ServiceRenewalService().renew(renewal);
-  assert.equal(contract.expiresAt!.seconds, 691217);
+  assert.ok(contract.expiresAt);
+  assert.equal(contract.expiresAt.seconds, 691217);
   assert.equal(contract.startedAt.seconds, 3600);
   assert.equal(character.service, contract);
   assert.equal(renewal.treasury.balance.pesos, 60);
 });
 
-test('refused renewal leaves the person and treasury unchanged', () => {
+void test('refused renewal leaves the person and treasury unchanged', () => {
   for (const renewal of [context(10), context(100, true), { ...context(), durationSeconds: 0 }]) {
     const before = renewal.character.service;
     const funds = renewal.treasury.balance.pesos;
@@ -56,7 +57,7 @@ test('refused renewal leaves the person and treasury unchanged', () => {
   }
 });
 
-test('health belongs to the character and service termination preserves the person and its wounds', () => {
+void test('health belongs to the character and service termination preserves the person and its wounds', () => {
   const renewal = context();
   const injury = renewal.character.health.sufferInjury(18, 2);
   assert.equal(injury.healthLost, 18);

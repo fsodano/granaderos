@@ -1,18 +1,22 @@
 'use client';
+import type {
+  CampaignContent,
+  CareRules as CareRulesDefinition,
+} from '../../../../../packages/campaign-format/types.ts';
 import {
   DEFAULT_CARE_RULES,
   CARE_RULE_FIELDS,
   STRATEGIC_BLEEDING_FIELD,
   DEFAULT_STRATEGIC_BLEEDING_PERCENT,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 export default function CareRules({
   draft,
   onChange,
 }: {
-  draft: any;
-  onChange: (value: any) => void;
+  draft: CampaignContent;
+  onChange: (value: CampaignContent) => void;
 }) {
-  const rules = draft.careRules ?? DEFAULT_CARE_RULES;
+  const rules: CareRulesDefinition = draft.careRules ?? DEFAULT_CARE_RULES;
   return (
     <section aria-label="Reglas de atención y descanso">
       <h2>Atención médica y descanso</h2>
@@ -25,7 +29,7 @@ export default function CareRules({
         {[
           ...CARE_RULE_FIELDS.filter(([key]) => key !== 'dressingPrice'),
           STRATEGIC_BLEEDING_FIELD,
-        ].map(([key, label, min, max]: any) => (
+        ].map(([key, label, min, max]) => (
           <label key={key}>
             {label}
             <input
@@ -62,9 +66,11 @@ export default function CareRules({
       <button
         onClick={() => {
           const next = { ...draft };
-          if (next.careRules)
+          if (next.careRules) {
             next.careRules = { ...DEFAULT_CARE_RULES, dressingPrice: rules.dressingPrice };
-          else delete next.careRules;
+          } else {
+            delete next.careRules;
+          }
           onChange(next);
         }}
       >

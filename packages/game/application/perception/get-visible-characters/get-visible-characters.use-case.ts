@@ -12,7 +12,9 @@ export class GetVisibleCharactersUseCase {
   execute(): GetVisibleCharactersResponse {
     const characterIds = new Set<string>();
     for (const character of this.#repository.inspect()) {
-      if (character.visible) characterIds.add(character.characterId);
+      if (character.visible) {
+        characterIds.add(character.characterId);
+      }
     }
     return { characterIds: [...characterIds] };
   }

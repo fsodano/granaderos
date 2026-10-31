@@ -50,11 +50,15 @@ export class SectorOperationRunner<Snapshot extends SectorOperationState> {
       SectorTimeBudget.restore(snapshot).assertCanStartOperation();
       return execute(snapshot);
     } catch (error) {
-      if (!(error instanceof SectorTimeLimitReached)) throw error;
+      if (!(error instanceof SectorTimeLimitReached)) {
+        throw error;
+      }
       const accepted = this.#operation.acceptedSnapshot();
       this.#effects.restore(this.#effectsCheckpoint);
       const remainingSeconds = SectorTimeBudget.restore(accepted).remainingSeconds;
-      if (remainingSeconds > 0) advanceIdleTime(accepted, remainingSeconds);
+      if (remainingSeconds > 0) {
+        advanceIdleTime(accepted, remainingSeconds);
+      }
       accepted.pendingSectorOperation = this.#operation.continuation(accepted);
       accepted.lastError = null;
       return accepted;

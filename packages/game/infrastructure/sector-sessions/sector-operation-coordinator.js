@@ -39,7 +39,9 @@ export function remainingSectorRestSeconds(state, fallback) {
   return currentRunner?.remainingRestSeconds(state) ?? fallback;
 }
 export function coordinateSectorOperation(state, intent, execute, advanceIdleTime) {
-  if (currentRunner) return execute(state);
+  if (currentRunner) {
+    return execute(state);
+  }
   const input = structuredClone(state);
   const transaction = new SectorOperationTransaction(input);
   const createRunner = (snapshot) => {
@@ -56,13 +58,14 @@ export function coordinateSectorOperation(state, intent, execute, advanceIdleTim
         advanceIdleTime,
       ).execute({ order: intent.order });
     }
-    if (intent.kind === SectorOperationKind.Continue)
+    if (intent.kind === SectorOperationKind.Continue) {
       return new ResumeSectorOperationUseCase(
         new SnapshotResumeSectorOperationRepository(transaction),
         createRunner,
         execute,
         advanceIdleTime,
       ).execute();
+    }
     return new EndSectorTurnUseCase(
       new SnapshotEndSectorTurnRepository(transaction),
       createRunner,

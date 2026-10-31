@@ -1,5 +1,5 @@
 import { CharacterAbilities, CharacterRating } from '../../domain/personnel/character-abilities.ts';
-import { rosterFor } from '../../recruitment.js';
+import { rosterFor } from '../../recruitment.ts';
 import { legacyCharacterAbilities } from '../../character-abilities.js';
 
 export class CampaignCharacterAbilitiesMapper {
@@ -30,10 +30,14 @@ export class CampaignCharacterAbilitiesMapper {
       training,
       record.strength,
     );
-    if (!participant) return abilities;
+    if (!participant) {
+      return abilities;
+    }
     const snapshot = abilities.toSnapshot();
     for (const name of Object.values(CharacterRating)) {
-      if (participant[name] !== undefined) snapshot.ratings[name] = participant[name];
+      if (participant[name] !== undefined) {
+        snapshot.ratings[name] = participant[name];
+      }
     }
     return new CharacterAbilities(snapshot);
   }

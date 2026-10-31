@@ -1,0 +1,352 @@
+export interface ActorActionRequest {
+  action: string;
+  posture?: string;
+  mounted?: boolean;
+  equipment?: string;
+}
+export interface ActorActionOptions {
+  clip?: string;
+  loop?: boolean;
+  fromPosture?: string;
+  toPosture?: string;
+}
+export interface ActorActionCapability extends ActorActionOptions {
+  action: string;
+  posture: string;
+  equipment: string;
+  clip: string;
+}
+export interface ActorClipCapability extends ActorActionOptions {
+  name: string;
+  gesture: string;
+  posture: string;
+  equipment: string;
+  loop: boolean;
+  item?: string;
+  barrel?: number;
+  barrelClips?: readonly string[];
+  variant?: string;
+}
+export interface RecordedActorClip {
+  name: string;
+  loop?: boolean;
+  durationSeconds?: number;
+  duration?: number;
+  markers?: Record<string, number>;
+  events?: Record<string, number>;
+  locomotionSpeed?: number;
+}
+/** Presentation capabilities. These names never issue orders or change rules. */
+export const ACTOR_ACTION_CONTRACT_VERSION = 1;
+export const ACTOR_EQUIPMENT = Object.freeze([
+  'unarmed',
+  'long-gun',
+  'short-gun',
+  'blade',
+] as const);
+export const ACTOR_POSTURES = Object.freeze(['standing', 'crouched', 'prone', 'mounted'] as const);
+const prefix: Record<string, string> = {
+  standing: 'stand',
+  crouched: 'crouch',
+  prone: 'prone',
+  mounted: 'mounted',
+};
+const entries: ActorActionCapability[] = [];
+const clips = new Map<string, ActorClipCapability>();
+function add(
+  action: string,
+  posture: string,
+  equipment: string,
+  gesture = action,
+  options: ActorActionOptions = {},
+) {
+  const clip = options.clip ?? `${prefix[posture]}.${gesture}.${equipment}`;
+  const entry = Object.freeze({ action, posture, equipment, clip, ...options });
+  entries.push(entry);
+  if (!clips.has(clip)) {
+    clips.set(
+      clip,
+      Object.freeze({ name: clip, gesture, posture, equipment, loop: false, ...options }),
+    );
+  }
+}
+for (const posture of ACTOR_POSTURES) {
+  for (const equipment of ACTOR_EQUIPMENT) {
+    add('idle', posture, equipment, 'idle', { loop: true });
+    add(
+      posture === 'prone' ? 'crawl' : 'walk',
+      posture,
+      equipment,
+      posture === 'prone' ? 'crawl' : 'walk',
+      { loop: true },
+    );
+    if (posture === 'standing' || posture === 'mounted') {
+      add('run', posture, equipment, 'run', { loop: true });
+    }
+    if (posture === 'standing' || posture === 'crouched') {
+      for (const action of ['strafeLeft', 'strafeRight']) {
+        add(action, posture, equipment, action, { loop: true });
+      }
+    }
+    if (equipment === 'long-gun' || equipment === 'short-gun') {
+      for (const action of ['aim', 'fire', 'reload', 'reprime', 'repair', 'unload']) {
+        add(action, posture, equipment, action, { loop: action === 'aim' });
+      }
+    }
+    if (posture !== 'prone') {
+      add(
+        'strike',
+        posture,
+        equipment,
+        equipment === 'unarmed' ? 'punch' : equipment === 'blade' ? 'slash' : 'butt',
+      );
+      if (equipment === 'blade') {
+        add('brace', posture, equipment, 'brace', { loop: true });
+      }
+      if (equipment === 'long-gun') {
+        add('bayonet', posture, equipment, 'bayonet');
+        add('brace', posture, equipment, 'brace', { loop: true });
+      }
+    }
+  }
+}
+// Sharing is explicit and limited to the same visible hand gesture.
+const interactionGestures = {
+  heal: 'heal',
+  loot: 'pickup',
+  pickup: 'pickup',
+  containerLoot: 'pickup',
+  equip: 'equip',
+  weapon: 'equip',
+  equipLoot: 'equip',
+  drop: 'offer',
+  transfer: 'offer',
+  giveItem: 'offer',
+  steal: 'grab',
+  door: 'door',
+  environment: 'tool',
+  breach: 'breach',
+  free: 'free',
+  ration: 'ration',
+  prisonerEscort: 'signal',
+  fitBayonet: 'fitting',
+  removeBayonet: 'fitting',
+  attachment: 'fitting',
+  throwTorch: 'throw',
+  boleadoras: 'bolas',
+};
+for (const posture of ACTOR_POSTURES) {
+  for (const [action, gesture] of Object.entries(interactionGestures)) {
+    add(action, posture, 'any', gesture, { clip: `${prefix[posture]}.gesture.${gesture}` });
+  }
+}
+// Grenades and knives have paid standing preparation and cannot be thrown mounted.
+add('throwGrenade', 'standing', 'any', 'throw', { clip: 'stand.gesture.throw' });
+add('throwKnife', 'standing', 'any', 'throwKnife', { clip: 'stand.gesture.throwKnife' });
+for (const [from, to] of [
+  ['standing', 'crouched'],
+  ['crouched', 'standing'],
+  ['standing', 'prone'],
+  ['prone', 'standing'],
+  ['crouched', 'prone'],
+  ['prone', 'crouched'],
+] as const) {
+  add(`stance:${from}:${to}`, from, 'any', 'transition', {
+    clip: `transition.${prefix[from]}.${prefix[to]}`,
+    fromPosture: from,
+    toPosture: to,
+  });
+}
+for (const action of ['climbUp', 'climbDown', 'mount']) {
+  add(action, 'standing', 'any', action, { clip: `life.${action}` });
+}
+add('dismount', 'mounted', 'any', 'dismount', { clip: 'life.dismount' });
+for (const posture of ACTOR_POSTURES) {
+  for (const action of ['die', 'collapse', 'dead', 'unconscious', 'recover', 'hit', 'knockdown']) {
+    add(action, posture, 'any', action, {
+      clip: `life.${prefix[posture]}.${action}`,
+      loop: action === 'dead' || action === 'unconscious',
+    });
+  }
+}
+for (const action of ['artilleryFire', 'artilleryReload', 'artilleryMove', 'artilleryPivot']) {
+  add(action, 'standing', 'any', action, {
+    clip: `crew.${action}`,
+    loop: action === 'artilleryMove',
+  });
+}
+
+// A lance remains a blade in the rules. Only the item's visual binding
+// selects a long-shaft carry/brace/thrust instead of a sabre pose.
+const lanceOverrides: Record<string, string> = {};
+const knifeOverrides: Record<string, string> = {};
+for (const spec of [...clips.values()].filter((spec) => spec.equipment === 'blade')) {
+  const name = spec.name.replace('.slash.', '.thrust.').replace(/\.blade$/, '.lance');
+  lanceOverrides[spec.name] = name;
+  clips.set(
+    name,
+    Object.freeze({
+      ...spec,
+      name,
+      equipment: 'lance',
+      gesture: spec.gesture === 'slash' ? 'thrust' : spec.gesture,
+    }),
+  );
+  const knifeName = spec.name.replace(/\.blade$/, '.knife');
+  knifeOverrides[spec.name] = knifeName;
+  clips.set(knifeName, Object.freeze({ ...spec, name: knifeName, equipment: 'knife' }));
+}
+// A loading hand must meet the actual muzzle. Barrel lengths range from the
+// short blunderbuss to the full infantry musket; one shared reach cannot fit.
+const firearmOverrides: Record<string, Readonly<Record<string, string>>> = {};
+const firearmLoads = [...clips.values()].filter(
+  (spec) => spec.equipment === 'long-gun' && ['reload', 'unload'].includes(spec.gesture),
+);
+for (const item of ['1800', '1801', '1802', '1803', '1804', '1807']) {
+  const overrides: Record<string, string> = {};
+  for (const spec of firearmLoads) {
+    const name = `${spec.name}.${item}`;
+    overrides[spec.name] = name;
+    clips.set(name, Object.freeze({ ...spec, name, item }));
+  }
+  firearmOverrides[item] = Object.freeze(overrides);
+}
+// Native pistol lengths also differ. Each paid charge retains its owned
+// gun's muzzle contact, including when the left-hand pose is mirrored.
+const pistolLoads = [...clips.values()].filter(
+  (spec) => spec.equipment === 'short-gun' && spec.gesture === 'reload',
+);
+for (const item of ['1805', '1806', '1808']) {
+  const overrides: Record<string, string> = {};
+  for (const spec of pistolLoads) {
+    const name = `${spec.name}.${item}`;
+    overrides[spec.name] = name;
+    const barrelClips =
+      item === '1808' ? Object.freeze([name, `${name}.barrel1`] as const) : undefined;
+    clips.set(
+      name,
+      Object.freeze({ ...spec, name, item, ...(barrelClips ? { barrel: 0, barrelClips } : {}) }),
+    );
+    if (barrelClips) {
+      clips.set(barrelClips[1], Object.freeze({ ...spec, name: barrelClips[1], item, barrel: 1 }));
+    }
+  }
+  firearmOverrides[item] = Object.freeze(overrides);
+}
+export const ACTOR_ITEM_CLIP_OVERRIDES = Object.freeze({
+  ...firearmOverrides,
+  '1812': Object.freeze(lanceOverrides),
+  '1813': Object.freeze(knifeOverrides),
+});
+
+// Every variant presents one paid strike with one contact. The preview's
+// two-cut combination is deliberately not a gameplay animation capability.
+const strikeVariants: Record<string, readonly string[]> = {};
+for (const [base, variants] of [
+  ['stand.slash.blade', ['forehand', 'backhand', 'thrust', 'hilt']],
+  ['stand.slash.knife', ['backhand', 'thrust']],
+] as const) {
+  const names: string[] = [base],
+    spec = clips.get(base);
+  if (!spec) {
+    throw Error(`Missing base strike clip: ${base}`);
+  }
+  for (const variant of variants) {
+    const name = `${base}.${variant}`;
+    names.push(name);
+    clips.set(name, Object.freeze({ ...spec, name, variant }));
+  }
+  strikeVariants[base] = Object.freeze(names);
+}
+export const ACTOR_STRIKE_CLIP_VARIANTS = Object.freeze(strikeVariants);
+
+/** A cue keeps its selected pose through prepare, contact, and impact. */
+export function selectActorClipVariant(semantic: string, cueId?: string) {
+  const variants = ACTOR_STRIKE_CLIP_VARIANTS[semantic];
+  if (!variants || typeof cueId !== 'string' || !cueId) {
+    return semantic;
+  }
+  let hash = 2166136261;
+  for (let index = 0; index < cueId.length; index++) {
+    hash = Math.imul(hash ^ cueId.charCodeAt(index), 16777619) >>> 0;
+  }
+  return variants[hash % variants.length] ?? semantic;
+}
+
+export const ACTOR_ACTION_CAPABILITIES = Object.freeze(entries);
+export const ACTOR_CLIP_SPECS = Object.freeze([...clips.values()]);
+const keyed = new Map(
+  entries.map((entry) => [`${entry.action}|${entry.posture}|${entry.equipment}`, entry]),
+);
+
+export function actorActionKey({
+  action,
+  posture = 'standing',
+  mounted = false,
+  equipment = 'unarmed',
+}: ActorActionRequest) {
+  return `${action}|${mounted ? 'mounted' : posture}|${equipment}`;
+}
+
+/** Resolve only supported requests; impossible combinations are not idle. */
+export function resolveActorAction(request: ActorActionRequest) {
+  const posture = request.mounted ? 'mounted' : (request.posture ?? 'standing');
+  const equipment = request.equipment ?? 'unarmed';
+  return (
+    keyed.get(`${request.action}|${posture}|${equipment}`) ??
+    keyed.get(`${request.action}|${posture}|any`) ??
+    null
+  );
+}
+
+/** Check exported data rather than trusting an asserted capabilities list. */
+export function validateActorActionCapabilities(
+  manifest: { clips?: readonly RecordedActorClip[] } | null | undefined,
+  { required = ACTOR_CLIP_SPECS }: { required?: readonly ActorClipCapability[] } = {},
+) {
+  const errors: string[] = [],
+    available = new Map<string, RecordedActorClip>();
+  for (const clip of manifest?.clips ?? []) {
+    if (available.has(clip.name)) {
+      errors.push(`Duplicate clip: ${clip.name}`);
+    }
+    available.set(clip.name, clip);
+  }
+  for (const spec of required) {
+    const clip = available.get(spec.name);
+    if (!clip) {
+      errors.push(`Missing clip: ${spec.name}`);
+      continue;
+    }
+    const duration = clip.durationSeconds ?? clip.duration;
+    if (!(duration !== undefined && Number.isFinite(duration) && duration > 0)) {
+      errors.push(`Invalid duration: ${spec.name}`);
+    }
+    if (Boolean(clip.loop) !== Boolean(spec.loop)) {
+      errors.push(`Wrong loop mode: ${spec.name}`);
+    }
+    for (const [event, time] of Object.entries(clip.markers ?? clip.events ?? {})) {
+      if (!Number.isFinite(time) || time < 0 || (duration !== undefined && time > duration)) {
+        errors.push(`Invalid ${event} marker: ${spec.name}`);
+      }
+    }
+    const marker =
+      spec.gesture === 'fire' || spec.gesture === 'artilleryFire'
+        ? 'shot'
+        : ['slash', 'thrust', 'punch', 'butt', 'bayonet', 'breach'].includes(spec.gesture)
+          ? 'contact'
+          : ['throw', 'throwKnife', 'bolas'].includes(spec.gesture)
+            ? 'release'
+            : null;
+    if (marker && !Number.isFinite((clip.markers ?? clip.events)?.[marker])) {
+      errors.push(`Missing ${marker} marker: ${spec.name}`);
+    }
+    if (
+      ['walk', 'run', 'crawl', 'strafeLeft', 'strafeRight'].includes(spec.gesture) &&
+      !((clip.locomotionSpeed ?? 0) > 0)
+    ) {
+      errors.push(`Missing stride speed: ${spec.name}`);
+    }
+  }
+  return errors;
+}

@@ -9,7 +9,9 @@ export function reloadRoundCost(unit, weapon, assisted = false) {
   );
 }
 export function validateReloadProgress(value, capacity, loaded = 0, dropped = false) {
-  if (value === undefined) return;
+  if (value === undefined) {
+    return;
+  }
   if (
     typeof value !== 'number' ||
     !Number.isFinite(value) ||
@@ -17,8 +19,9 @@ export function validateReloadProgress(value, capacity, loaded = 0, dropped = fa
     value >= 1 ||
     !(capacity > loaded) ||
     dropped
-  )
+  ) {
     throw Error('El avance de recarga no es válido.');
+  }
 }
 export function planReload(unit, roundCost, capacity, exploring = false) {
   const work =

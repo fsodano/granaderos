@@ -9,8 +9,9 @@ export class AdmitSectorReinforcementsUseCase {
     admission.session.admitParticipants(
       admission.preferences.map((preference) => preference.characterId),
     );
-    for (const preference of admission.preferences)
+    for (const preference of admission.preferences) {
       admission.deployment.placeNear([preference.characterId], preference.point);
+    }
     const placements = admission.deployment.confirm(admission.occupiedPoints);
     this.#repository.commitReinforcementAdmission(
       admission.session,

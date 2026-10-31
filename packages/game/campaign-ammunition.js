@@ -1,209 +1,649 @@
-import {enterSector} from './world.js';
+import { enterSector } from './world.js';
 export * from './physical-ammunition.js';
-import {syncCarriedAmmunition,unitAmmunitionByType,fieldAmmunitionByType} from './physical-ammunition.js';
-import {initializeUnitAmmunition,syncUnitAmmunition} from './tactical-ammunition.js';
-import {AMMUNITION_FAMILIES} from './ammunition-families.js';
-import {AMMO_KEYS,AMMO_TYPES,ammoTypeFor,ammoStock,ammoCount,totalAmmo,changeAmmo,validateAmmo,validateAmmunitionChoice,ammunitionChoiceReason} from './ammo-types.js';
-import {ammunitionMarketLocations,ammunitionMarketRules,ammunitionUnitPrice} from './ammunition-market-rules.js';
-import {campaignRules} from './campaign-rules.js';
-import {arrivalFacilityOptions} from './arrival-sites.js';
-import {operativeLocation} from './squads.js';
-import {worldOwner,validWorldLocation} from './world-cells.js';
-import {weaponSpecification} from './weapon-definition.js';
-import {supplyRoom,pocketChangeReason} from './personal-pockets.js';
-import {retainedMilitaryBodies} from './military-remains.js';
+import {
+  syncCarriedAmmunition,
+  unitAmmunitionByType,
+  fieldAmmunitionByType,
+} from './physical-ammunition.js';
+import { initializeUnitAmmunition, syncUnitAmmunition } from './tactical-ammunition.js';
+import { AMMUNITION_FAMILIES } from './ammunition-families.js';
+import {
+  AMMO_KEYS,
+  AMMO_TYPES,
+  ammoTypeFor,
+  ammoStock,
+  ammoCount,
+  totalAmmo,
+  changeAmmo,
+  validateAmmo,
+  validateAmmunitionChoice,
+  ammunitionChoiceReason,
+} from './ammo-types.js';
+import {
+  ammunitionMarketLocations,
+  ammunitionMarketRules,
+  ammunitionUnitPrice,
+} from './ammunition-market-rules.js';
+import { campaignRules } from './campaign-rules.js';
+import { arrivalFacilityOptions } from './arrival-sites.js';
+import { operativeLocation } from './squads.js';
+import { worldOwner, validWorldLocation } from './world-cells.ts';
+import { weaponSpecification } from './weapon-definition.ts';
+import { supplyRoom, pocketChangeReason } from './personal-pockets.js';
+import { retainedMilitaryBodies } from './military-remains.js';
 
-const need=(ok,message)=>{if(!ok)throw Error(message);};
-const object=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
-const count=value=>Number.isSafeInteger(value)&&value>=0&&value<=1000000;
-export const AMMUNITION_ORDER_LIMIT=60;
-export const hasAmmunitionMarket=(s,at)=>arrivalFacilityOptions(at,s).length>0&&ammunitionMarketRules(s,at).enabled;
-export const ammunitionShopCapacity=(key,s,at)=>ammunitionMarketRules(s,at).families[key].capacity;
-const freshShop=(s,at)=>({stock:Object.fromEntries(AMMO_KEYS.map(key=>[key,ammunitionMarketRules(s,at).families[key].initial])),restockHours:0});
-const shop=(s,at=s.location)=>s.ammunitionShops?.[at]??freshShop(s,at);
-const loaded=record=>record?.carriedLoaded??0;
-export function carriedAmmunition(op,record){
- const unit={...op,...record,inventory:structuredClone(record?.inventory??{}),loaded:loaded(record),ammo:record?.ammo??0,...(record?.carriedReloadProgress?{reloadProgress:record.carriedReloadProgress}:{})};
- initializeUnitAmmunition(unit,{defaultCount:0});return unit;
+const need = (ok, message) => {
+  if (!ok) {
+    throw Error(message);
+  }
+};
+const object = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
+const count = (value) => Number.isSafeInteger(value) && value >= 0 && value <= 1000000;
+export const AMMUNITION_ORDER_LIMIT = 60;
+export const hasAmmunitionMarket = (s, at) =>
+  arrivalFacilityOptions(at, s).length > 0 && ammunitionMarketRules(s, at).enabled;
+export const ammunitionShopCapacity = (key, s, at) =>
+  ammunitionMarketRules(s, at).families[key].capacity;
+const freshShop = (s, at) => ({
+  stock: Object.fromEntries(
+    AMMO_KEYS.map((key) => [key, ammunitionMarketRules(s, at).families[key].initial]),
+  ),
+  restockHours: 0,
+});
+const shop = (s, at = s.location) => s.ammunitionShops?.[at] ?? freshShop(s, at);
+const loaded = (record) => record?.carriedLoaded ?? 0;
+/**
+ * @param {import("./public/campaign-types.ts").CampaignOperative} op
+ * @param {import("./public/campaign-types.ts").CampaignOperativeState | undefined} record
+ * @returns {import("./public/campaign-types.ts").CampaignOperative & {inventory:Record<string,import("./public/compatibility-types.ts").EquipmentItem>,loaded:number,ammo:number}}
+ */
+export function carriedAmmunition(op, record) {
+  const unit = {
+    ...op,
+    ...record,
+    inventory: structuredClone(record?.inventory ?? {}),
+    loaded: loaded(record),
+    ammo: record?.ammo ?? 0,
+    ...(record?.carriedReloadProgress ? { reloadProgress: record.carriedReloadProgress } : {}),
+  };
+  initializeUnitAmmunition(unit, { defaultCount: 0 });
+  return unit;
 }
-function keep(record,unit){
- const physical=initializeUnitAmmunition(structuredClone(unit),{defaultCount:0});
- if(physical.ammunitionChoice!==undefined)record.ammunitionChoice=physical.ammunitionChoice;else delete record.ammunitionChoice;
- record.inventory=physical.inventory;record.ammunitionVersion=2;record.ammo=physical.ammo;delete record.ammunition;
- for(const key of ['pocketOrder','equipmentCursor','activeItem','leftHandItem','activeSlot'])if(physical[key]!==undefined)record[key]=structuredClone(physical[key]);else delete record[key];
- record.carriedLoaded=physical.loaded??0;
- if(physical.reloadProgress)record.carriedReloadProgress=physical.reloadProgress;else delete record.carriedReloadProgress;
- syncCarriedAmmunition(record,physical.weapon);
+function keep(record, unit) {
+  const physical = initializeUnitAmmunition(structuredClone(unit), { defaultCount: 0 });
+  if (physical.ammunitionChoice !== undefined) {
+    record.ammunitionChoice = physical.ammunitionChoice;
+  } else {
+    delete record.ammunitionChoice;
+  }
+  record.inventory = physical.inventory;
+  record.ammunitionVersion = 2;
+  record.ammo = physical.ammo;
+  delete record.ammunition;
+  for (const key of [
+    'pocketOrder',
+    'equipmentCursor',
+    'activeItem',
+    'leftHandItem',
+    'activeSlot',
+  ]) {
+    if (physical[key] !== undefined) {
+      record[key] = structuredClone(physical[key]);
+    } else {
+      delete record[key];
+    }
+  }
+  record.carriedLoaded = physical.loaded ?? 0;
+  if (physical.reloadProgress) {
+    record.carriedReloadProgress = physical.reloadProgress;
+  } else {
+    delete record.carriedReloadProgress;
+  }
+  syncCarriedAmmunition(record, physical.weapon);
 }
-function validateCounts(value){need(object(value)&&Object.entries(value).every(([key,n])=>Object.hasOwn(AMMO_TYPES,key)&&count(n)),'La reserva de munición no es válida.');}
+function validateCounts(value) {
+  need(
+    object(value) &&
+      Object.entries(value).every(([key, n]) => Object.hasOwn(AMMO_TYPES, key) && count(n)),
+    'La reserva de munición no es válida.',
+  );
+}
 
 // Previously settled cartridges were refunded. They do not become free stock.
 // A pending scene already owns its paid issue and is settled physically once.
-export function migrateAmmunitionCustody(s){
- const oldMerchants=Object.entries(s.merchants??{}).filter(([,merchant])=>merchant.ammunition!==undefined);
- need(!oldMerchants.length||s.ammunitionCustodyVersion===undefined,'La partida contiene dos reservas de munición para el mismo proveedor.');
- if(s.ammunitionCustodyVersion===undefined){
-  need(s.ammunitionStores===undefined&&s.ammunitionShops===undefined,'Falta la versión de las reservas de munición.');
-  const shops={};
-  if(s.contentCampaign?.package.ammunitionMarket)for(const {id}of ammunitionMarketLocations(s))shops[id]=freshShop(s,id);
-  for(const [at,merchant]of oldMerchants){
-   const stock=merchant.ammunition,rules=ammunitionMarketRules(s,at),families=Object.values(AMMUNITION_FAMILIES);
-   need(arrivalFacilityOptions(at,s).length>0&&object(stock)&&Object.keys(stock).length===families.length&&families.every(f=>count(stock[f.type])&&stock[f.type]<=rules.families[f.id].capacity),'Las existencias antiguas de munición no son válidas.');
-   need(Number.isSafeInteger(merchant.restockHours)&&merchant.restockHours>=0&&merchant.restockHours<rules.restockHours,'El plazo antiguo de reposición no es válido.');
-   shops[at]={stock:Object.fromEntries(families.map(f=>[f.id,stock[f.type]])),restockHours:merchant.restockHours};
+export function migrateAmmunitionCustody(s) {
+  const oldMerchants = Object.entries(s.merchants ?? {}).filter(
+    ([, merchant]) => merchant.ammunition !== undefined,
+  );
+  need(
+    !oldMerchants.length || s.ammunitionCustodyVersion === undefined,
+    'La partida contiene dos reservas de munición para el mismo proveedor.',
+  );
+  if (s.ammunitionCustodyVersion === undefined) {
+    need(
+      s.ammunitionStores === undefined && s.ammunitionShops === undefined,
+      'Falta la versión de las reservas de munición.',
+    );
+    const shops = {};
+    if (s.contentCampaign?.package.ammunitionMarket) {
+      for (const { id } of ammunitionMarketLocations(s)) {
+        shops[id] = freshShop(s, id);
+      }
+    }
+    for (const [at, merchant] of oldMerchants) {
+      const stock = merchant.ammunition,
+        rules = ammunitionMarketRules(s, at),
+        families = Object.values(AMMUNITION_FAMILIES);
+      need(
+        arrivalFacilityOptions(at, s).length > 0 &&
+          object(stock) &&
+          Object.keys(stock).length === families.length &&
+          families.every(
+            (f) => count(stock[f.type]) && stock[f.type] <= rules.families[f.id].capacity,
+          ),
+        'Las existencias antiguas de munición no son válidas.',
+      );
+      need(
+        Number.isSafeInteger(merchant.restockHours) &&
+          merchant.restockHours >= 0 &&
+          merchant.restockHours < rules.restockHours,
+        'El plazo antiguo de reposición no es válido.',
+      );
+      shops[at] = {
+        stock: Object.fromEntries(families.map((f) => [f.id, stock[f.type]])),
+        restockHours: merchant.restockHours,
+      };
+    }
+    s.ammunitionCustodyVersion = 1;
+    s.ammunitionStores = {};
+    s.ammunitionShops = shops;
+    for (const [, merchant] of oldMerchants) {
+      delete merchant.ammunition;
+    }
   }
-  s.ammunitionCustodyVersion=1;s.ammunitionStores={};s.ammunitionShops=shops;
-  for(const [,merchant]of oldMerchants)delete merchant.ammunition;
- }
- need(s.ammunitionCustodyVersion===1,'La versión de las reservas de munición no es válida.');
- return s;
+  need(s.ammunitionCustodyVersion === 1, 'La versión de las reservas de munición no es válida.');
+  return s;
 }
-export function validateAmmunitionCustody(s,roster){
- migrateAmmunitionCustody(s);
- need(object(s.ammunitionStores)&&object(s.ammunitionShops),'Las reservas de munición no son válidas.');
- if(s.contentCampaign?.package.ammunitionMarket)need(ammunitionMarketLocations(s).every(({id})=>Object.hasOwn(s.ammunitionShops,id)),'Faltan existencias de un proveedor configurado.');
- for(const [at,counts]of Object.entries(s.ammunitionStores)){need(validWorldLocation(at,s),'El depósito de munición no existe.');validateCounts(counts);}
- for(const [at,merchant]of Object.entries(s.ammunitionShops)){
-  need(arrivalFacilityOptions(at,s).length>0&&object(merchant)&&object(merchant.stock)&&Object.keys(merchant.stock).length===AMMO_KEYS.length&&AMMO_KEYS.every(key=>count(merchant.stock[key])&&merchant.stock[key]<=ammunitionShopCapacity(key,s,at))&&Number.isInteger(merchant.restockHours)&&merchant.restockHours>=0&&merchant.restockHours<ammunitionMarketRules(s,at).restockHours,'Las existencias de munición del proveedor no son válidas.');
- }
- for(const op of roster){
-  const record=s.operativeState[op.id];if(!record)continue;validateAmmunitionChoice(carriedAmmunition(op,record));
-  if(record.ammunition!==undefined){validateCounts(record.ammunition);need(record.ammo===totalAmmo(record),'El total de munición personal no coincide.');}
-  need(count(loaded(record))&&loaded(record)<=(weaponSpecification({...op,...record})?.capacity??0),'La carga personal del arma no es válida.');
-  if(record.carriedReloadProgress!==undefined)need(Number.isFinite(record.carriedReloadProgress)&&record.carriedReloadProgress>0&&record.carriedReloadProgress<1&&loaded(record)<(weaponSpecification({...op,...record})?.capacity??0),'La recarga personal no es válida.');
- }
+export function validateAmmunitionCustody(s, roster) {
+  migrateAmmunitionCustody(s);
+  need(
+    object(s.ammunitionStores) && object(s.ammunitionShops),
+    'Las reservas de munición no son válidas.',
+  );
+  if (s.contentCampaign?.package.ammunitionMarket) {
+    need(
+      ammunitionMarketLocations(s).every(({ id }) => Object.hasOwn(s.ammunitionShops, id)),
+      'Faltan existencias de un proveedor configurado.',
+    );
+  }
+  for (const [at, counts] of Object.entries(s.ammunitionStores)) {
+    need(validWorldLocation(at, s), 'El depósito de munición no existe.');
+    validateCounts(counts);
+  }
+  for (const [at, merchant] of Object.entries(s.ammunitionShops)) {
+    need(
+      arrivalFacilityOptions(at, s).length > 0 &&
+        object(merchant) &&
+        object(merchant.stock) &&
+        Object.keys(merchant.stock).length === AMMO_KEYS.length &&
+        AMMO_KEYS.every(
+          (key) =>
+            count(merchant.stock[key]) && merchant.stock[key] <= ammunitionShopCapacity(key, s, at),
+        ) &&
+        Number.isInteger(merchant.restockHours) &&
+        merchant.restockHours >= 0 &&
+        merchant.restockHours < ammunitionMarketRules(s, at).restockHours,
+      'Las existencias de munición del proveedor no son válidas.',
+    );
+  }
+  for (const op of roster) {
+    const record = s.operativeState[op.id];
+    if (!record) {
+      continue;
+    }
+    validateAmmunitionChoice(carriedAmmunition(op, record));
+    if (record.ammunition !== undefined) {
+      validateCounts(record.ammunition);
+      need(record.ammo === totalAmmo(record), 'El total de munición personal no coincide.');
+    }
+    need(
+      count(loaded(record)) &&
+        loaded(record) <= (weaponSpecification({ ...op, ...record })?.capacity ?? 0),
+      'La carga personal del arma no es válida.',
+    );
+    if (record.carriedReloadProgress !== undefined) {
+      need(
+        Number.isFinite(record.carriedReloadProgress) &&
+          record.carriedReloadProgress > 0 &&
+          record.carriedReloadProgress < 1 &&
+          loaded(record) < (weaponSpecification({ ...op, ...record })?.capacity ?? 0),
+        'La recarga personal no es válida.',
+      );
+    }
+  }
 }
-export function restockAmmunitionShops(s,isSupplied){
- for(const [at,merchant]of Object.entries(s.ammunitionShops??{})){
-  if(!hasAmmunitionMarket(s,at)||worldOwner(s,at)!=='patriot'||!isSupplied(s,at))continue;
-  const rules=ammunitionMarketRules(s,at);
-  if(++merchant.restockHours<ammunitionMarketRules(s,at).restockHours)continue;merchant.restockHours=0;
-  for(const key of AMMO_KEYS)merchant.stock[key]=Math.min(rules.families[key].capacity,merchant.stock[key]+rules.families[key].replenish);
- }
+export function restockAmmunitionShops(s, isSupplied) {
+  for (const [at, merchant] of Object.entries(s.ammunitionShops ?? {})) {
+    if (!hasAmmunitionMarket(s, at) || worldOwner(s, at) !== 'patriot' || !isSupplied(s, at)) {
+      continue;
+    }
+    const rules = ammunitionMarketRules(s, at);
+    if (++merchant.restockHours < ammunitionMarketRules(s, at).restockHours) {
+      continue;
+    }
+    merchant.restockHours = 0;
+    for (const key of AMMO_KEYS) {
+      merchant.stock[key] = Math.min(
+        rules.families[key].capacity,
+        merchant.stock[key] + rules.families[key].replenish,
+      );
+    }
+  }
 }
-function accessReason(s,op){
- return s.pendingBattle?'Terminá la escena táctica antes de mover munición.':s.defeated?'La campaña ha terminado.':!op||!s.recruited.includes(op.id)||!s.operativeState[op.id]?.alive||s.operativeState[op.id].captured?'El combatiente no está disponible.':operativeLocation(s,op.id)!==s.location?'El combatiente debe estar en este sector.':worldOwner(s,s.location)!=='patriot'?'El sector debe estar bajo tu control.':null;
+function accessReason(s, op) {
+  return s.pendingBattle
+    ? 'Terminá la escena táctica antes de mover munición.'
+    : s.defeated
+      ? 'La campaña ha terminado.'
+      : !op ||
+          !s.recruited.includes(op.id) ||
+          !s.operativeState[op.id]?.alive ||
+          s.operativeState[op.id].captured
+        ? 'El combatiente no está disponible.'
+        : operativeLocation(s, op.id) !== s.location
+          ? 'El combatiente debe estar en este sector.'
+          : worldOwner(s, s.location) !== 'patriot'
+            ? 'El sector debe estar bajo tu control.'
+            : null;
 }
-export function ammunitionOrderQuote(s,op,key,quantity,direction,supplied){
- const record=s.operativeState[op?.id],unit=carriedAmmunition(op,record),validKey=Object.hasOwn(AMMO_TYPES,key),store=s.ammunitionStores?.[s.location]?.[key]??0,merchant=validKey?shop(s).stock[key]:0,carried=validKey?ammoCount(unit,key):0;
- let reason=accessReason(s,op);
- if(!reason&&(!validKey||!Number.isSafeInteger(quantity)||quantity<1||quantity>AMMUNITION_ORDER_LIMIT||!['buy','store','take'].includes(direction)))reason='Elegí una familia y entre 1 y 60 cartuchos.';
- const unitPrice=ammunitionUnitPrice(s,s.location,key),cost=direction==='buy'?quantity*unitPrice:0;
- if(!reason&&direction==='buy'&&(!hasAmmunitionMarket(s,s.location)||!supplied))reason='La compra requiere un proveedor habilitado en una localidad propia y comunicada.';
- if(!reason&&direction==='buy'&&merchant<quantity)reason='El proveedor no tiene suficientes cartuchos.';
- if(!reason&&direction==='buy'&&s.resources.treasury<cost)reason='No hay suficientes pesos.';
- if(!reason&&direction==='store'&&(carried<quantity||store+quantity>1000000))reason='No hay suficientes cartuchos sueltos o el depósito está lleno.';
- if(!reason&&direction==='take'&&store<quantity)reason='El depósito no tiene suficientes cartuchos.';
- if(!reason&&direction!=='store'&&supplyRoom(unit,key,quantity)<quantity)reason='No queda espacio en los bolsillos para esos cartuchos.';
- return {available:!reason,reason,cost,unitPrice,carried,stored:store,stock:merchant,loaded:loaded(record),key,quantity,direction};
+export function ammunitionOrderQuote(s, op, key, quantity, direction, supplied) {
+  const record = s.operativeState[op?.id],
+    unit = carriedAmmunition(op, record),
+    validKey = Object.hasOwn(AMMO_TYPES, key),
+    store = s.ammunitionStores?.[s.location]?.[key] ?? 0,
+    merchant = validKey ? shop(s).stock[key] : 0,
+    carried = validKey ? ammoCount(unit, key) : 0;
+  let reason = accessReason(s, op);
+  if (
+    !reason &&
+    (!validKey ||
+      !Number.isSafeInteger(quantity) ||
+      quantity < 1 ||
+      quantity > AMMUNITION_ORDER_LIMIT ||
+      !['buy', 'store', 'take'].includes(direction))
+  ) {
+    reason = 'Elegí una familia y entre 1 y 60 cartuchos.';
+  }
+  const unitPrice = ammunitionUnitPrice(s, s.location, key),
+    cost = direction === 'buy' ? quantity * unitPrice : 0;
+  if (!reason && direction === 'buy' && (!hasAmmunitionMarket(s, s.location) || !supplied)) {
+    reason = 'La compra requiere un proveedor habilitado en una localidad propia y comunicada.';
+  }
+  if (!reason && direction === 'buy' && merchant < quantity) {
+    reason = 'El proveedor no tiene suficientes cartuchos.';
+  }
+  if (!reason && direction === 'buy' && s.resources.treasury < cost) {
+    reason = 'No hay suficientes pesos.';
+  }
+  if (!reason && direction === 'store' && (carried < quantity || store + quantity > 1000000)) {
+    reason = 'No hay suficientes cartuchos sueltos o el depósito está lleno.';
+  }
+  if (!reason && direction === 'take' && store < quantity) {
+    reason = 'El depósito no tiene suficientes cartuchos.';
+  }
+  if (!reason && direction !== 'store' && supplyRoom(unit, key, quantity) < quantity) {
+    reason = 'No queda espacio en los bolsillos para esos cartuchos.';
+  }
+  return {
+    available: !reason,
+    reason,
+    cost,
+    unitPrice,
+    carried,
+    stored: store,
+    stock: merchant,
+    loaded: loaded(record),
+    key,
+    quantity,
+    direction,
+  };
 }
-export function unloadOwnedCampaignAmmunition(s,op){const reason=accessReason(s,op);need(!reason,reason);need(loaded(s.operativeState[op.id])>0,'El arma está vacía.');unloadCampaignWeapon(s,op);s.operativeState[op.id].jammed=false;}
-export function selectCampaignAmmunitionLoad(s,op,family){
- const reason=accessReason(s,op);need(!reason,reason);
- const unit={...carriedAmmunition(op,s.operativeState[op.id]),activeSlot:'primary'},choice=ammunitionChoiceReason(unit,family);need(!choice,choice);
- unit.ammunitionChoice=family;syncUnitAmmunition(unit);keep(s.operativeState[op.id],unit);
+export function unloadOwnedCampaignAmmunition(s, op) {
+  const reason = accessReason(s, op);
+  need(!reason, reason);
+  need(loaded(s.operativeState[op.id]) > 0, 'El arma está vacía.');
+  unloadCampaignWeapon(s, op);
+  s.operativeState[op.id].jammed = false;
 }
-export function moveCampaignAmmunition(s,op,key,quantity,direction,supplied){
- const quote=ammunitionOrderQuote(s,op,key,quantity,direction,supplied);need(quote.available,quote.reason);
- const record=s.operativeState[op.id],unit=carriedAmmunition(op,record),unissued=record.carriedLoaded===undefined;
- if(direction==='buy'){
-  s.ammunitionShops[s.location]??=freshShop(s,s.location);s.ammunitionShops[s.location].stock[key]-=quantity;s.resources.treasury-=quote.cost;
- }else{
-  s.ammunitionStores[s.location]??={};s.ammunitionStores[s.location][key]=quote.stored+(direction==='store'?quantity:-quantity);
- }
- changeAmmo(unit,key,direction==='store'?-quantity:quantity);keep(record,unit);
- // Moving loose rounds does not turn an unissued weapon into a returned empty gun.
- if(unissued)delete record.carriedLoaded;
- return quote;
+export function selectCampaignAmmunitionLoad(s, op, family) {
+  const reason = accessReason(s, op);
+  need(!reason, reason);
+  const unit = { ...carriedAmmunition(op, s.operativeState[op.id]), activeSlot: 'primary' },
+    choice = ammunitionChoiceReason(unit, family);
+  need(!choice, choice);
+  unit.ammunitionChoice = family;
+  syncUnitAmmunition(unit);
+  keep(s.operativeState[op.id], unit);
+}
+export function moveCampaignAmmunition(s, op, key, quantity, direction, supplied) {
+  const quote = ammunitionOrderQuote(s, op, key, quantity, direction, supplied);
+  need(quote.available, quote.reason);
+  const record = s.operativeState[op.id],
+    unit = carriedAmmunition(op, record),
+    unissued = record.carriedLoaded === undefined;
+  if (direction === 'buy') {
+    s.ammunitionShops[s.location] ??= freshShop(s, s.location);
+    s.ammunitionShops[s.location].stock[key] -= quantity;
+    s.resources.treasury -= quote.cost;
+  } else {
+    s.ammunitionStores[s.location] ??= {};
+    s.ammunitionStores[s.location][key] =
+      quote.stored + (direction === 'store' ? quantity : -quantity);
+  }
+  changeAmmo(unit, key, direction === 'store' ? -quantity : quantity);
+  keep(record, unit);
+  // Moving loose rounds does not turn an unissued weapon into a returned empty gun.
+  if (unissued) {
+    delete record.carriedLoaded;
+  }
+  return quote;
 }
 
 // The old admission marked every absent flag as issued, including candidates
 // who had never served. Recover only those candidates. A service location or
 // any actual equipment/deployment history makes an empty reserve ambiguous;
 // it must not be refilled on load, renewal, rehire or another sector entry.
-export function migrateStartingCartridges(s){
- const served=new Set((s.recruited??[]).map(String));
- for(const id of Object.keys(s.contracts??{}))served.add(id);
- for(const owner of s.serviceEquipmentReturns?.entries??[])served.add(String(owner.operativeId));
- const scenes=[...Object.values(s.sectorStates??{}),...Object.values(s.sceneStates??{}),s.pendingBattle?.resumeSnapshot];
- for(const scene of scenes)for(const unit of scene?.units??[])if(unit.side==='player')served.add(String(unit.id));
- for(const unit of s.pendingBattle?.squad??[])served.add(String(unit.id));
- for(const remains of Object.values(s.sectorRemains??{}))for(const entry of remains)if(entry.unit?.side==='player')served.add(String(entry.unit.id));
- for(const [id,record]of Object.entries(s.operativeState??{})){
-  need(record.startingCartridgesIssued===undefined||typeof record.startingCartridgesIssued==='boolean','La entrega inicial de cartuchos no es válida.');
-  const serviceFields=['location','arrival','residentSector','residentScene','carriedLoaded','carriedReloadProgress','outfit','headwear','legwear','weaponDropped','weaponMode','weaponInstanceId','bladeInstanceId','offHand','leftHandItem','equipmentCursor','pocketOrder','activeItem','serviceEquipmentReturn'];
-  const pristine=!served.has(id)&&record.alive&&!record.captured&&!(record.captureSequence>0)&&!serviceFields.some(key=>record[key]!==undefined)&&!(record.xp>0)&&record.lastMoralePayAt==null&&!(record.ammo>0)&&!(record.carriedAmmo>0)&&!Object.values(record.inventory??{}).some(item=>typeof item==='number'?item>0:item?.count>0)&&!Object.values(record.ammunition??{}).some(n=>n>0)&&!(record.capturedAmmunition?.loaded>0||record.capturedAmmunition?.ammo>0);
-  if(record.startingCartridgesIssued===undefined)record.startingCartridgesIssued=!pristine;
-  else if(record.startingCartridgesIssued&&pristine)record.startingCartridgesIssued=false;
- }
- return s;
+export function migrateStartingCartridges(s) {
+  const served = new Set((s.recruited ?? []).map(String));
+  for (const id of Object.keys(s.contracts ?? {})) {
+    served.add(id);
+  }
+  for (const owner of s.serviceEquipmentReturns?.entries ?? []) {
+    served.add(String(owner.operativeId));
+  }
+  const scenes = [
+    ...Object.values(s.sectorStates ?? {}),
+    ...Object.values(s.sceneStates ?? {}),
+    s.pendingBattle?.resumeSnapshot,
+  ];
+  for (const scene of scenes) {
+    for (const unit of scene?.units ?? []) {
+      if (unit.side === 'player') {
+        served.add(String(unit.id));
+      }
+    }
+  }
+  for (const unit of s.pendingBattle?.squad ?? []) {
+    served.add(String(unit.id));
+  }
+  for (const remains of Object.values(s.sectorRemains ?? {})) {
+    for (const entry of remains) {
+      if (entry.unit?.side === 'player') {
+        served.add(String(entry.unit.id));
+      }
+    }
+  }
+  for (const [id, record] of Object.entries(s.operativeState ?? {})) {
+    need(
+      record.startingCartridgesIssued === undefined ||
+        typeof record.startingCartridgesIssued === 'boolean',
+      'La entrega inicial de cartuchos no es válida.',
+    );
+    const serviceFields = [
+      'location',
+      'arrival',
+      'residentSector',
+      'residentScene',
+      'carriedLoaded',
+      'carriedReloadProgress',
+      'outfit',
+      'headwear',
+      'legwear',
+      'weaponDropped',
+      'weaponMode',
+      'weaponInstanceId',
+      'bladeInstanceId',
+      'offHand',
+      'leftHandItem',
+      'equipmentCursor',
+      'pocketOrder',
+      'activeItem',
+      'serviceEquipmentReturn',
+    ];
+    const pristine =
+      !served.has(id) &&
+      record.alive &&
+      !record.captured &&
+      !(record.captureSequence > 0) &&
+      !serviceFields.some((key) => record[key] !== undefined) &&
+      !(record.xp > 0) &&
+      record.lastMoralePayAt == null &&
+      !(record.ammo > 0) &&
+      !(record.carriedAmmo > 0) &&
+      !Object.values(record.inventory ?? {}).some((item) =>
+        typeof item === 'number' ? item > 0 : item?.count > 0,
+      ) &&
+      !Object.values(record.ammunition ?? {}).some((n) => n > 0) &&
+      !(record.capturedAmmunition?.loaded > 0 || record.capturedAmmunition?.ammo > 0);
+    if (record.startingCartridgesIssued === undefined) {
+      record.startingCartridgesIssued = !pristine;
+    } else if (record.startingCartridgesIssued && pristine) {
+      record.startingCartridgesIssued = false;
+    }
+  }
+  return s;
 }
 
 // A first hire owns a finite initial allowance with their service equipment.
 // The campaign marks this issue once; renewal, rehire and sector entry do not refill it.
-export function issueStartingCartridges(s,op){
- const record=s.operativeState[op.id];if(record.startingCartridgesIssued!==false)return;
- const unit=carriedAmmunition(op,record),key=ammoTypeFor(unit);
- if(key&&!unit.weaponDropped){const quantity=Math.min(campaignRules(s).deploymentCartridges,supplyRoom(unit,key,campaignRules(s).deploymentCartridges));changeAmmo(unit,key,quantity);const charges=Math.min(quantity,Math.max(0,(weaponSpecification(unit)?.capacity??0)-unit.loaded));unit.loaded+=charges;changeAmmo(unit,key,-charges);keep(record,unit);}
- record.startingCartridgesIssued=true;
+export function issueStartingCartridges(s, op) {
+  const record = s.operativeState[op.id];
+  if (record.startingCartridgesIssued !== false) {
+    return;
+  }
+  const unit = carriedAmmunition(op, record),
+    key = ammoTypeFor(unit);
+  if (key && !unit.weaponDropped) {
+    const quantity = Math.min(
+      campaignRules(s).deploymentCartridges,
+      supplyRoom(unit, key, campaignRules(s).deploymentCartridges),
+    );
+    changeAmmo(unit, key, quantity);
+    const charges = Math.min(
+      quantity,
+      Math.max(0, (weaponSpecification(unit)?.capacity ?? 0) - unit.loaded),
+    );
+    unit.loaded += charges;
+    changeAmmo(unit, key, -charges);
+    keep(record, unit);
+  }
+  record.startingCartridgesIssued = true;
 }
 
 // Deployment uses only carried cartridges. An untracked initial firearm can
 // receive a charge from its owner's pockets; later loads keep their real work.
-export function prepareCampaignAmmunition(s,roster,ids,{commit=false}={}){
- const state=commit?s:structuredClone(s);migrateAmmunitionCustody(state);
- const allocation={};let issued=0;
- for(const id of ids){
-  const op=roster.find(o=>o.id===id),record=state.operativeState[id],unit=carriedAmmunition(op,record),key=ammoTypeFor(unit),capacity=weaponSpecification({...op,...record})?.capacity??0,initialLoad=record.carriedLoaded===undefined&&!record.carriedReloadProgress;
-  if(key&&!unit.weaponDropped&&initialLoad){const charges=Math.min(capacity-unit.loaded,ammoCount(unit,key));unit.loaded+=charges;changeAmmo(unit,key,-charges);}
-  allocation[id]={...(unit.ammunitionChoice!==undefined?{ammunitionChoice:unit.ammunitionChoice}:{}),loaded:unit.loaded,ammo:unit.ammo,ammunitionVersion:2,inventory:structuredClone(unit.inventory),...(record.carriedReloadProgress?{reloadProgress:record.carriedReloadProgress}:{})};
-  issued+=unit.loaded+totalAmmo(unit);keep(record,unit);
- }
- return {allocation,issued,cost:0};
+export function prepareCampaignAmmunition(s, roster, ids, { commit = false } = {}) {
+  const state = commit ? s : structuredClone(s);
+  migrateAmmunitionCustody(state);
+  const allocation = {};
+  let issued = 0;
+  for (const id of ids) {
+    const op = roster.find((o) => o.id === id),
+      record = state.operativeState[id],
+      unit = carriedAmmunition(op, record),
+      key = ammoTypeFor(unit),
+      capacity = weaponSpecification({ ...op, ...record })?.capacity ?? 0,
+      initialLoad = record.carriedLoaded === undefined && !record.carriedReloadProgress;
+    if (key && !unit.weaponDropped && initialLoad) {
+      const charges = Math.min(capacity - unit.loaded, ammoCount(unit, key));
+      unit.loaded += charges;
+      changeAmmo(unit, key, -charges);
+    }
+    allocation[id] = {
+      ...(unit.ammunitionChoice !== undefined ? { ammunitionChoice: unit.ammunitionChoice } : {}),
+      loaded: unit.loaded,
+      ammo: unit.ammo,
+      ammunitionVersion: 2,
+      inventory: structuredClone(unit.inventory),
+      ...(record.carriedReloadProgress ? { reloadProgress: record.carriedReloadProgress } : {}),
+    };
+    issued += unit.loaded + totalAmmo(unit);
+    keep(record, unit);
+  }
+  return { allocation, issued, cost: 0 };
 }
 
 // Changing a firearm does not convert or sell its charges. Unload its actual
 // family into the owner's pockets before the weapon moves to the armory.
-export function unloadCampaignWeapon(s,op){
- const record=s.operativeState[op.id],before=carriedAmmunition(op,record),after=structuredClone(before),key=ammoTypeFor(before);
- need(!record.carriedReloadProgress,'Terminá la recarga antes de guardar el arma en la armería.');
- if(before.loaded){need(key,'La carga del arma no tiene familia.');changeAmmo(after,key,before.loaded);after.loaded=0;const reason=pocketChangeReason(before,after);need(!reason,reason);}
- delete after.reloadProgress;keep(record,after);
-}
-function fieldCounts(units,scene={}){
- const result=Object.fromEntries(AMMO_KEYS.map(key=>[key,0]));
- const add=counts=>{for(const family of Object.values(AMMUNITION_FAMILIES))result[family.id]+=counts[family.type]??0;};
- for(const original of units){const unit=initializeUnitAmmunition(structuredClone(original),{defaultCount:0});add(unitAmmunitionByType(unit));}
- add(fieldAmmunitionByType(scene));
- // Published saves can retain family-labelled ground bundles until scene migration.
- for(const item of scene.groundItems??[]){const key=item.type==='ammo'?'ammoMusket':item.type;if(Object.hasOwn(AMMO_TYPES,key)&&!item.heldBy){need(count(item.count),'La cantidad física de munición no es válida.');result[key]+=item.count;}}
- return result;
-}
-export function assertAmmunitionConservation(request,snapshot,previous){
- if(!snapshot)return;
- need((request.squad??[]).every(issued=>snapshot.units.some(u=>u.side==='player'&&Number(u.id)===Number(issued.id))),'Falta un combatiente en el parte de munición.');
- const enemies=request.exploration?[]:previous&&!previous.sectorCleared?previous.units.filter(u=>u.side==='enemy'):request.enemies??[];
- const deployed=[...(request.squad??[]),...(request.garrison??[]),...(request.missionAllies??[]),...enemies.map(u=>({...u,weapon:u.weapon??u.primary??1800,ammo:u.ammo??12,loaded:u.loaded??weaponSpecification({...u,weapon:u.weapon??u.primary??1800})?.capacity??0}))];
- const bodies=retainedMilitaryBodies(previous,deployed,request.sector);
- const initial=fieldCounts([...deployed,...bodies],previous??enterSector(request)),current=fieldCounts(snapshot.units,snapshot);
- for(const receipt of request.civilianWeaponRecoveries??[]){const key=ammoTypeFor(receipt.gun);if(key)initial[key]+=receipt.gun.loaded??0;}
- for(const key of AMMO_KEYS)need(current[key]<=initial[key],`El parte añade ${AMMO_TYPES[key].name.toLowerCase()} sin una fuente física.`);
-}
-export function retainReturnedAmmunition(s,request,reports,snapshot,previous=null){
- assertAmmunitionConservation(request,snapshot,previous);
- if(snapshot)for(const issued of request.squad){const actual=snapshot.units.find(u=>u.side==='player'&&Number(u.id)===Number(issued.id));if(actual.hp<=0)keep(s.operativeState[issued.id],{ammunition:{},loaded:0});else need(reports.some(r=>Number(r.id)===Number(issued.id)),'Falta el parte de un combatiente vivo.');}
- const seen=new Set();
- for(const report of reports){
-  const id=Number(report.id),issued=request.squad.find(u=>u.id===id);need(issued&&!seen.has(id),'El parte de munición tiene un combatiente inválido.');seen.add(id);
-  const actual=snapshot?.units.find(u=>u.side==='player'&&Number(u.id)===id),unit=structuredClone(actual??{...issued,...report});
-  if(actual){for(const key of ['ammo','loaded'])if(report[key]!==undefined)need(report[key]===actual[key],'El parte de munición no coincide con el sector.');if(report.ammunition!==undefined){validateCounts(report.ammunition);need(AMMO_KEYS.every(key=>(report.ammunition[key]??0)===(ammoStock(actual)[key]??0)),'Las familias del parte no coinciden con el sector.');}}
-  validateAmmo(unit);need(count(unit.loaded??0)&&(unit.loaded??0)<=(unit.weaponDropped?0:weaponSpecification(unit)?.capacity??0),'La carga del parte no es válida.');
-  if(!actual){
-   const before=ammoStock(issued),after=ammoStock(unit),oldKey=ammoTypeFor(issued),newKey=ammoTypeFor(unit);
-   for(const key of AMMO_KEYS)need((after[key]??0)+(key===newKey?(unit.loaded??0):0)<=(before[key]??0)+(key===oldKey?(issued.loaded??0):0),'Un parte sin escena no puede añadir munición.');
+export function unloadCampaignWeapon(s, op) {
+  const record = s.operativeState[op.id],
+    before = carriedAmmunition(op, record),
+    after = structuredClone(before),
+    key = ammoTypeFor(before);
+  need(!record.carriedReloadProgress, 'Terminá la recarga antes de guardar el arma en la armería.');
+  if (before.loaded) {
+    need(key, 'La carga del arma no tiene familia.');
+    changeAmmo(after, key, before.loaded);
+    after.loaded = 0;
+    const reason = pocketChangeReason(before, after);
+    need(!reason, reason);
   }
-  const record=s.operativeState[id];
-  if((report.hp??unit.hp)<=0)keep(record,{ammunition:{},loaded:0});
-  else {keep(record,unit);if(unit.weaponDropped)record.carriedLoaded=0;}
- }
+  delete after.reloadProgress;
+  keep(record, after);
+}
+function fieldCounts(units, scene = {}) {
+  const result = Object.fromEntries(AMMO_KEYS.map((key) => [key, 0]));
+  const add = (counts) => {
+    for (const family of Object.values(AMMUNITION_FAMILIES)) {
+      result[family.id] += counts[family.type] ?? 0;
+    }
+  };
+  for (const original of units) {
+    const unit = initializeUnitAmmunition(structuredClone(original), { defaultCount: 0 });
+    add(unitAmmunitionByType(unit));
+  }
+  add(fieldAmmunitionByType(scene));
+  // Published saves can retain family-labelled ground bundles until scene migration.
+  for (const item of scene.groundItems ?? []) {
+    const key = item.type === 'ammo' ? 'ammoMusket' : item.type;
+    if (Object.hasOwn(AMMO_TYPES, key) && !item.heldBy) {
+      need(count(item.count), 'La cantidad física de munición no es válida.');
+      result[key] += item.count;
+    }
+  }
+  return result;
+}
+export function assertAmmunitionConservation(request, snapshot, previous) {
+  if (!snapshot) {
+    return;
+  }
+  need(
+    (request.squad ?? []).every((issued) =>
+      snapshot.units.some((u) => u.side === 'player' && Number(u.id) === Number(issued.id)),
+    ),
+    'Falta un combatiente en el parte de munición.',
+  );
+  const enemies = request.exploration
+    ? []
+    : previous && !previous.sectorCleared
+      ? previous.units.filter((u) => u.side === 'enemy')
+      : (request.enemies ?? []);
+  const deployed = [
+    ...(request.squad ?? []),
+    ...(request.garrison ?? []),
+    ...(request.missionAllies ?? []),
+    ...enemies.map((u) => ({
+      ...u,
+      weapon: u.weapon ?? u.primary ?? 1800,
+      ammo: u.ammo ?? 12,
+      loaded:
+        u.loaded ??
+        weaponSpecification({ ...u, weapon: u.weapon ?? u.primary ?? 1800 })?.capacity ??
+        0,
+    })),
+  ];
+  const bodies = retainedMilitaryBodies(previous, deployed, request.sector);
+  const initial = fieldCounts([...deployed, ...bodies], previous ?? enterSector(request)),
+    current = fieldCounts(snapshot.units, snapshot);
+  for (const receipt of request.civilianWeaponRecoveries ?? []) {
+    const key = ammoTypeFor(receipt.gun);
+    if (key) {
+      initial[key] += receipt.gun.loaded ?? 0;
+    }
+  }
+  for (const key of AMMO_KEYS) {
+    need(
+      current[key] <= initial[key],
+      `El parte añade ${AMMO_TYPES[key].name.toLowerCase()} sin una fuente física.`,
+    );
+  }
+}
+export function retainReturnedAmmunition(s, request, reports, snapshot, previous = null) {
+  assertAmmunitionConservation(request, snapshot, previous);
+  if (snapshot) {
+    for (const issued of request.squad) {
+      const actual = snapshot.units.find(
+        (u) => u.side === 'player' && Number(u.id) === Number(issued.id),
+      );
+      if (actual.hp <= 0) {
+        keep(s.operativeState[issued.id], { ammunition: {}, loaded: 0 });
+      } else {
+        need(
+          reports.some((r) => Number(r.id) === Number(issued.id)),
+          'Falta el parte de un combatiente vivo.',
+        );
+      }
+    }
+  }
+  const seen = new Set();
+  for (const report of reports) {
+    const id = Number(report.id),
+      issued = request.squad.find((u) => u.id === id);
+    need(issued && !seen.has(id), 'El parte de munición tiene un combatiente inválido.');
+    seen.add(id);
+    const actual = snapshot?.units.find((u) => u.side === 'player' && Number(u.id) === id),
+      unit = structuredClone(actual ?? { ...issued, ...report });
+    if (actual) {
+      for (const key of ['ammo', 'loaded']) {
+        if (report[key] !== undefined) {
+          need(report[key] === actual[key], 'El parte de munición no coincide con el sector.');
+        }
+      }
+      if (report.ammunition !== undefined) {
+        validateCounts(report.ammunition);
+        need(
+          AMMO_KEYS.every((key) => (report.ammunition[key] ?? 0) === (ammoStock(actual)[key] ?? 0)),
+          'Las familias del parte no coinciden con el sector.',
+        );
+      }
+    }
+    validateAmmo(unit);
+    need(
+      count(unit.loaded ?? 0) &&
+        (unit.loaded ?? 0) <= (unit.weaponDropped ? 0 : (weaponSpecification(unit)?.capacity ?? 0)),
+      'La carga del parte no es válida.',
+    );
+    if (!actual) {
+      const before = ammoStock(issued),
+        after = ammoStock(unit),
+        oldKey = ammoTypeFor(issued),
+        newKey = ammoTypeFor(unit);
+      for (const key of AMMO_KEYS) {
+        need(
+          (after[key] ?? 0) + (key === newKey ? (unit.loaded ?? 0) : 0) <=
+            (before[key] ?? 0) + (key === oldKey ? (issued.loaded ?? 0) : 0),
+          'Un parte sin escena no puede añadir munición.',
+        );
+      }
+    }
+    const record = s.operativeState[id];
+    if ((report.hp ?? unit.hp) <= 0) {
+      keep(record, { ammunition: {}, loaded: 0 });
+    } else {
+      keep(record, unit);
+      if (unit.weaponDropped) {
+        record.carriedLoaded = 0;
+      }
+    }
+  }
 }

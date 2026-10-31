@@ -1,6 +1,46 @@
 'use client';
 import { editorErrorMessage } from '../../../infrastructure/editor-error-message.ts';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
+import type { CampaignProjectDocument } from '../../../domain/campaign-project.ts';
+import type { SectorMapCommand } from '../../../domain/sector-map-command.ts';
+import type { PhysicalMap, JsonValue } from '../../../../../packages/campaign-format/types.ts';
+import type { BattleSnapshot } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import {
+  assertPhysicalMap,
+  assertCampaignContent,
+  readBuildingTemplate,
+  documentObjects,
+  documentObject,
+  documentString,
+  requireJsonDocument,
+} from '../../lib/editor-documents.ts';
+
+type BuildingPreview = {
+  source: CampaignProjectDocument;
+  mapId: string;
+  battle: BattleSnapshot;
+  expanded: boolean;
+};
+
+function readBuildingDocuments(project: CampaignProjectDocument, id: string) {
+  try {
+    const document = project.maps[id];
+    if (!document) {
+      return { error: 'Creá un mapa para empezar.' };
+    }
+    assertPhysicalMap(document);
+    const campaign = projectContent(project);
+    assertCampaignContent(campaign);
+    const rawTemplates = project.editor?.['buildingTemplates'];
+    if (rawTemplates !== undefined && !Array.isArray(rawTemplates)) {
+      throw new Error('La biblioteca de plantillas necesita una lista.');
+    }
+    const templates = (rawTemplates ?? []).map(readBuildingTemplate);
+    return { document, campaign, templates };
+  } catch (error) {
+    return { error: editorErrorMessage(error) };
+  }
+}
 import { Battlefield } from '../../../../web/game-preview.ts';
 import SectorEditor from '../editor/SectorEditor.tsx';
 import FieldEditor, { DocumentEditor } from './FieldEditor';
@@ -10,66 +50,101 @@ import {
   saveProjectBuildingTemplate,
   setProjectBuildingSlab,
 } from '../../../infrastructure/world-editing.js';
-import {
-  buildingTemplate,
-  editSectorMapDocument,
-} from '../../../public/map-editing-api.js';
-import { createMapPlaytest } from '../../../../../packages/game/public/campaign-editor-api.js';
+import { buildingTemplate, editSectorMapDocument } from '../../../public/map-editing-api.js';
+import { createMapPlaytest } from '../../../../../packages/game/public/campaign-editor-api.ts';
 export default function BuildingWorkspace({
   project,
   onChange,
 }: {
-  project: any;
-  onChange: (next: any) => void;
+  project: CampaignProjectDocument;
+  onChange: (next: CampaignProjectDocument) => void;
 }) {
   const [mapId, setMapId] = useState(Object.keys(project.maps)[0] ?? ''),
     [buildingId, setBuildingId] = useState(''),
-    [battle, setBattle] = useState<any>(null),
-    [expandedPreview, setExpandedPreview] = useState(false),
+    [storedPreview, setStoredPreview] = useState<BuildingPreview | null>(null),
     [error, setError] = useState(''),
     [advanced, setAdvanced] = useState(false),
     [elevation, setElevation] = useState(3),
     [thickness, setThickness] = useState(0.28);
-  const id = project.maps[mapId] ? mapId : Object.keys(project.maps)[0],
-    document = project.maps[id],
-    building = document?.buildings.find((b: any) => b.id === buildingId) ?? document?.buildings[0],
-    campaign = useMemo(() => projectContent(project), [project]),
-    templates = project.editor?.buildingTemplates ?? [];
-  function change(next: any) {
+  const id = project.maps[mapId] ? mapId : (Object.keys(project.maps)[0] ?? '');
+  const documents = readBuildingDocuments(project, id);
+  if ('error' in documents) {
+    return (
+      <section className="studio-body">
+        <h2>Edificios y vista 3D</h2>
+        <p role="alert">{documents.error}</p>
+        <p>Corregí los documentos para abrir el constructor.</p>
+        <DocumentEditor
+          value={project.maps}
+          path="maps"
+          onChange={(value) => {
+            const maps = requireJsonDocument(value);
+            const entries = Object.entries(maps).map(
+              ([key, map]) => [key, requireJsonDocument(map)] as const,
+            );
+            onChange({ ...project, maps: Object.fromEntries(entries) });
+          }}
+        />
+      </section>
+    );
+  }
+  const { document, campaign, templates } = documents;
+  const building =
+    document.buildings.find((entry) => entry.id === buildingId) ?? document.buildings[0];
+  const currentPreview =
+    storedPreview?.source === project && storedPreview.mapId === id ? storedPreview : null;
+  const battle = currentPreview?.battle;
+  function change(next: PhysicalMap) {
     try {
       onChange(setProjectMap(project, id, next));
-      setBattle(null);
       setError('');
-    } catch (e: any) {
-      setError(editorErrorMessage(e));
+    } catch (error) {
+      setError(editorErrorMessage(error));
     }
   }
-  function command(commands: any[]) {
-    const result = editSectorMapDocument(document, commands);
-    if (result.errors.length) setError(result.errors.join(' '));
-    else change(result.document);
+  function changeRaw(value: JsonValue) {
+    try {
+      assertPhysicalMap(value);
+      change(value);
+    } catch (error) {
+      setError(editorErrorMessage(error));
+    }
   }
-  function slab(geometry: any) {
+  function command(commands: SectorMapCommand[]) {
+    const result = editSectorMapDocument(document, commands);
+    if (result.errors.length) {
+      setError(result.errors.join(' '));
+    } else {
+      change(result.document);
+    }
+  }
+  function slab(geometry: { elevation: number; slabThickness: number } | null) {
+    if (!building) {
+      return;
+    }
     try {
       onChange(setProjectBuildingSlab(project, id, building.id, geometry));
-      setBattle(null);
       setError('');
-    } catch (e: any) {
-      setError(editorErrorMessage(e));
+    } catch (error) {
+      setError(editorErrorMessage(error));
     }
   }
   function preview(expanded: boolean) {
     try {
-      setBattle(createMapPlaytest(document, campaign, { expanded }));
-      setExpandedPreview(expanded);
+      setStoredPreview({
+        source: project,
+        mapId: id,
+        battle: createMapPlaytest(document, campaign, { expanded }),
+        expanded,
+      });
       setError('');
-    } catch (e: any) {
-      setError(editorErrorMessage(e));
+    } catch (error) {
+      setError(editorErrorMessage(error));
     }
   }
   const explicitFinishes =
     building &&
-    ['wallFinish', 'roofFinish', 'doorStyle', 'windowStyle'].filter(
+    (['wallFinish', 'roofFinish', 'doorStyle', 'windowStyle'] as const).filter(
       (key) => building[key] !== undefined,
     );
   return (
@@ -86,12 +161,12 @@ export default function BuildingWorkspace({
           y sus acabados. Un acabado explícito tiene prioridad sobre el estilo de campaña.
         </p>
         <FieldEditor
-          value={project.world.buildings}
+          value={project.world['buildings'] ?? null}
           label="Tipos y dimensiones de construcción"
           path="world.buildings"
           onChange={(value) => {
             onChange({ ...project, world: { ...project.world, buildings: value } });
-            setBattle(null);
+            setStoredPreview(null);
           }}
         />
       </details>
@@ -104,13 +179,13 @@ export default function BuildingWorkspace({
             onChange={(e) => {
               setMapId(e.target.value);
               setBuildingId('');
-              setBattle(null);
+              setStoredPreview(null);
               setError('');
             }}
           >
-            {Object.entries(project.maps).map(([id, map]: any) => (
+            {Object.entries(project.maps).map(([id, map]) => (
               <option key={id} value={id}>
-                {map.metadata.title}
+                {documentString(documentObject(map['metadata'])['title'], id)}
               </option>
             ))}
           </select>
@@ -123,7 +198,7 @@ export default function BuildingWorkspace({
             onChange={(e) => setBuildingId(e.target.value)}
           >
             {!building && <option value="">Sin edificios</option>}
-            {document?.buildings.map((b: any) => (
+            {document.buildings.map((b) => (
               <option key={b.id} value={b.id}>
                 {b.name ?? b.id}
               </option>
@@ -257,7 +332,7 @@ export default function BuildingWorkspace({
           onDocumentChange={change}
           embedded
           templates={templates}
-          onSaveTemplate={(t: any) => onChange(saveProjectBuildingTemplate(project, t))}
+          onSaveTemplate={(t) => onChange(saveProjectBuildingTemplate(project, t))}
         />
       )}
       <details>
@@ -272,7 +347,7 @@ export default function BuildingWorkspace({
             reutilizarlo en otros mapas.
           </p>
         )}
-        {templates.map((t: any, index: number) => (
+        {templates.map((t, index) => (
           <div className="studio-row" key={index}>
             <span>{t.name}</span>
             <button
@@ -298,7 +373,7 @@ export default function BuildingWorkspace({
                   ...project,
                   editor: {
                     ...project.editor,
-                    buildingTemplates: templates.filter((_: any, i: number) => i !== index),
+                    buildingTemplates: templates.filter((_, i) => i !== index),
                   },
                 })
               }
@@ -308,23 +383,26 @@ export default function BuildingWorkspace({
           </div>
         ))}
       </details>
-      {battle && (
+      {battle && currentPreview && (
         <div className="studio-preview">
           <h3>
-            {expandedPreview ? 'Escena expandida' : 'Plano'} · {document.metadata.title}
+            {currentPreview.expanded ? 'Escena expandida' : 'Plano'} · {document.metadata.title}
           </h3>
           <p className="editor-help">
             {battle.width} × {battle.height} casillas · {battle.buildings?.length ?? 0} edificios.
             Esta prueba usa el mapa y los recursos del proyecto. Las acciones de la prueba no
             cambian los documentos.
           </p>
-          <button onClick={() => setBattle(null)}>Cerrar vista 3D</button>
+          <button onClick={() => setStoredPreview(null)}>Cerrar vista 3D</button>
           <Battlefield
             battle={battle}
             campaignContext={campaign}
-            onChange={setBattle}
-            onFinish={() => setBattle(null)}
-            onMap={() => setBattle(null)}
+            onChange={(next) => {
+              setStoredPreview((current) => (current ? { ...current, battle: next } : null));
+              return next;
+            }}
+            onFinish={() => setStoredPreview(null)}
+            onMap={() => setStoredPreview(null)}
           />
         </div>
       )}
@@ -342,18 +420,24 @@ export default function BuildingWorkspace({
               climbLinks: document.climbLinks ?? [],
             }}
             path={`maps.${id}.levels`}
-            onChange={(value) => change({ ...document, ...value, revision: document.revision + 1 })}
+            onChange={(value) =>
+              changeRaw({
+                ...document,
+                ...requireJsonDocument(value),
+                revision: document.revision + 1,
+              })
+            }
           />
           <FieldEditor
-            value={document.terrain.filter((t: any) => t.elevation !== undefined)}
+            value={document.terrain.filter((t) => t.elevation !== undefined)}
             label="Terreno con altura"
             path={`maps.${id}.terrain.elevation`}
             onChange={(value) =>
-              change({
+              changeRaw({
                 ...document,
                 terrain: document.terrain.map(
-                  (t: any) =>
-                    value.find((v: any) => v.x === t.x && v.y === t.y) ??
+                  (t) =>
+                    documentObjects(value).find((v) => v['x'] === t.x && v['y'] === t.y) ??
                     Object.fromEntries(Object.entries(t).filter(([key]) => key !== 'elevation')),
                 ),
                 revision: document.revision + 1,

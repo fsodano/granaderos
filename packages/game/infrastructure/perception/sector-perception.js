@@ -6,7 +6,7 @@ import { KnownSectorPolicy } from '../../domain/perception/known-sector-policy.t
 import { hasCharacterAbility } from '../../character-abilities.js';
 import { tacticalLevel, surfaceHeight } from '../../tactical-space.js';
 import { concealmentSightPenalty } from '../../projectile-cover.js';
-import { isInteriorVisible } from '../../tactical-visibility.js';
+import { isInteriorVisible } from '../../tactical-visibility.ts';
 import { wallEdgeBlocksMovement } from '../../wall-geometry.js';
 
 const visibility = new VisibilityPolicy();
@@ -33,18 +33,23 @@ export class SectorPerception {
 
   illuminationAt(x, y, level = 0) {
     const state = this.#state;
-    if (!state.night) return illumination.daylight();
+    if (!state.night) {
+      return illumination.daylight();
+    }
     const target = { x, y, tacticalLevel: level };
     const sources = [];
     for (const source of state.lights ?? []) {
-      if (source.turns === 0 || source.extinguished) continue;
+      if (source.turns === 0 || source.extinguished) {
+        continue;
+      }
       const distance = Math.hypot(
         source.x - x,
         source.y - y,
         (surfaceHeight(state, source) ?? 0) - (surfaceHeight(state, target) ?? 0),
       );
-      if (distance > source.radius || !this.#geometry.hasLineOfSight(state, source, target))
+      if (distance > source.radius || !this.#geometry.hasLineOfSight(state, source, target)) {
         continue;
+      }
       sources.push({ distance, radius: source.radius, intensity: source.intensity ?? 1 });
     }
     return illumination.night(sources);
@@ -66,8 +71,9 @@ export class SectorPerception {
   canObserve(observer, rawTarget) {
     const state = this.#state;
     const target = this.#geometry.edgePoint(rawTarget, state);
-    if (state.deployment || !this.#geometry.observerAvailable(observer) || target.departure)
+    if (state.deployment || !this.#geometry.observerAvailable(observer) || target.departure) {
       return false;
+    }
     const facing =
       observer.facing ?? (observer.side === 'enemy' ? 6 : observer.side === 'player' ? 2 : 0);
     const vision = new VisionObserver(observer, true, new FieldOfView(facing), visibility);

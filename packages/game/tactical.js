@@ -1,5 +1,5 @@
 import { advanceSectorWorldEvents } from './military-remains.js';
-import {residentPositionPoints} from './infrastructure/world/campaign-resident-positions.js';
+import { residentPositionPoints } from './infrastructure/world/campaign-resident-positions.js';
 import { MeleeExchange, MeleeRules } from './domain/combat/melee-exchange.ts';
 import { CombatOutcomePolicy } from './domain/combat/combat-outcome-policy.ts';
 import {
@@ -45,13 +45,11 @@ import {
   wallEdgeId,
   wallEdgeCenter,
   wallEdgeCells,
-  wallEdgesBetween,
   wallMovementBlocked,
-  wallEdgeBlocksMovement,
 } from './wall-geometry.js';
 import { formatAP } from './action-points.js';
 import { hasProjectileEnergy } from './projectile-energy.js';
-import { worldCell } from './world-cells.js';
+import { worldCell } from './world-cells.ts';
 import { canonicalContent } from './content-identity.js';
 import { fieldCapable } from './actor-condition.js';
 import { medicalPatientPresent, medicalPatientAvailable } from './medical-patient.js';
@@ -68,7 +66,7 @@ import {
 import { AMMUNITION_FAMILIES } from './ammunition-families.js';
 import { AMMO_TYPES, ammoTypeFor, ammunitionChoiceReason } from './ammo-types.js';
 import { migrateBattleAmmunition, initializeGroundAmmunition } from './physical-ammunition.js';
-import { weaponSpecification, contentWeaponOf } from './weapon-definition.js';
+import { weaponSpecification, contentWeaponOf } from './weapon-definition.ts';
 import { hasCharacterAbility } from './character-abilities.js';
 import { speechFor } from './characters.js';
 import { initializeCivilianHealth } from './civilian-health.js';
@@ -77,7 +75,7 @@ import { supplyRoom, POCKET_FULL } from './personal-pockets.js';
 import { militiaPatrolRules } from './militia-patrol-rules.js';
 import { militiaPatrolOrder } from './militia-patrol.js';
 import { holdsArtilleryPost } from './tactical-ai-artillery.js';
-import { ARTILLERY, artilleryProfile } from './artillery-definitions.js';
+import { ARTILLERY, artilleryProfile } from './artillery-definitions.ts';
 import { artilleryCellOccupied, initializeArtilleryOccupancy } from './artillery-occupancy.js';
 import { WEAPONS } from './firearm-definitions.js';
 import { BLADES } from './blade-definitions.js';
@@ -167,9 +165,9 @@ import {
   wornOutfit,
   hasPoncho,
   regionalGarmentWear,
-} from './outfits.js';
+} from './outfits.ts';
 import { FIELD_DRESSINGS_AP, planFieldDressings } from './field-dressings.js';
-import { handsRequired, selectMainHand, handLayout } from './hand-layout.js';
+import { handsRequired, selectMainHand, handLayout } from './hand-layout.ts';
 import {
   firearmPreparation,
   lowerWeapon,
@@ -181,8 +179,8 @@ import { planReprime, reprimeCost } from './weapon-reprime.js';
 import { repairMaterialPoints, isRepairKit, validateRepairKit } from './repair-materials.js';
 import { spendRepairMaterials } from './equipment-repair.js';
 import { discoverInventory } from './inventory-discovery.js';
-import { isInteriorVisible } from './tactical-visibility.js';
-import { automaticOrder, searchOrder } from './autonomous-orders.js';
+import { isInteriorVisible } from './tactical-visibility.ts';
+import { automaticOrder } from './autonomous-orders.js';
 import { shotRangeModifiers } from './shot-range.js';
 import { limitEnergy, maximumEnergy, recoverEnergy, recoverFatigue } from './fatigue.js';
 import { recordMilitiaHit } from './militia-experience.js';
@@ -192,7 +190,6 @@ import {
   pointProjectileFlight,
   physicalBodies,
   concealmentAt,
-  concealmentSightPenalty,
 } from './projectile-cover.js';
 import { isShotLoad, shotLoadFlight, shotLoadForecast, shotLoadChance } from './shot-load.js';
 import { applyCivilianHarm, civilianWoundedByPlayer } from './civilian-harm.js';
@@ -204,7 +201,7 @@ import {
   environmentActionProfile,
   resolveEnvironmentInteraction,
   extractContainerItem,
-} from './environment-interactions.js';
+} from './environment-interactions.ts';
 import { revealFiniteArsenal } from './finite-artillery-arsenals.js';
 import {
   SUPPLY_ITEMS,
@@ -331,7 +328,9 @@ function dischargeFirearm(state, record, risk) {
 function advanceBattleClock(state, seconds, options) {
   SectorTimeBudget.restore(state).assertCanAdvance(seconds);
   advanceUncheckedBattleClock(state, seconds, options);
-  if (state.mode === 'combat') advanceAmbientTime(state, seconds);
+  if (state.mode === 'combat') {
+    advanceAmbientTime(state, seconds);
+  }
   return state;
 }
 
@@ -353,14 +352,18 @@ export { AP_CARRY_LIMIT, CRITICAL_HEALTH, maxActionPoints, actionPointBudget, st
 // fixed bayonets and thrown knives retain their separate existing rules.
 const LOOSE_BLADE_USABLE = 10;
 function looseBladeSlot(unit) {
-  if (unit.activeSlot === 'blade') return BLADES[unit.blade] ? 'blade' : null;
+  if (unit.activeSlot === 'blade') {
+    return BLADES[unit.blade] ? 'blade' : null;
+  }
   return !unit.weaponDropped && (unit.activeSlot ?? 'primary') === 'primary' && BLADES[unit.weapon]
     ? 'primary'
     : null;
 }
 function looseBladeProfile(unit, profile) {
   const slot = looseBladeSlot(unit);
-  if (!slot) return profile;
+  if (!slot) {
+    return profile;
+  }
   const condition = unit[slot === 'blade' ? 'bladeCondition' : 'condition'] ?? 100;
   const scale = condition >= 85 ? 100 : Math.floor((condition * 100) / 85);
   return {
@@ -369,9 +372,12 @@ function looseBladeProfile(unit, profile) {
     ...(condition < LOOSE_BLADE_USABLE ? { usable: false } : {}),
   };
 }
+/** @returns {import('./public/tactical-query-types.ts').HeldBladeProfile} */
 export function bladeFor(unit) {
-  if (['unarmed', 'medical', 'tool', 'supply', 'item'].includes(unit.activeSlot)) return FISTS;
-  if (unit.activeSlot === 'blade')
+  if (['unarmed', 'medical', 'tool', 'supply', 'item'].includes(unit.activeSlot)) {
+    return FISTS;
+  }
+  if (unit.activeSlot === 'blade') {
     return looseBladeProfile(
       unit,
       contentWeaponOf(unit, 'blade')
@@ -380,10 +386,15 @@ export function bladeFor(unit) {
           ? LOOSE_BAYONET
           : BLADES[unit.blade] || FISTS,
     );
-  if (unit.weaponDropped) return FISTS;
+  }
+  if (unit.weaponDropped) {
+    return FISTS;
+  }
   const fixed = fixedBayonetProfile(unit);
-  if (fixed) return fixed;
-  if (BLADES[unit.weapon])
+  if (fixed) {
+    return fixed;
+  }
+  if (BLADES[unit.weapon]) {
     return looseBladeProfile(
       unit,
       contentWeaponOf(unit)
@@ -392,6 +403,7 @@ export function bladeFor(unit) {
           ? LOOSE_BAYONET
           : BLADES[unit.weapon],
     );
+  }
   return hasFirearm(unit)
     ? {
         ...BUTTSTOCK,
@@ -409,7 +421,9 @@ const positionOf = (p) => ({
   ...(p.tacticalLevel === undefined ? {} : { tacticalLevel: p.tacticalLevel }),
 });
 const edgePoint = (p, s) => {
-  if (!p?.axis || p.side || p.hp !== undefined || p.wallPoint) return p;
+  if (!p?.axis || p.side || p.hp !== undefined || p.wallPoint) {
+    return p;
+  }
   const edge = s?.wallEdges?.find((edge) => wallEdgeId(edge) === (p.wallEdgeId ?? p.id)) ?? p;
   return { ...p, ...wallEdgeCenter(edge), wallEdgeId: wallEdgeId(edge), wallPoint: true };
 };
@@ -426,7 +440,9 @@ const clone = (s) => {
   migrateBattleAmmunition(copy);
   copy.conditionVersion = 1;
   for (const u of copy.units) {
-    if (u.side === 'enemy' && u.patrol !== false) u.patrolOrigin ??= positionOf(u);
+    if (u.side === 'enemy' && u.patrol !== false) {
+      u.patrolOrigin ??= positionOf(u);
+    }
     normalizeUnitFittings(u);
     u.activeSlot ??= 'primary';
     u.facing ??= u.side === 'enemy' ? 6 : 2;
@@ -442,7 +458,9 @@ const clone = (s) => {
     u.knockedDown ??= false;
     u.braced ??= false;
     u.energy ??= 100;
-    if (s.conditionVersion !== 1) refreshCondition(u);
+    if (s.conditionVersion !== 1) {
+      refreshCondition(u);
+    }
     u.movementMode ??= 'walk';
     u.inventory ??= {};
     u.boleadoras ??= 1;
@@ -485,21 +503,29 @@ function journalVisible(s, unit) {
   );
 }
 function sayObserved(s, subjects, text, enemyText = null) {
-  if (!subjects.every((unit) => journalVisible(s, unit))) return;
+  if (!subjects.every((unit) => journalVisible(s, unit))) {
+    return;
+  }
   say(s, text);
   // Owned actions can report costs and supplies. Other actors require a
   // separately reviewed message, admitted before later contact can reveal it.
   const publicText = subjects.every((unit) => unit.side === 'player') ? text : enemyText;
-  if (publicText && subjects.every((unit) => playerObservedBody(s, unit)))
+  if (publicText && subjects.every((unit) => playerObservedBody(s, unit))) {
     recordPublicCombatMessage(s, publicText);
+  }
 }
 export function hasFirearm(unit) {
-  if (unit.weaponDropped) return false;
-  if (unit.activeSlot && unit.activeSlot !== 'primary') return false;
+  if (unit.weaponDropped) {
+    return false;
+  }
+  if (unit.activeSlot && unit.activeSlot !== 'primary') {
+    return false;
+  }
   return typeof unit.weapon === 'object' ? unit.weapon.capacity > 0 : Boolean(WEAPONS[unit.weapon]);
 }
+/** @returns {import('./public/tactical-query-types.ts').HeldWeaponProfile} */
 export function weaponFor(unit) {
-  if (unit.activeSlot === 'item')
+  if (unit.activeSlot === 'item') {
     return {
       id: 'item',
       name: carriedObject(unit)?.label ?? 'Objeto',
@@ -510,6 +536,7 @@ export function weaponFor(unit) {
       capacity: 0,
       range: 0,
     };
+  }
   if (unit.activeSlot === 'supply') {
     const supply = heldSupply(unit);
     return {
@@ -536,9 +563,10 @@ export function weaponFor(unit) {
       range: 1.5,
     };
   }
-  if (unit.activeSlot === 'unarmed')
+  if (unit.activeSlot === 'unarmed') {
     return { ...FISTS, fireAP: 0, aimAP: 0, reloadAP: 0, capacity: 0, range: FISTS.reach };
-  if (unit.activeSlot === 'medical')
+  }
+  if (unit.activeSlot === 'medical') {
     return {
       id: 'medical',
       name: 'Equipo de curación',
@@ -549,7 +577,8 @@ export function weaponFor(unit) {
       capacity: 0,
       range: 1.5,
     };
-  if (unit.activeSlot === 'blade')
+  }
+  if (unit.activeSlot === 'blade') {
     return {
       ...bladeFor(unit),
       fireAP: 0,
@@ -558,8 +587,10 @@ export function weaponFor(unit) {
       capacity: 0,
       range: bladeFor(unit).reach,
     };
-  if (unit.weaponDropped)
+  }
+  if (unit.weaponDropped) {
     return { ...FISTS, fireAP: 0, aimAP: 0, reloadAP: 0, capacity: 0, range: FISTS.reach };
+  }
   return typeof unit.weapon === 'object'
     ? (weaponSpecification(unit) ?? {
         ...unit.weapon,
@@ -587,9 +618,11 @@ function nearbyTrait(s, u, id, radius = 4) {
     (v) => v.side === u.side && alive(v) && hasTrait(v, id) && dist(u, v) <= radius,
   );
 }
+/** @returns {import('./public/tactical-preview-types.ts').HeldReprimePlan} */
 export function reprimePlan(unit, state) {
   return planReprime(unit, { exploring: state.mode === 'exploration', firearm: hasFirearm(unit) });
 }
+/** @param {import('./public/compatibility-types.ts').BattleSnapshot} s @param {import('./public/compatibility-types.ts').BattleUnit} u @param {import('./public/compatibility-types.ts').TacticalPoint | null} [point] @returns {import('./public/tactical-query-types.ts').ActionCosts} */
 export function actionCosts(s, u, point) {
   const w = weaponFor(u),
     cavalry = u.mounted && hasTrait(u, 'cavalry_commander');
@@ -664,13 +697,15 @@ function autonomousRepairContext(s, u) {
     u.condition !== 0 ||
     !(u.loaded > 0) ||
     u.jammed
-  )
+  ) {
     return null;
+  }
   try {
     if (
       !Object.values(u.inventory ?? {}).some((item) => isRepairKit(item) && validateRepairKit(item))
-    )
+    ) {
       return null;
+    }
   } catch {
     return null;
   }
@@ -683,8 +718,9 @@ function autonomousRepairContext(s, u) {
       !Number.isInteger(count) ||
       count < 0 ||
       count >= 12
-    )
+    ) {
       return null;
+    }
     const context = {};
     autonomousRepairContexts.set(context, {
       state: s,
@@ -702,7 +738,9 @@ function autonomousRepairContext(s, u) {
       .map((id) => s.units.find((v) => v.id === id))
       .find((v) => v?.militia && alive(v) && v.ap >= 3 && (queue.militiaActions?.[v.id] ?? 0) < 12);
     const count = queue?.militiaActions?.[u.id] ?? 0;
-    if (selected !== u || !Number.isInteger(count) || count < 0 || count >= 12) return null;
+    if (selected !== u || !Number.isInteger(count) || count < 0 || count >= 12) {
+      return null;
+    }
     const context = {};
     autonomousRepairContexts.set(context, { state: s, actor: u, queue, count, kind: 'interrupt' });
     return context;
@@ -725,8 +763,9 @@ function autonomousRepairAllowed(s, u, context) {
     u.routed ||
     u.knockedDown ||
     u.entangled
-  )
+  ) {
     return false;
+  }
   let count;
   if (entry.kind === 'allied') {
     const queue = s.alliedTurn;
@@ -735,13 +774,15 @@ function autonomousRepairAllowed(s, u, context) {
       queue !== entry.queue ||
       queue.unitIndex !== entry.index ||
       queue.unitIds[queue.unitIndex] !== u.id
-    )
+    ) {
       return false;
+    }
     count = queue.actionsTaken;
   } else {
     const queue = s.interrupt;
-    if (s.phase !== 'interrupt' || queue !== entry.queue || !queue.unitIds.includes(u.id))
+    if (s.phase !== 'interrupt' || queue !== entry.queue || !queue.unitIds.includes(u.id)) {
       return false;
+    }
     count = queue.militiaActions?.[u.id] ?? 0;
     const selected = queue.unitIds
       .map((id) => s.units.find((v) => v.id === id))
@@ -754,12 +795,18 @@ function autonomousRepairAllowed(s, u, context) {
             ? entry.count
             : (queue.militiaActions?.[v.id] ?? 0)) < 12,
       );
-    if (selected !== u) return false;
+    if (selected !== u) {
+      return false;
+    }
   }
   // The queues increment after choosing and before applying. The twelfth
   // selected action remains paid and legal; a later selection gets no token.
-  if (count !== entry.count && count !== entry.count + 1) return false;
-  if (!hasFirearm(u) || u.condition !== 0 || !(u.loaded > 0) || u.jammed) return false;
+  if (count !== entry.count && count !== entry.count + 1) {
+    return false;
+  }
+  if (!hasFirearm(u) || u.condition !== 0 || !(u.loaded > 0) || u.jammed) {
+    return false;
+  }
   try {
     return Object.values(u.inventory ?? {}).some(
       (item) => isRepairKit(item) && validateRepairKit(item),
@@ -768,6 +815,7 @@ function autonomousRepairAllowed(s, u, context) {
     return false;
   }
 }
+/** @returns {import('./public/tactical-preview-types.ts').MaintenancePreview} */
 export function firearmMaintenancePreview(s, u, autonomousContext = null) {
   const pa = u ? actionCosts(s, u).repair : 25,
     action = u ? { type: 'repair', unitId: u.id } : null;
@@ -777,21 +825,31 @@ export function firearmMaintenancePreview(s, u, autonomousContext = null) {
     !reason &&
     (u.militia || (s.alliedTurn && s.phase !== 'interrupt')) &&
     !autonomousRepairAllowed(s, u, autonomousContext)
-  )
+  ) {
     reason = 'La milicia actúa por su cuenta. Da órdenes a los combatientes de tu escuadra.';
-  if (!reason && !hasFirearm(u)) reason = 'Prepara primero el arma de fuego que quieres mantener.';
-  if (!reason && (!Number.isFinite(u.condition) || u.condition < 0 || u.condition > 100))
+  }
+  if (!reason && !hasFirearm(u)) {
+    reason = 'Prepara primero el arma de fuego que quieres mantener.';
+  }
+  if (!reason && (!Number.isFinite(u.condition) || u.condition < 0 || u.condition > 100)) {
     reason = 'El estado del mecanismo no es válido.';
-  if (!reason && u.condition >= 100) reason = 'El mecanismo ya está en buen estado.';
-  if (!reason)
+  }
+  if (!reason && u.condition >= 100) {
+    reason = 'El mecanismo ya está en buen estado.';
+  }
+  if (!reason) {
     try {
       materialsAvailable = repairMaterialPoints(u);
     } catch (error) {
       reason = error.message;
     }
-  if (!reason && !materialsAvailable) reason = 'No quedan materiales de reparación.';
-  if (!reason && s.mode !== 'exploration' && u.ap < pa)
+  }
+  if (!reason && !materialsAvailable) {
+    reason = 'No quedan materiales de reparación.';
+  }
+  if (!reason && s.mode !== 'exploration' && u.ap < pa) {
     reason = `Mantener el mecanismo requiere ${formatAP(pa)} PA.`;
+  }
   const capacity =
     u && hasTrait(u, 'gunsmith_artillerist') ? 45 : u && hasTrait(u, 'workshop_training') ? 40 : 30;
   const gain = reason ? 0 : Math.min(capacity, 100 - u.condition, materialsAvailable);
@@ -807,9 +865,11 @@ export function firearmMaintenancePreview(s, u, autonomousContext = null) {
 }
 // All ordinary hostile clicks, HUD previews and attack animations share this
 // choice. Gun mode is explicit; distance never silently changes fire into melee.
+/** @returns {import('./public/tactical-preview-types.ts').ContextualAttack} */
 export function contextualAttack(s, u, target, options = {}) {
-  if (heldGrenade(u) && !['fire', 'melee'].includes(options.type))
+  if (heldGrenade(u) && !['fire', 'melee'].includes(options.type)) {
     return { type: 'throwGrenade', pa: grenadeThrowCosts(u, target).total, profile: GRENADE_THROW };
+  }
   const explicit = ['fire', 'melee'].includes(options.type) ? options.type : null;
   const type = explicit ?? (hasFirearm(u) ? (u.weaponMode ?? 'fire') : 'melee');
   const costs = actionCosts(s, u, target),
@@ -820,6 +880,7 @@ export function contextualAttack(s, u, target, options = {}) {
     profile: type === 'fire' ? weaponFor(u) : bladeFor(u),
   };
 }
+/** @returns {import('./public/tactical-query-types.ts').ArtilleryCosts} */
 export function artilleryCosts(s, u, gun) {
   const powderFactor = 1 + (50 - clamp(u.explosives ?? 50, 0, 100)) / 500,
     spec = artilleryProfile(s, gun),
@@ -852,6 +913,7 @@ export function artilleryContact(s, u, gun) {
 }
 // Crew work is simultaneous: the least available assigned member limits one
 // loading step. Prefer stronger available helpers without spending other units' AP.
+/** @returns {import('./public/tactical-query-types.ts').ArtilleryCrewPlan} */
 export function artilleryCrewPlan(s, u, gun, cost, partial = false) {
   const spec = artilleryProfile(s, gun);
   const eligible = (v) =>
@@ -871,12 +933,16 @@ export function artilleryCrewPlan(s, u, gun, cost, partial = false) {
     ) &&
     !inventoryOrderReason(s, v, cost) &&
     artilleryContact(s, v, gun);
-  if (!u || !spec || gun.side !== u.side)
+  if (!u || !spec || gun.side !== u.side) {
     return { crew: [], reason: 'Debes estar junto a una pieza de artillería propia.' };
-  if (sameCell(u, gun))
+  }
+  if (sameCell(u, gun)) {
     return { crew: [], reason: 'El artillero debe estar en una casilla al lado del cañón.' };
+  }
   const helpers = s.units.filter((v) => v.id !== u.id && eligible(v));
-  if (partial) helpers.sort((a, b) => b.ap - a.ap || String(a.id).localeCompare(String(b.id)));
+  if (partial) {
+    helpers.sort((a, b) => b.ap - a.ap || String(a.id).localeCompare(String(b.id)));
+  }
   const assigned = eligible(u) ? [u, ...helpers].slice(0, spec.crew) : [];
   const reason =
     assigned.length < spec.crew
@@ -884,6 +950,7 @@ export function artilleryCrewPlan(s, u, gun, cost, partial = false) {
       : null;
   return { crew: assigned.map((v) => v.id), reason };
 }
+/** @returns {import('./public/tactical-preview-types.ts').ArtilleryReloadPreview} */
 export function artilleryReloadPreview(s, u, gun) {
   const spec = artilleryProfile(s, gun),
     rate = spec && u ? artilleryCosts(s, u, gun).reload : 0;
@@ -915,7 +982,9 @@ export function artilleryReloadPreview(s, u, gun) {
 export function artilleryCanisterContains(s, gun, point, body) {
   const spec = artilleryProfile(s, gun),
     length = dist(gun, point);
-  if (!length || !sameSurface(gun, body)) return false;
+  if (!length || !sameSurface(gun, body)) {
+    return false;
+  }
   const dx = (point.x - gun.x) / length,
     dy = (point.y - gun.y) / length,
     vx = body.x - gun.x,
@@ -938,7 +1007,7 @@ export function artilleryShotTrace(s, u, gun, point, mode = 'solid') {
     const length = dist(gun, point),
       dx = (point.x - gun.x) / length,
       dy = (point.y - gun.y) / length;
-    for (const { body, kind } of bodies)
+    for (const { body, kind } of bodies) {
       if (artilleryCanisterContains(s, gun, point, body)) {
         const forward = (body.x - gun.x) * dx + (body.y - gun.y) * dy;
         events.push({
@@ -951,22 +1020,30 @@ export function artilleryShotTrace(s, u, gun, point, mode = 'solid') {
             (hasCharacterAbility(u, 'artillery_fire') ? 1.15 : 1),
         });
       }
+    }
   } else {
     let energy = spec.damage,
       penetration = spec.penetration + (hasCharacterAbility(u, 'artillery_loading') ? 1 : 0);
     const crossed = new Map(),
       sourceHeight = (surfaceHeight(s, gun) ?? 0) + 0.65,
       endHeight = (surfaceHeight(s, point) ?? 0) + 0.65;
-    for (const cell of geometryCells(gun, point))
+    for (const cell of geometryCells(gun, point)) {
       for (const volume of obstacleVolumesAt(s, cell)) {
-        if (volume.kind !== 'edge') continue;
+        if (volume.kind !== 'edge') {
+          continue;
+        }
         const clipped = volumeRayCell(gun, point, cell, volume),
           hit =
             clipped &&
             rayHeightIntersection(sourceHeight, endHeight, clipped, volume.bottom, volume.top);
-        if (hit && (!crossed.has(volume.edgeId) || hit.entry < crossed.get(volume.edgeId).fraction))
+        if (
+          hit &&
+          (!crossed.has(volume.edgeId) || hit.entry < crossed.get(volume.edgeId).fraction)
+        ) {
           crossed.set(volume.edgeId, { edgeId: volume.edgeId, fraction: hit.entry });
+        }
       }
+    }
     const barriers = [...crossed.values()].sort(
       (a, b) => a.fraction - b.fraction || a.edgeId.localeCompare(b.edgeId),
     );
@@ -1000,9 +1077,13 @@ export function artilleryShotTrace(s, u, gun, point, mode = 'solid') {
         penetration -= resistance;
         events.push({ type: 'breach', edgeId: barrier.edgeId, ...contact, stone });
       }
-      if (stopped) break;
+      if (stopped) {
+        break;
+      }
       if (ground?.blocked) {
-        if (ground.type === 'water' || ground.type === 'cliff') break;
+        if (ground.type === 'water' || ground.type === 'cliff') {
+          break;
+        }
         const stone = ground.material === 'stone' || ground.type === 'stone',
           resistance = stone ? 3 : 1;
         if (penetration < resistance) {
@@ -1024,7 +1105,9 @@ export function artilleryShotTrace(s, u, gun, point, mode = 'solid') {
         energy *= 0.75;
         penetration--;
       }
-      if (penetration < 0 || energy < 20) break;
+      if (penetration < 0 || energy < 20) {
+        break;
+      }
     }
   }
   return { events, cells };
@@ -1073,6 +1156,7 @@ function holdMorale(s, u) {
 }
 // The v1.13 look cursor turns first; a second look along the same facing
 // raises the held firearm. This never fires, identifies a target, or loads it.
+/** @returns {import('./public/tactical-preview-types.ts').LookPreview} */
 export function lookPreview(s, u, point) {
   let reason =
     !u || !alive(u)
@@ -1089,11 +1173,14 @@ export function lookPreview(s, u, point) {
     turn = reason ? 0 : turnAPCost(u, facing);
   const prepare = !reason && !turn && hasFirearm(u) && !u.weaponReady;
   const pa = reason ? 0 : prepare ? actionCosts(s, u).ready : turn;
-  if (!reason && !pa)
+  if (!reason && !pa) {
     reason = hasFirearm(u)
       ? 'El arma ya está en posición de tiro.'
       : 'El combatiente ya mira en esa dirección.';
-  if (!reason && s.mode !== 'exploration' && u.ap < pa) reason = 'PA insuficientes.';
+  }
+  if (!reason && s.mode !== 'exploration' && u.ap < pa) {
+    reason = 'PA insuficientes.';
+  }
   return {
     valid: !reason,
     reason,
@@ -1106,11 +1193,12 @@ export function lookPreview(s, u, point) {
 function singleReloadPlan(unit, state, reserved = 0) {
   const w = weaponFor(unit),
     rate = reloadRoundCost(unit, w, Boolean(state && nearby(state, unit, 'loading_support', 2)));
-  if (!firearmServiceable(unit))
+  if (!firearmServiceable(unit)) {
     return {
       ...planReload({ ...unit, ammo: 0 }, rate, w.capacity, state?.mode === 'exploration'),
       reason: BROKEN_FIREARM_REASON,
     };
+  }
   return planReload(
     { ...unit, ammo: Math.max(0, availableAmmunition(unit, unit) - reserved) },
     rate,
@@ -1118,10 +1206,13 @@ function singleReloadPlan(unit, state, reserved = 0) {
     state?.mode === 'exploration',
   );
 }
+/** @returns {import('./public/tactical-preview-types.ts').HeldReloadPlan} */
 export function reloadPlan(unit, state) {
   const first = singleReloadPlan(unit, state),
     other = secondHeldPistol(unit);
-  if (!other || other.jammed || !firearmServiceable(other)) return first;
+  if (!other || other.jammed || !firearmServiceable(other)) {
+    return first;
+  }
   const second = secondaryPistolView(unit, other),
     hands = [];
   const step = (hand, view, plan) => ({
@@ -1130,7 +1221,9 @@ export function reloadPlan(unit, state) {
     name: weaponFor(view).name,
     ...plan,
   });
-  if (first.available) hands.push(step('primary', unit, first));
+  if (first.available) {
+    hands.push(step('primary', unit, first));
+  }
   // Reserve ammunition for the first gun before considering the second.
   const reserved = weaponAmmoType(unit) === weaponAmmoType(second) ? first.available : 0;
   second.ap = Math.max(0, unit.ap - first.totalPA);
@@ -1138,8 +1231,12 @@ export function reloadPlan(unit, state) {
   // Do not spend the AP left after a completed primary load on incomplete
   // secondary work. When only the secondary needs work, it may span turns.
   const include = last.available && (!first.available || (!first.partial && !last.partial));
-  if (include) hands.push(step('offhand', second, last));
-  if (!hands.length) return first;
+  if (include) {
+    hands.push(step('offhand', second, last));
+  }
+  if (!hands.length) {
+    return first;
+  }
   return {
     ...hands[0],
     hands,
@@ -1158,10 +1255,15 @@ export function reloadCost(unit, state) {
 function applyReloadPlan(unit, plan) {
   for (const hand of plan.hands ?? [{ hand: 'primary', ...plan }]) {
     const gun = hand.hand === 'offhand' ? unit.offHand : unit;
-    if (hand.rounds) consumeWeaponAmmunition(unit, gun, hand.rounds);
+    if (hand.rounds) {
+      consumeWeaponAmmunition(unit, gun, hand.rounds);
+    }
     gun.loaded += hand.rounds;
-    if (hand.progress > 0) gun.reloadProgress = hand.progress;
-    else delete gun.reloadProgress;
+    if (hand.progress > 0) {
+      gun.reloadProgress = hand.progress;
+    } else {
+      delete gun.reloadProgress;
+    }
   }
   syncUnitAmmunition(unit);
 }
@@ -1262,6 +1364,7 @@ export function createSectorParticipant(raw, state) {
   refreshCondition(unit);
   return unit;
 }
+/** @returns {import('./public/compatibility-types.ts').BattleSnapshot} */
 export function createBattle(squad = [], sector = {}) {
   const width = sector.width || 16,
     height = sector.height || 12;
@@ -1354,16 +1457,22 @@ export function createBattle(squad = [], sector = {}) {
     log: [],
     lastError: null,
   };
-  if (sector.questWithdrawals !== undefined)
+  if (sector.questWithdrawals !== undefined) {
     state.questWithdrawals = structuredClone(sector.questWithdrawals);
+  }
   const beneficiaryMap =
     sector.questBeneficiaries !== undefined
       ? sector.questBeneficiaries
       : initializeQuestBeneficiaries(state);
-  if (beneficiaryMap !== undefined) state.questBeneficiaries = structuredClone(beneficiaryMap);
-  if (sector.upperSurfaces !== undefined)
+  if (beneficiaryMap !== undefined) {
+    state.questBeneficiaries = structuredClone(beneficiaryMap);
+  }
+  if (sector.upperSurfaces !== undefined) {
     state.upperSurfaces = structuredClone(sector.upperSurfaces);
-  if (sector.climbLinks !== undefined) state.climbLinks = structuredClone(sector.climbLinks);
+  }
+  if (sector.climbLinks !== undefined) {
+    state.climbLinks = structuredClone(sector.climbLinks);
+  }
   if (sector.regionalWeather) {
     state.regionalWeather = true;
     state.regionalWeatherDefinition = structuredClone(
@@ -1371,17 +1480,22 @@ export function createBattle(squad = [], sector = {}) {
     );
     state.weather = regionalWeatherAt(state.sectorId, state.startSeconds / 3600, state);
   }
-  if (sector.localityIds !== undefined) state.localityIds = structuredClone(sector.localityIds);
-  if (sector.adjacentExitIds !== undefined)
+  if (sector.localityIds !== undefined) {
+    state.localityIds = structuredClone(sector.localityIds);
+  }
+  if (sector.adjacentExitIds !== undefined) {
     state.adjacentExitIds = structuredClone(sector.adjacentExitIds);
-  if (sector.sectorCode !== undefined) state.sectorCode = sector.sectorCode;
+  }
+  if (sector.sectorCode !== undefined) {
+    state.sectorCode = sector.sectorCode;
+  }
   state.weather.rain =
     typeof state.weather.rain === 'boolean' ? (state.weather.rain ? 40 : 0) : state.weather.rain;
   state.weather.humidity =
     state.weather.humidity > 0 && state.weather.humidity <= 1
       ? state.weather.humidity * 10
       : state.weather.humidity;
-  for (let y = 0; y < height; y++)
+  for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       const edge =
         x === Math.floor(width * 0.56) && y > 1 && y < height - 2 && y !== Math.floor(height / 2);
@@ -1403,9 +1517,13 @@ export function createBattle(squad = [], sector = {}) {
             : 0,
       });
     }
-  if (Array.isArray(sector.tiles))
+  }
+  if (Array.isArray(sector.tiles)) {
     state.tiles = sector.tiles.map((t) => ({ blocked: false, cover: 0, ...t }));
-  if (Array.isArray(sector.wallEdges)) state.wallEdges = structuredClone(sector.wallEdges);
+  }
+  if (Array.isArray(sector.wallEdges)) {
+    state.wallEdges = structuredClone(sector.wallEdges);
+  }
   migrateWallGeometry(state);
   state.units = squad.map((u, i) =>
     makeUnit(u, 'player', i, 1 + Math.floor(i / (height - 2)), 1 + (i % (height - 2))),
@@ -1438,7 +1556,7 @@ export function createBattle(squad = [], sector = {}) {
       makeUnit(u, 'enemy', i, width - 2 - Math.floor(i / (height - 2)), 1 + (i % (height - 2))),
     ),
   );
-  if (!Array.isArray(sector.artillery) && sector.cannons > 0)
+  if (!Array.isArray(sector.artillery) && sector.cannons > 0) {
     state.artillery = Array.from({ length: Math.min(sector.cannons, 3) }, (_, i) => ({
       id: `gun-${i}`,
       type: 'bronze4',
@@ -1448,12 +1566,15 @@ export function createBattle(squad = [], sector = {}) {
       loaded: artilleryProfile(sector, 'bronze4').initialLoaded,
       ammo: artilleryProfile(sector, 'bronze4').initialAmmo,
     }));
+  }
   initializeArtilleryOccupancy(state);
   for (const u of state.units) {
     normalizeOutfit(u);
     lowerWeapon(u);
     limitEnergy(u);
-    if (u.side === 'enemy' && u.patrol !== false) u.patrolOrigin ??= positionOf(u);
+    if (u.side === 'enemy' && u.patrol !== false) {
+      u.patrolOrigin ??= positionOf(u);
+    }
     normalizeUnitFittings(u);
     u.weaponFittings = structuredClone(u.weaponFittings);
     const participant = participantOf(u);
@@ -1461,7 +1582,9 @@ export function createBattle(squad = [], sector = {}) {
     writeParticipant(u, participant);
     refreshCondition(u);
   }
-  for (const item of state.groundItems) initializeGroundAmmunition(item);
+  for (const item of state.groundItems) {
+    initializeGroundAmmunition(item);
+  }
   migrateBattleAmmunition(state);
   writeSectorSession(state, readSectorSession(state));
   const entered = sector.deferContact ? state : initializeBattlePerception(state, sector.firstSide);
@@ -1474,7 +1597,9 @@ export function createBattle(squad = [], sector = {}) {
   return removeIgnitionSupplies(entered);
 }
 export function initializeBattlePerception(state, firstSide) {
-  if (state.deployment) return state;
+  if (state.deployment) {
+    return state;
+  }
   checkEnd(state);
   detectContact(state);
   rememberContacts(state);
@@ -1488,7 +1613,9 @@ export function initializeBattlePerception(state, firstSide) {
   return resolveFirstContact(state);
 }
 function tile(s, x, y, level = 0) {
-  if (level) return surfaceAt(s, { x, y, tacticalLevel: level });
+  if (level) {
+    return surfaceAt(s, { x, y, tacticalLevel: level });
+  }
   const at = s.tiles[y * s.width + x];
   return at?.x === x && at?.y === y ? at : s.tiles.find((t) => t.x === x && t.y === y);
 }
@@ -1503,14 +1630,19 @@ function occupied(s, x, y, except, level = 0) {
   );
 }
 // Planning sees own and observed guns. Execution checks every physical piece.
+/** @returns {import('./public/compatibility-types.ts').BattleArtillery[]} */
 export function knownArtillery(s, u) {
   return (s.artillery ?? []).filter(
     (gun) => gun.side === u?.side || (u && teamCanSee(s, u.side, gun)),
   );
 }
 function artilleryStepBlocked(s, from, to) {
-  if (artilleryCellOccupied(s, to)) return true;
-  if (!sameSurface(from, to) || from.x === to.x || from.y === to.y) return false;
+  if (artilleryCellOccupied(s, to)) {
+    return true;
+  }
+  if (!sameSurface(from, to) || from.x === to.x || from.y === to.y) {
+    return false;
+  }
   return (
     artilleryCellOccupied(s, { x: to.x, y: from.y, tacticalLevel: tacticalLevel(from) }) ||
     artilleryCellOccupied(s, { x: from.x, y: to.y, tacticalLevel: tacticalLevel(from) })
@@ -1519,6 +1651,7 @@ function artilleryStepBlocked(s, from, to) {
 export function carryCapacity(u) {
   return Math.max(10, (u.strength || 50) * 0.5);
 }
+/** @returns {number} */
 export function carriedWeight(u) {
   const inventory = Object.values(u.inventory || {}).reduce(
     (sum, item) =>
@@ -1631,15 +1764,19 @@ export function canSee(state, observer, target) {
   return sectorPerception(state).canObserve(observer, target);
 }
 
+/** @returns {boolean} */
 export function teamCanSee(state, side, target) {
   return sectorPerception(state).teamCanObserve(side, target);
 }
 
+/** @returns {string[]} */
 export function visibleRooms(state) {
   const perception = sectorPerception(state);
   const rooms = new Set();
   for (const surface of [...state.tiles, ...(state.upperSurfaces ?? [])]) {
-    if (surface.roomId && perception.teamCanObserve('player', surface)) rooms.add(surface.roomId);
+    if (surface.roomId && perception.teamCanObserve('player', surface)) {
+      rooms.add(surface.roomId);
+    }
   }
   return [...rooms];
 }
@@ -1647,11 +1784,12 @@ function revealRooms(s) {
   s.revealedRooms = [...new Set([...(s.revealedRooms || []), ...visibleRooms(s)])];
   discoverInventory(s);
   const pieces = revealFiniteArsenal(s);
-  if (pieces.length)
+  if (pieces.length) {
     sayPublic(
       s,
       `Se recuperan ${pieces.length} piezas del arsenal. Conservan su carga y su munición de reserva.`,
     );
+  }
 }
 export function visibleTiles(state, observer) {
   const perception = sectorPerception(state);
@@ -1678,6 +1816,7 @@ export function visibleHostiles(state, observer) {
   return observedCharacters(targets, (target) => perception.canObserve(observer, target));
 }
 
+/** @returns {import('./public/compatibility-types.ts').BattleUnit[]} */
 export function visibleEnemies(state) {
   const perception = sectorPerception(state);
   const targets = state.units.filter((target) => target.side === 'enemy' && onField(target));
@@ -1698,9 +1837,13 @@ function emitNoise(s, source, kind, position = source, { deferCivilians = false 
           .slice(0, -1)
           .filter((p) => tile(s, p.x, p.y)?.blocksSight ?? tile(s, p.x, p.y)?.blocked).length,
     );
-  if (!deferCivilians) notifyCivilians();
+  if (!deferCivilians) {
+    notifyCivilians();
+  }
   for (const listener of s.units.filter((v) => v.side !== source.side && alive(v))) {
-    if (canSee(s, listener, source)) continue;
+    if (canSee(s, listener, source)) {
+      continue;
+    }
     const obstructions = line(listener, position)
       .slice(0, -1)
       .filter((p) => tile(s, p.x, p.y)?.blocksSight ?? tile(s, p.x, p.y)?.blocked).length;
@@ -1713,24 +1856,30 @@ function emitNoise(s, source, kind, position = source, { deferCivilians = false 
       obstructions,
       night: s.night,
     });
-    if (!heard) continue;
+    if (!heard) {
+      continue;
+    }
     const previous = listener.lastHeardNoise;
     listener.lastHeardNoise = heard;
     if (
       listener.side === 'player' &&
       (!previous || previous.kind !== kind || previous.x !== heard.x || previous.y !== heard.y)
-    )
+    ) {
       sayObserved(
         s,
         [listener],
         `${listener.name} oye ${kind === 'fire' ? 'un disparo' : kind === 'explosion' ? 'una detonación' : kind === 'alarm' ? 'una alarma' : 'un ruido'} cerca de ${heard.x + 1}, ${heard.y + 1}.`,
       );
+    }
   }
   return notifyCivilians;
 }
 function forgetInvestigatedNoise(s) {
-  for (const u of s.units)
-    if (u.lastHeardNoise && s.turn - u.lastHeardNoise.turn > 3) delete u.lastHeardNoise;
+  for (const u of s.units) {
+    if (u.lastHeardNoise && s.turn - u.lastHeardNoise.turn > 3) {
+      delete u.lastHeardNoise;
+    }
+  }
 }
 function investigateNoise(s, u) {
   const heard = u.lastHeardNoise;
@@ -1753,12 +1902,14 @@ function rememberContacts(s) {
     const seen = visibleHostiles(s, u)
       .filter(alive)
       .sort((a, b) => dist(u, a) - dist(u, b) || String(a.id).localeCompare(String(b.id)));
-    if (seen.length) u.lastKnownEnemy = { ...positionOf(seen[0]), turn: s.turn };
-    else if (
+    if (seen.length) {
+      u.lastKnownEnemy = { ...positionOf(seen[0]), turn: s.turn };
+    } else if (
       u.lastKnownEnemy &&
       (s.turn - u.lastKnownEnemy.turn > 3 || contactDistance(u, u.lastKnownEnemy) <= 1)
-    )
+    ) {
       delete u.lastKnownEnemy;
+    }
   }
 }
 function hasVisualContact(s) {
@@ -1774,13 +1925,17 @@ function explorationEligibility(state) {
   };
 }
 export function canEndCombat(state) {
-  if (state.status !== CombatOutcome.Active || state.mode !== 'combat') return false;
+  if (state.status !== CombatOutcome.Active || state.mode !== 'combat') {
+    return false;
+  }
   return readSectorSession(state).combat?.allowsExploration(explorationEligibility(state)) ?? false;
 }
 function resumeExploration(state) {
   const session = readSectorSession(state);
   if (session.combat) {
-    if (state.sectorCleared && session.combat.active) session.combat.finish(CombatOutcome.Victory);
+    if (state.sectorCleared && session.combat.active) {
+      session.combat.finish(CombatOutcome.Victory);
+    }
     session.resumeExploration(explorationEligibility(state));
     writeSectorSession(state, session);
   }
@@ -1794,7 +1949,9 @@ function resumeExploration(state) {
   return state;
 }
 function pauseAutonomousAtBoundary(state) {
-  if (!SectorTimeBudget.restore(state).reached) return false;
+  if (!SectorTimeBudget.restore(state).reached) {
+    return false;
+  }
   const continuationRequired =
     state.status === CombatOutcome.Active &&
     Boolean(
@@ -1803,35 +1960,46 @@ function pauseAutonomousAtBoundary(state) {
       state.alliedTurn ||
       state.reactionStack?.length,
     );
-  if (continuationRequired)
+  if (continuationRequired) {
     state.pendingSectorOperation = {
       kind: SectorOperationKind.Continue,
       interruptedAtSecond: (state.startSeconds ?? 0) + (state.elapsedSeconds ?? 0),
     };
+  }
   return true;
 }
 function resolveFirstContact(state) {
-  if (state.contactInitiative !== 'enemy' || pauseAutonomousAtBoundary(state)) return state;
+  if (state.contactInitiative !== 'enemy' || pauseAutonomousAtBoundary(state)) {
+    return state;
+  }
   delete state.contactInitiative;
   return endTurn(state);
 }
 function detectContact(s) {
-  if (s.mode !== 'exploration' || s.status !== 'active') return false;
+  if (s.mode !== 'exploration' || s.status !== 'active') {
+    return false;
+  }
   const observers = s.units.filter((u) => alive(u) && visibleHostiles(s, u).some(alive));
-  if (!observers.length) return false;
+  if (!observers.length) {
+    return false;
+  }
   const playerAware = observers.some((u) => u.side === 'player');
   const session = readSectorSession(s);
   session.startCombat(playerAware ? 'player' : 'enemy', s.turn);
   writeSectorSession(s, session);
   s.enemyTurns = 0;
-  for (const unit of s.units) returnBattleEquipmentCursor(s, unit);
+  for (const unit of s.units) {
+    returnBattleEquipmentCursor(s, unit);
+  }
   delete s.enemyFirstAwaitingPlayer;
   for (const unit of s.units.filter(alive)) {
     const participant = participantOf(unit);
     participant.beginEncounter(maxActionPoints(s, unit));
     writeParticipant(unit, participant);
   }
-  if (!playerAware) s.contactInitiative = 'enemy';
+  if (!playerAware) {
+    s.contactInitiative = 'enemy';
+  }
   sayPublic(
     s,
     playerAware
@@ -1875,12 +2043,15 @@ function movementFactor(from, to) {
   return from.x !== to.x && from.y !== to.y ? 1.4 : 1;
 }
 export function movementIntentReason(u, intent = 'forward') {
-  if (!['forward', 'preserveFacing'].includes(intent))
+  if (!['forward', 'preserveFacing'].includes(intent)) {
     return 'La intención de movimiento no es válida.';
-  if (intent === 'preserveFacing' && u?.mounted)
+  }
+  if (intent === 'preserveFacing' && u?.mounted) {
     return 'Debes desmontar antes de retroceder o avanzar de costado.';
-  if (intent === 'preserveFacing' && u?.movementMode === 'run')
+  }
+  if (intent === 'preserveFacing' && u?.movementMode === 'run') {
     return 'Camina, agáchate o arrástrate para conservar la dirección.';
+  }
   return null;
 }
 const intentFactor = (intent) => (intent === 'preserveFacing' ? 1.25 : 1);
@@ -1894,7 +2065,9 @@ function stepCostWithGeometry(
   intent = 'forward',
   costFor = null,
 ) {
-  if (!sameSurface(from, to) || wallMovementBlocked(s, from, to)) return Infinity;
+  if (!sameSurface(from, to) || wallMovementBlocked(s, from, to)) {
+    return Infinity;
+  }
   const dx = Math.abs(to.x - from.x),
     dy = Math.abs(to.y - from.y),
     start = lookup(from.x, from.y),
@@ -1910,12 +2083,15 @@ function stepCostWithGeometry(
     !ground ||
     ground.blocked ||
     propBlocked(to.x, to.y)
-  )
+  ) {
     return Infinity;
+  }
   // The route already has a floor-specific index. Reuse these records instead
   // of repeating global surface lookup for every edge and diagonal corner.
   const elevation = start.elevation ?? 0;
-  if (elevated && (start.blocked || (ground.elevation ?? 0) !== elevation)) return Infinity;
+  if (elevated && (start.blocked || (ground.elevation ?? 0) !== elevation)) {
+    return Infinity;
+  }
   if (dx && dy) {
     const horizontal = lookup(to.x, from.y),
       vertical = lookup(from.x, to.y);
@@ -1926,13 +2102,15 @@ function stepCostWithGeometry(
       vertical.blocked ||
       propBlocked(to.x, from.y) ||
       propBlocked(from.x, to.y)
-    )
+    ) {
       return Infinity;
+    }
     if (
       elevated &&
       ((horizontal.elevation ?? 0) !== elevation || (vertical.elevation ?? 0) !== elevation)
-    )
+    ) {
       return Infinity;
+    }
   }
   return Math.ceil(
     Math.ceil((costFor ? costFor(ground) : stepCost(u, ground)) * movementFactor(from, to)) *
@@ -1941,8 +2119,12 @@ function stepCostWithGeometry(
 }
 export function movementStepCost(s, u, from, to, options = {}) {
   const intent = options?.movementIntent === undefined ? 'forward' : options.movementIntent;
-  if (movementIntentReason(u, intent)) return Infinity;
-  if (!sameSurface(from, to)) return climbStep(s, u, from, to).pa;
+  if (movementIntentReason(u, intent)) {
+    return Infinity;
+  }
+  if (!sameSurface(from, to)) {
+    return climbStep(s, u, from, to).pa;
+  }
   const level = tacticalLevel(from);
   return stepCostWithGeometry(
     s,
@@ -1984,6 +2166,7 @@ function climbStep(s, u, from, to) {
     destination: access ?? null,
   };
 }
+/** @returns {{valid:boolean,reason:string|null,pa:number,destination:(import('./public/compatibility-types.ts').TacticalPoint & {kind:'climb',linkId:string,from:import('./public/compatibility-types.ts').TacticalPoint})|null,energy?:number,seconds?:number}} */
 export function climbPreview(s, u, action = {}) {
   const destination = u && accessStepsFrom(s, u).find((step) => step.linkId === action.linkId),
     step = destination
@@ -2018,7 +2201,9 @@ function routeStepCosts(u) {
   const costs = new Map();
   return (ground) => {
     const type = ground?.type;
-    if (!costs.has(type)) costs.set(type, stepCost(u, ground));
+    if (!costs.has(type)) {
+      costs.set(type, stepCost(u, ground));
+    }
     return costs.get(type);
   };
 }
@@ -2048,8 +2233,12 @@ function elevatedReachable(s, u, options, intent) {
   while (queue.length) {
     const from = queue.shift(),
       fromKey = spaceKey(from);
-    if (from.cost !== costs.get(fromKey)) continue;
-    if (options.stopAt?.(from)) return [{ ...from, path: paths.get(fromKey) }];
+    if (from.cost !== costs.get(fromKey)) {
+      continue;
+    }
+    if (options.stopAt?.(from)) {
+      return [{ ...from, path: paths.get(fromKey) }];
+    }
     const level = tacticalLevel(from),
       lookup = (x, y) => cells.get(spaceKey({ x, y, tacticalLevel: level })),
       blocked = (x, y) => props.has(spaceKey({ x, y, tacticalLevel: level }));
@@ -2065,7 +2254,9 @@ function elevatedReachable(s, u, options, intent) {
     ].map(([dx, dy]) => ({ x: from.x + dx, y: from.y + dy, tacticalLevel: level, kind: 'move' }));
     for (const to of [...adjacent, ...accessStepsFrom(s, from)]) {
       const key = spaceKey(to);
-      if (occupants.has(key)) continue;
+      if (occupants.has(key)) {
+        continue;
+      }
       const step =
           to.kind === 'climb'
             ? climbStep(s, u, from, to).pa
@@ -2075,8 +2266,9 @@ function elevatedReachable(s, u, options, intent) {
         !Number.isFinite(cost) ||
         cost > (s.mode === 'exploration' || options.previewBudget ? Infinity : u.ap) ||
         cost >= (costs.get(key) ?? Infinity)
-      )
+      ) {
         continue;
+      }
       costs.set(key, cost);
       paths.set(key, [...paths.get(fromKey), to]);
       queue.push({ ...to, cost });
@@ -2091,12 +2283,17 @@ function elevatedReachable(s, u, options, intent) {
         path: paths.get(key),
       }));
 }
+/** @param {import('./public/tactical-query-types.ts').ReachabilityState} s @param {import('./public/compatibility-types.ts').BattleUnit | string | number} unitOrId @param {{movementIntent?: import('./public/compatibility-types.ts').MovementIntent, previewBudget?: boolean, stopAt?: (point: import('./public/tactical-query-types.ts').ReachableCell) => boolean}} [options] @returns {import('./public/tactical-query-types.ts').ReachableCell[]} */
 export function getReachable(s, unitOrId, options = {}) {
   const u =
       typeof unitOrId === 'object' ? unitOrId : s.units.find((u) => u.id === String(unitOrId)),
     intent = options?.movementIntent === undefined ? 'forward' : options.movementIntent;
-  if (!u || !alive(u) || s.status !== 'active' || movementIntentReason(u, intent)) return [];
-  if (s.upperSurfaces?.length) return elevatedReachable(s, u, options, intent);
+  if (!u || !alive(u) || s.status !== 'active' || movementIntentReason(u, intent)) {
+    return [];
+  }
+  if (s.upperSurfaces?.length) {
+    return elevatedReachable(s, u, options, intent);
+  }
   const tiles = new Map(s.tiles.map((t) => [`${t.x},${t.y}`, t])),
     props = new Set(
       [
@@ -2119,8 +2316,12 @@ export function getReachable(s, unitOrId, options = {}) {
     queue = new RouteQueue({ x: u.x, y: u.y, cost: 0 });
   while (queue.length) {
     const p = queue.shift();
-    if (p.cost !== costs.get(`${p.x},${p.y}`)) continue;
-    if (options?.stopAt?.(p)) return [{ ...p, path: paths.get(`${p.x},${p.y}`) }];
+    if (p.cost !== costs.get(`${p.x},${p.y}`)) {
+      continue;
+    }
+    if (options?.stopAt?.(p)) {
+      return [{ ...p, path: paths.get(`${p.x},${p.y}`) }];
+    }
     for (const [dx, dy] of [
       [1, 0],
       [-1, 0],
@@ -2134,15 +2335,18 @@ export function getReachable(s, unitOrId, options = {}) {
       const x = p.x + dx,
         y = p.y + dy,
         key = `${x},${y}`;
-      if (occupants.has(key)) continue;
+      if (occupants.has(key)) {
+        continue;
+      }
       const step = stepCostWithGeometry(s, u, p, { x, y }, lookup, propBlocked, intent, costFor),
         cost = p.cost + step;
       if (
         !Number.isFinite(cost) ||
         cost > (s.mode === 'exploration' || options.previewBudget ? Infinity : u.ap) ||
         cost >= (costs.get(key) ?? Infinity)
-      )
+      ) {
         continue;
+      }
       costs.set(key, cost);
       paths.set(key, [...paths.get(`${p.x},${p.y}`), { x, y }]);
       queue.push({ x, y, cost });
@@ -2163,8 +2367,9 @@ function line(a, b) {
     y = Math.round(a.y);
   const endX = Math.round(b.x),
     endY = Math.round(b.y);
-  if (![x, y, endX, endY].every(Number.isSafeInteger))
+  if (![x, y, endX, endY].every(Number.isSafeInteger)) {
     throw new RangeError('Invalid sight coordinates');
+  }
   const dx = Math.abs(endX - x),
     dy = Math.abs(endY - y),
     sx = x < endX ? 1 : -1,
@@ -2187,10 +2392,14 @@ function line(a, b) {
 // Every ray samples a local cloud's height above its supporting surface, so a
 // downstairs shot does not cross roof smoke and distant roofs change no rule.
 function smokeBetween(s, a, b) {
-  if (!s.smoke?.length) return 0;
+  if (!s.smoke?.length) {
+    return 0;
+  }
   const start = absoluteBodyHeight(s, a),
     end = absoluteBodyHeight(s, b);
-  if (start === null || end === null) return 0;
+  if (start === null || end === null) {
+    return 0;
+  }
   return geometryCells(a, b).filter(
     (cell) =>
       cell.entry !== cell.exit &&
@@ -2208,6 +2417,7 @@ function smokeBetween(s, a, b) {
 export function hasLineOfSight(s, a, b) {
   return elevationSightClear(s, edgePoint(a, s), edgePoint(b, s));
 }
+/** @returns {import('./public/tactical-preview-types.ts').FirearmPathPreview} */
 export function firearmProjectilePath(s, attacker, target, hitLocation = 'torso') {
   return projectilePath(
     firearmPreviewScene(s, attacker, target),
@@ -2224,11 +2434,15 @@ function firearmPreviewScene(state, attacker, target) {
   const perception = sectorPerception(state);
   const candidates = state.units.filter((character) => civilian || character.id !== target.id);
   const units = perception.knownCharacters(attacker, candidates);
-  if (!civilian && target.id !== undefined) units.push(target);
+  if (!civilian && target.id !== undefined) {
+    units.push(target);
+  }
   const npcs = knownCivilianBodies(state, attacker).filter(
     (character) => !civilian || character.id !== target.id,
   );
-  if (civilian && target.id !== undefined) npcs.push(target);
+  if (civilian && target.id !== undefined) {
+    npcs.push(target);
+  }
   return { ...state, ...perception.knownTerrain(attacker), units, npcs };
 }
 function firearmForecastPath(scene, attacker, target, hitLocation) {
@@ -2238,6 +2452,7 @@ function firearmForecastPath(scene, attacker, target, hitLocation) {
     ? shotLoadForecast(scene, attacker, target, weapon, hitLocation, { targetKind })
     : projectileFlight(scene, attacker, target, weapon, hitLocation, { targetKind });
 }
+/** @returns {import('./public/tactical-preview-types.ts').FirearmFlightPreview} */
 export function firearmFlightPreview(s, attacker, target, hitLocation = 'torso') {
   return firearmForecastPath(
     firearmPreviewScene(s, attacker, target),
@@ -2294,12 +2509,16 @@ function forecastTarget(s, attacker, target, path, accuracy, hitLocation = 'tors
     ...(interveningFriendly ? { interveningFriendly: true } : {}),
   };
 }
+/** @returns {number} */
 export function shotChance(s, attacker, target, aim = 0, hitLocation = 'torso') {
-  if (!hasFirearm(attacker) || !firearmServiceable(attacker)) return 0;
+  if (!hasFirearm(attacker) || !firearmServiceable(attacker)) {
+    return 0;
+  }
   const accuracy = shotAccuracy(s, attacker, target, aim, hitLocation);
   const path = firearmFlightPreview(s, attacker, target, hitLocation);
   return forecastTarget(s, attacker, target, path, accuracy, hitLocation).chance;
 }
+/** @returns {import('./public/tactical-preview-types.ts').FirearmVolleyPreview} */
 export function firearmVolleyPreview(s, unit, target, aim = 0, hitLocation = 'torso') {
   if (!firearmServiceable(unit)) {
     const w = weaponFor(unit);
@@ -2348,13 +2567,15 @@ export function firearmVolleyPreview(s, unit, target, aim = 0, hitLocation = 'to
 }
 // One geometry trace per body region serves all affordable aim increments.
 // This is a fresh read, not a cache that can outlive movement or a breached wall.
+/** @returns {import('./public/tactical-preview-types.ts').FirearmShotOption[]} */
 export function firearmShotOptions(s, attacker, target, maxAim = 4) {
   if (
     !hasFirearm(attacker) ||
     !firearmServiceable(attacker) ||
     !hasLineOfSight(s, attacker, target)
-  )
+  ) {
     return [];
+  }
   const options = [],
     limit = clamp(Number.isFinite(maxAim) ? Math.floor(maxAim) : 0, 0, 4);
   const second = pairedPistol(attacker),
@@ -2475,11 +2696,14 @@ function shotAccuracy(
     !hasFirearm(attacker) ||
     !firearmServiceable(attacker) ||
     (!pointShot && !knownSight && !hasLineOfSight(s, attacker, target))
-  )
+  ) {
     return 0;
+  }
   const w = weaponFor(attacker),
     range = spaceDistance(s, attacker, target);
-  if (w.loadPattern === 'cone' && range > w.range) return 0;
+  if (w.loadPattern === 'cone' && range > w.range) {
+    return 0;
+  }
   const rangeProfile = firearmRangeProfile(s, attacker, target);
   return accuracyPolicy.chance({
     skill: attacker.marksmanship ?? 70,
@@ -2531,6 +2755,7 @@ const isCivilianBody = (s, body) => (s.npcs ?? []).includes(body);
 const playerObservedBody = (s, body) =>
   body.side === 'player' ||
   (teamCanSee(s, 'player', body) && isInteriorVisible(s, body, new Set(s.revealedRooms ?? [])));
+/** @returns {Pick<import('./public/compatibility-types.ts').BattleSnapshot,'tiles'|'wallEdges'|'upperSurfaces'|'props'>} */
 export function firearmKnownTerrain(state, observer = { side: 'player' }) {
   return sectorPerception(state).knownTerrain(observer);
 }
@@ -2541,11 +2766,14 @@ const observedProjectileObstacle = (s, obstacle) => {
     );
     return Boolean(edge && teamCanSee(s, 'player', edge));
   }
-  if (obstacle.kind === 'prop')
+  if (obstacle.kind === 'prop') {
     return (s.props ?? []).some(
       (prop) => obstacle.sourceId === `prop:${prop.id}` && playerObservedBody(s, prop),
     );
-  if (obstacle.material !== 'stone') return true;
+  }
+  if (obstacle.material !== 'stone') {
+    return true;
+  }
   if (obstacle.kind === 'cover') {
     // A projectile receipt is a generic point, not the visible face of its
     // surface. Resolve only the matching physical source before testing sight.
@@ -2598,7 +2826,9 @@ function physicalImpact(
     practiceImpact = true,
   } = {},
 ) {
-  if (kind === 'firearm' && projectile) amount *= COMBAT_BALANCE.firearmDamageMultiplier;
+  if (kind === 'firearm' && projectile) {
+    amount *= COMBAT_BALANCE.firearmDamageMultiplier;
+  }
   if (!isCivilianBody(s, target)) {
     const before = target.hp,
       eligible =
@@ -2621,8 +2851,9 @@ function physicalImpact(
       projectile &&
       source?.side !== target.side &&
       target.hp < before
-    )
+    ) {
       practice(source, 'marksmanship', 2);
+    }
     return result;
   }
   // Civilian harm shares body effects but cannot enter soldier rewards, guards,
@@ -2648,12 +2879,15 @@ function physicalImpact(
     knockedDown: impact.knockedDown,
     intentional,
   });
-  for (const reaction of applyServiceObjection(s, objection)) sayPublic(s, reaction.text);
-  if (observed)
+  for (const reaction of applyServiceObjection(s, objection)) {
+    sayPublic(s, reaction.text);
+  }
+  if (observed) {
     sayPublic(
       s,
       `${target.name} ${target.hp > 0 ? 'queda herido por el impacto.' : 'muere por el impacto.'}`,
     );
+  }
   return target;
 }
 function scatteredShotDestination(s, u, target) {
@@ -2752,7 +2986,9 @@ function presentReflectedFirearmFlight(
       return;
     }
     for (const segment of segments) {
-      if (segment.toDistance <= progress + 1e-8 || segment.fromDistance > goal + 1e-8) continue;
+      if (segment.toDistance <= progress + 1e-8 || segment.fromDistance > goal + 1e-8) {
+        continue;
+      }
       const end = segment.toDistance < goal - 1e-8 ? segment.destination : impact;
       const bounce =
         segment.toDistance < goal - 1e-8
@@ -2800,13 +3036,16 @@ function presentReflectedFirearmFlight(
     if (collision) {
       const entry = observed[index];
       if (entry !== collision) {
-        if (knownHealth.some((record) => record.body.hp < record.hp))
+        if (knownHealth.some((record) => record.body.hp < record.hp)) {
           recordBattleFrame(s, {
             unitId: source.id,
             action: pointShot ? 'firePoint' : 'fire',
             type: 'impact',
           });
-        for (const record of knownHealth) record.hp = record.body.hp;
+        }
+        for (const record of knownHealth) {
+          record.hp = record.body.hp;
+        }
         return;
       }
       const body = bodyFor(entry),
@@ -2820,14 +3059,18 @@ function presentReflectedFirearmFlight(
         type: 'impact',
         ...(!redirected ? { shotVisual: { ...visual, outcome: injury ? 'hit' : null } } : {}),
       });
-      for (const record of knownHealth) record.hp = record.body.hp;
+      for (const record of knownHealth) {
+        record.hp = record.body.hp;
+      }
       origin = { ...entry.impact };
       sourceBodyKey = visual.bodyTargetKey ?? null;
       progress = distanceOf(entry);
       index++;
       waiting = false;
       sourceSurfaceContact = null;
-      if (entry.continued !== false) projectile();
+      if (entry.continued !== false) {
+        projectile();
+      }
       return;
     }
     if (waiting) {
@@ -2899,7 +3142,7 @@ function presentKineticFlight(
       bounce = known.ricochets?.find(
         (entry) => Math.abs(entry.distance - segment.toDistance) < 1e-8,
       );
-    if (!last || Math.abs(last.distance - segment.toDistance) > 1e-8)
+    if (!last || Math.abs(last.distance - segment.toDistance) > 1e-8) {
       endpoints.push({
         point: segment.destination,
         distance: segment.toDistance,
@@ -2911,6 +3154,7 @@ function presentKineticFlight(
               ? 'cover'
               : 'miss',
       });
+    }
     const sourceBounce = known.ricochets?.find(
       (entry) => Math.abs(entry.distance - segment.fromDistance) < 1e-8,
     );
@@ -2923,7 +3167,9 @@ function presentKineticFlight(
       sourceBodyKey = null,
       sourceSurfaceContact = sourceBounce ? surfaceContact(sourceBounce) : null;
     for (const endpoint of endpoints) {
-      if (Math.hypot(endpoint.point.x - origin.x, endpoint.point.y - origin.y) < 1e-8) continue;
+      if (Math.hypot(endpoint.point.x - origin.x, endpoint.point.y - origin.y) < 1e-8) {
+        continue;
+      }
       const impactBounce =
         bounce && Math.abs(endpoint.distance - segment.toDistance) < 1e-8 ? bounce : null;
       const visual = {
@@ -2962,7 +3208,9 @@ function presentKineticFlight(
       ...(visual ? { shotVisual: visual } : {}),
     });
   const updateHealth = () => {
-    for (const record of health) record.hp = record.body.hp ?? 100;
+    for (const record of health) {
+      record.hp = record.body.hp ?? 100;
+    }
     displayed = structuredClone(s);
   };
   const changedHealth = () => health.some((record) => (record.body.hp ?? 100) < record.hp);
@@ -2970,7 +3218,9 @@ function presentKineticFlight(
     while (cursor < schedule.length) {
       waiting = schedule[cursor++];
       frame('projectile', waiting.visual);
-      if (waiting.bodyKey) return;
+      if (waiting.bodyKey) {
+        return;
+      }
       frame('impact', waiting.visual);
       waiting = null;
     }
@@ -3047,7 +3297,7 @@ function presentFirearmFlight(
     targetKind,
   } = {},
 ) {
-  if (Array.isArray(flight?.bodyImpacts) && hasProjectileEnergy(weaponFor(actor)))
+  if (Array.isArray(flight?.bodyImpacts) && hasProjectileEnergy(weaponFor(actor))) {
     return presentKineticFlight(s, actor, destination, hitLocation, source, {
       pointShot,
       aimHit,
@@ -3055,6 +3305,7 @@ function presentFirearmFlight(
       flightState,
       targetKind,
     });
+  }
   if (Array.isArray(flight?.bodyImpacts)) {
     const bodyFor = (collision) =>
       (collision.victimKind === 'npc' ? (s.npcs ?? []) : s.units).find(
@@ -3081,12 +3332,13 @@ function presentFirearmFlight(
           { destinationHeight, targetKind },
         )
       : flight;
-    if (flight.segments || known.segments)
+    if (flight.segments || known.segments) {
       return presentReflectedFirearmFlight(s, actor, flight, known, source, {
         pointShot,
         aimHit,
         hidden,
       });
+    }
     const terminal = known.terminal ?? {
       impact: known.impact ?? known.destination,
       termination: known.termination,
@@ -3156,13 +3408,16 @@ function presentFirearmFlight(
         if (!entry || entry.collision !== collision) {
           // An existing bodyguard can take real damage for an unseen commander.
           // Show only that known injury, without the concealed ray intersection.
-          if (knownHealth.some((record) => record.body.hp < record.hp))
+          if (knownHealth.some((record) => record.body.hp < record.hp)) {
             recordBattleFrame(s, {
               unitId: source.id,
               action: pointShot ? 'firePoint' : 'fire',
               type: 'impact',
             });
-          for (const record of knownHealth) record.hp = record.body.hp;
+          }
+          for (const record of knownHealth) {
+            record.hp = record.body.hp;
+          }
           return;
         }
         // An actual body contact that causes no injury cannot invent blood or a
@@ -3180,7 +3435,9 @@ function presentFirearmFlight(
           type: 'impact',
           ...(!redirected ? { shotVisual: { ...visual, outcome: injury ? 'hit' : null } } : {}),
         });
-        for (const record of knownHealth) record.hp = record.body.hp;
+        for (const record of knownHealth) {
+          record.hp = record.body.hp;
+        }
         origin = { ...collision.impact };
         sourceBodyKey = visual.bodyTargetKey ?? null;
         index++;
@@ -3355,7 +3612,9 @@ function shotLoadFireImpact(
     (a, b) => a.entry.fraction - b.entry.fraction || a.entry.pelletIndex - b.entry.pelletIndex,
   )) {
     const victim = flightVictim(s, entry);
-    if (!victim) continue;
+    if (!victim) {
+      continue;
+    }
     const key = `${entry.victimKind}:${entry.victimId}`;
     if (
       victim.hp <= 0 ||
@@ -3374,16 +3633,21 @@ function shotLoadFireImpact(
       practiceImpact: false,
     });
     contacted.add(key);
-    if (actual) contacted.add(`${isCivilianBody(s, actual) ? 'npc' : 'unit'}:${actual.id}`);
+    if (actual) {
+      contacted.add(`${isCivilianBody(s, actual) ? 'npc' : 'unit'}:${actual.id}`);
+    }
     if (
       actual &&
       !isCivilianBody(s, actual) &&
       eligible.has(actual.id) &&
       actual.hp < before.get(actual.id)
-    )
+    ) {
       learned.add(actual.id);
+    }
   }
-  for (const id of learned) practice(source, 'marksmanship', 2);
+  for (let practiceIndex = 0; practiceIndex < learned.size; practiceIndex++) {
+    practice(source, 'marksmanship', 2);
+  }
   sayObserved(
     s,
     [source],
@@ -3443,7 +3707,9 @@ function directedFireImpact(s, u, target, hitLocation, hit, source = u, prepared
       (obstacle) => obstacle.stopped && observedProjectileObstacle(flightState, obstacle),
     )
   ) {
-    if (journalVisible(s, target)) say(s, 'La cobertura detiene el disparo.');
+    if (journalVisible(s, target)) {
+      say(s, 'La cobertura detiene el disparo.');
+    }
   }
   const damagedBodies = applyFirearmBodyImpacts(s, flight, amount, source, finishFlight, {
     intended: target,
@@ -3496,10 +3762,12 @@ function applyFirearmBodyImpacts(
         (obstacle) =>
           obstacle.fraction <= entry.fraction && observedProjectileObstacle(s, obstacle),
       )
-    )
+    ) {
       say(s, 'El disparo atraviesa la cobertura y pierde fuerza.');
-    if (entry.bodyDamageReduction > 0 && knownPassage && knownBodies.has(key))
+    }
+    if (entry.bodyDamageReduction > 0 && knownPassage && knownBodies.has(key)) {
       sayPublic(s, 'La bala atraviesa un cuerpo y llega con menos fuerza.');
+    }
     const injury = penetratingFirearmDamage(amount, entry, undefined, weapon);
     if (
       hasProjectileEnergy(weapon) &&
@@ -3524,20 +3792,25 @@ function applyFirearmBodyImpacts(
       const actualKind = isCivilianBody(s, actual) ? 'npc' : 'unit',
         actualKey = `${actualKind}:${actual.id}`;
       processed.add(actualKey);
-      if (actual.hp < beforeHealth.get(actualKey)) damagedBodies.add(actualKey);
+      if (actual.hp < beforeHealth.get(actualKey)) {
+        damagedBodies.add(actualKey);
+      }
       if (actual !== victim) {
         entry.actualVictimId = actual.id;
         entry.actualVictimKind = actualKind;
       }
-      if (entry.continued && (knownBodies.has(key) || knownBodies.has(actualKey)))
+      if (entry.continued && (knownBodies.has(key) || knownBodies.has(actualKey))) {
         knownPassage = true;
+      }
     }
     finishFlight(entry);
   }
   return damagedBodies;
 }
 function checkEnd(state) {
-  for (const unit of state.units) refreshCondition(unit);
+  for (const unit of state.units) {
+    refreshCondition(unit);
+  }
   const outcome = combatOutcomePolicy.evaluate(
     state.units.map((unit) => ({
       side: unit.side,
@@ -3547,21 +3820,27 @@ function checkEnd(state) {
       surrendered: Boolean(unit.surrendered),
     })),
   );
-  if (outcome === CombatOutcome.Active) return;
+  if (outcome === CombatOutcome.Active) {
+    return;
+  }
   if (outcome === CombatOutcome.Victory) {
     state.sectorCleared = true;
-    if (state.mode === 'exploration') return;
-    if (state.status !== CombatOutcome.Victory)
+    if (state.mode === 'exploration') {
+      return;
+    }
+    if (state.status !== CombatOutcome.Victory) {
       sayPublic(state, '¡Victoria! El enemigo quedó fuera de combate.');
+    }
     changeCombat(state, (combat) => combat.finish(CombatOutcome.Victory));
   } else {
-    if (state.status !== outcome)
+    if (state.status !== outcome) {
       sayPublic(
         state,
         outcome === CombatOutcome.Retreat
           ? 'La última fuerza capaz salió del sector.'
           : 'La escuadra quedó fuera de combate.',
       );
+    }
     const session = readSectorSession(state);
     session.conclude(outcome);
     writeSectorSession(state, session);
@@ -3572,7 +3851,9 @@ function checkEnd(state) {
   delete state.alliedTurn;
 }
 function rout(s, u, report = true) {
-  if (u.routed || !onField(u) || holdMorale(s, u)) return;
+  if (u.routed || !onField(u) || holdMorale(s, u)) {
+    return;
+  }
   lowerWeapon(u);
   u.routed = true;
   u.fled = false;
@@ -3607,28 +3888,34 @@ function rout(s, u, report = true) {
     delete u.contentWeapon;
     delete u.ammunitionChoice;
   }
-  if (report)
+  if (report) {
     sayObserved(
       s,
       [u],
       `${u.name} pierde la disciplina y abandona su arma. Intentará alcanzar una salida en su turno.`,
       `${u.name} abandona su arma y huye.`,
     );
+  }
 }
 function wearBayonet(unit) {
   const fitting = fixedBayonetFor(unit);
   if (fitting) {
     fitting.condition = Math.max(0, fitting.condition - 1);
-    if (fitting.condition === 0) unit.braced = false;
+    if (fitting.condition === 0) {
+      unit.braced = false;
+    }
   }
 }
 function wearMeleeBlade(unit) {
   const slot = looseBladeSlot(unit);
   if (slot) {
     const key = slot === 'blade' ? 'bladeCondition' : 'condition';
-    if ((unit[key] ?? 100) > LOOSE_BLADE_USABLE)
+    if ((unit[key] ?? 100) > LOOSE_BLADE_USABLE) {
       unit[key] = Math.max(LOOSE_BLADE_USABLE, (unit[key] ?? 100) - 1);
-  } else wearBayonet(unit);
+    }
+  } else {
+    wearBayonet(unit);
+  }
 }
 // Record the paid contact posture before the existing impact changes a body.
 // The recorder admits only known actors/targets and does not resolve an attack.
@@ -3652,7 +3939,9 @@ function meleeStrike(s, attacker, target, amount, { counter = true, action = 'me
   const blade = bladeFor(attacker),
     defense = bladeFor(target);
   if (isCivilianBody(s, target)) {
-    if (looseBladeSlot(attacker)) wearMeleeBlade(attacker);
+    if (looseBladeSlot(attacker)) {
+      wearMeleeBlade(attacker);
+    }
     physicalImpact(s, target, amount, attacker, {
       projectile: false,
       kind: 'melee',
@@ -3676,8 +3965,9 @@ function meleeStrike(s, attacker, target, amount, { counter = true, action = 'me
   }
   damage(s, target, defenseResult.damage, attacker);
   if (alive(target)) {
-    if ([1809, 1810].includes(blade.id))
+    if ([1809, 1810].includes(blade.id)) {
       target.bleeding = Math.min(10, target.bleeding + MeleeRules.SabreBleeding);
+    }
     if (blade.id === 1812) {
       lowerWeapon(target);
       target.knockedDown = true;
@@ -3724,8 +4014,9 @@ function interceptCharge(s, mover, target) {
     target.ap < 16 ||
     contactDistance(mover, target) > 2 ||
     !hasLineOfSight(s, target, mover)
-  )
+  ) {
     return;
+  }
   target.braceTurn = s.turn;
   spendParticipantActionPoints(target, 16);
   sayObserved(s, [target], `${target.name} recibe la carga con la bayoneta fijada.`);
@@ -3745,7 +4036,7 @@ function damage(
   report = true,
   excludedBodyguards = null,
 ) {
-  if (isCivilianBody(s, target))
+  if (isCivilianBody(s, target)) {
     return physicalImpact(s, target, amount, source, {
       projectile,
       hitLocation,
@@ -3753,6 +4044,7 @@ function damage(
       report,
       intentional: true,
     });
+  }
   if (
     projectile &&
     (hasCharacterAbility(target, 'protected_commander') || (target.leadership || 0) >= 90)
@@ -3774,12 +4066,13 @@ function damage(
     if (guard) {
       spendParticipantActionPoints(guard, 8);
       guard.interceptTurn = s.turn;
-      if (report)
+      if (report) {
         sayObserved(
           s,
           [guard, target],
           `${guard.name} se interpone para proteger a ${target.name}.`,
         );
+      }
       target = guard;
     }
   }
@@ -3816,38 +4109,52 @@ function damage(
   target.shock = injury.condition.shock;
   target.morale = injury.condition.morale;
   const garmentWear = regionalGarmentWear(target, projectile ? hitLocation : 'torso', loss);
-  if (garmentWear) target[garmentWear.slot] = garmentWear.garment;
+  if (garmentWear) {
+    target[garmentWear.slot] = garmentWear.garment;
+  }
   recordMilitiaHit(s, source, target, creditEligible, loss);
   if (projectile) {
     target.lastHitLocation = hitLocation;
-    if (impact.balanceLoss) loseParticipantActionPoints(target, impact.balanceLoss);
+    if (impact.balanceLoss) {
+      loseParticipantActionPoints(target, impact.balanceLoss);
+    }
     if (impact.knockedDown) {
       target.knockedDown = true;
       target.stance = 'prone';
       target.movementMode = 'prone';
       target.mounted = false;
-      if (report) sayPublic(s, `${target.name} cae por el impacto en las piernas.`);
+      if (report) {
+        sayPublic(s, `${target.name} cae por el impacto en las piernas.`);
+      }
     }
   }
   refreshCondition(target);
-  if (report)
+  if (report) {
     sayPublic(
       s,
       `${sourceKnown ? source.name + ' hiere a' : 'Un ataque alcanza a'} ${target.name}${projectile && hitLocation !== 'torso' ? ` (${getHitLocationProfile(hitLocation).label.toLowerCase()})` : ''}: ${impact.damage} de daño.`,
     );
+  }
   if (target.hp === 0) {
-    if (report) sayPublic(s, `${target.name} cayó en combate.`);
-    for (const u of s.units.filter((u) => u.side === target.side && alive(u)))
+    if (report) {
+      sayPublic(s, `${target.name} cayó en combate.`);
+    }
+    for (const u of s.units.filter((u) => u.side === target.side && alive(u))) {
       u.morale = Math.max(0, u.morale - 18);
+    }
   }
   reportCompanionGrief(s, grief);
   holdMorale(s, target);
-  if (alive(target) && target.morale < 15) rout(s, target, report);
+  if (alive(target) && target.morale < 15) {
+    rout(s, target, report);
+  }
   return target;
 }
 // An interrupt grants control, not a new AP budget. Normal orders remain usable.
 export function interruptAvailable(s, u) {
-  if (s.deployment) return false;
+  if (s.deployment) {
+    return false;
+  }
   return Boolean(
     u &&
     u.side === 'player' &&
@@ -3875,8 +4182,9 @@ function reactionObservation(s, actor) {
 function reactionFire(s, actor, before) {
   // Contact starts a new combat window. The exploration step that revealed
   // it is already paid in elapsed time; it must not also start a reaction turn.
-  if (s.mode !== 'combat' || s.status !== 'active' || !alive(actor) || before?.mode !== 'combat')
+  if (s.mode !== 'combat' || s.status !== 'active' || !alive(actor) || before?.mode !== 'combat') {
     return false;
+  }
   const moved =
     before.crossing === true ||
     before.x !== actor.x ||
@@ -3912,10 +4220,16 @@ function reactionFire(s, actor, before) {
   const qualified = reactionPolicy
     .qualifiedObservers(observers, { initiative: interruptInitiative(s, actor), moved })
     .map((id) => s.units.find((unit) => unit.id === id));
-  if (!qualified.length) return false;
+  if (!qualified.length) {
+    return false;
+  }
   if (actor.side === 'enemy') {
-    if (s.phase !== 'enemy' || (!s.enemyTurn && !s.reactionStack?.length)) return false;
-    for (const u of qualified) u.reactionTurn = s.turn;
+    if (s.phase !== 'enemy' || (!s.enemyTurn && !s.reactionStack?.length)) {
+      return false;
+    }
+    for (const u of qualified) {
+      u.reactionTurn = s.turn;
+    }
     setCombatPhase(s, CombatPhase.Interrupt);
     s.interrupt = reactionWindowSnapshot(
       ReactionWindow.open(
@@ -3929,8 +4243,12 @@ function reactionFire(s, actor, before) {
       `¡Interrupción! ${qualified.map((u) => u.name).join(', ')} ${qualified.length === 1 ? 'puede' : 'pueden'} actuar con sus PA restantes.`,
     );
   } else {
-    if (!['player', 'interrupt'].includes(s.phase)) return false;
-    for (const u of qualified) u.reactionTurn = s.turn;
+    if (!['player', 'interrupt'].includes(s.phase)) {
+      return false;
+    }
+    for (const u of qualified) {
+      u.reactionTurn = s.turn;
+    }
     const reactions = readReactionStack(s);
     reactions.suspend(
       qualified.map((unit) => unit.id),
@@ -3953,7 +4271,11 @@ function reactionFire(s, actor, before) {
 }
 
 function replaceUnit(unit, next) {
-  for (const key of Object.keys(unit)) if (!Object.hasOwn(next, key)) delete unit[key];
+  for (const key of Object.keys(unit)) {
+    if (!Object.hasOwn(next, key)) {
+      delete unit[key];
+    }
+  }
   Object.assign(unit, next);
 }
 function inventoryOrderReason(s, u, pa) {
@@ -3961,9 +4283,12 @@ function inventoryOrderReason(s, u, pa) {
     u?.side === 'enemy'
       ? s.phase === 'enemy' && s.status === 'active' && alive(u)
       : interruptAvailable(s, u);
-  if (!window || u.knockedDown) return 'El soldado no puede manejar equipo ahora.';
-  if (s.mode !== 'exploration' && u.ap < pa)
+  if (!window || u.knockedDown) {
+    return 'El soldado no puede manejar equipo ahora.';
+  }
+  if (s.mode !== 'exploration' && u.ap < pa) {
     return `Faltan ${formatAP(pa)} PA para manejar el equipo.`;
+  }
   return null;
 }
 export function grenadeThrowPreview(s, u, target, options = {}) {
@@ -3974,25 +4299,39 @@ export function grenadeThrowPreview(s, u, target, options = {}) {
     range = u ? grenadeThrowRange(u, grenade) : { maximum: 0 };
   let reason = inventoryOrderReason(s, u, costs.total),
     flight = null;
-  if (!reason && !grenade) reason = 'Prepará una granada en la mano principal.';
-  if (!reason && grenade.record.condition <= 0) reason = 'Esta granada está inutilizada.';
-  if (!reason && grenade.record.condition < 100 && (s.groundItems?.length ?? 0) >= 2000)
+  if (!reason && !grenade) {
+    reason = 'Prepará una granada en la mano principal.';
+  }
+  if (!reason && grenade.record.condition <= 0) {
+    reason = 'Esta granada está inutilizada.';
+  }
+  if (!reason && grenade.record.condition < 100 && (s.groundItems?.length ?? 0) >= 2000) {
     reason = 'No queda espacio en el sector para conservar una granada fallida.';
-  if (!reason && u.mounted) reason = 'Desmontá antes de lanzar la granada.';
+  }
+  if (!reason && u.mounted) {
+    reason = 'Desmontá antes de lanzar la granada.';
+  }
   if (
     !reason &&
     (!Number.isInteger(target?.x) || !Number.isInteger(target?.y) || !surfaceAt(s, target))
-  )
+  ) {
     reason = 'Seleccioná una superficie del mapa.';
-  if (!reason && (options.targetId !== undefined || options.hitLocation !== undefined))
+  }
+  if (!reason && (options.targetId !== undefined || options.hitLocation !== undefined)) {
     reason = 'La granada se lanza a una casilla, sin elegir una zona del cuerpo.';
-  if (!reason && sameCell(u, target)) reason = 'Seleccioná otra casilla para lanzar la granada.';
+  }
+  if (!reason && sameCell(u, target)) {
+    reason = 'Seleccioná otra casilla para lanzar la granada.';
+  }
   const distance = u && target && surfaceAt(s, target) ? spaceDistance(s, u, target) : Infinity;
-  if (!reason && distance > range.maximum) reason = 'Fuera del alcance de la granada.';
+  if (!reason && distance > range.maximum) {
+    reason = 'Fuera del alcance de la granada.';
+  }
   if (!reason) {
     flight = grenadeFlight(s, u, target);
-    if (!flight.landing || flight.impact.kind === 'invalid')
+    if (!flight.landing || flight.impact.kind === 'invalid') {
       reason = 'No hay una trayectoria válida para la granada.';
+    }
   }
   // No enemy data or hidden civilian positions enter the public preview.
   const friendlyRisk = Boolean(
@@ -4018,6 +4357,9 @@ export function grenadeThrowPreview(s, u, target, options = {}) {
   };
 }
 const grenadeThrowVisuals = new WeakMap();
+/** @param {import('./public/compatibility-types.ts').BattleSnapshot} before
+ * @param {import('./public/compatibility-types.ts').BattleSnapshot} after
+ * @returns {import('./public/compatibility-types.ts').GrenadePresentation | null} */
 export function getGrenadeThrowVisual(before, after) {
   const visual = grenadeThrowVisuals.get(after);
   return before !== after && visual ? structuredClone(visual) : null;
@@ -4025,16 +4367,18 @@ export function getGrenadeThrowVisual(before, after) {
 function grenadeScatter(s, u, point, range) {
   const radius = grenadeScatterRadius(dist(u, point)),
     candidates = [];
-  for (let y = point.y - radius; y <= point.y + radius; y++)
+  for (let y = point.y - radius; y <= point.y + radius; y++) {
     for (let x = point.x - radius; x <= point.x + radius; x++) {
       const cell = { x, y, tacticalLevel: tacticalLevel(point) };
       if (
         !sameCell(cell, point) &&
         surfaceAt(s, cell) &&
         spaceDistance(s, u, cell) <= range.maximum
-      )
+      ) {
         candidates.push(cell);
+      }
     }
+  }
   return candidates.length ? candidates[Math.floor(random(s) * candidates.length)] : point;
 }
 function grenadeBlast(s, source, origin, intended) {
@@ -4043,7 +4387,9 @@ function grenadeBlast(s, source, origin, intended) {
   // A departed or dead body cannot take another hit or earn combat credit.
   for (const victim of s.units.filter((v) => onField(v) && !v.fled)) {
     const { multiplier } = grenadeBlastExposure(s, origin, victim, GRENADE_THROW.radius);
-    if (multiplier <= 0) continue;
+    if (multiplier <= 0) {
+      continue;
+    }
     const amount = GRENADE_THROW.damage * multiplier,
       breath = GRENADE_THROW.energyDamage * multiplier;
     const automaticBreath = Math.ceil(Math.min(victim.hp, Math.round(amount)) * 0.5);
@@ -4059,7 +4405,9 @@ function grenadeBlast(s, source, origin, intended) {
   }
   for (const npc of (s.npcs ?? []).filter((n) => (n.hp ?? 100) > 0 && !n.departure && !n.fled)) {
     const { multiplier } = grenadeBlastExposure(s, origin, npc, GRENADE_THROW.radius);
-    if (multiplier <= 0) continue;
+    if (multiplier <= 0) {
+      continue;
+    }
     const visible = teamCanSee(s, 'player', npc),
       publiclyObserved = playerObservedBody(s, npc);
     const objection = captureServiceObjection(s, npc, source, {
@@ -4077,11 +4425,15 @@ function grenadeBlast(s, source, origin, intended) {
       observed: visible,
       intentional: npc === intended,
     });
-    for (const reaction of applyServiceObjection(s, objection)) sayPublic(s, reaction.text);
+    for (const reaction of applyServiceObjection(s, objection)) {
+      sayPublic(s, reaction.text);
+    }
     if (visible) {
       const message = `${npc.name} ${npc.hp > 0 ? 'queda herido por la explosión.' : 'muere por la explosión.'}`;
       say(s, message);
-      if (publiclyObserved) recordPublicCombatMessage(s, message);
+      if (publiclyObserved) {
+        recordPublicCombatMessage(s, message);
+      }
     }
   }
   // Sound can make survivors take cover only after this blast is resolved.
@@ -4113,37 +4465,52 @@ export function knifeThrowPreview(s, u, target, options = {}) {
     pointShot = target?.id === undefined;
   let reason = inventoryOrderReason(s, u, costs.total),
     flight = null;
-  if (!reason && !knife) reason = 'Prepará el facón que querés lanzar en la mano.';
-  if (!reason && u.mounted) reason = 'Desmontá antes de lanzar el facón.';
+  if (!reason && !knife) {
+    reason = 'Prepará el facón que querés lanzar en la mano.';
+  }
+  if (!reason && u.mounted) {
+    reason = 'Desmontá antes de lanzar el facón.';
+  }
   if (
     !reason &&
     (!Number.isInteger(target?.x) || !Number.isInteger(target?.y) || !surfaceAt(s, target))
-  )
+  ) {
     reason = 'Seleccioná una superficie del mapa.';
-  if (!reason && sameCell(u, target)) reason = 'Seleccioná otra casilla para lanzar el facón.';
-  if (!reason && !HIT_LOCATIONS.includes(hitLocation))
+  }
+  if (!reason && sameCell(u, target)) {
+    reason = 'Seleccioná otra casilla para lanzar el facón.';
+  }
+  if (!reason && !HIT_LOCATIONS.includes(hitLocation)) {
     reason = 'Seleccioná torso, cabeza o piernas.';
-  if (!reason && pointShot && hitLocation !== 'torso')
+  }
+  if (!reason && pointShot && hitLocation !== 'torso') {
     reason = 'El lanzamiento a una casilla apunta a una altura fija.';
+  }
   if (!reason && !pointShot) {
     const actual = s.units.find((v) => v.id === target.id);
-    if (!actual || !sameCell(actual, target) || actual.side === u.side || !targetable(actual))
+    if (!actual || !sameCell(actual, target) || actual.side === u.side || !targetable(actual)) {
       reason = 'Seleccioná un enemigo activo.';
-    else if (!(u.side === 'player' ? teamCanSee(s, u.side, actual) : canSee(s, u, actual)))
+    } else if (!(u.side === 'player' ? teamCanSee(s, u.side, actual) : canSee(s, u, actual))) {
       reason = 'El objetivo no está a la vista.';
-    else if (!shotLocationsFor(actual).includes(hitLocation))
+    } else if (!shotLocationsFor(actual).includes(hitLocation)) {
       reason = 'Un objetivo cuerpo a tierra tiene una sola zona de tiro.';
+    }
   }
-  if (!reason && (u.energy ?? 100) < costs.energy) reason = 'Falta energía para lanzar el facón.';
+  if (!reason && (u.energy ?? 100) < costs.energy) {
+    reason = 'Falta energía para lanzar el facón.';
+  }
   const distance = target && u && surfaceAt(s, target) ? spaceDistance(s, u, target) : Infinity;
-  if (!reason && distance > range.maximum) reason = 'Fuera del alcance del facón.';
+  if (!reason && distance > range.maximum) {
+    reason = 'Fuera del alcance del facón.';
+  }
   const prepared = u ? { ...u, stance: 'standing', facing: costs.facing } : u;
   const point =
     pointShot && target ? { ...positionOf(target), stance: 'standing', mounted: false } : target;
   if (!reason) {
     flight = knownKnifeFlight(s, prepared, point, hitLocation);
-    if (!flight.landing || flight.impact.kind === 'invalid')
+    if (!flight.landing || flight.impact.kind === 'invalid') {
       reason = 'No hay una trayectoria válida para el facón.';
+    }
   }
   const chance = reason ? 0 : knifeThrowChance(u, distance, costs.aimLevel, knife);
   return {
@@ -4167,6 +4534,9 @@ export function knifeThrowPreview(s, u, target, options = {}) {
 // One transient visual per returned state; it never enters a save or public
 // state payload. Unseen actors are excluded from the displayed trajectory.
 const knifeThrowVisuals = new WeakMap();
+/** @param {import('./public/compatibility-types.ts').BattleSnapshot} before
+ * @param {import('./public/compatibility-types.ts').BattleSnapshot} after
+ * @returns {import('./public/hud-types.ts').KnifeThrowReceipt | null} */
 export function getKnifeThrowVisual(before, after) {
   const visual = knifeThrowVisuals.get(after);
   return visual && before !== after ? structuredClone(visual) : null;
@@ -4183,8 +4553,12 @@ export function pointFirePreview(s, u, point, aim = 0) {
     u.knockedDown
       ? 'El soldado no puede disparar ahora.'
       : null;
-  if (!reason && !hasFirearm(u)) reason = 'Equipá un arma de fuego.';
-  if (!reason && !firearmServiceable(u)) reason = BROKEN_FIREARM_REASON;
+  if (!reason && !hasFirearm(u)) {
+    reason = 'Equipá un arma de fuego.';
+  }
+  if (!reason && !firearmServiceable(u)) {
+    reason = BROKEN_FIREARM_REASON;
+  }
   if (
     !reason &&
     (!Number.isInteger(point?.x) ||
@@ -4193,13 +4567,24 @@ export function pointFirePreview(s, u, point, aim = 0) {
       point.y < 0 ||
       point.x >= s.width ||
       point.y >= s.height)
-  )
+  ) {
     reason = 'Seleccioná una casilla del mapa.';
-  if (!reason && !surfaceAt(s, point)) reason = 'Seleccioná una superficie del mapa.';
-  if (!reason && sameCell(point, u)) reason = 'Seleccioná otra casilla para disparar.';
-  if (!reason && u.jammed) reason = 'Cebá el arma antes de disparar.';
-  if (!reason && !(u.loaded > 0)) reason = 'Recargá el arma.';
-  if (!reason && s.mode !== 'exploration' && u.ap < pa) reason = 'PA insuficientes.';
+  }
+  if (!reason && !surfaceAt(s, point)) {
+    reason = 'Seleccioná una superficie del mapa.';
+  }
+  if (!reason && sameCell(point, u)) {
+    reason = 'Seleccioná otra casilla para disparar.';
+  }
+  if (!reason && u.jammed) {
+    reason = 'Cebá el arma antes de disparar.';
+  }
+  if (!reason && !(u.loaded > 0)) {
+    reason = 'Recargá el arma.';
+  }
+  if (!reason && s.mode !== 'exploration' && u.ap < pa) {
+    reason = 'PA insuficientes.';
+  }
   // No occupancy, enemy attributes, cover or sight query: empty and unobserved
   // occupied coordinates have exactly the same public preflight.
   return { valid: !reason, reason, pa, aim: level };
@@ -4259,24 +4644,28 @@ function pointFireImpact(s, u, point, aim, source = u, preparedAccuracy, prepare
   finishFlight();
   firearmNearMissFeedback(s, { attacker: u, source, weapon: w, flight, damagedBodies });
 }
+/** @returns {import('./public/tactical-preview-types.ts').DropPreview} */
 export function dropPreview(s, u, item, count = 1) {
   const pa = 4;
   let reason = inventoryOrderReason(s, u, pa);
-  if (!reason && s.groundItems.length >= 2000)
+  if (!reason && s.groundItems.length >= 2000) {
     reason = 'No queda espacio para otro objeto en el sector.';
-  if (!reason)
+  }
+  if (!reason) {
     try {
       extractItemQuantity(u, item, count);
     } catch (error) {
       reason = error.message;
     }
+  }
   return { pa, kind: 'drop', chance: 100, reason, valid: !reason };
 }
 // Older callers address personal supplies by family; ownership still lives in
 // the same finite pockets and physical stacks used by the equipment cursor.
 function legacyActorReason(s, u, pa) {
-  if (!u || u.side !== 'player' || u.militia || !alive(u) || u.fled || u.departure)
+  if (!u || u.side !== 'player' || u.militia || !alive(u) || u.fled || u.departure) {
     return 'Seleccioná un integrante de la escuadra que pueda actuar.';
+  }
   return inventoryOrderReason(s, u, pa);
 }
 function adjacentRecipientReason(s, u, target) {
@@ -4290,18 +4679,22 @@ function adjacentRecipientReason(s, u, target) {
     target.departure ||
     target.knockedDown ||
     target.entangled
-  )
+  ) {
     return 'Elegí otro integrante consciente de la escuadra.';
-  if (!artilleryContact(s, u, target))
+  }
+  if (!artilleryContact(s, u, target)) {
     return 'El compañero debe estar al lado, sin obstáculos entre ambos.';
+  }
   return null;
 }
 function legacySupplyPlan(u, item, count, target = null) {
-  if (!Number.isSafeInteger(count) || count < 1)
+  if (!Number.isSafeInteger(count) || count < 1) {
     throw Error('La cantidad debe ser un número entero positivo.');
+  }
   const family = item === 'ammo' ? ammoTypeFor(u) : item;
-  if (count > (item === 'medkits' ? 1000000 : 100000))
+  if (count > (item === 'medkits' ? 1000000 : 100000)) {
     throw Error('Esa cantidad supera el límite de un bulto.');
+  }
   let selections;
   if (Object.hasOwn(AMMO_TYPES, family ?? '')) {
     const type = AMMUNITION_FAMILIES[family].type;
@@ -4314,10 +4707,13 @@ function legacySupplyPlan(u, item, count, target = null) {
         remaining -= amount;
         return amount ? [{ item: `inventory:${key}`, count: amount }] : [];
       });
-    if (remaining) throw Error('No quedan suficientes cartuchos de ese tipo.');
+    if (remaining) {
+      throw Error('No quedan suficientes cartuchos de ese tipo.');
+    }
   } else {
-    if (!Object.hasOwn(SUPPLY_ITEMS, item) || item === 'ammo')
+    if (!Object.hasOwn(SUPPLY_ITEMS, item) || item === 'ammo') {
       throw Error('Elegí un suministro personal disponible.');
+    }
     selections = [{ item, count }];
   }
   let source = u,
@@ -4327,55 +4723,69 @@ function legacySupplyPlan(u, item, count, target = null) {
     const extraction = extractItemQuantity(source, selection.item, selection.count);
     source = extraction.unit;
     stacks.push(extraction.stack);
-    if (receiver) receiver = applyItemQuantity(receiver, extraction.stack);
+    if (receiver) {
+      receiver = applyItemQuantity(receiver, extraction.stack);
+    }
   }
   return { source, target: receiver, stacks };
 }
 export function supplyDropPreview(s, u, item, count) {
   let reason = legacyActorReason(s, u, 4),
     plan;
-  if (!reason && item === 'ammo') reason = 'Seleccioná una pila o un tipo de munición para dejar.';
-  if (!reason)
+  if (!reason && item === 'ammo') {
+    reason = 'Seleccioná una pila o un tipo de munición para dejar.';
+  }
+  if (!reason) {
     try {
       plan = legacySupplyPlan(u, item, count);
-      if (s.groundItems.length + plan.stacks.length > 2000)
+      if (s.groundItems.length + plan.stacks.length > 2000) {
         reason = 'No queda espacio para otro objeto en el sector.';
+      }
     } catch (error) {
       reason = error.message;
     }
+  }
   return { reason, valid: !reason, pa: 4, seconds: s.mode === 'exploration' ? 1 : undefined };
 }
 export function supplyTransferPreview(s, u, target, item, count) {
   let reason = legacyActorReason(s, u, 4);
-  if (!reason) reason = adjacentRecipientReason(s, u, target);
-  if (!reason)
+  if (!reason) {
+    reason = adjacentRecipientReason(s, u, target);
+  }
+  if (!reason) {
     try {
       legacySupplyPlan(u, item, count, target);
     } catch (error) {
       reason = error.message;
     }
+  }
   return { reason, valid: !reason, pa: 4, seconds: s.mode === 'exploration' ? 1 : undefined };
 }
-export function weaponTransferPreview(s, u, target, inventoryKey, slot = undefined) {
+export function weaponTransferPreview(s, u, target, inventoryKey, slot) {
   let reason = legacyActorReason(s, u, 4),
     item;
-  if (!reason) reason = adjacentRecipientReason(s, u, target);
+  if (!reason) {
+    reason = adjacentRecipientReason(s, u, target);
+  }
   if (
     !reason &&
     slot !== undefined &&
     (!['primary', 'blade'].includes(slot) || inventoryKey !== undefined)
-  )
+  ) {
     reason = 'Elegí una sola mano o un arma de la mochila.';
-  if (!reason)
+  }
+  if (!reason) {
     try {
       item = slot ?? `inventory:${inventoryKey}`;
       const plan = extractItemQuantity(u, item, 1);
-      if (!WEAPONS[plan.stack.weapon] && !BLADES[plan.stack.weapon])
+      if (!WEAPONS[plan.stack.weapon] && !BLADES[plan.stack.weapon]) {
         throw Error('Elegí un arma disponible para entregar.');
+      }
       applyItemQuantity(target, plan.stack);
     } catch (error) {
       reason = error.message;
     }
+  }
   return { reason, valid: !reason, pa: 4, seconds: s.mode === 'exploration' ? 1 : undefined, item };
 }
 export function groundSupplyPickupPreview(s, u, groundId, count) {
@@ -4388,13 +4798,18 @@ export function groundSupplyPickupPreview(s, u, groundId, count) {
       ground.count < 1 ||
       ground.heldBy ||
       ground.containerId)
-  )
+  ) {
     reason = 'Ese bulto no está disponible para recoger.';
-  if (!reason && !artilleryContact(s, u, ground))
+  }
+  if (!reason && !artilleryContact(s, u, ground)) {
     reason = 'Acercate al bulto, sin obstáculos entre ambos.';
-  if (!reason && (!Number.isSafeInteger(count) || count < 1))
+  }
+  if (!reason && (!Number.isSafeInteger(count) || count < 1)) {
     reason = 'La cantidad debe ser un número entero positivo.';
-  if (!reason) reason = lootPreview(s, u, { groundId, count }).reason;
+  }
+  if (!reason) {
+    reason = lootPreview(s, u, { groundId, count }).reason;
+  }
   return {
     reason,
     valid: !reason,
@@ -4403,36 +4818,49 @@ export function groundSupplyPickupPreview(s, u, groundId, count) {
     seconds: s.mode === 'exploration' ? 1 : undefined,
   };
 }
+/** @param {import('./public/inventory-types.ts').InventoryContext} s
+ * @param {import('./public/inventory-types.ts').InventoryActor} u
+ * @param {import('./public/tactical-preview-types.ts').EquipmentHostAction} action
+ * @returns {import('./public/inventory-types.ts').EquipmentPreview} */
 export function equipmentUnloadPreview(s, u, action) {
   let reason = inventoryOrderReason(s, u, 12);
-  if (!reason && (u.side !== 'player' || u.militia || u.departure))
+  if (!reason && (u.side !== 'player' || u.militia || u.departure)) {
     reason = 'Elegí un combatiente de tu escuadra.';
-  if (!reason)
+  }
+  if (!reason) {
     try {
       planEquipmentUnload(u, action);
     } catch (error) {
       reason = error.message;
     }
+  }
   return { valid: !reason, reason, pa: s.mode === 'exploration' ? 0 : 12 };
 }
+/** @param {import('./public/inventory-types.ts').InventoryContext} s
+ * @param {import('./public/inventory-types.ts').InventoryActor} u
+ * @param {import('./public/tactical-preview-types.ts').EquipmentHostAction} action
+ * @returns {import('./public/inventory-types.ts').EquipmentPreview & {swapped:boolean}} */
 export function equipmentAttachmentPreview(s, u, action) {
   let reason = inventoryOrderReason(s, u, 0),
     plan;
-  if (!reason && (u.side !== 'player' || u.militia || u.departure))
+  if (!reason && (u.side !== 'player' || u.militia || u.departure)) {
     reason = 'Elegí un combatiente de tu escuadra.';
+  }
   if (
     !reason &&
     action.operation === 'detach' &&
     s.units?.some((other) => other.id !== u.id && alive(other) && other.equipmentCursor)
-  )
+  ) {
     reason = 'Colocá primero el objeto del otro combatiente.';
-  if (!reason)
+  }
+  if (!reason) {
     try {
       plan = planEquipmentAttachment(u, action);
       reason = inventoryOrderReason(s, u, plan.pa);
     } catch (error) {
       reason = error.message;
     }
+  }
   return {
     valid: !reason,
     reason,
@@ -4443,16 +4871,18 @@ export function equipmentAttachmentPreview(s, u, action) {
     swapped: plan?.swapped ?? false,
   };
 }
+/** @returns {import('./public/tactical-preview-types.ts').BayonetPreview} */
 export function fitBayonetPreview(s, u, item) {
   const pa = FIT_BAYONET_AP;
   let reason = inventoryOrderReason(s, u, pa),
     plan;
-  if (!reason)
+  if (!reason) {
     try {
       plan = planFitBayonet(u, item);
     } catch (error) {
       reason = error.message;
     }
+  }
   return {
     pa,
     source: item,
@@ -4463,16 +4893,18 @@ export function fitBayonetPreview(s, u, item) {
     valid: !reason,
   };
 }
+/** @returns {import('./public/tactical-preview-types.ts').BayonetPreview} */
 export function removeBayonetPreview(s, u, destination = 'inventory') {
   const pa = REMOVE_BAYONET_AP;
   let reason = inventoryOrderReason(s, u, pa),
     plan;
-  if (!reason)
+  if (!reason) {
     try {
       plan = planRemoveBayonet(u, destination);
     } catch (error) {
       reason = error.message;
     }
+  }
   return {
     pa,
     source: 'primary',
@@ -4490,7 +4922,9 @@ function itemRelayRoute(s, u, target, stack) {
     contactDistance(a, b) <= 1.5 &&
     hasLineOfSight(s, a, b) &&
     Number.isFinite(movementStepCost(s, a, a, b));
-  if (adjacent(u, target)) return [u, target];
+  if (adjacent(u, target)) {
+    return [u, target];
+  }
   const helpers = s.units
     .filter(
       (v) =>
@@ -4515,15 +4949,19 @@ function itemRelayRoute(s, u, target, stack) {
   for (let i = 0; i < queue.length; i++) {
     const path = queue[i],
       last = path[path.length - 1];
-    if (adjacent(last, target)) return [...path, target];
-    for (const v of helpers)
+    if (adjacent(last, target)) {
+      return [...path, target];
+    }
+    for (const v of helpers) {
       if (!seen.has(v.id) && adjacent(last, v)) {
         seen.add(v.id);
         queue.push([...path, v]);
       }
+    }
   }
   return null;
 }
+/** @returns {import('./public/tactical-preview-types.ts').TransferPreview} */
 export function transferPreview(s, u, target, item, count = 1) {
   const distance = u && target ? contactDistance(u, target) : Infinity;
   let kind = distance <= 1.5 ? 'give' : 'throw',
@@ -4531,15 +4969,17 @@ export function transferPreview(s, u, target, item, count = 1) {
     route = null;
   let reason = inventoryOrderReason(s, u, 4),
     chance = kind === 'give' ? 100 : 0;
-  if (!reason && (!target || target.id === u.id || target.side !== u.side || !alive(target)))
+  if (!reason && (!target || target.id === u.id || target.side !== u.side || !alive(target))) {
     reason = 'Elige otro compañero consciente.';
-  if (!reason)
+  }
+  if (!reason) {
     try {
       const transfer = transferItemQuantity(u, target, item, count);
       route = itemRelayRoute(s, u, target, transfer.stack);
     } catch (error) {
       reason = error.message;
     }
+  }
   if (route) {
     kind = route.length > 2 ? 'relay' : 'give';
     pa = 4;
@@ -4549,10 +4989,11 @@ export function transferPreview(s, u, target, item, count = 1) {
     pa = 8;
     reason = inventoryOrderReason(s, u, pa);
   }
-  if (!reason && !route && (distance > 6 || !hasLineOfSight(s, u, target)))
+  if (!reason && !route && (distance > 6 || !hasLineOfSight(s, u, target))) {
     reason =
       'El compañero debe estar al alcance y sin obstáculos, o conectado por aliados contiguos.';
-  if (kind === 'throw' && target)
+  }
+  if (kind === 'throw' && target) {
     chance =
       target.knockedDown || (s.mode !== 'exploration' && target.ap < 2)
         ? 0
@@ -4566,6 +5007,7 @@ export function transferPreview(s, u, target, item, count = 1) {
               95,
             ),
           );
+  }
   const participants =
     route?.map((v, i) => ({
       id: v.id,
@@ -4584,7 +5026,9 @@ export function transferPreview(s, u, target, item, count = 1) {
 }
 function planInventoryMap(s, u, action) {
   const need = (ok, message) => {
-    if (!ok) throw Error(message);
+    if (!ok) {
+      throw Error(message);
+    }
   };
   const unavailable = inventoryOrderReason(s, u, 4);
   need(!unavailable, unavailable);
@@ -4612,8 +5056,9 @@ function planInventoryMap(s, u, action) {
     kind = 'drop',
     cost = 4,
     chance = 100;
-  if (intent === 'auto' && action.targetId !== undefined && String(action.targetId) === u.id)
+  if (intent === 'auto' && action.targetId !== undefined && String(action.targetId) === u.id) {
     need(sameCell(u, point), 'El combatiente cambió de lugar. Volvé a seleccionar el destino.');
+  }
   // A point order never resolves a private occupant into an inventory target.
   if (intent === 'auto' && action.targetId !== undefined && String(action.targetId) !== u.id) {
     target = s.units.find((other) => other.id === String(action.targetId));
@@ -4624,7 +5069,9 @@ function planInventoryMap(s, u, action) {
         sameCell(npc, point) &&
         canSee(s, u, npc) &&
         isInteriorVisible(s, npc, new Set(s.revealedRooms ?? []));
-      if (visible) return planSelectedNpcGift(s, u, action, npc, extraction, point);
+      if (visible) {
+        return planSelectedNpcGift(s, u, action, npc, extraction, point);
+      }
     }
     need(
       target && target.side === u.side && target.id !== u.id && !target.fled && alive(target),
@@ -4674,8 +5121,9 @@ function planInventoryMap(s, u, action) {
   need(!reason, reason);
   // Every toss needs room for a failed catch. Empty historical piles still
   // count toward the same collection bound used by save admission.
-  if (!target || kind === 'throw')
+  if (!target || kind === 'throw') {
     need((s.groundItems ?? []).length < 2000, 'No queda espacio para más objetos en el sector.');
+  }
   const participants =
     route?.map((v, i) => ({
       id: v.id,
@@ -4686,18 +5134,21 @@ function planInventoryMap(s, u, action) {
     expectedRoute = JSON.stringify(
       (route ?? []).map((v) => ({ id: v.id, ...positionOf(v), tacticalLevel: tacticalLevel(v) })),
     );
-  if (action.transferKind !== undefined)
+  if (action.transferKind !== undefined) {
     need(action.transferKind === kind, 'Cambió la entrega. Volvé a revisar el destino.');
-  if (action.transferRoute !== undefined)
+  }
+  if (action.transferRoute !== undefined) {
     need(
       JSON.stringify(action.transferRoute) === JSON.stringify(routeIds),
       'Cambió la cadena de entrega. Volvé a revisar los compañeros.',
     );
-  if (action.expectedRoute !== undefined)
+  }
+  if (action.expectedRoute !== undefined) {
     need(
       action.expectedRoute === expectedRoute,
       'Los compañeros cambiaron de lugar. Volvé a revisar la entrega.',
     );
+  }
   const confirmed = {
     type: 'inventoryMap',
     unitId: u.id,
@@ -4742,6 +5193,10 @@ function planInventoryMap(s, u, action) {
               : 'Arrojar al suelo',
   };
 }
+/** @param {import('./public/compatibility-types.ts').BattleSnapshot} state
+ * @param {import('./public/compatibility-types.ts').BattleUnit} unit
+ * @param {import('./public/inventory-types.ts').InventoryMapAction} action
+ * @returns {import('./public/inventory-types.ts').InventoryMapPreview} */
 export function inventoryMapPreview(s, u, action = {}) {
   try {
     const { extraction, target, received, cost, ...preview } = planInventoryMap(s, u, action);
@@ -4764,6 +5219,9 @@ export function inventoryMapPreview(s, u, action = {}) {
 }
 // Gift responses are UI events, not additional item owners or save records.
 const npcGiftResults = new WeakMap();
+/** @param {import('./public/compatibility-types.ts').BattleSnapshot} before
+ * @param {import('./public/compatibility-types.ts').BattleSnapshot} after
+ * @returns {import('./public/compatibility-types.ts').NpcGiftReceipt | null} */
 export function getNpcGiftResult(before, after) {
   const result = npcGiftResults.get(after);
   return before !== after && result ? structuredClone(result) : null;
@@ -4785,7 +5243,9 @@ function recordNpcGiftResult(state, action, npc, status, text) {
 }
 function planSelectedNpcGift(s, u, action, npc, extraction, point) {
   const need = (ok, message) => {
-    if (!ok) throw Error(message);
+    if (!ok) {
+      throw Error(message);
+    }
   };
   need(s.mode === 'exploration', 'Terminá el combate antes de entregar el objeto.');
   need(
@@ -4808,8 +5268,9 @@ function planSelectedNpcGift(s, u, action, npc, extraction, point) {
     approach = knownApproachRoute({ ...s, npcs: knownNpcs }, u, inReach);
     need(approach, 'No hay un camino libre para acercarse y entregar el objeto.');
   }
-  if (action.transferKind !== undefined)
+  if (action.transferKind !== undefined) {
     need(action.transferKind === 'gift', 'Cambió el destinatario. Volvé a seleccionar el objeto.');
+  }
   const confirmed = {
     type: 'inventoryMap',
     unitId: u.id,
@@ -4851,10 +5312,12 @@ function planSelectedNpcGift(s, u, action, npc, extraction, point) {
   };
 }
 function groundStack(ground) {
-  if (ground.type === 'money')
+  if (ground.type === 'money') {
     return { item: `inventory:${ground.id}`, name: 'Pesos', count: ground.count, weight: 0.01 };
-  if (Object.hasOwn(SUPPLY_ITEMS, ground.type) && ground.type !== 'ammo')
+  }
+  if (Object.hasOwn(SUPPLY_ITEMS, ground.type) && ground.type !== 'ammo') {
     return { item: ground.type, count: ground.count, weight: SUPPLY_ITEMS[ground.type].weight };
+  }
   const { id, type, x, y, tacticalLevel, heldBy, knownToPlayer, ...stack } = ground;
   return stack;
 }
@@ -4878,20 +5341,28 @@ export function planLoot(s, u, a) {
   if (
     [a.targetId !== undefined, a.dropIndex !== undefined, a.groundId !== undefined].filter(Boolean)
       .length !== 1
-  )
+  ) {
     throw Error('Seleccioná un solo cuerpo u objeto.');
-  if (a.count !== undefined && (!Number.isSafeInteger(a.count) || a.count < 1))
+  }
+  if (a.count !== undefined && (!Number.isSafeInteger(a.count) || a.count < 1)) {
     throw Error('La cantidad debe ser un número entero positivo.');
+  }
   const { source, drop, ground, position } = lootSource(s, a);
-  if (ground && !artilleryContact(s, u, ground))
+  if (ground && !artilleryContact(s, u, ground)) {
     throw Error('Acercate al bulto, sin obstáculos entre ambos.');
-  if (source?.departure || source?.fled) throw Error('Esa persona ya salió del sector.');
-  if (!position || contactDistance(u, position) > 1.5 || !hasLineOfSight(s, u, position))
+  }
+  if (source?.departure || source?.fled) {
+    throw Error('Esa persona ya salió del sector.');
+  }
+  if (!position || contactDistance(u, position) > 1.5 || !hasLineOfSight(s, u, position)) {
     throw Error('Acércate al cuerpo o equipo que quieres registrar.');
-  if (source && source.hp > 0 && !source.unconscious && !source.surrendered)
+  }
+  if (source && source.hp > 0 && !source.unconscious && !source.surrendered) {
     throw Error('Solo puedes registrar un cuerpo o una persona inconsciente.');
-  if (drop?.taken || ground?.count === 0 || ground?.heldBy || ground?.containerId)
+  }
+  if (drop?.taken || ground?.count === 0 || ground?.heldBy || ground?.containerId) {
     throw Error('Ese objeto ya fue recogido o sigue enredado.');
+  }
   let receiver = u,
     donor = source;
   if (source && isCivilianBody(s, source)) {
@@ -4899,8 +5370,9 @@ export function planLoot(s, u, a) {
     receiver = structuredClone(u);
     const wanted = a.item ?? 'all',
       gear = donor.civilianWeapons;
-    if (a.count !== undefined && (!Number.isSafeInteger(a.count) || a.count < 1))
+    if (a.count !== undefined && (!Number.isSafeInteger(a.count) || a.count < 1)) {
       throw Error('La cantidad debe ser un número entero positivo.');
+    }
     const supplies = civilianSupplyLoot(donor, receiver, a),
       slots = ['primary', 'blade'].filter(
         (slot) =>
@@ -4909,9 +5381,12 @@ export function planLoot(s, u, a) {
             wanted === slot) &&
           gear?.[slot],
       );
-    if (!supplies.valid && !slots.length) throw Error(supplies.reason);
-    if (slots.length && a.count !== undefined && a.count !== 1)
+    if (!supplies.valid && !slots.length) {
+      throw Error(supplies.reason);
+    }
+    if (slots.length && a.count !== undefined && a.count !== 1) {
       throw Error('No queda esa cantidad del arma.');
+    }
     let collected = 0;
     for (const slot of slots) {
       try {
@@ -4919,12 +5394,16 @@ export function planLoot(s, u, a) {
         gear[slot] = null;
         collected++;
       } catch (error) {
-        if (wanted !== 'all') throw error;
+        if (wanted !== 'all') {
+          throw error;
+        }
       }
     }
     for (const [key, wantedCount] of Object.entries(supplies.amounts)) {
       const count = supplyRoom(receiver, key, wantedCount);
-      if (a.count !== undefined && count < wantedCount) throw Error(POCKET_FULL);
+      if (a.count !== undefined && count < wantedCount) {
+        throw Error(POCKET_FULL);
+      }
       if (count) {
         receiver = applyItemQuantity(receiver, {
           item: key,
@@ -4935,7 +5414,9 @@ export function planLoot(s, u, a) {
         collected += count;
       }
     }
-    if (!collected) throw Error(POCKET_FULL);
+    if (!collected) {
+      throw Error(POCKET_FULL);
+    }
     syncUnitAmmunition(receiver);
     return { receiver, source, donor };
   }
@@ -4959,25 +5440,34 @@ export function planLoot(s, u, a) {
               .map(([key]) => `inventory:${key}`),
           ]
         : [wanted === 'weapon' ? 'primary' : wanted];
-    if (!items.length) throw Error('No queda equipo que recoger.');
+    if (!items.length) {
+      throw Error('No queda equipo que recoger.');
+    }
     let collected = 0;
     for (const item of items) {
       const available = itemQuantity(donor, item),
         stack = extractItemQuantity(donor, item, available).stack;
       const count = wanted === 'all' ? incomingItemRoom(receiver, stack) : (a.count ?? available);
-      if (!count) continue;
+      if (!count) {
+        continue;
+      }
       const transfer = transferItemQuantity(donor, receiver, item, count);
       donor = transfer.source;
       receiver = transfer.target;
       collected += count;
     }
-    if (!collected) throw Error(POCKET_FULL);
+    if (!collected) {
+      throw Error(POCKET_FULL);
+    }
   } else {
     const stack = drop ? droppedWeaponStack(drop) : groundStack(ground);
     const count = a.count ?? incomingItemRoom(receiver, stack);
-    if (!count && a.count === undefined) throw Error(POCKET_FULL);
-    if (!Number.isSafeInteger(count) || count < 1 || count > stack.count)
+    if (!count && a.count === undefined) {
+      throw Error(POCKET_FULL);
+    }
+    if (!Number.isSafeInteger(count) || count < 1 || count > stack.count) {
       throw Error('No queda esa cantidad del objeto.');
+    }
     const transfer = transferStoredItemQuantity(
       stack,
       receiver,
@@ -4991,13 +5481,20 @@ export function planLoot(s, u, a) {
 }
 function commitLoot(u, plan) {
   replaceUnit(u, plan.receiver);
-  if (plan.source) replaceUnit(plan.source, plan.donor);
-  if (plan.drop) plan.drop.taken = true;
-  if (plan.ground) plan.ground.count = plan.remaining;
+  if (plan.source) {
+    replaceUnit(plan.source, plan.donor);
+  }
+  if (plan.drop) {
+    plan.drop.taken = true;
+  }
+  if (plan.ground) {
+    plan.ground.count = plan.remaining;
+  }
 }
 function planLootBatch(s, u, items) {
-  if (!Array.isArray(items) || !items.length || items.length > 1000)
+  if (!Array.isArray(items) || !items.length || items.length > 1000) {
     throw Error('Seleccioná entre uno y mil objetos para recoger.');
+  }
   // Work on private source/receiver copies. A later capacity or quantity failure
   // must not consume any earlier selection in the same pickup transaction.
   const view = {
@@ -5018,38 +5515,46 @@ function planLootBatch(s, u, items) {
       Object.keys(item).some(
         (key) => !['targetId', 'groundId', 'dropIndex', 'item', 'count'].includes(key),
       )
-    )
+    ) {
       throw Error('La selección de equipo no es válida.');
+    }
     const selectors = ['targetId', 'groundId', 'dropIndex'].filter((key) =>
       Object.hasOwn(item, key),
     );
-    if (selectors.length !== 1 || !Number.isSafeInteger(item.count) || item.count < 1)
+    if (selectors.length !== 1 || !Number.isSafeInteger(item.count) || item.count < 1) {
       throw Error('Indicá un origen y una cantidad entera para cada objeto.');
+    }
     const selector = selectors[0];
     if (
       selector === 'dropIndex'
         ? !Number.isSafeInteger(item.dropIndex) || item.dropIndex < 0
         : typeof item[selector] !== 'string' || !item[selector]
-    )
+    ) {
       throw Error('El origen del objeto no es válido.');
+    }
     if (
       selector === 'targetId'
         ? typeof item.item !== 'string' || !item.item || item.item === 'all'
         : item.item !== undefined
-    )
+    ) {
       throw Error('Seleccioná cada objeto del cuerpo por separado.');
+    }
     const key = JSON.stringify([
       selector,
       item[selector],
       item.item === 'weapon' ? 'primary' : (item.item ?? null),
     ]);
-    if (seen.has(key)) throw Error('El mismo objeto aparece más de una vez en la selección.');
+    if (seen.has(key)) {
+      throw Error('El mismo objeto aparece más de una vez en la selección.');
+    }
     seen.add(key);
     const { position } = lootSource(view, item);
-    if (!position || !canSee(view, receiver, position))
+    if (!position || !canSee(view, receiver, position)) {
       throw Error('El equipo seleccionado debe estar a la vista.');
-    if (point && !sameCell(position, point))
+    }
+    if (point && !sameCell(position, point)) {
       throw Error('Recogé objetos de una sola casilla por vez.');
+    }
     point = position;
     commitLoot(receiver, planLoot(view, receiver, item));
   }
@@ -5058,31 +5563,37 @@ function planLootBatch(s, u, items) {
 export function lootBatchPreview(s, u, items) {
   const pa = 8;
   let reason = inventoryOrderReason(s, u, pa);
-  if (!reason)
+  if (!reason) {
     try {
       planLootBatch(s, u, items);
     } catch (error) {
       reason = error.message;
     }
+  }
   return { pa, valid: !reason, reason };
 }
 export function planEquipLoot(u, key, slot = 'primary') {
-  if (slot === 'offhandItem') return planHoldOffhand(u, key);
-  if (BODY_SLOTS.includes(slot))
+  if (slot === 'offhandItem') {
+    return planHoldOffhand(u, key);
+  }
+  if (BODY_SLOTS.includes(slot)) {
     return key === null ? planStowOutfit(u, slot) : planEquipOutfit(u, key, slot);
+  }
   const record = u.inventory?.[key];
   if (
     !record ||
     typeof record !== 'object' ||
     record.count < 1 ||
     !['primary', 'blade', 'offhand'].includes(slot)
-  )
+  ) {
     throw Error('Selecciona un arma recuperada disponible.');
+  }
   if (
     !(WEAPONS[record.weapon] || BLADES[record.weapon]) ||
     (slot === 'blade' && !BLADES[record.weapon])
-  )
+  ) {
     throw Error('Ese objeto no puede equiparse en esa mano.');
+  }
   const extracted = extractItemQuantity(u, `inventory:${key}`, 1);
   return equipIncomingHand(extracted.unit, extracted.stack, slot);
 }
@@ -5090,24 +5601,28 @@ function equipIncomingHand(unit, incoming, slot) {
   let next = structuredClone(unit);
   if (slot === 'offhand') {
     delete next.leftHandItem;
-    if (handsRequired(incoming.weapon) > 1)
+    if (handsRequired(incoming.weapon) > 1) {
       throw Error('La mano secundaria necesita un arma de una mano.');
+    }
     if (
       !next.weaponDropped &&
       handsRequired(next.weapon) > 1 &&
       (next.activeSlot ?? 'primary') === 'primary'
-    )
+    ) {
       throw Error('El arma principal ocupa las dos manos.');
-    for (const item of ['blade', 'offhand'])
+    }
+    for (const item of ['blade', 'offhand']) {
       if (itemQuantity(next, item)) {
         const stored = extractItemQuantity(next, item, 1, { keepOtherHand: false });
         next = applyItemQuantity(stored.unit, stored.stack, { deferCapacity: true });
       }
+    }
     const { item, ...record } = incoming;
     next.offHand = structuredClone(record);
     next.offHand.count = 1;
-    if (inventoryUsage(next).overloaded)
+    if (inventoryUsage(next).overloaded) {
       throw Error('No queda espacio para guardar el equipo desplazado.');
+    }
     return next;
   }
   if (slot === 'blade' && next.offHand) {
@@ -5122,29 +5637,39 @@ function equipIncomingHand(unit, incoming, slot) {
   if (slot === 'primary') {
     delete next.contentWeapon;
     delete next.ammunitionChoice;
-    if (incoming.ammunitionChoice !== undefined) next.ammunitionChoice = incoming.ammunitionChoice;
+    if (incoming.ammunitionChoice !== undefined) {
+      next.ammunitionChoice = incoming.ammunitionChoice;
+    }
     next.weapon = incoming.weapon;
     next.loaded = incoming.loaded ?? 0;
     delete next.reloadProgress;
-    if (incoming.reloadProgress) next.reloadProgress = incoming.reloadProgress;
+    if (incoming.reloadProgress) {
+      next.reloadProgress = incoming.reloadProgress;
+    }
     next.condition = incoming.condition ?? 100;
     next.jammed = Boolean(incoming.jammed);
     next.weaponDropped = false;
     next.weaponFittings = structuredClone(incoming.fittings ?? {});
     next.weaponFittingPattern = incoming.fittingPattern ?? null;
     delete next.weaponInstanceId;
-    if (incoming.instanceId) next.weaponInstanceId = incoming.instanceId;
+    if (incoming.instanceId) {
+      next.weaponInstanceId = incoming.instanceId;
+    }
   } else {
     next.blade = incoming.weapon;
     next.bladeCondition = incoming.condition ?? 100;
     next.bladeFittingPattern = incoming.fittingPattern ?? null;
     delete next.bladeInstanceId;
-    if (incoming.instanceId) next.bladeInstanceId = incoming.instanceId;
+    if (incoming.instanceId) {
+      next.bladeInstanceId = incoming.instanceId;
+    }
   }
   const metadataKey = slot === 'primary' ? 'weaponMetadata' : 'bladeMetadata',
     metadata = handMetadata(incoming);
   delete next[metadataKey];
-  if (metadata && Object.keys(metadata).length) next[metadataKey] = metadata;
+  if (metadata && Object.keys(metadata).length) {
+    next[metadataKey] = metadata;
+  }
   lowerWeapon(next);
   next = selectMainHand(next, { activeSlot: slot });
   delete next.activeTool;
@@ -5154,12 +5679,15 @@ function equipIncomingHand(unit, incoming, slot) {
   next.momentum = 0;
   delete next.lastTargetId;
   delete next.lastShotPosition;
-  if (inventoryUsage(next).overloaded)
+  if (inventoryUsage(next).overloaded) {
     throw Error('No queda espacio para guardar el equipo desplazado.');
+  }
   return next;
 }
 export function planSwapHands(unit) {
-  if (!unit.offHand) throw Error('La mano secundaria está vacía.');
+  if (!unit.offHand) {
+    throw Error('La mano secundaria está vacía.');
+  }
   let next = structuredClone(unit);
   const incoming = next.offHand;
   delete next.offHand;
@@ -5169,14 +5697,17 @@ export function planSwapHands(unit) {
     if (handsRequired(taken.stack.weapon) === 1) {
       const { item, ...record } = taken.stack;
       next.offHand = record;
-    } else next = applyItemQuantity(next, taken.stack, { deferCapacity: true });
+    } else {
+      next = applyItemQuantity(next, taken.stack, { deferCapacity: true });
+    }
   }
   return equipIncomingHand(next, { item: 'weapon', ...incoming }, 'primary');
 }
 function planStealWeapon(u, target) {
   const slot = target.activeSlot ?? 'primary';
-  if (!['primary', 'blade'].includes(slot) || !itemQuantity(target, slot))
+  if (!['primary', 'blade'].includes(slot) || !itemQuantity(target, slot)) {
     throw Error('El enemigo no lleva un arma en la mano.');
+  }
   const taken = extractItemQuantity(target, slot, 1);
   return { source: taken.unit, receiver: equipIncomingHand(u, taken.stack, 'primary') };
 }
@@ -5189,61 +5720,79 @@ export function stealPreview(s, u, target) {
     (u.side === 'player' ? !interruptAvailable(s, u) : s.phase !== 'enemy')
       ? 'El soldado no puede actuar ahora.'
       : null;
-  if (!reason && (u.activeSlot !== 'unarmed' || handLayout(u).held.length))
+  if (!reason && (u.activeSlot !== 'unarmed' || handLayout(u).held.length)) {
     reason = 'Prepará las manos libres antes de quitar un arma.';
-  if (!reason && (u.mounted || u.knockedDown || u.entangled || u.stance === 'prone'))
+  }
+  if (!reason && (u.mounted || u.knockedDown || u.entangled || u.stance === 'prone')) {
     reason = 'Debés estar de pie o agachado, desmontado y libre para quitar un arma.';
+  }
   if (
     !reason &&
     (!target || target.side === u.side || !alive(target) || target.routed || target.surrendered)
-  )
+  ) {
     reason = 'Seleccioná un enemigo consciente; los cuerpos se registran con Recoger equipo.';
+  }
   if (
     !reason &&
     (!teamCanSee(s, u.side, target) ||
       dist(u, target) > 1.5 ||
       !hasLineOfSight(s, u, target) ||
       !Number.isFinite(movementStepCost(s, u, u, target)))
-  )
+  ) {
     reason = 'Acercate al enemigo visible para quitarle el arma.';
-  if (!reason && target.mounted)
+  }
+  if (!reason && target.mounted) {
     reason = 'El arma de un jinete queda fuera del alcance de las manos.';
-  if (!reason && s.mode !== 'exploration' && u.ap < STEAL_MIN_AP)
+  }
+  if (!reason && s.mode !== 'exploration' && u.ap < STEAL_MIN_AP) {
     reason = `Quitar el arma requiere al menos ${formatAP(STEAL_MIN_AP)} PA y consume todos los restantes.`;
-  if (!reason)
+  }
+  if (!reason) {
     try {
       planStealWeapon(u, target);
     } catch (error) {
       reason = error.message;
     }
+  }
   return { pa, valid: !reason, reason };
 }
 function planMainHandEquipment(u, a) {
-  if (!['primary', 'blade', 'medical', 'unarmed', 'tool', 'supply', 'item'].includes(a.slot))
+  if (!['primary', 'blade', 'medical', 'unarmed', 'tool', 'supply', 'item'].includes(a.slot)) {
     throw Error('Selecciona el objeto que quieres llevar en la mano.');
+  }
   if (
     a.slot === 'primary' &&
     (u.weaponDropped || !(WEAPONS[u.weapon] || BLADES[u.weapon] || typeof u.weapon === 'object'))
-  )
+  ) {
     throw Error('No lleva un arma principal disponible.');
-  if (a.slot === 'item' && !carriedObject(u, a.item))
+  }
+  if (a.slot === 'item' && !carriedObject(u, a.item)) {
     throw Error('No lleva ese objeto disponible.');
-  if (a.slot === 'medical' && u.medkits < 1)
+  }
+  if (a.slot === 'medical' && u.medkits < 1) {
     throw Error('No quedan vendas en el equipo de curación.');
-  if (a.slot === 'blade' && !BLADES[u.blade])
+  }
+  if (a.slot === 'blade' && !BLADES[u.blade]) {
     throw Error('No hay un arma blanca secundaria equipada.');
-  if (a.slot === 'tool' && !heldTool({ ...u, activeSlot: 'tool', activeTool: a.toolKey }))
+  }
+  if (a.slot === 'tool' && !heldTool({ ...u, activeSlot: 'tool', activeTool: a.toolKey })) {
     throw Error('No lleva esa herramienta en el inventario.');
-  if (a.slot === 'supply' && !heldSupply({ ...u, activeSlot: 'supply', activeSupply: a.supplyKey }))
+  }
+  if (
+    a.slot === 'supply' &&
+    !heldSupply({ ...u, activeSlot: 'supply', activeSupply: a.supplyKey })
+  ) {
     throw Error('No lleva ese pertrecho en el inventario.');
+  }
   if (
     !(a.slot === 'unarmed' && handLayout(u).left) &&
     (u.activeSlot || 'primary') === a.slot &&
     (a.slot !== 'tool' || u.activeTool === a.toolKey) &&
     (a.slot !== 'supply' || u.activeSupply === a.supplyKey) &&
     (a.slot !== 'item' || u.activeItem === a.item)
-  )
+  ) {
     throw Error('Ese objeto ya está en la mano.');
+  }
   const next = selectMainHand(structuredClone(u), {
     activeSlot: a.slot,
     ...(a.slot === 'tool'
@@ -5254,11 +5803,18 @@ function planMainHandEquipment(u, a) {
           ? { activeItem: a.item }
           : {}),
   });
-  if (a.slot !== 'tool') delete next.activeTool;
-  if (a.slot !== 'supply') delete next.activeSupply;
-  if (a.slot !== 'item') delete next.activeItem;
-  if (inventoryUsage(next).overloaded)
+  if (a.slot !== 'tool') {
+    delete next.activeTool;
+  }
+  if (a.slot !== 'supply') {
+    delete next.activeSupply;
+  }
+  if (a.slot !== 'item') {
+    delete next.activeItem;
+  }
+  if (inventoryUsage(next).overloaded) {
     throw Error('No queda espacio para guardar el objeto que tenés en la mano.');
+  }
   lowerWeapon(next);
   next.momentum = 0;
   next.braced = false;
@@ -5271,10 +5827,13 @@ function readyReference(unit, item, side) {
     weapon = descriptor.weapon;
   if (side === 'left') {
     if (weapon) {
-      if (handsRequired(weapon) > 1) throw Error('El arma necesita las dos manos.');
-      if (item.startsWith('inventory:'))
+      if (handsRequired(weapon) > 1) {
+        throw Error('El arma necesita las dos manos.');
+      }
+      if (item.startsWith('inventory:')) {
         return { unit: planEquipLoot(unit, item.slice(10), 'offhand'), pa: 6 };
-      let next = structuredClone(unit);
+      }
+      const next = structuredClone(unit);
       if (handLayout(next).right === item) {
         next.activeSlot = 'unarmed';
         delete next.activeTool;
@@ -5283,11 +5842,12 @@ function readyReference(unit, item, side) {
       }
       next.leftHandItem = item;
       lowerWeapon(next);
-      if (inventoryUsage(next).overloaded)
+      if (inventoryUsage(next).overloaded) {
         throw Error('No queda espacio para guardar el objeto desplazado.');
+      }
       return { unit: next, pa: 4 };
     }
-    let next = structuredClone(unit);
+    const next = structuredClone(unit);
     if (handLayout(next).right === item) {
       next.activeSlot = 'unarmed';
       delete next.activeTool;
@@ -5297,9 +5857,12 @@ function readyReference(unit, item, side) {
     return { unit: planHoldOffhand(next, item), pa: 4 };
   }
   if (weapon) {
-    if (item.startsWith('inventory:'))
+    if (item.startsWith('inventory:')) {
       return { unit: planEquipLoot(unit, item.slice(10), 'primary'), pa: 6 };
-    if (item === 'offhand') return { unit: planSwapHands(unit), pa: 4 };
+    }
+    if (item === 'offhand') {
+      return { unit: planSwapHands(unit), pa: 4 };
+    }
     return { unit: planMainHandEquipment(unit, { slot: item }), pa: 4 };
   }
   const action =
@@ -5312,7 +5875,9 @@ function readyReference(unit, item, side) {
           : carriedObject(unit, item)
             ? { slot: 'item', item }
             : null;
-  if (!action) throw Error('Este objeto no se puede llevar en la mano principal.');
+  if (!action) {
+    throw Error('Este objeto no se puede llevar en la mano principal.');
+  }
   return { unit: planMainHandEquipment(unit, action), pa: 4 };
 }
 // Campaign equipment uses the same item-to-mode and pocket checks as dragging.
@@ -5333,7 +5898,9 @@ function storeHandReference(unit, source) {
       delete next.activeSupply;
       delete next.activeItem;
       next.leftHandItem = other;
-    } else next.leftHandItem = null;
+    } else {
+      next.leftHandItem = null;
+    }
     next = applyItemQuantity(next, taken.stack, { deferCapacity: true });
     item = 'inventory:' + Object.keys(next.inventory).find((key) => !oldKeys.has(key));
   } else if (source.side === 'right') {
@@ -5342,47 +5909,64 @@ function storeHandReference(unit, source) {
     delete next.activeSupply;
     delete next.activeItem;
     next.leftHandItem = other;
-  } else next.leftHandItem = null;
+  } else {
+    next.leftHandItem = null;
+  }
   lowerWeapon(next);
   return { unit: next, item };
 }
 export function planEquipmentPlacement(unit, action) {
   const { sourceId, destinationId, expectedSource, expectedDestination } = action;
-  if (sourceId === destinationId) throw Error('Elegí otra ranura.');
+  if (sourceId === destinationId) {
+    throw Error('Elegí otra ranura.');
+  }
   for (const [id, expected] of [
     [sourceId, expectedSource],
     [destinationId, expectedDestination],
-  ])
-    if (typeof expected !== 'string' || expected !== equipmentFingerprint(unit, id))
+  ]) {
+    if (typeof expected !== 'string' || expected !== equipmentFingerprint(unit, id)) {
       throw Error('Cambió el equipo. Volvé a seleccionar el objeto.');
+    }
+  }
   const source = equipmentEndpoint(unit, sourceId),
     destination = equipmentEndpoint(unit, destinationId);
-  if (!source.item) throw Error('La ranura de origen está vacía.');
+  if (!source.item) {
+    throw Error('La ranura de origen está vacía.');
+  }
   if (
     action.count !== undefined &&
     (!Number.isSafeInteger(action.count) || action.count < 1 || action.count > source.count)
-  )
+  ) {
     throw Error('No queda esa cantidad en la ranura de origen.');
-  if (action.count > 1 && source.kind !== 'pocket')
+  }
+  if (action.count > 1 && source.kind !== 'pocket') {
     throw Error('Las manos y la vestimenta admiten un objeto por ranura.');
-  if (source.kind === 'outfit' || destination.kind === 'outfit')
+  }
+  if (source.kind === 'outfit' || destination.kind === 'outfit') {
     return { unit: planOutfitPlacement(unit, source, destination), pa: OUTFIT_CHANGE_AP };
-  if (source.kind === 'pocket' && destination.kind === 'pocket')
+  }
+  if (source.kind === 'pocket' && destination.kind === 'pocket') {
     return {
       unit: planPocketMove(unit, sourceId, destinationId, undefined, undefined, action.count),
       pa: 0,
     };
+  }
   if (destination.kind === 'hand') {
-    if (destination.blocked) throw Error('El arma principal ocupa las dos manos.');
+    if (destination.blocked) {
+      throw Error('El arma principal ocupa las dos manos.');
+    }
     const result = readyReference(unit, source.item, destination.side);
     if (source.kind === 'pocket') {
       const slots = structuredClone(inventoryUsage(unit).slots),
         from = slots.find((slot) => slot.id === sourceId);
       from.entry.count--;
-      if (!from.entry.count) from.entry = null;
+      if (!from.entry.count) {
+        from.entry = null;
+      }
       result.unit.pocketOrder = pocketOrderFromSlots(slots);
-      if (inventoryUsage(result.unit).overloaded)
+      if (inventoryUsage(result.unit).overloaded) {
         throw Error('No queda espacio para guardar el objeto desplazado.');
+      }
     }
     return result;
   }
@@ -5397,26 +5981,32 @@ export function planEquipmentPlacement(unit, action) {
     pa = Math.max(pa, ready.pa);
   }
   const descriptor = itemDescriptor(next, stored.item);
-  if (descriptor.slotSize > 1 && destination.size !== 'large')
+  if (descriptor.slotSize > 1 && destination.size !== 'large') {
     throw Error('Ese objeto necesita un bolsillo grande.');
+  }
   const slots = structuredClone(inventoryUsage(unit).slots),
     to = slots.find((slot) => slot.id === destinationId);
   const count = destination.item === stored.item ? destination.count + 1 : 1;
-  if (count > descriptor.stackLimit) throw Error('Esa pila ya está completa.');
+  if (count > descriptor.stackLimit) {
+    throw Error('Esa pila ya está completa.');
+  }
   to.entry = { ...descriptor, count };
   next.pocketOrder = pocketOrderFromSlots(slots);
-  if (inventoryUsage(next).overloaded)
+  if (inventoryUsage(next).overloaded) {
     throw Error('No queda espacio para guardar el objeto desplazado.');
+  }
   return { unit: next, pa };
 }
+/** @returns {{pa:number;valid:boolean;reason:string|null;action:{type:'weapon';slot:'item';item:string}}} */
 export function mainItemPreview(s, u, item) {
   let reason = inventoryOrderReason(s, u, 4);
-  if (!reason)
+  if (!reason) {
     try {
       planMainHandEquipment(u, { slot: 'item', item });
     } catch (error) {
       reason = error.message;
     }
+  }
   return {
     pa: s.mode === 'exploration' ? 0 : 4,
     valid: !reason,
@@ -5428,7 +6018,7 @@ export function equipmentPlacementPreview(s, u, action) {
   let pa = 0,
     reason = inventoryOrderReason(s, u, 0),
     remainingSelection;
-  if (!reason)
+  if (!reason) {
     try {
       const plan = planEquipmentPlacement(u, action);
       pa = plan.pa;
@@ -5457,6 +6047,7 @@ export function equipmentPlacementPreview(s, u, action) {
     } catch (error) {
       reason = error.message;
     }
+  }
   return { pa, reason, valid: !reason, ...(remainingSelection ? { remainingSelection } : {}) };
 }
 
@@ -5471,16 +6062,22 @@ export function planEquipmentCursorOrder(unit, action, state) {
     exploring: !state || state.mode === 'exploration',
     assisted: Boolean(state && nearby(state, unit, 'loading_support', 2)),
   };
-  if (action.type === 'pickupEquipment') return planEquipmentPickup(unit, action);
-  if (action.type === 'placeEquipment') return planEquipmentCursorPlacement(unit, action, loading);
+  if (action.type === 'pickupEquipment') {
+    return planEquipmentPickup(unit, action);
+  }
+  if (action.type === 'placeEquipment') {
+    return planEquipmentCursorPlacement(unit, action, loading);
+  }
   if (action.type === 'returnEquipmentCursor') {
-    if (action.expectedSource !== equipmentFingerprint(unit, 'cursor'))
+    if (action.expectedSource !== equipmentFingerprint(unit, 'cursor')) {
       throw Error('Cambió el objeto del cursor. Revisá el equipo.');
+    }
     return planEquipmentCursorReturn(unit);
   }
   if (action.type === 'dragEquipment') {
-    if (action.expectedDestination !== equipmentFingerprint(unit, action.destinationId))
+    if (action.expectedDestination !== equipmentFingerprint(unit, action.destinationId)) {
       throw Error('Cambió el destino. Revisá el equipo.');
+    }
     const picked = planEquipmentPickup(unit, action);
     return planEquipmentCursorPlacement(
       picked.unit,
@@ -5494,31 +6091,40 @@ export function planEquipmentCursorOrder(unit, action, state) {
   }
   throw Error('La orden del cursor no es válida.');
 }
+/** @param {import('./public/inventory-types.ts').InventoryContext} state
+ * @param {import('./public/inventory-types.ts').InventoryActor} actor
+ * @param {import('./public/inventory-types.ts').EquipmentAction} action
+ * @returns {import('./public/inventory-types.ts').EquipmentPreview} */
 export function equipmentCursorPreview(s, u, action) {
   let reason = inventoryOrderReason(s, u, 0),
     plan;
-  if (!reason && (u.side !== 'player' || u.militia || u.departure))
+  if (!reason && (u.side !== 'player' || u.militia || u.departure)) {
     reason = 'Elegí un combatiente de tu escuadra.';
+  }
   if (
     !reason &&
     ['pickupEquipment', 'dragEquipment'].includes(action.type) &&
     s.units?.some((other) => other.id !== u.id && alive(other) && other.equipmentCursor)
-  )
+  ) {
     reason = 'Colocá primero el objeto del otro combatiente.';
-  if (!reason)
+  }
+  if (!reason) {
     try {
       if (
         action.type === 'dragEquipment' &&
         action.expectedDestination !== equipmentFingerprint(u, action.destinationId)
-      )
+      ) {
         throw Error('Cambió el destino. Revisá el equipo.');
+      }
       plan = planEquipmentCursorOrder(u, action, s);
       reason = inventoryOrderReason(s, u, plan.pa);
-      if (plan.dropped && (s.groundItems?.length ?? 0) >= 2000)
+      if (plan.dropped && (s.groundItems?.length ?? 0) >= 2000) {
         throw Error('No queda espacio para dejar el objeto. Sigue en el cursor.');
+      }
     } catch (error) {
       reason = error.message;
     }
+  }
   return {
     pa: s.mode === 'exploration' ? 0 : (plan?.pa ?? 0),
     valid: !reason,
@@ -5537,58 +6143,69 @@ export function equipmentCursorPreview(s, u, action) {
 }
 
 function returnBattleEquipmentCursor(s, unit) {
-  if (!unit.equipmentCursor) return true;
+  if (!unit.equipmentCursor) {
+    return true;
+  }
   const plan = planEquipmentCursorReturn(unit);
-  if (plan.dropped && s.groundItems.length >= 2000) return false;
+  if (plan.dropped && s.groundItems.length >= 2000) {
+    return false;
+  }
   replaceUnit(unit, plan.unit);
-  if (plan.dropped) addGroundStack(s, plan.dropped, unit);
+  if (plan.dropped) {
+    addGroundStack(s, plan.dropped, unit);
+  }
   return true;
 }
 
 export function swapHandsPreview(s, u) {
   const pa = s.mode === 'exploration' ? 0 : 4;
   let reason = inventoryOrderReason(s, u, pa);
-  if (!reason)
+  if (!reason) {
     try {
       planSwapHands(u);
     } catch (error) {
       reason = error.message;
     }
+  }
   return { pa, reason, valid: !reason };
 }
 export function equipLootPreview(s, u, inventoryKey, slot = 'primary') {
   const pa = BODY_SLOTS.includes(slot) ? OUTFIT_CHANGE_AP : slot === 'offhandItem' ? 4 : 6;
   let reason = inventoryOrderReason(s, u, pa);
-  if (!reason)
+  if (!reason) {
     try {
       planEquipLoot(u, inventoryKey, slot);
     } catch (error) {
       reason = error.message;
     }
+  }
   return { pa, reason, valid: !reason };
 }
 export function fieldDressingsPreview(s, u, inventoryKey, expectedSource) {
   const pa = FIELD_DRESSINGS_AP;
   let reason = inventoryOrderReason(s, u, pa);
-  if (!reason)
+  if (!reason) {
     try {
       planFieldDressings(u, inventoryKey, expectedSource);
     } catch (error) {
       reason = error.message;
     }
+  }
   return { pa, reason, valid: !reason };
 }
 export function lootPreview(s, u, action = {}) {
   const pa = 8;
   let reason = inventoryOrderReason(s, u, pa);
-  if (!reason)
+  if (!reason) {
     try {
       planLoot(s, u, action);
     } catch (error) {
       reason = error.message;
     }
+  }
   return { pa, reason, valid: !reason };
 }
+/** @returns {import('./public/tactical-preview-types.ts').LootApproachPreview} */
 export function lootApproachPreview(s, u, action = {}) {
   const local = lootPreview(s, u, action),
     { position } = lootSource(s, action);
@@ -5603,10 +6220,15 @@ export function lootApproachPreview(s, u, action = {}) {
     valid: !reason,
     reason,
   });
-  if (!u || inventoryOrderReason({ ...s, mode: 'exploration' }, u, 0)) return result();
-  if (!position || position.departure || !canSee(s, u, position))
+  if (!u || inventoryOrderReason({ ...s, mode: 'exploration' }, u, 0)) {
+    return result();
+  }
+  if (!position || position.departure || !canSee(s, u, position)) {
     return result('El cuerpo o equipo debe estar a la vista del soldado.');
-  if (contactDistance(u, position) <= 1.5 && hasLineOfSight(s, u, position)) return result();
+  }
+  if (contactDistance(u, position) <= 1.5 && hasLineOfSight(s, u, position)) {
+    return result();
+  }
   // Capacity and exact source quantities must be valid before the approach.
   // This virtual preflight changes neither ownership nor position in the battle.
   const ready = lootPreview(
@@ -5614,14 +6236,20 @@ export function lootApproachPreview(s, u, action = {}) {
     { ...u, ...positionOf(position), tacticalLevel: tacticalLevel(position) },
     action,
   );
-  if (!ready.valid) return result(ready.reason);
-  if (u.entangled) return result('Primero debés liberarte de las boleadoras.');
+  if (!ready.valid) {
+    return result(ready.reason);
+  }
+  if (u.entangled) {
+    return result('Primero debés liberarte de las boleadoras.');
+  }
   const route = knownApproachRoute(
     s,
     u,
     (cell) => contactDistance(cell, position) <= 1.5 && hasLineOfSight(s, cell, position),
   );
-  if (!route) return result('No hay una ruta para acercarse y recoger el equipo.');
+  if (!route) {
+    return result('No hay una ruta para acercarse y recoger el equipo.');
+  }
   return result(
     s.mode !== 'exploration' && route.cost + local.pa > u.ap
       ? 'PA insuficientes para acercarse y recoger el equipo.'
@@ -5629,6 +6257,7 @@ export function lootApproachPreview(s, u, action = {}) {
     route,
   );
 }
+/** @returns {import('./public/tactical-preview-types.ts').LootSearchPreview} */
 export function lootSearchPreview(s, u, point) {
   let available = false;
   const result = (reason = null, route = null) => ({
@@ -5643,9 +6272,12 @@ export function lootSearchPreview(s, u, point) {
     reason,
   });
   const reason = inventoryOrderReason({ ...s, mode: 'exploration' }, u, 0);
-  if (reason) return result(reason);
-  if (!point || !canSee(s, u, point))
+  if (reason) {
+    return result(reason);
+  }
+  if (!point || !canSee(s, u, point)) {
     return result('El cuerpo o equipo debe estar a la vista del soldado.');
+  }
   const at = (source) => sameCell(source, point);
   const found =
     [...s.units, ...(s.npcs ?? [])].some(
@@ -5660,16 +6292,24 @@ export function lootSearchPreview(s, u, point) {
     s.groundItems.some(
       (source) => source.count > 0 && !source.heldBy && !source.containerId && at(source),
     );
-  if (!found) return result('No hay un cuerpo o equipo para registrar en esta casilla.');
+  if (!found) {
+    return result('No hay un cuerpo o equipo para registrar en esta casilla.');
+  }
   available = true;
-  if (contactDistance(u, point) <= 1.5 && hasLineOfSight(s, u, point)) return result();
-  if (u.entangled) return result('Primero debés liberarte de las boleadoras.');
+  if (contactDistance(u, point) <= 1.5 && hasLineOfSight(s, u, point)) {
+    return result();
+  }
+  if (u.entangled) {
+    return result('Primero debés liberarte de las boleadoras.');
+  }
   const route = knownApproachRoute(
     s,
     u,
     (cell) => contactDistance(cell, point) <= 1.5 && hasLineOfSight(s, cell, point),
   );
-  if (!route) return result('No hay una ruta para acercarse al equipo.');
+  if (!route) {
+    return result('No hay una ruta para acercarse al equipo.');
+  }
   return result(
     s.mode !== 'exploration' && u.ap < route.cost
       ? 'PA insuficientes para acercarse al equipo.'
@@ -5692,11 +6332,16 @@ function environmentObject(s, ref) {
         (edge.doorId ?? wallEdgeId(edge)) === ref.id) ||
       (ref?.kind === 'wall' && wallEdgeId(edge) === ref.id),
   );
-  if (edge) return wallEdgeReferenceMatches(edge, ref) ? edge : null;
-  if (ref?.kind === 'door')
+  if (edge) {
+    return wallEdgeReferenceMatches(edge, ref) ? edge : null;
+  }
+  if (ref?.kind === 'door') {
     return s.tiles.find((t) => t.type === 'door' && (t.doorId ?? `door:${t.x}:${t.y}`) === ref.id);
-  if (ref?.kind === 'container') return s.props.find((p) => p.type === 'chest' && p.id === ref.id);
-  if (ref?.kind === 'wall' && (ref.tacticalLevel ?? 0) === 0)
+  }
+  if (ref?.kind === 'container') {
+    return s.props.find((p) => p.type === 'chest' && p.id === ref.id);
+  }
+  if (ref?.kind === 'wall' && (ref.tacticalLevel ?? 0) === 0) {
     return s.tiles.find(
       (t) =>
         (t.tacticalLevel ?? 0) === 0 &&
@@ -5704,14 +6349,20 @@ function environmentObject(s, ref) {
         (ref.x === undefined || ref.x === t.x) &&
         (ref.y === undefined || ref.y === t.y),
     );
+  }
   return null;
 }
+/** @param {import('./public/compatibility-types.ts').BattleSnapshot} s
+ * @param {import('./public/compatibility-types.ts').TacticalPoint & {wallEdgeId?:string;axis?:'x'|'y';id?:string}} point
+ * @returns {((import('./public/compatibility-types.ts').BattleTile|import('./public/compatibility-types.ts').BattleProp) & {id:string;kind:'door'|'wall'|'container';wallEdgeId?:string})|null} */
 export function environmentTargetAt(s, point) {
   if (point?.wallEdgeId || point?.axis) {
     const edge = (s.wallEdges ?? []).find(
       (edge) => wallEdgeId(edge) === (point.wallEdgeId ?? point.id),
     );
-    if (!edge || !wallEdgeReferenceMatches(edge, point)) return null;
+    if (!edge || !wallEdgeReferenceMatches(edge, point)) {
+      return null;
+    }
     const kind = edge.type === 'door' ? 'door' : breachableWall(edge) ? 'wall' : null;
     return kind
       ? {
@@ -5723,16 +6374,22 @@ export function environmentTargetAt(s, point) {
       : null;
   }
   const door = s.tiles.find((t) => sameCell(t, point) && t.type === 'door');
-  if (door) return { ...door, kind: 'door', id: door.doorId ?? `door:${door.x}:${door.y}` };
+  if (door) {
+    return { ...door, kind: 'door', id: door.doorId ?? `door:${door.x}:${door.y}` };
+  }
   const chest = s.props.find(
     (p) => p.type === 'chest' && propCells(p).some((t) => sameCell(t, point)),
   );
-  if (chest) return { ...chest, kind: 'container' };
+  if (chest) {
+    return { ...chest, kind: 'container' };
+  }
   const wall = s.tiles.find((t) => sameCell(t, point) && breachableWall(t));
   return wall ? { ...wall, kind: 'wall', id: `wall:${wall.x}:${wall.y}`, tacticalLevel: 0 } : null;
 }
 function observedContainerCells(s, u, object) {
-  if (!u || object?.type !== 'chest') return [];
+  if (!u || object?.type !== 'chest') {
+    return [];
+  }
   const revealed = new Set(s.revealedRooms ?? []);
   return propCells(object)
     .map((point) => ({ ...object, ...point }))
@@ -5743,9 +6400,12 @@ export function environmentContainerVisible(s, u, object) {
   return observedContainerCells(s, u, object).length > 0;
 }
 function environmentReachReason(s, u, object) {
-  if (!object) return 'El objeto ya no está en el sector.';
-  if (!u || !alive(u) || !interruptAvailable(s, u) || u.knockedDown)
+  if (!object) {
+    return 'El objeto ya no está en el sector.';
+  }
+  if (!u || !alive(u) || !interruptAvailable(s, u) || u.knockedDown) {
     return 'El soldado no puede manejar el objeto ahora.';
+  }
   const cells = object.type === 'chest' ? observedContainerCells(s, u, object) : [object];
   if (
     !cells.some(
@@ -5754,10 +6414,12 @@ function environmentReachReason(s, u, object) {
           ? wallEdgeCells(p).some((cell) => sameCell(u, cell))
           : contactDistance(u, p) <= 1.5) && canSee(s, u, p),
     )
-  )
+  ) {
     return 'Acércate al objeto y mira hacia él.';
+  }
   return null;
 }
+/** @returns {import('./public/tactical-preview-types.ts').EnvironmentActionPreview} */
 export function environmentPreview(s, u, ref, verb) {
   const target = environmentObject(s, ref),
     tool = u && heldTool(u);
@@ -5788,19 +6450,21 @@ export function environmentPreview(s, u, ref, verb) {
     (s.units.some((v) => onField(v) && sameCell(v, target)) ||
       (s.npcs ?? []).some((v) => onField(v) && sameCell(v, target)) ||
       s.artillery.some((v) => sameCell(v, target)))
-  )
+  ) {
     reason = 'Hay una persona o una pieza en el paso de la puerta.';
-  if (!reason && s.mode !== 'exploration' && u.ap < profile.pa)
+  }
+  if (!reason && s.mode !== 'exploration' && u.ap < profile.pa) {
     reason = `Faltan ${formatAP(profile.pa)} PA para manejar el objeto.`;
+  }
   return {
     ...profile,
     reason,
     valid: !reason,
     action: {
       type: 'environment',
-      unitId: u?.id,
-      kind: ref?.kind,
-      id: ref?.id,
+      ...(u ? { unitId: u.id } : {}),
+      ...(ref?.kind ? { kind: ref.kind } : {}),
+      ...(ref?.id ? { id: ref.id } : {}),
       ...Object.fromEntries(
         ['wallEdgeId', 'x', 'y', 'axis', 'tacticalLevel']
           .filter((key) => ref?.[key] !== undefined)
@@ -5810,6 +6474,7 @@ export function environmentPreview(s, u, ref, verb) {
     },
   };
 }
+/** @returns {import('./public/tactical-preview-types.ts').EnvironmentUsePreview} */
 export function environmentUsePreview(s, u, ref, verb) {
   const local = environmentPreview(s, u, ref, verb),
     target = environmentObject(s, ref);
@@ -5825,16 +6490,21 @@ export function environmentUsePreview(s, u, ref, verb) {
     reason,
     valid: !reason,
   });
-  if (!target || !u || !alive(u) || !interruptAvailable(s, u) || u.knockedDown) return result();
+  if (!target || !u || !alive(u) || !interruptAvailable(s, u) || u.knockedDown) {
+    return result();
+  }
   const cells = target.type === 'chest' ? observedContainerCells(s, u, target) : [target];
   const visible = cells.find((point) => canSee(s, u, point));
-  if (!visible)
+  if (!visible) {
     return result(
       ref?.kind === 'wall' || ref?.kind === 'container'
         ? local.reason
         : 'El objeto debe estar a la vista del soldado.',
     );
-  if (!environmentReachReason(s, u, target)) return result();
+  }
+  if (!environmentReachReason(s, u, target)) {
+    return result();
+  }
   // Check the held tool, lock, known trap and occupied doorway before spending
   // movement. Only position and the AP cap are relaxed in this pure preflight.
   const readyCell = target.axis
@@ -5846,8 +6516,12 @@ export function environmentUsePreview(s, u, ref, verb) {
     ref,
     local.action.verb,
   );
-  if (!ready.valid) return result(ready.reason);
-  if (u.entangled) return result('Primero debés liberarte de las boleadoras.');
+  if (!ready.valid) {
+    return result(ready.reason);
+  }
+  if (u.entangled) {
+    return result('Primero debés liberarte de las boleadoras.');
+  }
   const route = knownApproachRoute(s, u, (cell) =>
     cells.some(
       (point) =>
@@ -5856,7 +6530,9 @@ export function environmentUsePreview(s, u, ref, verb) {
           : contactDistance(cell, point) <= 1.5) && canSee(s, { ...u, ...cell }, point),
     ),
   );
-  if (!route) return result('No hay una ruta para acercarse y usar el objeto.');
+  if (!route) {
+    return result('No hay una ruta para acercarse y usar el objeto.');
+  }
   return result(
     s.mode !== 'exploration' && route.cost + local.pa > u.ap
       ? 'PA insuficientes para acercarse y usar el objeto.'
@@ -5864,15 +6540,17 @@ export function environmentUsePreview(s, u, ref, verb) {
     route,
   );
 }
-/** @param {string | undefined} [expectedSource] */
-export function containerLootPreview(s, u, ref, index, count = 1, expectedSource = undefined) {
+/** @param {string  } [expectedSource] */
+/** @param {string} [expectedSource]
+ * @returns {import('./public/tactical-preview-types.ts').ContainerLootPreview} */
+export function containerLootPreview(s, u, ref, index, count = 1, expectedSource) {
   const target = environmentObject(s, { ...ref, kind: 'container' }),
     pa = 8;
   let reason = environmentContainerVisible(s, u, target)
       ? environmentReachReason(s, u, target)
       : 'El cofre debe estar a la vista del soldado.',
     source;
-  if (!reason)
+  if (!reason) {
     try {
       // Only an observed open container can disclose its selected stack. Keep
       // the full quantity/metadata so a shifted index cannot replace the item.
@@ -5881,24 +6559,27 @@ export function containerLootPreview(s, u, ref, index, count = 1, expectedSource
       if (
         expectedSource !== undefined &&
         (typeof expectedSource !== 'string' || expectedSource !== source)
-      )
+      ) {
         throw Error('Cambió el objeto del cofre. Seleccioná el objeto de nuevo.');
-      if (s.mode !== 'exploration' && u.ap < pa)
+      }
+      if (s.mode !== 'exploration' && u.ap < pa) {
         throw Error(`Recoger el objeto requiere ${formatAP(pa)} PA.`);
+      }
       const { stack } = extractContainerItem(target, index, count);
       applyItemQuantity(u, stack);
     } catch (error) {
       reason = error.message;
     }
+  }
   return {
     pa,
     valid: !reason,
     reason,
     action: {
       type: 'containerLoot',
-      unitId: u?.id,
+      ...(u ? { unitId: u.id } : {}),
       kind: 'container',
-      id: ref?.id,
+      ...(ref?.id ? { id: ref.id } : {}),
       index,
       count,
       ...(expectedSource !== undefined
@@ -5910,6 +6591,7 @@ export function containerLootPreview(s, u, ref, index, count = 1, expectedSource
   };
 }
 
+/** @returns {import('./public/tactical-preview-types.ts').MedicalUsePreview} */
 export function medicalUsePreview(s, u, target = u, { targetKind = 'unit' } = {}) {
   const baseCost = u ? actionCosts(s, u).heal : 0;
   let treatment = null;
@@ -5921,9 +6603,12 @@ export function medicalUsePreview(s, u, target = u, { targetKind = 'unit' } = {}
     (u.side === 'player' ? !interruptAvailable(s, u) : s.phase !== 'enemy')
       ? 'El soldado no puede usar equipo ahora.'
       : null;
-  if (!reason && !['unit', 'npc'].includes(targetKind)) reason = 'El tipo de herido no es válido.';
-  if (!reason && u.activeSlot !== 'medical')
+  if (!reason && !['unit', 'npc'].includes(targetKind)) {
+    reason = 'El tipo de herido no es válido.';
+  }
+  if (!reason && u.activeSlot !== 'medical') {
     reason = 'Prepará las vendas en la mano antes de tratar una herida.';
+  }
   if (
     !reason &&
     civilian &&
@@ -5933,34 +6618,42 @@ export function medicalUsePreview(s, u, target = u, { targetKind = 'unit' } = {}
       target.fled ||
       (target.hp ?? 100) <= 0 ||
       !canSee(s, u, target))
-  )
+  ) {
     reason = 'El habitante herido debe estar vivo y a la vista.';
+  }
   if (
     !reason &&
     !civilian &&
     target?.side === u.side &&
     medicalPatientPresent(target) &&
     !medicalPatientAvailable(target)
-  )
+  ) {
     reason = 'El herido está en pánico y rechaza la atención mientras está consciente.';
+  }
   if (
     !reason &&
     (!target ||
       (!civilian && (target.side !== u.side || !medicalPatientAvailable(target))) ||
       contactDistance(u, target) > 1.5 ||
       !hasLineOfSight(s, u, target))
-  )
+  ) {
     reason = 'El herido debe estar vivo, junto a ti y al alcance de las vendas.';
-  if (!reason && !u.medkits) reason = 'No quedan vendas.';
-  if (!reason && !(u.medical > 0))
+  }
+  if (!reason && !u.medkits) {
+    reason = 'No quedan vendas.';
+  }
+  if (!reason && !(u.medical > 0)) {
     reason = 'Este soldado no tiene conocimientos de primeros auxilios.';
+  }
   if (!reason) {
     treatment = firstAidPlan(u, target, {
       baseCost,
       budgetAP: s.mode === 'exploration' ? Infinity : u.ap,
       targetKind,
     });
-    if (!treatment.valid) reason = treatment.reason;
+    if (!treatment.valid) {
+      reason = treatment.reason;
+    }
   }
   const observed =
     !reason &&
@@ -5997,8 +6690,9 @@ function knownApproachRoute(s, u, inReach) {
     },
   )[0];
 }
+/** @returns {import('./public/tactical-preview-types.ts').NpcGiftPreview} */
 export function npcGiftPreview(s, u, npc) {
-  let beneficiaryDelivery;
+  let beneficiaryDelivery = null;
   const actionPa = 4,
     result = (reason = null, route = null) => ({
       type: 'giveItem',
@@ -6013,8 +6707,12 @@ export function npcGiftPreview(s, u, npc) {
       ...(beneficiaryDelivery ? { beneficiaryDelivery } : {}),
     });
   const unavailable = inventoryOrderReason(s, u, actionPa);
-  if (unavailable) return result(unavailable);
-  if (s.mode !== 'exploration') return result('Terminá el combate antes de entregar el objeto.');
+  if (unavailable) {
+    return result(unavailable);
+  }
+  if (s.mode !== 'exploration') {
+    return result('Terminá el combate antes de entregar el objeto.');
+  }
   if (
     !npc ||
     !s.npcs.includes(npc) ||
@@ -6025,10 +6723,13 @@ export function npcGiftPreview(s, u, npc) {
     npc.unconscious ||
     !canSee(s, u, npc) ||
     !isInteriorVisible(s, npc, new Set(s.revealedRooms ?? []))
-  )
+  ) {
     return result('El interlocutor debe estar disponible y a la vista.');
+  }
   beneficiaryDelivery = questBeneficiaryDeliveryPreview(s, npc.id);
-  if (civilianWoundedByPlayer(npc)) return result('No quiere colaborar con quienes lo hirieron.');
+  if (civilianWoundedByPlayer(npc)) {
+    return result('No quiere colaborar con quienes lo hirieron.');
+  }
   try {
     questGiftPlan(u, npc, s);
   } catch (error) {
@@ -6038,13 +6739,18 @@ export function npcGiftPreview(s, u, npc) {
     sameSurface(cell, npc) &&
     Math.abs(cell.x - npc.x) + Math.abs(cell.y - npc.y) === 1 &&
     hasLineOfSight(s, cell, npc);
-  if (inReach(u)) return result();
-  if (u.entangled) return result('Primero debés liberarte de las boleadoras.');
+  if (inReach(u)) {
+    return result();
+  }
+  if (u.entangled) {
+    return result('Primero debés liberarte de las boleadoras.');
+  }
   const route = knownApproachRoute(s, u, inReach);
   return route ? result(null, route) : result('No hay una ruta para entregar el objeto.');
 }
 // Melee is prepared from the actual hand. Crawling remains the approach mode;
 // only the final contact position is evaluated with the required upright body.
+/** @returns {import('./public/tactical-preview-types.ts').MeleePreview} */
 export function meleePreview(s, u, target, { approach = false } = {}) {
   const costs = u ? actionCosts(s, u) : {},
     stancePa = costs.meleeStance ?? 0,
@@ -6067,17 +6773,27 @@ export function meleePreview(s, u, target, { approach = false } = {}) {
     !alive(u) ||
     s.status !== 'active' ||
     (u.side === 'player' ? !interruptAvailable(s, u) : s.phase !== 'enemy')
-  )
+  ) {
     return result('El combatiente no puede actuar ahora.');
-  if (u.knockedDown) return result('El soldado está derribado: primero debés levantarte.');
-  if (['medical', 'tool', 'supply', 'item'].includes(u.activeSlot))
+  }
+  if (u.knockedDown) {
+    return result('El soldado está derribado: primero debés levantarte.');
+  }
+  if (['medical', 'tool', 'supply', 'item'].includes(u.activeSlot)) {
     return result('Prepará un arma o las manos libres antes de atacar.');
-  if (bladeFor(u).usable === false)
+  }
+  if (bladeFor(u).usable === false) {
     return result('El arma blanca necesita reparación antes de atacar.');
-  if (!target || !targetable(target) || target.fled || target.side === u.side)
+  }
+  if (!target || !targetable(target) || target.fled || target.side === u.side) {
     return result('El objetivo no está disponible para atacar.');
-  if (!teamCanSee(s, u.side, target)) return result('Ningún compañero puede ver ese objetivo.');
-  if (stancePa && u.mounted) return result('Debes desmontar antes de cambiar de postura.');
+  }
+  if (!teamCanSee(s, u.side, target)) {
+    return result('Ningún compañero puede ver ese objetivo.');
+  }
+  if (stancePa && u.mounted) {
+    return result('Debes desmontar antes de cambiar de postura.');
+  }
   const ready = (cell) => ({
       ...u,
       ...positionOf(cell),
@@ -6088,10 +6804,16 @@ export function meleePreview(s, u, target, { approach = false } = {}) {
     contactDistance(cell, target) <= reach && hasLineOfSight(s, ready(cell), target);
   let route = null;
   if (!inReach(u)) {
-    if (!approach) return result('Debes acercarte al enemigo para atacar.');
-    if (u.entangled) return result('Primero debés liberarte de las boleadoras.');
+    if (!approach) {
+      return result('Debes acercarte al enemigo para atacar.');
+    }
+    if (u.entangled) {
+      return result('Primero debés liberarte de las boleadoras.');
+    }
     route = knownApproachRoute(s, u, (cell) => contactDistance(cell, target) > 0 && inReach(cell));
-    if (!route) return result('No hay una ruta para acercarse y atacar.');
+    if (!route) {
+      return result('No hay una ruta para acercarse y atacar.');
+    }
   }
   return result(
     s.mode !== 'exploration' && u.ap < actionPa + (route?.cost ?? 0)
@@ -6103,6 +6825,7 @@ export function meleePreview(s, u, target, { approach = false } = {}) {
 // A coordinate orders a deliberate swing, never an implicit attack on a body.
 // Its preview depends on known geometry and approach routes, not on an unseen
 // occupant. The ordinary targeted melee action remains the way to hit someone.
+/** @returns {import('./public/tactical-preview-types.ts').MeleePointPreview} */
 export function meleePointPreview(s, u, point, { approach = true } = {}) {
   const costs = u ? actionCosts(s, u) : {},
     stancePa = costs.meleeStance ?? 0,
@@ -6125,15 +6848,21 @@ export function meleePointPreview(s, u, point, { approach = true } = {}) {
     !alive(u) ||
     s.status !== 'active' ||
     (u.side === 'player' ? !interruptAvailable(s, u) : s.phase !== 'enemy')
-  )
+  ) {
     return result('El combatiente no puede actuar ahora.');
-  if (u.knockedDown) return result('El soldado está derribado: primero debés levantarte.');
-  if (['medical', 'tool', 'supply', 'item'].includes(u.activeSlot))
+  }
+  if (u.knockedDown) {
+    return result('El soldado está derribado: primero debés levantarte.');
+  }
+  if (['medical', 'tool', 'supply', 'item'].includes(u.activeSlot)) {
     return result('Prepará un arma o las manos libres antes de atacar.');
-  if (bladeFor(u).usable === false)
+  }
+  if (bladeFor(u).usable === false) {
     return result('El arma blanca necesita reparación antes de atacar.');
-  if (point?.targetId !== undefined || point?.targetKind !== undefined)
+  }
+  if (point?.targetId !== undefined || point?.targetKind !== undefined) {
     return result('Elegí una casilla sin un objetivo personal.');
+  }
   if (
     !Number.isInteger(point?.x) ||
     !Number.isInteger(point?.y) ||
@@ -6141,14 +6870,22 @@ export function meleePointPreview(s, u, point, { approach = true } = {}) {
     point.y < 0 ||
     point.x >= s.width ||
     point.y >= s.height
-  )
+  ) {
     return result('Seleccioná una casilla del mapa.');
+  }
   const ground = surfaceAt(s, point);
-  if (!ground) return result('Seleccioná una superficie del mapa.');
-  if (sameCell(u, point)) return result('Seleccioná otra casilla para golpear.');
-  if (ground.blocked || propBlocksAt(s, point.x, point.y, tacticalLevel(point)))
+  if (!ground) {
+    return result('Seleccioná una superficie del mapa.');
+  }
+  if (sameCell(u, point)) {
+    return result('Seleccioná otra casilla para golpear.');
+  }
+  if (ground.blocked || propBlocksAt(s, point.x, point.y, tacticalLevel(point))) {
     return result('La casilla está bloqueada: elegí terreno libre para golpear.');
-  if (stancePa && u.mounted) return result('Debes desmontar antes de cambiar de postura.');
+  }
+  if (stancePa && u.mounted) {
+    return result('Debes desmontar antes de cambiar de postura.');
+  }
   const destination = positionOf(point),
     ready = (cell) => ({
       ...u,
@@ -6162,10 +6899,16 @@ export function meleePointPreview(s, u, point, { approach = true } = {}) {
     hasLineOfSight(s, ready(cell), destination);
   let route = null;
   if (!inReach(u)) {
-    if (!approach) return result('Debes acercarte a la casilla para golpear.');
-    if (u.entangled) return result('Primero debés liberarte de las boleadoras.');
+    if (!approach) {
+      return result('Debes acercarte a la casilla para golpear.');
+    }
+    if (u.entangled) {
+      return result('Primero debés liberarte de las boleadoras.');
+    }
     route = knownApproachRoute(s, u, inReach);
-    if (!route) return result('No hay una ruta para acercarse y golpear.');
+    if (!route) {
+      return result('No hay una ruta para acercarse y golpear.');
+    }
   }
   return result(
     s.mode !== 'exploration' && u.ap < actionPa + (route?.cost ?? 0)
@@ -6175,23 +6918,33 @@ export function meleePointPreview(s, u, point, { approach = true } = {}) {
   );
 }
 const meleeAttackResults = new WeakMap();
+/** @param {import('./public/compatibility-types.ts').BattleSnapshot} before
+ * @param {import('./public/compatibility-types.ts').BattleSnapshot} after
+ * @param {string} unitId
+ * @returns {boolean} */
 export function getMeleeAttackResult(before, after, unitId) {
   return before !== after && Boolean(meleeAttackResults.get(after)?.has(String(unitId)));
 }
 const careComposureResults = new WeakMap();
+/** @param {import('./public/compatibility-types.ts').BattleSnapshot} before
+ * @param {import('./public/compatibility-types.ts').BattleSnapshot} after
+ * @returns {import('./public/hud-types.ts').CareComposureReceipt | null} */
 export function getCareComposureResult(before, after) {
   const result = careComposureResults.get(after);
   return before !== after && result ? structuredClone(result) : null;
 }
 function carryMeleeAttackResult(applied, resolved) {
   const completed = meleeAttackResults.get(applied);
-  if (applied !== resolved && completed?.size)
+  if (applied !== resolved && completed?.size) {
     meleeAttackResults.set(
       resolved,
       new Set([...completed, ...(meleeAttackResults.get(resolved) ?? [])]),
     );
+  }
   const care = careComposureResults.get(applied);
-  if (applied !== resolved && care) careComposureResults.set(resolved, care);
+  if (applied !== resolved && care) {
+    careComposureResults.set(resolved, care);
+  }
   return resolved;
 }
 /** @param {string|null} [escortOrder] */
@@ -6232,13 +6985,19 @@ export function prisonerReleasePreview(s, u, npc, escortOrder = null) {
                       : null;
   return { valid: !reason, reason, cost, seconds: 1 };
 }
+/** @returns {import('./public/tactical-preview-types.ts').ItemUsePreview | null} */
 export function itemUsePreview(s, u, target, { targetKind = 'unit' } = {}) {
-  if (!u || !['primary', 'blade', 'unarmed', 'medical'].includes(u.activeSlot ?? 'primary'))
+  if (!u || !['primary', 'blade', 'unarmed', 'medical'].includes(u.activeSlot ?? 'primary')) {
     return null;
+  }
   const civilian = targetKind === 'npc',
     type = u.activeSlot === 'medical' || civilian ? 'heal' : contextualAttack(s, u, target).type;
-  if (!['heal', 'melee'].includes(type)) return null;
-  if (type === 'melee') return meleePreview(s, u, target, { approach: true });
+  if (!['heal', 'melee'].includes(type)) {
+    return null;
+  }
+  if (type === 'melee') {
+    return meleePreview(s, u, target, { approach: true });
+  }
   let actionPa = actionCosts(s, u).heal,
     treatment = null,
     composureRelief = 0;
@@ -6259,9 +7018,12 @@ export function itemUsePreview(s, u, target, { targetKind = 'unit' } = {}) {
     !alive(u) ||
     s.status !== 'active' ||
     (u.side === 'player' ? !interruptAvailable(s, u) : s.phase !== 'enemy')
-  )
+  ) {
     return result('El combatiente no puede actuar ahora.');
-  if (!['unit', 'npc'].includes(targetKind)) return result('El tipo de herido no es válido.');
+  }
+  if (!['unit', 'npc'].includes(targetKind)) {
+    return result('El tipo de herido no es válido.');
+  }
   if (
     civilian &&
     (!target ||
@@ -6270,18 +7032,21 @@ export function itemUsePreview(s, u, target, { targetKind = 'unit' } = {}) {
       target.fled ||
       (target.hp ?? 100) <= 0 ||
       !canSee(s, u, target))
-  )
+  ) {
     return result('El habitante herido debe estar vivo y a la vista.');
+  }
   if (
     !civilian &&
     (!target ||
       !onField(target) ||
       (type === 'heal' && target.side !== u.side) ||
       (type === 'melee' && (target.side === u.side || target.surrendered)))
-  )
+  ) {
     return result('El objetivo no está disponible para este objeto.');
-  if (type === 'melee' && !teamCanSee(s, u.side, target))
+  }
+  if (type === 'melee' && !teamCanSee(s, u.side, target)) {
     return result('Ningún compañero puede ver ese objetivo.');
+  }
   if (type === 'heal') {
     // Validate the actual supplies and patient before searching. The virtual
     // position removes only the reach check; it grants no AP, kit or treatment.
@@ -6293,18 +7058,24 @@ export function itemUsePreview(s, u, target, { targetKind = 'unit' } = {}) {
     );
     actionPa = medical.cost;
     treatment = medical.treatment;
-    if (!medical.allowed) return result(medical.reason);
+    if (!medical.allowed) {
+      return result(medical.reason);
+    }
   }
   const inReach = contactDistance(u, target) <= reach && hasLineOfSight(s, u, target);
-  if (u.knockedDown && (type !== 'heal' || !inReach))
+  if (u.knockedDown && (type !== 'heal' || !inReach)) {
     return result('El soldado está derribado: primero debés levantarte.');
-  if (s.mode !== 'exploration' && u.ap < actionPa)
+  }
+  if (s.mode !== 'exploration' && u.ap < actionPa) {
     return result('PA insuficientes para usar el objeto.');
+  }
   if (inReach) {
     composureRelief = medicalUsePreview(s, u, target, { targetKind }).composureRelief ?? 0;
     return result();
   }
-  if (u.entangled) return result('Primero debés liberarte de las boleadoras.');
+  if (u.entangled) {
+    return result('Primero debés liberarte de las boleadoras.');
+  }
   const route = knownApproachRoute(
     s,
     u,
@@ -6313,7 +7084,9 @@ export function itemUsePreview(s, u, target, { targetKind = 'unit' } = {}) {
       contactDistance(cell, target) <= reach &&
       hasLineOfSight(s, cell, target),
   );
-  if (!route) return result('No hay una ruta para acercarse y usar el objeto.');
+  if (!route) {
+    return result('No hay una ruta para acercarse y usar el objeto.');
+  }
   const arrived = medicalUsePreview(
     s,
     {
@@ -6338,6 +7111,7 @@ export function itemUsePreview(s, u, target, { targetKind = 'unit' } = {}) {
   );
 }
 
+/** @returns {{allowed:boolean,reason:string|null,cost:number}} */
 export function supplyUsePreview(s, u, target, key = u?.activeSupply) {
   const supply = Object.hasOwn(HELD_SUPPLIES, key) ? HELD_SUPPLIES[key] : null,
     cost = supply?.cost ?? 0;
@@ -6348,15 +7122,24 @@ export function supplyUsePreview(s, u, target, key = u?.activeSupply) {
     (u.side === 'player' ? !interruptAvailable(s, u) : s.phase !== 'enemy')
       ? 'El soldado no puede usar equipo ahora.'
       : null;
-  if (!reason && target?.departure) reason = 'Esa persona ya salió del sector.';
-  if (!reason && !supply) reason = 'Selecciona un pertrecho disponible.';
-  if (!reason && heldSupply(u)?.key !== key)
+  if (!reason && target?.departure) {
+    reason = 'Esa persona ya salió del sector.';
+  }
+  if (!reason && !supply) {
+    reason = 'Selecciona un pertrecho disponible.';
+  }
+  if (!reason && heldSupply(u)?.key !== key) {
     reason = 'Prepará ese pertrecho en la mano antes de usarlo.';
-  if (!reason && u.knockedDown && key !== 'rations')
+  }
+  if (!reason && u.knockedDown && key !== 'rations') {
     reason = 'El soldado está derribado: debe ponerse de pie.';
-  if (!reason && !(u[key] > 0)) reason = 'No queda ese pertrecho.';
-  if (!reason && ['torches', 'boleadoras'].includes(key) && target && !sameSurface(u, target))
+  }
+  if (!reason && !(u[key] > 0)) {
+    reason = 'No queda ese pertrecho.';
+  }
+  if (!reason && ['torches', 'boleadoras'].includes(key) && target && !sameSurface(u, target)) {
     reason = 'El lanzamiento requiere un objetivo a la misma altura.';
+  }
   if (!reason && key === 'torches') {
     if (
       !target ||
@@ -6367,10 +7150,15 @@ export function supplyUsePreview(s, u, target, key = u?.activeSupply) {
       propBlocksAt(s, target.x, target.y, tacticalLevel(target)) ||
       dist(u, target) > supply.range ||
       !hasLineOfSight(s, u, target)
-    )
+    ) {
       reason = 'La antorcha debe caer en terreno accesible a ocho casillas o menos.';
-    else if (target.id !== undefined && target.side !== u.side && !teamCanSee(s, u.side, target))
+    } else if (
+      target.id !== undefined &&
+      target.side !== u.side &&
+      !teamCanSee(s, u.side, target)
+    ) {
       reason = 'Ningún compañero puede ver ese objetivo.';
+    }
   }
   if (!reason && key === 'boleadoras') {
     if (target?.id !== undefined) {
@@ -6382,8 +7170,9 @@ export function supplyUsePreview(s, u, target, key = u?.activeSupply) {
         dist(u, victim) > supply.range ||
         !hasLineOfSight(s, u, victim) ||
         !teamCanSee(s, u.side, victim)
-      )
+      ) {
         reason = 'El blanco de las boleadoras debe estar visible y a ocho casillas o menos.';
+      }
     } else if (
       !target ||
       !Number.isInteger(target.x) ||
@@ -6393,16 +7182,20 @@ export function supplyUsePreview(s, u, target, key = u?.activeSupply) {
       propBlocksAt(s, target.x, target.y, tacticalLevel(target)) ||
       dist(u, target) > supply.range ||
       !hasLineOfSight(s, u, target)
-    )
+    ) {
       reason = 'Las boleadoras deben caer en terreno accesible a ocho casillas o menos.';
+    }
   }
   if (!reason && key === 'rations') {
-    if (target?.id !== u.id) reason = 'La ración se usa sobre el mismo soldado.';
-    else if (!(u.fatigue > 0) && (u.energy ?? 100) >= 100)
+    if (target?.id !== u.id) {
+      reason = 'La ración se usa sobre el mismo soldado.';
+    } else if (!(u.fatigue > 0) && (u.energy ?? 100) >= 100) {
       reason = 'El soldado ya está descansado.';
+    }
   }
-  if (!reason && s.mode !== 'exploration' && u.ap < cost)
+  if (!reason && s.mode !== 'exploration' && u.ap < cost) {
     reason = `Usar ${supply.name.toLowerCase()} requiere ${formatAP(cost)} PA.`;
+  }
   return { allowed: !reason, reason, cost };
 }
 
@@ -6449,7 +7242,7 @@ function apply(s, a, enemy = false, movementPath = null, maintenanceContext = nu
                         a,
                       ).type
                     : 'useItem';
-    if (!movement)
+    if (!movement) {
       recordBattleFrame(s, {
         type: 'prepare',
         unitId: String(a.unitId),
@@ -6457,11 +7250,12 @@ function apply(s, a, enemy = false, movementPath = null, maintenanceContext = nu
         targetKind: a.targetKind,
         action: frameAction,
       });
+    }
     const accepted = applyOrder(s, a, enemy, movementPath, maintenanceContext);
     const closeCombat = ['melee', 'meleePoint', 'charge'].includes(frameAction),
       completedStrike = closeCombat && meleeAttackResults.get(s)?.has(String(a.unitId)),
       cancelledStrike = closeCombat && !completedStrike;
-    if (accepted !== false)
+    if (accepted !== false) {
       recordBattleFrame(s, {
         type: 'result',
         unitId: String(a.unitId),
@@ -6474,18 +7268,22 @@ function apply(s, a, enemy = false, movementPath = null, maintenanceContext = nu
             ? { contactComplete: true }
             : {}),
       });
+    }
     return accepted;
   } finally {
-    if (maintenanceContext) autonomousRepairContexts.delete(maintenanceContext);
+    if (maintenanceContext) {
+      autonomousRepairContexts.delete(maintenanceContext);
+    }
   }
 }
 function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext = null) {
   if (a.type === 'useItem') {
     const user = s.units.find((v) => v.id === String(a.unitId));
-    if (heldGrenade(user)) a = grenadeUseOrder(s, a);
-    else if (user?.activeSlot === 'item' && s.npcs?.some((n) => n.id === String(a.targetId)))
+    if (heldGrenade(user)) {
+      a = grenadeUseOrder(s, a);
+    } else if (user?.activeSlot === 'item' && s.npcs?.some((n) => n.id === String(a.targetId))) {
       a = { ...a, type: 'giveItem' };
-    else if (user?.activeSlot === 'supply') {
+    } else if (user?.activeSlot === 'supply') {
       const point = s.units.find((v) => v.id === String(a.targetId));
       a = {
         ...a,
@@ -6493,8 +7291,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
         ...(point ? positionOf(point) : {}),
         targetId: a.targetId ?? (user.activeSupply === 'rations' ? '' : undefined),
       };
-    } else if (a.environment) a = { ...a, ...a.environment, type: 'environment' };
-    else
+    } else if (a.environment) {
+      a = { ...a, ...a.environment, type: 'environment' };
+    } else {
       a = {
         ...a,
         type:
@@ -6509,6 +7308,7 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
                 ).type
               : 'melee',
       };
+    }
   }
   const fail = (text) => {
     if (!enemy || (u && journalVisible(s, u))) {
@@ -6518,43 +7318,58 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     return false;
   };
   const u = s.units.find((u) => u.id === String(a.unitId));
-  if (s.status !== 'active') return fail('El combate ya terminó.');
-  if (!u || !alive(u)) return fail('El soldado no puede actuar.');
-  if (u.side !== (enemy ? 'enemy' : 'player')) return fail('No puedes dar órdenes a ese soldado.');
-  if (!enemy && !interruptAvailable(s, u))
+  if (s.status !== 'active') {
+    return fail('El combate ya terminó.');
+  }
+  if (!u || !alive(u)) {
+    return fail('El soldado no puede actuar.');
+  }
+  if (u.side !== (enemy ? 'enemy' : 'player')) {
+    return fail('No puedes dar órdenes a ese soldado.');
+  }
+  if (!enemy && !interruptAvailable(s, u)) {
     return fail('Ese soldado no puede actuar en esta interrupción.');
-  if (u.knockedDown && !['stance', 'heal', 'ration'].includes(a.type))
+  }
+  if (u.knockedDown && !['stance', 'heal', 'ration'].includes(a.type)) {
     return fail('El soldado está derribado: debe ponerse de pie.');
+  }
   const observation = reactionObservation(s, u);
   if (
     a.targetKind === 'npc' &&
     a.targetId !== undefined &&
     !['heal', 'giveItem', 'free', 'prisonerEscort', 'loot', 'fire', 'melee'].includes(a.type)
-  )
+  ) {
     return fail('Prepará las vendas para tratar al habitante.');
+  }
   const target =
     a.type === 'giveItem' ||
     (['heal', 'free', 'prisonerEscort', 'loot', 'fire', 'melee'].includes(a.type) &&
       a.targetKind === 'npc')
       ? s.npcs?.find((n) => n.id === String(a.targetId))
       : s.units.find((u) => u.id === String(a.targetId) && !u.departure);
-  if (a.type !== 'inventoryMap' && a.targetId !== undefined && !target)
+  if (a.type !== 'inventoryMap' && a.targetId !== undefined && !target) {
     return fail('El objetivo no está disponible en este sector.');
+  }
   const pay = (n) => {
-    if (!Number.isFinite(n) || n < 0 || (s.mode !== 'exploration' && u.ap < n)) return false;
-    if (n > 0 && (lowersWeapon(a.type) || (a.type === 'look' && u.stance === 'prone')))
+    if (!Number.isFinite(n) || n < 0 || (s.mode !== 'exploration' && u.ap < n)) {
+      return false;
+    }
+    if (n > 0 && (lowersWeapon(a.type) || (a.type === 'look' && u.stance === 'prone'))) {
       lowerWeapon(u);
+    }
     if (s.mode === 'exploration') {
-      if (a.type !== 'move' && a.type !== 'climb')
+      if (a.type !== 'move' && a.type !== 'climb') {
         s.actionDurationSeconds = Math.max(1, Math.ceil(n * 0.06));
+      }
       return true;
     }
     spendParticipantActionPoints(u, n);
     return true;
   };
   if (a.type === 'unloadAmmunition') {
-    if (!hasFirearm(u) || !u.loaded || u.reloadProgress)
+    if (!hasFirearm(u) || !u.loaded || u.reloadProgress) {
       return fail('El arma debe estar cargada y sin recarga pendiente.');
+    }
     let plan;
     try {
       plan = planEquipmentUnload(u, {
@@ -6564,35 +7379,50 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     } catch (error) {
       return fail(error.message);
     }
-    if (!pay(plan.pa)) return fail(`Descargar requiere ${formatAP(plan.pa)} PA.`);
+    if (!pay(plan.pa)) {
+      return fail(`Descargar requiere ${formatAP(plan.pa)} PA.`);
+    }
     plan.unit.ap = u.ap;
     replaceUnit(u, plan.unit);
     sayObserved(s, [u], `${u.name} guarda la carga en sus bolsillos.`);
   } else if (a.type === 'selectAmmunitionLoad') {
     const reason = ammunitionChoiceReason(u, a.family);
-    if (reason) return fail(reason);
+    if (reason) {
+      return fail(reason);
+    }
     u.ammunitionChoice = a.family;
     syncUnitAmmunition(u);
     s.actionDurationSeconds = 0;
     sayObserved(s, [u], `${u.name} prepara ${AMMO_TYPES[a.family].name.toLowerCase()}.`);
   } else if (a.type === 'move' || a.type === 'climb') {
-    if (u.entangled) return fail('Las boleadoras inmovilizan al soldado: debe liberarse.');
+    if (u.entangled) {
+      return fail('Las boleadoras inmovilizan al soldado: debe liberarse.');
+    }
     let postureCost = 0;
     if (a.movement !== undefined) {
-      if (!['walk', 'run', 'crouch', 'prone'].includes(a.movement))
+      if (!['walk', 'run', 'crouch', 'prone'].includes(a.movement)) {
         return fail('Forma de desplazamiento inválida.');
+      }
       const stance = movementStance(a.movement);
-      if (u.mounted && stance !== 'standing') return fail('Debes desmontar antes de agacharte.');
+      if (u.mounted && stance !== 'standing') {
+        return fail('Debes desmontar antes de agacharte.');
+      }
       postureCost = stanceCost(u, stance);
-      if (!pay(postureCost)) return fail('Faltan PA para cambiar de postura.');
+      if (!pay(postureCost)) {
+        return fail('Faltan PA para cambiar de postura.');
+      }
       u.movementMode = a.movement;
       u.stance = stance;
     }
     const movementIntent = a.movementIntent === undefined ? 'forward' : a.movementIntent,
       intentReason = movementIntentReason(u, movementIntent);
-    if (intentReason) return fail(intentReason);
+    if (intentReason) {
+      return fail(intentReason);
+    }
     const climbing = a.type === 'climb' ? climbPreview(s, u, a) : null;
-    if (climbing && !climbing.valid) return fail(climbing.reason);
+    if (climbing && !climbing.valid) {
+      return fail(climbing.reason);
+    }
     const destination = { x: a.x, y: a.y, tacticalLevel: a.tacticalLevel ?? tacticalLevel(u) };
     // Plan from observed occupants; inspect the actual field one step at a time.
     // Hidden people must not reject a distant route or secretly divert it.
@@ -6611,8 +7441,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
           movementIntent,
           stopAt: (point) => sameCell(point, destination),
         })[0]);
-    if (!path || path.cost === 0)
+    if (!path || path.cost === 0) {
       return fail('Destino inaccesible o puntos de acción insuficientes.');
+    }
     const exploring = s.mode === 'exploration',
       setupSeconds = postureCost > 0 ? Math.max(1, Math.ceil(postureCost * 0.06)) : 0;
     u.braced = false;
@@ -6623,12 +7454,18 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
       steps = 0;
     if (exploring && setupSeconds) {
       advanceExplorationAction(s, setupSeconds);
-      if (alive(u)) detectContact(s);
+      if (alive(u)) {
+        detectContact(s);
+      }
     }
-    if (exploring && setupSeconds) checkpointSectorOperation(s);
+    if (exploring && setupSeconds) {
+      checkpointSectorOperation(s);
+    }
     for (const p of path.path) {
       SectorTimeBudget.restore(s).assertCanStartOperation();
-      if (!alive(u) || (exploring && s.mode !== 'exploration')) break;
+      if (!alive(u) || (exploring && s.mode !== 'exploration')) {
+        break;
+      }
       // A planned route uses known occupancy. An unseen obstruction can
       // stop that route, but cannot secretly select a different path around it.
       if (
@@ -6636,20 +7473,26 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
         artilleryStepBlocked(s, u, p) ||
         !Number.isFinite(movementStepCost(s, u, u, p, { movementIntent }))
       ) {
-        if (!steps) return fail('La ruta está bloqueada.');
+        if (!steps) {
+          return fail('La ruta está bloqueada.');
+        }
         sayObserved(s, [u], `${u.name} se detiene: la ruta está bloqueada.`);
         break;
       }
       const vertical = !sameSurface(u, p) ? climbStep(s, u, u, p) : null;
       if (vertical && (u.energy ?? 100) < vertical.energy) {
-        if (!steps) return fail('Falta energía para trepar.');
+        if (!steps) {
+          return fail('Falta energía para trepar.');
+        }
         sayObserved(s, [u], `${u.name} se detiene: falta energía para trepar.`);
         break;
       }
       const stepObservation = reactionObservation(s, u);
       const factor = vertical ? 1 : movementFactor(u, p),
         step = movementStepCost(s, u, u, p, { movementIntent });
-      if (!pay(step)) break;
+      if (!pay(step)) {
+        break;
+      }
       spent += step;
       steps++;
       const seconds = vertical
@@ -6665,12 +7508,14 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
       u.momentum =
         movementIntent === 'preserveFacing' ? 0 : dir === u.lastDirection ? u.momentum + 1 : 1;
       u.lastDirection = dir;
-      if (movementIntent !== 'preserveFacing' && (u.x !== p.x || u.y !== p.y))
+      if (movementIntent !== 'preserveFacing' && (u.x !== p.x || u.y !== p.y)) {
         u.facing = directionTo(u, p);
+      }
       u.x = p.x;
       u.y = p.y;
-      if (p.tacticalLevel !== undefined || u.tacticalLevel !== undefined)
+      if (p.tacticalLevel !== undefined || u.tacticalLevel !== undefined) {
         u.tacticalLevel = tacticalLevel(p);
+      }
       if (vertical) {
         u.momentum = 0;
         lowerWeapon(u);
@@ -6696,7 +7541,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
           ? vertical.energy
           : movementStepEnergy(s, u, tile(s, p.x, p.y, tacticalLevel(p)), factor),
       );
-      if (exploring) advanceExplorationAction(s, seconds);
+      if (exploring) {
+        advanceExplorationAction(s, seconds);
+      }
       emitNoise(s, u, 'move');
       rememberContacts(s);
       recordBattleFrame(s, { type: 'step', unitId: u.id, action: a.type });
@@ -6722,10 +7569,18 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
         }
       }
       const contact = detectContact(s);
-      if (exploring) checkpointSectorOperation(s);
-      if (!alive(u) || contact) break;
-      if (s.mode === 'combat' && reactionFire(s, u, stepObservation)) break;
-      if (!alive(u) || s.status !== 'active') break;
+      if (exploring) {
+        checkpointSectorOperation(s);
+      }
+      if (!alive(u) || contact) {
+        break;
+      }
+      if (s.mode === 'combat' && reactionFire(s, u, stepObservation)) {
+        break;
+      }
+      if (!alive(u) || s.status !== 'active') {
+        break;
+      }
     }
 
     sayObserved(
@@ -6739,19 +7594,26 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
   } else if (a.type === 'throwGrenade') {
     const point = positionOf(a),
       preview = grenadeThrowPreview(s, u, point, a);
-    if (!preview.valid) return fail(preview.reason);
-    if (u.stance !== 'standing') return fail('Ponete de pie antes de lanzar la granada.');
+    if (!preview.valid) {
+      return fail(preview.reason);
+    }
+    if (u.stance !== 'standing') {
+      return fail('Ponete de pie antes de lanzar la granada.');
+    }
     const grenade = heldGrenade(u),
       source = { ...positionOf(u), height: absoluteBodyHeight(s, u, 'muzzle') },
       intended = intendedCivilian(s, u, point);
     const hit = random(s) * 100 < preview.chance,
       end = hit ? point : grenadeScatter(s, u, point, preview.range),
       flight = grenadeFlight(s, u, end);
-    if (!flight.landing || flight.impact.kind === 'invalid')
+    if (!flight.landing || flight.impact.kind === 'invalid') {
       return fail('No hay una trayectoria válida para la granada.');
+    }
     const visible = journalVisible(s, u),
       extracted = extractItemQuantity(u, grenade.slot, 1);
-    if (!pay(preview.pa)) return fail('PA insuficientes.');
+    if (!pay(preview.pa)) {
+      return fail('PA insuficientes.');
+    }
     extracted.unit.ap = u.ap;
     replaceUnit(u, extracted.unit);
     lowerWeapon(u);
@@ -6764,7 +7626,7 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     // A failed period grenade becomes a finite, recoverable but unusable object.
     // Delayed malfunction fuses and physical bounces remain separate work.
     const detonated = grenade.record.condition >= 100 || random(s) * 100 < grenade.record.condition;
-    if (visible)
+    if (visible) {
       recordBattleFrame(s, {
         type: 'effect',
         unitId: u.id,
@@ -6779,15 +7641,20 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
           visible: true,
         },
       });
+    }
     if (detonated) {
       grenadeBlast(s, u, flight.landing, intended);
-      if (visible) say(s, `${u.name}: explosión de granada.`);
+      if (visible) {
+        say(s, `${u.name}: explosión de granada.`);
+      }
     } else {
       addGroundStack(s, { ...extracted.stack, condition: 0 }, flight.landing);
       emitNoise(s, u, 'knife', flight.landing);
-      if (visible) say(s, `${u.name}: la granada no explota y queda inutilizada.`);
+      if (visible) {
+        say(s, `${u.name}: la granada no explota y queda inutilizada.`);
+      }
     }
-    if (visible)
+    if (visible) {
       grenadeThrowVisuals.set(s, {
         source,
         impact: flight.impact,
@@ -6797,12 +7664,16 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
         detonated,
         visible: true,
       });
+    }
   } else if (a.type === 'throwKnife') {
     const point = target ?? { ...positionOf(a), stance: 'standing', mounted: false },
       preview = knifeThrowPreview(s, u, point, a);
-    if (!preview.valid) return fail(preview.reason);
-    if (u.stance !== 'standing' || preview.costs.turn)
+    if (!preview.valid) {
+      return fail(preview.reason);
+    }
+    if (u.stance !== 'standing' || preview.costs.turn) {
       return fail('Ponete de pie y mirá hacia el objetivo antes de lanzar.');
+    }
     const knife = heldThrowingKnife(u),
       source = { ...positionOf(u), height: absoluteBodyHeight(s, u, 'muzzle') },
       height = absoluteBodyHeight(s, point, preview.hitLocation),
@@ -6814,8 +7685,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     const flight = knifeFlight(flightState, u, end, preview.hitLocation, {
       destinationHeight: height,
     });
-    if (!flight.landing || flight.impact.kind === 'invalid')
+    if (!flight.landing || flight.impact.kind === 'invalid') {
       return fail('No hay una trayectoria válida para el facón.');
+    }
     const shown = knownKnifeFlight(flightState, u, end, preview.hitLocation, {
         destinationHeight: height,
       }),
@@ -6823,14 +7695,16 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     const amount = knifeThrowDamage(u, knife),
       extracted = extractItemQuantity(u, knife.slot, 1);
     replaceUnit(u, extracted.unit);
-    if (!pay(preview.pa)) return fail('PA insuficientes.');
+    if (!pay(preview.pa)) {
+      return fail('PA insuficientes.');
+    }
     u.momentum = 0;
     u.overwatch = false;
     u.braced = false;
     delete u.lastTargetId;
     delete u.lastShotPosition;
     emitNoise(s, u, 'knife');
-    if (visible)
+    if (visible) {
       recordBattleFrame(s, {
         type: 'effect',
         unitId: u.id,
@@ -6843,6 +7717,7 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
           visible: true,
         },
       });
+    }
     let victim = flightVictim(s, flight),
       stored = false;
     if (victim) {
@@ -6864,10 +7739,12 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
         }
       }
     }
-    if (!stored) addGroundStack(s, extracted.stack, flight.landing);
+    if (!stored) {
+      addGroundStack(s, extracted.stack, flight.landing);
+    }
     exhaust(s, u, preview.costs.energy);
     sayObserved(s, [u], `${u.name} lanza el facón que llevaba en la mano.`);
-    if (visible)
+    if (visible) {
       knifeThrowVisuals.set(s, {
         source,
         impact: shown.impact,
@@ -6875,26 +7752,39 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
         weapon: knife.record.weapon,
         visible: true,
       });
-  } else if (['fire', 'firePoint'].includes(a.type) && hasFirearm(u) && !firearmServiceable(u))
+    }
+  } else if (['fire', 'firePoint'].includes(a.type) && hasFirearm(u) && !firearmServiceable(u)) {
     return fail(BROKEN_FIREARM_REASON);
-  else if (['fire', 'firePoint'].includes(a.type) && pairedPistol(u)) {
+  } else if (['fire', 'firePoint'].includes(a.type) && pairedPistol(u)) {
     const pointShot = a.type === 'firePoint',
       hitLocation = a.hitLocation ?? 'torso';
     if (pointShot) {
       const preview = pointFirePreview(s, u, a, a.aim);
-      if (!preview.valid) return fail(preview.reason);
-      if (a.targetId !== undefined)
+      if (!preview.valid) {
+        return fail(preview.reason);
+      }
+      if (a.targetId !== undefined) {
         return fail('El disparo a una casilla usa coordenadas, no una persona.');
-      if (hitLocation !== 'torso')
+      }
+      if (hitLocation !== 'torso') {
         return fail('El disparo a una casilla apunta a una altura fija.');
+      }
     } else {
-      if (!HIT_LOCATIONS.includes(hitLocation)) return fail('Selecciona torso, cabeza o piernas.');
-      if (!target || target.side === u.side || !targetable(target))
+      if (!HIT_LOCATIONS.includes(hitLocation)) {
+        return fail('Selecciona torso, cabeza o piernas.');
+      }
+      if (!target || target.side === u.side || !targetable(target)) {
         return fail('Selecciona un enemigo activo.');
-      if (!teamCanSee(s, u.side, target)) return fail('Ningún compañero puede ver ese objetivo.');
-      if (!shotLocationsFor(target).includes(hitLocation))
+      }
+      if (!teamCanSee(s, u.side, target)) {
+        return fail('Ningún compañero puede ver ese objetivo.');
+      }
+      if (!shotLocationsFor(target).includes(hitLocation)) {
         return fail('Un objetivo cuerpo a tierra tiene una sola zona de tiro.');
-      if (!hasLineOfSight(s, u, target)) return fail('No hay línea de tiro.');
+      }
+      if (!hasLineOfSight(s, u, target)) {
+        return fail('No hay línea de tiro.');
+      }
     }
     const point = Object.freeze(
         pointShot ? { ...positionOf(a), stance: 'standing', mounted: false } : { ...target },
@@ -6919,8 +7809,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
       chance: shotAccuracy(s, shot.view, point, aim, hitLocation, pointShot, penalty),
       risk: ignitionRisk(s, shot.view),
     }));
-    if (!pay(costs.fire + aim * costs.aim))
+    if (!pay(costs.fire + aim * costs.aim)) {
       return fail('Faltan puntos de acción para disparar ambas pistolas.');
+    }
     u.weaponReady = true;
     u.momentum = 0;
     u.facing = directionTo(u, point);
@@ -6945,12 +7836,13 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
 
       const notifyCivilians = emitNoise(s, u, 'fire', u, { deferCivilians: true });
       withBattleShotHand(shot.hand === 'secundaria' ? 'offhand' : 'primary', () => {
-        if (pointShot) pointFireImpact(s, shot.view, point, aim, u, shot.chance, intent);
-        else {
+        if (pointShot) {
+          pointFireImpact(s, shot.view, point, aim, u, shot.chance, intent);
+        } else {
           practice(u, 'marksmanship', 2);
-          if (isShotLoad(weaponFor(shot.view)))
+          if (isShotLoad(weaponFor(shot.view))) {
             shotLoadFireImpact(s, shot.view, target, aim, hitLocation, u, shot.chance, intent);
-          else {
+          } else {
             const hit = random(s) * 100 < shot.chance;
             directedFireImpact(s, shot.view, target, hitLocation, hit, u, intent);
             if (!hit && !isCivilianBody(s, target)) {
@@ -6971,12 +7863,18 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     }
   } else if (a.type === 'firePoint') {
     const preview = pointFirePreview(s, u, a, a.aim);
-    if (!preview.valid) return fail(preview.reason);
-    if (a.targetId !== undefined)
+    if (!preview.valid) {
+      return fail(preview.reason);
+    }
+    if (a.targetId !== undefined) {
       return fail('El disparo a una casilla usa coordenadas, no una persona.');
-    if (a.hitLocation !== undefined && a.hitLocation !== 'torso')
+    }
+    if (a.hitLocation !== undefined && a.hitLocation !== 'torso') {
       return fail('El disparo a una casilla apunta a una altura fija.');
-    if (!pay(preview.pa)) return fail('PA insuficientes.');
+    }
+    if (!pay(preview.pa)) {
+      return fail('PA insuficientes.');
+    }
     u.weaponReady = true;
     u.momentum = 0;
     u.facing = directionTo(u, a);
@@ -7010,21 +7908,36 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     }
   } else if (a.type === 'fire') {
     const hitLocation = a.hitLocation ?? 'torso';
-    if (!HIT_LOCATIONS.includes(hitLocation)) return fail('Selecciona torso, cabeza o piernas.');
-    if (!target || target.side === u.side || !targetable(target))
+    if (!HIT_LOCATIONS.includes(hitLocation)) {
+      return fail('Selecciona torso, cabeza o piernas.');
+    }
+    if (!target || target.side === u.side || !targetable(target)) {
       return fail('Selecciona un enemigo activo.');
-    if (!hasFirearm(u)) return fail('Este soldado lleva un arma blanca: acércate para atacar.');
-    if (!teamCanSee(s, u.side, target)) return fail('Ningún compañero puede ver ese objetivo.');
-    if (!shotLocationsFor(target).includes(hitLocation))
+    }
+    if (!hasFirearm(u)) {
+      return fail('Este soldado lleva un arma blanca: acércate para atacar.');
+    }
+    if (!teamCanSee(s, u.side, target)) {
+      return fail('Ningún compañero puede ver ese objetivo.');
+    }
+    if (!shotLocationsFor(target).includes(hitLocation)) {
       return fail('Un objetivo cuerpo a tierra tiene una sola zona de tiro.');
-    if (u.jammed) return fail('La cazoleta falló: vuelve a cebar el arma.');
-    if (u.loaded < 1) return fail('El arma está descargada.');
-    if (!hasLineOfSight(s, u, target)) return fail('No hay línea de tiro.');
+    }
+    if (u.jammed) {
+      return fail('La cazoleta falló: vuelve a cebar el arma.');
+    }
+    if (u.loaded < 1) {
+      return fail('El arma está descargada.');
+    }
+    if (!hasLineOfSight(s, u, target)) {
+      return fail('No hay línea de tiro.');
+    }
     const aim = clamp(Math.floor(Number.isFinite(a.aim) ? a.aim : 0), 0, 4),
       w = weaponFor(u),
       chance = shotAccuracy(s, u, target, aim, hitLocation);
-    if (!pay(actionCosts(s, u, target).fire + aim * actionCosts(s, u, target).aim))
+    if (!pay(actionCosts(s, u, target).fire + aim * actionCosts(s, u, target).aim)) {
       return fail('Faltan puntos de acción para disparar.');
+    }
     u.weaponReady = true;
     u.momentum = 0;
     u.facing = directionTo(u, target);
@@ -7066,14 +7979,22 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     } catch (error) {
       return fail(error.message);
     }
-    if (!pay(4)) return fail('Cambiar de mano requiere 1 PA.');
+    if (!pay(4)) {
+      return fail('Cambiar de mano requiere 1 PA.');
+    }
     next.ap = u.ap;
     replaceUnit(u, next);
     sayObserved(s, [u], `${u.name} prepara el arma de la otra mano.`);
   } else if (a.type === 'weaponMode') {
-    if (!hasFirearm(u)) return fail('Prepará un arma de fuego en la mano.');
-    if (!['fire', 'melee'].includes(a.mode)) return fail('Elegí disparo o combate cercano.');
-    if (u.weaponMode === a.mode) return fail('Ese modo ya está seleccionado.');
+    if (!hasFirearm(u)) {
+      return fail('Prepará un arma de fuego en la mano.');
+    }
+    if (!['fire', 'melee'].includes(a.mode)) {
+      return fail('Elegí disparo o combate cercano.');
+    }
+    if (u.weaponMode === a.mode) {
+      return fail('Ese modo ya está seleccionado.');
+    }
     u.weaponMode = a.mode;
     sayObserved(
       s,
@@ -7082,15 +8003,24 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     );
     return true;
   } else if (a.type === 'reload') {
-    if (!hasFirearm(u)) return fail('Las armas blancas no necesitan recarga.');
-    if (u.jammed && firearmServiceable(u)) return fail('Primero debes volver a cebar el arma.');
+    if (!hasFirearm(u)) {
+      return fail('Las armas blancas no necesitan recarga.');
+    }
+    if (u.jammed && firearmServiceable(u)) {
+      return fail('Primero debes volver a cebar el arma.');
+    }
     const plan = reloadPlan(u, s);
-    if (!plan.totalPA)
+    if (!plan.totalPA) {
       return fail(plan.reason ?? 'No falta carga o no quedan cartuchos compatibles.');
-    if (!plan.pa || !pay(plan.pa)) return fail('Faltan puntos de acción para recargar.');
+    }
+    if (!plan.pa || !pay(plan.pa)) {
+      return fail('Faltan puntos de acción para recargar.');
+    }
     const exploring = s.mode === 'exploration';
     const completed = exploring ? advanceExplorationReload(s, u, plan) : plan;
-    if (!exploring) applyReloadPlan(u, plan);
+    if (!exploring) {
+      applyReloadPlan(u, plan);
+    }
     emitNoise(s, u, 'reload');
     u.momentum = 0;
     const subject =
@@ -7099,14 +8029,14 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
         : plan.hands?.[0]?.hand === 'offhand'
           ? ' la pistola de la segunda mano'
           : '';
-    if (exploring)
+    if (exploring) {
       sayObserved(
         s,
         [u],
         `${u.name} ${completed.partial ? 'interrumpe la recarga' : 'recarga'}${subject} (${completed.seconds} s).${completed.partial ? ' Conserva el trabajo realizado.' : ''}`,
         `${u.name} recarga su arma.`,
       );
-    else
+    } else {
       sayObserved(
         s,
         [u],
@@ -7115,10 +8045,15 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
           : `${u.name} recarga${subject} (${formatAP(plan.pa)} PA).${plan.offhandPending ? ' La segunda pistola espera: faltan PA para completar su recarga.' : ''}`,
         `${u.name} recarga su arma.`,
       );
+    }
   } else if (a.type === 'reprime') {
     const plan = reprimePlan(u, s);
-    if (plan.reason) return fail(plan.reason);
-    if (!pay(plan.pa)) return fail(`Cebar requiere ${formatAP(plan.pa)} PA.`);
+    if (plan.reason) {
+      return fail(plan.reason);
+    }
+    if (!pay(plan.pa)) {
+      return fail(`Cebar requiere ${formatAP(plan.pa)} PA.`);
+    }
     for (const hand of plan.hands) {
       const gun = hand === 'offhand' ? u.offHand : u;
       gun.jammed = false;
@@ -7136,18 +8071,26 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
       `${u.name} vuelve a cebar ${subject}.${plan.pending ? ' La segunda pistola todavía necesita cebado.' : ''}`,
     );
   } else if (a.type === 'melee' || a.type === 'meleePoint') {
-    if (u.activeSlot === 'item')
+    if (u.activeSlot === 'item') {
       return fail('Este objeto no sirve para atacar. Guardalo o elegí un arma.');
-    if (u.activeSlot === 'tool') return fail('La herramienta se usa sobre un objeto del entorno.');
-    if (u.activeSlot === 'supply') return fail('Usa el pertrecho que llevas en la mano.');
-    if (u.activeSlot === 'medical')
+    }
+    if (u.activeSlot === 'tool') {
+      return fail('La herramienta se usa sobre un objeto del entorno.');
+    }
+    if (u.activeSlot === 'supply') {
+      return fail('Usa el pertrecho que llevas en la mano.');
+    }
+    if (u.activeSlot === 'medical') {
       return fail('El equipo de curación se usa sobre un compañero herido.');
+    }
     const pointStrike = a.type === 'meleePoint',
       destination = pointStrike ? positionOf(a) : target;
     const preview = () =>
       pointStrike ? meleePointPreview(s, u, a, { approach: false }) : meleePreview(s, u, target);
     const plan = preview();
-    if (!plan.valid) return fail(plan.reason);
+    if (!plan.valid) {
+      return fail(plan.reason);
+    }
     let preparationSeconds = 0;
     if (plan.stancePa) {
       const before = {
@@ -7157,8 +8100,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
         },
         position = positionOf(u),
         exploring = s.mode === 'exploration';
-      if (apply(s, { type: 'stance', unitId: u.id, stance: 'standing' }, enemy) === false)
+      if (apply(s, { type: 'stance', unitId: u.id, stance: 'standing' }, enemy) === false) {
         return false;
+      }
       if (exploring) {
         preparationSeconds = s.actionDurationSeconds;
         advanceExplorationAction(s, preparationSeconds);
@@ -7172,8 +8116,12 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     }
     const blade = bladeFor(u),
       meleeCost = actionCosts(s, u).meleeStrike;
-    if (!pay(meleeCost)) return fail(`El ataque requiere ${formatAP(meleeCost)} PA.`);
-    if (preparationSeconds) s.actionDurationSeconds += preparationSeconds;
+    if (!pay(meleeCost)) {
+      return fail(`El ataque requiere ${formatAP(meleeCost)} PA.`);
+    }
+    if (preparationSeconds) {
+      s.actionDurationSeconds += preparationSeconds;
+    }
     const completed = meleeAttackResults.get(s) ?? new Set();
     completed.add(u.id);
     meleeAttackResults.set(s, completed);
@@ -7183,9 +8131,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     emitNoise(s, u, 'melee');
     if (pointStrike || blade.id === FISTS.id) {
       const finishContact = presentMeleeContact(s, u, pointStrike ? null : target, a.type);
-      if (pointStrike)
+      if (pointStrike) {
         sayObserved(s, [u], `${u.name} golpea hacia la casilla con ${blade.name.toLowerCase()}.`);
-      else {
+      } else {
         const chance = unarmedChance(u, target, { aware: canSee(s, target, u) });
         if (random(s) * 100 < chance) {
           const impact = unarmedImpact(u);
@@ -7199,52 +8147,77 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
             Math.max(0, impact.breathLoss - Math.ceil(impact.damage / 2)),
           );
           practice(u, 'agility');
-          if (target.unconscious)
+          if (target.unconscious) {
             sayObserved(s, [target], `${target.name} queda inconsciente por el golpe.`);
-        } else
+          }
+        } else {
           sayObserved(
             s,
             [u],
             `${u.name} falla el golpe (${chance}%).`,
             `${u.name} falla el golpe.`,
           );
+        }
       }
       finishContact();
-    } else meleeStrike(s, u, target, blade.damage * bonus);
+    } else {
+      meleeStrike(s, u, target, blade.damage * bonus);
+    }
     u.momentum = 0;
   } else if (a.type === 'charge') {
-    if (u.stance === 'prone') return fail('Primero debés levantarte para cargar.');
-    if (tacticalLevel(u) !== 0 || (target && tacticalLevel(target) !== 0))
+    if (u.stance === 'prone') {
+      return fail('Primero debés levantarte para cargar.');
+    }
+    if (tacticalLevel(u) !== 0 || (target && tacticalLevel(target) !== 0)) {
       return fail('La carga requiere terreno al nivel del suelo.');
-    if (['medical', 'tool', 'supply', 'item'].includes(u.activeSlot))
+    }
+    if (['medical', 'tool', 'supply', 'item'].includes(u.activeSlot)) {
       return fail('Prepara un arma antes de atacar.');
+    }
     const blade = bladeFor(u);
-    if (blade.usable === false) return fail('El arma blanca necesita reparación antes de atacar.');
-    if (blade.id === -1) return fail('Prepará una hoja o una bayoneta fijada para cargar.');
-    if (blade.id === 0) return fail('Acércate al enemigo para golpear con las manos vacías.');
-    if (!target || !targetable(target) || target.side === u.side)
+    if (blade.usable === false) {
+      return fail('El arma blanca necesita reparación antes de atacar.');
+    }
+    if (blade.id === -1) {
+      return fail('Prepará una hoja o una bayoneta fijada para cargar.');
+    }
+    if (blade.id === 0) {
+      return fail('Acércate al enemigo para golpear con las manos vacías.');
+    }
+    if (!target || !targetable(target) || target.side === u.side) {
       return fail('Selecciona un enemigo para cargar.');
+    }
     const dx = target.x - u.x,
       dy = target.y - u.y;
-    if (dx !== 0 && dy !== 0 && Math.abs(dx) !== Math.abs(dy))
+    if (dx !== 0 && dy !== 0 && Math.abs(dx) !== Math.abs(dy)) {
       return fail('La carga exige una línea recta.');
+    }
     let path = line(u, target);
     const contact = path.findIndex((p) => dist(p, target) <= blade.reach);
     path = dist(u, target) <= blade.reach ? [] : path.slice(0, contact + 1);
-    if (!path.length && dist(u, target) > blade.reach) return fail('No hay espacio para cargar.');
+    if (!path.length && dist(u, target) > blade.reach) {
+      return fail('No hay espacio para cargar.');
+    }
     let previous = u,
       cost = actionCosts(s, u).melee;
     for (const p of path) {
       const t = tile(s, p.x, p.y);
-      if (!t || t.blocked || occupied(s, p.x, p.y, u.id) || artilleryStepBlocked(s, previous, p))
+      if (!t || t.blocked || occupied(s, p.x, p.y, u.id) || artilleryStepBlocked(s, previous, p)) {
         return fail('La carga está bloqueada.');
+      }
       const step = movementStepCost(s, u, previous, p);
-      if (!Number.isFinite(step)) return fail('La carga no puede atravesar una esquina.');
+      if (!Number.isFinite(step)) {
+        return fail('La carga no puede atravesar una esquina.');
+      }
       cost += step;
       previous = p;
     }
-    if (!hasLineOfSight(s, u, target)) return fail('No hay un paso libre hasta el objetivo.');
-    if (u.ap < Math.ceil(cost)) return fail('Faltan puntos de acción para completar la carga.');
+    if (!hasLineOfSight(s, u, target)) {
+      return fail('No hay un paso libre hasta el objetivo.');
+    }
+    if (u.ap < Math.ceil(cost)) {
+      return fail('Faltan puntos de acción para completar la carga.');
+    }
     u.lastMovePath = [];
     let stopped = false;
     for (const p of path) {
@@ -7317,7 +8290,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
           (v.militia || v.levy || v.marksmanship < 60),
       )) {
         levy.morale = Math.max(0, levy.morale - 25);
-        if (levy.morale < 15) rout(s, levy);
+        if (levy.morale < 15) {
+          rout(s, levy);
+        }
       }
       sayObserved(s, [u], `${u.name} aterroriza a las levas con su carga montada.`);
     }
@@ -7339,37 +8314,44 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
   } else if (['artillery', 'artilleryReload', 'artilleryMove', 'artilleryPivot'].includes(a.type)) {
     const gun = s.artillery.find((g) => g.id === a.artilleryId),
       spec = artilleryProfile(s, gun);
-    if (!gun || !spec || gun.side !== u.side || contactDistance(u, gun) > 1.5)
+    if (!gun || !spec || gun.side !== u.side || contactDistance(u, gun) > 1.5) {
       return fail('Debes estar junto a una pieza de artillería propia.');
-    if (tacticalLevel(gun) !== 0 || tacticalLevel(u) !== 0 || tacticalLevel(target ?? a) !== 0)
+    }
+    if (tacticalLevel(gun) !== 0 || tacticalLevel(u) !== 0 || tacticalLevel(target ?? a) !== 0) {
       return fail('La artillería necesita posiciones y blancos al nivel del suelo.');
+    }
     const costs = artilleryCosts(s, u, gun),
       loading = a.type === 'artilleryReload' ? artilleryReloadPreview(s, u, gun) : null;
     const cost = loading
       ? loading.pa
       : costs[{ artillery: 'fire', artilleryMove: 'move', artilleryPivot: 'pivot' }[a.type]];
     const crew = loading ?? artilleryCrewPlan(s, u, gun, cost);
-    if (crew.reason) return fail(crew.reason);
+    if (crew.reason) {
+      return fail(crew.reason);
+    }
     const assigned = crew.crew.map((id) => s.units.find((v) => v.id === id));
     if (a.type === 'artilleryMove') {
       const dx = a.x - gun.x,
         dy = a.y - gun.y;
-      if (!Number.isInteger(a.x) || !Number.isInteger(a.y) || Math.abs(dx) + Math.abs(dy) !== 1)
+      if (!Number.isInteger(a.x) || !Number.isInteger(a.y) || Math.abs(dx) + Math.abs(dy) !== 1) {
         return fail('La pieza se arrastra una casilla horizontal o vertical por orden.');
+      }
       const positions = [
           { x: a.x, y: a.y },
           ...assigned.map((v) => ({ x: v.x + dx, y: v.y + dy })),
         ],
         ids = new Set(assigned.map((v) => v.id));
-      if (new Set(positions.map(spaceKey)).size !== positions.length)
+      if (new Set(positions.map(spaceKey)).size !== positions.length) {
         return fail('La pieza y su dotación necesitan casillas distintas.');
+      }
       if (
         [
           { from: gun, to: positions[0] },
           ...assigned.map((v, i) => ({ from: v, to: positions[i + 1] })),
         ].some(({ from, to }) => wallMovementBlocked(s, from, to))
-      )
+      ) {
         return fail('La pieza y su dotación no pueden atravesar una pared.');
+      }
       if (
         positions.some(
           (p) =>
@@ -7382,8 +8364,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
             residentPositionPoints(s).some((position) => sameCell(position, p)) ||
             s.artillery.some((g) => g !== gun && sameCell(g, p)),
         )
-      )
+      ) {
         return fail('La pieza y su dotación no caben en ese terreno.');
+      }
       gun.x = a.x;
       gun.y = a.y;
       for (const v of assigned) {
@@ -7397,8 +8380,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
         !Number.isInteger(a.y) ||
         !tile(s, a.x, a.y) ||
         dist(gun, a) < 1
-      )
+      ) {
         return fail('Indica una casilla hacia la cual orientar la pieza.');
+      }
       gun.facing = Math.atan2(a.y - gun.y, a.x - gun.x);
       sayObserved(
         s,
@@ -7411,7 +8395,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
         gun.loaded = true;
         gun.ammo--;
         delete gun.reloadProgress;
-      } else if (loading.progress > 0) gun.reloadProgress = loading.progress;
+      } else if (loading.progress > 0) {
+        gun.reloadProgress = loading.progress;
+      }
       emitNoise(s, u, 'reload', gun);
       sayObserved(
         s,
@@ -7422,7 +8408,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
         `${u.name} trabaja en la recarga de la pieza de artillería.`,
       );
     } else {
-      if (!gun.loaded) return fail('Primero hay que recargar la pieza.');
+      if (!gun.loaded) {
+        return fail('Primero hay que recargar la pieza.');
+      }
       const point = target || { x: a.x, y: a.y };
       if (
         !Number.isInteger(point.x) ||
@@ -7430,15 +8418,17 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
         !tile(s, point.x, point.y) ||
         dist(gun, point) < 1 ||
         dist(gun, point) > spec.range
-      )
+      ) {
         return fail(`Objetivo fuera del alcance de ${spec.range} casillas o no válido.`);
+      }
       const facing = Math.atan2(point.y - gun.y, point.x - gun.x);
       if (
         Number.isFinite(gun.facing) &&
         Math.abs(Math.atan2(Math.sin(facing - gun.facing), Math.cos(facing - gun.facing))) >
           Math.PI / 4
-      )
+      ) {
         return fail('Gira la pieza antes de disparar fuera de su arco frontal.');
+      }
       const intended = target ? null : intendedCivilian(s, u, point);
       gun.facing = facing;
       gun.loaded = false;
@@ -7498,12 +8488,13 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
       } else if (
         displayTrace.events.some((event) => event.type === 'stop') ||
         (terminal?.blocked && ['water', 'cliff'].includes(terminal.type))
-      )
+      ) {
         artilleryVisual.impacts.push({
           ...displayPoint(displayEnd),
           outcome: 'cover',
           material: terminal?.material ?? (terminal?.type === 'cliff' ? 'stone' : terminal?.type),
         });
+      }
       recordBattleFrame(s, {
         type: 'projectile',
         unitId: u.id,
@@ -7531,16 +8522,19 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
             projectile: false,
             intentional: victim === intended,
           });
-          if (victim.hp < hp)
+          if (victim.hp < hp) {
             artilleryVisual.impacts.push({
               ...contact,
               outcome: 'hit',
               victimId: victim.id,
               victimKind: event.victimKind ?? 'unit',
             });
+          }
           if (event.victimKind !== 'npc' && a.mode === 'canister' && alive(victim)) {
             victim.morale = Math.max(0, victim.morale - 12);
-            if (victim.morale < 15) rout(s, victim);
+            if (victim.morale < 15) {
+              rout(s, victim);
+            }
           }
         } else if (event.type === 'breach') {
           const ground = event.edgeId
@@ -7548,9 +8542,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
               : tile(s, event.x, event.y),
             contact = event.edgeId ? event : displayPoint(ground),
             material = ground.material ?? (event.stone ? 'stone' : 'adobe');
-          if (event.edgeId || ground.structureDamage !== undefined)
+          if (event.edgeId || ground.structureDamage !== undefined) {
             destroyStructure(ground, event.edgeId ? 'edge' : 'surface');
-          else {
+          } else {
             ground.blocked = false;
             ground.blocksSight = false;
             ground.type = 'rubble';
@@ -7561,11 +8555,15 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
           artilleryVisual.impacts.push({ ...contact, outcome: 'cover', material });
           const message = `La bala abre una brecha en ${event.stone ? 'la piedra' : 'el adobe'}.`;
           say(s, message);
-          if (observedStructures.has(event)) recordPublicCombatMessage(s, message);
+          if (observedStructures.has(event)) {
+            recordPublicCombatMessage(s, message);
+          }
         } else {
           const message = 'La bala se detiene contra la fortificación.';
           say(s, message);
-          if (observedStructures.has(event)) recordPublicCombatMessage(s, message);
+          if (observedStructures.has(event)) {
+            recordPublicCombatMessage(s, message);
+          }
         }
       }
       recordBattleFrame(s, { type: 'impact', unitId: u.id, action: 'artillery', artilleryVisual });
@@ -7589,11 +8587,16 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     });
     for (const v of assigned) {
       lowerWeapon(v);
-      if (s.mode !== 'exploration') spendParticipantActionPoints(v, cost);
-      if (a.type === 'artillery' || (a.type === 'artilleryReload' && loading.rounds))
+      if (s.mode !== 'exploration') {
+        spendParticipantActionPoints(v, cost);
+      }
+      if (a.type === 'artillery' || (a.type === 'artilleryReload' && loading.rounds)) {
         practice(v, 'explosives', a.type === 'artillery' ? 2 : 1);
+      }
     }
-    if (s.mode === 'exploration') s.actionDurationSeconds = Math.max(1, Math.ceil(cost * 0.06));
+    if (s.mode === 'exploration') {
+      s.actionDurationSeconds = Math.max(1, Math.ceil(cost * 0.06));
+    }
   } else if (a.type === 'door' || a.type === 'environment' || a.type === 'breach') {
     const ref =
       a.type === 'door'
@@ -7624,7 +8627,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
               : 'open'
           : a.verb;
     const preview = environmentPreview(s, u, ref, verb);
-    if (!preview.valid) return fail(preview.reason);
+    if (!preview.valid) {
+      return fail(preview.reason);
+    }
     const result = resolveEnvironmentInteraction(u, object, {
       verb: preview.verb,
       ...(preview.requiresRoll ? { roll: random(s) } : {}),
@@ -7633,8 +8638,10 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     pay(result.pa);
     replaceUnit(object, result.target);
     u.facing = directionTo(u, edgePoint(object));
-    for (const [skill, amount] of Object.entries(result.practice)) practice(u, skill, amount);
-    if (result.damage || result.breathLoss)
+    for (const [skill, amount] of Object.entries(result.practice)) {
+      practice(u, skill, amount);
+    }
+    if (result.damage || result.breathLoss) {
       damage(
         s,
         u,
@@ -7644,12 +8651,16 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
         'torso',
         Math.max(0, result.breathLoss - Math.ceil(result.damage / 2)),
       );
-    if (result.noiseKind)
+    }
+    if (result.noiseKind) {
       emitNoise(s, { ...u, activeSlot: 'unarmed' }, result.noiseKind, edgePoint(object));
+    }
     sayObserved(s, [u], `${u.name}: ${result.message}`);
   } else if (a.type === 'containerLoot') {
     const preview = containerLootPreview(s, u, a, a.index, a.count ?? 1, a.expectedSource);
-    if (!preview.valid) return fail(preview.reason);
+    if (!preview.valid) {
+      return fail(preview.reason);
+    }
     const object = environmentObject(s, { ...a, kind: 'container' }),
       extracted = extractContainerItem(object, a.index, a.count ?? 1);
     replaceUnit(u, applyItemQuantity(u, extracted.stack));
@@ -7659,7 +8670,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
   } else if (a.type === 'throwTorch') {
     const point = target ?? positionOf(a),
       preview = supplyUsePreview(s, u, point, 'torches');
-    if (!preview.allowed) return fail(preview.reason);
+    if (!preview.allowed) {
+      return fail(preview.reason);
+    }
     pay(preview.cost);
     u.torches--;
     clearEmptySupply(u);
@@ -7672,12 +8685,18 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
       turns: s.weather.rain > 50 ? 4 : 8,
       age: 0,
     });
-    if (dist(u, point) > 0) u.facing = directionTo(u, point);
+    if (dist(u, point) > 0) {
+      u.facing = directionTo(u, point);
+    }
     sayObserved(s, [u], `${u.name} lanza una antorcha encendida.`);
   } else if (a.type === 'look') {
     const preview = lookPreview(s, u, a);
-    if (!preview.valid) return fail(preview.reason);
-    if (!pay(preview.pa)) return fail('PA insuficientes.');
+    if (!preview.valid) {
+      return fail(preview.reason);
+    }
+    if (!pay(preview.pa)) {
+      return fail('PA insuficientes.');
+    }
     u.momentum = 0;
     if (preview.prepare) {
       u.weaponReady = true;
@@ -7687,7 +8706,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
         `${u.name} pone ${weaponFor(u).name} en posición de tiro${s.mode === 'exploration' ? '' : ` (${formatAP(preview.pa)} PA)`}.`,
       );
     } else {
-      if (turnLowersWeapon(u, preview.pa)) lowerWeapon(u);
+      if (turnLowersWeapon(u, preview.pa)) {
+        lowerWeapon(u);
+      }
       u.facing = preview.facing;
       investigateNoise(s, u);
       delete u.lastTargetId;
@@ -7699,8 +8720,12 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
       );
     }
   } else if (a.type === 'stealth') {
-    if (typeof a.enabled !== 'boolean') return fail('Indica si quieres activar el sigilo.');
-    if (a.enabled && u.mounted) return fail('Debes desmontar antes de avanzar con sigilo.');
+    if (typeof a.enabled !== 'boolean') {
+      return fail('Indica si quieres activar el sigilo.');
+    }
+    if (a.enabled && u.mounted) {
+      return fail('Debes desmontar antes de avanzar con sigilo.');
+    }
     u.stealthMode = a.enabled;
     s.actionDurationSeconds = 0;
     sayObserved(
@@ -7709,22 +8734,30 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
       `${u.name} ${a.enabled ? 'avanzará con sigilo' : 'deja de avanzar con sigilo'}.`,
     );
   } else if (a.type === 'movement') {
-    if (!['walk', 'run', 'crouch', 'prone'].includes(a.movement))
+    if (!['walk', 'run', 'crouch', 'prone'].includes(a.movement)) {
       return fail('Elige caminar, correr, agacharte o arrastrarte.');
+    }
     const stance = movementStance(a.movement);
-    if (u.mounted && stance !== 'standing') return fail('Debes desmontar antes de agacharte.');
+    if (u.mounted && stance !== 'standing') {
+      return fail('Debes desmontar antes de agacharte.');
+    }
     const cost = stanceCost(u, stance);
-    if (!pay(cost)) return fail(`Cambiar de postura requiere ${formatAP(cost)} PA.`);
+    if (!pay(cost)) {
+      return fail(`Cambiar de postura requiere ${formatAP(cost)} PA.`);
+    }
     u.movementMode = a.movement;
     u.stance = stance;
     u.momentum = 0;
     sayObserved(s, [u], `${u.name} cambia su forma de desplazarse.`);
   } else if (cursorOrders.has(a.type)) {
     const preview = equipmentCursorPreview(s, u, a);
-    if (!preview.valid) return fail(preview.reason);
+    if (!preview.valid) {
+      return fail(preview.reason);
+    }
     const plan = planEquipmentCursorOrder(u, a, s);
-    if (plan.operation !== 'reload' || !pay(plan.pa))
+    if (plan.operation !== 'reload' || !pay(plan.pa)) {
       return fail('Faltan puntos de acción para recargar.');
+    }
     plan.unit.ap = u.ap;
     replaceUnit(u, plan.unit);
     emitNoise(s, u, 'reload');
@@ -7735,9 +8768,13 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     );
   } else if (a.type === 'unloadEquipment') {
     const preview = equipmentUnloadPreview(s, u, a);
-    if (!preview.valid) return fail(preview.reason);
+    if (!preview.valid) {
+      return fail(preview.reason);
+    }
     const plan = planEquipmentUnload(u, a);
-    if (!pay(plan.pa)) return fail('Descargar requiere 3 PA.');
+    if (!pay(plan.pa)) {
+      return fail('Descargar requiere 3 PA.');
+    }
     plan.unit.ap = u.ap;
     replaceUnit(u, plan.unit);
     emitNoise(s, u, 'reload');
@@ -7748,9 +8785,13 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     );
   } else if (a.type === 'attachment') {
     const preview = equipmentAttachmentPreview(s, u, a);
-    if (!preview.valid) return fail(preview.reason);
+    if (!preview.valid) {
+      return fail(preview.reason);
+    }
     const plan = planEquipmentAttachment(u, a);
-    if (!pay(plan.pa)) return fail(`Cambiar el accesorio requiere ${formatAP(plan.pa)} PA.`);
+    if (!pay(plan.pa)) {
+      return fail(`Cambiar el accesorio requiere ${formatAP(plan.pa)} PA.`);
+    }
     plan.unit.ap = u.ap;
     replaceUnit(u, plan.unit);
     emitNoise(s, u, 'reload');
@@ -7770,7 +8811,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     } catch (error) {
       return fail(error.message);
     }
-    if (!pay(pa)) return fail(`Cambiar la bayoneta requiere ${formatAP(pa)} PA.`);
+    if (!pay(pa)) {
+      return fail(`Cambiar la bayoneta requiere ${formatAP(pa)} PA.`);
+    }
     plan.unit.ap = u.ap;
     replaceUnit(u, plan.unit);
     emitNoise(s, u, 'reload');
@@ -7781,7 +8824,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     );
   } else if (a.type === 'steal') {
     const preview = stealPreview(s, u, target);
-    if (!preview.valid) return fail(preview.reason);
+    if (!preview.valid) {
+      return fail(preview.reason);
+    }
     const plan = planStealWeapon(u, target),
       chance = weaponStealChance(u, target, { aware: canSee(s, target, u) });
     pay(preview.pa);
@@ -7795,7 +8840,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
         [u, target],
         `${u.name} quita ${weaponFor(u).name} a ${target.name}. El enemigo aún puede combatir.`,
       );
-    } else sayObserved(s, [u, target], `${u.name} no logra quitar el arma a ${target.name}.`);
+    } else {
+      sayObserved(s, [u, target], `${u.name} no logra quitar el arma a ${target.name}.`);
+    }
     u.facing = directionTo(u, target);
     u.momentum = 0;
     u.braced = false;
@@ -7806,8 +8853,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     emitNoise(s, { ...u, activeSlot: 'unarmed' }, 'melee');
   } else if (a.type === 'giveItem') {
     const preview = npcGiftPreview(s, u, target);
-    if (!preview.valid || preview.path.length)
+    if (!preview.valid || preview.path.length) {
       return fail(preview.reason ?? 'Acercate al interlocutor para entregar el objeto.');
+    }
     const sourceId = u.activeItem,
       plan = questGiftPlan(u, target, s);
     pay(preview.actionPa);
@@ -7818,7 +8866,7 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
       target.questGifts = plan.gifts;
       commitQuestBeneficiary(s, plan.quest, target.id);
     }
-    if (plan.quest.beneficiaries)
+    if (plan.quest.beneficiaries) {
       recordNpcGiftResult(
         s,
         { ...a, sourceId, count: 1, x: target.x, y: target.y },
@@ -7826,6 +8874,7 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
         plan.accepted ? 'accepted' : 'refused',
         plan.text,
       );
+    }
     sayObserved(
       s,
       [u],
@@ -7835,7 +8884,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     );
   } else if (a.type === 'equipLoot') {
     const preview = equipLootPreview(s, u, a.inventoryKey, a.slot ?? 'primary');
-    if (!preview.valid) return fail(preview.reason);
+    if (!preview.valid) {
+      return fail(preview.reason);
+    }
     const next = planEquipLoot(u, a.inventoryKey, a.slot ?? 'primary');
     pay(preview.pa);
     next.ap = u.ap;
@@ -7851,16 +8902,22 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     );
   } else if (a.type === 'craftDressings') {
     const preview = fieldDressingsPreview(s, u, a.inventoryKey, a.expectedSource);
-    if (!preview.valid) return fail(preview.reason);
+    if (!preview.valid) {
+      return fail(preview.reason);
+    }
     const plan = planFieldDressings(u, a.inventoryKey, a.expectedSource);
-    if (!pay(preview.pa)) return fail(`Preparar vendas requiere ${formatAP(preview.pa)} PA.`);
+    if (!pay(preview.pa)) {
+      return fail(`Preparar vendas requiere ${formatAP(preview.pa)} PA.`);
+    }
     plan.unit.ap = u.ap;
     lowerWeapon(plan.unit);
     replaceUnit(u, plan.unit);
     sayObserved(s, [u], `${u.name} prepara tres vendas con una camisa de lino.`);
   } else if (a.type === 'moveEquipment') {
     const preview = equipmentPlacementPreview(s, u, a);
-    if (!preview.valid) return fail(preview.reason);
+    if (!preview.valid) {
+      return fail(preview.reason);
+    }
     const plan = planEquipmentPlacement(u, a);
     pay(plan.pa);
     plan.unit.ap = u.ap;
@@ -7868,7 +8925,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     sayObserved(s, [u], `${u.name} cambia el equipo de ranura.`);
   } else if (a.type === 'movePocket') {
     const reason = inventoryOrderReason(s, u, 0);
-    if (reason) return fail(reason);
+    if (reason) {
+      return fail(reason);
+    }
     let next;
     try {
       next = planPocketMove(
@@ -7893,7 +8952,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
       return fail(error.message);
     }
     if (plan.kind === 'gift') {
-      if (plan.path.length) return fail('Acercate al interlocutor para entregar el objeto.');
+      if (plan.path.length) {
+        return fail('Acercate al interlocutor para entregar el objeto.');
+      }
       let decision;
       try {
         decision = questGiftDecision(plan.target, plan.extraction.stack, s);
@@ -7923,16 +8984,21 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
         for (const step of plan.route.slice(1, -1)) {
           const helper = s.units.find((other) => other.id === step.id);
           lowerWeapon(helper);
-          if (s.mode !== 'exploration') spendParticipantActionPoints(helper, step.pa);
+          if (s.mode !== 'exploration') {
+            spendParticipantActionPoints(helper, step.pa);
+          }
         }
-        if (s.mode === 'exploration') s.actionDurationSeconds = plan.route.length - 1;
+        if (s.mode === 'exploration') {
+          s.actionDurationSeconds = plan.route.length - 1;
+        }
       }
       const caught = plan.target && (plan.kind !== 'throw' || random(s) * 100 < plan.chance);
       if (caught) {
         replaceUnit(plan.target, plan.received);
         lowerWeapon(plan.target);
-        if (plan.kind === 'throw' && s.mode !== 'exploration')
+        if (plan.kind === 'throw' && s.mode !== 'exploration') {
           spendParticipantActionPoints(plan.target, 2);
+        }
         sayObserved(
           s,
           [u, plan.target],
@@ -7951,23 +9017,30 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
       }
     }
   } else if (a.type === 'dropSupply' || a.type === 'transferSupply') {
-    if (a.slot !== undefined || a.inventoryKey !== undefined)
+    if (a.slot !== undefined || a.inventoryKey !== undefined) {
       return fail('Elegí solamente el suministro y la cantidad.');
+    }
     const giving = a.type === 'transferSupply',
       preview = giving
         ? supplyTransferPreview(s, u, target, a.item, a.count)
         : supplyDropPreview(s, u, a.item, a.count);
-    if (!preview.valid) return fail(preview.reason);
+    if (!preview.valid) {
+      return fail(preview.reason);
+    }
     const plan = legacySupplyPlan(u, a.item, a.count, giving ? target : null);
     replaceUnit(u, plan.source);
     pay(preview.pa);
-    if (giving) replaceUnit(target, plan.target);
-    else
+    if (giving) {
+      replaceUnit(target, plan.target);
+    } else {
       for (const stack of plan.stacks) {
         addGroundStack(s, stack, u, 'supply');
         const ground = s.groundItems.at(-1);
-        if (Object.hasOwn(SUPPLY_ITEMS, stack.item)) ground.type = stack.item;
+        if (Object.hasOwn(SUPPLY_ITEMS, stack.item)) {
+          ground.type = stack.item;
+        }
       }
+    }
     sayObserved(
       s,
       giving ? [u, target] : [u],
@@ -7977,7 +9050,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     );
   } else if (a.type === 'drop') {
     const preview = dropPreview(s, u, a.item, a.count ?? 1);
-    if (!preview.valid) return fail(preview.reason);
+    if (!preview.valid) {
+      return fail(preview.reason);
+    }
     const extracted = extractItemQuantity(u, a.item, a.count ?? 1);
     replaceUnit(u, extracted.unit);
     pay(preview.pa);
@@ -7985,13 +9060,16 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     sayObserved(s, [u], `${u.name} deja el objeto en el suelo.`);
   } else if (a.type === 'transfer') {
     const preview = transferPreview(s, u, target, a.item, a.count ?? 1);
-    if (!preview.valid) return fail(preview.reason);
+    if (!preview.valid) {
+      return fail(preview.reason);
+    }
     if (
       a.transferKind !== undefined &&
       (a.transferKind !== preview.kind ||
         JSON.stringify(a.transferRoute) !== JSON.stringify(preview.route.map((v) => v.id)))
-    )
+    ) {
       return fail('Cambió la entrega. Revisa el destinatario y los PA antes de confirmar.');
+    }
     const transfer = transferItemQuantity(u, target, a.item, a.count ?? 1);
     replaceUnit(u, transfer.source);
     pay(preview.pa);
@@ -7999,15 +9077,20 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
       for (const step of preview.route.slice(1, -1)) {
         const helper = s.units.find((v) => v.id === step.id);
         lowerWeapon(helper);
-        if (s.mode !== 'exploration') spendParticipantActionPoints(helper, step.pa);
+        if (s.mode !== 'exploration') {
+          spendParticipantActionPoints(helper, step.pa);
+        }
       }
-      if (s.mode === 'exploration') s.actionDurationSeconds = preview.route.length - 1;
+      if (s.mode === 'exploration') {
+        s.actionDurationSeconds = preview.route.length - 1;
+      }
     }
     if (preview.kind !== 'throw' || random(s) * 100 < preview.chance) {
       replaceUnit(target, transfer.target);
       lowerWeapon(target);
-      if (preview.kind === 'throw' && s.mode !== 'exploration')
+      if (preview.kind === 'throw' && s.mode !== 'exploration') {
         spendParticipantActionPoints(target, 2);
+      }
       sayObserved(
         s,
         [u, target],
@@ -8027,20 +9110,25 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     }
   } else if (a.type === 'loot') {
     const preview = lootPreview(s, u, a);
-    if (!preview.valid) return fail(preview.reason);
+    if (!preview.valid) {
+      return fail(preview.reason);
+    }
     const plan = planLoot(s, u, a);
     commitLoot(u, plan);
     pay(preview.pa);
     sayObserved(s, [u], `${u.name} recoge el equipo seleccionado.`);
   } else if (a.type === 'lootBatch') {
     const preview = lootBatchPreview(s, u, a.items);
-    if (!preview.valid) return fail(preview.reason);
+    if (!preview.valid) {
+      return fail(preview.reason);
+    }
     const plan = planLootBatch(s, u, a.items);
-    for (const unit of s.units)
+    for (const unit of s.units) {
       replaceUnit(
         unit,
         plan.units.find((next) => next.id === unit.id),
       );
+    }
     s.npcs = plan.npcs;
     s.groundItems = plan.groundItems;
     s.droppedWeapons = plan.droppedWeapons;
@@ -8053,11 +9141,15 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
   } else if (a.type === 'boleadoras') {
     const point = target ?? positionOf(a),
       preview = supplyUsePreview(s, u, point, 'boleadoras');
-    if (!preview.allowed) return fail(preview.reason);
+    if (!preview.allowed) {
+      return fail(preview.reason);
+    }
     pay(preview.cost);
     u.boleadoras--;
     clearEmptySupply(u);
-    if (dist(u, point) > 0) u.facing = directionTo(u, point);
+    if (dist(u, point) > 0) {
+      u.facing = directionTo(u, point);
+    }
     if (target) {
       target.entangled = true;
       target.mounted = false;
@@ -8081,8 +9173,12 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     }
   } else if (a.type === 'prisonerEscort') {
     const preview = prisonerReleasePreview(s, u, target, a.escortOrder ?? 'invalid');
-    if (!preview.valid) return fail(preview.reason);
-    if (!pay(preview.cost)) return fail('PA insuficientes.');
+    if (!preview.valid) {
+      return fail(preview.reason);
+    }
+    if (!pay(preview.cost)) {
+      return fail('PA insuficientes.');
+    }
     recordPrisonerEscort(s, u, target, a.escortOrder === 'wait');
     sayObserved(
       s,
@@ -8091,8 +9187,12 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     );
   } else if (a.type === 'free' && a.targetKind === 'npc') {
     const preview = prisonerReleasePreview(s, u, target);
-    if (!preview.valid) return fail(preview.reason);
-    if (!pay(preview.cost)) return fail('PA insuficientes.');
+    if (!preview.valid) {
+      return fail(preview.reason);
+    }
+    if (!pay(preview.cost)) {
+      return fail('PA insuficientes.');
+    }
     lowerWeapon(u);
     recordPrisonerRelease(s, u, target);
     sayObserved(
@@ -8101,22 +9201,36 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
       `${u.name} libera de las ataduras a ${target.name}. Te seguirá cuando pueda caminar.`,
     );
   } else if (a.type === 'free') {
-    if (!u.entangled) return fail('El soldado no está enredado.');
-    if (!pay(15)) return fail('Soltarse requiere 3,75 PA.');
+    if (!u.entangled) {
+      return fail('El soldado no está enredado.');
+    }
+    if (!pay(15)) {
+      return fail('Soltarse requiere 3,75 PA.');
+    }
     u.entangled = false;
-    for (const g of s.groundItems) if (g.heldBy === u.id) g.heldBy = null;
+    for (const g of s.groundItems) {
+      if (g.heldBy === u.id) {
+        g.heldBy = null;
+      }
+    }
     sayObserved(s, [u], `${u.name} se libera de las boleadoras.`);
   } else if (a.type === 'repair') {
     const plan = firearmMaintenancePreview(s, u, maintenanceContext);
-    if (!plan.valid) return fail(plan.reason);
-    if (!pay(plan.pa)) return fail(`Mantener el mecanismo requiere ${formatAP(plan.pa)} PA.`);
+    if (!plan.valid) {
+      return fail(plan.reason);
+    }
+    if (!pay(plan.pa)) {
+      return fail(`Mantener el mecanismo requiere ${formatAP(plan.pa)} PA.`);
+    }
     spendRepairMaterials(u, plan.materialCost);
     practice(u, 'mechanical', 3);
     u.condition = Math.min(100, u.condition + plan.gain);
     sayObserved(s, [u], `${u.name} mantiene y ajusta el mecanismo.`);
   } else if (a.type === 'ration') {
     const preview = supplyUsePreview(s, u, a.targetId === undefined ? u : target, 'rations');
-    if (!preview.allowed) return fail(preview.reason);
+    if (!preview.allowed) {
+      return fail(preview.reason);
+    }
     pay(preview.cost);
     u.rations--;
     clearEmptySupply(u);
@@ -8127,10 +9241,15 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
       `${u.name} come una ración y recupera fuerzas. Las heridas requieren vendas.`,
     );
   } else if (a.type === 'brace') {
-    if (u.stance === 'prone') return fail('Primero debés levantarte para preparar la guardia.');
-    if (!fixedBayonetFor(u))
+    if (u.stance === 'prone') {
+      return fail('Primero debés levantarte para preparar la guardia.');
+    }
+    if (!fixedBayonetFor(u)) {
       return fail('Se necesita una bayoneta preparada para recibir la carga.');
-    if (u.ap < 16) return fail('Reserva al menos 4 PA para detener una carga.');
+    }
+    if (u.ap < 16) {
+      return fail('Reserva al menos 4 PA para detener una carga.');
+    }
     u.braced = true;
     sayObserved(s, [u], `${u.name} mantiene la bayoneta fijada en guardia.`);
   } else if (a.type === 'weapon') {
@@ -8140,7 +9259,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
     } catch (error) {
       return fail(error.message);
     }
-    if (!pay(4)) return fail('Cambiar de objeto requiere 1 PA.');
+    if (!pay(4)) {
+      return fail('Cambiar de objeto requiere 1 PA.');
+    }
     next.ap = u.ap;
     replaceUnit(u, next);
     sayObserved(s, [u], `${u.name} prepara ${weaponFor(u).name}.`);
@@ -8149,21 +9270,32 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
       u.overwatch = false;
       sayObserved(s, [u], `${u.name} deja de cubrir el frente.`);
     } else {
-      if (hasFirearm(u) && !firearmServiceable(u)) return fail(BROKEN_FIREARM_REASON);
-      if (!hasFirearm(u) || !u.loaded || u.jammed)
+      if (hasFirearm(u) && !firearmServiceable(u)) {
+        return fail(BROKEN_FIREARM_REASON);
+      }
+      if (!hasFirearm(u) || !u.loaded || u.jammed) {
         return fail('Necesitas un arma cargada y cebada para cubrir el frente.');
-      if (s.mode !== 'exploration' && u.ap < actionCosts(s, u).fire)
+      }
+      if (s.mode !== 'exploration' && u.ap < actionCosts(s, u).fire) {
         return fail('Reserva PA suficientes para disparar.');
+      }
       u.overwatch = true;
       sayObserved(s, [u], `${u.name} reserva sus PA para fuego de reacción.`);
     }
   } else if (a.type === 'mount') {
-    if (tacticalLevel(u) !== 0) return fail('La montura debe permanecer en el suelo.');
-    if (!u.horse) return fail('Este soldado no tiene una montura asignada.');
-    if (!u.mounted && u.mount && (u.mount.stamina < 20 || u.mount.condition < 30))
+    if (tacticalLevel(u) !== 0) {
+      return fail('La montura debe permanecer en el suelo.');
+    }
+    if (!u.horse) {
+      return fail('Este soldado no tiene una montura asignada.');
+    }
+    if (!u.mounted && u.mount && (u.mount.stamina < 20 || u.mount.condition < 30)) {
       return fail('El caballo necesita descanso y cuidados antes de la monta.');
+    }
     const cost = actionCosts(s, u).mount;
-    if (!pay(cost)) return fail(`Montar o desmontar requiere ${formatAP(cost)} PA.`);
+    if (!pay(cost)) {
+      return fail(`Montar o desmontar requiere ${formatAP(cost)} PA.`);
+    }
     u.mounted = !u.mounted;
     u.stance = 'standing';
     u.momentum = 0;
@@ -8171,7 +9303,9 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
   } else if (a.type === 'heal') {
     const t = target || u;
     const preview = medicalUsePreview(s, u, t, { targetKind: a.targetKind });
-    if (!preview.allowed) return fail(preview.reason);
+    if (!preview.allowed) {
+      return fail(preview.reason);
+    }
     pay(preview.cost);
     const treatment = preview.treatment,
       bleedReduced = (t.bleeding ?? 0) - treatment.bleedingAfter;
@@ -8196,12 +9330,15 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
         delete t.civilianWoundSeconds;
       }
       t.unconscious = isUnconscious(t);
-      if (treatment.hpGain > 0)
+      if (treatment.hpGain > 0) {
         t.civilianFirstAid = {
           version: 1,
           hpRestored: (t.civilianFirstAid?.hpRestored ?? 0) + treatment.hpGain,
         };
-    } else refreshCondition(t);
+      }
+    } else {
+      refreshCondition(t);
+    }
     const progress = [
       treatment.hpGain > 0 ? `recupera ${treatment.hpGain} de salud crítica` : null,
       bleedReduced > 0 ? `reduce la hemorragia en ${bleedReduced}` : null,
@@ -8217,17 +9354,28 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
       `${u.name} presta primeros auxilios a ${t.name}.`,
     );
     const line = t !== u && !isUnconscious(t) ? speechFor(t, 'treated') : null;
-    if (line?.trim()) sayObserved(s, [t], `${t.nickname || t.name}: «${line}»`);
+    if (line?.trim()) {
+      sayObserved(s, [t], `${t.nickname || t.name}: «${line}»`);
+    }
   } else if (a.type === 'stance') {
-    if (u.mounted) return fail('Debes desmontar antes de cambiar de postura.');
-    if (!STANCES.includes(a.stance) || u.stance === a.stance) return fail('Postura no válida.');
-    if (u.knockedDown && a.stance !== 'standing')
+    if (u.mounted) {
+      return fail('Debes desmontar antes de cambiar de postura.');
+    }
+    if (!STANCES.includes(a.stance) || u.stance === a.stance) {
+      return fail('Postura no válida.');
+    }
+    if (u.knockedDown && a.stance !== 'standing') {
       return fail('El soldado derribado debe ponerse de pie.');
+    }
     const cost = stanceCost(u, a.stance);
-    if (!pay(cost)) return fail(`Cambiar de postura requiere ${formatAP(cost)} PA.`);
+    if (!pay(cost)) {
+      return fail(`Cambiar de postura requiere ${formatAP(cost)} PA.`);
+    }
     u.stance = a.stance;
     u.movementMode = a.stance === 'prone' ? 'prone' : a.stance === 'crouched' ? 'crouch' : 'walk';
-    if (a.stance === 'standing') u.knockedDown = false;
+    if (a.stance === 'standing') {
+      u.knockedDown = false;
+    }
     u.momentum = 0;
     sayObserved(
       s,
@@ -8235,10 +9383,16 @@ function applyOrder(s, a, enemy = false, movementPath = null, maintenanceContext
       `${u.name} ${a.stance === 'prone' ? 'se tiende cuerpo a tierra' : a.stance === 'crouched' ? 'se agacha' : 'se pone de pie'}.`,
       `${u.name} cambia de postura.`,
     );
-  } else return fail('Orden desconocida.');
-  if (lowersWeapon(a.type) && a.type !== 'movement') lowerWeapon(u);
+  } else {
+    return fail('Orden desconocida.');
+  }
+  if (lowersWeapon(a.type) && a.type !== 'movement') {
+    lowerWeapon(u);
+  }
   checkEnd(s);
-  if (!['move', 'climb', 'charge'].includes(a.type)) reactionFire(s, u, observation);
+  if (!['move', 'climb', 'charge'].includes(a.type)) {
+    reactionFire(s, u, observation);
+  }
   return true;
 }
 function captureObservedCompanionGrief(s, target) {
@@ -8250,11 +9404,12 @@ function captureObservedCompanionGrief(s, target) {
   );
 }
 function reportCompanionGrief(s, captured) {
-  for (const { unit, companion, loss } of applyCompanionGrief(s, captured))
+  for (const { unit, companion, loss } of applyCompanionGrief(s, captured)) {
     sayPublic(
       s,
       `${unit.name} lamenta la muerte de ${companion.name}. ${loss ? `Moral −${loss}.` : 'Moral sin cambio.'}`,
     );
+  }
 }
 function advanceMilitaryConditions(s, targetSecond, initialSecond) {
   advanceMilitaryWoundClock(s, targetSecond, {
@@ -8262,27 +9417,34 @@ function advanceMilitaryConditions(s, targetSecond, initialSecond) {
     beforeBleeding: (unit, ticks) =>
       unit.bleeding && ticks > 0 ? captureObservedCompanionGrief(s, unit) : null,
     afterBleeding: (unit, result, grief) => {
-      if (result.healthLost > 0 && (unit.side === 'player' || teamCanSee(s, 'player', unit)))
+      if (result.healthLost > 0 && (unit.side === 'player' || teamCanSee(s, 'player', unit))) {
         sayObserved(
           s,
           [unit],
           `${unit.name} pierde ${result.healthLost} de salud por hemorragia.`,
           `${unit.name} pierde ${result.healthLost} de salud por hemorragia.`,
         );
+      }
       reportCompanionGrief(s, grief);
     },
   });
 }
 function reportResidentBleeding(state, resident, previousHealth) {
-  if ((resident.hp ?? 100) >= previousHealth || !teamCanSee(state, 'player', resident)) return;
+  if ((resident.hp ?? 100) >= previousHealth || !teamCanSee(state, 'player', resident)) {
+    return;
+  }
   const publiclyObserved = playerObservedBody(state, resident);
   const messages = [
     `${resident.name} pierde ${previousHealth - resident.hp} de salud por hemorragia.`,
   ];
-  if (resident.hp === 0) messages.push(`${resident.name} muere por sus heridas.`);
+  if (resident.hp === 0) {
+    messages.push(`${resident.name} muere por sus heridas.`);
+  }
   for (const message of messages) {
     say(state, message);
-    if (publiclyObserved) recordPublicCombatMessage(state, message);
+    if (publiclyObserved) {
+      recordPublicCombatMessage(state, message);
+    }
   }
 }
 // Apply exploration time at the end of each completed movement step. This lets
@@ -8321,9 +9483,13 @@ function advanceExplorationReload(s, u, plan) {
     const earned = (plan.pa * seconds) / duration;
     let budget = earned - paid;
     for (const hand of hands) {
-      if (!budget) break;
+      if (!budget) {
+        break;
+      }
       const spend = Math.min(budget, hand.remaining);
-      if (!spend) continue;
+      if (!spend) {
+        continue;
+      }
       const view = hand.hand === 'offhand' ? secondaryPistolView(u) : u;
       const work = planReload(
         { ...view, ammo: availableAmmunition(u, view), ap: spend },
@@ -8346,7 +9512,7 @@ function advanceAmbientTime(s, seconds) {
   const afterWound = (resident, beforeHealth) => reportResidentBleeding(s, resident, beforeHealth);
   const endSecond = (s.startSeconds ?? 0) + (s.elapsedSeconds ?? 0);
   const initialSecond = endSecond - seconds;
-  const beforeConditions = atSecond => advanceMilitaryConditions(s, atSecond, initialSecond);
+  const beforeConditions = (atSecond) => advanceMilitaryConditions(s, atSecond, initialSecond);
   if (s.mode !== 'exploration' || s.status !== 'active') {
     beforeConditions(endSecond);
     advanceResidentWoundClock(s, endSecond, { initialSecond, afterWound });
@@ -8357,7 +9523,9 @@ function advanceAmbientTime(s, seconds) {
     s,
     seconds,
     () => {
-      if (detectContact(s)) return false;
+      if (detectContact(s)) {
+        return false;
+      }
       for (const u of s.units.filter(
         (u) => (u.side === 'enemy' || u.militia) && alive(u) && !u.routed,
       )) {
@@ -8367,16 +9535,22 @@ function advanceAmbientTime(s, seconds) {
           : u.militia
             ? militiaPatrolOrder(patrolState, { ...u, ap: 100 })
             : choosePatrolAction(patrolState, { ...u, patrolTurn: undefined, ap: 24 });
-        if (!order) continue;
+        if (!order) {
+          continue;
+        }
         const step = getReachable(
           { ...patrolState, artillery: knownArtillery(s, u) },
           { ...u, ap: u.militia ? 100 : 24 },
         ).find((p) =>
           sameCell(p, { ...order, tacticalLevel: order.tacticalLevel ?? tacticalLevel(u) }),
         )?.path[0];
-        if (!step || artilleryStepBlocked(s, u, step)) continue;
+        if (!step || artilleryStepBlocked(s, u, step)) {
+          continue;
+        }
         const climbing = !sameSurface(u, step) ? climbStep(s, u, u, step) : null;
-        if (climbing && !climbing.valid) continue;
+        if (climbing && !climbing.valid) {
+          continue;
+        }
         const cost = climbing?.energy ?? movementEnergy(u, surfaceAt(s, step));
         // Keep a breath reserve for contact. A tired patrol spends this whole
         // six-second tick recovering instead of walking until near collapse.
@@ -8394,14 +9568,18 @@ function advanceAmbientTime(s, seconds) {
           continue;
         }
         lowerWeapon(u);
-        if (u.x !== step.x || u.y !== step.y) u.facing = directionTo(u, step);
+        if (u.x !== step.x || u.y !== step.y) {
+          u.facing = directionTo(u, step);
+        }
         // Route metadata belongs to the path, never to the persistent actor.
         Object.assign(u, positionOf(step));
         u.momentum = 0;
         delete u.lastTargetId;
         delete u.lastShotPosition;
         exhaust(s, u, cost);
-        if (detectContact(s)) return false;
+        if (detectContact(s)) {
+          return false;
+        }
       }
       return true;
     },
@@ -8419,20 +9597,45 @@ function beginUnitTurn(s, u) {
 // Exit orders retain every participant. A receipt records the paid crossing;
 // it does not transfer the soldier or their equipment to campaign stock.
 function exitUnitReason(s, u, exit, { routing = false } = {}) {
-  if (!u || (u.side !== 'player' && !routing)) return 'No puedes retirar a ese combatiente.';
-  if (u.departure) return 'El soldado ya salió del sector.';
-  if (u.hp <= 0 || u.unconscious || u.hp < CRITICAL_HEALTH) return 'El soldado no puede caminar.';
-  if (u.surrendered || (u.routed && !routing)) return 'El soldado no está bajo tus órdenes.';
-  if (u.knockedDown) return 'El soldado debe ponerse de pie.';
-  if (u.entangled) return 'El soldado debe liberarse de las boleadoras.';
-  if (tacticalLevel(u) !== 0) return 'Bajá al suelo antes de salir del sector.';
-  if (!boundaryMatches(s, u, exit.edge)) return 'Debe alcanzar el borde de esta salida.';
+  if (!u || (u.side !== 'player' && !routing)) {
+    return 'No puedes retirar a ese combatiente.';
+  }
+  if (u.departure) {
+    return 'El soldado ya salió del sector.';
+  }
+  if (u.hp <= 0 || u.unconscious || u.hp < CRITICAL_HEALTH) {
+    return 'El soldado no puede caminar.';
+  }
+  if (u.surrendered || (u.routed && !routing)) {
+    return 'El soldado no está bajo tus órdenes.';
+  }
+  if (u.knockedDown) {
+    return 'El soldado debe ponerse de pie.';
+  }
+  if (u.entangled) {
+    return 'El soldado debe liberarse de las boleadoras.';
+  }
+  if (tacticalLevel(u) !== 0) {
+    return 'Bajá al suelo antes de salir del sector.';
+  }
+  if (!boundaryMatches(s, u, exit.edge)) {
+    return 'Debe alcanzar el borde de esta salida.';
+  }
   const ground = tile(s, u.x, u.y);
-  if (!ground || ground.blocked || propBlocksAt(s, u.x, u.y) || !boundaryPassable(s, u, exit.edge))
+  if (
+    !ground ||
+    ground.blocked ||
+    propBlocksAt(s, u.x, u.y) ||
+    !boundaryPassable(s, u, exit.edge)
+  ) {
     return 'El paso de salida está bloqueado.';
-  if (s.mode !== 'exploration' && u.ap < stepCost(u, ground))
+  }
+  if (s.mode !== 'exploration' && u.ap < stepCost(u, ground)) {
     return 'Faltan PA para cruzar el borde.';
-  if (u.energy <= movementStepEnergy(s, u, ground)) return 'Faltan fuerzas para cruzar el borde.';
+  }
+  if (u.energy <= movementStepEnergy(s, u, ground)) {
+    return 'Faltan fuerzas para cruzar el borde.';
+  }
   return null;
 }
 export function exitPreview(s, { unitIds, exitId } = {}) {
@@ -8448,17 +9651,21 @@ export function exitPreview(s, { unitIds, exitId } = {}) {
     s.reactionStack?.length
       ? 'La salida requiere el turno normal del jugador.'
       : null;
-  if (!reason && !exit) reason = 'Selecciona una salida autorizada.';
-  if (!reason && (!ids.length || new Set(ids).size !== ids.length))
+  if (!reason && !exit) {
+    reason = 'Selecciona una salida autorizada.';
+  }
+  if (!reason && (!ids.length || new Set(ids).size !== ids.length)) {
     reason = 'Selecciona combatientes distintos para salir.';
+  }
   const eligibleIds = [],
     blocked = [],
     costById = {};
   for (const id of ids) {
     const u = s?.units?.find((v) => v.id === id),
       why = reason ?? (u?.militia ? 'La milicia actúa por su cuenta.' : exitUnitReason(s, u, exit));
-    if (why) blocked.push({ id, reason: why });
-    else {
+    if (why) {
+      blocked.push({ id, reason: why });
+    } else {
       eligibleIds.push(id);
       costById[id] = stepCost(u, tile(s, u.x, u.y));
     }
@@ -8502,7 +9709,9 @@ function crossBoundary(s, u, exit) {
     observation = { ...reactionObservation(s, u), crossing: true },
     ground = tile(s, u.x, u.y),
     cost = stepCost(u, ground);
-  if (!exploring) spendParticipantActionPoints(u, cost);
+  if (!exploring) {
+    spendParticipantActionPoints(u, cost);
+  }
   lowerWeapon(u);
   u.facing = { N: 0, E: 2, S: 4, W: 6 }[exit.edge];
   u.momentum = 0;
@@ -8541,14 +9750,17 @@ function crossBoundary(s, u, exit) {
     elapsedSeconds: s.elapsedSeconds ?? 0,
     mountId: u.mounted && u.mount?.id ? u.mount.id : null,
   };
-  if (u.routed) u.fled = true;
+  if (u.routed) {
+    u.fled = true;
+  }
   delete u.lastKnownEnemy;
   delete u.lastHeardNoise;
-  if (departureObserved)
+  if (departureObserved) {
     say(
       s,
       `${u.name} sale del sector por el borde ${{ N: 'norte', E: 'este', S: 'sur', W: 'oeste' }[exit.edge]}.`,
     );
+  }
   return true;
 }
 function applyExit(s, a) {
@@ -8567,14 +9779,19 @@ function applyExit(s, a) {
       sayObserved(s, [u], `${u.name}: ${reason}`);
       break;
     }
-    if (!crossBoundary(s, u, exit)) break;
-    for (const npc of crossPrisonerEscorts(s, u, exit))
+    if (!crossBoundary(s, u, exit)) {
+      break;
+    }
+    for (const npc of crossPrisonerEscorts(s, u, exit)) {
       sayPublic(
         s,
         `${npc.name} cruza la salida junto a ${u.name}. Su equipo queda en el lugar de cautiverio.`,
       );
+    }
     checkEnd(s);
-    if (s.status !== 'active') break;
+    if (s.status !== 'active') {
+      break;
+    }
   }
   return true;
 }
@@ -8588,18 +9805,24 @@ function routedOrder(s, u, action) {
   const accepted = apply(s, { ...action, unitId: u.id }, u.side === 'enemy');
   if (accepted !== false && exploring) {
     const seconds = Math.max(0, (s.actionDurationSeconds ?? 6) - (s.actionTimeAppliedSeconds ?? 0));
-    if (seconds) advanceExplorationAction(s, seconds);
+    if (seconds) {
+      advanceExplorationAction(s, seconds);
+    }
     checkEnd(s);
     detectContact(s);
   }
   u.routed = true;
-  if (accepted === false) s.lastError = null;
+  if (accepted === false) {
+    s.lastError = null;
+  }
   delete s.actionDurationSeconds;
   delete s.actionTimeAppliedSeconds;
   return accepted;
 }
 function processRout(s, u) {
-  if (!u.routed || !fieldCapable(u) || u.unconscious) return;
+  if (!u.routed || !fieldCapable(u) || u.unconscious) {
+    return;
+  }
   const exploring = s.mode === 'exploration',
     stopped = () =>
       s.status !== 'active' ||
@@ -8607,12 +9830,18 @@ function processRout(s, u) {
       s.reactionStack?.length ||
       (exploring && s.mode !== 'exploration');
   if (u.knockedDown || (s.upperSurfaces?.length && u.stance !== 'standing')) {
-    if (!routedOrder(s, u, { type: 'stance', stance: 'standing' }) || stopped()) return;
+    if (!routedOrder(s, u, { type: 'stance', stance: 'standing' }) || stopped()) {
+      return;
+    }
   }
   if (u.entangled) {
-    if (!routedOrder(s, u, { type: 'free' }) || stopped()) return;
+    if (!routedOrder(s, u, { type: 'free' }) || stopped()) {
+      return;
+    }
   }
-  if (stopped()) return;
+  if (stopped()) {
+    return;
+  }
   // Garrisons retain town custody; only hired squads can return to rural cells.
   const exits =
     u.side === 'player'
@@ -8674,23 +9903,38 @@ function processRout(s, u) {
         .reverse()
         .map((p) => reachable.find((v) => sameCell(v, p)))
         .find(Boolean);
-    if (!step) return;
+    if (!step) {
+      return;
+    }
     const before = positionOf(u);
-    if (!routedOrder(s, u, { type: 'move', ...positionOf(step) })) return;
+    if (!routedOrder(s, u, { type: 'move', ...positionOf(step) })) {
+      return;
+    }
     const actual = step.path.findIndex((p) => sameCell(p, u));
-    if (actual >= 0) u.fleePath = [...(u.fleePath ?? []), ...step.path.slice(0, actual + 1)];
-    if (sameCell(u, before)) return;
+    if (actual >= 0) {
+      u.fleePath = [...(u.fleePath ?? []), ...step.path.slice(0, actual + 1)];
+    }
+    if (sameCell(u, before)) {
+      return;
+    }
   }
-  if (stopped() || exitUnitReason(s, u, route.exit, { routing: true })) return;
+  if (stopped() || exitUnitReason(s, u, route.exit, { routing: true })) {
+    return;
+  }
   u.routed = false;
   const departed = crossBoundary(s, u, route.exit);
   u.routed = true;
-  if (departed) u.fled = true;
+  if (departed) {
+    u.fled = true;
+  }
   checkEnd(s);
 }
 
+/** @param {import('./public/compatibility-types.ts').BattleSnapshot} state @param {import('./public/compatibility-types.ts').TacticalAction} action @param {{cost:number,path:import('./public/compatibility-types.ts').TacticalRoutePoint[]} | null} [movementPath] @returns {import('./public/compatibility-types.ts').BattleSnapshot} */
 export function actBattle(state, action, movementPath = null) {
-  if (action.type === 'rest') return endTurn(state);
+  if (action.type === 'rest') {
+    return endTurn(state);
+  }
   return captureFirearmNearMissFeedback(state, () =>
     coordinateSectorOperation(
       state,
@@ -8700,11 +9944,18 @@ export function actBattle(state, action, movementPath = null) {
     ),
   );
 }
+/** @param {import('./public/compatibility-types.ts').BattleSnapshot} state @returns {import('./public/compatibility-types.ts').BattleSnapshot} */
 export function resumeSectorOperation(state) {
   const pending = state.pendingSectorOperation;
-  if (!pending) return state;
-  if (pending.kind === SectorOperationKind.EndTurn) return endTurn(state);
-  if (pending.kind === SectorOperationKind.Order) return actBattle(state, pending.order);
+  if (!pending) {
+    return state;
+  }
+  if (pending.kind === SectorOperationKind.EndTurn) {
+    return endTurn(state);
+  }
+  if (pending.kind === SectorOperationKind.Order) {
+    return actBattle(state, pending.order);
+  }
   return coordinateSectorOperation(
     state,
     { kind: SectorOperationKind.Continue },
@@ -8713,7 +9964,9 @@ export function resumeSectorOperation(state) {
   );
 }
 function actBattleResolved(state, action, movementPath = null) {
-  if (state.deployment) return sectorDeploymentAction(state, action);
+  if (state.deployment) {
+    return sectorDeploymentAction(state, action);
+  }
   const ids = [action.unitId, ...(Array.isArray(action.unitIds) ? action.unitIds : [])]
     .filter((id) => id !== undefined)
     .map(String);
@@ -8728,8 +9981,14 @@ function actBattleResolved(state, action, movementPath = null) {
     return rejected;
   }
   const next = actBattleInput(state, action, movementPath);
-  if (next !== state && !next.lastError) for (const unit of next.units) syncUnitAmmunition(unit);
-  if (cursorOrders.has(action.type)) return next;
+  if (next !== state && !next.lastError) {
+    for (const unit of next.units) {
+      syncUnitAmmunition(unit);
+    }
+  }
+  if (cursorOrders.has(action.type)) {
+    return next;
+  }
   return next.lastError
     ? next
     : carryMeleeAttackResult(next, cleanActionTime(settleAutonomous(next)));
@@ -8743,8 +10002,9 @@ function actBattleInput(state, action, movementPath = null) {
     ['fire', 'melee', 'heal', 'free', 'prisonerEscort', 'loot', 'useItem'].includes(action.type) &&
     !state.units.some((u) => u.id === String(action.targetId)) &&
     state.npcs?.some((n) => n.id === String(action.targetId))
-  )
+  ) {
     action = { ...action, targetKind: 'npc' };
+  }
   if (
     ['drop', 'transfer'].includes(action.type) &&
     (action.slot !== undefined || action.inventoryKey !== undefined)
@@ -8752,14 +10012,16 @@ function actBattleInput(state, action, movementPath = null) {
     const u = state.units.find((v) => v.id === String(action.unitId)),
       target = state.units.find((v) => v.id === String(action.targetId));
     let reason = action.item !== undefined ? 'Elegí una sola pieza de equipo.' : null;
-    if (!reason && action.type === 'transfer')
+    if (!reason && action.type === 'transfer') {
       reason = weaponTransferPreview(state, u, target, action.inventoryKey, action.slot).reason;
+    }
     if (
       !reason &&
       action.slot !== undefined &&
       (!['primary', 'blade'].includes(action.slot) || action.inventoryKey !== undefined)
-    )
+    ) {
       reason = 'Elegí una sola mano o un arma de la mochila.';
+    }
     if (reason) {
       const rejected = clone(state);
       rejected.lastError = reason;
@@ -8777,14 +10039,17 @@ function actBattleInput(state, action, movementPath = null) {
       sayPublic(rejected, rejected.lastError);
       return rejected;
     }
-    if (plan.path.length) return approachAndUse(state, action, plan);
+    if (plan.path.length) {
+      return approachAndUse(state, action, plan);
+    }
     return actBattleOrder(state, action);
   }
   if (
     action.type === 'useItem' &&
     heldGrenade(state.units.find((u) => u.id === String(action.unitId)))
-  )
+  ) {
     action = grenadeUseOrder(state, action);
+  }
   if (action.type === 'throwGrenade') {
     const unit = state.units.find((u) => u.id === String(action.unitId)),
       plan = grenadeThrowPreview(state, unit, action, action);
@@ -8805,11 +10070,12 @@ function actBattleInput(state, action, movementPath = null) {
         !approachCompleted(state, prepared, unit.id, { destination: positionOf(unit) }) ||
         !grenadeThrowPreview(prepared, ready, action, action).valid
       ) {
-        if (!prepared.lastError)
+        if (!prepared.lastError) {
           sayPublic(
             prepared,
             'La preparación se detuvo antes del lanzamiento. Revisá la situación y apuntá de nuevo.',
           );
+        }
         return prepared;
       }
       return actBattleOrder(prepared, action);
@@ -8825,12 +10091,15 @@ function actBattleInput(state, action, movementPath = null) {
       sayPublic(next, preview.reason);
       return next;
     }
-    if (preview.operation === 'reload')
+    if (preview.operation === 'reload') {
       return cleanActionTime(settleAutonomous(actBattleOrder(state, action)));
+    }
     const plan = planEquipmentCursorOrder(unit, action, state),
       actor = next.units.find((u) => u.id === unit.id);
     replaceUnit(actor, plan.unit);
-    if (plan.dropped) addGroundStack(next, plan.dropped, actor);
+    if (plan.dropped) {
+      addGroundStack(next, plan.dropped, actor);
+    }
     next.lastError = null;
     return next;
   }
@@ -8843,7 +10112,9 @@ function actBattleInput(state, action, movementPath = null) {
       sayPublic(rejected, plan.reason);
       return rejected;
     }
-    if (plan.kind === 'gift' && plan.path.length) return approachAndUse(state, plan.action, plan);
+    if (plan.kind === 'gift' && plan.path.length) {
+      return approachAndUse(state, plan.action, plan);
+    }
     return actBattleOrder(state, plan.action);
   }
   if (action.type === 'throwKnife') {
@@ -8863,7 +10134,9 @@ function actBattleInput(state, action, movementPath = null) {
     for (const type of ['stance', 'look']) {
       const current = prepared.units.find((u) => u.id === String(action.unitId)),
         costs = knifeThrowCosts(current, target, action.aim);
-      if (!(type === 'stance' ? costs.stance : costs.turn)) continue;
+      if (!(type === 'stance' ? costs.stance : costs.turn)) {
+        continue;
+      }
       const order =
         type === 'stance'
           ? { type, unitId: current.id, stance: 'standing' }
@@ -8881,11 +10154,12 @@ function actBattleInput(state, action, movementPath = null) {
           action,
         ).valid
       ) {
-        if (!next.lastError)
+        if (!next.lastError) {
           sayPublic(
             next,
             'La preparación se detuvo antes del lanzamiento. Revisá la situación y apuntá de nuevo.',
           );
+        }
         return next;
       }
       prepared = next;
@@ -8921,18 +10195,29 @@ function actBattleInput(state, action, movementPath = null) {
       sayPublic(rejected, plan.reason);
       return rejected;
     }
-    if (plan?.path.length) return approachAndUse(state, action, plan);
+    if (plan?.path.length) {
+      return approachAndUse(state, action, plan);
+    }
   }
   return actBattleOrder(state, action, action.type === 'move' ? movementPath : null);
 }
 function contextualUsePlan(state, unit, action) {
-  if (action.type === 'meleePoint') return meleePointPreview(state, unit, action);
-  if (action.type === 'inventoryMap') return inventoryMapPreview(state, unit, action);
-  if (action.type === 'loot') return lootApproachPreview(state, unit, action);
-  if (action.environment)
+  if (action.type === 'meleePoint') {
+    return meleePointPreview(state, unit, action);
+  }
+  if (action.type === 'inventoryMap') {
+    return inventoryMapPreview(state, unit, action);
+  }
+  if (action.type === 'loot') {
+    return lootApproachPreview(state, unit, action);
+  }
+  if (action.environment) {
     return environmentUsePreview(state, unit, action.environment, action.environment.verb);
+  }
   const npc = state.npcs?.find((n) => n.id === String(action.targetId));
-  if (npc && unit.activeSlot === 'item') return npcGiftPreview(state, unit, npc);
+  if (npc && unit.activeSlot === 'item') {
+    return npcGiftPreview(state, unit, npc);
+  }
   return action.targetId !== undefined
     ? itemUsePreview(
         state,
@@ -8968,7 +10253,7 @@ function approachAndUse(state, action, plan) {
     { ...plan.destination, cost: plan.movePa, path: plan.path },
   );
   const interruptedGift = () => {
-    if (plan.kind === 'gift')
+    if (plan.kind === 'gift') {
       recordNpcGiftResult(
         moved,
         action,
@@ -8976,6 +10261,7 @@ function approachAndUse(state, action, plan) {
         'interrupted',
         'El desplazamiento se detuvo antes de entregar el objeto. Revisá la situación.',
       );
+    }
   };
   if (moved.lastError) {
     interruptedGift();
@@ -9005,11 +10291,15 @@ function approachAndUse(state, action, plan) {
   );
 }
 function actBattleOrder(state, action, movementPath = null) {
-  if (action.type === 'rest') return endTurn(state);
+  if (action.type === 'rest') {
+    return endTurn(state);
+  }
   const s = clone(state);
   s.lastError = null;
   if (action.type === 'ambient') {
-    if (s.mode !== 'exploration' || s.phase !== 'player' || s.status !== 'active') return s;
+    if (s.mode !== 'exploration' || s.phase !== 'player' || s.status !== 'active') {
+      return s;
+    }
     advanceExplorationAction(s, 6);
     checkEnd(s);
     detectContact(s);
@@ -9027,8 +10317,9 @@ function actBattleOrder(state, action, movementPath = null) {
     return s;
   }
   SectorTimeBudget.restore(s).assertCanStartOperation();
-  if (s.mode === 'combat' && !s.roundTimeCharged)
+  if (s.mode === 'combat' && !s.roundTimeCharged) {
     SectorTimeBudget.restore(s).assertCanAdvance(COMBAT_ROUND_SECONDS);
+  }
   const oldMode = s.mode;
   delete s.actionDurationSeconds;
   delete s.actionTimeAppliedSeconds;
@@ -9040,7 +10331,9 @@ function actBattleOrder(state, action, movementPath = null) {
     sayPublic(rejected, s.lastError);
     return rejected;
   }
-  if (action.type === 'weaponMode') return cleanActionTime(s);
+  if (action.type === 'weaponMode') {
+    return cleanActionTime(s);
+  }
   if (oldMode === 'exploration') {
     const seconds = Math.max(0, (s.actionDurationSeconds ?? 6) - (s.actionTimeAppliedSeconds ?? 0));
     if (seconds) {
@@ -9059,7 +10352,9 @@ function actBattleOrder(state, action, movementPath = null) {
   rememberContacts(s);
   revealRooms(s);
   checkpointCompletedSectorOrder(s);
-  if (s.phase === 'enemy' && s.reactionStack?.length) runEnemyReactions(s);
+  if (s.phase === 'enemy' && s.reactionStack?.length) {
+    runEnemyReactions(s);
+  }
   return carryMeleeAttackResult(s, cleanActionTime(resolveFirstContact(s)));
 }
 function finishEnemyRound(s) {
@@ -9087,13 +10382,17 @@ function beginAlliedTurn(s, startEnemyAfter = false) {
     actionsTaken: 0,
     startEnemyAfter,
   };
-  if (s.alliedTurn.unitIds.length) sayPublic(s, `Turno ${s.turn}: actúa la guarnición local.`);
+  if (s.alliedTurn.unitIds.length) {
+    sayPublic(s, `Turno ${s.turn}: actúa la guarnición local.`);
+  }
   return runAlliedTurn(s);
 }
 // Militia use their existing AP, equipment and awareness. This queue survives
 // enemy reactions and hired-soldier interrupts without starting the turn again.
 function runAlliedTurn(state) {
-  if (pauseAutonomousAtBoundary(state)) return state;
+  if (pauseAutonomousAtBoundary(state)) {
+    return state;
+  }
   const queue = state.alliedTurn,
     turn = readCombatTurn(queue);
   while (!turn.complete && state.status === 'active') {
@@ -9102,27 +10401,37 @@ function runAlliedTurn(state) {
       turn.finishCurrentActions();
       writeCombatTurn(queue, turn);
       processRout(state, unit);
-      if (state.status !== 'active' || state.phase !== 'player') return state;
+      if (state.status !== 'active' || state.phase !== 'player') {
+        return state;
+      }
     }
     while (unit && alive(unit) && unit.ap >= 3 && turn.canAct && state.status === 'active') {
       rememberContacts(state);
       const maintenanceContext = autonomousRepairContext(state, unit),
         order = automaticOrder(state, unit, { maintenanceContext });
-      if (!order) break;
+      if (!order) {
+        break;
+      }
       turn.recordAction();
       writeCombatTurn(queue, turn);
       const accepted = apply(state, order, false, null, maintenanceContext);
-      if (order.patrol) unit.patrolTurn = state.turn;
+      if (order.patrol) {
+        unit.patrolTurn = state.turn;
+      }
       if (accepted === false) {
         state.lastError = null;
         break;
       }
-      if (state.status !== 'active' || state.phase !== 'player') return state;
+      if (state.status !== 'active' || state.phase !== 'player') {
+        return state;
+      }
     }
     turn.finishCurrentParticipant();
     writeCombatTurn(queue, turn);
   }
-  if (state.status !== 'active') return state;
+  if (state.status !== 'active') {
+    return state;
+  }
   delete state.alliedTurn;
   finishCombatRound(state);
   return queue.startEnemyAfter && state.status === 'active' && state.mode === 'combat'
@@ -9131,7 +10440,9 @@ function runAlliedTurn(state) {
 }
 function settleAutonomous(s) {
   while (s.status === 'active') {
-    if (pauseAutonomousAtBoundary(s)) return s;
+    if (pauseAutonomousAtBoundary(s)) {
+      return s;
+    }
     if (s.phase === 'enemy' && s.reactionStack?.length) {
       runEnemyReactions(s);
       continue;
@@ -9152,8 +10463,11 @@ function settleAutonomous(s) {
         rememberContacts(s);
         const maintenanceContext = autonomousRepairContext(s, militia),
           order = chooseEnemyAction(s, militia, { maintenanceContext });
-        if (order) reactionWindow.recordAutomaticAction(militia.id);
-        else reactionWindow.finishAutomaticActions(militia.id);
+        if (order) {
+          reactionWindow.recordAutomaticAction(militia.id);
+        } else {
+          reactionWindow.finishAutomaticActions(militia.id);
+        }
         s.interrupt = reactionWindowSnapshot(reactionWindow);
         if (order && apply(s, order, false, null, maintenanceContext) === false) {
           reactionWindow.finishAutomaticActions(militia.id);
@@ -9167,13 +10481,17 @@ function settleAutonomous(s) {
           const u = s.units.find((v) => v.id === id);
           return u && !u.militia;
         })
-      )
+      ) {
         break;
+      }
       const reaction = window.returnTo === 'reaction';
       delete s.interrupt;
       setCombatPhase(s, CombatPhase.Enemy);
-      if (reaction) runEnemyReactions(s);
-      else runEnemyPhase(s);
+      if (reaction) {
+        runEnemyReactions(s);
+      } else {
+        runEnemyPhase(s);
+      }
       continue;
     }
     if (s.phase === 'player' && s.alliedTurn) {
@@ -9185,9 +10503,16 @@ function settleAutonomous(s) {
   return s;
 }
 function finishCombatRound(s) {
-  if (s.npcs?.length) say(s, `Turno ${s.turn}: actúan los civiles.`);
+  if (s.npcs?.length) {
+    say(s, `Turno ${s.turn}: actúan los civiles.`);
+  }
   runCivilianPhase(s, s.elapsedSeconds ?? 0, {
-    beforeConditions: atSecond => advanceMilitaryConditions(s, atSecond, (s.startSeconds ?? 0) + (s.elapsedSeconds ?? 0) - COMBAT_ROUND_SECONDS),
+    beforeConditions: (atSecond) =>
+      advanceMilitaryConditions(
+        s,
+        atSecond,
+        (s.startSeconds ?? 0) + (s.elapsedSeconds ?? 0) - COMBAT_ROUND_SECONDS,
+      ),
     afterWound: (resident, beforeHealth) => reportResidentBleeding(s, resident, beforeHealth),
   });
   s.smoke = s.smoke
@@ -9197,7 +10522,9 @@ function finishCombatRound(s) {
   for (const u of s.units.filter((u) => onField(u) && !u.surrendered)) {
     recoverEnergy(u, u.side === 'player' && !u.militia ? 20 : 10);
     refreshCondition(u);
-    if (u.side === 'player') beginUnitTurn(s, u);
+    if (u.side === 'player') {
+      beginUnitTurn(s, u);
+    }
     u.momentum = 0;
     u.lastDirection = null;
   }
@@ -9205,8 +10532,9 @@ function finishCombatRound(s) {
   checkEnd(s);
   rememberContacts(s);
   revealRooms(s);
-  if (canEndCombat(s)) resumeExploration(s);
-  else if (s.status === 'active') {
+  if (canEndCombat(s)) {
+    resumeExploration(s);
+  } else if (s.status === 'active') {
     // Every companion has recovered and refreshed before isolation is tested.
     // A quiet round that already returned to exploration has no fear event.
     for (const u of s.units) {
@@ -9231,9 +10559,12 @@ function finishCombatRound(s) {
 function issueEnemyTurnBudgets(state, queue, turn) {
   for (const id of turn.takeUnissuedBudgets()) {
     const unit = state.units.find((candidate) => candidate.id === id);
-    if (!unit || (!alive(unit) && !fieldCapable(unit))) continue;
-    if (state.enemyTurns > 0) beginUnitTurn(state, unit);
-    else {
+    if (!unit || (!alive(unit) && !fieldCapable(unit))) {
+      continue;
+    }
+    if (state.enemyTurns > 0) {
+      beginUnitTurn(state, unit);
+    } else {
       unit.reactionSpent = 0;
       unit.shock = (unit.shock ?? 0) / 2;
     }
@@ -9241,7 +10572,9 @@ function issueEnemyTurnBudgets(state, queue, turn) {
   writeCombatTurn(queue, turn);
 }
 function runEnemyPhase(state) {
-  if (pauseAutonomousAtBoundary(state)) return state;
+  if (pauseAutonomousAtBoundary(state)) {
+    return state;
+  }
   const queue = state.enemyTurn,
     turn = readCombatTurn(queue);
   issueEnemyTurnBudgets(state, queue, turn);
@@ -9256,7 +10589,9 @@ function runEnemyPhase(state) {
     writeCombatTurn(queue, turn);
     if (unit.routed) {
       processRout(state, unit);
-      if (state.status !== 'active' || state.phase === 'interrupt') return state;
+      if (state.status !== 'active' || state.phase === 'interrupt') {
+        return state;
+      }
       turn.finishCurrentParticipant(Boolean(unit.departure));
       writeCombatTurn(queue, turn);
       continue;
@@ -9264,9 +10599,13 @@ function runEnemyPhase(state) {
     while (turn.canAct && alive(unit) && unit.ap >= 3 && state.status === 'active') {
       rememberContacts(state);
       const order = chooseEnemyAction(state, unit);
-      if (!order) break;
+      if (!order) {
+        break;
+      }
       const accepted = apply(state, order, true);
-      if (order.patrol) unit.patrolTurn = state.turn;
+      if (order.patrol) {
+        unit.patrolTurn = state.turn;
+      }
       turn.recordAction();
       writeCombatTurn(queue, turn);
       if (accepted === false) {
@@ -9281,7 +10620,9 @@ function runEnemyPhase(state) {
     }
     if (alive(unit)) {
       unit.overwatch = unit.ap >= 3;
-      if (!unit.mounted && unit.ap >= 16 && fixedBayonetFor(unit)) unit.braced = true;
+      if (!unit.mounted && unit.ap >= 16 && fixedBayonetFor(unit)) {
+        unit.braced = true;
+      }
     }
     turn.finishCurrentParticipant();
     writeCombatTurn(queue, turn);
@@ -9291,7 +10632,9 @@ function runEnemyPhase(state) {
 // Enemy reactions are resumable mini-turns. They consume the current AP budget;
 // they never advance the clock, bleed wounds, refresh AP, or reset a reaction.
 function runEnemyReactions(state) {
-  if (pauseAutonomousAtBoundary(state)) return state;
+  if (pauseAutonomousAtBoundary(state)) {
+    return state;
+  }
   while (state.reactionStack?.length && state.status === 'active') {
     const reactions = readReactionStack(state),
       turn = reactions.currentTurn;
@@ -9300,11 +10643,17 @@ function runEnemyReactions(state) {
       while (unit && alive(unit) && unit.ap >= 3 && turn.canAct && state.status === 'active') {
         rememberContacts(state);
         const order = chooseEnemyAction(state, unit);
-        if (!order) break;
+        if (!order) {
+          break;
+        }
         const accepted = apply(state, order, true);
         turn.recordAction();
-        if (state.status === 'active') writeReactionStack(state, reactions);
-        if (state.status !== 'active') return state;
+        if (state.status === 'active') {
+          writeReactionStack(state, reactions);
+        }
+        if (state.status !== 'active') {
+          return state;
+        }
         if (accepted === false) {
           state.lastError = null;
           break;
@@ -9315,18 +10664,26 @@ function runEnemyReactions(state) {
           return state;
         }
       }
-      if (state.status !== 'active') return state;
+      if (state.status !== 'active') {
+        return state;
+      }
       turn.finishCurrentParticipant();
       writeReactionStack(state, reactions);
     }
-    if (state.status !== 'active') return state;
+    if (state.status !== 'active') {
+      return state;
+    }
     const resumed = reactions.completeCurrent();
     writeReactionStack(state, reactions);
     setCombatPhase(state, resumed.phase);
-    if (resumed.window)
+    if (resumed.window) {
       state.interrupt = reactionWindowSnapshot(ReactionWindow.restore(resumed.window));
-    else delete state.interrupt;
-    if (state.phase === 'interrupt') break;
+    } else {
+      delete state.interrupt;
+    }
+    if (state.phase === 'interrupt') {
+      break;
+    }
   }
   checkEnd(state);
   rememberContacts(state);
@@ -9335,17 +10692,22 @@ function runEnemyReactions(state) {
   return state;
 }
 function cleanActionTime(s) {
-  for (const unit of s.units) syncUnitAmmunition(unit);
+  for (const unit of s.units) {
+    syncUnitAmmunition(unit);
+  }
   delete s.actionDurationSeconds;
   delete s.actionTimeAppliedSeconds;
-  for (const unit of s.units)
+  for (const unit of s.units) {
     if (
       unit.equipmentCursor &&
       (!alive(unit) || unit.departure || (unit.side === 'player' && !interruptAvailable(s, unit)))
-    )
+    ) {
       returnBattleEquipmentCursor(s, unit);
+    }
+  }
   return s;
 }
+/** @param {import('./public/compatibility-types.ts').BattleSnapshot} state @returns {import('./public/compatibility-types.ts').PresentedBattleResult} */
 export function presentedEndTurn(state) {
   return captureBattlePresentation(
     state,
@@ -9354,6 +10716,7 @@ export function presentedEndTurn(state) {
     (s, surface) => teamCanSee(s, 'player', surface),
   );
 }
+/** @param {import('./public/compatibility-types.ts').BattleSnapshot} state @param {import('./public/compatibility-types.ts').TacticalAction} action @returns {import('./public/compatibility-types.ts').PresentedBattleResult} */
 export function presentedActBattle(state, action) {
   return captureBattlePresentation(
     state,
@@ -9362,6 +10725,7 @@ export function presentedActBattle(state, action) {
     (s, surface) => teamCanSee(s, 'player', surface),
   );
 }
+/** @param {import('./public/compatibility-types.ts').BattleSnapshot} state @returns {import('./public/compatibility-types.ts').BattleSnapshot} */
 export function endTurn(state) {
   const remainingRestSeconds =
     state.mode === 'exploration'
@@ -9382,21 +10746,26 @@ export function endTurn(state) {
   );
 }
 function endTurnResolved(state) {
-  if (state.deployment) return sectorDeploymentAction(state, { type: 'endTurn' });
+  if (state.deployment) {
+    return sectorDeploymentAction(state, { type: 'endTurn' });
+  }
   const ready = clone(state);
-  for (const unit of ready.units)
+  for (const unit of ready.units) {
     if (!returnBattleEquipmentCursor(ready, unit)) {
       const rejected = clone(state);
       rejected.lastError = 'Colocá el objeto del cursor antes de terminar el turno.';
       sayPublic(rejected, rejected.lastError);
       return rejected;
     }
+  }
   return cleanActionTime(settleAutonomous(endTurnState(ready)));
 }
 function endTurnState(state) {
   const s = clone(state);
   s.lastError = null;
-  if (s.status !== 'active') return s;
+  if (s.status !== 'active') {
+    return s;
+  }
   if (s.phase === 'interrupt') {
     const reaction = s.interrupt?.returnTo === 'reaction';
     if (reaction ? !s.reactionStack?.length : !s.enemyTurn) {
@@ -9412,7 +10781,9 @@ function endTurnState(state) {
     const startedAt = s.elapsedSeconds ?? 0;
     for (const u of s.units.filter((u) => u.routed && fieldCapable(u))) {
       processRout(s, u);
-      if (s.status !== 'active' || s.mode !== 'exploration') return resolveFirstContact(s);
+      if (s.status !== 'active' || s.mode !== 'exploration') {
+        return resolveFirstContact(s);
+      }
     }
     if ((s.elapsedSeconds ?? 0) > startedAt) {
       s.turn++;
@@ -9454,9 +10825,15 @@ function endTurnState(state) {
     revealRooms(s);
     return resolveFirstContact(s);
   }
-  if (s.phase === 'enemy' && s.reactionStack?.length) return runEnemyReactions(s);
-  if (s.phase === 'enemy' && s.enemyTurn) return runEnemyPhase(s);
-  if (s.alliedTurn) return runAlliedTurn(s);
+  if (s.phase === 'enemy' && s.reactionStack?.length) {
+    return runEnemyReactions(s);
+  }
+  if (s.phase === 'enemy' && s.enemyTurn) {
+    return runEnemyPhase(s);
+  }
+  if (s.alliedTurn) {
+    return runAlliedTurn(s);
+  }
   if (s.enemyFirstAwaitingPlayer) {
     delete s.enemyFirstAwaitingPlayer;
     return beginAlliedTurn(s, true);
@@ -9467,10 +10844,16 @@ function endTurnState(state) {
   }
   for (const u of s.units.filter((u) => u.side === 'player' && !u.militia && u.routed)) {
     processRout(s, u);
-    if (s.status !== 'active' || s.phase === 'interrupt') return s;
-    if (s.reactionStack?.length) return runEnemyReactions(s);
+    if (s.status !== 'active' || s.phase === 'interrupt') {
+      return s;
+    }
+    if (s.reactionStack?.length) {
+      return runEnemyReactions(s);
+    }
   }
-  if (!s.roundTimeCharged) advanceBattleClock(s, COMBAT_ROUND_SECONDS);
+  if (!s.roundTimeCharged) {
+    advanceBattleClock(s, COMBAT_ROUND_SECONDS);
+  }
   changeCombat(s, (combat) => combat.chargeRoundTime());
   return startEnemyTurn(s);
 }

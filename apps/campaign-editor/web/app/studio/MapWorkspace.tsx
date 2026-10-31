@@ -1,6 +1,15 @@
 'use client';
+import type { CampaignProjectDocument, JsonValue } from '../../../domain/campaign-project.ts';
+import {
+  assertPhysicalMap,
+  assertCampaignContent,
+  documentObjects,
+  documentObject,
+  documentString,
+  readBuildingTemplate,
+} from '../../lib/editor-documents.ts';
 import { editorErrorMessage } from '../../../infrastructure/editor-error-message.ts';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import SectorEditor from '../editor/SectorEditor.tsx';
 import { DocumentEditor } from './FieldEditor.tsx';
 import { projectContent } from '../../../infrastructure/project-operations.js';
@@ -12,19 +21,46 @@ export default function MapWorkspace({
   project,
   onChange,
 }: {
-  project: any;
-  onChange: (next: any) => void;
+  project: CampaignProjectDocument;
+  onChange: (next: CampaignProjectDocument) => void;
 }) {
   const [id, setId] = useState(Object.keys(project.maps)[0] ?? ''),
     [error, setError] = useState('');
-  const selected = project.maps[id] ? id : Object.keys(project.maps)[0],
-    document = project.maps[selected],
-    campaign = useMemo(() => projectContent(project), [project]);
-  function change(next: any) {
+  const selected = project.maps[id] ? id : Object.keys(project.maps)[0];
+  const document = selected ? project.maps[selected] : undefined;
+  let map = null;
+  let mapError = '';
+  if (document) {
     try {
+      assertPhysicalMap(document);
+      map = document;
+    } catch (error) {
+      mapError = editorErrorMessage(error);
+    }
+  }
+  const rawCampaign = projectContent(project);
+  let campaign = null;
+  try {
+    assertCampaignContent(rawCampaign);
+    campaign = rawCampaign;
+  } catch {}
+  const rawTemplates = documentObjects(project.editor?.['buildingTemplates']);
+  const templates = rawTemplates.flatMap((value) => {
+    try {
+      return [readBuildingTemplate(value)];
+    } catch {
+      return [];
+    }
+  });
+  function change(next: JsonValue) {
+    if (!selected) {
+      return;
+    }
+    try {
+      assertPhysicalMap(next);
       onChange(setProjectMap(project, selected, next));
       setError('');
-    } catch (e: any) {
+    } catch (e) {
       setError(editorErrorMessage(e));
     }
   }
@@ -38,9 +74,9 @@ export default function MapWorkspace({
       <label>
         Mapa
         <select value={selected ?? ''} onChange={(e) => setId(e.target.value)}>
-          {Object.entries(project.maps).map(([id, map]: any) => (
+          {Object.entries(project.maps).map(([id, map]) => (
             <option key={id} value={id}>
-              {map.metadata?.title ?? id} · {id}
+              {documentString(documentObject(map['metadata'])['title'], id)} · {id}
             </option>
           ))}
         </select>
@@ -48,18 +84,25 @@ export default function MapWorkspace({
       {error && <p role="alert">{error}</p>}
       {document ? (
         <>
-          <SectorEditor
-            key={selected}
-            document={document}
-            campaign={campaign}
-            onDocumentChange={change}
-            embedded
-            templates={project.editor?.buildingTemplates ?? []}
-            onSaveTemplate={(template: any) =>
-              onChange(saveProjectBuildingTemplate(project, template))
-            }
-          />
-          <details>
+          {map ? (
+            <SectorEditor
+              key={selected}
+              document={map}
+              {...(campaign ? { campaign } : {})}
+              onDocumentChange={change}
+              embedded
+              templates={templates}
+              onSaveTemplate={(template) =>
+                onChange(saveProjectBuildingTemplate(project, template))
+              }
+            />
+          ) : (
+            <p role="alert">Corregí el documento para abrir el mapa: {mapError}</p>
+          )}
+          {templates.length !== rawTemplates.length && (
+            <p role="alert">Algunas plantillas necesitan correcciones en sus documentos.</p>
+          )}
+          <details open={!map}>
             <summary>Campos completos del mapa, niveles y losas</summary>
             <p>
               upperSurfaces define losas y plataformas en metros. climbLinks conecta niveles. Las

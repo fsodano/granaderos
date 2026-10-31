@@ -1,4 +1,4 @@
-name: Minimal tests
+name: Repository verification
 
 on:
   pull_request:
@@ -9,34 +9,29 @@ permissions:
   contents: read
 
 concurrency:
-  group: minimal-tests-${{ github.event.pull_request.number || github.ref }}
+  group: repository-verification-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   tests:
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version-file: .node-version
           cache: npm
           cache-dependency-path: |
             apps/web/package-lock.json
             apps/campaign-editor/package-lock.json
+            tools/playgrounds/granadero-3d/package-lock.json
       - name: Install test dependencies
         run: npm ci --prefix apps/web
       - name: Install editor dependencies
         run: npm ci --prefix apps/campaign-editor
-      - name: Lint architecture and browser boundaries
-        run: npm run lint
-      - name: Check architecture boundaries
-        run: npm run check:architecture
-      - name: Check source formatting
-        run: npm run check:format
-      - name: Check types
-        run: npm run typecheck
-      - name: Run minimal tests
-        run: npm test
+      - name: Install playground test dependencies
+        run: npm ci --prefix tools/playgrounds/granadero-3d
+      - name: Run the complete local verification profile
+        run: npm run verify

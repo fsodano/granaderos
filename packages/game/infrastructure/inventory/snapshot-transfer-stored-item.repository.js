@@ -46,7 +46,9 @@ export class SnapshotTransferStoredItemRepository {
   }
 
   result() {
-    if (!this.#result) throw new Error('The stored item transfer has not committed.');
+    if (!this.#result) {
+      throw new Error('The stored item transfer has not committed.');
+    }
     return this.#result;
   }
 }

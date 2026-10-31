@@ -25,8 +25,9 @@ export function validateForceEquipment(field, value, weaponIds) {
     Array.isArray(value) ||
     Object.keys(value).length !== roles.length ||
     !roles.every((role) => Object.hasOwn(value, role))
-  )
+  ) {
     return [`${group.label}: elegí un arma para cada tipo de tropa.`];
+  }
   return roles.flatMap((role) =>
     value[role] === null || weaponIds.has(value[role])
       ? []
@@ -55,8 +56,9 @@ export function validateForceAppearance(field, value) {
     Array.isArray(value) ||
     Object.keys(value).length !== roles.length ||
     !roles.every((role) => Object.hasOwn(value, role))
-  )
+  ) {
     return [`${group.label}: elegí una apariencia para cada tipo de tropa.`];
+  }
   return roles.flatMap((role) =>
     validAppearance(value[role])
       ? []

@@ -1,8 +1,13 @@
+import type {
+  CharacterDefinition,
+  DraftPatch,
+  ServiceRelationship,
+} from '../../../../../packages/campaign-format/types.ts';
 import {
   SERVICE_REFUSAL_LIMIT,
   SERVICE_REFUSAL_REASON_LIMIT,
   PREFERRED_COMPANION_LIMIT,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 import { PREFERRED_COMPANION_EXPLANATION } from '../../../../web/game-preview.ts';
 
 export default function ServiceRelationshipsEditor({
@@ -10,9 +15,9 @@ export default function ServiceRelationshipsEditor({
   characters,
   onChange,
 }: {
-  character: any;
-  characters: any[];
-  onChange: (patch: any) => void;
+  character: CharacterDefinition;
+  characters: CharacterDefinition[];
+  onChange: (patch: DraftPatch<CharacterDefinition>) => void;
 }) {
   const choices = characters.filter((c) => c.id !== character.id);
   const fields = [
@@ -41,27 +46,27 @@ export default function ServiceRelationshipsEditor({
       initialReason: 'Confía en su apoyo durante el combate.',
       description: PREFERRED_COMPANION_EXPLANATION,
     },
-  ];
+  ] as const;
   return (
     <>
       {fields.map((option) => {
         const preferences = character[option.field] ?? [],
           opposed = character[option.other] ?? [];
-        const change = (index: number, patch: any) =>
+        const change = (index: number, patch: Partial<ServiceRelationship>) =>
           onChange({
-            [option.field]: preferences.map((p: any, i: number) =>
+            [option.field]: preferences.map((p, i: number) =>
               i === index ? { ...p, ...patch } : p,
             ),
           });
         const used = (id: string, index = -1) =>
-          preferences.some((p: any, i: number) => i !== index && p.character === id) ||
-          opposed.some((p: any) => p.character === id);
+          preferences.some((p, i: number) => i !== index && p.character === id) ||
+          opposed.some((p) => p.character === id);
         const available = choices.filter((c) => !used(c.id));
         return (
           <fieldset key={option.field} aria-label={option.title}>
             <legend>{option.title}</legend>
             <p>{option.description}</p>
-            {preferences.map((preference: any, index: number) => (
+            {preferences.map((preference, index: number) => (
               <div key={index}>
                 <label>
                   {option.person}
@@ -97,7 +102,7 @@ export default function ServiceRelationshipsEditor({
                   className="line-button"
                   onClick={() =>
                     onChange({
-                      [option.field]: preferences.filter((_: any, i: number) => i !== index),
+                      [option.field]: preferences.filter((_, i: number) => i !== index),
                     })
                   }
                 >
@@ -113,7 +118,7 @@ export default function ServiceRelationshipsEditor({
                 onChange({
                   [option.field]: [
                     ...preferences,
-                    { character: available[0].id, reason: option.initialReason },
+                    { character: available[0]?.id ?? '', reason: option.initialReason },
                   ],
                 })
               }

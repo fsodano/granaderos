@@ -1,13 +1,14 @@
+import type { CampaignContent } from '../../../../../packages/campaign-format/types.ts';
 import {
   contractQuote,
   contractTermsFor,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 export default function ContractPricePreview({
   draft,
   monthlyPay,
   serviceGuarantee = 0,
 }: {
-  draft: any;
+  draft: CampaignContent;
   monthlyPay: number;
   serviceGuarantee?: number;
 }) {

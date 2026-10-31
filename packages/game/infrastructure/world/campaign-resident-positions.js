@@ -13,7 +13,9 @@ const characterPosition = (reference) => ({
 /** @returns {ResidentPositionReference[]} */
 export function residentPositionsFor(campaign, field) {
   const sectorId = field.sectorId ?? field.sector;
-  if (!sectorId) return [];
+  if (!sectorId) {
+    return [];
+  }
   const sceneId = field.sceneId ?? null;
   const location = sceneAnchorFor(campaign, sectorId);
   const participating = new Set([
@@ -41,8 +43,9 @@ export function residentPositionsFor(campaign, field) {
       character.residentSector !== sectorId ||
       (character.residentScene ?? null) !== sceneId ||
       !character.residentPosition
-    )
+    ) {
       return [];
+    }
     const point = character.residentPosition;
     return [
       {
@@ -59,14 +62,19 @@ export function residentPositionPoints(field) {
 
 export function refreshResidentPositions(campaign, field) {
   const positions = residentPositionsFor(campaign, field);
-  if (positions.length) field.residentPositions = positions;
-  else delete field.residentPositions;
+  if (positions.length) {
+    field.residentPositions = positions;
+  } else {
+    delete field.residentPositions;
+  }
 }
 
 export function refreshCampaignResidentPositions(campaign) {
   for (const request of openSectorEntryRequests(campaign)) {
     refreshResidentPositions(campaign, request);
-    if (request.resumeSnapshot) refreshResidentPositions(campaign, request.resumeSnapshot);
+    if (request.resumeSnapshot) {
+      refreshResidentPositions(campaign, request.resumeSnapshot);
+    }
   }
   for (const session of campaign.suspendedSectorSessions ?? []) {
     refreshResidentPositions(campaign, session.snapshot);
@@ -74,8 +82,12 @@ export function refreshCampaignResidentPositions(campaign) {
 }
 
 export function validateResidentPositions(field) {
-  if (!field || field.residentPositions === undefined) return;
-  if (!Array.isArray(field.residentPositions)) throw new Error('Invalid resident positions.');
+  if (!field || field.residentPositions === undefined) {
+    return;
+  }
+  if (!Array.isArray(field.residentPositions)) {
+    throw new Error('Invalid resident positions.');
+  }
   const identities = new Set();
   for (const reference of field.residentPositions) {
     const { characterId, position } = reference ?? {};
@@ -92,8 +104,9 @@ export function validateResidentPositions(field) {
       position.level < 0 ||
       position.level > MAX_TACTICAL_LEVEL ||
       !surfaceAt(field, characterPosition(reference))
-    )
+    ) {
       throw new Error('Invalid resident position reference.');
+    }
     identities.add(characterId);
   }
 }
@@ -103,7 +116,9 @@ export function validateResidentPositionContext(
   field,
   { allowLegacyOmission = false } = {},
 ) {
-  if (field.residentPositions === undefined && allowLegacyOmission) return;
+  if (field.residentPositions === undefined && allowLegacyOmission) {
+    return;
+  }
   validateResidentPositions(field);
   const expected = residentPositionsFor(campaign, field);
   const actualPositions = field.residentPositions ?? [];
@@ -117,6 +132,7 @@ export function validateResidentPositionContext(
             ['x', 'y', 'level'].every((key) => actual.position?.[key] === reference.position[key]),
         ),
     )
-  )
+  ) {
     throw new Error('Resident positions do not match the campaign.');
+  }
 }

@@ -1,5 +1,11 @@
 'use client';
-import { isWorldCharacter } from '../../../../../packages/game/public/campaign-editor-api.js';
+import { selectValue, effectQuestStates } from '../../lib/editor-values.ts';
+import type {
+  CharacterDefinition,
+  DialogueEffect,
+  QuestDefinition,
+} from '../../../../../packages/campaign-format/types.ts';
+import { isWorldCharacter } from '../../../../../packages/game/public/campaign-editor-api.ts';
 export default function DialogueEffects({
   effects = [],
   quests,
@@ -9,11 +15,11 @@ export default function DialogueEffects({
   allowMovement = true,
 }: {
   allowMovement?: boolean;
-  effects?: any[];
-  quests: any[];
-  characters: any[];
+  effects?: DialogueEffect[] | undefined;
+  quests: QuestDefinition[];
+  characters: CharacterDefinition[];
   ownerId: string;
-  onChange: (effects: any[]) => void;
+  onChange: (effects: DialogueEffect[]) => void;
 }) {
   const residents = characters.filter(isWorldCharacter),
     others = residents.filter((c) => c.id !== ownerId),
@@ -21,7 +27,7 @@ export default function DialogueEffects({
     candidates = movement?.destination === 'routine' ? residents : others;
   const effect = effects.find((e) => e.type === 'treasury'),
     quest = effects.find((e) => e.type === 'quest');
-  const change = (type: string, value: any) =>
+  const change = (type: string, value: DialogueEffect | null) =>
     onChange([...effects.filter((e) => e.type !== type), ...(value ? [value] : [])]);
   return (
     <>
@@ -46,7 +52,12 @@ export default function DialogueEffects({
               Operación de pesos
               <select
                 value={effect.operation}
-                onChange={(e) => change('treasury', { ...effect, operation: e.target.value })}
+                onChange={(e) =>
+                  change('treasury', {
+                    ...effect,
+                    operation: e.target.value === 'pay' ? 'pay' : 'receive',
+                  })
+                }
               >
                 <option value="receive">El jugador recibe</option>
                 <option value="pay">El jugador paga</option>
@@ -79,7 +90,9 @@ export default function DialogueEffects({
             onChange={(e) =>
               change(
                 'quest',
-                e.target.checked ? { type: 'quest', quest: quests[0].id, status: 'active' } : null,
+                e.target.checked
+                  ? { type: 'quest', quest: quests[0]?.id ?? '', status: 'active' }
+                  : null,
               )
             }
           />
@@ -105,7 +118,12 @@ export default function DialogueEffects({
               Resultado del encargo
               <select
                 value={quest.status}
-                onChange={(e) => change('quest', { ...quest, status: e.target.value })}
+                onChange={(e) =>
+                  change('quest', {
+                    ...quest,
+                    status: selectValue(e.target.value, effectQuestStates),
+                  })
+                }
               >
                 <option value="active">Iniciar</option>
                 <option value="completed">Completar</option>
@@ -151,10 +169,10 @@ export default function DialogueEffects({
                   onChange={(e) =>
                     change('movement', {
                       ...movement,
-                      destination: e.target.value,
+                      destination: e.target.value === 'speaker' ? 'speaker' : 'routine',
                       character:
                         e.target.value === 'speaker' && movement.character === ownerId
-                          ? others[0].id
+                          ? (others[0]?.id ?? ownerId)
                           : movement.character,
                     })
                   }

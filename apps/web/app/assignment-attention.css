@@ -1,11 +1,59 @@
-.assignment-attention{max-width:1500px;margin:0 auto 18px;padding:14px 16px;background:#26382e;border:1px solid #a39864;border-left:4px solid #d8c990;color:#e3dec3;font-size:13px;line-height:1.5;overflow-wrap:anywhere}
-.assignment-attention-heading{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:4px 16px}
-.assignment-attention h2{margin:0;font:19px Georgia}
-.assignment-attention-heading>span,.assignment-attention-time{color:#d8c990;white-space:nowrap}
-.assignment-attention p{margin:8px 0 0}
-.assignment-attention ul{margin:8px 0;padding-left:20px}
-.assignment-attention li+li{margin-top:5px}
-.assignment-attention .assignment-attention-resume{color:#bdc9b4}
-.assignment-attention-dismiss{flex:none;align-self:flex-start;min-height:32px;padding:4px 9px;border:1px solid #b6aa77;background:#172b22;color:#f3e8c8;font:inherit;cursor:pointer}
-.assignment-attention-dismiss:hover{background:#344c3d}
-.assignment-attention-dismiss:focus-visible{outline:2px solid #f3e8c8;outline-offset:2px}
+.assignment-attention {
+  max-width: 1500px;
+  margin: 0 auto 18px;
+  padding: 14px 16px;
+  background: #26382e;
+  border: 1px solid #a39864;
+  border-left: 4px solid #d8c990;
+  color: #e3dec3;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.assignment-attention-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+.assignment-attention h2 {
+  margin: 0;
+  font: 19px Georgia;
+}
+.assignment-attention-heading > span,
+.assignment-attention-time {
+  color: #d8c990;
+  white-space: nowrap;
+}
+.assignment-attention p {
+  margin: 8px 0 0;
+}
+.assignment-attention ul {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+.assignment-attention li + li {
+  margin-top: 5px;
+}
+.assignment-attention .assignment-attention-resume {
+  color: #bdc9b4;
+}
+.assignment-attention-dismiss {
+  flex: none;
+  align-self: flex-start;
+  min-height: 32px;
+  padding: 4px 9px;
+  border: 1px solid #b6aa77;
+  background: #172b22;
+  color: #f3e8c8;
+  font: inherit;
+  cursor: pointer;
+}
+.assignment-attention-dismiss:hover {
+  background: #344c3d;
+}
+.assignment-attention-dismiss:focus-visible {
+  outline: 2px solid #f3e8c8;
+  outline-offset: 2px;
+}

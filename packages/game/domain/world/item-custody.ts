@@ -25,7 +25,9 @@ export class ItemCustody {
   #custodian: ItemCustodian;
 
   constructor(itemId: string, custodian: ItemCustodian) {
-    if (typeof itemId !== 'string' || !itemId) throw new Error('An item needs an identity.');
+    if (typeof itemId !== 'string' || !itemId) {
+      throw new Error('An item needs an identity.');
+    }
     requireCustodian(custodian);
     this.itemId = itemId;
     this.#custodian = Object.freeze({ ...custodian });
@@ -37,8 +39,9 @@ export class ItemCustody {
 
   transferFrom(expected: ItemCustodian, destination: ItemCustodian): void {
     requireCustodian(destination);
-    if (!this.heldBy(expected))
+    if (!this.heldBy(expected)) {
       throw new Error('The item is no longer held by the expected custodian.');
+    }
     this.#custodian = Object.freeze({ ...destination });
   }
 

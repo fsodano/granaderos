@@ -46,7 +46,7 @@ const candidates = [
   }),
 ];
 
-test('recruitment filters use text normalization, skill thresholds, traits and availability', () => {
+void test('recruitment filters use text normalization, skill thresholds, traits and availability', () => {
   const catalogue = new RecruitmentCatalogue(candidates);
   const ids = (criteria: Parameters<RecruitmentCatalogue['select']>[0]) =>
     catalogue.select(criteria).map((candidate) => candidate.characterId);
@@ -58,7 +58,7 @@ test('recruitment filters use text normalization, skill thresholds, traits and a
   assert.deepEqual(ids({ availability: 'available' }), ['ana']);
 });
 
-test('ordering is stable and does not mutate the source collection', () => {
+void test('ordering is stable and does not mutate the source collection', () => {
   const catalogue = new RecruitmentCatalogue(candidates);
   assert.deepEqual(
     catalogue.select({ sort: 'price' }).map((candidate) => candidate.characterId),

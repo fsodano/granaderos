@@ -3,8 +3,8 @@ import { HELD_SUPPLIES } from '../../held-supplies.js';
 import { withPocketRefusals } from '../../inventory-pockets.js';
 import { Item, InventoryRefusal, InventoryRefusalCode } from '../../domain/inventory/item.ts';
 import { Inventory } from '../../domain/inventory/inventory.ts';
-import { BODY_SLOTS } from '../../outfits.js';
-import { handLayout } from '../../hand-layout.js';
+import { BODY_SLOTS } from '../../outfits.ts';
+import { handLayout } from '../../hand-layout.ts';
 import { fittingItemIds } from '../../weapon-fittings.js';
 import {
   SUPPLY_ITEMS,
@@ -22,7 +22,9 @@ export function withInventoryRefusals(operation) {
   try {
     return withPocketRefusals(operation);
   } catch (error) {
-    if (!(error instanceof InventoryRefusal)) throw error;
+    if (!(error instanceof InventoryRefusal)) {
+      throw error;
+    }
     const messages = {
       [InventoryRefusalCode.InvalidItem]: 'El objeto o la cantidad no son válidos.',
       [InventoryRefusalCode.InsufficientQuantity]: 'No queda esa cantidad del objeto.',
@@ -79,7 +81,9 @@ export function readTacticalInventory(unit, custodianId = `character:${unit.id ?
   ];
   const entries = selections.flatMap((selectionId) => {
     const quantity = itemQuantity(unit, selectionId);
-    if (!quantity) return [];
+    if (!quantity) {
+      return [];
+    }
     const descriptor = itemDescriptor(unit, selectionId);
     const item = readTransferredItem(readItemStack(unit, selectionId, quantity));
     return [
@@ -107,9 +111,12 @@ export function writeStoredInventory(unit, inventory) {
   const next = structuredClone(unit);
   next.inventory ??= {};
   for (const entry of snapshot.entries) {
-    if (Object.hasOwn(SUPPLY_ITEMS, entry.selectionId))
+    if (Object.hasOwn(SUPPLY_ITEMS, entry.selectionId)) {
       next[entry.selectionId] = entry.item.quantity;
-    if (!entry.selectionId.startsWith('inventory:')) continue;
+    }
+    if (!entry.selectionId.startsWith('inventory:')) {
+      continue;
+    }
     const key = entry.selectionId.slice(10);
     const previous = unit.inventory?.[key];
     const unchanged =
@@ -128,19 +135,25 @@ export function writeStoredInventory(unit, inventory) {
       ? structuredClone(previous)
       : { ...structuredClone(entry.item.metadata), count: entry.item.quantity };
   }
-  if (snapshot.pocketOrder !== undefined) next.pocketOrder = structuredClone(snapshot.pocketOrder);
+  if (snapshot.pocketOrder !== undefined) {
+    next.pocketOrder = structuredClone(snapshot.pocketOrder);
+  }
   return next;
 }
 
 function assignOptional(record, key, value) {
-  if (value === undefined) delete record[key];
-  else record[key] = structuredClone(value);
+  if (value === undefined) {
+    delete record[key];
+  } else {
+    record[key] = structuredClone(value);
+  }
 }
 
 function writeHandRecord(unit, selectionId, item) {
   const metadata = structuredClone(item.metadata);
-  if (item.quantity !== 1 || metadata.weapon === undefined)
+  if (item.quantity !== 1 || metadata.weapon === undefined) {
     throw new Error('A weapon slot requires one weapon.');
+  }
   if (selectionId === 'offhand') {
     unit.offHand = { ...metadata, count: 1 };
     return;
@@ -161,8 +174,9 @@ function writeHandRecord(unit, selectionId, item) {
     unit.loaded = metadata.loaded ?? 0;
     unit.jammed = metadata.jammed ?? false;
     unit.weaponFittings = structuredClone(metadata.fittings ?? {});
-    for (const field of ['reloadProgress', 'contentWeapon', 'ammunitionChoice'])
+    for (const field of ['reloadProgress', 'contentWeapon', 'ammunitionChoice']) {
       assignOptional(unit, field, metadata[field]);
+    }
   }
 }
 
@@ -172,7 +186,9 @@ function restoreHeldSelections(unit, before, entries) {
       ? []
       : Array(entry.heldQuantity).fill(entry.selectionId),
   );
-  if (held.length > 2) throw new Error('The inventory cannot occupy more than two hands.');
+  if (held.length > 2) {
+    throw new Error('The inventory cannot occupy more than two hands.');
+  }
   const take = (preferred) => {
     const index = held.indexOf(preferred);
     return index < 0 ? null : held.splice(index, 1)[0];
@@ -184,9 +200,11 @@ function restoreHeldSelections(unit, before, entries) {
   delete unit.activeTool;
   delete unit.activeSupply;
   unit.activeSlot = 'unarmed';
-  if (['primary', 'blade', 'offhand'].includes(right)) unit.activeSlot = right;
-  else if (right === 'medkits') unit.activeSlot = 'medical';
-  else if (Object.hasOwn(HELD_SUPPLIES, right ?? '')) {
+  if (['primary', 'blade', 'offhand'].includes(right)) {
+    unit.activeSlot = right;
+  } else if (right === 'medkits') {
+    unit.activeSlot = 'medical';
+  } else if (Object.hasOwn(HELD_SUPPLIES, right ?? '')) {
     unit.activeSlot = 'supply';
     unit.activeSupply = right;
   } else if (right) {
@@ -202,6 +220,10 @@ function restoreHeldSelections(unit, before, entries) {
   unit.leftHandItem = left;
 }
 
+/** @template {import('../../public/inventory-types.ts').InventoryActor} Actor
+ * @param {Actor} unit
+ * @param {Inventory} inventory
+ * @returns {Actor} */
 export function writeTacticalInventory(unit, inventory) {
   const snapshot = inventory.toSnapshot();
   const expected = new Map(
@@ -213,24 +235,28 @@ export function writeTacticalInventory(unit, inventory) {
   let next = structuredClone(unit);
   for (const entry of original.entries) {
     const remaining = expected.get(entry.selectionId)?.item.quantity ?? 0;
-    if (remaining < entry.item.quantity)
+    if (remaining < entry.item.quantity) {
       next = extractItemQuantity(next, entry.selectionId, entry.item.quantity - remaining, {
         keepOtherHand: false,
       }).unit;
+    }
   }
   next = writeStoredInventory(next, inventory);
   for (const entry of expected.values()) {
-    if (['primary', 'blade', 'offhand'].includes(entry.selectionId))
+    if (['primary', 'blade', 'offhand'].includes(entry.selectionId)) {
       writeHandRecord(next, entry.selectionId, entry.item);
-    else if (BODY_SLOTS.includes(entry.selectionId)) {
+    } else if (BODY_SLOTS.includes(entry.selectionId)) {
       next[entry.selectionId] = {
         ...structuredClone(entry.item.metadata),
         count: entry.item.quantity,
       };
-      if (entry.selectionId === 'outfit') delete next.poncho;
+      if (entry.selectionId === 'outfit') {
+        delete next.poncho;
+      }
     } else if (entry.selectionId === 'cursor') {
-      if (!unit.equipmentCursor)
+      if (!unit.equipmentCursor) {
         throw new Error('A cursor item requires its admitted cursor origin.');
+      }
       next.equipmentCursor = {
         ...structuredClone(unit.equipmentCursor),
         stack: {
@@ -242,8 +268,12 @@ export function writeTacticalInventory(unit, inventory) {
     }
   }
   restoreHeldSelections(next, unit, [...expected.values()]);
-  if (snapshot.pocketOrder === undefined) delete next.pocketOrder;
-  if (next.ammunitionVersion === 2) syncUnitAmmunition(next);
+  if (snapshot.pocketOrder === undefined) {
+    delete next.pocketOrder;
+  }
+  if (next.ammunitionVersion === 2) {
+    syncUnitAmmunition(next);
+  }
   const projected = readTacticalInventory(next, snapshot.custodianId).toSnapshot();
   const comparable = (entries) =>
     entries
@@ -251,7 +281,8 @@ export function writeTacticalInventory(unit, inventory) {
       .sort((left, right) => left.selectionId.localeCompare(right.selectionId));
   if (
     JSON.stringify(comparable(projected.entries)) !== JSON.stringify(comparable(snapshot.entries))
-  )
+  ) {
     throw new Error('The inventory cannot be projected without changing item custody.');
+  }
   return next;
 }
