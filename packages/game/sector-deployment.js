@@ -1,3 +1,4 @@
+import {residentPositionPoints} from './infrastructure/world/campaign-resident-positions.js';
 import {
   SectorDeployment,
   DeploymentRefusal,
@@ -231,6 +232,7 @@ export function sectorDeploymentAction(state, action) {
       const occupied = [
         ...next.units.filter((unit) => !ids.has(unit.id) && !unit.departure && !unit.fled),
         ...(next.npcs ?? []),
+        ...residentPositionPoints(next),
         ...(next.artillery ?? []),
       ].filter((unit) => tacticalLevel(unit) === 0);
       const committed = deployment.confirm(occupied);

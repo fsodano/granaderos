@@ -1,4 +1,5 @@
 import { SectorTimeBudget } from './domain/sector-sessions/sector-time-budget.ts';
+import {residentPositionsFor,validateResidentPositionContext} from './infrastructure/world/campaign-resident-positions.js';
 import { advanceSectorWorld } from './military-remains.js';
 import { hasPendingArrivalDecision, nextSquadTravelBoundarySeconds } from './squad-travel.js';
 import { reconcileSectorResidents } from './campaign-presence.js';
@@ -51,6 +52,10 @@ export function advanceBattleClock(s, seconds, { resting = false } = {}) {
 }
 export function withCampaignTimeBoundary(campaign, battle) {
   const next = { ...battle, gameRevision: campaign.gameRevision ?? 0 };
+  const context = battle.sectorId ? battle : campaign.pendingBattle ?? battle;
+  const residentPositions = residentPositionsFor(campaign, context);
+  if (residentPositions.length) next.residentPositions = residentPositions;
+  else delete next.residentPositions;
   if (campaign.gameSessionId) next.gameSessionId = campaign.gameSessionId;
   const now = campaign.hour * 3600 + (campaign.secondOfHour ?? 0);
   const duration = hasPendingArrivalDecision(campaign)
@@ -68,6 +73,7 @@ export function syncBattleTime(campaign, battle) {
       (battle.battleId && battle.battleId !== campaign.pendingBattle.id)
     )
       return { campaign, battle, error: 'El reloj no corresponde al despliegue.' };
+    validateResidentPositionContext(campaign, battle);
     validateRepairReserveContext(campaign.pendingBattle, battle);
     if (campaign.pendingBattle.resumeSnapshot)
       validateRepairReserveContext(campaign.pendingBattle, campaign.pendingBattle.resumeSnapshot);

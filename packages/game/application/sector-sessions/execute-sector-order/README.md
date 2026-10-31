@@ -18,6 +18,13 @@ advance `sectorRevision`; the enclosing game transaction owns `gameRevision`.
 Browser and worker execution use the same application path. Worker responses
 must match game session, sector session, both revisions, and request identity.
 
+Physical placement and movement respect `ResidentPositionReference` records for
+other serving characters' saved posts. Civilian routes, soldier routes,
+artillery movement, deployment, and reinforcement admission use the same occupied
+positions and physical levels. Synchronization rejects omitted or altered
+references when the current campaign requires those positions. Restoring an
+older save derives missing references from canonical character presence.
+
 A revision must be a nonnegative safe integer with room for one increment.
 An exhausted revision is refused with `DomainRefusalCode.RevisionConflict` before
 execution or publication. The source snapshot and pending work stay unchanged.

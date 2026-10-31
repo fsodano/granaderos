@@ -10,6 +10,12 @@ admitted positions exist. A resumed visit restores the same session, combat,
 AP, health, equipment, pending operation, and clock. Restoration does not issue
 equipment or budgets again.
 
+Saved posts of serving characters outside this visit remain occupied.
+The campaign adapter supplies `ResidentPositionReference` records with character
+identity and physical level. Entry reserves these posts before placing civilians
+or arrivals. Selected residents retain priority at their saved posts. These
+references do not admit extra participants or copy character condition or gear.
+
 `EnterSectorRepository` loads one admitted entry and commits one session at its
 expected revision. `SnapshotEnterSectorRepository` maps campaign request fields,
 retained scene data, and physical map construction. The legacy `enterSector`

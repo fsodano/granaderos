@@ -1,5 +1,6 @@
 import { restoreSector, sectorPosition } from './infrastructure/world/sector-mapper.js';
 import { RetainedSectorPresence } from './infrastructure/world/retained-sector-presence.js';
+import {refreshResidentPositions} from './infrastructure/world/campaign-resident-positions.js';
 import { validateResidentScavengingReceipts } from './resident-scavenging.js';
 import { advanceMilitaryWoundClock } from './military-health.js';
 import { advanceBattleClock } from './time.js';
@@ -190,6 +191,7 @@ function advanceInactiveSectorWorld(campaign, snapshot, targetSecond, { suspende
  const presence = suspended ? null : new RetainedSectorPresence(campaign);
  const physicalUnits = suspended ? snapshot.units : snapshot.units.filter(actor => presence.includes(actor, snapshot));
  const routineField = { ...expanded, units: physicalUnits };
+ refreshResidentPositions(campaign, routineField);
  routineField.residentRoutine ??= { startedAtSecond: snapshot.startSeconds ?? previousSecond, advancedThroughSecond: previousSecond };
  let conditionsThroughSecond = previousSecond;
  const physicalIds = new Set(physicalUnits.map(actor => actor.id));
@@ -230,6 +232,7 @@ function advanceInactiveSectorWorld(campaign, snapshot, targetSecond, { suspende
   },
  });
  snapshot.residentRoutine = routineField.residentRoutine;
+ refreshResidentPositions(campaign, snapshot);
  snapshot.civilianTurns = routineField.civilianTurns ?? snapshot.civilianTurns;
  if (snapshot.civilianTurns === undefined) delete snapshot.civilianTurns;
  if (Array.isArray(snapshot.tiles)) snapshot.tiles = routineField.tiles;

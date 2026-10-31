@@ -13,6 +13,7 @@ import {requireGameSecond} from './domain/world/world-timeline.ts';
 import {recoverEnergy} from './fatigue.js';
 import {artillerySpaceKeys} from './artillery-occupancy.js';
 import {ResidentRoutine, RESIDENT_ROUTINE_INTERVAL_SECONDS} from './domain/world/resident-routine.ts';
+import {residentPositionPoints} from './infrastructure/world/campaign-resident-positions.js';
 
 // Local, deterministic state machines. No network, hidden enemy positions or RNG.
 export const NPC_ACTIVITIES = ['roaming','home','working','socializing','meeting','hiding','fleeing','following','waiting'];
@@ -29,6 +30,7 @@ const now = s => s.elapsedSeconds??0;
 export function npcRoutes(s,n,{stopWhen}={}) {
   const tiles=new Map([...s.tiles,...(s.upperSurfaces??[])].map(t=>[key(t),t]));
   const occupied=new Set([...(s.npcs??[]).filter(v=>v!==n&&v.id!==n.id&&(v.hp??100)>0&&!v.departure&&!v.fled),...s.units.filter(v=>v.id!==n.id&&v.hp>0&&!v.departure&&!v.fled)].map(key));
+  for(const position of residentPositionPoints(s))occupied.add(key(position));
   for(const p of s.props??[])if(p.blocksMovement!==false)for(const cell of propCells(p))occupied.add(key(cell));
   const artillery=artillerySpaceKeys(s);
   const usable=t=>t&&!occupied.has(key(t))&&!artillery.has(spaceKey(t))&&(!t.blocked||t.type==='door'&&!t.locked&&!t.jammed);

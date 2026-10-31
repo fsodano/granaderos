@@ -1,4 +1,5 @@
 import {validateSectorOperationSnapshot} from './infrastructure/sector-sessions/sector-operation-validation.js';
+import {validateResidentPositions} from './infrastructure/world/campaign-resident-positions.js';
 import {wallEdgeKey,wallEdgeCells,WALL_GEOMETRY_VERSION} from './wall-geometry.js';
 import {validateSectorWorld,removedSectorCharacters} from './military-remains.js';
 import {validCombatJournal} from './combat-journal.js';
@@ -56,6 +57,7 @@ const text=x=>typeof x==='string'&&x.length<=1000;
 function need(ok,label){if(!ok)throw Error(`La partida contiene ${label} inválidos.`);}
 function safeTree(value,depth=0){need(depth<=20,'objetos anidados');if(typeof value==='number')need(Number.isFinite(value),'números');if(value&&typeof value==='object'){need(Object.keys(value).length<=10000,'colecciones');for(const[k,v]of Object.entries(value)){need(!['__proto__','constructor','prototype'].includes(k),'claves');safeTree(v,depth+1);}}}
 export function validateBattleSnapshot(value,context=null){
+ validateResidentPositions(value);
  validateSectorOperationSnapshot(value);
  validateSectorWorld(value);
  validateQuestWithdrawals(value?.questWithdrawals,value??{});

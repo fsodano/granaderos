@@ -1,4 +1,5 @@
 import { DomainRefusal, DomainRefusalCode } from '../../domain/shared/domain-refusal.ts';
+import { residentPositionPoints } from '../world/campaign-resident-positions.js';
 import { nextRevision } from '../shared/revision.js';
 import { createSectorParticipant, initializeBattlePerception } from '../../tactical.js';
 import { SectorDeployment } from '../../domain/sector-sessions/sector-deployment.ts';
@@ -68,6 +69,7 @@ export class SnapshotAdmitSectorReinforcementsRepository {
       occupiedPoints: [
         ...state.units.filter((unit) => !unit.departure && !unit.fled),
         ...(state.npcs ?? []),
+        ...residentPositionPoints(state),
         ...(state.artillery ?? []),
       ].filter((unit) => tacticalLevel(unit) === 0),
       revision: this.#revision,
