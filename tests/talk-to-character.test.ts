@@ -1,29 +1,34 @@
+import type { ActiveGame } from './local-contract-fixture.ts';
+import { present } from './assert-present.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readyLocal, localNPC, localId } from './local-contract-fixture.mjs';
+import { readyLocal, localNPC, localId } from './local-contract-fixture.ts';
 import { TalkToCharacterUseCase } from '../packages/game/application/talk-to-character/talk-to-character.use-case.ts';
-import { CampaignTalkToCharacterRepository } from '../packages/game/infrastructure/session/talk-to-character-repository.js';
-import { ConversationParticipantProjection } from '../packages/game/infrastructure/session/conversation-participant-projection.js';
-import { encodeSave, decodeSave } from '../packages/game/save.js';
-import { dispatchCampaignSandbox } from '../packages/game/public/campaign-playtest-api.js';
+import { CampaignTalkToCharacterRepository } from '../packages/game/infrastructure/session/talk-to-character-repository.ts';
+import { ConversationParticipantProjection } from '../packages/game/infrastructure/session/conversation-participant-projection.ts';
+import { encodeSave, decodeSave } from '../packages/game/save.ts';
+import {
+  createCampaignSandbox,
+  dispatchCampaignSandbox,
+} from '../packages/game/public/campaign-playtest-api.ts';
 
-function conversationRequest(pair) {
+function conversationRequest(pair: ActiveGame) {
   return {
     characterId: localNPC(pair.battle).id,
-    speakerId: pair.battle.units.find((participant) => participant.side === 'player').id,
+    speakerId: present(pair.battle.units.find((participant) => participant.side === 'player')).id,
     approach: 'recruit',
     serviceTerm: 'day',
   };
 }
 
-test('local recruitment publishes one character at the same position and survives save restoration', () => {
+void test('local recruitment publishes one character at the same position and survives save restoration', () => {
   const pair = readyLocal();
   const before = structuredClone(pair);
   const resident = localNPC(pair.battle);
   const result = new TalkToCharacterUseCase(
     new CampaignTalkToCharacterRepository(pair.campaign, pair.battle),
   ).execute(conversationRequest(pair));
-  const identifier = localId(result.campaign);
+  const identifier = present(localId(result.campaign));
   assert.equal(result.campaign.gameRevision, (pair.campaign.gameRevision ?? 0) + 1);
   assert.equal(
     result.sectorSession.npcs.some((character) => character.id === resident.id),
@@ -33,26 +38,30 @@ test('local recruitment publishes one character at the same position and survive
     (character) => Number(character.id) === identifier,
   );
   assert.equal(participants.length, 1);
-  assert.equal(participants[0].x, resident.x);
-  assert.equal(participants[0].y, resident.y);
-  assert.equal(participants[0].tacticalLevel ?? 0, resident.tacticalLevel ?? 0);
+  assert.equal(present(participants[0]).x, resident.x);
+  assert.equal(present(participants[0]).y, resident.y);
+  assert.equal(present(participants[0]).tacticalLevel ?? 0, resident.tacticalLevel ?? 0);
   assert.deepEqual(pair, before);
   const restored = decodeSave(encodeSave(result.campaign, result.sectorSession));
   assert.equal(
-    restored.battle.units.filter((character) => Number(character.id) === identifier).length,
+    present(restored.battle).units.filter((character) => Number(character.id) === identifier)
+      .length,
     1,
   );
   assert.ok(restored.campaign.recruited.includes(identifier));
 });
 
-test('live and editor conversations resolve through the same projection and revision', () => {
+void test('live and editor conversations resolve through the same projection and revision', () => {
   const pair = readyLocal();
   const request = conversationRequest(pair);
   const live = new TalkToCharacterUseCase(
     new CampaignTalkToCharacterRepository(pair.campaign, pair.battle),
   ).execute(request);
   const editor = dispatchCampaignSandbox(
-    { ...pair, version: 1, history: [], lastError: null },
+    {
+      ...createCampaignSandbox(present(pair.campaign.contentCampaign).package, pair.campaign.seed),
+      ...pair,
+    },
     {
       type: 'talk',
       npcId: request.characterId,
@@ -66,7 +75,7 @@ test('live and editor conversations resolve through the same projection and revi
   assert.deepEqual(editor.battle, live.sectorSession);
 });
 
-test('projection failure and stale source revisions cannot publish a partially paid recruitment', () => {
+void test('projection failure and stale source revisions cannot publish a partially paid recruitment', () => {
   const pair = readyLocal();
   const before = structuredClone(pair);
   const failedProjection = {

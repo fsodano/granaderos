@@ -1,13 +1,20 @@
+import { present } from './assert-present.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { initialCampaign, dispatchCampaign, rosterFor, contractQuote } from '../packages/game/campaign.js';
+import {
+  initialCampaign,
+  dispatchCampaign,
+  rosterFor,
+  contractQuote,
+} from '../packages/game/campaign.js';
 import { defaultContentPackage } from '../packages/game/content-package.js';
-import { encodeSave, decodeSave } from '../packages/game/save.js';
+import { encodeSave, decodeSave } from '../packages/game/save.ts';
 
-test('an authored arrival delay does not postpone control or contract start', () => {
+void test('an authored arrival delay does not postpone control or contract start', () => {
   const definition = defaultContentPackage();
-  definition.characters.find((character) => character.id === 'person-110').arrivalHours = 12;
-  definition.rules.startingTreasury = 100_000;
+  present(definition.characters.find((character) => character.id === 'person-110')).arrivalHours =
+    12;
+  present(definition.rules).startingTreasury = 100_000;
   const campaign = initialCampaign(1812, definition);
   campaign.secondOfHour = 61;
   const candidate = rosterFor(campaign).find((character) => character.id === 110);
@@ -20,12 +27,12 @@ test('an authored arrival delay does not postpone control or contract start', ()
   assert.equal(accepted.lastError, null);
   assert.ok(accepted.recruited.includes(110));
   assert.ok(accepted.squad.includes(110));
-  assert.equal(accepted.operativeState[110].location, campaign.location);
+  assert.equal(present(accepted.operativeState[110]).location, campaign.location);
   assert.equal(accepted.hour, campaign.hour);
   assert.equal(accepted.secondOfHour, 61);
-  assert.equal(accepted.contracts[110].started, campaign.hour);
-  assert.equal(accepted.contracts[110].startedSecond, 61);
-  assert.equal(accepted.contracts[110].expiresSecond, 61);
+  assert.equal(present(accepted.contracts[110]).started, campaign.hour);
+  assert.equal(present(accepted.contracts[110]).startedSecond, 61);
+  assert.equal(present(accepted.contracts[110]).expiresSecond, 61);
   assert.equal(accepted.resources.treasury, campaign.resources.treasury - quote.total);
   assert.deepEqual(accepted.hiringArrivals ?? [], []);
   const restored = decodeSave(encodeSave(accepted)).campaign;
@@ -40,7 +47,7 @@ test('an authored arrival delay does not postpone control or contract start', ()
   assert.equal(repeated.gameRevision, accepted.gameRevision);
 });
 
-test('insufficient payment and stale requests preserve the entire accepted game', () => {
+void test('insufficient payment and stale requests preserve the entire accepted game', () => {
   const campaign = initialCampaign();
   campaign.resources.treasury = 0;
   const rejected = dispatchCampaign(campaign, {

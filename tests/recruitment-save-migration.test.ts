@@ -1,3 +1,4 @@
+import { present } from './assert-present.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { initialCampaign, rosterFor } from '../packages/game/campaign.js';
@@ -5,11 +6,12 @@ import { defaultContentPackage } from '../packages/game/content-package.js';
 import { contractQuote } from '../packages/game/contracts.js';
 import { hireArrivalOrder } from '../packages/game/hiring-arrivals.js';
 import { fundServiceGuarantee } from '../packages/game/service-guarantees.js';
-import { encodeSave, decodeSave } from '../packages/game/save.js';
+import { encodeSave, decodeSave } from '../packages/game/save.ts';
 
 function prepaidRecruitment() {
   const definition = defaultContentPackage();
-  definition.characters.find((character) => character.id === 'person-110').arrivalHours = 12;
+  present(definition.characters.find((character) => character.id === 'person-110')).arrivalHours =
+    12;
   const campaign = initialCampaign(42, definition);
   const candidate = rosterFor(campaign).find((character) => character.id === 110);
   const quote = contractQuote(campaign, candidate, 'day');
@@ -22,7 +24,7 @@ function prepaidRecruitment() {
   return campaign;
 }
 
-test('a prepaid legacy recruit becomes available at saved time without paying or issuing equipment twice', () => {
+void test('a prepaid legacy recruit becomes available at saved time without paying or issuing equipment twice', () => {
   const legacy = prepaidRecruitment();
   const restored = decodeSave(encodeSave(legacy)).campaign;
   assert.equal(restored.resources.treasury, legacy.resources.treasury);
@@ -32,9 +34,9 @@ test('a prepaid legacy recruit becomes available at saved time without paying or
   assert.deepEqual(restored.hiringArrivals, []);
   assert.ok(restored.recruited.includes(110));
   assert.ok(restored.squad.includes(110));
-  assert.equal(restored.contracts[110].started, legacy.hour);
-  assert.equal(restored.contracts[110].expiresAt, legacy.hour + 24);
-  assert.equal(restored.contracts[110].paid, legacy.hiringArrivals[0].paid);
-  assert.equal(restored.operativeState[110].startingCartridgesIssued, true);
+  assert.equal(present(restored.contracts[110]).started, legacy.hour);
+  assert.equal(present(restored.contracts[110]).expiresAt, legacy.hour + 24);
+  assert.equal(present(restored.contracts[110]).paid, present(legacy.hiringArrivals[0]).paid);
+  assert.equal(present(restored.operativeState[110]).startingCartridgesIssued, true);
   assert.deepEqual(decodeSave(encodeSave(restored)).campaign, restored);
 });

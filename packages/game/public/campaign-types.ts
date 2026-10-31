@@ -95,6 +95,8 @@ export interface CampaignOperative extends Omit<Partial<BattleUnit>, 'id' | 'sid
   genericCharacter?: boolean;
   serviceGuarantee?: number;
   contentId?: string;
+  ammunitionChoice?: string;
+  contentWeapon?: import('../../campaign-format/types.ts').WeaponDefinition;
   bladeCondition?: number;
   weaponDropped?: boolean;
   portraitId?: string;
@@ -217,6 +219,7 @@ export interface TownIncomeReceipt {
   secondOfHour: number;
 }
 export interface CampaignConversation {
+  operativeId?: number;
   met?: boolean;
   secondOfHour?: number;
   sector?: string;
@@ -575,7 +578,7 @@ export interface CampaignSnapshot {
   artilleryTransfers?: CampaignArtilleryTransfer[];
   armory: Record<string, number>;
   armoryItems: StoredEquipmentInstance[];
-  loadouts: Record<number, EquipmentItem>;
+  loadouts: Record<number, { weapon?: number; blade?: number }>;
   artillerySelection: string[];
   artillery?: CampaignArtillery[];
   stationedArtillery?: CampaignArtillery[];
@@ -606,6 +609,7 @@ export interface CampaignSnapshot {
     reports: Record<string, import('../enemy-intelligence.ts').EnemyIntelligenceObservation>;
   };
   nextEnemyGroupId: number;
+  recruitmentVersion?: 2;
   ammunitionVersion?: number;
   fittingRulesVersion?: number;
   contentPresence?: Omit<
@@ -688,7 +692,8 @@ export type CampaignInventoryOrder =
       item?: string;
       count?: number;
     };
-export type CampaignAction =
+export type CampaignAction = CampaignOrder & { expectedRevision?: number };
+type CampaignOrder =
   | { type: 'advanceStrategicTime'; seconds: number }
   | { type: 'wait'; hours?: number }
   | { type: 'selectSquad'; id: string }
@@ -704,12 +709,18 @@ export type CampaignAction =
       queue?: boolean;
       waypoints?: string[];
     }
-  | { type: 'redirectJourney'; squadId: string; sector: string; waypoints?: string[] }
+  | { type: 'redirectJourney'; squadId?: string; sector: string; waypoints?: string[] }
   | { type: 'cancelTravel'; squadId?: string; choice?: 'stop' | 'return' }
   | { type: 'resumeTravel'; squadId?: string }
-  | { type: 'fightOnArrival' | 'withdrawOnArrival'; squadId: string; decisionId?: string }
+  | {
+      type: 'fightOnArrival';
+      squadId: string;
+      decisionId?: string;
+      sectorState?: BattleSnapshot | null;
+    }
+  | { type: 'withdrawOnArrival'; squadId: string; decisionId?: string }
   | { type: 'visitSector'; sector?: string }
-  | { type: 'resumeSectorSession'; sectorSessionId: string; sectorState?: BattleSnapshot }
+  | { type: 'resumeSectorSession'; sectorSessionId: string; sectorState?: BattleSnapshot | null }
   | { type: 'visitMission'; id?: string; missionId?: string; mission?: string }
   | {
       type: 'finishMission' | 'battleResult';
@@ -774,6 +785,8 @@ export type CampaignAction =
     }
   | {
       type: 'talkNPC';
+      questResolution?: 'cash' | 'civic';
+      questWithdrawal?: { questId: string; beneficiaryId?: string; deliveredCount: number };
       dialogueNode?: string;
       dialogueChoice?: string;
       npcId: string;
