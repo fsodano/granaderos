@@ -2,18 +2,12 @@ import { isMesh, isSkinnedMesh } from './scene-node-types';
 import type { AnimationClipJSON, BufferAttribute } from 'three';
 import type { Attribute, Calibration } from './melee-worker-snapshot';
 import { isWorkerRecord } from '../battle-worker-values';
-import {
-  readReadyMeleeSamples,
-  type ReadyMeleeSamples,
-} from './melee-worker-values';
+import { readReadyMeleeSamples, type ReadyMeleeSamples } from './melee-worker-values';
 import { required } from './required';
 // eslint-disable-next-line import/default -- Vite supplies this virtual worker URL; native URL workers break the static export.
 import workerUrl from './melee-fit-worker?worker&url';
 import { AnimationClip, Object3D, InterleavedBufferAttribute } from 'three';
-import {
-  NativeMeleeContactFit,
-  type ContactActorResolver,
-} from './melee-contact-fit';
+import { NativeMeleeContactFit, type ContactActorResolver } from './melee-contact-fit';
 import {
   snapshotActor,
   snapshotCalibration,
@@ -77,10 +71,7 @@ function shown(node: Object3D) {
   return true;
 }
 function equal(a: ArrayLike<number>, b: ArrayLike<number>) {
-  return (
-    a.length === b.length &&
-    Array.from(a).every((value, index) => value === b[index])
-  );
+  return a.length === b.length && Array.from(a).every((value, index) => value === b[index]);
 }
 function attributeSame(
   source: BufferAttribute | InterleavedBufferAttribute | undefined | null,
@@ -120,9 +111,7 @@ export function geometrySame(
     snapshot.model !== model.uuid ||
     snapshot.weapon !== gun.uuid ||
     !equal(
-      root.parent?.matrixWorld.elements ?? [
-        1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
-      ],
+      root.parent?.matrixWorld.elements ?? [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
       snapshot.parent,
     )
   ) {
@@ -140,8 +129,7 @@ export function geometrySame(
       !node ||
       node.visible !== record.visible ||
       node.matrixAutoUpdate !== record.auto ||
-      (record.parent >= 0 &&
-        node.parent?.uuid !== snapshot.nodes[record.parent]?.id)
+      (record.parent >= 0 && node.parent?.uuid !== snapshot.nodes[record.parent]?.id)
     ) {
       return false;
     }
@@ -176,8 +164,7 @@ export function geometrySame(
       }
       if (
         Boolean(geometry.index) !== Boolean(record.geometry.index) ||
-        (record.geometry.index &&
-          !attributeSame(geometry.index, record.geometry.index))
+        (record.geometry.index && !attributeSame(geometry.index, record.geometry.index))
       ) {
         return false;
       }
@@ -186,8 +173,7 @@ export function geometrySame(
         morph.length !== record.geometry.morph.length ||
         geometry.morphTargetsRelative !== record.geometry.relative ||
         morph.some(
-          (attribute, index) =>
-            !attributeSame(attribute, required(record.geometry).morph[index]),
+          (attribute, index) => !attributeSame(attribute, required(record.geometry).morph[index]),
         )
       ) {
         return false;
@@ -233,8 +219,7 @@ export function clipSame(clip: AnimationClip, data: AnimationClipJSON) {
       return (
         saved !== undefined &&
         track.name === saved.name &&
-        track.getInterpolation() ===
-          (saved.interpolation ?? track.DefaultInterpolation) &&
+        track.getInterpolation() === (saved.interpolation ?? track.DefaultInterpolation) &&
         equal(track.times, saved.times) &&
         equal(track.values, saved.values)
       );
@@ -335,11 +320,7 @@ export class NativeReadyMeleeContactFit extends NativeMeleeContactFit {
       return;
     }
     const target = warm.targets[0];
-    if (
-      !target ||
-      target.mounted ||
-      !['standing', 'crouched'].includes(target.posture)
-    ) {
+    if (!target || target.mounted || !['standing', 'crouched'].includes(target.posture)) {
       return;
     }
     const toYaw = Math.atan2(
@@ -424,11 +405,7 @@ export class NativeReadyMeleeContactFit extends NativeMeleeContactFit {
       }
       worker.onmessage = (event: MessageEvent<unknown>) => {
         const current = owner;
-        if (
-          !current ||
-          !isWorkerRecord(event.data) ||
-          current.lease?.id !== event.data['id']
-        ) {
+        if (!current || !isWorkerRecord(event.data) || current.lease?.id !== event.data['id']) {
           return;
         }
         owner = undefined;
@@ -645,9 +622,7 @@ export class NativeReadyMeleeContactFit extends NativeMeleeContactFit {
     const retained = this.retainedTurn(cue.id),
       turn =
         cue.contactTurn ??
-        (retained
-          ? { fromYaw: retained.fromYaw, toYaw: retained.toYaw }
-          : undefined),
+        (retained ? { fromYaw: retained.fromYaw, toYaw: retained.toYaw } : undefined),
       other = resolve(cue.contactTarget);
     const allow =
       ready &&
@@ -659,15 +634,13 @@ export class NativeReadyMeleeContactFit extends NativeMeleeContactFit {
       other.root === ready.lease.targetRoot &&
       shown(other.model) &&
       other.model === ready.lease.target &&
-      this.key(cue.contactTarget, required(cue.contactSupport), turn) ===
-        ready.lease.key &&
+      this.key(cue.contactTarget, required(cue.contactSupport), turn) === ready.lease.key &&
       weapon === ready.lease.weapon &&
       geometrySame(ready.lease.own, this.ownRoot, this.ownModel, weapon) &&
       clipSame(clip, ready.lease.clipData) &&
       clipSame(ready.lease.gait.clip, ready.lease.gaitData) &&
       ready.lease.gait.speed === ready.lease.gaitSpeed &&
-      JSON.stringify(snapshotCalibration(this)) ===
-        JSON.stringify(ready.lease.calibration);
+      JSON.stringify(snapshotCalibration(this)) === JSON.stringify(ready.lease.calibration);
     if (!allow) {
       this.fallbackCue = cue.id;
       return this.originalApply(cue, clip, spec, weapon, time, resolve);

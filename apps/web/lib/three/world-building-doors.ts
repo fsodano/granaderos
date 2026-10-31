@@ -71,16 +71,7 @@ export function addDoorLeaf(
     } else {
       const planks = style === 'double' ? 3 : 6;
       for (let n = 1; n < planks; n++) {
-        batch.box(
-          dark,
-          (sign * w * n) / planks,
-          h * 0.5,
-          z,
-          0.012,
-          h * 0.93,
-          0.008,
-          light,
-        );
+        batch.box(dark, (sign * w * n) / planks, h * 0.5, z, 0.012, h * 0.93, 0.008, light);
       }
       if (full) {
         // Opening draws its two cross bands at 7/33 and 24/33 of the leaf,
@@ -89,9 +80,7 @@ export function addDoorLeaf(
         const authored = sourceBands,
           wide = ['double', 'barn', 'arched'].includes(style),
           span = authored ? w * (1 - 2 / (wide ? 28 : 18)) : w * 0.82;
-        const band = authored
-          ? materials.get('door-cross-band', { colour: '#4b4435' })
-          : iron;
+        const band = authored ? materials.get('door-cross-band', { colour: '#4b4435' }) : iron;
         for (const y of authored ? [7 / 33, 24 / 33] : [0.21, 0.73]) {
           batch.box(
             band,
@@ -107,16 +96,7 @@ export function addDoorLeaf(
       }
     }
     if (style === 'barn' && full) {
-      batch.box(
-        dark,
-        sign * w * 0.5,
-        h * 0.5,
-        z,
-        0.014,
-        h * 0.94,
-        0.009,
-        light,
-      );
+      batch.box(dark, sign * w * 0.5, h * 0.5, z, 0.014, h * 0.94, 0.009, light);
       // The source gate has two diagonal timber braces. A flat rectangular
       // section keeps their join legible without making round metal rods.
       for (const x of [0.1, 0.9]) {
@@ -128,37 +108,16 @@ export function addDoorLeaf(
           brace,
           a.clone().add(b).multiplyScalar(0.5),
           [0.045, delta.length(), 0.022],
-          new Quaternion().setFromUnitVectors(
-            new Vector3(0, 1, 0),
-            delta.normalize(),
-          ),
+          new Quaternion().setFromUnitVectors(new Vector3(0, 1, 0), delta.normalize()),
           light,
         );
       }
     }
     if (full) {
       for (const y of [0.23, 0.75]) {
-        batch.box(
-          iron,
-          sign * w * 0.09,
-          h * y,
-          face * 0.048,
-          w * 0.15,
-          0.065,
-          0.018,
-          light,
-        );
+        batch.box(iron, sign * w * 0.09, h * y, face * 0.048, w * 0.15, 0.065, 0.018, light);
       }
-      batch.box(
-        iron,
-        sign * w * 0.83,
-        h * 0.46,
-        face * 0.047,
-        0.045,
-        0.09,
-        0.014,
-        light,
-      );
+      batch.box(iron, sign * w * 0.83, h * 0.46, face * 0.047, 0.045, 0.09, 0.014, light);
       batch.primitive(
         'sphere',
         materials.get('brass'),
@@ -169,16 +128,7 @@ export function addDoorLeaf(
       );
     }
     if (broken) {
-      batch.box(
-        dark,
-        sign * w * 0.5,
-        h * 0.54,
-        face * 0.047,
-        w * 0.9,
-        0.035,
-        0.018,
-        light,
-      );
+      batch.box(dark, sign * w * 0.5, h * 0.54, face * 0.047, w * 0.9, 0.035, 0.018, light);
     }
   }
 }

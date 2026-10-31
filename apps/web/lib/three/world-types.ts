@@ -103,8 +103,7 @@ export type WorldItem = EquipmentItem & {
   itemMetadata?: Pick<EquipmentItem, 'contentWeapon'>;
   bladeMetadata?: Pick<EquipmentItem, 'contentWeapon'>;
 };
-export type WorldLoot = WorldPoint &
-  WorldItem & { id?: string; items?: readonly WorldItem[] };
+export type WorldLoot = WorldPoint & WorldItem & { id?: string; items?: readonly WorldItem[] };
 export type WorldCannon = WorldPoint & {
   id: string;
   type: string;

@@ -5,8 +5,7 @@ import { ELEVATION_PIXELS_PER_METRE } from '../tactical-elevation';
 export const ISO_HALF_WIDTH = 26;
 export const ISO_HALF_HEIGHT = 14;
 export const ISO_PITCH = Math.asin(ISO_HALF_HEIGHT / ISO_HALF_WIDTH);
-export const PIXELS_PER_METRE =
-  ELEVATION_PIXELS_PER_METRE / Math.cos(ISO_PITCH);
+export const PIXELS_PER_METRE = ELEVATION_PIXELS_PER_METRE / Math.cos(ISO_PITCH);
 export const TILE_METRES = (ISO_HALF_WIDTH * Math.SQRT2) / PIXELS_PER_METRE;
 /** Normal field zoom projects a 1.76 m body to 44, 88 or 132 CSS pixels. */
 export const CHARACTER_LOD_PIXEL_THRESHOLDS = [120, 65, 0] as const;
@@ -24,10 +23,7 @@ export type SectorCameraView = {
   height: number;
   mapHeight: number;
 };
-export type MetricProject = ((
-  x: number,
-  y: number,
-) => { x: number; y: number }) & { metric: true };
+export type MetricProject = ((x: number, y: number) => { x: number; y: number }) & { metric: true };
 export function sectorProject(mapHeight: number): MetricProject {
   const origin = mapHeight * ISO_HALF_WIDTH + 28;
   return Object.assign(
@@ -38,10 +34,7 @@ export function sectorProject(mapHeight: number): MetricProject {
     { metric: true as const },
   );
 }
-export function updateSectorCamera(
-  camera: OrthographicCamera,
-  view: SectorCameraView,
-) {
+export function updateSectorCamera(camera: OrthographicCamera, view: SectorCameraView) {
   const origin = view.mapHeight * ISO_HALF_WIDTH + 28;
   camera.left = (view.x - origin) / PIXELS_PER_METRE;
   camera.right = camera.left + view.width / PIXELS_PER_METRE;

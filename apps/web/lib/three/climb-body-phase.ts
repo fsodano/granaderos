@@ -37,9 +37,7 @@ export class NativeClimbBodyPhase {
       for (const name of ['Root', 'spine_01', 'spine_02', 'spine_03']) {
         const bone = this.model.getObjectByName(name),
           track = clip.tracks.find(
-            (track) =>
-              track.name ===
-              name + (name === 'Root' ? '.position' : '.quaternion'),
+            (track) => track.name === name + (name === 'Root' ? '.position' : '.quaternion'),
           );
         if (
           !bone ||
@@ -96,17 +94,12 @@ export class NativeClimbBodyPhase {
       if (position) {
         this.actualPosition.fromArray(position.evaluate(phase(paidFraction)));
         this.mappedPosition.fromArray(position.evaluate(phase(mappedFraction)));
-        bone.position.addScaledVector(
-          this.actualPosition.sub(this.mappedPosition),
-          w,
-        );
+        bone.position.addScaledVector(this.actualPosition.sub(this.mappedPosition), w);
       }
       if (rotation) {
         this.actualRotation.fromArray(rotation.evaluate(phase(paidFraction)));
         this.mappedRotation.fromArray(rotation.evaluate(phase(mappedFraction)));
-        this.correction
-          .copy(this.actualRotation)
-          .multiply(this.mappedRotation.invert());
+        this.correction.copy(this.actualRotation).multiply(this.mappedRotation.invert());
         this.actualRotation.copy(this.identity).slerp(this.correction, w);
         bone.quaternion.premultiply(this.actualRotation);
       }

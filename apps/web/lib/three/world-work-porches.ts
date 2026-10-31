@@ -1,13 +1,6 @@
-import {
-  worldWallRecords,
-  buildingWallAtPoint,
-  wallFrameRecords,
-} from './world-wall-records';
+import { worldWallRecords, buildingWallAtPoint, wallFrameRecords } from './world-wall-records';
 import { Group, Vector3 } from 'three';
-import {
-  entranceFrame,
-  getBuildingProfile,
-} from '../../../../packages/game/building-profile.ts';
+import { entranceFrame, getBuildingProfile } from '../../../../packages/game/building-profile.ts';
 import { buildingAppearance } from '../../../../packages/game/building-appearance.ts';
 import { WorldBatch, roofTextureProjector } from './world-geometry';
 import { illuminationAt } from './world-materials';
@@ -40,9 +33,7 @@ export function workPorch(
   if (!['pulperia', 'smithy', 'depot'].includes(kind ?? '') || height < 2.4) {
     return root;
   }
-  const walls = worldWallRecords(input).filter(
-      (tile) => tile.buildingId === b.id,
-    ),
+  const walls = worldWallRecords(input).filter((tile) => tile.buildingId === b.id),
     frame = entranceFrame({ ...b, walls: wallFrameRecords(walls) }),
     appearance = buildingAppearance(b),
     profile = getBuildingProfile(b),
@@ -53,9 +44,7 @@ export function workPorch(
       colour: '#a99a79',
     }),
     roof = materials.get(
-      !loading && appearance['roofFinish'] === 'thatch'
-        ? 'clay'
-        : appearance['roofFinish'],
+      !loading && appearance['roofFinish'] === 'thatch' ? 'clay' : appearance['roofFinish'],
     ),
     batch = new WorldBatch(geometry),
     name = loading ? 'gallery' : kind === 'smithy' ? 'forge-canopy' : 'gallery';
@@ -67,11 +56,9 @@ export function workPorch(
     sourceLo = Math.max(0.15, frame.doorU - radius),
     sourceHi = Math.min(frame.width - 0.15, frame.doorU + radius),
     supports = loading
-      ? [
-          ...new Set(
-            [1 / 6, 1 / 2, 5 / 6].map((r) => Math.round(frame.width * r)),
-          ),
-        ].filter((u) => wallAt(u)?.type === 'wall')
+      ? [...new Set([1 / 6, 1 / 2, 5 / 6].map((r) => Math.round(frame.width * r)))].filter(
+          (u) => wallAt(u)?.type === 'wall',
+        )
       : Array.from(
           { length: Math.max(1, Math.ceil(sourceHi - sourceLo)) },
           (_, n) => Math.round(sourceLo) + n,
@@ -115,12 +102,7 @@ export function workPorch(
   };
   const front = loading ? -0.46 : -0.42,
     back = 0.42 + (loading ? 0 : 0.01),
-    roofRect = rectangle(
-      lo - (loading ? 0.16 : 0),
-      front,
-      hi + (loading ? 0.16 : 0),
-      back,
-    );
+    roofRect = rectangle(lo - (loading ? 0.16 : 0), front, hi + (loading ? 0.16 : 0), back);
   if (
     (input.terrain.upperSurfaces ?? []).some(
       (surface) =>
@@ -173,10 +155,7 @@ export function workPorch(
     for (const sign of [-1, 1]) {
       const to = Math.max(
         u - 0.49 + pad,
-        Math.min(
-          u + 0.49 - pad,
-          Math.max(lo, Math.min(hi, u + sign * (loading ? 0.4 : 0.33))),
-        ),
+        Math.min(u + 0.49 - pad, Math.max(lo, Math.min(hi, u + sign * (loading ? 0.4 : 0.33)))),
       );
       if (Math.abs(to - u) > 0.05) {
         batch.cylinder(wood, at(u, v, start), at(to, v, end), tieRadius, light);

@@ -15,11 +15,7 @@ export function clothingPaint(
   material: MeshStandardMaterial,
   appearance?: string,
 ): ClothingPaint | undefined {
-  if (
-    !['worker', 'surgeon', 'woman-scout', 'woman-shawl'].includes(
-      appearance ?? '',
-    )
-  ) {
+  if (!['worker', 'surgeon', 'woman-scout', 'woman-shawl'].includes(appearance ?? '')) {
     return;
   }
   const match = /^Human_(outfit|legwear)_LOD([012])$/.exec(mesh.name);
@@ -37,8 +33,7 @@ export function clothingPaint(
   return { key: `${appearance}:${part}:lod${lod}`, part, appearance, lod };
 }
 
-const vec = (values: number[]) =>
-  `vec3(${values.map((value) => value.toFixed(3)).join(', ')})`;
+const vec = (values: number[]) => `vec3(${values.map((value) => value.toFixed(3)).join(', ')})`;
 const colours: Record<string, number[][]> = {
   'worker:outfit': [
     [1.2, 1.22, 1.25],
@@ -166,14 +161,8 @@ export function paintClothingShader(
     return;
   }
   shader.vertexShader = shader.vertexShader
-    .replace(
-      '#include <common>',
-      '#include <common>\nvarying vec3 vClothingRest;',
-    )
-    .replace(
-      '#include <begin_vertex>',
-      '#include <begin_vertex>\nvClothingRest = position;',
-    );
+    .replace('#include <common>', '#include <common>\nvarying vec3 vClothingRest;')
+    .replace('#include <begin_vertex>', '#include <begin_vertex>\nvClothingRest = position;');
   shader.fragmentShader = shader.fragmentShader.replace(
     '#include <common>',
     '#include <common>\nvarying vec3 vClothingRest;',

@@ -77,9 +77,7 @@ export class NativeGaitTransitionSupport {
   maximumBodyDrop = 0;
   rejectedFits = 0;
   maximumReachError = 0;
-  private forecasts:
-    | WeakMap<AnimationClip, Map<number, Map<string, Goal>>>
-    | undefined;
+  private forecasts: WeakMap<AnimationClip, Map<number, Map<string, Goal>>> | undefined;
   private visualScale: number;
   private body: Object3D;
   private bodyPosition = new Vector3();
@@ -158,10 +156,7 @@ export class NativeGaitTransitionSupport {
     }
     this.forecasts = bindings.get(mesh.skeleton.boneInverses);
     if (!this.forecasts) {
-      bindings.set(
-        mesh.skeleton.boneInverses,
-        (this.forecasts = new WeakMap()),
-      );
+      bindings.set(mesh.skeleton.boneInverses, (this.forecasts = new WeakMap()));
     }
     const p = required(mesh.geometry.attributes['position']),
       indices = required(mesh.geometry.attributes['skinIndex']),
@@ -197,9 +192,7 @@ export class NativeGaitTransitionSupport {
           continue;
         }
         seen.add(signature);
-        const position = new Vector3()
-            .fromBufferAttribute(p, i)
-            .applyMatrix4(mesh.bindMatrix),
+        const position = new Vector3().fromBufferAttribute(p, i).applyMatrix4(mesh.bindMatrix),
           influences: Influence[] = [];
         for (let slot = 0; slot < 4; slot++) {
           const weight = weights.getComponent(i, slot);
@@ -207,9 +200,7 @@ export class NativeGaitTransitionSupport {
             const bone = indices.getComponent(i, slot);
             influences.push({
               bone: required(mesh.skeleton.bones[bone]),
-              point: position
-                .clone()
-                .applyMatrix4(required(mesh.skeleton.boneInverses[bone])),
+              point: position.clone().applyMatrix4(required(mesh.skeleton.boneInverses[bone])),
               weight,
             });
           }
@@ -225,11 +216,7 @@ export class NativeGaitTransitionSupport {
         toes = ring.filter((i) => p.getZ(i) < front + 0.001);
       const toe = new Vector3();
       for (const i of toes) {
-        toe.add(
-          new Vector3()
-            .fromBufferAttribute(p, i)
-            .applyMatrix4(mesh.matrixWorld),
-        );
+        toe.add(new Vector3().fromBufferAttribute(p, i).applyMatrix4(mesh.matrixWorld));
       }
       toe.divideScalar(toes.length);
       required(foot).worldToLocal(toe);
@@ -266,12 +253,7 @@ export class NativeGaitTransitionSupport {
     }
     return result;
   }
-  begin(
-    previous: GaitClip | undefined,
-    next: GaitClip,
-    _time: number,
-    clip: AnimationClip,
-  ) {
+  begin(previous: GaitClip | undefined, next: GaitClip, _time: number, clip: AnimationClip) {
     this.pending = undefined;
     this.plan = undefined;
     if (
@@ -284,17 +266,10 @@ export class NativeGaitTransitionSupport {
     }
     const idle = (s: GaitClip) =>
         s.gesture === 'idle' ||
-        (s.posture === 'crouched' &&
-          ['aim', 'brace'].includes(s.gesture ?? '')),
+        (s.posture === 'crouched' && ['aim', 'brace'].includes(s.gesture ?? '')),
       sideways = (s: GaitClip) =>
-        ['strafeLeft', 'strafeRight'].includes(s.gesture ?? '') &&
-        Boolean(s.nativeSidewaysSupport);
-    if (
-      !(
-        (idle(previous) && sideways(next)) ||
-        (sideways(previous) && idle(next))
-      )
-    ) {
+        ['strafeLeft', 'strafeRight'].includes(s.gesture ?? '') && Boolean(s.nativeSidewaysSupport);
+    if (!((idle(previous) && sideways(next)) || (sideways(previous) && idle(next)))) {
       return;
     }
     const initial = this.capture(),
@@ -313,8 +288,7 @@ export class NativeGaitTransitionSupport {
     this.pending = { spec: next, clip, moving: sideways(next), initial };
   }
   private forecast(clip: AnimationClip, phase: number, delta: Vector3) {
-    const localPhase =
-      ((phase % clip.duration) + clip.duration) % clip.duration;
+    const localPhase = ((phase % clip.duration) + clip.duration) % clip.duration;
     const origin = this.root.getWorldPosition(new Vector3()),
       rotation = this.root.getWorldQuaternion(new Quaternion()),
       scale = this.root.getWorldScale(new Vector3());
@@ -346,9 +320,7 @@ export class NativeGaitTransitionSupport {
       action.time = localPhase;
       action.timeScale = 0;
       this.previewMixer.update(0);
-      this.previewRoot.position.copy(
-        rigidYaw ? new Vector3() : origin.clone().add(delta),
-      );
+      this.previewRoot.position.copy(rigidYaw ? new Vector3() : origin.clone().add(delta));
       this.previewRoot.quaternion.copy(rigidYaw ? new Quaternion() : rotation);
       this.previewRoot.scale.copy(rigidYaw ? new Vector3(1, 1, 1) : scale);
       this.previewRoot.updateWorldMatrix(true, true);
@@ -361,9 +333,7 @@ export class NativeGaitTransitionSupport {
               p: foot.getWorldPosition(new Vector3()),
               q: foot.getWorldQuaternion(new Quaternion()),
               height: this.lowest(leg, true),
-              knee: required(
-                this.previewBones.get(leg.calf.name),
-              ).getWorldPosition(new Vector3()),
+              knee: required(this.previewBones.get(leg.calf.name)).getWorldPosition(new Vector3()),
             },
           ] as [string, Goal];
         }),
@@ -408,8 +378,7 @@ export class NativeGaitTransitionSupport {
       firstSide = '';
     const velocity = new Vector3();
     if (pending.moving) {
-      const stride =
-          pending.spec.nativeStrideSpeed ?? pending.spec.locomotionSpeed,
+      const stride = pending.spec.nativeStrideSpeed ?? pending.spec.locomotionSpeed,
         rate = stride && stride > 0 ? speed / (stride * this.visualScale) : 0;
       if (!(rate > 0)) {
         this.rejectedFits++;
@@ -432,17 +401,12 @@ export class NativeGaitTransitionSupport {
       }
       boundaries.sort((a, b) => a.time - b.time);
       const first = required(boundaries[0]),
-        second = boundaries.find(
-          (b) => b.side !== first?.side && b.time > first.time + 0.05,
-        );
+        second = boundaries.find((b) => b.side !== first?.side && b.time > first.time + 0.05);
       if (!first || !second || second.time > 1.1) {
         this.rejectedFits++;
         return;
       }
-      firstTime =
-        pending.spec.posture === 'standing'
-          ? Math.min(first.time, 0.26)
-          : first.time;
+      firstTime = pending.spec.posture === 'standing' ? Math.min(first.time, 0.26) : first.time;
       secondTime = second.time;
       firstSide = first.side;
       velocity
@@ -506,10 +470,7 @@ export class NativeGaitTransitionSupport {
     }
     const u = Math.max(0, Math.min(1, fraction)),
       weight = u * u * (3 - 2 * u),
-      forward = leg.toe
-        .clone()
-        .multiplyScalar(this.visualScale)
-        .applyQuaternion(initial.q);
+      forward = leg.toe.clone().multiplyScalar(this.visualScale).applyQuaternion(initial.q);
     forward.y = 0;
     forward.normalize();
     const axis = new Vector3(0, 1, 0).cross(forward).normalize(),
@@ -521,9 +482,7 @@ export class NativeGaitTransitionSupport {
         .multiplyScalar(this.visualScale)
         .applyQuaternion(initial.q)
         .add(initial.p),
-      p = anchor.sub(
-        leg.toe.clone().multiplyScalar(this.visualScale).applyQuaternion(q),
-      );
+      p = anchor.sub(leg.toe.clone().multiplyScalar(this.visualScale).applyQuaternion(q));
     return { p, q };
   }
   private rawGoal(side: string, elapsed: number): Goal {
@@ -547,12 +506,7 @@ export class NativeGaitTransitionSupport {
     }
     if (!plan.moving && elapsed > plan.secondTime) {
       return move
-        ? mix(
-            first,
-            final,
-            (elapsed - plan.secondTime) / (plan.endTime - plan.secondTime),
-            0,
-          )
+        ? mix(first, final, (elapsed - plan.secondTime) / (plan.endTime - plan.secondTime), 0)
         : final;
     }
     return move
@@ -600,10 +554,8 @@ export class NativeGaitTransitionSupport {
           this.scratch
             .copy(influence.point)
             .applyMatrix4(
-              (preview
-                ? required(this.previewBones.get(influence.bone.name))
-                : influence.bone
-              ).matrixWorld,
+              (preview ? required(this.previewBones.get(influence.bone.name)) : influence.bone)
+                .matrixWorld,
             ),
           influence.weight,
         );
@@ -625,16 +577,10 @@ export class NativeGaitTransitionSupport {
     thigh.getWorldPosition(this.start);
     calf.getWorldPosition(this.joint);
     foot.getWorldPosition(this.end);
-    const distance = this.direction
-      .subVectors(this.target, this.start)
-      .length();
+    const distance = this.direction.subVectors(this.target, this.start).length();
     this.maximumReachError = Math.max(
       this.maximumReachError,
-      Math.max(
-        0,
-        distance - (a + b - 0.0004),
-        Math.abs(a - b) + 0.0004 - distance,
-      ),
+      Math.max(0, distance - (a + b - 0.0004), Math.abs(a - b) + 0.0004 - distance),
     );
     if (distance >= a + b - 0.0004 || distance <= Math.abs(a - b) + 0.0004) {
       this.rejectedFits++;
@@ -667,9 +613,7 @@ export class NativeGaitTransitionSupport {
       this.after.subVectors(this.target, this.joint),
     );
     required(foot.parent).getWorldQuaternion(this.parentRotation);
-    foot.quaternion.copy(
-      this.parentRotation.invert().multiply(this.footRotation),
-    );
+    foot.quaternion.copy(this.parentRotation.invert().multiply(this.footRotation));
     foot.updateWorldMatrix(false, true);
     return true;
   }
@@ -689,8 +633,7 @@ export class NativeGaitTransitionSupport {
     const elapsed = time - plan.started;
     if (
       elapsed >= plan.endTime ||
-      Math.abs(this.root.getWorldPosition(this.rootPoint).y - plan.floor) >
-        0.002
+      Math.abs(this.root.getWorldPosition(this.rootPoint).y - plan.floor) > 0.002
     ) {
       this.plan = undefined;
       this.recordFrame();
@@ -721,9 +664,7 @@ export class NativeGaitTransitionSupport {
       }
       drop = Math.max(
         drop,
-        this.start.y -
-          leg.target.y -
-          Math.sqrt(reach * reach - dx * dx - dz * dz),
+        this.start.y - leg.target.y - Math.sqrt(reach * reach - dx * dx - dz * dz),
       );
     }
     if (plan.moving && plan.roll) {
@@ -764,9 +705,7 @@ export class NativeGaitTransitionSupport {
       const goal = required(goals.get(leg.foot.name));
       this.target.copy(goal.p);
       this.footRotation.copy(goal.q);
-      const adjustment = this.target.distanceTo(
-        leg.foot.getWorldPosition(this.initial),
-      );
+      const adjustment = this.target.distanceTo(leg.foot.getWorldPosition(this.initial));
       this.maximumAdjustment = Math.max(this.maximumAdjustment, adjustment);
       if (adjustment > 0.65 || !this.solve(leg, goal)) {
         this.rejectedFits++;

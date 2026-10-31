@@ -1,9 +1,5 @@
 import { required } from './required';
-import {
-  worldWallRecords,
-  buildingWallAtPoint,
-  wallFrameRecords,
-} from './world-wall-records';
+import { worldWallRecords, buildingWallAtPoint, wallFrameRecords } from './world-wall-records';
 import { Group, Quaternion, Vector3 } from 'three';
 import { entranceFrame } from '../../../../packages/game/building-profile.ts';
 import { WorldBatch } from './world-geometry';
@@ -24,9 +20,7 @@ export function smithyChimney(
   geometry: WorldGeometry,
   materials: WorldMaterialSource,
 ) {
-  const walls = worldWallRecords(input).filter(
-      (tile) => tile.buildingId === b.id,
-    ),
+  const walls = worldWallRecords(input).filter((tile) => tile.buildingId === b.id),
     frame = entranceFrame({ ...b, walls: wallFrameRecords(walls) }),
     V = 25.066666666666666;
   const root = new Group();
@@ -41,10 +35,7 @@ export function smithyChimney(
   }
   const supports = [frame.width, 0]
     .flatMap((u) =>
-      Array.from(
-        { length: Math.max(0, Math.floor(frame.depth) - 1) },
-        (_, n) => ({ u, v: n + 1 }),
-      ),
+      Array.from({ length: Math.max(0, Math.floor(frame.depth) - 1) }, (_, n) => ({ u, v: n + 1 })),
     )
     .filter(({ u, v }) => {
       const point = frame.at(u, v);
@@ -62,10 +53,7 @@ export function smithyChimney(
         )
       );
     })
-    .sort(
-      (a, c) =>
-        Math.abs(a.v - frame.depth * 0.66) - Math.abs(c.v - frame.depth * 0.66),
-    );
+    .sort((a, c) => Math.abs(a.v - frame.depth * 0.66) - Math.abs(c.v - frame.depth * 0.66));
   if (!supports.length) {
     return root;
   }

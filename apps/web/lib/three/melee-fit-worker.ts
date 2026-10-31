@@ -34,20 +34,12 @@ export function runFitJob(job: FitJob) {
     gait = job.gait
       ? { clip: AnimationClip.parse(job.gait.clip), speed: job.gait.speed }
       : undefined,
-    fit = new NativeMeleeContactFit(
-      own.model,
-      own.root,
-      job.footwear,
-      false,
-      gait,
-    );
+    fit = new NativeMeleeContactFit(own.model, own.root, job.footwear, false, gait);
   try {
     restoreCalibration(fit, job.calibration);
     if (
       job.existingGait &&
-      Object.values(job.existingGait).every(
-        (value) => Number.isFinite(value) && value > 0,
-      )
+      Object.values(job.existingGait).every((value) => Number.isFinite(value) && value > 0)
     ) {
       fit.admitGait(job.existingGait);
     }
@@ -56,18 +48,14 @@ export function runFitJob(job: FitJob) {
         model: other.model,
         root: other.root,
       }));
-    const pairs = job.lowerCache
-      ? fit.sampleRejectedSpeedPairs(apply)
-      : (apply(), []);
+    const pairs = job.lowerCache ? fit.sampleRejectedSpeedPairs(apply) : (apply(), []);
     const cache = job.lowerCache ? fit.warmCacheMetadata() : undefined;
     const contact =
       job.lowerCache && fit.hasSamplingContext
         ? required(job.spec.markers?.['contact'], 'native contact marker')
         : 0;
     const native =
-      job.lowerCache && fit.hasSamplingContext
-        ? fit.nativePoseCacheFor(clip, contact)
-        : undefined;
+      job.lowerCache && fit.hasSamplingContext ? fit.nativePoseCacheFor(clip, contact) : undefined;
     const seed = {
       body: new Vector3(),
       hand: new Vector3(),
@@ -87,9 +75,7 @@ export function runFitJob(job: FitJob) {
         : {}),
     };
     const settled =
-      job.lowerCache && fit.hasSamplingContext
-        ? fit.settledPoseCacheFor(clip, seed)
-        : undefined;
+      job.lowerCache && fit.hasSamplingContext ? fit.settledPoseCacheFor(clip, seed) : undefined;
     return {
       id: job.id,
       plan: fit.fittedPlanSnapshot(),

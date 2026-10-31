@@ -5,10 +5,7 @@ import type {
 import type { CampaignConversation } from '../../../packages/game/public/campaign-types.ts';
 import { hasAuthoredDialogue } from '../../../packages/game/npc-dialogue.ts';
 import { canSee } from '../../../packages/game/tactical.js';
-import {
-  sameCell,
-  tacticalLevel,
-} from '../../../packages/game/tactical-space.js';
+import { sameCell, tacticalLevel } from '../../../packages/game/tactical-space.js';
 
 // The reducer receipt is transient. Save data owns accepted items and quest
 // progress; this model only chooses the visible response after movement ends.
@@ -22,12 +19,7 @@ export function npcGiftFeedback(
   }
   const actor = battle.units.find((unit) => unit.id === receipt.unitId);
   const npc = (battle.npcs ?? []).find((person) => person.id === receipt.npcId);
-  if (
-    !actor ||
-    !npc ||
-    !sameCell(npc, receipt) ||
-    !canSee(battle, actor, npc)
-  ) {
+  if (!actor || !npc || !sameCell(npc, receipt) || !canSee(battle, actor, npc)) {
     return null;
   }
   const accepted = receipt.status === 'accepted',

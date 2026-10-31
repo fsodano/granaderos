@@ -1,8 +1,5 @@
 import { encodeSave } from '../../../packages/game/save.ts';
-import {
-  readCampaignSaveRequest,
-  readSaveRequestIdentity,
-} from './campaign-save-values';
+import { readCampaignSaveRequest, readSaveRequestIdentity } from './campaign-save-values';
 
 self.onmessage = (event: MessageEvent<unknown>) => {
   // Replies can be correlated only after the transport identity is admitted.

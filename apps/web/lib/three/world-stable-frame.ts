@@ -1,8 +1,4 @@
-import {
-  worldWallRecords,
-  buildingWallAtPoint,
-  wallFrameRecords,
-} from './world-wall-records';
+import { worldWallRecords, buildingWallAtPoint, wallFrameRecords } from './world-wall-records';
 import { Group, Vector3 } from 'three';
 import { entranceFrame } from '../../../../packages/game/building-profile.ts';
 import { BUILDING_OPENINGS } from '../../../../packages/game/building-scale.js';
@@ -26,9 +22,7 @@ export function stableTimberFrame(
 ) {
   const root = new Group();
   root.name = `building-detail:${b.id}:stable-timber-frame`;
-  const walls = worldWallRecords(input).filter(
-      (tile) => tile.buildingId === b.id,
-    ),
+  const walls = worldWallRecords(input).filter((tile) => tile.buildingId === b.id),
     frame = entranceFrame({ ...b, walls: wallFrameRecords(walls) }),
     inset = buildingArtInset(b, input),
     along = inset * (frame.u.x + frame.u.y),
@@ -117,18 +111,10 @@ export function stableTimberFrame(
         v = Math.max(-0.49 + pad, Math.min(0.49 - pad, -0.31 + depth));
       if (end - start > 0.05) {
         const y = (a: number) =>
-            top -
-            13 / V +
-            (((a - sourceStart) / (sourceEnd - sourceStart)) * 11) / V,
+            top - 13 / V + (((a - sourceStart) / (sourceEnd - sourceStart)) * 11) / V,
           tieRect = rectangle(start - pad, v - pad, end + pad, v + pad);
         if (!walking(tieRect)) {
-          batch.cylinder(
-            wood,
-            at(start, v, y(start)),
-            at(end, v, y(end)),
-            radius,
-            light,
-          );
+          batch.cylinder(wood, at(start, v, y(start)), at(end, v, y(end)), radius, light);
         }
       }
     }
@@ -141,12 +127,7 @@ export function stableTimberFrame(
       Math.min(frame.width + 0.49, frame.width - 0.02 + along),
       Math.min(0.49, 0.1 + depth),
     );
-  if (
-    supports >= 2 &&
-    bottom >= doorTop + 0.045 &&
-    top <= height - 0.05 &&
-    !walking(rect)
-  ) {
+  if (supports >= 2 && bottom >= doorTop + 0.045 && top <= height - 0.05 && !walking(rect)) {
     feature('stable-timber-header', (batch) => box(batch, rect, bottom, top));
   }
   return root;

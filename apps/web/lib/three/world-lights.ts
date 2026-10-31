@@ -4,17 +4,10 @@ import { WorldBatch, seeded } from './world-geometry';
 import { illuminationAt } from './world-materials';
 import type { WorldGeometry } from './world-geometry';
 import type { WorldMaterialSource } from './world-materials';
-import type {
-  WorldInput,
-  WorldLight,
-  WorldPoint,
-  WorldSmoke,
-} from './world-types';
+import type { WorldInput, WorldLight, WorldPoint, WorldSmoke } from './world-types';
 
 export function lightActive(light: WorldLight) {
-  return (
-    !light.extinguished && light.turns !== 0 && light.remainingSeconds !== 0
-  );
+  return !light.extinguished && light.turns !== 0 && light.remainingSeconds !== 0;
 }
 export function buildLight(
   id: string,
@@ -75,33 +68,11 @@ export function buildLight(
         batch.box(iron, x, 1.3, z, 0.014, 0.28, 0.014, light);
       }
     }
-    batch.box(
-      materials.get('glass', { opacity: 0.3 }),
-      0.19,
-      1.3,
-      0,
-      0.17,
-      0.23,
-      0.14,
-      light,
-    );
-    batch.primitive(
-      'cone',
-      iron,
-      [0.19, 1.48, 0],
-      [0.145, 0.11, 0.13],
-      undefined,
-      light,
-    );
+    batch.box(materials.get('glass', { opacity: 0.3 }), 0.19, 1.3, 0, 0.17, 0.23, 0.14, light);
+    batch.primitive('cone', iron, [0.19, 1.48, 0], [0.145, 0.11, 0.13], undefined, light);
   } else {
     height = 0.62;
-    batch.cylinder(
-      wood,
-      new Vector3(0, 0.04, 0),
-      new Vector3(0.08, 0.57, 0),
-      0.028,
-      light,
-    );
+    batch.cylinder(wood, new Vector3(0, 0.04, 0), new Vector3(0.08, 0.57, 0), 0.028, light);
     batch.cylinder(
       materials.get('linen'),
       new Vector3(0.065, 0.49, 0),
@@ -136,10 +107,7 @@ export function buildLight(
           materials.get('ember', { emissive: true }),
           [(n - 1) * 0.09, height * 0.8, 0.04],
           [0.07, 0.24, 0.06],
-          new Quaternion().setFromAxisAngle(
-            new Vector3(0, 0, 1),
-            (n - 1) * 0.16,
-          ),
+          new Quaternion().setFromAxisAngle(new Vector3(0, 0, 1), (n - 1) * 0.16),
           1,
         );
       }
@@ -147,11 +115,7 @@ export function buildLight(
     const flames = fire.finish(`flame:${id}`);
     group.add(flames);
     group.userData['flame'] = flames;
-    group.userData['seed'] = seeded(
-      Math.floor(source.x),
-      Math.floor(source.y),
-      9,
-    );
+    group.userData['seed'] = seeded(Math.floor(source.x), Math.floor(source.y), 9);
     if (pointLight) {
       const lamp = new PointLight(
         '#ffd0a1',
@@ -200,11 +164,7 @@ export function buildSmoke(
   return group;
 }
 
-export function animateWorldNode(
-  group: Group,
-  time: number,
-  reducedMotion: boolean,
-) {
+export function animateWorldNode(group: Group, time: number, reducedMotion: boolean) {
   if (reducedMotion) {
     return;
   }
@@ -227,8 +187,7 @@ export function animateWorldNode(
   }
   if (group.userData['kind'] === 'smoke') {
     group.rotation.y = Math.sin(time * 0.11 + seed) * 0.035;
-    group.position.y =
-      Number(group.userData['baseY']) + 0.035 * Math.sin(time * 0.67 + seed);
+    group.position.y = Number(group.userData['baseY']) + 0.035 * Math.sin(time * 0.67 + seed);
   }
 }
 
@@ -243,10 +202,7 @@ export function buildClimbLinks(
     iron = materials.get('iron');
   const elevation = (point: WorldPoint) =>
     point.elevation ??
-    (point.tacticalLevel
-      ? input.terrain.upperSurfaces
-      : input.terrain.tiles
-    )?.find(
+    (point.tacticalLevel ? input.terrain.upperSurfaces : input.terrain.tiles)?.find(
       (surface) =>
         surface.x === point.x &&
         surface.y === point.y &&
@@ -254,11 +210,7 @@ export function buildClimbLinks(
     )?.elevation ??
     0;
   for (const link of input.terrain.climbLinks ?? []) {
-    const a = new Vector3(
-        link.from.x * T,
-        elevation(link.from),
-        link.from.y * T,
-      ),
+    const a = new Vector3(link.from.x * T, elevation(link.from), link.from.y * T),
       b = new Vector3(link.to.x * T, elevation(link.to), link.to.y * T),
       delta = b.clone().sub(a),
       light = illuminationAt(input, link.from);
@@ -309,13 +261,7 @@ export function buildClimbLinks(
           light,
         );
       }
-      batch.cylinder(
-        iron,
-        top.clone().sub(across),
-        top.clone().add(across),
-        0.022,
-        light,
-      );
+      batch.cylinder(iron, top.clone().sub(across), top.clone().add(across), 0.022, light);
     }
   }
   const group = batch.finish('climb-links');

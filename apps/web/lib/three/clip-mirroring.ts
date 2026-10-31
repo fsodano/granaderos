@@ -17,11 +17,7 @@ const propCache = new WeakMap<Object3D, WeakMap<ClipSpec, ClipSpec>>();
 const reflect = (q: Quaternion) => q.set(q.x, -q.y, -q.z, q.w);
 
 /** Mirror animation, never anatomy. Source clips and source bones stay intact. */
-export function mirroredClip(
-  clip: AnimationClip,
-  rest: Object3D,
-  spec: AnimationMirroring,
-) {
+export function mirroredClip(clip: AnimationClip, rest: Object3D, spec: AnimationMirroring) {
   if (spec.axis !== 'x') {
     throw Error('Unsupported animation mirror axis');
   }
@@ -77,10 +73,7 @@ export function mirroredClip(
       for (let index = 0; index < copy.values.length; index += 3) {
         position.fromArray(track.values, index).sub(source.position);
         position.x *= -1;
-        position
-          .applyQuaternion(parentCorrection)
-          .add(target.position)
-          .toArray(copy.values, index);
+        position.applyQuaternion(parentCorrection).add(target.position).toArray(copy.values, index);
       }
     } else if (parsed.propertyName === 'scale' && size === 3) {
       for (let index = 0; index < copy.values.length; index += 3) {
@@ -171,10 +164,7 @@ export type MirroredSocket = {
 };
 /** Fit the offhand grip from the matching right grip, without changing bones.
  * Two reflections keep a proper rotation and positive mesh scale. */
-export function fitMirroredSockets(
-  model: Object3D,
-  sockets: Record<string, MirroredSocket>,
-) {
+export function fitMirroredSockets(model: Object3D, sockets: Record<string, MirroredSocket>) {
   model.updateMatrixWorld(true);
   for (const spec of Object.values(sockets)) {
     if (!spec.mirror) {
@@ -193,9 +183,7 @@ export function fitMirroredSockets(
         localAxis === 'y' ? -1 : 1,
         localAxis === 'z' ? -1 : 1,
       );
-    const desired = modelReflection
-      .multiply(source.matrixWorld)
-      .multiply(localReflection);
+    const desired = modelReflection.multiply(source.matrixWorld).multiply(localReflection);
     desired
       .premultiply(target.parent.matrixWorld.clone().invert())
       .decompose(target.position, target.quaternion, target.scale);

@@ -79,9 +79,7 @@ function shown(node: Object3D) {
   }
   return true;
 }
-function attribute(
-  source: BufferAttribute | InterleavedBufferAttribute,
-): Attribute {
+function attribute(source: BufferAttribute | InterleavedBufferAttribute): Attribute {
   if (source instanceof InterleavedBufferAttribute) {
     const array = source.data.array.slice(0, source.count * source.itemSize);
     for (let i = 0; i < source.count; i++) {
@@ -102,11 +100,7 @@ function attribute(
 
 /** The explicit rendered actor subtree contains no roster, future frame,
  * ammunition, userData dump, image, material texture or hidden mesh. */
-export function snapshotActor(
-  root: Object3D,
-  model: Object3D,
-  weapon?: Object3D,
-): ActorSnapshot {
+export function snapshotActor(root: Object3D, model: Object3D, weapon?: Object3D): ActorSnapshot {
   root.updateWorldMatrix(true, true);
   root.updateMatrixWorld(true);
   const nodes: NodeRecord[] = [],
@@ -118,18 +112,10 @@ export function snapshotActor(
   ) {
     weaponPath.add(current);
   }
-  const visit = (
-    node: Object3D,
-    parent: number,
-    insideModel = false,
-    insideWeapon = false,
-  ) => {
+  const visit = (node: Object3D, parent: number, insideModel = false, insideWeapon = false) => {
     insideModel ||= node === model;
     insideWeapon ||= node === weapon;
-    if (
-      isMesh(node) &&
-      ((!isSkinnedMesh(node) && !insideWeapon) || !shown(node))
-    ) {
+    if (isMesh(node) && ((!isSkinnedMesh(node) && !insideWeapon) || !shown(node))) {
       return;
     }
     const record: NodeRecord = {
@@ -149,16 +135,12 @@ export function snapshotActor(
       const attributes: Record<string, Attribute> = {};
       for (const name of ['position', 'skinIndex', 'skinWeight']) {
         if (node.geometry.attributes[name]) {
-          attributes[name] = attribute(
-            required(node.geometry.attributes[name]),
-          );
+          attributes[name] = attribute(required(node.geometry.attributes[name]));
         }
       }
       record.geometry = {
         attributes,
-        ...(node.geometry.index
-          ? { index: attribute(node.geometry.index) }
-          : {}),
+        ...(node.geometry.index ? { index: attribute(node.geometry.index) } : {}),
         morph: (node.geometry.morphAttributes.position ?? []).map(attribute),
         relative: node.geometry.morphTargetsRelative,
       };
@@ -188,12 +170,7 @@ export function snapshotActor(
       }
     }
     for (const child of node.children) {
-      if (
-        insideModel ||
-        insideWeapon ||
-        child === model ||
-        weaponPath.has(child)
-      ) {
+      if (insideModel || insideWeapon || child === model || weaponPath.has(child)) {
         visit(child, index, insideModel, insideWeapon);
       }
     }
@@ -224,20 +201,15 @@ export function restoreActor(snapshot: ActorSnapshot) {
       }
       if (record.geometry.index) {
         const a = record.geometry.index;
-        geometry.setIndex(
-          new BufferAttribute(a.array, a.itemSize, a.normalized),
-        );
+        geometry.setIndex(new BufferAttribute(a.array, a.itemSize, a.normalized));
       }
       geometry.morphAttributes.position = record.geometry.morph.map(
-        (data) =>
-          new BufferAttribute(data.array, data.itemSize, data.normalized),
+        (data) => new BufferAttribute(data.array, data.itemSize, data.normalized),
       );
       geometry.morphTargetsRelative = record.geometry.relative;
       const material = new MeshBasicMaterial();
       material.name = record.material ?? '';
-      node = record.skin
-        ? new SkinnedMesh(geometry, material)
-        : new Mesh(geometry, material);
+      node = record.skin ? new SkinnedMesh(geometry, material) : new Mesh(geometry, material);
       if (record.morph && isMesh(node)) {
         node.morphTargetInfluences = [...record.morph];
       }
@@ -297,18 +269,13 @@ export function restoreActor(snapshot: ActorSnapshot) {
 export function snapshotCalibration(fit: NativeMeleeContactFit): Calibration {
   return fit.snapshotCalibration();
 }
-export function restoreCalibration(
-  fit: NativeMeleeContactFit,
-  calibration: Calibration,
-) {
+export function restoreCalibration(fit: NativeMeleeContactFit, calibration: Calibration) {
   fit.restoreCalibration(calibration);
 }
 export function clipSnapshot(clip: AnimationClip) {
   const data = AnimationClip.toJSON(clip);
   for (let index = 0; index < clip.tracks.length; index++) {
-    required(data.tracks[index]).interpolation = required(
-      clip.tracks[index],
-    ).getInterpolation();
+    required(data.tracks[index]).interpolation = required(clip.tracks[index]).getInterpolation();
   }
   return data;
 }

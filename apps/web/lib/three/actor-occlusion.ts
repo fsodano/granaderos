@@ -19,9 +19,7 @@ export function markActorMaterials(root: Object3D) {
     if (!isMesh(node) || node.userData['occlusionOverlay']) {
       return;
     }
-    for (const material of Array.isArray(node.material)
-      ? node.material
-      : [node.material]) {
+    for (const material of Array.isArray(node.material) ? node.material : [node.material]) {
       material.stencilWrite = true;
       material.stencilRef = 0;
       material.stencilFunc = AlwaysStencilFunc;

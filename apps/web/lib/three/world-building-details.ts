@@ -1,9 +1,5 @@
 import { required } from './required';
-import {
-  worldWallRecords,
-  buildingWallAtPoint,
-  wallFrameRecords,
-} from './world-wall-records';
+import { worldWallRecords, buildingWallAtPoint, wallFrameRecords } from './world-wall-records';
 import {
   ExtrudeGeometry,
   Group,
@@ -13,10 +9,7 @@ import {
   Shape,
   Vector3,
 } from 'three';
-import {
-  entranceFrame,
-  getBuildingProfile,
-} from '../../../../packages/game/building-profile.ts';
+import { entranceFrame, getBuildingProfile } from '../../../../packages/game/building-profile.ts';
 import { buildingStyle } from '../../../../packages/game/building-types.ts';
 import { WorldBatch, roofTextureProjector } from './world-geometry';
 import { illuminationAt } from './world-materials';
@@ -63,8 +56,7 @@ export function roofEdgeDetails(
   const batch = new WorldBatch(geometry),
     edges = new Map<string, { a: Vector3; b: Vector3; count: number }>(),
     thickness = terrace ? 0.12 : 0.075;
-  const key = (p: Vector3) =>
-    [p.x, p.y, p.z].map((value) => value.toFixed(6)).join(',');
+  const key = (p: Vector3) => [p.x, p.y, p.z].map((value) => value.toFixed(6)).join(',');
   for (const panel of panels) {
     batch.polygon(
       wood,
@@ -120,9 +112,7 @@ export function architecturalDetails(
   materials: WorldMaterialSource,
   legacy: boolean,
 ) {
-  const walls = worldWallRecords(input).filter(
-    (tile) => tile.buildingId === b.id,
-  );
+  const walls = worldWallRecords(input).filter((tile) => tile.buildingId === b.id);
   const wallInset = buildingArtInset(b, input),
     frame = entranceFrame({ ...b, walls: wallFrameRecords(walls) }),
     kind = b.kind ?? b.architecture ?? 'house',
@@ -135,10 +125,7 @@ export function architecturalDetails(
         ? { colour: buildingStyle(b).wall }
         : { architectureRole: 'volume' },
     ),
-    trim = materials.get(
-      'trim',
-      legacy ? { colour: buildingStyle(b).trim } : {},
-    ),
+    trim = materials.get('trim', legacy ? { colour: buildingStyle(b).trim } : {}),
     wood = materials.get('wood'),
     darkwood = materials.get('darkwood'),
     iron = materials.get('iron'),
@@ -156,29 +143,10 @@ export function architecturalDetails(
     doorU = frame.doorU - alongInset;
   const at = (u: number, v: number, y: number) => {
     const point = frame.at(u, v);
-    return new Vector3(
-      (point.x + wallInset) * T,
-      base + y,
-      (point.y + wallInset) * T,
-    );
+    return new Vector3((point.x + wallInset) * T, base + y, (point.y + wallInset) * T);
   };
-  const box = (
-    u: number,
-    v: number,
-    y: number,
-    w: number,
-    h: number,
-    d: number,
-    material = wall,
-  ) =>
-    batch.primitive(
-      'box',
-      material,
-      at(u, v, y),
-      [w * T, h, d * T],
-      rotation,
-      light,
-    );
+  const box = (u: number, v: number, y: number, w: number, h: number, d: number, material = wall) =>
+    batch.primitive('box', material, at(u, v, y), [w * T, h, d * T], rotation, light);
   const wallAt = (u: number, v: number) => {
     const point = frame.at(u, v);
     return buildingWallAtPoint(walls, point, b);
@@ -230,21 +198,8 @@ export function architecturalDetails(
     y: number,
     radius: number,
     material: MeshStandardMaterial,
-  ) =>
-    batch.cylinder(
-      material,
-      at(u, v - 0.012 / T, y),
-      at(u, v + 0.012 / T, y),
-      radius,
-      light,
-    );
-  const clock = (
-    u: number,
-    v: number,
-    y: number,
-    radius = 0.27,
-    facing = -1,
-  ) => {
+  ) => batch.cylinder(material, at(u, v - 0.012 / T, y), at(u, v + 0.012 / T, y), radius, light);
+  const clock = (u: number, v: number, y: number, radius = 0.27, facing = -1) => {
     faceDisc(u, v, y, radius + 0.036, iron);
     faceDisc(u, v + (facing * 0.018) / T, y, radius, materials.get('linen'));
     for (let n = 0; n < 12; n++) {
@@ -276,14 +231,7 @@ export function architecturalDetails(
       light,
     );
   };
-  const tower = (
-    u: number,
-    v: number,
-    w: number,
-    top: number,
-    bottom = 0,
-    civic = false,
-  ) => {
+  const tower = (u: number, v: number, w: number, top: number, bottom = 0, civic = false) => {
     // The broad base cornice belongs to the occupied tower footprint too.
     // Decoration cannot fill an authored upper walking cell.
     if (walkableAbove(u, v, w + 0.15)) {
@@ -293,10 +241,7 @@ export function architecturalDetails(
       // The civic cupola rests on the facade. It never fills the entrance below.
       const footing =
         !civic && (!legacy || b.wallFinish !== undefined) && bottom === 0
-          ? Math.min(
-              (getBuildingProfile(b).plinthHeight + 2) / 25.066666666666666,
-              top,
-            )
+          ? Math.min((getBuildingProfile(b).plinthHeight + 2) / 25.066666666666666, top)
           : bottom;
       // The current parish sprite has a warm stone foot over its plaster base.
       // Join those volumes once on the unchanged actual reserved foundation.
@@ -337,11 +282,7 @@ export function architecturalDetails(
         );
       } else {
         for (let n = 0; n < 4; n++) {
-          const panel = [
-            required(corners[n]),
-            required(corners[(n + 1) % 4]),
-            apex,
-          ];
+          const panel = [required(corners[n]), required(corners[(n + 1) % 4]), apex];
           batch.polygon(roof, panel, light, roofTextureProjector(panel));
         }
       }
@@ -367,16 +308,9 @@ export function architecturalDetails(
               y,
             );
           const arch = Array.from({ length: 17 }, (_, n) =>
-            point(
-              Math.cos((n * Math.PI) / 16) * rx,
-              spring + Math.sin((n * Math.PI) / 16) * 0.24,
-            ),
+            point(Math.cos((n * Math.PI) / 16) * rx, spring + Math.sin((n * Math.PI) / 16) * 0.24),
           );
-          batch.polygon(
-            darkwood,
-            [point(-rx, bottom), point(rx, bottom), ...arch],
-            light,
-          );
+          batch.polygon(darkwood, [point(-rx, bottom), point(rx, bottom), ...arch], light);
           for (const sign of [-1, 1]) {
             batch.cylinder(
               trim,
@@ -387,13 +321,7 @@ export function architecturalDetails(
             );
           }
           for (let n = 1; n < arch.length; n++) {
-            batch.cylinder(
-              trim,
-              required(arch[n - 1]),
-              required(arch[n]),
-              0.037,
-              light,
-            );
+            batch.cylinder(trim, required(arch[n - 1]), required(arch[n]), 0.037, light);
           }
           batch.cylinder(
             wood,
@@ -406,12 +334,7 @@ export function architecturalDetails(
               ? rotation
               : rotation
                   .clone()
-                  .multiply(
-                    new Quaternion().setFromAxisAngle(
-                      new Vector3(0, 1, 0),
-                      Math.PI * 0.5,
-                    ),
-                  ),
+                  .multiply(new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), Math.PI * 0.5)),
             radius = Math.min(0.18, rx * 0.6);
           batch.primitive(
             'flare',
@@ -421,13 +344,7 @@ export function architecturalDetails(
             bellRotation,
             light,
           );
-          batch.cylinder(
-            iron,
-            point(0, cy - 0.18, 0.03),
-            point(0, cy - 0.25, 0.03),
-            0.023,
-            light,
-          );
+          batch.cylinder(iron, point(0, cy - 0.18, 0.03), point(0, cy - 0.25, 0.03), 0.023, light);
         }
         box(u, v, bottom - 0.09, w + 0.12, 0.12, w + 0.12, trim);
         return;
@@ -440,13 +357,7 @@ export function architecturalDetails(
           box(u + side * w * 0.25, cv, cy, 0.04 / T, 0.76, 0.04 / T, trim);
         }
         box(u, cv, cy + 0.38, w * 0.54, 0.055, 0.04 / T, trim);
-        clock(
-          u,
-          cv + (face * 0.044) / T,
-          cy,
-          Math.min(0.34, w * T * 0.3),
-          face,
-        );
+        clock(u, cv + (face * 0.044) / T, cy, Math.min(0.34, w * T * 0.3), face);
       }
     });
   };
@@ -502,11 +413,7 @@ export function architecturalDetails(
       batch.add(
         mesh,
         wall,
-        new Matrix4().compose(
-          at(lo, front, baseY),
-          rotation,
-          new Vector3(1, 1, 1),
-        ),
+        new Matrix4().compose(at(lo, front, baseY), rotation, new Vector3(1, 1, 1)),
         light,
       );
       mesh.dispose();
@@ -519,37 +426,17 @@ export function architecturalDetails(
             front - 0.025 / T,
             baseY + required(outline[n - 1]).y,
           ),
-          at(
-            lo + required(outline[n]).x / T,
-            front - 0.025 / T,
-            baseY + required(outline[n]).y,
-          ),
+          at(lo + required(outline[n]).x / T, front - 0.025 / T, baseY + required(outline[n]).y),
           0.045,
           light,
         );
       }
-      box(
-        center,
-        -0.06,
-        height + 1.5 / V,
-        width + 0.2,
-        7 / V,
-        0.68,
-        materials.get('stone'),
-      );
+      box(center, -0.06, height + 1.5 / V, width + 0.2, 7 / V, 0.68, materials.get('stone'));
       clock(center, front - 0.028 / T, baseY + y(29), 7.5 / V);
     });
     feature('townhall-finials', () => {
       for (const u of [lo + 0.16, hi - 0.16]) {
-        box(
-          u,
-          -0.135,
-          baseY + 7.5 / V,
-          0.2,
-          5 / V,
-          0.31,
-          materials.get('stone'),
-        );
+        box(u, -0.135, baseY + 7.5 / V, 0.2, 5 / V, 0.31, materials.get('stone'));
         batch.primitive(
           'sphere',
           trim,
@@ -565,17 +452,9 @@ export function architecturalDetails(
     Array.from({ length: Math.floor(frame.width) + 1 }, (_, u) => u).filter(
       (u) =>
         wallAt(u, 0)?.type === 'wall' &&
-        (u === 0 ||
-          u === frame.width ||
-          u % 2 === 0 ||
-          Math.abs(u - frame.doorU) === 1),
+        (u === 0 || u === frame.width || u % 2 === 0 || Math.abs(u - frame.doorU) === 1),
     );
-  const roofCanopy = (
-    name: string,
-    supports: number[],
-    depth = 0.55,
-    masonry = false,
-  ) => {
+  const roofCanopy = (name: string, supports: number[], depth = 0.55, masonry = false) => {
     if (supports.length < 2 || height < 2.4) {
       return;
     }
@@ -586,21 +465,14 @@ export function architecturalDetails(
       front = -depth - 0.15,
       back = 0.16,
       supportDepth =
-        wallInset === 0
-          ? kind === 'warehouse'
-            ? -0.3
-            : kind === 'posta'
-              ? -0.33
-              : 0
-          : 0;
+        wallInset === 0 ? (kind === 'warehouse' ? -0.3 : kind === 'posta' ? -0.33 : 0) : 0;
     const panel = [
         at(lo - 0.18, front, low),
         at(hi + 0.18, front, low),
         at(hi + 0.18, back, high),
         at(lo - 0.18, back, high),
       ],
-      roofAt = (v: number) =>
-        low + ((v - front) / (back - front)) * (high - low);
+      roofAt = (v: number) => low + ((v - front) / (back - front)) * (high - low);
     feature(name, () => {
       for (const u of supports) {
         if (masonry && (u === 0 || u === frame.width)) {
@@ -609,11 +481,7 @@ export function architecturalDetails(
         // The posta's broad corner piers are separate. Its thin porch posts
         // expose their front face without crossing the solid cell boundary.
         const a = masonry ? u - alongInset : u,
-          v = masonry
-            ? wallInset === 0
-              ? -0.3
-              : 0.02 * (frame.v.x + frame.v.y)
-            : supportDepth,
+          v = masonry ? (wallInset === 0 ? -0.3 : 0.02 * (frame.v.x + frame.v.y)) : supportDepth,
           top = roofAt(v);
         if (masonry) {
           box(a, v, (top + 0.11) * 0.5, 0.14, top - 0.11, 0.14, wall);
@@ -645,41 +513,15 @@ export function architecturalDetails(
     });
     root
       .getObjectByName(`building-detail:${b.id}:${name}`)
-      ?.add(
-        roofEdgeDetails(
-          `${b.id}:${name}`,
-          [panel],
-          low,
-          geometry,
-          roof,
-          darkwood,
-          light,
-        ),
-      );
+      ?.add(roofEdgeDetails(`${b.id}:${name}`, [panel], low, geometry, roof, darkwood, light));
   };
   const workCanopy = (name: string, supports: number[], depth: number) => {
     if (legacy && b.wallFinish === undefined) {
       roofCanopy(name, supports, depth);
     } else {
       root.add(
-        workPorch(
-          b,
-          input,
-          T,
-          height,
-          base,
-          geometry,
-          materials,
-          (panels, eave, surface) =>
-            roofEdgeDetails(
-              `${b.id}:${name}`,
-              panels,
-              eave,
-              geometry,
-              surface,
-              darkwood,
-              light,
-            ),
+        workPorch(b, input, T, height, base, geometry, materials, (panels, eave, surface) =>
+          roofEdgeDetails(`${b.id}:${name}`, panels, eave, geometry, surface, darkwood, light),
         ),
       );
     }
@@ -720,15 +562,7 @@ export function architecturalDetails(
         for (const u of frontSupports) {
           post(u, 0, u === lo ? 1 : -1, 0);
         }
-        box(
-          (lo + hi) * 0.5,
-          0,
-          postTop - 0.04,
-          hi - lo + 0.18,
-          0.12,
-          0.14 / T,
-          wood,
-        );
+        box((lo + hi) * 0.5, 0, postTop - 0.04, hi - lo + 0.18, 0.12, 0.14 / T, wood);
         panels.push([
           at(joint ? outside : lo - 0.15, outside, low),
           at(hi + 0.15, outside, low),
@@ -742,15 +576,7 @@ export function architecturalDetails(
             post(0, v, 0, v === 0 ? 1 : -1);
           }
         }
-        box(
-          0,
-          length * 0.5,
-          postTop - 0.04,
-          0.14 / T,
-          0.12,
-          length + 0.18,
-          wood,
-        );
+        box(0, length * 0.5, postTop - 0.04, 0.14 / T, 0.12, length + 0.18, wood);
         panels.push([
           at(outside, length + 0.15, low),
           at(outside, joint ? outside : 0, low),
@@ -765,15 +591,7 @@ export function architecturalDetails(
     root
       .getObjectByName(`building-detail:${b.id}:farmhouse-gallery`)
       ?.add(
-        roofEdgeDetails(
-          `${b.id}:farmhouse-gallery`,
-          panels,
-          low,
-          geometry,
-          roof,
-          darkwood,
-          light,
-        ),
+        roofEdgeDetails(`${b.id}:farmhouse-gallery`, panels, low, geometry, roof, darkwood, light),
       );
   };
   const chimney = (
@@ -787,34 +605,30 @@ export function architecturalDetails(
       name?: string;
     } = {},
   ) =>
-    feature(
-      options.name ??
-        (options.industrial ? 'forge-chimney' : 'domestic-chimney'),
-      () => {
-        const bottom = height - 0.12,
-          top = options.top ?? height + 1.02,
-          w = options.industrial ? 0.42 : 0.38,
-          cap = options.industrial ? 0.56 : 0.48;
-        box(
-          u,
-          v,
-          (bottom + top) * 0.5,
-          w,
-          top - bottom,
-          w,
-          options.material ?? materials.get('brick'),
-        );
-        box(u, v, top + 0.015, cap, 0.12, cap, options.capMaterial ?? trim);
-        box(u, v, top + 0.08, w - 0.11, 0.018, w - 0.11, darkwood);
-      },
-    );
+    feature(options.name ?? (options.industrial ? 'forge-chimney' : 'domestic-chimney'), () => {
+      const bottom = height - 0.12,
+        top = options.top ?? height + 1.02,
+        w = options.industrial ? 0.42 : 0.38,
+        cap = options.industrial ? 0.56 : 0.48;
+      box(
+        u,
+        v,
+        (bottom + top) * 0.5,
+        w,
+        top - bottom,
+        w,
+        options.material ?? materials.get('brick'),
+      );
+      box(u, v, top + 0.015, cap, 0.12, cap, options.capMaterial ?? trim);
+      box(u, v, top + 0.08, w - 0.11, 0.018, w - 0.11, darkwood);
+    });
   const sideChimney = (industrial = false) => {
     const supports = [frame.width, 0]
       .flatMap((u) =>
-        Array.from(
-          { length: Math.max(0, Math.floor(frame.depth) - 1) },
-          (_, n) => ({ u, v: n + 1 }),
-        ),
+        Array.from({ length: Math.max(0, Math.floor(frame.depth) - 1) }, (_, n) => ({
+          u,
+          v: n + 1,
+        })),
       )
       .filter(({ u, v }) => {
         const point = frame.at(u, v);
@@ -829,11 +643,7 @@ export function architecturalDetails(
           )
         );
       })
-      .sort(
-        (a, c) =>
-          Math.abs(a.v - frame.depth * 0.66) -
-          Math.abs(c.v - frame.depth * 0.66),
-      );
+      .sort((a, c) => Math.abs(a.v - frame.depth * 0.66) - Math.abs(c.v - frame.depth * 0.66));
     if (supports.length) {
       const { u, v } = required(supports[0]);
       chimney(u - alongInset, v - depthInset, {
@@ -845,14 +655,9 @@ export function architecturalDetails(
   };
 
   if (kind === 'chapel') {
-    root.add(
-      chapelPiers(b, input, T, height, base, geometry, materials, legacy),
-    );
+    root.add(chapelPiers(b, input, T, height, base, geometry, materials, legacy));
   }
-  if (
-    kind === 'chapel' &&
-    !walkableAbove(doorU, -0.17 / T, 1.36 / T, 0.28 / T)
-  ) {
+  if (kind === 'chapel' && !walkableAbove(doorU, -0.17 / T, 1.36 / T, 0.28 / T)) {
     feature('chapel-bell-gable', () => {
       const bottom = height + roofRise * 0.62,
         spring = bottom + 0.55,
@@ -881,11 +686,7 @@ export function architecturalDetails(
         const a = (n * Math.PI) / 16,
           c = ((n + 1) * Math.PI) / 16;
         const crown = (angle: number, width: number, rise: number, v: number) =>
-          at(
-            u + (Math.cos(angle) * width) / T,
-            v,
-            spring + Math.sin(angle) * rise,
-          );
+          at(u + (Math.cos(angle) * width) / T, v, spring + Math.sin(angle) * rise);
         for (const v of [front - 0.095 / T, back]) {
           batch.polygon(
             wall,
@@ -936,15 +737,7 @@ export function architecturalDetails(
           light,
         );
       }
-      box(
-        u,
-        front + 0.025 / T,
-        spring - 0.035,
-        (inner * 2) / T,
-        0.055,
-        0.085 / T,
-        wood,
-      );
+      box(u, front + 0.025 / T, spring - 0.035, (inner * 2) / T, 0.055, 0.085 / T, wood);
       batch.primitive(
         'flare',
         materials.get('brass'),
@@ -966,25 +759,14 @@ export function architecturalDetails(
   } else if (kind === 'church') {
     const reserved = (end: boolean) =>
       [0, 1].every((u) =>
-        [0, 1].every(
-          (v) => wallAt(end ? frame.width - u : u, v)?.type === 'wall',
-        ),
-      ) &&
-      !walkableAbove(
-        (end ? frame.width - 0.5 : 0.5) - alongInset,
-        0.5 - depthInset,
-        1.95,
-      );
+        [0, 1].every((v) => wallAt(end ? frame.width - u : u, v)?.type === 'wall'),
+      ) && !walkableAbove((end ? frame.width - 0.5 : 0.5) - alongInset, 0.5 - depthInset, 1.95);
     const end =
       [true, false].find(reserved) ??
       [true, false].find(
         (end) =>
           wallAt(end ? frame.width : 0, 0)?.type === 'wall' &&
-          !walkableAbove(
-            (end ? frame.width : 0) - alongInset,
-            -depthInset,
-            0.95,
-          ),
+          !walkableAbove((end ? frame.width : 0) - alongInset, -depthInset, 0.95),
       );
     if (end !== undefined && style?.tower !== false) {
       const wide = reserved(end),
@@ -1000,10 +782,7 @@ export function architecturalDetails(
       );
     }
     const span = Math.min(Math.max(0.8, frame.width - 1.8), 5.2),
-      center = Math.max(
-        span * 0.5 + 0.15,
-        Math.min(frame.width - span * 0.5 - 0.15, doorU),
-      ),
+      center = Math.max(span * 0.5 + 0.15, Math.min(frame.width - span * 0.5 - 0.15, doorU)),
       rise = roofRise,
       crest = rise + 0.42;
     feature('church-shaped-facade', () => {
@@ -1058,33 +837,9 @@ export function architecturalDetails(
           light,
         );
       }
-      box(
-        center,
-        -0.13 / T,
-        height + 0.015,
-        span + 0.17 / T,
-        0.13,
-        0.35 / T,
-        trim,
-      );
-      box(
-        center,
-        -0.16 / T,
-        height + crest + 0.18,
-        0.04 / T,
-        0.5,
-        0.04 / T,
-        iron,
-      );
-      box(
-        center,
-        -0.16 / T,
-        height + crest + 0.27,
-        0.28 / T,
-        0.04,
-        0.04 / T,
-        iron,
-      );
+      box(center, -0.13 / T, height + 0.015, span + 0.17 / T, 0.13, 0.35 / T, trim);
+      box(center, -0.16 / T, height + crest + 0.18, 0.04 / T, 0.5, 0.04 / T, iron);
+      box(center, -0.16 / T, height + crest + 0.27, 0.28 / T, 0.04, 0.04 / T, iron);
     });
     feature('church-oculus', () => {
       const y = height + rise * 0.43,
@@ -1134,18 +889,7 @@ export function architecturalDetails(
         }
       });
     } else {
-      root.add(
-        churchFrontPiers(
-          b,
-          input,
-          T,
-          height,
-          base,
-          geometry,
-          materials,
-          legacy,
-        ),
-      );
+      root.add(churchFrontPiers(b, input, T, height, base, geometry, materials, legacy));
     }
     if (!legacy || b.wallFinish !== undefined) {
       root.add(churchNave(b, input, T, height, base, geometry, materials));
@@ -1161,17 +905,12 @@ export function architecturalDetails(
   } else if (kind === 'townhall') {
     const profile = getBuildingProfile(b),
       twoStoreys = height >= 4 && style?.upper !== false,
-      storey = twoStoreys
-        ? (height * profile.groundFloorHeight) / profile.wallHeight
-        : height,
+      storey = twoStoreys ? (height * profile.groundFloorHeight) / profile.wallHeight : height,
       stone = materials.get('stone'),
       formal = [
         ...new Set(
           [-2, 2].map((offset) =>
-            Math.max(
-              0,
-              Math.min(frame.width, Math.round(frame.doorU + offset)),
-            ),
+            Math.max(0, Math.min(frame.width, Math.round(frame.doorU + offset))),
           ),
         ),
       ].filter((u) => wallAt(u, 0)?.type === 'wall');
@@ -1179,30 +918,13 @@ export function architecturalDetails(
       root.add(townhallColumns(b, input, T, height, base, geometry, materials));
     } else {
       feature('townhall-formal-columns', () => {
-        const column = (
-          u: number,
-          v: number,
-          w: number,
-          material: MeshStandardMaterial,
-        ) => {
-          box(
-            u,
-            v,
-            (storey - 0.1) * 0.5,
-            w / T,
-            storey - 0.1,
-            0.38 / T,
-            material,
-          );
+        const column = (u: number, v: number, w: number, material: MeshStandardMaterial) => {
+          box(u, v, (storey - 0.1) * 0.5, w / T, storey - 0.1, 0.38 / T, material);
           box(u, v, 0.12, 0.38 / T, 0.24, 0.38 / T, stone);
           box(u, v, storey - 0.08, 0.38 / T, 0.14, 0.38 / T, stone);
         };
         for (const support of formal) {
-          const [u, v] = bearing(
-            support,
-            0,
-            support !== 0 && support !== frame.width,
-          );
+          const [u, v] = bearing(support, 0, support !== 0 && support !== frame.width);
           column(u, v, 0.3, stone);
         }
         for (const u of [0, frame.width]) {
@@ -1229,25 +951,14 @@ export function architecturalDetails(
         for (const u of [0, frame.width]) {
           for (let v = 2; v < frame.depth - 1; v += 4) {
             if (wallAt(u, v)?.type === 'wall') {
-              column(
-                u - 0.06 * (frame.u.x + frame.u.y),
-                v - depthInset,
-                0.3,
-                wall,
-              );
+              column(u - 0.06 * (frame.u.x + frame.u.y), v - depthInset, 0.3, wall);
             }
           }
         }
       });
     }
-    if (
-      twoStoreys &&
-      wallInset === 0 &&
-      (!legacy || b.wallFinish !== undefined)
-    ) {
-      root.add(
-        civicStoreyBands(b, input, T, height, base, geometry, materials),
-      );
+    if (twoStoreys && wallInset === 0 && (!legacy || b.wallFinish !== undefined)) {
+      root.add(civicStoreyBands(b, input, T, height, base, geometry, materials));
     } else {
       feature('townhall-storey-bands', () => {
         const bands = twoStoreys
@@ -1296,12 +1007,7 @@ export function architecturalDetails(
           }
           return result;
         };
-        const pane = (
-          u: number,
-          v: number,
-          side: number,
-          alongFront: boolean,
-        ) => {
+        const pane = (u: number, v: number, side: number, alongFront: boolean) => {
           const width = 0.72,
             edge = width * 0.5 + 0.04,
             face = alongFront ? v + (side * 0.085) / T : u + (side * 0.085) / T,
@@ -1319,30 +1025,11 @@ export function architecturalDetails(
                 trim,
               );
             }
-            for (const dy of [
-              -paneHeight * 0.5 - 0.04,
-              paneHeight * 0.5 + 0.04,
-            ]) {
-              box(
-                u,
-                face + (side * 0.022) / T,
-                y + dy,
-                (width + 0.14) / T,
-                0.06,
-                0.065 / T,
-                trim,
-              );
+            for (const dy of [-paneHeight * 0.5 - 0.04, paneHeight * 0.5 + 0.04]) {
+              box(u, face + (side * 0.022) / T, y + dy, (width + 0.14) / T, 0.06, 0.065 / T, trim);
             }
             for (const offset of [-0.16, 0, 0.16]) {
-              box(
-                u + offset / T,
-                bar,
-                y,
-                0.028 / T,
-                paneHeight,
-                0.028 / T,
-                bars,
-              );
+              box(u + offset / T, bar, y, 0.028 / T, paneHeight, 0.028 / T, bars);
             }
             box(u, bar, y - 0.025, width / T, 0.028, 0.028 / T, bars);
           } else {
@@ -1358,39 +1045,17 @@ export function architecturalDetails(
                 trim,
               );
             }
-            for (const dy of [
-              -paneHeight * 0.5 - 0.04,
-              paneHeight * 0.5 + 0.04,
-            ]) {
-              box(
-                face + (side * 0.022) / T,
-                v,
-                y + dy,
-                0.065 / T,
-                0.06,
-                (width + 0.14) / T,
-                trim,
-              );
+            for (const dy of [-paneHeight * 0.5 - 0.04, paneHeight * 0.5 + 0.04]) {
+              box(face + (side * 0.022) / T, v, y + dy, 0.065 / T, 0.06, (width + 0.14) / T, trim);
             }
             for (const offset of [-0.16, 0, 0.16]) {
-              box(
-                bar,
-                v + offset / T,
-                y,
-                0.028 / T,
-                paneHeight,
-                0.028 / T,
-                bars,
-              );
+              box(bar, v + offset / T, y, 0.028 / T, paneHeight, 0.028 / T, bars);
             }
             box(bar, v, y - 0.025, 0.028 / T, 0.028, width / T, bars);
           }
         };
         for (const v of [0, frame.depth]) {
-          for (const u of positions(
-            frame.width,
-            v === 0 ? Math.round(frame.doorU) % 2 : 1,
-          )) {
+          for (const u of positions(frame.width, v === 0 ? Math.round(frame.doorU) % 2 : 1)) {
             if (wallAt(u, v)) {
               pane(u - alongInset, v, v === 0 ? -1 : 1, true);
             }
@@ -1407,18 +1072,14 @@ export function architecturalDetails(
     }
     townhallCrown();
   } else if (kind === 'cabildo') {
-    const sourceCabildo =
-        wallInset === 0 && (!legacy || b.wallFinish !== undefined),
+    const sourceCabildo = wallInset === 0 && (!legacy || b.wallFinish !== undefined),
       twoStoreys = height >= 4 && style?.upper !== false,
       storey = twoStoreys ? height * 0.5 : height,
       records: { a: number; u: number; v: number }[] = [];
     for (let u = 0; u <= frame.width; u++) {
       if (
         wallAt(u, 0)?.type === 'wall' &&
-        (!sourceCabildo ||
-          u === 0 ||
-          u === frame.width ||
-          (u % 2 === 0 && u < frame.width - 1))
+        (!sourceCabildo || u === 0 || u === frame.width || (u % 2 === 0 && u < frame.width - 1))
       ) {
         const [a, v] = bearing(u, 0, u !== 0 && u !== frame.width);
         records.push({
@@ -1435,15 +1096,7 @@ export function architecturalDetails(
         for (const record of records) {
           const u = upper ? record.a : record.u,
             v = upper ? -0.16 / T : record.v;
-          box(
-            u,
-            v,
-            (bottom + top) * 0.5,
-            0.21 / T,
-            top - bottom,
-            (upper ? 0.25 : 0.38) / T,
-            trim,
-          );
+          box(u, v, (bottom + top) * 0.5, 0.21 / T, top - bottom, (upper ? 0.25 : 0.38) / T, trim);
           box(u, v, top - 0.08, 0.3 / T, 0.13, (upper ? 0.29 : 0.38) / T, trim);
         }
         for (let n = 1; n < columns.length; n++) {
@@ -1471,9 +1124,7 @@ export function architecturalDetails(
               at(left, -0.13 / T, bottom + 0.1),
               at(right, -0.13 / T, bottom + 0.1),
               ...arch.map((point) =>
-                point
-                  .clone()
-                  .add(new Vector3(frame.v.x * 0.07, 0, frame.v.y * 0.07)),
+                point.clone().add(new Vector3(frame.v.x * 0.07, 0, frame.v.y * 0.07)),
               ),
             ];
             batch.polygon(darkwood, pane, light);
@@ -1487,13 +1138,7 @@ export function architecturalDetails(
               );
             }
             for (const y of [bottom + 0.14, bottom + 0.53]) {
-              batch.cylinder(
-                iron,
-                at(left, -0.26 / T, y),
-                at(right, -0.26 / T, y),
-                0.021,
-                light,
-              );
+              batch.cylinder(iron, at(left, -0.26 / T, y), at(right, -0.26 / T, y), 0.021, light);
             }
             const rods = Math.max(2, Math.ceil((right - left) / 0.2));
             for (let k = 0; k <= rods; k++) {
@@ -1508,13 +1153,7 @@ export function architecturalDetails(
             }
           }
           for (let k = 1; k < arch.length; k++) {
-            batch.cylinder(
-              trim,
-              required(arch[k - 1]),
-              required(arch[k]),
-              0.053,
-              light,
-            );
+            batch.cylinder(trim, required(arch[k - 1]), required(arch[k]), 0.053, light);
           }
         }
       });
@@ -1540,9 +1179,7 @@ export function architecturalDetails(
       );
       for (const suffix of [
         ...(style?.arcade === false ? ['civic-ground-arcade'] : []),
-        ...(style?.tower === false
-          ? ['civic-clock-tower', 'civic-cupola']
-          : []),
+        ...(style?.tower === false ? ['civic-clock-tower', 'civic-cupola'] : []),
       ]) {
         const child =
           facade.getObjectByName(`building-detail:${b.id}:${suffix}`) ??
@@ -1566,15 +1203,7 @@ export function architecturalDetails(
         : twoStoreys
           ? [storey, height - 0.1]
           : [height - 0.1]) {
-        box(
-          frame.width * 0.5,
-          -0.12 / T,
-          y,
-          frame.width + 0.2 / T,
-          0.15,
-          0.29 / T,
-          trim,
-        );
+        box(frame.width * 0.5, -0.12 / T, y, frame.width + 0.2 / T, 0.15, 0.29 / T, trim);
         for (const u of [0, frame.width]) {
           box(u, frame.depth * 0.5, y, 0.22 / T, 0.14, frame.depth, trim);
         }
@@ -1592,47 +1221,15 @@ export function architecturalDetails(
               u = side + (sign * 0.085) / T;
             box(u, v, y, 0.04 / T, 1.04, 0.72 / T, darkwood);
             for (const offset of [-0.4, 0.4]) {
-              box(
-                u + (sign * 0.024) / T,
-                v + offset / T,
-                y,
-                0.065 / T,
-                1.17,
-                0.055 / T,
-                trim,
-              );
+              box(u + (sign * 0.024) / T, v + offset / T, y, 0.065 / T, 1.17, 0.055 / T, trim);
             }
             for (const dy of [-0.55, 0.55]) {
-              box(
-                u + (sign * 0.024) / T,
-                v,
-                y + dy,
-                0.065 / T,
-                0.06,
-                0.86 / T,
-                trim,
-              );
+              box(u + (sign * 0.024) / T, v, y + dy, 0.065 / T, 0.06, 0.86 / T, trim);
             }
             for (const offset of [-0.23, 0, 0.23]) {
-              box(
-                u + (sign * 0.045) / T,
-                v + offset / T,
-                y,
-                0.023 / T,
-                1.03,
-                0.024 / T,
-                iron,
-              );
+              box(u + (sign * 0.045) / T, v + offset / T, y, 0.023 / T, 1.03, 0.024 / T, iron);
             }
-            box(
-              u + (sign * 0.045) / T,
-              v,
-              y - 0.16,
-              0.023 / T,
-              0.024,
-              0.72 / T,
-              iron,
-            );
+            box(u + (sign * 0.045) / T, v, y - 0.16, 0.023 / T, 0.024, 0.72 / T, iron);
           }
         }
       });
@@ -1648,60 +1245,38 @@ export function architecturalDetails(
       );
     }
   } else if (kind === 'posta') {
-    const supports = Array.from(
-      { length: Math.floor(frame.width) + 1 },
-      (_, u) => u,
-    ).filter(
-      (u) =>
-        wallAt(u, 0)?.type === 'wall' &&
-        (u === 0 || u === frame.width || u % 2 === 0),
+    const supports = Array.from({ length: Math.floor(frame.width) + 1 }, (_, u) => u).filter(
+      (u) => wallAt(u, 0)?.type === 'wall' && (u === 0 || u === frame.width || u % 2 === 0),
     );
     roofCanopy('posta-masonry-veranda', supports, 0.55, true);
-    root.add(
-      postaPiers(b, input, T, height, base, geometry, materials, legacy),
-    );
+    root.add(postaPiers(b, input, T, height, base, geometry, materials, legacy));
   } else if (['farmhouse', 'estancia'].includes(kind)) {
     if (style?.gallery !== false) {
       if (legacy && b.wallFinish === undefined) {
         farmhouseGallery();
       } else {
         root.add(
-          supportedFarmhouseGallery(
-            b,
-            input,
-            T,
-            height,
-            base,
-            geometry,
-            materials,
-            (panels, low) =>
-              roofEdgeDetails(
-                `${b.id}:farmhouse-gallery`,
-                panels,
-                low,
-                geometry,
-                roof,
-                darkwood,
-                light,
-              ),
+          supportedFarmhouseGallery(b, input, T, height, base, geometry, materials, (panels, low) =>
+            roofEdgeDetails(
+              `${b.id}:farmhouse-gallery`,
+              panels,
+              low,
+              geometry,
+              roof,
+              darkwood,
+              light,
+            ),
           ),
         );
       }
     }
     for (const u of [0, frame.width]) {
-      const v = Array.from(
-        { length: Math.max(0, Math.floor(frame.depth) - 1) },
-        (_, n) => n + 1,
-      )
+      const v = Array.from({ length: Math.max(0, Math.floor(frame.depth) - 1) }, (_, n) => n + 1)
         .filter(
           (v) =>
-            wallAt(u, v)?.type === 'wall' &&
-            !walkableAbove(u - alongInset, v - depthInset, 0.48),
+            wallAt(u, v)?.type === 'wall' && !walkableAbove(u - alongInset, v - depthInset, 0.48),
         )
-        .sort(
-          (a, c) =>
-            Math.abs(a - frame.depth + 1) - Math.abs(c - frame.depth + 1),
-        )[0];
+        .sort((a, c) => Math.abs(a - frame.depth + 1) - Math.abs(c - frame.depth + 1))[0];
       if (v !== undefined) {
         chimney(u - alongInset, v - depthInset, {
           name: u === 0 ? 'farmhouse-chimney-left' : 'farmhouse-chimney-right',
@@ -1715,25 +1290,12 @@ export function architecturalDetails(
     if (style?.awning !== false) {
       workCanopy('gallery', frontSupports(), 0.55);
     }
-    const support = Array.from(
-      { length: Math.floor(frame.width) + 1 },
-      (_, u) => u,
-    )
+    const support = Array.from({ length: Math.floor(frame.width) + 1 }, (_, u) => u)
       .filter((u) => wallAt(u, 0)?.type === 'wall')
-      .sort(
-        (a, c) => Math.abs(a - frame.doorU - 1) - Math.abs(c - frame.doorU - 1),
-      )[0];
+      .sort((a, c) => Math.abs(a - frame.doorU - 1) - Math.abs(c - frame.doorU - 1))[0];
     if (b.wallFinish !== undefined) {
       if (root.getObjectByName(`building-detail:${b.id}:gallery`)) {
-        const sign = pulperiaSign(
-          b,
-          input,
-          T,
-          height,
-          base,
-          geometry,
-          materials,
-        );
+        const sign = pulperiaSign(b, input, T, height, base, geometry, materials);
         if (sign.children.length) {
           root.add(sign);
         }
@@ -1762,25 +1324,8 @@ export function architecturalDetails(
     }
   } else if (kind === 'palace') {
     root.add(
-      palaceFacade(
-        b,
-        input,
-        T,
-        height,
-        base,
-        geometry,
-        materials,
-        legacy,
-        (panels, eave) =>
-          roofEdgeDetails(
-            `${b.id}:palace-portico`,
-            panels,
-            eave,
-            geometry,
-            roof,
-            darkwood,
-            light,
-          ),
+      palaceFacade(b, input, T, height, base, geometry, materials, legacy, (panels, eave) =>
+        roofEdgeDetails(`${b.id}:palace-portico`, panels, eave, geometry, roof, darkwood, light),
       ),
     );
   } else if (['warehouse', 'depot', 'stable', 'barracks'].includes(kind)) {
@@ -1795,40 +1340,13 @@ export function architecturalDetails(
     }
     if (kind === 'warehouse') {
       roofCanopy('loading-canopy', entranceSupports(), 0.5);
-      root.add(
-        warehouseButtresses(
-          b,
-          input,
-          T,
-          height,
-          base,
-          geometry,
-          materials,
-          legacy,
-        ),
-      );
+      root.add(warehouseButtresses(b, input, T, height, base, geometry, materials, legacy));
     }
     if (kind === 'depot') {
       workCanopy('gallery', frontSupports(), 0.6);
-      root.add(
-        depotFacade(
-          b,
-          input,
-          T,
-          height,
-          base,
-          roofRise,
-          geometry,
-          materials,
-          legacy,
-        ),
-      );
+      root.add(depotFacade(b, input, T, height, base, roofRise, geometry, materials, legacy));
     }
-    if (
-      kind === 'barracks' &&
-      wallInset === 0 &&
-      (!legacy || b.wallFinish !== undefined)
-    ) {
+    if (kind === 'barracks' && wallInset === 0 && (!legacy || b.wallFinish !== undefined)) {
       root.add(barracksGate(b, input, T, height, base, geometry, materials));
     } else if (kind === 'barracks') {
       feature('barracks-gate', () => {
@@ -1842,15 +1360,7 @@ export function architecturalDetails(
         }
         const lo = Math.min(...supports) - alongInset,
           hi = Math.max(...supports) - alongInset;
-        box(
-          (lo + hi) * 0.5,
-          -0.11 / T,
-          height - 0.06,
-          hi - lo + 0.24,
-          0.18,
-          0.25 / T,
-          trim,
-        );
+        box((lo + hi) * 0.5, -0.11 / T, height - 0.06, hi - lo + 0.24, 0.18, 0.25 / T, trim);
         const y = height - 0.03,
           v = -0.26 / T,
           w = 0.19 / T;
@@ -1887,15 +1397,7 @@ export function architecturalDetails(
       if (legacy && b.wallFinish === undefined) {
         feature('stable-timber-frame', () => {
           const y = height * 0.91;
-          box(
-            frame.width * 0.5,
-            -0.13 / T,
-            y,
-            frame.width + 0.1,
-            0.14,
-            0.2 / T,
-            wood,
-          );
+          box(frame.width * 0.5, -0.13 / T, y, frame.width + 0.1, 0.14, 0.2 / T, wood);
           for (let u = 0; u <= frame.width; u += 2) {
             if (wallAt(u, 0)?.type === 'wall') {
               const [a, v] = bearing(u, 0, u !== 0 && u !== frame.width);
@@ -1911,37 +1413,20 @@ export function architecturalDetails(
           }
         });
       } else {
-        root.add(
-          stableTimberFrame(b, input, T, height, base, geometry, materials),
-        );
+        root.add(stableTimberFrame(b, input, T, height, base, geometry, materials));
       }
-      root.add(
-        stableVentilation(
-          b,
-          input,
-          T,
-          height,
-          base,
-          roofRise,
-          geometry,
-          materials,
-        ),
-      );
+      root.add(stableVentilation(b, input, T, height, base, roofRise, geometry, materials));
     }
   } else if (kind === 'smithy') {
     if (legacy && b.wallFinish === undefined) {
       sideChimney(true);
     } else {
-      root.add(
-        smithyChimney(b, input, T, height, base, roofRise, geometry, materials),
-      );
+      root.add(smithyChimney(b, input, T, height, base, roofRise, geometry, materials));
     }
     workCanopy('forge-canopy', entranceSupports(), 0.5);
   } else if (kind === 'house') {
     sideChimney();
-    root.add(
-      houseFacade(b, input, T, height, base, geometry, materials, legacy),
-    );
+    root.add(houseFacade(b, input, T, height, base, geometry, materials, legacy));
   }
   // Optional additions reuse the existing supported exterior details. They
   // never add collision cells, playable floors or access links.
@@ -1951,10 +1436,7 @@ export function architecturalDetails(
   if (style?.awning === true && kind !== 'pulperia') {
     workCanopy('campaign-awning', entranceSupports(), 0.55);
   }
-  if (
-    style?.tower === true &&
-    !['church', 'cabildo', 'townhall'].includes(kind)
-  ) {
+  if (style?.tower === true && !['church', 'cabildo', 'townhall'].includes(kind)) {
     const end = [0, frame.width].find((u) => wallAt(u, 0)?.type === 'wall');
     if (end !== undefined) {
       tower(end - alongInset, -depthInset, 0.8, height + roofRise + 1.25);

@@ -69,11 +69,7 @@ export function movementStepDuration(
   const posture = actorPosture(unit),
     equipment = spriteEquipment(unit);
   let action =
-    !unit.mounted && posture === 'prone'
-      ? 'crawl'
-      : unit.movementMode === 'run'
-        ? 'run'
-        : 'walk';
+    !unit.mounted && posture === 'prone' ? 'crawl' : unit.movementMode === 'run' ? 'run' : 'walk';
   if (preserveFacing && !unit.mounted && ['walk', 'run'].includes(action)) {
     const yaw = actorYaw(
         typeof unit.facing === 'number' && Number.isInteger(unit.facing)
@@ -88,24 +84,18 @@ export function movementStepDuration(
       action = left > 0 ? 'strafeLeft' : 'strafeRight';
     }
   }
-  let gait:
-    | { nativeStrideSpeed: number; duration: number; playbackRate: number }
-    | undefined;
+  let gait: { nativeStrideSpeed: number; duration: number; playbackRate: number } | undefined;
   if (unit.mounted) {
     gait = profile.horse[action];
   } else {
     const capability = resolveActorAction({ action, posture, equipment });
     if (!capability) {
-      throw Error(
-        `Unsupported movement gait: ${action}:${posture}:${equipment}`,
-      );
+      throw Error(`Unsupported movement gait: ${action}:${posture}:${equipment}`);
     }
     const held = actorItems(unit).find((item) => item.socket === 'handRight'),
       id = held && (profile.itemAliases[held.id] ?? held.id);
     const overrides = id ? profile.itemClips[id] : undefined;
-    const semantic = locomotionReference(
-      overrides?.[capability.clip] ?? capability.clip,
-    );
+    const semantic = locomotionReference(overrides?.[capability.clip] ?? capability.clip);
     const clips = (bank ? profile.banks[bank] : undefined)?.clips;
     gait = clips?.[semantic];
   }
@@ -115,9 +105,7 @@ export function movementStepDuration(
   const distance = Math.hypot(to.x - from.x, to.y - from.y) * TILE_METRES;
   const pace = footMovementPace(action, posture, Boolean(unit.mounted));
   return (
-    Math.max(
-      fallback,
-      (distance / (gait.nativeStrideSpeed * gait.playbackRate * pace)) * 1000,
-    ) * (preserveFacing ? 1.25 : 1)
+    Math.max(fallback, (distance / (gait.nativeStrideSpeed * gait.playbackRate * pace)) * 1000) *
+    (preserveFacing ? 1.25 : 1)
   );
 }

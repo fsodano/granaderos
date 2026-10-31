@@ -31,8 +31,7 @@ function isPoint(value: unknown): value is PreviewPoint {
     typeof value['y'] === 'number' &&
     Number.isFinite(value['y']) &&
     (value['tacticalLevel'] === undefined ||
-      (typeof value['tacticalLevel'] === 'number' &&
-        Number.isFinite(value['tacticalLevel'])))
+      (typeof value['tacticalLevel'] === 'number' && Number.isFinite(value['tacticalLevel'])))
   );
 }
 
@@ -52,9 +51,7 @@ function isGroupMember(value: unknown): value is GroupMovePreviewMember {
     isRecord(value) &&
     typeof value['unitId'] === 'string' &&
     (value['status'] === undefined ||
-      ['skipped', 'blocked', 'ready', 'arrived'].some(
-        (status) => status === value['status'],
-      )) &&
+      ['skipped', 'blocked', 'ready', 'arrived'].some((status) => status === value['status'])) &&
     (value['destination'] === null || isPoint(value['destination'])) &&
     Array.isArray(value['path']) &&
     value['path'].every(isPoint) &&

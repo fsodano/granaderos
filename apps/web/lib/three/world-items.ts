@@ -26,13 +26,7 @@ const equipmentKinds: Record<number, string> = {
 };
 export function worldItemKind(item: WorldItem) {
   const raw =
-      item.weapon ??
-      item.blade ??
-      item.outfit ??
-      item.item ??
-      item.kind ??
-      item.type ??
-      'supply',
+      item.weapon ?? item.blade ?? item.outfit ?? item.item ?? item.kind ?? item.type ?? 'supply',
     id = typeof raw === 'object' ? raw.id : raw;
   const template =
     item.template ??
@@ -58,8 +52,7 @@ export function buildLoot(
     light = illuminationAt(input, pile),
     modelNodes: string[] = [];
   for (const [n, item] of items.slice(0, 5).entries()) {
-    const angle =
-      seeded(Math.floor(pile.x), Math.floor(pile.y), n + 90) * Math.PI;
+    const angle = seeded(Math.floor(pile.x), Math.floor(pile.y), n + 90) * Math.PI;
     const model =
       equipment &&
       addWorldItemModel(
@@ -95,10 +88,7 @@ export function buildLoot(
         wood,
         [-0.12, 0.025, -0.04],
         [0.038, 0.17, 0.035],
-        new Quaternion().setFromAxisAngle(
-          new Vector3(1, 0, 0),
-          Math.PI * 0.5 - 0.28,
-        ),
+        new Quaternion().setFromAxisAngle(new Vector3(1, 0, 0), Math.PI * 0.5 - 0.28),
         light,
       );
       for (const z of barrels) {
@@ -124,16 +114,7 @@ export function buildLoot(
         end = length * 0.53,
         start = -length * 0.47;
       part.box(wood, start + 0.16, 0.045, 0, 0.32, 0.09, 0.12, light);
-      part.box(
-        wood,
-        0.08,
-        0.035,
-        0,
-        length * 0.57,
-        0.065,
-        shotgun ? 0.1 : 0.07,
-        light,
-      );
+      part.box(wood, 0.08, 0.035, 0, length * 0.57, 0.065, shotgun ? 0.1 : 0.07, light);
       for (const z of shotgun ? [-0.022, 0.022] : [0]) {
         part.cylinder(
           iron,
@@ -157,25 +138,13 @@ export function buildLoot(
         );
       }
       if (/blunderbuss|trabuco/.test(kind)) {
-        const flare = new Quaternion().setFromAxisAngle(
-          new Vector3(0, 0, 1),
-          -Math.PI * 0.5,
-        );
-        part.primitive(
-          'flare',
-          brass,
-          [end + 0.055, 0.079, 0],
-          [0.067, 0.16, 0.067],
-          flare,
-          light,
-        );
+        const flare = new Quaternion().setFromAxisAngle(new Vector3(0, 0, 1), -Math.PI * 0.5);
+        part.primitive('flare', brass, [end + 0.055, 0.079, 0], [0.067, 0.16, 0.067], flare, light);
       }
       if (item.fittings?.['bayonet']) {
         part.box(iron, 0.79, 0.069, 0, 0.34, 0.016, 0.025, light);
       }
-    } else if (
-      /sabre|saber|sable|facon|facón|knife|cuchillo|bayonet/.test(kind)
-    ) {
+    } else if (/sabre|saber|sable|facon|facón|knife|cuchillo|bayonet/.test(kind)) {
       const long = /sabre|saber|sable/.test(kind),
         socket = /bayonet/.test(kind),
         length = long ? 0.76 : 0.29,
@@ -186,24 +155,12 @@ export function buildLoot(
           iron,
           [-0.055, 0.04, 0],
           [0.043, 0.043, 0.043],
-          new Quaternion().setFromAxisAngle(
-            new Vector3(0, 1, 0),
-            Math.PI * 0.5,
-          ),
+          new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), Math.PI * 0.5),
           light,
         );
         part.box(iron, 0.01, 0.04, -0.06, 0.11, 0.021, 0.021, light);
       } else {
-        part.box(
-          materials.get('leather'),
-          -0.12,
-          0.03,
-          0,
-          0.2,
-          0.05,
-          0.055,
-          light,
-        );
+        part.box(materials.get('leather'), -0.12, 0.03, 0, 0.2, 0.05, 0.055, light);
         part.box(brass, -0.012, 0.038, 0, 0.025, 0.025, 0.16, light);
         if (long) {
           part.primitive(
@@ -211,10 +168,7 @@ export function buildLoot(
             brass,
             [-0.13, 0.028, -0.03],
             [0.105, 0.065, 0.075],
-            new Quaternion().setFromAxisAngle(
-              new Vector3(1, 0, 0),
-              Math.PI * 0.5,
-            ),
+            new Quaternion().setFromAxisAngle(new Vector3(1, 0, 0), Math.PI * 0.5),
             light,
           );
         }
@@ -239,13 +193,7 @@ export function buildLoot(
         light,
       );
     } else if (/lance|lanza|pike|pica/.test(kind)) {
-      part.cylinder(
-        wood,
-        new Vector3(-0.8, 0.025, 0),
-        new Vector3(0.78, 0.025, 0),
-        0.018,
-        light,
-      );
+      part.cylinder(wood, new Vector3(-0.8, 0.025, 0), new Vector3(0.78, 0.025, 0), 0.018, light);
       part.primitive(
         'cone',
         iron,
@@ -255,20 +203,9 @@ export function buildLoot(
         light,
       );
     } else if (item.outfit || /coat|uniform|outfit|ropa/.test(kind)) {
-      part.box(
-        materials.get('rug', { colour: '#283946' }),
-        0,
-        0.04,
-        0,
-        0.33,
-        0.08,
-        0.27,
-        light,
-      );
+      part.box(materials.get('rug', { colour: '#283946' }), 0, 0.04, 0, 0.33, 0.08, 0.27, light);
       part.box(materials.get('linen'), 0, 0.084, 0, 0.04, 0.012, 0.25, light);
-    } else if (
-      /ammo|round|ball|cartridge|cartucho|municion|munición|powder/.test(kind)
-    ) {
+    } else if (/ammo|round|ball|cartridge|cartucho|municion|munición|powder/.test(kind)) {
       part.box(materials.get('linen'), 0, 0.04, 0, 0.19, 0.08, 0.14, light);
       for (let k = 0; k < 3; k++) {
         part.primitive(
@@ -283,9 +220,7 @@ export function buildLoot(
     } else {
       part.primitive(
         'sphere',
-        materials.get(
-          /medical|bandage|vendaje|botiquin/.test(kind) ? 'linen' : 'leather',
-        ),
+        materials.get(/medical|bandage|vendaje|botiquin/.test(kind) ? 'linen' : 'leather'),
         [0, 0.07, 0],
         [0.17, 0.09, 0.13],
         undefined,

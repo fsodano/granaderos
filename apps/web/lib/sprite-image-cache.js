@@ -9,14 +9,9 @@ export function spriteContinuity(requested, loaded, readyHref) {
   const sameLife =
     loaded &&
     ['dead', 'collapse', 'unconscious'].every(
-      (condition) =>
-        loaded.name.includes(condition) === requested.name.includes(condition),
+      (condition) => loaded.name.includes(condition) === requested.name.includes(condition),
     );
-  return readyHref === requested.href
-    ? requested
-    : sameLife
-      ? loaded
-      : requested;
+  return readyHref === requested.href ? requested : sameLife ? loaded : requested;
 }
 /** Keep the previous atlas drawn until the next one is decoded.
  * @param {string} href

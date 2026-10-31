@@ -23,9 +23,7 @@ export function stableVentilation(
 ) {
   const root = new Group();
   root.name = `building-stable-ventilation:${b.id}`;
-  const walls = worldWallRecords(input).filter(
-      (tile) => tile.buildingId === b.id,
-    ),
+  const walls = worldWallRecords(input).filter((tile) => tile.buildingId === b.id),
     frame = entranceFrame({ ...b, walls: wallFrameRecords(walls) }),
     V = 25.066666666666666,
     span = frame.width - 0.8,
@@ -52,8 +50,7 @@ export function stableVentilation(
       return (
         !surface.blocked &&
         (surface.tacticalLevel ?? 0) > 0 &&
-        Math.abs(x * frame.u.x + z * frame.u.y) <
-          (width + 1) * T * 0.5 - 1e-6 &&
+        Math.abs(x * frame.u.x + z * frame.u.y) < (width + 1) * T * 0.5 - 1e-6 &&
         Math.abs(x * frame.v.x + z * frame.v.y) < (depth + 1) * T * 0.5 - 1e-6
       );
     })
@@ -72,19 +69,12 @@ export function stableVentilation(
     ];
   batch.polygon(shadow, panel, light);
   for (let n = 0; n < 3; n++) {
-    batch.cylinder(
-      wood,
-      required(panel[n]),
-      required(panel[(n + 1) % 3]),
-      0.04,
-      light,
-    );
+    batch.cylinder(wood, required(panel[n]), required(panel[(n + 1) % 3]), 0.04, light);
   }
   for (const x of [8, 13, 18, 23, 28, 33]) {
     const u = 0.4 + (x / 40) * span,
       slatBottom = bottom + 1 / V,
-      slatTop =
-        bottom + Math.max(1 / V, (rise - 7 / V) * (1 - Math.abs(x - 20) / 18));
+      slatTop = bottom + Math.max(1 / V, (rise - 7 / V) * (1 - Math.abs(x - 20) / 18));
     if (slatTop - slatBottom > 0.025) {
       batch.cylinder(
         slats,

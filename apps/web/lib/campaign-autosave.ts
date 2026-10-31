@@ -25,10 +25,7 @@ export interface CampaignSaveWorker {
   onerror: ((event: ErrorEvent) => void) | null;
   onmessageerror: ((event: MessageEvent<unknown>) => void) | null;
 }
-type EncodeCampaignSave = (
-  campaign: CampaignSnapshot,
-  battle: BattleSnapshot | null,
-) => string;
+type EncodeCampaignSave = (campaign: CampaignSnapshot, battle: BattleSnapshot | null) => string;
 type WriteCampaignSave = (text: string, key: string) => void;
 type SaveWriter = Pick<BrowserSaveWriter, 'write' | 'owns' | 'claim' | 'close'>;
 export type CampaignAutosaveOptions = {
@@ -37,16 +34,9 @@ export type CampaignAutosaveOptions = {
   onSaved?: () => void;
   onError?: (error: Error) => void;
   onStatus?: (status: SaveStatus) => void;
-} & (
-  | { writer: SaveWriter; write?: never }
-  | { writer?: never; write: WriteCampaignSave }
-);
+} & ({ writer: SaveWriter; write?: never } | { writer?: never; write: WriteCampaignSave });
 export interface CampaignAutosave {
-  submit(
-    campaign: CampaignSnapshot | null,
-    battle: BattleSnapshot | null,
-    key: string,
-  ): void;
+  submit(campaign: CampaignSnapshot | null, battle: BattleSnapshot | null, key: string): void;
   flush(): void;
   status(): SaveStatus;
   close(): void;
@@ -69,11 +59,7 @@ function replyRecord(
   );
 }
 
-function writeSavedText(
-  options: CampaignAutosaveOptions,
-  text: string,
-  key: string,
-): void {
+function writeSavedText(options: CampaignAutosaveOptions, text: string, key: string): void {
   if (options.writer) {
     options.writer.write(key, text);
   } else {
@@ -81,10 +67,7 @@ function writeSavedText(
   }
 }
 
-function sameRequest(
-  left: GameSaveIdentity | null,
-  right: GameSaveIdentity | null,
-) {
+function sameRequest(left: GameSaveIdentity | null, right: GameSaveIdentity | null) {
   return (
     left?.sessionId === right?.sessionId &&
     left?.revision === right?.revision &&
@@ -121,9 +104,7 @@ class AutosaveRepository implements SaveGameRepository {
     return current;
   }
   serialize() {
-    return (
-      this.#text ?? this.#encode(this.#snapshot.campaign, this.#snapshot.battle)
-    );
+    return this.#text ?? this.#encode(this.#snapshot.campaign, this.#snapshot.battle);
   }
   persist(text: string, identity: GameSaveIdentity) {
     if (!sameRequest(identity, this.current())) {
@@ -133,9 +114,7 @@ class AutosaveRepository implements SaveGameRepository {
   }
 }
 
-export function createCampaignAutosave(
-  options: CampaignAutosaveOptions,
-): CampaignAutosave {
+export function createCampaignAutosave(options: CampaignAutosaveOptions): CampaignAutosave {
   let worker = options.worker;
   const {
     encode,
@@ -179,8 +158,7 @@ export function createCampaignAutosave(
       failProgress(error);
     }
   };
-  const fallback = (snapshot: QueuedCampaignSave) =>
-    persist(snapshot, undefined);
+  const fallback = (snapshot: QueuedCampaignSave) => persist(snapshot, undefined);
   const failedWorker = () => {
     if (closed) {
       return;
@@ -223,12 +201,7 @@ export function createCampaignAutosave(
   };
   if (worker) {
     worker.onmessage = ({ data }) => {
-      if (
-        closed ||
-        !inFlight ||
-        !replyRecord(data) ||
-        !sameRequest(data, inFlight)
-      ) {
+      if (closed || !inFlight || !replyRecord(data) || !sameRequest(data, inFlight)) {
         return;
       }
       const snapshot = inFlight;

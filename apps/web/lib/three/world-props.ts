@@ -27,22 +27,15 @@ export function visualPropRotation(prop: WorldProp, input: WorldInput) {
   if (!new Set(input.revealedRooms ?? []).has(roomId)) {
     return fallback;
   }
-  const building = input.terrain.buildings?.find(
-      (item) => item.id === prop.buildingId,
-    ),
+  const building = input.terrain.buildings?.find((item) => item.id === prop.buildingId),
     room = building?.rooms?.find((item) => item.id === roomId),
     level = prop.tacticalLevel ?? 0;
-  if (
-    !room ||
-    (room.tacticalLevel ?? room.cells[0]?.tacticalLevel ?? 0) !== level
-  ) {
+  if (!room || (room.tacticalLevel ?? room.cells[0]?.tacticalLevel ?? 0) !== level) {
     return fallback;
   }
   const cells = new Set(
     room.cells
-      .filter(
-        (cell) => (cell.tacticalLevel ?? room.tacticalLevel ?? 0) === level,
-      )
+      .filter((cell) => (cell.tacticalLevel ?? room.tacticalLevel ?? 0) === level)
       .map((cell) => `${cell.x},${cell.y}`),
   );
   if (!cells.has(`${prop.x},${prop.y}`)) {
@@ -91,10 +84,7 @@ export function buildProps(
       z = (prop.y + ((prop.footprint?.height ?? 1) - 1) * 0.5) * T,
       y = prop.elevation ?? 0;
     const angle = (visualPropRotation(prop, input) * Math.PI) / 180,
-      rotation = new Quaternion().setFromAxisAngle(
-        new Vector3(0, 1, 0),
-        -angle,
-      );
+      rotation = new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), -angle);
     const frame = new Group();
     frame.position.set(x, y, z);
     frame.quaternion.copy(rotation);
@@ -151,11 +141,7 @@ export function buildProps(
         depth: d,
         light,
       });
-    } else if (
-      prop.type === 'table' ||
-      prop.type === 'bench' ||
-      prop.type === 'washstand'
-    ) {
+    } else if (prop.type === 'table' || prop.type === 'bench' || prop.type === 'washstand') {
       const tw = w * 0.8,
         td = d * (prop.type === 'bench' ? 0.35 : 0.68),
         th = 0.07,
@@ -179,15 +165,7 @@ export function buildProps(
       }
       for (const a of [-1, 1]) {
         for (const b of [-1, 1]) {
-          box(
-            wood,
-            a * tw * 0.4,
-            (h - th) * 0.5,
-            b * td * 0.33,
-            0.075,
-            h - th,
-            0.075,
-          );
+          box(wood, a * tw * 0.4, (h - th) * 0.5, b * td * 0.33, 0.075, h - th, 0.075);
           if (prop.type !== 'bench') {
             box(dark, a * tw * 0.4, 0.25, b * td * 0.33, 0.09, 0.05, 0.09);
           }
@@ -209,14 +187,7 @@ export function buildProps(
         const ceramic = materials.get('ceramic'),
           pitcherX = w * 0.29,
           pitcherZ = -d * 0.16;
-        part.primitive(
-          'washstand-basin',
-          ceramic,
-          [0, h + 0.012, 0],
-          [1, 1, 1],
-          undefined,
-          light,
-        );
+        part.primitive('washstand-basin', ceramic, [0, h + 0.012, 0], [1, 1, 1], undefined, light);
         part.primitive(
           'cylinder',
           materials.get('water'),
@@ -289,15 +260,7 @@ export function buildProps(
       // The seven existing frame parts retain their vertices and dimensions.
       const support = Math.max(0, h - 0.12 - 0.255);
       for (const a of [-1, 1]) {
-        box(
-          wood,
-          a * w * 0.25,
-          0.255 + support * 0.5,
-          0,
-          0.075,
-          support,
-          d * 0.72,
-        );
+        box(wood, a * w * 0.25, 0.255 + support * 0.5, 0, 0.075, support, d * 0.72);
       }
     } else if (prop.type === 'chest') {
       const cw = w * 0.68,
@@ -312,15 +275,7 @@ export function buildProps(
           sideTop = top - 0.036;
         box(dark, 0, bottom + 0.035, 0, cw - wall * 2, 0.07, cd - wall * 2);
         for (const a of [-1, 1]) {
-          box(
-            wood,
-            a * (cw - wall) * 0.5,
-            (bottom + sideTop) * 0.5,
-            0,
-            wall,
-            sideTop - bottom,
-            cd,
-          );
+          box(wood, a * (cw - wall) * 0.5, (bottom + sideTop) * 0.5, 0, wall, sideTop - bottom, cd);
           box(dark, a * (cw - wall) * 0.5, top - 0.018, 0, wall, 0.036, cd);
         }
         for (const b of [-1, 1]) {
@@ -333,15 +288,7 @@ export function buildProps(
             sideTop - bottom,
             wall,
           );
-          box(
-            dark,
-            0,
-            top - 0.018,
-            b * (cd - wall) * 0.5,
-            cw - wall * 2,
-            0.036,
-            wall,
-          );
+          box(dark, 0, top - 0.018, b * (cd - wall) * 0.5, cw - wall * 2, 0.036, wall);
         }
       } else {
         box(wood, 0, h * 0.42, 0, cw, h * 0.79, cd);
@@ -364,35 +311,9 @@ export function buildProps(
         );
         for (const a of [-1, 1]) {
           lid.box(dark, a * cw * 0.31, -0.04, -cd * 0.5, 0.05, 0.02, cd, light);
-          lid.box(
-            iron,
-            a * cw * 0.31,
-            0.047,
-            -cd * 0.5,
-            0.034,
-            0.006,
-            cd,
-            light,
-          );
-          lid.box(
-            iron,
-            a * cw * 0.31,
-            0.047,
-            -0.038,
-            0.075,
-            0.006,
-            0.076,
-            light,
-          );
-          box(
-            iron,
-            a * cw * 0.31,
-            h - 0.105,
-            cd * 0.5 + 0.008,
-            0.075,
-            0.11,
-            0.016,
-          );
+          lid.box(iron, a * cw * 0.31, 0.047, -cd * 0.5, 0.034, 0.006, cd, light);
+          lid.box(iron, a * cw * 0.31, 0.047, -0.038, 0.075, 0.006, 0.076, light);
+          box(iron, a * cw * 0.31, h - 0.105, cd * 0.5 + 0.008, 0.075, 0.11, 0.016);
           pole(
             iron,
             [a * cw * 0.31 - 0.047, h - 0.05, cd * 0.5],
@@ -404,15 +325,7 @@ export function buildProps(
             handleY = h * 0.44;
           for (const b of [-1, 1]) {
             box(iron, side, handleY, b * 0.062, 0.014, 0.066, 0.014);
-            box(
-              iron,
-              a * (cw * 0.5 + 0.019),
-              handleY + 0.03,
-              b * 0.062,
-              0.038,
-              0.032,
-              0.028,
-            );
+            box(iron, a * (cw * 0.5 + 0.019), handleY + 0.03, b * 0.062, 0.038, 0.032, 0.028);
           }
           box(iron, side, handleY - 0.033, 0, 0.014, 0.014, 0.138);
         }
@@ -443,33 +356,18 @@ export function buildProps(
       for (let n = 0; n < count; n++) {
         const a = count > 1 ? ((n % 2) - 0.5) * r * 2.1 : 0,
           b = count > 2 ? (Math.floor(n / 2) - 0.5) * r * 2.1 : 0;
-        part.add(
-          barrel,
-          wood,
-          new importMatrix().makeTranslation(a, 0, b),
-          light,
-        );
+        part.add(barrel, wood, new importMatrix().makeTranslation(a, 0, b), light);
         for (const by of [0.1, h * 0.48, h - 0.1]) {
           part.primitive(
             'torus',
             iron,
             [a, by, b],
             [r * 1.03, r * 1.03, r * 1.03],
-            new Quaternion().setFromAxisAngle(
-              new Vector3(1, 0, 0),
-              Math.PI * 0.5,
-            ),
+            new Quaternion().setFromAxisAngle(new Vector3(1, 0, 0), Math.PI * 0.5),
             light,
           );
         }
-        part.primitive(
-          'cylinder',
-          dark,
-          [a, h, b],
-          [r * 0.79, 0.025, r * 0.79],
-          undefined,
-          light,
-        );
+        part.primitive('cylinder', dark, [a, h, b], [r * 0.79, 0.025, r * 0.79], undefined, light);
       }
       barrel.dispose();
     } else if (prop.type === 'hay' || prop.type === 'sacks') {
@@ -484,14 +382,8 @@ export function buildProps(
         let fit = 1;
         if (prop.type === 'sacks') {
           const bounds = required(geometry.get(kind).boundingBox),
-            rx =
-              Math.max(Math.abs(bounds.min.x), Math.abs(bounds.max.x)) *
-              w *
-              0.33,
-            rz =
-              Math.max(Math.abs(bounds.min.z), Math.abs(bounds.max.z)) *
-              d *
-              0.31,
+            rx = Math.max(Math.abs(bounds.min.x), Math.abs(bounds.max.x)) * w * 0.33,
+            rz = Math.max(Math.abs(bounds.min.z), Math.abs(bounds.max.z)) * d * 0.31,
             c = Math.cos(n * 0.12),
             s = Math.sin(n * 0.12);
           fit = Math.min(
@@ -530,12 +422,7 @@ export function buildProps(
       }
       box(wood, 0, 0.85, bedZ + cd * 0.5, cw, 0.43, 0.075);
       for (const a of [-1, 1]) {
-        pole(
-          wood,
-          [a * cw * 0.39, 0.6, bedZ - cd * 0.45],
-          [a * cw * 0.39, 0.39, -d * 0.45],
-          0.035,
-        );
+        pole(wood, [a * cw * 0.39, 0.6, bedZ - cd * 0.45], [a * cw * 0.39, 0.39, -d * 0.45], 0.035);
       }
       // The iron tyre includes the torus tube. Rest its outer edge on the
       // floor and leave the hubs and shafts inside the authored cells.
@@ -562,15 +449,7 @@ export function buildProps(
             bw = 0.075,
             bd = Math.min(0.19, sd * 0.78);
           box(n % 2 ? dark : wood, a, base + bh * 0.5, 0, bw, bh, bd);
-          box(
-            linen,
-            a,
-            base + bh * 0.5,
-            -0.008,
-            bw * 0.67,
-            bh - 0.028,
-            bd - 0.022,
-          );
+          box(linen, a, base + bh * 0.5, -0.008, bw * 0.67, bh - 0.028, bd - 0.022);
           box(dark, a, base + bh * 0.5, bd * 0.48, bw + 0.006, bh, 0.016);
           for (const by of [0.045, bh - 0.045]) {
             box(wood, a, base + by, bd * 0.52, bw + 0.012, 0.012, 0.009);
@@ -593,8 +472,7 @@ export function buildProps(
           ],
           vesselScale = Math.min(
             1,
-            (Math.max(0, Math.min(h * 0.3 - 0.06, h * 0.35 - 0.1)) * 0.94) /
-              0.257,
+            (Math.max(0, Math.min(h * 0.3 - 0.06, h * 0.35 - 0.1)) * 0.94) / 0.257,
           );
         for (let n = 0; vesselScale > 0 && n < 5; n++) {
           const a = (n - 2) * sw * 0.15,
@@ -616,15 +494,7 @@ export function buildProps(
         box(stone, a * w * 0.27, h * 0.34, 0, w * 0.13, h * 0.68, d * 0.47);
       }
       box(stone, 0, h * 0.73, 0, w * 0.67, 0.18, d * 0.53);
-      box(
-        materials.get('ember', { emissive: true }),
-        0,
-        0.105,
-        0,
-        w * 0.24,
-        0.025,
-        d * 0.18,
-      );
+      box(materials.get('ember', { emissive: true }), 0, 0.105, 0, w * 0.24, 0.025, d * 0.18);
       for (const a of [-1, 1]) {
         pole(dark, [a * 0.17, 0.13, -0.12], [-a * 0.17, 0.13, 0.12], 0.035);
       }
@@ -635,14 +505,7 @@ export function buildProps(
         lintel = h * 0.73 - 0.09,
         outside = lintel < bailY + 0.088 + 0.006;
       const potZ = outside ? -d * 0.265 - 0.145 : -d * 0.265 - 0.012;
-      part.primitive(
-        'hearth-pot',
-        iron,
-        [0, 0.17, potZ],
-        [1, 1, 1],
-        undefined,
-        light,
-      );
+      part.primitive('hearth-pot', iron, [0, 0.17, potZ], [1, 1, 1], undefined, light);
       part.primitive(
         'hearth-bail',
         iron,
@@ -652,12 +515,7 @@ export function buildProps(
         light,
       );
       for (const a of [-1, 1]) {
-        pole(
-          iron,
-          [a * 0.137, bailY, potZ - 0.0125],
-          [a * 0.137, bailY, potZ + 0.0125],
-          0.008,
-        );
+        pole(iron, [a * 0.137, bailY, potZ - 0.0125], [a * 0.137, bailY, potZ + 0.0125], 0.008);
       }
       if (outside) {
         // A short firebox stores the same pot on an outside iron arm. Keep
@@ -665,29 +523,13 @@ export function buildProps(
         const anchorZ = -d * 0.265 + 0.012,
           top = h * 0.73 + 0.09,
           beamY = Math.max(top + 0.006, bailY + 0.1);
-        box(
-          iron,
-          0,
-          beamY,
-          (anchorZ + potZ) * 0.5,
-          0.02,
-          0.012,
-          anchorZ - potZ + 0.012,
-        );
+        box(iron, 0, beamY, (anchorZ + potZ) * 0.5, 0.02, 0.012, anchorZ - potZ + 0.012);
         pole(iron, [0, top - 0.004, anchorZ], [0, beamY, anchorZ], 0.005);
         pole(iron, [0, bailY + 0.088, potZ], [0, beamY, potZ], 0.005);
       } else {
         const anchorZ = -d * 0.265 + 0.02;
         box(iron, 0, lintel + 0.002, anchorZ, 0.36, 0.012, 0.02);
-        box(
-          iron,
-          0,
-          lintel + 0.002,
-          (anchorZ + potZ) * 0.5,
-          0.02,
-          0.012,
-          anchorZ - potZ + 0.012,
-        );
+        box(iron, 0, lintel + 0.002, (anchorZ + potZ) * 0.5, 0.02, 0.012, anchorZ - potZ + 0.012);
         pole(iron, [0, bailY + 0.088, potZ], [0, lintel + 0.002, potZ], 0.005);
       }
     } else if (prop.type === 'pottery') {
@@ -722,14 +564,7 @@ export function buildProps(
         undefined,
         light,
       );
-      part.primitive(
-        'floor-rug-trim',
-        linen,
-        [0, 0, 0],
-        [w, 1, d],
-        undefined,
-        light,
-      );
+      part.primitive('floor-rug-trim', linen, [0, 0, 0], [w, 1, d], undefined, light);
     } else if (prop.type === 'candle') {
       part.primitive(
         'cylinder',
@@ -765,14 +600,10 @@ export function buildProps(
           sd = rubble ? 0.16 : Math.min(0.6, d * 0.6);
         const halfX = rubble
             ? Math.hypot(sw, sd)
-            : (Math.abs(Math.cos(angle)) * sw +
-                Math.abs(Math.sin(angle)) * sd) *
-              0.5,
+            : (Math.abs(Math.cos(angle)) * sw + Math.abs(Math.sin(angle)) * sd) * 0.5,
           halfZ = rubble
             ? Math.hypot(sw, sd)
-            : (Math.abs(Math.sin(angle)) * sw +
-                Math.abs(Math.cos(angle)) * sd) *
-              0.5;
+            : (Math.abs(Math.sin(angle)) * sw + Math.abs(Math.cos(angle)) * sd) * 0.5;
         const px = (a - 0.5) * Math.max(0, w - 2 * halfX) * 0.8,
           pz = (b - 0.5) * Math.max(0, d - 2 * halfZ) * 0.8;
         part.primitive(
@@ -840,12 +671,10 @@ export function addStructureDebris(
     // Conservative extents include every rotated vertex, on either level.
     const halfX = rock
         ? Math.hypot(sw, sd)
-        : (Math.abs(Math.cos(angle)) * sw + Math.abs(Math.sin(angle)) * sd) *
-          0.5,
+        : (Math.abs(Math.cos(angle)) * sw + Math.abs(Math.sin(angle)) * sd) * 0.5,
       halfZ = rock
         ? Math.hypot(sw, sd)
-        : (Math.abs(Math.sin(angle)) * sw + Math.abs(Math.cos(angle)) * sd) *
-          0.5;
+        : (Math.abs(Math.sin(angle)) * sw + Math.abs(Math.cos(angle)) * sd) * 0.5;
     const px = (a - 0.5) * Math.max(0, w - 2 * halfX) * 0.84,
       pz = (b - 0.5) * Math.max(0, d - 2 * halfZ) * 0.84;
     batch.primitive(
@@ -908,20 +737,10 @@ export function applyStructureWear(
       return;
     }
     for (let n = 0; n < position.count; n++) {
-      const patch =
-          0.5 +
-          0.5 * Math.sin(position.getX(n) * 8 + position.getZ(n) * 11 + phase),
-        upper = Math.min(
-          1,
-          Math.max(0, (position.getY(n) - base) / Math.max(0.1, height)),
-        ),
+      const patch = 0.5 + 0.5 * Math.sin(position.getX(n) * 8 + position.getZ(n) * 11 + phase),
+        upper = Math.min(1, Math.max(0, (position.getY(n) - base) / Math.max(0.1, height))),
         shade = 1 - strength * (0.06 + 0.2 * patch + 0.05 * upper);
-      colours.setXYZ(
-        n,
-        colours.getX(n) * shade,
-        colours.getY(n) * shade,
-        colours.getZ(n) * shade,
-      );
+      colours.setXYZ(n, colours.getX(n) * shade, colours.getY(n) * shade, colours.getZ(n) * shade);
     }
   });
 }
@@ -964,18 +783,8 @@ export function wheel(
   z: number,
   radius: number,
 ) {
-  const q = new Quaternion().setFromAxisAngle(
-    new Vector3(0, 1, 0),
-    Math.PI * 0.5,
-  );
-  batch.primitive(
-    'torus',
-    materials.get('wood'),
-    [x, y, z],
-    [radius, radius, radius],
-    q,
-    light,
-  );
+  const q = new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), Math.PI * 0.5);
+  batch.primitive('torus', materials.get('wood'), [x, y, z], [radius, radius, radius], q, light);
   batch.primitive(
     'torus',
     materials.get('iron'),
@@ -996,11 +805,7 @@ export function wheel(
     batch.cylinder(
       materials.get('wood'),
       new Vector3(x, y, z),
-      new Vector3(
-        x,
-        y + Math.sin(a) * radius * 0.93,
-        z + Math.cos(a) * radius * 0.93,
-      ),
+      new Vector3(x, y + Math.sin(a) * radius * 0.93, z + Math.cos(a) * radius * 0.93),
       0.021,
       light,
     );

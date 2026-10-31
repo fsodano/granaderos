@@ -1,20 +1,10 @@
 import { required } from './required';
-import {
-  worldWallRecords,
-  buildingWallAtPoint,
-  wallFrameRecords,
-} from './world-wall-records';
+import { worldWallRecords, buildingWallAtPoint, wallFrameRecords } from './world-wall-records';
 import { Group, Quaternion, Vector3 } from 'three';
-import {
-  entranceFrame,
-  getBuildingProfile,
-} from '../../../../packages/game/building-profile.ts';
+import { entranceFrame, getBuildingProfile } from '../../../../packages/game/building-profile.ts';
 import { BUILDING_OPENINGS } from '../../../../packages/game/building-scale.js';
 import { buildingAppearance } from '../../../../packages/game/building-appearance.ts';
-import {
-  architectureFinish,
-  applyArchitectureFinish,
-} from './world-architecture-finish';
+import { architectureFinish, applyArchitectureFinish } from './world-architecture-finish';
 import { civicCorniceRoofJoin } from './world-civic-cornice';
 import { WorldBatch } from './world-geometry';
 import { illuminationAt } from './world-materials';
@@ -33,9 +23,7 @@ export function civicStoreyBands(
   geometry: WorldGeometry,
   materials: WorldMaterialSource,
 ) {
-  const walls = worldWallRecords(input).filter(
-      (tile) => tile.buildingId === b.id,
-    ),
+  const walls = worldWallRecords(input).filter((tile) => tile.buildingId === b.id),
     frame = entranceFrame({ ...b, walls: wallFrameRecords(walls) }),
     profile = getBuildingProfile(b),
     V = 25.066666666666666,
@@ -52,11 +40,10 @@ export function civicStoreyBands(
   stoneCap.polygonOffsetFactor = -1;
   stoneCap.polygonOffsetUnits = -1;
   const join = civicCorniceRoofJoin(b, input, height, 0, false),
-    stages: [number, number, number, typeof stone, typeof stone | undefined][] =
-      [
-        [storey - 2 / V, storey + 4 / V, 0.22, stone, undefined],
-        [storey + 3 / V, storey + 5 / V, 0.3, stone, stoneCap],
-      ] as const;
+    stages: [number, number, number, typeof stone, typeof stone | undefined][] = [
+      [storey - 2 / V, storey + 4 / V, 0.22, stone, undefined],
+      [storey + 3 / V, storey + 5 / V, 0.3, stone, stoneCap],
+    ] as const;
   if (join) {
     const appearance = buildingAppearance(b),
       texture = '/art/architecture-plaster-v2.png',
@@ -139,9 +126,8 @@ export function civicStoreyBands(
           bottom <
             Math.min(
               height - 0.12,
-              (tile.type === 'door'
-                ? BUILDING_OPENINGS.doorHeight
-                : BUILDING_OPENINGS.windowTop) / V,
+              (tile.type === 'door' ? BUILDING_OPENINGS.doorHeight : BUILDING_OPENINGS.windowTop) /
+                V,
             ) +
               0.05
         ) {
@@ -205,20 +191,10 @@ export function civicStoreyBands(
       batch.primitive('box', trim, p, [w * T, 0.15, d * T], rotation, light);
     };
     for (const v of [0, frame.depth]) {
-      box(
-        frame.width * 0.5,
-        v + (v === 0 ? -0.1 : 0.1) / T,
-        frame.width + 0.2 / T,
-        0.29 / T,
-      );
+      box(frame.width * 0.5, v + (v === 0 ? -0.1 : 0.1) / T, frame.width + 0.2 / T, 0.29 / T);
     }
     for (const u of [0, frame.width]) {
-      box(
-        u + (u === 0 ? -0.1 : 0.1) / T,
-        frame.depth * 0.5,
-        0.29 / T,
-        frame.depth,
-      );
+      box(u + (u === 0 ? -0.1 : 0.1) / T, frame.depth * 0.5, 0.29 / T, frame.depth);
     }
   }
   const node = batch.finish(

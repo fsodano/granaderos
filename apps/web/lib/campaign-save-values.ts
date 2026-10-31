@@ -48,13 +48,9 @@ export function readCampaignSaveRequest(value: unknown): CampaignSaveRequest {
     (campaign.gameSessionId && campaign.gameSessionId !== identity.sessionId) ||
     campaign.gameRevision !== identity.revision
   ) {
-    throw new Error(
-      'La revisión enviada al guardado no coincide con la partida.',
-    );
+    throw new Error('La revisión enviada al guardado no coincide con la partida.');
   }
   const battle =
-    value['battle'] === null
-      ? null
-      : validateBattleSnapshot(value['battle'], campaign);
+    value['battle'] === null ? null : validateBattleSnapshot(value['battle'], campaign);
   return { ...identity, campaign, battle };
 }

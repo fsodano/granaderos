@@ -2,14 +2,7 @@
 // eslint-disable-next-line import/default -- Vite supplies this virtual worker URL; native URL workers break the static export.
 import enemyWorkerUrl from './enemy-turn-worker.ts?worker&url';
 
-import {
-  useEffect,
-  useEffectEvent,
-  useLayoutEffect,
-  useRef,
-  useState,
-  useMemo,
-} from 'react';
+import { useEffect, useEffectEvent, useLayoutEffect, useRef, useState, useMemo } from 'react';
 import { presentedEndTurn } from '../../../packages/game/tactical.js';
 import {
   BATTLE_PLAYBACK,
@@ -24,10 +17,7 @@ import {
   admittedHealingIntervals,
   nativeActionFrameDuration,
 } from './three/action-timing';
-import {
-  admittedMountTransitions,
-  mountFrameDuration,
-} from './three/mount-presentation';
+import { admittedMountTransitions, mountFrameDuration } from './three/mount-presentation';
 import { actionPresentationDuration } from './three/action-pace';
 
 import type {
@@ -46,16 +36,10 @@ interface PendingTurn {
   reject: (error: Error) => void;
 }
 const stepMs = BATTLE_PLAYBACK.step;
-export function presentedFrameDuration(
-  frame: BattlePresentationFrame,
-  previous: BattleSnapshot,
-) {
+export function presentedFrameDuration(frame: BattlePresentationFrame, previous: BattleSnapshot) {
   if (frame.type !== 'step') {
     return actionPresentationDuration(
-      mountFrameDuration(
-        frame,
-        nativeActionFrameDuration(frame, battleFrameDuration(frame)),
-      ),
+      mountFrameDuration(frame, nativeActionFrameDuration(frame, battleFrameDuration(frame))),
     );
   }
   if (!frame.unitId) {
@@ -115,12 +99,7 @@ export function useEnemyPlayback(
       worker.current = w;
       w.onmessage = ({ data }: MessageEvent<unknown>) => {
         const r = request.current;
-        if (
-          worker.current !== w ||
-          !r ||
-          !isWorkerRecord(data) ||
-          data['id'] !== r.id
-        ) {
+        if (worker.current !== w || !r || !isWorkerRecord(data) || data['id'] !== r.id) {
           return;
         }
         request.current = null;
@@ -131,17 +110,11 @@ export function useEnemyPlayback(
             r.resolve(readPresentedBattleResult(data['result']));
           }
         } catch (error) {
-          r.reject(
-            error instanceof Error
-              ? error
-              : new Error('Invalid enemy turn response'),
-          );
+          r.reject(error instanceof Error ? error : new Error('Invalid enemy turn response'));
         }
       };
       const fail = () => {
-        request.current?.reject(
-          Error('No se pudo completar el turno. Intentá de nuevo.'),
-        );
+        request.current?.reject(Error('No se pudo completar el turno. Intentá de nuevo.'));
         request.current = null;
         w.terminate();
         worker.current = null;
@@ -171,10 +144,7 @@ export function useEnemyPlayback(
     }
     const source = committed,
       generation = epoch.current,
-      current = () =>
-        live.current &&
-        epoch.current === generation &&
-        latest.current === source;
+      current = () => live.current && epoch.current === generation && latest.current === source;
     pending.current = true;
     setBusy(true);
     onBusy?.(true);
@@ -192,9 +162,7 @@ export function useEnemyPlayback(
         actionDurationMs = 0;
       const sequenceId = `${generation}:${++presentationSequence.current}`;
       const frames = admittedMountTransitions(
-        admittedHealingIntervals(
-          admittedThrownRelease(admittedReloadWork(result.frames)),
-        ),
+        admittedHealingIntervals(admittedThrownRelease(admittedReloadWork(result.frames))),
       );
       let timingState = source;
       const durations = frames.map((next) => {
@@ -293,13 +261,9 @@ export function useEnemyPlayback(
       frame
         ? {
             ...frame.state,
-            ...(frame.visibleIds
-              ? { presentationVisibleIds: frame.visibleIds }
-              : {}),
-            presentationStepMs:
-              frame.type === 'step' ? frame.durationMs : stepMs,
-            presentationMovingUnitId:
-              frame.type === 'step' ? (frame.unitId ?? null) : null,
+            ...(frame.visibleIds ? { presentationVisibleIds: frame.visibleIds } : {}),
+            presentationStepMs: frame.type === 'step' ? frame.durationMs : stepMs,
+            presentationMovingUnitId: frame.type === 'step' ? (frame.unitId ?? null) : null,
           }
         : committed,
     [frame, committed],

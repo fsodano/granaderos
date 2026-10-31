@@ -1,11 +1,6 @@
 'use client';
 import { sitePath } from './site-path.js';
-import {
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useSyncExternalStore,
-} from 'react';
+import { useEffect, useLayoutEffect, useRef, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { Package } from 'lucide-react';
 import type { EquipmentInteraction } from './equipment-interaction';
@@ -13,16 +8,8 @@ const serverSnapshot = () => null;
 const transform = (point: { x: number; y: number }) =>
   `translate(${Math.max(0, Math.min(window.innerWidth - 224, point.x + 14))}px,${Math.max(0, Math.min(window.innerHeight - 48, point.y + 14))}px)`;
 /** The visual follows the pointer; the exact item is owned by the saved cursor. */
-export default function EquipmentCursor({
-  store,
-}: {
-  store: EquipmentInteraction;
-}) {
-  const state = useSyncExternalStore(
-      store.subscribe,
-      store.getSnapshot,
-      serverSnapshot,
-    ),
+export default function EquipmentCursor({ store }: { store: EquipmentInteraction }) {
+  const state = useSyncExternalStore(store.subscribe, store.getSnapshot, serverSnapshot),
     picked = state?.selection;
   const node = useRef<HTMLDivElement>(null),
     point = useRef<{ x: number; y: number } | null>(null);

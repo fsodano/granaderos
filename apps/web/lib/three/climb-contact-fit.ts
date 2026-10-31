@@ -69,10 +69,7 @@ export class NativeClimbContactFit {
   private pelvis: Object3D | undefined;
   private authoredPole = new Vector3();
   private sourceWeight = 0;
-  private idleRotations = new WeakMap<
-    AnimationClip,
-    Map<Object3D, Quaternion>
-  >();
+  private idleRotations = new WeakMap<AnimationClip, Map<Object3D, Quaternion>>();
   private nativePole = new Vector3();
   private bendCross = new Vector3();
   private kneeRise = 0;
@@ -101,9 +98,7 @@ export class NativeClimbContactFit {
     for (const side of ['l', 'r']) {
       for (const role of ['foot', 'hand']) {
         const names =
-            role === 'foot'
-              ? ['thigh', 'calf', 'foot']
-              : ['upperarm', 'lowerarm', 'hand'],
+            role === 'foot' ? ['thigh', 'calf', 'foot'] : ['upperarm', 'lowerarm', 'hand'],
           nodes = names.map((name) => model.getObjectByName(`${name}_${side}`));
         if (nodes.some((node) => !node)) {
           continue;
@@ -118,9 +113,7 @@ export class NativeClimbContactFit {
           finger = model.getObjectByName(`middle_01_${side}`);
         const point =
           role === 'hand'
-            ? c
-                .clone()
-                .lerp(required(finger).getWorldPosition(new Vector3()), 0.72)
+            ? c.clone().lerp(required(finger).getWorldPosition(new Vector3()), 0.72)
             : required(ball).getWorldPosition(new Vector3());
         if (role === 'foot') {
           model.worldToLocal(point);
@@ -129,27 +122,18 @@ export class NativeClimbContactFit {
         }
         let bindHandContactRotation: Quaternion | undefined;
         if (role === 'hand') {
-          const long = required(finger)
-              .getWorldPosition(new Vector3())
-              .sub(c)
-              .normalize(),
+          const long = required(finger).getWorldPosition(new Vector3()).sub(c).normalize(),
             across = required(model.getObjectByName(`index_01_${side}`))
               .getWorldPosition(new Vector3())
               .sub(
-                required(
-                  model.getObjectByName(`pinky_01_${side}`),
-                ).getWorldPosition(new Vector3()),
+                required(model.getObjectByName(`pinky_01_${side}`)).getWorldPosition(new Vector3()),
               ),
             normal = across
               .cross(long)
               .normalize()
               .multiplyScalar(side === 'l' ? -1 : 1);
           const nativeFrame = new Quaternion().setFromRotationMatrix(
-            this.frame.makeBasis(
-              this.across.crossVectors(long, normal).normalize(),
-              long,
-              normal,
-            ),
+            this.frame.makeBasis(this.across.crossVectors(long, normal).normalize(), long, normal),
           );
           const sourceFrame = new Quaternion().setFromRotationMatrix(
             this.frame.makeBasis(
@@ -172,18 +156,13 @@ export class NativeClimbContactFit {
           nativeEndRotation: new Quaternion(),
           bindEndRotation: required(end).getWorldQuaternion(new Quaternion()),
           bindBaseRotation: required(base).getWorldQuaternion(new Quaternion()),
-          bindMiddleRotation: required(middle).getWorldQuaternion(
-            new Quaternion(),
-          ),
+          bindMiddleRotation: required(middle).getWorldQuaternion(new Quaternion()),
           bindFirstDirection: b.clone().sub(a),
           bindSecondDirection: c.clone().sub(b),
           ...(bindHandContactRotation ? { bindHandContactRotation } : {}),
         });
         for (const bone of [base, middle, end]) {
-          this.nativeRotations.set(
-            required(bone),
-            required(bone).quaternion.clone(),
-          );
+          this.nativeRotations.set(required(bone), required(bone).quaternion.clone());
         }
       }
     }
@@ -206,9 +185,7 @@ export class NativeClimbContactFit {
     this.adjusted = false;
   }
   nativeFraction(geometry: ClimbGeometry, fraction: number, spec: ClipSpec) {
-    const safeFraction = Number.isFinite(fraction)
-      ? Math.max(0, Math.min(1, fraction))
-      : 0;
+    const safeFraction = Number.isFinite(fraction) ? Math.max(0, Math.min(1, fraction)) : 0;
     const support = spec.climbSupport;
     if (!support || !finiteGeometry(geometry) || !Number.isFinite(fraction)) {
       return safeFraction;
@@ -216,11 +193,7 @@ export class NativeClimbContactFit {
     return referenceClimbFraction(
       geometry,
       fraction,
-      ladderGeometry(
-        [0, 0, 0],
-        [0, support.height, support.span],
-        support.span,
-      ),
+      ladderGeometry([0, 0, 0], [0, support.height, support.span], support.span),
     );
   }
   private idleRotation(clip: AnimationClip, bone: Object3D, down: boolean) {
@@ -239,9 +212,7 @@ export class NativeClimbContactFit {
     }
     const result = new Quaternion();
     for (const node of chain) {
-      const track = clip.tracks.find(
-        (t) => t.name === node.name + '.quaternion',
-      );
+      const track = clip.tracks.find((t) => t.name === node.name + '.quaternion');
       if (track) {
         const sample = nativeInterpolant(track);
         this.rotation.fromArray(sample.evaluate(down ? clip.duration : 0));
@@ -262,9 +233,7 @@ export class NativeClimbContactFit {
   ) {
     after.normalize();
     bone.getWorldQuaternion(this.worldRotation);
-    this.rotation
-      .setFromUnitVectors(before.normalize(), after)
-      .multiply(this.worldRotation);
+    this.rotation.setFromUnitVectors(before.normalize(), after).multiply(this.worldRotation);
     this.nativeWorldRotation.copy(this.rotation);
     this.before.copy(direction).applyQuaternion(this.rootRotation);
     this.rotation.setFromUnitVectors(this.before.normalize(), after);
@@ -306,8 +275,7 @@ export class NativeClimbContactFit {
       } else {
         const crest = this.kneeRise / 0.7,
           forward =
-            (-0.35 * this.footRoofWeight + 0.3 * (1 - this.footRoofWeight)) *
-              crest -
+            (-0.35 * this.footRoofWeight + 0.3 * (1 - this.footRoofWeight)) * crest -
             0.35 * (1 - crest);
         this.current.set(sign * (0.1 + 0.15 * crest), -0.25 + crest, -forward);
       }
@@ -331,14 +299,10 @@ export class NativeClimbContactFit {
     if (this.sourceWeight < 1 && this.nativePole.lengthSq() > 1e-7) {
       this.nativePole.normalize();
       const angle = Math.atan2(
-        this.direction.dot(
-          this.bendCross.crossVectors(this.nativePole, this.pole),
-        ),
+        this.direction.dot(this.bendCross.crossVectors(this.nativePole, this.pole)),
         this.nativePole.dot(this.pole),
       );
-      this.pole
-        .copy(this.nativePole)
-        .applyAxisAngle(this.direction, angle * this.sourceWeight);
+      this.pole.copy(this.nativePole).applyAxisAngle(this.direction, angle * this.sourceWeight);
     }
     const along = (a * a - b * b + distance * distance) / (2 * distance),
       rise = Math.sqrt(Math.max(0, a * a - along * along));
@@ -363,9 +327,7 @@ export class NativeClimbContactFit {
       this.after.subVectors(this.target, this.joint),
     );
     required(end.parent).getWorldQuaternion(this.parentRotation);
-    end.quaternion.copy(
-      this.parentRotation.invert().multiply(this.endRotation),
-    );
+    end.quaternion.copy(this.parentRotation.invert().multiply(this.endRotation));
     end.updateWorldMatrix(false, true);
   }
   apply(
@@ -399,11 +361,7 @@ export class NativeClimbContactFit {
     this.adjusted = true;
     const actual = sampleLadderClimb(geometry, fraction, support.feetRest),
       reference = sampleLadderClimb(
-        ladderGeometry(
-          [0, 0, 0],
-          [0, support.height, support.span],
-          support.span,
-        ),
+        ladderGeometry([0, 0, 0], [0, support.height, support.span], support.span),
         this.nativeFraction(geometry, fraction, spec),
         support.feetRest,
       );
@@ -412,30 +370,22 @@ export class NativeClimbContactFit {
     if (this.visualScale !== 1 && fraction < 0.76) {
       const q = Math.max(
           0,
-          Math.min(
-            geometry.steps - 2,
-            ((fraction - 0.12) / 0.64) * (geometry.steps - 2),
-          ),
+          Math.min(geometry.steps - 2, ((fraction - 0.12) / 0.64) * (geometry.steps - 2)),
         ),
         step = Math.min(geometry.steps - 3, Math.floor(q)),
         u = q - step,
         moving = step % 2 === 0 ? 'r' : 'l',
         gap = Math.max(2, Math.floor(4 * this.visualScale));
       for (const side of ['l', 'r']) {
-        const index =
-            side === 'l'
-              ? 1 + 2 * Math.floor(step / 2)
-              : 2 * Math.floor((step + 1) / 2),
+        const index = side === 'l' ? 1 + 2 * Math.floor(step / 2) : 2 * Math.floor((step + 1) / 2),
           advance = side === moving ? phase(u, 0.55, 0.94) : 0,
           a = Math.min(geometry.steps, index + gap),
           b = Math.min(geometry.steps, index + gap + 2),
           at = a + (b - a) * advance;
-        required(actual.hands[side]).position[1] =
-          (geometry.height * at) / geometry.steps + 0.026;
+        required(actual.hands[side]).position[1] = (geometry.height * at) / geometry.steps + 0.026;
         required(actual.hands[side]).position[2] =
           (geometry.baseSpan ?? 0) +
-          ((geometry.ladderSpan - (geometry.baseSpan ?? 0)) * at) /
-            geometry.steps;
+          ((geometry.ladderSpan - (geometry.baseSpan ?? 0)) * at) / geometry.steps;
       }
     }
     this.root.updateWorldMatrix(true, true);
@@ -445,14 +395,10 @@ export class NativeClimbContactFit {
     this.kneeRise = actual.kneeRise;
     const evenCrest = geometry.steps > 2 && geometry.steps % 2 === 0,
       endFade = 0.76 - 0.32 / (geometry.steps - 2),
-      sourceClip =
-        geometry.steps > 2 &&
-        clip?.name === spec.name &&
-        this.bodyPhase.supports(clip);
+      sourceClip = geometry.steps > 2 && clip?.name === spec.name && this.bodyPhase.supports(clip);
     this.sourceWeight = sourceClip
       ? phase(fraction, 0.02, 0.12) *
-        (1 -
-          phase(fraction, evenCrest ? 0.82 : endFade, evenCrest ? 0.85 : 0.76))
+        (1 - phase(fraction, evenCrest ? 0.82 : endFade, evenCrest ? 0.85 : 0.76))
       : 0;
     if (sourceClip) {
       this.bodyPhase.apply(
@@ -466,8 +412,7 @@ export class NativeClimbContactFit {
     this.root.getWorldQuaternion(this.rootRotation);
     const contactWeight = sourceClip
       ? phase(fraction, 0.12, 0.12 + 0.32 / (geometry.steps - 2)) *
-        (1 -
-          phase(fraction, evenCrest ? 0.82 : endFade, evenCrest ? 0.85 : 0.76))
+        (1 - phase(fraction, evenCrest ? 0.82 : endFade, evenCrest ? 0.85 : 0.76))
       : 0;
     // Retain the authored pole/contact frame across the parity-aware crest.
     // Both contact frames and bend poles fade smoothly to the native landing.
@@ -476,10 +421,7 @@ export class NativeClimbContactFit {
         const foot = this.limbs.get(`foot_${side}`),
           contact = required(actual.feet[side]);
         if (foot) {
-          this.tilt.setFromAxisAngle(
-            this.current.set(1, 0, 0),
-            (-contact.tilt * Math.PI) / 180,
-          );
+          this.tilt.setFromAxisAngle(this.current.set(1, 0, 0), (-contact.tilt * Math.PI) / 180);
           this.authoredWorldRotation
             .copy(this.tilt)
             .multiply(foot.bindEndRotation)
@@ -488,10 +430,7 @@ export class NativeClimbContactFit {
               contact.restWeight,
             );
           this.authoredWorldRotation.premultiply(this.rootRotation);
-          foot.nativeEndRotation.slerp(
-            this.authoredWorldRotation,
-            contactWeight,
-          );
+          foot.nativeEndRotation.slerp(this.authoredWorldRotation, contactWeight);
         }
         const hand = this.limbs.get(`hand_${side}`);
         if (hand?.bindHandContactRotation) {
@@ -555,10 +494,8 @@ export class NativeClimbContactFit {
           continue;
         }
         this.footRoofWeight = required(actual.feet[side]).roofWeight;
-        const desired =
-            role === 'foot' ? actual.feet[side] : actual.hands[side],
-          native =
-            role === 'foot' ? reference.feet[side] : reference.hands[side],
+        const desired = role === 'foot' ? actual.feet[side] : actual.hands[side],
+          native = role === 'foot' ? reference.feet[side] : reference.hands[side],
           weight = role === 'hand' ? required(actual.hands[side]).weight : 1;
         this.target
           .fromArray(required(desired).position)
@@ -567,9 +504,7 @@ export class NativeClimbContactFit {
         if (role === 'hand' && weight < 0.999) {
           this.before
             .fromArray(required(native).position)
-            .sub(
-              this.origin.set(0, reference.root.height, reference.root.forward),
-            )
+            .sub(this.origin.set(0, reference.root.height, reference.root.forward))
             .divideScalar(this.visualScale);
           this.target.sub(this.before).multiplyScalar(weight);
           this.current.copy(limb.contact);

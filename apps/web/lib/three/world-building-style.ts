@@ -9,11 +9,7 @@ export function buildingRenderAppearance(b: WorldBuilding) {
   const selected = selectedBuildingStyle(b),
     roofFinish =
       b.roofFinish ??
-      (b.roof === 'thatch'
-        ? 'thatch'
-        : selected && b.roof === 'tile'
-          ? 'clay'
-          : undefined);
+      (b.roof === 'thatch' ? 'thatch' : selected && b.roof === 'tile' ? 'clay' : undefined);
   return buildingAppearance({ ...b, ...(roofFinish ? { roofFinish } : {}) });
 }
 export function buildingRenderProfile(b: WorldBuilding) {
@@ -22,16 +18,13 @@ export function buildingRenderProfile(b: WorldBuilding) {
   if (!style) {
     return profile;
   }
-  const floors =
-    style.upper === undefined ? profile.floors : style.upper ? 2 : 1;
+  const floors = style.upper === undefined ? profile.floors : style.upper ? 2 : 1;
   return {
     ...profile,
     wallHeight: style.height,
     floors,
     groundFloorHeight:
-      floors > 1
-        ? Math.min(profile.groundFloorHeight, style.height * 0.55)
-        : style.height,
+      floors > 1 ? Math.min(profile.groundFloorHeight, style.height * 0.55) : style.height,
   };
 }
 // Each building gets a view of the shared cache. No cached material is recoloured

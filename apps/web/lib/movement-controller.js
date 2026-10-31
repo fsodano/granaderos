@@ -186,8 +186,7 @@ export function createMovementController({ execute, commit, canMove }) {
         intent &&
         intent.action.type === action.type &&
         intent.action.unitId === action.unitId &&
-        JSON.stringify(intent.action.unitIds) ===
-          JSON.stringify(action.unitIds) &&
+        JSON.stringify(intent.action.unitIds) === JSON.stringify(action.unitIds) &&
         sameCell(intent.action, action) &&
         intent.action.movement === action.movement &&
         intent.action.movementIntent === action.movementIntent &&

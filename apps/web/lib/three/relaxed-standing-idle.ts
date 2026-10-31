@@ -21,10 +21,7 @@ type Grip = {
   rotation: Quaternion;
   pole: Vector3;
 };
-const cache = new WeakMap<
-  Object3D,
-  WeakMap<AnimationClip, Map<string, AnimationClip>>
->();
+const cache = new WeakMap<Object3D, WeakMap<AnimationClip, Map<string, AnimationClip>>>();
 const point = (node: Object3D) => node.getWorldPosition(new Vector3());
 const rotation = (node: Object3D) => node.getWorldQuaternion(new Quaternion());
 function skeletonCopy(node: Object3D): Object3D {
@@ -42,9 +39,7 @@ function turn(node: Object3D, from: Vector3, to: Vector3) {
   const world = new Quaternion()
     .setFromUnitVectors(from.normalize(), to.normalize())
     .multiply(rotation(node));
-  node.quaternion.copy(
-    rotation(required(node.parent)).invert().multiply(world),
-  );
+  node.quaternion.copy(rotation(required(node.parent)).invert().multiply(world));
   node.updateWorldMatrix(false, true);
 }
 function fitArm(arm: Arm, grip: Grip) {
@@ -73,14 +68,8 @@ function fitArm(arm: Arm, grip: Grip) {
     .addScaledVector(direction, along)
     .addScaledVector(pole.normalize(), rise);
   turn(arm.upper, middle.sub(start), elbow.sub(start));
-  turn(
-    arm.elbow,
-    point(arm.hand).sub(point(arm.elbow)),
-    target.sub(point(arm.elbow)),
-  );
-  arm.hand.quaternion.copy(
-    rotation(required(arm.hand.parent)).invert().multiply(grip.rotation),
-  );
+  turn(arm.elbow, point(arm.hand).sub(point(arm.elbow)), target.sub(point(arm.elbow)));
+  arm.hand.quaternion.copy(rotation(required(arm.hand.parent)).invert().multiply(grip.rotation));
   arm.hand.updateWorldMatrix(false, true);
   return true;
 }
@@ -102,13 +91,8 @@ export function relaxedStandingIdle(
   offhandBladeSocket?: string,
   neutralLegs = false,
 ) {
-  const blade =
-    semantic === 'stand.idle.blade' || semantic === 'stand.idle.knife';
-  if (
-    semantic !== 'stand.idle.long-gun' &&
-    semantic !== 'stand.idle.short-gun' &&
-    !blade
-  ) {
+  const blade = semantic === 'stand.idle.blade' || semantic === 'stand.idle.knife';
+  if (semantic !== 'stand.idle.long-gun' && semantic !== 'stand.idle.short-gun' && !blade) {
     return source;
   }
   const key = `${semantic}:${neutral.uuid}:${carry.uuid}:${offhandPistol}:${bladeSocket ?? ''}:${offhandBladeSocket ?? ''}:${neutralLegs}`;
@@ -159,31 +143,18 @@ export function relaxedStandingIdle(
   const gripRotation = (role: string, name?: string) => {
     const hand = body.getObjectByName(required(bones[role])),
       socket = name ? body.getObjectByName(name) : undefined;
-    return hand && socket
-      ? rotation(hand).invert().multiply(rotation(socket))
-      : undefined;
+    return hand && socket ? rotation(hand).invert().multiply(rotation(socket)) : undefined;
   };
-  const rightSocket = blade
-      ? gripRotation('handRight', bladeSocket)
-      : undefined,
+  const rightSocket = blade ? gripRotation('handRight', bladeSocket) : undefined,
     leftSocket =
-      blade && offhandBladeSocket
-        ? gripRotation('handLeft', offhandBladeSocket)
-        : undefined;
-  if (
-    blade &&
-    (!rightSocket || (offhandBladeSocket && !leftSocket) || offhandPistol)
-  ) {
+      blade && offhandBladeSocket ? gripRotation('handLeft', offhandBladeSocket) : undefined;
+  if (blade && (!rightSocket || (offhandBladeSocket && !leftSocket) || offhandPistol)) {
     variants.set(key, source);
     return source;
   }
   const upperBody: Object3D[] = [];
   let ancestor: Object3D | undefined = chest;
-  for (
-    ;
-    ancestor && ancestor !== hips;
-    ancestor = ancestor.parent ?? undefined
-  ) {
+  for (; ancestor && ancestor !== hips; ancestor = ancestor.parent ?? undefined) {
     upperBody.unshift(ancestor);
   }
   if (ancestor !== hips || upperBody.some((node) => !(node instanceof Bone))) {
@@ -232,12 +203,7 @@ export function relaxedStandingIdle(
     ...new Set([
       ...lowerBody,
       ...upperBody,
-      ...restingArms.flatMap((arm) => [
-        required(arm.upper.parent),
-        arm.upper,
-        arm.elbow,
-        arm.hand,
-      ]),
+      ...restingArms.flatMap((arm) => [required(arm.upper.parent), arm.upper, arm.elbow, arm.hand]),
       ...offhandFingers,
     ]),
   ];
@@ -270,12 +236,7 @@ export function relaxedStandingIdle(
     });
   const mixer = new AnimationMixer(model),
     donorMixer = new AnimationMixer(donor);
-  const sample = (
-    root: Object3D,
-    mixer: AnimationMixer,
-    clip: AnimationClip,
-    time: number,
-  ) => {
+  const sample = (root: Object3D, mixer: AnimationMixer, clip: AnimationClip, time: number) => {
     reset(root);
     mixer.stopAllAction();
     const action = mixer.clipAction(clip).reset().setLoop(LoopOnce, 1);
@@ -297,28 +258,17 @@ export function relaxedStandingIdle(
     longGun = semantic === 'stand.idle.long-gun';
   const offhandGrip = new Map<Object3D, Quaternion>();
   if (!longGun && offhandPistol) {
-    sample(
-      donor,
-      donorMixer,
-      mirroredClip(carry, body, required(mirroring)),
-      0,
-    );
+    sample(donor, donorMixer, mirroredClip(carry, body, required(mirroring)), 0);
     Object.assign(leftGrip, grip(donorLeft));
     for (const node of offhandFingers) {
-      offhandGrip.set(
-        node,
-        required(donor.getObjectByName(node.name)).quaternion.clone(),
-      );
+      offhandGrip.set(node, required(donor.getObjectByName(node.name)).quaternion.clone());
     }
   }
   const count = Math.max(1, Math.ceil(source.duration * 60)),
     times = [
       ...new Set(
         [
-          ...Array.from(
-            { length: count + 1 },
-            (_, i) => (source.duration * i) / count,
-          ),
+          ...Array.from({ length: count + 1 }, (_, i) => (source.duration * i) / count),
           ...source.tracks.flatMap((track) => Array.from(track.times)),
         ].map(Math.fround),
       ),
@@ -328,17 +278,10 @@ export function relaxedStandingIdle(
   let valid = true;
   for (const time of times) {
     sample(model, mixer, source, time);
-    sample(
-      donor,
-      donorMixer,
-      neutral,
-      (time / source.duration) * neutral.duration,
-    );
+    sample(donor, donorMixer, neutral, (time / source.duration) * neutral.duration);
     for (let i = 0; i < modified.length; i++) {
       const node = required(modified[i]);
-      node.quaternion.copy(
-        offhandGrip.get(node) ?? required(twins[i]).quaternion,
-      );
+      node.quaternion.copy(offhandGrip.get(node) ?? required(twins[i]).quaternion);
       // Armed guards have staggered feet. Admitted noncombat rest replaces
       // the complete Root/hip/leg/toe pose, including translation channels.
       if (positions.has(node)) {
@@ -357,9 +300,7 @@ export function relaxedStandingIdle(
         target.z += 0.035;
         // Leave a small elbow bend on both anatomies instead of extending the
         // neutral arm beyond its reach when the wrist moves outside the thigh.
-        const reach =
-          (start.distanceTo(middle) + middle.distanceTo(point(arm.hand))) *
-          0.96;
+        const reach = (start.distanceTo(middle) + middle.distanceTo(point(arm.hand))) * 0.96;
         target.sub(start).clampLength(0, reach).add(start);
         pole.x = start.x + side * Math.max(side * (pole.x - start.x), 0.1);
         const orientation = rotation(chest).multiply(
@@ -368,9 +309,7 @@ export function relaxedStandingIdle(
           axis = new Vector3(0, 1, 0).applyQuaternion(
             orientation
               .clone()
-              .multiply(
-                arm === right ? required(rightSocket) : required(leftSocket),
-              ),
+              .multiply(arm === right ? required(rightSocket) : required(leftSocket)),
           );
         // Native sabre and knife geometry runs along socket +Y. Keep its roll
         // from the carry grip and lower the point forward and away from the leg.
@@ -390,10 +329,7 @@ export function relaxedStandingIdle(
       }
     } else {
       const pivot = chest.localToWorld(rightGrip.position.clone()),
-        pitch = new Quaternion().setFromAxisAngle(
-          new Vector3(1, 0, 0),
-          longGun ? 0.55 : 0.6,
-        );
+        pitch = new Quaternion().setFromAxisAngle(new Vector3(1, 0, 0), longGun ? 0.55 : 0.6);
       const placed = (grip: Grip): Grip => {
         const position = chest.localToWorld(grip.position.clone()),
           orientation = rotation(chest).multiply(grip.rotation),
@@ -425,10 +361,7 @@ export function relaxedStandingIdle(
           valuesForBone.length &&
           valuesForBone
             .slice(-4)
-            .reduce(
-              (sum, value, index) => sum + value * required(q.toArray()[index]),
-              0,
-            ) < 0
+            .reduce((sum, value, index) => sum + value * required(q.toArray()[index]), 0) < 0
             ? -1
             : 1;
       valuesForBone.push(q.x * sign, q.y * sign, q.z * sign, q.w * sign);
@@ -445,17 +378,10 @@ export function relaxedStandingIdle(
     variants.set(key, source);
     return source;
   }
-  const replacements = new Map<
-    string,
-    QuaternionKeyframeTrack | VectorKeyframeTrack
-  >(
+  const replacements = new Map<string, QuaternionKeyframeTrack | VectorKeyframeTrack>(
     modified.map((node) => [
       node.name + '.quaternion',
-      new QuaternionKeyframeTrack(
-        node.name + '.quaternion',
-        times,
-        required(values.get(node)),
-      ),
+      new QuaternionKeyframeTrack(node.name + '.quaternion', times, required(values.get(node))),
     ]),
   );
   for (const [node, row] of positions) {
@@ -467,10 +393,7 @@ export function relaxedStandingIdle(
   const result = new AnimationClip(
     source.name,
     source.duration,
-    [
-      ...source.tracks.filter((track) => !replacements.has(track.name)),
-      ...replacements.values(),
-    ],
+    [...source.tracks.filter((track) => !replacements.has(track.name)), ...replacements.values()],
     source.blendMode,
   );
   variants.set(key, result);

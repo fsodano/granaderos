@@ -1,20 +1,10 @@
 import { required } from './required';
-import {
-  worldWallRecords,
-  buildingWallAtPoint,
-  wallFrameRecords,
-} from './world-wall-records';
+import { worldWallRecords, buildingWallAtPoint, wallFrameRecords } from './world-wall-records';
 import { Quaternion, Vector3 } from 'three';
-import {
-  entranceFrame,
-  getBuildingProfile,
-} from '../../../../packages/game/building-profile.ts';
+import { entranceFrame, getBuildingProfile } from '../../../../packages/game/building-profile.ts';
 import { buildingAppearance } from '../../../../packages/game/building-appearance.ts';
 import { buildingStyle } from '../../../../packages/game/building-types.ts';
-import {
-  architectureFinish,
-  applyArchitectureFinish,
-} from './world-architecture-finish';
+import { architectureFinish, applyArchitectureFinish } from './world-architecture-finish';
 import { WorldBatch } from './world-geometry';
 import { illuminationAt } from './world-materials';
 import { buildingArtInset } from './world-building-placement';
@@ -34,9 +24,7 @@ export function postaPiers(
   materials: WorldMaterialSource,
   legacy = false,
 ) {
-  const walls = worldWallRecords(input).filter(
-      (tile) => tile.buildingId === b.id,
-    ),
+  const walls = worldWallRecords(input).filter((tile) => tile.buildingId === b.id),
     frame = entranceFrame({ ...b, walls: wallFrameRecords(walls) }),
     inset = buildingArtInset(b, input),
     profile = getBuildingProfile(b),
@@ -48,9 +36,7 @@ export function postaPiers(
     texture = '/art/architecture-plaster-v2.png',
     wall = materials.get(
       appearance['wallFinish'],
-      authored
-        ? { architectureRole: 'volume', texture }
-        : { colour: buildingStyle(b).wall },
+      authored ? { architectureRole: 'volume', texture } : { colour: buildingStyle(b).wall },
     ),
     stone = materials.get(
       'stone',
@@ -65,8 +51,7 @@ export function postaPiers(
     },
     trim = authored
       ? materials.get('posta-pier-coping', {
-          colour:
-            copingColours[appearance['wallFinish']] ?? copingColours['adobe'],
+          colour: copingColours[appearance['wallFinish']] ?? copingColours['adobe'],
         })
       : materials.get('trim', legacy ? { colour: buildingStyle(b).trim } : {}),
     rotation = new Quaternion().setFromAxisAngle(
@@ -101,11 +86,8 @@ export function postaPiers(
       light,
     );
   };
-  const shift = (
-      value: number,
-      inset: number,
-      axis: { x: number; y: number },
-    ) => value - (0.4 - inset) * (axis.x + axis.y),
+  const shift = (value: number, inset: number, axis: { x: number; y: number }) =>
+      value - (0.4 - inset) * (axis.x + axis.y),
     top = height - 3 / V,
     foot = Math.min(profile.plinthHeight / V, top * 0.35);
   const walking = (u: number, v: number, w: number, d: number) => {
@@ -133,31 +115,15 @@ export function postaPiers(
         continue;
       }
       const footU = inset === 0 ? u : shift(u, 0.27, frame.u),
-        footV =
-          inset === 0 ? (authored ? -0.095 : -0.145) : shift(0, 0.195, frame.v);
+        footV = inset === 0 ? (authored ? -0.095 : -0.145) : shift(0, 0.195, frame.v);
       if (authored && walking(footU, footV, 0.44, 0.59)) {
         continue;
       }
       if (inset === 0) {
-        box(
-          u,
-          authored ? -0.095 : -0.2,
-          (shaftTop + foot) * 0.5,
-          0.3,
-          shaftTop - foot,
-          0.49,
-        );
+        box(u, authored ? -0.095 : -0.2, (shaftTop + foot) * 0.5, 0.3, shaftTop - foot, 0.49);
         box(u, footV, foot * 0.5, 0.44, foot, 0.59, stone);
         box(u, authored ? -0.09 : -0.15, top - 1.25 / V, 0.4, 4.5 / V, 0.56);
-        box(
-          u,
-          authored ? -0.09 : -0.15,
-          top + 1.25 / V,
-          0.4,
-          0.5 / V,
-          0.56,
-          trim,
-        );
+        box(u, authored ? -0.09 : -0.15, top + 1.25 / V, 0.4, 0.5 / V, 0.56, trim);
       } else {
         box(
           shift(u, 0.34, frame.u),
@@ -167,23 +133,8 @@ export function postaPiers(
           shaftTop - foot,
           0.49,
         );
-        box(
-          shift(u, 0.27, frame.u),
-          shift(0, 0.195, frame.v),
-          foot * 0.5,
-          0.44,
-          foot,
-          0.59,
-          stone,
-        );
-        box(
-          shift(u, 0.29, frame.u),
-          shift(0, 0.21, frame.v),
-          top - 1.25 / V,
-          0.4,
-          4.5 / V,
-          0.56,
-        );
+        box(shift(u, 0.27, frame.u), shift(0, 0.195, frame.v), foot * 0.5, 0.44, foot, 0.59, stone);
+        box(shift(u, 0.29, frame.u), shift(0, 0.21, frame.v), top - 1.25 / V, 0.4, 4.5 / V, 0.56);
         box(
           shift(u, 0.29, frame.u),
           shift(0, 0.21, frame.v),

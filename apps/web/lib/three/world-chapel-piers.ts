@@ -1,19 +1,9 @@
 import { required } from './required';
-import {
-  worldWallRecords,
-  buildingWallAtPoint,
-  wallFrameRecords,
-} from './world-wall-records';
+import { worldWallRecords, buildingWallAtPoint, wallFrameRecords } from './world-wall-records';
 import { Group, Vector3 } from 'three';
-import {
-  entranceFrame,
-  getBuildingProfile,
-} from '../../../../packages/game/building-profile.ts';
+import { entranceFrame, getBuildingProfile } from '../../../../packages/game/building-profile.ts';
 import { buildingAppearance } from '../../../../packages/game/building-appearance.ts';
-import {
-  architectureFinish,
-  applyArchitectureFinish,
-} from './world-architecture-finish';
+import { architectureFinish, applyArchitectureFinish } from './world-architecture-finish';
 import { WorldBatch } from './world-geometry';
 import { illuminationAt } from './world-materials';
 import { buildingArtInset } from './world-building-placement';
@@ -39,18 +29,14 @@ export function chapelPiers(
   if (legacy && b.wallFinish === undefined) {
     return root;
   }
-  const walls = worldWallRecords(input).filter(
-      (tile) => tile.buildingId === b.id,
-    ),
+  const walls = worldWallRecords(input).filter((tile) => tile.buildingId === b.id),
     frame = entranceFrame({ ...b, walls: wallFrameRecords(walls) }),
     inset = buildingArtInset(b, input),
     V = 25.066666666666666,
     appearance = buildingAppearance(b),
     profile = getBuildingProfile(b),
     light = illuminationAt(input, b);
-  const recipe = required(
-      architectureFinish(appearance['wallFinish'], 'volume'),
-    ),
+  const recipe = required(architectureFinish(appearance['wallFinish'], 'volume')),
     texture = '/art/architecture-plaster-v2.png',
     wall = materials.get(appearance['wallFinish'], {
       architectureRole: 'volume',
@@ -162,10 +148,7 @@ export function chapelPiers(
         if (tile?.type !== 'wall') {
           continue;
         }
-        const footRect = supported(
-            tile,
-            rectangle(u - 0.21, -0.39, u + 0.21, 0.2),
-          ),
+        const footRect = supported(tile, rectangle(u - 0.21, -0.39, u + 0.21, 0.2)),
           radius = (0.5 / V) * 0.5;
         if (
           walking(
@@ -181,15 +164,9 @@ export function chapelPiers(
           continue;
         }
         box(batch, footRect, 0, foot, stone);
-        const shaft = supported(
-          tile,
-          rectangle(u - 0.14, -0.34, u + 0.14, 0.15),
-        );
+        const shaft = supported(tile, rectangle(u - 0.14, -0.34, u + 0.14, 0.15));
         box(batch, shaft, foot, capitalBottom, wall);
-        const capital = supported(
-          tile,
-          rectangle(u - 0.19, -0.37, u + 0.19, 0.19),
-        );
+        const capital = supported(tile, rectangle(u - 0.19, -0.37, u + 0.19, 0.19));
         box(batch, capital, capitalBottom, capitalTop - 0.5 / V, wall);
         box(batch, capital, capitalTop - 0.5 / V, capitalTop, coping);
         const support = {

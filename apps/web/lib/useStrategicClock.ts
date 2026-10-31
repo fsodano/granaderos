@@ -29,22 +29,15 @@ export function useStrategicClock(
   }));
   const arrivalPending = hasPendingArrivalDecision(state);
   const blocked = Boolean(
-    state.pendingBattle ||
-    state.pendingEncounter ||
-    state.defeated ||
-    arrivalPending,
+    state.pendingBattle || state.pendingEncounter || state.defeated || arrivalPending,
   );
   let current = control;
   if (control.campaign !== state) {
-    const reason = control.pending
-      ? strategicClockInterrupt(control.pending, state)
-      : null;
+    const reason = control.pending ? strategicClockInterrupt(control.pending, state) : null;
     current = {
       campaign: state,
       running: control.running && !blocked && !reason,
-      cause:
-        reason ??
-        (control.arrivalPending && !arrivalPending ? '' : control.cause),
+      cause: reason ?? (control.arrivalPending && !arrivalPending ? '' : control.cause),
       pending: null,
       arrivalPending,
     };

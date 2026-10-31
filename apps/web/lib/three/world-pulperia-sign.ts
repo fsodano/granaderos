@@ -1,8 +1,4 @@
-import {
-  worldWallRecords,
-  buildingWallAtPoint,
-  wallFrameRecords,
-} from './world-wall-records';
+import { worldWallRecords, buildingWallAtPoint, wallFrameRecords } from './world-wall-records';
 import { Group, Vector3 } from 'three';
 import { entranceFrame } from '../../../../packages/game/building-profile.ts';
 import { WorldBatch } from './world-geometry';
@@ -33,9 +29,7 @@ export function pulperiaSign(
   ) {
     return root;
   }
-  const walls = worldWallRecords(input).filter(
-      (tile) => tile.buildingId === b.id,
-    ),
+  const walls = worldWallRecords(input).filter((tile) => tile.buildingId === b.id),
     frame = entranceFrame({ ...b, walls: wallFrameRecords(walls) }),
     V = 25.066666666666666;
   const anchor = Math.max(0.4, frame.doorU - 1.35),
@@ -134,16 +128,7 @@ export function pulperiaSign(
     );
   };
   feature('board', (batch) =>
-    box(
-      batch,
-      u0,
-      front - depth * 0.5,
-      u1,
-      front + depth * 0.5,
-      bottom,
-      top,
-      board,
-    ),
+    box(batch, u0, front - depth * 0.5, u1, front + depth * 0.5, bottom, top, board),
   );
   // Both thin timber faces carry the same retained marks, so the plaque
   // remains legible when the real building faces the opposite direction.
@@ -205,26 +190,8 @@ export function pulperiaSign(
       v0 = front - stroke / (2 * T),
       v1 = front + stroke / (2 * T),
       rail = anchorY - 4 / V;
-    box(
-      batch,
-      anchor - half,
-      v0,
-      anchor + half,
-      v1,
-      anchorY - 10 / V,
-      anchorY,
-      bracket,
-    );
-    box(
-      batch,
-      anchor,
-      v0,
-      center,
-      v1,
-      rail - stroke * 0.5,
-      rail + stroke * 0.5,
-      bracket,
-    );
+    box(batch, anchor - half, v0, anchor + half, v1, anchorY - 10 / V, anchorY, bracket);
+    box(batch, anchor, v0, center, v1, rail - stroke * 0.5, rail + stroke * 0.5, bracket);
     box(batch, center - half, v0, center + half, v1, top, rail, bracket);
     // A short return joins the bracket to the actual porch fascia.
     box(

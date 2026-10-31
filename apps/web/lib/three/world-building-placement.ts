@@ -52,18 +52,13 @@ export function buildingArtInset(b: WorldBuilding, input: WorldInput) {
       return 0.4;
     }
     const walls = input.terrain.tiles.filter(
-        (tile) =>
-          tile.buildingId === b.id &&
-          ['wall', 'door', 'window'].includes(tile.type),
+        (tile) => tile.buildingId === b.id && ['wall', 'door', 'window'].includes(tile.type),
       ),
       frame = entranceFrame({ ...b, walls });
     if (
       [0, frame.width].some((u) => {
         const p = frame.at(u, 0);
-        return (
-          walls.find((tile) => tile.x === p.x && tile.y === p.y)?.type !==
-          'wall'
-        );
+        return walls.find((tile) => tile.x === p.x && tile.y === p.y)?.type !== 'wall';
       })
     ) {
       return 0.4;
@@ -116,10 +111,7 @@ export function buildingFloorRectangles(
         tile.x === x &&
         tile.y === y &&
         ['wall', 'door', 'window'].includes(tile.type) &&
-        (x === b.x ||
-          x === b.x + b.width - 1 ||
-          y === b.y ||
-          y === b.y + b.height - 1),
+        (x === b.x || x === b.x + b.width - 1 || y === b.y || y === b.y + b.height - 1),
     );
   if (wall(cell.x - 1, cell.y)) {
     rect.minX = (cell.x - 1) * T + halfWall;

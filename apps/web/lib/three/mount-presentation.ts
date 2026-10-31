@@ -4,18 +4,11 @@ import { spriteAppearance } from '../../../../packages/game/sprite-appearances.t
 
 /** Admission must cover both sides of a successful mount-state change.
  * The helper cannot infer or disclose a hidden rider's preparation. */
-export function admittedMountTransitions(
-  frames: readonly BattlePresentationFrame[],
-) {
+export function admittedMountTransitions(frames: readonly BattlePresentationFrame[]) {
   const result = frames.map((frame) => ({ ...frame }));
   for (let index = 0; index < frames.length; index++) {
     const start = frames[index];
-    if (
-      !start ||
-      start.type !== 'prepare' ||
-      start.action !== 'mount' ||
-      !start.unitId
-    ) {
+    if (!start || start.type !== 'prepare' || start.action !== 'mount' || !start.unitId) {
       continue;
     }
     let endIndex = index + 1;
@@ -64,10 +57,7 @@ export function admittedMountTransitions(
 
 /** One protected native preparation contains the complete physical move.
  * The result commits rules normally and holds the final idle pose. */
-export function mountFrameDuration(
-  frame: BattlePresentationFrame,
-  requested: number,
-) {
+export function mountFrameDuration(frame: BattlePresentationFrame, requested: number) {
   if (frame.type !== 'prepare' || !frame.mountAction || !frame.unitId) {
     return requested;
   }
@@ -75,9 +65,6 @@ export function mountFrameDuration(
   if (!unit) {
     return requested;
   }
-  const clip = nativeAnimationClip(
-    spriteAppearance(unit),
-    `life.${frame.mountAction}`,
-  );
+  const clip = nativeAnimationClip(spriteAppearance(unit), `life.${frame.mountAction}`);
   return Math.max(requested, clip.duration * 1000);
 }

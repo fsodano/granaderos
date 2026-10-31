@@ -1,8 +1,5 @@
 /** Pure visual time mapping. No animation event is a gameplay command. */
-import {
-  ACTION_PRESENTATION_DURATION_SCALE,
-  actionPresentationDuration,
-} from './action-pace';
+import { ACTION_PRESENTATION_DURATION_SCALE, actionPresentationDuration } from './action-pace';
 export type AnimationClockClip = {
   duration: number;
   loop: boolean;
@@ -52,18 +49,9 @@ export type AnimationClockSample = {
   cueControlsAction: boolean;
   workIndex?: number;
 };
-const clamp = (value: number, min: number, max: number) =>
-  Math.max(min, Math.min(max, value));
-const wrap = (time: number, duration: number) =>
-  ((time % duration) + duration) % duration;
-const locomotion = new Set([
-  'walk',
-  'run',
-  'crawl',
-  'strafeLeft',
-  'strafeRight',
-  'artilleryMove',
-]);
+const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
+const wrap = (time: number, duration: number) => ((time % duration) + duration) % duration;
+const locomotion = new Set(['walk', 'run', 'crawl', 'strafeLeft', 'strafeRight', 'artilleryMove']);
 const nativeActions = new Set([
   'heal',
   'reload',
@@ -76,8 +64,7 @@ const nativeActions = new Set([
   'throwTorch',
   'boleadoras',
 ]);
-export const usesNativeActionTiming = (action: string) =>
-  nativeActions.has(action);
+export const usesNativeActionTiming = (action: string) => nativeActions.has(action);
 
 /** A recorded phase and the body clock share the same native pose interval. */
 export function animationPhaseRange(
@@ -148,9 +135,7 @@ export function animationPhaseRanges(
   }
   const duration = clip.duration,
     ready = ((clip.markers?.['contact'] ?? duration * 0.45) * 0.45) / duration;
-  const ranges = work.map(
-    ({ from, to }) => [clamp(from, 0, 1), clamp(to, from, 1)] as const,
-  );
+  const ranges = work.map(({ from, to }) => [clamp(from, 0, 1), clamp(to, from, 1)] as const);
   const first = ranges[0];
   if (!first) {
     return [animationPhaseRange(clip, action, phase, healInterval)];
@@ -159,20 +144,12 @@ export function animationPhaseRanges(
   if (phase === 'prepare') {
     return [[first[0] * duration, split * duration] as const];
   }
-  const remaining =
-    phase === 'result'
-      ? [[split, first[1]] as const, ...ranges.slice(1)]
-      : ranges;
-  return remaining.map(
-    ([from, to]) => [from * duration, to * duration] as const,
-  );
+  const remaining = phase === 'result' ? [[split, first[1]] as const, ...ranges.slice(1)] : ranges;
+  return remaining.map(([from, to]) => [from * duration, to * duration] as const);
 }
 
 /** A queued gesture must not change the clock of movement or a life state. */
-export function cueControlsAction(
-  action: string,
-  cue?: Pick<AnimationClockCue, 'action'>,
-) {
+export function cueControlsAction(action: string, cue?: Pick<AnimationClockCue, 'action'>) {
   return Boolean(cue && cue.action === action);
 }
 
@@ -209,15 +186,10 @@ export function sampleAnimationTime({
   if (locomotion.has(action) && motion?.moving && stride && stride > 0) {
     // Accumulated distance survives the brief stationary boundary between paid
     // tiles. It also handles different cardinal and diagonal segment speeds.
-    const sign =
-      motion.signedForwardSpeed !== undefined && motion.signedForwardSpeed < 0
-        ? -1
-        : 1;
+    const sign = motion.signedForwardSpeed !== undefined && motion.signedForwardSpeed < 0 ? -1 : 1;
     const distance =
       motion.signedDistance ??
-      (motion.elapsedDistance !== undefined
-        ? motion.elapsedDistance * sign
-        : undefined);
+      (motion.elapsedDistance !== undefined ? motion.elapsedDistance * sign : undefined);
     const seconds =
       distance !== undefined
         ? distance / stride
@@ -247,22 +219,11 @@ export function sampleAnimationTime({
       !locomotion.has(action) &&
       action !== 'climbUp' &&
       action !== 'climbDown';
-    const fallback = paced
-      ? actionPresentationDuration(duration * 1000)
-      : duration * 1000;
-    const span = Math.max(
-      0.001,
-      (cue.phaseDurationMs ?? cue.durationMs ?? fallback) / 1000,
-    );
+    const fallback = paced ? actionPresentationDuration(duration * 1000) : duration * 1000;
+    const span = Math.max(0.001, (cue.phaseDurationMs ?? cue.durationMs ?? fallback) / 1000);
     const elapsed = Math.max(0, (now - start) / 1000),
       fraction = clamp(elapsed / span, 0, 1);
-    const ranges = animationPhaseRanges(
-      clip,
-      action,
-      phase,
-      cue.work,
-      cue.healInterval,
-    );
+    const ranges = animationPhaseRanges(clip, action, phase, cue.work, cue.healInterval);
     const length = ranges.reduce((sum, [begin, end]) => sum + end - begin, 0);
     const last = ranges.at(-1);
     if (!last) {
@@ -288,8 +249,7 @@ export function sampleAnimationTime({
           ? 0
           : rangeIndex
         : undefined;
-    const intermediate =
-      hasPhase && ['prepare', 'contact', 'projectile'].includes(phase);
+    const intermediate = hasPhase && ['prepare', 'contact', 'projectile'].includes(phase);
     return {
       ...result,
       time: clamp(time, 0, duration),
@@ -307,8 +267,7 @@ export function sampleAnimationTime({
   // Unframed finite actions use the same pace. Idle loops and distance-driven
   // locomotion retain their clocks; explicit cue spans were handled above.
   const playbackRate = clip.playbackRate ?? 1;
-  const rate =
-    Number.isFinite(playbackRate) && playbackRate > 0 ? playbackRate : 1;
+  const rate = Number.isFinite(playbackRate) && playbackRate > 0 ? playbackRate : 1;
   const paced =
     !clip.loop &&
     action !== 'idle' &&

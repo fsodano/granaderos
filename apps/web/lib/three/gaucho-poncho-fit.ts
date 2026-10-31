@@ -7,10 +7,7 @@ const nativeTriangles = [1218, 414, 154];
 /** Return a smooth window and its derivative in model metres. */
 function ramp(low: number, high: number, value: number): [number, number] {
   const t = Math.max(0, Math.min(1, (value - low) / (high - low)));
-  return [
-    t * t * (3 - 2 * t),
-    t > 0 && t < 1 ? (6 * t * (1 - t)) / (high - low) : 0,
-  ];
+  return [t * t * (3 - 2 * t), t > 0 && t < 1 ? (6 * t * (1 - t)) / (high - low) : 0];
 }
 
 /** Fit only the retained native poncho. Its constant atlas coordinate separates
@@ -47,11 +44,7 @@ export function fitGauchoPoncho(root: Object3D, appearance: string) {
       unowned = new Set<number>();
     let triangles = 0;
     for (let offset = 0; offset < index.count; offset += 3) {
-      const triangle = [
-        index.getX(offset),
-        index.getX(offset + 1),
-        index.getX(offset + 2),
-      ];
+      const triangle = [index.getX(offset), index.getX(offset + 1), index.getX(offset + 2)];
       const poncho = triangle.every(
         (vertex) =>
           Math.abs(uv.getX(vertex) - 0.015625) < 1e-7 &&
@@ -95,8 +88,7 @@ export function fitGauchoPoncho(root: Object3D, appearance: string) {
         reliefSlope = Math.min(1, excess / 0.02);
       const offset = 0.9 * height * width * relief;
       const dx = -0.9 * height * sideSlope * Math.sign(x) * relief;
-      const dy =
-        0.9 * (lowerSlope * (1 - upper) - lower * upperSlope) * width * relief;
+      const dy = 0.9 * (lowerSlope * (1 - upper) - lower * upperSlope) * width * relief;
       const dz = 1 - 0.9 * height * width * reliefSlope;
       position.setZ(vertex, z + offset);
       // Transform the authored normal with the inverse-transpose Jacobian.

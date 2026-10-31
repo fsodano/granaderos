@@ -18,10 +18,7 @@ import {
   type MouseEvent,
 } from 'react';
 import { equipmentEndpoint } from '../../../packages/game/tactical-inventory.js';
-import {
-  createEquipmentInteraction,
-  type EquipmentInteraction,
-} from './equipment-interaction';
+import { createEquipmentInteraction, type EquipmentInteraction } from './equipment-interaction';
 import EquipmentCursor from './EquipmentCursor';
 
 const Context = createContext<EquipmentInteraction | null>(null);
@@ -63,26 +60,16 @@ function EquipmentInteractionRoot({ children }: { children: ReactNode }) {
     createElement(EquipmentCursor, { store }),
   );
 }
-export function EquipmentInteractionProvider({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export function EquipmentInteractionProvider({ children }: { children: ReactNode }) {
   const shared = useContext(Context);
-  return shared
-    ? children
-    : createElement(EquipmentInteractionRoot, null, children);
+  return shared ? children : createElement(EquipmentInteractionRoot, null, children);
 }
 export function useEquipmentInteraction() {
   const store = useContext(Context);
   if (!store) {
     throw Error('El cursor necesita un ámbito de equipo.');
   }
-  const current = useSyncExternalStore(
-    store.subscribe,
-    store.getSnapshot,
-    serverSnapshot,
-  );
+  const current = useSyncExternalStore(store.subscribe, store.getSnapshot, serverSnapshot);
   return { store, current };
 }
 
@@ -97,11 +84,7 @@ export function useEquipmentDrag(
     id = useId();
   const [local] = useState(() => createEquipmentInteraction(id)),
     store = shared ?? local;
-  const current = useSyncExternalStore(
-    store.subscribe,
-    store.getSnapshot,
-    serverSnapshot,
-  );
+  const current = useSyncExternalStore(store.subscribe, store.getSnapshot, serverSnapshot);
   const owner = useRef(Symbol('equipment-source')),
     pointerId = useRef<number | null>(null),
     suppressClick = useRef(false),
@@ -130,15 +113,7 @@ export function useEquipmentDrag(
       element.dataset['equipmentUnit'] === String(unit.id)
         ? (element.dataset['equipmentSlot'] ?? null)
         : null;
-    store.drag(
-      battle,
-      unit,
-      owner.current,
-      event.clientX,
-      event.clientY,
-      destinationId,
-      fresh,
-    );
+    store.drag(battle, unit, owner.current, event.clientX, event.clientY, destinationId, fresh);
   };
   const handlers = (
     slotId: string,
@@ -154,8 +129,7 @@ export function useEquipmentDrag(
     'data-equipment-unit': String(unit.id),
     'data-equipment-scope': store.scope,
     'aria-pressed': Boolean(
-      current?.selection?.unitId === String(unit.id) &&
-      current.selection.sourceId === slotId,
+      current?.selection?.unitId === String(unit.id) && current.selection.sourceId === slotId,
     ),
     onPointerDown: (event: PointerEvent<HTMLElement>) => {
       if (
@@ -168,16 +142,7 @@ export function useEquipmentDrag(
         return;
       }
       suppressClick.current = false;
-      if (
-        store.press(
-          unit,
-          slotId,
-          owner.current,
-          event.clientX,
-          event.clientY,
-          event.shiftKey,
-        )
-      ) {
+      if (store.press(unit, slotId, owner.current, event.clientX, event.clientY, event.shiftKey)) {
         pickupShift.current = event.shiftKey;
         pointerId.current = event.pointerId;
         event.currentTarget.setPointerCapture(event.pointerId);
@@ -214,11 +179,7 @@ export function useEquipmentDrag(
         pickupShift.current = null;
       }
       if (!disabled && result.action) {
-        store.dispatch(
-          { ...result.action, unitId: String(unit.id) },
-          onOrder,
-          owner.current,
-        );
+        store.dispatch({ ...result.action, unitId: String(unit.id) }, onOrder, owner.current);
       }
     },
     onPointerCancel: (event: PointerEvent) => {
@@ -248,21 +209,14 @@ export function useEquipmentDrag(
     onClick: selectOnClick
       ? (event: MouseEvent) => {
           event.stopPropagation();
-          const all =
-            event.detail === 0
-              ? event.shiftKey
-              : (pickupShift.current ?? event.shiftKey);
+          const all = event.detail === 0 ? event.shiftKey : (pickupShift.current ?? event.shiftKey);
           pickupShift.current = null;
           if (disabled) {
             return;
           }
           const action = store.click(battle, unit, slotId, owner.current, all);
           if (action) {
-            store.dispatch(
-              { ...action, unitId: String(unit.id) },
-              onOrder,
-              owner.current,
-            );
+            store.dispatch({ ...action, unitId: String(unit.id) }, onOrder, owner.current);
           }
         }
       : undefined,

@@ -27,11 +27,7 @@ import {
   type ClipSpec,
   type EquipmentSpec,
 } from './actor-assets';
-import {
-  mirroredClip,
-  fitMirroredSockets,
-  withMirroredProps,
-} from './clip-mirroring';
+import { mirroredClip, fitMirroredSockets, withMirroredProps } from './clip-mirroring';
 import { sampleAnimationTime, cueControlsAction } from './animation-clock';
 import { TILE_METRES } from './projection';
 import { NativeGaitTransitionSupport } from './gait-transition-support';
@@ -86,9 +82,7 @@ function shareSkeletons(root: Object3D) {
           other.bones.every(
             (bone, index) =>
               bone === source.bones[index] &&
-              required(other.boneInverses[index]).equals(
-                required(source.boneInverses[index]),
-              ),
+              required(other.boneInverses[index]).equals(required(source.boneInverses[index])),
           )),
     );
     if (shared) {
@@ -187,10 +181,7 @@ export class ActorRuntime {
         node.receiveShadow = true;
         node.frustumCulled = false;
         const targets = node.morphTargetDictionary;
-        if (
-          targets?.['cloth_prone'] !== undefined &&
-          targets?.['cloth_crouched'] !== undefined
-        ) {
+        if (targets?.['cloth_prone'] !== undefined && targets?.['cloth_crouched'] !== undefined) {
           this.clothMeshes.push({
             mesh: node,
             prone: targets['cloth_prone'],
@@ -212,34 +203,21 @@ export class ActorRuntime {
       asset.appearance.parts?.['footwear']?.replace('{lod}', String(asset.lod)),
     );
     this.patientFit = new NativePatientContactFit(this.model, this.root);
-    this.proneArmSupport = new NativeProneArmBlendSupport(
-      this.model,
-      this.root,
-    );
+    this.proneArmSupport = new NativeProneArmBlendSupport(this.model, this.root);
     this.climbFit = new NativeClimbContactFit(this.model, this.root);
-    const walkingClip = asset.animation.animations.find(
-        (clip) => clip.name === 'stand.walk.blade',
-      ),
-      walkingSpec = asset.clips.find(
-        (clip) => clip.name === 'stand.walk.blade',
-      ),
-      walkingSpeed =
-        walkingSpec?.nativeStrideSpeed ?? walkingSpec?.locomotionSpeed;
+    const walkingClip = asset.animation.animations.find((clip) => clip.name === 'stand.walk.blade'),
+      walkingSpec = asset.clips.find((clip) => clip.name === 'stand.walk.blade'),
+      walkingSpeed = walkingSpec?.nativeStrideSpeed ?? walkingSpec?.locomotionSpeed;
     this.meleeFit = new NativeMeleeContactFit(
       this.model,
       this.root,
       asset.appearance.parts?.['footwear']?.replace('{lod}', String(asset.lod)),
       false,
-      walkingClip && walkingSpeed
-        ? { clip: walkingClip, speed: walkingSpeed }
-        : undefined,
+      walkingClip && walkingSpeed ? { clip: walkingClip, speed: walkingSpeed } : undefined,
     );
     fitMirroredSockets(
       this.model,
-      asset.appearance.sockets ??
-        asset.manifest.sockets ??
-        asset.manifest.rig?.sockets ??
-        {},
+      asset.appearance.sockets ?? asset.manifest.sockets ?? asset.manifest.rig?.sockets ?? {},
     );
     this.mixer = new AnimationMixer(this.model);
     if (asset.garments) {
@@ -259,10 +237,7 @@ export class ActorRuntime {
             }
             return match;
           });
-          mesh.bind(
-            new Skeleton(bones, mesh.skeleton.boneInverses),
-            mesh.bindMatrix,
-          );
+          mesh.bind(new Skeleton(bones, mesh.skeleton.boneInverses), mesh.bindMatrix);
         }
         mesh.visible = false;
         mesh.castShadow = true;
@@ -302,10 +277,7 @@ export class ActorRuntime {
     }
     return new Set(clips);
   }
-  private setRotation(
-    object: Object3D,
-    rotation: readonly number[] | undefined,
-  ) {
+  private setRotation(object: Object3D, rotation: readonly number[] | undefined) {
     const [x = 0, y = 0, z = 0] = rotation ?? [];
     object.rotation.set(x, y, z);
   }
@@ -315,8 +287,7 @@ export class ActorRuntime {
       this.asset.manifest.sockets ??
       this.asset.manifest.rig?.sockets ??
       {};
-    const spec: SocketSpec | undefined =
-      sockets[grip ? `${role}_${grip}` : role] ?? sockets[role];
+    const spec: SocketSpec | undefined = sockets[grip ? `${role}_${grip}` : role] ?? sockets[role];
     return spec
       ? this.model.getObjectByName(spec.node)
       : this.bones.get(this.asset.manifest.bones[role] ?? role);
@@ -327,20 +298,11 @@ export class ActorRuntime {
       return;
     }
     this.clothesKey = key;
-    const garmentSpecs =
-      this.asset.manifest.garments?.[this.asset.appearance.gender]?.items ?? {};
-    const owned = Object.values(visual.garments).filter((id): id is string =>
-      Boolean(id),
-    );
-    const hidden = new Set(
-      owned.flatMap((id) => garmentSpecs[id]?.hideAppearanceParts ?? []),
-    );
-    for (const [part, pattern] of Object.entries(
-      this.asset.appearance.parts ?? {},
-    )) {
-      const node = this.model.getObjectByName(
-        pattern.replace('{lod}', String(this.asset.lod)),
-      );
+    const garmentSpecs = this.asset.manifest.garments?.[this.asset.appearance.gender]?.items ?? {};
+    const owned = Object.values(visual.garments).filter((id): id is string => Boolean(id));
+    const hidden = new Set(owned.flatMap((id) => garmentSpecs[id]?.hideAppearanceParts ?? []));
+    for (const [part, pattern] of Object.entries(this.asset.appearance.parts ?? {})) {
+      const node = this.model.getObjectByName(pattern.replace('{lod}', String(this.asset.lod)));
       if (node) {
         node.visible = !hidden.has(part);
       }
@@ -363,14 +325,9 @@ export class ActorRuntime {
       if (!isMesh(node)) {
         return;
       }
-      const materials = Array.isArray(node.material)
-        ? node.material
-        : [node.material];
+      const materials = Array.isArray(node.material) ? node.material : [node.material];
       const updated = materials.map((material) => {
-        if (
-          material.name !== skinName &&
-          material.userData['role'] !== 'skin'
-        ) {
+        if (material.name !== skinName && material.userData['role'] !== 'skin') {
           return material;
         }
         let owned = material;
@@ -383,36 +340,25 @@ export class ActorRuntime {
             owned,
             this.asset.manifest.skinTones?.[visual.skin] ??
               { light: '#d5a788', brown: '#965d40', dark: '#51301f' }[
-                visual.skin === 'brown'
-                  ? 'brown'
-                  : visual.skin === 'dark'
-                    ? 'dark'
-                    : 'light'
+                visual.skin === 'brown' ? 'brown' : visual.skin === 'dark' ? 'dark' : 'light'
               ],
           );
         }
         return owned;
       });
-      node.material = Array.isArray(node.material)
-        ? updated
-        : required(updated[0]);
+      node.material = Array.isArray(node.material) ? updated : required(updated[0]);
     });
   }
   private itemSpec(id: string) {
-    return this.asset.manifest.equipment.items[
-      this.asset.manifest.equipment.aliases?.[id] ?? id
-    ];
+    return this.asset.manifest.equipment.items[this.asset.manifest.equipment.aliases?.[id] ?? id];
   }
   private loadingItem(visual: ActorVisual, index = 0) {
-    const reference =
-      visual.action === 'reload' ? visual.cue?.work?.[index]?.hand : undefined;
+    const reference = visual.action === 'reload' ? visual.cue?.work?.[index]?.hand : undefined;
     if (!reference) {
       return;
     }
     const item = visual.items.find(
-      (item) =>
-        item.reference === reference &&
-        ['handRight', 'handLeft'].includes(item.socket),
+      (item) => item.reference === reference && ['handRight', 'handLeft'].includes(item.socket),
     );
     if (!item) {
       throw Error(`Missing admitted loading hand: ${visual.key}:${reference}`);
@@ -442,8 +388,7 @@ export class ActorRuntime {
       if (!source) {
         throw Error(`Missing equipment geometry: ${spec.node}`);
       }
-      const role =
-        item.socket === 'hip' ? (spec.stowedSocket ?? 'hipLeft') : item.socket;
+      const role = item.socket === 'hip' ? (spec.stowedSocket ?? 'hipLeft') : item.socket;
       const socket = this.socket(
         role,
         ['handRight', 'handLeft'].includes(role) ? spec.grip : undefined,
@@ -457,8 +402,7 @@ export class ActorRuntime {
       this.setRotation(object, spec.rotation);
       object.scale.setScalar(spec.scale ?? 1);
       for (const fitting of Object.values(item.fittings ?? {})) {
-        const fit =
-          this.asset.manifest.equipment.fittings?.[fitting.fittingPattern];
+        const fit = this.asset.manifest.equipment.fittings?.[fitting.fittingPattern];
         if (!fit) {
           throw Error(`Missing fitting: ${fitting.fittingPattern}`);
         }
@@ -529,14 +473,9 @@ export class ActorRuntime {
     if (!spec) {
       return;
     }
-    const free = new Set(
-        spec.freeHands ?? gestureHands[spec.gesture ?? ''] ?? [],
-      ),
+    const free = new Set(spec.freeHands ?? gestureHands[spec.gesture ?? ''] ?? []),
       propHands = new Set<HandRole>();
-    if (
-      this.visual.action === 'reload' &&
-      this.visual.equipment === 'short-gun'
-    ) {
+    if (this.visual.action === 'reload' && this.visual.equipment === 'short-gun') {
       free.add(this.actionHand === 'handLeft' ? 'handRight' : 'handLeft');
     }
     for (const cue of spec.propCues ?? []) {
@@ -549,24 +488,18 @@ export class ActorRuntime {
     }
     for (const object of this.attachedEquipment) {
       const hand = required(this.equipmentMetadata.get(object)).hand,
-        item = this.itemSpec(
-          required(this.equipmentMetadata.get(object)).itemId,
-        );
+        item = this.itemSpec(required(this.equipmentMetadata.get(object)).itemId);
       if (!item) {
         continue;
       }
       const held = hand === 'handRight' || hand === 'handLeft';
       const weapon =
-        ['rifle', 'pistol', 'sabre', 'knife', 'lance'].includes(
-          item.category ?? '',
-        ) || ['rifle', 'pistol', 'sabre'].includes(item.grip ?? '');
+        ['rifle', 'pistol', 'sabre', 'knife', 'lance'].includes(item.category ?? '') ||
+        ['rifle', 'pistol', 'sabre'].includes(item.grip ?? '');
       const handProp = spec.handProps?.find(
-        (prop) =>
-          prop.hand === hand && prop.categories.includes(item.category ?? ''),
+        (prop) => prop.hand === hand && prop.categories.includes(item.category ?? ''),
       );
-      const release = handProp?.untilMarker
-        ? spec.markers?.[handProp.untilMarker]
-        : undefined;
+      const release = handProp?.untilMarker ? spec.markers?.[handProp.untilMarker] : undefined;
       if (handProp?.untilMarker && !Number.isFinite(release)) {
         throw Error(`Missing held prop marker: ${handProp.untilMarker}`);
       }
@@ -575,21 +508,14 @@ export class ActorRuntime {
       object.visible = release === undefined || time < release;
       // Active tools and supplies remain visible for their own gestures. Timed
       // props claim their hand even when the current item is a tool.
-      const patientSupply =
-        this.patientFit.suppliesStowed && item.node === 'item_medkits';
+      const patientSupply = this.patientFit.suppliesStowed && item.node === 'item_medkits';
       const stow =
         held &&
         (patientSupply ||
-          ((hand === 'handRight' || hand === 'handLeft') &&
-            propHands.has(hand)) ||
-          (weapon &&
-            (hand === 'handRight' || hand === 'handLeft') &&
-            free.has(hand) &&
-            !handProp));
+          ((hand === 'handRight' || hand === 'handLeft') && propHands.has(hand)) ||
+          (weapon && (hand === 'handRight' || hand === 'handLeft') && free.has(hand) && !handProp));
       const stowItem = stow
-        ? spec.stowItems?.find((fitting) =>
-            fitting.categories.includes(item.category ?? ''),
-          )
+        ? spec.stowItems?.find((fitting) => fitting.categories.includes(item.category ?? ''))
         : undefined;
       const role = stow
         ? (stowItem?.socket ?? item.stowedSocket ?? 'hipLeft')
@@ -626,9 +552,7 @@ export class ActorRuntime {
         }
       }
       const grip =
-        !stow && held
-          ? spec.gripOffsets?.find((offset) => offset.hand === hand)
-          : undefined;
+        !stow && held ? spec.gripOffsets?.find((offset) => offset.hand === hand) : undefined;
       if (grip?.keys.length) {
         let position = required(grip.keys[0]).position;
         for (let index = 1; index < grip.keys.length; index++) {
@@ -640,8 +564,7 @@ export class ActorRuntime {
           }
           const fraction = Math.max(0, (time - a.time) / (b.time - a.time));
           position = a.position.map(
-            (value, axis) =>
-              value + (required(b.position[axis]) - value) * fraction,
+            (value, axis) => value + (required(b.position[axis]) - value) * fraction,
           );
           break;
         }
@@ -656,9 +579,7 @@ export class ActorRuntime {
     if (!cueControlsAction(visual.action, visual.cue)) {
       visual = this.withoutCue(visual);
     }
-    const cueKey = visual.cue
-      ? `${visual.cue.id}:${visual.cue.phase ?? ''}`
-      : '';
+    const cueKey = visual.cue ? `${visual.cue.id}:${visual.cue.phase ?? ''}` : '';
     if (cueKey && this.completedCues.has(cueKey)) {
       visual = this.restVisual(visual);
     }
@@ -671,9 +592,7 @@ export class ActorRuntime {
     const request = {
       action: visual.action,
       posture: visual.cue?.fromPosture ?? visual.posture,
-      mounted: visual.cue?.fromPosture
-        ? visual.cue.fromPosture === 'mounted'
-        : visual.mounted,
+      mounted: visual.cue?.fromPosture ? visual.cue.fromPosture === 'mounted' : visual.mounted,
       equipment: visual.equipment,
     };
     const spec = resolveActorAction(request);
@@ -682,11 +601,7 @@ export class ActorRuntime {
     }
     let workIndex: number | undefined;
     if (visual.action === 'reload' && visual.cue?.work?.length) {
-      const bound = boundClip(
-        this.asset.clips,
-        this.asset.animation.animations,
-        spec.clip,
-      );
+      const bound = boundClip(this.asset.clips, this.asset.animation.animations, spec.clip);
       workIndex = sampleAnimationTime({
         clip: { ...bound.spec, duration: bound.clip.duration },
         action: visual.action,
@@ -695,28 +610,16 @@ export class ActorRuntime {
       }).workIndex;
     }
     const loadingItem = this.loadingItem(visual, workIndex),
-      mainItem =
-        loadingItem ?? visual.items.find((item) => item.socket === 'handRight');
+      mainItem = loadingItem ?? visual.items.find((item) => item.socket === 'handRight');
     const itemSemantic =
-      (mainItem && this.itemSpec(mainItem.id)?.clipOverrides?.[spec.clip]) ??
-      spec.clip;
-    const barrel = loadingItem
-        ? (visual.cue?.work?.[workIndex ?? 0]?.barrel ?? 0)
-        : 0,
-      barrelClips = this.asset.clips.find(
-        (clip) => clip.name === itemSemantic,
-      )?.barrelClips;
+      (mainItem && this.itemSpec(mainItem.id)?.clipOverrides?.[spec.clip]) ?? spec.clip;
+    const barrel = loadingItem ? (visual.cue?.work?.[workIndex ?? 0]?.barrel ?? 0) : 0,
+      barrelClips = this.asset.clips.find((clip) => clip.name === itemSemantic)?.barrelClips;
     if (barrelClips && !barrelClips[barrel]) {
       throw Error(`Missing admitted loading barrel: ${visual.key}:${barrel}`);
     }
-    const semantic = selectActorClipVariant(
-      barrelClips?.[barrel] ?? itemSemantic,
-      visual.cue?.id,
-    );
-    const { spec: sourceSpec, clip: sourceClip } = boundLocomotionClip(
-      this.asset,
-      semantic,
-    );
+    const semantic = selectActorClipVariant(barrelClips?.[barrel] ?? itemSemantic, visual.cue?.id);
+    const { spec: sourceSpec, clip: sourceClip } = boundLocomotionClip(this.asset, semantic);
     const selectedHand = loadingItem?.socket ?? visual.cue?.hand ?? 'handRight';
     if (selectedHand !== 'handRight' && selectedHand !== 'handLeft') {
       throw Error('Loading item has no hand');
@@ -727,24 +630,17 @@ export class ActorRuntime {
         visual.equipment === 'short-gun' &&
         ['aim', 'fire', 'reload'].includes(visual.action);
     if (mirror && !this.asset.manifest.animationMirroring) {
-      throw Error(
-        `Missing left-hand animation mapping: ${this.asset.appearance.id}`,
-      );
+      throw Error(`Missing left-hand animation mapping: ${this.asset.appearance.id}`);
     }
     let resting = sourceClip;
     const leftItem = visual.items.find((item) => item.socket === 'handLeft'),
       leftBlade =
-        leftItem &&
-        ['sabre', 'knife'].includes(this.itemSpec(leftItem.id)?.category ?? '');
+        leftItem && ['sabre', 'knife'].includes(this.itemSpec(leftItem.id)?.category ?? '');
     const relaxedBlade =
       visual.relaxedIdle &&
       (semantic === 'stand.idle.blade' || semantic === 'stand.idle.knife') &&
       (!leftItem || leftBlade);
-    if (
-      semantic === 'stand.idle.long-gun' ||
-      semantic === 'stand.idle.short-gun' ||
-      relaxedBlade
-    ) {
+    if (semantic === 'stand.idle.long-gun' || semantic === 'stand.idle.short-gun' || relaxedBlade) {
       const neutral = boundClip(
           this.asset.clips,
           this.asset.animation.animations,
@@ -756,9 +652,7 @@ export class ActorRuntime {
           semantic.replace('.idle.', '.walk.'),
         ).clip;
       const offhandPistol = visual.items.some(
-        (item) =>
-          item.socket === 'handLeft' &&
-          this.itemSpec(item.id)?.category === 'pistol',
+        (item) => item.socket === 'handLeft' && this.itemSpec(item.id)?.category === 'pistol',
       );
       const bladeSocket =
         relaxedBlade && mainItem
@@ -766,8 +660,7 @@ export class ActorRuntime {
           : undefined;
       const offhandBladeSocket =
         relaxedBlade && leftBlade
-          ? this.socket('handLeft', this.itemSpec(required(leftItem).id)?.grip)
-              ?.name
+          ? this.socket('handLeft', this.itemSpec(required(leftItem).id)?.grip)?.name
           : undefined;
       resting = relaxedStandingIdle(
         sourceClip,
@@ -806,19 +699,13 @@ export class ActorRuntime {
         this.asset.manifest.bones,
         semantic,
       ),
-      idleTiming =
-        breathing !== posed ? idleBreathingTiming(visual.key) : undefined;
+      idleTiming = breathing !== posed ? idleBreathingTiming(visual.key) : undefined;
     // A long gun or lance uses the supporting hand even without a second
     // inventory record. Every other held item reserves its actual hand.
-    const twoHandedIdle =
-      visual.equipment === 'long-gun' || semantic === 'stand.idle.lance';
+    const twoHandedIdle = visual.equipment === 'long-gun' || semantic === 'stand.idle.lance';
     const freeHands = {
-      handLeft:
-        !twoHandedIdle &&
-        !visual.items.some((item) => item.socket === 'handLeft'),
-      handRight:
-        !twoHandedIdle &&
-        !visual.items.some((item) => item.socket === 'handRight'),
+      handLeft: !twoHandedIdle && !visual.items.some((item) => item.socket === 'handLeft'),
+      handRight: !twoHandedIdle && !visual.items.some((item) => item.socket === 'handRight'),
     };
     // Keep the accepted breathing clock; the gesture only replaces free-arm
     // rotations within that same cycle and never admits a combat guard.
@@ -865,14 +752,10 @@ export class ActorRuntime {
       this.action.reset();
       this.action.enabled = true;
       this.action.clampWhenFinished = !clipSpec.loop;
-      this.action.setLoop(
-        clipSpec.loop ? LoopRepeat : LoopOnce,
-        clipSpec.loop ? Infinity : 1,
-      );
+      this.action.setLoop(clipSpec.loop ? LoopRepeat : LoopOnce, clipSpec.loop ? Infinity : 1);
       this.action.play();
       if (idleTiming) {
-        this.action.time =
-          (continuedIdlePhase ?? idleTiming.phase) * clip.duration;
+        this.action.time = (continuedIdlePhase ?? idleTiming.phase) * clip.duration;
       }
       if (previous && previous !== this.action) {
         if (visual.action === 'fire' && visual.cue?.shotHand) {
@@ -900,16 +783,10 @@ export class ActorRuntime {
     this.actionBarrel = barrel;
     if (this.horse && this.horseMixer) {
       const horseAction =
-          visual.action === 'run'
-            ? 'run'
-            : visual.action === 'walk'
-              ? 'walk'
-              : 'idle',
+          visual.action === 'run' ? 'run' : visual.action === 'walk' ? 'walk' : 'idle',
         horseClip = this.asset.manifest.horse?.actions?.[horseAction];
       if (horseClip && horseClip !== this.horseClip) {
-        const clip = required(this.asset.horse).animations.find(
-          (clip) => clip.name === horseClip,
-        );
+        const clip = required(this.asset.horse).animations.find((clip) => clip.name === horseClip);
         if (!clip) {
           throw Error(`Missing horse action: ${horseClip}`);
         }
@@ -959,10 +836,7 @@ export class ActorRuntime {
       if (!source || !socket) {
         throw Error(`Missing timed prop or socket: ${key}`);
       }
-      if (
-        cue.scale !== undefined &&
-        !(Number.isFinite(cue.scale) && cue.scale > 0)
-      ) {
+      if (cue.scale !== undefined && !(Number.isFinite(cue.scale) && cue.scale > 0)) {
         throw Error(`Invalid timed prop scale: ${key}`);
       }
       let object = this.temporaryProps.get(key);
@@ -997,19 +871,13 @@ export class ActorRuntime {
       const fraction = Math.max(0, Math.min(1, time / duration)),
         from = spec.fromPosture,
         to = spec.toPosture;
-      prone =
-        (from === 'prone' ? 1 - fraction : 0) + (to === 'prone' ? fraction : 0);
-      crouched =
-        (from === 'crouched' ? 1 - fraction : 0) +
-        (to === 'crouched' ? fraction : 0);
+      prone = (from === 'prone' ? 1 - fraction : 0) + (to === 'prone' ? fraction : 0);
+      crouched = (from === 'crouched' ? 1 - fraction : 0) + (to === 'crouched' ? fraction : 0);
     } else if (['dead', 'unconscious'].includes(spec.gesture ?? '')) {
       prone = 1;
       crouched = 0;
     } else if (['die', 'collapse', 'knockdown'].includes(spec.gesture ?? '')) {
-      const fraction = Math.max(
-        0,
-        Math.min(1, time / (spec.markers?.['ground'] ?? duration)),
-      );
+      const fraction = Math.max(0, Math.min(1, time / (spec.markers?.['ground'] ?? duration)));
       prone += (1 - prone) * fraction;
       crouched *= 1 - fraction;
     } else if (spec.gesture === 'recover') {
@@ -1023,10 +891,7 @@ export class ActorRuntime {
     this.clothProne += (prone - this.clothProne) * blend;
     this.clothCrouched += (crouched - this.clothCrouched) * blend;
     for (const [action] of this.clothActions) {
-      if (
-        action !== this.action &&
-        (!action.enabled || !action.isScheduled())
-      ) {
+      if (action !== this.action && (!action.enabled || !action.isScheduled())) {
         this.clothActions.delete(action);
       }
     }
@@ -1047,10 +912,7 @@ export class ActorRuntime {
             weight += action.getEffectiveWeight();
           }
         }
-        required(mesh.morphTargetInfluences)[boot] = Math.min(
-          this.clothProne,
-          Math.max(0, weight),
-        );
+        required(mesh.morphTargetInfluences)[boot] = Math.min(this.clothProne, Math.max(0, weight));
       }
     }
   }
@@ -1082,8 +944,7 @@ export class ActorRuntime {
           }
           weight =
             a.weight +
-            (b.weight - a.weight) *
-              Math.max(0, (action.time - a.time) / (b.time - a.time));
+            (b.weight - a.weight) * Math.max(0, (action.time - a.time) / (b.time - a.time));
           break;
         }
       }
@@ -1101,12 +962,7 @@ export class ActorRuntime {
       this.model.position.divideScalar(totalWeight);
     }
   }
-  tick(
-    delta: number,
-    now: number,
-    reducedMotion = false,
-    ambientPaused = false,
-  ) {
+  tick(delta: number, now: number, reducedMotion = false, ambientPaused = false) {
     if (!this.action || !this.clipSpec) {
       return;
     }
@@ -1121,15 +977,9 @@ export class ActorRuntime {
       clip = this.action.getClip(),
       motion = visual.motion,
       idlePaused = ambientPaused && visual.action === 'idle';
-    const projected = (x = 0, y = 0) =>
-      x * Math.sin(visual.yaw) + y * Math.cos(visual.yaw);
-    const strafe =
-      visual.action === 'strafeLeft' || visual.action === 'strafeRight';
-    const direction = strafe
-      ? 1
-      : projected(motion?.travelX, motion?.travelY) < 0
-        ? -1
-        : 1;
+    const projected = (x = 0, y = 0) => x * Math.sin(visual.yaw) + y * Math.cos(visual.yaw);
+    const strafe = visual.action === 'strafeLeft' || visual.action === 'strafeRight';
+    const direction = strafe ? 1 : projected(motion?.travelX, motion?.travelY) < 0 ? -1 : 1;
     // Total path length keeps gait phase through turns. Net displacement loses
     // distance on curved paths; projecting it onto a new facing loses more.
     const inputMotion = motion
@@ -1139,8 +989,7 @@ export class ActorRuntime {
             ? {}
             : {
                 elapsedDistance: motion.elapsedDistance * TILE_METRES,
-                signedDistance:
-                  motion.elapsedDistance * TILE_METRES * direction,
+                signedDistance: motion.elapsedDistance * TILE_METRES * direction,
               }),
           speed: (motion.speed ?? 0) * TILE_METRES,
           signedForwardSpeed: direction * (motion.speed ?? 0) * TILE_METRES,
@@ -1173,10 +1022,7 @@ export class ActorRuntime {
     });
     const loadingItem = this.loadingItem(visual, timing.workIndex);
     const barrel = visual.cue?.work?.[timing.workIndex ?? 0]?.barrel ?? 0;
-    if (
-      loadingItem &&
-      (loadingItem.socket !== this.actionHand || barrel !== this.actionBarrel)
-    ) {
+    if (loadingItem && (loadingItem.socket !== this.actionHand || barrel !== this.actionBarrel)) {
       this.update(visual, now);
       this.tick(0, now, reducedMotion, ambientPaused);
       return;
@@ -1203,9 +1049,7 @@ export class ActorRuntime {
       const down = visual.action === 'climbDown',
         fraction = required(this.climbFit).nativeFraction(
           motion.climbGeometry,
-          down
-            ? 1 - (motion.segmentFraction ?? 0)
-            : (motion.segmentFraction ?? 0),
+          down ? 1 - (motion.segmentFraction ?? 0) : (motion.segmentFraction ?? 0),
           this.clipSpec,
         );
       this.action.time = clip.duration * (down ? 1 - fraction : fraction);
@@ -1222,16 +1066,8 @@ export class ActorRuntime {
         this.action.getEffectiveWeight(),
       );
     }
-    this.gaitSupport.apply(
-      this.mixer.time,
-      this.action.time,
-      inputMotion?.speed ?? 0,
-    );
-    this.gestureSupport.apply(
-      this.mixer.time,
-      this.action.time,
-      this.action.timeScale,
-    );
+    this.gaitSupport.apply(this.mixer.time, this.action.time, inputMotion?.speed ?? 0);
+    this.gestureSupport.apply(this.mixer.time, this.action.time, this.action.timeScale);
     this.poseCloth(Math.min(delta, 0.1));
     this.proneArmSupport.apply(this.mixer.time);
     this.patientFit.apply(
@@ -1243,18 +1079,15 @@ export class ActorRuntime {
     );
     const attached = this.attachedEquipment,
       freeGuard = !attached.some(
-        (item) =>
-          required(this.equipmentMetadata.get(item)).hand === 'handLeft',
+        (item) => required(this.equipmentMetadata.get(item)).hand === 'handLeft',
       );
     const meleeWeapon = attached.find(
       (item) =>
         required(this.equipmentMetadata.get(item)).hand === 'handRight' &&
-        (this.itemSpec(required(this.equipmentMetadata.get(item)).itemId)
-          ?.category === 'sabre' ||
+        (this.itemSpec(required(this.equipmentMetadata.get(item)).itemId)?.category === 'sabre' ||
           (freeGuard &&
             ['pistol', 'rifle'].includes(
-              this.itemSpec(required(this.equipmentMetadata.get(item)).itemId)
-                ?.category ?? '',
+              this.itemSpec(required(this.equipmentMetadata.get(item)).itemId)?.category ?? '',
             ))),
     );
     this.meleeFit.apply(
@@ -1271,8 +1104,7 @@ export class ActorRuntime {
       const visibility = this.clipSpec.horseVisibility;
       if (visibility) {
         this.horse.visible =
-          this.action.time >= visibility.start &&
-          this.action.time <= visibility.end;
+          this.action.time >= visibility.start && this.action.time <= visibility.end;
       }
       if (this.horseAction) {
         const horseSpec = this.asset.manifest.horse?.clips?.find(
@@ -1301,9 +1133,7 @@ export class ActorRuntime {
       // Read the animated saddle in actor-local space, after the horse mixer.
       this.root.updateMatrixWorld(true);
       const saddle = socket
-        ? this.root
-            .worldToLocal(socket.getWorldPosition(this.saddlePosition))
-            .toArray()
+        ? this.root.worldToLocal(socket.getWorldPosition(this.saddlePosition)).toArray()
         : saddleSpec?.position;
       this.placeRider(saddle);
     }
@@ -1323,8 +1153,7 @@ export class ActorRuntime {
     }
     const careVisual = this.visual,
       careStock = this.attachedEquipment.find(
-        (item) =>
-          required(this.equipmentMetadata.get(item)).itemId === 'medkits',
+        (item) => required(this.equipmentMetadata.get(item)).itemId === 'medkits',
       );
     this.patientFit.prewarm(
       careVisual.selected && !careVisual.cue && !careVisual.motion?.moving
@@ -1337,15 +1166,14 @@ export class ActorRuntime {
     const visual = this.visual,
       attached = this.attachedEquipment,
       freeGuard = !attached.some(
-        (item) =>
-          required(this.equipmentMetadata.get(item)).hand === 'handLeft',
+        (item) => required(this.equipmentMetadata.get(item)).hand === 'handLeft',
       ),
       gun = freeGuard
         ? attached.find(
             (item) =>
               required(this.equipmentMetadata.get(item)).hand === 'handRight' &&
-              this.itemSpec(required(this.equipmentMetadata.get(item)).itemId)
-                ?.category === 'rifle',
+              this.itemSpec(required(this.equipmentMetadata.get(item)).itemId)?.category ===
+                'rifle',
           )
         : undefined;
     if (
@@ -1370,13 +1198,7 @@ export class ActorRuntime {
       this.asset.animation.animations,
       'stand.butt.long-gun',
     );
-    this.meleeFit.prewarm(
-      visual.contactWarm,
-      bound.clip,
-      bound.spec,
-      gun,
-      this.contactActor,
-    );
+    this.meleeFit.prewarm(visual.contactWarm, bound.clip, bound.spec, gun, this.contactActor);
   }
   bodyAnchor(nativeHeight: number) {
     if (!Number.isFinite(nativeHeight)) {
@@ -1401,9 +1223,7 @@ export class ActorRuntime {
       const hips = this.anchor('hips'),
         left = this.anchor('footLeft'),
         right = this.anchor('footRight');
-      return hips && left && right
-        ? left.add(right).multiplyScalar(0.5).lerp(hips, 0.5)
-        : null;
+      return hips && left && right ? left.add(right).multiplyScalar(0.5).lerp(hips, 0.5) : null;
     }
     return null;
   }

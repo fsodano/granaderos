@@ -61,11 +61,7 @@ export class ActorCueStore {
     delete next[key];
     this.publish(next);
   };
-  observe(
-    sceneId: string,
-    entries: readonly ActorEntry[],
-    frame?: BattlePresentationFrame | null,
-  ) {
+  observe(sceneId: string, entries: readonly ActorEntry[], frame?: BattlePresentationFrame | null) {
     let next = this.cues;
     if (sceneId !== this.sceneId) {
       this.sceneId = sceneId;
@@ -78,12 +74,8 @@ export class ActorCueStore {
       key,
       actor: {
         hp: actor.hp,
-        ...(actor.unconscious !== undefined
-          ? { unconscious: actor.unconscious }
-          : {}),
-        ...(actor.knockedDown !== undefined
-          ? { knockedDown: actor.knockedDown }
-          : {}),
+        ...(actor.unconscious !== undefined ? { unconscious: actor.unconscious } : {}),
+        ...(actor.knockedDown !== undefined ? { knockedDown: actor.knockedDown } : {}),
         ...(actor.mounted !== undefined ? { mounted: actor.mounted } : {}),
         ...(actor.stance ? { stance: actor.stance } : {}),
         ...(actor.movementMode ? { movementMode: actor.movementMode } : {}),
@@ -99,16 +91,12 @@ export class ActorCueStore {
         continue;
       }
       const impact =
-        action === 'hit' && entry
-          ? admittedImpactCue(entry, frame, this.now())
-          : undefined;
+        action === 'hit' && entry ? admittedImpactCue(entry, frame, this.now()) : undefined;
       next = { ...next, [key]: this.cue(action, { ...extra, ...impact }) };
     }
     const keys = new Set(entries.map((entry) => entry.key));
     if (Object.keys(next).some((key) => !keys.has(key))) {
-      next = Object.fromEntries(
-        Object.entries(next).filter(([key]) => keys.has(key)),
-      );
+      next = Object.fromEntries(Object.entries(next).filter(([key]) => keys.has(key)));
     }
     if (next !== this.cues) {
       this.publish(next);

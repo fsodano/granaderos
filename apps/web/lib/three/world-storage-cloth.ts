@@ -23,8 +23,7 @@ export function storageSackGeometry(variant: number) {
       const angle = (n * Math.PI * 2) / segments,
         body = ring > 0 && ring < 5,
         fold = body
-          ? 0.045 * Math.cos(angle * 3 + variant * 0.7) +
-            0.025 * Math.sin(angle * 2 - variant)
+          ? 0.045 * Math.cos(angle * 3 + variant * 0.7) + 0.025 * Math.sin(angle * 2 - variant)
           : ring >= 5
             ? 0.045 * Math.cos(angle * 4)
             : 0;
@@ -35,11 +34,7 @@ export function storageSackGeometry(variant: number) {
             : ring === 6
               ? y + 0.03 * Math.cos(angle)
               : y + 0.025 * Math.sin(angle * 2 + variant) * Number(body);
-      position.push(
-        Math.cos(angle) * (rx + fold) + lean,
-        height,
-        Math.sin(angle) * (rz + fold),
-      );
+      position.push(Math.cos(angle) * (rx + fold) + lean, height, Math.sin(angle) * (rz + fold));
       uv.push(n / segments, ring / 6);
       const shade =
         (ring === 5 ? 0.67 : ring === 6 ? 0.92 : 0.91) +
@@ -71,10 +66,7 @@ export function storageSackGeometry(variant: number) {
     }
   }
   const geometry = new BufferGeometry()
-    .setAttribute(
-      'position',
-      new BufferAttribute(new Float32Array(position), 3),
-    )
+    .setAttribute('position', new BufferAttribute(new Float32Array(position), 3))
     .setAttribute('uv', new BufferAttribute(new Float32Array(uv), 2))
     .setAttribute('color', new BufferAttribute(new Float32Array(colour), 3))
     .setIndex(index);
@@ -87,16 +79,9 @@ function clothBuilder() {
   const positions: number[] = [],
     colours: number[] = [],
     uv: number[] = [];
-  const face = (
-    points: readonly (readonly [number, number, number])[],
-    shade: number,
-  ) => {
+  const face = (points: readonly (readonly [number, number, number])[], shade: number) => {
     for (let n = 1; n < points.length - 1; n++) {
-      for (const p of [
-        required(points[0]),
-        required(points[n]),
-        required(points[n + 1]),
-      ]) {
+      for (const p of [required(points[0]), required(points[n]), required(points[n + 1])]) {
         positions.push(...p);
         colours.push(shade, shade, shade);
         uv.push(required(p[0]) + 0.5, required(p[2]) + 0.5);
@@ -105,10 +90,7 @@ function clothBuilder() {
   };
   const finish = () => {
     const geometry = new BufferGeometry()
-      .setAttribute(
-        'position',
-        new BufferAttribute(new Float32Array(positions), 3),
-      )
+      .setAttribute('position', new BufferAttribute(new Float32Array(positions), 3))
       .setAttribute('uv', new BufferAttribute(new Float32Array(uv), 2))
       .setAttribute('color', new BufferAttribute(new Float32Array(colours), 3));
     geometry.computeVertexNormals();

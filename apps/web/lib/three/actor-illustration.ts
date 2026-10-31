@@ -12,11 +12,7 @@ import {
   Vector2,
   Vector4,
 } from 'three';
-import {
-  clothingPaint,
-  paintClothingShader,
-  type ClothingPaint,
-} from './illustrated-clothing';
+import { clothingPaint, paintClothingShader, type ClothingPaint } from './illustrated-clothing';
 
 type ActorPaintProfile = 'base' | 'human';
 
@@ -119,14 +115,8 @@ export class ActorIllustration {
     this.outline.onBeforeCompile = (shader) => {
       shader.uniforms['actorOutlinePixels'] = this.outlinePixels;
       shader.vertexShader = shader.vertexShader
-        .replace(
-          '#include <common>',
-          '#include <common>\nuniform vec2 actorOutlinePixels;',
-        )
-        .replace(
-          '#if defined ( USE_ENVMAP ) || defined ( USE_SKINNING )',
-          '#if 1',
-        )
+        .replace('#include <common>', '#include <common>\nuniform vec2 actorOutlinePixels;')
+        .replace('#if defined ( USE_ENVMAP ) || defined ( USE_SKINNING )', '#if 1')
         .replace(
           '#include <project_vertex>',
           `#include <project_vertex>
@@ -138,10 +128,7 @@ export class ActorIllustration {
   }
   private outlineFor(source: Material) {
     if (
-      !(
-        source instanceof MeshStandardMaterial ||
-        source instanceof MeshBasicMaterial
-      ) ||
+      !(source instanceof MeshStandardMaterial || source instanceof MeshBasicMaterial) ||
       (!source.alphaTest && !source.alphaMap && !source.transparent)
     ) {
       return this.outline;
@@ -157,33 +144,22 @@ export class ActorIllustration {
       outline.depthWrite = source.depthWrite;
       outline.onBeforeCompile = (shader, renderer) =>
         this.outline.onBeforeCompile(shader, renderer);
-      outline.customProgramCacheKey = () =>
-        this.outline.customProgramCacheKey();
+      outline.customProgramCacheKey = () => this.outline.customProgramCacheKey();
       this.cutoutOutlines.set(source, outline);
       this.owned.add(outline);
     }
     return outline;
   }
-  apply(
-    root: Object3D,
-    profile: ActorPaintProfile = 'base',
-    appearance?: string,
-  ) {
+  apply(root: Object3D, profile: ActorPaintProfile = 'base', appearance?: string) {
     root.traverse((node) => {
       if (!isMesh(node) || node.userData['occlusionOverlay']) {
         return;
       }
       const copy = (source: Material) => {
-        if (
-          !(source instanceof MeshStandardMaterial) ||
-          this.owned.has(source)
-        ) {
+        if (!(source instanceof MeshStandardMaterial) || this.owned.has(source)) {
           return source;
         }
-        const clothing =
-            profile === 'human'
-              ? clothingPaint(node, source, appearance)
-              : undefined,
+        const clothing = profile === 'human' ? clothingPaint(node, source, appearance) : undefined,
           key = profile + ':' + (clothing?.key ?? '');
         let profiles = this.copies.get(source);
         if (!profiles) {
@@ -199,22 +175,13 @@ export class ActorIllustration {
         }
         return material;
       };
-      node.material = Array.isArray(node.material)
-        ? node.material.map(copy)
-        : copy(node.material);
+      node.material = Array.isArray(node.material) ? node.material.map(copy) : copy(node.material);
       if (this.outlined.has(node)) {
         return;
       }
       this.outlined.add(node);
       const previous = node.onAfterRender.bind(node);
-      node.onAfterRender = (
-        renderer,
-        scene,
-        camera,
-        geometry,
-        material,
-        group,
-      ) => {
+      node.onAfterRender = (renderer, scene, camera, geometry, material, group) => {
         previous.call(node, renderer, scene, camera, geometry, material, group);
         if (
           !material.colorWrite ||
@@ -241,8 +208,7 @@ export class ActorIllustration {
           node,
           geometry.groups.find((candidate) => sameObject(candidate, group)) ?? {
             start: 0,
-            count:
-              geometry.index?.count ?? geometry.getAttribute('position').count,
+            count: geometry.index?.count ?? geometry.getAttribute('position').count,
           },
         );
       };

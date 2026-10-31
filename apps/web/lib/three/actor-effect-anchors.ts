@@ -22,8 +22,7 @@ type Actor = {
 };
 const EPS = 1e-8;
 const finite = (p: EffectPoint | undefined): p is EffectPoint =>
-  Boolean(p) &&
-  [required(p).x, required(p).y, required(p).height].every(Number.isFinite);
+  Boolean(p) && [required(p).x, required(p).y, required(p).height].every(Number.isFinite);
 const same = (a: EffectPoint, b: EffectPoint) =>
   a.x === b.x && a.y === b.y && a.height === b.height;
 const levelMatches = (p: EffectPoint, a: Actor) =>
@@ -117,9 +116,7 @@ export function withActorEffectAnchors(
   ) {
     return event;
   }
-  const sourceActor = actor(
-      v.discharge === false ? v.sourceBodyKey : event.actorKey,
-    ),
+  const sourceActor = actor(v.discharge === false ? v.sourceBodyKey : event.actorKey),
     targetActor = v.outcome === 'hit' ? actor(v.bodyTargetKey) : undefined;
   const sourceRaw =
       sourceActor &&
@@ -134,10 +131,8 @@ export function withActorEffectAnchors(
                 : undefined,
           )),
     targetRaw = targetActor?.runtime.bodyAnchor(v.impact.height);
-  const sourceAnchor =
-      sourceRaw && sourceActor ? point(sourceRaw, sourceActor) : undefined,
-    targetAnchor =
-      targetRaw && targetActor ? point(targetRaw, targetActor) : undefined;
+  const sourceAnchor = sourceRaw && sourceActor ? point(sourceRaw, sourceActor) : undefined,
+    targetAnchor = targetRaw && targetActor ? point(targetRaw, targetActor) : undefined;
   // Finite, currently loaded admitted socket identity validates the separate
   // muzzle discharge. Its height must still belong to that actor's floor.
   const dischargeAnchor =
@@ -201,13 +196,11 @@ export function withActorEffectAnchors(
               y: before.y + (after.y - before.y) * t,
               height: before.height + (after.height - before.height) * t,
               tacticalLevel: a.cell.level,
-              ...(Number.isFinite(before.fraction) &&
-              Number.isFinite(after.fraction)
+              ...(Number.isFinite(before.fraction) && Number.isFinite(after.fraction)
                 ? {
                     fraction:
                       required(before.fraction) +
-                      (required(after.fraction) - required(before.fraction)) *
-                        t,
+                      (required(after.fraction) - required(before.fraction)) * t,
                   }
                 : {}),
             };
@@ -226,10 +219,7 @@ export function withActorEffectAnchors(
     // The convex cell envelope contains the whole replacement connector.
     const horizontal = dx * dx + dy * dy,
       forwardXY = (boundary.x - anchor.x) * dx + (boundary.y - anchor.y) * dy;
-    if (
-      !same(anchor, boundary) &&
-      (progress <= EPS || (horizontal > EPS && forwardXY <= EPS))
-    ) {
+    if (!same(anchor, boundary) && (progress <= EPS || (horizontal > EPS && forwardXY <= EPS))) {
       return points;
     }
     const candidate = [
@@ -239,9 +229,7 @@ export function withActorEffectAnchors(
     ];
     // Never deduplicate the native outside tail: equal XYZ samples can carry
     // distinct admitted level/fraction values and are still native records.
-    return candidate.length >= 2 && candidate.length <= 256
-      ? candidate
-      : points;
+    return candidate.length >= 2 && candidate.length <= 256 ? candidate : points;
   }
   let points: readonly EffectPoint[] = native;
   const sharedCell =

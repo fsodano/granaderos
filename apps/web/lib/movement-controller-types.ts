@@ -11,9 +11,7 @@ import type {
 export type MovementOrder =
   | (MoveAction & { unitId: string })
   | (GroupMoveAction & { type: 'groupMove'; unitId: string });
-export type MovementContinuation =
-  | TacticalRoutePoint[]
-  | GroupMovementContinuation;
+export type MovementContinuation = TacticalRoutePoint[] | GroupMovementContinuation;
 export type MovementResult = MovementStepResult<MovementContinuation>;
 export interface MovementIntent {
   unitId: string;
@@ -21,10 +19,7 @@ export interface MovementIntent {
   action: MovementOrder;
   finishing: boolean;
 }
-export type MovementPositions = Record<
-  string,
-  TacticalPoint & { settled?: boolean }
->;
+export type MovementPositions = Record<string, TacticalPoint & { settled?: boolean }>;
 export type MovementCommit = (
   next: BattleSnapshot,
   action: MovementOrder,
@@ -37,11 +32,7 @@ export interface MovementControllerOptions {
     continuation: MovementContinuation | null,
   ) => Promise<MovementResult | null>;
   commit: MovementCommit;
-  canMove: (
-    state: BattleSnapshot,
-    id: string,
-    action: MovementOrder,
-  ) => boolean;
+  canMove: (state: BattleSnapshot, id: string, action: MovementOrder) => boolean;
 }
 export interface MovementController {
   updateCallbacks: (options: MovementControllerOptions) => void;

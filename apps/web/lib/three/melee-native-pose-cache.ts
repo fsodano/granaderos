@@ -40,9 +40,6 @@ export function settledPoseCacheFor(
 ): SettledPoseCache {
   return fit.settledPoseCacheFor(clip, plan);
 }
-export function replaySettledPose(
-  fit: NativeMeleeContactFit,
-  cache: SettledPoseCache,
-) {
+export function replaySettledPose(fit: NativeMeleeContactFit, cache: SettledPoseCache) {
   return fit.replaySettledPose(cache);
 }

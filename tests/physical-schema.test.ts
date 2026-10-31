@@ -1,18 +1,24 @@
+import type { CampaignPhysicalSources } from '../packages/campaign-format/types.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateCampaignPhysical as validatePhysicalSchema } from '../packages/campaign-format/physical-schema.js';
 import { validateCampaignPhysical } from '../packages/game/campaign-physical-validation.js';
 import { validateEnvironmentRecord } from '../packages/campaign-format/environment-record-schema.js';
-import { validateEnvironment } from '../packages/game/environment-interactions.js';
+import { validateEnvironment } from '../packages/game/environment-interactions.ts';
 import { DEFAULT_WORLD } from '../content/campaigns/default.js';
 
-const source = () => ({ version: 1, caches: {}, arsenals: {}, environment: {} });
+const source = (): CampaignPhysicalSources => ({
+  version: 1,
+  caches: {},
+  arsenals: {},
+  environment: {},
+});
 
-test('shared physical admission preserves the default campaign and game capability checks', () => {
+void test('shared physical admission preserves the default campaign and game capability checks', () => {
   assert.deepEqual(validatePhysicalSchema(DEFAULT_WORLD.physical, DEFAULT_WORLD), []);
   assert.deepEqual(validateCampaignPhysical(DEFAULT_WORLD.physical, DEFAULT_WORLD), []);
   const physical = source();
-  physical.arsenals.retiro = {
+  physical.arsenals['retiro'] = {
     version: 1,
     sector: 'retiro',
     chest: 'arsenal-chest',
@@ -30,7 +36,7 @@ test('shared physical admission preserves the default campaign and game capabili
   assert.match(validateCampaignPhysical(physical, DEFAULT_WORLD).join('\n'), /pieza inválida/);
 });
 
-test('runtime environment checks retain item support after shared record admission', () => {
+void test('runtime environment checks retain item support after shared record admission', () => {
   const environment = { type: 'chest', open: true, contents: [{ item: 'rations', count: 3 }] };
   assert.equal(validateEnvironmentRecord(environment), true);
   assert.equal(validateEnvironment(environment), true);
@@ -43,7 +49,7 @@ test('runtime environment checks retain item support after shared record admissi
   assert.equal(validateEnvironmentRecord(unsupported), true);
   assert.throws(() => validateEnvironment(unsupported), /herramienta/);
   const physical = source();
-  physical.caches.retiro = { chest: 'supply-chest', contents: unsupported.contents };
+  physical.caches['retiro'] = { chest: 'supply-chest', contents: unsupported.contents };
   assert.deepEqual(validatePhysicalSchema(physical, DEFAULT_WORLD), []);
   assert.match(validateCampaignPhysical(physical, DEFAULT_WORLD).join('\n'), /herramienta/);
 });

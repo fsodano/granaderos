@@ -83,11 +83,7 @@ export class WorldGeometry {
           dz = Math.sin(angle),
           width = 0.024;
         const point = (reach: number, y: number, halfWidth: number) =>
-          new Vector3(
-            dx * reach - dz * halfWidth,
-            y,
-            dz * reach + dx * halfWidth,
-          );
+          new Vector3(dx * reach - dz * halfWidth, y, dz * reach + dx * halfWidth);
         const a = point(0, 0, -width),
           b = point(0, 0, width),
           c = point(height * lean * 0.36, height * 0.56, width * 0.65),
@@ -109,10 +105,7 @@ export class WorldGeometry {
         'position',
         new BufferAttribute(new Float32Array(vertices), 3),
       );
-      geometry.setAttribute(
-        'color',
-        new BufferAttribute(new Float32Array(colours), 3),
-      );
+      geometry.setAttribute('color', new BufferAttribute(new Float32Array(colours), 3));
       geometry.computeVertexNormals();
     } else if (kind === 'cylinder') {
       geometry = new CylinderGeometry(1, 1, 1, 12);
@@ -132,8 +125,7 @@ export class WorldGeometry {
           y = position.getY(n),
           z = position.getZ(n),
           noise =
-            Math.sin(x * 8.3 + y * 4.7 + variant * 2.1) *
-            Math.cos(z * 7.2 - y * 3.1 + variant),
+            Math.sin(x * 8.3 + y * 4.7 + variant * 2.1) * Math.cos(z * 7.2 - y * 3.1 + variant),
           radius = 0.84 + 0.19 * noise;
         position.setXYZ(
           n,
@@ -142,9 +134,7 @@ export class WorldGeometry {
           z * (radius + 0.06 * Math.cos(x * 9)),
         );
         const shade =
-          0.81 +
-          0.16 *
-            (0.5 + 0.5 * Math.sin(x * 6.1 + y * 5.8 + z * 3.2 + variant * 7));
+          0.81 + 0.16 * (0.5 + 0.5 * Math.sin(x * 6.1 + y * 5.8 + z * 3.2 + variant * 7));
         colours[n * 3] = shade * (0.92 + 0.06 * Math.sin(y * 9 + variant));
         colours[n * 3 + 1] = shade;
         colours[n * 3 + 2] = shade * 0.88;
@@ -243,10 +233,7 @@ function bedBlanketGeometry() {
       // A thin sheet clears the whole mattress top, including each rounded
       // edge triangle. Positive folds and all hanging hem vertices stay exact.
       const edge = Math.max(0, (Math.abs(x) - 0.4) / 0.1),
-        y = Math.max(
-          0.002,
-          fold * (0.82 + 0.18 * Math.cos(x * 5 + z * 2)) - 0.016 * edge * edge,
-        );
+        y = Math.max(0.002, fold * (0.82 + 0.18 * Math.cos(x * 5 + z * 2)) - 0.016 * edge * edge);
       positions.push(x, y, z);
       uv.push(x + 0.5, z + 0.5);
     }
@@ -272,10 +259,7 @@ function bedBlanketGeometry() {
     }
   }
   const geometry = new BufferGeometry()
-    .setAttribute(
-      'position',
-      new BufferAttribute(new Float32Array(positions), 3),
-    )
+    .setAttribute('position', new BufferAttribute(new Float32Array(positions), 3))
     .setAttribute('uv', new BufferAttribute(new Float32Array(uv), 2))
     .setIndex(indices);
   geometry.computeVertexNormals();
@@ -371,10 +355,7 @@ function washstandTowelGeometry() {
     }
   }
   const geometry = new BufferGeometry()
-    .setAttribute(
-      'position',
-      new BufferAttribute(new Float32Array(positions), 3),
-    )
+    .setAttribute('position', new BufferAttribute(new Float32Array(positions), 3))
     .setAttribute('uv', new BufferAttribute(new Float32Array(uv), 2))
     .setIndex(indices);
   geometry.computeVertexNormals();
@@ -481,10 +462,7 @@ export class WorldBatch {
     if (!part.getAttribute('uv')) {
       part.setAttribute(
         'uv',
-        new BufferAttribute(
-          new Float32Array(part.getAttribute('position').count * 2),
-          2,
-        ),
+        new BufferAttribute(new Float32Array(part.getAttribute('position').count * 2), 2),
       );
     }
     const colours = new Float32Array(part.getAttribute('position').count * 3),
@@ -511,16 +489,11 @@ export class WorldBatch {
     rotation?: Quaternion,
     light = 1,
   ) {
-    const point =
-      position instanceof Vector3 ? position : new Vector3(...position);
+    const point = position instanceof Vector3 ? position : new Vector3(...position);
     this.add(
       this.library.get(kind),
       material,
-      new Matrix4().compose(
-        point,
-        rotation ?? new Quaternion(),
-        new Vector3(...scale),
-      ),
+      new Matrix4().compose(point, rotation ?? new Quaternion(), new Vector3(...scale)),
       light,
       kind === 'box' && material.userData['metricBoxUV'] === true,
     );
@@ -553,10 +526,7 @@ export class WorldBatch {
       material,
       a.clone().add(b).multiplyScalar(0.5),
       [radius, vector.length(), radius],
-      new Quaternion().setFromUnitVectors(
-        new Vector3(0, 1, 0),
-        vector.normalize(),
-      ),
+      new Quaternion().setFromUnitVectors(new Vector3(0, 1, 0), vector.normalize()),
       light,
     );
   }
@@ -571,11 +541,7 @@ export class WorldBatch {
     }
     const vertices: number[] = [];
     for (let n = 1; n < points.length - 1; n++) {
-      for (const point of [
-        required(points[0]),
-        required(points[n]),
-        required(points[n + 1]),
-      ]) {
+      for (const point of [required(points[0]), required(points[n]), required(points[n + 1])]) {
         vertices.push(point.x, point.y, point.z);
       }
     }
@@ -630,43 +596,31 @@ export class WorldBatch {
     return group;
   }
 }
-export function disposeWorldNode(
-  object: Group | Mesh | import('three').Object3D,
-) {
+export function disposeWorldNode(object: Group | Mesh | import('three').Object3D) {
   object.traverse((child) => {
     if (isMesh(child) || isLine(child)) {
       child.geometry.dispose();
     }
     if (isLine(child)) {
-      for (const material of Array.isArray(child.material)
-        ? child.material
-        : [child.material]) {
+      for (const material of Array.isArray(child.material) ? child.material : [child.material]) {
         material.dispose();
       }
     }
   });
   object.removeFromParent();
 }
-export function lathe(
-  points: readonly (readonly [number, number])[],
-  segments = 12,
-) {
+export function lathe(points: readonly (readonly [number, number])[], segments = 12) {
   return new LatheGeometry(
     points.map((point) => new Vector2(point[0], point[1])),
     segments,
   );
 }
 export function planarShape(points: readonly (readonly [number, number])[]) {
-  const shape = new Shape(
-    points.map((point) => new Vector2(point[0], point[1])),
-  );
+  const shape = new Shape(points.map((point) => new Vector2(point[0], point[1])));
   return new ShapeGeometry(shape);
 }
 export const seeded = (x: number, y: number, salt = 0) =>
-  ((Math.imul(x + salt + 71, 374761393) ^
-    Math.imul(y - salt + 97, 668265263)) >>>
-    0) /
-  0xffffffff;
+  ((Math.imul(x + salt + 71, 374761393) ^ Math.imul(y - salt + 97, 668265263)) >>> 0) / 0xffffffff;
 export function cellTop(
   batch: WorldBatch,
   material: MeshStandardMaterial,

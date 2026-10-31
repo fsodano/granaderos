@@ -11,10 +11,7 @@ import {
   TextureLoader,
 } from 'three';
 import type { WorldInput, WorldOptions, WorldPoint } from './world-types';
-import {
-  architectureFinish,
-  applyArchitectureFinish,
-} from './world-architecture-finish';
+import { architectureFinish, applyArchitectureFinish } from './world-architecture-finish';
 import type { ArchitectureRole } from './world-architecture-finish';
 import { applyRoomFloorJoints } from './world-room-floors';
 
@@ -62,10 +59,7 @@ const texturePaths: Record<string, string> = {
 };
 // Plane UVs use metres. The clay sheet has eight tile columns and seven
 // courses; these repeats give approximately 19 cm widths and 45 cm lengths.
-const roofSurfaces: Record<
-  string,
-  { repeat: readonly [number, number]; relief: number }
-> = {
+const roofSurfaces: Record<string, { repeat: readonly [number, number]; relief: number }> = {
   '/art/architecture-roof-clay-v2.png': { repeat: [0.65, 0.32], relief: 0.035 },
   '/art/architecture-roof-thatch-v2.png': {
     repeat: [0.75, 0.5],
@@ -124,9 +118,7 @@ export class WorldMaterials {
       color:
         options.colour ??
         architecture?.base ??
-        (path && colourTextures.has(path)
-          ? '#ffffff'
-          : (colours[kind] ?? '#91836b')),
+        (path && colourTextures.has(path) ? '#ffffff' : (colours[kind] ?? '#91836b')),
       roughness: metal ? 0.48 : 0.94,
       metalness: metal ? 0.68 : 0,
       vertexColors: true,
@@ -145,10 +137,7 @@ export class WorldMaterials {
           'diffuseColor *= sampledDiffuseColor;',
           `sampledDiffuseColor.rgb = mix( vec3( 1.0 ), sampledDiffuseColor.rgb, ${strength.toFixed(2)} );\n\tdiffuseColor *= sampledDiffuseColor;`,
         );
-        shader.fragmentShader = shader.fragmentShader.replace(
-          '#include <map_fragment>',
-          fragment,
-        );
+        shader.fragmentShader = shader.fragmentShader.replace('#include <map_fragment>', fragment);
       };
       material.customProgramCacheKey = () => `plaster-finish:${strength}`;
     }
@@ -171,10 +160,7 @@ export class WorldMaterials {
           sampledDiffuseColor = sRGBTransferEOTF( roofEncoded );
           diffuseColor *= sampledDiffuseColor;`,
         );
-        shader.fragmentShader = shader.fragmentShader.replace(
-          '#include <map_fragment>',
-          fragment,
-        );
+        shader.fragmentShader = shader.fragmentShader.replace('#include <map_fragment>', fragment);
       };
       material.customProgramCacheKey = () =>
         `roof-finish:${kind}:0.55:${roofBrightness.toFixed(2)}`;
@@ -197,9 +183,7 @@ export class WorldMaterials {
       material.metalness = 0.12;
     }
     if (options.emissive) {
-      material.emissive = new Color(
-        options.colour ?? colours[kind] ?? '#f0ac50',
-      );
+      material.emissive = new Color(options.colour ?? colours[kind] ?? '#f0ac50');
       material.emissiveIntensity = 1.3;
     }
     if (path && typeof document !== 'undefined') {
@@ -297,8 +281,7 @@ export type WorldMaterialSource = Pick<
   WorldMaterials,
   'get' | 'terrain' | 'equipment' | 'roomFloor'
 >;
-export const worldKey = (p: WorldPoint) =>
-  `${p.tacticalLevel ?? 0}:${p.x},${p.y}`;
+export const worldKey = (p: WorldPoint) => `${p.tacticalLevel ?? 0}:${p.x},${p.y}`;
 export function illuminationAt(input: WorldInput, p: WorldPoint) {
   if (!input.terrain.night) {
     return 1;
@@ -309,10 +292,6 @@ export function illuminationAt(input: WorldInput, p: WorldPoint) {
   return 0.27 + 0.73 * Math.max(0, Math.min(1, value ?? 0.08));
 }
 
-function isLightMap(
-  source: WorldInput['illumination'],
-): source is ReadonlyMap<string, number> {
-  return (
-    source !== undefined && 'get' in source && typeof source.get === 'function'
-  );
+function isLightMap(source: WorldInput['illumination']): source is ReadonlyMap<string, number> {
+  return source !== undefined && 'get' in source && typeof source.get === 'function';
 }

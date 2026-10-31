@@ -9,10 +9,7 @@ function hasKey<Value extends object>(
 }
 
 /** Resolve only authored appearance and action identifiers. */
-export function nativeAnimationClip(
-  appearance: string,
-  name: string,
-): AnimationClockClip {
+export function nativeAnimationClip(appearance: string, name: string): AnimationClockClip {
   if (!hasKey(profile.appearances, appearance)) {
     throw new Error(`Missing animation appearance: ${appearance}`);
   }

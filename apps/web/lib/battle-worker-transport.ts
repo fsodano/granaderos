@@ -14,19 +14,13 @@ import {
   readBattleWorkerContinuation,
 } from './battle-worker-values.ts';
 export { BattleJobKind };
-export type {
-  BattleWorkerJob,
-  BattleWorkerRequest,
-} from './battle-worker-contracts.ts';
+export type { BattleWorkerJob, BattleWorkerRequest } from './battle-worker-contracts.ts';
 
 type WorkerEnvelope<Result, Context> = Readonly<{
   id: number;
   context: Context;
 }> &
-  (
-    | Readonly<{ battle: Result; error?: never }>
-    | Readonly<{ error: string; battle?: never }>
-  );
+  (Readonly<{ battle: Result; error?: never }> | Readonly<{ error: string; battle?: never }>);
 
 export type BattleWorkerResponse = WorkerEnvelope<
   BattleWorkerResultByKind[BattleJobKind],
@@ -43,9 +37,7 @@ export function battleWorkerMessageId(value: unknown): number | undefined {
   if (!isRecord(value)) {
     return undefined;
   }
-  return typeof value['id'] === 'number' &&
-    Number.isSafeInteger(value['id']) &&
-    value['id'] > 0
+  return typeof value['id'] === 'number' && Number.isSafeInteger(value['id']) && value['id'] > 0
     ? value['id']
     : undefined;
 }
@@ -99,9 +91,7 @@ export function readBattleWorkerRequest(value: unknown): BattleWorkerRequest {
     throw new Error('Invalid battle worker job');
   }
   if (job['context'] !== undefined) {
-    new SectorOperationContext(context).assertMatches(
-      readContext(job['context']),
-    );
+    new SectorOperationContext(context).assertMatches(readContext(job['context']));
   }
   const battle = readBattleSnapshot(job['battle']);
   assertSectorOperationContext(battle, context);
@@ -116,10 +106,7 @@ export function readBattleWorkerRequest(value: unknown): BattleWorkerRequest {
       ...(job['continuation'] === undefined || job['continuation'] === null
         ? {}
         : {
-            continuation: readBattleWorkerContinuation(
-              kind,
-              job['continuation'],
-            ),
+            continuation: readBattleWorkerContinuation(kind, job['continuation']),
           }),
       context,
     },
@@ -166,9 +153,7 @@ export function executeBattleWorkerRequest(
   }
 }
 
-function responseContext(
-  value: unknown,
-): SectorOperationContextSnapshot | null {
+function responseContext(value: unknown): SectorOperationContextSnapshot | null {
   if (!isRecord(value)) {
     return null;
   }

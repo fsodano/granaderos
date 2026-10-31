@@ -1,13 +1,6 @@
-import {
-  worldWallRecords,
-  buildingWallAtPoint,
-  wallFrameRecords,
-} from './world-wall-records';
+import { worldWallRecords, buildingWallAtPoint, wallFrameRecords } from './world-wall-records';
 import { Group, Vector3 } from 'three';
-import {
-  entranceFrame,
-  getBuildingProfile,
-} from '../../../../packages/game/building-profile.ts';
+import { entranceFrame, getBuildingProfile } from '../../../../packages/game/building-profile.ts';
 import { buildingAppearance } from '../../../../packages/game/building-appearance.ts';
 import { BUILDING_OPENINGS } from '../../../../packages/game/building-scale.js';
 import { WorldBatch } from './world-geometry';
@@ -34,9 +27,7 @@ export function houseFacade(
   if (legacy && b.wallFinish === undefined) {
     return root;
   }
-  const walls = worldWallRecords(input).filter(
-      (tile) => tile.buildingId === b.id,
-    ),
+  const walls = worldWallRecords(input).filter((tile) => tile.buildingId === b.id),
     frame = entranceFrame({ ...b, walls: wallFrameRecords(walls) }),
     inset = buildingArtInset(b, input),
     V = 25.066666666666666,
@@ -128,10 +119,7 @@ export function houseFacade(
         if (tile?.type !== 'wall') {
           continue;
         }
-        const footRect = supported(
-          tile,
-          rectangle(u - 0.165, -0.27, u + 0.165, 0.2),
-        );
+        const footRect = supported(tile, rectangle(u - 0.165, -0.27, u + 0.165, 0.2));
         if (walking(footRect, capitalTop)) {
           continue;
         }
@@ -143,10 +131,7 @@ export function houseFacade(
           capitalBottom,
           wall,
         );
-        const capital = supported(
-          tile,
-          rectangle(u - 0.145, -0.25, u + 0.145, 0.19),
-        );
+        const capital = supported(tile, rectangle(u - 0.145, -0.25, u + 0.145, 0.19));
         box(batch, capital, capitalBottom, capitalTop - 0.5 / V, wall);
         box(batch, capital, capitalTop - 0.5 / V, capitalTop, coping);
       }

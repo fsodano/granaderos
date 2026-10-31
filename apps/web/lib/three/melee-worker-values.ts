@@ -1,19 +1,12 @@
 import { isWorkerRecord } from '../battle-worker-values';
 import type { LowerPathCache, LowerPoseRow } from './melee-lower-path-cache';
-import type {
-  NativePoseCache,
-  SettledPoseCache,
-  SettledPoseRow,
-} from './melee-native-pose-cache';
+import type { NativePoseCache, SettledPoseCache, SettledPoseRow } from './melee-native-pose-cache';
 const finite = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value);
 const strings = (value: unknown): value is string[] =>
-  Array.isArray(value) &&
-  value.every((item: unknown) => typeof item === 'string');
-const numbers = (value: unknown): value is number[] =>
-  Array.isArray(value) && value.every(finite);
-const tuple = (value: unknown, length: number) =>
-  numbers(value) && value.length === length;
+  Array.isArray(value) && value.every((item: unknown) => typeof item === 'string');
+const numbers = (value: unknown): value is number[] => Array.isArray(value) && value.every(finite);
+const tuple = (value: unknown, length: number) => numbers(value) && value.length === length;
 const floatValues = (value: unknown): value is Float64Array =>
   value instanceof Float64Array && value.every(Number.isFinite);
 function lowerRow(value: unknown): value is LowerPoseRow {
@@ -24,9 +17,7 @@ function lowerRow(value: unknown): value is LowerPoseRow {
     tuple(value['nativeRight'], 3) &&
     tuple(value['nativeLeft'], 3) &&
     tuple(value['rotation'], 4) &&
-    ['handWeight', 'footError', 'maximumError'].every((key) =>
-      finite(value[key]),
-    ) &&
+    ['handWeight', 'footError', 'maximumError'].every((key) => finite(value[key])) &&
     typeof value['solves'] === 'boolean' &&
     typeof value['bodyCheck'] === 'boolean'
   );
@@ -72,11 +63,7 @@ function lowerCache(value: unknown): value is LowerPathCache {
   );
 }
 function nativeCache(value: unknown): value is NativePoseCache {
-  if (
-    !isWorkerRecord(value) ||
-    !strings(value['names']) ||
-    !Array.isArray(value['rows'])
-  ) {
+  if (!isWorkerRecord(value) || !strings(value['names']) || !Array.isArray(value['rows'])) {
     return false;
   }
   const length = value['names'].length * 10;
@@ -102,17 +89,11 @@ function settledRow(value: unknown): value is SettledPoseRow {
   );
 }
 function settledCache(value: unknown): value is SettledPoseCache {
-  if (
-    !isWorkerRecord(value) ||
-    !strings(value['names']) ||
-    !Array.isArray(value['rows'])
-  ) {
+  if (!isWorkerRecord(value) || !strings(value['names']) || !Array.isArray(value['rows'])) {
     return false;
   }
   const length = value['names'].length * 26;
-  return value['rows'].every(
-    (item: unknown) => settledRow(item) && item.values.length === length,
-  );
+  return value['rows'].every((item: unknown) => settledRow(item) && item.values.length === length);
 }
 export interface ReadyMeleeSamples {
   id: number;
@@ -130,9 +111,7 @@ export function readReadyMeleeSamples(value: unknown): ReadyMeleeSamples {
     !nativeCache(value['native']) ||
     !settledCache(value['settled']) ||
     !Array.isArray(value['pairs']) ||
-    !value['pairs'].every(
-      (item: unknown) => numbers(item) && item.length === 2,
-    ) ||
+    !value['pairs'].every((item: unknown) => numbers(item) && item.length === 2) ||
     !finite(value['workerMs'])
   ) {
     throw new Error('Invalid melee preparation result');

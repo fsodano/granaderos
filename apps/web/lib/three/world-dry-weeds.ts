@@ -45,11 +45,7 @@ export function dryWeeds(
       width = (0.006 + random(1031) * 0.003) * T,
       lean = (random(1049) - 0.5) * height * 0.6;
     const point = (across: number, y: number, depth = 0) =>
-      new Vector3(
-        rootX + across * c - depth * s,
-        ground + y,
-        rootZ + across * s + depth * c,
-      );
+      new Vector3(rootX + across * c - depth * s, ground + y, rootZ + across * s + depth * c);
     const a = point(-width, 0),
       b = point(width, 0),
       d = point(lean * 0.46 - width * 0.65, height * 0.56),
@@ -87,10 +83,7 @@ export function dryWeeds(
       'position',
       new BufferAttribute(new Float32Array(vertices), 3),
     );
-    geometry.setAttribute(
-      'color',
-      new BufferAttribute(new Float32Array(colours), 3),
-    );
+    geometry.setAttribute('color', new BufferAttribute(new Float32Array(colours), 3));
     geometry.computeVertexNormals();
     batch.add(geometry, materials.get('grass'), undefined, light);
     geometry.dispose();

@@ -13,8 +13,7 @@ import {
 const cache = new WeakMap<Object3D, WeakMap<AnimationClip, AnimationClip>>();
 const breathsPerCycle = 3;
 const world = (node: Object3D) => node.getWorldPosition(new Vector3());
-const orientation = (node: Object3D) =>
-  node.getWorldQuaternion(new Quaternion());
+const orientation = (node: Object3D) => node.getWorldQuaternion(new Quaternion());
 function skeletonCopy(node: Object3D): Object3D {
   const hasBone = (part: Object3D): boolean =>
     Boolean(part instanceof Bone) || part.children.some(hasBone);
@@ -27,9 +26,7 @@ function skeletonCopy(node: Object3D): Object3D {
   return copy;
 }
 function worldRotation(node: Object3D, rotation: Quaternion) {
-  node.quaternion.copy(
-    orientation(required(node.parent)).invert().multiply(rotation),
-  );
+  node.quaternion.copy(orientation(required(node.parent)).invert().multiply(rotation));
   node.updateWorldMatrix(false, true);
 }
 function turn(node: Object3D, before: Vector3, after: Vector3) {
@@ -49,12 +46,7 @@ type Arm = Limb & {
   shoulder: Object3D;
   side: number;
 };
-function keepContact(
-  arm: Limb,
-  target: Vector3,
-  pole: Vector3,
-  rotation: Quaternion,
-) {
+function keepContact(arm: Limb, target: Vector3, pole: Vector3, rotation: Quaternion) {
   const { upper, elbow, hand } = arm,
     start = world(upper),
     middle = world(elbow),
@@ -73,10 +65,7 @@ function keepContact(
   }
   const along = (a * a - b * b + distance * distance) / (2 * distance),
     rise = Math.sqrt(Math.max(0, a * a - along * along)),
-    bend = start
-      .clone()
-      .addScaledVector(direction, along)
-      .addScaledVector(pole.normalize(), rise);
+    bend = start.clone().addScaledVector(direction, along).addScaledVector(pole.normalize(), rise);
   turn(upper, middle.sub(start), bend.clone().sub(start));
   turn(elbow, world(hand).sub(world(elbow)), target.clone().sub(world(elbow)));
   worldRotation(hand, rotation);
@@ -167,19 +156,12 @@ export function idleBreathingClip(
       chest,
       neck,
       head,
-      ...nativeArms.flatMap((arm) => [
-        arm.shoulder,
-        arm.upper,
-        arm.elbow,
-        arm.hand,
-      ]),
+      ...nativeArms.flatMap((arm) => [arm.shoulder, arm.upper, arm.elbow, arm.hand]),
       ...nativeLegs.flatMap((leg) => [leg.upper, leg.elbow, leg.hand]),
     ];
   const duration = source.duration * breathsPerCycle,
     count = Math.max(1, Math.ceil(duration * 60)),
-    times = Array.from({ length: count + 1 }, (_, i) =>
-      Math.fround((duration * i) / count),
-    );
+    times = Array.from({ length: count + 1 }, (_, i) => Math.fround((duration * i) / count));
   const rotations = new Map(modified.map((node) => [node, [] as number[]])),
     positions: number[] = [],
     hipPositions: number[] = [];
@@ -191,13 +173,9 @@ export function idleBreathingClip(
   // Restore every changed property before sampling. Some authored idle clips
   // omit static tracks; those must not accumulate the previous sample's lift.
   const rest = new Map(
-    modified.map((node) => [
-      node,
-      { q: node.quaternion.clone(), p: node.position.clone() },
-    ]),
+    modified.map((node) => [node, { q: node.quaternion.clone(), p: node.position.clone() }]),
   );
-  let referenceHead: Vector3 | undefined,
-    referenceHeadRotation: Quaternion | undefined;
+  let referenceHead: Vector3 | undefined, referenceHeadRotation: Quaternion | undefined;
   for (const time of times) {
     for (const [node, value] of rest) {
       node.quaternion.copy(value.q);
@@ -205,8 +183,7 @@ export function idleBreathingClip(
     }
     playing.enabled = true;
     playing.paused = false;
-    playing.time =
-      time === times.at(-1) ? source.duration : time % source.duration;
+    playing.time = time === times.at(-1) ? source.duration : time % source.duration;
     mixer.update(0);
     model.updateMatrixWorld(true);
     for (const [node, value] of rest) {
@@ -232,8 +209,7 @@ export function idleBreathingClip(
     for (const { leg, target } of feet) {
       const start = world(leg.upper).add(offset),
         reach =
-          (world(leg.upper).distanceTo(world(leg.elbow)) +
-            world(leg.elbow).distanceTo(target)) *
+          (world(leg.upper).distanceTo(world(leg.elbow)) + world(leg.elbow).distanceTo(target)) *
           0.9999,
         horizontal = (start.x - target.x) ** 2 + (start.z - target.z) ** 2;
       drop = Math.max(
@@ -264,9 +240,7 @@ export function idleBreathingClip(
         .setFromAxisAngle(new Vector3(1, 0, 0), -0.022 * breath)
         .multiply(orientation(spine)),
     );
-    const lifted = world(chest).add(
-      new Vector3(0, 0.026 * breath, 0.022 * breath),
-    );
+    const lifted = world(chest).add(new Vector3(0, 0.026 * breath, 0.022 * breath));
     chest.position.copy(required(chest.parent).worldToLocal(lifted));
     chest.updateWorldMatrix(false, true);
     // Two-hand grips follow the chest as one rigid pair. Opening each shoulder
@@ -286,21 +260,14 @@ export function idleBreathingClip(
       .lerp(nativeHead, 0.2)
       .add(new Vector3(shift * 0.75, 0.006 * breath - drop, 0.003 * breath));
     turn(neck, world(head).sub(world(neck)), headTarget.sub(world(neck)));
-    worldRotation(
-      head,
-      referenceHeadRotation.clone().slerp(nativeHeadRotation, 0.2),
-    );
+    worldRotation(head, referenceHeadRotation.clone().slerp(nativeHeadRotation, 0.2));
     for (const node of modified) {
       const row = required(rotations.get(node)),
         q = node.quaternion;
       if (
         row.length &&
-        row
-          .slice(-4)
-          .reduce(
-            (sum, value, index) => sum + value * required(q.toArray()[index]),
-            0,
-          ) < 0
+        row.slice(-4).reduce((sum, value, index) => sum + value * required(q.toArray()[index]), 0) <
+          0
       ) {
         row.push(-q.x, -q.y, -q.z, -q.w);
       } else {
@@ -312,17 +279,10 @@ export function idleBreathingClip(
   }
   mixer.stopAllAction();
   mixer.uncacheRoot(model);
-  const replacements = new Map<
-    string,
-    QuaternionKeyframeTrack | VectorKeyframeTrack
-  >(
+  const replacements = new Map<string, QuaternionKeyframeTrack | VectorKeyframeTrack>(
     modified.map((node) => [
       node.name + '.quaternion',
-      new QuaternionKeyframeTrack(
-        node.name + '.quaternion',
-        times,
-        required(rotations.get(node)),
-      ),
+      new QuaternionKeyframeTrack(node.name + '.quaternion', times, required(rotations.get(node))),
     ]),
   );
   replacements.set(

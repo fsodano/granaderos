@@ -18,10 +18,7 @@ type Arm = {
   hand: Object3D;
   side: number;
 };
-const cache = new WeakMap<
-  Object3D,
-  WeakMap<AnimationClip, Map<string, AnimationClip>>
->();
+const cache = new WeakMap<Object3D, WeakMap<AnimationClip, Map<string, AnimationClip>>>();
 const point = (node: Object3D) => node.getWorldPosition(new Vector3());
 const rotation = (node: Object3D) => node.getWorldQuaternion(new Quaternion());
 function skeletonCopy(node: Object3D): Object3D {
@@ -36,9 +33,7 @@ function skeletonCopy(node: Object3D): Object3D {
   return copy;
 }
 function worldRotation(node: Object3D, value: Quaternion) {
-  node.quaternion.copy(
-    rotation(required(node.parent)).invert().multiply(value),
-  );
+  node.quaternion.copy(rotation(required(node.parent)).invert().multiply(value));
   node.updateWorldMatrix(false, true);
 }
 function turn(node: Object3D, before: Vector3, after: Vector3) {
@@ -49,12 +44,7 @@ function turn(node: Object3D, before: Vector3, after: Vector3) {
       .multiply(rotation(node)),
   );
 }
-function solve(
-  arm: Arm,
-  target: Vector3,
-  pole: Vector3,
-  handRotation: Quaternion,
-) {
+function solve(arm: Arm, target: Vector3, pole: Vector3, handRotation: Quaternion) {
   const start = point(arm.upper),
     middle = point(arm.elbow),
     end = point(arm.hand),
@@ -77,16 +67,9 @@ function solve(
   }
   const along = (a * a - b * b + distance * distance) / (2 * distance),
     rise = Math.sqrt(Math.max(0, a * a - along * along)),
-    bend = start
-      .clone()
-      .addScaledVector(direction, along)
-      .addScaledVector(pole.normalize(), rise);
+    bend = start.clone().addScaledVector(direction, along).addScaledVector(pole.normalize(), rise);
   turn(arm.upper, middle.sub(start), bend.clone().sub(start));
-  turn(
-    arm.elbow,
-    point(arm.hand).sub(point(arm.elbow)),
-    target.clone().sub(point(arm.elbow)),
-  );
+  turn(arm.elbow, point(arm.hand).sub(point(arm.elbow)), target.clone().sub(point(arm.elbow)));
   worldRotation(arm.hand, handRotation);
   return true;
 }
@@ -99,9 +82,7 @@ export function idleArmGesturesClip(
   bones: Record<string, string>,
   freeHands: IdleFreeHands,
 ) {
-  const roles = (['handLeft', 'handRight'] as const).filter(
-    (role) => freeHands[role] === true,
-  );
+  const roles = (['handLeft', 'handRight'] as const).filter((role) => freeHands[role] === true);
   if (
     !roles.length ||
     !source.name.startsWith('stand.idle.') ||
@@ -132,9 +113,8 @@ export function idleArmGesturesClip(
       elbow = hand?.parent,
       upper = elbow?.parent,
       shoulder = upper?.parent;
-    return [hand, elbow, upper, shoulder].every(
-      (node) => node instanceof Bone,
-    ) && required(shoulder).parent === chest
+    return [hand, elbow, upper, shoulder].every((node) => node instanceof Bone) &&
+      required(shoulder).parent === chest
       ? {
           hand: required(hand),
           elbow: required(elbow),
@@ -150,12 +130,7 @@ export function idleArmGesturesClip(
     return source;
   }
   const freeArms = arms.filter((arm): arm is Arm => arm !== undefined),
-    modified = freeArms.flatMap((arm) => [
-      arm.shoulder,
-      arm.upper,
-      arm.elbow,
-      arm.hand,
-    ]);
+    modified = freeArms.flatMap((arm) => [arm.shoulder, arm.upper, arm.elbow, arm.hand]);
   if (new Set(modified).size !== modified.length) {
     variants.set(key, source);
     return source;
@@ -164,17 +139,12 @@ export function idleArmGesturesClip(
     times = [
       ...new Set(
         [
-          ...Array.from(
-            { length: count + 1 },
-            (_, i) => (source.duration * i) / count,
-          ),
+          ...Array.from({ length: count + 1 }, (_, i) => (source.duration * i) / count),
           ...source.tracks.flatMap((track) => Array.from(track.times)),
         ].map(Math.fround),
       ),
     ].sort((a, b) => a - b);
-  const native = new Map(
-      modified.map((node) => [node, node.quaternion.clone()]),
-    ),
+  const native = new Map(modified.map((node) => [node, node.quaternion.clone()])),
     values = new Map(modified.map((node) => [node, [] as number[]]));
   const mixer = new AnimationMixer(model),
     playing = mixer.clipAction(source).setLoop(LoopOnce, 1);
@@ -217,28 +187,17 @@ export function idleArmGesturesClip(
       }
       const shoulderTurn = new Quaternion()
         .setFromAxisAngle(new Vector3(0, 0, 1), arm.side * 0.03 * stretch)
-        .multiply(
-          new Quaternion().setFromAxisAngle(
-            new Vector3(0, 1, 0),
-            arm.side * 0.045 * roll,
-          ),
-        );
-      worldRotation(
-        arm.shoulder,
-        shoulderTurn.multiply(rotation(arm.shoulder)),
-      );
+        .multiply(new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), arm.side * 0.045 * roll));
+      worldRotation(arm.shoulder, shoulderTurn.multiply(rotation(arm.shoulder)));
       // Extend only into the existing elbow bend; never lock or lengthen an
       // arm. A sixteen-degree outward arc stays readable at tactical scale.
-      const extension =
-        Math.min(0.035, Math.max(0, reach * 0.985 - distance)) * 0.65 * stretch;
+      const extension = Math.min(0.035, Math.max(0, reach * 0.985 - distance)) * 0.65 * stretch;
       direction
         .normalize()
         .applyAxisAngle(new Vector3(0, 0, 1), arm.side * 0.28 * stretch)
         .applyAxisAngle(new Vector3(1, 0, 0), 0.08 * roll);
       const newStart = point(arm.upper),
-        target = newStart
-          .clone()
-          .addScaledVector(direction, distance + extension),
+        target = newStart.clone().addScaledVector(direction, distance + extension),
         pole = middle
           .add(newStart.clone().sub(start))
           .add(new Vector3(arm.side * 0.025 * stretch, 0, 0.01 * roll));
@@ -257,10 +216,7 @@ export function idleArmGesturesClip(
           row.length &&
           row
             .slice(-4)
-            .reduce(
-              (sum, value, index) => sum + value * required(q.toArray()[index]),
-              0,
-            ) < 0
+            .reduce((sum, value, index) => sum + value * required(q.toArray()[index]), 0) < 0
             ? -1
             : 1;
       row.push(q.x * sign, q.y * sign, q.z * sign, q.w * sign);
@@ -275,20 +231,13 @@ export function idleArmGesturesClip(
   const replacements = new Map(
     modified.map((node) => [
       node.name + '.quaternion',
-      new QuaternionKeyframeTrack(
-        node.name + '.quaternion',
-        times,
-        required(values.get(node)),
-      ),
+      new QuaternionKeyframeTrack(node.name + '.quaternion', times, required(values.get(node))),
     ]),
   );
   const result = new AnimationClip(
     source.name,
     source.duration,
-    [
-      ...source.tracks.filter((track) => !replacements.has(track.name)),
-      ...replacements.values(),
-    ],
+    [...source.tracks.filter((track) => !replacements.has(track.name)), ...replacements.values()],
     source.blendMode,
   );
   variants.set(key, result);

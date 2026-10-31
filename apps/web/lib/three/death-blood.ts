@@ -22,8 +22,7 @@ type Burst = {
   height: number;
 };
 export const DEATH_BLOOD_SECONDS = 0.55;
-const dead = (actor: BloodActor) =>
-  actor.action === 'die' || actor.action === 'dead';
+const dead = (actor: BloodActor) => actor.action === 'die' || actor.action === 'dead';
 const valid = (actor: BloodActor) =>
   actor &&
   typeof actor.key === 'string' &&
@@ -31,13 +30,9 @@ const valid = (actor: BloodActor) =>
   Array.isArray(actor.position) &&
   actor.position.length === 3 &&
   actor.position.every(Number.isFinite);
-const fraction = (seed: number, n: number) =>
-  ((Math.imul(seed + 1, 1597) + n * 2371) % 997) / 997;
+const fraction = (seed: number, n: number) => ((Math.imul(seed + 1, 1597) + n * 2371) % 997) / 997;
 const seedFor = (key: string) =>
-  Array.from(key).reduce(
-    (seed, char) => (seed * 31 + char.charCodeAt(0)) >>> 0,
-    0,
-  ) % 997;
+  Array.from(key).reduce((seed, char) => (seed * 31 + char.charCodeAt(0)) >>> 0, 0) % 997;
 /** Corpses are already admitted by presentation. No battle state or save data is owned here. */
 export function createDeathBlood(scene: Scene) {
   const root = new Group();
@@ -119,13 +114,9 @@ export function createDeathBlood(scene: Scene) {
         [0.51, -0.14, 0.04, 0.028],
       ]) {
         transform.position.set(
-          corpse.position[0] +
-            required(x) * Math.cos(angle) -
-            required(z) * Math.sin(angle),
+          corpse.position[0] + required(x) * Math.cos(angle) - required(z) * Math.sin(angle),
           corpse.position[1] + 0.012,
-          corpse.position[2] +
-            required(x) * Math.sin(angle) +
-            required(z) * Math.cos(angle),
+          corpse.position[2] + required(x) * Math.sin(angle) + required(z) * Math.cos(angle),
         );
         transform.rotation.set(0, angle, 0);
         transform.scale.set(required(sx), 1, required(sz));
@@ -165,10 +156,7 @@ export function createDeathBlood(scene: Scene) {
           burst.corpse.position[0] + Math.cos(angle) * spread * p,
           burst.corpse.position[1] +
             0.02 +
-            Math.max(
-              0,
-              burst.height * (1 - p * p) + 0.09 * Math.sin(p * Math.PI),
-            ),
+            Math.max(0, burst.height * (1 - p * p) + 0.09 * Math.sin(p * Math.PI)),
           burst.corpse.position[2] + Math.sin(angle) * spread * p,
         );
         transform.rotation.set(n, 0.8 * n, 0);
@@ -192,9 +180,7 @@ export function createDeathBlood(scene: Scene) {
         throw Error('Death blood is disposed.');
       }
       if (['units', 'npcs', 'state'].some((key) => key in input)) {
-        throw Error(
-          'Death blood accepts admitted actor visuals, not battle state.',
-        );
+        throw Error('Death blood accepts admitted actor visuals, not battle state.');
       }
       if (Number.isFinite(input.timeSeconds)) {
         time = required(input.timeSeconds);
@@ -228,21 +214,13 @@ export function createDeathBlood(scene: Scene) {
         ) {
           emitted.add(actor.key);
           const startedAt = cue.startedAt / 1000;
-          if (
-            !reduced &&
-            time >= startedAt &&
-            time - startedAt < DEATH_BLOOD_SECONDS
-          ) {
+          if (!reduced && time >= startedAt && time - startedAt < DEATH_BLOOD_SECONDS) {
             emittedCount++;
             bursts.set(actor.key, {
               corpse,
               startedAt,
               height:
-                cue.fromPosture === 'prone'
-                  ? 0.12
-                  : cue.fromPosture === 'crouched'
-                    ? 0.35
-                    : 0.55,
+                cue.fromPosture === 'prone' ? 0.12 : cue.fromPosture === 'crouched' ? 0.35 : 0.55,
             });
           }
         }
@@ -283,8 +261,7 @@ export function createDeathBlood(scene: Scene) {
         emitted: emittedCount,
         stainInstances: pools?.count ?? 0,
         dropletInstances: drops?.count ?? 0,
-        drawCalls:
-          Number(Boolean(pools?.count)) + Number(Boolean(drops?.count)),
+        drawCalls: Number(Boolean(pools?.count)) + Number(Boolean(drops?.count)),
       };
     },
     dispose() {

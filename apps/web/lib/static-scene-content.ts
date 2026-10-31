@@ -10,12 +10,7 @@ export function sameStaticSceneContent(a: unknown, b: unknown): boolean {
   if (Object.is(a, b)) {
     return true;
   }
-  if (
-    a === null ||
-    b === null ||
-    typeof a !== 'object' ||
-    typeof b !== 'object'
-  ) {
+  if (a === null || b === null || typeof a !== 'object' || typeof b !== 'object') {
     return false;
   }
   const known = compared.get(a)?.get(b);
@@ -60,9 +55,7 @@ function compareContent(a: object, b: object): boolean {
     other = Object.keys(b);
   return (
     keys.length === other.length &&
-    keys.every(
-      (key) => Object.hasOwn(b, key) && sameStaticSceneContent(a[key], b[key]),
-    )
+    keys.every((key) => Object.hasOwn(b, key) && sameStaticSceneContent(a[key], b[key]))
   );
 }
 

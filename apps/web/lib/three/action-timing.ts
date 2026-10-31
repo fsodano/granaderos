@@ -27,14 +27,7 @@ function loadingWork(
     to = after.reloadProgress ?? 0,
     rounds = Number(after.loaded ?? 0) - Number(before.loaded ?? 0);
   const gain = rounds + to - from;
-  if (
-    !(gain > 1e-9) ||
-    from < 0 ||
-    from >= 1 ||
-    to < 0 ||
-    to >= 1 ||
-    rounds < 0
-  ) {
+  if (!(gain > 1e-9) || from < 0 || from >= 1 || to < 0 || to >= 1 || rounds < 0) {
     return [];
   }
   const work: AnimationWork[] = [];
@@ -54,9 +47,7 @@ function admittedGunWork(
 ): AnimationWork[] {
   const held = (actor: BattleUnit) =>
     actorItems(actor).find(
-      (item) =>
-        item.reference === hand &&
-        ['handRight', 'handLeft'].includes(item.socket),
+      (item) => item.reference === hand && ['handRight', 'handLeft'].includes(item.socket),
     );
   const first = held(before),
     last = held(after);
@@ -64,12 +55,7 @@ function admittedGunWork(
     hand === 'primary' ? actor.weaponInstanceId : actor.offHand?.instanceId;
   // A dropped, replaced or pocketed gun does not establish observed loading
   // for that owned item. The two pistols retain their separate work intervals.
-  if (
-    !first ||
-    !last ||
-    first.id !== last.id ||
-    identity(before) !== identity(after)
-  ) {
+  if (!first || !last || first.id !== last.id || identity(before) !== identity(after)) {
     return [];
   }
   const initial = hand === 'primary' ? before : before.offHand,
@@ -77,9 +63,7 @@ function admittedGunWork(
   return loadingWork(initial, final).map((work, index) => ({
     ...work,
     hand,
-    ...(first.id === '1808'
-      ? { barrel: (Number(initial?.loaded ?? 0) + index) % 2 }
-      : {}),
+    ...(first.id === '1808' ? { barrel: (Number(initial?.loaded ?? 0) + index) % 2 } : {}),
   }));
 }
 
@@ -130,10 +114,7 @@ export function admittedReloadWork(frames: readonly BattlePresentationFrame[]) {
       const observed = (state: BattleSnapshot, gun: BattleArtillery) =>
         state.units.some(
           (unit) =>
-            unit.side === 'player' &&
-            unit.hp > 0 &&
-            !unit.unconscious &&
-            canSee(state, unit, gun),
+            unit.side === 'player' && unit.hp > 0 && !unit.unconscious && canSee(state, unit, gun),
         );
       work = (start.state.artillery ?? []).flatMap((gun) => {
         const next = end.state.artillery?.find((next) => next.id === gun.id);
@@ -156,9 +137,7 @@ export function admittedReloadWork(frames: readonly BattlePresentationFrame[]) {
 
 /** An observed thrown flight already contains the release and follow-through.
  * The final rules result may hold impacts, but cannot replay the throw. */
-export function admittedThrownRelease(
-  frames: readonly BattlePresentationFrame[],
-) {
+export function admittedThrownRelease(frames: readonly BattlePresentationFrame[]) {
   const result = frames.map((frame) => ({ ...frame }));
   for (let index = 0; index < frames.length; index++) {
     const flight = frames[index];
@@ -199,9 +178,7 @@ export function admittedThrownRelease(
 
 /** An accepted observed treatment has preparation and result for the same
  * current actor. This flag carries no patient state or hidden position. */
-export function admittedHealingIntervals(
-  frames: readonly BattlePresentationFrame[],
-) {
+export function admittedHealingIntervals(frames: readonly BattlePresentationFrame[]) {
   const result = frames.map((frame) => ({ ...frame }));
   for (let index = 0; index < frames.length; index++) {
     const start = frames[index];
@@ -249,10 +226,7 @@ export function admittedHealingIntervals(
 
 /** Only the admitted actor selects a native visual delay. Rules and simulation
  * time remain unchanged; unseen actions retain the ordinary playback delay. */
-export function nativeActionFrameDuration(
-  frame: BattlePresentationFrame,
-  requested: number,
-) {
+export function nativeActionFrameDuration(frame: BattlePresentationFrame, requested: number) {
   if (!frame.unitId || frame.performed === false || frame.releaseComplete) {
     return requested;
   }
@@ -261,11 +235,7 @@ export function nativeActionFrameDuration(
     return requested;
   }
   const action = semanticOrder(frame.action, frame, unit);
-  if (
-    !action ||
-    !usesNativeActionTiming(action) ||
-    (action === 'heal' && !frame.healInterval)
-  ) {
+  if (!action || !usesNativeActionTiming(action) || (action === 'heal' && !frame.healInterval)) {
     return requested;
   }
   const capability = resolveActorAction({
@@ -285,7 +255,6 @@ export function nativeActionFrameDuration(
     frame.actionWork,
     frame.healInterval,
   );
-  const duration =
-    ranges.reduce((sum, [begin, end]) => sum + end - begin, 0) * 1000;
+  const duration = ranges.reduce((sum, [begin, end]) => sum + end - begin, 0) * 1000;
   return frame.actionWork && duration === 0 ? 0 : Math.max(requested, duration);
 }

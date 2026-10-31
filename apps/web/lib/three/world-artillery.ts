@@ -40,17 +40,9 @@ export function buildCannon(
     [radius * 0.68, length * 0.5],
     [radius * 0.68, length * 0.35],
   ] as const);
-  const barrelQ = new Quaternion().setFromAxisAngle(
-      new Vector3(0, 0, 1),
-      -Math.PI * 0.5,
-    ),
+  const barrelQ = new Quaternion().setFromAxisAngle(new Vector3(0, 0, 1), -Math.PI * 0.5),
     centre = new Vector3(0.22, height, 0);
-  batch.add(
-    barrel,
-    metal,
-    new Matrix4().compose(centre, barrelQ, new Vector3(1, 1, 1)),
-    light,
-  );
+  batch.add(barrel, metal, new Matrix4().compose(centre, barrelQ, new Vector3(1, 1, 1)), light);
   barrel.dispose();
   batch.primitive(
     'sphere',
@@ -96,30 +88,13 @@ export function buildCannon(
     const wheels = new WorldBatch(geometry),
       wheelRadius = 0.48 / (1.04 * 1.09);
     for (const side of [-1, 1]) {
-      wheel(
-        wheels,
-        materials,
-        light,
-        side * axle * 0.59,
-        0.48,
-        0.1,
-        wheelRadius,
-      );
+      wheel(wheels, materials, light, side * axle * 0.59, 0.48, 0.1, wheelRadius);
     }
     const wheelGroup = wheels.finish('cannon-wheels'),
       matrix = new Matrix4().makeRotationY(Math.PI * 0.5);
     batch.take(wheelGroup, matrix);
     for (const side of [-1, 1]) {
-      batch.box(
-        wood,
-        -0.12,
-        0.61,
-        side * radius * 1.5,
-        0.71,
-        0.25,
-        0.11,
-        light,
-      );
+      batch.box(wood, -0.12, 0.61, side * radius * 1.5, 0.71, 0.25, 0.11, light);
       batch.cylinder(
         wood,
         new Vector3(0.1, 0.54, side * 0.2),
@@ -127,16 +102,7 @@ export function buildCannon(
         0.072,
         light,
       );
-      batch.box(
-        iron,
-        -0.06,
-        0.71,
-        side * radius * 1.54,
-        0.19,
-        0.05,
-        0.13,
-        light,
-      );
+      batch.box(iron, -0.06, 0.71, side * radius * 1.54, 0.19, 0.05, 0.13, light);
     }
     batch.box(wood, -1.07, 0.13, 0, 0.39, 0.1, 0.42, light);
     batch.box(iron, -1.12, 0.15, 0, 0.11, 0.035, 0.4, light);
@@ -146,11 +112,7 @@ export function buildCannon(
         batch.primitive(
           'sphere',
           iron,
-          [
-            -0.78 + (n % 2) * 0.12,
-            0.41 + (n === 2 ? 0.1 : 0),
-            ((n % 2) - 0.5) * 0.13,
-          ],
+          [-0.78 + (n % 2) * 0.12, 0.41 + (n === 2 ? 0.1 : 0), ((n % 2) - 0.5) * 0.13],
           [0.052, 0.052, 0.052],
           undefined,
           light,

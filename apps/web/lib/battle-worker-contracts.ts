@@ -10,9 +10,7 @@ export type {
   BattleWorkerResultByKind,
   BattleWorkerContinuationByKind,
 } from '../../../packages/game/public/battle-job-types.ts';
-export interface BattleWorkerRequest<
-  Kind extends BattleJobKind = BattleJobKind,
-> {
+export interface BattleWorkerRequest<Kind extends BattleJobKind = BattleJobKind> {
   id: number;
   context: SectorOperationContextSnapshot;
   job: BattleWorkerJob<Kind>;

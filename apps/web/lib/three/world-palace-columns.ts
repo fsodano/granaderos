@@ -1,20 +1,10 @@
 import { required } from './required';
-import {
-  worldWallRecords,
-  buildingWallAtPoint,
-  wallFrameRecords,
-} from './world-wall-records';
+import { worldWallRecords, buildingWallAtPoint, wallFrameRecords } from './world-wall-records';
 import { Group, Vector3 } from 'three';
-import {
-  entranceFrame,
-  getBuildingProfile,
-} from '../../../../packages/game/building-profile.ts';
+import { entranceFrame, getBuildingProfile } from '../../../../packages/game/building-profile.ts';
 import { buildingAppearance } from '../../../../packages/game/building-appearance.ts';
 import { WorldBatch } from './world-geometry';
-import {
-  architectureFinish,
-  applyArchitectureFinish,
-} from './world-architecture-finish';
+import { architectureFinish, applyArchitectureFinish } from './world-architecture-finish';
 import { illuminationAt } from './world-materials';
 import type { WorldGeometry } from './world-geometry';
 import type { WorldMaterialSource } from './world-materials';
@@ -34,17 +24,13 @@ export function palaceColumns(
 ) {
   const root = new Group();
   root.name = `building-palace-columns:${b.id}`;
-  const walls = worldWallRecords(input).filter(
-      (tile) => tile.buildingId === b.id,
-    ),
+  const walls = worldWallRecords(input).filter((tile) => tile.buildingId === b.id),
     frame = entranceFrame({ ...b, walls: wallFrameRecords(walls) }),
     profile = getBuildingProfile(b),
     appearance = buildingAppearance(b),
     V = 25.066666666666666,
     twoStoreys = height >= 4,
-    storey = twoStoreys
-      ? (height * profile.groundFloorHeight) / profile.wallHeight
-      : height,
+    storey = twoStoreys ? (height * profile.groundFloorHeight) / profile.wallHeight : height,
     light = illuminationAt(input, b);
   let batch = new WorldBatch(geometry);
   const texture = '/art/architecture-plaster-v2.png',
@@ -106,12 +92,7 @@ export function palaceColumns(
         (surface.y + 0.5) * T > r.minZ + 1e-6 &&
         (surface.y - 0.5) * T < r.maxZ - 1e-6,
     );
-  const box = (
-    r: ReturnType<typeof rect>,
-    bottom: number,
-    top: number,
-    material = wall,
-  ) => {
+  const box = (r: ReturnType<typeof rect>, bottom: number, top: number, material = wall) => {
     if (top > bottom && r.maxX > r.minX && r.maxZ > r.minZ) {
       batch.box(
         material,
@@ -140,12 +121,7 @@ export function palaceColumns(
       continue;
     }
     box(footRect, 0, foot, stone);
-    box(
-      clip(tile, rect(u - 0.14, -0.34, u + 0.14, 0.16)),
-      foot,
-      capitalBottom,
-      stone,
-    );
+    box(clip(tile, rect(u - 0.14, -0.34, u + 0.14, 0.16)), foot, capitalBottom, stone);
     box(footRect, capitalBottom, top - 0.5 / V, stone);
     box(footRect, top - 0.5 / V, top, stoneCoping);
   }
@@ -164,26 +140,17 @@ export function palaceColumns(
       }
       if (v !== 0 || !formal.includes(u)) {
         const sign = v === 0 ? 1 : -1,
-          footRect = clip(
-            tile,
-            rect(u - 0.225, v - 0.39 * sign, u + 0.225, v + 0.2 * sign),
-          ),
+          footRect = clip(tile, rect(u - 0.225, v - 0.39 * sign, u + 0.225, v + 0.2 * sign)),
           top = storey - 0.5 / V,
           foot = Math.min(profile.plinthHeight / V, (storey - 5.5 / V) * 0.6);
         if (!walking(footRect, top) && storey - 5.5 / V > foot + 0.1) {
           box(footRect, 0, foot, stone);
           box(
-            clip(
-              tile,
-              rect(u - 0.155, v - 0.34 * sign, u + 0.155, v + 0.15 * sign),
-            ),
+            clip(tile, rect(u - 0.155, v - 0.34 * sign, u + 0.155, v + 0.15 * sign)),
             foot,
             storey - 5.5 / V,
           );
-          const capital = clip(
-            tile,
-            rect(u - 0.205, v - 0.37 * sign, u + 0.205, v + 0.19 * sign),
-          );
+          const capital = clip(tile, rect(u - 0.205, v - 0.37 * sign, u + 0.205, v + 0.19 * sign));
           box(capital, storey - 5.5 / V, top - 0.5 / V);
           box(capital, top - 0.5 / V, top, coping);
         }

@@ -1,7 +1,4 @@
-import {
-  NativePatientContactFit,
-  type PatientCalibration,
-} from './heal-patient-contact-fit';
+import { NativePatientContactFit, type PatientCalibration } from './heal-patient-contact-fit';
 import { restoreActor, type ActorSnapshot } from './melee-worker-snapshot';
 import type { ActorCue } from './presentation';
 export type PatientFitJob = {

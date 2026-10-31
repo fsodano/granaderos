@@ -13,10 +13,7 @@ import {
   equipmentFingerprint,
   itemDescriptor,
 } from '../../../packages/game/tactical-inventory.js';
-import {
-  equipmentCursorPreview,
-  interruptAvailable,
-} from '../../../packages/game/tactical.js';
+import { equipmentCursorPreview, interruptAvailable } from '../../../packages/game/tactical.js';
 
 export type EquipmentSource = {
   owner: symbol;
@@ -118,9 +115,7 @@ export function createEquipmentInteraction(scope: string) {
     unit: InventoryActor | null | undefined,
     owner = state.selection?.owner ?? restoredOwner,
   ) => {
-    const cursor = unit?.equipmentCursor
-      ? source(unit, 'cursor', owner, true)
-      : null;
+    const cursor = unit?.equipmentCursor ? source(unit, 'cursor', owner, true) : null;
     if (
       cursor &&
       state.selection?.expectedSource === cursor.expectedSource &&
@@ -140,17 +135,8 @@ export function createEquipmentInteraction(scope: string) {
       hint: cursor ? selectedHint(cursor) : '',
     });
   };
-  const accept = (
-    result: InventoryOrderResult,
-    unitId: string,
-    owner?: symbol,
-  ) => {
-    if (
-      result &&
-      typeof result === 'object' &&
-      'lastError' in result &&
-      result.lastError
-    ) {
+  const accept = (result: InventoryOrderResult, unitId: string, owner?: symbol) => {
+    if (result && typeof result === 'object' && 'lastError' in result && result.lastError) {
       pending = false;
       publish({ ...state, target: '', hint: result.lastError });
       return false;
@@ -170,9 +156,7 @@ export function createEquipmentInteraction(scope: string) {
           ...binding,
           unit,
           battle:
-            result && typeof result === 'object' && 'units' in result
-              ? result
-              : binding.battle,
+            result && typeof result === 'object' && 'units' in result ? result : binding.battle,
         };
       }
       observe(unit, owner);
@@ -286,10 +270,7 @@ export function createEquipmentInteraction(scope: string) {
     } catch (error) {
       return {
         valid: false,
-        reason:
-          error instanceof Error
-            ? error.message
-            : 'No se pudo comprobar el destino.',
+        reason: error instanceof Error ? error.message : 'No se pudo comprobar el destino.',
         pa: 0,
         action: null,
       };
@@ -370,31 +351,21 @@ export function createEquipmentInteraction(scope: string) {
       onOrder?: InventoryOrderHandler,
       battle?: InventoryContext,
     ) {
-      if (
-        state.selection &&
-        String(unit?.id) !== state.selection.unitId &&
-        battle
-      ) {
-        const owner = battle.units.find(
-          (actor) => String(actor.id) === state.selection?.unitId,
-        );
+      if (state.selection && String(unit?.id) !== state.selection.unitId && battle) {
+        const owner = battle.units.find((actor) => String(actor.id) === state.selection?.unitId);
         if (
           !owner?.equipmentCursor ||
           ('tiles' in battle &&
             !interruptAvailable(
               battle,
-              battle.units.find(
-                (actor) => String(actor.id) === String(owner.id),
-              ),
+              battle.units.find((actor) => String(actor.id) === String(owner.id)),
             ))
         ) {
           resetGesture();
           pending = false;
           publish({
             ...empty(),
-            hint: owner?.equipmentCursor
-              ? 'El objeto permanece con su dueño.'
-              : '',
+            hint: owner?.equipmentCursor ? 'El objeto permanece con su dueño.' : '',
           });
         }
       }
@@ -408,8 +379,7 @@ export function createEquipmentInteraction(scope: string) {
         let matches = false;
         try {
           matches =
-            state.gesture.expectedSource ===
-            equipmentFingerprint(unit, state.gesture.sourceId);
+            state.gesture.expectedSource === equipmentFingerprint(unit, state.gesture.sourceId);
         } catch {}
         if (disabled || !matches) {
           resetGesture();
@@ -484,14 +454,7 @@ export function createEquipmentInteraction(scope: string) {
         publish({ ...state, target: '', hint: selectedHint(state.selection) });
       }
     },
-    press(
-      unit: InventoryActor,
-      slotId: string,
-      owner: symbol,
-      x: number,
-      y: number,
-      all = false,
-    ) {
+    press(unit: InventoryActor, slotId: string, owner: symbol, x: number, y: number, all = false) {
       if (state.gesture || state.selection || pending) {
         return false;
       }
@@ -570,6 +533,4 @@ export function createEquipmentInteraction(scope: string) {
     },
   };
 }
-export type EquipmentInteraction = ReturnType<
-  typeof createEquipmentInteraction
->;
+export type EquipmentInteraction = ReturnType<typeof createEquipmentInteraction>;

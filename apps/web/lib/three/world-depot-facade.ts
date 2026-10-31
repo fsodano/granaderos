@@ -1,13 +1,6 @@
-import {
-  worldWallRecords,
-  buildingWallAtPoint,
-  wallFrameRecords,
-} from './world-wall-records';
+import { worldWallRecords, buildingWallAtPoint, wallFrameRecords } from './world-wall-records';
 import { Group, Quaternion, Vector3 } from 'three';
-import {
-  entranceFrame,
-  getBuildingProfile,
-} from '../../../../packages/game/building-profile.ts';
+import { entranceFrame, getBuildingProfile } from '../../../../packages/game/building-profile.ts';
 import { WorldBatch } from './world-geometry';
 import { illuminationAt } from './world-materials';
 import { buildingArtInset } from './world-building-placement';
@@ -28,9 +21,7 @@ export function depotFacade(
   materials: WorldMaterialSource,
   legacy = false,
 ) {
-  const walls = worldWallRecords(input).filter(
-      (tile) => tile.buildingId === b.id,
-    ),
+  const walls = worldWallRecords(input).filter((tile) => tile.buildingId === b.id),
     frame = entranceFrame({ ...b, walls: wallFrameRecords(walls) }),
     inset = buildingArtInset(b, input),
     V = 25.066666666666666;
@@ -74,30 +65,15 @@ export function depotFacade(
     h: number,
     d: number,
     material = stone,
-  ) =>
-    batch.primitive(
-      'box',
-      material,
-      at(u, v, y),
-      [w * T, h, d * T],
-      rotation,
-      light,
-    );
+  ) => batch.primitive('box', material, at(u, v, y), [w * T, h, d * T], rotation, light);
 
   feature('depot-masonry-piers', (batch) => {
     for (const u of [0, frame.width]) {
       for (let v = 0; v <= frame.depth; v++) {
-        if (
-          (v === 0 || v === frame.depth || v % 3 === 0) &&
-          wallAt(u, v)?.type === 'wall'
-        ) {
+        if ((v === 0 || v === frame.depth || v % 3 === 0) && wallAt(u, v)?.type === 'wall') {
           // Each outer stone face reaches 49% of its solid cell. The shaft joins
           // the art-inset shell, while its wider foot stays clear of walking cells.
-          const shift = (
-              value: number,
-              target: number,
-              axis: { x: number; y: number },
-            ) =>
+          const shift = (value: number, target: number, axis: { x: number; y: number }) =>
               value - (inset - (inset === 0 ? 0 : target)) * (axis.x + axis.y),
             top = height - 3 / V,
             foot = Math.min((profile.plinthHeight + 2) / V, top * 0.4);
@@ -108,14 +84,8 @@ export function depotFacade(
             footU = shift(u, 0.14, frame.u),
             footV = shift(v, 0.14, frame.v),
             point = at(footU, footV, 0),
-            halfX =
-              (Math.abs(frame.u.x) * footW + Math.abs(frame.v.x) * footD) *
-              T *
-              0.5,
-            halfZ =
-              (Math.abs(frame.u.y) * footW + Math.abs(frame.v.y) * footD) *
-              T *
-              0.5;
+            halfX = (Math.abs(frame.u.x) * footW + Math.abs(frame.v.x) * footD) * T * 0.5,
+            halfZ = (Math.abs(frame.u.y) * footW + Math.abs(frame.v.y) * footD) * T * 0.5;
           if (
             authored &&
             (input.terrain.upperSurfaces ?? []).some(
@@ -164,11 +134,7 @@ export function depotFacade(
     u = support - inset * (frame.u.x + frame.u.y),
     bottom = height + 7 / V,
     top = height + rise - 7 / V;
-  if (
-    frame.width < 4 ||
-    wallAt(support, 0)?.type !== 'wall' ||
-    top - bottom < 0.12
-  ) {
+  if (frame.width < 4 || wallAt(support, 0)?.type !== 'wall' || top - bottom < 0.12) {
     return root;
   }
   const point = at(u, -0.16, 0),
@@ -186,16 +152,7 @@ export function depotFacade(
     return root;
   }
   feature('depot-loft-hatch', (batch) => {
-    box(
-      batch,
-      u,
-      -0.0275,
-      (bottom + top) * 0.5,
-      0.92,
-      top - bottom,
-      0.095,
-      wood,
-    );
+    box(batch, u, -0.0275, (bottom + top) * 0.5, 0.92, top - bottom, 0.095, wood);
     for (const side of [-1, 1]) {
       box(
         batch,
@@ -214,16 +171,7 @@ export function depotFacade(
     for (const y of [bottom + 3 / V, top - 3 / V]) {
       box(batch, u, -0.083, y, 0.91, 1.1 / V, 0.022 / T, iron);
     }
-    box(
-      batch,
-      u,
-      -0.084,
-      (bottom + top) * 0.5,
-      1.1 / V / T,
-      top - bottom,
-      0.022 / T,
-      iron,
-    );
+    box(batch, u, -0.084, (bottom + top) * 0.5, 1.1 / V / T, top - bottom, 0.022 / T, iron);
     batch.cylinder(
       wood,
       at(u - 0.39, -0.095, bottom + 3 / V),
@@ -255,13 +203,7 @@ export function depotFacade(
       pulleyRotation,
       light,
     );
-    batch.cylinder(
-      rope,
-      at(u, -0.43, boom - 1 / V),
-      at(u, -0.43, bottom - 1 / V),
-      0.012,
-      light,
-    );
+    batch.cylinder(rope, at(u, -0.43, boom - 1 / V), at(u, -0.43, bottom - 1 / V), 0.012, light);
   });
   return root;
 }

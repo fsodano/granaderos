@@ -31,6 +31,7 @@ export function defaultCampaignStory() {
     failureConditions: [],
   };
 }
+/** @param {import('./public/compatibility-types.ts').CampaignContext} [context] */
 export function validateCampaignStory(value, characters, quests, context = null) {
   return validateStoryRecords(
     value,

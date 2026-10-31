@@ -9,13 +9,7 @@ import type { WorldMaterialSource } from './world-materials';
 export type WorldEquipment = Pick<LoadedActor, 'manifest' | 'equipment'>;
 export function worldEquipmentReference(item: WorldItem) {
   const raw =
-      item.weapon ??
-      item.blade ??
-      item.outfit ??
-      item.item ??
-      item.kind ??
-      item.type ??
-      'supply',
+      item.weapon ?? item.blade ?? item.outfit ?? item.item ?? item.kind ?? item.type ?? 'supply',
     id = typeof raw === 'object' ? raw.id : raw;
   const template =
     item.template ??
@@ -66,36 +60,21 @@ export function addWorldItemModel(
     }
     const attachment = model.clone(true);
     attachment.position.fromArray(fit.position ?? [0, 0, 0]);
-    attachment.rotation.set(
-      fit.rotation?.[0] ?? 0,
-      fit.rotation?.[1] ?? 0,
-      fit.rotation?.[2] ?? 0,
-    );
+    attachment.rotation.set(fit.rotation?.[0] ?? 0, fit.rotation?.[1] ?? 0, fit.rotation?.[2] ?? 0);
     attachment.scale.setScalar(fit.scale ?? 1);
     object.add(attachment);
   }
-  object.quaternion.premultiply(
-    new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), angle),
-  );
+  object.quaternion.premultiply(new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), angle));
   const bounds = new Box3().setFromObject(object),
     centre = bounds.getCenter(new Vector3());
-  object.position.set(
-    offset.x - centre.x,
-    offset.y - bounds.min.y,
-    offset.z - centre.z,
-  );
+  object.position.set(offset.x - centre.x, offset.y - bounds.min.y, offset.z - centre.z);
   object.updateMatrixWorld(true);
   object.traverse((child) => {
     if (isMesh(child)) {
       if (!(child.material instanceof MeshStandardMaterial)) {
         throw Error(`Unsupported ground item material group: ${spec.node}`);
       }
-      batch.add(
-        child.geometry,
-        materials.equipment(child.material),
-        child.matrixWorld,
-        light,
-      );
+      batch.add(child.geometry, materials.equipment(child.material), child.matrixWorld, light);
     }
   });
   return spec.node;

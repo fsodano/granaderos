@@ -1,20 +1,10 @@
 import { required } from './required';
-import {
-  worldWallRecords,
-  buildingWallAtPoint,
-  wallFrameRecords,
-} from './world-wall-records';
+import { worldWallRecords, buildingWallAtPoint, wallFrameRecords } from './world-wall-records';
 import { Group, Vector3 } from 'three';
 import type { MeshStandardMaterial } from 'three';
-import {
-  entranceFrame,
-  getBuildingProfile,
-} from '../../../../packages/game/building-profile.ts';
+import { entranceFrame, getBuildingProfile } from '../../../../packages/game/building-profile.ts';
 import { buildingAppearance } from '../../../../packages/game/building-appearance.ts';
-import {
-  architectureFinish,
-  applyArchitectureFinish,
-} from './world-architecture-finish';
+import { architectureFinish, applyArchitectureFinish } from './world-architecture-finish';
 import { WorldBatch, roofTextureProjector } from './world-geometry';
 import { illuminationAt } from './world-materials';
 import type { WorldGeometry } from './world-geometry';
@@ -39,9 +29,7 @@ export function cabildoFacade(
 ) {
   const root = new Group();
   root.name = `building-cabildo-facade:${b.id}`;
-  const walls = worldWallRecords(input).filter(
-      (tile) => tile.buildingId === b.id,
-    ),
+  const walls = worldWallRecords(input).filter((tile) => tile.buildingId === b.id),
     frame = entranceFrame({ ...b, walls: wallFrameRecords(walls) }),
     profile = getBuildingProfile(b),
     appearance = buildingAppearance(b),
@@ -49,9 +37,7 @@ export function cabildoFacade(
     storey = height >= 4 ? height * 0.5 : height,
     light = illuminationAt(input, b),
     texture = '/art/architecture-plaster-v2.png';
-  const recipe = required(
-      architectureFinish(appearance['wallFinish'], 'volume'),
-    ),
+  const recipe = required(architectureFinish(appearance['wallFinish'], 'volume')),
     wall = materials.get(appearance['wallFinish'], {
       architectureRole: 'volume',
       texture,
@@ -177,22 +163,14 @@ export function cabildoFacade(
         continue;
       }
       box(batch, footRect, 0, foot, stone);
-      box(
-        batch,
-        clip(tile, rect(u - 0.13, -0.34, u + 0.13, 0.15)),
-        foot,
-        capitalBottom,
-      );
+      box(batch, clip(tile, rect(u - 0.13, -0.34, u + 0.13, 0.15)), foot, capitalBottom);
       const cap = clip(tile, rect(u - 0.18, -0.37, u + 0.18, 0.19));
       box(batch, cap, capitalBottom, top - 0.5 / V);
       box(batch, cap, top - 0.5 / V, top, pierCoping);
     }
     if (storey > 2.4) {
       for (let n = 1; n < rhythm.length; n++) {
-        if (
-          !columns.includes(required(rhythm[n - 1])) ||
-          !columns.includes(required(rhythm[n]))
-        ) {
+        if (!columns.includes(required(rhythm[n - 1])) || !columns.includes(required(rhythm[n]))) {
           continue;
         }
         const left = required(rhythm[n - 1]) + 0.14,
@@ -233,24 +211,13 @@ export function cabildoFacade(
           const sides = points.map((p, n) => {
             const a = required(normals[Math.max(0, n - 1)]),
               c = required(normals[Math.min(n, normals.length - 1)]),
-              length = Math.hypot(
-                required(a[0]) + required(c[0]),
-                required(a[1]) + required(c[1]),
-              ),
+              length = Math.hypot(required(a[0]) + required(c[0]), required(a[1]) + required(c[1])),
               x = (required(a[0]) + required(c[0])) / length,
               y = (required(a[1]) + required(c[1])) / length,
               scale = (width * 0.5) / (x * required(c[0]) + y * required(c[1]));
             return [
-              at(
-                left + ((p[0] + x * scale) * (right - left)) / 40,
-                depth,
-                (p[1] + y * scale) / V,
-              ),
-              at(
-                left + ((p[0] - x * scale) * (right - left)) / 40,
-                depth,
-                (p[1] - y * scale) / V,
-              ),
+              at(left + ((p[0] + x * scale) * (right - left)) / 40, depth, (p[1] + y * scale) / V),
+              at(left + ((p[0] - x * scale) * (right - left)) / 40, depth, (p[1] - y * scale) / V),
             ];
           });
           for (let p = 1; p < sides.length; p++) {
@@ -278,10 +245,9 @@ export function cabildoFacade(
 
   const u = frame.width * 0.5,
     footprint = rect(u - 0.81, -0.4, u + 0.81, 0.51),
-    bearing = Array.from(
-      { length: Math.ceil(1.4) + 1 },
-      (_, n) => Math.floor(u - 0.7) + n,
-    ).filter((a) => a >= u - 0.7 - 0.5 && a <= u + 0.7 + 0.5),
+    bearing = Array.from({ length: Math.ceil(1.4) + 1 }, (_, n) => Math.floor(u - 0.7) + n).filter(
+      (a) => a >= u - 0.7 - 0.5 && a <= u + 0.7 + 0.5,
+    ),
     supported = bearing.every((a) => {
       const p = frame.at(a, 0);
       return Boolean(buildingWallAtPoint(walls, p, b));
@@ -290,25 +256,9 @@ export function cabildoFacade(
     return root;
   }
   const crown = feature('civic-clock-tower', (batch) => {
-    box(
-      batch,
-      rect(u - 0.7, -0.27, u + 0.7, 0.4),
-      height - 3 / V,
-      height + 53 / V,
-    );
-    box(
-      batch,
-      rect(u - 0.78, -0.35, u + 0.78, 0.47),
-      height + 53 / V,
-      height + 57.5 / V,
-    );
-    box(
-      batch,
-      rect(u - 0.78, -0.35, u + 0.78, 0.47),
-      height + 57.5 / V,
-      height + 58 / V,
-      trim,
-    );
+    box(batch, rect(u - 0.7, -0.27, u + 0.7, 0.4), height - 3 / V, height + 53 / V);
+    box(batch, rect(u - 0.78, -0.35, u + 0.78, 0.47), height + 53 / V, height + 57.5 / V);
+    box(batch, rect(u - 0.78, -0.35, u + 0.78, 0.47), height + 57.5 / V, height + 58 / V, trim);
     const face = materials.get('linen', { colour: '#ddd0aa' }),
       ring = materials.get('cabildo-clock-ring', { colour: '#9b8964' }),
       hands = materials.get('cabildo-clock-hands', { colour: '#554931' }),
@@ -321,35 +271,14 @@ export function cabildoFacade(
         point = (x: number, y: number, out = 0) =>
           at(u + (x * 1.4) / 40, v + side * out, cy + y / V),
         disc = Array.from({ length: 48 }, (_, n) =>
-          point(
-            Math.sin((n * Math.PI) / 24) * 10,
-            Math.cos((n * Math.PI) / 24) * 10,
-          ),
+          point(Math.sin((n * Math.PI) / 24) * 10, Math.cos((n * Math.PI) / 24) * 10),
         );
       batch.polygon(face, disc, light);
       for (let n = 0; n < 48; n++) {
-        batch.cylinder(
-          ring,
-          required(disc[n]),
-          required(disc[(n + 1) % 48]),
-          0.65 / V,
-          light,
-        );
+        batch.cylinder(ring, required(disc[n]), required(disc[(n + 1) % 48]), 0.65 / V, light);
       }
-      batch.cylinder(
-        hands,
-        point(0, 7, 0.02),
-        point(0, 0, 0.02),
-        0.55 / V,
-        light,
-      );
-      batch.cylinder(
-        hands,
-        point(0, 0, 0.02),
-        point(6, -2, 0.02),
-        0.55 / V,
-        light,
-      );
+      batch.cylinder(hands, point(0, 7, 0.02), point(0, 0, 0.02), 0.55 / V, light);
+      batch.cylinder(hands, point(0, 0, 0.02), point(6, -2, 0.02), 0.55 / V, light);
       for (let n = 0; n < 12; n++) {
         const a = (n * Math.PI) / 6;
         batch.cylinder(
@@ -374,9 +303,7 @@ export function cabildoFacade(
       at(u - 0.81, 0.51, height + 58 / V),
     ],
     apex = at(u, 0.055, height + 75 / V),
-    panels = corners.map(
-      (point, n) => [point, required(corners[(n + 1) % 4]), apex] as const,
-    );
+    panels = corners.map((point, n) => [point, required(corners[(n + 1) % 4]), apex] as const);
   const tiles = feature('civic-cupola-roof', (batch) => {
     for (const panel of panels) {
       batch.polygon(roof, panel, light, roofTextureProjector(panel));

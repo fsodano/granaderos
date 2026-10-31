@@ -1,3 +1,10 @@
+import {
+  parseEditorJson,
+  requireJsonDocument,
+  readBuildingTemplate,
+  isJsonValue,
+} from '../apps/campaign-editor/web/lib/editor-documents.ts';
+import type { SectorMapCommand } from '../apps/campaign-editor/domain/sector-map-command.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -5,15 +12,22 @@ import { BUILDING_TEMPLATES } from '../packages/game/map-templates.js';
 import { blankMap } from '../packages/game/map-schema.js';
 import { editSectorMapDocument } from '../apps/campaign-editor/public/map-editing-api.js';
 
-const fixtures = JSON.parse(
-  readFileSync(
-    new URL('../apps/web/app/renderer-sandbox/generated-architecture-documents.json', import.meta.url),
-    'utf8',
+const fixtures = requireJsonDocument(
+  parseEditorJson(
+    readFileSync(
+      new URL(
+        '../apps/web/app/renderer-sandbox/generated-architecture-documents.json',
+        import.meta.url,
+      ),
+      'utf8',
+    ),
   ),
 );
 
-test('renderer fixture documents match the independently packaged editor at every template rotation', () => {
-  for (const [identifier, template] of Object.entries(BUILDING_TEMPLATES)) {
+void test('renderer fixture documents match the independently packaged editor at every template rotation', () => {
+  for (const [identifier, rawTemplate] of Object.entries(BUILDING_TEMPLATES)) {
+    assert.ok(isJsonValue(rawTemplate));
+    const template = readBuildingTemplate(rawTemplate);
     for (const rotation of [0, 90, 180, 270]) {
       const size = Math.max(template.building.width, template.building.height) + 10;
       const result = editSectorMapDocument(
@@ -25,7 +39,7 @@ test('renderer fixture documents match the independently packaged editor at ever
         }),
         [
           { type: 'stampTemplate', id: `review-${identifier}`, template, x: 4, y: 4 },
-          ...Array.from({ length: rotation / 90 }, () => ({
+          ...Array.from({ length: rotation / 90 }, (): SectorMapCommand => ({
             type: 'rotateObject',
             id: `review-${identifier}`,
           })),

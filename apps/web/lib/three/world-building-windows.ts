@@ -20,11 +20,7 @@ type WindowFace = {
 
 /** Opening dimensions and disclosure belong to the shell. This helper only
  * dresses a retained full-height window, from either side of its wall. */
-export function addWindowFace(
-  batch: WorldBatch,
-  materials: WorldMaterialSource,
-  face: WindowFace,
-) {
+export function addWindowFace(batch: WorldBatch, materials: WorldMaterialSource, face: WindowFace) {
   const { axis, mid, cross, base, sill, top, width, style, light } = face,
     height = top - sill;
   const point = (x: number, y: number, d = 0) =>
@@ -41,25 +37,9 @@ export function addWindowFace(
     offset = 0,
   ) => {
     const p = point(x, y, offset);
-    batch.box(
-      material,
-      p.x,
-      p.y,
-      p.z,
-      axis === 'x' ? w : d,
-      h,
-      axis === 'x' ? d : w,
-      light,
-    );
+    batch.box(material, p.x, p.y, p.z, axis === 'x' ? w : d, h, axis === 'x' ? d : w, light);
   };
-  box(
-    0,
-    (top + sill) * 0.5,
-    width,
-    height,
-    0.025,
-    materials.get('glass', { opacity: 0.38 }),
-  );
+  box(0, (top + sill) * 0.5, width, height, 0.025, materials.get('glass', { opacity: 0.38 }));
   if (style === 'lattice') {
     const timber = materials.get('timber-lattice', { colour: '#b29970' });
     // The sprite has four diagonals from each upper jamb. Their ends stop
@@ -82,9 +62,7 @@ export function addWindowFace(
             'box',
             timber,
             a.clone().add(b).multiplyScalar(0.5),
-            axis === 'x'
-              ? [0.03, vector.length(), 0.018]
-              : [0.018, vector.length(), 0.03],
+            axis === 'x' ? [0.03, vector.length(), 0.018] : [0.018, vector.length(), 0.03],
             rotation,
             light,
           );
@@ -93,22 +71,12 @@ export function addWindowFace(
     }
   } else if (style === 'arched' && face.sourceParish) {
     addParishArchedBars(batch, materials, face);
-  } else if (
-    face.sourceRectangular &&
-    (style === 'barred' || style === 'small')
-  ) {
+  } else if (face.sourceRectangular && (style === 'barred' || style === 'small')) {
     addRectangularWindowBars(batch, materials, { ...face, style });
   } else if (['barred', 'small', 'arched'].includes(style)) {
     const iron = materials.get('iron');
     for (let n = 0; n < 4; n++) {
-      box(
-        -width * 0.38 + width * 0.25 * n,
-        (top + sill) * 0.5,
-        0.018,
-        height,
-        0.035,
-        iron,
-      );
+      box(-width * 0.38 + width * 0.25 * n, (top + sill) * 0.5, 0.018, height, 0.035, iron);
     }
     box(0, sill + height * 0.48, width, 0.018, 0.035, iron);
   } else if (style === 'shutters') {

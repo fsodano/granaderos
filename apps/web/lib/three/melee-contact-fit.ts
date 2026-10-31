@@ -1,15 +1,7 @@
 import { isMesh, isSkinnedMesh } from './scene-node-types';
 import { required } from './required';
-import type {
-  LowerPathCache,
-  LowerPoseRow,
-  LowerRecipe,
-} from './melee-lower-path-cache';
-import type {
-  NativePoseCache,
-  SettledPoseCache,
-  SettledPoseRow,
-} from './melee-native-pose-cache';
+import type { LowerPathCache, LowerPoseRow, LowerRecipe } from './melee-lower-path-cache';
+import type { NativePoseCache, SettledPoseCache, SettledPoseRow } from './melee-native-pose-cache';
 import type { Calibration } from './melee-worker-snapshot';
 import type { ContactActorModel } from './contact-target-model';
 import {
@@ -29,9 +21,7 @@ import {
 import type { ClipSpec } from './actor-assets';
 import type { ActorCue, ContactTarget, ContactSupport } from './presentation';
 import { animationPhaseRange } from './animation-clock';
-export type ContactActorResolver = (
-  target: ContactTarget,
-) => ContactActorModel | undefined;
+export type ContactActorResolver = (target: ContactTarget) => ContactActorModel | undefined;
 type Limb = {
   base: Object3D;
   middle: Object3D;
@@ -165,10 +155,7 @@ export class NativeMeleeContactFit {
   // Morph or detached footwear keeps Three's full vertex deformation.
   private solePoint(sole: Sole, index: number, point: Vector3) {
     const mesh = sole.mesh;
-    if (
-      mesh.bindMode !== 'attached' ||
-      mesh.geometry.morphAttributes.position?.length
-    ) {
+    if (mesh.bindMode !== 'attached' || mesh.geometry.morphAttributes.position?.length) {
       return mesh.localToWorld(mesh.getVertexPosition(index, point));
     }
     let vertices = this.soleVertices.get(sole);
@@ -179,10 +166,7 @@ export class NativeMeleeContactFit {
     let influences = vertices.get(index);
     if (!influences) {
       const position = new Vector3()
-          .fromBufferAttribute(
-            required(mesh.geometry.attributes['position']),
-            index,
-          )
+          .fromBufferAttribute(required(mesh.geometry.attributes['position']), index)
           .applyMatrix4(mesh.bindMatrix),
         indices = required(mesh.geometry.attributes['skinIndex']),
         weights = required(mesh.geometry.attributes['skinWeight']);
@@ -193,9 +177,7 @@ export class NativeMeleeContactFit {
           const boneIndex = indices.getComponent(index, slot);
           influences.push({
             bone: required(mesh.skeleton.bones[boneIndex]),
-            point: position
-              .clone()
-              .applyMatrix4(required(mesh.skeleton.boneInverses[boneIndex])),
+            point: position.clone().applyMatrix4(required(mesh.skeleton.boneInverses[boneIndex])),
             weight,
           });
         }
@@ -209,12 +191,9 @@ export class NativeMeleeContactFit {
       const p = influence.point,
         e = influence.bone.matrixWorld.elements,
         w = 1 / (e[3] * p.x + e[7] * p.y + e[11] * p.z + e[15]);
-      x +=
-        (e[0] * p.x + e[4] * p.y + e[8] * p.z + e[12]) * w * influence.weight;
-      y +=
-        (e[1] * p.x + e[5] * p.y + e[9] * p.z + e[13]) * w * influence.weight;
-      z +=
-        (e[2] * p.x + e[6] * p.y + e[10] * p.z + e[14]) * w * influence.weight;
+      x += (e[0] * p.x + e[4] * p.y + e[8] * p.z + e[12]) * w * influence.weight;
+      y += (e[1] * p.x + e[5] * p.y + e[9] * p.z + e[13]) * w * influence.weight;
+      z += (e[2] * p.x + e[6] * p.y + e[10] * p.z + e[14]) * w * influence.weight;
     }
     return point.set(x, y, z);
   }
@@ -253,26 +232,21 @@ export class NativeMeleeContactFit {
     return [...required(this.previewFit).soles.values()].map((sole) => {
       const center = new Vector3();
       for (const index of sole.outline) {
-        center.add(
-          required(this.previewFit).solePoint(sole, index, new Vector3()),
-        );
+        center.add(required(this.previewFit).solePoint(sole, index, new Vector3()));
       }
       return center.divideScalar(sole.outline.length);
     });
   }
   private soleOutlinePoints() {
     return [...required(this.previewFit).soles.values()].flatMap((sole) =>
-      sole.outline.map((index) =>
-        required(this.previewFit).solePoint(sole, index, new Vector3()),
-      ),
+      sole.outline.map((index) => required(this.previewFit).solePoint(sole, index, new Vector3())),
     );
   }
   private completeBootPoints(target?: Float64Array) {
     const fit = required(this.previewFit),
       boot = fit.completeBoot,
       length = (boot?.vertices.length ?? 0) * 3;
-    const points =
-      target?.length === length ? target : new Float64Array(length);
+    const points = target?.length === length ? target : new Float64Array(length);
     if (!boot) {
       return points;
     }
@@ -280,10 +254,7 @@ export class NativeMeleeContactFit {
     // Match solePoint's native attached skin calculation without allocating
     // one Vector3 for every boot vertex at every complete-path sample.
     // Detached or morph footwear retains Three's full deformation path.
-    if (
-      mesh.bindMode !== 'attached' ||
-      mesh.geometry.morphAttributes.position?.length
-    ) {
+    if (mesh.bindMode !== 'attached' || mesh.geometry.morphAttributes.position?.length) {
       for (let i = 0; i < boot.vertices.length; i++) {
         fit.solePoint(boot, required(boot.vertices[i]), fit.bootScratch);
         points[i * 3] = fit.bootScratch.x;
@@ -306,14 +277,9 @@ export class NativeMeleeContactFit {
         const p = influence.point,
           e = influence.bone.matrixWorld.elements,
           w = 1 / (e[3] * p.x + e[7] * p.y + e[11] * p.z + e[15]);
-        x +=
-          (e[0] * p.x + e[4] * p.y + e[8] * p.z + e[12]) * w * influence.weight;
-        y +=
-          (e[1] * p.x + e[5] * p.y + e[9] * p.z + e[13]) * w * influence.weight;
-        z +=
-          (e[2] * p.x + e[6] * p.y + e[10] * p.z + e[14]) *
-          w *
-          influence.weight;
+        x += (e[0] * p.x + e[4] * p.y + e[8] * p.z + e[12]) * w * influence.weight;
+        y += (e[1] * p.x + e[5] * p.y + e[9] * p.z + e[13]) * w * influence.weight;
+        z += (e[2] * p.x + e[6] * p.y + e[10] * p.z + e[14]) * w * influence.weight;
       }
       points[i * 3] = x;
       points[i * 3 + 1] = y;
@@ -331,19 +297,12 @@ export class NativeMeleeContactFit {
     }
     return maximum;
   }
-  private bootSpeedAllowed(
-    points: Float64Array,
-    before: Float64Array,
-    dt: number,
-  ) {
+  private bootSpeedAllowed(points: Float64Array, before: Float64Array, dt: number) {
     for (let i = 0; i < points.length; i += 3) {
       const x = required(points[i]) - required(before[i]),
         y = required(points[i + 1]) - required(before[i + 1]),
         z = required(points[i + 2]) - required(before[i + 2]);
-      if (
-        Math.sqrt(x * x + y * y + z * z) / dt >
-        this.walkingBootSpeed + 1e-6
-      ) {
+      if (Math.sqrt(x * x + y * y + z * z) / dt > this.walkingBootSpeed + 1e-6) {
         return false;
       }
     }
@@ -354,15 +313,10 @@ export class NativeMeleeContactFit {
     if (!gait || !Number.isFinite(gait.speed) || gait.speed <= 0) {
       return;
     }
-    const action = required(this.sampleMixer)
-      .clipAction(gait.clip)
-      .reset()
-      .play();
+    const action = required(this.sampleMixer).clipAction(gait.clip).reset().play();
     action.timeScale = 0;
     const count = Math.ceil(gait.clip.duration * 240),
-      forward = new Vector3(0, 0, 1).applyQuaternion(
-        this.sampleRoot.quaternion,
-      );
+      forward = new Vector3(0, 0, 1).applyQuaternion(this.sampleRoot.quaternion);
     let previous: Vector3[] | undefined,
       previousOutline: Vector3[] | undefined,
       previousBoot: Float64Array | undefined,
@@ -378,9 +332,7 @@ export class NativeMeleeContactFit {
       );
       if (previous) {
         for (let side = 0; side < points.length; side++) {
-          const delta = required(points[side])
-            .clone()
-            .sub(required(previous[side]));
+          const delta = required(points[side]).clone().sub(required(previous[side]));
           this.walkingFootSpeed = Math.max(
             this.walkingFootSpeed,
             delta.length() / (gait.clip.duration / count),
@@ -396,9 +348,7 @@ export class NativeMeleeContactFit {
           for (let vertex = 0; vertex < outline.length; vertex++) {
             this.walkingSoleSpeed = Math.max(
               this.walkingSoleSpeed,
-              required(outline[vertex]).distanceTo(
-                required(previousOutline[vertex]),
-              ) /
+              required(outline[vertex]).distanceTo(required(previousOutline[vertex])) /
                 (gait.clip.duration / count),
             );
           }
@@ -453,9 +403,7 @@ export class NativeMeleeContactFit {
     for (const side of ['l', 'r']) {
       for (const role of ['foot', 'hand']) {
         const names =
-            role === 'foot'
-              ? ['thigh', 'calf', 'foot']
-              : ['upperarm', 'lowerarm', 'hand'],
+            role === 'foot' ? ['thigh', 'calf', 'foot'] : ['upperarm', 'lowerarm', 'hand'],
           nodes = names.map((name) => model.getObjectByName(`${name}_${side}`));
         if (nodes.some((node) => !node)) {
           continue;
@@ -490,9 +438,7 @@ export class NativeMeleeContactFit {
         }
       }
     }
-    const footwear = footwearName
-      ? model.getObjectByName(footwearName)
-      : undefined;
+    const footwear = footwearName ? model.getObjectByName(footwearName) : undefined;
     if (isSkinnedMesh(footwear)) {
       this.completeBoot = {
         mesh: footwear,
@@ -512,9 +458,7 @@ export class NativeMeleeContactFit {
           for (let slot = 0; slot < 4; slot++) {
             if (
               [`foot_${side}`, `ball_${side}`].includes(
-                required(
-                  footwear.skeleton.bones[indices.getComponent(index, slot)],
-                ).name,
+                required(footwear.skeleton.bones[indices.getComponent(index, slot)]).name,
               )
             ) {
               weight += weights.getComponent(index, slot);
@@ -527,15 +471,11 @@ export class NativeMeleeContactFit {
         if (vertices.length) {
           const points = vertices.map((index) =>
               root.worldToLocal(
-                footwear.localToWorld(
-                  footwear.getVertexPosition(index, new Vector3()),
-                ),
+                footwear.localToWorld(footwear.getVertexPosition(index, new Vector3())),
               ),
             ),
             floor = Math.min(...points.map((point) => point.y)),
-            outline = vertices.filter(
-              (_, index) => required(points[index]).y <= floor + 0.003,
-            );
+            outline = vertices.filter((_, index) => required(points[index]).y <= floor + 0.003);
           this.soles.set(side, {
             mesh: footwear,
             vertices,
@@ -566,8 +506,7 @@ export class NativeMeleeContactFit {
           for (let slot = 0; slot < 4; slot++) {
             if (
               /^(pelvis|spine_0[123]|neck_01|head|thigh_[lr]|calf_[lr])$/.test(
-                required(mesh.skeleton.bones[indices.getComponent(index, slot)])
-                  .name,
+                required(mesh.skeleton.bones[indices.getComponent(index, slot)]).name,
               )
             ) {
               weight += weights.getComponent(index, slot);
@@ -633,25 +572,16 @@ export class NativeMeleeContactFit {
     this.position(end, this.end);
     this.quaternion(end, this.endRotation);
     const requested = this.direction.subVectors(target, this.start).length(),
-      distance = Math.min(
-        a + b - 0.001,
-        Math.max(Math.abs(a - b) + 0.001, requested),
-      );
+      distance = Math.min(a + b - 0.001, Math.max(Math.abs(a - b) + 0.001, requested));
     this.direction.normalize();
     this.maximumReachError = Math.max(
       this.maximumReachError,
       Math.max(0, requested - (a + b - 0.001)),
     );
     if (end.name.startsWith('foot')) {
-      this.footReachError = Math.max(
-        this.footReachError,
-        Math.max(0, requested - (a + b - 0.001)),
-      );
+      this.footReachError = Math.max(this.footReachError, Math.max(0, requested - (a + b - 0.001)));
     } else {
-      this.handReachError = Math.max(
-        this.handReachError,
-        Math.max(0, requested - (a + b - 0.001)),
-      );
+      this.handReachError = Math.max(this.handReachError, Math.max(0, requested - (a + b - 0.001)));
     }
     this.pole
       .subVectors(this.joint, this.start)
@@ -683,17 +613,10 @@ export class NativeMeleeContactFit {
       this.after.subVectors(this.target, this.joint),
     );
     this.quaternion(required(end.parent), this.parentRotation);
-    end.quaternion.copy(
-      this.parentRotation.invert().multiply(this.endRotation),
-    );
+    end.quaternion.copy(this.parentRotation.invert().multiply(this.endRotation));
     end.updateWorldMatrix(false, true);
   };
-  private contactPoints(
-    weapon: Object3D,
-    hilt: boolean,
-    pistol = false,
-    rifle = false,
-  ) {
+  private contactPoints(weapon: Object3D, hilt: boolean, pistol = false, rifle = false) {
     if (rifle) {
       // The packed brass mesh includes barrel bands. The actual butt face is
       // its exposed minimum-X ring in this owned gun's coordinate system.
@@ -709,17 +632,10 @@ export class NativeMeleeContactFit {
         ) {
           return;
         }
-        const transform = new Matrix4().multiplyMatrices(
-            inverse,
-            node.matrixWorld,
-          ),
+        const transform = new Matrix4().multiplyMatrices(inverse, node.matrixWorld),
           position = required(node.geometry.attributes['position']);
         for (let index = 0; index < position.count; index++) {
-          vertices.push(
-            new Vector3()
-              .fromBufferAttribute(position, index)
-              .applyMatrix4(transform),
-          );
+          vertices.push(new Vector3().fromBufferAttribute(position, index).applyMatrix4(transform));
         }
       });
       if (!vertices.length) {
@@ -742,8 +658,7 @@ export class NativeMeleeContactFit {
     }
     const cap = pistol
       ? weapon.children.find(
-          (node): node is Mesh =>
-            isMesh(node) && /Pistol_Butt_Cap/.test(node.name),
+          (node): node is Mesh => isMesh(node) && /Pistol_Butt_Cap/.test(node.name),
         )
       : undefined;
     if (pistol && !cap) {
@@ -759,18 +674,14 @@ export class NativeMeleeContactFit {
       for (let index = 0; index < positions.count; index++) {
         if (Math.abs(positions.getY(index) - bottom) < 1e-6) {
           const point = new Vector3().fromBufferAttribute(positions, index);
-          ring.set(
-            `${Math.round(point.x * 1e6)}:${Math.round(point.z * 1e6)}`,
-            point,
-          );
+          ring.set(`${Math.round(point.x * 1e6)}:${Math.round(point.z * 1e6)}`, point);
         }
       }
       return [...ring.values()];
     }
     if (hilt) {
       const grip = weapon.children.find(
-          (node): node is Mesh =>
-            isMesh(node) && /Leather_Grip/.test(node.name),
+          (node): node is Mesh => isMesh(node) && /Leather_Grip/.test(node.name),
         ),
         guard = weapon.children.find(
           (node): node is Mesh => isMesh(node) && /Crossguard/.test(node.name),
@@ -790,10 +701,7 @@ export class NativeMeleeContactFit {
           high = Math.max(high, guardPositions.getY(i));
         }
       }
-      return Array.from(
-        { length: 9 },
-        (_, i) => new Vector3(0, low + ((high - low) * i) / 8, 0),
-      );
+      return Array.from({ length: 9 }, (_, i) => new Vector3(0, low + ((high - low) * i) / 8, 0));
     }
     const blade = weapon.children.find(
       (node): node is Mesh => isMesh(node) && /Curved_Blade/.test(node.name),
@@ -845,10 +753,7 @@ export class NativeMeleeContactFit {
       // all active clothing morphs; the same four exported weights then skin it.
       const indices = required(node.geometry.attributes['skinIndex']),
         weights = required(node.geometry.attributes['skinWeight']),
-        meshToWorld = new Matrix4().multiplyMatrices(
-          node.matrixWorld,
-          node.bindMatrixInverse,
-        ),
+        meshToWorld = new Matrix4().multiplyMatrices(node.matrixWorld, node.bindMatrixInverse),
         matrices = node.skeleton.bones.map((bone, i) =>
           new Matrix4()
             .copy(meshToWorld)
@@ -915,8 +820,7 @@ export class NativeMeleeContactFit {
     target: Object3D,
   ) {
     const previousPlan = this.plan,
-      previousTurn =
-        previousPlan?.cueId === cue.id ? previousPlan.turn : undefined;
+      previousTurn = previousPlan?.cueId === cue.id ? previousPlan.turn : undefined;
     this.plan = undefined;
     this.bodyAdvance = 0;
     this.attemptedKey = key;
@@ -927,9 +831,7 @@ export class NativeMeleeContactFit {
     const support = cue.contactSupport;
     if (
       !support?.floors.some(
-        (floor) =>
-          Math.abs(floor.height - this.root.getWorldPosition(new Vector3()).y) <
-          0.001,
+        (floor) => Math.abs(floor.height - this.root.getWorldPosition(new Vector3()).y) < 0.001,
       )
     ) {
       return;
@@ -959,8 +861,7 @@ export class NativeMeleeContactFit {
         const parent =
           mesh.parent === this.model
             ? this.sample
-            : (this.sample.getObjectByName(required(mesh.parent).name) ??
-              this.sample);
+            : (this.sample.getObjectByName(required(mesh.parent).name) ?? this.sample);
         parent.add(copy);
         copy.bind(
           new Skeleton(
@@ -982,10 +883,7 @@ export class NativeMeleeContactFit {
         true,
       );
       this.previewFit.flatRest = new Map(
-        [...this.flatRest].map(([name, quaternion]) => [
-          name,
-          quaternion.clone(),
-        ]),
+        [...this.flatRest].map(([name, quaternion]) => [name, quaternion.clone()]),
       );
       for (const [side, sole] of this.previewFit.soles) {
         const native = required(this.soles.get(side));
@@ -997,17 +895,14 @@ export class NativeMeleeContactFit {
     this.root.getWorldQuaternion(this.sampleRoot.quaternion);
     this.sample.position.copy(this.model.position);
     const admittedTurn =
-        spec.name.startsWith('stand.slash.blade') ||
-        spec.name === 'stand.butt.long-gun'
+        spec.name.startsWith('stand.slash.blade') || spec.name === 'stand.butt.long-gun'
           ? cue.phase === 'prepare'
             ? cue.contactTurn
             : cue.phase === 'contact' && previousTurn
               ? previousTurn
               : undefined
           : undefined,
-      deltaYaw = admittedTurn
-        ? angle(admittedTurn.toYaw - admittedTurn.fromYaw)
-        : 0;
+      deltaYaw = admittedTurn ? angle(admittedTurn.toYaw - admittedTurn.fromYaw) : 0;
     if (
       admittedTurn &&
       (![admittedTurn.fromYaw, admittedTurn.toYaw].every(Number.isFinite) ||
@@ -1038,10 +933,7 @@ export class NativeMeleeContactFit {
     // A continuous rifle correction preserves the exact native endpoints.
     // Reject their raised or tilted complete soles before searching; repairing
     // the exported guard is a prerequisite, not an instantaneous foot drop.
-    if (
-      spec.name === 'stand.butt.long-gun' &&
-      !this.rifleNativeEndsFlat(clip, action)
-    ) {
+    if (spec.name === 'stand.butt.long-gun' && !this.rifleNativeEndsFlat(clip, action)) {
       return;
     }
     if (spec.name === 'stand.butt.long-gun') {
@@ -1054,14 +946,8 @@ export class NativeMeleeContactFit {
       arm = required(this.limbs.get('hand_r'));
     this.root.updateWorldMatrix(true, false);
     this.root.updateMatrixWorld(true);
-    const relative = new Matrix4()
-        .copy(hand.matrixWorld)
-        .invert()
-        .multiply(weapon.matrixWorld),
-      transform = new Matrix4().multiplyMatrices(
-        sampleHand.matrixWorld,
-        relative,
-      );
+    const relative = new Matrix4().copy(hand.matrixWorld).invert().multiply(weapon.matrixWorld),
+      transform = new Matrix4().multiplyMatrices(sampleHand.matrixWorld, relative);
     const points = this.contactPoints(
         weapon,
         spec.name.endsWith('.hilt'),
@@ -1075,9 +961,7 @@ export class NativeMeleeContactFit {
     const twoHands = spec.name === 'stand.butt.long-gun',
       leftArm = twoHands ? this.limbs.get('hand_l') : undefined,
       leftShoulder = twoHands
-        ? required(this.sample.getObjectByName('upperarm_l')).getWorldPosition(
-            new Vector3(),
-          )
+        ? required(this.sample.getObjectByName('upperarm_l')).getWorldPosition(new Vector3())
         : undefined,
       leftDesired = twoHands
         ? required(this.sample.getObjectByName('hand_l'))
@@ -1085,9 +969,9 @@ export class NativeMeleeContactFit {
             .add(correction)
         : undefined;
     const rootRotation = this.sampleRoot.getWorldQuaternion(new Quaternion()),
-      shoulder = required(
-        this.sample.getObjectByName('upperarm_r'),
-      ).getWorldPosition(new Vector3()),
+      shoulder = required(this.sample.getObjectByName('upperarm_r')).getWorldPosition(
+        new Vector3(),
+      ),
       desired = sampleHand.getWorldPosition(new Vector3()).add(correction),
       forward = new Vector3(0, 0, 1).applyQuaternion(rootRotation),
       body = new Vector3(),
@@ -1103,17 +987,17 @@ export class NativeMeleeContactFit {
     const hips = new Map(
         ['l', 'r'].map((side) => [
           side,
-          required(
-            required(this.sample).getObjectByName(`thigh_${side}`),
-          ).getWorldPosition(new Vector3()),
+          required(required(this.sample).getObjectByName(`thigh_${side}`)).getWorldPosition(
+            new Vector3(),
+          ),
         ]),
       ),
       feet = new Map(
         ['l', 'r'].map((side) => [
           side,
-          required(
-            required(this.sample).getObjectByName(`foot_${side}`),
-          ).getWorldPosition(new Vector3()),
+          required(required(this.sample).getObjectByName(`foot_${side}`)).getWorldPosition(
+            new Vector3(),
+          ),
         ]),
       );
     // Choose the smallest supported advance that puts the contact wrist within
@@ -1163,10 +1047,7 @@ export class NativeMeleeContactFit {
     for (
       let advance = 0;
       advance <=
-      (spec.name.startsWith('stand.slash.blade') || twoHands
-        ? this.walkingStep
-        : 0.8) +
-        0.0001;
+      (spec.name.startsWith('stand.slash.blade') || twoHands ? this.walkingStep : 0.8) + 0.0001;
       advance += 0.01
     ) {
       for (let drop = 0; drop <= 0.3801; drop += 0.01) {
@@ -1174,13 +1055,9 @@ export class NativeMeleeContactFit {
         body.y = -drop;
         rearStep.set(0, 0, 0);
         if (
-          shoulder.clone().add(body).distanceTo(desired) >
-            arm.first + arm.second - 0.008 ||
+          shoulder.clone().add(body).distanceTo(desired) > arm.first + arm.second - 0.008 ||
           (leftArm &&
-            required(leftShoulder)
-              .clone()
-              .add(body)
-              .distanceTo(required(leftDesired)) >
+            required(leftShoulder).clone().add(body).distanceTo(required(leftDesired)) >
               leftArm.first + leftArm.second - 0.008)
         ) {
           continue;
@@ -1197,9 +1074,7 @@ export class NativeMeleeContactFit {
               lateral = relative.clone().addScaledVector(forward, -along);
             lateral.y = 0;
             const available =
-              (leg.first + leg.second - 0.008) ** 2 -
-              height * height -
-              lateral.lengthSq();
+              (leg.first + leg.second - 0.008) ** 2 - height * height - lateral.lengthSq();
             if (available < 0) {
               supported = false;
               continue;
@@ -1212,10 +1087,7 @@ export class NativeMeleeContactFit {
             rearStep.copy(forward).multiplyScalar(gather);
             foot.add(rearStep);
           }
-          if (
-            side === 'l' &&
-            hip.distanceTo(foot) > leg.first + leg.second - 0.0079
-          ) {
+          if (side === 'l' && hip.distanceTo(foot) > leg.first + leg.second - 0.0079) {
             supported = false;
           }
         }
@@ -1254,11 +1126,7 @@ export class NativeMeleeContactFit {
           if (plan.turn) {
             this.sampleRoot.rotation.set(0, plan.turn.toYaw, 0);
           }
-          if (
-            plan.sabre &&
-            this.nativePath.length &&
-            !this.wristPathReachable(plan)
-          ) {
+          if (plan.sabre && this.nativePath.length && !this.wristPathReachable(plan)) {
             continue;
           }
           if (!this.pathAllowed(plan, clip, support, action)) {
@@ -1320,9 +1188,7 @@ export class NativeMeleeContactFit {
       maxX += 0.003;
       minZ -= 0.003;
       maxZ += 0.003;
-      const floors = support.floors.filter(
-          (floor) => Math.abs(floor.height - height) < 0.001,
-        ),
+      const floors = support.floors.filter((floor) => Math.abs(floor.height - height) < 0.001),
         cuts = [
           minX,
           maxX,
@@ -1337,10 +1203,7 @@ export class NativeMeleeContactFit {
         const x = (required(cuts[index]) + required(cuts[index - 1])) / 2,
           spans = floors
             .filter((floor) => x >= floor.minX && x <= floor.maxX)
-            .map((floor) => [
-              Math.max(minZ, floor.minZ),
-              Math.min(maxZ, floor.maxZ),
-            ])
+            .map((floor) => [Math.max(minZ, floor.minZ), Math.min(maxZ, floor.maxZ)])
             .filter(([a, b]) => required(b) >= required(a))
             .sort((a, b) => required(a[0]) - required(b[0]));
         let covered = minZ;
@@ -1403,10 +1266,7 @@ export class NativeMeleeContactFit {
       const x = (required(cuts[index]) + required(cuts[index - 1])) / 2,
         spans = floors
           .filter((floor) => x >= floor.minX && x <= floor.maxX)
-          .map((floor) => [
-            Math.max(low.z, floor.minZ),
-            Math.min(high.z, floor.maxZ),
-          ])
+          .map((floor) => [Math.max(low.z, floor.minZ), Math.min(high.z, floor.maxZ)])
           .filter(([a, b]) => required(b) >= required(a))
           .sort((a, b) => required(a[0]) - required(b[0]));
       let covered = low.z;
@@ -1433,8 +1293,7 @@ export class NativeMeleeContactFit {
         plan.handRecovery && time > contact
           ? 1 - smooth((time - contact) / (plan.handRecovery - contact))
           : weight;
-    const rearDistance =
-        plan.rearStep.length() + (plan.turn?.footDistance ?? 0),
+    const rearDistance = plan.rearStep.length() + (plan.turn?.footDistance ?? 0),
       leadDistance = plan.step.length(),
       totalDistance = rearDistance + leadDistance,
       settleEnd = plan.sabre || plan.twoHands ? end * 0.1 : 0,
@@ -1451,8 +1310,7 @@ export class NativeMeleeContactFit {
       rearReturnEnd =
         plan.sabre || plan.twoHands
           ? totalDistance > 0
-            ? rearReturnStart +
-              ((end * 0.9 - rearReturnStart) * rearDistance) / totalDistance
+            ? rearReturnStart + ((end * 0.9 - rearReturnStart) * rearDistance) / totalDistance
             : rearReturnStart
           : end * 0.62;
     const leadWeight =
@@ -1472,20 +1330,14 @@ export class NativeMeleeContactFit {
             ? smooth((time - settleEnd) / (stepStart - settleEnd))
             : time < rearReturnStart
               ? 1
-              : 1 -
-                smooth(
-                  (time - rearReturnStart) / (rearReturnEnd - rearReturnStart),
-                );
+              : 1 - smooth((time - rearReturnStart) / (rearReturnEnd - rearReturnStart));
     const rearAdvance =
         time > settleEnd && time < stepStart
           ? Math.sin((Math.PI * (time - settleEnd)) / (stepStart - settleEnd))
           : 0,
       rearRecovery =
         time > rearReturnStart && time < rearReturnEnd
-          ? Math.sin(
-              (Math.PI * (time - rearReturnStart)) /
-                (rearReturnEnd - rearReturnStart),
-            )
+          ? Math.sin((Math.PI * (time - rearReturnStart)) / (rearReturnEnd - rearReturnStart))
           : 0,
       leadAdvance =
         time > stepStart && time < stepEnd
@@ -1493,16 +1345,12 @@ export class NativeMeleeContactFit {
           : 0,
       leadRecovery =
         time > rearReturnEnd && time < end * 0.9
-          ? Math.sin(
-              (Math.PI * (time - rearReturnEnd)) / (end * 0.9 - rearReturnEnd),
-            )
+          ? Math.sin((Math.PI * (time - rearReturnEnd)) / (end * 0.9 - rearReturnEnd))
           : 0;
     return {
       weight,
       handWeight,
-      groundWeight:
-        smooth(time / (end * 0.1)) *
-        (1 - smooth((time - end * 0.9) / (end * 0.1))),
+      groundWeight: smooth(time / (end * 0.1)) * (1 - smooth((time - end * 0.9) / (end * 0.1))),
       rearWeight,
       leadWeight,
       rearArc: Math.max(rearAdvance, rearRecovery),
@@ -1522,29 +1370,27 @@ export class NativeMeleeContactFit {
       this.sampleRoot.updateMatrixWorld(true);
       this.nativePath.push({
         time,
-        shoulder: required(
-          required(this.sample).getObjectByName('upperarm_r'),
-        ).getWorldPosition(new Vector3()),
-        hand: required(
-          required(this.sample).getObjectByName('hand_r'),
-        ).getWorldPosition(new Vector3()),
+        shoulder: required(required(this.sample).getObjectByName('upperarm_r')).getWorldPosition(
+          new Vector3(),
+        ),
+        hand: required(required(this.sample).getObjectByName('hand_r')).getWorldPosition(
+          new Vector3(),
+        ),
         hips: ['l', 'r'].map((side) =>
-          required(
-            required(this.sample).getObjectByName(`thigh_${side}`),
-          ).getWorldPosition(new Vector3()),
+          required(required(this.sample).getObjectByName(`thigh_${side}`)).getWorldPosition(
+            new Vector3(),
+          ),
         ),
         feet: ['l', 'r'].map((side) =>
-          required(
-            required(this.sample).getObjectByName(`foot_${side}`),
-          ).getWorldPosition(new Vector3()),
+          required(required(this.sample).getObjectByName(`foot_${side}`)).getWorldPosition(
+            new Vector3(),
+          ),
         ),
         soleMin: ['l', 'r'].map((side) => {
           const sole = required(required(this.previewFit).soles.get(side));
           return Math.min(
             ...sole.vertices.map(
-              (vertex) =>
-                required(this.previewFit).solePoint(sole, vertex, new Vector3())
-                  .y,
+              (vertex) => required(this.previewFit).solePoint(sole, vertex, new Vector3()).y,
             ),
           );
         }),
@@ -1570,8 +1416,7 @@ export class NativeMeleeContactFit {
       }),
       floor = ['l', 'r'].map(
         (side) =>
-          this.sampleRoot.position.y +
-          required(required(this.previewFit).soles.get(side)).floor,
+          this.sampleRoot.position.y + required(required(this.previewFit).soles.get(side)).floor,
       ),
       reachSquared = (arm.first + arm.second - 0.001 + 1e-7) ** 2;
     if (!this.pathPrioritized) {
@@ -1612,8 +1457,7 @@ export class NativeMeleeContactFit {
         bodyZ = advance.z * transfer.weight;
       let drop = 0;
       for (let index = 0; index < 2; index++) {
-        const stepWeight =
-            index === 0 ? transfer.rearWeight : transfer.leadWeight,
+        const stepWeight = index === 0 ? transfer.rearWeight : transfer.leadWeight,
           arc = index === 0 ? transfer.rearArc : transfer.leadArc,
           foot = required(sample.feet[index]),
           hip = required(sample.hips[index]),
@@ -1621,30 +1465,19 @@ export class NativeMeleeContactFit {
           dz = hip.z + bodyZ - foot.z - required(steps[index]).z * stepWeight;
         const footY =
             foot.y +
-            (required(floor[index]) - required(sample.soleMin[index])) *
-              transfer.groundWeight +
+            (required(floor[index]) - required(sample.soleMin[index])) * transfer.groundWeight +
             arc * required(lift[index]),
-          height = Math.sqrt(
-            Math.max(0, required(legLength[index]) - dx * dx - dz * dz),
-          );
+          height = Math.sqrt(Math.max(0, required(legLength[index]) - dx * dx - dz * dz));
         drop = Math.max(drop, hip.y + bodyY - footY - height);
       }
-      const dx =
-          sample.shoulder.x +
-          bodyX -
-          sample.hand.x -
-          hand.x * transfer.handWeight,
+      const dx = sample.shoulder.x + bodyX - sample.hand.x - hand.x * transfer.handWeight,
         dy =
           sample.shoulder.y +
           bodyY -
           Math.max(0, drop) -
           sample.hand.y -
           hand.y * transfer.handWeight,
-        dz =
-          sample.shoulder.z +
-          bodyZ -
-          sample.hand.z -
-          hand.z * transfer.handWeight;
+        dz = sample.shoulder.z + bodyZ - sample.hand.z - hand.z * transfer.handWeight;
       if (dx * dx + dy * dy + dz * dz > reachSquared) {
         return false;
       }
@@ -1657,14 +1490,10 @@ export class NativeMeleeContactFit {
       supported = false;
     for (const sole of required(this.previewFit).soles.values()) {
       const whole = sole.vertices.map(
-          (index) =>
-            required(this.previewFit).solePoint(sole, index, new Vector3()).y -
-            floor,
+          (index) => required(this.previewFit).solePoint(sole, index, new Vector3()).y - floor,
         ),
         outline = sole.outline.map(
-          (index) =>
-            required(this.previewFit).solePoint(sole, index, new Vector3()).y -
-            floor,
+          (index) => required(this.previewFit).solePoint(sole, index, new Vector3()).y - floor,
         );
       lowest = Math.min(lowest, ...whole);
       if (Math.min(...outline) >= -0.001 && Math.max(...outline) <= 0.008) {
@@ -1736,8 +1565,7 @@ export class NativeMeleeContactFit {
         this.sampleRoot.rotation.set(
           0,
           plan.turn.fromYaw +
-            angle(plan.turn.toYaw - plan.turn.fromYaw) *
-              smooth(time / plan.turn.until),
+            angle(plan.turn.toYaw - plan.turn.fromYaw) * smooth(time / plan.turn.until),
           0,
         );
       }
@@ -1752,33 +1580,19 @@ export class NativeMeleeContactFit {
           Math.min(
             ...[...required(this.previewFit).soles.values()].flatMap((sole) =>
               sole.vertices.map(
-                (index) =>
-                  required(this.previewFit).solePoint(
-                    sole,
-                    index,
-                    new Vector3(),
-                  ).y,
+                (index) => required(this.previewFit).solePoint(sole, index, new Vector3()).y,
               ),
             ),
           ) - this.sampleRoot.position.y;
-        if (
-          minimum < -0.001 ||
-          minimum > 0.008 ||
-          (plan.twoHands && !this.rifleFlatSupport())
-        ) {
+        if (minimum < -0.001 || minimum > 0.008 || (plan.twoHands && !this.rifleFlatSupport())) {
           return false;
         }
         const points = this.soleCenters(),
           before = this.pathFeet;
         if (before && time > before.time) {
           for (let side = 0; side < points.length; side++) {
-            const delta = required(points[side])
-              .clone()
-              .sub(required(before.points[side]));
-            if (
-              delta.length() / (time - before.time) >
-              this.walkingFootSpeed + 1e-6
-            ) {
+            const delta = required(points[side]).clone().sub(required(before.points[side]));
+            if (delta.length() / (time - before.time) > this.walkingFootSpeed + 1e-6) {
               return false;
             }
           }
@@ -1789,9 +1603,7 @@ export class NativeMeleeContactFit {
           if (previousOutline && time > previousOutline.time) {
             for (let vertex = 0; vertex < outline.length; vertex++) {
               if (
-                required(outline[vertex]).distanceTo(
-                  required(previousOutline.points[vertex]),
-                ) /
+                required(outline[vertex]).distanceTo(required(previousOutline.points[vertex])) /
                   (time - previousOutline.time) >
                 this.walkingSoleSpeed + 1e-6
               ) {
@@ -1804,11 +1616,7 @@ export class NativeMeleeContactFit {
           if (
             previousBoot &&
             time > previousBoot.time &&
-            !this.bootSpeedAllowed(
-              boot,
-              previousBoot.points,
-              time - previousBoot.time,
-            )
+            !this.bootSpeedAllowed(boot, previousBoot.points, time - previousBoot.time)
           ) {
             this.rifleSpeedPair = [previousBoot.time, time];
             return false;
@@ -1840,8 +1648,7 @@ export class NativeMeleeContactFit {
           this.sampleRoot.rotation.set(
             0,
             plan.turn.fromYaw +
-              angle(plan.turn.toYaw - plan.turn.fromYaw) *
-                smooth(time / plan.turn.until),
+              angle(plan.turn.toYaw - plan.turn.fromYaw) * smooth(time / plan.turn.until),
             0,
           );
         }
@@ -1864,11 +1671,7 @@ export class NativeMeleeContactFit {
     previousOutline = undefined;
     previousBoot = undefined;
     const frequency = plan.sabre || plan.twoHands ? 240 : 120;
-    for (
-      let index = 0;
-      index <= Math.ceil(clip.duration * frequency);
-      index++
-    ) {
+    for (let index = 0; index <= Math.ceil(clip.duration * frequency); index++) {
       if (
         !sample(Math.min(clip.duration, index / frequency)) ||
         (index % 4 === 0 && !this.bodyAllowed(support))
@@ -1900,8 +1703,7 @@ export class NativeMeleeContactFit {
         spec.name === 'stand.butt.short-gun' ||
         spec.name === 'stand.butt.long-gun'
       ) ||
-      (spec.name === 'stand.butt.long-gun' &&
-        (!this.limbs.has('hand_l') || !this.gait)) ||
+      (spec.name === 'stand.butt.long-gun' && (!this.limbs.has('hand_l') || !this.gait)) ||
       (spec.name.startsWith('stand.slash.blade') && !this.gait) ||
       (cue.contactTarget &&
         (cue.contactTarget.mounted ||
@@ -1925,15 +1727,11 @@ export class NativeMeleeContactFit {
         floorKey =
           floors
             ?.map(
-              (floor) =>
-                `${floor.minX},${floor.maxX},${floor.minZ},${floor.maxZ},${floor.height}`,
+              (floor) => `${floor.minX},${floor.maxX},${floor.minZ},${floor.maxZ},${floor.height}`,
             )
             .join(';') ?? '';
       const phaseKey = `${key}:${spec.name}:${weapon.userData['itemId']}:${cue.contactTarget.key}:${cue.contactTarget.appearance}:${cue.contactTarget.posture}:${cue.contactTarget.position.join(',')}:${floorKey}:${cue.phase === 'contact' ? 'contact' : 'prepare'}`;
-      if (
-        this.attemptedKey !== phaseKey ||
-        this.attemptedTarget !== admitted.model
-      ) {
+      if (this.attemptedKey !== phaseKey || this.attemptedTarget !== admitted.model) {
         this.prepare(phaseKey, cue, clip, spec, weapon, admitted.model);
       }
     } else if (this.plan?.cueId !== key) {
@@ -1954,22 +1752,14 @@ export class NativeMeleeContactFit {
       this.root.rotation.set(
         0,
         plan.turn.fromYaw +
-          angle(plan.turn.toYaw - plan.turn.fromYaw) *
-            smooth(time / plan.turn.until),
+          angle(plan.turn.toYaw - plan.turn.fromYaw) * smooth(time / plan.turn.until),
         0,
       );
       this.root.updateWorldMatrix(true, false);
       this.root.updateMatrixWorld(true);
     }
-    const {
-        weight,
-        handWeight,
-        groundWeight,
-        rearWeight,
-        leadWeight,
-        rearArc,
-        leadArc,
-      } = this.transfer(plan, time),
+    const { weight, handWeight, groundWeight, rearWeight, leadWeight, rearArc, leadArc } =
+        this.transfer(plan, time),
       end = plan.duration;
     if (
       (plan.twoHands && (time <= 0 || time >= end)) ||
@@ -1978,12 +1768,7 @@ export class NativeMeleeContactFit {
       return;
     }
     const modified = new Set<Object3D>([this.body]);
-    for (const name of [
-      'foot_l',
-      'foot_r',
-      'hand_r',
-      ...(plan.twoHands ? ['hand_l'] : []),
-    ]) {
+    for (const name of ['foot_l', 'foot_r', 'hand_r', ...(plan.twoHands ? ['hand_l'] : [])]) {
       const limb = required(this.limbs.get(name));
       modified.add(limb.base);
       modified.add(limb.middle);
@@ -2028,10 +1813,7 @@ export class NativeMeleeContactFit {
     }
     const footTargets = new Map<string, Vector3>();
     for (const side of ['l', 'r']) {
-      const target = this.position(
-        required(this.limbs.get(`foot_${side}`)).end,
-        new Vector3(),
-      );
+      const target = this.position(required(this.limbs.get(`foot_${side}`)).end, new Vector3());
       if (plan.sabre || plan.twoHands) {
         // Each sabre boot starts from its complete grounded native sole. The
         // continuous transfer arcs below lift it from this same baseline. The
@@ -2041,13 +1823,10 @@ export class NativeMeleeContactFit {
         // A support handoff or recovery cannot toggle a raised source foot.
         const sole = required(this.soles.get(side));
         const minimum = Math.min(
-          ...sole.vertices.map(
-            (index) => this.solePoint(sole, index, new Vector3()).y,
-          ),
+          ...sole.vertices.map((index) => this.solePoint(sole, index, new Vector3()).y),
         );
         target.y +=
-          (this.position(this.root, new Vector3()).y + sole.floor - minimum) *
-          groundWeight;
+          (this.position(this.root, new Vector3()).y + sole.floor - minimum) * groundWeight;
       }
       footTargets.set(side, target);
     }
@@ -2064,23 +1843,15 @@ export class NativeMeleeContactFit {
         .lerp(plan.hand, smooth((time - begin) / (plan.contact - begin)));
     }
     handDelta.applyQuaternion(rootRotation).multiplyScalar(handWeight);
-    const handTarget = this.position(
-        required(this.limbs.get('hand_r')).end,
-        new Vector3(),
-      ).add(handDelta),
+    const handTarget = this.position(required(this.limbs.get('hand_r')).end, new Vector3()).add(
+        handDelta,
+      ),
       leftTarget = plan.twoHands
-        ? this.position(
-            required(this.limbs.get('hand_l')).end,
-            new Vector3(),
-          ).add(handDelta)
+        ? this.position(required(this.limbs.get('hand_l')).end, new Vector3()).add(handDelta)
         : undefined,
-      body = plan.body
-        .clone()
-        .applyQuaternion(rootRotation)
-        .multiplyScalar(weight);
+      body = plan.body.clone().applyQuaternion(rootRotation).multiplyScalar(weight);
     const turnRear = plan.turn
-      ? angle(plan.turn.fromYaw - this.root.rotation.y) *
-        (time < plan.contact ? 1 - rearWeight : 0)
+      ? angle(plan.turn.fromYaw - this.root.rotation.y) * (time < plan.contact ? 1 - rearWeight : 0)
       : 0;
     const lead = required(footTargets.get('r')),
       rear = required(footTargets.get('l'));
@@ -2090,32 +1861,16 @@ export class NativeMeleeContactFit {
         .applyAxisAngle(up, turnRear)
         .add(this.position(this.root, new Vector3()));
     }
-    lead.add(
-      plan.step
-        .clone()
-        .applyQuaternion(rootRotation)
-        .multiplyScalar(leadWeight),
-    );
-    rear.add(
-      plan.rearStep
-        .clone()
-        .applyQuaternion(rootRotation)
-        .multiplyScalar(rearWeight),
-    );
+    lead.add(plan.step.clone().applyQuaternion(rootRotation).multiplyScalar(leadWeight));
+    rear.add(plan.rearStep.clone().applyQuaternion(rootRotation).multiplyScalar(rearWeight));
     rear.y +=
-      rearArc *
-      Math.min(
-        0.035,
-        (plan.rearStep.length() + (plan.turn?.footDistance ?? 0)) * 0.1,
-      );
+      rearArc * Math.min(0.035, (plan.rearStep.length() + (plan.turn?.footDistance ?? 0)) * 0.1);
     lead.y += leadArc * Math.min(0.045, plan.step.length() * 0.1);
     const support = plan.rearStep.length() > 0.005 && rearArc > 0 ? 'r' : 'l',
       sole = this.soles.get(support);
     if (sole && !(plan.sabre || plan.twoHands)) {
       const minimum = Math.min(
-          ...sole.vertices.map(
-            (index) => this.solePoint(sole, index, new Vector3()).y,
-          ),
+          ...sole.vertices.map((index) => this.solePoint(sole, index, new Vector3()).y),
         ),
         floor = this.position(this.root, new Vector3()).y + sole.floor;
       required(footTargets.get(support)).y += floor - minimum;
@@ -2139,9 +1894,7 @@ export class NativeMeleeContactFit {
     this.position(this.body, this.start).add(body);
     if (this.preview) {
       this.start.applyMatrix4(
-        this.inverseParent
-          .copy(required(this.body.parent).matrixWorld)
-          .invert(),
+        this.inverseParent.copy(required(this.body.parent).matrixWorld).invert(),
       );
     } else {
       required(this.body.parent).worldToLocal(this.start);
@@ -2153,13 +1906,9 @@ export class NativeMeleeContactFit {
       this.solve(foot, required(footTargets.get(side)));
       if (side === 'l' && plan.turn) {
         this.quaternion(foot.end, this.endRotation);
-        this.endRotation.premultiply(
-          new Quaternion().setFromAxisAngle(up, turnRear),
-        );
+        this.endRotation.premultiply(new Quaternion().setFromAxisAngle(up, turnRear));
         this.quaternion(required(foot.end.parent), this.parentRotation);
-        foot.end.quaternion.copy(
-          this.parentRotation.invert().multiply(this.endRotation),
-        );
+        foot.end.quaternion.copy(this.parentRotation.invert().multiply(this.endRotation));
         foot.end.updateWorldMatrix(false, true);
       }
     }
@@ -2231,12 +1980,8 @@ export class NativeMeleeContactFit {
       return solve.call(pf, limb, target);
     };
     pf.pose = (plan: MeleePosePlan, time: number) => {
-      const right = required(model.getObjectByName('hand_r')).getWorldPosition(
-          new Vector3(),
-        ),
-        left = required(model.getObjectByName('hand_l')).getWorldPosition(
-          new Vector3(),
-        ),
+      const right = required(model.getObjectByName('hand_r')).getWorldPosition(new Vector3()),
+        left = required(model.getObjectByName('hand_l')).getWorldPosition(new Vector3()),
         rotation = root.getWorldQuaternion(new Quaternion()),
         transfer = this.transfer(plan, time);
       row = {
@@ -2304,11 +2049,7 @@ export class NativeMeleeContactFit {
       },
     };
   }
-  cachedPathAllowed(
-    cache: LowerPathCache,
-    plan: MeleePosePlan,
-    support: ContactSupport,
-  ) {
+  cachedPathAllowed(cache: LowerPathCache, plan: MeleePosePlan, support: ContactSupport) {
     const pf = required(this.previewFit),
       model = required(this.sample),
       root = this.sampleRoot,
@@ -2346,10 +2087,7 @@ export class NativeMeleeContactFit {
     const list = samplingNodes(model, root);
     if (
       list.length !== cache.names.length ||
-      list.some(
-        (node, index) =>
-          (node === root ? '@root' : node.name) !== cache.names[index],
-      )
+      list.some((node, index) => (node === root ? '@root' : node.name) !== cache.names[index])
     ) {
       throw new Error('MELEE_CACHE_CHANGED_HIERARCHY');
     }
@@ -2377,10 +2115,7 @@ export class NativeMeleeContactFit {
           pf.solve(required(pf.limbs.get('hand_l')), left);
         }
       }
-      if (
-        pf.handReachError >= 1e-7 ||
-        (row.bodyCheck && !this.bodyAllowed(support))
-      ) {
+      if (pf.handReachError >= 1e-7 || (row.bodyCheck && !this.bodyAllowed(support))) {
         return false;
       }
     }
@@ -2401,15 +2136,11 @@ export class NativeMeleeContactFit {
     });
     for (const mesh of meshes) {
       const copy = mesh.clone(false),
-        bones = mesh.skeleton.bones.map((bone) =>
-          required(this.sample).getObjectByName(bone.name),
-        );
+        bones = mesh.skeleton.bones.map((bone) => required(this.sample).getObjectByName(bone.name));
       const parent =
         mesh.parent === this.model
           ? this.sample
-          : (required(this.sample).getObjectByName(
-              required(mesh.parent).name,
-            ) ?? this.sample);
+          : (required(this.sample).getObjectByName(required(mesh.parent).name) ?? this.sample);
       required(parent).add(copy);
       copy.bind(
         new Skeleton(
@@ -2440,10 +2171,7 @@ export class NativeMeleeContactFit {
       high: new Vector3().fromArray(bound.high),
     }));
     pf.flatRest = new Map(
-      [...this.flatRest].map(([name, quaternion]) => [
-        name,
-        quaternion.clone(),
-      ]),
+      [...this.flatRest].map(([name, quaternion]) => [name, quaternion.clone()]),
     );
     for (const [side, sole] of pf.soles) {
       const native = required(this.soles.get(side));
@@ -2546,10 +2274,7 @@ export class NativeMeleeContactFit {
       mixer.update = update;
     };
   }
-  settledPoseCacheFor(
-    clip: AnimationClip,
-    plan: MeleePosePlan,
-  ): SettledPoseCache {
+  settledPoseCacheFor(clip: AnimationClip, plan: MeleePosePlan): SettledPoseCache {
     const pf = required(this.previewFit),
       root: Object3D = this.sampleRoot,
       model: Object3D = required(this.sample),
@@ -2575,32 +2300,20 @@ export class NativeMeleeContactFit {
         const transfer = this.transfer(plan, action.time),
           feet = ['l', 'r'].map((side) => {
             const sole = required(pf.soles.get(side)),
-              point = position.call(
-                pf,
-                required(pf.limbs.get('foot_' + side)).end,
-                new Vector3(),
-              ),
+              point = position.call(pf, required(pf.limbs.get('foot_' + side)).end, new Vector3()),
               minimum = Math.min(
-                ...sole.vertices.map(
-                  (index: number) => pf.solePoint(sole, index, new Vector3()).y,
-                ),
+                ...sole.vertices.map((index: number) => pf.solePoint(sole, index, new Vector3()).y),
               );
             point.y +=
-              (position.call(pf, root, new Vector3()).y +
-                sole.floor -
-                minimum) *
+              (position.call(pf, root, new Vector3()).y + sole.floor - minimum) *
               transfer.groundWeight;
             return point.toArray();
           });
         row = {
           time: action.time,
           values,
-          right: position
-            .call(pf, required(pf.limbs.get('hand_r')).end, new Vector3())
-            .toArray(),
-          left: position
-            .call(pf, required(pf.limbs.get('hand_l')).end, new Vector3())
-            .toArray(),
+          right: position.call(pf, required(pf.limbs.get('hand_r')).end, new Vector3()).toArray(),
+          left: position.call(pf, required(pf.limbs.get('hand_l')).end, new Vector3()).toArray(),
           feet,
           rotation: root.getWorldQuaternion(new Quaternion()).toArray(),
         };
@@ -2654,10 +2367,7 @@ export class NativeMeleeContactFit {
       rows = new Map(cache.rows.map((row) => [row.time, row]));
     if (
       list.length !== cache.names.length ||
-      list.some(
-        (node, index) =>
-          (node === root ? '@root' : node.name) !== cache.names[index],
-      )
+      list.some((node, index) => (node === root ? '@root' : node.name) !== cache.names[index])
     ) {
       throw Error('MELEE_SETTLED_CACHE_HIERARCHY');
     }
@@ -2697,22 +2407,18 @@ export class NativeMeleeContactFit {
         node.matrixWorld.fromArray(row.values, offset + 10);
       }
       const rootRotation = new Quaternion().fromArray(row.rotation),
-        { weight, handWeight, rearWeight, leadWeight, rearArc, leadArc } =
-          this.transfer(plan, time),
+        { weight, handWeight, rearWeight, leadWeight, rearArc, leadArc } = this.transfer(
+          plan,
+          time,
+        ),
         footTargets = new Map<string, Vector3>([
           ['l', new Vector3().fromArray(required(row.feet[0]))],
           ['r', new Vector3().fromArray(required(row.feet[1]))],
         ]),
-        handDelta = plan.hand
-          .clone()
-          .applyQuaternion(rootRotation)
-          .multiplyScalar(handWeight),
+        handDelta = plan.hand.clone().applyQuaternion(rootRotation).multiplyScalar(handWeight),
         handTarget = new Vector3().fromArray(row.right).add(handDelta),
         leftTarget = new Vector3().fromArray(row.left).add(handDelta),
-        body = plan.body
-          .clone()
-          .applyQuaternion(rootRotation)
-          .multiplyScalar(weight),
+        body = plan.body.clone().applyQuaternion(rootRotation).multiplyScalar(weight),
         turnRear = plan.turn
           ? Math.atan2(
               Math.sin(plan.turn.fromYaw - root.rotation.y),
@@ -2727,24 +2433,10 @@ export class NativeMeleeContactFit {
           .applyAxisAngle(new Vector3(0, 1, 0), turnRear)
           .add(required(this).position(root, new Vector3()));
       }
-      lead.add(
-        plan.step
-          .clone()
-          .applyQuaternion(rootRotation)
-          .multiplyScalar(leadWeight),
-      );
-      rear.add(
-        plan.rearStep
-          .clone()
-          .applyQuaternion(rootRotation)
-          .multiplyScalar(rearWeight),
-      );
+      lead.add(plan.step.clone().applyQuaternion(rootRotation).multiplyScalar(leadWeight));
+      rear.add(plan.rearStep.clone().applyQuaternion(rootRotation).multiplyScalar(rearWeight));
       rear.y +=
-        rearArc *
-        Math.min(
-          0.035,
-          (plan.rearStep.length() + (plan.turn?.footDistance ?? 0)) * 0.1,
-        );
+        rearArc * Math.min(0.035, (plan.rearStep.length() + (plan.turn?.footDistance ?? 0)) * 0.1);
       lead.y += leadArc * Math.min(0.045, plan.step.length() * 0.1);
       let kneeDrop = 0;
       for (const side of ['l', 'r']) {
@@ -2754,21 +2446,14 @@ export class NativeMeleeContactFit {
           dx = hip.x - foot.x,
           dz = hip.z - foot.z,
           height = Math.sqrt(
-            Math.max(
-              0,
-              (leg.first + leg.second - 0.002) ** 2 - dx * dx - dz * dz,
-            ),
+            Math.max(0, (leg.first + leg.second - 0.002) ** 2 - dx * dx - dz * dz),
           );
         kneeDrop = Math.max(kneeDrop, hip.y - foot.y - height);
       }
       body.y -= Math.max(0, kneeDrop);
-      required(this)
-        .position(required(this).body, required(this).start)
-        .add(body);
+      required(this).position(required(this).body, required(this).start).add(body);
       required(this).start.applyMatrix4(
-        required(this)
-          .inverseParent.copy(required(this.body.parent).matrixWorld)
-          .invert(),
+        required(this).inverseParent.copy(required(this.body.parent).matrixWorld).invert(),
       );
       required(this).body.position.copy(required(this).start);
       required(this).body.updateWorldMatrix(false, true);
@@ -2780,14 +2465,9 @@ export class NativeMeleeContactFit {
           required(this).endRotation.premultiply(
             new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), turnRear),
           );
-          required(this).quaternion(
-            required(foot.end.parent),
-            required(this).parentRotation,
-          );
+          required(this).quaternion(required(foot.end.parent), required(this).parentRotation);
           foot.end.quaternion.copy(
-            required(this)
-              .parentRotation.invert()
-              .multiply(required(this).endRotation),
+            required(this).parentRotation.invert().multiply(required(this).endRotation),
           );
           foot.end.updateWorldMatrix(false, true);
         }
@@ -2814,8 +2494,7 @@ export class NativeMeleeContactFit {
     const soles = [...pf.soles.values()],
       floorsFor = (support: ContactSupport) =>
         support.floors.filter(
-          (floor) =>
-            Math.abs(floor.height - this.sampleRoot.position.y) < 0.001,
+          (floor) => Math.abs(floor.height - this.sampleRoot.position.y) < 0.001,
         );
     function floorAllowed(
       points: Float64Array,
@@ -2855,14 +2534,9 @@ export class NativeMeleeContactFit {
           const x = (required(cuts[index]) + required(cuts[index - 1])) / 2,
             spans = floors
               .filter((floor) => x >= floor.minX && x <= floor.maxX)
-              .map((floor) => [
-                Math.max(minZ, floor.minZ),
-                Math.min(maxZ, floor.maxZ),
-              ])
+              .map((floor) => [Math.max(minZ, floor.minZ), Math.min(maxZ, floor.maxZ)])
               .filter(([a, b]: number[]) => required(b) >= required(a))
-              .sort(
-                (a: number[], b: number[]) => required(a[0]) - required(b[0]),
-              );
+              .sort((a: number[], b: number[]) => required(a[0]) - required(b[0]));
           let covered = minZ;
           for (const [a, b] of spans) {
             if (required(a) > covered + 1e-8) {
@@ -2912,8 +2586,7 @@ export class NativeMeleeContactFit {
           this.sampleRoot.rotation.set(
             0,
             plan.turn.fromYaw +
-              angle(plan.turn.toYaw - plan.turn.fromYaw) *
-                smooth(time / plan.turn.until),
+              angle(plan.turn.toYaw - plan.turn.fromYaw) * smooth(time / plan.turn.until),
             0,
           );
         }
@@ -2936,10 +2609,7 @@ export class NativeMeleeContactFit {
             low = Infinity,
             high = -Infinity;
           for (const vertex of sole.vertices) {
-            minimum = Math.min(
-              minimum,
-              required(points[vertex * 3 + 1]) - floor,
-            );
+            minimum = Math.min(minimum, required(points[vertex * 3 + 1]) - floor);
           }
           lowest = Math.min(lowest, minimum);
           const centre = new Vector3();
@@ -2965,9 +2635,7 @@ export class NativeMeleeContactFit {
         if (prior && time > prior.time) {
           const dt = time - prior.time;
           for (let side = 0; side < centres.length; side++) {
-            const delta = required(centres[side])
-              .clone()
-              .sub(required(prior.centres[side]));
+            const delta = required(centres[side]).clone().sub(required(prior.centres[side]));
             if (delta.length() / dt > this.walkingFootSpeed + 1e-6) {
               return false;
             }
@@ -2978,10 +2646,7 @@ export class NativeMeleeContactFit {
                 x = required(points[at]) - required(prior.points[at]),
                 y = required(points[at + 1]) - required(prior.points[at + 1]),
                 z = required(points[at + 2]) - required(prior.points[at + 2]);
-              if (
-                Math.sqrt(x * x + y * y + z * z) / dt >
-                this.walkingSoleSpeed + 1e-6
-              ) {
+              if (Math.sqrt(x * x + y * y + z * z) / dt > this.walkingSoleSpeed + 1e-6) {
                 return false;
               }
             }
@@ -3010,9 +2675,7 @@ export class NativeMeleeContactFit {
       const pair = this.rifleSpeedPair,
         pairs = [
           ...(pair ? [pair] : []),
-          ...knownPairs.filter(
-            (value) => !pair || value[0] !== pair[0] || value[1] !== pair[1],
-          ),
+          ...knownPairs.filter((value) => !pair || value[0] !== pair[0] || value[1] !== pair[1]),
         ];
       for (const times of pairs) {
         if (
@@ -3028,13 +2691,7 @@ export class NativeMeleeContactFit {
         const first = this.completeBootPoints();
         native(required(times[1]));
         const second = this.completeBootPoints();
-        if (
-          !this.bootSpeedAllowed(
-            second,
-            first,
-            required(times[1]) - required(times[0]),
-          )
-        ) {
+        if (!this.bootSpeedAllowed(second, first, required(times[1]) - required(times[0]))) {
           this.rifleSpeedPair = [required(times[0]), required(times[1])];
           return false;
         }
@@ -3132,10 +2789,7 @@ export class NativeMeleeContactFit {
           node.matrixWorldNeedsUpdate = true;
         }
       };
-      node.updateWorldMatrix = function (
-        parents: boolean,
-        descendants: boolean,
-      ) {
+      node.updateWorldMatrix = function (parents: boolean, descendants: boolean) {
         if (parents && this.parent) {
           this.parent.updateWorldMatrix(true, false);
         }
@@ -3146,10 +2800,7 @@ export class NativeMeleeContactFit {
           if (this.parent === null) {
             this.matrixWorld.copy(this.matrix);
           } else {
-            this.matrixWorld.multiplyMatrices(
-              this.parent.matrixWorld,
-              this.matrix,
-            );
+            this.matrixWorld.multiplyMatrices(this.parent.matrixWorld, this.matrix);
           }
         }
         if (descendants) {
@@ -3167,10 +2818,7 @@ export class NativeMeleeContactFit {
             if (this.parent === null) {
               this.matrixWorld.copy(this.matrix);
             } else {
-              this.matrixWorld.multiplyMatrices(
-                this.parent.matrixWorld,
-                this.matrix,
-              );
+              this.matrixWorld.multiplyMatrices(this.parent.matrixWorld, this.matrix);
             }
           }
           this.matrixWorldNeedsUpdate = false;
@@ -3215,10 +2863,7 @@ export class NativeMeleeContactFit {
       }
     }
     this.flatRest = new Map(
-      calibration.flat.map((value) => [
-        value.name,
-        new Quaternion().fromArray(value.quaternion),
-      ]),
+      calibration.flat.map((value) => [value.name, new Quaternion().fromArray(value.quaternion)]),
     );
     for (const value of calibration.soles) {
       const sole = this.soles.get(value.name);
@@ -3238,9 +2883,7 @@ export class NativeMeleeContactFit {
   get canFitPairedStrike() {
     return (
       Boolean(this.body) &&
-      ['hand_r', 'hand_l', 'foot_l', 'foot_r'].every((name) =>
-        this.limbs.has(name),
-      ) &&
+      ['hand_r', 'hand_l', 'foot_l', 'foot_r'].every((name) => this.limbs.has(name)) &&
       this.soles.size === 2
     );
   }
@@ -3321,10 +2964,7 @@ export class NativeMeleeContactFit {
     this.pathAllowed = (plan, clip, support, action) => {
       const accepted = path.call(this, plan, clip, support, action),
         pair = this.rifleSpeedPair;
-      if (
-        pair &&
-        !pairs.some((value) => value[0] === pair[0] && value[1] === pair[1])
-      ) {
+      if (pair && !pairs.some((value) => value[0] === pair[0] && value[1] === pair[1])) {
         pairs.push([...pair]);
       }
       return accepted;
@@ -3357,18 +2997,8 @@ export class NativeMeleeContactFit {
     if (!plan) {
       return null;
     }
-    const {
-      key,
-      cueId,
-      contact,
-      duration,
-      pistol,
-      sabre,
-      twoHands,
-      handRecovery,
-      yaw,
-      turn,
-    } = plan;
+    const { key, cueId, contact, duration, pistol, sabre, twoHands, handRecovery, yaw, turn } =
+      plan;
     return {
       key,
       cueId,

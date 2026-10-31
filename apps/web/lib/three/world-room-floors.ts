@@ -16,11 +16,8 @@ export function floorBoardRow(v: number) {
 }
 export function floorJointDistance(u: number, v: number) {
   return (
-    Math.abs(
-      fract(
-        u / FLOOR_BOARD_LENGTH + (((floorBoardRow(v) % 3) + 3) % 3) * 0.37,
-      ) - 0.5,
-    ) * FLOOR_BOARD_LENGTH
+    Math.abs(fract(u / FLOOR_BOARD_LENGTH + (((floorBoardRow(v) % 3) + 3) % 3) * 0.37) - 0.5) *
+    FLOOR_BOARD_LENGTH
   );
 }
 
@@ -41,10 +38,7 @@ export function applyRoomFloorJoints(material: MeshStandardMaterial) {
       sampledDiffuseColor.rgb *= 1.0 - 0.44 * floorMask;
       diffuseColor *= sampledDiffuseColor;`,
     );
-    shader.fragmentShader = shader.fragmentShader.replace(
-      '#include <map_fragment>',
-      fragment,
-    );
+    shader.fragmentShader = shader.fragmentShader.replace('#include <map_fragment>', fragment);
   };
   material.customProgramCacheKey = () =>
     `room-floor-joints:1:${FLOOR_BOARD_LENGTH}:${FLOOR_JOINT_HALF_WIDTH}`;
@@ -84,8 +78,7 @@ export function roomFloorFinish(
   const strength = finish === 'wood' ? 1 : finish === 'floor' ? 0.6 : 0.35;
   const sample = (x: number, z: number, cellLevel: number) => {
     const broad =
-      (seed - 0.5) * 0.065 +
-      0.035 * Math.sin(x * 0.61 + phase) * Math.sin(z * 0.53 - phase);
+      (seed - 0.5) * 0.065 + 0.035 * Math.sin(x * 0.61 + phase) * Math.sin(z * 0.53 - phase);
     let wear = 0;
     for (const door of entries) {
       if ((door.tacticalLevel ?? 0) === cellLevel) {
@@ -108,12 +101,8 @@ export function roomFloorFinish(
         tz = v - iz,
         x0 = (ix - 0.5) * T,
         z0 = (iz - 0.5) * T;
-      const a =
-          sample(x0, z0, cellLevel) * (1 - tx) +
-          sample(x0 + T, z0, cellLevel) * tx,
-        b =
-          sample(x0, z0 + T, cellLevel) * (1 - tx) +
-          sample(x0 + T, z0 + T, cellLevel) * tx;
+      const a = sample(x0, z0, cellLevel) * (1 - tx) + sample(x0 + T, z0, cellLevel) * tx,
+        b = sample(x0, z0 + T, cellLevel) * (1 - tx) + sample(x0 + T, z0 + T, cellLevel) * tx;
       return a * (1 - tz) + b * tz;
     },
   };
@@ -145,11 +134,7 @@ export function roomFloorPart(
   for (let n = 0; n < 6; n++) {
     uv[n * 2] = required(points[n])[0];
     uv[n * 2 + 1] = required(points[n])[2] + height;
-    const shade = finish.shade(
-      required(points[n])[0],
-      required(points[n])[2],
-      level,
-    );
+    const shade = finish.shade(required(points[n])[0], required(points[n])[2], level);
     colours.fill(shade, n * 3, n * 3 + 3);
   }
   const geometry = new BufferGeometry()

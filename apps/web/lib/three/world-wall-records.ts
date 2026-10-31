@@ -27,26 +27,21 @@ export function wallAtPoint(
       (tile) =>
         (!type || tile.type === type) &&
         (tile.axis === 'x'
-          ? Math.abs(tile.y - point.y) < 1e-8 &&
-            Math.abs(tile.x - point.x) <= 0.500001
+          ? Math.abs(tile.y - point.y) < 1e-8 && Math.abs(tile.x - point.x) <= 0.500001
           : tile.axis === 'y'
-            ? Math.abs(tile.x - point.x) < 1e-8 &&
-              Math.abs(tile.y - point.y) <= 0.500001
+            ? Math.abs(tile.x - point.x) < 1e-8 && Math.abs(tile.y - point.y) <= 0.500001
             : tile.x === point.x && tile.y === point.y),
     )
     .sort(
       (a, b) =>
-        Math.hypot(a.x - point.x, a.y - point.y) -
-          Math.hypot(b.x - point.x, b.y - point.y) ||
+        Math.hypot(a.x - point.x, a.y - point.y) - Math.hypot(b.x - point.x, b.y - point.y) ||
         (a.type === 'wall' ? -1 : b.type === 'wall' ? 1 : 0),
     )[0];
 }
 /** Facade frames consume canonical authoring coordinates, not projected centres. */
 export function wallFrameRecords(walls: readonly WorldTile[]) {
   return walls.map((tile) =>
-    tile.axis
-      ? { ...tile, x: tile.edgeX ?? tile.x, y: tile.edgeY ?? tile.y }
-      : tile,
+    tile.axis ? { ...tile, x: tile.edgeX ?? tile.x, y: tile.edgeY ?? tile.y } : tile,
   );
 }
 
@@ -74,9 +69,7 @@ export function buildingWallAtPoint(
     axes.push('x');
   }
   return wallAtPoint(
-    axes.length
-      ? walls.filter((wall) => wall.axis && axes.includes(wall.axis))
-      : walls,
+    axes.length ? walls.filter((wall) => wall.axis && axes.includes(wall.axis)) : walls,
     point,
     type,
   );

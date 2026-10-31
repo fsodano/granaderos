@@ -17,10 +17,7 @@ import { spriteEquipment } from '../../../../packages/game/sprite-equipment.js';
 import { handLayout } from '../../../../packages/game/hand-layout.ts';
 import { fixedBayonetFor } from '../../../../packages/game/weapon-fittings.js';
 import { wornOutfit } from '../../../../packages/game/outfits.ts';
-import {
-  canSee,
-  tileIllumination,
-} from '../../../../packages/game/tactical.js';
+import { canSee, tileIllumination } from '../../../../packages/game/tactical.js';
 import { sceneWallEdges } from '../../../../packages/game/scene-wall-edges.js';
 import { relativeBodyHeight } from '../../../../packages/game/sight-geometry.js';
 import {
@@ -182,8 +179,7 @@ function equipmentItem(
   if (!stored) {
     return null;
   }
-  const record: EquipmentItem =
-    typeof stored === 'number' ? { count: stored } : stored;
+  const record: EquipmentItem = typeof stored === 'number' ? { count: stored } : stored;
   // Inventory keys and authored content IDs are ownership identifiers, not
   // model names. Only the equipment kind or base weapon selects geometry.
   const raw = record.weapon ?? record.blade ?? record.id;
@@ -210,9 +206,7 @@ function equipmentItem(
     id: String(id),
     reference,
     socket,
-    ...((fittings ?? record.fittings)
-      ? { fittings: fittings ?? record.fittings }
-      : {}),
+    ...((fittings ?? record.fittings) ? { fittings: fittings ?? record.fittings } : {}),
   };
 }
 export function actorItems(unit: BattleBody): VisualItem[] {
@@ -236,9 +230,7 @@ export function actorItems(unit: BattleBody): VisualItem[] {
   }
   return result;
 }
-export function actorPosture(
-  unit: Pick<BattleBody, 'stance' | 'movementMode'>,
-) {
+export function actorPosture(unit: Pick<BattleBody, 'stance' | 'movementMode'>) {
   return unit.stance === 'prone' || unit.movementMode === 'prone'
     ? 'prone'
     : unit.stance === 'crouched' || unit.movementMode === 'crouch'
@@ -294,15 +286,10 @@ export function semanticOrder(
     return null;
   }
   const action = aliases[type] ?? type;
-  if (
-    action === 'strike' &&
-    (request.meleeStyle === 'bayonet' || fixedBayonetFor(actor))
-  ) {
+  if (action === 'strike' && (request.meleeStyle === 'bayonet' || fixedBayonetFor(actor))) {
     return 'bayonet';
   }
-  return ACTOR_ACTION_CAPABILITIES.some(
-    (capability) => capability.action === action,
-  )
+  return ACTOR_ACTION_CAPABILITIES.some((capability) => capability.action === action)
     ? action
     : null;
 }
@@ -329,12 +316,7 @@ export function observedActorTransitions(
       extra = { fromPosture };
     } else if (!actor.unconscious && old.unconscious && actor.hp > 0) {
       action = 'recover';
-    } else if (
-      actor.hp > 0 &&
-      !actor.unconscious &&
-      actor.knockedDown &&
-      !old.knockedDown
-    ) {
+    } else if (actor.hp > 0 && !actor.unconscious && actor.knockedDown && !old.knockedDown) {
       action = 'knockdown';
       extra = { fromPosture, toPosture: actorPosture(actor) };
     } else if (
@@ -347,18 +329,10 @@ export function observedActorTransitions(
     ) {
       action = 'hit';
       extra = { fromPosture };
-    } else if (
-      actor.hp > 0 &&
-      !actor.unconscious &&
-      actor.mounted !== old.mounted
-    ) {
+    } else if (actor.hp > 0 && !actor.unconscious && actor.mounted !== old.mounted) {
       action = actor.mounted ? 'mount' : 'dismount';
       extra = { fromPosture };
-    } else if (
-      actor.hp > 0 &&
-      !actor.unconscious &&
-      actorPosture(actor) !== actorPosture(old)
-    ) {
+    } else if (actor.hp > 0 && !actor.unconscious && actorPosture(actor) !== actorPosture(old)) {
       action = `stance:${actorPosture(old)}:${actorPosture(actor)}`;
       extra = {
         fromPosture: actorPosture(old),
@@ -370,10 +344,7 @@ export function observedActorTransitions(
 }
 const lifeCue = (cue?: ActorCue) =>
   Boolean(
-    cue &&
-    ['die', 'dead', 'collapse', 'unconscious', 'recover', 'knockdown'].includes(
-      cue.action,
-    ),
+    cue && ['die', 'dead', 'collapse', 'unconscious', 'recover', 'knockdown'].includes(cue.action),
   );
 /** Caller supplies an admitted actor; raw world bodies never enter this helper. */
 export function admittedImpactCue(
@@ -416,9 +387,7 @@ function contactSupport(
     height = visual.position[1];
   const active = new Set(
     visible.flatMap((actor) =>
-      actor.motion?.moving &&
-      actor.motion.kind === 'climb' &&
-      actor.motion.linkId
+      actor.motion?.moving && actor.motion.kind === 'climb' && actor.motion.linkId
         ? [actor.motion.linkId]
         : [],
     ),
@@ -430,9 +399,7 @@ function contactSupport(
             width: state.width,
             height: state.height,
             tiles: state.tiles,
-            ...(state.upperSurfaces
-              ? { upperSurfaces: state.upperSurfaces }
-              : {}),
+            ...(state.upperSurfaces ? { upperSurfaces: state.upperSurfaces } : {}),
             ...(state.climbLinks ? { climbLinks: state.climbLinks } : {}),
           },
         },
@@ -440,9 +407,7 @@ function contactSupport(
       ).filter((opening) => active.has(opening.linkId))
     : [];
   const props = {
-    props: (state.props ?? []).filter((prop) =>
-      isInteriorVisible(state, prop, revealed),
-    ),
+    props: (state.props ?? []).filter((prop) => isInteriorVisible(state, prop, revealed)),
   };
   for (let dy = -1; dy <= 1; dy++) {
     for (let dx = -1; dx <= 1; dx++) {
@@ -462,11 +427,9 @@ function contactSupport(
         continue;
       }
       floors.push(
-        ...surfaceRectangles(
-          { ...point, elevation: height },
-          TILE_METRES,
-          openings,
-        ).map((rect) => ({ ...rect, height })),
+        ...surfaceRectangles({ ...point, elevation: height }, TILE_METRES, openings).map(
+          (rect) => ({ ...rect, height }),
+        ),
       );
     }
   }
@@ -500,16 +463,13 @@ export function presentActors(
       items = actorItems(actor),
       at = motion ?? actor;
     const activeCombat =
-        state.mode !== 'exploration' &&
-        (state.status === undefined || state.status === 'active'),
+        state.mode !== 'exploration' && (state.status === undefined || state.status === 'active'),
       readyInCombat = activeCombat && actor.weaponReady;
     const idleAction =
       actor.braced && equipment === 'long-gun'
         ? 'brace'
         : (readyInCombat ||
-              (options.selected === actor.id &&
-                kind === 'unit' &&
-                options.mode === 'fire')) &&
+              (options.selected === actor.id && kind === 'unit' && options.mode === 'fire')) &&
             ['long-gun', 'short-gun'].includes(equipment)
           ? 'aim'
           : 'idle';
@@ -520,12 +480,7 @@ export function presentActors(
       frameDuration = frame?.durationMs ?? 0;
     const assignedCrew =
       frame &&
-      [
-        'artillery',
-        'artilleryReload',
-        'artilleryMove',
-        'artilleryPivot',
-      ].includes(frame.action) &&
+      ['artillery', 'artilleryReload', 'artilleryMove', 'artilleryPivot'].includes(frame.action) &&
       frame.crewIds?.includes(actor.id);
     if (
       kind === 'unit' &&
@@ -540,9 +495,7 @@ export function presentActors(
         cue = {
           id: `${frame.sequenceId}:${frame.actionId}:mount:${key}`,
           action: frame.mountAction,
-          ...(frame.mountFromPosture
-            ? { fromPosture: frame.mountFromPosture }
-            : {}),
+          ...(frame.mountFromPosture ? { fromPosture: frame.mountFromPosture } : {}),
           phase: 'prepare',
           startedAt: frameStart,
           phaseStartedAt: frameStart,
@@ -554,11 +507,7 @@ export function presentActors(
       if (
         semantic &&
         frame.type !== 'step' &&
-        !(
-          frame.shotComplete ||
-          frame.contactComplete ||
-          frame.releaseComplete
-        ) &&
+        !(frame.shotComplete || frame.contactComplete || frame.releaseComplete) &&
         frame.shotVisual?.discharge !== false
       ) {
         const shotHand = frame.shotHand ?? frame.shotVisual?.shotHand,
@@ -578,8 +527,7 @@ export function presentActors(
         cue = {
           id: `${frame.sequenceId}:${frame.actionId}${shotId === undefined ? '' : `:shot:${shotId}`}:${key}`,
           action:
-            frame.type === 'prepare' &&
-            ['fire', 'firePoint'].includes(frame.action)
+            frame.type === 'prepare' && ['fire', 'firePoint'].includes(frame.action)
               ? 'aim'
               : semantic,
           ...(shotHand && hand ? { shotHand, hand } : {}),
@@ -599,11 +547,7 @@ export function presentActors(
     }
     // Frame impacts are already disclosure-filtered by the recorder. The
     // current entry/readability checks provide the second admission boundary.
-    const impactCue = admittedImpactCue(
-      { key, kind, actor },
-      frame,
-      options.now,
-    );
+    const impactCue = admittedImpactCue({ key, kind, actor }, frame, options.now);
     if (impactCue && !lifeCue(cue)) {
       cue = impactCue;
     }
@@ -666,18 +610,11 @@ export function presentActors(
       key,
       id: actor.id,
       kind,
-      appearance: spriteAppearance(
-        actor,
-        kind === 'npc' ? 'civilian' : 'soldier',
-      ),
+      appearance: spriteAppearance(actor, kind === 'npc' ? 'civilian' : 'soldier'),
       skin: spriteSkinTone(actor),
       side: actor.side ?? 'civilian',
       tacticalLevel: tacticalLevel(actor),
-      position: [
-        at.x * TILE_METRES,
-        renderedSurfaceHeight(state, at),
-        at.y * TILE_METRES,
-      ],
+      position: [at.x * TILE_METRES, renderedSurfaceHeight(state, at), at.y * TILE_METRES],
       yaw: actorYaw(direction),
       posture,
       mounted,
@@ -696,10 +633,7 @@ export function presentActors(
       ...(motion ? { motion } : {}),
       selected,
       bodyHeights: Object.fromEntries(
-        ['head', 'torso', 'legs', 'muzzle'].map((part) => [
-          part,
-          relativeBodyHeight(actor, part),
-        ]),
+        ['head', 'torso', 'legs', 'muzzle'].map((part) => [part, relativeBodyHeight(actor, part)]),
       ),
     });
   }
@@ -747,18 +681,14 @@ export function presentActors(
             target.position[0] - visual.position[0],
             target.position[2] - visual.position[2],
           );
-          const deltaYaw = Math.atan2(
-              Math.sin(toYaw - visual.yaw),
-              Math.cos(toYaw - visual.yaw),
-            ),
+          const deltaYaw = Math.atan2(Math.sin(toYaw - visual.yaw), Math.cos(toYaw - visual.yaw)),
             distance =
               (target.position[0] - visual.position[0]) ** 2 +
               (target.position[2] - visual.position[2]) ** 2;
           const turn =
             visual.cue.phase === 'prepare' &&
             (visual.equipment === 'blade' ||
-              (visual.equipment === 'long-gun' &&
-                visual.action === 'strike')) &&
+              (visual.equipment === 'long-gun' && visual.action === 'strike')) &&
             visual.posture === 'standing' &&
             !visual.mounted &&
             !visual.motion?.moving &&
@@ -780,13 +710,7 @@ export function presentActors(
               action: target.action,
               bodyHeights: { ...target.bodyHeights },
             },
-            contactSupport: contactSupport(
-              state,
-              source.actor,
-              visual,
-              revealed,
-              result,
-            ),
+            contactSupport: contactSupport(state, source.actor, visual, revealed, result),
           };
         }
       }
@@ -801,11 +725,7 @@ export function presentActors(
     ['prepare', 'result'].includes(frame.type)
   ) {
     for (const visual of result) {
-      if (
-        visual.kind === 'unit' &&
-        visual.id === frame.unitId &&
-        visual.cue?.action === 'heal'
-      ) {
+      if (visual.kind === 'unit' && visual.id === frame.unitId && visual.cue?.action === 'heal') {
         if (frame.careSelf === true) {
           visual.cue = { ...visual.cue, care: { mode: 'self' } };
           continue;
@@ -853,13 +773,7 @@ export function presentActors(
               action: target.action,
               bodyHeights: { ...target.bodyHeights },
             },
-            support: contactSupport(
-              state,
-              source.actor,
-              visual,
-              revealed,
-              result,
-            ),
+            support: contactSupport(state, source.actor, visual, revealed, result),
           },
         };
       }
@@ -905,13 +819,7 @@ export function presentActors(
             action: target.action,
             bodyHeights: { ...target.bodyHeights },
           })),
-          support: contactSupport(
-            state,
-            source.actor,
-            visual,
-            revealed,
-            result,
-          ),
+          support: contactSupport(state, source.actor, visual, revealed, result),
         };
       }
     }
@@ -958,13 +866,7 @@ export function presentActors(
             action: target.action,
             bodyHeights: { ...target.bodyHeights },
           })),
-          support: contactSupport(
-            state,
-            source.actor,
-            visual,
-            revealed,
-            result,
-          ),
+          support: contactSupport(state, source.actor, visual, revealed, result),
         };
       }
     }
@@ -982,8 +884,7 @@ export function presentWorld(
 ): WorldInput {
   const visible = (point: TacticalPoint) =>
     isInteriorVisible(state, point, revealed) &&
-    (!tacticalLevel(point) ||
-      players.some((player) => canSee(state, player, point)));
+    (!tacticalLevel(point) || players.some((player) => canSee(state, player, point)));
   const seenPoints = new Map<string, boolean>();
   const observed = (point: TacticalPoint) => {
     const key = spaceKey(point);
@@ -1000,9 +901,7 @@ export function presentWorld(
     ...point,
     elevation: surfaceHeight(state, point) ?? 0,
   });
-  const lootKeys = new Set(
-    groundLootPiles(state, players).filter(visible).map(spaceKey),
-  );
+  const lootKeys = new Set(groundLootPiles(state, players).filter(visible).map(spaceKey));
   const loot = [
     ...(state.droppedWeapons ?? []).filter((item) => !item.taken),
     ...(state.groundItems ?? []).filter(

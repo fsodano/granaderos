@@ -33,9 +33,7 @@ export function subtractRectangle(
     { minX: x1, maxX: rect.maxX, minZ: rect.minZ, maxZ: rect.maxZ },
     { minX: x0, maxX: x1, minZ: rect.minZ, maxZ: z0 },
     { minX: x0, maxX: x1, minZ: z1, maxZ: rect.maxZ },
-  ].filter(
-    (part) => part.maxX - part.minX > 1e-8 && part.maxZ - part.minZ > 1e-8,
-  );
+  ].filter((part) => part.maxX - part.minX > 1e-8 && part.maxZ - part.minZ > 1e-8);
 }
 
 /** Static authored access records only. No actor or private room data enters. */
@@ -44,9 +42,7 @@ export function climbOpenings(input: WorldInput, T: number): ClimbOpening[] {
     if (point.elevation !== undefined) {
       return point.elevation;
     }
-    const surface = (
-      point.tacticalLevel ? input.terrain.upperSurfaces : input.terrain.tiles
-    )?.find(
+    const surface = (point.tacticalLevel ? input.terrain.upperSurfaces : input.terrain.tiles)?.find(
       (surface) =>
         surface.x === point.x &&
         surface.y === point.y &&
@@ -232,16 +228,7 @@ export function buildClimbCovers(
           light,
         );
       }
-      batch.box(
-        iron,
-        x,
-        opening.height - 0.022,
-        opening.minZ - 0.045,
-        0.06,
-        0.02,
-        0.09,
-        light,
-      );
+      batch.box(iron, x, opening.height - 0.022, opening.minZ - 0.045, 0.06, 0.02, 0.09, light);
     }
     const node = batch.finish(`climb-cover:${opening.linkId}`);
     node.userData = { kind: 'climb-cover', linkId: opening.linkId, open };

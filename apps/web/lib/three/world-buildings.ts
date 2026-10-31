@@ -9,10 +9,7 @@ import { roomDecorProfile } from '../../../../packages/game/room-dressing.js';
 import { WorldBatch, roofTextureProjector } from './world-geometry';
 import { roomFloorFinish, roomFloorPart } from './world-room-floors';
 import { illuminationAt } from './world-materials';
-import {
-  architecturalDetails,
-  roofEdgeDetails,
-} from './world-building-details';
+import { architecturalDetails, roofEdgeDetails } from './world-building-details';
 import { civicCorniceRoofJoin } from './world-civic-cornice';
 import { addWallSurfaceDetails } from './world-building-surfaces';
 import { addDoorLeaf } from './world-building-doors';
@@ -21,10 +18,7 @@ import { climbOpenings } from './world-climb-openings';
 import { addWindowFace } from './world-building-windows';
 import { addWindowSill } from './world-window-sills';
 import { architectureTrimColour } from './world-architecture-finish';
-import {
-  buildingArtInset,
-  buildingFloorRectangles,
-} from './world-building-placement';
+import { buildingArtInset, buildingFloorRectangles } from './world-building-placement';
 import {
   buildingRenderAppearance,
   buildingRenderProfile,
@@ -93,13 +87,7 @@ function openingArch(
       0.039,
       light,
     );
-    batch.cylinder(
-      trim,
-      at(ua, ya, thickness * 0.53),
-      at(ub, yb, thickness * 0.53),
-      0.039,
-      light,
-    );
+    batch.cylinder(trim, at(ua, ya, thickness * 0.53), at(ub, yb, thickness * 0.53), 0.039, light);
   }
 }
 export function normalizedBuilding(b: WorldBuilding) {
@@ -108,12 +96,7 @@ export function normalizedBuilding(b: WorldBuilding) {
     ...b,
     ...(kind
       ? {
-          kind:
-            kind === 'estancia'
-              ? 'farmhouse'
-              : kind === 'mansion'
-                ? 'palace'
-                : kind,
+          kind: kind === 'estancia' ? 'farmhouse' : kind === 'mansion' ? 'palace' : kind,
         }
       : {}),
   };
@@ -127,14 +110,7 @@ function appendWornWall(
   base: number,
 ) {
   const group = source.finish('worn-wall');
-  applyStructureWear(
-    group,
-    tile.structureDamage ?? 0,
-    tile.x,
-    tile.y,
-    height,
-    base,
-  );
+  applyStructureWear(group, tile.structureDamage ?? 0, tile.x, tile.y, height, base);
   target.take(group);
 }
 export function effectiveRooms(input: WorldInput) {
@@ -143,10 +119,7 @@ export function effectiveRooms(input: WorldInput) {
   if (level) {
     const terraces = new Set(
       (input.terrain.upperSurfaces ?? [])
-        .filter(
-          (surface) =>
-            surface.kind === 'roof' && (surface.tacticalLevel ?? 0) === level,
-        )
+        .filter((surface) => surface.kind === 'roof' && (surface.tacticalLevel ?? 0) === level)
         .map((surface) => surface.buildingId),
     );
     for (const building of input.terrain.buildings ?? []) {
@@ -187,13 +160,7 @@ export function roofOwners(b: WorldBuilding) {
       const x = cell.x + dx,
         y = cell.y + dy,
         key = `${x},${y}`;
-      if (
-        x < b.x ||
-        y < b.y ||
-        x >= b.x + b.width ||
-        y >= b.y + b.height ||
-        owners.has(key)
-      ) {
+      if (x < b.x || y < b.y || x >= b.x + b.width || y >= b.y + b.height || owners.has(key)) {
         continue;
       }
       owners.set(key, owner);
@@ -210,9 +177,7 @@ export function upperSurfaceShown(surface: WorldTile, input: WorldInput) {
   ) {
     return true;
   }
-  const b = input.terrain.buildings?.find(
-    (building) => building.id === surface.buildingId,
-  );
+  const b = input.terrain.buildings?.find((building) => building.id === surface.buildingId);
   if (!b) {
     return true;
   }
@@ -242,9 +207,7 @@ export function shownUpperSurfaces(input: WorldInput) {
     ) {
       return true;
     }
-    const owner = owners
-      .get(surface.buildingId)
-      ?.get(`${surface.x},${surface.y}`);
+    const owner = owners.get(surface.buildingId)?.get(`${surface.x},${surface.y}`);
     if (!owner || !known.has(owner)) {
       return true;
     }
@@ -256,12 +219,7 @@ export function shownUpperSurfaces(input: WorldInput) {
     );
   });
 }
-function clipPlane(
-  points: readonly Vector3[],
-  axis: 'x' | 'z',
-  bound: number,
-  greater: boolean,
-) {
+function clipPlane(points: readonly Vector3[], axis: 'x' | 'z', bound: number, greater: boolean) {
   const result: Vector3[] = [];
   for (let n = 0; n < points.length; n++) {
     const a = required(points[n]),
@@ -305,20 +263,12 @@ export function buildingWallAxes(
   }
   const onX = b && (tile.x === b.x || tile.x === b.x + b.width - 1),
     onY = b && (tile.y === b.y || tile.y === b.y + b.height - 1);
-  const result: Axis[] = b
-    ? [...(onX ? ['y' as const] : []), ...(onY ? ['x' as const] : [])]
-    : [];
+  const result: Axis[] = b ? [...(onX ? ['y' as const] : []), ...(onY ? ['x' as const] : [])] : [];
   if (!result.length) {
-    if (
-      occupied.has(`${tile.x - 1},${tile.y}`) ||
-      occupied.has(`${tile.x + 1},${tile.y}`)
-    ) {
+    if (occupied.has(`${tile.x - 1},${tile.y}`) || occupied.has(`${tile.x + 1},${tile.y}`)) {
       result.push('x');
     }
-    if (
-      occupied.has(`${tile.x},${tile.y - 1}`) ||
-      occupied.has(`${tile.x},${tile.y + 1}`)
-    ) {
+    if (occupied.has(`${tile.x},${tile.y - 1}`) || occupied.has(`${tile.x},${tile.y + 1}`)) {
       result.push('y');
     }
     if (!result.length) {
@@ -351,25 +301,18 @@ export function buildBuilding(
   const roofs = (input.terrain.upperSurfaces ?? []).filter(
       (surface) => surface.kind === 'roof' && surface.buildingId === b.id,
     ),
-    base =
-      input.terrain.tiles.find((tile) => tile.x === b.x && tile.y === b.y)
-        ?.elevation ?? 0;
+    base = input.terrain.tiles.find((tile) => tile.x === b.x && tile.y === b.y)?.elevation ?? 0;
   const groundRooms = (b.rooms ?? []).filter(
       (room) => !(room.tacticalLevel ?? room.cells[0]?.tacticalLevel ?? 0),
     ),
-    allOpen =
-      groundRooms.length > 0 && groundRooms.every((room) => known.has(room.id)),
+    allOpen = groundRooms.length > 0 && groundRooms.every((room) => known.has(room.id)),
     someOpen = groundRooms.some((room) => known.has(room.id));
   // Existing metric slabs and cover metadata win over artwork pixel heights.
   const fullHeight = roofs.length
     ? Math.min(...roofs.map((surface) => (surface.elevation ?? 3) - base))
     : Math.max(
         2.5,
-        (selected
-          ? selected.height
-          : legacy
-            ? buildingStyle(b).height
-            : profile.wallHeight) / V,
+        (selected ? selected.height : legacy ? buildingStyle(b).height : profile.wallHeight) / V,
       );
   const floorHeight = roofs.length
     ? fullHeight
@@ -387,10 +330,7 @@ export function buildBuilding(
         ? { colour: buildingStyle(b).wall }
         : { architectureRole: 'wall' },
     ),
-    trim = materials.get(
-      'trim',
-      legacy ? { colour: buildingStyle(b).trim } : {},
-    );
+    trim = materials.get('trim', legacy ? { colour: buildingStyle(b).trim } : {});
   const doorHeight = BUILDING_OPENINGS.doorHeight / V,
     doorWidth = T * 0.6,
     thickness = 0.18,
@@ -407,12 +347,10 @@ export function buildBuilding(
   for (const tile of walls) {
     const edge = Boolean(tile.axis),
       onX = edge
-        ? tile.axis === 'y' &&
-          (tile.x === b.x - 0.5 || tile.x === b.x + b.width - 0.5)
+        ? tile.axis === 'y' && (tile.x === b.x - 0.5 || tile.x === b.x + b.width - 0.5)
         : tile.x === b.x || tile.x === b.x + b.width - 1,
       onY = edge
-        ? tile.axis === 'x' &&
-          (tile.y === b.y - 0.5 || tile.y === b.y + b.height - 0.5)
+        ? tile.axis === 'x' && (tile.y === b.y - 0.5 || tile.y === b.y + b.height - 0.5)
         : tile.y === b.y || tile.y === b.y + b.height - 1,
       corner = !edge && onX && onY;
     const roomOpen =
@@ -423,8 +361,7 @@ export function buildBuilding(
           room.cells.some((cell) =>
             corner
               ? Math.abs(cell.x - tile.x) <= 1 && Math.abs(cell.y - tile.y) <= 1
-              : Math.abs(cell.x - tile.x) + Math.abs(cell.y - tile.y) ===
-                (edge ? 0.5 : 1),
+              : Math.abs(cell.x - tile.x) + Math.abs(cell.y - tile.y) === (edge ? 0.5 : 1),
           ),
       );
     const light = illuminationAt(input, tile),
@@ -442,21 +379,13 @@ export function buildBuilding(
         h = cut ? cutaway : onX || onY ? height : floorHeight;
       const along = axis === 'x' ? tile.x : tile.y,
         lower = (axis === 'x' ? b.x : b.y) + wallInset,
-        upper =
-          (axis === 'x' ? b.x + b.width - 1 : b.y + b.height - 1) + wallInset,
+        upper = (axis === 'x' ? b.x + b.width - 1 : b.y + b.height - 1) + wallInset,
         first = (edge ? along - 0.5 : Math.max(along - 0.5, lower)) * T,
         last = (edge ? along + 0.5 : Math.min(along + 0.5, upper)) * T;
       const mid = (first + last) * 0.5,
         len = last - first,
         cross = ((axis === 'x' ? tile.y : tile.x) + wallInset) * T;
-      const box = (
-        u: number,
-        y: number,
-        w: number,
-        hi: number,
-        d: number,
-        material = wallMat,
-      ) =>
+      const box = (u: number, y: number, w: number, hi: number, d: number, material = wallMat) =>
         axis === 'x'
           ? wallBatch.box(material, u, tileBase + y, cross, w, hi, d, light)
           : wallBatch.box(material, cross, tileBase + y, u, d, hi, w, light);
@@ -466,10 +395,7 @@ export function buildBuilding(
           h - 0.12,
           tile.type === 'door' ? doorHeight : BUILDING_OPENINGS.windowTop / V,
         ),
-        sill =
-          tile.type === 'window'
-            ? Math.min(top - 0.25, BUILDING_OPENINGS.windowSill / V)
-            : 0;
+        sill = tile.type === 'window' ? Math.min(top - 0.25, BUILDING_OPENINGS.windowSill / V) : 0;
       if (cut) {
         const originalHeight = onX || onY ? height : floorHeight;
         outlines.add({
@@ -485,15 +411,10 @@ export function buildBuilding(
             ? {
                 opening: {
                   width: ow,
-                  bottom:
-                    tile.type === 'window'
-                      ? BUILDING_OPENINGS.windowSill / V
-                      : 0,
+                  bottom: tile.type === 'window' ? BUILDING_OPENINGS.windowSill / V : 0,
                   top: Math.min(
                     originalHeight - 0.12,
-                    tile.type === 'door'
-                      ? doorHeight
-                      : BUILDING_OPENINGS.windowTop / V,
+                    tile.type === 'door' ? doorHeight : BUILDING_OPENINGS.windowTop / V,
                   ),
                 },
               }
@@ -516,20 +437,8 @@ export function buildBuilding(
       if (!opening) {
         box(mid, h * 0.5, len, h, thickness);
       } else {
-        box(
-          (first + mid - ow * 0.5) * 0.5,
-          h * 0.5,
-          (len - ow) * 0.5,
-          h,
-          thickness,
-        );
-        box(
-          (mid + ow * 0.5 + last) * 0.5,
-          h * 0.5,
-          (len - ow) * 0.5,
-          h,
-          thickness,
-        );
+        box((first + mid - ow * 0.5) * 0.5, h * 0.5, (len - ow) * 0.5, h, thickness);
+        box((mid + ow * 0.5 + last) * 0.5, h * 0.5, (len - ow) * 0.5, h, thickness);
         if (!cut) {
           box(mid, top + (h - top) * 0.5, ow, h - top, thickness);
         }
@@ -583,9 +492,8 @@ export function buildBuilding(
         if (
           !cut &&
           (tile.style ??
-            (tile.type === 'door'
-              ? appearance['doorStyle']
-              : appearance['windowStyle'])) === 'arched'
+            (tile.type === 'door' ? appearance['doorStyle'] : appearance['windowStyle'])) ===
+            'arched'
         ) {
           openingArch(
             wallBatch,
@@ -629,11 +537,7 @@ export function buildBuilding(
               light,
             });
             const fallen = debris.finish(`door-debris:${id}`);
-            fallen.position.set(
-              axis === 'x' ? mid : cross,
-              tileBase,
-              axis === 'x' ? cross : mid,
-            );
+            fallen.position.set(axis === 'x' ? mid : cross, tileBase, axis === 'x' ? cross : mid);
             fallen.rotation.y = axis === 'x' ? 0 : -Math.PI * 0.5;
             leafGroup.add(fallen);
           } else {
@@ -661,13 +565,7 @@ export function buildBuilding(
                 sourceBands: !legacy || b.wallFinish !== undefined,
               });
               const leaf = part.finish(`door-leaf:${id}:${side}`);
-              applyStructureWear(
-                leaf,
-                tile.structureDamage ?? 0,
-                tile.x,
-                tile.y,
-                openingHeight,
-              );
+              applyStructureWear(leaf, tile.structureDamage ?? 0, tile.x, tile.y, openingHeight);
               leaf.userData['style'] = style;
               hinge.add(leaf);
               leafGroup.add(hinge);
@@ -719,9 +617,7 @@ export function buildBuilding(
   for (const [index, room] of (b.rooms ?? []).entries()) {
     if (known.has(room.id)) {
       const decor = roomDecorProfile(b, room, index),
-        floor = materials.roomFloor(
-          decor.floor === 'stone' ? 'cobble' : decor.floor,
-        ),
+        floor = materials.roomFloor(decor.floor === 'stone' ? 'cobble' : decor.floor),
         finish = roomFloorFinish(
           room,
           walls.filter((tile) => tile.type === 'door'),
@@ -731,13 +627,9 @@ export function buildBuilding(
         level = room.tacticalLevel ?? 0;
       for (const cell of room.cells) {
         const cellLevel = cell.tacticalLevel ?? level,
-          surface = (
-            cellLevel ? input.terrain.upperSurfaces : input.terrain.tiles
-          )?.find(
+          surface = (cellLevel ? input.terrain.upperSurfaces : input.terrain.tiles)?.find(
             (tile) =>
-              tile.x === cell.x &&
-              tile.y === cell.y &&
-              (tile.tacticalLevel ?? 0) === cellLevel,
+              tile.x === cell.x && tile.y === cell.y && (tile.tacticalLevel ?? 0) === cellLevel,
           ),
           y = surface?.elevation ?? base;
         for (const part of buildingFloorRectangles(
@@ -780,11 +672,7 @@ export function buildBuilding(
     roofMat.polygonOffsetUnits = -1;
     const at = (u: number, v: number, y: number) => {
       const p = frame.at(u, v);
-      return new Vector3(
-        (p.x + wallInset) * T,
-        base + y,
-        (p.y + wallInset) * T,
-      );
+      return new Vector3((p.x + wallInset) * T, base + y, (p.y + wallInset) * T);
     };
     const lo = -e,
       hi = frame.width + e,
@@ -831,11 +719,7 @@ export function buildBuilding(
       for (const d of [0, frame.depth]) {
         batch.polygon(
           wallMat,
-          [
-            at(0, d, height),
-            at(frame.width, d, height),
-            at(mid, d, height + rise),
-          ],
+          [at(0, d, height), at(frame.width, d, height), at(mid, d, height + rise)],
           illuminationAt(input, b),
         );
       }
@@ -858,12 +742,7 @@ export function buildBuilding(
                 (x + 0.5 + wallInset) * T,
                 (y + 0.5 + wallInset) * T,
               );
-              batch.polygon(
-                roofMat,
-                clipped,
-                illuminationAt(input, { x, y }),
-                projectUV,
-              );
+              batch.polygon(roofMat, clipped, illuminationAt(input, { x, y }), projectUV);
             }
           }
         }
@@ -885,18 +764,7 @@ export function buildBuilding(
     }
   }
   if (!someOpen) {
-    group.add(
-      architecturalDetails(
-        b,
-        input,
-        T,
-        height,
-        base,
-        geometry,
-        materials,
-        legacy,
-      ),
-    );
+    group.add(architecturalDetails(b, input, T, height, base, geometry, materials, legacy));
   }
   group.add(
     surfaces.finish(`building-surfaces:${b.id}`),
@@ -926,22 +794,14 @@ export function buildIndependentWalls(
   for (const tile of tiles) {
     const worn = Boolean(tile.structureDamage && !tile.destroyed),
       wallBatch = worn ? new WorldBatch(geometry) : batch;
-    for (const [n, axis] of buildingWallAxes(
-      tile,
-      undefined,
-      occupied,
-    ).entries()) {
+    for (const [n, axis] of buildingWallAxes(tile, undefined, occupied).entries()) {
       const h = tile.obstacleHeight ?? 2.5,
         light = illuminationAt(input, tile),
         x = tile.x * T,
         z = tile.y * T,
         base = tile.elevation ?? 0,
         material = materials.get(
-          tile.material === 'wood'
-            ? 'wood'
-            : tile.material === 'stone'
-              ? 'stone'
-              : 'adobe',
+          tile.material === 'wood' ? 'wood' : tile.material === 'stone' ? 'stone' : 'adobe',
         );
       const box = (u: number, y: number, w: number, hi: number, m = material) =>
         axis === 'x'
@@ -954,14 +814,9 @@ export function buildIndependentWalls(
       const width = T * 0.6,
         top = Math.min(
           h - 0.12,
-          tile.type === 'door'
-            ? BUILDING_OPENINGS.doorHeight / V
-            : BUILDING_OPENINGS.windowTop / V,
+          tile.type === 'door' ? BUILDING_OPENINGS.doorHeight / V : BUILDING_OPENINGS.windowTop / V,
         ),
-        sill =
-          tile.type === 'window'
-            ? Math.min(top - 0.25, BUILDING_OPENINGS.windowSill / V)
-            : 0;
+        sill = tile.type === 'window' ? Math.min(top - 0.25, BUILDING_OPENINGS.windowSill / V) : 0;
       box(-(T + width) * 0.25, h * 0.5, (T - width) * 0.5, h);
       box((T + width) * 0.25, h * 0.5, (T - width) * 0.5, h);
       box(0, top + (h - top) * 0.5, width, h - top);
@@ -1000,16 +855,7 @@ export function buildIndependentWalls(
         doors.add(fallen);
         continue;
       }
-      leaf.box(
-        materials.get('wood'),
-        width * 0.5,
-        top * 0.5,
-        0,
-        width,
-        top,
-        0.055,
-        light,
-      );
+      leaf.box(materials.get('wood'), width * 0.5, top * 0.5, 0, width, top, 0.055, light);
       leaf.box(
         materials.get('iron'),
         width * 0.5,
@@ -1027,20 +873,13 @@ export function buildIndependentWalls(
         base,
         axis === 'x' ? z : z - width * 0.5,
       );
-      hinge.rotation.y =
-        (axis === 'x' ? 0 : -Math.PI * 0.5) + (tile.open ? Math.PI * 0.48 : 0);
+      hinge.rotation.y = (axis === 'x' ? 0 : -Math.PI * 0.5) + (tile.open ? Math.PI * 0.48 : 0);
       hinge.userData['semanticId'] = `door:${id}`;
       hinge.userData['open'] = Boolean(tile.open);
       doors.add(hinge);
     }
     if (worn) {
-      appendWornWall(
-        batch,
-        wallBatch,
-        tile,
-        tile.obstacleHeight ?? 2.5,
-        tile.elevation ?? 0,
-      );
+      appendWornWall(batch, wallBatch, tile, tile.obstacleHeight ?? 2.5, tile.elevation ?? 0);
     }
   }
   const group = batch.finish('independent-walls');

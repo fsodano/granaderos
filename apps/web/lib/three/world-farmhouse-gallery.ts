@@ -1,8 +1,4 @@
-import {
-  worldWallRecords,
-  buildingWallAtPoint,
-  wallFrameRecords,
-} from './world-wall-records';
+import { worldWallRecords, buildingWallAtPoint, wallFrameRecords } from './world-wall-records';
 import { Group, Vector3 } from 'three';
 import { entranceFrame } from '../../../../packages/game/building-profile.ts';
 import { buildingAppearance } from '../../../../packages/game/building-appearance.ts';
@@ -31,9 +27,7 @@ export function farmhouseGallery(
   if (height < 2.4) {
     return root;
   }
-  const walls = worldWallRecords(input).filter(
-      (tile) => tile.buildingId === b.id,
-    ),
+  const walls = worldWallRecords(input).filter((tile) => tile.buildingId === b.id),
     frame = entranceFrame({ ...b, walls: wallFrameRecords(walls) }),
     inset = buildingArtInset(b, input),
     along = inset * (frame.u.x + frame.u.y),
@@ -79,12 +73,7 @@ export function farmhouseGallery(
         (surface.y + 0.5) * T > rect.minZ + 1e-6 &&
         (surface.y - 0.5) * T < rect.maxZ - 1e-6,
     );
-  const box = (
-    rect: ReturnType<typeof rectangle>,
-    bottom: number,
-    top: number,
-    material = wood,
-  ) =>
+  const box = (rect: ReturnType<typeof rectangle>, bottom: number, top: number, material = wood) =>
     batch.box(
       material,
       (rect.minX + rect.maxX) * 0.5,
@@ -95,11 +84,7 @@ export function farmhouseGallery(
       rect.maxZ - rect.minZ,
       light,
     );
-  const supported = (
-    u: number,
-    v: number,
-    rect: ReturnType<typeof rectangle>,
-  ) => {
+  const supported = (u: number, v: number, rect: ReturnType<typeof rectangle>) => {
     const p = frame.at(u, v);
     return {
       minX: Math.max(rect.minX, (p.x - 0.49) * T),
@@ -132,16 +117,8 @@ export function farmhouseGallery(
         supportV,
         rectangle(u - 0.075, v - 0.075, u + 0.075, v + 0.075),
       ),
-      foot = supported(
-        supportU,
-        supportV,
-        rectangle(u - 0.13, v - 0.13, u + 0.13, v + 0.13),
-      );
-    if (
-      shaft.maxX <= shaft.minX ||
-      shaft.maxZ <= shaft.minZ ||
-      walking(foot, low)
-    ) {
+      foot = supported(supportU, supportV, rectangle(u - 0.13, v - 0.13, u + 0.13, v + 0.13));
+    if (shaft.maxX <= shaft.minX || shaft.maxZ <= shaft.minZ || walking(foot, low)) {
       return false;
     }
     box(foot, 0, 4 / V, stone);
@@ -170,8 +147,7 @@ export function farmhouseGallery(
             support - 0.49 + pad,
             Math.min(
               support + 0.49 - pad,
-              Math.max(joint ? -0.3 : lo, Math.min(hi, u + sign * 0.35)) +
-                along,
+              Math.max(joint ? -0.3 : lo, Math.min(hi, u + sign * 0.35)) + along,
             ),
           ),
           start = sign < 0 ? first : last;

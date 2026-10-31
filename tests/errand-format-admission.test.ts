@@ -1,15 +1,19 @@
+import type { ErrandDefinition } from '../packages/campaign-format/types.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateErrandDefinitions } from '../packages/campaign-format/errand-schema.js';
 import { validateRoadsideDiscoveries as validateRoadsideFormat } from '../packages/campaign-format/roadside-discovery-schema.js';
-import { validateQuestDefinitions, freshDefaultErrands } from '../packages/game/quest-definitions.js';
+import {
+  validateQuestDefinitions,
+  freshDefaultErrands,
+} from '../packages/game/quest-definitions.js';
 import {
   validateRoadsideDiscoveries,
   freshDefaultRoadsideDiscoveries,
 } from '../packages/game/roadside-discoveries.js';
 import { DEFAULT_WORLD } from '../content/campaigns/default.js';
 
-test('published errands and roadside discoveries share format validation without changing their documents', () => {
+void test('published errands and roadside discoveries share format validation without changing their documents', () => {
   const errands = freshDefaultErrands();
   const discoveries = freshDefaultRoadsideDiscoveries();
   const before = structuredClone({ errands, discoveries });
@@ -20,8 +24,8 @@ test('published errands and roadside discoveries share format validation without
   assert.deepEqual({ errands, discoveries }, before);
 });
 
-test('game admission retains equipment capabilities and real escort route validation', () => {
-  const quest = {
+void test('game admission retains equipment capabilities and real escort route validation', () => {
+  const quest: ErrandDefinition = {
     id: 'supply',
     npcId: 'contact',
     sector: 'retiro',

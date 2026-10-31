@@ -64,9 +64,7 @@ export function advanceSceneActors({
   for (const contact of [false, true]) {
     for (const { visual, actor, runtime } of ready) {
       if (
-        Boolean(
-          visual.cue?.contactTarget || visual.cue?.care?.mode === 'patient',
-        ) !== contact ||
+        Boolean(visual.cue?.contactTarget || visual.cue?.care?.mode === 'patient') !== contact ||
         actor.error
       ) {
         continue;

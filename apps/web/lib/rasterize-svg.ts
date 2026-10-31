@@ -11,10 +11,7 @@ type RasterProfileEntry = {
 };
 let profileEpoch = 0,
   profileStarted: number | null = null;
-let profileStages: Record<
-    string,
-    { count: number; totalMs: number; maxMs: number }
-  > = {},
+let profileStages: Record<string, { count: number; totalMs: number; maxMs: number }> = {},
   profileEntries: RasterProfileEntry[] = [];
 /** Opt-in diagnostics. Async stages report elapsed wait, not main-thread CPU. */
 export function startRasterProfile() {
@@ -44,9 +41,7 @@ export function readRasterProfile({ stop = false }: { stop?: boolean } = {}) {
   return result;
 }
 const profileStamp = (): RasterProfileStamp | null =>
-  profileStarted === null
-    ? null
-    : { epoch: profileEpoch, at: performance.now() };
+  profileStarted === null ? null : { epoch: profileEpoch, at: performance.now() };
 function profileStage(
   stage: string,
   start: RasterProfileStamp | null,
@@ -230,9 +225,7 @@ export function shadedSceneryImage(href: string, brightness: number) {
     }
     context.filter = `brightness(${brightness})`;
     context.drawImage(image, 0, 0);
-    const blob = await new Promise<Blob | null>((resolve) =>
-      canvas.toBlob(resolve, 'image/png'),
-    );
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
     if (!blob) {
       throw Error('Scenery conversion failed');
     }
@@ -270,13 +263,7 @@ export type RasterPicture = { image: RasterImage; release: () => void };
 // it must not rebuild every background texture while actors are moving.
 // Actors, controls and effects keep their independent full-resolution drawing.
 export const rasterDensity = () =>
-  Math.min(
-    3,
-    Math.max(
-      1,
-      typeof window === 'undefined' ? 1 : window.devicePixelRatio || 1,
-    ),
-  );
+  Math.min(3, Math.max(1, typeof window === 'undefined' ? 1 : window.devicePixelRatio || 1));
 async function drawPreparedSvg(
   svg: SVGSVGElement,
   bounds: { x: number; y: number; width: number; height: number },
@@ -322,9 +309,7 @@ async function drawPreparedSvg(
   context.drawImage(image, 0, 0);
   profileStage('draw-image-sync', timing, { pixels: pixelWidth * pixelHeight });
   timing = profileStamp();
-  const blob = await new Promise<Blob | null>((resolve) =>
-    canvas.toBlob(resolve, 'image/png'),
-  );
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
   profileStage('png-blob-async', timing);
   if (!blob) {
     return null;
@@ -367,10 +352,7 @@ async function drawPreparedSvg(
     throw error;
   }
 }
-export async function rasterizeSvgGroup(
-  source: SVGGElement,
-  signal?: AbortSignal,
-) {
+export async function rasterizeSvgGroup(source: SVGGElement, signal?: AbortSignal) {
   const request: BoundsRequest = {
     source,
     ...(signal ? { signal } : {}),
@@ -410,14 +392,12 @@ export async function rasterizeSvgGroup(
       svg.appendChild(clone);
       // Include only referenced definitions; local wall textures are already in the
       // cloned group. Recursion handles patterns referencing other definitions.
-      const included = new Set(
-        [...clone.querySelectorAll('[id]')].map((node) => node.id),
-      );
+      const included = new Set([...clone.querySelectorAll('[id]')].map((node) => node.id));
       let markup = clone.outerHTML;
       for (let pass = 0; pass < 8; pass++) {
-        const refs = [
-          ...markup.matchAll(/url\(["']?#([^\s)"']+)["']?\)/g),
-        ].flatMap((match) => (match[1] ? [match[1]] : []));
+        const refs = [...markup.matchAll(/url\(["']?#([^\s)"']+)["']?\)/g)].flatMap((match) =>
+          match[1] ? [match[1]] : [],
+        );
         let added = '';
         for (const id of refs) {
           if (included.has(id)) {

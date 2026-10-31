@@ -10,11 +10,7 @@ export function useActorCues(
   frame?: BattlePresentationFrame | null,
 ) {
   const [store] = useState(() => new ActorCueStore());
-  const cues = useSyncExternalStore(
-    store.subscribe,
-    store.getSnapshot,
-    store.getSnapshot,
-  );
+  const cues = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
   useLayoutEffect(() => {
     store.observe(sceneId, entries, frame);
   }, [store, sceneId, entries, frame]);

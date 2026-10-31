@@ -1,20 +1,10 @@
 import { required } from './required';
-import {
-  worldWallRecords,
-  buildingWallAtPoint,
-  wallFrameRecords,
-} from './world-wall-records';
+import { worldWallRecords, buildingWallAtPoint, wallFrameRecords } from './world-wall-records';
 import { CylinderGeometry, Group, Matrix4, Quaternion, Vector3 } from 'three';
-import {
-  entranceFrame,
-  getBuildingProfile,
-} from '../../../../packages/game/building-profile.ts';
+import { entranceFrame, getBuildingProfile } from '../../../../packages/game/building-profile.ts';
 import { buildingAppearance } from '../../../../packages/game/building-appearance.ts';
 import { WorldBatch } from './world-geometry';
-import {
-  architectureFinish,
-  applyArchitectureFinish,
-} from './world-architecture-finish';
+import { architectureFinish, applyArchitectureFinish } from './world-architecture-finish';
 import { illuminationAt } from './world-materials';
 import { buildingArtInset } from './world-building-placement';
 import type { WorldGeometry, PolygonUV } from './world-geometry';
@@ -40,9 +30,7 @@ export function churchNave(
   if (outer <= 0.2) {
     return root;
   }
-  const walls = worldWallRecords(input).filter(
-      (tile) => tile.buildingId === b.id,
-    ),
+  const walls = worldWallRecords(input).filter((tile) => tile.buildingId === b.id),
     frame = entranceFrame({ ...b, walls: wallFrameRecords(walls) }),
     inset = buildingArtInset(b, input),
     appearance = buildingAppearance(b),
@@ -51,9 +39,7 @@ export function churchNave(
     light = illuminationAt(input, b);
   // sideButtresses uses plaster for every non-stone authored finish,
   // including edited brick. Retain that local source texture exception.
-  const recipe = required(
-      architectureFinish(appearance['wallFinish'], 'volume'),
-    ),
+  const recipe = required(architectureFinish(appearance['wallFinish'], 'volume')),
     texture =
       appearance['wallFinish'] === 'stone'
         ? '/art/architecture-stone-v2.png'
@@ -80,8 +66,7 @@ export function churchNave(
       brick: '#cfb490',
     },
     coping = materials.get('church-nave-coping', {
-      colour:
-        copingColours[appearance['wallFinish']] ?? copingColours['limewash'],
+      colour: copingColours[appearance['wallFinish']] ?? copingColours['limewash'],
     });
   const shadows: Record<string, string> = {
       adobe: '#776448',
@@ -119,15 +104,10 @@ export function churchNave(
     // Fix the closed vertical face winding without changing its retained
     // metre projector, phase or texture direction.
     const first = uv(required(points[0]));
-    batch.polygon(
-      material,
-      reverseWinding ? [...points].reverse() : points,
-      light,
-      (p) => {
-        const value = uv(p);
-        return [value[0] - first[0], value[1]];
-      },
-    );
+    batch.polygon(material, reverseWinding ? [...points].reverse() : points, light, (p) => {
+      const value = uv(p);
+      return [value[0] - first[0], value[1]];
+    });
   };
   const foot = Math.min((profile.plinthHeight + 2) / V, outer * 0.6);
   const edge = (
@@ -144,10 +124,7 @@ export function churchNave(
     const line = new CylinderGeometry(radius, radius, vector.length(), 6),
       matrix = new Matrix4().compose(
         a.clone().add(b).multiplyScalar(0.5),
-        new Quaternion().setFromUnitVectors(
-          new Vector3(0, 1, 0),
-          vector.normalize(),
-        ),
+        new Quaternion().setFromUnitVectors(new Vector3(0, 1, 0), vector.normalize()),
         new Vector3(1, 1, 1),
       );
     line.applyMatrix4(matrix);
@@ -220,12 +197,7 @@ export function churchNave(
         const next = (n + 1) % 4;
         face(
           wall,
-          [
-            required(feet[n]),
-            required(feet[next]),
-            required(top[next]),
-            required(top[n]),
-          ],
+          [required(feet[n]), required(feet[next]), required(top[next]), required(top[n])],
           true,
         );
       }
@@ -235,12 +207,7 @@ export function churchNave(
         const next = (n + 1) % 4;
         face(
           stone,
-          [
-            required(bottom[n]),
-            required(bottom[next]),
-            required(feet[next]),
-            required(feet[n]),
-          ],
+          [required(bottom[n]), required(bottom[next]), required(feet[next]), required(feet[n])],
           true,
         );
         // ArchitectureVolume outlines each vertical face at .45 source units

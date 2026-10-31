@@ -32,14 +32,9 @@ const landing = (state: BattleSnapshot, p: TacticalPoint) => ({
 });
 const finite = (p: ProjectilePresentationPoint | undefined) =>
   p && [p.x, p.y, p.height].every(Number.isFinite);
-const samePoint = (
-  a: ProjectilePresentationPoint | undefined,
-  b: ProjectilePresentationPoint,
-) => Boolean(a) && a?.x === b.x && a.y === b.y && a.height === b.height;
-const validShotPath = (
-  p: ProjectilePresentationPoint[] | undefined,
-  shot: FirearmPresentation,
-) =>
+const samePoint = (a: ProjectilePresentationPoint | undefined, b: ProjectilePresentationPoint) =>
+  Boolean(a) && a?.x === b.x && a.y === b.y && a.height === b.height;
+const validShotPath = (p: ProjectilePresentationPoint[] | undefined, shot: FirearmPresentation) =>
   p === undefined ||
   (Array.isArray(p) &&
     p.length >= 2 &&
@@ -74,9 +69,7 @@ export function presentCombatEffects(
       stage: frame.type,
       startedAtSeconds,
       ...(frame.unitId ? { actorKey: `unit:${frame.unitId}` } : {}),
-      ...((frame.durationMs ?? 0) > 0
-        ? { durationSeconds: (frame.durationMs ?? 0) / 1000 }
-        : {}),
+      ...((frame.durationMs ?? 0) > 0 ? { durationSeconds: (frame.durationMs ?? 0) / 1000 } : {}),
       visual: {
         visible: true,
         source: point(shot.source),
@@ -116,11 +109,7 @@ export function presentCombatEffects(
         ...point(v.source),
         height:
           v.source?.height ??
-          absoluteBodyHeight(
-            state,
-            { ...v.source, stance: 'standing' },
-            'muzzle',
-          ),
+          absoluteBodyHeight(state, { ...v.source, stance: 'standing' }, 'muzzle'),
       };
     if (finite(source) && finite(v.impact)) {
       events.push({
@@ -180,21 +169,14 @@ export function presentCombatEffects(
       id: `${base}:artillery`,
       kind: 'artillery',
       ...(cannon.cannonId ? { cannonId: cannon.cannonId } : {}),
-      stage:
-        frame.type === 'projectile' || frame.type === 'impact'
-          ? frame.type
-          : 'effect',
+      stage: frame.type === 'projectile' || frame.type === 'impact' ? frame.type : 'effect',
       startedAtSeconds,
-      ...((frame.durationMs ?? 0) > 0
-        ? { durationSeconds: (frame.durationMs ?? 0) / 1000 }
-        : {}),
+      ...((frame.durationMs ?? 0) > 0 ? { durationSeconds: (frame.durationMs ?? 0) / 1000 } : {}),
       visual: {
         visible: true,
         source: point(cannon.source),
         ...(cannon.impact ? { impact: point(cannon.impact) } : {}),
-        ...(Array.isArray(cannon.points)
-          ? { points: cannon.points.map(point) }
-          : {}),
+        ...(Array.isArray(cannon.points) ? { points: cannon.points.map(point) } : {}),
         ...(Array.isArray(cannon.impacts)
           ? {
               impacts: cannon.impacts.map((p) => ({

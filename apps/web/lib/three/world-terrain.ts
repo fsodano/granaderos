@@ -33,9 +33,7 @@ export function buildTerrainChunk(
   materials: WorldMaterialSource,
 ) {
   const batch = new WorldBatch(geometry),
-    all = new Map(
-      input.terrain.tiles.map((tile) => [worldKey(tile), tile] as const),
-    ),
+    all = new Map(input.terrain.tiles.map((tile) => [worldKey(tile), tile] as const)),
     sceneId = input.terrain.sceneId ?? input.terrain.sectorId,
     context =
       input.terrain.landscape && sceneId
@@ -46,23 +44,10 @@ export function buildTerrainChunk(
       z = tile.y * T,
       height = tile.elevation ?? 0,
       light = illuminationAt(input, tile);
-    const kind =
-      tile.type === 'rubble' ? 'dirt' : terrainMaterial(tile, sceneId, context);
-    const material =
-      tile.type === 'water' ? materials.get('water') : materials.terrain(kind);
-    if (
-      !soilGrassTop(batch, tile, all, sceneId, T, materials, light, context)
-    ) {
-      cellTop(
-        batch,
-        material,
-        x - T * 0.5,
-        z - T * 0.5,
-        x + T * 0.5,
-        z + T * 0.5,
-        height,
-        light,
-      );
+    const kind = tile.type === 'rubble' ? 'dirt' : terrainMaterial(tile, sceneId, context);
+    const material = tile.type === 'water' ? materials.get('water') : materials.terrain(kind);
+    if (!soilGrassTop(batch, tile, all, sceneId, T, materials, light, context)) {
+      cellTop(batch, material, x - T * 0.5, z - T * 0.5, x + T * 0.5, z + T * 0.5, height, light);
     }
     soilFragments(batch, tile, kind, T, materials, light);
     dryWeeds(batch, tile, kind, T, materials, light);
@@ -97,19 +82,14 @@ export function buildTerrainChunk(
       );
     }
     const rock =
-      (tile.blocked &&
-        !['wall', 'door', 'window', 'water'].includes(tile.type)) ||
+      (tile.blocked && !['wall', 'door', 'window', 'water'].includes(tile.type)) ||
       (tile.type === 'stone' && tile.material === 'stone' && !tile.buildingId);
     if (rock) {
       const seed = seeded(tile.x, tile.y),
         scale = tile.blocked ? 0.65 : 0.24,
         h = tile.obstacleHeight ?? (tile.blocked ? 1.05 : 0.22);
-      const form =
-          Math.floor(seeded(tile.x, tile.y, 1201) * ROCK_FORM_COUNT) %
-          ROCK_FORM_COUNT,
-        companion =
-          (form + 1 + Math.floor(seeded(tile.y, tile.x, 1223) * 2)) %
-          ROCK_FORM_COUNT;
+      const form = Math.floor(seeded(tile.x, tile.y, 1201) * ROCK_FORM_COUNT) % ROCK_FORM_COUNT,
+        companion = (form + 1 + Math.floor(seeded(tile.y, tile.x, 1223) * 2)) % ROCK_FORM_COUNT;
       batch.primitive(
         `rock-form-${form}`,
         materials.get('stone'),
@@ -148,11 +128,7 @@ export function buildTerrainChunk(
       for (let n = 0; n < count; n++) {
         const a = seeded(tile.x, tile.y, n + 41),
           b = seeded(tile.y, tile.x, n + 103),
-          root = new Vector3(
-            x + (a - 0.5) * T * 0.85,
-            height,
-            z + (b - 0.5) * T * 0.85,
-          );
+          root = new Vector3(x + (a - 0.5) * T * 0.85, height, z + (b - 0.5) * T * 0.85);
         const tuftHeight = 0.25 * (0.8 + seeded(tile.x, tile.y, n + 151) * 0.4),
           rotation = new Quaternion().setFromAxisAngle(
             new Vector3(0, 1, 0),
@@ -190,11 +166,7 @@ export function buildUpperSurfaces(
       x = surface.x * T,
       z = surface.y * T;
     const finish =
-        surface.material === 'wood'
-          ? 'wood'
-          : surface.kind === 'roof'
-            ? 'roof'
-            : 'floor',
+        surface.material === 'wood' ? 'wood' : surface.kind === 'roof' ? 'roof' : 'floor',
       material = materials.get(`upper-${finish}`, {
         colour: '#ffffff',
         texture: `/art/terrain-${finish}-v1.webp`,

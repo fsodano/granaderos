@@ -13,12 +13,10 @@ const object = (value: unknown): value is ObjectValue =>
 const text = (value: unknown): value is string => typeof value === 'string';
 const finite = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value);
-const boolean = (value: unknown): value is boolean =>
-  typeof value === 'boolean';
+const boolean = (value: unknown): value is boolean => typeof value === 'boolean';
 const vector = (value: unknown): value is number[] =>
   Array.isArray(value) && value.length === 3 && value.every(finite);
-const strings = (value: unknown): value is string[] =>
-  Array.isArray(value) && value.every(text);
+const strings = (value: unknown): value is string[] => Array.isArray(value) && value.every(text);
 const array =
   (check: Check): Check =>
   (value) =>
@@ -60,13 +58,7 @@ function equipment(value: unknown): value is EquipmentSpec {
     object(value) &&
     text(value['node']) &&
     transform(value) &&
-    optionalText(value, [
-      'category',
-      'socket',
-      'grip',
-      'stowedSocket',
-      'muzzle',
-    ]) &&
+    optionalText(value, ['category', 'socket', 'grip', 'stowedSocket', 'muzzle']) &&
     optional(value, 'clipOverrides', record(text))
   );
 }
@@ -98,10 +90,7 @@ function clip(value: unknown): value is ClipSpec {
       value,
       'reviewedPose',
       (pose) =>
-        object(pose) &&
-        text(pose['name']) &&
-        text(pose['origin']) &&
-        text(pose['sourceSha256']),
+        object(pose) && text(pose['name']) && text(pose['origin']) && text(pose['sourceSha256']),
     ) &&
     optional(value, 'freeHands', array(hand)) &&
     optional(
@@ -122,24 +111,20 @@ function clip(value: unknown): value is ClipSpec {
         (offset) =>
           object(offset) &&
           hand(offset['hand']) &&
-          array(
-            (key) =>
-              object(key) && finite(key['time']) && vector(key['position']),
-          )(offset['keys']),
+          array((key) => object(key) && finite(key['time']) && vector(key['position']))(
+            offset['keys'],
+          ),
       ),
     ) &&
     optional(
       value,
       'seatWeight',
-      array(
-        (key) => object(key) && finite(key['time']) && finite(key['weight']),
-      ),
+      array((key) => object(key) && finite(key['time']) && finite(key['weight'])),
     ) &&
     optional(
       value,
       'horseVisibility',
-      (window) =>
-        object(window) && finite(window['start']) && finite(window['end']),
+      (window) => object(window) && finite(window['start']) && finite(window['end']),
     ) &&
     optional(
       value,
@@ -157,10 +142,7 @@ function clip(value: unknown): value is ClipSpec {
       'stowItems',
       array(
         (item) =>
-          object(item) &&
-          strings(item['categories']) &&
-          text(item['socket']) &&
-          transform(item),
+          object(item) && strings(item['categories']) && text(item['socket']) && transform(item),
       ),
     ) &&
     optional(
@@ -211,19 +193,14 @@ function appearance(value: unknown): value is AppearanceSpec {
   );
 }
 function manifest(value: unknown): value is CharacterManifest {
-  if (
-    !object(value) ||
-    !finite(value['version']) ||
-    !record(text)(value['bones'])
-  ) {
+  if (!object(value) || !finite(value['version']) || !record(text)(value['bones'])) {
     return false;
   }
   return (
-    (array(appearance)(value['appearances']) ||
-      record(appearance)(value['appearances'])) &&
-    record(
-      (bank) => object(bank) && text(bank['url']) && array(clip)(bank['clips']),
-    )(value['animationLibraries']) &&
+    (array(appearance)(value['appearances']) || record(appearance)(value['appearances'])) &&
+    record((bank) => object(bank) && text(bank['url']) && array(clip)(bank['clips']))(
+      value['animationLibraries'],
+    ) &&
     object(value['equipment']) &&
     text(value['equipment']['url']) &&
     record(equipment)(value['equipment']['items']) &&
@@ -234,10 +211,7 @@ function manifest(value: unknown): value is CharacterManifest {
     optional(
       value,
       'animationMirroring',
-      (mirror) =>
-        object(mirror) &&
-        mirror['axis'] === 'x' &&
-        record(text)(mirror['bones']),
+      (mirror) => object(mirror) && mirror['axis'] === 'x' && record(text)(mirror['bones']),
     ) &&
     optional(
       value,
@@ -268,16 +242,11 @@ function manifest(value: unknown): value is CharacterManifest {
       'horse',
       (horse) =>
         object(horse) &&
-        array((lod) => object(lod) && finite(lod['lod']) && text(lod['url']))(
-          horse['lods'],
-        ) &&
+        array((lod) => object(lod) && finite(lod['lod']) && text(lod['url']))(horse['lods']) &&
         optional(
           horse,
           'saddle',
-          (saddle) =>
-            object(saddle) &&
-            text(saddle['node']) &&
-            vector(saddle['position']),
+          (saddle) => object(saddle) && text(saddle['node']) && vector(saddle['position']),
         ) &&
         optional(horse, 'actions', record(text)) &&
         optional(horse, 'clips', array(clip)),

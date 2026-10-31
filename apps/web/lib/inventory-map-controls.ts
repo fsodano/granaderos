@@ -8,21 +8,10 @@ import type {
   SelectedItemMapPreview,
 } from '../../../packages/game/public/inventory-types.ts';
 import { formatAP } from '../../../packages/game/action-points.js';
-import {
-  inventoryMapPreview,
-  canSee,
-  visibleRooms,
-} from '../../../packages/game/tactical.js';
-import {
-  tacticalLevel,
-  sameCell,
-  spaceKey,
-} from '../../../packages/game/tactical-space.js';
+import { inventoryMapPreview, canSee, visibleRooms } from '../../../packages/game/tactical.js';
+import { tacticalLevel, sameCell, spaceKey } from '../../../packages/game/tactical-space.js';
 import { isInteriorVisible } from '../../../packages/game/tactical-visibility.ts';
-import type {
-  EquipmentInteraction,
-  EquipmentSource,
-} from './equipment-interaction';
+import type { EquipmentInteraction, EquipmentSource } from './equipment-interaction';
 
 export type InventoryMapIntent = 'auto' | 'ground';
 export type InventoryMapOverride = {
@@ -32,8 +21,7 @@ export type InventoryMapOverride = {
 export const inventoryIntentAt = (
   override: InventoryMapOverride,
   point: (TacticalPoint & { id?: string }) | null,
-): InventoryMapIntent =>
-  point && override?.target === spaceKey(point) ? override.intent : 'auto';
+): InventoryMapIntent => (point && override?.target === spaceKey(point) ? override.intent : 'auto');
 export const toggleInventoryDestination = (
   override: InventoryMapOverride,
   point: TacticalPoint,
@@ -44,8 +32,7 @@ export const toggleInventoryDestination = (
 export const retainInventoryDestination = (
   override: InventoryMapOverride,
   point: (TacticalPoint & { id?: string }) | null,
-): InventoryMapOverride =>
-  point && override?.target === spaceKey(point) ? override : null;
+): InventoryMapOverride => (point && override?.target === spaceKey(point) ? override : null);
 export function selectedItemMapPreview(
   battle: BattleSnapshot,
   unit: BattleUnit | null | undefined,
@@ -72,8 +59,7 @@ export function selectedItemMapPreview(
             new Set([...(battle.revealedRooms ?? []), ...visibleRooms(battle)]),
           ) &&
             battle.units?.some(
-              (observer) =>
-                observer.side === 'player' && canSee(battle, observer, person),
+              (observer) => observer.side === 'player' && canSee(battle, observer, person),
             ))),
     );
   const action: InventoryMapAction = {
@@ -151,8 +137,7 @@ export function placeSelectedItemOnMap(
     store.accept(accepted, String(unit?.id));
   } else {
     store.report(
-      accepted?.lastError ??
-        'La orden no se pudo completar. El objeto sigue en su lugar.',
+      accepted?.lastError ?? 'La orden no se pudo completar. El objeto sigue en su lugar.',
     );
   }
   return true;

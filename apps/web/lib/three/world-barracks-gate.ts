@@ -1,19 +1,9 @@
 import { required } from './required';
-import {
-  worldWallRecords,
-  buildingWallAtPoint,
-  wallFrameRecords,
-} from './world-wall-records';
+import { worldWallRecords, buildingWallAtPoint, wallFrameRecords } from './world-wall-records';
 import { Group, Quaternion, Vector3 } from 'three';
-import {
-  entranceFrame,
-  getBuildingProfile,
-} from '../../../../packages/game/building-profile.ts';
+import { entranceFrame, getBuildingProfile } from '../../../../packages/game/building-profile.ts';
 import { buildingAppearance } from '../../../../packages/game/building-appearance.ts';
-import {
-  architectureFinish,
-  applyArchitectureFinish,
-} from './world-architecture-finish';
+import { architectureFinish, applyArchitectureFinish } from './world-architecture-finish';
 import { WorldBatch } from './world-geometry';
 import { illuminationAt } from './world-materials';
 import type { WorldGeometry } from './world-geometry';
@@ -36,18 +26,13 @@ export function barracksGate(
   if (height < 2.4) {
     return root;
   }
-  const walls = worldWallRecords(input).filter(
-      (tile) => tile.buildingId === b.id,
-    ),
+  const walls = worldWallRecords(input).filter((tile) => tile.buildingId === b.id),
     frame = entranceFrame({ ...b, walls: wallFrameRecords(walls) }),
     V = 25.066666666666666,
     appearance = buildingAppearance(b),
     profile = getBuildingProfile(b),
     light = illuminationAt(input, b),
-    supports = [
-      Math.round(frame.doorU - 1),
-      Math.round(frame.doorU + 1),
-    ].filter(
+    supports = [Math.round(frame.doorU - 1), Math.round(frame.doorU + 1)].filter(
       (u) =>
         u >= 0 &&
         u <= frame.width &&
@@ -81,9 +66,7 @@ export function barracksGate(
   ) {
     return root;
   }
-  const recipe = required(
-      architectureFinish(appearance['wallFinish'], 'volume'),
-    ),
+  const recipe = required(architectureFinish(appearance['wallFinish'], 'volume')),
     texture = '/art/architecture-plaster-v2.png',
     wall = materials.get(appearance['wallFinish'], {
       architectureRole: 'volume',
@@ -151,14 +134,7 @@ export function barracksGate(
   if (supports.length === 2) {
     const first = Math.max(0, frame.doorU - 1.2),
       last = Math.min(frame.width, frame.doorU + 1.2);
-    box(
-      (first + last) * 0.5,
-      -0.06,
-      height - 4 / V,
-      height + 3 / V,
-      last - first,
-      0.5,
-    );
+    box((first + last) * 0.5, -0.06, height - 4 / V, height + 3 / V, last - first, 0.5);
     // Reproduce the current geometric plaque and its two crossed marks.
     // This does not assert a named regiment or a historical coat of arms.
     const y = height - 8 / V,

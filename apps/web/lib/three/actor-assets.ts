@@ -118,10 +118,7 @@ export type CharacterManifest = {
     string,
     {
       url: string;
-      items: Record<
-        string,
-        { node: string; slot: string; hideAppearanceParts: string[] }
-      >;
+      items: Record<string, { node: string; slot: string; hideAppearanceParts: string[] }>;
     }
   >;
   horse?: {
@@ -158,15 +155,11 @@ export class ActorAssetLibrary {
     private manifestPath = '/models/characters/manifest.json',
   ) {}
   manifest(): Promise<CharacterManifest> {
-    return (this.manifestPromise ??= fetch(
-      this.assetUrl(this.manifestPath),
-    ).then((response) => {
+    return (this.manifestPromise ??= fetch(this.assetUrl(this.manifestPath)).then((response) => {
       if (!response.ok) {
         throw Error(`Character manifest: ${response.status}`);
       }
-      return response
-        .json()
-        .then((value: unknown) => readCharacterManifest(value));
+      return response.json().then((value: unknown) => readCharacterManifest(value));
     }));
   }
   private load(url: string) {
@@ -201,18 +194,15 @@ export class ActorAssetLibrary {
     }
     const garment = manifest.garments?.[appearance.gender],
       horse = mounted
-        ? (manifest.horse?.lods.find((item) => item.lod === lod) ??
-          manifest.horse?.lods.at(-1))
+        ? (manifest.horse?.lods.find((item) => item.lod === lod) ?? manifest.horse?.lods.at(-1))
         : undefined;
-    const [body, animation, equipment, garments, horseFile] = await Promise.all(
-      [
-        this.load(level.url),
-        this.load(library.url),
-        this.load(manifest.equipment.url),
-        garment ? this.load(garment.url) : undefined,
-        horse ? this.load(horse.url) : undefined,
-      ],
-    );
+    const [body, animation, equipment, garments, horseFile] = await Promise.all([
+      this.load(level.url),
+      this.load(library.url),
+      this.load(manifest.equipment.url),
+      garment ? this.load(garment.url) : undefined,
+      horse ? this.load(horse.url) : undefined,
+    ]);
     fitGauchoPoncho(body.scene, appearance.id);
     return {
       manifest,
@@ -238,9 +228,7 @@ export class ActorAssetLibrary {
         this.disposedGeometry.add(object.geometry);
         object.geometry.dispose();
       }
-      for (const material of Array.isArray(object.material)
-        ? object.material
-        : [object.material]) {
+      for (const material of Array.isArray(object.material) ? object.material : [object.material]) {
         if (this.disposedMaterial.has(material)) {
           continue;
         }
@@ -275,9 +263,7 @@ export function boundClip(
   clips: readonly AnimationClip[],
   semantic: string,
 ) {
-  const spec = specs.find(
-    (entry) => entry.semantic === semantic || entry.name === semantic,
-  );
+  const spec = specs.find((entry) => entry.semantic === semantic || entry.name === semantic);
   if (!spec) {
     throw Error(`Missing animation capability: ${semantic}`);
   }

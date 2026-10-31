@@ -73,9 +73,7 @@ export class NativeProneArmBlendSupport {
       !!spec &&
       spec.name.startsWith('prone.') &&
       spec.name.includes('.short-gun') &&
-      ['idle', 'aim', 'fire', 'reload', 'reprime', 'repair', 'unload'].includes(
-        spec.gesture ?? '',
-      )
+      ['idle', 'aim', 'fire', 'reload', 'reprime', 'repair', 'unload'].includes(spec.gesture ?? '')
     );
   }
   begin(before: ClipSpec | undefined, after: ClipSpec, time: number) {
@@ -89,10 +87,8 @@ export class NativeProneArmBlendSupport {
       }
       return;
     }
-    this.until =
-      this.accepted(before) && this.accepted(after) ? time + 0.12 : -Infinity;
-    this.activeWork =
-      this.accepted(after) && ['reload', 'fire'].includes(after.gesture ?? '');
+    this.until = this.accepted(before) && this.accepted(after) ? time + 0.12 : -Infinity;
+    this.activeWork = this.accepted(after) && ['reload', 'fire'].includes(after.gesture ?? '');
     this.loading = this.accepted(after) && after.gesture === 'reload';
     this.workStarted = time;
     if (!this.accepted(after)) {
@@ -128,9 +124,7 @@ export class NativeProneArmBlendSupport {
     this.ready = true;
     this.root.updateMatrixWorld(true);
     for (const side of ['l', 'r'] as const) {
-      const bones = roles.map((role) =>
-        this.model.getObjectByName(role + '_' + side),
-      );
+      const bones = roles.map((role) => this.model.getObjectByName(role + '_' + side));
       if (bones.some((b) => !b)) {
         continue;
       }
@@ -161,12 +155,8 @@ export class NativeProneArmBlendSupport {
           positions instanceof InterleavedBufferAttribute
             ? positions.data.version
             : positions.version,
-          indices instanceof InterleavedBufferAttribute
-            ? indices.data.version
-            : indices.version,
-          weights instanceof InterleavedBufferAttribute
-            ? weights.data.version
-            : weights.version,
+          indices instanceof InterleavedBufferAttribute ? indices.data.version : indices.version,
+          weights instanceof InterleavedBufferAttribute ? weights.data.version : weights.version,
           ...node.bindMatrix.elements,
           ...node.skeleton.boneInverses.flatMap((matrix) => matrix.elements),
         ].join(','),
@@ -186,9 +176,7 @@ export class NativeProneArmBlendSupport {
                 weight = weights.getComponent(index, j);
               if (bone?.name.endsWith('_' + side)) {
                 if (
-                  /^(upperarm_|lowerarm_|hand_|thumb_|index_|middle_|ring_|pinky_)/.test(
-                    bone.name,
-                  )
+                  /^(upperarm_|lowerarm_|hand_|thumb_|index_|middle_|ring_|pinky_)/.test(bone.name)
                 ) {
                   total += weight;
                 }
@@ -197,9 +185,7 @@ export class NativeProneArmBlendSupport {
             if (total <= 0.7) {
               continue;
             }
-            point
-              .fromBufferAttribute(positions, index)
-              .applyMatrix4(node.bindMatrix);
+            point.fromBufferAttribute(positions, index).applyMatrix4(node.bindMatrix);
             const parts: Part[] = [];
             for (let j = 0; j < 4; j++) {
               const joint = indices.getComponent(index, j),
@@ -207,9 +193,7 @@ export class NativeProneArmBlendSupport {
               if (weight <= 1e-7) {
                 continue;
               }
-              const local = point
-                  .clone()
-                  .applyMatrix4(required(node.skeleton.boneInverses[joint])),
+              const local = point.clone().applyMatrix4(required(node.skeleton.boneInverses[joint])),
                 part: Part = {
                   joint,
                   weight,
@@ -220,9 +204,7 @@ export class NativeProneArmBlendSupport {
               for (let slot = 0; slot < targets.length; slot++) {
                 delta.fromBufferAttribute(required(targets[slot]), index);
                 if (!geometry.morphTargetsRelative) {
-                  delta.sub(
-                    new Vector3().fromBufferAttribute(positions, index),
-                  );
+                  delta.sub(new Vector3().fromBufferAttribute(positions, index));
                 }
                 if (delta.lengthSq() < 1e-16) {
                   continue;
@@ -255,9 +237,7 @@ export class NativeProneArmBlendSupport {
         byGeometry.set(signature, template);
       }
       for (const entry of template) {
-        this.limbs
-          .get(entry.side)
-          ?.points.push({ mesh: node, parts: entry.parts });
+        this.limbs.get(entry.side)?.points.push({ mesh: node, parts: entry.parts });
       }
     });
   }
@@ -303,11 +283,7 @@ export class NativeProneArmBlendSupport {
       along = (a * a - b * b + d * d) / (2 * d),
       center = s.clone().addScaledVector(dir, along),
       bend = e.clone().sub(center);
-    const native = [
-      u.quaternion.clone(),
-      m.quaternion.clone(),
-      h.quaternion.clone(),
-    ];
+    const native = [u.quaternion.clone(), m.quaternion.clone(), h.quaternion.clone()];
     const reset = () => {
       u.quaternion.copy(required(native[0]));
       m.quaternion.copy(required(native[1]));
@@ -315,15 +291,9 @@ export class NativeProneArmBlendSupport {
       u.updateWorldMatrix(false, true);
     };
     if (
-      ![
-        a,
-        b,
-        d,
-        ...s.toArray(),
-        ...e.toArray(),
-        ...w.toArray(),
-        ...hq.toArray(),
-      ].every(Number.isFinite) ||
+      ![a, b, d, ...s.toArray(), ...e.toArray(), ...w.toArray(), ...hq.toArray()].every(
+        Number.isFinite,
+      ) ||
       a < 0.1 ||
       b < 0.1 ||
       d < Math.abs(a - b) + 0.0005 ||
@@ -339,36 +309,21 @@ export class NativeProneArmBlendSupport {
       reset();
       const joint = center.clone().add(bend.clone().applyAxisAngle(dir, angle)),
         upper = new Quaternion()
-          .setFromUnitVectors(
-            e.clone().sub(s).normalize(),
-            joint.clone().sub(s).normalize(),
-          )
+          .setFromUnitVectors(e.clone().sub(s).normalize(), joint.clone().sub(s).normalize())
           .multiply(uq),
         lower = new Quaternion()
-          .setFromUnitVectors(
-            w.clone().sub(e).normalize(),
-            w.clone().sub(joint).normalize(),
-          )
+          .setFromUnitVectors(w.clone().sub(e).normalize(), w.clone().sub(joint).normalize())
           .multiply(mq);
       u.quaternion.copy(
-        required(u.parent)
-          .getWorldQuaternion(new Quaternion())
-          .invert()
-          .multiply(upper),
+        required(u.parent).getWorldQuaternion(new Quaternion()).invert().multiply(upper),
       );
       u.updateWorldMatrix(false, true);
       m.quaternion.copy(
-        required(m.parent)
-          .getWorldQuaternion(new Quaternion())
-          .invert()
-          .multiply(lower),
+        required(m.parent).getWorldQuaternion(new Quaternion()).invert().multiply(lower),
       );
       m.updateWorldMatrix(false, true);
       h.quaternion.copy(
-        required(h.parent)
-          .getWorldQuaternion(new Quaternion())
-          .invert()
-          .multiply(hq),
+        required(h.parent).getWorldQuaternion(new Quaternion()).invert().multiply(hq),
       );
       h.updateWorldMatrix(false, true);
       return this.lowest(limb);
@@ -384,19 +339,13 @@ export class NativeProneArmBlendSupport {
           0.065 *
           Math.min(1, Math.max(0, (this.time - this.workStarted) / 0.12))
         : 0,
-      goal =
-        previous +
-        Math.max(-3 * this.delta, Math.min(3 * this.delta, bias - previous));
+      goal = previous + Math.max(-3 * this.delta, Math.min(3 * this.delta, bias - previous));
     let angle = goal;
     if (evaluate(goal) < height + floor) {
       let found = false,
         unsafe = goal,
         safe = goal;
-      for (
-        let distance = 0.025;
-        distance <= 2 * maxAngle + 0.025 && !found;
-        distance += 0.025
-      ) {
+      for (let distance = 0.025; distance <= 2 * maxAngle + 0.025 && !found; distance += 0.025) {
         let best = -Infinity;
         for (const sign of [1, -1]) {
           const candidate = goal + distance * sign;
@@ -445,9 +394,7 @@ export class NativeProneArmBlendSupport {
       limb.direction = undefined;
       return;
     }
-    [u, m, h].forEach((_, index) =>
-      required(limb.saved[index]).copy(required(native[index])),
-    );
+    [u, m, h].forEach((_, index) => required(limb.saved[index]).copy(required(native[index])));
     limb.angle = angle;
     limb.direction = Math.sign(angle);
     limb.adjusted = true;
@@ -463,10 +410,7 @@ export class NativeProneArmBlendSupport {
       return;
     }
     this.time = time;
-    this.delta =
-      this.lastTime === undefined
-        ? 0
-        : Math.min(0.1, Math.max(0, time - this.lastTime));
+    this.delta = this.lastTime === undefined ? 0 : Math.min(0.1, Math.max(0, time - this.lastTime));
     this.lastTime = time;
     if (
       time > this.until &&
@@ -483,10 +427,7 @@ export class NativeProneArmBlendSupport {
     }
     for (const limb of this.limbs.values()) {
       const lowest = this.lowest(limb);
-      if (
-        Number.isFinite(lowest) &&
-        (lowest < height + trigger || Math.abs(limb.angle) > 1e-7)
-      ) {
+      if (Number.isFinite(lowest) && (lowest < height + trigger || Math.abs(limb.angle) > 1e-7)) {
         this.fit(limb, height);
       }
     }

@@ -23,16 +23,9 @@ const V = 25.066666666666666;
 /** The source Opening draws a 2.5-unit sill beyond either jamb. Put its
  * whole thickness below the retained aperture; slope both exposed edges
  * away from the masonry instead of filling the window's sight gap. */
-export function addWindowSill(
-  batch: WorldBatch,
-  materials: WorldMaterialSource,
-  face: SillFace,
-) {
+export function addWindowSill(batch: WorldBatch, materials: WorldMaterialSource, face: SillFace) {
   const colour = architectureTrimColour(face.finish);
-  if (
-    !colour ||
-    !['barred', 'small', 'arched', 'lattice', 'shutters'].includes(face.style)
-  ) {
+  if (!colour || !['barred', 'small', 'arched', 'lattice', 'shutters'].includes(face.style)) {
     return;
   }
   if (
@@ -106,10 +99,6 @@ export function addWindowSill(
       point(width * 0.5, b),
       point(-width * 0.5, b),
     ];
-    batch.polygon(
-      material,
-      face.axis === 'y' ? points.reverse() : points,
-      face.light,
-    );
+    batch.polygon(material, face.axis === 'y' ? points.reverse() : points, face.light);
   }
 }

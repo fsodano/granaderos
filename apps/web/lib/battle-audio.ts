@@ -33,11 +33,7 @@ export class BattleAudio {
     }
     const c = this.context,
       time = c.currentTime,
-      buffer = c.createBuffer(
-        1,
-        Math.ceil(c.sampleRate * duration),
-        c.sampleRate,
-      );
+      buffer = c.createBuffer(1, Math.ceil(c.sampleRate * duration), c.sampleRate);
     const channel = buffer.getChannelData(0);
     for (let i = 0; i < channel.length; i++) {
       channel[i] = Math.random() * 2 - 1;
@@ -59,28 +55,20 @@ export class BattleAudio {
     }
     const before: string[] = previous?.log || [];
     let overlap = Math.min(before.length, next.log.length);
-    while (
-      overlap > 0 &&
-      !before.slice(-overlap).every((line, i) => line === next.log[i])
-    ) {
+    while (overlap > 0 && !before.slice(-overlap).every((line, i) => line === next.log[i])) {
       overlap--;
     }
     const entries: string[] = next.log.slice(overlap);
     if (next.status === 'victory' && previous?.status !== 'victory') {
       const startedAt = this.context.currentTime;
-      [0, 0.18, 0.36, 0.7].forEach((delay) =>
-        this.drum(startedAt + delay, 0.18),
-      );
+      [0, 0.18, 0.36, 0.7].forEach((delay) => this.drum(startedAt + delay, 0.18));
       return;
     }
     const text = entries.join(' ');
     if (/metralla|bala rasa|cañón.*dispara|explosión de granada/i.test(text)) {
       this.noise(0.9, 0.28, 1500);
       this.drum(this.context.currentTime, 0.28);
-    } else if (
-      /dispara|de daño/.test(text) &&
-      next.smoke.length > previous.smoke.length
-    ) {
+    } else if (/dispara|de daño/.test(text) && next.smoke.length > previous.smoke.length) {
       this.noise(0.45, 0.2, 2800);
       this.drum(this.context.currentTime, 0.15);
     } else if (/recarga|ceba|chispa/.test(text)) {

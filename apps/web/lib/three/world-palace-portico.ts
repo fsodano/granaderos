@@ -1,8 +1,5 @@
 import { worldWallRecords, wallFrameRecords } from './world-wall-records';
-import {
-  entranceFrame,
-  getBuildingProfile,
-} from '../../../../packages/game/building-profile.ts';
+import { entranceFrame, getBuildingProfile } from '../../../../packages/game/building-profile.ts';
 import { civicCorniceRoofJoin } from './world-civic-cornice';
 import type { WorldBuilding, WorldInput } from './world-types';
 
@@ -40,9 +37,7 @@ export function palacePorticoHipReturn(
   }
   const frame = entranceFrame({
       ...b,
-      walls: wallFrameRecords(
-        worldWallRecords(input).filter((tile) => tile.buildingId === b.id),
-      ),
+      walls: wallFrameRecords(worldWallRecords(input).filter((tile) => tile.buildingId === b.id)),
     }),
     profile = getBuildingProfile(b),
     rise = Math.min(profile.roofRise / V, Math.max(0.4, frame.width * 0.28)),
@@ -58,10 +53,7 @@ export function palacePorticoHipReturn(
         (back + join.eave) / (inset + join.eave),
         (frame.depth + join.eave - back) / (inset + join.eave),
       );
-  if (
-    Math.min(mainRoof(lo), mainRoof(hi)) - roofThickness <
-    eave + 1 / V + ridgeCap
-  ) {
+  if (Math.min(mainRoof(lo), mainRoof(hi)) - roofThickness < eave + 1 / V + ridgeCap) {
     return;
   }
   return { ridgeEnd: returnSupport };

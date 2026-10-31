@@ -1,8 +1,5 @@
 import { worldWallRecords, wallFrameRecords } from './world-wall-records';
-import {
-  entranceFrame,
-  getBuildingProfile,
-} from '../../../../packages/game/building-profile.ts';
+import { entranceFrame, getBuildingProfile } from '../../../../packages/game/building-profile.ts';
 import type { WorldBuilding, WorldInput } from './world-types';
 
 const V = 25.066666666666666,
@@ -36,9 +33,7 @@ export function civicCorniceRoofJoin(
   }
   const frame = entranceFrame({
     ...b,
-    walls: wallFrameRecords(
-      worldWallRecords(input).filter((tile) => tile.buildingId === b.id),
-    ),
+    walls: wallFrameRecords(worldWallRecords(input).filter((tile) => tile.buildingId === b.id)),
   });
   if (frame.width <= 0 || frame.depth <= 0) {
     return;
@@ -46,8 +41,7 @@ export function civicCorniceRoofJoin(
   const eave = Math.max(profile.eave, projection),
     rise = Math.min(profile.roofRise / V, Math.max(0.4, frame.width * 0.28)),
     inset = Math.min(frame.width * 0.44, frame.depth * 0.3),
-    fraction =
-      (eave - projection) / Math.max(frame.width * 0.5 + eave, inset + eave);
+    fraction = (eave - projection) / Math.max(frame.width * 0.5 + eave, inset + eave);
   // The hip is linear between its eave and fixed ridge. Solve its lowest
   // underside over the complete cornice footprint, including every return.
   const lift = (1 / V + thickness - rise * fraction) / (1 - fraction);

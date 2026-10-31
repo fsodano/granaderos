@@ -8,11 +8,7 @@ export function locomotionReference(semantic: string) {
 
 /** Display pace only. The distance-driven animation clock follows this speed;
  * paid cells, action points, energy and simulation time do not use it. */
-export function footMovementPace(
-  action: string,
-  posture: string,
-  mounted: boolean,
-) {
+export function footMovementPace(action: string, posture: string, mounted: boolean) {
   return !mounted && posture === 'standing'
     ? action === 'walk'
       ? 1.15

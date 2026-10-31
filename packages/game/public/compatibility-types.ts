@@ -305,6 +305,7 @@ export interface BattleNpc extends BattleBody {
   supplies?: Record<string, number>;
 }
 export interface BattleTile extends TacticalPoint {
+  projectileResistance?: number;
   type: string;
   id?: string;
   kind?: string;
@@ -434,7 +435,22 @@ export interface CombatJournal {
   version: 1;
   entries: { turn: number; text: string }[];
 }
+export type PendingBattleSectorOperation = { interruptedAtSecond: number } & (
+  | { kind: 'order'; order: TacticalAction }
+  | { kind: 'endTurn'; remainingRestSeconds?: number; order?: MoveAction }
+  | { kind: 'continue'; order?: MoveAction }
+  | {
+      kind: 'groupMovement';
+      request: GroupMoveAction;
+      continuation: GroupMovementContinuation;
+      order?: MoveAction;
+    }
+);
 export interface BattleSnapshot {
+  bleedSeconds?: number;
+  roundTimeCharged?: boolean;
+  savedHour?: number;
+  savedSecond?: number;
   residentPositions?: { characterId: string; position: { x: number; y: number; level: number } }[];
   worldTimeline?: import('../domain/world/world-timeline.ts').WorldTimelineSnapshot;
   worldItemAvailability?: Record<string, number>;
@@ -511,13 +527,7 @@ export interface BattleSnapshot {
   wallEdges?: BattleTile[];
   upperSurfaces?: BattleTile[];
   climbLinks?: { id: string; kind: string; from: TacticalPoint; to: TacticalPoint }[];
-  pendingSectorOperation?: {
-    kind: string;
-    order?: TacticalAction;
-    request?: GroupMoveAction;
-    continuation?: GroupMovementContinuation;
-    interruptedAtSecond: number;
-  };
+  pendingSectorOperation?: PendingBattleSectorOperation;
   deployment?: { cells?: TacticalPoint[]; entries?: TacticalPoint[]; confirmed?: boolean };
   presentationVisibleIds?: string[];
   presentationStepMs?: number;

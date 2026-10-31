@@ -32,9 +32,7 @@ export function addChapelPierEdges(
       [rect.minX, rect.maxZ],
     ] as const
   ).map(([x, z]) => new Vector3(x, base + bottom, z));
-  const raised = corners.map(
-    (point) => new Vector3(point.x, base + top, point.z),
-  );
+  const raised = corners.map((point) => new Vector3(point.x, base + top, point.z));
   const edge = (a: Vector3, b: Vector3, width: number) => {
     const vector = b.clone().sub(a);
     if (vector.lengthSq() < 1e-12) {
@@ -44,10 +42,7 @@ export function addChapelPierEdges(
       line = new CylinderGeometry(radius, radius, vector.length(), 6),
       matrix = new Matrix4().compose(
         a.clone().add(b).multiplyScalar(0.5),
-        new Quaternion().setFromUnitVectors(
-          new Vector3(0, 1, 0),
-          vector.normalize(),
-        ),
+        new Quaternion().setFromUnitVectors(new Vector3(0, 1, 0), vector.normalize()),
         new Vector3(1, 1, 1),
       );
     line.applyMatrix4(matrix);

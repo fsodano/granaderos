@@ -11,12 +11,7 @@ import { buildCannon, worldCannonAnchors } from './world-artillery';
 import { WorldGeometry, disposeWorldNode } from './world-geometry';
 import { buildLoot } from './world-items';
 import type { WorldEquipment } from './world-item-models';
-import {
-  animateWorldNode,
-  buildClimbLinks,
-  buildLight,
-  buildSmoke,
-} from './world-lights';
+import { animateWorldNode, buildClimbLinks, buildLight, buildSmoke } from './world-lights';
 import { WorldMaterials, illuminationAt, worldKey } from './world-materials';
 import {
   activeClimbLinks,
@@ -25,12 +20,7 @@ import {
   type ClimbOpening,
 } from './world-climb-openings';
 import { buildProps, visualPropRotation } from './world-props';
-import {
-  buildTerrainChunk,
-  buildUpperSurfaces,
-  chunkKey,
-  terrainChunks,
-} from './world-terrain';
+import { buildTerrainChunk, buildUpperSurfaces, chunkKey, terrainChunks } from './world-terrain';
 import { buildVegetationChunk, softenedFoliage } from './world-vegetation';
 import type {
   SectorWorld,
@@ -44,10 +34,7 @@ import type {
 export type { SectorWorld, WorldInput, WorldOptions } from './world-types';
 
 /** Rendering consumes admitted records. It never derives collision or visibility. */
-export function createSectorWorld(
-  scene: Scene,
-  options: WorldOptions,
-): SectorWorld {
+export function createSectorWorld(scene: Scene, options: WorldOptions): SectorWorld {
   if (!Number.isFinite(options.tileMetres) || options.tileMetres <= 0) {
     throw Error('World tileMetres must be positive');
   }
@@ -113,8 +100,7 @@ export function createSectorWorld(
       retain(
         `vegetation:${id}`,
         `${vegetationBase.get(id)}:${softenedFoliage(vegetation, current).join(';')}`,
-        () =>
-          buildVegetationChunk(id, vegetation, current, T, geometry, materials),
+        () => buildVegetationChunk(id, vegetation, current, T, geometry, materials),
       );
     }
     const supported = upperSupported.filter((surface) =>
@@ -127,10 +113,8 @@ export function createSectorWorld(
       ),
       surfaces = [...upperAlways, ...supported];
     if (surfaces.length) {
-      retain(
-        'upper-surfaces',
-        `${upperBase}:${supported.map(worldKey).join(';')}`,
-        () => buildUpperSurfaces(surfaces, current, T, geometry, materials),
+      retain('upper-surfaces', `${upperBase}:${supported.map(worldKey).join(';')}`, () =>
+        buildUpperSurfaces(surfaces, current, T, geometry, materials),
       );
     } else {
       const node = nodes.get('upper-surfaces');
@@ -156,9 +140,7 @@ export function createSectorWorld(
         'climb-covers',
         signature([
           shown,
-          [...active]
-            .filter((id) => shown.some((opening) => opening.linkId === id))
-            .sort(),
+          [...active].filter((id) => shown.some((opening) => opening.linkId === id)).sort(),
           lit(
             shown.map((opening) => ({
               x: (opening.minX + opening.maxX) / 2 / T,
@@ -203,9 +185,7 @@ export function createSectorWorld(
     openings = climbOpenings(next, T);
     upperAlways = shownUpperSurfaces({ ...next, admittedActorPoints: [] });
     const always = new Set(upperAlways);
-    upperSupported = (next.terrain.upperSurfaces ?? []).filter(
-      (surface) => !always.has(surface),
-    );
+    upperSupported = (next.terrain.upperSurfaces ?? []).filter((surface) => !always.has(surface));
     upperBase = signature([
       next.terrain.upperSurfaces,
       openings,
@@ -216,14 +196,7 @@ export function createSectorWorld(
     const groundEdges = new Map(
       next.terrain.tiles.map((tile) => [
         worldKey(tile),
-        [
-          tile.elevation ?? 0,
-          tile.type,
-          tile.material,
-          tile.buildingId,
-          tile.roomId,
-          tile.blocked,
-        ],
+        [tile.elevation ?? 0, tile.type, tile.material, tile.buildingId, tile.roomId, tile.blocked],
       ]),
     );
     for (const [id, tiles] of chunks) {
@@ -251,9 +224,7 @@ export function createSectorWorld(
     const known = [...effectiveRooms(next)].sort(),
       allWalls = worldWallRecords(next);
     for (const building of next.terrain.buildings ?? []) {
-      const tiles = next.terrain.tiles.filter(
-          (tile) => tile.buildingId === building.id,
-        ),
+      const tiles = next.terrain.tiles.filter((tile) => tile.buildingId === building.id),
         surfaces = (next.terrain.upperSurfaces ?? []).filter(
           (tile) => tile.buildingId === building.id,
         );
@@ -275,16 +246,11 @@ export function createSectorWorld(
     }
     const independent = allWalls.filter((tile) => !tile.buildingId);
     if (independent.length) {
-      retain(
-        'independent-walls',
-        signature([independent, lit(independent)]),
-        () => buildIndependentWalls(next, T, geometry, materials),
+      retain('independent-walls', signature([independent, lit(independent)]), () =>
+        buildIndependentWalls(next, T, geometry, materials),
       );
     }
-    const propChunks = new Map<
-      string,
-      NonNullable<WorldInput['terrain']['props']>[number][]
-    >();
+    const propChunks = new Map<string, NonNullable<WorldInput['terrain']['props']>[number][]>();
     for (const prop of next.terrain.props ?? []) {
       const key = `${prop.tacticalLevel ?? 0}:${chunkKey(prop)}`,
         list = propChunks.get(key) ?? [];
@@ -294,72 +260,51 @@ export function createSectorWorld(
     for (const [id, props] of propChunks) {
       retain(
         `props:${id}`,
-        signature([
-          props,
-          props.map((prop) => visualPropRotation(prop, next)),
-          lit(props),
-        ]),
+        signature([props, props.map((prop) => visualPropRotation(prop, next)), lit(props)]),
         () => buildProps(id, props, next, T, geometry, materials),
       );
     }
     if (next.terrain.climbLinks?.length) {
       const elevation = (point: WorldPoint) =>
         point.elevation ??
-        (point.tacticalLevel
-          ? next.terrain.upperSurfaces
-          : next.terrain.tiles
-        )?.find((surface) => worldKey(surface) === worldKey(point))
-          ?.elevation ??
+        (point.tacticalLevel ? next.terrain.upperSurfaces : next.terrain.tiles)?.find(
+          (surface) => worldKey(surface) === worldKey(point),
+        )?.elevation ??
         0;
       retain(
         'climb-links',
         signature([
           next.terrain.climbLinks,
-          next.terrain.climbLinks.map((link) => [
-            elevation(link.from),
-            elevation(link.to),
-          ]),
+          next.terrain.climbLinks.map((link) => [elevation(link.from), elevation(link.to)]),
           lit(next.terrain.climbLinks.map((link) => link.from)),
         ]),
         () => buildClimbLinks(next, T, geometry, materials),
       );
     }
     for (const cannon of next.cannons ?? []) {
-      retain(
-        `cannon:${cannon.id}`,
-        signature([cannon, illuminationAt(next, cannon)]),
-        () => buildCannon(cannon, next, T, geometry, materials),
+      retain(`cannon:${cannon.id}`, signature([cannon, illuminationAt(next, cannon)]), () =>
+        buildCannon(cannon, next, T, geometry, materials),
       );
     }
     for (const [n, pile] of (next.loot ?? []).entries()) {
       const id = pile.id ?? `${worldKey(pile)}:${n}`;
-      retain(
-        `loot:${id}`,
-        signature([pile, illuminationAt(next, pile), Boolean(equipment)]),
-        () => buildLoot(id, pile, next, T, geometry, materials, equipment),
+      retain(`loot:${id}`, signature([pile, illuminationAt(next, pile), Boolean(equipment)]), () =>
+        buildLoot(id, pile, next, T, geometry, materials, equipment),
       );
     }
     for (const [n, source] of (next.terrain.lights ?? []).entries()) {
-      const id =
-        source.id ?? `${worldKey(source)}:${source.type ?? 'campfire'}:${n}`;
+      const id = source.id ?? `${worldKey(source)}:${source.type ?? 'campfire'}:${n}`;
       retain(
         `light:${id}`,
-        signature([
-          source,
-          next.terrain.night,
-          illuminationAt(next, source),
-          n < 12,
-        ]),
+        signature([source, next.terrain.night, illuminationAt(next, source), n < 12]),
         () => buildLight(id, source, next, T, geometry, materials, n < 12),
       );
     }
     for (const [n, source] of (next.smoke ?? []).entries()) {
       if (source.turns !== 0 && source.remainingSeconds !== 0) {
         const id = source.id ?? `${worldKey(source)}:${n}`;
-        retain(
-          `smoke:${id}`,
-          signature([source, illuminationAt(next, source)]),
-          () => buildSmoke(id, source, next, T, geometry, materials),
+        retain(`smoke:${id}`, signature([source, illuminationAt(next, source)]), () =>
+          buildSmoke(id, source, next, T, geometry, materials),
         );
       }
     }
@@ -384,10 +329,7 @@ export function createSectorWorld(
     }
     time = timeSeconds;
     for (const node of nodes.values()) {
-      if (
-        node.object.userData['kind'] === 'light' ||
-        node.object.userData['kind'] === 'smoke'
-      ) {
+      if (node.object.userData['kind'] === 'light' || node.object.userData['kind'] === 'smoke') {
         animateWorldNode(node.object, time, Boolean(input?.reducedMotion));
       }
     }
@@ -415,16 +357,14 @@ export function createSectorWorld(
       if (isMesh(object)) {
         meshes++;
         triangles +=
-          (object.geometry.index?.count ??
-            object.geometry.getAttribute('position').count) / 3;
+          (object.geometry.index?.count ?? object.geometry.getAttribute('position').count) / 3;
       }
     });
     return {
       objects,
       meshes,
       triangles,
-      chunks: [...nodes.keys()].filter((key) => key.startsWith('terrain:'))
-        .length,
+      chunks: [...nodes.keys()].filter((key) => key.startsWith('terrain:')).length,
       semanticIds: [...ids].sort(),
       pendingTextures: materials.pending,
       pendingModels,

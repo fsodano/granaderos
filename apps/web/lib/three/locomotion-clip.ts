@@ -2,10 +2,7 @@ import { required } from './required';
 import { AnimationClip } from 'three';
 import { boundClip, type LoadedActor } from './actor-assets';
 import { locomotionReference } from './locomotion-reference';
-const cache = new WeakMap<
-  AnimationClip,
-  WeakMap<AnimationClip, AnimationClip>
->();
+const cache = new WeakMap<AnimationClip, WeakMap<AnimationClip, AnimationClip>>();
 /** Preserve lance carry arms and fingers; replace the old short-stride lower
  * body with the reviewed gait. Both sets of tracks cover the same full cycle. */
 export function boundLocomotionClip(asset: LoadedActor, semantic: string) {
@@ -32,8 +29,7 @@ export function boundLocomotionClip(asset: LoadedActor, semantic: string) {
       }
       thigh.traverse((node) => lower.add(node.name));
     }
-    const isLower = (name: string) =>
-      lower.has(name.slice(0, name.lastIndexOf('.')));
+    const isLower = (name: string) => lower.has(name.slice(0, name.lastIndexOf('.')));
     const upper = source.clip.tracks
       .filter((track) => !isLower(track.name))
       .map((track) => {

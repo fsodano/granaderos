@@ -1,6 +1,4 @@
-export type PreviewCompletion<Result> =
-  | { ok: true; value: Result }
-  | { ok: false; error: unknown };
+export type PreviewCompletion<Result> = { ok: true; value: Result } | { ok: false; error: unknown };
 
 export interface LatestPreviewQueue<Job> {
   request(job: Job | null): void;

@@ -1,14 +1,7 @@
 import { required } from './required';
-import {
-  worldWallRecords,
-  buildingWallAtPoint,
-  wallFrameRecords,
-} from './world-wall-records';
+import { worldWallRecords, buildingWallAtPoint, wallFrameRecords } from './world-wall-records';
 import { Group, Vector3 } from 'three';
-import {
-  entranceFrame,
-  getBuildingProfile,
-} from '../../../../packages/game/building-profile.ts';
+import { entranceFrame, getBuildingProfile } from '../../../../packages/game/building-profile.ts';
 import { buildingAppearance } from '../../../../packages/game/building-appearance.ts';
 import { buildingStyle } from '../../../../packages/game/building-types.ts';
 import { WorldBatch } from './world-geometry';
@@ -35,9 +28,7 @@ export function warehouseButtresses(
   if (height < 0.8) {
     return root;
   }
-  const walls = worldWallRecords(input).filter(
-      (tile) => tile.buildingId === b.id,
-    ),
+  const walls = worldWallRecords(input).filter((tile) => tile.buildingId === b.id),
     frame = entranceFrame({ ...b, walls: wallFrameRecords(walls) }),
     inset = buildingArtInset(b, input),
     appearance = buildingAppearance(b),
@@ -77,11 +68,7 @@ export function warehouseButtresses(
     const p = frame.at(u, v);
     return new Vector3((p.x + inset) * T, base + y, (p.y + inset) * T);
   };
-  const face = (
-    material: ReturnType<WorldMaterialSource['get']>,
-    points: Vector3[],
-    shade = 1,
-  ) => {
+  const face = (material: ReturnType<WorldMaterialSource['get']>, points: Vector3[], shade = 1) => {
     const normal = required(points[1])
       .clone()
       .sub(required(points[0]))
@@ -120,9 +107,7 @@ export function warehouseButtresses(
         ] as const,
         bottom = plan.map(([x, z]) => at(a + x, c + z, 0)),
         feet = plan.map(([x, z]) => at(a + x, c + z, foot)),
-        top = plan.map(([x, z]) =>
-          at(a + x, c + z, x * out > 0 ? outer : inner),
-        );
+        top = plan.map(([x, z]) => at(a + x, c + z, x * out > 0 ? outer : inner));
       // Join the body at the top of the footing. Overlapping plaster and stone
       // on a shared outer plane would flicker on authored non-stone walls.
       face(coping, [...top].reverse());
@@ -134,12 +119,7 @@ export function warehouseButtresses(
         const next = (n + 1) % 4;
         face(
           wall,
-          [
-            required(feet[n]),
-            required(feet[next]),
-            required(top[next]),
-            required(top[n]),
-          ],
+          [required(feet[n]), required(feet[next]), required(top[next]), required(top[n])],
           stoneBody ? 1 : 0.86,
         );
       }

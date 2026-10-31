@@ -5,10 +5,7 @@ import battleWorkerUrl from './battle-worker.ts?worker&url';
 import type { BattleSnapshot } from '../../../packages/game/public/compatibility-types.ts';
 import { useEffect, useRef, useState } from 'react';
 import { createBattleExecutor } from './battle-executor.ts';
-import {
-  createLatestPreview,
-  type LatestPreviewQueue,
-} from './latest-preview.ts';
+import { createLatestPreview, type LatestPreviewQueue } from './latest-preview.ts';
 import {
   readBattlePreview,
   type BattlePreviewJob,
@@ -24,9 +21,7 @@ export interface BattlePreviewState<Preview> {
 
 export function useBattlePreview<Kind extends BattlePreviewKind>(
   battle: BattleSnapshot,
-  request:
-    | import('./battle-worker-contracts.ts').BattleWorkerActionByKind[NoInfer<Kind>]
-    | null,
+  request: import('./battle-worker-contracts.ts').BattleWorkerActionByKind[NoInfer<Kind>] | null,
   kind: Kind,
 ): BattlePreviewState<BattlePreviewResultByKind[Kind]> {
   type Job = BattlePreviewJob<Kind>;
@@ -42,9 +37,7 @@ export function useBattlePreview<Kind extends BattlePreviewKind>(
     let executor: ReturnType<typeof createBattleExecutor> | null = null;
     const current = createLatestPreview<Job, Preview>(
       async (job) => {
-        executor ??= createBattleExecutor(
-          new Worker(battleWorkerUrl, { type: 'module' }),
-        );
+        executor ??= createBattleExecutor(new Worker(battleWorkerUrl, { type: 'module' }));
         const running = executor;
         try {
           return readBattlePreview(job.kind, await running.run(job));
@@ -74,9 +67,7 @@ export function useBattlePreview<Kind extends BattlePreviewKind>(
   }, []);
 
   useEffect(() => {
-    queue.current?.request(
-      request === null ? null : { battle, action: request, kind },
-    );
+    queue.current?.request(request === null ? null : { battle, action: request, kind });
   }, [battle, request, kind]);
 
   const current =

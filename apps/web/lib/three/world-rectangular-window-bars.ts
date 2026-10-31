@@ -42,12 +42,7 @@ export function addRectangularWindowBars(
   const bottom = sill + height / rise,
     end = top - height / rise;
   for (const x of [-4, 0, 4]) {
-    box(
-      (x * width) / span,
-      (bottom + end) * 0.5,
-      (width * 0.8) / span,
-      end - bottom,
-    );
+    box((x * width) / span, (bottom + end) * 0.5, (width * 0.8) / span, end - bottom);
   }
   // The source small window has no transverse bar.
   if (!small) {

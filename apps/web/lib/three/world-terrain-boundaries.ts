@@ -13,10 +13,7 @@ const sides = [
   [0, -1],
 ] as const;
 const outdoor = (tile: WorldTile) =>
-  !tile.buildingId &&
-  !tile.roomId &&
-  !tile.blocked &&
-  (tile.tacticalLevel ?? 0) === 0;
+  !tile.buildingId && !tile.roomId && !tile.blocked && (tile.tacticalLevel ?? 0) === 0;
 
 /** Flat, disjoint partitions use only admitted ground records. Each tongue
  * stays inside its centre-to-edge triangle, leaving cell corners untouched. */
@@ -37,9 +34,7 @@ export function soilGrassTop(
   ) {
     return false;
   }
-  const neighbours = sides.map(([dx, dy]) =>
-    all.get(worldKey({ x: tile.x + dx, y: tile.y + dy })),
-  );
+  const neighbours = sides.map(([dx, dy]) => all.get(worldKey({ x: tile.x + dx, y: tile.y + dy })));
   const kinds = neighbours.map((neighbour) =>
     neighbour &&
     outdoor(neighbour) &&
@@ -85,23 +80,13 @@ export function soilGrassTop(
         .add(new Vector3(-dx * inward, 0, -dy * inward));
     const tongue = [
       point(low),
-      point(
-        low + (high - low) * (0.28 + random(3) * 0.1),
-        depth * (0.85 + random(4) * 0.15),
-      ),
-      point(
-        low + (high - low) * (0.62 + random(5) * 0.1),
-        depth * (0.85 + random(6) * 0.15),
-      ),
+      point(low + (high - low) * (0.28 + random(3) * 0.1), depth * (0.85 + random(4) * 0.15)),
+      point(low + (high - low) * (0.62 + random(5) * 0.1), depth * (0.85 + random(6) * 0.15)),
       point(high),
     ];
     const path = [a, ...tongue, b];
     for (let n = 0; n < path.length - 1; n++) {
-      batch.polygon(
-        soil,
-        [centre, required(path[n]), required(path[n + 1])],
-        light,
-      );
+      batch.polygon(soil, [centre, required(path[n]), required(path[n + 1])], light);
     }
     // Reverse the boundary path so both materials retain upward normals and
     // the existing world-metre UV projector, including authored elevation.

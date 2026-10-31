@@ -9,10 +9,7 @@ declare module 'three' {
 }
 
 function numericArray(value: unknown): value is number[] {
-  return (
-    Array.isArray(value) &&
-    value.every((item: unknown) => typeof item === 'number')
-  );
+  return Array.isArray(value) && value.every((item: unknown) => typeof item === 'number');
 }
 export function nativeInterpolant(track: KeyframeTrack) {
   const interpolant = track.createInterpolant();

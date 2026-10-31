@@ -11,8 +11,7 @@ const palettes: Record<string, Palette> = {
   stone: { base: '#928f80', trim: '#c5bd9f', shadow: '#5e635c' },
   brick: { base: '#a17258', trim: '#cfb490', shadow: '#6f5140' },
 };
-export const architectureTrimColour = (finish: string) =>
-  palettes[finish]?.trim;
+export const architectureTrimColour = (finish: string) => palettes[finish]?.trim;
 export type ArchitectureFinish = {
   role: ArchitectureRole;
   base: string;
@@ -37,16 +36,9 @@ export function architectureFinish(
     role,
     base: palette.base,
     texture: `/art/architecture-${masonry ? finish : 'plaster'}-v2.png`,
-    textureOpacity:
-      role === 'wall' ? (masonry ? 0.92 : 0.85) : masonry ? 0.6 : 0.36,
+    textureOpacity: role === 'wall' ? (masonry ? 0.92 : 0.85) : masonry ? 0.6 : 0.36,
     multiplyOpacity:
-      role === 'wall'
-        ? finish === 'adobe'
-          ? 0.48
-          : finish === 'ochre'
-            ? 0.34
-            : 0
-        : 0,
+      role === 'wall' ? (finish === 'adobe' ? 0.48 : finish === 'ochre' ? 0.34 : 0) : 0,
   };
 }
 
@@ -75,10 +67,7 @@ export function applyArchitectureFinish(
       diffuseColor.rgb = sRGBTransferEOTF( vec4( architectureEncoded, 1.0 ) ).rgb;
       diffuseColor.a *= sampledDiffuseColor.a;`,
     );
-    shader.fragmentShader = shader.fragmentShader.replace(
-      '#include <map_fragment>',
-      fragment,
-    );
+    shader.fragmentShader = shader.fragmentShader.replace('#include <map_fragment>', fragment);
   };
   material.customProgramCacheKey = () =>
     `architecture-finish:${finish.role}:${finish.textureOpacity.toFixed(2)}:${finish.multiplyOpacity.toFixed(2)}`;

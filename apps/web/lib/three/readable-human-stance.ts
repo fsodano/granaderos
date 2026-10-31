@@ -26,22 +26,13 @@ type RestOptions = {
   plantFeet?: boolean;
   footwearName?: string;
 };
-const cache = new WeakMap<
-  Object3D,
-  WeakMap<AnimationClip, Map<string, AnimationClip>>
->();
+const cache = new WeakMap<Object3D, WeakMap<AnimationClip, Map<string, AnimationClip>>>();
 const world = (node: Object3D) => node.getWorldPosition(new Vector3());
 const finite = (point: Vector3) =>
-  Number.isFinite(point.x) &&
-  Number.isFinite(point.y) &&
-  Number.isFinite(point.z);
+  Number.isFinite(point.x) && Number.isFinite(point.y) && Number.isFinite(point.z);
 /** Read the native sole in foot-bone space. An ankle height cannot describe
  * both boots: their bind offsets and native idle pitch are different. */
-function nativeSoles(
-  body: Object3D,
-  legs: Limb[],
-  footwearName?: string,
-): Sole[] | undefined {
+function nativeSoles(body: Object3D, legs: Limb[], footwearName?: string): Sole[] | undefined {
   const mesh = footwearName ? body.getObjectByName(footwearName) : undefined;
   if (
     !isSkinnedMesh(mesh) ||
@@ -67,17 +58,12 @@ function nativeSoles(
   }
   const index = mesh.geometry.index,
     used = index
-      ? [
-          ...new Set<number>(
-            Array.from({ length: index.count }, (_, i) => index.getX(i)),
-          ),
-        ]
+      ? [...new Set<number>(Array.from({ length: index.count }, (_, i) => index.getX(i)))]
       : Array.from({ length: p.count }, (_, i) => i),
     soles: Sole[] = [];
   for (const leg of legs) {
     const foot = mesh.skeleton.bones.find((bone) => bone.name === leg.end.name),
-      inverse =
-        foot && mesh.skeleton.boneInverses[mesh.skeleton.bones.indexOf(foot)];
+      inverse = foot && mesh.skeleton.boneInverses[mesh.skeleton.bones.indexOf(foot)];
     if (!foot || !inverse) {
       return;
     }
@@ -197,19 +183,11 @@ function turn(bone: Object3D, before: Vector3, after: Vector3) {
     .setFromUnitVectors(before.normalize(), after.normalize())
     .multiply(bone.getWorldQuaternion(new Quaternion()));
   bone.quaternion.copy(
-    required(bone.parent)
-      .getWorldQuaternion(new Quaternion())
-      .invert()
-      .multiply(rotation),
+    required(bone.parent).getWorldQuaternion(new Quaternion()).invert().multiply(rotation),
   );
   bone.updateWorldMatrix(false, true);
 }
-function solve(
-  limb: Limb,
-  target: Vector3,
-  pole: Vector3,
-  orientation: Quaternion,
-) {
+function solve(limb: Limb, target: Vector3, pole: Vector3, orientation: Quaternion) {
   const { upper, joint, end } = limb,
     start = world(upper),
     middle = world(joint),
@@ -236,10 +214,7 @@ function solve(
   turn(upper, middle.sub(start), bend.clone().sub(start));
   turn(joint, world(end).sub(world(joint)), target.clone().sub(world(joint)));
   end.quaternion.copy(
-    required(end.parent)
-      .getWorldQuaternion(new Quaternion())
-      .invert()
-      .multiply(orientation),
+    required(end.parent).getWorldQuaternion(new Quaternion()).invert().multiply(orientation),
   );
   end.updateWorldMatrix(false, true);
   return true;
@@ -257,9 +232,7 @@ export function readableHumanClip(
   const [posture, action, equipment] = semantic.split('.');
   if (
     !['stand', 'mounted'].includes(required(posture)) ||
-    !['idle', 'walk', 'run', 'backwalk', 'strafeLeft', 'strafeRight'].includes(
-      required(action),
-    )
+    !['idle', 'walk', 'run', 'backwalk', 'strafeLeft', 'strafeRight'].includes(required(action))
   ) {
     return source;
   }
@@ -278,12 +251,8 @@ export function readableHumanClip(
     variants = new Map();
     clips.set(source, variants);
   }
-  const plantFeet = Boolean(
-      options.plantFeet && posture === 'stand' && action === 'idle',
-    ),
-    key = plantFeet
-      ? `${semantic}:planted:${options.footwearName ?? ''}`
-      : semantic;
+  const plantFeet = Boolean(options.plantFeet && posture === 'stand' && action === 'idle'),
+    key = plantFeet ? `${semantic}:planted:${options.footwearName ?? ''}` : semantic;
   const cached = variants.get(key);
   if (cached) {
     return cached;
@@ -295,10 +264,7 @@ export function readableHumanClip(
     const end = model.getObjectByName(required(bones[role])),
       joint = end?.parent,
       upper = joint?.parent;
-    return end &&
-      end instanceof Bone &&
-      joint instanceof Bone &&
-      upper instanceof Bone
+    return end && end instanceof Bone && joint instanceof Bone && upper instanceof Bone
       ? { upper: required(upper), joint: required(joint), end, side }
       : undefined;
   };
@@ -319,21 +285,19 @@ export function readableHumanClip(
   const widenLegs = posture === 'stand';
   const nativeLegs = legs.filter((leg): leg is Limb => leg !== undefined),
     nativeArms = arms.filter((arm): arm is Limb => arm !== undefined),
-    modified = [...(widenLegs ? nativeLegs : []), ...nativeArms].flatMap(
-      (limb) => [limb.upper, limb.joint, limb.end],
-    );
+    modified = [...(widenLegs ? nativeLegs : []), ...nativeArms].flatMap((limb) => [
+      limb.upper,
+      limb.joint,
+      limb.end,
+    ]);
   if (
     widenLegs &&
-    nativeLegs.some(
-      (leg) => !leg.end.children.some((child) => child instanceof Bone),
-    )
+    nativeLegs.some((leg) => !leg.end.children.some((child) => child instanceof Bone))
   ) {
     variants.set(key, source);
     return source;
   }
-  const soles = plantFeet
-    ? nativeSoles(body, nativeLegs, options.footwearName)
-    : undefined;
+  const soles = plantFeet ? nativeSoles(body, nativeLegs, options.footwearName) : undefined;
   if (plantFeet && !soles) {
     variants.set(key, source);
     return source;
@@ -342,19 +306,14 @@ export function readableHumanClip(
     times = [
       ...new Set(
         [
-          ...Array.from(
-            { length: samples + 1 },
-            (_, n) => (source.duration * n) / samples,
-          ),
+          ...Array.from({ length: samples + 1 }, (_, n) => (source.duration * n) / samples),
           ...source.tracks.flatMap((track) => Array.from(track.times)),
         ].map(Math.fround),
       ),
     ].sort((a, b) => a - b);
   const values = new Map(modified.map((node) => [node, [] as number[]])),
     positions: number[] = [];
-  const native = new Map(
-      modified.map((node) => [node, node.quaternion.clone()]),
-    ),
+  const native = new Map(modified.map((node) => [node, node.quaternion.clone()])),
     nativeRoot = root.position.clone();
   const mixer = new AnimationMixer(model),
     playing = mixer.clipAction(source).setLoop(LoopOnce, 1);
@@ -392,13 +351,9 @@ export function readableHumanClip(
       const goals = nativeLegs.map((leg, index) => {
         const target = world(leg.end),
           orientation = leg.end.getWorldQuaternion(new Quaternion());
-        target.x =
-          centre +
-          leg.side * Math.max(halfWidth, leg.side * (target.x - centre));
+        target.x = centre + leg.side * Math.max(halfWidth, leg.side * (target.x - centre));
         const sole = soles?.[index],
-          toe = required(
-            leg.end.children.find((child) => child instanceof Bone),
-          ),
+          toe = required(leg.end.children.find((child) => child instanceof Bone)),
           forward = sole
             ? sole.forward.clone().applyQuaternion(orientation)
             : world(toe).sub(world(leg.end));
@@ -406,10 +361,7 @@ export function readableHumanClip(
         // the ankles spread; turn only that yaw out, retaining pitch and roll.
         const heading = Math.atan2(forward.x, forward.z),
           outward = leg.side * Math.max(leg.side * heading, Math.PI / 180),
-          yaw = new Quaternion().setFromAxisAngle(
-            new Vector3(0, 1, 0),
-            outward - heading,
-          );
+          yaw = new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), outward - heading);
         orientation.premultiply(yaw);
         forward.applyQuaternion(yaw);
         forward.y = 0;
@@ -419,14 +371,10 @@ export function readableHumanClip(
           // target comes from the lowest sole vertex, not a guessed bone offset.
           const up = new Vector3(0, 1, 0),
             normal = sole.normal.clone().applyQuaternion(orientation);
-          orientation.premultiply(
-            new Quaternion().setFromUnitVectors(normal, up),
-          );
+          orientation.premultiply(new Quaternion().setFromUnitVectors(normal, up));
           const flatForward = sole.forward.clone().applyQuaternion(orientation),
             flatHeading = Math.atan2(flatForward.x, flatForward.z);
-          orientation.premultiply(
-            new Quaternion().setFromAxisAngle(up, outward - flatHeading),
-          );
+          orientation.premultiply(new Quaternion().setFromAxisAngle(up, outward - flatHeading));
           const scale = leg.end.getWorldScale(new Vector3());
           if (
             !finite(scale) ||
@@ -440,8 +388,7 @@ export function readableHumanClip(
             0.002 -
             Math.min(
               ...sole.points.map(
-                (point) =>
-                  point.clone().multiply(scale).applyQuaternion(orientation).y,
+                (point) => point.clone().multiply(scale).applyQuaternion(orientation).y,
               ),
             );
           forward.copy(sole.forward).applyQuaternion(orientation);
@@ -463,15 +410,11 @@ export function readableHumanClip(
       for (const { leg, target } of supported) {
         const start = world(leg.upper),
           middle = world(leg.joint),
-          reach =
-            (start.distanceTo(middle) + middle.distanceTo(world(leg.end))) *
-            0.9995,
+          reach = (start.distanceTo(middle) + middle.distanceTo(world(leg.end))) * 0.9995,
           horizontal = (start.x - target.x) ** 2 + (start.z - target.z) ** 2;
         drop = Math.max(
           drop,
-          start.y -
-            target.y -
-            Math.sqrt(Math.max(0, reach * reach - horizontal)),
+          start.y - target.y - Math.sqrt(Math.max(0, reach * reach - horizontal)),
         );
       }
       if (plantFeet && (!Number.isFinite(drop) || drop > 0.06)) {
@@ -501,19 +444,11 @@ export function readableHumanClip(
       if (posture === 'stand' && equipment === 'unarmed') {
         target.x =
           centre +
-          arm.side *
-            Math.max(
-              arm.side * (target.x - centre),
-              arm.side * (start.x - centre) + 0.1,
-            );
+          arm.side * Math.max(arm.side * (target.x - centre), arm.side * (start.x - centre) + 0.1);
       }
       pole.x =
         centre +
-        arm.side *
-          Math.max(
-            arm.side * (pole.x - centre),
-            arm.side * (start.x - centre) + 0.105,
-          );
+        arm.side * Math.max(arm.side * (pole.x - centre), arm.side * (start.x - centre) + 0.105);
       solve(arm, target, pole, orientation);
     }
     for (const node of modified) {
@@ -521,12 +456,8 @@ export function readableHumanClip(
         q = node.quaternion;
       if (
         row.length &&
-        row
-          .slice(-4)
-          .reduce(
-            (sum, value, index) => sum + value * required(q.toArray()[index]),
-            0,
-          ) < 0
+        row.slice(-4).reduce((sum, value, index) => sum + value * required(q.toArray()[index]), 0) <
+          0
       ) {
         row.push(-q.x, -q.y, -q.z, -q.w);
       } else {
@@ -537,17 +468,10 @@ export function readableHumanClip(
   }
   mixer.stopAllAction();
   mixer.uncacheRoot(model);
-  const replacements = new Map<
-    string,
-    QuaternionKeyframeTrack | VectorKeyframeTrack
-  >(
+  const replacements = new Map<string, QuaternionKeyframeTrack | VectorKeyframeTrack>(
     modified.map((node) => [
       node.name + '.quaternion',
-      new QuaternionKeyframeTrack(
-        node.name + '.quaternion',
-        times,
-        required(values.get(node)),
-      ),
+      new QuaternionKeyframeTrack(node.name + '.quaternion', times, required(values.get(node))),
     ]),
   );
   if (widenLegs) {
@@ -559,10 +483,7 @@ export function readableHumanClip(
   const clip = new AnimationClip(
     source.name,
     source.duration,
-    [
-      ...source.tracks.filter((track) => !replacements.has(track.name)),
-      ...replacements.values(),
-    ],
+    [...source.tracks.filter((track) => !replacements.has(track.name)), ...replacements.values()],
     source.blendMode,
   );
   variants.set(key, clip);

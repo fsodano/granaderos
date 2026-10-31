@@ -16,10 +16,7 @@ import type {
   TacticalAction,
 } from '../../../packages/game/public/compatibility-types.ts';
 import { readBattleWorkerResult } from './battle-worker-values.ts';
-type MutationKind = Exclude<
-  BattleJobKind,
-  'reachable-preview' | 'group-preview'
->;
+type MutationKind = Exclude<BattleJobKind, 'reachable-preview' | 'group-preview'>;
 import { runBattleJob } from '../../../packages/game/battle-job.ts';
 import { sectorOperationContextFor } from '../../../packages/game/infrastructure/sector-sessions/sector-operation-context.js';
 
@@ -40,9 +37,7 @@ export function useBattleExecutor(battle: BattleSnapshot) {
     pending.current = false;
     let mountedExecutor: ReturnType<typeof createBattleExecutor> | null = null;
     try {
-      mountedExecutor = createBattleExecutor(
-        new Worker(battleWorkerUrl, { type: 'module' }),
-      );
+      mountedExecutor = createBattleExecutor(new Worker(battleWorkerUrl, { type: 'module' }));
       executor.current = mountedExecutor;
     } catch {
       executor.current = null;
@@ -72,10 +67,7 @@ export function useBattleExecutor(battle: BattleSnapshot) {
     setWorking(true);
     const source = battle,
       epoch = generation.current,
-      context = sectorOperationContextFor(
-        source,
-        `${epoch}:${++sequence.current}`,
-      ),
+      context = sectorOperationContextFor(source, `${epoch}:${++sequence.current}`),
       job: BattleWorkerJob<MutationKind> = {
         battle: source,
         action,
@@ -88,10 +80,7 @@ export function useBattleExecutor(battle: BattleSnapshot) {
       generation.current === epoch &&
       latest.current === source &&
       context.matches(
-        sectorOperationContextFor(
-          latest.current,
-          context.snapshot().requestId,
-        ).snapshot(),
+        sectorOperationContextFor(latest.current, context.snapshot().requestId).snapshot(),
       );
     try {
       let result: BattleWorkerResultByKind[MutationKind];

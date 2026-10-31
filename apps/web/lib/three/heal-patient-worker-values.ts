@@ -2,8 +2,7 @@ import { isWorkerRecord } from '../battle-worker-values';
 import type { PatientPlanData } from './heal-patient-contact-fit';
 const finite = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value);
-const numbers = (value: unknown): value is number[] =>
-  Array.isArray(value) && value.every(finite);
+const numbers = (value: unknown): value is number[] => Array.isArray(value) && value.every(finite);
 const vector = (value: unknown) => numbers(value) && value.length === 3;
 const optionalVector = (value: unknown) => value === undefined || vector(value);
 function plan(value: unknown): value is PatientPlanData {
@@ -31,9 +30,7 @@ function plan(value: unknown): value is PatientPlanData {
         isWorkerRecord(group) &&
         typeof group['mesh'] === 'string' &&
         numbers(group['indices']) &&
-        group['indices'].every(
-          (index) => Number.isSafeInteger(index) && index >= 0,
-        ),
+        group['indices'].every((index) => Number.isSafeInteger(index) && index >= 0),
     )
   );
 }

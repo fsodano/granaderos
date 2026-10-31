@@ -5,16 +5,16 @@ import { BufferAttribute, BufferGeometry, Vector3 } from 'three';
 // corners are omitted; every old hull plane and rotated bound stays exact.
 const support: readonly (readonly number[])[] = [
   [
-    0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 14, 16, 17, 19, 20, 21, 22, 24, 25, 26,
-    27, 28, 29, 31, 33, 34, 36, 37, 38, 40, 41,
+    0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 14, 16, 17, 19, 20, 21, 22, 24, 25, 26, 27, 28, 29, 31, 33,
+    34, 36, 37, 38, 40, 41,
   ],
   [
-    0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 15, 16, 17, 18, 19, 20, 21, 22, 24, 25,
-    26, 27, 28, 29, 31, 32, 34, 35, 36, 37, 38, 39, 40, 41,
+    0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 15, 16, 17, 18, 19, 20, 21, 22, 24, 25, 26, 27, 28, 29, 31,
+    32, 34, 35, 36, 37, 38, 39, 40, 41,
   ],
   [
-    0, 1, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 19, 20, 22, 23, 24, 25,
-    26, 28, 29, 30, 31, 32, 33, 35, 36, 37, 38, 39, 40, 41,
+    0, 1, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 19, 20, 22, 23, 24, 25, 26, 28, 29, 30, 31,
+    32, 33, 35, 36, 37, 38, 39, 40, 41,
   ],
 ] as const;
 /** Folded leaf diamonds replace the closed lobe. Each new corner is a
@@ -77,14 +77,8 @@ export function leafSpray(crown: BufferGeometry, variant: number) {
       }
     }
     const root = tip.clone().multiplyScalar(0.28),
-      a = tip
-        .clone()
-        .multiplyScalar(0.45)
-        .addScaledVector(required(corners[left]), 0.38),
-      b = tip
-        .clone()
-        .multiplyScalar(0.45)
-        .addScaledVector(required(corners[right]), 0.38);
+      a = tip.clone().multiplyScalar(0.45).addScaledVector(required(corners[left]), 0.38),
+      b = tip.clone().multiplyScalar(0.45).addScaledVector(required(corners[right]), 0.38);
     for (const face of [
       [root, a, tip],
       [root, tip, b],
@@ -101,10 +95,7 @@ export function leafSpray(crown: BufferGeometry, variant: number) {
     'position',
     new BufferAttribute(new Float32Array(vertices), 3),
   );
-  geometry.setAttribute(
-    'color',
-    new BufferAttribute(new Float32Array(colours), 3),
-  );
+  geometry.setAttribute('color', new BufferAttribute(new Float32Array(colours), 3));
   geometry.computeVertexNormals();
   return geometry;
 }

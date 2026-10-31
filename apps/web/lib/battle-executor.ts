@@ -3,10 +3,7 @@ import {
   sectorOperationContextFor,
   assertSectorOperationContext,
 } from '../../../packages/game/infrastructure/sector-sessions/sector-operation-context.js';
-import {
-  battleWorkerMessageId,
-  readBattleWorkerResponse,
-} from './battle-worker-transport.ts';
+import { battleWorkerMessageId, readBattleWorkerResponse } from './battle-worker-transport.ts';
 import type {
   BattleWorkerJob,
   BattleWorkerRequest,

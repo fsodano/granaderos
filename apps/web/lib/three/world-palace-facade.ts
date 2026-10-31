@@ -1,9 +1,5 @@
 import { required } from './required';
-import {
-  worldWallRecords,
-  buildingWallAtPoint,
-  wallFrameRecords,
-} from './world-wall-records';
+import { worldWallRecords, buildingWallAtPoint, wallFrameRecords } from './world-wall-records';
 import { Group, Matrix4, Quaternion, Vector3 } from 'three';
 import { entranceFrame } from '../../../../packages/game/building-profile.ts';
 import { buildingAppearance } from '../../../../packages/game/building-appearance.ts';
@@ -15,10 +11,7 @@ import { buildingArtInset } from './world-building-placement';
 import { palaceColumns } from './world-palace-columns';
 import { civicStoreyBands } from './world-civic-storey-bands';
 import { palacePorticoHipReturn } from './world-palace-portico';
-import {
-  buildingRenderProfile,
-  selectedBuildingStyle,
-} from './world-building-style';
+import { buildingRenderProfile, selectedBuildingStyle } from './world-building-style';
 import type { WorldGeometry } from './world-geometry';
 import type { WorldMaterialSource } from './world-materials';
 import type { WorldBuilding, WorldInput } from './world-types';
@@ -35,9 +28,7 @@ export function palaceFacade(
   legacy: boolean,
   edgeDetails: (panels: readonly (readonly Vector3[])[], eave: number) => Group,
 ) {
-  const walls = worldWallRecords(input).filter(
-      (tile) => tile.buildingId === b.id,
-    ),
+  const walls = worldWallRecords(input).filter((tile) => tile.buildingId === b.id),
     frame = entranceFrame({ ...b, walls: wallFrameRecords(walls) }),
     appearance = buildingAppearance({
       ...b,
@@ -54,10 +45,7 @@ export function palaceFacade(
         ? { colour: buildingStyle(b).wall }
         : { architectureRole: 'volume' },
     ),
-    trim = materials.get(
-      'trim',
-      legacy ? { colour: buildingStyle(b).trim } : {},
-    ),
+    trim = materials.get('trim', legacy ? { colour: buildingStyle(b).trim } : {}),
     stone = materials.get('stone'),
     dark = materials.get('darkwood'),
     iron = materials.get('iron'),
@@ -86,23 +74,8 @@ export function palaceFacade(
   const root = new Group();
   root.name = `palace-facade:${b.id}`;
   let batch = new WorldBatch(geometry);
-  const box = (
-    u: number,
-    v: number,
-    y: number,
-    w: number,
-    h: number,
-    d: number,
-    material = wall,
-  ) =>
-    batch.primitive(
-      'box',
-      material,
-      at(u, v, y),
-      [w * T, h, d * T],
-      rotation,
-      light,
-    );
+  const box = (u: number, v: number, y: number, w: number, h: number, d: number, material = wall) =>
+    batch.primitive('box', material, at(u, v, y), [w * T, h, d * T], rotation, light);
   const feature = (name: string, draw: () => void) => {
     const previous = batch;
     batch = new WorldBatch(geometry);
@@ -114,15 +87,12 @@ export function palaceFacade(
   };
   const twoStoreys = height >= 4 && selectedBuildingStyle(b)?.upper !== false,
     storey = twoStoreys
-      ? (height * buildingRenderProfile(b).groundFloorHeight) /
-        buildingRenderProfile(b).wallHeight
+      ? (height * buildingRenderProfile(b).groundFloorHeight) / buildingRenderProfile(b).wallHeight
       : height;
   // Compact edited shells retain their attached corner piers instead of
   // adding a second detached entrance column in the same corner wall cell.
   const supports = [
-    ...new Set(
-      [-3, -1, 1, 3].map((offset) => Math.round(frame.doorU + offset)),
-    ),
+    ...new Set([-3, -1, 1, 3].map((offset) => Math.round(frame.doorU + offset))),
   ].filter((u) => u > 0 && u < frame.width && wallAt(u, 0)?.type === 'wall');
   const hasBalcony =
     twoStoreys &&
@@ -131,9 +101,7 @@ export function palaceFacade(
   root.userData['storey'] = storey;
   root.userData['balconyFloor'] = hasBalcony ? storey + 0.24 : undefined;
   if (wallInset === 0 && (!legacy || b.wallFinish !== undefined)) {
-    root.add(
-      palaceColumns(b, input, T, height, base, geometry, materials, supports),
-    );
+    root.add(palaceColumns(b, input, T, height, base, geometry, materials, supports));
   } else {
     feature('entrance-columns', () => {
       for (const support of supports) {
@@ -141,28 +109,12 @@ export function palaceFacade(
           shaft = twoStoreys ? storey + 0.02 : storey - 0.12;
         box(u, v, shaft * 0.5, 0.31 / T, shaft, 0.38 / T, stone);
         box(u, v, 0.13, 0.38 / T, 0.26, 0.38 / T, stone);
-        box(
-          u,
-          v,
-          twoStoreys ? storey + 0.055 : storey - 0.1,
-          0.38 / T,
-          0.15,
-          0.38 / T,
-          stone,
-        );
+        box(u, v, twoStoreys ? storey + 0.055 : storey - 0.1, 0.38 / T, 0.15, 0.38 / T, stone);
       }
     });
     feature('palace-pilasters', () => {
       const pier = (u: number, v: number, w: number, material = wall) => {
-        box(
-          u,
-          v,
-          (storey - 0.1) * 0.5,
-          w / T,
-          storey - 0.1,
-          0.38 / T,
-          material,
-        );
+        box(u, v, (storey - 0.1) * 0.5, w / T, storey - 0.1, 0.38 / T, material);
         box(u, v, 0.12, 0.38 / T, 0.24, 0.38 / T, stone);
         box(u, v, storey - 0.08, 0.38 / T, 0.14, 0.38 / T, trim);
       };
@@ -194,11 +146,7 @@ export function palaceFacade(
       }
     });
   }
-  if (
-    twoStoreys &&
-    wallInset === 0 &&
-    (!legacy || b.wallFinish !== undefined)
-  ) {
+  if (twoStoreys && wallInset === 0 && (!legacy || b.wallFinish !== undefined)) {
     root.add(civicStoreyBands(b, input, T, height, base, geometry, materials));
   } else {
     feature('palace-storey-bands', () => {
@@ -242,10 +190,7 @@ export function palaceFacade(
         width = small ? 0.38 : 0.72,
         radius = width * 0.5,
         bottom = storey + (small ? 0.98 : 0.65),
-        paneHeight = Math.min(
-          arched ? 1.18 : small ? 0.48 : 0.9,
-          height - bottom - 0.26,
-        ),
+        paneHeight = Math.min(arched ? 1.18 : small ? 0.48 : 0.9, height - bottom - 0.26),
         spring = paneHeight - radius;
       const positions = (length: number, parity: number) => {
         const result: number[] = [];
@@ -298,21 +243,8 @@ export function palaceFacade(
             light,
           );
         }
-        const line = (
-          x: number,
-          y: number,
-          x1: number,
-          y1: number,
-          r = 0.043,
-          material = trim,
-        ) =>
-          batch.cylinder(
-            material,
-            point(x, y, 0.145),
-            point(x1, y1, 0.145),
-            r,
-            light,
-          );
+        const line = (x: number, y: number, x1: number, y1: number, r = 0.043, material = trim) =>
+          batch.cylinder(material, point(x, y, 0.145), point(x1, y1, 0.145), r, light);
         line(-radius, 0, radius, 0);
         line(-radius, 0, -radius, arched ? spring : paneHeight);
         line(radius, 0, radius, arched ? spring : paneHeight);
@@ -327,24 +259,14 @@ export function palaceFacade(
             for (const d of [0.1125, 0.1775]) {
               batch.polygon(
                 trim,
-                [
-                  arc(a, outer, d),
-                  arc(c, outer, d),
-                  arc(c, inner, d),
-                  arc(a, inner, d),
-                ],
+                [arc(a, outer, d), arc(c, outer, d), arc(c, inner, d), arc(a, inner, d)],
                 light,
               );
             }
             for (const r of [inner, outer]) {
               batch.polygon(
                 trim,
-                [
-                  arc(a, r, 0.1125),
-                  arc(c, r, 0.1125),
-                  arc(c, r, 0.1775),
-                  arc(a, r, 0.1775),
-                ],
+                [arc(a, r, 0.1125), arc(c, r, 0.1125), arc(c, r, 0.1775), arc(a, r, 0.1775)],
                 light,
               );
             }
@@ -359,14 +281,7 @@ export function palaceFacade(
             line(x, 0.045, x, top, 0.014, bars);
           }
           if (!small) {
-            line(
-              -radius + 0.04,
-              paneHeight * 0.36,
-              radius - 0.04,
-              paneHeight * 0.36,
-              0.014,
-              bars,
-            );
+            line(-radius + 0.04, paneHeight * 0.36, radius - 0.04, paneHeight * 0.36, 0.014, bars);
           }
         } else if (style === 'lattice') {
           for (const x of [-0.16, 0.16]) {
@@ -406,14 +321,8 @@ export function palaceFacade(
         }
       };
       for (const v of [0, frame.depth]) {
-        for (const u of positions(
-          frame.width,
-          v === 0 ? Math.round(frame.doorU) % 2 : 1,
-        )) {
-          if (
-            wallAt(u, v) &&
-            !(v === 0 && hasBalcony && Math.abs(u - frame.doorU) < 0.8)
-          ) {
+        for (const u of positions(frame.width, v === 0 ? Math.round(frame.doorU) % 2 : 1)) {
+          if (wallAt(u, v) && !(v === 0 && hasBalcony && Math.abs(u - frame.doorU) < 0.8)) {
             pane(u - alongInset, v, v === 0 ? -1 : 1, true);
           }
         }
@@ -432,27 +341,13 @@ export function palaceFacade(
       hi = Math.max(...supports) - alongInset,
       floor = storey + 0.24;
     feature('palace-balcony', () => {
-      box(
-        (lo + hi) * 0.5,
-        -0.25,
-        storey + 0.14,
-        hi - lo + 0.24,
-        0.2,
-        0.74,
-        stone,
-      );
+      box((lo + hi) * 0.5, -0.25, storey + 0.14, hi - lo + 0.24, 0.2, 0.74, stone);
       for (const u of [lo, hi]) {
         box(u, -0.425, floor + 0.28, 0.12 / T, 0.56, 0.12 / T, stone);
         box(u, -0.425, floor + 0.575, 0.17 / T, 0.04, 0.17 / T, trim);
       }
       for (const y of [floor + 0.07, floor + 0.54]) {
-        batch.cylinder(
-          iron,
-          at(lo, -0.425, y),
-          at(hi, -0.425, y),
-          0.021,
-          light,
-        );
+        batch.cylinder(iron, at(lo, -0.425, y), at(hi, -0.425, y), 0.021, light);
       }
       const rods = Math.ceil((hi - lo) / 0.23);
       for (let n = 0; n <= rods; n++) {
@@ -466,13 +361,7 @@ export function palaceFacade(
         );
       }
       for (const u of [lo, hi]) {
-        batch.cylinder(
-          iron,
-          at(u, -0.425, floor + 0.54),
-          at(u, -0.06, floor + 0.54),
-          0.021,
-          light,
-        );
+        batch.cylinder(iron, at(u, -0.425, floor + 0.54), at(u, -0.06, floor + 0.54), 0.021, light);
       }
       const doorHeight = Math.min(1.49, height - floor - 0.17),
         width = 0.74,
@@ -503,33 +392,16 @@ export function palaceFacade(
           trim,
         );
       }
-      box(
-        doorU,
-        -0.13 / T,
-        floor + 0.02 + doorHeight + 0.04,
-        0.88 / T,
-        0.08,
-        0.065 / T,
-        trim,
-      );
+      box(doorU, -0.13 / T, floor + 0.02 + doorHeight + 0.04, 0.88 / T, 0.08, 0.065 / T, trim);
       for (const u of [lo, hi]) {
-        box(
-          u,
-          -0.1 / T,
-          (floor + height - 0.12) * 0.5,
-          0.17,
-          height - floor - 0.12,
-          0.14,
-          trim,
-        );
+        box(u, -0.1 / T, (floor + height - 0.12) * 0.5, 0.17, height - floor - 0.12, 0.14, trim);
       }
     });
     const center = (lo + hi) * 0.5,
       front = -0.39,
       back = Math.min(1.2, frame.depth - 0.3),
       eave = height + 7 / 25.066666666666666,
-      peak =
-        eave + Math.min(30, Math.max(13, (hi - lo) * 4.5)) / 25.066666666666666;
+      peak = eave + Math.min(30, Math.max(13, (hi - lo) * 4.5)) / 25.066666666666666;
     // The complete canopy footprint includes its return into the entrance
     // bay. A walking roof cell must clear its roof, fascia and entablature.
     const first = front - 0.05,
@@ -563,15 +435,9 @@ export function palaceFacade(
         );
       });
       feature('palace-pediment', () => {
-        const face = [
-            at(lo, front, eave),
-            at(hi, front, eave),
-            at(center, front, peak),
-          ],
+        const face = [at(lo, front, eave), at(hi, front, eave), at(center, front, peak)],
           rear = face.map((point) =>
-            point
-              .clone()
-              .add(new Vector3(frame.v.x * 0.18, 0, frame.v.y * 0.18)),
+            point.clone().add(new Vector3(frame.v.x * 0.18, 0, frame.v.y * 0.18)),
           );
         batch.polygon(wall, face, light);
         batch.polygon(wall, rear, light);
@@ -579,12 +445,7 @@ export function palaceFacade(
           const next = (n + 1) % 3;
           batch.polygon(
             wall,
-            [
-              required(face[n]),
-              required(face[next]),
-              required(rear[next]),
-              required(rear[n]),
-            ],
+            [required(face[n]), required(face[next]), required(rear[next]), required(rear[n])],
             light,
           );
         }
@@ -636,15 +497,9 @@ export function palaceFacade(
       tiles.add(edgeDetails(panels, base + eave + 1 / 25.066666666666666));
       if (!hipReturn) {
         feature('palace-portico-return', () => {
-          const rear = [
-              at(lo, back, eave),
-              at(hi, back, eave),
-              at(center, back, peak),
-            ],
+          const rear = [at(lo, back, eave), at(hi, back, eave), at(center, back, peak)],
             face = rear.map((point) =>
-              point
-                .clone()
-                .add(new Vector3(-frame.v.x * 0.18, 0, -frame.v.y * 0.18)),
+              point.clone().add(new Vector3(-frame.v.x * 0.18, 0, -frame.v.y * 0.18)),
             );
           batch.polygon(wall, face, light);
           batch.polygon(wall, rear, light);
@@ -652,12 +507,7 @@ export function palaceFacade(
             const next = (n + 1) % 3;
             batch.polygon(
               wall,
-              [
-                required(face[n]),
-                required(face[next]),
-                required(rear[next]),
-                required(rear[n]),
-              ],
+              [required(face[n]), required(face[next]), required(rear[next]), required(rear[n])],
               light,
             );
           }
@@ -676,13 +526,9 @@ export function palaceFacade(
             [0.2, 0.28],
             [0, 0.12],
           ] as const,
-          face = outline.map(([x, y]) =>
-            at(center + x / T, front - 0.035 / T, eave + y),
-          ),
+          face = outline.map(([x, y]) => at(center + x / T, front - 0.035 / T, eave + y)),
           rear = face.map((point) =>
-            point
-              .clone()
-              .add(new Vector3(frame.v.x * 0.025, 0, frame.v.y * 0.025)),
+            point.clone().add(new Vector3(frame.v.x * 0.025, 0, frame.v.y * 0.025)),
           );
         batch.polygon(badge, face, light);
         batch.polygon(badge, rear, light);
@@ -690,24 +536,12 @@ export function palaceFacade(
           const next = (n + 1) % face.length;
           batch.polygon(
             badge,
-            [
-              required(face[n]),
-              required(face[next]),
-              required(rear[next]),
-              required(rear[n]),
-            ],
+            [required(face[n]), required(face[next]), required(rear[next]), required(rear[n])],
             light,
           );
-          batch.cylinder(
-            mark,
-            required(face[n]),
-            required(face[next]),
-            0.01,
-            light,
-          );
+          batch.cylinder(mark, required(face[n]), required(face[next]), 0.01, light);
         }
-        const a = (x: number, y: number) =>
-          at(center + x / T, front - 0.052 / T, eave + y);
+        const a = (x: number, y: number) => at(center + x / T, front - 0.052 / T, eave + y);
         for (const [x, y, x1, y1] of [
           [0, 0.19, 0, 0.47],
           [-0.115, 0.43, 0.115, 0.43],

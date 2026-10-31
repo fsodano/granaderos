@@ -69,11 +69,7 @@ const smooth = (u: number) => {
   u = Math.max(0, Math.min(1, u));
   return u * u * u * (10 + u * (-15 + 6 * u));
 };
-const gestures = new Set([
-  'stand.gesture.heal',
-  'stand.gesture.pickup',
-  'stand.gesture.free',
-]);
+const gestures = new Set(['stand.gesture.heal', 'stand.gesture.pickup', 'stand.gesture.free']);
 const guards = new Set([
   'stand.idle.unarmed',
   'stand.idle.long-gun',
@@ -85,8 +81,7 @@ const guards = new Set([
   'stand.aim.short-gun',
   'stand.brace.long-gun',
 ]);
-const finite = (p: Vector3) =>
-  Number.isFinite(p.x) && Number.isFinite(p.y) && Number.isFinite(p.z);
+const finite = (p: Vector3) => Number.isFinite(p.x) && Number.isFinite(p.y) && Number.isFinite(p.z);
 /** Fit only ordinary standing guard/reach gestures. Contact targets use
  * quintic easing; the complete pose still retains the source body/mixer
  * motion. Root, pelvis, wrapper and paid clocks keep their native channels. */
@@ -198,9 +193,7 @@ export class NativeGestureBlendSupport {
           continue;
         }
         seen.add(signature);
-        const position = new Vector3()
-            .fromBufferAttribute(p, i)
-            .applyMatrix4(mesh.bindMatrix),
+        const position = new Vector3().fromBufferAttribute(p, i).applyMatrix4(mesh.bindMatrix),
           influences: Influence[] = [];
         let total = 0;
         for (let slot = 0; slot < 4; slot++) {
@@ -232,12 +225,7 @@ export class NativeGestureBlendSupport {
         second = required(calf)
           .getWorldPosition(new Vector3())
           .distanceTo(required(foot).getWorldPosition(new Vector3()));
-      if (
-        !Number.isFinite(first + second) ||
-        first <= 0 ||
-        second <= 0 ||
-        !surface.length
-      ) {
+      if (!Number.isFinite(first + second) || first <= 0 || second <= 0 || !surface.length) {
         return;
       }
       const sole = Array.from({ length: p.count }, (_, i) => i).filter(
@@ -248,9 +236,7 @@ export class NativeGestureBlendSupport {
         front = Math.max(...ring.map((i) => p.getZ(i))),
         back = Math.min(...ring.map((i) => p.getZ(i)));
       const inverse =
-        mesh.skeleton.boneInverses[
-          mesh.skeleton.bones.findIndex((bone) => bone === foot)
-        ];
+        mesh.skeleton.boneInverses[mesh.skeleton.bones.findIndex((bone) => bone === foot)];
       if (!inverse || ring.length < 40) {
         return;
       }
@@ -351,12 +337,7 @@ export class NativeGestureBlendSupport {
     });
   }
   private forecast(clip: AnimationClip, phase: number): Goal[] | undefined {
-    if (
-      !this.preview ||
-      !this.previewMixer ||
-      !Number.isFinite(phase) ||
-      !(clip.duration > 0)
-    ) {
+    if (!this.preview || !this.previewMixer || !Number.isFinite(phase) || !(clip.duration > 0)) {
       return;
     }
     const at = ((phase % clip.duration) + clip.duration) % clip.duration;
@@ -391,31 +372,24 @@ export class NativeGestureBlendSupport {
         for (const vertex of leg.surface) {
           let y = 0;
           for (const point of vertex) {
-            const m = required(this.previewBones.get(point.bone.name))
-              .matrixWorld.elements;
-            y +=
-              (m[1] * point.x + m[5] * point.y + m[9] * point.z + m[13]) *
-              point.weight;
+            const m = required(this.previewBones.get(point.bone.name)).matrixWorld.elements;
+            y += (m[1] * point.x + m[5] * point.y + m[9] * point.z + m[13]) * point.weight;
           }
           low = Math.min(low, y);
         }
         return {
           p,
           q,
-          ball: required(
-            this.previewBones.get(leg.ball.name),
-          ).getWorldQuaternion(new Quaternion()),
+          ball: required(this.previewBones.get(leg.ball.name)).getWorldQuaternion(new Quaternion()),
           bend: (() => {
-            const hip = required(
-                this.previewBones.get(leg.thigh.name),
-              ).getWorldPosition(new Vector3()),
+            const hip = required(this.previewBones.get(leg.thigh.name)).getWorldPosition(
+                new Vector3(),
+              ),
               direction = p.clone().sub(hip).normalize(),
               bend = required(this.previewBones.get(leg.calf.name))
                 .getWorldPosition(new Vector3())
                 .sub(hip);
-            return bend
-              .addScaledVector(direction, -bend.dot(direction))
-              .normalize();
+            return bend.addScaledVector(direction, -bend.dot(direction)).normalize();
           })(),
           toe: leg.toe.clone().applyQuaternion(q).add(p),
           contactToe: leg.toe.clone().applyMatrix4(foot.matrixWorld),
@@ -432,22 +406,11 @@ export class NativeGestureBlendSupport {
     const origin = this.root.getWorldPosition(new Vector3()),
       rotation = this.root.getWorldQuaternion(new Quaternion());
     return local.map((goal) => ({
-      p: goal.p
-        .clone()
-        .multiplyScalar(this.visualScale)
-        .applyQuaternion(rotation)
-        .add(origin),
+      p: goal.p.clone().multiplyScalar(this.visualScale).applyQuaternion(rotation).add(origin),
       q: rotation.clone().multiply(goal.q),
       ball: rotation.clone().multiply(goal.ball),
-      toe: goal.toe
-        .clone()
-        .multiplyScalar(this.visualScale)
-        .applyQuaternion(rotation)
-        .add(origin),
-      low:
-        goal.low === undefined
-          ? undefined
-          : goal.low * this.visualScale + origin.y,
+      toe: goal.toe.clone().multiplyScalar(this.visualScale).applyQuaternion(rotation).add(origin),
+      low: goal.low === undefined ? undefined : goal.low * this.visualScale + origin.y,
       contactToe: goal.contactToe
         ?.clone()
         .multiplyScalar(this.visualScale)
@@ -476,10 +439,7 @@ export class NativeGestureBlendSupport {
       : gestures.has(previous.name)
         ? previous
         : undefined;
-    if (
-      !gesture ||
-      gesture.nativeBootSupport?.surface !== 'complete-native-boots-all-lods'
-    ) {
+    if (!gesture || gesture.nativeBootSupport?.surface !== 'complete-native-boots-all-lods') {
       return;
     }
     if (
@@ -528,9 +488,7 @@ export class NativeGestureBlendSupport {
       let value = 0;
       for (const point of vertex) {
         const m = point.bone.matrixWorld.elements;
-        value +=
-          (m[1] * point.x + m[5] * point.y + m[9] * point.z + m[13]) *
-          point.weight;
+        value += (m[1] * point.x + m[5] * point.y + m[9] * point.z + m[13]) * point.weight;
       }
       height = Math.min(height, value);
       this.processedVertices++;
@@ -550,9 +508,7 @@ export class NativeGestureBlendSupport {
     // untouched source with matching first and second derivatives.
     // Factored form stays positive near the untouched boundary without
     // cancellation of nearly equal polynomial terms.
-    return (
-      0.001 * remainder * remainder * remainder * (1 + 1.5 * u + 1.5 * u * u)
-    );
+    return 0.001 * remainder * remainder * remainder * (1 + 1.5 * u + 1.5 * u * u);
   }
   private rotateToward(bone: Object3D, before: Vector3, after: Vector3) {
     this.rotation.setFromUnitVectors(before.normalize(), after.normalize());
@@ -567,24 +523,13 @@ export class NativeGestureBlendSupport {
     thigh.getWorldPosition(this.start);
     calf.getWorldPosition(this.joint);
     foot.getWorldPosition(this.end);
-    if (
-      !finite(this.start) ||
-      !finite(this.joint) ||
-      !finite(this.end) ||
-      !finite(this.target)
-    ) {
+    if (!finite(this.start) || !finite(this.joint) || !finite(this.end) || !finite(this.target)) {
       return false;
     }
-    const distance = this.direction
-      .subVectors(this.target, this.start)
-      .length();
+    const distance = this.direction.subVectors(this.target, this.start).length();
     this.maximumReachError = Math.max(
       this.maximumReachError,
-      Math.max(
-        0,
-        distance - (a + b - 0.0004),
-        Math.abs(a - b) + 0.0004 - distance,
-      ),
+      Math.max(0, distance - (a + b - 0.0004), Math.abs(a - b) + 0.0004 - distance),
     );
     if (distance >= a + b - 0.0004 || distance <= Math.abs(a - b) + 0.0004) {
       return false;
@@ -615,14 +560,10 @@ export class NativeGestureBlendSupport {
       this.after.subVectors(this.target, this.joint),
     );
     required(foot.parent).getWorldQuaternion(this.parentRotation);
-    foot.quaternion.copy(
-      this.parentRotation.invert().multiply(this.footRotation),
-    );
+    foot.quaternion.copy(this.parentRotation.invert().multiply(this.footRotation));
     foot.updateWorldMatrix(false, true);
     required(ball.parent).getWorldQuaternion(this.parentRotation);
-    ball.quaternion.copy(
-      this.parentRotation.invert().multiply(this.ballRotation),
-    );
+    ball.quaternion.copy(this.parentRotation.invert().multiply(this.ballRotation));
     ball.updateWorldMatrix(false, true);
     return true;
   }
@@ -669,10 +610,7 @@ export class NativeGestureBlendSupport {
     // Keep ordinary returns at 120 ms. A real stance change lifts and lands
     // one foot before the other, without changing the paid/mixer clock.
     if (!plan.entry && plan.returnDuration === undefined) {
-      const goal = this.forecast(
-        plan.clip,
-        phase + Math.max(0, 0.12 - elapsed) * rate,
-      );
+      const goal = this.forecast(plan.clip, phase + Math.max(0, 0.12 - elapsed) * rate);
       if (!goal) {
         return this.rejectContact();
       }
@@ -697,9 +635,7 @@ export class NativeGestureBlendSupport {
             goal.toe.copy(goal.contactToe);
           }
         }
-        const supports = plan.landing.map(
-          (goal) => (goal.low ?? Infinity) <= plan.floor + 0.003,
-        );
+        const supports = plan.landing.map((goal) => (goal.low ?? Infinity) <= plan.floor + 0.003);
         if (!supports.some(Boolean)) {
           return this.rejectContact();
         }
@@ -710,9 +646,7 @@ export class NativeGestureBlendSupport {
       this.plan = undefined;
       return false;
     }
-    const weight = smooth(
-      elapsed / (plan.entry ? 0.12 : required(plan.returnDuration)),
-    );
+    const weight = smooth(elapsed / (plan.entry ? 0.12 : required(plan.returnDuration)));
     for (const [bone, q] of this.native) {
       q.copy(bone.quaternion);
     }
@@ -735,15 +669,9 @@ export class NativeGestureBlendSupport {
       } else if (plan.step) {
         const goal = required(required(plan.landing)[index]),
           half = required(plan.returnDuration) / 2,
-          u = Math.max(
-            0,
-            Math.min(1, (elapsed - (index === plan.first ? 0 : half)) / half),
-          ),
+          u = Math.max(0, Math.min(1, (elapsed - (index === plan.first ? 0 : half)) / half)),
           travel = smooth((u - 0.2) / 0.6),
-          distance = Math.hypot(
-            goal.toe.x - initial.toe.x,
-            goal.toe.z - initial.toe.z,
-          ),
+          distance = Math.hypot(goal.toe.x - initial.toe.x, goal.toe.z - initial.toe.z),
           height = Math.min(0.05, 0.025 + distance * 0.08),
           arc = 64 * u * u * u * (1 - u) * (1 - u) * (1 - u);
         poleWeight = travel;
@@ -775,19 +703,11 @@ export class NativeGestureBlendSupport {
         target = (rotation: Quaternion) =>
           toe
             .clone()
-            .sub(
-              leg.toe
-                .clone()
-                .multiplyScalar(this.visualScale)
-                .applyQuaternion(rotation),
-            );
+            .sub(leg.toe.clone().multiplyScalar(this.visualScale).applyQuaternion(rotation));
       let roll = 0;
       const reachable = (rotation: Quaternion) => {
         const distance = target(rotation).distanceTo(hip);
-        return (
-          distance < limit &&
-          distance > Math.abs(leg.first - leg.second) + reserve
-        );
+        return distance < limit && distance > Math.abs(leg.first - leg.second) + reserve;
       };
       if (!reachable(q)) {
         let low = 0,
@@ -808,9 +728,7 @@ export class NativeGestureBlendSupport {
       const fitted = orientation(roll),
         delta = fitted.clone().multiply(q.clone().invert());
       if (plan.entry) {
-        ball
-          .copy(initial.ball)
-          .premultiply(fitted.clone().multiply(initial.q.clone().invert()));
+        ball.copy(initial.ball).premultiply(fitted.clone().multiply(initial.q.clone().invert()));
       } else {
         ball.premultiply(delta);
       }
@@ -829,25 +747,15 @@ export class NativeGestureBlendSupport {
             ? required(required(required(plan.landing)[index]).bend).clone()
             : leg.calf.getWorldPosition(new Vector3()).sub(hip);
         end.addScaledVector(direction, -end.dot(direction)).normalize();
-        if (
-          start.lengthSq() < 0.5 ||
-          end.lengthSq() < 0.5 ||
-          !finite(start) ||
-          !finite(end)
-        ) {
+        if (start.lengthSq() < 0.5 || end.lengthSq() < 0.5 || !finite(start) || !finite(end)) {
           return this.rejectContact();
         }
-        const angle = Math.atan2(
-          direction.dot(start.clone().cross(end)),
-          start.dot(end),
-        );
+        const angle = Math.atan2(direction.dot(start.clone().cross(end)), start.dot(end));
         if (plan.resumedStep) {
           poleWeight = weight;
         }
         poleTarget = start
-          .applyQuaternion(
-            new Quaternion().setFromAxisAngle(direction, angle * poleWeight),
-          )
+          .applyQuaternion(new Quaternion().setFromAxisAngle(direction, angle * poleWeight))
           .add(hip);
       }
       const raw = leg.foot.getWorldPosition(new Vector3()),
@@ -883,10 +791,7 @@ export class NativeGestureBlendSupport {
       if (this.lowest(leg) < plan.floor + 0.0008) {
         return this.rejectContact();
       }
-      this.maximumContactError = Math.max(
-        this.maximumContactError,
-        actual.distanceTo(toe),
-      );
+      this.maximumContactError = Math.max(this.maximumContactError, actual.distanceTo(toe));
     }
     plan.last = this.capture();
     return true;
@@ -944,10 +849,7 @@ export class NativeGestureBlendSupport {
       leg.foot.getWorldQuaternion(this.footRotation);
       leg.ball.getWorldQuaternion(this.ballRotation);
       for (let attempt = 0; attempt < 2; attempt++) {
-        this.maximumAdjustment = Math.max(
-          this.maximumAdjustment,
-          this.target.y - ankleHeight,
-        );
+        this.maximumAdjustment = Math.max(this.maximumAdjustment, this.target.y - ankleHeight);
         if (!this.solve(leg)) {
           this.rejectedFits++;
           this.restore();
@@ -959,10 +861,7 @@ export class NativeGestureBlendSupport {
           break;
         }
         const nextAdjustment = this.target.y + residual - ankleHeight;
-        if (
-          nextAdjustment > this.adjustmentLimit ||
-          !Number.isFinite(residual)
-        ) {
+        if (nextAdjustment > this.adjustmentLimit || !Number.isFinite(residual)) {
           this.rejectedFits++;
           this.restore();
           this.until = -Infinity;

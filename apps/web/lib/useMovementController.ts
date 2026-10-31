@@ -1,15 +1,6 @@
 'use client';
-import {
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useState,
-  useSyncExternalStore,
-} from 'react';
-import {
-  unitCanAct,
-  groupSelectionMode,
-} from '../../../packages/game/ja2-hud.ts';
+import { useEffect, useLayoutEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { unitCanAct, groupSelectionMode } from '../../../packages/game/ja2-hud.ts';
 import { createMovementController } from './movement-controller.js';
 import { BattleJobKind } from './battle-worker-contracts.ts';
 import type {
@@ -17,23 +8,15 @@ import type {
   BattleWorkerContinuationByKind,
   BattleWorkerResultByKind,
 } from './battle-worker-contracts.ts';
-import type {
-  MovementCommit,
-  MovementControllerOptions,
-} from './movement-controller-types.ts';
+import type { MovementCommit, MovementControllerOptions } from './movement-controller-types.ts';
 
-type MovementJob =
-  | typeof BattleJobKind.MovementStep
-  | typeof BattleJobKind.GroupStep;
+type MovementJob = typeof BattleJobKind.MovementStep | typeof BattleJobKind.GroupStep;
 type RunMovement = <Kind extends MovementJob>(
   action: BattleWorkerActionByKind[NoInfer<Kind>],
   kind: Kind,
   continuation?: BattleWorkerContinuationByKind[NoInfer<Kind>] | null,
 ) => Promise<BattleWorkerResultByKind[Kind] | null>;
-function movementOptions(
-  run: RunMovement,
-  commit: MovementCommit,
-): MovementControllerOptions {
+function movementOptions(run: RunMovement, commit: MovementCommit): MovementControllerOptions {
   return {
     execute: (action, continuation) => {
       if (action.type === 'groupMove') {
@@ -47,8 +30,7 @@ function movementOptions(
       }
       return run(action, BattleJobKind.MovementStep, continuation);
     },
-    commit: (next, action, source, result) =>
-      commit(next, action, source, result),
+    commit: (next, action, source, result) => commit(next, action, source, result),
     canMove: (state, id, action) =>
       action.type === 'groupMove'
         ? groupSelectionMode(state) &&
@@ -64,31 +46,19 @@ function movementOptions(
           ),
   };
 }
-export function useMovementController(
-  run: RunMovement,
-  commit: MovementCommit,
-) {
-  const [current] = useState(() =>
-    createMovementController(movementOptions(run, commit)),
-  );
+export function useMovementController(run: RunMovement, commit: MovementCommit) {
+  const [current] = useState(() => createMovementController(movementOptions(run, commit)));
   useLayoutEffect(() => {
     current.updateCallbacks(movementOptions(run, commit));
   }, [current, run, commit]);
 
-  const intent = useSyncExternalStore(
-    current.subscribe,
-    current.getSnapshot,
-    current.getSnapshot,
-  );
+  const intent = useSyncExternalStore(current.subscribe, current.getSnapshot, current.getSnapshot);
   useEffect(() => {
     current.setEnabled(true);
     return () => current.setEnabled(false);
   }, [current]);
   const movingUnitId = intent?.movingUnitId;
-  const continuingIds = useMemo(
-    () => new Set(movingUnitId ? [movingUnitId] : []),
-    [movingUnitId],
-  );
+  const continuingIds = useMemo(() => new Set(movingUnitId ? [movingUnitId] : []), [movingUnitId]);
   return {
     intent,
     continuingIds,
@@ -99,8 +69,7 @@ export function useMovementController(
       const currentIntent = current.getSnapshot();
       return (
         currentIntent?.unitId === id ||
-        (currentIntent?.action.type === 'groupMove' &&
-          currentIntent.action.unitIds.includes(id))
+        (currentIntent?.action.type === 'groupMove' && currentIntent.action.unitIds.includes(id))
       );
     },
   };

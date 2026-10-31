@@ -177,11 +177,7 @@ function validEvent(event: unknown): event is CombatEffectEvent {
     return false;
   }
   if (
-    !optional(
-      event,
-      'durationSeconds',
-      (value) => finite(value) && value >= 0.02 && value <= 60,
-    ) ||
+    !optional(event, 'durationSeconds', (value) => finite(value) && value >= 0.02 && value <= 60) ||
     !optional(event, 'actorKey', text) ||
     !optional(event, 'cannonId', text) ||
     !optional(event, 'dischargeAnchor', finitePoint)
@@ -236,11 +232,7 @@ function validEvent(event: unknown): event is CombatEffectEvent {
         optional(visual, 'material', text) &&
         optional(visual, 'spread', boolean) &&
         optional(visual, 'discharge', boolean) &&
-        optional(
-          visual,
-          'shotHand',
-          (value) => value === 'primary' || value === 'offhand',
-        ) &&
+        optional(visual, 'shotHand', (value) => value === 'primary' || value === 'offhand') &&
         optional(visual, 'shotId', (value) => text(value) || finite(value)) &&
         optional(visual, 'bodyTargetKey', text) &&
         optional(visual, 'sourceBodyKey', text)
@@ -311,23 +303,16 @@ function randomFor(id: string) {
   };
 }
 function pathSampler(points: readonly EffectPoint[], T: number) {
-  const path = points.map(
-      (point) => new Vector3(point.x * T, point.height, point.y * T),
-    ),
+  const path = points.map((point) => new Vector3(point.x * T, point.height, point.y * T)),
     lengths = [0];
   for (let n = 1; n < path.length; n++) {
-    lengths.push(
-      required(lengths[n - 1]) +
-        required(path[n]).distanceTo(required(path[n - 1])),
-    );
+    lengths.push(required(lengths[n - 1]) + required(path[n]).distanceTo(required(path[n - 1])));
   }
   const fractions =
     points.every(
       (point, n) =>
         Number.isFinite(point.fraction) &&
-        (!n ||
-          required(point.fraction) >=
-            required(required(points[n - 1]).fraction)),
+        (!n || required(point.fraction) >= required(required(points[n - 1]).fraction)),
     ) &&
     required(points[0]).fraction === 0 &&
     required(points.at(-1)).fraction === 1
@@ -355,10 +340,7 @@ function pathSampler(points: readonly EffectPoint[], T: number) {
   };
 }
 /** Draw only admitted records. Collision, trajectory solving and visibility belong to the game. */
-export function createCombatEffects(
-  scene: Scene,
-  options: CombatEffectsOptions,
-) {
+export function createCombatEffects(scene: Scene, options: CombatEffectsOptions) {
   const T = options.tileMetres;
   if (!Number.isFinite(T) || T <= 0) {
     throw Error('Combat effects require a positive tileMetres.');
@@ -415,15 +397,8 @@ export function createCombatEffects(
         duration: eventDuration(event),
       },
       rnd = randomFor(event.id);
-    const at = (point: EffectPoint) =>
-      new Vector3(point.x * T, point.height, point.y * T);
-    const mesh = (
-      name: string,
-      kind: string,
-      colour: string,
-      basic = false,
-      opacity = 1,
-    ) => {
+    const at = (point: EffectPoint) => new Vector3(point.x * T, point.height, point.y * T);
+    const mesh = (name: string, kind: string, colour: string, basic = false, opacity = 1) => {
       const material = basic
         ? new MeshBasicMaterial({
             color: colour,
@@ -450,9 +425,7 @@ export function createCombatEffects(
     const add = (object: Object3D, draw: AnimatedPart['draw']) =>
       entry.parts.push({ mesh: object, draw });
     const opacity = (object: Mesh, value: number) => {
-      for (const material of Array.isArray(object.material)
-        ? object.material
-        : [object.material]) {
+      for (const material of Array.isArray(object.material) ? object.material : [object.material]) {
         material.opacity = clamp(value);
       }
     };
@@ -478,63 +451,30 @@ export function createCombatEffects(
           object.visible = age >= 0 && age < life;
           object.position
             .copy(origin)
-            .add(
-              new Vector3(
-                Math.cos(angle) * rad * p,
-                lift * p,
-                Math.sin(angle) * rad * p,
-              ),
-            );
+            .add(new Vector3(Math.cos(angle) * rad * p, lift * p, Math.sin(angle) * rad * p));
           object.scale.setScalar(size * (1 + p * 0.8));
-          opacity(
-            object,
-            quiet ? 0.16 * (1 - p) : 0.46 * Math.sin(Math.PI * p),
-          );
+          opacity(object, quiet ? 0.16 * (1 - p) : 0.46 * Math.sin(Math.PI * p));
         });
       }
     }
-    function discharge(
-      point: EffectPoint,
-      toward: EffectPoint | undefined,
-      large = false,
-    ) {
+    function discharge(point: EffectPoint, toward: EffectPoint | undefined, large = false) {
       const flash = mesh('muzzle-flash', 'cone', '#f2c777', true),
         origin = at(point),
-        direction = toward
-          ? at(toward).sub(origin).normalize()
-          : new Vector3(1, 0, 0);
+        direction = toward ? at(toward).sub(origin).normalize() : new Vector3(1, 0, 0);
       if (direction.lengthSq() === 0) {
         direction.set(1, 0, 0);
       }
       flash.userData['role'] = 'muzzle-flash';
       flash.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), direction);
-      flash.position
-        .copy(origin)
-        .addScaledVector(direction, large ? 0.23 : 0.11);
-      flash.scale.set(
-        large ? 0.18 : 0.08,
-        large ? 0.48 : 0.24,
-        large ? 0.18 : 0.08,
-      );
+      flash.position.copy(origin).addScaledVector(direction, large ? 0.23 : 0.11);
+      flash.scale.set(large ? 0.18 : 0.08, large ? 0.48 : 0.24, large ? 0.18 : 0.08);
       add(flash, (elapsed, quiet) => {
         flash.visible = elapsed >= 0 && elapsed < (quiet ? 0.14 : 0.09);
         opacity(flash, quiet ? 0.4 : 1 - elapsed / 0.09);
       });
-      smoke(
-        point,
-        0.03,
-        large ? 6 : 3,
-        large ? 0.3 : 0.13,
-        '#a3a092',
-        large ? 0.9 : 0.6,
-      );
+      smoke(point, 0.03, large ? 6 : 3, large ? 0.3 : 0.13, '#a3a092', large ? 0.9 : 0.6);
     }
-    function impact(
-      point: EffectImpact,
-      start: number,
-      large = false,
-      readable = false,
-    ) {
+    function impact(point: EffectImpact, start: number, large = false, readable = false) {
       if (!point.outcome) {
         return;
       }
@@ -563,22 +503,12 @@ export function createCombatEffects(
             p = clamp(age / life);
           cloud.visible = age >= 0 && age < life;
           cloud.position.copy(origin).add(new Vector3(0, p * 0.18, 0));
-          cloud.scale.setScalar(
-            (large ? 0.18 : 0.065) + p * (large ? 0.45 : 0.16),
-          );
+          cloud.scale.setScalar((large ? 0.18 : 0.065) + p * (large ? 0.45 : 0.16));
           opacity(cloud, (quiet ? 0.25 : 0.42) * (1 - p));
         });
       }
-      for (
-        let n = 0;
-        n < (point.outcome === 'miss' ? 2 : large ? 12 : 4);
-        n++
-      ) {
-        const chip = mesh(
-            `impact-chip:${n}`,
-            point.material === 'wood' ? 'box' : 'metal',
-            colour,
-          ),
+      for (let n = 0; n < (point.outcome === 'miss' ? 2 : large ? 12 : 4); n++) {
+        const chip = mesh(`impact-chip:${n}`, point.material === 'wood' ? 'box' : 'metal', colour),
           angle = rnd() * Math.PI * 2,
           speed = (0.12 + rnd() * 0.4) * (large ? 2 : 1),
           up = 0.3 + rnd() * 0.5,
@@ -635,18 +565,12 @@ export function createCombatEffects(
         const ball = mesh(
           `${kind}-body`,
           'metal',
-          kind === 'grenade'
-            ? '#30362a'
-            : kind === 'bullet'
-              ? '#d2c5a4'
-              : '#969789',
+          kind === 'grenade' ? '#30362a' : kind === 'bullet' ? '#d2c5a4' : '#969789',
           kind === 'bullet',
         );
         group.remove(ball);
         body.add(ball);
-        ball.scale.setScalar(
-          kind === 'grenade' ? 0.073 : kind === 'ball' ? 0.09 : 0.038,
-        );
+        ball.scale.setScalar(kind === 'grenade' ? 0.073 : kind === 'ball' ? 0.09 : 0.038);
         if (kind === 'bullet') {
           ball.renderOrder = 1;
           ball.material.toneMapped = false;
@@ -670,10 +594,7 @@ export function createCombatEffects(
           sample(Math.min(1, p + 0.001), ahead);
           const direction = ahead.sub(current);
           if (direction.lengthSq()) {
-            body.quaternion.setFromUnitVectors(
-              new Vector3(1, 0, 0),
-              direction.normalize(),
-            );
+            body.quaternion.setFromUnitVectors(new Vector3(1, 0, 0), direction.normalize());
           }
         }
         body.traverse((object) => {
@@ -684,12 +605,7 @@ export function createCombatEffects(
       });
       return body;
     }
-    function quietMarker(
-      point: EffectPoint,
-      start: number,
-      end: number,
-      colour: string,
-    ) {
+    function quietMarker(point: EffectPoint, start: number, end: number, colour: string) {
       const marker = mesh('reduced-motion-marker', 'metal', colour, true);
       marker.userData['role'] = 'reduced-motion-marker';
       marker.position.copy(at(point));
@@ -705,10 +621,7 @@ export function createCombatEffects(
       flight(v.points, flightTime, 'grenade');
       quietMarker(v.impact, 0, entry.duration, '#b7ad87');
       for (const point of v.contacts ?? []) {
-        impact(
-          { ...point, outcome: 'miss' },
-          flightTime * clamp(point.fraction ?? 1),
-        );
+        impact({ ...point, outcome: 'miss' }, flightTime * clamp(point.fraction ?? 1));
       }
       if (v.detonated) {
         const ground = {
@@ -735,9 +648,7 @@ export function createCombatEffects(
           const age = elapsed - flightTime,
             p = clamp(age / 0.3);
           burst.visible = age >= 0 && age < 0.3;
-          burst.scale.setScalar(
-            0.14 + Math.sin(Math.PI * p) * Math.min(0.65, radius * 0.18),
-          );
+          burst.scale.setScalar(0.14 + Math.sin(Math.PI * p) * Math.min(0.65, radius * 0.18));
           opacity(burst, 1 - p);
         });
         smoke(
@@ -822,12 +733,7 @@ export function createCombatEffects(
       if (stage !== 'projectile') {
         for (const point of contacts) {
           impact(point, stage === 'impact' ? 0 : travel, true);
-          quietMarker(
-            point,
-            stage === 'impact' ? 0 : travel,
-            entry.duration,
-            colourFor(point),
-          );
+          quietMarker(point, stage === 'impact' ? 0 : travel, entry.duration, colourFor(point));
         }
       }
     }
@@ -852,11 +758,7 @@ export function createCombatEffects(
       if (disposed) {
         throw Error('Combat effects are disposed.');
       }
-      if (
-        ['units', 'npcs', 'state', 'flight', 'trajectoryModel'].some(
-          (key) => key in input,
-        )
-      ) {
+      if (['units', 'npcs', 'state', 'flight', 'trajectoryModel'].some((key) => key in input)) {
         throw Error(
           'Combat effects accept admitted visual records, not state or private flight data.',
         );
@@ -878,10 +780,7 @@ export function createCombatEffects(
         wanted.add(event.id);
         const signature = JSON.stringify(event),
           current = entries.get(event.id);
-        if (
-          current?.signature === signature ||
-          completed.get(event.id) === signature
-        ) {
+        if (current?.signature === signature || completed.get(event.id) === signature) {
           continue;
         }
         remove(event.id);
@@ -920,8 +819,7 @@ export function createCombatEffects(
         if (isMesh(object)) {
           meshes++;
           triangles +=
-            (object.geometry.index?.count ??
-              object.geometry.getAttribute('position').count) / 3;
+            (object.geometry.index?.count ?? object.geometry.getAttribute('position').count) / 3;
         }
       });
       return {

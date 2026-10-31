@@ -66,10 +66,7 @@ export function cachedPathAllowed(
 export { recipeKey };
 
 /** Preallocate only owned geometry. No paid pose or target plan is retained. */
-export function initializeCachedSample(
-  fit: NativeMeleeContactFit,
-  cache: LowerPathCache,
-) {
+export function initializeCachedSample(fit: NativeMeleeContactFit, cache: LowerPathCache) {
   return fit.initializeCachedSample(cache);
 }
 /** Match the original first constructor's actual mixed native inputs. The

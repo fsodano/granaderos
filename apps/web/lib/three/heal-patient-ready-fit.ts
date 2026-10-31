@@ -5,19 +5,12 @@ import { nativeInterpolant } from './native-interpolant';
 import { isMesh, isSkinnedMesh } from './scene-node-types';
 import { required } from './required';
 import { isWorkerRecord } from '../battle-worker-values';
-import {
-  readPatientFitResult,
-  type PatientFitResult,
-} from './heal-patient-worker-values';
+import { readPatientFitResult, type PatientFitResult } from './heal-patient-worker-values';
 // eslint-disable-next-line import/default -- Vite supplies this virtual worker URL; native URL workers break the static export.
 import workerUrl from './heal-patient-fit-worker?worker&url';
 import { Object3D, Vector3, Quaternion, AnimationClip } from 'three';
 import { NativePatientContactFit } from './heal-patient-contact-fit';
-import {
-  snapshotActor,
-  clipSnapshot,
-  type ActorSnapshot,
-} from './melee-worker-snapshot';
+import { snapshotActor, clipSnapshot, type ActorSnapshot } from './melee-worker-snapshot';
 import { geometrySame, clipSame } from './melee-ready-contact-fit';
 import type { ActorCue, ContactTarget, ContactSupport } from './presentation';
 import type { ContactActorResolver } from './melee-contact-fit';
@@ -88,19 +81,12 @@ function poseRow(node: Object3D): PoseRow {
   };
 }
 function pose(model: Object3D): PoseStamp {
-  return [
-    'Root',
-    'pelvis',
-    'thigh_l',
-    'thigh_r',
-    'calf_l',
-    'calf_r',
-    'foot_l',
-    'foot_r',
-  ].map((name) => {
-    const node = model.getObjectByName(name);
-    return node ? poseRow(node) : null;
-  });
+  return ['Root', 'pelvis', 'thigh_l', 'thigh_r', 'calf_l', 'calf_r', 'foot_l', 'foot_r'].map(
+    (name) => {
+      const node = model.getObjectByName(name);
+      return node ? poseRow(node) : null;
+    },
+  );
 }
 function patientPose(model: Object3D): PoseStamp {
   const rows: PoseRow[] = [];
@@ -138,11 +124,7 @@ function poseSame(left: PoseStamp, right: PoseStamp) {
       return false;
     }
     const distance = (sign: number) =>
-      Math.hypot(
-        ...entry.quaternion.map(
-          (n, j) => n - sign * required(other.quaternion[j]),
-        ),
-      );
+      Math.hypot(...entry.quaternion.map((n, j) => n - sign * required(other.quaternion[j])));
     return (
       entry.quaternion.every(Number.isFinite) &&
       other.quaternion.every(Number.isFinite) &&
@@ -182,26 +164,21 @@ function stamp(model: Object3D, supply?: Object3D) {
         parent: node.parent?.uuid ?? null,
         visible: node.visible,
         pose: poseRow(node),
-        itemId:
-          typeof itemId === 'string' || typeof itemId === 'number'
-            ? itemId
-            : null,
+        itemId: typeof itemId === 'string' || typeof itemId === 'number' ? itemId : null,
       };
     }
     if (isMesh(node)) {
       record.geometry = {
         id: node.geometry.uuid,
         visible: shown(node),
-        attributes: Object.entries(node.geometry.attributes).map(
-          ([name, attribute]) => ({
-            name,
-            version:
-              attribute instanceof InterleavedBufferAttribute
-                ? attribute.data.version
-                : attribute.version,
-            count: attribute.count,
-          }),
-        ),
+        attributes: Object.entries(node.geometry.attributes).map(([name, attribute]) => ({
+          name,
+          version:
+            attribute instanceof InterleavedBufferAttribute
+              ? attribute.data.version
+              : attribute.version,
+          count: attribute.count,
+        })),
         index: node.geometry.index?.version ?? null,
         morph: node.morphTargetInfluences ?? null,
         skin: isSkinnedMesh(node)
@@ -267,24 +244,19 @@ export class NativeReadyPatientContactFit extends NativePatientContactFit {
       return false;
     }
     const position = new Vector3().fromArray(record.position);
-    let parent =
-      record.parent >= 0 ? lease.own.nodes[record.parent]?.id : undefined;
+    let parent = record.parent >= 0 ? lease.own.nodes[record.parent]?.id : undefined;
     if (this.suppliesStowed) {
       parent = lease.hip.uuid;
       position.add(
         new Vector3(0, this.ready?.data.lift ?? 0, 0)
-          .applyQuaternion(
-            lease.hip.getWorldQuaternion(new Quaternion()).invert(),
-          )
+          .applyQuaternion(lease.hip.getWorldQuaternion(new Quaternion()).invert())
           .divide(lease.hip.getWorldScale(new Vector3())),
       );
     }
     return (
       lease.stock.parent?.uuid === parent &&
       lease.stock.position.distanceTo(position) < 1e-6 &&
-      lease.stock.quaternion.angleTo(
-        new Quaternion().fromArray(record.quaternion),
-      ) < 1e-6 &&
+      lease.stock.quaternion.angleTo(new Quaternion().fromArray(record.quaternion)) < 1e-6 &&
       lease.stock.scale.distanceTo(new Vector3().fromArray(record.scale)) < 1e-6
     );
   }
@@ -317,9 +289,7 @@ export class NativeReadyPatientContactFit extends NativePatientContactFit {
         const [name, property] = track.name.split('.');
         if (
           !name ||
-          (property !== 'position' &&
-            property !== 'quaternion' &&
-            property !== 'scale')
+          (property !== 'position' && property !== 'quaternion' && property !== 'scale')
         ) {
           throw new Error('Invalid patient animation track');
         }
@@ -336,26 +306,17 @@ export class NativeReadyPatientContactFit extends NativePatientContactFit {
       }
       const actual = row.node[row.property].toArray(),
         expected = row.sample.evaluate(native.time);
-      if (
-        !actual ||
-        actual.length !== expected.length ||
-        !actual.every(Number.isFinite)
-      ) {
+      if (!actual || actual.length !== expected.length || !actual.every(Number.isFinite)) {
         return false;
       }
       if (row.property === 'quaternion') {
         const distance = (sign: number) =>
-          Math.hypot(
-            ...actual.map(
-              (n: number, i: number) => n - sign * required(expected[i]),
-            ),
-          );
+          Math.hypot(...actual.map((n: number, i: number) => n - sign * required(expected[i])));
         return Math.min(distance(1), distance(-1)) <= 2e-6;
       }
       return actual.every(
         (n: number, i: number) =>
-          Number.isFinite(expected[i]) &&
-          Math.abs(n - required(expected[i])) <= 1e-6,
+          Number.isFinite(expected[i]) && Math.abs(n - required(expected[i])) <= 1e-6,
       );
     });
   }
@@ -402,12 +363,7 @@ export class NativeReadyPatientContactFit extends NativePatientContactFit {
         healInterval: true,
         care: { mode: 'patient', target, support: warm.support },
       };
-      return (
-        other &&
-        shown(other.root) &&
-        shown(other.model) &&
-        this.supportedPose(cue, other)
-      );
+      return other && shown(other.root) && shown(other.model) && this.supportedPose(cue, other);
     });
     if (!target) {
       return;
@@ -504,11 +460,7 @@ export class NativeReadyPatientContactFit extends NativePatientContactFit {
       }
       worker.onmessage = (event: MessageEvent<unknown>) => {
         const current = owner;
-        if (
-          !current ||
-          !isWorkerRecord(event.data) ||
-          current.lease?.id !== event.data['id']
-        ) {
+        if (!current || !isWorkerRecord(event.data) || current.lease?.id !== event.data['id']) {
           return;
         }
         owner = undefined;
@@ -590,9 +542,7 @@ export class NativeReadyPatientContactFit extends NativePatientContactFit {
       });
       return;
     }
-    const target = this.warm.targets.find(
-        (target) => target.key === lease.target.key,
-      ),
+    const target = this.warm.targets.find((target) => target.key === lease.target.key),
       other = target && lease.resolve(target);
     if (
       !target ||
@@ -666,14 +616,12 @@ export class NativeReadyPatientContactFit extends NativePatientContactFit {
       !shown(ready.lease.gun) ||
       !this.supplySame(ready.lease) ||
       ready.lease.gun.userData['itemId'] !==
-        ready.lease.other.nodes.find((n) => n.id === ready.lease.gun.uuid)
-          ?.itemId ||
+        ready.lease.other.nodes.find((n) => n.id === ready.lease.gun.uuid)?.itemId ||
       other.model !== ready.lease.model ||
       other.root !== ready.lease.root ||
       this.key(cue.care.target, cue.care.support) !== ready.lease.key ||
       !this.poseMatches(ready.lease, other) ||
-      stamp(this.own, ready.lease.stock) + '|' + stamp(other.model) !==
-        ready.lease.stamp
+      stamp(this.own, ready.lease.stock) + '|' + stamp(other.model) !== ready.lease.stamp
     ) {
       this.fallback = cue.id;
       return native();
@@ -682,26 +630,10 @@ export class NativeReadyPatientContactFit extends NativePatientContactFit {
       if (
         (cue.phase && cue.phase !== 'prepare') ||
         time / duration > 0.08 ||
-        !geometrySame(
-          ready.lease.own,
-          this.ownRoot,
-          this.own,
-          ready.lease.stock,
-        ) ||
-        !geometrySame(
-          ready.lease.other,
-          other.root,
-          other.model,
-          ready.lease.gun,
-        ) ||
+        !geometrySame(ready.lease.own, this.ownRoot, this.own, ready.lease.stock) ||
+        !geometrySame(ready.lease.other, other.root, other.model, ready.lease.gun) ||
         !ready.data.plan ||
-        !this.adopt(
-          ready.data.plan,
-          cue,
-          other,
-          ready.lease.stock,
-          ready.data.lift,
-        )
+        !this.adopt(ready.data.plan, cue, other, ready.lease.stock, ready.data.lift)
       ) {
         this.fallback = cue.id;
         return native();

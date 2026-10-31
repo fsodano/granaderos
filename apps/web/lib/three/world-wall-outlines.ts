@@ -40,13 +40,8 @@ export class WallCutawayOutlines {
       axis === 'x'
         ? new Vector3(along, base + height, cross)
         : new Vector3(cross, base + height, along);
-    const segment = (
-      points: Vector3[],
-      a: number,
-      b: number,
-      c: number,
-      d: number,
-    ) => points.push(point(a, b), point(c, d));
+    const segment = (points: Vector3[], a: number, b: number, c: number, d: number) =>
+      points.push(point(a, b), point(c, d));
     segment(this.walls, first, low, first, high);
     segment(this.walls, first, high, last, high);
     segment(this.walls, last, high, last, low);
@@ -98,10 +93,7 @@ export class WallCutawayOutlines {
       if (!points.length) {
         continue;
       }
-      const lines = new LineSegments(
-        new BufferGeometry().setFromPoints(points),
-        material(),
-      );
+      const lines = new LineSegments(new BufferGeometry().setFromPoints(points), material());
       lines.name = `wall-cutaway-${name}:${id}`;
       lines.computeLineDistances();
       lines.renderOrder = 1;

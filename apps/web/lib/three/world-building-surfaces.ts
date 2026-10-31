@@ -57,22 +57,11 @@ export function addWallSurfaceDetails(
   const blockWidth = 0.4,
     joint = 0.014;
   for (const [first, last] of spans) {
-    for (
-      let index = Math.floor(first / blockWidth);
-      index * blockWidth < last;
-      index++
-    ) {
+    for (let index = Math.floor(first / blockWidth); index * blockWidth < last; index++) {
       const a = Math.max(first, index * blockWidth + joint * 0.5),
         b = Math.min(last, (index + 1) * blockWidth - joint * 0.5);
       if (b > a) {
-        box(
-          (a + b) * 0.5,
-          footHeight * 0.5,
-          b - a,
-          footHeight,
-          s.thickness + 0.045,
-          stone,
-        );
+        box((a + b) * 0.5, footHeight * 0.5, b - a, footHeight, s.thickness + 0.045, stone);
       }
     }
   }
@@ -97,11 +86,7 @@ export function addWallSurfaceDetails(
   });
   const seed = seeded(s.x, s.y, s.face + 19),
     width = Math.min(0.3 + seed * 0.12, (s.last - s.first) * 0.65),
-    u =
-      s.first +
-      width * 0.5 +
-      0.025 +
-      seed * Math.max(0, s.last - s.first - width - 0.05),
+    u = s.first + width * 0.5 + 0.025 + seed * Math.max(0, s.last - s.first - width - 0.05),
     bottom = 0.205;
   const points: readonly (readonly [number, number])[] = [
     [-0.5, 0.04],
@@ -116,18 +101,14 @@ export function addWallSurfaceDetails(
     const d = side * (s.thickness * 0.5 + 0.003);
     batch.polygon(
       chip,
-      points.map(([x, y]) =>
-        at(u + x * width, bottom + y * (0.72 + seed * 0.45), d),
-      ),
+      points.map(([x, y]) => at(u + x * width, bottom + y * (0.72 + seed * 0.45), d)),
       s.light,
     );
     for (let n = 0; n < 8; n++) {
       const q = seeded(s.x * 43 + n, s.y * 29 + s.face, 7),
         length = 0.035 + 0.075 * q,
         center = s.first + 0.065 + q * Math.max(0, s.last - s.first - 0.13),
-        y =
-          0.32 +
-          seeded(s.x + n, s.y, s.face + 31) * Math.min(1.05, s.height - 0.45);
+        y = 0.32 + seeded(s.x + n, s.y, s.face + 31) * Math.min(1.05, s.height - 0.45);
       batch.polygon(
         n % 3 === 0 ? chip : pale,
         [

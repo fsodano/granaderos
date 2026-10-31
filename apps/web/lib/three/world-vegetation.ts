@@ -5,10 +5,7 @@ import type { WorldGeometry } from './world-geometry';
 import type { WorldMaterialSource } from './world-materials';
 import type { WorldInput, WorldTile } from './world-types';
 
-export function softenedFoliage(
-  tiles: readonly WorldTile[],
-  input: WorldInput,
-) {
+export function softenedFoliage(tiles: readonly WorldTile[], input: WorldInput) {
   return tiles
     .filter(
       (tile) =>
@@ -77,13 +74,7 @@ export function buildVegetationChunk(
     const shoulder = root
       .clone()
       .addScaledVector(direction, lean * 0.72)
-      .add(
-        new Vector3(
-          -Math.sin(leanAngle) * 0.045,
-          height * 0.46,
-          Math.cos(leanAngle) * 0.045,
-        ),
-      );
+      .add(new Vector3(-Math.sin(leanAngle) * 0.045, height * 0.46, Math.cos(leanAngle) * 0.045));
     const leader = root
       .clone()
       .addScaledVector(direction, lean)
@@ -96,15 +87,10 @@ export function buildVegetationChunk(
     batch.cylinder(trunk, knot, shoulder, radius * 0.8, light * 0.95, 'taper');
     batch.cylinder(trunk, shoulder, leader, radius * 0.63, light, 'taper');
     for (let n = 0; n < 3; n++) {
-      const angle =
-        leanAngle + n * 2.094 + seeded(tile.x, tile.y, n + 81) * 0.4;
+      const angle = leanAngle + n * 2.094 + seeded(tile.x, tile.y, n + 81) * 0.4;
       batch.cylinder(
         trunk,
-        new Vector3(
-          x + Math.cos(angle) * 0.19,
-          ground + 0.025,
-          z + Math.sin(angle) * 0.19,
-        ),
+        new Vector3(x + Math.cos(angle) * 0.19, ground + 0.025, z + Math.sin(angle) * 0.19),
         root.clone().add(new Vector3(0, 0.23, 0)),
         radius * 0.34,
         light * 0.78,
@@ -123,16 +109,14 @@ export function buildVegetationChunk(
           originHeight <= 0.46
             ? knot.clone().lerp(shoulder, (originHeight - 0.22) / 0.24)
             : shoulder.clone().lerp(leader, (originHeight - 0.46) / 0.27);
-      const spread =
-        (poplar ? 0.24 : 0.39) + variation * (poplar ? 0.16 : 0.43);
+      const spread = (poplar ? 0.24 : 0.39) + variation * (poplar ? 0.16 : 0.43);
       const end = root
         .clone()
         .addScaledVector(direction, lean * 0.85)
         .add(
           new Vector3(
             Math.cos(angle) * spread,
-            height *
-              (poplar ? 0.5 + n * 0.063 : 0.6 + n * 0.034 + variation * 0.045),
+            height * (poplar ? 0.5 + n * 0.063 : 0.6 + n * 0.034 + variation * 0.045),
             Math.sin(angle) * spread,
           ),
         );
@@ -156,14 +140,7 @@ export function buildVegetationChunk(
                 Math.sin(forkAngle) * reach,
               ),
             );
-        batch.cylinder(
-          trunk,
-          end,
-          fork,
-          0.009 + (1 - variation) * 0.003,
-          light * 0.9,
-          'taper',
-        );
+        batch.cylinder(trunk, end, fork, 0.009 + (1 - variation) * 0.003, light * 0.9, 'taper');
         const r = (poplar ? 0.23 : 0.31) + variation * (poplar ? 0.1 : 0.13),
           rotation = new Quaternion()
             .setFromAxisAngle(up, forkAngle)
@@ -177,11 +154,7 @@ export function buildVegetationChunk(
           `leaf-spray-${(n + (side > 0 ? 1 : 0)) % 3}`,
           leaf,
           fork.clone().add(new Vector3(0, poplar ? 0.16 : 0.08, 0)),
-          [
-            r * (poplar ? 0.82 : 1.48),
-            r * (poplar ? 1.5 : 0.62),
-            r * (0.78 + variation * 0.15),
-          ],
+          [r * (poplar ? 0.82 : 1.48), r * (poplar ? 1.5 : 0.62), r * (0.78 + variation * 0.15)],
           rotation,
           light * (0.78 + n * 0.028 + variation * 0.05),
         );
