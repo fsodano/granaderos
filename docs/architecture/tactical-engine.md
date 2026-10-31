@@ -45,6 +45,27 @@ Unit initialization (`makeUnit`) normalizes authored raw people into tactical fi
 
 Simulation calls are functional at the public boundary: they return a resulting state (often cloned), rather than requiring callers to mutate the input. Random choices use the battle's seed-based stream, so the state carries the source of deterministic variation. Determinism still depends on equivalent input state and action ordering.
 
+## Browser worker transport
+
+The browser compatibility adapter uses
+[`BattleWorkerJob`, `BattleWorkerRequest`, and `BattleWorkerResponse`](../../apps/web/lib/battle-worker-transport.ts)
+for worker messages. These names describe the existing browser transport. The
+domain and application continue to use `SectorSession` and `SectorOperation`.
+
+Each request has a positive integer message ID, an operation context, and a job.
+The context identifies the game session, sector visit, both revisions, and
+request identity. The worker checks the context against the supplied snapshot
+before it runs the job. The executor checks the returned context before it
+accepts a result. A reply contains either a result or a string error. Malformed
+replies for a pending message reject that request. Messages without a pending
+ID are ignored. Worker failure or closure rejects all pending requests.
+
+Message data enters as `unknown`. Envelope and context validation protect this
+transport boundary. Legacy simulation snapshots, orders, continuations, and
+result payloads remain opaque to the transport; their reducers own the gameplay
+rules. The adapter passes both route arrays and group progress objects through
+the continuation field.
+
 ## Control flow and API contracts
 
 * `createBattle(squad, sector) -> BattleState`: creates a deployment from strategic/authored data. Width/height default to 16x12; mode is `exploration` when `sector.exploration` is truthy, otherwise `combat`; seed defaults to `18130203` and is normalized unsigned.

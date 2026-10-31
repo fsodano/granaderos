@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { createBattleExecutor } from './battle-executor.js';
+import { createBattleExecutor } from './battle-executor.ts';
 import { runBattleJob } from '../../../packages/game/battle-job.js';
 import { sectorOperationContextFor } from '../../../packages/game/infrastructure/sector-sessions/sector-operation-context.js';
 import battleWorkerUrl from './battle-worker.ts?worker&url';

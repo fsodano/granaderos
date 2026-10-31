@@ -16,7 +16,7 @@ import {
 } from './group-movement.js';
 import { movementStep } from './movement-step.js';
 // Both browser paths execute the same deterministic rules on owned snapshots.
-/** @param {{battle:any,action:any,kind?:string,continuation?:any[]|null,context?:any}} job */
+/** @param {{battle:any,action:any,kind?:string,continuation?:unknown,context?:any}} job */
 export function runBattleJob({
   battle,
   action,

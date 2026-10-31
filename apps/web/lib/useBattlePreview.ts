@@ -1,6 +1,6 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
-import {createBattleExecutor} from './battle-executor.js';
+import {createBattleExecutor} from './battle-executor.ts';
 import {createLatestPreview} from './latest-preview.js';
 import battleWorkerUrl from './battle-worker.ts?worker&url';
 
