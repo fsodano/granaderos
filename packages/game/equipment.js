@@ -1155,7 +1155,7 @@ export function deliverEquipmentShipments(s) {
   if (importDelayReason(s)) {
     return delivered;
   }
-  for (const shipment of s.equipmentShipments) {
+  for (const shipment of s.equipmentShipments.slice()) {
     if (shipment.due <= s.hour && s.armoryItems.length + shipment.quantity <= 10000) {
       const item = equipmentCatalogItem(shipment.item, s);
       need(item && isImportedEquipment(item), 'El pedido de armas ya no corresponde al catálogo.');

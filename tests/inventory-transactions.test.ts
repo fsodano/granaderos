@@ -24,6 +24,7 @@ import { dispatchCampaign } from '../packages/game/campaign.js';
 import { syncBattleTime } from '../packages/game/time.js';
 import { encodeSave, decodeSave } from '../packages/game/save.ts';
 import { enterSector } from '../packages/game/world.js';
+import { deliverEquipmentShipments } from '../packages/game/equipment.js';
 
 const tiles = () =>
   Array.from({ length: 216 }, (_, i) => ({
@@ -409,4 +410,30 @@ void test('campaign tool inventory validation shares canonical type, key, and co
   ]) {
     assert.throws(() => validatePersonalInventory({ key: { ...key, ...change } }));
   }
+});
+
+void test('equipment delivery processes every due shipment and preserves later arrivals', () => {
+  const campaign = initialCampaign();
+  const importedMusket = 1802;
+  const futureShipment = { item: importedMusket, quantity: 1, due: campaign.hour + 1 };
+  campaign.equipmentShipments = [
+    { item: importedMusket, quantity: 2, due: campaign.hour },
+    { item: importedMusket, quantity: 3, due: campaign.hour },
+    futureShipment,
+  ];
+  const existingMuskets = campaign.armoryItems.filter(
+    (item) => item.item === importedMusket,
+  ).length;
+
+  deliverEquipmentShipments(campaign);
+
+  assert.deepEqual(campaign.equipmentShipments, [futureShipment]);
+  assert.equal(
+    campaign.armoryItems.filter((item) => item.item === importedMusket).length,
+    existingMuskets + 5,
+  );
+  assert.equal(
+    new Set(campaign.armoryItems.map((item) => item.id)).size,
+    campaign.armoryItems.length,
+  );
 });
