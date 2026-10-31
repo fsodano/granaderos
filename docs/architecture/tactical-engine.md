@@ -66,6 +66,24 @@ result payloads remain opaque to the transport; their reducers own the gameplay
 rules. The adapter passes both route arrays and group progress objects through
 the continuation field.
 
+### Preview lifecycle
+
+[`useBattlePreview`](../../apps/web/lib/useBattlePreview.ts) accepts reachable-area
+or group-movement requests and returns the corresponding typed preview. The
+[`latest-preview`](../../apps/web/lib/latest-preview.ts) queue keeps one active
+calculation and one waiting replacement. A new request replaces waiting work.
+Cancellation or closure invalidates pending publication. The hook also requires
+the same snapshot, request object, and preview kind before it displays a result.
+A failed worker is closed; the next request creates a replacement worker.
+
+[`battle-preview`](../../apps/web/lib/battle-preview.ts) checks the result fields
+used by preview rendering: point coordinates, optional tactical level, path
+points, costs, member identities, destinations, and explanatory text. It retains
+additional result and route metadata. The complete legacy sector snapshot stays
+`unknown` at this boundary. The game preview rules determine legal routes and
+apply the player's information limits. A displayed preview does not authorize
+movement; execution checks the current game state again.
+
 ## Control flow and API contracts
 
 * `createBattle(squad, sector) -> BattleState`: creates a deployment from strategic/authored data. Width/height default to 16x12; mode is `exploration` when `sector.exploration` is truthy, otherwise `combat`; seed defaults to `18130203` and is normalized unsigned.
