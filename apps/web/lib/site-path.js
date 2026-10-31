@@ -1,8 +1,5 @@
 /* global __GRANADEROS_BASE_PATH__ */
-const basePath =
-  typeof __GRANADEROS_BASE_PATH__ === 'undefined'
-    ? ''
-    : __GRANADEROS_BASE_PATH__;
+const basePath = typeof __GRANADEROS_BASE_PATH__ === 'undefined' ? '' : __GRANADEROS_BASE_PATH__;
 const previewScopes = [];
 /** @type {Set<() => void>} */
 const previewAssetListeners = new Set();
@@ -56,12 +53,7 @@ export function sitePath(path, base = basePath) {
       }
     }
   }
-  if (
-    typeof path !== 'string' ||
-    !base ||
-    !path.startsWith('/') ||
-    path.startsWith('//')
-  ) {
+  if (typeof path !== 'string' || !base || !path.startsWith('/') || path.startsWith('//')) {
     return path;
   }
   if (
