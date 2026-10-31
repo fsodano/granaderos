@@ -73,6 +73,20 @@ save schemas and explicit migrations are described in the
 [persistence guide](../architecture/persistence.md). Keep focused migration
 fixtures for those contracts; a save from an unsupported economy is rejected.
 
+## TypeScript toolchain
+
+Type checking uses TypeScript **7.0.2**, pinned through the `@typescript/native`
+npm alias in both applications. Run `npm run typecheck` from the repository root
+to check the game, browser interface, and campaign editor with this compiler.
+
+The `typescript` dependency is pinned to `@typescript/typescript6` **6.0.2**.
+It supplies the compatible compiler API used by architecture checks, test loaders,
+and preview tools. The `tsc` command runs TypeScript 7; `tsc6` belongs to the API
+compatibility package. This follows Microsoft's
+[side-by-side installation guidance](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/#running-side-by-side-with-typescript-6-0).
+Both dependency lockfiles include the platform packages needed by local development
+and CI. The editor includes Vite's browser asset declarations for CSS imports.
+
 ## Checks
 
 The test runner includes domain invariants, application contracts, persistence,
@@ -104,7 +118,7 @@ flows. A passing suite does not certify campaign completion or visual quality.
 [Minimal tests](../../.github/workflows/tests.yml) runs `npm test` on non-draft
 pull requests and manual requests. A newer commit cancels the older run for
 that pull request. It installs both application dependency sets and checks
-architecture boundaries and formatting before tests.
+architecture boundaries, formatting, and types before tests.
 
 On `main`, the [Web game build and Pages workflow](../../.github/workflows/web.yml)
 runs the same minimum, the documentation and baseline audits, the type check,
