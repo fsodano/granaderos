@@ -1,6 +1,7 @@
-import { personalPockets } from '../packages/game/personal-pockets.js';
+import { personalPockets } from '../packages/game/personal-pockets.ts';
+import type { BattleUnit } from '../packages/game/public/compatibility-types.ts';
 // Declared full-pack boundary: fill free slots with finite unequipped pieces.
-export function fillSparePockets(unit) {
+export function fillSparePockets(unit: BattleUnit) {
   unit.inventory ??= {};
   for (const slot of personalPockets(unit).slots.filter((p) => !p.entry)) {
     unit.inventory[`fixture-${slot.id}`] = {
