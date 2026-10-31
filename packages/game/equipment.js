@@ -36,7 +36,7 @@ import {
 import { AMMUNITION_FAMILIES } from './ammunition-families.js';
 import { BODY_SLOTS, wornOutfit, PONCHO_STOCK_CAP, PONCHO_DAILY_RESTOCK } from './outfits.ts';
 import { merchantBuyingTerms, merchantWeaponRefusal } from './merchant-preferences.ts';
-import { isGrenadeStack, makeGrenadeStack } from './grenades.js';
+import { isGrenadeStack, makeGrenadeStack } from './grenades.ts';
 import { operativeLocation, operativeInTransit } from './squads.js';
 import { validateReloadProgress } from './weapon-reload.js';
 import { heldSupply } from './held-supplies.js';

@@ -12,8 +12,8 @@ import { travelLegHours } from '../packages/game/squad-travel.js';
 import { completeTestTravel } from './campaign-test-helpers.ts';
 import { fight } from './battery-field-driver.mjs';
 import { order, saved, sync } from './local-contract-fixture.ts';
-import { contentFixtureCache } from './content-fixture-cache.mjs';
-import { withStoredGear } from './commerce-gear-fixture.mjs';
+import { contentFixtureCache } from './content-fixture-cache.ts';
+import { withStoredGear } from './commerce-gear-fixture.ts';
 export function issuedBattery(content) {
   const d = content ? structuredClone(content) : defaultContentPackage();
   d.rules.startingTreasury = 10000;

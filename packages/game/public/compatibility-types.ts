@@ -60,7 +60,7 @@ export interface EquipmentItem {
   loaded?: number;
   ammo?: number;
   ammoType?: string;
-  instanceId?: string;
+  instanceId?: string | undefined;
   reloadProgress?: number;
   fittings?: Record<string, WeaponFitting>;
   fittingPattern?: string;

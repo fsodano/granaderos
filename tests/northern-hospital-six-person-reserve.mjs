@@ -18,7 +18,7 @@ import {
 import { carriedAmmunition } from '../packages/game/campaign-ammunition.js';
 import { ammoTypeFor, ammoCount } from '../packages/game/ammo-types.js';
 import { campaignRules } from '../packages/game/campaign-rules.js';
-import { supplyRoom } from '../packages/game/personal-pockets.js';
+import { supplyRoom } from '../packages/game/personal-pockets.ts';
 import { weaponSpecification } from '../packages/game/weapon-definition.ts';
 import { enterSector } from '../packages/game/world.js';
 import { actBattle, getReachable, climbPreview } from '../packages/game/tactical.js';

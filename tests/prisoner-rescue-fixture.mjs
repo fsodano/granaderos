@@ -1,5 +1,5 @@
 import { fightOnArrival } from './assault-fixture.ts';
-import { withStoredGear } from './commerce-gear-fixture.mjs';
+import { withStoredGear } from './commerce-gear-fixture.ts';
 // Established northern front and scripted capture fixture. Paid rescue hiring
 // and the subsequent tactical approach are real; this is not a fresh campaign.
 import assert from 'node:assert/strict';

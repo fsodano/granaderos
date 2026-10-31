@@ -19,7 +19,7 @@ import {
   validateAmmunitionStack,
   isAmmunitionStack,
 } from './ammunition-types.js';
-import { GRENADE_TYPES, validateGrenadeStack, isGrenadeStack } from './grenades.js';
+import { GRENADE_TYPES, validateGrenadeStack, isGrenadeStack } from './grenades.ts';
 import { BODY_SLOTS, OUTFITS, validateOutfit, wornOutfit } from './outfits.ts';
 import { handLayout, handsRequired, selectMainHand } from './hand-layout.ts';
 import {
@@ -27,7 +27,7 @@ import {
   rearrangePockets,
   pocketOrderFromSlots,
   validatePocketOrder,
-} from './inventory-pockets.js';
+} from './inventory-pockets.ts';
 import { lowerWeapon } from './weapon-readiness.js';
 import { validateReloadProgress } from './weapon-reload.js';
 import { WEAPONS } from './data.js';

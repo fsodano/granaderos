@@ -4,7 +4,7 @@ import { JSDOM, VirtualConsole } from '../apps/web/node_modules/jsdom/lib/api.js
 import { createElement as h, act } from '../apps/web/node_modules/react/index.js';
 import { CONTENT_SAVE_KEY, campaignStorageKey } from '../packages/game/content-launch.ts';
 import { encodeSave, decodeSave } from '../packages/game/save.ts';
-import { battleTimers } from './battle-timers-fixture.mjs';
+import { battleTimers } from './battle-timers-fixture.ts';
 import { campaignFetch } from './campaign-library-fixture.ts';
 register('../tools/test-render-loader.ts', import.meta.url);
 export async function mountCampaign(t, saved) {

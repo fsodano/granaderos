@@ -1,6 +1,6 @@
 import { defaultContentPackage } from '../packages/game/content-package.js';
 import { DEFAULT_FOUNDRY } from '../packages/game/campaign-foundry.js';
-import { DEFAULT_ALTERNATIVE_LOADS } from '../packages/game/firearm-loads.js';
+import { alternativeLoadsFor } from '../packages/game/firearm-loads.js';
 import { DEFAULT_MATERIAL_RANGE_SLOPE } from '../packages/game/material-range-penetration.js';
 
 // Explicit authoring options used by editor capability tests. These are not
@@ -25,7 +25,7 @@ export function authoredEditorPackage() {
   for (const weapon of content.weapons.filter((weapon) => weapon.id.startsWith('firearm-'))) {
     weapon.readyAP = 0;
     weapon.materialRangeSlope = DEFAULT_MATERIAL_RANGE_SLOPE;
-    weapon.alternativeLoads = (DEFAULT_ALTERNATIVE_LOADS[weapon.template] ?? []).map((load) => ({
+    weapon.alternativeLoads = alternativeLoadsFor({ template: weapon.template }).map((load) => ({
       ...load,
       materialRangeSlope: DEFAULT_MATERIAL_RANGE_SLOPE,
       ...(weapon.template === 1800 && load.family === 'ammoShot'

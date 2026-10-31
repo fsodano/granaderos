@@ -1,6 +1,6 @@
 import { canSee, grenadeThrowPreview, planReadyMainHand, weaponFor } from './tactical.js';
 import { heldGrenade, GRENADE_THROW, grenadeScatterRadius } from './grenade-throw.js';
-import { isGrenadeStack } from './grenades.js';
+import { isGrenadeStack } from './grenades.ts';
 import { grenadeFlight, grenadeBlastExposure } from './grenade-flight.js';
 import { surfaceAt, tacticalLevel } from './tactical-space.js';
 

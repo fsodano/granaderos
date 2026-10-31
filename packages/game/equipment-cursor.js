@@ -12,7 +12,7 @@ import {
 } from './weapon-fittings.js';
 import { handsRequired, handLayout } from './hand-layout.ts';
 import { HELD_SUPPLIES } from './held-supplies.js';
-import { POCKETS, pocketOrderFromSlots } from './inventory-pockets.js';
+import { POCKETS, pocketOrderFromSlots } from './inventory-pockets.ts';
 import { BODY_SLOTS, wornOutfit, validateOutfit } from './outfits.ts';
 import { lowerWeapon } from './weapon-readiness.js';
 import { firearmServiceable } from './firearm-serviceability.js';

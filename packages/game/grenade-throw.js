@@ -1,6 +1,6 @@
 import { handLayout } from './hand-layout.ts';
 import { itemQuantity } from './tactical-inventory.js';
-import { isGrenadeStack, validateGrenadeStack } from './grenades.js';
+import { isGrenadeStack, validateGrenadeStack } from './grenades.ts';
 import { stanceCost, effectiveWounds } from './tactical-condition.js';
 import { directionTo } from './tactical-awareness.js';
 

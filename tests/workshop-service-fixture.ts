@@ -1,3 +1,5 @@
+import type { CampaignSnapshot } from '../packages/game/public/campaign-types.ts';
+import { present } from './assert-present.ts';
 import { defaultContentPackage } from '../packages/game/content-package.js';
 import { initialCampaign } from '../packages/game/campaign.js';
 import { order, saved } from './local-contract-fixture.ts';
@@ -5,10 +7,10 @@ export const REMOTE = 110,
   LOCAL = 112;
 export function separatedWorkshop() {
   const d = defaultContentPackage();
-  d.rules.startingTreasury = 10000;
-  d.startingTerritory.buenos_aires = { owner: 'patriot', loyalty: 65 };
+  present(d.rules).startingTreasury = 10000;
+  present(d.startingTerritory)['buenos_aires'] = { owner: 'patriot', loyalty: 65 };
   for (const id of [REMOTE, LOCAL]) {
-    const c = d.characters.find((c) => c.id === `person-${id}`);
+    const c = present(d.characters.find((c) => c.id === `person-${id}`));
     c.arrivalHours = 0;
     c.startingSupplies = {
       priming: 0,
@@ -25,14 +27,17 @@ export function separatedWorkshop() {
   }
   // Prepared wear isolates workshop eligibility; no claim of tactical wear here.
   for (const id of [REMOTE, LOCAL]) {
-    s.operativeState[id].condition = 40;
+    present(s.operativeState[id]).condition = 40;
   }
   s = order(s, { type: 'createSquad', name: 'Avanzada', ids: [REMOTE] });
   s = order(s, { type: 'travel', sector: 'buenos_aires' });
   s = order(s, { type: 'selectSquad', id: 'squad-1' });
   return saved({ campaign: s }).campaign;
 }
-export function returnToWorkshop(s) {
-  s = order(s, { type: 'selectSquad', id: s.squads.find((q) => q.members.includes(REMOTE)).id });
+export function returnToWorkshop(s: CampaignSnapshot): CampaignSnapshot {
+  s = order(s, {
+    type: 'selectSquad',
+    id: present(s.squads.find((q) => q.members.includes(REMOTE))).id,
+  });
   return order(s, { type: 'travel', sector: 'retiro' });
 }
