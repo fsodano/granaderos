@@ -18,11 +18,13 @@ export class RenewServiceContractUseCase {
       throw new DomainRefusal(DomainRefusalCode.InvalidValue);
     const context = this.#repository.load(request);
     const contract = this.#renewal.renew(context);
+    const expiresAt = contract.expiresAt;
+    if (expiresAt === null) throw new DomainRefusal(DomainRefusalCode.PermanentService);
     this.#repository.commit(context, contract);
     return {
       characterId: contract.characterId,
       paidPesos: contract.payment.pesos,
-      expiresAtSeconds: contract.expiresAt!.seconds,
+      expiresAtSeconds: expiresAt.seconds,
     };
   }
 }

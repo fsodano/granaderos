@@ -1,3 +1,4 @@
+import { isArrayValue } from '../shared/array-value.ts';
 import { ItemCustodianKind } from './item-custody.ts';
 import type { ItemCustody } from './item-custody.ts';
 
@@ -212,7 +213,7 @@ export class Sector {
   }
 
   #requireItemIds(itemIds: readonly string[]): void {
-    if (!Array.isArray(itemIds) || new Set(itemIds).size !== itemIds.length)
+    if (!isArrayValue(itemIds) || new Set(itemIds).size !== itemIds.length)
       throw new Error('Sector item references must be unique.');
     for (const id of itemIds) requireIdentity(id);
   }

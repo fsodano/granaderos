@@ -1,3 +1,4 @@
+import { isArrayValue } from '../shared/array-value.ts';
 export const PocketRefusalCode = Object.freeze({
   InvalidOrder: 'invalid-pocket-order',
   StackLimit: 'pocket-stack-limit',
@@ -55,8 +56,8 @@ export class PocketLayout {
 
   private constructor(snapshot: PocketLayoutSnapshot) {
     if (
-      !Array.isArray(snapshot.slots) ||
-      !Array.isArray(snapshot.overflow) ||
+      !isArrayValue(snapshot.slots) ||
+      !isArrayValue(snapshot.overflow) ||
       snapshot.slots.length !== PocketRules.Capacity ||
       new Set(snapshot.slots.map((slot) => slot.id)).size !== PocketRules.Capacity ||
       snapshot.slots.some((slot) => {
@@ -80,7 +81,7 @@ export class PocketLayout {
 
   static validateOrder(order?: readonly PocketOrderEntry[]): void {
     if (order === undefined) return;
-    if (!Array.isArray(order) || order.length > PocketRules.Capacity)
+    if (!isArrayValue(order) || order.length > PocketRules.Capacity)
       throw new PocketRefusal(PocketRefusalCode.InvalidOrder);
     const slots = new Set<string>();
     const items = new Set<string>();
@@ -116,7 +117,8 @@ export class PocketLayout {
     const partitions = new Map<string, number>();
     for (const entry of order ?? []) {
       if (entry.count === undefined) continue;
-      if (limits.has(entry.item) && entry.count > limits.get(entry.item)!)
+      const limit = limits.get(entry.item);
+      if (limit !== undefined && entry.count > limit)
         throw new PocketRefusal(PocketRefusalCode.StackLimit);
       partitions.set(partitionKey(entry), entry.count);
     }

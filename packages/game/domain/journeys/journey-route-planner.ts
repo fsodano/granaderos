@@ -1,3 +1,4 @@
+import { isArrayValue } from '../shared/array-value.ts';
 import { Journey, JourneyLimits, JourneyPurpose } from './journey.ts';
 import type { JourneyModeValue, RedirectJourneyPlan } from './journey.ts';
 import { JourneyRefusal, JourneyRefusalCode } from './arrival-decision.ts';
@@ -78,7 +79,7 @@ export class JourneyRoutePlanner {
   }
 
   #validateWaypointLimit(waypoints: unknown): void {
-    if (!Array.isArray(waypoints) || waypoints.length > JourneyLimits.MaximumWaypoints) {
+    if (!isArrayValue(waypoints) || waypoints.length > JourneyLimits.MaximumWaypoints) {
       throw new JourneyRefusal(JourneyRefusalCode.TooManyJourneyWaypoints);
     }
   }

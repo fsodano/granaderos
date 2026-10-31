@@ -38,7 +38,7 @@ function recruitmentContext({
   };
 }
 
-test('recruitment admits an existing person immediately and debits pay plus guarantee once', () => {
+void test('recruitment admits an existing person immediately and debits pay plus guarantee once', () => {
   const context = recruitmentContext();
   const identity = context.character;
   const result = new RecruitmentService().recruit(context, 'retiro');
@@ -56,7 +56,7 @@ test('recruitment admits an existing person immediately and debits pay plus guar
   assert.equal(context.treasury.balance.pesos, 30);
 });
 
-test('a full squad or a remote site gives an immediately controlled reserve', () => {
+void test('a full squad or a remote site gives an immediately controlled reserve', () => {
   for (const [members, destination] of [
     [['uno', 'dos'], 'retiro'],
     [[], 'posta'],
@@ -71,7 +71,7 @@ test('a full squad or a remote site gives an immediately controlled reserve', ()
   }
 });
 
-test('refused funds, custody, life status and placement leave all domain participants unchanged', () => {
+void test('refused funds, custody, life status and placement leave all domain participants unchanged', () => {
   const cases = [
     {
       context: recruitmentContext({ funds: 69 }),
@@ -104,10 +104,10 @@ test('refused funds, custody, life status and placement leave all domain partici
   }
 });
 
-test('restoring service preserves its original timestamps and rejects an identity mismatch', () => {
+void test('restoring service preserves its original timestamps and rejects an identity mismatch', () => {
   const context = recruitmentContext();
   const outcome = new RecruitmentService().recruit(context, 'retiro');
-  const contract = ServiceContract.restore(JSON.parse(JSON.stringify(outcome.contract.snapshot())));
+  const contract = ServiceContract.restore(structuredClone(outcome.contract.snapshot()));
   const restored = Character.restore(context.character.snapshot(), contract);
   assert.equal(restored.service?.startedAt.seconds, 61);
   assert.equal(restored.service?.isActiveAt(GameTime.atSeconds(86_461)), false);
@@ -115,7 +115,7 @@ test('restoring service preserves its original timestamps and rejects an identit
   assert.throws(() => ServiceContract.start('ana', 'day', context.now, -1, Money.pesos(1)));
 });
 
-test('service pricing applies authored experience increases and currency rounding', () => {
+void test('service pricing applies authored experience increases and currency rounding', () => {
   const pricing = new ServicePricingPolicy({
     salaryMonthDays: 30,
     experienceStep: 100,

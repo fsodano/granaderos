@@ -1,3 +1,4 @@
+import { isArrayValue } from '../shared/array-value.ts';
 export type WorldEvent = Readonly<{
   id: string;
   kind: string;
@@ -29,8 +30,8 @@ export class WorldTimeline {
   constructor(snapshot: WorldTimelineSnapshot) {
     if (
       !snapshot ||
-      !Array.isArray(snapshot.pendingEvents) ||
-      !Array.isArray(snapshot.completedEventIds)
+      !isArrayValue(snapshot.pendingEvents) ||
+      !isArrayValue(snapshot.completedEventIds)
     ) {
       throw new Error('A world timeline requires pending events and completion receipts.');
     }
