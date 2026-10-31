@@ -1,41 +1,67 @@
+import type { InventoryActor } from './public/inventory-types.ts';
+import type { EquipmentItem } from './public/compatibility-types.ts';
+
+import type { WeaponSlot } from './public/weapon-types.ts';
 import { inventoryUsage } from './tactical-inventory.js';
-import { AMMO_KEYS, AMMO_TYPES, supplyCount, changeSupply } from './ammo-types.js';
-import { allocatePockets, rearrangePockets } from './inventory-pockets.js';
+import { AMMO_KEYS, AMMO_TYPES, ammoCount, changeSupply } from './ammo-types.js';
+import { allocatePockets, rearrangePockets } from './inventory-pockets.ts';
 import {
   DEFAULT_CHARACTER_SUPPLIES,
   TRANSFER_SUPPLY_LABELS,
   SUPPLY_PRESENTATION,
-} from './character-supplies.js';
+} from './character-supplies.ts';
 import { weaponSpecification, weaponRecord } from './weapon-definition.ts';
 
 // Quantities remain in their existing save records. These descriptors allocate
 // those same objects to physical pockets; they never create another inventory.
-export const SUPPLY_STACKS = Object.freeze({
-  ...Object.fromEntries(AMMO_KEYS.map((key) => [key, 20])),
+export const SUPPLY_STACKS: Readonly<Record<string, number>> = Object.freeze({
+  ...Object.fromEntries(AMMO_KEYS.map((key): readonly [string, number] => [key, 20])),
   rations: 2,
   medkits: 5,
   boleadoras: 2,
   torches: 2,
 });
+type CharacterSupply = keyof typeof DEFAULT_CHARACTER_SUPPLIES;
+type LegacyPocketItem = Omit<EquipmentItem, 'item' | 'count' | 'name' | 'weapon'> & {
+  item: string;
+  count: number;
+  kind: string;
+  name: string | undefined;
+  art?: string | undefined;
+  weapon?: string | number | undefined;
+  stackLimit: number;
+  slotSize: 1 | 2;
+  key?: string;
+  slot?: WeaponSlot;
+};
+function isCharacterSupply(item: string): item is CharacterSupply {
+  return Object.hasOwn(DEFAULT_CHARACTER_SUPPLIES, item);
+}
 const compactWeapons = new Set([1805, 1806, 1808, 1811, 1813]);
 export const POCKET_FULL =
   'No queda un bolsillo del tamaño necesario. Dejá o entregá equipo antes de recoger más.';
-export function pocketItems(unit) {
+export function pocketItems(unit: InventoryActor) {
   if (unit.ammunitionVersion === 2) {
     return inventoryUsage(unit).items;
   }
-  const items = Object.entries(SUPPLY_STACKS).map(([item, stackLimit]) => ({
+  const items: LegacyPocketItem[] = Object.entries(SUPPLY_STACKS).map(([item, stackLimit]) => ({
     item,
     kind: 'supply',
     name: TRANSFER_SUPPLY_LABELS[item],
     ...(AMMO_TYPES[item] ?? SUPPLY_PRESENTATION[item]),
     count: Object.hasOwn(AMMO_TYPES, item)
-      ? supplyCount(unit, item)
-      : (unit[item] ?? DEFAULT_CHARACTER_SUPPLIES[item] ?? 0),
+      ? ammoCount(unit, item)
+      : isCharacterSupply(item)
+        ? (unit[item] ?? DEFAULT_CHARACTER_SUPPLIES[item])
+        : 0,
     stackLimit,
     slotSize: 1,
   }));
-  const describe = (item, record, extra = {}) => {
+  const describe = (
+    item: string,
+    record: EquipmentItem,
+    extra: { kind: string; key?: string; slot?: WeaponSlot },
+  ): LegacyPocketItem => {
     const spec = weaponSpecification(record),
       money = item.startsWith('inventory:cash:');
     return {
@@ -47,16 +73,22 @@ export function pocketItems(unit) {
       weapon: spec?.id,
       count: record.count ?? 0,
       stackLimit: spec ? 1 : money ? 1000000 : (record.weight ?? 0) > 2 ? 1 : 4,
-      slotSize: spec ? (compactWeapons.has(spec.id) ? 1 : 2) : (record.weight ?? 0) > 2 ? 2 : 1,
+      slotSize: spec
+        ? typeof spec.id === 'number' && compactWeapons.has(spec.id)
+          ? 1
+          : 2
+        : (record.weight ?? 0) > 2
+          ? 2
+          : 1,
     };
   };
   for (const [key, value] of Object.entries(unit.inventory ?? {})) {
     const record = typeof value === 'number' ? { count: value, weight: 0 } : value;
-    if (record?.count > 0) {
+    if (record?.count !== undefined && record.count > 0) {
       items.push(describe(`inventory:${key}`, record, { kind: 'inventory', key }));
     }
   }
-  for (const slot of ['primary', 'blade']) {
+  for (const slot of ['primary', 'blade'] as const) {
     if ((unit.activeSlot ?? 'primary') === slot || (slot === 'primary' && unit.weaponDropped)) {
       continue;
     }
@@ -66,17 +98,17 @@ export function pocketItems(unit) {
   }
   return items.filter((item) => item.count > 0);
 }
-export function personalPockets(unit) {
+export function personalPockets(unit: InventoryActor) {
   return unit.ammunitionVersion === 2
     ? inventoryUsage(unit)
     : allocatePockets(pocketItems(unit), unit.pocketOrder);
 }
-export function pocketsFit(unit) {
+export function pocketsFit(unit: InventoryActor) {
   return personalPockets(unit).overflow.length === 0;
 }
 // A legacy overfilled save must still allow removal and consumption. It cannot
 // use its existing excess as permission to acquire additional objects.
-export function pocketChangeReason(before, after) {
+export function pocketChangeReason(before: InventoryActor, after: InventoryActor) {
   if (pocketsFit(after)) {
     return null;
   }
@@ -85,14 +117,14 @@ export function pocketChangeReason(before, after) {
     ? null
     : POCKET_FULL;
 }
-export function supplyRoom(unit, item, maximum) {
+export function supplyRoom(unit: InventoryActor, item: string, maximum: number) {
   let low = 0,
     high = Math.max(0, Math.floor(maximum));
   while (low < high) {
     const middle = Math.ceil((low + high) / 2);
     const candidate = { ...unit };
-    if (!Object.hasOwn(AMMO_TYPES, item) && item !== 'ammo') {
-      candidate[item] ??= DEFAULT_CHARACTER_SUPPLIES[item] ?? 0;
+    if (isCharacterSupply(item)) {
+      candidate[item] ??= DEFAULT_CHARACTER_SUPPLIES[item];
     }
     changeSupply(candidate, item, middle);
     if (pocketsFit(candidate)) {
@@ -103,7 +135,12 @@ export function supplyRoom(unit, item, maximum) {
   }
   return low;
 }
-export function inventoryRoom(unit, key, record, maximum = record.count ?? 1) {
+export function inventoryRoom(
+  unit: InventoryActor,
+  key: string,
+  record: EquipmentItem,
+  maximum = record.count ?? 1,
+) {
   let low = 0,
     high = Math.max(0, Math.floor(maximum));
   while (low < high) {
@@ -120,6 +157,6 @@ export function inventoryRoom(unit, key, record, maximum = record.count ?? 1) {
   }
   return low;
 }
-export function movePocket(unit, source, destination) {
+export function movePocket(unit: InventoryActor, source: string, destination: string) {
   return rearrangePockets(personalPockets(unit), source, destination);
 }
