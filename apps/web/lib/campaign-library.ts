@@ -74,21 +74,13 @@ export async function verifyCampaignResources(
             if (signal?.aborted) {
               throw new DOMException('Aborted', 'AbortError');
             }
-            if (
-              !campaignRelativePath(asset.path) ||
-              !asset.path.startsWith('assets/')
-            ) {
+            if (!campaignRelativePath(asset.path) || !asset.path.startsWith('assets/')) {
               throw Error('La campaña tiene una ruta de recurso inválida.');
             }
             const path = `/campaigns/${content.id}/${asset.path}`,
-              response = await reader(
-                sitePath(path),
-                refresh ? { cache: 'no-store' } : undefined,
-              );
+              response = await reader(sitePath(path), refresh ? { cache: 'no-store' } : undefined);
             if (!response.ok || !response.arrayBuffer) {
-              throw Error(
-                `Falta un recurso de la campaña: ${path}. ${reinstall}`,
-              );
+              throw Error(`Falta un recurso de la campaña: ${path}. ${reinstall}`);
             }
             const bytes = await response.arrayBuffer(),
               digest = await crypto.subtle.digest('SHA-256', bytes),
@@ -120,11 +112,7 @@ function relativeFile(base: string, path: string) {
   }
   return `${base}/${path}`;
 }
-async function readJSON(
-  path: string,
-  reader: Reader,
-  signal?: AbortSignal,
-): Promise<JsonObject> {
+async function readJSON(path: string, reader: Reader, signal?: AbortSignal): Promise<JsonObject> {
   const response = await reader(sitePath(path));
   if (signal?.aborted) {
     throw new DOMException('Aborted', 'AbortError');
@@ -159,9 +147,7 @@ export async function loadInstalledCampaign(
   }
   const names = ['content', 'world', 'maps', 'presentation', 'assets'] as const;
   const documents = await Promise.all(
-    names.map((name) =>
-      readJSON(relativeFile(base, manifest[name]), reader, signal),
-    ),
+    names.map((name) => readJSON(relativeFile(base, manifest[name]), reader, signal)),
   );
   const [content, world, index, presentation, assets] = documents;
   assertMapIndex(index);
@@ -169,18 +155,10 @@ export async function loadInstalledCampaign(
   const maps: Record<string, JsonObject> = {};
   const loaded = await Promise.all(
     index.maps.map(async (item) => {
-      if (
-        !item ||
-        typeof item.id !== 'string' ||
-        !item.id ||
-        typeof item.path !== 'string'
-      ) {
+      if (!item || typeof item.id !== 'string' || !item.id || typeof item.path !== 'string') {
         throw Error('El índice de mapas contiene una entrada inválida.');
       }
-      return [
-        item.id,
-        await readJSON(relativeFile(mapBase, item.path), reader, signal),
-      ] as const;
+      return [item.id, await readJSON(relativeFile(mapBase, item.path), reader, signal)] as const;
     }),
   );
   for (const [id, map] of loaded) {
@@ -223,17 +201,13 @@ function contentFor(context: CampaignContext): Partial<CampaignContent> | null {
   }
   return 'characters' in context ? context : null;
 }
-function assertRegistry(
-  value: unknown,
-): asserts value is { campaigns: CampaignEntry[] } {
+function assertRegistry(value: unknown): asserts value is { campaigns: CampaignEntry[] } {
   validateCampaignRegistry(value);
 }
 function assertManifest(value: unknown): asserts value is CampaignManifest {
   validateCampaignManifest(value);
 }
-function assertMapIndex(
-  value: unknown,
-): asserts value is { maps: { id: string; path: string }[] } {
+function assertMapIndex(value: unknown): asserts value is { maps: { id: string; path: string }[] } {
   if (
     typeof value !== 'object' ||
     value === null ||

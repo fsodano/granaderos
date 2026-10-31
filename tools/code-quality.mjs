@@ -24,6 +24,8 @@ const ignoredDirectories = new Set([
   'coverage',
   '.output',
 ]);
+// Vinext regenerates this file during builds using its own formatting.
+const generatedFiles = new Set([resolve(root, 'apps/web/next-env.d.ts')]);
 const sourceExtension = /\.(?:[cm]?[jt]sx?|css)$/;
 const sourceConfig = /^(?:package|tsconfig(?:\.[\w-]+)?)\.json$/;
 function collect(directory) {
@@ -32,7 +34,9 @@ function collect(directory) {
     if (entry.isDirectory()) {
       return ignoredDirectories.has(entry.name) ? [] : collect(path);
     }
-    return entry.isFile() && (sourceExtension.test(entry.name) || sourceConfig.test(entry.name))
+    return entry.isFile() &&
+      !generatedFiles.has(path) &&
+      (sourceExtension.test(entry.name) || sourceConfig.test(entry.name))
       ? [path]
       : [];
   });
