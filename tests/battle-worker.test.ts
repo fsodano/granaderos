@@ -17,6 +17,7 @@ import type { BattleExecutor, BattleWorkerPort } from '../apps/web/lib/battle-ex
 import type { BattleWorkerRequest } from '../apps/web/lib/battle-worker-contracts.ts';
 import type {
   MoveAction,
+  TacticalAction,
   GroupMoveAction,
   MovementIntent,
   TacticalPoint,
@@ -48,6 +49,11 @@ import {
 } from '../packages/game/group-movement.ts';
 import { movementGroupModel } from '../packages/game/ja2-hud.ts';
 import { movementStep } from '../packages/game/movement-step.ts';
+import {
+  readBattleWorkerAction,
+  readBattleWorkerContinuation,
+  readBattleWorkerResult,
+} from '../apps/web/lib/battle-worker-values.ts';
 const fixture = () =>
   createBattle([{ id: 'p', x: 1, y: 2, weapon: 1800 }], {
     width: 8,
@@ -679,3 +685,160 @@ for (const malformed of [null, 'snapshot', {}, { units: [] }]) {
     executor.close();
   });
 }
+
+void test('worker admission validates nested inventory and environment action fields', () => {
+  const admitted: TacticalAction[] = [
+    { type: 'equipLoot', unitId: 'p', slot: 'offhandItem', inventoryKey: null },
+    { type: 'prisonerEscort', unitId: 'p', npcId: 'prisoner', escortOrder: 'follow' },
+    {
+      type: 'inventoryMap',
+      unitId: 'p',
+      transferKind: 'relay',
+      transferRoute: ['p', 'ally'],
+      sourceId: 'hand:p',
+      destinationId: 'hand:ally',
+      expectedSource: 'source',
+      count: 1,
+    },
+    {
+      type: 'useItem',
+      unitId: 'p',
+      item: 'torch',
+      environment: { kind: 'container', id: 'chest', x: 1, y: 2, tacticalLevel: 0 },
+    },
+    {
+      type: 'lootBatch',
+      unitId: 'p',
+      items: [
+        { targetId: 'enemy', item: 'weapon', count: 1 },
+        { groundId: 'ground', count: 2 },
+        { dropIndex: 0, count: 1 },
+      ],
+    },
+    { type: 'move', unitId: 'p', x: 2, y: 2, conversationTargetId: 'resident' },
+    { type: 'groupMove', unitIds: ['p'], anchorId: 'p', x: 2, y: 2 },
+  ];
+  for (const action of admitted) {
+    assert.deepEqual(readBattleWorkerAction('action', action), action);
+  }
+  const invalidFields: Record<string, unknown> = {
+    open: 'yes',
+    expectedHost: 1,
+    expectedCursor: 1,
+    family: 1,
+    transferKind: 'teleport',
+    transferRoute: [1],
+    hostId: 1,
+    operation: 1,
+    kind: 1,
+    id: 1,
+    wallEdgeId: 1,
+    axis: 'z',
+    verb: 1,
+    index: NaN,
+    doorId: 1,
+    escortOrder: 'release',
+    supplyKey: 1,
+    toolKey: 1,
+    inventoryKey: {},
+    destination: 1,
+    linkId: 1,
+    hitLocation: 1,
+    unitIds: [{}],
+    dropIndex: Infinity,
+    groundId: 1,
+    items: [{ count: 1 }],
+    environment: { kind: 'container', id: 1 },
+  };
+  for (const [key, value] of Object.entries(invalidFields)) {
+    assert.throws(
+      () =>
+        readBattleWorkerAction('action', {
+          type: 'inventoryMap',
+          unitId: 'p',
+          [key]: value,
+        }),
+      /Invalid battle worker action/,
+      key,
+    );
+  }
+  for (const items of [
+    [{ targetId: 3, item: 'weapon', count: 1 }],
+    [{ groundId: 'ground', count: NaN }],
+    [{ dropIndex: '0', count: 1 }],
+  ]) {
+    assert.throws(() => readBattleWorkerAction('action', { type: 'lootBatch', items }));
+  }
+  for (const environment of [null, {}, { kind: 'container', x: NaN }, { kind: 'door', verb: 1 }]) {
+    assert.throws(() => readBattleWorkerAction('action', { type: 'useItem', environment }));
+  }
+  assert.throws(() =>
+    readBattleWorkerAction('movement-step', {
+      type: 'move',
+      unitId: 'p',
+      x: 2,
+      y: 2,
+      conversationTargetId: 1,
+    }),
+  );
+  assert.throws(() =>
+    readBattleWorkerAction('group', {
+      type: 'move',
+      unitIds: ['p'],
+      anchorId: 'p',
+      x: 2,
+      y: 2,
+    }),
+  );
+});
+
+void test('worker admission checks route elevations and optional group progress fields', () => {
+  const route: TacticalRoutePoint[] = [
+    { x: 2, y: 2, elevation: 1, kind: 'climb', linkId: 'ladder' },
+  ];
+  assert.deepEqual(readBattleWorkerContinuation('movement-step', route), route);
+  assert.throws(() =>
+    readBattleWorkerContinuation('movement-step', [{ x: 2, y: 2, elevation: 'roof' }]),
+  );
+  const battle = createBattle([{ id: 'p', x: 1, y: 2 }], {
+    width: 8,
+    height: 8,
+    exploration: true,
+    enemies: [],
+    tiles: Array.from({ length: 64 }, (_, index) => ({
+      x: index % 8,
+      y: Math.floor(index / 8),
+      type: 'grass',
+      blocked: false,
+      cover: 0,
+    })),
+  });
+  const result = executeGroupMove(battle, { unitIds: ['p'], anchorId: 'p', x: 2, y: 2 });
+  assert.deepEqual(readBattleWorkerResult('group', result), result);
+  const member = required(result.members[0]);
+  for (const [field, value] of Object.entries({
+    to: { x: '2', y: 2 },
+    desired: { x: 2, y: NaN },
+    status: 1,
+    moved: 'yes',
+    energyBefore: '100',
+    energyAfter: Infinity,
+    elapsedSeconds: {},
+  })) {
+    assert.throws(
+      () =>
+        readBattleWorkerResult('group', {
+          ...result,
+          members: [{ ...member, [field]: value }],
+        }),
+      /Invalid battle worker group report/,
+      field,
+    );
+  }
+  const movement = movementStep(battle, { type: 'move', unitId: 'p', x: 2, y: 2 });
+  assert.deepEqual(readBattleWorkerResult('movement-step', movement), movement);
+  assert.throws(
+    () => readBattleWorkerResult('movement-step', { ...movement, unitId: 1 }),
+    /Invalid battle worker movement unit/,
+  );
+});
