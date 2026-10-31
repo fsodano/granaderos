@@ -6,6 +6,7 @@ import {
   makeGrenadeStack,
   validateGrenadeStack,
 } from '../packages/game/grenades.ts';
+import type { GrenadeStack } from '../packages/game/grenades.ts';
 import { jsonRoundTrip } from './json-round-trip.ts';
 
 void test('grenade stacks preserve finite quantities and survive JSON restoration', () => {
@@ -43,6 +44,36 @@ void test('grenade construction preserves independent admitted metadata', () => 
     count: 1,
     weight: 1,
   });
+});
+
+function identityAfterPresenceCheck(stack: GrenadeStack): string | undefined {
+  if ('instanceId' in stack) {
+    const identity = stack.instanceId;
+    // This assignment must compile even after the property-presence check.
+    const missingIdentity: typeof identity = undefined;
+    if (identity === missingIdentity) {
+      return missingIdentity;
+    }
+    return identity.toUpperCase();
+  }
+  return undefined;
+}
+
+void test('grenades preserve an own undefined identity without treating it as a string', () => {
+  const stack = makeGrenadeStack('arsenal', 1, { instanceId: undefined });
+  assert.equal(Object.hasOwn(stack, 'instanceId'), true);
+  assert.equal(stack.instanceId, undefined);
+  assert.equal(validateGrenadeStack(stack), true);
+  assert.equal(identityAfterPresenceCheck(stack), undefined);
+  assert.equal(identityAfterPresenceCheck(makeGrenadeStack()), undefined);
+  assert.equal(
+    identityAfterPresenceCheck(makeGrenadeStack('arsenal', 1, { instanceId: 'guardia-1' })),
+    'GUARDIA-1',
+  );
+  const restored: unknown = JSON.parse(JSON.stringify(stack));
+  assert.ok(validateGrenadeStack(restored));
+  assert.equal(Object.hasOwn(restored, 'instanceId'), false);
+  assert.equal(identityAfterPresenceCheck(restored), undefined);
 });
 
 void test('grenade recognition keeps unrelated inventory outside grenade validation', () => {
