@@ -1,0 +1,91 @@
+import type { FirearmShotOption } from '../packages/game/public/tactical-preview-types.ts';
+import type { BattleSnapshot, BattleUnit } from '../packages/game/public/compatibility-types.ts';
+import { firearmFlightPreview } from '../packages/game/tactical.js';
+import { pairedPistol, secondaryPistolView } from '../packages/game/paired-fire.js';
+import { firearmBystanderRisk } from '../packages/game/firearm-bystander-risk.js';
+
+// Public geometry only. Actual misses can still hit an unknown or off-ray body.
+export function knownCivilianFireRisk(
+  battle: BattleSnapshot,
+  unit: BattleUnit,
+  target: BattleUnit,
+  hitLocation = 'torso',
+) {
+  const second = pairedPistol(unit),
+    views = [unit, ...(second ? [secondaryPistolView(unit, second)] : [])];
+  return views.some((view) => {
+    const flight = firearmFlightPreview(battle, view, target, hitLocation);
+    return (
+      flight.victimKind === 'npc' ||
+      Boolean(flight.bodyImpacts?.some((impact) => impact.victimKind === 'npc'))
+    );
+  });
+}
+
+// One fresh predicate per immutable actor/target state. Aim increments share
+// the same body geometry; movement, posture and later orders need a new read.
+export function knownRouteShotSafety(battle: BattleSnapshot, unit: BattleUnit, target: BattleUnit) {
+  const civilians = new Map<string, boolean>();
+  return (option: FirearmShotOption | null | undefined): boolean => {
+    if (
+      !option ||
+      option.interveningFriendly ||
+      option.shots?.some((shot) => shot.interveningFriendly)
+    ) {
+      return false;
+    }
+    const location = option.hitLocation ?? 'torso';
+    if (!civilians.has(location)) {
+      civilians.set(location, knownCivilianFireRisk(battle, unit, target, location));
+    }
+    return !civilians.get(location);
+  };
+}
+
+// A relief battle must also avoid known civilians on legal missed-shot and
+// continued pellet paths. Native owns visibility, both hands, the actual load
+// and hit-region geometry; this preview does not draw RNG or apply an order.
+export function knownRouteCivilianShotSafety(
+  battle: BattleSnapshot,
+  unit: BattleUnit,
+  target: BattleUnit,
+) {
+  const direct = knownRouteShotSafety(battle, unit, target),
+    locations = new Map<string, boolean>();
+  return (option: FirearmShotOption | null | undefined): boolean => {
+    if (!option || !direct(option)) {
+      return false;
+    }
+    const location = option.hitLocation ?? 'torso';
+    if (!locations.has(location)) {
+      const risk = firearmBystanderRisk(battle, unit, target, location);
+      locations.set(
+        location,
+        [...risk.direct, ...risk.scatter].some((body) => body.kind === 'npc'),
+      );
+    }
+    return !locations.get(location);
+  };
+}
+
+// Hospital rifle roles also protect the known friendly posts from every
+// legal Native miss path. Other route policies retain their existing guard.
+export function knownRouteBystanderShotSafety(
+  battle: BattleSnapshot,
+  unit: BattleUnit,
+  target: BattleUnit,
+) {
+  const direct = knownRouteShotSafety(battle, unit, target),
+    locations = new Map<string, boolean>();
+  return (option: FirearmShotOption | null | undefined): boolean => {
+    if (!option || !direct(option)) {
+      return false;
+    }
+    const location = option.hitLocation ?? 'torso';
+    if (!locations.has(location)) {
+      const risk = firearmBystanderRisk(battle, unit, target, location);
+      locations.set(location, Boolean(risk.direct.length || risk.scatter.length));
+    }
+    return !locations.get(location);
+  };
+}
