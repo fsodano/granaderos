@@ -1,3 +1,4 @@
+import { jsonRoundTrip } from './json-round-trip.ts';
 import type { BattleSnapshot, BattleUnit } from '../packages/game/public/compatibility-types.ts';
 import { present } from './assert-present.ts';
 import { setTestAmmunition } from './typed-ammunition-fixture.ts';
@@ -131,7 +132,7 @@ void test('enemy turn is deterministic and serializable', () => {
   present(s.units[1]).weapon = 1806;
   present(s.units[1]).ap = actionCosts(s, present(s.units[1])).fire;
   const a = endTurn(s),
-    b = endTurn(structuredClone(s));
+    b = endTurn(jsonRoundTrip(s));
   assert.deepEqual(a, b);
   assert.equal(a.turn, 2);
   assert.equal(a.phase, 'player');

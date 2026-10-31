@@ -1,3 +1,4 @@
+import { jsonRoundTrip } from './json-round-trip.ts';
 import type { BattleSnapshot, MoveAction } from '../packages/game/public/compatibility-types.ts';
 import { present } from './assert-present.ts';
 import { DomainRefusal, DomainRefusalCode } from '../packages/game/domain/shared/domain-refusal.ts';
@@ -88,7 +89,7 @@ void test('rest preserves partial duration through save-shaped copies and resume
   const pending = present(interrupted.pendingSectorOperation);
   assert.equal(pending.kind, 'endTurn');
   assert.equal(pending.remainingRestSeconds, 593);
-  const resumed = resumeSectorOperation(bound(structuredClone(interrupted), 1000));
+  const resumed = resumeSectorOperation(bound(jsonRoundTrip(interrupted), 1000));
   assert.equal(resumed.elapsedSeconds, 600);
   assert.equal(resumed.pendingSectorOperation, undefined);
   const uninterrupted = endTurn({ ...state, worldTimeLimitSecond: state.startSeconds + 1000 });
@@ -178,7 +179,7 @@ void test('interrupted reload preserves earned work and consumes exactly one car
   assert.equal(present(partial.units[0]).loaded, 0);
   assert.ok(present(present(partial.units[0]).reloadProgress) > 0);
   assert.equal(present(partial.units[0]).ammo, present(before.units[0]).ammo);
-  const complete = resumeSectorOperation(bound(structuredClone(partial), 100));
+  const complete = resumeSectorOperation(bound(jsonRoundTrip(partial), 100));
   assert.equal(complete.elapsedSeconds, 3);
   assert.equal(present(complete.units[0]).loaded, 1);
   assert.equal(present(complete.units[0]).ammo, present(present(before.units[0]).ammo) - 1);
@@ -224,7 +225,7 @@ void test('rest orders preserve their remaining duration through the same contin
 
 void test('save validation restores unfinished orders and refuses malformed revision or continuation authority', () => {
   const paused = endTurn(bound(peaceful(), 1));
-  assert.doesNotThrow(() => validateBattleSnapshot(structuredClone(paused)));
+  assert.doesNotThrow(() => validateBattleSnapshot(jsonRoundTrip(paused)));
   const changes: ((state: BattleSnapshot) => void)[] = [
     (state) => (state.sectorRevision = -1),
     (state) => {

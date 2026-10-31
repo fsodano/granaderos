@@ -1,3 +1,4 @@
+import { jsonRoundTrip } from './json-round-trip.ts';
 import type { BattleSnapshot } from '../packages/game/public/compatibility-types.ts';
 import { present } from './assert-present.ts';
 import test from 'node:test';
@@ -55,7 +56,7 @@ void test('legacy saves start empty and never reconstruct private log text', () 
   delete legacy.publicJournal;
   legacy.log = ['PRIVATE old reload: 99 cartuchos, 45 PA, 95%.'];
   for (const validate of [validateBattleSnapshot, validateSectorSnapshot]) {
-    const restored = validate(structuredClone(legacy));
+    const restored = validate(jsonRoundTrip(legacy));
     assert.deepEqual(publicCombatJournal(restored), []);
     assert.deepEqual(present(playerKnownBattle(restored)).journal, []);
     assert.deepEqual(restored.log, legacy.log);
@@ -108,7 +109,7 @@ void test('partial exploration wound steps omit zero-loss reports without changi
     journal(next).includes('Herido avanza 2 casillas.'),
     'movement message consolidation retains stored history too',
   );
-  const restored = validateBattleSnapshot(structuredClone(next));
+  const restored = validateBattleSnapshot(jsonRoundTrip(next));
   assert.deepEqual(restored.publicJournal, next.publicJournal);
   assert.deepEqual(present(playerKnownBattle(restored)).journal, publicCombatJournal(next));
   assert.deepEqual(state, before);
@@ -122,7 +123,7 @@ void test('the observed last casualty and attacker remain readable after defeat 
   assert.equal(next.status, 'defeat');
   assert.ok(journal(next).some((text) => text.includes('Atacante hiere a Centinela')));
   assert.ok(journal(next).includes('Centinela cayó en combate.'));
-  const restored = validateBattleSnapshot(structuredClone(next));
+  const restored = validateBattleSnapshot(jsonRoundTrip(next));
   assert.deepEqual(publicCombatJournal(restored), publicCombatJournal(next));
   assert.deepEqual(present(playerKnownBattle(restored)).journal, publicCombatJournal(next));
   assert.ok(!present(playerKnownBattle(restored)).units.some((unit) => unit.id === 'e'));

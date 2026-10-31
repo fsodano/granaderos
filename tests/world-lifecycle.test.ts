@@ -1,3 +1,4 @@
+import { jsonRoundTrip } from './json-round-trip.ts';
 import { present } from './assert-present.ts';
 import { advanceMilitaryWoundClock } from '../packages/game/military-health.js';
 import assert from 'node:assert/strict';
@@ -93,7 +94,7 @@ void test('world events use deterministic ordering and restoration cannot replay
   });
   assert.deepEqual(receipts, ['first']);
   assert.equal(timeline.currentSecond, 60);
-  const restored = new WorldTimeline(structuredClone(timeline.toSnapshot()));
+  const restored = new WorldTimeline(jsonRoundTrip(timeline.toSnapshot()));
   restored.advanceTo(180, (event) => {
     receipts.push(event.id);
     return 'continue';
@@ -134,7 +135,7 @@ void test('sector corpse removal preserves finite equipment, death identity, and
     true,
   );
   validateBattleSnapshot(field);
-  const restored = structuredClone(field);
+  const restored = jsonRoundTrip(field);
   advanceSectorWorld(restored, REMOVAL_SECOND + 3600);
   assert.deepEqual(restored.groundItems, field.groundItems);
   assert.equal(present(restored.deathHistory).length, 1);
