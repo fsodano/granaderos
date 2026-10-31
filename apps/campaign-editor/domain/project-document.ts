@@ -1,5 +1,3 @@
-import type { CampaignProjectDocument, JsonDocument } from './campaign-project.ts';
-import type { JsonValue } from '../../../packages/campaign-format/types.ts';
 import { CampaignEditorRefusal, CampaignEditorRefusalCode } from './campaign-editor-refusal.ts';
 import { campaignRelativePath } from '../../../packages/campaign-format/campaign-assets.js';
 import { validateCampaignData } from '../../../packages/campaign-format/campaign-data-validation.ts';
@@ -10,6 +8,22 @@ import {
   encodeBase64,
   resourceSHA256,
 } from '../../../packages/campaign-format/campaign-resources.js';
+export type JsonValue = string | number | boolean | null | JsonValue[] | JsonDocument;
+export type JsonDocument = { [field: string]: JsonValue };
+export type CampaignProjectDocument = {
+  format: 'granaderos-editor-project';
+  version: 1;
+  manifest: JsonDocument & { id: string };
+  content: JsonDocument;
+  world: JsonDocument;
+  presentation: JsonDocument;
+  maps: Record<string, JsonDocument>;
+  mapIndex: JsonDocument;
+  assets: JsonDocument;
+  resources: Record<string, { type: string; base64: string }>;
+  editor?: JsonDocument;
+};
+
 const object = (value: unknown): value is Record<string, unknown> =>
   value !== null && typeof value === 'object' && !Array.isArray(value);
 const jsonValue = (value: unknown): value is JsonValue =>

@@ -38,7 +38,7 @@ import { BUILDING_KINDS } from '../../../../../packages/game/public/campaign-edi
 import { useEffect, useEffectEvent, useId, useMemo, useRef, useState } from 'react';
 import { TacticalScene } from '../../../../web/game-preview.ts';
 import { Battlefield } from '../../../../web/game-preview.ts';
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import EditorDialog from '../EditorDialog.tsx';
 import {
   editorCampaignBase,
   editorCampaignURL,
@@ -2410,40 +2410,33 @@ export default function SectorEditor({
             : 'Sin selección'}
         </span>
       </output>
-      <Dialog
+      <EditorDialog
         open={Boolean(exportFile)}
-        onOpenChange={(open) => {
-          if (!open) {
-            setExportFile(null);
-          }
-        }}
+        onClose={() => setExportFile(null)}
+        className="editor-export-dialog"
+        title={`Exportar ${exportFile?.name ?? ''}`}
+        description="Guarda el archivo para abrirlo en el editor o modificarlo con un script."
       >
-        <DialogContent className="editor-export-dialog">
-          <DialogTitle>Exportar {exportFile?.name}</DialogTitle>
-          <DialogDescription>
-            Guarda el archivo para abrirlo en el editor o modificarlo con un script.
-          </DialogDescription>
-          <textarea aria-label="JSON del mapa" readOnly value={exportFile?.text ?? ''} />
-          <div className="editor-export-actions">
-            <a href={exportUrl} download={exportFile?.name}>
-              Descargar JSON
-            </a>
-            <button
-              onClick={async () => {
-                try {
-                  await navigator.clipboard.writeText(exportFile?.text ?? '');
-                  setNotice('JSON copiado.');
-                } catch {
-                  setNotice('Selecciona el texto y cópialo con el teclado.');
-                }
-              }}
-            >
-              Copiar JSON
-            </button>
-            <button onClick={() => setExportFile(null)}>Cerrar exportación</button>
-          </div>
-        </DialogContent>
-      </Dialog>
+        <textarea aria-label="JSON del mapa" readOnly value={exportFile?.text ?? ''} />
+        <div className="editor-export-actions">
+          <a href={exportUrl} download={exportFile?.name}>
+            Descargar JSON
+          </a>
+          <button
+            onClick={async () => {
+              try {
+                await navigator.clipboard.writeText(exportFile?.text ?? '');
+                setNotice('JSON copiado.');
+              } catch {
+                setNotice('Selecciona el texto y cópialo con el teclado.');
+              }
+            }}
+          >
+            Copiar JSON
+          </button>
+          <button onClick={() => setExportFile(null)}>Cerrar exportación</button>
+        </div>
+      </EditorDialog>
     </EditorRoot>
   );
 }

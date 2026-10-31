@@ -6,14 +6,16 @@ const editor = fileURLToPath(new URL('..', import.meta.url));
 const repository = resolve(editor, '../..');
 const sourceExtensions = new Set(['.js', '.ts', '.tsx', '.mjs']);
 const publicGameApis = new Set([
-  resolve(repository, 'packages/game/public/campaign-editor-api.js'),
-  resolve(repository, 'packages/game/public/campaign-playtest-api.js'),
+  resolve(repository, 'packages/game/public/campaign-editor-api.ts'),
+  resolve(repository, 'packages/game/public/campaign-playtest-api.ts'),
 ]);
 const failures = [];
 
 function files(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
-    if (['node_modules', 'dist', 'tests', 'tools'].includes(entry.name)) return [];
+    if (['node_modules', 'dist', 'tests', 'tools'].includes(entry.name)) {
+      return [];
+    }
     const path = resolve(directory, entry.name);
     return entry.isDirectory() ? files(path) : sourceExtensions.has(extname(path)) ? [path] : [];
   });
@@ -56,22 +58,31 @@ for (const file of files(resolve(repository, 'packages/campaign-format'))) {
 
 const visited = new Set();
 function checkGameClosure(file) {
-  if (!existsSync(file) || visited.has(file)) return;
+  if (!existsSync(file) || visited.has(file)) {
+    return;
+  }
   visited.add(file);
   if (file.startsWith(editor + '/')) {
     failures.push(`Game runtime depends on editor: ${relative(repository, file)}`);
     return;
   }
-  if (['.js', '.ts', '.mjs'].includes(extname(file)))
-    for (const target of imports(file)) checkGameClosure(target);
+  if (sourceExtensions.has(extname(file))) {
+    for (const target of imports(file)) {
+      checkGameClosure(target);
+    }
+  }
 }
-for (const entry of ['campaign.js', 'tactical.js', 'world.js', 'save.js']) {
+for (const entry of ['campaign.js', 'tactical.js', 'world.js', 'save.ts']) {
   const path = resolve(repository, 'packages/game', entry);
-  if (!existsSync(path)) throw new Error(`Game runtime entry is missing: ${path}`);
+  if (!existsSync(path)) {
+    throw new Error(`Game runtime entry is missing: ${path}`);
+  }
   checkGameClosure(path);
 }
 
-if (failures.length) throw new Error(failures.join('\n'));
+if (failures.length) {
+  throw new Error(failures.join('\n'));
+}
 console.log(
   `Editor boundaries pass. ${visited.size} game dependencies contain no editor implementation.`,
 );

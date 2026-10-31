@@ -49,7 +49,7 @@ import {
   useState,
   type KeyboardEvent as ReactKeyboardEvent,
 } from 'react';
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import EditorDialog from '../EditorDialog.tsx';
 import {
   ATTRIBUTE_FIELDS,
   FIREARM_TEMPLATES,
@@ -2609,41 +2609,34 @@ export default function ContentEditor({
             </ul>
           )}
         </footer>
-        <Dialog
+        <EditorDialog
           open={Boolean(exportFile)}
-          onOpenChange={(open) => {
-            if (!open) {
-              setExportFile(null);
-            }
-          }}
+          onClose={() => setExportFile(null)}
+          className="content-export-dialog"
+          title={`Exportar ${exportFile?.name ?? ''}`}
+          description="Guardá el archivo o copiá el JSON para conservar una copia de tu contenido."
         >
-          <DialogContent className="content-export-dialog">
-            <DialogTitle>Exportar {exportFile?.name}</DialogTitle>
-            <DialogDescription>
-              Guardá el archivo o copiá el JSON para conservar una copia de tu contenido.
-            </DialogDescription>
-            <output aria-live="polite">{exportStatus}</output>
-            <textarea aria-label="JSON del contenido" readOnly value={exportFile?.text ?? ''} />
-            <div className="content-export-actions">
-              <a href={exportUrl} download={exportFile?.name}>
-                Descargar JSON
-              </a>
-              <button
-                onClick={async () => {
-                  try {
-                    await navigator.clipboard.writeText(exportFile?.text ?? '');
-                    setExportStatus('JSON copiado.');
-                  } catch {
-                    setExportStatus('Seleccioná el texto y copialo con el teclado.');
-                  }
-                }}
-              >
-                Copiar JSON
-              </button>
-              <button onClick={() => setExportFile(null)}>Cerrar exportación</button>
-            </div>
-          </DialogContent>
-        </Dialog>
+          <output aria-live="polite">{exportStatus}</output>
+          <textarea aria-label="JSON del contenido" readOnly value={exportFile?.text ?? ''} />
+          <div className="content-export-actions">
+            <a href={exportUrl} download={exportFile?.name}>
+              Descargar JSON
+            </a>
+            <button
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(exportFile?.text ?? '');
+                  setExportStatus('JSON copiado.');
+                } catch {
+                  setExportStatus('Seleccioná el texto y copialo con el teclado.');
+                }
+              }}
+            >
+              Copiar JSON
+            </button>
+            <button onClick={() => setExportFile(null)}>Cerrar exportación</button>
+          </div>
+        </EditorDialog>
       </EditorRoot>
     </DocumentDraftProvider>
   );
