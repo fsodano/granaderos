@@ -1,7 +1,9 @@
 export { CONTENT_QUEST_STATES, validateContentQuests } from '../campaign-format/quest-schema.js';
-import { characterForOperative, operativeIdForCharacter } from './content-character-ids.js';
+import { characterForOperative, operativeIdForCharacter } from './content-character-ids.ts';
 const need = (ok, message) => {
-  if (!ok) throw Error(message);
+  if (!ok) {
+    throw Error(message);
+  }
 };
 const object = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 const exact = (v, keys) =>
@@ -16,6 +18,7 @@ export const QUEST_STATE_LABELS = {
   failed: 'Fallido',
 };
 
+/** @returns {import('../campaign-format/types.ts').QuestStatus} */
 export const contentQuestStatus = (s, id) =>
   s.contentQuestEvents?.findLast((e) => e.quest === id)?.to ?? 'not-started';
 const allowed = (from, to) =>
@@ -31,20 +34,22 @@ export function questTransitionQuote(s, effect) {
     from = contentQuestStatus(s, effect.quest);
   need(quest, 'El encargo no pertenece a esta campaña.');
   const dead = deadRequirement(s, quest);
-  if (dead)
+  if (dead) {
     return {
       quest,
       from,
       available: false,
       reason: `${s.contentCampaign.package.characters.find((c) => c.id === dead).name} ha muerto; el encargo ya no puede realizarse.`,
     };
+  }
   const start = s.contentQuestEvents?.find((e) => e.quest === quest.id && e.to === 'active');
   if (
     from === 'active' &&
     quest.deadlineHours != null &&
     timeOf(s) >= secondsOf(start) + quest.deadlineHours * 3600
-  )
+  ) {
     return { quest, from, available: false, reason: `Venció el plazo de «${quest.title}».` };
+  }
   return {
     quest,
     from,
@@ -102,7 +107,9 @@ export function updateContentQuests(s) {
   }
   for (const q of s.contentCampaign?.package.quests ?? []) {
     const dead = contentQuestStatus(s, q.id) === 'active' ? deadRequirement(s, q) : null;
-    if (!dead) continue;
+    if (!dead) {
+      continue;
+    }
     s.contentQuestEvents.push({
       quest: q.id,
       from: 'active',
@@ -116,6 +123,7 @@ export function updateContentQuests(s) {
     s.log = s.log.slice(-80);
   }
 }
+/** @returns {(import('../campaign-format/types.ts').QuestDefinition & {status: import('../campaign-format/types.ts').QuestStatus, startedAt: number | undefined, resolvedAt: number | null, deadline: number | null, remainingMinutes: number | null, expired: boolean, deathName: string | null | undefined})[]} */
 export function contentQuestJournal(s) {
   return (s.contentCampaign?.package.quests ?? [])
     .map((q) => {
@@ -191,14 +199,14 @@ export function validateContentQuestState(s, npcs) {
         event.from === 'active' && event.to === 'failed' && states[event.quest] === 'active',
         'El fallo guardado del encargo es inválido.',
       );
-      if (timed)
+      if (timed) {
         need(
           quest.deadlineHours != null &&
             event.deadline === starts[event.quest] + quest.deadlineHours * 3600 &&
             time === event.deadline,
           'El vencimiento guardado del encargo es inválido.',
         );
-      else {
+      } else {
         const record = quest.requiredAlive?.includes(event.death)
           ? deathRecord(s, event.death)
           : null;
@@ -258,38 +266,43 @@ export function validateContentQuestState(s, npcs) {
         'La secuencia guardada del encargo es inválida.',
       );
     }
-    if (event.to === 'active') starts[event.quest] = time;
+    if (event.to === 'active') {
+      starts[event.quest] = time;
+    }
     states[event.quest] = event.to;
     lastTime = time;
   }
-  for (const q of s.contentCampaign?.package.quests ?? [])
+  for (const q of s.contentCampaign?.package.quests ?? []) {
     if (states[q.id] === 'active') {
       if (q.deadlineHours != null)
-        need(
+        {need(
           timeOf(s) < starts[q.id] + q.deadlineHours * 3600,
           'Falta el vencimiento del encargo guardado.',
-        );
+        );}
       need(!deadRequirement(s, q), 'Falta el fallo del encargo por muerte.');
     }
+  }
   for (const npc of npcs) {
     const graph = characterForOperative(s, npc.operativeId)?.encounter?.dialogue;
     for (const r of s.conversations?.[npc.id]?.dialogueReceipts ?? []) {
       const choice = graph?.nodes
         .find((n) => n.id === r.node)
         ?.choices.find((c) => c.id === r.choice);
-      if (choice?.effects?.some((e) => e.type === 'quest'))
+      if (choice?.effects?.some((e) => e.type === 'quest')) {
         need(
           seen.has(`${npc.id}/${r.node}/${r.choice}`),
           'Falta el registro del encargo aplicado por el diálogo.',
         );
+      }
     }
   }
   for (const receipt of s.campaignEventState?.receipts ?? []) {
     const event = s.contentCampaign.package.campaignEvents.find((e) => e.id === receipt.event);
-    if (receipt.outcome === 'applied' && event.effects.some((e) => e.type === 'quest'))
+    if (receipt.outcome === 'applied' && event.effects.some((e) => e.type === 'quest')) {
       need(
         seen.has(`event/${receipt.event}`),
         'Falta el registro del encargo aplicado por el evento de campaña.',
       );
+    }
   }
 }

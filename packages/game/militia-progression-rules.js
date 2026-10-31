@@ -1,7 +1,3 @@
-import {
-  MILITIA_PROGRESSION_FIELDS,
-  validateMilitiaProgression,
-} from '../campaign-format/campaign-rules-schema.js';
 export {
   MILITIA_PROGRESSION_FIELDS,
   validateMilitiaProgression,
@@ -15,5 +11,6 @@ export const DEFAULT_MILITIA_PROGRESSION = Object.freeze({
   levelGain: 1,
 });
 
+/** @returns {import('../campaign-format/types.ts').MilitiaProgressionRules} */
 export const militiaProgression = (s) =>
   s?.contentCampaign?.package.militiaProgression ?? DEFAULT_MILITIA_PROGRESSION;

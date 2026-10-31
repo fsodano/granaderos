@@ -21,18 +21,26 @@ export const importPortName = (state) => {
 };
 
 export function importOrderReason(state) {
-  if (importRulesFor(state).port === null)
+  if (importRulesFor(state).port === null) {
     return 'Esta campaña no permite pedidos de armas importadas.';
-  if (state.sectors[importRulesFor(state).port]?.owner !== 'patriot')
+  }
+  if (state.sectors[importRulesFor(state).port]?.owner !== 'patriot') {
     return `Las importaciones requieren ${importPortName(state)} bajo control patriota.`;
-  if (state.reputation.foreign < 0)
+  }
+  if (state.reputation.foreign < 0) {
     return 'Los comerciantes extranjeros no están dispuestos a negociar.';
+  }
   return null;
 }
 export function importDelayReason(state) {
-  if (importRulesFor(state).port === null) return 'Importaciones deshabilitadas';
-  if (state.sectors[importRulesFor(state).port]?.owner !== 'patriot')
+  if (importRulesFor(state).port === null) {
+    return 'Importaciones deshabilitadas';
+  }
+  if (state.sectors[importRulesFor(state).port]?.owner !== 'patriot') {
     return 'Demorado por ocupación del puerto';
-  if (state.blockade) return 'Demorado por bloqueo';
+  }
+  if (state.blockade) {
+    return 'Demorado por bloqueo';
+  }
   return null;
 }

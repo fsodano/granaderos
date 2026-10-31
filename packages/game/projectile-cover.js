@@ -69,7 +69,9 @@ export function physicalBodies(state) {
 // Traverse every crossed cell, including the two cells touching a diagonal
 // corner. Entry/exit fractions let a sloping shot meet a low obstacle correctly.
 export function projectileCells(a, b) {
-  if (a.x === b.x && a.y === b.y) return [];
+  if (a.x === b.x && a.y === b.y) {
+    return [];
+  }
   const dx = b.x - a.x,
     dy = b.y - a.y,
     sx = Math.sign(dx),
@@ -84,8 +86,12 @@ export function projectileCells(a, b) {
   const result = [];
   while (entry <= 1) {
     const exit = Math.min(nx, ny, 1);
-    if (x !== a.x || y !== a.y) result.push({ x, y, entry, exit });
-    if (exit === 1) break;
+    if (x !== a.x || y !== a.y) {
+      result.push({ x, y, entry, exit });
+    }
+    if (exit === 1) {
+      break;
+    }
     if (Math.abs(nx - ny) < 1e-10) {
       result.push({ x: x + sx, y, entry: exit, exit }, { x, y: y + sy, entry: exit, exit });
       x += sx;
@@ -106,9 +112,15 @@ export function projectileCells(a, b) {
 
 export function concealmentAt(state, target) {
   const tile = surfaceAt(state, target);
-  if (!tile) return 0;
-  if (tile.concealment !== undefined) return tile.concealment;
-  if (['wall', 'door', 'window', 'rubble'].includes(tile.type)) return 0;
+  if (!tile) {
+    return 0;
+  }
+  if (tile.concealment !== undefined) {
+    return tile.concealment;
+  }
+  if (['wall', 'door', 'window', 'rubble'].includes(tile.type)) {
+    return 0;
+  }
   return tile.type === 'forest'
     ? Math.max(20, tile.cover ?? 0)
     : tile.type === 'scrub'
@@ -148,8 +160,9 @@ export function projectilePath(
     tacticalLevel: tacticalLevel(target),
   };
   const power = flight.forceBudget ?? projectileLaunchImpact(weapon);
-  if (!Number.isFinite(source.height) || !Number.isFinite(destination.height))
+  if (!Number.isFinite(source.height) || !Number.isFinite(destination.height)) {
     return { blocked: true, damageFactor: 0, obstacles: [] };
+  }
   if (continuedBall(weapon)) {
     const distance =
       Math.hypot(destination.x - source.x, destination.y - source.y) *
@@ -218,8 +231,9 @@ export function projectileFlight(
   hitLocation = 'torso',
   flight = {},
 ) {
-  if (continuedBall(weapon))
+  if (continuedBall(weapon)) {
     return continuedProjectileFlight(state, attacker, target, weapon, hitLocation, flight);
+  }
   return boundedProjectileFlight(state, attacker, target, weapon, hitLocation, flight);
 }
 
@@ -258,8 +272,9 @@ export function firearmRay(state, attacker, target, weapon, hitLocation = 'torso
     height: flight.destinationHeight ?? absoluteBodyHeight(state, target, hitLocation),
     tacticalLevel: tacticalLevel(target),
   };
-  if (![source.x, source.y, source.height, aim.x, aim.y, aim.height].every(Number.isFinite))
+  if (![source.x, source.y, source.height, aim.x, aim.y, aim.height].every(Number.isFinite)) {
     return null;
+  }
   const dx = aim.x - source.x,
     dy = aim.y - source.y,
     distance = Math.hypot(dx, dy);
@@ -311,9 +326,13 @@ function materialEvents(
   const objects = new Map(),
     events = [];
   for (const cell of geometryCells(source, destination)) {
-    if (cell.entry > stopFraction) break;
+    if (cell.entry > stopFraction) {
+      break;
+    }
     const ground = groundTileAt(state, cell);
-    if (!ground) continue;
+    if (!ground) {
+      continue;
+    }
     const origin =
       originSource &&
       cell.x === Math.floor(originSource.x + 0.5) &&
@@ -321,9 +340,13 @@ function materialEvents(
     for (const volume of obstacleVolumesAt(state, cell)) {
       // Preserve the established flat muzzle-cell cover rule. Floor slabs and
       // ground still stop a shot in the origin cell.
-      if (origin && !elevated && !['slab', 'edge'].includes(volume.kind)) continue;
+      if (origin && !elevated && !['slab', 'edge'].includes(volume.kind)) {
+        continue;
+      }
       const crossed = volumeRayCell(source, destination, cell, volume);
-      if (!crossed) continue;
+      if (!crossed) {
+        continue;
+      }
       const hits = projectileTrajectoryIntervals(
         trajectory,
         crossed,
@@ -346,7 +369,9 @@ function materialEvents(
         // A corner or height-boundary touch crosses no material. It cannot spend
         // force. Opted air accounting retains zero-density material occupancy
         // without adding an obstruction, resistance debit or reflection cue.
-        if (hit.exit <= hit.entry || (volume.resistance <= 0 && !retainZeroMaterial)) continue;
+        if (hit.exit <= hit.entry || (volume.resistance <= 0 && !retainZeroMaterial)) {
+          continue;
+        }
         const intervals = objects.get(volume.id) ?? [];
         intervals.push({ ...hit, cell, volume });
         objects.set(volume.id, intervals);
@@ -365,7 +390,7 @@ function materialEvents(
       bottom,
       groundHeight,
       stopFraction,
-    ))
+    )) {
       events.push({
         fraction: hit.entry,
         priority: 0,
@@ -380,15 +405,18 @@ function materialEvents(
           solid: true,
         },
       });
+    }
   }
   for (const [key, intervals] of objects) {
     intervals.sort((a, b) => a.entry - b.entry || a.exit - b.exit);
     const merged = [];
     for (const interval of intervals) {
       const previous = merged.at(-1);
-      if (previous && interval.entry <= previous.exit + 1e-10)
+      if (previous && interval.entry <= previous.exit + 1e-10) {
         previous.exit = Math.max(previous.exit, interval.exit);
-      else merged.push({ ...interval });
+      } else {
+        merged.push({ ...interval });
+      }
     }
     for (const span of merged) {
       events.push({ fraction: span.entry, priority: 2, key, type: 'enter', span });
@@ -403,26 +431,35 @@ function materialEvents(
 function stoneEntryFace(state, trajectory, span) {
   const { volume, entry, exit } = span,
     bounds = volume.bounds;
-  if (!volume.stoneFace || !bounds || exit <= entry + 1e-10 || entry <= 1e-10) return null;
+  if (!volume.stoneFace || !bounds || exit <= entry + 1e-10 || entry <= 1e-10) {
+    return null;
+  }
   const point = projectileTrajectoryPoint(trajectory, entry),
     dx = trajectory.destination.x - trajectory.source.x,
     dy = trajectory.destination.y - trajectory.source.y,
     faces = [];
-  if (point.height <= volume.bottom + 1e-10 || point.height >= volume.top - 1e-10) return null;
+  if (point.height <= volume.bottom + 1e-10 || point.height >= volume.top - 1e-10) {
+    return null;
+  }
   for (const [axis, delta] of [
     ['x', dx],
     ['y', dy],
   ]) {
-    if (!delta) continue;
+    if (!delta) {
+      continue;
+    }
     const boundary = bounds[`${delta > 0 ? 'min' : 'max'}${axis.toUpperCase()}`];
-    if (Math.abs(point[axis] - boundary) < 1e-8)
+    if (Math.abs(point[axis] - boundary) < 1e-8) {
       faces.push({
         x: axis === 'x' ? -Math.sign(delta) : 0,
         y: axis === 'y' ? -Math.sign(delta) : 0,
         height: 0,
       });
+    }
   }
-  if (faces.length !== 1) return null;
+  if (faces.length !== 1) {
+    return null;
+  }
   const normal = faces[0],
     outside = {
       x: Math.floor(point.x + normal.x * 0.25 + 0.5),
@@ -441,8 +478,9 @@ function stoneEntryFace(state, trajectory, span) {
             point.y + normal.y * 0.0001 >= other.bounds.minY &&
             point.y + normal.y * 0.0001 <= other.bounds.maxY)),
     )
-  )
+  ) {
     return null;
+  }
   const distance = trajectory.horizontalDistance,
     slope = projectileTrajectorySlope(trajectory, entry),
     dot = Math.abs((normal.x * dx + normal.y * dy) / distance) / Math.hypot(1, slope);
@@ -516,8 +554,9 @@ function traverseMaterialRay(
       // can reach a body or cause a passage roll. Preserve real positive force.
       const exhausted = debit >= remaining || remaining - debit <= roundoff,
         traveled = exhausted ? Math.min(distance, remaining / density) : distance;
-      for (const { resistance, receipt } of active.values())
+      for (const { resistance, receipt } of active.values()) {
         receipt.resistance += resistance * traveled;
+      }
       const loss = exhausted ? remaining : density * distance;
       remaining -= loss;
       coverLoss += loss;
@@ -541,7 +580,9 @@ function traverseMaterialRay(
   };
   for (const event of events) {
     const stopped = advance(event.fraction);
-    if (stopped) return stopped;
+    if (stopped) {
+      return stopped;
+    }
     // Obstacle receipts retain the entry fraction and actual consumed force.
     // The separate terminal impact records the exact interior stop position.
     if (event.type === 'enter') {
@@ -598,10 +639,13 @@ function traverseMaterialRay(
               weapon,
               distanceOffset + trajectory.horizontalDistance * span.entry,
             );
-      if (volume.resistance > 0) obstacles.push(receipt);
+      if (volume.resistance > 0) {
+        obstacles.push(receipt);
+      }
       active.set(event.key, { span, receipt, factor, resistance: volume.resistance * factor });
-    } else if (event.type === 'exit') active.delete(event.key);
-    else if (event.type === 'solid') {
+    } else if (event.type === 'exit') {
+      active.delete(event.key);
+    } else if (event.type === 'solid') {
       const { volume, cell } = event;
       obstacles.push({
         x: cell.x,
@@ -620,7 +664,9 @@ function traverseMaterialRay(
     } else if (event.body) {
       const result = onBody(event, { remaining, coverLoss, airLoss, pointAt });
       remaining = result.remaining;
-      if (result.stopped) return finish(event.fraction, tacticalLevel(event.body), 'body', false);
+      if (result.stopped) {
+        return finish(event.fraction, tacticalLevel(event.body), 'body', false);
+      }
     }
   }
   return advance(limit) ?? finish(limit, destination.tacticalLevel, null, false);
@@ -634,14 +680,18 @@ function traverseMaterialRay(
 function continuedProjectileFlight(state, attacker, target, weapon, hitLocation, flight) {
   const ray = firearmRay(state, attacker, target, weapon, hitLocation, flight),
     power = flight.forceBudget ?? projectileLaunchImpact(weapon);
-  if (!ray) return { blocked: true, damageFactor: 0, obstacles: [], victimId: null, hitLocation };
+  if (!ray) {
+    return { blocked: true, damageFactor: 0, obstacles: [], victimId: null, hitLocation };
+  }
   const originalSource = ray.source,
     columns = new Map(),
     elevated = usesElevationGeometry(state, attacker, target),
     budget = flightRangeLimit(ray.source, ray.aim, weapon, flight);
   const targetKind = flight.targetKind ?? ((state.npcs ?? []).includes(target) ? 'npc' : 'unit');
   for (const entry of flight.ignoreBodies ? [] : physicalBodies(state)) {
-    if (entry.kind === 'unit' && entry.body.id === attacker.id) continue;
+    if (entry.kind === 'unit' && entry.body.id === attacker.id) {
+      continue;
+    }
     const key = `${entry.body.x},${entry.body.y}`,
       column = columns.get(key) ?? [];
     column.push(entry);
@@ -667,12 +717,16 @@ function continuedProjectileFlight(state, attacker, target, weapon, hitLocation,
       trajectory = leg.trajectoryModel ?? projectileTrajectory(source, destination),
       events = [];
     for (const cell of geometryCells(source, destination)) {
-      if (!groundTileAt(state, cell)) continue;
+      if (!groundTileAt(state, cell)) {
+        continue;
+      }
       const origin =
         index === 0 &&
         cell.x === Math.floor(originalSource.x + 0.5) &&
         cell.y === Math.floor(originalSource.y + 0.5);
-      if (cell.entry === cell.exit || (origin && !elevated)) continue;
+      if (cell.entry === cell.exit || (origin && !elevated)) {
+        continue;
+      }
       for (const { body, kind } of columns.get(`${cell.x},${cell.y}`) ?? []) {
         const base = surfaceHeight(state, body),
           top = absoluteBodyHeight(state, body, 'head');
@@ -680,7 +734,7 @@ function continuedProjectileFlight(state, attacker, target, weapon, hitLocation,
           base === null || top === null
             ? []
             : projectileTrajectoryIntervals(trajectory, cell, base, top + 0.15);
-        for (const hit of hits)
+        for (const hit of hits) {
           events.push({
             fraction: hit.entry,
             priority: 3,
@@ -690,6 +744,7 @@ function continuedProjectileFlight(state, attacker, target, weapon, hitLocation,
             kind,
             base,
           });
+        }
       }
     }
     trace = traverseMaterialRay(state, source, destination, remaining, elevated, {
@@ -709,7 +764,9 @@ function continuedProjectileFlight(state, attacker, target, weapon, hitLocation,
         event,
         { remaining: incoming, coverLoss: legCoverLoss, airLoss: legAirLoss, pointAt },
       ) => {
-        if (seen.has(event.key)) return { remaining: incoming };
+        if (seen.has(event.key)) {
+          return { remaining: incoming };
+        }
         seen.add(event.key);
         const { body, kind, base } = event,
           z = pointAt(event.fraction, tacticalLevel(body)).height - base;
@@ -770,12 +827,13 @@ function continuedProjectileFlight(state, attacker, target, weapon, hitLocation,
         return { remaining: impact.remainingImpact, stopped: !continued };
       },
     });
-    for (const obstacle of trace.obstacles)
+    for (const obstacle of trace.obstacles) {
       obstacles.push({
         ...obstacle,
         distance: travelled + trajectory.horizontalDistance * obstacle.fraction,
         segmentIndex: index,
       });
+    }
     const endDistance = travelled + trajectory.horizontalDistance * trace.fraction;
     segments.push({
       index,
@@ -789,7 +847,9 @@ function continuedProjectileFlight(state, attacker, target, weapon, hitLocation,
     remaining = trace.remaining;
     coverLoss += trace.coverLoss;
     airLoss += trace.airLoss ?? 0;
-    if (!trace.reflection) break;
+    if (!trace.reflection) {
+      break;
+    }
     continuingMaterials = trace.continuingMaterials;
     ricochets.push({ ...trace.reflection, distance: endDistance });
     reflectionLoss += trace.reflection.incomingImpact - trace.reflection.remainingImpact;
@@ -831,8 +891,9 @@ function continuedProjectileFlight(state, attacker, target, weapon, hitLocation,
     reflected = ricochets.length > 0,
     first = bodyImpacts[0];
   for (const entry of [...bodyImpacts, ...obstacles]) {
-    if (reflected) entry.fraction = entry.distance / budget;
-    else {
+    if (reflected) {
+      entry.fraction = entry.distance / budget;
+    } else {
       delete entry.distance;
       delete entry.segmentIndex;
     }
@@ -879,8 +940,9 @@ function continuedProjectileFlight(state, attacker, target, weapon, hitLocation,
 function boundedProjectileFlight(state, attacker, target, weapon, hitLocation, flight) {
   const muzzle = absoluteBodyHeight(state, attacker, 'muzzle'),
     destination = flight.destinationHeight ?? absoluteBodyHeight(state, target, hitLocation);
-  if (muzzle === null || !Number.isFinite(destination))
+  if (muzzle === null || !Number.isFinite(destination)) {
     return { blocked: true, damageFactor: 0, obstacles: [], victimId: null, hitLocation };
+  }
   const bodies = physicalBodies(state),
     elevated = usesElevationGeometry(state, attacker, target),
     targetKind = flight.targetKind ?? ((state.npcs ?? []).includes(target) ? 'npc' : 'unit');
@@ -890,8 +952,9 @@ function boundedProjectileFlight(state, attacker, target, weapon, hitLocation, f
       (!elevated &&
         cell.x === Math.floor(attacker.x + 0.5) &&
         cell.y === Math.floor(attacker.y + 0.5))
-    )
+    ) {
       continue;
+    }
     const victims = bodies
       .filter(
         ({ body, kind }) =>
@@ -917,7 +980,9 @@ function boundedProjectileFlight(state, attacker, target, weapon, hitLocation, f
           String(a.unit.id).localeCompare(String(b.unit.id)) ||
           a.kind.localeCompare(b.kind),
       );
-    if (!victims.length) continue;
+    if (!victims.length) {
+      continue;
+    }
     const { unit: victim, kind, base, hit } = victims[0],
       relative = muzzle + (destination - muzzle) * hit.entry - base;
     const location =

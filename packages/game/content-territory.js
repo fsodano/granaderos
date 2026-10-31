@@ -5,6 +5,9 @@ export function validateStartingTerritory(value, headquarters, context = null) {
 import { headquartersFor, headquartersName } from './campaign-headquarters.js';
 import { campaignSectors, campaignWorld } from './campaign-definition.js';
 
+/** @param {string | null} [headquarters] @param {import('./public/compatibility-types.ts').CampaignContext | null} [context]
+ * @returns {Record<string, {owner: import('../campaign-format/types.ts').CampaignOwner, loyalty: number}>}
+ */
 export const defaultStartingTerritory = (headquarters, context = null) => {
   headquarters ??= campaignWorld(context).defaultHeadquarters;
   return Object.fromEntries(
@@ -35,8 +38,9 @@ export function applyStartingTerritory(state) {
     headquarters = headquartersFor(state);
   state.location = headquarters;
   state.squads[0].location = headquarters;
-  for (const sector of campaignSectors(state))
+  for (const sector of campaignSectors(state)) {
     Object.assign(state.sectors[sector.id], territory[sector.id]);
+  }
   // No capture, quest, force issue or reward occurs when composing a new campaign.
   const defaultHeadquarters = campaignWorld(state).defaultHeadquarters;
   if (
@@ -45,6 +49,7 @@ export function applyStartingTerritory(state) {
       campaignSectors(state).some(
         (s) => s.id !== defaultHeadquarters && territory[s.id].owner === 'patriot',
       ))
-  )
+  ) {
     state.log[0].text = `${headquartersName(state)}. ${startingTerritoryDescription(state)} Contratá combatientes, creá tu personaje o combiná ambas opciones para partir.`;
+  }
 }

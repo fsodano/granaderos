@@ -1,6 +1,5 @@
 import {
   validateTacticalSpaceRecords,
-  MAX_TACTICAL_LEVEL,
   DEFAULT_SLAB_THICKNESS,
   tacticalLevel,
   validTacticalLevel as validLevel,
@@ -22,15 +21,21 @@ export const spacePoint = (point) => ({
   tacticalLevel: tacticalLevel(point),
 });
 
+/** @param {{width:number,height:number,tiles:readonly import('./public/compatibility-types.ts').BattleTile[],upperSurfaces?:readonly import('./public/compatibility-types.ts').BattleTile[]|undefined}} state
+ * @param {import('./public/compatibility-types.ts').TacticalPoint|null|undefined} point
+ * @returns {import('./public/compatibility-types.ts').BattleTile|null} */
 export function surfaceAt(state, point) {
   if (
     !point ||
     !Number.isInteger(point.x) ||
     !Number.isInteger(point.y) ||
     !validLevel(tacticalLevel(point))
-  )
+  ) {
     return null;
-  if (point.x < 0 || point.y < 0 || point.x >= state.width || point.y >= state.height) return null;
+  }
+  if (point.x < 0 || point.y < 0 || point.x >= state.width || point.y >= state.height) {
+    return null;
+  }
   if (tacticalLevel(point) === 0) {
     const candidate = state.tiles?.[point.y * state.width + point.x];
     return candidate && sameCell(candidate, point)
@@ -38,7 +43,9 @@ export function surfaceAt(state, point) {
       : (state.tiles?.find((tile) => sameCell(tile, point)) ?? null);
   }
   const surfaces = state.upperSurfaces;
-  if (!Array.isArray(surfaces)) return null;
+  if (!Array.isArray(surfaces)) {
+    return null;
+  }
   let index = upperIndexes.get(surfaces);
   if (!index) {
     index = new Map(surfaces.map((surface) => [spaceKey(surface), surface]));
@@ -46,10 +53,12 @@ export function surfaceAt(state, point) {
   }
   return index.get(spaceKey(point)) ?? null;
 }
+/** @returns {number|null} */
 export function surfaceHeight(state, point) {
   const surface = surfaceAt(state, point);
   return surface ? (surface.elevation ?? 0) : null;
 }
+/** @param {{tiles:readonly import('./public/compatibility-types.ts').BattleTile[];upperSurfaces?:readonly import('./public/compatibility-types.ts').BattleTile[]|undefined}} state @returns {readonly import('./public/compatibility-types.ts').BattleTile[]} */
 export function surfacesAtLevel(state, level = 0) {
   return level === 0
     ? (state.tiles ?? [])
@@ -57,7 +66,9 @@ export function surfacesAtLevel(state, level = 0) {
 }
 // Geometry only. Occupants, furniture, AP and body condition belong to callers.
 export function canWalkBetween(state, from, to) {
-  if (!sameSurface(from, to) || wallMovementBlocked(state, from, to)) return false;
+  if (!sameSurface(from, to) || wallMovementBlocked(state, from, to)) {
+    return false;
+  }
   const dx = Math.abs(to.x - from.x),
     dy = Math.abs(to.y - from.y),
     start = surfaceAt(state, from),
@@ -69,32 +80,38 @@ export function canWalkBetween(state, from, to) {
     start.blocked ||
     end.blocked ||
     surfaceHeight(state, from) !== surfaceHeight(state, to)
-  )
+  ) {
     return false;
-  if (dx && dy)
+  }
+  if (dx && dy) {
     for (const point of [
       { ...spacePoint(from), x: to.x },
       { ...spacePoint(from), y: to.y },
     ]) {
       const corner = surfaceAt(state, point);
       if (!corner || corner.blocked || surfaceHeight(state, point) !== surfaceHeight(state, from))
-        return false;
+        {return false;}
     }
+  }
   return true;
 }
+/** @returns {(import('./public/compatibility-types.ts').TacticalPoint&{kind:'climb';linkId:string;from:import('./public/compatibility-types.ts').TacticalPoint})[]} */
 export function accessStepsFrom(state, point) {
   const steps = [];
   for (const link of state.climbLinks ?? []) {
     const to = sameCell(point, link.from) ? link.to : sameCell(point, link.to) ? link.from : null;
-    if (to)
+    if (to) {
       steps.push({ ...spacePoint(to), kind: 'climb', linkId: link.id, from: spacePoint(point) });
+    }
   }
   return steps;
 }
 
 const object = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 const need = (ok, label) => {
-  if (!ok) throw Error(`El espacio táctico contiene ${label} inválidos.`);
+  if (!ok) {
+    throw Error(`El espacio táctico contiene ${label} inválidos.`);
+  }
 };
 export function validateTacticalSpace(state) {
   const coord = (point) =>
@@ -128,7 +145,7 @@ export function validateTacticalSpace(state) {
         'pertenencia al edificio',
       );
     }
-    if (surface.roomId !== undefined)
+    if (surface.roomId !== undefined) {
       need(
         (state.buildings ?? [])
           .flatMap((b) => b.rooms ?? [])
@@ -138,15 +155,17 @@ export function validateTacticalSpace(state) {
           ),
         'pertenencia a la habitación',
       );
+    }
   }
   for (const levels of columns.values()) {
     levels.sort((a, b) => tacticalLevel(a) - tacticalLevel(b));
-    for (let i = 1; i < levels.length; i++)
+    for (let i = 1; i < levels.length; i++) {
       need(
         levels[i].elevation - (levels[i].slabThickness ?? DEFAULT_SLAB_THICKNESS) >
           levels[i - 1].elevation,
         'orden de las alturas',
       );
+    }
   }
   const endpoint = (point) =>
     coord(point) &&
@@ -164,7 +183,9 @@ export function validateTacticalSpace(state) {
   }
   const supported = (point, label, walkable = false) => {
     need(coord(point) && surfaceAt(state, point), label);
-    if (walkable && tacticalLevel(point) > 0) need(!surfaceAt(state, point).blocked, label);
+    if (walkable && tacticalLevel(point) > 0) {
+      need(!surfaceAt(state, point).blocked, label);
+    }
   };
   const upperOccupants = new Set();
   for (const actor of [...(state.units ?? []), ...(state.npcs ?? [])]) {
@@ -178,20 +199,23 @@ export function validateTacticalSpace(state) {
         upperOccupants.add(spaceKey(actor));
       }
     }
-    if (actor.departure)
+    if (actor.departure) {
       need(
         tacticalLevel(actor) === 0 && tacticalLevel(actor.departure) === 0,
         'salidas a nivel del suelo',
       );
+    }
     for (const point of [
       actor.lastKnownEnemy,
       actor.lastShotPosition,
       actor.patrolOrigin,
       actor.ai?.destination,
-    ])
-      if (point) supported(point, 'posiciones recordadas');
-    for (const point of [...(actor.lastMovePath ?? []), ...(actor.fleePath ?? [])])
+    ]) {
+      if (point) {supported(point, 'posiciones recordadas');}
+    }
+    for (const point of [...(actor.lastMovePath ?? []), ...(actor.fleePath ?? [])]) {
       supported(point, 'rutas');
+    }
   }
   for (const item of [
     ...(state.groundItems ?? []),
@@ -199,20 +223,22 @@ export function validateTacticalSpace(state) {
     ...(state.lights ?? []),
     ...(state.smoke ?? []),
     ...(state.artillery ?? []),
-  ])
+  ]) {
     supported(item, 'apoyos de objetos');
+  }
   for (const prop of state.props ?? []) {
     const size = prop.footprint ?? { width: 1, height: 1 };
-    for (let dy = 0; dy < size.height; dy++)
+    for (let dy = 0; dy < size.height; dy++) {
       for (let dx = 0; dx < size.width; dx++) {
         const point = { ...spacePoint(prop), x: prop.x + dx, y: prop.y + dy };
         supported(point, 'apoyos del mobiliario');
         if (tacticalLevel(prop) > 0) {
           need(surfaceHeight(state, prop) === surfaceHeight(state, point), 'altura del mobiliario');
           if (prop.blocksMovement !== false)
-            need(!upperOccupants.has(spaceKey(point)), 'personas dentro del mobiliario');
+            {need(!upperOccupants.has(spaceKey(point)), 'personas dentro del mobiliario');}
         }
       }
+    }
   }
   // Nothing is added to old flat saves. Their serialized form stays unchanged.
   return state;

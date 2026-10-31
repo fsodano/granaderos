@@ -1,7 +1,3 @@
-import {
-  ARTILLERY_TRANSPORT_FIELDS,
-  validateArtilleryTransportRules,
-} from '../campaign-format/campaign-rules-schema.js';
 export {
   ARTILLERY_TRANSPORT_FIELDS,
   validateArtilleryTransportRules,

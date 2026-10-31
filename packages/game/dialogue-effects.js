@@ -6,7 +6,9 @@ import {
   QUEST_STATE_LABELS,
 } from './content-quests.js';
 const need = (ok, message) => {
-  if (!ok) throw Error(message);
+  if (!ok) {
+    throw Error(message);
+  }
 };
 const object = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 const exact = (v, keys) =>
@@ -16,7 +18,9 @@ const amountFor = (effect) => (effect ? effect.amount * (effect.operation === 'p
 const receiptFor = (s, npc, node, choice) =>
   s.conversations?.[npc.id]?.dialogueReceipts?.find((r) => r.node === node && r.choice === choice);
 export function dialogueEffectQuote(s, npc, node, choice, battle = null) {
-  if (!choice.effects?.length) return null;
+  if (!choice.effects?.length) {
+    return null;
+  }
   const money = choice.effects.find((e) => e.type === 'treasury'),
     quest = choice.effects.find((e) => e.type === 'quest'),
     transition = quest ? questTransitionQuote(s, quest) : null;
@@ -66,14 +70,19 @@ export function dialogueEffectQuote(s, npc, node, choice, battle = null) {
 }
 export function applyDialogueEffects(s, npc, node, choice, battle = null) {
   const quote = dialogueEffectQuote(s, npc, node, choice, battle);
-  if (!quote) return null;
+  if (!quote) {
+    return null;
+  }
   need(quote.available, quote.reason);
   if (!quote.used) {
     const movement = choice.effects.find((e) => e.type === 'movement');
-    if (movement)
+    if (movement) {
       recordDialogueMovement(s, npc, node, choice, movementQuote(s, battle, movement, npc));
+    }
     const quest = choice.effects.find((e) => e.type === 'quest');
-    if (quest) applyQuestTransition(s, quest, { npc: npc.id, node, choice: choice.id });
+    if (quest) {
+      applyQuestTransition(s, quest, { npc: npc.id, node, choice: choice.id });
+    }
     s.resources.treasury += quote.amount;
     s.conversations ??= {};
     const record = (s.conversations[npc.id] ??= {});
@@ -93,7 +102,9 @@ export function applyDialogueEffects(s, npc, node, choice, battle = null) {
 }
 export function validateDialogueReceipts(s, graph, record) {
   const receipts = record.dialogueReceipts;
-  if (receipts === undefined) return;
+  if (receipts === undefined) {
+    return;
+  }
   need(
     Array.isArray(receipts) && receipts.length <= 360,
     'El registro de operaciones del diálogo es inválido.',
@@ -123,7 +134,9 @@ export function validateDialogueReceipts(s, graph, record) {
 }
 export function validateLastDialogueEffect(s, npc, graph, last) {
   const effect = last?.dialogueEffect;
-  if (effect === undefined) return;
+  if (effect === undefined) {
+    return;
+  }
   need(
     last.outcome === 'dialogue' &&
       exact(effect, [

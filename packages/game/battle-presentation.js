@@ -5,14 +5,16 @@ import { markFirearmNearMissPresented } from './firearm-near-miss-feedback.js';
 import { surfaceAt, tacticalLevel } from './tactical-space.js';
 import { obstacleVolumesAt, volumeRayCell, rayHeightIntersection } from './sight-geometry.js';
 import { wallEdgeId, wallEdgeCells } from './wall-geometry.js';
-import { isInteriorVisible } from './tactical-visibility.js';
+import { isInteriorVisible } from './tactical-visibility.ts';
 let recorder = null,
   recordingShotHand = null;
 export function captureBattlePresentationCheckpoint() {
   return recorder?.checkpoint?.();
 }
 export function restoreBattlePresentationCheckpoint(checkpoint) {
-  if (checkpoint) recorder?.restore?.(checkpoint);
+  if (checkpoint) {
+    recorder?.restore?.(checkpoint);
+  }
 }
 export function withBattleShotHand(hand, execute) {
   const previous = recordingShotHand;
@@ -24,17 +26,23 @@ export function withBattleShotHand(hand, execute) {
   }
 }
 export function recordBattleFrame(state, event) {
-  if (!recorder) return;
+  if (!recorder) {
+    return;
+  }
   if (event.shotVisual) {
     const shotHand =
       recordingShotHand ?? (event.shotVisual.shotHand === 'offhand' ? 'offhand' : 'primary');
     recorder(state, { ...event, shotHand, shotVisual: { ...event.shotVisual, shotHand } });
-  } else recorder(state, event);
+  } else {
+    recorder(state, event);
+  }
 }
 // Reuse unchanged branches between frames. Tiles and buildings normally share
 // one copy; a breach still receives its own snapshot at the correct instant.
 function snapshot(value, previous) {
-  if (value === null || typeof value !== 'object') return value;
+  if (value === null || typeof value !== 'object') {
+    return value;
+  }
   const keys = Object.keys(value),
     sameKind =
       previous && typeof previous === 'object' && Array.isArray(value) === Array.isArray(previous);
@@ -42,7 +50,9 @@ function snapshot(value, previous) {
   const next = Array.isArray(value) ? [] : {};
   for (const key of keys) {
     next[key] = snapshot(value[key], sameKind ? previous[key] : undefined);
-    if (!sameKind || next[key] !== previous[key]) same = false;
+    if (!sameKind || next[key] !== previous[key]) {
+      same = false;
+    }
   }
   return same ? previous : next;
 }
@@ -83,15 +93,18 @@ function observedStoneContact(state, point, contact, canObserve, canObserveExter
         Number.isFinite(contact.point[key]) &&
         Math.abs(point[key] - contact.point[key]) < 1e-8,
     )
-  )
+  ) {
     return false;
+  }
   const match =
     typeof contact.sourceId === 'string' && /^surface:(\d+):(\d+),(\d+)$/.exec(contact.sourceId);
   const edge =
     typeof contact.sourceId === 'string' && contact.sourceId.startsWith('edge:')
       ? (state.wallEdges ?? []).find((edge) => `edge:${wallEdgeId(edge)}` === contact.sourceId)
       : null;
-  if (!match && !edge) return false;
+  if (!match && !edge) {
+    return false;
+  }
   const cell = edge
       ? wallEdgeCells(edge)[0]
       : { tacticalLevel: Number(match[1]), x: Number(match[2]), y: Number(match[3]) },
@@ -109,11 +122,14 @@ function observedStoneContact(state, point, contact, canObserve, canObserveExter
     tacticalLevel(point) !== cell.tacticalLevel ||
     point.height <= volume.bottom + 1e-8 ||
     point.height >= volume.top - 1e-8
-  )
+  ) {
     return false;
+  }
   const normal = contact.normal,
     bounds = volume.bounds;
-  if (!normal || normal.height !== 0) return false;
+  if (!normal || normal.height !== 0) {
+    return false;
+  }
   const onFace =
     normal.y === 0 && Math.abs(normal.x) === 1
       ? Math.abs(point.x - (normal.x < 0 ? bounds.minX : bounds.maxX)) < 1e-8 &&
@@ -124,8 +140,12 @@ function observedStoneContact(state, point, contact, canObserve, canObserveExter
         Math.abs(point.y - (normal.y < 0 ? bounds.minY : bounds.maxY)) < 1e-8 &&
         point.x > bounds.minX + 1e-8 &&
         point.x < bounds.maxX - 1e-8;
-  if (!onFace) return false;
-  if (!canObserveExterior(state, surface)) return false;
+  if (!onFace) {
+    return false;
+  }
+  if (!canObserveExterior(state, surface)) {
+    return false;
+  }
   const outside = {
     x: Math.floor(point.x + normal.x * 0.25 + 0.5),
     y: Math.floor(point.y + normal.y * 0.25 + 0.5),
@@ -139,13 +159,16 @@ function observedStoneContact(state, point, contact, canObserve, canObserveExter
         !other.stoneFace ||
         point.height <= other.bottom + 1e-8 ||
         point.height >= other.top - 1e-8
-      )
+      ) {
         return false;
+      }
       if (other.kind === 'edge') {
         const bounds = other.bounds,
           x = point.x + normal.x * 0.0001,
           y = point.y + normal.y * 0.0001;
-        if (x < bounds.minX || x > bounds.maxX || y < bounds.minY || y > bounds.maxY) return false;
+        if (x < bounds.minX || x > bounds.maxX || y < bounds.minY || y > bounds.maxY) {
+          return false;
+        }
         const neighbour = (state.wallEdges ?? []).find(
           (edge) => `edge:${wallEdgeId(edge)}` === other.id,
         );
@@ -165,12 +188,15 @@ function observedStoneContact(state, point, contact, canObserve, canObserveExter
       }
       return false;
     })
-  )
+  ) {
     return false;
+  }
   return true;
 }
 function observedShot(state, raw, known, canObserve, canObserveExterior) {
-  if (!raw) return null;
+  if (!raw) {
+    return null;
+  }
   // An unseen interception cannot disclose a concealed body or its coordinates.
   // In that case only the observed part of the original ray is shown.
   const hiddenVictim =
@@ -181,8 +207,9 @@ function observedShot(state, raw, known, canObserve, canObserveExterior) {
     ![raw.source, end].every(
       (point) => point && [point.x, point.y, point.height].every(Number.isFinite),
     )
-  )
+  ) {
     return null;
+  }
   if (
     raw.discharge === false &&
     !canObserve(state, {
@@ -197,8 +224,9 @@ function observedShot(state, raw, known, canObserve, canObserveExterior) {
       canObserve,
       canObserveExterior,
     )
-  )
+  ) {
     return null;
+  }
   const distance = Math.hypot(end.x - raw.source.x, end.y - raw.source.y),
     points = [];
   if (raw.trajectoryModel !== undefined) {
@@ -210,16 +238,18 @@ function observedShot(state, raw, known, canObserve, canObserveExterior) {
       !finish ||
       !Number.isFinite(model.horizontalDistance) ||
       model.horizontalDistance <= 0
-    )
+    ) {
       return null;
+    }
     const dx = finish.x - start.x,
       dy = finish.y - start.y,
       length = dx * dx + dy * dy;
     const progress = (point) => ((point.x - start.x) * dx + (point.y - start.y) * dy) / length;
     const from = progress(raw.source),
       to = progress(end);
-    if (!Number.isFinite(from) || !Number.isFinite(to) || from < 0 || to > 1 || to < from)
+    if (!Number.isFinite(from) || !Number.isFinite(to) || from < 0 || to > 1 || to < from) {
       return null;
+    }
     // Sample the same fixed XY grid before any visibility boundary. A private
     // stop or fallback endpoint cannot shift the visible sampling positions.
     for (
@@ -232,11 +262,15 @@ function observedShot(state, raw, known, canObserve, canObserveExterior) {
         step / (4 * model.horizontalDistance),
         raw.source.tacticalLevel,
       );
-      if (!point) return null;
+      if (!point) {
+        return null;
+      }
       points.push(point);
     }
     const point = projectileTrajectoryPoint(model, to, end.tacticalLevel);
-    if (!point) return null;
+    if (!point) {
+      return null;
+    }
     points.push(point);
   } else {
     const steps = Math.max(1, Math.ceil(distance * 4));
@@ -268,7 +302,9 @@ function observedShot(state, raw, known, canObserve, canObserveExterior) {
     last = point;
     admitted.push(point);
   }
-  if (last === raw.source) return null;
+  if (last === raw.source) {
+    return null;
+  }
   const outcome = !complete
     ? null
     : hiddenVictim
@@ -324,11 +360,13 @@ function observedArtilleryEdgeContact(state, point, contact, raw, canObserveExte
       (key) => Number.isFinite(point?.[key]) && Math.abs(point[key] - contact.point[key]) < 1e-8,
     ) ||
     tacticalLevel(point) !== tacticalLevel(contact.point)
-  )
+  ) {
     return false;
+  }
   const edge = (state.wallEdges ?? []).find((edge) => wallEdgeId(edge) === contact.edgeId);
-  if (!edge || tacticalLevel(point) !== tacticalLevel(edge) || !canObserveExterior(state, edge))
+  if (!edge || tacticalLevel(point) !== tacticalLevel(edge) || !canObserveExterior(state, edge)) {
     return false;
+  }
   const volume = obstacleVolumesAt(state, wallEdgeCells(edge)[0]).find(
     (volume) => volume.kind === 'edge' && volume.edgeId === contact.edgeId,
   );
@@ -359,8 +397,9 @@ function observedArtillery(state, raw, known, canObserve, canObserveExterior) {
     ![raw.source, raw.destination].every(
       (point) => point && [point.x, point.y, point.height].every(Number.isFinite),
     )
-  )
+  ) {
     return null;
+  }
   const clean = (point) => ({
     x: point.x,
     y: point.y,
@@ -369,7 +408,9 @@ function observedArtillery(state, raw, known, canObserve, canObserveExterior) {
   });
   const observed = (point) =>
     canObserve(state, { ...point, x: Math.round(point.x), y: Math.round(point.y) });
-  if (!observed(raw.source)) return null;
+  if (!observed(raw.source)) {
+    return null;
+  }
   const source = clean(raw.source),
     canister = Boolean(raw.canister),
     points = [source],
@@ -386,13 +427,15 @@ function observedArtillery(state, raw, known, canObserve, canObserveExterior) {
       raw.displaySurfaceContact && !endContact
         ? raw.destination
         : (raw.displayEnd ?? raw.destination);
-  if (![end.x, end.y, end.height].every(Number.isFinite)) return null;
+  if (![end.x, end.y, end.height].every(Number.isFinite)) {
+    return null;
+  }
   // Artillery currently resolves grid cells, not a metric trajectory. This is
   // an observed-only grid trace from the issued aim. A private body/force stop
   // never supplies its endpoint, height, material or presentation duration.
   const distance = Math.hypot(end.x - source.x, end.y - source.y),
     steps = Math.min(255, Math.max(1, Math.ceil(distance * 4)));
-  if (!canister)
+  if (!canister) {
     for (let n = 1; n <= steps; n++) {
       const fraction = n / steps,
         point = {
@@ -401,9 +444,10 @@ function observedArtillery(state, raw, known, canObserve, canObserveExterior) {
           height: source.height + (end.height - source.height) * fraction,
           tacticalLevel: source.tacticalLevel,
         };
-      if (!observed(point) && !(n === steps && endContact)) break;
+      if (!observed(point) && !(n === steps && endContact)) {break;}
       points.push(point);
     }
+  }
   const impacts = (raw.impacts ?? [])
     .filter(
       (point) =>
@@ -474,8 +518,9 @@ export function captureBattlePresentation(
     if (event.type === 'crew') {
       if (
         !['artillery', 'artilleryReload', 'artilleryMove', 'artilleryPivot'].includes(event.action)
-      )
+      ) {
         return;
+      }
       const leader = state.units.find((unit) => unit.id === event.unitId),
         crewIds = [
           ...new Set(
@@ -487,12 +532,13 @@ export function captureBattlePresentation(
           ),
         ];
       actionCrews.set(event.unitId, { action: event.action, crewIds });
-      for (let n = actionStarts.get(event.unitId) ?? frames.length; n < frames.length; n++)
+      for (let n = actionStarts.get(event.unitId) ?? frames.length; n < frames.length; n++) {
         if (frames[n].action === event.action) {
           const observed = knownIn(frames[n].state),
             admitted = crewIds.filter((id) => observed.has(bodyKey('unit', id)));
-          if (admitted.length) frames[n].crewIds = admitted;
+          if (admitted.length) {frames[n].crewIds = admitted;}
         }
+      }
       return;
     }
     const nearMissIds = Array.isArray(event.nearMissIds)
@@ -505,8 +551,12 @@ export function captureBattlePresentation(
             ),
         )
       : [];
-    if (!seen && signature === lastSignature && !nearMissIds.length) return;
-    if ((event.type === 'prepare' || event.type === 'contact') && !seen) return;
+    if (!seen && signature === lastSignature && !nearMissIds.length) {
+      return;
+    }
+    if ((event.type === 'prepare' || event.type === 'contact') && !seen) {
+      return;
+    }
     const shotVisual = seen
       ? observedShot(state, event.shotVisual, known, canObserve, canObserveExterior)
       : null;
@@ -514,15 +564,20 @@ export function captureBattlePresentation(
       if (
         (event.type === 'projectile' && shotVisual.discharge !== false) ||
         !shotIds.has(event.unitId)
-      )
+      ) {
         shotIds.set(event.unitId, `${event.unitId}:${++shotSequence}`);
+      }
       shotVisual.shotId = shotIds.get(event.unitId);
     }
     const artilleryVisual = seen
       ? observedArtillery(state, event.artilleryVisual, known, canObserve, canObserveExterior)
       : null;
-    if (event.type === 'projectile' && shotVisual) presentedShots.add(event.unitId);
-    if (event.type === 'projectile' && artilleryVisual) presentedArtillery.add(event.unitId);
+    if (event.type === 'projectile' && shotVisual) {
+      presentedShots.add(event.unitId);
+    }
+    if (event.type === 'projectile' && artilleryVisual) {
+      presentedArtillery.add(event.unitId);
+    }
     const impacts = bodyEntries(state)
       .filter(({ body, kind }) => known.has(bodyKey(kind, body.id)))
       .flatMap(({ body: u, kind }) => {
@@ -556,7 +611,9 @@ export function captureBattlePresentation(
     prior = current;
     lastSignature = signature;
     const shotComplete = event.type === 'result' && presentedShots.delete(event.unitId);
-    if (shotComplete) shotIds.delete(event.unitId);
+    if (shotComplete) {
+      shotIds.delete(event.unitId);
+    }
     const artilleryComplete = event.type === 'result' && presentedArtillery.delete(event.unitId);
     const crew = actionCrews.get(event.unitId),
       crewIds =
@@ -631,7 +688,9 @@ export function captureBattlePresentation(
       [presentedArtillery, checkpoint.presentedArtillery],
     ]) {
       target.clear();
-      for (const value of source) target.add(value);
+      for (const value of source) {
+        target.add(value);
+      }
     }
     for (const [target, source] of [
       [shotIds, checkpoint.shotIds],
@@ -639,12 +698,16 @@ export function captureBattlePresentation(
       [actionCrews, checkpoint.actionCrews],
     ]) {
       target.clear();
-      for (const [key, value] of source) target.set(key, value);
+      for (const [key, value] of source) {
+        target.set(key, value);
+      }
     }
   };
   try {
     const state = execute();
-    if (frames.some((frame) => frame.nearMissIds)) markFirearmNearMissPresented(state);
+    if (frames.some((frame) => frame.nearMissIds)) {
+      markFirearmNearMissPresented(state);
+    }
     return { state, frames };
   } finally {
     recorder = parent;

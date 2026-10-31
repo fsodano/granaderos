@@ -34,7 +34,7 @@ import {
   worldCell,
   sameCityCells,
   roadLinks,
-} from './world-cells.js';
+} from './world-cells.ts';
 import { tooTiredToMarch, advanceMarchFatigue } from './march-fatigue.js';
 import { mountForOperative } from './horses.js';
 import { recordStrategicArrival } from './deployment-return.js';
@@ -42,7 +42,9 @@ import { flotillaSectorAllowed } from './logistics.js';
 
 const sector = (id, context) => campaignSectors(context).find((d) => d.id === id);
 const need = (ok, message) => {
-  if (!ok) throw Error(message);
+  if (!ok) {
+    throw Error(message);
+  }
 };
 const modes = ['march', 'horse', 'posta', 'flotilla', 'carts'];
 const progressSeconds = (j) => j.elapsed * 3600 + (j.elapsedSecond ?? 0);
@@ -58,6 +60,8 @@ const retainJourney = (
   squad.journeyRevision = acceptedRevision;
 };
 
+/** @param {import('./public/campaign-types.ts').CampaignSnapshot} campaign
+ * @returns {import("./public/campaign-types.ts").CampaignArrivalDecision[]} */
 export function pendingArrivalDecisions(campaign) {
   return campaign.squads
     .filter((squad) => squad.journey?.status === 'ready')
@@ -77,6 +81,7 @@ export function pendingArrivalDecisions(campaign) {
     );
 }
 
+/** @param {Pick<import('./public/campaign-types.ts').CampaignSnapshot, 'squads'>} campaign @returns {boolean} */
 export const hasPendingArrivalDecision = (campaign) =>
   campaign.squads.some((squad) => squad.journey?.status === 'ready');
 
@@ -169,14 +174,22 @@ export function redirectJourney(campaign, request) {
     if (arrival.from !== arrival.to) {
       recordStrategicArrival(campaign, squad.members, arrival.from, arrival.to);
       squad.location = arrival.to;
-      for (const id of squad.members) campaign.operativeState[id].location = arrival.to;
-      for (const horse of campaign.horseState.horses)
+      for (const id of squad.members) {
+        campaign.operativeState[id].location = arrival.to;
+      }
+      for (const horse of campaign.horseState.horses) {
         if (!horse.returned && squad.members.includes(horse.assignedTo))
-          horse.location = arrival.to;
-      if (squad.id === campaign.activeSquadId) campaign.location = arrival.to;
+          {horse.location = arrival.to;}
+      }
+      if (squad.id === campaign.activeSquadId) {
+        campaign.location = arrival.to;
+      }
     }
-    if (arrival.complete) delete squad.journey;
-    else retainJourney(squad, journey, squad.journeyRevision);
+    if (arrival.complete) {
+      delete squad.journey;
+    } else {
+      retainJourney(squad, journey, squad.journeyRevision);
+    }
   }
   return response;
 }
@@ -212,13 +225,24 @@ export const assaultNeighbor = (from, to, context = null) =>
     (sector(from, context)?.neighbors.includes(to) ||
       (validWorldLocation(from, context) && adjacentCells(from, to, context))),
   );
+/**
+ * @param {string} from
+ * @param {string} to
+ * @param {string} [mode]
+ * @param {import("./public/compatibility-types.ts").CampaignContext} [context]
+ * @returns {number}
+ */
 export const travelLegHours = (from, to, mode = 'march', context = null) => {
-  if (adjacentCells(from, to, context)) return cellLegHours(from, to, mode, context);
+  if (adjacentCells(from, to, context)) {
+    return cellLegHours(from, to, mode, context);
+  }
   if (sameCityCells(from, to, context)) {
     const link = roadLinks(context).find(
       (link) => (link.from === from && link.to === to) || (link.from === to && link.to === from),
     );
-    if (link) return (link.path.length - 1) * TRAVEL_BALANCE.cityCellHours;
+    if (link) {
+      return (link.path.length - 1) * TRAVEL_BALANCE.cityCellHours;
+    }
   }
   return Math.ceil(
     {
@@ -240,22 +264,28 @@ export function supportedTravelLegHours(from, to, mode = 'march', context = null
     hours.add(previousCellStepHours(to, mode, context));
   }
   if (!sector(from, context) && adjacentCells(from, to, context)) {
-    if (mode === 'march') hours.add(worldCell(to, context)?.biome === 'mountain' ? 4 : 2);
-  } else
+    if (mode === 'march') {
+      hours.add(worldCell(to, context)?.biome === 'mountain' ? 4 : 2);
+    }
+  } else {
     hours.add(
       Math.ceil(
         { march: 12, horse: 6, posta: 4, flotilla: 5, carts: 18 }[mode] *
           ([from, to].some((id) => sector(id, context)?.biome === 'mountain') ? 1.5 : 1),
       ),
     );
+  }
   return [...hours];
 }
+/** @param {import('./public/campaign-types.ts').CampaignSnapshot} s
+ * @param {import("./public/campaign-types.ts").CampaignSquad} q
+ * @returns {boolean} */
 export const squadHasHorses = (s, q) =>
   Boolean(
     q?.members.length && q.members.every((id) => mountForOperative(s.horseState, id)?.canMount),
   );
 function pathTo(s, from, to, mode) {
-  if (['march', 'horse'].includes(mode) || !sector(from, s) || !sector(to, s))
+  if (['march', 'horse'].includes(mode) || !sector(from, s) || !sector(to, s)) {
     return cellTravelPlan(
       {
         location: from,
@@ -266,32 +296,41 @@ function pathTo(s, from, to, mode) {
       to,
       mode,
     ).path;
+  }
   const queue = [[from]],
     seen = new Set([from]);
   while (queue.length) {
     const path = queue.shift(),
       last = path.at(-1);
-    if (last === to) return path;
-    for (const id of sector(last, s).neighbors)
+    if (last === to) {
+      return path;
+    }
+    for (const id of sector(last, s).neighbors) {
       if (!seen.has(id) && s.sectors[id].owner === 'patriot') {
         seen.add(id);
         queue.push([...path, id]);
       }
+    }
   }
   return null;
 }
 function legIssue(s, q) {
   const j = q.journey,
     [from, to] = j.path;
-  if (!q.members.length) return 'empty';
+  if (!q.members.length) {
+    return 'empty';
+  }
   if (
     q.members.some(
       (id) =>
         !s.recruited.includes(id) || !s.operativeState[id]?.alive || s.operativeState[id].captured,
     )
-  )
+  ) {
     return 'unavailable';
-  if (q.members.some((id) => tooTiredToMarch(s.operativeState[id]))) return 'exhausted';
+  }
+  if (q.members.some((id) => tooTiredToMarch(s.operativeState[id]))) {
+    return 'exhausted';
+  }
   if (
     q.members.some(
       (id) =>
@@ -299,29 +338,39 @@ function legIssue(s, q) {
         s.operativeState[id].assignment !== 'active' ||
         s.militiaTraining?.some((t) => t.trainerId === id),
     )
-  )
+  ) {
     return 'assignment';
+  }
   if (
     s.enemyGroups?.some(
       (g) => g.target === from && ['waiting', 'engaged', 'stationed'].includes(g.status),
     )
-  )
+  ) {
     return 'contact';
+  }
   if (
     (j.intent !== 'attack' && s.pendingBattle?.sector === to) ||
     (j.intent !== 'attack' &&
       (worldOwner(s, to) === 'royalist' ||
         s.enemyGroups?.some((g) => g.target === to && g.status === 'stationed')))
-  )
+  ) {
     return 'blocked';
-  if ([from, to].some((id) => cellWinterClosed(s, id))) return 'winter';
-  if (j.mode === 'horse' && !squadHasHorses(s, q)) return 'transport';
+  }
+  if ([from, to].some((id) => cellWinterClosed(s, id))) {
+    return 'winter';
+  }
+  if (j.mode === 'horse' && !squadHasHorses(s, q)) {
+    return 'transport';
+  }
   if (
     (!['march', 'horse'].includes(j.mode) && !s.routes[j.mode]) ||
     (j.mode === 'flotilla' && s.blockade)
-  )
+  ) {
     return 'transport';
-  if (j.mode === 'posta' && s.resources.treasury < 10) return 'remounts';
+  }
+  if (j.mode === 'posta' && s.resources.treasury < 10) {
+    return 'remounts';
+  }
   return null;
 }
 export function queueSquadTravel(
@@ -333,13 +382,14 @@ export function queueSquadTravel(
   need(modes.includes(mode), 'Medio de transporte desconocido.');
   need(Array.isArray(waypoints) && waypoints.length <= 8, 'Elegí hasta ocho escalas.');
   need(['travel', 'attack'].includes(intent), 'La intención de marcha es inválida.');
-  if (intent === 'attack')
+  if (intent === 'attack') {
     need(
       waypoints.length === 0 && assaultNeighbor(q.location, destination, s),
       'Prepará el ataque desde un sector vecino, sin escalas.',
     );
+  }
   need(validWorldLocation(q.location, s), 'La ubicación de la escuadra no existe.');
-  let path = [q.location];
+  const path = [q.location];
   for (const to of [...waypoints, destination]) {
     need(
       validWorldLocation(to, s) && (intent === 'attack' || worldOwner(s, to) !== 'royalist'),
@@ -386,9 +436,11 @@ export function cancelSquadTravel(squad, choice = 'stop') {
     delete squad.journey;
     return;
   }
-  if (choice === 'return' || journey.purpose === JourneyPurpose.HostileApproach)
+  if (choice === 'return' || journey.purpose === JourneyPurpose.HostileApproach) {
     journey.returnToOrigin();
-  else journey.stopAtNextSector();
+  } else {
+    journey.stopAtNextSector();
+  }
   retainJourney(squad, journey);
 }
 
@@ -401,8 +453,13 @@ export function resumeSquadTravel(campaign, squad) {
   retainJourney(squad, journey);
 }
 
+/** @param {import("./public/campaign-types.ts").CampaignSquad} squad
+ * @param {import('./public/campaign-types.ts').CampaignSnapshot | null} [context]
+ * @returns {import("./public/campaign-types.ts").CampaignTravelStatus | null} */
 export function squadTravelStatus(squad, context = null) {
-  if (!squad.journey) return null;
+  if (!squad.journey) {
+    return null;
+  }
   const record = squad.journey;
   const journey = journeyMapper.restore(
     squad,
@@ -458,7 +515,9 @@ export function advanceSquadTravel(
     Number.isSafeInteger(seconds) && seconds >= 1 && seconds <= SecondsPerTravelHour,
     'El intervalo de marcha es inválido.',
   );
-  if (hasPendingArrivalDecision(campaign)) return false;
+  if (hasPendingArrivalDecision(campaign)) {
+    return false;
+  }
   const acceptedRevisions = new Map(
     campaign.squads
       .filter(
@@ -472,7 +531,9 @@ export function advanceSquadTravel(
     events.push({ squadId: squad.id, name: squad.name, sector: squad.location, text: message });
   };
   for (const squad of campaign.squads) {
-    if (!squad.journey) continue;
+    if (!squad.journey) {
+      continue;
+    }
     if (!squad.members.length) {
       squad.journeyRevision = acceptedRevisions.get(squad.id);
       delete squad.journey;
@@ -480,7 +541,9 @@ export function advanceSquadTravel(
       continue;
     }
     const journey = restoreJourney(campaign, squad);
-    if (!journey.travelling) continue;
+    if (!journey.travelling) {
+      continue;
+    }
     if (!journey.backwards && journey.positionSeconds === 0) {
       const reason = legIssue(campaign, squad);
       if (reason) {
@@ -490,7 +553,9 @@ export function advanceSquadTravel(
         continue;
       }
       if (!journey.legPaid) {
-        if (squad.journey.mode === 'posta') campaign.resources.treasury -= 10;
+        if (squad.journey.mode === 'posta') {
+          campaign.resources.treasury -= 10;
+        }
         journey.markLegPaid();
       }
     }
@@ -524,7 +589,7 @@ export function advanceSquadTravel(
         campaign,
         roster.map((operative) => ({
           ...operative,
-          ...(mountForOperative(campaign.horseState, operative.id) ?? {}),
+          ...mountForOperative(campaign.horseState, operative.id),
         })),
         {
           traveling: squad.members,
@@ -535,12 +600,15 @@ export function advanceSquadTravel(
         },
       );
       for (const horse of campaign.horseState.horses) {
-        if (!horse.returned && squad.members.includes(horse.assignedTo))
+        if (!horse.returned && squad.members.includes(horse.assignedTo)) {
           horse.stamina = Math.max(0, horse.stamina - 2);
+        }
       }
     }
     retainJourney(squad, journey, acceptedRevisions.get(squad.id));
-    if (!progress.reachedBoundary) continue;
+    if (!progress.reachedBoundary) {
+      continue;
+    }
     if (journey.awaitingArrivalDecision) {
       announce(
         squad,
@@ -556,14 +624,21 @@ export function advanceSquadTravel(
           SecondsPerTravelHour
         : undefined;
     const arrival = journey.finishLeg(nextLegSeconds);
-    if (arrival.to !== arrival.from)
+    if (arrival.to !== arrival.from) {
       recordStrategicArrival(campaign, squad.members, arrival.from, arrival.to);
-    squad.location = arrival.to;
-    for (const id of squad.members) campaign.operativeState[id].location = arrival.to;
-    for (const horse of campaign.horseState.horses) {
-      if (!horse.returned && squad.members.includes(horse.assignedTo)) horse.location = arrival.to;
     }
-    if (squad.id === campaign.activeSquadId) campaign.location = arrival.to;
+    squad.location = arrival.to;
+    for (const id of squad.members) {
+      campaign.operativeState[id].location = arrival.to;
+    }
+    for (const horse of campaign.horseState.horses) {
+      if (!horse.returned && squad.members.includes(horse.assignedTo)) {
+        horse.location = arrival.to;
+      }
+    }
+    if (squad.id === campaign.activeSquadId) {
+      campaign.location = arrival.to;
+    }
     onArrival(squad);
     for (const horse of campaign.horseState.horses) {
       if (
@@ -595,12 +670,13 @@ export function advanceSquadTravel(
       );
     }
   }
-  if (events.length)
+  if (events.length) {
     campaign.travelNotice = {
       hour: campaign.hour,
       ...(campaign.secondOfHour ? { secondOfHour: campaign.secondOfHour } : {}),
       events,
     };
+  }
   return events.length > 0;
 }
 export function validateSquadTravel(s) {
@@ -631,7 +707,9 @@ export function validateSquadTravel(s) {
   );
   for (const q of s.squads) {
     const j = q.journey;
-    if (j === undefined) continue;
+    if (j === undefined) {
+      continue;
+    }
     need(
       j &&
         typeof j === 'object' &&
@@ -731,7 +809,7 @@ export function validateSquadTravel(s) {
       q.members.every((id) => !s.pendingBattle?.squad?.some((u) => Number(u.id) === id)),
       'Una escuadra en ruta no puede estar desplegada.',
     );
-    if (['moving', 'ready'].includes(j.status))
+    if (['moving', 'ready'].includes(j.status)) {
       need(
         q.members.every(
           (id) =>
@@ -743,6 +821,7 @@ export function validateSquadTravel(s) {
         ),
         'Los viajeros guardados no están disponibles.',
       );
+    }
   }
 }
 
@@ -796,25 +875,31 @@ export function arriveForAssault(s, groups, target) {
     members: [...q.members],
   }));
   for (const q of groups) {
-    if (q.journey?.status === 'ready')
+    if (q.journey?.status === 'ready') {
       authorizeFightOnArrival(s, {
         squadId: q.id,
         decisionId: restoreJourney(s, q).arrivalDecision.id,
       });
+    }
   }
   for (const q of groups) {
     recordStrategicArrival(s, q.members, q.location, target);
     q.location = target;
     delete q.journey;
-    for (const horse of s.horseState.horses)
-      if (!horse.returned && q.members.includes(horse.assignedTo)) horse.location = target;
-    if (q.id === s.activeSquadId) s.location = target;
+    for (const horse of s.horseState.horses) {
+      if (!horse.returned && q.members.includes(horse.assignedTo)) {horse.location = target;}
+    }
+    if (q.id === s.activeSquadId) {
+      s.location = target;
+    }
   }
   return manifest;
 }
 export function validateAssaultDeployment(s) {
   const b = s.pendingBattle;
-  if (b?.assaultSquads === undefined) return;
+  if (b?.assaultSquads === undefined) {
+    return;
+  }
   const manifest = b.assaultSquads,
     mission = scenarioFor(s).assault.validationContext(s, b),
     location = mission?.location ?? b.sector;
@@ -846,7 +931,9 @@ export function validateAssaultDeployment(s) {
   );
   for (const group of manifest) {
     const name = s.squads.find((q) => q.id === group.id).name || group.id;
-    if (group.name === undefined) group.name = name;
+    if (group.name === undefined) {
+      group.name = name;
+    }
     need(group.name === name, 'El nombre de la escuadra de llegada no corresponde a la campaña.');
   }
   need(

@@ -1,42 +1,119 @@
-import {holdsArtilleryPost} from './tactical-ai-artillery.js';
-import {sameSurface,tacticalLevel,surfacesAtLevel} from './tactical-space.js';
-import {moveOrder} from './tactical-planning-space.js';
-import {canSee,getReachable,knownArtillery,stanceCost} from './tactical.js';
-import {chooseEnemyAction,choosePlayerSharedSightingInvestigation} from './tactical-ai.js';
-const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
-const able=u=>u.hp>=15&&!u.unconscious&&!u.routed&&!u.surrendered&&!u.departure&&!u.fled;
+import { holdsArtilleryPost } from './tactical-ai-artillery.js';
+import { sameSurface, tacticalLevel, surfacesAtLevel } from './tactical-space.js';
+import { moveOrder } from './tactical-planning-space.ts';
+import { canSee, getReachable, knownArtillery, stanceCost } from './tactical.js';
+import { chooseEnemyAction, choosePlayerSharedSightingInvestigation } from './tactical-ai.js';
+const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+const able = (u) =>
+  u.hp >= 15 && !u.unconscious && !u.routed && !u.surrendered && !u.departure && !u.fled;
 
-export function automaticOrder(b,u,options){
- const action=chooseEnemyAction(b,u,options);if(action)return action;
- // A teammate's current sighting can guide a bounded militia search. It does
- // not become personal memory or permission to fire through an obstruction.
- if(u.side==='player'&&u.militia&&b.mode==='combat'&&b.phase==='player'&&!b.reactionStack?.length&&
-    able(u)&&u.energy>0&&!u.knockedDown&&!u.entangled&&!holdsArtilleryPost(b,u)&&
-    !b.units.some(v=>v.side!==u.side&&v.hp>0&&!v.departure&&!v.surrendered&&!v.unconscious&&canSee(b,u,v))){
-  const observers=b.units.filter(p=>p.side===u.side&&able(p));
-  const sightings=b.units.filter(v=>v.side==='enemy'&&able(v)&&observers.some(p=>canSee(b,p,v)))
-   .sort((a,c)=>distance(u,a)-distance(u,c)||(String(a.id)<String(c.id)?-1:String(a.id)>String(c.id)?1:0));
-  for(const sighting of sightings){
-   const search=choosePlayerSharedSightingInvestigation(b,u,sighting);if(search)return search;
+/** @returns {import('./public/compatibility-types.ts').TacticalAction|null} */
+export function automaticOrder(b, u, options) {
+  const action = chooseEnemyAction(b, u, options);
+  if (action) {
+    return action;
   }
- }
- return searchOrder(b,u);
+  // A teammate's current sighting can guide a bounded militia search. It does
+  // not become personal memory or permission to fire through an obstruction.
+  if (
+    u.side === 'player' &&
+    u.militia &&
+    b.mode === 'combat' &&
+    b.phase === 'player' &&
+    !b.reactionStack?.length &&
+    able(u) &&
+    u.energy > 0 &&
+    !u.knockedDown &&
+    !u.entangled &&
+    !holdsArtilleryPost(b, u) &&
+    !b.units.some(
+      (v) =>
+        v.side !== u.side &&
+        v.hp > 0 &&
+        !v.departure &&
+        !v.surrendered &&
+        !v.unconscious &&
+        canSee(b, u, v),
+    )
+  ) {
+    const observers = b.units.filter((p) => p.side === u.side && able(p));
+    const sightings = b.units
+      .filter((v) => v.side === 'enemy' && able(v) && observers.some((p) => canSee(b, p, v)))
+      .sort(
+        (a, c) =>
+          distance(u, a) - distance(u, c) ||
+          (String(a.id) < String(c.id) ? -1 : String(a.id) > String(c.id) ? 1 : 0),
+      );
+    for (const sighting of sightings) {
+      const search = choosePlayerSharedSightingInvestigation(b, u, sighting);
+      if (search) {
+        return search;
+      }
+    }
+  }
+  return searchOrder(b, u);
 }
 
 // Map waypoints do not disclose the position of an unseen opponent.
-export function searchOrder(b,u,{changeStance=true}={}){
- if(!able(u)||u.knockedDown||u.entangled||holdsArtilleryPost(b,u))return null;
- const visible=b.units.some(v=>v.side!==u.side&&able(v)&&b.units.some(p=>p.side===u.side&&able(p)&&canSee(b,p,v)));
- if(visible||b.phase==='interrupt'||u.ap<25)return null;
- // Sweep fixed map waypoints when there is no contact. Stopping permanently at
- // the center leaves defenders unable to discover a concealed flank.
- const patrol=[[.55,.5],[.75,.25],[.85,.5],[.75,.75],[.4,.75],[.4,.25]],waypoint=patrol[Math.floor((b.turn-1)/8)%patrol.length];
- let center={x:Math.floor((b.width-1)*waypoint[0]),y:Math.floor((b.height-1)*waypoint[1]),...(u.tacticalLevel!==undefined?{tacticalLevel:tacticalLevel(u)}:{})};
- if(tacticalLevel(u)>0){const cells=surfacesAtLevel(b,tacticalLevel(u)).filter(p=>!p.blocked);cells.sort((a,c)=>distance(a,center)-distance(c,center)||a.y-c.y||a.x-c.x);if(!cells.length)return null;center=cells[0];}
- if(distance(u,center)<=3)return null;
- if(changeStance&&u.stance!=='standing'&&!u.mounted&&u.ap>=stanceCost(u,'standing'))return {type:'stance',unitId:u.id,stance:'standing'};
- const perceived={...b,units:b.units.filter(v=>v.side===u.side||canSee(b,u,v)),artillery:knownArtillery(b,u)};
- const moves=getReachable(perceived,u).filter(p=>sameSurface(p,u)&&p.cost>0&&p.cost<=Math.min(32,u.ap-20)&&distance(p,center)<distance(u,center));
- moves.sort((a,c)=>distance(a,center)-distance(c,center)||a.cost-c.cost||a.y-c.y||a.x-c.x);
- return moves[0]?moveOrder(b,u,moves[0]):null;
+/** @returns {import('./public/compatibility-types.ts').TacticalAction|null} */
+export function searchOrder(b, u, { changeStance = true } = {}) {
+  if (!able(u) || u.knockedDown || u.entangled || holdsArtilleryPost(b, u)) {
+    return null;
+  }
+  const visible = b.units.some(
+    (v) =>
+      v.side !== u.side &&
+      able(v) &&
+      b.units.some((p) => p.side === u.side && able(p) && canSee(b, p, v)),
+  );
+  if (visible || b.phase === 'interrupt' || u.ap < 25) {
+    return null;
+  }
+  // Sweep fixed map waypoints when there is no contact. Stopping permanently at
+  // the center leaves defenders unable to discover a concealed flank.
+  const patrol = [
+      [0.55, 0.5],
+      [0.75, 0.25],
+      [0.85, 0.5],
+      [0.75, 0.75],
+      [0.4, 0.75],
+      [0.4, 0.25],
+    ],
+    waypoint = patrol[Math.floor((b.turn - 1) / 8) % patrol.length];
+  let center = {
+    x: Math.floor((b.width - 1) * waypoint[0]),
+    y: Math.floor((b.height - 1) * waypoint[1]),
+    ...(u.tacticalLevel !== undefined ? { tacticalLevel: tacticalLevel(u) } : {}),
+  };
+  if (tacticalLevel(u) > 0) {
+    const cells = surfacesAtLevel(b, tacticalLevel(u)).filter((p) => !p.blocked);
+    cells.sort((a, c) => distance(a, center) - distance(c, center) || a.y - c.y || a.x - c.x);
+    if (!cells.length) {
+      return null;
+    }
+    center = cells[0];
+  }
+  if (distance(u, center) <= 3) {
+    return null;
+  }
+  if (changeStance && u.stance !== 'standing' && !u.mounted && u.ap >= stanceCost(u, 'standing')) {
+    return { type: 'stance', unitId: u.id, stance: 'standing' };
+  }
+  const perceived = {
+    ...b,
+    units: b.units.filter((v) => v.side === u.side || canSee(b, u, v)),
+    artillery: knownArtillery(b, u),
+  };
+  const moves = getReachable(perceived, u).filter(
+    (p) =>
+      sameSurface(p, u) &&
+      p.cost > 0 &&
+      p.cost <= Math.min(32, u.ap - 20) &&
+      distance(p, center) < distance(u, center),
+  );
+  moves.sort(
+    (a, c) =>
+      distance(a, center) - distance(c, center) || a.cost - c.cost || a.y - c.y || a.x - c.x,
+  );
+  return moves[0] ? moveOrder(b, u, moves[0]) : null;
 }

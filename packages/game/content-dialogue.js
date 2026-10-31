@@ -8,9 +8,11 @@ import {
   validateLastDialogueEffect,
 } from './dialogue-effects.js';
 import { dialogueConditionsMet } from './dialogue-conditions.js';
-import { characterForOperative } from './content-character-ids.js';
+import { characterForOperative } from './content-character-ids.ts';
 const need = (ok, message) => {
-  if (!ok) throw Error(message);
+  if (!ok) {
+    throw Error(message);
+  }
 };
 
 const definition = (s, npc) => characterForOperative(s, npc?.operativeId)?.encounter?.dialogue;
@@ -30,9 +32,15 @@ const view = (s, npc, node, battle) => ({
       };
     }),
 });
+/** @param {import('./public/campaign-types.ts').CampaignSnapshot} s
+ * @param {import('./public/compatibility-types.ts').BattleNpc} npc
+ * @param {import('./public/compatibility-types.ts').BattleSnapshot|null} [battle]
+ * @returns {import('./public/hud-types.ts').DialogueView|null} */
 export function dialogueForNPC(s, npc, battle = null) {
   const graph = definition(s, npc);
-  if (!graph) return null;
+  if (!graph) {
+    return null;
+  }
   const node = graph.nodes.find(
     (n) => n.id === (s.conversations?.[npc.id]?.dialogueNode ?? graph.entry),
   );
@@ -67,22 +75,26 @@ export function validateSavedDialogues(s, npcs) {
     const npc = npcs.find((n) => n.id === npcId),
       graph = definition(s, npc);
     validateDialogueReceipts(s, graph, record);
-    if (record.dialogueNode !== undefined)
+    if (record.dialogueNode !== undefined) {
       need(
         graph?.nodes.some((n) => n.id === record.dialogueNode),
         'El pasaje guardado no pertenece al diálogo.',
       );
-    if (record.lastApproach === 'dialogue')
+    }
+    if (record.lastApproach === 'dialogue') {
       need(
         record.dialogueNode !== undefined && graph,
         'Falta el pasaje de la conversación guardada.',
       );
+    }
   }
   validateContentQuestState(s, npcs);
   const last = s.lastConversation,
     npc = npcs.find((n) => n.id === last?.npcId);
   validateLastDialogueEffect(s, npc, definition(s, npc), last);
-  if (last?.outcome !== 'dialogue') return;
+  if (last?.outcome !== 'dialogue') {
+    return;
+  }
   const current = dialogueForNPC(s, npc);
   need(
     current &&

@@ -1,26 +1,65 @@
-import {speechFor} from './characters.js';
-import {recordPublicCombatMessage} from './combat-journal.js';
-import {visibleEnemies} from './tactical.js';
+import { speechFor } from './characters.js';
+import { recordPublicCombatMessage } from './combat-journal.js';
+import { visibleEnemies } from './tactical.js';
 
 // Presentation events follow authoritative state transitions; no extra game state
 // or random rolls are introduced by a character's spoken response.
-export function characterEventLines(before,after){
- if(!before||!after||after.lastError)return [];
- const events=[];
- for(const unit of after.units.filter(u=>u.side==='player')){
-  const old=before.units.find(u=>u.id===unit.id);if(!old)continue;
-  const event=old.hp>0&&unit.hp<=0?'death':unit.hp<old.hp?'wounded':!old.unconscious&&unit.unconscious&&(unit.energy??100)<=0?'exhausted':null;
-  if(event)events.push({unit,event});
- }
- const speaker=after.units.find(u=>u.side==='player'&&u.hp>0&&!u.departure&&!u.surrendered&&!u.unconscious&&!u.routed);
- if(speaker){if(!before.sectorCleared&&after.sectorCleared)events.push({unit:speaker,event:'cleared'});
- else if(!visibleEnemies(before).length&&visibleEnemies(after).length)events.push({unit:speaker,event:'contact'});}
- return events.flatMap(({unit,event})=>{const line=speechFor(unit,event);return line?.trim()?[`${unit.nickname||unit.name}: «${line}»`]:[];}).slice(0,3);
+export function characterEventLines(before, after) {
+  if (!before || !after || after.lastError) {
+    return [];
+  }
+  const events = [];
+  for (const unit of after.units.filter((u) => u.side === 'player')) {
+    const old = before.units.find((u) => u.id === unit.id);
+    if (!old) {
+      continue;
+    }
+    const event =
+      old.hp > 0 && unit.hp <= 0
+        ? 'death'
+        : unit.hp < old.hp
+          ? 'wounded'
+          : !old.unconscious && unit.unconscious && (unit.energy ?? 100) <= 0
+            ? 'exhausted'
+            : null;
+    if (event) {
+      events.push({ unit, event });
+    }
+  }
+  const speaker = after.units.find(
+    (u) =>
+      u.side === 'player' &&
+      u.hp > 0 &&
+      !u.departure &&
+      !u.surrendered &&
+      !u.unconscious &&
+      !u.routed,
+  );
+  if (speaker) {
+    if (!before.sectorCleared && after.sectorCleared) {
+      events.push({ unit: speaker, event: 'cleared' });
+    } else if (!visibleEnemies(before).length && visibleEnemies(after).length) {
+      events.push({ unit: speaker, event: 'contact' });
+    }
+  }
+  return events
+    .flatMap(({ unit, event }) => {
+      const line = speechFor(unit, event);
+      return line?.trim() ? [`${unit.nickname || unit.name}: «${line}»`] : [];
+    })
+    .slice(0, 3);
 }
-export function withCharacterSpeech(before,after){
- const lines=characterEventLines(before,after);
- if(!lines.length)return after;
- const next={...after,log:[...after.log,...lines].slice(-80)};
- for(const line of lines)recordPublicCombatMessage(next,line);
- return next;
+/** @param {import('./public/compatibility-types.ts').BattleSnapshot} before
+ * @param {import('./public/compatibility-types.ts').BattleSnapshot} after
+ * @returns {import('./public/compatibility-types.ts').BattleSnapshot} */
+export function withCharacterSpeech(before, after) {
+  const lines = characterEventLines(before, after);
+  if (!lines.length) {
+    return after;
+  }
+  const next = { ...after, log: [...after.log, ...lines].slice(-80) };
+  for (const line of lines) {
+    recordPublicCombatMessage(next, line);
+  }
+  return next;
 }

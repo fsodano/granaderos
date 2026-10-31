@@ -1,7 +1,4 @@
-import {
-  MILITIA_PATROL_FIELDS,
-  validateMilitiaPatrol,
-} from '../campaign-format/campaign-rules-schema.js';
+import { validateMilitiaPatrol } from '../campaign-format/campaign-rules-schema.js';
 export {
   MILITIA_PATROL_FIELDS,
   validateMilitiaPatrol,
@@ -18,12 +15,15 @@ export const militiaPatrolRules = (s) =>
   s?.contentCampaign?.package.militiaPatrol ?? s?.militiaPatrol ?? DEFAULT_MILITIA_PATROL;
 
 export function validateCampaignPatrol(campaign, scene) {
-  if (!scene) return;
+  if (!scene) {
+    return;
+  }
   const expected = campaign.contentCampaign?.package.militiaPatrol ?? DEFAULT_MILITIA_PATROL,
     actual = scene.militiaPatrol ?? DEFAULT_MILITIA_PATROL;
   if (
     validateMilitiaPatrol(scene.militiaPatrol).length ||
     !Object.keys(DEFAULT_MILITIA_PATROL).every((key) => actual[key] === expected[key])
-  )
+  ) {
     throw Error('Las reglas de patrulla no coinciden con la campaña.');
+  }
 }

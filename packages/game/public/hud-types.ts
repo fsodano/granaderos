@@ -390,7 +390,8 @@ export interface EncounterHireQuote {
   available: boolean;
   reason: string | null;
 }
-export interface QuestView extends ErrandDefinition {
+export interface QuestView extends Omit<ErrandDefinition, 'reward'> {
+  reward?: number | NonNullable<ErrandDefinition['reward']>;
   status: string;
   conditionMet: boolean;
   resolutionReady?: boolean;

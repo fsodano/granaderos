@@ -1,11 +1,13 @@
 import { DEFAULT_WORLD } from '../../content/campaigns/default.js';
 import { validateCampaignPhysical as validatePhysicalRecords } from '../campaign-format/physical-schema.js';
-import { ARTILLERY } from './artillery-definitions.js';
-import { validateEnvironment } from './environment-interactions.js';
+import { ARTILLERY } from './artillery-definitions.ts';
+import { validateEnvironment } from './environment-interactions.ts';
 
 export function validateCampaignPhysical(value, world = DEFAULT_WORLD) {
   const errors = validatePhysicalRecords(value, world);
-  if (errors.length || value === undefined) return errors;
+  if (errors.length || value === undefined) {
+    return errors;
+  }
   const checkEnvironment = (target) => {
     try {
       validateEnvironment(target);
@@ -24,8 +26,12 @@ export function validateCampaignPhysical(value, world = DEFAULT_WORLD) {
     }
   }
   for (const environment of Object.values(value.environment)) {
-    for (const door of environment.doors) checkEnvironment(door);
-    for (const entry of environment.containers) checkEnvironment(entry.configuration);
+    for (const door of environment.doors) {
+      checkEnvironment(door);
+    }
+    for (const entry of environment.containers) {
+      checkEnvironment(entry.configuration);
+    }
   }
   return errors;
 }

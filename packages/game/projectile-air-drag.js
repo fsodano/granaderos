@@ -18,6 +18,8 @@ export const hasProjectileAirDrag = (weapon) =>
   weapon.range > 0;
 export function projectileAirRetention(weapon, distance) {
   const profile = weapon.projectileAirDrag;
-  if (!hasProjectileAirDrag(weapon) || distance <= 0) return 1;
+  if (!hasProjectileAirDrag(weapon) || distance <= 0) {
+    return 1;
+  }
   return Math.exp((Math.log(profile.retentionAtRange) * distance) / weapon.range);
 }

@@ -13,9 +13,13 @@ export const FOUNDRY_LOCATIONS = Object.freeze(foundryLocations());
 export const DEFAULT_FOUNDRY = Object.freeze(campaignWorld().defaultFoundry);
 export const foundryFor = (state) => {
   const content = campaignDefinitions(state);
-  if (content?.foundry) return content.foundry;
-  if (content?.world?.defaultFoundry) return content.world.defaultFoundry;
-  if (content?.scenario === 'generic-v1' || content?.campaignStory)
+  if (content?.foundry) {
+    return content.foundry;
+  }
+  if (content?.world?.defaultFoundry) {
+    return content.world.defaultFoundry;
+  }
+  if (content?.scenario === 'generic-v1' || content?.campaignStory) {
     return {
       sector:
         content.headquarters ?? content.world?.defaultHeadquarters ?? campaignSectors(state)[0]?.id,
@@ -24,6 +28,7 @@ export const foundryFor = (state) => {
       setupCost: 0,
       fundingCost: 0,
     };
+  }
   return campaignWorld(state).defaultFoundry ?? DEFAULT_FOUNDRY;
 };
 export const foundryLocationName = (state) =>

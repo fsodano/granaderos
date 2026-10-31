@@ -1,118 +1,246 @@
 import { restoreSector, sectorCharacterReference } from './infrastructure/world/sector-mapper.js';
-import {residentPositionsFor,residentPositionPoints} from './infrastructure/world/campaign-resident-positions.js';
-import {historicalRequiredActors} from './historical-loss.js';
-import {civilianDiedHere,resumeCivilianServiceReturns,synchronizeResidentWounds} from './campaign-civilians.js';
-import {encounterDefinitions,encountersFor} from './encounters.js';
-import {propBlocksAt} from './props.js';
-import {expandCellScene} from './cell-scene-storage.js';
-import {spaceKey,surfacesAtLevel,tacticalLevel} from './tactical-space.js';
-import {createContentSession,advancePlacementState,changePlacementStatus} from './content-placement.js';
-import {isContractCharacter,operativeIdForCharacter,characterForOperative} from './content-character-ids.js';
-import {contentCellIds} from './content-map.js';
-import {locationId} from './world-cells.js';
-import {validateDetainedPrisoner} from './detention.js';
-import {captureSequence} from './capture-identity.js';
-const minuteOf=s=>s.hour*60+Math.floor((s.secondOfHour??0)/60);
-const strip=({content,history,...runtime})=>runtime;
-const need=ok=>{if(!ok)throw Error('Las apariciones guardadas son inválidas.');};
-export function initializeCampaignPresence(state){
-  state.contentPresence=strip(createContentSession(state.contentCampaign.package,state.seed));
+import {
+  residentPositionsFor,
+  residentPositionPoints,
+} from './infrastructure/world/campaign-resident-positions.js';
+import { historicalRequiredActors } from './historical-loss.js';
+import {
+  civilianDiedHere,
+  resumeCivilianServiceReturns,
+  synchronizeResidentWounds,
+} from './campaign-civilians.js';
+import { encounterDefinitions, encountersFor } from './encounters.js';
+import { propBlocksAt } from './props.js';
+import { expandCellScene } from './cell-scene-storage.js';
+import { spaceKey, surfacesAtLevel, tacticalLevel } from './tactical-space.js';
+import {
+  createContentSession,
+  advancePlacementState,
+  changePlacementStatus,
+} from './content-placement.js';
+import {
+  isContractCharacter,
+  operativeIdForCharacter,
+  characterForOperative,
+} from './content-character-ids.ts';
+import { contentCellIds } from './content-map.js';
+import { locationId } from './world-cells.ts';
+import { validateDetainedPrisoner } from './detention.js';
+import { captureSequence } from './capture-identity.js';
+const minuteOf = (s) => s.hour * 60 + Math.floor((s.secondOfHour ?? 0) / 60);
+const strip = ({ content, history, ...runtime }) => runtime;
+const need = (ok) => {
+  if (!ok) {
+    throw Error('Las apariciones guardadas son inválidas.');
+  }
+};
+export function initializeCampaignPresence(state) {
+  state.contentPresence = strip(createContentSession(state.contentCampaign.package, state.seed));
   synchronizeCampaignPresence(state);
 }
-export function characterPresentInSector(state,characterId,sector){
-  const person=state.contentPresence?.people[characterId];
-  return Boolean(person?.alive&&!person.recruited&&!person.suspended&&person.appeared&&locationId(person.sector,state)===locationId(sector,state));
+export function characterPresentInSector(state, characterId, sector) {
+  const person = state.contentPresence?.people[characterId];
+  return Boolean(
+    person?.alive &&
+    !person.recruited &&
+    !person.suspended &&
+    person.appeared &&
+    locationId(person.sector, state) === locationId(sector, state),
+  );
 }
 
 export function reconcileSectorResidents(campaign, snapshot) {
- if (!campaign.contentPresence || snapshot.sceneId) return snapshot;
- const current = new Map((snapshot.npcs ?? []).map(resident => [resident.id, resident]));
- const removedResidentIds = new Set((snapshot.deathHistory ?? []).filter(record => record.kind === 'resident').map(record => record.actor.id));
- const canonical = encountersFor(campaign, snapshot.sectorId ?? snapshot.sector).filter(resident => !removedResidentIds.has(resident.id));
- const retainedDetention = (snapshot.npcs ?? []).filter(resident => resident.detention !== undefined);
- const residents = canonical.map(resident => {
-  const existing = current.get(resident.id);
-  if (existing?.presenceRevision === resident.presenceRevision) return { ...existing, ...resident, x: existing.x, y: existing.y, ...(existing.tacticalLevel === undefined ? {} : { tacticalLevel: existing.tacticalLevel }), ...(existing.ai ? { ai: existing.ai } : {}) };
-  return { ...resident };
- });
- const occupied = new Set([...(snapshot.units ?? []).filter(actor => actor.hp > 0 && !actor.departure), ...retainedDetention].map(spaceKey));
- for(const position of residentPositionPoints({residentPositions:residentPositionsFor(campaign,snapshot)}))occupied.add(spaceKey(position));
- for (const resident of residents) {
-  if (resident.hp === 0) continue;
-  const existing = current.get(resident.id);
-  if (existing?.presenceRevision === resident.presenceRevision && !occupied.has(spaceKey(resident))) {
-   occupied.add(spaceKey(resident));
-   continue;
+  if (!campaign.contentPresence || snapshot.sceneId) {
+    return snapshot;
   }
-  if (snapshot.tiles === undefined) continue;
-  const expanded = expandCellScene(snapshot, campaign);
-  const level=tacticalLevel(resident);
-  const positions = surfacesAtLevel(expanded,level).filter(tile => !tile.blocked && !occupied.has(spaceKey(tile)) && !propBlocksAt(expanded, tile.x, tile.y,level));
-  positions.sort((left, right) => Math.abs(left.x - resident.x) + Math.abs(left.y - resident.y) - Math.abs(right.x - resident.x) - Math.abs(right.y - resident.y) || left.y - right.y || left.x - right.x);
-  if (!positions.length) throw new Error('The arriving resident has no free position in the sector.');
-  resident.x = positions[0].x;
-  resident.y = positions[0].y;
-  occupied.add(spaceKey(resident));
- }
- const sector = restoreSector(snapshot);
- const nextResidents = [...residents, ...retainedDetention];
- sector.replaceResidents(nextResidents.filter(resident => !resident.departure && !resident.fled).map(sectorCharacterReference));
- const admittedIds = new Set(sector.toSnapshot().residents.map(resident => resident.localId));
- snapshot.npcs = nextResidents.filter(resident => admittedIds.has(String(resident.id)) || resident.departure || resident.fled);
- return snapshot;
+  const current = new Map((snapshot.npcs ?? []).map((resident) => [resident.id, resident]));
+  const removedResidentIds = new Set(
+    (snapshot.deathHistory ?? [])
+      .filter((record) => record.kind === 'resident')
+      .map((record) => record.actor.id),
+  );
+  const canonical = encountersFor(campaign, snapshot.sectorId ?? snapshot.sector).filter(
+    (resident) => !removedResidentIds.has(resident.id),
+  );
+  const retainedDetention = (snapshot.npcs ?? []).filter(
+    (resident) => resident.detention !== undefined,
+  );
+  const residents = canonical.map((resident) => {
+    const existing = current.get(resident.id);
+    if (existing?.presenceRevision === resident.presenceRevision) {
+      return {
+        ...existing,
+        ...resident,
+        x: existing.x,
+        y: existing.y,
+        ...(existing.tacticalLevel === undefined ? {} : { tacticalLevel: existing.tacticalLevel }),
+        ...(existing.ai ? { ai: existing.ai } : {}),
+      };
+    }
+    return { ...resident };
+  });
+  const occupied = new Set(
+    [
+      ...(snapshot.units ?? []).filter((actor) => actor.hp > 0 && !actor.departure),
+      ...retainedDetention,
+    ].map(spaceKey),
+  );
+  for (const position of residentPositionPoints({
+    residentPositions: residentPositionsFor(campaign, snapshot),
+  })) {
+    occupied.add(spaceKey(position));
+  }
+  for (const resident of residents) {
+    if (resident.hp === 0) {
+      continue;
+    }
+    const existing = current.get(resident.id);
+    if (
+      existing?.presenceRevision === resident.presenceRevision &&
+      !occupied.has(spaceKey(resident))
+    ) {
+      occupied.add(spaceKey(resident));
+      continue;
+    }
+    if (snapshot.tiles === undefined) {
+      continue;
+    }
+    const expanded = expandCellScene(snapshot, campaign);
+    const level = tacticalLevel(resident);
+    const positions = surfacesAtLevel(expanded, level).filter(
+      (tile) =>
+        !tile.blocked &&
+        !occupied.has(spaceKey(tile)) &&
+        !propBlocksAt(expanded, tile.x, tile.y, level),
+    );
+    positions.sort(
+      (left, right) =>
+        Math.abs(left.x - resident.x) +
+          Math.abs(left.y - resident.y) -
+          Math.abs(right.x - resident.x) -
+          Math.abs(right.y - resident.y) ||
+        left.y - right.y ||
+        left.x - right.x,
+    );
+    if (!positions.length) {
+      throw new Error('The arriving resident has no free position in the sector.');
+    }
+    resident.x = positions[0].x;
+    resident.y = positions[0].y;
+    occupied.add(spaceKey(resident));
+  }
+  const sector = restoreSector(snapshot);
+  const nextResidents = [...residents, ...retainedDetention];
+  sector.replaceResidents(
+    nextResidents
+      .filter((resident) => !resident.departure && !resident.fled)
+      .map(sectorCharacterReference),
+  );
+  const admittedIds = new Set(sector.toSnapshot().residents.map((resident) => resident.localId));
+  snapshot.npcs = nextResidents.filter(
+    (resident) => admittedIds.has(String(resident.id)) || resident.departure || resident.fled,
+  );
+  return snapshot;
 }
-function currentResident(state,npc,sector){
-  if(npc.detention!==undefined){
-    validateDetainedPrisoner(npc,state);
-    const d=npc.detention,request=state.pendingBattle;
-    if(d.sector!==sector)return false;
-    const sources=[state.detentionRecords?.[npc.id]?.npc,
-      ...(request?.sector===sector&&!request.sceneId?request.detainedPrisoners??[]:[])];
-    return sources.some(source=>source?.id===npc.id&&source.detention&&
-      source.detention.operativeId===d.operativeId&&source.detention.capturedAt===d.capturedAt&&
-      source.detention.sector===d.sector&&captureSequence(source.detention)===captureSequence(d));
+function currentResident(state, npc, sector) {
+  if (npc.detention !== undefined) {
+    validateDetainedPrisoner(npc, state);
+    const d = npc.detention,
+      request = state.pendingBattle;
+    if (d.sector !== sector) {
+      return false;
+    }
+    const sources = [
+      state.detentionRecords?.[npc.id]?.npc,
+      ...(request?.sector === sector && !request.sceneId ? (request.detainedPrisoners ?? []) : []),
+    ];
+    return sources.some(
+      (source) =>
+        source?.id === npc.id &&
+        source.detention &&
+        source.detention.operativeId === d.operativeId &&
+        source.detention.capturedAt === d.capturedAt &&
+        source.detention.sector === d.sector &&
+        captureSequence(source.detention) === captureSequence(d),
+    );
   }
-  const original=encounterDefinitions(state).find(n=>n.id===npc.id);
-  if(!original||original.operativeId!==npc.operativeId||original.contentId!==undefined&&original.contentId!==npc.contentId)return false;
-  if(npc.hp===0)return civilianDiedHere(state,npc,sector);
-  const character=characterForOperative(state,npc.operativeId);
-  if(!character)return npc.operativeId===undefined&&npc.contentId===undefined;
-  const person=state.contentPresence.people[character.id];
-  return characterPresentInSector(state,character.id,sector)&&npc.presenceRevision===person.revision;
+  const original = encounterDefinitions(state).find((n) => n.id === npc.id);
+  if (
+    !original ||
+    original.operativeId !== npc.operativeId ||
+    (original.contentId !== undefined && original.contentId !== npc.contentId)
+  ) {
+    return false;
+  }
+  if (npc.hp === 0) {
+    return civilianDiedHere(state, npc, sector);
+  }
+  const character = characterForOperative(state, npc.operativeId);
+  if (!character) {
+    return npc.operativeId === undefined && npc.contentId === undefined;
+  }
+  const person = state.contentPresence.people[character.id];
+  return (
+    characterPresentInSector(state, character.id, sector) &&
+    npc.presenceRevision === person.revision
+  );
 }
 // One identity owns the location. A retained scene is a cache, never a second
 // source of residents. A new visit after a relocation starts a new local routine.
-export function synchronizeCampaignPresence(state){
-  if(!state.contentPresence)return;
-  let runtime={...state.contentPresence,content:state.contentCampaign.package,history:[]};
-  const loaded=state.pendingBattle&&locationId(state.pendingBattle.sector,state)
-    ?contentCellIds([state.pendingBattle.sector],state)[0]:null;
+export function synchronizeCampaignPresence(state) {
+  if (!state.contentPresence) {
+    return;
+  }
+  let runtime = { ...state.contentPresence, content: state.contentCampaign.package, history: [] };
+  const loaded =
+    state.pendingBattle && locationId(state.pendingBattle.sector, state)
+      ? contentCellIds([state.pendingBattle.sector], state)[0]
+      : null;
   // Off-screen bleeding can confirm a death inside a batched interval.
   // Process those events in order before daily movement or successor deadlines.
-  const deaths=runtime.content.characters.map(c=>({character:c,id:operativeIdForCharacter(runtime.content,c.id)}))
-    .filter(({character:c,id})=>state.operativeState[id].alive===false&&runtime.people[c.id].alive)
-    .map(v=>({...v,minute:state.operativeState[v.id].deathMinute??minuteOf(state)}))
-    .sort((a,b)=>a.minute-b.minute);
-  for(const {character:c,id,minute}of deaths){
-    need(Number.isSafeInteger(minute)&&minute>=runtime.minute&&minute<=minuteOf(state));
-    runtime=advancePlacementState(runtime,minute,loaded,52560000);
-    state.operativeState[id].deathMinute=minute;runtime=changePlacementStatus(runtime,c.id,'dead',loaded);
+  const deaths = runtime.content.characters
+    .map((c) => ({ character: c, id: operativeIdForCharacter(runtime.content, c.id) }))
+    .filter(
+      ({ character: c, id }) =>
+        state.operativeState[id].alive === false && runtime.people[c.id].alive,
+    )
+    .map((v) => ({ ...v, minute: state.operativeState[v.id].deathMinute ?? minuteOf(state) }))
+    .sort((a, b) => a.minute - b.minute);
+  for (const { character: c, id, minute } of deaths) {
+    need(Number.isSafeInteger(minute) && minute >= runtime.minute && minute <= minuteOf(state));
+    runtime = advancePlacementState(runtime, minute, loaded, 52560000);
+    state.operativeState[id].deathMinute = minute;
+    runtime = changePlacementStatus(runtime, c.id, 'dead', loaded);
   }
-  runtime=advancePlacementState(runtime,minuteOf(state),loaded,52560000);
-  for(const c of runtime.content.characters){
-    const numeric=operativeIdForCharacter(runtime.content,c.id),record=state.operativeState[numeric],person=runtime.people[c.id];
-    if(person.alive&&person.recruited!==state.recruited.includes(numeric))
-      runtime=changePlacementStatus(runtime,c.id,state.recruited.includes(numeric)?'recruited':'released',loaded);
+  runtime = advancePlacementState(runtime, minuteOf(state), loaded, 52560000);
+  for (const c of runtime.content.characters) {
+    const numeric = operativeIdForCharacter(runtime.content, c.id),
+      record = state.operativeState[numeric],
+      person = runtime.people[c.id];
+    if (person.alive && person.recruited !== state.recruited.includes(numeric)) {
+      runtime = changePlacementStatus(
+        runtime,
+        c.id,
+        state.recruited.includes(numeric) ? 'recruited' : 'released',
+        loaded,
+      );
+    }
     // A casualty can leave the service ledger when its contract ends. This is
     // not a living placement transition and must not release or revive an actor.
-    if(!runtime.people[c.id].alive)runtime.people[c.id].recruited=state.recruited.includes(numeric);
-    runtime.people[c.id].hp=record.hp;
+    if (!runtime.people[c.id].alive) {
+      runtime.people[c.id].recruited = state.recruited.includes(numeric);
+    }
+    runtime.people[c.id].hp = record.hp;
   }
-  state.contentPresence=strip(runtime);
+  state.contentPresence = strip(runtime);
   resumeCivilianServiceReturns(state);
   synchronizeResidentWounds(state);
-  for(const scene of Object.values(state.sectorStates)) reconcileSectorResidents(state, scene);
-  if(state.pendingBattle&&!state.pendingBattle.sceneId) reconcileSectorResidents(state, state.pendingBattle);
+  for (const scene of Object.values(state.sectorStates)) {
+    reconcileSectorResidents(state, scene);
+  }
+  if (state.pendingBattle && !state.pendingBattle.sceneId) {
+    reconcileSectorResidents(state, state.pendingBattle);
+  }
   for (const session of state.suspendedSectorSessions ?? []) {
     reconcileSectorResidents(state, session.snapshot);
     reconcileSectorResidents(state, session.request);
@@ -120,87 +248,230 @@ export function synchronizeCampaignPresence(state){
 }
 // Split the physical clock at placement deadlines. An unseen successor starts
 // bleeding at its actual appearance, and daily movement precedes later deaths.
-export function nextCampaignPresenceChange(state){
- const r=state.contentPresence;if(!r)return Infinity;
- return Math.min(r.nextDaily,...r.events.filter(e=>e.at>r.minute).map(e=>e.at))*60;
+export function nextCampaignPresenceChange(state) {
+  const r = state.contentPresence;
+  if (!r) {
+    return Infinity;
+  }
+  return Math.min(r.nextDaily, ...r.events.filter((e) => e.at > r.minute).map((e) => e.at)) * 60;
 }
 // Successors, quest survival and campaign conditions need confirmed deployed deaths.
-function successionActors(state,snapshot){
- const content=state.contentCampaign?.package??{placements:[]},storyConditions=[...(content.campaignStory?.chapters??[]).flatMap(c=>c.conditions),...(content.campaignStory?.failureConditions??[])],sources=new Set([...storyConditions.filter(c=>c.type==='character').map(c=>c.character),...content.placements.filter(p=>p.afterDeath!==null).map(p=>p.afterDeath),...(content.quests??[]).flatMap(q=>q.requiredAlive??[])].map(id=>operativeIdForCharacter(content,id)));
- for(const actor of historicalRequiredActors(state))sources.add(actor.id);
- return [...snapshot.units,...(snapshot.deathHistory??[]).filter(record=>record.kind==='combatant').map(record=>record.actor)].filter(u=>u.side==='player'&&!u.militia&&sources.has(Number(u.id))&&state.pendingBattle?.squad.some(o=>o.id===Number(u.id)));
+function successionActors(state, snapshot) {
+  const content = state.contentCampaign?.package ?? { placements: [] },
+    storyConditions = [
+      ...(content.campaignStory?.chapters ?? []).flatMap((c) => c.conditions),
+      ...(content.campaignStory?.failureConditions ?? []),
+    ],
+    sources = new Set(
+      [
+        ...storyConditions.filter((c) => c.type === 'character').map((c) => c.character),
+        ...content.placements.filter((p) => p.afterDeath !== null).map((p) => p.afterDeath),
+        ...(content.quests ?? []).flatMap((q) => q.requiredAlive ?? []),
+      ].map((id) => operativeIdForCharacter(content, id)),
+    );
+  for (const actor of historicalRequiredActors(state)) {
+    sources.add(actor.id);
+  }
+  return [
+    ...snapshot.units,
+    ...(snapshot.deathHistory ?? [])
+      .filter((record) => record.kind === 'combatant')
+      .map((record) => record.actor),
+  ].filter(
+    (u) =>
+      u.side === 'player' &&
+      !u.militia &&
+      sources.has(Number(u.id)) &&
+      state.pendingBattle?.squad.some((o) => o.id === Number(u.id)),
+  );
 }
-export function acknowledgeSuccessionDeaths(state,snapshot){
- for(const unit of successionActors(state,snapshot)){
-  const record=state.operativeState[Number(unit.id)];
-  need(record.deathMinute===undefined||unit.hp===0);
-  if(unit.hp===0){record.hp=0;record.alive=false;record.bleeding=0;}
- }
+export function acknowledgeSuccessionDeaths(state, snapshot) {
+  for (const unit of successionActors(state, snapshot)) {
+    const record = state.operativeState[Number(unit.id)];
+    need(record.deathMinute === undefined || unit.hp === 0);
+    if (unit.hp === 0) {
+      record.hp = 0;
+      record.alive = false;
+      record.bleeding = 0;
+    }
+  }
 }
-export function validateActiveSuccessionDeaths(state,snapshot){
- for(const unit of successionActors(state,snapshot))need(state.operativeState[Number(unit.id)].alive===(unit.hp>0));
+export function validateActiveSuccessionDeaths(state, snapshot) {
+  for (const unit of successionActors(state, snapshot)) {
+    need(state.operativeState[Number(unit.id)].alive === unit.hp > 0);
+  }
 }
-export function validatePresenceScene(state,scene){
-  if(!state.contentPresence||scene.sceneId)return;
-  for(const npc of scene.npcs??[])need(currentResident(state,npc,scene.sectorId??scene.sector));
+export function validatePresenceScene(state, scene) {
+  if (!state.contentPresence || scene.sceneId) {
+    return;
+  }
+  for (const npc of scene.npcs ?? []) {
+    need(currentResident(state, npc, scene.sectorId ?? scene.sector));
+  }
 }
-function validateSuccessions(state){
- const r=state.contentPresence,placements=state.contentCampaign.package.placements;
- const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
- const integer=(v,min,max)=>Number.isSafeInteger(v)&&v>=min&&v<=max;
- need(Array.isArray(r.events)&&Array.isArray(r.receipts)&&r.events.length<=placements.length&&r.receipts.length<=placements.length);
- const receipts=new Map(),events=new Map();
- for(const receipt of r.receipts){
-  need(object(receipt)&&Object.keys(receipt).length===4&&['placement','trigger','minute','at'].every(k=>Object.hasOwn(receipt,k)));
-  const p=placements.find(p=>p.id===receipt.placement);
-  need(p&&p.afterDeath===receipt.trigger&&r.people[p.afterDeath]?.alive===false&&!receipts.has(p.id));
-  need(integer(receipt.minute,0,r.minute)&&receipt.minute===state.operativeState[operativeIdForCharacter(state.contentCampaign.package,p.afterDeath)]?.deathMinute&&integer(receipt.at,receipt.minute+p.delayMin,receipt.minute+p.delayMax));
-  receipts.set(p.id,receipt);
- }
- for(const event of r.events){
-  need(object(event)&&Object.keys(event).every(k=>['placement','at','destination'].includes(k)));
-  const p=placements.find(p=>p.id===event.placement),receipt=receipts.get(event.placement);
-  need(p&&receipt&&event.at===receipt.at&&!events.has(p.id)&&!r.people[p.character]?.appeared);
-  need(event.destination===undefined||p.sectors.includes(event.destination));
-  if(event.at<=r.minute)need(event.destination!==undefined&&state.pendingBattle&&locationId(event.destination,state)===locationId(state.pendingBattle.sector,state));
-  else need(event.destination===undefined);
-  events.set(p.id,event);
- }
- for(const p of placements.filter(p=>p.afterDeath!==null)){
-  const person=r.people[p.character],receipt=receipts.get(p.id);
-  need(Boolean(receipt)===(r.people[p.afterDeath]?.alive===false));
-  if(!receipt)need(!person.appeared&&person.sector===null&&person.revision===0);
-  else if(person.appeared)need(!events.has(p.id)&&receipt.at<=r.minute);
-  else if(person.alive&&!person.recruited)need(events.has(p.id));
- }
+function validateSuccessions(state) {
+  const r = state.contentPresence,
+    placements = state.contentCampaign.package.placements;
+  const object = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
+  const integer = (v, min, max) => Number.isSafeInteger(v) && v >= min && v <= max;
+  need(
+    Array.isArray(r.events) &&
+      Array.isArray(r.receipts) &&
+      r.events.length <= placements.length &&
+      r.receipts.length <= placements.length,
+  );
+  const receipts = new Map(),
+    events = new Map();
+  for (const receipt of r.receipts) {
+    need(
+      object(receipt) &&
+        Object.keys(receipt).length === 4 &&
+        ['placement', 'trigger', 'minute', 'at'].every((k) => Object.hasOwn(receipt, k)),
+    );
+    const p = placements.find((p) => p.id === receipt.placement);
+    need(
+      p &&
+        p.afterDeath === receipt.trigger &&
+        r.people[p.afterDeath]?.alive === false &&
+        !receipts.has(p.id),
+    );
+    need(
+      integer(receipt.minute, 0, r.minute) &&
+        receipt.minute ===
+          state.operativeState[operativeIdForCharacter(state.contentCampaign.package, p.afterDeath)]
+            ?.deathMinute &&
+        integer(receipt.at, receipt.minute + p.delayMin, receipt.minute + p.delayMax),
+    );
+    receipts.set(p.id, receipt);
+  }
+  for (const event of r.events) {
+    need(
+      object(event) &&
+        Object.keys(event).every((k) => ['placement', 'at', 'destination'].includes(k)),
+    );
+    const p = placements.find((p) => p.id === event.placement),
+      receipt = receipts.get(event.placement);
+    need(
+      p &&
+        receipt &&
+        event.at === receipt.at &&
+        !events.has(p.id) &&
+        !r.people[p.character]?.appeared,
+    );
+    need(event.destination === undefined || p.sectors.includes(event.destination));
+    if (event.at <= r.minute) {
+      need(
+        event.destination !== undefined &&
+          state.pendingBattle &&
+          locationId(event.destination, state) === locationId(state.pendingBattle.sector, state),
+      );
+    } else {
+      need(event.destination === undefined);
+    }
+    events.set(p.id, event);
+  }
+  for (const p of placements.filter((p) => p.afterDeath !== null)) {
+    const person = r.people[p.character],
+      receipt = receipts.get(p.id);
+    need(Boolean(receipt) === (r.people[p.afterDeath]?.alive === false));
+    if (!receipt) {
+      need(!person.appeared && person.sector === null && person.revision === 0);
+    } else if (person.appeared) {
+      need(!events.has(p.id) && receipt.at <= r.minute);
+    } else if (person.alive && !person.recruited) {
+      need(events.has(p.id));
+    }
+  }
 }
-export function validateCampaignPresence(state){
-  const content=state.contentCampaign?.package,r=state.contentPresence;
-  if(state.contentCampaign?.adapter!=='character-presence-v1'){need(r===undefined);return;}
-  const integer=(v,min,max)=>Number.isSafeInteger(v)&&v>=min&&v<=max;
-  const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
-  need(object(r)&&r.version===1&&integer(r.rng,0,0xffffffff)&&integer(r.initialSeed,0,0xffffffff)&&r.minute===minuteOf(state)&&integer(r.minute,0,52560000));
-  need(Object.keys(r).every(k=>['version','rng','initialSeed','minute','nextDaily','people','events','receipts'].includes(k)));
-  need(r.nextDaily===240+1440*(Math.floor((r.minute-240)/1440)+1));
-  need(object(r.people)&&Object.keys(r.people).length===content.characters.length);
-  for(const c of content.characters){
-    const id=operativeIdForCharacter(content,c.id),p=r.people[c.id],placement=content.placements.find(v=>v.character===c.id),record=state.operativeState[id];
-    need(object(p)&&['alive','recruited','appeared','suspended'].every(k=>typeof p[k]==='boolean')&&p.suspended===false&&integer(p.revision,0,1e9));
-    need(Object.keys(p).every(k=>['alive','recruited','appeared','suspended','revision','sector','hp'].includes(k)));
-    if(record.deathMinute!==undefined)need(record.alive===false&&integer(record.deathMinute,0,r.minute));
+export function validateCampaignPresence(state) {
+  const content = state.contentCampaign?.package,
+    r = state.contentPresence;
+  if (state.contentCampaign?.adapter !== 'character-presence-v1') {
+    need(r === undefined);
+    return;
+  }
+  const integer = (v, min, max) => Number.isSafeInteger(v) && v >= min && v <= max;
+  const object = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
+  need(
+    object(r) &&
+      r.version === 1 &&
+      integer(r.rng, 0, 0xffffffff) &&
+      integer(r.initialSeed, 0, 0xffffffff) &&
+      r.minute === minuteOf(state) &&
+      integer(r.minute, 0, 52560000),
+  );
+  need(
+    Object.keys(r).every((k) =>
+      [
+        'version',
+        'rng',
+        'initialSeed',
+        'minute',
+        'nextDaily',
+        'people',
+        'events',
+        'receipts',
+      ].includes(k),
+    ),
+  );
+  need(r.nextDaily === 240 + 1440 * (Math.floor((r.minute - 240) / 1440) + 1));
+  need(object(r.people) && Object.keys(r.people).length === content.characters.length);
+  for (const c of content.characters) {
+    const id = operativeIdForCharacter(content, c.id),
+      p = r.people[c.id],
+      placement = content.placements.find((v) => v.character === c.id),
+      record = state.operativeState[id];
+    need(
+      object(p) &&
+        ['alive', 'recruited', 'appeared', 'suspended'].every((k) => typeof p[k] === 'boolean') &&
+        p.suspended === false &&
+        integer(p.revision, 0, 1e9),
+    );
+    need(
+      Object.keys(p).every((k) =>
+        ['alive', 'recruited', 'appeared', 'suspended', 'revision', 'sector', 'hp'].includes(k),
+      ),
+    );
+    if (record.deathMinute !== undefined) {
+      need(record.alive === false && integer(record.deathMinute, 0, r.minute));
+    }
     // Older saves retained this derived bit after a confirmed casualty's expiry
     // or dismissal. Repair only the stale service bit; all death, health,
     // placement, scene and succession checks below still apply.
-    if(record.alive===false&&record.hp===0&&integer(record.deathMinute,0,r.minute)&&p.alive===false&&p.hp===0&&p.sector===null&&p.recruited&&!state.recruited.includes(id)&&!state.contracts[id])p.recruited=false;
-    need(p.hp===record.hp&&p.alive===record.alive&&p.recruited===state.recruited.includes(id));
-    need(p.sector===null||placement?.sectors.includes(p.sector));
-    need(!p.appeared||Boolean(placement)&&p.revision>=1);
-    need(p.alive||p.hp===0&&p.sector===null);
-    if(!placement||isContractCharacter(c))need(!p.appeared&&p.sector===null&&p.revision===0);
-    else if(placement.afterDeath===null||p.appeared)need(p.appeared&&(!p.alive||p.sector!==null));
-    else need(p.sector===null&&p.revision===0&&!p.recruited);
+    if (
+      record.alive === false &&
+      record.hp === 0 &&
+      integer(record.deathMinute, 0, r.minute) &&
+      p.alive === false &&
+      p.hp === 0 &&
+      p.sector === null &&
+      p.recruited &&
+      !state.recruited.includes(id) &&
+      !state.contracts[id]
+    ) {
+      p.recruited = false;
+    }
+    need(
+      p.hp === record.hp &&
+        p.alive === record.alive &&
+        p.recruited === state.recruited.includes(id),
+    );
+    need(p.sector === null || placement?.sectors.includes(p.sector));
+    need(!p.appeared || (Boolean(placement) && p.revision >= 1));
+    need(p.alive || (p.hp === 0 && p.sector === null));
+    if (!placement || isContractCharacter(c)) {
+      need(!p.appeared && p.sector === null && p.revision === 0);
+    } else if (placement.afterDeath === null || p.appeared) {
+      need(p.appeared && (!p.alive || p.sector !== null));
+    } else {
+      need(p.sector === null && p.revision === 0 && !p.recruited);
+    }
   }
- validateSuccessions(state);
-  for(const scene of Object.values(state.sectorStates))validatePresenceScene(state,scene);
-  if(state.pendingBattle)validatePresenceScene(state,state.pendingBattle);
+  validateSuccessions(state);
+  for (const scene of Object.values(state.sectorStates)) {
+    validatePresenceScene(state, scene);
+  }
+  if (state.pendingBattle) {
+    validatePresenceScene(state, state.pendingBattle);
+  }
 }

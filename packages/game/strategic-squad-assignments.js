@@ -1,39 +1,111 @@
-import {canCreateSquad,canReassignOperative,operativeLocation} from './squads.js';
-import {careAssignmentReason} from './medical-care.js';
+import { canCreateSquad, canReassignOperative, operativeLocation } from './squads.js';
+import { careAssignmentReason } from './medical-care.js';
 
 // Numbered UI slots refer to saved squads. Forming a later slot first must not
 // renumber it, and old named squads retain their IDs and membership.
-export function strategicSquadSlots(state){
- const slots=Array.from({length:6},(_,index)=>({number:index+1,label:`Escuadra ${index+1}`,squad:null})),remaining=[];
- for(const squad of state.squads??[]){
-  const match=/^Escuadra ([1-6])$/.exec(squad.name);
-  if(match&&!slots[Number(match[1])-1].squad)slots[Number(match[1])-1].squad=squad;
-  else remaining.push(squad);
- }
- const extra=[];
- for(const squad of remaining){const slot=slots.find(slot=>!slot.squad);if(slot){slot.squad=squad;slot.label=squad.name;}else extra.push({number:null,label:squad.name,squad});}
- return [...slots,...extra];
+/** @returns {import('./public/personnel-query-types.ts').SquadSlot[]} */
+export function strategicSquadSlots(state) {
+  const slots = Array.from({ length: 6 }, (_, index) => ({
+      number: index + 1,
+      label: `Escuadra ${index + 1}`,
+      squad: null,
+    })),
+    remaining = [];
+  for (const squad of state.squads ?? []) {
+    const match = /^Escuadra ([1-6])$/.exec(squad.name);
+    if (match && !slots[Number(match[1]) - 1].squad) {
+      slots[Number(match[1]) - 1].squad = squad;
+    } else {
+      remaining.push(squad);
+    }
+  }
+  const extra = [];
+  for (const squad of remaining) {
+    const slot = slots.find((slot) => !slot.squad);
+    if (slot) {
+      slot.squad = squad;
+      slot.label = squad.name;
+    } else {
+      extra.push({ number: null, label: squad.name, squad });
+    }
+  }
+  return [...slots, ...extra];
 }
 
-export function strategicSquadLabel(state,squadId){return strategicSquadSlots(state).find(slot=>slot.squad?.id===squadId)?.label??'En servicio';}
-
-const assignmentIssue=(state,operativeId,operative)=>state.pendingBattle||state.pendingEncounter||state.defeated?'Terminá el encuentro antes de cambiar de escuadra.':!canReassignOperative(state,operativeId)?'El combatiente debe estar disponible y sin una ruta pendiente.':operative?careAssignmentReason(state,operative,'active')||null:null;
-
-export function strategicSquadAssignments(state,operativeId,operative=null){
- const at=operativeLocation(state,operativeId),unavailable=assignmentIssue(state,operativeId,operative);
- return strategicSquadSlots(state).map(slot=>{
-  const squad=slot.squad;
-  const reason=unavailable??(squad?.journey?'La escuadra tiene una ruta pendiente.':squad&&squad.location!==at?'Los combatientes deben reunirse en el mismo sector.':squad&&squad.members.length>=6&&!squad.members.includes(operativeId)?'La escuadra ya tiene seis combatientes.':!squad&&!canCreateSquad(state)?'No hay otra escuadra disponible.':null);
-  const action=squad?{type:'assignToSquad',operativeId,squadId:squad.id,returnToService:true}:{type:'createSquad',name:slot.label,ids:[operativeId],sector:at,returnToService:true};
-  return {...slot,reason,action};
- });
+/** @returns {string} */
+export function strategicSquadLabel(state, squadId) {
+  return (
+    strategicSquadSlots(state).find((slot) => slot.squad?.id === squadId)?.label ?? 'En servicio'
+  );
 }
 
-export function strategicNewSquadAssignment(state,operativeId,operative=null){
- // Empty numbered slots already form squads. Once all six refer to saved
- // groups, retain access to the engine's remaining capacity and vacant reuse.
- if(strategicSquadSlots(state).some(slot=>!slot.squad))return null;
- let number=7;while(state.squads.some(squad=>squad.name===`Escuadra ${number}`))number++;
- const reason=assignmentIssue(state,operativeId,operative)??(!canCreateSquad(state)?'El ejército ya tiene ocho escuadras ocupadas.':null);
- return {reason,action:{type:'createSquad',name:`Escuadra ${number}`,ids:[operativeId],sector:operativeLocation(state,operativeId),returnToService:true}};
+const assignmentIssue = (state, operativeId, operative) =>
+  state.pendingBattle || state.pendingEncounter || state.defeated
+    ? 'Terminá el encuentro antes de cambiar de escuadra.'
+    : !canReassignOperative(state, operativeId)
+      ? 'El combatiente debe estar disponible y sin una ruta pendiente.'
+      : operative
+        ? careAssignmentReason(state, operative, 'active') || null
+        : null;
+
+/** @param {import('./public/campaign-types.ts').CampaignSnapshot} state
+ * @param {number} operativeId
+ * @param {import('./public/campaign-types.ts').CampaignOperative|null} [operative]
+ * @returns {import('./public/personnel-query-types.ts').SquadAssignment[]} */
+export function strategicSquadAssignments(state, operativeId, operative = null) {
+  const at = operativeLocation(state, operativeId),
+    unavailable = assignmentIssue(state, operativeId, operative);
+  return strategicSquadSlots(state).map((slot) => {
+    const squad = slot.squad;
+    const reason =
+      unavailable ??
+      (squad?.journey
+        ? 'La escuadra tiene una ruta pendiente.'
+        : squad && squad.location !== at
+          ? 'Los combatientes deben reunirse en el mismo sector.'
+          : squad && squad.members.length >= 6 && !squad.members.includes(operativeId)
+            ? 'La escuadra ya tiene seis combatientes.'
+            : !squad && !canCreateSquad(state)
+              ? 'No hay otra escuadra disponible.'
+              : null);
+    const action = squad
+      ? { type: 'assignToSquad', operativeId, squadId: squad.id, returnToService: true }
+      : {
+          type: 'createSquad',
+          name: slot.label,
+          ids: [operativeId],
+          sector: at,
+          returnToService: true,
+        };
+    return { ...slot, reason, action };
+  });
+}
+
+/** @param {import('./public/campaign-types.ts').CampaignSnapshot} state
+ * @param {number} operativeId
+ * @param {import('./public/campaign-types.ts').CampaignOperative|null} [operative]
+ * @returns {{reason:string|null;action:Extract<import('./public/campaign-types.ts').CampaignAction,{type:'createSquad'}>}|null} */
+export function strategicNewSquadAssignment(state, operativeId, operative = null) {
+  // Empty numbered slots already form squads. Once all six refer to saved
+  // groups, retain access to the engine's remaining capacity and vacant reuse.
+  if (strategicSquadSlots(state).some((slot) => !slot.squad)) {
+    return null;
+  }
+  let number = 7;
+  while (state.squads.some((squad) => squad.name === `Escuadra ${number}`)) {
+    number++;
+  }
+  const reason =
+    assignmentIssue(state, operativeId, operative) ??
+    (!canCreateSquad(state) ? 'El ejército ya tiene ocho escuadras ocupadas.' : null);
+  return {
+    reason,
+    action: {
+      type: 'createSquad',
+      name: `Escuadra ${number}`,
+      ids: [operativeId],
+      sector: operativeLocation(state, operativeId),
+      returnToService: true,
+    },
+  };
 }

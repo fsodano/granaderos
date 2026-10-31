@@ -11,7 +11,8 @@ export function materialRangeResistanceFactor(weapon, distance) {
     weapon.range <= 0 ||
     !Number.isFinite(distance) ||
     distance < 0
-  )
+  ) {
     return 1;
+  }
   return 1 + slope * Math.max(0, distance / weapon.range - 1);
 }

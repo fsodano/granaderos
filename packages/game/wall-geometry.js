@@ -1,4 +1,4 @@
-import { wallEdgeKey, wallEdgeCells } from '../campaign-format/map-coordinates.js';
+import { wallEdgeKey } from '../campaign-format/map-coordinates.js';
 export { wallEdgeKey, wallEdgeCells } from '../campaign-format/map-coordinates.js';
 // Cell centers are integers. Wall coordinates name grid vertices; the world
 // vertex is (x - .5, y - .5). Each edge is exactly one cell long.
@@ -8,6 +8,7 @@ const level = (point) => point?.tacticalLevel ?? 0;
 const cellKey = (point) => `${point.x},${point.y}`;
 const indexes = new WeakMap();
 
+/** @returns {string} */
 export const wallEdgeId = (edge) =>
   edge.id ?? `wall:${level(edge)}:${edge.axis}:${edge.x}:${edge.y}`;
 export function wallEdgeEndpoints(edge) {
@@ -35,7 +36,9 @@ function edgeIndex(state) {
   return index.byKey;
 }
 export function wallEdgesBetween(state, a, b) {
-  if (level(a) !== level(b) || Math.abs(a.x - b.x) + Math.abs(a.y - b.y) !== 1) return [];
+  if (level(a) !== level(b) || Math.abs(a.x - b.x) + Math.abs(a.y - b.y) !== 1) {
+    return [];
+  }
   const edge =
     a.x !== b.x
       ? { x: Math.max(a.x, b.x), y: a.y, axis: 'y', tacticalLevel: level(a) }
@@ -43,20 +46,30 @@ export function wallEdgesBetween(state, a, b) {
   return edgeIndex(state).get(wallEdgeKey(edge)) ?? [];
 }
 export function wallEdgeBlocksMovement(edge, { openDoors = false } = {}) {
-  if (edge.destroyed || edge.type === 'rubble') return false;
-  if (edge.type === 'door') return !edge.open && !(openDoors && !edge.locked && !edge.jammed);
+  if (edge.destroyed || edge.type === 'rubble') {
+    return false;
+  }
+  if (edge.type === 'door') {
+    return !edge.open && !(openDoors && !edge.locked && !edge.jammed);
+  }
   return edge.type === 'wall' || edge.type === 'window';
 }
 // A diagonal must clear both orthogonal routes around its shared corner. This
 // prevents crossing a closed edge by touching its endpoint.
 export function wallMovementBlocked(state, a, b, options = {}) {
-  if (level(a) !== level(b)) return false;
+  if (level(a) !== level(b)) {
+    return false;
+  }
   const dx = Math.abs(a.x - b.x),
     dy = Math.abs(a.y - b.y);
-  if (Math.max(dx, dy) !== 1) return false;
+  if (Math.max(dx, dy) !== 1) {
+    return false;
+  }
   const blocked = (from, to) =>
     wallEdgesBetween(state, from, to).some((edge) => wallEdgeBlocksMovement(edge, options));
-  if (!dx || !dy) return blocked(a, b);
+  if (!dx || !dy) {
+    return blocked(a, b);
+  }
   const horizontal = { ...a, x: b.x },
     vertical = { ...a, y: b.y };
   return (
@@ -69,13 +82,14 @@ export function wallMovementBlocked(state, a, b, options = {}) {
 // damage and door fields remain on the corresponding edge records.
 export function normalizeBuildingWalls(building) {
   const walls = building.walls ?? [];
-  if (walls.every((w) => w.axis === 'x' || w.axis === 'y'))
+  if (walls.every((w) => w.axis === 'x' || w.axis === 'y')) {
     return walls.map((w) => ({
       ...w,
       buildingId: building.id,
       material: w.material ?? building.material ?? 'adobe',
       id: wallEdgeId(w),
     }));
+  }
   const source = new Map(walls.map((w) => [cellKey(w), w])),
     result = new Map();
   const x0 = building.x,
@@ -85,20 +99,34 @@ export function normalizeBuildingWalls(building) {
   const internal = (x, y) => x > x0 && x < x1 && y > y0 && y < y1 && source.has(`${x},${y}`);
   for (const w of walls) {
     const segments = [];
-    if (w.y === y0) segments.push({ x: w.x, y: y0, axis: 'x' });
-    if (w.y === y1) segments.push({ x: w.x, y: y1 + 1, axis: 'x' });
-    if (w.x === x0) segments.push({ x: x0, y: w.y, axis: 'y' });
-    if (w.x === x1) segments.push({ x: x1 + 1, y: w.y, axis: 'y' });
+    if (w.y === y0) {
+      segments.push({ x: w.x, y: y0, axis: 'x' });
+    }
+    if (w.y === y1) {
+      segments.push({ x: w.x, y: y1 + 1, axis: 'x' });
+    }
+    if (w.x === x0) {
+      segments.push({ x: x0, y: w.y, axis: 'y' });
+    }
+    if (w.x === x1) {
+      segments.push({ x: x1 + 1, y: w.y, axis: 'y' });
+    }
     if (!segments.length) {
       const horizontal = source.has(`${w.x - 1},${w.y}`) || source.has(`${w.x + 1},${w.y}`);
       const vertical = source.has(`${w.x},${w.y - 1}`) || source.has(`${w.x},${w.y + 1}`);
-      if (horizontal || !vertical) segments.push({ x: w.x, y: w.y + 1, axis: 'x' });
-      if (vertical) segments.push({ x: w.x + 1, y: w.y, axis: 'y' });
-    } else {
-      if ((w.y === y0 && internal(w.x, w.y + 1)) || (w.y === y1 && internal(w.x, w.y - 1)))
-        segments.push({ x: w.x + 1, y: w.y, axis: 'y' });
-      if ((w.x === x0 && internal(w.x + 1, w.y)) || (w.x === x1 && internal(w.x - 1, w.y)))
+      if (horizontal || !vertical) {
         segments.push({ x: w.x, y: w.y + 1, axis: 'x' });
+      }
+      if (vertical) {
+        segments.push({ x: w.x + 1, y: w.y, axis: 'y' });
+      }
+    } else {
+      if ((w.y === y0 && internal(w.x, w.y + 1)) || (w.y === y1 && internal(w.x, w.y - 1))) {
+        segments.push({ x: w.x + 1, y: w.y, axis: 'y' });
+      }
+      if ((w.x === x0 && internal(w.x + 1, w.y)) || (w.x === x1 && internal(w.x - 1, w.y))) {
+        segments.push({ x: w.x, y: w.y + 1, axis: 'x' });
+      }
     }
     segments.forEach((segment, index) => {
       const edge = {
@@ -125,17 +153,21 @@ export function normalizeBuildingWalls(building) {
 
 export function buildingEdgeRooms(building, walls = normalizeBuildingWalls(building)) {
   const remaining = new Map();
-  for (let y = building.y; y < building.y + building.height; y++)
-    for (let x = building.x; x < building.x + building.width; x++)
+  for (let y = building.y; y < building.y + building.height; y++) {
+    for (let x = building.x; x < building.x + building.width; x++) {
       remaining.set(`${x},${y}`, { x, y });
+    }
+  }
   const rooms = [],
     used = new Set(),
     geometry = { wallEdges: walls };
-  for (const first of [...remaining.values()]) {
-    if (!remaining.has(cellKey(first))) continue;
+  for (const first of remaining.values()) {
+    if (!remaining.has(cellKey(first))) {
+      continue;
+    }
     const cells = [first];
     remaining.delete(cellKey(first));
-    for (let i = 0; i < cells.length; i++)
+    for (let i = 0; i < cells.length; i++) {
       for (const [dx, dy] of [
         [1, 0],
         [-1, 0],
@@ -145,10 +177,13 @@ export function buildingEdgeRooms(building, walls = normalizeBuildingWalls(build
         const next = { x: cells[i].x + dx, y: cells[i].y + dy },
           key = cellKey(next);
         // Doors split rooms even when open; a breach does not rename the rooms.
-        if (!remaining.has(key) || wallEdgesBetween(geometry, cells[i], next).length) continue;
+        if (!remaining.has(key) || wallEdgesBetween(geometry, cells[i], next).length) {
+          continue;
+        }
         remaining.delete(key);
         cells.push(next);
       }
+    }
     const keys = new Set(cells.map(cellKey)),
       match = (building.rooms ?? [])
         .filter((r) => !used.has(r.id))
@@ -185,7 +220,7 @@ export function migrateWallGeometry(state) {
     const converted = normalizeBuildingWalls({ ...building, walls });
     const native = walls.every((w) => w.axis === 'x' || w.axis === 'y');
     building.walls = converted;
-    if (!native)
+    if (!native) {
       building.rooms = [
         ...buildingEdgeRooms(
           {
@@ -200,6 +235,7 @@ export function migrateWallGeometry(state) {
           (room) => (room.tacticalLevel ?? level(room.cells?.[0])) > 0,
         ),
       ];
+    }
     edges.push(...converted);
     const rooms = new Map(
       building.rooms.flatMap((room) =>
@@ -208,7 +244,7 @@ export function migrateWallGeometry(state) {
           .map((cell) => [cellKey(cell), room.id]),
       ),
     );
-    for (const tile of state.tiles ?? [])
+    for (const tile of state.tiles ?? []) {
       if (rooms.has(cellKey(tile))) {
         assigned.add(cellKey(tile));
         Object.assign(tile, {
@@ -231,9 +267,11 @@ export function migrateWallGeometry(state) {
           'destroyed',
           'obstacleHeight',
           'projectileResistance',
-        ])
+        ]) {
           delete tile[key];
+        }
       }
+    }
   }
   const free = (state.tiles ?? []).filter((t) => !assigned.has(cellKey(t)) && structural(t));
   const source = new Map(free.map((t) => [cellKey(t), t]));
@@ -255,8 +293,9 @@ export function migrateWallGeometry(state) {
         edge.blocked = true;
         edge.blocksSight = true;
         edge.cover = 40;
-        for (const key of ['doorId', 'open', 'locked', 'broken', 'jammed', 'trap', 'contents'])
+        for (const key of ['doorId', 'open', 'locked', 'broken', 'jammed', 'trap', 'contents']) {
           delete edge[key];
+        }
       }
       edges.push(edge);
     }
@@ -272,8 +311,9 @@ export function migrateWallGeometry(state) {
       'destroyed',
       'obstacleHeight',
       'projectileResistance',
-    ])
+    ]) {
       delete tile[key];
+    }
   }
   state.wallEdges = edges;
   state.wallGeometryVersion = WALL_GEOMETRY_VERSION;

@@ -17,7 +17,10 @@ import { CampaignResumeSectorSessionRepository } from './infrastructure/session/
 import { ResumeSectorSessionUseCase } from './application/sector-sessions/resume-sector-session/resume-sector-session.use-case.ts';
 import { RecruitmentService } from './domain/personnel/recruitment-service.ts';
 import { RecruitmentAssignment } from './domain/personnel/force-roster.ts';
-import {refreshCampaignResidentPositions,validateResidentPositionContext} from './infrastructure/world/campaign-resident-positions.js';
+import {
+  refreshCampaignResidentPositions,
+  validateResidentPositionContext,
+} from './infrastructure/world/campaign-resident-positions.js';
 import {
   CampaignRecruitmentMapper,
   RecruitmentEquipmentSource,
@@ -25,10 +28,9 @@ import {
 import { GameUnitOfWork } from './infrastructure/persistence/game-unit-of-work.ts';
 import { RecruitCombatantUseCase } from './application/personnel/recruit-combatant/recruit-combatant.use-case.ts';
 import { CampaignRecruitCombatantRepository } from './infrastructure/personnel/campaign-recruit-combatant.repository.js';
-import { CampaignCharacterEquipmentMapper } from './infrastructure/personnel/campaign-character-equipment-mapper.js';
+import { CampaignCharacterEquipmentMapper } from './infrastructure/personnel/campaign-character-equipment-mapper.ts';
 import { CampaignCharacterAbilitiesMapper } from './infrastructure/personnel/campaign-character-abilities-mapper.js';
 import {
-  fundServiceGuarantee,
   settleServiceGuarantee,
   forfeitDeadServiceGuarantees,
   validateServiceGuarantees,
@@ -36,7 +38,6 @@ import {
   creditPendingGuaranteeRefunds,
 } from './service-guarantees.js';
 import {
-  treasuryIncomeReason,
   awardVictoryFunds,
   creditPendingVictoryFunds,
   validatePendingVictoryFunds,
@@ -59,7 +60,7 @@ import {
   campaignPackageSaveReplacer,
   restoreCampaignPackageReference,
 } from './campaign-package-storage.js';
-import { migrateLegacySkillLearning } from './recruitment.js';
+import { migrateLegacySkillLearning } from './recruitment.ts';
 import { receiveCorrespondence, validateCorrespondence } from './correspondence.js';
 import {
   receiveCompanionLossCorrespondence,
@@ -71,7 +72,7 @@ import {
 import { isSectorSupplied } from './sector-income.js';
 import { AMMUNITION_FAMILIES } from './ammunition-families.js';
 import { changeMerchantCash } from './equipment-merchants.js';
-import { equipmentKey } from './equipment-catalog.js';
+import { equipmentKey } from './equipment-catalog.ts';
 import {
   migrateServiceEquipmentReturns,
   validateServiceEquipmentReturns,
@@ -86,12 +87,8 @@ import {
   prepareCampaignAmmunition,
   issueStartingCartridges,
   migrateStartingCartridges,
-  retainReturnedAmmunition,
   moveCampaignAmmunition,
-  unloadCampaignWeapon,
   carriedAmmunition,
-  ammoResourceKey,
-  initialAmmunitionStock,
   migrateCampaignAmmunition,
   syncCampaignAmmunition,
   validateCampaignAmmunition,
@@ -99,24 +96,18 @@ import {
 } from './campaign-ammunition.js';
 import { removeIgnitionSupplies, validateStoredAmmo } from './ammo-types.js';
 import { personalPockets, pocketChangeReason, POCKET_FULL } from './personal-pockets.js';
+import { repurchaseArtillery, validateArtilleryMerchants } from './artillery-trading.js';
 import {
-  sellArtillery,
-  repurchaseArtillery,
-  validateArtilleryMerchants,
-} from './artillery-trading.js';
-import {
-  dispatchArtilleryTransport,
   deliverArtilleryTransfers,
   validateArtilleryTransport,
   queueArtilleryTransport,
-  deliverTransportedArtillery,
   storeStationedArtillery,
 } from './artillery-transport.js';
 import {
   validateCampaignArtilleryProfiles,
   artillerySaveReplacer,
   restoreArtilleryReferences,
-} from './artillery-definitions.js';
+} from './artillery-definitions.ts';
 import { artillerySupplyQuote } from './artillery-supply.js';
 import {
   migrateArtilleryState,
@@ -141,13 +132,10 @@ import {
   advanceMilitaryWounds,
   validateMedicalCare,
   medicalSupplyQuote,
-  MEDICAL_KIT_PRICE,
   migrateMedicalCare,
   returnMedicalCare,
 } from './medical-care.js';
 import {
-  previousDeploymentScene,
-  withoutPreviousCasualties,
   retainedMilitaryBodies,
   advanceCampaignWorld,
   removedSectorCharacters,
@@ -156,16 +144,16 @@ import { firstAidPlan } from './first-aid.js';
 import { CRITICAL_HEALTH } from './actor-condition.js';
 import { completedTacticalVictory } from './battle-outcome.js';
 import { foundryFor } from './campaign-foundry.js';
-import { campaignRole, campaignRoleActive, foundryReason } from './campaign-roles.js';
+import { campaignRole, foundryReason } from './campaign-roles.js';
 import {
   campaignStory,
   advanceCampaignStory,
   campaignChapterIndex,
   validateCampaignProgress,
 } from './campaign-story.js';
-import { importRulesFor, importOrderReason } from './campaign-imports.js';
+import { importRulesFor } from './campaign-imports.js';
 import { headquartersFor, headquartersName, campaignChapters } from './campaign-headquarters.js';
-import { campaignRules } from './campaign-rules.js';
+import './campaign-rules.js';
 import { synchronizeDialogueMovements, validateDialogueMovements } from './dialogue-movement.js';
 import { updateContentQuests, nextContentQuestDeadline } from './content-quests.js';
 import {
@@ -198,7 +186,7 @@ import {
   gainsExperience,
   characterForOperative,
   isWorldCharacter,
-} from './content-character-ids.js';
+} from './content-character-ids.ts';
 import { validateAbilityReferences } from './content-character-abilities.js';
 import {
   campaignPlace,
@@ -206,8 +194,7 @@ import {
   locationId,
   validWorldLocation,
   worldOwner,
-  adjacentCells,
-} from './world-cells.js';
+} from './world-cells.ts';
 import { compactCellScene, expandCellScene, cellSceneSaveReplacer } from './cell-scene-storage.js';
 import { validateCampaignSceneDefinitions } from './campaign-scene-definitions.js';
 import { validateForceWeapon } from './content-force-equipment.js';
@@ -215,22 +202,11 @@ import {
   weaponSaveReplacer,
   weaponSpecification,
   validateWeaponCarrier,
-  validateWeaponReferences,
-  setWeaponDefinition,
-  weaponRecord,
-} from './weapon-definition.js';
+} from './weapon-definition.ts';
+import { equipArmoryItem, validateArmoryItems } from './armory-items.js';
 import {
-  usesAuthoredEquipment,
-  addArmoryStock,
-  equipArmoryItem,
-  validateArmoryItems,
-} from './armory-items.js';
-import {
-  hiringArrivalReason,
   hiringArrivalOptions,
   pendingHire,
-  hireArrivalOrder,
-  advanceHireArrivals,
   nextHireArrivalSeconds,
   redirectHire,
   cancelHireArrival,
@@ -248,7 +224,7 @@ import {
 import { campaignSectors } from './campaign-definition.js';
 import { resolveContent } from './content-package.js';
 import { canonicalContent } from './content-identity.js';
-import { refreshEnemyIntelligence, recordEnemyPresence } from './enemy-intelligence.js';
+import { refreshEnemyIntelligence, recordEnemyPresence } from './enemy-intelligence.ts';
 import { tradeArtillery } from './artillery-trade.js';
 import { exchangeMerchantEquipment } from './merchant-exchange.js';
 import { enterSector } from './world.js';
@@ -268,27 +244,18 @@ import {
   deliverEquipmentShipments,
   validEquipmentShipments,
   EQUIPMENT_CATALOG,
-  refillCost,
-  firearmRepairCost,
   deployedArtillery,
   migrateEquipment,
   validateStoredFittingFields,
   merchantStatus,
   addEquipment,
-  storeEquipment,
   takeEquipment,
-  storedEquipmentMetadata,
   resaleBreakdown,
   returnEquipment,
   validateEquipment,
-  equipmentInventoryUsage,
-  allocateEquipmentAmmo,
   equipmentCatalogItem,
   equipmentLabel,
   medicalSupplyStock,
-  ammunitionStock,
-  AMMUNITION_PRICE,
-  AMMUNITION_MERCHANT_CAP,
   validateEquipmentOwnership,
   USED_EQUIPMENT_LIMIT,
   usedEquipmentOffers,
@@ -300,14 +267,14 @@ import {
   validateRegionalWeather,
   validateCampaignWeather,
 } from './regional-weather.js';
-import { issueInitialOutfit } from './outfits.js';
+import { issueInitialOutfit } from './outfits.ts';
 import {
   hasAuthoredDialogue,
   dialogueOptions,
   dialogueReason,
   ambientReply,
   contextualThreatReply,
-} from './npc-dialogue.js';
+} from './npc-dialogue.ts';
 import { validatePocketOrder } from './inventory-pockets.js';
 import {
   recordLogisticsNotice,
@@ -317,16 +284,15 @@ import {
   reconcileLogisticsAttention,
 } from './logistics-attention.js';
 import { moveSectorItem } from './sector-inventory.js';
-import { handLayout } from './hand-layout.js';
+import './hand-layout.ts';
 import {
-  initialContractAttention,
   migrateContractAttention,
   reconcileContractAttention,
   collectContractAttention,
   nextContractWarningSeconds,
   validateContractAttention,
 } from './contract-attention.js';
-import { totalSectorIncome } from './sector-income.js';
+import './sector-income.js';
 import {
   assaultNeighbor,
   queueSquadTravel,
@@ -346,7 +312,7 @@ import {
 import { gainFatigue, needsCollapseRecovery } from './fatigue.js';
 import { advanceMarchFatigue, tooTiredToMarch } from './march-fatigue.js';
 import { assertSaveSize } from './save-limits.js';
-import { dailyIncome, artilleryCount, collectSectorCash } from './economy.js';
+import { artilleryCount, collectSectorCash } from './economy.js';
 import { speechFor } from './characters.js';
 import {
   prepareGarrison,
@@ -357,14 +323,13 @@ import {
   validMilitiaTrainees,
   advanceMilitiaWounds,
 } from './garrison.js';
-import { tradeQuote, policyStatus } from './politics.js';
+import { tradeQuote } from './politics.js';
 import {
   questForNPC,
   validateQuests,
   validateQuestFailures,
   validateQuestGifts,
   questsFor,
-  NPC_QUESTS,
   questGiftProgressPending,
   questDeliveryText,
   questResolutionReward,
@@ -382,10 +347,8 @@ import { recordCityLoyalty, validCityLoyaltyEvents } from './cities.js';
 import {
   contractQuote,
   contractRenewalQuote,
-  contractStatus,
   migrateContracts,
   contractExpiresSeconds,
-  contractStartedFields,
 } from './contracts.js';
 import { validateTraining } from './skill-training.js';
 import {
@@ -396,7 +359,6 @@ import {
   militiaEligibility,
 } from './militia.js';
 import {
-  ENCOUNTERS,
   encounterDefinitions,
   canRecruitEncounter,
   encounterForOperative,
@@ -404,12 +366,7 @@ import {
   encounterRequirements,
   encounterHireTerms,
 } from './encounters.js';
-import {
-  initialHorseState,
-  migrateHorseState,
-  applyHorseAction,
-  mountForOperative,
-} from './horses.js';
+import { initialHorseState, applyHorseAction, mountForOperative } from './horses.js';
 import { fieldCapable, canSee } from './tactical.js';
 import {
   prepareDeploymentExits,
@@ -418,7 +375,7 @@ import {
   migrateDeploymentReturns,
   validateDeploymentReturnState,
 } from './deployment-return.js';
-import { validateSectorExits } from './tactical-exits.js';
+import './tactical-exits.js';
 import {
   WORK_ASSIGNMENTS,
   TOOLKIT_PRICE,
@@ -467,9 +424,6 @@ import {
 import { setSleep, prepareSleep, finishSleepHour, SLEEP_ISSUE_TEXT } from './sleep.js';
 import { autoResolve } from './auto-resolve.js';
 import {
-  canCreateSquad,
-  vacantSquad,
-  canReassignOperative,
   migrateSquads,
   activeSquad,
   squadReorganizationReason,
@@ -489,9 +443,9 @@ import {
   CIVIC_RECRUITS,
   civicStatus as baseCivicStatus,
   createOfficerRecord,
-} from './recruitment.js';
-import { campaignOfficerCreation, officerStartingFitting } from './campaign-officer-creation.js';
-import { validateOfficerCreationHealth } from './character-profile.js';
+} from './recruitment.ts';
+import { campaignOfficerCreation, officerStartingFitting } from './campaign-officer-creation.ts';
+import { validateOfficerCreationHealth } from './character-profile.ts';
 import { OPERATIVES, WEAPONS, CAMPAIGN_SECTORS, FACTIONS, PHASES, RESOURCE_NAMES } from './data.js';
 export { MISSION_SCENES, missionStatus } from './missions.js';
 export { dailyIncome, incomeSources, incomeSummary } from './economy.js';
@@ -533,11 +487,12 @@ export { activeSquad, operativeLocation } from './squads.js';
 export { TRANSPORT_OPTIONS, transferOptions, inventoryAt, cargoWeight } from './logistics.js';
 export { EQUIPMENT_CATALOG, armoryInventory, refillCost, firearmRepairCost } from './equipment.js';
 export { ROYALIST_COMMANDS, royalistIntel, mentorDispatch } from './narrative.js';
-export { CIVIC_RECRUITS } from './recruitment.js';
-export function civicStatus(s, id, local = false) {
+export { CIVIC_RECRUITS } from './recruitment.ts';
+export function civicStatus(s, id) {
   return baseCivicStatus(s, id);
 }
 export { OPERATIVES, WEAPONS, CAMPAIGN_SECTORS, FACTIONS, PHASES, RESOURCE_NAMES };
+/** @param {import('./public/campaign-types.ts').CampaignSnapshot} s @returns {import('./public/campaign-types.ts').CampaignOperative[]} */
 export function rosterFor(s) {
   const equipment = new CampaignCharacterEquipmentMapper(s);
   const abilities = new CampaignCharacterAbilitiesMapper(s);
@@ -551,6 +506,7 @@ export function rosterFor(s) {
     return op;
   });
 }
+/** @returns {number} */
 export function deploymentCost(s) {
   return prepareCampaignAmmunition(s, rosterFor(s), s.squad, {
     supplied: isSupplied(s, s.location),
@@ -567,7 +523,9 @@ function deploymentOperative(s, id) {
   return { ...clone(op), ...record, strength: op.strength };
 }
 function returnMount(s, id, report) {
-  if (!report.mount) return;
+  if (!report.mount) {
+    return;
+  }
   const horse = s.horseState?.horses.find(
     (h) => h.id === report.mount.id && h.assignedTo === id && !h.returned,
   );
@@ -584,13 +542,18 @@ function returnMount(s, id, report) {
 }
 function returnTraining(s, id, report) {
   validateTraining(report);
-  for (const field of ['trainedStats', 'skillPractice', 'practiceSeed'])
-    if (report[field] !== undefined) s.operativeState[id][field] = clone(report[field]);
+  for (const field of ['trainedStats', 'skillPractice', 'practiceSeed']) {
+    if (report[field] !== undefined) {
+      s.operativeState[id][field] = clone(report[field]);
+    }
+  }
 }
 function removeFromService(s, id) {
   const personnel = new CanonicalPersonnelMapper(s, new DomainIdentityMap());
   const character = personnel.restoreCharacter(rosterFor(s).find((person) => person.id === id));
-  if (character.service) character.endService();
+  if (character.service) {
+    character.endService();
+  }
   personnel.roster.release(String(id));
   personnel.apply(s);
   cancelPendingCompanionLoss(s, id);
@@ -602,9 +565,15 @@ function removeFromService(s, id) {
   s.operativeState[id].location = location;
   for (const squad of s.squads) {
     squad.members = squad.members.filter((x) => x !== id);
-    if (!squad.members.length) delete squad.journey;
+    if (!squad.members.length) {
+      delete squad.journey;
+    }
   }
-  for (const horse of s.horseState.horses) if (horse.assignedTo === id) horse.assignedTo = null;
+  for (const horse of s.horseState.horses) {
+    if (horse.assignedTo === id) {
+      horse.assignedTo = null;
+    }
+  }
   for (const course of s.militiaTraining.filter((t) => t.trainerId === id)) {
     returnMilitiaTrainees(s, course);
   }
@@ -616,18 +585,20 @@ function endOperativeService(s, id, fullCredit = false) {
     settlement = settleServiceGuarantee(s, s.contracts[id], op, 'departed', fullCredit);
   const returned = returnServiceEquipment(s, id, rosterFor(s));
   removeFromService(s, id);
-  if (settlement)
+  if (settlement) {
     note(
       s,
       settlement.creditedRefund < settlement.refund
         ? `${op.name}: garantía liquidada, ${settlement.creditedRefund} pesos abonados y ${settlement.refund - settlement.creditedRefund} pendientes de ${settlement.amount}. La paga no se devuelve.`
         : `${op.name}: garantía liquidada, ${settlement.refund} de ${settlement.amount} pesos devueltos. La paga no se devuelve.`,
     );
-  if (returned)
+  }
+  if (returned) {
     note(
       s,
       `El equipo queda en ${missionScenesFor(s)[returned.siteId]?.name ?? campaignPlace(returned.sectorId, s).name}, disponible para un combatiente presente.${returned.fallback ? ' Recogé todo el equipo antes de volver a contratar a esta persona.' : ''}`,
     );
+  }
 }
 function endExpiredService(s, id) {
   const name = rosterFor(s).find((o) => o.id === id)?.name ?? 'Un combatiente',
@@ -655,7 +626,9 @@ function receiveHire(s, arrival, joinSquad = true) {
   character.beginService(contract, arrival.destination);
   personnel.roster.admit(character.id, arrival.destination, joinSquad && !s.pendingBattle);
   personnel.apply(s);
-  if (arrival.guaranteeId) s.contracts[id].guaranteeId = arrival.guaranteeId;
+  if (arrival.guaranteeId) {
+    s.contracts[id].guaranteeId = arrival.guaranteeId;
+  }
   issueStartingCartridges(s, op);
   issueInitialOutfit(s, id);
   Object.assign(s.operativeState[id], {
@@ -674,17 +647,21 @@ function receiveHire(s, arrival, joinSquad = true) {
   });
   if (s.contentCampaign) {
     const line = speechFor(op, 'hired');
-    if (line?.trim()) note(s, `${op.name}: «${line}»`);
+    if (line?.trim()) {
+      note(s, `${op.name}: «${line}»`);
+    }
   }
 }
 function receiveDueHires(s, joinSquad = true) {
   const availableSites = hiringArrivalOptions(s);
-  for (const booking of [...(s.hiringArrivals ?? [])]) {
+  for (const booking of (s.hiringArrivals ?? []).slice()) {
     const destination =
       availableSites.find((site) => site.id === booking.destination)?.id ??
       availableSites.find((site) => site.id === s.location)?.id ??
       availableSites[0]?.id;
-    if (!destination) continue;
+    if (!destination) {
+      continue;
+    }
     const record = s.operativeState[booking.operativeId];
     if (
       !record?.alive ||
@@ -692,8 +669,9 @@ function receiveDueHires(s, joinSquad = true) {
       record.serviceEquipmentReturn ||
       s.recruited.includes(booking.operativeId) ||
       s.contracts[booking.operativeId]
-    )
+    ) {
       continue;
+    }
     receiveHire(s, { ...booking, destination }, joinSquad);
     s.hiringArrivals = s.hiringArrivals.filter((candidate) => candidate !== booking);
   }
@@ -702,18 +680,21 @@ function receiveDueHires(s, joinSquad = true) {
 function expireDueContracts(s) {
   const events = [],
     now = s.hour * 3600 + (s.secondOfHour ?? 0);
-  for (const id of [...s.recruited]) {
+  for (const id of s.recruited.slice()) {
     const contract = s.contracts?.[id],
       expiry = contractExpiresSeconds(contract);
-    if (expiry === null || expiry > now) continue;
+    if (expiry === null || expiry > now) {
+      continue;
+    }
     cancelPendingCompanionLoss(s, id);
-    if (s.operativeState[id]?.alive && !s.operativeState[id].captured)
+    if (s.operativeState[id]?.alive && !s.operativeState[id].captured) {
       events.push({
         operativeId: id,
         expiresAt: contract.expiresAt,
         ...(contract.expiresSecond ? { expiresSecond: contract.expiresSecond } : {}),
         code: 'expired',
       });
+    }
     if (deployed(s, id) || operativeInTransit(s, id)) {
       contract.departurePending = true;
       continue;
@@ -731,7 +712,9 @@ export function nextContractExpirySeconds(s) {
 }
 const clone = (value) => {
   const definitions = value?.contentCampaign?.package;
-  if (!definitions || !Object.isFrozen(definitions)) return JSON.parse(JSON.stringify(value));
+  if (!definitions || !Object.isFrozen(definitions)) {
+    return JSON.parse(JSON.stringify(value));
+  }
   // Campaign definitions are immutable. Copy only the mutable campaign state,
   // including a new wrapper, and reuse its pinned package on each clock tick.
   const source = { ...value, contentCampaign: { ...value.contentCampaign } };
@@ -743,7 +726,9 @@ const clone = (value) => {
   }
   const result = JSON.parse(JSON.stringify(source));
   result.contentCampaign.package = definitions;
-  if (pinnedRequest) result.pendingBattle.campaignPackage = definitions;
+  if (pinnedRequest) {
+    result.pendingBattle.campaignPackage = definitions;
+  }
   return result;
 };
 const clamp = (value) => Math.max(-100, Math.min(100, value));
@@ -764,22 +749,30 @@ const note = (s, text) => {
   s.log = s.log.slice(0, 80);
 };
 const requireThat = (test, message) => {
-  if (!test) throw Error(message);
+  if (!test) {
+    throw Error(message);
+  }
 };
 const pay = (s, cost) => {
-  for (const [key, value] of Object.entries(cost))
+  for (const [key, value] of Object.entries(cost)) {
     requireThat(
       s.resources[key] >= value,
       `Faltan recursos: ${RESOURCE_NAMES[key] ?? key} (${value}).`,
     );
-  for (const [key, value] of Object.entries(cost)) s.resources[key] -= value;
+  }
+  for (const [key, value] of Object.entries(cost)) {
+    s.resources[key] -= value;
+  }
 };
 const add = (s, values) => {
-  for (const [key, value] of Object.entries(values))
+  for (const [key, value] of Object.entries(values)) {
     s.resources[key] = (s.resources[key] ?? 0) + value;
+  }
 };
 const standing = (s, id, value) => {
-  if (Object.hasOwn(s.reputation, id)) s.reputation[id] = clamp(s.reputation[id] + value);
+  if (Object.hasOwn(s.reputation, id)) {
+    s.reputation[id] = clamp(s.reputation[id] + value);
+  }
 };
 const scenarioContext = (s) => ({
   requireThat,
@@ -822,6 +815,7 @@ function initializeCampaignSystems(s) {
   initializeTownIncome(s);
   return s;
 }
+/** @param {number} [seed] @param {import('../campaign-format/types.ts').CampaignContent | null} [content] @returns {import('./public/campaign-types.ts').CampaignSnapshot} */
 export function initialCampaign(seed = 1812, content = null) {
   const definitions = content === null ? null : resolveContent(content),
     state = scenarioFor(definitions).initialState(seed, definitions);
@@ -829,28 +823,39 @@ export function initialCampaign(seed = 1812, content = null) {
   // Restore never reapplies this new-campaign setting to an existing save.
   if (definitions?.rules?.startingHour !== undefined) {
     state.hour = definitions.rules.startingHour;
-    for (const entry of state.log) entry.hour = state.hour;
+    for (const entry of state.log) {
+      entry.hour = state.hour;
+    }
   }
-  if (definitions !== null) attachCampaignContent(state, definitions);
-  else {
+  if (definitions !== null) {
+    attachCampaignContent(state, definitions);
+  } else {
     state.errandDefinitions = freshDefaultErrands();
     state.roadsideDiscoveryDefinitions = freshDefaultRoadsideDiscoveries();
   }
   state.gameRevision = 0;
   state.recruitmentVersion = 2;
   initializeCampaignSystems(state);
-  if (initializeCampaignEvents(state)) progress(state);
+  if (initializeCampaignEvents(state)) {
+    progress(state);
+  }
   return state;
 }
 export const isSupplied = isSectorSupplied;
 export function recruitmentStatus(s, id, local = false) {
-  if (s.recruited.includes(id))
+  if (s.recruited.includes(id)) {
     return { available: false, reason: 'Ya se encuentra en tus filas.' };
-  if (!s.operativeState[id]?.alive) return { available: false, reason: 'Ha caído en combate.' };
-  if (s.operativeState[id]?.captured)
+  }
+  if (!s.operativeState[id]?.alive) {
+    return { available: false, reason: 'Ha caído en combate.' };
+  }
+  if (s.operativeState[id]?.captured) {
     return { available: false, reason: 'Está prisionero. Liberá el sector donde está detenido.' };
+  }
   const returnReason = serviceEquipmentReturnReason(s, id);
-  if (returnReason) return { available: false, reason: returnReason };
+  if (returnReason) {
+    return { available: false, reason: returnReason };
+  }
   const character = characterForOperative(s, id);
   if (character && isWorldCharacter(character)) {
     const reason = !character.encounter.recruitable
@@ -863,13 +868,15 @@ export function recruitmentStatus(s, id, local = false) {
     return { available: !reason, reason: reason ?? 'Disponible para incorporarse.' };
   }
 
-  if (!local && encounterForOperative(id))
+  if (!local && encounterForOperative(id)) {
     return {
       available: false,
       reason: `Buscá a ${encounterForOperative(id).name} en su localidad y hablá con él o ella.`,
     };
+  }
   return scenarioFor(s).recruitmentGate(s, id);
 }
+/** @returns {(import('../campaign-format/types.ts').CampaignChapter & {complete: boolean, active: boolean})[]} */
 export function campaignObjectives(s) {
   const index = campaignChapterIndex(s);
   return campaignChapters(s).map((p, i) => ({
@@ -900,14 +907,15 @@ function endingSpeech(s) {
     (o) => s.recruited.includes(o.id) && s.operativeState[o.id]?.alive,
   )) {
     const line = speechFor(op, 'ending');
-    if (line?.trim()) note(s, `${op.name}: «${line}»`);
+    if (line?.trim()) {
+      note(s, `${op.name}: «${line}»`);
+    }
   }
 }
 function progress(s) {
-  if (!s.completed) scenarioFor(s).progress(s, scenarioContext(s));
-}
-function raid(s, theater, forcedTarget = null) {
-  return scenarioFor(s).raid(s, theater, forcedTarget, scenarioContext(s));
+  if (!s.completed) {
+    scenarioFor(s).progress(s, scenarioContext(s));
+  }
 }
 function loseSectorToGroup(s, group) {
   const region = s.sectors[group.target];
@@ -933,7 +941,9 @@ function addDefenseHistory(s, group, outcome, casualties, text, extra = {}) {
   s.encounterHistory = s.encounterHistory.slice(0, 40);
 }
 function settleEnemyEncounters(s, options = {}) {
-  if (s.pendingBattle || s.pendingEncounter) return;
+  if (s.pendingBattle || s.pendingEncounter) {
+    return;
+  }
   for (const group of s.enemyGroups
     .filter((g) => g.status === 'waiting')
     .sort((a, b) => a.arrivalAt - b.arrivalAt)) {
@@ -966,7 +976,9 @@ function settleEnemyEncounters(s, options = {}) {
 }
 function meetEnemyGroups(s, at) {
   // A battle already in progress owns its enemy roster until its report returns.
-  if (s.pendingBattle?.sector === at) return;
+  if (s.pendingBattle?.sector === at) {
+    return;
+  }
   haltEnemyGroupsAt(s, at);
   for (const group of occupyingGroups(s, at)) {
     group.status = 'waiting';
@@ -985,14 +997,20 @@ function relocateDefenders(s, ids, destination, moralePenalty = 5) {
     gainFatigue(r, 8);
     r.morale = Math.max(0, r.morale - moralePenalty);
   }
-  for (const squad of s.squads)
+  for (const squad of s.squads) {
     if (squad.members.some((id) => ids.includes(id))) {
       delete squad.journey;
       squad.location = destination;
-      if (squad.id === s.activeSquadId) s.location = destination;
+      if (squad.id === s.activeSquadId) {
+        s.location = destination;
+      }
     }
-  for (const horse of s.horseState.horses)
-    if (ids.includes(horse.assignedTo)) horse.location = destination;
+  }
+  for (const horse of s.horseState.horses) {
+    if (ids.includes(horse.assignedTo)) {
+      horse.location = destination;
+    }
+  }
 }
 // An empty roster is recoverable through paid recruitment, as at campaign start.
 function reorganizeAfterLoss(s, previous) {
@@ -1002,8 +1020,9 @@ function reorganizeAfterLoss(s, previous) {
     s.pendingEncounter ||
     s.sectors[headquartersFor(s)].owner !== 'patriot' ||
     s.recruited.some((id) => s.operativeState[id]?.alive)
-  )
+  ) {
     return;
+  }
   const loss =
     (previous.pendingBattle && !s.pendingBattle) ||
     Object.entries(previous.operativeState).some(
@@ -1011,7 +1030,9 @@ function reorganizeAfterLoss(s, previous) {
         r.alive &&
         (!s.operativeState[id]?.alive || (!r.captured && s.operativeState[id]?.captured)),
     );
-  if (!loss) return;
+  if (!loss) {
+    return;
+  }
   // Move the empty command only. Prisoners, casualties and property stay put.
   s.squad = [];
   const command = activeSquad(s);
@@ -1042,31 +1063,38 @@ function captureOperatives(s, ids, at, ammunition = {}) {
       location: at,
     });
   }
-  if (ids.length)
+  if (ids.length) {
     note(
       s,
       `${ids.map((id) => rosterFor(s).find((o) => o.id === id).nickname).join(', ')} quedan prisioneros en ${sector(at, s).name}.`,
     );
+  }
 }
 function releaseCaptives(s, at) {
-  for (const h of s.horseState.horses)
+  for (const h of s.horseState.horses) {
     if (h.custody?.kind === 'field' && h.location === at) {
       h.custody = null;
       h.assignedTo = null;
     }
+  }
   for (const op of rosterFor(s)) {
     const r = s.operativeState[op.id];
-    if (!r.captured || r.capturedSector !== at) continue;
+    if (!r.captured || r.capturedSector !== at) {
+      continue;
+    }
     const held = r.capturedAmmunition ?? { loaded: 0, ammo: 0 };
     setCarriedLoading(r, { weapon: op.weapon, ...held, weaponDropped: r.weaponDropped });
     r.capturedAmmunition = { loaded: 0, ammo: 0 };
-    for (const h of s.horseState.horses)
+    for (const h of s.horseState.horses) {
       if (h.custody?.kind === 'captured' && h.custody.operativeId === op.id) {
         h.custody = null;
         h.assignedTo = null;
       }
+    }
     const contract = restoredCaptiveContract(r, s.hour, s.secondOfHour ?? 0);
-    if (!contract) settleServiceGuarantee(s, r.capturedContract, op);
+    if (!contract) {
+      settleServiceGuarantee(s, r.capturedContract, op);
+    }
     Object.assign(r, {
       asleep: false,
       captured: false,
@@ -1091,7 +1119,9 @@ function releaseCaptives(s, at) {
     }
     s.contracts[op.id] = contract;
     s.recruited.push(op.id);
-    if (s.location === at && s.squad.length < 6) s.squad.push(op.id);
+    if (s.location === at && s.squad.length < 6) {
+      s.squad.push(op.id);
+    }
     note(
       s,
       `${op.name} vuelve al servicio tras la liberación de ${sector(at, s).name}. Conserva sus heridas y equipo.`,
@@ -1103,7 +1133,11 @@ function prepareDefense(s, group, { excludeMercs = false } = {}) {
     def = sector(at, s),
     ids = excludeMercs ? [] : localDefenderIds(s, at),
     allocated = {};
-  for (const q of s.squads) if (q.members.some((id) => ids.includes(id))) delete q.journey;
+  for (const q of s.squads) {
+    if (q.members.some((id) => ids.includes(id))) {
+      delete q.journey;
+    }
+  }
   for (const id of ids) {
     s.operativeState[id].assignment = 'active';
     s.operativeState[id].asleep = false;
@@ -1165,7 +1199,9 @@ function finishDefense(s, request, outcome, snapshot, plan) {
         (g) => g.target === group.target && ['waiting', 'engaged', 'stationed'].includes(g.status),
       )
     ) {
-      if (request.wasRoyalist) s.sectors[group.target].owner = 'patriot';
+      if (request.wasRoyalist) {
+        s.sectors[group.target].owner = 'patriot';
+      }
       releaseCaptives(s, group.target);
     }
     recordCityLoyalty(s, { sectorId: group.target, kind: 'defense', eventId: group.id });
@@ -1174,11 +1210,14 @@ function finishDefense(s, request, outcome, snapshot, plan) {
       s,
       `La defensa de ${sector(group.target, s).name} rechaza a ${group.initialStrength} ${scenarioFor(s).enemyName}.`,
     );
-  } else loseSectorToGroup(s, group);
-  for (const squad of s.squads)
+  } else {
+    loseSectorToGroup(s, group);
+  }
+  for (const squad of s.squads) {
     squad.members = squad.members.filter(
       (id) => s.operativeState[id].alive && !s.operativeState[id].captured,
     );
+  }
   s.squad = s.squad.filter((id) => s.operativeState[id].alive && !s.operativeState[id].captured);
   const militiaCasualties = (request.garrison ?? [])
       .filter(
@@ -1217,18 +1256,22 @@ function applyTacticalTime(s, request, elapsed) {
     if (s.secondOfHour === 3600) {
       s.secondOfHour = 0;
       advanceCampaignHour(s, { stopOnDefeat: false, civilianSeconds: step, travelSeconds: step });
-    } else advanceFractionalSystems(s, step);
+    } else {
+      advanceFractionalSystems(s, step);
+    }
   }
   request.syncedSeconds = elapsed;
 }
 // Receipt counts are acknowledgement markers, never a second item inventory.
 // Check only the small NPC receipt lists on ordinary clock synchronizations.
 function validateAcknowledgedNpcGiftReceipts(campaign, npcs, sectorId) {
-  for (const quest of questsFor(campaign))
+  for (const quest of questsFor(campaign)) {
     for (const npcId of questContactIds(quest)) {
       const acknowledged = campaign.conversations?.[npcId]?.giftCount ?? 0,
         at = questBeneficiaryForNPC(quest, npcId)?.sector ?? quest.sector;
-      if (!quest.carried || at !== sectorId || !acknowledged) continue;
+      if (!quest.carried || at !== sectorId || !acknowledged) {
+        continue;
+      }
       const npc = npcs.find((n) => n?.id === npcId);
       requireThat(npc, 'Falta el interlocutor que recibió los objetos del encargo.');
       requireThat(
@@ -1236,15 +1279,18 @@ function validateAcknowledgedNpcGiftReceipts(campaign, npcs, sectorId) {
         'El parte perdió objetos que el interlocutor ya recibió.',
       );
     }
+  }
 }
 export function hasPendingNpcGiftProgress(campaign, battle) {
   validateQuestContext(campaign, battle);
   validateRoadsideDiscoveryContext(campaign, battle);
   validateQuestBeneficiaryContext(campaign, battle);
-  if (campaign.pendingBattle && Array.isArray(battle.units))
+  if (campaign.pendingBattle && Array.isArray(battle.units)) {
     validateCompanionGriefContext(campaign, battle, rosterFor(campaign));
-  if (campaign.pendingBattle && Array.isArray(battle.units))
+  }
+  if (campaign.pendingBattle && Array.isArray(battle.units)) {
     validateServiceObjectionContext(campaign, battle, rosterFor(campaign));
+  }
   const npcs = battle.npcs ?? [];
   requireThat(
     Array.isArray(npcs) && npcs.length <= 2000,
@@ -1254,11 +1300,15 @@ export function hasPendingNpcGiftProgress(campaign, battle) {
   let changed = false;
   for (const npc of npcs) {
     const quest = questForNPC(campaign, npc?.id);
-    if (npc?.questGifts === undefined && !quest?.carried) continue;
+    if (npc?.questGifts === undefined && !quest?.carried) {
+      continue;
+    }
     const count = validateQuestGifts(npc, campaign).length,
       acknowledged = campaign.conversations?.[npc.id]?.giftCount ?? 0;
     requireThat(count >= acknowledged, 'El parte perdió objetos que el interlocutor ya recibió.');
-    if (questGiftProgressPending(quest, count, acknowledged)) changed = true;
+    if (questGiftProgressPending(quest, count, acknowledged)) {
+      changed = true;
+    }
   }
   return changed;
 }
@@ -1320,7 +1370,9 @@ function validatedInteractionSnapshot(s, raw) {
   );
   let retainedRoster = false;
   for (const local of snapshot.npcs) {
-    if (!local.questGifts?.length) continue;
+    if (!local.questGifts?.length) {
+      continue;
+    }
     const npc = encounterDefinitions(s).find((n) => n.id === local.id);
     // Combat requests may omit the civilian roster. Only an existing, same-scene
     // nonrecruitable gift owner can supply that missing authorization.
@@ -1339,11 +1391,15 @@ function validatedInteractionSnapshot(s, raw) {
       npc && (request.npcs?.some((n) => n.id === npc.id) || retained),
       'El receptor no pertenece al sector del despliegue.',
     );
-    if (retained) retainedRoster = true;
+    if (retained) {
+      retainedRoster = true;
+    }
   }
   // Convert the old omitted-roster defense format once, from the validated
   // retained scene rather than from the submitted receipt or current location.
-  if (retainedRoster) request.npcs = clone(previous.npcs.filter((n) => n.detention === undefined));
+  if (retainedRoster) {
+    request.npcs = clone(previous.npcs.filter((n) => n.detention === undefined));
+  }
   validateAcknowledgedNpcGiftReceipts(s, snapshot.npcs, request.sector);
   hasPendingCivilians(s, snapshot);
   retainRepairReserves(request, snapshot);
@@ -1363,18 +1419,21 @@ function rewardQuest(s, quest, resolution = null) {
     'La recompensa supera el límite de tesorería.',
   );
   s.resources.treasury += reward.treasury;
-  if (reward.loyalty)
+  if (reward.loyalty) {
     recordCityLoyalty(s, {
       sectorId: branch?.sector ?? quest.sector,
       kind: 'quest',
       eventId: `npc-${quest.id}`,
     });
+  }
 }
 function acknowledgeNpcGifts(s, snapshot) {
   retainQuestBeneficiaries(s, s.pendingBattle, snapshot);
   for (const local of snapshot.npcs) {
     let quest = questForNPC(s, local.id);
-    if (!quest?.carried) continue;
+    if (!quest?.carried) {
+      continue;
+    }
     const count = validateQuestGifts(local, s).length,
       previous = s.conversations?.[local.id],
       acknowledged = previous?.giftCount ?? 0;
@@ -1385,11 +1444,16 @@ function acknowledgeNpcGifts(s, snapshot) {
       count === quest.carried.count &&
       !['completed', 'failed', 'withdrawn'].includes(quest.status) &&
       quest.conditionMet;
-    if (!questGiftProgressPending(quest, count, acknowledged)) continue;
-    if (!count) continue;
+    if (!questGiftProgressPending(quest, count, acknowledged)) {
+      continue;
+    }
+    if (!count) {
+      continue;
+    }
     const npc = encounterDefinitions(s).find((n) => n.id === local.id);
-    if (quest.status === 'unoffered')
+    if (quest.status === 'unoffered') {
       s.quests[quest.id] = { status: 'offered', offeredAt: s.hour, completedAt: null };
+    }
     // Gifts can arrive at the first checkpoint together with the recipient's
     // recorded death. A new pending choice must fail there, before any reward.
     if ((quest.rewardChoice || quest.beneficiaries) && (local.hp ?? 100) <= 0) {
@@ -1398,8 +1462,9 @@ function acknowledgeNpcGifts(s, snapshot) {
         snapshot.sectorId,
         snapshot.sceneId ?? null,
         local.id,
-      ))
+      )) {
         note(s, text);
+      }
       quest = questForNPC(s, local.id);
     }
     let text = `Recibimos ${count} de ${quest.carried.count} ${quest.carried.label.toLowerCase()}. Todavía faltan objetos para completar el encargo.`,
@@ -1561,10 +1626,18 @@ function completeDeploymentReport(s, request, action) {
   let criticalDressings = 0;
   const authorizedRetained = (unit) => {
     const old = retained.find((old) => old.id === unit.id);
-    if (!old) return false;
-    if (unit.originalUnitId !== old.originalUnitId || unit.maxHp !== old.maxHp) return false;
-    if (unit.hp <= old.hp) return true;
-    if (!(old.hp > 0 && unit.hp <= CRITICAL_HEALTH && old.hp < CRITICAL_HEALTH)) return false;
+    if (!old) {
+      return false;
+    }
+    if (unit.originalUnitId !== old.originalUnitId || unit.maxHp !== old.maxHp) {
+      return false;
+    }
+    if (unit.hp <= old.hp) {
+      return true;
+    }
+    if (!(old.hp > 0 && unit.hp <= CRITICAL_HEALTH && old.hp < CRITICAL_HEALTH)) {
+      return false;
+    }
     const capacity = Math.max(
       0,
       ...healers.map(
@@ -1584,7 +1657,9 @@ function completeDeploymentReport(s, request, action) {
           ).hpGain,
       ),
     );
-    if (!capacity) return false;
+    if (!capacity) {
+      return false;
+    }
     criticalDressings += Math.ceil((unit.hp - old.hp) / capacity);
     return true;
   };
@@ -1676,7 +1751,7 @@ function applyReturnedOperative(s, request, report) {
     condition: 100,
     fatigue: 100,
     boleadoras: 100000,
-  }))
+  })) {
     if (report[field] !== undefined) {
       requireThat(
         Number.isFinite(report[field]) && report[field] >= 0 && report[field] <= max,
@@ -1684,12 +1759,17 @@ function applyReturnedOperative(s, request, report) {
       );
       s.operativeState[id][field] = report[field];
     }
-  if (s.operativeState[id].sleepCollapsed && !needsCollapseRecovery(s.operativeState[id]))
+  }
+  if (s.operativeState[id].sleepCollapsed && !needsCollapseRecovery(s.operativeState[id])) {
     s.operativeState[id].sleepCollapsed = false;
+  }
   s.operativeState[id].inventory = clone(validatePersonalInventory(report.inventory));
   validatePocketOrder(report.pocketOrder);
-  if (report.pocketOrder === undefined) delete s.operativeState[id].pocketOrder;
-  else s.operativeState[id].pocketOrder = clone(report.pocketOrder);
+  if (report.pocketOrder === undefined) {
+    delete s.operativeState[id].pocketOrder;
+  } else {
+    s.operativeState[id].pocketOrder = clone(report.pocketOrder);
+  }
 }
 function commitDeploymentReturn(s, request, snapshot, plan) {
   applyTacticalTime(s, request, snapshot.elapsedSeconds ?? 0);
@@ -1713,12 +1793,13 @@ function commitDeploymentReturn(s, request, snapshot, plan) {
       r.residentPosition === undefined &&
       r.residentSector === request.sector &&
       (r.residentScene ?? null) === (request.sceneId ?? null)
-    )
+    ) {
       r.residentPosition = {
         x: unit.x,
         y: unit.y,
         ...(unit.tacticalLevel === undefined ? {} : { tacticalLevel: unit.tacticalLevel }),
       };
+    }
   }
   retainQuestBeneficiaries(s, request, snapshot);
   acknowledgeCivilians(s, snapshot);
@@ -1734,7 +1815,9 @@ function commitDeploymentReturn(s, request, snapshot, plan) {
     r.location = entry.sector;
     clearCarriedLoading(r);
     const loading = plan.ammunition.carried[id];
-    if (loading) setCarriedLoading(r, { weapon: unit.weapon, ...loading });
+    if (loading) {
+      setCarriedLoading(r, { weapon: unit.weapon, ...loading });
+    }
     syncCarriedAmmunition(r, unit.weapon);
     if (['dead', 'dispersed'].includes(entry.kind) && r.activeItem === 'ammo') {
       delete r.activeItem;
@@ -1756,32 +1839,37 @@ function commitDeploymentReturn(s, request, snapshot, plan) {
     // Other local squads replace the scene's issued units when they return.
     // Keep only this person's actual position; current campaign gear remains
     // authoritative and is never copied from an absent scene participant.
-    if (entry.kind === 'resident')
+    if (entry.kind === 'resident') {
       r.residentPosition = {
         x: unit.x,
         y: unit.y,
         ...(unit.tacticalLevel === undefined ? {} : { tacticalLevel: unit.tacticalLevel }),
       };
-    else delete r.residentPosition;
+    } else {
+      delete r.residentPosition;
+    }
   }
   requireThat(
     Object.values(plan.ammunition.creditedAmmunition ?? {}).every((count) => count === 0),
     'El parte intenta crear una reserva global de munición.',
   );
-  if (request.exploration)
+  if (request.exploration) {
     recordCasualtyMorale(
       s,
       plan.entries.filter((e) => e.kind === 'dead').map((e) => Number(e.unitId)),
       request.squad.map((u) => Number(u.id)),
     );
-  else recordBattleMorale(s, request, plan.outcome, snapshot);
+  } else {
+    recordBattleMorale(s, request, plan.outcome, snapshot);
+  }
   const captured = plan.entries.filter((e) => e.kind === 'captured').map((e) => Number(e.unitId));
   captureOperatives(s, captured, plan.sourceSector, plan.ammunition.custody);
-  for (const entry of plan.entries)
+  for (const entry of plan.entries) {
     receiveServiceObjectionCorrespondence(
       s,
       rosterFor(s).find((operative) => operative.id === Number(entry.unitId)),
     );
+  }
   receiveCompanionLossCorrespondence(
     s,
     rosterFor(s),
@@ -1792,19 +1880,22 @@ function commitDeploymentReturn(s, request, snapshot, plan) {
   const selected = s.squads.find((q) => q.id === s.activeSquadId);
   s.squad = [...selected.members];
   s.location = selected.location;
-  for (const change of plan.horseChanges)
+  for (const change of plan.horseChanges) {
     Object.assign(
       s.horseState.horses.find((h) => h.id === change.id),
       clone(change),
     );
-  for (const h of s.horseState.horses)
+  }
+  for (const h of s.horseState.horses) {
     if (
       h.custody?.kind === 'field' &&
       s.sectors[h.location]?.owner === 'patriot' &&
       !occupyingGroups(s, h.location).length &&
       plan.outcome !== 'defeat'
-    )
+    ) {
       h.custody = null;
+    }
+  }
   settlePrisonerEscapes(s, request, snapshot, rosterFor(s));
   returnGarrison(s, request, snapshot, plan.auxiliary);
   settleSectorArtillery(snapshot, plan.outcome);
@@ -1818,8 +1909,12 @@ function commitDeploymentReturn(s, request, snapshot, plan) {
   // A new report cannot invent or erase an earlier accepted unpaid reward.
   delete snapshot.pendingVictoryFunds;
   const funds = s.sectorStates[request.sector]?.pendingVictoryFunds;
-  if (!request.sceneId && funds) snapshot.pendingVictoryFunds = clone(funds);
-  if (!request.sceneId) collectSectorCash(s, snapshot);
+  if (!request.sceneId && funds) {
+    snapshot.pendingVictoryFunds = clone(funds);
+  }
+  if (!request.sceneId) {
+    collectSectorCash(s, snapshot);
+  }
   const delivered = new Set((request.remains ?? []).map((r) => `${r.battleId}:${r.unitId}`));
   s.sectorRemains[plan.sourceSector] = (s.sectorRemains[plan.sourceSector] ?? []).filter(
     (r) => !delivered.has(`${r.battleId}:${r.unitId}`),
@@ -1840,8 +1935,11 @@ function commitDeploymentReturn(s, request, snapshot, plan) {
       entryAnchor: clone(e.departure.entryAnchor),
     });
   }
-  if (request.sceneId) s.sceneStates[request.sceneId] = clone(snapshot);
-  else s.sectorStates[request.sector] = clone(snapshot);
+  if (request.sceneId) {
+    s.sceneStates[request.sceneId] = clone(snapshot);
+  } else {
+    s.sectorStates[request.sector] = clone(snapshot);
+  }
 }
 function advanceCampaignHorses(s) {
   const held = s.horseState.horses.filter(
@@ -1859,14 +1957,22 @@ function advanceCampaignHorses(s) {
   }
 }
 function releaseDeferred(s) {
-  if (s.pendingBattle) return;
-  if (s.horseState.horses.some((h) => h.hired && !h.returned && h.hireUntil <= s.hour))
+  if (s.pendingBattle) {
+    return;
+  }
+  if (s.horseState.horses.some((h) => h.hired && !h.returned && h.hireUntil <= s.hour)) {
     advanceCampaignHorses(s);
-  for (const id of [...s.recruited])
-    if (s.contracts?.[id]?.departurePending && !operativeInTransit(s, id)) endExpiredService(s, id);
+  }
+  for (const id of s.recruited.slice()) {
+    if (s.contracts?.[id]?.departurePending && !operativeInTransit(s, id)) {
+      endExpiredService(s, id);
+    }
+  }
   const raids = s.deferredRaids ?? [];
   s.deferredRaids = [];
-  for (const r of raids) launchEnemyGroup(s, r.theater, r.target, { immediate: true });
+  for (const r of raids) {
+    launchEnemyGroup(s, r.theater, r.target, { immediate: true });
+  }
   settleEnemyEncounters(s);
 }
 function assignmentContext(s, options = {}) {
@@ -1890,7 +1996,9 @@ function pauseForAssignments(s, hours, advancedHours, extraEvents = []) {
     assignmentStates(s, rosterFor(s), assignmentContext(s)),
     extraEvents,
   );
-  if (!events.length) return false;
+  if (!events.length) {
+    return false;
+  }
   s.assignmentAttention.notice = { hour: s.hour, requestedHours: hours, advancedHours, events };
   note(
     s,
@@ -1900,7 +2008,9 @@ function pauseForAssignments(s, hours, advancedHours, extraEvents = []) {
 }
 function pauseForContracts(s, hours, advancedHours, extra = []) {
   const events = collectContractAttention(s, extra);
-  if (!events.length) return false;
+  if (!events.length) {
+    return false;
+  }
   s.contractAttention.notice = {
     hour: s.hour,
     ...(s.secondOfHour ? { secondOfHour: s.secondOfHour } : {}),
@@ -1916,7 +2026,9 @@ function pauseForContracts(s, hours, advancedHours, extra = []) {
 }
 function pauseForLogistics(s, hours, advancedHours, completed = []) {
   const events = [...completed, ...collectLogisticsAttention(s, { isSupplied })];
-  if (!recordLogisticsNotice(s, hours, advancedHours, events)) return false;
+  if (!recordLogisticsNotice(s, hours, advancedHours, events)) {
+    return false;
+  }
   note(
     s,
     `El avance se detuvo tras ${advancedHours} de ${hours} horas: hay novedades en producción y entregas.`,
@@ -1966,8 +2078,9 @@ function advanceOffscreenTime(s, seconds) {
     at = next;
     if (at === midnight) {
       const payment = collectTownIncome(s);
-      if (payment.amount)
+      if (payment.amount) {
         note(s, `Los puertos acordados aportaron ${payment.amount} pesos a la tesorería.`);
+      }
     }
     // Delivery at a whole-hour endpoint follows raids in tick. A deadline
     // inside the interval must be resolved now, including a whole-hour deadline
@@ -1993,8 +2106,11 @@ function advanceQueuedTravel(s, seconds, stopAtEveryArrival = false) {
     stopAtEveryArrival,
     onArrival: (q) => meetEnemyGroups(s, q.location),
     releaseAtArrival: (q) => {
-      for (const id of [...q.members])
-        if (s.contracts[id]?.departurePending) endExpiredService(s, id);
+      for (const id of q.members.slice()) {
+        if (s.contracts[id]?.departurePending) {
+          endExpiredService(s, id);
+        }
+      }
     },
   });
 }
@@ -2020,14 +2136,16 @@ function advanceCampaignHour(s, options) {
   s.hour++;
   contractEvents.push(...advanceOffscreenTime(s, civilianSeconds), ...expireDueContracts(s));
   advanceCampaignHorses(s);
-  for (const course of [...(s.militiaTraining ?? [])]) {
+  for (const course of (s.militiaTraining ?? []).slice()) {
     if (s.sectors[course.sector].owner !== 'patriot') {
       s.militiaTraining = s.militiaTraining.filter((t) => t !== course);
       assignmentEvents.push(militiaCancellationAttention(course));
       note(s, 'La ocupación enemiga dispersa un curso de milicias.');
       continue;
     }
-    if (militiaAssignmentIssue(s, course, { isSupplied })) continue;
+    if (militiaAssignmentIssue(s, course, { isSupplied })) {
+      continue;
+    }
     const trainer = s.operativeState[course.trainerId];
     if (trainer) {
       trainer.energy = Math.max(0, trainer.energy - 3);
@@ -2036,8 +2154,11 @@ function advanceCampaignHour(s, options) {
     }
     course.remaining--;
     if (course.remaining <= 0) {
-      if (course.rank > 0) returnMilitiaTrainees(s, course, true);
-      else s.sectors[course.sector].militia[0] += course.count;
+      if (course.rank > 0) {
+        returnMilitiaTrainees(s, course, true);
+      } else {
+        s.sectors[course.sector].militia[0] += course.count;
+      }
       s.militiaTraining = s.militiaTraining.filter((t) => t !== course);
       assignmentEvents.push(militiaCompletionAttention(course));
       note(s, `Tres milicianos completan su instrucción en ${sector(course.sector, s).name}.`);
@@ -2045,30 +2166,41 @@ function advanceCampaignHour(s, options) {
   }
   advanceMarchFatigue(
     s,
-    rosterFor(s).map((op) => ({ ...op, ...(mountForOperative(s.horseState, op.id) ?? {}) })),
+    rosterFor(s).map((op) => ({ ...op, ...mountForOperative(s.horseState, op.id) })),
     options,
   );
-  for (const message of advanceDetentionCare(s, rosterFor(s))) note(s, message);
+  for (const message of advanceDetentionCare(s, rosterFor(s))) {
+    note(s, message);
+  }
   const careOptions = assignmentContext(s, options);
   advanceMedicalCare(s, rosterFor(s), careOptions);
   const deaths = advanceMilitaryWounds(s, rosterFor(s));
-  for (const death of advanceMilitiaWounds(s))
+  for (const death of advanceMilitiaWounds(s)) {
     note(s, `${death.name} fallece por sus heridas en ${sector(death.sector, s).name}.`);
+  }
   advanceAssignments(s, rosterFor(s), careOptions);
   recordCasualtyMorale(s, deaths);
   receiveCompanionLossCorrespondence(s, rosterFor(s), deaths);
   for (const message of advanceMorale(s, rosterFor(s), {
     ...careOptions,
     strategicTraveling: options.traveling ?? [],
-  }))
+  })) {
     note(s, message);
+  }
   for (const id of deaths) {
     s.operativeState[id].location = operativeLocation(s, id);
-    for (const squad of s.squads) squad.members = squad.members.filter((member) => member !== id);
+    for (const squad of s.squads) {
+      squad.members = squad.members.filter((member) => member !== id);
+    }
     s.squad = s.squad.filter((member) => member !== id);
-    for (const horse of s.horseState.horses) if (horse.assignedTo === id) horse.assignedTo = null;
-    for (const course of s.militiaTraining.filter((t) => t.trainerId === id))
+    for (const horse of s.horseState.horses) {
+      if (horse.assignedTo === id) {
+        horse.assignedTo = null;
+      }
+    }
+    for (const course of s.militiaTraining.filter((t) => t.trainerId === id)) {
       returnMilitiaTrainees(s, course);
+    }
     s.militiaTraining = s.militiaTraining.filter((t) => t.trainerId !== id);
     note(s, `${rosterFor(s).find((o) => o.id === id).name} fallece por sus heridas.`);
   }
@@ -2076,7 +2208,9 @@ function advanceCampaignHour(s, options) {
     scenarioFor(s).dailyEvents(s);
     for (const def of campaignSectors(s)) {
       const region = s.sectors[def.id];
-      if (region.owner === 'patriot') region.loyalty = Math.min(100, region.loyalty + 1);
+      if (region.owner === 'patriot') {
+        region.loyalty = Math.min(100, region.loyalty + 1);
+      }
     }
   }
   if (s.hour % 720 === 0) {
@@ -2117,7 +2251,7 @@ function advanceCampaignHour(s, options) {
     Boolean(options.continuousClock),
   );
   advanceEnemyGroups(s);
-  for (const q of s.squads)
+  for (const q of s.squads) {
     if (
       q.journey?.status === 'moving' &&
       q.journey.elapsed === 0 &&
@@ -2129,6 +2263,7 @@ function advanceCampaignHour(s, options) {
       q.journey.status = 'paused';
       q.journey.reason = 'contact';
     }
+  }
   settleEnemyEncounters(s, options);
   refreshEnemyIntelligence(s, options);
   // Occupation and blockade are resolved before delivery.
@@ -2158,7 +2293,9 @@ function advanceCampaignHour(s, options) {
   const logisticsPause =
     options.pauseOnAssignments &&
     pauseForLogistics(s, options.requestedHours ?? 1, options.advancedHours ?? 1, logisticsEvents);
-  if (!options.pauseOnAssignments) reconcileLogisticsAttention(s, { isSupplied });
+  if (!options.pauseOnAssignments) {
+    reconcileLogisticsAttention(s, { isSupplied });
+  }
   return (
     hasPendingArrivalDecision(s) ||
     (stopOnDefeat && s.defeated) ||
@@ -2210,7 +2347,9 @@ function advanceCampaignSeconds(s, requestedSeconds, options = {}) {
         );
       }
     }
-    if (interrupted || hasPendingArrivalDecision(s)) break;
+    if (interrupted || hasPendingArrivalDecision(s)) {
+      break;
+    }
   }
   return s.hour * 3600 + (s.secondOfHour ?? 0) - startedAt;
 }
@@ -2220,7 +2359,9 @@ function tick(s, hours, options = {}) {
     Number.isInteger(hours) && hours >= 1 && hours <= 240,
     'El avance debe ser de 1 a 240 horas.',
   );
-  if (hasPendingArrivalDecision(s)) return;
+  if (hasPendingArrivalDecision(s)) {
+    return;
+  }
   const sleepEvents = recordSleepEvents(
     s,
     prepareSleep(s, rosterFor(s), assignmentContext(s, options)),
@@ -2233,33 +2374,22 @@ function tick(s, hours, options = {}) {
     const assignmentPause = pauseForAssignments(s, hours, 0, sleepEvents);
     const contractPause = pauseForContracts(s, hours, 0);
     const logisticsPause = pauseForLogistics(s, hours, 0);
-    if (assignmentPause || contractPause || logisticsPause) return;
+    if (assignmentPause || contractPause || logisticsPause) {
+      return;
+    }
   }
   advanceCampaignSeconds(s, hours * 3600, { ...options, requestedHours: hours });
 }
 
-function travelPath(s, from, to) {
-  const queue = [[from]],
-    seen = new Set([from]);
-  while (queue.length) {
-    const path = queue.shift(),
-      last = path.at(-1);
-    if (last === to) return path;
-    for (const id of sector(last, s).neighbors)
-      if (!seen.has(id) && s.sectors[id].owner === 'patriot') {
-        seen.add(id);
-        queue.push([...path, id]);
-      }
-  }
-  return null;
-}
 function prepareAttack(s, at, origin, ids, assaultSquads = null) {
   const def = scenarioFor(s).attackDefinition(s, at, scenarioContext(s)),
     mission = Boolean(def.mission);
-  if (!mission) haltEnemyGroupsAt(s, at, 'stationed');
+  if (!mission) {
+    haltEnemyGroupsAt(s, at, 'stationed');
+  }
   const allocated = {},
     sources = assaultSquads ?? [{ origin, members: ids }];
-  for (const group of sources)
+  for (const group of sources) {
     Object.assign(
       allocated,
       prepareCampaignAmmunition(s, rosterFor(s), group.members, {
@@ -2268,6 +2398,7 @@ function prepareAttack(s, at, origin, ids, assaultSquads = null) {
         commit: true,
       }).allocation,
     );
+  }
 
   s.pendingBattle = {
     ...(s.contentCampaign ? { campaignPackage: s.contentCampaign.package } : {}),
@@ -2323,8 +2454,11 @@ function prepareAttack(s, at, origin, ids, assaultSquads = null) {
     s,
     `El destacamento se despliega para ${def.name}. Mando enemigo: ${s.pendingBattle.enemyCommander}.`,
   );
-  if (assaultSquads) s.pendingBattle.assaultSquads = clone(assaultSquads);
+  if (assaultSquads) {
+    s.pendingBattle.assaultSquads = clone(assaultSquads);
+  }
 }
+/** @param {import('./public/campaign-types.ts').CampaignSnapshot} previous @param {import('./public/campaign-types.ts').CampaignAction} action @returns {import('./public/campaign-types.ts').CampaignSnapshot} */
 export function dispatchCampaign(previous, action) {
   const transaction = new GameUnitOfWork(previous, clone);
   const s = migrateSquads(transaction.draft);
@@ -2349,8 +2483,9 @@ export function dispatchCampaign(previous, action) {
     );
     validateCampaignServiceObjections(s, rosterFor(s));
     validatePendingCompanionLoss(s, rosterFor(s));
-    if (s.pendingBattle)
+    if (s.pendingBattle) {
       validateQuestBeneficiaryContext(s, s.pendingBattle, { request: null, issued: true });
+    }
     if (s.pendingBattle?.resumeSnapshot) {
       validateRepairReserveContext(s.pendingBattle, s.pendingBattle.resumeSnapshot);
       validateAbilityReferences(s, s.pendingBattle.resumeSnapshot);
@@ -2482,16 +2617,18 @@ export function dispatchCampaign(previous, action) {
         ].includes(action.type),
       'Hay una batalla pendiente. Resuélvela antes de dar nuevas órdenes.',
     );
-    if (['travel', 'attack', 'visitSector', 'visitMission'].includes(action.type))
+    if (['travel', 'attack', 'visitSector', 'visitMission'].includes(action.type)) {
       requireThat(
         !s.squad.some((id) => militiaAssignment(s, id)),
         'Un instructor de la escuadra está asignado a las milicias. Cancelá su curso o dejalo en una escuadra de guarnición.',
       );
-    if (['travel', 'attack', 'visitSector', 'visitMission'].includes(action.type))
+    }
+    if (['travel', 'attack', 'visitSector', 'visitMission'].includes(action.type)) {
       requireThat(
         s.squad.every((id) => s.operativeState[id].assignment === 'active'),
         'Hay combatientes en atención o descanso. Devolvelos al servicio o dejalos en otra escuadra antes de marchar.',
       );
+    }
     if (['travel', 'attack', 'visitSector', 'visitMission'].includes(action.type)) {
       requireThat(
         !s.squad.some(
@@ -2504,19 +2641,21 @@ export function dispatchCampaign(previous, action) {
         'Hay combatientes durmiendo. Despertalos o dejalos en otra escuadra antes de marchar.',
       );
     }
-    if (['travel', 'attack', 'visitSector', 'visitMission'].includes(action.type))
+    if (['travel', 'attack', 'visitSector', 'visitMission'].includes(action.type)) {
       requireThat(
         !activeSquad(s).journey,
         'Terminá o cancelá la ruta antes de entrar en un sector.',
       );
+    }
     const targetId = Number(
       action.operativeId ?? action.trainerId ?? (action.type === 'dismiss' ? action.id : NaN),
     );
-    if (Number.isFinite(targetId))
+    if (Number.isFinite(targetId)) {
       requireThat(
         !operativeInTransit(s, targetId),
         'El combatiente está en camino. Esperá su llegada.',
       );
+    }
     if (['squad', 'recruitCombatant', 'recruitCivic', 'createOfficer'].includes(action.type)) {
       const reason = squadReorganizationReason(s);
       requireThat(!reason, reason);
@@ -2545,9 +2684,9 @@ export function dispatchCampaign(previous, action) {
           );
           relocateDefenders(s, ids, action.destination);
           s.pendingEncounter = null;
-          if (s.sectors[group.target].militia.some((n) => n > 0))
+          if (s.sectors[group.target].militia.some((n) => n > 0)) {
             resolveDefenseAutomatically(s, prepareDefense(s, group, { excludeMercs: true }));
-          else {
+          } else {
             loseSectorToGroup(s, group);
             addDefenseHistory(
               s,
@@ -2560,12 +2699,14 @@ export function dispatchCampaign(previous, action) {
           }
         } else {
           const request = prepareDefense(s, group);
-          if (action.choice === 'auto') resolveDefenseAutomatically(s, request);
-          else
+          if (action.choice === 'auto') {
+            resolveDefenseAutomatically(s, request);
+          } else {
             note(
               s,
               `La defensa de ${sector(group.target, s).name} espera órdenes en el sector táctico.`,
             );
+          }
         }
         break;
       }
@@ -2647,7 +2788,7 @@ export function dispatchCampaign(previous, action) {
           s.sectors[s.location]?.owner === 'patriot',
           'La caballada requiere una localidad segura.',
         );
-        if (order.name !== undefined)
+        if (order.name !== undefined) {
           requireThat(
             typeof order.name === 'string' &&
               order.name.trim().length > 0 &&
@@ -2655,18 +2796,21 @@ export function dispatchCampaign(previous, action) {
               !/[<>]/.test(order.name),
             'El nombre de la montura es inválido.',
           );
-        if (order.horseId)
+        }
+        if (order.horseId) {
           requireThat(
             s.horseState?.horses.some((h) => h.id === order.horseId && h.location === s.location),
             'La montura está en otra localidad.',
           );
-        if (order.type === 'assign')
+        }
+        if (order.type === 'assign') {
           requireThat(
             s.recruited.includes(order.operativeId) &&
               s.operativeState[order.operativeId].alive &&
               operativeLocation(s, order.operativeId) === s.location,
             'El jinete debe estar presente en la localidad.',
           );
+        }
         requireThat(
           !operativeInTransit(s, order.operativeId) &&
             !s.horseState.horses.some(
@@ -2732,18 +2876,25 @@ export function dispatchCampaign(previous, action) {
           action.sectorState === undefined
             ? null
             : validatedInteractionSnapshot(s, action.sectorState);
-        if (snapshot)
+        if (snapshot) {
           requireThat(snapshot.elapsedSeconds === elapsed, 'El parte y el reloj no coinciden.');
+        }
         const griefProgress = snapshot ?? s.pendingBattle.resumeSnapshot;
-        if (griefProgress) retainRepairReserves(s.pendingBattle, griefProgress);
-        if (griefProgress && !snapshot)
+        if (griefProgress) {
+          retainRepairReserves(s.pendingBattle, griefProgress);
+        }
+        if (griefProgress && !snapshot) {
           validateCompanionGriefContext(s, griefProgress, rosterFor(s));
-        if (griefProgress) validateServiceObjectionContext(s, griefProgress, rosterFor(s));
-        if (!snapshot && griefProgress)
+        }
+        if (griefProgress) {
+          validateServiceObjectionContext(s, griefProgress, rosterFor(s));
+        }
+        if (!snapshot && griefProgress) {
           requireThat(
             !hasPendingServiceObjections(s, griefProgress),
             'La objeción necesita un parte táctico completo antes de avanzar el reloj.',
           );
+        }
         if (!snapshot && s.pendingBattle.resumeSnapshot) {
           const resume = s.pendingBattle.resumeSnapshot,
             physicalDelivery = questsFor(s).some(
@@ -2779,7 +2930,9 @@ export function dispatchCampaign(previous, action) {
               civilianSeconds: step,
               travelSeconds: step,
             });
-          } else advanceFractionalSystems(s, step);
+          } else {
+            advanceFractionalSystems(s, step);
+          }
         }
         // A death is confirmed at this tactical checkpoint, after its time has elapsed.
         if (snapshot) {
@@ -2787,10 +2940,16 @@ export function dispatchCampaign(previous, action) {
           acknowledgeCivilians(s, snapshot);
           acknowledgeNpcGifts(s, snapshot);
           acknowledgeSuccessionDeaths(s, snapshot);
-          if (campaignStory(s)) advanceCampaignStory(s, snapshot);
+          if (campaignStory(s)) {
+            advanceCampaignStory(s, snapshot);
+          }
         }
-        if (griefProgress) retainCompanionGrief(s.pendingBattle, griefProgress);
-        if (snapshot) retainServiceObjections(s.pendingBattle, snapshot);
+        if (griefProgress) {
+          retainCompanionGrief(s.pendingBattle, griefProgress);
+        }
+        if (snapshot) {
+          retainServiceObjections(s.pendingBattle, snapshot);
+        }
         s.pendingBattle.syncedSeconds = elapsed;
         delete s.pendingBattle.resumeSnapshot;
         break;
@@ -2846,7 +3005,9 @@ export function dispatchCampaign(previous, action) {
         const assignmentPause = pauseForAssignments(s, 1, 0, sleepEvents),
           contractPause = pauseForContracts(s, 1, 0),
           logisticsPause = pauseForLogistics(s, 1, 0);
-        if (assignmentPause || contractPause || logisticsPause) break;
+        if (assignmentPause || contractPause || logisticsPause) {
+          break;
+        }
         const before = s.hour * 3600 + (s.secondOfHour ?? 0);
         const arrivalsBefore = s.hiringArrivals?.length ?? 0;
         const wasCompleted = Boolean(s.completed);
@@ -2899,8 +3060,9 @@ export function dispatchCampaign(previous, action) {
             gained ||
             (s.hiringArrivals?.length ?? 0) < arrivalsBefore ||
             (s.contentQuestEvents?.length ?? 0) > questEventsBefore
-          )
+          ) {
             break;
+          }
         }
         requireThat(
           s.hour * 3600 + (s.secondOfHour ?? 0) >= before,
@@ -3140,16 +3302,19 @@ export function dispatchCampaign(previous, action) {
           startingCartridgesIssued: false,
         };
         const fittingPattern = officerStartingFitting(action.profile, s);
-        if (fittingPattern)
+        if (fittingPattern) {
           Object.assign(s.operativeState[op.id], {
             bladeFittingPattern: fittingPattern,
             bladeInstanceId: `equipment-${s.nextEquipmentInstanceId++}`,
           });
+        }
         s.recruited.push(op.id);
         issueStartingCartridges(s, op);
         issueInitialOutfit(s, op.id);
         s.operativeState[op.id].location = s.location;
-        if (s.squad.length < 6) s.squad.push(op.id);
+        if (s.squad.length < 6) {
+          s.squad.push(op.id);
+        }
         note(s, `${op.name} ${campaignOfficerCreation(s).commission.statusText}`);
         break;
       }
@@ -3173,7 +3338,9 @@ export function dispatchCampaign(previous, action) {
         });
         if (s.contentCampaign) {
           const line = speechFor(combatant, 'hired');
-          if (line?.trim()) note(s, `${combatant.name}: «${line}»`);
+          if (line?.trim()) {
+            note(s, `${combatant.name}: «${line}»`);
+          }
         }
         break;
       }
@@ -3238,8 +3405,9 @@ export function dispatchCampaign(previous, action) {
         });
         renewPendingCompanionLossService(s, id);
         // Scenario rewards use the saved pay clock to cap repeated renewals.
-        if (op.foreign && quote.price > 0 && payMoraleRewardEligible(s, id))
+        if (op.foreign && quote.price > 0 && payMoraleRewardEligible(s, id)) {
           scenarioFor(s).paidService(s, scenarioContext(s));
+        }
         recordPayMorale(s, [id], true);
         note(
           s,
@@ -3314,11 +3482,12 @@ export function dispatchCampaign(previous, action) {
         break;
       }
       case 'talkNPC': {
-        if (action.approach === 'questWithdraw')
+        if (action.approach === 'questWithdraw') {
           requireThat(
             questForNPC(s, action.npcId)?.withdrawalChoice,
             'Registrá la entrega parcial antes de retirar el compromiso.',
           );
+        }
         validateQuestContext(s, action.sectorState);
         validateRoadsideDiscoveryContext(s, action.sectorState);
         requireThat(s.pendingBattle, 'Primero entrá al sector.');
@@ -3410,7 +3579,9 @@ export function dispatchCampaign(previous, action) {
               : ''),
           outcome = 'conversation',
           dialogue = null;
-        if (action.approach === 'threaten') text = contextualThreatReply(npc, quest);
+        if (action.approach === 'threaten') {
+          text = contextualThreatReply(npc, quest);
+        }
         if (action.approach === 'repeat') {
           text = s.conversations?.[npc.id]?.text ?? npc.greeting;
           outcome = 'repeated';
@@ -3420,23 +3591,26 @@ export function dispatchCampaign(previous, action) {
           text = dialogue.text;
           outcome = 'dialogue';
           if (dialogue.effect?.applied) {
-            if (dialogue.effect.amount)
+            if (dialogue.effect.amount) {
               note(
                 s,
                 `${npc.name}: ${dialogue.effect.amount > 0 ? 'entrega' : 'recibe'} ${Math.abs(dialogue.effect.amount)} pesos.`,
               );
-            if (dialogue.effect.movement)
+            }
+            if (dialogue.effect.movement) {
               note(
                 s,
                 dialogue.effect.movement.destination === 'routine'
                   ? `${npc.name} termina el encuentro con ${dialogue.effect.movement.name}.`
                   : `${npc.name} llama a ${dialogue.effect.movement.name} para un encuentro en este sector.`,
               );
-            if (dialogue.effect.quest)
+            }
+            if (dialogue.effect.quest) {
               note(
                 s,
                 `Encargo «${dialogue.effect.quest.title}»: ${dialogue.effect.quest.status === 'active' ? 'en curso' : dialogue.effect.quest.status === 'completed' ? 'completado' : 'fallido'}.`,
               );
+            }
           }
         }
         if (action.approach === 'direct') {
@@ -3555,7 +3729,9 @@ export function dispatchCampaign(previous, action) {
             const arrival = quest.escort
               ? escortArrival(quest, s.quests[quest.id], snapshot, local, unit, s)
               : null;
-            if (quest.cost) pay(s, quest.cost);
+            if (quest.cost) {
+              pay(s, quest.cost);
+            }
             rewardQuest(s, quest);
             s.quests[quest.id] = {
               ...s.quests[quest.id],
@@ -3793,19 +3969,21 @@ export function dispatchCampaign(previous, action) {
         const destination = locationId(action.sector, s);
         requireThat(destination, 'El destino no existe.');
         action = { ...action, sector: destination };
-        if (destination !== s.location)
+        if (destination !== s.location) {
           prepareCampaignAmmunition(s, rosterFor(s), s.squad, {
             supplied: isSupplied(s, s.location),
             commit: true,
           });
+        }
         const q = activeSquad(s);
         queueSquadTravel(s, q, { ...action, intent: 'travel' });
         for (
           let hours = 0;
           hours < 240 && q.journey?.status === 'moving' && !s.defeated && !s.pendingEncounter;
           hours++
-        )
+        ) {
           tick(s, 1, { joinArrivals: false });
+        }
         note(s, `La escuadra queda en ${campaignPlace(s.location, s).name}.`);
         break;
       }
@@ -3889,7 +4067,9 @@ export function dispatchCampaign(previous, action) {
         const course = militiaCourse(trainer, rank);
         pay(s, course.cost);
         const trainees = rank > 0 ? reserveMilitiaTrainees(s, at, rank, course.count) : undefined;
-        if (rank > 0) region.militia[rank - 1] -= course.count;
+        if (rank > 0) {
+          region.militia[rank - 1] -= course.count;
+        }
         s.militiaTraining.push({
           ...(trainees ? { trainees } : {}),
           sector: at,
@@ -3942,7 +4122,11 @@ export function dispatchCampaign(previous, action) {
           !occupyingGroups(s, at).length &&
           !scenarioFor(s).blockaded(s, sector(at, s))
         ) {
-          for (const id of ids) if (s.contracts[id]?.departurePending) endOperativeService(s, id);
+          for (const id of ids) {
+            if (s.contracts[id]?.departurePending) {
+              endOperativeService(s, id);
+            }
+          }
           note(s, `Las escuadras entran en ${sector(at, s).name}; el sector ya está libre.`);
           break;
         }
@@ -4095,7 +4279,7 @@ export function dispatchCampaign(previous, action) {
         );
         const plan = planDeploymentReturn(s, request, battleSnapshot, action.outcome);
         commitDeploymentReturn(s, request, battleSnapshot, plan);
-        for (const id of request.squad.map((u) => Number(u.id)))
+        for (const id of request.squad.map((u) => Number(u.id))) {
           if (
             gainsExperience(
               s,
@@ -4110,16 +4294,20 @@ export function dispatchCampaign(previous, action) {
             if (after.level > before.level) {
               const growth = after.maxHp - before.maxHp;
               s.operativeState[id].maxHp += growth;
-              if (s.operativeState[id].hp === before.maxHp) s.operativeState[id].hp += growth;
+              if (s.operativeState[id].hp === before.maxHp) {
+                s.operativeState[id].hp += growth;
+              }
               note(s, `${after.name} mejora su instrucción tras el combate: grado${after.level}.`);
             }
           }
+        }
         if (request.defenseGroupId) {
           finishDefense(s, request, action.outcome, battleSnapshot, plan);
           break;
         }
-        for (const groupId of request.occupationGroupIds ?? [])
+        for (const groupId of request.occupationGroupIds ?? []) {
           recordEnemyGroupResult(s, groupId, battleSnapshot, action.outcome);
+        }
         if (action.outcome === 'victory') {
           recordCityLoyalty(s, {
             sectorId: sceneAnchorFor(s, request.sector),
@@ -4133,8 +4321,9 @@ export function dispatchCampaign(previous, action) {
             releaseCaptives(s, request.sector);
           }
           scenarioFor(s).clearVictoryBlockade(s, request);
-          if (request.wasRoyalist || isCampaignScene(s, request.sector))
+          if (request.wasRoyalist || isCampaignScene(s, request.sector)) {
             awardVictoryFunds(s, request, battleSnapshot);
+          }
           scenarioFor(s).battleOutcome(s, request, 'victory', scenarioContext(s));
           note(s, scenarioFor(s).victoryText(request));
         } else {
@@ -4180,37 +4369,46 @@ export function dispatchCampaign(previous, action) {
       default:
         throw Error('Orden desconocida.');
     }
-    if (previous.pendingBattle && !s.pendingBattle)
+    if (previous.pendingBattle && !s.pendingBattle) {
       settleDetentionReturn(s, previous.pendingBattle);
+    }
     reorganizeAfterLoss(s, previous);
     delayCrossingEnemyGroups(s);
-    if (s.pendingBattle && !previous.pendingBattle) prepareSectorArtillery(s, s.pendingBattle);
-    if (s.pendingBattle && !s.pendingBattle.exits) prepareDeploymentExits(s, s.pendingBattle);
+    if (s.pendingBattle && !previous.pendingBattle) {
+      prepareSectorArtillery(s, s.pendingBattle);
+    }
+    if (s.pendingBattle && !s.pendingBattle.exits) {
+      prepareDeploymentExits(s, s.pendingBattle);
+    }
     // Check real arrival geometry before committing soldiers, ammunition or guns.
     if (
       ['attack', 'beginAssault', 'fightOnArrival'].includes(action.type) &&
       s.pendingBattle &&
       s.pendingBattle.id !== previous.pendingBattle?.id
-    )
+    ) {
       enterSector(
         { ...s.pendingBattle, campaignPackage: s.contentCampaign?.package },
         s.sectorStates[s.pendingBattle.sector],
         { placement: true },
       );
-    if (s.pendingBattle && s.pendingBattle.id !== previous.pendingBattle?.id)
+    }
+    if (s.pendingBattle && s.pendingBattle.id !== previous.pendingBattle?.id) {
       prepareSectorArtillery(s, s.pendingBattle);
+    }
     if (
       s.pendingBattle &&
       s.pendingBattle.id !== previous.pendingBattle?.id &&
       s.contentCampaign?.package.militiaPatrol !== undefined
-    )
+    ) {
       s.pendingBattle.militiaPatrol = clone(s.contentCampaign.package.militiaPatrol);
+    }
     if (
       s.pendingBattle &&
       s.pendingBattle.id !== previous.pendingBattle?.id &&
       s.contentCampaign?.package.artilleryProfiles !== undefined
-    )
+    ) {
       s.pendingBattle.artilleryDefinitions = clone(s.contentCampaign.package.artilleryProfiles);
+    }
     updateContentQuests(s);
     releaseDeferred(s);
     receiveDueHires(s);
@@ -4232,7 +4430,7 @@ export function dispatchCampaign(previous, action) {
         requireThat(!pocketChangeReason(before, after), POCKET_FULL);
       }
     }
-    if (s.pendingBattle && s.pendingBattle.id !== previous.pendingBattle?.id)
+    if (s.pendingBattle && s.pendingBattle.id !== previous.pendingBattle?.id) {
       for (const unit of s.pendingBattle.squad) {
         const before = carriedAmmunition(
           rosterFor(previous).find((o) => o.id === unit.id),
@@ -4240,29 +4438,34 @@ export function dispatchCampaign(previous, action) {
         );
         requireThat(!pocketChangeReason(before, unit), `${unit.name}: ${POCKET_FULL}`);
       }
+    }
     forfeitDeadServiceGuarantees(s, rosterFor(s));
-    for (const credit of creditPendingGuaranteeRefunds(s))
+    for (const credit of creditPendingGuaranteeRefunds(s)) {
       note(
         s,
         `Garantía ${credit.id}: se abonan ${credit.amount} pesos pendientes; quedan ${credit.pendingRefund} pesos por devolver.`,
       );
+    }
     validateServiceGuarantees(s, rosterFor(s));
-    for (const credit of creditPendingVictoryFunds(s))
-      if (previous.pendingVictoryRewards?.some((e) => e.battleId === credit.battleId))
+    for (const credit of creditPendingVictoryFunds(s)) {
+      if (previous.pendingVictoryRewards?.some((e) => e.battleId === credit.battleId)) {
         note(
           s,
           `Fondos de victoria: se abonan ${credit.amount} pesos pendientes; quedan ${credit.pending} pesos por recibir.`,
         );
+      }
+    }
     validatePendingVictoryFunds(s);
     initializeCampaignSystems(s);
     validateServiceEquipmentReturns(s, rosterFor(s));
     syncCampaignAmmunition(s, rosterFor(s));
-    validateCampaignAmmunition(s, rosterFor(s));
+    validateCampaignAmmunition(s);
     validateCampaignWeather(s);
     validateDeploymentReturnState(s);
     validateEquipmentOwnership(s, rosterFor(s));
-    if (Object.keys(s.assignmentAttention.reported).length)
+    if (Object.keys(s.assignmentAttention.reported).length) {
       reconcileAssignmentAttention(s, assignmentStates(s, rosterFor(s), assignmentContext(s)));
+    }
     reconcileContractAttention(s);
     reconcileLogisticsAttention(s, { isSupplied });
     refreshEnemyIntelligence(s);
@@ -4277,6 +4480,7 @@ export function dispatchCampaign(previous, action) {
     return rejected;
   }
 }
+/** @param {import('./public/campaign-types.ts').CampaignSnapshot} s @returns {string} */
 export function serializeCampaign(s) {
   return JSON.stringify(
     s,
@@ -4286,10 +4490,13 @@ export function serializeCampaign(s) {
     ),
   );
 }
+/** @param {string} text @returns {import('./public/campaign-types.ts').CampaignSnapshot} */
 export function restoreCampaign(text) {
   assertSaveSize(text);
   return restoreCampaignValue(JSON.parse(text));
 }
+/** @param {unknown} s @returns {import('./public/campaign-types.ts').CampaignSnapshot} */
+/** @returns {import('./public/campaign-types.ts').CampaignSnapshot} */
 export function restoreCampaignValue(s) {
   requireThat(
     s.gameRevision === undefined || (Number.isSafeInteger(s.gameRevision) && s.gameRevision >= 0),
@@ -4311,8 +4518,9 @@ export function restoreCampaignValue(s) {
     ...Object.values(s.sectorStates ?? {}),
     ...Object.values(s.sceneStates ?? {}),
     s.pendingBattle?.resumeSnapshot,
-  ])
+  ]) {
     validateCampaignSceneDefinitions(s, scene);
+  }
   restoreArtilleryReferences(s, s);
   const base = initialCampaign(s.seed, s.contentCampaign?.package ?? null);
   validateCorrespondence(s);
@@ -4406,15 +4614,19 @@ export function restoreCampaignValue(s) {
     'Los cursos de milicias guardados son inválidos.',
   );
   // Version1 migration: old saves did not contain civic volunteers or a custom officer.
-  if (s.officer === undefined) s.officer = null;
+  if (s.officer === undefined) {
+    s.officer = null;
+  }
   requireThat(
     s.officer === null ||
       (object(s.officer) && typeof s.officer.name === 'string' && object(s.officer.answers)),
     'El examen guardado es inválido.',
   );
-  if (s.officer) createOfficerRecord(s.officer.name, s.officer.answers, s.officer.profile, s);
+  if (s.officer) {
+    createOfficerRecord(s.officer.name, s.officer.answers, s.officer.profile, s);
+  }
   requireThat(object(s.operativeState), 'Las hojas de servicio son inválidas.');
-  for (const op of s.contentCampaign ? [] : CIVIC_RECRUITS)
+  for (const op of s.contentCampaign ? [] : CIVIC_RECRUITS) {
     s.operativeState[op.id] ??= {
       hp: op.maxHp,
       fatigue: 0,
@@ -4424,20 +4636,26 @@ export function restoreCampaignValue(s) {
       torches: 2,
       condition: 100,
     };
+  }
   for (const op of Object.values(s.operativeState)) {
     requireThat(object(op), 'Las hojas de servicio son inválidas.');
-    if (op.missionSuppliesVersion !== undefined)
+    if (op.missionSuppliesVersion !== undefined) {
       requireThat(
         op.missionSuppliesVersion === 1,
         'La versión de suministros del aliado no es válida.',
       );
+    }
     validateTraining(op);
     validatePocketOrder(op.pocketOrder);
-    for (const k of ['medkits', 'bleeding'])
-      if (op[k] !== undefined)
+    for (const k of ['medkits', 'bleeding']) {
+      if (op[k] !== undefined) {
         requireThat(Number.isInteger(op[k]), 'Los suministros y heridas guardados son inválidos.');
+      }
+    }
     op.xp ??= 0;
-    if (op.inventory !== undefined) validatePersonalInventory(op.inventory);
+    if (op.inventory !== undefined) {
+      validatePersonalInventory(op.inventory);
+    }
     for (const [field, limit] of Object.entries({
       energy: 100,
       bleeding: 10,
@@ -4447,11 +4665,12 @@ export function restoreCampaignValue(s) {
       strengthTraining: 10000,
       boleadoras: 100000,
     })) {
-      if (op[field] !== undefined)
+      if (op[field] !== undefined) {
         requireThat(
           Number.isFinite(op[field]) && op[field] >= 0 && op[field] <= limit,
           'El estado físico guardado es inválido.',
         );
+      }
     }
     for (const [field, baseline] of Object.entries({ rations: 2, torches: 2, condition: 100 })) {
       op[field] ??= baseline;
@@ -4488,9 +4707,10 @@ export function restoreCampaignValue(s) {
     }),
     'Las escenas guardadas son inválidas.',
   );
-  for (const [id, snapshot] of Object.entries(s.sceneStates))
+  for (const [id, snapshot] of Object.entries(s.sceneStates)) {
     s.sceneStates[id] =
       validatedScenes.get(snapshot) ?? validateSectorSnapshot(expandCellScene(snapshot, s), s);
+  }
   s.garrisons ??= {};
   s.nextMilitiaId ??= 20000;
   requireThat(validGarrisons(s), 'Las guarniciones guardadas son inválidas.');
@@ -4516,8 +4736,9 @@ export function restoreCampaignValue(s) {
   }
   s.quests ??= {};
   requireThat(validateQuests(s.quests, s.hour, s), 'Los encargos guardados son inválidos.');
-  if (s.pendingBattle)
+  if (s.pendingBattle) {
     validateQuestBeneficiaryContext(s, s.pendingBattle, { request: null, issued: true });
+  }
   if (s.pendingBattle?.resumeSnapshot) {
     s.pendingBattle.resumeSnapshot = validateSectorSnapshot(
       expandCellScene(s.pendingBattle.resumeSnapshot, s),
@@ -4530,8 +4751,9 @@ export function restoreCampaignValue(s) {
   for (const snapshot of [
     ...Object.values(s.sectorStates ?? {}),
     ...Object.values(s.sceneStates ?? {}),
-  ])
+  ]) {
     validateQuestBeneficiaryContext(s, snapshot, { request: null, retained: true });
+  }
   s.lastConversation ??= null;
   s.conversations ??= {};
   requireThat(
@@ -4614,16 +4836,18 @@ export function restoreCampaignValue(s) {
   validateCampaignEventState(s);
   validateSavedDialogues(s, encounterDefinitions(s));
   validateTownIncome(s);
-  for (const quest of questsFor(s))
+  for (const quest of questsFor(s)) {
     for (const npcId of questContactIds(quest)) {
       const at = questBeneficiaryForNPC(quest, npcId)?.sector ?? quest.sector;
       if (
         quest.carried &&
         at !== s.pendingBattle?.sector &&
         (s.conversations[npcId]?.giftCount ?? 0) > 0
-      )
+      ) {
         validateAcknowledgedNpcGiftReceipts(s, s.sectorStates[at]?.npcs ?? [], at);
+      }
     }
+  }
   s.armory ??= {};
   s.loadouts ??= {};
   s.artillerySelection ??= [];
@@ -4672,7 +4896,7 @@ export function restoreCampaignValue(s) {
     'El registro de lealtad es inválido.',
   );
   validateQuestWithdrawalReceipts(s, rosterFor(s));
-  for (const quest of questsFor(s))
+  for (const quest of questsFor(s)) {
     if (quest.rewardChoice && s.quests[quest.id]?.status === 'completed') {
       const resolution = s.quests[quest.id].questResolution,
         event = s.cityLoyaltyEvents.find(
@@ -4686,25 +4910,29 @@ export function restoreCampaignValue(s) {
         'La resolución del encargo no coincide con la entrega y su recompensa.',
       );
     }
-  for (const quest of questsFor(s))
+  }
+  for (const quest of questsFor(s)) {
     if (quest.beneficiaries) {
       const record = s.quests[quest.id],
         selected = quest.beneficiaries.find((b) => b.id === record?.beneficiaryId),
         event = s.cityLoyaltyEvents.find(
           (e) => e.kind === 'quest' && e.eventId === `npc-${quest.id}`,
         );
-      if (selected)
+      if (selected) {
         requireThat(
           (s.conversations[selected.npcId]?.giftCount ?? 0) > 0,
           'El destino elegido no tiene una entrega reconocida.',
         );
-      for (const branch of quest.beneficiaries)
-        if (branch !== selected)
+      }
+      for (const branch of quest.beneficiaries) {
+        if (branch !== selected) {
           requireThat(
             (s.conversations[branch.npcId]?.giftCount ?? 0) === 0,
             'El encargo entregó objetos a dos destinatarios.',
           );
-      if (record?.status === 'completed')
+        }
+      }
+      if (record?.status === 'completed') {
         requireThat(
           selected &&
             s.conversations[selected.npcId]?.giftCount === quest.carried.count &&
@@ -4713,8 +4941,11 @@ export function restoreCampaignValue(s) {
               : !event),
           'La resolución del encargo no coincide con el destinatario y su recompensa.',
         );
-      else requireThat(!event, 'El encargo pendiente o fallido no admite una recompensa.');
+      } else {
+        requireThat(!event, 'El encargo pendiente o fallido no admite una recompensa.');
+      }
     }
+  }
   migrateContracts(s);
   requireThat(
     object(s.contracts) &&
@@ -4742,7 +4973,9 @@ export function restoreCampaignValue(s) {
   );
   for (const id of s.recruited) {
     const c = characterForOperative(s, id);
-    if (!c || !isWorldCharacter(c)) continue;
+    if (!c || !isWorldCharacter(c)) {
+      continue;
+    }
     const contract = s.contracts[id];
     requireThat(
       c.service === 'contract'
@@ -4783,7 +5016,7 @@ export function restoreCampaignValue(s) {
     'Las hojas de servicio son inválidas.',
   );
   // Older authored saves retained the initial ceiling after gaining a level.
-  for (const op of rosterFor(s))
+  for (const op of rosterFor(s)) {
     if (s.operativeState[op.id].maxHp !== undefined) {
       requireThat(
         integer(s.operativeState[op.id].maxHp, 1, op.maxHp),
@@ -4791,6 +5024,7 @@ export function restoreCampaignValue(s) {
       );
       s.operativeState[op.id].maxHp = op.maxHp;
     }
+  }
   validateHireArrivals(s, rosterFor(s));
   validateServiceGuarantees(s, rosterFor(s));
   validatePendingVictoryFunds(s);
@@ -4806,11 +5040,12 @@ export function restoreCampaignValue(s) {
   validateMedicalCare(s, rosterFor(s));
   for (const o of rosterFor(s)) {
     const r = s.operativeState[o.id];
-    if (r.bandaged !== undefined)
+    if (r.bandaged !== undefined) {
       requireThat(
         Number.isFinite(r.bandaged) && r.bandaged >= 0 && r.bandaged <= o.maxHp - r.hp,
         'Las heridas vendadas guardadas son inválidas.',
       );
+    }
   }
   requireThat(
     ['blockade', 'completed', 'defeated'].every((k) => typeof s[k] === 'boolean') &&
@@ -4851,21 +5086,24 @@ export function restoreCampaignValue(s) {
         ),
       'La batalla guardada es inválida.',
     );
-    if (!sector(b.sector, s) && !isCampaignScene(s, b.sector))
+    if (!sector(b.sector, s) && !isCampaignScene(s, b.sector)) {
       requireThat(
         b.exploration === true && b.sector === s.location,
         'La visita guardada no corresponde a la celda actual.',
       );
-    if (b.origin !== undefined)
+    }
+    if (b.origin !== undefined) {
       requireThat(validWorldLocation(b.origin, s), 'El origen del despliegue es inválido.');
+    }
   }
 
   for (const unit of [
     ...(s.pendingBattle?.squad ?? []),
     ...(s.pendingBattle?.missionAllies ?? []),
     ...Object.values(s.missionAllies ?? {}),
-  ])
+  ]) {
     validateWeaponCarrier(unit);
+  }
   for (const unit of [...(s.pendingBattle?.enemies ?? []), ...(s.pendingBattle?.garrison ?? [])]) {
     validateForceWeapon(unit);
     requireThat(
@@ -4883,7 +5121,7 @@ export function restoreCampaignValue(s) {
     );
     validateRegionalWeather(request, s);
   }
-  if (s.pendingBattle)
+  if (s.pendingBattle) {
     for (const unit of s.pendingBattle.squad) {
       requireThat(
         unit.preserveLoading === undefined || typeof unit.preserveLoading === 'boolean',
@@ -4899,18 +5137,22 @@ export function restoreCampaignValue(s) {
         bleeding: 100,
         bandaged: maxHp - unit.hp,
         energy: 100,
-      }))
-        if (unit[field] !== undefined)
+      })) {
+        if (unit[field] !== undefined) {
           requireThat(
             Number.isFinite(unit[field]) && unit[field] >= 0 && unit[field] <= limit,
             'Las heridas del despliegue guardado son inválidas.',
           );
-      if (unit.medkits !== undefined)
+        }
+      }
+      if (unit.medkits !== undefined) {
         requireThat(
           integer(unit.medkits, 0, 100000),
           'Los botiquines del despliegue guardado son inválidos.',
         );
+      }
     }
+  }
   s.horseState ??= { ...initialHorseState(), hour: s.hour };
   requireThat(
     object(s.horseState) &&
@@ -5019,8 +5261,9 @@ export function restoreCampaignValue(s) {
     validateCampaignPatrol(s, scene);
     validateCampaignArtilleryProfiles(s, scene);
   }
-  for (const [id, snapshot] of Object.entries(s.sectorStates))
+  for (const [id, snapshot] of Object.entries(s.sectorStates)) {
     s.sectorStates[id] = compactCellScene(snapshot, s);
+  }
   requireThat(
     !s.pendingBattle ||
       s.pendingBattle.syncedSeconds === undefined ||
@@ -5049,32 +5292,42 @@ export function restoreCampaignValue(s) {
   validateAssignments(s, rosterFor(s));
   validateAssignmentAttention(s, rosterFor(s));
   validateLogisticsNotice(s);
-  if (s.pendingBattle) validateArtilleryDeployment(s.pendingBattle);
+  if (s.pendingBattle) {
+    validateArtilleryDeployment(s.pendingBattle);
+  }
   validateContractAttention(s, rosterFor(s));
   validateMorale(s, rosterFor(s));
   validateCampaignCompanionGrief(s, rosterFor(s));
-  if (s.pendingBattle?.resumeSnapshot)
+  if (s.pendingBattle?.resumeSnapshot) {
     validateCompanionGriefContext(s, s.pendingBattle.resumeSnapshot, rosterFor(s));
+  }
   validateEquipment(s, rosterFor(s));
   validateEnemyGroups(s, rosterFor(s));
-  validateCampaignAmmunition(s, rosterFor(s));
+  validateCampaignAmmunition(s);
   validateCampaignWeather(s);
   validateDeploymentReturnState(s);
   requireThat(
     s.economyVersion === 2 && Object.keys(s.resources).length === 1,
     'La economía guardada es inválida.',
   );
-  if (migrateCampaignCivilians(s)) synchronizeCampaignPresence(s);
+  if (migrateCampaignCivilians(s)) {
+    synchronizeCampaignPresence(s);
+  }
   migrateCampaignCivilianSupplies(s);
   validateCampaignCivilians(s);
   validateQuestFailures(s);
-  if (resumeCivilianServiceReturns(s)) validateCampaignCivilians(s);
+  if (resumeCivilianServiceReturns(s)) {
+    validateCampaignCivilians(s);
+  }
   validateCampaignPresence(s);
-  if (migrateResidentWounds(s)) validateCampaignCivilians(s);
+  if (migrateResidentWounds(s)) {
+    validateCampaignCivilians(s);
+  }
   validateDialogueMovements(s, encounterDefinitions(s));
   validateCampaignServiceObjections(s, rosterFor(s));
-  if (s.pendingBattle?.resumeSnapshot)
+  if (s.pendingBattle?.resumeSnapshot) {
     validateServiceObjectionContext(s, s.pendingBattle.resumeSnapshot, rosterFor(s));
+  }
   scenarioFor(s).validateHistoricalState(s);
   validatePendingCompanionLoss(s, rosterFor(s));
   requireThat(
@@ -5086,7 +5339,7 @@ export function restoreCampaignValue(s) {
   synchronizeCampaignPresence(s);
   validateCampaignPresence(s);
   syncCampaignAmmunition(s, rosterFor(s));
-  validateCampaignAmmunition(s, rosterFor(s));
+  validateCampaignAmmunition(s);
   validateHireArrivals(s, rosterFor(s));
   validateServiceGuarantees(s, rosterFor(s));
   s.lastError = null;
