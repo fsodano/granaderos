@@ -1,9 +1,11 @@
 'use client';
+
 import { formatAP } from '../../../packages/game/action-points.js';
+import type { ExitModel } from '../../../packages/game/public/hud-types.ts';
 
 type Props = {
-  model: any;
-  selectedId?: string;
+  model: ExitModel;
+  selectedId?: string | undefined;
   busy: boolean;
   onUnits: (ids: string[]) => void;
   onExit: (id: string) => void;
@@ -46,7 +48,7 @@ export default function JA2ExitPanel({
           onChange={(event) => onExit(event.target.value)}
         >
           {!exits.length && <option value="">No hay salidas autorizadas</option>}
-          {exits.map((exit: any) => (
+          {exits.map((exit) => (
             <option key={exit.id} value={exit.id}>
               {exit.label}
             </option>
@@ -56,7 +58,7 @@ export default function JA2ExitPanel({
       <div className="ja2-exit-selection">
         <button
           className="line-button"
-          disabled={busy || !units.some((unit: any) => unit.id === selectedId)}
+          disabled={busy || !units.some((unit) => unit.id === selectedId)}
           onClick={() => onUnits(selectedId ? [selectedId] : [])}
         >
           Solo seleccionado
@@ -64,7 +66,7 @@ export default function JA2ExitPanel({
         <button
           className="line-button"
           disabled={busy || !units.length}
-          onClick={() => onUnits(units.map((unit: any) => unit.id))}
+          onClick={() => onUnits(units.map((unit) => unit.id))}
         >
           Todos presentes
         </button>
@@ -80,9 +82,9 @@ export default function JA2ExitPanel({
       </div>
       <fieldset>
         <legend>Combatientes que van a salir</legend>
-        {units.map((unit: any) => {
+        {units.map((unit) => {
           const checked = unitIds.includes(unit.id),
-            blocked = preview.blocked.find((entry: any) => entry.id === unit.id);
+            blocked = preview.blocked.find((entry) => entry.id === unit.id);
           return (
             <label className="ja2-exit-unit" key={unit.id}>
               <input
@@ -112,7 +114,7 @@ export default function JA2ExitPanel({
       </fieldset>
       {(preview.prisoners ?? []).length > 0 && (
         <ul aria-label="Prisioneros escoltados">
-          {preview.prisoners.map((npc: any) => (
+          {preview.prisoners.map((npc) => (
             <li key={npc.id}>
               {npc.name}:{' '}
               {npc.ready
@@ -122,7 +124,11 @@ export default function JA2ExitPanel({
           ))}
         </ul>
       )}
-      {preview.reason && <p role="status">{preview.reason}</p>}
+      {preview.reason && (
+        <p>
+          <output>{preview.reason}</output>
+        </p>
+      )}
       <button className="gold-button" disabled={busy || !preview.available} onClick={onLeave}>
         Cruzar el borde · {unitIds.length} {unitIds.length === 1 ? 'combatiente' : 'combatientes'}
       </button>

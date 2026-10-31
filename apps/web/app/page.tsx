@@ -1,22 +1,56 @@
 'use client';
-import { domainRefusalMessage } from '../../../packages/game/infrastructure/shared/domain-refusal-message.js';
+
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
+import { BookOpen, Download, Menu, Volume2, VolumeX } from 'lucide-react';
+import type { ChangeEvent } from 'react';
+import {
+  useEffect,
+  useEffectEvent,
+  useLayoutEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from 'react';
+import type { CampaignPresentation } from '../../../packages/campaign-format/types.ts';
+import type { SaveStatus } from '../../../packages/game/application/get-save-status/get-save-status.repository.ts';
+import { TalkToCharacterUseCase } from '../../../packages/game/application/talk-to-character/talk-to-character.use-case.ts';
+import { battleFromRequest, prepareCampaignBattle } from '../../../packages/game/battle-handoff.js';
 import { runBattleJob } from '../../../packages/game/battle-job.js';
-import { pendingArrivalDecisions } from '../../../packages/game/squad-travel.js';
+import { dispatchCampaign, questForNPC, rosterFor } from '../../../packages/game/campaign.js';
+import { withCharacterSpeech } from '../../../packages/game/character-events.js';
+import { dialogueForNPC } from '../../../packages/game/content-dialogue.js';
+import {
+  campaignLaunchSearch,
+  campaignStorageCandidates,
+  campaignStorageKey,
+  CONTENT_LAUNCH_KEY,
+} from '../../../packages/game/content-launch.ts';
+import { encounterHireTerms } from '../../../packages/game/encounters.js';
+import { CampaignTalkToCharacterRepository } from '../../../packages/game/infrastructure/session/talk-to-character-repository.ts';
+import { domainRefusalMessage } from '../../../packages/game/infrastructure/shared/domain-refusal-message.js';
+import { removedSectorCharacters } from '../../../packages/game/military-remains.js';
+import { missionStatus } from '../../../packages/game/missions.js';
+import {
+  playerKnownBattle,
+  playerKnownError,
+  playerKnownState,
+} from '../../../packages/game/player-known-state.ts';
+import type {
+  CampaignAction,
+  CampaignSnapshot,
+} from '../../../packages/game/public/campaign-types.ts';
+import type { BattleSnapshot } from '../../../packages/game/public/compatibility-types.ts';
 import {
   createNewGameSession,
   restoreGameSnapshot,
-} from '../../../packages/game/public/game-persistence-api.js';
-import { removedSectorCharacters } from '../../../packages/game/military-remains.js';
-import { TalkToCharacterUseCase } from '../../../packages/game/application/talk-to-character/talk-to-character.use-case.ts';
-import { CampaignTalkToCharacterRepository } from '../../../packages/game/infrastructure/session/talk-to-character-repository.js';
-import { sitePath, pagePath } from '../lib/site-path.js';
-import BuildIdentity from './BuildIdentity';
-import {
-  CONTENT_LAUNCH_KEY,
-  campaignStorageKey,
-  campaignStorageCandidates,
-  campaignLaunchSearch,
-} from '../../../packages/game/content-launch.js';
+} from '../../../packages/game/public/game-persistence-api.ts';
+import { MAX_SAVE_BYTES } from '../../../packages/game/save-limits.js';
+import { encodeSave } from '../../../packages/game/save.ts';
+import { pendingArrivalDecisions } from '../../../packages/game/squad-travel.js';
+import { actBattle, endTurn } from '../../../packages/game/tactical.js';
+import { syncBattleTime, withCampaignTimeBoundary } from '../../../packages/game/time.js';
+import { BattleAudio } from '../lib/battle-audio';
+import { readBattleWorkerAction } from '../lib/battle-worker-values';
 import {
   loadCampaignRegistry,
   loadInstalledCampaign,
@@ -24,84 +58,97 @@ import {
   type CampaignEntry,
   type LoadedCampaign,
 } from '../lib/campaign-library';
-import { dialogueForNPC } from '../../../packages/game/content-dialogue.js';
-import { encounterHireTerms } from '../../../packages/game/encounters.js';
-import { MAX_SAVE_BYTES } from '../../../packages/game/save-limits.js';
-import {
-  playerKnownState,
-  playerKnownBattle,
-  playerKnownError,
-} from '../../../packages/game/player-known-state.js';
-import { missionStatus } from '../../../packages/game/missions.js';
-import { syncBattleTime, withCampaignTimeBoundary } from '../../../packages/game/time.js';
-import { useEffect, useRef, useState } from 'react';
-import {
-  BookOpen,
-  Download,
-  Upload,
-  Save,
-  Menu,
-  X,
-  Flag,
-  ChevronRight,
-  Volume2,
-  VolumeX,
-} from 'lucide-react';
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { pagePath, sitePath } from '../lib/site-path.js';
+import { useCampaignAutosave } from '../lib/useCampaignAutosave';
+import Battlefield from './Battlefield';
+import type { BrowserTool } from './browser-tools';
+import BuildIdentity from './BuildIdentity';
 import Campaign from './Campaign';
 import CampaignIntro from './CampaignIntro';
-import Desk from './Desk';
-import { BattleAudio } from '../lib/battle-audio';
-import Battlefield from './Battlefield';
-import SectorDeployment from './SectorDeployment';
 import CampaignPerformance from './CampaignPerformance';
-import TransientNotice, { useTransientNotice } from './TransientNotice';
-import { useCampaignAutosave } from '../lib/useCampaignAutosave';
+import Desk from './Desk';
 import SaveProgress from './SaveProgress';
-import type { SaveStatus } from '../../../packages/game/application/get-save-status/get-save-status.repository.ts';
-import { dispatchCampaign, OPERATIVES, rosterFor, questForNPC } from '../../../packages/game/campaign.js';
-import { withCharacterSpeech } from '../../../packages/game/character-events.js';
-import { battleFromRequest, prepareCampaignBattle } from '../../../packages/game/battle-handoff.js';
-import { actBattle, endTurn } from '../../../packages/game/tactical.js';
-import { encodeSave, SAVE_KEY } from '../../../packages/game/save.js';
+import SectorDeployment from './SectorDeployment';
+import TransientNotice, { useTransientNotice } from './TransientNotice';
+const BROWSER_STATE_CHANGED = 'granaderos:browser-state-changed';
+function subscribeBrowserState(onChange: () => void) {
+  window.addEventListener('storage', onChange);
+  window.addEventListener('popstate', onChange);
+  window.addEventListener(BROWSER_STATE_CHANGED, onChange);
+  return () => {
+    window.removeEventListener('storage', onChange);
+    window.removeEventListener('popstate', onChange);
+    window.removeEventListener(BROWSER_STATE_CHANGED, onChange);
+  };
+}
+function notifyBrowserStateChanged() {
+  window.dispatchEvent(new Event(BROWSER_STATE_CHANGED));
+}
+function readSavePresence() {
+  try {
+    return Boolean(savedCampaign());
+  } catch {
+    return false;
+  }
+}
+const readBrowserSearch = () => window.location.search;
+const serverSearch = () => '';
+const serverSavePresence = () => false;
 const contentMode = () =>
   typeof window !== 'undefined' &&
   new URLSearchParams(window.location.search).get('content') === '1';
-const storageKey = (value: any = null) =>
+const storageKey = (value: CampaignSnapshot | null = null) =>
   campaignStorageKey(value, typeof window === 'undefined' ? '' : window.location.search);
-function savedCampaign(value: any = null) {
+function savedCampaign(value: CampaignSnapshot | null = null) {
   for (const key of campaignStorageCandidates(value, window.location.search)) {
     const raw = localStorage.getItem(key);
-    if (raw) return raw;
+    if (raw) {
+      return raw;
+    }
   }
   return null;
 }
 function selectCampaignURL(id: string) {
   const url = new URL(window.location.href);
-  for (const key of ['content', 'contentId', 'contentHash', 'launch']) url.searchParams.delete(key);
+  for (const key of ['content', 'contentId', 'contentHash', 'launch']) {
+    url.searchParams.delete(key);
+  }
   url.searchParams.set('campaign', id);
   window.history.replaceState(null, '', url);
+  notifyBrowserStateChanged();
 }
-function savedCampaignURL(value: any) {
+function savedCampaignURL(value: CampaignSnapshot) {
   const url = new URL(window.location.href);
   url.search = campaignLaunchSearch(value, url.search);
   window.history.replaceState(null, '', url);
+  notifyBrowserStateChanged();
 }
 export default function Home() {
   const tacticalPlaybackBusy = useRef(false);
   const audio = useRef<BattleAudio | null>(null);
   const [sound, setSound] = useState(false);
-  const [campaign, setCampaign] = useState<any>(null);
-  const [battle, setBattle] = useState<any>(null);
+  const [campaign, setCampaign] = useState<CampaignSnapshot | null>(null);
+  const [battle, setBattle] = useState<BattleSnapshot | null>(null);
   const [battleSession, setBattleSession] = useState(0);
   const [screen, setScreen] = useState('title');
   const [dialog, setDialog] = useState('');
   const [notice, setNotice] = useTransientNotice();
-  const [hasSave, setHasSave] = useState(false);
+  const hasSave = useSyncExternalStore(subscribeBrowserState, readSavePresence, serverSavePresence);
+  const browserSearch = useSyncExternalStore(
+    subscribeBrowserState,
+    readBrowserSearch,
+    serverSearch,
+  );
+  const [completedLaunch, setCompletedLaunch] = useState<string | null>(null);
+  const launchParameters = new URLSearchParams(browserSearch);
+  const launchRequested =
+    launchParameters.get('content') === '1' && launchParameters.get('launch') === '1';
   const [saveStatus, setSaveStatus] = useState<SaveStatus | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const latest = useRef({ campaign, battle, screen });
-  latest.current = { campaign, battle, screen };
+  useLayoutEffect(() => {
+    latest.current = { campaign, battle, screen };
+  }, [campaign, battle, screen]);
   const [introMode, setIntroMode] = useState<'new' | 'replay'>('new'),
     [introReturn, setIntroReturn] = useState('title'),
     [deskTab, setDeskTab] = useState('overview');
@@ -110,9 +157,11 @@ export default function Home() {
     [selectedId, setSelectedId] = useState(''),
     [loadingCampaign, setLoadingCampaign] = useState(false),
     [campaignError, setCampaignError] = useState(''),
-    [restoring, setRestoring] = useState(false);
+    [restoringRequest, setRestoring] = useState(false);
+  const restoring = restoringRequest || (launchRequested && completedLaunch !== browserSearch);
   const loadSequence = useRef(0);
-  const genericPresentation = {
+  const genericPresentation: Partial<CampaignPresentation> &
+    Pick<CampaignPresentation, 'title' | 'edition' | 'caption'> = {
     title: campaign?.contentCampaign?.package?.name ?? 'Campaña',
     edition: 'JUEGO TÁCTICO',
     caption: 'Elegí una campaña para comenzar.',
@@ -122,61 +171,80 @@ export default function Home() {
     : (installed?.presentation ?? genericPresentation);
   const introduction = presentation.introduction;
   const canContinue = hasSave || Boolean(campaign);
-  useEffect(() => {
-    try {
-      setHasSave(Boolean(savedCampaign()));
-    } catch {}
-  }, []);
+  const chooseInitialCampaign = useEffectEvent((entry: CampaignEntry) =>
+    chooseCampaign(entry, false),
+  );
+  const reportLaunchError = useEffectEvent((error: unknown) =>
+    setNotice(domainRefusalMessage(error)),
+  );
   useEffect(() => {
     let active = true;
+    const sequence = loadSequence;
     loadCampaignRegistry()
       .then((entries) => {
-        if (!active) return;
+        if (!active) {
+          return undefined;
+        }
         setLibrary(entries);
         if (!contentMode()) {
           const requested = new URLSearchParams(window.location.search).get('campaign'),
             entry =
               entries.find((item) => item.id === requested) ?? (!requested ? entries[0] : null);
-          if (!entry) throw Error('La campaña seleccionada no está instalada.');
-          return chooseCampaign(entry, false);
+          if (!entry) {
+            throw Error('La campaña seleccionada no está instalada.');
+          }
+          return chooseInitialCampaign(entry);
         }
+        return undefined;
       })
-      .catch((error: any) => {
-        if (active) setCampaignError(error.message);
+      .catch((error: unknown) => {
+        if (active) {
+          setCampaignError(domainRefusalMessage(error));
+        }
       });
     return () => {
       active = false;
-      loadSequence.current++;
+      sequence.current++;
     };
   }, []);
   useEffect(() => {
-    if (!contentMode() || new URLSearchParams(window.location.search).get('launch') !== '1') return;
+    if (!launchRequested) {
+      return;
+    }
     let active = true;
-    setRestoring(true);
     void (async () => {
       try {
         const raw = sessionStorage.getItem(CONTENT_LAUNCH_KEY);
-        if (!raw) throw Error('Volvé al editor para iniciar una campaña con sus fichas.');
+        if (!raw) {
+          throw Error('Volvé al editor para iniciar una campaña con sus fichas.');
+        }
         const saved = restoreGameSnapshot(raw);
-        if (!saved.campaign.contentCampaign || saved.battle)
+        if (!saved.campaign.contentCampaign || saved.battle) {
           throw Error('Falta el contenido inicial de la campaña.');
+        }
         await verifyCampaignResources(saved.campaign, { refresh: true });
-        if (!active) return;
+        if (!active) {
+          return;
+        }
         savedCampaignURL(saved.campaign);
         setCampaign(saved.campaign);
         setBattle(null);
         setScreen('desk');
         sessionStorage.removeItem(CONTENT_LAUNCH_KEY);
-      } catch (error: any) {
-        if (active) setNotice(domainRefusalMessage(error));
+      } catch (error) {
+        if (active) {
+          reportLaunchError(error);
+        }
       } finally {
-        if (active) setRestoring(false);
+        if (active) {
+          setCompletedLaunch(browserSearch);
+        }
       }
     })();
     return () => {
       active = false;
     };
-  }, []);
+  }, [launchRequested, browserSearch]);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [screen]);
@@ -184,7 +252,7 @@ export default function Home() {
     campaign,
     battle,
     storageKey,
-    () => setHasSave(true),
+    notifyBrowserStateChanged,
     (error?: Error) =>
       setNotice(
         error
@@ -199,7 +267,9 @@ export default function Home() {
     setCampaignError('');
     try {
       const loaded = await loadInstalledCampaign(entry);
-      if (sequence !== loadSequence.current) return;
+      if (sequence !== loadSequence.current) {
+        return;
+      }
       if (clear) {
         flushSave();
         setCampaign(null);
@@ -209,11 +279,15 @@ export default function Home() {
       selectCampaignURL(entry.id);
       setInstalled(loaded);
       setSelectedId(entry.id);
-      setHasSave(Boolean(savedCampaign()));
-    } catch (error: any) {
-      if (sequence === loadSequence.current) setCampaignError(error.message);
+      notifyBrowserStateChanged();
+    } catch (error) {
+      if (sequence === loadSequence.current) {
+        setCampaignError(domainRefusalMessage(error));
+      }
     } finally {
-      if (sequence === loadSequence.current) setLoadingCampaign(false);
+      if (sequence === loadSequence.current) {
+        setLoadingCampaign(false);
+      }
     }
   }
   async function toggleSound() {
@@ -224,30 +298,41 @@ export default function Home() {
       setNotice('Este navegador no pudo activar el sonido.');
     }
   }
-  function commitBattle(next: any, previous: any) {
-    if (next.lastError) throw Error(next.lastError);
+  function commitBattle(next: BattleSnapshot, previous: BattleSnapshot | null) {
+    if (next.lastError) {
+      throw Error(next.lastError);
+    }
     const current = latest.current;
-    if (current.battle !== previous)
+    if (!previous || !current.battle || current.battle !== previous) {
       throw Error('El combate cambió mientras se preparaba la orden. Volvé a intentarlo.');
+    }
     const spoken = withCharacterSpeech(previous, next);
     const pair = current.campaign
       ? syncBattleTime(current.campaign, spoken)
       : { campaign: null, battle: spoken, error: null };
-    if (pair.error) throw Error(pair.error);
+    if (pair.error) {
+      throw Error(pair.error);
+    }
     // Tool calls can arrive before React renders. Commit both states together.
-    latest.current = { ...current, campaign: pair.campaign, battle: pair.battle };
+    latest.current = {
+      ...current,
+      campaign: pair.campaign,
+      battle: pair.battle,
+    };
     setCampaign(pair.campaign);
     setBattle(pair.battle);
     // Audio must not turn an accepted order into a reported failure.
     try {
-      if (!tacticalPlaybackBusy.current) audio.current?.play(current.battle, pair.battle);
+      if (!tacticalPlaybackBusy.current) {
+        audio.current?.play(current.battle, pair.battle);
+      }
     } catch {}
     return pair.battle;
   }
-  function updateBattle(next: any) {
+  function updateBattle(next: BattleSnapshot) {
     try {
       return commitBattle(next, battle);
-    } catch (error: any) {
+    } catch (error) {
       setNotice(domainRefusalMessage(error));
       return null;
     }
@@ -257,9 +342,13 @@ export default function Home() {
       let content = campaign?.contentCampaign?.package ?? installed?.content ?? null;
       if (contentMode() && !content) {
         const raw = savedCampaign();
-        if (raw) content = restoreGameSnapshot(raw).campaign.contentCampaign?.package;
+        if (raw) {
+          content = restoreGameSnapshot(raw).campaign.contentCampaign?.package ?? null;
+        }
       }
-      if (!content) throw Error('Cargá una campaña o abrí el editor de historia para comenzar.');
+      if (!content) {
+        throw Error('Cargá una campaña o abrí el editor de historia para comenzar.');
+      }
       flushSave();
       const next = createNewGameSession(1812, content);
       savedCampaignURL(next);
@@ -269,7 +358,7 @@ export default function Home() {
       setScreen('desk');
       setDialog('');
       setNotice('');
-    } catch (error: any) {
+    } catch (error) {
       setNotice(domainRefusalMessage(error));
     }
   }
@@ -285,7 +374,9 @@ export default function Home() {
     setNotice('');
   }
   function replayIntro() {
-    if (!introduction?.scenes?.length) return;
+    if (!introduction?.scenes?.length) {
+      return;
+    }
     setIntroMode('replay');
     setIntroReturn(screen);
     setScreen('intro');
@@ -299,7 +390,9 @@ export default function Home() {
     startCampaign(destination);
   }
   async function resume() {
-    if (restoring) return;
+    if (restoring) {
+      return;
+    }
     const sequence = loadSequence.current;
     setRestoring(true);
     try {
@@ -308,23 +401,28 @@ export default function Home() {
         selectedId &&
         saved.campaign.campaignOrigin &&
         saved.campaign.campaignOrigin.id !== selectedId
-      )
+      ) {
         throw Error('La partida pertenece a otra campaña.');
+      }
       await verifyCampaignResources(saved.campaign, { refresh: true });
-      if (sequence !== loadSequence.current) return;
+      if (sequence !== loadSequence.current) {
+        return;
+      }
       savedCampaignURL(saved.campaign);
       setCampaign(saved.campaign);
       setBattle(saved.battle);
       setScreen(saved.battle ? 'battle' : saved.campaign.recruited.length ? 'campaign' : 'desk');
-      if (!campaign) setNotice('');
-    } catch (e: any) {
-      setNotice(e.message);
+      if (!campaign) {
+        setNotice('');
+      }
+    } catch (e) {
+      setNotice(domainRefusalMessage(e));
     } finally {
       setRestoring(false);
     }
   }
 
-  function openCampaignBattle(state: any) {
+  function openCampaignBattle(state: CampaignSnapshot) {
     const pair = prepareCampaignBattle(state, { placement: true });
     if (pair.error) {
       setNotice(pair.error);
@@ -340,8 +438,11 @@ export default function Home() {
     setBattle(pair.battle);
     setScreen('battle');
   }
-  function dispatch(action: any) {
+  function dispatch(action: CampaignAction) {
     const current = latest.current;
+    if (!current.campaign) {
+      return;
+    }
     const needsCurrentVisit =
       action.type === 'fightOnArrival' || action.type === 'resumeSectorSession';
     const next = dispatchCampaign(current.campaign, {
@@ -368,13 +469,15 @@ export default function Home() {
   }
   function continueSectorOperation() {
     const current = latest.current;
-    if (!current.battle) return;
+    if (!current.battle) {
+      return;
+    }
     try {
       commitBattle(
         runBattleJob({ battle: current.battle, kind: 'resume', action: null }),
         current.battle,
       );
-    } catch (error: any) {
+    } catch (error) {
       setNotice(domainRefusalMessage(error));
     }
   }
@@ -387,7 +490,11 @@ export default function Home() {
       node?: string;
       id?: string;
       questResolution?: 'cash' | 'civic';
-      questWithdrawal?: { questId: string; beneficiaryId?: string; deliveredCount: number };
+      questWithdrawal?: {
+        questId: string;
+        beneficiaryId?: string;
+        deliveredCount: number;
+      };
     },
   ) {
     const current = latest.current;
@@ -401,30 +508,40 @@ export default function Home() {
         characterId: npcId,
         speakerId: unitId,
         approach,
-        serviceTerm: term,
-        dialogueNodeId: choice?.node,
-        dialogueChoiceId: choice?.id,
-        questResolution: choice?.questResolution === 'civic' ? 'recruit' : choice?.questResolution,
-        questWithdrawal: choice?.questWithdrawal,
+        ...(term === undefined ? {} : { serviceTerm: term }),
+        ...(choice?.node === undefined ? {} : { dialogueNodeId: choice.node }),
+        ...(choice?.id === undefined ? {} : { dialogueChoiceId: choice.id }),
+        ...(choice?.questResolution === undefined
+          ? {}
+          : {
+              questResolution:
+                choice.questResolution === 'civic' ? 'recruit' : choice.questResolution,
+            }),
+        ...(choice?.questWithdrawal === undefined
+          ? {}
+          : { questWithdrawal: choice.questWithdrawal }),
       });
-      latest.current = { ...current, campaign: result.campaign, battle: result.sectorSession };
+      latest.current = {
+        ...current,
+        campaign: result.campaign,
+        battle: result.sectorSession,
+      };
       setCampaign(result.campaign);
       setBattle(result.sectorSession);
-    } catch (error: any) {
+    } catch (error) {
       setNotice(domainRefusalMessage(error));
     }
   }
-  function mappedBattle(request: any, state: any = null) {
-    return battleFromRequest(request, state);
-  }
   function skirmish() {
     const config = presentation.skirmish;
-    if (!config) return;
+    if (!config) {
+      return;
+    }
     flushSave();
     setCampaign(null);
-    const state = createNewGameSession(1812, installed?.content);
+    const state = createNewGameSession(1812, installed?.content ?? null);
     setBattle(
-      mappedBattle(
+      battleFromRequest(
         {
           ...config.request,
           campaignPackage: installed?.content,
@@ -439,7 +556,7 @@ export default function Home() {
     setNotice('');
   }
   function finish(outcome?: string) {
-    if (campaign && battle) {
+    if (campaign && battle && campaign.pendingBattle) {
       const request = campaign.pendingBattle;
       const next = dispatchCampaign(campaign, {
         type:
@@ -459,17 +576,22 @@ export default function Home() {
         sectorState: battle,
         survivors: [...battle.units, ...removedSectorCharacters(battle)]
           .filter(
-            (u: any) =>
+            (u) =>
               u.side === 'player' &&
-              request.squad.some((person: any) => String(person.id) === String(u.id)),
+              request.squad.some((person) => String(person.id) === String(u.id)),
           )
-          .map((u: any) => ({ ...u, id: Number(u.id) })),
+          .map((u) => ({ ...u, id: Number(u.id) })),
       });
       if (next.lastError) {
         setNotice(next.lastError);
         return;
       }
-      latest.current = { ...latest.current, campaign: next, battle: null, screen: 'campaign' };
+      latest.current = {
+        ...latest.current,
+        campaign: next,
+        battle: null,
+        screen: 'campaign',
+      };
       setCampaign(next);
       setBattle(null);
       setScreen('campaign');
@@ -481,7 +603,9 @@ export default function Home() {
     setDialog('');
   }
   function exportSave() {
-    if (!campaign) return;
+    if (!campaign) {
+      return;
+    }
     try {
       const contents = encodeSave(campaign, battle),
         url = URL.createObjectURL(new Blob([contents], { type: 'application/json' }));
@@ -494,16 +618,19 @@ export default function Home() {
         URL.revokeObjectURL(url);
       }
       setNotice('Partida exportada.');
-    } catch (error: any) {
-      setNotice(error.message || 'No se pudo exportar la partida.');
+    } catch (error) {
+      setNotice(domainRefusalMessage(error) || 'No se pudo exportar la partida.');
     }
   }
-  async function importSave(e: any) {
+  async function importSave(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file) {
+      return;
+    }
     try {
-      if (file.size > MAX_SAVE_BYTES)
+      if (file.size > MAX_SAVE_BYTES) {
         throw Error('El archivo de campaña es demasiado grande. El límite es de 5 MB.');
+      }
       const loaded = restoreGameSnapshot(await file.text());
       setRestoring(true);
       await verifyCampaignResources(loaded.campaign, { refresh: true });
@@ -519,7 +646,7 @@ export default function Home() {
       setDeskTab('overview');
       setScreen(loaded.battle ? 'battle' : loaded.campaign.recruited.length ? 'campaign' : 'desk');
       setNotice('Partida recuperada.');
-    } catch (error: any) {
+    } catch (error) {
       setNotice(domainRefusalMessage(error));
     } finally {
       setRestoring(false);
@@ -527,15 +654,21 @@ export default function Home() {
     e.target.value = '';
   }
   useEffect(() => {
-    const context = (document as any).modelContext;
-    if (!context?.registerTool) return;
+    const context = document.modelContext;
+    if (!context?.registerTool) {
+      return;
+    }
     const lifecycle = new AbortController();
-    const tools = [
+    const tools: BrowserTool[] = [
       {
         name: 'read_granaderos_state',
         title: 'Consultar campaña',
         description: 'Read the visible Granaderos campaign and tactical state.',
-        inputSchema: { type: 'object', properties: {}, additionalProperties: false },
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          additionalProperties: false,
+        },
         annotations: { readOnlyHint: true },
         execute: () => playerKnownState(latest.current),
       },
@@ -608,14 +741,25 @@ export default function Home() {
               ],
             },
             unitId: { type: 'string' },
-            family: { type: 'string', enum: ['ammoMusket', 'ammoRifle', 'ammoPistol', 'ammoShot'] },
-            unitIds: { type: 'array', items: { type: 'string' }, minItems: 1, uniqueItems: true },
+            family: {
+              type: 'string',
+              enum: ['ammoMusket', 'ammoRifle', 'ammoPistol', 'ammoShot'],
+            },
+            unitIds: {
+              type: 'array',
+              items: { type: 'string' },
+              minItems: 1,
+              uniqueItems: true,
+            },
             escortOrder: { type: 'string', enum: ['follow', 'wait'] },
             exitId: { type: 'string' },
             destination: { type: 'string', enum: ['inventory', 'blade'] },
             inventoryKey: { type: 'string' },
             toolKey: { type: 'string' },
-            supplyKey: { type: 'string', enum: ['torches', 'boleadoras', 'rations'] },
+            supplyKey: {
+              type: 'string',
+              enum: ['torches', 'boleadoras', 'rations'],
+            },
             kind: { type: 'string', enum: ['door', 'container'] },
             id: { type: 'string' },
             verb: {
@@ -655,8 +799,14 @@ export default function Home() {
             groundId: { type: 'string' },
             dropIndex: { type: 'integer', minimum: 0 },
             enabled: { type: 'boolean' },
-            movement: { type: 'string', enum: ['walk', 'run', 'crouch', 'prone'] },
-            movementIntent: { type: 'string', enum: ['forward', 'preserveFacing'] },
+            movement: {
+              type: 'string',
+              enum: ['walk', 'run', 'crouch', 'prone'],
+            },
+            movementIntent: {
+              type: 'string',
+              enum: ['forward', 'preserveFacing'],
+            },
             targetId: { type: 'string' },
             targetKind: { type: 'string', enum: ['npc'] },
             linkId: { type: 'string' },
@@ -671,19 +821,30 @@ export default function Home() {
               enum: ['primary', 'blade', 'offhand', 'medical', 'tool', 'supply', 'item', 'unarmed'],
             },
             artilleryId: { type: 'string' },
-            mode: { type: 'string', enum: ['solid', 'canister', 'fire', 'melee'] },
+            mode: {
+              type: 'string',
+              enum: ['solid', 'canister', 'fire', 'melee'],
+            },
           },
           required: ['type'],
           additionalProperties: false,
         },
-        execute: (action: any) => {
-          const reject = (reason: any) => ({ ok: false, error: playerKnownError(reason) });
-          if (tacticalPlaybackBusy.current) return reject('Esperá a que termine el movimiento.');
+        execute: (input: unknown) => {
+          const reject = (reason: string) => ({
+            ok: false as const,
+            error: playerKnownError(reason),
+          });
+          if (tacticalPlaybackBusy.current) {
+            return reject('Esperá a que termine el movimiento.');
+          }
           const current = latest.current.battle;
-          if (!current || latest.current.screen !== 'battle')
+          if (!current || latest.current.screen !== 'battle') {
             return reject('No hay batalla activa.');
+          }
           if (
-            !action ||
+            !input ||
+            typeof input !== 'object' ||
+            !('type' in input) ||
             ![
               'move',
               'climb',
@@ -740,21 +901,31 @@ export default function Home() {
               'clearDeployment',
               'spreadDeployment',
               'confirmDeployment',
-            ].includes(action.type)
-          )
+            ].some((type) => type === input.type)
+          ) {
             return reject('Orden no válida.');
+          }
+          const action =
+            input.type === 'endTurn'
+              ? { type: 'endTurn' as const }
+              : readBattleWorkerAction('action', input);
           let next;
           try {
             const resolved =
               action.type === 'endTurn' ? endTurn(current) : actBattle(current, action);
             // Admission failures are data: browser tool transports can hide thrown messages.
             // Commit faults remain exceptions and must not be reported as ordinary refusals.
-            if (resolved.lastError) return reject(resolved.lastError);
+            if (resolved.lastError) {
+              return reject(resolved.lastError);
+            }
             next = commitBattle(resolved, current);
-          } catch (error: any) {
-            throw Error(playerKnownError(error.message));
+          } catch (error) {
+            throw Error(playerKnownError(domainRefusalMessage(error)));
           }
-          const known = playerKnownBattle(latest.current.battle)!;
+          const known = playerKnownBattle(latest.current.battle);
+          if (!known) {
+            throw new Error('No hay batalla activa.');
+          }
           return {
             turn: next.turn,
             status: next.status,
@@ -822,7 +993,9 @@ export default function Home() {
                 disabled={loadingCampaign || restoring}
                 onChange={(event) => {
                   const entry = library.find((item) => item.id === event.target.value);
-                  if (entry) void chooseCampaign(entry);
+                  if (entry) {
+                    void chooseCampaign(entry);
+                  }
                 }}
               >
                 {!selectedId && (
@@ -880,7 +1053,7 @@ export default function Home() {
             >
               Constructor de sectores
             </a>
-            {introduction?.scenes?.length > 0 && (
+            {(introduction?.scenes?.length ?? 0) > 0 && (
               <button className="menu-link" onClick={replayIntro}>
                 Ver introducción
               </button>
@@ -943,7 +1116,7 @@ export default function Home() {
             </div>
           </nav>
           {screen === 'battle' && battle?.pendingSectorOperation && (
-            <div role="status" className="sector-continuation">
+            <output className="sector-continuation">
               <span>La orden quedó pendiente al detenerse el tiempo.</span>
               <button
                 onClick={continueSectorOperation}
@@ -951,18 +1124,21 @@ export default function Home() {
               >
                 Continuar orden
               </button>
-            </div>
+            </output>
           )}
           {campaign &&
             screen === 'campaign' &&
             (campaign.suspendedSectorSessions ?? []).length > 0 && (
               <section aria-label="Visitas de sector abiertas" className="sector-continuation">
                 <span>Volver al sector</span>
-                {campaign.suspendedSectorSessions.map((visit: any) => (
+                {(campaign.suspendedSectorSessions ?? []).map((visit) => (
                   <button
                     key={visit.request.id}
                     onClick={() =>
-                      dispatch({ type: 'resumeSectorSession', sectorSessionId: visit.request.id })
+                      dispatch({
+                        type: 'resumeSectorSession',
+                        sectorSessionId: visit.request.id,
+                      })
                     }
                   >
                     {visit.request.name}
@@ -1012,7 +1188,7 @@ export default function Home() {
                 quests={
                   campaign
                     ? Object.fromEntries(
-                        (battle.npcs || []).map((n: any) => [n.id, questForNPC(campaign, n.id)]),
+                        (battle.npcs || []).map((n) => [n.id, questForNPC(campaign, n.id)]),
                       )
                     : undefined
                 }
@@ -1022,20 +1198,14 @@ export default function Home() {
                 dialogues={
                   campaign
                     ? Object.fromEntries(
-                        (battle.npcs || []).map((n: any) => [
-                          n.id,
-                          dialogueForNPC(campaign, n, battle),
-                        ]),
+                        (battle.npcs || []).map((n) => [n.id, dialogueForNPC(campaign, n, battle)]),
                       )
                     : undefined
                 }
                 hireTerms={
                   campaign
                     ? Object.fromEntries(
-                        (battle.npcs || []).map((n: any) => [
-                          n.id,
-                          encounterHireTerms(campaign, n),
-                        ]),
+                        (battle.npcs || []).map((n) => [n.id, encounterHireTerms(campaign, n)]),
                       )
                     : undefined
                 }
@@ -1065,8 +1235,11 @@ export default function Home() {
                 setScreen('desk');
               }}
               onBattle={() => {
-                if (!battle && campaign.pendingBattle) openCampaignBattle(campaign);
-                else setScreen('battle');
+                if (!battle && campaign.pendingBattle) {
+                  openCampaignBattle(campaign);
+                } else {
+                  setScreen('battle');
+                }
               }}
             />
           ) : null}
@@ -1190,7 +1363,7 @@ export default function Home() {
             </div>
           ) : dialog === 'menu' ? (
             <div className="dialog-buttons">
-              {introduction?.scenes?.length > 0 && (
+              {(introduction?.scenes?.length ?? 0) > 0 && (
                 <button className="line-button" onClick={replayIntro}>
                   Ver introducción
                 </button>

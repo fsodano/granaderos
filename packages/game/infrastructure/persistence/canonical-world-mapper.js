@@ -24,7 +24,7 @@ export class CanonicalWorldMapper {
     const field = projection.field;
     this.#sectors.restoreField(field, ownerId);
     this.#inventories.restoreField(field, ownerId);
-    if (field.worldTimeline)
+    if (field.worldTimeline) {
       this.#restore(
         ownerId,
         'WorldTimeline',
@@ -32,7 +32,8 @@ export class CanonicalWorldMapper {
         'worldTimeline',
         () => new WorldTimeline(field.worldTimeline),
       );
-    if (field.residentRoutine)
+    }
+    if (field.residentRoutine) {
       this.#restore(
         ownerId,
         'ResidentRoutine',
@@ -40,36 +41,51 @@ export class CanonicalWorldMapper {
         'residentRoutine',
         () => new ResidentRoutine(field.residentRoutine),
       );
+    }
     for (const actor of [
       ...(field.units ?? []),
       ...(field.npcs ?? []),
       ...(field.civilians ?? []),
     ]) {
-      if (actor.corpse)
+      if (actor.corpse) {
         this.#restore(actor.corpse.id, 'Corpse', actor, 'corpse', () => new Corpse(actor.corpse));
+      }
     }
     for (const death of field.deathHistory ?? []) {
       this.#restore(death.corpse.id, 'Corpse', death, 'corpse', () => new Corpse(death.corpse));
     }
   }
 
+  /** @param {string} ownerId
+   * @param {string} characterId
+   * @returns {import('../../domain/inventory/inventory.ts').Inventory} */
   inventory(ownerId, characterId) {
     return this.#inventories.inventory(ownerId, characterId);
   }
 
+  /** @template {keyof import('../../public/world-state-types.ts').WorldObjectByKind} Kind
+   * @param {Kind} kind
+   * @param {string} id
+   * @returns {import('../../public/world-state-types.ts').WorldObjectByKind[Kind]} */
   object(kind, id) {
     if (kind === 'Inventory') {
       const inventory = this.#inventories.object(id);
-      if (!inventory) throw new Error('El inventario no pertenece al contexto cargado.');
+      if (!inventory) {
+        throw new Error('El inventario no pertenece al contexto cargado.');
+      }
       return inventory;
     }
     if (kind === 'Sector') {
       const sector = this.#sectors.object(id);
-      if (!sector) throw new Error('El sector no pertenece al contexto cargado.');
+      if (!sector) {
+        throw new Error('El sector no pertenece al contexto cargado.');
+      }
       return sector;
     }
     const entry = this.#entries.find((candidate) => candidate.kind === kind && candidate.id === id);
-    if (!entry) throw new Error('El objeto del mundo no pertenece al contexto cargado.');
+    if (!entry) {
+      throw new Error('El objeto del mundo no pertenece al contexto cargado.');
+    }
     return entry.object;
   }
 
@@ -78,9 +94,13 @@ export class CanonicalWorldMapper {
     this.#inventories.apply();
     for (const entry of this.#entries) {
       const snapshot = entry.object.toSnapshot();
-      if (JSON.stringify(snapshot) !== entry.original) entry.owner[entry.field] = snapshot;
+      if (JSON.stringify(snapshot) !== entry.original) {
+        entry.owner[entry.field] = snapshot;
+      }
     }
-    for (const projection of this.#projections) projection.apply();
+    for (const projection of this.#projections) {
+      projection.apply();
+    }
   }
 
   #restore(id, kind, owner, field, restore) {

@@ -1,7 +1,7 @@
 import { wallEdgeCells } from '../../../../packages/game/wall-geometry.js';
 import fixtureDocuments from './generated-architecture-documents.json' with { type: 'json' };
 import { compileMap } from '../../../../packages/game/compile-map.js';
-import { entranceFrame } from '../../../../packages/game/building-profile.js';
+import { entranceFrame } from '../../../../packages/game/building-profile.ts';
 import { buildTerrace } from '../../../../packages/game/buildings.js';
 import { createBattle } from '../../../../packages/game/tactical.js';
 export const VARIED_ROOF_CLIMB_SCENARIO = Object.freeze({
@@ -45,7 +45,9 @@ export const ROOF_CLIMB_CASES = Object.freeze([
 ]);
 export function createVariedRoofClimbBattle(id = 'tall-cardinal') {
   const item = ROOF_CLIMB_CASES.find((c) => c.id === id);
-  if (!item) throw Error('Unknown roof climb case');
+  if (!item) {
+    throw Error('Unknown roof climb case');
+  }
   const document = structuredClone(fixtureDocuments['roof-climb']);
   document.id = `roof-climb-${id}`;
   document.metadata.title = item.label;
@@ -62,9 +64,7 @@ export function createVariedRoofClimbBattle(id = 'tall-cardinal') {
         cell.y < building.y + building.height,
     ),
     outside = adjacent.find((cell) => cell !== inside),
-    from = item.vertical
-      ? { x: inside.x + frame.v.x, y: inside.y + frame.v.y }
-      : outside,
+    from = item.vertical ? { x: inside.x + frame.v.x, y: inside.y + frame.v.y } : outside,
     to = item.vertical ? from : inside,
     upper = buildTerrace(building, {
       elevation: item.base + item.height,
@@ -105,10 +105,8 @@ export function createVariedRoofClimbBattle(id = 'tall-cardinal') {
       id: 'height-watch',
       name: 'Vigía de la azotea',
       nickname: 'Vigía',
-      ...{
-        x: Math.round(frame.at(frame.doorU + 2, frame.depth - 2).x),
-        y: Math.round(frame.at(frame.doorU + 2, frame.depth - 2).y),
-      },
+      x: Math.round(frame.at(frame.doorU + 2, frame.depth - 2).x),
+      y: Math.round(frame.at(frame.doorU + 2, frame.depth - 2).y),
       tacticalLevel: 1,
       spriteAppearance: 'worker',
       weapon: 0,

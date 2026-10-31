@@ -1,5 +1,5 @@
-import {sitePath} from '../lib/site-path.js';
 import type { ReactNode } from 'react';
+import { sitePath } from '../lib/site-path.js';
 
 export type PlanPoint = { x: number; y: number };
 export type ElevatedPoint = PlanPoint & { z: number };
@@ -46,16 +46,29 @@ export function ArchitectureVolume({
   cap?: boolean;
 }) {
   const heights = typeof top === 'number' ? points.map(() => top) : top;
-  const raised = points.map((p, i) => ({ ...p, z: heights[i] }));
+  const raised = points.map((p, i) => {
+    const height = heights[i];
+    if (height === undefined) {
+      throw new RangeError('Every architectural vertex requires a height');
+    }
+    return { ...p, z: height };
+  });
   const faces: ReactNode[] = [];
   points.forEach((p, i) => {
     const j = (i + 1) % points.length,
-      q = points[j];
+      q = points[j],
+      currentRaised = raised[i],
+      nextRaised = raised[j];
+    if (!q || !currentRaised || !nextRaised) {
+      return;
+    }
     const nx = q.y - p.y,
       ny = p.x - q.x;
-    if (nx + ny <= 0) return;
+    if (nx + ny <= 0) {
+      return;
+    }
     const face = pointList(
-      [{ ...p, z: bottom }, { ...q, z: bottom }, raised[j], raised[i]],
+      [{ ...p, z: bottom }, { ...q, z: bottom }, nextRaised, currentRaised],
       project,
     );
     const a = project(p.x, p.y),
@@ -70,18 +83,13 @@ export function ArchitectureVolume({
         {texture !== 'none' && (
           <g transform={textureMatrix}>
             <polygon
-              points={`0,${-bottom} ${wallWidth},${-bottom} ${wallWidth},${-heights[j]} 0,${-heights[i]}`}
+              points={`0,${-bottom} ${wallWidth},${-bottom} ${wallWidth},${-nextRaised.z} 0,${-currentRaised.z}`}
               fill={`url(#architecture-${texture})`}
               opacity={texture === 'plaster' ? '.36' : '.6'}
             />
           </g>
         )}
-        <polygon
-          points={face}
-          fill="none"
-          stroke={palette.shadow}
-          strokeWidth=".45"
-        />
+        <polygon points={face} fill="none" stroke={palette.shadow} strokeWidth=".45" />
       </g>,
     );
   });
@@ -101,12 +109,7 @@ export function ArchitectureVolume({
 }
 
 /** A wall-local matrix. Local X is 0..40 across the wall; local Y is altitude. */
-export function faceMatrix(
-  a: PlanPoint,
-  b: PlanPoint,
-  project: Project,
-  height = 0,
-) {
+export function faceMatrix(a: PlanPoint, b: PlanPoint, project: Project, height = 0) {
   const p = project(a.x, a.y),
     q = project(b.x, b.y);
   return `matrix(${(q.x - p.x) / 40} ${(q.y - p.y) / 40} 0 1 ${p.x} ${p.y - height})`;
@@ -132,6 +135,9 @@ export function ProjectedRoofSurface({
   finish?: string;
 }) {
   const [a, c, d, f] = points;
+  if (!a || !c || !d || !f) {
+    return null;
+  }
   const midpoint = (p: ElevatedPoint, q: ElevatedPoint) => ({
     x: (p.x + q.x) / 2,
     y: (p.y + q.y) / 2,
@@ -140,7 +146,9 @@ export function ProjectedRoofSurface({
   const foot = midpoint(a, c),
     top = midpoint(f, d);
   const across = Math.hypot(c.x - a.x, c.y - a.y);
-  if (across < 0.001) return null;
+  if (across < 0.001) {
+    return null;
+  }
   // A mitred canopy is a trapezoid with an offset high edge. Remove that
   // sideways offset so tile courses follow the actual downhill direction.
   const alongX = (c.x - a.x) / across,
@@ -152,14 +160,16 @@ export function ProjectedRoofSurface({
     y: top.y + sideways * alongY,
   };
   const slope = Math.hypot(ridge.x - foot.x, ridge.y - foot.y);
-  if (across < 0.001 || slope < 0.001) return null;
+  if (across < 0.001 || slope < 0.001) {
+    return null;
+  }
   const pa = screenPoint(a, project),
     pc = screenPoint(c, project),
     pt = screenPoint(ridge, project),
     pf = screenPoint(foot, project);
   const matrix = `${(pc.x - pa.x) / across} ${(pc.y - pa.y) / across} ${(pf.x - pt.x) / slope} ${(pf.y - pt.y) / slope} ${pa.x} ${pa.y}`;
   const pattern = `architecture-detail-roof-${Array.from(id)
-    .map((c) => c.codePointAt(0)!.toString(16))
+    .map((c) => c.codePointAt(0)?.toString(16) ?? '')
     .join('-')}`;
   const straw = finish === 'thatch',
     aged = finish === 'aged',
@@ -195,11 +205,7 @@ export function ProjectedRoofSurface({
         stroke="#443727"
         strokeWidth=".35"
       />
-      <polygon
-        points={pointList(points, project)}
-        fill={`url(#${pattern})`}
-        style={style}
-      />
+      <polygon points={pointList(points, project)} fill={`url(#${pattern})`} style={style} />
       <polygon
         points={pointList(points, project)}
         fill="#362b23"

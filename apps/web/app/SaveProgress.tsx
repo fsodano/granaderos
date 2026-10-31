@@ -14,13 +14,16 @@ const SAVE_LABELS: Record<SaveState, string> = {
 
 type SaveProgressProps = Readonly<{
   status: SaveStatus | null;
-  sessionId: string;
+  sessionId: string | undefined;
   revision: number;
 }>;
 
 export default function SaveProgress({ status, sessionId, revision }: SaveProgressProps) {
   const current =
-    status?.accepted?.sessionId === sessionId && status.accepted.revision === revision;
+    status?.accepted !== undefined &&
+    status?.accepted !== null &&
+    status.accepted.sessionId === sessionId &&
+    status.accepted.revision === revision;
   const state = current ? status.state : 'unsaved';
   const message = current ? status.message : null;
   const needsExport = state === 'failed' || state === 'blocked';
@@ -32,11 +35,11 @@ export default function SaveProgress({ status, sessionId, revision }: SaveProgre
     <span
       className="save-progress"
       data-save-state={state}
-      role="status"
+
       aria-live="polite"
       title={description}
     >
-      {SAVE_LABELS[state]}
+      <output>{SAVE_LABELS[state]}</output>
     </span>
   );
 }

@@ -1,32 +1,123 @@
 'use client';
-import {formatAP} from '../../../packages/game/action-points.js';
+import type {
+  InventoryActor,
+  InventoryContext,
+  InventoryOrderHandler,
+} from '../../../packages/game/public/inventory-types.ts';
 
-import {sitePath} from '../lib/site-path.js';
-import {equipmentFingerprint} from '../../../packages/game/tactical-inventory.js';
-import {equipmentUnloadPreview} from '../../../packages/game/tactical.js';
-import {Package} from 'lucide-react';
-import {inspectEquipmentItem} from '../../../packages/game/item-inspection.js';
+import type { EquipmentHostAction } from '../../../packages/game/public/tactical-preview-types.ts';
+
+import { formatAP } from '../../../packages/game/action-points.js';
+
+import { Package } from 'lucide-react';
+import { inspectEquipmentItem } from '../../../packages/game/item-inspection.ts';
+import { equipmentFingerprint } from '../../../packages/game/tactical-inventory.js';
+import { equipmentUnloadPreview } from '../../../packages/game/tactical.js';
+import { sitePath } from '../lib/site-path.js';
 import JA2AttachmentSlot from './JA2AttachmentSlot';
 import './ja2-item-card.css';
-type Props={battle:any;unit:any;reference:string;slotId?:string;disabled:boolean;onOrder:(action:any)=>any};
-export default function JA2ItemCard({battle,unit,reference,slotId='',disabled,onOrder}:Props){
- const item:any=inspectEquipmentItem(unit,reference,slotId);
- if(!item)return <p>Esta ranura está vacía.</p>;
- const unload=slotId&&item.loaded!==undefined?{type:'unloadEquipment',unitId:String(unit.id),hostId:slotId,expectedHost:equipmentFingerprint(unit,slotId)}:null;
- const preview=unload?equipmentUnloadPreview(battle,unit,unload):null;
- return <section className="ja2-item-card" aria-label={`Detalles de ${item.label}`}>
-  <div className="ja2-item-picture">{item.art||item.weapon>=1800&&item.weapon<=1813?<img src={sitePath(item.art??`/art/weapon-${item.weapon}.png`)} alt={item.label}/>:<Package size={54} aria-hidden="true"/>}
-   {item.loaded!==undefined&&<button type="button" className="ja2-item-charge" aria-label="Descargar munición" title={preview?.reason??`Descargar · ${formatAP(preview?.pa??0)} PA`} disabled={disabled||!preview?.valid} onClick={()=>unload&&onOrder(unload)}>{item.loaded} / {item.capacity??1}</button>}
-   {(item.ammoType||item.condition!==undefined)&&<span className={`ja2-item-bar ${item.ammoType?'ammunition':''}`} title={item.ammoType?`${item.count} cartuchos`:`Estado ${item.condition}%`} aria-hidden="true"><i style={{width:`${Math.max(0,Math.min(100,item.ammoType?item.count/Math.max(1,item.stackLimit)*100:item.condition))}%`}}/></span>}
-  </div>
-  <dl>
-   {item.condition!==undefined&&<><dt>Estado</dt><dd>{item.condition}%</dd></>}
-   <dt>Cantidad</dt><dd>{item.count}{item.stackLimit>1?` / ${item.stackLimit}`:''}</dd>
-   <dt>Peso</dt><dd>{item.totalWeight.toFixed(2)} kg</dd>
-   {item.damage!==undefined&&<><dt>Daño</dt><dd>{item.damage}</dd></>}
-   {item.range!==undefined&&<><dt>Alcance</dt><dd>{item.range} casillas</dd></>}
-  </dl>
-  <h4>{item.label}</h4><p>{item.help}</p>
-  {item.weapon&&slotId&&<JA2AttachmentSlot battle={battle} unit={unit} hostId={slotId} disabled={disabled} onOrder={onOrder}/>}
- </section>;
+type Props = {
+  battle: InventoryContext;
+  unit: InventoryActor;
+  reference: string;
+  slotId?: string;
+  disabled: boolean;
+  onOrder: InventoryOrderHandler;
+};
+export default function JA2ItemCard({
+  battle,
+  unit,
+  reference,
+  slotId = '',
+  disabled,
+  onOrder,
+}: Props) {
+  const item = inspectEquipmentItem(unit, reference, slotId);
+  if (!item) {
+    return <p>Esta ranura está vacía.</p>;
+  }
+  const unload: EquipmentHostAction | null =
+    slotId && item.loaded !== undefined
+      ? {
+          type: 'unloadEquipment',
+          unitId: String(unit.id),
+          hostId: slotId,
+          expectedHost: equipmentFingerprint(unit, slotId),
+        }
+      : null;
+  const preview = unload ? equipmentUnloadPreview(battle, unit, unload) : null;
+  return (
+    <section className="ja2-item-card" aria-label={`Detalles de ${item.label}`}>
+      <div className="ja2-item-picture">
+        {item.art || (item.weapon !== undefined && item.weapon >= 1800 && item.weapon <= 1813) ? (
+          <img src={sitePath(item.art ?? `/art/weapon-${item.weapon}.png`)} alt={item.label} />
+        ) : (
+          <Package size={54} aria-hidden="true" />
+        )}
+        {item.loaded !== undefined && (
+          <button
+            type="button"
+            className="ja2-item-charge"
+            aria-label="Descargar munición"
+            title={preview?.reason ?? `Descargar · ${formatAP(preview?.pa ?? 0)} PA`}
+            disabled={disabled || !preview?.valid}
+            onClick={() => unload && onOrder(unload)}
+          >
+            {item.loaded} / {item.capacity ?? 1}
+          </button>
+        )}
+        {(item.ammoType || item.condition !== undefined) && (
+          <span
+            className={`ja2-item-bar ${item.ammoType ? 'ammunition' : ''}`}
+            title={item.ammoType ? `${item.count} cartuchos` : `Estado ${item.condition}%`}
+            aria-hidden="true"
+          >
+            <i
+              style={{
+                width: `${Math.max(0, Math.min(100, item.ammoType ? (item.count / Math.max(1, item.stackLimit)) * 100 : (item.condition ?? 0)))}%`,
+              }}
+            />
+          </span>
+        )}
+      </div>
+      <dl>
+        {item.condition !== undefined && (
+          <>
+            <dt>Estado</dt>
+            <dd>{item.condition}%</dd>
+          </>
+        )}
+        <dt>Cantidad</dt>
+        <dd>
+          {item.count}
+          {item.stackLimit > 1 ? ` / ${item.stackLimit}` : ''}
+        </dd>
+        <dt>Peso</dt>
+        <dd>{item.totalWeight.toFixed(2)} kg</dd>
+        {item.damage !== undefined && (
+          <>
+            <dt>Daño</dt>
+            <dd>{item.damage}</dd>
+          </>
+        )}
+        {item.range !== undefined && (
+          <>
+            <dt>Alcance</dt>
+            <dd>{item.range} casillas</dd>
+          </>
+        )}
+      </dl>
+      <h4>{item.label}</h4>
+      <p>{item.help}</p>
+      {item.weapon && slotId && (
+        <JA2AttachmentSlot
+          battle={battle}
+          unit={unit}
+          hostId={slotId}
+          disabled={disabled}
+          onOrder={onOrder}
+        />
+      )}
+    </section>
+  );
 }
