@@ -132,9 +132,7 @@ export default function MerchantExchange({
       const old = current.find((line) => line.key === offer.key);
       return old
         ? current.map((line) =>
-            line.key === offer.key
-              ? { ...line, quantity: line.quantity + quantity }
-              : line,
+            line.key === offer.key ? { ...line, quantity: line.quantity + quantity } : line,
           )
         : [
             ...current,
@@ -152,9 +150,8 @@ export default function MerchantExchange({
     <details className="merchant-exchange">
       <summary>Intercambiar equipo</summary>
       <p>
-        Entregá armas o cañones y elegí equipo del comercio. Solo se paga o
-        cobra la diferencia. Nada cambia hasta confirmar. Los pedidos de
-        importación se tramitan por separado.
+        Entregá armas o cañones y elegí equipo del comercio. Solo se paga o cobra la diferencia.
+        Nada cambia hasta confirmar. Los pedidos de importación se tramitan por separado.
       </p>
       <div className="exchange-pickers">
         <Picker offers={offers.filter((o) => o.sell)} sell={true} add={add} />
@@ -164,17 +161,15 @@ export default function MerchantExchange({
         {lines.map((line) => (
           <li key={line.key}>
             <span>
-              {line.sell ? 'Entregás' : 'Recibís'} {line.quantity} ×{' '}
-              {line.label} · {line.price * line.quantity} pesos
+              {line.sell ? 'Entregás' : 'Recibís'} {line.quantity} × {line.label} ·{' '}
+              {line.price * line.quantity} pesos
             </span>
             <button
               type="button"
               className="line-button"
               aria-label={`Retirar ${line.label} del intercambio`}
               onClick={() =>
-                setLines((current) =>
-                  current.filter((other) => other.key !== line.key),
-                )
+                setLines((current) => current.filter((other) => other.key !== line.key))
               }
             >
               Retirar

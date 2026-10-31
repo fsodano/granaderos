@@ -28,14 +28,13 @@ export default function ServiceRefusalNotice({
       state.contracts?.[refusal.rivalId],
       rosterFor(state).find((o) => o.id === refusal.rivalId),
     ),
-    blocked =
-      disabled || moving || refusal.rivalId === 1000 || Boolean(refundReason);
+    blocked = disabled || moving || refusal.rivalId === 1000 || Boolean(refundReason);
   return (
     <div aria-live="polite" className="service-refusal">
       <p>{refusal.reason}</p>
       <p>
-        Podés conservar a {refusal.rivalName} o finalizar su servicio. El
-        rechazo no acorta los contratos ya pagados.
+        Podés conservar a {refusal.rivalName} o finalizar su servicio. El rechazo no acorta los
+        contratos ya pagados.
       </p>
       {refundReason && !moving && <p>{refundReason}</p>}
       <button
@@ -43,9 +42,7 @@ export default function ServiceRefusalNotice({
         className="line-button"
         disabled={blocked}
         title={
-          moving
-            ? 'Esperá a que llegue antes de finalizar su servicio.'
-            : refundReason || undefined
+          moving ? 'Esperá a que llegue antes de finalizar su servicio.' : refundReason || undefined
         }
         onClick={() =>
           dispatch({

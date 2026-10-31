@@ -16,8 +16,9 @@ export class SectorMapEditingRepository implements EditSectorMapRepository {
 
   load(identifier: string): SectorMap {
     const { document } = this.#history.snapshot();
-    if (document.id !== identifier)
+    if (document.id !== identifier) {
       throw new CampaignEditorRefusal(CampaignEditorRefusalCode.MapNotOpen);
+    }
     return new SectorMap(document, sectorMapGeometry);
   }
 

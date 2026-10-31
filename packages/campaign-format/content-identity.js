@@ -29,7 +29,9 @@ export function sha256Bytes(input) {
     ]),
     w = new Uint32Array(64);
   for (let offset = 0; offset < bytes.length; offset += 64) {
-    for (let i = 0; i < 16; i++) w[i] = view.getUint32(offset + i * 4);
+    for (let i = 0; i < 16; i++) {
+      w[i] = view.getUint32(offset + i * 4);
+    }
     for (let i = 16; i < 64; i++) {
       const x = w[i - 15],
         y = w[i - 2];
@@ -66,15 +68,21 @@ export function sha256Bytes(input) {
   return Array.from(h, (n) => n.toString(16).padStart(8, '0')).join('');
 }
 // Object property order is irrelevant; array order remains part of the definition.
+/** @returns {string | undefined} */
 export function canonicalContent(value) {
-  if (Array.isArray(value)) return `[${value.map(canonicalContent).join(',')}]`;
-  if (value !== null && typeof value === 'object')
+  if (Array.isArray(value)) {
+    return `[${value.map(canonicalContent).join(',')}]`;
+  }
+  if (value !== null && typeof value === 'object') {
     return `{${Object.keys(value)
       .sort()
       .map((k) => `${JSON.stringify(k)}:${canonicalContent(value[k])}`)
       .join(',')}}`;
+  }
   return JSON.stringify(value);
 }
+/** @param {{ id: string, version: number }} definitions
+ * @returns {Readonly<{version: 1, packageId: string, formatVersion: number, hash: string}>} */
 export function contentIdentity(definitions) {
   return Object.freeze({
     version: 1,

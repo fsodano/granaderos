@@ -28,7 +28,9 @@ export type ItemSnapshot = Readonly<{
 }>;
 
 function canonicalValue(value: unknown): unknown {
-  if (isArrayValue(value)) return value.map(canonicalValue);
+  if (isArrayValue(value)) {
+    return value.map(canonicalValue);
+  }
   if (value && typeof value === 'object') {
     return Object.fromEntries(
       Object.entries(value)
@@ -101,8 +103,9 @@ export class Item {
   }
 
   merge(other: Item): void {
-    if (!this.canMerge(other) || this.#quantity + other.#quantity > ItemRules.MaximumQuantity)
+    if (!this.canMerge(other) || this.#quantity + other.#quantity > ItemRules.MaximumQuantity) {
       throw new InventoryRefusal(InventoryRefusalCode.InvalidItem);
+    }
     this.#quantity += other.#quantity;
   }
 

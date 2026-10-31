@@ -327,15 +327,18 @@ function autoplace(m, raw, { exclude = null, emptyOnly = false } = {}) {
         !slot.stack ||
         !fits(stack, slot) ||
         !equipmentStacksMerge(stack, slot.stack)
-      )
-        {continue;}
+      ) {
+        continue;
+      }
       const moved = Math.min(
         stack.count,
         itemStackDescriptor(slot.stack).stackLimit - slot.stack.count,
       );
       slot.stack.count += moved;
       stack.count -= moved;
-      if (!stack.count) {return null;}
+      if (!stack.count) {
+        return null;
+      }
     }
   }
   for (const slot of m.slots) {
@@ -498,7 +501,9 @@ export function planEquipmentCursorPlacement(
       m.cursor = null;
     }
     for (const slot of m.slots) {
-      if (slot.stack?.count === 0) {slot.stack = null;}
+      if (slot.stack?.count === 0) {
+        slot.stack = null;
+      }
     }
     m.overflow = m.overflow.filter((stack) => stack.count > 0);
     if (m.right?.count === 0) {

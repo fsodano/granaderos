@@ -274,11 +274,12 @@ export function validateContentQuestState(s, npcs) {
   }
   for (const q of s.contentCampaign?.package.quests ?? []) {
     if (states[q.id] === 'active') {
-      if (q.deadlineHours != null)
-        {need(
+      if (q.deadlineHours != null) {
+        need(
           timeOf(s) < starts[q.id] + q.deadlineHours * 3600,
           'Falta el vencimiento del encargo guardado.',
-        );}
+        );
+      }
       need(!deadRequirement(s, q), 'Falta el fallo del encargo por muerte.');
     }
   }

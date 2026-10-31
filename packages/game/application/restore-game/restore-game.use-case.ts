@@ -10,7 +10,9 @@ export class RestoreGameUseCase<TGame> {
 
   execute(): TGame {
     const text = this.#repository.read();
-    if (!text) throw new DomainRefusal(DomainRefusalCode.SavedGameUnavailable);
+    if (!text) {
+      throw new DomainRefusal(DomainRefusalCode.SavedGameUnavailable);
+    }
     return this.#repository.restore(text);
   }
 }

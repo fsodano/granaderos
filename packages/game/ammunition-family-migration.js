@@ -77,7 +77,9 @@ export function legacyCompatibleReserve(unit, weapon = unit.weapon) {
   for (const stack of Object.values(unit.inventory ?? {})) {
     if (isAmmunitionStack(stack)) {
       groupAmmunitionStack(stack);
-      if (stack.ammoType === type) {count += stack.count;}
+      if (stack.ammoType === type) {
+        count += stack.count;
+      }
     }
   }
   return count;
@@ -122,15 +124,21 @@ export function groupSceneAmmunition(scene) {
     scene.tiles = expandCellTiles(scene);
   }
   for (const key of ['groundItems', 'droppedWeapons']) {
-    if (Array.isArray(scene[key])) {scene[key] = scene[key].map(groupAmmunitionStack);}
+    if (Array.isArray(scene[key])) {
+      scene[key] = scene[key].map(groupAmmunitionStack);
+    }
   }
   for (const owner of [...(scene.props ?? []), ...(scene.tiles ?? []), ...(scene.npcs ?? [])]) {
     for (const key of ['contents', 'questGifts']) {
-      if (Array.isArray(owner[key])) {owner[key] = owner[key].map(groupAmmunitionStack);}
+      if (Array.isArray(owner[key])) {
+        owner[key] = owner[key].map(groupAmmunitionStack);
+      }
     }
   }
   for (const key of ['issuedAmmunition', 'fieldAmmunition', 'creditedAmmunition']) {
-    if (scene[key] !== undefined) {scene[key] = groupAmmunitionCounts(scene[key]);}
+    if (scene[key] !== undefined) {
+      scene[key] = groupAmmunitionCounts(scene[key]);
+    }
   }
   if (scene.returnLedger?.creditedAmmunition) {
     scene.returnLedger.creditedAmmunition = groupAmmunitionCounts(
@@ -138,15 +146,19 @@ export function groupSceneAmmunition(scene) {
     );
   }
   for (const key of ['ammunitionSources', 'garrisonLootSources', 'casualtyLootSources']) {
-    for (const source of scene[key] ?? [])
-      {if (source.ammunitionByType !== undefined)
-        {source.ammunitionByType = groupAmmunitionCounts(source.ammunitionByType);}}
+    for (const source of scene[key] ?? []) {
+      if (source.ammunitionByType !== undefined) {
+        source.ammunitionByType = groupAmmunitionCounts(source.ammunitionByType);
+      }
+    }
   }
 }
 
 export function groupAmmunitionNotices(state) {
   for (const event of state.logisticsNotice?.events ?? []) {
-    if (event.goods) {event.goods = groupAmmunitionResources(event.goods);}
+    if (event.goods) {
+      event.goods = groupAmmunitionResources(event.goods);
+    }
   }
   if (state.logisticsAttention?.reported) {
     const grouped = {};

@@ -9,5 +9,8 @@
   "scripts": {
     "build": "node tools/check-package.mjs",
     "test": "node --test tests/*.test.mjs"
+  },
+  "engines": {
+    "node": "22.23.4"
   }
 }

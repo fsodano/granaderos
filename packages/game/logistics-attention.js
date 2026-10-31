@@ -119,7 +119,9 @@ function blockedStates(s, { isSupplied }) {
 function reconcile(s, states) {
   const current = new Map(states.map(({ binding, event }) => [binding, event.code]));
   for (const [binding, code] of Object.entries(s.logisticsAttention.reported)) {
-    if (current.get(binding) !== code) {delete s.logisticsAttention.reported[binding];}
+    if (current.get(binding) !== code) {
+      delete s.logisticsAttention.reported[binding];
+    }
   }
 }
 export function reconcileLogisticsAttention(s, context) {

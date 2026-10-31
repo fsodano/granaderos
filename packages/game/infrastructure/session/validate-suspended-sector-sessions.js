@@ -2,7 +2,9 @@ import { restoreGameSession } from './campaign-game-session-mapper.js';
 
 export function validateSuspendedSectorSessions(campaign, activeSnapshot, restorePair) {
   const suspended = campaign.suspendedSectorSessions;
-  if (suspended === undefined) return;
+  if (suspended === undefined) {
+    return;
+  }
   if (!Array.isArray(suspended) || suspended.length > 8) {
     throw new Error('Las visitas suspendidas no son válidas.');
   }

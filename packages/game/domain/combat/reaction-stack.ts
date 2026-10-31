@@ -17,21 +17,28 @@ export class ReactionStack {
   }[];
   readonly #maximumDepth: number;
   constructor(snapshots: readonly ReactionFrameSnapshot[], maximumDepth: number) {
-    if (!Number.isSafeInteger(maximumDepth) || maximumDepth < 1 || snapshots.length > maximumDepth)
+    if (
+      !Number.isSafeInteger(maximumDepth) ||
+      maximumDepth < 1 ||
+      snapshots.length > maximumDepth
+    ) {
       throw new CombatRefusal(CombatRefusalCode.InvalidCombatPhase);
+    }
     const ids = snapshots.flatMap((snapshot) => snapshot.turn.participantIds);
     if (
       new Set(ids).size !== ids.length ||
       snapshots.some((snapshot) => !snapshot.turn.participantIds.length)
-    )
+    ) {
       throw new CombatRefusal(CombatRefusalCode.InvalidCombatPhase);
+    }
     this.#maximumDepth = maximumDepth;
     this.#frames = snapshots.map((snapshot) => {
       if (
         ![CombatPhase.Player, CombatPhase.Interrupt].includes(snapshot.resumePhase) ||
         Boolean(snapshot.resumeWindow) !== (snapshot.resumePhase === CombatPhase.Interrupt)
-      )
+      ) {
         throw new CombatRefusal(CombatRefusalCode.InvalidCombatPhase);
+      }
       return {
         turn: CombatTurn.restore(snapshot.turn),
         resumePhase: snapshot.resumePhase,
@@ -59,8 +66,9 @@ export class ReactionStack {
       ) ||
       this.#frames.length >= this.#maximumDepth ||
       Boolean(resumeWindow) !== (resumePhase === CombatPhase.Interrupt)
-    )
+    ) {
       throw new CombatRefusal(CombatRefusalCode.InvalidCombatPhase);
+    }
     this.#frames.push({
       turn: CombatTurn.begin(participantIds),
       resumePhase,
@@ -69,8 +77,9 @@ export class ReactionStack {
   }
   completeCurrent(): Readonly<{ phase: 'player' | 'interrupt'; window?: ReactionWindowSnapshot }> {
     const frame = this.#frames.at(-1);
-    if (!frame || !frame.turn.complete)
+    if (!frame || !frame.turn.complete) {
       throw new CombatRefusal(CombatRefusalCode.InvalidCombatPhase);
+    }
     this.#frames.pop();
     return {
       phase: frame.resumePhase,

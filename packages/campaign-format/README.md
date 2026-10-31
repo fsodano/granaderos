@@ -4,7 +4,7 @@ This package owns the portable campaign-file contract. It imports neither the
 game nor the campaign editor. Use direct module imports. Package exports expose
 each module by its name.
 
-[`CampaignDefinition`](campaign-definition.js) admits the manifest and complete
+[`CampaignDefinition`](campaign-definition.ts) admits the manifest and complete
 published documents, checks their references, and owns immutable copies. The
 editor can retain incomplete projects. Publication requires format admission and
 the public game validation report.

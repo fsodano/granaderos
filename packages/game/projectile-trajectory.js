@@ -116,7 +116,9 @@ export function projectileTrajectoryIntervals(model, cell, bottom, top, limit = 
     const root = Math.sqrt(discriminant),
       q = -0.5 * (b + (b >= 0 ? root : -root));
     for (const value of q === 0 ? [-b / (2 * a)] : [q / a, c / q]) {
-      if (value >= dropStart - epsilon) {add(value);}
+      if (value >= dropStart - epsilon) {
+        add(value);
+      }
     }
   }
   points.sort((a, b) => a - b);

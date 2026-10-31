@@ -42,11 +42,14 @@ export class WorldTimeline {
       throw new Error('A world event cannot complete twice.');
     }
     for (const id of this.#completedEventIds) {
-      if (typeof id !== 'string' || !id.length) throw new Error('A world event needs an identity.');
+      if (typeof id !== 'string' || !id.length) {
+        throw new Error('A world event needs an identity.');
+      }
     }
     for (const event of snapshot.pendingEvents) {
-      if (this.#pendingEvents.has(event.id))
+      if (this.#pendingEvents.has(event.id)) {
         throw new Error('A scheduled world event cannot appear twice.');
+      }
       this.schedule(event);
     }
   }
@@ -65,12 +68,15 @@ export class WorldTimeline {
       ![event.id, event.kind, event.subjectId].every(
         (value) => typeof value === 'string' && value.length > 0,
       )
-    )
+    ) {
       throw new Error('A world event needs an identity and subject.');
-    if (event.atSecond < this.#currentSecond)
+    }
+    if (event.atSecond < this.#currentSecond) {
       throw new Error('A world event cannot be scheduled before the accepted time.');
-    if (this.#completedEventIds.has(event.id))
+    }
+    if (this.#completedEventIds.has(event.id)) {
       throw new Error('A completed world event cannot be scheduled again.');
+    }
     const existing = this.#pendingEvents.get(event.id);
     if (existing) {
       if (
@@ -87,17 +93,24 @@ export class WorldTimeline {
 
   advanceTo(targetSecond: number, applyEvent: (event: WorldEvent) => 'continue' | 'pause'): void {
     requireGameSecond(targetSecond);
-    if (targetSecond < this.#currentSecond) throw new Error('World time cannot move backwards.');
+    if (targetSecond < this.#currentSecond) {
+      throw new Error('World time cannot move backwards.');
+    }
     while (true) {
       const next = [...this.#pendingEvents.values()].sort(compareEvents)[0];
-      if (!next || next.atSecond > targetSecond) break;
+      if (!next || next.atSecond > targetSecond) {
+        break;
+      }
       const decision = applyEvent(next);
-      if (decision !== 'continue' && decision !== 'pause')
+      if (decision !== 'continue' && decision !== 'pause') {
         throw new Error('A world event must return a progression decision.');
+      }
       this.#currentSecond = next.atSecond;
       this.#pendingEvents.delete(next.id);
       this.#completedEventIds.add(next.id);
-      if (decision === 'pause') return;
+      if (decision === 'pause') {
+        return;
+      }
     }
     this.#currentSecond = targetSecond;
   }

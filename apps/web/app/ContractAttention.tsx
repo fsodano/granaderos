@@ -52,17 +52,14 @@ export default function ContractAttention({
         <div className="assignment-attention-heading">
           <h2>Avance detenido por contratos</h2>
           <span>
-            Día {Math.floor(notice.hour / 24) + 1} ·{' '}
-            {clock(notice.hour, notice.secondOfHour ?? 0)}
+            Día {Math.floor(notice.hour / 24) + 1} · {clock(notice.hour, notice.secondOfHour ?? 0)}
           </span>
         </div>
         <p>
           Tiempo avanzado:{' '}
           <strong>
             {notice.advancedHours} de {notice.requestedHours}{' '}
-            {notice.requestedHours === 1
-              ? 'hora solicitada'
-              : 'horas solicitadas'}
+            {notice.requestedHours === 1 ? 'hora solicitada' : 'horas solicitadas'}
           </strong>
           .
         </p>
@@ -73,16 +70,10 @@ export default function ContractAttention({
             name = op?.nickname ?? op?.name ?? 'Combatiente',
             current = s.contracts[event.operativeId],
             r = s.operativeState[event.operativeId];
-          const serving =
-            s.recruited.includes(event.operativeId) && r?.alive && !r.captured;
+          const serving = s.recruited.includes(event.operativeId) && r?.alive && !r.captured;
           const expiry = event.expiresAt * 3600 + (event.expiresSecond ?? 0),
-            unchanged =
-              current !== undefined &&
-              contractExpiresSeconds(current) === expiry;
-          const remaining = Math.max(
-            0,
-            expiry - s.hour * 3600 - (s.secondOfHour ?? 0),
-          );
+            unchanged = current !== undefined && contractExpiresSeconds(current) === expiry;
+          const remaining = Math.max(0, expiry - s.hour * 3600 - (s.secondOfHour ?? 0));
           return (
             <li key={event.operativeId}>
               <strong>{name}</strong>:{' '}
@@ -95,12 +86,8 @@ export default function ContractAttention({
                     : 'El contrato terminó. La salida queda pendiente hasta que pueda dejar la escuadra.'}
               {serving && unchanged && op && (
                 <>
-                  <ServiceObjectionNotice
-                    reason={serviceObjectionReason(s, op)}
-                  />
-                  <ContractMoraleNotice
-                    status={lowMoraleRenewalStatus(s, op)}
-                  />
+                  <ServiceObjectionNotice reason={serviceObjectionReason(s, op)} />
+                  <ContractMoraleNotice status={lowMoraleRenewalStatus(s, op)} />
                   <ServiceRefusalNotice
                     state={s}
                     refusal={contractRenewalQuote(s, op, 'day').serviceRefusal}
@@ -112,9 +99,7 @@ export default function ContractAttention({
               {serving && unchanged && op && (
                 <div className="travel-actions">
                   {Object.entries(contractTermsFor(s))
-                    .filter(([term]) =>
-                      ['day', 'week', 'fortnight'].includes(term),
-                    )
+                    .filter(([term]) => ['day', 'week', 'fortnight'].includes(term))
                     .map(([term, period]) => {
                       const quote = contractRenewalQuote(s, op, term),
                         reason = blocked
@@ -155,8 +140,8 @@ export default function ContractAttention({
         })}
       </ul>
       <p className="assignment-attention-resume">
-        Para continuar sin renovar, pulsá <strong>Iniciar</strong>. El contrato
-        conserva su fecha de finalización.
+        Para continuar sin renovar, pulsá <strong>Iniciar</strong>. El contrato conserva su fecha de
+        finalización.
       </p>
     </section>
   );

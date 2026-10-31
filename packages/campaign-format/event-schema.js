@@ -4,7 +4,9 @@ const exact = (v, keys) =>
   object(v) && Object.keys(v).length === keys.length && keys.every((k) => Object.hasOwn(v, k));
 const integer = (v, min, max) => Number.isSafeInteger(v) && v >= min && v <= max;
 const need = (ok, message) => {
-  if (!ok) throw Error(message);
+  if (!ok) {
+    throw Error(message);
+  }
 };
 
 export function validateCampaignEvents(
@@ -12,7 +14,9 @@ export function validateCampaignEvents(
   context,
   sectorIds = new Set((context?.world?.sectors ?? []).map((sector) => sector.id)),
 ) {
-  if (value === undefined) return [];
+  if (value === undefined) {
+    return [];
+  }
   try {
     need(
       Array.isArray(value) && value.length <= 100,

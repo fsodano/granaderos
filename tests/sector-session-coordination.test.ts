@@ -1,3 +1,5 @@
+import { parseJsonObject, isJsonObject } from '../packages/campaign-format/json-value.ts';
+import type { JsonObject, JsonValue } from '../packages/campaign-format/types.ts';
 import type { CampaignSnapshot, CampaignAction } from '../packages/game/public/campaign-types.ts';
 import { present } from './assert-present.ts';
 import test from 'node:test';
@@ -84,6 +86,21 @@ void test('an arrival choice preserves the active visit when the arriving squad 
   assert.equal(campaign.hour * 3600 + present(campaign.secondOfHour), 7200);
 });
 
+function rawSaveRecord(document: JsonObject, ...path: (string | number)[]): JsonObject {
+  let value: JsonValue | undefined = document;
+  for (const key of path) {
+    if (typeof key === 'number') {
+      assert.ok(Array.isArray(value));
+      value = value[key];
+    } else {
+      assert.ok(isJsonObject(value));
+      value = value[key];
+    }
+  }
+  assert.ok(isJsonObject(value));
+  return value;
+}
+
 void test('save restoration refuses duplicate participants and altered clocks in suspended visits', () => {
   const pair = visitingWhileOtherSquadArrives();
   const decision = pendingArrivalDecisions(pair.campaign)[0];
@@ -94,19 +111,21 @@ void test('save restoration refuses duplicate participants and altered clocks in
     sectorState: pair.battle,
   });
   const active = prepareCampaignBattle(campaign, { placement: true });
-  const encoded = decodeSave(encodeSave(active.campaign, active.battle));
+  const encoded = parseJsonObject(encodeSave(active.campaign, active.battle));
   const duplicate = structuredClone(encoded);
-  present(present(present(duplicate.campaign.suspendedSectorSessions)[0]).request.squad[0]).id =
+  rawSaveRecord(duplicate, 'campaign', 'suspendedSectorSessions', 0, 'request', 'squad', 0)['id'] =
     present(present(active.campaign.pendingBattle).squad[0]).id;
   assert.throws(
     () => decodeSave(JSON.stringify(duplicate)),
     /duplicate-sector|inválid|corresponde/,
   );
   const clock = structuredClone(encoded);
-  present(present(clock.campaign.suspendedSectorSessions)[0]).snapshot.elapsedSeconds++;
+  const snapshot = rawSaveRecord(clock, 'campaign', 'suspendedSectorSessions', 0, 'snapshot');
+  assert.equal(typeof snapshot['elapsedSeconds'], 'number');
+  snapshot['elapsedSeconds'] = Number(snapshot['elapsedSeconds']) + 1;
   assert.throws(() => decodeSave(JSON.stringify(clock)), /reloj/);
   const actor = structuredClone(encoded);
-  present(present(present(actor.campaign.suspendedSectorSessions)[0]).snapshot.units[0]).hp = -1;
+  rawSaveRecord(actor, 'campaign', 'suspendedSectorSessions', 0, 'snapshot', 'units', 0)['hp'] = -1;
   assert.throws(() => decodeSave(JSON.stringify(actor)), /inválid|salud/);
 });
 

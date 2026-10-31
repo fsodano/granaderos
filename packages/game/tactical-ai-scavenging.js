@@ -132,14 +132,16 @@ export function chooseScavengingAction(state, unit, targets, paths) {
     if (needAmmo) {
       for (const [key, stack] of Object.entries(body.inventory ?? {}).sort(([a], [b]) =>
         a < b ? -1 : a > b ? 1 : 0,
-      ))
-        {if (stack?.kind === 'ammunition' && stack.ammoType === type && stack.count > 0)
-          {sources.push({
+      )) {
+        if (stack?.kind === 'ammunition' && stack.ammoType === type && stack.count > 0) {
+          sources.push({
             point: body,
             action: { targetId: body.id, item: `inventory:${key}` },
             count: Math.min(12, stack.count),
             ammo: true,
-          });}}
+          });
+        }
+      }
     }
     if (!body.weaponDropped && usable({ ...body, activeSlot: 'primary' })) {
       sources.push({ point: body, action: { targetId: body.id, item: 'primary' }, count: 1 });

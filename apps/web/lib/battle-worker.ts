@@ -2,9 +2,7 @@ import { runBattleJob } from '../../../packages/game/battle-job.ts';
 import { executeBattleWorkerRequest } from './battle-worker-transport.ts';
 
 self.onmessage = (event: MessageEvent<unknown>) => {
-  const response = executeBattleWorkerRequest(event.data, (job) =>
-    runBattleJob(job),
-  );
+  const response = executeBattleWorkerRequest(event.data, (job) => runBattleJob(job));
   if (!response) {
     return;
   }

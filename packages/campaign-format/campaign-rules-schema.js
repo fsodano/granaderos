@@ -1,3 +1,4 @@
+/** @type {ReadonlyArray<readonly ['salaryMonthDays' | 'xpStep' | 'xpRaisePercent' | 'warningHours', string, number, number]>} */
 export const CONTRACT_RULE_FIELDS = Object.freeze([
   ['salaryMonthDays', 'Días usados para calcular la paga diaria', 1, 90],
   ['xpStep', 'Experiencia necesaria para cada aumento de paga', 1, 10000],
@@ -6,7 +7,9 @@ export const CONTRACT_RULE_FIELDS = Object.freeze([
 ]);
 
 export function validateContractRules(value) {
-  if (value === undefined) return [];
+  if (value === undefined) {
+    return [];
+  }
   const exact = (v, keys) =>
     v &&
     typeof v === 'object' &&
@@ -17,19 +20,24 @@ export function validateContractRules(value) {
   if (
     !exact(value, ['days', ...CONTRACT_RULE_FIELDS.map(([key]) => key)]) ||
     !exact(value.days, ['day', 'week', 'month'])
-  )
+  ) {
     return ['Contratos: configurá los tres plazos y todas las reglas, sin campos adicionales.'];
+  }
   const errors = CONTRACT_RULE_FIELDS.flatMap(([key, label, min, max]) =>
     integer(value[key], min, max) ? [] : [`${label}: elegí un entero de ${min} a ${max}.`],
   );
-  for (const term of ['day', 'week', 'month'])
-    if (!integer(value.days[term], 1, 90))
+  for (const term of ['day', 'week', 'month']) {
+    if (!integer(value.days[term], 1, 90)) {
       errors.push(`Contratos.${term}: elegí un plazo de 1 a 90 días.`);
-  if (!(value.days.day < value.days.week && value.days.week < value.days.month))
+    }
+  }
+  if (!(value.days.day < value.days.week && value.days.week < value.days.month)) {
     errors.push('Contratos: los plazos corto, medio y largo deben aumentar.');
+  }
   return errors;
 }
 
+/** @type {ReadonlyArray<readonly ['cartsHours' | 'flotillaHours' | 'cartsFee' | 'flotillaFee', string, number, number]>} */
 export const ARTILLERY_TRANSPORT_FIELDS = Object.freeze([
   ['cartsHours', 'Horas por tramo en carreta', 1, 168],
   ['flotillaHours', 'Horas por tramo en flotilla', 1, 168],
@@ -38,7 +46,9 @@ export const ARTILLERY_TRANSPORT_FIELDS = Object.freeze([
 ]);
 
 export function validateArtilleryTransportRules(value) {
-  if (value === undefined) return [];
+  if (value === undefined) {
+    return [];
+  }
   const keys = ['enabled', ...ARTILLERY_TRANSPORT_FIELDS.map(([key]) => key)];
   if (
     !value ||
@@ -46,8 +56,9 @@ export function validateArtilleryTransportRules(value) {
     Array.isArray(value) ||
     Object.keys(value).length !== keys.length ||
     !keys.every((key) => Object.hasOwn(value, key))
-  )
+  ) {
     return ['Traslado de artillería: configurá todas las reglas, sin campos adicionales.'];
+  }
   const errors =
     typeof value.enabled === 'boolean'
       ? []
@@ -61,6 +72,7 @@ export function validateArtilleryTransportRules(value) {
   );
 }
 
+/** @type {ReadonlyArray<readonly ['bronze4' | 'field8' | 'swivel' | 'reserveLimit', string, number, number]>} */
 export const ARTILLERY_SUPPLY_FIELDS = Object.freeze([
   ['bronze4', 'Munición de 4 libras (pesos)', 0, 1000000],
   ['field8', 'Munición de 8 libras (pesos)', 0, 1000000],
@@ -69,7 +81,9 @@ export const ARTILLERY_SUPPLY_FIELDS = Object.freeze([
 ]);
 
 export function validateArtillerySupply(value) {
-  if (value === undefined) return [];
+  if (value === undefined) {
+    return [];
+  }
   const keys = ['enabled', ...ARTILLERY_SUPPLY_FIELDS.map(([key]) => key)];
   if (
     !value ||
@@ -77,8 +91,9 @@ export function validateArtillerySupply(value) {
     Array.isArray(value) ||
     Object.keys(value).length !== keys.length ||
     !keys.every((key) => Object.hasOwn(value, key))
-  )
+  ) {
     return ['Munición de artillería: configurá todas las reglas, sin campos adicionales.'];
+  }
   const errors =
     typeof value.enabled === 'boolean'
       ? []
@@ -92,6 +107,7 @@ export function validateArtillerySupply(value) {
   );
 }
 
+/** @type {ReadonlyArray<readonly ['waypointTicks' | 'energyReserve' | 'restEnergy', string, number, number]>} */
 export const MILITIA_PATROL_FIELDS = Object.freeze([
   ['waypointTicks', 'Intervalos por punto de patrulla', 1, 60],
   ['energyReserve', 'Energía que reserva la patrulla', 0, 95],
@@ -99,7 +115,9 @@ export const MILITIA_PATROL_FIELDS = Object.freeze([
 ]);
 
 export function validateMilitiaPatrol(value) {
-  if (value === undefined) return [];
+  if (value === undefined) {
+    return [];
+  }
   const keys = ['enabled', ...MILITIA_PATROL_FIELDS.map(([key]) => key)];
   if (
     !value ||
@@ -107,8 +125,9 @@ export function validateMilitiaPatrol(value) {
     Array.isArray(value) ||
     Object.keys(value).length !== keys.length ||
     !keys.every((key) => Object.hasOwn(value, key))
-  )
+  ) {
     return ['Patrullas de milicias: configurá todas las reglas, sin campos adicionales.'];
+  }
   const errors =
     typeof value.enabled === 'boolean'
       ? []
@@ -122,6 +141,7 @@ export function validateMilitiaPatrol(value) {
   );
 }
 
+/** @type {ReadonlyArray<readonly ['regularThreshold' | 'veteranThreshold' | 'marksmanshipGain' | 'leadershipGain' | 'levelGain', string, number, number]>} */
 export const MILITIA_PROGRESSION_FIELDS = Object.freeze([
   ['regularThreshold', 'Puntos para ascender a montonero', 1, 99],
   ['veteranThreshold', 'Puntos para ascender a veterano', 2, 100],
@@ -131,25 +151,30 @@ export const MILITIA_PROGRESSION_FIELDS = Object.freeze([
 ]);
 
 export function validateMilitiaProgression(value) {
-  if (value === undefined) return [];
+  if (value === undefined) {
+    return [];
+  }
   if (
     !value ||
     typeof value !== 'object' ||
     Array.isArray(value) ||
     Object.keys(value).some((k) => !MILITIA_PROGRESSION_FIELDS.some(([key]) => key === k)) ||
     !MILITIA_PROGRESSION_FIELDS.every(([key]) => Object.hasOwn(value, key))
-  )
+  ) {
     return ['Ascensos de milicias: configurá todas las reglas, sin campos adicionales.'];
+  }
   const errors = MILITIA_PROGRESSION_FIELDS.flatMap(([key, label, min, max]) =>
     Number.isSafeInteger(value[key]) && value[key] >= min && value[key] <= max
       ? []
       : [`${label}: elegí un entero de ${min} a ${max}.`],
   );
-  if (value.veteranThreshold <= value.regularThreshold)
+  if (value.veteranThreshold <= value.regularThreshold) {
     errors.push('El ascenso a veterano necesita más puntos que el ascenso a montonero.');
+  }
   return errors;
 }
 
+/** @type {ReadonlyArray<readonly ['minimumSkill' | 'baseHealing' | 'skillStep' | 'dressingPrice' | 'energyCost' | 'fatigueCost' | 'restEnergy' | 'restFatigue' | 'restHealingHours', string, number, number]>} */
 export const CARE_RULE_FIELDS = Object.freeze([
   ['minimumSkill', 'Medicina mínima para atender', 0, 100],
   ['baseHealing', 'Salud recuperada por hora (base)', 1, 100],
@@ -162,6 +187,7 @@ export const CARE_RULE_FIELDS = Object.freeze([
   ['restHealingHours', 'Horas de descanso por cada punto de salud', 1, 168],
 ]);
 
+/** @type {readonly ['bleedingDamagePercent', string, number, number]} */
 export const STRATEGIC_BLEEDING_FIELD = [
   'bleedingDamagePercent',
   'Daño horario de hemorragia (%)',
@@ -170,7 +196,9 @@ export const STRATEGIC_BLEEDING_FIELD = [
 ];
 
 export function validateCareRules(value) {
-  if (value === undefined) return [];
+  if (value === undefined) {
+    return [];
+  }
   if (
     !value ||
     typeof value !== 'object' ||
@@ -179,8 +207,9 @@ export function validateCareRules(value) {
       (k) => !CARE_RULE_FIELDS.some(([key]) => key === k) && k !== 'bleedingDamagePercent',
     ) ||
     !CARE_RULE_FIELDS.every(([key]) => Object.hasOwn(value, key))
-  )
+  ) {
     return ['Atención y descanso: configurá todas las reglas, sin campos adicionales.'];
+  }
   return [
     ...CARE_RULE_FIELDS,
     ...(Object.hasOwn(value, 'bleedingDamagePercent') ? [STRATEGIC_BLEEDING_FIELD] : []),
@@ -192,7 +221,9 @@ export function validateCareRules(value) {
 }
 
 export function validateCampaignRules(value) {
-  if (value === undefined) return [];
+  if (value === undefined) {
+    return [];
+  }
   const keys = ['startingTreasury', 'deploymentCartridges', 'enemyCartridges', 'militiaCartridges'];
   if (
     !value ||
@@ -202,10 +233,11 @@ export function validateCampaignRules(value) {
       (key) => !keys.includes(key) && !['cartridgePrice', 'startingHour'].includes(key),
     ) ||
     !keys.every((key) => Object.hasOwn(value, key))
-  )
+  ) {
     return [
       'Reglas: configurá los fondos iniciales y los tres grupos de cartuchos. El precio del cartucho y la hora inicial son opcionales.',
     ];
+  }
   return Object.keys(value).flatMap((key) =>
     Number.isSafeInteger(value[key]) &&
     value[key] >= 0 &&

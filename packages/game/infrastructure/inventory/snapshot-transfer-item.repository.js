@@ -33,7 +33,9 @@ export class SnapshotTransferItemRepository {
   }
 
   result() {
-    if (!this.#result) throw new Error('The item transfer has not committed.');
+    if (!this.#result) {
+      throw new Error('The item transfer has not committed.');
+    }
     return this.#result;
   }
 }

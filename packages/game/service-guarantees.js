@@ -54,12 +54,13 @@ function upgradeCredits(state) {
   need(ledger.version === 1);
   ledger.version = 2;
   for (const entry of Object.values(ledger.entries)) {
-    if (entry.state !== 'held')
-      {Object.assign(entry, {
+    if (entry.state !== 'held') {
+      Object.assign(entry, {
         creditedRefund: entry.refund,
         creditedAt: entry.settledAt,
         creditedSecond: entry.settledSecond,
-      });}
+      });
+    }
   }
 }
 export function creditPendingGuaranteeRefunds(state) {
@@ -173,31 +174,34 @@ export function forfeitDeadServiceGuarantees(state, roster) {
 export function validateServiceGuarantees(state, roster) {
   const refs = [];
   for (const [id, contract] of Object.entries(state.contracts ?? {})) {
-    if (contract.guaranteeId !== undefined)
-      {refs.push({
+    if (contract.guaranteeId !== undefined) {
+      refs.push({
         id: contract.guaranteeId,
         owner: Number(id),
         kind: 'contract',
         record: contract,
-      });}
+      });
+    }
   }
   for (const arrival of state.hiringArrivals ?? []) {
-    if (arrival.guaranteeId !== undefined)
-      {refs.push({
+    if (arrival.guaranteeId !== undefined) {
+      refs.push({
         id: arrival.guaranteeId,
         owner: arrival.operativeId,
         kind: 'arrival',
         record: arrival,
-      });}
+      });
+    }
   }
   for (const [id, record] of Object.entries(state.operativeState ?? {})) {
-    if (record.capturedContract?.guaranteeId !== undefined)
-      {refs.push({
+    if (record.capturedContract?.guaranteeId !== undefined) {
+      refs.push({
         id: record.capturedContract.guaranteeId,
         owner: Number(id),
         kind: 'captured',
         record: record.capturedContract,
-      });}
+      });
+    }
   }
   for (const operative of roster) {
     if (!guaranteeAmount(operative)) {

@@ -178,8 +178,9 @@ export function redirectJourney(campaign, request) {
         campaign.operativeState[id].location = arrival.to;
       }
       for (const horse of campaign.horseState.horses) {
-        if (!horse.returned && squad.members.includes(horse.assignedTo))
-          {horse.location = arrival.to;}
+        if (!horse.returned && squad.members.includes(horse.assignedTo)) {
+          horse.location = arrival.to;
+        }
       }
       if (squad.id === campaign.activeSquadId) {
         campaign.location = arrival.to;
@@ -887,7 +888,9 @@ export function arriveForAssault(s, groups, target) {
     q.location = target;
     delete q.journey;
     for (const horse of s.horseState.horses) {
-      if (!horse.returned && q.members.includes(horse.assignedTo)) {horse.location = target;}
+      if (!horse.returned && q.members.includes(horse.assignedTo)) {
+        horse.location = target;
+      }
     }
     if (q.id === s.activeSquadId) {
       s.location = target;

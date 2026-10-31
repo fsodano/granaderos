@@ -39,8 +39,9 @@ export class ResidentPresence {
   }
 
   arriveAt(sector: string): void {
-    if (!sector || !this.canAppear)
+    if (!sector || !this.canAppear) {
       throw new Error('The resident cannot arrive at this placement.');
+    }
     this.#snapshot = Object.freeze({
       ...this.#snapshot,
       sector,
@@ -50,9 +51,12 @@ export class ResidentPresence {
   }
 
   moveTo(sector: string): void {
-    if (!this.canMove || !sector)
+    if (!this.canMove || !sector) {
       throw new Error('The resident cannot move from the current placement.');
-    if (this.#snapshot.sector === sector) return;
+    }
+    if (this.#snapshot.sector === sector) {
+      return;
+    }
     this.#snapshot = Object.freeze({
       ...this.#snapshot,
       sector,
@@ -65,7 +69,9 @@ export class ResidentPresence {
   }
 
   changeService(recruited: boolean): void {
-    if (!this.#snapshot.alive) throw new Error('A dead resident cannot change service.');
+    if (!this.#snapshot.alive) {
+      throw new Error('A dead resident cannot change service.');
+    }
     this.#snapshot = Object.freeze({ ...this.#snapshot, recruited });
   }
 
@@ -90,14 +96,19 @@ export class ResidentMovementPolicy {
     ) {
       throw new Error('Resident movement requires a valid probability and destinations.');
     }
-    if (!resident.canMove) return null;
+    if (!resident.canMove) {
+      return null;
+    }
     const draw = (): number => {
       const value = random();
-      if (!Number.isFinite(value) || value < 0 || value >= 1)
+      if (!Number.isFinite(value) || value < 0 || value >= 1) {
         throw new Error('The world random source returned an invalid draw.');
+      }
       return value;
     };
-    if (draw() * 100 >= chancePercent) return null;
+    if (draw() * 100 >= chancePercent) {
+      return null;
+    }
     const destination =
       selection === 'alternate'
         ? sectors.find((sector) => sector !== resident.sector)

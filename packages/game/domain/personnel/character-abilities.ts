@@ -77,13 +77,15 @@ function requireRating(value: number): void {
     !Number.isInteger(value) ||
     value < CharacterAbilityRules.MinimumRating ||
     value > CharacterAbilityRules.MaximumRating
-  )
+  ) {
     throw new DomainRefusal(DomainRefusalCode.InvalidValue);
+  }
 }
 
 function namedValues(values: readonly string[], supported: readonly string[]): readonly string[] {
-  if (!isArrayValue(values) || !values.every((value) => supported.includes(value)))
+  if (!isArrayValue(values) || !values.every((value) => supported.includes(value))) {
     throw new DomainRefusal(DomainRefusalCode.InvalidValue);
+  }
   return Object.freeze([...new Set(values)]);
 }
 
@@ -93,10 +95,17 @@ export class CharacterAbilities {
   readonly #capabilities: readonly string[];
 
   constructor(snapshot: CharacterAbilitiesSnapshot) {
-    if (!snapshot.ratings || typeof snapshot.ratings !== 'object' || isArrayValue(snapshot.ratings))
+    if (
+      !snapshot.ratings ||
+      typeof snapshot.ratings !== 'object' ||
+      isArrayValue(snapshot.ratings)
+    ) {
       throw new DomainRefusal(DomainRefusalCode.InvalidValue);
+    }
     for (const [name, value] of Object.entries(snapshot.ratings)) {
-      if (!isCharacterRating(name)) throw new DomainRefusal(DomainRefusalCode.InvalidValue);
+      if (!isCharacterRating(name)) {
+        throw new DomainRefusal(DomainRefusalCode.InvalidValue);
+      }
       requireRating(value);
     }
     this.#ratings = Object.freeze({ ...snapshot.ratings });
@@ -120,8 +129,9 @@ export class CharacterAbilities {
         !Number.isInteger(gain) ||
         gain < 0 ||
         gain > CharacterAbilityRules.MaximumTrainingGain
-      )
+      ) {
         throw new DomainRefusal(DomainRefusalCode.InvalidValue);
+      }
       ratings[name] = Math.min(CharacterAbilityRules.MaximumRating, this.rating(name) + gain);
     }
     if (strengthFloor !== undefined) {

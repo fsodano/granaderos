@@ -1,10 +1,67 @@
-.combat-journal{color:#f1e5c7;font-size:.8rem}
-.combat-journal>summary{cursor:pointer;white-space:nowrap;border:1px solid #796d50;border-radius:3px;padding:.4rem .6rem;background:#25372e}
-.combat-journal>summary:focus-visible{outline:2px solid #f0cf80;outline-offset:3px}
-.combat-journal-panel{position:absolute;right:8px;top:calc(100% + .4rem);z-index:80;box-sizing:border-box;width:min(32rem,calc(100vw - 2rem));max-height:min(28rem,65vh);overflow:auto;overscroll-behavior:contain;padding:1rem;border:1px solid #a39268;border-radius:4px;background:#17271f;box-shadow:0 .4rem 1.5rem #0009;line-height:1.5}
-.combat-journal-panel p{margin:0 0 .65rem;color:#c7c6ad}
-.combat-journal-panel p:last-child{margin-bottom:0}
-.combat-journal-panel ol{display:grid;gap:.5rem;list-style:none;margin:0;padding:0}
-.combat-journal-panel li{display:grid;grid-template-columns:4.5rem minmax(0,1fr);gap:.5rem;border-top:1px solid #ffffff21;padding-top:.5rem;overflow-wrap:anywhere}
-.combat-journal-turn{color:#d6bd80;font-variant-numeric:tabular-nums}
-@media(max-width:650px){.battle-layout .tactical-map-toolbar .map-toolbar-actions{grid-column:1/-1;grid-row:3;justify-content:flex-end;flex-wrap:wrap}}
+.combat-journal {
+  color: #f1e5c7;
+  font-size: 0.8rem;
+}
+.combat-journal > summary {
+  cursor: pointer;
+  white-space: nowrap;
+  border: 1px solid #796d50;
+  border-radius: 3px;
+  padding: 0.4rem 0.6rem;
+  background: #25372e;
+}
+.combat-journal > summary:focus-visible {
+  outline: 2px solid #f0cf80;
+  outline-offset: 3px;
+}
+.combat-journal-panel {
+  position: absolute;
+  right: 8px;
+  top: calc(100% + 0.4rem);
+  z-index: 80;
+  box-sizing: border-box;
+  width: min(32rem, calc(100vw - 2rem));
+  max-height: min(28rem, 65vh);
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 1rem;
+  border: 1px solid #a39268;
+  border-radius: 4px;
+  background: #17271f;
+  box-shadow: 0 0.4rem 1.5rem #0009;
+  line-height: 1.5;
+}
+.combat-journal-panel p {
+  margin: 0 0 0.65rem;
+  color: #c7c6ad;
+}
+.combat-journal-panel p:last-child {
+  margin-bottom: 0;
+}
+.combat-journal-panel ol {
+  display: grid;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.combat-journal-panel li {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  gap: 0.5rem;
+  border-top: 1px solid #ffffff21;
+  padding-top: 0.5rem;
+  overflow-wrap: anywhere;
+}
+.combat-journal-turn {
+  color: #d6bd80;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 650px) {
+  .battle-layout .tactical-map-toolbar .map-toolbar-actions {
+    grid-column: 1/-1;
+    grid-row: 3;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+}

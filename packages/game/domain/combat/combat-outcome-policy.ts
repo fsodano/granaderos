@@ -19,12 +19,13 @@ export class CombatOutcomePolicy {
           !participant.fled &&
           !participant.surrendered,
       );
-    if (!capable('player'))
+    if (!capable('player')) {
       return participants.some(
         (participant) => participant.side === 'player' && participant.departed,
       )
         ? CombatOutcome.Retreat
         : CombatOutcome.Defeat;
+    }
     return capable('enemy') ? CombatOutcome.Active : CombatOutcome.Victory;
   }
 }

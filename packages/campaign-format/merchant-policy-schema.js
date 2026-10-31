@@ -1,5 +1,7 @@
 export function validateMerchantPolicies(value, world) {
-  if (value === undefined) return [];
+  if (value === undefined) {
+    return [];
+  }
   const object = (v) => v !== null && typeof v === 'object' && !Array.isArray(v),
     integer = (n, min, max) => Number.isSafeInteger(n) && n >= min && n <= max,
     text = (v, max = 1000) => typeof v === 'string' && v.trim().length > 0 && v.length <= max;
@@ -9,11 +11,12 @@ export function validateMerchantPolicies(value, world) {
     !object(value.preferences) ||
     !object(value.legacyAmmunitionLimits) ||
     !integer(value.defaultLegacyAmmunitionLimit, 0, 1000000)
-  )
+  ) {
     return ['Comerciantes de campaña: política inválida.'];
+  }
   const errors = [],
     sectors = new Set((world?.sectors ?? []).map((s) => s.id));
-  for (const [at, p] of Object.entries(value.preferences))
+  for (const [at, p] of Object.entries(value.preferences)) {
     if (
       !sectors.has(at) ||
       !object(p) ||
@@ -30,10 +33,14 @@ export function validateMerchantPolicies(value, world) {
         (id) => integer(id, 1800, 1813) || ['bronze4', 'field8', 'swivel'].includes(id),
       ) ||
       !((p.weaponRefusal === null && p.minimumWeaponCondition === 0) || text(p.weaponRefusal))
-    )
+    ) {
       errors.push(`Comerciantes de campaña: preferencia inválida en ${at}.`);
-  for (const [at, limit] of Object.entries(value.legacyAmmunitionLimits))
-    if (!sectors.has(at) || !integer(limit, 0, 1000000))
+    }
+  }
+  for (const [at, limit] of Object.entries(value.legacyAmmunitionLimits)) {
+    if (!sectors.has(at) || !integer(limit, 0, 1000000)) {
       errors.push(`Comerciantes de campaña: reserva antigua inválida en ${at}.`);
+    }
+  }
   return errors;
 }

@@ -18,8 +18,9 @@ export class ItemTransferService {
     placement: IncomingPlacement,
     expectedSource?: string,
   ): ItemTransfer {
-    if (source.custodianId === destination.custodianId)
+    if (source.custodianId === destination.custodianId) {
       throw new InventoryRefusal(InventoryRefusalCode.SameCustodian);
+    }
     const sourceCopy = new Inventory(source.toSnapshot());
     const destinationCopy = new Inventory(destination.toSnapshot());
     const item = sourceCopy.take(selectionId, quantity, expectedSource);

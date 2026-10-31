@@ -1,13 +1,6 @@
 import type { CampaignSnapshot } from '../../../packages/game/public/campaign-types.ts';
-import {
-  contentQuestJournal,
-  QUEST_STATE_LABELS,
-} from '../../../packages/game/content-quests.js';
-export default function StoryQuestJournal({
-  state,
-}: {
-  state: CampaignSnapshot;
-}) {
+import { contentQuestJournal, QUEST_STATE_LABELS } from '../../../packages/game/content-quests.js';
+export default function StoryQuestJournal({ state }: { state: CampaignSnapshot }) {
   const quests = contentQuestJournal(state);
   if (!quests.length) {
     return null;

@@ -76,7 +76,9 @@ function carrier(s, id, roster) {
       ammunitionVersion: 2,
     };
   if (loadout.weapon === 0) {
-    for (const key of ['contentWeapon', 'weaponMetadata', 'ammunitionChoice']) {delete unit[key];}
+    for (const key of ['contentWeapon', 'weaponMetadata', 'ammunitionChoice']) {
+      delete unit[key];
+    }
   }
   if (loadout.blade === 0) {
     delete unit.bladeMetadata;
@@ -147,7 +149,9 @@ function commitCarrier(s, id, next, { empty = false } = {}) {
   }
   returnEquipment(s, id, next);
   for (const key of recordFields) {
-    if (next[key] !== undefined) {r[key] = copy(next[key]);}
+    if (next[key] !== undefined) {
+      r[key] = copy(next[key]);
+    }
   }
   // A direct legacy definition must not outlive its physical host.
   if (!next.weapon || next.weaponDropped) {
@@ -391,9 +395,12 @@ export function serviceReturnSources(s, siteId, snapshot = null, roster = null) 
   };
   for (const entry of s.serviceEquipmentReturns?.entries ?? []) {
     if (entry.siteId === siteId) {
-      for (const item of entry.items) {add(entry, entry.operativeId, item.selection, item.stack);}
-      if (entry.repairPoints)
-        {add(entry, entry.operativeId, 'repairPoints', null, entry.repairPoints);}
+      for (const item of entry.items) {
+        add(entry, entry.operativeId, item.selection, item.stack);
+      }
+      if (entry.repairPoints) {
+        add(entry, entry.operativeId, 'repairPoints', null, entry.repairPoints);
+      }
     }
   }
   for (const [id, r] of Object.entries(s.operativeState ?? {})) {
@@ -406,8 +413,9 @@ export function serviceReturnSources(s, siteId, snapshot = null, roster = null) 
         });
         add(r.serviceEquipmentReturn, Number(id), item, taken.stack);
       }
-      if (r.toolkitPoints)
-        {add(r.serviceEquipmentReturn, Number(id), 'repairPoints', null, r.toolkitPoints);}
+      if (r.toolkitPoints) {
+        add(r.serviceEquipmentReturn, Number(id), 'repairPoints', null, r.toolkitPoints);
+      }
     }
   }
   return rows;
@@ -604,7 +612,9 @@ export function validateServiceEquipmentReturns(s, roster) {
       validateHands(unit);
       validateEquipmentCursor(unit);
       need(selections(unit).length || r.toolkitPoints > 0);
-      for (const item of extractAll(unit).items) {validateItemStack(item.stack);}
+      for (const item of extractAll(unit).items) {
+        validateItemStack(item.stack);
+      }
     }
   }
   // Ground returns retain their immutable source prefix after cache collection.
@@ -615,11 +625,12 @@ export function validateServiceEquipmentReturns(s, roster) {
     for (const item of snapshot.groundItems ?? []) {
       const match =
         typeof item.id === 'string' ? /^service-return-([1-9][0-9]*)-[0-9]+$/.exec(item.id) : null;
-      if (match)
-        {need(
+      if (match) {
+        need(
           Number(match[1]) < cache.nextId,
           'La secuencia del equipo devuelto reutiliza una fuente existente.',
-        );}
+        );
+      }
     }
   }
   return true;

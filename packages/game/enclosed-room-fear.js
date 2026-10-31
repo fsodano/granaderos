@@ -164,8 +164,9 @@ export function occupiedEnclosedRoom(state, unit) {
         !previous ||
         surface.elevation - (surface.slabThickness ?? DEFAULT_SLAB_THICKNESS) <
           previous.elevation - (previous.slabThickness ?? DEFAULT_SLAB_THICKNESS)
-      )
-        {ceilings.set(key, surface);}
+      ) {
+        ceilings.set(key, surface);
+      }
     }
   }
   for (const cell of cells) {

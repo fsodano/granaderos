@@ -318,8 +318,9 @@ export function attachCampaignContent(state, content) {
   for (const id of Object.keys(state.operativeState)) {
     if (
       !definitions.characters.some((c) => operativeIdForCharacter(definitions, c.id) === Number(id))
-    )
-      {delete state.operativeState[id];}
+    ) {
+      delete state.operativeState[id];
+    }
   }
   initializeCampaignPresence(state);
   initializeCampaignStory(state);

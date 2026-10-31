@@ -12,10 +12,7 @@ import {
   artillerySelectionReason,
 } from '../../../packages/game/equipment.js';
 import { artilleryProfile } from '../../../packages/game/artillery-definitions.ts';
-import {
-  localArtilleryDepot,
-  depotSelection,
-} from '../../../packages/game/artillery-depots.ts';
+import { localArtilleryDepot, depotSelection } from '../../../packages/game/artillery-depots.ts';
 import { ArtilleryStorage, SendArtillery } from './ArtilleryTransport';
 import { finiteArsenalHint } from '../../../packages/game/finite-artillery-arsenals.js';
 import { artilleryStorageQuote } from '../../../packages/game/artillery-transport.js';
@@ -24,9 +21,7 @@ import './owned-artillery.css';
 export function hasOwnedArtillery(state: CampaignSnapshot) {
   return (
     Boolean(finiteArsenalHint(state)) ||
-    ['bronze4', 'field8', 'swivel'].some(
-      (type) => (state.armory?.[type] ?? 0) > 0,
-    ) ||
+    ['bronze4', 'field8', 'swivel'].some((type) => (state.armory?.[type] ?? 0) > 0) ||
     localArtilleryDepot(state).length > 0 ||
     stationedArtillery(state).some(({ gun }) => gun.side === 'player') ||
     (state.artilleryTransfers?.length ?? 0) > 0
@@ -43,12 +38,10 @@ export default function OwnedArtillery({
   const [selection, setSelection] = useState<string[] | null>(null);
   const stored = localArtilleryDepot(s),
     field = stationedArtillery(s).filter(({ gun }) => gun.side === 'player');
-  const stock = ['bronze4', 'field8', 'swivel'].filter(
-    (type) => (s.armory?.[type] ?? 0) > 0,
-  );
+  const stock = ['bronze4', 'field8', 'swivel'].filter((type) => (s.armory?.[type] ?? 0) > 0);
   const available = new Set([...stock, ...stored.map(depotSelection)]);
-  const choices = (selection ?? artilleryDeploymentChoices(s)).map(
-    (choice: string) => (available.has(choice) ? choice : ''),
+  const choices = (selection ?? artilleryDeploymentChoices(s)).map((choice: string) =>
+    available.has(choice) ? choice : '',
   );
   const reason = artillerySelectionReason(s, choices.filter(Boolean));
   const blocked =
@@ -60,8 +53,8 @@ export default function OwnedArtillery({
     <section className="owned-artillery" aria-label="Artillería propia">
       <h3>Batería de campaña</h3>
       <p>
-        Elegí hasta tres piezas propias para el próximo ataque. Cada pieza del
-        depósito conserva su carga y munición.
+        Elegí hasta tres piezas propias para el próximo ataque. Cada pieza del depósito conserva su
+        carga y munición.
       </p>
       {finiteArsenalHint(s) && (
         <p>
@@ -85,8 +78,7 @@ export default function OwnedArtillery({
               <option value="">Sin pieza</option>
               {stock.map((type) => (
                 <option key={type} value={type}>
-                  {artilleryProfile(s, type).name} · {s.armory[type]}{' '}
-                  disponibles
+                  {artilleryProfile(s, type).name} · {s.armory[type]} disponibles
                 </option>
               ))}
               {stored.map((gun) => (
@@ -121,9 +113,8 @@ export default function OwnedArtillery({
         <section aria-label="Artillería emplazada">
           <h3>Piezas emplazadas</h3>
           <p>
-            Permanecen en este sector al salir. Guardalas en el depósito local
-            para elegirlas en la batería. Cada pieza conserva su carga, munición
-            y trabajo de recarga.
+            Permanecen en este sector al salir. Guardalas en el depósito local para elegirlas en la
+            batería. Cada pieza conserva su carga, munición y trabajo de recarga.
           </p>
           {field.map(({ sector, gun }) => {
             const quote = artilleryStorageQuote(s, sector, gun.id);
@@ -146,12 +137,7 @@ export default function OwnedArtillery({
                 >
                   Guardar pieza
                 </button>
-                <SendArtillery
-                  state={s}
-                  sector={sector}
-                  gun={gun}
-                  dispatch={dispatch}
-                />
+                <SendArtillery state={s} sector={sector} gun={gun} dispatch={dispatch} />
               </div>
             );
           })}

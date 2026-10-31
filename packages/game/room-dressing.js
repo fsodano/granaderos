@@ -89,7 +89,9 @@ export function roomDressings(state) {
     );
   for (const building of state.buildings ?? []) {
     for (const [index, room] of (building.rooms ?? []).entries()) {
-      if ((room.cells?.length ?? 0) < 4) {continue;}
+      if ((room.cells?.length ?? 0) < 4) {
+        continue;
+      }
       const profile = roomDecorProfile(building, room, index),
         cells = room.cells.map((cell) => ({
           ...cell,

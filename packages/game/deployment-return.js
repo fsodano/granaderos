@@ -341,13 +341,14 @@ export function planSquadPartition(s, entries) {
     q.members = buckets.get(retained);
     q.location = retained;
     for (const [at, members] of buckets) {
-      if (at !== retained)
-        {splits.push({
+      if (at !== retained) {
+        splits.push({
           id: `squad-${nextId++}`,
           name: `Destacamento ${at}`.slice(0, 30),
           members,
           location: at,
-        });}
+        });
+      }
     }
   }
   squads.push(...splits.slice(0, Math.max(0, 8 - squads.length)));
@@ -731,8 +732,8 @@ export function validateDeploymentReturnState(s) {
     }
   }
   for (const h of s.horseState.horses) {
-    if (h.custody != null)
-      {need(
+    if (h.custody != null) {
+      need(
         object(h.custody) &&
           ['field', 'captured'].includes(h.custody.kind) &&
           sector(h.custody.sector, s) &&
@@ -742,7 +743,8 @@ export function validateDeploymentReturnState(s) {
           h.assignedTo === null &&
           !h.returned,
         'La custodia de la montura es inválida.',
-      );}
+      );
+    }
   }
   for (const snapshot of [
     ...Object.values(s.sectorStates ?? {}),

@@ -51,19 +51,14 @@ export default function MilitiaTraining({
         !careAssignmentBusy(s.operativeState[o.id]?.assignment),
     )
     .sort((a, b) => militiaCourse(a, 0).hours - militiaCourse(b, 0).hours);
-  const trainer =
-      trainers.find((o) => String(o.id) === trainerId) ?? trainers[0],
+  const trainer = trainers.find((o) => String(o.id) === trainerId) ?? trainers[0],
     rank = choice ?? ((sector.militia[0] ?? 0) >= MILITIA_COHORT ? 1 : 0),
     course = trainer ? militiaCourse(trainer, rank) : null;
-  const promotion =
-      rank === 1 ? militiaPromotionStatus(s, sectorId, rank) : null,
+  const promotion = rank === 1 ? militiaPromotionStatus(s, sectorId, rank) : null,
     total = sector.militia.reduce((a: number, b: number) => a + b, 0),
     progression = militiaProgression(s),
     supplied = isSupplied(s, sectorId);
-  const shortage = Math.max(
-    0,
-    (course?.cost.treasury ?? 0) - s.resources.treasury,
-  );
+  const shortage = Math.max(0, (course?.cost.treasury ?? 0) - s.resources.treasury);
   const reason = s.defeated
     ? 'La campaña terminó.'
     : s.pendingBattle
@@ -84,15 +79,13 @@ export default function MilitiaTraining({
       <h3>Milicias</h3>
       <p>{total} defensores</p>
       <p>
-        {sector.militia[0]} {sector.militia[0] === 1 ? 'cívico' : 'cívicos'} ·{' '}
-        {sector.militia[1]}{' '}
-        {sector.militia[1] === 1 ? 'montonero' : 'montoneros'} ·{' '}
-        {sector.militia[2]} {sector.militia[2] === 1 ? 'veterano' : 'veteranos'}
+        {sector.militia[0]} {sector.militia[0] === 1 ? 'cívico' : 'cívicos'} · {sector.militia[1]}{' '}
+        {sector.militia[1] === 1 ? 'montonero' : 'montoneros'} · {sector.militia[2]}{' '}
+        {sector.militia[2] === 1 ? 'veterano' : 'veteranos'}
       </p>
       <small>
         Los veteranos ascienden por experiencia de combate. Montonero:{' '}
-        {progression.regularThreshold} puntos · Veterano:{' '}
-        {progression.veteranThreshold} puntos.
+        {progression.regularThreshold} puntos · Veterano: {progression.veteranThreshold} puntos.
       </small>
       {training ? (
         <>
@@ -111,16 +104,12 @@ export default function MilitiaTraining({
           {(!eligibility.eligible || !supplied) && (
             <small>
               Instrucción detenida:{' '}
-              {!eligibility.eligible
-                ? eligibility.reason
-                : 'falta abastecimiento.'}
+              {!eligibility.eligible ? eligibility.reason : 'falta abastecimiento.'}
             </small>
           )}
           <button
             className="line-button"
-            onClick={() =>
-              dispatch({ type: 'cancelMilitia', sector: sectorId })
-            }
+            onClick={() => dispatch({ type: 'cancelMilitia', sector: sectorId })}
           >
             Suspender instrucción
           </button>
@@ -147,9 +136,7 @@ export default function MilitiaTraining({
               value={trainer?.id ?? ''}
               onChange={(e) => setTrainerId(e.target.value)}
             >
-              {!trainers.length && (
-                <option value="">Necesitás un instructor disponible</option>
-              )}
+              {!trainers.length && <option value="">Necesitás un instructor disponible</option>}
               {trainers.map((o) => (
                 <option key={o.id} value={o.id}>
                   {o.nickname}

@@ -6,14 +6,8 @@ import type {
   CampaignAction,
 } from '../../../packages/game/public/campaign-types.ts';
 import { useEffect, useRef, useState } from 'react';
-import {
-  contractRenewalQuote,
-  contractStatus,
-} from '../../../packages/game/contracts.js';
-import {
-  CARE_ASSIGNMENTS,
-  careAssignmentReason,
-} from '../../../packages/game/medical-care.js';
+import { contractRenewalQuote, contractStatus } from '../../../packages/game/contracts.js';
+import { CARE_ASSIGNMENTS, careAssignmentReason } from '../../../packages/game/medical-care.js';
 import {
   WORK_ASSIGNMENTS,
   STUDY_SKILLS,
@@ -24,14 +18,8 @@ import {
   serviceGuaranteeRefund,
   guaranteeDepartureReason,
 } from '../../../packages/game/service-guarantees.js';
-import {
-  operativeInTransit,
-  operativeLocation,
-} from '../../../packages/game/squads.js';
-import {
-  mountForOperative,
-  MATURITY_HOURS,
-} from '../../../packages/game/horses.js';
+import { operativeInTransit, operativeLocation } from '../../../packages/game/squads.js';
+import { mountForOperative, MATURITY_HOURS } from '../../../packages/game/horses.js';
 import {
   strategicSquadAssignments,
   strategicNewSquadAssignment,
@@ -54,11 +42,7 @@ function visibleControl(control: HTMLElement) {
   if (!control.isConnected || control.closest('[hidden],[inert]')) {
     return false;
   }
-  for (
-    let parent: HTMLElement | null = control;
-    parent;
-    parent = parent.parentElement
-  ) {
+  for (let parent: HTMLElement | null = control; parent; parent = parent.parentElement) {
     const style = window.getComputedStyle(parent);
     if (
       style.display === 'none' ||
@@ -97,10 +81,7 @@ export default function StrategicPersonnelMenu({
     record = s.operativeState[id];
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
-    const previous =
-      document.activeElement instanceof HTMLElement
-        ? document.activeElement
-        : null;
+    const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     dialog.current?.querySelector<HTMLElement>('button')?.focus();
     return () => {
       if (
@@ -113,15 +94,9 @@ export default function StrategicPersonnelMenu({
         return;
       }
       const label =
-        kind === 'contract'
-          ? 'Fin contrato:'
-          : kind === 'destination'
-            ? 'Destino:'
-            : 'Asignación:';
+        kind === 'contract' ? 'Fin contrato:' : kind === 'destination' ? 'Destino:' : 'Asignación:';
       const person = Array.from(
-        document.querySelectorAll<HTMLElement>(
-          `[data-operative-id="${id}"] button`,
-        ),
+        document.querySelectorAll<HTMLElement>(`[data-operative-id="${id}"] button`),
       ).find(
         (control) =>
           control.getAttribute('aria-label')?.startsWith(label) &&
@@ -146,9 +121,7 @@ export default function StrategicPersonnelMenu({
     departureReason = guaranteeDepartureReason(s, contract, op);
   const contractDays = Math.ceil((contract?.remaining ?? 0) / 24);
   const contractRefusal =
-    kind === 'contract'
-      ? contractRenewalQuote(s, op, 'day').serviceRefusal
-      : null;
+    kind === 'contract' ? contractRenewalQuote(s, op, 'day').serviceRefusal : null;
   const local = roster.filter(
     (o) =>
       s.recruited.includes(o.id) &&
@@ -168,12 +141,7 @@ export default function StrategicPersonnelMenu({
   const mount = mountForOperative(s.horseState, id)?.mount;
   const squad = s.squads.find((q) => q.members.includes(id)),
     journey = squad ? squadTravelStatus(squad, s) : null,
-    title =
-      kind === 'contract'
-        ? 'Contrato'
-        : kind === 'destination'
-          ? 'Destino'
-          : 'Asignación';
+    title = kind === 'contract' ? 'Contrato' : kind === 'destination' ? 'Destino' : 'Asignación';
   const newSquad = strategicNewSquadAssignment(s, id, op);
   const guarantee = guaranteeRecord(s, contract);
   const place = (sector: string) => campaignPlace(sector, s)?.name ?? sector;
@@ -217,8 +185,7 @@ export default function StrategicPersonnelMenu({
               )
                 .filter(visibleControl)
                 .sort((left, right) =>
-                  left.compareDocumentPosition(right) &
-                  window.Node.DOCUMENT_POSITION_FOLLOWING
+                  left.compareDocumentPosition(right) & window.Node.DOCUMENT_POSITION_FOLLOWING
                     ? -1
                     : 1,
                 ),
@@ -268,9 +235,7 @@ export default function StrategicPersonnelMenu({
                   <button
                     className="gold-button"
                     disabled={blocked}
-                    onClick={() =>
-                      order({ type: 'resumeTravel', squadId: squad.id })
-                    }
+                    onClick={() => order({ type: 'resumeTravel', squadId: squad.id })}
                   >
                     Retomar marcha
                   </button>
@@ -287,18 +252,14 @@ export default function StrategicPersonnelMenu({
                       })
                     }
                   >
-                    {journey.elapsed === 0
-                      ? 'Cancelar ruta'
-                      : 'Detenerse en el próximo sector'}
+                    {journey.elapsed === 0 ? 'Cancelar ruta' : 'Detenerse en el próximo sector'}
                   </button>
                 )}
                 {journey.intent === 'attack' && journey.elapsed === 0 && (
                   <button
                     className="line-button"
                     disabled={blocked}
-                    onClick={() =>
-                      order({ type: 'cancelTravel', squadId: squad.id })
-                    }
+                    onClick={() => order({ type: 'cancelTravel', squadId: squad.id })}
                   >
                     Cancelar ataque
                   </button>
@@ -366,31 +327,23 @@ export default function StrategicPersonnelMenu({
                         ...(s.contracts[id]?.expiresAt !== undefined
                           ? { expectedExpiresAt: s.contracts[id].expiresAt }
                           : {}),
-                        expectedExpiresSecond:
-                          s.contracts[id]?.expiresSecond ?? 0,
+                        expectedExpiresSecond: s.contracts[id]?.expiresSecond ?? 0,
                       })
                     }
                   >
-                    {term === 'day'
-                      ? 'Un día'
-                      : term === 'week'
-                        ? 'Una semana'
-                        : 'Dos semanas'}{' '}
-                    · {q.price.toLocaleString('es-AR')} pesos
+                    {term === 'day' ? 'Un día' : term === 'week' ? 'Una semana' : 'Dos semanas'} ·{' '}
+                    {q.price.toLocaleString('es-AR')} pesos
                   </button>
                 );
               })}
             {guarantee && (
               <p>
                 Garantía: {guarantee.amount} pesos. Devolución actual al salir:{' '}
-                {serviceGuaranteeRefund(s, contract, op)} pesos. La paga no se
-                devuelve.
+                {serviceGuaranteeRefund(s, contract, op)} pesos. La paga no se devuelve.
               </p>
             )}
             {operativeInTransit(s, id) && (
-              <p>
-                Está en camino. Esperá su llegada para finalizar el servicio.
-              </p>
+              <p>Está en camino. Esperá su llegada para finalizar el servicio.</p>
             )}
             {departureReason && !operativeInTransit(s, id) && (
               <p>
@@ -400,19 +353,13 @@ export default function StrategicPersonnelMenu({
             {id !== 1000 && (
               <button
                 className="line-button"
-                disabled={
-                  blocked ||
-                  operativeInTransit(s, id) ||
-                  Boolean(departureReason)
-                }
+                disabled={blocked || operativeInTransit(s, id) || Boolean(departureReason)}
                 title={departureReason || undefined}
                 onClick={() =>
                   order({
                     type: 'dismiss',
                     id,
-                    ...(contract?.guaranteeId
-                      ? { expectedGuaranteeId: contract.guaranteeId }
-                      : {}),
+                    ...(contract?.guaranteeId ? { expectedGuaranteeId: contract.guaranteeId } : {}),
                   })
                 }
               >
@@ -477,9 +424,7 @@ export default function StrategicPersonnelMenu({
                     className="line-button"
                     title={why || undefined}
                     disabled={blocked || Boolean(why)}
-                    onClick={() =>
-                      order({ type: 'assignCare', operativeId: id, assignment })
-                    }
+                    onClick={() => order({ type: 'assignCare', operativeId: id, assignment })}
                   >
                     {String(label)}
                   </button>
@@ -500,24 +445,17 @@ export default function StrategicPersonnelMenu({
               >
                 {Object.entries(STUDY_SKILLS).map(([value, label]) => (
                   <option value={value} key={value}>
-                    {String(label)} ·{' '}
-                    {op[isStudySkill(value) ? value : skill] ?? 0}
+                    {String(label)} · {op[isStudySkill(value) ? value : skill] ?? 0}
                   </option>
                 ))}
               </select>
             </label>
             {(op[skill] ?? 0) < 35 && (
-              <small>
-                Esta habilidad necesita un valor de 35 para mejorar con la
-                práctica.
-              </small>
+              <small>Esta habilidad necesita un valor de 35 para mejorar con la práctica.</small>
             )}
             <label>
               Instructor
-              <select
-                value={teacher}
-                onChange={(e) => setTeacher(e.target.value)}
-              >
+              <select value={teacher} onChange={(e) => setTeacher(e.target.value)}>
                 <option value="">Sin instructor</option>
                 {local
                   .filter((o) => o.id !== id)
@@ -530,10 +468,7 @@ export default function StrategicPersonnelMenu({
             </label>
             <label>
               Equipo para reparar
-              <select
-                value={target}
-                onChange={(e) => setTarget(e.target.value)}
-              >
+              <select value={target} onChange={(e) => setTarget(e.target.value)}>
                 {local.map((o) => (
                   <option key={o.id} value={o.id}>
                     {o.nickname}
@@ -543,13 +478,7 @@ export default function StrategicPersonnelMenu({
             </label>
             <div className="strategic-menu-actions">
               {Object.entries(WORK_ASSIGNMENTS).map(([assignment, label]) => {
-                const why = workAssignmentReason(
-                  s,
-                  op,
-                  assignment,
-                  options,
-                  roster,
-                );
+                const why = workAssignmentReason(s, op, assignment, options, roster);
                 return (
                   <button
                     className="line-button"
@@ -575,11 +504,7 @@ export default function StrategicPersonnelMenu({
               <select
                 aria-label={`Montura de ${op.nickname}`}
                 value={mount?.id ?? ''}
-                disabled={
-                  blocked ||
-                  Boolean(mount) ||
-                  operativeLocation(s, id) !== s.location
-                }
+                disabled={blocked || Boolean(mount) || operativeLocation(s, id) !== s.location}
                 onChange={(e) =>
                   order({
                     type: 'horseAction',

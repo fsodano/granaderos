@@ -76,8 +76,9 @@ function validateDefinitionRecords(value) {
   ) {
     const characters = new Set(value.characters.map((c) => c?.id));
     for (const character of Object.values(value.world.defaultRoles)) {
-      if (character !== null && !characters.has(character))
-        {errors.push('Funciones de campaña: el personaje asignado por el mapa no existe.');}
+      if (character !== null && !characters.has(character)) {
+        errors.push('Funciones de campaña: el personaje asignado por el mapa no existe.');
+      }
     }
   }
   if (value.maps !== undefined && !object(value.maps)) {
@@ -95,15 +96,19 @@ function validateDefinitionRecords(value) {
         !['terrain', 'features', 'buildings', 'props', 'spawns', 'exits', 'items', 'lights'].every(
           (k) => Array.isArray(doc[k]),
         )
-      )
-        {errors.push(`Campaña: el mapa ${key} no tiene una definición táctica válida.`);}
+      ) {
+        errors.push(`Campaña: el mapa ${key} no tiene una definición táctica válida.`);
+      }
     }
     if (!errors.length && value.world) {
       for (const key of [
         ...value.world.sectors.map((s) => s.id),
         ...Object.keys(value.world.sceneExits ?? {}),
-      ])
-        {if (!Object.hasOwn(value.maps, key)) {errors.push(`Campaña: falta el mapa ${key}.`);}}
+      ]) {
+        if (!Object.hasOwn(value.maps, key)) {
+          errors.push(`Campaña: falta el mapa ${key}.`);
+        }
+      }
     }
   }
   if (value.presentation !== undefined) {

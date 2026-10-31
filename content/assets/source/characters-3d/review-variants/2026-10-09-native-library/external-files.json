@@ -15691,7 +15691,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-adult-pigment-pilot/source/game/artillery-depots.js",
+      "path": "/tmp/granadero-adult-pigment-pilot/source/game/artillery-depots.ts",
       "bytes": 258,
       "gitBlob": "1b87acca0ab0bae68938076f17a26af2ed24176c",
       "sha256": "2cee8bf36b87f049fd9b27858ec3e68f683068da38ec33a48e188060f1ab5d76",
@@ -16757,7 +16757,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-adult-pigment-pilot/source/game/content-launch.js",
+      "path": "/tmp/granadero-adult-pigment-pilot/source/game/content-launch.ts",
       "bytes": 508,
       "gitBlob": "cf60a4d88065ceda6a212259fb5afa593824b05d",
       "sha256": "b6068973e0b8471f45181b6614128f98de662b18b0c47cc4608b7691982d415e",
@@ -17477,7 +17477,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-adult-pigment-pilot/source/game/group-movement.js",
+      "path": "/tmp/granadero-adult-pigment-pilot/source/game/group-movement.ts",
       "bytes": 15639,
       "gitBlob": "42a76ce0b4d5ed9faa2a4d6ad090c35175d2e7a1",
       "sha256": "a1502529749d818fdf0759c587da0bc49418ff02f3573b3a13302f6769928938",
@@ -17957,7 +17957,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-adult-pigment-pilot/source/game/merchant-preferences.js",
+      "path": "/tmp/granadero-adult-pigment-pilot/source/game/merchant-preferences.ts",
       "bytes": 1391,
       "gitBlob": "7db1ffe8b5e0daa3aa1b989a041a2b18b68ed24f",
       "sha256": "10de423f52f493b9c131f74f8666ab55a9deb737f6654908d54f7c1973621f21",
@@ -18152,7 +18152,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-adult-pigment-pilot/source/game/movement-step.js",
+      "path": "/tmp/granadero-adult-pigment-pilot/source/game/movement-step.ts",
       "bytes": 4466,
       "gitBlob": "5c673737164fb71714ba96c87b5a4b840916f0d6",
       "sha256": "b6f71927fec204c25e6267cc5b590cd8e49c5092f0dcdf5c135a77f64ff9f4ff",
@@ -18662,7 +18662,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-adult-pigment-pilot/source/game/roster-hands.js",
+      "path": "/tmp/granadero-adult-pigment-pilot/source/game/roster-hands.ts",
       "bytes": 2722,
       "gitBlob": "f47776cb4457dfda63cd86cdd28707c26df87af1",
       "sha256": "52f3073f11d3c92dc80b5b08757c6c26eb8b2ad514917c0d0b703bc725df589b",
@@ -19547,7 +19547,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-adult-pigment-pilot/source/game/tactical-planning-space.js",
+      "path": "/tmp/granadero-adult-pigment-pilot/source/game/tactical-planning-space.ts",
       "bytes": 566,
       "gitBlob": "0d12565f8b11d8927a505875ef2cda969d4cc75a",
       "sha256": "d6159a82ef81659437baa3065bebd96828e1f8ef1f9fe8734451a9e3f4f20da6",
@@ -19862,7 +19862,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-adult-pigment-pilot/source/game/world-cells.js",
+      "path": "/tmp/granadero-adult-pigment-pilot/source/game/world-cells.ts",
       "bytes": 6130,
       "gitBlob": "b4faf71aaf1f0708e694b446a140f2df957546f7",
       "sha256": "dfde9b4e98d8f482c98ab195b66109bd2667699f5c26078c1fbaa3a8b3e792d5",
@@ -23001,7 +23001,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-adult-plane-pilot/source/game/artillery-depots.js",
+      "path": "/tmp/granadero-adult-plane-pilot/source/game/artillery-depots.ts",
       "bytes": 258,
       "gitBlob": "1b87acca0ab0bae68938076f17a26af2ed24176c",
       "sha256": "2cee8bf36b87f049fd9b27858ec3e68f683068da38ec33a48e188060f1ab5d76",
@@ -24067,7 +24067,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-adult-plane-pilot/source/game/content-launch.js",
+      "path": "/tmp/granadero-adult-plane-pilot/source/game/content-launch.ts",
       "bytes": 508,
       "gitBlob": "cf60a4d88065ceda6a212259fb5afa593824b05d",
       "sha256": "b6068973e0b8471f45181b6614128f98de662b18b0c47cc4608b7691982d415e",
@@ -24787,7 +24787,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-adult-plane-pilot/source/game/group-movement.js",
+      "path": "/tmp/granadero-adult-plane-pilot/source/game/group-movement.ts",
       "bytes": 15639,
       "gitBlob": "42a76ce0b4d5ed9faa2a4d6ad090c35175d2e7a1",
       "sha256": "a1502529749d818fdf0759c587da0bc49418ff02f3573b3a13302f6769928938",
@@ -25267,7 +25267,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-adult-plane-pilot/source/game/merchant-preferences.js",
+      "path": "/tmp/granadero-adult-plane-pilot/source/game/merchant-preferences.ts",
       "bytes": 1391,
       "gitBlob": "7db1ffe8b5e0daa3aa1b989a041a2b18b68ed24f",
       "sha256": "10de423f52f493b9c131f74f8666ab55a9deb737f6654908d54f7c1973621f21",
@@ -25462,7 +25462,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-adult-plane-pilot/source/game/movement-step.js",
+      "path": "/tmp/granadero-adult-plane-pilot/source/game/movement-step.ts",
       "bytes": 4466,
       "gitBlob": "5c673737164fb71714ba96c87b5a4b840916f0d6",
       "sha256": "b6f71927fec204c25e6267cc5b590cd8e49c5092f0dcdf5c135a77f64ff9f4ff",
@@ -25972,7 +25972,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-adult-plane-pilot/source/game/roster-hands.js",
+      "path": "/tmp/granadero-adult-plane-pilot/source/game/roster-hands.ts",
       "bytes": 2722,
       "gitBlob": "f47776cb4457dfda63cd86cdd28707c26df87af1",
       "sha256": "52f3073f11d3c92dc80b5b08757c6c26eb8b2ad514917c0d0b703bc725df589b",
@@ -26857,7 +26857,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-adult-plane-pilot/source/game/tactical-planning-space.js",
+      "path": "/tmp/granadero-adult-plane-pilot/source/game/tactical-planning-space.ts",
       "bytes": 566,
       "gitBlob": "0d12565f8b11d8927a505875ef2cda969d4cc75a",
       "sha256": "d6159a82ef81659437baa3065bebd96828e1f8ef1f9fe8734451a9e3f4f20da6",
@@ -27172,7 +27172,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-adult-plane-pilot/source/game/world-cells.js",
+      "path": "/tmp/granadero-adult-plane-pilot/source/game/world-cells.ts",
       "bytes": 6130,
       "gitBlob": "b4faf71aaf1f0708e694b446a140f2df957546f7",
       "sha256": "dfde9b4e98d8f482c98ab195b66109bd2667699f5c26078c1fbaa3a8b3e792d5",
@@ -32513,7 +32513,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-authored-face-pilot/source/game/artillery-depots.js",
+      "path": "/tmp/granadero-authored-face-pilot/source/game/artillery-depots.ts",
       "bytes": 258,
       "gitBlob": "1b87acca0ab0bae68938076f17a26af2ed24176c",
       "sha256": "2cee8bf36b87f049fd9b27858ec3e68f683068da38ec33a48e188060f1ab5d76",
@@ -33579,7 +33579,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-authored-face-pilot/source/game/content-launch.js",
+      "path": "/tmp/granadero-authored-face-pilot/source/game/content-launch.ts",
       "bytes": 508,
       "gitBlob": "cf60a4d88065ceda6a212259fb5afa593824b05d",
       "sha256": "b6068973e0b8471f45181b6614128f98de662b18b0c47cc4608b7691982d415e",
@@ -34299,7 +34299,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-authored-face-pilot/source/game/group-movement.js",
+      "path": "/tmp/granadero-authored-face-pilot/source/game/group-movement.ts",
       "bytes": 15639,
       "gitBlob": "42a76ce0b4d5ed9faa2a4d6ad090c35175d2e7a1",
       "sha256": "a1502529749d818fdf0759c587da0bc49418ff02f3573b3a13302f6769928938",
@@ -34779,7 +34779,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-authored-face-pilot/source/game/merchant-preferences.js",
+      "path": "/tmp/granadero-authored-face-pilot/source/game/merchant-preferences.ts",
       "bytes": 1391,
       "gitBlob": "7db1ffe8b5e0daa3aa1b989a041a2b18b68ed24f",
       "sha256": "10de423f52f493b9c131f74f8666ab55a9deb737f6654908d54f7c1973621f21",
@@ -34974,7 +34974,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-authored-face-pilot/source/game/movement-step.js",
+      "path": "/tmp/granadero-authored-face-pilot/source/game/movement-step.ts",
       "bytes": 4466,
       "gitBlob": "5c673737164fb71714ba96c87b5a4b840916f0d6",
       "sha256": "b6f71927fec204c25e6267cc5b590cd8e49c5092f0dcdf5c135a77f64ff9f4ff",
@@ -35484,7 +35484,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-authored-face-pilot/source/game/roster-hands.js",
+      "path": "/tmp/granadero-authored-face-pilot/source/game/roster-hands.ts",
       "bytes": 2722,
       "gitBlob": "f47776cb4457dfda63cd86cdd28707c26df87af1",
       "sha256": "52f3073f11d3c92dc80b5b08757c6c26eb8b2ad514917c0d0b703bc725df589b",
@@ -36369,7 +36369,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-authored-face-pilot/source/game/tactical-planning-space.js",
+      "path": "/tmp/granadero-authored-face-pilot/source/game/tactical-planning-space.ts",
       "bytes": 566,
       "gitBlob": "0d12565f8b11d8927a505875ef2cda969d4cc75a",
       "sha256": "d6159a82ef81659437baa3065bebd96828e1f8ef1f9fe8734451a9e3f4f20da6",
@@ -36684,7 +36684,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-authored-face-pilot/source/game/world-cells.js",
+      "path": "/tmp/granadero-authored-face-pilot/source/game/world-cells.ts",
       "bytes": 6130,
       "gitBlob": "b4faf71aaf1f0708e694b446a140f2df957546f7",
       "sha256": "dfde9b4e98d8f482c98ab195b66109bd2667699f5c26078c1fbaa3a8b3e792d5",
@@ -41803,7 +41803,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-cloth-form-pilot/source/game/artillery-depots.js",
+      "path": "/tmp/granadero-cloth-form-pilot/source/game/artillery-depots.ts",
       "bytes": 258,
       "gitBlob": "1b87acca0ab0bae68938076f17a26af2ed24176c",
       "sha256": "2cee8bf36b87f049fd9b27858ec3e68f683068da38ec33a48e188060f1ab5d76",
@@ -42869,7 +42869,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-cloth-form-pilot/source/game/content-launch.js",
+      "path": "/tmp/granadero-cloth-form-pilot/source/game/content-launch.ts",
       "bytes": 508,
       "gitBlob": "cf60a4d88065ceda6a212259fb5afa593824b05d",
       "sha256": "b6068973e0b8471f45181b6614128f98de662b18b0c47cc4608b7691982d415e",
@@ -43589,7 +43589,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-cloth-form-pilot/source/game/group-movement.js",
+      "path": "/tmp/granadero-cloth-form-pilot/source/game/group-movement.ts",
       "bytes": 15639,
       "gitBlob": "42a76ce0b4d5ed9faa2a4d6ad090c35175d2e7a1",
       "sha256": "a1502529749d818fdf0759c587da0bc49418ff02f3573b3a13302f6769928938",
@@ -44069,7 +44069,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-cloth-form-pilot/source/game/merchant-preferences.js",
+      "path": "/tmp/granadero-cloth-form-pilot/source/game/merchant-preferences.ts",
       "bytes": 1391,
       "gitBlob": "7db1ffe8b5e0daa3aa1b989a041a2b18b68ed24f",
       "sha256": "10de423f52f493b9c131f74f8666ab55a9deb737f6654908d54f7c1973621f21",
@@ -44264,7 +44264,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-cloth-form-pilot/source/game/movement-step.js",
+      "path": "/tmp/granadero-cloth-form-pilot/source/game/movement-step.ts",
       "bytes": 4466,
       "gitBlob": "5c673737164fb71714ba96c87b5a4b840916f0d6",
       "sha256": "b6f71927fec204c25e6267cc5b590cd8e49c5092f0dcdf5c135a77f64ff9f4ff",
@@ -44774,7 +44774,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-cloth-form-pilot/source/game/roster-hands.js",
+      "path": "/tmp/granadero-cloth-form-pilot/source/game/roster-hands.ts",
       "bytes": 2722,
       "gitBlob": "f47776cb4457dfda63cd86cdd28707c26df87af1",
       "sha256": "52f3073f11d3c92dc80b5b08757c6c26eb8b2ad514917c0d0b703bc725df589b",
@@ -45659,7 +45659,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-cloth-form-pilot/source/game/tactical-planning-space.js",
+      "path": "/tmp/granadero-cloth-form-pilot/source/game/tactical-planning-space.ts",
       "bytes": 566,
       "gitBlob": "0d12565f8b11d8927a505875ef2cda969d4cc75a",
       "sha256": "d6159a82ef81659437baa3065bebd96828e1f8ef1f9fe8734451a9e3f4f20da6",
@@ -45974,7 +45974,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-cloth-form-pilot/source/game/world-cells.js",
+      "path": "/tmp/granadero-cloth-form-pilot/source/game/world-cells.ts",
       "bytes": 6130,
       "gitBlob": "b4faf71aaf1f0708e694b446a140f2df957546f7",
       "sha256": "dfde9b4e98d8f482c98ab195b66109bd2667699f5c26078c1fbaa3a8b3e792d5",
@@ -108060,7 +108060,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-eye-region-pilot/source/game/artillery-depots.js",
+      "path": "/tmp/granadero-eye-region-pilot/source/game/artillery-depots.ts",
       "bytes": 258,
       "gitBlob": "1b87acca0ab0bae68938076f17a26af2ed24176c",
       "sha256": "2cee8bf36b87f049fd9b27858ec3e68f683068da38ec33a48e188060f1ab5d76",
@@ -109126,7 +109126,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-eye-region-pilot/source/game/content-launch.js",
+      "path": "/tmp/granadero-eye-region-pilot/source/game/content-launch.ts",
       "bytes": 508,
       "gitBlob": "cf60a4d88065ceda6a212259fb5afa593824b05d",
       "sha256": "b6068973e0b8471f45181b6614128f98de662b18b0c47cc4608b7691982d415e",
@@ -109846,7 +109846,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-eye-region-pilot/source/game/group-movement.js",
+      "path": "/tmp/granadero-eye-region-pilot/source/game/group-movement.ts",
       "bytes": 15639,
       "gitBlob": "42a76ce0b4d5ed9faa2a4d6ad090c35175d2e7a1",
       "sha256": "a1502529749d818fdf0759c587da0bc49418ff02f3573b3a13302f6769928938",
@@ -110326,7 +110326,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-eye-region-pilot/source/game/merchant-preferences.js",
+      "path": "/tmp/granadero-eye-region-pilot/source/game/merchant-preferences.ts",
       "bytes": 1391,
       "gitBlob": "7db1ffe8b5e0daa3aa1b989a041a2b18b68ed24f",
       "sha256": "10de423f52f493b9c131f74f8666ab55a9deb737f6654908d54f7c1973621f21",
@@ -110521,7 +110521,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-eye-region-pilot/source/game/movement-step.js",
+      "path": "/tmp/granadero-eye-region-pilot/source/game/movement-step.ts",
       "bytes": 4466,
       "gitBlob": "5c673737164fb71714ba96c87b5a4b840916f0d6",
       "sha256": "b6f71927fec204c25e6267cc5b590cd8e49c5092f0dcdf5c135a77f64ff9f4ff",
@@ -111031,7 +111031,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-eye-region-pilot/source/game/roster-hands.js",
+      "path": "/tmp/granadero-eye-region-pilot/source/game/roster-hands.ts",
       "bytes": 2722,
       "gitBlob": "f47776cb4457dfda63cd86cdd28707c26df87af1",
       "sha256": "52f3073f11d3c92dc80b5b08757c6c26eb8b2ad514917c0d0b703bc725df589b",
@@ -111916,7 +111916,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-eye-region-pilot/source/game/tactical-planning-space.js",
+      "path": "/tmp/granadero-eye-region-pilot/source/game/tactical-planning-space.ts",
       "bytes": 566,
       "gitBlob": "0d12565f8b11d8927a505875ef2cda969d4cc75a",
       "sha256": "d6159a82ef81659437baa3065bebd96828e1f8ef1f9fe8734451a9e3f4f20da6",
@@ -112231,7 +112231,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-eye-region-pilot/source/game/world-cells.js",
+      "path": "/tmp/granadero-eye-region-pilot/source/game/world-cells.ts",
       "bytes": 6130,
       "gitBlob": "b4faf71aaf1f0708e694b446a140f2df957546f7",
       "sha256": "dfde9b4e98d8f482c98ab195b66109bd2667699f5c26078c1fbaa3a8b3e792d5",
@@ -117511,7 +117511,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-garment-construction-pilot/source/game/artillery-depots.js",
+      "path": "/tmp/granadero-garment-construction-pilot/source/game/artillery-depots.ts",
       "bytes": 258,
       "gitBlob": "1b87acca0ab0bae68938076f17a26af2ed24176c",
       "sha256": "2cee8bf36b87f049fd9b27858ec3e68f683068da38ec33a48e188060f1ab5d76",
@@ -118577,7 +118577,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-garment-construction-pilot/source/game/content-launch.js",
+      "path": "/tmp/granadero-garment-construction-pilot/source/game/content-launch.ts",
       "bytes": 508,
       "gitBlob": "cf60a4d88065ceda6a212259fb5afa593824b05d",
       "sha256": "b6068973e0b8471f45181b6614128f98de662b18b0c47cc4608b7691982d415e",
@@ -119297,7 +119297,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-garment-construction-pilot/source/game/group-movement.js",
+      "path": "/tmp/granadero-garment-construction-pilot/source/game/group-movement.ts",
       "bytes": 15639,
       "gitBlob": "42a76ce0b4d5ed9faa2a4d6ad090c35175d2e7a1",
       "sha256": "a1502529749d818fdf0759c587da0bc49418ff02f3573b3a13302f6769928938",
@@ -119777,7 +119777,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-garment-construction-pilot/source/game/merchant-preferences.js",
+      "path": "/tmp/granadero-garment-construction-pilot/source/game/merchant-preferences.ts",
       "bytes": 1391,
       "gitBlob": "7db1ffe8b5e0daa3aa1b989a041a2b18b68ed24f",
       "sha256": "10de423f52f493b9c131f74f8666ab55a9deb737f6654908d54f7c1973621f21",
@@ -119972,7 +119972,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-garment-construction-pilot/source/game/movement-step.js",
+      "path": "/tmp/granadero-garment-construction-pilot/source/game/movement-step.ts",
       "bytes": 4466,
       "gitBlob": "5c673737164fb71714ba96c87b5a4b840916f0d6",
       "sha256": "b6f71927fec204c25e6267cc5b590cd8e49c5092f0dcdf5c135a77f64ff9f4ff",
@@ -120482,7 +120482,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-garment-construction-pilot/source/game/roster-hands.js",
+      "path": "/tmp/granadero-garment-construction-pilot/source/game/roster-hands.ts",
       "bytes": 2722,
       "gitBlob": "f47776cb4457dfda63cd86cdd28707c26df87af1",
       "sha256": "52f3073f11d3c92dc80b5b08757c6c26eb8b2ad514917c0d0b703bc725df589b",
@@ -121367,7 +121367,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-garment-construction-pilot/source/game/tactical-planning-space.js",
+      "path": "/tmp/granadero-garment-construction-pilot/source/game/tactical-planning-space.ts",
       "bytes": 566,
       "gitBlob": "0d12565f8b11d8927a505875ef2cda969d4cc75a",
       "sha256": "d6159a82ef81659437baa3065bebd96828e1f8ef1f9fe8734451a9e3f4f20da6",
@@ -121682,7 +121682,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-garment-construction-pilot/source/game/world-cells.js",
+      "path": "/tmp/granadero-garment-construction-pilot/source/game/world-cells.ts",
       "bytes": 6130,
       "gitBlob": "b4faf71aaf1f0708e694b446a140f2df957546f7",
       "sha256": "dfde9b4e98d8f482c98ab195b66109bd2667699f5c26078c1fbaa3a8b3e792d5",
@@ -131329,7 +131329,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/source/game/artillery-depots.js",
+      "path": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/source/game/artillery-depots.ts",
       "bytes": 258,
       "gitBlob": "1b87acca0ab0bae68938076f17a26af2ed24176c",
       "sha256": "2cee8bf36b87f049fd9b27858ec3e68f683068da38ec33a48e188060f1ab5d76",
@@ -132395,7 +132395,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/source/game/content-launch.js",
+      "path": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/source/game/content-launch.ts",
       "bytes": 508,
       "gitBlob": "cf60a4d88065ceda6a212259fb5afa593824b05d",
       "sha256": "b6068973e0b8471f45181b6614128f98de662b18b0c47cc4608b7691982d415e",
@@ -133115,7 +133115,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/source/game/group-movement.js",
+      "path": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/source/game/group-movement.ts",
       "bytes": 15639,
       "gitBlob": "42a76ce0b4d5ed9faa2a4d6ad090c35175d2e7a1",
       "sha256": "a1502529749d818fdf0759c587da0bc49418ff02f3573b3a13302f6769928938",
@@ -133595,7 +133595,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/source/game/merchant-preferences.js",
+      "path": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/source/game/merchant-preferences.ts",
       "bytes": 1391,
       "gitBlob": "7db1ffe8b5e0daa3aa1b989a041a2b18b68ed24f",
       "sha256": "10de423f52f493b9c131f74f8666ab55a9deb737f6654908d54f7c1973621f21",
@@ -133790,7 +133790,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/source/game/movement-step.js",
+      "path": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/source/game/movement-step.ts",
       "bytes": 4466,
       "gitBlob": "5c673737164fb71714ba96c87b5a4b840916f0d6",
       "sha256": "b6f71927fec204c25e6267cc5b590cd8e49c5092f0dcdf5c135a77f64ff9f4ff",
@@ -134300,7 +134300,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/source/game/roster-hands.js",
+      "path": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/source/game/roster-hands.ts",
       "bytes": 2722,
       "gitBlob": "f47776cb4457dfda63cd86cdd28707c26df87af1",
       "sha256": "52f3073f11d3c92dc80b5b08757c6c26eb8b2ad514917c0d0b703bc725df589b",
@@ -135201,7 +135201,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/source/game/tactical-planning-space.js",
+      "path": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/source/game/tactical-planning-space.ts",
       "bytes": 566,
       "gitBlob": "0d12565f8b11d8927a505875ef2cda969d4cc75a",
       "sha256": "d6159a82ef81659437baa3065bebd96828e1f8ef1f9fe8734451a9e3f4f20da6",
@@ -135516,7 +135516,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/source/game/world-cells.js",
+      "path": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/source/game/world-cells.ts",
       "bytes": 6130,
       "gitBlob": "b4faf71aaf1f0708e694b446a140f2df957546f7",
       "sha256": "dfde9b4e98d8f482c98ab195b66109bd2667699f5c26078c1fbaa3a8b3e792d5",
@@ -135610,7 +135610,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/source/playgrounds/granadero-3d/tests/server.test.mjs",
+      "path": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/source/playgrounds/granadero-3d/tests/server.test.ts",
       "bytes": 4627,
       "gitBlob": "44dcbcb505c676aa23e429aa30720c04b7eb068d",
       "sha256": "f4b92f5d63000de98f65e61ab3b457bf67bbf6b1fb12d3b9b1f64655de59e71a",
@@ -150031,7 +150031,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-hair-braid01-pilot/source/game/artillery-depots.js",
+      "path": "/tmp/granadero-hair-braid01-pilot/source/game/artillery-depots.ts",
       "bytes": 258,
       "gitBlob": "1b87acca0ab0bae68938076f17a26af2ed24176c",
       "sha256": "2cee8bf36b87f049fd9b27858ec3e68f683068da38ec33a48e188060f1ab5d76",
@@ -151097,7 +151097,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-hair-braid01-pilot/source/game/content-launch.js",
+      "path": "/tmp/granadero-hair-braid01-pilot/source/game/content-launch.ts",
       "bytes": 508,
       "gitBlob": "cf60a4d88065ceda6a212259fb5afa593824b05d",
       "sha256": "b6068973e0b8471f45181b6614128f98de662b18b0c47cc4608b7691982d415e",
@@ -151817,7 +151817,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-hair-braid01-pilot/source/game/group-movement.js",
+      "path": "/tmp/granadero-hair-braid01-pilot/source/game/group-movement.ts",
       "bytes": 15639,
       "gitBlob": "42a76ce0b4d5ed9faa2a4d6ad090c35175d2e7a1",
       "sha256": "a1502529749d818fdf0759c587da0bc49418ff02f3573b3a13302f6769928938",
@@ -152297,7 +152297,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-hair-braid01-pilot/source/game/merchant-preferences.js",
+      "path": "/tmp/granadero-hair-braid01-pilot/source/game/merchant-preferences.ts",
       "bytes": 1391,
       "gitBlob": "7db1ffe8b5e0daa3aa1b989a041a2b18b68ed24f",
       "sha256": "10de423f52f493b9c131f74f8666ab55a9deb737f6654908d54f7c1973621f21",
@@ -152492,7 +152492,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-hair-braid01-pilot/source/game/movement-step.js",
+      "path": "/tmp/granadero-hair-braid01-pilot/source/game/movement-step.ts",
       "bytes": 4466,
       "gitBlob": "5c673737164fb71714ba96c87b5a4b840916f0d6",
       "sha256": "b6f71927fec204c25e6267cc5b590cd8e49c5092f0dcdf5c135a77f64ff9f4ff",
@@ -153002,7 +153002,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-hair-braid01-pilot/source/game/roster-hands.js",
+      "path": "/tmp/granadero-hair-braid01-pilot/source/game/roster-hands.ts",
       "bytes": 2722,
       "gitBlob": "f47776cb4457dfda63cd86cdd28707c26df87af1",
       "sha256": "52f3073f11d3c92dc80b5b08757c6c26eb8b2ad514917c0d0b703bc725df589b",
@@ -153887,7 +153887,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-hair-braid01-pilot/source/game/tactical-planning-space.js",
+      "path": "/tmp/granadero-hair-braid01-pilot/source/game/tactical-planning-space.ts",
       "bytes": 566,
       "gitBlob": "0d12565f8b11d8927a505875ef2cda969d4cc75a",
       "sha256": "d6159a82ef81659437baa3065bebd96828e1f8ef1f9fe8734451a9e3f4f20da6",
@@ -154202,7 +154202,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-hair-braid01-pilot/source/game/world-cells.js",
+      "path": "/tmp/granadero-hair-braid01-pilot/source/game/world-cells.ts",
       "bytes": 6130,
       "gitBlob": "b4faf71aaf1f0708e694b446a140f2df957546f7",
       "sha256": "dfde9b4e98d8f482c98ab195b66109bd2667699f5c26078c1fbaa3a8b3e792d5",
@@ -158165,7 +158165,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-hair-construction-pilot/source/game/artillery-depots.js",
+      "path": "/tmp/granadero-hair-construction-pilot/source/game/artillery-depots.ts",
       "bytes": 258,
       "gitBlob": "1b87acca0ab0bae68938076f17a26af2ed24176c",
       "sha256": "2cee8bf36b87f049fd9b27858ec3e68f683068da38ec33a48e188060f1ab5d76",
@@ -159231,7 +159231,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-hair-construction-pilot/source/game/content-launch.js",
+      "path": "/tmp/granadero-hair-construction-pilot/source/game/content-launch.ts",
       "bytes": 508,
       "gitBlob": "cf60a4d88065ceda6a212259fb5afa593824b05d",
       "sha256": "b6068973e0b8471f45181b6614128f98de662b18b0c47cc4608b7691982d415e",
@@ -159951,7 +159951,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-hair-construction-pilot/source/game/group-movement.js",
+      "path": "/tmp/granadero-hair-construction-pilot/source/game/group-movement.ts",
       "bytes": 15639,
       "gitBlob": "42a76ce0b4d5ed9faa2a4d6ad090c35175d2e7a1",
       "sha256": "a1502529749d818fdf0759c587da0bc49418ff02f3573b3a13302f6769928938",
@@ -160431,7 +160431,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-hair-construction-pilot/source/game/merchant-preferences.js",
+      "path": "/tmp/granadero-hair-construction-pilot/source/game/merchant-preferences.ts",
       "bytes": 1391,
       "gitBlob": "7db1ffe8b5e0daa3aa1b989a041a2b18b68ed24f",
       "sha256": "10de423f52f493b9c131f74f8666ab55a9deb737f6654908d54f7c1973621f21",
@@ -160626,7 +160626,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-hair-construction-pilot/source/game/movement-step.js",
+      "path": "/tmp/granadero-hair-construction-pilot/source/game/movement-step.ts",
       "bytes": 4466,
       "gitBlob": "5c673737164fb71714ba96c87b5a4b840916f0d6",
       "sha256": "b6f71927fec204c25e6267cc5b590cd8e49c5092f0dcdf5c135a77f64ff9f4ff",
@@ -161136,7 +161136,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-hair-construction-pilot/source/game/roster-hands.js",
+      "path": "/tmp/granadero-hair-construction-pilot/source/game/roster-hands.ts",
       "bytes": 2722,
       "gitBlob": "f47776cb4457dfda63cd86cdd28707c26df87af1",
       "sha256": "52f3073f11d3c92dc80b5b08757c6c26eb8b2ad514917c0d0b703bc725df589b",
@@ -162021,7 +162021,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-hair-construction-pilot/source/game/tactical-planning-space.js",
+      "path": "/tmp/granadero-hair-construction-pilot/source/game/tactical-planning-space.ts",
       "bytes": 566,
       "gitBlob": "0d12565f8b11d8927a505875ef2cda969d4cc75a",
       "sha256": "d6159a82ef81659437baa3065bebd96828e1f8ef1f9fe8734451a9e3f4f20da6",
@@ -162336,7 +162336,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-hair-construction-pilot/source/game/world-cells.js",
+      "path": "/tmp/granadero-hair-construction-pilot/source/game/world-cells.ts",
       "bytes": 6130,
       "gitBlob": "b4faf71aaf1f0708e694b446a140f2df957546f7",
       "sha256": "dfde9b4e98d8f482c98ab195b66109bd2667699f5c26078c1fbaa3a8b3e792d5",
@@ -176641,7 +176641,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-hair-naturalism-pilot/worker-delivery/preview/playgrounds/granadero-3d/tests/asset.test.mjs",
+      "path": "/tmp/granadero-hair-naturalism-pilot/worker-delivery/preview/playgrounds/granadero-3d/tests/asset.test.ts",
       "bytes": 38821,
       "gitBlob": "8e8d50ae960226f4f66a66e9e1b3139552180dac",
       "sha256": "803a10c2fbff0b163c057083c74a3d7598bfd1f7547be433ef75a6c0fced6f6f",
@@ -176656,7 +176656,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-hair-naturalism-pilot/worker-delivery/preview/playgrounds/granadero-3d/tests/library.test.mjs",
+      "path": "/tmp/granadero-hair-naturalism-pilot/worker-delivery/preview/playgrounds/granadero-3d/tests/library.test.ts",
       "bytes": 5119,
       "gitBlob": "20b2d05554799b0a6f40069eb5613d4b0942bd2a",
       "sha256": "61f9d85b5ac64aece04f2569a7d2173b506c8ea6fd1c9979b556edef301ec73e",
@@ -176672,7 +176672,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-hair-naturalism-pilot/worker-delivery/preview/playgrounds/granadero-3d/tests/server.test.mjs",
+      "path": "/tmp/granadero-hair-naturalism-pilot/worker-delivery/preview/playgrounds/granadero-3d/tests/server.test.ts",
       "bytes": 4627,
       "gitBlob": "44dcbcb505c676aa23e429aa30720c04b7eb068d",
       "sha256": "f4b92f5d63000de98f65e61ab3b457bf67bbf6b1fb12d3b9b1f64655de59e71a",
@@ -221057,7 +221057,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-stubble-pilot/source/game/artillery-depots.js",
+      "path": "/tmp/granadero-stubble-pilot/source/game/artillery-depots.ts",
       "bytes": 258,
       "gitBlob": "1b87acca0ab0bae68938076f17a26af2ed24176c",
       "sha256": "2cee8bf36b87f049fd9b27858ec3e68f683068da38ec33a48e188060f1ab5d76",
@@ -222123,7 +222123,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-stubble-pilot/source/game/content-launch.js",
+      "path": "/tmp/granadero-stubble-pilot/source/game/content-launch.ts",
       "bytes": 508,
       "gitBlob": "cf60a4d88065ceda6a212259fb5afa593824b05d",
       "sha256": "b6068973e0b8471f45181b6614128f98de662b18b0c47cc4608b7691982d415e",
@@ -222843,7 +222843,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-stubble-pilot/source/game/group-movement.js",
+      "path": "/tmp/granadero-stubble-pilot/source/game/group-movement.ts",
       "bytes": 15639,
       "gitBlob": "42a76ce0b4d5ed9faa2a4d6ad090c35175d2e7a1",
       "sha256": "a1502529749d818fdf0759c587da0bc49418ff02f3573b3a13302f6769928938",
@@ -223323,7 +223323,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-stubble-pilot/source/game/merchant-preferences.js",
+      "path": "/tmp/granadero-stubble-pilot/source/game/merchant-preferences.ts",
       "bytes": 1391,
       "gitBlob": "7db1ffe8b5e0daa3aa1b989a041a2b18b68ed24f",
       "sha256": "10de423f52f493b9c131f74f8666ab55a9deb737f6654908d54f7c1973621f21",
@@ -223518,7 +223518,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-stubble-pilot/source/game/movement-step.js",
+      "path": "/tmp/granadero-stubble-pilot/source/game/movement-step.ts",
       "bytes": 4466,
       "gitBlob": "5c673737164fb71714ba96c87b5a4b840916f0d6",
       "sha256": "b6f71927fec204c25e6267cc5b590cd8e49c5092f0dcdf5c135a77f64ff9f4ff",
@@ -224028,7 +224028,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-stubble-pilot/source/game/roster-hands.js",
+      "path": "/tmp/granadero-stubble-pilot/source/game/roster-hands.ts",
       "bytes": 2722,
       "gitBlob": "f47776cb4457dfda63cd86cdd28707c26df87af1",
       "sha256": "52f3073f11d3c92dc80b5b08757c6c26eb8b2ad514917c0d0b703bc725df589b",
@@ -224913,7 +224913,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-stubble-pilot/source/game/tactical-planning-space.js",
+      "path": "/tmp/granadero-stubble-pilot/source/game/tactical-planning-space.ts",
       "bytes": 566,
       "gitBlob": "0d12565f8b11d8927a505875ef2cda969d4cc75a",
       "sha256": "d6159a82ef81659437baa3065bebd96828e1f8ef1f9fe8734451a9e3f4f20da6",
@@ -225228,7 +225228,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-stubble-pilot/source/game/world-cells.js",
+      "path": "/tmp/granadero-stubble-pilot/source/game/world-cells.ts",
       "bytes": 6130,
       "gitBlob": "b4faf71aaf1f0708e694b446a140f2df957546f7",
       "sha256": "dfde9b4e98d8f482c98ab195b66109bd2667699f5c26078c1fbaa3a8b3e792d5",
@@ -237448,7 +237448,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-uniform-material-pilot/source/game/artillery-depots.js",
+      "path": "/tmp/granadero-uniform-material-pilot/source/game/artillery-depots.ts",
       "bytes": 258,
       "gitBlob": "1b87acca0ab0bae68938076f17a26af2ed24176c",
       "sha256": "2cee8bf36b87f049fd9b27858ec3e68f683068da38ec33a48e188060f1ab5d76",
@@ -238514,7 +238514,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-uniform-material-pilot/source/game/content-launch.js",
+      "path": "/tmp/granadero-uniform-material-pilot/source/game/content-launch.ts",
       "bytes": 508,
       "gitBlob": "cf60a4d88065ceda6a212259fb5afa593824b05d",
       "sha256": "b6068973e0b8471f45181b6614128f98de662b18b0c47cc4608b7691982d415e",
@@ -239234,7 +239234,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-uniform-material-pilot/source/game/group-movement.js",
+      "path": "/tmp/granadero-uniform-material-pilot/source/game/group-movement.ts",
       "bytes": 15639,
       "gitBlob": "42a76ce0b4d5ed9faa2a4d6ad090c35175d2e7a1",
       "sha256": "a1502529749d818fdf0759c587da0bc49418ff02f3573b3a13302f6769928938",
@@ -239714,7 +239714,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-uniform-material-pilot/source/game/merchant-preferences.js",
+      "path": "/tmp/granadero-uniform-material-pilot/source/game/merchant-preferences.ts",
       "bytes": 1391,
       "gitBlob": "7db1ffe8b5e0daa3aa1b989a041a2b18b68ed24f",
       "sha256": "10de423f52f493b9c131f74f8666ab55a9deb737f6654908d54f7c1973621f21",
@@ -239909,7 +239909,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-uniform-material-pilot/source/game/movement-step.js",
+      "path": "/tmp/granadero-uniform-material-pilot/source/game/movement-step.ts",
       "bytes": 4466,
       "gitBlob": "5c673737164fb71714ba96c87b5a4b840916f0d6",
       "sha256": "b6f71927fec204c25e6267cc5b590cd8e49c5092f0dcdf5c135a77f64ff9f4ff",
@@ -240419,7 +240419,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-uniform-material-pilot/source/game/roster-hands.js",
+      "path": "/tmp/granadero-uniform-material-pilot/source/game/roster-hands.ts",
       "bytes": 2722,
       "gitBlob": "f47776cb4457dfda63cd86cdd28707c26df87af1",
       "sha256": "52f3073f11d3c92dc80b5b08757c6c26eb8b2ad514917c0d0b703bc725df589b",
@@ -241304,7 +241304,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-uniform-material-pilot/source/game/tactical-planning-space.js",
+      "path": "/tmp/granadero-uniform-material-pilot/source/game/tactical-planning-space.ts",
       "bytes": 566,
       "gitBlob": "0d12565f8b11d8927a505875ef2cda969d4cc75a",
       "sha256": "d6159a82ef81659437baa3065bebd96828e1f8ef1f9fe8734451a9e3f4f20da6",
@@ -241619,7 +241619,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-uniform-material-pilot/source/game/world-cells.js",
+      "path": "/tmp/granadero-uniform-material-pilot/source/game/world-cells.ts",
       "bytes": 6130,
       "gitBlob": "b4faf71aaf1f0708e694b446a140f2df957546f7",
       "sha256": "dfde9b4e98d8f482c98ab195b66109bd2667699f5c26078c1fbaa3a8b3e792d5",
@@ -244980,7 +244980,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-uniform-shape-pilot/source/game/artillery-depots.js",
+      "path": "/tmp/granadero-uniform-shape-pilot/source/game/artillery-depots.ts",
       "bytes": 258,
       "gitBlob": "1b87acca0ab0bae68938076f17a26af2ed24176c",
       "sha256": "2cee8bf36b87f049fd9b27858ec3e68f683068da38ec33a48e188060f1ab5d76",
@@ -246046,7 +246046,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-uniform-shape-pilot/source/game/content-launch.js",
+      "path": "/tmp/granadero-uniform-shape-pilot/source/game/content-launch.ts",
       "bytes": 508,
       "gitBlob": "cf60a4d88065ceda6a212259fb5afa593824b05d",
       "sha256": "b6068973e0b8471f45181b6614128f98de662b18b0c47cc4608b7691982d415e",
@@ -246766,7 +246766,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-uniform-shape-pilot/source/game/group-movement.js",
+      "path": "/tmp/granadero-uniform-shape-pilot/source/game/group-movement.ts",
       "bytes": 15639,
       "gitBlob": "42a76ce0b4d5ed9faa2a4d6ad090c35175d2e7a1",
       "sha256": "a1502529749d818fdf0759c587da0bc49418ff02f3573b3a13302f6769928938",
@@ -247246,7 +247246,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-uniform-shape-pilot/source/game/merchant-preferences.js",
+      "path": "/tmp/granadero-uniform-shape-pilot/source/game/merchant-preferences.ts",
       "bytes": 1391,
       "gitBlob": "7db1ffe8b5e0daa3aa1b989a041a2b18b68ed24f",
       "sha256": "10de423f52f493b9c131f74f8666ab55a9deb737f6654908d54f7c1973621f21",
@@ -247441,7 +247441,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-uniform-shape-pilot/source/game/movement-step.js",
+      "path": "/tmp/granadero-uniform-shape-pilot/source/game/movement-step.ts",
       "bytes": 4466,
       "gitBlob": "5c673737164fb71714ba96c87b5a4b840916f0d6",
       "sha256": "b6f71927fec204c25e6267cc5b590cd8e49c5092f0dcdf5c135a77f64ff9f4ff",
@@ -247951,7 +247951,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-uniform-shape-pilot/source/game/roster-hands.js",
+      "path": "/tmp/granadero-uniform-shape-pilot/source/game/roster-hands.ts",
       "bytes": 2722,
       "gitBlob": "f47776cb4457dfda63cd86cdd28707c26df87af1",
       "sha256": "52f3073f11d3c92dc80b5b08757c6c26eb8b2ad514917c0d0b703bc725df589b",
@@ -248836,7 +248836,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-uniform-shape-pilot/source/game/tactical-planning-space.js",
+      "path": "/tmp/granadero-uniform-shape-pilot/source/game/tactical-planning-space.ts",
       "bytes": 566,
       "gitBlob": "0d12565f8b11d8927a505875ef2cda969d4cc75a",
       "sha256": "d6159a82ef81659437baa3065bebd96828e1f8ef1f9fe8734451a9e3f4f20da6",
@@ -249151,7 +249151,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-uniform-shape-pilot/source/game/world-cells.js",
+      "path": "/tmp/granadero-uniform-shape-pilot/source/game/world-cells.ts",
       "bytes": 6130,
       "gitBlob": "b4faf71aaf1f0708e694b446a140f2df957546f7",
       "sha256": "dfde9b4e98d8f482c98ab195b66109bd2667699f5c26078c1fbaa3a8b3e792d5",
@@ -264959,7 +264959,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-worker-face-identity-pilot/preview/playgrounds/granadero-3d/tests/asset.test.mjs",
+      "path": "/tmp/granadero-worker-face-identity-pilot/preview/playgrounds/granadero-3d/tests/asset.test.ts",
       "bytes": 38821,
       "gitBlob": "8e8d50ae960226f4f66a66e9e1b3139552180dac",
       "sha256": "803a10c2fbff0b163c057083c74a3d7598bfd1f7547be433ef75a6c0fced6f6f",
@@ -264974,7 +264974,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-worker-face-identity-pilot/preview/playgrounds/granadero-3d/tests/library.test.mjs",
+      "path": "/tmp/granadero-worker-face-identity-pilot/preview/playgrounds/granadero-3d/tests/library.test.ts",
       "bytes": 5119,
       "gitBlob": "20b2d05554799b0a6f40069eb5613d4b0942bd2a",
       "sha256": "61f9d85b5ac64aece04f2569a7d2173b506c8ea6fd1c9979b556edef301ec73e",
@@ -264990,7 +264990,7 @@
       "sourceBranchRecorded": false
     },
     {
-      "path": "/tmp/granadero-worker-face-identity-pilot/preview/playgrounds/granadero-3d/tests/server.test.mjs",
+      "path": "/tmp/granadero-worker-face-identity-pilot/preview/playgrounds/granadero-3d/tests/server.test.ts",
       "bytes": 4627,
       "gitBlob": "44dcbcb505c676aa23e429aa30720c04b7eb068d",
       "sha256": "f4b92f5d63000de98f65e61ab3b457bf67bbf6b1fb12d3b9b1f64655de59e71a",
@@ -283118,8 +283118,8 @@
       "archivePath": "blobs/47/4740b680e88281e628c30987ac5bf247e7357572"
     },
     {
-      "path": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/asset.test.mjs",
-      "relativePath": "artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/asset.test.mjs",
+      "path": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/asset.test.ts",
+      "relativePath": "artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/asset.test.ts",
       "originalWorktree": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos",
       "checkoutHead": "1a1fcef891249f371c34ad9d340b522aef862fe6",
       "checkoutBranch": "codex/human-anatomy-review",
@@ -283139,8 +283139,8 @@
       "comparedIntegrationHead": "af952d7f81809e5c150b3ae8f6225ed1eb6bb78c"
     },
     {
-      "path": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/library.test.mjs",
-      "relativePath": "artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/library.test.mjs",
+      "path": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/library.test.ts",
+      "relativePath": "artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/library.test.ts",
       "originalWorktree": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos",
       "checkoutHead": "1a1fcef891249f371c34ad9d340b522aef862fe6",
       "checkoutBranch": "codex/human-anatomy-review",
@@ -283161,8 +283161,8 @@
       "archivePath": "blobs/20/20b2d05554799b0a6f40069eb5613d4b0942bd2a"
     },
     {
-      "path": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/server.test.mjs",
-      "relativePath": "artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/server.test.mjs",
+      "path": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/server.test.ts",
+      "relativePath": "artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/server.test.ts",
       "originalWorktree": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos",
       "checkoutHead": "1a1fcef891249f371c34ad9d340b522aef862fe6",
       "checkoutBranch": "codex/human-anatomy-review",

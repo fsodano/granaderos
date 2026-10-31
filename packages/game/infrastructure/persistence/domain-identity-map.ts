@@ -54,7 +54,9 @@ export class DomainIdentityMap {
   ): DomainObjects[Kind] {
     const identities: Map<string, DomainObjects[Kind]> = this.#objects[kind];
     const existing = identities.get(id);
-    if (existing) return existing;
+    if (existing) {
+      return existing;
+    }
     const object = restore();
     identities.set(id, object);
     return object;

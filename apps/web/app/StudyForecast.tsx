@@ -21,13 +21,9 @@ export default function StudyForecast({
     return null;
   }
   return (
-    <p
-      className="care-condition"
-      aria-label={`Previsión de estudio de ${op.nickname}`}
-    >
+    <p className="care-condition" aria-label={`Previsión de estudio de ${op.nickname}`}>
       <strong>
-        {Object.entries(TRAINING_LABELS).find(([id]) => id === skill)?.[1]} ·{' '}
-        {solo.value}
+        {Object.entries(TRAINING_LABELS).find(([id]) => id === skill)?.[1]} · {solo.value}
       </strong>
       <br />
       {solo.ineligible ? (
@@ -44,9 +40,8 @@ export default function StudyForecast({
             </>
           )}
           <br />
-          {solo.earned}/10 mejoras por práctica · quedan {solo.remainingGains}.
-          Las horas cuentan solo mientras trabaja; las pausas y el descanso
-          alargan el plazo.
+          {solo.earned}/10 mejoras por práctica · quedan {solo.remainingGains}. Las horas cuentan
+          solo mientras trabaja; las pausas y el descanso alargan el plazo.
         </>
       )}
     </p>

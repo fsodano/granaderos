@@ -77,7 +77,9 @@ export function migrateArtilleryState(s) {
   }
   migrateArtilleryStateValue(next);
   for (const key of Object.keys(s)) {
-    if (!Object.hasOwn(next, key)) {delete s[key];}
+    if (!Object.hasOwn(next, key)) {
+      delete s[key];
+    }
   }
   Object.assign(s, next);
   return s;
@@ -132,14 +134,15 @@ function migrateArtilleryStateValue(s) {
         );
         s.artilleryStores ??= {};
         s.artilleryStores[at] ??= [];
-        for (let i = 0; i < count; i++)
-          {s.artilleryStores[at].push({
+        for (let i = 0; i < count; i++) {
+          s.artilleryStores[at].push({
             id: nextId(s),
             type: 'bronze4',
             side: 'player',
             loaded: true,
             ammo: 6,
-          });}
+          });
+        }
         delete depot.cannons;
       }
     }
@@ -195,7 +198,9 @@ function migrateArtilleryStateValue(s) {
         : guns.filter((g) => g.side === 'enemy' || take(g)).map((g) => ({ ...g, id: nextId(s) }));
   }
   for (const type of Object.keys(ARTILLERY)) {
-    if (Object.hasOwn(s.armory ?? {}, type)) {s.armory[type] = available[type];}
+    if (Object.hasOwn(s.armory ?? {}, type)) {
+      s.armory[type] = available[type];
+    }
   }
   s.artilleryVersion = 1;
   migrateArtilleryCustody(s);
@@ -318,14 +323,18 @@ export function settleSectorArtillery(snapshot, outcome) {
     return;
   }
   if (outcome === 'victory') {
-    for (const gun of snapshot.artillery) {gun.side = 'player';}
+    for (const gun of snapshot.artillery) {
+      gun.side = 'player';
+    }
   } else if (
     ['defeat', 'retreat'].includes(outcome) &&
     snapshot.units.some(
       (u) => u.side === 'enemy' && u.hp > 0 && !u.departure && !u.routed && !u.surrendered,
     )
   ) {
-    for (const gun of snapshot.artillery) {gun.side = 'enemy';}
+    for (const gun of snapshot.artillery) {
+      gun.side = 'enemy';
+    }
   }
   for (const gun of snapshot.artillery) {
     delete gun.stationed;
@@ -337,16 +346,29 @@ export function ownedArtilleryCount(s) {
     ...Object.entries(s.sectorStates ?? {}),
     ...Object.entries(s.sceneStates ?? {}),
   ]) {
-    if (s.sectors[parent(s, b.sectorId ?? id)]?.owner === 'patriot')
-      {for (const g of b.artillery ?? []) {if (g.side === 'player') {owned.set(g.id, g);}}}
+    if (s.sectors[parent(s, b.sectorId ?? id)]?.owner === 'patriot') {
+      for (const g of b.artillery ?? []) {
+        if (g.side === 'player') {
+          owned.set(g.id, g);
+        }
+      }
+    }
   }
   if (s.pendingBattle) {
-    for (const g of s.pendingBattle.artillery ?? [])
-      {if (g.side === 'player') {owned.set(g.id, g);}
-      else {owned.delete(g.id);}}
+    for (const g of s.pendingBattle.artillery ?? []) {
+      if (g.side === 'player') {
+        owned.set(g.id, g);
+      } else {
+        owned.delete(g.id);
+      }
+    }
   }
   for (const [at, guns] of Object.entries(s.artilleryDepots ?? {})) {
-    if (s.sectors[at]?.owner === 'patriot') {for (const g of guns) {owned.set(g.id, g);}}
+    if (s.sectors[at]?.owner === 'patriot') {
+      for (const g of guns) {
+        owned.set(g.id, g);
+      }
+    }
   }
   for (const t of s.artilleryTransfers ?? []) {
     owned.set(t.gun.id, t.gun);
@@ -380,8 +402,9 @@ export function validateCampaignArtillery(s) {
     ...Object.values(s.artilleryMerchants ?? {}).map((shop) => ({ artillery: shop.guns })),
   ]) {
     for (const g of list(b.artillery ?? [])) {
-      if (/^piece-[1-9][0-9]*$/.test(g.id))
-        {need(Number(g.id.slice(6)) < s.nextArtilleryId, 'La secuencia de piezas es inválida.');}
+      if (/^piece-[1-9][0-9]*$/.test(g.id)) {
+        need(Number(g.id.slice(6)) < s.nextArtilleryId, 'La secuencia de piezas es inválida.');
+      }
       need(!ids.has(g.id), 'Una pieza no puede estar en dos sectores.');
       ids.add(g.id);
     }

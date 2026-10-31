@@ -1,10 +1,7 @@
 import type { CampaignSnapshot } from '../../../packages/game/public/campaign-types.ts';
 import './sector-income.css';
 import { campaignSectors } from '../../../packages/game/campaign-definition.js';
-import {
-  townIncomeSources,
-  incomeSummary,
-} from '../../../packages/game/town-income-query.ts';
+import { townIncomeSources, incomeSummary } from '../../../packages/game/town-income-query.ts';
 
 const placeNameFor = (state: CampaignSnapshot) => (id: string) =>
   campaignSectors(state).find((sector) => sector.id === id)?.name ?? id;
@@ -16,9 +13,7 @@ export default function SectorIncome({
   definition: { id: string };
 }) {
   const placeName = placeNameFor(state),
-    source = townIncomeSources(state).find((row) =>
-      row.requiredSectors.includes(definition.id),
-    );
+    source = townIncomeSources(state).find((row) => row.requiredSectors.includes(definition.id));
   if (!source) {
     return (
       <section className="sector-income" aria-label="Ingresos del sector">
@@ -31,34 +26,27 @@ export default function SectorIncome({
     <section className="sector-income" aria-label="Ingresos del sector">
       <h3>{source.source}</h3>
       <p>
-        <strong>{source.daily.toLocaleString('es-AR')} pesos por día</strong> ·
-        acuerdo de {source.base.toLocaleString('es-AR')} pesos
+        <strong>{source.daily.toLocaleString('es-AR')} pesos por día</strong> · acuerdo de{' '}
+        {source.base.toLocaleString('es-AR')} pesos
       </p>
       <p>{source.status}</p>
       <small>
-        Representante: {source.representative.name} en{' '}
-        {placeName(source.representative.sectorId)}.
+        Representante: {source.representative.name} en {placeName(source.representative.sectorId)}.
       </small>
       {source.uncontrolled.length > 0 && (
-        <small>
-          Falta controlar: {source.uncontrolled.map(placeName).join(' y ')}.
-        </small>
+        <small>Falta controlar: {source.uncontrolled.map(placeName).join(' y ')}.</small>
       )}
       {!source.activated && (
         <small>
-          Con toda la localidad bajo control, entrá al sector y hablá con el
-          representante de forma amable o directa.
+          Con toda la localidad bajo control, entrá al sector y hablá con el representante de forma
+          amable o directa.
         </small>
       )}
       <small>
-        El acuerdo paga a medianoche mientras conserves el control de toda la
-        localidad.
+        El acuerdo paga a medianoche mientras conserves el control de toda la localidad.
       </small>
       {definition.id !== source.sectorId && (
-        <small>
-          Este sector comparte el acuerdo de {source.name}; no genera otro
-          cobro.
-        </small>
+        <small>Este sector comparte el acuerdo de {source.name}; no genera otro cobro.</small>
       )}
     </section>
   );
@@ -89,9 +77,7 @@ export function SectorIncomeTable({
           {sources.map((source) => (
             <tr key={source.id}>
               <td>
-                <button onClick={() => onSelect(source.sectorId)}>
-                  {source.name}
-                </button>
+                <button onClick={() => onSelect(source.sectorId)}>{source.name}</button>
               </td>
               <td>
                 {source.source}
@@ -114,9 +100,9 @@ export function SectorIncomeTable({
         </tfoot>
       </table>
       <p>
-        Controlá toda la localidad y hablá en persona con su representante de
-        forma amable o directa. Cada acuerdo paga una sola vez por día, a
-        medianoche. Las demás localidades no generan ingresos diarios.
+        Controlá toda la localidad y hablá en persona con su representante de forma amable o
+        directa. Cada acuerdo paga una sola vez por día, a medianoche. Las demás localidades no
+        generan ingresos diarios.
       </p>
     </div>
   );

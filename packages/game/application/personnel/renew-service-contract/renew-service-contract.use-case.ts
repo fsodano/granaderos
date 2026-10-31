@@ -14,12 +14,15 @@ export class RenewServiceContractUseCase {
   }
 
   execute(request: RenewServiceContractRequest): RenewServiceContractResponse {
-    if (!request.characterId || !request.term)
+    if (!request.characterId || !request.term) {
       throw new DomainRefusal(DomainRefusalCode.InvalidValue);
+    }
     const context = this.#repository.load(request);
     const contract = this.#renewal.renew(context);
     const expiresAt = contract.expiresAt;
-    if (expiresAt === null) throw new DomainRefusal(DomainRefusalCode.PermanentService);
+    if (expiresAt === null) {
+      throw new DomainRefusal(DomainRefusalCode.PermanentService);
+    }
     this.#repository.commit(context, contract);
     return {
       characterId: contract.characterId,

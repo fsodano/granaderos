@@ -59,27 +59,40 @@ export class CombatTurn {
     return this.#actionsTaken;
   }
   beginCurrentParticipant(): void {
-    if (this.complete) throw new CombatRefusal(CombatRefusalCode.InvalidCombatPhase);
+    if (this.complete) {
+      throw new CombatRefusal(CombatRefusalCode.InvalidCombatPhase);
+    }
     this.#participantStarted = true;
   }
   takeUnissuedBudgets(): readonly string[] {
-    if (this.#budgetsIssued) return [];
+    if (this.#budgetsIssued) {
+      return [];
+    }
     this.#budgetsIssued = true;
     return this.#participantIds.slice(this.#participantIndex + (this.#participantStarted ? 1 : 0));
   }
   recordAction(): void {
-    if (!this.canAct) throw new CombatRefusal(CombatRefusalCode.InvalidCombatPhase);
+    if (!this.canAct) {
+      throw new CombatRefusal(CombatRefusalCode.InvalidCombatPhase);
+    }
     this.#participantStarted = true;
     this.#actionsTaken++;
   }
   finishCurrentActions(): void {
-    if (this.complete) throw new CombatRefusal(CombatRefusalCode.InvalidCombatPhase);
+    if (this.complete) {
+      throw new CombatRefusal(CombatRefusalCode.InvalidCombatPhase);
+    }
     this.#actionsTaken = MaximumAutomaticActionsPerTurn;
   }
   finishCurrentParticipant(remove = false): void {
-    if (this.complete) throw new CombatRefusal(CombatRefusalCode.InvalidCombatPhase);
-    if (remove) this.#participantIds.splice(this.#participantIndex, 1);
-    else this.#participantIndex++;
+    if (this.complete) {
+      throw new CombatRefusal(CombatRefusalCode.InvalidCombatPhase);
+    }
+    if (remove) {
+      this.#participantIds.splice(this.#participantIndex, 1);
+    } else {
+      this.#participantIndex++;
+    }
     this.#actionsTaken = 0;
     this.#participantStarted = false;
   }

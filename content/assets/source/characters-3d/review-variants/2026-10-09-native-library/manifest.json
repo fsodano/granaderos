@@ -1557,8 +1557,8 @@
       "gitBlob": "20b2d05554799b0a6f40069eb5613d4b0942bd2a",
       "bytes": 5119,
       "paths": [
-        "playgrounds/granadero-3d/tests/library.test.mjs",
-        "artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/library.test.mjs"
+        "playgrounds/granadero-3d/tests/library.test.ts",
+        "artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/library.test.ts"
       ],
       "sourceCommits": [
         "b596abe94115d83e5110ea14d2ab93a44d27d2e3",
@@ -1581,7 +1581,7 @@
       "gitBlob": "44dcbcb505c676aa23e429aa30720c04b7eb068d",
       "bytes": 4627,
       "paths": [
-        "playgrounds/granadero-3d/tests/server.test.mjs"
+        "playgrounds/granadero-3d/tests/server.test.ts"
       ],
       "sourceCommits": [
         "4df8d499dc234fe819c5ad95143425261c66ffcc"

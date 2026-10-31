@@ -64,11 +64,15 @@ export function applyRegionalTerrain(map, landmark, context = null) {
   const reserved = new Set();
   const reserve = (point, padding = 1) => {
     for (let y = point.y - padding; y <= point.y + padding; y++) {
-      for (let x = point.x - padding; x <= point.x + padding; x++) {reserved.add(`${x},${y}`);}
+      for (let x = point.x - padding; x <= point.x + padding; x++) {
+        reserved.add(`${x},${y}`);
+      }
     }
   };
   for (const prop of map.props ?? []) {
-    for (const cell of propCells(prop)) {reserve(cell);}
+    for (const cell of propCells(prop)) {
+      reserve(cell);
+    }
   }
   for (const collection of [
     'squad',
@@ -79,17 +83,22 @@ export function applyRegionalTerrain(map, landmark, context = null) {
     'npcs',
     'lights',
   ]) {
-    for (const point of map[collection] ?? []) {reserve(point);}
+    for (const point of map[collection] ?? []) {
+      reserve(point);
+    }
   }
   for (const building of map.buildings ?? []) {
     for (let y = building.y - 1; y <= building.y + building.height; y++) {
-      for (let x = building.x - 1; x <= building.x + building.width; x++) {reserved.add(`${x},${y}`);}
+      for (let x = building.x - 1; x <= building.x + building.width; x++) {
+        reserved.add(`${x},${y}`);
+      }
     }
   }
   const waterByRow = new Map();
   for (const tile of map.tiles) {
-    if (tile.type === 'water')
-      {waterByRow.set(tile.y, Math.min(waterByRow.get(tile.y) ?? Infinity, tile.x));}
+    if (tile.type === 'water') {
+      waterByRow.set(tile.y, Math.min(waterByRow.get(tile.y) ?? Infinity, tile.x));
+    }
   }
   for (const tile of map.tiles) {
     const { x, y } = tile;

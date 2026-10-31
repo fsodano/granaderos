@@ -29,8 +29,9 @@ export class ReactionWindow {
           count < 1 ||
           count > MaximumAutomaticActionsPerTurn,
       )
-    )
+    ) {
       throw new CombatRefusal(CombatRefusalCode.InvalidCombatPhase);
+    }
     this.#participantIds = [...snapshot.participantIds];
     this.#triggeringCharacterId = snapshot.triggeringCharacterId;
     this.#returnTo = snapshot.returnTo;
@@ -61,12 +62,15 @@ export class ReactionWindow {
     );
   }
   recordAutomaticAction(characterId: string): void {
-    if (!this.canActAutomatically(characterId))
+    if (!this.canActAutomatically(characterId)) {
       throw new CombatRefusal(CombatRefusalCode.InvalidCombatPhase);
+    }
     this.#automaticActions.set(characterId, (this.#automaticActions.get(characterId) ?? 0) + 1);
   }
   finishAutomaticActions(characterId: string): void {
-    if (!this.allows(characterId)) throw new CombatRefusal(CombatRefusalCode.InvalidCombatPhase);
+    if (!this.allows(characterId)) {
+      throw new CombatRefusal(CombatRefusalCode.InvalidCombatPhase);
+    }
     this.#automaticActions.set(characterId, MaximumAutomaticActionsPerTurn);
   }
   snapshot(): ReactionWindowSnapshot {

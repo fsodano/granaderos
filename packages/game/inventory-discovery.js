@@ -20,16 +20,23 @@ export function discoverInventory(state) {
     isInteriorVisible(state, point, rooms) &&
     observers.some((u) => canSee(state, u, point) && (!near || atHand(u, point)));
   for (const item of state.groundItems ?? []) {
-    if (item.count > 0 && !item.heldBy && seen(item)) {item.knownToPlayer = true;}
+    if (item.count > 0 && !item.heldBy && seen(item)) {
+      item.knownToPlayer = true;
+    }
   }
   for (const item of state.droppedWeapons ?? []) {
-    if (!item.taken && seen(item)) {item.knownToPlayer = true;}
+    if (!item.taken && seen(item)) {
+      item.knownToPlayer = true;
+    }
   }
   for (const unit of state.units) {
-    if (unit.hp <= 0 && !unit.departure && seen(unit, true)) {unit.knownToPlayer = true;}
+    if (unit.hp <= 0 && !unit.departure && seen(unit, true)) {
+      unit.knownToPlayer = true;
+    }
   }
   for (const prop of state.props ?? []) {
-    if (prop.type === 'chest' && prop.open && propCells(prop).some((point) => seen(point)))
-      {prop.knownToPlayer = true;}
+    if (prop.type === 'chest' && prop.open && propCells(prop).some((point) => seen(point))) {
+      prop.knownToPlayer = true;
+    }
   }
 }

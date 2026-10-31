@@ -55,8 +55,9 @@ export function validateTraining(record) {
         !Number.isInteger(value) ||
         value < 0 ||
         value > (field === 'skillPractice' ? 39 : 10)
-      )
-        {throw Error('El registro de práctica es inválido.');}
+      ) {
+        throw Error('El registro de práctica es inválido.');
+      }
     }
   }
   for (const field of ['practiceTiles', 'ridingPracticeTiles']) {
@@ -65,8 +66,9 @@ export function validateTraining(record) {
       (!Array.isArray(record[field]) ||
         record[field].length > 10000 ||
         !record[field].every((v) => typeof v === 'string' && /^\d+,\d+$/.test(v)))
-    )
-      {throw Error('El registro de desplazamiento es inválido.');}
+    ) {
+      throw Error('El registro de desplazamiento es inválido.');
+    }
   }
   if (
     record.practiceTiles !== undefined &&

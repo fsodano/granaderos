@@ -9115,7 +9115,7 @@
       "originalModeOctal": "0o644"
     },
     {
-      "path": "artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/asset.test.mjs",
+      "path": "artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/asset.test.ts",
       "gitBlob": "8e8d50ae960226f4f66a66e9e1b3139552180dac",
       "sha256": "803a10c2fbff0b163c057083c74a3d7598bfd1f7547be433ef75a6c0fced6f6f",
       "bytes": 38821,
@@ -9125,7 +9125,7 @@
       "originalModeOctal": "0o644"
     },
     {
-      "path": "artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/library.test.mjs",
+      "path": "artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/library.test.ts",
       "gitBlob": "20b2d05554799b0a6f40069eb5613d4b0942bd2a",
       "sha256": "61f9d85b5ac64aece04f2569a7d2173b506c8ea6fd1c9979b556edef301ec73e",
       "bytes": 5119,
@@ -9136,7 +9136,7 @@
       "originalModeOctal": "0o644"
     },
     {
-      "path": "artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/server.test.mjs",
+      "path": "artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/server.test.ts",
       "gitBlob": "44dcbcb505c676aa23e429aa30720c04b7eb068d",
       "sha256": "f4b92f5d63000de98f65e61ab3b457bf67bbf6b1fb12d3b9b1f64655de59e71a",
       "bytes": 4627,

@@ -40,14 +40,17 @@ export function initializeArtilleryOccupancy(state) {
     const candidates = [];
     for (let dy = -1; dy <= 1; dy++) {
       for (let dx = -1; dx <= 1; dx++) {
-        if (!dx && !dy) {continue;}
+        if (!dx && !dy) {
+          continue;
+        }
         const point = { x: person.x + dx, y: person.y + dy, tacticalLevel: level };
         if (
           reserved.has(spaceKey(point)) ||
           propBlocksAt(state, point.x, point.y, level) ||
           !canWalkBetween(state, person, point)
-        )
-          {continue;}
+        ) {
+          continue;
+        }
         if (
           dx &&
           dy &&
@@ -59,8 +62,9 @@ export function initializeArtilleryOccupancy(state) {
               propBlocksAt(state, corner.x, corner.y, level) ||
               artilleryCellOccupied(state, corner),
           )
-        )
-          {continue;}
+        ) {
+          continue;
+        }
         const forward = dx * Math.cos(facing) + dy * Math.sin(facing);
         candidates.push({
           ...point,

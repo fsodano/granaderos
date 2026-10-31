@@ -12,7 +12,9 @@ export function changeStudioProject(
   snapshot: StudioHistory,
   document: CampaignProjectDocument,
 ): StudioHistory {
-  if (snapshot.current === document) return snapshot;
+  if (snapshot.current === document) {
+    return snapshot;
+  }
   const history = CampaignProjectHistory.restore(snapshot);
   history.record(new CampaignProject(document));
   return history.snapshot();

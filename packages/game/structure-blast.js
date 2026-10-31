@@ -208,7 +208,9 @@ export function applyStructureBlast(
   ]) {
     for (const target of targets) {
       const spec = structureBlastProfile(target, kind);
-      if (!spec) {continue;}
+      if (!spec) {
+        continue;
+      }
       const points =
         kind === 'prop' ? propCells(target) : kind === 'edge' ? [wallEdgeCenter(target)] : [target];
       const multiplier = Math.max(
@@ -218,7 +220,9 @@ export function applyStructureBlast(
       const damage = Math.round(
         (Math.max(0, strength * multiplier - spec.armour) * 100) / spec.durability,
       );
-      if (damage <= 0) {continue;}
+      if (damage <= 0) {
+        continue;
+      }
       hits.push({ target, kind, damage: Math.min(100, (target.structureDamage ?? 0) + damage) });
     }
   }

@@ -17,8 +17,9 @@ function withdrawalOrder(b, u) {
     return null;
   }
   for (const exit of b.exits ?? []) {
-    if (exitPreview(b, { unitIds: [u.id], exitId: exit.id }).available)
-      {return { type: 'exit', unitIds: [u.id], exitId: exit.id };}
+    if (exitPreview(b, { unitIds: [u.id], exitId: exit.id }).available) {
+      return { type: 'exit', unitIds: [u.id], exitId: exit.id };
+    }
   }
   if (u.knockedDown) {
     return { type: 'stance', unitId: u.id, stance: 'standing' };
@@ -69,12 +70,18 @@ export function withdrawAutomatically(state, { maxRounds = 8 } = {}) {
       for (let attempt = 0; attempt < 6 && battle.status === 'active'; attempt++) {
         const unit = battle.units.find((u) => u.id === id),
           action = withdrawalOrder(battle, unit);
-        if (!action) {break;}
+        if (!action) {
+          break;
+        }
         const next = actBattle(battle, action);
-        if (next.lastError) {break;}
+        if (next.lastError) {
+          break;
+        }
         orders.push(action);
         battle = next;
-        if (battle.phase === 'interrupt') {break;}
+        if (battle.phase === 'interrupt') {
+          break;
+        }
       }
     }
     if (battle.status !== 'active' || battle.mode === 'exploration') {
@@ -120,11 +127,17 @@ export function autoResolve(request, previous = null, { maxRounds = 80 } = {}) {
         attempts++
       ) {
         const unit = battle.units.find((u) => u.id === id);
-        if (!interruptAvailable(battle, unit) || unit.ap < 3) {break;}
+        if (!interruptAvailable(battle, unit) || unit.ap < 3) {
+          break;
+        }
         const action = automaticOrder(battle, unit);
-        if (!action) {break;}
+        if (!action) {
+          break;
+        }
         const next = actBattle(battle, action);
-        if (next.lastError) {break;}
+        if (next.lastError) {
+          break;
+        }
         battle = next;
         actions++;
       }

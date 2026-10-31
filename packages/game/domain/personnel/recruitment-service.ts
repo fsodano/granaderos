@@ -39,8 +39,9 @@ export class RecruitmentService {
       throw new DomainRefusal(DomainRefusalCode.InvalidPlacement);
     }
     const total = context.terms.payment.plus(context.terms.guarantee);
-    if (!context.treasury.canPay(total))
+    if (!context.treasury.canPay(total)) {
       throw new DomainRefusal(DomainRefusalCode.InsufficientFunds);
+    }
     const contract = ServiceContract.start(
       context.character.id,
       context.terms.term,

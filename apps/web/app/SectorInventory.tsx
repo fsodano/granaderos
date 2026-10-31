@@ -34,9 +34,7 @@ export default function SectorInventory({
   const [selected, setSelected] = useState('');
   const [selectedSite, setSelectedSite] = useState(sectorId);
   const sites = sectorInventorySites(state, sectorId),
-    siteId = sites.some((site) => site.id === selectedSite)
-      ? selectedSite
-      : sectorId;
+    siteId = sites.some((site) => site.id === selectedSite) ? selectedSite : sectorId;
   const cursorOwner = Object.entries(state.operativeState ?? {}).find(
     ([, record]) => record.equipmentCursor,
   )?.[0];
@@ -63,9 +61,9 @@ export default function SectorInventory({
         <div>
           <h3>Equipo del sector</h3>
           <p>
-            Elegí un combatiente presente para preparar lo que lleva en las
-            manos y equipar su vestimenta. En un sector reconocido y seguro
-            también puede recoger o dejar objetos para otro combatiente.
+            Elegí un combatiente presente para preparar lo que lleva en las manos y equipar su
+            vestimenta. En un sector reconocido y seguro también puede recoger o dejar objetos para
+            otro combatiente.
           </p>
         </div>
         <label>
@@ -76,9 +74,7 @@ export default function SectorInventory({
             value={model.operativeId ?? ''}
             onChange={(event) => setSelected(event.target.value)}
           >
-            {!model.candidates.length && (
-              <option value="">Sin combatientes presentes</option>
-            )}
+            {!model.candidates.length && <option value="">Sin combatientes presentes</option>}
             {model.candidates.map((op) => (
               <option value={op.id} key={op.id}>
                 {op.name}
@@ -99,8 +95,7 @@ export default function SectorInventory({
             {sites.map((site) => (
               <option key={site.id} value={site.id}>
                 {site.name} · {site.count} objetos
-                {site.repairPoints > 0 &&
-                  ` · ${site.repairPoints} puntos de reparación`}
+                {site.repairPoints > 0 && ` · ${site.repairPoints} puntos de reparación`}
               </option>
             ))}
           </select>
@@ -108,15 +103,13 @@ export default function SectorInventory({
       )}
       {model.usage && (
         <p>
-          Mochila: {model.usage.used}/{model.usage.capacity} espacios. Las
-          cargas permanecen en el arma; los cartuchos sueltos se usan en el
-          próximo despliegue.
+          Mochila: {model.usage.used}/{model.usage.capacity} espacios. Las cargas permanecen en el
+          arma; los cartuchos sueltos se usan en el próximo despliegue.
         </p>
       )}
       {model.personal && (
         <p aria-label="Materiales de reparación del combatiente">
-          Materiales de reparación: {repairMaterialPoints(model.personal)}{' '}
-          puntos
+          Materiales de reparación: {repairMaterialPoints(model.personal)} puntos
         </p>
       )}
       {model.personal && (
@@ -144,9 +137,7 @@ export default function SectorInventory({
                 number={index + 1}
                 disabled={!row.reachable}
                 verb="Recoger"
-                quantityReason={(count) =>
-                  sectorPickupReason(model.personal, row, count)
-                }
+                quantityReason={(count) => sectorPickupReason(model.personal, row, count)}
                 onConfirm={(count: number) =>
                   order({
                     direction: 'take',
@@ -172,23 +163,21 @@ export default function SectorInventory({
           {model.repairReserves.length > 0 && (
             <section aria-label="Materiales de reparación">
               <h4>Materiales de reparación</h4>
-              {model.repairReserves.map(
-                (row: RepairReserveRow, index: number) => (
-                  <RepairReserve
-                    key={`${siteId}:${row.key}:${row.expected}`}
-                    row={row}
-                    number={index + 1}
-                    onConfirm={(count) =>
-                      order({
-                        direction: 'takeRepairPoints',
-                        sourceKey: row.key,
-                        expected: row.expected,
-                        count,
-                      })
-                    }
-                  />
-                ),
-              )}
+              {model.repairReserves.map((row: RepairReserveRow, index: number) => (
+                <RepairReserve
+                  key={`${siteId}:${row.key}:${row.expected}`}
+                  row={row}
+                  number={index + 1}
+                  onConfirm={(count) =>
+                    order({
+                      direction: 'takeRepairPoints',
+                      sourceKey: row.key,
+                      expected: row.expected,
+                      count,
+                    })
+                  }
+                />
+              ))}
             </section>
           )}
         </section>
@@ -208,17 +197,12 @@ export default function SectorInventory({
                 number={index + 1}
                 disabled={Boolean(model.reason)}
                 verb="Dejar"
-                onConfirm={(count: number) =>
-                  order({ direction: 'drop', item: row.item, count })
-                }
+                onConfirm={(count: number) => order({ direction: 'drop', item: row.item, count })}
               >
                 <EquipCarriedItem
                   row={row}
                   onEquip={(slot: CampaignEquipmentSlot) => {
-                    if (
-                      row.inventoryKey === undefined ||
-                      row.expected === undefined
-                    ) {
+                    if (row.inventoryKey === undefined || row.expected === undefined) {
                       return;
                     }
                     order({
@@ -231,9 +215,7 @@ export default function SectorInventory({
                 />
                 <PrepareCarriedHands
                   row={row}
-                  onPrepare={(action) =>
-                    order({ direction: 'equip', ...action })
-                  }
+                  onPrepare={(action) => order({ direction: 'equip', ...action })}
                 />
               </ItemRow>
             ))
@@ -273,8 +255,7 @@ function ItemRow({
 }) {
   const [quantity, setQuantity] = useState(1),
     reasonId = useId();
-  const valid =
-    Number.isSafeInteger(quantity) && quantity > 0 && quantity <= maximum;
+  const valid = Number.isSafeInteger(quantity) && quantity > 0 && quantity <= maximum;
   const reason = !disabled ? quantityReason?.(quantity) : null;
   return (
     <div className="sector-inventory-row">
@@ -385,16 +366,14 @@ export function EquipCarriedItem({
       {row.loaded === undefined && row.condition !== undefined && (
         <p>
           Estado {row.condition}%
-          {['headwear', 'outfit', 'legwear'].includes(row.item) &&
-            ' · Vestimenta puesta'}
+          {['headwear', 'outfit', 'legwear'].includes(row.item) && ' · Vestimenta puesta'}
         </p>
       )}
       {row.loaded !== undefined && (
         <p>
           {row.loaded} carga(s)
           {row.condition !== undefined && ` · Estado ${row.condition}%`}
-          {row.reloadProgress &&
-            ` · Recarga ${Math.round(row.reloadProgress * 100)}%`}
+          {row.reloadProgress && ` · Recarga ${Math.round(row.reloadProgress * 100)}%`}
           {row.jammed && ' · Necesita cebado'}
         </p>
       )}

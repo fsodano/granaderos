@@ -184,8 +184,8 @@ export function buildTerrace(
   }
   const upperSurfaces = [];
   for (let dy = 0; dy < building.height; dy++) {
-    for (let dx = 0; dx < building.width; dx++)
-      {upperSurfaces.push({
+    for (let dx = 0; dx < building.width; dx++) {
+      upperSurfaces.push({
         id: `${building.id}:roof:${dx}:${dy}`,
         x: building.x + dx,
         y: building.y + dy,
@@ -198,7 +198,8 @@ export function buildTerrace(
         cover: 0,
         material: building.material,
         buildingId: building.id,
-      });}
+      });
+    }
   }
   const climbLinks = climbPoints.map((point) => ({
     id: `${building.id}:climb:${point.id}`,

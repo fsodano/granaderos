@@ -43,15 +43,12 @@ export default function StrategicRoster({
       <div className="personnel-title">
         <h2>Nómina</h2>
         <span>
-          {s.recruited.length}{' '}
-          {s.recruited.length === 1 ? 'soldado' : 'soldados'}
+          {s.recruited.length} {s.recruited.length === 1 ? 'soldado' : 'soldados'}
         </span>
       </div>
       <div className="strategy-roster-scroll">
         {!s.recruited.length && (
-          <p className="roster-hint">
-            Creá tu oficial o contratá soldados en el escritorio.
-          </p>
+          <p className="roster-hint">Creá tu oficial o contratá soldados en el escritorio.</p>
         )}
         <table className="merc-map-table dense-personnel-table">
           <colgroup>
@@ -82,10 +79,7 @@ export default function StrategicRoster({
               if (!op || !r) {
                 return null;
               }
-              const portrait = portraitFor(
-                op.portrait ?? op.portraitId ?? id,
-                s,
-              );
+              const portrait = portraitFor(op.portrait ?? op.portraitId ?? id, s);
               return (
                 <tr
                   key={id}
@@ -93,17 +87,11 @@ export default function StrategicRoster({
                   data-active-member={selected?.members.includes(id)}
                 >
                   <th>
-                    <button
-                      type="button"
-                      title={op.name}
-                      onClick={() => onDossier(id)}
-                    >
+                    <button type="button" title={op.name} onClick={() => onDossier(id)}>
                       {portrait && <img src={sitePath(portrait)} alt="" />}
                       <span>
                         {op.nickname}
-                        <small>
-                          {r.alive ? `${Math.round(r.hp)} PS` : '☠ Caído'}
-                        </small>
+                        <small>{r.alive ? `${Math.round(r.hp)} PS` : '☠ Caído'}</small>
                       </span>
                     </button>
                   </th>
@@ -130,9 +118,7 @@ export default function StrategicRoster({
                   <td>
                     <button
                       aria-label={`${r.asleep ? 'Despertar' : 'Dormir'}: ${op.nickname}`}
-                      disabled={
-                        blocked || Boolean(sleepOrderReason(s, id, !r.asleep))
-                      }
+                      disabled={blocked || Boolean(sleepOrderReason(s, id, !r.asleep))}
                       title={sleepOrderReason(s, id, !r.asleep) || undefined}
                       onClick={() =>
                         dispatch({
@@ -179,11 +165,7 @@ export default function StrategicRoster({
                       disabled={blocked || !r.alive || !c}
                       onClick={() => onContract(id)}
                     >
-                      {c?.remaining === null
-                        ? '∞'
-                        : c
-                          ? `${Math.ceil(c.remaining / 24)} d`
-                          : '—'}
+                      {c?.remaining === null ? '∞' : c ? `${Math.ceil(c.remaining / 24)} d` : '—'}
                     </button>
                   </td>
                 </tr>
@@ -198,12 +180,8 @@ export default function StrategicRoster({
           {(s.log ?? []).slice(0, 20).map((entry, i: number) => (
             <p key={`${entry.hour}:${i}`}>
               <time>
-                D{Math.floor(entry.hour / 24) + 1}{' '}
-                {String(entry.hour % 24).padStart(2, '0')}:
-                {String(Math.floor((entry.secondOfHour ?? 0) / 60)).padStart(
-                  2,
-                  '0',
-                )}
+                D{Math.floor(entry.hour / 24) + 1} {String(entry.hour % 24).padStart(2, '0')}:
+                {String(Math.floor((entry.secondOfHour ?? 0) / 60)).padStart(2, '0')}
               </time>{' '}
               {entry.text}
             </p>

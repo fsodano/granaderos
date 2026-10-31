@@ -18,10 +18,11 @@ void test('ability ratings retain zero aptitude and the full authored range', ()
   assert.equal(abilities.meetsRating(CharacterRating.Marksmanship, 100), true);
   assert.equal(abilities.meetsRating(CharacterRating.Medical, 1), false);
   assert.equal(abilities.rating(CharacterRating.Stealth), 0);
-  for (const value of [-1, 101, 1.5, NaN, Infinity])
+  for (const value of [-1, 101, 1.5, NaN, Infinity]) {
     assert.throws(
       () => new CharacterAbilities({ ratings: { medical: value }, traits: [], capabilities: [] }),
     );
+  }
   const invalidRatings = { medical: 50, invalid: 50 };
   assert.throws(
     () => new CharacterAbilities({ ratings: invalidRatings, traits: [], capabilities: [] }),
@@ -39,7 +40,9 @@ void test('training respects the lifetime gain and rating limits without changin
   assert.equal(trained.rating(CharacterRating.Strength), 75);
   assert.equal(abilities.rating(CharacterRating.Medical), 98);
   assert.equal(abilities.rating(CharacterRating.Strength), 65);
-  for (const gain of [-1, 11, 0.5]) assert.throws(() => abilities.withTraining({ medical: gain }));
+  for (const gain of [-1, 11, 0.5]) {
+    assert.throws(() => abilities.withTraining({ medical: gain }));
+  }
   assert.throws(() => abilities.withTraining({}, 101));
   assert.throws(() => abilities.withTraining({ wisdom: 1 }));
 });

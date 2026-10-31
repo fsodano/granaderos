@@ -41,8 +41,9 @@ export function validateQuestEscortOrders(campaign, battle) {
       !battle.sceneId &&
       campaign.quests?.[quest.id] &&
       !battle.npcs.some((n) => n.id === quest.npcId)
-    )
-      {throw Error('Falta el personaje del encargo de escolta.');}
+    ) {
+      throw Error('Falta el personaje del encargo de escolta.');
+    }
   }
   for (let i = 0; i < battle.npcs.length; i++) {
     const npc = battle.npcs[i];

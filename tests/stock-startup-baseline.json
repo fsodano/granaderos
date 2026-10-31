@@ -34,143 +34,91 @@
       "buenos_aires": {
         "owner": "royalist",
         "loyalty": 25,
-        "militia": [
-          0,
-          0,
-          0
-        ],
+        "militia": [0, 0, 0],
         "damageUntil": 0,
         "fort": 0
       },
       "retiro": {
         "owner": "patriot",
         "loyalty": 65,
-        "militia": [
-          0,
-          0,
-          0
-        ],
+        "militia": [0, 0, 0],
         "damageUntil": 0,
         "fort": 0
       },
       "ensenada": {
         "owner": "royalist",
         "loyalty": 25,
-        "militia": [
-          0,
-          0,
-          0
-        ],
+        "militia": [0, 0, 0],
         "damageUntil": 0,
         "fort": 0
       },
       "san_nicolas": {
         "owner": "royalist",
         "loyalty": 25,
-        "militia": [
-          0,
-          0,
-          0
-        ],
+        "militia": [0, 0, 0],
         "damageUntil": 0,
         "fort": 0
       },
       "santa_fe": {
         "owner": "royalist",
         "loyalty": 25,
-        "militia": [
-          0,
-          0,
-          0
-        ],
+        "militia": [0, 0, 0],
         "damageUntil": 0,
         "fort": 0
       },
       "cordoba": {
         "owner": "royalist",
         "loyalty": 25,
-        "militia": [
-          0,
-          0,
-          0
-        ],
+        "militia": [0, 0, 0],
         "damageUntil": 0,
         "fort": 0
       },
       "mendoza": {
         "owner": "royalist",
         "loyalty": 25,
-        "militia": [
-          0,
-          0,
-          0
-        ],
+        "militia": [0, 0, 0],
         "damageUntil": 0,
         "fort": 0
       },
       "uspallata": {
         "owner": "royalist",
         "loyalty": 25,
-        "militia": [
-          0,
-          0,
-          0
-        ],
+        "militia": [0, 0, 0],
         "damageUntil": 0,
         "fort": 0
       },
       "los_patos": {
         "owner": "royalist",
         "loyalty": 25,
-        "militia": [
-          0,
-          0,
-          0
-        ],
+        "militia": [0, 0, 0],
         "damageUntil": 0,
         "fort": 0
       },
       "tucuman": {
         "owner": "royalist",
         "loyalty": 25,
-        "militia": [
-          0,
-          0,
-          0
-        ],
+        "militia": [0, 0, 0],
         "damageUntil": 0,
         "fort": 0
       },
       "salta": {
         "owner": "royalist",
         "loyalty": 25,
-        "militia": [
-          0,
-          0,
-          0
-        ],
+        "militia": [0, 0, 0],
         "damageUntil": 0,
         "fort": 0
       },
       "jujuy": {
         "owner": "royalist",
         "loyalty": 25,
-        "militia": [
-          0,
-          0,
-          0
-        ],
+        "militia": [0, 0, 0],
         "damageUntil": 0,
         "fort": 0
       },
       "humahuaca": {
         "owner": "royalist",
         "loyalty": 25,
-        "militia": [
-          0,
-          0,
-          0
-        ],
+        "militia": [0, 0, 0],
         "damageUntil": 0,
         "fort": 0
       }
@@ -252,9 +200,7 @@
       },
       "foreign": false,
       "traits": [],
-      "abilities": [
-        "mud_rider"
-      ],
+      "abilities": ["mud_rider"],
       "supplies": {
         "hp": 82,
         "fatigue": 0,
@@ -539,9 +485,7 @@
       },
       "foreign": false,
       "traits": [],
-      "abilities": [
-        "militia_command"
-      ],
+      "abilities": ["militia_command"],
       "supplies": {
         "hp": 88,
         "fatigue": 0,
@@ -826,9 +770,7 @@
       },
       "foreign": false,
       "traits": [],
-      "abilities": [
-        "loading_support"
-      ],
+      "abilities": ["loading_support"],
       "supplies": {
         "hp": 76,
         "fatigue": 0,
@@ -1113,10 +1055,7 @@
       },
       "foreign": false,
       "traits": [],
-      "abilities": [
-        "counterattack",
-        "bodyguard"
-      ],
+      "abilities": ["counterattack", "bodyguard"],
       "supplies": {
         "hp": 96,
         "fatigue": 0,
@@ -1367,10 +1306,7 @@
       },
       "foreign": false,
       "traits": [],
-      "abilities": [
-        "quick_shot",
-        "quick_movement"
-      ],
+      "abilities": ["quick_shot", "quick_movement"],
       "supplies": {
         "hp": 84,
         "fatigue": 0,
@@ -1655,9 +1591,7 @@
       },
       "foreign": false,
       "traits": [],
-      "abilities": [
-        "artillery_fire"
-      ],
+      "abilities": ["artillery_fire"],
       "supplies": {
         "hp": 85,
         "fatigue": 0,
@@ -1942,11 +1876,7 @@
       },
       "foreign": false,
       "traits": [],
-      "abilities": [
-        "breaching",
-        "night_scout",
-        "scatter_concealment"
-      ],
+      "abilities": ["breaching", "night_scout", "scatter_concealment"],
       "supplies": {
         "hp": 86,
         "fatigue": 0,
@@ -2231,10 +2161,7 @@
       },
       "foreign": false,
       "traits": [],
-      "abilities": [
-        "artillery_loading",
-        "foot_morale"
-      ],
+      "abilities": ["artillery_loading", "foot_morale"],
       "supplies": {
         "hp": 85,
         "fatigue": 0,
@@ -2804,9 +2731,7 @@
       },
       "foreign": false,
       "traits": [],
-      "abilities": [
-        "mounted_intimidation"
-      ],
+      "abilities": ["mounted_intimidation"],
       "supplies": {
         "hp": 92,
         "fatigue": 0,
@@ -3057,9 +2982,7 @@
       },
       "foreign": false,
       "traits": [],
-      "abilities": [
-        "rapid_first_aid"
-      ],
+      "abilities": ["rapid_first_aid"],
       "supplies": {
         "hp": 72,
         "fatigue": 0,
@@ -3344,9 +3267,7 @@
       },
       "foreign": false,
       "traits": [],
-      "abilities": [
-        "tactical_command"
-      ],
+      "abilities": ["tactical_command"],
       "supplies": {
         "hp": 78,
         "fatigue": 0,
@@ -3601,11 +3522,7 @@
       },
       "foreign": false,
       "traits": [],
-      "abilities": [
-        "strategic_command",
-        "protected_commander",
-        "mounted_charge"
-      ],
+      "abilities": ["strategic_command", "protected_commander", "mounted_charge"],
       "supplies": {
         "hp": 88,
         "fatigue": 0,
@@ -3889,9 +3806,7 @@
         "classId": "gaucho"
       },
       "foreign": false,
-      "traits": [
-        "cavalry_commander"
-      ],
+      "traits": ["cavalry_commander"],
       "abilities": [],
       "supplies": {
         "hp": 70,
@@ -4176,9 +4091,7 @@
         "classId": "baqueano"
       },
       "foreign": false,
-      "traits": [
-        "guerrilla_tactician"
-      ],
+      "traits": ["guerrilla_tactician"],
       "abilities": [],
       "supplies": {
         "hp": 70,
@@ -4463,9 +4376,7 @@
         "classId": "artesano"
       },
       "foreign": false,
-      "traits": [
-        "gunsmith_artillerist"
-      ],
+      "traits": ["gunsmith_artillerist"],
       "abilities": [],
       "supplies": {
         "hp": 70,
@@ -4750,9 +4661,7 @@
         "classId": "artesano"
       },
       "foreign": true,
-      "traits": [
-        "gunsmith_artillerist"
-      ],
+      "traits": ["gunsmith_artillerist"],
       "abilities": [],
       "supplies": {
         "hp": 70,
@@ -5037,9 +4946,7 @@
         "classId": "soldado"
       },
       "foreign": true,
-      "traits": [
-        "guerrilla_tactician"
-      ],
+      "traits": ["guerrilla_tactician"],
       "abilities": [],
       "supplies": {
         "hp": 70,
@@ -5324,9 +5231,7 @@
         "classId": "soldado"
       },
       "foreign": true,
-      "traits": [
-        "line_marksman"
-      ],
+      "traits": ["line_marksman"],
       "abilities": [],
       "supplies": {
         "hp": 70,
@@ -5581,9 +5486,7 @@
         "classId": "gaucho"
       },
       "foreign": false,
-      "traits": [
-        "teacher"
-      ],
+      "traits": ["teacher"],
       "abilities": [],
       "supplies": {
         "hp": 70,
@@ -5868,9 +5771,7 @@
         "classId": "artesano"
       },
       "foreign": false,
-      "traits": [
-        "field_rescuer"
-      ],
+      "traits": ["field_rescuer"],
       "abilities": [],
       "supplies": {
         "hp": 72,
@@ -6155,9 +6056,7 @@
         "classId": "gaucho"
       },
       "foreign": false,
-      "traits": [
-        "expert_rider"
-      ],
+      "traits": ["expert_rider"],
       "abilities": [],
       "supplies": {
         "hp": 82,
@@ -6442,10 +6341,7 @@
         "classId": "soldado"
       },
       "foreign": true,
-      "traits": [
-        "teacher",
-        "steadfast"
-      ],
+      "traits": ["teacher", "steadfast"],
       "abilities": [],
       "supplies": {
         "hp": 84,
@@ -6730,9 +6626,7 @@
         "classId": "soldado"
       },
       "foreign": false,
-      "traits": [
-        "steadfast"
-      ],
+      "traits": ["steadfast"],
       "abilities": [],
       "supplies": {
         "hp": 85,
@@ -7017,10 +6911,7 @@
         "classId": "artesano"
       },
       "foreign": true,
-      "traits": [
-        "gunsmith_artillerist",
-        "workshop_training"
-      ],
+      "traits": ["gunsmith_artillerist", "workshop_training"],
       "abilities": [],
       "supplies": {
         "hp": 77,
@@ -7305,10 +7196,7 @@
         "classId": "artesano"
       },
       "foreign": false,
-      "traits": [
-        "field_rescuer",
-        "teacher"
-      ],
+      "traits": ["field_rescuer", "teacher"],
       "abilities": [],
       "supplies": {
         "hp": 64,
@@ -7593,10 +7481,7 @@
         "classId": "baqueano"
       },
       "foreign": true,
-      "traits": [
-        "guerrilla_tactician",
-        "night_vision"
-      ],
+      "traits": ["guerrilla_tactician", "night_vision"],
       "abilities": [],
       "supplies": {
         "hp": 80,
@@ -7881,10 +7766,7 @@
         "classId": "soldado"
       },
       "foreign": false,
-      "traits": [
-        "teacher",
-        "steadfast"
-      ],
+      "traits": ["teacher", "steadfast"],
       "abilities": [],
       "supplies": {
         "hp": 81,
@@ -8169,9 +8051,7 @@
         "classId": "baqueano"
       },
       "foreign": false,
-      "traits": [
-        "line_marksman"
-      ],
+      "traits": ["line_marksman"],
       "abilities": [],
       "supplies": {
         "hp": 70,
@@ -8426,9 +8306,7 @@
         "classId": "baqueano"
       },
       "foreign": false,
-      "traits": [
-        "field_rescuer"
-      ],
+      "traits": ["field_rescuer"],
       "abilities": [],
       "supplies": {
         "hp": 75,
@@ -8713,9 +8591,7 @@
         "classId": "gaucho"
       },
       "foreign": false,
-      "traits": [
-        "cavalry_commander"
-      ],
+      "traits": ["cavalry_commander"],
       "abilities": [],
       "supplies": {
         "hp": 88,
@@ -9000,10 +8876,7 @@
         "classId": "artesano"
       },
       "foreign": true,
-      "traits": [
-        "gunsmith_artillerist",
-        "teacher"
-      ],
+      "traits": ["gunsmith_artillerist", "teacher"],
       "abilities": [],
       "supplies": {
         "hp": 82,
@@ -9288,9 +9161,7 @@
         "classId": "soldado"
       },
       "foreign": false,
-      "traits": [
-        "steadfast"
-      ],
+      "traits": ["steadfast"],
       "abilities": [],
       "supplies": {
         "hp": 76,
@@ -9575,10 +9446,7 @@
         "classId": "baqueano"
       },
       "foreign": false,
-      "traits": [
-        "guerrilla_tactician",
-        "night_vision"
-      ],
+      "traits": ["guerrilla_tactician", "night_vision"],
       "abilities": [],
       "supplies": {
         "hp": 73,
@@ -9863,10 +9731,7 @@
         "classId": "artesano"
       },
       "foreign": false,
-      "traits": [
-        "workshop_training",
-        "gunsmith_artillerist"
-      ],
+      "traits": ["workshop_training", "gunsmith_artillerist"],
       "abilities": [],
       "supplies": {
         "hp": 80,
@@ -10151,9 +10016,7 @@
         "classId": "artesano"
       },
       "foreign": false,
-      "traits": [
-        "field_rescuer"
-      ],
+      "traits": ["field_rescuer"],
       "abilities": [],
       "supplies": {
         "hp": 65,
@@ -10438,10 +10301,7 @@
         "classId": "soldado"
       },
       "foreign": false,
-      "traits": [
-        "line_marksman",
-        "steadfast"
-      ],
+      "traits": ["line_marksman", "steadfast"],
       "abilities": [],
       "supplies": {
         "hp": 83,
@@ -10696,10 +10556,7 @@
         "classId": "gaucho"
       },
       "foreign": true,
-      "traits": [
-        "cavalry_commander",
-        "expert_rider"
-      ],
+      "traits": ["cavalry_commander", "expert_rider"],
       "abilities": [],
       "supplies": {
         "hp": 85,
@@ -10984,9 +10841,7 @@
         "classId": "artesano"
       },
       "foreign": false,
-      "traits": [
-        "gunsmith_artillerist"
-      ],
+      "traits": ["gunsmith_artillerist"],
       "abilities": [],
       "supplies": {
         "hp": 85,
@@ -11271,9 +11126,7 @@
         "classId": "baqueano"
       },
       "foreign": false,
-      "traits": [
-        "guerrilla_tactician"
-      ],
+      "traits": ["guerrilla_tactician"],
       "abilities": [],
       "supplies": {
         "hp": 63,
@@ -11558,9 +11411,7 @@
         "classId": "soldado"
       },
       "foreign": false,
-      "traits": [
-        "teacher"
-      ],
+      "traits": ["teacher"],
       "abilities": [],
       "supplies": {
         "hp": 71,
@@ -11845,10 +11696,7 @@
         "classId": "soldado"
       },
       "foreign": true,
-      "traits": [
-        "line_marksman",
-        "teacher"
-      ],
+      "traits": ["line_marksman", "teacher"],
       "abilities": [],
       "supplies": {
         "hp": 79,
@@ -12103,9 +11951,7 @@
         "classId": "gaucho"
       },
       "foreign": false,
-      "traits": [
-        "expert_rider"
-      ],
+      "traits": ["expert_rider"],
       "abilities": [],
       "supplies": {
         "hp": 86,
@@ -12390,9 +12236,7 @@
         "classId": "artesano"
       },
       "foreign": false,
-      "traits": [
-        "field_rescuer"
-      ],
+      "traits": ["field_rescuer"],
       "abilities": [],
       "supplies": {
         "hp": 67,
@@ -12677,10 +12521,7 @@
         "classId": "gaucho"
       },
       "foreign": false,
-      "traits": [
-        "cavalry_commander",
-        "expert_rider"
-      ],
+      "traits": ["cavalry_commander", "expert_rider"],
       "abilities": [],
       "supplies": {
         "hp": 82,
@@ -12965,10 +12806,7 @@
         "classId": "soldado"
       },
       "foreign": true,
-      "traits": [
-        "teacher",
-        "steadfast"
-      ],
+      "traits": ["teacher", "steadfast"],
       "abilities": [],
       "supplies": {
         "hp": 78,
@@ -13253,10 +13091,7 @@
         "classId": "artesano"
       },
       "foreign": false,
-      "traits": [
-        "gunsmith_artillerist",
-        "workshop_training"
-      ],
+      "traits": ["gunsmith_artillerist", "workshop_training"],
       "abilities": [],
       "supplies": {
         "hp": 89,
@@ -13541,10 +13376,7 @@
         "classId": "baqueano"
       },
       "foreign": false,
-      "traits": [
-        "night_vision",
-        "guerrilla_tactician"
-      ],
+      "traits": ["night_vision", "guerrilla_tactician"],
       "abilities": [],
       "supplies": {
         "hp": 68,
@@ -13829,10 +13661,7 @@
         "classId": "artesano"
       },
       "foreign": false,
-      "traits": [
-        "field_rescuer",
-        "teacher"
-      ],
+      "traits": ["field_rescuer", "teacher"],
       "abilities": [],
       "supplies": {
         "hp": 76,
@@ -14117,9 +13946,7 @@
         "classId": "soldado"
       },
       "foreign": false,
-      "traits": [
-        "steadfast"
-      ],
+      "traits": ["steadfast"],
       "abilities": [],
       "supplies": {
         "hp": 90,
@@ -14404,10 +14231,7 @@
         "classId": "gaucho"
       },
       "foreign": true,
-      "traits": [
-        "cavalry_commander",
-        "expert_rider"
-      ],
+      "traits": ["cavalry_commander", "expert_rider"],
       "abilities": [],
       "supplies": {
         "hp": 85,
@@ -14692,9 +14516,7 @@
         "classId": "artesano"
       },
       "foreign": true,
-      "traits": [
-        "gunsmith_artillerist"
-      ],
+      "traits": ["gunsmith_artillerist"],
       "abilities": [],
       "supplies": {
         "hp": 77,
@@ -14979,9 +14801,7 @@
         "classId": "artesano"
       },
       "foreign": true,
-      "traits": [
-        "field_rescuer"
-      ],
+      "traits": ["field_rescuer"],
       "abilities": [],
       "supplies": {
         "hp": 73,
@@ -15266,9 +15086,7 @@
         "classId": "artesano"
       },
       "foreign": true,
-      "traits": [
-        "gunsmith_artillerist"
-      ],
+      "traits": ["gunsmith_artillerist"],
       "abilities": [],
       "supplies": {
         "hp": 65,
@@ -15553,9 +15371,7 @@
         "classId": "soldado"
       },
       "foreign": true,
-      "traits": [
-        "steadfast"
-      ],
+      "traits": ["steadfast"],
       "abilities": [],
       "supplies": {
         "hp": 84,
@@ -15840,9 +15656,7 @@
         "classId": "soldado"
       },
       "foreign": true,
-      "traits": [
-        "line_marksman"
-      ],
+      "traits": ["line_marksman"],
       "abilities": [],
       "supplies": {
         "hp": 79,
@@ -16097,10 +15911,7 @@
         "classId": "soldado"
       },
       "foreign": true,
-      "traits": [
-        "teacher",
-        "steadfast"
-      ],
+      "traits": ["teacher", "steadfast"],
       "abilities": [],
       "supplies": {
         "hp": 76,
@@ -16385,10 +16196,7 @@
         "classId": "artesano"
       },
       "foreign": true,
-      "traits": [
-        "gunsmith_artillerist",
-        "workshop_training"
-      ],
+      "traits": ["gunsmith_artillerist", "workshop_training"],
       "abilities": [],
       "supplies": {
         "hp": 79,
@@ -16673,10 +16481,7 @@
         "classId": "gaucho"
       },
       "foreign": false,
-      "traits": [
-        "cavalry_commander",
-        "expert_rider"
-      ],
+      "traits": ["cavalry_commander", "expert_rider"],
       "abilities": [],
       "supplies": {
         "hp": 88,
@@ -16961,10 +16766,7 @@
         "classId": "artesano"
       },
       "foreign": true,
-      "traits": [
-        "field_rescuer",
-        "teacher"
-      ],
+      "traits": ["field_rescuer", "teacher"],
       "abilities": [],
       "supplies": {
         "hp": 72,
@@ -17249,10 +17051,7 @@
         "classId": "baqueano"
       },
       "foreign": false,
-      "traits": [
-        "guerrilla_tactician",
-        "night_vision"
-      ],
+      "traits": ["guerrilla_tactician", "night_vision"],
       "abilities": [],
       "supplies": {
         "hp": 78,

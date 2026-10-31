@@ -1,6 +1,8 @@
 // Portable campaign URLs remain independent of the hosting base path.
 export function isCampaignAssetReference(value) {
-  if (typeof value !== 'string') return false;
+  if (typeof value !== 'string') {
+    return false;
+  }
   return /^\/campaigns\/[a-z0-9][a-z0-9_-]*\/assets\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-]+\.(?:png|webp|jpg|jpeg)$/.test(
     value,
   );
@@ -38,8 +40,9 @@ export function validateCampaignAssets(value) {
     value.version !== 1 ||
     !Array.isArray(value.assets) ||
     value.assets.length > 3000
-  )
+  ) {
     return ['Recursos de campaña: catálogo o versión inválida.'];
+  }
   const errors = [],
     ids = new Set(),
     paths = new Set();
@@ -57,7 +60,9 @@ export function validateCampaignAssets(value) {
       /^[a-f0-9]{64}$/.test(asset.sha256) &&
       Object.hasOwn(fileTypes, asset.path.split('.').at(-1)) &&
       fileTypes[asset.path.split('.').at(-1)] === asset.type;
-    if (!valid) errors.push('Recursos de campaña: referencia, tipo o suma de control inválida.');
+    if (!valid) {
+      errors.push('Recursos de campaña: referencia, tipo o suma de control inválida.');
+    }
     ids.add(asset?.id);
     paths.add(asset?.path);
   }
@@ -66,6 +71,7 @@ export function validateCampaignAssets(value) {
 
 // Installed packages can reference their own declared files or inline images.
 // The renderer's shared textures are selected by core code, not by package JSON.
+/** @returns {string[]} */
 export function validateSelectedCampaignAssets(id, assets, sources) {
   const errors = [],
     prefix = `/campaigns/${id}/`,
@@ -75,29 +81,43 @@ export function validateSelectedCampaignAssets(id, assets, sources) {
         .map((asset) => [asset.path, asset]),
     );
   const visit = (value, field) => {
-    if (Array.isArray(value)) for (const child of value) visit(child, field);
-    else if (object(value)) for (const [key, child] of Object.entries(value)) visit(child, key);
-    else if (typeof value === 'string') {
+    if (Array.isArray(value)) {
+      for (const child of value) {
+        visit(child, field);
+      }
+    } else if (object(value)) {
+      for (const [key, child] of Object.entries(value)) {
+        visit(child, key);
+      }
+    } else if (typeof value === 'string') {
       if (value.startsWith('/campaigns/')) {
         const asset = value.startsWith(prefix) ? files.get(value.slice(prefix.length)) : undefined;
-        if (!asset) errors.push(`El recurso ${value} no pertenece al paquete.`);
-        else if (imageFields.has(field) || /\.(png|webp|jpe?g)$/.test(value))
+        if (!asset) {
+          errors.push(`El recurso ${value} no pertenece al paquete.`);
+        } else if (imageFields.has(field) || /\.(png|webp|jpe?g)$/.test(value)) {
           if (
             !isCampaignAssetReference(value) ||
             typeof asset.type !== 'string' ||
             !asset.type.startsWith('image/')
-          )
+          ) {
             errors.push(`El recurso de imagen ${value} tiene otro tipo.`);
-      } else if (value.startsWith('/art/'))
+          }
+        }
+      } else if (value.startsWith('/art/')) {
         errors.push(`El recurso ${value} necesita estar incluido en el paquete.`);
+      }
       if (
         imageFields.has(field) &&
         (!isContentImageReference(value) || (value.startsWith('data:') && value.length >= 350000))
-      )
+      ) {
         errors.push(`El campo ${field} necesita una imagen válida del paquete.`);
-    } else if (imageFields.has(field))
+      }
+    } else if (imageFields.has(field)) {
       errors.push(`El campo ${field} necesita una imagen válida del paquete.`);
+    }
   };
-  for (const source of sources) visit(source);
+  for (const source of sources) {
+    visit(source);
+  }
   return errors;
 }

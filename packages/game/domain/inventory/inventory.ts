@@ -37,7 +37,9 @@ export class Inventory {
   #pocketOrder: readonly PocketOrderEntry[] | undefined;
 
   constructor(snapshot: InventorySnapshot) {
-    if (!snapshot.custodianId) throw new InventoryRefusal(InventoryRefusalCode.InvalidItem);
+    if (!snapshot.custodianId) {
+      throw new InventoryRefusal(InventoryRefusalCode.InvalidItem);
+    }
     this.#custodianId = snapshot.custodianId;
     this.#unlimitedCapacity = snapshot.unlimitedCapacity ?? false;
     this.#pocketOrder =
@@ -75,7 +77,9 @@ export class Inventory {
 
   fingerprint(selectionId: string): string {
     const entry = this.#entries.get(selectionId);
-    if (!entry) throw new InventoryRefusal(InventoryRefusalCode.InsufficientQuantity);
+    if (!entry) {
+      throw new InventoryRefusal(InventoryRefusalCode.InsufficientQuantity);
+    }
     return JSON.stringify({
       custodianId: this.#custodianId,
       selectionId,
@@ -84,17 +88,23 @@ export class Inventory {
   }
 
   assertSelection(selectionId: string, expected?: string): void {
-    if (expected !== undefined && this.fingerprint(selectionId) !== expected)
+    if (expected !== undefined && this.fingerprint(selectionId) !== expected) {
       throw new InventoryRefusal(InventoryRefusalCode.StaleSelection);
+    }
   }
 
   take(selectionId: string, quantity: number, expected?: string): Item {
     this.assertSelection(selectionId, expected);
     const entry = this.#entries.get(selectionId);
-    if (!entry) throw new InventoryRefusal(InventoryRefusalCode.InsufficientQuantity);
+    if (!entry) {
+      throw new InventoryRefusal(InventoryRefusalCode.InsufficientQuantity);
+    }
     const item = entry.item.take(quantity);
-    if (entry.item.quantity === 0) this.#entries.delete(selectionId);
-    else entry.heldQuantity = Math.min(entry.heldQuantity, entry.item.quantity);
+    if (entry.item.quantity === 0) {
+      this.#entries.delete(selectionId);
+    } else {
+      entry.heldQuantity = Math.min(entry.heldQuantity, entry.item.quantity);
+    }
     return item;
   }
 
@@ -103,9 +113,12 @@ export class Inventory {
     placement: IncomingPlacement,
     { deferCapacity = false } = {},
   ): readonly string[] {
-    if (item.quantity <= 0) throw new InventoryRefusal(InventoryRefusalCode.InvalidItem);
-    if (!deferCapacity && this.overloaded)
+    if (item.quantity <= 0) {
+      throw new InventoryRefusal(InventoryRefusalCode.InvalidItem);
+    }
+    if (!deferCapacity && this.overloaded) {
       throw new InventoryRefusal(InventoryRefusalCode.CapacityExceeded);
+    }
     const next = new Inventory(this.toSnapshot());
     const incomingIdentities = item.instanceIds;
     if (
@@ -119,8 +132,9 @@ export class Inventory {
     }
     const selections: string[] = [];
     if (placement.separateUnits) {
-      if (!next.#unlimitedCapacity && item.quantity > PocketRules.Capacity)
+      if (!next.#unlimitedCapacity && item.quantity > PocketRules.Capacity) {
         throw new InventoryRefusal(InventoryRefusalCode.CapacityExceeded);
+      }
       const available = new Item(item.toSnapshot());
       while (available.quantity > 0) {
         const selectionId = next.#availableSelection(placement.selectionId);
@@ -159,7 +173,9 @@ export class Inventory {
       )) {
         let added = next.quantityOf(selectionId) - this.quantityOf(selectionId);
         for (const slot of slots) {
-          if (added <= 0 || slot.entry?.item !== selectionId) continue;
+          if (added <= 0 || slot.entry?.item !== selectionId) {
+            continue;
+          }
           const count = Math.min(added, slot.entry.stackLimit - slot.entry.count);
           slot.entry = { ...slot.entry, count: slot.entry.count + count };
           added -= count;
@@ -168,22 +184,30 @@ export class Inventory {
       next.#pocketOrder = PocketLayout.restore({ slots, overflow: [] }).toOrder();
     }
     next.#assertUniqueIdentities();
-    if (!deferCapacity) next.assertCapacity();
+    if (!deferCapacity) {
+      next.assertCapacity();
+    }
     this.#entries = next.#entries;
     this.#pocketOrder = next.#pocketOrder;
     return selections;
   }
 
   assertCapacity(): void {
-    if (this.overloaded) throw new InventoryRefusal(InventoryRefusalCode.CapacityExceeded);
+    if (this.overloaded) {
+      throw new InventoryRefusal(InventoryRefusalCode.CapacityExceeded);
+    }
   }
 
   #availableSelection(base: string): string {
-    if (!this.#entries.has(base)) return base;
+    if (!this.#entries.has(base)) {
+      return base;
+    }
     const stem = base.slice(0, base.startsWith('inventory:') ? 98 : 88);
     for (let index = 1; index <= 1_000_000; index++) {
       const selectionId = `${stem}:${index}`;
-      if (!this.#entries.has(selectionId)) return selectionId;
+      if (!this.#entries.has(selectionId)) {
+        return selectionId;
+      }
     }
     throw new InventoryRefusal(InventoryRefusalCode.CapacityExceeded);
   }
@@ -191,9 +215,13 @@ export class Inventory {
   #assertUniqueIdentities(): void {
     const identities = new Set<string>();
     for (const entry of this.#entries.values()) {
-      if (entry.item.quantity === 0) continue;
+      if (entry.item.quantity === 0) {
+        continue;
+      }
       for (const id of entry.item.instanceIds) {
-        if (identities.has(id)) throw new InventoryRefusal(InventoryRefusalCode.DuplicateIdentity);
+        if (identities.has(id)) {
+          throw new InventoryRefusal(InventoryRefusalCode.DuplicateIdentity);
+        }
         identities.add(id);
       }
     }

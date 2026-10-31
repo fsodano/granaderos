@@ -47,7 +47,9 @@ export class CampaignSectorSessionCoordinator {
     const campaign = this.#campaign;
     const suspended = campaign.suspendedSectorSessions ?? [];
     const record = suspended.find((session) => session.request.id === sectorSessionId);
-    if (!record) throw new Error('La visita suspendida no existe.');
+    if (!record) {
+      throw new Error('La visita suspendida no existe.');
+    }
     const now = campaign.hour * 3600 + (campaign.secondOfHour ?? 0);
     const snapshot = structuredClone(record.snapshot);
     const elapsed = now - snapshot.startSeconds;
@@ -68,7 +70,9 @@ export class CampaignSectorSessionCoordinator {
     campaign.activeSquadId = record.activeSquadId;
     campaign.location = record.location;
     const squad = campaign.squads.find((group) => group.id === record.activeSquadId);
-    if (!squad) throw new Error('Falta la escuadra de la visita suspendida.');
+    if (!squad) {
+      throw new Error('Falta la escuadra de la visita suspendida.');
+    }
     campaign.squad = [...squad.members];
   }
 }

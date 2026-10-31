@@ -56,8 +56,9 @@ export function placeInvaders(state, units, request, occupied) {
         blocked.has(spaceKey(next)) ||
         depth.has(spaceKey(next)) ||
         !Number.isFinite(movementStepCost(state, actor, from, next))
-      )
-        {continue;}
+      ) {
+        continue;
+      }
       depth.set(spaceKey(next), depth.get(spaceKey(from)) + 1);
       queue.push(next);
     }

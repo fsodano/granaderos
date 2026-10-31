@@ -30,9 +30,7 @@ export default function MilitiaDistribution({
   const [destination, setDestination] = useState(''),
     [rank, setRank] = useState(0),
     [quantity, setQuantity] = useState('1');
-  const to = destinations.includes(destination)
-    ? destination
-    : (destinations[0] ?? '');
+  const to = destinations.includes(destination) ? destination : (destinations[0] ?? '');
   const action = {
       type: 'transferMilitia' as const,
       from: sector,
@@ -52,20 +50,14 @@ export default function MilitiaDistribution({
           </p>
         ) : (
           <>
-            <p>
-              Mové defensores entre los sectores propios conectados de{' '}
-              {status.city?.name}.
-            </p>
+            <p>Mové defensores entre los sectores propios conectados de {status.city?.name}.</p>
             <ul aria-label="Guarniciones de la ciudad">
               {status.sectors.map((id: string) => (
                 <li key={id}>
                   <strong>{label(id)}</strong>
                   <span>
                     {state.sectors[id]?.militia
-                      .map(
-                        (count: number, r: number) =>
-                          `${MILITIA_NAMES[r]}: ${count}`,
-                      )
+                      .map((count: number, r: number) => `${MILITIA_NAMES[r]}: ${count}`)
                       .join(' · ')}
                   </span>
                 </li>
@@ -137,10 +129,7 @@ export default function MilitiaDistribution({
                 {automatic.sectors.map((id: string) => (
                   <li key={id}>
                     {label(id)}:{' '}
-                    {(automatic.targets[id] ?? []).reduce(
-                      (a: number, b: number) => a + b,
-                      0,
-                    )}{' '}
+                    {(automatic.targets[id] ?? []).reduce((a: number, b: number) => a + b, 0)}{' '}
                     defensores
                   </li>
                 ))}
@@ -149,10 +138,9 @@ export default function MilitiaDistribution({
               <p>{automatic.reason}</p>
             )}
             <small>
-              La redistribución local es inmediata. Conserva armas, munición,
-              heridas y experiencia. Los heridos inestables y los alumnos
-              permanecen en su sector. Cada sector admite 60 plazas, incluida la
-              instrucción.
+              La redistribución local es inmediata. Conserva armas, munición, heridas y experiencia.
+              Los heridos inestables y los alumnos permanecen en su sector. Cada sector admite 60
+              plazas, incluida la instrucción.
             </small>
           </>
         )}

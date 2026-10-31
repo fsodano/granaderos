@@ -87,8 +87,11 @@ function keep(record, unit) {
     'leftHandItem',
     'activeSlot',
   ]) {
-    if (physical[key] !== undefined) {record[key] = structuredClone(physical[key]);}
-    else {delete record[key];}
+    if (physical[key] !== undefined) {
+      record[key] = structuredClone(physical[key]);
+    } else {
+      delete record[key];
+    }
   }
   record.carriedLoaded = physical.loaded ?? 0;
   if (physical.reloadProgress) {
@@ -123,7 +126,9 @@ export function migrateAmmunitionCustody(s) {
     );
     const shops = {};
     if (s.contentCampaign?.package.ammunitionMarket) {
-      for (const { id } of ammunitionMarketLocations(s)) {shops[id] = freshShop(s, id);}
+      for (const { id } of ammunitionMarketLocations(s)) {
+        shops[id] = freshShop(s, id);
+      }
     }
     for (const [at, merchant] of oldMerchants) {
       const stock = merchant.ammunition,
@@ -362,14 +367,21 @@ export function migrateStartingCartridges(s) {
     s.pendingBattle?.resumeSnapshot,
   ];
   for (const scene of scenes) {
-    for (const unit of scene?.units ?? []) {if (unit.side === 'player') {served.add(String(unit.id));}}
+    for (const unit of scene?.units ?? []) {
+      if (unit.side === 'player') {
+        served.add(String(unit.id));
+      }
+    }
   }
   for (const unit of s.pendingBattle?.squad ?? []) {
     served.add(String(unit.id));
   }
   for (const remains of Object.values(s.sectorRemains ?? {})) {
-    for (const entry of remains)
-      {if (entry.unit?.side === 'player') {served.add(String(entry.unit.id));}}
+    for (const entry of remains) {
+      if (entry.unit?.side === 'player') {
+        served.add(String(entry.unit.id));
+      }
+    }
   }
   for (const [id, record] of Object.entries(s.operativeState ?? {})) {
     need(
@@ -573,12 +585,14 @@ export function retainReturnedAmmunition(s, request, reports, snapshot, previous
       const actual = snapshot.units.find(
         (u) => u.side === 'player' && Number(u.id) === Number(issued.id),
       );
-      if (actual.hp <= 0) {keep(s.operativeState[issued.id], { ammunition: {}, loaded: 0 });}
-      else
-        {need(
+      if (actual.hp <= 0) {
+        keep(s.operativeState[issued.id], { ammunition: {}, loaded: 0 });
+      } else {
+        need(
           reports.some((r) => Number(r.id) === Number(issued.id)),
           'Falta el parte de un combatiente vivo.',
-        );}
+        );
+      }
     }
   }
   const seen = new Set();
@@ -591,8 +605,9 @@ export function retainReturnedAmmunition(s, request, reports, snapshot, previous
       unit = structuredClone(actual ?? { ...issued, ...report });
     if (actual) {
       for (const key of ['ammo', 'loaded']) {
-        if (report[key] !== undefined)
-          {need(report[key] === actual[key], 'El parte de munición no coincide con el sector.');}
+        if (report[key] !== undefined) {
+          need(report[key] === actual[key], 'El parte de munición no coincide con el sector.');
+        }
       }
       if (report.ammunition !== undefined) {
         validateCounts(report.ammunition);

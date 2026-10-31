@@ -69,8 +69,9 @@ function scene(value) {
     );
   }
   for (const prop of list(value.props)) {
-    if (Array.isArray(prop?.contents))
-      {prop.contents = prop.contents.filter((item) => !obsolete(item?.item));}
+    if (Array.isArray(prop?.contents)) {
+      prop.contents = prop.contents.filter((item) => !obsolete(item?.item));
+    }
   }
   if (value.resumeSnapshot) {
     scene(value.resumeSnapshot);
@@ -83,16 +84,22 @@ export function removeIgnitionSupplies(state) {
   }
   scene(state);
   for (const key of ['operativeState', 'missionAllies']) {
-    for (const unit of values(state[key])) {removeUnitIgnitionSupplies(unit);}
+    for (const unit of values(state[key])) {
+      removeUnitIgnitionSupplies(unit);
+    }
   }
   for (const units of values(state.garrisons)) {
-    for (const unit of list(units)) {removeUnitIgnitionSupplies(unit);}
+    for (const unit of list(units)) {
+      removeUnitIgnitionSupplies(unit);
+    }
   }
   for (const group of [...list(state.militiaTraining), ...list(state.enemyGroups)]) {
     scene(group);
   }
   for (const remains of values(state.sectorRemains)) {
-    for (const entry of list(remains)) {removeUnitIgnitionSupplies(entry?.unit);}
+    for (const entry of list(remains)) {
+      removeUnitIgnitionSupplies(entry?.unit);
+    }
   }
   for (const snapshot of [
     ...values(state.sectorStates),

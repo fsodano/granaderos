@@ -159,10 +159,11 @@ function targetResult(flight, kind, target, weapon) {
     const low = scaled * 0.8,
       high = scaled * 1.2;
     if (high > low) {
-      for (let injury = Math.floor(low + 0.5); injury <= Math.floor(high + 0.5); injury++)
-        {expectedDamage +=
+      for (let injury = Math.floor(low + 0.5); injury <= Math.floor(high + 0.5); injury++) {
+        expectedDamage +=
           (injury * Math.max(0, Math.min(high, injury + 0.5) - Math.max(low, injury - 0.5))) /
-          (high - low);}
+          (high - low);
+      }
     }
   }
   return { contact: 1 - none, force: Math.min(flight.totalForce, force), expectedDamage };

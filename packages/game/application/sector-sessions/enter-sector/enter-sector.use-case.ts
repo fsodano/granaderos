@@ -16,8 +16,9 @@ export class EnterSectorUseCase<Snapshot> {
     const session =
       entry.resumedSession ??
       SectorSession.enter(request.sessionId, request.sectorId, request.deploymentRequired);
-    if (!entry.resumedSession && request.participantIds.length)
+    if (!entry.resumedSession && request.participantIds.length) {
       session.admitParticipants(request.participantIds);
+    }
     return {
       snapshot: this.#repository.commitSectorEntry(session, entry.revision),
       sessionId: session.id,

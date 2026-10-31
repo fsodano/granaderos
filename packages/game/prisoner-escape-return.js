@@ -83,8 +83,9 @@ export function settlePrisonerEscapes(campaign, request, battle, roster) {
       );
     }
     for (const horse of campaign.horseState.horses) {
-      if (horse.custody?.kind === 'captured' && horse.custody.operativeId === id)
-        {horse.custody.kind = 'field';}
+      if (horse.custody?.kind === 'captured' && horse.custody.operativeId === id) {
+        horse.custody.kind = 'field';
+      }
     }
     returnEquipment(campaign, id, {
       weapon: 0,

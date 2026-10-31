@@ -73,9 +73,12 @@ export class Character {
   }
 
   assertAvailableForService(): void {
-    if (!this.#health.alive || this.#captured)
+    if (!this.#health.alive || this.#captured) {
       throw new DomainRefusal(DomainRefusalCode.CharacterUnavailable);
-    if (this.#service) throw new DomainRefusal(DomainRefusalCode.AlreadyServing);
+    }
+    if (this.#service) {
+      throw new DomainRefusal(DomainRefusalCode.AlreadyServing);
+    }
   }
 
   beginService(contract: ServiceContract, locationId: string): void {
@@ -88,14 +91,22 @@ export class Character {
   }
 
   renewService(contract: ServiceContract): void {
-    if (!this.#service) throw new DomainRefusal(DomainRefusalCode.NotServing);
-    if (!this.#health.alive) throw new DomainRefusal(DomainRefusalCode.CharacterUnavailable);
-    if (contract.characterId !== this.#id) throw new DomainRefusal(DomainRefusalCode.InvalidValue);
+    if (!this.#service) {
+      throw new DomainRefusal(DomainRefusalCode.NotServing);
+    }
+    if (!this.#health.alive) {
+      throw new DomainRefusal(DomainRefusalCode.CharacterUnavailable);
+    }
+    if (contract.characterId !== this.#id) {
+      throw new DomainRefusal(DomainRefusalCode.InvalidValue);
+    }
     this.#service = contract;
   }
 
   endService(): ServiceContract {
-    if (!this.#service) throw new DomainRefusal(DomainRefusalCode.NotServing);
+    if (!this.#service) {
+      throw new DomainRefusal(DomainRefusalCode.NotServing);
+    }
     const ended = this.#service;
     this.#service = null;
     return ended;

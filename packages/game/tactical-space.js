@@ -89,8 +89,9 @@ export function canWalkBetween(state, from, to) {
       { ...spacePoint(from), y: to.y },
     ]) {
       const corner = surfaceAt(state, point);
-      if (!corner || corner.blocked || surfaceHeight(state, point) !== surfaceHeight(state, from))
-        {return false;}
+      if (!corner || corner.blocked || surfaceHeight(state, point) !== surfaceHeight(state, from)) {
+        return false;
+      }
     }
   }
   return true;
@@ -211,7 +212,9 @@ export function validateTacticalSpace(state) {
       actor.patrolOrigin,
       actor.ai?.destination,
     ]) {
-      if (point) {supported(point, 'posiciones recordadas');}
+      if (point) {
+        supported(point, 'posiciones recordadas');
+      }
     }
     for (const point of [...(actor.lastMovePath ?? []), ...(actor.fleePath ?? [])]) {
       supported(point, 'rutas');
@@ -234,8 +237,9 @@ export function validateTacticalSpace(state) {
         supported(point, 'apoyos del mobiliario');
         if (tacticalLevel(prop) > 0) {
           need(surfaceHeight(state, prop) === surfaceHeight(state, point), 'altura del mobiliario');
-          if (prop.blocksMovement !== false)
-            {need(!upperOccupants.has(spaceKey(point)), 'personas dentro del mobiliario');}
+          if (prop.blocksMovement !== false) {
+            need(!upperOccupants.has(spaceKey(point)), 'personas dentro del mobiliario');
+          }
         }
       }
     }

@@ -1,20 +1,11 @@
 import type { CampaignOperative } from '../../../packages/game/public/campaign-types.ts';
 import type { BattleUnit } from '../../../packages/game/public/compatibility-types.ts';
-import {
-  trainingProgress,
-  TRAINING_LABELS,
-} from '../../../packages/game/skill-training.js';
+import { trainingProgress, TRAINING_LABELS } from '../../../packages/game/skill-training.js';
 const labels: Record<string, string> = TRAINING_LABELS;
-export default function TrainingProgress({
-  unit,
-}: {
-  unit: BattleUnit | CampaignOperative;
-}) {
+export default function TrainingProgress({ unit }: { unit: BattleUnit | CampaignOperative }) {
   return (
     <details className="field-supplies" style={{ fontSize: '.8rem' }}>
-      <summary
-        style={{ cursor: 'pointer', padding: '.5rem 0', color: '#d8c69a' }}
-      >
+      <summary style={{ cursor: 'pointer', padding: '.5rem 0', color: '#d8c69a' }}>
         Aprendizaje por práctica
       </summary>
       <dl style={{ display: 'grid', gap: '.55rem', margin: '.5rem 0' }}>

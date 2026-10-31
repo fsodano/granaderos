@@ -444,7 +444,9 @@ function observedArtillery(state, raw, known, canObserve, canObserveExterior) {
           height: source.height + (end.height - source.height) * fraction,
           tacticalLevel: source.tacticalLevel,
         };
-      if (!observed(point) && !(n === steps && endContact)) {break;}
+      if (!observed(point) && !(n === steps && endContact)) {
+        break;
+      }
       points.push(point);
     }
   }
@@ -536,7 +538,9 @@ export function captureBattlePresentation(
         if (frames[n].action === event.action) {
           const observed = knownIn(frames[n].state),
             admitted = crewIds.filter((id) => observed.has(bodyKey('unit', id)));
-          if (admitted.length) {frames[n].crewIds = admitted;}
+          if (admitted.length) {
+            frames[n].crewIds = admitted;
+          }
         }
       }
       return;

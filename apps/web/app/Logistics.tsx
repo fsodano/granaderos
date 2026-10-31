@@ -22,9 +22,8 @@ export default function Logistics({ state: s, dispatch }: Props) {
         <p className="eyebrow">TRANSPORTE Y DEPÓSITOS</p>
         <h2 id="logistics-title">Rutas de campaña</h2>
         <p>
-          Organizá el transporte para las escuadras y la artillería. Elegí las
-          piezas y su destino desde Sector → Preparativos del sector →
-          Artillería.
+          Organizá el transporte para las escuadras y la artillería. Elegí las piezas y su destino
+          desde Sector → Preparativos del sector → Artillería.
         </p>
       </div>
       <div className="logistics-routes">
@@ -36,9 +35,7 @@ export default function Logistics({ state: s, dispatch }: Props) {
             <button
               type="button"
               className="line-button"
-              disabled={
-                disabled || s.routes[o.id] || s.resources.treasury < o.cost
-              }
+              disabled={disabled || s.routes[o.id] || s.resources.treasury < o.cost}
               onClick={() => dispatch({ type: 'transport', mode: o.id })}
             >
               {s.routes[o.id] ? '✓ Red organizada' : 'Organizar transporte'}
@@ -61,9 +58,8 @@ export default function Logistics({ state: s, dispatch }: Props) {
                     {title(t.from)} → {title(t.to)}
                   </strong>
                   <p>
-                    {artilleryProfile(s, t.gun).name} ·{' '}
-                    {t.gun.ammo + Number(t.gun.loaded)} disparos ·{' '}
-                    {t.mode === 'flotilla' ? 'Flotilla' : 'Carreta'}
+                    {artilleryProfile(s, t.gun).name} · {t.gun.ammo + Number(t.gun.loaded)} disparos
+                    · {t.mode === 'flotilla' ? 'Flotilla' : 'Carreta'}
                   </p>
                 </div>
                 <span className={reason ? 'logistics-route-closed' : ''}>
@@ -84,9 +80,9 @@ export default function Logistics({ state: s, dispatch }: Props) {
               {guns.map((gun) => artilleryProfile(s, gun).name).join(' · ')}
             </p>
           ))}
-        {!Object.values(s.artilleryDepots ?? {}).some(
-          (guns) => guns.length > 0,
-        ) && <p>No hay piezas guardadas en los depósitos.</p>}
+        {!Object.values(s.artilleryDepots ?? {}).some((guns) => guns.length > 0) && (
+          <p>No hay piezas guardadas en los depósitos.</p>
+        )}
       </div>
     </section>
   );

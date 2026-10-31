@@ -28,10 +28,17 @@ export class VisionObserver {
   }
 
   canObserve(target: SightTarget, environment: SightEnvironment): boolean {
-    if (!this.#available || target.departed || !this.#fieldOfView.includes(this.#position, target))
+    if (
+      !this.#available ||
+      target.departed ||
+      !this.#fieldOfView.includes(this.#position, target)
+    ) {
       return false;
+    }
     const distance = Math.hypot(this.#position.x - target.x, this.#position.y - target.y);
-    if (distance > environment.range() || !environment.lineOfSightClear()) return false;
+    if (distance > environment.range() || !environment.lineOfSightClear()) {
+      return false;
+    }
     return this.#visibility.smokeIsTransparent(environment.smokeCells());
   }
 }

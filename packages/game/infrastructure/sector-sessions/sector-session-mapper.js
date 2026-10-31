@@ -83,17 +83,25 @@ export function writeSectorSession(state, session) {
 
 export function changeCombat(state, change) {
   const session = readSectorSession(state);
-  if (!session.combat) return;
+  if (!session.combat) {
+    return;
+  }
   change(session.combat);
   writeSectorSession(state, session);
 }
 
 export function setCombatPhase(state, phase) {
   changeCombat(state, (combat) => {
-    if (!combat.active) return;
-    if (phase === CombatPhase.Player) combat.beginPlayerPhase();
-    else if (phase === CombatPhase.Enemy) combat.beginEnemyPhase();
-    else combat.openPlayerInterrupt();
+    if (!combat.active) {
+      return;
+    }
+    if (phase === CombatPhase.Player) {
+      combat.beginPlayerPhase();
+    } else if (phase === CombatPhase.Enemy) {
+      combat.beginEnemyPhase();
+    } else {
+      combat.openPlayerInterrupt();
+    }
   });
 }
 
@@ -115,7 +123,9 @@ export function writeParticipant(unit, participant) {
 
 export function spendParticipantActionPoints(unit, amount) {
   const participant = participantOf(unit);
-  if (!participant.canSpend(amount)) return false;
+  if (!participant.canSpend(amount)) {
+    return false;
+  }
   participant.spend(amount);
   writeParticipant(unit, participant);
   return true;

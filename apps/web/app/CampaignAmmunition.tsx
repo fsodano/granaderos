@@ -8,11 +8,7 @@ import type {
 import { sitePath } from '../lib/site-path.js';
 import AmmunitionLoadChoice from './AmmunitionLoadChoice';
 import { useState } from 'react';
-import {
-  AMMO_KEYS,
-  AMMO_TYPES,
-  ammoTypeFor,
-} from '../../../packages/game/ammo-types.js';
+import { AMMO_KEYS, AMMO_TYPES, ammoTypeFor } from '../../../packages/game/ammo-types.js';
 import {
   ammunitionOrderQuote,
   AMMUNITION_ORDER_LIMIT,
@@ -37,14 +33,7 @@ export default function CampaignAmmunition({
     supplied = isSupplied(s, s.location),
     quotes = {
       buy: ammunitionOrderQuote(s, operative, family, value, 'buy', supplied),
-      store: ammunitionOrderQuote(
-        s,
-        operative,
-        family,
-        value,
-        'store',
-        supplied,
-      ),
+      store: ammunitionOrderQuote(s, operative, family, value, 'store', supplied),
       take: ammunitionOrderQuote(s, operative, family, value, 'take', supplied),
     };
   const selected = AMMO_TYPES[family],
@@ -81,15 +70,12 @@ export default function CampaignAmmunition({
         <img src={sitePath(selected.art)} alt={selected.name} />
         <div>
           <p>
-            {quotes['buy'].carried} cartuchos sueltos con{' '}
-            {operative?.name ?? 'el combatiente'}
+            {quotes['buy'].carried} cartuchos sueltos con {operative?.name ?? 'el combatiente'}
           </p>
           <p>
             {quotes['buy'].stored} guardados en {location}
           </p>
-          {ammoTypeFor(operative) === family && (
-            <p>{quotes['buy'].loaded} en el arma</p>
-          )}
+          {ammoTypeFor(operative) === family && <p>{quotes['buy'].loaded} en el arma</p>}
         </div>
       </div>
       <label htmlFor="campaign-ammunition-quantity">
@@ -111,9 +97,7 @@ export default function CampaignAmmunition({
           title={quotes['buy'].reason ?? undefined}
           onClick={() => act('buy')}
         >
-          Comprar ·{' '}
-          {Number.isSafeInteger(quotes['buy'].cost) ? quotes['buy'].cost : 0}{' '}
-          pesos
+          Comprar · {Number.isSafeInteger(quotes['buy'].cost) ? quotes['buy'].cost : 0} pesos
         </button>
         <button
           className="line-button"
@@ -134,8 +118,7 @@ export default function CampaignAmmunition({
       </div>
       {hasAmmunitionMarket(s, s.location) && (
         <p>
-          {quotes['buy'].stock} disponibles con el proveedor ·{' '}
-          {quotes['buy'].unitPrice}{' '}
+          {quotes['buy'].stock} disponibles con el proveedor · {quotes['buy'].unitPrice}{' '}
           {quotes['buy'].unitPrice === 1 ? 'peso' : 'pesos'} por cartucho.
         </p>
       )}
@@ -150,9 +133,7 @@ export default function CampaignAmmunition({
           activeSlot: 'primary',
         }}
         disabled={!!s.pendingBattle}
-        onUnload={() =>
-          dispatch({ type: 'unloadAmmunition', operativeId: operative?.id })
-        }
+        onUnload={() => dispatch({ type: 'unloadAmmunition', operativeId: operative?.id })}
         onSelect={(family) => {
           dispatch({
             type: 'selectAmmunitionLoad',
@@ -163,10 +144,9 @@ export default function CampaignAmmunition({
         }}
       />
       <small>
-        Los cartuchos conservan su familia. El depósito queda en este sector. Al
-        entrar o partir de una localidad propia y comunicada se compra solo lo
-        que falta para la carga configurada; fuera de esas localidades llevás tu
-        munición actual.
+        Los cartuchos conservan su familia. El depósito queda en este sector. Al entrar o partir de
+        una localidad propia y comunicada se compra solo lo que falta para la carga configurada;
+        fuera de esas localidades llevás tu munición actual.
       </small>
     </section>
   );

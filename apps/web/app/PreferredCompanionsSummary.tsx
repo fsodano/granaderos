@@ -25,21 +25,13 @@ export default function PreferredCompanionsSummary({
   operative: CampaignOperative;
   details?: boolean;
 }) {
-  const preferences: CompanionPreference[] = preferredCompanions(
-    state,
-    operative,
-  );
+  const preferences: CompanionPreference[] = preferredCompanions(state, operative);
   if (!preferences.length) {
     return null;
   }
-  const issued = state?.pendingBattle?.squad?.find(
-    (u) => Number(u.id) === Number(operative.id),
-  );
+  const issued = state?.pendingBattle?.squad?.find((u) => Number(u.id) === Number(operative.id));
   const source =
-    issued &&
-    preferences.find(
-      (preference) => preference.companionId === issued.companionId,
-    );
+    issued && preferences.find((preference) => preference.companionId === issued.companionId);
   return (
     <div
       className="companion-preferences"
@@ -59,15 +51,14 @@ export default function PreferredCompanionsSummary({
       ) : (
         <p>
           <strong>Compañeros preferidos:</strong>{' '}
-          {preferences.map((preference) => preference.companionName).join(', ')}
-          .
+          {preferences.map((preference) => preference.companionName).join(', ')}.
         </p>
       )}
       <small>{PREFERRED_COMPANION_EXPLANATION}</small>
       {source && (issued.companionBonus ?? 0) > 0 && (
         <p>
-          Apoyo de {source.companionName} al inicio del despliegue: +
-          {issued.companionBonus} de moral.
+          Apoyo de {source.companionName} al inicio del despliegue: +{issued.companionBonus} de
+          moral.
         </p>
       )}
     </div>

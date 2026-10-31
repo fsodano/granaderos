@@ -3,7 +3,7 @@ import { CanonicalPersonnelMapper } from '../persistence/canonical-personnel-map
 import { Money } from '../../domain/finance/money.ts';
 import { GameTime, TimeUnits } from '../../domain/shared/game-time.ts';
 import { DomainRefusal, DomainRefusalCode } from '../../domain/shared/domain-refusal.ts';
-import { rosterFor } from '../../recruitment.js';
+import { rosterFor } from '../../recruitment.ts';
 import { contractRenewalQuote, contractExpiresSeconds } from '../../contracts.js';
 
 export class CampaignRenewServiceContractRepository {
@@ -18,7 +18,9 @@ export class CampaignRenewServiceContractRepository {
   }
 
   load(request) {
-    if (this.#closed || this.#context) throw new DomainRefusal(DomainRefusalCode.TransactionClosed);
+    if (this.#closed || this.#context) {
+      throw new DomainRefusal(DomainRefusalCode.TransactionClosed);
+    }
     const campaign = this.#transaction.draft;
     const id = Number(request.characterId);
     const candidate = rosterFor(campaign).find((character) => character.id === id);
@@ -35,8 +37,9 @@ export class CampaignRenewServiceContractRepository {
       throw new DomainRefusal(DomainRefusalCode.ContractChanged);
     }
     const quote = contractRenewalQuote(campaign, candidate, request.term);
-    if (!quote.available)
+    if (!quote.available) {
       throw new CampaignRuleRefusal(DomainRefusalCode.ServiceTermsUnavailable, quote.reason);
+    }
     this.#context = {
       character: this.#personnel.restoreCharacter(candidate),
       treasury: this.#personnel.treasury,

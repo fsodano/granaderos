@@ -18,7 +18,9 @@ export function chooseGrenadeThrow(state, unit, targets) {
     for (const [key, stack] of Object.entries(unit.inventory ?? {}).sort(([a], [b]) =>
       a.localeCompare(b),
     )) {
-      if (!isGrenadeStack(stack) || stack.count < 1 || stack.condition < 50) {continue;}
+      if (!isGrenadeStack(stack) || stack.count < 1 || stack.condition < 50) {
+        continue;
+      }
       try {
         const ready = planReadyMainHand(unit, `inventory:${key}`);
         ready.ap -= 4;
@@ -74,10 +76,12 @@ export function chooseGrenadeThrow(state, unit, targets) {
       const radius = grenadeScatterRadius(Math.hypot(unit.x - point.x, unit.y - point.y));
       let unsafe = false;
       if (protectedPeople.length) {
-        for (let y = point.y - radius; y <= point.y + radius && !unsafe; y++)
-          {for (let x = point.x - radius; x <= point.x + radius && !unsafe; x++) {
+        for (let y = point.y - radius; y <= point.y + radius && !unsafe; y++) {
+          for (let x = point.x - radius; x <= point.x + radius && !unsafe; x++) {
             const end = { x, y, tacticalLevel: point.tacticalLevel };
-            if (!surfaceAt(state, end)) {continue;}
+            if (!surfaceAt(state, end)) {
+              continue;
+            }
             const flight = grenadeFlight(state, candidate.unit, end);
             if (
               flight.landing &&
@@ -86,9 +90,11 @@ export function chooseGrenadeThrow(state, unit, targets) {
                   grenadeBlastExposure(state, flight.landing, t, GRENADE_THROW.radius).multiplier >
                   0,
               )
-            )
-              {unsafe = true;}
-          }}
+            ) {
+              unsafe = true;
+            }
+          }
+        }
       }
       if (unsafe) {
         continue;

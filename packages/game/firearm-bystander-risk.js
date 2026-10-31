@@ -135,7 +135,9 @@ export function firearmBystanderRisk(state, attacker, target, hitLocation = 'tor
     // one legal scatter cell. The zero/zero draw becomes +1/0 in the shot rule.
     for (let dx = -radius; dx <= radius; dx++) {
       for (let dy = -radius; dy <= radius; dy++) {
-        if (!dx && !dy) {continue;}
+        if (!dx && !dy) {
+          continue;
+        }
         const destination = {
           x: target.x + dx,
           y: target.y + dy,
@@ -143,7 +145,9 @@ export function firearmBystanderRisk(state, attacker, target, hitLocation = 'tor
             target.unconscious || target.knockedDown ? 'prone' : (target.stance ?? 'standing'),
           mounted: !target.unconscious && !target.knockedDown && Boolean(target.mounted),
         };
-        if (!couldHit(destination)) {continue;}
+        if (!couldHit(destination)) {
+          continue;
+        }
         record(
           projectileFlight(
             missScene,

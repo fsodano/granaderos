@@ -10,11 +10,7 @@ import './assignment-attention.css';
 
 // Existing owned artillery and already-paid cargo still retain their delivery
 // receipts. These notices do not expose a new order or a trade control.
-export default function LogisticsAttention({
-  state,
-}: {
-  state: CampaignSnapshot;
-}) {
+export default function LogisticsAttention({ state }: { state: CampaignSnapshot }) {
   const notice = publicLogisticsNotice(state);
   if (!notice) {
     return null;
@@ -41,8 +37,7 @@ export default function LogisticsAttention({
       <div className="assignment-attention-heading">
         <h2>{title}</h2>
         <span>
-          Día {Math.floor(notice.hour / 24) + 1} ·{' '}
-          {String(notice.hour % 24).padStart(2, '0')}:00
+          Día {Math.floor(notice.hour / 24) + 1} · {String(notice.hour % 24).padStart(2, '0')}:00
         </span>
       </div>
       <ul>

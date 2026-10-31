@@ -12,13 +12,16 @@ export function validateErrandDefinitions(quests, content = {}) {
   const world = content.world ?? {};
   const sector = (id) => (world.sectors ?? []).some((value) => value.id === id);
   const cityForSector = (id) => (world.cities ?? []).find((city) => city.sectors.includes(id));
-  if (!Array.isArray(quests) || quests.length > 200)
+  if (!Array.isArray(quests) || quests.length > 200) {
     return ['Encargos: se necesita una lista de hasta 200 encargos.'];
+  }
   const errors = [],
     ids = new Set(),
     contacts = new Set();
   const check = (ok, id, message) => {
-    if (!ok) errors.push(`Encargo ${id}: ${message}`);
+    if (!ok) {
+      errors.push(`Encargo ${id}: ${message}`);
+    }
   };
   for (const quest of quests) {
     if (!object(quest)) {
@@ -237,18 +240,30 @@ export function validateErrandDefinitions(quests, content = {}) {
       'usá una sola forma de entrega.',
     );
   }
-  if (errors.length) return errors;
-  for (const quest of quests)
-    for (const id of quest.requires ?? [])
+  if (errors.length) {
+    return errors;
+  }
+  for (const quest of quests) {
+    for (const id of quest.requires ?? []) {
       check(ids.has(id), quest.id, 'el encargo previo no existe.');
+    }
+  }
   const visiting = new Set(),
     done = new Set(),
     byId = new Map(quests.map((quest) => [quest.id, quest]));
   function visit(id) {
-    if (visiting.has(id)) return false;
-    if (done.has(id)) return true;
+    if (visiting.has(id)) {
+      return false;
+    }
+    if (done.has(id)) {
+      return true;
+    }
     visiting.add(id);
-    for (const dependency of byId.get(id)?.requires ?? []) if (!visit(dependency)) return false;
+    for (const dependency of byId.get(id)?.requires ?? []) {
+      if (!visit(dependency)) {
+        return false;
+      }
+    }
     visiting.delete(id);
     done.add(id);
     return true;
@@ -262,12 +277,16 @@ export function validateErrandDefinitions(quests, content = {}) {
 }
 
 export function validateErrandContactReferences(content) {
-  if (!Array.isArray(content.errands)) return [];
+  if (!Array.isArray(content.errands)) {
+    return [];
+  }
   const errors = [];
   const characters = Array.isArray(content.characters) ? content.characters : [];
   const placements = Array.isArray(content.placements) ? content.placements : [];
   for (const quest of content.errands) {
-    if (!object(quest)) continue;
+    if (!object(quest)) {
+      continue;
+    }
     const contacts =
       quest.beneficiaries === undefined
         ? [quest.npcId]
@@ -275,7 +294,9 @@ export function validateErrandContactReferences(content) {
           ? quest.beneficiaries.filter(object).map((beneficiary) => beneficiary.npcId)
           : [];
     for (const contactId of contacts) {
-      if (typeof contactId !== 'string' || !contactId.startsWith('authored-')) continue;
+      if (typeof contactId !== 'string' || !contactId.startsWith('authored-')) {
+        continue;
+      }
       const characterId = contactId.slice('authored-'.length);
       if (
         !characters.some((character) => character?.id === characterId) ||

@@ -14,11 +14,14 @@ export class RecruitCombatantUseCase {
   }
 
   execute(request: RecruitCombatantRequest): RecruitCombatantResponse {
-    if (!request.characterId || !request.term)
+    if (!request.characterId || !request.term) {
       throw new DomainRefusal(DomainRefusalCode.InvalidValue);
+    }
     const context = this.#repository.load(request);
     const locationId = request.locationId ?? context.allowedLocations[0];
-    if (!locationId) throw new DomainRefusal(DomainRefusalCode.InvalidPlacement);
+    if (!locationId) {
+      throw new DomainRefusal(DomainRefusalCode.InvalidPlacement);
+    }
     const outcome = this.#recruitment.recruit(context, locationId);
     this.#repository.commit(context, outcome);
     return {

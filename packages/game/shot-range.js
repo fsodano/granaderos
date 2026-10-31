@@ -7,7 +7,9 @@ export function shotRangeModifiers({
   visibleRange,
 }) {
   for (const value of [distance, weaponRange, apparentRange, visibleRange]) {
-    if (!Number.isFinite(value) || value < 0) {throw Error('Invalid shot range.');}
+    if (!Number.isFinite(value) || value < 0) {
+      throw Error('Invalid shot range.');
+    }
   }
   const beyondSight = apparentRange > visibleRange,
     beyondWeapon = distance > weaponRange;

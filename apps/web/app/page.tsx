@@ -15,7 +15,7 @@ import type { CampaignPresentation } from '../../../packages/campaign-format/typ
 import type { SaveStatus } from '../../../packages/game/application/get-save-status/get-save-status.repository.ts';
 import { TalkToCharacterUseCase } from '../../../packages/game/application/talk-to-character/talk-to-character.use-case.ts';
 import { battleFromRequest, prepareCampaignBattle } from '../../../packages/game/battle-handoff.js';
-import { runBattleJob } from '../../../packages/game/battle-job.js';
+import { runBattleJob } from '../../../packages/game/battle-job.ts';
 import { dispatchCampaign, questForNPC, rosterFor } from '../../../packages/game/campaign.js';
 import { withCharacterSpeech } from '../../../packages/game/character-events.js';
 import { dialogueForNPC } from '../../../packages/game/content-dialogue.js';

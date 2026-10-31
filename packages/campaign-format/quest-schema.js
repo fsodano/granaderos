@@ -1,10 +1,14 @@
 const need = (condition, message) => {
-  if (!condition) throw new Error(message);
+  if (!condition) {
+    throw new Error(message);
+  }
 };
 const object = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 export const CONTENT_QUEST_STATES = Object.freeze(['not-started', 'active', 'completed', 'failed']);
 export function validateContentQuests(quests, characters) {
-  if (quests === undefined) return;
+  if (quests === undefined) {
+    return;
+  }
   need(Array.isArray(quests) && quests.length <= 100, 'La campaña admite hasta 100 encargos.');
   const ids = new Set();
   for (const quest of quests) {

@@ -678,7 +678,7 @@
   cursor: pointer;
   text-decoration: none;
 }
-.content-export-actions a {
+.content-export-dialog .content-export-actions a {
   background: #69dcc5;
   border-color: #69dcc5;
   color: #092c28;

@@ -27,7 +27,9 @@ export class Money {
   }
 
   minus(other: Money): Money {
-    if (!this.covers(other)) throw new DomainRefusal(DomainRefusalCode.InsufficientFunds);
+    if (!this.covers(other)) {
+      throw new DomainRefusal(DomainRefusalCode.InsufficientFunds);
+    }
     return new Money(this.#pesos - other.#pesos);
   }
 }

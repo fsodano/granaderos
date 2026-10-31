@@ -183,10 +183,14 @@ export function redistributeMilitia(s, action) {
   for (const rank of [2, 1, 0]) {
     for (const from of preview.sectors) {
       let surplus = s.sectors[from].militia[rank] - preview.targets[from][rank];
-      if (surplus <= 0) {continue;}
+      if (surplus <= 0) {
+        continue;
+      }
       for (const to of preview.sectors) {
         const count = Math.min(surplus, preview.targets[to][rank] - s.sectors[to].militia[rank]);
-        if (count <= 0) {continue;}
+        if (count <= 0) {
+          continue;
+        }
         transfer(s, preview.city, from, to, rank, count);
         surplus -= count;
       }

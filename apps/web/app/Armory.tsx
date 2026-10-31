@@ -10,10 +10,7 @@ import CampaignAmmunition from './CampaignAmmunition';
 import { ammunitionForWeapon } from '../../../packages/game/ammo-types.js';
 import { SendArtillery, ArtilleryStorage } from './ArtilleryTransport';
 import ArtilleryTrading from './ArtilleryTrading';
-import {
-  localArtilleryDepot,
-  depotSelection,
-} from '../../../packages/game/artillery-transport.js';
+import { localArtilleryDepot, depotSelection } from '../../../packages/game/artillery-transport.js';
 import { artilleryProfile } from '../../../packages/game/artillery-definitions.ts';
 import { artillerySupplyQuote } from '../../../packages/game/artillery-supply.js';
 import { stationedArtillery } from '../../../packages/game/campaign-artillery.js';
@@ -27,11 +24,7 @@ import {
 import { weaponSpecification } from '../../../packages/game/weapon-definition.ts';
 import { tradeQuote } from '../../../packages/game/politics.js';
 import { useState } from 'react';
-import {
-  rosterFor,
-  isSupplied,
-  operativeLocation,
-} from '../../../packages/game/campaign.js';
+import { rosterFor, isSupplied, operativeLocation } from '../../../packages/game/campaign.js';
 import { workshopServiceQuote } from '../../../packages/game/workshop-service.js';
 import { campaignPlace } from '../../../packages/game/world-cells.ts';
 import {
@@ -82,18 +75,8 @@ export default function Armory({ state: s, dispatch }: Props) {
   const emplacements = stationedArtillery(s),
     inventory = armoryInventory(s),
     record = op ? s.operativeState[op.id] : null;
-  const resupply = workshopServiceQuote(
-      s,
-      op,
-      'resupply',
-      isSupplied(s, s.location),
-    ),
-    repair = workshopServiceQuote(
-      s,
-      op,
-      'repairWeapon',
-      isSupplied(s, s.location),
-    );
+  const resupply = workshopServiceQuote(s, op, 'resupply', isSupplied(s, s.location)),
+    repair = workshopServiceQuote(s, op, 'repairWeapon', isSupplied(s, s.location));
   const catalog = equipmentCatalog(s),
     imports = importRulesFor(s),
     importBlocked = importOrderReason(s),
@@ -144,12 +127,11 @@ export default function Armory({ state: s, dispatch }: Props) {
           {imports.port === null
             ? 'Esta campaña no admite pedidos de armas importadas.'
             : `Las armas importadas llegan a ${importPortName(s)} en ${imports.minHours === imports.maxHours ? imports.minHours : `${imports.minHours} a ${imports.maxHours}`} horas; los bloqueos y la ocupación del puerto demoran la entrega.`}{' '}
-          Al cambiar un equipo, el arma anterior vuelve a la armería. La
-          munición comprada queda con cada combatiente o en el depósito del
-          sector. Precio general: {cartridgePrice(s)}{' '}
-          {cartridgePrice(s) === 1 ? 'peso' : 'pesos'} por cartucho; cada
-          proveedor puede tener otro precio. Cada comerciante tiene existencias
-          y fondos limitados. Los caballos se administran en la caballada.
+          Al cambiar un equipo, el arma anterior vuelve a la armería. La munición comprada queda con
+          cada combatiente o en el depósito del sector. Precio general: {cartridgePrice(s)}{' '}
+          {cartridgePrice(s) === 1 ? 'peso' : 'pesos'} por cartucho; cada proveedor puede tener otro
+          precio. Cada comerciante tiene existencias y fondos limitados. Los caballos se administran
+          en la caballada.
         </p>
       </div>
       <p className="merchant-status">
@@ -160,14 +142,11 @@ export default function Armory({ state: s, dispatch }: Props) {
         </output>
       </p>
       {profile && (
-        <aside
-          className="merchant-status"
-          aria-label="Preferencias del comerciante"
-        >
+        <aside className="merchant-status" aria-label="Preferencias del comerciante">
           <strong>{profile.name}</strong>
           <p>
-            {profile.description} Las piezas usadas se compran al 80% del valor
-            nuevo, ajustado por su estado.
+            {profile.description} Las piezas usadas se compran al 80% del valor nuevo, ajustado por
+            su estado.
           </p>
         </aside>
       )}
@@ -176,12 +155,8 @@ export default function Armory({ state: s, dispatch }: Props) {
         {(s.equipmentShipments ?? []).map((q, i: number) => (
           <p key={i}>
             {q.quantity} ×{' '}
-            {
-              catalog.find(
-                (w) => String(w.stockKey ?? w.item) === String(q.item),
-              )?.name
-            }{' '}
-            · {Math.max(0, q.due - s.hour)} horas
+            {catalog.find((w) => String(w.stockKey ?? w.item) === String(q.item))?.name} ·{' '}
+            {Math.max(0, q.due - s.hour)} horas
             {delayReason ? ` · ${delayReason}` : ''}
           </p>
         ))}
@@ -212,9 +187,7 @@ export default function Armory({ state: s, dispatch }: Props) {
           {op && record && (
             <>
               <h3>{op.name}</h3>
-              <p>
-                Ubicación: {campaignPlace(operativeLocation(s, op.id), s)?.name}
-              </p>
+              <p>Ubicación: {campaignPlace(operativeLocation(s, op.id), s)?.name}</p>
               {(['weapon', 'blade'] as const).map((slot) => (
                 <label key={slot} htmlFor={`armory-${slot}`}>
                   {slot === 'weapon' ? 'Arma principal' : 'Arma blanca'}
@@ -227,10 +200,8 @@ export default function Armory({ state: s, dispatch }: Props) {
                     <option value="equipped">
                       {slot === 'weapon' && record.weaponDropped
                         ? 'Arma abandonada'
-                        : (weaponSpecification(
-                            op,
-                            slot === 'weapon' ? 'primary' : 'blade',
-                          )?.name ?? 'Sin arma')}{' '}
+                        : (weaponSpecification(op, slot === 'weapon' ? 'primary' : 'blade')?.name ??
+                          'Sin arma')}{' '}
                       · Equipada
                     </option>
                     {armoryOptions(s, op, slot).map((w) => (
@@ -244,9 +215,7 @@ export default function Armory({ state: s, dispatch }: Props) {
                     ))}
                   </select>
                   {slot === 'weapon' && !record.weaponDropped && (
-                    <FittingReadout
-                      fitting={record.weaponFittings?.['bayonet']}
-                    />
+                    <FittingReadout fitting={record.weaponFittings?.['bayonet']} />
                   )}
                 </label>
               ))}
@@ -254,12 +223,7 @@ export default function Armory({ state: s, dispatch }: Props) {
               {ammunitionForWeapon(op) && (
                 <p>Munición compatible: {ammunitionForWeapon(op)?.name}</p>
               )}
-              <CampaignAmmunition
-                key={op.id}
-                state={s}
-                operative={op}
-                dispatch={dispatch}
-              />
+              <CampaignAmmunition key={op.id} state={s} operative={op} dispatch={dispatch} />
               <div className="armory-condition">
                 <span>
                   Estado del arma <b>{record?.condition ?? 100}%</b>
@@ -276,9 +240,7 @@ export default function Armory({ state: s, dispatch }: Props) {
                     ? 'Retirá objetos de los bolsillos antes de reponer.'
                     : resupply.reason || undefined
                 }
-                onClick={() =>
-                  dispatch({ type: 'resupply', operativeId: op.id })
-                }
+                onClick={() => dispatch({ type: 'resupply', operativeId: op.id })}
               >
                 Reponer provisiones · {resupply.cost} pesos
               </button>
@@ -286,9 +248,7 @@ export default function Armory({ state: s, dispatch }: Props) {
                 className="line-button"
                 disabled={!repair.available}
                 title={repair.reason || undefined}
-                onClick={() =>
-                  dispatch({ type: 'repairWeapon', operativeId: op.id })
-                }
+                onClick={() => dispatch({ type: 'repairWeapon', operativeId: op.id })}
               >
                 Reparar arma · {repair.cost} pesos
               </button>
@@ -309,33 +269,22 @@ export default function Armory({ state: s, dispatch }: Props) {
             <section aria-label="Artillería emplazada">
               <h3>Piezas emplazadas en este sector</h3>
               <p>
-                Conservan su posición y munición al volver. Permanecen aquí
-                cuando la escuadra sale. Para moverlas, organizá un traslado. Al
-                retirarte de un combate pueden quedar en manos enemigas.
+                Conservan su posición y munición al volver. Permanecen aquí cuando la escuadra sale.
+                Para moverlas, organizá un traslado. Al retirarte de un combate pueden quedar en
+                manos enemigas.
               </p>
               {emplacements.map(({ sector, gun }) => {
-                const quote = artillerySupplyQuote(
-                  s,
-                  sector,
-                  gun.id,
-                  isSupplied(s, s.location),
-                );
+                const quote = artillerySupplyQuote(s, sector, gun.id, isSupplied(s, s.location));
                 return (
                   <div key={`${sector}:${gun.id}`} data-artillery-id={gun.id}>
                     <p>
-                      {
-                        equipmentCatalog(s).find(
-                          (item) => item.item === gun.type,
-                        )?.name
-                      }{' '}
-                      ·{' '}
+                      {equipmentCatalog(s).find((item) => item.item === gun.type)?.name} ·{' '}
                       {gun.loaded
                         ? 'Cargada'
                         : gun.reloadProgress
                           ? `Recarga ${Math.floor(gun.reloadProgress * 100)}%`
                           : 'Descargada'}{' '}
-                      · {gun.ammo} en reserva ·{' '}
-                      {gun.side === 'player' ? 'Propia' : enemyName}
+                      · {gun.ammo} en reserva · {gun.side === 'player' ? 'Propia' : enemyName}
                     </p>
                     <button
                       className="line-button"
@@ -355,28 +304,18 @@ export default function Armory({ state: s, dispatch }: Props) {
                       {quote.reason ||
                         `Se entrega en reserva, sin cargar la pieza. Límite de reposición: ${quote.limit}.`}
                     </small>
-                    <SendArtillery
-                      state={s}
-                      sector={sector}
-                      gun={gun}
-                      dispatch={dispatch}
-                    />
+                    <SendArtillery state={s} sector={sector} gun={gun} dispatch={dispatch} />
                   </div>
                 );
               })}
             </section>
           )}
           <ArtilleryStorage state={s} dispatch={dispatch} />
-          <ArtilleryTrading
-            state={s}
-            dispatch={dispatch}
-            supplied={isSupplied(s, s.location)}
-          />
+          <ArtilleryTrading state={s} dispatch={dispatch} supplied={isSupplied(s, s.location)} />
           <h3>Batería de campaña</h3>
           <p>
-            Elegí hasta tres piezas de la armería o del depósito local para el
-            próximo ataque. Preparar todos los espacios sin pieza deja los
-            cañones guardados.
+            Elegí hasta tres piezas de la armería o del depósito local para el próximo ataque.
+            Preparar todos los espacios sin pieza deja los cañones guardados.
           </p>
           {[0, 1, 2].map((i) => (
             <label key={i} htmlFor={`battery-${i}`}>
@@ -433,9 +372,7 @@ export default function Armory({ state: s, dispatch }: Props) {
         </div>
         <div className="armory-catalog">
           <MerchantExchange key={s.location} state={s} dispatch={dispatch} />
-          {op && (
-            <GrenadeSupplies state={s} operative={op} dispatch={dispatch} />
-          )}
+          {op && <GrenadeSupplies state={s} operative={op} dispatch={dispatch} />}
           <UsedEquipment state={s} dispatch={dispatch} />
           {['firearm', 'blade', 'artillery'].map((category) => (
             <div key={category}>
@@ -450,9 +387,7 @@ export default function Armory({ state: s, dispatch }: Props) {
                 .filter((w) => w.category === category)
                 .map((w) => {
                   const offer = merchantStatus(s, w, isSupplied),
-                    price = isImportedEquipment(w)
-                      ? tradeQuote(s, w.price)
-                      : w.price;
+                    price = isImportedEquipment(w) ? tradeQuote(s, w.price) : w.price;
                   return (
                     <article key={w.stockKey ?? w.item}>
                       <img
@@ -463,25 +398,18 @@ export default function Armory({ state: s, dispatch }: Props) {
                       <div>
                         <strong>{w.name}</strong>
                         <small>
-                          {w.quantity} en armería · {offer.stock} disponibles
-                          para {isImportedEquipment(w) ? 'pedir' : 'comprar'}
-                          {w.category === 'artillery'
-                            ? ` · Dotación: ${w.crew} hombres`
-                            : ''}
+                          {w.quantity} en armería · {offer.stock} disponibles para{' '}
+                          {isImportedEquipment(w) ? 'pedir' : 'comprar'}
+                          {w.category === 'artillery' ? ` · Dotación: ${w.crew} hombres` : ''}
                         </small>
                         {offer.stock === 0 && (
-                          <small>
-                            Reposición en {offer.restockIn} horas de
-                            abastecimiento.
-                          </small>
+                          <small>Reposición en {offer.restockIn} horas de abastecimiento.</small>
                         )}
                       </div>
                       <button
                         className="line-button"
                         disabled={
-                          !offer.available ||
-                          offer.stock < 1 ||
-                          s.resources.treasury < price
+                          !offer.available || offer.stock < 1 || s.resources.treasury < price
                         }
                         aria-label={`${isImportedEquipment(w) ? 'Importar' : 'Comprar'} ${w.name} · ${price} pesos`}
                         title={offer.reason ?? undefined}
@@ -493,8 +421,7 @@ export default function Armory({ state: s, dispatch }: Props) {
                           })
                         }
                       >
-                        {isImportedEquipment(w) ? 'Importar' : 'Comprar'} ·{' '}
-                        {price} pesos
+                        {isImportedEquipment(w) ? 'Importar' : 'Comprar'} · {price} pesos
                       </button>
                     </article>
                   );
@@ -504,15 +431,14 @@ export default function Armory({ state: s, dispatch }: Props) {
           <details className="armory-resale">
             <summary>Armas guardadas · {stored.length} ejemplares</summary>
             <p>
-              Elegí el ejemplar que querés vender. La oferta depende de las
-              preferencias de esta maestranza y del estado de cada pieza. El
-              comerciante conserva el ejemplar vendido entre sus armas usadas.
-              También podés ofrecer artillería en el intercambio.
+              Elegí el ejemplar que querés vender. La oferta depende de las preferencias de esta
+              maestranza y del estado de cada pieza. El comerciante conserva el ejemplar vendido
+              entre sus armas usadas. También podés ofrecer artillería en el intercambio.
             </p>
             {stored.length === 0 && (
               <p>
-                No hay armas guardadas. Al cambiar un arma, la anterior vuelve a
-                la armería con su estado actual.
+                No hay armas guardadas. Al cambiar un arma, la anterior vuelve a la armería con su
+                estado actual.
               </p>
             )}
             {stored.map((item) => {
@@ -523,8 +449,7 @@ export default function Armory({ state: s, dispatch }: Props) {
                   <div>
                     <strong>{equipmentLabel(item)}</strong>
                     <small>
-                      Estado {item.condition}%
-                      {item.jammed ? ' · Fallo de chispa' : ''}
+                      Estado {item.condition}%{item.jammed ? ' · Fallo de chispa' : ''}
                     </small>
                     <FittingReadout fitting={item.fittings?.['bayonet']} />
                     {quote.reason && <small>{quote.reason}</small>}
@@ -532,8 +457,7 @@ export default function Armory({ state: s, dispatch }: Props) {
                       <ul aria-label="Desglose de venta">
                         {quote.items.map((part, index: number) => (
                           <li key={index}>
-                            {part.name} · estado {part.condition}% ·{' '}
-                            {part.price} pesos
+                            {part.name} · estado {part.condition}% · {part.price} pesos
                           </li>
                         ))}
                       </ul>
@@ -546,12 +470,9 @@ export default function Armory({ state: s, dispatch }: Props) {
                       Boolean(quote.reason) ||
                       price <= 0 ||
                       market.cash < price ||
-                      (s.merchants?.[s.location]?.usedItems?.length ?? 0) >=
-                        USED_EQUIPMENT_LIMIT
+                      (s.merchants?.[s.location]?.usedItems?.length ?? 0) >= USED_EQUIPMENT_LIMIT
                     }
-                    onClick={() =>
-                      dispatch({ type: 'sellEquipment', instanceId: item.id })
-                    }
+                    onClick={() => dispatch({ type: 'sellEquipment', instanceId: item.id })}
                   >
                     {quote.reason
                       ? 'No acepta esta arma'

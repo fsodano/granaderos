@@ -19,7 +19,9 @@ export class CollectResidentSupplyUseCase {
   execute(request: CollectResidentSupplyRequest): CollectResidentSupplyResult {
     const context = this.#repository.load(request.characterId);
     const supply = this.#policy.selectSupply(context.resident, context.groundSupplies);
-    if (!supply) return { collected: null };
+    if (!supply) {
+      return { collected: null };
+    }
     const custody = supply.transferOneTo(context.resident);
     this.#repository.commit(context);
     return { collected: { itemId: custody.itemId, groundId: supply.id, kind: supply.kind } };

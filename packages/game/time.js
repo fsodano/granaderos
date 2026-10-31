@@ -29,9 +29,14 @@ export function advanceBattleClock(s, seconds, { resting = false } = {}) {
   const hours = Math.floor(total / 3600) - Math.floor(before / 3600);
   if (hours) {
     for (const unit of s.units ?? []) {
-      if (unit.hp <= 0 || unit.departure || unit.fled || unit.surrendered) {continue;}
-      if (resting && s.mode === 'exploration') {recoverFatigue(unit, hours, 0);}
-      else {gainFatigue(unit, 2 * hours);}
+      if (unit.hp <= 0 || unit.departure || unit.fled || unit.surrendered) {
+        continue;
+      }
+      if (resting && s.mode === 'exploration') {
+        recoverFatigue(unit, hours, 0);
+      } else {
+        gainFatigue(unit, 2 * hours);
+      }
     }
   }
   s.night = total % 86400 < 21600 || total % 86400 >= 72000;

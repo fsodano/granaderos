@@ -77,15 +77,18 @@ export class Health {
   }
 
   advanceBleeding(ticks: number): BleedingResult {
-    if (!Number.isSafeInteger(ticks) || ticks < 0)
+    if (!Number.isSafeInteger(ticks) || ticks < 0) {
       throw new DomainRefusal(DomainRefusalCode.InvalidValue);
+    }
     const before = this.#current;
     const deathAfterTicks =
       this.#bleeding > 0 && this.alive ? Math.ceil(before / this.#bleeding) : null;
     const healthLost = Math.min(before, this.#bleeding * ticks);
     this.#current -= healthLost;
     this.#bandaged = Math.min(this.#bandaged, this.#maximum - this.#current);
-    if (!this.alive) this.#bleeding = 0;
+    if (!this.alive) {
+      this.#bleeding = 0;
+    }
     const died = before > 0 && !this.alive;
     return { healthLost, died, deathAfterTicks: died ? deathAfterTicks : null };
   }

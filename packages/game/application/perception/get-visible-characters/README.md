@@ -17,5 +17,5 @@ private scene through a preview. Actual projectile physics still uses the full
 physical scene.
 
 No query advances time, spends action points, changes contact history, or mutates
-its source snapshot. Verify with `node --test tests/perception-domain.test.mjs`
+its source snapshot. Verify with `node --test tests/perception-domain.test.ts`
 and the tactical, public-journal, and worker integration suites.

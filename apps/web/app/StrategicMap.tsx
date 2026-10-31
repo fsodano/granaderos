@@ -68,10 +68,7 @@ function geometryPath(geometry: GeoGeometry, projection = project): string {
     .join('');
 }
 const stockCount = (s: CampaignSnapshot, id: string) =>
-  knownCampaignSectorEquipment(s, id).reduce(
-    (n: number, row) => n + row.count,
-    0,
-  );
+  knownCampaignSectorEquipment(s, id).reduce((n: number, row) => n + row.count, 0);
 function PresenceDots({
   players = 0,
   militia = 0,
@@ -112,13 +109,7 @@ function PresenceDots({
             cx={p.x}
             cy={p.y}
             r={radius}
-            fill={
-              side === 'player'
-                ? '#f4d969'
-                : side === 'militia'
-                  ? '#80dba1'
-                  : '#ef8d86'
-            }
+            fill={side === 'player' ? '#f4d969' : side === 'militia' ? '#80dba1' : '#ef8d86'}
             stroke="#142018"
             strokeWidth={radius * 0.25}
           />
@@ -176,8 +167,7 @@ export default function StrategicMap({
     presentation = campaignPresentation(s),
     atlas = presentation.atlas ?? {},
     projection = (lon: number, lat: number) => project(lon, lat, s);
-  const { WORLD_CELLS, ROAD_CELLS, ROAD_SEGMENTS, roadEdgesForCell } =
-      worldContext(s),
+  const { WORLD_CELLS, ROAD_CELLS, ROAD_SEGMENTS, roadEdgesForCell } = worldContext(s),
     CAMPAIGN_SECTORS = campaignSectors(s),
     CITIES = campaignCities(s),
     MAP_PLACES = world.places;
@@ -192,9 +182,7 @@ export default function StrategicMap({
     return point;
   };
   const selectedCell = worldCell(selected, s) ?? worldCell(s.location, s);
-  const presence = new Map(
-    strategicSectorPresence(s, battle).map((row) => [row.sector, row]),
-  );
+  const presence = new Map(strategicSectorPresence(s, battle).map((row) => [row.sector, row]));
   const marks = (id: string) =>
     mode === 'resources'
       ? `${s.sectors[id] ? sectorIncome(s, campaignPlace(id, s)) : 0} $/día`
@@ -257,12 +245,7 @@ export default function StrategicMap({
         <rect x="36" y="36" width="648" height="588" fill="#25454d" />
         <g clipPath="url(#atlas-clip)">
           {(geography.land ?? []).map((g, i: number) => (
-            <path
-              key={i}
-              d={geometryPath(g, projection)}
-              fill="url(#atlas-land)"
-              stroke="none"
-            />
+            <path key={i} d={geometryPath(g, projection)} fill="url(#atlas-land)" stroke="none" />
           ))}
           {atlas.mountains && (
             <path
@@ -282,30 +265,15 @@ export default function StrategicMap({
               fill="none"
             />
           ))}
-          <rect
-            x="36"
-            y="36"
-            width="648"
-            height="588"
-            fill="url(#atlas-grid)"
-          />
+          <rect x="36" y="36" width="648" height="588" fill="url(#atlas-grid)" />
           <g className="atlas-region-labels">
             {atlas.labels?.map((label, index: number) => (
-              <text
-                key={index}
-                x={label.x}
-                y={label.y}
-                transform={label.transform}
-              >
+              <text key={index} x={label.x} y={label.y} transform={label.transform}>
                 {label.text}
               </text>
             ))}
           </g>
-          <g
-            className="atlas-district-fills"
-            pointerEvents="none"
-            aria-hidden="true"
-          >
+          <g className="atlas-district-fills" pointerEvents="none" aria-hidden="true">
             {WORLD_CELLS.filter((tile) => tile.district).map((tile) => (
               <rect
                 key={tile.id}
@@ -313,9 +281,7 @@ export default function StrategicMap({
                 y={tile.y}
                 width={MAP_TILE_SIZE}
                 height={MAP_TILE_SIZE}
-                fill={
-                  worldOwner(s, tile.id) === 'patriot' ? '#7f9e61' : '#876448'
-                }
+                fill={worldOwner(s, tile.id) === 'patriot' ? '#7f9e61' : '#876448'}
                 fillOpacity=".85"
               />
             ))}
@@ -400,16 +366,11 @@ export default function StrategicMap({
                   const delta = deltas[e.key];
                   if (delta) {
                     e.preventDefault();
-                    const next = worldCell(
-                      `cell-${tile.col + delta[0]}-${tile.row + delta[1]}`,
-                      s,
-                    );
+                    const next = worldCell(`cell-${tile.col + delta[0]}-${tile.row + delta[1]}`, s);
                     if (next) {
                       onSelect(next.location);
                       e.currentTarget.ownerSVGElement
-                        ?.querySelector<SVGGElement>(
-                          `[data-map-cell="${next.id}"]`,
-                        )
+                        ?.querySelector<SVGGElement>(`[data-map-cell="${next.id}"]`)
                         ?.focus();
                     }
                   }
@@ -489,12 +450,7 @@ export default function StrategicMap({
                       fill="transparent"
                     />
                     <circle cx={p.x} cy={p.y} r="3" fill="#e6d194" />
-                    <text
-                      className="atlas-city"
-                      x={p.x + 14}
-                      y={p.y + 4}
-                      fill="#e6d194"
-                    >
+                    <text className="atlas-city" x={p.x + 14} y={p.y + 4} fill="#e6d194">
                       {site.label}
                     </text>
                   </g>
@@ -541,10 +497,7 @@ export default function StrategicMap({
             )}
           </g>
           {s.squads
-            .filter(
-              (q) =>
-                q.journey?.status === 'moving' || q.journey?.status === 'ready',
-            )
+            .filter((q) => q.journey?.status === 'moving' || q.journey?.status === 'ready')
             .map((q) => {
               const j = squadTravelStatus(q, s),
                 players = strategicTravelPresence(s, q);
@@ -579,13 +532,7 @@ export default function StrategicMap({
                   }}
                 >
                   <title>{`${q.name} · ${players.length} combatientes en marcha`}</title>
-                  <circle
-                    data-travel-hit="true"
-                    cx={x}
-                    cy={y}
-                    r="8"
-                    fill="transparent"
-                  />
+                  <circle data-travel-hit="true" cx={x} cy={y} r="8" fill="transparent" />
                   <PresenceDots players={players.length} x={x} y={y} />
                 </g>
               );
@@ -595,11 +542,7 @@ export default function StrategicMap({
               <path
                 key={area.id}
                 data-city-boundary={area.id}
-                d={mapTileOutline(
-                  area.sectors.flatMap((id: string) =>
-                    mapTilesForSector(id, s),
-                  ),
-                )}
+                d={mapTileOutline(area.sectors.flatMap((id: string) => mapTilesForSector(id, s)))}
                 fill="none"
                 stroke="#dacb93"
                 strokeWidth="1.8"
@@ -687,14 +630,7 @@ export default function StrategicMap({
               stroke="#d6c898"
               strokeWidth=".7"
             />
-            <rect
-              x="20"
-              y="13"
-              width="88"
-              height="70"
-              fill="#e0c87d22"
-              stroke="#f1d389"
-            />
+            <rect x="20" y="13" width="88" height="70" fill="#e0c87d22" stroke="#f1d389" />
             <text x="8" y="178" fill="#e1d1a6" fontSize="10">
               {atlas.referenceLabel}
             </text>
@@ -705,11 +641,7 @@ export default function StrategicMap({
         </text>
         {atlas.scale && (
           <>
-            <path
-              d="M120 641v6h164v-6M202 641v6"
-              stroke="#d6c895"
-              fill="none"
-            />
+            <path d="M120 641v6h164v-6M202 641v6" stroke="#d6c895" fill="none" />
             <text x="120" y="665" fill="#d6c895" fontSize="11">
               0
             </text>
@@ -729,9 +661,7 @@ export default function StrategicMap({
         >
           <tspan fill="#f4d969">● Propios </tspan>
           <tspan fill="#80dba1">● Milicias </tspan>
-          <tspan fill="#ef8d86">
-            ● {atlas.enemyLabel ?? 'Enemigos'} · ? Sin cifra
-          </tspan>
+          <tspan fill="#ef8d86">● {atlas.enemyLabel ?? 'Enemigos'} · ? Sin cifra</tspan>
         </text>
       </svg>
       {/* oxlint-enable jsx-a11y/prefer-tag-over-role, jsx-a11y/no-noninteractive-element-interactions */}
@@ -779,12 +709,7 @@ export default function StrategicMap({
             0
           </button>
           {[1, 2, 3].map((n) => (
-            <button
-              type="button"
-              disabled
-              key={n}
-              title="Subsuelo no disponible"
-            >
+            <button type="button" disabled key={n} title="Subsuelo no disponible">
               −{n}
             </button>
           ))}
@@ -793,8 +718,8 @@ export default function StrategicMap({
 
       {mode === 'militia' && (
         <p className="atlas-help">
-          Seleccioná una localidad. Usá «Milicias» en las órdenes del sector
-          para elegir instructor y entrenar defensores.
+          Seleccioná una localidad. Usá «Milicias» en las órdenes del sector para elegir instructor
+          y entrenar defensores.
         </p>
       )}
 
@@ -832,12 +757,7 @@ export default function StrategicMap({
               }}
             />
           ) : mode === 'items' ? (
-            <SectorInventory
-              key={selected}
-              state={s}
-              sectorId={selected}
-              dispatch={dispatch}
-            />
+            <SectorInventory key={selected} state={s} sectorId={selected} dispatch={dispatch} />
           ) : (
             <div className="atlas-management">
               <Horses state={s} dispatch={dispatch} />
@@ -849,17 +769,14 @@ export default function StrategicMap({
         <summary>Lectura del mapa · Caminos: marcha más rápida</summary>
         <p className="atlas-route-help">
           <span className="atlas-road-key" aria-hidden="true" />
-          La ruta elige el menor tiempo. Los caminos conectados son más rápidos.
-          Entre sectores vecinos de la misma ciudad: 1 h. Agregá escalas para
-          rodear patrullas conocidas.
+          La ruta elige el menor tiempo. Los caminos conectados son más rápidos. Entre sectores
+          vecinos de la misma ciudad: 1 h. Agregá escalas para rodear patrullas conocidas.
         </p>
         <p>
-          Seleccioná una celda con el ratón o las flechas del teclado. Cada
-          celda terrestre conserva su escena y sus objetos. Los barrios
-          comparten el control de su localidad; sus ingresos, milicias y
-          servicios pertenecen al sector principal. El agua abierta requiere
-          transporte. La geografía y las rutas son una adaptación de campaña, no
-          límites históricos.
+          Seleccioná una celda con el ratón o las flechas del teclado. Cada celda terrestre conserva
+          su escena y sus objetos. Los barrios comparten el control de su localidad; sus ingresos,
+          milicias y servicios pertenecen al sector principal. El agua abierta requiere transporte.
+          La geografía y las rutas son una adaptación de campaña, no límites históricos.
         </p>
       </details>
     </div>

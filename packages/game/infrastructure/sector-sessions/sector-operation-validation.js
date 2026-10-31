@@ -6,18 +6,27 @@ const nonnegativeInteger = (value) => Number.isSafeInteger(value) && value >= 0;
 const object = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 const identifier = (value) => typeof value === 'string' && value.length > 0 && value.length <= 200;
 const requireValid = (condition, field) => {
-  if (!condition) throw new Error(`Invalid sector operation ${field}.`);
+  if (!condition) {
+    throw new Error(`Invalid sector operation ${field}.`);
+  }
 };
 
 export function validateSectorOperationSnapshot(snapshot) {
   for (const field of ['sectorRevision', 'gameRevision', 'worldTimeLimitSecond']) {
-    if (snapshot?.[field] !== undefined) requireValid(nonnegativeInteger(snapshot[field]), field);
+    if (snapshot?.[field] !== undefined) {
+      requireValid(nonnegativeInteger(snapshot[field]), field);
+    }
   }
-  if (snapshot?.gameSessionId !== undefined)
+  if (snapshot?.gameSessionId !== undefined) {
     requireValid(identifier(snapshot.gameSessionId), 'game session identity');
-  if (snapshot?.sectorSession) SectorSession.restore(snapshot.sectorSession);
+  }
+  if (snapshot?.sectorSession) {
+    SectorSession.restore(snapshot.sectorSession);
+  }
   const pending = snapshot?.pendingSectorOperation;
-  if (pending === undefined) return;
+  if (pending === undefined) {
+    return;
+  }
   requireValid(object(pending), 'continuation');
   const currentSecond = (snapshot.startSeconds ?? 0) + (snapshot.elapsedSeconds ?? 0);
   requireValid(
@@ -28,22 +37,26 @@ export function validateSectorOperationSnapshot(snapshot) {
     [...Object.values(SectorOperationKind), 'groupMovement'].includes(pending.kind),
     'kind',
   );
-  if (pending.remainingRestSeconds !== undefined)
+  if (pending.remainingRestSeconds !== undefined) {
     requireValid(
       pending.kind === SectorOperationKind.EndTurn &&
         nonnegativeInteger(pending.remainingRestSeconds) &&
         pending.remainingRestSeconds <= REST_SECONDS,
       'remaining rest',
     );
+  }
   if (pending.kind === SectorOperationKind.Order) {
     requireValid(object(pending.order) && identifier(pending.order.type), 'order');
-    if (pending.order.unitId !== undefined)
+    if (pending.order.unitId !== undefined) {
       requireValid(
         (snapshot.units ?? []).some((unit) => String(unit.id) === String(pending.order.unitId)),
         'order participant',
       );
+    }
   }
-  if (pending.kind !== 'groupMovement') return;
+  if (pending.kind !== 'groupMovement') {
+    return;
+  }
   const request = pending.request;
   const continuation = pending.continuation;
   requireValid(object(request) && object(continuation), 'group continuation');
@@ -91,7 +104,7 @@ export function validateSectorOperationSnapshot(snapshot) {
     String(request.anchorId),
     ...ids.filter((id) => id !== String(request.anchorId)),
   ];
-  for (const [index, member] of continuation.members.entries())
+  for (const [index, member] of continuation.members.entries()) {
     requireValid(
       object(member) &&
         member.unitId === orderedIds[index] &&
@@ -99,6 +112,7 @@ export function validateSectorOperationSnapshot(snapshot) {
         (!member.destination || coordinate(member.destination)),
       'formation placement',
     );
+  }
   requireValid(
     continuation.route === null ||
       (Array.isArray(continuation.route) &&

@@ -1,6 +1,6 @@
 import { validateCampaignPhysical } from './physical-schema.js';
 // Data admission only. Campaign JSON cannot add executable mechanics.
-import { validateCampaignData } from './campaign-data-validation.js';
+import { validateCampaignData } from './campaign-data-validation.ts';
 import { validateMerchantPolicies } from './merchant-policy-schema.js';
 import { validateEnemyStrategy } from './enemy-strategy-schema.js';
 const object = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
@@ -57,7 +57,9 @@ const edgeAnchor = (edge, v) =>
         : edge === 'E' && v.x === 19);
 
 function geometry(value, kinds) {
-  if (!object(value) || !kinds.includes(value.type)) return false;
+  if (!object(value) || !kinds.includes(value.type)) {
+    return false;
+  }
   const point = (v) =>
     Array.isArray(v) && v.length === 2 && finite(v[0], -180, 180) && finite(v[1], -90, 90);
   const line = (v, min) =>
@@ -77,12 +79,17 @@ function geometry(value, kinds) {
           value.coordinates.every((v) => line(v, 2));
 }
 
+/** @returns {string[]} */
 export function validateWorldData(world, options = {}) {
   try {
     const errors = validateCampaignData(world);
-    if (errors.length) return errors.map((error) => `Mapa de campaña: ${error}`);
+    if (errors.length) {
+      return errors.map((error) => `Mapa de campaña: ${error}`);
+    }
     const worldErrors = validateWorldRecords(world, options);
-    if (!worldErrors.length) worldErrors.push(...validateCampaignPhysical(world.physical, world));
+    if (!worldErrors.length) {
+      worldErrors.push(...validateCampaignPhysical(world.physical, world));
+    }
     return worldErrors;
   } catch {
     return ['Mapa de campaña: los datos contienen una estructura inválida.'];
@@ -91,9 +98,13 @@ export function validateWorldData(world, options = {}) {
 function validateWorldRecords(world, options) {
   const errors = [],
     check = (valid, message) => {
-      if (!valid) errors.push(`Mapa de campaña: ${message}`);
+      if (!valid) {
+        errors.push(`Mapa de campaña: ${message}`);
+      }
     };
-  if (!object(world)) return ['Mapa de campaña: se necesita una definición.'];
+  if (!object(world)) {
+    return ['Mapa de campaña: se necesita una definición.'];
+  }
   check(world.version === 1, 'versión incompatible.');
   check(
     world.columns === 36 && world.rows === 33,
@@ -110,7 +121,9 @@ function validateWorldRecords(world, options) {
       world.theaters.length > 0,
     'faltan ciudades, facciones o regiones.',
   );
-  if (errors.length) return errors;
+  if (errors.length) {
+    return errors;
+  }
   if (world.projection !== undefined) {
     const p = world.projection;
     check(
@@ -129,9 +142,11 @@ function validateWorldRecords(world, options) {
     'incomeSources',
     'exitLinks',
     'sceneEntries',
-  ])
-    if (world[key] !== undefined)
+  ]) {
+    if (world[key] !== undefined) {
       check(Array.isArray(world[key]), `${key}: se necesita una lista.`);
+    }
+  }
   for (const key of [
     'places',
     'districts',
@@ -142,23 +157,29 @@ function validateWorldRecords(world, options) {
     'landscapes',
     'deployment',
     'sceneLocations',
-  ])
-    if (world[key] !== undefined) check(object(world[key]), `${key}: se necesita un objeto.`);
-  if (world.geography !== undefined)
+  ]) {
+    if (world[key] !== undefined) {
+      check(object(world[key]), `${key}: se necesita un objeto.`);
+    }
+  }
+  if (world.geography !== undefined) {
     check(
       object(world.geography) &&
         Array.isArray(world.geography.land) &&
         Array.isArray(world.geography.rivers),
       'geografía inválida.',
     );
-  if (errors.length) return errors;
+  }
+  if (errors.length) {
+    return errors;
+  }
   const sectors = new Set(world.sectors.map((s) => s?.id)),
     theaters = new Set(world.theaters.map((t) => t?.id));
   errors.push(...validateEnemyStrategy(world.enemyStrategy, world, options));
   check(sectors.size === world.sectors.length, 'las localidades deben tener identidades únicas.');
   for (const kind of ['factions', 'theaters']) {
     check(unique(world[kind].map((v) => v?.id)), `${kind}: identidades repetidas.`);
-    for (const entry of world[kind])
+    for (const entry of world[kind]) {
       check(
         object(entry) &&
           id(entry.id) &&
@@ -166,6 +187,7 @@ function validateWorldRecords(world, options) {
           (entry.description === undefined || text(entry.description, 1000)),
         `${kind}: definición inválida.`,
       );
+    }
   }
   for (const sector of world.sectors) {
     check(
@@ -181,7 +203,7 @@ function validateWorldRecords(world, options) {
         sector.neighbors.every((target) => sectors.has(target) && target !== sector.id),
       `localidad inválida: ${sector?.id ?? '?'} .`,
     );
-    if (Array.isArray(sector?.neighbors))
+    if (Array.isArray(sector?.neighbors)) {
       for (const target of sector.neighbors) {
         const reciprocal = world.sectors.find((s) => s?.id === target)?.neighbors;
         check(
@@ -189,9 +211,12 @@ function validateWorldRecords(world, options) {
           `la conexión ${sector.id} / ${target} debe ser recíproca.`,
         );
       }
-    for (const key of ['x', 'y', 'income'])
-      if (sector?.[key] !== undefined)
+    }
+    for (const key of ['x', 'y', 'income']) {
+      if (sector?.[key] !== undefined) {
         check(finite(sector[key], 0, 1000000), `valor inválido: ${sector.id}.${key}.`);
+      }
+    }
   }
   const locations = new Set(),
     cells = new Set(),
@@ -244,12 +269,15 @@ function validateWorldRecords(world, options) {
       !cell.district || (cell.land && sectors.has(cell.locality)),
       'el distrito necesita una localidad terrestre.',
     );
-    if (cell.anchor) mainCells.set(cell.locality, (mainCells.get(cell.locality) ?? 0) + 1);
+    if (cell.anchor) {
+      mainCells.set(cell.locality, (mainCells.get(cell.locality) ?? 0) + 1);
+    }
     cells.add(cell.id);
     locations.add(cell.location);
   }
-  for (const sector of world.sectors)
+  for (const sector of world.sectors) {
     check(mainCells.get(sector?.id) === 1, `se necesita una celda principal de ${sector?.id}.`);
+  }
   const cityIds = new Set(),
     citySectors = new Set();
   for (const city of world.cities) {
@@ -264,10 +292,14 @@ function validateWorldRecords(world, options) {
       city.sectors.every((s) => sectors.has(s) && !citySectors.has(s));
     check(valid, `ciudad inválida: ${city?.id ?? '?'} .`);
     cityIds.add(city?.id);
-    if (Array.isArray(city?.sectors)) for (const sector of city.sectors) citySectors.add(sector);
+    if (Array.isArray(city?.sectors)) {
+      for (const sector of city.sectors) {
+        citySectors.add(sector);
+      }
+    }
   }
   check(object(world.places) && object(world.districts), 'faltan etiquetas o distritos.');
-  for (const [place, p] of Object.entries(world.places ?? {}))
+  for (const [place, p] of Object.entries(world.places ?? {})) {
     check(
       sectors.has(place) &&
         object(p) &&
@@ -278,6 +310,7 @@ function validateWorldRecords(world, options) {
         (p.dy === undefined || finite(p.dy, -2000, 2000)),
       `etiqueta inválida: ${place}.`,
     );
+  }
   const districtIds = new Set(),
     districtCells = new Set();
   for (const [sector, rows] of Object.entries(world.districts ?? {})) {
@@ -306,23 +339,29 @@ function validateWorldRecords(world, options) {
       districtCells.add(cell?.id);
     }
   }
-  for (const cell of world.cells)
-    if (cell?.district) check(districtCells.has(cell.id), `falta el distrito de ${cell.id}.`);
+  for (const cell of world.cells) {
+    if (cell?.district) {
+      check(districtCells.has(cell.id), `falta el distrito de ${cell.id}.`);
+    }
+  }
   check(
     object(world.geography) &&
       Array.isArray(world.geography.land) &&
       Array.isArray(world.geography.rivers),
     'geografía inválida.',
   );
-  for (const g of world.geography?.land ?? [])
+  for (const g of world.geography?.land ?? []) {
     check(geometry(g, ['Polygon', 'MultiPolygon']), 'polígono terrestre inválido.');
-  for (const g of world.geography?.rivers ?? [])
+  }
+  for (const g of world.geography?.rivers ?? []) {
     check(geometry(g, ['LineString', 'MultiLineString']), 'curso de agua inválido.');
-  if (world.geography?.argentina !== undefined)
+  }
+  if (world.geography?.argentina !== undefined) {
     check(
       geometry(world.geography.argentina, ['Polygon', 'MultiPolygon']),
       'contorno principal inválido.',
     );
+  }
   const localList = (values, label) =>
     check(
       Array.isArray(values) && unique(values) && values.every((v) => sectors.has(v)),
@@ -331,7 +370,7 @@ function validateWorldRecords(world, options) {
   localList(world.ruralSectors ?? [], 'áreas rurales');
   check(sectors.has(world.defaultHeadquarters), 'cuartel principal inválido.');
   check(object(world.arrivalFacilities), 'instalaciones de llegada inválidas.');
-  for (const [sector, facilities] of Object.entries(world.arrivalFacilities ?? {}))
+  for (const [sector, facilities] of Object.entries(world.arrivalFacilities ?? {})) {
     check(
       sectors.has(sector) &&
         Array.isArray(facilities) &&
@@ -339,6 +378,7 @@ function validateWorldRecords(world, options) {
         facilities.every((f) => ['post', 'barracks', 'port', 'landing'].includes(f)),
       `instalaciones inválidas: ${sector}.`,
     );
+  }
   check(
     Array.isArray(world.arrivalFacilities?.[world.defaultHeadquarters]) &&
       world.arrivalFacilities[world.defaultHeadquarters].includes('barracks'),
@@ -398,7 +438,7 @@ function validateWorldRecords(world, options) {
     object(types) && object(footprints) && Object.hasOwn(types ?? {}, 'house'),
     'faltan estilos y dimensiones de edificios.',
   );
-  for (const [kind, style] of Object.entries(types ?? {}))
+  for (const [kind, style] of Object.entries(types ?? {})) {
     check(
       ARCHITECTURES.includes(kind) &&
         object(style) &&
@@ -412,7 +452,8 @@ function validateWorldRecords(world, options) {
         ),
       `estilo de edificio inválido: ${kind}.`,
     );
-  for (const [kind, size] of Object.entries(footprints ?? {}))
+  }
+  for (const [kind, size] of Object.entries(footprints ?? {})) {
     check(
       Object.hasOwn(types ?? {}, kind) &&
         Array.isArray(size) &&
@@ -420,67 +461,81 @@ function validateWorldRecords(world, options) {
         size.every((n) => integer(n, 3, 20)),
       `dimensiones de edificio inválidas: ${kind}.`,
     );
-  for (const kind of Object.keys(types ?? {}))
+  }
+  for (const kind of Object.keys(types ?? {})) {
     check(Object.hasOwn(footprints ?? {}, kind), `faltan dimensiones de ${kind}.`);
+  }
   const expansion = world.expansion;
   check(object(expansion), 'expansión táctica inválida.');
   if (object(expansion)) {
     const scenes = new Set([...sectors, ...Object.keys(world.sceneExits ?? {})]);
-    for (const key of ['coast', 'rural'])
+    for (const key of ['coast', 'rural']) {
       check(
         Array.isArray(expansion[key]) &&
           unique(expansion[key]) &&
           expansion[key].every((v) => scenes.has(v)),
         `${key}: expansión inválida.`,
       );
-    if (expansion.pavedStreets !== undefined)
+    }
+    if (expansion.pavedStreets !== undefined) {
       check(
         Array.isArray(expansion.pavedStreets) &&
           unique(expansion.pavedStreets) &&
           expansion.pavedStreets.every((v) => scenes.has(v)),
         'calles pavimentadas inválidas.',
       );
+    }
     for (const key of [
       'buildingSelections',
       'buildingLandmarks',
       'buildingTargets',
       'waterOffsets',
       'accessRoads',
-    ])
-      if (expansion[key] !== undefined)
+    ]) {
+      if (expansion[key] !== undefined) {
         check(object(expansion[key]), `${key}: expansión inválida.`);
+      }
+    }
     const selection = (v) =>
       Array.isArray(v) && v.length > 0 && v.every((kind) => Object.hasOwn(types ?? {}, kind));
     check(
       selection(expansion.defaultBuildingSelection),
       'selección general de edificios inválida.',
     );
-    for (const [place, v] of Object.entries(expansion.buildingSelections ?? {}))
+    for (const [place, v] of Object.entries(expansion.buildingSelections ?? {})) {
       check(scenes.has(place) && selection(v), `selección de edificios inválida: ${place}.`);
-    for (const [place, v] of Object.entries(expansion.buildingLandmarks ?? {}))
+    }
+    for (const [place, v] of Object.entries(expansion.buildingLandmarks ?? {})) {
       check(
         scenes.has(place) && Object.hasOwn(types ?? {}, v),
         `edificio principal inválido: ${place}.`,
       );
-    for (const [place, v] of Object.entries(expansion.buildingTargets ?? {}))
+    }
+    for (const [place, v] of Object.entries(expansion.buildingTargets ?? {})) {
       check(scenes.has(place) && integer(v, 0, 100), `cantidad de edificios inválida: ${place}.`);
-    for (const [place, v] of Object.entries(expansion.waterOffsets ?? {}))
+    }
+    for (const [place, v] of Object.entries(expansion.waterOffsets ?? {})) {
       check(scenes.has(place) && integer(v, 0, 19), `ribera inválida: ${place}.`);
-    for (const [place, v] of Object.entries(expansion.accessRoads ?? {}))
+    }
+    for (const [place, v] of Object.entries(expansion.accessRoads ?? {})) {
       check(scenes.has(place) && Array.isArray(v) && v.every(anchor), `acceso inválido: ${place}.`);
+    }
   }
-  for (const [place, amount] of Object.entries(world.sectorCash ?? {}))
+  for (const [place, amount] of Object.entries(world.sectorCash ?? {})) {
     check(sectors.has(place) && integer(amount, 0, 1000000), `fondos inválidos: ${place}.`);
+  }
   localList(world.workshopSectors ?? [], 'talleres');
   errors.push(...validateMerchantPolicies(world.merchantPolicies, world));
-  for (const kind of ['caches', 'arsenals', 'environment'])
-    for (const place of Object.keys(world.physical?.[kind] ?? {}))
+  for (const kind of ['caches', 'arsenals', 'environment']) {
+    for (const place of Object.keys(world.physical?.[kind] ?? {})) {
       check(
         locations.has(place) || Object.hasOwn(world.sceneExits ?? {}, place),
         `fuente física en un lugar inexistente: ${place}.`,
       );
+    }
+  }
   const trading = world.artilleryTrading;
-  if (trading !== undefined)
+  if (trading !== undefined) {
     check(
       object(trading) &&
         typeof trading.enabled === 'boolean' &&
@@ -493,20 +548,23 @@ function validateWorldRecords(world, options) {
         ),
       'comercio de artillería inválido.',
     );
+  }
   const travel = world.travel;
   if (travel !== undefined) {
     check(object(travel), 'transporte inválido.');
-    if (travel?.roughTransportSectors !== undefined)
+    if (travel?.roughTransportSectors !== undefined) {
       localList(travel.roughTransportSectors, 'transporte por terreno difícil');
-    if (travel?.flotillaTheaters !== undefined)
+    }
+    if (travel?.flotillaTheaters !== undefined) {
       check(
         Array.isArray(travel.flotillaTheaters) &&
           unique(travel.flotillaTheaters) &&
           travel.flotillaTheaters.every((t) => theaters.has(t)),
         'regiones navegables inválidas.',
       );
+    }
     const winter = travel?.winter;
-    if (winter !== undefined)
+    if (winter !== undefined) {
       check(
         object(winter) &&
           Array.isArray(winter.months) &&
@@ -519,7 +577,8 @@ function validateWorldRecords(world, options) {
           typeof winter.excludeCities === 'boolean',
         'cierre estacional inválido.',
       );
-    if (travel?.transportPresentation !== undefined)
+    }
+    if (travel?.transportPresentation !== undefined) {
       check(
         Array.isArray(travel.transportPresentation) &&
           unique(travel.transportPresentation.map((v) => v?.id)) &&
@@ -532,7 +591,8 @@ function validateWorldRecords(world, options) {
           ),
         'presentación de transporte inválida.',
       );
-    if (travel?.transportIssues !== undefined)
+    }
+    if (travel?.transportIssues !== undefined) {
       check(
         object(travel.transportIssues) &&
           Object.entries(travel.transportIssues).every(
@@ -547,6 +607,7 @@ function validateWorldRecords(world, options) {
           ),
         'mensajes de transporte inválidos.',
       );
+    }
   }
   const weather = world.weather;
   if (weather !== undefined) {
@@ -560,7 +621,7 @@ function validateWorldRecords(world, options) {
         object(weather.fallbacks),
       'clima inválido.',
     );
-    for (const [key, c] of Object.entries(weather?.climates ?? {}))
+    for (const [key, c] of Object.entries(weather?.climates ?? {})) {
       check(
         id(key) &&
           object(c) &&
@@ -571,35 +632,40 @@ function validateWorldRecords(world, options) {
           ),
         `perfil climático inválido: ${key}.`,
       );
-    for (const [place, c] of Object.entries(weather?.regions ?? {}))
+    }
+    for (const [place, c] of Object.entries(weather?.regions ?? {})) {
       check(
         (locations.has(place) || Object.hasOwn(world.sceneExits ?? {}, place)) &&
           Object.hasOwn(weather?.climates ?? {}, c),
         `región climática inválida: ${place}.`,
       );
+    }
     check(
       object(weather?.fallbacks?.biomes) &&
         object(weather?.fallbacks?.theaters) &&
         Object.hasOwn(weather?.climates ?? {}, weather?.fallbacks?.default),
       'clima general inválido.',
     );
-    for (const [b, c] of Object.entries(weather?.fallbacks?.biomes ?? {}))
+    for (const [b, c] of Object.entries(weather?.fallbacks?.biomes ?? {})) {
       check(
         BIOMES.includes(b) && Object.hasOwn(weather?.climates ?? {}, c),
         'clima por terreno inválido.',
       );
-    for (const [t, c] of Object.entries(weather?.fallbacks?.theaters ?? {}))
+    }
+    for (const [t, c] of Object.entries(weather?.fallbacks?.theaters ?? {})) {
       check(
         theaters.has(t) && Object.hasOwn(weather?.climates ?? {}, c),
         'clima por región inválido.',
       );
+    }
   }
-  for (const [place, v] of Object.entries(world.landscapes ?? {}))
+  for (const [place, v] of Object.entries(world.landscapes ?? {})) {
     check(
       (locations.has(place) || Object.hasOwn(world.sceneExits ?? {}, place)) &&
         LANDSCAPES.includes(v),
       `paisaje inválido: ${place}.`,
     );
+  }
   const linked = new Set();
   for (const link of world.exitLinks ?? []) {
     const pair = Array.isArray(link)
@@ -607,8 +673,12 @@ function validateWorldRecords(world, options) {
           .sort((left, right) => {
             const first = String(left);
             const second = String(right);
-            if (first < second) return -1;
-            if (first > second) return 1;
+            if (first < second) {
+              return -1;
+            }
+            if (first > second) {
+              return 1;
+            }
             return 0;
           })
           .join('|')
@@ -626,7 +696,7 @@ function validateWorldRecords(world, options) {
     );
     linked.add(pair);
   }
-  for (const [scene, record] of Object.entries(world.sceneExits ?? {}))
+  for (const [scene, record] of Object.entries(world.sceneExits ?? {})) {
     check(
       id(scene) &&
         object(record) &&
@@ -643,7 +713,8 @@ function validateWorldRecords(world, options) {
         ),
       `salidas de escena inválidas: ${scene}.`,
     );
-  for (const entry of world.sceneEntries ?? [])
+  }
+  for (const entry of world.sceneEntries ?? []) {
     check(
       object(entry) &&
         sectors.has(entry.from) &&
@@ -652,13 +723,16 @@ function validateWorldRecords(world, options) {
         edgeAnchor(entry.entryEdge, entry.entryAnchor),
       'entrada de escena inválida.',
     );
-  for (const [scene, p] of Object.entries(world.sceneExitAnchors ?? {}))
+  }
+  for (const [scene, p] of Object.entries(world.sceneExitAnchors ?? {})) {
     check(Object.hasOwn(world.sceneExits ?? {}, scene) && anchor(p), 'ancla de salida inválida.');
-  for (const [scene, location] of Object.entries(world.sceneLocations ?? {}))
+  }
+  for (const [scene, location] of Object.entries(world.sceneLocations ?? {})) {
     check(
       Object.hasOwn(world.sceneExits ?? {}, scene) && sectors.has(location),
       'localidad de escena inválida.',
     );
+  }
   const placementValid = (placement) =>
     object(placement) &&
     (placement.playerAnchors === undefined ||
@@ -667,23 +741,25 @@ function validateWorldRecords(world, options) {
         placement.playerAnchors.length <= 48 &&
         placement.playerAnchors.every(anchor))) &&
     (placement.enemyAnchor === undefined || anchor(placement.enemyAnchor));
-  if (world.defaultDeployment !== undefined)
+  if (world.defaultDeployment !== undefined) {
     check(placementValid(world.defaultDeployment), 'despliegue general inválido.');
-  for (const [place, placement] of Object.entries(world.deployment ?? {}))
+  }
+  for (const [place, placement] of Object.entries(world.deployment ?? {})) {
     check(
       (sectors.has(place) || Object.hasOwn(world.sceneExits ?? {}, place)) &&
         placementValid(placement),
       `despliegue inválido: ${place}.`,
     );
+  }
   if (!errors.length) {
     const byCell = new Map(world.cells.map((c) => [c.id, c])),
       components = new Map();
     let index = 0;
-    for (const cell of world.cells)
+    for (const cell of world.cells) {
       if (cell.land && !components.has(cell.id)) {
         const queue = [cell];
         components.set(cell.id, index);
-        for (let i = 0; i < queue.length; i++)
+        for (let i = 0; i < queue.length; i++) {
           for (const [dx, dy] of [
             [0, -1],
             [0, 1],
@@ -696,15 +772,19 @@ function validateWorldRecords(world, options) {
               queue.push(next);
             }
           }
+        }
         index++;
       }
+    }
     const anchorCells = new Map(world.cells.filter((c) => c.anchor).map((c) => [c.locality, c.id]));
-    for (const sector of world.sectors)
-      for (const to of sector.neighbors)
+    for (const sector of world.sectors) {
+      for (const to of sector.neighbors) {
         check(
           components.get(anchorCells.get(sector.id)) === components.get(anchorCells.get(to)),
           `el camino ${sector.id} / ${to} no tiene conexión terrestre.`,
         );
+      }
+    }
   }
   return errors;
 }

@@ -4,11 +4,14 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./campaign-editor-api": "./public/campaign-editor-api.js",
-    "./campaign-playtest-api": "./public/campaign-playtest-api.js",
-    "./game-persistence-api": "./public/game-persistence-api.js"
+    "./campaign-editor-api": "./public/campaign-editor-api.ts",
+    "./campaign-playtest-api": "./public/campaign-playtest-api.ts",
+    "./game-persistence-api": "./public/game-persistence-api.ts"
   },
   "scripts": {
     "typecheck": "npm --prefix ../../apps/web run typecheck:game"
+  },
+  "engines": {
+    "node": "22.23.4"
   }
 }

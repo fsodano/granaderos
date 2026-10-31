@@ -33,9 +33,7 @@ export function SendArtillery({
     (p) => p.id !== s.location && s.sectors[p.id]?.owner === 'patriot',
   );
   const [chosen, setChosen] = useState(''),
-    [mode, setMode] = useState<'carts' | 'flotilla'>(
-      s.routes['carts'] ? 'carts' : 'flotilla',
-    ),
+    [mode, setMode] = useState<'carts' | 'flotilla'>(s.routes['carts'] ? 'carts' : 'flotilla'),
     to = chosen || destinations[0]?.id || '',
     quote = artilleryTransportQuote(s, sector, gun.id, to, mode, source);
   return (
@@ -98,8 +96,7 @@ export function ArtilleryStorage({
   state: CampaignSnapshot;
   dispatch: (a: CampaignAction) => void;
 }) {
-  const place = (id: string) =>
-    campaignSectors(s).find((sector) => sector.id === id)?.name ?? id;
+  const place = (id: string) => campaignSectors(s).find((sector) => sector.id === id)?.name ?? id;
   const depot = localArtilleryDepot(s),
     transfers = s.artilleryTransfers ?? [];
   return (
@@ -108,8 +105,8 @@ export function ArtilleryStorage({
         <section aria-label="Depósito local de artillería">
           <h3>Depósito de {place(s.location)}</h3>
           <p>
-            Podés elegir estas piezas en la batería para el próximo ataque.
-            Conservan su munición y el trabajo de recarga.
+            Podés elegir estas piezas en la batería para el próximo ataque. Conservan su munición y
+            el trabajo de recarga.
           </p>
           {depot.map((gun) => (
             <div key={gun.id} data-stored-artillery-id={gun.id}>
@@ -135,12 +132,11 @@ export function ArtilleryStorage({
             return (
               <div key={t.id} data-artillery-transfer-id={t.id}>
                 <p>
-                  {artilleryProfile(s, t.gun).name} · {place(t.from)} →{' '}
-                  {place(t.to)} · {t.mode === 'carts' ? 'Carretas' : 'Flotilla'}
+                  {artilleryProfile(s, t.gun).name} · {place(t.from)} → {place(t.to)} ·{' '}
+                  {t.mode === 'carts' ? 'Carretas' : 'Flotilla'}
                 </p>
                 <small>
-                  {load(t.gun)} ·{' '}
-                  {delay || `Llegada en ${Math.max(0, t.dueAt - s.hour)} horas`}
+                  {load(t.gun)} · {delay || `Llegada en ${Math.max(0, t.dueAt - s.hour)} horas`}
                 </small>
               </div>
             );

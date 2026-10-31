@@ -10,10 +10,7 @@ import {
   campaignPresentation,
   campaignSectors,
 } from '../../../packages/game/campaign-definition.js';
-import {
-  campaignStory,
-  campaignChapterIndex,
-} from '../../../packages/game/campaign-story.js';
+import { campaignStory, campaignChapterIndex } from '../../../packages/game/campaign-story.js';
 import { startingTerritoryDescription } from '../../../packages/game/content-territory.js';
 import { useState } from 'react';
 import Recruitment from './Recruitment';
@@ -53,8 +50,7 @@ export default function Desk({
   }).length;
   const fallen = Object.entries(s.operativeState).filter(
     ([id, r]) =>
-      (s.recruited.includes(Number(id)) || r.location !== undefined) &&
-      (!r.alive || r.hp <= 0),
+      (s.recruited.includes(Number(id)) || r.location !== undefined) && (!r.alive || r.hp <= 0),
   ).length;
   // Service locations remain after a contract ends, so an empty later roster
   // must not bring back the first-start guide (including in chapterless campaigns).
@@ -69,17 +65,11 @@ export default function Desk({
     Object.values(s.operativeState).some((r) => r.location !== undefined),
   );
   const sectors = campaignSectors(s),
-    controlled = sectors.filter(
-      (sector) => s.sectors[sector.id]?.owner === 'patriot',
-    ).length,
+    controlled = sectors.filter((sector) => s.sectors[sector.id]?.owner === 'patriot').length,
     story = campaignStory(s);
-  const [tab, setTab] = useState(
-    tabs.some(([id]) => id === initialTab) ? initialTab : 'overview',
-  );
+  const [tab, setTab] = useState(tabs.some(([id]) => id === initialTab) ? initialTab : 'overview');
   const own = rosterFor(s).find((o) => o.id === 1000);
-  const portrait = own
-    ? portraitFor(own.portrait ?? own.portraitId ?? own.id, s)
-    : null;
+  const portrait = own ? portraitFor(own.portrait ?? own.portraitId ?? own.id, s) : null;
   const phase = campaignChapters(s)[campaignChapterIndex(s)];
   return (
     <div className="desk-screen">
@@ -110,8 +100,7 @@ export default function Desk({
           </small>
           <small>Cobro a medianoche</small>
           <small>
-            {serving} {serving === 1 ? 'combatiente' : 'combatientes'} en
-            servicio
+            {serving} {serving === 1 ? 'combatiente' : 'combatientes'} en servicio
           </small>
         </div>
         <button className="gold-button" onClick={onClose}>
@@ -145,15 +134,14 @@ export default function Desk({
             </p>
             {started ? (
               <p>
-                Control actual: {controlled} de {sectors.length} sectores.{' '}
-                {serving} {serving === 1 ? 'combatiente' : 'combatientes'} en
-                servicio · {fallen} {fallen === 1 ? 'caído' : 'caídos'}.
+                Control actual: {controlled} de {sectors.length} sectores. {serving}{' '}
+                {serving === 1 ? 'combatiente' : 'combatientes'} en servicio · {fallen}{' '}
+                {fallen === 1 ? 'caído' : 'caídos'}.
               </p>
             ) : (
               <p>
-                {startingTerritoryDescription(s)} Podés contratar combatientes,
-                crear tu personaje o combinar ambas opciones. Con una sola
-                persona ya podés partir.
+                {startingTerritoryDescription(s)} Podés contratar combatientes, crear tu personaje o
+                combinar ambas opciones. Con una sola persona ya podés partir.
               </p>
             )}
             <ol className={`desk-checklist${started ? ' desk-progress' : ''}`}>
@@ -162,28 +150,21 @@ export default function Desk({
                   <li>
                     <strong>Creá tu personaje · Opcional</strong>
                     <p>
-                      Elegí un rostro, un oficio y tus aptitudes. Tus respuestas
-                      definen la forma de afrontar la campaña.
+                      Elegí un rostro, un oficio y tus aptitudes. Tus respuestas definen la forma de
+                      afrontar la campaña.
                     </p>
-                    <button
-                      className="line-button"
-                      onClick={() => setTab('create')}
-                    >
+                    <button className="line-button" onClick={() => setTab('create')}>
                       Crear mi personaje
                     </button>
                   </li>
                   <li>
                     <strong>Reuní tu escuadra</strong>
                     <p>
-                      No necesitás crear un personaje propio. Consultá
-                      antecedentes y contratá por un día, una semana o dos
-                      semanas. Si hay un viaje pendiente, esperá su llegada al
-                      cuartel.
+                      No necesitás crear un personaje propio. Consultá antecedentes y contratá por
+                      un día, una semana o dos semanas. Si hay un viaje pendiente, esperá su llegada
+                      al cuartel.
                     </p>
-                    <button
-                      className="line-button"
-                      onClick={() => setTab('hire')}
-                    >
+                    <button className="line-button" onClick={() => setTab('hire')}>
                       Examinar candidatos
                     </button>
                   </li>
@@ -202,8 +183,7 @@ export default function Desk({
                       ? (story?.victory ??
                         ui.victoryText ??
                         'Los objetivos de la campaña están cumplidos.')
-                      : (phase?.objective ??
-                        'Consultá la carta y los encargos disponibles.')}
+                      : (phase?.objective ?? 'Consultá la carta y los encargos disponibles.')}
                 </p>
                 {!s.completed && !s.defeated && DeskObjective && (
                   <DeskObjective state={s} dispatch={dispatch} />
@@ -216,23 +196,16 @@ export default function Desk({
                 <li>
                   <strong>Personal y contratos</strong>
                   <p>
-                    Consultá el estado de tus combatientes y sus contratos en la
-                    carta de operaciones. Podés examinar candidatos para
-                    incorporar refuerzos.
+                    Consultá el estado de tus combatientes y sus contratos en la carta de
+                    operaciones. Podés examinar candidatos para incorporar refuerzos.
                   </p>
                   {serving === 1 && !s.completed && !s.defeated && (
                     <p>Con una sola persona ya podés partir.</p>
                   )}
-                  <button
-                    className="line-button"
-                    onClick={() => setTab('hire')}
-                  >
+                  <button className="line-button" onClick={() => setTab('hire')}>
                     Examinar candidatos
                   </button>{' '}
-                  <button
-                    className="line-button"
-                    onClick={() => setTab('create')}
-                  >
+                  <button className="line-button" onClick={() => setTab('create')}>
                     {s.officer ? 'Ver mi personaje' : 'Crear mi personaje'}
                   </button>
                 </li>
@@ -247,8 +220,8 @@ export default function Desk({
               <h3>{own.name}</h3>
               <p>{own.role}</p>
               <p>
-                Tu personaje ya está creado. Su hoja de servicio y su progreso
-                se consultan desde la carta de operaciones.
+                Tu personaje ya está creado. Su hoja de servicio y su progreso se consultan desde la
+                carta de operaciones.
               </p>
               <button className="gold-button" onClick={onClose}>
                 Ver mi personaje en la carta

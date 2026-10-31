@@ -146,11 +146,14 @@ export function validateErrandContacts(content) {
         errors.push(`Encargo ${q.id}: el contacto no existe o no aparece en el mapa.`);
         continue;
       }
-      if (!q.carried && !q.escort) {continue;}
-      if (c.canRecruit)
-        {errors.push(
+      if (!q.carried && !q.escort) {
+        continue;
+      }
+      if (c.canRecruit) {
+        errors.push(
           `Encargo ${q.id}: la entrega física o escolta necesita un contacto que no se incorpore a la escuadra.`,
-        );}
+        );
+      }
       const p = c.characterId && content.placements.find((p) => p?.character === c.characterId);
       if (
         c.characterId
@@ -160,10 +163,11 @@ export function validateErrandContacts(content) {
               contentCellIds(p.sectors, content)[0] === contentCellIds([at], content)[0]
             )
           : c.sector !== at
-      )
-        {errors.push(
+      ) {
+        errors.push(
           `Encargo ${q.id}: la entrega física o escolta necesita un contacto fijo en esa localidad.`,
-        );}
+        );
+      }
     }
   }
   return errors;

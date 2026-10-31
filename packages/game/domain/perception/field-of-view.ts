@@ -34,7 +34,9 @@ export class FieldOfView {
     const horizontal = target.x - observer.x;
     const vertical = target.y - observer.y;
     const distance = Math.hypot(horizontal, vertical);
-    if (distance <= this.#peripheralRange) return true;
+    if (distance <= this.#peripheralRange) {
+      return true;
+    }
     const angle = this.#facing * RadiansPerDirection;
     const alignment = (horizontal * Math.sin(angle) - vertical * Math.cos(angle)) / distance;
     return alignment + AlignmentTolerance >= Math.cos(this.#halfArc * RadiansPerDirection);

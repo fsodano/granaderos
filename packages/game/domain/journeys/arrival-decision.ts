@@ -109,9 +109,12 @@ export class ArrivalDecision {
   }
 
   #resolve(expectedId: string, resolution: ArrivalDecisionStatusValue): void {
-    if (expectedId !== this.#id)
+    if (expectedId !== this.#id) {
       throw new JourneyRefusal(JourneyRefusalCode.ArrivalDecisionMismatch);
-    if (!this.pending) throw new JourneyRefusal(JourneyRefusalCode.ArrivalDecisionAlreadyResolved);
+    }
+    if (!this.pending) {
+      throw new JourneyRefusal(JourneyRefusalCode.ArrivalDecisionAlreadyResolved);
+    }
     this.#status = resolution;
   }
 

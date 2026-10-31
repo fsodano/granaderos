@@ -749,12 +749,10 @@ export function playerKnownBattle(
             })),
         }
       : {}),
-    props: (state.props ?? [])
-      .filter(seen)
-      .map((prop) => ({
-        ...pick(prop, ['id', 'type', ...POSITION, 'blocksMovement', ...STRUCTURE]),
-        ...(prop.footprint ? { footprint: pick(prop.footprint, ['width', 'height']) } : {}),
-      })),
+    props: (state.props ?? []).filter(seen).map((prop) => ({
+      ...pick(prop, ['id', 'type', ...POSITION, 'blocksMovement', ...STRUCTURE]),
+      ...(prop.footprint ? { footprint: pick(prop.footprint, ['width', 'height']) } : {}),
+    })),
     environment,
     contacts,
     orders,

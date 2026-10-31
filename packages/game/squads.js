@@ -115,7 +115,9 @@ export function validatePersonalInventory(inventory) {
     validateItemStack({ ...record, item: `inventory:${key}`, count: Math.max(1, record.count) });
     if (record.count > 0) {
       for (const id of fittingItemIds(record)) {
-        if (identities.has(id)) {throw Error('La identidad del equipo está duplicada.');}
+        if (identities.has(id)) {
+          throw Error('La identidad del equipo está duplicada.');
+        }
         identities.add(id);
       }
     }

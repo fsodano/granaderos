@@ -65,14 +65,17 @@ export class RecruitmentCandidate {
       [RecruitmentSpecialty.Leader]: CharacterRating.Leadership,
     };
     const rating = fields[specialty];
-    if (rating !== undefined)
+    if (rating !== undefined) {
       return this.#snapshot.abilities.meetsRating(rating, RecruitmentExpertiseThreshold);
-    if (specialty === RecruitmentSpecialty.Scout)
+    }
+    if (specialty === RecruitmentSpecialty.Scout) {
       return this.#snapshot.abilities.hasTrait(CharacterTrait.GuerrillaTactician);
-    if (specialty === RecruitmentSpecialty.Rider)
+    }
+    if (specialty === RecruitmentSpecialty.Rider) {
       return [CharacterTrait.ExpertRider, CharacterTrait.CavalryCommander].some((trait) =>
         this.#snapshot.abilities.hasTrait(trait),
       );
+    }
     return true;
   }
   static normalize(value: string): string {

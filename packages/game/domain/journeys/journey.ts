@@ -173,45 +173,58 @@ export class Journey {
   }
 
   markLegPaid(): void {
-    if (!this.travelling || this.backwards || this.#positionSeconds !== 0)
+    if (!this.travelling || this.backwards || this.#positionSeconds !== 0) {
       throw new JourneyRefusal(JourneyRefusalCode.JourneyLegNotStarting);
+    }
     this.#legPaid = true;
   }
 
   pause(reason: string): void {
-    if (!this.travelling) throw new JourneyRefusal(JourneyRefusalCode.JourneyNotTravelling);
-    if (this.#positionSeconds !== 0)
+    if (!this.travelling) {
+      throw new JourneyRefusal(JourneyRefusalCode.JourneyNotTravelling);
+    }
+    if (this.#positionSeconds !== 0) {
       throw new JourneyRefusal(JourneyRefusalCode.JourneyCannotPauseBetweenSectors);
+    }
     this.#status = JourneyStatus.Paused;
     this.#pauseReason = reason;
   }
 
   resume(): void {
-    if (this.#status !== JourneyStatus.Paused)
+    if (this.#status !== JourneyStatus.Paused) {
       throw new JourneyRefusal(JourneyRefusalCode.JourneyNotPaused);
+    }
     this.#status = JourneyStatus.Travelling;
     this.#pauseReason = undefined;
   }
 
   stopAtNextSector(): void {
-    if (!this.travelling) throw new JourneyRefusal(JourneyRefusalCode.JourneyNotTravelling);
-    if (!this.backwards) this.#route = [this.#route[0], this.#route[1]];
+    if (!this.travelling) {
+      throw new JourneyRefusal(JourneyRefusalCode.JourneyNotTravelling);
+    }
+    if (!this.backwards) {
+      this.#route = [this.#route[0], this.#route[1]];
+    }
     this.#returnRoute = undefined;
   }
 
   returnToOrigin(): void {
-    if (!this.travelling && this.#status !== JourneyStatus.Paused)
+    if (!this.travelling && this.#status !== JourneyStatus.Paused) {
       throw new JourneyRefusal(JourneyRefusalCode.JourneyNotTravelling);
+    }
     this.#direction = JourneyDirection.Backward;
     this.#returnRoute = undefined;
     this.#status = JourneyStatus.Travelling;
     this.#pauseReason = undefined;
-    if (this.#purpose === JourneyPurpose.HostileApproach) this.#purpose = JourneyPurpose.Withdrawal;
+    if (this.#purpose === JourneyPurpose.HostileApproach) {
+      this.#purpose = JourneyPurpose.Withdrawal;
+    }
   }
 
   reverseForBlockedRoute(reason: string): void {
-    if (!this.travelling || this.#positionSeconds === 0)
+    if (!this.travelling || this.#positionSeconds === 0) {
       throw new JourneyRefusal(JourneyRefusalCode.JourneyCannotReverse);
+    }
     this.#direction = JourneyDirection.Backward;
     this.#returnRoute = undefined;
     this.#pauseReason = reason;
@@ -229,7 +242,9 @@ export class Journey {
     ) {
       throw new JourneyRefusal(JourneyRefusalCode.InvalidJourneyDuration);
     }
-    if (!this.travelling) throw new JourneyRefusal(JourneyRefusalCode.JourneyNotTravelling);
+    if (!this.travelling) {
+      throw new JourneyRefusal(JourneyRefusalCode.JourneyNotTravelling);
+    }
     const acceptedSeconds = Math.min(requestedSeconds, this.remainingLegSeconds);
     const reachedAtSeconds = acceptedAtSeconds - (requestedSeconds - acceptedSeconds);
     if (reachedAtSeconds - this.#startedAtSeconds < this.#travelledSeconds + acceptedSeconds) {
@@ -263,9 +278,12 @@ export class Journey {
   }
 
   redirect(plan: RedirectJourneyPlan, nowSeconds: number): void {
-    if (!this.travelling) throw new JourneyRefusal(JourneyRefusalCode.JourneyNotTravelling);
-    if (!Number.isSafeInteger(nowSeconds) || nowSeconds < this.#startedAtSeconds)
+    if (!this.travelling) {
+      throw new JourneyRefusal(JourneyRefusalCode.JourneyNotTravelling);
+    }
+    if (!Number.isSafeInteger(nowSeconds) || nowSeconds < this.#startedAtSeconds) {
       throw new JourneyRefusal(JourneyRefusalCode.InvalidJourneyTime);
+    }
     if (
       !plan.route.length ||
       plan.route[0] !== plan.through ||
@@ -295,8 +313,9 @@ export class Journey {
   }
 
   finishLeg(nextLegDurationSeconds?: number): { from: string; to: string; complete: boolean } {
-    if (!this.travelling || this.remainingLegSeconds !== 0)
+    if (!this.travelling || this.remainingLegSeconds !== 0) {
       throw new JourneyRefusal(JourneyRefusalCode.JourneyLegNotComplete);
+    }
     const from = this.origin;
     const to = this.nextSector;
     const nextRoute = this.backwards ? this.#returnRoute : this.#route.slice(1);
@@ -308,8 +327,9 @@ export class Journey {
       nextLegDurationSeconds === undefined ||
       !Number.isSafeInteger(nextLegDurationSeconds) ||
       nextLegDurationSeconds < 1
-    )
+    ) {
       throw new JourneyRefusal(JourneyRefusalCode.InvalidNextJourneyLeg);
+    }
     this.#route = Journey.#routeWithCurrentSegment(nextRoute);
     this.#returnRoute = undefined;
     this.#positionSeconds = 0;
@@ -321,13 +341,16 @@ export class Journey {
 
   static #routeWithCurrentSegment(route: readonly string[]): [string, string, ...string[]] {
     const [origin, destination, ...remaining] = route;
-    if (!origin || !destination) throw new JourneyRefusal(JourneyRefusalCode.InvalidJourney);
+    if (!origin || !destination) {
+      throw new JourneyRefusal(JourneyRefusalCode.InvalidJourney);
+    }
     return [origin, destination, ...remaining];
   }
 
   #requirePendingDecision(): ArrivalDecision {
-    if (!this.awaitingArrivalDecision || !this.#arrivalDecision?.pending)
+    if (!this.awaitingArrivalDecision || !this.#arrivalDecision?.pending) {
       throw new JourneyRefusal(JourneyRefusalCode.ArrivalDecisionNotPending);
+    }
     return this.#arrivalDecision;
   }
 

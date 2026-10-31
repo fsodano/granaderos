@@ -279,11 +279,12 @@ export function validateFiniteArtilleryArsenals(state) {
   for (const scene of scenes) {
     validateFiniteArsenalScene(scene, state);
     for (const prop of scene.props ?? []) {
-      if (prop.artilleryRecovered !== undefined)
-        {need(
+      if (prop.artilleryRecovered !== undefined) {
+        need(
           state.artilleryArsenalRecoveries[scene.sectorId],
           'El descubrimiento del arsenal carece de registro.',
-        );}
+        );
+      }
     }
   }
   const request = state.pendingBattle;

@@ -129,8 +129,9 @@ export function acknowledgeDetentionHealth(campaign, battle) {
         if (
           horse.custody?.kind === 'captured' &&
           horse.custody.operativeId === npc.detention.operativeId
-        )
-          {horse.custody.kind = 'field';}
+        ) {
+          horse.custody.kind = 'field';
+        }
       }
     }
     campaign.detentionRecords[npc.id] = receipt;
@@ -274,11 +275,12 @@ export function validateCampaignDetention(campaign) {
       );
     }
     if (sameCaptivity(r, d)) {
-      for (const key of ['hp', 'energy', 'bleeding', 'bandaged'])
-        {need(
+      for (const key of ['hp', 'energy', 'bleeding', 'bandaged']) {
+        need(
           (r[key] ?? 0) === (npc[key] ?? 0),
           'Las heridas guardadas del prisionero no coinciden.',
-        );}
+        );
+      }
     }
   }
   const request = campaign.pendingBattle,
@@ -305,20 +307,25 @@ export function validateCampaignDetention(campaign) {
     );
   }
   if (request?.detainedPrisoners !== undefined) {
-    for (const [id, r] of Object.entries(campaign.operativeState))
-      {if (r.captured && r.capturedSector === request.sector && !request.sceneId)
-        {need(ids.has(detentionId(id, r)), 'El manifiesto omitió un prisionero local.');}}
+    for (const [id, r] of Object.entries(campaign.operativeState)) {
+      if (r.captured && r.capturedSector === request.sector && !request.sceneId) {
+        need(ids.has(detentionId(id, r)), 'El manifiesto omitió un prisionero local.');
+      }
+    }
   }
   for (const snapshot of [
     ...Object.values(campaign.sectorStates ?? {}),
     ...Object.values(campaign.sceneStates ?? {}),
   ]) {
     for (const npc of snapshot.npcs ?? []) {
-      if (!npc.detention) {continue;}
+      if (!npc.detention) {
+        continue;
+      }
       const receipt = records[npc.id];
       need(receipt, 'Falta el recibo del prisionero.');
-      if (request?.sector !== snapshot.sectorId)
-        {need(equal(receipt.npc, npc), 'El sector perdió el estado del prisionero.');}
+      if (request?.sector !== snapshot.sectorId) {
+        need(equal(receipt.npc, npc), 'El sector perdió el estado del prisionero.');
+      }
     }
   }
   return campaign;

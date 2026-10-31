@@ -15,10 +15,7 @@ import {
   itemDescriptor,
   equipmentEndpoint,
 } from '../../../packages/game/tactical-inventory.js';
-import {
-  EquipmentInteractionProvider,
-  useEquipmentDrag,
-} from '../lib/equipment-drag';
+import { EquipmentInteractionProvider, useEquipmentDrag } from '../lib/equipment-drag';
 import './ja2-hands.css';
 type Props = {
   unit: CampaignInventoryActor;
@@ -51,40 +48,29 @@ function CampaignPocketsBody({ unit, disabled, onOrder }: Props) {
   };
   const arrange = (order: TacticalOrder): void => {
     const details = {
-      ...('hostId' in order && order.hostId !== undefined
-        ? { hostId: order.hostId }
-        : {}),
+      ...('hostId' in order && order.hostId !== undefined ? { hostId: order.hostId } : {}),
       ...('expectedHost' in order && order.expectedHost !== undefined
         ? { expectedHost: order.expectedHost }
         : {}),
       ...('expectedCursor' in order && order.expectedCursor !== undefined
         ? { expectedCursor: order.expectedCursor }
         : {}),
-      ...('sourceId' in order && order.sourceId !== undefined
-        ? { sourceId: order.sourceId }
-        : {}),
+      ...('sourceId' in order && order.sourceId !== undefined ? { sourceId: order.sourceId } : {}),
       ...('destinationId' in order && order.destinationId !== undefined
         ? { destinationId: order.destinationId }
         : {}),
       ...('expectedSource' in order && order.expectedSource !== undefined
         ? { expectedSource: order.expectedSource }
         : {}),
-      ...('expectedDestination' in order &&
-      order.expectedDestination !== undefined
+      ...('expectedDestination' in order && order.expectedDestination !== undefined
         ? { expectedDestination: order.expectedDestination }
         : {}),
       ...('inventoryKey' in order && order.inventoryKey !== undefined
         ? { inventoryKey: order.inventoryKey }
         : {}),
-      ...('slot' in order && order.slot !== undefined
-        ? { slot: order.slot }
-        : {}),
-      ...('item' in order && order.item !== undefined
-        ? { item: order.item }
-        : {}),
-      ...('count' in order && order.count !== undefined
-        ? { count: order.count }
-        : {}),
+      ...('slot' in order && order.slot !== undefined ? { slot: order.slot } : {}),
+      ...('item' in order && order.item !== undefined ? { item: order.item } : {}),
+      ...('count' in order && order.count !== undefined ? { count: order.count } : {}),
     };
     switch (order.type) {
       case 'unloadEquipment':
@@ -128,10 +114,7 @@ function CampaignPocketsBody({ unit, disabled, onOrder }: Props) {
   return (
     <section className="campaign-pockets" aria-label="Organizar equipo llevado">
       <h4>Equipo llevado</h4>
-      <p>
-        Podés mover objetos entre manos, vestimenta y bolsillos. No consume
-        tiempo.
-      </p>
+      <p>Podés mover objetos entre manos, vestimenta y bolsillos. No consume tiempo.</p>
       <JA2OutfitSlot
         battle={context}
         unit={unit}
@@ -144,28 +127,19 @@ function CampaignPocketsBody({ unit, disabled, onOrder }: Props) {
           const item = hands[side],
             blocked = side === 'left' && hands.twoHanded;
           const details = item ? itemDescriptor(unit, item) : null;
-          const label =
-            details?.label ?? (blocked ? 'Ocupada por el arma' : 'Vacía');
+          const label = details?.label ?? (blocked ? 'Ocupada por el arma' : 'Vacía');
           return (
             <button
               key={side}
               type="button"
               disabled={disabled || blocked}
-              className={
-                blocked
-                  ? 'blocked'
-                  : drag.target === `hand:${side}`
-                    ? 'drop-target'
-                    : ''
-              }
+              className={blocked ? 'blocked' : drag.target === `hand:${side}` ? 'drop-target' : ''}
               data-held={Boolean(item)}
               aria-label={`${side === 'right' ? 'Mano principal' : 'Segunda mano'}: ${label}`}
               title="Clic: tomar o colocar. Botón derecho: detalles."
               {...drag.handlers(`hand:${side}`, { onInspect: inspect })}
             >
-              <small>
-                {side === 'right' ? 'Mano principal' : 'Segunda mano'}
-              </small>
+              <small>{side === 'right' ? 'Mano principal' : 'Segunda mano'}</small>
               <span>{label}</span>
               {details?.loaded !== undefined && (
                 <small>

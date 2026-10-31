@@ -591,8 +591,9 @@ export function withoutPreviousCasualties(previous, request, reports, snapshot) 
       .map((u) => String(u.id)),
   );
   for (const unit of snapshot?.units ?? []) {
-    if (bodies.has(String(unit.id)) && unit.hp !== 0)
-      {throw Error('El parte modifica una baja ya confirmada.');}
+    if (bodies.has(String(unit.id)) && unit.hp !== 0) {
+      throw Error('El parte modifica una baja ya confirmada.');
+    }
   }
   return reports.filter((report) => {
     if (!report || typeof report !== 'object') {

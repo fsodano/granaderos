@@ -6,9 +6,9 @@ import ts from '../apps/web/node_modules/typescript/lib/typescript.js';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const failures = [];
 const publicGameEntries = new Set([
-  'packages/game/public/campaign-editor-api.js',
-  'packages/game/public/campaign-playtest-api.js',
-  'packages/game/public/game-persistence-api.js',
+  'packages/game/public/campaign-editor-api.ts',
+  'packages/game/public/campaign-playtest-api.ts',
+  'packages/game/public/game-persistence-api.ts',
 ]);
 const publicPreviewEntries = new Set([
   'apps/web/game-preview.ts',
@@ -30,10 +30,14 @@ for (const directory of sourceDirectories) {
 }
 
 function sourceFiles(directory) {
-  if (!existsSync(directory)) return [];
+  if (!existsSync(directory)) {
+    return [];
+  }
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     const path = resolve(directory, entry.name);
-    if (entry.isDirectory()) return excludedDirectories.has(entry.name) ? [] : sourceFiles(path);
+    if (entry.isDirectory()) {
+      return excludedDirectories.has(entry.name) ? [] : sourceFiles(path);
+    }
     return sourceExtension.test(entry.name) ? [path] : [];
   });
 }
@@ -165,12 +169,13 @@ for (const directory of sourceDirectories) {
           const locallyDeclared = symbol?.declarations?.some(
             (declaration) => declaration.getSourceFile().fileName === filename,
           );
-          if (!locallyDeclared)
+          if (!locallyDeclared) {
             fail(
               file,
               node.expression.text,
               'Domain and application code must use ports for browser mechanisms.',
             );
+          }
         }
         ts.forEachChild(node, inspect);
       }

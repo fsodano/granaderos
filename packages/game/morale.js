@@ -205,8 +205,11 @@ export function recordBattleMorale(s, request, outcome, snapshot) {
   }
   recordCasualtyMorale(s, dead, ids);
   if ((snapshot?.elapsedSeconds ?? 0) > 0) {
-    for (let i = 0; i < living.length; i++)
-      {for (let j = i + 1; j < living.length; j++) {addCohesion(s, living[i], living[j], 12);}}
+    for (let i = 0; i < living.length; i++) {
+      for (let j = i + 1; j < living.length; j++) {
+        addCohesion(s, living[i], living[j], 12);
+      }
+    }
   }
 }
 
@@ -247,7 +250,9 @@ export function advanceMorale(s, roster, options = {}) {
   for (const squad of s.squads ?? []) {
     const ids = squad.members.filter(safe);
     for (let i = 0; i < ids.length; i++) {
-      for (let j = i + 1; j < ids.length; j++) {addCohesion(s, ids[i], ids[j], 1);}
+      for (let j = i + 1; j < ids.length; j++) {
+        addCohesion(s, ids[i], ids[j], 1);
+      }
     }
   }
   return messages;

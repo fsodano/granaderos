@@ -42,21 +42,15 @@ function PortraitPicker({
   portraits: Portrait[];
 }) {
   const CHARACTER_PORTRAITS = portraits,
-    SELECTABLE_CHARACTER_PORTRAITS = portraits.filter(
-      (p) => p.selectable !== false,
-    );
-  const genders = [
-      ...new Set(SELECTABLE_CHARACTER_PORTRAITS.map((p) => p.gender)),
-    ].map((id) => ({
+    SELECTABLE_CHARACTER_PORTRAITS = portraits.filter((p) => p.selectable !== false);
+  const genders = [...new Set(SELECTABLE_CHARACTER_PORTRAITS.map((p) => p.gender))].map((id) => ({
       id,
       name: PORTRAIT_GENDERS.find((p) => p.id === id)?.name ?? 'Persona',
     })),
-    roles = [...new Set(SELECTABLE_CHARACTER_PORTRAITS.map((p) => p.role))].map(
-      (id) => ({
-        id,
-        name: PORTRAIT_ROLES.find((p) => p.id === id)?.name ?? 'Personaje',
-      }),
-    );
+    roles = [...new Set(SELECTABLE_CHARACTER_PORTRAITS.map((p) => p.role))].map((id) => ({
+      id,
+      name: PORTRAIT_ROLES.find((p) => p.id === id)?.name ?? 'Personaje',
+    }));
   const [gender, setGender] = useState(''),
     [role, setRole] = useState('');
   const genderSelect = useRef<HTMLSelectElement>(null);
@@ -64,13 +58,9 @@ function PortraitPicker({
     galleryId = `${pickerId}-gallery`,
     helpId = `${pickerId}-help`,
     ready = Boolean(gender && role);
-  const selected =
-    CHARACTER_PORTRAITS.find((p) => p.id === selectedId) ??
-    CHARACTER_PORTRAITS[0];
+  const selected = CHARACTER_PORTRAITS.find((p) => p.id === selectedId) ?? CHARACTER_PORTRAITS[0];
   const visible = ready
-    ? SELECTABLE_CHARACTER_PORTRAITS.filter(
-        (p) => p.gender === gender && p.role === role,
-      )
+    ? SELECTABLE_CHARACTER_PORTRAITS.filter((p) => p.gender === gender && p.role === role)
     : [];
   const selectedVisible = visible.some((p) => p.id === selectedId);
   const clearFilters = () => {
@@ -78,10 +68,8 @@ function PortraitPicker({
     setRole('');
     genderSelect.current?.focus();
   };
-  const label = (
-    options: readonly { id: string; name: string }[],
-    id: string,
-  ) => options.find((option) => option.id === id)?.name ?? id;
+  const label = (options: readonly { id: string; name: string }[], id: string) =>
+    options.find((option) => option.id === id)?.name ?? id;
   const description = (p: Portrait) =>
     `${label(PORTRAIT_GENDERS, p.gender)} · ${label(PORTRAIT_ROLES, p.role)} · ${label(PORTRAIT_SKIN_TONES, p.skinTone)}`;
   const groups = PORTRAIT_SKIN_TONES.map((t) => ({
@@ -144,8 +132,8 @@ function PortraitPicker({
         </label>
       </div>
       <p id={helpId} className="creator-portrait-help">
-        El tipo describe la ropa y el aspecto del retrato. Podés elegir
-        cualquier oficio y habilidad.
+        El tipo describe la ropa y el aspecto del retrato. Podés elegir cualquier oficio y
+        habilidad.
       </p>
       <div className="creator-portrait-picker">
         <figure className="creator-portrait-preview">
@@ -157,30 +145,17 @@ function PortraitPicker({
           />
           <figcaption aria-live="polite">
             <strong>{selected.name}</strong>
-            <span className="creator-portrait-details">
-              {description(selected)}
-            </span>
-            <small>
-              Seleccionado{ready && !selectedVisible && ' · de otro grupo'}
-            </small>
+            <span className="creator-portrait-details">{description(selected)}</span>
+            <small>Seleccionado{ready && !selectedVisible && ' · de otro grupo'}</small>
           </figcaption>
         </figure>
         <div className="creator-portrait-results">
           {!ready ? (
-            <div
-              aria-live="polite"
-              id={galleryId}
-              className="creator-portrait-prompt"
-            >
+            <div aria-live="polite" id={galleryId} className="creator-portrait-prompt">
               <span aria-hidden="true">{gender ? '2' : '1'}</span>
               <p>
-                {gender
-                  ? 'Ahora elegí un tipo de retrato.'
-                  : 'Primero elegí un género.'}
-                <small>
-                  Después verás los rostros disponibles, organizados por tono de
-                  piel.
-                </small>
+                {gender ? 'Ahora elegí un tipo de retrato.' : 'Primero elegí un género.'}
+                <small>Después verás los rostros disponibles, organizados por tono de piel.</small>
               </p>
             </div>
           ) : visible.length > 0 ? (
@@ -197,9 +172,7 @@ function PortraitPicker({
                     className="creator-portrait-group"
                     aria-labelledby={`${pickerId}-${group.id}`}
                   >
-                    <h3 id={`${pickerId}-${group.id}`}>
-                      Tono de piel · {group.name}
-                    </h3>
+                    <h3 id={`${pickerId}-${group.id}`}>Tono de piel · {group.name}</h3>
                     <div className="creator-portrait-grid">
                       {group.portraits.map((p) => (
                         <button
@@ -224,10 +197,7 @@ function PortraitPicker({
                             {label(PORTRAIT_SKIN_TONES, p.skinTone)}
                           </span>
                           {selectedId === p.id && (
-                            <span
-                              className="creator-portrait-check"
-                              aria-hidden="true"
-                            >
+                            <span className="creator-portrait-check" aria-hidden="true">
                               ✓
                             </span>
                           )}
@@ -237,22 +207,14 @@ function PortraitPicker({
                   </section>
                 ))}
               </fieldset>
-              <button
-                type="button"
-                className="creator-portrait-reset"
-                onClick={clearFilters}
-              >
+              <button type="button" className="creator-portrait-reset" onClick={clearFilters}>
                 Cambiar género y tipo
               </button>
             </>
           ) : (
             <div id={galleryId} className="creator-portrait-empty">
               <p>No hay retratos de este tipo.</p>
-              <button
-                type="button"
-                className="creator-portrait-reset"
-                onClick={clearFilters}
-              >
+              <button type="button" className="creator-portrait-reset" onClick={clearFilters}>
                 Cambiar género y tipo
               </button>
             </div>
@@ -277,9 +239,7 @@ export default function CharacterCreator({
   busy?: boolean;
 }) {
   const [name, setName] = useState(''),
-    [profile, setProfile] = useState<CampaignOfficerProfile>(() =>
-      defaultProfile(state),
-    ),
+    [profile, setProfile] = useState<CampaignOfficerProfile>(() => defaultProfile(state)),
     [answers, setAnswers] = useState<Record<string, string>>({}),
     [error, setError] = useState('');
   const portraits = campaignCharacterPortraits(state).map((portrait) => ({
@@ -293,17 +253,14 @@ export default function CharacterCreator({
     OFFICER_QUESTIONS = creation.commissionQuestions,
     PROFILE_QUESTIONS = creation.questions;
   const healthHelpId = useId();
-  const remaining =
-    PROFILE_POINTS -
-    Object.values(profile.attributes).reduce((a, b) => a + b, 0);
+  const remaining = PROFILE_POINTS - Object.values(profile.attributes).reduce((a, b) => a + b, 0);
   return (
     <section className="character-creator">
       <p className="eyebrow">Tu personaje</p>
       <h2>Hoja de servicio</h2>
       <p>
-        Elegí tu rostro y oficio, distribuí 550 puntos y respondé el
-        cuestionario. Este personaje te representa durante la campaña y no cobra
-        contratación.
+        Elegí tu rostro y oficio, distribuí 550 puntos y respondé el cuestionario. Este personaje te
+        representa durante la campaña y no cobra contratación.
       </p>
       <label>
         Nombre
@@ -326,9 +283,7 @@ export default function CharacterCreator({
       <PortraitPicker
         portraits={portraits}
         selectedId={profile.portraitId}
-        onSelect={(portraitId) =>
-          setProfile((current) => ({ ...current, portraitId }))
-        }
+        onSelect={(portraitId) => setProfile((current) => ({ ...current, portraitId }))}
       />
       <label>
         Oficio
@@ -346,8 +301,8 @@ export default function CharacterCreator({
       <fieldset>
         <legend>Atributos · {remaining} puntos por distribuir</legend>
         <p id={healthHelpId}>
-          La salud inicial debe estar entre {MIN_OFFICER_HEALTH} y 85 para que
-          tu personaje esté consciente. Los demás atributos admiten de 0 a 85.
+          La salud inicial debe estar entre {MIN_OFFICER_HEALTH} y 85 para que tu personaje esté
+          consciente. Los demás atributos admiten de 0 a 85.
         </p>
         <div className="creator-attributes">
           {PROFILE_ATTRIBUTES.map((a) => (
@@ -396,9 +351,8 @@ export default function CharacterCreator({
         </label>
       ))}
       <p>
-        La equitación facilita marchar a caballo; la experiencia nocturna amplía
-        la visión; la enseñanza mejora la instrucción. El optimismo o pesimismo
-        afectan la moral inicial.
+        La equitación facilita marchar a caballo; la experiencia nocturna amplía la visión; la
+        enseñanza mejora la instrucción. El optimismo o pesimismo afectan la moral inicial.
       </p>
       {error && <p role="alert">{error}</p>}
       <button
@@ -411,9 +365,7 @@ export default function CharacterCreator({
             setError('');
             onCreate(name, answers, profile);
           } catch (e) {
-            setError(
-              e instanceof Error ? e.message : 'Revisá la hoja de servicio.',
-            );
+            setError(e instanceof Error ? e.message : 'Revisá la hoja de servicio.');
           }
         }}
       >

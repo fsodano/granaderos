@@ -12,8 +12,7 @@ import { encounterDefinitions } from '../../../packages/game/encounters.js';
 import { beneficiaryDeliveryNotice } from '../../../packages/game/ja2-hud.ts';
 import './quest-journal.css';
 
-const stamp = (hour: number) =>
-  `Día ${1 + Math.floor(hour / 24)} · ${hour % 24}:00`;
+const stamp = (hour: number) => `Día ${1 + Math.floor(hour / 24)} · ${hour % 24}:00`;
 export default function QuestJournal({ state }: { state: CampaignSnapshot }) {
   const sectorName = (id: string) =>
     campaignSectors(state).find((sector) => sector.id === id)?.name ?? id;
@@ -23,8 +22,7 @@ export default function QuestJournal({ state }: { state: CampaignSnapshot }) {
       <h3 id="quest-journal-title">Encargos locales</h3>
       {!entries.length ? (
         <p className="muted">
-          Todavía no aceptaste encargos. Conversá con los habitantes durante tus
-          visitas.
+          Todavía no aceptaste encargos. Conversá con los habitantes durante tus visitas.
         </p>
       ) : (
         <ul>
@@ -49,21 +47,14 @@ export default function QuestJournal({ state }: { state: CampaignSnapshot }) {
                     </strong>
                   </header>
                   <p>
-                    {
-                      encounterDefinitions(state).find(
-                        (npc) => npc.id === recipientId,
-                      )?.name
-                    }{' '}
-                    · {sectorName(selected?.sector ?? quest.sector)}
+                    {encounterDefinitions(state).find((npc) => npc.id === recipientId)?.name} ·{' '}
+                    {sectorName(selected?.sector ?? quest.sector)}
                   </p>
-                  <p className="quest-date">
-                    Aceptado: {stamp(quest.offeredAt)}
-                  </p>
+                  <p className="quest-date">Aceptado: {stamp(quest.offeredAt)}</p>
                   {quest.carried && (
                     <p>
                       {quest.carried.label} entregad
-                      {quest.carried.item ? 'as' : 'os'}: {quest.delivered}/
-                      {quest.carried.count}
+                      {quest.carried.item ? 'as' : 'os'}: {quest.delivered}/{quest.carried.count}
                     </p>
                   )}
                   {quest.beneficiaries && quest.status === 'offered' && (
@@ -82,8 +73,7 @@ export default function QuestJournal({ state }: { state: CampaignSnapshot }) {
                   {quest.status === 'offered' ? (
                     <>
                       <p>
-                        {quest.escort &&
-                        state.contentCampaign?.package.errands === undefined
+                        {quest.escort && state.contentCampaign?.package.errands === undefined
                           ? 'Acompañá al arriero hasta la salida occidental hacia Humahuaca. Hablale allí para confirmar la llegada. Podés pedirle que espere o que siga a otro combatiente.'
                           : quest.carried
                             ? quest.carried.instruction
@@ -101,8 +91,7 @@ export default function QuestJournal({ state }: { state: CampaignSnapshot }) {
                           {quest.resolutionReady
                             ? 'Entrega completa. Conversá con el contacto para elegir la recompensa.'
                             : 'Completá la entrega y las condiciones para elegir la recompensa.'}{' '}
-                          Reintegro de {quest.rewardChoice.reimbursement} pesos
-                          o apoyo local (+8).
+                          Reintegro de {quest.rewardChoice.reimbursement} pesos o apoyo local (+8).
                         </p>
                       )}
                       {selected && (
@@ -119,17 +108,14 @@ export default function QuestJournal({ state }: { state: CampaignSnapshot }) {
                       )}
                       {quest.unsecured.length > 0 && (
                         <p className="quest-blocker">
-                          Primero asegurá:{' '}
-                          {quest.unsecured.map(sectorName).join(', ')}.
+                          Primero asegurá: {quest.unsecured.map(sectorName).join(', ')}.
                         </p>
                       )}
                     </>
                   ) : quest.status === 'withdrawn' ? (
                     <p>
                       {questWithdrawalText(quest, quest)}{' '}
-                      <span className="quest-date">
-                        Retirado: {stamp(quest.withdrawnAt)}.
-                      </span>
+                      <span className="quest-date">Retirado: {stamp(quest.withdrawnAt)}.</span>
                     </p>
                   ) : quest.status === 'completed' ? (
                     <p>
@@ -138,9 +124,7 @@ export default function QuestJournal({ state }: { state: CampaignSnapshot }) {
                         : selected
                           ? questBeneficiaryResolutionText(quest, state)
                           : quest.delivery}{' '}
-                      <span className="quest-date">
-                        Cumplido: {stamp(quest.completedAt)}.
-                      </span>
+                      <span className="quest-date">Cumplido: {stamp(quest.completedAt)}.</span>
                     </p>
                   ) : (
                     <p>
@@ -149,9 +133,7 @@ export default function QuestJournal({ state }: { state: CampaignSnapshot }) {
                         : quest.escort
                           ? 'El arriero murió. La escolta terminó sin recompensa.'
                           : 'El contacto murió. El encargo terminó sin recompensa. Los objetos ya entregados permanecen con el contacto.'}{' '}
-                      <span className="quest-date">
-                        Fallido: {stamp(quest.failedAt)}.
-                      </span>
+                      <span className="quest-date">Fallido: {stamp(quest.failedAt)}.</span>
                     </p>
                   )}
                 </article>

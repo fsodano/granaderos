@@ -103,16 +103,24 @@ export function expandSectorMap(
   // Continue each authored road to the new boundary. Coast and cliffs win.
   for (const p of boundaryRoads) {
     if (p.x === 0) {
-      for (let x = 0; x < DX; x++) {road(x, p.y + DY);}
+      for (let x = 0; x < DX; x++) {
+        road(x, p.y + DY);
+      }
     }
     if (p.x === 19) {
-      for (let x = DX + 20; x < width; x++) {road(x, p.y + DY);}
+      for (let x = DX + 20; x < width; x++) {
+        road(x, p.y + DY);
+      }
     }
     if (p.y === 0) {
-      for (let y = 0; y < DY; y++) {road(p.x + DX, y);}
+      for (let y = 0; y < DY; y++) {
+        road(p.x + DX, y);
+      }
     }
     if (p.y === 15) {
-      for (let y = DY + 16; y < height; y++) {road(p.x + DX, y);}
+      for (let y = DY + 16; y < height; y++) {
+        road(p.x + DX, y);
+      }
     }
   }
   // Authored access corrections retain their compact-map coordinates.
@@ -162,7 +170,9 @@ export function expandSectorMap(
     for (let row = y; row < y + h; row++) {
       for (let col = x; col < x + w; col++) {
         const t = map.tiles[row * width + col];
-        if (!t || t.blocked || t.buildingId || t.type === 'road') {return false;}
+        if (!t || t.blocked || t.buildingId || t.type === 'road') {
+          return false;
+        }
       }
     }
     const doorstep = map.tiles[(y + h) * width + x + Math.floor(w / 2)];
@@ -238,17 +248,22 @@ export function expandSectorMap(
     // Continuous streets between the lots, with stone pavements beside the houses.
     for (let y = 1; y < height - 1; y++) {
       for (let x = 1; x < width - 1; x++) {
-        if (x >= DX - 1 && x <= DX + 20 && y >= DY - 1 && y <= DY + 16) {continue;}
+        if (x >= DX - 1 && x <= DX + 20 && y >= DY - 1 && y <= DY + 16) {
+          continue;
+        }
         const t = map.tiles[y * width + x];
-        if (t.blocked || t.buildingId) {continue;}
-        if (x % 8 === 1 || x % 8 === 2 || [9, 10, 17, 18, 25, 26, 33, 34, 40, 41].includes(y))
-          {Object.assign(t, { type: 'road', cover: 0 });}
-        else if (
+        if (t.blocked || t.buildingId) {
+          continue;
+        }
+        if (x % 8 === 1 || x % 8 === 2 || [9, 10, 17, 18, 25, 26, 33, 34, 40, 41].includes(y)) {
+          Object.assign(t, { type: 'road', cover: 0 });
+        } else if (
           map.buildings.some(
             (b) => x >= b.x - 1 && x <= b.x + b.width && y >= b.y - 1 && y <= b.y + b.height,
           )
-        )
-          {Object.assign(t, { type: 'stone', cover: 0 });}
+        ) {
+          Object.assign(t, { type: 'stone', cover: 0 });
+        }
       }
     }
   }

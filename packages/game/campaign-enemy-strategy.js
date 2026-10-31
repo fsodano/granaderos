@@ -60,7 +60,8 @@ export function authoredEnemyHourlyEvents(s, world, context) {
   for (const [theater, policy] of Object.entries(enemyStrategiesFor(world)).sort(([a], [b]) =>
     a < b ? -1 : a > b ? 1 : 0,
   )) {
-    if (s.hour > 0 && s.hour % policy.raidEveryHours === 0)
-      {authoredEnemyRaid(s, world, theater, null, context);}
+    if (s.hour > 0 && s.hour % policy.raidEveryHours === 0) {
+      authoredEnemyRaid(s, world, theater, null, context);
+    }
   }
 }

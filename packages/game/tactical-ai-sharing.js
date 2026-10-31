@@ -87,14 +87,16 @@ export function chooseSupplySharingAction(state, unit, targets, paths) {
       gun.loaded === 0 &&
       !(ammunitionByType(ally)[type] > 0)
     ) {
-      for (const [key, stack] of sources)
-        {if (stack.ammoType === type)
-          {needs.push({
+      for (const [key, stack] of sources) {
+        if (stack.ammoType === type) {
+          needs.push({
             ally,
             item: `inventory:${key}`,
             count: Math.min(capacity, spare[type], stack.count),
             priority: 1,
-          });}}
+          });
+        }
+      }
     }
     if (spareDressings && ally.medical > 0 && ally.medkits === 0) {
       // A dressing has a present purpose only when the recipient can reach a

@@ -1,0 +1,131 @@
+{
+  "$schema": "./apps/web/node_modules/dependency-cruiser/src/schema/configuration.schema.json",
+  "forbidden": [
+    {
+      "name": "game-domain-is-independent",
+      "severity": "error",
+      "from": {
+        "path": "^packages/game/domain/",
+        "pathNot": "\\.test\\.|/tests/"
+      },
+      "to": {
+        "pathNot": "^packages/game/domain/"
+      }
+    },
+    {
+      "name": "game-application-uses-domain-and-ports",
+      "severity": "error",
+      "from": {
+        "path": "^packages/game/application/",
+        "pathNot": "\\.test\\.|/tests/"
+      },
+      "to": {
+        "pathNot": "^packages/game/(domain|application)/"
+      }
+    },
+    {
+      "name": "editor-domain-uses-format-contracts",
+      "severity": "error",
+      "from": {
+        "path": "^apps/campaign-editor/domain/",
+        "pathNot": "\\.test\\.|/tests/"
+      },
+      "to": {
+        "pathNot": "^(apps/campaign-editor/domain/|packages/campaign-format/)"
+      }
+    },
+    {
+      "name": "editor-application-uses-domain-and-ports",
+      "severity": "error",
+      "from": {
+        "path": "^apps/campaign-editor/application/",
+        "pathNot": "\\.test\\.|/tests/"
+      },
+      "to": {
+        "pathNot": "^(apps/campaign-editor/(domain|application)/|packages/campaign-format/)"
+      }
+    },
+    {
+      "name": "format-is-independent-of-consumers",
+      "severity": "error",
+      "from": {
+        "path": "^packages/campaign-format/"
+      },
+      "to": {
+        "path": "^(packages/game/|apps/)"
+      }
+    },
+    {
+      "name": "game-does-not-depend-on-editor",
+      "severity": "error",
+      "from": {
+        "path": "^packages/game/"
+      },
+      "to": {
+        "path": "^apps/campaign-editor/"
+      }
+    },
+    {
+      "name": "editor-uses-game-public-entries",
+      "severity": "error",
+      "from": {
+        "path": "^apps/campaign-editor/",
+        "pathNot": "/tools/"
+      },
+      "to": {
+        "path": "^packages/game/",
+        "pathNot": "^packages/game/public/(campaign-editor-api|campaign-playtest-api|game-persistence-api)\\.(js|ts)$"
+      }
+    },
+    {
+      "name": "editor-uses-public-preview-entry",
+      "severity": "error",
+      "from": {
+        "path": "^apps/campaign-editor/"
+      },
+      "to": {
+        "path": "^apps/web/",
+        "pathNot": "^apps/web/game-preview(?:-assets)?\\.(js|ts)$"
+      }
+    },
+    {
+      "name": "production-does-not-import-tests-or-tools",
+      "severity": "error",
+      "from": {
+        "path": "^(apps|packages|content)/",
+        "pathNot": "/(tools|tests)/|\\.test\\.|\\.config\\."
+      },
+      "to": {
+        "path": "(^tools/|/tests/|\\.test\\.)"
+      }
+    },
+    {
+      "name": "domain-and-application-have-no-runtime-cycles",
+      "severity": "error",
+      "from": {
+        "path": "^(packages/game|apps/campaign-editor)/(domain|application)/",
+        "pathNot": "/tests/|\\.test\\."
+      },
+      "to": {
+        "circular": true,
+        "dependencyTypesNot": ["type-only"]
+      }
+    }
+  ],
+  "options": {
+    "doNotFollow": {
+      "path": "node_modules"
+    },
+    "exclude": {
+      "path": "(^|/)(node_modules|dist|build|out|coverage|\\.output|\\.next|\\.vinext)/"
+    },
+    "tsPreCompilationDeps": true,
+    "tsConfig": {
+      "fileName": "tsconfig.json"
+    },
+    "enhancedResolveOptions": {
+      "conditionNames": ["import", "browser", "node", "default"],
+      "exportsFields": ["exports"]
+    }
+  }
+}

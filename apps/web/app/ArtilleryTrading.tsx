@@ -35,9 +35,8 @@ export default function ArtilleryTrading({
     <section aria-label="Comercio de artillería">
       <h3>Comercio de piezas</h3>
       <p>
-        El taller dispone de {shop.cash} pesos. Paga el{' '}
-        {Math.round(artilleryBuyingRate(s) * 100)}% del precio de compra y
-        permite recomprar al {artilleryTradingRules(s).resalePercent}%. Cada
+        El taller dispone de {shop.cash} pesos. Paga el {Math.round(artilleryBuyingRate(s) * 100)}%
+        del precio de compra y permite recomprar al {artilleryTradingRules(s).resalePercent}%. Cada
         pieza conserva su munición y su recarga.
       </p>
       <h4>Vender al taller</h4>
@@ -51,9 +50,7 @@ export default function ArtilleryTrading({
         return (
           <div
             key={`${offer.kind}:${offer.kind === 'stock' ? offer.model : offer.artilleryId}`}
-            data-artillery-sale={
-              offer.kind === 'stock' ? offer.model : offer.artilleryId
-            }
+            data-artillery-sale={offer.kind === 'stock' ? offer.model : offer.artilleryId}
           >
             <p>
               {spec.name} ·{' '}
@@ -89,9 +86,7 @@ export default function ArtilleryTrading({
               className="line-button"
               disabled={!quote.available}
               title={quote.reason || undefined}
-              onClick={() =>
-                dispatch({ type: 'repurchaseArtillery', artilleryId: gun.id })
-              }
+              onClick={() => dispatch({ type: 'repurchaseArtillery', artilleryId: gun.id })}
             >
               Recomprar pieza · {quote.price} pesos
             </button>

@@ -16,7 +16,9 @@ export class ActiveSectorCharacterMapper {
 
   restore(unit, sectorId) {
     const id = String(unit.operativeId ?? unit.id);
-    if (this.#campaign.operativeState[id]) return this.#personnel.character(id);
+    if (this.#campaign.operativeState[id]) {
+      return this.#personnel.character(id);
+    }
     return this.#identities.obtain('Character', id, () =>
       Character.restore({
         id,

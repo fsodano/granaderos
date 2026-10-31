@@ -84,8 +84,9 @@ function heightIntersection(height, coefficients, cell, bottom, top) {
     }
     const root = Math.sqrt(Math.max(0, discriminant));
     for (const t of [(-b - root) / (2 * a), (-b + root) / (2 * a)]) {
-      if (t >= from - epsilon && t <= to + epsilon)
-        {candidates.push(Math.max(from, Math.min(to, t)));}
+      if (t >= from - epsilon && t <= to + epsilon) {
+        candidates.push(Math.max(from, Math.min(to, t)));
+      }
     }
   }
   return candidates.length ? Math.min(...candidates) : null;
@@ -175,7 +176,9 @@ export function itemFlight(state, source, destination) {
       for (const prop of props) {
         if (prop.type === 'cart') {
           const base = surfaceHeight(state, prop);
-          if (!validHeight(base)) {return invalid();}
+          if (!validHeight(base)) {
+            return invalid();
+          }
           volumes.push({ bottom: base, top: base + (prop.obstacleHeight ?? 1.5) });
         }
       }

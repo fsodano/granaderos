@@ -13,8 +13,9 @@ export class ResidentRoutine {
   constructor(snapshot: ResidentRoutineSnapshot) {
     requireGameSecond(snapshot.startedAtSecond);
     requireGameSecond(snapshot.advancedThroughSecond);
-    if (snapshot.advancedThroughSecond < snapshot.startedAtSecond)
+    if (snapshot.advancedThroughSecond < snapshot.startedAtSecond) {
       throw new Error('A resident routine cannot precede its start.');
+    }
     this.#snapshot = Object.freeze({ ...snapshot });
   }
 
@@ -24,8 +25,9 @@ export class ResidentRoutine {
     performCollection: (atSecond: number) => void = () => {},
   ): void {
     requireGameSecond(targetSecond);
-    if (targetSecond < this.#snapshot.advancedThroughSecond)
+    if (targetSecond < this.#snapshot.advancedThroughSecond) {
       throw new Error('Resident movement time cannot move backwards.');
+    }
     const completedIntervals = Math.floor(
       (this.#snapshot.advancedThroughSecond - this.#snapshot.startedAtSecond) /
         RESIDENT_ROUTINE_INTERVAL_SECONDS,

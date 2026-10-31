@@ -78,11 +78,12 @@ export function advanceDetentionCare(campaign, roster) {
       refreshMilitaryCondition(guard);
       // A stationary enemy group and its sector snapshot describe the same guard.
       for (const group of campaign.enemyGroups ?? []) {
-        for (const unit of group.units ?? [])
-          {if (unit.id === guard.id) {
+        for (const unit of group.units ?? []) {
+          if (unit.id === guard.id) {
             unit.energy = guard.energy;
             refreshMilitaryCondition(unit);
-          }}
+          }
+        }
       }
       Object.assign(npc, {
         hp: plan.hpAfter,

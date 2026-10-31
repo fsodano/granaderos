@@ -150,8 +150,9 @@ export function approximateHeardPosition(
     throw new RangeError('Sound turn must be a nonnegative integer.');
   }
   for (const bound of [width, height]) {
-    if (bound !== undefined && (!Number.isInteger(bound) || bound < 1))
-      {throw new RangeError('Map dimensions must be positive integers.');}
+    if (bound !== undefined && (!Number.isInteger(bound) || bound < 1)) {
+      throw new RangeError('Map dimensions must be positive integers.');
+    }
   }
   if ((listener.hp !== undefined && listener.hp <= 0) || listener.unconscious) {
     return null;

@@ -5,8 +5,9 @@ export function isometricWallEdge(client, box, camera, origin, bounds) {
     client.y < box.top ||
     client.x > box.left + box.width ||
     client.y > box.top + box.height
-  )
+  ) {
     return null;
+  }
   const scale = Math.min(box.width / camera.width, box.height / camera.height),
     offsetX = (box.width - camera.width * scale) / 2,
     offsetY = (box.height - camera.height * scale) / 2;

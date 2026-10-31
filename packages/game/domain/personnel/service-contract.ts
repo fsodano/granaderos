@@ -83,7 +83,9 @@ export class ServiceContract {
   }
 
   renew(now: GameTime, term: string, durationSeconds: number, payment: Money): ServiceContract {
-    if (this.#expiresAt === null) throw new DomainRefusal(DomainRefusalCode.PermanentService);
+    if (this.#expiresAt === null) {
+      throw new DomainRefusal(DomainRefusalCode.PermanentService);
+    }
     if (
       now.seconds < this.#startedAt.seconds ||
       !Number.isSafeInteger(durationSeconds) ||

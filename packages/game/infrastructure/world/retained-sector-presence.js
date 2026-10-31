@@ -34,12 +34,19 @@ export class RetainedSectorPresence {
   }
 
   includes(unit, field) {
-    if (unit.departure || unit.fled) return false;
-    if (unit.side !== 'player' || unit.hp <= 0) return true;
-    const characterId = String(unit.operativeId ?? unit.id);
-    if (this.#travellingCharacters.has(characterId) || this.#visitingCharacters.has(characterId))
+    if (unit.departure || unit.fled) {
       return false;
-    if (unit.militia) return this.#garrisonLocations.get(characterId) === field.sectorId;
+    }
+    if (unit.side !== 'player' || unit.hp <= 0) {
+      return true;
+    }
+    const characterId = String(unit.operativeId ?? unit.id);
+    if (this.#travellingCharacters.has(characterId) || this.#visitingCharacters.has(characterId)) {
+      return false;
+    }
+    if (unit.militia) {
+      return this.#garrisonLocations.get(characterId) === field.sectorId;
+    }
     const character = this.#campaign.operativeState?.[characterId];
     const location =
       character?.location ??

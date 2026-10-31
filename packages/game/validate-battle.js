@@ -131,14 +131,17 @@ export function validateBattleSnapshot(value, context = null) {
     need(number(s.bleedSeconds, 0, 6) && s.bleedSeconds < 6, 'reloj de hemorragia');
   }
   for (const key of ['elapsedSeconds', 'syncedSeconds', 'startSeconds']) {
-    if (s[key] !== undefined) {need(Number.isSafeInteger(s[key]) && s[key] >= 0, 'reloj táctico');}
+    if (s[key] !== undefined) {
+      need(Number.isSafeInteger(s[key]) && s[key] >= 0, 'reloj táctico');
+    }
   }
   if (s.roundTimeCharged !== undefined) {
     need(typeof s.roundTimeCharged === 'boolean', 'turno del reloj');
   }
   for (const l of s.lights ?? []) {
-    if (l.remainingSeconds !== undefined)
-      {need(Number.isFinite(l.remainingSeconds) && l.remainingSeconds >= 0, 'duración de luz');}
+    if (l.remainingSeconds !== undefined) {
+      need(Number.isFinite(l.remainingSeconds) && l.remainingSeconds >= 0, 'duración de luz');
+    }
   }
   for (const u of s.units ?? []) {
     validateTraining(u);
@@ -186,10 +189,14 @@ export function validateBattleSnapshot(value, context = null) {
       'terreno',
     );
     for (const key of ['blocksSight', 'open', 'locked']) {
-      if (t[key] !== undefined) {need(typeof t[key] === 'boolean', 'puertas');}
+      if (t[key] !== undefined) {
+        need(typeof t[key] === 'boolean', 'puertas');
+      }
     }
     for (const key of ['buildingId', 'roomId', 'doorId']) {
-      if (t[key] != null) {need(text(t[key]), 'habitaciones');}
+      if (t[key] != null) {
+        need(text(t[key]), 'habitaciones');
+      }
     }
   }
   if (s.wallGeometryVersion !== undefined) {
@@ -238,7 +245,9 @@ export function validateBattleSnapshot(value, context = null) {
       );
     }
     for (const field of ['blocked', 'blocksSight', 'open', 'locked']) {
-      if (edge[field] !== undefined) {need(typeof edge[field] === 'boolean', 'estado de paredes');}
+      if (edge[field] !== undefined) {
+        need(typeof edge[field] === 'boolean', 'estado de paredes');
+      }
     }
     if (edge.cover !== undefined) {
       need(number(edge.cover, 0, 100), 'cobertura de paredes');
@@ -319,12 +328,14 @@ export function validateBattleSnapshot(value, context = null) {
           'salidas',
         );
         seenExits.add(exit.id);
-        if (key === 'enemyExits')
-          {need(
+        if (key === 'enemyExits') {
+          need(
             exit.id === `enemy:${exit.edge}` && exit.destination === '__offmap_enemy__',
             'salidas enemigas',
-          );}
-        else {need(validEntry(exit.entryEdge, exit.entryAnchor), 'llegada de salida');}
+          );
+        } else {
+          need(validEntry(exit.entryEdge, exit.entryAnchor), 'llegada de salida');
+        }
       }
     }
   }
@@ -360,8 +371,8 @@ export function validateBattleSnapshot(value, context = null) {
     need(npc.nervousIsolationWarned === undefined, 'aviso de aislamiento de civiles');
   }
   for (const u of s.units ?? []) {
-    if (Object.hasOwn(u, 'nervousIsolationWarned'))
-      {need(
+    if (Object.hasOwn(u, 'nervousIsolationWarned')) {
+      need(
         u.nervousIsolationWarned === true &&
           u.side === 'player' &&
           !u.militia &&
@@ -371,14 +382,15 @@ export function validateBattleSnapshot(value, context = null) {
           String(Number(u.id)) === u.id &&
           u.abilities?.includes('nervous_isolation'),
         'aviso de aislamiento',
-      );}
+      );
+    }
   }
   for (const npc of s.npcs ?? []) {
     need(npc.enclosedRoomFearWarned === undefined, 'aviso de temor de civiles');
   }
   for (const u of s.units ?? []) {
-    if (Object.hasOwn(u, 'enclosedRoomFearWarned'))
-      {need(
+    if (Object.hasOwn(u, 'enclosedRoomFearWarned')) {
+      need(
         u.enclosedRoomFearWarned === true &&
           u.side === 'player' &&
           !u.militia &&
@@ -388,7 +400,8 @@ export function validateBattleSnapshot(value, context = null) {
           String(Number(u.id)) === u.id &&
           u.abilities?.includes('enclosed_room_fear'),
         'aviso de temor a lugares cerrados',
-      );}
+      );
+    }
   }
   for (const u of s.units ?? []) {
     validateServiceObjection(u);
@@ -481,7 +494,9 @@ export function validateBattleSnapshot(value, context = null) {
       inventory: {},
     };
     for (const [k, v] of Object.entries(defaults)) {
-      if (u[k] === undefined) {u[k] = v;}
+      if (u[k] === undefined) {
+        u[k] = v;
+      }
     }
     need(
       number(u.maxHp, 1, 1000) && number(u.hp, 0, u.maxHp) && number(u.ap, 0, 100 + AP_CARRY_LIMIT),
@@ -543,7 +558,9 @@ export function validateBattleSnapshot(value, context = null) {
       u.weaponDropped,
     );
     for (const k of ['ammo', 'rations', 'torches', 'boleadoras', 'medkits', 'strengthTraining']) {
-      if (u[k] !== undefined) {need(integer(u[k], 0, 1000000), 'suministros');}
+      if (u[k] !== undefined) {
+        need(integer(u[k], 0, 1000000), 'suministros');
+      }
     }
     validateRepairReserve(u);
     if (u.facing === undefined) {
@@ -575,7 +592,9 @@ export function validateBattleSnapshot(value, context = null) {
       need(typeof u.patrol === 'boolean', 'patrulla');
     }
     for (const k of ['patrolTurn', 'lastInvestigatedTurn']) {
-      if (u[k] !== undefined) {need(integer(u[k], 0, 1e9), 'reloj de patrulla');}
+      if (u[k] !== undefined) {
+        need(integer(u[k], 0, 1e9), 'reloj de patrulla');
+      }
     }
     if (u.assaultPatrol !== undefined) {
       need(
@@ -599,7 +618,9 @@ export function validateBattleSnapshot(value, context = null) {
       'poncho',
       'overwatch',
     ]) {
-      if (u[k] !== undefined) {need(typeof u[k] === 'boolean', 'estados del soldado');}
+      if (u[k] !== undefined) {
+        need(typeof u[k] === 'boolean', 'estados del soldado');
+      }
     }
     need(u.weaponMode === undefined || ['fire', 'melee'].includes(u.weaponMode), 'modo del arma');
     need(
@@ -647,7 +668,9 @@ export function validateBattleSnapshot(value, context = null) {
       );
     }
     for (const key of ['leadership', 'wisdom', 'dexterity', 'mechanical', 'explosives', 'maxAP']) {
-      if (u[key] !== undefined) {need(number(u[key], 0, 100), 'atributos adicionales');}
+      if (u[key] !== undefined) {
+        need(number(u[key], 0, 100), 'atributos adicionales');
+      }
     }
     for (const key of [
       'reactionSpent',
@@ -658,7 +681,9 @@ export function validateBattleSnapshot(value, context = null) {
       'braceTurn',
       'momentum',
     ]) {
-      if (u[key] !== undefined) {need(number(u[key], 0, 1000000000), 'iniciativa');}
+      if (u[key] !== undefined) {
+        need(number(u[key], 0, 1000000000), 'iniciativa');
+      }
     }
     if (u.lastDirection != null) {
       need(text(u.lastDirection), 'dirección');
@@ -703,8 +728,9 @@ export function validateBattleSnapshot(value, context = null) {
       need(u.activeSupply === undefined, 'pertrecho fuera de mano');
     }
     for (const k of ['weight', 'carryWeight', 'ridingSkill']) {
-      if (u[k] !== undefined)
-        {need(number(u[k], 0, k === 'ridingSkill' ? 100 : 100000), 'peso o equitación');}
+      if (u[k] !== undefined) {
+        need(number(u[k], 0, k === 'ridingSkill' ? 100 : 100000), 'peso o equitación');
+      }
     }
     if (u.mount !== undefined) {
       need(
@@ -747,10 +773,12 @@ export function validateBattleSnapshot(value, context = null) {
           !propBlocksAt(s, receipt.x, receipt.y),
         'paso de salida',
       );
-      if (receipt.mountId !== null)
-        {need(u.mount?.id === receipt.mountId, 'identidad de montura salida');}
-      if (u.mounted && u.mount?.id)
-        {need(receipt.mountId === u.mount.id, 'montura que cruzó la salida');}
+      if (receipt.mountId !== null) {
+        need(u.mount?.id === receipt.mountId, 'identidad de montura salida');
+      }
+      if (u.mounted && u.mount?.id) {
+        need(receipt.mountId === u.mount.id, 'montura que cruzó la salida');
+      }
     }
   }
   if (s.status === 'retreat') {
@@ -956,7 +984,9 @@ export function validateBattleSnapshot(value, context = null) {
     need(Array.isArray(s[key]) && s[key].length <= 2000, key);
   }
   for (const k of ['night', 'sectorCleared']) {
-    if (s[k] !== undefined) {need(typeof s[k] === 'boolean', 'situación táctica');}
+    if (s[k] !== undefined) {
+      need(typeof s[k] === 'boolean', 'situación táctica');
+    }
   }
   for (const surface of s.upperSurfaces ?? []) {
     validateStructureDamage(surface);
@@ -1134,8 +1164,9 @@ export function validateBattleSnapshot(value, context = null) {
     }
   }
   for (const value of [...s.units, ...s.groundItems, ...s.droppedWeapons, ...s.props]) {
-    if (value.knownToPlayer !== undefined)
-      {need(typeof value.knownToPlayer === 'boolean', 'conocimiento del inventario');}
+    if (value.knownToPlayer !== undefined) {
+      need(typeof value.knownToPlayer === 'boolean', 'conocimiento del inventario');
+    }
   }
   const groundIds = new Set();
   for (const g of s.groundItems) {
@@ -1223,7 +1254,9 @@ export function validateBattleSnapshot(value, context = null) {
       }
     }
     for (const key of ['buildingId', 'roomId']) {
-      if (p[key] != null) {need(text(p[key]), 'habitación del mobiliario');}
+      if (p[key] != null) {
+        need(text(p[key]), 'habitación del mobiliario');
+      }
     }
   }
   for (const d of s.decor) {

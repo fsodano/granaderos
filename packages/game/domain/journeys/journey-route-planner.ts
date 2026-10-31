@@ -24,8 +24,9 @@ export class JourneyRoutePlanner {
     destination: string,
     waypoints: readonly string[],
   ): RedirectJourneyPlan {
-    if (!this.#network.locationExists(destination))
+    if (!this.#network.locationExists(destination)) {
       throw new JourneyRefusal(JourneyRefusalCode.JourneyDestinationNotFound);
+    }
     this.#validateWaypointLimit(waypoints);
     const snapshot = journey.snapshot();
     if (this.#network.isHostile(destination)) {
@@ -44,14 +45,17 @@ export class JourneyRoutePlanner {
     }
     const candidates: Array<RedirectJourneyPlan & { seconds: number }> = [];
     for (const endpoint of snapshot.route.slice(0, 2)) {
-      if (this.#network.isHostile(endpoint)) continue;
+      if (this.#network.isHostile(endpoint)) {
+        continue;
+      }
       const route = this.#routeThroughStops(endpoint, [...waypoints, destination], snapshot.mode);
       if (
         !route ||
         route.length >= JourneyLimits.MaximumRouteLocations ||
         !this.#network.permitsRoute(route, snapshot.mode)
-      )
+      ) {
         continue;
+      }
       const currentSegmentSeconds =
         endpoint === snapshot.route[0]
           ? snapshot.positionSeconds
@@ -73,7 +77,9 @@ export class JourneyRoutePlanner {
       (left, right) => left.seconds - right.seconds || left.through.localeCompare(right.through),
     );
     const selected = candidates[0];
-    if (!selected) throw new JourneyRefusal(JourneyRefusalCode.JourneyRouteUnavailable);
+    if (!selected) {
+      throw new JourneyRefusal(JourneyRefusalCode.JourneyRouteUnavailable);
+    }
     const { through, route, purpose } = selected;
     return { through, route, purpose };
   }
@@ -92,10 +98,13 @@ export class JourneyRoutePlanner {
     const route = [origin];
     let previousSector = origin;
     for (const destination of stops) {
-      if (!this.#network.locationExists(destination) || this.#network.isHostile(destination))
+      if (!this.#network.locationExists(destination) || this.#network.isHostile(destination)) {
         return null;
+      }
       const leg = this.#network.findRoute(previousSector, destination, mode);
-      if (!leg?.length) return null;
+      if (!leg?.length) {
+        return null;
+      }
       route.push(...leg.slice(1));
       previousSector = route.at(-1) ?? previousSector;
     }

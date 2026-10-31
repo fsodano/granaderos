@@ -568,7 +568,7 @@
   cursor: pointer;
   text-decoration: none;
 }
-.editor-export-actions a {
+.editor-export-dialog .editor-export-actions a {
   background: var(--editor-accent, #69dcc5);
   color: #082823;
   font-weight: 650;

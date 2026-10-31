@@ -12,9 +12,12 @@ export class SnapshotEnterSectorRepository {
     this.#snapshot = this.#resuming
       ? structuredClone(request.resumeSnapshot)
       : buildSectorEntrySnapshot(request, previous, options);
-    if (this.#resuming) validateBattleSnapshot(this.#snapshot, request);
-    if (this.#snapshot.sectorId !== request.sector)
+    if (this.#resuming) {
+      validateBattleSnapshot(this.#snapshot, request);
+    }
+    if (this.#snapshot.sectorId !== request.sector) {
       throw new Error('sector-entry-location-mismatch');
+    }
     this.#initializePerception = initializePerception;
   }
 
@@ -35,7 +38,9 @@ export class SnapshotEnterSectorRepository {
   }
 
   commitSectorEntry(session, expectedRevision) {
-    if (expectedRevision !== this.#revision) throw new Error('stale-sector-entry');
+    if (expectedRevision !== this.#revision) {
+      throw new Error('stale-sector-entry');
+    }
     const snapshot = structuredClone(this.#snapshot);
     writeSectorSession(snapshot, session);
     const admitted =

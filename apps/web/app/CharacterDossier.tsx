@@ -10,12 +10,7 @@ import { sitePath } from '../lib/site-path.js';
 import { weaponSpecification } from '../../../packages/game/weapon-definition.ts';
 import TrainingProgress from './TrainingProgress';
 import { portraitFor } from '../lib/portraits';
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import {
   ATTRIBUTE_LABELS,
   characterProfile,
@@ -112,9 +107,7 @@ export default function CharacterDossier({
                     ? 'Servicio permanente'
                     : `${quote?.daily ?? quote?.price} pesos por día`}
                 </p>
-                {o.classId && (
-                  <p>Clase: {classes.find((c) => c.id === o.classId)?.name}</p>
-                )}
+                {o.classId && <p>Clase: {classes.find((c) => c.id === o.classId)?.name}</p>}
                 <p>
                   Grado {o.level || 1} · {o.xp || 0} experiencia
                 </p>
@@ -125,9 +118,7 @@ export default function CharacterDossier({
                 <div key={key}>
                   <span>{ATTRIBUTE_LABELS[key]}</span>
                   <strong>
-                    {key === 'maxHp'
-                      ? `${Math.round(record?.hp ?? o.maxHp)} / ${o.maxHp}`
-                      : o[key]}
+                    {key === 'maxHp' ? `${Math.round(record?.hp ?? o.maxHp)} / ${o.maxHp}` : o[key]}
                   </strong>
                   <meter
                     min="0"
@@ -139,33 +130,24 @@ export default function CharacterDossier({
               ))}
             </div>
             <p className="dossier-stat-note">
-              Pólvora y artillería: manejo de municiones y servicio de las
-              piezas de campaña.
+              Pólvora y artillería: manejo de municiones y servicio de las piezas de campaña.
             </p>
             <TrainingProgress
               unit={{
                 ...o,
-                ...(record.skillPractice
-                  ? { skillPractice: record.skillPractice }
-                  : {}),
-                ...(record.trainedStats
-                  ? { trainedStats: record.trainedStats }
-                  : {}),
+                ...(record.skillPractice ? { skillPractice: record.skillPractice } : {}),
+                ...(record.trainedStats ? { trainedStats: record.trainedStats } : {}),
               }}
             />
             <h3>Especialidades</h3>
             <div className="dossier-skills">
               {profile.skills.map((skill: string) => (
-                <span key={skill}>
-                  {traits.find((t) => t.id === skill)?.name || skill}
-                </span>
+                <span key={skill}>{traits.find((t) => t.id === skill)?.name || skill}</span>
               ))}
             </div>
-            {characterAbilityDescriptions(o).map(
-              (ability: { id: string; description: string }) => (
-                <p key={ability.id}>{ability.description}</p>
-              ),
-            )}
+            {characterAbilityDescriptions(o).map((ability: { id: string; description: string }) => (
+              <p key={ability.id}>{ability.description}</p>
+            ))}
             <h3>Equipo personal</h3>
             <DossierEquipment operative={o} record={record} />
             <h3>Hoja de servicio</h3>
@@ -178,9 +160,8 @@ export default function CharacterDossier({
                 <ul>
                   {relationships.map((relationship) => (
                     <li key={relationship.character}>
-                      No acepta contratarse ni renovar mientras{' '}
-                      {relationship.rivalName} siga en servicio.{' '}
-                      {relationship.reason}
+                      No acepta contratarse ni renovar mientras {relationship.rivalName} siga en
+                      servicio. {relationship.reason}
                     </li>
                   ))}
                 </ul>
@@ -188,17 +169,10 @@ export default function CharacterDossier({
               </>
             )}
             <ServiceObjectionNotice
-              reason={serviceObjectionReason(
-                state ?? { operativeState: {} },
-                o,
-              )}
+              reason={serviceObjectionReason(state ?? { operativeState: {} }, o)}
             />
             <ContractMoraleNotice status={moraleStatus} />
-            <PreferredCompanionsSummary
-              {...(state ? { state } : {})}
-              operative={o}
-              details
-            />
+            <PreferredCompanionsSummary {...(state ? { state } : {})} operative={o} details />
             <blockquote>«{profile.speech['hired']}»</blockquote>
             <small>Personalidad y diálogo dramatizados para el juego.</small>
             <button className="gold-button" onClick={onClose}>

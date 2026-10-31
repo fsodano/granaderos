@@ -134,7 +134,9 @@ function poolSources(snapshot, state) {
     if (body.knownToPlayer && body.hp <= 0 && !body.departure && !body.fled) {
       const disposition = snapshot.returnLedger?.entries?.find((e) => e.unitId === body.id),
         owner = sceneAnchorFor(state ?? snapshot, snapshot.sectorId);
-      if (disposition && (disposition.kind !== 'dead' || disposition.sector !== owner)) {continue;}
+      if (disposition && (disposition.kind !== 'dead' || disposition.sector !== owner)) {
+        continue;
+      }
       const items = [
         ...Object.keys(SUPPLY_ITEMS).filter(
           (key) => key !== 'ammo' || body.ammunitionVersion !== 2,
@@ -146,11 +148,12 @@ function poolSources(snapshot, state) {
         ...(body.equipmentCursor ? ['cursor'] : []),
         ...Object.keys(body.inventory ?? {}).map((key) => `inventory:${key}`),
       ];
-      for (const item of items)
-        {if (itemQuantity(body, item) > 0) {
+      for (const item of items) {
+        if (itemQuantity(body, item) > 0) {
           const { stack } = extractItemQuantity(body, item, itemQuantity(body, item));
           add(JSON.stringify(['body', body.id, item]), body, stack, { kind: 'body', item });
-        }}
+        }
+      }
     }
   }
   for (const chest of snapshot.props ?? []) {
@@ -161,8 +164,9 @@ function poolSources(snapshot, state) {
       !chest.locked &&
       !chest.trap?.armed
     ) {
-      for (const [index, stack] of (chest.contents ?? []).entries())
-        {add(`container:${chest.id}:${index}`, chest, copy(stack), { kind: 'container', index });}
+      for (const [index, stack] of (chest.contents ?? []).entries()) {
+        add(`container:${chest.id}:${index}`, chest, copy(stack), { kind: 'container', index });
+      }
     }
   }
   return rows;
@@ -877,7 +881,9 @@ export function moveSectorItem(s, action, roster) {
   const record = s.operativeState[op.id];
   returnEquipment(s, op.id, next);
   for (const key of fields) {
-    if (next[key] !== undefined) {record[key] = copy(next[key]);}
+    if (next[key] !== undefined) {
+      record[key] = copy(next[key]);
+    }
   }
   const source =
     direction === 'arrange' && action.kind === 'equipment'

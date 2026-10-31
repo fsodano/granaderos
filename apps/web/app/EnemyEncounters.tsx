@@ -7,10 +7,7 @@ import type {
 import { prisonerStatus } from '../../../packages/game/prisoner-custody.js';
 import { useState } from 'react';
 import { rosterFor } from '../../../packages/game/campaign.js';
-import {
-  localDefenderIds,
-  retreatDestinations,
-} from '../../../packages/game/enemy-groups.js';
+import { localDefenderIds, retreatDestinations } from '../../../packages/game/enemy-groups.js';
 import {
   enemyIntelligenceReports,
   INTELLIGENCE_LIFETIME,
@@ -25,9 +22,7 @@ const duration = (hours: number) => {
     m = Math.floor((seconds % 3600) / 60),
     s = seconds % 60;
   return (
-    [h ? `${h} h` : '', m ? `${m} min` : '', s ? `${s} s` : '']
-      .filter(Boolean)
-      .join(' ') || '0 h'
+    [h ? `${h} h` : '', m ? `${m} min` : '', s ? `${s} s` : ''].filter(Boolean).join(' ') || '0 h'
   );
 };
 const captureClock = (hour: number, second: number) =>
@@ -40,8 +35,7 @@ export default function EnemyEncounters({
   dispatch: (a: CampaignAction) => void;
 }) {
   const enemyName = campaignFactionName(s, 'royalist');
-  const place = (id: string) =>
-    campaignSectors(s).find((sector) => sector.id === id)?.name ?? id;
+  const place = (id: string) => campaignSectors(s).find((sector) => sector.id === id)?.name ?? id;
   const [destination, setDestination] = useState('');
   const reports = enemyIntelligenceReports(s);
   const encounter = s.pendingEncounter,
@@ -52,29 +46,21 @@ export default function EnemyEncounters({
   const captives = rosterFor(s).filter((o) => s.operativeState[o.id]?.captured),
     report = s.encounterHistory?.[0];
   return (
-    <section
-      className="enemy-encounters"
-      aria-label="Movimientos y encuentros enemigos"
-    >
+    <section className="enemy-encounters" aria-label="Movimientos y encuentros enemigos">
       <h2>Partes del frente</h2>
       {group && (
-        <section
-          className="encounter-decision"
-          aria-label="Respuesta al encuentro"
-        >
+        <section className="encounter-decision" aria-label="Respuesta al encuentro">
           <h3>Contacto en {place(group.target)}</h3>
           <p>
             {contactStrength == null
               ? 'Fuerza enemiga por confirmar'
               : `${contactStrength} combatientes observados · ${enemyName}`}{' '}
             · {localDefenderIds(s, group.target).length} combatientes y{' '}
-            {s.sectors[group.target]?.militia.reduce((a, b) => a + b, 0) ?? 0}{' '}
-            milicianos presentes.
+            {s.sectors[group.target]?.militia.reduce((a, b) => a + b, 0) ?? 0} milicianos presentes.
           </p>
           <p>
-            El reloj está detenido. La resolución automática usa sus armas,
-            municiones y salud. Los milicianos permanecen para defender el
-            sector si los combatientes se retiran.
+            El reloj está detenido. La resolución automática usa sus armas, municiones y salud. Los
+            milicianos permanecen para defender el sector si los combatientes se retiran.
           </p>
           <div className="encounter-actions">
             <button
@@ -106,10 +92,7 @@ export default function EnemyEncounters({
             <div className="encounter-retreat">
               <label>
                 Destino de retirada
-                <select
-                  value={target}
-                  onChange={(e) => setDestination(e.target.value)}
-                >
+                <select value={target} onChange={(e) => setDestination(e.target.value)}>
                   {exits.map((id: string) => (
                     <option key={id} value={id}>
                       {place(id)}
@@ -133,23 +116,19 @@ export default function EnemyEncounters({
             </div>
           ) : (
             <p>
-              Sin ruta de retirada para los combatientes. Si sobreviven a una
-              derrota sin salida, quedarán prisioneros.
+              Sin ruta de retirada para los combatientes. Si sobreviven a una derrota sin salida,
+              quedarán prisioneros.
             </p>
           )}
         </section>
       )}
       <p>
-        Los combatientes despiertos y aptos observan su sector; las milicias
-        también informan sobre sectores vecinos. Los partes se conservan hasta{' '}
-        {INTELLIGENCE_LIFETIME} horas. Una guarnición enemiga puede ocultar su
-        número.
+        Los combatientes despiertos y aptos observan su sector; las milicias también informan sobre
+        sectores vecinos. Los partes se conservan hasta {INTELLIGENCE_LIFETIME} horas. Una
+        guarnición enemiga puede ocultar su número.
       </p>
       {reports.length === 0 ? (
-        <p>
-          Sin partes recientes. No se conocen las rutas ni los horarios del
-          enemigo.
-        </p>
+        <p>Sin partes recientes. No se conocen las rutas ni los horarios del enemigo.</p>
       ) : (
         <ul className="enemy-movements">
           {reports.map((r) => (
@@ -187,9 +166,8 @@ export default function EnemyEncounters({
         <div className="encounter-prisoners">
           <h3>Prisioneros</h3>
           <p>
-            Liberá el sector para recuperar a los combatientes. Sus contratos
-            quedan suspendidos durante el cautiverio. La atención en cautiverio
-            consume vendas incautadas.
+            Liberá el sector para recuperar a los combatientes. Sus contratos quedan suspendidos
+            durante el cautiverio. La atención en cautiverio consume vendas incautadas.
           </p>
           <ul>
             {captives.map((o) => {
@@ -199,12 +177,11 @@ export default function EnemyEncounters({
               }
               return (
                 <li key={o.id}>
-                  <strong>{p.name}</strong> · {place(p.sector)} · {p.hp}/
-                  {p.maxHp} salud
+                  <strong>{p.name}</strong> · {place(p.sector)} · {p.hp}/{p.maxHp} salud
                   <p>
                     Prisionero desde el día {1 + Math.floor(p.capturedAt / 24)},{' '}
-                    {captureClock(p.capturedAt, p.capturedAtSecond)} ·{' '}
-                    {duration(p.heldHours)} en cautiverio.
+                    {captureClock(p.capturedAt, p.capturedAtSecond)} · {duration(p.heldHours)} en
+                    cautiverio.
                   </p>
                   <p>
                     {p.serviceHours === undefined
@@ -223,9 +200,8 @@ export default function EnemyEncounters({
                   </p>
                   {p.careDressings > 0 && p.lastCareHour !== null && (
                     <p>
-                      Atención en cautiverio: {p.careDressings} venda(s) usadas.
-                      Última atención: día {1 + Math.floor(p.lastCareHour / 24)}
-                      , {p.lastCareHour % 24}:00.
+                      Atención en cautiverio: {p.careDressings} venda(s) usadas. Última atención:
+                      día {1 + Math.floor(p.lastCareHour / 24)}, {p.lastCareHour % 24}:00.
                     </p>
                   )}
                 </li>

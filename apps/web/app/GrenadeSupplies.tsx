@@ -43,8 +43,8 @@ export default function GrenadeSupplies({ state, operative, dispatch }: Props) {
       </button>
       {!offer.available && <p>{offer.reason}</p>}
       <small>
-        Colocá una granada en la mano principal. Botón derecho o F prepara el
-        lanzamiento; clic en una casilla la arroja.
+        Colocá una granada en la mano principal. Botón derecho o F prepara el lanzamiento; clic en
+        una casilla la arroja.
       </small>
     </section>
   );

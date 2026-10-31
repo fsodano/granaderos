@@ -57,8 +57,9 @@ export class CombatSession {
       typeof snapshot.contactThisRound !== 'boolean' ||
       typeof snapshot.roundTimeCharged !== 'boolean' ||
       !['player', 'enemy'].includes(snapshot.firstSide)
-    )
+    ) {
       throw new CombatRefusal(CombatRefusalCode.InvalidCombatSession);
+    }
     this.#id = snapshot.id;
     this.#round = snapshot.round;
     this.#phase = snapshot.phase;
@@ -101,7 +102,9 @@ export class CombatSession {
   }
 
   recordVisualContact(): void {
-    if (!this.active) return;
+    if (!this.active) {
+      return;
+    }
     this.#contactThisRound = true;
     this.#quietRounds = 0;
   }
@@ -116,18 +119,24 @@ export class CombatSession {
     this.#changePhase(CombatPhase.Interrupt);
   }
   #changePhase(phase: CombatPhaseValue): void {
-    if (!this.active) throw new CombatRefusal(CombatRefusalCode.CombatAlreadyCompleted);
+    if (!this.active) {
+      throw new CombatRefusal(CombatRefusalCode.CombatAlreadyCompleted);
+    }
     this.#phase = phase;
   }
 
   chargeRoundTime(): boolean {
-    if (this.#roundTimeCharged) return false;
+    if (this.#roundTimeCharged) {
+      return false;
+    }
     this.#roundTimeCharged = true;
     return true;
   }
 
   finishRound(visualContact: boolean): void {
-    if (!this.active) throw new CombatRefusal(CombatRefusalCode.CombatAlreadyCompleted);
+    if (!this.active) {
+      throw new CombatRefusal(CombatRefusalCode.CombatAlreadyCompleted);
+    }
     this.#quietRounds =
       visualContact || this.#contactThisRound
         ? 0
@@ -139,7 +148,9 @@ export class CombatSession {
   }
 
   allowsExploration(eligibility: ExplorationEligibility): boolean {
-    if (this.#outcome === CombatOutcome.Victory) return true;
+    if (this.#outcome === CombatOutcome.Victory) {
+      return true;
+    }
     return (
       this.active &&
       this.#phase === CombatPhase.Player &&
@@ -151,10 +162,12 @@ export class CombatSession {
   }
 
   finish(outcome: Exclude<CombatOutcomeValue, 'active'>): void {
-    if (!Object.values(CombatOutcome).includes(outcome))
+    if (!Object.values(CombatOutcome).includes(outcome)) {
       throw new CombatRefusal(CombatRefusalCode.InvalidCombatSession);
-    if (!this.active && this.#outcome !== outcome)
+    }
+    if (!this.active && this.#outcome !== outcome) {
       throw new CombatRefusal(CombatRefusalCode.CombatAlreadyCompleted);
+    }
     this.#outcome = outcome;
     this.#phase = CombatPhase.Player;
   }

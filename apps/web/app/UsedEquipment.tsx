@@ -3,10 +3,7 @@ import type {
   CampaignAction,
 } from '../../../packages/game/public/campaign-types.ts';
 import { isSupplied } from '../../../packages/game/campaign.js';
-import {
-  usedEquipmentOffers,
-  equipmentLabel,
-} from '../../../packages/game/equipment.js';
+import { usedEquipmentOffers, equipmentLabel } from '../../../packages/game/equipment.js';
 import { FittingReadout } from './JA2Bayonet';
 export default function UsedEquipment({
   state,
@@ -18,24 +15,19 @@ export default function UsedEquipment({
   const offers = usedEquipmentOffers(state, isSupplied);
   return (
     <details className="armory-resale" open={offers.length > 0}>
-      <summary>
-        Armas usadas del comerciante · {offers.length} ejemplares
-      </summary>
+      <summary>Armas usadas del comerciante · {offers.length} ejemplares</summary>
       <p>
-        Las armas vendidas quedan en esta maestranza. El precio de compra es el
-        80% del valor nuevo, ajustado por el estado de cada pieza. Se entregan
-        en su estado actual, sin reparación ni cartuchos adicionales.
+        Las armas vendidas quedan en esta maestranza. El precio de compra es el 80% del valor nuevo,
+        ajustado por el estado de cada pieza. Se entregan en su estado actual, sin reparación ni
+        cartuchos adicionales.
       </p>
-      {!offers.length && (
-        <p>No hay armas usadas disponibles en esta localidad.</p>
-      )}
+      {!offers.length && <p>No hay armas usadas disponibles en esta localidad.</p>}
       {offers.map(({ instance, quote, reason, available, action }) => (
         <article key={instance.id}>
           <div>
             <strong>{equipmentLabel(instance)}</strong>
             <small>
-              Estado {instance.condition}%
-              {instance.jammed ? ' · Fallo de chispa' : ''}
+              Estado {instance.condition}%{instance.jammed ? ' · Fallo de chispa' : ''}
             </small>
             <FittingReadout fitting={instance.fittings?.['bayonet']} />
             {quote.items.length > 1 && (

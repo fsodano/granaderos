@@ -10,7 +10,7 @@ import {
   migrateMapDocument,
   BUILDING_TYPES,
   buildBuilding,
-} from '../../../packages/game/public/campaign-editor-api.js';
+} from '../../../packages/game/public/campaign-editor-api.ts';
 
 export const sectorMapGeometry = Object.freeze({
   wallEdgeKey,

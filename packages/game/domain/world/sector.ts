@@ -35,8 +35,9 @@ export type SectorSnapshot = Readonly<{
 }>;
 
 function requireIdentity(value: string): void {
-  if (typeof value !== 'string' || value.length === 0)
+  if (typeof value !== 'string' || value.length === 0) {
     throw new Error('A sector reference requires an identity.');
+  }
 }
 
 export class Sector {
@@ -60,13 +61,24 @@ export class Sector {
     this.#id = snapshot.id;
     this.#environment = Object.freeze({ ...snapshot.environment });
     this.#removedCharacterIds = new Set(snapshot.removedCharacterIds);
-    if (this.#removedCharacterIds.size !== snapshot.removedCharacterIds.length)
+    if (this.#removedCharacterIds.size !== snapshot.removedCharacterIds.length) {
       throw new Error('A removed character cannot appear twice.');
-    for (const id of this.#removedCharacterIds) requireIdentity(id);
-    for (const resident of snapshot.residents) this.admitResident(resident);
-    for (const participant of snapshot.participants) this.admitParticipant(participant);
-    for (const corpse of snapshot.corpses) this.admitCorpse(corpse);
-    for (const object of snapshot.objects) this.admitObject(object);
+    }
+    for (const id of this.#removedCharacterIds) {
+      requireIdentity(id);
+    }
+    for (const resident of snapshot.residents) {
+      this.admitResident(resident);
+    }
+    for (const participant of snapshot.participants) {
+      this.admitParticipant(participant);
+    }
+    for (const corpse of snapshot.corpses) {
+      this.admitCorpse(corpse);
+    }
+    for (const object of snapshot.objects) {
+      this.admitObject(object);
+    }
   }
 
   get id(): string {
@@ -85,11 +97,13 @@ export class Sector {
     reference: SectorCharacterReference,
     members: Map<string, SectorCharacterReference>,
   ): void {
-    for (const id of [reference.characterId, reference.localId, reference.custodianId])
+    for (const id of [reference.characterId, reference.localId, reference.custodianId]) {
       requireIdentity(id);
+    }
     this.#requirePosition(reference.position);
-    if (reference.custodianId !== reference.characterId)
+    if (reference.custodianId !== reference.characterId) {
       throw new Error('A sector character must retain its canonical inventory custodian.');
+    }
     if (
       typeof reference.alive !== 'boolean' ||
       this.#residents.has(reference.characterId) ||
@@ -118,8 +132,9 @@ export class Sector {
     position: SectorPosition,
     expectedCustodianId: string,
   ): void {
-    if (destination.id === this.id)
+    if (destination.id === this.id) {
       throw new Error('A resident sector transfer requires another sector.');
+    }
     const resident = this.#resident(characterId, expectedCustodianId);
     const nextDestination = new Sector(destination.toSnapshot());
     nextDestination.admitResident({ ...resident, position });
@@ -129,13 +144,16 @@ export class Sector {
 
   #resident(characterId: string, expectedCustodianId: string): SectorCharacterReference {
     const resident = this.#residents.get(characterId);
-    if (!resident || !resident.alive || resident.custodianId !== expectedCustodianId)
+    if (!resident || !resident.alive || resident.custodianId !== expectedCustodianId) {
       throw new Error('The resident is absent, dead, or has different custody.');
+    }
     return resident;
   }
 
   admitCorpse(corpse: SectorCorpseReference): void {
-    for (const id of [corpse.id, corpse.characterId, corpse.localId]) requireIdentity(id);
+    for (const id of [corpse.id, corpse.characterId, corpse.localId]) {
+      requireIdentity(id);
+    }
     this.#requirePosition(corpse.position);
     this.#requireItemIds(corpse.itemIds);
     const character =
@@ -158,8 +176,9 @@ export class Sector {
     this.#requirePosition(object.position);
     this.#requireItemIds(object.itemIds);
     const heldItems = new Set([...this.#objects.values()].flatMap((current) => current.itemIds));
-    if (this.#objects.has(object.id) || object.itemIds.some((id) => heldItems.has(id)))
+    if (this.#objects.has(object.id) || object.itemIds.some((id) => heldItems.has(id))) {
       throw new Error('A sector object or item reference cannot occur twice.');
+    }
     this.#objects.set(object.id, structuredClone(object));
   }
 
@@ -169,7 +188,9 @@ export class Sector {
     recoveredObjects: readonly SectorObjectReference[],
   ): void {
     const corpse = this.#corpses.get(corpseId);
-    if (!corpse) throw new Error('The corpse is no longer present in this sector.');
+    if (!corpse) {
+      throw new Error('The corpse is no longer present in this sector.');
+    }
     const releasedIds = new Set(releasedEquipment.map((item) => item.itemId));
     const ground = { kind: ItemCustodianKind.Ground, id: this.id };
     const recoveredIds = recoveredObjects.flatMap((object) => object.itemIds);
@@ -186,7 +207,9 @@ export class Sector {
       throw new Error('Corpse removal must settle each remaining item into this sector ground.');
     }
     const next = new Sector(this.toSnapshot());
-    for (const object of recoveredObjects) next.admitObject(object);
+    for (const object of recoveredObjects) {
+      next.admitObject(object);
+    }
     next.#corpses.delete(corpseId);
     next.#residents.delete(corpse.characterId);
     next.#participants.delete(corpse.characterId);
@@ -213,9 +236,12 @@ export class Sector {
   }
 
   #requireItemIds(itemIds: readonly string[]): void {
-    if (!isArrayValue(itemIds) || new Set(itemIds).size !== itemIds.length)
+    if (!isArrayValue(itemIds) || new Set(itemIds).size !== itemIds.length) {
       throw new Error('Sector item references must be unique.');
-    for (const id of itemIds) requireIdentity(id);
+    }
+    for (const id of itemIds) {
+      requireIdentity(id);
+    }
   }
 
   toSnapshot(): SectorSnapshot {

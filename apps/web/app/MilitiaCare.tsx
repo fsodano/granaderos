@@ -1,9 +1,6 @@
 import type { CampaignOperative } from '../../../packages/game/public/campaign-types.ts';
 import type { CampaignSnapshot } from '../../../packages/game/public/campaign-types.ts';
-import {
-  operativeLocation,
-  operativeInTransit,
-} from '../../../packages/game/squads.js';
+import { operativeLocation, operativeInTransit } from '../../../packages/game/squads.js';
 import { careAssignmentReason } from '../../../packages/game/medical-care.js';
 import { militiaWoundLoss } from '../../../packages/game/garrison.js';
 export default function MilitiaCare({
@@ -16,9 +13,7 @@ export default function MilitiaCare({
   roster: CampaignOperative[];
 }) {
   const defenders = (state.garrisons?.[sectorId] ?? []).filter((u) => u.hp > 0);
-  const wounded = defenders.filter(
-    (u) => (u.bleeding ?? 0) > 0 || u.hp < u.maxHp,
-  );
+  const wounded = defenders.filter((u) => (u.bleeding ?? 0) > 0 || u.hp < u.maxHp);
   const doctors = roster.filter(
     (op) =>
       state.recruited.includes(op.id) &&
@@ -27,9 +22,7 @@ export default function MilitiaCare({
       operativeLocation(state, op.id) === sectorId &&
       state.operativeState[op.id]?.assignment === 'militia_doctor',
   );
-  const available = doctors.filter(
-    (op) => !careAssignmentReason(state, op, 'militia_doctor'),
-  );
+  const available = doctors.filter((op) => !careAssignmentReason(state, op, 'militia_doctor'));
   const fighting = state.pendingBattle?.sector === sectorId;
   const reason = fighting
     ? 'La atención de campaña espera hasta el regreso del despliegue.'
@@ -46,10 +39,8 @@ export default function MilitiaCare({
     <section className="militia-care" aria-label="Atención de las milicias">
       <h3>Atención de las milicias</h3>
       <p>
-        {state.sectors[sectorId]?.militia.reduce(
-          (sum: number, count: number) => sum + count,
-          0,
-        ) ?? 0}{' '}
+        {state.sectors[sectorId]?.militia.reduce((sum: number, count: number) => sum + count, 0) ??
+          0}{' '}
         defensores · {wounded.length}{' '}
         {wounded.length === 1 ? 'herido registrado' : 'heridos registrados'}
       </p>
@@ -79,10 +70,9 @@ export default function MilitiaCare({
                 {u.name} ·{' '}
                 {(u.militiaRank === undefined
                   ? undefined
-                  : ['Cívico', 'Montonero', 'Veterano'][u.militiaRank]) ??
-                  'Miliciano'}{' '}
-                · {u.militiaExperience ?? 0} puntos de combate · {u.hp}/
-                {u.maxHp} salud · {u.bleeding ?? 0} hemorragia
+                  : ['Cívico', 'Montonero', 'Veterano'][u.militiaRank]) ?? 'Miliciano'}{' '}
+                · {u.militiaExperience ?? 0} puntos de combate · {u.hp}/{u.maxHp} salud ·{' '}
+                {u.bleeding ?? 0} hemorragia
                 {(u.bleeding ?? 0) > 0
                   ? ` · pierde ${militiaWoundLoss(state, u)} salud/h fuera del combate`
                   : ''}
@@ -92,9 +82,9 @@ export default function MilitiaCare({
         </details>
       )}
       <p>
-        Un médico atiende a un defensor por hora y consume un botiquín personal.
-        Primero detiene las hemorragias; después recupera salud. Los defensores
-        conservan sus armas, munición y experiencia.
+        Un médico atiende a un defensor por hora y consume un botiquín personal. Primero detiene las
+        hemorragias; después recupera salud. Los defensores conservan sus armas, munición y
+        experiencia.
       </p>
     </section>
   );

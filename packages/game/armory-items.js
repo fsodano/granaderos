@@ -112,7 +112,9 @@ export function equipArmoryItem(s, op, action) {
         'weaponFittingPattern',
       ]
     : ['bladeMetadata', 'bladeInstanceId', 'bladeFittingPattern']) {
-    if (record[field] === undefined) {delete next[field];}
+    if (record[field] === undefined) {
+      delete next[field];
+    }
   }
   need(!inventoryUsage(next).overloaded, 'No quedan bolsillos para el equipo guardado.');
   syncCarriedAmmunition(record, next.weapon);

@@ -48,12 +48,13 @@ export function connectWorldCellApproaches(map, context = null) {
       queue = [start];
     seen.add(key(start));
     for (let i = 0; i < queue.length; i++) {
-      for (const next of neighbors(queue[i]))
-        {if (passable(next) && !seen.has(key(next)) && !wallMovementBlocked(map, queue[i], next)) {
+      for (const next of neighbors(queue[i])) {
+        if (passable(next) && !seen.has(key(next)) && !wallMovementBlocked(map, queue[i], next)) {
           seen.add(key(next));
           component.add(key(next));
           queue.push(next);
-        }}
+        }
+      }
     }
     if (component.size > exterior.size) {
       exterior = component;
@@ -129,7 +130,9 @@ export function connectWorldCellApproaches(map, context = null) {
             y: point.y + (edge === 'E' || edge === 'W' ? spread : 0),
           }),
         );
-        if (!tile || inside(tile) || tile.buildingId || props.has(key(tile))) {continue;}
+        if (!tile || inside(tile) || tile.buildingId || props.has(key(tile))) {
+          continue;
+        }
         if (tile.blocked) {
           Object.assign(tile, {
             type: road ? 'road' : 'grass',
@@ -138,9 +141,13 @@ export function connectWorldCellApproaches(map, context = null) {
             cover: 0,
           });
           delete tile.material;
-        } else if (road) {Object.assign(tile, { type: 'road', cover: 0 });}
+        } else if (road) {
+          Object.assign(tile, { type: 'road', cover: 0 });
+        }
         exterior.add(key(tile));
-        if (tile.type === 'road') {roads.add(key(tile));}
+        if (tile.type === 'road') {
+          roads.add(key(tile));
+        }
       }
     }
   }

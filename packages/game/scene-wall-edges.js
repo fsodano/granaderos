@@ -38,8 +38,9 @@ export function sceneWallEdges(
   );
   const authored = new Map();
   for (const building of state.buildings ?? []) {
-    for (const edge of building.walls ?? [])
-      {authored.set(`${building.id}:${wallEdgeKey(edge)}`, { building, edge });}
+    for (const edge of building.walls ?? []) {
+      authored.set(`${building.id}:${wallEdgeKey(edge)}`, { building, edge });
+    }
   }
   return state.wallEdges.map((edge) => {
     const source = edge.buildingId && authored.get(`${edge.buildingId}:${wallEdgeKey(edge)}`),

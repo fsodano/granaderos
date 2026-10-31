@@ -5,10 +5,7 @@ import type {
   CampaignAction,
   CampaignHorseOrder,
 } from '../../../packages/game/public/campaign-types.ts';
-import {
-  rosterFor,
-  operativeLocation,
-} from '../../../packages/game/campaign.js';
+import { rosterFor, operativeLocation } from '../../../packages/game/campaign.js';
 import { campaignPlace } from '../../../packages/game/world-cells.ts';
 import { operativeInTransit } from '../../../packages/game/squads.js';
 import { MATURITY_HOURS } from '../../../packages/game/horses.js';
@@ -27,8 +24,7 @@ export default function Horses({ state: s, dispatch }: Props) {
     !s.pendingBattle &&
     !s.pendingEncounter &&
     s.sectors[s.location]?.owner === 'patriot';
-  const order = (payload: CampaignHorseOrder) =>
-    dispatch({ type: 'horseAction', order: payload });
+  const order = (payload: CampaignHorseOrder) => dispatch({ type: 'horseAction', order: payload });
   const riders = roster.filter(
     (o) =>
       s.recruited.includes(o.id) &&
@@ -43,23 +39,21 @@ export default function Horses({ state: s, dispatch }: Props) {
         <p className="eyebrow">CABALLADA</p>
         <h2>Monturas y jinetes</h2>
         <p>
-          Asigná las monturas presentes en {place(s.location)}. Cada animal
-          conserva su condición, resistencia y jinete.
+          Asigná las monturas presentes en {place(s.location)}. Cada animal conserva su condición,
+          resistencia y jinete.
         </p>
       </div>
       {!available && (
         <p className="horse-notice">
-          La caballada requiere un sector patriota y una campaña activa, sin
-          despliegue táctico pendiente.
+          La caballada requiere un sector patriota y una campaña activa, sin despliegue táctico
+          pendiente.
         </p>
       )}
       <p className="horse-notice">
-        El descanso recupera resistencia. Solo una montura presente y en
-        condiciones puede recibir un jinete.
+        El descanso recupera resistencia. Solo una montura presente y en condiciones puede recibir
+        un jinete.
       </p>
-      {!horses.length && (
-        <p className="horse-empty">No hay monturas en la caballada.</p>
-      )}
+      {!horses.length && <p className="horse-empty">No hay monturas en la caballada.</p>}
       <div className="horse-grid">
         {horses.map((h) => {
           const adult = hour - h.bornAt >= MATURITY_HOURS,
@@ -74,17 +68,11 @@ export default function Horses({ state: s, dispatch }: Props) {
           const candidates = riders.filter(
             (o) =>
               !horses.some(
-                (other) =>
-                  !other.returned &&
-                  other.id !== h.id &&
-                  other.assignedTo === o.id,
+                (other) => !other.returned && other.id !== h.id && other.assignedTo === o.id,
               ),
           );
           return (
-            <article
-              key={h.id}
-              className={`horse-card${h.returned ? ' horse-returned' : ''}`}
-            >
+            <article key={h.id} className={`horse-card${h.returned ? ' horse-returned' : ''}`}>
               <div className="horse-heading">
                 <h3>{h.name}</h3>
                 <span>
@@ -118,15 +106,12 @@ export default function Horses({ state: s, dispatch }: Props) {
               </dl>
               {!adult && (
                 <p>
-                  Edad de monta dentro de{' '}
-                  {Math.ceil((MATURITY_HOURS - hour + h.bornAt) / 24)} días.
+                  Edad de monta dentro de {Math.ceil((MATURITY_HOURS - hour + h.bornAt) / 24)} días.
                 </p>
               )}
               {h.hired && !h.returned && (
                 <p>
-                  Devolución en{' '}
-                  {Math.max(0, Math.ceil(((h.hireUntil ?? hour) - hour) / 24))}{' '}
-                  días.
+                  Devolución en {Math.max(0, Math.ceil(((h.hireUntil ?? hour) - hour) / 24))} días.
                 </p>
               )}
               {!h.returned && (
@@ -136,9 +121,7 @@ export default function Horses({ state: s, dispatch }: Props) {
                     <select
                       aria-label={`Jinete de ${h.name}`}
                       value={h.assignedTo ?? ''}
-                      disabled={
-                        !usable || !adult || h.condition < 30 || h.stamina < 20
-                      }
+                      disabled={!usable || !adult || h.condition < 30 || h.stamina < 20}
                       onChange={(e) =>
                         order(
                           e.target.value
@@ -157,10 +140,9 @@ export default function Horses({ state: s, dispatch }: Props) {
                           {o.name}
                         </option>
                       ))}
-                      {assigned &&
-                        !candidates.some((o) => o.id === assigned.id) && (
-                          <option value={assigned.id}>{assigned.name}</option>
-                        )}
+                      {assigned && !candidates.some((o) => o.id === assigned.id) && (
+                        <option value={assigned.id}>{assigned.name}</option>
+                      )}
                     </select>
                   </label>
                   {h.assignedTo !== null && (
@@ -172,11 +154,7 @@ export default function Horses({ state: s, dispatch }: Props) {
                       Liberar montura
                     </button>
                   )}
-                  {!local && (
-                    <small>
-                      Viajá hasta su ubicación para asignar un jinete.
-                    </small>
-                  )}
+                  {!local && <small>Viajá hasta su ubicación para asignar un jinete.</small>}
                   {adult && (h.condition < 30 || h.stamina < 20) && (
                     <small>No está en condiciones de recibir un jinete.</small>
                   )}

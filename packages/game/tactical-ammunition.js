@@ -97,8 +97,9 @@ function synchronized(unit) {
         hint.count === undefined || hint.count <= AMMUNITION_STACK_LIMIT,
         'La cantidad del bolsillo supera el límite de la pila.',
       );
-      if (hint.count !== undefined)
-        {partitions.set(JSON.stringify([hint.item, hint.index]), hint.count);}
+      if (hint.count !== undefined) {
+        partitions.set(JSON.stringify([hint.item, hint.index]), hint.count);
+      }
     }
   }
   const actual = new Map();
@@ -113,10 +114,16 @@ function synchronized(unit) {
   }
   if (unit.pocketOrder !== undefined) {
     next.pocketOrder = unit.pocketOrder.flatMap((hint) => {
-      if (hint.item === 'ammo' || staleItem(next, hint.item)) {return [];}
-      if (!counts.has(hint.item)) {return [hint];}
+      if (hint.item === 'ammo' || staleItem(next, hint.item)) {
+        return [];
+      }
+      if (!counts.has(hint.item)) {
+        return [hint];
+      }
       const count = actual.get(JSON.stringify([hint.item, hint.index]));
-      if (!count) {return [];}
+      if (!count) {
+        return [];
+      }
       return [hint.count !== undefined && hint.count !== count ? { ...hint, count } : hint];
     });
   }

@@ -5045,8 +5045,8 @@
       "archivePath": "blobs/47/4740b680e88281e628c30987ac5bf247e7357572"
     },
     {
-      "path": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/asset.test.mjs",
-      "relativePath": "artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/asset.test.mjs",
+      "path": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/asset.test.ts",
+      "relativePath": "artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/asset.test.ts",
       "originalWorktree": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos",
       "checkoutHead": "1a1fcef891249f371c34ad9d340b522aef862fe6",
       "checkoutBranch": "codex/human-anatomy-review",
@@ -5066,8 +5066,8 @@
       "comparedIntegrationHead": "af952d7f81809e5c150b3ae8f6225ed1eb6bb78c"
     },
     {
-      "path": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/library.test.mjs",
-      "relativePath": "artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/library.test.mjs",
+      "path": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/library.test.ts",
+      "relativePath": "artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/library.test.ts",
       "originalWorktree": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos",
       "checkoutHead": "1a1fcef891249f371c34ad9d340b522aef862fe6",
       "checkoutBranch": "codex/human-anatomy-review",
@@ -5088,8 +5088,8 @@
       "archivePath": "blobs/20/20b2d05554799b0a6f40069eb5613d4b0942bd2a"
     },
     {
-      "path": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/server.test.mjs",
-      "relativePath": "artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/server.test.mjs",
+      "path": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/server.test.ts",
+      "relativePath": "artifacts/character-anatomy-review/delivery/worker-hair-surface/preview/playgrounds/granadero-3d/tests/server.test.ts",
       "originalWorktree": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos",
       "checkoutHead": "1a1fcef891249f371c34ad9d340b522aef862fe6",
       "checkoutBranch": "codex/human-anatomy-review",

@@ -27,14 +27,18 @@ export class SnapshotAdmitSectorReinforcementsRepository {
     nextRevision(this.#revision);
     const state = this.#snapshot,
       request = this.#request;
-    if (request.sector !== state.sectorId)
+    if (request.sector !== state.sectorId) {
       throw Error('Los refuerzos deben entrar al mismo sector.');
+    }
     this.#incoming = (request.squad ?? []).map((raw) => {
-      if (raw.entryReason !== 'arrival' || !validEntry(raw.entryEdge, raw.entryAnchor))
+      if (raw.entryReason !== 'arrival' || !validEntry(raw.entryEdge, raw.entryAnchor)) {
         throw Error('Los refuerzos necesitan un borde de llegada válido.');
+      }
       return createSectorParticipant(raw, state);
     });
-    if (!this.#incoming.length) throw Error('La llegada necesita combatientes.');
+    if (!this.#incoming.length) {
+      throw Error('La llegada necesita combatientes.');
+    }
     const component = exteriorComponent(state, this.#incoming[0]);
     const cells = Object.fromEntries(
       ['N', 'E', 'S', 'W'].map((edge) => [
@@ -76,8 +80,9 @@ export class SnapshotAdmitSectorReinforcementsRepository {
     };
   }
   commitReinforcementAdmission(session, placements, expectedRevision) {
-    if (expectedRevision !== this.#revision)
+    if (expectedRevision !== this.#revision) {
       throw new DomainRefusal(DomainRefusalCode.RevisionConflict);
+    }
     const acceptedRevision = nextRevision(this.#revision);
     const next = structuredClone(this.#snapshot);
     for (const unit of this.#incoming) {
@@ -108,7 +113,9 @@ export class SnapshotAdmitSectorReinforcementsRepository {
     this.#snapshot = this.#result;
   }
   get result() {
-    if (!this.#result) throw Error('sector-reinforcements-not-committed');
+    if (!this.#result) {
+      throw Error('sector-reinforcements-not-committed');
+    }
     return this.#result;
   }
 }

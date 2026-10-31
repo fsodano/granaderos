@@ -84,26 +84,14 @@ function CampaignMap({
       aria-hidden="true"
     >
       <defs>
-        <pattern
-          id="intro-grid"
-          width="62"
-          height="64"
-          patternUnits="userSpaceOnUse"
-        >
-          <path
-            d="M62 0H0V64"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth=".5"
-          />
+        <pattern id="intro-grid" width="62" height="64" patternUnits="userSpaceOnUse">
+          <path d="M62 0H0V64" fill="none" stroke="currentColor" strokeWidth=".5" />
         </pattern>
       </defs>
       <rect width="620" height="640" fill="url(#intro-grid)" opacity=".18" />
       {chart?.land && <path className="intro-land" d={chart.land} />}
       {chart?.river && <path className="intro-river" d={chart.river} />}
-      {chart?.mountains && (
-        <path className="intro-mountains" d={chart.mountains} />
-      )}
+      {chart?.mountains && <path className="intro-mountains" d={chart.mountains} />}
       <g className="intro-map-labels">
         {chart?.labels?.map((label, index: number) => (
           <text
@@ -117,9 +105,7 @@ function CampaignMap({
           </text>
         ))}
       </g>
-      {chart?.route && (
-        <path className="intro-campaign-route" pathLength="1" d={chart.route} />
-      )}
+      {chart?.route && <path className="intro-campaign-route" pathLength="1" d={chart.route} />}
       <g className="intro-map-towns">
         {chart?.towns?.map((town, index: number) => (
           <g key={index}>
@@ -131,12 +117,7 @@ function CampaignMap({
         ))}
       </g>
       {chart?.beacon && (
-        <circle
-          className="intro-beacon"
-          cx={chart.beacon.x}
-          cy={chart.beacon.y}
-          r="21"
-        />
+        <circle className="intro-beacon" cx={chart.beacon.x} cy={chart.beacon.y} r="21" />
       )}
       <g transform="translate(525 80)" className="intro-compass">
         <path d="M0-31 7-7 31 0 7 7 0 31-7 7-31 0-7-7Z" />
@@ -164,9 +145,7 @@ export default function CampaignIntro({
     scene = content.scenes[index] ?? openingScene,
     last = index === content.scenes.length - 1;
   function showScene(next: number) {
-    focusAfter.current = Boolean(
-      root.current?.contains(document.activeElement),
-    );
+    focusAfter.current = Boolean(root.current?.contains(document.activeElement));
     setIndex(next);
   }
   useEffect(() => {
@@ -235,17 +214,12 @@ export default function CampaignIntro({
           {replay ? 'Cerrar introducción' : 'Omitir introducción'} →
         </button>
       </header>
-      <div
-        className={`intro-stage intro-stage-${scene.visual}`}
-        data-intro-scene={scene.id}
-      >
+      <div className={`intro-stage intro-stage-${scene.visual}`} data-intro-scene={scene.id}>
         <div className="intro-visual" key={scene.id} aria-hidden="true">
           {scene.portrait ? (
             <div className="intro-portrait">
               <img src={sitePath(scene.portrait)} alt="" />
-              {scene.portraitName && (
-                <div className="intro-signature">{scene.portraitName}</div>
-              )}
+              {scene.portraitName && <div className="intro-signature">{scene.portraitName}</div>}
               {scene.portraitCaption && <span>{scene.portraitCaption}</span>}
             </div>
           ) : (
@@ -271,24 +245,15 @@ export default function CampaignIntro({
           {last ? (
             <div className="intro-choices">
               {replay ? (
-                <button
-                  className="intro-primary"
-                  onClick={() => onComplete('hire')}
-                >
+                <button className="intro-primary" onClick={() => onComplete('hire')}>
                   Volver al juego →
                 </button>
               ) : (
                 <>
-                  <button
-                    className="intro-primary"
-                    onClick={() => onComplete('hire')}
-                  >
+                  <button className="intro-primary" onClick={() => onComplete('hire')}>
                     Contratar combatientes →
                   </button>
-                  <button
-                    className="intro-secondary"
-                    onClick={() => onComplete('create')}
-                  >
+                  <button className="intro-secondary" onClick={() => onComplete('create')}>
                     {content.createLabel ?? 'Crear mi personaje'} →
                   </button>
                 </>
@@ -317,8 +282,7 @@ export default function CampaignIntro({
         </nav>
         <div className="intro-playback">
           <span>
-            {String(index + 1).padStart(2, '0')} /{' '}
-            {String(content.scenes.length).padStart(2, '0')}
+            {String(index + 1).padStart(2, '0')} / {String(content.scenes.length).padStart(2, '0')}
           </span>
           {!last && !reduced && (
             <button onClick={() => setPaused((value) => !value)}>

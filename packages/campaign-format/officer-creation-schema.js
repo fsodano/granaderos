@@ -20,13 +20,20 @@ const QUESTION_CHOICES = {
   crisis: ['rescue', 'rally', 'flank'],
 };
 
+/** @returns {string[]} */
 export function validateOfficerCreation(value, content) {
-  if (value === undefined) return [];
+  if (value === undefined) {
+    return [];
+  }
   const errors = [],
     check = (ok, message) => {
-      if (!ok) errors.push(`Creación de personajes: ${message}`);
+      if (!ok) {
+        errors.push(`Creación de personajes: ${message}`);
+      }
     };
-  if (!object(value)) return ['Creación de personajes: la presentación no es válida.'];
+  if (!object(value)) {
+    return ['Creación de personajes: la presentación no es válida.'];
+  }
   check(
     Object.keys(value).every((key) =>
       [
@@ -46,7 +53,7 @@ export function validateOfficerCreation(value, content) {
     bladeIds = new Set((content?.weapons ?? []).filter((w) => w.template >= 1809).map((w) => w.id));
   const equipment = (reference, blade = false) =>
     reference === null || (blade ? bladeIds : weaponIds).has(reference);
-  if (value.classes !== undefined)
+  if (value.classes !== undefined) {
     check(
       Array.isArray(value.classes) &&
         value.classes.length > 0 &&
@@ -69,6 +76,7 @@ export function validateOfficerCreation(value, content) {
         ),
       'clases o equipo local inválidos.',
     );
+  }
   function questions(list, ids) {
     return (
       Array.isArray(list) &&
@@ -94,17 +102,19 @@ export function validateOfficerCreation(value, content) {
       )
     );
   }
-  if (value.questions !== undefined)
+  if (value.questions !== undefined) {
     check(
       questions(value.questions, ['specialty', 'temperament']),
       'cuestionario personal inválido.',
     );
-  if (value.commissionQuestions !== undefined)
+  }
+  if (value.commissionQuestions !== undefined) {
     check(
       questions(value.commissionQuestions, ['origin', 'doctrine', 'crisis']),
       'cuestionario de formación inválido.',
     );
-  if (value.traits !== undefined)
+  }
+  if (value.traits !== undefined) {
     check(
       Array.isArray(value.traits) &&
         value.traits.length > 0 &&
@@ -120,6 +130,7 @@ export function validateOfficerCreation(value, content) {
         ),
       'especialidades inválidas.',
     );
+  }
   if (value.defaults !== undefined) {
     const classes = value.classes ?? [{ id: 'gaucho' }];
     check(
@@ -160,7 +171,11 @@ export function validateOfficerCreation(value, content) {
       'datos de incorporación inválidos.',
     );
   }
-  if (value.biography !== undefined) check(text(value.biography, 1000), 'biografía inválida.');
-  if (value.registry !== undefined) check(text(value.registry, 100), 'registro inválido.');
+  if (value.biography !== undefined) {
+    check(text(value.biography, 1000), 'biografía inválida.');
+  }
+  if (value.registry !== undefined) {
+    check(text(value.registry, 100), 'registro inválido.');
+  }
   return errors;
 }

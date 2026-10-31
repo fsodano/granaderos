@@ -20,15 +20,17 @@ export class ResidentSupplies {
   #quantities: Record<ResidentSupplyKind, number>;
 
   constructor(characterId: string, x: number, y: number, quantities: ResidentSupplyQuantities) {
-    if (!characterId || !Number.isSafeInteger(x) || !Number.isSafeInteger(y))
+    if (!characterId || !Number.isSafeInteger(x) || !Number.isSafeInteger(y)) {
       throw new Error('A resident needs an identity and local position.');
+    }
     this.characterId = characterId;
     this.x = x;
     this.y = y;
     this.#quantities = { ...quantities };
     for (const kind of RECOVERABLE_RESIDENT_SUPPLIES) {
-      if (!Number.isSafeInteger(quantities[kind]) || quantities[kind] < 0)
+      if (!Number.isSafeInteger(quantities[kind]) || quantities[kind] < 0) {
         throw new Error('Resident supply quantities must be non-negative integers.');
+      }
     }
   }
 
@@ -37,8 +39,9 @@ export class ResidentSupplies {
   }
 
   collectOneFrom(source: Inventory, kind: ResidentSupplyKind): Inventory {
-    if (!RECOVERABLE_RESIDENT_SUPPLIES.includes(kind))
+    if (!RECOVERABLE_RESIDENT_SUPPLIES.includes(kind)) {
       throw new Error('The resident cannot accept this supply.');
+    }
     const destination = new Inventory({
       custodianId: `character:${this.characterId}`,
       unlimitedCapacity: true,
@@ -94,7 +97,9 @@ export class GroundSupply {
   }
 
   transferOneTo(resident: ResidentSupplies): ItemCustody {
-    if (this.#quantity === 0) throw new Error('The ground supply is empty.');
+    if (this.#quantity === 0) {
+      throw new Error('The ground supply is empty.');
+    }
     const source = { kind: ItemCustodianKind.Ground, id: this.id };
     const custody = new ItemCustody(`${this.id}:${this.#quantity}`, source);
     const inventory = new Inventory({

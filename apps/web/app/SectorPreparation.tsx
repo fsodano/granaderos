@@ -90,11 +90,7 @@ export default function SectorPreparation({
             key={order.kind ?? order.type}
             className="line-button"
             title={order.reason || undefined}
-            disabled={
-              blocked ||
-              Boolean(order.reason) ||
-              s.resources.treasury < order.price
-            }
+            disabled={blocked || Boolean(order.reason) || s.resources.treasury < order.price}
             onClick={() =>
               dispatch(
                 order.type === 'diplomacy'
@@ -116,21 +112,12 @@ export default function SectorPreparation({
             }
           }}
         >
-          <DialogContent
-            className="strategic-local-services"
-            showCloseButton={false}
-          >
+          <DialogContent className="strategic-local-services" showCloseButton={false}>
             <header>
-              <DialogTitle>
-                {service === 'horses' ? 'Caballada' : 'Artillería propia'}
-              </DialogTitle>
+              <DialogTitle>{service === 'horses' ? 'Caballada' : 'Artillería propia'}</DialogTitle>
               <button
                 className="line-button"
-                aria-label={
-                  service === 'horses'
-                    ? 'Cerrar caballada'
-                    : 'Cerrar artillería'
-                }
+                aria-label={service === 'horses' ? 'Cerrar caballada' : 'Cerrar artillería'}
                 onClick={() => setService(null)}
               >
                 ×

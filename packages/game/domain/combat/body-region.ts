@@ -44,14 +44,18 @@ export class BodyRegion {
     this.#profile = profile;
   }
   static named(id: BodyRegionIdValue): BodyRegion {
-    if (!Object.hasOwn(profiles, id)) throw new RangeError('invalid-body-region');
+    if (!Object.hasOwn(profiles, id)) {
+      throw new RangeError('invalid-body-region');
+    }
     return new BodyRegion(profiles[id]);
   }
   profile(): BodyRegionProfile {
     return { ...this.#profile };
   }
   aimingPenalty(range: number): number {
-    if (!Number.isFinite(range) || range < 0) throw new RangeError('invalid-aiming-range');
+    if (!Number.isFinite(range) || range < 0) {
+      throw new RangeError('invalid-aiming-range');
+    }
     return Math.round(range * this.#profile.chancePenaltyPerTile);
   }
   impact(
@@ -62,11 +66,14 @@ export class BodyRegion {
       !Number.isFinite(baseDamage) ||
       baseDamage < 0 ||
       (target.health !== undefined && (!Number.isFinite(target.health) || target.health < 0))
-    )
+    ) {
       throw new RangeError('invalid-impact-damage');
+    }
     const health = target.health ?? Infinity,
       damage = Math.round(baseDamage * this.#profile.damageMultiplier);
-    if (!Number.isFinite(damage)) throw new RangeError('invalid-impact-damage');
+    if (!Number.isFinite(damage)) {
+      throw new RangeError('invalid-impact-damage');
+    }
     const actualDamage = Math.min(health, damage),
       breathLoss = Math.ceil(actualDamage * this.#profile.breathMultiplier);
     const balanceLoss =
