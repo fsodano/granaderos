@@ -1,6 +1,6 @@
 {
   "date": "2026-10-31",
-  "sourceRevision": "a90c0647cf8c75e6017b3b21275947f2aaa22ddf",
+  "sourceRevision": "51926aa756d45b13f2f7b2f99b1a0028cb444ad8",
   "scope": "tests/**/*.mjs",
   "fileCount": 231,
   "sourceLines": 93611,
