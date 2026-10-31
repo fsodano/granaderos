@@ -126,6 +126,8 @@ export class CanonicalPersonnelMapper {
     const record = this.#campaign.operativeState[id];
     if (!record) throw new Error(`Falta el estado del personaje ${id}.`);
     const contract = this.#campaign.contracts[id];
+    const bleeding = activeCondition ? activeCondition.bleeding : record.bleeding;
+    const bandaged = activeCondition ? activeCondition.bandaged : record.bandaged;
     const character = this.#identities.obtain(PersonnelIdentity.character, id, () =>
       Character.restore(
         {
@@ -133,8 +135,8 @@ export class CanonicalPersonnelMapper {
           health: activeCondition?.hp ?? record.hp,
           maximumHealth: activeCondition?.maxHp ?? definition.maxHp,
           alive: activeCondition ? activeCondition.hp > 0 : record.alive,
-          bleeding: activeCondition ? activeCondition.bleeding : record.bleeding,
-          bandaged: activeCondition ? activeCondition.bandaged : record.bandaged,
+          ...(bleeding === undefined ? {} : { bleeding }),
+          ...(bandaged === undefined ? {} : { bandaged }),
           captured: Boolean(record.captured),
           locationId: record.location ?? record.residentSector ?? null,
           abilities: this.#abilities.read(definition, activeCondition).toSnapshot(),
@@ -197,11 +199,13 @@ export class CanonicalPersonnelMapper {
     for (const [id, character] of this.#characters) {
       if (this.#characterState(character) === this.#originalCharacters.get(id)) continue;
       const snapshot = character.snapshot();
+      const health = character.health.toSnapshot();
       const record = target.operativeState[id];
+      if (!record) throw new Error(`Falta el estado del personaje ${id}.`);
       record.hp = snapshot.health;
       record.alive = snapshot.alive;
-      record.bleeding = snapshot.bleeding;
-      record.bandaged = snapshot.bandaged;
+      record.bleeding = health.bleeding;
+      record.bandaged = health.bandaged;
       record.captured = snapshot.captured;
       record.location = snapshot.locationId;
       const contract = character.service;

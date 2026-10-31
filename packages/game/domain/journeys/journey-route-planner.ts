@@ -1,4 +1,4 @@
-import { Journey, JourneyPurpose } from './journey.ts';
+import { Journey, JourneyLimits, JourneyPurpose } from './journey.ts';
 import type { JourneyModeValue, RedirectJourneyPlan } from './journey.ts';
 import { JourneyRefusal, JourneyRefusalCode } from './arrival-decision.ts';
 
@@ -25,14 +25,13 @@ export class JourneyRoutePlanner {
   ): RedirectJourneyPlan {
     if (!this.#network.locationExists(destination))
       throw new JourneyRefusal(JourneyRefusalCode.JourneyDestinationNotFound);
-    if (!Array.isArray(waypoints) || waypoints.length > 8)
-      throw new JourneyRefusal(JourneyRefusalCode.TooManyJourneyWaypoints);
+    this.#validateWaypointLimit(waypoints);
     const snapshot = journey.snapshot();
     if (this.#network.isHostile(destination)) {
       if (
         destination !== snapshot.route[1] ||
         waypoints.length > 0 ||
-        !this.#network.permitsHostileApproach(snapshot.route[0], destination)
+        !this.#network.permitsHostileApproach(journey.origin, destination)
       ) {
         throw new JourneyRefusal(JourneyRefusalCode.HostileRedirectionOutsideCurrentSegment);
       }
@@ -46,19 +45,22 @@ export class JourneyRoutePlanner {
     for (const endpoint of snapshot.route.slice(0, 2)) {
       if (this.#network.isHostile(endpoint)) continue;
       const route = this.#routeThroughStops(endpoint, [...waypoints, destination], snapshot.mode);
-      if (!route || route.length > 64 || !this.#network.permitsRoute(route, snapshot.mode))
+      if (
+        !route ||
+        route.length >= JourneyLimits.MaximumRouteLocations ||
+        !this.#network.permitsRoute(route, snapshot.mode)
+      )
         continue;
       const currentSegmentSeconds =
         endpoint === snapshot.route[0]
           ? snapshot.positionSeconds
           : snapshot.legDurationSeconds - snapshot.positionSeconds;
-      const laterSeconds = route
-        .slice(1)
-        .reduce(
-          (seconds, sectorId, index) =>
-            seconds + this.#network.legDurationSeconds(route[index], sectorId, snapshot.mode),
-          0,
-        );
+      let laterSeconds = 0;
+      let previousSector = endpoint;
+      for (const sectorId of route.slice(1)) {
+        laterSeconds += this.#network.legDurationSeconds(previousSector, sectorId, snapshot.mode);
+        previousSector = sectorId;
+      }
       candidates.push({
         through: endpoint,
         route,
@@ -69,9 +71,16 @@ export class JourneyRoutePlanner {
     candidates.sort(
       (left, right) => left.seconds - right.seconds || left.through.localeCompare(right.through),
     );
-    if (!candidates.length) throw new JourneyRefusal(JourneyRefusalCode.JourneyRouteUnavailable);
-    const { through, route, purpose } = candidates[0];
+    const selected = candidates[0];
+    if (!selected) throw new JourneyRefusal(JourneyRefusalCode.JourneyRouteUnavailable);
+    const { through, route, purpose } = selected;
     return { through, route, purpose };
+  }
+
+  #validateWaypointLimit(waypoints: unknown): void {
+    if (!Array.isArray(waypoints) || waypoints.length > JourneyLimits.MaximumWaypoints) {
+      throw new JourneyRefusal(JourneyRefusalCode.TooManyJourneyWaypoints);
+    }
   }
 
   #routeThroughStops(
@@ -80,12 +89,14 @@ export class JourneyRoutePlanner {
     mode: JourneyModeValue,
   ): string[] | null {
     const route = [origin];
+    let previousSector = origin;
     for (const destination of stops) {
       if (!this.#network.locationExists(destination) || this.#network.isHostile(destination))
         return null;
-      const leg = this.#network.findRoute(route.at(-1)!, destination, mode);
+      const leg = this.#network.findRoute(previousSector, destination, mode);
       if (!leg?.length) return null;
       route.push(...leg.slice(1));
+      previousSector = route.at(-1) ?? previousSector;
     }
     return route;
   }

@@ -24,10 +24,11 @@ export class RedirectJourneyUseCase {
     const route = this.#repository.planRoute(journey, request.destination, request.waypoints ?? []);
     journey.redirect(route, nowSeconds);
     this.#repository.commitJourney(request.squadId, journey, revision);
+    const arrivalDecision = journey.arrivalDecision;
     return {
       squadId: request.squadId,
       destination: journey.destination,
-      ...(journey.awaitingArrivalDecision ? { arrivalDecision: journey.arrivalDecision } : {}),
+      ...(journey.awaitingArrivalDecision && arrivalDecision ? { arrivalDecision } : {}),
     };
   }
 }

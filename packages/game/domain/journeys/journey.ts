@@ -7,6 +7,7 @@ import {
 import type { ArrivalDecisionSnapshot } from './arrival-decision.ts';
 
 export const SecondsPerTravelHour = 3600;
+export const JourneyLimits = Object.freeze({ MaximumRouteLocations: 65, MaximumWaypoints: 8 });
 export const JourneyPurpose = Object.freeze({
   Travel: 'travel',
   HostileApproach: 'hostile-approach',
@@ -63,7 +64,7 @@ export class Journey {
   readonly #id: string;
   readonly #mode: JourneyModeValue;
   readonly #startedAtSeconds: number;
-  #route: string[];
+  #route: [string, string, ...string[]];
   #returnRoute: string[] | undefined;
   #purpose: JourneyPurposeValue;
   #status: JourneyStatusValue;
@@ -79,7 +80,7 @@ export class Journey {
 
   private constructor(snapshot: JourneySnapshot) {
     this.#id = snapshot.id;
-    this.#route = [...snapshot.route];
+    this.#route = Journey.#routeWithCurrentSegment(snapshot.route);
     this.#returnRoute = snapshot.returnRoute ? [...snapshot.returnRoute] : undefined;
     this.#mode = snapshot.mode;
     this.#purpose = snapshot.purpose;
@@ -158,7 +159,9 @@ export class Journey {
     return this.backwards ? this.#route[0] : this.#route[1];
   }
   get destination(): string {
-    return this.backwards ? (this.#returnRoute?.at(-1) ?? this.origin) : this.#route.at(-1)!;
+    return this.backwards
+      ? (this.#returnRoute?.at(-1) ?? this.origin)
+      : (this.#route.at(-1) ?? this.nextSector);
   }
   get remainingLegSeconds(): number {
     return this.backwards
@@ -192,7 +195,7 @@ export class Journey {
 
   stopAtNextSector(): void {
     if (!this.travelling) throw new JourneyRefusal(JourneyRefusalCode.JourneyNotTravelling);
-    if (!this.backwards) this.#route = this.#route.slice(0, 2);
+    if (!this.backwards) this.#route = [this.#route[0], this.#route[1]];
     this.#returnRoute = undefined;
   }
 
@@ -275,7 +278,7 @@ export class Journey {
       this.#returnRoute = [...plan.route];
     } else if (plan.through === this.#route[1]) {
       this.#direction = JourneyDirection.Forward;
-      this.#route = [this.#route[0], ...plan.route];
+      this.#route = Journey.#routeWithCurrentSegment([this.origin, ...plan.route]);
       this.#returnRoute = undefined;
     } else {
       throw new JourneyRefusal(JourneyRefusalCode.RedirectionMustStartAtCurrentSegment);
@@ -301,15 +304,25 @@ export class Journey {
       this.#status = JourneyStatus.Completed;
       return { from, to, complete: true };
     }
-    if (!Number.isSafeInteger(nextLegDurationSeconds) || nextLegDurationSeconds! < 1)
+    if (
+      nextLegDurationSeconds === undefined ||
+      !Number.isSafeInteger(nextLegDurationSeconds) ||
+      nextLegDurationSeconds < 1
+    )
       throw new JourneyRefusal(JourneyRefusalCode.InvalidNextJourneyLeg);
-    this.#route = [...nextRoute];
+    this.#route = Journey.#routeWithCurrentSegment(nextRoute);
     this.#returnRoute = undefined;
     this.#positionSeconds = 0;
-    this.#legDurationSeconds = nextLegDurationSeconds!;
+    this.#legDurationSeconds = nextLegDurationSeconds;
     this.#direction = JourneyDirection.Forward;
     this.#legPaid = false;
     return { from, to, complete: false };
+  }
+
+  static #routeWithCurrentSegment(route: readonly string[]): [string, string, ...string[]] {
+    const [origin, destination, ...remaining] = route;
+    if (!origin || !destination) throw new JourneyRefusal(JourneyRefusalCode.InvalidJourney);
+    return [origin, destination, ...remaining];
   }
 
   #requirePendingDecision(): ArrivalDecision {
@@ -334,7 +347,7 @@ export class Journey {
     if (
       !this.#id ||
       this.#route.length < 2 ||
-      this.#route.length > 65 ||
+      this.#route.length > JourneyLimits.MaximumRouteLocations ||
       this.#route.some((id) => !id) ||
       !Object.values(JourneyMode).includes(this.#mode) ||
       !Object.values(JourneyPurpose).includes(this.#purpose) ||

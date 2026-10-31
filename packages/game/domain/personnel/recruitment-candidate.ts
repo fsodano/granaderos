@@ -64,8 +64,9 @@ export class RecruitmentCandidate {
       [RecruitmentSpecialty.Artillery]: CharacterRating.Explosives,
       [RecruitmentSpecialty.Leader]: CharacterRating.Leadership,
     };
-    if (specialty in fields)
-      return this.#snapshot.abilities.meetsRating(fields[specialty], RecruitmentExpertiseThreshold);
+    const rating = fields[specialty];
+    if (rating !== undefined)
+      return this.#snapshot.abilities.meetsRating(rating, RecruitmentExpertiseThreshold);
     if (specialty === RecruitmentSpecialty.Scout)
       return this.#snapshot.abilities.hasTrait(CharacterTrait.GuerrillaTactician);
     if (specialty === RecruitmentSpecialty.Rider)
