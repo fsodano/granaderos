@@ -123,6 +123,8 @@ export type TrainableSkill =
 export interface CampaignOperativeState extends Partial<CampaignOperative> {
   serviceEquipmentReturn?: ServiceEquipmentReturnMarker;
   deathMinute?: number;
+  residentSector?: string | null;
+  residentScene?: string | null;
   residentPosition?: { x: number; y: number; tacticalLevel?: number };
   hp: number;
   maxHp: number;
@@ -209,6 +211,7 @@ export interface CampaignSquad {
   location: string;
   journey?: CampaignJourney;
   journeyRevision?: number;
+  journeySequence?: number;
 }
 export interface TownIncomeReceipt {
   sourceId: string;
@@ -256,6 +259,7 @@ export interface CampaignLogEntry {
   secondOfHour?: number;
 }
 export interface CampaignServiceContract {
+  departurePending?: boolean;
   kind?: 'patriot' | 'legacy' | 'paid';
   paid?: number;
   operativeId?: number;
@@ -319,6 +323,9 @@ export interface CampaignQuest {
   acceptedAt?: number;
 }
 export interface CampaignPendingBattle {
+  origin?: string;
+  artillery?: import('./compatibility-types.ts').BattleArtillery[];
+  finiteArtilleryArsenal?: BattleSnapshot['finiteArtilleryArsenal'];
   enemies?: BattleUnit[];
   hour?: number;
   secondOfHour?: number;
@@ -330,7 +337,7 @@ export interface CampaignPendingBattle {
   sceneId?: string | null;
   squad: CampaignOperative[];
   missionAllies?: CampaignOperative[];
-  garrison?: BattleUnit[];
+  garrison?: CampaignOperative[];
   defenseGroupId?: string;
   occupationGroupIds?: string[];
   npcs?: BattleNpc[];
@@ -518,7 +525,40 @@ export interface CampaignEventReceipt {
   outcome: 'applied' | 'skipped';
   amount: number;
 }
+export interface DialogueMovementReceipt {
+  npc: string;
+  node: string;
+  choice: string;
+  character: string;
+  sector: string;
+  revision: number;
+  target: { x: number; y: number } | null;
+  hour: number;
+  secondOfHour: number;
+}
+export interface DetentionCareReceipt {
+  hour: number;
+  guardId: string;
+  sourceId: number;
+  dressings: number;
+  hpBefore: number;
+  hpAfter: number;
+  bleedingBefore: number;
+  bleedingAfter: number;
+}
+export interface CampaignDetentionRecord {
+  npc: BattleNpc & {detention: NonNullable<BattleNpc['detention']>};
+  ammunition?: {loaded: number; ammo: number; reloadProgress?: number};
+  care?: DetentionCareReceipt[];
+  releaseAttempts?: {release: import('./compatibility-types.ts').PrisonerReleaseReceipt; outcome: 'recaptured'; hour: number}[];
+  escape?: {battleId: string; hour: number; destination: string; cacheIds: string[]};
+}
 export interface CampaignSnapshot {
+  detentionRecords?: Record<string, CampaignDetentionRecord>;
+  artilleryArsenalVersion?: 1;
+  artilleryArsenalRecoveries?: Record<string, {battleId: string; hour: number; second: number}>;
+  nextArtilleryId?: number;
+  dialogueMovements?: DialogueMovementReceipt[];
   civilianState?: import('./world-state-types.ts').CivilianStateSnapshot;
   version: number;
   seed: number;
@@ -846,7 +886,7 @@ type CampaignOrder =
       | { choice: 'tactical' | 'auto' }
       | { choice: 'retreat'; destination: string }
     ))
-  | { type: 'militia'; sector: string; trainerId: number; rank: number }
+  | { type: 'militia'; sector?: string; trainerId: number; rank: number }
   | { type: 'cancelMilitia'; sector: string }
   | { type: 'transferMilitia'; from: string; to: string; rank: number; count: number }
   | { type: 'distributeMilitia'; sector: string }
@@ -875,7 +915,7 @@ type CampaignOrder =
       artilleryId: string;
       to: string;
       mode: 'carts' | 'flotilla';
-      source: 'field' | 'depot';
+      source?: 'field' | 'depot';
     }
   | { type: 'fundArmy' | 'foundry' | 'academy'; amount?: number }
   | { type: 'policy'; kind: 'tax' | 'frontierRequisition' }

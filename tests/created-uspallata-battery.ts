@@ -1,0 +1,825 @@
+import { present } from './assert-present.ts';
+import type { TacticalPoint, BattleSnapshot, BattleUnit, BattleNpc } from '../packages/game/public/compatibility-types.ts';
+import assert from 'node:assert/strict';
+import {
+  sectorDeploymentModel,
+  sectorDeploymentAction,
+} from '../packages/game/sector-deployment.js';
+import { artilleryProfile } from '../packages/game/artillery-definitions.ts';
+import { propBlocksAt } from '../packages/game/props.js';
+import { wallMovementBlocked } from '../packages/game/wall-geometry.js';
+import { sameCell, sameSurface, spacePoint, surfaceAt } from '../packages/game/tactical-space.js';
+import { boundaryPassable } from '../packages/game/tactical-exits.js';
+import {
+  getReachable,
+  teamCanSee,
+  hasLineOfSight,
+  hasFirearm,
+  artilleryContact,
+  artilleryCrewPlan,
+  artilleryCosts,
+  artilleryReloadPreview,
+  stanceCost,
+  actionCosts,
+  exitPreview,
+  meleePreview,
+  medicalUsePreview,
+  movementEnergy,
+  interruptAvailable,
+  transferPreview,
+} from '../packages/game/tactical.js';
+import { availableAmmunition } from '../packages/game/ammunition-types.js';
+import { firearmServiceable } from '../packages/game/firearm-serviceability.js';
+import { criticalFirstAidNeeded } from '../packages/game/first-aid.js';
+import { medicalPatientAvailable } from '../packages/game/medical-patient.js';
+import { tucumanCombatOrder } from './tucuman-driver.ts';
+import { teamArtilleryOrder } from './team-artillery-driver.ts';
+import {
+  publicRouteView,
+  usefulRouteRifleShot,
+  usefulRouteFiringPosture,
+} from './route-infantry-progress.ts';
+import { recordRouteStrategicEvidence } from './route-strategic-failure-evidence.ts';
+
+const distance = (a: TacticalPoint, b: TacticalPoint) => Math.hypot(a.x - b.x, a.y - b.y),
+  idCompare = (a: BattleUnit, b: BattleUnit) => String(a.id).localeCompare(String(b.id));
+const capable = (u: BattleUnit|undefined) =>
+  present(u?.hp) >= 15 &&
+  !present(u).departure &&
+  !present(u).fled &&
+  !present(u).routed &&
+  !present(u).unconscious &&
+  !present(u).surrendered &&
+  !present(u).asleep &&
+  !present(u).captured &&
+  !present(u).detained &&
+  !present(u).bound;
+const onField = (u: BattleUnit|BattleNpc) => (u.hp ?? 100) > 0 && !u.departure && !u.fled;
+
+// This opt-in formation keeps the actual eight arrivals and two finite pieces.
+// The deployment model contains only public terrain and our arrival identities.
+// Every subsequent move, departure, shot, reload and dressing is a native order.
+export function createdUspallataBattery(
+  initial: BattleSnapshot,
+  {
+    reserveIds = [],
+    reserveDestination,
+    coordinateClinicalReserve = false,
+    report = () => {},
+  } = {},
+) {
+  const own = initial.units.filter((u) => u.side === 'player' && capable(u)),
+    reserves = new Set(reserveIds.map(String));
+  assert.ok(
+    [...reserves].every((id) => own.some((u) => u.id === id)),
+    'Each required reserve must be an actual capable arrival.',
+  );
+  assert.ok(
+    !reserves.size || typeof reserveDestination === 'string',
+    'Required reserves need the actual return destination.',
+  );
+  const guns = initial.artillery.filter((g) => g.side === 'player' && !g.stationed);
+  assert.equal(guns.length, 2);
+  assert.deepEqual(guns.map((g) => g.type).sort(), ['field8', 'swivel']);
+  const physician = own
+    .filter((u) => !reserves.has(u.id) && u.medical >= 60 && u.medkits > 0)
+    .sort((a, b) => b.medical - a.medical || b.medkits - a.medkits || idCompare(a, b))[0];
+  assert.ok(physician, 'The actual mountain physician needs skill and finite carried dressings.');
+  const crewCount = guns.reduce((count, gun) => count + artilleryProfile(initial, gun).crew, 0),
+    nonclinical = own.filter((u) => !reserves.has(u.id) && u.id !== physician.id && u.medical < 60);
+  // Keep the actual supplied physician. A second qualified arrival can remain
+  // at clinical cover only when the same force still supplies every gun contact
+  // and a real infantry screen. No additional person or dressing is issued.
+  const clinicalReserve =
+    coordinateClinicalReserve &&
+    nonclinical.length >= crewCount &&
+    own.length - reserves.size >= crewCount + 3
+      ? own
+          .filter((u) => !reserves.has(u.id) && u.id !== physician.id && u.medical >= 60)
+          .sort((a, b) => b.medical - a.medical || idCompare(a, b))[0]
+      : null;
+  const clinicalIds = new Set([physician.id, ...(clinicalReserve ? [clinicalReserve.id] : [])]);
+  const operators = own
+    .filter((u) => !reserves.has(u.id) && !clinicalIds.has(u.id))
+    .sort(
+      (a, b) =>
+        (clinicalReserve ? Number(a.medical >= 60) - Number(b.medical >= 60) : 0) ||
+        a.marksmanship - b.marksmanship ||
+        idCompare(a, b),
+    );
+  const crews = guns
+    .slice()
+    .sort((a, b) => artilleryProfile(initial, b).crew - artilleryProfile(initial, a).crew)
+    .map((gun) => {
+      const ids = operators.splice(0, artilleryProfile(initial, gun).crew).map((u) => u.id);
+      assert.equal(ids.length, artilleryProfile(initial, gun).crew);
+      return { gunId: gun.id, ids };
+    });
+  const screens = new Set(operators.map((u) => u.id)),
+    crewIds = new Set(crews.flatMap((crew) => crew.ids));
+  if (clinicalReserve) {
+    assert.ok(
+      crews.every((crew) => crew.ids.every((id) => nonclinical.some((u) => u.id === id))),
+      'The clinical reserve cannot replace a real nonclinical cannon contact.',
+    );
+  }
+  const roles = {
+    reserves: [...reserves],
+    physicianId: physician.id,
+    crews,
+    screens: [...screens],
+    ...(coordinateClinicalReserve ? { clinicalReserveId: clinicalReserve?.id ?? null } : {}),
+  };
+  const arrivalDirection = {
+    N: { x: 0, y: 1 },
+    E: { x: -1, y: 0 },
+    S: { x: 0, y: -1 },
+    W: { x: 1, y: 0 },
+  }[physician.entryEdge];
+  assert.ok(screens.size, 'The real battery needs an actual remaining infantry screen.');
+  const piece = (b: BattleSnapshot, id: string) => b.artillery.find((g) => g.id === id),
+    protectedIds = new Set([...reserves, ...clinicalIds]);
+  const emit = (event, action, battle) =>
+    report({
+      event,
+      action: structuredClone(action),
+      hour: battle.enteredHour,
+      turn: battle.turn,
+      elapsedSeconds: battle.elapsedSeconds,
+    });
+
+  function deploy(start: BattleSnapshot) {
+    recordRouteStrategicEvidence({
+      helper: 'createdUspallataDeployment',
+      stage: 'preparation-input',
+      campaign: null,
+      context: {
+        initial: start,
+        roles,
+        scope:
+          'Actual original executor construction before any deployment order; tactical boundary, campaign null. No extra entry, order or synchronization.',
+      },
+    });
+    let battle = start;
+    const model = sectorDeploymentModel(battle);
+    assert.ok(model);
+    assert.deepEqual(model.units.map((u) => u.id).sort(), own.map((u) => u.id).sort());
+    const occupied = new Set(guns.map((g: TacticalPoint) => `${g.x},${g.y}`)),
+      placements = [];
+    const place = (id, accept, score, fallback = null) => {
+      const row = model.units.find((u) => u.id === id),
+        available = model.entryCells[present(row).edge].filter((p: TacticalPoint) => !occupied.has(`${p.x},${p.y}`));
+      let points = available.filter(accept);
+      if (!points.length && fallback) {
+        points = available.filter(fallback);
+      }
+      points.sort((a: TacticalPoint, b: TacticalPoint) => score(a) - score(b) || a.y - b.y || a.x - b.x);
+      const point = points[0];
+      assert.ok(point, `A real arrival cell must supply ${id}'s battery role.`);
+      const action = { type: 'placeDeployment', unitIds: [id], x: point.x, y: point.y };
+      battle = sectorDeploymentAction(battle, action);
+      assert.equal(battle.lastError, null, battle.lastError);
+      occupied.add(`${point.x},${point.y}`);
+      placements.push({ id, ...point });
+      emit('uspallataDeploymentOrder', action, battle);
+    };
+    for (const id of reserves) {
+      const row = model.units.find((u) => u.id === id),
+        exit = start.exits.find((e) => e.destination === reserveDestination && e.edge === present(row).edge);
+      assert.ok(exit, 'A required reserve needs its real return edge.');
+      place(
+        id,
+        (p: TacticalPoint) => boundaryPassable(start, p, exit.edge) && guns.every((g) => distance(p, g) > 2.5),
+        (p: TacticalPoint) => -Math.min(...guns.map((g) => distance(p, g))),
+      );
+    }
+    // Place the small crew first, keeping the three heavy crew slots distinct.
+    for (const crew of crews.slice().sort((a, b) => a.ids.length - b.ids.length)) {
+      for (const id of crew.ids) {
+        const gun = piece(start, crew.gunId);
+        place(
+          id,
+          (p: TacticalPoint) =>
+            distance(p, gun) <= 1.5 &&
+            artilleryContact(start, { ...own.find((u) => u.id === id), ...p }, gun) &&
+            (crew.ids.length > 1 ||
+              guns
+                .filter((other) => other.id !== present(gun).id)
+                .every((other) => distance(p, other) > 1.5)),
+          (p: TacticalPoint) => distance(p, gun),
+        );
+      }
+    }
+    // Leave the small piece's two-step separation lane free of our other roles.
+    const small = guns.find((g) => g.type === 'swivel'),
+      heavy = guns.find((g) => g.type === 'field8'),
+      smallRole = crews.find((c) => c.gunId === present(small).id),
+      smallPosition = placements.find((p) => p.id === present(smallRole).ids[0]);
+    const delta =
+      Math.abs(present(small).y - present(heavy).y) >= Math.abs(present(small).x - present(heavy).x)
+        ? { x: 0, y: Math.sign(present(small).y - present(heavy).y) }
+        : { x: Math.sign(present(small).x - present(heavy).x), y: 0 };
+    const clearance = new Set(
+      [1, 2].flatMap((step) =>
+        [small, smallPosition].map((p: TacticalPoint) => `${p.x + step * delta.x},${p.y + step * delta.y}`),
+      ),
+    );
+    const outsideCrews = (p: TacticalPoint) =>
+      !clearance.has(`${p.x},${p.y}`) &&
+      guns.every((g) => distance(p, g) > (g.type === 'swivel' ? 2.5 : 1.5));
+    const cover = (p: TacticalPoint|null|undefined) => surfaceAt(start, p)?.cover ?? 0;
+    place(
+      present(physician).id,
+      outsideCrews,
+      (p: TacticalPoint) =>
+        (clinicalReserve ? -cover(p) * 100 : 0) +
+        Math.min(...placements.filter((p) => crewIds.has(p.id)).map((q) => distance(p, q))),
+    );
+    if (clinicalReserve) {
+      const primary = placements.find((p) => p.id === present(physician).id);
+      place(
+        clinicalReserve.id,
+        (p: TacticalPoint) =>
+          outsideCrews(p) &&
+          sameSurface(p, primary) &&
+          distance(p, primary) <= 1.5 &&
+          cover(p) >= cover(primary),
+        (p: TacticalPoint) => -cover(p) * 100 + distance(p, primary),
+        outsideCrews,
+      );
+    }
+    for (const id of screens) {
+      const actor = own.find((u) => u.id === id),
+        view = publicRouteView(start, actor);
+      // A narrow real entry can need the preferred separation lane. Keep this
+      // screen outside actual cannon contact; paid separation still checks every
+      // translated gun/crew cell and can choose a different open direction.
+      place(
+        id,
+        (p: TacticalPoint) => outsideCrews(p) && guns.some((g) => distance(p, g) <= 5),
+        (p: TacticalPoint|null|undefined) =>
+          Math.min(...guns.map((g) => distance(p, g))) - (surfaceAt(start, p)?.cover ?? 0) * 0.1,
+        (p: TacticalPoint) =>
+          guns.some((g) => distance(p, g) <= 5) &&
+          guns.every((g) => !artilleryContact(view, { ...actor, ...p }, g)),
+      );
+    }
+    const action = { type: 'confirmDeployment' };
+    battle = sectorDeploymentAction(battle, action);
+    assert.equal(battle.lastError, null, battle.lastError);
+    emit('uspallataDeploymentOrder', action, battle);
+    assert.deepEqual(battle.artillery, start.artillery);
+    assert.equal(
+      new Set(
+        battle.units
+          .filter((u: { side: string; }) => u.side === 'player')
+          .map((u: TacticalPoint) => `${u.tacticalLevel ?? 0}:${u.x},${u.y}`),
+      ).size,
+      own.length,
+    );
+    report({
+      event: 'uspallataBatteryRoles',
+      ...structuredClone(roles),
+      placements,
+      campaignBattleId: battle.battleId,
+    });
+    return battle;
+  }
+
+  function route(b, u: BattleUnit, predicate, score, budget = 20) {
+    if (!capable(u) || u.knockedDown || u.entangled) {
+      return null;
+    }
+    const view = publicRouteView(b, u),
+      points = getReachable(view, u).filter(
+        (p) =>
+          p.cost > 0 &&
+          p.cost <= Math.min(budget, u.ap) &&
+          sameSurface(p, u) &&
+          p.path.every((step) => sameSurface(step, u)) &&
+          predicate(p, view),
+      );
+    points.sort((a: TacticalPoint, c: TacticalPoint) => score(a) - score(c) || a.cost - c.cost || a.y - c.y || a.x - c.x);
+    return points[0] ? { type: 'move', unitId: u.id, ...spacePoint(points[0]) } : null;
+  }
+  // The initiator sets the rate for all coupled crew work. Quote the complete
+  // actual field: an off-role helper cannot be removed to admit a fixed crew.
+  function reloadInitiator(b: BattleSnapshot, gun, crew) {
+    return (
+      crew.ids
+        .map((id: string) => b.units.find((actor) => actor.id === id))
+        .filter(
+          (actor: BattleUnit) =>
+            capable(actor) &&
+            !actor.knockedDown &&
+            !actor.entangled &&
+            interruptAvailable(b, actor) &&
+            actor.ap >= 3 &&
+            artilleryContact(b, actor, gun),
+        )
+        .map((actor) => ({ actor, quote: artilleryReloadPreview(b, actor, gun) }))
+        .filter(
+          ({ quote }) =>
+            quote.valid && quote.crew.every((id: string) => crew.ids.includes(id) && !protectedIds.has(id)),
+        )
+        .sort((a, c) => a.quote.rate - c.quote.rate || idCompare(a.actor, c.actor))[0]?.actor ??
+      null
+    );
+  }
+  function separation(b: BattleSnapshot, u: BattleUnit) {
+    const gun = b.artillery.find((g) => g.side === 'player' && g.type === 'swivel'),
+      others = b.artillery.filter((g) => g.side === 'player' && g.id !== gun?.id);
+    if (!gun || others.every((g) => distance(gun, g) >= 3)) {
+      return null;
+    }
+    const role = crews.find((c) => c.gunId === gun.id);
+    if (!present(role).ids.includes(u.id)) {
+      return null;
+    }
+    const plan = artilleryCrewPlan(b, u, gun, artilleryCosts(b, u, gun).move);
+    if (plan.reason || plan.crew.some((id) => !present(role).ids.includes(id))) {
+      return null;
+    }
+    const view = publicRouteView(b, u),
+      members = b.units.filter((actor) => plan.crew.includes(actor.id)),
+      gain = (p: TacticalPoint) => Math.min(...others.map((g) => distance(p, g))),
+      current = gain(gun);
+    const candidates = [
+      [0, -1],
+      [0, 1],
+      [-1, 0],
+      [1, 0],
+    ]
+      .map(([dx, dy]) => ({ dx, dy, x: gun.x + present(dx), y: gun.y + present(dy) }))
+      .filter((p) => gain(p) > current && gain(p) <= 5)
+      .filter((p) => {
+        const translated = [
+          { from: gun, to: p },
+          ...members.map((actor: TacticalPoint) => ({
+            from: actor,
+            to: { x: actor.x + present(p.dx), y: actor.y + present(p.dy) },
+          })),
+        ];
+        return (
+          new Set(translated.map(({ to }) => `${to.x},${to.y}`)).size === translated.length &&
+          translated.every(({ from, to }) => {
+            const tile = surfaceAt(view, to);
+            return (
+              tile &&
+              !tile.blocked &&
+              !['water', 'cliff'].includes(tile.type) &&
+              !propBlocksAt(view, to.x, to.y) &&
+              !wallMovementBlocked(view, from, to) &&
+              !view.units.some(
+                (actor) => onField(actor) && !plan.crew.includes(actor.id) && sameCell(actor, to),
+              ) &&
+              !(view.npcs ?? []).some((actor) => onField(actor) && sameCell(actor, to)) &&
+              !view.artillery.some((g) => g.id !== gun.id && sameCell(g, to))
+            );
+          })
+        );
+      })
+      .sort((a: TacticalPoint, c: TacticalPoint) => gain(c) - gain(a) || a.y - c.y || a.x - c.x);
+    return candidates[0]
+      ? {
+          type: 'artilleryMove',
+          unitId: u.id,
+          artilleryId: gun.id,
+          x: candidates[0].x,
+          y: candidates[0].y,
+        }
+      : null;
+  }
+  // Medical progress keeps the doctor's current cover and known hostile sight
+  // boundary, including a paid rise at the original cell. This is a public
+  // route quote only; no enemy reaction or completed treatment is predicted.
+  function medicalPathSafety(b: BattleSnapshot, u: TacticalPoint|null|undefined) {
+    const view = publicRouteView(b, u),
+      cover = surfaceAt(view, u)?.cover ?? 0,
+      contacts = view.units
+        .filter((actor) => actor.side !== present(u).side && capable(actor))
+        .map((actor) => ({ actor, seesCurrent: hasLineOfSight(view, actor, u) }));
+    const safe = (actor, p) =>
+      sameSurface(p, u) &&
+      (surfaceAt(view, p)?.cover ?? 0) >= cover &&
+      contacts.every(
+        (contact) =>
+          distance(p, contact.actor) > 2.5 &&
+          (!hasLineOfSight(view, contact.actor, { ...actor, ...spacePoint(p) }) ||
+            contact.seesCurrent),
+      );
+    return { view, safe };
+  }
+  function medicalApproachQuote(b, u: BattleUnit, patient, stance, movementMode, safety) {
+    const { view, safe } = safety,
+      paid = stanceCost(u, stance),
+      actor = { ...u, stance, movementMode, ap: u.ap - paid },
+      hand = actionCosts(b, u).weapon;
+    if (!safe(actor, u)) {
+      return { paid, actor, points: [], goal: null };
+    }
+    const points = getReachable(view, actor).filter(
+      (p) => sameSurface(p, u) && p.path.every((step) => sameSurface(step, u)),
+    );
+    const goals = points
+      .filter(
+        (p) =>
+          p.cost > 0 &&
+          medicalUsePreview(
+            view,
+            { ...actor, ...spacePoint(p), activeSlot: 'medical', ap: actor.ap - p.cost - hand },
+            patient,
+          ).allowed &&
+          p.path.every((step) => safe(actor, step)),
+      )
+      .sort((a: TacticalPoint, c: TacticalPoint) => a.cost - c.cost || a.y - c.y || a.x - c.x);
+    return { paid, actor, points, goal: goals[0] ?? null };
+  }
+  function medicalPrefix(quote, budget, safety) {
+    if (!quote.goal) {
+      return null;
+    }
+    return (
+      quote.goal.path
+        .map((step) => quote.points.find((p) => sameCell(p, step)))
+        .filter(
+          (p) =>
+            p &&
+            p.cost > 0 &&
+            quote.paid + p.cost <= budget &&
+            p.path.every((step) => safety.safe(quote.actor, step)),
+        )
+        .at(-1) ?? null
+    );
+  }
+  function uprightMedicalApproach(b, u: BattleUnit, patient, budget, safety) {
+    if (u.stance !== 'prone' || u.mounted || !u.medkits || !sameSurface(u, patient)) {
+      return null;
+    }
+    // These are public quotes, not a simulated posture or completed approach.
+    // Pay the posture inside one Native move and re-read the returned battle.
+    const crawling = medicalApproachQuote(b, u, patient, u.stance, u.movementMode, safety),
+      walking = medicalApproachQuote(b, u, patient, 'standing', 'walk', safety);
+    if (
+      !walking.goal ||
+      (crawling.goal && walking.paid + walking.goal.cost >= crawling.goal.cost)
+    ) {
+      return null;
+    }
+    const point = medicalPrefix(walking, budget, safety);
+    return point ? { type: 'move', unitId: u.id, ...spacePoint(point), movement: 'walk' } : null;
+  }
+  // Follow the current second screen, using only quoted public geometry.
+  // A projected gait is a cost/safety quote, never an executed posture.
+  function physicianScreenFollow(b: BattleSnapshot, u: BattleUnit, { coverGainOnly = false } = {}) {
+    if (
+      !arrivalDirection ||
+      !u.medkits ||
+      u.energy <= 10 ||
+      u.mounted ||
+      u.knockedDown ||
+      u.entangled ||
+      b.phase !== 'player' ||
+      b.reactionStack?.length
+    ) {
+      return null;
+    }
+    const direction = arrivalDirection,
+      progress = (p: TacticalPoint) => p.x * direction.x + p.y * direction.y;
+    const current = b.units
+      .filter(
+        (actor) =>
+          screens.has(actor.id) && actor.side === u.side && capable(actor) && sameSurface(actor, u),
+      )
+      .sort(
+        (a, c) => progress(c) - progress(a) || c.marksmanship - a.marksmanship || idCompare(a, c),
+      );
+    if (!current.length) {
+      return null;
+    }
+    const lead = current[Math.min(1, current.length - 1)],
+      goal = { x: present(lead).x - 2 * direction.x, y: present(lead).y - 2 * direction.y };
+    if (distance(u, goal) <= 2 && progress(u) <= progress(lead)) {
+      return null;
+    }
+    const view = publicRouteView(b, u),
+      contacts = view.units.filter((actor) => actor.side !== u.side && capable(actor)),
+      cover = (p: TacticalPoint|null|undefined) => surfaceAt(view, p)?.cover ?? 0,
+      costs = actionCosts(b, u),
+      budget = Math.min(16, u.ap - costs.weapon - costs.heal);
+    if (budget <= 0) {
+      return null;
+    }
+    const safe = (actor, p) =>
+      sameSurface(p, u) &&
+      progress(p) <= progress(lead) &&
+      cover(p) >= cover(u) &&
+      view.artillery
+        .filter((gun) => gun.side === u.side)
+        .every((gun) => !artilleryContact(view, { ...actor, ...spacePoint(p) }, gun)) &&
+      contacts.every(
+        (contact) =>
+          distance(p, contact) > 2.5 &&
+          (!hasLineOfSight(view, contact, { ...actor, ...spacePoint(p) }) ||
+            hasLineOfSight(view, contact, u)),
+      );
+    const candidates = [];
+    for (const walking of [false, true]) {
+      if (walking && u.stance === 'standing' && u.movementMode === 'walk') {
+        continue;
+      }
+      const paid = walking ? stanceCost(u, 'standing') : 0,
+        actor = walking ? { ...u, stance: 'standing', movementMode: 'walk', ap: u.ap - paid } : u;
+      if (paid >= budget || !safe(actor, u)) {
+        continue;
+      }
+      for (const point of getReachable(view, actor)) {
+        if (
+          point.cost <= 0 ||
+          point.cost + paid > budget ||
+          (coverGainOnly && cover(point) <= cover(u)) ||
+          distance(point, goal) >= distance(u, goal) ||
+          !point.path.every((p) => safe(actor, p))
+        ) {
+          continue;
+        }
+        let from = u,
+          energy = 0;
+        for (const step of point.path) {
+          const factor = from.x !== step.x && from.y !== step.y ? 1.4 : 1,
+            used = movementEnergy(actor, surfaceAt(view, step), b.mode === 'exploration') * factor;
+          energy += b.mode === 'exploration' ? used : Math.ceil(used);
+          from = step;
+        }
+        if (energy >= u.energy - 10) {
+          continue;
+        }
+        candidates.push({ point, paid, walking });
+      }
+    }
+    candidates.sort(
+      (a, c) =>
+        distance(a.point, goal) - distance(c.point, goal) ||
+        cover(c.point) - cover(a.point) ||
+        a.paid + a.point.cost - c.paid - c.point.cost ||
+        Number(a.walking) - Number(c.walking) ||
+        a.point.y - c.point.y ||
+        a.point.x - c.point.x,
+    );
+    const next = candidates[0];
+    return next
+      ? {
+          type: 'move',
+          unitId: u.id,
+          ...spacePoint(next.point),
+          ...(next.walking ? { movement: 'walk' } : {}),
+        }
+      : null;
+  }
+  function shareClinicalDressing(b: BattleSnapshot, u: BattleUnit|undefined) {
+    if (!clinicalReserve || present(u).id !== present(physician).id || present(u).bleeding) {
+      return null;
+    }
+    const target = b.units.find((actor) => actor.id === clinicalReserve.id);
+    if (!capable(target) || present(target).medkits > 0) {
+      return null;
+    }
+    // The first two actual primary dressings are the entire handover budget.
+    // Earlier medical use also consumes that budget; a later empty reserve does
+    // not cause another allocation. The primary always retains its last piece.
+    const budget = Math.max(
+        0,
+        Math.min(2, present(physician).medkits - 1) - Math.max(0, present(physician).medkits - present(u).medkits),
+      ),
+      count = Math.min(budget, present(u).medkits - 1);
+    if (count < 1) {
+      return null;
+    }
+    const quote = transferPreview(publicRouteView(b, u), u, target, 'medkits', count);
+    if (
+      !quote.valid ||
+      quote.chance !== 100 ||
+      !['give', 'relay'].includes(quote.kind) ||
+      quote.route.slice(1, -1).some((step) => crewIds.has(step.id) || reserves.has(step.id))
+    ) {
+      return null;
+    }
+    return {
+      type: 'transfer',
+      unitId: present(u).id,
+      targetId: present(target).id,
+      item: 'medkits',
+      count,
+      transferKind: quote.kind,
+      transferRoute: quote.route.map((step) => step.id),
+    };
+  }
+  const controller = (b: BattleSnapshot, u: BattleUnit) => {
+    if (!capable(u)) {
+      return null;
+    }
+    const normal = tucumanCombatOrder(b, u);
+    if (normal?.type === 'useItem' || normal?.slot === 'medical' || u.knockedDown || u.entangled) {
+      return normal;
+    }
+    const pendingReserve = b.units.some(
+      (actor) => reserves.has(actor.id) && capable(actor) && !actor.departure,
+    );
+    if (reserves.has(u.id)) {
+      const exit = b.exits.find((e) => e.destination === reserveDestination),
+        action = exit && { type: 'exit', unitIds: [u.id], exitId: exit.id };
+      return action && exitPreview(b, action).available ? action : null;
+    }
+    if (pendingReserve) {
+      return null;
+    }
+    const small = b.artillery.find((g) => g.side === 'player' && g.type === 'swivel'),
+      apart =
+        small &&
+        b.artillery
+          .filter((g) => g.side === 'player' && g.id !== small.id)
+          .every((g) => distance(small, g) >= 3);
+    if (!apart) {
+      return separation(b, u);
+    }
+    const transfer = shareClinicalDressing(b, u);
+    if (transfer) {
+      return transfer;
+    }
+    if (clinicalIds.has(u.id)) {
+      if (clinicalReserve && u.id === clinicalReserve.id && u.stance === 'standing' && !u.medkits) {
+        const primary = b.units.find((actor) => actor.id === physician.id);
+        // Do not spend a rise before the current, payable two-kit handover. This
+        // is a hold only; the primary must still perform its ordinary transfer.
+        if (capable(primary) && shareClinicalDressing(b, primary)?.count === 2) {
+          return null;
+        }
+      }
+      // Paired clinicians can leave an exposed arrival cell through an actual
+      // cover gain before longer aid approaches or rifle work. Adjacent Native
+      // aid and the same finite handover have already retained their priority.
+      if (clinicalReserve) {
+        const cover = physicianScreenFollow(b, u, { coverGainOnly: true });
+        if (cover) {
+          return cover;
+        }
+      }
+      const patients = b.units
+        .filter(
+          (p) =>
+            p.side === u.side &&
+            p.id !== u.id &&
+            medicalPatientAvailable(p) &&
+            (p.bleeding > 0 || criticalFirstAidNeeded(p)),
+        )
+        .sort((a, c) => a.hp - c.hp || idCompare(a, c));
+      const safety = medicalPathSafety(b, u);
+      for (const patient of patients) {
+        const budget = Math.min(16, u.ap - actionCosts(b, u).weapon - actionCosts(b, u).heal),
+          upright = uprightMedicalApproach(b, u, patient, budget, safety);
+        if (upright) {
+          return upright;
+        }
+        const quote = medicalApproachQuote(b, u, patient, u.stance, u.movementMode, safety),
+          point = medicalPrefix(quote, budget, safety);
+        if (point) {
+          return { type: 'move', unitId: u.id, ...spacePoint(point) };
+        }
+      }
+      const shot = usefulRouteRifleShot(publicRouteView(b, u), u);
+      if (shot) {
+        return shot;
+      }
+      if (!patients.length && !clinicalReserve) {
+        const follow = physicianScreenFollow(b, u);
+        if (follow) {
+          return follow;
+        }
+      }
+      return u.stance !== 'prone' && u.ap >= stanceCost(u, 'prone')
+        ? { type: 'stance', unitId: u.id, stance: 'prone' }
+        : null;
+    }
+    const crew = crews.find((c) => c.ids.includes(u.id));
+    if (crew) {
+      const gun = piece(b, crew.gunId);
+      if (!gun) {
+        return null;
+      }
+      if (artilleryContact(b, u, gun)) {
+        if (u.stance === 'prone') {
+          return u.ap >= stanceCost(u, 'crouched')
+            ? { type: 'stance', unitId: u.id, stance: 'crouched' }
+            : null;
+        }
+        const targets = b.units.filter(
+            (v) => v.side !== u.side && capable(v) && teamCanSee(b, u.side, v),
+          ),
+          action = teamArtilleryOrder({ ...b, artillery: [gun] }, u, targets);
+        if (action?.type?.startsWith('artillery')) {
+          if (action.type === 'artilleryReload') {
+            const initiator = reloadInitiator(b, gun, crew);
+            if (initiator) {
+              return initiator.id === u.id ? action : null;
+            }
+          }
+          const kind = { artillery: 'fire', artilleryPivot: 'pivot', artilleryMove: 'move' }[
+              action.type
+            ],
+            plan =
+              action.type === 'artilleryReload'
+                ? artilleryReloadPreview(b, u, gun)
+                : artilleryCrewPlan(b, u, gun, artilleryCosts(b, u, gun)[kind]);
+          if (
+            !plan.reason &&
+            plan.crew.every((id) => crew.ids.includes(id) && !protectedIds.has(id))
+          ) {
+            return action;
+          }
+        }
+        // Finish an admitted close blade defence before restoring the rifle.
+        // The current Native quote permits no approach away from this gun post.
+        if (u.activeSlot === 'blade') {
+          const view = publicRouteView(b, u),
+            target = view.units
+              .filter((v) => v.side !== u.side && meleePreview(view, u, v).valid)
+              .sort((a, c) => a.hp - c.hp || distance(u, a) - distance(u, c) || idCompare(a, c))[0];
+          if (target) {
+            return { type: 'melee', unitId: u.id, targetId: target.id };
+          }
+        }
+        // A carried primary needs its real activation and maintenance when the
+        // finite cannon has no payable work. Keeping the crew does not remove it.
+        if (
+          u.activeSlot !== 'primary' &&
+          hasFirearm({ ...u, activeSlot: 'primary' }) &&
+          firearmServiceable(u) &&
+          (u.loaded > 0 || availableAmmunition(u) > 0) &&
+          u.ap >= actionCosts(b, u).weapon
+        ) {
+          return { type: 'weapon', unitId: u.id, slot: 'primary' };
+        }
+        if (['fire', 'reload', 'reprime', 'weapon'].includes(normal?.type)) {
+          return normal;
+        }
+        const shot = usefulRouteRifleShot(publicRouteView(b, u), u);
+        if (shot) {
+          return shot;
+        }
+        return u.stance === 'standing' && u.ap >= stanceCost(u, 'crouched')
+          ? { type: 'stance', unitId: u.id, stance: 'crouched' }
+          : null;
+      }
+      return route(
+        b,
+        u,
+        (p: TacticalPoint) => distance(p, gun) < distance(u, gun),
+        (p: TacticalPoint) =>
+          Number(!artilleryContact(publicRouteView(b, u), { ...u, ...p }, gun)) * 100 +
+          distance(p, gun),
+      );
+    }
+    if (['fire', 'reload', 'reprime', 'weapon', 'useItem'].includes(normal?.type)) {
+      return normal;
+    }
+    if (normal?.type === 'stance' && usefulRouteFiringPosture(b, u, normal)) {
+      return normal;
+    }
+    const view = publicRouteView(b, u),
+      shot = usefulRouteRifleShot(view, u);
+    if (shot) {
+      return shot;
+    }
+    const goal = { x: Math.floor(b.width * 0.65), y: Math.floor(b.height * 0.5) },
+      cover = (p: TacticalPoint|null|undefined) => surfaceAt(b, p)?.cover ?? 0;
+    // An optional screen bound cannot trade away current cover or the loaded
+    // rifle's Native unready base fire cost. Turning, aim and a useful lane still
+    // need a fresh actual quote after the move; this reserves no completed shot.
+    const fireReserve =
+      u.loaded > 0 && !u.jammed && hasFirearm(u) && firearmServiceable(u)
+        ? actionCosts(b, { ...u, weaponReady: false }).fire
+        : 0;
+    const advance =
+      clinicalReserve && u.hp < u.maxHp
+        ? null
+        : route(
+            b,
+            u,
+            (p: TacticalPoint) =>
+              b.artillery.some((g) => g.side === 'player' && distance(p, g) <= 6) &&
+              distance(p, goal) < distance(u, goal) &&
+              cover(p) >= cover(u) &&
+              p.path.every((step) => cover(step) >= cover(u)) &&
+              !view.units.some((v) => v.side !== u.side && capable(v) && distance(p, v) <= 2.5),
+            (p: TacticalPoint) => distance(p, goal) - cover(p) * 0.2,
+            Math.min(20, Math.max(0, u.ap - fireReserve)),
+          );
+    if (advance) {
+      return advance;
+    }
+    return u.stance !== 'prone' && u.ap >= stanceCost(u, 'prone')
+      ? { type: 'stance', unitId: u.id, stance: 'prone' }
+      : null;
+  };
+  return { deploy, controller, roles };
+}

@@ -11,6 +11,8 @@ export interface ReachableCell extends TacticalPoint {
 }
 
 export interface HeldWeaponProfile {
+  projectileEnergy?: import('../../campaign-format/types.ts').ProjectileEnergy;
+  projectileAirDrag?: import('../../campaign-format/types.ts').ProjectileAirDrag;
   id: string | number;
   name: string;
   damage: number;

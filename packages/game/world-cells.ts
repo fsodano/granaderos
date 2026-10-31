@@ -1,6 +1,7 @@
 import type { WorldCell, WorldDefinition } from '../campaign-format/types.ts';
 import type { CampaignContext } from './public/compatibility-types.ts';
 import type { CampaignSnapshot } from './public/campaign-types.ts';
+type TravelMapState = Pick<CampaignSnapshot, 'location' | 'hour' | 'sectors' | 'contentCampaign'>;
 type RoadDirection = 'N' | 'E' | 'S' | 'W';
 type RoadSegment = Readonly<{ from: string; to: string }>;
 const neighboringOffsets = [
@@ -35,7 +36,7 @@ function compileWorldContext(definition: WorldDefinition) {
   const locationId = (id: string) => worldCell(id)?.location ?? null;
   const campaignPlace = (id: string) => localities.get(id) ?? byLocation.get(id) ?? null;
   const validWorldLocation = (id: string) => Boolean(byLocation.get(id)?.land);
-  function worldOwner(state: CampaignSnapshot, id: string) {
+  function worldOwner(state: TravelMapState, id: string) {
     const cell = worldCell(id);
     return cell?.locality
       ? (state.sectors[cell.locality]?.owner ?? null)
@@ -43,7 +44,7 @@ function compileWorldContext(definition: WorldDefinition) {
         ? 'neutral'
         : null;
   }
-  function cellTravelReason(state: CampaignSnapshot, id: string) {
+  function cellTravelReason(state: TravelMapState, id: string) {
     const cell = worldCell(id);
     if (!cell) {
       return 'La celda no existe.';
@@ -59,7 +60,7 @@ function compileWorldContext(definition: WorldDefinition) {
     }
     return null;
   }
-  function cellWinterClosed(state: CampaignSnapshot, id: string) {
+  function cellWinterClosed(state: TravelMapState, id: string) {
     const cell = worldCell(id),
       winter = definition.travel?.winter,
       month = scenarioFor(state).calendar(state).month;
@@ -273,7 +274,7 @@ function compileWorldContext(definition: WorldDefinition) {
     return mode === 'horse' ? Math.max(1, Math.floor(base / 2)) : base;
   };
   function cellTravelPlan(
-    state: CampaignSnapshot,
+    state: TravelMapState,
     destination: string,
     mode = 'march',
   ): { path: string[]; hours: number; reason: string | null } {
@@ -392,11 +393,11 @@ export const previousCellStepHours = (
   mode = 'march',
   context: CampaignContext = null,
 ) => worldContext(context).previousCellStepHours(id, mode);
-export const worldOwner = (state: CampaignSnapshot, id: string) =>
+export const worldOwner = (state: TravelMapState, id: string) =>
   worldContext(state).worldOwner(state, id);
-export const cellTravelReason = (state: CampaignSnapshot, id: string) =>
+export const cellTravelReason = (state: TravelMapState, id: string) =>
   worldContext(state).cellTravelReason(state, id);
-export const cellWinterClosed = (state: CampaignSnapshot, id: string) =>
+export const cellWinterClosed = (state: TravelMapState, id: string) =>
   worldContext(state).cellWinterClosed(state, id);
-export const cellTravelPlan = (state: CampaignSnapshot, destination: string, mode = 'march') =>
+export const cellTravelPlan = (state: TravelMapState, destination: string, mode = 'march') =>
   worldContext(state).cellTravelPlan(state, destination, mode);

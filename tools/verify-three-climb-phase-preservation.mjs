@@ -15,7 +15,7 @@ import {
   snapshot,
   supportSkin,
   lowestSurface,
-} from '../tests/helpers/climb-native-fixture.mjs';
+} from '../tests/helpers/climb-native-fixture.ts';
 const { ActorRuntime } = await import('../apps/web/lib/three/actor-runtime.ts');
 const { TILE_METRES } = await import('../apps/web/lib/three/projection.ts');
 import { ladderGeometry, referenceClimbFraction } from '../packages/game/climb-geometry.ts';

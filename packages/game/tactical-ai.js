@@ -1,6 +1,6 @@
 import { ammoCount, ammunitionLoadsFor } from './ammo-types.js';
-import { chooseArtilleryAction, holdsArtilleryPost } from './tactical-ai-artillery.js';
-import { chooseGrenadeThrow } from './tactical-ai-grenades.js';
+import { chooseArtilleryAction, holdsArtilleryPost } from './tactical-ai-artillery.ts';
+import { chooseGrenadeThrow } from './tactical-ai-grenades.ts';
 import { sameSurface, spaceKey, surfaceAt, tacticalLevel } from './tactical-space.js';
 import { atHand, moveOrder, planningPoint } from './tactical-planning-space.ts';
 import { chooseSupplySharingAction } from './tactical-ai-sharing.js';

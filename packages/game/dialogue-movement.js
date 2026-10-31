@@ -1,3 +1,5 @@
+import { orderFor, applyDialogueMovements } from './dialogue-movement-projection.ts';
+export { applyDialogueMovements, projectDialogueMovements } from './dialogue-movement-projection.ts';
 import { contentCellIds } from './content-map.js';
 import { characterForOperative, isWorldCharacter } from './content-character-ids.ts';
 import { npcRoutes } from './npc-ai.js';
@@ -99,20 +101,6 @@ export function recordDialogueMovement(s, npc, node, choice, quote) {
     secondOfHour: s.secondOfHour ?? 0,
   });
 }
-function orderFor(s, scene, n) {
-  const id = character(s, n),
-    sector = scene.sectorId ?? scene.sector;
-  if (scene.sceneId || s.recruited.includes(Number(n.operativeId))) {
-    return undefined;
-  }
-  const orders = s.dialogueMovements ?? [];
-  for (let i = orders.length - 1; i >= 0; i--) {
-    const o = orders[i];
-    if (o.character === id && o.sector === sector && o.revision === n.presenceRevision) {
-      return o.target === null ? undefined : { order: i, target: { ...o.target } };
-    }
-  }
-}
 // This is current physical presence, not a timer or a historical completion flag.
 export function atDialogueMeeting(s, characterId, battle) {
   const request = s.pendingBattle;
@@ -144,28 +132,6 @@ export function atDialogueMeeting(s, characterId, battle) {
   return Boolean(
     order && same(n.scriptedMove, order) && n.x === order.target.x && n.y === order.target.y,
   );
-}
-export function applyDialogueMovements(s, scene) {
-  for (const n of scene.npcs ?? []) {
-    const order = orderFor(s, scene, n);
-    if (order) {
-      n.scriptedMove = order;
-    } else if (n.scriptedMove) {
-      delete n.scriptedMove;
-      if (n.ai) {
-        delete n.ai.destination;
-        n.ai.wait = 0;
-        if (!n.ai.threat) {
-          n.ai.activity = 'roaming';
-        }
-      }
-    }
-  }
-  return scene;
-}
-/** @param {import('./public/compatibility-types.ts').BattleSnapshot} battle @returns {import('./public/compatibility-types.ts').BattleSnapshot} */
-export function projectDialogueMovements(s, battle) {
-  return s.dialogueMovements?.length ? applyDialogueMovements(s, structuredClone(battle)) : battle;
 }
 export function synchronizeDialogueMovements(s) {
   for (const scene of [

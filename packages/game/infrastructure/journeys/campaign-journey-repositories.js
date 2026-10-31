@@ -1,6 +1,6 @@
-import { nextRevision } from '../shared/revision.js';
+import { nextRevision } from '../shared/revision.ts';
 import { JourneyRefusal, JourneyRefusalCode } from '../../domain/journeys/arrival-decision.ts';
-import { JourneySnapshotMapper } from './journey-snapshot-mapper.js';
+import { JourneySnapshotMapper } from './journey-snapshot-mapper.ts';
 
 export class CampaignJourneyTransaction {
   #campaign;

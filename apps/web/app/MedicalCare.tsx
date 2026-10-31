@@ -24,7 +24,7 @@ import {
   workStatus,
   repairEquipmentQueue,
 } from '../../../packages/game/assignments.js';
-import { sleepNeedStatus } from '../../../packages/game/sleep-needs.js';
+import { sleepNeedStatus } from '../../../packages/game/sleep-needs.ts';
 import { sleepOrderReason } from '../../../packages/game/sleep.js';
 import { moraleStatus } from '../../../packages/game/morale.js';
 import { equipmentInventoryUsage } from '../../../packages/game/equipment.js';

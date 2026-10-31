@@ -1,4 +1,6 @@
-import { nextRevision } from './infrastructure/shared/revision.js';
+import { TRAVEL_REASONS, assaultNeighbor, travelLegHours, supportedTravelLegHours, squadHasHorses, pathTo, legIssue, queueSquadTravel, retainJourney } from './squad-travel-planning.ts';
+export { TRAVEL_REASONS, assaultNeighbor, travelLegHours, supportedTravelLegHours, squadHasHorses, queueSquadTravel } from './squad-travel-planning.ts';
+import { nextRevision } from './infrastructure/shared/revision.ts';
 import {
   Journey,
   JourneyPurpose,
@@ -7,7 +9,7 @@ import {
 } from './domain/journeys/journey.ts';
 import { JourneyRoutePlanner } from './domain/journeys/journey-route-planner.ts';
 import { executeJourneyCommand } from './infrastructure/journeys/journey-refusal-messages.js';
-import { JourneySnapshotMapper } from './infrastructure/journeys/journey-snapshot-mapper.js';
+import { JourneySnapshotMapper } from './infrastructure/journeys/journey-snapshot-mapper.ts';
 import {
   CampaignJourneyTransaction,
   CampaignFightOnArrivalRepository,
@@ -51,14 +53,7 @@ const progressSeconds = (j) => j.elapsed * 3600 + (j.elapsedSecond ?? 0);
 const campaignSeconds = (s) => s.hour * 3600 + (s.secondOfHour ?? 0);
 const journeyMapper = new JourneySnapshotMapper();
 const restoreJourney = (campaign, squad) => journeyMapper.restore(squad, campaignSeconds(campaign));
-const retainJourney = (
-  squad,
-  journey,
-  acceptedRevision = nextRevision(squad.journeyRevision ?? 0),
-) => {
-  squad.journey = journeyMapper.serialize(journey);
-  squad.journeyRevision = acceptedRevision;
-};
+
 
 /** @param {import('./public/campaign-types.ts').CampaignSnapshot} campaign
  * @returns {import("./public/campaign-types.ts").CampaignArrivalDecision[]} */
@@ -208,222 +203,6 @@ export function nextSquadTravelBoundarySeconds(s) {
     .filter((seconds) => seconds > 0);
   return due.length ? Math.min(...due) : null;
 }
-export const TRAVEL_REASONS = {
-  exhausted: 'La escuadra necesita descansar.',
-  assignment: 'Hay combatientes durmiendo o con otra asignación.',
-  blocked: 'La ruta está ocupada.',
-  winter: 'La nieve cerró el paso.',
-  transport: 'El transporte no está disponible.',
-  remounts: 'Faltan pesos para la siguiente etapa de postas.',
-  contact: 'Hay un encuentro en este sector.',
-  empty: 'La escuadra no tiene combatientes.',
-  unavailable: 'Hay combatientes que no pueden marchar.',
-  assault: 'En el límite del sector. Elegí combatir o retirarte. El tiempo está detenido.',
-};
-export const assaultNeighbor = (from, to, context = null) =>
-  Boolean(
-    sector(to, context) &&
-    (sector(from, context)?.neighbors.includes(to) ||
-      (validWorldLocation(from, context) && adjacentCells(from, to, context))),
-  );
-/**
- * @param {string} from
- * @param {string} to
- * @param {string} [mode]
- * @param {import("./public/compatibility-types.ts").CampaignContext} [context]
- * @returns {number}
- */
-export const travelLegHours = (from, to, mode = 'march', context = null) => {
-  if (adjacentCells(from, to, context)) {
-    return cellLegHours(from, to, mode, context);
-  }
-  if (sameCityCells(from, to, context)) {
-    const link = roadLinks(context).find(
-      (link) => (link.from === from && link.to === to) || (link.from === to && link.to === from),
-    );
-    if (link) {
-      return (link.path.length - 1) * TRAVEL_BALANCE.cityCellHours;
-    }
-  }
-  return Math.ceil(
-    {
-      march: TRAVEL_BALANCE.roadWalkHours,
-      horse: TRAVEL_BALANCE.horseHours,
-      posta: 4,
-      flotilla: 5,
-      carts: 18,
-    }[mode] *
-      ([from, to].some((id) => sector(id, context)?.biome === 'mountain')
-        ? TRAVEL_BALANCE.mountainFactor
-        : 1),
-  );
-};
-export function supportedTravelLegHours(from, to, mode = 'march', context = null) {
-  const hours = new Set([travelLegHours(from, to, mode, context)]);
-  if (adjacentCells(from, to, context)) {
-    hours.add(legacyCellStepHours(to, mode, context));
-    hours.add(previousCellStepHours(to, mode, context));
-  }
-  if (!sector(from, context) && adjacentCells(from, to, context)) {
-    if (mode === 'march') {
-      hours.add(worldCell(to, context)?.biome === 'mountain' ? 4 : 2);
-    }
-  } else {
-    hours.add(
-      Math.ceil(
-        { march: 12, horse: 6, posta: 4, flotilla: 5, carts: 18 }[mode] *
-          ([from, to].some((id) => sector(id, context)?.biome === 'mountain') ? 1.5 : 1),
-      ),
-    );
-  }
-  return [...hours];
-}
-/** @param {import('./public/campaign-types.ts').CampaignSnapshot} s
- * @param {import("./public/campaign-types.ts").CampaignSquad} q
- * @returns {boolean} */
-export const squadHasHorses = (s, q) =>
-  Boolean(
-    q?.members.length && q.members.every((id) => mountForOperative(s.horseState, id)?.canMount),
-  );
-function pathTo(s, from, to, mode) {
-  if (['march', 'horse'].includes(mode) || !sector(from, s) || !sector(to, s)) {
-    return cellTravelPlan(
-      {
-        location: from,
-        hour: s.hour,
-        sectors: s.sectors,
-        ...(s.contentCampaign ? { contentCampaign: s.contentCampaign } : {}),
-      },
-      to,
-      mode,
-    ).path;
-  }
-  const queue = [[from]],
-    seen = new Set([from]);
-  while (queue.length) {
-    const path = queue.shift(),
-      last = path.at(-1);
-    if (last === to) {
-      return path;
-    }
-    for (const id of sector(last, s).neighbors) {
-      if (!seen.has(id) && s.sectors[id].owner === 'patriot') {
-        seen.add(id);
-        queue.push([...path, id]);
-      }
-    }
-  }
-  return null;
-}
-function legIssue(s, q) {
-  const j = q.journey,
-    [from, to] = j.path;
-  if (!q.members.length) {
-    return 'empty';
-  }
-  if (
-    q.members.some(
-      (id) =>
-        !s.recruited.includes(id) || !s.operativeState[id]?.alive || s.operativeState[id].captured,
-    )
-  ) {
-    return 'unavailable';
-  }
-  if (q.members.some((id) => tooTiredToMarch(s.operativeState[id]))) {
-    return 'exhausted';
-  }
-  if (
-    q.members.some(
-      (id) =>
-        s.operativeState[id].asleep ||
-        s.operativeState[id].assignment !== 'active' ||
-        s.militiaTraining?.some((t) => t.trainerId === id),
-    )
-  ) {
-    return 'assignment';
-  }
-  if (
-    s.enemyGroups?.some(
-      (g) => g.target === from && ['waiting', 'engaged', 'stationed'].includes(g.status),
-    )
-  ) {
-    return 'contact';
-  }
-  if (
-    (j.intent !== 'attack' && s.pendingBattle?.sector === to) ||
-    (j.intent !== 'attack' &&
-      (worldOwner(s, to) === 'royalist' ||
-        s.enemyGroups?.some((g) => g.target === to && g.status === 'stationed')))
-  ) {
-    return 'blocked';
-  }
-  if ([from, to].some((id) => cellWinterClosed(s, id))) {
-    return 'winter';
-  }
-  if (j.mode === 'horse' && !squadHasHorses(s, q)) {
-    return 'transport';
-  }
-  if (
-    (!['march', 'horse'].includes(j.mode) && !s.routes[j.mode]) ||
-    (j.mode === 'flotilla' && s.blockade)
-  ) {
-    return 'transport';
-  }
-  if (j.mode === 'posta' && s.resources.treasury < 10) {
-    return 'remounts';
-  }
-  return null;
-}
-export function queueSquadTravel(
-  s,
-  q,
-  { sector: destination, waypoints = [], mode = 'march', intent = 'travel' },
-) {
-  need(!q.journey, 'Terminá o cancelá la ruta anterior.');
-  need(modes.includes(mode), 'Medio de transporte desconocido.');
-  need(Array.isArray(waypoints) && waypoints.length <= 8, 'Elegí hasta ocho escalas.');
-  need(['travel', 'attack'].includes(intent), 'La intención de marcha es inválida.');
-  if (intent === 'attack') {
-    need(
-      waypoints.length === 0 && assaultNeighbor(q.location, destination, s),
-      'Prepará el ataque desde un sector vecino, sin escalas.',
-    );
-  }
-  need(validWorldLocation(q.location, s), 'La ubicación de la escuadra no existe.');
-  const path = [q.location];
-  for (const to of [...waypoints, destination]) {
-    need(
-      validWorldLocation(to, s) && (intent === 'attack' || worldOwner(s, to) !== 'royalist'),
-      'Cada escala debe ser una celda terrestre accesible.',
-    );
-    const leg = intent === 'attack' ? [q.location, to] : pathTo(s, path.at(-1), to, mode);
-    need(leg?.length, 'Los realistas cortan la ruta de tránsito.');
-    path.push(...leg.slice(1));
-  }
-  need(path.length > 1 && path.length <= 65, 'La ruta debe tener entre una y 64 etapas.');
-  need(
-    ['march', 'horse'].includes(mode) || path.every((id) => sector(id, s)),
-    'Las celdas rurales requieren marcha a pie o caballos.',
-  );
-  need(
-    mode !== 'flotilla' || path.every((id) => flotillaSectorAllowed(s, id)),
-    'La flotilla requiere una ruta navegable.',
-  );
-  const journey = Journey.begin({
-    id: `${q.id}:journey:${campaignSeconds(s)}:${(q.journeySequence ?? 0) + 1}`,
-    route: path,
-    mode,
-    purpose: intent === 'attack' ? JourneyPurpose.HostileApproach : JourneyPurpose.Travel,
-    startedAtSeconds: campaignSeconds(s),
-    legDurationSeconds: travelLegHours(path[0], path[1], mode, s) * SecondsPerTravelHour,
-  });
-  retainJourney(q, journey);
-  const reason = legIssue(s, q);
-  need(!reason, TRAVEL_REASONS[reason]);
-  q.journeySequence = (q.journeySequence ?? 0) + 1;
-  return q.journey;
-}
-
 export function cancelSquadTravel(squad, choice = 'stop') {
   need(squad?.journey, 'La escuadra no tiene una ruta pendiente.');
   need(['stop', 'return'].includes(choice), 'Elegí detenerse o regresar.');

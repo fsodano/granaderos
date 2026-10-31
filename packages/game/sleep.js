@@ -1,6 +1,6 @@
 import { isCharacterDeployed as deployed } from './infrastructure/session/campaign-session-access.js';
 import { worldOwner, worldCell } from './world-cells.ts';
-import { sleepRecovery } from './sleep-needs.js';
+import { sleepRecovery } from './sleep-needs.ts';
 import { recoverFatigue, maximumEnergy, needsCollapseRecovery } from './fatigue.js';
 import { operativeInTransit, operativeLocation } from './squads.js';
 

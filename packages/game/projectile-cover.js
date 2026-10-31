@@ -1,3 +1,5 @@
+import { physicalBodies } from './physical-bodies.ts';
+export { physicalBodies } from './physical-bodies.ts';
 import { surfaceAt, surfaceHeight, tacticalLevel } from './tactical-space.js';
 import { COMBAT_BALANCE } from './combat-balance.js';
 import {
@@ -52,19 +54,6 @@ const flightRangeLimit = (source, aim, weapon, flight) =>
       ? Math.max(0, weapon.range) * COMBAT_BALANCE.firearmFlightRangeMultiplier
       : 0,
   );
-
-// A body's storage collection does not change its physical silhouette. Keep
-// the collection tag separate from its ID: civilian and soldier IDs may match.
-export function physicalBodies(state) {
-  return [
-    ...(state.units ?? [])
-      .filter((body) => body.hp > 0 && !body.departure && !body.fled)
-      .map((body) => ({ body, kind: 'unit' })),
-    ...(state.npcs ?? [])
-      .filter((body) => (body.hp ?? 100) > 0 && !body.departure && !body.fled)
-      .map((body) => ({ body, kind: 'npc' })),
-  ];
-}
 
 // Traverse every crossed cell, including the two cells touching a diagonal
 // corner. Entry/exit fractions let a sloping shot meet a low obstacle correctly.
@@ -223,6 +212,7 @@ export function projectilePath(
 // A shot retains its original destination height. Living bodies in
 // crossed cells can intercept it, including allies and unconscious soldiers.
 // Cell-wide silhouettes and body resistance are explicit game tuning.
+/** @returns {import('./public/tactical-preview-types.ts').FirearmFlightPreview} */
 export function projectileFlight(
   state,
   attacker,

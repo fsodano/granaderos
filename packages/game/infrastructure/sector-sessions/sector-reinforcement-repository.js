@@ -1,6 +1,6 @@
 import { DomainRefusal, DomainRefusalCode } from '../../domain/shared/domain-refusal.ts';
 import { residentPositionPoints } from '../world/campaign-resident-positions.js';
-import { nextRevision } from '../shared/revision.js';
+import { nextRevision } from '../shared/revision.ts';
 import { createSectorParticipant, initializeBattlePerception } from '../../tactical.js';
 import { SectorDeployment } from '../../domain/sector-sessions/sector-deployment.ts';
 import { readSectorSession, writeSectorSession } from './sector-session-mapper.js';

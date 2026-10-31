@@ -12,14 +12,8 @@ export {
 import { wallMovementBlocked } from './wall-geometry.js';
 // Physical levels are independent of a recruit's earned `level`.
 const upperIndexes = new WeakMap();
-export const spaceKey = (point) => `${tacticalLevel(point)}:${point.x},${point.y}`;
-export const sameSurface = (a, b) => tacticalLevel(a) === tacticalLevel(b);
-export const sameCell = (a, b) => sameSurface(a, b) && a.x === b.x && a.y === b.y;
-export const spacePoint = (point) => ({
-  x: point.x,
-  y: point.y,
-  tacticalLevel: tacticalLevel(point),
-});
+import { spaceKey, sameSurface, sameCell, spacePoint } from './tactical-space-point.ts';
+export { spaceKey, sameSurface, sameCell, spacePoint } from './tactical-space-point.ts';
 
 /** @param {{width:number,height:number,tiles:readonly import('./public/compatibility-types.ts').BattleTile[],upperSurfaces?:readonly import('./public/compatibility-types.ts').BattleTile[]|undefined}} state
  * @param {import('./public/compatibility-types.ts').TacticalPoint|null|undefined} point

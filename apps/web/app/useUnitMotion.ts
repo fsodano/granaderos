@@ -146,11 +146,13 @@ export function movementRoute(
   preserveFacing = false,
 ): Point[] {
   const recorded = target.lastMovePath,
-    firstRecorded = recorded?.[0];
+    firstRecorded = recorded?.[0],
+    lastRecorded = recorded?.at(-1);
   if (
     recorded &&
     firstRecorded &&
-    sameCell(recorded.at(-1), target) &&
+    lastRecorded &&
+    sameCell(lastRecorded, target) &&
     (firstRecorded.kind === 'climb' ||
       (sameSurface(unit, firstRecorded) &&
         Math.max(Math.abs(firstRecorded.x - unit.x), Math.abs(firstRecorded.y - unit.y)) === 1))

@@ -1,5 +1,5 @@
 import { DomainRefusal, DomainRefusalCode } from '../../domain/shared/domain-refusal.ts';
-import { nextRevision } from '../shared/revision.js';
+import { nextRevision } from '../shared/revision.ts';
 
 export class SectorOperationTransaction {
   #revision;

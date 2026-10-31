@@ -6,13 +6,13 @@ import {
   prepareMendozaAssault,
   prepareMendozaRelief,
   openMendozaFoundry,
-} from '../tests/mendoza-route.mjs';
-import { fightNorthernSector } from '../tests/northern-route.mjs';
+} from '../tests/mendoza-route.ts';
+import { fightNorthernSector } from '../tests/northern-route.ts';
 import { cautiousCombatOrder } from '../tests/cautious-driver.ts';
 const args = process.argv.slice(2);
 if (args.length !== 4 || args[0] !== '--input' || args[2] !== '--output') {
   throw Error(
-    'Usage: node tools/verify-mendoza-route.mjs --input cuyo-recovered.save.json --output directory',
+    'Usage: node tools/verify-mendoza-route.ts --input cuyo-recovered.save.json --output directory',
   );
 }
 const input = resolve(args[1]),

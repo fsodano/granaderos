@@ -1,3 +1,9 @@
+import {inventoryOrderReason} from './inventory-order-reason.ts';
+import {grenadeThrowPreview} from './grenade-throw-preview.ts';
+export {grenadeThrowPreview} from './grenade-throw-preview.ts';
+import { gridLine as line } from './grid-line.ts';
+import { artilleryCanisterContains, artilleryShotTrace } from './artillery-shot-trace.ts';
+export { artilleryCanisterContains, artilleryShotTrace } from './artillery-shot-trace.ts';
 import { advanceSectorWorldEvents } from './military-remains.js';
 import { residentPositionPoints } from './infrastructure/world/campaign-resident-positions.js';
 import { MeleeExchange, MeleeRules } from './domain/combat/melee-exchange.ts';
@@ -74,7 +80,7 @@ import { civilianSupplyLoot } from './civilian-supplies.js';
 import { supplyRoom, POCKET_FULL } from './personal-pockets.ts';
 import { militiaPatrolRules } from './militia-patrol-rules.js';
 import { militiaPatrolOrder } from './militia-patrol.js';
-import { holdsArtilleryPost } from './tactical-ai-artillery.js';
+import { holdsArtilleryPost } from './tactical-ai-artillery.ts';
 import { ARTILLERY, artilleryProfile } from './artillery-definitions.ts';
 import { artilleryCellOccupied, initializeArtilleryOccupancy } from './artillery-occupancy.js';
 import { WEAPONS } from './firearm-definitions.js';
@@ -131,8 +137,8 @@ import {
   grenadeThrowChance,
   grenadeScatterRadius,
   GRENADE_THROW,
-} from './grenade-throw.js';
-import { grenadeFlight, grenadeBlastExposure } from './grenade-flight.js';
+} from './grenade-throw.ts';
+import { grenadeFlight, grenadeBlastExposure } from './grenade-flight.ts';
 import { itemFlight } from './item-flight.js';
 import {
   elevationSightClear,
@@ -975,142 +981,6 @@ export function artilleryReloadPreview(s, u, gun) {
       ? 'No quedan municiones para la pieza.'
       : crew.reason || (!plan.pa ? 'Faltan puntos de acción para recargar.' : null);
   return { ...plan, crew: crew.crew, rate, reason, valid: !reason };
-}
-
-// Read-only geometry shared by actual cannon fire and autonomous aiming.
-// Callers may supply a perceived roster; execution always uses the full field.
-export function artilleryCanisterContains(s, gun, point, body) {
-  const spec = artilleryProfile(s, gun),
-    length = dist(gun, point);
-  if (!length || !sameSurface(gun, body)) {
-    return false;
-  }
-  const dx = (point.x - gun.x) / length,
-    dy = (point.y - gun.y) / length,
-    vx = body.x - gun.x,
-    vy = body.y - gun.y,
-    forward = vx * dx + vy * dy,
-    across = Math.abs(vx * dy - vy * dx);
-  return (
-    forward > 1 &&
-    forward <= spec.radius * 2 &&
-    across <= Math.max(1, forward * 0.5) &&
-    hasLineOfSight(s, gun, body)
-  );
-}
-export function artilleryShotTrace(s, u, gun, point, mode = 'solid') {
-  const spec = artilleryProfile(s, gun),
-    events = [],
-    cells = [],
-    bodies = physicalBodies(s);
-  if (mode === 'canister') {
-    const length = dist(gun, point),
-      dx = (point.x - gun.x) / length,
-      dy = (point.y - gun.y) / length;
-    for (const { body, kind } of bodies) {
-      if (artilleryCanisterContains(s, gun, point, body)) {
-        const forward = (body.x - gun.x) * dx + (body.y - gun.y) * dy;
-        events.push({
-          type: 'impact',
-          unitId: body.id,
-          ...(kind === 'npc' ? { victimKind: 'npc' } : {}),
-          damage:
-            spec.damage *
-            Math.max(0.35, 1 - forward / (spec.radius * 3)) *
-            (hasCharacterAbility(u, 'artillery_fire') ? 1.15 : 1),
-        });
-      }
-    }
-  } else {
-    let energy = spec.damage,
-      penetration = spec.penetration + (hasCharacterAbility(u, 'artillery_loading') ? 1 : 0);
-    const crossed = new Map(),
-      sourceHeight = (surfaceHeight(s, gun) ?? 0) + 0.65,
-      endHeight = (surfaceHeight(s, point) ?? 0) + 0.65;
-    for (const cell of geometryCells(gun, point)) {
-      for (const volume of obstacleVolumesAt(s, cell)) {
-        if (volume.kind !== 'edge') {
-          continue;
-        }
-        const clipped = volumeRayCell(gun, point, cell, volume),
-          hit =
-            clipped &&
-            rayHeightIntersection(sourceHeight, endHeight, clipped, volume.bottom, volume.top);
-        if (
-          hit &&
-          (!crossed.has(volume.edgeId) || hit.entry < crossed.get(volume.edgeId).fraction)
-        ) {
-          crossed.set(volume.edgeId, { edgeId: volume.edgeId, fraction: hit.entry });
-        }
-      }
-    }
-    const barriers = [...crossed.values()].sort(
-      (a, b) => a.fraction - b.fraction || a.edgeId.localeCompare(b.edgeId),
-    );
-    let barrierIndex = 0,
-      stopped = false;
-    for (const p of line(gun, point)) {
-      cells.push(p);
-      const ground = tile(s, p.x, p.y);
-      const dx = point.x - gun.x,
-        dy = point.y - gun.y,
-        progress = ((p.x - gun.x) * dx + (p.y - gun.y) * dy) / (dx * dx + dy * dy);
-      while (
-        barrierIndex < barriers.length &&
-        barriers[barrierIndex].fraction <= progress + 1e-10
-      ) {
-        const barrier = barriers[barrierIndex++],
-          edge = (s.wallEdges ?? []).find((edge) => wallEdgeId(edge) === barrier.edgeId),
-          stone = edge.material === 'stone',
-          resistance = stone ? 3 : 1;
-        const contact = {
-          x: gun.x + dx * barrier.fraction,
-          y: gun.y + dy * barrier.fraction,
-          height: sourceHeight + (endHeight - sourceHeight) * barrier.fraction,
-          tacticalLevel: tacticalLevel(edge),
-        };
-        if (penetration < resistance) {
-          events.push({ type: 'stop', edgeId: barrier.edgeId, ...contact });
-          stopped = true;
-          break;
-        }
-        penetration -= resistance;
-        events.push({ type: 'breach', edgeId: barrier.edgeId, ...contact, stone });
-      }
-      if (stopped) {
-        break;
-      }
-      if (ground?.blocked) {
-        if (ground.type === 'water' || ground.type === 'cliff') {
-          break;
-        }
-        const stone = ground.material === 'stone' || ground.type === 'stone',
-          resistance = stone ? 3 : 1;
-        if (penetration < resistance) {
-          events.push({ type: 'stop' });
-          break;
-        }
-        penetration -= resistance;
-        events.push({ type: 'breach', ...p, stone });
-      }
-      for (const { body, kind } of bodies.filter(
-        ({ body }) => sameSurface(body, gun) && sameCell(body, p),
-      )) {
-        events.push({
-          type: 'impact',
-          unitId: body.id,
-          ...(kind === 'npc' ? { victimKind: 'npc' } : {}),
-          damage: energy,
-        });
-        energy *= 0.75;
-        penetration--;
-      }
-      if (penetration < 0 || energy < 20) {
-        break;
-      }
-    }
-  }
-  return { events, cells };
 }
 
 export function interruptInitiative(s, u) {
@@ -2358,36 +2228,6 @@ export function getReachable(s, unitOrId, options = {}) {
         const [x, y] = key.split(',').map(Number);
         return { x, y, cost, path: paths.get(key) };
       });
-}
-// Animation positions can lie between cells. Trace their grid cells so each
-// integer step reaches the endpoint instead of growing an unbounded point list.
-function line(a, b) {
-  const points = [];
-  let x = Math.round(a.x),
-    y = Math.round(a.y);
-  const endX = Math.round(b.x),
-    endY = Math.round(b.y);
-  if (![x, y, endX, endY].every(Number.isSafeInteger)) {
-    throw new RangeError('Invalid sight coordinates');
-  }
-  const dx = Math.abs(endX - x),
-    dy = Math.abs(endY - y),
-    sx = x < endX ? 1 : -1,
-    sy = y < endY ? 1 : -1;
-  let err = dx - dy;
-  while (x !== endX || y !== endY) {
-    const e = 2 * err;
-    if (e > -dy) {
-      err -= dy;
-      x += sx;
-    }
-    if (e < dx) {
-      err += dx;
-      y += sy;
-    }
-    points.push({ x, y });
-  }
-  return points;
 }
 // Every ray samples a local cloud's height above its supporting surface, so a
 // downstairs shot does not cross roof smoke and distant roofs change no rule.
@@ -4278,84 +4118,6 @@ function replaceUnit(unit, next) {
   }
   Object.assign(unit, next);
 }
-function inventoryOrderReason(s, u, pa) {
-  const window =
-    u?.side === 'enemy'
-      ? s.phase === 'enemy' && s.status === 'active' && alive(u)
-      : interruptAvailable(s, u);
-  if (!window || u.knockedDown) {
-    return 'El soldado no puede manejar equipo ahora.';
-  }
-  if (s.mode !== 'exploration' && u.ap < pa) {
-    return `Faltan ${formatAP(pa)} PA para manejar el equipo.`;
-  }
-  return null;
-}
-export function grenadeThrowPreview(s, u, target, options = {}) {
-  const costs = u
-    ? grenadeThrowCosts(u, target)
-    : { total: 0, stance: 0, turn: 0, attack: 0, aim: 0, aimLevel: 0, energy: 0 };
-  const grenade = heldGrenade(u),
-    range = u ? grenadeThrowRange(u, grenade) : { maximum: 0 };
-  let reason = inventoryOrderReason(s, u, costs.total),
-    flight = null;
-  if (!reason && !grenade) {
-    reason = 'Prepará una granada en la mano principal.';
-  }
-  if (!reason && grenade.record.condition <= 0) {
-    reason = 'Esta granada está inutilizada.';
-  }
-  if (!reason && grenade.record.condition < 100 && (s.groundItems?.length ?? 0) >= 2000) {
-    reason = 'No queda espacio en el sector para conservar una granada fallida.';
-  }
-  if (!reason && u.mounted) {
-    reason = 'Desmontá antes de lanzar la granada.';
-  }
-  if (
-    !reason &&
-    (!Number.isInteger(target?.x) || !Number.isInteger(target?.y) || !surfaceAt(s, target))
-  ) {
-    reason = 'Seleccioná una superficie del mapa.';
-  }
-  if (!reason && (options.targetId !== undefined || options.hitLocation !== undefined)) {
-    reason = 'La granada se lanza a una casilla, sin elegir una zona del cuerpo.';
-  }
-  if (!reason && sameCell(u, target)) {
-    reason = 'Seleccioná otra casilla para lanzar la granada.';
-  }
-  const distance = u && target && surfaceAt(s, target) ? spaceDistance(s, u, target) : Infinity;
-  if (!reason && distance > range.maximum) {
-    reason = 'Fuera del alcance de la granada.';
-  }
-  if (!reason) {
-    flight = grenadeFlight(s, u, target);
-    if (!flight.landing || flight.impact.kind === 'invalid') {
-      reason = 'No hay una trayectoria válida para la granada.';
-    }
-  }
-  // No enemy data or hidden civilian positions enter the public preview.
-  const friendlyRisk = Boolean(
-    flight?.landing &&
-    [
-      ...s.units.filter((v) => v.side === u.side && onField(v) && !v.fled),
-      ...(s.npcs ?? []).filter(
-        (v) => (v.hp ?? 100) > 0 && !v.departure && !v.fled && canSee(s, u, v),
-      ),
-    ].some((v) => grenadeBlastExposure(s, flight.landing, v, GRENADE_THROW.radius).multiplier > 0),
-  );
-  return {
-    valid: !reason,
-    reason,
-    pa: costs.total,
-    aim: 0,
-    chance: reason ? 0 : grenadeThrowChance(u, distance, grenade),
-    costs,
-    range,
-    flight,
-    blastRadius: GRENADE_THROW.radius,
-    friendlyRisk,
-  };
-}
 const grenadeThrowVisuals = new WeakMap();
 /** @param {import('./public/compatibility-types.ts').BattleSnapshot} before
  * @param {import('./public/compatibility-types.ts').BattleSnapshot} after
@@ -5881,6 +5643,10 @@ function readyReference(unit, item, side) {
   return { unit: planMainHandEquipment(unit, action), pa: 4 };
 }
 // Campaign equipment uses the same item-to-mode and pocket checks as dragging.
+/** @template {import('./public/inventory-types.ts').InventoryActor} Actor
+ * @param {Actor} unit
+ * @param {string} item
+ * @returns {Actor} */
 export function planReadyMainHand(unit, item) {
   return readyReference(unit, item, 'right').unit;
 }

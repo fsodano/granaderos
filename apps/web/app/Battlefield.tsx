@@ -42,7 +42,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { rightClickAim } from '../../../packages/game/aim-cursor.js';
 import { autoBandageBattle } from '../../../packages/game/auto-bandage.js';
 import { battleFramePose } from '../../../packages/game/battle-playback.js';
-import { heldGrenade } from '../../../packages/game/grenade-throw.js';
+import { heldGrenade } from '../../../packages/game/grenade-throw.ts';
 import {
   TACTICAL_KEYS,
   pointerItemIntent,

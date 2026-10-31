@@ -3,10 +3,10 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 const base = fileURLToPath(new URL('../', import.meta.url)).replace(/\/$/, '');
 const { asset, visual, surface, vertices, sample } = await import(
-  pathToFileURL(base + '/tests/helpers/climb-native-fixture.mjs')
+  pathToFileURL(base + '/tests/helpers/climb-native-fixture.ts')
 );
 const { predecessorActor } = await import(
-  pathToFileURL(base + '/tests/helpers/climb-crest-predecessor.mjs')
+  pathToFileURL(base + '/tests/helpers/climb-crest-predecessor.ts')
 );
 const { ActorRuntime } = await import(pathToFileURL(base + '/apps/web/lib/three/actor-runtime.ts'));
 const { TILE_METRES } = await import(pathToFileURL(base + '/apps/web/lib/three/projection.ts'));

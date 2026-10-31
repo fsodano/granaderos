@@ -11,10 +11,8 @@ import {
 import { WEAPONS } from './data.js';
 import {
   AMMUNITION_TYPES,
-  weaponAmmoType,
   isAmmunitionStack,
   validateAmmunitionStack,
-  ammunitionByType,
   totalReserveAmmunition,
   availableAmmunition,
 } from './ammunition-types.js';
@@ -58,47 +56,10 @@ export function initialAmmunitionStock() {
     Object.values(AMMUNITION_RESOURCE_KEYS).map((key, i) => [key, [180, 30, 50, 40][i]]),
   );
 }
-export function addAmmoCounts(target, source, factor = 1) {
-  for (const [type, n] of Object.entries(source ?? {})) {
-    need(Object.hasOwn(AMMUNITION_TYPES, type) && count(n), 'La cuenta de munición no es válida.');
-    target[type] = (target[type] ?? 0) + n * factor;
-  }
-  return target;
-}
+import { addAmmoCounts, stackAmmunitionByType, unitAmmunitionByType } from './ammunition-counts.ts';
+export { addAmmoCounts, stackAmmunitionByType, unitAmmunitionByType } from './ammunition-counts.ts';
 export const totalAmmoCounts = (counts) =>
   Object.values(counts ?? {}).reduce((sum, n) => sum + n, 0);
-export function stackAmmunitionByType(stack) {
-  if (!stack || typeof stack !== 'object') {
-    return {};
-  }
-  if (isAmmunitionStack(stack)) {
-    validateAmmunitionStack(stack);
-    return stack.count ? { [stack.ammoType]: stack.count } : {};
-  }
-  const type = weaponAmmoType(
-    stack.weapon !== undefined
-      ? stack
-      : typeof stack.item === 'number'
-        ? { ...stack, weapon: stack.item, weaponMetadata: stack.itemMetadata }
-        : null,
-  );
-  return type && stack.loaded ? { [type]: stack.loaded * (stack.count ?? 1) } : {};
-}
-export function unitAmmunitionByType(unit) {
-  const result = ammunitionByType(unit),
-    type = weaponAmmoType(unit);
-  if (type && !unit.weaponDropped && unit.loaded) {
-    addAmmoCounts(result, { [type]: unit.loaded });
-  }
-  addAmmoCounts(result, stackAmmunitionByType(unit.offHand));
-  addAmmoCounts(result, stackAmmunitionByType(unit.equipmentCursor?.stack));
-  for (const item of Object.values(unit.inventory ?? {})) {
-    if (!isAmmunitionStack(item)) {
-      addAmmoCounts(result, stackAmmunitionByType(item));
-    }
-  }
-  return result;
-}
 function fieldStacks(snapshot) {
   return [
     ...(snapshot?.groundItems ?? []),

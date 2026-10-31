@@ -157,7 +157,7 @@ export function readyLocal(options: LocalPackageOptions = {}, content = localPac
     unit = present(p.battle).units.find((u) => u.side === 'player');
   return sync({ campaign: p.campaign, battle: approachNPC(p.battle, present(unit).id, n.id) });
 }
-export const talk = (p: ActiveGame, term = 'day', approach = 'recruit'): CampaignAction => ({
+export const talk = (p: ActiveGame, term = 'day', approach = 'recruit'): Extract<CampaignAction, { type: 'talkNPC' }> => ({
   type: 'talkNPC',
   npcId: localNPC(p.battle).id,
   unitId: present(p.battle.units.find((u) => u.side === 'player')).id,

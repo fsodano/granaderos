@@ -1,4 +1,4 @@
-import type { TacticalPoint } from './compatibility-types.ts';
+import type { TacticalPoint, BattleTile, BattleNpc } from './compatibility-types.ts';
 
 /** Browser inspection projections contain only fields admitted by player-known-state.ts. */
 export type KnownScalar = string | number | boolean | null;
@@ -49,7 +49,7 @@ export interface KnownAction extends Partial<TacticalPoint> {
   kind?: string;
   id?: string;
   wallEdgeId?: string;
-  axis?: string;
+  axis?: 'x' | 'y';
   verb?: string;
   index?: number;
   destination?: string;
@@ -149,7 +149,7 @@ export interface KnownStructure extends Partial<TacticalPoint> {
   roomId?: string | null;
   structureDamage?: number;
   destroyed?: boolean;
-  axis?: string;
+  axis?: 'x' | 'y';
   blocksSight?: boolean;
   doorId?: string;
   material?: string;
@@ -280,8 +280,8 @@ export interface KnownBattle {
   elapsedSeconds?: number;
   weather?: { rain?: number; humidity?: number };
   units: (KnownActor | KnownPlayerActor)[];
-  npcs: (Partial<TacticalPoint> & {
-    id?: string;
+  npcs: (TacticalPoint & {
+    id: string;
     name?: string;
     hp?: number;
     maxHp?: number;
@@ -289,25 +289,25 @@ export interface KnownBattle {
     bandaged?: number;
     unconscious?: boolean;
     knockedDown?: boolean;
-    stance?: string;
+    stance?: BattleNpc['stance'];
     mission?: string;
   })[];
-  tiles: KnownStructure[];
-  wallEdges?: KnownStructure[];
-  upperSurfaces?: KnownStructure[];
+  tiles: (KnownStructure & Pick<BattleTile, 'x' | 'y' | 'type'>)[];
+  wallEdges?: (Omit<KnownStructure, 'axis'> & Pick<BattleTile, 'x' | 'y' | 'type' | 'axis'>)[];
+  upperSurfaces?: (KnownStructure & Pick<BattleTile, 'x' | 'y' | 'type'>)[];
   climbLinks?: {
-    id?: string;
-    kind?: string;
-    from: Partial<TacticalPoint>;
-    to: Partial<TacticalPoint>;
+    id: string;
+    kind: string;
+    from: TacticalPoint;
+    to: TacticalPoint;
   }[];
-  props?: (Partial<TacticalPoint> & {
-    id?: string;
-    type?: string;
+  props?: (TacticalPoint & {
+    id: string;
+    type: string;
     blocksMovement?: boolean;
     structureDamage?: number;
     destroyed?: boolean;
-    footprint?: { width?: number; height?: number };
+    footprint?: { width: number; height: number };
   })[];
   environment?: (KnownStructure & {
     wallEdgeId?: string;

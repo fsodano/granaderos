@@ -1,4 +1,4 @@
-import { holdsArtilleryPost } from './tactical-ai-artillery.js';
+import { holdsArtilleryPost } from './tactical-ai-artillery.ts';
 import { sameSurface, tacticalLevel, surfacesAtLevel } from './tactical-space.js';
 import { moveOrder } from './tactical-planning-space.ts';
 import { canSee, getReachable, knownArtillery, stanceCost } from './tactical.js';

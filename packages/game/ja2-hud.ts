@@ -35,7 +35,7 @@ import { reloadPlan, reprimePlan, lookPreview, firearmMaintenancePreview } from 
 import { reprimeLabel } from './weapon-reprime.js';
 import { shotRangeText } from './shot-range.js';
 import { heldThrowingKnife } from './thrown-knife.js';
-import { heldGrenade } from './grenade-throw.js';
+import { heldGrenade } from './grenade-throw.ts';
 import { knifeThrowPreview, grenadeThrowPreview } from './tactical.js';
 import { canChooseShotLocation } from './targeted-combat.js';
 import { tacticalGridLabel } from './tactical-grid.js';

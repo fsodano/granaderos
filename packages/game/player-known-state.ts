@@ -48,7 +48,7 @@ import {
   grenadeThrowCosts,
   grenadeThrowRange,
   GRENADE_THROW,
-} from './grenade-throw.js';
+} from './grenade-throw.ts';
 import { CARE_COMPOSURE_RELIEF } from './care-composure.js';
 import { publicCombatJournal } from './combat-journal.js';
 
@@ -672,7 +672,7 @@ export function playerKnownBattle(
       .filter((unit) => unit.side === 'player' && unit.departure)
       .map(departure),
     npcs: visibleNpcs.map((npc) =>
-      pick(npc, [
+      ({ x: npc.x, y: npc.y, id: npc.id, ...pick(npc, [
         'id',
         'name',
         ...POSITION,
@@ -684,10 +684,10 @@ export function playerKnownBattle(
         'knockedDown',
         'stance',
         'mission',
-      ]),
+      ]) }),
     ),
     wallEdges: wallEdges.map((edge) =>
-      pick(edge, [
+      ({ x: edge.x, y: edge.y, type: edge.type, ...pick(edge, [
         'id',
         'axis',
         ...POSITION,
@@ -701,10 +701,10 @@ export function playerKnownBattle(
         'material',
         'buildingId',
         ...STRUCTURE,
-      ]),
+      ]) }),
     ),
     tiles: tiles.map((tile) =>
-      pick(tile, [
+      ({ x: tile.x, y: tile.y, type: tile.type, ...pick(tile, [
         ...POSITION,
         'elevation',
         'type',
@@ -714,12 +714,12 @@ export function playerKnownBattle(
         'buildingId',
         'roomId',
         ...STRUCTURE,
-      ]),
+      ]) }),
     ),
     ...(state.upperSurfaces
       ? {
           upperSurfaces: surfaces.map((surface) =>
-            pick(surface, [
+            ({ x: surface.x, y: surface.y, type: surface.type, ...pick(surface, [
               'id',
               ...POSITION,
               'elevation',
@@ -732,7 +732,7 @@ export function playerKnownBattle(
               'buildingId',
               'roomId',
               ...STRUCTURE,
-            ]),
+            ]) }),
           ),
         }
       : {}),
@@ -743,15 +743,16 @@ export function playerKnownBattle(
               (link) => knownCells.has(spaceKey(link.from)) && knownCells.has(spaceKey(link.to)),
             )
             .map((link) => ({
-              ...pick(link, ['id', 'kind']),
-              from: pick(link.from, POSITION),
-              to: pick(link.to, POSITION),
+              id: link.id, kind: link.kind,
+              from: { x: link.from.x, y: link.from.y, ...pick(link.from, POSITION) },
+              to: { x: link.to.x, y: link.to.y, ...pick(link.to, POSITION) },
             })),
         }
       : {}),
     props: (state.props ?? []).filter(seen).map((prop) => ({
+      id: prop.id, type: prop.type, x: prop.x, y: prop.y,
       ...pick(prop, ['id', 'type', ...POSITION, 'blocksMovement', ...STRUCTURE]),
-      ...(prop.footprint ? { footprint: pick(prop.footprint, ['width', 'height']) } : {}),
+      ...(prop.footprint ? { footprint: { width: prop.footprint.width, height: prop.footprint.height } } : {}),
     })),
     environment,
     contacts,

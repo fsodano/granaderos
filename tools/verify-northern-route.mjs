@@ -2,22 +2,22 @@ import assert from 'node:assert/strict';
 import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { runOpeningCampaign } from '../tests/opening-campaign.mjs';
+import { runOpeningCampaign } from '../tests/opening-campaign.ts';
 import {
   prepareNorthernSquad,
   prepareTucumanSquad,
   prepareRescueSquad,
   stabilizeRescued,
   fightNorthernSector,
-} from '../tests/northern-route.mjs';
-import { recoverRescueForce } from '../tests/rescue-recovery.mjs';
-import { prepareSaltaAssault, completeNorthernMission } from '../tests/salta-route.mjs';
+} from '../tests/northern-route.ts';
+import { recoverRescueForce } from '../tests/rescue-recovery.ts';
+import { prepareSaltaAssault, completeNorthernMission } from '../tests/salta-route.ts';
 import { cautiousCombatOrder } from '../tests/cautious-driver.ts';
 import { encodeSave, decodeSave } from '../packages/game/save.ts';
 
 const args = process.argv.slice(2);
 if (args.length && !(args.length === 2 && args[0] === '--output')) {
-  throw Error('Usage: node tools/verify-northern-route.mjs [--output directory]');
+  throw Error('Usage: node tools/verify-northern-route.ts [--output directory]');
 }
 const directory = args.length
   ? resolve(args[1])

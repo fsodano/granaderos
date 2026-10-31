@@ -1,6 +1,6 @@
 import { isCharacterDeployed as deployed } from './infrastructure/session/campaign-session-access.js';
 import { careRules, DEFAULT_CARE_RULES, strategicBleedingPercent } from './campaign-care-rules.js';
-import { restRecovery, recoverAtRest } from './strategic-rest.js';
+import { restRecovery, recoverAtRest } from './strategic-rest.ts';
 import { worldOwner } from './world-cells.ts';
 import { workshopAccessReason } from './workshop-access.js';
 import { militiaCarePatients } from './garrison.js';

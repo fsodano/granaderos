@@ -1,0 +1,54 @@
+import type { BattleSnapshot, BattleUnit, TacticalAction, TacticalPoint } from '../packages/game/public/compatibility-types.ts';
+// Tactical test orders: move a purchased battery toward the known sector centre,
+// then use visible targets, finite ammunition, actual crew AP and personal weapons.
+import { chooseArtilleryAction } from '../packages/game/tactical-ai-artillery.ts';
+import { actBattle, teamCanSee, getReachable } from '../packages/game/tactical.js';
+import { tucumanCombatOrder } from './tucuman-driver.ts';
+export function batteryOrder(b: BattleSnapshot, u: BattleUnit): TacticalAction | null {
+  const visible = b.units.filter(
+    (t) =>
+      t.side === 'enemy' &&
+      t.hp >= 15 &&
+      !t.routed &&
+      !t.surrendered &&
+      !t.unconscious &&
+      !t.departure &&
+      teamCanSee(b, u.side, t),
+  );
+  const view = {
+    ...b,
+    units: b.units.filter((t) => t.side === u.side || teamCanSee(b, u.side, t)),
+  };
+  const gun = b.artillery.find((g) => g.side === u.side);
+  const action = chooseArtilleryAction(b, u, visible, () => getReachable(view, u));
+  if (action) {
+    return action;
+  }
+  if (!gun) {
+    return tucumanCombatOrder(b, u);
+  }
+  if (visible.length) {
+    return tucumanCombatOrder(b, u);
+  }
+  if (u.id !== '57') {
+    return null;
+  }
+  const destination = { x: Math.floor(b.width * 0.65), y: Math.floor(b.height * 0.5) };
+  const distance = (p: TacticalPoint) => Math.hypot(destination.x - p.x, destination.y - p.y);
+  const options = ([
+    [1, 0],
+    [-1, 0],
+    [0, 1],
+    [0, -1],
+  ] satisfies [number, number][] )
+    .map(([dx, dy]) => ({ x: gun.x + dx, y: gun.y + dy }))
+    .filter((p) => distance(p) < distance(gun))
+    .sort((a, c) => distance(a) - distance(c));
+  for (const p of options) {
+    const a: TacticalAction = { type: 'artilleryMove', unitId: u.id, artilleryId: gun.id, ...p };
+    if (!actBattle(b, a).lastError) {
+      return a;
+    }
+  }
+  return null;
+}

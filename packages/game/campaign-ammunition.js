@@ -52,23 +52,9 @@ const freshShop = (s, at) => ({
 });
 const shop = (s, at = s.location) => s.ammunitionShops?.[at] ?? freshShop(s, at);
 const loaded = (record) => record?.carriedLoaded ?? 0;
-/**
- * @param {import("./public/campaign-types.ts").CampaignOperative} op
- * @param {import("./public/campaign-types.ts").CampaignOperativeState | undefined} record
- * @returns {import("./public/campaign-types.ts").CampaignOperative & {inventory:Record<string,import("./public/compatibility-types.ts").EquipmentItem>,loaded:number,ammo:number}}
- */
-export function carriedAmmunition(op, record) {
-  const unit = {
-    ...op,
-    ...record,
-    inventory: structuredClone(record?.inventory ?? {}),
-    loaded: loaded(record),
-    ammo: record?.ammo ?? 0,
-    ...(record?.carriedReloadProgress ? { reloadProgress: record.carriedReloadProgress } : {}),
-  };
-  initializeUnitAmmunition(unit, { defaultCount: 0 });
-  return unit;
-}
+import { carriedAmmunition } from './carried-ammunition.ts';
+export { carriedAmmunition } from './carried-ammunition.ts';
+
 function keep(record, unit) {
   const physical = initializeUnitAmmunition(structuredClone(unit), { defaultCount: 0 });
   if (physical.ammunitionChoice !== undefined) {

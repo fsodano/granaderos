@@ -4,7 +4,7 @@ import { restoreGameSession, projectGameSession } from '../session/campaign-game
 import { DomainIdentityMap } from './domain-identity-map.ts';
 import { CanonicalPersonnelMapper } from './canonical-personnel-mapper.ts';
 import { CanonicalWorldMapper } from './canonical-world-mapper.js';
-import { JourneySnapshotMapper } from '../journeys/journey-snapshot-mapper.js';
+import { JourneySnapshotMapper } from '../journeys/journey-snapshot-mapper.ts';
 import {
   readSectorSession,
   writeSectorSession,

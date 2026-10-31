@@ -228,6 +228,9 @@ export function sectorDeploymentModel(state) {
   };
 }
 
+/** @param {import('./public/compatibility-types.ts').BattleSnapshot} state
+ * @param {import('./public/compatibility-types.ts').TacticalAction} action
+ * @returns {import('./public/compatibility-types.ts').BattleSnapshot} */
 export function sectorDeploymentAction(state, action) {
   const next = structuredClone(state);
   next.lastError = null;

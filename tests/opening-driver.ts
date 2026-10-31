@@ -24,7 +24,7 @@ import {
   chooseEnemyAction,
   choosePlayerSharedSightingInvestigation,
 } from '../packages/game/tactical-ai.js';
-import { holdsArtilleryPost } from '../packages/game/tactical-ai-artillery.js';
+import { holdsArtilleryPost } from '../packages/game/tactical-ai-artillery.ts';
 import { firearmServiceable } from '../packages/game/firearm-serviceability.js';
 import { sameCell, sameSurface, spacePoint } from '../packages/game/tactical-space.js';
 import { availableAmmunition } from '../packages/game/ammunition-types.js';

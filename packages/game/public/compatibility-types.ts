@@ -129,6 +129,9 @@ export interface BattleBody extends TacticalRoutePoint {
   legwear?: OutfitRecord | null;
 }
 export interface BattleUnit extends BattleBody {
+  originalUnitId?: string;
+  entryReason?: 'arrival' | 'resident';
+  entryEdge?: 'N' | 'E' | 'S' | 'W';
   patrolOrigin?: TacticalPoint;
   patrol?: boolean;
   patrolTurn?: number;
@@ -242,7 +245,21 @@ export interface CivilianHarmIncident extends CivilianHarmOrigin {
   hpBefore: number;
   hpAfter: number;
 }
+export interface PrisonerReleaseReceipt {
+  version: 1;
+  battleId: string;
+  leaderId: string;
+  turn: number;
+  elapsedSeconds: number;
+  mode: 'combat' | 'exploration';
+  paidAP: number;
+  leader: TacticalRoutePoint;
+  prisoner: TacticalRoutePoint;
+}
 export interface BattleNpc extends BattleBody {
+  detentionRelease?: PrisonerReleaseReceipt;
+  detentionOrders?: (PrisonerReleaseReceipt & {waiting: boolean})[];
+  scriptedMove?: { order: number; target: TacticalPoint };
   civilianHarm?: { version: 1; incidents: CivilianHarmIncident[] };
   corpseRemovedAtSecond?: number;
   presenceRevision?: number;
@@ -305,6 +322,7 @@ export interface BattleNpc extends BattleBody {
   supplies?: Record<string, number>;
 }
 export interface BattleTile extends TacticalPoint {
+  blocksSight?: boolean;
   projectileResistance?: number;
   type: string;
   id?: string;
@@ -399,6 +417,7 @@ export interface BattleLight extends TacticalPoint {
   remainingSeconds?: number;
 }
 export interface BattleArtillery extends TacticalPoint {
+  stationed?: boolean;
   id: string;
   type: string;
   side: 'player' | 'enemy';

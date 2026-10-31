@@ -19,7 +19,7 @@ import {
 import { dialogueAvailability } from './npc-dialogue.ts';
 import { sameCell } from './tactical-space.js';
 import { spriteCondition } from './sprite-state.js';
-import { heldGrenade } from './grenade-throw.js';
+import { heldGrenade } from './grenade-throw.ts';
 
 // Presentation only. Reuse the caller's native preview; do not search a route,
 // choose a new attack, inspect hidden contents or dispatch an order on hover.

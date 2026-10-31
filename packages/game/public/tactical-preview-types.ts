@@ -52,6 +52,7 @@ export interface FirearmBodyImpact {
   victimId: string;
   victimKind: 'unit' | 'npc';
   hitLocation: string;
+  continued: boolean;
   reachChance: number;
   damageFactor: number;
 }
