@@ -6,6 +6,7 @@ const key = (value) =>
   typeof value === 'string' &&
   value.length > 0 &&
   value.length <= 100 &&
+  // eslint-disable-next-line no-control-regex -- Reject control characters in authored text/IDs.
   !/[<>\x00-\x1f]/.test(value) &&
   !['constructor', 'prototype', '__proto__'].includes(value);
 const fields = (value, required, optional = []) =>

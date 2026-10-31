@@ -17,7 +17,11 @@
     "campaign:assets": "node tools/campaign-authoring.mjs assets",
     "check:architecture": "node tools/check-architecture.mjs",
     "build:editor": "npm --prefix packages/campaign-format run build && npm --prefix apps/campaign-editor run build",
-    "format:architecture": "node apps/web/node_modules/oxfmt/bin/oxfmt --config .oxfmtrc.json --disable-nested-config packages/game/domain packages/game/application packages/game/infrastructure packages/game/public apps/campaign-editor/domain apps/campaign-editor/application apps/campaign-editor/infrastructure apps/campaign-editor/public packages/campaign-format",
-    "check:format": "node apps/web/node_modules/oxfmt/bin/oxfmt --check --config .oxfmtrc.json --disable-nested-config packages/game/domain packages/game/application packages/game/infrastructure packages/game/public apps/campaign-editor/domain apps/campaign-editor/application apps/campaign-editor/infrastructure apps/campaign-editor/public packages/campaign-format"
+    "format:architecture": "npm run format",
+    "check:format": "node tools/code-quality.mjs format:check",
+    "lint": "node tools/code-quality.mjs lint",
+    "lint:fix": "node tools/code-quality.mjs lint --fix",
+    "lint:audit": "node tools/code-quality.mjs lint:audit",
+    "format": "node tools/code-quality.mjs format"
   }
 }

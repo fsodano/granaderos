@@ -23,7 +23,12 @@ export function campaignMapFile(manifest, path) {
 }
 /** Combine raw editable documents for previews; do not add a pinned save origin. */
 export function projectContent(project) {
-  const { campaignOrigin, campaignPackage, contentCampaign, ...content } = copy(project.content);
+  const {
+    campaignOrigin: _campaignOrigin,
+    campaignPackage: _campaignPackage,
+    contentCampaign: _contentCampaign,
+    ...content
+  } = copy(project.content);
   return {
     ...content,
     scenario: project.manifest.scenario,
@@ -41,10 +46,10 @@ export function updateProjectContent(project, next) {
       maps,
       presentation,
       assets,
-      campaignOrigin,
-      campaignPackage,
-      contentCampaign,
-      scenario,
+      campaignOrigin: _campaignOrigin,
+      campaignPackage: _campaignPackage,
+      contentCampaign: _contentCampaign,
+      scenario: _scenario,
       ...content
     } = copy(next);
   result.content = content;

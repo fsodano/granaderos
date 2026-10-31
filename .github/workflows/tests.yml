@@ -30,9 +30,11 @@ jobs:
         run: npm ci --prefix apps/web
       - name: Install editor dependencies
         run: npm ci --prefix apps/campaign-editor
+      - name: Lint architecture and browser boundaries
+        run: npm run lint
       - name: Check architecture boundaries
         run: npm run check:architecture
-      - name: Check architecture formatting
+      - name: Check source formatting
         run: npm run check:format
       - name: Check types
         run: npm run typecheck

@@ -602,7 +602,17 @@ function validateWorldRecords(world, options) {
     );
   const linked = new Set();
   for (const link of world.exitLinks ?? []) {
-    const pair = Array.isArray(link) ? [link[0], link[4]].sort().join('|') : null;
+    const pair = Array.isArray(link)
+      ? [link[0], link[4]]
+          .sort((left, right) => {
+            const first = String(left);
+            const second = String(right);
+            if (first < second) return -1;
+            if (first > second) return 1;
+            return 0;
+          })
+          .join('|')
+      : null;
     check(
       Array.isArray(link) &&
         link.length === 8 &&
