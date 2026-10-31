@@ -1,43 +1,66 @@
 'use client';
+import type { CampaignProjectDocument, JsonDocument } from '../../../domain/campaign-project.ts';
+import {
+  documentObjects,
+  documentObject,
+  documentString,
+  documentNumber,
+  requireJsonDocument,
+  assertCampaignContent,
+} from '../../lib/editor-documents.ts';
 import FieldEditor, { DocumentEditor } from './FieldEditor';
 import { useStudioAssetResolver } from '../../lib/campaign-studio-assets.ts';
-import { NEUTRAL_OFFICER_CREATION } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { operativeIdForCharacter } from '../../../../../packages/game/public/campaign-editor-api.js';
+import { NEUTRAL_OFFICER_CREATION } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { operativeIdForCharacter } from '../../../../../packages/game/public/campaign-editor-api.ts';
 import { projectContent } from '../../../infrastructure/project-operations.js';
 
 export default function PresentationWorkspace({
   project,
   onChange,
 }: {
-  project: any;
-  onChange: (next: any) => void;
+  project: CampaignProjectDocument;
+  onChange: (next: CampaignProjectDocument) => void;
 }) {
   const presentation = project.presentation,
     resolveAsset = useStudioAssetResolver(project);
-  const update = (patch: any) => {
+  const update = (patch: JsonDocument) => {
     const next = { ...presentation, ...patch };
-    for (const [key, value] of Object.entries(patch))
-      if (value === null || value === undefined) delete next[key];
+    for (const [key, value] of Object.entries(patch)) {
+      if (value === null || value === undefined) {
+        delete next[key];
+      }
+    }
     onChange({ ...project, presentation: next });
   };
-  const imageChoices = (Array.isArray(project.assets?.assets) ? project.assets.assets : []).filter(
-    (entry: any) => typeof entry?.type === 'string' && entry.type.startsWith('image/'),
+  const imageChoices = documentObjects(project.assets['assets']).filter((entry) =>
+    documentString(entry['type']).startsWith('image/'),
   );
+  const portraits = documentObjects(presentation['characterPortraits']);
+  const characters = documentObjects(project.content['characters']);
+  const sectors = documentObjects(project.world['sectors']);
+  const calendar = documentObject(presentation['calendar']);
   function sample() {
-    const person = project.content.characters?.[0],
+    const person = characters[0],
       mapId = Object.keys(project.maps)[0],
-      sector =
-        project.world.sectors?.find((s: any) => s.id === mapId) ?? project.world.sectors?.[0];
-    if (!person || !mapId) return;
+      sector = sectors.find((sector) => sector['id'] === mapId) ?? sectors[0];
+    if (!person || !mapId) {
+      return;
+    }
+    const content = projectContent(project);
+    assertCampaignContent(content);
+    const operativeId = operativeIdForCharacter(content, documentString(person['id']));
+    if (operativeId === undefined) {
+      throw new Error('El personaje de muestra no tiene una identidad publicada.');
+    }
     update({
       skirmish: {
         label: 'Combate de muestra',
-        operativeIds: [operativeIdForCharacter(projectContent(project), person.id)],
+        operativeIds: [operativeId],
         horse: false,
         request: {
           id: mapId,
-          name: project.maps[mapId].metadata.title,
-          biome: sector?.biome ?? 'plains',
+          name: documentString(documentObject(project.maps[mapId]?.['metadata'])['title'], mapId),
+          biome: documentString(sector?.['biome'], 'plains'),
           seed: 1812,
           enemyCount: 2,
         },
@@ -57,48 +80,57 @@ export default function PresentationWorkspace({
         <section className="studio-card">
           <h3>Menú de inicio</h3>
           <div className="studio-form-grid">
-            {['title', 'subtitle', 'eyebrow', 'period', 'caption', 'footer', 'menuArtAlt'].map(
-              (key) => (
-                <FieldEditor
-                  key={key}
-                  value={presentation[key] ?? ''}
-                  label={
-                    {
-                      title: 'Título',
-                      subtitle: 'Subtítulo',
-                      eyebrow: 'Antetítulo',
-                      period: 'Época',
-                      caption: 'Descripción',
-                      footer: 'Pie',
-                      menuArtAlt: 'Descripción de la imagen',
-                    }[key]
+            {(
+              ['title', 'subtitle', 'eyebrow', 'period', 'caption', 'footer', 'menuArtAlt'] as const
+            ).map((key) => (
+              <FieldEditor
+                key={key}
+                value={presentation[key] ?? ''}
+                label={
+                  {
+                    title: 'Título',
+                    subtitle: 'Subtítulo',
+                    eyebrow: 'Antetítulo',
+                    period: 'Época',
+                    caption: 'Descripción',
+                    footer: 'Pie',
+                    menuArtAlt: 'Descripción de la imagen',
+                  }[key]
+                }
+                path={`presentation.${key}`}
+                onChange={(value) => {
+                  const next = { ...presentation };
+                  if (value === '') {
+                    delete next[key];
+                  } else {
+                    next[key] = value;
                   }
-                  path={`presentation.${key}`}
-                  onChange={(value) => {
-                    const next = { ...presentation };
-                    if (value === '') delete next[key];
-                    else next[key] = value;
-                    onChange({ ...project, presentation: next });
-                  }}
-                />
-              ),
-            )}
+                  onChange({ ...project, presentation: next });
+                }}
+              />
+            ))}
           </div>
           <label>
             Imagen del menú
             <select
-              value={presentation.menuArt ?? ''}
+              value={documentString(presentation['menuArt'])}
               onChange={(e) => {
                 const next = { ...presentation };
-                if (e.target.value) next.menuArt = e.target.value;
-                else delete next.menuArt;
+                if (e.target.value) {
+                  next['menuArt'] = e.target.value;
+                } else {
+                  delete next['menuArt'];
+                }
                 onChange({ ...project, presentation: next });
               }}
             >
               <option value="">Sin imagen</option>
-              {imageChoices.map((entry: any) => (
-                <option key={entry.path} value={`/campaigns/${project.manifest.id}/${entry.path}`}>
-                  {entry.id} · {entry.path}
+              {imageChoices.map((entry) => (
+                <option
+                  key={documentString(entry['path'])}
+                  value={`/campaigns/${project.manifest.id}/${documentString(entry['path'])}`}
+                >
+                  {documentString(entry['id'])} · {documentString(entry['path'])}
                 </option>
               ))}
             </select>
@@ -108,22 +140,22 @@ export default function PresentationWorkspace({
           className="studio-menu-preview"
           aria-label="Vista previa del menú"
           style={
-            presentation.menuArt
+            presentation['menuArt']
               ? {
-                  backgroundImage: `linear-gradient(180deg,#111b15aa,#111b15ee),url("${resolveAsset(presentation.menuArt)}")`,
+                  backgroundImage: `linear-gradient(180deg,#111b15aa,#111b15ee),url("${resolveAsset(documentString(presentation['menuArt']))}")`,
                 }
               : undefined
           }
         >
-          <p>{presentation.eyebrow ?? 'CAMPAÑA TÁCTICA'}</p>
-          <h3>{presentation.title}</h3>
-          <p>{presentation.subtitle}</p>
-          <span>{presentation.period}</span>
-          <p>{presentation.caption}</p>
+          <p>{documentString(presentation['eyebrow'], 'CAMPAÑA TÁCTICA')}</p>
+          <h3>{documentString(presentation['title'])}</h3>
+          <p>{documentString(presentation['subtitle'])}</p>
+          <span>{documentString(presentation['period'])}</span>
+          <p>{documentString(presentation['caption'])}</p>
           <button type="button" disabled>
             Nueva campaña
           </button>
-          <small>{presentation.footer}</small>
+          <small>{documentString(presentation['footer'])}</small>
         </section>
       </div>
       <div className="studio-two-column">
@@ -137,14 +169,14 @@ export default function PresentationWorkspace({
                   type="number"
                   min={1}
                   max={key === 'year' ? 10000 : key === 'month' ? 12 : 30}
-                  value={presentation.calendar?.[key] ?? 1}
+                  value={documentNumber(calendar[key], 1)}
                   onChange={(e) =>
                     update({
                       calendar: {
                         year: 1,
                         month: 1,
                         day: 1,
-                        ...presentation.calendar,
+                        ...calendar,
                         [key]: e.target.valueAsNumber,
                       },
                     })
@@ -158,7 +190,7 @@ export default function PresentationWorkspace({
           <h3>Manual del jugador</h3>
           <FieldEditor
             value={
-              presentation.manual ?? {
+              presentation['manual'] ?? {
                 campaign: 'Comenzá la campaña.',
                 goals: 'Completá sus objetivos.',
                 note: 'Explorá el mundo.',
@@ -176,7 +208,7 @@ export default function PresentationWorkspace({
           Creá escenas de mapa, carta, ruta o formación. Cada escena puede tener retrato, texto,
           sello y duración.
         </p>
-        {!presentation.introduction && (
+        {!presentation['introduction'] && (
           <button
             type="button"
             onClick={() =>
@@ -201,7 +233,7 @@ export default function PresentationWorkspace({
           </button>
         )}
         <FieldEditor
-          value={presentation.introduction ?? null}
+          value={presentation['introduction'] ?? null}
           onChange={(introduction) => update({ introduction })}
           label="Escenas y carta"
           path="presentation.introduction"
@@ -217,16 +249,21 @@ export default function PresentationWorkspace({
           type="button"
           disabled={!imageChoices.length}
           onClick={() => {
+            const image = imageChoices[0];
+            if (!image) {
+              return;
+            }
             let n = 1;
-            while ((presentation.characterPortraits ?? []).some((p: any) => p.id === `face-${n}`))
+            while (portraits.some((p) => p['id'] === `face-${n}`)) {
               n++;
+            }
             update({
               characterPortraits: [
-                ...(presentation.characterPortraits ?? []),
+                ...portraits,
                 {
                   id: `face-${n}`,
                   name: `Retrato ${n}`,
-                  src: `/campaigns/${project.manifest.id}/${imageChoices[0].path}`,
+                  src: `/campaigns/${project.manifest.id}/${documentString(image['path'])}`,
                   gender: 'man',
                   role: 'scout',
                   skinTone: 'brown',
@@ -241,7 +278,7 @@ export default function PresentationWorkspace({
           Agregar retrato
         </button>
         <FieldEditor
-          value={presentation.characterPortraits ?? []}
+          value={presentation['characterPortraits'] ?? []}
           onChange={(characterPortraits) => update({ characterPortraits })}
           label="Retratos disponibles"
           path="presentation.characterPortraits"
@@ -254,12 +291,12 @@ export default function PresentationWorkspace({
           preguntas seleccionan las reglas compartidas.
         </p>
         <FieldEditor
-          value={presentation.atlas ?? { title: 'Mapa de campaña', label: 'Territorio' }}
+          value={presentation['atlas'] ?? { title: 'Mapa de campaña', label: 'Territorio' }}
           onChange={(atlas) => update({ atlas })}
           label="Atlas"
           path="presentation.atlas"
         />
-        {!presentation.officerCreation ? (
+        {!presentation['officerCreation'] ? (
           <button
             onClick={() => update({ officerCreation: structuredClone(NEUTRAL_OFFICER_CREATION) })}
           >
@@ -268,7 +305,7 @@ export default function PresentationWorkspace({
         ) : (
           <>
             <FieldEditor
-              value={presentation.officerCreation}
+              value={presentation['officerCreation']}
               onChange={(officerCreation) => update({ officerCreation })}
               label="Creación de personajes"
               path="presentation.officerCreation"
@@ -278,14 +315,14 @@ export default function PresentationWorkspace({
             </button>
           </>
         )}
-        {!presentation.skirmish ? (
-          <button disabled={!project.content.characters?.length} onClick={sample}>
+        {!presentation['skirmish'] ? (
+          <button disabled={!characters.length} onClick={sample}>
             Crear combate de muestra
           </button>
         ) : (
           <>
             <FieldEditor
-              value={presentation.skirmish}
+              value={presentation['skirmish']}
               onChange={(skirmish) => update({ skirmish })}
               label="Combate de muestra"
               path="presentation.skirmish"
@@ -298,7 +335,7 @@ export default function PresentationWorkspace({
         <summary>Documento completo de presentación</summary>
         <DocumentEditor
           value={presentation}
-          onChange={(value) => onChange({ ...project, presentation: value })}
+          onChange={(value) => onChange({ ...project, presentation: requireJsonDocument(value) })}
           label="Todos los campos de presentación"
           path="presentation"
         />

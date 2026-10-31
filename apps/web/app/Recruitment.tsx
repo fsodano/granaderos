@@ -1,4 +1,9 @@
 'use client';
+
+import type {
+  CampaignSnapshot,
+  CampaignAction,
+} from '../../../packages/game/public/campaign-types.ts';
 import { sitePath } from '../lib/site-path.js';
 import { useState } from 'react';
 import {
@@ -19,12 +24,21 @@ import {
   serviceGuaranteeRefund,
   guaranteeDepartureReason,
 } from '../../../packages/game/service-guarantees.js';
-import { operativeInTransit, squadReorganizationReason } from '../../../packages/game/squads.js';
-import { contractTermsFor, contractRenewalQuote } from '../../../packages/game/contracts.js';
+import {
+  operativeInTransit,
+  squadReorganizationReason,
+} from '../../../packages/game/squads.js';
+import {
+  contractTermsFor,
+  contractRenewalQuote,
+} from '../../../packages/game/contracts.js';
 import { GetRecruitmentCandidatesUseCase } from '../../../packages/game/application/personnel/get-recruitment-candidates/get-recruitment-candidates.use-case.ts';
 import { CampaignGetRecruitmentCandidatesRepository } from '../../../packages/game/infrastructure/personnel/campaign-get-recruitment-candidates.repository.js';
-import { isContractOperative } from '../../../packages/game/content-character-ids.js';
-import { characterProfile, characterAbilityDescriptions } from '../../../packages/game/characters.js';
+import { isContractOperative } from '../../../packages/game/content-character-ids.ts';
+import {
+  characterProfile,
+  characterAbilityDescriptions,
+} from '../../../packages/game/characters.js';
 import { portraitFor } from '../lib/portraits';
 import { travelTime } from '../lib/travel-time';
 import CharacterDossier from './CharacterDossier';
@@ -35,7 +49,7 @@ import ServiceObjectionNotice from './ServiceObjectionNotice';
 import { lowMoraleRenewalStatus } from '../../../packages/game/morale-renewal.js';
 import ContractMoraleNotice from './ContractMoraleNotice';
 import './recruitment.css';
-type Props = { state: any; dispatch: (a: any) => void };
+type Props = { state: CampaignSnapshot; dispatch: (a: CampaignAction) => void };
 export default function Recruitment({ state: s, dispatch }: Props) {
   const [selected, setSelected] = useState<number | null>(null),
     [periods, setPeriods] = useState<Record<number, string>>({});
@@ -64,16 +78,20 @@ export default function Recruitment({ state: s, dispatch }: Props) {
     availability,
     sort,
   });
-  const visible = candidates.characterIds.map((id) =>
-    roster.find((character) => String(character.id) === id)!,
-  );
+  const visible = candidates.characterIds.flatMap((id) => {
+    const candidate = roster.find((character) => String(character.id) === id);
+    return candidate ? [candidate] : [];
+  });
+  const selectedOperative = roster.find((o) => o.id === selected);
+  const selectedRecord =
+    selected === null ? undefined : s.operativeState[selected];
   const busy = Boolean(s.pendingBattle || s.pendingEncounter) || s.defeated;
   const hiringRouteReason = squadReorganizationReason(s);
   return (
     <section className="roster-section">
       <p>
-        El servicio comienza al reclutar. El combatiente queda disponible de inmediato en el lugar
-        elegido.
+        El servicio comienza al reclutar. El combatiente queda disponible de
+        inmediato en el lugar elegido.
       </p>
       <label className="arrival-destination">
         Lugar de incorporación
@@ -82,7 +100,9 @@ export default function Recruitment({ state: s, dispatch }: Props) {
           onChange={(e) => setDestination(e.target.value)}
           disabled={!options.length || busy}
         >
-          {!options.length && <option value="">No hay destinos disponibles</option>}
+          {!options.length && (
+            <option value="">No hay destinos disponibles</option>
+          )}
           {options.map((o) => (
             <option key={o.id} value={o.id}>
               {o.name} · {o.infrastructure}
@@ -91,12 +111,16 @@ export default function Recruitment({ state: s, dispatch }: Props) {
         </select>
       </label>
       <p className="catalogue-count">
-        El destino debe estar bajo tu control y tener una posta, un cuartel, un puerto o un
-        embarcadero habilitado. Un bloqueo impide la llegada por agua.
+        El destino debe estar bajo tu control y tener una posta, un cuartel, un
+        puerto o un embarcadero habilitado. Un bloqueo impide la llegada por
+        agua.
       </p>
       {!options.length && (
-        <p role="status">
-          No hay un punto seguro para recibir contratados. Podés renovar los contratos vigentes.
+        <p>
+          <output>
+            No hay un punto seguro para recibir contratados. Podés renovar los
+            contratos vigentes.
+          </output>
         </p>
       )}
       <div className="catalogue-tools">
@@ -111,7 +135,10 @@ export default function Recruitment({ state: s, dispatch }: Props) {
         </label>
         <label>
           Especialidad
-          <select value={specialty} onChange={(e) => setSpecialty(e.target.value)}>
+          <select
+            value={specialty}
+            onChange={(e) => setSpecialty(e.target.value)}
+          >
             {[
               ['all', 'Todas'],
               ['marksman', 'Tiro · 70+'],
@@ -130,7 +157,10 @@ export default function Recruitment({ state: s, dispatch }: Props) {
         </label>
         <label>
           Estado
-          <select value={availability} onChange={(e) => setAvailability(e.target.value)}>
+          <select
+            value={availability}
+            onChange={(e) => setAvailability(e.target.value)}
+          >
             <option value="all">Todos</option>
             <option value="available">Disponibles para reclutar</option>
             <option value="unavailable">No disponibles para reclutar</option>
@@ -149,9 +179,11 @@ export default function Recruitment({ state: s, dispatch }: Props) {
           </select>
         </label>
       </div>
-      <p className="catalogue-count" role="status">
-        {visible.length} de {roster.length} combatientes · {serving} en tus filas ·{' '}
-        {(s.hiringArrivals ?? []).length} pendientes de incorporación
+      <p className="catalogue-count">
+        <output>
+          {visible.length} de {roster.length} combatientes · {serving} en tus
+          filas · {(s.hiringArrivals ?? []).length} pendientes de incorporación
+        </output>
       </p>
       {!visible.length && (
         <p className="catalogue-empty">
@@ -170,10 +202,13 @@ export default function Recruitment({ state: s, dispatch }: Props) {
       )}
       <div className="recruit-catalogue">
         {visible.map((o) => {
+          const portrait = portraitFor(o.portrait ?? o.portraitId ?? o.id, s);
           const hired = s.recruited.includes(o.id),
             arrival = pendingHire(s, o.id),
             term = periods[o.id] || 'day',
-            quote = hired ? contractRenewalQuote(s, o, term) : contractQuote(s, o, term),
+            quote = hired
+              ? contractRenewalQuote(s, o, term)
+              : contractQuote(s, o, term),
             contract = contractStatus(s, o.id),
             profile = characterProfile(o),
             record = s.operativeState[o.id],
@@ -181,8 +216,12 @@ export default function Recruitment({ state: s, dispatch }: Props) {
             inTransit = operativeInTransit(s, o.id);
           const objection = serviceObjectionReason(s, o),
             moraleStatus = lowMoraleRenewalStatus(s, o);
-          const cancellationReason = arrival ? hireCancellationReason(s, o.id) : null,
-            departureReason = hired ? guaranteeDepartureReason(s, contract, o) : null;
+          const cancellationReason = arrival
+              ? hireCancellationReason(s, o.id)
+              : null,
+            departureReason = hired
+              ? guaranteeDepartureReason(s, contract, o)
+              : null;
           const hireReason = !hired ? hiringRouteReason : null;
           const admission = !hired ? civicStatus(s, o.id) : null,
             captive = !hired && record?.alive !== false && record?.captured;
@@ -201,28 +240,30 @@ export default function Recruitment({ state: s, dispatch }: Props) {
                 ? 'La llegada espera a que salgas del sector.'
                 : null));
           return (
-            <article key={o.id} className="contract-card" data-operative-id={o.id}>
+            <article
+              key={o.id}
+              className="contract-card"
+              data-operative-id={o.id}
+            >
               <button
                 className="candidate-face"
                 onClick={() => setSelected(o.id)}
                 aria-label={`Ver hoja de servicio de ${o.name}`}
               >
-                {portraitFor((o as any).portrait ?? (o as any).portraitId ?? o.id, s) ? (
-                  <img
-                    src={sitePath(
-                      portraitFor((o as any).portrait ?? (o as any).portraitId ?? o.id, s)!,
-                    )}
-                    alt={o.name}
-                    loading="lazy"
-                  />
+                {portrait ? (
+                  <img src={sitePath(portrait)} alt={o.name} loading="lazy" />
                 ) : (
-                  <span>{o.nickname.slice(0, 2).toUpperCase()}</span>
+                  <span>
+                    {(o.nickname ?? o.name).slice(0, 2).toUpperCase()}
+                  </span>
                 )}
                 <span>{o.name}</span>
               </button>
               <p className="eyebrow">{o.role}</p>
-              <p className="candidate-greeting">«{profile.speech.hired}»</p>
-              <p className="candidate-specialties">{profile.skills.join(' · ')}</p>
+              <p className="candidate-greeting">«{profile.speech['hired']}»</p>
+              <p className="candidate-specialties">
+                {profile.skills.join(' · ')}
+              </p>
               {characterAbilityDescriptions(o).map(
                 (ability: { id: string; description: string }) => (
                   <small key={ability.id}>{ability.description}</small>
@@ -239,16 +280,24 @@ export default function Recruitment({ state: s, dispatch }: Props) {
                   Grado <b>{o.level}</b>
                 </span>
               </div>
-              <button className="dossier-link" onClick={() => setSelected(o.id)}>
+              <button
+                className="dossier-link"
+                onClick={() => setSelected(o.id)}
+              >
                 Atributos, carácter y equipo →
               </button>
               <PreferredCompanionsSummary state={s} operative={o} />
-              {quote.topTier && <small className="elite-contract">Especialista de élite</small>}
+              {quote.topTier && (
+                <small className="elite-contract">Especialista de élite</small>
+              )}
               {arrival ? (
                 <>
                   <p className="contract-remaining">
                     Reclutamiento pagado · Falta un destino seguro ·{' '}
-                    {CAMPAIGN_SECTORS.find((d) => d.id === arrival.destination)?.name}
+                    {
+                      CAMPAIGN_SECTORS.find((d) => d.id === arrival.destination)
+                        ?.name
+                    }
                   </p>
                   <small>
                     {arrival.serviceHours === null
@@ -257,12 +306,16 @@ export default function Recruitment({ state: s, dispatch }: Props) {
                     · Paga: {arrival.paid} pesos.{' '}
                     {guarantee && (
                       <>
-                        Garantía financiada: {guarantee.amount} pesos. Total pagado:{' '}
-                        {arrival.paid + guarantee.amount} pesos.
+                        Garantía financiada: {guarantee.amount} pesos. Total
+                        pagado: {arrival.paid + guarantee.amount} pesos.
                       </>
                     )}
                   </small>
-                  {held && <p role="status">{held}</p>}
+                  {held && (
+                    <p>
+                      <output>{held}</output>
+                    </p>
+                  )}
                   <label>
                     Cambiar destino
                     <select
@@ -270,13 +323,21 @@ export default function Recruitment({ state: s, dispatch }: Props) {
                       value={arrival.destination}
                       disabled={busy}
                       onChange={(e) =>
-                        dispatch({ type: 'redirectHire', id: o.id, destination: e.target.value })
+                        dispatch({
+                          type: 'redirectHire',
+                          id: o.id,
+                          destination: e.target.value,
+                        })
                       }
                     >
                       {!options.some((d) => d.id === arrival.destination) && (
                         <option value={arrival.destination}>
-                          {CAMPAIGN_SECTORS.find((d) => d.id === arrival.destination)?.name} · No
-                          disponible
+                          {
+                            CAMPAIGN_SECTORS.find(
+                              (d) => d.id === arrival.destination,
+                            )?.name
+                          }{' '}
+                          · No disponible
                         </option>
                       )}
                       {options.map((d) => (
@@ -287,10 +348,12 @@ export default function Recruitment({ state: s, dispatch }: Props) {
                     </select>
                   </label>
                   <small>
-                    La incorporación es inmediata cuando hay un destino seguro. El pago ya está
-                    registrado.
+                    La incorporación es inmediata cuando hay un destino seguro.
+                    El pago ya está registrado.
                   </small>
-                  {cancellationReason && <small role="status">{cancellationReason}</small>}
+                  {cancellationReason && (
+                    <small aria-live="polite">{cancellationReason}</small>
+                  )}
                   <button
                     className="dossier-link"
                     disabled={busy || Boolean(cancellationReason)}
@@ -306,7 +369,9 @@ export default function Recruitment({ state: s, dispatch }: Props) {
                     }
                   >
                     Cancelar reclutamiento · recuperar{' '}
-                    {arrival.paid + (guarantee?.state === 'held' ? guarantee.amount : 0)} pesos
+                    {arrival.paid +
+                      (guarantee?.state === 'held' ? guarantee.amount : 0)}{' '}
+                    pesos
                   </button>
                 </>
               ) : (
@@ -333,14 +398,18 @@ export default function Recruitment({ state: s, dispatch }: Props) {
                   ) : (
                     quote.reason &&
                     quote.reason !== objection &&
-                    quote.reason !== moraleStatus.reason && <small>{quote.reason}</small>
+                    quote.reason !== moraleStatus.reason && (
+                      <small>{quote.reason}</small>
+                    )
                   )}
                   <label>
                     Duración
                     <select
                       aria-label={`Duración del contrato de ${o.name}`}
                       value={term}
-                      onChange={(e) => setPeriods({ ...periods, [o.id]: e.target.value })}
+                      onChange={(e) =>
+                        setPeriods({ ...periods, [o.id]: e.target.value })
+                      }
                     >
                       {terms.map(([id, name]) => (
                         <option key={id} value={id}>
@@ -351,8 +420,8 @@ export default function Recruitment({ state: s, dispatch }: Props) {
                   </label>
                   {(quote.guarantee > 0 || guarantee) && (
                     <small>
-                      Paga: {quote.price} pesos · Garantía a financiar: {quote.guarantee} pesos ·
-                      Total: {quote.total} pesos.
+                      Paga: {quote.price} pesos · Garantía a financiar:{' '}
+                      {quote.guarantee} pesos · Total: {quote.total} pesos.
                     </small>
                   )}
                   {hired && guarantee && (
@@ -366,14 +435,19 @@ export default function Recruitment({ state: s, dispatch }: Props) {
                   )}
                   {hired && inTransit && (
                     <small>
-                      Está en camino. Esperá su llegada para finalizar el servicio. Si vence durante
-                      el viaje, la garantía queda retenida hasta la salida efectiva.
+                      Está en camino. Esperá su llegada para finalizar el
+                      servicio. Si vence durante el viaje, la garantía queda
+                      retenida hasta la salida efectiva.
                     </small>
                   )}
                   {captivityReason && (
-                    <small id={`hire-captivity-reason-${o.id}`}>{captivityReason}</small>
+                    <small id={`hire-captivity-reason-${o.id}`}>
+                      {captivityReason}
+                    </small>
                   )}
-                  {hireReason && <small id={`hire-route-reason-${o.id}`}>{hireReason}</small>}
+                  {hireReason && (
+                    <small id={`hire-route-reason-${o.id}`}>{hireReason}</small>
+                  )}
                   <button
                     className="gold-button"
                     aria-describedby={hireDescription}
@@ -412,7 +486,7 @@ export default function Recruitment({ state: s, dispatch }: Props) {
                         : `${hired ? 'Renovar' : 'Reclutar'} · ${quote.total} pesos`}
                   </button>
                   {hired && departureReason && !inTransit && (
-                    <small role="status">{departureReason}</small>
+                    <small aria-live="polite">{departureReason}</small>
                   )}
                   {hired && (
                     <button
@@ -434,17 +508,21 @@ export default function Recruitment({ state: s, dispatch }: Props) {
                   )}
                 </>
               )}
-              <small>Personaje ficticio · {profile.personality.split('.')[0]}.</small>
+              <small>
+                Personaje ficticio · {profile.personality.split('.')[0]}.
+              </small>
             </article>
           );
         })}
       </div>
-      <CharacterDossier
-        state={s}
-        operative={roster.find((o) => o.id === selected)}
-        record={s.operativeState[selected ?? -1]}
-        onClose={() => setSelected(null)}
-      />
+      {selectedOperative && selectedRecord && (
+        <CharacterDossier
+          state={s}
+          operative={selectedOperative}
+          record={selectedRecord}
+          onClose={() => setSelected(null)}
+        />
+      )}
     </section>
   );
 }

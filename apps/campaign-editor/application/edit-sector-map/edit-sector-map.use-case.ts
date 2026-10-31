@@ -1,3 +1,4 @@
+import type { PhysicalMap } from '../../../../packages/campaign-format/types.ts';
 import type { SectorMapCommand } from '../../domain/sector-map-command.ts';
 import type { CampaignEditorRefusalSnapshot } from '../../domain/campaign-editor-refusal.ts';
 import type { EditSectorMapRepository } from './edit-sector-map.repository.ts';
@@ -9,7 +10,7 @@ export type EditSectorMapRequest = {
 };
 
 export type EditSectorMapResponse = {
-  document: { id: string; revision: number; [field: string]: unknown };
+  document: PhysicalMap;
   errors: string[];
   warnings: string[];
   refusal?: CampaignEditorRefusalSnapshot;
@@ -25,7 +26,9 @@ export class EditSectorMapUseCase {
   execute(request: EditSectorMapRequest): EditSectorMapResponse {
     const map = this.#repository.load(request.mapId);
     const result = map.edit(request.commands, { expectedRevision: request.revision });
-    if (!result.errors.length && !result.refusal) this.#repository.commit(map, request.revision);
+    if (!result.errors.length && !result.refusal) {
+      this.#repository.commit(map, request.revision);
+    }
     return result;
   }
 }

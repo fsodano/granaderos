@@ -24,10 +24,11 @@ export function DocumentDraftProvider({ scope, children }: { scope: string; chil
   const [drafts, setDrafts] = useState<Drafts>({});
   const dirty = Object.keys(drafts).length > 0;
   useEffect(() => {
-    if (parent || !dirty) return;
+    if (parent || !dirty) {
+      return;
+    }
     const guard = (event: BeforeUnloadEvent) => {
       event.preventDefault();
-      event.returnValue = '';
     };
     window.addEventListener('beforeunload', guard);
     return () => window.removeEventListener('beforeunload', guard);
@@ -49,12 +50,16 @@ export const documentDraftKey = (scope: string, path: string) => `${scope}:${pat
 
 export function DocumentDraftStatus({ onOpen }: { onOpen: () => void }) {
   const store = useDocumentDraftStore();
-  if (!store) return null;
+  if (!store) {
+    return null;
+  }
   const count = Object.keys(store.drafts).filter((key) => key.startsWith(`${store.scope}:`)).length;
   const total = Object.keys(store.drafts).length;
-  if (!total) return null;
+  if (!total) {
+    return null;
+  }
   return (
-    <div className="studio-staged-notice" role="status">
+    <output className="studio-staged-notice">
       {count ? (
         <>
           <span>
@@ -74,6 +79,6 @@ export function DocumentDraftStatus({ onOpen }: { onOpen: () => void }) {
           estudio.
         </span>
       )}
-    </div>
+    </output>
   );
 }

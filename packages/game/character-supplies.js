@@ -16,6 +16,7 @@ export const CHARACTER_SUPPLY_LABELS = Object.freeze({
   medkits: 'Vendas',
   boleadoras: 'Boleadoras',
 });
+/** @param {import("../campaign-format/types.ts").CharacterDefinition} character @returns {Record<"rations" | "torches" | "medkits" | "boleadoras", number>} */
 export function startingCharacterSupplies(character) {
   const supplies = { ...DEFAULT_CHARACTER_SUPPLIES, ...character.startingSupplies };
   delete supplies.priming;

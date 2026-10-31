@@ -34,8 +34,9 @@ export class CampaignProjectEditingRepository
 
   load(identifier: string) {
     const project = this.#history.current();
-    if (!project || project.id !== identifier)
+    if (!project || project.id !== identifier) {
       throw new CampaignEditorRefusal(CampaignEditorRefusalCode.ProjectNotOpen);
+    }
     return { project, revision: this.#revision };
   }
 
@@ -51,7 +52,11 @@ export class CampaignProjectEditingRepository
       this.#history.undo();
       this.#revision += 1;
     }
-    return { project: this.#history.current()!.snapshot(), revision: this.#revision };
+    const current = this.#history.current();
+    if (!current) {
+      throw new CampaignEditorRefusal(CampaignEditorRefusalCode.ProjectNotOpen);
+    }
+    return { project: current.snapshot(), revision: this.#revision };
   }
 
   redo(identifier: string, expectedRevision: number) {
@@ -60,12 +65,17 @@ export class CampaignProjectEditingRepository
       this.#history.redo();
       this.#revision += 1;
     }
-    return { project: this.#history.current()!.snapshot(), revision: this.#revision };
+    const current = this.#history.current();
+    if (!current) {
+      throw new CampaignEditorRefusal(CampaignEditorRefusalCode.ProjectNotOpen);
+    }
+    return { project: current.snapshot(), revision: this.#revision };
   }
 
   #requireRevision(identifier: string, expectedRevision: number): void {
     const { revision } = this.load(identifier);
-    if (revision !== expectedRevision)
+    if (revision !== expectedRevision) {
       throw new CampaignEditorRefusal(CampaignEditorRefusalCode.StaleProjectRevision);
+    }
   }
 }

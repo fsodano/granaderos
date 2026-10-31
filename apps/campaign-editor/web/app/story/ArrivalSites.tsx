@@ -1,27 +1,28 @@
 'use client';
-import { campaignSectors } from '../../../../../packages/game/public/campaign-editor-api.js';
+import type { CampaignContent } from '../../../../../packages/campaign-format/types.ts';
+import { campaignSectors } from '../../../../../packages/game/public/campaign-editor-api.ts';
 import {
   ARRIVAL_FACILITIES,
   arrivalFacilityOptions,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 export default function ArrivalSites({
   draft,
   onChange,
 }: {
-  draft: any;
-  onChange: (next: any) => void;
+  draft: CampaignContent;
+  onChange: (next: CampaignContent) => void;
 }) {
   const original = draft.arrivalSites ?? [],
     sites = original;
   function toggle(sector: string, facility: string) {
-    const current = sites.find((s: any) => s.sector === sector)?.facilities ?? [];
+    const current = sites.find((s) => s.sector === sector)?.facilities ?? [];
     const facilities = current.includes(facility)
       ? current.filter((f: string) => f !== facility)
       : [...current, facility];
     onChange({
       ...draft,
       arrivalSites: [
-        ...sites.filter((s: any) => s.sector !== sector),
+        ...sites.filter((s) => s.sector !== sector),
         ...(facilities.length ? [{ sector, facilities }] : []),
       ],
     });
@@ -71,7 +72,7 @@ export default function ArrivalSites({
                         type="checkbox"
                         aria-label={`${label} en ${sector.name}`}
                         checked={sites.some(
-                          (s: any) => s.sector === sector.id && s.facilities.includes(id),
+                          (s) => s.sector === sector.id && s.facilities.includes(id),
                         )}
                         onChange={() => toggle(sector.id, id)}
                       />
@@ -86,7 +87,7 @@ export default function ArrivalSites({
         </table>
       </div>
       {!sites.length && (
-        <p role="status">No hay puntos habilitados. Esta campaña no podrá recibir contratados.</p>
+        <output>No hay puntos habilitados. Esta campaña no podrá recibir contratados.</output>
       )}
     </section>
   );

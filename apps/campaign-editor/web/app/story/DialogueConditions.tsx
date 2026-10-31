@@ -1,11 +1,18 @@
 'use client';
-import { CHARACTER_SUPPLY_LABELS } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { DIALOGUE_PERSON_STATE_LABELS } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { CAMPAIGN_PROJECT_LABELS } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { isWorldCharacter } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { QUEST_STATE_LABELS } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { campaignSectors } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { campaignFactionName } from '../../../../../packages/game/public/campaign-editor-api.js';
+import { selectValue, supplyIds, questStates, characterStates } from '../../lib/editor-values.ts';
+import type {
+  CampaignContent,
+  CharacterDefinition,
+  DialogueCondition,
+  QuestDefinition,
+} from '../../../../../packages/campaign-format/types.ts';
+import { CHARACTER_SUPPLY_LABELS } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { DIALOGUE_PERSON_STATE_LABELS } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { CAMPAIGN_PROJECT_LABELS } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { isWorldCharacter } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { QUEST_STATE_LABELS } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { campaignSectors } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { campaignFactionName } from '../../../../../packages/game/public/campaign-editor-api.ts';
 export default function DialogueConditions({
   conditions = [],
   characters,
@@ -14,31 +21,35 @@ export default function DialogueConditions({
   campaign = false,
   content,
 }: {
-  content?: any;
+  content?: CampaignContent | undefined;
   campaign?: boolean;
-  conditions?: any[];
-  characters: any[];
-  quests: any[];
-  onChange: (conditions: any[]) => void;
+  conditions?: DialogueCondition[] | undefined;
+  characters: CharacterDefinition[];
+  quests: QuestDefinition[];
+  onChange: (conditions: DialogueCondition[]) => void;
 }) {
   const sectors = campaignSectors(content);
   const residents = characters.filter(isWorldCharacter);
-  const update = (index: number, value: any) =>
+  const update = (index: number, value: DialogueCondition) =>
     onChange(conditions.map((c, i) => (i === index ? value : c)));
-  const initial = (type: string) =>
+  const initial = (type: string): DialogueCondition =>
     type === 'supply'
-      ? { type, character: characters[0].id, item: 'medkits', min: 1, max: null }
+      ? { type, character: characters[0]?.id ?? '', item: 'medkits', min: 1, max: null }
       : type === 'project'
         ? { type, project: 'foundry', completed: true }
         : type === 'meeting'
-          ? { type, character: residents[0].id }
+          ? { type, character: residents[0]?.id ?? '' }
           : type === 'quest'
-            ? { type, quest: quests[0].id, status: 'active' }
+            ? { type, quest: quests[0]?.id ?? '', status: 'active' }
             : type === 'character'
-              ? { type, character: characters[0].id, state: 'alive' }
+              ? { type, character: characters[0]?.id ?? '', state: 'alive' }
               : type === 'sector'
-                ? { type, sector: sectors[0]?.id, owner: 'patriot' }
-                : { type, min: type === 'day' ? 1 : 0, max: null };
+                ? { type, sector: sectors[0]?.id ?? '', owner: 'patriot' }
+                : {
+                    type: type === 'day' ? 'day' : 'treasury',
+                    min: type === 'day' ? 1 : 0,
+                    max: null,
+                  };
   return (
     <div>
       <p>
@@ -89,7 +100,12 @@ export default function DialogueConditions({
               </label>
               <label>
                 Suministro requerido
-                <select value={c.item} onChange={(e) => update(i, { ...c, item: e.target.value })}>
+                <select
+                  value={c.item}
+                  onChange={(e) =>
+                    update(i, { ...c, item: selectValue(e.target.value, supplyIds) })
+                  }
+                >
                   {Object.entries(CHARACTER_SUPPLY_LABELS).map(([id, label]) => (
                     <option key={id} value={id}>
                       {label}
@@ -131,7 +147,9 @@ export default function DialogueConditions({
                 Proyecto de la condición
                 <select
                   value={c.project}
-                  onChange={(e) => update(i, { ...c, project: e.target.value })}
+                  onChange={(e) =>
+                    update(i, { ...c, project: e.target.value === 'army' ? 'army' : 'foundry' })
+                  }
                 >
                   {Object.entries(CAMPAIGN_PROJECT_LABELS).map(([id, label]) => (
                     <option key={id} value={id}>
@@ -194,7 +212,9 @@ export default function DialogueConditions({
                 Estado del encargo requerido
                 <select
                   value={c.status}
-                  onChange={(e) => update(i, { ...c, status: e.target.value })}
+                  onChange={(e) =>
+                    update(i, { ...c, status: selectValue(e.target.value, questStates) })
+                  }
                 >
                   {Object.entries(QUEST_STATE_LABELS).map(([id, label]) => (
                     <option key={id} value={id}>
@@ -223,7 +243,9 @@ export default function DialogueConditions({
                 Estado requerido
                 <select
                   value={c.state}
-                  onChange={(e) => update(i, { ...c, state: e.target.value })}
+                  onChange={(e) =>
+                    update(i, { ...c, state: selectValue(e.target.value, characterStates) })
+                  }
                 >
                   {Object.entries(DIALOGUE_PERSON_STATE_LABELS).map(([id, label]) => (
                     <option key={id} value={id}>
@@ -257,7 +279,12 @@ export default function DialogueConditions({
                 Control requerido
                 <select
                   value={c.owner}
-                  onChange={(e) => update(i, { ...c, owner: e.target.value })}
+                  onChange={(e) =>
+                    update(i, {
+                      ...c,
+                      owner: e.target.value === 'royalist' ? 'royalist' : 'patriot',
+                    })
+                  }
                 >
                   <option value="patriot">{campaignFactionName(content, 'patriot')}</option>
                   <option value="royalist">{campaignFactionName(content, 'royalist')}</option>

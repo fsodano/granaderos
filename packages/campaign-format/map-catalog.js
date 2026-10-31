@@ -27,6 +27,7 @@ export const ITEM_TYPES = {
   rations: 'Raciones',
   torches: 'Antorchas',
 };
+/** @type {readonly ['features', 'buildings', 'props', 'items', 'spawns', 'exits', 'lights']} */
 export const LAYERS = ['features', 'buildings', 'props', 'items', 'spawns', 'exits', 'lights'];
 export const cellKey = (p) => `${p.x},${p.y}`;
 export const neighbours = (p) =>

@@ -1,16 +1,21 @@
 'use client';
+import type {
+  ArtilleryProfile,
+  CampaignContent,
+} from '../../../../../packages/campaign-format/types.ts';
 import { editorErrorMessage } from '../../../infrastructure/editor-error-message.ts';
 import {
   displayedAP,
   storedAP,
   isAPField,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 import { sitePath } from '../../../../web/game-preview-assets.js';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ARTILLERY,
   ARTILLERY_FIELDS,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
+const artilleryTypes = ['bronze4', 'field8', 'swivel'] as const;
 const normalized = (s: string) =>
   s
     .normalize('NFD')
@@ -21,23 +26,25 @@ export default function ArtilleryProfiles({
   onChange,
   resolveAsset = sitePath,
 }: {
-  draft: any;
-  onChange: (value: any) => void;
+  draft: CampaignContent;
+  onChange: (value: CampaignContent) => void;
   resolveAsset?: (reference: string) => string;
 }) {
   const [search, setSearch] = useState(''),
-    [selected, setSelected] = useState('bronze4'),
+    [selected, setSelected] = useState<keyof typeof ARTILLERY>('bronze4'),
     [notice, setNotice] = useState(''),
     imageRef = useRef<HTMLInputElement>(null),
     latest = useRef(draft);
-  latest.current = draft;
+  useEffect(() => {
+    latest.current = draft;
+  }, [draft]);
   const profiles = draft.artilleryProfiles ?? ARTILLERY,
     profile = profiles[selected],
     query = normalized(search.trim()),
-    types = Object.keys(ARTILLERY).filter((type) =>
+    types = artilleryTypes.filter((type) =>
       normalized(`${type} ${profiles[type].name}`).includes(query),
     );
-  const update = (fields: any, type = selected) => {
+  const update = (fields: Partial<ArtilleryProfile>, type = selected) => {
     const current = latest.current,
       values = current.artilleryProfiles ?? ARTILLERY;
     onChange({
@@ -46,20 +53,29 @@ export default function ArtilleryProfiles({
     });
   };
   async function upload(file: File | undefined) {
-    if (!file) return;
+    if (!file) {
+      return;
+    }
     const type = selected;
     try {
-      if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type) || file.size > 250000)
+      if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type) || file.size > 250000) {
         throw Error('Usá una imagen PNG, JPEG o WebP de hasta 250 KB.');
+      }
       const art = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = () => resolve(String(reader.result));
+        reader.onload = () => {
+          if (typeof reader.result === 'string') {
+            resolve(reader.result);
+          } else {
+            reject(new Error('No se pudo leer la imagen.'));
+          }
+        };
         reader.onerror = () => reject(Error('No se pudo leer la imagen.'));
         reader.readAsDataURL(file);
       });
       update({ art }, type);
       setNotice('Imagen de artillería actualizada.');
-    } catch (error: any) {
+    } catch (error) {
       setNotice(editorErrorMessage(error));
     }
   }
@@ -79,7 +95,7 @@ export default function ArtilleryProfiles({
           />
         </label>
         <div className="content-list-feedback">
-          <span role="status">{types.length} de 3 modelos</span>
+          <output>{types.length} de 3 modelos</output>
           {search && (
             <button type="button" onClick={() => setSearch('')}>
               Limpiar búsqueda
@@ -94,9 +110,7 @@ export default function ArtilleryProfiles({
             </button>
           ))}
           {types.length === 0 && (
-            <p className="content-empty" role="status">
-              No hay resultados para esta búsqueda.
-            </p>
+            <output className="content-empty">No hay resultados para esta búsqueda.</output>
           )}
         </div>
         <button
@@ -139,7 +153,7 @@ export default function ArtilleryProfiles({
           />
         </label>
         <div className="fields">
-          {ARTILLERY_FIELDS.map(([key, label, min, max]: any) => (
+          {ARTILLERY_FIELDS.map(([key, label, min, max]) => (
             <label key={key}>
               {label}
               <input
@@ -186,7 +200,7 @@ export default function ArtilleryProfiles({
           El precio de reposición y su límite se editan en Reglas. La imagen también aparece en el
           campo de batalla.
         </p>
-        {notice && <p role="status">{notice}</p>}
+        {notice && <output>{notice}</output>}
       </div>
     </section>
   );

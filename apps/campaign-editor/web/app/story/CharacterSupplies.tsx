@@ -1,15 +1,19 @@
+import type {
+  CharacterDefinition,
+  DraftPatch,
+} from '../../../../../packages/campaign-format/types.ts';
 import {
   CHARACTER_SUPPLY_LIMIT,
   CHARACTER_SUPPLY_LABELS,
   startingCharacterSupplies,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 
 export default function CharacterSupplies({
   character,
   onChange,
 }: {
-  character: any;
-  onChange: (patch: any) => void;
+  character: CharacterDefinition;
+  onChange: (patch: DraftPatch<CharacterDefinition>) => void;
 }) {
   const supplies = startingCharacterSupplies(character);
   return (
@@ -21,21 +25,24 @@ export default function CharacterSupplies({
         recogido por otra persona.
       </p>
       <div className="fields">
-        {Object.entries(CHARACTER_SUPPLY_LABELS).map(([key, label]) => (
-          <label key={key}>
-            {label}
-            <input
-              type="number"
-              min={0}
-              max={CHARACTER_SUPPLY_LIMIT}
-              step={1}
-              value={supplies[key]}
-              onChange={(e) =>
-                onChange({ startingSupplies: { ...supplies, [key]: e.target.valueAsNumber } })
-              }
-            />
-          </label>
-        ))}
+        {(['rations', 'torches', 'medkits', 'boleadoras'] as const).map((key) => {
+          const label = CHARACTER_SUPPLY_LABELS[key];
+          return (
+            <label key={key}>
+              {label}
+              <input
+                type="number"
+                min={0}
+                max={CHARACTER_SUPPLY_LIMIT}
+                step={1}
+                value={supplies[key]}
+                onChange={(e) =>
+                  onChange({ startingSupplies: { ...supplies, [key]: e.target.valueAsNumber } })
+                }
+              />
+            </label>
+          );
+        })}
       </div>
       <button
         disabled={character.startingSupplies === undefined}

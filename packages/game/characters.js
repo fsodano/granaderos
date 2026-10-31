@@ -1,13 +1,9 @@
-import {
-  SPEECH_EVENTS,
-  OPTIONAL_SPEECH_EVENTS,
-  AUTHORABLE_SPEECH_EVENTS,
-} from '../campaign-format/character-presentation-schema.js';
 export {
   SPEECH_EVENTS,
   OPTIONAL_SPEECH_EVENTS,
   AUTHORABLE_SPEECH_EVENTS,
 } from '../campaign-format/character-presentation-schema.js';
+// Original dramatic characterization and dialogue, not authenticated historical quotations.
 // Original dramatic characterization and dialogue, not authenticated historical quotations.
 import { CHARACTER_ABILITIES } from './character-abilities.js';
 import { CONTENT_TRAITS } from './content-character-options.js';
@@ -28,8 +24,10 @@ export const ATTRIBUTE_LABELS = {
 // Optional additions do not change older packages or their saved content identity.
 export const CHARACTER_PROFILES = structuredClone(DEFAULT_CATALOGUE.characterProfiles);
 function baseCharacterProfile(operative) {
-  if (Number(operative.id) === 1000) return customProfile(operative);
-  if (operative.contentId && (!CHARACTER_PROFILES[operative.id] || operative.genericCharacter))
+  if (Number(operative.id) === 1000) {
+    return customProfile(operative);
+  }
+  if (operative.contentId && (!CHARACTER_PROFILES[operative.id] || operative.genericCharacter)) {
     return {
       personality: operative.biography || 'Su historia se define durante la campaña.',
       skills: (operative.traits ?? []).map(
@@ -52,13 +50,15 @@ function baseCharacterProfile(operative) {
         ending: 'La campaña ha terminado.',
       },
     };
-  if (operative.contentId && operative.recruitmentSource === 'contract')
+  }
+  if (operative.contentId && operative.recruitmentSource === 'contract') {
     return {
       ...CHARACTER_PROFILES[operative.id],
       skills: (operative.traits ?? []).map(
         (id) => CONTENT_TRAITS.find((t) => t.id === id)?.name ?? id,
       ),
     };
+  }
   return (
     CHARACTER_PROFILES[operative.id] ?? {
       personality:
@@ -77,6 +77,7 @@ function baseCharacterProfile(operative) {
     }
   );
 }
+/** @returns {{personality:string,skills:string[],registry:string,speech:Record<string,string>}} */
 export function characterProfile(operative) {
   const base = baseCharacterProfile(operative);
   const profile = operative.storyProfile ? { ...base, ...operative.storyProfile } : base;

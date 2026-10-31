@@ -1,14 +1,15 @@
 'use client';
+import type { CampaignContent } from '../../../../../packages/campaign-format/types.ts';
 import {
   DEFAULT_MILITIA_PROGRESSION,
   MILITIA_PROGRESSION_FIELDS,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 export default function MilitiaRules({
   draft,
   onChange,
 }: {
-  draft: any;
-  onChange: (value: any) => void;
+  draft: CampaignContent;
+  onChange: (value: CampaignContent) => void;
 }) {
   const rules = draft.militiaProgression ?? DEFAULT_MILITIA_PROGRESSION;
   return (
@@ -20,7 +21,7 @@ export default function MilitiaRules({
         encuentro con puntos nuevos, puede ganar un grado.
       </p>
       <div className="fields">
-        {MILITIA_PROGRESSION_FIELDS.map(([key, label, min, max]: any) => (
+        {MILITIA_PROGRESSION_FIELDS.map(([key, label, min, max]) => (
           <label key={key}>
             {label}
             <input

@@ -1,4 +1,5 @@
 'use client';
+import type { CampaignContent } from '../../../../../packages/campaign-format/types.ts';
 import ContractRules from './ContractRules.tsx';
 import MilitiaRules from './MilitiaRules.tsx';
 import ArtilleryTransportRules from './ArtilleryTransportRules.tsx';
@@ -8,7 +9,7 @@ import FoundryRules from './FoundryRules.tsx';
 import CampaignRoles from './CampaignRoles.tsx';
 import CampaignStory from './CampaignStory.tsx';
 import StartingTerritory from './StartingTerritory.tsx';
-import { DEFAULT_CAMPAIGN_RULES } from '../../../../../packages/game/public/campaign-editor-api.js';
+import { DEFAULT_CAMPAIGN_RULES } from '../../../../../packages/game/public/campaign-editor-api.ts';
 const fields = [
   ['startingTreasury', 'Fondos iniciales (pesos)'],
   ['deploymentCartridges', 'Cartuchos iniciales por combatiente'],
@@ -19,8 +20,8 @@ export default function CampaignRules({
   draft,
   onChange,
 }: {
-  draft: any;
-  onChange: (value: any) => void;
+  draft: CampaignContent;
+  onChange: (value: CampaignContent) => void;
 }) {
   const rules = draft.rules ?? DEFAULT_CAMPAIGN_RULES;
   return (

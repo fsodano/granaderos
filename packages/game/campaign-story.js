@@ -3,14 +3,18 @@ import { campaignSectors } from './campaign-definition.js';
 import { validateCampaignStory as validateStoryRecords } from '../campaign-format/story-schema.js';
 
 const need = (ok, message) => {
-  if (!ok) throw Error(message);
+  if (!ok) {
+    throw Error(message);
+  }
 };
 const object = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 const exact = (v, keys) =>
   object(v) && Object.keys(v).length === keys.length && keys.every((k) => Object.hasOwn(v, k));
 const time = (s) => s.hour * 3600 + (s.secondOfHour ?? 0);
 const stamp = (s) => ({ hour: s.hour, secondOfHour: s.secondOfHour ?? 0 });
+/** @returns {import('../campaign-format/types.ts').CampaignStory|null} */
 export const campaignStory = (s) => s?.contentCampaign?.package.campaignStory ?? null;
+/** @returns {import('../campaign-format/types.ts').CampaignStory} */
 export function defaultCampaignStory() {
   return {
     introduction: 'Reuní una escuadra y cumplí los objetivos de esta campaña.',
@@ -36,6 +40,7 @@ export function validateCampaignStory(value, characters, quests, context = null)
   );
 }
 
+/** @returns {number} */
 export const campaignChapterIndex = (s) =>
   campaignStory(s)
     ? Math.min(s.campaignProgress?.completed.length ?? 0, campaignStory(s).chapters.length - 1)
@@ -48,14 +53,18 @@ export const storyReferences = (story, type, id) =>
     (c) => (c.type === type || (type === 'character' && c.type === 'supply')) && c[type] === id,
   );
 export function initializeCampaignStory(s) {
-  if (!campaignStory(s)) return;
+  if (!campaignStory(s)) {
+    return;
+  }
   s.campaignProgress = { version: 1, completed: [], outcome: null };
   s.log = [{ hour: s.hour, text: campaignStory(s).introduction }];
 }
 // Campaign objectives use settled campaign state. Do not finish an open scene.
 export function advanceCampaignStory(s, battle = null) {
   const story = campaignStory(s);
-  if (!story || s.campaignProgress.outcome) return;
+  if (!story || s.campaignProgress.outcome) {
+    return;
+  }
   const log = (value) => {
     s.log.unshift({ hour: s.hour, text: value });
     s.log = s.log.slice(0, 80);
@@ -70,10 +79,14 @@ export function advanceCampaignStory(s, battle = null) {
     log(story.defeat);
     return;
   }
-  if (s.pendingBattle) return;
+  if (s.pendingBattle) {
+    return;
+  }
   while (s.campaignProgress.completed.length < story.chapters.length) {
     const chapter = story.chapters[s.campaignProgress.completed.length];
-    if (!dialogueConditionsMet(s, chapter.conditions)) break;
+    if (!dialogueConditionsMet(s, chapter.conditions)) {
+      break;
+    }
     s.campaignProgress.completed.push({ chapter: chapter.id, ...stamp(s) });
     log(`Objetivo cumplido: ${chapter.name}.`);
   }
@@ -118,9 +131,9 @@ export function validateCampaignProgress(s) {
     previous = time(e);
   }
   need(!(s.completed && s.defeated), message);
-  if (p.outcome === null)
+  if (p.outcome === null) {
     need(!s.completed && !s.defeated && p.completed.length < story.chapters.length, message);
-  else {
+  } else {
     need(
       exact(p.outcome, ['type', 'hour', 'secondOfHour']) &&
         validTime(p.outcome) &&

@@ -1,17 +1,21 @@
 'use client';
+import type {
+  CampaignContent,
+  ContractRules as ContractRulesDefinition,
+} from '../../../../../packages/campaign-format/types.ts';
 import {
   CONTRACT_RULE_FIELDS,
   DEFAULT_CONTRACT_RULES,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
 export default function ContractRules({
   draft,
   onChange,
 }: {
-  draft: any;
-  onChange: (value: any) => void;
+  draft: CampaignContent;
+  onChange: (value: CampaignContent) => void;
 }) {
   const rules = draft.contractRules ?? DEFAULT_CONTRACT_RULES;
-  const setRules = (next: any) => onChange({ ...draft, contractRules: next });
+  const setRules = (next: ContractRulesDefinition) => onChange({ ...draft, contractRules: next });
   return (
     <section aria-label="Reglas de contratación">
       <h2>Contratos y paga</h2>
@@ -42,7 +46,7 @@ export default function ContractRules({
             />
           </label>
         ))}
-        {CONTRACT_RULE_FIELDS.map(([key, label, min, max]: any) => (
+        {CONTRACT_RULE_FIELDS.map(([key, label, min, max]) => (
           <label key={key}>
             {label}
             <input

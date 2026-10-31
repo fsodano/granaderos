@@ -2,9 +2,9 @@ import { validateMapDocument, MAP_SCHEMA_VERSION } from '../campaign-format/map-
 export { MAP_SCHEMA_VERSION } from '../campaign-format/map-schema.js';
 import { validateTacticalSpace } from './tactical-space.js';
 import { wallEdgeKey, wallEdgeCells, migrateWallGeometry } from './wall-geometry.js';
-import { BUILDING_TYPES } from './building-types.js';
+import { BUILDING_TYPES } from './building-types.ts';
 import { STRUCTURE_BLAST, validateStructureDamage } from './structure-blast.js';
-import { validateEnvironment } from './environment-interactions.js';
+import { validateEnvironment } from './environment-interactions.ts';
 import { FURNITURE, LAYERS, cellKey, ground } from './map-catalog.js';
 import { compileBuilding, compileMap, reachableMap } from './compile-map.js';
 import { propPlacementError, propBlocksAt } from './props.js';
@@ -22,6 +22,7 @@ const placementMessages = {
 };
 const location = (e) => `${e.name ?? FURNITURE[e.type]?.name ?? 'Objeto'} (${e.x}, ${e.y})`;
 
+/** @returns {import("../campaign-format/types.ts").PhysicalMap} */
 export function blankMap({
   id = 'new-sector',
   title = 'Nuevo sector',
@@ -35,8 +36,9 @@ export function blankMap({
     height < 4 ||
     width > 64 ||
     height > 64
-  )
+  ) {
     throw Error('Dimensiones no válidas.');
+  }
   return {
     schemaVersion: MAP_SCHEMA_VERSION,
     id,
@@ -51,13 +53,18 @@ export function blankMap({
     ...Object.fromEntries(LAYERS.map((k) => [k, []])),
   };
 }
+/** @returns {{errors:string[],warnings:string[],valid:boolean}} */
 export function validateMap(input, { playable = false } = {}) {
   const { errors, warnings } = validateMapDocument(input);
-  if (errors.length) return { errors, warnings, valid: false };
+  if (errors.length) {
+    return { errors, warnings, valid: false };
+  }
   try {
     const d = input;
     const need = (condition, message) => {
-      if (!condition) throw new Error(message);
+      if (!condition) {
+        throw new Error(message);
+      }
     };
     const wallMetadata = (wall, runtime = false) => {
       need(
@@ -65,22 +72,35 @@ export function validateMap(input, { playable = false } = {}) {
         'Material de pared no válido.',
       );
       validateStructureDamage(wall);
-      if (wall.type === 'door' && runtime) validateEnvironment(wall);
+      if (wall.type === 'door' && runtime) {
+        validateEnvironment(wall);
+      }
     };
-    for (const tile of d.terrain)
-      if (['wall', 'door', 'window'].includes(tile.type)) wallMetadata(tile);
-    for (const wall of d.wallEdges ?? []) wallMetadata(wall, true);
+    for (const tile of d.terrain) {
+      if (['wall', 'door', 'window'].includes(tile.type)) {
+        wallMetadata(tile);
+      }
+    }
+    for (const wall of d.wallEdges ?? []) {
+      wallMetadata(wall, true);
+    }
     for (const building of d.buildings) {
       need(
         building.architecture === undefined || Object.hasOwn(BUILDING_TYPES, building.architecture),
         'Edificio no válido.',
       );
-      for (const wall of building.walls) wallMetadata(wall);
+      for (const wall of building.walls) {
+        wallMetadata(wall);
+      }
     }
     const occupied = new Set();
-    for (const building of d.buildings)
-      for (let y = building.y; y < building.y + building.height; y++)
-        for (let x = building.x; x < building.x + building.width; x++) occupied.add(`${x},${y}`);
+    for (const building of d.buildings) {
+      for (let y = building.y; y < building.y + building.height; y++) {
+        for (let x = building.x; x < building.x + building.width; x++) {
+          occupied.add(`${x},${y}`);
+        }
+      }
+    }
     const map = compileMap(d);
     validateTacticalSpace(map);
     const tiles = new Map(map.tiles.map((t) => [cellKey(t), t]));
@@ -97,75 +117,98 @@ export function validateMap(input, { playable = false } = {}) {
         { ...map, props: map.props.filter((v) => v.id !== p.id) },
         p,
       );
-      if (reason) errors.push(`${location(p)}: ${placementMessages[reason] ?? reason}`);
+      if (reason) {
+        errors.push(`${location(p)}: ${placementMessages[reason] ?? reason}`);
+      }
     }
     const spawnKeys = new Set();
     for (const s of [...d.spawns, ...d.exits]) {
-      if (tiles.get(cellKey(s)).blocked || propBlocksAt(map, s.x, s.y))
+      if (tiles.get(cellKey(s)).blocked || propBlocksAt(map, s.x, s.y)) {
         errors.push(`${location(s)}: casilla bloqueada.`);
+      }
       if (d.spawns.includes(s)) {
-        if (spawnKeys.has(cellKey(s))) errors.push(`${location(s)}: aparición superpuesta.`);
+        if (spawnKeys.has(cellKey(s))) {
+          errors.push(`${location(s)}: aparición superpuesta.`);
+        }
         spawnKeys.add(cellKey(s));
       }
     }
-    for (const i of d.items)
-      if (!i.containerId && (tiles.get(cellKey(i)).blocked || propBlocksAt(map, i.x, i.y)))
+    for (const i of d.items) {
+      if (!i.containerId && (tiles.get(cellKey(i)).blocked || propBlocksAt(map, i.x, i.y))) {
         errors.push(`${location(i)}: objeto en una casilla bloqueada.`);
+      }
+    }
     const starts = d.spawns.filter((s) => s.side === 'player');
-    if (!starts.length)
+    if (!starts.length) {
       (playable ? errors : warnings).push(
         'Añade al menos una aparición del jugador para probar el mapa.',
       );
+    }
     const reachable = reachableMap(map, starts[0]);
     if (starts.length) {
-      for (const e of [...d.spawns, ...d.exits])
-        if (!reachable.has(cellKey(e)))
+      for (const e of [...d.spawns, ...d.exits]) {
+        if (!reachable.has(cellKey(e))) {
           errors.push(`${location(e)}: sin ruta desde la entrada del jugador.`);
+        }
+      }
     }
-    for (const b of map.buildings)
+    for (const b of map.buildings) {
       for (const room of b.rooms) {
         const doors = b.walls.filter(
           (w) =>
             w.type === 'door' &&
             room.cells.some((c) => wallEdgeCells(w).some((n) => cellKey(n) === cellKey(c))),
         );
-        if (!doors.length)
+        if (!doors.length) {
           warnings.push(
             `${b.name ?? 'Edificio'}: habitación sin puerta (${room.cells[0].x}, ${room.cells[0].y}).`,
           );
-        else if (starts.length && !room.cells.some((c) => reachable.has(cellKey(c))))
+        } else if (starts.length && !room.cells.some((c) => reachable.has(cellKey(c)))) {
           warnings.push(
             `${b.name ?? 'Edificio'}: habitación aislada (${room.cells[0].x}, ${room.cells[0].y}).`,
           );
+        }
       }
-    for (const b of d.buildings)
-      for (const w of b.walls)
-        if (w.locked)
+    }
+    for (const b of d.buildings) {
+      for (const w of b.walls) {
+        if (w.locked) {
           warnings.push(
             `${b.name ?? 'Edificio'}: puerta con llave (${w.x}, ${w.y}); la ruta se comprueba con puertas abiertas.`,
           );
+        }
+      }
+    }
   } catch (e) {
     errors.push(e.message);
   }
   return { errors, warnings, valid: errors.length === 0 };
 }
+/** @returns {import("../campaign-format/types.ts").PhysicalMap} */
 export function parseMap(text) {
   const doc = JSON.parse(text);
   const result = validateMap(doc);
-  if (!result.valid) throw Error(result.errors.join('\n'));
+  if (!result.valid) {
+    throw Error(result.errors.join('\n'));
+  }
   return migrateMapDocument(doc);
 }
 export function serializeMap(doc) {
   const result = validateMap(doc);
-  if (!result.valid) throw Error(result.errors.join('\n'));
+  if (!result.valid) {
+    throw Error(result.errors.join('\n'));
+  }
   const copy = migrateMapDocument(doc);
-  for (const layer of LAYERS) copy[layer].sort((a, b) => a.id.localeCompare(b.id));
+  for (const layer of LAYERS) {
+    copy[layer].sort((a, b) => a.id.localeCompare(b.id));
+  }
   copy.terrain.sort((a, b) => a.y - b.y || a.x - b.x);
   copy.wallEdges.sort((a, b) => a.id.localeCompare(b.id));
   return JSON.stringify(copy, null, 2) + '\n';
 }
 
 // Import old authored plans once. Runtime compilation always uses edge geometry.
+/** @returns {import("../campaign-format/types.ts").PhysicalMap} */
 export function migrateMapDocument(document) {
   const copy = structuredClone(document);
   const standalone = copy.terrain.filter((t) => ['wall', 'door', 'window'].includes(t.type));

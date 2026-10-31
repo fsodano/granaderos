@@ -1,11 +1,15 @@
-import { startingCharacterCondition } from '../../../../../packages/game/public/campaign-editor-api.js';
+import type {
+  CharacterDefinition,
+  DraftPatch,
+} from '../../../../../packages/campaign-format/types.ts';
+import { startingCharacterCondition } from '../../../../../packages/game/public/campaign-editor-api.ts';
 
 export default function CharacterCondition({
   character,
   onChange,
 }: {
-  character: any;
-  onChange: (patch: any) => void;
+  character: CharacterDefinition;
+  onChange: (patch: DraftPatch<CharacterDefinition>) => void;
 }) {
   const condition = startingCharacterCondition(character);
   const fields = [

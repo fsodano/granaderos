@@ -1,17 +1,18 @@
 'use client';
-import { headquartersOptions } from '../../../../../packages/game/public/campaign-editor-api.js';
+import type { CampaignContent } from '../../../../../packages/campaign-format/types.ts';
+import { headquartersOptions } from '../../../../../packages/game/public/campaign-editor-api.ts';
 import {
   campaignSectors,
   campaignWorld,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
-import { defaultStartingTerritory } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { campaignFactionName } from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { defaultStartingTerritory } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { campaignFactionName } from '../../../../../packages/game/public/campaign-editor-api.ts';
 export default function StartingTerritory({
   draft,
   onChange,
 }: {
-  draft: any;
-  onChange: (value: any) => void;
+  draft: CampaignContent;
+  onChange: (value: CampaignContent) => void;
 }) {
   const sectors = campaignSectors(draft),
     originalHeadquarters = campaignWorld(draft).defaultHeadquarters ?? sectors[0]?.id,
@@ -21,13 +22,20 @@ export default function StartingTerritory({
     onChange({
       ...draft,
       headquarters: id,
-      startingTerritory: { ...territory, [id]: { ...territory[id], owner: 'patriot' } },
+      startingTerritory: {
+        ...territory,
+        [id]: { loyalty: territory[id]?.loyalty ?? 65, owner: 'patriot' },
+      },
     });
   }
   function change(id: string, field: string, value: string | number) {
+    const current = territory[id];
+    if (!current) {
+      return;
+    }
     onChange({
       ...draft,
-      startingTerritory: { ...territory, [id]: { ...territory[id], [field]: value } },
+      startingTerritory: { ...territory, [id]: { ...current, [field]: value } },
     });
   }
   return (
@@ -78,7 +86,7 @@ export default function StartingTerritory({
                 <td>
                   <select
                     aria-label={`Control inicial de ${s.name}`}
-                    value={territory[s.id].owner}
+                    value={territory[s.id]?.owner ?? 'royalist'}
                     disabled={s.id === headquarters}
                     onChange={(e) => change(s.id, 'owner', e.target.value)}
                   >
@@ -93,7 +101,9 @@ export default function StartingTerritory({
                     min={0}
                     max={100}
                     step={1}
-                    value={Number.isFinite(territory[s.id].loyalty) ? territory[s.id].loyalty : ''}
+                    value={
+                      Number.isFinite(territory[s.id]?.loyalty) ? territory[s.id]?.loyalty : ''
+                    }
                     onChange={(e) => change(s.id, 'loyalty', e.target.valueAsNumber)}
                   />
                 </td>

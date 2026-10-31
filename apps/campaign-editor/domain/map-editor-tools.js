@@ -12,11 +12,12 @@ export function rectangleCells(a, b) {
 export function lineCells(a, b) {
   const cells = [],
     steps = Math.max(Math.abs(b.x - a.x), Math.abs(b.y - a.y));
-  for (let i = 0; i <= steps; i++)
+  for (let i = 0; i <= steps; i++) {
     cells.push({
       x: Math.round(a.x + ((b.x - a.x) * i) / (steps || 1)),
       y: Math.round(a.y + ((b.y - a.y) * i) / (steps || 1)),
     });
+  }
   return cells;
 }
 export function isometricCell(client, box, camera, origin, bounds) {
@@ -25,8 +26,9 @@ export function isometricCell(client, box, camera, origin, bounds) {
     client.y < box.top ||
     client.x > box.left + box.width ||
     client.y > box.top + box.height
-  )
+  ) {
     return null;
+  }
   const scale = Math.min(box.width / camera.width, box.height / camera.height),
     offsetX = (box.width - camera.width * scale) / 2,
     offsetY = (box.height - camera.height * scale) / 2;
@@ -36,6 +38,9 @@ export function isometricCell(client, box, camera, origin, bounds) {
     y = Math.round((sy / 14 - sx / 26) / 2);
   return x >= 0 && y >= 0 && x < bounds.width && y < bounds.height ? { x, y } : null;
 }
+/** @param {import("../../../packages/campaign-format/types.ts").PhysicalMap} document
+ * @param {{seed?:number,density?:number,type?:import("./sector-map-command.ts").MapTerrain}} [options]
+ * @returns {import("./sector-map-command.ts").SectorMapCommand[]} */
 export function seededTerrainCommands(
   document,
   { seed = 1, density = 0.15, type = 'forest' } = {},
@@ -44,7 +49,9 @@ export function seededTerrainCommands(
   const cells = [];
   for (const t of document.terrain) {
     value = (Math.imul(value, 1664525) + 1013904223) >>> 0;
-    if (value / 4294967296 < density) cells.push({ x: t.x, y: t.y });
+    if (value / 4294967296 < density) {
+      cells.push({ x: t.x, y: t.y });
+    }
   }
   return [{ type: 'paintTerrain', terrain: type, cells }];
 }

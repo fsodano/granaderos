@@ -736,3 +736,11 @@
     transition: none;
   }
 }
+
+.sector-editor fieldset.editor-toolbar-group,
+.sector-editor fieldset.editor-tool-group {
+  border: 0;
+  margin-inline: 0;
+  padding: 0;
+  min-width: 0;
+}

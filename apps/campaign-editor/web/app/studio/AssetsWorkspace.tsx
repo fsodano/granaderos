@@ -1,12 +1,24 @@
 'use client';
+import type {
+  CampaignProjectDocument,
+  JsonDocument,
+  JsonValue,
+} from '../../../domain/campaign-project.ts';
+import {
+  documentObjects,
+  documentString,
+  parseEditorJson,
+  requireJsonDocument,
+} from '../../lib/editor-documents.ts';
+import { assertCampaignProjectEnvelope } from '../../../domain/project-document.ts';
 import { editorErrorMessage } from '../../../infrastructure/editor-error-message.ts';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { campaignRelativePath } from '../../../../../packages/campaign-format/campaign-assets.js';
 import {
   setProjectResource,
   removeProjectResource,
 } from '../../../infrastructure/project-operations.js';
-import { projectResourceBytes } from '../../../domain/project-document.js';
+import { projectResourceBytes } from '../../../domain/project-document.ts';
 import {
   projectAssetUsage,
   replaceProjectImageReferences,
@@ -32,69 +44,82 @@ export default function AssetsWorkspace({
   project,
   onChange,
 }: {
-  project: any;
-  onChange: (next: any) => void;
+  project: CampaignProjectDocument;
+  onChange: (next: CampaignProjectDocument) => void;
 }) {
   const input = useRef<HTMLInputElement>(null),
     latest = useRef(project),
     replacement = useRef<string | null>(null);
-  latest.current = project;
+  useEffect(() => {
+    latest.current = project;
+  }, [project]);
   const [selected, setSelected] = useState(''),
     [rename, setRename] = useState(''),
     [person, setPerson] = useState(''),
     [notice, setNotice] = useState(''),
     [busy, setBusy] = useState(false),
     resolveAsset = useStudioAssetResolver(project);
-  const assets = Array.isArray(project.assets?.assets)
-      ? project.assets.assets.filter((a: any) => a && typeof a.path === 'string')
-      : [],
-    asset = assets.find((a: any) => a.path === selected) ?? assets[0],
+  const assets = documentObjects(project.assets['assets']).filter(
+      (entry): entry is JsonDocument & { path: string } => typeof entry['path'] === 'string',
+    ),
+    asset = assets.find((a) => a.path === selected) ?? assets[0],
     usage = asset ? projectAssetUsage(project, asset.path) : [],
-    characters = Array.isArray(project.content?.characters) ? project.content.characters : [];
+    characters = documentObjects(project.content['characters']);
   let byteCount: number | null = null,
     resourceError = '';
   try {
-    if (asset) byteCount = projectResourceBytes(project, asset.path).length;
-  } catch (error: any) {
+    if (asset) {
+      byteCount = projectResourceBytes(project, asset.path).length;
+    }
+  } catch (error) {
     resourceError = editorErrorMessage(error);
   }
   async function upload(files: FileList | null) {
-    if (!files?.length) return;
+    if (!files?.length) {
+      return;
+    }
     setBusy(true);
     setNotice('');
     const original = latest.current;
     let next = original;
     try {
-      if (replacement.current && files.length !== 1)
+      if (replacement.current && files.length !== 1) {
         throw Error('Seleccioná un solo archivo para reemplazar este recurso.');
+      }
       for (const file of Array.from(files)) {
         const name = file.name.replaceAll(' ', '-'),
           path = replacement.current ?? `assets/${name}`,
           type = fileTypes[name.split('.').at(-1)?.toLowerCase() ?? ''];
-        if (!campaignRelativePath(path) || !type)
+        if (!campaignRelativePath(path) || !type) {
           throw Error(`Usá una imagen PNG, JPEG o WebP, o un archivo JSON: ${file.name}`);
+        }
         next = await setProjectResource(next, path, new Uint8Array(await file.arrayBuffer()), type);
         setSelected(path);
         setRename(path);
       }
-      if (latest.current !== original)
+      if (latest.current !== original) {
         throw Error(
           'El proyecto cambió durante la carga. Volvé a seleccionar los archivos para conservar ambos cambios.',
         );
+      }
       onChange(next);
       setNotice(
         `${files.length} recurso${files.length === 1 ? '' : 's'} incluido${files.length === 1 ? '' : 's'} en el proyecto.`,
       );
-    } catch (error: any) {
+    } catch (error) {
       setNotice(editorErrorMessage(error));
     } finally {
       setBusy(false);
       replacement.current = null;
-      if (input.current) input.current.value = '';
+      if (input.current) {
+        input.current.value = '';
+      }
     }
   }
   function renameAsset() {
-    if (!asset) return;
+    if (!asset) {
+      return;
+    }
     if (byteCount === null) {
       setNotice('Incluí el archivo ausente antes de renombrarlo.');
       return;
@@ -103,7 +128,7 @@ export default function AssetsWorkspace({
     if (
       !campaignRelativePath(path) ||
       !path.startsWith('assets/') ||
-      fileTypes[path.split('.').at(-1) ?? ''] !== asset.type
+      fileTypes[path.split('.').at(-1) ?? ''] !== documentString(asset['type'])
     ) {
       setNotice('La ruta debe comenzar con assets/ y conservar el tipo de archivo.');
       return;
@@ -112,29 +137,40 @@ export default function AssetsWorkspace({
       setNotice('Ya existe un archivo en esa ruta.');
       return;
     }
-    const next = replaceProjectImageReferences(
-        project,
-        `/campaigns/${project.manifest.id}/${asset.path}`,
-        `/campaigns/${project.manifest.id}/${path}`,
+    const next = assertCampaignProjectEnvelope(
+        replaceProjectImageReferences(
+          project,
+          `/campaigns/${project.manifest.id}/${asset.path}`,
+          `/campaigns/${project.manifest.id}/${path}`,
+        ),
       ),
       resources = { ...next.resources };
-    resources[path] = resources[asset.path];
-    if (path !== asset.path) delete resources[asset.path];
+    const resource = resources[asset.path];
+    if (!resource) {
+      return;
+    }
+    resources[path] = resource;
+    if (path !== asset.path) {
+      delete resources[asset.path];
+    }
     next.resources = resources;
     next.assets = {
       ...next.assets,
-      assets: next.assets.assets.map((entry: any) =>
-        entry.path === asset.path ? { ...entry, path } : entry,
+      assets: documentObjects(next.assets['assets']).map((entry) =>
+        entry['path'] === asset.path ? { ...entry, path } : entry,
       ),
     };
     onChange(next);
     setSelected(path);
     setNotice('Archivo renombrado. Sus referencias también cambiaron.');
   }
-  let metadata: any = null;
+  let metadata: JsonValue = null;
   try {
-    if (asset?.type === 'application/json')
-      metadata = JSON.parse(new TextDecoder().decode(projectResourceBytes(project, asset.path)));
+    if (asset && documentString(asset['type']) === 'application/json') {
+      metadata = parseEditorJson(
+        new TextDecoder().decode(projectResourceBytes(project, asset.path)),
+      );
+    }
   } catch {}
   return (
     <div className="studio-workspace">
@@ -166,16 +202,12 @@ export default function AssetsWorkspace({
         hidden
         onChange={(e) => upload(e.target.files)}
       />
-      {notice && (
-        <p role="status" className="studio-notice">
-          {notice}
-        </p>
-      )}
+      {notice && <output className="studio-notice">{notice}</output>}
       <div className="studio-asset-layout">
         <section className="studio-card">
           <h3>{assets.length} recursos</h3>
           <div className="studio-asset-list">
-            {assets.map((entry: any) => (
+            {assets.map((entry) => (
               <button
                 type="button"
                 key={entry.path}
@@ -186,8 +218,8 @@ export default function AssetsWorkspace({
                   setNotice('');
                 }}
               >
-                {typeof entry.type === 'string' &&
-                entry.type.startsWith('image/') &&
+                {typeof documentString(entry['type']) === 'string' &&
+                documentString(entry['type']).startsWith('image/') &&
                 project.resources[entry.path] ? (
                   <img
                     src={resolveAsset(`/campaigns/${project.manifest.id}/${entry.path}`)}
@@ -199,7 +231,7 @@ export default function AssetsWorkspace({
                   </span>
                 )}
                 <span>
-                  <strong>{entry.id}</strong>
+                  <strong>{documentString(entry['id'])}</strong>
                   <small>{entry.path}</small>
                 </span>
               </button>
@@ -211,14 +243,14 @@ export default function AssetsWorkspace({
         </section>
         {asset && (
           <section className="studio-card studio-asset-detail">
-            <h3>{asset.id}</h3>
-            {typeof asset.type === 'string' &&
-              asset.type.startsWith('image/') &&
+            <h3>{documentString(asset['id'])}</h3>
+            {typeof documentString(asset['type']) === 'string' &&
+              documentString(asset['type']).startsWith('image/') &&
               byteCount !== null && (
                 <img
                   className="studio-resource-preview"
                   src={resolveAsset(`/campaigns/${project.manifest.id}/${asset.path}`)}
-                  alt={`Vista previa de ${asset.id}`}
+                  alt={`Vista previa de ${documentString(asset['id'])}`}
                 />
               )}
             {resourceError && (
@@ -237,7 +269,7 @@ export default function AssetsWorkspace({
             <dl>
               <div>
                 <dt>Tipo</dt>
-                <dd>{asset.type}</dd>
+                <dd>{documentString(asset['type'])}</dd>
               </div>
               <div>
                 <dt>Tamaño</dt>
@@ -246,20 +278,20 @@ export default function AssetsWorkspace({
               <div>
                 <dt>SHA-256</dt>
                 <dd>
-                  <code>{asset.sha256}</code>
+                  <code>{documentString(asset['sha256'])}</code>
                 </dd>
               </div>
             </dl>
             <label>
               Identidad del recurso
               <input
-                value={asset.id}
+                value={documentString(asset['id'])}
                 onChange={(e) =>
                   onChange({
                     ...project,
                     assets: {
                       ...project.assets,
-                      assets: assets.map((entry: any) =>
+                      assets: assets.map((entry) =>
                         entry.path === asset.path ? { ...entry, id: e.target.value } : entry,
                       ),
                     },
@@ -284,55 +316,59 @@ export default function AssetsWorkspace({
             >
               Renombrar archivo y referencias
             </button>
-            {typeof asset.type === 'string' && asset.type.startsWith('image/') && (
-              <div className="studio-asset-use">
-                <button
-                  type="button"
-                  onClick={() =>
-                    onChange({
-                      ...project,
-                      presentation: {
-                        ...project.presentation,
-                        menuArt: `/campaigns/${project.manifest.id}/${asset.path}`,
-                        menuArtAlt: asset.id,
-                      },
-                    })
-                  }
-                >
-                  Usar en el menú
-                </button>
-                <label>
-                  Personaje
-                  <select value={person} onChange={(e) => setPerson(e.target.value)}>
-                    <option value="">Elegir personaje</option>
-                    {characters.map((c: any) => (
-                      <option key={c.id} value={c.id}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <button
-                  type="button"
-                  disabled={!person}
-                  onClick={() =>
-                    onChange({
-                      ...project,
-                      content: {
-                        ...project.content,
-                        characters: characters.map((c: any) =>
-                          c.id === person
-                            ? { ...c, portrait: `/campaigns/${project.manifest.id}/${asset.path}` }
-                            : c,
-                        ),
-                      },
-                    })
-                  }
-                >
-                  Asignar como retrato
-                </button>
-              </div>
-            )}
+            {typeof documentString(asset['type']) === 'string' &&
+              documentString(asset['type']).startsWith('image/') && (
+                <div className="studio-asset-use">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onChange({
+                        ...project,
+                        presentation: {
+                          ...project.presentation,
+                          menuArt: `/campaigns/${project.manifest.id}/${asset.path}`,
+                          menuArtAlt: documentString(asset['id']),
+                        },
+                      })
+                    }
+                  >
+                    Usar en el menú
+                  </button>
+                  <label>
+                    Personaje
+                    <select value={person} onChange={(e) => setPerson(e.target.value)}>
+                      <option value="">Elegir personaje</option>
+                      {characters.map((c) => (
+                        <option key={documentString(c['id'])} value={documentString(c['id'])}>
+                          {documentString(c['name'])}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <button
+                    type="button"
+                    disabled={!person}
+                    onClick={() =>
+                      onChange({
+                        ...project,
+                        content: {
+                          ...project.content,
+                          characters: characters.map((c) =>
+                            documentString(c['id']) === person
+                              ? {
+                                  ...c,
+                                  portrait: `/campaigns/${project.manifest.id}/${asset.path}`,
+                                }
+                              : c,
+                          ),
+                        },
+                      })
+                    }
+                  >
+                    Asignar como retrato
+                  </button>
+                </div>
+              )}
             {metadata !== null && (
               <FieldEditor
                 value={metadata}
@@ -346,13 +382,14 @@ export default function AssetsWorkspace({
                       original,
                       asset.path,
                       new TextEncoder().encode(JSON.stringify(value, null, 2) + '\n'),
-                      asset.type,
-                      asset.id,
+                      documentString(asset['type']),
+                      documentString(asset['id']),
                     );
-                    if (latest.current !== original)
+                    if (latest.current !== original) {
                       throw Error('El proyecto cambió. Volvé a editar estos metadatos.');
+                    }
                     onChange(next);
-                  } catch (e: any) {
+                  } catch (e) {
                     setNotice(editorErrorMessage(e));
                   } finally {
                     setBusy(false);
@@ -394,7 +431,7 @@ export default function AssetsWorkspace({
         <summary>Catálogo completo de recursos</summary>
         <FieldEditor
           value={project.assets}
-          onChange={(assets) => onChange({ ...project, assets })}
+          onChange={(assets) => onChange({ ...project, assets: requireJsonDocument(assets) })}
           label="Catálogo"
           path="assets"
         />

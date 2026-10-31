@@ -1,8 +1,3 @@
-import {
-  CARE_RULE_FIELDS,
-  STRATEGIC_BLEEDING_FIELD,
-  validateCareRules,
-} from '../campaign-format/campaign-rules-schema.js';
 export {
   CARE_RULE_FIELDS,
   STRATEGIC_BLEEDING_FIELD,
@@ -25,4 +20,5 @@ export const DEFAULT_STRATEGIC_BLEEDING_PERCENT = 25;
 export const strategicBleedingPercent = (s) =>
   careRules(s).bleedingDamagePercent ?? DEFAULT_STRATEGIC_BLEEDING_PERCENT;
 
+/** @returns {import("../campaign-format/types.ts").CareRules} */
 export const careRules = (s) => s?.contentCampaign?.package.careRules ?? DEFAULT_CARE_RULES;

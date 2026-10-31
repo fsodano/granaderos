@@ -1,14 +1,19 @@
 'use client';
-import { defaultCampaignStory } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { errandContacts } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { includesOriginalResidents } from '../../../../../packages/game/public/campaign-editor-api.js';
+import type {
+  CampaignChapter,
+  CampaignContent,
+  CampaignStory as CampaignStoryDefinition,
+} from '../../../../../packages/campaign-format/types.ts';
+import { defaultCampaignStory } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { errandContacts } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { includesOriginalResidents } from '../../../../../packages/game/public/campaign-editor-api.ts';
 import DialogueConditions from './DialogueConditions.tsx';
 export default function CampaignStory({
   draft,
   onChange,
 }: {
-  draft: any;
-  onChange: (value: any) => void;
+  draft: CampaignContent;
+  onChange: (value: CampaignContent) => void;
 }) {
   const story = draft.campaignStory;
   const residentsIncluded = includesOriginalResidents(draft);
@@ -18,34 +23,58 @@ export default function CampaignStory({
   const originalContacts = errandContacts({ ...draft, includeOriginalResidents: true }).filter(
     (contact) => !retainedContacts.has(contact.id),
   );
-  const dependentErrands = (draft.errands ?? []).flatMap((quest: any) =>
+  const dependentErrands = (draft.errands ?? []).flatMap((quest) =>
     [
       ...new Set<string>([
         quest.npcId,
-        ...(quest.beneficiaries ?? []).map((recipient: any) => recipient.npcId),
+        ...(quest.beneficiaries ?? []).map((recipient) => recipient.npcId),
       ]),
     ].flatMap((id) => {
       const contact = originalContacts.find((contact) => contact.id === id);
       return contact ? [{ quest, contact }] : [];
     }),
   );
-  const update = (patch: any) => onChange({ ...draft, campaignStory: { ...story, ...patch } });
-  const chapter = (index: number, patch: any) =>
+  const update = (patch: Partial<CampaignStoryDefinition>) => {
+    if (story) {
+      onChange({ ...draft, campaignStory: { ...story, ...patch } });
+    }
+  };
+  const chapter = (index: number, patch: Partial<CampaignChapter>) =>
     update({
-      chapters: story.chapters.map((c: any, i: number) => (i === index ? { ...c, ...patch } : c)),
+      chapters: (story?.chapters ?? []).map((c, i: number) =>
+        i === index ? { ...c, ...patch } : c,
+      ),
     });
   const move = (index: number, step: number) => {
+    if (!story) {
+      return;
+    }
     const chapters = [...story.chapters];
-    [chapters[index], chapters[index + step]] = [chapters[index + step], chapters[index]];
+    const source = chapters[index],
+      target = chapters[index + step];
+    if (!source || !target) {
+      return;
+    }
+    chapters[index] = target;
+    chapters[index + step] = source;
     update({ chapters });
   };
   const add = () => {
+    if (!story) {
+      return;
+    }
     let n = 1;
-    while (story.chapters.some((c: any) => c.id === `chapter-${n}`)) n++;
+    while (story.chapters.some((c) => c.id === `chapter-${n}`)) {
+      n++;
+    }
+    const template = defaultCampaignStory().chapters[0];
+    if (!template) {
+      return;
+    }
     update({
       chapters: [
         ...story.chapters,
-        { ...defaultCampaignStory().chapters[0], id: `chapter-${n}`, name: `Objetivo ${n}` },
+        { ...structuredClone(template), id: `chapter-${n}`, name: `Objetivo ${n}` },
       ],
     });
   };
@@ -81,7 +110,9 @@ export default function CampaignStory({
           disabled={residentsIncluded && dependentErrands.length > 0}
           aria-describedby={dependentErrands.length ? 'original-resident-dependencies' : undefined}
           onChange={(e) => {
-            if (!e.target.checked && dependentErrands.length) return;
+            if (!e.target.checked && dependentErrands.length) {
+              return;
+            }
             onChange({ ...draft, includeOriginalResidents: e.target.checked });
           }}
         />
@@ -99,7 +130,7 @@ export default function CampaignStory({
             locales»:
           </p>
           <ul>
-            {dependentErrands.map(({ quest, contact }: any) => (
+            {dependentErrands.map(({ quest, contact }) => (
               <li key={`${quest.id}:${contact.id}`}>
                 {quest.title} · {contact.name}
               </li>
@@ -145,7 +176,7 @@ export default function CampaignStory({
             capítulos cumplidos no se reinician si el mundo cambia. La victoria espera a que salgas
             del sector táctico.
           </p>
-          {story.chapters.map((c: any, i: number) => (
+          {story.chapters.map((c, i: number) => (
             <fieldset key={c.id} aria-label={`Capítulo ${i + 1}`}>
               <legend>Capítulo {i + 1}</legend>
               <label>
@@ -187,7 +218,7 @@ export default function CampaignStory({
                 disabled={story.chapters.length === 1}
                 onClick={() =>
                   update({
-                    chapters: story.chapters.filter((_: any, index: number) => index !== i),
+                    chapters: story.chapters.filter((_, index: number) => index !== i),
                   })
                 }
               >

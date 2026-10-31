@@ -1,3 +1,11 @@
+import type {
+  MapObject,
+  MapBuilding,
+  MapUpperSurface,
+  MapClimbLink,
+  PhysicalMap,
+} from '../../../packages/campaign-format/types.ts';
+import type { CampaignEditorRefusalSnapshot } from './campaign-editor-refusal.ts';
 export type MapPoint = Readonly<{ x: number; y: number }>;
 export type MapWallAxis = 'x' | 'y';
 export type MapObjectLayer = 'features' | 'props' | 'items' | 'spawns' | 'exits' | 'lights';
@@ -19,18 +27,46 @@ export type MapBuildingInput = MapPoint &
     windowStyle?: string;
   }>;
 
-export type MapObjectInput = MapPoint & Readonly<{ id: string; [field: string]: unknown }>;
-export type MapObjectValues = Readonly<Record<string, unknown>>;
-export type MapBuildingTemplate = Readonly<{
+export type MapObjectInput = Readonly<MapObject>;
+export type MapObjectValues = {
+  [Key in keyof MapObject | keyof MapBuilding]?:
+    | (Key extends keyof MapObject
+        ? MapObject[Key]
+        : Key extends keyof MapBuilding
+          ? MapBuilding[Key]
+          : never)
+    | null;
+};
+export type MapBuildingTemplate = {
   version: 1;
-  building: MapBuildingInput & {
-    width: number;
-    height: number;
-    walls: readonly MapObjectInput[];
-    rooms: readonly Readonly<{ id: string; cells: readonly MapPoint[] }>[];
-  };
-  [layer: string]: unknown;
-}>;
+  name: string;
+  building: MapBuilding;
+  upperSurfaces?: MapUpperSurface[];
+  climbLinks?: MapClimbLink[];
+  features: MapObject[];
+  props: MapObject[];
+  items: MapObject[];
+  spawns: MapObject[];
+  exits: MapObject[];
+  lights: MapObject[];
+};
+export type MapLayer = MapObjectLayer | 'buildings';
+export type MapSelection =
+  | (MapObject & { layer: MapObjectLayer })
+  | (MapBuilding & { layer: 'buildings' });
+export type SectorMapHistorySnapshot = {
+  document: PhysicalMap;
+  past: PhysicalMap[];
+  future: PhysicalMap[];
+  errors: string[];
+  refusal?: CampaignEditorRefusalSnapshot;
+};
+export type SectorMapEditResult = {
+  document: PhysicalMap;
+  errors: string[];
+  warnings: string[];
+  refusal?: CampaignEditorRefusalSnapshot;
+};
 
 export type SectorMapCommand =
   | Readonly<{
@@ -47,7 +83,7 @@ export type SectorMapCommand =
   | Readonly<{ type: 'rotateObject'; id: string }>
   | Readonly<{ type: 'deleteObject'; id: string }>
   | Readonly<{ type: 'setObject'; id: string; values: MapObjectValues }>
-  | Readonly<{ type: 'setMetadata'; values: MapObjectValues }>
+  | Readonly<{ type: 'setMetadata'; values: Partial<PhysicalMap['metadata']> }>
   | Readonly<{ type: 'setDoor'; id: string; open?: boolean; locked?: boolean }>
   | Readonly<{
       type: 'setOpeningStyle';

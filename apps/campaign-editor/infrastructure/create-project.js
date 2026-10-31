@@ -1,6 +1,6 @@
-import { scaffoldDocuments } from './project-scaffold.js';
+import { scaffoldDocuments } from './project-scaffold.ts';
 import { encodeBase64 } from '../../../packages/campaign-format/campaign-resources.js';
-/** @returns {Promise<any>} */
+/** @param {string} id @param {string} name @returns {Promise<import("../domain/campaign-project.ts").CampaignProjectDocument>} */
 export async function createCampaignProject(id, name) {
   const { manifest, content, world, presentation, maps, assets, image } = scaffoldDocuments(
     id,

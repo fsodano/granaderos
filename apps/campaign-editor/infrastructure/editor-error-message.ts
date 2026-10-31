@@ -61,19 +61,20 @@ const translations = {
   OpeningRequiresWall: () => 'Las aberturas deben ocupar una pared.',
   UnsupportedTemplateVersion: () => 'Versión de plantilla no válida.',
   InvalidTemplateDimensions: () => 'Dimensiones de plantilla no válidas.',
-  ObjectNotFound: (details) => `Objeto desconocido: ${String(details.id)}`,
-  UnsupportedMapCommand: (details) => `Comando desconocido: ${String(details.command)}`,
+  ObjectNotFound: (details) => `Objeto desconocido: ${String(details['id'])}`,
+  UnsupportedMapCommand: (details) => `Comando desconocido: ${String(details['command'])}`,
   LocalitiesDisconnected: (details) =>
-    `El camino ${String(details.origin)} / ${String(details.destination)} no tiene conexión terrestre.`,
+    `El camino ${String(details['origin'])} / ${String(details['destination'])} no tiene conexión terrestre.`,
   LocalityInUse: (details) =>
-    `Reasigná las referencias antes de eliminar: ${Array.isArray(details.references) ? details.references.join(', ') : ''}.`,
-  ResourceNotFound: (details) => `Falta el recurso ${String(details.path)}.`,
-  InvalidProjectResource: (details) => `Recurso de proyecto inválido: ${String(details.path)}.`,
+    `Reasigná las referencias antes de eliminar: ${Array.isArray(details['references']) ? details['references'].join(', ') : ''}.`,
+  ResourceNotFound: (details) => `Falta el recurso ${String(details['path'])}.`,
+  InvalidProjectResource: (details) => `Recurso de proyecto inválido: ${String(details['path'])}.`,
 } satisfies Record<CampaignEditorRefusalCode, RefusalTranslation>;
 
 function isEditorRefusal(value: unknown): value is CampaignEditorRefusalSnapshot {
-  if (!value || typeof value !== 'object' || !('code' in value) || !('details' in value))
+  if (!value || typeof value !== 'object' || !('code' in value) || !('details' in value)) {
     return false;
+  }
   return (
     typeof value.code === 'string' &&
     Object.hasOwn(translations, value.code) &&
@@ -83,7 +84,11 @@ function isEditorRefusal(value: unknown): value is CampaignEditorRefusalSnapshot
 }
 
 export function editorErrorMessage(error: unknown): string {
-  if (isEditorRefusal(error)) return translations[error.code](error.details);
-  if (error instanceof Error) return error.message;
+  if (isEditorRefusal(error)) {
+    return translations[error.code](error.details);
+  }
+  if (error instanceof Error) {
+    return error.message;
+  }
   return String(error);
 }

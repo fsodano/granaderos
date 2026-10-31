@@ -1,66 +1,78 @@
 'use client';
+import { isSupplyOption } from '../../lib/editor-values.ts';
+import type {
+  CampaignContent,
+  ErrandBeneficiary,
+  ErrandDefinition,
+} from '../../../../../packages/campaign-format/types.ts';
 import { useState } from 'react';
-import { cityForSector as findCityForSector } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { RESOURCE_NAMES } from '../../../../../packages/game/public/campaign-editor-api.js';
+import { cityForSector as findCityForSector } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { RESOURCE_NAMES } from '../../../../../packages/game/public/campaign-editor-api.ts';
 import {
   errandContacts,
   defaultErrands,
   QUEST_RESOURCES,
-} from '../../../../../packages/game/public/campaign-editor-api.js';
-import { SUPPLY_ITEMS } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { OUTFITS } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { sectorExits } from '../../../../../packages/game/public/campaign-editor-api.js';
-import { campaignSectors } from '../../../../../packages/game/public/campaign-editor-api.js';
+} from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { SUPPLY_ITEMS } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { OUTFITS } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { sectorExits } from '../../../../../packages/game/public/campaign-editor-api.ts';
+import { campaignSectors } from '../../../../../packages/game/public/campaign-editor-api.ts';
 type NamedSector = { id: string; name: string };
-type NamedExit = { id: string; destination: string; edge: string };
 
-const contactIds = (quest: any): string[] => [
+const contactIds = (quest: ErrandDefinition): string[] => [
   ...new Set<string>([
     quest.npcId,
-    ...(quest.beneficiaries ?? []).map((recipient: any) => recipient.npcId),
+    ...(quest.beneficiaries ?? []).map((recipient) => recipient.npcId),
   ]),
 ];
 export default function ErrandEditor({
   draft,
   onChange,
 }: {
-  draft: any;
-  onChange: (value: any) => void;
+  draft: CampaignContent;
+  onChange: (value: CampaignContent) => void;
 }) {
+  const supplyOptions = Object.values(SUPPLY_ITEMS).filter(isSupplyOption);
   const CAMPAIGN_SECTORS: NamedSector[] = campaignSectors(draft),
     cityForSector = (id: string) => findCityForSector(id, draft),
     namedExits = (id: string) =>
-      (sectorExits(id, null, draft) as NamedExit[]).filter((exit) =>
+      sectorExits(id, null, draft).filter((exit) =>
         CAMPAIGN_SECTORS.some((s) => s.id === exit.destination),
       );
   const [selected, select] = useState(''),
     [search, setSearch] = useState('');
   const contacts = errandContacts(draft),
-    quests =
+    quests: ErrandDefinition[] =
       draft.errands ??
       defaultErrands(draft).filter((q: { npcId: string }) =>
         contacts.some((c) => c.id === q.npcId),
       );
-  const quest = quests.find((q: any) => q.id === selected) ?? quests[0];
-  const change = (next: any[]) => onChange({ ...draft, errands: next });
-  const update = (patch: any, remove: string[] = []) =>
+  const quest = quests.find((q) => q.id === selected) ?? quests[0];
+  const change = (next: ErrandDefinition[]) => onChange({ ...draft, errands: next });
+  const update = (patch: Partial<ErrandDefinition>, remove: (keyof ErrandDefinition)[] = []) =>
     change(
-      quests.map((q: any) => {
-        if (q !== quest) return q;
+      quests.map((q) => {
+        if (q !== quest) {
+          return q;
+        }
         const next = { ...q, ...patch };
-        for (const key of remove) delete next[key];
+        for (const key of remove) {
+          delete next[key];
+        }
         return next;
       }),
     );
   const id = () => {
     let n = 1;
-    while (quests.some((q: any) => q.id === `encargo-${n}`)) n++;
+    while (quests.some((q) => q.id === `encargo-${n}`)) {
+      n++;
+    }
     return `encargo-${n}`;
   };
-  const reserved = (id: string) =>
-    quests.some((q: any) => q !== quest && contactIds(q).includes(id));
-  const freeContact = contacts.find((c) => !quests.some((q: any) => contactIds(q).includes(c.id)));
+  const reserved = (id: string) => quests.some((q) => q !== quest && contactIds(q).includes(id));
+  const freeContact = contacts.find((c) => !quests.some((q) => contactIds(q).includes(c.id)));
   const edges: Record<string, string> = { N: 'norte', E: 'este', S: 'sur', W: 'oeste' };
+  const carried = quest?.carried;
   const kind = quest?.escort ? 'escort' : quest?.carried ? 'carried' : 'resources';
   const contact = contacts.find((c) => c.id === quest?.npcId),
     physicalAllowed = Boolean(contact?.fixedSector) && !contact?.canRecruit;
@@ -73,30 +85,38 @@ export default function ErrandEditor({
   const withdrawalAllowed =
     kind === 'carried' &&
     physicalAllowed &&
-    quest?.carried?.count >= 2 &&
+    (quest?.carried?.count ?? 0) >= 2 &&
     (quest?.beneficiaries
-      ? quest.beneficiaries.every((b: any) => Boolean(cityForSector(b.sector)))
-      : Boolean(cityForSector(quest?.sector)));
+      ? quest.beneficiaries.every((b) => Boolean(cityForSector(b.sector)))
+      : Boolean(cityForSector(quest?.sector ?? '')));
   const rewardChoiceAllowed =
     kind === 'carried' &&
     physicalAllowed &&
-    Boolean(cityForSector(quest?.sector)) &&
+    Boolean(cityForSector(quest?.sector ?? '')) &&
     !quest?.beneficiaries;
   const recipient = (contact: (typeof contacts)[number], id: string) => ({
     id,
     npcId: contact.id,
     sector: contact.sector,
-    delivery: quest.delivery,
+    delivery: quest?.delivery ?? '',
     reward: { treasury: 0, loyalty: Boolean(cityForSector(contact.sector)) },
   });
-  const updateRecipient = (index: number, patch: any) =>
+  const updateRecipient = (index: number, patch: Partial<ErrandBeneficiary>) =>
     update({
-      beneficiaries: quest.beneficiaries.map((choice: any, i: number) =>
+      beneficiaries: (quest?.beneficiaries ?? []).map((choice, i: number) =>
         i === index ? { ...choice, ...patch } : choice,
       ),
     });
   const setKind = (value: string) => {
-    const { carried, escort, rewardChoice, beneficiaries, withdrawal, ...base } = quest;
+    if (!quest) {
+      return;
+    }
+    const base = { ...quest };
+    delete base.carried;
+    delete base.escort;
+    delete base.rewardChoice;
+    delete base.beneficiaries;
+    delete base.withdrawal;
     const exit = namedExits(quest.sector)[0];
     const next = {
       ...base,
@@ -114,14 +134,14 @@ export default function ErrandEditor({
           ? { escort: { destination: exit.destination, edge: exit.edge } }
           : {}),
     };
-    change(quests.map((q: any) => (q === quest ? next : q)));
+    change(quests.map((q) => (q === quest ? next : q)));
   };
   const norm = (s: string) =>
     s
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
       .toLowerCase();
-  const filtered = quests.filter((q: any) =>
+  const filtered = quests.filter((q) =>
     norm(`${q.title} ${q.id} ${contacts.find((c) => c.id === q.npcId)?.name ?? ''}`).includes(
       norm(search.trim()),
     ),
@@ -145,7 +165,9 @@ export default function ErrandEditor({
               placeholder="Título, contacto o ID"
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === 'Escape') setSearch('');
+                if (e.key === 'Escape') {
+                  setSearch('');
+                }
               }}
             />
           </label>
@@ -153,11 +175,13 @@ export default function ErrandEditor({
             className="primary"
             disabled={!freeContact || quests.length >= 200}
             onClick={() => {
-              if (!freeContact) return;
+              if (!freeContact) {
+                return;
+              }
               const added = {
                 id: id(),
                 npcId: freeContact.id,
-                sector: freeContact.sector ?? draft.headquarters ?? CAMPAIGN_SECTORS[0]?.id,
+                sector: freeContact.sector ?? draft.headquarters ?? CAMPAIGN_SECTORS[0]?.id ?? '',
                 title: 'Nuevo encargo',
                 offer: 'Necesito tu ayuda.',
                 delivery: 'Gracias por tu ayuda.',
@@ -174,9 +198,9 @@ export default function ErrandEditor({
             Crear encargo
           </button>
           <div className="content-list-feedback">
-            <span role="status">
+            <output>
               {filtered.length} de {quests.length} encargos
-            </span>
+            </output>
             {search && (
               <button type="button" onClick={() => setSearch('')}>
                 Limpiar búsqueda
@@ -184,7 +208,7 @@ export default function ErrandEditor({
             )}
           </div>
           <div className="entry-list">
-            {filtered.map((q: any) => (
+            {filtered.map((q) => (
               <button
                 key={q.id}
                 aria-label={q.title}
@@ -196,11 +220,11 @@ export default function ErrandEditor({
               </button>
             ))}
             {filtered.length === 0 && (
-              <p role="status" className="content-empty">
+              <output className="content-empty">
                 {search
                   ? 'No hay resultados para esta búsqueda.'
                   : 'No hay encargos locales. Creá uno para comenzar.'}
-              </p>
+              </output>
             )}
           </div>
           {!freeContact && (
@@ -221,7 +245,7 @@ export default function ErrandEditor({
             </div>
           ) : (
             <>
-              {search && !filtered.some((q: any) => q.id === quest.id) && (
+              {search && !filtered.some((q) => q.id === quest.id) && (
                 <p className="content-selection-note">
                   El filtro conserva el encargo que estás editando.
                 </p>
@@ -234,16 +258,16 @@ export default function ErrandEditor({
               <div className="toolbar">
                 <button
                   className="content-danger"
-                  disabled={quests.some((q: any) => q.requires?.includes(quest.id))}
+                  disabled={quests.some((q) => q.requires?.includes(quest.id))}
                   onClick={() => {
-                    change(quests.filter((q: any) => q !== quest));
+                    change(quests.filter((q) => q !== quest));
                     select('');
                   }}
                 >
                   Quitar encargo
                 </button>
               </div>
-              {quests.some((q: any) => q.requires?.includes(quest.id)) && (
+              {quests.some((q) => q.requires?.includes(quest.id)) && (
                 <p>Otros encargos dependen de este. Quitá esas condiciones antes de borrarlo.</p>
               )}
               <div className="fields">
@@ -274,11 +298,11 @@ export default function ErrandEditor({
                             ? { escort: { destination: exit.destination, edge: exit.edge } }
                             : {}),
                           ...(quest.beneficiaries &&
-                          !quest.beneficiaries.some(
-                            (choice: any) => choice.npcId === e.target.value,
+                          !(quest.beneficiaries ?? []).some(
+                            (choice) => choice.npcId === e.target.value,
                           )
                             ? {
-                                beneficiaries: quest.beneficiaries.map((choice: any) =>
+                                beneficiaries: (quest?.beneficiaries ?? []).map((choice) =>
                                   choice.npcId === quest.npcId
                                     ? {
                                         ...choice,
@@ -394,48 +418,68 @@ export default function ErrandEditor({
                     Si todas las cantidades son cero, basta con conversar y cumplir las condiciones.
                   </p>
                   <div className="fields">
-                    {QUEST_RESOURCES.map((key) => (
-                      <label key={key}>
-                        {(RESOURCE_NAMES as any)[key]}
-                        <input
-                          type="number"
-                          min={0}
-                          max={10000}
-                          value={quest.cost[key] ?? 0}
-                          onChange={(e) => {
-                            const cost = { ...quest.cost };
-                            if (e.target.valueAsNumber === 0) delete cost[key];
-                            else cost[key] = e.target.valueAsNumber;
-                            update({ cost });
-                          }}
-                        />
-                      </label>
-                    ))}
+                    {QUEST_RESOURCES.filter((key): key is 'treasury' => key === 'treasury').map(
+                      (key) => (
+                        <label key={key}>
+                          {RESOURCE_NAMES[key]}
+                          <input
+                            type="number"
+                            min={0}
+                            max={10000}
+                            value={quest.cost[key] ?? 0}
+                            onChange={(e) => {
+                              const cost = { ...quest.cost };
+                              if (e.target.valueAsNumber === 0) {
+                                delete cost[key];
+                              } else {
+                                cost[key] = e.target.valueAsNumber;
+                              }
+                              update({ cost });
+                            }}
+                          />
+                        </label>
+                      ),
+                    )}
                   </div>
                 </fieldset>
               )}
-              {quest.carried && (
+              {carried && (
                 <fieldset>
                   <legend>Entrega física</legend>
                   <div className="fields">
                     <label>
                       Objeto
                       <select
-                        value={quest.carried.item ?? quest.carried.outfit}
+                        value={carried.item ?? carried.outfit}
                         onChange={(e) => {
+                          if (!carried) {
+                            return;
+                          }
                           const value = e.target.value,
-                            { item, outfit, ...carried } = quest.carried;
+                            nextCarried = { ...carried };
+                          delete nextCarried.item;
+                          delete nextCarried.outfit;
                           update({
                             carried: {
-                              ...carried,
+                              ...nextCarried,
                               ...(Object.hasOwn(OUTFITS, value)
-                                ? { outfit: value, label: (OUTFITS as any)[value].name }
-                                : { item: value, label: (SUPPLY_ITEMS as any)[value].label }),
+                                ? {
+                                    outfit: value,
+                                    label:
+                                      Object.entries(OUTFITS).find(([id]) => id === value)?.[1]
+                                        .name ?? value,
+                                  }
+                                : {
+                                    item: value,
+                                    label:
+                                      supplyOptions.find((supply) => supply.item === value)
+                                        ?.label ?? value,
+                                  }),
                             },
                           });
                         }}
                       >
-                        {Object.values(SUPPLY_ITEMS)
+                        {supplyOptions
                           .filter((s) => s.item !== 'ammo')
                           .map((s) => (
                             <option key={s.item} value={s.item}>
@@ -455,30 +499,28 @@ export default function ErrandEditor({
                         type="number"
                         min={1}
                         max={100}
-                        value={quest.carried.count}
+                        value={carried.count}
                         onChange={(e) =>
-                          update({ carried: { ...quest.carried, count: e.target.valueAsNumber } })
+                          update({ carried: { ...carried, count: e.target.valueAsNumber } })
                         }
                       />
                     </label>
                     <label>
                       Nombre de los objetos
                       <input
-                        value={quest.carried.label}
+                        value={carried.label}
                         maxLength={80}
-                        onChange={(e) =>
-                          update({ carried: { ...quest.carried, label: e.target.value } })
-                        }
+                        onChange={(e) => update({ carried: { ...carried, label: e.target.value } })}
                       />
                     </label>
                   </div>
                   <label>
                     Instrucciones de entrega
                     <textarea
-                      value={quest.carried.instruction}
+                      value={carried.instruction}
                       maxLength={800}
                       onChange={(e) =>
-                        update({ carried: { ...quest.carried, instruction: e.target.value } })
+                        update({ carried: { ...carried, instruction: e.target.value } })
                       }
                     />
                   </label>
@@ -492,7 +534,10 @@ export default function ErrandEditor({
                     onChange={(e) => {
                       const exit = namedExits(quest.sector).find(
                         (exit) => exit.destination === e.target.value,
-                      )!;
+                      );
+                      if (!exit) {
+                        return;
+                      }
                       update({ escort: { destination: exit.destination, edge: exit.edge } });
                     }}
                   >
@@ -529,8 +574,8 @@ export default function ErrandEditor({
                 <p>Encargos que deben estar completos:</p>
                 <div className="fields">
                   {quests
-                    .filter((q: any) => q !== quest)
-                    .map((q: any) => (
+                    .filter((q) => q !== quest)
+                    .map((q) => (
                       <label key={q.id}>
                         <input
                           type="checkbox"
@@ -584,7 +629,7 @@ export default function ErrandEditor({
                       esa persona. Después, el jugador confirma el encargo al conversar con ella.
                       Solo se aplica su recompensa.
                     </p>
-                    {quest.beneficiaries.map((choice: any, index: number) => (
+                    {quest.beneficiaries.map((choice, index: number) => (
                       <fieldset key={choice.id} aria-label={`Destinatario ${index + 1}`}>
                         <legend>Destinatario {index + 1}</legend>
                         <label>
@@ -592,22 +637,26 @@ export default function ErrandEditor({
                           <select
                             value={choice.npcId}
                             onChange={(e) => {
-                              const nextContact = contacts.find((c) => c.id === e.target.value)!;
+                              const nextContact = contacts.find((c) => c.id === e.target.value);
+                              if (!nextContact) {
+                                return;
+                              }
                               update({
-                                beneficiaries: quest.beneficiaries.map((other: any, i: number) =>
-                                  i === index
-                                    ? {
-                                        ...other,
-                                        npcId: nextContact.id,
-                                        sector: nextContact.sector,
-                                        reward: {
-                                          ...other.reward,
-                                          loyalty:
-                                            Boolean(cityForSector(nextContact.sector)) &&
-                                            other.reward.loyalty,
-                                        },
-                                      }
-                                    : other,
+                                beneficiaries: (quest?.beneficiaries ?? []).map(
+                                  (other, i: number) =>
+                                    i === index
+                                      ? {
+                                          ...other,
+                                          npcId: nextContact.id,
+                                          sector: nextContact.sector,
+                                          reward: {
+                                            ...other.reward,
+                                            loyalty:
+                                              Boolean(cityForSector(nextContact.sector)) &&
+                                              other.reward.loyalty,
+                                          },
+                                        }
+                                      : other,
                                 ),
                                 ...(choice.npcId === quest.npcId
                                   ? { npcId: nextContact.id, sector: nextContact.sector }
@@ -619,8 +668,8 @@ export default function ErrandEditor({
                               <option
                                 key={c.id}
                                 value={c.id}
-                                disabled={quest.beneficiaries.some(
-                                  (other: any, i: number) => i !== index && other.npcId === c.id,
+                                disabled={(quest.beneficiaries ?? []).some(
+                                  (other, i: number) => i !== index && other.npcId === c.id,
                                 )}
                               >
                                 {c.name}
