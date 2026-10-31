@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { jsonRoundTrip } from '../../../../tests/json-round-trip.ts';
 import { Character } from './character.ts';
 import { ForceRoster, RecruitmentAssignment } from './force-roster.ts';
 import { ServiceContract } from './service-contract.ts';
@@ -107,7 +108,7 @@ void test('refused funds, custody, life status and placement leave all domain pa
 void test('restoring service preserves its original timestamps and rejects an identity mismatch', () => {
   const context = recruitmentContext();
   const outcome = new RecruitmentService().recruit(context, 'retiro');
-  const contract = ServiceContract.restore(structuredClone(outcome.contract.snapshot()));
+  const contract = ServiceContract.restore(jsonRoundTrip(outcome.contract.snapshot()));
   const restored = Character.restore(context.character.snapshot(), contract);
   assert.equal(restored.service?.startedAt.seconds, 61);
   assert.equal(restored.service?.isActiveAt(GameTime.atSeconds(86_461)), false);

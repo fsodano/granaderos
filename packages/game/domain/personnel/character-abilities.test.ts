@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { jsonRoundTrip } from '../../../../tests/json-round-trip.ts';
 import {
   CharacterAbilities,
   CharacterCapability,
@@ -86,7 +87,7 @@ void test('character restoration owns one ability value and preserves its behavi
     },
   });
   assert.equal(character.abilities, character.abilities);
-  const restored = Character.restore(structuredClone(character.snapshot()));
+  const restored = Character.restore(jsonRoundTrip(character.snapshot()));
   assert.equal(restored.abilities.meetsRating(CharacterRating.Medical, 80), true);
   assert.equal(restored.abilities.hasTrait(CharacterTrait.FieldRescuer), true);
   assert.equal(restored.abilities.hasCapability(CharacterCapability.RapidFirstAid), true);
