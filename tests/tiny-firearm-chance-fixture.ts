@@ -1,3 +1,4 @@
+import { present } from './assert-present.ts';
 import { createBattle } from '../packages/game/tactical.js';
 import { compileWeaponDefinition } from '../packages/game/weapon-definition.ts';
 import { defaultContentPackage } from '../packages/game/content-package.js';
@@ -5,9 +6,9 @@ import { defaultContentPackage } from '../packages/game/content-package.js';
 // Explicit authored subsystem field. Six real head intersections leave ten
 // physical force and less than one percent conditional reach to the target.
 export function tinyFirearmChanceField({ paired = false } = {}) {
-  const definition = (template) =>
+  const definition = (template: number) =>
     compileWeaponDefinition({
-      ...defaultContentPackage().weapons.find((w) => w.template === template),
+      ...present(defaultContentPackage().weapons.find((w) => w.template === template)),
       id: `tiny-passage-${template}`,
       name: 'Arma de prueba',
       damage: 100,
@@ -56,11 +57,11 @@ export function tinyFirearmChanceField({ paired = false } = {}) {
   );
   for (let i = 0; i < 6; i++) {
     state.units.push({
-      ...structuredClone(state.units[0]),
+      ...structuredClone(present(state.units[0])),
       id: `friend-${i}`,
       name: `Aliado ${i + 1}`,
       x: 3 + i * 2,
     });
   }
-  return { state, player: state.units[0], target: state.units[1] };
+  return { state, player: present(state.units[0]), target: present(state.units[1]) };
 }

@@ -1,3 +1,5 @@
+import type { CampaignSnapshot } from '../packages/game/public/campaign-types.ts';
+import { present } from './assert-present.ts';
 import { completeQueuedAssault } from './assault-fixture.ts';
 import assert from 'node:assert/strict';
 import { rosterFor } from '../packages/game/campaign.js';
@@ -12,8 +14,8 @@ import { supplyRouteAmmunition } from './route-ammunition.ts';
 // Hire a second squad at the controlled reception site, recover actual weapons,
 // buy its missing cartridges, then wait for both real journeys before attacking.
 export function prepareNorthernSupport(
-  start,
-  sector,
+  start: CampaignSnapshot,
+  sector: string,
   { maxWeeklyPrice = Infinity, preferMarksmanship = false } = {},
 ) {
   let s = start;
@@ -22,7 +24,7 @@ export function prepareNorthernSupport(
       .filter(
         (o) =>
           o.id >= 100 &&
-          s.operativeState[o.id].alive &&
+          present(s.operativeState[o.id]).alive &&
           !s.recruited.includes(o.id) &&
           contractQuote(s, o, 'week').price <= maxWeeklyPrice,
       )
@@ -37,12 +39,7 @@ export function prepareNorthernSupport(
   assert.equal(ids.length, 6, 'six living replacements must remain available');
   const cost = ids.reduce(
       (sum, id) =>
-        sum +
-        contractQuote(
-          s,
-          rosterFor(s).find((o) => o.id === id),
-          'week',
-        ).price,
+        sum + contractQuote(s, present(rosterFor(s).find((o) => o.id === id)), 'week').price,
       0,
     ),
     funds = s.resources.treasury;
@@ -56,7 +53,9 @@ export function prepareNorthernSupport(
   const wait = Math.max(0, ...ids.map((id) => (pendingHire(s, id)?.dueAt ?? s.hour) - s.hour));
   s = advanceCampaignHours(s, wait);
   assert.ok(
-    ids.every((id) => s.recruited.includes(id) && s.operativeState[id].location === s.location),
+    ids.every(
+      (id) => s.recruited.includes(id) && present(s.operativeState[id]).location === s.location,
+    ),
   );
   s = order(s, { type: 'createSquad', ids, name: `Apoyo de ${sector}`, sector: s.location });
   const support = s.activeSquadId,
@@ -70,6 +69,6 @@ export function prepareNorthernSupport(
     s = order(s, { type: 'attack', sector, queue: true });
   }
   s = completeQueuedAssault(s, [field, support], sector);
-  assert.equal(s.pendingBattle.squad.length, start.squad.length + ids.length);
+  assert.equal(present(s.pendingBattle).squad.length, start.squad.length + ids.length);
   return { campaign: s, ids, cost };
 }

@@ -1,3 +1,5 @@
+import { storedArtilleryRecord } from './stored-artillery.ts';
+export { storedArtilleryRecord } from './stored-artillery.ts';
 import { artilleryTransportRules } from './artillery-transport-rules.js';
 import { campaignSectors } from './campaign-definition.js';
 import { sceneAnchorFor } from './campaign-scenario.js';
@@ -192,13 +194,6 @@ export function artilleryTransportQuote(s, sector, gunId, to, mode, source = 'fi
 export const ARTILLERY_TRANSPORT_CAPACITY = Object.freeze({ carts: 1000, flotilla: 4000 });
 export const artilleryCargoWeight = (gun) =>
   500 + (gun.ammo + Number(gun.loaded)) * (gun.type === 'field8' ? 4 : 2);
-export function storedArtilleryRecord(gun) {
-  return Object.fromEntries(
-    ['id', 'type', 'side', 'loaded', 'ammo', 'reloadProgress', 'facing']
-      .filter((key) => gun[key] !== undefined)
-      .map((key) => [key, structuredClone(gun[key])]),
-  );
-}
 const stored = storedArtilleryRecord;
 /** @returns {import('./public/artillery-query-types.ts').ArtilleryStorageQuote} */
 export function artilleryStorageQuote(s, sector, gunId) {

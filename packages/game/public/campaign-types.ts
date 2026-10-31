@@ -518,7 +518,20 @@ export interface CampaignEventReceipt {
   outcome: 'applied' | 'skipped';
   amount: number;
 }
+export interface DialogueMovementReceipt {
+  npc: string;
+  node: string;
+  choice: string;
+  character: string;
+  sector: string;
+  revision: number;
+  target: { x: number; y: number } | null;
+  hour: number;
+  secondOfHour: number;
+}
 export interface CampaignSnapshot {
+  nextArtilleryId?: number;
+  dialogueMovements?: DialogueMovementReceipt[];
   civilianState?: import('./world-state-types.ts').CivilianStateSnapshot;
   version: number;
   seed: number;

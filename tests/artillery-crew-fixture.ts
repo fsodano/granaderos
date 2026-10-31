@@ -1,5 +1,6 @@
+import type { BattleSnapshot, BattleTile } from '../packages/game/public/compatibility-types.ts';
 import { createBattle } from '../packages/game/tactical.js';
-export const flatTiles = () =>
+export const flatTiles = (): BattleTile[] =>
   Array.from({ length: 320 }, (_, i) => ({
     x: i % 40,
     y: Math.floor(i / 40),
@@ -7,7 +8,10 @@ export const flatTiles = () =>
     cover: 0,
     blocked: false,
   }));
-export function crewField(type = 'field8', { wounded = false, exploration = false } = {}) {
+export function crewField(
+  type: string = 'field8',
+  { wounded = false, exploration = false } = {},
+): BattleSnapshot {
   const tiles = flatTiles();
   if (!exploration) {
     for (const t of tiles) {

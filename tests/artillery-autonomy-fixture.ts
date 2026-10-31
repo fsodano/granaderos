@@ -1,6 +1,20 @@
+import type {
+  BattleSnapshot,
+  BattleTile,
+  BattleUnit,
+} from '../packages/game/public/compatibility-types.ts';
 import { createBattle, ARTILLERY } from '../packages/game/tactical.js';
 // Declared flat tactical boundaries. Campaign purchase/capture is covered by the
 // unchanged stationed-artillery tests; these cases do not assign an outcome.
+type ArtilleryFieldOptions = {
+  type?: keyof typeof ARTILLERY;
+  side?: 'player' | 'enemy';
+  loaded?: boolean;
+  ammo?: number;
+  hidden?: boolean;
+  exploration?: boolean;
+  crew?: Partial<BattleUnit>;
+};
 export function artilleryField({
   type = 'field8',
   side = 'enemy',
@@ -9,7 +23,7 @@ export function artilleryField({
   hidden = false,
   exploration = false,
   crew = {},
-} = {}) {
+}: ArtilleryFieldOptions = {}): BattleSnapshot {
   const operators = [
     { id: 'crew-1', x: 2, y: 2 },
     { id: 'crew-2', x: 3, y: 2 },
@@ -29,7 +43,7 @@ export function artilleryField({
     morale: 100,
     patrol: false,
   };
-  const tiles = Array.from({ length: 480 }, (_, i) => ({
+  const tiles: BattleTile[] = Array.from({ length: 480 }, (_, i) => ({
     x: i % 40,
     y: Math.floor(i / 40),
     type: 'grass',

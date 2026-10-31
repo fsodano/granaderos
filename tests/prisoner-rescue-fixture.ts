@@ -1,3 +1,6 @@
+import type { CampaignSnapshot, CampaignAction } from '../packages/game/public/campaign-types.ts';
+import type { BattleSnapshot } from '../packages/game/public/compatibility-types.ts';
+import { present } from './assert-present.ts';
 import { fightOnArrival } from './assault-fixture.ts';
 import { withStoredGear } from './commerce-gear-fixture.ts';
 // Established northern front and scripted capture fixture. Paid rescue hiring
@@ -10,9 +13,9 @@ import { enterSector } from '../packages/game/world.js';
 import { prepareCampaignBattle } from '../packages/game/battle-handoff.js';
 import { syncBattleTime } from '../packages/game/time.js';
 import { refreshMilitaryCondition } from '../packages/game/actor-condition.js';
-const order = (s, a) => {
+const order = (s: CampaignSnapshot, a: CampaignAction): CampaignSnapshot => {
   const n = dispatchCampaign(s, a);
-  assert.equal(n.lastError, null, n.lastError);
+  assert.equal(n.lastError, null, n.lastError ?? undefined);
   return n;
 };
 function captured({ custodySupplies = 2 } = {}) {
@@ -26,22 +29,22 @@ function captured({ custodySupplies = 2 } = {}) {
   for (const id of [112, 123, 115, 110, 114, 113]) {
     s = order(s, { type: 'recruitCivic', id, term: 'week' });
   }
-  s.operativeState[112].location = s.location;
-  s.operativeState[112].medkits = 4;
+  present(s.operativeState[112]).location = s.location;
+  present(s.operativeState[112]).medkits = 4;
   s = order(s, { type: 'squad', ids: [3, 4, 10] });
-  s.operativeState[112].location = 'buenos_aires';
+  present(s.operativeState[112]).location = 'buenos_aires';
   s.location = 'humahuaca';
-  s.squads[0].location = s.location;
-  s.sectors.humahuaca.owner = 'patriot';
+  present(s.squads[0]).location = s.location;
+  present(s.sectors['humahuaca']).owner = 'patriot';
   launchEnemyGroup(s, 'north', 'humahuaca', { immediate: true });
   s = order(s, { type: 'wait', hours: 1 });
   s = order(s, {
     type: 'respondToEncounter',
-    groupId: s.pendingEncounter.groupId,
+    groupId: present(present(s.pendingEncounter).groupId),
     choice: 'tactical',
   });
   const b = enterSector(s.pendingBattle);
-  const u = b.units.find((u) => Number(u.id) === 3);
+  const u = present(b.units.find((u) => Number(u.id) === 3));
   u.hp = 11;
   u.bleeding = 2;
   u.bandaged = 20;
@@ -57,31 +60,31 @@ function captured({ custodySupplies = 2 } = {}) {
   b.status = 'defeat';
   s = order(s, {
     type: 'battleResult',
-    battleId: s.pendingBattle.id,
+    battleId: present(s.pendingBattle).id,
     outcome: 'defeat',
     sectorState: b,
     survivors: b.units.filter((u) => u.side === 'player'),
   });
   for (const id of ['cordoba', 'tucuman', 'salta', 'jujuy']) {
-    s.sectors[id].owner = 'patriot';
+    present(s.sectors[id]).owner = 'patriot';
   }
   s.location = 'jujuy';
   s.squad = [112, 123, 115, 110, 114, 113];
-  s.squads[0].members = [...s.squad];
-  s.squads[0].location = s.location;
+  present(s.squads[0]).members = [...s.squad];
+  present(s.squads[0]).location = s.location;
   // The already-owned reserve gun remains outside the captured patrol. Issue it
   // to the relief force through the normal deployment selection.
   s = order(s, { type: 'configureArtillery', types: ['swivel', 'bronze4'] });
   return fightOnArrival(order(s, { type: 'attack', sector: 'humahuaca' }));
 }
-function start(options) {
+function start(options: { custodySupplies?: number } = {}) {
   const next = prepareCampaignBattle(captured(options));
-  assert.equal(next.error, null, next.error);
+  assert.equal(next.error, null, next.error ?? undefined);
   return next;
 }
-function sync(campaign, battle) {
+function sync(campaign: CampaignSnapshot, battle: BattleSnapshot) {
   const next = syncBattleTime(campaign, battle);
-  assert.equal(next.error, null, next.error);
+  assert.equal(next.error, null, next.error ?? undefined);
   return next;
 }
 
