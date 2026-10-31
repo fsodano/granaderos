@@ -1153,6 +1153,35 @@ for (const kind of ['assignment', 'contract']) {
   });
 }
 
+for (const dismissal of ['cancel', 'close button']) {
+  void test(`campaign panel ${dismissal} closes the native dialog before removing it`, async (t) => {
+    const m = await mountCampaignMenus(t, { narrow: true }),
+      opener = present(m.doc.querySelector<HTMLButtonElement>('.strategy-roster-open'));
+    opener.focus();
+    await m.click(opener);
+    const panel = present(m.doc.querySelector<HTMLDialogElement>('.strategic-panel-dialog')),
+      nativeClose = panel.close.bind(panel),
+      close = t.mock.method(panel, 'close', () => {
+        assert.ok(
+          panel.isConnected,
+          'native close must restore focus before the dialog is detached',
+        );
+        nativeClose();
+      });
+    if (dismissal === 'cancel') {
+      await act(async () =>
+        panel.dispatchEvent(new (present(m.doc.defaultView).Event)('cancel', { cancelable: true })),
+      );
+    } else {
+      await m.click(panel.querySelector('button[aria-label="Cerrar panel de campaña"]'));
+    }
+    assert.equal(close.mock.callCount(), 1);
+    assert.equal(panel.open, false);
+    assert.equal(panel.isConnected, false);
+    assert.deepEqual(m.actions, []);
+  });
+}
+
 void test('closing the person menu after the narrow roster unmounts restores the visible Nómina button', async (t) => {
   const m = await mountCampaignMenus(t, { narrow: true }),
     nomina = present(m.doc.querySelector<HTMLElement>('.strategy-roster-open')),
