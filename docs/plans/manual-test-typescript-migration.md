@@ -1,12 +1,12 @@
 # Manual acceptance tools: TypeScript migration
 
-Status: proposed follow-up batches. Inventory date: 31 October 2026.
+Status: active migration; remaining work batches. Inventory date: 31 October 2026.
 
 [Test guide](../../tests/README.md) · [Complete file inventory](manual-test-typescript-inventory.json)
 
 The automated test suite and its shared helpers use TypeScript. The `tests/`
-directory also contains 231 manual acceptance scripts and supporting JavaScript
-modules, with 93,611 source lines. These files are linted. Their implementations
+directory also contains 210 manual acceptance scripts and supporting JavaScript
+modules, with 92,973 source lines. These files are linted. Their implementations
 do not receive strict TypeScript checking. None has the automated `.test.mjs`
 suffix, and the inspected TypeScript source does not import these modules.
 
@@ -23,17 +23,17 @@ not reasons to omit required contracts or checks.
 
 | Group | Files | Source lines | Suggested review slices |
 | --- | ---: | ---: | --- |
-| Fixture builders and instrumentation | 73 | 8,354 | 4–6 slices, grouped by equipment, personnel, rendering, and authored content |
+| Fixture builders and instrumentation | 52 | 7,716 | 3–5 slices, grouped by equipment, personnel, rendering, and authored content |
 | Tactical controllers | 23 | 5,466 | 3 slices, with shared controller inputs and results first |
 | Shared route utilities | 17 | 4,132 | 2–3 slices for equipment, supplies, and progress reporting |
 | Opening and coastal acceptance | 16 | 4,730 | 2 slices after their shared utilities |
 | Cuyo and mountain acceptance | 18 | 18,824 | 5–7 slices; separate the shared order functions first |
 | Northern and medical acceptance | 48 | 37,148 | 10–13 slices; use the actual care, travel, and supply contracts |
 | Capital, ending and remaining logistics acceptance | 36 | 14,957 | 4–6 slices after their route dependencies |
-| **Total** | **231** | **93,611** | |
+| **Total** | **210** | **92,973** | |
 
-The dependency scan found 107 files with no imports of another remaining manual
-module, totaling 14,836 lines. These are the first candidates for parallel work.
+The dependency scan found 93 files with no imports of another remaining manual
+module, totaling 15,006 lines. These are the first candidates for parallel work.
 Shared modules with many consumers include `route-owned-equipment.mjs` (25),
 `route-infantry-progress.mjs` (20), `route-dressings.mjs` (18), and
 `route-battery.mjs` (17). Migrate these contracts before the long route scripts.
