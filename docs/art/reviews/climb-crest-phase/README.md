@@ -34,9 +34,12 @@ The native later roof transfer and landing remain rapid. A universal 8 m/s trial
 
 The independent strict −4 mm palm floor test also failed; its raw failure is retained. The bounded regression checks now require that full palm penetration does not increase against the exact predecessor, while the complete sole retains the independent −4 mm bound. Eight retained sampled palm failures remain, worst −4.047580 mm; they are explicitly reported in `surface-continuity.json`. This preserves the safety measurement without calling the existing defect accepted support. Broader previously recorded palm-plane cases and the real low-ceiling/headwear collisions after paid return remain separate open work. No roof or hat was hidden or resized.
 
-## Reproduce
+## Historical reproduction
 
-Run from the repository root with the existing web dependencies:
+These commands belong to this historical review. The manual verification tools
+are available through the [retired-tool recovery instructions](../../../../tests/README.md#recover-retired-manual-tools).
+Use the recorded review revision and its web dependencies to reproduce the
+recorded results:
 
 ```sh
 node --test tests/climb-crest-contact-plan.test.mjs tests/characters-climb-crest-continuity.test.mjs tests/characters-climb-crest-appearance.test.mjs
