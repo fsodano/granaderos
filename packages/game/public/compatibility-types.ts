@@ -243,6 +243,7 @@ export interface CivilianHarmIncident extends CivilianHarmOrigin {
   hpAfter: number;
 }
 export interface BattleNpc extends BattleBody {
+  scriptedMove?: { order: number; target: TacticalPoint };
   civilianHarm?: { version: 1; incidents: CivilianHarmIncident[] };
   corpseRemovedAtSecond?: number;
   presenceRevision?: number;
@@ -305,6 +306,7 @@ export interface BattleNpc extends BattleBody {
   supplies?: Record<string, number>;
 }
 export interface BattleTile extends TacticalPoint {
+  blocksSight?: boolean;
   projectileResistance?: number;
   type: string;
   id?: string;

@@ -29,7 +29,7 @@ input explicit; do not hide it with an unchecked assertion.
 The suite covers game and editor operations, saves, worker transport, lifecycle
 cleanup, architecture boundaries, and published actor assets. Long campaign
 route scripts are separate acceptance tools. The 31 October 2026 inventory contains
-210 manual `.mjs` scripts and helpers that remain JavaScript. They are linted but
+198 manual `.mjs` scripts and helpers that remain JavaScript. They are linted but
 their implementations do not receive strict TypeScript checking. The
 [migration inventory and proposed batches](../docs/plans/manual-test-typescript-migration.md)
 track this remaining scope. Shared route helpers follow normal recruitment,

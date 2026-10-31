@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { start, sync, order } from './prisoner-rescue-fixture.mjs';
+import { start, sync, order } from './prisoner-rescue-fixture.ts';
 import {
   actBattle,
   endTurn,

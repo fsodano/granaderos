@@ -1,3 +1,4 @@
+import type { LoadHook } from 'node:module';
 // Test-only counters at real read-model entry points. No production hooks or mocks.
 import ts from '../apps/web/node_modules/typescript/lib/typescript.js';
 const names = new Set([
@@ -11,17 +12,22 @@ const names = new Set([
   'supplyUsePreview',
   'artilleryReloadPreview',
 ]);
-export async function load(url, context, next) {
+export const load: LoadHook = async (url, context, next) => {
   const result = await next(url, context);
   if (!/\/game\/(ja2-hud|tactical)\.js$/.test(url)) {
     return result;
   }
-  let source = String(result.source);
+  if (result.source === null || result.source === undefined) {
+    throw new Error('The instrumented JavaScript module must have source text.');
+  }
+  let source =
+    typeof result.source === 'string' ? result.source : new TextDecoder().decode(result.source);
   const file = ts.createSourceFile(url, source, ts.ScriptTarget.ESNext, true, ts.ScriptKind.JS);
-  const functions = file.statements.filter(
-    (node) => ts.isFunctionDeclaration(node) && names.has(node.name?.text) && node.body,
-  );
+  const functions = file.statements.filter(ts.isFunctionDeclaration);
   for (const node of functions.reverse()) {
+    if (!node.name || !names.has(node.name.text) || !node.body) {
+      continue;
+    }
     const at = node.body.getStart(file) + 1,
       name = JSON.stringify(node.name.text);
     source =
@@ -30,4 +36,4 @@ export async function load(url, context, next) {
       source.slice(at);
   }
   return { ...result, source };
-}
+};

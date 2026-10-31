@@ -30,7 +30,7 @@ import { sectorInventoryModel } from '../packages/game/sector-inventory.js';
 import assert from 'node:assert/strict';
 import { dispatchCampaign, isSupplied, rosterFor } from '../packages/game/campaign.js';
 import { contractQuote } from '../packages/game/contracts.js';
-import { prepareNorthernSupport } from './northern-support-fixture.mjs';
+import { prepareNorthernSupport } from './northern-support-fixture.ts';
 import { enterSector } from '../packages/game/world.js';
 import {
   actBattle,

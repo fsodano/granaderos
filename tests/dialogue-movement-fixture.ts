@@ -1,14 +1,16 @@
+import type { ActiveGame } from './local-contract-fixture.ts';
+import { present } from './assert-present.ts';
 import { dialoguePackage } from './dialogue-fixture.ts';
 import { A, order, talk } from './local-contract-fixture.ts';
 import { projectDialogueMovements } from '../packages/game/dialogue-movement.js';
 export function movementPackage() {
   const d = dialoguePackage(),
-    speaker = d.characters.find((c) => c.id === 'alma-contract'),
+    speaker = present(d.characters.find((c) => c.id === 'alma-contract')),
     guest = structuredClone(speaker);
   guest.id = 'pablo';
   guest.name = 'Pablo';
   guest.nickname = 'Pablo';
-  delete guest.encounter.dialogue;
+  delete present(guest.encounter).dialogue;
   d.characters.push(guest);
   d.placements.push({
     id: 'pablo-location',
@@ -20,13 +22,13 @@ export function movementPackage() {
     delayMin: 0,
     delayMax: 0,
   });
-  speaker.encounter.dialogue.nodes[0].choices[0].effects = [
+  present(present(present(present(speaker.encounter).dialogue).nodes[0]).choices[0]).effects = [
     { type: 'movement', character: 'pablo', destination: 'speaker' },
   ];
   return d;
 }
-export const guest = (p) => p.battle.npcs.find((n) => n.contentId === 'pablo');
-export function callGuest(p) {
+export const guest = (p: ActiveGame) => p.battle.npcs.find((n) => n.contentId === 'pablo');
+export function callGuest(p: ActiveGame): ActiveGame {
   const campaign = order(p.campaign, {
     ...talk(p, undefined, 'dialogue'),
     dialogueNode: 'start',
