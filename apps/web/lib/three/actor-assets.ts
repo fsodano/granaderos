@@ -150,10 +150,15 @@ export class ActorAssetLibrary {
   private loads = new Map<string, Promise<GLTF>>();
   private manifestPromise: Promise<CharacterManifest> | null = null;
   private released = false;
+  private assetUrl: (path: string) => string;
+  private manifestPath: string;
   constructor(
-    private assetUrl: (path: string) => string,
-    private manifestPath = '/models/characters/manifest.json',
-  ) {}
+    assetUrl: (path: string) => string,
+    manifestPath = '/models/characters/manifest.json',
+  ) {
+    this.assetUrl = assetUrl;
+    this.manifestPath = manifestPath;
+  }
   manifest(): Promise<CharacterManifest> {
     return (this.manifestPromise ??= fetch(this.assetUrl(this.manifestPath)).then((response) => {
       if (!response.ok) {

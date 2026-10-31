@@ -425,7 +425,10 @@ function shelfVesselGeometry(kind: 'jar' | 'bottle' | 'bowl') {
 }
 export class WorldBatch {
   private parts = new Map<MeshStandardMaterial, BufferGeometry[]>();
-  constructor(public library: WorldGeometry) {}
+  public library: WorldGeometry;
+  constructor(library: WorldGeometry) {
+    this.library = library;
+  }
   add(
     geometry: BufferGeometry,
     material: MeshStandardMaterial,

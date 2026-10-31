@@ -248,17 +248,31 @@ export class NativeReadyMeleeContactFit extends NativeMeleeContactFit {
   private fallbackCue = '';
   private usingCue = '';
   private finalized = false;
+  private ownModel: Object3D;
+  private ownRoot: Object3D;
+  private footwear: string | undefined;
+  private nativeGait:
+    | {
+        clip: AnimationClip;
+        speed: number;
+      }
+    | undefined;
   constructor(
-    private ownModel: Object3D,
-    private ownRoot: Object3D,
-    private footwear?: string,
+    ownModel: Object3D,
+    ownRoot: Object3D,
+    footwear?: string,
     preview = false,
-    private nativeGait?: {
+    nativeGait?: {
       clip: AnimationClip;
       speed: number;
     },
   ) {
     super(ownModel, ownRoot, footwear, preview, nativeGait);
+    this.ownModel = ownModel;
+    this.ownRoot = ownRoot;
+    this.footwear = footwear;
+    this.nativeGait = nativeGait;
+
     this.registered = typeof Worker !== 'undefined';
     if (this.registered) {
       references++;

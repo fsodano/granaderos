@@ -20,7 +20,10 @@ export class NativeClimbBodyPhase {
   private mappedRotation = new Quaternion();
   private correction = new Quaternion();
   private identity = new Quaternion();
-  constructor(private model: Object3D) {}
+  private model: Object3D;
+  constructor(model: Object3D) {
+    this.model = model;
+  }
   restore() {
     for (const channel of this.adjusted) {
       channel.bone.position.copy(channel.nativePosition);

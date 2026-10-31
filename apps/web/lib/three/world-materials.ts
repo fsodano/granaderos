@@ -89,7 +89,10 @@ export class WorldMaterials {
   pending = 0;
   errors: string[] = [];
   private disposed = false;
-  constructor(private options: WorldOptions) {}
+  private options: WorldOptions;
+  constructor(options: WorldOptions) {
+    this.options = options;
+  }
   get(
     kind: string,
     options: {

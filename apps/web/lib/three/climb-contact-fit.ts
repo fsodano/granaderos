@@ -87,10 +87,12 @@ export class NativeClimbContactFit {
   private worldRotation = new Quaternion();
   private parentRotation = new Quaternion();
   private endRotation = new Quaternion();
-  constructor(
-    private model: Object3D,
-    private root: Object3D,
-  ) {
+  private model: Object3D;
+  private root: Object3D;
+  constructor(model: Object3D, root: Object3D) {
+    this.model = model;
+    this.root = root;
+
     this.visualScale = root.getWorldScale(new Vector3()).x;
     model.updateWorldMatrix(true, true);
     this.pelvis = model.getObjectByName('pelvis');

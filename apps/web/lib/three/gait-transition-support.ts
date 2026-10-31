@@ -119,11 +119,12 @@ export class NativeGaitTransitionSupport {
   private worldRotation = new Quaternion();
   private parentRotation = new Quaternion();
   private footRotation = new Quaternion();
-  constructor(
-    private model: Object3D,
-    private root: Object3D,
-    footwearName?: string,
-  ) {
+  private model: Object3D;
+  private root: Object3D;
+  constructor(model: Object3D, root: Object3D, footwearName?: string) {
+    this.model = model;
+    this.root = root;
+
     this.visualScale = root.getWorldScale(new Vector3()).x;
     const containsBone = (node: Object3D): boolean =>
         node instanceof Bone || node.children.some(containsBone),

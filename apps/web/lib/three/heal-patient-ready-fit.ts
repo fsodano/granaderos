@@ -228,11 +228,13 @@ export class NativeReadyPatientContactFit extends NativePatientContactFit {
   private using = '';
   private registered = false;
   private unavailable: Lease | undefined;
-  constructor(
-    private own: Object3D,
-    private ownRoot: Object3D,
-  ) {
+  private own: Object3D;
+  private ownRoot: Object3D;
+  constructor(own: Object3D, ownRoot: Object3D) {
     super(own, ownRoot);
+    this.own = own;
+    this.ownRoot = ownRoot;
+
     this.registered = typeof Worker !== 'undefined';
     if (this.registered) {
       references++;

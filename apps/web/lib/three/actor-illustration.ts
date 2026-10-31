@@ -97,7 +97,10 @@ export class ActorIllustration {
   private outlined = new WeakSet<Mesh>();
   private outlinePixels = { value: new Vector2() };
   private viewport = new Vector4();
-  constructor(private owned: Set<Material>) {
+  private owned: Set<Material>;
+  constructor(owned: Set<Material>) {
+    this.owned = owned;
+
     this.outline = new MeshBasicMaterial({
       name: 'actor-ink-contour',
       color: '#171910',

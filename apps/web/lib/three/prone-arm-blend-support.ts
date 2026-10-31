@@ -64,10 +64,12 @@ export class NativeProneArmBlendSupport {
   maximumAngle = 0;
   maximumHandDrift = 0;
   surfaceEvaluations = 0;
-  constructor(
-    private model: Object3D,
-    private root: Object3D,
-  ) {}
+  private model: Object3D;
+  private root: Object3D;
+  constructor(model: Object3D, root: Object3D) {
+    this.model = model;
+    this.root = root;
+  }
   private accepted(spec?: ClipSpec) {
     return (
       !!spec &&

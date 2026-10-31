@@ -13,7 +13,7 @@ import {
   Box3,
 } from '../../apps/web/node_modules/three/build/three.module.js';
 import { clone } from '../../apps/web/node_modules/three/examples/jsm/utils/SkeletonUtils.js';
-import { publishedActor, manifest } from '../../tests/published-actor-fixture.mjs';
+import { publishedActor, manifest } from '../../tests/published-actor-fixture.ts';
 
 const library = new URL('../../apps/web/public/models/characters/', import.meta.url);
 const names = [

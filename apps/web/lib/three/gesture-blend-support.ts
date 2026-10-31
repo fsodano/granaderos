@@ -133,11 +133,12 @@ export class NativeGestureBlendSupport {
   private footRotation = new Quaternion();
   private ballRotation = new Quaternion();
   private visualScale: number;
-  constructor(
-    private model: Object3D,
-    private root: Object3D,
-    footwearName?: string,
-  ) {
+  private model: Object3D;
+  private root: Object3D;
+  constructor(model: Object3D, root: Object3D, footwearName?: string) {
+    this.model = model;
+    this.root = root;
+
     this.visualScale = root.getWorldScale(new Vector3()).x;
     const mesh = footwearName ? model.getObjectByName(footwearName) : undefined;
     if (

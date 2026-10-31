@@ -15,7 +15,10 @@ export class ActorCueStore {
   private previous: readonly ActorObservation[] = [];
   private cues: Readonly<Record<string, ActorCue>> = {};
   private readonly listeners = new Set<() => void>();
-  constructor(private readonly now: () => number = () => performance.now()) {}
+  private readonly now: () => number;
+  constructor(now: () => number = () => performance.now()) {
+    this.now = now;
+  }
   readonly getSnapshot = () => this.cues;
   readonly subscribe = (listener: () => void) => {
     this.listeners.add(listener);

@@ -3,7 +3,7 @@ register('../test-render-loader.ts', import.meta.url);
 import { writeFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { BATTLE_PLAYBACK } from '../../packages/game/battle-playback.js';
-import { publishedActor } from '../../tests/published-actor-fixture.mjs';
+import { publishedActor } from '../../tests/published-actor-fixture.ts';
 const { ActorRuntime } = await import('../../apps/web/lib/three/actor-runtime.ts');
 const assets = await Promise.all(
   ['granadero', 'woman-scout'].map((name) => publishedActor(name, 1)),

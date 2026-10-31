@@ -99,12 +99,8 @@ export function campaignResponse(
       resourceBytes.get(key) ??
       resourceBytes.get(key.replace(/^\/campaigns\/[^/]+\//, '/campaigns/granaderos/')),
     ok = value !== undefined || bytes !== undefined;
-  return {
-    ok,
-    status: ok ? 200 : 404,
-    json: () => Promise.resolve(structuredClone(value)),
-    arrayBuffer: () => Promise.resolve(Uint8Array.from(present(bytes)).buffer),
-  };
+  const body = bytes ? Uint8Array.from(bytes) : (JSON.stringify(value) ?? '');
+  return new Response(body, { status: ok ? 200 : 404 });
 }
 export function campaignFetch(path: string) {
   return Promise.resolve(campaignResponse(documents, path));

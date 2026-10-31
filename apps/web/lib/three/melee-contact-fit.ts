@@ -387,16 +387,30 @@ export class NativeMeleeContactFit {
   private worldRotation = new Quaternion();
   private parentRotation = new Quaternion();
   private endRotation = new Quaternion();
+  private model: Object3D;
+  private root: Object3D;
+  private preview: boolean;
+  private gait:
+    | {
+        clip: AnimationClip;
+        speed: number;
+      }
+    | undefined;
   constructor(
-    private model: Object3D,
-    private root: Object3D,
+    model: Object3D,
+    root: Object3D,
     footwearName?: string,
-    private preview = false,
-    private gait?: {
+    preview = false,
+    gait?: {
       clip: AnimationClip;
       speed: number;
     },
   ) {
+    this.model = model;
+    this.root = root;
+    this.preview = preview;
+    this.gait = gait;
+
     this.body = required(model.getObjectByName('Root'));
     model.updateWorldMatrix(true, false);
     model.updateMatrixWorld(true);

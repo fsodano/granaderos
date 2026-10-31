@@ -173,10 +173,12 @@ export class NativePatientContactFit {
   rejected = 0;
   contactWeight = 0;
   surface: Vector3 | undefined;
-  constructor(
-    private model: Object3D,
-    private root: Object3D,
-  ) {
+  private model: Object3D;
+  private root: Object3D;
+  constructor(model: Object3D, root: Object3D) {
+    this.model = model;
+    this.root = root;
+
     const [upper, lower, hand] = ['upperarm_r', 'lowerarm_r', 'hand_r'].map((n) =>
       model.getObjectByName(n),
     );

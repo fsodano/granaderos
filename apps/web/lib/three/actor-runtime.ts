@@ -159,13 +159,22 @@ export class ActorRuntime {
   private temporaryProps = new Map<string, Object3D>();
   private completedCues = new Set<string>();
   private illustration = new ActorIllustration(this.ownedMaterials);
+  readonly asset: LoadedActor;
+  private onCueComplete: ((key: string, id: string) => void) | undefined;
+  private contactActor: ContactActorResolver | undefined;
+  readonly visualScale: number;
   constructor(
-    readonly asset: LoadedActor,
+    asset: LoadedActor,
     visual: ActorVisual,
-    private onCueComplete?: (key: string, id: string) => void,
-    private contactActor?: ContactActorResolver,
-    readonly visualScale = 1,
+    onCueComplete?: (key: string, id: string) => void,
+    contactActor?: ContactActorResolver,
+    visualScale = 1,
   ) {
+    this.asset = asset;
+    this.onCueComplete = onCueComplete;
+    this.contactActor = contactActor;
+    this.visualScale = visualScale;
+
     if (!Number.isFinite(visualScale) || visualScale <= 0) {
       throw Error('Invalid actor visual scale');
     }
