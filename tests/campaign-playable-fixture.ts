@@ -1,9 +1,10 @@
+import type { PhysicalMap } from '../packages/campaign-format/types.ts';
 import { compileMap, reachableMap } from '../packages/game/compile-map.js';
 import { propBlocksAt } from '../packages/game/props.js';
 
 // Stock maps use configured deployment. Copies used as generic authored maps
 // need their own explicit entry points in the same reachable walking area.
-export function addPlayableSpawns(doc) {
+export function addPlayableSpawns(doc: PhysicalMap): PhysicalMap {
   const map = compileMap(doc),
     open = map.tiles.filter((t) => !t.blocked && !propBlocksAt(map, t.x, t.y));
   const start = open.find((t) => t.x <= 2 && t.y >= 5) ?? open[0];

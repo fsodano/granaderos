@@ -1,21 +1,34 @@
+import type { CampaignSnapshot } from '../packages/game/public/campaign-types.ts';
+import { present } from './assert-present.ts';
 import { makeOutfit } from '../packages/game/outfits.ts';
 import { initialHorseState, MATURITY_HOURS } from '../packages/game/horses.js';
 
 // Finite preexisting property for isolated custody tests. These helpers do not
 // buy stock, grant a route reward, or change a new-player campaign constructor.
-export function withCarriedPonchos(state, id, count = 1) {
+export function withCarriedPonchos(
+  state: CampaignSnapshot,
+  id: number,
+  count = 1,
+): CampaignSnapshot {
   const next = structuredClone(state),
-    record = next.operativeState[id];
+    record = present(next.operativeState[id]);
   record.inventory ??= {};
-  record.inventory.outfit = { ...makeOutfit('poncho'), count };
+  record.inventory['outfit'] = { ...makeOutfit('poncho'), count };
   return next;
 }
-export function withLegacyRepairReserve(state, id, points = 100) {
+export function withLegacyRepairReserve(
+  state: CampaignSnapshot,
+  id: number,
+  points = 100,
+): CampaignSnapshot {
   const next = structuredClone(state);
-  next.operativeState[id].toolkitPoints = points;
+  present(next.operativeState[id]).toolkitPoints = points;
   return next;
 }
-export function withOwnedMount(state, { hired = false, name = 'Correo' } = {}) {
+export function withOwnedMount(
+  state: CampaignSnapshot,
+  { hired = false, name = 'Correo' } = {},
+): { state: CampaignSnapshot; id: string } {
   const next = structuredClone(state);
   next.horseState ??= initialHorseState();
   const id = `horse-${next.horseState.nextId++}`;

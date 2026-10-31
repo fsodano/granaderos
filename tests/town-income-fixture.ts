@@ -1,9 +1,10 @@
+import type { CampaignSnapshot } from '../packages/game/public/campaign-types.ts';
 import assert from 'node:assert/strict';
 import { activateTownIncome, TOWN_INCOME_SOURCES } from '../packages/game/town-income.js';
 
 // A declared established agreement for subsystem scenarios. This is saved
 // fixture history; actual spoken activation is proved in town-income-campaign.
-export function recordTownAgreement(state, sourceId) {
+export function recordTownAgreement(state: CampaignSnapshot, sourceId: string): CampaignSnapshot {
   const source = TOWN_INCOME_SOURCES.find((source) => source.id === sourceId);
   assert.ok(source);
   const npcId = source.representative.npcId,
