@@ -27,15 +27,24 @@ change affects those contracts. Negative admission tests must make malformed
 input explicit; do not hide it with an unchecked assertion.
 
 The suite covers game and editor operations, saves, worker transport, lifecycle
-cleanup, architecture boundaries, and published actor assets. Long campaign
-route scripts are separate acceptance tools. The 31 October 2026 inventory contains
-198 manual `.mjs` scripts and helpers that remain JavaScript. They are linted but
-their implementations do not receive strict TypeScript checking. The
-[migration inventory and proposed batches](../docs/plans/manual-test-typescript-migration.md)
-track this remaining scope. Shared route helpers follow normal recruitment,
-movement, time, and fight-or-withdraw rules.
+cleanup, architecture boundaries, and published actor assets.
 
 Run `npm run verify:quick` before pushing. Run `npm run verify` for the production
 build as well. A passing suite does not establish campaign completion, sustained
 performance, or visual quality. Browser checks verify visible controls,
 rendering, and file workflows. Record exact results and limits in dated evidence.
+
+## Recover retired manual tools
+
+The 210 manual acceptance scripts and helpers, plus five dependent verification
+tools, are preserved at revision
+`a91f934ea764902e1d3f5d7fb24e1a7cb74f3ac4`. To inspect or run them, create a
+separate checkout from the repository root:
+
+```sh
+git worktree add --detach ../granaderos-manual-tools a91f934ea764902e1d3f5d7fb24e1a7cb74f3ac4
+```
+
+Use that checkout's Node.js version and setup instructions. Historical results
+apply to their recorded source revisions. A new run needs its own results and
+limits.

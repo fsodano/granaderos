@@ -32,9 +32,12 @@ Fourteen broader palm-floor cases remain below the proposed −4 mm acceptance l
 
 The rejected body/pole-only surface proof, unbounded crest trial and old native-body-exact assertion are retained. The assertion was replaced by a measured comparison to an exact bounded blend of native paid/remapped body tracks because a body-phase change is necessary to remove the old Root jump; all preserved dimensions/clocks/unrelated channels remain explicitly checked.
 
-## Reproduce
+## Historical reproduction
 
-From the repository root, with the normal web dependencies installed:
+These commands belong to this historical review. The manual verification tool
+is available through the [retired-tool recovery instructions](../../../../tests/README.md#recover-retired-manual-tools).
+Use the recorded review revision and its web dependencies to reproduce the
+recorded results:
 
 ```sh
 node --test tests/characters-climb-phase-continuity.test.mjs tests/characters-tall-climbing-contact.test.mjs tests/characters-climbing-support.test.mjs tests/climb-playback-timing.test.mjs

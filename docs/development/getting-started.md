@@ -66,9 +66,10 @@ dependencies. It reports each package set and preserves failures.
 The suite checks domain invariants, use-case refusals, identity, partial progress,
 time, save compatibility, worker admission, lifecycle ownership, and editor
 operations. See the [test guide](../../tests/README.md) for focused commands and
-fixture rules. Long campaign routes and browser acceptance remain separate
-checks. Automated tests do not establish complete campaign acceptance or visual
-quality. Record the source revision, checks, failures, and limits of each
+fixture rules. Use the [recovery instructions](../../tests/README.md#recover-retired-manual-tools)
+to inspect the retired manual acceptance tools. Browser acceptance uses the real
+application. Automated tests do not establish complete campaign acceptance or
+visual quality. Record the source revision, checks, failures, and limits of each
 acceptance run.
 
 ## TypeScript and lint rules

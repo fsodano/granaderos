@@ -35,9 +35,12 @@ The meeting verifier previously selected the highest-leadership player-side unit
 
 At hour 313, second 758, the foundry and passage agreement are active. Treasury is 573 pesos. The campaign is still in phase 3. Doctor 122 and operative 132 are critically wounded but stable. Mendoza's new force still needs care and supplies; Salta must be retaken, the blockade removed, the mountain passes secured, and production completed before the ending can be verified.
 
-## Reproduce
+## Historical reproduction
 
-After the northern route and Cuyo recovery verifiers, run:
+The command below belongs to this historical verification. The manual verifier
+is available through the [retired-tool recovery instructions](../../tests/README.md#recover-retired-manual-tools).
+The recorded results apply to the source revisions described in this document.
+The command requires the northern route and Cuyo recovery checkpoints:
 
 ```sh
 node tools/verify-mendoza-route.mjs --input /tmp/granaderos-cuyo-recovery-check/cuyo-recovered.save.json --output /tmp/granaderos-mendoza-check
