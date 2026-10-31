@@ -17,6 +17,7 @@ void test('full verification includes every push check and the production export
   assert.ok(stagesFor('push').includes('test'));
   assert.ok(stagesFor('push').includes('typecheck'));
   assert.ok(stagesFor('push').includes('audit:baseline'));
+  assert.ok(stagesFor('push').includes('audit:dependencies'));
   assert.throws(() => stagesFor('quick-but-skip-tests'));
   const edited = stagesFor('push');
   edited.pop();

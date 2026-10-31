@@ -41,7 +41,7 @@ Run commands from the repository root.
 | Command | Purpose |
 | --- | --- |
 | `npm run verify:commit` | Format, lint, architecture, and dependency checks. |
-| `npm run verify:quick` | Commit checks, strict types, all automated tests, documentation and baseline audits. |
+| `npm run verify:quick` | Commit checks, strict types, all automated tests, dependency security, documentation and baseline audits. |
 | `npm run verify` | Push checks and the complete production build. |
 | `npm test` | All discovered TypeScript tests, with two workers. |
 | `npm run test:quick` | Alias for the same complete automated test suite. |
@@ -49,6 +49,7 @@ Run commands from the repository root.
 | `npm run lint` | Lint all maintained application, package, campaign, tool, and test source. |
 | `npm run lint:audit` | The same lint scope and rules. |
 | `npm run check:dependencies` | Enforce Dependency Cruiser layer and package boundaries. |
+| `npm run audit:dependencies` | Audit all application and playground dependencies; any advisory fails the check. |
 | `npm run check:architecture` | Enforce repository architecture policies and public entries. |
 | `npm run format` | Format maintained source with Oxfmt. |
 | `npm run lint:fix` | Apply supported safe lint fixes. Review the result. |
@@ -58,7 +59,9 @@ The pre-commit hook checks staged whitespace and runs `verify:commit`. The
 pre-push hook runs `verify:quick`. These commands inspect the current working
 tree. Run them on the complete intended change and keep the pushed branch in
 sync with that tree. CI runs `npm run verify` on pull requests and before Pages
-publication. Each verification profile stops at its first failed stage.
+publication. Each verification profile stops at its first failed stage. The dependency audit
+requires registry access and checks all three lockfiles, including development
+dependencies. It reports each package set and preserves failures.
 
 The suite checks domain invariants, use-case refusals, identity, partial progress,
 time, save compatibility, worker admission, lifecycle ownership, and editor
@@ -79,7 +82,7 @@ TypeScript 7. This follows Microsoft's
 [`tsconfig.strict.json`](../../tsconfig.strict.json) supplies common rules.
 These include strict null checks, checked indexed access, exact optional
 properties, checked return paths, explicit overrides, unused binding checks,
-and library declaration checking. Automated tests and shared test helpers use
+and library declaration checking. Automated tests and their shared helpers use
 `.ts`; React test components use `.tsx` when needed. Runtime and file boundaries
 validate external values before they expose concrete application types.
 Existing JavaScript game modules remain explicit compatibility adapters during
