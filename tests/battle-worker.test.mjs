@@ -10,8 +10,16 @@ import {
   teamCanSee,
   knownArtillery,
 } from '../packages/game/tactical.js';
-import { createBattleExecutor } from '../apps/web/lib/battle-executor.js';
-import { executeGroupMove, planGroupMove } from '../packages/game/group-movement.js';
+import { createBattleExecutor } from '../apps/web/lib/battle-executor.ts';
+import {
+  executeBattleWorkerRequest,
+  readBattleWorkerRequest,
+} from '../apps/web/lib/battle-worker-transport.ts';
+import {
+  executeGroupMove,
+  groupMovementStep,
+  planGroupMove,
+} from '../packages/game/group-movement.js';
 import { movementGroupModel } from '../packages/game/ja2-hud.js';
 import { movementStep } from '../packages/game/movement-step.js';
 const fixture = () =>
@@ -23,8 +31,9 @@ const fixture = () =>
   });
 async function withExecutor(check) {
   const url = new URL('../packages/game/battle-job.js', import.meta.url).href;
+  const transportUrl = new URL('../apps/web/lib/battle-worker-transport.ts', import.meta.url).href;
   const worker = new Worker(
-    `const {parentPort}=require('node:worker_threads');import(${JSON.stringify(url)}).then(({runBattleJob})=>parentPort.on('message',({id,job,context})=>{try{parentPort.postMessage({id,context,battle:runBattleJob(job)});}catch(e){parentPort.postMessage({id,context,error:e.message});}}));`,
+    `const {parentPort}=require('node:worker_threads');Promise.all([import(${JSON.stringify(url)}),import(${JSON.stringify(transportUrl)})]).then(([{runBattleJob},{executeBattleWorkerRequest}])=>parentPort.on('message',data=>{const response=executeBattleWorkerRequest(data,job=>runBattleJob({...job,action:job.action}));if(response)parentPort.postMessage(response);}));`,
     { eval: true },
   );
   const bridge = {
@@ -148,6 +157,48 @@ test('worker group orders retain exact formation reports, partial moves and cont
       let replay = battle;
       for (const order of result.orders) replay = actBattle(replay, order);
       assert.deepEqual(result.state, replay);
+    }
+  });
+});
+
+test('group-step worker preserves object continuations and exact formation progress', async () => {
+  await withExecutor(async (executor) => {
+    let battle = createBattle(
+      [
+        { id: 'a', x: 1, y: 2 },
+        { id: 'b', x: 1, y: 3 },
+      ],
+      {
+        width: 12,
+        height: 6,
+        exploration: true,
+        enemies: [],
+        tiles: Array.from({ length: 72 }, (_, i) => ({
+          x: i % 12,
+          y: Math.floor(i / 12),
+          type: 'grass',
+          blocked: false,
+          cover: 0,
+        })),
+      },
+    );
+    const action = { unitIds: ['a', 'b'], anchorId: 'a', x: 6, y: 2 };
+    let continuation;
+    for (let count = 0; ; count++) {
+      assert.ok(count < 20);
+      const before = structuredClone(battle);
+      const expected = groupMovementStep(battle, action, continuation);
+      const result = await executor.run({ battle, action, kind: 'group-step', continuation });
+      assert.deepEqual(result, expected);
+      assert.deepEqual(battle, before);
+      if (result.status !== 'moving') {
+        assert.equal(result.status, 'completed');
+        assert.equal(result.continuation, null);
+        break;
+      }
+      assert.equal(Array.isArray(result.continuation), false);
+      battle = result.state;
+      continuation = result.continuation;
     }
   });
 });
@@ -281,4 +332,109 @@ test('worker results require matching game session, sector visit, revision and r
     await rejected;
     executor.close();
   }
+});
+
+test('worker transport rejects malformed requests before executing simulation rules', async () => {
+  const messages = [];
+  const worker = { postMessage: (message) => messages.push(message), terminate() {} };
+  const executor = createBattleExecutor(worker);
+  const result = executor.run({ battle: fixture(), kind: 'turn' });
+  const request = messages[0];
+  let calls = 0;
+  const run = () => {
+    calls++;
+    return 'completed';
+  };
+  for (const value of [null, [], {}, { ...request, id: '1' }, { ...request, id: 0 }]) {
+    assert.equal(executeBattleWorkerRequest(value, run), undefined);
+  }
+  for (const value of [
+    { ...request, job: null },
+    { ...request, job: { ...request.job, kind: 'other' } },
+    { ...request, job: { kind: 'turn' } },
+    { ...request, context: null },
+    { ...request, context: { ...request.context, revision: -1 } },
+    { ...request, job: { ...request.job, context: { ...request.context, requestId: 'other' } } },
+  ]) {
+    assert.throws(() => readBattleWorkerRequest(value));
+    const failure = executeBattleWorkerRequest(value, run);
+    assert.equal(failure.id, request.id);
+    assert.equal(typeof failure.error, 'string');
+    assert.ok(!Object.hasOwn(failure, 'battle'));
+  }
+  assert.equal(calls, 0);
+  worker.onmessage({ data: executeBattleWorkerRequest(request, run) });
+  assert.equal(await result, 'completed');
+  assert.equal(calls, 1);
+  executor.close();
+});
+
+test('worker transport reports simulation errors with the original operation identity', async () => {
+  const messages = [];
+  const worker = { postMessage: (message) => messages.push(message), terminate() {} };
+  const executor = createBattleExecutor(worker);
+  const result = executor.run({ battle: fixture(), kind: 'turn' });
+  const rejected = assert.rejects(result, /simulation failed/);
+  const response = executeBattleWorkerRequest(messages[0], () => {
+    throw Error('simulation failed');
+  });
+  assert.deepEqual(response.context, messages[0].context);
+  worker.onmessage({ data: response });
+  await rejected;
+  executor.close();
+});
+
+test('executor rejects malformed replies for a pending request and can accept the next reply', async () => {
+  for (const malformed of [
+    (message) => ({ id: message.id, context: message.context }),
+    (message) => ({ id: message.id, context: null, battle: 'invalid' }),
+    (message) => ({ id: message.id, context: message.context, error: 42 }),
+    (message) => ({ id: message.id, context: message.context, error: 'failed', battle: 'invalid' }),
+  ]) {
+    const messages = [];
+    const worker = { postMessage: (message) => messages.push(message), terminate() {} };
+    const executor = createBattleExecutor(worker);
+    const first = executor.run({ battle: fixture() });
+    const rejected = assert.rejects(first, /Invalid battle worker/);
+    worker.onmessage({ data: malformed(messages[0]) });
+    await rejected;
+    const second = executor.run({ battle: fixture() });
+    worker.onmessage({
+      data: { id: messages[1].id, context: messages[1].context, battle: 'next' },
+    });
+    assert.equal(await second, 'next');
+    executor.close();
+  }
+});
+
+test('executor ignores uncorrelated messages without consuming the pending request', async () => {
+  const messages = [];
+  const worker = { postMessage: (message) => messages.push(message), terminate() {} };
+  const executor = createBattleExecutor(worker);
+  const result = executor.run({ battle: fixture() });
+  for (const data of [null, [], {}, { id: '1' }, { id: 0 }, { id: 1.5 }, { id: 100 }]) {
+    assert.doesNotThrow(() => worker.onmessage({ data }));
+  }
+  worker.onmessage({ data: { id: messages[0].id, context: messages[0].context, battle: null } });
+  assert.equal(await result, null, 'legacy result payloads stay opaque to the transport');
+  executor.close();
+});
+
+test('executor removes a request when posting fails and preserves later requests', async () => {
+  const messages = [];
+  let fail = true;
+  const worker = {
+    postMessage(message) {
+      if (fail) throw Error('cannot clone');
+      messages.push(message);
+    },
+    terminate() {},
+  };
+  const executor = createBattleExecutor(worker);
+  await assert.rejects(executor.run({ battle: fixture() }), /cannot clone/);
+  fail = false;
+  const result = executor.run({ battle: fixture() });
+  worker.onmessage({ data: { id: messages[0].id, context: messages[0].context, battle: 'next' } });
+  assert.equal(await result, 'next');
+  executor.close();
 });
