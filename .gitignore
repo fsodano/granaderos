@@ -24,3 +24,6 @@ node_modules/
 
 # Blender creates numbered backup copies beside the source rig.
 /content/assets/rig/*.blend[0-9]*
+
+# Local tool output from the OpenChamber session panel.
+.openchamber/
