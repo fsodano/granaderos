@@ -1,8 +1,4 @@
-# Preparing failed pistol pans — 27 September 2026
-
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
+# Preparing failed pistol pans
 
 In tactical exploration and turn-based combat, the existing R key and weapon order control can service a failed second
 pistol without a hand swap. Only pistols physically held in both hands join the
@@ -28,9 +24,3 @@ contract is unchanged.
 AI maintenance can prepare a failed spare outside visible contact. With a ready
 main gun and a visible target, it retains its existing firing decision. Both
 failed guns use the same player cost and supply plan.
-
-Validation includes exact AP/powder boundaries, finite supplies, retained gun
-metadata, exploration time, specialist costs, invalid held items, save/replay,
-real enemy turns, order-panel actions, and mounted Battlefield R input with
-the ordinary text-input guard. See `tests/paired-reprime.test.mjs` and
-`tests/paired-reprime-ui.test.mjs`.

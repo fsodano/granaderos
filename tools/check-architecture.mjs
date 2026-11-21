@@ -177,6 +177,19 @@ for (const directory of sourceDirectories) {
             );
           }
         }
+        if (
+          ts.isCallExpression(node) &&
+          ts.isPropertyAccessExpression(node.expression) &&
+          ts.isIdentifier(node.expression.expression) &&
+          node.expression.expression.text === 'Math' &&
+          node.expression.name.text === 'random'
+        ) {
+          fail(
+            file,
+            'Math.random',
+            'Domain and application code must receive randomness from RandomSource.',
+          );
+        }
         ts.forEachChild(node, inspect);
       }
       inspect(syntax);

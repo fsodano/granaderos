@@ -1,13 +1,15 @@
 # Build and tooling
 
-**Architecture guide:** [Overview](README.md) · [Content and campaigns](content-and-campaigns.md) · [Rendering](rendering.md)
+[Architecture guide](README.md) · [System map](system-map.md) · [Content and campaigns](content-and-campaigns.md) · [Rendering](rendering.md)
 
-The deployed web game is built as a static browser export; a server runtime is not required to serve the published game. The root build script adds campaign staging and deployment integrity checks around the web build. See the [architecture overview](README.md) and [content and campaigns](content-and-campaigns.md) for the campaign side of that pipeline.
+This page explains how Granaderos builds, stages, and checks the static browser deployment (`.output/dist/`), how root npm scripts and CI workflows enforce architectural boundaries, formatting, types, and tests, and how the browser toolchain stays separate from the native C++ reference tree. It connects the package boundaries in the [system map](system-map.md) to the campaign staging pipeline in [content and campaigns](content-and-campaigns.md) and the runtime asset manifests in [rendering](rendering.md).
 
 ## At a glance
 
+The flowchart below shows how local development (`vinext + Vite dev`) serves the `Browser app`, and how `npm run build` runs `vinext build / static export` and `Independent editor Vite build`, combines them in `Stage client files under .output/dist`, executes `Stage and validate campaign packages` and `Check URLs, workers, manifests, checksums`, passes `Check build identity`, and produces the `Static hosting / Pages artifact`.
+
 ```mermaid
-flowchart LR
+flowchart TB
   Dev[vinext + Vite dev] --> Browser[Browser app]
   Root[npm run build] --> WebBuild[vinext build / static export]
   Root --> EditorBuild[Independent editor Vite build]
@@ -22,27 +24,11 @@ flowchart LR
 
 ## Web build versus root build
 
-The web package declares `vinext dev` and `vinext build` in [`apps/web/package.json`](../../apps/web/package.json). Its [`apps/web/next.config.ts`](../../apps/web/next.config.ts) sets static export output and an asset prefix; [`apps/web/vite.config.ts`](../../apps/web/vite.config.ts) wires the vinext Vite plugin plus development/build identity and campaign-file handling. The browser app therefore uses a React/Vite toolchain while retaining the static-export shape. No Next server runtime is needed for the exported site; an optional local Wrangler `start` script exists but is not the publication requirement.
+[`apps/web/package.json`](../../apps/web/package.json) declares `vinext dev` and `vinext build`. [`apps/web/next.config.ts`](../../apps/web/next.config.ts) configures static export output and the deployment asset prefix, while [`apps/web/vite.config.ts`](../../apps/web/vite.config.ts) wires the vinext Vite plugin, build-identity metadata, and development campaign-file middleware. The published site is a purely static export that runs in the browser without a Node.js or Next.js server process.
 
-The top-level scripts are in [`package.json`](../../package.json). `npm run build` runs [`tools/build-web.mjs`](../../tools/build-web.mjs). It generates renderer fixtures, builds the game and independent editor, stages `apps/web/dist/client` into `.output/dist`, stages campaign packages, and copies `apps/campaign-editor/dist` into `.output/dist/campaign-editor`. It then checks the exported index, internal HTML/CSS/JS URLs, browser worker references, static manifest dependencies, known dynamic portrait/action URLs, artwork manifest SHA-256 checksums, tactical assets, and build identity consistency. Missing referenced assets, checksums, worker URLs, manifest dependencies, or a source/build identity race fail the build. `--stage-only` uses existing game and editor build outputs.
+At the repository root, [`package.json`](../../package.json) defines `npm run build` (`node tools/build-web.mjs`). [`tools/build-web.mjs`](../../tools/build-web.mjs) generates architecture fixtures ([`tools/generate-architecture-fixtures.mjs`](../../tools/generate-architecture-fixtures.mjs)), builds `apps/web` and `apps/campaign-editor`, stages `apps/web/dist/client` into `.output/dist`, packages and validates campaigns into `.output/dist/campaigns`, and copies `apps/campaign-editor/dist` into `.output/dist/campaign-editor`. It then verifies internal HTML/CSS/JS asset URLs, worker bundles ([`tools/verify-browser-workers.mjs`](../../tools/verify-browser-workers.mjs)), manifest dependencies, artwork SHA-256 checksums, tactical 3D assets ([`tools/verify-tactical-assets.mjs`](../../tools/verify-tactical-assets.mjs)), and build identity consistency ([`tools/build-identity.mjs`](../../tools/build-identity.mjs)). Passing `--stage-only` skips fixture generation and both application builds, staging and auditing existing `apps/web/dist/client` and `apps/campaign-editor/dist` directories.
 
-### Commands and artifacts
-
-| Command | Inputs / behavior | Output / limits |
-| --- | --- | --- |
-| `npm run dev` (root) | Delegates to `npm --prefix apps/web run dev`; web script runs vinext dev. | Local browser app; Vite config provides identity and campaign-file dev middleware. Not a static deployment build. |
-| `npm run build` (root) | Renderer fixture generation, game and independent editor builds, static staging, campaign export, URL/worker/artwork/tactical-asset verification and build identity check. Honors `GRANADEROS_BASE_PATH`. | Verified `.output/dist/` artifact with both applications; primary CI/Pages path. |
-| `npm run build -- --stage-only` (root) | Skips fixture generation and both builds; requires existing `apps/web/dist/client` and `apps/campaign-editor/dist`. | Stages and verifies both existing application exports. |
-| `npm --prefix apps/web run build` | Runs vinext build directly; no root campaign staging/audit wrapper. | Web package's export in `apps/web/dist/client`; not by itself the documented Pages artifact. |
-| `npm run build:editor` | Checks the shared format package and builds the independent editor. | Editor application in `apps/campaign-editor/dist`; root staging places it at `/campaign-editor/`. |
-| `npm --prefix apps/web run start` | Runs `wrangler dev --config dist/server/wrangler.json`. | Optional local server-oriented preview; it is not needed to serve the published static game. |
-| `npm run campaign:new -- <id> <destination>` | Shared scaffold and folder verification; destination's basename must equal ID and existing target is not overwritten. | New package folder with manifest, docs, map index/maps, starter asset. |
-| `npm run campaign:check -- <folder>` | Verifies package folder and compiles it against campaign contracts. | Validity/revision report or failure. |
-| `npm run campaign:assets -- <folder>` | Refreshes authored asset metadata/checksums in the specified campaign folder. | Updated asset catalog; does not build the whole game. |
-
-For current exact argument parsing, consult [`tools/campaign-authoring.mjs`](../../tools/campaign-authoring.mjs); these commands are authoring helpers and do not alter root build's validation sequence.
-
-Deployment base paths are normalized by [`tools/deployment-path.mjs`](../../tools/deployment-path.mjs) and passed into staging and browser code. [`apps/web/lib/site-path.js`](../../apps/web/lib/site-path.js) supplies site-relative asset/page URLs, while [`tools/static-export-path.mjs`](../../tools/static-export-path.mjs) resolves and verifies exported references. This is why a site deployed below a repository/project subpath must use the configured base-path flow rather than hard-coded root assumptions. Build identity generation is in [`tools/build-identity.mjs`](../../tools/build-identity.mjs).
+The sequence diagram below traces the steps orchestrated by `npm run build` across `vinext build`, `editor Vite build`, `stageStaticDeployment`, `stageCampaigns`, `Asset/worker audits`, and `build identity`.
 
 ```mermaid
 sequenceDiagram
@@ -61,41 +47,36 @@ sequenceDiagram
   N->>C: package campaigns into .output/dist
   N->>S: copy editor into .output/dist/campaign-editor
   N->>A: validate exported URL and artifact closure
-  A->>I: verify source identity/build info match
+  A->>I: check source identity and build-info.json match
   I-->>N: publishable .output/dist or build failure
 ```
 
-Development is separate from that staging path: root `npm run dev` delegates to the web package. Vite configuration includes a development middleware for build-info and a campaign-files plugin, while static export and production staging are executed by the root tool. Do not infer that development middleware is part of the deployed site.
+Deployment base paths (`GRANADEROS_BASE_PATH`) are normalized by [`tools/deployment-path.mjs`](../../tools/deployment-path.mjs) and applied during staging ([`tools/stage-static-deployment.mjs`](../../tools/stage-static-deployment.mjs)), runtime URL resolution ([`apps/web/lib/site-path.js`](../../apps/web/lib/site-path.js)), and export verification ([`tools/static-export-path.mjs`](../../tools/static-export-path.mjs)).
 
-## Validation and CI surface
+## Commands, checks, and CI workflows
 
-Current root commands include:
+The table below lists each root build, authoring, and verification `Command`, its `Inputs / behavior`, and its `Output / scope`.
 
-| Command | Role |
-| --- | --- |
-| `npm test` | Run the repository's domain, application, persistence, editor, format, and gameplay test inventory through [`tools/test-runner.mjs`](../../tools/test-runner.mjs). |
-| `npm run typecheck` | Type-check the game, web UI, and independent editor through their configured TypeScript projects. |
-| `npm run build` | Build, stage, and verify both static applications. |
-| `npm run audit:baseline` | Check reference gameplay values against the source baseline; it is not an overall quality or runtime test. |
+| Command | Inputs / behavior | Output / scope |
+| --- | --- | --- |
+| `npm run dev` | Delegates to `npm --prefix apps/web run dev` (`vinext dev`). | Local development server for `apps/web` with Vite dev middleware; not a static export. |
+| `npm run build` | Generates fixtures, builds `apps/web` and `apps/campaign-editor`, stages `.output/dist`, exports campaigns, and audits URLs, workers, assets, and build identity (honoring `GRANADEROS_BASE_PATH`). | Complete `.output/dist/` static deployment artifact containing both applications and installed campaigns. |
+| `npm run build -- --stage-only` | Skips fixture generation and application builds; requires pre-built `apps/web/dist/client` and `apps/campaign-editor/dist`. | Restages and audits existing build outputs under `.output/dist/`. |
+| `npm --prefix apps/web run build` | Runs `vinext build` in `apps/web` without root campaign staging or asset audits. | Client export in `apps/web/dist/client`. |
+| `npm run build:editor` | Runs `npm --prefix packages/campaign-format run build` and `npm --prefix apps/campaign-editor run build`. | Independent editor export in `apps/campaign-editor/dist`. |
+| `npm run check:architecture` | Runs [`tools/check-architecture.mjs`](../../tools/check-architecture.mjs) over `packages/game`, `apps/campaign-editor`, `packages/campaign-format`, and `apps/web`. | Enforces package and layer import boundaries and rejects browser globals and `Math.random` in `domain` and `application`. |
+| `npm run check:dependencies` | Runs [`tools/check-dependencies.mjs`](../../tools/check-dependencies.mjs) with [`.dependency-cruiser.json`](../../.dependency-cruiser.json). | Enforces dependency-cruiser boundary rules, blocks production imports of `tools/` or tests, and rejects `domain`/`application` runtime cycles. |
+| `npm run check:format` / `npm run lint` | Runs [`tools/code-quality.mjs`](../../tools/code-quality.mjs) for formatting and linting checks. | Enforces repository code formatting and static lint rules. |
+| `npm run typecheck` | Runs TypeScript project checks across `packages/game`, `apps/web`, `apps/campaign-editor`, and `tsconfig.json` (`typecheck:tools`). | Verifies static types across packages, applications, and tools. |
+| `npm test` | Runs [`tools/test-runner.mjs`](../../tools/test-runner.mjs) across `.test.ts` and `.test.tsx` files in `tests/`, `packages/`, `apps/`, and `tools/`. | Executes unit and integration test suites across two worker processes. |
+| `npm run audit:dependencies` / `npm run audit:baseline` | Runs [`tools/audit-dependencies.ts`](../../tools/audit-dependencies.ts) and [`tools/audit-baseline.mjs`](../../tools/audit-baseline.mjs). | Checks dependency declarations and compares reference gameplay constants against the source baseline. |
+| `npm run verify` (`verify:commit`, `verify:quick`) | Runs [`tools/verify.mjs`](../../tools/verify.mjs) with the `full`, `commit`, or `push` profile from [`tools/verification-plan.ts`](../../tools/verification-plan.ts). | Executes the ordered verification pipeline (`check:format`, `lint`, `check:architecture`, `check:dependencies`, `typecheck`, `test`, `audit:dependencies`, `audit:baseline`, and `build` in `full`). |
+| `npm run campaign:new -- <id> <destination>` | Runs [`tools/campaign-authoring.mjs`](../../tools/campaign-authoring.mjs) `scaffold` and validates the created folder. | Creates a new campaign package directory with starter manifest, documents, maps, and assets. |
+| `npm run campaign:check -- <folder>` | Runs [`tools/campaign-authoring.mjs`](../../tools/campaign-authoring.mjs) `check` against `compileCampaignPackage` and asset digests. | Reports campaign package validity and revision metadata. |
+| `npm run campaign:assets -- <folder>` | Runs [`tools/campaign-authoring.mjs`](../../tools/campaign-authoring.mjs) `assets`. | Recomputes and updates SHA-256 asset entries in `<folder>/assets.json`. |
 
-The web workflow in [`.github/workflows/web.yml`](../../.github/workflows/web.yml)
-installs the game UI and editor dependencies on Node 22. It checks documentation,
-the gameplay baseline, source boundaries, types, tests, and the static build.
-The pull-request workflow in [`.github/workflows/tests.yml`](../../.github/workflows/tests.yml)
-installs the same dependencies and checks boundaries and the complete minimum
-test suite. The test runner discovers current `tests/*.test.mjs` plus tests inside
-the domain, application, infrastructure, editor, and shared format. It prints the
-actual file and test counts. The suite uses two test workers.
+GitHub Actions workflows in [`.github/workflows/web.yml`](../../.github/workflows/web.yml) (push to `main` and manual dispatch, publishing `.output/dist/` to GitHub Pages) and [`.github/workflows/tests.yml`](../../.github/workflows/tests.yml) (pull requests and manual dispatch) install `apps/web`, `apps/campaign-editor`, and `tools/playgrounds/granadero-3d` dependencies using the Node version in [`.node-version`](../../.node-version) and run `npm run verify`. A separate manual workflow in [`.github/workflows/build-windows.yml`](../../.github/workflows/build-windows.yml) builds the native Windows engine and campaign overlay package.
 
-`npm run check:format` enforces source formatting for the architecture layers.
-`npm run check:architecture` also enforces the editor's inward dependencies and
-its declared public game/preview integration. These checks establish source and
-contract evidence; browser and campaign-playthrough evidence have separate scopes.
+## Native reference and asset-generation boundary
 
-## Legacy and native tooling boundary
-
-The repository also contains legacy/native engine, mod, patch, and platform build material. Native compilation, mod/native/patch tooling, and platform packaging are not prerequisites of the browser static build described above. The native reference at [`docs/reference/native-build.md`](../reference/native-build.md) documents that separate toolchain. Likewise, old web-port plans and historical notes describe intended or previous work, not the current successful build path. Artwork/model generation and review utilities are also separate production workflows: root build verifies packaged browser assets and checksums; it does not invoke every generator under `tools/`. For present behavior, start with `package.json`, `tools/build-web.mjs`, web package scripts/configuration, and the active CI workflow.
-
-## Limits
-
-Build verification proves artifact closure for the references it scans and explicit dynamic-asset catalogs it knows about; it is not a general proof that every user journey or browser/device works. Static output and checksums do not replace browser integration testing. The CI workflow can change independently of these docs, so check the linked workflow when reporting exact release gates. For campaign-specific checks, see [content and campaigns](content-and-campaigns.md).
+The native C++ engine and platform build files in [`reference/native/`](../../reference/native/) are separate from the browser applications and are not invoked by `npm run build`; see [`docs/reference/native-build.md`](../reference/native-build.md) for that reference toolchain. Offline art and 3D character preparation utilities under `content/assets/` and `tools/characters-3d/` generate packaged files committed to `apps/web/public` and `content/campaigns/`; the static build verifies those packaged outputs and their SHA-256 digests rather than re-running art generators during deployment.

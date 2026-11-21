@@ -1,9 +1,5 @@
 # Local equipment exchange
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
-
 The armory's **Intercambiar equipo** control accepts an offer from both sides and settles one cash difference. A player can exchange goods even when neither participant can afford the two separate purchases. JA2's `PerformTransaction` compares the player's offered value against dealer goods and checks the dealer's available cash against the change owed; see [ShopKeeper_Interface.cc](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/master/src/game/Tactical/ShopKeeper_Interface.cc). The period workshop inventory, prices and limits remain Granaderos adaptations.
 
 ## Player flow
@@ -20,10 +16,6 @@ Supported offers are unequipped stored handheld weapons, exact local used weapon
 - Catalog quantities are removed once. Exact weapon and cannon records move between custodians; buying does not repair or refill them. A new cannon retains the existing deployment ammunition allowance, without duplicating its stock count.
 - There are at most 100 distinct lines and 100 units per line. The existing inventory limits still apply to the resulting inventories. Direct one-item buy/sell actions retain their original cash and capacity checks.
 
-## Evidence and boundaries
+## Boundaries
 
-Eight transaction/save cases cover a cashless exchange, a net payment, a net payout funded by artillery, stale or malformed offers, full merchant storage, multiple undeployed pieces, a fitted loaded musket, and crew/cash refusal without partial changes. Two render cases cover actual armory integration, named controls and local catalog scope. Related buyback/artillery cases run alongside these checks.
-
-In a separate live QA fixture, treasury and merchant cash both started at zero. Cancelling a draft kept two player carbines and one shop carbine. Offering both player carbines at 72 pesos each paid for the shop carbine at 144. Confirmation and reload retained zero cash on both sides, one player weapon and two shop weapons. The fixture isolates trading and is not campaign-completion evidence.
-
-[Workshop preferences](merchant-preferences.md) now change the sale price and can refuse damaged handhelds. Background sales to other customers, cross-merchant exchanges and negotiation dialogue remain outside this implementation. The broader gameplay audit remains open.
+[Workshop preferences](merchant-preferences.md) change the sale price and can refuse damaged handhelds. Background sales to other customers, cross-merchant exchanges and negotiation dialogue remain outside this implementation. The broader gameplay parity requirements remain open.

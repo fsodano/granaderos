@@ -1,43 +1,34 @@
 # Campaign folders and shared engine
 
-Date: 11 October 2026.
-
-This plan defines the boundary between the shared game engine and installed campaign folders. Status: implemented on `feature/campaigns` and published in `main` through
-[PR #334](https://github.com/fsodano/granaderos/pull/334). The engine/package boundary is
-implemented with the scope recorded below. Full campaign acceptance remains
-separate work; the final broad run and browser refresh were stopped before completion.
-
-The engine owns mechanics, UI, strategy, tactical simulation, rendering and
-reusable dialogue, encounter, hiring and quest execution. Campaigns own their
-world, people, dialogue, objectives, buildings, initial allocations and visual
-references. The first version installs only the existing Granaderos campaign.
+This plan defines the boundary between the shared game engine and installed
+campaign folders. The engine owns mechanics, UI, strategy, tactical simulation,
+rendering and reusable dialogue, encounter, hiring and quest execution. Campaigns
+own their world, people, dialogue, objectives, buildings, initial allocations and
+visual references. The first version installs only the existing Granaderos
+campaign.
 
 ## Required result
 
-- [x] Complete the boundary between core code and campaign definitions. Move
+- Complete the boundary between core code and campaign definitions. Move
   stock historical rules and data into `campaigns/granaderos/`; retain only
   documented compatibility facades in the core.
-- [x] Load and validate campaign folders through manifests. Discover multiple
+- Load and validate campaign folders through manifests. Discover multiple
   installed campaigns without edits to engine code. Keep the shared 36 by 33
   sector grid and allow campaign geography, localities and tactical maps to vary.
-- [x] Use explicit configurable mercenaries, NPCs, dialogue, quests and roles.
+- Use explicit configurable mercenaries, NPCs, dialogue, quests and roles.
   Generic campaigns must not inherit stock identity powers or historical events.
-- [x] Resolve campaign portraits, skins, building presentation and other visual
+- Resolve campaign portraits, skins, building presentation and other visual
   resources without changing simulation. Validate and export local resources.
-- [x] Select, start, continue and import campaigns. Pin their content identity
+- Select, start, continue and import campaigns. Pin their content identity
   and isolate their saves and editor drafts.
-- [x] Preserve the actual shipped campaign's mechanics and starting behavior.
+- Preserve the distributed campaign's mechanics and starting behavior.
   Compare normal stock behavior with the packaged campaign, rather than treating
   the older editor template as an equivalent gameplay baseline.
-- [x] Verify two different campaigns through the same runtime. Check their
+- Verify two different campaigns through the same runtime. Check their
   maps, hiring, encounters, dialogue, quests, visuals and saved continuation.
-  Keep the second campaign as a fixture; ship only Granaderos.
-- [x] Complete authoring documentation and record existing affected checks,
-  types, production export and bounded browser evidence. Record the incomplete
-  final checks and run no further campaign checks in this pass.
-- [x] Commit progress, merge work PRs into `feature/campaigns`, and open a draft
-  PR to `main` with exact evidence and remaining limits. PR #334 was later
-  merged into `main` on 11 October 2026.
+  Keep the second campaign as a fixture; distribute only Granaderos.
+- Document the authoring workflow for both the engine boundary and the folder
+  format, so a second campaign needs no engine edits.
 
 ## Current integration
 
@@ -53,15 +44,5 @@ executable mechanics. The immutable package covers all loaded definitions and
 resource hashes; changed disk content cannot replace a saved package silently.
 
 The [author guide](../development/campaign-authoring.md) describes the folder
-format, scaffold, validation, assets, editors and installation. The
-[verification record](../verification/campaign-engine-separation-2026-10-10.md)
-records the exact test and browser scopes. Older full campaign route acceptance
-remains separate from the engine/content boundary checks in this work.
-
-## Publication
-
-[Implementation PR #333](https://github.com/fsodano/granaderos/pull/333) contains
-three progress commits and is merged into `feature/campaigns`.
-[PR #334](https://github.com/fsodano/granaderos/pull/334) merged the feature
-branch, documentation and evidence into `main` on 11 October 2026 as
-`0a04f72c1c0a1b0ec56a8db84668f2e3b12a722e`. The historical `0.1` tag remains unchanged.
+format, scaffold, validation, assets, editors and installation. Full campaign
+route acceptance is separate from the engine/content boundary.

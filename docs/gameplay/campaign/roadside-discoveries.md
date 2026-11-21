@@ -1,6 +1,6 @@
 # Finite roadside discovery
 
-Across a campaign save and its tactical battlefield sector for cell `24,27`, new stock campaigns have one optional chest beside the road in cell `24,27`. This guide describes published optional-discovery content and tactical container pickup; see [version 0.1](../../verification/version-0.1.md) for current published scope. It holds one used crowbar at 60% condition and one linen shirt at 75% condition. These contents and conditions are fictional game tuning. They are not an inventory from a historical event.
+Across a campaign save and its tactical battlefield sector for cell `24,27`, new stock campaigns have one optional chest beside the road in cell `24,27`. This guide describes optional-discovery content and tactical container pickup. It holds one used crowbar at 60% condition and one linen shirt at 75% condition. These contents and conditions are fictional game tuning. They are not an inventory from a historical event.
 
 Travel gives no equipment reward. A soldier must enter the cell, find and approach the actual chest, open it, and select what to take. Closed contents remain hidden. Opening and pickup use the existing action costs and carrying limits. A failed pickup spends nothing and changes neither the chest nor the soldier.
 
@@ -30,8 +30,6 @@ Fresh default packages pin the record in their saved content identity. Fresh cam
 
 Deployment requests receive the effective definitions before their map and finite-stock baseline are built. Active scenes, retained scenes and pending requests must match the campaign's pinned definitions on official save admission and return.
 
-## Acceptance scope
+## Limits
 
-`tests/roadside-discovery-content.test.mjs` covers strict import, content identity, context substitution, old-save neutrality and both map sizes. `tests/roadside-discovery-integration.test.mjs` covers ordinary paid travel, pickup, practical use and persistent custody. Existing container transaction and mounted inventory tests cover hidden contents, carrying refusal and stale selections.
-
-This is one optional discovery. Wider travel encounters, local opportunities and the complete campaign remain open under V12 (travel danger, discoveries, and local opportunities) and V13 (player route, entry time, specialist, retreat/recovery, and alternate-access choices) in the [video requirement map](../../verification/ja2-video-review-2026-10-03.md). Door-mounted explosives are not part of this content. Future tactical equipment must fit 1810–1820 and have reliable period support. Cannon, map artwork and 3D presentation remain with the separate asset work.
+This is one optional discovery. Wider travel encounters, local opportunities and the complete campaign remain open under V12 (travel danger, discoveries, and local opportunities) and V13 (player route, entry time, specialist, retreat/recovery, and alternate-access choices). Door-mounted explosives are not part of this content. Future tactical equipment must fit 1810–1820 and have reliable period support. Cannon, map artwork and 3D presentation remain with the separate asset work.

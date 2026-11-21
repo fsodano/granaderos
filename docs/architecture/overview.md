@@ -2,62 +2,48 @@
 
 [Architecture guide](README.md) · [C4 views](c4.md) · [Source map](system-map.md)
 
+This overview explains how Granaderos connects strategic campaign management and tactical sector visits across one continuing world, who owns each piece of state, and how player intentions travel from the browser interface through application use cases and domain objects to storage. It is the starting point for the [architecture guide](README.md) and connects directly to the [C4 views](c4.md), the [system map](system-map.md), the [use-case catalogue](use-cases/README.md), and the [runtime flows](runtime-flows.md).
+
 ## 1. One force, two scales
 
-Granaderos lets you manage a force on a campaign map and control individual
-combatants inside a sector. The campaign decides where people travel, which
-places they control, and how time affects contracts, wounds, money, and supplies.
-A sector visit shows people, buildings, equipment, and local encounters.
+Granaderos lets you manage a force on a campaign map and control individual combatants inside a sector. The campaign map governs where squads travel, which localities they control, and how game time affects service contracts, wounds, treasury funds, and supplies. A sector visit shows physical terrain, buildings, residents, equipment, and local encounters.
 
-A visit can be peaceful. Combat is an episode inside that visit. The same people
-and equipment continue across both scales. A wound, a death, a spent cartridge,
-or a recovered weapon can affect later decisions.
+A sector visit can be peaceful exploration or include one or more combat episodes. The same characters and items continue across both scales with one authoritative owner per fact:
+
+- `Character` owns persistent identity, `Health` (current and maximum hit points, bleeding, and bandaged wounds), `CharacterAbilities` (ratings, traits, and capabilities), `ServiceContract`, and strategic `locationId`.
+- `Squad` and `Journey` own strategic squad membership and physical route progress between sectors; during an active or suspended `SectorSession`, local coordinates on the sector grid belong to the sector visit and synchronize with strategic location on entry and exit.
+- `Inventory` and `ItemCustody` own item quantities, pocket placement, and the single authoritative custodian (`character`, `container`, `ground`, or `corpse`) for every item.
+- `SectorParticipant` references a `Character` by `characterId` and owns only visit-local action points (`ActionPoints`). Read models, retained sector caches, and `ResidentPositionReference` projections never create a second owner of character health, inventory, position, or item custody.
 
 ## 2. Follow one player intention
 
-Start a campaign. The game loads a published campaign definition and creates a
-new game session. At headquarters, recruit a combatant. Successful recruitment
-adds that person to the force immediately, with a valid location and service
-contract. A full or differently located active squad can place the combatant in
-the reserve; the person is still under player control.
+Start a campaign. The game loads a published `CampaignDefinition` and runs `CreateGameSessionUseCase` to initialize a new `GameSession` with a stable session ID and revision `0`. At headquarters, recruit a combatant through `RecruitCombatantUseCase`. `RecruitmentService` checks the candidate, charges `Treasury` once, starts a `ServiceContract`, admits the character into `ForceRoster`, and places the combatant either into an eligible local `Squad` with a free slot or into the controllable reserve at that safe recruitment site.
 
-Order a journey. The journey records the squad's route and actual progress. At a
-hostile arrival boundary, the game pauses campaign time and requires a choice:
-fight or withdraw. Choosing withdrawal creates redirectable movement. The player
-can reverse it immediately or after some travel. Completed progress and spent
-supplies remain part of the journey.
+Order a journey. `Journey` records the squad's route and physical segment progress. When a squad reaches a hostile sector boundary, `ArrivalDecision` pauses campaign time and requires `FightOnArrival` or `WithdrawOnArrival`. Choosing withdrawal starts a journey with `JourneyPurpose.Withdrawal` without advancing time. The player can invoke `RedirectJourney` immediately at zero elapsed time or after travel has progressed; completed distance, elapsed time, and spent fatigue remain part of the journey.
 
-Enter a sector. The game constructs a `SectorSession` from the entry request,
-map definition, participants, and retained world state. Place participants when
-deployment is required. Exploration can start combat. `CombatSession` owns that
-combat episode's phase and outcome; participants spend action points on accepted
-orders. Rendering shows the result that the simulation accepted.
+Enter a sector. `EnterSectorUseCase` admits a `SectorEntryRequest` and constructs a `SectorSession` from the map definition, participating characters, and retained `Sector` state. `SectorDeployment` places participants on authorized entry cells when deployment is required. Exploration can transition into combat, opening a `CombatSession` where participants spend `ActionPoints` on orders through `ExecuteSectorOrderUseCase` and advance phases through `EndSectorTurnUseCase`.
 
-Leave or resolve the visit. The game reconciles participants and physical
-resources with the campaign. Retained sectors continue to evolve with game time.
-Residents can move and collect eligible unattended supplies. Bodies have a
-removal lifecycle; death records remain after the physical body disappears.
+Leave or resolve the visit. Finishing or leaving reconciles participant health, physical inventories, ammunition, and sector consequences into the campaign snapshot in one transaction. Inactive and retained sectors continue to evolve as `WorldTimeline.advanceTo` moves game time forward: residents follow `ResidentRoutine` and collect eligible unattended supplies, and each `Corpse` is removed 72 game hours after death while transferring remaining recoverable equipment to sector ground custody once and preserving the character's death record.
 
 ## 3. Name the four different kinds of data
 
+The table below distinguishes each data `Concept`, `What it owns`, and a concrete `Example` so authoring drafts, published definitions, live gameplay progress, and transient visuals are never conflated.
+
 | Concept | What it owns | Example |
 | --- | --- | --- |
-| `CampaignDefinition` | Validated authored facts and supported rule settings | A map, character definition, dialogue, or equipment definition |
-| `CampaignProject` | An editable authoring draft and its resources | An unfinished map or a new portrait awaiting validation |
-| `GameSession` and game state | Accepted player progress and open sector visits | Recruited people, journeys, contracts, wounds, ammunition and combat state |
-| Presentation | Temporary visible output | A walking animation, camera position, sound, or damage indicator |
+| `CampaignDefinition` | Validated immutable authored facts and allowlisted scenario settings in `packages/campaign-format` | A published sector map, character definition, dialogue tree, or weapon profile |
+| `CampaignProject` | An editable authoring draft, resource bytes, and undo history in `apps/campaign-editor` | An unfinished sector map or portrait awaiting package validation |
+| `GameSession` and game state | Accepted player progress, canonical identities, and active or suspended `SectorSession` state | Recruited combatants, journeys, service contracts, `Health`, `Inventory`, and `CombatSession` |
+| Presentation | Temporary visible output and animation state projected from accepted simulation state | A walking clip, camera frustum, sound effect, or floating damage indicator |
 
-The editor changes the draft. Publication validates a campaign package. The game
-uses the package to create progress. A playtest has its own progress and leaves
-the authoring draft separate. An animation cannot decide a hit or spend a second
-cartridge.
+The campaign editor mutates `CampaignProject` drafts. Exporting a validated project produces a `CampaignPackage` admitted by `CampaignDefinition`. The game compiles that definition into playable state (`compileCampaignPackage` in current source; `CampaignCompiler` in `packages/game/application` under the [accepted plan](../plans/accepted/domain-architecture.md)). Editor playtests run inside an isolated game session without mutating the authoring draft or the player's saved campaign. Presentation adapters project accepted simulation state and never decide combat outcomes or spend ammunition.
 
 ## 4. Read an operation through its layers
 
-A migrated intention follows this chain:
+The flowchart below shows how a migrated player command moves from `Player input` through `Use-case class`, `Domain behavior and invariants`, `Use-case repository interface`, `Repository adapter`, and `Shared transaction and identity map` to produce an `Accepted game snapshot` for `UI and rendering` and the `Save queue and storage adapter`.
 
 ```mermaid
-flowchart LR
+flowchart TB
   Input["Player input"] --> UseCase["Use-case class"]
   UseCase --> Domain["Domain behavior and invariants"]
   UseCase --> Repository["Use-case repository interface"]
@@ -68,52 +54,34 @@ flowchart LR
   Snapshot --> Save["Save queue and storage adapter"]
 ```
 
-For recruitment, `RecruitCombatantUseCase` coordinates `RecruitmentService` with
-its repository. The service checks the character, contract terms, treasury,
-force membership, and destination together. The repository uses the shared
-transaction and mapper to publish accepted changes once. A refusal cannot leave
-a payment without the corresponding recruitment.
+Every use case owns one narrow repository interface with a matching stem (for example, `RecruitCombatantUseCase` depends on `RecruitCombatantRepository`). Repository adapters share `GameUnitOfWork`, `DomainIdentityMap`, and `GameSnapshotMapper` beneath those interfaces so all domain objects in one transaction reference the same canonical `Character`, `Squad`, `Sector`, and `Inventory` instances. When the use case finishes, `dispatchCampaign` validates the draft itself, then `GameUnitOfWork.commit()` stores the snapshot and advances `gameRevision` by one. A refusal aborts the transaction and leaves prior state untouched.
 
-For restoration, `RestoreGameUseCase` reads the save through its repository.
-`GameSnapshotMapper` keeps format and relationship validation, restores domain
-classes, and shares each person's identity. Restoration does not recruit again,
-issue equipment, or advance time.
+For restoration, `RestoreGameUseCase` reads saved text through `RestoreGameRepository`. `GameSnapshotMapper` decodes the portable save, validates clocks and cross-system relationships, and rebuilds domain objects through their static `restore` factories without repeating creation-only effects such as starting equipment issuance or contract charges.
 
-Read-only use cases inspect the same logical model. They do not advance the game
-or require a separate query database.
+Read-only use cases (`GetRecruitmentCandidatesUseCase`, `GetVisibleCharactersUseCase`, and `GetSaveStatusUseCase`) query the same logical model through read-only repository interfaces and return narrow view records (such as `{ characterIds }` or `SaveStatus`) rather than mutable domain objects, without advancing `WorldTimeline`.
 
 ## 5. Find the code that implements each role
 
+The table below maps each architectural `Role` to its `Source` path in the repository.
+
 | Role | Source |
 | --- | --- |
-| Domain entities, value objects and services | [`packages/game/domain`](../../packages/game/domain/) |
-| Use cases and narrow repository contracts | [`packages/game/application`](../../packages/game/application/) |
-| Repository adapters, transactions and snapshot mapping | [`packages/game/infrastructure`](../../packages/game/infrastructure/) |
-| Player UI and browser composition | [`apps/web/app/page.tsx`](../../apps/web/app/page.tsx), [`apps/web/lib`](../../apps/web/lib/) |
-| Independent editor application and model | [`apps/campaign-editor`](../../apps/campaign-editor/README.md) |
-| Published campaign-file contract | [`packages/campaign-format`](../../packages/campaign-format/README.md) |
-| Installed definitions, resources and trusted scenario implementations | [`content/campaigns`](../../content/campaigns/) |
+| Domain entities, value objects, state machines, policies, and services | [`packages/game/domain`](../../packages/game/domain/) |
+| Application use cases and narrow repository contracts | [`packages/game/application`](../../packages/game/application/) |
+| Repository adapters, unit of work, identity map, and snapshot mappers | [`packages/game/infrastructure`](../../packages/game/infrastructure/) |
+| Declared public composition entry points for game, editor, and persistence | [`packages/game/public`](../../packages/game/public/) |
+| Compatibility simulation entry points and specialized procedural rules | [`packages/game/`](../../packages/game/) (`campaign.js`, `tactical.js`, `world.js`, `time.js`, `save.ts`) |
+| Player UI, Three.js tactical renderer, and browser composition | [`apps/web/app/page.tsx`](../../apps/web/app/page.tsx), [`apps/web/lib`](../../apps/web/lib/) |
+| Independent campaign editor application, domain, and storage adapters | [`apps/campaign-editor`](../../apps/campaign-editor/README.md) |
+| Shared published campaign-file schemas and `CampaignDefinition` | [`packages/campaign-format`](../../packages/campaign-format/README.md) |
+| Installed campaign packages, art sources, and trusted scenario implementations | [`content/campaigns`](../../content/campaigns/), [`content/assets`](../../content/assets/README.md) |
 
-`campaign.js`, `tactical.js`, `world.js`, `time.js`, and `save.js` remain important
-compatibility entry points. Migrated paths call domain classes and use cases;
-other rules still execute in specialized procedural modules. The source map and
-[C4 component views](c4.md#level-3-game-application-components) identify both.
+The compatibility modules at the `packages/game/` root bridge the browser UI to both migrated domain slices and retained procedural rules. See [C4 levels 1–3](c4.md) and the [system map](system-map.md) for how these modules interact.
 
 ## 6. Know what saving guarantees
 
-An accepted order changes in-memory progress. Autosave then tries to persist it.
-The save includes the campaign and active sector state, with version, session,
-and revision metadata. Restoring it validates their clocks, identities,
-participants, equipment relationships, and campaign resources.
+An accepted operation updates in-memory progress and advances `gameRevision`. The autosave queue (`useCampaignAutosave`) then serializes the campaign and active sector snapshot pair through `SaveGameUseCase` and `GameSnapshotMapper`. Details on save envelopes, terrain compaction, Web Lock ownership, and restoration validation live in [persistence](persistence.md).
 
-Only the browser tab that owns the save key's Web Lock can autosave. A storage
-failure or another writer leaves the accepted game available for play and manual
-download. A late worker reply cannot replace a newer session or snapshot.
+The browser game (`apps/web`) and campaign editor (`apps/campaign-editor`) deploy as static browser files staged by `npm run build` (documented in [build and tooling](build-and-tooling.md)). All game rules execute locally in the browser main thread and Web Workers.
 
-The browser game and editor are static applications. HTTP supplies code and
-resources; game rules execute in the browser and its workers. The C++ `reference/native/engine/`
-submodule belongs to the separate native implementation.
-
-Continue with [C4 levels 1–3](c4.md), then use the [source map](system-map.md) to
-trace one concrete operation. The [use-case catalogue](use-cases/README.md)
-describes player and author intentions in more detail.
+Continue with [C4 levels 1–3](c4.md) for visual boundary diagrams, or jump to the [system map](system-map.md) and [runtime flows](runtime-flows.md) to trace a concrete operation end to end.

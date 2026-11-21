@@ -2,16 +2,12 @@
 
 [Gameplay index](../README.md) · [Documentation index](../../README.md)
 
-Current geometry and presentation: [shared wall edges](../../verification/wall-edges.md)
+Current geometry and presentation: [shared wall edges](../../specification/wall-edges.md)
 and visible firearm projectiles.
-Their dated checks retain the scope stated in each record.
 
-This folder indexes the tactical battlefield feature guides and development-workspace records for both real-time tactical exploration and turn-based combat. Read
-[version 0.1](../../verification/version-0.1.md) for current published scope.
-The requirement ledger and
-[parity audit](../../verification/ja2-parity-audit.md) retain row evidence and
-comparison requirements. A historical *workspace* label does not establish the
-current merge state; use the named source, date and acceptance limits.
+This folder indexes the tactical battlefield feature guides for both real-time
+tactical exploration and turn-based combat. [JA2 parity requirements](../../requirements/ja2-parity.md)
+record each handled or still-open parity row.
 
 ## Action-point display
 
@@ -25,12 +21,11 @@ units: four stored units equal one displayed PA. HUD values, cursor previews,
 new journal messages and rejection messages use the compact scale. Weapon and
 artillery editors convert both directions and accept steps of 0,25 PA. This
 preserves old saves, authored equipment, partial reload work, enemy decisions
-and the number of actions available per turn. The data API and historical
-verification records still use stored units; old saved journal entries remain
-historical text.
+and the number of actions available per turn. The data API and stored records
+still use integer units; old saved journal entries remain historical text.
 
-This is a scale change, not a reload balance change. Base firearm reloads remain
-7–17,5 PA, before modifiers; a Brown Bess costs 11,25 PA. Reload progress and
+The compact scale is a display convention, not a reload balance change. Base
+firearm reloads remain 7–17,5 PA, before modifiers; a Brown Bess costs 11,25 PA. Reload progress and
 available ammunition can reduce the cost of the next loading order.
 
 Hit feedback uses the existing observed health-loss frames. The number rises
@@ -60,51 +55,51 @@ Health, PA, ammunition and time stay the same. Loading fails if no adjacent
 cell is available.
 
 - [Keyboard controls](TACTICAL-HOTKEYS.md)
-- [Interface and equipment target](ja2-interface-target.md) *(workspace)*
-- [Optional orders panel](lazy-orders-panel.md) *(workspace)*
-- [Roster hand indicators](roster-hand-status.md) *(workspace)*
-- [Observation and combat journal](tactical-journal.md) *(workspace)*
+- [Interface and equipment target](ja2-interface-target.md)
+- [Optional orders panel](lazy-orders-panel.md)
+- [Roster hand indicators](roster-hand-status.md)
+- [Observation and combat journal](tactical-journal.md)
 
 ## Exploration, movement, and interaction
 
-- [Automatic return to exploration](automatic-exploration.md) *(workspace)*
-- [Patrols and the battle opening clock](exploration-patrols.md) *(workspace)*
-- [Movement and hidden occupants](movement-knowledge.md) *(workspace)*
+- [Automatic return to exploration](automatic-exploration.md)
+- [Patrols and the battle opening clock](exploration-patrols.md)
+- [Movement and hidden occupants](movement-knowledge.md)
 - [Larger tactical sectors](large-tactical-sectors.md)
-- [Tactical elevation](tactical-elevation.md) *(workspace)*
-- [Tactical exit layouts](tactical-exit-layouts.md) *(workspace)*
-- [Crowded assault entrances](crowded-assaults.md) *(workspace)*
-- [Approach and use a held item](item-approach.md) *(workspace)*
-- [Approach a door or container](environment-approach.md) *(workspace)*
-- [Ground equipment and body searches](loot-approach.md) *(workspace)*
+- [Tactical elevation](tactical-elevation.md)
+- [Tactical exit layouts](tactical-exit-layouts.md)
+- [Crowded assault entrances](crowded-assaults.md)
+- [Approach and use a held item](item-approach.md)
+- [Approach a door or container](environment-approach.md)
+- [Ground equipment and body searches](loot-approach.md)
 
 ## Aiming and firearm use
 
-- [Pointer aiming](aim-cursor.md) *(workspace)*
-- [Weapon readiness](weapon-readiness.md) *(workspace)*
-- [Prepare a firearm with the look cursor](look-readiness.md) *(workspace)*
-- [Turning to fire](shot-turning.md) *(workspace)*
-- [Firearm range and sight](shot-range.md) *(workspace)*
-- [Fire at a location](location-fire.md) *(workspace)*
-- [Named-target shot paths](directed-projectiles.md) *(workspace)*
-- [Single-ball body penetration](body-penetration.md) *(workspace)*
-- [Finite physical shot loads](physical-shot-loads.md) *(workspace)*
-- [Projectile cover and concealment](projectile-cover.md) *(workspace)*
-- [Glancing shots against stone](stone-ricochet.md) *(workspace)*
+- [Pointer aiming](aim-cursor.md)
+- [Weapon readiness](weapon-readiness.md)
+- [Prepare a firearm with the look cursor](look-readiness.md)
+- [Turning to fire](shot-turning.md)
+- [Firearm range and sight](shot-range.md)
+- [Fire at a location](location-fire.md)
+- [Named-target shot paths](directed-projectiles.md)
+- [Single-ball body penetration](body-penetration.md)
+- [Finite physical shot loads](physical-shot-loads.md)
+- [Projectile cover and concealment](projectile-cover.md)
+- [Glancing shots against stone](stone-ricochet.md)
 
 ## Close combat and thrown weapons
 
-- [Deliberate melee at a map cell](melee-point.md) *(workspace)*
-- [Stand before close combat](prone-melee-preparation.md) *(workspace)*
-- [Equipped knife throws](contextual-knife-throws.md) *(workspace)*
-- [Hand-thrown grenades](hand-grenades.md) *(workspace)*
-- [Take a held weapon](weapon-stealing.md) *(workspace)*
+- [Deliberate melee at a map cell](melee-point.md)
+- [Stand before close combat](prone-melee-preparation.md)
+- [Equipped knife throws](contextual-knife-throws.md)
+- [Hand-thrown grenades](hand-grenades.md)
+- [Take a held weapon](weapon-stealing.md)
 
 ## AI and allied units
 
-- [AI shot selection](ai-shot-selection.md) *(workspace)*
-- [AI field aid and carried weapons](ai-field-equipment.md) *(workspace)*
-- [Recovering combat supplies](ai-scavenging.md) *(workspace)*
-- [AI supply handovers](ai-supply-sharing.md) *(workspace)*
-- [Autonomous artillery crews](artillery-ai.md) *(workspace)*
-- [Autonomous local militia](militia-autonomy.md) *(workspace)*
+- [AI shot selection](ai-shot-selection.md)
+- [AI field aid and carried weapons](ai-field-equipment.md)
+- [Recovering combat supplies](ai-scavenging.md)
+- [AI supply handovers](ai-supply-sharing.md)
+- [Autonomous artillery crews](artillery-ai.md)
+- [Autonomous local militia](militia-autonomy.md)

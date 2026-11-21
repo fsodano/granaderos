@@ -1,6 +1,6 @@
 # Brief combat reactions
 
-This guide describes published behavior on the tactical battlefield. A capable soldier can react after a real firearm shot passes close without
+This guide describes current behavior on the tactical battlefield. A capable soldier can react after a real firearm shot passes close without
 touching or injuring that soldier. Enemy fire and friendly fire use the same
 physical passage check. The firing soldier does not react to the muzzle of
 their own shot.
@@ -35,5 +35,3 @@ delay. A shown reaction disappears after 10 seconds or a manual close. Automatic
 turn selection does not discard an unfinished reaction. The same passage cannot
 repeat at final commit or be recreated by loading a save. Replacing the battle
 discards its pending playback.
-
-See the current acceptance record.

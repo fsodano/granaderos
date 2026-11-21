@@ -1,10 +1,6 @@
 # Equipped knife throws
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
-
-During tactical exploration and turn-based combat, a combatant holding the facón (1813) in the active hand can aim and throw it at a person or ground cell as a physical, recoverable projectile. This implements the missing thrown-knife part of parity audit row [C09](../../verification/ja2-parity-audit.md) (blades and thrown knives support quiet attacks and short-range tradeoffs). A facón in a pocket, a
+During tactical exploration and turn-based combat, a combatant holding the facón (1813) in the active hand can aim and throw it at a person or ground cell as a physical, recoverable projectile. See [parity requirements](../../requirements/ja2-parity.md) row C09 (blades and thrown knives support quiet attacks and short-range tradeoffs). A facón in a pocket, a
 fixed bayonet, a sabre, a gun butt and empty hands do not qualify. Character
 identity does not grant a weapon or a spare.
 
@@ -61,9 +57,9 @@ a dedicated illustrated knife-throw pose remains an art task.
 
 ## Reference and period adaptation
 
-Patusco's JA2 Strategy Guide 1.3, pp. 28–29 and 63 ([G28–29, G63](../../verification/ja2-parity-audit.md#scope-and-evidence)), describes knife attacks,
-aiming and stealth tradeoffs. The implementation also checked JA2 Stracciatella
-at pinned revision `a06f4896c43c76396529e415a29a8ca26b00f9f1`:
+Patusco's JA2 Strategy Guide 1.3, pp. 28–29 and 63 ([G28–29, G63](../../requirements/ja2-parity.md#scope-and-evidence)), describes knife attacks,
+aiming and stealth tradeoffs. JA2 Stracciatella at pinned revision
+`a06f4896c43c76396529e415a29a8ca26b00f9f1` describes:
 
 - [Target cursor and aim refinement](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/a06f4896c43c76396529e415a29a8ca26b00f9f1/src/game/Tactical/UI_Cursors.cc#L170).
 - [Standing, turning and attack AP](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/a06f4896c43c76396529e415a29a8ca26b00f9f1/src/game/Tactical/Points.cc#L993).
@@ -76,44 +72,4 @@ This is an improvised use of an existing period knife. The available
 facón throwing as standard military doctrine. The guaranteed supported recovery
 fallback, hard physical range limit, numerical tuning, separate equip of a
 pocket spare and ordinary damage instead of a special instant kill are explicit
-adaptations. They must not be reported as exact classic behavior.
-
-## Verification
-
-The committed implementation and final labels at `3ec50fa` pass the complete
-**1,887/1,887-test suite**, with no skips. Typecheck and the production build pass;
-the static export validates 960 files and 856 asset references. These results
-come from the isolated committed source, before integration with concurrent
-uncommitted work in the shared checkout.
-
-The new geometry, statistics, cursor, rendering, reducer and campaign checks
-cover exact item identity, damage-recipient custody, full packs, roof support,
-friend/hidden-body interception, failed-order rollback, interruption during
-preparation, finite ammunition, and deterministic save/reentry. The campaign
-case uses a fresh Retiro start, paid hiring, purchase, a real throw, pickup,
-return and reentry. It does not inject a replacement blade or a victory report.
-
-Existing movement/interrupt fixtures that required an approaching enemy now use
-a melee-only sabre. Their original AP, route and continuation assertions remain.
-Separate tests prove that an equipped facón can choose a finite ranged attack.
-
-Live browser checks on the isolated practice scene at port 3033:
-
-- Right-click: torso, 12 AP, aim 0. Two refinements: 18 AP, aim 2, 88% chance.
-  Selection alone leaves AP and energy unchanged. Right-click on empty ground
-  cancels the cursor.
-- F and ArrowUp select the head. Pointing at the head also selects it. A confirmed
-  aim-1 head throw spends 15 AP and six energy: Dorrego ends at 85 AP / 94 energy;
-  the target ends at 58 health. The pistol retains two loads and six reserve
-  cartridges. The transient knife and shadow both appear, then clear.
-- A prone target remains the single body zone after ArrowUp.
-- Exploration ground throw: no AP counter in the reticle, six energy spent,
-  one ground knife at D6. The ordinary two-cell approach and pickup recover that
-  knife at 87% condition. Dragging it from the pocket into the main hand equips
-  it; the pistol moves to the freed pocket with its contents retained.
-- The pickup dialog shows energy/time in exploration, and AP costs in combat.
-  The browser reported no warning/error entries in the checked scene.
-
-The practice scene uses explicit test equipment and enemies; it does not read or
-write a player's saved campaign. The dedicated throw-pose art and full JA2/campaign
-parity remain open work.
+adaptations. They are not exact classic behavior.

@@ -1,6 +1,6 @@
 # Descanso entre combates
 
-[Personajes](README.md) · Verificación
+[Personajes](README.md)
 
 Esta guía describe el comportamiento publicado en el mapa estratégico de campaña. En el mapa, abrí **Organizar escuadras**. En **Atención médica y descanso**,
 seleccioná **Descanso** para la persona y avanzá el tiempo. La tabla muestra su

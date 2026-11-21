@@ -1,16 +1,14 @@
 # Tactical sprite rendering quality
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../verification/version-0.1.md) for the published-main checkpoint.
+This note documents the 2D tactical sprite rendering interpolation and the
+active-sequence manifest coverage contract for the equipment preview and
+published illustrated sprite library. It defines the browser interpolation
+policy and the 240-sequence manifest requirement; it makes no artwork
+completion claim.
 
-This record documents the 12 September 2026 verification of 2D tactical sprite rendering interpolation and active-sequence manifest coverage against the equipment preview and published illustrated sprite library. This check accepts the browser interpolation policy and 240-sequence manifest check; it is not a new artwork completion claim.
-
-The reported screenshot showed a much coarser character than the approved art.
-A fresh load of the reported preview on port 3023 selected the illustrated
-`granadero-idle` atlas for Dorrego, with no legacy fallback. The served PNG
-matched the published file byte for byte. The original screenshot's load state
-could not be reproduced, so a stale tab or cache is not a confirmed cause.
+The equipment preview selects the illustrated `granadero-idle` atlas for
+Dorrego with no legacy fallback, and the served PNG matches the published file
+byte for byte.
 
 Illustrated standing cells contain 156 raster pixels across 52 map units. The
 renderer now uses normal browser interpolation for both the body and skin
@@ -24,17 +22,5 @@ no longer pass verification and leave gameplay to select legacy artwork. The
 current contract contains 240 active sequences; retired extra atlases remain
 valid. This is a runtime coverage check, not a new artwork completion claim.
 
-Validation:
-
-- 30 focused sprite, skin, layout and asset tests passed.
-- TypeScript and the production build passed. The static export verified 960
-  files and 856 asset references.
-- A browser comparison used the same actual sprite component, source, frame,
-  direction and size with the previous and updated sampling policies. Standing
-  enlargement was inspected at 800%; aiming, crouched and prone poses at 300%.
-  Walking-frame DOM checks confirmed the same atlas crop and matching body/skin
-  interpolation. These checks do not establish animation timing.
-- The actual equipment scene was inspected at 200% and 300%. Dorrego loaded the
-  approved illustrated sprite. No browser warnings or errors were recorded.
-
-No source artwork or atlas pixels were changed.
+The renderer keeps the authored atlas pixels unchanged. Enlarged edges are
+smoothed by browser interpolation; the source resolution limits detail.

@@ -189,7 +189,7 @@ Key functions:
 
 ### 6.3 Keyboard / a11y
 
-- The minimap is `role="button"` with `tabIndex={0}` and arrow-key panning already implemented (`TacticalMinimap.tsx:5`). Keep `aria-label` describing click-to-center and arrow-to-pan.
+- The minimap is `role="button"` with `tabIndex={0}` and arrow-key panning (`TacticalMinimap.tsx:5`). Keep `aria-label` describing click-to-center and arrow-to-pan.
 - Ensure the minimap is keyboard-reachable but does not trap focus; arrow keys should `stopPropagation` so they don't scroll the page.
 
 ---

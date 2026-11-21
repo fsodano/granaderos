@@ -1,8 +1,7 @@
 # Authored mission interface
 
-This guide describes published mission-entry and mission-HUD behavior across the
-strategic campaign screen and the tactical battlefield; see
-[version 0.1](../../verification/version-0.1.md) for current published scope.
+This guide describes mission-entry and mission-HUD behavior across the
+strategic campaign screen and the tactical battlefield.
 The desk overview and Tucumán strategic orders show the Yatasto briefing after
 phase two begins. Entry requires the active squad at patriotic Tucumán and no
 pending tactical scene. The entry dispatch is `visitMission` with mission
@@ -19,7 +18,3 @@ San Lorenzo's mission ally is shown in a separate temporary-officer panel and
 excluded from the hired squad strip and its number-key slots. The commander
 remains an allied unit for visibility, movement selection and battlefield rules.
 This presentation does not add a contract or recruit the historical commander.
-
-Source verification: web TypeScript check passes. Backend scene completion,
-conversation conditions and ally persistence are owned by the campaign mission
-implementation and its tests. Browser completion is not claimed here.

@@ -1,20 +1,12 @@
 # Campaign studio
 
-Updated: 11 October 2026.
-
 [Documentation index](../README.md) · [Campaign folder format](../development/campaign-authoring.md) · [Studio acceptance plan](../plans/campaign-studio.md)
 
 The campaign studio authors the fields supported by the current campaign
 package format through one website at `/studio`. Specialized tools and
 complete structured document controls share one project, its resources and
-its history. The studio and engine/package separation are published in `main`
-through [PR #334](https://github.com/fsodano/granaderos/pull/334).
-New executable mechanics and hosted community publishing
+its history. New executable mechanics and hosted community publishing
 remain separate work.
-
-Read the [studio evidence record](../evidence/campaign-studio-2026-10-10/README.md)
-for completed checks, exact source identities and browser limits. The historical `0.1` tag remains a
-separate game checkpoint and does not include the studio.
 
 ## Choose an editor
 
@@ -37,9 +29,7 @@ download both the editable project and the installable ZIP. The editable
 project is the recovery copy; the ZIP is the runtime package.
 
 The [editor experience plan](../plans/editor-experience.md) records navigation,
-field guidance, recovery and layout acceptance. Its
-[current evidence](../evidence/editor-experience-2026-10-11/README.md) is separate
-from the earlier studio checks. Developers should use the
+field guidance, recovery and layout acceptance. Developers should use the
 [editor extension guide](../development/editor-development.md).
 
 ## One project
@@ -186,9 +176,8 @@ compact-layout panels. Large maps can scroll inside their workspace.
 
 Global project history belongs to Studio when a tool is embedded. Standalone
 story and map routes retain their own history. Text fields use their normal
-text-editing shortcuts. See the current evidence for the exact keyboard and
-narrow-layout paths reviewed; this guide does not claim full accessibility
-certification.
+text-editing shortcuts. This guide does not cover every keyboard and
+narrow-layout path, nor does it certify full accessibility.
 
 ## Full content controls
 
@@ -367,20 +356,11 @@ campaign to a community catalogue or deploy it to GitHub Pages.
 
 ## Acceptance boundary
 
-The package, archive, byte-integrity and storage foundation has focused test
-coverage, including the complete Granaderos package and acceptance by the
-existing folder validator. Mounted master checks also cover shared map history,
-autosave/reload isolation, actual ZIP controls and missing-resource repair.
-The final studio/CLI group passed 57 checks, and typecheck and the production
-export passed. Production browser review completed a real authored quest,
-3D character controls, shared undo, project reload and Resources at 390 × 844.
-Its actual downloaded ZIP passed archive and folder validation with exact
-resource bytes. Production file selection was blocked by the browser/host
-automation, so visual ZIP reimport and sandbox test-save reimport were not
-established; mounted/API checks cover import, repair and saved continuation.
-The narrow review covered the Resources panel. Consult the
-[evidence record](../evidence/campaign-studio-2026-10-10/README.md) and
-[acceptance plan](../plans/campaign-studio.md) for source and publication status.
+The package, archive, byte-integrity and storage foundation includes the complete
+Granaderos package and acceptance by the existing folder validator. Shared map
+history, autosave/reload isolation, actual ZIP controls and missing-resource
+repair are covered by the mounted master checks. The downloaded ZIP keeps its
+archive structure and exact resource bytes.
 
 Full historical campaign routes, game balance, release readiness, unrestricted
-renderer imports and community hosting are outside this studio verification.
+renderer imports and community hosting are outside this studio's scope.

@@ -1,9 +1,5 @@
 # Automatic loading of two held pistols
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
-
 In tactical exploration and turn-based combat, pressing R or clicking to fire with an empty gun uses the same automatic reload plan for two held pistols. It fills the main pistol first. If reserve cartridges and enough AP remain to finish the second pistol, it loads that gun too. The cursor shows the combined cost and the cartridges loaded into each hand. Confirmation only reloads; firing is a separate order.
 
 If the second operation does not fit, the second gun stays unchanged and the soldier keeps the AP left after the first. A pair costing 32 + 28 AP uses 60 AP when available. With 59 AP, it spends 32 and keeps 27. The preview and combat log explain the pending second load.
@@ -20,18 +16,4 @@ The pinned classic-compatible [AutoReload implementation](https://github.com/ja2
 
 The 100-point scale, weapon-specific muzzle-loading times, shared finite cartridge reserve, saved partial charges and explicit full-main/partial-second continuation are period-game adaptations. This implementation does not introduce JA2 magazines or claim its modern-firearm timings.
 
-## Verification
-
-All 2,196 tests pass, with no skips. Typecheck, production build, static export verification and diff checks pass. The browser reported no warnings or errors.
-
-Twenty-four added tests cover model, input, rendered controls, AI and a purchased second pistol through the actual campaign inventory, tactical loading, firing, full save, report and reentry. Boundaries include scarce ammunition, 59/60 AP, double barrels, separate saved fractions, real enemy turns, a genuine saved interruption, invalid actor rollback, hidden-target independence and zero-AP exploration. Single-gun and existing paired-fire checks remain in the full suite.
-
-Live checks use a disposable practice scene with the production Battlefield, equipment controls and reducer, without accessing campaign storage:
-
-- R loaded both single-shot pistols: 100 → 40 AP, reserve eight → six, and both charges zero → one. Both conditions remained unchanged.
-- With 59 AP, R loaded the main pistol for 32 AP and preserved the other gun and 27 AP. A second R stored 27 AP of second-gun work without consuming a cartridge. Save/restore, a real turn change and R finished it for one AP and one cartridge.
-- The empty firing cursor showed both hands and 60 AP. Clicking loaded both guns while the selected enemy stayed at 100 health.
-- Exploration loaded both double-barrel pistols from eight reserve cartridges to four, with no AP charge in the interface or log.
-- Exhausted reserve retained the crossed-out aiming cursor and no-ammunition explanation.
-
-Broader parity remains tracked in the [current audit](../../verification/ja2-parity-audit.md).
+Broader parity requirements are tracked in the [JA2 parity requirements](../../requirements/ja2-parity.md).

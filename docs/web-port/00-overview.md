@@ -2,7 +2,7 @@
 
 [Series index](README.md) · Next: [01 — Platform Layer: SGP + Utils + ext](01-platform-sgp.md)
 
-> **Reference notice:** This document is a source and design analysis of the original Jagged Alliance 2 v1.13 (`1dot13/source`) C++ engine (build graph, directory layout, screen-flow state machine, and `GRANADEROS` compile-time rules) kept as reference material for Granaderos' browser adaptation. It is **not** a description of Granaderos' current browser implementation. See the [series index](README.md) for the full 14-document reference set, [version 0.1 status](../verification/version-0.1.md) for current implementation status, and [the parity audit](../verification/ja2-parity-audit.md) for the active gameplay baseline. In the current repository layout, the C++ engine submodule lives at `reference/native/engine/` (referred to below as `engine/`), the native mod overlay lives at `reference/native/mod/`, and the browser game modules live under `packages/game/` and `apps/web/` (referred to below by their earlier root paths `game/` and `web/`).
+> **Reference notice:** This document is a source and design analysis of the original Jagged Alliance 2 v1.13 (`1dot13/source`) C++ engine (build graph, directory layout, screen-flow state machine, and `GRANADEROS` compile-time rules) kept as reference material for Granaderos' browser adaptation. It is **not** a description of Granaderos' current browser implementation. See the [series index](README.md) for the full 14-document reference set and [the parity audit](../requirements/ja2-parity.md) for the active gameplay baseline. In the current repository layout, the C++ engine submodule lives at `reference/native/engine/` (referred to below as `engine/`), the native mod overlay lives at `reference/native/mod/`, and the browser game modules live under `packages/game/` and `apps/web/` (referred to below by their earlier root paths `game/` and `web/`).
 
 > Economy update: the browser game now uses pesos only. The material, convoy, and horse-management mappings below describe the earlier implementation. See [the current economy rules](../gameplay/campaign/INDUSTRY-AND-IMPORTS.md).
 
@@ -118,7 +118,7 @@ hosts cannot build it natively; Windows CI is the supported path.
 
 ## 3. Directory-to-system map with file counts
 
-Counts = `.cpp/.c/.h/.hpp` files per top-level engine dir (measured 2026-09-06).
+Counts = `.cpp/.c/.h/.hpp` files per top-level engine dir.
 
 | Engine dir | Files | System | Web-port relevance |
 |---|---|---|---|

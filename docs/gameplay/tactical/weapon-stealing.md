@@ -1,10 +1,6 @@
 # Taking a held weapon
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
-
-During tactical exploration and turn-based combat, a standing or crouched soldier with empty hands (**Manos libres**) or the **Recoger equipo** cursor can attempt a contested grab to take the primary firearm or blade currently held by an adjacent conscious enemy (parity row [I10](../../verification/ja2-parity-audit.md)). Patusco's guide, printed pages 64–66 ([G64–66](../../verification/ja2-parity-audit.md#scope-and-evidence)), describes a risky adjacent grab with empty hands, Ctrl-targeting and a cost that consumes the remaining AP. It also warns that the victim can still fight. The guide's duplication bugs and claims of guaranteed success for particular characters are not implemented.
+During tactical exploration and turn-based combat, a standing or crouched soldier with empty hands (**Manos libres**) or the **Recoger equipo** cursor can attempt a contested grab to take the primary firearm or blade currently held by an adjacent conscious enemy (parity row [I10](../../requirements/ja2-parity.md)). Patusco's guide, printed pages 64–66 ([G64–66](../../requirements/ja2-parity.md#scope-and-evidence)), describes a risky adjacent grab with empty hands, Ctrl-targeting and a cost that consumes the remaining AP. It also warns that the victim can still fight. The guide's duplication bugs and its claims of guaranteed success for particular characters are not adopted.
 
 ## Controls and consequences
 
@@ -16,10 +12,11 @@ Success transfers the actual primary or blade currently in the target's hand int
 
 The target loses that exact hand item. Repeating the request cannot duplicate it. A disarmed enemy with a remaining primary or secondary blade can pay the ordinary equipment-selection cost to draw it. Urgent field aid retains priority over drawing a backup. The grab does not kill, knock out, surrender or capture the victim.
 
-## Tuning and evidence
+## Tuning and limits
 
 The 28-AP minimum, eight energy, two exploration seconds and probability formula are Granaderos tuning. Attack uses strength/dexterity/agility weights 0.4/0.4/0.2; defense uses 0.5/0.3/0.2. Chance starts at 50, adds 0.6 times the skill difference, three points per experience-level difference, 15 for lack of awareness and 15 for a knocked-down defender. Attacker exhaustion subtracts 0.25 per missing energy point; defender exhaustion adds 0.2. Final chance is bounded to 5–95%. The HUD does not publish this percentage because defender attributes and energy are private.
 
-Thirteen tests in `tests/weapon-stealing.test.mjs` cover successful and failed grabs, finite equipment and fittings, capacity, invalid orders, blocked geometry, legacy object weapons, modifier/cursor routing, private information, enemy backup selection, exhaustion, a real saved interrupt and a campaign-bound save. Existing inventory and campaign suites check the common equipment custody paths. This new test file does not establish a played campaign victory or a new campaign report path.
-
-Live verification uses an imported controlled fixture, recorded in [the browser evidence](../../verification/ja2-live-verification.md). Enemies can now select a prepared firearm from their own pack through a paid capacity-checked swap; see [AI field equipment](ai-field-equipment.md). Enemy-initiated theft and a complete loadout policy remain incomplete. The chance values are not an exact JA2 implementation.
+Enemies can select a prepared firearm from their own pack through a paid
+capacity-checked swap; see [AI field equipment](ai-field-equipment.md).
+Enemy-initiated theft and a complete loadout policy remain open. The chance values
+are not an exact JA2 implementation.

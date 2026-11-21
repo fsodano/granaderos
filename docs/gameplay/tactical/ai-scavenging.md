@@ -1,9 +1,5 @@
 # Recovering combat supplies
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
-
 During turn-based combat, a computer-controlled combatant whose held firearm is empty, unusable, or missing can move to and pick up observed ground ammunition or a loaded firearm from the ground or a nearby body. JA2's `SearchForItems` searches reachable item pools for ammunition or usable weapons and reserves the pickup cost from the path budget. The classic source also weighs item value and distance. Reference: [JA2 Stracciatella, FindLocations.cc](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/master/src/game/TacticalAI/FindLocations.cc), `SearchForItems`. The policy below is a Granaderos adaptation, not an exact copy of that scoring formula.
 
 ## Behavior
@@ -18,8 +14,9 @@ The selected action passes through the ordinary movement, pickup, equip, reload 
 
 No future pickup is reserved. After a step, an interruption, another soldier's pickup, or loading a save, the AI chooses again from the current state. Ordinary reactions can interrupt movement, pickup, equipping or firing. A depleted source cannot supply a second soldier. Failed inventory plans neither discard existing gear nor alter the source.
 
-## Evidence and remaining work
+## Limits
 
-`tests/tactical-ai-scavenging.test.mjs` covers actual enemy turns, cartridge pickup followed by paid reload/fire, a recovered pistol followed by paid equip/fire, exact fitted-gun recovery, paid approach, hidden information, nearby corpse quantities, capacity and affordability, invalid/depleted sources, exposure limits, competing soldiers, the player-command boundary, and a saved nested interruption after recovery and firing.
-
-These are simulation and save-continuation checks. Live visual verification, broader equipment selection, coordinated requests beyond [local supply handovers](ai-supply-sharing.md), conscious weapon theft, hidden-container searches, and typed period ammunition remain open. This change does not complete the full AI or JA2 parity requirements.
+Broader equipment selection, coordinated requests beyond [local supply
+handovers](ai-supply-sharing.md), conscious weapon theft, hidden-container
+searches and typed period ammunition remain open. Information stays limited to
+what the acting soldier observes.

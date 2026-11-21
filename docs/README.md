@@ -1,13 +1,11 @@
 # Granaderos documentation
 
-This index maps every documentation folder in the repository and states which
-document governs completion status. Granaderos is a browser strategy and
-tactical game in active development. Read
-the [shipping campaign status](plans/core-campaign-v0.1.md) for current checks
-and remaining acceptance work. The [campaign separation record](verification/campaign-engine-separation-2026-10-10.md)
-records the engine/content boundary. The [version 0.1 status](verification/version-0.1.md)
-retains the earlier tagged checkpoint. Start with the [project README](../README.md) for the game overview and local setup.
-Player-facing text is Spanish. Code and documentation are English.
+This index maps every documentation folder in the repository. Granaderos is a
+browser strategy and tactical game. Source and its commit history define the
+code; these documents define requirements, design, and the behavior a reader
+should expect. Start with the [project README](../README.md) for the game
+overview and local setup. Player-facing text is Spanish. Code and documentation
+are English.
 
 ## Start here
 
@@ -16,16 +14,12 @@ Player-facing text is Spanish. Code and documentation are English.
 | Find source files and understand the repository layout | [Repository map](development/repository-layout.md) |
 | Understand how the browser game fits together | [Progressive architecture guide](architecture/README.md) and [C4 levels 1–3](architecture/c4.md) |
 | Explore player and campaign-author capabilities | [Use-case catalogue](architecture/use-cases/README.md) |
-| Verify the domain architecture implementation | [28 October architecture evidence](verification/domain-architecture-2026-10-28.md) |
+| Read the target domain architecture and naming contract | [Domain architecture](plans/accepted/domain-architecture.md) and [ubiquitous language](plans/accepted/ubiquitous-language.md) |
 | Install, run, build or test the browser game | [Development setup](development/getting-started.md) |
 | Read the current game design | [Game design](specification/game-design.md) |
-| Check version 0.1 scope and remaining work | [Version 0.1 status](verification/version-0.1.md) |
-| Check current engine and campaign separation | [Campaign separation](verification/campaign-engine-separation-2026-10-10.md) |
-| Check the shipping campaign and remaining acceptance work | [Shipping campaign status](plans/core-campaign-v0.1.md) |
-| Find requirement history and feature evidence | [Classic JA2 parity audit](verification/ja2-parity-audit.md) |
-| Review the historical cross-branch verification | [27 September audit](verification/formal-audit-2026-09-27.md) |
-| Review ammunition ownership and current limits | [Persistent ammunition](verification/strategic-ammunition-custody.md) |
-| Create a campaign in the browser | [Campaign editor](authoring/campaign-studio.md) and [studio acceptance evidence](evidence/campaign-studio-2026-10-10/README.md) |
+| Read the classic JA2 gameplay requirements baseline | [JA2 parity requirements](requirements/ja2-parity.md) |
+| Read the campaign map format | [Wall edges](specification/wall-edges.md) |
+| Create a campaign in the browser | [Campaign editor](authoring/campaign-studio.md) |
 | Extend or improve the editing tools | [Editor development](development/editor-development.md) and [editor experience plan](plans/editor-experience.md) |
 | Create, check and install local campaign folders | [Campaign authoring](development/campaign-authoring.md) |
 | Use the experimental content editor | [Story editor](development/story-editor.md) |
@@ -34,82 +28,42 @@ Player-facing text is Spanish. Code and documentation are English.
 | Build tactical sectors | [Sector editor](development/sector-editor.md) |
 | Find controls and game-system notes | [Gameplay index](gameplay/README.md) |
 | Find art sources and visual decisions | [Art guide](art/README.md) and [decision records](adr/README.md) |
-| Review historical workspace acceptance | [Development-workspace acceptance](verification/gameplay-completion.md) |
-
-The [alpha service-equipment record](verification/alpha-service-equipment-return-2026-10-01.md)
-and [PR #139 consolidation](verification/latest-build-consolidation.md) retain
-their 1 October source, checks and delivery limits. They do not describe the
-current version's complete acceptance. Local campaign creation is available in
-Studio; community hosting and sharing services are
-[future work](plans/campaign-authoring.md).
 
 ## Documentation map
 
 | Folder | Contents |
 | --- | --- |
-| [Architecture](architecture/README.md) | Progressive system overview, sequence diagrams, and subsystem deep dives |
-| [Gameplay](gameplay/README.md) | Campaign, combat, equipment, characters and controls |
-| [Authoring](authoring/README.md) | Campaign studio workflow, portable projects and installable packages |
-| [Development](development/README.md) | Browser setup, editors, system notes and performance work |
-| [Verification](verification/README.md) | Status checkpoints, the classic JA2 parity audit, and dated acceptance records |
-| [Evidence](evidence/README.md) | Saved workspace route results and performance measurements |
-| [Art](art/README.md) | Buildings, portraits, sprite families and render quality |
+| [Architecture](architecture/README.md) | Progressive system overview, sequence diagrams, C4 diagrams, and the use-case catalogue |
+| [Gameplay](gameplay/README.md) | Campaign, combat, equipment, characters, and controls |
+| [Authoring](authoring/README.md) | Campaign studio workflow, portable projects, and installable packages |
+| [Development](development/README.md) | Browser setup, repository map, editors, and system notes |
+| [Requirements](requirements/ja2-parity.md) | The classic JA2 gameplay requirements baseline and its sources |
+| [Art](art/README.md) | Buildings, portraits, sprite families, and render quality |
 | [Architecture decisions](adr/README.md) | Visual decisions and reference images |
 | [Plans](plans/README.md) | Accepted architecture, ubiquitous language, feature proposals, and acceptance criteria |
-| [Specifications](specification/README.md) | Original design and later gameplay requirements |
+| [Specifications](specification/README.md) | Current product design, portability formats, and historical gameplay requirements |
 | [JA2 engine reference](web-port/README.md) | Source analysis and browser adaptation notes |
-| [Other references](reference/README.md) | Period equipment evidence and the earlier native build |
-| [Archive](archive/README.md) | Superseded progress ledgers, audits and design snapshots |
+| [Other references](reference/README.md) | Period equipment sources and the earlier native build (`references/` holds archived playtest and visual reference screenshots) |
 
-The [changelog](CHANGELOG.md) records release checkpoints.
+## What governs a decision
 
-## Current design and tracking
-
-[Version 0.1 status](verification/version-0.1.md) records the historical 0.1
-checkpoint. [Game design](specification/game-design.md) records the product design.
-[The formal audit](verification/formal-audit-2026-09-27.md) preserves the evidence.
-[The changelog](CHANGELOG.md) records release checkpoints. These documents extend
-this topic structure; they do not replace the feature notes.
-
-Explicit user decisions override older design notes; record the resolution in the
-current design. Preserve all original and parity requirements: the
-[parity audit](verification/ja2-parity-audit.md) keeps the full requirement rows
-and their sources.
-
-The dated per-feature verification receipts and the machine-readable requirement
-register that earlier versions of this documentation referenced were removed in
-November 2026. Their rows and evidence survive in the parity audit, in the
-records kept under [verification](verification/README.md), and in Git history.
-
-## Which document governs status?
-
-1. The [version 0.1 status](verification/version-0.1.md) records the version's
-   scope, current source evidence and known limits. A version tag does not prove
-   game completion or publish a new GitHub Pages deployment.
-2. Published feature guides describe bounded behavior. Use each record's
-   source, date and limits when assessing completion.
-3. Notes marked **development-workspace record** describe the separate advanced
-   gameplay checkout at their recorded date. Later work can be merged. The
-   [workspace acceptance record](verification/gameplay-completion.md) preserves
-   its dated results. The [JA2 parity audit](verification/ja2-parity-audit.md)
-   combines dated assessments and named published feature receipts; it does
-   not establish full current parity.
-4. [Specifications](specification/README.md), [plans](plans/README.md) and
-   [archived records](archive/README.md) preserve requirements and history.
-   They do not replace accepted scope changes or current verification.
-
-Full game completion remains open. The existing editors support bounded,
-experimental workflows. The complete browser campaign studio has
-[its own scoped acceptance record](plans/campaign-studio.md). Community hosting and
-sharing services remain future work. Publishing a development record does not prove
-its implementation or acceptance on a later source.
+1. Current user instructions override older design notes. Record the resolution
+   in the current design.
+2. Accepted plans and the [ubiquitous language](plans/accepted/ubiquitous-language.md)
+   govern architecture and naming for new work.
+3. [Specifications](specification/README.md) and
+   [requirements](requirements/ja2-parity.md) preserve the product requirements,
+   including every original and parity requirement with its external source.
+4. Source code defines current behavior. These documents describe requirements
+   and intended behavior, so read the named entry points when the two disagree.
 
 ## Keep the documentation usable
 
 - Put a new note in the matching folder and add it to that folder's index.
 - Use relative Markdown links between documents. Code-formatted source paths
   such as `packages/game/tactical.js` start at the repository root.
-- State the checkout or source commit, date, tested scope, result and limits of
-  verification. Keep raw measurements in `evidence/` and link their record.
-  Keep unpublished work clearly labelled and retain earlier results as history.
+- State requirements, rules, and current behavior. Do not record implementation,
+  verification, delivery or publication status, dates, commit hashes, test
+  counts or run results: the commit history is that record.
+- Keep local build, cache and diagnostic output in ignored `.output/`.
 - Keep player help in Spanish and contributor documentation in English.

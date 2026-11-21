@@ -1,12 +1,17 @@
 # Persistence
 
-[Architecture guide](README.md)
+[Architecture guide](README.md) · [Runtime flows](runtime-flows.md) · [Strategic engine](strategic-engine.md) · [Tactical engine](tactical-engine.md)
 
-Persistence has two related but distinct jobs: `packages/game/save.js` encodes/decodes portable campaign saves, while the browser autosave queue stores the latest campaign/battle pair under a campaign-specific `localStorage` key. A portable save is not just raw JSON state: it carries format/schema metadata, applies reference-aware serialization and terrain compaction, expands/migrates on decode, then validates campaign and tactical consistency before returning the pair. Installed campaign assets are external resources verified separately from the save bytes. For screen-level resume/import behavior see [runtime flows](runtime-flows.md); for campaign and battle state semantics see [strategic engine](strategic-engine.md) and [tactical engine](tactical-engine.md).
+This page explains how Granaderos maps canonical domain objects to and from versioned game snapshots (`GameSnapshotMapper`), encodes and compacts portable save files (`packages/game/save.ts`), coordinates single-writer browser autosaves under Web Locks (`apps/web/lib/browser-save-writer.ts` and `useCampaignAutosave`), and checks campaign resource hashes before restoring a session. It connects the transaction model in the [system map](system-map.md) and [runtime flows](runtime-flows.md) to the state structures in the [strategic engine](strategic-engine.md), [tactical engine](tactical-engine.md), and [content and campaigns](content-and-campaigns.md).
+
+Persistence separates two jobs:
+
+1. **Snapshot mapping and portable save encoding:** [`GameSnapshotMapper`](../../packages/game/infrastructure/persistence/game-snapshot-mapper.js) and [`packages/game/save.ts`](../../packages/game/save.ts) project domain state into a versioned JSON envelope, compact large terrain arrays when needed, and restore domain classes through their `restore` factories on decode.
+2. **Browser autosave and file export/import:** [`SaveGameUseCase`](../../packages/game/application/save-game/save-game.use-case.ts), [`GetSaveStatusUseCase`](../../packages/game/application/get-save-status/get-save-status.use-case.ts), and [`useCampaignAutosave.ts`](../../apps/web/lib/useCampaignAutosave.ts) queue asynchronous save-worker encoding and write to campaign-specific `localStorage` keys under an exclusive Web Lock.
 
 ## Portable save envelope and byte limits
 
-`encodeSave(campaign, battle = null)` produces JSON with this envelope:
+`encodeSave(campaign, battle = null)` in `packages/game/save.ts` produces a JSON string with this envelope structure:
 
 ```json
 {
@@ -19,102 +24,70 @@ Persistence has two related but distinct jobs: `packages/game/save.js` encodes/d
 }
 ```
 
-The `mapping` record identifies the domain snapshot version and accepted game
-revision. It must agree with `campaign.gameSessionId` and `gameRevision`. Legacy
-saves without a session identity remain readable. The restoration use case
-assigns their owned restored copy a new identity. Unsupported mapping versions
-and mismatched identities or revisions are refused.
+In this envelope:
 
-The campaign and battle are serialized through composed replacers for campaign content packages, cell scenes, artillery definitions, and weapons. `savedAt` is generated at encode time. `SAVE_KEY` in `save.js` remains the legacy key `granaderos.campaign.v1`; current browser routing derives campaign-aware keys in `content-launch.js` instead.
+- `format` (`"granaderos"`) and `schema` (`1` for raw tiles or `2` when palette terrain compaction is applied) identify the save codec version.
+- `savedAt` records the ISO-8601 encoding timestamp.
+- `mapping` records the domain snapshot mapping `version` (`1`), the `GameSession` `sessionId`, and the accepted `revision`. These values must match `campaign.gameSessionId` and `campaign.gameRevision`. Legacy saves without a session ID receive a fresh ID on restoration; mismatched IDs or revisions are rejected.
+- `campaign` and `battle` hold the serialized strategic and active sector snapshots, encoded with custom replacers for pinned campaign packages, cell scenes, artillery definitions, and weapons.
 
-The encode thresholds are not interchangeable:
+Three distinct byte thresholds in [`packages/game/save-limits.js`](../../packages/game/save-limits.js) govern encoding and decoding:
 
-* If the initial encoded JSON is under 1,000,000 bytes, it is checked against the final save limit and returned unchanged (schema 1).
-* If it is at or above 1,000,000 bytes, inputs exceeding `MAX_EXPANDED_SAVE_BYTES` (20,000,000 UTF-8 bytes) are rejected before compaction. Otherwise eligible full tile arrays are palette-compacted; schema becomes 2 only when compaction changed at least one terrain map. If nothing can be compacted, it may remain schema 1 despite exceeding that compaction threshold.
-* The final JSON must pass `assertSaveSize`: both JavaScript string length and UTF-8 byte length must be no more than 5,000,000. This 5 MB value is the actual persisted/imported save cap; 1 MB is only the compaction trigger, and 20 MB bounds expanded size.
-
-Compaction examines battle, campaign sector/scene states, and pending-battle resume snapshots. Regular eligible tile arrays use `{encoding:"palette-v1", palette:[tile-shapes], indices:[palette-index...]}` while `width`/`height` stay alongside. Repeated tile shapes are stored once; compaction is used only when its JSON representation is shorter. Expansion validates encoding, dimensions, palette, index count/range and computed expanded size before rebuilding tiles. Cell-scene storage has its own compact representation (`cell-tiles-v1`) expanded via the cell-scene storage helper.
+- **1,000,000 bytes (compaction trigger):** If the initial encoded JSON is under 1 MB, it remains `schema: 1`. At or above 1 MB, eligible tile arrays across the active `battle`, `campaign.sectorStates`, `campaign.sceneStates`, and `pendingBattle.resumeSnapshot` are palette-compacted (`{ encoding: "palette-v1", palette: [...], indices: [...] }`), switching `schema` to `2` if at least one map shrinks. Cell scenes use their own `cell-tiles-v1` compaction in [`packages/game/cell-scene-storage.js`](../../packages/game/cell-scene-storage.js).
+- **20,000,000 UTF-8 bytes (`MAX_EXPANDED_SAVE_BYTES`):** Bounds the uncompacted or expanded JSON size before compaction or during `schema: 2` expansion to prevent decompression bombs.
+- **5,000,000 bytes / characters (`assertSaveSize`):** Bounds the final persisted or imported JSON string (both UTF-8 byte length and JavaScript string length).
 
 ## Decode, migrations, and validation sequence
 
-`decodeSave(text)` proceeds in an order that matters:
+`decodeSave(text)` in `packages/game/save.ts` validates and restores a portable save in six steps:
 
-1. Reject oversize input using 5 MB limit, parse JSON (parse failures become “file does not contain a valid save”), then require `format === "granaderos"` and schema 1 or 2.
-2. For schema 2, expand compact terrain subject to the 20 MB expanded cap.
-3. Clone and restore campaign via `restoreCampaignValue`; expand a compact cell scene for battle against that campaign.
-4. Require campaign pending-battle presence to agree with whether a battle snapshot exists. Restore weapon/artillery/generic-character references and enforce fitting/ammunition/exit version compatibility.
-5. Validate tactical-weather context and battle snapshot. Defaults for legacy battle clock fields are assigned, then require tactical and campaign synchronized clocks, start time, battle identity, sector, deployed participants, and authored cell/map identity to agree.
-6. Validate arsenal, scene definitions, artillery/patrol, civilians/presence, movement, weapons, presentation, abilities, deployment, repair reserves, discovery, companion grief, service objections, quest escorts/beneficiaries and equipment ownership. Certain legacy missing fields are migrated; active battles are validated and retained, not reconstructed from deployment.
+1. Enforce the 5 MB input size cap, parse JSON, and require `format === "granaderos"` with `schema` `1` or `2`.
+2. For `schema: 2`, expand `palette-v1` terrain arrays subject to the 20 MB expanded cap.
+3. Clone and restore the campaign snapshot via `restoreCampaignValue` and expand any compact `cell-tiles-v1` scene data against that campaign.
+4. Require `Boolean(campaign.pendingBattle)` to agree with `Boolean(battle)`, restore weapon, artillery, and character references, and verify fitting, ammunition, and exit version compatibility.
+5. Validate tactical weather and the active sector snapshot (`packages/game/validate-battle.js`), requiring synchronized campaign and sector clocks (`syncedSeconds`), start times, entry identity, sector ID, deployed participants, and authored map identity to agree.
+6. Validate cross-system invariants across the arsenal, scene definitions, artillery, civilians, movement, weapons, presentation, abilities, deployment, repair reserves, discovery, companion grief, service objections, quest escorts/beneficiaries, and equipment custody. Supported legacy fields (such as prepaid `hiringArrivals` claims or missing legacy corpse death timestamps) convert deterministically at the saved game timestamp.
 
-The result is `{campaign, battle}` where `battle` may be null. Decode can throw specific errors for unsupported format/schema, malformed compact terrain, oversized expanded data, mismatched battle/campaign clocks or participants, incompatible versions, stale authored maps, and invalid ownership/context. `restoreCampaignValue` itself validates campaign content and state, builds a base campaign for comparison/migration, and checks multiple state families; it is not a blind JSON cast.
+## Application contracts and restored domain objects
 
-## Application contracts and restored objects
+Four application use cases govern session persistence, each with its own narrow repository interface:
 
-[`CreateGameSession`](../../packages/game/application/create-game-session/README.md)
-assigns a new identity to a fresh campaign.
-[`RestoreGame`](../../packages/game/application/restore-game/README.md) validates serialized
-state and restores canonical domain behavior through
-[`GameSnapshotMapper`](../../packages/game/infrastructure/persistence/game-snapshot-mapper.js).
-Its identity map shares each character between personnel and active sector
-participation. The mapper retains restored objects and projects their accepted
-changes back into the same logical snapshot. It does not issue starting equipment,
-repeat payments, or advance the campaign clock.
+- [`CreateGameSessionUseCase`](../../packages/game/application/create-game-session/README.md) (`CreateGameSessionRepository`): creates a new `GameSession` with a unique ID and revision `0`.
+- [`RestoreGameUseCase`](../../packages/game/application/restore-game/README.md) (`RestoreGameRepository`): decodes and restores canonical domain objects through [`GameSnapshotMapper`](../../packages/game/infrastructure/persistence/game-snapshot-mapper.js) without repeating creation-only effects (such as starting equipment issuance, initial contract payments, or completed world events).
+- [`SaveGameUseCase`](../../packages/game/application/save-game/README.md) (`SaveGameRepository`): verifies session ID, revision, and request ID before persisting an encoded snapshot.
+- [`GetSaveStatusUseCase`](../../packages/game/application/get-save-status/README.md) (`GetSaveStatusRepository`): read-only query that returns a `SaveStatus` view record (`{ state, accepted, persisted, message }` with `state`: `'unsaved' | 'saving' | 'saved' | 'blocked' | 'failed'`) tracking accepted in-memory revisions separately from persisted storage revisions.
 
-`CanonicalPersonnelMapper` restores every `Squad` once and supplies the active
-instance to `ForceRoster`. They share membership ownership. Character health
-projects to its campaign record and active physical participation together.
-`ActiveSectorCharacterMapper` restores the same character identity for serving
-combatants and a canonical character for deployed militia outside the force
-roster. During an open visit, the active participant owns the militia's current
-condition; the return transaction settles it into the garrison record.
-`CanonicalWorldMapper` retains `Sector`, world timeline, corpse and routine
-objects. Sector references can move an existing resident while preserving the
-physical actor and inventory. A corpse removal requires the world adapter's
-existing death receipt and materialized recovered objects before serialization.
-`CanonicalInventoryMapper` restores tactical unit inventories and projects exact
-remaining quantities, held equipment, metadata and pocket order. Resident supply
-records keep their separate civilian mapping. These mappers add no parallel
-persisted entity tables.
+When `GameSnapshotMapper` builds a `RestoredGame`, its `DomainIdentityMap` ensures that every fact has a single owner across strategic and tactical state:
 
-Retained sector snapshots also contain archival participant rows, such as prior
-movement-practice records. These rows do not own a second physical character or
-inventory. `RetainedSectorPresence` uses current location, journeys, and open
-visits to select physical participants. `PhysicalSectorProjection` keeps archival
-records during persistence while mapping only current presence into the domain.
-Only open visits restore `SectorSession` objects.
+- [`CanonicalPersonnelMapper`](../../packages/game/infrastructure/persistence/canonical-personnel-mapper.ts) restores `Treasury`, `ForceRoster`, each `Squad`, and each serving `Character` (with its `Health`, immutable `CharacterAbilities`, and `ServiceContract`). If a combatant is currently deployed in an active or suspended sector visit, `CanonicalPersonnelMapper` initializes the single `Character` and `Health` instance from that active unit's current hit points, bleeding, and bandaged state, and projects changes back to both the campaign record and the unit on commit.
+- [`ActiveSectorCharacterMapper`](../../packages/game/infrastructure/persistence/active-sector-character-mapper.js) returns that same `Character` instance from `CanonicalPersonnelMapper` for serving combatants, or restores a canonical `Character` in `DomainIdentityMap` for deployed militia outside the force roster so no participant ever has a duplicate health owner.
+- [`CanonicalWorldMapper`](../../packages/game/infrastructure/persistence/canonical-world-mapper.js) and [`CanonicalSectorMapper`](../../packages/game/infrastructure/persistence/canonical-sector-mapper.js) restore `Sector`, `WorldTimeline`, `ResidentRoutine`, and `Corpse` objects across retained (`sectorStates`, `sceneStates`), suspended (`suspendedSectorSessions`), and active (`battle`) fields.
+- [`RetainedSectorPresence`](../../packages/game/infrastructure/world/retained-sector-presence.js) and [`PhysicalSectorProjection`](../../packages/game/infrastructure/persistence/physical-sector-projection.js) filter archival unit rows in retained sector snapshots so only characters physically present at that location are mapped into `Sector` and `Inventory` domain objects, while preserving archival records on serialization. Only active and suspended visits restore `SectorSession` and `SectorParticipant` objects.
+- [`CanonicalInventoryMapper`](../../packages/game/infrastructure/persistence/canonical-inventory-mapper.js) and [`tactical-inventory-mapper.js`](../../packages/game/infrastructure/inventory/tactical-inventory-mapper.js) restore one `Inventory` per custodian in `DomainIdentityMap` and project exact item quantities, held hands, body slots, and `PocketLayout` order back to the snapshot.
 
-[`SaveGame`](../../packages/game/application/save-game/README.md) checks session, revision,
-and request identity before persistence. [`GetSaveStatus`](../../packages/game/application/get-save-status/README.md)
-reports accepted and persisted progress separately. Its states are `unsaved`,
-`saving`, `saved`, `blocked`, and `failed`. The game header displays the status
-beside the export button. It shows `Guardado` only for the current game identity
-and revision; a failed or blocked save remains visible.
-
-The [`browser writer`](../../apps/web/lib/browser-save-writer.ts) uses an exclusive Web
-Lock per save key. A second tab cannot write that key. A browser without Web Locks
-cannot autosave. Both cases keep accepted in-memory progress and manual download
-available. Focus, a new snapshot, or an explicit flush retries ownership. The
-worker only encodes; it never owns the lock or writes browser storage.
+The [`browser-save-writer.ts`](../../apps/web/lib/browser-save-writer.ts) adapter holds an exclusive browser Web Lock for the active campaign storage key. A second tab on the same key cannot overwrite `localStorage` and reports `blocked` save status while keeping in-memory play and manual file export available.
 
 ## Browser autosave keys and URL identity
 
-`campaignStorageKey(campaign, search)` selects the browser key based on campaign origin/content identity, with `.qa` appended when query `qa=1`:
+`campaignStorageKey(campaign, search)` in [`packages/game/content-launch.ts`](../../packages/game/content-launch.ts) selects the `localStorage` key from the campaign's origin or content identity (appending `.qa` when the URL query includes `qa=1`).
+
+The table below lists each runtime `Situation` and the resulting `localStorage key`.
 
 | Situation | localStorage key |
-|---|---|
-| Installed campaign with origin ID | `granaderos.campaign.v2.<encoded-id>[.qa]` |
-| Authored/editor content campaign with identity | `granaderos.content-campaign.v2.<encoded-packageId>.<encoded-hash>[.qa]` |
-| Editor content URL with complete `contentId` + `contentHash` but no campaign object | same content-campaign v2 form |
-| Editor content URL without complete identity | legacy fallback `granaderos.content-campaign.v1[.qa]` |
-| Other unbound/legacy campaign | `granaderos.campaign.v1[.qa]` |
+| --- | --- |
+| Installed campaign with `campaignOrigin.id` | `granaderos.campaign.v2.<encoded-id>[.qa]` |
+| Authored or editor content campaign with package ID and content hash | `granaderos.content-campaign.v2.<encoded-packageId>.<encoded-hash>[.qa]` |
+| Editor content URL with complete `contentId` and `contentHash` before campaign load | `granaderos.content-campaign.v2.<encoded-contentId>.<encoded-contentHash>[.qa]` |
+| Editor content URL without complete identity | Legacy fallback `granaderos.content-campaign.v1[.qa]` |
+| Unbound or legacy stock campaign | `granaderos.campaign.v1[.qa]` |
 
-`campaignStorageCandidates` returns the current key and, only for applicable old stock/editor saves, a legacy candidate. Installed campaigns do not silently autosave to a legacy key. The content launch handoff uses `sessionStorage` key `granaderos.content-launch.v1` (`CONTENT_LAUNCH_KEY`), a one-time transfer separate from all persistent autosave keys. The editor content save constant is `granaderos.content-campaign.v1`; it is a compatibility fallback, not the installed-campaign v2 format.
-
-`campaignLaunchSearch` removes prior `campaign`, `content`, `contentId`, `contentHash`, and `launch` query parameters, then adds installed origin campaign ID or content ID/hash from the campaign. This is only a query-string function. `page.tsx` writes the normalized URL with `history.replaceState`; URL normalization itself does not write localStorage.
+The Story Editor's one-time launch handoff uses `sessionStorage` key `granaderos.content-launch.v1` (`CONTENT_LAUNCH_KEY`), which is removed as soon as `apps/web/app/page.tsx` consumes it. `campaignLaunchSearch` normalizes the browser URL query parameters via `history.replaceState` without writing to `localStorage`.
 
 ## Autosave queue and worker behavior
 
-`useCampaignAutosave` constructs one `createCampaignAutosave` queue with a save worker when worker construction succeeds, `encodeSave` as encoder, and `localStorage.setItem` as writer. Campaign and battle are submitted as an atomic snapshot pair; key derives from the submitted campaign. The queue allows at most one serialization in flight and retains only the newest pending snapshot. Sequence IDs prevent an old response from overwriting a newer campaign/import.
+`useCampaignAutosave` ([`apps/web/lib/useCampaignAutosave.ts`](../../apps/web/lib/useCampaignAutosave.ts)) coordinates [`createCampaignAutosave`](../../apps/web/lib/campaign-autosave.ts) with [`campaign-save-worker.ts`](../../apps/web/lib/campaign-save-worker.ts), `encodeSave`, and `browser-save-writer.ts`. The queue keeps at most one worker encoding job in flight and retains only the newest pending snapshot pair.
+
+The sequence diagram below traces how `React campaign/battle state`, `useCampaignAutosave`, `createCampaignAutosave`, `campaign-save-worker`, `encodeSave`, and `localStorage` persist a state change.
 
 ```mermaid
 sequenceDiagram
@@ -125,52 +98,45 @@ sequenceDiagram
   participant E as encodeSave
   participant LS as localStorage
   R->>H: campaign or battle changes
-  H->>Q: submit(campaign,battle,key)
+  H->>Q: submit(campaign, battle, key)
   alt worker available
     Q->>W: post session ID, revision, request ID + pair
-    W->>E: encodeSave(campaign,battle)
+    W->>E: encodeSave(campaign, battle)
     E-->>W: JSON or thrown error
     W-->>Q: identity + text or error
   else no worker / transport failure
     Q->>E: encode latest snapshot inline
   end
-  Q->>LS: setItem(key,text)
+  Q->>LS: setItem(key, text) under Web Lock
   LS-->>Q: write succeeds or throws
   Q-->>H: onSaved or onError
 ```
 
-Operational details:
-
-* `submit` replaces `latest` and starts `pump` unless closed, already saving, or that snapshot ID was saved.
-* A worker encode response for an outdated snapshot does not persist over newer data; queue starts the latest snapshot next. Successful persist checks session ID, revision, and request ID against the latest accepted snapshot before writing.
-* Worker construction failure makes `worker` null and uses inline encoding. A worker `error` or `messageerror` terminates worker, drops in-flight state, and falls back to inline encoding of the latest snapshot.
-* A worker response with `data.error` calls `onError` only if that failed snapshot is still latest; it does not automatically inline-retry that encode. If newer state exists, it proceeds to pump that latest state.
-* A `localStorage.setItem` failure calls `onError`; the UI callback shows a notice suggesting export. Save encode/export errors likewise surface through caller handling.
-* `flush` synchronously encodes and persists the latest unsaved pair when this tab owns its save key. It is called on `pagehide`, when document becomes hidden, hook cleanup/navigation, and explicit caller flush before replacement/import. Cleanup then closes/terminates the worker.
+The state diagram below shows how the autosave queue transitions among `Idle`, `Encoding`, `InlineFallback`, `Persisting`, and `Error`.
 
 ```mermaid
 stateDiagram-v2
   [*] --> Idle
   Idle --> Encoding: submit latest snapshot
-  Encoding --> Persisting: valid successful response
-  Encoding --> Encoding: newer snapshot queued
-  Encoding --> InlineFallback: worker unavailable / transport failure
+  Encoding --> Persisting: valid response for latest revision
+  Encoding --> Encoding: newer snapshot queued while busy
+  Encoding --> InlineFallback: worker unavailable or transport failure
   InlineFallback --> Persisting: inline encode succeeds
   InlineFallback --> Error: inline encode fails
   Encoding --> Error: latest worker response contains data.error
   Persisting --> Idle: write succeeds
-  Persisting --> Error: localStorage write throws
+  Persisting --> Error: localStorage write throws or lock blocked
   Error --> Encoding: newer snapshot submitted
-  Idle --> InlineFallback: flush latest unsaved
+  Idle --> InlineFallback: flush latest unsaved on pagehide or replacement
 ```
 
-The diagram is conceptual: stale successful results can be discarded and `pump` can immediately process a newer snapshot; worker `data.error` and worker transport failure have deliberately different behavior.
+If an encoding reply arrives from `campaign-save-worker` for an older revision, `createCampaignAutosave` discards it and immediately encodes the newest queued snapshot. When `pagehide`, document visibility hiding, or campaign replacement triggers `flush`, the queue synchronously encodes and writes the latest unsaved snapshot if the tab holds the Web Lock.
 
-## Load, hash verification, and recovery paths
+## Load, hash checks, and recovery paths
 
-Installed campaign boot first loads `/campaigns/index.json`, validates the registry, and loads a chosen manifest plus its content/world/map index/presentation/assets and maps. It validates registry/manifest ID/name/revision consistency and compiles the package. `verifyCampaignResources` fetches listed asset bytes in batches of four, checks safe package-relative `assets/` paths and SHA-256 hashes, caching successful/in-flight checks per reader/descriptor unless `refresh` is requested. `loadInstalledCampaign` does this verification before returning the installed package, so boot does not treat an unverified package as loaded.
+When resuming from `localStorage` or importing a JSON save file, `apps/web/app/page.tsx` decodes and restores the snapshot through `RestoreGameUseCase` and `GameSnapshotMapper`, checks that the campaign origin matches the selected campaign, and calls `verifyCampaignResources` with `refresh: true` to re-verify all referenced package asset SHA-256 digests before replacing the active session.
 
-Save resume/import sequencing differs: `page.tsx` first obtains an in-memory pair or decodes save text/file, then checks selected campaign origin as applicable, then verifies referenced campaign resources with `refresh:true` before applying the restored pair. If decode or resource verification fails, page keeps current session and reports an error. Resume can use the current in-memory campaign/battle without decoding a saved string, though it still refresh-verifies its resources. Autosave can fail independently and is not a migration/validation step; users are offered export when local persistence fails.
+The sequence diagram below shows how `Home resume/import`, `localStorage or uploaded file`, `RestoreGame and GameSnapshotMapper`, `verifyCampaignResources`, and `current application state` complete or reject a restore request.
 
 ```mermaid
 sequenceDiagram
@@ -180,23 +146,21 @@ sequenceDiagram
   participant V as verifyCampaignResources
   participant UI as current application state
   H->>LS: retrieve candidate / read file text
-  H->>S: decode (except current in-memory pair)
+  H->>S: decode and restore domain objects
   S-->>H: validated campaign + optional battle
-  H->>H: check selected origin
-  H->>V: refresh resource hashes
-  alt valid resources
-    V-->>H: verified
+  H->>H: check selected campaign origin
+  H->>V: refresh resource SHA-256 hashes
+  alt all asset hashes match
+    V-->>H: resources valid
     H->>UI: install pair + route to proper screen
-  else error
-    V-->>H: missing/changed resource error
-    H->>UI: notice and retain current pair
+  else decode or hash error
+    V-->>H: missing or changed resource error
+    H->>UI: show notice and retain current pair
   end
 ```
 
-## Export and import interface
-
-Export calls `encodeSave(campaign,battle)`, downloads JSON with filename based on campaign origin/content ID plus campaign day, and reports success/failure. Import enforces the 5 MB file-size check before calling `restoreGameSnapshot`, then hash-verifies resources and replaces state only after success. `decodeSave` repeats its own byte limit check, so direct callers cannot bypass the maximum by skipping the UI check. A save with no battle is legal when the campaign has no pending battle; a pending battle without matching tactical snapshot is rejected, and vice versa.
+Manual export calls `encodeSave(campaign, battle)` and triggers a browser file download named after the campaign ID and campaign day. Manual import enforces the 5 MB file limit at the file input and again inside `decodeSave`, replacing the active session only after both snapshot validation and resource hash checks succeed.
 
 ## Source anchors
 
-[`save.ts`](../../packages/game/save.ts), [`save-limits.js`](../../packages/game/save-limits.js), [`save-terrain.js`](../../packages/game/save-terrain.js), [`cell-scene-storage.js`](../../packages/game/cell-scene-storage.js), [`content-launch.ts`](../../packages/game/content-launch.ts), [`campaign-package-storage.js`](../../packages/game/campaign-package-storage.js), [`campaign.js`](../../packages/game/campaign.js), [`validate-battle.js`](../../packages/game/validate-battle.js), [`useCampaignAutosave.ts`](../../apps/web/lib/useCampaignAutosave.ts), [`campaign-autosave.ts`](../../apps/web/lib/campaign-autosave.ts), [`campaign-save-worker.ts`](../../apps/web/lib/campaign-save-worker.ts), [`campaign-library.ts`](../../apps/web/lib/campaign-library.ts), [`page.tsx`](../../apps/web/app/page.tsx), [`ContentEditor.tsx`](../../apps/campaign-editor/web/app/story/ContentEditor.tsx).
+[`packages/game/save.ts`](../../packages/game/save.ts), [`packages/game/save-limits.js`](../../packages/game/save-limits.js), [`packages/game/save-terrain.js`](../../packages/game/save-terrain.js), [`packages/game/cell-scene-storage.js`](../../packages/game/cell-scene-storage.js), [`packages/game/content-launch.ts`](../../packages/game/content-launch.ts), [`packages/game/campaign-package-storage.js`](../../packages/game/campaign-package-storage.js), [`packages/game/infrastructure/persistence/game-snapshot-mapper.js`](../../packages/game/infrastructure/persistence/game-snapshot-mapper.js), [`packages/game/infrastructure/persistence/game-unit-of-work.ts`](../../packages/game/infrastructure/persistence/game-unit-of-work.ts), [`packages/game/validate-battle.js`](../../packages/game/validate-battle.js), [`apps/web/lib/browser-save-writer.ts`](../../apps/web/lib/browser-save-writer.ts), [`apps/web/lib/useCampaignAutosave.ts`](../../apps/web/lib/useCampaignAutosave.ts), [`apps/web/lib/campaign-autosave.ts`](../../apps/web/lib/campaign-autosave.ts), [`apps/web/lib/campaign-save-worker.ts`](../../apps/web/lib/campaign-save-worker.ts), [`apps/web/lib/campaign-library.ts`](../../apps/web/lib/campaign-library.ts), and [`apps/web/app/page.tsx`](../../apps/web/app/page.tsx).

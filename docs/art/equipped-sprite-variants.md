@@ -1,21 +1,13 @@
 # Equipped sprite variants
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../verification/version-0.1.md) for the published-main checkpoint.
-
 This guide defines the contract and art acceptance rules for main-hand weapon sprite variants (long gun, short gun, blade, and bare hands) across the eight character sprite family appearances. Code paths under `assets/` refer to `content/assets/` in the current repository layout.
 
-Status: implementation in progress. Equipment classification exists; the
-renderer still uses the existing family artwork. Programmatic image edits are
-permitted for this work. The first weapon-removal prototype is review-only and
-has not been published. Classification tests do not
-prove that the four visible weapon variants are available.
-
-The 2026-09-22 blade candidates also failed review. Grid counts, facing
-directions, grips or blade visibility were incorrect. See
-`assets/previews/equipped-sprites/blade-generation-review.json` for retained
-prompts and candidate files. These images were not added to the runtime atlas.
+Equipment classification exists; the renderer still uses the existing family
+artwork for the visible weapon variants. Programmatic image edits are permitted
+for this work. Earlier blade candidates in
+`assets/previews/equipped-sprites/blade-generation-review.json` were rejected for
+incorrect grid counts, facing directions, grips or blade visibility, and are not
+part of the runtime atlas.
 
 ## Contract
 

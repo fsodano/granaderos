@@ -1,6 +1,8 @@
 # Walls between cells
 
-This implementation plan replaces full-cell walls with shared cell-edge segments for walls, doors, and windows (implemented in the [version 2 map format](../development/sector-editor.md#format-and-runtime-boundary), superseding the wall-cell geometry in the [sector builder plan](sector-builder.md)).
+This plan defines shared cell-edge segments for walls, doors, and windows in the
+[version 2 map format](../development/sector-editor.md#format-and-runtime-boundary),
+superseding the wall-cell geometry in the [sector builder plan](sector-builder.md).
 
 Walls, doors, and windows must occupy a shared cell edge. Both adjacent floor
 cells remain available for people and items. A wall blocks crossing its edge,
@@ -26,10 +28,9 @@ not standing in either cell.
    with sight, projectiles, throws, blast shielding, and destruction.
 3. Render explicit edge segments in SVG and Three. Align floors, roofs, and
    facade details. Add precise door/wall controls and editor edge selection.
-4. Validate focused edge behavior, existing regressions, the full local gate,
-   and a visible browser scene. Commit completed stages and open a new PR.
+4. Validate focused edge behavior, existing regressions, and a visible browser scene.
 
-## Main risks and required evidence
+## Main risks and required checks
 
 - Diagonal motion cannot bypass an edge endpoint.
 - A shot from an incident cell cannot skip the adjacent wall volume.
@@ -38,6 +39,3 @@ not standing in either cell.
 - Door and breach changes must invalidate renderer caches.
 - Converted partitions must remain attached to the outer wall at T junctions.
 - Cell contents, exits, and floor heights remain valid.
-
-The baseline is latest `origin/main`, commit `b5a4a114`. Local full-suite output
-is recorded in `/tmp/granaderos-wall-edges-baseline.log` for comparison.

@@ -25,7 +25,5 @@ La carga, el reloj y el regreso rechazan un sello eliminado o alterado. La muert
 posterior del contacto, la ocupación o los cambios posteriores de apoyo no
 reescriben el resultado histórico.
 
-La verificación acotada
-separa la ruta nativa pagada de los controles declarados de recorte y ocupación.
-No demuestra una conquista ni la campaña completa. V14 (resoluciones de misión en competencia con recompensas y consecuencias cívicas persistentes) conserva otros resultados
-de misión abiertos en la [revisión del video](../../verification/ja2-video-review-2026-10-03.md).
+V14 (resoluciones de misión en competencia con recompensas y consecuencias cívicas persistentes) conserva otros resultados
+de misión abiertos.

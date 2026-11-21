@@ -1,8 +1,5 @@
 # Glancing shots against stone
 
-> **Development-workspace record.** Current candidate rules and bounded scope;
-> acceptance evidence is recorded in the [video review](../../verification/ja2-video-review-2026-10-03.md).
-
 During tactical exploration and turn-based combat, a continued firearm ray—whether a single lead ball or one of the nine finite pellets in a shot load—can ricochet once in the horizontal plane when it strikes an exposed vertical face of explicit stone cover at a glancing angle. The existing aiming intent,
 loaded charge, ignition, shot variation, AP, wear, time and body-passage rules
 remain authoritative. Cannon flight and 3D assets have separate ownership.
@@ -49,10 +46,10 @@ adaptation. The 0.3 threshold, half-force retention and reflection cap are not
 inferred measurements from that study. Fragmentation, other surface reflection
 and a supported projectile mass/velocity model remain open.
 
-The reviewed classic and Stracciatella source established spent force, body
-passage and far-shot drop. It did not establish a reflected projectile path.
-This addition therefore claims a Granaderos rule, rather than exact classic
-ricochet parity. It introduces no modern equipment or door explosives.
+The reviewed classic and Stracciatella source establishes spent force, body
+passage and far-shot drop. It establishes no reflected projectile path.
+Reflection is therefore a Granaderos rule, not exact classic ricochet parity. It
+introduces no modern equipment or door explosives.
 
 ## Parallel 3D integration
 
@@ -66,8 +63,6 @@ Later observed legs use `discharge: false`, so one paid shot produces one muzzle
 cue. Raw physical segment models, private obstacle IDs and force records remain
 inside resolution. They are not renderer input and do not enter a save.
 
-Models, terrain, cameras and animations can proceed in a separate worktree while
-this gameplay change is tested. Connect reflected firearm playback to the
-tested shared result rather than resolving another shot in the renderer. The
-actual campaign/battle result remains equal through ordinary, presented and
-saved execution.
+Reflected firearm playback consumes the shared resolution result rather than
+resolving another shot in the renderer. The actual campaign/battle result
+remains equal through ordinary, presented and saved execution.

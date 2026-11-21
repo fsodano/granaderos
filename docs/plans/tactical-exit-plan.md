@@ -1,12 +1,8 @@
 # T09: physical retreat and sector exit
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../verification/version-0.1.md) for the published-main checkpoint.
+This implementation plan records the design input for requirement row T09 (retreat requires a real exit) of [the classic JA2 parity requirement baseline](../requirements/ja2-parity.md).
 
-Status note: this implementation plan records the design input for requirement row T09 (retreat requires a real exit) of [the classic JA2 parity audit](../verification/ja2-parity-audit.md). The implemented behavior and remaining limits are now described in [JA2 gameplay](../gameplay/ja2-gameplay.md#physical-departure-and-persistent-casualties) and [the parity audit](../verification/ja2-parity-audit.md).
-
-Read-only audit and proposed contract, 6 September 2026. It covers boundary departure rules, partial squad exit, rout crossing, and final participant dispositions (`departed`, `resident`, `captured`, and `dead`). No implementation status changes.
+This contract covers boundary departure rules, partial squad exit, rout crossing, and final participant dispositions (`departed`, `resident`, `captured`, and `dead`).
 
 ## Reference and current defects
 
@@ -21,8 +17,6 @@ The [original JA2 manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/m
 | `game/world.js:9–42` | Re-entry chooses positions near each previous player position, even after retreat and a new approach. Only old dead militia are restored separately; departed player corpses can disappear when no longer in the request squad. |
 | `game/ammunition.js`; `equipment.js:95`; `save.js:8–16` | Supplies return for every living report; no extracted/captive/resident partition exists. Save validation requires request participants in `battle.units`; removal during partial exit would break loading. |
 | `game/auto-resolve.js:39` | Timeout labels an active battle retreat without walking to an exit. It must use the same withdrawal contract once that contract is enforced. |
-
-Reproduced on current code: a valid unconscious soldier with HP 10 at `(9,8)` on a `20×16` map returns to Buenos Aires with the squad; a retreat with `survivors:[]` and no snapshot succeeds; re-entry places a prior interior soldier near `(10,9)` again.
 
 ## Proposed bounded contract
 
@@ -57,4 +51,4 @@ Reproduced on current code: a valid unconscious soldier with HP 10 at `(9,8)` on
 - Adapt auto-resolve timeout to a bounded legal withdrawal phase. Units that cannot escape are unresolved residents or captives according to the final control state; never label all survivors evacuated because time expired. Existing pre-combat retreat remains a strategic action.
 - Test: center refusal; correct/wrong/blocked edge; insufficient AP and energy; bleeding collapse on exit; closed door or prop on approach; movement interruption before edge; selected departure while a second unit fights; departure save/load; escaping unit excluded from sight/fire; unconscious/routed/trapped/dead dispositions; corpse and exact tool/gun metadata after re-entry; dropped weapon not restored; partial squad/mount location; missing/duplicate reports; two submissions returning supplies once; new edge arrival; old save migration; scene exits; auto-resolve cannot manufacture evacuation.
 
-The UI should reuse the retreat control for a destination and selected/all preview, show blocked names and reasons, and name anyone who will remain before abandonment. Keep this separate from completed-battle reporting and map viewing. T09 remains partial until the reducer, complete campaign transaction, arrival rules and these tests agree.
+The UI should reuse the retreat control for a destination and selected/all preview, show blocked names and reasons, and name anyone who will remain before abandonment. Keep this separate from completed-battle reporting and map viewing. T09 is satisfied only when the reducer, complete campaign transaction, arrival rules and these tests agree.

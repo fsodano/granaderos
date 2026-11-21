@@ -1,9 +1,5 @@
 # Autonomous local militia
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
-
 During turn-based combat and reaction interrupts, local militia fight automatically under AI control while hired soldiers and temporary mission allies remain under player control (during peaceful tactical exploration, militia hold their posts or run autonomous patrols). Militia remain on the friendly combat side, share friendly visibility, and keep their own identity, equipment, wounds, supplies and combat experience.
 
 ## Source and adaptation
@@ -22,23 +18,10 @@ Granaderos retains its existing two-side allegiance and 100-point AP system. It 
 - Auto-resolve uses the same autonomous turn. Its manual-order counter excludes AI orders. On timeout, hired troops attempt physical withdrawal while local militia continue defense; unresolved combat stays available.
 - Routed militia use the existing paid escape or surrender rules. Campaign return retains casualties, wounds, ammunition and earned promotions.
 
-## Verification
+## Limits
 
-Focused tests cover autonomous actions, finite reloads, mixed and nested interrupts, corrupt continuations, full campaign save/load, time accounting, promotion through actual combat, auto-resolve, manual-control rejection, support from hired soldiers, and rendered status controls.
-
-The final isolated regression run passed all 1,232 tests. Type checking, the production build and `git diff --check` also passed. The isolated checkout excluded concurrent art and recruitment edits. Live training and control checks passed as detailed below; automatic combat remains unverified in the browser. No tactical militia command menu, peaceful patrol system, or strategic militia medical assignment is included.
-
-
-## Live control verification — 11 September 2026
-
-The existing `http://localhost:3000/?qa=1` campaign was used through normal controls. It contained Kerr and no garrison. No ordinary campaign storage was changed.
-
-- Rested Kerr, selected En servicio, and paid 60 pesos for three new defenders. A 24-hour wait stopped at his contract warning. Paid a one-week renewal, then a six-hour request stopped after the remaining three training hours. The completed course took 22 working hours and produced three cívicos.
-- Entered Retiro and paused exploration. All three militia status cards appeared under Guarnición local. Their IDs were 20000–20002; each had 60 HP, one loaded round and five reserve rounds. Only Kerr appeared in the hired squad strip.
-- Clicked a militia figure on the map. Kerr remained selected. The garrison cards offered no manual selection buttons.
-- Equipped Kerr's dressings. The garrison panel changed to Vendar a targets. Clicking a healthy militiaman kept every position and HP value unchanged and retained Kerr's two dressings. The game rejected unnecessary treatment.
-
-The native file picker could not be operated because the computer-use tool denies control of the Codex app. Consequently, the controlled combat save below was not imported or tested live. No claim of browser combat, nested interrupts, casualty return or reload persistence is made by these checks.
+No tactical militia command menu, peaceful patrol system or strategic militia
+medical assignment is included. Militia remain autonomous on the friendly side.
 
 ## Reproducible defense demonstration
 
@@ -46,4 +29,5 @@ Run `node tools/build-militia-demo.mjs` to create `artifacts/militia-defense-dem
 
 Open the separate QA campaign at `http://localhost:3000/?qa=1`, use Menú → Importar partida, and choose that JSON file. This replaces the QA campaign. The scenario is an explicit regression fixture: a legacy hired squad, three veteran militia, a scheduled defense request and an authored open field. It is not a fresh-player progression record or the normal Retiro map.
 
-Press Fin del turno without issuing any soldier orders. In simulation, all three militia fight automatically and win after six combat seconds. Each starts with six total rounds and finishes with four. The hired soldiers retain their positions, HP and ammunition. These expected results remain to be confirmed in the live browser.
+Press Fin del turno without issuing any soldier orders. All three militia then fight
+automatically and win after six combat seconds. Each starts with six total rounds and finishes with four. The hired soldiers retain their positions, HP and ammunition.

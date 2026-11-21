@@ -1,15 +1,9 @@
 # Campaign creation and sharing
 
-Updated: 11 October 2026.
-
-This plan covers local campaign authoring in `/studio` and future community campaign sharing. Status: partially implemented. Campaign creation is available through `/studio` on `main`; community publishing
-and wider mechanics remain future work. Version 0.1 records an earlier playable game and
-does not include the studio.
+This plan covers local campaign authoring in `/studio` and future community
+campaign sharing. Community publishing and wider mechanics remain future work.
 
 [Campaign studio workflow](../authoring/campaign-studio.md) ·
-[Studio acceptance and evidence](../evidence/campaign-studio-2026-10-10/README.md) ·
-[Current separation checks](../verification/campaign-engine-separation-2026-10-10.md) ·
-[Version 0.1 checkpoint](../verification/version-0.1.md) ·
 [Story editor](../development/story-editor.md) ·
 [Sector editor](../development/sector-editor.md)
 
@@ -21,11 +15,11 @@ Campaigns pin validated content, and drafts support undo, import and export.
 The [La ruta de las postas example](../development/example-post-campaign.md)
 demonstrates an independent scenario in the existing world.
 
-The `main` branch separates the engine and installed campaign folders.
-Local authors can scaffold, check and install a generic campaign using
-the [campaign folder workflow](../development/campaign-authoring.md). The menu
-can select multiple installed packages, with separate saves and editor drafts.
-Only Granaderos ships in the repository. This local workflow does not add a
+The engine and installed campaign folders are separate. Local authors can
+scaffold, check and install a generic campaign using the
+[campaign folder workflow](../development/campaign-authoring.md). The menu can
+select multiple installed packages, with separate saves and editor drafts. Only
+Granaderos is included in the repository. This local workflow does not add a
 community catalogue or certify a finished campaign.
 
 The `/studio` website connects the content, world, map, building, presentation
@@ -33,7 +27,6 @@ and resource tools through one project. Embedded map edits update the project
 directly. A valid project exports an installable ZIP with its referenced
 documents and actual resource files; separate manual map exports are not
 required. The studio uses the same package validators as the folder workflow.
-Its final visible acceptance status is recorded in the linked evidence.
 
 Current package authoring includes supported geography, factions, opposition,
 calendar events, role bindings, chapters and resource definitions. Authors can
@@ -54,7 +47,7 @@ selected project. Browser project storage remains separate from game saves.
 Implementation should use small changes with visible controls, finite resource
 accounting and save/reload checks. The longer
 [content-system design](game-content-system.md) provides proposals; its full scope
-is not delivered merely because a related editor control exists.
+is not implied by any single editor control.
 
 ## Acceptance for the future community platform
 

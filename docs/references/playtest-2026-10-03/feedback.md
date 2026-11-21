@@ -1,6 +1,9 @@
 # Playtest feedback — 2026-10-03
 
-This dated reference document is a chronological record of the 43 player feedback items and requests from the 3 October 2026 playtest review, not a record of implemented changes (see the [2026-10-03 playtest implementation trace](../../development/playtest-feedback-2026-10-03.md) for the subsequent implementation status). Firm requests are separated from suspected causes and tentative ideas. Existing mechanics are noted as such rather than listed as missing work.
+This reference document records the 43 player feedback items and requests from the
+3 October 2026 playtest review. It captures requests, not their acceptance.
+Firm requests are separated from suspected causes and tentative ideas. Existing
+mechanics are noted as such rather than listed as missing work.
 
 ## Feedback, in order received
 

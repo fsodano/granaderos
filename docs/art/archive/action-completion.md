@@ -1,10 +1,10 @@
 # Complete shared sprite actions
 
-> Historical recovery record. Counts and completion statements below describe the source task, not the current combined build. See [../sprite-families.md](../sprite-families.md) and [../../verification/latest-build-consolidation.md](../../verification/latest-build-consolidation.md) for current scope.
+> Historical recovery record. Counts and completion statements below describe the source task, not the current combined build. See [sprite families](../sprite-families.md) for current sprite-family scope.
 
-This historical record documents the in-progress task to author and review the full tactical command action matrix across all 19 shared 2D sprite appearances in eight directions. Code paths such as `game/` and `assets/` refer to the pre-monorepo layout (`packages/game/` and `content/assets/` in the current repository).
+This record documents the task of authoring and reviewing the full tactical command action matrix across all 19 shared 2D sprite appearances in eight directions. Code paths such as `game/` and `assets/` refer to the pre-monorepo layout (`packages/game/` and `content/assets/` in the current repository).
 
-Status: in progress. The 328 atlases from [PR #14](https://github.com/fsodano/granaderos/pull/14) do not complete this goal.
+The 328 atlases do not complete this goal.
 
 All 19 shared appearances must have every required action in all eight
 directions. Civilian is included without an exception. Existing approved art
@@ -36,5 +36,4 @@ New built-in image generation outputs and exact prompts are stored under
 coverage until their selected regions have been registered, packed and reviewed.
 
 Initial batch: Granadero crouched firing. The north and south candidate sheets
-need cardinal-direction corrections before registration. The first north
-correction has been generated. No new atlas has been published yet.
+need cardinal-direction corrections before registration.

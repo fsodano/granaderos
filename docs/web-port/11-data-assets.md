@@ -122,7 +122,7 @@ Two surface types are used by the engine:
 The Granaderos conversion tooling is `tools/sti.py` (single-image converter)
 and `tools/sti_assets.py` (rebuilds all engine assets and records hashes in
 `assets/manifest.json`). See `assets/README.md` §"Engine assets" for the exact
-commands and the delivered STI files.
+commands and the STI files it produces.
 
 ---
 

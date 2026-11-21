@@ -1,9 +1,5 @@
 # Strategic militia medical care
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
-
 On the strategic campaign screen, a present hired soldier can be assigned to treat wounded local militia defenders using personal medical kits and elapsed campaign hours.
 
 ## Player controls
@@ -44,34 +40,4 @@ The notice and assignment survive saves. Paid local resupply lets the assigned
 doctor resume work. A completed-care notice takes priority when the final kit
 also completes the last patient's recovery.
 
-## Verification — 21 September 2026
-
-Eight simulation/save checks in `tests/militia-medical-care.test.mjs` cover hourly
-costs, bleeding triage, shared treatment limits, location/deployment restrictions,
-real sector reentry, empty work, saved supply exhaustion and paid resupply, sleep,
-and training custody. Two render checks cover the assignment, wounds, blocked
-work and completion text. With the existing care and assignment-attention checks,
-all 39 focused checks pass.
-
-The integrated suite passed 2,633 tests with no failures or skips. That run
-preceded the three added resupply/sleep/training tests and the final completion
-text correction; the final 39-check focused run covers those additions. Type
-checking, the production build and diff checks pass. All 49 unrelated files in
-the preservation snapshot remain unchanged.
-
-The live check imported a valid controlled scenario: three Retiro defenders,
-one with 20/60 health, and Paroissien with two kits. This is interface and medical
-rule evidence, not a fresh-campaign conquest scenario.
-
-1. Assigning Paroissien exposed his six-health hourly rate.
-2. One hour raised the wounded defender to 26/60 and reduced his kits to one.
-3. Reloading and continuing retained the assignment, health and supply count.
-4. Requesting six hours stopped after one hour at 32/60 with zero kits and a
-   named supply notice.
-5. Buying five kits consumed 150 pesos and five units of local shop stock.
-6. The next six-hour request stopped after five hours with no wounded defenders,
-   zero remaining kits and a completed-care notice. The doctor's card and militia
-   panel agreed. The final panel layout was inspected at 1280 × 720.
-
-Tactical militia command choices and the remaining gameplay audit are still
-open. This feature does not establish complete campaign balance or JA2 parity.
+Tactical militia command choices remain open. Campaign balance and JA2 parity are broader.

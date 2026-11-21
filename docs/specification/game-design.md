@@ -1,9 +1,7 @@
 # Granaderos: current game design
 
-Updated 2026-10-10. This document records the product direction and bounded
-system contracts. Read [version 0.1](../verification/version-0.1.md) for current
-scope and its recorded evidence. A design requirement is not proof of implementation.
-Dated acceptance notes below retain their original source and limits.
+This document records the product direction and bounded system contracts. A
+design requirement is not by itself a statement of current behavior.
 
 ## Purpose and platform
 
@@ -22,16 +20,16 @@ historical quotations, wages or surveyed geography.
 Gameplay systems and campaign content must be separate. The same tested mechanics
 must run a replacement cast, equipment catalogue, dialogue, rules and campaign
 without editing engine code. A complete workflow for the owner and other people
-to create, package and share independent campaigns is future work. Version 0.1
-includes bounded editor capabilities and an example; it does not claim that
-future platform. See [the campaign authoring plan](../plans/campaign-authoring.md).
+to create, package and share independent campaigns is future work. The current
+design includes bounded editor capabilities and an example; it does not claim
+that future platform. See [the campaign authoring plan](../plans/campaign-authoring.md).
 
 ## Decisions that override earlier documents
 
-- Version 0.1 is a playable development checkpoint. Full campaign, balance,
-  performance and presentation acceptance remain open.
-- Complete campaign creation and sharing are future work, not a prerequisite
-  for recording this checkpoint.
+- Release acceptance requires end-to-end campaign playability, combat balance,
+  60 FPS target performance on reference scenes, and complete period visual
+  presentation.
+- Complete campaign creation and sharing are future work.
 - Equipment commerce is disabled. Recruiting actual owners and recovering
   physical sector objects provide finite equipment and supplies. Legacy commerce
   fields survive imported packages but do not enable purchases, replenishment,
@@ -39,22 +37,20 @@ future platform. See [the campaign authoring plan](../plans/campaign-authoring.m
 - The game is a web game, not a required native JA2 installation.
 - The strategic economy uses pesos. Raw-material recipes, resource convoys,
   infantry manufacturing and individual horse breeding/care from the original
-  specification were removed in [PR #12](https://github.com/fsodano/granaderos/pull/12).
-  Tactical carried equipment, finite ammunition, care and transport restrictions
-  remain required. They must not reintroduce an unwanted material-management game.
+  specification are out of scope. Tactical carried equipment, finite ammunition,
+  care and transport restrictions remain required. They must not reintroduce an unwanted material-management game.
 - Paid candidates permit day, week and month contracts when affordable, including
-  elites ([PR #17](https://github.com/fsodano/granaderos/pull/17)). A local prototype
-  that restricts elites to one day does not change this decision.
+  elites. A local prototype that restricts elites to one day does not change this
+  decision.
 - A new game has no pre-hired historical squad. The player can create one free
   personal character or hire a paid candidate. The formation chapter advances
   with that first person in service, without an extra academy funding charge.
-  A pending hire must arrive first. See opening acceptance
-  and the verified local-recruit route.
-  The local route requires ordinary paid equipment and finite care; it does not
-  guarantee solo or all-profile victory.
-- A bulletin candidate exists off-map until hired and delivered. A dossier is not
-  an NPC encounter. Arrival requires a controlled, suitable reception location;
-  an arbitrary river, sea cell or mountain pass is not a reception facility.
+  A pending hire must arrive first. The local-recruit route requires ordinary paid
+  equipment and finite care; it does not guarantee solo or all-profile victory.
+- A bulletin candidate exists off-map until hired and present at a reception
+  site. A dossier is not an NPC encounter. Arrival requires a controlled,
+  suitable reception location; an arbitrary river, sea cell or mountain pass is
+  not a reception facility.
 - An appearance range is a set of exact cells anywhere on the actual map. It can
   cross regions and include open land. It is not a locality plus invented outskirts.
 - Existing state is conserved. A location update must not heal, clone, resurrect,
@@ -75,8 +71,8 @@ no capture reward, forces or completed missions and never reset later saved cont
 Changing headquarters does not remap historical contacts or their role rules.
 Authored chapter progression is a separate choice, described below.
 
-The following imported-firearm contract is historical. Commerce is disabled in
-version 0.1; retained import fields do not permit a new purchase or delivery.
+The following imported-firearm contract is historical. Commerce is disabled;
+retained import fields do not permit a new purchase or delivery.
 
 Imported firearm families use an authored reception port and inclusive delivery
 window of 1–720 hours, or an explicit disabled setting. Defaults remain Ensenada
@@ -158,7 +154,7 @@ Pinned saves retain configuration and completed steps.
 
 Preparation retains the project, its paid costs, control conditions and local
 loyalty effect. It does not enable equipment purchases, replenishment or commercial
-repair in version 0.1. Current repair assignments use actual finite physical kits.
+repair. Current repair assignments use actual finite physical kits.
 Treasury, logs and historical preparation text reflect configured names/prices. This does not move tactical
 buildings, change the map geography or replace the original Cuyo mission gates.
 
@@ -238,14 +234,14 @@ month contracts with a visible price. Local service starts in place; it has no
 bulletin arrival. Historical encounter roles retain their original service policy. Independent squads have at most six members; reassignment requires
 real co-location. The player officer has one persistent identity.
 
-Ordinary live dismissal or contract expiry returns the person's current physical equipment once at the actual local cell. Loaded-battle changes defer to normal settlement; expiry in transit follows real arrival. Returning or rehiring cannot refill weapon slots, charges, pockets, outfit, consumables or repair stock. Rehire must collect existing local property or recover other actual equipment. Capture/death custody and horses keep their separate policies. This is bounded service-equipment return, not full civilian belongings/armour or stock-transfer parity. See [alpha local acceptance](../verification/alpha-service-equipment-return-2026-10-01.md).
+Ordinary live dismissal or contract expiry returns the person's current physical equipment once at the actual local cell. Loaded-battle changes defer to normal settlement; expiry in transit follows real arrival. Returning or rehiring cannot refill weapon slots, charges, pockets, outfit, consumables or repair stock. Rehire must collect existing local property or recover other actual equipment. Capture/death custody and horses keep their separate policies. This is bounded service-equipment return, not full civilian belongings/armour or stock-transfer parity.
 
 Health, bleeding, breath, fatigue, morale, experience, learned skills, inventory,
 relationships, custody and service are separate state. Dead, unconscious, routed,
 captured, dismissed and off-map are not interchangeable statuses. Care, rest,
 repair, training and rescue consume real time and available resources. A route
 must adapt to actual survivors; it cannot revive an expected doctor or give free
-supplies to reach a scripted checkpoint.
+supplies to reach a scripted stage.
 
 The default doctor/patient integration assigns serving personnel in the same
 safe controlled cell. Doctors need medicine 20, health 15, no bleeding, energy
@@ -254,14 +250,14 @@ three energy and adds two fatigue. It stops bleeding first; later hours restore
 `2 + floor(medicine / 20)` health. A patient receives at most one treatment per
 hour. Assigned staff cannot march, deploy or instruct militia. Dressings must
 already exist with their owner or be recovered from a physical sector object.
-Equipment commerce and workshop replenishment are disabled in version 0.1.
+Equipment commerce and workshop replenishment are disabled.
 Assignments and quantities persist; service changes cannot grant new stock.
 Current carried-equipment repair uses an actual local mechanic, finite kits and
-the owner's equipment. Selecting another squad cannot service someone remotely.
-See current repair rules.
+the owner's equipment. Selecting another squad cannot service someone remotely;
+see [equipment repair](../gameplay/equipment/equipment-repair.md).
 These are declared tuning values, not a claim of exact JA2 numerical behavior.
 Advanced care, strategic bleeding, automatic sleep and physical kit custody retain
-separate acceptance requirements. See care verification.
+separate acceptance requirements.
 
 Explicit rest uses safe serving personnel and real campaign hours. It restores
 energy and reduces fatigue; patients receive the same recovery while waiting for
@@ -272,8 +268,7 @@ service resumes. Contract expiry stops recovery before that hour's work. Rates
 use an eight-hour reference adjusted by wounds and the authored night-vision
 trait; no historical-ID profile is implied. The existing supplied daily recovery
 is retained. Automatic sleep/wake, collapse, configurable sleep needs, global
-fatigue capacity and advanced marching remain separate integrations. See
-rest acceptance.
+fatigue capacity and advanced marching remain separate integrations.
 
 An optional authored care group configures minimum medicine, base healing and
 skill interval, treatment energy/fatigue costs, base rest recovery
@@ -282,7 +277,6 @@ legacy packages omit the group and retain their identity/defaults. Older dressin
 price fields are preserved for content compatibility; the current editor hides
 them and commerce guards reject their purchase paths. Saved partial rest hours use the pinned
 interval. Core safe-presence, critical-threshold and finite-dressing rules remain.
-See care-rule acceptance.
 
 Manual field first aid uses finite local strokes. It stops ordinary bleeding
 without restoring ordinary lost health. Critical care restores living patients
@@ -297,27 +291,25 @@ wounds; stabilization grants no immediate AP. Critical casualties cannot hold th
 field, but exhaustion alone does not settle a battle. Incapacitated enemy wounds
 and finite equipment persist across visits and a distinct new occupation.
 Complete shock, wound/AP, custody and transport behavior retain separate work.
-See critical condition acceptance.
 Living, present civilians recover ten energy after each loaded civilian phase:
 once per completed combat round or six exploration seconds. Waking grants no
 movement in that same phase, health, AP or cleared wound history. Critical health
 still requires care, corpses remain dead and unloaded scenes do not recover.
 Saved partial intervals and identity preserve recovery through visits and service
-changes. See civilian breath recovery.
+changes.
 
 Authored character conditions can query consciousness, unconsciousness, wounds,
 bleeding, stable consciousness or full health in dialogue and campaign rules.
 They use the current maximum and matching active actor, including mission allies.
 A deployed actor without its matching scene has unknown physical condition, not
-an inferred result from an older service sheet. Validated tactical checkpoints
+an inferred result from an older service sheet. Validated tactical conditions
 resolve failure rules; chapter success still waits for settlement. Health does
-not imply presence, service, automatic speech or rewards. See
-story health conditions.
+not imply presence, service, automatic speech or rewards.
 An optional authored first-aid response belongs to the patient and is emitted
 only after an accepted, paid tactical stroke by another person, while the patient
 is conscious. A later recovery tick, self-care, rejected order or saved reload
 cannot emit it. Blank or omitted text stays silent, and older packages retain
-their identity. See treatment responses.
+their identity.
 These stroke and indivisible-dressing rules are explicit
 Granaderos adaptations. See [manual care](../gameplay/characters/field-first-aid.md).
 
@@ -342,8 +334,7 @@ from their shared identity. Adjacent dead or unconscious residents can be looted
 through ordinary paid orders. Collection reduces the original holder; movement,
 service changes, saves and distinct successors cannot replenish or duplicate it.
 The temporary mission ally retains actual supplies in later contacts. Complete
-weapons, pockets, gifts and merchant custody remain separate. See
-finite civilian supplies.
+weapons, pockets, gifts and merchant custody remain separate.
 
 Successors are distinct people. Confirm the triggering death once, retain the
 chosen delay and destination, and hold blocked arrivals without rerolling.
@@ -369,7 +360,7 @@ whole enemy turn with one final set of positions. An actor first seen inside the
 field starts at its observed cell; its unseen approach remains private. Walking
 cycles continue across consecutive cells. Input waits for the visible sequence,
 and the campaign stores the authoritative result once, without saving transient
-animation frames. See the bounded implementation record.
+animation frames.
 
 Weapons require owned, compatible ammunition and equipment. Aiming, readying,
 firing, partial reloads, misfires, priming, wear and hand changes must conserve
@@ -385,16 +376,17 @@ and persistent. NPC and enemy movement uses real walkability and observation.
 Enemies and militia obey the same costs and resource constraints as comparable
 player actions.
 
-The detailed parity register retains all 87 gameplay requirements from the local
-JA2 audit, including inventory, assignments, relationships, custody, rescue,
-transport and world persistence. Its missing or unverified parts are not removed
-by this summary. Numerical adaptations must be recorded with tests, not described
-as exact JA2 equivalence without evidence.
+The detailed parity register retains all 87 gameplay requirements from the
+[JA2 parity baseline](../requirements/ja2-parity.md), including inventory,
+assignments, relationships, custody, rescue, transport and world persistence.
+Its outstanding parts are not removed by this summary. Numerical adaptations
+must be covered by tests, not described as exact JA2 equivalence without source
+citations.
 
-The [30 September overview review](../verification/ja2-gameplay-review-2026-09-30.md)
-identifies decisions still to document for route freedom, sector approaches, shop
-progression, campaign variation and lasting attribute damage. These are proposed
-clarifications, not silently approved additions or implementation-status changes.
+Route freedom across non-road cells, multi-edge sector approaches, shop
+progression when commerce is enabled, campaign replay variation, and permanent
+attribute damage from critical wounds require explicit design rules before those
+mechanics are expanded.
 
 ## Story editor and authoring
 
@@ -414,9 +406,9 @@ Enemy roles and militia ranks can select primary weapons and secondary blades
 independently. Only newly issued soldiers receive those selections; retained
 soldiers keep their actual gear. A blade primary receives no firearm cartridges
 and needs no separate ignition supplies. An unspecified secondary selection retains the role default.
-Historical commerce definitions retain validated prices and custody. Version
-0.1 hides their editor forms and rejects commerce orders. Their presence in a
-package does not make shops available.
+Historical commerce definitions retain validated prices and custody. The current
+editor hides their forms and runtime guards reject commerce orders. Their
+presence in a package does not make shops available.
 
 Dialogue is a graph of authored text, conditions, choices and effects. Quests
 track explicit state, participants, receipts and completion/failure consequences.
@@ -448,7 +440,7 @@ items are recorded once; loading, renewal, rehire and repeated entry cannot
 restore spent quantities. Owned rounds stay with soldiers or physical stores.
 Blade primaries receive no new firearm rounds and retain any owned families.
 The editor can change the initial definitions, but an existing campaign keeps
-its pinned package. See finite editor scope.
+its pinned package.
 
 Each catalogued character can author an initial allocation of rations, torches,
 dressings and boleadoras (integer 0–1000 for each). The campaign
@@ -491,14 +483,13 @@ A dialogue can end the commanded meeting and return that resident to its routine
 including the speaker itself. Release and optional quest/money changes are atomic.
 A consumed release cannot cancel a later distinct meeting. Save/re-entry preserves
 the released state; ordinary danger and conversation pauses still control motion.
-Map-marker destinations,
-arrival effects and multi-actor story sequences remain part of the target design;
-see the separate status and evidence in local meetings.
+Map-marker destinations, arrival effects and multi-actor story sequences remain
+part of the target design.
 
 ## Presentation and release acceptance
 
 The default campaign needs legible Spanish UI, recognizable period characters,
-distinct Royalists, proportionate buildings and original art/audio with provenance.
+distinct Royalists, proportionate buildings and original art/audio with documented sources.
 Movement, posture, equipment, injury and death must match the actual action.
 Walking frames, sprite-family coverage and the complete requested animation set
 are different acceptance scopes. Static atlas coverage is not visual approval.
@@ -508,23 +499,22 @@ lighting, room reveals, groups, inventory and repeated save/load on recorded
 hardware. A fast helper or one smooth walk does not establish universal 60 FPS.
 
 Final gameplay acceptance requires the selected release requirements to have
-usable controls, tested rules, persistence and integration evidence. It includes
-a complete fresh campaign with real battles, finite supplies and permanent losses,
-plus defeat and rescue/recovery routes. The full creator platform has separate
+usable controls, tested rules and persistence. It includes a complete fresh
+campaign with real battles, finite supplies and permanent losses, plus defeat and
+rescue/recovery routes. The full creator platform has separate
 future acceptance, including independently authored campaigns without engine edits.
-The requested version 0.1 source tag records a development checkpoint with stated
-limits. A test fixture that injects victory proves only a state transition;
-a passing subset does not establish the complete campaign.
+A test fixture that injects victory proves only a state transition; a passing
+subset does not establish the complete campaign.
 
 ## Sources and maintenance
 
 The supplied [original specification](original.txt),
-[gameplay clarifications](gameplay-expansion.md), merged scope changes
-and recorded design decisions supply the requirements. The [formal parity audit](../verification/ja2-parity-audit.md) preserves the
-additional local parity requirements and identifies conflicting implementations.
-Legacy design documents remain available for provenance, with current-status
-banners. Every feature PR must update its requirement entries, design decisions
-when needed, verification evidence and the generated progress view.
+[gameplay clarifications](gameplay-expansion.md), scope decisions
+and recorded design decisions supply the requirements. The
+[parity register](../requirements/ja2-parity.md) carries the additional local
+parity requirements. Earlier design documents remain available for background.
+Every feature change updates its requirement entries and, when needed, its
+design decisions.
 
 ### Personal supply conditions
 
@@ -533,8 +523,7 @@ character to retain an inclusive supply quantity range. Current tactical stock
 overrides the deployed service snapshot; absent tactical state is unknown, not
 empty. The check does not grant or consume goods and does not imply life, presence
 or service. The four current personal supplies share this rule. Arbitrary inventory
-and dialogue transfers remain separate work. See the
-verification record.
+and dialogue transfers remain separate work.
 
 ### Partial firearm loading
 
@@ -546,7 +535,6 @@ it. Controls preview the current cost and remaining work using the same plan.
 Strategic returns retain this partial work on the equipped firearm. Moving that
 partially loaded firearm into the abstract campaign armory requires completing
 its loading first; tactical physical swaps retain unfinished work.
-See the verification record.
 
 ### Authored firearm preparation
 
@@ -556,23 +544,18 @@ Physical handling and incapacity lower the weapon; accepted shots establish the
 position after payment, including failed ignition. Readiness belongs to the
 actor and active scene, not to an inventory gun or a fresh deployment. Zero is
 the existing default and remains the fallback for unconfigured older weapons.
-See the bounded acceptance record;
 directional turning and independent hands remain separate requirements.
 
 ### Authored cartridge price
 
-> **Historical commerce contract.** This path is disabled in version 0.1.
-> The text below records earlier implementation and package fields, not current
-> player controls. See commerce deferral.
+> **Historical commerce contract.** Commerce is disabled.
+> The text below records earlier package fields, not current player controls.
 
 A campaign can pin an optional shared cartridge unit price. An absent value
 preserves one peso and older content identities. Purchases use that price while
 issued, held and returned cartridges remain physical quantities. Returns do not
 credit money. A settled request cannot deliver stock twice. Zero price is an
 authored economic choice.
-The verification record separates
-the original price delivery from later ammunition types and
-[persistent strategic custody](../verification/strategic-ammunition-custody.md).
 
 ### Civilian wound continuity
 
@@ -581,15 +564,13 @@ in the world, even before the first encounter. Dormant successors wait until
 appearance; a loaded-cell guard postpones both appearance and the wound clock.
 Daily moves carry the same wound to the new cell; a later corpse stays there.
 Bulletin candidates remain outside this civilian clock. Older saves start unseen
-wounds from their saved condition and time without retroactive damage. See
-unseen-resident verification.
+wounds from their saved condition and time without retroactive damage.
 
 A civilian wound retains its unfinished six-second interval while its
 sector is closed. Campaign time and loaded tactical time each process their own
 actors once. Reentry and saving cannot stop bleeding; finite aid can. Off-screen
 death is recorded at its actual minute, with one set of consequences and the
 original successor delay. Bodies and successors remain separate identities.
-See the bounded acceptance record.
 Strategic civilian care and off-screen recovery remain separate requirements.
 Military service wounds use the hourly rule below.
 
@@ -599,9 +580,7 @@ A known world resident leaving service resumes its current physical condition an
 remaining personal supplies before its next civilian encounter. Its old civilian
 cache cannot heal a service wound or restore an injury already treated. Placement
 still controls its next appearance, and active scenes do not gain a duplicate.
-Dead service actors remain military bodies. See the
-bounded verification for legacy
-conversion and the separate military-clock and custody requirements.
+Dead service actors remain military bodies.
 
 ### Military wounds outside deployment
 
@@ -610,9 +589,7 @@ after local physician work. Waiting, travel and other-squad time share this
 rule; deployed, arriving and out-of-service people do not receive a second clock.
 The editor pins an optional percentage (default 25; zero disables it). Death
 removes the person from marching squads without reviving or replenishing it.
-A squad with no survivors stops at its last reached location. See the
-verification record for the hourly
-boundary and the remaining fractional-time, custody and strategic-remains scope.
+A squad with no survivors stops at its last reached location.
 
 ### Local militia physicians
 
@@ -621,22 +598,20 @@ recruited patients. Each effective hour spends one personal dressing using the
 pinned care rates. Bleeding takes priority and each soldier is treated at most
 once that hour. The loaded scene owns deployed garrison health. Treatment keeps
 identity and finite equipment through saved reentry; it cannot recreate a
-casualty. See the bounded verification
-for the separate unloaded-militia wound clock and custody requirements.
+casualty.
 
 ### Individual militia promotion
 
 The campaign offers an explicit choice between three fresh cívicos and
 promotion of three existing fit cívicos to montoneros. The selected quote shows
 actual cost and duration; missing funds, space, supply or participants block
-payment with a reason. See course controls.
+payment with a reason.
 New paid promotion courses reserve the actual participants. Completion
 changes their rank and training attributes without replacing their health,
 weapons or finite supplies. Cancellation or instructor departure returns them
 at the previous rank. Saved identities remain separate from a deployed garrison,
 even if the course completes while another squad is inside the sector. Older
-count-only courses and already-paid veteran courses retain their earlier contract. See the
-verification and compatibility limits.
+count-only courses and already-paid veteran courses retain their earlier contract.
 
 ### Militia wounds outside the active scene
 
@@ -645,8 +620,7 @@ work. Actually deployed defenders use only their tactical clock. A separate miss
 scene leaves the town garrison and its physician on their strategic clocks. A death reduces the
 existing rank count once and retains the actual corpse and finite possessions
 in the known saved scene. Older records without a scene cannot establish a body
-position. See wound and remains verification
-for real travel, remote tactical time, collection, saves and compatibility limits.
+position.
 
 ### Combat-earned militia rank
 
@@ -659,9 +633,7 @@ ordered cumulative thresholds and per-rank attribute gains, pinned to each new
 campaign. Zero gains keep the current effective attribute.
 New instruction can create cívicos or promote them to montoneros; veteran rank
 requires combat. Promotion preserves the actual wounded soldier and finite
-belongings. See bounded combat verification
-for prior paid-course compatibility and the separate allied-AI scope. See also
-authored promotion verification.
+belongings.
 
 ### Autonomous local defenders
 
@@ -671,8 +643,7 @@ or after the player's response in enemy-first contact. Reactions spend the same
 budget; no extra points are issued for their phase. The squad and temporary
 mission allies retain manual control. Garrison cards report status, and squad
 members can still treat wounded defenders. Saved return retains identity, wounds,
-casualties, supplies and combat credit. See bounded combat and control checks
-for the separate patrol, redistribution, artillery and advanced-AI requirements.
+casualties, supplies and combat credit.
 
 ### Local militia exploration
 
@@ -682,8 +653,7 @@ without spending AP or refilling any supply. A tired defender rests to preserve
 an authored energy reserve (50 by default). Actual sight contact stops the patrol and starts the existing
 combat initiative. Pausing or hiding the game stops ambient time. Complete saved
 continuation preserves patrol cadence and synchronized campaign time. The same
-waypoints support paid movement after lost combat contact. See verification
-for prepared boundaries, real paid-garrison acceptance and remaining scope.
+waypoints support paid movement after lost combat contact.
 
 ### City militia distribution
 
@@ -696,8 +666,7 @@ included kit once. Invalid or occupied routes and active deployments reject
 atomically. Transferred people enter from their final city approach on connected
 exterior ground; large groups can spread inward. Old source scenes cannot restore
 the transferred people. These city boundaries, limits and approaches remain fixed
-rules. See verification for scope,
-prepared boundaries and actual paid/wounded campaign sequences.
+rules.
 
 ### Authored patrol settings
 
@@ -706,8 +675,7 @@ fixed waypoint, exploration energy reserve and rest recovery. Defaults retain
 the existing behavior; older package identities do not gain a new field. New
 deployments and saved tactical scenes carry the pinned campaign choice. Disabled
 patrols retain combat and reactions. Strict report and save checks reject rule
-drift. Fixed waypoint coordinates and combat search costs remain separate. See
-verification.
+drift. Fixed waypoint coordinates and combat search costs remain separate.
 
 ### Explicit battery choice
 
@@ -715,9 +683,7 @@ The effective automatic or named battery appears in the armory. Preparing three
 empty slots records an explicit no-artillery choice; saves and later purchases
 retain it. A subsequent valid named choice selects only the available quantities
 of those actual models. An explicit empty tactical manifest cannot fall back to
-a stock count. Selection spends no money, time or stock. See
-verification for actual paid
-attack entry and the separate stationed-artillery integration.
+a stock count. Selection spends no money, time or stock.
 
 ### Physical artillery emplacements
 
@@ -729,8 +695,7 @@ reject duplicate or missing pieces and ammunition increases. The armory shows
 resident ownership and load separately from the next attack's stock selection.
 Friendly stationed pieces count toward the historical army requirement. Legacy
 stock projections migrate once, prioritizing the active battery and then the
-latest retained scenes. Verification and limits
-distinguish actual combat from prepared migration and separate-scene boundaries.
+latest retained scenes.
 
 ### Retained artillery crew work
 
@@ -739,14 +704,12 @@ All required artillerists pay the same step, limited by the least available
 assigned AP. A completed load consumes one reserve shot. Authored specialist
 modifiers affect remaining work. Shared crew checks govern controls and execution;
 hired actors cannot commandeer militia AP. Peaceful work advances one simultaneous
-duration without spending combat AP. See verification
-for prepared tactical boundaries and actual paid-gun continuation.
+duration without spending combat AP.
 
 ### Authored artillery replenishment
 
-> **Historical commerce contract.** This path is disabled in version 0.1.
-> The text below records earlier implementation and package fields, not current
-> player controls. See commerce deferral.
+> **Historical commerce contract.** Commerce is disabled.
+> The text below records earlier package fields, not current player controls.
 
 An exact local friendly emplacement can receive one purchased reserve round in
 a controlled, connected, cleared sector with an available squad. Payment uses
@@ -754,9 +717,7 @@ pesos and preserves position, identity, current load and unfinished work. The
 story editor pins the permission, three model prices and purchase reserve limit.
 The default prices are 20/30/10 pesos for four-pounder/eight-pounder/swivel rounds,
 with a six-round limit; these are game tuning. A lower limit preserves existing
-rounds and the initial purchased bundle. Old packages keep their identity. See
-verification for paid depletion,
-reload and saved UI continuation, and for prepared eligibility boundaries.
+rounds and the initial purchased bundle. Old packages keep their identity.
 
 
 ### Autonomous local artillery crews
@@ -769,8 +730,7 @@ depleted pieces release it. Shared enemy budgets are issued before any cannon
 work, preventing a helper from receiving a second issue at its individual slot.
 Visible-target selection and execution share penetrating and canister traces,
 with known-friendly and visible-civilian checks. Hired soldiers retain manual
-control. Verification separates
-real paid-gun/cohort continuation from prepared geometry. Strategic transport,
+control. Strategic transport,
 gun authoring, remote assembly and advanced AI remain separate.
 
 
@@ -782,9 +742,7 @@ initial ammunition. Campaigns pin optional model definitions. Purchases and
 physical deployment use those values once; later visits preserve actual load
 and reserves. Shared player, enemy and militia rules consume the same profile.
 Scene saves reference the pinned package to avoid repeated uploaded images;
-inline definitions and references reject mismatches. See
-verification for field limits,
-actual paid use and the separate transport/trade scope.
+inline definitions and references reject mismatches.
 
 
 ### Finite artillery transport and depots
@@ -797,9 +755,8 @@ refer to that identity. No new ammunition or generic gun appears on delivery.
 Control loss, blockade, enemies at the destination or full storage delays arrival.
 An occupied depot cannot supply a friendly battery. Default rates are
 18 hours per cart link and five per flotilla link, with no dispatch fee after
-organizing the network. Campaigns can now author these rates and dispatch fees. Mountain crossings by assembled guns, arbitrary-cell
-routes, bulk capacity and convoy combat remain outside this delivery. See
-verification and prepared boundaries.
+organizing the network. Campaigns can author these rates and dispatch fees. Mountain crossings by assembled guns, arbitrary-cell
+routes, bulk capacity and convoy combat remain outside this scope.
 
 
 ### Authored artillery transport
@@ -809,14 +766,13 @@ cart/flotilla mode. Defaults retain 18/5-hour links and free dispatch after netw
 organization. Fees are paid once; an interrupted route delays the same saved gun
 without another charge. Invalid rates or schedules are rejected. The armory
 shares the actual quote and insufficient-funds reason. Crew and geographical
-restrictions remain in force. See verification.
+restrictions remain in force.
 
 
 ### Finite local artillery trading
 
-> **Historical commerce contract.** This path is disabled in version 0.1.
-> The text below records earlier implementation and package fields, not current
-> player controls. See commerce deferral.
+> **Historical commerce contract.** Commerce is disabled.
+> The text below records earlier package fields, not current player controls.
 
 A controlled supplied workshop buys local emplacements, depot pieces or one
 unissued armory gun. Emplacements require their full available crew. Sales and
@@ -826,7 +782,7 @@ keeps its balance and stock through saves. Default buying rates are 40% at Retir
 and other workshops, 30% in Córdoba and 50% in Mendoza; repurchase is 80%.
 These are game tuning. Merchant-held guns do not count toward the army. Remote
 sales, cash refresh, merchant authoring and equipment-wide
-physical custody remain separate. Verification.
+physical custody remain separate.
 
 
 ### Forwarding depot artillery
@@ -837,14 +793,13 @@ The same crew, route, fee, control and arrival rules used for field recovery
 apply. The action explicitly selects field or depot custody and removes that
 exact gun once. Full saves and later attack entry retain its finite load and
 unfinished work. This permits returning a gun from headquarters to the front
-without inventing an intermediate battle. Verification.
+without inventing an intermediate battle.
 
 
 ### Authored artillery commerce
 
-> **Historical commerce contract.** This path is disabled in version 0.1.
-> The text below records earlier implementation and package fields, not current
-> player controls. See commerce deferral.
+> **Historical commerce contract.** Commerce is disabled.
+> The text below records earlier package fields, not current player controls.
 
 Campaigns can pin workshop starting cash, trade permission, general buying and
 repurchase percentages and named-locality buying overrides. A shop's configured
@@ -852,8 +807,7 @@ cash is issued once and then preserved through transactions and saves. Zero rate
 allow free transfers; a generous buying subsidy stops when the finite shop cash
 cannot fund another offer. Integer-percent arithmetic gives exact peso rounding.
 Editor overrides change prices at existing workshops and do not create new
-facilities. The armory shows and executes the same actual rates. See
-verification.
+facilities. The armory shows and executes the same actual rates.
 
 ### Finite secondary recovery
 
@@ -865,7 +819,7 @@ Equipping it stores the displaced weapon without recreating either piece.
 Saved tactical return, later entry and surviving militia storage preserve the
 empty slot. A later physical recovery provides another owned piece through the ordinary
 path. This does not add civilian weapons, stealth theft, armour, fitting rules
-or complete inventory custody. See secondary recovery.
+or complete inventory custody.
 
 
 ### Leave recovered weapons on the field
@@ -878,8 +832,7 @@ reload through saves and sector return. Collection preserves other carried
 pieces even when fields have overlapping local indices. The selected held
 primary or secondary can also be left with the same cost and preservation rules.
 Personal supplies use their exact-bundle controls. Throwing and full pocket
-organization remain separate. See
-verification.
+organization remain separate.
 
 
 ### Hand recovered weapons to a companion
@@ -890,8 +843,7 @@ or one exploration second, and preserves the recipient's other equipment.
 Walls, furniture and closed diagonal corners block handover. Authored identity,
 image and mechanism follow the piece through saves and later sector entry.
 The inventory shows actual eligibility before sending the order. Broader item
-transfers, relays and throwing remain separate. See
-verification.
+transfers, relays and throwing remain separate.
 
 
 ### Empty hands and selected weapons
@@ -904,7 +856,7 @@ use punches, with a twelve-AP attack, condition/attribute-dependent hit chance,
 small injury and separate breath loss. Unconscious soldiers can provide only
 their real remaining equipment. Empty hands cannot brace or execute a weapon
 charge, and do not add weapon weight. Normal civilian consequences and injury
-rules still apply. Physical fittings remain separate. Held firearms now use the stock behavior described below. See verification.
+rules still apply. Physical fittings remain separate. Held firearms use the stock behavior described below.
 
 
 ### Leave the held weapon
@@ -915,7 +867,7 @@ hand leaves fists; an inactive hand can be emptied without hiding the other
 selected weapon. Mechanism and authored identity follow the actual piece.
 Packed loaded charges and legacy secondary blades contribute their real carried
 weight. Loose rounds remain with their actual holder on campaign return, and
-a grounded weapon keeps its own charge. See verification.
+a grounded weapon keeps its own charge.
 
 
 ### Give a held weapon directly
@@ -926,8 +878,7 @@ obstacle and eligibility checks as stored-weapon handover. Emptying the selected
 hand leaves fists; the recipient retains its own equipment and can equip the
 received piece normally. Authored identity and mechanism survive saved campaign
 return. The supply controls handle personal allocations; remote delivery remains
-separate. See
-verification.
+separate.
 
 
 ### Exact personal supply handover
@@ -938,8 +889,7 @@ or one exploration second, and the recipient pays no action points. Supplies
 move once between their actual holders; subsequent use and saved campaign return
 retain the remainders. Invalid or unavailable quantities fail in full before
 costs. Loose cartridges use the same handover controls with shared witnessed
-settlement; physical pocket capacity remains separate. See
-verification.
+settlement; physical pocket capacity remains separate.
 
 
 ### Ground supply bundles
@@ -950,8 +900,7 @@ and quantity with the ordinary eight-AP or one-second collection action. Another
 collect it even while the owner occupies that cell. Source, ground and receiver
 retain finite quantities across save and campaign reentry. Numerical limits
 reject overflowing collection atomically; the selected quantity can be reduced.
-Shared physical pocket capacity limits both dropping and collection. See
-verification.
+Shared physical pocket capacity limits both dropping and collection.
 
 
 ### Shared deployment cartridge settlement
@@ -962,8 +911,7 @@ the actual holders. Returns preserve each living holder's actual typed reserve
 and loaded firearm. Each family is bounded by the initial force and retained
 field stock; a report cannot convert one family into another. Legacy reports
 without a matching tactical holder keep their individual source ceilings.
-Campaign returns do not convert these rounds into money. See
-verification.
+Campaign returns do not convert these rounds into money.
 
 
 ### Exact ground supply selection
@@ -974,8 +922,7 @@ second and retains untouched stock. Choosing or canceling has no cost and pauses
 the ambient exploration interval. Shared current eligibility handles obstacles,
 AP, stock and receiving numeric bounds, so an excessive whole bundle can be
 reduced to an accepted partial selection. Body/container inventories, batch
-pickup and physical pockets remain separate. See
-verification.
+pickup and physical pockets remain separate.
 
 
 ### Residents over loose equipment
@@ -984,8 +931,7 @@ Collection through a resident's figure uses loose-ground priority, matching the
 cell and soldier controls. It can recover a dropped weapon or open the personal
 supply picker without searching the resident. With no free item remaining, the
 existing unconscious-resident supply action remains available. Held and container
-records are excluded from loose stock. See
-verification.
+records are excluded from loose stock.
 
 
 ### Close strikes with a held firearm
@@ -995,8 +941,7 @@ Its default profile is 16 AP, 18 base injury and 1.5-cell reach. It preserves th
 same gun, loaded cartridges, reserves, partial reload, jam and wear. Existing
 momentum, parries, counters and injury rules apply. The gun does not provide an
 unowned bayonet. To charge or brace, select an actual suitable blade. Physical
-fittings and separate stock accuracy/breath calculations remain open. See
-verification.
+fittings and separate stock accuracy/breath calculations remain open.
 
 ### Authored stock profile
 
@@ -1006,13 +951,12 @@ in the normal story weapon editor. Omitted values use 16 AP, 18 injury and
 are integers from 1 to 100; reach is between 1 and 1.5 cells. Blades reject these
 fields. Undo, validation, launch, weapon custody and full saves retain the authored
 profile. This extends stock contact configuration; physical fittings and separate
-stock accuracy/breath rules remain open. See
-verification.
+stock accuracy/breath rules remain open.
 
 
 ### Ammunition families and implicit ignition kit
 
-User decision, 29 September 2026: do not track priming charges or flints as
+User decision: do not track priming charges or flints as
 inventory supplies. Assume each soldier has the kit needed to ignite and maintain
 their firearm. Keep misfires, condition and action/time costs. This decision
 supersedes older separate-kit requirements in the historical notes.
@@ -1023,8 +967,7 @@ when a weapon changes; never convert incompatible reserves. Old saves migrate
 carried generic rounds according to the primary weapon. Ground bundles keep their
 family, quantity and identity through saved visits. Under the persistent custody
 rules, collected rounds stay with their actual owner. Per-family conservation includes retained bundles and bodies; dropping
-and picking up a bundle cannot create stock or money. See the bounded
-implementation and verification.
+and picking up a bundle cannot create stock or money.
 
 ### Authored firearm ammunition family
 
@@ -1037,8 +980,6 @@ families, with their own damage, range and single-target or cone pattern. Select
 a profile only with an empty gun and no unfinished reload. Unloading returns
 the actual family to pockets; reloading consumes that family at the normal cost.
 Choices survive physical custody and saves. New family definitions remain open.
-See primary-family verification
-and alternative-load verification.
 
 ### Shared family definitions and old physical stacks
 
@@ -1047,8 +988,7 @@ old historical cartridge keys once when loading an advanced save. Preserve every
 physical owner, inventory key, hand reference, pocket partition and cartridge
 quantity. Do not merge physical lots or refill guns during conversion. Purchases,
 production and imports show four family choices and compatible firearm names.
-The advanced adapter remains local until its dependencies are published. See
-scope and verification.
+The advanced adapter remains local until its dependencies are published.
 
 
 ### Persistent campaign ammunition
@@ -1078,15 +1018,13 @@ broken supply route stops that clock. Each direct order is limited to 60 rounds.
 These are the default rules. The story editor can override supplier availability,
 automatic purchases, initial stock, maximum stock, replenishment amount and interval,
 and per-family prices, globally or by town. Each campaign pins those rules.
-An empty authored supplier can replenish without a first purchase. See
-authored supplier verification.
+An empty authored supplier can replenish without a first purchase.
 
 Old settled saves receive no free reserve because their former returns already
 refunded unused rounds. A pending paid scene returns its actual remaining
 ammunition once. Dead soldiers leave their rounds on the field. Loaded guns,
 partial work, mixed reserves, ground bundles and recovered weapons retain their
-physical quantities across saves and repeated entries. See
-[persistent ammunition verification](../verification/strategic-ammunition-custody.md).
+physical quantities across saves and repeated entries.
 
 ### Civilian weapon ownership
 
@@ -1096,5 +1034,5 @@ dead or unconscious resident moves those exact weapons into available pockets,
 including authored definitions, wear, loaded ammunition and unfinished work.
 Recruitment and later service departure do not refill emptied weapon slots.
 A death successor receives its own allocation, not a duplicate of the body's
-remaining property. See civilian weapon verification.
+remaining property.
 Armour, arbitrary belongings and explicit stock transfer remain separate work.

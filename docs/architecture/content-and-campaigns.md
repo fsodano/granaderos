@@ -1,13 +1,17 @@
 # Content and campaigns
 
-**Architecture guide:** [Overview](README.md) · [Rendering](rendering.md) · [Build and tooling](build-and-tooling.md)
+[Architecture guide](README.md) · [Authoring use cases](use-cases/authoring.md) · [Rendering](rendering.md) · [Build and tooling](build-and-tooling.md)
 
-Campaigns are authored data packages interpreted by the game, not executable plug-ins. A campaign manifest selects one of the engine's supported scenario contracts; it does not name an arbitrary script to load. For the broader repository map and persistence flows, see the [architecture overview](README.md), [runtime flows](runtime-flows.md), and [persistence](persistence.md).
+This page explains how published campaign packages (`packages/campaign-format`), runtime package compilation (`packages/game/campaign-library.js`), trusted scenario implementations (`content/campaigns/`), and the independent campaign editor (`apps/campaign-editor`) work together. It connects the component boundaries in [C4 views](c4.md) and the [system map](system-map.md) to the authoring intentions in [authoring use cases](use-cases/authoring.md), the save representations in [persistence](persistence.md), and the staging pipeline in [build and tooling](build-and-tooling.md).
+
+Campaigns are authored data packages interpreted by the game rather than executable plug-ins. A campaign manifest selects one of the engine's allowlisted scenario contracts (`generic-v1` or `granaderos-historical-v1`); it never loads arbitrary JavaScript from an imported package.
 
 ## At a glance
 
+The flowchart below shows how `Campaign package files` and `manifest.json` pass through the `campaign registry`, `compileCampaignPackage`, and `Campaign library / install` into `Validate world, maps, data, assets` to produce `Resolved campaign definitions` for `Runtime campaign and battle` and `Static build campaign staging`.
+
 ```mermaid
-flowchart LR
+flowchart TB
   Files[Campaign package files] --> Manifest[manifest.json]
   Manifest --> Registry[campaign registry]
   Files --> Compile[compileCampaignPackage]
@@ -20,11 +24,9 @@ flowchart LR
   Package --> Export[Static build campaign staging]
 ```
 
-The manifest identifies a campaign and references five JSON documents: content, world, maps, presentation, and assets. The shared compiler in [`packages/game/campaign-library.js`](../../packages/game/campaign-library.js) validates and resolves them into the definitions consumed by runtime. The registry is a catalog of manifest references, not a separate validation bypass. Installed campaign loading and build staging use the same package compilation/validation contract.
+Each campaign `manifest.json` identifies the campaign and references five JSON documents: `content`, `world`, `maps` (a map index), `presentation`, and `assets`. Both `Campaign library / install` ([`apps/web/lib/campaign-library.ts`](../../apps/web/lib/campaign-library.ts)) and `Static build campaign staging` ([`tools/campaign-export.mjs`](../../tools/campaign-export.mjs)) pass loaded documents to `compileCampaignPackage` in [`packages/game/campaign-library.js`](../../packages/game/campaign-library.js), which constructs an immutable [`CampaignDefinition`](../../packages/campaign-format/campaign-definition.ts) and resolves runtime playable definitions. (Under the [accepted architecture plan](../plans/accepted/domain-architecture.md), `CampaignCompiler` in `packages/game/application` is the target application service for turning a validated `CampaignDefinition` into domain objects.)
 
-The overview diagram below is a logical contract view. Runtime loading and build staging are separate callers with distinct I/O responsibilities; the detailed sequences later in this guide show those paths independently. The compiler accepts documents already loaded by its caller and does not itself fetch package files or hash resource bytes.
-
-Minimal authored manifest shape (the scaffold adds more realistic documents and assets):
+The JSON snippet below shows a minimal authored `manifest.json` structure (based on the starter scaffold in [`apps/campaign-editor/infrastructure/project-scaffold.ts`](../../apps/campaign-editor/infrastructure/project-scaffold.ts)):
 
 ```json
 {
@@ -42,16 +44,16 @@ Minimal authored manifest shape (the scaffold adds more realistic documents and 
 }
 ```
 
-The `maps` reference points to an index containing `{ "maps": [{ "id": "camp", "path": "camp.json" }] }`; it is not a single tactical-map payload. The `assets` JSON contains versioned asset entries with package-relative paths and SHA-256 digests. [`apps/campaign-editor/infrastructure/project-scaffold.ts`](../../apps/campaign-editor/infrastructure/project-scaffold.ts) is the authoritative concrete starter example; [`tools/campaign-authoring.mjs`](../../tools/campaign-authoring.mjs) writes the folder representation and immediately verifies it.
+Here `format` (`"granaderos-campaign"`) and `version` (`1`) identify the manifest schema; `id`, `name`, and `revision` define the package identity; `scenario` selects an allowlisted scenario ruleset (`"generic-v1"` or `"granaderos-historical-v1"`); `content`, `world`, `presentation`, and `assets` name relative JSON document paths; and `maps` points to a map catalog JSON file (`{ "maps": [{ "id": "camp", "path": "camp.json" }] }`) rather than a single sector map. The `assets` document lists package-relative asset paths under `assets/` with expected SHA-256 digests.
 
-## Package layout and contract
+## Package layout and validation contract
 
-A campaign package is conventionally rooted at `content/campaigns/<id>/` and contains `manifest.json` plus the referenced JSON documents and packaged media. The manifest has format `granaderos-campaign`, version `1`, a constrained identifier, name and revision, scenario, and relative JSON paths for each document. The registry uses format `granaderos-campaign-registry`, version `1`; entries bind `id`, display name and revision to `<id>/manifest.json`. See [`campaign-library.js`](../../packages/game/campaign-library.js) and data-level checks in [`campaign-data-validation.js`](../../packages/game/campaign-data-validation.js).
+A published campaign package lives under `content/campaigns/<id>/` and contains `manifest.json`, the five referenced JSON documents, individual map JSON files, and packaged media files. The campaign registry (`index.json`) uses format `granaderos-campaign-registry` (version `1`) to map each installed campaign's `id`, `name`, and `revision` to `<id>/manifest.json`.
 
-Compilation applies several layers of checks: schema-level data validation; campaign identity matching; required content collections; world validation; nonempty maps with matching map IDs and supported dimensions; map playability rules selected by scenario; world-to-map references; presentation/assets shape and asset-path/checksum validation; and a content report that rejects blocked definitions. Assets are referenced package content, not a facility for loading executable code. The scenario allowlist currently contains `generic-v1` and `granaderos-historical-v1`.
+The flowchart below shows the validation sequence inside `compileCampaignPackage`: from `Manifest` through `Manifest and data validation`, `Content + world + maps + presentation + assets`, `World and map checks`, `Selected asset and path checks`, `Resolve content definitions`, and `Campaign content report` to either a `Resolved package` or `Reject`.
 
 ```mermaid
-flowchart TD
+flowchart TB
   M[Manifest] --> S[Manifest and data validation]
   S --> D[Content + world + maps + presentation + assets]
   D --> W[World and map checks]
@@ -62,44 +64,37 @@ flowchart TD
   C -->|blocked / invalid| X[Reject]
 ```
 
-The compiled result carries campaign identity (`version`, `id`, `revision`) in `campaignOrigin`, together with resolved content/world/maps/presentation/assets. Runtime code may receive this shape directly or through wrappers such as `contentCampaign.package` and `campaignPackage`; helpers intentionally normalize these forms. For example, campaign rules consult package definitions through [`packages/game/campaign-definition.js`](../../packages/game/campaign-definition.js), while serialization handles campaign package identity references in [`packages/game/campaign-package-storage.js`](../../packages/game/campaign-package-storage.js).
+First, `new CampaignDefinition(manifest, documents)` in `packages/campaign-format/campaign-definition.ts` validates the `Manifest`, runs `CampaignContentSchema` (`packages/campaign-format/content-schema.js`), checks world and map schemas, validates presentation and asset catalog references, freezes the documents, and computes a deterministic content identity (`contentIdentity`). Next, `compileCampaignPackage` in `packages/game/campaign-library.js` enforces 20x16 map dimensions, scenario-specific playability rules (such as requiring an enemy spawn in `generic-v1`), building-architecture references, and world-to-map locality coverage, resolves defaults via `resolveContent`, and runs `campaignContentReport` ([`packages/game/campaign-content.js`](../../packages/game/campaign-content.js)) to `Reject` any package with blocked findings. The resulting `Resolved package` carries `campaignOrigin` (`{ version: 1, id, revision }`).
 
 ## Authoring paths and persistence boundaries
 
-The independently built `campaign-editor` application opens at
-`/campaign-editor/`. It contains a project workspace, a story editor, a sector
-editor, and isolated playtests. The game links to this application; its runtime
-dependency graph excludes editor implementation code.
+The independent `apps/campaign-editor` application is served at `/campaign-editor/` (with focused `?workspace=story` and `?workspace=sector` views). The game runtime (`packages/game` and `apps/web`) never imports editor code.
 
-- [`CampaignProject`](../../apps/campaign-editor/domain/campaign-project.ts) owns draft
-  identity, envelope admission, document edits, and resources.
-- [`CampaignProjectHistory`](../../apps/campaign-editor/domain/campaign-project-history.ts)
-  owns undo and redo snapshots.
-- [`EditCampaignProjectUseCase`](../../apps/campaign-editor/application/edit-campaign-project/edit-campaign-project.use-case.ts)
-  admits edits through a repository at the expected project revision.
-- [`ValidateCampaignProjectUseCase`](../../apps/campaign-editor/application/validate-campaign-project/validate-campaign-project.use-case.ts)
-  reads the draft through its own repository and validates it without mutation.
-- [`campaign-format`](../../packages/campaign-format/README.md) owns published file contracts
-  and content identity. Game rules and preview behavior are accessed through
-  explicit public game APIs.
+Inside the editor:
 
-These modes distinguish an in-progress project from an installable package and from gameplay progress:
+- [`CampaignProject`](../../apps/campaign-editor/domain/campaign-project.ts) and [`CampaignProjectDocument`](../../apps/campaign-editor/domain/project-document.ts) own mutable draft identity, envelope invariants, document edits, and base64 resource maps.
+- [`CampaignProjectHistory`](../../apps/campaign-editor/domain/campaign-project-history.ts) owns bounded in-memory undo/redo snapshots (up to 50 steps), mutated by [`EditCampaignProjectUseCase`](../../apps/campaign-editor/application/edit-campaign-project/edit-campaign-project.use-case.ts), [`UndoCampaignProjectEditUseCase`](../../apps/campaign-editor/application/undo-campaign-project-edit/undo-campaign-project-edit.use-case.ts), and [`RedoCampaignProjectEditUseCase`](../../apps/campaign-editor/application/redo-campaign-project-edit/redo-campaign-project-edit.use-case.ts) through their own narrow repository interfaces at an expected project revision.
+- [`CampaignWorld`](../../apps/campaign-editor/domain/campaign-world.js) owns strategic locality, district, place, and route draft invariants; [`CampaignMap`](../../apps/campaign-editor/domain/campaign-map.js) owns the fixed 20x16 campaign map slot; and [`SectorMap`](../../apps/campaign-editor/domain/sector-map.js) with [`SectorMapHistory`](../../apps/campaign-editor/domain/sector-map-history.js) owns physical sector map command batches (`SectorMapCommand`) applied through [`EditSectorMapUseCase`](../../apps/campaign-editor/application/edit-sector-map/edit-sector-map.use-case.ts).
+- [`ValidateCampaignProjectUseCase`](../../apps/campaign-editor/application/validate-campaign-project/validate-campaign-project.use-case.ts) reads the project through its read-only repository and invokes [`packages/game/public/campaign-editor-api.ts`](../../packages/game/public/campaign-editor-api.ts) to return structured diagnostics without mutating the draft.
+
+The table below contrasts each content `Representation`, its `Shape / storage`, and its `Role` across authoring, publication, and play.
 
 | Representation | Shape / storage | Role |
 | --- | --- | --- |
-| Campaign project | `granaderos-editor-project`, version `1`; documents, `mapIndex`, and base64 `resources` (see `createCampaignProject` in [`create-project.js`](../../apps/campaign-editor/infrastructure/create-project.js)) | Mutable draft; structural admission allows invalid authored documents to remain drafts, while full validation reports issues. |
-| Editor browser record | IndexedDB database `granaderos.campaign-studio.v1`, object store `projects`; binary resources are stored as `Blob`s and converted to/from project base64 on read/write (see [`apps/campaign-editor/web/lib/campaign-studio-storage.ts`](../../apps/campaign-editor/web/lib/campaign-studio-storage.ts)) | Durable local project storage. `localStorage` in Studio only remembers the last project ID; it is not project content storage. |
-| Editor history / package file | In-memory undo/redo snapshots (bounded to 50); JSON `.granaderos` project encode/decode and supported archive/file operations in [`apps/campaign-editor/web/lib/campaign-studio-history.ts`](../../apps/campaign-editor/web/lib/campaign-studio-history.ts) and [`apps/campaign-editor/web/lib/campaign-studio-files.ts`](../../apps/campaign-editor/web/lib/campaign-studio-files.ts) | Editing history and explicit file import/export. Studio images can resolve from in-project resources for previews via [`apps/campaign-editor/web/lib/campaign-studio-assets.ts`](../../apps/campaign-editor/web/lib/campaign-studio-assets.ts). |
-| Installed campaign | Registry entry plus manifest, content/world/maps/presentation/assets JSON, map files and packaged resource bytes | Portable published content, loaded and verified by runtime/build. `campaignOrigin` identifies campaign ID/revision. |
-| Gameplay progress | Campaign/battle save state, potentially with campaign package pinned/restored by content identity | Player progress, not an authoring project or Studio undo log. Gameplay autosave hooks such as [`apps/web/lib/useCampaignAutosave.ts`](../../apps/web/lib/useCampaignAutosave.ts) belong to play, not Studio project persistence. |
+| Campaign project (`CampaignProject`) | `granaderos-editor-project` (version `1`) with `documents`, `mapIndex`, and base64 `resources` ([`create-project.js`](../../apps/campaign-editor/infrastructure/create-project.js)) | Mutable authoring draft; structural envelope checks allow incomplete or invalid drafts to be edited and saved locally while validation reports outstanding issues |
+| Editor browser record | IndexedDB database `granaderos.campaign-studio.v1`, object store `projects`, storing binary resources as `Blob` values ([`campaign-studio-storage.ts`](../../apps/campaign-editor/web/lib/campaign-studio-storage.ts)) | Durable local draft storage in the browser (`localStorage` in Studio only remembers the last active project ID) |
+| Editor history and archive files | Bounded in-memory undo/redo snapshots (`CampaignProjectHistory` / `SectorMapHistory`); Studio downloads `${id}.project.json`, imports `.json` or `.zip`, and exports `${id}-${revision}.zip` ([`campaign-studio-files.ts`](../../apps/campaign-editor/web/lib/campaign-studio-files.ts)) | Undo/redo history and portable project or installable package file downloads |
+| Installed campaign (`CampaignPackage`) | Registry entry plus `manifest.json`, five JSON documents, map files, and SHA-256-checked asset bytes | Immutable published content loaded by the browser game and staged by the static build |
+| Gameplay progress (`GameSnapshot`) | Portable save envelope (`format: "granaderos"`) in `localStorage` or exported JSON ([`save.ts`](../../packages/game/save.ts)) | Player campaign and sector progress, completely separate from editor drafts and undo history |
 
-Project envelope validation is distinct from full project validation. `assertCampaignProjectEnvelope` checks format/version and safe envelope/resource bounds; `validateCampaignProject` validates the documents and then calls the same compiler, returning sectioned issues and checks. Thus a draft can be saved before it is package-valid. Runtime saves may pin package contents or restore a package reference keyed by canonical content identity; do not treat a local draft/autosave as the same thing as a published package.
+The editor supports two isolated playtest paths that never touch player saves or mutate the authoring draft:
 
-The `?workspace=story` and `?workspace=sector` routes open focused document editors within the independent application. The default workspace supplies the complete project workflow. Do not confuse [`apps/web/lib/campaign-library.ts`](../../apps/web/lib/campaign-library.ts) with Studio import/export: it loads the installed runtime registry/packages. Studio file parsing, archive reading, encoding, and export are in [`apps/campaign-editor/web/lib/campaign-studio-files.ts`](../../apps/campaign-editor/web/lib/campaign-studio-files.ts). The sector building workspace invokes [`packages/game/map-playtest.js`](../../packages/game/map-playtest.js): it validates and compiles the current map, combines it with the selected campaign package when present, creates a battle/sector request, marks its source map identity, and returns that battle state to the in-browser `Battlefield`. This map playtest is in-memory; it is not a published install or its own serialized playtest session.
+- **Single-map playtest:** The sector and building workspaces call `packages/game/public/campaign-editor-api.ts` (backed by [`packages/game/map-playtest.js`](../../packages/game/map-playtest.js)) and render the resulting battle state through [`apps/web/game-preview.ts`](../../apps/web/game-preview.ts).
+- **Full-campaign Quest Sandbox:** [`apps/campaign-editor/web/app/studio/QuestSandbox.tsx`](../../apps/campaign-editor/web/app/studio/QuestSandbox.tsx) calls [`packages/game/public/campaign-playtest-api.ts`](../../packages/game/public/campaign-playtest-api.ts) to run a seeded campaign and tactical battles in an isolated session, with its own `granaderos-editor-sandbox` fixture export/import bound to the project's content identity hash.
 
-The Studio also has a separate full-campaign **Quest Sandbox** in [`apps/campaign-editor/web/app/studio/QuestSandbox.tsx`](../../apps/campaign-editor/web/app/studio/QuestSandbox.tsx), backed by [`packages/game/public/campaign-playtest-api.ts`](../../packages/game/public/campaign-playtest-api.ts). It creates a fresh campaign from compiled project content and a test seed/setup, then dispatches strategic actions and enters tactical battles using the regular campaign/battle functions. It can adopt battle changes, keep a bounded action history, and encode/decode a `granaderos-editor-sandbox` save bound to the source content identity. This differs from the map playtest, which builds a single battle directly from one authored map. Neither path runs arbitrary authored code.
+## Runtime loading and build-time staging paths
 
-## Runtime and build paths
+The sequence diagram below shows how the browser's `Installed campaign loader` ([`apps/web/lib/campaign-library.ts`](../../apps/web/lib/campaign-library.ts)) fetches a campaign from the `Static asset host`, compiles it with `compileCampaignPackage`, and checks asset digests through the `Resource verifier` (`verifyCampaignResources`).
 
 ```mermaid
 sequenceDiagram
@@ -130,7 +125,7 @@ sequenceDiagram
   Hash-->>Loader: Hash checks complete or mismatch
 ```
 
-Build-time package staging has a separate filesystem path:
+At build time, static staging follows a separate filesystem sequence. The sequence diagram below shows how `tools/build-web.mjs` invokes `tools/campaign-export.mjs` to read each `content/campaigns/<id> folder`, validate it through `compileCampaignPackage`, check SHA-256 asset digests, and write the staged files to `.output/dist/campaigns`.
 
 ```mermaid
 sequenceDiagram
@@ -150,14 +145,6 @@ sequenceDiagram
   Export->>Dist: Write registry index.json last
 ```
 
-Campaign content and the default historical game are not a strict one-way dependency layer. The default content is exported by [`content/campaigns/default.js`](../../content/campaigns/default.js); legacy engine modules import those defaults, and historical-specific behavior is implemented under [`content/campaigns/granaderos/`](../../content/campaigns/granaderos/), including [`scenario.js`](../../content/campaigns/granaderos/scenario.js). Engine code also dispatches through the supported scenario contract in [`packages/game/campaign-scenario.js`](../../packages/game/campaign-scenario.js). There is campaign UI code in [`content/campaigns/granaderos/ui/`](../../content/campaigns/granaderos/ui/), so the directory structure itself reflects some feature-local engine/UI coupling. Avoid inferring strict layering from folder names.
+Default historical campaign data is exported by [`content/campaigns/default.js`](../../content/campaigns/default.js), and historical scenario rules live under [`content/campaigns/granaderos/scenario.js`](../../content/campaigns/granaderos/scenario.js), invoked through [`packages/game/campaign-scenario.js`](../../packages/game/campaign-scenario.js).
 
-Installed runtime sequence in detail: `loadCampaignRegistry` fetches `/campaigns/index.json` and validates registry shape; `loadInstalledCampaign` fetches the manifest and checks that its ID/name/revision agree with the registry entry; it fetches the five referenced JSON documents (one is the map index), then fetches each map JSON file listed by that index. It passes those already-loaded values to synchronous `compileCampaignPackage`, which performs structural/data/map/asset-catalog checks and resolves definitions; it does not fetch or hash resource bytes. After successful compilation, `verifyCampaignResources` fetches referenced campaign assets and checks their SHA-256 values. Resource verification is memoized per reader/content descriptor and can be explicitly refreshed. See [`apps/web/lib/campaign-library.ts`](../../apps/web/lib/campaign-library.ts). Build staging is a different filesystem caller: [`tools/campaign-export.mjs`](../../tools/campaign-export.mjs) discovers folders to form a registry, calls `verifyCampaignFolder` to read documents/maps, compile and compare asset bytes to catalog checksums, stages JSON and assets, then writes the registry index. It does not make runtime fetch calls.
-
-The practical extension boundary is therefore data plus a supported scenario identifier and engine-owned scenario behavior. Adding new arbitrary executable scenario files from imported content is outside the package contract. Historical and generic campaigns may intentionally have different validation and gameplay rules; a package's scenario value is part of its compatibility contract, not a free-form label.
-
-## Source trail and limits
-
-Key implementation points: [`packages/game/campaign-library.js`](../../packages/game/campaign-library.js) (manifest, registry, shared compiler); [`campaign-project.ts`](../../apps/campaign-editor/domain/campaign-project.ts) (project mutations); [`project-validation.js`](../../apps/campaign-editor/infrastructure/project-validation.js) (runtime validation adapter); [`packages/game/campaign-assets.js`](../../packages/game/campaign-assets.js) (asset validation); [`packages/game/campaign-content.js`](../../packages/game/campaign-content.js) (blocked content report); [`packages/game/campaign-package-storage.js`](../../packages/game/campaign-package-storage.js) (runtime package persistence); [`tools/campaign-export.mjs`](../../tools/campaign-export.mjs) (build-time package staging); [`tools/campaign-authoring.mjs`](../../tools/campaign-authoring.mjs) (authoring CLI).
-
-This describes current contracts visible in source, not a guarantee that every legacy or external campaign is importable. Validation rules can evolve; consult the compiler and its tests before relying on a particular field or compatibility behavior. Existing migration and porting notes describe historical work and are not authoritative descriptions of the current package path.
+Source anchors: [`packages/campaign-format/campaign-definition.ts`](../../packages/campaign-format/campaign-definition.ts), [`packages/game/campaign-library.js`](../../packages/game/campaign-library.js), [`packages/game/campaign-assets.js`](../../packages/game/campaign-assets.js), [`packages/game/campaign-content.js`](../../packages/game/campaign-content.js), [`packages/game/campaign-package-storage.js`](../../packages/game/campaign-package-storage.js), [`apps/campaign-editor/domain/campaign-project.ts`](../../apps/campaign-editor/domain/campaign-project.ts), [`apps/campaign-editor/infrastructure/project-validation.js`](../../apps/campaign-editor/infrastructure/project-validation.js), [`tools/campaign-export.mjs`](../../tools/campaign-export.mjs), and [`tools/campaign-authoring.mjs`](../../tools/campaign-authoring.mjs).

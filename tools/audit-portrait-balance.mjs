@@ -136,9 +136,9 @@ const report = {
   legacySourceSizeExceptions: ['103'],
   groups: reports,
 };
-await mkdir(resolve(root, 'docs/evidence'), { recursive: true });
+await mkdir(resolve(root, '.output'), { recursive: true });
 await writeFile(
-  resolve(root, 'docs/evidence/portrait-balance-2026-09-27.json'),
+  resolve(root, '.output/portrait-balance.json'),
   JSON.stringify(report, null, 2) + '\n',
 );
 console.log(

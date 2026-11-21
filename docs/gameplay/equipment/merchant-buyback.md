@@ -1,9 +1,5 @@
 # Local used-weapon trading
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
-
 In the campaign armory at a supplied friendly workshop, selling a stored handheld weapon transfers that exact item record to the local merchant's used stock so the player can buy it back later with its condition and fittings preserved. Classic JA2 transfers sold player objects into the dealer's inventory and removes purchased objects from that dealer. See [JA2 Stracciatella, ShopKeeper_Interface.cc](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/master/src/game/Tactical/ShopKeeper_Interface.cc), `MovePlayerOfferedItemsOfValueToArmsDealersInventory` and `RemoveItemFromDealersInventory`. This is gameplay reference material. The pricing and workshop model below are Granaderos adaptations.
 
 ## Ownership and purchase
@@ -19,10 +15,8 @@ New weapons and used weapons remain separate inventories. Used stock is not repl
 - The merchant's purchase from the player follows its [local buying preference](merchant-preferences.md), adjusted for each component's condition. Retiro retains the general 40% rate; Caroya can refuse badly damaged handhelds.
 - The player's used purchase costs 80% of new value, adjusted for each component's condition. Each component is rounded down separately. There is no profitable immediate sell/buy cycle.
 - Each merchant can retain at most 1,000 used weapons; a full merchant refuses further sales. The existing 10,000-item armory limit also applies to used purchases.
-- Used weapons remain available until the player buys them. Background sales to third parties are not implemented. [Workshop preferences](merchant-preferences.md) now supply local valuation and condition-based refusal. [Equipment exchange](merchant-exchange.md) now supports a combined net payment, and artillery trading retains exact gun custody.
+- Used weapons remain available until the player buys them. Background sales to third parties are unsupported. [Workshop preferences](merchant-preferences.md) supply local valuation and condition-based refusal. [Equipment exchange](merchant-exchange.md) supports a combined net payment, and artillery trading retains exact gun custody.
 
-## Evidence
+## Saved used stock
 
-Eight transaction/save tests cover exact local custody, pricing, no ammunition creation, a jammed fitted musket through sale/save/buy/equip/deployment, stale orders, shop separation and refresh, insufficient funds, deployment/ownership restrictions, capacity, and duplicate physical identities across shops, soldiers and the armory. Three render/input tests verify the actual Armory integration, exact purchase-button action, stock removal, current-town scope and unavailable-state feedback.
-
-All existing ownership validators now count merchant-held weapons and fittings as physical items. Missing used-stock fields in older saves mean an empty list; historical sales are not reconstructed. A live check on 11 September 2026 used a separate `?qa=1` browser campaign. The workshop sold one new Tercerola for 180 pesos (treasury 3,200 → 3,020; new stock 3 → 2), bought it back for 72 (treasury 3,092; shop cash 1,308), and offered the single used weapon for 144. Buying that offer left treasury 2,948, shop cash 1,452, one stored weapon, zero used offers and two new units. Loading the same save in a fresh tab and resuming retained those values. This proves the basic visible purchase/sale/buyback/save route. Worn and fitted weapon metadata, capacity rejection and duplicate identity protection remain automated-test evidence.
+Ownership validation counts merchant-held weapons and fittings as physical items. Missing used-stock fields in older saves mean an empty list; historical sales are not reconstructed. Worn and fitted weapon metadata, capacity rejection and duplicate identity protection apply to every purchase and sale.

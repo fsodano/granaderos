@@ -1,9 +1,5 @@
 # New campaign introduction
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
-
 On the strategic campaign layer, selecting **Nueva campaña** opens a four-scene introduction before the desk.
 It sets the campaign in Buenos Aires in 1812, introduces San Martín, explains
 the independence objective, and offers **Contratar combatientes** or
@@ -40,14 +36,3 @@ archival map. The portrait is the game's existing San Martín illustration.
 - Independence is an objective in the opening, not an accomplished 1812 event.
   The formal declaration followed on [9 July 1816](https://www.argentina.gob.ar/noticias/9-de-julio-dia-de-la-independencia-2).
 - The adversaries are described as royalist forces, not all Spanish people.
-
-## Verification
-
-Mounted component and Home checks cover authored content, timing, pause,
-visibility, reduced motion, timer cleanup, keyboard focus, persistent live
-announcements, both starting choices, skip, cancellation, replay, Continue,
-prior-save preservation and autosave failure recovery. The combined intro,
-Home and Retiro desk group passes 22 tests.
-
-The production build and typecheck pass. Browser checks are recorded in the
-current gameplay follow-up.

@@ -99,7 +99,7 @@ screenX = (2*distX - 2*distY) + gsCX - gsTLX
 screenY = (distX + distY) + gsCY - gsTLY
 ```
 
-**Web equivalent (already implemented):** `web/app/Battlefield.tsx` line 60 uses
+**Web equivalent:** `web/app/Battlefield.tsx` line 60 uses
 `project=(x,y)=>({x:origin+(x-y)*hw, y:65+(x+y)*hh})` with `hw=26`, `hh=14`. That is the
 same diamond projection scaled by 0.65 (26/40, 14/20). For pixel fidelity, `hw=40`, `hh=20`
 (or any uniform scale) reproduces JA2 exactly. The tile diamond polygon is

@@ -1,6 +1,6 @@
 # Illustrated character sprites
 
-This guide documents the initial 19-appearance illustrated 2D pixel-art character sprite library (328 atlases and 7,856 frames), its source packing pipeline, and its verification on `origin/main` at `6096229`. Code paths such as `game/` and `assets/` refer to the pre-monorepo layout (`packages/game/` and `content/assets/` in the current repository).
+This guide documents the illustrated 2D pixel-art character sprite library (19 appearances, 328 atlases and 7,856 frames) and its source packing pipeline. Code paths such as `game/` and `assets/` refer to the pre-monorepo layout (`packages/game/` and `content/assets/` in the current repository).
 
 The game uses a library of **19 shared appearances**. The library follows the
 approved illustrated pixel art style: adult proportions, defined faces, dark
@@ -92,37 +92,27 @@ The interactive review is
 It has appearance, action, direction, zoom, pause, and frame controls. The tactical
 preview tool renders the actual React scene and the currently selected atlas.
 
-## Verification
+## Coverage contract
 
-The final coverage audit passed with 328 expected and 328 packed atlases, no
-missing states, and no invalid assets. All focused sprite tests passed, including
-packing every selected source frame, checking transparent margins and distinct
-frames, validating the published files, and checking runtime selection and timing.
-TypeScript and the production build passed. The static export contains 619 files
-and 530 verified asset references.
+The complete library contains 328 atlases, and every expected atlas is packed:
+no missing states and no invalid assets. Packing covers every selected source
+frame; published files are validated for transparent margins, distinct frames,
+runtime selection and timing.
 
-The [final browser report](../../content/assets/previews/illustrated-sprites/browser/final-sprite-qa.json)
-records 39 passing checks against the complete 328-atlas build. These cover all
-18 states on the shawl appearance, all 19 shared idle appearances, appearance and
-stance retention through save import and reload, and six visible appearances at
-100% and 300% zoom. The north-facing unconscious pose uses the correct row and
-changes breathing frames. No browser errors or failed requests were recorded.
-The checks used a fresh, isolated browser context and did not access the user's
-saved game.
+The [browser report](../../content/assets/previews/illustrated-sprites/browser/final-sprite-qa.json)
+records the checks for the complete 328-atlas build: all 18 states on the shawl
+appearance, all 19 shared idle appearances, appearance and stance retention
+through save import and reload, and six visible appearances at 100% and 300%
+zoom. The north-facing unconscious pose uses the correct row and changes
+breathing frames.
 
 The [300% battlefield screenshot](../../content/assets/previews/illustrated-sprites/browser/variety-3x.png)
 shows the shared bodies in the game. The browser report lists additional action
 screenshots.
 
-PR verification uses a separate worktree based on `origin/main` at `6096229`.
-All 332 tests pass in that worktree, with no skipped or failed tests.
-The browser report and battlefield previews were regenerated there. The PR
-contains only sprite art, runtime selection and timing, related tools, tests,
-and documentation. Other gameplay changes remain outside this PR.
-
 ## Expanded family animations
 
-The subsequent 216-set base collection, current counts, and equipment limitations
+The 216-set base collection, its counts, and its equipment limitations
 are documented in [sprite-families.md](sprite-families.md). The 328-atlas figures
-above describe the earlier delivery. Sources outside the registration manifests
+above describe the earlier library. Sources outside the registration manifests
 can be rejected candidates or references and do not establish coverage.

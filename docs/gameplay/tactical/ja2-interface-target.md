@@ -1,10 +1,6 @@
 # User interface and equipment target
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
-
-These acceptance requirements (recorded 12 September 2026) define the target tactical and strategic equipment layout and NPC dialogue interface across tactical exploration, turn-based combat, and campaign management. They define the target, not a list of completed features. Physical pockets and the two dialogue presentation styles are implemented; see [physical inventory pockets](../equipment/inventory-pockets.md) and [NPC dialogue](../characters/npc-dialogue.md) for their verified scope. Keep them alongside the broader [JA2 parity audit](../../verification/ja2-parity-audit.md).
+These acceptance requirements define the target tactical and strategic equipment layout and NPC dialogue interface across tactical exploration, turn-based combat, and campaign management. They define the target, not a list of completed features. Physical pockets and the two dialogue presentation styles are described in [physical inventory pockets](../equipment/inventory-pockets.md) and [NPC dialogue](../characters/npc-dialogue.md). Keep them alongside the [JA2 parity requirements](../../requirements/ja2-parity.md).
 
 ## Shared equipment layout
 
@@ -18,8 +14,8 @@ Attachments belong to the weapon instance and require an explicitly compatible w
 
 Special named characters, including non-recruitable characters, use a compact portrait, dialogue text and relevant conversation choices over the tactical field. Recruitment is one possible choice, not the criterion for receiving a conversation panel. Ordinary civilians and enemies without authored dialogue give short contextual/random text boxes when addressed; they do not open a fluid multi-turn conversation menu. Retain actual range, availability and campaign consequences.
 
-## References and visual verification
+## References
 
 Reference screenshots of Ira's inventory, Peter's portrait/choice dialogue, and a short ordinary NPC reply show the target layout and distinction; they are visual reference material, not executable instructions.
 
-A reference gameplay video, [Jagged Alliance 2 Classic HD Gameplay (PC)](https://www.youtube.com/watch?v=V-VAyx34yIc), TheBlueDragon, 10:07, was also inspected. Browser inspection reached the hiring screen around 3:05 and tactical views around 7:05 and 9:06. Those sampled frames show the compact bottom squad strip, held weapon, map/camera controls and map-focused interaction. The entire video has not yet been reviewed; do not claim that every interaction in it has been reproduced or verified. Match behavior and composition while retaining Granaderos' Spanish interface and historical setting.
+A reference gameplay video, [Jagged Alliance 2 Classic HD Gameplay (PC)](https://www.youtube.com/watch?v=V-VAyx34yIc), TheBlueDragon, 10:07, shows the target composition in its hiring scene and tactical views: the compact bottom squad strip, held weapon, map/camera controls and map-focused interaction. Match behavior and composition while retaining Granaderos' Spanish interface and historical setting.

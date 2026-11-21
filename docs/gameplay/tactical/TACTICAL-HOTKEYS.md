@@ -1,10 +1,10 @@
 # Adapted tactical keyboard controls
 
-Reference read: the JA2 1.13 hotkey reference document's tactical selection,
-movement and interface sections, accessed 2026-09-05:
+Reference: the JA2 1.13 hotkey reference document's tactical selection,
+movement and interface sections:
 https://www.scribd.com/document/621229369/Ja2-113-Hotkeys-Alt-Mouse
 
-These published keyboard and pointer controls apply on the tactical battlefield during both exploration and turn-based combat. Retained recognizable mappings include Space to cycle soldiers, M for the map,
+These keyboard and pointer controls apply on the tactical battlefield during both exploration and turn-based combat. Retained recognizable mappings include Space to cycle soldiers, M for the map,
 D to finish a turn, R/S/C/P movement/posture, PageUp/PageDown posture changes,
 Z stealth and Shift+R or Alt+R reload. Number keys select the six active squad members
 instead of browser-sensitive function keys. H opens the Spanish reference.
@@ -53,7 +53,7 @@ M opens the campaign chart while retaining the live deployment. To withdraw, use
 Retirada or Salir del sector, select a destination and soldiers, move them to the
 required edge, and cross with the available PA and energy. Partial departures
 keep the encounter open. Escape closes the exit panel.
-No modern firing modes, scopes, goggles or nonexistent equipment are added.
+The controls add no modern firing modes, scopes, goggles or nonexistent equipment.
 
 `game/hotkeys.js` is the action resolver and Spanish help source. The localized
 Battlefield handler dispatches existing authoritative orders; shortcuts do not
@@ -66,10 +66,8 @@ conversation and otherwise returns to the movement cursor; it does not undo
 already committed game actions. Busy animation and inactive battles block
 orders. Cursor shortcuts select a mode and never attack an implicit target.
 
-Verification: `tests/hotkeys.test.mjs` covers mapping distinctions,
-modifier protection, editing/dialog suppression, repeat/IME guards and utility
-bindings. Mounted Battlefield checks in `tests/battlefield-movement-input.test.mjs` cover selected-actor running, repeated R, normal reload costs and keyboard guards. `web` TypeScript check passes. Browser interaction verification is
-not claimed in this document. This is a useful adapted subset, not an assertion
-that every JA2 hotkey or mouse gesture is implemented.
-
 With **Manos libres**, Ctrl-click or Ctrl-Enter on an adjacent conscious enemy attempts to take the weapon in its hand. The existing **Recoger equipo** cursor supports the same target without a modifier. The preview shows all remaining AP; at least 28 are required. Failure also spends them. Normal empty-hand targeting still punches. See [weapon stealing](weapon-stealing.md).
+
+This is an adapted subset. `tests/hotkeys.test.mjs` and
+`tests/battlefield-movement-input.test.mjs` are the executable mapping record; the
+list above is not every hotkey or mouse gesture in classic JA2.

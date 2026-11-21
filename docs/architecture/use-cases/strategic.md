@@ -1,93 +1,99 @@
 # Strategic player-intent catalogue
 
-[Architecture guide](../README.md) · [Use-case index](README.md) · [Session & runtime](session.md) · [Campaign authoring](authoring.md) · [Application contracts](application-contracts.md)
+[Architecture guide](../README.md) · [Use-case index](README.md) · [Session & runtime](session.md) · [Tactical play](tactical.md) · [Campaign authoring](authoring.md) · [Application contracts](application-contracts.md)
 
-## Mental model
+This page catalogues the player's strategic campaign intentions—building a force, organizing squads and service contracts, moving across the world map, resolving hostile arrivals and enemy encounters, managing finite equipment and supplies, and settling sector visits—and maps every `dispatchCampaign` action `type` in `packages/game/campaign.js` to its use case. It connects the [use-case index](README.md) and [application contracts](application-contracts.md) to the engine internals in the [strategic engine](../strategic-engine.md) and the runtime sequences in [runtime flows](../runtime-flows.md).
 
-Strategic play is the player's command of an evolving campaign: build a force, organize people and supplies, move through a contested map, respond to obligations and threats, and decide when and where to commit the force to a tactical scene. The player-facing intention is broader than any one `dispatchCampaign` action: for example, arranging an assault may include route selection, waiting through travel, handling an interruption, and finally deploying. This catalogue groups those steps into use cases instead of pretending every reducer command is a separate user goal. Requests and outcomes below describe the current browser game, not proposed CRUD endpoints or a promise that every scenario exposes every option.
+## Mental model and exposure
 
-**Status meanings:** *Playable* is a player-facing operation implemented in the browser; *Conditional* depends on campaign content, location, state, or a prior event; *Read-only* is an information projection; *Supporting* is a player-triggered background/coordination operation; *Disabled* is rejected by the current dispatcher guard. These labels indicate code/UI availability, not playtest certification.
+Strategic play lets the player command an evolving campaign across one continuing world. One player intention can span several low-level steps—for example, assaulting a sector involves plotting a `Journey`, advancing `WorldTimeline`, resolving a paused `ArrivalDecision` via `FightOnArrival`, and opening a `SectorSession` via `EnterSector`.
+
+Every `Exposure` column below uses the canonical six-value vocabulary defined in the [use-case index](README.md#exposure-vocabulary): `Command`, `Gated`, `Query`, `Supporting`, `No interface route`, and `Refused`.
 
 ## Capability families and case index
 
-| Family | Intent IDs | What the player is trying to do |
-|---|---|---|
-| Start and command | STR-001–004 | Begin a campaign, create a leader, recruit people, organize squads/contracts |
-| Move and enter | STR-005–008 | Route squads, advance time, visit localities, initiate a mission or assault |
-| Respond and settle | STR-009–012 | Resolve enemy contact, defend/retreat, return from battle, speak and progress authored obligations |
-| Sustain people | STR-013–016 | Assign care/work, rest/train, maintain morale and contract service |
-| Equip and supply | STR-017–020 | Issue finite kit/ammunition, maintain/store/transport artillery, acquire mounts where currently available |
-| Organize the theater | STR-021–024 | Train militia, improve security/logistics, manage faction/state policy and inspect the campaign |
+The first table below groups strategic intentions by `Family`, lists their `Intent IDs`, and summarizes `What the player is trying to do`.
 
-| ID / intention | Status | Intent |
-|---|---|---|
-| STR-001 `start-campaign` | Playable | Start or replay authored campaign introduction and establish campaign state |
-| STR-002 `create-campaign-officer` | Conditional | Create the player's officer and place them in the force |
-| STR-003 `RecruitCombatant` | Conditional | Recruit an eligible character with immediate control at a valid location |
-| STR-004 `manage-contract-and-squad` | Playable | Renew/end service, form/select squads, assign a person |
-| STR-005 `plan-and-march` | Playable | Queue, start, pause/cancel, or resume a squad journey |
-| STR-006 `advance-campaign-time` | Playable | Wait or advance time until a useful boundary, interruption, or arrival |
-| STR-007 `visit-locality` | Conditional | Enter a friendly/eligible sector for exploration and local interaction |
-| STR-008 `launch-mission-or-assault` | Conditional | Deploy against an authored mission/hostile sector, potentially with supporting squads |
-| STR-009 `respond-to-enemy-contact` | Conditional | Choose tactical defense, automatic resolution, or a valid retreat |
-| STR-010 `settle-battle-and-return` | Conditional | Submit validated tactical report and settle campaign consequences |
-| STR-011 `interact-with-local-actor` | Conditional | Converse, recruit, give an order, negotiate, or resolve a quest with a local actor |
-| STR-012 `fulfil-campaign-obligation` | Conditional | Progress authored mission, story, quest, event, or diplomacy consequence |
-| STR-013 `assign-care-and-sleep` | Playable | Assign medical attention or change an operative's sleep state |
-| STR-014 `assign-work-and-training` | Conditional | Assign strategic work, learning, study, or training where content permits |
-| STR-015 `manage-morale-and-recovery` | Supporting | Allow time-based recovery and respond to attention/notice state |
-| STR-016 `maintain-contract-service` | Conditional | Renew, dismiss, or otherwise manage contract service guarantees |
-| STR-017 `issue-and-reconcile-equipment` | Playable | Equip/reassign existing gear and move finite items between people and local stores |
-| STR-018 `manage-ammunition-and-field-supplies` | Playable | Select/load/store/issue/unload physical ammunition and use carried stocks |
-| STR-019 `manage-artillery` | Conditional | Configure, store, transport, supply, repair/repurchase field pieces |
-| STR-020 `manage-horses` | Conditional | Assign/unassign eligible existing horses to people; acquisition/hiring/feeding/breeding are disabled |
-| STR-021 `train-and-redistribute-militia` | Conditional | Start/cancel training and redistribute local militia cohorts |
-| STR-022 `improve-theater-capacity` | Conditional | Organize foundry/army/transit and fortify an eligible sector |
-| STR-023 `apply-scenario-policy` | Conditional | Choose scenario-provided policy, diplomacy, academy or event action |
-| STR-024 `inspect-campaign-options` | Read-only | Inspect available recruits, destinations, objectives, notices and local readiness |
+| Family | Intent IDs | What the player is trying to do |
+| --- | --- | --- |
+| Start and command | STR-001–004 | Begin a campaign, create a leader, recruit combatants, and organize squads and contracts |
+| Move and enter | STR-005–008 | Route squads, resolve hostile arrivals or redirect journeys, advance time, visit localities, and launch assaults |
+| Respond and settle | STR-009–012 | Respond to enemy groups, resume or settle sector visits, converse with local characters, and progress quests |
+| Sustain people | STR-013–016 | Assign medical care, sleep, work, or training, recover morale, and renew or end service contracts |
+| Equip and supply | STR-017–020 | Issue finite equipment and physical ammunition, manage artillery, and assign existing mounts |
+| Organize the theater | STR-021–024 | Train and distribute militia, improve fortifications and logistics, apply scenario policies, and inspect options |
+
+The second table below lists each strategic use case by `ID / intention`, its `Exposure` classification, and its `Intent`.
+
+| ID / intention | Exposure | Intent |
+| --- | --- | --- |
+| STR-001 `start-campaign` | `Command` | Initialize campaign progress (`CreateGameSession`) and complete or replay any authored introduction |
+| STR-002 `create-campaign-officer` | `Gated` | Create the player's commander profile and admit that character into `ForceRoster` and the active `Squad` |
+| STR-003 `RecruitCombatant` | `Gated` | Recruit an eligible `RecruitmentCandidate` (`GetRecruitmentCandidates` is the paired `Query`) with immediate control, valid placement, and `ServiceContract` terms |
+| STR-004 `FormSquad` / `manage-squad-and-claims` | `Command` | Form or reorganize a `Squad` at one location (`FormSquad`), select the active squad, or manage legacy prepaid arrival claims |
+| STR-005 `plan-and-march` (`RedirectJourney`) | `Command` | Start, queue, cancel, resume, or redirect (`RedirectJourney`) a squad `Journey` while preserving completed travel and costs |
+| STR-006 `advance-campaign-time` | `Command` | Wait or advance campaign time (`AdvanceWorldTime` is the `Supporting` background progression step) until a target time or the first paused `ArrivalDecision` / encounter |
+| STR-007 `visit-locality` (`EnterSector`) | `Gated` | Build a peaceful `SectorEntryRequest` and open or resume a `SectorSession` for local exploration |
+| STR-008 `launch-mission-or-assault` (`FightOnArrival` / `WithdrawOnArrival`) | `Gated` | Resolve a paused `ArrivalDecision` by committing to combat (`FightOnArrival`) or starting a redirectable withdrawal (`WithdrawOnArrival`), or deploy to an authored mission (`ResumeSectorSession` switches among open visits) |
+| STR-009 `respond-to-enemy-contact` | `Gated` | Choose tactical defense, automatic resolution, or retreat when an enemy group intercepts a sector or squad |
+| STR-010 `settle-battle-and-return` | `Gated` | Submit a validated `SectorSession` report to reconcile `Character` health, `Inventory` custody, ammunition, and territory |
+| STR-011 `TalkToCharacter` | `Gated` | Converse with a present character (`TalkToCharacter`), executing local recruitment (`RecruitmentService`), gifts, or quest choices in one transaction |
+| STR-012 `fulfil-campaign-obligation` | `Gated` | Progress an authored mission, quest, timed event, or diplomacy milestone |
+| STR-013 `assign-care-and-sleep` | `Command` | Assign medical care (`care.js`) or toggle sleep (`sleep.js`) for a combatant |
+| STR-014 `assign-work-and-training` | `Gated` | Assign strategic work, attribute training, or study courses where scenario rules permit |
+| STR-015 `manage-morale-and-recovery` | `Supporting` | Time-driven recovery, fatigue, and attention-notice processing during clock advancement |
+| STR-016 `RenewServiceContract` / `dismiss` | `Gated` | Extend a paid `ServiceContract` from the later of its existing expiry or current `GameTime` (`RenewServiceContract`), or dismiss a combatant |
+| STR-017 `issue-and-reconcile-equipment` (`TransferItem`) | `Command` | Equip or transfer finite items between character `Inventory` custody and sector stores (`TransferItem`) |
+| STR-018 `manage-ammunition-and-field-supplies` | `Command` | Store, issue, load, or unload finite physical ammunition families across combatants and sector stores |
+| STR-019 `manage-artillery` | `Gated` | Configure, store, transport, or supply owned artillery pieces |
+| STR-020 `manage-horses` | `Gated` | Assign or unassign eligible existing horses to combatants (horse acquisition, hiring, feeding, and breeding are `Refused`) |
+| STR-021 `train-and-redistribute-militia` | `Gated` | Start or cancel militia training and redistribute local militia cohorts across owned sectors |
+| STR-022 `improve-theater-capacity` | `Gated` | Unlock transport networks, fund the army or foundry, and fortify eligible sectors |
+| STR-023 `apply-scenario-policy` | `Gated` | Execute an allowlisted scenario policy, diplomacy, or academy action |
+| STR-024 `inspect-campaign-options` (`GetRecruitmentCandidates`) | `Query` | Read-only inspection of recruitment candidates (`GetRecruitmentCandidates`), reachable destinations, and active objectives |
 
 ## Use-case contracts
 
-The request fields are intent-level inputs; concrete action type values are in the crosswalk. Strategic requests are dispatched as `{type, ...payload}` and yield a new campaign snapshot. Most rejections leave the caller a previous-state clone with `lastError`; encounter-time and battle-time gates are state-dependent. See [strategic engine](../strategic-engine.md), [runtime flows](../runtime-flows.md), [session/runtime companion](session.md), and [authoring](authoring.md).
+The table below specifies each strategic use case by `ID`, `Request information`, `Outcome / authoritative owner touched`, `Key refusals or alternatives`, and `Browser surface and rule source`.
 
-| ID | Request information | Outcome / state touched | Key refusals or alternatives | Browser surface and rule source |
-|---|---|---|---|---|
-| STR-001 | content identity, seed/default start, intro completion | `initialCampaign` state, content package, clock, initialized events; intro replay changes no campaign | no installed/editor content; intro back/replay returns without starting | `page.tsx` title/`CampaignIntro`; `campaign.js:initialCampaign` |
-| STR-002 | officer name, creator answers/profile | officer record, contract, operative state, starting kit and squad | officer already exists; HQ occupied; invalid profile/health; treasury requirement when legacy profile costs apply | `CharacterCreator`, `Desk`; `campaign.js:createOfficer` |
-| STR-003 | character ID, term, safe recruitment site, or local conversation approach | immediate force membership and placement, service contract, payment/guarantee, local custody transfer | dead/captured/already recruited; local person must be present and eligible; service quote or safe site unavailable | `Recruitment`, `ReceivedCorrespondence`, `JA2Conversation`; `RecruitCombatantUseCase`, `TalkToCharacterUseCase`, `RecruitmentService` |
-| STR-004 | contract ID/expected guarantee/date, action (renew/dismiss/redirect/cancel); squad IDs/name/location | contract, pending arrivals, squad memberships/active squad | stale expected contract version; protected officer; transit, squad/location mismatch, unavailable assignment, size limits | `StrategicRoster`, `Squads`, `Desk`; `campaign.js` contract/squad cases |
-| STR-005 | squad, destination/route, queue flag, cancel choice | journey, route progress, locations/arrival records, fatigue/energy and committed ammunition | no march-ready members, exhausted/asleep/in-care, invalid/blocked route, pending battle/encounter, open journey | `StrategicMap`, `Campaign`; `campaign.js:travel/cancelTravel/resumeTravel`, `strategic-route.js`, `world.js` |
-| STR-006 | duration in hours/seconds or wait choice | campaign clock; timed contracts, events, arrivals, care, logistics, enemy presence and possible interruption | invalid/backward/oversized delta; pause notices/assignment choices; time stops at encountered battle or relevant notice | `Campaign`, `useStrategicClock`; `campaign.js:wait/advanceStrategicTime`, `time.js` |
-| STR-007 | current or target sector, active squad | pending exploration deployment with map, local actors, garrison and finite issued supplies | sector must be current, valid, not hostile/occupied, eligible and squad nonempty | `StrategicMap`, `CampaignOffice`; `campaign.js:visitSector`, `battle-handoff.js`, `world.js` |
-| STR-008 | target/mission, squad or mission support squad IDs, immediate/queued travel | pending request with battle identity, location/time, squad, ammunition, opposition, conditions and artillery | wrong neighbor/anchor, unsupported attack, no living force/supply route, tired squad, blocked sector, mission-only squad selection | `StrategicMap`, `MissionAssault`, `SectorPreparation`; `campaign.js:attack/beginAssault`, `campaign-scenario.js` |
-| STR-009 | enemy group and choice `tactical`/`auto`/`retreat`; retreat destination | pending encounter cleared or pending tactical battle, group status/history, defender relocation/sector ownership | encounter/group no longer pending; unavailable retreat route/defenders; stale choice | `EnemyEncounters`; `campaign.js:respondToEncounter`, `campaign-enemy-groups.js` |
-| STR-010 | pending battle ID, outcome, tactical `sectorState`, survivor report | report validation, roster wounds/departures, custody/ammunition/artillery, XP, quests, sectors, pending request removal | stale/missing battle ID; invalid outcome; mismatched/partial/invalid report; completion/deployment invariants | `page.tsx:finish`, `Battlefield`; `campaign.js:battleResult/leaveSector/finishMission`, `battle-outcome.js` helpers |
-| STR-011 | NPC ID, approach, local player unit, dialogue choice/quest option, tactical snapshot | conversation history, recruitment/contract, gifts, escort orders, quest/payment/loyalty effects | actor absent/unavailable/not adjacent, combat unresolved, wrong approach, state snapshot invalid, option/quest condition unmet | `JA2Conversation`, `Battlefield`; `campaign.js:talkNPC`, `content-dialogue.js`, `quests.js` |
-| STR-012 | mission/quest/event/policy-specific choices | scenario/story flags, objectives, resources, standing, quest state, local tactical snapshot as required | scenario gates, deadlines, missing prerequisites, invalid outcome/content choice | `Campaign`, `StoryQuestJournal`, conversation/event panels; `campaign-scenario.js`, `campaign-events.js`, `content-quests.js` |
-| STR-013 | operative ID, care assignment or asleep boolean | assignment, sleep/recovery, rest interruption state | person missing, in transit, invalid assignment, unable to wake due collapse/recovery | `MedicalCare`, `StrategicPersonnelMenu`; `campaign.js:assignCare/setSleep`, `care.js`, `sleep.js` |
-| STR-014 | operative/trainer, assignment/activity/skill/course | work/training/study/assignment, fatigue, course state and completion clock | skill/content unavailable, course/trainer eligibility, in transit, busy assignment | `StrategicPersonnelMenu`, `TrainingProgress`, `StudyForecast`, `MilitiaTraining`; campaign assignment + `skill-training.js`, `study-training.js` |
-| STR-015 | elapsed time, care/work assignments, attention resolution | recovery, morale, fatigue, warning and attention projections | not an independent order; clock can pause for unresolved attention/assignment prompts | `CampaignPerformance`, attention panels; `time.js`, `assignment-attention.js`, `contract-attention.js`, `logistics-attention.js` |
-| STR-016 | operative and expected guarantee/deadline, renewal term or dismissal | paid/patriot contract, departure/guarantee settlement, notice/log | stale contract, protected officer, unavailable funds/term, settlement guarantee condition | `StrategicRoster`, `ContractAttention`; `campaign.js:renewContract/dismiss`, `contract-rules.js` |
-| STR-017 | operative, owned equipment instance/item, destination slot or sector | operative inventory, armory/sector custody, serviceability and ownership records | not present/alive/owned, full pockets, unavailable equipment, invalid custody transfer | `StrategicPersonnelMenu`, `SectorInventory`, `RecoveredInventory`; `campaign.js:equip/sectorInventory`, `equipment.js` |
-| STR-018 | operative, ammunition family, count and direction (`store`/withdraw/load/unload) | finite carried/sector cartridges, selected load, issued report allocation | incompatible load, capacity/stocks/ownership, unavailable supplies; campaign purchase path disabled | `CampaignAmmunition`, `AmmunitionSupplies`, `AmmunitionLoadChoice`; campaign ammo helpers and `physical-ammunition.js` |
-| STR-019 | artillery ID, source/destination, configuration, quantity/repair request | field/depot custody, selection, ammo reserve, transport arrival and service state | route/storage/sector availability, capacity, supply/ownership; purchase/trade commands disabled | `ArtilleryTransport`, `StationedArtillery`, `JA2ArtilleryMenu`; artillery subsystem helpers |
-| STR-020 | horse ID and operative assignment/unassignment | horse/rider association and location/mount readiness | missing horse/rider, location/transit mismatch; `acquire`, `hire`, `feed`, `breed` rejected by global trade guard | `Horses`; `horseAction` allowlist in `campaign.js`, `garrison.js`/horse helpers |
-| STR-021 | sector, trainer, rank, course cancellation or redistribution manifest | militia cohorts, training course, local defense | sector not owned, trainer absent/low leadership/busy, capacity/course already active, rank ineligible | `MilitiaTraining`, `MilitiaDistribution`; `campaign.js:militia/cancelMilitia/transferMilitia/distributeMilitia` |
-| STR-022 | transport mode, fortification sector, foundry/funding confirmation | route unlock, treasury and fort level, army/foundry flags | already organized/funded, invalid sector/cap, scenario prerequisites/funds | `Logistics`, `StrategicMap`; `campaign.js:transport/fortify/foundry/fundArmy` |
-| STR-023 | scenario-defined `policy`, `diplomacy`, `academy`, event option | scenario state, flags, resources and campaign progression | no scenario implementation/offer or unmet authored prerequisites | `Campaign` and content panels; scenario `dispatchAction` hooks |
-| STR-024 | no mutation request; current campaign snapshot | projection of recruit statuses, destinations and chapter/objectives | may be stale by next action; dispatch remains authoritative | `Campaign`, `StrategicMap`; `availableActions`, `campaignObjectives` |
+| ID | Request information | Outcome / authoritative owner touched | Key refusals or alternatives | Browser surface and rule source |
+| --- | --- | --- | --- | --- |
+| STR-001 | Content identity, seed, intro completion | Initializes `GameSession` (revision `0`), campaign snapshot, `WorldTimeline`, and initial scenario events | Missing or invalid campaign content; intro replay mutates no state | `page.tsx`, `CampaignIntro.tsx`; `CreateGameSessionUseCase`, `campaign.js:initialCampaign` |
+| STR-002 | Officer name and profile answers | Creates officer `Character`, `Health`, `CharacterAbilities`, permanent `ServiceContract`, starting `Inventory`, and `Squad` membership | Officer already created; headquarters occupied; invalid profile or insufficient `Treasury` | `CharacterCreator.tsx`, `Desk.tsx`; `campaign.js:createOfficer` |
+| STR-003 | Candidate `characterId`, service term, safe recruitment site or local conversation approach | `RecruitmentService` updates `Character`, `ServiceContract`, `Treasury`, `ForceRoster`, and local `Squad` or reserve placement in one transaction | Candidate dead, captured, or already serving; unsafe site; insufficient `Treasury` | `Recruitment.tsx`, `ReceivedCorrespondence.tsx`, `JA2Conversation.tsx`; `RecruitCombatantUseCase`, `TalkToCharacterUseCase`, `RecruitmentService` |
+| STR-004 | Selected `characterIds`, target `Squad` ID/name/location; or legacy prepaid claim ID | `SquadFormationService` updates `Squad` and `ForceRoster` membership at the shared location without changing character location | Combatant in transit or deployed in an open `SectorSession`; location mismatch; squad size over 6 | `StrategicRoster.tsx`, `Desk.tsx`; `FormSquadUseCase`, `SquadFormationService`, `campaign.js` |
+| STR-005 | `Squad` ID, destination/route, transport mode, queue or redirection request | Creates, advances, cancels, or redirects (`RedirectJourney`) a `Journey`, preserving actual segment position, elapsed time, paid fares, and fatigue | Squad empty, asleep, in care, or deployed; blocked route; unresolved `ArrivalDecision` or encounter | `StrategicMap.tsx`, `Campaign.tsx`; `RedirectJourneyUseCase`, `Journey`, `campaign.js:travel/cancelTravel/resumeTravel` |
+| STR-006 | Target duration or wait command | Player `wait` (`Command`) advances campaign time; `AdvanceWorldTime` and `CollectResidentSupply` run as `Supporting` world-progression steps along `WorldTimeline.advanceTo` and `ResidentRoutine` | Refused while an `ArrivalDecision` or `pendingEncounter` is unresolved; stops at the first paused event boundary | `Campaign.tsx`, `useStrategicClock.ts`; `AdvanceWorldTimeUseCase`, `CollectResidentSupplyUseCase`, `time.js` |
+| STR-007 | Target friendly/eligible sector and active `Squad` | Emits `SectorEntryRequest` (`pendingBattle`) with participants, map, retained `Sector` state, and `residentPositions` projection | Sector hostile, invalid, or ineligible; squad empty or busy | `StrategicMap.tsx`; `EnterSectorUseCase`, `campaign.js:visitSector`, `battle-handoff.js` |
+| STR-008 | Pending `ArrivalDecision` ID (`FightOnArrival` / `WithdrawOnArrival`), target mission/sector, or suspended `SectorSession` ID (`ResumeSectorSession`) | `FightOnArrival` authorizes `SectorEntryRequest` (or `AdmitSectorReinforcements` if already open); `WithdrawOnArrival` starts a redirectable withdrawal `Journey`; `ResumeSectorSession` switches active visit | Decision ID already resolved or mismatched; no living squad or supply route; tired squad | `StrategicMap.tsx`, `SectorPreparation.tsx`; `FightOnArrivalUseCase`, `WithdrawOnArrivalUseCase`, `ResumeSectorSessionUseCase`, `campaign.js` |
+| STR-009 | Enemy group ID, response (`tactical`, `auto`, or `retreat`), optional retreat destination | Clears `pendingEncounter` via auto-resolve/retreat or emits a defensive `SectorEntryRequest` (`pendingBattle`) | Encounter no longer pending; no valid retreat route or defenders | `EnemyEncounters.tsx`; `campaign.js:respondToEncounter`, `enemy-groups.js` |
+| STR-010 | Issued `pendingBattle.id`, outcome, final sector snapshot, participant report | Reconciles `Character` (`Health`), `Inventory` and `ItemCustody`, ammunition, `Corpse` history, sector ownership, and closes `SectorSession` in `GameSession` | Stale or mismatched entry ID; incomplete or invalid report leaves `SectorSession` open | `page.tsx:finish`, `Battlefield.tsx`; `campaign.js:battleResult/leaveSector/finishMission`, `battle-outcome.js` |
+| STR-011 | Present NPC ID, approach, player speaker, dialogue option, optional sector snapshot | `TalkToCharacterUseCase` applies dialogue effects, local `RecruitmentService` admission, item transfers, escort orders, and quest updates in one transaction | Character absent, dead, or not adjacent; active combat unresolved; dialogue condition unmet | `JA2Conversation.tsx`, `Battlefield.tsx`; `TalkToCharacterUseCase`, `content-dialogue.js`, `quests.js` |
+| STR-012 | Quest, mission, or event choice payload | Updates scenario story flags, quest state, `Treasury`, faction standing, and sector ownership | Unmet scenario prerequisites, expired deadlines, or invalid option | `Campaign.tsx`, `StoryQuestJournal.tsx`; `campaign-scenario.js`, `campaign-events.js`, `content-quests.js` |
+| STR-013 | Character ID, medical care assignment or sleep flag | Updates character care assignment or sleep state and rest-interruption flags | Character absent, in transit, or unable to wake due to collapse/recovery | `MedicalCare.tsx`, `StrategicPersonnelMenu.tsx`; `campaign.js:assignCare/setSleep`, `medical-care.js`, `sleep.js` |
+| STR-014 | Character/trainer ID, work activity, skill, or study course | Updates strategic assignment, fatigue, training/study progress, and completion schedule | Skill or course unavailable; character in transit or busy | `StrategicPersonnelMenu.tsx`, `TrainingProgress.tsx`, `StudyForecast.tsx`; `skill-training.js`, `study-training.js` |
+| STR-015 | Elapsed time during clock advancement | Updates morale, fatigue recovery, and attention projections (`assignment-attention.js`, `contract-attention.js`, `logistics-attention.js`) | Supporting process; pauses clock when an attention prompt requires player resolution | `CampaignPerformance.tsx`, `AssignmentAttention.tsx`, `ContractAttention.tsx`, `LogisticsAttention.tsx`; `time.js` |
+| STR-016 | Character ID, renewal term or dismissal, expected contract state | `ServiceRenewalService` charges `Treasury` once and replaces `ServiceContract` from the later of existing expiry or current `GameTime`; dismissal ends service | Character dead or not serving; protected commander; insufficient `Treasury`; stale contract state | `StrategicRoster.tsx`, `ContractAttention.tsx`; `RenewServiceContractUseCase`, `ServiceRenewalService`, `campaign.js:dismiss` |
+| STR-017 | Source and destination custodian (`Character` or sector store), item selection, quantity/slot | `ItemTransferService` updates `Inventory`, `PocketLayout`, and `ItemCustody` atomically at both ends | Character absent or dead; insufficient quantity; destination `PocketLayout` capacity exceeded | `StrategicPersonnelMenu.tsx`, `SectorInventory.tsx`, `CampaignPockets.tsx`; `TransferItemUseCase`, `ItemTransferService`, `campaign.js:equip/sectorInventory` |
+| STR-018 | Character ID, ammunition family, cartridge count, direction (`store`, withdraw, load, unload) | Updates finite character and sector cartridge stocks, weapon load selection, and partial `ReloadWork` | Incompatible weapon load; insufficient stock or pocket capacity (`direction: 'buy'` is `Refused`) | `CampaignAmmunition.tsx`, `AmmunitionLoadChoice.tsx`; `campaign-ammunition.js`, `physical-ammunition.js` |
+| STR-019 | Artillery piece ID, source/destination sector, configuration, or ammo supply count | Updates artillery depot/field custody, transport schedule, and ammunition reserve | Invalid route, storage cap, or missing piece (artillery purchase/sale commands are `Refused`) | `ArtilleryTransport.tsx`, `OwnedArtillery.tsx`, `JA2ArtilleryMenu.tsx`; `campaign-artillery.js`, `artillery-transport.js` |
+| STR-020 | Horse ID and character assignment or unassignment | Updates rider/mount association at the shared location | Missing horse or rider; location or transit mismatch (`acquire`, `hire`, `feed`, `breed` are `Refused`) | `Horses.tsx`; `campaign.js:horseAction`, `horses.js` |
+| STR-021 | Sector ID, trainer ID, militia rank, cancel flag, or redistribution manifest | Updates militia training courses, local militia cohorts, and sector garrison strength | Sector not player-owned; trainer absent or low leadership; capacity full | `MilitiaTraining.tsx`, `MilitiaDistribution.tsx`; `campaign.js:militia/cancelMilitia/transferMilitia/distributeMilitia` |
+| STR-022 | Transport mode, fortification sector, foundry, or army funding choice | Updates `Treasury`, route network availability, sector fortification level, and foundry/army flags | Already unlocked or funded; invalid sector; insufficient `Treasury` or scenario gate | `Logistics.tsx`, `StrategicMap.tsx`; `campaign.js:transport/fortify/foundry/fundArmy` |
+| STR-023 | Scenario `policy`, `diplomacy`, or `academy` choice | Applies allowlisted scenario rule mutations to standing, resources, and progression | Unmet scenario prerequisites or unsupported action in the active scenario | `Campaign.tsx`; `campaign-scenario.js` |
+| STR-024 | Read-only filter request or current campaign snapshot | `GetRecruitmentCandidatesUseCase` returns `{ characterIds }` view; `availableActions` and `campaignObjectives` return UI projections without domain objects | Read-only `Query`; never mutates state or advances `WorldTimeline` | `Recruitment.tsx`, `Campaign.tsx`, `StrategicMap.tsx`; `GetRecruitmentCandidatesUseCase`, `campaign.js` |
 
 ## Two end-to-end intent contracts
 
-### STR-005 · March a squad to a destination
+### STR-005 · March a squad and handle hostile arrival or redirection
 
-**Actor:** commander. **Trigger:** choose a destination/route on the strategic map. **Preconditions:** active squad exists, is fit, awake, active and not already journeying; destination/route is reachable under current scenario/world ownership rules.
+**Actor:** Player (commander). **Trigger:** Select a destination route on the strategic map or redirect an active journey. **Preconditions:** The selected `Squad` has living, awake members not deployed in a sector visit, and no unresolved `ArrivalDecision` or `pendingEncounter` blocks time progression.
 
-**Request:** destination sector, optional route/mode and queue intent. **Success:** `dispatchCampaign({type:'travel',sector,...})` queues the active squad route; the immediate path advances up to the next meaningful travel interruption (bounded internal loop), while `queue:true` leaves travel queued for clock advancement. `cancelTravel` and `resumeTravel` alter the journey. The state records arrivals and changes operative/squad/horse location, energy, fatigue and morale as route ticks resolve.
+**Request:** Dispatch `{ type: 'travel', sector, ... }` to start/advance a `Journey`, or invoke `RedirectJourneyUseCase` (`cancelTravel` / `resumeTravel` / redirection) from the squad's current segment position.
 
-**Alternates/refusals:** empty squad, fatigue, sleep or care assignment, pending route, unknown destination, blocked route/ownership, enemy contact or battle pending. Arrival can be partial; an interruption takes precedence over reaching the requested endpoint. The request is not a promise of instantaneous teleportation.
+**Success:** `Journey` records physical segment progress, elapsed time, paid transport fare, and fatigue. If the squad reaches a hostile sector boundary, `ArrivalDecision` pauses `WorldTimeline` and requires `FightOnArrival` or `WithdrawOnArrival`. Choosing `WithdrawOnArrival` creates a journey with `JourneyPurpose.Withdrawal` at zero elapsed time; invoking `RedirectJourney` preserves exact segment position and costs (re-triggering a fresh `ArrivalDecision` immediately if reversed back into the hostile boundary at zero elapsed time).
 
-**Changes/invariants:** campaign owns one journey per squad; carried ammunition is committed when leaving; current `location` follows active squad selection while other squad journeys remain independent. Failed dispatch returns prior campaign plus `lastError`.
+The sequence diagram below shows how the `Commander`, `StrategicMap`, `Home dispatch`, `dispatchCampaign`, and `Journey and WorldTimeline rules` process a squad travel request.
 
 ```mermaid
 sequenceDiagram
@@ -95,26 +101,26 @@ sequenceDiagram
   participant Map as StrategicMap
   participant H as Home dispatch
   participant C as dispatchCampaign
-  participant R as route and clock rules
+  participant R as Journey and WorldTimeline rules
   Commander->>Map: choose destination and march
-  Map->>H: {type:travel, sector, queue?}
+  Map->>H: {type: travel, sector, queue?}
   H->>C: dispatchCampaign(previous, action)
-  C->>C: check active squad readiness
-  C->>R: queueSquadTravel and advance route as requested
-  R-->>C: arrival, interruption, or route state
-  C-->>H: next state or lastError rollback
-  H-->>Map: render updated route and notices
+  C->>C: check global guards and active squad readiness
+  C->>R: advance Journey and WorldTimeline.advanceTo
+  R-->>C: arrival, paused ArrivalDecision, or route state
+  C-->>H: committed snapshot (gameRevision + 1) or lastError rollback
+  H-->>Map: render updated route, arrival decision, or notice
 ```
 
-### STR-010 · Return from a tactical deployment
+### STR-010 · Return from a tactical sector visit
 
-**Actor:** commander. **Trigger:** tactical result screen chooses return/finish. **Preconditions:** active campaign pending battle and corresponding tactical snapshot; snapshot has completed/reportable status and current deployment identity.
+**Actor:** Player (commander). **Trigger:** Finish combat or leave exploration from `Battlefield`. **Preconditions:** An active `SectorEntryRequest` (`pendingBattle`) and matching `SectorSession` snapshot exist.
 
-**Request:** page callback chooses `finishMission`, `leaveSector` for exploration, or `battleResult`; payload contains pending `battleId`, `sectorState`, result/outcome and survivors. **Success:** campaign validates the report, reconciles return roster and finite custody, records progression/ownership/quests and clears pending battle; UI installs returned campaign and leaves battle screen.
+**Request:** `apps/web/app/page.tsx` (`finish`) dispatches `battleResult`, `leaveSector`, or `finishMission` with the pending `battleId`, final `sectorState`, outcome, and participant report.
 
-**Alternates/refusals:** stale battle ID, invalid/mismatched snapshot, illegal outcome, incomplete state or invariant failure returns `lastError`; page keeps battle open and surfaces notice. Successful tactical victory alone does not settle campaign state until this request is accepted.
+**Success:** Campaign settlement validates the entry ID and clocks, reconciles `Character` (`Health`), `Inventory` and `ItemCustody`, spent cartridges, `Corpse` records, quests, and sector ownership, closes the `SectorSession` in `GameSession`, and clears `pendingBattle`. **Refusal:** A stale ID or invalid report aborts the transaction with `lastError` and leaves the `SectorSession` open.
 
-**Changes/invariants:** report party identity matches issued squad; campaign outcome and tactical snapshot agree; campaign settlement remains authoritative. `battle-outcome.js` supplies helpers but does not own the whole use case.
+The sequence diagram below traces how the `Commander`, `Battlefield result`, `page.tsx finish`, `dispatchCampaign`, and `report validators and settlement` reconcile a completed sector visit.
 
 ```mermaid
 sequenceDiagram
@@ -128,90 +134,92 @@ sequenceDiagram
   H->>H: build action with pending battle ID and sectorState
   H->>C: dispatchCampaign(campaign, report action)
   C->>S: validate participants and tactical snapshot
-  S-->>C: settle custody and campaign consequences
+  S-->>C: settle Character health, Inventory custody, and consequences
   alt report accepted
-    C-->>H: settled campaign
-    H->>H: clear battle and return to campaign screen
+    C-->>H: settled campaign (gameRevision + 1)
+    H->>H: clear active battle view and return to campaign screen
   else report refused
-    C-->>H: lastError
-    H->>H: retain battle and show notice
+    C-->>H: rollback snapshot + lastError
+    H->>H: retain open SectorSession and show notice
   end
 ```
 
 ## Command crosswalk: campaign dispatcher
 
-Every `case` accepted syntactically by the `dispatchCampaign` switch is accounted for below. The global trade guard runs before the switch: a switch implementation does not necessarily mean the player can currently invoke it. Scenario hooks have content-dependent subcommands. UI availability varies by scenario and current state.
+The table below accounts for every `Exact action type` recognized by `dispatchCampaign` in [`packages/game/campaign.js`](../../../packages/game/campaign.js), mapping it to its `Use case / intent` and its `Exposure` classification (`Command`, `Gated`, `Query`, `Supporting`, `No interface route`, or `Refused`). The preflight trade guard runs before the `switch`, so trade and horse-purchase cases are classified as `Refused`.
 
-| Exact action `type` | Intent / classification |
-|---|---|
-| `sectorInventory` | STR-017, sector item custody |
-| `respondToEncounter` | STR-009 |
-| `setSleep` | STR-013 |
-| `assignWork` | STR-014 |
-| `purchaseToolkits` | Disabled by trade guard |
-| `purchaseAmmunition` | Disabled by trade guard |
-| `purchaseGrenades` | Disabled by trade guard |
-| `horseAction` | STR-020 only assignment/unassignment; acquire/hire/feed/breed explicitly disabled |
-| `unloadAmmunition` | STR-018 |
-| `selectAmmunitionLoad` | STR-018 |
-| `ammunition` | STR-018 store/withdraw; `direction:'buy'` disabled |
-| `syncTacticalTime` | Supporting tactical clock reconciliation, not direct player goal |
-| `repurchaseArtillery` | Disabled by trade guard |
-| `purchaseUsedArtillery` | Disabled by trade guard |
-| `resupplyArtillery` | Disabled by trade guard |
-| `advanceStrategicTime` | STR-006 supporting clock step |
-| `wait` | STR-006 |
-| `assignCare` | STR-013 |
-| `purchaseMedicalSupplies` | Disabled by trade guard |
-| `academy` | STR-014/023, scenario action (reachability conditional) |
-| `purchaseEquipment` | Disabled by trade guard |
-| `sellEquipment` | Disabled by trade guard |
-| `purchaseUsedEquipment` | Disabled by trade guard |
-| `sellArtillery` | Disabled by trade guard |
-| `exchangeEquipment` | Disabled by trade guard |
-| `storeArtillery` | STR-019 |
-| `transportArtillery` | STR-019 |
-| `supplyArtillery` | STR-019 |
-| `configureArtillery` | STR-019 |
-| `equip` | STR-017 |
-| `resupply` | Disabled by trade guard |
-| `repairWeapon` | Disabled by trade guard |
-| `createOfficer` | STR-002 |
-| `recruitCombatant` | STR-003 through RecruitCombatantUseCase |
-| `recruitCivic` | Compatibility alias for recruitCombatant |
-| `redirectHire` | STR-004 |
-| `cancelHireArrival` | STR-004 |
-| `recruit` | Disabled compatibility rejection: local recruits require personal encounter |
-| `renewContract` | STR-016 |
-| `dismiss` | STR-016 |
-| `createSquad` | STR-004 |
-| `squad` | STR-004; reorganization form |
-| `assignToSquad` | STR-004 |
-| `selectSquad` | STR-004 |
-| `talkNPC` | STR-011/012 |
-| `visitMission` | STR-008/012, scenario hook |
-| `finishMission` | STR-010 |
-| `visitSector` | STR-007 |
-| `leaveSector` | STR-010, exploration settlement |
-| `cancelTravel` | STR-005 |
-| `resumeTravel` | STR-005 |
-| `travel` | STR-005 |
-| `transport` | STR-022, unlock transport network |
-| `fundArmy` | STR-022 |
-| `foundry` | STR-022 |
-| `policy` | STR-023, scenario hook |
-| `diplomacy` | STR-023, scenario hook |
-| `transferMilitia` | STR-021 |
-| `distributeMilitia` | STR-021 |
-| `militia` | STR-021 |
-| `cancelMilitia` | STR-021 |
-| `fortify` | STR-022 |
-| `beginAssault` | STR-008 |
-| `attack` | STR-008 |
-| `battleResult` | STR-010 |
+| Exact action `type` | Use case / intent | Exposure |
+| --- | --- | --- |
+| `sectorInventory` | STR-017 (`TransferItem` between character and sector store; `issueOutfit` sub-mode is `Refused`) | `Command` |
+| `respondToEncounter` | STR-009 (resolve pending enemy-group encounter) | `Gated` |
+| `setSleep` | STR-013 (toggle combatant sleep state) | `Command` |
+| `assignWork` | STR-014 (assign strategic work, training, or study) | `Gated` |
+| `purchaseToolkits` | Preflight trade guard rejects merchant purchases | `Refused` |
+| `purchaseAmmunition` | Preflight trade guard rejects ammunition purchases | `Refused` |
+| `purchaseGrenades` | Preflight trade guard rejects grenade purchases | `Refused` |
+| `horseAction` | STR-020 (assign/unassign existing mounts is `Gated`; `acquire`, `hire`, `feed`, and `breed` are `Refused`) | `Gated` |
+| `unloadAmmunition` | STR-018 (unload physical firearm ammunition) | `Command` |
+| `selectAmmunitionLoad` | STR-018 (select ammunition load family) | `Command` |
+| `ammunition` | STR-018 (store/withdraw cartridges is `Command`; `direction: 'buy'` is `Refused`) | `Command` |
+| `syncTacticalTime` | Tactical-to-campaign clock synchronization via `syncBattleTime` | `Supporting` |
+| `repurchaseArtillery` | Preflight trade guard rejects artillery repurchase | `Refused` |
+| `purchaseUsedArtillery` | Preflight trade guard rejects used artillery purchase | `Refused` |
+| `resupplyArtillery` | Preflight trade guard rejects paid artillery resupply | `Refused` |
+| `advanceStrategicTime` | STR-006 (`AdvanceWorldTime` / `WorldTimeline.advanceTo` clock step) | `Supporting` |
+| `wait` | STR-006 (player-initiated wait command) | `Command` |
+| `assignCare` | STR-013 (assign medical care) | `Command` |
+| `purchaseMedicalSupplies` | Preflight trade guard rejects medical supply purchases | `Refused` |
+| `academy` | STR-014 / STR-023 (scenario academy hook) | `Gated` |
+| `purchaseEquipment` | Preflight trade guard rejects equipment purchases | `Refused` |
+| `sellEquipment` | Preflight trade guard rejects equipment sales | `Refused` |
+| `purchaseUsedEquipment` | Preflight trade guard rejects used equipment purchases | `Refused` |
+| `sellArtillery` | Preflight trade guard rejects artillery sales | `Refused` |
+| `exchangeEquipment` | Preflight trade guard rejects merchant exchanges | `Refused` |
+| `storeArtillery` | STR-019 (move artillery between squad and depot) | `Gated` |
+| `transportArtillery` | STR-019 (schedule artillery transport between sectors) | `Gated` |
+| `supplyArtillery` | STR-019 (allocate owned artillery ammunition; trade guard blocks paid resupply) | `Gated` |
+| `configureArtillery` | STR-019 (configure artillery crew and deployment selection) | `Gated` |
+| `equip` | STR-017 (equip or move carried items in campaign view) | `Command` |
+| `resupply` | Preflight trade guard rejects paid resupply | `Refused` |
+| `repairWeapon` | Preflight trade guard rejects paid weapon repair | `Refused` |
+| `createOfficer` | STR-002 (create player commander) | `Gated` |
+| `recruitCombatant` | STR-003 (`RecruitCombatantUseCase`) | `Gated` |
+| `recruitCivic` | STR-003 (compatibility alias routed to `RecruitCombatantUseCase`) | `Gated` |
+| `redirectHire` | STR-004 (redirect legacy prepaid arrival claim) | `Gated` |
+| `cancelHireArrival` | STR-004 (cancel legacy prepaid arrival claim) | `Gated` |
+| `recruit` | Legacy action rejected; local recruitment requires personal conversation (`TalkToCharacter`) | `Refused` |
+| `renewContract` | STR-016 (`RenewServiceContractUseCase`) | `Gated` |
+| `dismiss` | STR-016 (end combatant service) | `Gated` |
+| `createSquad` | STR-004 (`FormSquadUseCase` / create squad at location) | `Command` |
+| `squad` | STR-004 (`FormSquadUseCase` squad reorganization) | `Command` |
+| `assignToSquad` | STR-004 (`FormSquadUseCase` single-member assignment) | `Command` |
+| `selectSquad` | STR-004 (switch active squad) | `Command` |
+| `talkNPC` | STR-011 / STR-012 (`TalkToCharacterUseCase`) | `Gated` |
+| `visitMission` | STR-008 / STR-012 (enter authored scenario mission) | `Gated` |
+| `finishMission` | STR-010 (settle completed scenario mission) | `Gated` |
+| `visitSector` | STR-007 (`EnterSector` for friendly/exploration visit) | `Gated` |
+| `leaveSector` | STR-010 (settle and close exploration `SectorSession`) | `Gated` |
+| `resumeSectorSession` | STR-008 (`ResumeSectorSessionUseCase` to switch active authority to a suspended `SectorSession`) | `Gated` |
+| `withdrawOnArrival` | STR-008 (`WithdrawOnArrivalUseCase` to resolve a paused `ArrivalDecision` by starting a withdrawal journey) | `Gated` |
+| `redirectJourney` | STR-005 (`RedirectJourneyUseCase` to redirect a journey from its actual segment position) | `Command` |
+| `cancelTravel` | STR-005 (`RedirectJourneyUseCase` / halt or redirect journey) | `Command` |
+| `resumeTravel` | STR-005 (resume paused journey) | `Command` |
+| `travel` | STR-005 (start or queue squad `Journey`) | `Command` |
+| `transport` | STR-022 (unlock regional transport network) | `Gated` |
+| `fundArmy` | STR-022 (fund scenario army capacity) | `Gated` |
+| `foundry` | STR-022 (organize scenario foundry) | `Gated` |
+| `policy` | STR-023 (execute scenario policy hook) | `Gated` |
+| `diplomacy` | STR-023 (execute scenario diplomacy hook) | `Gated` |
+| `transferMilitia` | STR-021 (transfer militia between sectors) | `Gated` |
+| `distributeMilitia` | STR-021 (apply militia distribution manifest) | `Gated` |
+| `militia` | STR-021 (start militia training course) | `Gated` |
+| `cancelMilitia` | STR-021 (cancel active militia training course) | `Gated` |
+| `fortify` | STR-022 (fortify eligible sector) | `Gated` |
+| `fightOnArrival` | STR-008 (`FightOnArrivalUseCase` to resolve a paused `ArrivalDecision` by committing to sector entry) | `Gated` |
+| `beginAssault` | STR-008 (`FightOnArrivalUseCase` compatibility resolution of hostile arrival decision) | `Gated` |
+| `attack` | STR-008 (initiate assault or resolve hostile arrival) | `Gated` |
+| `battleResult` | STR-010 (settle completed combat `SectorSession`) | `Gated` |
 
-**Guard-only disabled types** (included because the switch's preflight explicitly recognizes/rejects them): `purchaseToolkits`, `purchaseAmmunition`, `purchaseGrenades`, `purchaseMedicalSupplies`, `purchaseEquipment`, `purchaseUsedEquipment`, `sellEquipment`, `exchangeEquipment`, `sellArtillery`, `purchaseUsedArtillery`, `repurchaseArtillery`, `resupplyArtillery`, `supplyArtillery`, `resupply`, `repairWeapon`, plus `ammunition` buy, `sectorInventory` `issueOutfit`, and `horseAction` acquire/hire/feed/breed. The same string may appear above because a case body exists behind the preflight guard.
+## Rule boundary
 
-## Sources and boundaries
-
-UI evidence: [`page.tsx`](../../../apps/web/app/page.tsx), [`Desk.tsx`](../../../apps/web/app/Desk.tsx), [`Campaign.tsx`](../../../apps/web/app/Campaign.tsx), [`StrategicMap.tsx`](../../../apps/web/app/StrategicMap.tsx), [`StrategicRoster.tsx`](../../../apps/web/app/StrategicRoster.tsx), `apps/web/app/Squads.tsx`, [`MedicalCare.tsx`](../../../apps/web/app/MedicalCare.tsx), [`Logistics.tsx`](../../../apps/web/app/Logistics.tsx), [`JA2Conversation.tsx`](../../../apps/web/app/JA2Conversation.tsx), [`EnemyEncounters.tsx`](../../../apps/web/app/EnemyEncounters.tsx). Rule evidence: [`campaign.js`](../../../packages/game/campaign.js), [`time.js`](../../../packages/game/time.js), [`battle-handoff.js`](../../../packages/game/battle-handoff.js), [`contracts.js`](../../../packages/game/contracts.js), [`strategic-route.js`](../../../packages/game/strategic-route.js), [`campaign-scenario.js`](../../../packages/game/campaign-scenario.js). This catalogue describes current browser intent surfaces and rule boundaries; it does not dictate a new application architecture.
+Strategic commands enter through [`packages/game/campaign.js`](../../../packages/game/campaign.js) and route migrated intentions to [`packages/game/application`](../../../packages/game/application/), with clock synchronization in [`packages/game/time.js`](../../../packages/game/time.js), sector entry preparation in [`packages/game/battle-handoff.js`](../../../packages/game/battle-handoff.js), contract helpers in [`packages/game/contracts.js`](../../../packages/game/contracts.js), route validation in [`packages/game/strategic-route.js`](../../../packages/game/strategic-route.js), and scenario hooks in [`packages/game/campaign-scenario.js`](../../../packages/game/campaign-scenario.js).

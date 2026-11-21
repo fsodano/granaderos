@@ -1,53 +1,47 @@
 # Strategic engine
 
-[Architecture guide](README.md)
+[Architecture guide](README.md) · [Runtime flows](runtime-flows.md) · [Strategic use cases](use-cases/strategic.md) · [Persistence](persistence.md)
 
-The strategic engine is a transactional campaign-state machine: authored scenario/content supplies the initial world and policy hooks, while `dispatchCampaign` applies one validated order to a cloned campaign snapshot. The resulting state coordinates travel, people, resources, contracts, care, finite equipment custody, events, and battle requests; it is not a separate simulation service per feature. Tactical play is handed off through a pending-battle request, and its clock and report are reconciled back through campaign actions. For the overall runtime and save boundaries, see [runtime flows](runtime-flows.md) and [persistence](persistence.md); this page focuses on strategic decisions and state contracts.
+This page explains how the strategic engine (`packages/game/campaign.js` and its domain, application, and scenario collaborators) initializes campaigns, processes player commands inside a transactional unit of work, advances game time and journeys, manages personnel and finite equipment custody, and coordinates sector entry and settlement with the [tactical engine](tactical-engine.md). It connects the call sequences in [runtime flows](runtime-flows.md) and the player intentions in [strategic use cases](use-cases/strategic.md) to the storage contracts in [persistence](persistence.md) and the package schemas in [content and campaigns](content-and-campaigns.md).
 
 ## Domain owners and application contracts
 
-`RecruitCombatant` coordinates `Character`, `Health`, `ServiceContract`, `Treasury`,
-`ForceRoster`, and `Squad` through `RecruitmentService`. The combatant is available
-immediately at a legal site. Local recruitment preserves the resident's condition
-and equipment. `RenewServiceContract` extends exact service deadlines and charges
-once. `FormSquad` validates all selected members before changing membership.
+Strategic operations combine domain classes in `packages/game/domain`, use cases in `packages/game/application`, and compatibility rules in `packages/game/campaign.js`. Every domain fact has one authoritative owner:
 
-`Journey` owns route progress. `ArrivalDecision` owns one fight-or-withdraw choice.
-`RedirectJourney` preserves the exact route position, elapsed time, and spent
-costs, including a reversal at zero elapsed time. Time remains paused until every
-pending arrival decision has a resolution.
+- **Personnel, health, abilities, and finances:** `Character` owns persistent identity, `Health` (hit points, bleeding, and bandaged wounds), immutable `CharacterAbilities` (0–100 ratings, traits, and rule capabilities), `ServiceContract`, and strategic `locationId`. `Treasury` owns force funds in integer pesos (`Money`). `ForceRoster` and `Squad` own player force membership, reserve status, and squad composition (up to six combatants per squad at one location).
+  - `RecruitCombatantUseCase` coordinates `RecruitmentService` through `RecruitCombatantRepository` to charge `Treasury` once, start a `ServiceContract`, admit the character into `ForceRoster`, and place the combatant immediately at a legal recruitment site (either in a local `Squad` with a free slot or in the controllable reserve). Local recruitment via `TalkToCharacterUseCase` uses the same `RecruitmentService` within the conversation transaction and preserves the character's current condition and equipment.
+  - `RenewServiceContractUseCase` coordinates `ServiceRenewalService` and `ServicePricingPolicy` through `RenewServiceContractRepository` to extend paid service from the later of the existing expiry or current `GameTime` and charge once.
+  - `FormSquadUseCase` coordinates `SquadFormationService` through `FormSquadRepository` to reorganize available combatants at the same location in one transaction.
+  - `GetRecruitmentCandidatesUseCase` queries `RecruitmentCatalogue` through `GetRecruitmentCandidatesRepository` and returns a view type (`{ characterIds }`) without mutating time, funds, or service.
+- **Journeys and hostile arrivals:** `Journey` owns strategic route progress, transport mode, physical segment position, and movement purpose (`JourneyPurpose`). `ArrivalDecision` owns the mutually exclusive fight-or-withdraw choice when a journey reaches a hostile sector boundary, pausing campaign time until resolved by `FightOnArrivalUseCase` or `WithdrawOnArrivalUseCase`. `RedirectJourneyUseCase` replaces a journey's route from its actual segment position while preserving elapsed time, paid segment fares, and fatigue, including immediate reversal at zero elapsed time.
+- **World evolution, sessions, and item custody:** `GameSession` owns session identity, `revision`, and active or suspended `SectorSession` registrations (`ResumeSectorSessionUseCase` switches active authority to a suspended visit). `Sector` owns environment bounds and references to current residents, participants, objects, and corpses without duplicating `Character` health or `Inventory` custody. `ResidentPositionReference` (`residentPositions`) is a read-only projection of a non-participating serving character's saved local post. `WorldTimeline` owns monotonic game time (`WorldTimeline.advanceTo` is the only domain clock mutation), ordering `Corpse` removal (72 game hours after death via `AdvanceWorldTimeUseCase`) and `ResidentRoutine` supply collection (`CollectResidentSupplyUseCase` and `ScavengingPolicy`).
 
-`GameSession` identifies active and suspended sector visits. `Sector` references
-physical residents, participants, objects, and corpses. `WorldTimeline` schedules
-corpse removal with stable event identity. The world adapters coordinate condition
-changes, resident routines, item collection, and removal through shared time
-boundaries for visible, retained, and suspended sectors.
-
-The serialized names `pendingBattle`, `recruited`, and `operativeState` remain at
-the compatibility boundary. New domain and application code uses the canonical
-[glossary](../plans/accepted/ubiquitous-language.md).
+The serialized fields `pendingBattle`, `recruited`, `operativeState`, and `hiringArrivals` remain at the compatibility snapshot boundary and map to canonical domain objects through `CanonicalPersonnelMapper`, `JourneySnapshotMapper`, and `CanonicalWorldMapper`. New domain and application modules use the canonical [ubiquitous language](../plans/accepted/ubiquitous-language.md).
 
 ## Ownership and state boundary
 
-`initialCampaign(seed, content)` resolves optional authored content, asks the selected scenario for `initialState`, applies authored starting time/content attachment (or default errand/discovery definitions), initializes/migrates campaign subsystems, then initializes campaign events and progresses the scenario when needed. Initialization is therefore scenario-aware, not simply a static catalog copy. `initializeCampaignSystems` visibly brings together roster-dependent migrations for skill learning, cartridges, equipment returns, medical care, assignments, morale, ammunition custody, artillery, enemy groups, deployment returns, attention state and town income (`../../game/campaign.js`).
+`initialCampaign(seed, content)` in `packages/game/campaign.js` resolves optional authored content, obtains initial scenario state from the allowlisted scenario module (`packages/game/campaign-scenario.js`), applies authored starting time and content definitions, and runs `initializeCampaignSystems` to initialize or migrate roster-dependent structures for skill learning, physical cartridges, equipment returns, medical care, assignments, morale, ammunition custody, artillery, enemy groups, deployment returns, attention notices, and town income.
 
-The campaign state is a serializable snapshot projected from domain behavior, with fields added by migrations and features. Commonly used top-level shapes include:
+The table below lists representative top-level `Field` groups on the serialized campaign snapshot and their `Role` at the compatibility boundary.
 
 | Field | Role |
-|---|---|
-| `seed`, `hour`, optional `secondOfHour` | deterministic campaign RNG and strategic clock |
-| `location`, `sectors`, `sectorStates` | current place, regional ownership/conditions, local finite stocks and units |
-| `recruited`, `operativeState`, `squads`, `activeSquadId` | personnel, individual mutable records and strategic squad organization |
-| `resources`, `reputation`, `log` | treasury and other campaign resource balances, faction standing and bounded activity history |
-| `contracts`, `quests`, `missions`, `sceneStates` | timed obligations and authored interaction/progression state |
-| `pendingEncounter`, `pendingBattle` | mutually exclusive strategic interruption / tactical handoff |
-| `lastError` | rejected order explanation; successful dispatch clears it |
+| --- | --- |
+| `gameSessionId`, `gameRevision` | Session identity and monotonic transaction revision managed by `GameSession` and `GameUnitOfWork` |
+| `seed`, `hour`, optional `secondOfHour` | Deterministic campaign RNG seed and accepted strategic clock (`GameTime`) |
+| `location`, `sectors`, `sectorStates`, `sceneStates` | Active strategic location, regional sector ownership/conditions, and retained physical sector snapshots (`Sector`, `WorldTimeline`, `ResidentRoutine`, `Corpse`) |
+| `recruited`, `operativeState`, `squad`, `squads`, `activeSquadId` | Compatibility projection of `ForceRoster`, per-character `Character` / `Health` / location / assignment records, and `Squad` / `Journey` state |
+| `resources`, `reputation`, `log` | `Treasury` and campaign resource balances, faction standing, and bounded activity log |
+| `contracts`, `quests`, `missions` | Compatibility projection of `ServiceContract` terms, authored quest state, and mission progression |
+| `pendingEncounter`, `pendingBattle`, `suspendedSectorSessions` | Active strategic enemy-group encounter, compatibility `SectorEntryRequest` (`pendingBattle`), and suspended `SectorSession` records |
+| `lastError` | Localized Spanish explanation of the most recent refused command; cleared on the next accepted dispatch |
 
-These are representative state families, not a closed schema. Scenario content and migrations can extend the state. Definitions may be pinned under `contentCampaign.package`; campaign cloning deliberately reuses that frozen package while cloning mutable state.
+When authored content is active, its frozen package definition is pinned under `contentCampaign.package`; campaign cloning reuses that immutable package reference while deep-cloning mutable gameplay state.
 
 ## Order transaction contract
 
-`dispatchCampaign(previous, action)` accepts an action object with a string `type` and returns the next campaign snapshot. It clones/migrates before application, clears the prior error, initializes compatibility defaults, validates campaign/event/service/quest contexts, checks global guards, then routes through a large action switch. After applying an action it performs campaign reconciliation/progression and final consistency work. On a thrown validation or action error it returns a clone of the prior snapshot with `lastError` set; this is rollback of the attempted order, not a promise that all returned snapshots are object-identical to inputs. Some valid operations intentionally make no broad state change, and guards depend on state/action context.
+`dispatchCampaign(previous, action)` in `packages/game/campaign.js` accepts an action object with a string `type` discriminant and returns the next campaign snapshot. It opens a `GameUnitOfWork`, clones and normalizes the snapshot, clears `lastError`, checks global campaign guards, and routes the command either to a migrated application use case or to a procedural subsystem helper. `dispatchCampaign` validates the draft itself, then `GameUnitOfWork.commit()` stores the snapshot and advances `gameRevision` by one. If a domain refusal or validation error occurs, `dispatchCampaign` aborts the unit of work and returns a clone of the prior snapshot with `lastError` populated.
+
+The sequence diagram below shows how `Strategic UI / caller`, `dispatchCampaign`, `Campaign policy + feature helpers`, and `Scenario/content hooks` process one strategic action.
 
 ```mermaid
 sequenceDiagram
@@ -65,33 +59,32 @@ sequenceDiagram
   D-->>UI: next snapshot (or rollback snapshot + lastError)
 ```
 
-Global order guards are significant: pending encounters accept only encounter response and squad selection; open sector visits accept their report, conversation, synchronization, and explicit arrival/resumption pathways; unresolved arrival decisions restrict mutation to fight or withdraw; travel and deployment orders require an eligible, awake, active squad with no journey. Defeated/completed campaigns have different permitted action sets. These are contextual gates, not blanket rules that every invalid order leaves every external object unchanged.
+Global order guards enforce lifecycle precedence before individual action handlers run:
+
+- When an `ArrivalDecision` is pending on any squad's `Journey`, campaign time is paused and mutating commands that would advance time or bypass the decision are refused; only arrival resolution (`FightOnArrival` / `WithdrawOnArrival`) and permitted inspection or active-visit selection are admitted.
+- When `pendingEncounter` is present, only `respondToEncounter` and squad selection are admitted.
+- When a sector visit (`pendingBattle`) is open, strategic mutations are restricted to battle reporting (`battleResult`, `leaveSector`, `finishMission`), local conversation (`talkNPC`), tactical clock synchronization (`syncTacticalTime`), and multi-squad arrival or visit-resumption commands (`ResumeSectorSession`).
+- Completed or defeated campaigns reject further gameplay mutations.
 
 ## Action families and strategic semantics
 
-Actions use `type` discriminants rather than one worker per action. The dispatcher and imported subsystem helpers implement families including:
+Commands use `action.type` discriminants grouped into five functional families (see [strategic use cases](use-cases/strategic.md) for the complete `dispatchCampaign` switch crosswalk):
 
-* **World movement and deployment:** `travel`, `cancelTravel`, `resumeTravel`, `visitSector`, `beginAssault`, mission visits, and encounter response. Travel follows strategic route/ownership and squad state; attack preparation captures origin, target, time, deployed squad, allocated ammunition, artillery, opposition and scenario attack definition into `pendingBattle`.
-* **Squad and personnel:** create/select/reorganize squads, recruitment, dismissal, assignment/work/sleep/care, training and contract renewal. Availability can depend on alive/captured status, local encounter requirements, service-equipment returns and scenario recruitment gates (`recruitmentStatus`).
-* **Economy, logistics and custody:** finite ammunition store/issue/unload/load selection, equipment transfer and sector inventory, horses, militia, and artillery transport/configuration. Goods have location/ownership/custody and serviceability implications; they are not abstract unlimited loadout choices. The dispatcher explicitly disables purchase/trade orders (including ammunition buys) with a trade-unavailable error; do not present those switch cases/compatibility paths as currently available purchasing.
-* **Events, contracts and authored progression:** quest/NPC interactions, timed events, mission completion, faction standing, sector ownership and event settlement. Scenario hooks are provided through `scenarioContext` (for example `pay`, `add`, `standing`, `note`, supply/readiness checks, deployment exits, arrival/loyalty recording, quest updates and sector lookup).
-* **Clock and reconciliation:** waiting/strategic-time advancement and `syncTacticalTime`; see the clock and handoff sections below.
+- **World movement and sector entry:** `travel`, `cancelTravel`, `resumeTravel`, `visitSector`, `beginAssault`, `attack`, `visitMission`, and `respondToEncounter`, backed by `Journey`, `ArrivalDecision`, `FightOnArrivalUseCase`, `WithdrawOnArrivalUseCase`, `RedirectJourneyUseCase`, `strategic-route.js`, and `battle-handoff.js`.
+- **Squads and personnel:** `createOfficer`, `recruitCombatant` (and compatibility alias `recruitCivic`), `renewContract`, `dismiss`, `createSquad`, `squad`, `assignToSquad`, `selectSquad`, `redirectHire`, `cancelHireArrival`, `assignCare`, `setSleep`, and `assignWork`, backed by `RecruitCombatantUseCase`, `RenewServiceContractUseCase`, `FormSquadUseCase`, `medical-care.js`, `sleep.js`, `skill-training.js`, and `study-training.js`.
+- **Economy, logistics, and item custody:** `equip`, `sectorInventory`, `ammunition`, `selectAmmunitionLoad`, `unloadAmmunition`, `storeArtillery`, `transportArtillery`, `supplyArtillery`, `configureArtillery`, and `horseAction` (rider assignment and unassignment only). Every item and cartridge stack has finite custody across character inventories and sector stores. The preflight trade guard in `dispatchCampaign` explicitly refuses merchant purchase/sale/repair commands (`purchaseEquipment`, `sellEquipment`, `purchaseAmmunition`, `repairWeapon`, and related trade actions) and horse acquisition/hiring/feeding/breeding with a trade-unavailable refusal.
+- **Events, conversations, and scenario progression:** `talkNPC` (backed by `TalkToCharacterUseCase`), `policy`, `diplomacy`, `academy`, `transport`, `fundArmy`, `foundry`, `militia`, `cancelMilitia`, `transferMilitia`, `distributeMilitia`, and `fortify`. Scenario hooks receive a `scenarioContext` adapter providing controlled operations (`pay`, `add`, `standing`, `note`, readiness checks, quest updates, and sector lookup).
+- **Clock advancement and tactical reconciliation:** `wait`, `advanceStrategicTime`, and `syncTacticalTime`, backed by `WorldTimeline`, `AdvanceWorldTimeUseCase`, `CollectResidentSupplyUseCase`, and `packages/game/time.js`.
 
-`availableActions` exposes a useful projection (recruits with availability reasons, destinations, active chapter), but callers should still dispatch and handle `lastError`: this projection is not a replacement for authoritative validation.
-
-## Travel, timed work, and finite custody
-
-Strategic travel changes more than `location`: arrivals are recorded; operative location, assignment, recovery, energy, fatigue and morale can change; squad journeys and locations are updated; assigned horses travel with their rider. Enemy groups can halt, wait, resolve or create a pending encounter as travel/time advances. Scenario-defined routes and sector relationships supply policy; this is not a universal unrestricted graph traversal.
-
-Finite inventory actions update ownership across operative, sector, and campaign records. Battle preparation calls campaign ammunition allocation with origin and supply status and commits the allocation before it emits the tactical request. The request records issued rounds and each deployed operative's allocated load, while strategic stocks/custody are reconciled from battle outcomes. Equipment and artillery have additional service/transport rules. See [content and campaigns](content-and-campaigns.md) for authoring and [persistence](persistence.md) for save representations rather than treating this page as a catalog.
+Read-only query helpers (`GetRecruitmentCandidatesUseCase`, `availableActions`, and `campaignObjectives`) project player-visible options without mutating state; `dispatchCampaign` remains the sole authority for command validation.
 
 ## Battle handoff and shared time
 
-`prepareAttack` in `campaign.js` constructs `pendingBattle` from the scenario attack definition and current campaign state, including battle identity, origin/sector, campaign hour/seconds, seed, squad, opposition, regional conditions, ammunition, artillery and relevant detained/encounter characters. It then allows scenario preparation and builds garrison/report context. This request is the strategic-to-tactical boundary, not itself the tactical engine.
+`prepareAttack` and `visitSector` in `packages/game/campaign.js` construct the compatibility `SectorEntryRequest` (`pendingBattle`), capturing the entry ID, origin and target sector, campaign timestamp (`hour` and `secondOfHour`), deterministic seed, participating squad members, committed ammunition allocation, artillery, regional weather/terrain conditions, and opposing forces. `EnterSectorUseCase` and `packages/game/battle-handoff.js` use that request to open or restore the `SectorSession`.
 
-`syncBattleTime(campaign, battle)` in `time.js` validates the pending battle identity and cross-system contexts (repair reserves, service objections, companion loss, quest beneficiaries and ability references). It dispatches `syncTacticalTime` through the campaign transaction. It returns `{campaign,battle,error}` and applies escort orders and synchronized clock metadata on success. Tactical elapsed time is monotonic against `pendingBattle.syncedSeconds`, bounded per sync, and a supplied tactical snapshot must report the same elapsed time. Combat rounds are six seconds (`COMBAT_ROUND_SECONDS`). `REST_SECONDS` is used for tactical exploration rest actions, not strategic rest.
+While a `SectorSession` is open, `syncBattleTime(campaign, battle)` in `packages/game/time.js` validates the entry ID, participant identities, and cross-system contexts (repair reserves, service objections, companion loss, quest beneficiaries, and ability references), then dispatches `syncTacticalTime` through `dispatchCampaign`. Tactical elapsed time must be monotonic against `pendingBattle.syncedSeconds` and bounded by `SectorTimeBudget` so sector play never advances past an unresolved campaign `ArrivalDecision`. Each combat round consumes six seconds (`COMBAT_ROUND_SECONDS`); tactical exploration rest consumes `REST_SECONDS`.
 
-The battle request-to-scene path also uses `battle-handoff.js` and `world.js`; settlement is performed by campaign dispatch/report handling, not solely by the `battle-outcome.js` helper. See [runtime flows](runtime-flows.md) for broader scene/runtime lifecycle.
+The state diagram below shows how the strategic campaign transitions among `CampaignReady`, `EncounterPending`, `ArrivalDecision`, `BattleRequested`, and `TacticalScene`.
 
 ```mermaid
 stateDiagram-v2
@@ -102,14 +95,12 @@ stateDiagram-v2
   CampaignReady --> ArrivalDecision: hostile journey reaches boundary
   ArrivalDecision --> BattleRequested: FightOnArrival
   ArrivalDecision --> CampaignReady: WithdrawOnArrival
-  CampaignReady --> BattleRequested: authorized mission deployment
-  BattleRequested --> TacticalScene: handoff request built
-  TacticalScene --> BattleRequested: time sync / saved resume state
-  TacticalScene --> CampaignReady: report or leave reconciled
+  CampaignReady --> BattleRequested: authorized mission or sector visit
+  BattleRequested --> TacticalScene: EnterSector builds or restores visit
+  TacticalScene --> BattleRequested: syncBattleTime / suspended visit
+  TacticalScene --> CampaignReady: battleResult, leaveSector, or finishMission
 ```
 
-## Failure modes, invariants, extension
+When the visit finishes, `battleResult`, `leaveSector`, or `finishMission` validates the returned sector snapshot against the issued `pendingBattle` identity and settles `Character` health, `Inventory` and sector item custody, spent ammunition, corpse and death history, sector ownership, and scenario hooks in one campaign transaction.
 
-Orders can fail because an actor is absent, dead, captured, in transit, assigned incompatibly, asleep, on a journey, insufficiently supplied, short of resources, or blocked by a pending encounter/battle or completed/defeated state. Helpers generally surface localized `lastError` strings; battle-time sync instead returns an `error` field. Pending request identity and report context are validated to prevent stale/mismatched settlement. Resource payment checks affordability before subtracting; finite stocks are allocated and reconciled explicitly. Avoid assuming strict global DAG routing, a universal catalog, or that every order is processed by a worker.
-
-Extension points are scenario definitions and hooks (`initialState`, progression, raid/attack definition, attack preparation, occupation, recruitment gates), plus focused subsystem modules imported by the dispatcher. Add or change a strategic order by preserving clone/validation/rollback semantics and accounting for interaction with clock, pending handoffs, finite custody, and state migrations. Source anchors: [`campaign.js`](../../packages/game/campaign.js), [`time.js`](../../packages/game/time.js), [`battle-handoff.js`](../../packages/game/battle-handoff.js), [`world.js`](../../packages/game/world.js), [`battle-outcome.js`](../../packages/game/battle-outcome.js), [`campaign-scenario.js`](../../packages/game/campaign-scenario.js).
+Source anchors: [`packages/game/campaign.js`](../../packages/game/campaign.js), [`packages/game/time.js`](../../packages/game/time.js), [`packages/game/battle-handoff.js`](../../packages/game/battle-handoff.js), [`packages/game/world.js`](../../packages/game/world.js), [`packages/game/battle-outcome.js`](../../packages/game/battle-outcome.js), and [`packages/game/campaign-scenario.js`](../../packages/game/campaign-scenario.js).

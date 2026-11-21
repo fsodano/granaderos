@@ -1,6 +1,6 @@
 # Serenidad al cuidar
 
-This guide describes published behavior on the tactical battlefield. Ángela Cejas is a fictional caregiver. Her profile says that caring for others
+This guide describes current behavior on the tactical battlefield. Ángela Cejas is a fictional caregiver. Her profile says that caring for others
 helps her recover her calm. The new default content package gives her the explicit
 `care_composure` capability. Campaign authors can select this capability for
 another character in the existing ability editor.
@@ -38,16 +38,9 @@ synchronization, return or save loading.
 
 The resulting shock uses the existing battle save field. The brief message uses
 an action-local result and is not saved or recreated on loading. Campaign return
-retains its existing transient-shock rules; this feature adds no strategic calm
-reward or persistent care receipt.
+retains its existing transient-shock rules; no strategic calm
+reward or persistent care receipt is added.
 
-## Verification scope
+## Limits
 
-Focused checks cover finite supplies, effective and rejected strokes, self-care,
-military and civilian patients, room visibility, clipped relief, authored and
-older pinned content, medical previews and the existing save and clock paths.
-The paid hostile-action acceptance and final short-suite results are recorded in
-the [video review](../../verification/ja2-video-review-2026-10-03.md).
-
-This implements one contextual personality effect. Contextual fears, evolving
-opinions, complaints, later departures and distinct recorded voices remain open.
+This is one contextual personality effect. Contextual fears, evolving opinions, complaints, later departures and distinct recorded voices remain open.

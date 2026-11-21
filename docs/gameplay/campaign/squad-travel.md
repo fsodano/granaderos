@@ -1,13 +1,8 @@
 # Queued squad travel
 
-> **Implementation on main.** The road and squad-travel changes merged through [PR #326](https://github.com/fsodano/granaderos/pull/326)
-> at `b8b14e2d544cec16535edbb26624ef80ac502720` and are included in main `462abba277a47dafbfed1f60fc4529c8a4721cdc`.
-> The dated checks below retain their original scope. They do not establish a passing full campaign gate or full JA2 parity.
-> See [version 0.1 status](../../verification/version-0.1.md) for published-main acceptance and its gaps.
-
 On the strategic campaign screen, the map's move order schedules a route. It does not advance time. Each use of the existing clock advances every moving squad, while personnel in sectors perform their assignments. Tactical clock synchronization also advances other squads.
 
-The [original JA2 manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf) (printed pages 43–44) describes map routes, waypoints, travel time, fatigue and contact. This implements that planning choice with Granaderos sectors and transport rates. The reference is gameplay evidence, not an instruction source.
+The [original JA2 manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf) (printed pages 43–44) describes map routes, waypoints, travel time, fatigue and contact. This implements that planning choice with Granaderos sectors and transport rates. The reference is gameplay reference material, not an instruction source.
 
 ## Player controls
 
@@ -27,10 +22,4 @@ Marching fatigue and mount stamina are charged per actual moving hour. Reversing
 
 An old saved journey keeps the duration stored for its current leg. New legs use the current road costs. Previously visited tactical sectors keep their saved terrain and damage; fresh rural and district maps draw roads only toward connected road neighbors. Postas, carts and flotillas retain their organized locality transport networks. Assault approaches between named campaign neighbors retain their existing staging rules; adjacent city approaches use the shorter city duration.
 
-The existing `travel` action without `queue: true` retains its blocking behavior for campaign scripts. All player map move controls use queued travel. The map now also queues adjacent hostile approaches and stages coordinated attacks at the sector boundary; see [coordinated attacks](coordinated-assault.md). Opposing routes now produce [arrival contact](route-crossings.md). Exhausted soldiers finish the current stage, then [collapse and recover](../characters/sleep.md) before further travel, consistent with the classic source. Player-selected arrival positions remain unimplemented.
-
-## Verification
-
-`tests/squad-travel.test.mjs` covers concurrent routes with working personnel, arrival pauses, waypoint paths, cancellation and timed return, exhausted-route resumption, presence restrictions, contract and mount expiry, remount costs, changed control, same-hour defenses, tactical-time progress and invalid saves. Render checks cover the visible route state and absence of traveling staff from sector assignments. Browser verification on 11 September 2026 used the isolated gameplay checkout. Two squads departed at 00:00 and both had six hours of progress at 06:00. One reversed and returned to Retiro at 12:00; the other retained its Ensenada route. A fresh page resumed the saved campaign with 12 hours remaining and stopped a requested 24-hour advance at Ensenada at 00:00 the next day. Moving staff were absent from sector assignments, entry controls were disabled, and arrival notices remained visible. No browser warnings or errors were reported. These checks do not establish full JA2 parity.
-
-The isolated checkout passed 1,083 tests, type checking, and the static build (278 files, 189 asset references). The final route/map checks passed all 28 tests after the paused-squad map marker correction.
+The existing `travel` action without `queue: true` retains its blocking behavior for campaign scripts. All player map move controls use queued travel. The map also queues adjacent hostile approaches and stages coordinated attacks at the sector boundary; see [coordinated attacks](coordinated-assault.md). Opposing routes produce [arrival contact](route-crossings.md). Exhausted soldiers finish the current stage, then [collapse and recover](../characters/sleep.md) before further travel, consistent with the classic source. Player-selected arrival positions are described in [sector arrival placement](sector-arrival-placement.md).

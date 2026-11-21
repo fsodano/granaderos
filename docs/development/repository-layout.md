@@ -12,19 +12,45 @@ responsibility owns a file.
 apps/
   web/                    Player application and browser adapters
   campaign-editor/        Independent campaign editor and its own domain model
+    domain/
+    application/
+    infrastructure/
+    public/
+    web/
 packages/
   game/                   Game rules, use cases, adapters, and public APIs
+    domain/
+    application/
+    infrastructure/
+    public/
+    map-templates/
   campaign-format/        Published campaign schemas and immutable definitions
 content/
   campaigns/              Campaign packages, media, and trusted scenario code
   assets/                 Art sources, prompts, rigs, previews, and production recipes
 docs/
-  architecture/           System explanations and C4 diagrams
-  plans/accepted/         Accepted architecture and ubiquitous language
-  evidence/               Retained measurements, images, and reports
+  adr/                    Visual decision records
+  architecture/           System explanations, C4 diagrams, and use-case catalogue
+  art/                    Art sources and visual decisions
+  authoring/              Campaign studio workflow and package format
+  development/            Setup, editors, and system notes
+  gameplay/               Player rules and controls
+  plans/                  Feature proposals and implementation plans
+    accepted/             Accepted architecture and ubiquitous language
+  reference/              Period equipment sources and the earlier native build
+  references/             Archived playtest and tactical-graphics visual references
+  requirements/           Gameplay requirement baselines
+  specification/          Product design and file formats
+  web-port/               JA2 source analysis and browser adaptation
 tests/                    Game integration tests and fixtures
 tools/
+  characters-3d/          3D character model and animation pipeline
+  performance-fixtures/   Reproducible benchmark and scenario fixtures
   playgrounds/            Independent visual review applications
+  recovered-registration/ Sprite registration and recovery helpers
+  skin-masks/             Sprite skin-tone mask definitions
+  sprite-consistency/     Sprite family consistency checks
+  sprite-equipment/       Sprite weapon and equipment overlay helpers
 reference/
   native/                 Separate Windows engine and conversion build
 .output/                  Local builds, caches, and new diagnostic output
@@ -60,7 +86,7 @@ and domain collaborators. The [source map](../architecture/system-map.md) lists
 more entry points.
 
 The game package also retains root modules such as `campaign.js`, `tactical.js`,
-`world.js`, and `save.js`. They connect migrated use cases to existing simulation
+`world.js`, and `save.ts`. They connect migrated use cases to existing simulation
 rules and supported save formats. Domain objects own the migrated invariants;
 the remaining modules are still part of the running game.
 
@@ -78,9 +104,8 @@ not filesystem paths.
 
 The root production build stages the game and editor in `.output/dist`.
 `.output/build`, `.output/cache`, and `.output/artifacts` hold local generated
-material. Retained verification records belong in `docs/evidence`; the
-[`artifacts`](../evidence/artifacts/) subdirectory contains tracked reports from
-previous work. Check a record's date and source before using it as current proof.
+material. Local build, cache, and diagnostic output stays in these ignored
+directories; documentation folders describe requirements, design, and behavior.
 
 The native engine under `reference/native/engine` is a pinned Git submodule.
 Its `overlay`, `mod`, and `patches` siblings form a separate native conversion
@@ -88,9 +113,9 @@ with its own build scripts. The browser build does not compile or package that
 engine. The 3D playground reads the game's palette module and prepared character
 models; the game does not import the playground.
 
-Hidden tool and IDE configuration, such as `.github`, `.idea`, and `.openai`, has
-its own purpose. Keep configuration distinct from generated output. A hidden
-folder is not evidence that its contents can be deleted.
+Hidden tool and repository configuration, such as `.github`, `.githooks`, and
+`.openai`, has its own purpose. Keep configuration distinct from generated
+output. A hidden folder does not indicate that its contents can be deleted.
 
 ## Keep the IDE project view focused
 
@@ -104,14 +129,14 @@ source groups are `apps`, `content`, `docs`, `packages`, `reference`, `tests`, a
 To reproduce this setup in another checkout:
 
 1. Open the repository root as the WebStorm project.
-2. Mark `.output`, `.idea`, `.omo`, dependency directories, application build
-   directories, and `reference/native/engine` as excluded in the IDE.
+2. Mark `.output`, dependency directories, application build directories, and
+   `reference/native/engine` as excluded in the IDE.
 3. Turn off **Show Excluded Files** in the Project tool window options.
 
 These exclusions change indexing and the project view. They do not remove files
 or change build inputs. Keep `content/assets` and the native overlay, mod, and
-patch sources available. The local `.idea` configuration is ignored by Git;
-other checkouts can apply the same settings without sharing IDE state.
+patch sources available. Local IDE configuration is ignored by Git; other
+checkouts can apply the same settings without sharing IDE state.
 
 ## Place new work
 
@@ -120,7 +145,8 @@ Use the existing application or package that owns the behavior. Keep game
 behavior inside `apps/campaign-editor`. Put shared published file contracts in
 `packages/campaign-format`.
 
-Add plans under `docs/plans`, retained evidence under `docs/evidence`, and new
-local outputs under `.output`. Update the relevant index and use-case README.
+Add plans under `docs/plans`, requirement baselines under `docs/requirements`,
+format and design documents under `docs/specification`, and new local outputs
+under `.output`. Update the relevant index and use-case README.
 Read [AGENTS.md](../../AGENTS.md), the accepted plan, and the glossary before
 changing architecture or domain terms.

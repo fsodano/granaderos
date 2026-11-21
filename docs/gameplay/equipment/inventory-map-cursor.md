@@ -1,9 +1,5 @@
 # Selected inventory items on the tactical map
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
-
 During tactical exploration and turn-based combat, players can pick up an item or partial stack from a soldier's inventory onto the cursor and click the tactical map to drop it on nearby ground, pass or relay it to squad members, toss it across distance, or offer it to a visible NPC in exploration.
 
 ## Controls
@@ -30,18 +26,6 @@ Ordinary tossing has its own bounded parabolic geometry. It checks ground height
 
 The [publisher manual, pages 22–25](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf?t=1502453641) distinguishes the inventory pointer from prepared-item use. The classic implementation covers [cursor selection and trajectories](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/a06f4896c43c76396529e415a29a8ca26b00f9f1/src/game/Tactical/Interface_Items.cc#L2822-L3083), [drop/pass/toss execution](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/a06f4896c43c76396529e415a29a8ca26b00f9f1/src/game/Tactical/Interface_Items.cc#L3323-L3558), and the [right-click alternative](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/a06f4896c43c76396529e415a29a8ca26b00f9f1/src/game/Tactical/Turn_Based_Input.cc#L758-L764).
 
-This milestone retains Granaderos tuning: 4 AP per pass sender, 8 AP for a toss, six-cell toss range and 2 receiver AP on a successful combat catch. The catch formula and arc are not the classic formulas. Original JA2 could inflict [one point of generic tossed-object collision damage](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/a06f4896c43c76396529e415a29a8ca26b00f9f1/src/game/TileEngine/Physics.cc#L1903-L1917); this transport action ignores bodies and does no damage.
+This transport action retains Granaderos tuning: 4 AP per pass sender, 8 AP for a toss, six-cell toss range and 2 receiver AP on a successful combat catch. The catch formula and arc are not the classic formulas. Original JA2 could inflict [one point of generic tossed-object collision damage](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/a06f4896c43c76396529e415a29a8ca26b00f9f1/src/game/TileEngine/Physics.cc#L1903-L1917); this transport action ignores bodies and does no damage.
 
-Selected-cursor gifts now support the existing Retiro poncho errand with direct replies and automatic progress; the [gift record](../characters/selected-npc-gifts.md) states its limits. Dragging directly from a slot to the map, walking to a distant drop instead of tossing, toss flight animation, and classic individual stack-member selection remain open. The current field preview shows the trajectory before the immediate accepted transfer. Touch and pen input have not been checked on physical devices. This does not establish full inventory or gameplay parity.
-
-## Verification
-
-Automated coverage checks exact source partitions, hand and outfit singletons, fitted loaded weapon metadata, stale and invalid orders, AP and control windows, finite catch outcomes, relay route changes, hidden-body equivalence, geometry and collection limits. Campaign tests use fresh paid recruitment and purchases, actual deployment, save/load, return/reentry and recovery. UI tests exercise shared nested providers, accepted/refused transactions and the production map/NPC callbacks.
-
-Live production-component checks on 12 September 2026 used a separate two-soldier fixture without a saved campaign. Passing one dressing reduced Dorrego's five to four. Right-clicking Cabral switched the next dressing to ground placement at his feet, leaving Dorrego with three. Tossing seven cartridges reduced the selected pocket from 20 to 13 while the separate five-cartridge pocket stayed unchanged. The map showed the reviewed arc before confirmation.
-
-In combat, a pass displayed and spent 4 AP (100 to 96). An out-of-range click retained the item and did not spend AP. A valid toss then displayed and spent 8 AP (96 to 88). Exploration versions spent no AP. Automated lifecycle coverage is broader than the controlled live fixture; a full authored campaign traversal was not repeated for this change.
-
-The final review also checked the inventory floor selector without losing the selected item. A bandage landed on the upper E8 platform, and changing from Cabral to Acosta reset ground placement to a recipient toss with an 85% catch preview. Escape canceled the next selection without moving any supplies. The final preview reported no browser errors or warnings.
-
-Final validation: **2,007/2,007 tests pass**. Typecheck and production build/static export pass (960 output files, 856 asset references). The pre-existing elevation-interface test now resolves the real scoped floor-control child before invoking its callback; it continues to verify paid climb admission and native Tab behavior.
+Selected-cursor gifts support the existing Retiro poncho errand with direct replies and automatic progress; the [gift record](../characters/selected-npc-gifts.md) states its limits. Dragging directly from a slot to the map, walking to a distant drop instead of tossing, toss flight animation, and classic individual stack-member selection remain open. The current field preview shows the trajectory before the immediate accepted transfer. Full inventory and gameplay parity remain open.

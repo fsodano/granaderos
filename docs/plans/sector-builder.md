@@ -3,16 +3,11 @@
 This plan defines the web sector map editor, its JSON map document format, and its shared command and compilation pipeline.
 
 The original wall-cell constraint in this design is superseded by the
-[wall-edge implementation plan](wall-edges.md) and
+[wall-edge plan](wall-edges.md) and
 [version 2 map format](../development/sector-editor.md#format-and-runtime-boundary).
-Walls, doors and windows now occupy shared cell edges.
-
-
-Status: implemented as the web editor at `/editor` in the dedicated feature worktree.
-See [the editor guide](../development/sector-editor.md) for controls, file workflows, limits
-and verification evidence. The sections below preserve the design rationale.
-The actual source format is version 1; unknown versions are rejected. All 15
-existing sector definitions are migrated and tested against reference hashes.
+Walls, doors and windows occupy shared cell edges. The sections below preserve
+the design rationale. The source format is version 1; unknown versions are
+rejected.
 
 ## Recommendation
 
@@ -41,7 +36,7 @@ Node script or generator ───┘                         │
 files retain runtime state separately. Do not use screenshots, SVG coordinates,
 or a saved battle as the authoring format.
 
-Implemented files:
+Source files:
 
 - `campaigns/<campaign-id>/maps/<sector-id>.json`: one authoring document per sector.
 - `game/map-schema.js`: validation, schema versions and migrations.
@@ -192,7 +187,7 @@ an edited base map automatically to an active save: require a migration or start
 a new sector instance. A script that changes a live map must also validate actor
 positions and invalidate pathfinding/visibility caches.
 
-## Delivery stages and acceptance checks
+## Implementation stages and acceptance checks
 
 1. **Map format and compiler.** Extract one existing sector into JSON, compile it,
    compare its terrain, buildings, doors, props and deployment behaviour with the

@@ -775,7 +775,7 @@ deterministic policy, not the C++ plan-library AI.
 6. **Clock.** C++ uses `GetWorldTotalSeconds()` for light/smoke/bomb decay
    (`TeamTurns.cpp:150-170`). JS uses `advanceBattleClock` + `COMBAT_ROUND_SECONDS`
    (6 s/round) and `REST_SECONDS` (10 min) via `game/time.js` — see
-   `docs/verification/tactical-verification.md` "Shared campaign clock".
+   the shared campaign clock rules.
 7. **UI planning mode** (`Handle UI Plan.cpp`) clones soldiers; the JS has no
    planning mode — the browser must implement it client-side by previewing
    `getReachable` paths and `actionCosts` without mutating state.
@@ -802,11 +802,11 @@ deterministic policy, not the C++ plan-library AI.
 | Bandage/doctor | `heal` (`:135`) | `tests/operative-profiles.test.mjs` |
 | Interrupts | `reactionFire`/`interruptInitiative` (`:71`,`:28`) | `tests/operative-profiles.test.mjs` |
 | Overwatch | `overwatch` action (`:133`) | `tests/operative-profiles.test.mjs` |
-| Animation | — (renderer) | browser verification pending |
-| Sound | — (renderer) | browser verification pending |
+| Animation | — (renderer) | — |
+| Sound | — (renderer) | — |
 | AI turn | `endTurn` enemy loop (`:139`) | `tests/battle-integration.test.mjs` |
 
-### Coverage gaps (from `docs/verification/tactical-verification.md` + code audit)
+### Coverage gaps (code audit)
 
 1. **Armor slots** — C++ `TotalArmourProtection`/`ArmourProtection`
    (`Weapons.cpp:7919,8013`) has no JS equivalent. `validate-battle.js` has no
@@ -815,9 +815,8 @@ deterministic policy, not the C++ plan-library AI.
    (`Overhead.cpp:8780`) absent in JS. **Gap.**
 3. **Full IIS interrupt counters** — JS uses a priority sort, not the
    `ubInterruptCounter` reaction-time accumulator (`Soldier Control.cpp:24800`).
-   `tactical-verification.md:61` explicitly states reaction fire "is a bounded
-   rule, not a complete recreation of JA2's interrupt initiative system."
-   **Documented gap.**
+   Reaction fire is a bounded rule, not a complete recreation of JA2's interrupt
+   initiative system. **Documented gap.**
 4. **Breath/energy** — C++ has a full BP system (`APBPConstants.ini` BP
    section); JS has `energy` (0–100) with exhaustion/unconsciousness
    (`tactical.js:51`). Different model, same role. **Intentional divergence.**

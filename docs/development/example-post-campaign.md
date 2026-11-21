@@ -1,11 +1,9 @@
 # La ruta de las postas
 
-Esta guía en español describe el paquete de campaña experimental **La ruta de las postas**, cómo cargarlo y editarlo en el editor de historia, y el recorrido verificado de tres capítulos.
+Esta guía en español describe el paquete de campaña experimental **La ruta de las postas**, cómo cargarlo y editarlo en el editor de historia, y su recorrido de tres capítulos.
 El [Estudio de campañas](../authoring/campaign-studio.md) permite crear y
 descargar paquetes. La publicación comunitaria sigue como
-[trabajo futuro](../plans/campaign-authoring.md). Consultá el
-[estado de la versión](../verification/version-0.1.md) y la fecha del recorrido
-verificado antes de usarlo como evidencia de aceptación.
+[trabajo futuro](../plans/campaign-authoring.md).
 
 Una campaña de ejemplo para jugar y modificar desde el editor. Tiene diez
 contratables, tres enlaces locales, tres capítulos y un final propio. Comienza
@@ -16,7 +14,7 @@ oposición del juego; su elenco no necesita personajes históricos.
 
 1. Abrí el editor de historia y desplegá **Campaña de ejemplo: La ruta de las postas**.
 2. Elegí **Cargar La ruta de las postas**. El editor carga el paquete y usa la
-   semilla 8, con la que se verificó el recorrido. Podés cambiarla en **Pruebas**.
+   semilla 8. Podés cambiarla en **Pruebas**.
 3. Modificá fichas, suministros, armas, apariciones, diálogos, encargos o reglas.
    **Deshacer** recupera el borrador anterior si cargaste el ejemplo por error.
 4. Elegí **Iniciar campaña con estas fichas**. El juego conserva una copia de ese
@@ -49,13 +47,10 @@ Córdoba y hablá con Inés. La entrega de ambas respuestas paga 400 pesos; el f
 se registra al salir del sector. Si vence el plazo, el encargo falla y se conserva
 la derrota. La campaña permite continuar después de una victoria.
 
-## Qué verifica el ejemplo
+## Alcance del ejemplo
 
-El registro de verificación
-identifica la versión, el recorrido, las bajas y los límites. Se verificó una
-estrategia con la semilla 8 en la fuente allí registrada. Ese resultado no es
-una nueva verificación de la versión 0.1. Tampoco garantiza la victoria con cualquier escuadra
-o sorteo. El [Estudio de campañas](../authoring/campaign-studio.md) y la
+El ejemplo recorre los tres capítulos con la semilla 8, pero no garantiza la
+victoria con cualquier escuadra o sorteo. El [Estudio de campañas](../authoring/campaign-studio.md) y la
 [guía de autoría](campaign-authoring.md) permiten configurar facciones,
 geografía, eventos y políticas de invasión. El recorrido de este ejemplo no
-verifica todas esas opciones ni demuestra el equilibrio de otras campañas.
+cubre todas esas opciones ni demuestra el equilibrio de otras campañas.

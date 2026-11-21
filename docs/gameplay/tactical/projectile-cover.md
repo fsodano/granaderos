@@ -1,22 +1,18 @@
 # Projectile cover and concealment
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
-
-During tactical exploration and turn-based combat, physical obstacles along a firearm ray reduce or stop projectile damage over their crossed depth, while vegetation and non-structural concealment reduce visual detection range and aiming accuracy without absorbing projectiles (parity row [C04](../../verification/ja2-parity-audit.md)). Patusco's JA2 guide, printed page 13 ([G13](../../verification/ja2-parity-audit.md#scope-and-evidence)), distinguishes protection that stops shots from vegetation that hides a soldier. Granaderos uses separate firearm-path and concealment rules, now shared with the later playable elevation geometry.
+During tactical exploration and turn-based combat, physical obstacles along a firearm ray reduce or stop projectile damage over their crossed depth, while vegetation and non-structural concealment reduce visual detection range and aiming accuracy without absorbing projectiles (parity row [C04](../../requirements/ja2-parity.md)). Patusco's JA2 guide, printed page 13 ([G13](../../requirements/ja2-parity.md#scope-and-evidence)), distinguishes protection that stops shots from vegetation that hides a soldier. Granaderos keeps firearm-path and concealment rules separate; both share the playable elevation geometry.
 
 ## Behavior
 
 Ordinary firearms trace the line from the shooter's muzzle to the selected head, torso or legs. The trace checks height along each crossed cell and spends material force over the actual crossed depth. It considers terrain, window sills, low rubble and furniture. Touching intervals from the same furniture footprint merge into one continuous span; several cells do not reset its resistance. Separate overlapping objects add resistance. A zero-length corner touch spends no penetrable-material force. Ground and floor slabs remain solid stops.
 
-Shots above an obstacle retain their ordinary damage. A penetrated obstacle reduces damage as the ray crosses it. A body inside a larger obstacle receives the force remaining at its own contact; any continued passage then spends the remaining material depth. An obstacle that exhausts the projectile allowance stops the ray at the point where force reaches zero. [Physical shot loads](physical-shot-loads.md) use nine finite weighted rays around one resolved direction, including allies and intervening bodies; they no longer trace a newly aimed shot at every person in a cone. Each pellet spends its own share of the load's force. Ordinary shot costs, ignition failure, loaded rounds, weapon wear, sound, smoke, wounds and time still use their existing rules. A deliberately blocked shot can be fired at a visible target and consumes its charge if ignition succeeds. A blocked preview is a warning, not a free attack or an automatic order cancellation.
+Shots above an obstacle retain their ordinary damage. A penetrated obstacle reduces damage as the ray crosses it. A body inside a larger obstacle receives the force remaining at its own contact; any continued passage then spends the remaining material depth. An obstacle that exhausts the projectile allowance stops the ray at the point where force reaches zero. [Physical shot loads](physical-shot-loads.md) use nine finite weighted rays around one resolved direction, including allies and intervening bodies; they do not trace a newly aimed shot at every person in a cone. Each pellet spends its own share of the load's force. Ordinary shot costs, ignition failure, loaded rounds, weapon wear, sound, smoke, wounds and time still use their existing rules. A deliberately blocked shot can be fired at a visible target and consumes its charge if ignition succeeds. A blocked preview is a warning, not a free attack or an automatic order cancellation.
 
-Single lead balls now also spend force on [conditional body passage](body-penetration.md). Bodies and cover share one ordered force budget; passing a body can expose a later person or obstacle. The cover-damage tuning setting cannot restore force spent on a body, reflection or optional free-flight air loss. Forecasts retain known-body conditional reach, while actual passage uses seeded rolls after the original shot damage draw.
+Single lead balls also spend force on [conditional body passage](body-penetration.md). Bodies and cover share one ordered force budget; passing a body can expose a later person or obstacle. The cover-damage tuning setting cannot restore force spent on a body, reflection or optional free-flight air loss. Forecasts retain known-body conditional reach, while actual passage uses seeded rolls after the original shot damage draw.
 
 The existing body-region controls show the resulting impact chance and cover warning. A leg shot can be blocked while a head shot clears the same furniture. Penetrable cover displays its damage reduction separately from impact chance. The public order projection includes that warning without exposing internal obstruction records.
 
-Concealment reduces detection range and aiming accuracy without absorbing a projectile. Forest and scrub have default concealment; posture changes its effect on detection. `concealment` can override the terrain value. Legacy nonstructural tile `cover` values remain concealment inputs. Walls, doors, windows and rubble use physical geometry rather than that old accuracy subtraction.
+Concealment reduces detection range and aiming accuracy without absorbing a projectile. Forest and scrub have default concealment; posture changes its effect on detection. `concealment` can override the terrain value. Legacy nonstructural tile `cover` values remain concealment inputs. Walls, doors, windows and rubble use physical geometry rather than an accuracy subtraction.
 
 ## Explicit game tuning
 
@@ -29,14 +25,13 @@ These are abstract simulation values, not measured ballistics or exact JA2 formu
 
 Optional `obstacleHeight`, `projectileResistance` and `concealment` metadata are range-validated on tactical restore. Missing fields derive their defaults from existing terrain and prop types; no item or resource migration is needed. Successful breach/artillery terrain destruction clears old ballistic overrides and leaves low rubble. Open doors contribute no obstruction.
 
-## Verification and limits
+## Limits
 
-Projectile-cover and continuation checks exercise ray corners, body regions, muzzle posture, window sills, partial damage, multiple obstacles, finite shot costs, separate concealment, spread friendly fire, AI rejection of blocked shots, breach metadata, public warnings and deterministic save/replay. Depth checks add thin/deep and oblique crossings, clipped height, overlapping materials, an embedded body, and exact force exhaustion inside cover. Existing firearm, body-targeting, HUD, inventory, interrupt and campaign tests remain covered by the broader suite.
+The battle controller uses the same observed-contact and cover scoring as
+ordinary AI, with bounded legal orders and no fabricated victory or changed
+combatant stats.
 
-The older three-person battle controller rushed across the field during interrupts. It now uses the same observed-contact and cover scoring as ordinary AI, with bounded legal orders and no fabricated victory or changed combatant stats. Its real victory, defeat, survivor/resource accounting and deterministic replay checks pass. The separate fresh-campaign opening playthrough also passes.
-
-Live verification used an imported, controlled three-barrel layout. The head preview showed 75% without an obstruction warning; the leg preview showed 0% and warned that firing spends the charge. An aimed leg shot spent 36 AP, consumed the loaded round, reduced weapon condition by one and left the target at 100 HP. Reloading the save retained these results. A paid reload and subsequent head shot passed above the barrels and dealt 79 damage. No browser warning/error was recorded.
-
-[Location fire](location-fire.md) adds firing at unseen coordinates, seeded miss scatter and unintended body collisions to the F cursor. [Named-target shot paths](directed-projectiles.md) also check intervening bodies and seeded missed-shot collisions, with knowledge-limited warnings and shared AI shot options. The later elevation work supplies playable roofs and shared absolute-height rays. Cover depth affects the shared firearm force budget. A qualifying exposed vertical stone face now permits one [glancing reflection](stone-ricochet.md), with half the current force and the original total range. Optional pinned mass/muzzle-speed and free-flight retention now affect contact energy, with separate nominal injury caps and explicit game tuning. Destructible furniture, reflection from other surfaces, aerodynamic calibration and an exact JA2 projectile model remain open. Artillery retains its separate penetration/blast rules. AI ranks body regions using both impact chance and partial damage loss; incoming exposure still uses torso chance. See [AI shot selection](ai-shot-selection.md) and the [parity audit](../../verification/ja2-parity-audit.md) for remaining systems.
-
-The original cover checkpoint was 904 passing logic tests, typecheck, production build and `git diff --check`. The unchanged illustrated-sprite packing suite was excluded from this run.
+Destructible furniture, reflection from other surfaces, aerodynamic calibration
+and an exact JA2 projectile model remain open. Artillery retains its separate
+penetration and blast rules. AI ranks body regions using both impact chance and
+partial damage loss; incoming exposure still uses torso chance.

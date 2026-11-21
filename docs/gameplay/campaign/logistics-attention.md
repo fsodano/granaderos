@@ -1,12 +1,8 @@
 # Stop time for production and delivery attention
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
+On the strategic campaign screen, explicit time advancement stops when a workshop job, imported weapon order, cargo shipment or convoy actually completes. The operations map shows a saved receipt with the completion hour, requested and elapsed hours, quantities and destination. This extends the existing assignment and contract attention flow; it is a period campaign adaptation of JA2's map-time control, not a reconstruction of its modern shops or laptop interface.
 
-On the strategic campaign screen, explicit time advancement now stops when a workshop job, imported weapon order, cargo shipment or convoy actually completes. The operations map shows a saved receipt with the completion hour, requested and elapsed hours, quantities and destination. This extends the existing assignment and contract attention flow; it is a period campaign adaptation of JA2's map-time control, not a reconstruction of its modern shops or laptop interface.
-
-As of 27 September, explicit waits also stop once when a due job cannot deliver under its existing rules. The notice explains the obstruction. This covers occupied or unsupplied workshops, blocked or occupied Ensenada imports, an imported weapon order that cannot fit in the armory, and convoys held by their existing route, transport or snow conditions. Paid inputs and reserved cargo remain in their queues. No new shortage, production cost or transport rule is introduced.
+Explicit waits also stop once when a due job cannot deliver under its existing rules. The notice explains the obstruction. This covers occupied or unsupplied workshops, blocked or occupied Ensenada imports, an imported weapon order that cannot fit in the armory, and convoys held by their existing route, transport or snow conditions. Paid inputs and reserved cargo remain in their queues. No new shortage, production cost or transport rule is introduced.
 
 ## Completion and continued time
 
@@ -28,18 +24,6 @@ Blocking travel and tactical clock synchronization still process their full requ
 
 The public campaign projection exposes only the receipt fields and detached goods objects. It omits queue bindings, acknowledgement records, random values and other private fields. The React notice escapes task names and shows an accessible live status beside the ordinary map clock. It distinguishes pending goods from arrivals and explains how to continue with the existing **Avanzar** control.
 
-## Evidence
+## Remaining work
 
-The 27 September interruption update passes **75 focused tests** across logistics notices, paid imports and convoys, blockage and restoration, identical pending orders, full armory capacity, mixed receipts, saved acknowledgement, invalid saves, public projection, map rendering, assignment attention, artillery transport and tactical/strategic clock equivalence. Type checking and whitespace checks pass. This is focused automated evidence; the interruption notice has not received a separate live-browser check. Full campaign completion remains unverified.
-
-The following completion-only evidence predates that update:
-
-Thirteen integration cases verify actual paid production, paid imports, paid convoys, finite credit, same-hour grouping, interrupted routes and ports, saved replay, simultaneous assignment/contract events, midnight income, queued travel, complete blocking/tactical durations, encounter priority, public projection and malformed saves. Three component cases verify the operations-map placement, quantities, destinations, escaped text and acknowledgement.
-
-All **1,385 tests** passed in the isolated gameplay checkout. Type checking, production build and whitespace checks passed. The final wording-only component revision was checked again with the three render tests and a new production build. The existing northern campaign route and its actual battle/save checks remain part of the complete suite.
-
-The live production-component demonstration paid 30 pesos and the ordinary inputs for sixty cartridges. A 24-hour request stopped at hour 12: stock rose from 300 to 360, the job disappeared, and the map displayed **12 de 24 horas solicitadas**. A full campaign save/load preserved the receipt and quantities. The next 24-hour request reached hour 36, cleared the receipt, retained 360 cartridges and collected the ordinary 286-peso midnight income. No second batch was credited.
-
-The separate demonstration is `http://127.0.0.1:3008/` while its preview server runs. It uses the production Campaign component, reducer and save functions. Its introduction and reset/save buttons are test controls; the time selector, **Avanzar** button and receipt are the game UI. The player's campaign is unchanged. Live convoy and import cases remain automated-test evidence.
-
-This covers completion and existing due-delivery interruptions under A07's explicit-wait policy (time compression and event-driven pause triggers in the [JA2 parity audit](../../verification/ja2-parity-audit.md)). Full JA2 parity and a complete campaign through the ending remain unverified.
+Completion and existing due-delivery interruptions follow A07's explicit-wait policy (time compression and event-driven pause triggers in the [parity requirements](../../requirements/ja2-parity.md)). Full JA2 parity and a complete campaign through the ending remain open.

@@ -1,22 +1,21 @@
 # Gameplay documentation
 
-Current scope: [version 0.1](../verification/version-0.1.md). Equipment commerce is disabled;
-older purchase, supplier and refill notes describe earlier rules. Use actual
-recruitment allocations and physical sector objects for finite supplies.
-See commerce deferral.
+Equipment commerce is disabled; older purchase, supplier and refill notes
+describe earlier rules. Use actual recruitment allocations and physical sector
+objects for finite supplies.
 
 [Documentation index](../README.md)
 
-These notes combine feature guides and dated workspace records. Read
-[version 0.1](../verification/version-0.1.md) for current scope.
-The [parity audit](../verification/ja2-parity-audit.md) retains row evidence and
-comparison requirements. A historical *workspace* label does not establish the
-current merge state; use the named source, date and acceptance limits.
+These notes state requirements, design, and current behavior across the
+strategic, tactical and character systems. The [parity requirements](../requirements/ja2-parity.md)
+hold the row-level comparison requirements against classic JA2. Each note states
+the rule and names its remaining scope; the commit history is the record of when
+each rule arrived.
 
 ## Start with your task
 
 1. **Understand the rules:** read the [JA2 gameplay adaptation](ja2-gameplay.md)
-   for the documented combat, equipment and campaign rules; check each note's date.
+   for the documented combat, equipment and campaign rules.
 2. **Start or direct a campaign:** use the campaign notes for recruitment entry,
    travel, sector entry, orders, time, and local defenses.
 3. **Control a soldier:** use the tactical notes for keyboard controls, movement,
@@ -25,13 +24,8 @@ current merge state; use the named source, date and acceptance limits.
    transfers, repairs, and trade.
 5. **Manage people:** use the character notes for contracts, training, health,
    conversations, errands, and prisoners.
-6. **Assess completion:** read the [version 0.1 status](../verification/version-0.1.md)
-   and each record's source, date and limits before using a feature note as
-   proof of campaign-wide behavior.
-
-The [JA2 overview review](../verification/ja2-gameplay-review-2026-09-30.md) connects
-the strategic, tactical and character systems to the existing parity requirements.
-It separates current documentation coverage from proposed design decisions.
+6. **Check JA2 comparison:** read the [parity requirements](../requirements/ja2-parity.md)
+   for the row-level comparison requirements behind a feature note.
 
 ## Browse by subject
 

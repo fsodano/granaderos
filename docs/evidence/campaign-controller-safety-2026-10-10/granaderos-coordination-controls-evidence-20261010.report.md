@@ -1,4 +1,0 @@
-# Coordination focused controls archive report, 10 October 2026
-
-This is a dated evidence workspace record from 10 October 2026 for `granaderos-coordination-controls-evidence-20261010.tar.gz` at source identity `c132c162f02420175ffd65eae404efcd221cf53c994e3bf7930810d5c4748026` (see [verification.md](verification.md) and [opening-coordination-focused-gate-receipt.json](opening-coordination-focused-gate-receipt.json)).
-The corrected coordination focused gate passed 92/92 tests with zero failures, skips or source drift. Every one of the 20 original files is preserved unchanged; all 22 archive members were independently byte and hash verified. The recorded parent and runner PIDs are gone. Original campaign assertions, full health and route acceptance still require their separate gates. This observer dispatched zero native orders.

@@ -1,7 +1,5 @@
 # ADR 001 — Realistic pre-rendered tactical pixel sprites
 
-Date: 2026-09-06. Status: implemented; review evidence below.
-
 ## Context
 
 The requested tactical characters must look like adult people in the four supplied
@@ -131,28 +129,18 @@ Review files are generated with the actual React sprite and scene components:
 - [Yatasto furnished interior](../../content/assets/previews/tactical-pixel-art/yatasto.png).
 - Native animation previews: `assets/web/pixel/*-preview.webp`.
 
-These are offline renders, not browser screenshots. Inspect movement, input,
-resize behavior, and physical display scaling in the browser before claiming full
-browser visual acceptance. Native render and build checks establish reproducible
-assets and integration; resemblance to the references remains an art judgment.
-
-## Validation results
-
-- `npm test`: 247 passed, zero failed.
-- `npm run typecheck`: passed.
-- `npm run build`: passed; 218 exported files and 134 asset references verified.
-- Infantry, cavalry, and low-stance Blender rig audits: passed.
-- Native atlas packing: all 1,088 frames have valid alpha and unclipped bounds.
-- Runtime atlas PNG payload: 936,734 bytes (previous large atlases: 8,717,421 bytes).
-- Local documentation links and `git diff --check`: passed.
-- `docs/web-port/`: no changes.
+These are offline renders, not browser screenshots. Browser visual acceptance for
+movement, input, resize behavior and physical display scaling is separate from
+them. Resemblance to the references remains an art judgment.
 
 ## Scope and consequences
 
 Portrait images, portrait panels, and portrait-generation pipelines are unchanged.
-All 47 recorded portrait source and export hashes match the baseline.
 Terrain and furniture art are unchanged. The whole tactical screen is therefore
 not claimed to reproduce every visual detail of JA2.
+
+The packed runtime atlases total 936,734 bytes; the previous large atlases
+totalled 8,717,421 bytes.
 
 Whole-number zoom replaces fractional zoom to preserve pixel edges. Camera motion
 and unit translation step through logical pixels. This is intentional for this art

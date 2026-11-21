@@ -1,11 +1,8 @@
 # Game content system and editor
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../verification/version-0.1.md) for the published-main checkpoint.
-
-Status: proposed design for review. This plan proposes separating the gameplay engine, tunable rulesets, and authored campaign content, and adding a web game editor for characters, weapons, placements, routines, dialogue, and quests. No editor or runtime conversion is implemented by this document.
-Date: 2026-09-27.
+This plan proposes separating the gameplay engine, tunable rulesets, and authored
+campaign content, and adding a web game editor for characters, weapons,
+placements, routines, dialogue, and quests.
 
 ## 1. Goal and design decision
 
@@ -46,7 +43,8 @@ flowchart LR
 
 ## 2. Current code and what must change
 
-These findings describe the working files inspected on the design date, including pending work. They do not establish that the full game passes its completion audit.
+These findings describe the working files at the time of design, including
+pending work. They do not establish that the full game is complete.
 
 | Current location | Current dependency | Required design change |
 | --- | --- | --- |
@@ -63,7 +61,7 @@ These findings describe the working files inspected on the design date, includin
 | [world.js](../../packages/game/world.js), `game/campaign-civilian-harm.js` | NPC snapshots and civilian history include location and contact identity | Explicit identity and save compatibility rules before changing appearances |
 | [npc-ai.js](../../packages/game/npc-ai.js), [world.js](../../packages/game/world.js), [validate-battle.js](../../packages/game/validate-battle.js) | Ambient AI can replace destinations, mission speakers are held in place, and re-entry/validation assumes existing activity states | Persisted scripted commands with explicit controller priority, arrival receipts, and save/re-entry support |
 
-The [proposed dialogue runner](../web-port/09-dialogue-quests.md#11-proposed-web-dialogue-runner-json-schema) provides a useful starting point. Its proposed conditions/actions structure is not an implemented general content system.
+The [proposed dialogue runner](../web-port/09-dialogue-quests.md#11-proposed-web-dialogue-runner-json-schema) provides a useful starting point. Its proposed conditions/actions structure is not a general content system.
 
 The [sector builder plan](sector-builder.md) covers map geometry and object placement. Share its map references, validation, and scene renderer. Character placement must not create a second map format.
 
@@ -241,7 +239,7 @@ The initial ruleset reproduces the current Granaderos behavior. Label it as the 
 
 ### Weapon catalogue and editor contract
 
-Weapons are first-class editable records. Support the existing firearm, melee, thrown-weapon, and artillery behavior families in verified groups. The first complete path is a new firearm; an editor must not claim support for a family until its inventory, combat, AI, visual, and save consumers accept the authored definition.
+Weapons are first-class editable records. Support the existing firearm, melee, thrown-weapon, and artillery behavior families in bounded groups. The first complete path is a new firearm; an editor must not claim support for a family until its inventory, combat, AI, visual, and save consumers accept the authored definition.
 
 | Field group | Editable content |
 | --- | --- |
@@ -266,7 +264,7 @@ Use one shared registry for conditions and effects across recruitment, placement
 
 Initial condition types should cover ownership, supplied route, character alive/dead/in service, actor attributes, quest state, story facts, reputation, item possession/delivery, time, and scene completion. Death by any cause and death caused by the player are separate conditions; the latter uses recorded attribution. Support explicit `all`, `any`, and `not` groups. Do not infer a rule from prose.
 
-Effects should initially cover dialogue, journal entry, starting/completing/failing a quest, recording a story fact, reputation changes, verified item/resource transfer, recruitment availability, mission entry, activation of a prepared character, and validated role handover. Add relocation only with identity and persistence support.
+Effects should initially cover dialogue, journal entry, starting/completing/failing a quest, recording a story fact, reputation changes, item/resource transfer that passes its checks, recruitment availability, mission entry, activation of a prepared character, and validated role handover. Add relocation only with identity and persistence support.
 
 Conditions read current state through engine queries. They must not change the campaign. Return both the result and an explanation, such as “Requires control of Salta” or “This contact has died.” The designer's inspector can show full state; player-facing explanations must preserve fog of war and undiscovered information.
 
@@ -430,7 +428,7 @@ A save records the campaign package ID/hash, ruleset ID/hash, save format, compa
 
 Initial design choice: a portable export can bundle its required content and assets; a compact save may refer to an installed immutable package. A missing package produces a clear recovery action instead of substituting the latest draft. Local draft recovery is useful, but a file export provides a durable copy.
 
-Legacy numeric IDs and location-based NPC history need a planned adapter. Do not make current saves silently load against a changed roster. Old map snapshots must not overwrite newly authored presentation or create a second identity during an explicit migration. Health, capture, death, inventory, and contract state require separate verified handling.
+Legacy numeric IDs and location-based NPC history need a planned adapter. Do not make current saves silently load against a changed roster. Old map snapshots must not overwrite newly authored presentation or create a second identity during an explicit migration. Health, capture, death, inventory, and contract state require handling with their own checks.
 
 “Play from here” uses validated scenario fixtures: location, participants, supplies, story state, and seed. A saved test run records the package hash and actions. Designer fixture setup is separate from the actions used to establish that the scenario works through normal gameplay.
 
@@ -455,9 +453,9 @@ Pass a resolved, immutable game context containing the campaign definitions and 
 
 The UI, save loader, AI, battle workers, and command handlers must use the same resolved context. Workers receive a validated serializable context or exact package identity during initialization and confirm the hash. Changing a draft invalidates affected previews and caches. A worker must never silently use default rules for a custom campaign.
 
-Build-time checks compile and validate the shipped campaign. Runtime import uses the same checks before a session starts. Saved progress is not an authoring document, and the compiled package is a derived artifact.
+Build-time checks compile and validate the distributed campaign. Runtime import uses the same checks before a session starts. Saved progress is not an authoring document, and the compiled package is a derived artifact.
 
-## 10. Verification and useful errors
+## 10. Checks and useful errors
 
 | Check | Expected result |
 | --- | --- |
@@ -476,12 +474,12 @@ Build-time checks compile and validate the shipped campaign. Runtime import uses
 | Reload before/after successor arrival or repeated death reports | Preserve trigger time, pending state, role binding, and exactly one successor |
 | Inactive/blocked/dead successor or contested service role | Apply the declared wait/failure policy without resurrection, duplicate stock, or silent reassignment |
 | Interaction directs an actor across the loaded sector | Walk through legal paths under normal time/action rules; suspend competing ambient orders |
-| Queued movement versus actual arrival | Dependent dialogue/effects run once after verified arrival, never at command creation |
+| Queued movement versus actual arrival | Dependent dialogue/effects run once after arrival is confirmed, never at command creation |
 | Blocked route, combat, death, player cancellation, or sector exit | Pause/fail through the authored branch without teleporting, freezing the game, or inventing arrival |
 | Save/reload or retrigger during a scene | One sequence and command set, continued progress, no duplicate effects, restored player control when it ends |
 | Required conversation node has no path from an entry | Report an unreachable node |
 | A dependency cycle prevents a required quest or chapter from starting | Report the cycle; permit deliberate dialogue loops with bounded processing |
-| A condition needs dynamic information | Inspect it in a scenario and show what is still unverified |
+| A condition needs dynamic information | Inspect it in a scenario and show what still needs confirmation |
 | Repeated conversation, map entry, or save/reload | No duplicate rewards, inventory, or people |
 | Hiring through two channels | One service record, one person, one contract |
 | Contact is wounded, killed, captured, hired, or dismissed | Preserve identity and authored consequences across visits and reloads |
@@ -494,7 +492,7 @@ Static validation can find structural defects; it cannot prove that an arbitrary
 
 Maintain two test collections. Mechanics scenarios use small controlled fixtures and stable seeds. Content scenarios test recruitment, branches, losses, and completion using normal actions. Keep a small number of full campaign routes for integration; the story author should not have to finish the entire campaign after each text edit.
 
-## 11. Delivery stages and acceptance criteria
+## 11. Implementation stages and acceptance criteria
 
 ### Stage A: character, weapon, and placement editor
 
@@ -505,12 +503,12 @@ Maintain two test collections. Mechanics scenarios use small controlled fixtures
 - Replace identity-based service, progression, and combat rules for the character path with explicit profiles, abilities, and relationships. Preserve baseline behavior with focused regression tests.
 - Build character, portrait, recruitment, and placement forms, including greeting and event-line editing, dependency checks, import/export, and a disposable test launch.
 - Implement fixed and randomized-stationary starting locations plus daily random movement over sector groups/ranges. Validate JA2-style update timing and profile guards, lifetime identity, saved randomness, linked movement, and lifecycle/quest overrides.
-- Consolidate weapon definitions and compatibility profiles. Deliver a complete new-firearm workflow first, then expose the other existing weapon families as their consumer paths pass verification.
+- Consolidate weapon definitions and compatibility profiles. Establish a complete new-firearm workflow first, then expose the other existing weapon families as their consumer paths pass verification.
 - Support both revising a person and creating a replacement identity.
 
 Acceptance: replace one paid hireable character with a new identity, choose a portrait, change attributes/pay/equipment/abilities, move their offer and physical appearance, set an availability condition, and edit their greeting. Export/import the package, hire them through normal controls, enter a battle, and save/reload. All views show the new identity. No code edit is required for the second replacement. Existing characters keep their intended abilities, and the new person has only their declared abilities.
 
-Weapon acceptance: create a firearm with a new ID and changed statistics, select compatible ammunition and supported fittings, assign it to a recruit and an enemy, and verify equip, fire, partial/full reload, unload, drop, pickup, transfer, targeting preview, AI use, and save/reload. Check ammunition and item conservation. Changes to the draft do not mutate an existing pinned save. Cover each additional weapon family with its applicable actions before marking it editable.
+Weapon acceptance: create a firearm with a new ID and changed statistics, select compatible ammunition and supported fittings, assign it to a recruit and an enemy, and verify equip, fire, partial/full reload, unload, drop, pickup, transfer, targeting preview, AI use, and save/reload. Check ammunition and item conservation. Changes to the draft do not mutate an existing pinned save. Cover each additional weapon family with its applicable actions before the editor offers it as editable.
 
 Placement acceptance: generate a campaign with one fixed person, one person randomized once within a range, and daily roaming profiles for toggle, random-with-stay, and quest-override behavior. Verify 04:00 updates, unchanged permanent locations, fresh eligible daily draws, skipped guard outcomes, optional weights, invalid/empty scopes, blocked markers, loaded-sector policies, sector ownership changes, meeting, hiring, escort, capture/release, linked vehicles, death, and explicit story relocation. Save/reload before and after an update preserves identity, health, inventory, history, random state, and exactly-once event progress. Multi-day waits equal ordinary advancement with the same complete inputs. Sector entry and preview never reroll a completed choice. Future roaming is not precomputed.
 
@@ -530,7 +528,7 @@ Scene acceptance: trigger an NPC's walk from a house to a bar marker through a d
 
 ### Stage C: rulesets and balance tools
 
-- Move supported combat, contract, progression, care, economy, and opposition values into bounded settings in small verified groups.
+- Move supported combat, contract, progression, care, economy, and opposition values into bounded settings in small bounded groups.
 - Show differences from the baseline, units, dependencies, and restart requirements.
 - Verify AI, previews, worker execution, and save checks with non-default values.
 

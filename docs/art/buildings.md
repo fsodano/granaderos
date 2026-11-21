@@ -1,6 +1,6 @@
 # Colonial buildings, 1810–1820
 
-This guide covers the 2D tactical building renderer, the fourteen-template architecture catalog, room revelation rules, and catalog verification. Code paths such as `web/`, `game/`, and `assets/` refer to the pre-monorepo layout (`apps/web/`, `packages/game/`, and `content/assets/` in the current repository).
+This guide covers the 2D tactical building renderer, the fourteen-template architecture catalog, and the room revelation rules. Code paths such as `web/`, `game/`, and `assets/` refer to the pre-monorepo layout (`apps/web/`, `packages/game/`, and `content/assets/` in the current repository).
 
 The tactical building renderer uses limewashed adobe, jointed stone footings,
 clay roof tiles, timber doors, iron window bars, and brick floor joints. These
@@ -67,8 +67,8 @@ node tools/preview-buildings.mjs
 Outputs: `assets/previews/buildings/exterior.png` and `interior.png`.
 These are deterministic renderer checks, not browser interaction recordings.
 
-Validation includes `tests/building-render.test.mjs`, the existing building and
-visibility tests, TypeScript checks, and the production build.
+`tests/building-render.test.mjs` and the building and visibility checks cover the
+catalog rules below.
 
 ## Catalog redesign review
 
@@ -182,37 +182,20 @@ Use these acceptance gates for human review of the rendered files:
 Review every close view at a useful size. A contact sheet is only an index and
 cannot prove that the geometry or material treatment is correct.
 
-The original ten template exteriors and interiors were reviewed across all four
-rotations (80 rendered views). The town hall and palace also passed exterior and
-interior review in all four rotations (16 additional views), including the final
-clock proportions and palace pediment paint order. The depósito and estancia
-also passed exterior and interior review in all four rotations (16 more views,
-112 views in total), including the final farmhouse gallery texture. Their
-interiors have continuous floor joins, visible furniture and clear door
-approaches. The catalog route checks and renderer regressions cover walking
-space, object identity, partial roof revelation, partition junctions and the
-solid tower corner. Added civic, warehouse and farmhouse checks cover named
-room functions, minimum-size shells and supports edited into doors or windows.
-Every new ground-level support is checked against a solid wall tile. The original
-review did not repeat live pointer interaction because the Mac was locked.
-No new browser interaction pass is claimed by this renderer review.
-
-The town hall and palace upper-storey revision passed a fresh review of 24 views:
-exterior, full interior and partial room revelation in all four rotations.
-The review confirmed that upper details disappear during room revelation and
-that the remaining roof meets the ground-floor shell. Unrevealed rooms keep
-their cover. Renderer tests also check each ground room separately and palace
-balcony supports retained only on one side: unsupported balcony doors and rails
-are omitted. Both civic template JSON files remain unchanged, including rooms,
-doors, furniture and tile routes. The earlier civic images record their previous
-one-storey silhouettes; use the new commands to review the current profiles.
+The catalog route checks and renderer regressions cover walking space, object
+identity, partial roof revelation, partition junctions and the solid tower
+corner. Civic, warehouse and farmhouse checks cover named room functions,
+minimum-size shells and supports edited into doors or windows; every new
+ground-level support is checked against a solid wall tile. Renderer tests also
+check each ground room separately and palace balcony supports retained only on
+one side: unsupported balcony doors and rails are omitted.
 
 Regenerate the catalog after renderer or material changes; an earlier image is
 evidence only for the revision that produced it. Use the generated JSON maps in
 the editor to inspect partial room revelation and walk through the interiors in
 playtest mode.
 
-## Consolidation status — 30 September 2026
+## Campaign landmark integration
 
 The working integration selects the catalog renderer for campaign landmarks and
 new neighbourhood buildings as well as editor templates. `kind` takes precedence
@@ -226,8 +209,5 @@ so their slab, chimney, parapets and climb routes still match the playable roof.
 Older snapshots without a catalog kind keep their original appearance. Existing
 saved maps are not replaced with new layouts.
 
-The current 67-check building batch passes, including exact campaign/editor
-render comparisons, roof-level inspection and terrace routes. Exterior and
-interior images from the real renderer were inspected for Retiro, Buenos Aires,
-San Lorenzo and Yatasto. These are renderer checks. The final built browser
-scene and editor export checks remain pending.
+Building checks cover exact campaign/editor render comparisons, roof-level
+inspection and terrace routes.

@@ -1,9 +1,5 @@
 # Inventory cursor exchanges
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
-
 Picking up an item in the tactical inventory (exploration or combat) or the campaign equipment panel now removes it from its physical slot. The exact item lives in a saved `equipmentCursor` record on its owner until it is placed, passed, thrown, given or returned. The pointer display does not own another copy.
 
 ## Controls and placement
@@ -39,16 +35,4 @@ The [publisher manual, pages 21–25](https://cdn.akamai.steamstatic.com/steam/a
 - [Return and cursor serialization](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/a06f4896c43c76396529e415a29a8ca26b00f9f1/src/game/Tactical/Interface_Items.cc#L5086-L5159).
 - [Placement AP and cursor owner](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/a06f4896c43c76396529e415a29a8ca26b00f9f1/src/game/Tactical/Interface_Panels.cc#L1548-L1585).
 
-Individual stack-member inspection, direct slot-to-map dragging, further attachment types and classic transfer/AP formulas remain separate gaps. A subsequent [physical attachment slot update](attachment-slots.md) preserves custom bayonet data and supports cursor fitting, exchange and removal from held or stored rifles. This milestone does not establish full JA2 inventory or gameplay parity.
-
-## Verification
-
-Browser checks use a disposable preview with an actual paid hire and finite Retiro stock. Tactical and campaign checks cover pickup, displaced-item exchange chains, rejected small-pocket placement, both hands holding bandages, partial cartridge placement, explicit return and save/load with an active cursor. A map check drops exactly one selected cartridge and saves the result. Rearrangement preserves displayed energy and carried weight. The final tactical mouse check restores a cursor-owned poncho and places it successfully; no browser errors or warnings were reported.
-
-Pointer hook tests cover drag release, touch/pen ownership, stale source rejection and click suppression. Physical touch/pen input and direct slot-to-map dragging are not claimed as browser-verified.
-
-The stack reader returns detached payloads without copying the entire soldier for each pocket. A batch validates pack keys once and still validates each selected record. `inventoryUsage` also shares key validation only within its current call. Pointer hover keeps one preview; click and drag release always recheck current state.
-
-A local deterministic 64 × 64 preview benchmark measured 0.25 → 0.12 ms with normal inventory, 40.5 → 3.8 ms with 200 extra records, and 953 → 20 ms with 1,000 extra records. The last case is an admitted overflow stress fixture, not normal pocket capacity. It measures inventory preview work, not overall game frame rate or all sources of slowness.
-
-The final optimized run passes all 2,091 tests, with no failures or skips. Type checking and the production build pass; the static export validates 960 files and 856 asset references. The optimized browser exchange also passes with 100/100 energy, unchanged 14.6 kg carried weight, and no browser errors or warnings.
+Individual stack-member inspection, direct slot-to-map dragging, further attachment types and classic transfer/AP formulas remain separate gaps. [Physical weapon attachment slots](attachment-slots.md) preserve custom bayonet data and support cursor fitting, exchange and removal from held or stored rifles. Full JA2 inventory and gameplay parity remain open.

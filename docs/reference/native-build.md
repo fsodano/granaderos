@@ -49,7 +49,7 @@ gh run download RUN_ID --name Granaderos-windows-overlay
 1. Install an original, legally obtained Jagged Alliance 2 copy in a writable directory outside Program Files. Keep a backup; use a separate installation for Granaderos.
 2. Copy the **contents** of the packaged `Granaderos-<version>-windows` directory over that installation. The package contains the pinned 1.13 runtime data, DLLs, both executables, and Granaderos overlay.
 3. Launch using the Granaderos launcher supplied in the overlay. The game must load the Granaderos VFS profile rather than the ordinary JA2 campaign.
-4. Record successful startup, campaign entry, tactical combat, saving and reloading before claiming the build is playable. The map editor needs separate runtime verification.
+4. Startup, campaign entry, tactical combat, saving and reloading are the playable-build checks. The map editor has separate runtime checks.
 
 The original commercial `Data/` archives are not provided by the source repository and are not bundled by this project. A successful C++ compilation does not remove this runtime dependency. The upstream installation instructions require an original JA2 installation: https://github.com/1dot13/source#installation.
 
@@ -57,4 +57,4 @@ The package contains `Granaderos-build.json` for source provenance and `SHA256SU
 
 ## macOS host limitation
 
-The development host is macOS on ARM. A native macOS build is not supported by this Windows engine. Upstream has a clang-cl cross toolchain requiring LLVM tools and a separately installed Microsoft SDK. Its MinGW toolchain explicitly remains a TODO. Windows CI is the supported build path; Wine runtime testing still needs the original JA2 data and a compatible Wine installation. No native macOS port or unverified Wine compatibility is implied.
+The development host is macOS on ARM. A native macOS build is not supported by this Windows engine. Upstream has a clang-cl cross toolchain requiring LLVM tools and a separately installed Microsoft SDK. Its MinGW toolchain explicitly remains a TODO. Windows CI is the supported build path. Wine runtime testing needs the original JA2 data and a compatible Wine installation. No native macOS port is implied.
