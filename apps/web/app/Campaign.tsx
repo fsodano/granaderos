@@ -5,7 +5,7 @@ import type {
   CampaignAction,
 } from '../../../packages/game/public/campaign-types.ts';
 import type { BattleSnapshot } from '../../../packages/game/public/compatibility-types.ts';
-import type { ArrivalDecisionSnapshot } from '../../../packages/game/domain/journeys/arrival-decision.ts';
+import type { ArrivalDecisionSnapshot } from '../../../packages/game/public/journey-types.ts';
 import SectorPreparation from './SectorPreparation';
 import MilitiaDistribution from './MilitiaDistribution';
 import MilitiaTraining from './MilitiaTraining';
@@ -38,10 +38,7 @@ import ContractAttention from './ContractAttention';
 import './strategy.css';
 import StrategicRoster from './StrategicRoster';
 import { previewStrategicRoute } from '../../../packages/game/strategic-route.js';
-import {
-  JourneyMode,
-  type JourneyModeValue,
-} from '../../../packages/game/domain/journeys/journey.ts';
+import { JourneyMode, type JourneyModeValue } from '../../../packages/game/public/journey-types.ts';
 import TransientNotice from './TransientNotice';
 export default function Campaign({
   state: s,

@@ -2,6 +2,7 @@ import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { resolve, relative, dirname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ts from '../apps/web/node_modules/typescript/lib/typescript.js';
+import { interfaceFileMayImport, interfaceImportRule } from './architecture-rules.ts';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const failures = [];
@@ -138,6 +139,9 @@ for (const directory of sourceDirectories) {
         !publicPreviewEntries.has(target)
       ) {
         fail(file, dependency, 'Editor previews must use the declared preview entry.');
+      }
+      if (!interfaceFileMayImport(file, target)) {
+        fail(file, dependency, interfaceImportRule);
       }
     }
     const checksBrowserBoundary =

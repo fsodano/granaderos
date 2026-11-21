@@ -9,12 +9,22 @@ the diff.
 
 | Slice | Branch | State | Version |
 | --- | --- | --- | --- |
-| [1. Plan and orientation](01-plan-and-orientation.md) | `migration/plan-and-orientation` | in progress | 0.2.6 |
-| [2. Canonical transaction](02-canonical-transaction.md) | `migration/canonical-transaction` | planned | 0.2.7 |
-| [3. Browser composition](03-browser-composition.md) | `migration/browser-composition` | planned | 0.2.8 |
+| [1. Plan and orientation](01-plan-and-orientation.md) | `migration/plan-and-orientation` | landed | 0.2.6 |
+| [2. Canonical transaction](02-canonical-transaction.md) | `migration/canonical-transaction` | landed | 0.2.7 |
+| [3. Browser composition](03-browser-composition.md) | `migration/browser-composition` | landed | 0.2.8 |
 | [4. Use-case contracts](04-use-case-contracts.md) | `migration/use-case-contracts` | planned | 0.2.9 |
 | [5. Compatibility aliases](05-compatibility-aliases.md) | `migration/compatibility-aliases` | planned | 0.2.10 |
 
 A slice moves from planned to in progress when its branch is created, and to
 landed when it is merged into `feature/clean-architecture-migration` and its
 branch is deleted.
+
+## What the series has changed so far
+
+- The orientation survey and the gap analysis are recorded in
+  [the overview](../overview.md).
+- The infrastructure has one revision policy, and `GameUnitOfWork` names the
+  revision field it guards.
+- The player interface no longer builds game object graphs. The construction
+  lives in `apps/web/lib`, and `tools/check-architecture.mjs` refuses an
+  interface file that reaches into a game layer.
