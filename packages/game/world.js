@@ -26,6 +26,7 @@ import { physicalEntryAnchor } from './sector-expansion.js';
 import { authoredEnvironment } from './environment-interactions.ts';
 import { sceneAnchorFor } from './campaign-scenario.js';
 import { propBlocksAt } from './props.js';
+import { roomDressings } from './room-dressing.js';
 import { buildSectorMap } from './maps.js';
 import { createBattle, initializeBattlePerception } from './tactical.js';
 import { validEntry, validateSectorExits, adjacentExitIdsFor } from './tactical-exits.js';
@@ -191,6 +192,28 @@ function buildSectorEntrySnapshot(request, previous = null, { placement = false 
         previous.units.filter((u) => u.side === 'enemy' && !u.departure),
       ).map(clearEncounter);
     }
+  }
+  // Generated room dressing is deterministic furniture: it joins the tactical
+  // props so movement, AI and rendering share one collision model. Old saves
+  // resume without it and pick it up on their next fresh entry. Cells with a
+  // standing person keep their dressing skipped until the room is re-entered
+  // fresh, so resumed snapshots never violate the furniture invariants.
+  const dressingPeople = new Set(
+    [
+      ...(map.squad ?? []),
+      ...(map.garrison ?? []),
+      ...(map.missionAllies ?? []),
+      ...(map.enemies ?? []),
+      ...(map.npcs ?? []),
+    ]
+      .filter((u) => (u.hp ?? 100) > 0 && !u.departure)
+      .map((u) => `${u.x},${u.y}`),
+  );
+  const dressingProps = roomDressings(map).filter(
+    (d) => !map.props.some((p) => p.id === d.id) && !dressingPeople.has(`${d.x},${d.y}`),
+  );
+  if (dressingProps.length) {
+    map.props.push(...dressingProps);
   }
   // Stationed artillery keeps coordinates from the saved full-size map. Apply
   // them after map expansion; otherwise each reentry scales its position again.

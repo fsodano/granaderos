@@ -10,7 +10,25 @@ import {
   tacticalLevel,
 } from './tactical-space.js';
 // Serializable tile footprints. Legacy props retain their original one-cell size.
-export const PROP_TYPES = ['table', 'bench', 'bed', 'chest', 'barrels', 'hay', 'cart'];
+// Room-dressing furniture joins the snapshots, so its types are props too.
+export const PROP_TYPES = [
+  'table',
+  'bench',
+  'bed',
+  'chest',
+  'barrels',
+  'hay',
+  'cart',
+  'shelf',
+  'hearth',
+  'washstand',
+  'sacks',
+  'pottery',
+  'rug',
+  'candle',
+  'rubble',
+  'broken-timber',
+];
 /** @returns {boolean} */
 export function propBlocksAt(state, x, y, level = 0) {
   return (state.props ?? []).some((p) => {

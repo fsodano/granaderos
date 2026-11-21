@@ -910,17 +910,20 @@ export function presentWorld(
   ]
     .filter((item) => lootKeys.has(spaceKey(item)))
     .map(height);
-  // Origin belongs to the admitted copy. Authored props cannot claim dressing status.
+  // Origin belongs to the admitted copy. Authored props cannot claim dressing
+  // status. Simulation props already carry generated dressing; the derived
+  // list only backfills scenes built outside the sector entry pipeline.
+  const dressingIds = new Set(roomDressings(terrain).map((prop) => prop.id));
   const props = [
-    ...(terrain.props ?? []).map((prop) => ({
-      ...prop,
-      generatedRoomDressing: false,
-    })),
-    ...roomDressings(terrain).map((prop) => ({
-      ...prop,
-      generatedRoomDressing: true,
-    })),
+    ...(terrain.props ?? []),
+    ...roomDressings(terrain).filter(
+      (prop) => !(terrain.props ?? []).some((p) => p.id === prop.id),
+    ),
   ]
+    .map((prop) => ({
+      ...prop,
+      generatedRoomDressing: dressingIds.has(prop.id),
+    }))
     .filter(visible)
     .map(height);
   const { upperSurfaces, wallEdges, sceneId, ...terrainCore } = terrain;

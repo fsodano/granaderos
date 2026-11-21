@@ -3,7 +3,8 @@ import { propCells } from './props.js';
 import { spaceKey, tacticalLevel } from './tactical-space.js';
 
 // Small wall-side objects and floor treatments add place and use to rooms.
-// They are visual dressing: authored collision and furniture remain unchanged.
+// Solid furniture blocks movement; flat or crushable pieces stay walkable.
+const WALKABLE_DRESSING_TYPES = new Set(['rug', 'candle', 'pottery', 'rubble', 'broken-timber']);
 const NAMED_PROFILES = {
   archive: { purpose: 'archive', floor: 'wood', details: ['shelf', 'chest', 'candle'] },
   office: { purpose: 'office', floor: 'wood', details: ['shelf', 'candle', 'rug'] },
@@ -135,7 +136,7 @@ export function roomDressings(state) {
           buildingId: building.id,
           purpose: profile.purpose,
           decorative: true,
-          blocksMovement: false,
+          blocksMovement: !WALKABLE_DRESSING_TYPES.has(profile.details[i]),
           footprint: { width: 1, height: 1 },
         });
         occupied.add(spaceKey(cell));

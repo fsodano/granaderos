@@ -242,10 +242,14 @@ export default function TacticalScene({
       ),
     [terrain, sightAdmittedUnits, positions],
   );
-  const sceneProps = useMemo(
-    () => [...(terrain.props ?? []), ...roomDressings(terrain)],
-    [terrain],
-  );
+  const sceneProps = useMemo(() => {
+    const dressingIds = new Set(roomDressings(terrain).map((prop) => prop.id));
+    const authored = terrain.props ?? [];
+    return [
+      ...authored,
+      ...roomDressings(terrain).filter((prop) => !authored.some((p) => p.id === prop.id)),
+    ].map((prop) => ({ ...prop, generatedRoomDressing: dressingIds.has(prop.id) }));
+  }, [terrain]);
   const propVisibilityKey = JSON.stringify(sceneProps.filter(upperPointVisible).map((p) => p.id));
   const scenery = useMemo(() => {
     const s = terrain;
