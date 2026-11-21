@@ -1,6 +1,6 @@
-import { nextRevision } from '../shared/revision.js';
 import { JourneyRefusal, JourneyRefusalCode } from '../../domain/journeys/arrival-decision.ts';
 import { JourneySnapshotMapper } from './journey-snapshot-mapper.js';
+import { advanceRevision, journeyRevisionDomain } from '../shared/revision-policy.ts';
 
 export class CampaignJourneyTransaction {
   #campaign;
@@ -15,23 +15,24 @@ export class CampaignJourneyTransaction {
     if (!squad?.journey) {
       throw new JourneyRefusal(JourneyRefusalCode.JourneyNotFound);
     }
-    nextRevision(squad.journeyRevision ?? 0);
+    const revision = journeyRevisionDomain.read(squad);
+    advanceRevision(revision);
     const nowSeconds = this.#campaign.hour * 3600 + (this.#campaign.secondOfHour ?? 0);
     return {
       journey: this.#mapper.restore(squad, nowSeconds),
-      revision: squad.journeyRevision ?? 0,
+      revision,
       nowSeconds,
     };
   }
 
   commitJourney(squadId, journey, expectedRevision) {
     const squad = this.#campaign.squads.find((candidate) => candidate.id === squadId);
-    if (!squad?.journey || (squad.journeyRevision ?? 0) !== expectedRevision) {
+    if (!squad?.journey || journeyRevisionDomain.read(squad) !== expectedRevision) {
       throw new JourneyRefusal(JourneyRefusalCode.JourneyRevisionConflict);
     }
-    const acceptedRevision = nextRevision(expectedRevision);
+    const acceptedRevision = advanceRevision(expectedRevision);
     squad.journey = this.#mapper.serialize(journey);
-    squad.journeyRevision = acceptedRevision;
+    journeyRevisionDomain.write(squad, acceptedRevision);
   }
 }
 

@@ -1,22 +1,24 @@
-import { DomainRefusal, DomainRefusalCode } from '../../domain/shared/domain-refusal.ts';
-import { nextRevision } from '../shared/revision.js';
+import {
+  advanceRevision,
+  assertExpectedRevision,
+  readRevision,
+  sectorRevisionDomain,
+} from '../shared/revision-policy.ts';
 
 export class SectorOperationTransaction {
   #revision;
   #snapshot;
   constructor(snapshot) {
     this.#snapshot = snapshot;
-    this.#revision = snapshot.sectorRevision ?? 0;
+    this.#revision = readRevision(sectorRevisionDomain, snapshot);
   }
   load() {
-    nextRevision(this.#revision);
+    advanceRevision(this.#revision);
     return { snapshot: structuredClone(this.#snapshot), revision: this.#revision };
   }
   commit(snapshot, expectedRevision) {
-    if (this.#revision !== expectedRevision) {
-      throw new DomainRefusal(DomainRefusalCode.RevisionConflict);
-    }
-    const acceptedRevision = nextRevision(this.#revision);
+    assertExpectedRevision(this.#revision, expectedRevision);
+    const acceptedRevision = advanceRevision(this.#revision);
     if (snapshot.lastError) {
       return;
     }
@@ -26,7 +28,7 @@ export class SectorOperationTransaction {
       return;
     }
     this.#revision = acceptedRevision;
-    snapshot.sectorRevision = this.#revision;
+    sectorRevisionDomain.write(snapshot, acceptedRevision);
     this.#snapshot = snapshot;
   }
 }
