@@ -1,6 +1,6 @@
 # Renewal with poor morale
 
-This guide describes published behavior on the strategic campaign contract screen: a serving paid soldier with the `low_morale_refusal` condition refuses contract renewal while personal morale is below 30. Fresh fictional Ángela Cejas content explicitly declares `low_morale_refusal`.
+This guide describes current behavior on the strategic campaign contract screen: a serving paid soldier with the `low_morale_refusal` condition refuses contract renewal while personal morale is below 30. Fresh fictional Ángela Cejas content explicitly declares `low_morale_refusal`.
 Authors can assign it to an explicitly paid contract character, including a
 paid local recruit. Personality prose, historical identities and older pinned
 packages without the ability do not activate this rule.
@@ -35,6 +35,4 @@ its existing low-morale boundary of 30 and does not add that override. These
 are explicit game rules, not exact classic parity or a medical measurement.
 
 Prolonged tactical panic, underground fear, wider changing relationships and
-other reasons for leaving service remain separate requirements. See the
-[video review](../../verification/ja2-video-review-2026-10-03.md) and the
-renewal verification.
+other reasons for leaving service remain separate requirements.

@@ -2,9 +2,8 @@
 
 On the strategic campaign layer (with cash pickups on the tactical battlefield),
 the browser campaign uses pesos as its only strategic resource. This note
-describes the economy version 2 treasury, income, and purchasing rules; in
-published [version 0.1](../../verification/version-0.1.md), equipment commerce is
-disabled (see commerce deferral).
+describes the economy version 2 treasury, income, and purchasing rules; equipment
+commerce is disabled (see commerce deferral).
 The Tesorería shows the balance, daily income, time until the next payment, and
 an optional breakdown by locality. There are no material stocks, production
 recipes, resource convoys, horse purchases, breeding, or feed.
@@ -40,7 +39,3 @@ there is no separate horse economy. Repairs and personal kit refills cost pesos.
 
 Start a new campaign for economy version 2. Earlier economy saves are rejected
 with a clear message; no save conversion is performed during active development.
-
-Validation: `tests/economy-web.test.mjs`, `tests/quests-web.test.mjs`,
-`tests/equipment-imports.test.mjs`, and the complete campaign playthrough cover
-the income, cash recovery, spending, and progression rules.

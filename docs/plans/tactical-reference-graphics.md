@@ -1,16 +1,10 @@
 # Tactical reference graphics
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../verification/version-0.1.md) for the published-main checkpoint.
-
 [Implementation plans](README.md)
 
-8 October 2026. Baseline: `origin/main` at `c71dce85`. Worktree:
-`tactical-graphics-reference`. This implementation plan defines 18 visual improvements to 3D characters, terrain, vegetation, and furniture against reference images; it is not a claim of
-published graphics parity. Each numbered change gets its own PR and visual record.
-Merge each completed PR after its
-visual checks and local gates pass, then synchronize local `main` safely.
+This plan defines 18 visual improvements to 3D characters, terrain, vegetation,
+and furniture against reference images. Each numbered change gets its own
+acceptance criteria and visual review.
 
 ## Visual target
 
@@ -33,57 +27,40 @@ plaster and roof textures, furniture, semantic room dressing, roof cutaways,
 grass, rocks, and varied trees. Extend those systems. Do not replace them with
 generic substitutes or claim that an existing feature is absent.
 
-## Small delivery pieces
+## Improvement pieces
 
-Work through this order. Mark a piece ready only after its visual checks and
-local gates pass. Record its PR beside the status; an open PR is not publication.
+Work through this order. A piece is ready for review once its visual checks and
+local gates pass.
 
-| # | Concrete improvement | Detail and acceptance | State |
-| --- | --- | --- | --- |
-| 1 | Granadero and worker cloth form | Strengthen existing fold valleys and ridge shading around sleeves, elbows, waist and knees. Allow a bounded change to the navy base-cloth colour resource where the dark atlas leaves no highlight range. Preserve the old atlas, trim and skin; use the current geometry. Compare front, side and rear at 44 and 88 pixel actor height. Keep face/skin maps and every rig/action payload exact. | [PR #306](https://github.com/fsodano/granaderos/pull/306) merged; visual record |
-| 2 | Cloth form across the other six families | Extend the reviewed treatment to realista, cirujano, gaucho, fraile, exploradora and mujer con rebozo. Respect the long-cloth, skirt hem and boot-clearance corrections. Check standing, crouched and prone poses. | [PR #307](https://github.com/fsodano/granaderos/pull/307) merged; visual record |
-| 3 | Cloth, leather and metal surfaces | Add restrained low-frequency cloth pigment variation and broad boot wear. The current cloth is already matte; retain its roughness and normal maps. Restrict aged metal finish to named steel/brass equipment, keeping polished blades, grip leather, uniform facings and trim exact. Check moving figures for sparkle and preserve faction colours. | [PR #308](https://github.com/fsodano/granaderos/pull/308) merged; visual record |
-| 4 | Correct coarse poncho surface directions | Correct gaucho LOD1/2 poncho normals where inner and outer surface directions mix after reduction. Keep oriented triangles, positions, UVs, colours, skin weights, all close models and all other families exact. Run the unchanged cloth recipes using verified historical selection masks. Review front, side and rear at 44/88 pixels and moving/posture views. Add no triangles or drawing parts; record extra stored/indexed corners required for the surface split. | [PR #309](https://github.com/fsodano/granaderos/pull/309) merged; visual record |
-| 5 | Check coarse outer garments in movement | Test bounded fits for the worker LOD2 vest and shawl LOD1/2. A rest-only coupled shell failed in native motion. The later original-overlay trials preserved openings and weights but showed no clear improvement at 44/88 pixels; the worker exceeded its 6 mm displacement bound. Keep the original models. A future fit needs a visible benefit and no worse outside contacts in motion. | Review complete; candidates rejected; trial record |
-| 6 | Relaxed free arm in standing weapon rest | Unarmed figures already have relaxed native arm positions. Give blade, knife and pistol standing idles an independent relaxed free left arm while retaining the right hand's weapon pose. Preserve rifle contacts, unarmed, aim, brace, attack, crouch/prone and paid-action timing. Record bounded transition contacts and exact source/export receipts. | [PR #312](https://github.com/fsodano/granaderos/pull/312) merged; record |
-| 7 | Irregular soil/grass boundaries | Add uneven, seeded edge incursions using existing textures. Join equal-height outdoor surfaces only. Include neighbouring material/type in chunk cache dependencies. Check the edge across chunk borders and after a neighbouring tile change. | [PR #310](https://github.com/fsodano/granaderos/pull/310) merged; record |
-| 8 | Sparse soil fragments | Add uneven groups of small flat pebble chips to dirt/roads/natural stone. Leave bare patches. Keep fragments rooted at the terrain elevation and visible at normal zoom. Cap decoration cost per cell. | [PR #311](https://github.com/fsodano/granaderos/pull/311) merged; record |
-| 9 | Thin dry weeds | Add occasional branched stems with varied height and lean in dry grass/scrub. Keep road centres and indoor cells clear. Match the reference's thin dark silhouettes without a uniform field of identical tufts. | [PR #313](https://github.com/fsodano/granaderos/pull/313) merged; record |
-| 10 | Varied rock forms | Add a small set of asymmetric rock forms with broken ledges and flatter tops. Retain obstruction height, placement and current bounds. Keep the existing geometry budget. | [PR #314](https://github.com/fsodano/granaderos/pull/314) merged; record |
-| 11 | Broken leaf silhouettes | Replace solid crown lobes with irregular leaf sprays and gaps. Keep rooted branches, tree height variation, poplar proportions, actor canopy fade and the existing material batches. | [PR #315](https://github.com/fsodano/granaderos/pull/315) merged; record |
-| 12 | Timber furniture construction | Show tabletop/bench boards and narrow joints; use edge rails instead of a solid apron. Add chest lid construction, hinges and handles. Preserve open states, usable sides and all four rotations. | [PR #316](https://github.com/fsodano/granaderos/pull/316) merged; record |
-| 13 | Soft bedding | Round mattress and pillow forms; add blanket folds and a hanging edge. Keep the bed frame, floor height, authored footprint and rotations. Review beside a standing character. | [PR #317](https://github.com/fsodano/granaderos/pull/317) merged; record |
-| 14 | Complete washstand | Carry the existing pitcher/handle, basin water and hanging towel from the authored furniture view into native 3D. Give the towel a folded outline. Keep every part within the washstand footprint. | [PR #318](https://github.com/fsodano/granaderos/pull/318) merged; record |
-| 15 | Complete cooking hearth | Add the existing cooking pot, rim, bail handle and supporting iron. Keep embers and the stone firebox visible. Face generated hearths into their admitted room while preserving authored rotations. Preserve fire and light rules. | [PR #319](https://github.com/fsodano/granaderos/pull/319) merged; record |
-| 16 | Varied shelf vessels | Replace repeated generic cylinders with a few vessel profiles, visible lips and openings. Preserve office/archive ledgers and semantic room selection. | [PR #320](https://github.com/fsodano/granaderos/pull/320) merged; record |
-| 17 | Gathered sacks and woven rugs | Add tied sack mouths and broad creases; add rug bands and fringe. Keep floor contact, footprints and door clearances. Use shared batches and materials. | [PR #321](https://github.com/fsodano/granaderos/pull/321) merged; record |
-| 18 | Room floor character | Extend the existing semantic floor finishes with continuous plank joints, restrained room variation and entrance wear. Clip around climb openings. Preserve the upper walking deck and hatch appearance. Add no raised surface that implies a new obstacle. | [PR #322](https://github.com/fsodano/granaderos/pull/322) merged; record |
+| # | Concrete improvement | Detail and acceptance |
+| --- | --- | --- |
+| 1 | Granadero and worker cloth form | Strengthen existing fold valleys and ridge shading around sleeves, elbows, waist and knees. Allow a bounded change to the navy base-cloth colour resource where the dark atlas leaves no highlight range. Preserve the old atlas, trim and skin; use the current geometry. Compare front, side and rear at 44 and 88 pixel actor height. Keep face/skin maps and every rig/action payload exact. |
+| 2 | Cloth form across the other six families | Extend the reviewed treatment to realista, cirujano, gaucho, fraile, exploradora and mujer con rebozo. Respect the long-cloth, skirt hem and boot-clearance corrections. Check standing, crouched and prone poses. |
+| 3 | Cloth, leather and metal surfaces | Add restrained low-frequency cloth pigment variation and broad boot wear. The current cloth is already matte; retain its roughness and normal maps. Restrict aged metal finish to named steel/brass equipment, keeping polished blades, grip leather, uniform facings and trim exact. Check moving figures for sparkle and preserve faction colours. |
+| 4 | Correct coarse poncho surface directions | Correct gaucho LOD1/2 poncho normals where inner and outer surface directions mix after reduction. Keep oriented triangles, positions, UVs, colours, skin weights, all close models and all other families exact. Run the unchanged cloth recipes using validated historical selection masks. Review front, side and rear at 44/88 pixels and moving/posture views. Add no triangles or drawing parts; record extra stored/indexed corners required for the surface split. |
+| 5 | Check coarse outer garments in movement | Test bounded fits for the worker LOD2 vest and shawl LOD1/2. A rest-only coupled shell fails in native motion. Original-overlay trials preserve openings and weights but show no clear improvement at 44/88 pixels; the worker exceeds its 6 mm displacement bound. Keep the original models. A future fit needs a visible benefit and no worse outside contacts in motion. |
+| 6 | Relaxed free arm in standing weapon rest | Unarmed figures already have relaxed native arm positions. Give blade, knife and pistol standing idles an independent relaxed free left arm while retaining the right hand's weapon pose. Preserve rifle contacts, unarmed, aim, brace, attack, crouch/prone and paid-action timing. Record bounded transition contacts and exact source/export receipts. |
+| 7 | Irregular soil/grass boundaries | Add uneven, seeded edge incursions using existing textures. Join equal-height outdoor surfaces only. Include neighbouring material/type in chunk cache dependencies. Check the edge across chunk borders and after a neighbouring tile change. |
+| 8 | Sparse soil fragments | Add uneven groups of small flat pebble chips to dirt/roads/natural stone. Leave bare patches. Keep fragments rooted at the terrain elevation and visible at normal zoom. Cap decoration cost per cell. |
+| 9 | Thin dry weeds | Add occasional branched stems with varied height and lean in dry grass/scrub. Keep road centres and indoor cells clear. Match the reference's thin dark silhouettes without a uniform field of identical tufts. |
+| 10 | Varied rock forms | Add a small set of asymmetric rock forms with broken ledges and flatter tops. Retain obstruction height, placement and current bounds. Keep the existing geometry budget. |
+| 11 | Broken leaf silhouettes | Replace solid crown lobes with irregular leaf sprays and gaps. Keep rooted branches, tree height variation, poplar proportions, actor canopy fade and the existing material batches. |
+| 12 | Timber furniture construction | Show tabletop/bench boards and narrow joints; use edge rails instead of a solid apron. Add chest lid construction, hinges and handles. Preserve open states, usable sides and all four rotations. |
+| 13 | Soft bedding | Round mattress and pillow forms; add blanket folds and a hanging edge. Keep the bed frame, floor height, authored footprint and rotations. Review beside a standing character. |
+| 14 | Complete washstand | Carry the existing pitcher/handle, basin water and hanging towel from the authored furniture view into native 3D. Give the towel a folded outline. Keep every part within the washstand footprint. |
+| 15 | Complete cooking hearth | Add the existing cooking pot, rim, bail handle and supporting iron. Keep embers and the stone firebox visible. Face generated hearths into their admitted room while preserving authored rotations. Preserve fire and light rules. |
+| 16 | Varied shelf vessels | Replace repeated generic cylinders with a few vessel profiles, visible lips and openings. Preserve office/archive ledgers and semantic room selection. |
+| 17 | Gathered sacks and woven rugs | Add tied sack mouths and broad creases; add rug bands and fringe. Keep floor contact, footprints and door clearances. Use shared batches and materials. |
+| 18 | Room floor character | Extend the existing semantic floor finishes with continuous plank joints, restrained room variation and entrance wear. Clip around climb openings. Preserve the upper walking deck and hatch appearance. Add no raised surface that implies a new obstacle. |
 
 If review finds a specific mismatch that these pieces do not address, add a
-bounded piece with its own acceptance criteria. Do not count a passing test or
-a completed checklist as proof that the reference's appearance has been reached.
+bounded piece with its own acceptance criteria. A passing test or a completed
+checklist is not proof that the reference's appearance has been reached.
 
-All 18 pieces have completed review. Seventeen accepted improvements are
-merged in PRs #306–#322. Piece 5 is a rejected private trial; its original models
-remain installed. Final quick passed 6,869/6,869 tests in 904 files, with zero
-failures or skips. Typecheck, production build and the isolated root's complete
-source/runtime/dependency/engine proof pass. Source identity is
-`755475a0cd6e40c218f25b35802d00eabca94a35e75ccb176b086cc7f4c2f953`.
+See the [phone picture gallery](../art/tactical-reference-gallery-2026-10-08.md).
 
-Piece 16 retains an unknown standalone affected-process exit after a collector
-error. Its full quick passed all six focused files and the overall process.
-Primary main has exact source bytes and a clean engine at the pinned commit;
-its engine is initialized, unlike the private candidates. This does not imply
-an exact primary runtime/dependency match.
+## Visual review and checks
 
-See the [phone picture gallery](../art/tactical-reference-gallery-2026-10-08.md)
-and completion audit.
-
-## Delivery and checks
-
-- Use one focused branch per piece in the isolated worktree. Use an explicit
-  staged file list. Start independent pieces from current `origin/main`; use an
-  explicit stacked base when a piece depends on an earlier open PR.
 - Keep simulation, AP, ammunition, health, visibility, saves, collision, input
   orders, actor roots, sockets and timing authoritative. Cosmetic detail must
   not consume simulation randomness or reveal hidden actors/rooms.
@@ -98,15 +75,12 @@ and completion audit.
   vessels, sacks and rugs in a real interior. Use ordinary stance orders or an
   expanded valid fixture to check all eight families, not just two posture actors.
 - Run affected renderer/asset tests, `npm run test:quick`, typecheck, production
-  build and `git diff --check` before each push. Record an existing failure as an
-  existing failure only after a matching clean-baseline check.
-- Verify ordinary in-game controls in the live preview. Offline renders support
+  build and `git diff --check`. Compare against a matching clean baseline before
+  recording a failure.
+- Verify ordinary in-game controls in the preview. Offline renders support
   visual review but do not prove browser shader, action or save behaviour.
 - Record draw calls, triangles and a bounded frame-time sample for changes that
   add geometry, materials or shader work. Preserve chunk reuse and disposal.
-- Open and attach a separate PR for each concrete improvement. State the final
-  scope, validation, visual evidence and remaining limits. Do not trigger paid
-  Actions as a debugging loop.
 
 ## Implementation boundaries
 

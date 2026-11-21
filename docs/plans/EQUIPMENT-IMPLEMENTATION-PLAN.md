@@ -1,13 +1,12 @@
 # Required equipment implementation plan
 
-Status: proposed implementation plan and read-only code/specification audit, 2026-09-05. It covers period equipment items, canonical weights, finite consumable containers, bayonet compatibility, pack-animal saddles, and corpse loot transfer. This plan does not implement the
-items below and does not claim the full equipment requirement is complete.
+This plan covers period equipment items, canonical weights, finite consumable containers, bayonet compatibility, pack-animal saddles, and corpse loot transfer. The sections below state the requirement and the current gaps; they do not claim the full equipment requirement is met.
 Primary requirement source: [docs/specification/original.txt](../specification/original.txt), especially the
 weapon tables and “Munitions, Field Consumables, and Accoutrements” table.
 
 ## Exact current gaps
 
-| Required item/function | Current implementation | Missing behavior |
+| Required item/function | Current behavior | Missing behavior |
 | --- | --- | --- |
 | Paper cartridges: 20 rounds / 0.8 kg; cartridge box | Finite ammo and loaded counts; 0.04 kg each counted by carriedWeight; reload transfers reserve to weapon | No cartridge-box item or capacity/compatibility; every firearm uses the same reserve; keep caliber compatibility a deliberate follow-up decision rather than silently claiming it exists |
 | Priming flask: 50 charges / 0.3 kg; small belt pocket | priming count, reload/priming consumption, shortage penalty and reprime checks | No flask/container record, no maximum carry capacity, no weight counted; distinguish refill from adding another flask |
@@ -71,7 +70,7 @@ concrete period kit above.
    Uniform/shako should initially provide mass and equipment identity without
    invented armor. Powder measure/sighting rule can enable measured loading or
    deliberate sight calibration only after modest costs/effects are documented
-   and tested; otherwise label them nonfunctional pending work, not complete.
+   and tested; otherwise they provide no behavior.
 
 6. Replace bulk corpse loot with a transfer preview listing primary, secondary,
    ammunition, consumables, accessories and containers. Each transfer preserves
@@ -86,7 +85,7 @@ concrete period kit above.
    full containers and missing animals. Existing hand-slot weapon controls remain
    usable throughout migration. Do not expose raw registry keys in player text.
 
-## Acceptance checks before marking complete
+## Acceptance checks
 
 - Exact table masses; secondary equipment and every consumable count toward
   weight once; loading transfers mass rather than creating/removing a round.
@@ -103,7 +102,7 @@ concrete period kit above.
   and return/save/resume; screenshots alone cannot establish item conservation.
 
 Implementation ownership should separate the pure registry/transfer engine from
-campaign persistence and UI consumers. Land a tested coherent slice (canonical
+campaign persistence and UI consumers. Complete a coherent slice (canonical
 weights plus finite consumable containers and corpse transfers) before optional
 accessory mechanics. This keeps “full equipment” measurable rather than a list
 of decorative slot names.

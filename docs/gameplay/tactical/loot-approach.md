@@ -1,10 +1,6 @@
 # Ground equipment and body searches
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
-
-During tactical exploration and turn-based combat, selecting a visible ground equipment marker or dead body walks the acting soldier into contact range and opens a quantity-and-checkbox item picker to collect selected items for a single 8 AP pickup cost. The [classic JA2 manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf), printed page 25 ([M25](../../verification/ja2-parity-audit.md#scope-and-evidence)), describes selecting an item with the hand cursor, moving into range and choosing from the available items. Granaderos now follows that sequence for visible ground equipment and bodies.
+During tactical exploration and turn-based combat, selecting a visible ground equipment marker or dead body walks the acting soldier into contact range and opens a quantity-and-checkbox item picker to collect selected items for a single 8 AP pickup cost. The [classic JA2 manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf), printed page 25 ([M25](../../requirements/ja2-parity.md#scope-and-evidence)), describes selecting an item with the hand cursor, moving into range and choosing from the available items. Granaderos follows that sequence for visible ground equipment and bodies.
 
 ## Player flow
 
@@ -24,14 +20,7 @@ An explicit `loot` action with a known item and quantity also supports a combine
 
 `lootBatch` accepts an `items` array of one to 1,000 selections. Each entry names exactly one source (`targetId`, `groundId` or `dropIndex`) and an explicit positive integer `count`; body entries also name the actual `item`. All sources must be visible, adjacent and on the same tile. Repeated sources, including `weapon`/`primary` aliases, stale quantities, departed bodies and mixed-tile requests are rejected. Capacity is checked for the complete selection on private copies before any source or receiver changes. The batch then spends one pickup cost and one exploration duration. It cannot change another soldier's hand or silently substitute a missing selection. Existing single-item commands remain supported.
 
-## Verification
+## Limits
 
-Ten simulation cases cover movement/pickup equivalence, finite partial stacks, full-pack search, concealed body inventory, fitted weapon identity, rejected orders, exploration time, collapse, reactions, saved player interrupts and marker visibility. Two component cases cover marker keyboard events, quantity controls and disabled capacity checks. The shared TSX test loader now fails on compiler syntax diagnostics; it no longer accepts recovered output from malformed source.
-
-The live controlled fixture spent 24 AP to reach a body and two ground stacks. It then spent 8 AP each on three ground cartridges, four body cartridges and one loaded, jammed musket with a fitted bayonet. Cabral finished with 52 AP, seven cartridges and the recovered weapon in his pack. Nine ground cartridges and fifteen body cartridges remained. The musket retained 41% condition, one loaded round and its ignition failure; its bayonet retained 39% condition. Canceling the picker spent no AP. A fresh tab restored identical public units, ground stacks, nearby loot and the six-second clock. See [the live record](../../verification/ja2-live-verification.md).
-
-Eleven batch tests add mixed body/ground quantities, complete-set capacity, late-failure rollback, source/alias validation, stale selections, Select All, legacy dropped weapons, single exploration duration, a real saved interrupt and a campaign-bound save. The component check now covers the checkbox/quantity picker and disabled full-pack confirmation.
-
-The live Select All check took five full stacks after approach for one 8 AP payment, leaving Cabral with 68 AP, 31 cartridges, three dressings and two distinct loaded muskets. The source body and ground were empty after reload. A second live fixture with 220 carried cartridges rejected Select All without changing inventory or spending pickup AP. Clearing it and selecting four body cartridges plus three ground cartridges succeeded for 8 AP and preserved every unselected item.
-
-Live interrupted searches remain unverified; their rules have simulation coverage. Strategic sector-inventory access remains a separate gap in the [parity audit](../../verification/ja2-parity-audit.md).
+Strategic sector-inventory access is not part of this flow; the
+[JA2 parity requirements](../../requirements/ja2-parity.md) track it.

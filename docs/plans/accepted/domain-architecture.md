@@ -1,9 +1,6 @@
 # Domain architecture and implementation plan
 
-This accepted architecture document governs the domain model, application use cases, repository contracts, package boundaries, and world behavior of Granaderos. Status: accepted on 27 October 2026; implemented and locally verified on 28 October 2026.
-
-[Implementation evidence](../../verification/domain-architecture-2026-10-28.md)
-records the completed stages, checks, browser flows, and verification limits.
+This accepted architecture document governs the domain model, application use cases, repository contracts, package boundaries, and world behavior of Granaderos.
 
 [Ubiquitous language](ubiquitous-language.md) · [Plan index](../README.md)
 
@@ -18,9 +15,10 @@ The architecture must support strategic and sector play as connected views of
 one continuing world. Every domain rule must be independently unit-testable.
 Names, formatting, types, and object responsibilities must make the code readable.
 
-This document specifies the implementation target. Source documentation and
-verification records establish the behavior currently delivered. Implementation includes all stages below, supported save conversions, replacement
-tests for changed behavior, and C4 context, container, and component diagrams.
+This document specifies the target architecture. Source code defines current
+behavior. The target includes all stages below, supported save conversions,
+replacement tests for changed behavior, and C4 context, container, and component
+diagrams.
 
 ## Accepted decisions
 
@@ -96,7 +94,8 @@ content/
 docs/
   architecture/
   plans/accepted/
-  evidence/
+  requirements/
+  specification/
 tests/
 tools/
   playgrounds/
@@ -135,7 +134,10 @@ use these contracts before either program can consume them.
 The shared package owns versioned file schemas, stable content IDs, structural
 and cross-reference validation, and conversion into immutable campaign
 definitions. Runtime playability and game invariants remain in the game domain.
-Editor publication can invoke the public game validation API when needed.
+`CampaignCompiler` in `packages/game/application` turns a validated definition
+into runtime-playable domain objects; it is the only path from the shared file
+contract into the game. Editor publication can invoke the public game validation
+API when needed.
 
 The package imports neither the game application nor the editor. It contains
 published definitions and their file contract; mutable game progress and editor
@@ -155,14 +157,22 @@ package and an isolated game session. It returns an explicit report and keeps
 game progress separate from project state. Preview integrations use declared
 public APIs; direct imports of internal game modules are prohibited.
 
-Package exports, separate builds, dependency checks, and tests enforce these
-boundaries. Game layers remain directories within the game package. Editor
-separation is enforced as a package boundary.
+Two checks enforce these boundaries. `npm run check:architecture` builds the
+import graph for `packages/game`, `apps/campaign-editor`,
+`packages/campaign-format`, and `apps/web`, and fails on any import outside the
+permitted set: the game runtime cannot import the editor, domain code imports
+only domain code, application code imports only its own contracts and the
+domain, and the editor reaches the game only through its public entries. The
+dependency-cruiser rules in `.dependency-cruiser.json` state the same
+constraints, reject production imports of tests and tools, and reject runtime
+cycles between domain and application. Game layers remain directories within the
+game package. Editor separation is enforced as a package boundary.
 
 ## Domain model and ownership
 
 | Object or collaboration | Responsibility and invariant |
 | --- | --- |
+| `GameSession` | Runtime consistency boundary for campaign progress, the active sector session, and shared identities; owns `WorldTimeline` and `RandomSource` |
 | `Character` with health and ability value objects | One persistent person; valid condition; death remains recorded across sector visits |
 | `ServiceContract` | Valid service terms, start, renewal, and termination |
 | `Squad` and `Journey` | Valid membership, location, route progress, and redirection |
@@ -174,6 +184,7 @@ separation is enforced as a package boundary.
 | `Sector` | Persistent environment and current references to residents, objects, and corpses |
 | `Corpse` and removal policy | Physical presence and removal time; equipment follows a separate custody rule |
 | `WorldTimeline` | Monotonic game time; deterministic ordering; each scheduled event applies once |
+| `RandomSource` | Seeded random sequence for one game session, saved in the game snapshot and passed explicitly to domain and application operations |
 | `Treasury` | Valid funds and financial operations |
 | `RecruitmentService` | Consistent recruitment across character, contract, treasury, roster, and placement |
 
@@ -187,7 +198,8 @@ progress along its route. A sector session owns local participant coordinates.
 Entry and exit synchronize these scopes within one transaction. The model must
 define the authoritative position for every lifecycle state.
 
-`GameSession` is a consistency boundary over these objects. It must not become a
+`GameSession` is a consistency boundary over these objects. It owns
+`WorldTimeline` and `RandomSource`, and coordinates commits without becoming a
 class containing every game rule. Cross-object rules use focused domain services.
 
 ## Hostile arrival and redirectable withdrawal
@@ -265,20 +277,27 @@ remaining item custody.
 
 A corpse records its death reference and removal schedule. Its removal lifetime
 is a named ruleset policy, with the product expectation of approximately two to
-three game days. Any randomized lifetime is chosen once from the deterministic
-random source and then saved.
+three game days. Any randomized lifetime is drawn once from `RandomSource` and
+then saved.
 
 Events have stable identity and chronological ordering, including a deterministic
 tie-break for simultaneous events. The save records enough scheduling and
-completion information to prevent repetition. An interruption stops time at the
-actual event boundary. Processing resumes from that point after the decision.
+completion information to prevent repetition.
 
-Every time-advancing path obeys the first unresolved arrival timestamp, including
-strategic controls, sector actions, worker results, and catch-up processing. A
-long operation must not commit effects beyond that boundary. Return accepted
-partial progress and any unexecuted continuation explicitly. Resuming must not
-repeat spent resources or random draws. An active sector session retains its
-state while a campaign arrival decision requires attention.
+`WorldTimeline.advanceTo(targetSecond, applyEvent)` is the only operation that
+moves game time. It applies scheduled events in chronological order with the
+stable identifier tie-break, stops before accepting time beyond a paused event,
+and leaves that event pending. Callers read accepted time from the timeline and
+the unexecuted continuation from its pending events; no use case, worker, or
+catch-up loop clamps the clock itself. Processing resumes from that boundary
+after the decision, without repeating spent resources or random draws. An active
+sector session retains its state while a campaign arrival decision requires
+attention.
+
+Split and combined advances agree. Advancing to a target in one step and
+advancing through any number of intermediate targets produce the same applied
+events, accepted time, and pending continuation up to the same pause. A
+generated-timeline test checks that equivalence rather than hand-written cases.
 
 Advance time through explicit application operations. Read-only use cases do
 not secretly advance the world. Restoration and sector entry must expose the
@@ -286,9 +305,33 @@ world at the accepted game time without replaying completed events. Real time
 spent outside the game does not itself grant elapsed campaign time.
 
 Start with one authoritative timeline. Optimize processing only after measuring
-it, and preserve the equivalence of small-step and large-step progression up to
-the same decision boundary. Domain events support coordination; versioned
-snapshots remain the persistence contract.
+it. Domain events support coordination; versioned snapshots remain the
+persistence contract.
+
+### What advances and what freezes
+
+| State | Campaign time | Resident routines | Open sector visit |
+| --- | --- | --- | --- |
+| Campaign map, no pending decision | Advances through explicit operations | Run on the six-second schedule | None |
+| Journey in progress | Advances through explicit operations | Run | None |
+| Open sector visit, exploration or combat | Advances by the accepted duration of each operation, bounded by the next campaign boundary | Run | Retained, with its round, AP, and unfinished orders |
+| Arrival decision pending | Paused | Do not run | Retained; no new sector operation is admitted |
+| Visit suspended for another squad's decision | Paused | Do not run | Retained; resumable once every pending decision resolves |
+
+Paused means no component advances time for any sector, resident routines do not
+run, and an open sector visit retains its round, AP, and unfinished orders while
+admitting no new sector operation until every pending arrival decision resolves.
+The duration each travel, exploration, and combat operation consumes comes from
+its action rules; this table fixes only which clocks run and which state survives.
+
+### Randomness
+
+`RandomSource` owns the seeded sequence for one game session, and its state is
+part of the game snapshot. Domain and application code receive every draw
+through an explicit parameter and never read ambient randomness; the
+architecture check rejects `Math.random` there. A restored game repeats the
+sequence it saved, and a retried or resumed operation never re-draws for effects
+the timeline already accepted.
 
 ## Use cases, repositories, and transactions
 
@@ -296,6 +339,11 @@ Every use case owns one narrow repository interface with a matching name. For
 example, `RecruitCombatantUseCase` depends on `RecruitCombatantRepository`.
 The repository exposes the domain context and commit operations this intention
 requires. Read-only use cases expose only permitted reads.
+
+Interfaces stay separate even when two of them expose the same reads. A use case
+never borrows another use case's repository, and shared infrastructure sits
+beneath the interfaces rather than being published as a common role interface
+that many use cases share.
 
 ```text
 RecruitCombatantUseCase
@@ -311,28 +359,38 @@ They do not maintain separate authoritative copies of the same person or item.
 Application use cases coordinate domain operations. Domain objects and services
 own game decisions. Repositories load and commit those objects.
 
-An accepted transaction reads a session and revision, executes domain behavior,
-validates the resulting invariants, and publishes its affected objects together.
-It advances the revision once. A refusal publishes no gameplay changes. A
-revision conflict cannot overwrite newer state.
+The committed set is derived, never listed. An accepted transaction reads a
+session and revision, copies the loaded game snapshot, hands the copy to the
+use case to execute domain behavior, validates the resulting invariants, and
+stores the whole snapshot with one revision advance. No use case maintains a
+list of affected objects: a hand-maintained list silently drops any domain
+object a later slice adds. A refusal stores no gameplay changes, and a revision
+conflict cannot overwrite newer state. A persistence test mutates objects
+reachable through each repository, restores the saved snapshot, and asserts that
+the mutation survives.
 
 Worker jobs carry session ID, revision, request ID, and a serializable context.
 They reconstruct domain objects and execute the same rules as direct execution.
 Their results pass through the same admission and commit boundary. Workers do
 not independently persist the game.
 
-Mapping distinguishes new-object creation from restoration. Restoring a
-character must not repeat initial equipment, payments, or recruitment effects.
-Validate relationships as well as individual fields. Class behavior is restored
-explicitly after JSON or worker transport.
+Mapping distinguishes new-object creation from restoration and validates
+relationships as well as individual fields. Each domain class has one
+restoration path: a static `restore` factory that rebuilds the object from its
+snapshot without running creation-only effects such as initial equipment,
+payments, or recruitment. Constructors create new objects; `restore` revives
+saved ones. A round-trip test asserts that restoring changes no treasury,
+service, equipment, placement, or scheduled-event state.
 
 Accepted in-memory progress and persisted progress are distinct statuses.
 Autosave follows accepted commits; storage errors identify unsaved progress.
 Choose an explicit single-writer or coordinated-writer policy for the storage
 adapter rather than assuming an in-memory revision check spans browser tabs.
 
-Use read-only application use cases over the same logical model. Public results
-apply the player's information limits. Separate command/query stores and a CQRS
+Use read-only application use cases over the same logical model. A query returns
+its own view types and never a domain object, because a domain object exposes
+facts the player has not observed; the information limits are therefore
+structural rather than conventional. Separate command/query stores and a CQRS
 migration are outside this plan.
 
 ## Readability and local design patterns
@@ -346,6 +404,13 @@ locations where they protect meaning and validity. Use explicit state machines
 for journey, arrival, sector-session, and combat-session lifecycles. Use policy
 classes for rules that vary, and factories for valid creation. Patterns must
 have an identified domain responsibility.
+
+Policies are pure functions of their explicit inputs. A policy never calls
+another policy and never mutates state. Only the named state machines —
+`Journey`, `ArrivalDecision`, `SectorSession`, `CombatSession`, `CombatTurn`, and
+`ReactionStack` — sequence steps and change state. That restriction keeps the
+rule graph acyclic; the architecture check rejects module-level runtime cycles
+between domain and application in the same spirit.
 
 Each migrated use case has a readable request, response, repository interface,
 class, tests, and short README. Use the canonical stem or a glossary-declared
@@ -363,17 +428,20 @@ external rule source; they must not compensate for unclear implementation.
 | Stage | Deliverable | Completion gate |
 | --- | --- | --- |
 | 1. Domain contracts | Glossary-backed ownership, state diagrams, request/result contracts, and the detailed product rules for the first slice | A first-time reader can trace the operation, owners, and refusal paths |
-| 2. Boundaries and persistence | Game layer restrictions, editor package boundary, versioned snapshot mapping, identity map, transaction contract, and test/type tooling | Boundary and restoration tests pass; runtime cannot import editor internals |
-| 3. Recruitment reference slice | Rich recruitment objects/service, use case, specialized repository, adapters, and immediate-availability behavior | Successful and refused recruitment, identity, placement, finances, and save/load are verified |
-| 4. Journey and arrival slice | Journey redirection, required arrival decision, pause behavior, fight, and withdrawal | Zero-time reversal, reversal after one minute, physical travel costs, and repeat-decision tests pass |
-| 5. World lifecycle slice | Character movement, item custody, corpse removal, and deterministic timeline | Visible/inactive sector and step-size equivalence tests pass |
-| 6. Sector and combat slices | SectorSession, CombatSession, deployment, exploration, attacks, interruptions, and completion | Rules, information limits, worker/direct execution, and presentation timing remain correct |
+| 2. Boundaries and persistence | Game layer restrictions, editor package boundary, versioned snapshot mapping, identity map, transaction contract, and test/type tooling | Boundary and restoration checks succeed; runtime cannot import editor internals |
+| 3. Recruitment reference slice | Rich recruitment objects/service, use case, specialized repository, adapters, and immediate-availability behavior | Successful and refused recruitment, identity, placement, finances, and save/load meet their contracts |
+| 4. Journey and arrival slice | Journey redirection, required arrival decision, pause behavior, fight, and withdrawal | Zero-time reversal, reversal after one minute, physical travel costs, and repeat-decision checks succeed |
+| 5. World lifecycle slice | Character movement, item custody, corpse removal, and deterministic timeline | Visible/inactive sector and step-size equivalence checks succeed |
+| 6. Sector and combat slices | SectorSession, CombatSession, deployment, exploration, attacks, interruptions, and completion | Rules, information limits, worker/direct execution, and presentation timing remain valid |
 | 7. Editor integration | Public campaign-format boundary, independent editor build, isolated playtests, and preview APIs | Editor can validate/test/export without internal runtime imports; game build excludes editor |
-| 8. Compatibility retirement | Migrated callers, explicit save conversions, and removal of obsolete entry points in owned scope | Supported saves and all migrated input routes pass their contract checks |
+| 8. Compatibility retirement | Migrated callers, explicit save conversions, and removal of obsolete entry points in owned scope | Supported saves and all migrated input routes meet their contracts |
 
 Implement one reviewable slice at a time. Preserve unrelated workspace changes.
 Retain existing entry points behind explicit compatibility adapters until their
-callers move. Run affected tests and required repository checks for each slice.
+callers move. Each compatibility name has one owner, the call sites it still
+serves, and the stage that removes it, recorded in the glossary. The list only
+shrinks; a new alias needs that record before it is added. Run affected tests
+and required repository checks for each slice.
 
 Use characterization tests for behavior the target retains and acceptance tests
 for the specified target behavior. Compare deterministic outcomes where parity
@@ -399,24 +467,44 @@ slice's review scope and tests.
 - Every item has one custodian. Transfers and corpse removal settle custody once.
 - Corpses persist before their configured removal time and disappear at the
   boundary. Character death remains recorded, and equipment follows its policy.
-- World effects are equivalent for visible and inactive sectors. Split and
-  combined time steps agree through the same decision boundary. Reopening a
-  sector does not repeat events.
-- Strategic, sector, worker, and catch-up time advances all stop at the first
-  unresolved arrival timestamp, preserving unexecuted work for continuation.
-- Save/load and worker transport restore valid classes and relationships without
-  repeating creation effects. Stale results cannot replace newer progress.
+- World effects are equivalent for visible and inactive sectors, including the
+  six-second resident routine schedule. Reopening a sector does not repeat events.
+- `WorldTimeline.advanceTo` is the only clock mutation. Advancing in one step or
+  several steps to the same target yields the same applied events, accepted time,
+  and pending continuation up to the first pause. Strategic, sector, worker, and
+  catch-up time advances stop at the first unresolved arrival timestamp, freeze
+  resident routines, retain open or suspended sector visits without admitting
+  new sector operations until every pending decision resolves, and resume without
+  repeating spent resources or random draws.
+- A mutation reachable through any repository survives save and restore. No use
+  case keeps its own changed-object list.
+- Save/load and worker transport restore valid classes and relationships through
+  each class's static `restore` factory without running creation effects. A
+  `RandomSource` restored from the snapshot repeats the same sequence, and stale
+  results cannot replace newer progress.
 - Combat completion can return to sector exploration without recreating people,
   items, or the sector session. Sector exit preserves lasting consequences.
 - Presentation and queries expose permitted information. Animation timing does
-  not become game-rule authority or erase paid partial progress.
-- Editor dependencies are absent from the game runtime. Project drafts,
-  published campaign packages, and game saves remain distinct contracts.
+  not become game-rule authority or erase paid partial progress. A query returns
+  view types and never a domain object.
+- Policies remain pure functions of their explicit inputs that never call another
+  policy or mutate state; only the named state machines (`Journey`,
+  `ArrivalDecision`, `SectorSession`, `CombatSession`, `CombatTurn`, and
+  `ReactionStack`) sequence steps and change state.
+- `npm run check:architecture` and `.dependency-cruiser.json` fail on a forbidden
+  import, an ambient `Math.random` in domain or application, and a
+  domain/application runtime cycle.
+- `CampaignCompiler` is the only path from a validated `CampaignDefinition` in
+  `campaign-format` into runtime-playable domain objects. Editor dependencies are
+  absent from the game runtime, and project drafts, published campaign packages,
+  and game saves remain distinct contracts.
 - Names match the glossary across code, UI translations, tests, and documentation.
+  Every retained compatibility name records its owner, served call sites, and
+  removal stage in the glossary, and the compatibility list only shrinks.
 
 ## Implementation policies
 
-The following policies define the behavior and verification of each slice:
+The following policies define required behavior for each slice:
 
 | Policy | Required decision |
 | --- | --- |
@@ -434,9 +522,7 @@ The following policies define the behavior and verification of each slice:
 Read this plan and the glossary before each domain or application slice. Record
 new vocabulary and the reason for distinctions in the glossary. Update affected
 use-case READMEs, translations, mappings, and tests together. Keep source guides
-accurate about delivered behavior and link them to these target contracts.
+accurate about current code behavior and link them to these target contracts.
 
 Review every deliverable as a first-time reader. State the current requirements
-directly. Include only context needed to understand the artifact. Approval of a
-plan, a successful build, or a passing unit suite does not establish complete
-campaign acceptance.
+directly. Include only context needed to understand the artifact.

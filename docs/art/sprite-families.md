@@ -1,8 +1,9 @@
 # Seven sprite families
 
-This guide documents the consolidated 2D character sprite family baseline (seven authoring families, eight exported variants, and 27 base action sequences), its retired-appearance mapping, and validation from 2026-09-11. Code paths under `assets/` refer to `content/assets/` in the current repository layout.
+This guide documents the consolidated 2D character sprite family baseline (seven authoring families, eight exported variants, and 27 base action sequences) and its retired-appearance mapping. Code paths under `assets/` refer to `content/assets/` in the current repository layout.
 
-Implemented base scope: seven authoring families, eight exported variants, and 27 sequences. All 216 sets are present and published locally, with 5,568 directional frames.
+Base scope: seven authoring families, eight exported variants, and 27 sequences.
+The 216 variant-sequence sets carry 5,568 directional frames.
 
 | Family | Existing base art | Consolidated appearances |
 |---|---|---|
@@ -20,8 +21,8 @@ Retired appearance IDs resolve to these bases, including explicit saved and NPC 
 Old source images and atlases remain available but are not new authoring targets.
 
 Military retains the existing royalist white-uniform variant as well as
-the navy granadero variant. These are separate existing atlases. A shared recoloring
-pipeline is not implemented. Both military variants have separately authored complete
+the navy granadero variant. These are separate existing atlases. No shared recoloring
+pipeline exists. Both military variants have separately authored complete
 27-sequence collections.
 
 Approved baseline: 7 x 27 = 189 family-sequence combinations.
@@ -69,24 +70,22 @@ published archive retains 424 atlases, including retired appearances.
 27. Mounted reload
 
 Equipment display classes: empty hands (including blades and throwables), small gun,
-and large gun. Shared body artwork is preferred; the equipment artwork pipeline is
-not yet implemented. Interactions require standing or crouching. Mounted firearm
+and large gun. Shared body artwork is preferred; weapon-specific equipment artwork is
+not authored yet. Interactions require standing or crouching. Mounted firearm
 use remains supported. Death must stop breathing. Artillery is additional scope.
 
-## Validation and review (2026-09-11)
+## Frame rules
 
-- Complete family coverage: 216/216, no missing or duplicate direction/frame slots.
-- Atlas checksums and dimensions checked before publication.
-- Fourteen sprite runtime and asset tests pass; TypeScript and production build pass.
-- Browser review includes the animation gallery and a San Lorenzo stance change;
-  the rendered game uses illustrated atlases without fallback. This is not an
-  exhaustive play-through of all combat actions.
+- Every variant carries complete family coverage of all 27 sequences in eight
+  directions, with no missing or duplicate direction/frame slots.
+- Atlas checksums and dimensions are verified before publication.
+- The rendered game uses illustrated atlases without fallback.
 - Fall plays once; the dead pose copies the exact final authored frame and has zero fps.
 - Aiming uses the authored pre-shot frame in standing, crouched, and prone poses.
 - New source images, prompts, and registration manifests are in
   `assets/source/illustrated-sprites/family-actions/`. Recovered source art is in
   `assets/source/illustrated-sprites/complete-actions/`.
-- Review: serve the repository and open
+- Review the packed art by serving the repository and opening
   `assets/previews/illustrated-sprites/family-actions/index.html`.
 
 The three equipment display classes remain separate work. Existing source art

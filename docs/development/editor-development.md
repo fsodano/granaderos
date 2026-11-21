@@ -1,13 +1,11 @@
 # Extend the campaign editors
 
-Updated: 27 October 2026.
-
 [Development index](README.md) · [Author workflow](../authoring/campaign-studio.md) · [Editor experience plan](../plans/editor-experience.md)
 
-This guide describes the current project and controlled-editor contracts.
+This guide describes the project and controlled-editor contracts.
 Use it when adding a field, workspace or editor control. The
 [editor experience plan](../plans/editor-experience.md) records planned UX/DX
-acceptance; it does not certify changes that are still being implemented.
+acceptance criteria.
 
 ## Start the tools
 
@@ -189,8 +187,8 @@ actual selected context and callback, not only the rendered labels.
 
 ## Run bounded checks
 
-Run these commands from the repository root. They are command examples, not
-claims that the current working changes passed.
+Run these commands from the repository root. Each row names the scope its check
+covers.
 
 | Change | Focused check |
 | --- | --- |
@@ -206,14 +204,5 @@ and WebGL previews. Model tests and a successful build do not establish these
 visible behaviors.
 
 The general [development setup](getting-started.md#local-checks) describes the
-repository suites. Use affected editor checks and record their exact results. A
-complete campaign run is a separate verification scope. Do not call a selected file list a full game gate.
-
-Record the final source, commands, failures/skips, tested routes and viewports.
-Use actual browser screenshots for hierarchy and narrow layouts. Report a
-blocked file picker or untested route directly. Keep historical receipts
-unchanged; a later source needs its own acceptance evidence.
-
-The [11 October editor evidence](../evidence/editor-experience-2026-10-11/README.md)
-records a dated editor check. Current independent-package browser evidence is
-listed in the [editor README](../../apps/campaign-editor/README.md#browser-evidence).
+repository suites. A selected file list is not a full game gate; a complete
+campaign run is a separate scope.

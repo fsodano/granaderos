@@ -2,7 +2,7 @@
 
 [Series index](README.md) · Previous: [06 — Tactical AI](06-tactical-ai.md) · Next: [08 — Laptop](08-laptop.md)
 
-> **Reference notice:** This document is a source and design analysis of the original Jagged Alliance 2 v1.13 (`1dot13/source`) strategic campaign layer (`Strategic/`) and how an earlier browser campaign checkpoint (`game/campaign.js` and its satellite modules) mapped onto it. It is **not** a description of Granaderos' current browser implementation. See the [series index](README.md) for the full reference set. In the current repository layout, the C++ engine submodule lives at `reference/native/engine/` (referred to below as `engine/`), and the browser modules live under `packages/game/` and `apps/web/` (referred to below by their earlier paths `game/` and `web/`).
+> **Reference notice:** This document is a source and design analysis of the original Jagged Alliance 2 v1.13 (`1dot13/source`) strategic campaign layer (`Strategic/`) and how an earlier browser campaign layer (`game/campaign.js` and its satellite modules) mapped onto it. It is **not** a description of Granaderos' current browser implementation. See the [series index](README.md) for the full reference set. In the current repository layout, the C++ engine submodule lives at `reference/native/engine/` (referred to below as `engine/`), and the browser modules live under `packages/game/` and `apps/web/` (referred to below by their earlier paths `game/` and `web/`).
 
 > Economy update: the browser game now uses pesos only. The material, convoy, and horse-management mappings below describe the earlier implementation. See [the current economy rules](../gameplay/campaign/INDUSTRY-AND-IMPORTS.md).
 

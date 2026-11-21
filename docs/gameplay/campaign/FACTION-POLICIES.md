@@ -1,10 +1,8 @@
-# Faction policy implementation
+# Faction policies
 
-Implemented 2026-09-05 on the strategic campaign layer as part of the continuing
-full-game objective. This guide describes published strategic faction-reputation,
-tribute, and requisition rules; see [version 0.1](../../verification/version-0.1.md)
-for current published scope (including deferred equipment commerce). These are
-explicit game-balance rules, not claims about historical tariff percentages.
+This guide describes strategic faction-reputation, tribute, and requisition
+rules. Equipment commerce is deferred. These are explicit game-balance rules,
+not claims about historical tariff percentages.
 
 - Foreign reputation changes actual imported cargo prices: 60+ grants 20% off,
   40+ grants 10% off, below 20 adds 20%. Negative standing still prevents orders.
@@ -26,11 +24,8 @@ explicit game-balance rules, not claims about historical tariff percentages.
   relations cause weekly recovery raids against an owned Cuyo sector: up to 100
   pesos lost and three days of regional economic disruption.
 
-Entry points: Escritorio → Cabildo and Maestranza. Tests in
-`tests/politics-web.test.mjs` exercise reducer orders, real import charges,
-weekly deadlines, finite requisitions, consequences, and malformed-save rejection.
+Entry points: Escritorio → Cabildo and Maestranza.
 
-Still outstanding from the original faction specification: privateering prize
+Outstanding from the original faction specification: privateering prize
 contracts, full individual estate livestock recovery, dedicated frontier combat
-encounters and broad faction-specific military doctrines. This document does not
-claim those systems are complete.
+encounters and broad faction-specific military doctrines.

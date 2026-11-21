@@ -19,9 +19,8 @@ playable browser game uses JavaScript/TypeScript rules and React with vinext.
 See [browser setup](../development/getting-started.md).
 
 **Reference scope:** proposals, checklists, and gap descriptions in this series
-are not current acceptance results. Use [version 0.1 status](../verification/version-0.1.md)
-for status and [the parity audit](../verification/ja2-parity-audit.md) for the
-active gameplay requirements baseline.
+are source-analysis reference material. Use [the parity audit](../requirements/ja2-parity.md)
+for the active gameplay requirements baseline.
 
 ## Reading order
 

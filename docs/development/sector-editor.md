@@ -66,7 +66,7 @@ abstraction; no second-floor navigation is implied.
 
 The browser stores a recovery draft for each selected installed campaign. Recovery is explicit after reload.
 Export important work to a file; local storage is not a project database. Opening
-another sector does not save it into the repository. To change a shipped sector,
+another sector does not save it into the repository. To change an installed sector,
 replace its JSON file under `content/campaigns/<campaign-id>/maps/`, validate the campaign
 folder, and rebuild the game. See [campaign authoring](campaign-authoring.md).
 
@@ -85,11 +85,11 @@ its edge, door ID, open/locked state and movement rules. New openings inherit th
 building style. Styles are saved in JSON and follow moves, rotations and copies.
 
 Templates use different combinations for rural, civic, religious, commercial
-and work buildings. They also include more side windows. Shipped sector maps
-and templates now use shared wall edges and full building floor footprints.
+and work buildings. They also include more side windows. Sector maps and
+templates use shared wall edges and full building floor footprints.
 Imported older buildings use defaults for their kind when explicit finishes are
-absent. During a new campaign, sector reentry retains damaged walls and door
-state. Compatibility with saves made before wall edges is outside this change.
+absent. Sector reentry retains damaged walls and door state. Saves made before
+wall edges are outside the supported compatibility scope.
 
 The normal editor grid is drawn below buildings. Use **Obstáculos** or
 **Rutas accesibles** when you need a diagnostic overlay above the scene.
@@ -164,32 +164,15 @@ shutters match the existing historical setting.
 
 Campaign snapshots retain edge geometry, door state, structural damage and
 source map revision. Editing a base map does not rewrite an active saved
-sector. Older campaign saves are outside the compatibility scope of this wall
-model change. Shared editing and multi-floor editor authoring remain separate
-work.
+sector. Campaign saves made before the wall-edge model are outside the supported
+compatibility scope. Shared editing and multi-floor editor authoring are separate
+capabilities.
 
-## Verification
+## Rendering scope
 
-Automated coverage includes migration hashes, atomic edits and stale revisions,
-map round trips, whole-building and group transforms, room partitions, doors,
-furniture routes, templates and container references, playtest isolation,
-malformed bounds, pointer projection, generators, CLI file protection and save
-re-entry. Renderer tests cover full and partial roofs, wall direction, corner
-geometry and two-cell furniture. Upper-storey coverage checks the town hall and
-palace in all four rotations, including full and partial interior revelation
-without changes to the ground-floor map.
+Sector maps hold between 4 and 64 tiles on each axis. The SVG renderer suits
+those sizes; dense large maps may need more rendering work.
 
-The two-storey civic revision was reviewed in 24 rendered views: exterior, full
-interior and partial revelation in every rotation. This renderer review does not
-claim a new browser interaction pass.
-
-Browser checks covered import, draft recovery, drag placement, invalid placement,
-undo/redo, rotated furniture, playtest movement, return without authoring changes,
-and the JSON export panel. The in-app browser did not report a download event;
-the complete exported JSON was verified through the export field.
-
-A local Node sample on 2026-09-06 used a 64×64 map with 36 buildings. A single
-36-building command batch took 44.5 ms; ten-run means were 7.2 ms to compile and
-12.9 ms to validate. These measure map logic, not browser frame rates. The SVG
-renderer remains suitable for the current sector sizes; dense large maps may
-need more rendering work.
+The two-storey civic buildings carry their extra storey as a renderer profile
+with a ground-floor map only. Roofs cover the building footprint and clip
+revealed rooms.

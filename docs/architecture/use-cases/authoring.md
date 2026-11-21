@@ -1,320 +1,166 @@
 # Campaign authoring use cases
 
-**Architecture:** [Overview](../README.md) · [Content and campaigns](../content-and-campaigns.md) · [Build and tooling](../build-and-tooling.md) · [Session/player use cases](session.md)
+[Architecture guide](../README.md) · [Use-case index](README.md) · [Content and campaigns](../content-and-campaigns.md) · [Build and tooling](../build-and-tooling.md) · [Session/player use cases](session.md) · [Application contracts](application-contracts.md)
 
-This inventory describes the independent `campaign-editor` application and
-supporting package tools. `CampaignProject` owns document mutations and envelope
-invariants. `CampaignProjectHistory` owns undo and redo. Editing and validation
-use cases access narrow repositories. Browser adapters own file access and
-IndexedDB. Playtests use the declared game application API.
+This page catalogues the campaign author's intentions in the independent `apps/campaign-editor` application (`/campaign-editor/`) and the repository CLI (`tools/campaign-authoring.mjs`): creating, reopening, duplicating, importing, and exporting project drafts (`CampaignProject`), editing strategic worlds (`CampaignWorld`) and physical sector maps (`CampaignMap` and `SectorMap`), authoring cast, equipment, rules, dialogue, and presentation, running isolated map and campaign playtests, and validating projects before export. It connects the [use-case index](README.md) and [application contracts](application-contracts.md) to the package schemas in [content and campaigns](../content-and-campaigns.md) and the build scripts in [build and tooling](../build-and-tooling.md).
+
+## Ownership and exposure
+
+Every authoring fact has one owner inside `apps/campaign-editor`:
+
+- `CampaignProject` and `CampaignProjectDocument` own project identity, draft envelope invariants, document groups, and base64 resource maps.
+- `CampaignProjectHistory` owns bounded undo/redo project snapshots, mutated through `EditCampaignProjectUseCase`, `UndoCampaignProjectEditUseCase`, and `RedoCampaignProjectEditUseCase`.
+- `CampaignWorld` owns strategic locality, district, place, route, and deletion-reference draft invariants.
+- `CampaignMap` owns the fixed 20x16 campaign map slot and slab admission rules, while `SectorMap` and `SectorMapHistory` own physical map authoring batches (`SectorMapCommand`) applied through `EditSectorMapUseCase`.
+- `ValidateCampaignProjectUseCase` inspects a draft through its read-only repository and `packages/game/public/campaign-editor-api.ts` without mutating project state.
+- Browser adapters (`campaign-studio-storage.ts` and `campaign-studio-files.ts`) own IndexedDB draft persistence and ZIP/JSON file I/O, while playtests run in isolated sessions via `packages/game/public/campaign-playtest-api.ts`. Neither editor drafts nor editor undo history ever touch live `GameSession` progress.
+
+Every `Exposure` column below uses the canonical six-value vocabulary defined in the [use-case index](README.md#exposure-vocabulary): `Command`, `Gated`, `Query`, `Supporting`, `No interface route`, and `Refused`.
 
 ## Summary by authoring journey
 
-| Family | IDs | Main intent | Availability |
+The first table below groups authoring intentions by `Family`, lists their `IDs`, summarizes the `Main intent`, and names the primary `Surface`.
+
+| Family | IDs | Main intent | Surface |
 | --- | --- | --- | --- |
-| Project lifecycle | AUT-001–AUT-006 | Create, reopen, duplicate, import, export, and remove drafts | Current authoring |
-| Edit/review lifecycle | AUT-007–AUT-010 | Change identity, undo/redo, save locally, validate before delivery | Current authoring; local storage required for durable draft |
-| World and maps | AUT-011–AUT-015 | Shape strategic world, locality connections, tactical maps and buildings | Current authoring |
-| Campaign content | AUT-016–AUT-020 | Author cast, equipment, rules, narrative, dialogue, quests and placements | Current authoring; runtime behavior constrained by engine-supported fields |
-| Presentation/resources | AUT-021–AUT-023 | Customize campaign presentation, manage packaged resources, use advanced document editing | Current authoring |
-| Test and handoff | AUT-024–AUT-027 | Run map/campaign tests, save test fixture, launch Story content, export package | Current authoring with validation/content guards |
-| Standalone editors / CLI | AUT-028–AUT-030 | Edit focused story or map documents; scaffold/check/refresh package resources | Current developer/author tools, not player-menu operations |
-| Unsupported ambitions | AUT-031–AUT-032 | Publish/install to arbitrary user-hosted catalog; run imported custom scripts | Not available |
-
-## Current authoring catalogue
-
-Contract shorthand in each entry: **Actor** is the author/tool operator; **Input → result** captures the meaningful request/response; **Guards** summarize current refusals; **Surface/source** names the current route and implementation. A project may be autosaved while invalid as a package: saving a draft is not equivalent to passing full package validation.
-
-### Project lifecycle
-
-#### AUT-001 — create-campaign-project
-
-* **Actor:** Campaign author. **Input → result:** unique lower-case campaign ID and display name → scaffolded `granaderos-editor-project` with starter manifest, content/world/maps/presentation/assets, map index, and guide resource; project opens in Studio.
-* **Guards:** ID format/reserved name and duplicate local identity rejected. Starter scaffold is data; no custom executable code is generated.
-* **Surface/source:** Studio **Crear una campaña**; [`apps/campaign-editor/web/app/studio/page.tsx`](../../../apps/campaign-editor/web/app/studio/page.tsx), [`apps/campaign-editor/domain/campaign-project.ts`](../../../apps/campaign-editor/domain/campaign-project.ts), [`apps/campaign-editor/infrastructure/project-scaffold.ts`](../../../apps/campaign-editor/infrastructure/project-scaffold.ts).
-* **Availability:** Current authoring.
-
-#### AUT-002 — reopen-local-draft
-
-* **Actor:** Author returning to a draft. **Input → result:** choose a locally saved project or previously active project → documents and resource bytes restored into an editable project and selected in Studio.
-* **Guards:** IndexedDB unavailable/read failure surfaces a notice; selecting installed content as a basis is distinct from opening a local draft.
-* **Surface/source:** Studio project manager; [`apps/campaign-editor/web/app/studio/page.tsx`](../../../apps/campaign-editor/web/app/studio/page.tsx), [`apps/campaign-editor/web/lib/campaign-studio-storage.ts`](../../../apps/campaign-editor/web/lib/campaign-studio-storage.ts).
-* **Availability:** Current authoring; durable local drafts require browser IndexedDB.
-
-#### AUT-003 — fork-project-from-draft-or-installed-campaign
-
-* **Actor:** Author creating a derivative. **Input → result:** source draft or installed package plus new identity/name → cloned editable draft with updated IDs/references and clean project history.
-* **Guards:** identity must be unique and cannot use reserved `granaderos`; copying the historical scenario intentionally converts it to generic and requires author review/reconfiguration.
-* **Surface/source:** Studio **Duplicar proyecto** or import installed campaign; [`apps/campaign-editor/web/app/studio/page.tsx`](../../../apps/campaign-editor/web/app/studio/page.tsx), [`apps/campaign-editor/domain/campaign-project.ts`](../../../apps/campaign-editor/domain/campaign-project.ts), [`apps/web/lib/campaign-library.ts`](../../../apps/web/lib/campaign-library.ts) (installed package loader).
-* **Availability:** Current authoring.
-
-#### AUT-004 — import-project-or-package-files
-
-* **Actor:** Author bringing in a project/package folder. **Input → result:** `.project.json`/project JSON, supported ZIP archive, or directory selection → parsed Studio project with document groups and in-memory resources.
-* **Guards:** Path safety, allowed file types/limits, archive safety, a single manifest, all referenced documents and map files required. Invalid campaign data may remain editable as a draft and show validation issues. Duplicate identity asks author to fork rather than overwrite.
-* **Surface/source:** Studio **Importar archivo/carpeta**; [`apps/campaign-editor/web/app/studio/page.tsx`](../../../apps/campaign-editor/web/app/studio/page.tsx), [`apps/campaign-editor/web/lib/campaign-studio-files.ts`](../../../apps/campaign-editor/web/lib/campaign-studio-files.ts), [`apps/campaign-editor/domain/campaign-project.ts`](../../../apps/campaign-editor/domain/campaign-project.ts).
-* **Availability:** Current authoring.
-
-#### AUT-005 — export-project-or-installable-folder
-
-* **Actor:** Author retaining or sharing work. **Input → result:** current project → JSON project download for continued editing, or validated campaign ZIP for installation/transfer.
-* **Guards:** Project JSON can represent an invalid draft; installable package export requires full validation and emits manifest/documents/map index/maps/resource bytes, without editor-only metadata or runtime package origin.
-* **Surface/source:** Studio project/download controls; [`apps/campaign-editor/web/app/studio/page.tsx`](../../../apps/campaign-editor/web/app/studio/page.tsx), [`apps/campaign-editor/web/lib/campaign-studio-files.ts`](../../../apps/campaign-editor/web/lib/campaign-studio-files.ts) (`encodeCampaignProject`, `exportCampaignArchive`, `campaignProjectFiles`).
-* **Availability:** Current authoring; package export conditional on valid project.
-
-#### AUT-006 — delete-local-draft
-
-* **Actor:** Author cleaning local project list. **Input → result:** choose draft and confirm removal → project record removed from local Studio storage/list.
-* **Guards:** Confirmation protects against accidental deletion; this does not delete a published server campaign or browser gameplay save.
-* **Surface/source:** Studio project manager and [`apps/campaign-editor/web/lib/campaign-studio-storage.ts`](../../../apps/campaign-editor/web/lib/campaign-studio-storage.ts); inspect delete control in [`apps/campaign-editor/web/app/studio/page.tsx`](../../../apps/campaign-editor/web/app/studio/page.tsx).
-* **Availability:** Current authoring.
-
-### Edit and review lifecycle
-
-#### AUT-007 — rename-project-identity
-
-* **Actor:** Author. **Input → result:** new campaign ID/name → project identity and supported internal campaign asset references updated as one editor operation.
-* **Guards:** ID/name bounds, reserved identity, or duplicate draft ID refused; existing project remains available if rename fails.
-* **Surface/source:** Studio **Aplicar identidad y nombre**; [`apps/campaign-editor/web/app/studio/page.tsx`](../../../apps/campaign-editor/web/app/studio/page.tsx), [`apps/campaign-editor/domain/campaign-project.ts`](../../../apps/campaign-editor/domain/campaign-project.ts).
-* **Availability:** Current authoring.
-
-#### AUT-008 — undo-or-redo-document-edit
-
-* **Actor:** Author. **Input → result:** undo/redo control or Ctrl/Cmd+Z and Ctrl/Cmd+Shift+Z → restore prior immutable project snapshot and resources.
-* **Guards:** History is in-memory and bounded to 50 past/future snapshots; changing projects resets the active history. It is not a version-control system.
-* **Surface/source:** Studio toolbar/keyboard; [`apps/campaign-editor/web/app/studio/page.tsx`](../../../apps/campaign-editor/web/app/studio/page.tsx), [`apps/campaign-editor/web/lib/campaign-studio-history.ts`](../../../apps/campaign-editor/web/lib/campaign-studio-history.ts).
-* **Availability:** Current authoring.
-
-#### AUT-009 — autosave-local-project
-
-* **Actor:** Author. **Input → result:** accepted document change → debounced IndexedDB save of project, including binary asset bytes; last project ID in localStorage supports reopen.
-* **Guards:** Invalid draft content can be saved if its envelope/resource constraints pass; browser storage error is shown. This is not player campaign autosave.
-* **Surface/source:** Studio status **Guardado en este navegador**; [`apps/campaign-editor/web/app/studio/page.tsx`](../../../apps/campaign-editor/web/app/studio/page.tsx), [`apps/campaign-editor/web/lib/campaign-studio-storage.ts`](../../../apps/campaign-editor/web/lib/campaign-studio-storage.ts).
-* **Availability:** Supporting current authoring process; durable save conditional on IndexedDB.
-
-#### AUT-010 — validate-campaign-project
-
-* **Actor:** Author checking readiness. **Input → result:** current project → sectioned issues and counts, plus compiled definitions on success.
-* **Guards:** Validation is scheduled after edits; stale reports are not considered current if tied to a different project object. It checks content/world/presentation/maps/asset manifest and package compiler constraints. Draft remains editable on failure.
-* **Surface/source:** Studio **Validación y descarga**; [`apps/campaign-editor/web/app/studio/page.tsx`](../../../apps/campaign-editor/web/app/studio/page.tsx), [`project-validation.js`](../../../apps/campaign-editor/infrastructure/project-validation.js) (`validateCampaignProject`).
-* **Availability:** Current authoring.
-
-### World and tactical-map authoring
-
-#### AUT-011 — define-strategic-world
-
-* **Actor:** Author. **Input → result:** world document → edit map's 36×33 cells, terrain/biome, theater, locality/district assignment, locality identity/name/income, headquarters and campaign geography/configuration.
-* **Guards:** Localities require valid identity and usable land/anchor; referenced sectors and neighbors must pass world validation. Full document fields are available for supported schema data.
-* **Surface/source:** Studio **Mundo**; [`apps/campaign-editor/web/app/studio/WorldWorkspace.tsx`](../../../apps/campaign-editor/web/app/studio/WorldWorkspace.tsx), [`apps/campaign-editor/infrastructure/world-editing.js`](../../../apps/campaign-editor/infrastructure/world-editing.js), [`packages/game/campaign-definition.js`](../../../packages/game/campaign-definition.js).
-* **Availability:** Current authoring.
-
-#### AUT-012 — connect-strategic-localities
-
-* **Actor:** Author. **Input → result:** choose neighboring locality links, move locality headquarter anchor, edit routes/travel data → strategic connections represented in world document.
-* **Guards:** Link changes require passable terrestrial route/correct reciprocal project updates; invalid world references are reported before export.
-* **Surface/source:** Studio World locality panel and travel groups; [`apps/campaign-editor/web/app/studio/WorldWorkspace.tsx`](../../../apps/campaign-editor/web/app/studio/WorldWorkspace.tsx), [`apps/campaign-editor/infrastructure/world-editing.js`](../../../apps/campaign-editor/infrastructure/world-editing.js).
-* **Availability:** Current authoring.
-
-#### AUT-013 — author-tactical-sector-map
-
-* **Actor:** Author. **Input → result:** select locality map (20×16) → change metadata, terrain, buildings, props/objects, walls, openings, spawn points, floors/upper surfaces and climb links; import/export map JSON in the standalone editor.
-* **Guards:** Map schema and playability checks surface errors/warnings; playable map constraints and campaign package references must be satisfied before package validation/export.
-* **Surface/source:** Studio **Mapas tácticos** and standalone **Constructor de sectores**; [`apps/campaign-editor/web/app/studio/MapWorkspace.tsx`](../../../apps/campaign-editor/web/app/studio/MapWorkspace.tsx), [`apps/campaign-editor/web/app/editor/SectorEditor.tsx`](../../../apps/campaign-editor/web/app/editor/SectorEditor.tsx), [`packages/game/map-schema.js`](../../../packages/game/map-schema.js).
-* **Availability:** Current authoring.
-
-#### AUT-014 — construct-and-template-building
-
-* **Actor:** Author. **Input → result:** select building geometry/styles/openings/levels and furniture, optionally save it as project template → reusable building template and updated map/world structure.
-* **Guards:** Geometry operations are validated; templates are editor project metadata, not campaign-executable behavior. A preview is not proof of map package validity.
-* **Surface/source:** Studio **Edificios** and embedded sector builder; [`apps/campaign-editor/web/app/studio/BuildingWorkspace.tsx`](../../../apps/campaign-editor/web/app/studio/BuildingWorkspace.tsx), [`apps/campaign-editor/web/app/editor/SectorEditor.tsx`](../../../apps/campaign-editor/web/app/editor/SectorEditor.tsx), map editing commands in [`apps/campaign-editor/web/app/editor/SectorEditor.tsx`](../../../apps/campaign-editor/web/app/editor/SectorEditor.tsx) and project operations in [`apps/campaign-editor/domain/campaign-project.ts`](../../../apps/campaign-editor/domain/campaign-project.ts).
-* **Availability:** Current authoring.
-
-#### AUT-015 — inspect-map-validation-and-preview
-
-* **Actor:** Author. **Input → result:** request preview/validation → map report plus in-memory 3D sector preview or battle playtest.
-* **Guards:** Invalid map disables playable test or reports reason; scene-expanded preview and actual playtest are separate modes. Neither publishes content.
-* **Surface/source:** Sector Editor validation panel and Studio map/building workspace; [`apps/campaign-editor/web/app/editor/SectorEditor.tsx`](../../../apps/campaign-editor/web/app/editor/SectorEditor.tsx), [`apps/campaign-editor/web/app/studio/BuildingWorkspace.tsx`](../../../apps/campaign-editor/web/app/studio/BuildingWorkspace.tsx), [`packages/game/map-playtest.js`](../../../packages/game/map-playtest.js).
-* **Availability:** Current authoring, gated by map validity where required.
-
-### Cast, rules, story, and presentation
-
-#### AUT-016 — author-campaign-cast-and-encounters
-
-* **Actor:** Author. **Input → result:** campaign content documents → create/edit character records, their attributes, appearance, encounter details, recruitment and deployment/presence placement data.
-* **Guards:** IDs, campaign references and supported types validate; existing generic/historical IDs obey scenario-specific semantics. Custom UI data does not create new engine capabilities by itself.
-* **Surface/source:** Studio **Historia y personajes** reuses Content Editor; [`apps/campaign-editor/web/app/studio/ContentWorkspace.tsx`](../../../apps/campaign-editor/web/app/studio/ContentWorkspace.tsx), [`apps/campaign-editor/web/app/story/ContentEditor.tsx`](../../../apps/campaign-editor/web/app/story/ContentEditor.tsx), [`apps/campaign-editor/domain/campaign-project.ts`](../../../apps/campaign-editor/domain/campaign-project.ts).
-* **Availability:** Current authoring.
-
-#### AUT-017 — define-equipment-and-force
-
-* **Actor:** Author. **Input → result:** content data → author supported portable/artillery weapon records, equipment assignments and force equipment/load rules, plus starting supplies where available in editor.
-* **Guards:** Templates/definitions and cross-references are constrained by engine schemas; authored labels or images do not create new combat mechanics.
-* **Surface/source:** Story Editor weapon tabs, force equipment and related content sections; [`apps/campaign-editor/web/app/story/ContentEditor.tsx`](../../../apps/campaign-editor/web/app/story/ContentEditor.tsx), [`apps/campaign-editor/web/app/story/ForceEquipment.tsx`](../../../apps/campaign-editor/web/app/story/ForceEquipment.tsx), [`packages/game/campaign-data-validation.js`](../../../packages/game/campaign-data-validation.js).
-* **Availability:** Current authoring within supported definitions.
-
-#### AUT-018 — author-campaign-rules-and-roles
-
-* **Actor:** Author. **Input → result:** campaign content/world → edit supported starting territory, campaign rules, hiring/contracts, care, militia, logistics/foundry, roles and other visible rule sections.
-* **Guards:** Bounded values, valid references and engine-defined rule types; invalid values remain reportable in a draft but block valid package output when compiler rejects them.
-* **Surface/source:** Story Editor rule components; [`apps/campaign-editor/web/app/story/CampaignRules.tsx`](../../../apps/campaign-editor/web/app/story/CampaignRules.tsx), [`apps/campaign-editor/web/app/story/StartingTerritory.tsx`](../../../apps/campaign-editor/web/app/story/StartingTerritory.tsx), [`apps/campaign-editor/web/app/story/ContractRules.tsx`](../../../apps/campaign-editor/web/app/story/ContractRules.tsx), [`apps/campaign-editor/web/app/story/CareRules.tsx`](../../../apps/campaign-editor/web/app/story/CareRules.tsx), [`apps/campaign-editor/web/app/story/MilitiaRules.tsx`](../../../apps/campaign-editor/web/app/story/MilitiaRules.tsx).
-* **Availability:** Current authoring for implemented schema fields.
-
-#### AUT-019 — author-dialogue-quests-and-story
-
-* **Actor:** Author. **Input → result:** narrative content → edit campaign chapters/conditions, quests/errands, character dialogue nodes/choices/conditions/effects and supported placement records.
-* **Guards:** Conditions/effects must be supported by the runtime interpreters and valid IDs/references; no arbitrary code callback is loaded from imported campaign data.
-* **Surface/source:** Story Editor and Studio content section; [`apps/campaign-editor/web/app/story/CampaignStory.tsx`](../../../apps/campaign-editor/web/app/story/CampaignStory.tsx), [`apps/campaign-editor/web/app/story/DialogueEditor.tsx`](../../../apps/campaign-editor/web/app/story/DialogueEditor.tsx), [`apps/campaign-editor/web/app/story/DialogueConditions.tsx`](../../../apps/campaign-editor/web/app/story/DialogueConditions.tsx), [`apps/campaign-editor/web/app/story/DialogueEffects.tsx`](../../../apps/campaign-editor/web/app/story/DialogueEffects.tsx), [`apps/campaign-editor/web/app/story/QuestEditor.tsx`](../../../apps/campaign-editor/web/app/story/QuestEditor.tsx), [`packages/game/content-dialogue.js`](../../../packages/game/content-dialogue.js).
-* **Availability:** Current authoring within engine-supported narrative vocabulary.
-
-#### AUT-020 — author-placements-and-arrival
-
-* **Actor:** Author. **Input → result:** content/world document → set supported character placements, arrival sites and related scene/campaign anchors.
-* **Guards:** Placement location, character identity, scene and package references must validate; these are data placements, not new maps unless paired with a valid map record.
-* **Surface/source:** Story editor placement map and arrival-site components; [`apps/campaign-editor/web/app/story/PlacementMap.tsx`](../../../apps/campaign-editor/web/app/story/PlacementMap.tsx), [`apps/campaign-editor/web/app/story/ArrivalSites.tsx`](../../../apps/campaign-editor/web/app/story/ArrivalSites.tsx), [`packages/game/campaign-content.js`](../../../packages/game/campaign-content.js).
-* **Availability:** Current authoring.
-
-#### AUT-021 — customize-campaign-presentation
-
-* **Actor:** Author. **Input → result:** presentation document → customize title/menu text and art references, intro scenes, calendar/manual, portraits, atlas/character creation choices and optional sample skirmish.
-* **Guards:** Referenced images must be declared resources; enum/data fields follow presentation validator. Sample skirmish is omitted unless configured and a valid roster/config is available.
-* **Surface/source:** Studio **Presentación**; [`apps/campaign-editor/web/app/studio/PresentationWorkspace.tsx`](../../../apps/campaign-editor/web/app/studio/PresentationWorkspace.tsx), [`packages/game/campaign-presentation-validation.js`](../../../packages/game/campaign-presentation-validation.js).
-* **Availability:** Current authoring.
-
-#### AUT-022 — manage-campaign-resources
-
-* **Actor:** Author. **Input → result:** supported image or JSON resource bytes → add/replace, preview, inspect or rename resource; update project catalog path/type/SHA-256 and dependent references as implemented.
-* **Guards:** Paths confined to assets, allowed resource type/size and unique asset ID; package validation checks catalog bytes and references. A missing resource can remain an editable draft issue.
-* **Surface/source:** Studio **Recursos**; [`apps/campaign-editor/web/app/studio/AssetsWorkspace.tsx`](../../../apps/campaign-editor/web/app/studio/AssetsWorkspace.tsx), [`apps/campaign-editor/web/lib/campaign-studio-assets.ts`](../../../apps/campaign-editor/web/lib/campaign-studio-assets.ts), [`apps/campaign-editor/domain/campaign-project.ts`](../../../apps/campaign-editor/domain/campaign-project.ts).
-* **Availability:** Current authoring.
-
-#### AUT-023 — edit-advanced-document-fields
-
-* **Actor:** Advanced author. **Input → result:** a project document field or full JSON-shaped document → edit supported fields outside the guided form and receive validation feedback.
-* **Guards:** Envelope checks preserve required top-level groups and identity. Arbitrary code is not evaluated; invalid values do not become playable merely because raw document editing accepts a draft.
-* **Surface/source:** Studio **Todos los documentos**, full world/map/content/presentation fields and optional JSON editing in [`apps/campaign-editor/web/app/studio/FieldEditor.tsx`](../../../apps/campaign-editor/web/app/studio/FieldEditor.tsx), [`apps/campaign-editor/web/app/studio/page.tsx`](../../../apps/campaign-editor/web/app/studio/page.tsx), [`apps/campaign-editor/domain/campaign-project.ts`](../../../apps/campaign-editor/domain/campaign-project.ts).
-* **Availability:** Current authoring; advanced data edits remain schema/compiler constrained.
-
-### Test and handoff
-
-#### AUT-024 — playtest-one-authored-map
-
-* **Actor:** Map author. **Input → result:** valid map and optional campaign content → a battle/sector state mounted in Studio's embedded Battlefield. Map edits remain independent from battle actions.
-* **Guards:** Map validation required; campaign package selected where applicable; changing the map closes stale preview.
-* **Surface/source:** Studio **Edificios** preview and embedded sector editor; [`apps/campaign-editor/web/app/studio/BuildingWorkspace.tsx`](../../../apps/campaign-editor/web/app/studio/BuildingWorkspace.tsx), [`apps/campaign-editor/web/app/editor/SectorEditor.tsx`](../../../apps/campaign-editor/web/app/editor/SectorEditor.tsx), [`packages/game/map-playtest.js`](../../../packages/game/map-playtest.js).
-* **Availability:** Current authoring.
-
-#### AUT-025 — exercise-full-campaign-sandbox
-
-* **Actor:** Campaign author. **Input → result:** compiled project content, seed and optional supported setup → isolated strategic sandbox with campaign state, action history, sector entry, tactical battles and conversations/quests as exercised by controls.
-* **Guards:** Seed/setup bounded; invalid campaign content cannot initialize. Sandbox actions use real game campaign/tactical rules, but operate on sandbox state rather than project documents or player campaign save.
-* **Surface/source:** Studio **Pruebas → campaign**; [`apps/campaign-editor/web/app/studio/QuestSandbox.tsx`](../../../apps/campaign-editor/web/app/studio/QuestSandbox.tsx), [`packages/game/public/campaign-playtest-api.ts`](../../../packages/game/public/campaign-playtest-api.ts).
-* **Availability:** Current authoring; requires content that compiles/initializes.
-
-#### AUT-026 — persist-or-reopen-campaign-sandbox
-
-* **Actor:** Author saving a reproducible test state. **Input → result:** serialize the sandbox to `granaderos-editor-sandbox` JSON, validate by decoding against current project content, download or re-import it → recover isolated campaign/battle and recorded action history.
-* **Guards:** Content identity hash and sandbox format/version must match; history bounded to 2,000 entries; imported sandbox from changed content is refused and author must reset/replay.
-* **Surface/source:** QuestSandbox “Guardar prueba y comprobar” / “Recuperar prueba”; [`apps/campaign-editor/web/app/studio/QuestSandbox.tsx`](../../../apps/campaign-editor/web/app/studio/QuestSandbox.tsx), [`packages/game/public/campaign-playtest-api.ts`](../../../packages/game/public/campaign-playtest-api.ts).
-* **Availability:** Current authoring.
-
-#### AUT-027 — launch-story-draft-in-player-app
-
-* **Actor:** Author checking authored cast/story within normal player UI. **Input → result:** selected content draft → sessionStorage one-time save handoff and game route `content=1&launch=1`; player app loads handoff and shows its desk.
-* **Guards:** Requires content to initialize and resource hashes to verify; isolated session is not the installed registry campaign and its gameplay save is separate from Studio draft storage.
-* **Surface/source:** Story Editor campaign launch in [`apps/campaign-editor/web/app/story/ContentEditor.tsx`](../../../apps/campaign-editor/web/app/story/ContentEditor.tsx), handoff [`packages/game/content-launch.ts`](../../../packages/game/content-launch.ts), consumer [`apps/web/app/page.tsx`](../../../apps/web/app/page.tsx).
-* **Availability:** Current authoring integration.
-
-### Standalone and developer tools
-
-#### AUT-028 — edit-story-document-standalone
-
-* **Actor:** Author focused on narrative/content rather than the whole Studio project workflow. **Input → result:** selected installed campaign as a base, editable local browser draft → edit story/content and use editor-specific tests/export or player handoff.
-* **Guards:** Base campaign must load; local draft does not become installed campaign until separately packaged/deployed. Tests/handoff may require valid campaign data.
-* **Surface/source:** `/campaign-editor/?workspace=story`; [`apps/campaign-editor/web/app/story/page.tsx`](../../../apps/campaign-editor/web/app/story/page.tsx), [`apps/campaign-editor/web/app/story/ContentEditor.tsx`](../../../apps/campaign-editor/web/app/story/ContentEditor.tsx).
-* **Availability:** Current authoring.
-
-#### AUT-029 — edit-map-json-standalone
-
-* **Actor:** Author focused on one tactical sector. **Input → result:** new/open map or JSON file → edit canvas/tools, validate, import/export map JSON, run supported map test.
-* **Guards:** Map drafts/autosaves are editor-local and not a complete installable campaign package; campaign references/sector context are needed for broader campaign validation.
-* **Surface/source:** `/campaign-editor/?workspace=sector`; [`apps/campaign-editor/web/app/editor/page.tsx`](../../../apps/campaign-editor/web/app/editor/page.tsx), [`apps/campaign-editor/web/app/editor/SectorEditor.tsx`](../../../apps/campaign-editor/web/app/editor/SectorEditor.tsx), [`packages/game/map-schema.js`](../../../packages/game/map-schema.js).
-* **Availability:** Current authoring.
-
-#### AUT-030 — scaffold-check-or-refresh-package-from-cli
-
-* **Actor:** Developer/content operator with repository access. **Input → result:** `npm run campaign:new -- <id> <destination>`, `npm run campaign:check -- <folder>`, or `npm run campaign:assets -- <folder>` → create verified scaffold, validate package folder, or refresh declared asset metadata/checksums.
-* **Guards:** Folder ID/manifest/path and package compiler/resource checks; existing scaffold destination is not overwritten. This CLI works on repository files, not a remote player's browser installation.
-* **Surface/source:** [`tools/campaign-authoring.mjs`](../../../tools/campaign-authoring.mjs), [`tools/campaign-export.mjs`](../../../tools/campaign-export.mjs).
-* **Availability:** Supporting author/developer process, current.
-
-### Explicitly unavailable
-
-#### AUT-031 — publish-arbitrary-user-campaign-to-live-catalog
-
-* **Actor / desired result:** Author would like a general in-app upload/publish service that installs a package for all players.
-* **Current behavior:** Studio exports package files; installed runtime registry and files are supplied by the deployed campaign catalog/build. There is no player-facing upload endpoint, user account, hosted campaign database, or shared live publication transaction in the inspected code.
-* **Availability:** Not available. Distribution requires operating/build tooling outside the browser authoring flow.
-
-#### AUT-032 — execute-imported-campaign-script
-
-* **Actor / desired result:** Author supplies arbitrary JavaScript/custom scenario code inside a package.
-* **Current behavior:** Campaign package schema accepts data and allowlisted scenario identifiers; runtime interprets supported data through engine-owned rules. Imported arbitrary scripts are not executed.
-* **Availability:** Not available by design of current package contract.
+| Project lifecycle | AUT-001–AUT-006 | Create, reopen, duplicate, import, export, and delete local project drafts | Studio project workspace |
+| Edit and review lifecycle | AUT-007–AUT-010 | Rename project identity, undo/redo edits, autosave to IndexedDB, and validate projects | Studio toolbar, persistence, and validation panel |
+| World and maps | AUT-011–AUT-015 | Shape the 36x33 strategic world, locality links, 20x16 sector maps, and building templates | Studio World, Maps, and Buildings workspaces; Sector Editor |
+| Campaign content | AUT-016–AUT-020 | Author cast, equipment, rules, dialogue, quests, and placements | Studio Content workspace and Story Editor |
+| Presentation and resources | AUT-021–AUT-023 | Customize presentation and skirmishes, manage SHA-256 asset bytes, and edit raw fields | Studio Presentation, Resources, and All Documents views |
+| Playtest and handoff | AUT-024–AUT-027 | Run single-map or full-campaign sandbox tests, save sandbox fixtures, and launch into the player app | Studio Building preview, Quest Sandbox, and Story Editor launch |
+| Standalone editors and CLI | AUT-028–AUT-030 | Edit standalone story or sector documents in the browser, or scaffold/check packages from the CLI | `?workspace=story`, `?workspace=sector`, and `npm run campaign:*` |
+| Unsupported ambitions | AUT-031–AUT-032 | Publish to a live multi-user server catalog or execute arbitrary scripts from an imported package | None (`No interface route` / `Refused`) |
+
+The second table below lists every authoring use case (`AUT-001` through `AUT-032`), its canonical `Exposure` value, and its `Intent`.
+
+| ID / intention | Exposure | Intent |
+| --- | --- | --- |
+| AUT-001 `create-campaign-project` | `Command` | Scaffold a new `CampaignProject` (`granaderos-editor-project`) with starter documents, map index, and guide asset |
+| AUT-002 `reopen-local-draft` | `Command` | Restore a saved `CampaignProject` and binary resource blobs from local IndexedDB storage |
+| AUT-003 `fork-project-from-draft-or-installed-campaign` | `Command` | Duplicate an existing draft or installed campaign under a new unique campaign ID |
+| AUT-004 `import-project-or-package-files` | `Command` | Import a `.project.json` draft, ZIP archive, or package folder into an editable `CampaignProject` |
+| AUT-005 `export-project-or-installable-folder` | `Command` | Download the raw `CampaignProject` JSON draft (`Command`) or a validated installable `CampaignPackage` ZIP (`Gated` on passing validation) |
+| AUT-006 `delete-local-draft` | `Command` | Delete a saved draft record from the browser's IndexedDB `projects` object store |
+| AUT-007 `rename-project-identity` (`EditCampaignProject`) | `Command` | Update the project's campaign ID, display name, and internal asset path references in one revision |
+| AUT-008 `undo-or-redo-document-edit` (`UndoCampaignProjectEdit` / `RedoCampaignProjectEdit`) | `Command` | Step backward or forward through `CampaignProjectHistory` or `SectorMapHistory` snapshots |
+| AUT-009 `autosave-local-project` | `Supporting` | Debounced background persistence of accepted `CampaignProject` revisions to browser IndexedDB |
+| AUT-010 `validate-campaign-project` (`ValidateCampaignProject`) | `Query` | Read-only inspection returning structural, cross-reference, and game-playability diagnostics for the current revision |
+| AUT-011 `define-strategic-world` (`EditCampaignProject` / `CampaignWorld`) | `Command` | Edit the 36x33 world grid, biomes, districts, localities, income, and headquarters in `CampaignWorld` |
+| AUT-012 `connect-strategic-localities` (`EditCampaignProject` / `CampaignWorld`) | `Command` | Add, move, or remove reciprocal terrestrial and river connections between localities |
+| AUT-013 `author-tactical-sector-map` (`EditSectorMap` / `SectorMap`) | `Command` | Apply atomic `SectorMapCommand` batches to terrain, walls, buildings, openings, props, spawns, and climb links |
+| AUT-014 `construct-and-template-building` (`EditSectorMap` / `EditCampaignProject`) | `Command` | Build multi-level structures and save or apply reusable building templates |
+| AUT-015 `inspect-map-validation-and-preview` | `Query` | Inspect map schema/playability diagnostics and view the 3D sector geometry preview |
+| AUT-016 `author-campaign-cast-and-encounters` (`EditCampaignProject`) | `Command` | Create and edit character definitions, ratings, traits, capabilities, appearances, and recruitment rules |
+| AUT-017 `define-equipment-and-force` (`EditCampaignProject`) | `Command` | Configure portable weapons, artillery profiles, outfits, and starting force equipment |
+| AUT-018 `author-campaign-rules-and-roles` (`EditCampaignProject`) | `Command` | Configure starting territory, contract pricing, medical care, militia, logistics, foundry, and campaign roles |
+| AUT-019 `author-dialogue-quests-and-story` (`EditCampaignProject`) | `Command` | Edit chapters, quests, errands, and dialogue trees using allowlisted condition and effect types |
+| AUT-020 `author-placements-and-arrival` (`EditCampaignProject`) | `Command` | Configure character placements, arrival sites, and scene anchor references |
+| AUT-021 `customize-campaign-presentation` (`EditCampaignProject`) | `Command` | Configure title/menu text, artwork references, introduction scenes, manual copy, and optional sample skirmish |
+| AUT-022 `manage-campaign-resources` (`EditCampaignProject`) | `Command` | Add, replace, rename, or remove packaged image/JSON resources and update `assets.json` SHA-256 digests |
+| AUT-023 `edit-advanced-document-fields` (`EditCampaignProject`) | `Command` | Edit raw schema fields across project documents through the ”Todos los documentos” inspector |
+| AUT-024 `playtest-one-authored-map` | `Gated` | Mount an in-memory tactical battle on the current authored map when map validation passes |
+| AUT-025 `exercise-full-campaign-sandbox` | `Gated` | Run an isolated strategic and tactical campaign playtest in Quest Sandbox when the project compiles |
+| AUT-026 `persist-or-reopen-campaign-sandbox` | `Gated` | Export or re-import a `granaderos-editor-sandbox` test fixture bound to the project's content identity hash |
+| AUT-027 `launch-story-draft-in-player-app` | `Gated` | Hand off a compiled initial campaign save via `sessionStorage` to open `/apps/web` at `?content=1&launch=1` |
+| AUT-028 `edit-story-document-standalone` | `Command` | Edit narrative and content definitions in the focused `/campaign-editor/?workspace=story` view |
+| AUT-029 `edit-map-json-standalone` (`EditSectorMap`) | `Command` | Edit, import, or export a standalone sector map JSON document in `/campaign-editor/?workspace=sector` |
+| AUT-030 `scaffold-check-or-refresh-package-from-cli` | `No interface route` | Run `npm run campaign:new`, `campaign:check`, or `campaign:assets` from the terminal (CLI-only, no browser control) |
+| AUT-031 `publish-arbitrary-user-campaign-to-live-catalog` | `No interface route` | Live server upload/catalog publishing is absent; the browser application is a static export |
+| AUT-032 `execute-imported-campaign-script` | `Refused` | Schema and compiler validation reject unallowlisted scenario identifiers and never execute imported scripts |
+
+## Authoring catalogue details
+
+### Project lifecycle (AUT-001 to AUT-006)
+
+- **AUT-001 (`create-campaign-project`):** Takes a unique lowercase campaign ID and display name, builds a `granaderos-editor-project` via [`project-scaffold.ts`](../../../apps/campaign-editor/infrastructure/project-scaffold.ts) and [`CampaignProject`](../../../apps/campaign-editor/domain/campaign-project.ts), and opens it in Studio ([`apps/campaign-editor/web/app/studio/page.tsx`](../../../apps/campaign-editor/web/app/studio/page.tsx)). Refuses reserved IDs (such as `granaderos`) or duplicate local IDs with a `CampaignEditorRefusal`.
+- **AUT-002 (`reopen-local-draft`):** Loads a saved project envelope and binary `Blob` resources from IndexedDB (`granaderos.campaign-studio.v1`) via [`campaign-studio-storage.ts`](../../../apps/campaign-editor/web/lib/campaign-studio-storage.ts).
+- **AUT-003 (`fork-project-from-draft-or-installed-campaign`):** Clones a local draft or an installed campaign loaded via [`apps/campaign-editor/web/lib/campaign-library.ts`](../../../apps/campaign-editor/web/lib/campaign-library.ts) under a new campaign ID and resets `CampaignProjectHistory`. Duplicating the historical campaign converts its scenario to `generic-v1`.
+- **AUT-004 (`import-project-or-package-files`):** Parses a `.project.json` file, ZIP archive, or folder selection through [`campaign-studio-files.ts`](../../../apps/campaign-editor/web/lib/campaign-studio-files.ts), enforcing path safety, file-size limits, and single-manifest presence. Incomplete or rule-invalid packages remain editable as drafts while `ValidateCampaignProject` reports their issues.
+- **AUT-005 (`export-project-or-installable-folder`):** Exports either a `.project.json` draft file (`encodeCampaignProject`) at any time or a validated installable `CampaignPackage` ZIP archive (`exportCampaignArchive`), which is gated on zero blocking errors from `ValidateCampaignProjectUseCase`.
+- **AUT-006 (`delete-local-draft`):** After confirmation, removes the selected draft from IndexedDB in [`campaign-studio-storage.ts`](../../../apps/campaign-editor/web/lib/campaign-studio-storage.ts) without affecting installed campaigns or player `localStorage` saves.
+
+### Edit and review lifecycle (AUT-007 to AUT-010)
+
+- **AUT-007 (`rename-project-identity`):** Applies a new campaign ID and name across the manifest, content documents, and internal asset paths through `EditCampaignProjectUseCase` and `CampaignProject`.
+- **AUT-008 (`undo-or-redo-document-edit`):** Invokes [`UndoCampaignProjectEditUseCase`](../../../apps/campaign-editor/application/undo-campaign-project-edit/undo-campaign-project-edit.use-case.ts) or [`RedoCampaignProjectEditUseCase`](../../../apps/campaign-editor/application/redo-campaign-project-edit/redo-campaign-project-edit.use-case.ts) (or `SectorMapHistory` in the map editor) to restore the previous or next admitted snapshot (up to 50 retained steps) without advancing game time.
+- **AUT-009 (`autosave-local-project`):** Supporting persistence hook in Studio that writes accepted `CampaignProject` revisions to IndexedDB and stores the active project ID in `localStorage`.
+- **AUT-010 (`validate-campaign-project`):** Read-only query [`ValidateCampaignProjectUseCase`](../../../apps/campaign-editor/application/validate-campaign-project/validate-campaign-project.use-case.ts) backed by [`project-validation.js`](../../../apps/campaign-editor/infrastructure/project-validation.js) and [`packages/game/public/campaign-editor-api.ts`](../../../packages/game/public/campaign-editor-api.ts). It checks `CampaignDefinition` schemas, `CampaignContentSchema`, map dimensions and playability, and asset SHA-256 catalogs, returning diagnostics tagged with the inspected project revision.
+
+### World and tactical-map authoring (AUT-011 to AUT-015)
+
+- **AUT-011 (`define-strategic-world`) and AUT-012 (`connect-strategic-localities`):** [`WorldWorkspace.tsx`](../../../apps/campaign-editor/web/app/studio/WorldWorkspace.tsx) and [`CampaignWorld`](../../../apps/campaign-editor/domain/campaign-world.js) (with [`world-editing.js`](../../../apps/campaign-editor/infrastructure/world-editing.js)) edit the 36x33 world grid, terrain biomes, districts, localities, headquarters, reciprocal road/river links, and deletion-reference guards, committing changes through `EditCampaignProjectUseCase`.
+- **AUT-013 (`author-tactical-sector-map`) and AUT-014 (`construct-and-template-building`):** [`MapWorkspace.tsx`](../../../apps/campaign-editor/web/app/studio/MapWorkspace.tsx), [`BuildingWorkspace.tsx`](../../../apps/campaign-editor/web/app/studio/BuildingWorkspace.tsx), and [`SectorEditor.tsx`](../../../apps/campaign-editor/web/app/editor/SectorEditor.tsx) submit atomic `SectorMapCommand` batches to [`EditSectorMapUseCase`](../../../apps/campaign-editor/application/edit-sector-map/edit-sector-map.use-case.ts), which validates the expected map revision and mutates [`SectorMap`](../../../apps/campaign-editor/domain/sector-map.js) and [`SectorMapHistory`](../../../apps/campaign-editor/domain/sector-map-history.js). When editing inside a campaign project, [`CampaignMap`](../../../apps/campaign-editor/domain/campaign-map.js) enforces the slot's campaign ID and 20x16 dimensions.
+- **AUT-015 (`inspect-map-validation-and-preview`):** Read-only query that compiles map geometry via `packages/game/public/campaign-editor-api.ts` and renders the 3D scene through [`apps/web/game-preview.ts`](../../../apps/web/game-preview.ts).
+
+### Cast, rules, story, presentation, and resources (AUT-016 to AUT-023)
+
+- **AUT-016 (`author-campaign-cast-and-encounters`):** [`ContentWorkspace.tsx`](../../../apps/campaign-editor/web/app/studio/ContentWorkspace.tsx) and [`ContentEditor.tsx`](../../../apps/campaign-editor/web/app/story/ContentEditor.tsx) edit character definitions, 0–100 ratings, traits, capabilities, portraits, and recruitment terms.
+- **AUT-017 (`define-equipment-and-force`):** [`ForceEquipment.tsx`](../../../apps/campaign-editor/web/app/story/ForceEquipment.tsx) and [`ArtilleryProfiles.tsx`](../../../apps/campaign-editor/web/app/story/ArtilleryProfiles.tsx) edit weapon definitions, ammunition families, artillery profiles, and starting force loadouts.
+- **AUT-018 (`author-campaign-rules-and-roles`):** [`CampaignRules.tsx`](../../../apps/campaign-editor/web/app/story/CampaignRules.tsx), [`StartingTerritory.tsx`](../../../apps/campaign-editor/web/app/story/StartingTerritory.tsx), [`ContractRules.tsx`](../../../apps/campaign-editor/web/app/story/ContractRules.tsx), [`CareRules.tsx`](../../../apps/campaign-editor/web/app/story/CareRules.tsx), [`MilitiaRules.tsx`](../../../apps/campaign-editor/web/app/story/MilitiaRules.tsx), [`FoundryRules.tsx`](../../../apps/campaign-editor/web/app/story/FoundryRules.tsx), and [`CampaignRoles.tsx`](../../../apps/campaign-editor/web/app/story/CampaignRoles.tsx) edit scenario-supported rule parameters.
+- **AUT-019 (`author-dialogue-quests-and-story`) and AUT-020 (`author-placements-and-arrival`):** [`CampaignStory.tsx`](../../../apps/campaign-editor/web/app/story/CampaignStory.tsx), [`DialogueEditor.tsx`](../../../apps/campaign-editor/web/app/story/DialogueEditor.tsx), [`QuestEditor.tsx`](../../../apps/campaign-editor/web/app/story/QuestEditor.tsx), [`PlacementMap.tsx`](../../../apps/campaign-editor/web/app/story/PlacementMap.tsx), and [`ArrivalSites.tsx`](../../../apps/campaign-editor/web/app/story/ArrivalSites.tsx) author chapters, dialogue trees, quests, character placements, and arrival anchors.
+- **AUT-021 (`customize-campaign-presentation`), AUT-022 (`manage-campaign-resources`), and AUT-023 (`edit-advanced-document-fields`):** [`PresentationWorkspace.tsx`](../../../apps/campaign-editor/web/app/studio/PresentationWorkspace.tsx), [`AssetsWorkspace.tsx`](../../../apps/campaign-editor/web/app/studio/AssetsWorkspace.tsx), and [`FieldEditor.tsx`](../../../apps/campaign-editor/web/app/studio/FieldEditor.tsx) edit presentation settings, binary asset catalogs with SHA-256 digests, and full document JSON trees through `EditCampaignProjectUseCase`.
+
+### Playtest, handoff, standalone tools, and limits (AUT-024 to AUT-032)
+
+- **AUT-024 (`playtest-one-authored-map`):** Gated on valid map compilation; runs an in-memory tactical battle in `SectorEditor.tsx` / `BuildingWorkspace.tsx` via `packages/game/public/campaign-editor-api.ts` and `apps/web/game-preview.ts`.
+- **AUT-025 (`exercise-full-campaign-sandbox`) and AUT-026 (`persist-or-reopen-campaign-sandbox`):** Gated on project compilation; [`QuestSandbox.tsx`](../../../apps/campaign-editor/web/app/studio/QuestSandbox.tsx) calls [`packages/game/public/campaign-playtest-api.ts`](../../../packages/game/public/campaign-playtest-api.ts) to run an isolated strategic and tactical session and export or re-import a `granaderos-editor-sandbox` JSON fixture (bounded to 2,000 action history entries and verified against the project's content identity hash).
+- **AUT-027 (`launch-story-draft-in-player-app`):** Gated on valid content and asset hashes; writes a one-time initial campaign save to `sessionStorage` (`granaderos.content-launch.v1`) and navigates to the player app with `?content=1&launch=1` (consumed by SES-008).
+- **AUT-028 (`edit-story-document-standalone`) and AUT-029 (`edit-map-json-standalone`):** Focused browser routes `/campaign-editor/?workspace=story` ([`apps/campaign-editor/web/app/story/page.tsx`](../../../apps/campaign-editor/web/app/story/page.tsx)) and `/campaign-editor/?workspace=sector` ([`apps/campaign-editor/web/app/editor/page.tsx`](../../../apps/campaign-editor/web/app/editor/page.tsx)).
+- **AUT-030 (`scaffold-check-or-refresh-package-from-cli`):** `No interface route` in the browser; developer CLI commands `npm run campaign:new`, `npm run campaign:check`, and `npm run campaign:assets` in [`tools/campaign-authoring.mjs`](../../../tools/campaign-authoring.mjs).
+- **AUT-031 (`publish-arbitrary-user-campaign-to-live-catalog`):** `No interface route`; static deployment has no backend upload server or shared live database.
+- **AUT-032 (`execute-imported-campaign-script`):** `Refused`; `CampaignDefinition` and `compileCampaignPackage` admit only structured data and allowlisted scenario IDs (`generic-v1` and `granaderos-historical-v1`).
 
 ## Worked use case: import, edit, validate, and export a package
 
-**Actor:** Author adapting an existing package. **Preconditions:** Browser supports the required file APIs and Studio project storage; source package has a single safe manifest. **Request:** Import a folder/archive, edit the project, then download an installable package.
+**Actor:** Campaign author adapting a package (AUT-004, AUT-009, AUT-010, AUT-005). **Preconditions:** Source archive or folder contains a valid `manifest.json` and referenced documents. **Request:** Import the folder or archive, edit project documents, run validation, and export an installable package archive.
+
+The sequence diagram below traces how the `Author`, `Campaign Studio`, `Studio file adapter`, `IndexedDB project store`, and `Project validator and compiler` (`ValidateCampaignProjectUseCase`) import, autosave, validate, and export a campaign package.
 
 ```mermaid
 sequenceDiagram
   actor Author
   participant Studio as Campaign Studio
   participant Files as Studio file adapter
-  participant Project as Project validator and compiler
   participant Storage as IndexedDB project store
+  participant Project as Project validator and compiler
   Author->>Studio: Choose folder or archive
-  Studio->>Files: Import files and parse project envelope
+  Studio->>Files: Import files and parse CampaignProject envelope
   Files-->>Studio: Editable project and resource bytes
-  Studio->>Storage: Autosave draft
-  Author->>Studio: Edit world, maps, content, presentation or assets
-  Studio->>Project: Validate current project
-  Project-->>Studio: Issues or compiled definitions
-  Author->>Studio: Request package download
-  Studio->>Project: Require valid campaign project
+  Studio->>Storage: Autosave draft to IndexedDB
+  Author->>Studio: Edit world, maps, content, presentation, or assets
+  Studio->>Project: Validate current project revision
+  Project-->>Studio: Sectioned issues or compiled CampaignDefinition
+  Author->>Studio: Request installable package download
+  Studio->>Project: Require zero blocking validation issues
   Project-->>Studio: Validated package file records
-  Studio-->>Author: Download package folder or archive
+  Studio-->>Author: Download CampaignPackage folder or ZIP archive
 ```
 
-**Success result:** Package contains the manifest-referenced campaign documents, map index/maps and resource bytes. **Refusal result:** Package export is blocked while validation has errors; project remains an editable draft. **Invariant:** local autosave is a project recovery mechanism, not evidence of installability.
+**Success result:** The exported archive contains `manifest.json`, the five JSON documents, all referenced map JSON files, and SHA-256-verified resource bytes. **Refusal:** If `ValidateCampaignProjectUseCase` reports any blocking error, installable package export is refused while raw `.project.json` draft export and IndexedDB autosave remain available.
 
-## Worked use case: test change without altering the authored draft
+## Worked use case: test a change without altering the authored draft
 
-**Actor:** Author checking a new campaign flow. **Precondition:** Current project compiles into supported campaign content. **Request:** Start Quest Sandbox with a seed, exercise strategic actions/sector battle, save and reopen test state.
+**Actor:** Campaign author testing quest and battle progression (AUT-025, AUT-026). **Precondition:** The current `CampaignProject` compiles without blocking errors. **Request:** Start a seeded Quest Sandbox session, dispatch strategic and tactical actions, and save a reproducible sandbox fixture.
+
+The sequence diagram below shows how the `Author`, `Studio` (`QuestSandbox.tsx`), `Campaign sandbox` (`packages/game/public/campaign-playtest-api.ts`), and `Campaign and tactical engine` run an isolated playtest and encode a sandbox fixture.
 
 ```mermaid
 sequenceDiagram
   actor Author
-  participant Studio
+  participant Studio as Studio
   participant Sandbox as Campaign sandbox
   participant Engine as Campaign and tactical engine
   Author->>Studio: Start seeded sandbox
-  Studio->>Sandbox: Create isolated campaign from project content
-  Author->>Studio: Travel, enter sector, act or talk
+  Studio->>Sandbox: Create isolated campaign from compiled project content
+  Author->>Studio: Travel, enter sector, act, or talk
   Studio->>Sandbox: Dispatch sandbox action
-  Sandbox->>Engine: Use normal campaign or battle functions
+  Sandbox->>Engine: Execute campaign or tactical rules in isolated session
   Engine-->>Sandbox: Updated isolated state
-  Sandbox-->>Studio: State, history and optional active battle
+  Sandbox-->>Studio: State, action history, and optional active battle
   Author->>Studio: Save test fixture
-  Studio->>Sandbox: Encode state and verify against project identity
-  Sandbox-->>Studio: Sandbox JSON or mismatch/error
+  Studio->>Sandbox: Encode granaderos-editor-sandbox JSON bound to content hash
+  Sandbox-->>Studio: Sandbox JSON or content-mismatch refusal
 ```
 
-**Success result:** Test state and history can be saved separately and reopened against the same content identity. **Refusal:** changed project content invalidates the saved sandbox's source identity; it must be reset/replayed. **Invariant:** sandbox play does not mutate authoring document state or the player's ordinary campaign save.
-
-## Scope and completeness notes
-
-* The catalogue groups related field operations into author intents; it is not a list of every widget, click, individual schema field, or game-system rule.
-* Guided editing and “Todos los documentos” are alternate surfaces over supported project documents, not separate publication capabilities.
-* Availability is source/UI-backed as of repository state on 2026-10-27. A button can be present but disabled by missing data/validation; conditional cases say so.
-* The Story Editor's embedded tests, Quest Sandbox, map battle playtest, and player launch handoff are distinct paths. Passing one does not certify all scenarios or all deployed assets.
-* Strategic and tactical gameplay intentions are intentionally delegated to [the engine use-case guides](../strategic-engine.md) and [tactical engine](../tactical-engine.md), not enumerated a second time here.
+**Success result:** The sandbox state and action history export as a `granaderos-editor-sandbox` JSON file that can be reopened while the project's content identity hash matches. **Refusal:** If subsequent project edits change the content identity hash, importing the older sandbox fixture is refused until the sandbox is reset.

@@ -1,12 +1,6 @@
 # T09 campaign transaction plan
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../verification/version-0.1.md) for the published-main checkpoint.
-
-Status note: this implementation plan records the design input for requirement row T09 (retreat requires a real exit) of [the classic JA2 parity audit](../verification/ja2-parity-audit.md). The implemented behavior and remaining limits are now described in [JA2 gameplay](../gameplay/ja2-gameplay.md#physical-departure-and-persistent-casualties) and [the parity audit](../verification/ja2-parity-audit.md).
-
-Proposed next batch, 6 September 2026. This plan proposes the atomic campaign return transaction, squad and mount partitioning, captive equipment custody, and ammunition accounting when a tactical encounter closes. It changes no game behavior or audit status. It supplements [the tactical exit design](tactical-exit-plan.md) and supersedes that document's old report-defect description: fresh battle, visit, and mission reports now require a complete matching snapshot and every deployed hired participant. `completeDeploymentReport` takes physical state from the snapshot, including the full deployed militia and mission-ally records. A receipt alone still does not prove a physical exit.
+This implementation plan records the design input for requirement row T09 (retreat requires a real exit) of [the classic JA2 parity requirement baseline](../requirements/ja2-parity.md). This plan proposes the atomic campaign return transaction, squad and mount partitioning, captive equipment custody, and ammunition accounting when a tactical encounter closes. It supplements [the tactical exit design](tactical-exit-plan.md) and supersedes that document's old report-defect description: fresh battle, visit, and mission reports require a complete matching snapshot and every deployed hired participant. `completeDeploymentReport` takes physical state from the snapshot, including the full deployed militia and mission-ally records. A receipt alone still does not prove a physical exit.
 
 ## Boundary and records
 

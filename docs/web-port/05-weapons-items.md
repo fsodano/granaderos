@@ -108,7 +108,7 @@ clone tracks priming/flints/rations as numeric counters on each operative
 | `ubAttachToPointAPCost` | `UINT8` | AP to attach to a matching point |
 | `usItemFlag` / `usItemFlag2` | `FLAGS64` | Bitflags for item properties |
 
-The **"Item Statistics editor"** is the `XML Editor.exe` shipped in `gamedir/`
+The **"Item Statistics editor"** is the `XML Editor.exe` provided in `gamedir/`
 (`gamedir/XML Editor.exe`, `XMLEditorInit.xml`, `XMLEditorSettings.xml`). It reads/writes the
 `TableData/Items/*.xml` files. The web clone has no editor; it authors `game/data.js` directly.
 

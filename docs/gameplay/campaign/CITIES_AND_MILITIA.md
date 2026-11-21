@@ -2,8 +2,7 @@
 
 On the strategic campaign layer, `game/cities.js` is the shared source for
 strategic boundaries, loyalty, and militia control checks. This guide describes
-published campaign-area and loyalty helper rules; see
-[version 0.1](../../verification/version-0.1.md) for current published scope.
+campaign-area and loyalty helper rules.
 These are deliberately schematic operational areas, not surveyed historical
 municipal boundaries. Buenos Aires groups Plaza Mayor, Retiro and the Ensenada
 supply port. Ensenada is not represented as an actual neighborhood of the
@@ -32,8 +31,3 @@ Militia instructors with the questionnaire's canonical `teacher` trait take
 25 percent less time. That multiplier stacks with the existing specialist
 bonus; troop count and resource costs remain unchanged. The teacher is a skill,
 not a character class.
-
-Verification: `node --test tests/cities.test.mjs` checks map partition, partial
-regional control, threshold boundaries, rural rejection, quest/combat gains,
-deduplication after save/load, saturation/losses and the teacher time bonus.
-Campaign wiring is owned separately from these reusable helpers.

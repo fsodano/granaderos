@@ -1,10 +1,9 @@
 # Editor de historia: fichas jugables
 
-Esta guía en español describe los controles actuales del editor de historia (`/story`) para fichas de personajes, habitantes, diálogos, encargos, armas, reglas de campaña y artillería, junto con notas históricas de verificación de entregas anteriores. En la versión 0.1, este editor es una herramienta experimental con funciones
+Esta guía en español describe los controles del editor de historia (`/story`) para fichas de personajes, habitantes, diálogos, encargos, armas, reglas de campaña y artillería. Es una herramienta experimental con funciones
 acotadas. Permite editar paquetes existentes e iniciar campañas de prueba.
 La plataforma completa para crear y compartir campañas de la comunidad queda
-para [trabajo futuro](../plans/campaign-authoring.md). Consultá el
-[estado de la versión](../verification/version-0.1.md) para conocer sus límites.
+para [trabajo futuro](../plans/campaign-authoring.md).
 
 El editor de historia se abre en `/story`, desde el menú del juego o desde el constructor de sectores. El constructor existente permanece en `/editor` con sus mapas, edificios y pruebas.
 
@@ -50,7 +49,7 @@ La campaña asigna esas cantidades una sola vez. El personaje las lleva al incor
 
 La munición inicial se configura en **Reglas** y se entrega una sola vez al incorporarse. No hay reposición pagada del taller. Esta regla tampoco cambia el equipo del granadero creado por el jugador.
 
-Los habitantes con ficha llevan estos suministros desde su aparición. Con **Recoger equipo**, podés seleccionarlos cuando estén muertos o inconscientes y junto al combatiente. La acción cuesta 8 PA en combate y muestra las cantidades recogidas. Lo que retirás deja de pertenecer al habitante. Cambiar de celda, incorporarse, salir del servicio o cargar la partida conserva lo que queda. Un sucesor usa sus propias cantidades; no copia las del cuerpo anterior. Las armas, armaduras, regalos e inventarios completos de habitantes siguen pendientes. Véase la verificación de suministros civiles.
+Los habitantes con ficha llevan estos suministros desde su aparición. Con **Recoger equipo**, podés seleccionarlos cuando estén muertos o inconscientes y junto al combatiente. La acción cuesta 8 PA en combate y muestra las cantidades recogidas. Lo que retirás deja de pertenecer al habitante. Cambiar de celda, incorporarse, salir del servicio o cargar la partida conserva lo que queda. Un sucesor usa sus propias cantidades; no copia las del cuerpo anterior. Las armas, armaduras, regalos e inventarios completos de habitantes siguen pendientes.
 
 ## Estado inicial de cada personaje
 
@@ -58,7 +57,7 @@ En **Estado inicial** podés definir salud, energía, fatiga, sangrado y heridas
 
 **Restablecer estado sano** recupera la salud máxima, 100 de energía y cero fatiga, sangrado y heridas vendadas. Duplicar copia estos valores; deshacer permite recuperar los anteriores. Se asignan una sola vez al crear la campaña. Guardar, renovar o volver a contratar conserva los cambios del juego. Un candidato del boletín sigue fuera del mapa hasta su llegada contratada.
 
-Podés crear un habitante herido con 1 de salud y energía mayor que 0. Primero habrá que estabilizarlo con vendas para conversar. Una vez incorporado puede recibir atención médica y recuperar la salud restante. El sangrado avanza desde que el habitante aparece en el mundo, aunque todavía no lo hayas encontrado. Un sucesor empieza su reloj cuando aparece; si su llegada espera a que cierres una escena, aún no sangra. Cambiar de celda conserva la herida. Las partidas anteriores empiezan este cálculo desde la salud y la hora guardadas, sin daño retroactivo. Los segundos pendientes se conservan al guardar. Un habitante con energía 0 empieza inconsciente. Mientras su sector está abierto, recupera 10 de energía por fase civil: cada 6 segundos de exploración o una vez por ronda completa de combate. Puede conversar al recuperar energía si tiene al menos 15 de salud. El tiempo fuera del sector no le concede esa recuperación. La verificación de heridas desde la aparición cubre el reloj, las apariciones y la migración. La verificación del estado inicial registra los recorridos y los límites.
+Podés crear un habitante herido con 1 de salud y energía mayor que 0. Primero habrá que estabilizarlo con vendas para conversar. Una vez incorporado puede recibir atención médica y recuperar la salud restante. El sangrado avanza desde que el habitante aparece en el mundo, aunque todavía no lo hayas encontrado. Un sucesor empieza su reloj cuando aparece; si su llegada espera a que cierres una escena, aún no sangra. Cambiar de celda conserva la herida. Las partidas anteriores empiezan este cálculo desde la salud y la hora guardadas, sin daño retroactivo. Los segundos pendientes se conservan al guardar. Un habitante con energía 0 empieza inconsciente. Mientras su sector está abierto, recupera 10 de energía por fase civil: cada 6 segundos de exploración o una vez por ronda completa de combate. Puede conversar al recuperar energía si tiene al menos 15 de salud. El tiempo fuera del sector no le concede esa recuperación.
 
 ## Crear habitantes del mundo
 
@@ -141,7 +140,7 @@ En una condición de diálogo, capítulo o derrota, elegí **Suministros de un p
 
 Por ejemplo, una respuesta puede exigir que el sanitario conserve cinco vendas después de atender al habitante. Las condiciones anteriores de compra siguen admitidas en paquetes importados, pero el comercio desactivado no permite cumplirlas mediante pedidos nuevos. La condición consulta la cantidad actual y no entrega ni consume objetos. Si también exigís que la persona viva, esté presente o esté incorporada, agregá esas condiciones.
 
-Durante una escena se usa el inventario actual del actor. Fuera de ella se usa lo que conserva su ficha. Un soldado desplegado sin su escena actual no cumple la condición: una cantidad desconocida no significa cero. Las derrotas pueden activarse al confirmar el gasto en la escena; los capítulos esperan hasta cerrarla. El editor protege los personajes usados por estas condiciones. Véase la verificación de condiciones de suministros.
+Durante una escena se usa el inventario actual del actor. Fuera de ella se usa lo que conserva su ficha. Un soldado desplegado sin su escena actual no cumple la condición: una cantidad desconocida no significa cero. Las derrotas pueden activarse al confirmar el gasto en la escena; los capítulos esperan hasta cerrarla. El editor protege los personajes usados por estas condiciones.
 
 ## Condiciones sobre proyectos
 
@@ -195,11 +194,11 @@ Cada ficha puede elegir un retrato de la biblioteca, conservar una imagen import
 
 El carácter describe al personaje en su hoja de servicio, sin modificar su moral. Las siete frases corresponden a incorporación, detección de enemigos, sector asegurado, herida, agotamiento, muerte y fin de campaña. Cada frase admite hasta 800 caracteres; una frase vacía mantiene el silencio. El contratado pronuncia su incorporación al llegar, una sola vez. Las frases tácticas se disparan por los eventos reales y el cierre de campaña usa las frases de los compañeros vivos.
 
-También podés escribir **Al recibir primeros auxilios de otra persona**. La frase aparece en el registro táctico después de un tratamiento válido que usa vendas, si el paciente está consciente. Un paciente crítico responde al recuperar la consciencia, no después de cada paso incompleto. Si sigue sin energía, permanece en silencio aunque recupere el aliento más tarde. No se activa por vendarse solo, descansar, cargar la partida ni repetir una orden rechazada. No concede recompensas ni cambia un encargo. Dejala vacía para mantener el silencio. Los paquetes anteriores conservan sus siete frases sin cambios. Véase la verificación de respuestas médicas.
+También podés escribir **Al recibir primeros auxilios de otra persona**. La frase aparece en el registro táctico después de un tratamiento válido que usa vendas, si el paciente está consciente. Un paciente crítico responde al recuperar la consciencia, no después de cada paso incompleto. Si sigue sin energía, permanece en silencio aunque recupere el aliento más tarde. No se activa por vendarse solo, descansar, cargar la partida ni repetir una orden rechazada. No concede recompensas ni cambia un encargo. Dejala vacía para mantener el silencio. Los paquetes anteriores conservan sus siete frases sin cambios.
 
 Estas opciones participan en la recuperación del borrador, deshacer/rehacer, duplicación, exportación, inicio y guardado. Los paquetes anteriores sin estos campos conservan sus perfiles. Las partidas rechazan voces o apariencias que difieren de la definición incluida. Los habitantes nuevos tienen un saludo editable. Las ramificaciones de texto para habitantes nuevos se editan desde su ficha. Las condiciones de las opciones ya consultan el estado de campaña. Los pagos y recompensas en pesos ya se aplican una vez con un registro guardado. Los estados de encargos tienen condiciones, efectos y registro de campaña. Los objetos todavía necesitan sus propios controles y reglas. En **Reglas** ya podés definir capítulos propios y sus textos de victoria y derrota.
 
-La prueba de incorporación también detectó que Cabral, Dorrego y Paroissien no tenían una condición regional adicional y se rechazaban después de cumplir el encuentro. Ahora pueden incorporarse al cumplir su conversación local, liderazgo, control y demás condiciones del encuentro. La contratación remota sigue bloqueada para ellos.
+Cabral, Dorrego y Paroissien se incorporan al cumplir su conversación local, liderazgo, control y demás condiciones del encuentro. La contratación remota sigue bloqueada para ellos.
 
 ## Llegadas y contratos
 
@@ -215,7 +214,7 @@ Cada arma puede tener su propio nombre, imagen, daño, alcance, costes de dispar
 
 Las variantes aparecen por separado en la armería. Cada ejemplar conserva su identidad, desgaste y atasco al equiparlo o devolverlo. Las reglas anteriores de importación se conservan en paquetes importados, pero no permiten pedidos nuevos. El inventario, las armas recuperadas y el equipo abandonado muestran el nombre y la imagen propios. Disparar, recargar, recuperar un arma, cambiarla y volver al mapa conservan su definición.
 
-Los **PA para levantar el arma** están incluidos en los **PA de disparo**. Por ejemplo, con 20 PA de disparo y 7 PA para levantarla, el primer disparo cuesta 20 y el siguiente 13 mientras el tirador conserve la posición. La puntería se suma por separado. Moverse, recargar, cambiar de postura o de arma, o quedar incapacitado vuelve a bajar el arma. Los fallos de chispa conservan la carga y la posición; volver a cebar exige prepararla de nuevo. Un valor de cero mantiene el mismo costo en cada disparo. Las armas actuales conservan cero. El control de disparo muestra la preparación y descarga en combate, y los segundos reales durante la exploración. Véase la verificación.
+Los **PA para levantar el arma** están incluidos en los **PA de disparo**. Por ejemplo, con 20 PA de disparo y 7 PA para levantarla, el primer disparo cuesta 20 y el siguiente 13 mientras el tirador conserve la posición. La puntería se suma por separado. Moverse, recargar, cambiar de postura o de arma, o quedar incapacitado vuelve a bajar el arma. Los fallos de chispa conservan la carga y la posición; volver a cebar exige prepararla de nuevo. Un valor de cero mantiene el mismo costo en cada disparo. Las armas actuales conservan cero. El control de disparo muestra la preparación y descarga en combate, y los segundos reales durante la exploración.
 
 Las partidas nuevas del editor guardan estas definiciones por referencia al paquete incluido. La imagen no se repite por cada ejemplar. Al cargar se comprueba la identidad del paquete y cada referencia; también se admiten las definiciones completas guardadas anteriormente. Las campañas normales y las campañas antiguas con solo fichas conservan su catálogo publicado.
 
@@ -231,7 +230,7 @@ En la ficha del personaje, **Arma principal** admite un arma de fuego o blanca. 
 
 Cada variante conserva su definición y precio anterior; ese precio no habilita compras. Los ejemplares disponibles pertenecen al inventario físico. Al equiparla, el arma anterior vuelve como un ejemplar separado. El nombre y la imagen propios aparecen en la hoja de servicio, la armería, los dos espacios del inventario y la mochila. Las armas blancas recuperadas del espacio principal de un cuerpo pueden equiparse en cualquiera de los dos espacios. Los cambios, el regreso a campaña y el guardado conservan su definición y estado. El peso de las armas blancas editadas cuenta mientras están equipadas o guardadas; cambiar de mano activa no modifica ese peso.
 
-Los residentes todavía no tienen inventario civil: esta asignación se aplica a su equipo militar al incorporarse. El saqueo del espacio secundario de un cuerpo, el desgaste cuerpo a cuerpo, los accesorios y la edición de técnicas especiales requieren entregas separadas. Esta entrega no acredita el sistema completo de inventario o combate sin armas.
+Los residentes todavía no tienen inventario civil: esta asignación se aplica a su equipo militar al incorporarse. El saqueo del espacio secundario de un cuerpo, el desgaste cuerpo a cuerpo, los accesorios y la edición de técnicas especiales requieren entregas separadas. El sistema completo de inventario y combate sin armas queda fuera de este alcance.
 
 ## Armamento de enemigos y milicias
 
@@ -285,15 +284,14 @@ La atención gasta una venda propia por hora de trabajo. El editor no ofrece
 un precio ni una compra de vendas. Detener la hemorragia tiene prioridad sobre recuperar salud.
 La atención necesita presencia segura y real en la misma celda. Los mismos
 valores rigen para **Médico de milicias**, que atiende a los heridos de la
-guarnición con sus propias vendas. La pantalla de campaña muestra su salud y la pérdida horaria por hemorragia. La milicia herida fuera del sector abierto usa el mismo porcentaje de daño horario; el médico trabaja antes de ese daño. Abrir la conferencia de Yatasto no detiene las heridas ni la atención de la guarnición que quedó en la ciudad. Si un soldado muere, deja de contar como defensor. Su cuerpo y sus objetos permanecen en la escena guardada conocida. Heridas de milicias verificadas.
-Atención a milicias verificada.
+guarnición con sus propias vendas. La pantalla de campaña muestra su salud y la pérdida horaria por hemorragia. La milicia herida fuera del sector abierto usa el mismo porcentaje de daño horario; el médico trabaja antes de ese daño. Abrir la conferencia de Yatasto no detiene las heridas ni la atención de la guarnición que quedó en la ciudad. Si un soldado muere, deja de contar como defensor. Su cuerpo y sus objetos permanecen en la escena guardada conocida.
 
 **Restaurar atención y descanso originales** recupera los valores originales.
 Podés deshacerlo. Las partidas iniciadas conservan sus reglas y las horas de
 recuperación ya transcurridas. Cambiar el borrador no cambia una partida guardada.
 El umbral crítico, los primeros auxilios tácticos y la recuperación diaria
 mantienen sus valores actuales. La recuperación diaria no cura a una persona que
-sigue sangrando o tiene menos de 15 de salud. Reglas de atención verificadas.
+sigue sangrando o tiene menos de 15 de salud.
 
 **Daño horario de hemorragia (%)** admite de 0 a 100 y usa 25 por defecto.
 Fuera del despliegue táctico, cada cambio de hora resta ese porcentaje de la
@@ -302,7 +300,7 @@ al 25 % resta 2 de salud. Cero desactiva ese daño. El médico atiende primero;
 el descanso solo no detiene la pérdida. La regla también se aplica durante la
 marcha y mientras usás otra escuadra. Los candidatos no contratados y los que
 todavía están llegando quedan fuera de este reloj. Las bajas y el momento de
-muerte se conservan al guardar. Alcance verificado.
+muerte se conservan al guardar.
 
 ## Ascensos de milicias
 
@@ -313,7 +311,7 @@ precio y las horas del curso elegido. Si faltan pesos, plazas, abastecimiento,
 un instructor o participantes estables, explica el motivo y bloquea el cobro.
 La elección se conserva mientras seguís viendo esa localidad; al volver a
 abrirla se muestra la sugerencia inicial. El curso ya pagado sí queda guardado
-con la campaña. Controles verificados.
+con la campaña.
 
 Los nuevos cursos de ascenso promueven a tres cívicos a montoneros y conservan
 a los tres soldados que participan.
@@ -322,7 +320,7 @@ inconscientes, en fuga ni desplegados. El mapa muestra quiénes están en el cur
 y su salud. Ascender no los cura ni repone sus armas o suministros. Suspender el
 curso los devuelve al grado anterior sin devolver los pesos gastados. Las
 partidas antiguas con cursos que solo guardaban cantidades conservan ese
-contrato anterior. Ascensos y compatibilidad.
+contrato anterior.
 
 Los veteranos nuevos ascienden por experiencia de combate. Un primer impacto
 que hiere a un rival apto suma un punto; abatirlo eleva ese registro a tres. No
@@ -336,13 +334,12 @@ atributo. La puntería y el liderazgo tienen un máximo de 100; el nivel, de 10.
 Las mejoras también rigen para el curso pagado a montonero. La salud, el arma y los suministros restantes se conservan.
 La lista de salud de la guarnición muestra el grado y los puntos. Los cursos de
 veteranos ya pagados en partidas anteriores conservan su contrato.
-Ascensos en combate verificados.
 
 **Restaurar ascensos de milicias originales** recupera los umbrales 2 y 5 y las
 mejoras 8, 5 y 1. Podés deshacer el cambio. Las reglas quedan guardadas al iniciar
 la campaña; cambiar el borrador después no cambia la partida. El mapa muestra
 los umbrales de esa partida. El precio y la duración de los cursos siguen sus
-reglas actuales. Verificación de reglas editables.
+reglas actuales.
 
 ## Milicias en combate
 
@@ -352,14 +349,13 @@ de acción que su turno. Las tarjetas de la guarnición muestran salud y estado;
 no permiten dar órdenes directas. Podés seleccionar a un integrante de la
 escuadra para atender a un miliciano herido. Al volver y guardar se conservan
 sus heridas, bajas, armas, suministros restantes y experiencia.
-Alcance verificado y pendientes.
 
 En exploración, las milicias recorren puntos del mapa. Cada seis segundos pueden
 avanzar una casilla y gastar energía, sin consumir puntos de acción ni munición.
 Si el paso las dejaría con menos de 50 de energía, descansan ese intervalo.
 El contacto real con enemigos detiene la patrulla e inicia los turnos. Pausar
 la exploración o esconder la pestaña detiene ese reloj. El guardado conserva
-posiciones, energía y ritmo de patrulla. Verificación.
+posiciones, energía y ritmo de patrulla.
 
 En **Reglas → Patrullas de milicias** podés activar o desactivar las patrullas y
 la búsqueda, cambiar los intervalos por punto y definir la reserva de energía
@@ -373,7 +369,7 @@ Puede seguir combatiendo y reaccionando. **Restaurar patrullas de milicias
 originales** recupera las opciones iniciales. Podés deshacer o rehacer los cambios.
 La configuración queda guardada con la campaña nueva, aunque después cambies el
 borrador. Los puntos del recorrido y los límites de búsqueda en combate aún son
-fijos. Reglas verificadas.
+fijos.
 
 ## Distribuir milicias
 
@@ -388,7 +384,6 @@ cobra pesos ni adelanta el reloj. Los heridos inestables y los alumnos permanece
 en su sector. Cada destino admite 60 plazas, incluida la instrucción. Al entrar,
 los trasladados aparecen en terreno exterior conectado al acceso de llegada.
 Estas áreas, límites y accesos todavía no son campos editables.
-Verificación y pendientes.
 
 ## Elegir la batería
 
@@ -399,7 +394,6 @@ se conserva al guardar y aunque consigas otro cañón. El menú conserva su nomb
 anterior, pero el comercio de equipo está desactivado. Podés elegir piezas de nuevo
 más adelante. La pantalla impide preparar más unidades de un modelo que las
 existentes. Elegir no cobra dinero ni adelanta el reloj.
-Verificación y alcance pendiente.
 
 ## Cañones emplazados
 
@@ -410,7 +404,7 @@ el combate captura las piezas. Retirarse puede dejarlas en manos realistas.
 Preparar una batería vacía no retira los cañones que ya están allí.
 
 La recuperación y el transporte usan piezas que ya tienen dueño. No hay
-reposición automática de munición. Los tres modelos se editan en Armas → Artillería. Verificación.
+reposición automática de munición. Los tres modelos se editan en Armas → Artillería.
 
 ## Territorio inicial
 
@@ -460,7 +454,7 @@ En el campo táctico podés usar los cursores normales para atacar o atender a u
 
 La muerte cancela los traslados y el reclutamiento. El cuerpo queda en su escena. La campaña aplica una vez la consecuencia local de lealtad y marca como fallido un encargo pendiente de ese contacto. Si muere un mando indispensable de la historia original, la campaña termina. San Martín comparte su salud entre sus funciones de contacto y aliado.
 
-Los seis suministros personales se pueden configurar y recoger de un cuerpo o una persona inconsciente. El equipo completo, las armas, las armaduras y el cautiverio siguen pendientes. Las heridas se conservan fuera de la escena. Un habitante reclutado puede recibir [atención médica en campaña](../gameplay/characters/strategic-medical-care.md) y conserva la salud recuperada al dejar el servicio. El despido o vencimiento del contrato devuelve al habitante ya conocido sus heridas actuales y sus provisiones restantes, antes de volver a encontrarlo. Si aún sangra, el tiempo fuera de servicio continúa esa herida. No recibe otra dotación inicial. La verificación del regreso cubre estos cambios de función. El cuidado médico de habitantes fuera del servicio sigue pendiente. La continuidad de las hemorragias conserva el cuerpo, la causa de muerte y el plazo del sucesor sin repetir sus consecuencias. La verificación detalla las pruebas y los límites.
+Los seis suministros personales se pueden configurar y recoger de un cuerpo o una persona inconsciente. El equipo completo, las armas, las armaduras y el cautiverio siguen pendientes. Las heridas se conservan fuera de la escena. Un habitante reclutado puede recibir [atención médica en campaña](../gameplay/characters/strategic-medical-care.md) y conserva la salud recuperada al dejar el servicio. El despido o vencimiento del contrato devuelve al habitante ya conocido sus heridas actuales y sus provisiones restantes, antes de volver a encontrarlo. Si aún sangra, el tiempo fuera de servicio continúa esa herida. No recibe otra dotación inicial. El cuidado médico de habitantes fuera del servicio sigue pendiente. La continuidad de las hemorragias conserva el cuerpo, la causa de muerte y el plazo del sucesor sin repetir sus consecuencias.
 
 ## Aparición después de una muerte
 
@@ -476,81 +470,7 @@ Esta opción activa habitantes nuevos. Los mandos históricos conservan sus pape
 
 El mapa permite marcar cualquier celda con una X desde la ficha del personaje, incluido terreno fuera de las localidades. Se pueden simular ubicaciones con una semilla. Las ubicaciones fijas, el sorteo inicial y los cambios diarios ya se aplican a las nuevas campañas. Eliminar mandos históricos bloquea el inicio si se conserva el avance histórico. Las opciones de historia no compatibles también impiden iniciar.
 
-Los mandos históricos conservan su servicio permanente, requisitos de reclutamiento y papeles de misión. Sus habilidades de combate, la asignación de fundición y marcha, y los nombres, ubicación y costos de la fundición ya son configurables. Los **Encargos locales** admiten entregas físicas y escoltas con sus condiciones actuales. Quedan pendientes la extracción de mandos, las transferencias de funciones a sucesores, efectos más amplios sobre objetos y funciones de campaña, las escenas dirigidas y la composición completa de campaña. Esta entrega no completa todo el editor de historia.
-
-## Verificación de entregas anteriores
-
-Las descripciones siguientes reúnen pruebas y entregas de distintos momentos.
-Los registros enlazados conservan su fuente, fecha y límites. Las referencias
-a compras, importaciones o reposición describen reglas anteriores; no habilitan
-esas operaciones en la versión 0.1. Esta lista no afirma una nueva ejecución de
-todos esos casos. El [estado de la versión](../verification/version-0.1.md)
-registra las comprobaciones actuales y sus resultados.
-
-`tests/story-editor.test.mjs` monta el formulario, recupera y modifica un borrador, usa deshacer y rehacer, inicia una campaña, contrata al personaje, lo despliega y guarda sus datos. También comprueba las imágenes de armas, la recuperación de datos inválidos y el bloqueo de opciones no aplicadas.
-
-`tests/campaign-content.test.mjs` cubre identidad, guardado, contratos, retratos, atributos, separación de partidas y rechazo de definiciones alteradas. `tests/content-system.test.mjs` cubre el formato, las referencias y las simulaciones deterministas. Las pruebas de economía, contratos y sectores existentes se mantienen como controles de integración.
-
-`tests/hiring-arrivals.test.mjs` comprueba control e infraestructura, bloqueo, incursiones en la misma hora, cobro y devolución únicos, desvíos, guardado y llegada tras salir de un sector. Las pruebas del formulario montado también configuran el viaje y los puntos de llegada, contratan, desvían y cancelan desde el boletín.
-
-`tests/content-weapons.test.mjs` cubre variantes, compra, importación, ejemplares usados, disparos de la IA, abandono, recuperación, cambios de equipo, retirada, guardado y nuevo despliegue. El caso de combate usa un escenario pequeño con el despliegue y el regreso reales de campaña; no sustituye un recorrido completo. También comprueba imágenes grandes compartidas y rechazo de definiciones o referencias alteradas. El formulario montado crea un arma con imagen propia, la asigna, inicia la campaña y equipa un ejemplar desde la armería.
-
-`tests/content-force-equipment.test.mjs` comprueba todas las asignaciones, un ataque de campaña, tropas sin arma, disparos de la IA, recuperación y regreso al combate, instrucción y ascensos de milicia, munición persistente y guardados alterados. Los casos de disparo y recuperación usan terreno compacto y actores generados por la campaña; no representan una prueba completa del mapa o de la campaña. El formulario montado cubre asignación, deshacer/rehacer, protección de referencias y activación en borradores anteriores.
-
-`tests/content-roster.test.mjs` comprueba identidades nuevas, eliminación del catálogo, separación respecto del oficial y la milicia, contratación y llegada, desvío y cancelación, entrenamiento y progreso, guardado y rechazo de identidades inválidas. El combate compacto verifica heridas reales, retirada y nuevo despliegue; no equivale a completar la campaña. El formulario montado crea, duplica, elimina y contrata candidatos nuevos.
-
-`tests/content-presentation.test.mjs` comprueba las frases con eventos tácticos reales, llegada única, silencios, final de campaña, aparición del contacto y comandante, incorporación local, compatibilidad y rechazo de cambios en guardados. El cierre usa un estado final preparado y el combate un terreno compacto; no prueban una campaña entera. El editor montado cubre retrato/apariencia independientes, frases, duplicación y lanzamiento; la prueba de presentación táctica comprueba el cuerpo elegido después de guardar y cargar.
-
-
-`tests/content-abilities.test.mjs` comprueba las capacidades con acciones de combate, fuego enemigo, apoyo de formación, dotaciones, límites de PA, guardados y compatibilidad. También comprueba quitar habilidades a identidades históricas y cambiar el nombre u orden del catálogo sin cambiar sus capacidades. Las pruebas del editor cubren selección, borradores anteriores, deshacer/rehacer, duplicación y lanzamiento; las de presentación comprueban incorporación local y reentrada en una escena de misión con capacidades editadas. Se usan escenarios de combate acotados; no prueban una campaña completa.
-
-`tests/world-cells.test.mjs` recorre, entra y vuelve a entrar en dos celdas rurales y dos barrios distintos con la campaña real. Comprueba objetos recogidos, puertas, relojes, contratos, llegadas, escuadras separadas, incursiones, servicios, agua, invierno y rechazo de escenas intercambiadas. `tests/world-cells-render.test.mjs` monta la carta de operaciones, selecciona celdas, ordena marchas, entra, guarda y consulta objetos con los controles reales. También se comprueba un recorrido continuo por 40 celdas, que antes excedía el límite de guardado, y el rechazo de terreno comprimido inválido o con un tamaño de expansión excesivo. Estas pruebas no sustituyen la continuidad de NPC ni una campaña completa.
-
-`tests/campaign-presence.test.mjs` comprueba conversación e incorporación en una celda rural mediante movimiento táctico real, guardado activo, reentrada, sorteo único, recorridos diarios, protección de escenas a las 04:00, eliminación de copias antiguas y rechazo de registros inválidos. También comprueba la aparición en un ataque real a un sector enemigo y su guardado activo. Comprueba correspondencia sin revelar sorteos y conservación de contratos fuera del mapa. El editor montado configura las celdas y reglas, usa deshacer/rehacer e inicia un encuentro real. No prueba bajas civiles ni una campaña completa.
-
-`tests/civilian-state.test.mjs` comprueba heridas, muerte, cambios de celda, incorporación, baja del servicio, misiones, lealtad y guardados. `tests/civilian-interaction.test.mjs` usa los controles del campo táctico montado para atacar y atender a un NPC. No equivalen a un recorrido completo de campaña.
-
-`tests/authored-residents.test.mjs` comprueba habitantes nuevos con saludo, retrato, salud, celdas fijas o sorteadas, traslado diario, incorporación local, condiciones, muerte, progreso, retiro del servicio y guardados. El formulario montado crea un habitante, marca celdas, duplica, elimina, deshace e inicia una campaña con ese encuentro. Los controles de conversación ocultan la incorporación para un habitante no reclutable. Son pruebas acotadas, no una campaña completa.
-
-`tests/death-successors.test.mjs` comprueba bajas civiles y militares, demoras, relojes, guardados, protección de la escena abierta, recorridos diarios y cadenas de sucesión con cuerpos conservados. El editor montado crea la condición y la verifica después de una muerte real en la campaña. La verificación de sucesores registra su alcance.
-
-
-`tests/local-contracts.test.mjs` comprueba los tres plazos locales, pago único, requisitos, heridas, vencimiento, regreso, renovación, baja, contrato gratuito y rechazo de guardados alterados. El editor montado configura el servicio, usa deshacer y duplica. La página del juego montada muestra el precio, contrata por el plazo seleccionado y conserva el resultado al guardar. La verificación de contratos locales registra el alcance.
-
-
-`tests/content-dialogue.test.mjs` comprueba ramas, vueltas, finales, continuidad, condiciones físicas de conversación y guardados alterados. El editor montado crea los pasajes, protege referencias, deshace, duplica e inicia una campaña donde se recorre una rama. La página del juego montada usa las opciones, rechaza un segundo clic atrasado y guarda el resultado. La verificación de diálogos registra su alcance.
-
-`tests/dialogue-conditions.test.mjs` comprueba intervalos, compras reales, muerte de habitantes, estados de personajes, opciones no disponibles y condiciones inválidas. El editor montado configura y conserva estas reglas; la conversación montada muestra una opción al cruzar medianoche. La verificación de condiciones separa acciones reales de los estados preparados.
-
-`tests/dialogue-payments.test.mjs` comprueba pagos y recompensas reales, guardados, ciclos, cambios de servicio, identidades independientes, rechazos y registros alterados. El editor montado configura y ejecuta un pago; el juego montado muestra el importe, bloquea fondos insuficientes y conserva una sola recompensa tras un doble clic. La verificación de pagos registra sus límites.
-
-`tests/content-quests.test.mjs` comprueba aceptación, una condición de día real, finalización con recompensa, fracaso alternativo, participantes distintos, pagos atómicos, estados finales y guardados alterados. El editor montado crea y conecta un encargo; la página del juego muestra su cambio desde la conversación y el registro de campaña. La verificación de encargos conserva los límites de esta entrega.
-
-`tests/quest-deadlines.test.mjs` comprueba vencimientos con segundos de aceptación reales, descanso táctico, viajes, espera, finalización previa y registros alterados. El editor conserva el plazo y la página del juego muestra el tiempo restante y el fracaso automático. La verificación de plazos registra su alcance.
-
-`tests/quest-survival.test.mjs` comprueba muerte civil real, una baja militar en una batalla compacta preparada, aceptación bloqueada tras una muerte, resultados ya completos, heridas y cambios de servicio. El editor montado conserva y protege las referencias; la página del juego registra una muerte real y muestra el fallo guardado. La verificación de supervivencia separa esas pruebas de una campaña completa.
-
-`tests/dialogue-movements.test.mjs` comprueba la llamada real, marcha, espera, guardado, reentrada, nuevas órdenes, muerte y cambio diario de sector. Las pruebas de rutinas usan casas preparadas para comprobar puertas, obstáculos, alarma y refugio. El editor y el juego montados comprueban creación, referencias y ejecución con guardado. La verificación de encuentros detalla sus límites.
-
-`tests/meeting-arrivals.test.mjs` comprueba llegada real, rechazo anticipado, reentrada y recompensa única. Algunos casos preparados aíslan alarma, incapacidad y bloqueo; la recuperación usa el reloj y la marcha habituales. El editor y el juego montados verifican la condición y su guardado. La verificación de llegada registra el alcance.
-
-`tests/meeting-release.test.mjs` comprueba salida real, rutina posterior, guardado, salida desde el propio personaje y transacciones combinadas. El editor montado conserva la orden; el juego montado verifica una salida y una recompensa tras un doble clic. La verificación de salida registra el alcance.
-
-`tests/content-blades.test.mjs` comprueba combate, intercepción, IA, peso, variantes de armería, cambios entre espacios, estado conservado, regreso y guardado, imágenes compartidas y paquetes anteriores. Las pruebas montadas verifican creación, asignación, protección de referencias, compra, imagen secundaria y cambio de mano con guardado activo. Son pruebas limitadas; no acreditan una campaña completa.
-
-`tests/force-blades.test.mjs` cubre ambos espacios de enemigos y milicias, cartuchos según el arma principal, decisiones de cambio de la IA, tropas guardadas y recuperación de un arma principal con retirada y reentrada. Usa tropas reales emitidas por campaña en escenarios pequeños preparados. El editor montado conserva ambas selecciones y las aplica a un ataque real. Ver armas blancas de las tropas.
-
-`tests/campaign-rules.test.mjs` cubre fondos iniciales, valores válidos, copias guardadas, cobros y devoluciones, cargas nulas y milicias con cartuchos consumidos. El editor montado modifica, restaura, deshace y lanza las reglas. La pantalla montada comprueba el precio, la entrada, la salida y el guardado automático. Ver fondos y abastecimiento.
-
-`tests/starting-territory.test.mjs` verifica formato, inicio, contratación y llegada, abastecimiento, ingresos diarios, requisitos de milicia, viajes y entrada real, ataque a un vecino ocupado y guardados. El editor montado configura el territorio, valida límites, deshace y lanza la campaña. La comprobación de escritorio y mapa usa la vista renderizada, sin una sesión de navegador. Ver territorio inicial.
-
-`tests/campaign-headquarters.test.mjs` comprueba los once destinos, el inicio y suministro alternativos, creación, compra, taller, contratación y viaje reales, entrada y ataque, protección ante incursiones, derrota y guardados. La pérdida del cuartel y el desgaste para probar el taller usan estados preparados, sin afirmar victorias enemigas ni desgaste obtenido en combate. El editor montado configura y lanza la base; el escritorio y cuaderno muestran su nombre. Ver cuartel general.
-
-`tests/import-supply-rules.test.mjs` comprueba las definiciones anteriores, los guardados y el rechazo del comercio. El editor montado conserva los valores importados al editar reglas activas, exportar y lanzar la campaña; no ofrece controles de compra ni de importación. Ver importaciones configurables.
-
-`tests/campaign-story.test.mjs` verifica capítulos ordenados, llegada pagada, vencimiento de contrato, encargos resueltos por diálogo, derrota por plazo y muerte táctica real, finales simultáneos, interrupción de viajes y guardados inválidos. El editor montado cubre orden, condiciones, referencias, deshacer y lanzamiento; las vistas muestran el objetivo y el final propios. La verificación de capítulos distingue estas rutas breves de la campaña completa pendiente.
-
-`tests/campaign-cast.test.mjs` recorre contratación, encuentro, diálogo, encargo y final con solo dos identidades nuevas; comprueba un elenco vacío con granadero gratuito, los habitantes genéricos opcionales y que los personajes eliminados no vuelvan al cargar. El editor montado copia y reemplaza un mando, guarda su incorporación local y verifica que no herede la bonificación de marcha. La verificación del elenco registra los límites.
+Los mandos históricos conservan su servicio permanente, requisitos de reclutamiento y papeles de misión. Sus habilidades de combate, la asignación de fundición y marcha, y los nombres, ubicación y costos de la fundición ya son configurables. Los **Encargos locales** admiten entregas físicas y escoltas con sus condiciones actuales. Quedan pendientes la extracción de mandos, las transferencias de funciones a sucesores, efectos más amplios sobre objetos y funciones de campaña, las escenas dirigidas y la composición completa de campaña.
 
 ## Recargas que duran varios turnos
 
@@ -563,11 +483,11 @@ Un arma con varios cañones puede cargar uno antes de terminar el siguiente.
 Guardar, cambiar de arma o recogerla conserva su avance. En exploración se gasta
 tiempo: el contacto con un enemigo o la caída del soldado interrumpe el trabajo.
 El avance no se completa gratis al pasar a combate. La artillería mantiene sus
-reglas separadas. Véase la verificación de recargas.
+reglas separadas.
 
 ### Precio de los cartuchos
 
-El precio anterior se conserva en paquetes importados, pero no tiene un control en el editor ni cobra al entrar o devuelve dinero al salir. Restaurar fondos y cantidades iniciales conserva ese valor importado. La dotación inicial se entrega una vez; los cartuchos gastados no se reponen por compra. La verificación anterior es un registro histórico.
+El precio anterior se conserva en paquetes importados, pero no tiene un control en el editor ni cobra al entrar o devuelve dinero al salir. Restaurar fondos y cantidades iniciales conserva ese valor importado. La dotación inicial se entrega una vez; los cartuchos gastados no se reponen por compra.
 
 ## Recargar una pieza entre turnos
 
@@ -580,11 +500,10 @@ La dotación debe estar de pie o agachada, próxima y disponible. Cada integrant
 asignado paga el mismo paso; los ayudantes que no participan conservan sus puntos.
 La escuadra no usa los puntos de acción de la milicia. Durante la exploración,
 el trabajo consume tiempo y no resta puntos de combate.
-Verificación y alcance.
 
 ## Reponer munición de artillería
 
-La compra y reposición de munición de artillería están desactivadas. El editor conserva los valores anteriores de los paquetes importados y no muestra controles para habilitarlas. La reserva inicial de cada modelo sigue en **Armas → Artillería**. Una pieza conserva su carga, munición y recarga incompleta; la dotación debe usar sus reservas reales. La verificación anterior conserva el alcance histórico y el rechazo actual del comercio.
+La compra y reposición de munición de artillería están desactivadas. El editor conserva los valores anteriores de los paquetes importados y no muestra controles para habilitarlas. La reserva inicial de cada modelo sigue en **Armas → Artillería**. Una pieza conserva su carga, munición y recarga incompleta; la dotación debe usar sus reservas reales.
 
 ## Dotaciones automáticas
 
@@ -597,8 +516,7 @@ Las piezas sin munición liberan a la dotación para otras acciones.
 El disparo exige un objetivo visible. La dotación evita trayectorias que alcancen
 aliados o civiles visibles. Una amenaza muy cercana tiene prioridad. Las escuadras
 contratadas conservan el control manual; no prestan sus PA a las milicias.
-Guardar conserva los recursos reales. Los traslados estratégicos de piezas propias usan los controles de armería y depósito descritos abajo; no forman parte de las órdenes tácticas de una dotación automática. Verificación.
-
+Guardar conserva los recursos reales. Los traslados estratégicos de piezas propias usan los controles de armería y depósito descritos abajo; no forman parte de las órdenes tácticas de una dotación automática.
 
 ## Editar modelos de artillería
 
@@ -618,8 +536,7 @@ un dato no es válido. La partida conserva los modelos con los que fue iniciada.
 Cada pieza recibe su munición inicial una sola vez. Volver al sector
 conserva la carga real. No hay reposición por compra. La edición
 se aplica tanto a los cañones propios como a los enemigos de ese modelo. No crea
-familias adicionales. Verificación.
-
+familias adicionales.
 
 ## Trasladar una pieza de artillería
 
@@ -637,8 +554,7 @@ Por ahora, las rutas usan localidades y sus conexiones: 18 horas por tramo en
 carreta o cinco en flotilla. Estos valores predeterminados se pueden cambiar en las reglas siguientes. Las carretas no
 cruzan sectores de montaña con un cañón completo; la flotilla usa localidades
 costeras. La selección libre de celdas para personajes sigue siendo independiente
-de estos envíos. Verificación y límites.
-
+de estos envíos.
 
 ## Reglas de traslado de artillería
 
@@ -652,12 +568,11 @@ La armería muestra el precio y la duración reales. Si faltan fondos, conserva
 la pieza. La ruta debe seguir controlada y ser apta para el transporte; estas
 reglas no eliminan la dotación ni las restricciones de costa y montaña. Deshacer,
 rehacer y restaurar las reglas originales funcionan. Los cambios del borrador
-solo se aplican a nuevas campañas. Verificación.
-
+solo se aplican a nuevas campañas.
 
 ## Vender y recomprar artillería
 
-La venta y recompra de artillería están desactivadas. Los controles actuales gestionan piezas propias, depósitos y traslados. La verificación anterior conserva el alcance histórico; no habilita operaciones en la campaña actual.
+La venta y recompra de artillería están desactivadas. Los controles actuales gestionan piezas propias, depósitos y traslados.
 
 ## Reenviar piezas guardadas
 
@@ -666,12 +581,11 @@ una pieza propia recuperada a otra localidad controlada, con la dotación y
 el transporte disponibles. Se aplican las horas y el precio que definiste en las
 reglas de traslado. No hace falta emplazarla primero en un combate. Al llegar,
 conserva su identidad, carga, reservas y recarga incompleta. Elegila en la batería
-cuando la escuadra alcance el nuevo depósito. Verificación.
-
+cuando la escuadra alcance el nuevo depósito.
 
 ## Reglas de comercio de artillería
 
-El editor no muestra los fondos, porcentajes ni precios locales del antiguo comercio. Un paquete importado conserva esos datos cuando se editan otras reglas, se deshace, se exporta o se inicia la campaña. El control de comercio de la campaña sigue rechazando las operaciones. La verificación anterior es un registro histórico.
+El editor no muestra los fondos, porcentajes ni precios locales del antiguo comercio. Un paquete importado conserva esos datos cuando se editan otras reglas, se deshace, se exporta o se inicia la campaña. El control de comercio de la campaña sigue rechazando las operaciones.
 
 ### Recuperar el arma secundaria
 
@@ -681,9 +595,7 @@ editor. La pieza pasa al inventario y deja un espacio vacío en el cuerpo. Podé
 equiparla en cualquiera de las dos manos; el arma que reemplazás queda guardada.
 Guardar, salir y volver al sector conserva ese cambio. Otro ejemplar físico
 puede reemplazar esa pieza sin crear equipo nuevo. Esto aún no incluye las armas y armaduras de habitantes
-civiles. La verificación registra
-los casos de recuperación, regreso y guardado.
-
+civiles.
 
 ### Dejar un arma recuperada
 
@@ -694,8 +606,7 @@ equipo** y hacé clic en esa celda. También funciona si hay un soldado encima.
 La pieza conserva la imagen, los valores, el desgaste y la carga que tenía.
 Guardar, salir y volver al sector mantiene su estado. **Dejar arma en uso**
 permite hacer lo mismo con el arma principal o secundaria elegida. La mano queda
-vacía. Para suministros, usá el panel Pertrechos. Verificación.
-
+vacía. Para suministros, usá el panel Pertrechos.
 
 ### Entregar un arma recuperada a un compañero
 
@@ -707,8 +618,7 @@ imagen, los valores, el desgaste y la carga, incluso después de guardar y
 volver al sector. Si no se puede entregar, el panel explica el motivo.
 También podés seleccionar el arma principal o secundaria y usar **Entregar arma
 en uso** con el compañero elegido. Para los suministros, usá el panel Pertrechos. Las entregas a distancia
-siguen pendientes. Verificación.
-
+siguen pendientes.
 
 ### Manos vacías y arma secundaria
 
@@ -720,8 +630,7 @@ No permite una carga con arma ni calar una bayoneta inexistente. Guardar y volve
 al sector conserva el equipo real. **Manos vacías** permite guardar voluntariamente el arma sin perderla ni
 cambiar su carga o desgaste. Cuesta 4 PA o un segundo en exploración. Hacé clic
 en el arma principal o secundaria para volver a usarla. Guardar conserva la
-selección de manos vacías en el combate activo. Verificación.
-
+selección de manos vacías en el combate activo.
 
 ### Dejar el arma en uso
 
@@ -731,8 +640,6 @@ Podés recogerla y equiparla con los controles habituales. Su imagen, desgaste,
 carga y recarga incompleta se conservan, incluso al guardar y volver. Los
 cartuchos sueltos conservan su cantidad y dueño al regresar a campaña; no se
 convierten en pesos. La carga dentro del arma en el suelo sigue en esa pieza.
-Verificación.
-
 
 ### Entregar el arma en uso
 
@@ -742,8 +649,7 @@ estar al lado, consciente y sin obstáculos entre ambos. Cuesta 4 PA del que
 entrega o un segundo en exploración. La mano queda vacía y la pieza pasa a la
 mochila del compañero, con su imagen, carga, desgaste y recarga incompleta.
 Puede equiparla y conservarla al guardar y volver al sector. El panel muestra
-el motivo si la entrega no está disponible. Verificación.
-
+el motivo si la entrega no está disponible.
 
 ### Entregar suministros
 
@@ -753,8 +659,7 @@ antorchas, boleadoras y las cuatro familias de munición. El compañero debe est
 consciente y sin obstáculos. Cuesta 4 PA del que entrega o un segundo en
 exploración. La cantidad debe estar disponible completa. El panel explica el
 motivo si no se puede entregar. El compañero puede usar lo recibido y cada uno
-conserva su sobrante al guardar y volver al sector. Los cartuchos también se pueden entregar a un compañero. Verificación.
-
+conserva su sobrante al guardar y volver al sector. Los cartuchos también se pueden entregar a un compañero.
 
 ### Dejar suministros en el sector
 
@@ -766,9 +671,6 @@ compañero cercano, aunque haya alguien encima. La recogida abre un selector de 
 Cuesta 8 PA o un segundo en exploración. Guardar, salir y volver conserva el
 bulto y los sobrantes. Esto cubre los cuatro suministros personales y las cuatro
 familias de munición. La reserva suelta se separa de la carga dentro del arma.
-Verificación de suministros y
-munición compatible.
-
 
 ### Pasar cartuchos a un compañero
 
@@ -780,7 +682,7 @@ en exploración. También podés dejar cartuchos en el suelo y recoger una parte
 Guardar conserva la familia y las cantidades restantes. Al retirarse, la escuadra
 recibe el valor de las cargas restantes dentro del límite de munición entregada
 y recuperada de fuentes previas. Volver a recoger el mismo bulto no duplica ese
-valor. Verificación.
+valor.
 
 La Brown Bess, el Charleville y la tercerola usan cartuchos de mosquete. El Baker
 usa munición de fusil. Las tres pistolas usan cartuchos de pistola. La escopeta y
@@ -792,8 +694,6 @@ Deshacer y rehacer conservan la selección. La campaña guarda su propia definic
 editar el borrador después no cambia sus armas. Los enemigos y las milicias usan
 la familia de las armas que les asignes. Todavía no se pueden crear familias
 nuevas ni elegir cargas alternativas con efectos distintos para una misma arma.
-Verificación.
-
 
 ### Elegir qué recoger del suelo
 
@@ -803,8 +703,7 @@ indicás; el resto queda allí. Si hay varios bultos en la celda, podés elegir
 cualquiera de los suministros disponibles. El panel muestra cuánto hay, cuánto
 llevás y el costo. Si no podés tomar todo, reducí la cantidad. Mientras elegís,
 el reloj de exploración se detiene. **Cancelar** o Esc cierran sin gastar PA ni
-suministros. Guardar y volver conserva los sobrantes. Verificación.
-
+suministros. Guardar y volver conserva los sobrantes.
 
 ### Recoger debajo de un habitante
 
@@ -813,8 +712,6 @@ clic en su figura. Se recoge el equipo suelto o se abre el selector del bulto.
 Los suministros personales del habitante quedan intactos. Si no queda equipo
 suelto, la misma acción permite registrar a un habitante inconsciente. Los
 objetos enredados o dentro de un contenedor no cuentan como equipo suelto.
-Verificación.
-
 
 ### Golpear con el arma de fuego
 
@@ -823,7 +720,7 @@ distancia. El valor original es 16 PA y 18 de daño base, con alcance de 1,5
 celdas. El golpe conserva la carga, los cartuchos, el desgaste, el atasco y el
 trabajo de recarga. Para cargar con un arma blanca, elegila en la mano secundaria.
 La culata no agrega una bayoneta al inventario. Los accesorios físicos siguen
-pendientes. Verificación.
+pendientes.
 
 ### Configurar la culata de cada arma
 
@@ -835,7 +732,7 @@ cambios. Un valor inválido impide iniciar la campaña.
 Si no definís un valor, se usan 16 PA, 18 de daño base y 1,5 casillas. Las armas
 ya guardadas conservan su definición. El golpe no consume cartuchos; las heridas
 y la protección siguen las reglas de combate. Los accesorios físicos de bayoneta
-siguen pendientes. Verificación.
+siguen pendientes.
 
 ## Encargos locales con entregas y escoltas
 

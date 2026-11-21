@@ -1,9 +1,5 @@
 # Finite physical shot loads
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
-
 During tactical exploration and turn-based combat, an equipped firearm's effective `loadPattern` determines its projectile flight: a `single` load keeps the existing lead-ball rules, while a `cone` shot load discharges nine finite pellet rays around one resolved aiming direction. This applies to native shot loads, authored primary shot ammunition, alternative musket loads and either held pistol. One successful discharge consumes one actual loaded charge.
 
 The released [classic JA2 source at revision 876ccf5d](https://github.com/dariusk/ja2/blob/876ccf5dfdad7e6821c5b26d6d783132ea1ab7a2/ja2/Build/Tactical/LOS.c#L3267) and [official Stracciatella source at revision 04869c8e](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/04869c8e339ead1de9fefb25b7ad206b9b786825/src/game/Tactical/LOS.cc#L3094) create nine buckshot bullets around a shared adjusted firing direction. Their finite-projectile structure is the behavior evidence. Granaderos does not copy their damage adjustment, spread table, bullet dimensions or historical ammunition specification.
@@ -30,24 +26,20 @@ Named warnings use the same direct and scattered pellet paths for the actual loa
 
 ## Paid effects, saves and limits
 
-AP/setup, ammunition ownership, independent hand ignition, weapon wear, noise, smoke, wounds and game-clock costs retain the existing firearm gates. Failed ignition retains that hand's charge. Invalid orders remain atomic. A valid shot load draws ignition, one center accuracy, two scatter draws only on a failed accuracy roll, and one load damage draw even if no pellet hits. Actual body-passage draws occur only when the shared flight permits passage. This deliberately replaces the former roster-dependent accuracy/damage lottery: adding a remote person no longer consumes a separate hit roll. A body merely lying within a former cone receives no automatic morale deduction; real injury retains normal morale effects.
+AP/setup, ammunition ownership, independent hand ignition, weapon wear, noise, smoke, wounds and game-clock costs retain the existing firearm gates. Failed ignition retains that hand's charge. Invalid orders remain atomic. A valid shot load draws ignition, one center accuracy, two scatter draws only on a failed accuracy roll, and one load damage draw even if no pellet hits. Actual body-passage draws occur only when the shared flight permits passage. Adding a remote person does not consume a separate hit roll. A body that merely lies inside a spread area receives no automatic morale deduction; real injury retains its normal morale effects.
 
-Existing saves retain finite guns, ammunition, health and RNG state without new saved pellet fields. Resuming a pre-change save under this engine can produce different future shot-load results because the old lottery and random draw order were replaced. The same saved input and orders under this engine reproduce the full result. Ordinary and presented execution remain equal. The current fan presentation describes one load; it does not invent an individual rendered impact path for every pellet.
+Existing saves retain finite guns, ammunition, health and RNG state without saved pellet fields. An older save written under the per-person lottery can produce different future shot-load results, because the draw order is not stored. The same saved input and orders under this engine reproduce the full result. Ordinary and presented execution remain equal. The current fan presentation describes one load; it does not invent an individual rendered impact path for every pellet.
 
-`tests/shot-load-projectiles.test.mjs` checks finite weighted force, cover and upper-floor stops, foreground shielding through death, fractional injury, typed civilian harm, actual bodyguard recipients, private-room bodies/props, frozen mixed-pistol intent, enemy orders, and a stock paid shot-load hire through actual fire, official save, return and reentry. Affected single-ball, point-fire, alternate-load, warning, paired and presentation tests retain their own contracts.
+Each ray spends material force over crossed cover depth, including oblique and vertically clipped intervals. Same-object cells merge; separate overlapping obstacles add force loss. Pellets share the exact range-scaled drop after twice the actual selected effective range. The longer finite tail can change a downstream body region, enter material or hit ground after the resolved aiming point. A qualifying glancing stone contact can redirect each pellet once with half its current force, while cumulative distance and drop remain spent. Reflection from other surfaces and a supported mass/velocity model remain open. Cannon and map/3D work are separate. Full JA2 and historical ballistic parity are not claimed.
 
-Each ray now spends material force over crossed cover depth, including oblique and vertically clipped intervals. Same-object cells merge; separate overlapping obstacles add force loss. Pellets share the exact range-scaled drop after twice the actual selected effective range. The longer finite tail can change a downstream body region, enter material or hit ground after the resolved aiming point. A qualifying glancing stone contact can redirect each pellet once with half its current force, while cumulative distance and drop remain spent. Reflection from other surfaces and a supported mass/velocity model remain open. Cannon and map/3D work are separate. This slice does not claim full JA2 or historical ballistic parity.
+## Falling pellet tails
 
-
-## Falling pellet tails — 4 October 2026
-
-The former one-range cap ended every pellet before the shared two-range drop
-onset. The explicit `shotLoadFlightRangeMultiplier: 3` setting now permits a
-falling tail on ordinary resolved near-centre shots. It changes physical reach,
-not aiming accuracy, the selected range, nine force shares or the random draws.
-Known-person warnings and enemy forecasts trace the same extended geometry.
-Actual concealed bodies still affect injury while the public spread descriptor
-uses its existing information boundary.
+The explicit `shotLoadFlightRangeMultiplier: 3` setting permits a falling tail
+on ordinary resolved near-centre shots past the shared two-range drop onset. It
+changes physical reach, not aiming accuracy, the selected range, nine force
+shares or the random draws. Known-person warnings and enemy forecasts trace the
+same extended geometry. Actual concealed bodies still affect injury while the
+public spread descriptor uses its existing information boundary.
 
 The pinned Stracciatella source assigns [ordinary gun range to each buckshot
 bullet](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/04869c8e339ead1de9fefb25b7ad206b9b786825/src/game/Tactical/LOS.cc#L3394-L3404)

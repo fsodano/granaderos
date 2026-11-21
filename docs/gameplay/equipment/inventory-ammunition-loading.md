@@ -1,9 +1,5 @@
 # Loading a gun with selected ammunition
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
-
 A cartridge stack placed onto a firearm now loads that specific gun. This works
 with a click or drag, in either hand or in a pocket. The gun stays in its slot.
 The same interaction works in tactical and campaign inventories.
@@ -35,37 +31,10 @@ uses the supplied ammunition object and the target gun. The
 permits pocket and hand hosts. The
 [cursor path](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/a06f4896c43c76396529e415a29a8ca26b00f9f1/src/game/Tactical/Interface_Panels.cc#L1536-L1590)
 retains an unconsumed object. The bundled manual PDF pages 22, 29 and 54 describe
-selection, loading and compatibility; Patusco's JA2 Strategy Guide 1.3 (cited as **G** in [the JA2 parity audit](../../verification/ja2-parity-audit.md#scope-and-evidence)), printed page 49, describes calibers.
+selection, loading and compatibility; Patusco's JA2 Strategy Guide 1.3 (cited as **G** in [the JA2 parity requirements](../../requirements/ja2-parity.md#scope-and-evidence)), printed page 49, describes calibers.
 
 Classic JA2 also exchanges detachable magazines and can exchange incompatible
 items through ordinary placement. Granaderos instead fills missing chambers from
 loose prepared cartridges, rejects full/incompatible loading attempts, and keeps
 its existing black-powder loading progress. These are explicit period adaptations.
-Modern magazine swapping and alternative AP/HP ammunition are not implemented.
-
-## Verification
-
-New reducer, component and campaign tests cover all nine handheld loads; right,
-left and pocket hosts; finite selected quantities; cursor remainders; AP and
-exploration timing; partial work; unchanged second pistols and reserve stacks;
-failed and stale input; held priming powder; save/restore and redeployment.
-The isolated full run passed all 2,348 tests. The main workspace passed 46
-focused integration tests with its pending changes present. Typecheck and the
-production build passed.
-
-The existing two-cartridge hand-custody test now frees the weapon hand before
-placing ammunition there, so it still tests ordinary held objects.
-
-Live check, 19 September 2026, isolated preview of this implementation:
-
-- Opened the standard San Lorenzo battle and Dorrego's inventory.
-- Fired one barrel: two loads became one and 100 AP became 94 AP.
-- Shift-clicked all 12 pistol .54 cartridges, then clicked the pistol.
-- The pistol had two loads, 66 AP, and 11 cartridges on the cursor. The journal
-  recorded a 28 AP load. Priming powder decreased from 50 to 49.
-- Another click on the full gun showed `El arma ya está cargada.` and kept the
-  gun, AP and cursor unchanged.
-- Esc returned all 11 remaining cartridges to their original pocket.
-
-The preview uses committed gameplay and does not include concurrent artwork or
-recruitment changes. This check does not establish complete JA2 parity.
+Modern magazine swapping and alternative AP/HP ammunition are not part of the period adaptation.

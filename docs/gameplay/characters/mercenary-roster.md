@@ -1,12 +1,12 @@
 # Paid mercenary roster
 
-This guide describes published behavior on the strategic hiring desk and tactical battlefield. The hiring desk contains 48 paid fictional volunteers, in addition to the 13 historical operatives. IDs 100–106 are retained; IDs 107–147 are new. The custom officer remains separate.
+This guide describes current behavior on the strategic hiring desk and tactical battlefield. The hiring desk contains 48 paid fictional volunteers, in addition to the 13 historical operatives. IDs 100–106 are retained; IDs 107–147 are new. The custom officer remains separate.
 
 Each new volunteer has ten attributes, working tactical traits, personal equipment, a biography, a personality, seven event lines, and an individual portrait. These are fictional dramatic characters, not historical claims.
 
 ## Former officers
 
-Ten women from the initial expansion have been replaced by five fictional former British officers and five fictional former French officers. The paid roster now has nine women and 39 men. Historical characters are unchanged.
+Ten women from the initial expansion have been replaced by five fictional former British officers and five fictional former French officers. The paid roster has nine women and 39 men. Historical characters are unchanged.
 
 The replacements include infantry and cavalry commanders, an engineer major, an artillery colonel, a staff colonel, and a senior military surgeon. They left their former service and seek private paid contracts; they do not represent Britain or France. Their invented backstories avoid later events such as Waterloo or the post-1815 demobilization. The National Archives documents period officer careers and half-pay status in its [British Army officer research guide](https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/british-army-officers-1913/); these game characters are not entries from those records.
 

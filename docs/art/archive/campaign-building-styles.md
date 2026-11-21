@@ -1,6 +1,6 @@
 # Historical campaign building styles
 
-This archived guide predates the 14-template architecture catalog. It documents the earlier nine-style compatibility 2D building renderer (`web/app/BuildingRoof.tsx` and `game/building-types.js`, corresponding to the pre-monorepo `apps/web/` and `packages/game/` paths) and is not current acceptance. See [the building guide](../buildings.md).
+This earlier guide predates the 14-template architecture catalog. It documents the earlier nine-style compatibility 2D building renderer (`web/app/BuildingRoof.tsx` and `game/building-types.js`, corresponding to the pre-monorepo `apps/web/` and `packages/game/` paths) and is not current. See [the building guide](../buildings.md).
 
 ## Colonial buildings, 1810–1820
 
@@ -36,9 +36,6 @@ node tools/preview-buildings.mjs
 
 Outputs: `assets/previews/buildings/exterior.png` and `interior.png`.
 These are deterministic renderer checks, not browser interaction recordings.
-
-Validation includes `tests/building-render.test.mjs`, the existing building and
-visibility tests, TypeScript checks, and the production build.
 
 ## Building catalogue and map placement
 
@@ -117,10 +114,8 @@ other buildings, furniture and deployed characters. Carts remain visible outside
 revealed rooms, use the shared prop collision rules and round-trip through saves.
 The renderer sorts entrance carts in front of their owner's broad roof object.
 
-Validation: building/material/render tests, map connectivity and deployment,
-large-sector save round trips, snapshot validation, type checks, production
-build, and exterior/interior catalogue renders. The catalogue is a static render
-of the game scene; it does not claim live browser interaction coverage.
+The catalogue is a static render of the game scene; it does not cover live
+browser interaction.
 
 ### Building scale relative to people and carts
 
@@ -153,6 +148,4 @@ rendered heights. Fresh sectors receive the larger footprints.
 
 The catalogue includes a standing granadero beside each exterior and another
 inside each revealed room. To check selected buildings quickly, run
-`node tools/preview-building-catalogue.mjs /tmp/building-preview pulperia cabildo`.
-The scale pass also received a live browser check in San Lorenzo, at normal and
-enlarged camera zoom, with no browser console errors.
+`node tools/preview-building-catalogue.mjs .output/building-preview pulperia cabildo`.

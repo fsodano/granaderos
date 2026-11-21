@@ -1,95 +1,52 @@
 # Tactical engine
 
-[Architecture guide](README.md)
+[Architecture guide](README.md) · [Runtime flows](runtime-flows.md) · [Tactical use cases](use-cases/tactical.md) · [Rendering](rendering.md) · [Persistence](persistence.md)
 
-The tactical engine is a deterministic, clone-and-return simulation over a serialized battle state. `createBattle` turns a strategic deployment description into a grid, units, clocks, objectives and environmental state; `actBattle` applies a typed player order and settles autonomous consequences; `endTurn` advances turn/phase flow, including enemy and allied behavior. The same state contains combat geometry, perception, inventory, physical ammunition, mission actors and presentation-relevant facts, while rendering/HUD code projects that state rather than owning combat rules. For runtime scene ownership and persistence mechanics, see [runtime flows](runtime-flows.md) and [persistence](persistence.md).
+This page explains how the tactical engine (`packages/game/tactical.js` and its domain, application, and geometry collaborators) opens and runs a `SectorSession`, resolves exploration and `CombatSession` turns, enforces action-point budgets, perception, firearm loading, and inventory custody, and coordinates worker calculations with the browser UI. It connects the call sequences in [runtime flows](runtime-flows.md) and the player intentions in [tactical use cases](use-cases/tactical.md) to the 3D/SVG presentation layer in [rendering](rendering.md) and the save mappers in [persistence](persistence.md).
 
 ## Domain owners and application contracts
 
-A `SectorSession` owns the complete visit. `EnterSector` admits an authorized
-`SectorEntryRequest`. `CombatSession` owns a combat episode, and `CombatTurn`
-controls the eligible phase queue and budget issue. `SectorParticipant` keeps
-local participation with `ActionPoints`; persistent health uses `Health`.
+Sector visits combine domain classes in `packages/game/domain`, use cases in `packages/game/application`, and physical geometry and AI modules in `packages/game/`. Each fact has a single authoritative owner:
 
-`Firearm`, `ReloadWork`, and `ReprimeWork` protect ammunition, weapon condition,
-and paid partial work. `FirearmAccuracy`, `BodyRegion`, and `CombatInjury` own the
-corresponding combat rules. `ReactionPolicy`, `ReactionWindow`, and `ReactionStack`
-control interruption eligibility and resumption. Geometry and trajectory
-algorithms remain focused collaborators in the compatibility engine.
-
-`VisionObserver`, `FieldOfView`, `VisibilityPolicy`, and `IlluminationPolicy`
-determine perception. `GetVisibleCharacters` is the read-only application
-contract. `KnownSectorPolicy` keeps hidden people and objects out of forecasts.
-`Inventory`, `PocketLayout`, and `ItemTransferService` protect capacity and custody.
-
-`ExecuteSectorOrder`, `EndSectorTurn`, and `ResumeSectorOperation` use separate
-repository contracts over the sector operation transaction. `SectorTimeBudget`
-and checkpoints stop at a campaign arrival decision. Accepted partial progress
-and unexecuted continuation are explicit snapshot fields.
+- **Visit, deployment, and combat lifecycles:** `EnterSectorUseCase` admits a `SectorEntryRequest` through `EnterSectorRepository` and opens a `SectorSession`. `SectorDeployment` owns authorized entry cells and exclusive participant placement until confirmed. `SectorSession` owns the visit mode (`deployment`, `exploration`, or `combat`), participant list, and completed combat history. `CombatSession` owns a single combat episode within that visit (`round`, `phase`, `quietRounds`, and `CombatOutcome`), while `CombatTurn` sequences automatic participant order and one-time action-point issuance inside a phase. `AdmitSectorReinforcementsUseCase` admits newly arriving combatants into an already open `SectorSession` on unoccupied entry cells.
+- **Participant budgets vs. persistent character state:** `SectorParticipant` references a `Character` by `characterId` and owns only visit-local action points (`ActionPoints`, derived by pure `ActionPointPolicy`). Persistent hit points, bleeding, and bandaged wounds belong exclusively to `Character` and `Health` (`ActiveSectorCharacterMapper` shares the same `Character` instance across campaign personnel and active sector participation via `DomainIdentityMap`).
+- **Combat, reactions, and injuries:** `Firearm` owns loaded charges, weapon condition, and jam state; `IgnitionPolicy` calculates ignition failure chance as a pure function; `ReloadWork` preserves fractional reload progress and consumes reserve ammunition only when a charge completes; and `ReprimeWork` admits pan repriming only when current `ActionPoints` can pay it. `FirearmAccuracy` and `BodyRegion` compute shot accuracy and regional injury modifiers, `CombatInjury` applies physical impact to `Health`, `MeleeExchange` owns parry and counterattack modifiers, and `CombatOutcomePolicy` evaluates whether either side can remain on the field. `ReactionPolicy`, `ReactionWindow`, and `ReactionStack` govern interrupt eligibility and restore the exact parent `CombatTurn` authority when a nested reaction finishes.
+- **Perception and information limits:** `VisionObserver`, `FieldOfView`, `VisibilityPolicy`, and `IlluminationPolicy` compute visual detection as pure functions of posture, facing, range, cover, and light. `GetVisibleCharactersUseCase` queries `GetVisibleCharactersRepository` and returns a view type (`{ characterIds }`) without exposing domain objects or advancing time. `KnownSectorPolicy` filters forecasts and previews so hidden characters and objects are never disclosed.
+- **Inventory and item custody:** `Inventory`, `Item`, `PocketLayout`, and `ItemCustody` own item quantities, pocket placement, and the single custodian (`character`, `container`, `ground`, or `corpse`) for every item. `TransferItemUseCase` coordinates atomic custody changes through `ItemTransferService` and `TransferItemRepository`.
+- **Bounded operations and checkpoints:** `ExecuteSectorOrderUseCase`, `EndSectorTurnUseCase`, and `ResumeSectorOperationUseCase` coordinate sector commands through their respective repository contracts (`ExecuteSectorOrderRepository`, `EndSectorTurnRepository`, and `ResumeSectorOperationRepository`). `SectorTimeBudget` stops any operation before it exceeds the next campaign `ArrivalDecision` timestamp, and `SectorOperation` with `SectorOperationContext` records the accepted checkpoint and unexecuted continuation on the snapshot.
 
 ## State and deterministic boundary
 
-`createBattle(squad = [], sector = {})` returns a battle-state object. It records version markers; optional authored map/source identifiers and definitions; exits; battle/sector identity; start, elapsed and synchronized seconds; turn/phase/mode/status; a 32-bit unsigned seed; weather/time-of-day; map geometry and actors. The complete shape is intentionally extensible. Core fields include:
+`createBattle(squad = [], sector = {})` in `packages/game/tactical.js` initializes the compatibility sector snapshot (`BattleState`) from a strategic `SectorEntryRequest` and authored map definition.
+
+The table below lists the core `Field` groups on the compatibility sector snapshot and their `Meaning`.
 
 | Field | Meaning |
-|---|---|
-| `width`, `height`, `tiles`, `wallEdges`, `buildings`, `props`, optional `upperSurfaces`/`climbLinks` | spatial model and traversal/cover geometry |
-| `units`, `npcs`, `objective`, `exits` | military actors, civilian/interactable actors, objective and departure routes |
-| `turn`, `phase`, `mode`, `status`, `deployment` | control-flow state; mode begins as combat or exploration |
-| `seed` | deterministic random stream state, initialized from sector seed/default |
-| `startSeconds`, `elapsedSeconds`, `syncedSeconds`, `night`, `weather`, `lights` | tactical clock and changing environmental conditions |
-| per-unit `x/y`, `side`, `hp`, `ap`, `weapon`, `loaded`, `ammo`, `inventory`, `stance`, `morale`, condition/medical state | mutable actor/combat/inventory model |
-| `lastError`, optional `combatJournal` / observation data | rejection feedback and recorded/derived battle information |
+| --- | --- |
+| `width`, `height`, `tiles`, `wallEdges`, `buildings`, `props`, optional `upperSurfaces` / `climbLinks` | Spatial grid (default 16x12, or 20x16 for authored campaign maps), elevation levels, cover, and traversal geometry |
+| `units`, `npcs`, `objective`, `exits`, `residentPositions` | Participating combatants, civilian/mission actors, sector objectives, departure zones, and read-only `ResidentPositionReference` projections |
+| `sectorSession`, `turn`, `phase`, `mode`, `status`, `deployment`, `reactionStack` | Serialized `SectorSession`, `CombatSession`, `SectorDeployment`, and `ReactionStack` state |
+| `seed` | Unsigned 32-bit deterministic random stream state (default `18130203`); under the [accepted plan](../plans/accepted/domain-architecture.md), `RandomSource` is the single session-owned seeded sequence |
+| `startSeconds`, `elapsedSeconds`, `syncedSeconds`, `night`, `weather`, `lights`, `worldTimeline`, `residentRoutine` | Sector clock, environmental lighting/weather, and serialized `WorldTimeline` and `ResidentRoutine` schedules |
+| Per-unit `x`, `y`, `tacticalLevel`, `side`, `hp`, `maxHp`, `ap`, `maxAP`, `carriedAP`, `weapon`, `loaded`, `ammo`, `inventory`, `pocketOrder`, `stance`, `morale`, `corpse` | Compatibility projection of participant position, `Health`, `SectorParticipant` (`ActionPoints`), `Firearm`, `Inventory` (`PocketLayout`), posture, and `Corpse` records |
+| `lastError`, optional `combatJournal` / observation records | Refusal feedback and player-visible observation history |
 
-Unit initialization (`makeUnit`) normalizes authored raw people into tactical fields and weapon/ammunition state. Position, AP, health, weapon state and inventory are state, not merely display metadata. The battle constructor also imports authored tiles/exits/weather, initializes local structures and NPC health, and performs migrations/derived setup.
+Public tactical entry points are functional: `createBattle`, `actBattle`, and `endTurn` clone and return the next sector snapshot rather than mutating caller state in place.
 
-Simulation calls are functional at the public boundary: they return a resulting state (often cloned), rather than requiring callers to mutate the input. Random choices use the battle's seed-based stream, so the state carries the source of deterministic variation. Determinism still depends on equivalent input state and action ordering.
+## Browser worker transport and previews
 
-## Browser worker transport
+The browser executes tactical orders and movement steps through [`apps/web/lib/useBattleExecutor.ts`](../../apps/web/lib/useBattleExecutor.ts) and [`apps/web/lib/battle-worker-transport.ts`](../../apps/web/lib/battle-worker-transport.ts) (`BattleWorkerJob`, `BattleWorkerRequest`, and `BattleWorkerResponse`). Each request carries a positive integer message ID, a `SectorOperationContext` (binding `gameSessionId`, `sectorSessionId`, `gameRevision`, `sectorRevision`, and `requestId`), and the job payload. The worker validates the context against the snapshot before running [`packages/game/battle-job.ts`](../../packages/game/battle-job.ts), and the main thread verifies that the returned context still matches the active session and revision before committing. If worker construction or transport fails, `useBattleExecutor` runs the same job inline.
 
-The browser compatibility adapter uses
-[`BattleWorkerJob`, `BattleWorkerRequest`, and `BattleWorkerResponse`](../../apps/web/lib/battle-worker-transport.ts)
-for worker messages. These names describe the existing browser transport. The
-domain and application continue to use `SectorSession` and `SectorOperation`.
-
-Each request has a positive integer message ID, an operation context, and a job.
-The context identifies the game session, sector visit, both revisions, and
-request identity. The worker checks the context against the supplied snapshot
-before it runs the job. The executor checks the returned context before it
-accepts a result. A reply contains either a result or a string error. Malformed
-replies for a pending message reject that request. Messages without a pending
-ID are ignored. Worker failure or closure rejects all pending requests.
-
-Message data enters as `unknown`. Envelope and context validation protect this
-transport boundary. Legacy simulation snapshots, orders, continuations, and
-result payloads remain opaque to the transport; their reducers own the gameplay
-rules. The adapter passes both route arrays and group progress objects through
-the continuation field.
-
-### Preview lifecycle
-
-[`useBattlePreview`](../../apps/web/lib/useBattlePreview.ts) accepts reachable-area
-or group-movement requests and returns the corresponding typed preview. The
-[`latest-preview`](../../apps/web/lib/latest-preview.ts) queue keeps one active
-calculation and one waiting replacement. A new request replaces waiting work.
-Cancellation or closure invalidates pending publication. The hook also requires
-the same snapshot, request object, and preview kind before it displays a result.
-A failed worker is closed; the next request creates a replacement worker.
-
-[`battle-preview`](../../apps/web/lib/battle-preview.ts) checks the result fields
-used by preview rendering: point coordinates, optional tactical level, path
-points, costs, member identities, destinations, and explanatory text. It retains
-additional result and route metadata. The complete legacy sector snapshot stays
-`unknown` at this boundary. The game preview rules determine legal routes and
-apply the player's information limits. A displayed preview does not authorize
-movement; execution checks the current game state again.
+For hover and path previews, [`apps/web/lib/useBattlePreview.ts`](../../apps/web/lib/useBattlePreview.ts) and [`apps/web/lib/latest-preview.ts`](../../apps/web/lib/latest-preview.ts) maintain at most one active worker calculation and one queued replacement. [`apps/web/lib/battle-preview.ts`](../../apps/web/lib/battle-preview.ts) validates returned coordinates, tactical levels, path costs, and member destinations under `KnownSectorPolicy`. A preview never mutates state or authorizes movement; `ExecuteSectorOrderUseCase` re-validates the order when executed.
 
 ## Control flow and API contracts
 
-* `createBattle(squad, sector) -> BattleState`: creates a deployment from strategic/authored data. Width/height default to 16x12; mode is `exploration` when `sector.exploration` is truthy, otherwise `combat`; seed defaults to `18130203` and is normalized unsigned.
-* `actBattle(state, action, movementPath = null) -> BattleState`: wraps action resolution with near-miss feedback capture. Deployment orders route to the deployment handler. Otherwise input resolution normalizes certain legacy target/item forms, executes the selected action, synchronizes ammunition on successful changed states, then usually settles autonomous consequences and action-time effects. Cursor-only orders can return before autonomous settlement. Rejections commonly return a clone with `lastError` and public feedback.
-* `endTurn(state) -> BattleState`: resolves equipment cursor constraints, then runs turn progression and autonomous settlement. Interrupt phase resumes the suspended enemy/reaction sequence; exploration and combat have distinct phase logic.
-* `presentedActBattle` / `presentedEndTurn` capture presentation/observation information around the public calls, while the underlying state transition remains the same tactical authority.
+- `createBattle(squad, sector) -> BattleState`: constructs a sector snapshot in `exploration` mode when `sector.exploration` is truthy or `combat` mode otherwise, with optional `deployment` placement state.
+- `actBattle(state, action, movementPath = null) -> BattleState` (routed via `ExecuteSectorOrderUseCase`): normalizes and validates the order, delegates deployment commands to `SectorDeployment`, executes movement, combat, interaction, or inventory rules, synchronizes physical ammunition (`syncUnitAmmunition`), and settles action duration and autonomous reactions within `SectorTimeBudget`. Cursor-only inventory manipulation returns before autonomous settlement. Refusals return a snapshot clone with `lastError`.
+- `endTurn(state) -> BattleState` (routed via `EndSectorTurnUseCase`): verifies that no item remains on `equipmentCursor`, then either yields the current `CombatTurn` / resumes a suspended `ReactionStack` frame in combat or advances a bounded rest/quiet interval in exploration.
+- `presentedActBattle` and `presentedEndTurn`: wrap `actBattle` and `endTurn` to record player-known observation frames for animation playback while keeping the underlying simulation result authoritative.
+
+The sequence diagram below shows how `Tactical UI / world`, `actBattle / endTurn`, `Input + action validation`, `Geometry, combat, inventory helpers`, and `Autonomous settlement / AI` resolve one sector action.
 
 ```mermaid
 sequenceDiagram
@@ -107,33 +64,17 @@ sequenceDiagram
   API-->>Caller: next state
 ```
 
-## Action taxonomy
+For the full taxonomy of player-facing `action.type` values—covering deployment, movement, posture, firearms, melee, thrown weapons, artillery, reactions, medical care, inventory, doors/environment, conversations, exits, and turn control—see [tactical use cases](use-cases/tactical.md).
 
-Actions are objects selected by `action.type`, frequently naming `unitId` and, for group movement, `unitIds`; targets can include explicit `targetKind` to distinguish units from NPCs. The exact accepted payload is action-specific. Implemented families include:
+## Turn phases, visit modes, and autonomous actors
 
-* **Movement and facing:** move/path, stance and directional/positioning operations; geometry/path helpers account for occupied/blocked cells, terrain, elevations, walls and traversal links.
-* **Firearms and targeted combat:** fire, aim/targeted fire, melee and `meleePoint`, reload/ammunition selection, weapon mode, blade/hand actions. Resolution depends on AP, range, line/visibility, weapon condition and physical loaded/ammo counts; hit and damage outcomes can affect cover, morale, bleeding, shock and other state.
-* **Thrown/area and physical interactions:** grenade throw, item flight, blast/structure effects, environmental interactions, doors/objects and exits. These cross geometry and physical-world helpers rather than being only UI events.
-* **Care and recovery:** supported treatment actions such as `heal` and item-based bandaging, plus exploration `rest`; each is constrained by actor, AP and carried supplies.
-* **Inventory and custody:** equip, drop, transfer, loot, use item, prisoner escort and equipment cursor flows. Cursor-held equipment must be placed or returned before ending a turn; not every rejection has the same side effects.
-* **Civilians, mission actors and objectives:** NPC-targeted actions, quest/mission interactions, deployment, departures and objective progress.
-* **Turn/AI control:** `endTurn`, interrupt responses and allied-turn behavior. Militia are autonomous rather than directly orderable; allied turns also restrict ordinary player orders except in interrupt handling.
+`SectorSession` mode (`deployment`, `exploration`, or `combat`) and `CombatSession` phase (`player`, `enemy`, or `interrupt`) are distinct dimensions:
 
-This is an action-family map, not an exhaustive promise that every label is legal in every mode or phase. The tactical dispatcher and specialized modules are authoritative.
+- **Visit mode:** A visit starts in `deployment` (when entry placement is required) or `exploration` / `combat`. Confirming deployment transitions the visit to `exploration` or `combat`. Hostile contact in `exploration` starts a new `CombatSession` (`combat` mode). When hostile contact ceases for `QuietRoundsBeforeExploration` rounds (or enemies are defeated/disengaged), `SectorSession.resumeExploration` records the `CompletedCombatSession` receipt and returns the visit to `exploration` without recreating participants or items.
+- **Combat phase:** Inside `CombatSession`, control alternates between `player` and `enemy` phases. When a moving or acting unit triggers an opponent's `ReactionPolicy`, `ReactionStack` pushes the active `CombatTurn` and opens a `ReactionWindow` (`interrupt` phase) without granting new `ActionPoints`. Resolving the interrupt pops `ReactionStack` and restores the interrupted turn.
+- **Allied and militia actors:** During `alliedTurn`, ordinary player commands are restricted outside interrupt reactions. Militia units act autonomously through AI modules (`packages/game/tactical-ai.js` and `packages/game/npc-ai.js`) and cannot be ordered directly by the player.
 
-## Geometry, perception and attack resolution
-
-The grid is a tactical model with more than a blocked-cell matrix. Tile cover, wall segments/geometry, buildings, surfaces, climb links, props, weather, lighting, stance and actor state feed movement, line tests, visibility and attack previews/resolution. Projectiles and thrown objects have flight/impact behavior; blast propagation can change structures and the battlefield. Visibility/perception and observation helpers determine what the player can know or what AI can share, not simply what is present in the state.
-
-AP is an explicit per-unit resource. Action-specific helpers validate and charge action costs; movement can resolve a path in steps and combat/interrupt rules can create additional phases. Firearms use loaded rounds and carried ammunition with reload progress, condition, jam/serviceability and weapon mode. Combat can leave persistent wounds, bleeding, bandaging, shock, unconsciousness, morale and equipment changes. Read [rendering](rendering.md) for presentation/HUD projections; tactical simulation should not be conflated with visual cursor or sprite state.
-
-## Turn phases and autonomous actors
-
-The main phase examples include `player`, `enemy`, and `interrupt`; the exact state may include reaction/ally coordination fields. In an interrupt, `endTurnState` verifies that an enemy turn/reaction is available and resumes it, rather than blindly incrementing a round. `endTurn` returns any equipment cursor object first, rejects if that is impossible, then advances through autonomous settlement. Exploration has quiet-turn/contact behavior and a different turn path from combat. Allied and militia actors may execute their own turns; they are not universally controlled by the player's action API.
-
-AI modules cover perception/sharing, movement/combat decisions, and specialist behaviors such as grenades. Their decisions are constrained by state and perception, and can consume the same tactical clock/resources as player actions. No claim is made that every action is delegated to an AI worker.
-
-Mode and phase are separate state dimensions: `mode` is combat/exploration, while `phase` controls who or what may act. Deployment is an optional deployment substate rather than a third phase. These diagrams show the principal transitions, not every intermediate reaction/recovery state.
+The first state diagram below shows transitions among the `player`, `enemy`, and `interrupt` control phases inside `Control phase` (`CombatSession`).
 
 ```mermaid
 stateDiagram-v2
@@ -146,26 +87,22 @@ stateDiagram-v2
   }
 ```
 
+The second state diagram below shows how a `SectorSession` moves from optional `deployment` into `Battle mode` (`combat` or `exploration`) and transitions between `exploration` and `combat` as contact begins or ends.
+
 ```mermaid
 stateDiagram-v2
   state "Battle mode" as mode {
     [*] --> combat: sector.exploration false
     [*] --> exploration: sector.exploration true
     exploration --> exploration: action / exploration turn
+    exploration --> combat: hostile contact starts CombatSession
     combat --> combat: ordinary tactical play
+    combat --> exploration: CombatSession disengaged / quiet rounds
   }
-  [*] --> deployment: optional deployment data
+  [*] --> deployment: optional SectorDeployment
   deployment --> mode: deployment confirmed
 ```
 
-Allied control is an additional orthogonal gate: `alliedTurn` restricts player actions except interrupt handling, while militia actors are autonomous and rejected as order targets. It is not another phase label.
+## Extension points and source anchors
 
-## End-to-end example
-
-At strategic assault time, campaign code builds a pending request containing a seeded encounter, deployed operative data, committed ammunition allocation, opposition and regional conditions. `battle-handoff.js` / `world.js` create or restore tactical scene state from that request. The tactical caller constructs the battle, supplies player actions, and passes returned state to presentation. An invalid shot or movement can yield a new state with `lastError`; a valid movement/action updates actor position/AP and may trigger autonomous resolution. Tactical elapsed seconds are synchronized to the campaign through `syncBattleTime`, not by directly editing strategic time. On completion, the finish callback in `apps/web/app/page.tsx` dispatches the battle report into the campaign transaction; campaign code validates and settles personnel, stocks, ownership, quests and battle closure. `battle-outcome.js` contains helpers in this lifecycle but is not the sole settlement owner.
-
-## Errors, invariants and extension points
-
-Important invariants include: actor IDs are normalized to strings in tactical units; physical loaded/carry ammunition must remain synchronized; AP/action legality is checked at execution; deployment and phase govern accepted orders; melee/target resolution distinguishes military units from NPCs where relevant; cursor-held equipment blocks turn end until returned/placed; battle identity and elapsed time must match the campaign pending handoff. Typical errors include no legal player actor, invalid target/path, unavailable AP/ammunition/item, incompatible phase, militia/allied control, and incomplete cursor placement. Errors are exposed through `lastError` and sometimes public messages, but action rejection behavior is not a universal unchanged-input guarantee.
-
-Extension points are dedicated rule modules: [`action-points.js`](../../packages/game/action-points.js), [`tactical-space.js`](../../packages/game/tactical-space.js), [`wall-geometry.js`](../../packages/game/wall-geometry.js), [`targeted-combat.js`](../../packages/game/targeted-combat.js), [`movement-step.ts`](../../packages/game/movement-step.ts), [`item-flight.js`](../../packages/game/item-flight.js), [`physical-ammunition.js`](../../packages/game/physical-ammunition.js), [`npc-ai.js`](../../packages/game/npc-ai.js), and tactical AI/perception modules. Prefer focused helpers for new rules and preserve state serialization/version/migration expectations. Source anchors: [`tactical.js`](../../packages/game/tactical.js), [`time.js`](../../packages/game/time.js), [`battle-handoff.js`](../../packages/game/battle-handoff.js), [`world.js`](../../packages/game/world.js), [`battle-outcome.js`](../../packages/game/battle-outcome.js).
+Focused rule collaborators live in [`packages/game/action-points.js`](../../packages/game/action-points.js), [`packages/game/tactical-space.js`](../../packages/game/tactical-space.js), [`packages/game/wall-geometry.js`](../../packages/game/wall-geometry.js), [`packages/game/targeted-combat.js`](../../packages/game/targeted-combat.js), [`packages/game/movement-step.ts`](../../packages/game/movement-step.ts), [`packages/game/group-movement.ts`](../../packages/game/group-movement.ts), [`packages/game/item-flight.js`](../../packages/game/item-flight.js), [`packages/game/physical-ammunition.js`](../../packages/game/physical-ammunition.js), [`packages/game/npc-ai.js`](../../packages/game/npc-ai.js), and [`packages/game/tactical-ai.js`](../../packages/game/tactical-ai.js). Core entry points: [`packages/game/tactical.js`](../../packages/game/tactical.js), [`packages/game/time.js`](../../packages/game/time.js), [`packages/game/battle-handoff.js`](../../packages/game/battle-handoff.js), [`packages/game/world.js`](../../packages/game/world.js), and [`packages/game/battle-outcome.js`](../../packages/game/battle-outcome.js).

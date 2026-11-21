@@ -1,25 +1,46 @@
 # SaveGame
 
-This use case persists the current accepted game snapshot to storage, and refuses
-requests whose session identity, revision, or request identity no longer matches
-the repository's current state.
+## Intention
 
-`SaveGameUseCase` owns
-`SaveGameRepository`. It admits a save only when the session identity, revision,
-and request identity still match the repository's current state. The repository
-serializes and writes the snapshot. A write failure does not roll back accepted
-in-memory progress.
+Persist the current accepted `GameSnapshot` to storage when the request's session identity, revision, and request identity match the repository's current accepted state.
 
-The browser adapter holds one exclusive Web Lock for each save key. A second
-tab cannot write that key. Missing lock support blocks automatic writes. The
-player can continue and download a save file. Closing the owner permits a new
-claim; focus, a new accepted snapshot, or an explicit flush retries the claim.
+## Actor and trigger
 
-The encoding worker echoes session, revision, and request identities. Workers
-never write storage. Stale responses cannot overwrite newer accepted progress.
+The autosave coordinator or manual save workflow invokes this use case after a `GameUnitOfWork` commits a new revision or when flushing pending progress to storage.
 
-Verification: `node --test tests/browser-save-writer.test.ts
-tests/campaign-autosave-identity.test.ts tests/campaign-autosave-lifecycle.test.ts`.
+## Request
 
-A changed save request is refused with `DomainRefusalCode.RevisionConflict`. The
-browser adapter translates the code and keeps accepted progress available.
+`GameSaveIdentity` contains:
+
+- `sessionId`: the active `GameSession` identifier.
+- `revision`: the nonnegative safe integer revision of the accepted snapshot to persist.
+- `requestId`: the unique identifier for this save request.
+
+## Response
+
+`SaveGameUseCase.execute` returns the persisted `GameSaveIdentity` (`{ sessionId: string; revision: number; requestId: string }`).
+
+## Refusals
+
+Expected refusals throw `DomainRefusal` with a typed `DomainRefusalCode`:
+
+- `DomainRefusalCode.RevisionConflict`: `sessionId` or `requestId` is empty, `revision` is not a nonnegative safe integer, or `request` does not match `SaveGameRepository.current()` on `sessionId`, `revision`, or `requestId`.
+
+Browser storage adapters translate `DomainRefusalCode.RevisionConflict` and keep accepted in-memory progress available.
+
+## Invariants
+
+- Stale save requests or out-of-order worker encoding callbacks cannot overwrite newer state: `SaveGameUseCase` verifies `sessionId`, `revision`, and `requestId` against `repository.current()` before calling `serialize()` and `persist(text, current)`.
+- Accepted in-memory progress and persisted storage progress are distinct: a storage refusal or write failure updates [GetSaveStatus](../get-save-status/README.md) without rolling back the accepted `GameSession` revision in memory.
+- In browser infrastructure, one exclusive Web Lock guards each save key so concurrent tabs cannot interleave writes, and background encoding workers never write to storage directly.
+
+## Repository
+
+This README describes only the `SaveGame` contract. `SaveGameUseCase` owns `SaveGameRepository`, which exposes `current(): GameSaveIdentity`, `serialize(): string`, and `persist(text: string, identity: GameSaveIdentity): void`. It does not share a repository interface with [RestoreGame](../restore-game/README.md) or [GetSaveStatus](../get-save-status/README.md).
+
+## Domain objects and related terms
+
+- `GameSaveIdentity` binds a save operation to one `GameSession`, revision, and request identity.
+- `GameSnapshot` and `GameSnapshotMapper` define the serialized persistence payload.
+- `DomainRefusal` and `DomainRefusalCode` represent typed revision refusals.
+- Related contracts: [GetSaveStatus](../get-save-status/README.md), [RestoreGame](../restore-game/README.md), and [CreateGameSession](../create-game-session/README.md).

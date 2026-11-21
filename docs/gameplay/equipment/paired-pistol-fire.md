@@ -1,9 +1,5 @@
 # Paired pistol fire
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
-
 In tactical exploration and turn-based combat, two loaded, usable pistols in the two physical hands fire together through the ordinary targeting cursor. Right-click to aim, right-click again over the target to add aim, and left-click to fire. There is no extra paired-fire mode. The existing red star still means close combat. That mode uses the selected gun for a strike.
 
 Each gun fires one charge. A double-barrel pistol retains its other charge. The pair uses the larger discharge cost and aim increment of the two guns, with one shared turn/preparation cost. The cursor shows the total AP and both hit chances. Paired aiming applies a 20-point accuracy deduction before range scaling and the final chance bounds. A custom recruit can choose ambidexterity instead of riding, night or teaching specialty; this removes only that deduction. No historical character has been assigned this trait.
@@ -14,9 +10,9 @@ Each gun uses its own condition, ignition roll, projectile power, cover penetrat
 
 A stored gun never joins the shot. An empty, jammed or broken second pistol leaves ordinary main-hand fire available, without the paired accuracy deduction. An empty main pistol retains the requested reload-click behavior, even if its other hand is loaded. Shift+R or Alt+R follows the [automatic two-pistol reload plan](paired-pistol-reload.md): main hand first, then the second if its complete load fits. With a full main gun, the reload shortcut can continue the second directly. R selects running. Change hands to reprime a failed second pistol; automatic paired reprime remains separate. Placing a pistol in a pocket lets the player fire the remaining gun alone.
 
-Exploration consumes the shot's normal time and ammunition without spending AP. Testing also found an old empty-gun preview error: it treated displayed zero AP as unavailable reload work in exploration. The preview now checks the actual reload plan. A click loads from finite reserve ammunition without firing in the same action. With no reserve, the cross and refusal remain.
+Exploration consumes the shot's normal time and ammunition without spending AP. The empty-gun preview checks the actual reload plan, so displayed zero AP is not treated as unavailable reload work in exploration. A click loads from finite reserve ammunition without firing in the same action. With no reserve, the cross and refusal remain.
 
-Enemy shot selection now evaluates both known projectile paths and their expected effects. It can choose the second gun's useful shot when the main gun cannot penetrate cover. It does not inspect hidden opponents or their private supplies. The shared [automatic reload plan](paired-pistol-reload.md) is now used by enemy maintenance too. Broader automatic equipment selection remains partial.
+Enemy shot selection evaluates both known projectile paths and their expected effects. It can choose the second gun's useful shot when the main gun cannot penetrate cover. It does not inspect hidden opponents or their private supplies. Enemy maintenance uses the shared [automatic reload plan](paired-pistol-reload.md) too. Broader automatic equipment selection remains partial.
 
 ## Reference and adaptations
 
@@ -24,24 +20,4 @@ The pinned classic-compatible source charges the [larger of the two base firing 
 
 Granaderos retains its 100-point AP scale, weapon-specific aim increments, readiness, black-powder ignition, partial loading, damage formulas and physical collision rules. Taking the larger aim increment, the main-empty reload contract and excluding an already failed second cazoleta are explicit adaptations. This is an equipment choice, not a claim that paired pistols were standard Argentine military doctrine. Artwork and a dedicated paired-pistol animation remain separate.
 
-## Verification
-
-On 4 October, the strengthened original-aim case passed death, knockdown, unhorsing, supported elevation and seeded second-shot scatter. It checks the actual ray, charges, wear, AP, time, RNG, ordinary/presented equality and JSON continuation. Two mounted `Battlefield` cases check the same falling-target orders with input held until one final state commit, concealed-reserve filtering and reduced motion. Independent review found no blocker. Typecheck and production export `f25fa952d0ff` pass, with 1,133 static files and 1,033 verified asset references. The current joint short-suite checkpoint is recorded in the [video review](../../verification/ja2-video-review-2026-10-03.md).
-
-The current unsaved browser arena used the real controls, workers and production styles. A seed-127 paired leg order displayed 95%/95% and 20 AP. The first shot unhorsed the guard for 30 damage; the second kept its original mounted-leg ray and struck the ground. Final state: 70 HP, prone, 80 AP, main/second loads 0/1, eight spare cartridges and six elapsed seconds. The complete state matched an ordinary order. Browser warnings/errors were empty. The temporary tab and generated files were removed; no player campaign was imported or saved. The standing variant still takes an actual second 22-point injury where the same original ray touches the fallen body.
-
-The initial paired-fire checkpoint passed all 2,172 tests with no skips, typecheck, production build, static export verification and diff checks. It preceded the later height correction and is a historical result.
-
-Twenty-five new tests cover shared costs and atomic rejection, each gun's load and condition, partial reload preservation, first-shot death/knockdown, firearm cover, primary/secondary chance, custom profile persistence, a genuine saved interruption, enemy actions, knowledge boundaries, render controls and exploration reload. A fresh custom recruit buys an actual finite pistol, arranges the guns through the real pockets, loads both from reserve, fires, and returns through full saves and sector reentry without refilling either load.
-
-The initial paired-fire checks below preceded the [automatic reload update](paired-pistol-reload.md). Those live checks used a disposable practice scene with the production Battlefield, inventory and reducer. It does not access the user's campaign storage:
-
-- The ordinary right-click cursor showed 8 AP and 78%/66%; one added aim step showed 11 AP and 86%/74%.
-- Confirmation spent 100 → 89 AP. Each double-barrel pistol changed from two charges to one, conditions 81% → 80% and 57% → 56%, and reserve stayed eight.
-- Save and reload retained both guns. The next shot spent 6 AP, emptied both remaining charges and left 83 AP even though the target died during the pair.
-- R spent 55 AP to load two main-hand charges, left the other gun empty and reduced reserve eight → six.
-- An already failed second pistol stayed at two charges and 57%; the primary fired once for 8 AP and became one charge at 80%.
-- Exploration showed no AP expenditure. A secondary ignition failure kept that pistol's load while the primary fired. After the primary emptied, a direct firing click reloaded two charges from reserve eight → six and did not shoot in the same action.
-- The exhausted-ammunition setup showed the refusal and empty reticle.
-
-No browser warnings or errors were reported. Broader gameplay parity remains incomplete; see the current [audit](../../verification/ja2-parity-audit.md).
+Broader gameplay parity remains open; see the [parity requirements](../../requirements/ja2-parity.md).

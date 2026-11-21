@@ -1,10 +1,6 @@
 # Errand failure after contact death
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
-
-Across tactical encounters and the strategic campaign ledger, accepted errands now end with a permanent `failed` result when the campaign acknowledges a new death receipt for their local contact. The log identifies the known errand and its failure once. An injury, temporary loss of the sector, flight or unconsciousness does not end the errand.
+Across tactical encounters and the strategic campaign ledger, accepted errands end with a permanent `failed` result when the campaign acknowledges a new death receipt for their local contact. The log identifies the known errand and its failure once. An injury, temporary loss of the sector, flight or unconsciousness does not end the errand.
 
 A completed delivery remains completed if the recipient later dies. A death does not introduce an errand the player has never accepted. Failure adds no separate support penalty: the existing civilian responsibility rules apply once. No completion reward is issued for a failed errand.
 
@@ -14,14 +10,6 @@ The saved failure includes its campaign hour and `contact-dead` reason. Save adm
 
 ## Campaign notebook
 
-The desk’s Cuaderno now lists only accepted errands. Pending entries show the contact, sector, acknowledged delivery count, required goods and uncontrolled required sectors. Completed and failed entries retain their outcome and date. Failed entries do not offer delivery instructions. The notebook reads acknowledged campaign receipts rather than hidden NPC inventories.
+The desk’s Cuaderno lists only accepted errands. Pending entries show the contact, sector, acknowledged delivery count, required goods and uncontrolled required sectors. Completed and failed entries retain their outcome and date. Failed entries do not offer delivery instructions. The notebook reads acknowledged campaign receipts rather than hidden NPC inventories.
 
-Live browser verification on 21 September 2026 checked the empty notebook and imported a validated failure fixture made from a real one-poncho delivery followed by controlled fatal damage. The notebook displayed Fallido, the contact, 1/2 ponchos and the failure explanation. This checks display and import, not a player-fired fatal attack. Three notebook projection/render tests plus four quest tests pass; type checking and production build pass.
-
-## Verification
-
-- 81 quest, gift, dialogue and campaign civilian tests pass.
-- New checks cover injury before death, once-only failure, save and reentry, absent/unaccepted errands, completed errands, invalid failure dates/reasons and a death receipt belonging to another contact.
-- A physical-delivery regression uses a created officer, finite depot ponchos, ordinary movement and item delivery. It applies a controlled fatal damage event to isolate the failure branch, then verifies full tactical/campaign saves, retained ownership, no reward and rejected repeat dialogue. It is not a combat-balance or live-browser test.
-
-This is one failure branch. Escort destinations, voluntary alternatives, detention choices, playable prison rescue and broader quest consequences remain open in the parity audit.
+This is one failure branch. Escort destinations, voluntary alternatives, detention choices, playable prison rescue and broader quest consequences remain open.

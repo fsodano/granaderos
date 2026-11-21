@@ -1,13 +1,9 @@
-# Service relationships *(workspace)*
-
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
+# Service relationships
 
 Across strategic hiring and contract renewals and tactical battlefield deployments, an authored disagreement can block a person's next hire or renewal. The player
 can retain the other person or use the existing dismissal action. This implements
 one personnel choice described at 5:37–6:32 in the
-[JA2 reference video](https://www.youtube.com/watch?v=6WtKA16osqE) (*Why Jagged Alliance 2 CRUSHES Modern RPGs*, source `V2` in [the parity audit](../../verification/ja2-parity-audit.md#scope-and-evidence)).
+[JA2 reference video](https://www.youtube.com/watch?v=6WtKA16osqE) (*Why Jagged Alliance 2 CRUSHES Modern RPGs*, source `V2` in [the parity requirements](../../requirements/ja2-parity.md#scope-and-evidence)).
 
 The default rule is directed: Inés Aguirre (`person-107`) refuses to hire or renew
 while Gaspar Villalba (`person-112`) is in service. The stated reason is a dispute
@@ -17,7 +13,7 @@ not have a reciprocal refusal.
 The hiring card, contract menu and contract notice show both names, the reason,
 and the existing action to end the rival's service. The dossier discloses the
 condition before hiring. Dismissal retains its ordinary custody and financial
-rules; this feature does not introduce a refund rule. A marching rival cannot be
+rules; no refund rule applies. A marching rival cannot be
 dismissed through this notice until arrival. Battle, encounter and defeat guards
 remain in effect.
 
@@ -58,18 +54,8 @@ characters; those choices are the author's dramatization. An omitted field means
 no refusal. The saved package identity protects the running campaign from later
 editor changes.
 
-## Verified scope
-
-The affected 13-file batch passed 160 checks. The new model and mounted checks
-exercise public hire, renew, dismiss and clock actions: rejection leaves money
-and state unchanged apart from the error; forty paid seconds remain valid;
-ordinary dismissal clears the refusal; renewed payment and exact expiry survive
-save/reload. Tests also cover accepted paid arrivals, stable new identities,
-legacy neutral content, marching rivals and editor undo/redo/launch.
-
 This is a bounded service refusal. Relationship complaints, forced early
-departure, contextual fears and recorded voices remain open. A green affected
-batch does not prove full JA2 parity or an entire fresh campaign.
+departure, contextual fears and recorded voices remain open.
 
 ## Preferred companions
 
@@ -105,7 +91,7 @@ This bounded deployment rule is Granaderos tuning. The reviewed
 [classic JA2 morale source](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/11e9430b67d788b73f7a57d22166e8b500c23dab/src/game/Tactical/Morale.cc#L664-L818)
 instead averages profile opinions among eligible people present together and
 moves a team modifier toward that opinion each hour; moving groups only consider
-their own group. This change does not reproduce that formula, buddy recruitment
+their own group. That formula, buddy recruitment
 overrides or evolving opinions. The separate witnessed-loss rule below supplies
 an additional companion-specific consequence.
 
@@ -129,11 +115,10 @@ campaign launch retain the stable reference. Older pinned packages that omit
 preferences remain neutral, and an already issued older deployment does not
 receive new support on restore.
 
-
-## Confirmed companion-loss letters — 4 October 2026
+## Confirmed companion-loss letters
 
 A serving soldier with an authored preferred companion can send a received
-letter after that companion dies. This first slice admits deaths from a validated
+letter after that companion dies. Deaths are admitted from a validated
 deployment return or from actual hourly military bleeding. It uses the pinned
 relationship and character names, even if cohesion or the morale cap meant no
 temporary companion bonus was issued.
@@ -146,7 +131,7 @@ the validated return. Actual dismissal, expiry, death or capture cancels it,
 while an accepted renewal during continuous service retains it. Later rehiring
 cannot revive a cancelled notice. Older pinned packages without preferences
 remain neutral; loading a save creates neither letters nor notices for past
-deaths. See confirmed-loss recovery evidence.
+deaths.
 
 The existing received correspondence stores the named reaction at actual
 delivery. Its stable ID uses the sender and deceased identities. Reading it

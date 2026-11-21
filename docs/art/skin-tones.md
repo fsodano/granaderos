@@ -1,12 +1,8 @@
 # Skin tones
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../verification/version-0.1.md) for the published-main checkpoint.
-
 This guide covers the 2D character sprite skin-tone overlay system (light, brown, and dark palettes across 240 active animation atlases), its offline segmentation mask build pipeline, and runtime audit coverage. Code paths such as `game/`, `web/`, and `assets/` refer to the pre-monorepo layout (`packages/game/`, `apps/web/`, and `content/assets/` in the current repository).
 
-The same animation atlas now supports light, brown, and dark skin. Uniforms,
+The same animation atlas supports light, brown, and dark skin. Uniforms,
 equipment, and poses retain their original image. A grayscale skin overlay is
 coloured by an SVG palette filter, restricted to the displayed frame.
 
@@ -44,9 +40,8 @@ is less reliable on lying bodies. No model or model dependency ships in the game
 6. Run the skin tests, type check, and build.
 
 Generated masks are approximate segmentation, with source-aligned pixels and
-fall corrections. Browser review covers the eight standing families and sample
-mounted, prone, and fall views; it is not a manual trace of every skin boundary.
-The original images remain intact, so a mask can be corrected independently.
+fall corrections. A mask is not a manual trace of every skin boundary; the
+original images remain intact, so a mask can be corrected independently.
 
 The build checks mask coverage, dimensions, file checksums, and source hashes.
 Finalization additionally checks that masks do not extend beyond source alpha.

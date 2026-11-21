@@ -1,7 +1,5 @@
 # ADR 002 — Prone combat and incapacitated sprites
 
-Date: 2026-09-06. Status: implemented.
-
 This extends [ADR 001](001-realistic-tactical-sprites.md). The engine analysis in
 `docs/web-port/` and all portraits remain unchanged.
 
@@ -44,7 +42,7 @@ pre-rendered muzzle flash. Prone reload has its own hand and weapon motion. Comb
 actions play once at 10 fps; breathing has its own slower clock and continues when
 no unit moves. Death and recovery cancel that clock.
 
-## Implementation
+## Source map
 
 - `game/sprite-state.js`: life-state priority, equipment-aware selection, and
   frame-clock rules.
@@ -62,7 +60,7 @@ pixels per world unit as standing sprites. Extra space accommodates limbs and th
 extended musket without changing human scale. Old generic prone assets are not
 selected by the runtime.
 
-## Rebuild and verification
+## Rebuild
 
 After the infantry and civilian source models from ADR 001 exist:
 
@@ -86,14 +84,9 @@ Animated previews are in `assets/web/pixel/`, including
 `granadero-unconscious-breathe-se-preview.webp` and
 `granadero-prone-armed-fire-se-preview.webp`.
 
-Validation: 262 tests passed; type checking and the production build passed.
-The build verified 236 exported files and 148 asset references. All 47 recorded
-portrait hashes still match.
-
 Enlarged animated previews:
 [breathing](../../content/assets/previews/tactical-pixel-art/granadero-unconscious-breathe-se.webp)
 and [prone firing](../../content/assets/previews/tactical-pixel-art/granadero-prone-armed-fire-se.webp).
 
-These previews are offline renders. Browser interaction has not been tested in
-this change. Melee-weapon-specific prone art and full fall-to-ground transitions
-are separate work; they are not represented as completed here.
+These previews are offline renders, not browser captures. Melee-weapon-specific
+prone art and full fall-to-ground transitions are separate work.

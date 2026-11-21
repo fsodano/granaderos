@@ -1,63 +1,56 @@
 # Equipment
 
-Current scope: [version 0.1](../../verification/version-0.1.md). Equipment commerce is disabled;
-older purchase, supplier and refill notes describe earlier rules. Use actual
-recruitment allocations and physical sector objects for finite supplies.
-See commerce deferral.
+Equipment commerce is disabled; older purchase, supplier and refill notes
+describe earlier rules. Use actual recruitment allocations and physical sector
+objects for finite supplies.
 
 [Gameplay index](../README.md) · [Documentation index](../../README.md)
 
-These notes combine feature guides and dated workspace records. Read
-[version 0.1](../../verification/version-0.1.md) for current scope.
-The [parity audit](../../verification/ja2-parity-audit.md) retains row evidence and
-comparison requirements. A historical *workspace* label does not establish the
-current merge state; use the named source, date and acceptance limits.
+These notes state requirements, design, and current behavior for hands, pockets,
+loading, transfers, repairs and trade. The [parity requirements](../../requirements/ja2-parity.md)
+hold the row-level comparison requirements against classic JA2.
 
 ## Hands, pockets, and clothing
 
-- [Two-hand equipment](two-hand-equipment.md) *(workspace)*
-- [Ordinary objects in the main hand](main-hand-objects.md) *(workspace)*
-- [Tools and supplies in the second hand](held-offhand-items.md) *(workspace)*
-- [Physical inventory pockets](inventory-pockets.md) *(workspace)*
-- [Pocket stacks and quantity selection](pocket-stack-quantities.md) *(workspace)*
-- [Individual outfit equipment](outfit-equipment.md) *(workspace)*
-- [Finite field dressings](field-dressings.md) *(workspace)*
-- [Campaign body equipment — 26 September 2026](body-equipment-2026-09-26.md) *(workspace)*
-- [Weapon attachment slots](attachment-slots.md) *(workspace)*
-
-## Service equipment
-
-- [Ordinary service-end equipment and actual collection](../../verification/alpha-service-equipment-return-2026-10-01.md) — bounded local alpha acceptance, finite return and empty rehire; broader belongings and parity remain open.
+- [Two-hand equipment](two-hand-equipment.md)
+- [Ordinary objects in the main hand](main-hand-objects.md)
+- [Tools and supplies in the second hand](held-offhand-items.md)
+- [Physical inventory pockets](inventory-pockets.md)
+- [Pocket stacks and quantity selection](pocket-stack-quantities.md)
+- [Individual outfit equipment](outfit-equipment.md)
+- [Finite field dressings](field-dressings.md)
+- [Campaign body equipment](body-equipment.md)
+- [Weapon attachment slots](attachment-slots.md)
 
 ## Placement and transfers
 
-- [Click placement](equipment-click-placement.md) *(workspace)*
-- [Dragging between hands, pockets, and outfits](equipment-dragging.md) *(workspace)*
-- [Inventory cursor exchanges](equipment-cursor-exchanges.md) *(workspace)*
-- [Selected items on the tactical map](inventory-map-cursor.md) *(workspace)*
-- [Pass items through adjacent soldiers](inventory-relay.md) *(workspace)*
-- [Equipment in a strategic sector](sector-inventory.md) *(workspace)*
-- [Equip carried weapons on the campaign map](campaign-carried-equip.md) *(workspace)*
-- [Campaign equipment dragging](campaign-equipment-dragging.md) *(workspace)*
+- [Click placement](equipment-click-placement.md)
+- [Dragging between hands, pockets, and outfits](equipment-dragging.md)
+- [Inventory cursor exchanges](equipment-cursor-exchanges.md)
+- [Selected items on the tactical map](inventory-map-cursor.md)
+- [Pass items through adjacent soldiers](inventory-relay.md)
+- [Equipment in a strategic sector](sector-inventory.md)
+- [Equip carried weapons on the campaign map](campaign-carried-equip.md)
+- [Campaign equipment dragging](campaign-equipment-dragging.md)
 
 ## Weapons and ammunition
 
-- [Typed handheld ammunition](typed-ammunition.md) *(workspace)*
-- [Load a gun with selected ammunition](inventory-ammunition-loading.md) *(workspace)*
-- [Loading across turns](reload-progress.md) *(workspace)*
+- [Typed handheld ammunition](typed-ammunition.md)
+- [Load a gun with selected ammunition](inventory-ammunition-loading.md)
+- [Loading across turns](reload-progress.md)
 - [Visible loading progress](retained-reload-display.md)
-- [Artillery loading across turns](artillery-reload-progress.md) *(workspace)*
-- [Firing and close-combat modes](weapon-modes.md) *(workspace)*
-- [Paired pistol fire](paired-pistol-fire.md) *(workspace)*
-- [Automatic loading of two pistols](paired-pistol-reload.md) *(workspace)*
-- [Prepare failed pistol pans](paired-pistol-reprime.md) *(workspace)*
-- [Preserve gun loads on campaign return](campaign-gun-loads.md) *(workspace)*
-- [Preserve unfinished reloads on campaign return](campaign-reload-work.md) *(workspace)*
+- [Artillery loading across turns](artillery-reload-progress.md)
+- [Firing and close-combat modes](weapon-modes.md)
+- [Paired pistol fire](paired-pistol-fire.md)
+- [Automatic loading of two pistols](paired-pistol-reload.md)
+- [Prepare failed pistol pans](paired-pistol-reprime.md)
+- [Preserve gun loads on campaign return](campaign-gun-loads.md)
+- [Preserve unfinished reloads on campaign return](campaign-reload-work.md)
 
 ## Repair and trade
 
 - [Reposición y reparación en el taller](workshop-service.md)
-- [Carried equipment repair](equipment-repair.md) *(workspace)*
-- [Local equipment exchange](merchant-exchange.md) *(workspace)*
-- [Local used-weapon trading](merchant-buyback.md) *(workspace)*
-- [Workshop buying preferences](merchant-preferences.md) *(workspace)*
+- [Carried equipment repair](equipment-repair.md)
+- [Local equipment exchange](merchant-exchange.md)
+- [Local used-weapon trading](merchant-buyback.md)
+- [Workshop buying preferences](merchant-preferences.md)

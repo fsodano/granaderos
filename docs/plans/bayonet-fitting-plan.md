@@ -1,14 +1,16 @@
 # Removable bayonet fitting plan — I06
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../verification/version-0.1.md) for the published-main checkpoint.
+This plan proposes the equipment lifecycle for removable, compatible bayonet
+fittings, addressing requirement row I06 (compatible weapon attachments and
+condition retention) of [the classic JA2 parity requirement
+baseline](../requirements/ja2-parity.md#inventory-transfers-and-equipment). It
+covers owned, compatible bayonet fittings and their complete equipment lifecycle.
+It does not add a Charge command, a combined fit-and-attack order, firearm
+readiness, or new art.
 
-This implementation plan proposes the equipment lifecycle for removable, compatible bayonet fittings, addressing requirement row I06 (compatible weapon attachments and condition retention) of [the classic JA2 parity audit](../verification/ja2-parity-audit.md#inventory-transfers-and-equipment). The implemented subset, its tests and live checks are tracked in [the parity audit](../verification/ja2-parity-audit.md#inventory-transfers-and-equipment) and [live verification](../verification/ja2-live-verification.md); this plan is not itself a completion report. Code was inspected on 6 September 2026. It covers owned, compatible bayonet fittings and their complete equipment lifecycle. It does not add a Charge command, a combined fit-and-attack order, firearm readiness, or new art.
+## Sources and first compatible host
 
-## Evidence and first compatible host
-
-The source review is [period-equipment-evidence.md](../reference/period-equipment-evidence.md), rows H2, H3 and H5. The primary sources were verified in that earlier review; this plan does not claim a new examination of their scans.
+The source review is [period-equipment-evidence.md](../reference/period-equipment-evidence.md), rows H2, H3 and H5.
 
 - The [1808 Spanish infantry regulation](https://idus.us.es/bitstreams/395a6249-ef2f-4d93-907c-678d2f21ddba/download#page=48), printed p.40 §§52–53 and p.51 §§110–111, describes separate fitting and removal commands. Its AP costs are not specified in game units.
 - The [Museo Histórico Nacional collection guide](https://museohistoriconacional.cultura.gob.ar/media/uploads/site-6/ACTIVIDADES%20EDUCACION/armas.pdf#page=7), PDF pp.7–8, identifies muskets with corresponding bayonets in the independence setting.
@@ -105,7 +107,7 @@ Add a fitting rules version inside tactical/campaign state while retaining envel
 
 After versioned migration, require explicit fitting fields in new complete reports, or normalize and compare their canonical presence so omitting an owned fitting cannot resurrect the prior copy. Stacked generic old bayonets remain legal; each moved quantity becomes a distinct item. Reject a fitted host stack rather than multiply one fitting identity. If broader anonymous nested legacy content is ever supported, its migration needs separate conservation tests.
 
-Recommended sequence: pure fitting/schema helpers → inventory assembly transfer → tactical paid actions/contextual targeting/weight → battle and campaign validation/report migration → finite merchant variant and strategic swaps → inventory controls → full save and re-entry tests. UI must not ship with a preview that treats unimplemented reducer actions as usable. I06 remains missing/partial until the complete lifecycle is tested; browser verification is a separate check.
+Recommended sequence: pure fitting/schema helpers → inventory assembly transfer → tactical paid actions/contextual targeting/weight → battle and campaign validation/report migration → finite merchant variant and strategic swaps → inventory controls → full save and re-entry checks. The interface must not offer a preview for an action the reducer does not accept. I06 is satisfied only when the complete lifecycle is covered by tests.
 
 ## Required tests
 
@@ -116,6 +118,6 @@ Recommended sequence: pure fitting/schema helpers → inventory assembly transfe
 5. Give, failed catch, drop, pickup, partial unconscious/corpse loot, equip swap and routed weapon drop preserve the assembly once. No free item appears after repeated loot, reload or re-entry.
 6. Matched variant purchase, finite stock exhaustion, delayed supply if used, assembly resale, exact strategic swap and a full campaign report/save/re-entry round trip preserve both conditions and pattern. Departed, captured and destination corpse paths keep ownership.
 7. Malformed saves reject incompatible nested hosts, duplicate IDs across pack/fitting/ground/chest, pattern overrides, illegal weights, ammunition on fittings and fitted stacks. Legacy unmarked, generic and overfull records still load without being upgraded.
-8. HUD/render tests use shared fitting and attack previews, show the separate condition, reject incompatible choices, and do not add Charge or combined fit-and-attack controls. Live UI test: buy or recover a real matched item, fit it, thrust, remove it, transfer it, save and reload.
+8. HUD/render tests use shared fitting and attack previews, show the separate condition, reject incompatible choices, and do not add Charge or combined fit-and-attack controls. UI check: buy or recover a real matched item, fit it, thrust, remove it, transfer it, save and reload.
 
 Existing regression anchors: `unarmed-combat`, `operative-abilities`, `cold-steel`, `tactical-web`, `tactical-inventory`, `inventory-transactions`, `inventory-equip-save`, `merchants`, `equipment-web`, `validate-battle`, `tactical-exit-campaign`, `world-exits`, `ja2-hud`, and `ja2-controls-render`. Update only their implicit fitting assumptions. Do not alter unrelated weapon stats, seeds, authored map layouts or the campaign opening to make I06 pass.

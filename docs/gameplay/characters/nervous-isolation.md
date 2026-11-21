@@ -1,6 +1,6 @@
 # Nervios al quedar aislado
 
-This guide describes published behavior across tactical combat and strategic campaign hours: a low-morale soldier with the `nervous_isolation` condition gains tactical shock when isolated from friendly companions in combat and loses personal morale during isolated strategic hours. Fresh default Ángela Cejas content declares the explicit `nervous_isolation`
+This guide describes current behavior across tactical combat and strategic campaign hours: a low-morale soldier with the `nervous_isolation` condition gains tactical shock when isolated from friendly companions in combat and loses personal morale during isolated strategic hours. Fresh default Ángela Cejas content declares the explicit `nervous_isolation`
 condition. Hiring and authoring controls disclose it. Older pinned content that
 omits the ability remains neutral. Personality prose alone never activates it.
 
@@ -35,15 +35,10 @@ morale recovery from rest; medical and energy recovery continue. Real capable
 regrouping clears the budget without refunding morale. Sleep, incapacity,
 expiry and deployment pause charges without resetting that budget. The first
 positive loss creates one named campaign-log entry. Loads create no event.
-See the strategic isolation evidence
-for exact saved receipts, location rules and declared acceptance limits.
 
 The [classic Stracciatella source](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/04869c8e339ead1de9fefb25b7ad206b9b786825/src/game/Tactical/Morale.cc#L154-L195)
 checks low morale and distance from companions for nervous isolation. Granaderos
 uses its own shock, timing, range and capability rules. These are declared game
-tuning, not the exact classic morale formula or a medical measurement. This
-does not implement underground claustrophobia, prolonged panic or recorded
-voice lines. Enclosed-room fear is a separate explicit condition.
-
-Acceptance and validation evidence are recorded in the
-[video review](../../verification/ja2-video-review-2026-10-03.md).
+tuning, not the exact classic morale formula or a medical measurement. Underground
+claustrophobia, prolonged panic and recorded voice lines remain outside this
+condition. Enclosed-room fear is a separate explicit condition.

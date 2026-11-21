@@ -1,10 +1,6 @@
 # Loading across turns
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
-
-Implemented 12 September 2026. In turn-based combat and tactical exploration, a soldier can reload a muzzle-loader across multiple orders and turns, preserving unfinished work on the firearm even when the full loading cost exceeds the soldier's maximum AP plus carryover.
+In turn-based combat and tactical exploration, a soldier can reload a muzzle-loader across multiple orders and turns, preserving unfinished work on the firearm even when the full loading cost exceeds the soldier's maximum AP plus carryover.
 
 ## Reference and period adaptation
 
@@ -24,10 +20,4 @@ Enemies and militia use the same loading action. They can kneel when that permit
 
 Exploration completes the remaining work in the existing action-duration scale without spending combat AP. Saved tactical states retain unfinished work, including interrupt queues and physical items. Packed and ground weapon work also survives campaign reports, saves, and sector reentry. As with existing loaded charges, the ordinary carried primary is returned to the strategic ammunition pool and prepared again during deployment; the campaign does not retain a separate in-hand loading job.
 
-## Verification
-
-Sixteen focused simulation tests cover wounded soldiers over real turns, exact cartridge and AP accounting, separate barrels, changed posture and assistance, invalid orders, missing ammunition, drops, swaps, transfers, malformed saves, autonomous enemy/militia work, a real saved interrupt, a full campaign save, and packed-weapon report/reentry. The reticle render test checks the immediate cost and remaining-work label. Existing empty-gun and combat tests cover the unchanged controls. The opening campaign test keeps its seed, paid recruitment and actual casualties, and now salvages the soldiers who actually fell instead of assuming fixed casualty IDs.
-
-Live verification in the separate `?qa=1` San Lorenzo skirmish passed for the keyboard firing path and R. Barcala fired, reloaded for 42 AP, and fired again, leaving 36 AP and 11 reserve cartridges. The reticle showed **Recarga parcial · 36 PA** and **Faltan 6 PA de recarga**. Confirming fire with Enter advanced the reload, leaving zero AP and all 11 reserve cartridges. After the enemy turn and its control windows, turn 2 showed a 6 AP reload. R completed it: 100→94 AP, 11→10 reserve cartridges, and one loaded charge. The test tab remains on the ready soldier. This skirmish did not write to the campaign save.
-
-All 1,268 tests, the type check and the production build pass in the isolated gameplay checkout. Partial loading via physical pointer clicks and live save loading remain covered indirectly by shared controls and automated checks. Artillery loading across turns remains open. Handheld preparation costs are covered in [weapon readiness](../tactical/weapon-readiness.md).
+Artillery loading across turns remains open. Handheld preparation costs are covered in [weapon readiness](../tactical/weapon-readiness.md).

@@ -2,9 +2,6 @@
 
 ## Communication and deliverables
 
-Prefer ASD-STE100-style communication: short, direct sentences, consistent terms,
-and explicit actors and actions.
-
 Every finished deliverable must be complete for a first-time reader. State the
 current facts, decisions, plan, and requirements directly. Do not include drafting
 history, abandoned options, removed figures, or commentary about earlier mistakes
@@ -19,9 +16,9 @@ read:
 - [Accepted domain architecture](docs/plans/accepted/domain-architecture.md).
 - [Ubiquitous language](docs/plans/accepted/ubiquitous-language.md).
 
-These documents define the target architecture. Source and dated evidence define
-current implementation. Preserve that distinction in plans, documentation, and
-status reports. A planning task does not authorize implementation.
+These documents define the target architecture. Source defines current
+implementation. Preserve that distinction in plans and documentation. A planning
+task does not authorize implementation.
 
 Use one glossary term for each concept across class and method names, use cases,
 requests/results, repositories, tests, README files, documentation, and Spanish UI
@@ -62,8 +59,9 @@ decisions in the accepted documents as part of the authorized work.
   belong in `packages/`.
 - Authored campaigns and art sources belong in `content/`. Prepared browser media
   lives in `apps/web/public` and campaign package assets.
-- Plans and evidence belong in `docs/plans` and `docs/evidence`. New local build,
-  cache, and diagnostic output belongs in ignored `.output/`.
+- Plans belong in `docs/plans`, requirement baselines in `docs/requirements`, and
+  formats or product designs in `docs/specification`. New local build, cache, and
+  diagnostic output belongs in ignored `.output/`.
 - The separate native build belongs in `reference/native`. Review applications
   belong in `tools/playgrounds`; they are not production game dependencies.
 - Keep filesystem paths distinct from public browser URLs. Use the
@@ -80,5 +78,7 @@ handling as applicable. Use real domain objects in domain tests. Run the affecte
 tests and required repository checks; match the verification scope to the change.
 
 For documentation-only work, check changed links, terminology, and whitespace.
-Do not claim runtime validation from documentation review. Update relevant
-use-case READMEs and the glossary when their contracts change.
+Documentation states requirements, design, and current behavior. It does not
+record implementation, verification, delivery, or publication status, dates,
+commit hashes, test counts, or run results: the commit history is that record.
+Update relevant use-case READMEs and the glossary when their contracts change.

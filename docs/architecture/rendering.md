@@ -1,13 +1,15 @@
 # Tactical rendering
 
-**Architecture guide:** [Overview](README.md) · [Content and campaigns](content-and-campaigns.md) · [Build and tooling](build-and-tooling.md)
+[Architecture guide](README.md) · [Tactical engine](tactical-engine.md) · [Content and campaigns](content-and-campaigns.md) · [Build and tooling](build-and-tooling.md)
 
-The active battle view is a Three.js world/actor canvas paired with an SVG controls overlay. The similarly named `TacticalScene` is not the active game renderer. See the [architecture overview](README.md), [tactical engine](tactical-engine.md), and [runtime flows](runtime-flows.md) for adjacent system context.
+This page explains how the browser projects accepted sector state into a Three.js WebGL scene (`TacticalThreeScene.tsx`) paired with an interactive SVG overlay (`TacticalSceneControls.tsx`), how visibility filtering prevents rendering from leaking hidden actors or items, how animation cues and contact-fitting workers run without becoming game-rule owners, and how isometric grid coordinates align with 3D world metres. It connects the simulation model in the [tactical engine](tactical-engine.md) and the sequence traces in [runtime flows](runtime-flows.md) to the asset pipelines in [content and campaigns](content-and-campaigns.md) and [build and tooling](build-and-tooling.md).
 
 ## At a glance
 
+The flowchart below shows how `Battlefield state + motion + cues` passes through `admittedActors`, `presentActors`, and `presentWorld` into `TacticalThreeScene / Three.js` (alongside `Art and runtime actor assets`) to render the `WebGL canvas`, while `TacticalSceneControls` renders the `SVG interaction / tactical overlay`.
+
 ```mermaid
-flowchart LR
+flowchart TB
   Battle[Battlefield state + motion + cues] --> Admit[admittedActors]
   Admit --> Actors[presentActors]
   Battle --> World[presentWorld]
@@ -19,27 +21,29 @@ flowchart LR
   Controls --> Overlay[SVG interaction / tactical overlay]
 ```
 
-[`apps/web/app/Battlefield.tsx`](../../apps/web/app/Battlefield.tsx) composes [`TacticalThreeScene.tsx`](../../apps/web/app/TacticalThreeScene.tsx) and [`TacticalSceneControls.tsx`](../../apps/web/app/TacticalSceneControls.tsx). The former renders world and actors to a canvas; the latter remains the SVG-based interaction and tactical-graphics layer. The canvas is marked `aria-hidden`, so it is not the source of tactical input semantics.
+[`apps/web/app/Battlefield.tsx`](../../apps/web/app/Battlefield.tsx) composes [`TacticalThreeScene.tsx`](../../apps/web/app/TacticalThreeScene.tsx) and [`TacticalSceneControls.tsx`](../../apps/web/app/TacticalSceneControls.tsx). `TacticalThreeScene` renders terrain, buildings, props, lighting, combat effects, and 3D glTF character models onto an `aria-hidden` `WebGL canvas`, while `TacticalSceneControls` draws the interactive `SVG interaction / tactical overlay` for tile selection, movement paths, sight lines, and targeting cursors. (The older 2D [`TacticalScene.tsx`](../../apps/web/app/TacticalScene.tsx) remains in the tree only for legacy or lightweight preview paths, and [`CharacterPreview.tsx`](../../apps/campaign-editor/web/app/studio/CharacterPreview.tsx) reuses `TacticalThreeScene` in the campaign editor.)
 
 ## Data contracts and disclosure boundary
 
-Rendering begins with `admittedActors(state, players, revealedRooms)`, which excludes departed/fled actors and applies visibility/interior readability policy before model presentation. `presentActors` converts only admitted entries into visual records: appearance, outfit/equipment, position/elevation, orientation, posture, action, motion and cue/contact data. `presentWorld` builds a `WorldInput` from terrain plus disclosed dynamic records. These functions are in [`apps/web/lib/three/presentation.ts`](../../apps/web/lib/three/presentation.ts); Battlefield owns their call site and feeds their results to the 3D scene.
+Presentation is a read-only projection layer and an information-disclosure boundary. In [`apps/web/lib/three/presentation.ts`](../../apps/web/lib/three/presentation.ts):
 
-The admission stage is a confidentiality boundary, not just a render optimization. World records such as loot, artillery, smoke, lights, props, surfaces and actor points are filtered by interior visibility and/or player sight as appropriate. Contact fitting uses currently admitted and readable bodies/support; it does not allow a cue target coordinate to introduce an unseen body. Keep rendering inputs derived through these boundaries instead of handing raw battle state to arbitrary asset/model code.
+- `admittedActors(state, players, revealedRooms)` filters out departed or fled units and applies player sight and interior room-readability rules before any 3D model is requested.
+- `presentActors` converts only admitted actors into `ActorVisual` view records carrying appearance, outfit, equipment, position, elevation, orientation, posture, and animation cues.
+- `presentWorld` builds a `WorldInput` record from static sector terrain plus disclosed dynamic objects (ground loot, artillery, smoke, lights, props, and upper surfaces).
 
-The SVG overlay uses tactical projection and interaction data for cursor, tile selection, movement routes, sight, target selection and other controls. It is layered with the 3D view, not a parallel full-world renderer. The older SVG [`TacticalScene.tsx`](../../apps/web/app/TacticalScene.tsx), sprite helpers, and lightweight preview components remain in the source tree for particular paths; their presence does not mean they are the live battlefield renderer. Studio character previews can reuse `TacticalThreeScene` directly (see [`apps/campaign-editor/web/app/studio/CharacterPreview.tsx`](../../apps/campaign-editor/web/app/studio/CharacterPreview.tsx)).
+Neither `TacticalThreeScene` nor `ActorRuntime` receives the raw sector snapshot or owns character health, inventory, or combat authority. Contact-fitting helpers only fit against admitted, visible bodies so an animation cue never reveals an unseen target.
 
-### Render input fields
+The table below lists each presentation `Contract`, its `Important fields`, and `What consumes them`.
 
 | Contract | Important fields | What consumes them |
 | --- | --- | --- |
-| `WorldInput` | `terrain` (dimensions, tiles, upper surfaces, buildings, props, lights, climb links, night/landscape identity); `revealedRooms`; `cursorLevel`; `admittedActorPoints`; `loot`, `cannons`, `smoke`, `illumination`; optional `timeSeconds` / `reducedMotion` | Sector world geometry and dynamic world objects. The typed contract explicitly carries presentation records, not simulation rosters: [`world-types.ts`](../../apps/web/lib/three/world-types.ts). |
-| `ActorVisual` | stable `key` / `id` / `kind`; appearance, skin, side; world `position`, `yaw`, posture, mounted/action/equipment/items/garments; optional cue, motion, selection, body-height values | Actor asset selection and `ActorRuntime`; no order-issuing API is included. Defined in [`presentation.ts`](../../apps/web/lib/three/presentation.ts). |
-| `ActorCue` | unique cue ID, semantic `action`, start/duration and optional phase timing, work, posture transition, contact target/support, care target | Runtime action clock and animation/contact fitting. Cue completion returns to Battlefield using `onCueComplete`. |
+| `WorldInput` | `terrain` (dimensions, tiles, upper surfaces, buildings, props, lights, climb links, night/landscape identity); `revealedRooms`; `cursorLevel`; `admittedActorPoints`; `loot`, `cannons`, `smoke`, `illumination`; optional `timeSeconds` / `reducedMotion` | [`sector-world.ts`](../../apps/web/lib/three/sector-world.ts) and [`world-types.ts`](../../apps/web/lib/three/world-types.ts) for building sector geometry and visible dynamic objects |
+| `ActorVisual` | Stable `key`, `id`, and `kind`; appearance, skin, and side; world `position`, `yaw`, posture, mounted state, action, equipment, items, and garments; optional `cue`, `motion`, selection, and body-height values | [`actor-assets.ts`](../../apps/web/lib/three/actor-assets.ts) and [`actor-runtime.ts`](../../apps/web/lib/three/actor-runtime.ts) for model selection and skeletal animation |
+| `ActorCue` | Unique cue ID, semantic `action`, start/duration and phase timing, work progress, posture transition, and contact or medical care target | [`actor-runtime.ts`](../../apps/web/lib/three/actor-runtime.ts), [`action-timing.ts`](../../apps/web/lib/three/action-timing.ts), and `onCueComplete` callbacks in `Battlefield` |
 
-`presentActors` composes actor state into `ActorVisual`; `presentWorld` composes the world contract. The data contracts deliberately differ from full battle state. Some world terrain is shared from the sector/map input; dynamic records are filtered individually, not by a blanket “everything is concealed” rule. Specific filters are visible in [`presentation.ts`](../../apps/web/lib/three/presentation.ts): visible room/surface predicates, sight-based observed records, admitted actor points, and visible loot/cannons/smoke/lights.
+## Frame processing and animation cues
 
-## Frame processing
+The sequence diagram below shows how `Battlefield`, `presentation.ts`, `TacticalThreeScene`, and `sector-world / assets` prepare and render each animation frame.
 
 ```mermaid
 sequenceDiagram
@@ -53,15 +57,15 @@ sequenceDiagram
   T->>W: update world and actor asset library
   loop animation frame
     T->>T: camera/frustum, actor LOD, active motion, occlusion
-    T->>W: tick world, combat effects and blood
+    T->>W: tick world, combat effects, and blood
     T->>T: render WebGL canvas
   end
   T-->>B: cue completion callback
 ```
 
-The scene creates an orthographic camera and Three renderer, updates the camera from the view rectangle, derives a frustum, and bounds shadow coverage around the viewed cells. It updates world geometry when inputs change, requests actor assets by appearance/LOD/mounted state, advances actors with cues and motion, applies selected-actor occlusion, then ticks world ambience and combat effects before rendering. See [`TacticalThreeScene.tsx`](../../apps/web/app/TacticalThreeScene.tsx), [`apps/web/lib/three/projection.ts`](../../apps/web/lib/three/projection.ts), [`apps/web/lib/three/scene-actors.ts`](../../apps/web/lib/three/scene-actors.ts), and [`apps/web/lib/three/actor-runtime.ts`](../../apps/web/lib/three/actor-runtime.ts).
+`TacticalThreeScene` maintains an orthographic Three.js camera and WebGL renderer, derives a view frustum and shadow bounds from the viewed cells, selects character level of detail (`characterLOD` with pixel-height thresholds at 120 and 65 pixels for LOD 0/1/2), advances active actor skeletal animations, applies selected-actor wall occlusion ([`actor-occlusion.ts`](../../apps/web/lib/three/actor-occlusion.ts)), and ticks ambient world and combat effects ([`combat-effects.ts`](../../apps/web/lib/three/combat-effects.ts)).
 
-Actor cues carry action identity and timing/phase data. The runtime and presentation modules map semantic actions into animation work, including movement, posture changes, firing, melee/contact, healing and mounted transitions. This is presentation timing, not an alternate authority for tactical outcomes: orders and game-state mutations remain in the game simulation and Battlefield executor; `ActorRuntime` explicitly consumes presentation records and cannot issue orders. Cue IDs prevent duplicate completion and let callbacks finish presentation work while battle events/state determine what happened. Contact-target model resolution and effect anchors connect animated actors/world equipment to effects.
+The sequence diagram below traces how an action's animation cue flows from `Game / battle executor` through `Battlefield` and `presentation.ts` to `ActorRuntime` and back on completion.
 
 ```mermaid
 sequenceDiagram
@@ -78,20 +82,20 @@ sequenceDiagram
   B->>B: clear / advance presentation cue
 ```
 
-The browser presentation stack also includes specialized workers for selected fits. For example, `NativeMeleeContactFit` is built around [`melee-fit-worker.ts`](../../apps/web/lib/three/melee-fit-worker.ts), and patient fit has worker/ready-fit counterparts. Do not generalize their fallback, caching, or failure semantics from filenames; check the specific worker and owning fit class before depending on those details. Relevant action modules include [`apps/web/lib/three/action-timing.ts`](../../apps/web/lib/three/action-timing.ts), [`apps/web/lib/three/action-pace.ts`](../../apps/web/lib/three/action-pace.ts), and [`apps/web/lib/three/actor-effect-anchors.ts`](../../apps/web/lib/three/actor-effect-anchors.ts).
+`ActorCue` playback is visual timing over an already resolved simulation step. Specialized Web Workers such as [`melee-fit-worker.ts`](../../apps/web/lib/three/melee-fit-worker.ts) (`NativeMeleeContactFit`) and [`heal-patient-fit-worker.ts`](../../apps/web/lib/three/heal-patient-fit-worker.ts) compute skeletal contact poses asynchronously for melee and medical animations without modifying tactical state.
 
-LOD selection depends on projected actor pixel height; frustum culling limits active actor advancement but does not replace admission. Reduced-motion preference affects world/effects/animation presentation. Visibility and interior room readability are computed earlier in the presentation path, before runtime asset loading.
+## World geometry, shared coordinate frame, and lifecycle
 
-## Geometry, assets, and lifecycle
-
-The world representation is assembled by [`apps/web/lib/three/sector-world.ts`](../../apps/web/lib/three/sector-world.ts), with typed inputs in [`world-types.ts`](../../apps/web/lib/three/world-types.ts) and focused geometry/material modules under [`apps/web/lib/three/`](../../apps/web/lib/three/). Its current division of work includes terrain chunks/upper surfaces in [`world-terrain.ts`](../../apps/web/lib/three/world-terrain.ts), building shells/rooms/walls in [`world-buildings.ts`](../../apps/web/lib/three/world-buildings.ts), independent wall records in [`world-wall-records.ts`](../../apps/web/lib/three/world-wall-records.ts), props in [`world-props.ts`](../../apps/web/lib/three/world-props.ts), vegetation in [`world-vegetation.ts`](../../apps/web/lib/three/world-vegetation.ts), dynamic lights/climb links/smoke in [`world-lights.ts`](../../apps/web/lib/three/world-lights.ts), loot in [`world-items.ts`](../../apps/web/lib/three/world-items.ts), artillery in [`world-artillery.ts`](../../apps/web/lib/three/world-artillery.ts), and shared material/illumination helpers in [`world-materials.ts`](../../apps/web/lib/three/world-materials.ts). `sector-world.ts` retains/rebuilds world nodes by semantic IDs/signatures and exposes anchors for effects. Tile/world projection uses tactical levels, elevations, surfaces, walls, buildings, props, climb openings, terrain, lighting and visibility. Occlusion and effects are separate concerns: [`actor-occlusion.ts`](../../apps/web/lib/three/actor-occlusion.ts) and [`combat-effects.ts`](../../apps/web/lib/three/combat-effects.ts).
+[`apps/web/lib/three/sector-world.ts`](../../apps/web/lib/three/sector-world.ts) assembles the 3D sector from focused builders under `apps/web/lib/three/`: terrain chunks and upper surfaces ([`world-terrain.ts`](../../apps/web/lib/three/world-terrain.ts)), buildings and interior rooms ([`world-buildings.ts`](../../apps/web/lib/three/world-buildings.ts)), standalone walls ([`world-wall-records.ts`](../../apps/web/lib/three/world-wall-records.ts)), props ([`world-props.ts`](../../apps/web/lib/three/world-props.ts)), vegetation ([`world-vegetation.ts`](../../apps/web/lib/three/world-vegetation.ts)), dynamic lights, climb openings, and smoke ([`world-lights.ts`](../../apps/web/lib/three/world-lights.ts)), ground loot ([`world-items.ts`](../../apps/web/lib/three/world-items.ts)), artillery ([`world-artillery.ts`](../../apps/web/lib/three/world-artillery.ts)), and shared materials ([`world-materials.ts`](../../apps/web/lib/three/world-materials.ts)).
 
 ### Shared coordinate frame
 
-[`projection.ts`](../../apps/web/lib/three/projection.ts) defines one metric frame for models, terrain, overlays, and recorded effects: `ISO_HALF_WIDTH=26`, `ISO_HALF_HEIGHT=14`, pitch derived from their ratio, `PIXELS_PER_METRE` derived from tactical elevation, and `TILE_METRES` derived from projected half-width. The grid point projection is `x = mapHeight*26 + 28 + (tileX-tileY)*26`, `y = 65 + (tileX+tileY)*14`. Three world inputs use tile x/y converted to metres (`x*TILE_METRES`, `z=y*TILE_METRES`) and `renderedSurfaceHeight` as world Y; `sectorProject` supplies screen-space mapping to `TacticalSceneControls` through its required `project(x,y)` prop. `updateSectorCamera` converts the Battlefield pixel viewport rectangle into orthographic camera bounds using `PIXELS_PER_METRE`. This is the bridge keeping cursor, tactical geometry, model placement, and camera view aligned.
+[`apps/web/lib/three/projection.ts`](../../apps/web/lib/three/projection.ts) defines one metric coordinate frame (`ISO_HALF_WIDTH = 26`, `ISO_HALF_HEIGHT = 14`, `PIXELS_PER_METRE`, and `TILE_METRES`) so the 3D WebGL scene and the 2D SVG overlay stay aligned.
+
+The flowchart below shows how `tile x,y + tactical level`, `elevation / surface height`, and `Battlefield pixel viewport + mapHeight` project through `sectorProject / ISO grid projection`, `tile coordinate × TILE_METRES`, and `updateSectorCamera` into `SVG TacticalSceneControls coordinates`, `Three world and actor positions`, and `Orthographic camera bounds in metres`.
 
 ```mermaid
-flowchart LR
+flowchart TB
   Grid[tile x,y + tactical level] --> Project[sectorProject / ISO grid projection]
   Project --> SVG[SVG TacticalSceneControls coordinates]
   Grid --> Metric[tile coordinate × TILE_METRES]
@@ -102,12 +106,12 @@ flowchart LR
   SVG -->|same viewport / projection contract| World
 ```
 
-Actor runtime's contract is a JSON character manifest (`/models/characters/manifest.json`) with appearance records and LOD URL lists, animation-library URLs and clip metadata, equipment model URL/catalog, optional gendered garments, sockets and optional horse assets. URLs resolve to glTF (`GLTFLoader`); `ActorAssetLibrary` shares each manifest promise and each GLTF load once per scene by URL, selects requested/fallback LOD, loads related libraries/equipment/garments/mount concurrently, and disposes shared geometries/materials/textures when the scene library is released. See [`actor-assets.ts`](../../apps/web/lib/three/actor-assets.ts). `TacticalThreeScene` computes projected body pixel height and calls `characterLOD`; the thresholds are currently 120 and 65 pixels (levels 0/1/2), and the asset library falls back to the last declared LOD if an exact level is absent.
+In this projection:
 
-Actor source assets and generated/runtime artifacts are distinct. Model authoring/build/registration utilities live under [`tools/characters-3d/`](../../tools/characters-3d/); runtime loads the resulting packaged browser assets. World assets additionally include authored art, maps and asset manifests. Do not conflate source scene files, generated glTF/atlas outputs, and runtime URLs. Build-time checksums and artifact closure are documented in [build and tooling](build-and-tooling.md).
+- `sectorProject` maps `tile x,y + tactical level` to 2D isometric screen coordinates (`x = mapHeight * 26 + 28 + (tileX - tileY) * 26`, `y = 65 + (tileX + tileY) * 14` adjusted for elevation) for `SVG TacticalSceneControls coordinates`.
+- 3D placement converts tile coordinates to metres (`x * TILE_METRES`, `z = y * TILE_METRES`) and uses `renderedSurfaceHeight` from `elevation / surface height` as world `Y` for `Three world and actor positions`.
+- `updateSectorCamera` converts the `Battlefield pixel viewport + mapHeight` rectangle into `Orthographic camera bounds in metres` using `PIXELS_PER_METRE`.
 
-When the scene unmounts or its `sceneId` changes, the effect cancels the animation frame, removes context listeners, disposes actor runtimes, occlusion, blood/effects, world, asset library and renderer. Actor entries absent from the current presented list are disposed and removed. Context loss reports an error; restore triggers scene recreation. These lifecycle behaviors are in [`TacticalThreeScene.tsx`](../../apps/web/app/TacticalThreeScene.tsx), not implied by the renderer API alone.
+### Assets and cleanup
 
-## Limits and source trail
-
-This is a browser-side visual/presentation subsystem, not the authority for tactical simulation. Battle state, visibility, motion and combat outcomes are produced elsewhere; presentation turns them into render inputs. Exact mesh composition and available actions vary with loaded assets and runtime contracts. Do not use old screenshots, sprite previews, catalog tools, or porting plans as evidence that a path is active. Verify a claim against the current `Battlefield` composition, `presentation.ts`, and `TacticalThreeScene.tsx` call chain.
+[`apps/web/lib/three/actor-assets.ts`](../../apps/web/lib/three/actor-assets.ts) (`ActorAssetLibrary`) loads `/models/characters/manifest.json` and caches glTF character meshes, LOD levels, animation clips, weapons, garments, and mounts per scene. Source 3D authoring scripts live in [`tools/characters-3d/`](../../tools/characters-3d/), whereas the browser loads packaged runtime glTF assets from `apps/web/public/models/`. When `TacticalThreeScene` unmounts or `sceneId` changes, it cancels the animation frame, removes WebGL context listeners, and disposes actor runtimes, occlusion helpers, combat effects, world meshes, cached glTF geometries/materials/textures, and the WebGL renderer.

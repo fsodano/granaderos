@@ -1,10 +1,6 @@
 # Approach and use the held item
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
-
-During tactical exploration and turn-based combat, selecting a patient or visible opponent while holding medical dressings, a blade, or empty hands moves the acting soldier into contact range and applies the treatment or melee strike in one order. The [classic JA2 manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf), printed page 33 ([M33](../../verification/ja2-parity-audit.md#scope-and-evidence)), describes selecting a patient with a medical kit in the main hand: the medic moves next to the patient and applies aid. Granaderos now uses that interaction for held dressings, blades and empty hands. The player does not need a separate Charge or Heal command.
+During tactical exploration and turn-based combat, selecting a patient or visible opponent while holding medical dressings, a blade, or empty hands moves the acting soldier into contact range and applies the treatment or melee strike in one order. The [classic JA2 manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf), printed page 33 ([M33](../../requirements/ja2-parity.md#scope-and-evidence)), describes selecting a patient with a medical kit in the main hand: the medic moves next to the patient and applies aid. Granaderos uses that interaction for held dressings, blades and empty hands. The player does not need a separate Charge or Heal command.
 
 ## Rules
 
@@ -16,12 +12,10 @@ During tactical exploration and turn-based combat, selecting a patient or visibl
 - Contact, an enemy reaction, collapse, target loss or a blocked route can stop the order. A reaction on the final approach tile also stops use. Completed movement costs remain spent; the dressing or attack is not used. Select the target again after reviewing the changed situation.
 - Treatment stops bleeding and records bandaged wounds. It does not restore health. Dressings remain finite.
 
-There is no saved pending order. The ordinary battle snapshot preserves any completed movement and reaction window. Direct `heal` and `melee` API aliases still require the target to be in reach. Ordinary door and container targeting now shares this approach executor; see [environment approach](environment-approach.md). Ground equipment and body searches now have an [approach and quantity picker](loot-approach.md). Giving and contested weapon grabs remain local.
+There is no saved pending order. The ordinary battle snapshot preserves any completed movement and reaction window. Direct `heal` and `melee` API aliases still require the target to be in reach. Ordinary door and container targeting shares this approach executor; see [environment approach](environment-approach.md). Ground equipment and body searches use an [approach and quantity picker](loot-approach.md). Giving and contested weapon grabs remain local.
 
-## Verification
+## Limits
 
-Thirteen `item-approach.test.mjs` cases cover exact move/use equivalence, blades, punches, ranged guns, unaffordable and invalid orders, detours, exploration bleeding, collapse, patient death, hidden obstruction, first contact, final-tile reactions, saved player interrupts and shared HUD costs.
-
-The live medical check equipped Paroissien's dressings, previewed 42 AP (24 movement plus 18 treatment), and selected Cabral once. Paroissien moved three tiles, spent exactly 42 AP and one dressing, and stopped Cabral's bleeding without changing his 50 HP. A fresh tab restored the same public unit records and six-second clock. See [the live record](../../verification/ja2-live-verification.md).
-
-Melee approach and interrupted approach have simulation coverage but were not exercised through live browser input in this check. AP values remain Granaderos tuning. This implements the stated interaction; it does not establish complete JA2 feature parity.
+Movement and use AP values remain Granaderos tuning. The approach covers the
+interaction stated above; further JA2 interaction parity is tracked in the
+[JA2 parity requirements](../../requirements/ja2-parity.md).

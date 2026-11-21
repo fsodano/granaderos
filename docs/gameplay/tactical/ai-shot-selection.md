@@ -1,10 +1,6 @@
 # AI shot selection
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
-
-During turn-based combat and reaction interrupts, computer-controlled combatants compare torso, head, and leg shots before firing. Each candidate uses the same accuracy, projectile cover, body-region effects, and AP costs as a player order. This implements the choices described by Patusco's guide on pages 13 and 47 ([G13, G47](../../verification/ja2-parity-audit.md#scope-and-evidence)); the scoring below is Granaderos tuning, not a reconstruction of JA2's AI.
+During turn-based combat and reaction interrupts, computer-controlled combatants compare torso, head, and leg shots before firing. Each candidate uses the same accuracy, projectile cover, body-region effects, and AP costs as a player order, following the choices described by Patusco's guide on pages 13 and 47 ([G13, G47](../../requirements/ja2-parity.md#scope-and-evidence)); the scoring below is Granaderos tuning, not a reconstruction of JA2's AI.
 
 ## Decisions
 
@@ -16,12 +12,9 @@ The score uses nominal weapon damage after cover and the common body-region effe
 
 Only observed opponents enter shot selection. Hidden positions, private target energy, supplies and future intentions do not affect it. Decisions are pure; the ordinary tactical reducer spends the charge, AP and condition and resolves damage, sound and reactions. The selected region is also used during enemy reactions.
 
-## Evidence and limits
+## Limits
 
-Eight tests in `tests/tactical-ai-targeting.test.mjs` cover fresh path results, exposed heads, mounted and prone targets, nearly incapacitated targets, partial penetration, private information, actual enemy turns and critical reaction hits. Existing AP-retention tests use noncritical pistol fixtures so critical injury and remaining-AP behavior are tested separately.
-
-At the shot-selection checkpoint, the legal seed-8 opening campaign passed both expanded battles: San Nicolás in 12 turns and 132 orders; San Lorenzo in nine turns and 129 orders. Four actual deaths persisted. The subsequent [AI field-equipment checkpoint](ai-field-equipment.md) supersedes those exact battle outcomes. Neither run injects victory, troop statistics or free ammunition.
-
-The verified automated checkpoint is 912 passing logic tests, excluding only the unchanged illustrated-sprite packing suite. Typecheck and production build pass, with 607 static files and 518 asset references. See the [live verification record](../../verification/ja2-live-verification.md) for the controlled browser case.
-
-Incoming exposure still estimates torso hit chance. It does not yet compare all incoming body regions or penetration damage. Specialist tool use, inventory transfers, a full equipment choice policy and exact classic AI parity remain incomplete. A nominal damage score also does not predict the random outcome of the next shot.
+Incoming exposure estimates torso hit chance. It does not compare all incoming
+body regions or penetration damage. Specialist tool use, inventory transfers, a
+full equipment choice policy and exact classic AI parity remain open. A nominal
+damage score also does not predict the random outcome of the next shot.

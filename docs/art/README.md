@@ -17,12 +17,9 @@ source files and reproducible exports.
 - [Skin tones](skin-tones.md)
 - [Equipped sprite variants](equipped-sprite-variants.md)
 - [Sprite render quality](sprite-render-quality.md)
-- [Tactical reference gallery, 8 October 2026](tactical-reference-gallery-2026-10-08.md)
+- [Tactical reference gallery](tactical-reference-gallery-2026-10-08.md)
   with the image set under `tactical-reference-2026-10-08/`
-- [Archived notes](archive/) — earlier action and building-style records
+- [Earlier records](archive/) — previous action and building-style notes
 
-The dated 3D art review records and their before/after captures that this
-folder previously held were removed in November 2026. The accepted geometry,
-materials and palettes live in the source exports and the guides above; the
-review history remains in Git history. Raw art receipts remain under
-`docs/evidence/artifacts/` where kept records link them.
+The accepted geometry, materials and palettes live in the source exports and the
+guides above. Earlier review records remain in Git history.

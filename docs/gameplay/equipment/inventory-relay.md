@@ -1,9 +1,5 @@
 # Passing items through adjacent soldiers
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
-
 In tactical exploration and turn-based combat, a soldier can transfer inventory items to a non-adjacent ally through an unbroken chain of adjacent squad members. The JA2 manual, printed page 23, describes inventory transfers through a chain of adjacent mercenaries. [Primary reference](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf).
 
 ## Player controls
@@ -21,18 +17,3 @@ An adjacent handover takes priority. Otherwise, the preview finds the shortest v
 - Loaded barrels, unfinished loading work, condition, jams, identities, and fitted bayonets remain attached to the relayed weapon. A helper's similar weapon cannot replace the selected one.
 
 The AP scale, capacity rules, geometry, atomic relay policy, six-tile throw range, and catch formula are period-game tuning. They are not claims about JA2's exact internal formulas.
-
-## Verification, 2026-09-12
-
-Twelve `inventory-relay.test.mjs` cases cover long chains, deterministic shortest routes, walls, blocked intermediates, AP, interrupt windows, stale confirmations, capacity, quantity conservation, fitted and partially loaded weapons, exploration timing, the production inventory model, and the full campaign save boundary. Existing direct-transfer and throw tests remain unchanged.
-
-A controlled browser harness mounted the production `JA2Inventory` component and sent its actual callbacks to `actBattle`. It did not access the user's campaign save.
-
-| Browser action | Observed result |
-| --- | --- |
-| Pass three cartridges from Acosta through Funes and Sosa to Díaz | Preview showed 12 AP total and the four names. Acosta went from 12 to 9 cartridges and 100 to 96 AP. Each intermediary went from 100 to 96 AP. Díaz received three cartridges and kept 100 AP. |
-| Save and restore the relay result | Validated JSON battle restoration kept quantities, AP, and ownership. Full campaign encoding/decoding is covered separately by the automated test. |
-| Throw three cartridges across four tiles at 95% catch chance | Acosta spent 8 AP; Díaz received three cartridges and spent 2 AP. No ground stack appeared. |
-| Throw three cartridges across four tiles at 5% catch chance | The catch failed. Acosta spent 8 AP. Díaz received nothing and kept his AP. Exactly three cartridges remained at Díaz's feet, including after validated restoration. |
-
-All 1,397 tests, TypeScript checking, the production build, and whitespace checks passed. The broader JA2 parity audit remains incomplete.

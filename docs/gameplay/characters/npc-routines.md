@@ -1,6 +1,6 @@
 # NPC routines and civilian turns
 
-This guide describes published behavior on the tactical battlefield, where civilian residents follow daytime and nighttime routines, pause for conversation, take cover from gunfire or explosions, and act in an atomic civilian turn phase after combat factions. NPC decisions use deterministic local rules. They do not call an LLM or a network service.
+This guide describes current behavior on the tactical battlefield, where civilian residents follow daytime and nighttime routines, pause for conversation, take cover from gunfire or explosions, and act in an atomic civilian turn phase after combat factions. NPC decisions use deterministic local rules. They do not call an LLM or a network service.
 
 ## Exploration
 
@@ -32,10 +32,6 @@ The civilian phase is atomic and runs once after both combat factions. It does n
 
 Enemies without recent contact patrol one short bound per round and retain AP for combat. They stop patrolling during interruption windows and pause after investigating a noise. Authored sentries can use `patrol: false`.
 
-## Persistence and checks
+## Persistence
 
 Civilian positions and routine progress survive JSON save/load and sector re-entry. Re-entry clears old fear reports because the new encounter has a new clock. New fields are optional for older saves and validated when present.
-
-`tests/npc-ai.test.mjs` covers routes through doors, home/bar visits, collision, hearing and recovery, real gunfire, conversation waiting, fixed time cadence, both initiative orders, patrols, persistence, wounds/lights, interrupted rest, and traps. Existing awareness, interruption, movement, time, and render tests cover integration.
-
-Live browser checks used an isolated scene with the real `Battlefield` component and no campaign storage. They confirmed automatic movement, entry into a house, prone/crouched reactions to a real musket shot, shelter movement after the enemy phase, pause/resume, and no browser console errors.

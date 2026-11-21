@@ -1,6 +1,6 @@
 # Ubiquitous language
 
-This accepted glossary defines the canonical domain terminology, ownership, Spanish UI translations, and naming rules across Granaderos code, tests, and documentation. Status: accepted naming contract for the target architecture (decision date: 27 October 2026).
+This accepted glossary defines the canonical domain terminology, ownership, Spanish UI translations, and naming rules across Granaderos code, tests, and documentation.
 
 [Architecture plan](domain-architecture.md) · [Plan index](../README.md)
 
@@ -50,11 +50,11 @@ names to players.
 | `SectorParticipant` | A reference to a character participating in a sector session, with local position, stance, and other session-specific state. Persistent health and inventory retain their canonical owners. | Participante en el sector |
 | `ExecuteSectorOrder` | Apply a player order inside the current sector visit through a bounded transaction. Preserve accepted partial work if world time reaches an arrival decision. | Dar una orden |
 | `EndSectorTurn` | Yield current combat authority or spend a bounded rest interval during exploration. | Terminar turno / descansar |
-| `ResumeSectorOperation` | Continue unfinished work inside the current visit from its accepted checkpoint. It does not activate another sector visit. | Continuar orden |
+| `ResumeSectorOperation` | Continue unfinished work inside the current visit from its accepted progress boundary. It does not activate another sector visit. | Continuar orden |
 | `AdmitSectorReinforcements` | Admit newly arriving participants into an open sector visit with legal entry positions and fresh entry budgets only for those participants. | Incorporar refuerzos |
 | `SectorDeployment` | Own the legal entry cells and exclusive participant placements until deployment is confirmed. | Despliegue del sector |
 | `SectorTimeBudget` | Bound sector progression by the next campaign-time boundary. Reject an atomic effect that needs more time than remains. | Tiempo disponible |
-| `SectorOperation` | Own accepted checkpoints and the unfinished intention for one sector operation. | Orden del sector |
+| `SectorOperation` | Own accepted partial progress and the unfinished intention for one sector operation. | Orden del sector |
 | `SectorOperationContext` | Bind an operation and its result to the game session, sector visit, both revisions, and request identity. | Contexto de la orden |
 | `ActionPoints` | A participant budget that refuses overspending and bounds unused carry into the next turn. | Puntos de acción |
 | `ActionPointPolicy` | Derive a participant turn budget from health, energy, fatigue, environment, and protection. | Reglas de puntos de acción |
@@ -72,7 +72,7 @@ names to players.
 | `MeleeExchange` | Own parry and counterattack costs and damage modifiers within one melee exchange. | Intercambio cuerpo a cuerpo |
 | `CombatOutcomePolicy` | Determine whether either side can remain on the field, including recoverable exhausted participants. | Resultado del combate |
 | `RetreatFromCombat` | Leave an active combat session through its permitted retreat and exit rules. | Retirarse del combate |
-| `GameSession` | The runtime consistency boundary for campaign progress, the active sector session, and shared identities. It coordinates commits without containing every game rule. | Partida en curso |
+| `GameSession` | The runtime consistency boundary for campaign progress, the active sector session, and shared identities. It owns the `WorldTimeline` and the `RandomSource`, and coordinates commits without containing every game rule. | Partida en curso |
 | `GameSnapshot` | A versioned representation of the game model for persistence and worker transport. | Estado guardado de la partida |
 | `GameUnitOfWork` | Shared transaction mechanism that commits one use case's accepted changes together and rejects a stale revision. | Transacción de la partida |
 | `GameSnapshotMapper` | Converts domain objects and their identity relationships to and from a versioned game snapshot. Restoration does not repeat creation effects. | Conversión del estado guardado |
@@ -91,8 +91,10 @@ names to players.
 | `Treasury` | Owns the force's funds and valid financial operations. | Tesorería |
 | `RecruitmentService` | Applies recruitment rules across character, contract, treasury, force membership, and placement within the caller's transaction. | Reglas de reclutamiento |
 | `Corpse` | Physical remains linked to a dead character, with a removal lifecycle independent of death history. | Cuerpo |
-| `WorldTimeline` | The monotonic game clock and deterministic scheduling of world changes. | Tiempo de campaña |
-| `CampaignDefinition` | Immutable published campaign documents admitted by shared file schemas and reference checks. The game compiler adds runtime playability and supported-rule validation. | Definición de campaña |
+| `WorldTimeline` | The monotonic game clock and deterministic scheduling of world changes. `advanceTo` is the only operation that moves time; it stops before the first paused event. | Tiempo de campaña |
+| `RandomSource` | The seeded random sequence for one game session. Its state belongs to the game snapshot, and domain and application code receive draws through explicit parameters. | Azar determinista |
+| `CampaignDefinition` | Immutable published campaign documents admitted by shared file schemas and reference checks. | Definición de campaña |
+| `CampaignCompiler` | The application service that turns a validated `CampaignDefinition` into runtime-playable domain objects. It is the only path from the shared file contract into the game. | Compilador de campaña |
 | `CampaignPackage` | The portable published files and resources that encode a campaign definition. | Paquete de campaña |
 | `CampaignProject` | An editable campaign-editor draft with project state, resources, and editing history. It can be incomplete. | Proyecto de campaña |
 | `Health` | The character's current and maximum health, bleeding, and bandaged wounds. Injury and elapsed bleeding update the same owner. | Salud |
@@ -154,6 +156,12 @@ the recruitment rules.
 subsequent travel. `RetreatFromCombat` applies to an active combat session. These
 names expose their different preconditions and physical consequences.
 
+`RandomSource` names the single seeded sequence a session owns, not a helper per
+module. One sequence per session keeps save, load, and worker replay exact, and
+passing the draw explicitly keeps policies pure. `CampaignCompiler` names the
+application step that turns published definitions into domain objects, so the
+domain can stay independent of the shared file contract.
+
 ## Naming rules for implementation
 
 - Name each use case after one domain intention. Use the same stem for its class,
@@ -161,6 +169,10 @@ names expose their different preconditions and physical consequences.
   `RecruitCombatantUseCase`, `RecruitCombatantRequest`,
   `RecruitCombatantResponse`, and `RecruitCombatantRepository` in
   `recruit-combatant/`.
+- Keep one repository interface per use case. Two use cases never share a
+  repository interface, even when their reads overlap. Shared identity,
+  transaction, mapping, and storage mechanisms live in infrastructure beneath
+  the interfaces.
 - The canonical entry pair is `EnterSector` with `SectorEntryRequest`. This is
   an explicit grammatical exception: the use case names an action, and its
   request names sector entry. Use `EnterSectorUseCase`, `EnterSectorResponse`,
@@ -195,26 +207,32 @@ the relevant README and repository instructions if the rule itself changes.
 
 Existing public and saved identifiers may remain at an explicit compatibility
 boundary until migrated. Maintain a mapping and tests for them. Current-source
-documentation must describe actual implementation accurately and link to this
-target naming contract; it must not claim that a planned rename has shipped.
+documentation must describe actual code behavior accurately and link to this
+target naming contract; it must not present a planned rename as current behavior.
 
 A naming review is complete when a first-time reader can identify each concept's
-meaning and owner without knowing the conversation or an earlier implementation.
+meaning and owner without knowing the conversation or an earlier version.
 
 ## Compatibility names
 
-| Retained name | Canonical meaning and boundary |
-| --- | --- |
-| `pendingBattle` | Saved and compatibility request field for `SectorEntryRequest`. It can request a peaceful visit. |
-| `battle` / `sectorState` | Existing serialized sector-view snapshot. Mapping restores `SectorSession` and its optional `CombatSession`; the field name does not imply active combat. |
-| `recruitCivic` | Compatibility command alias for `recruitCombatant`, which executes `RecruitCombatantUseCase`. New callers use the canonical command. |
-| `civicStatus` | Compatibility eligibility query used by recruitment adapters. It does not define a second category of recruit. |
-| `beginAssault` | Compatibility resolution of the current hostile arrival decision. It cannot bypass the required decision or its identity. |
-| `hiringArrivals` | Prepaid claims in supported older snapshots. Restoration admits them immediately at a legal site or preserves a refundable claim when no site is safe. New recruitment does not create a travel delay. |
+| Retained name | Canonical meaning and boundary | Owner and served call sites | Removal stage |
+| --- | --- | --- | --- |
+| `pendingBattle` | Saved and compatibility request field for `SectorEntryRequest`. It can request a peaceful visit. | Campaign snapshot field mapped by `GameSnapshotMapper` (`packages/game/infrastructure/persistence/game-snapshot-mapper.js`) and read by `packages/game/save.ts`, `packages/game/time.js`, `packages/game/campaign.js`, `packages/game/battle-handoff.js`, `packages/game/campaign-presence.js`, and the `apps/web` sector-entry and strategic-map adapters | Stage 8 (Compatibility retirement) |
+| `battle` / `sectorState` | Existing serialized sector-view snapshot. Mapping restores `SectorSession` and its optional `CombatSession`; the field name does not imply active combat. | Sector snapshot field mapped by `GameSnapshotMapper` (`packages/game/infrastructure/persistence/game-snapshot-mapper.js`) and read by `packages/game/save.ts`, `packages/game/infrastructure/session/talk-to-character-repository.ts`, and `apps/web/app/page.tsx` | Stage 8 (Compatibility retirement) |
+| `recruited` | Compatibility campaign snapshot array of serving combatant IDs; maps to `ForceRoster` membership. | Campaign snapshot field mapped by `CanonicalPersonnelMapper` (`packages/game/infrastructure/persistence/canonical-personnel-mapper.ts`) and `packages/game/infrastructure/personnel/campaign-recruitment-mapper.js`, and read by `packages/game/campaign.js`, `packages/game/recruitment.ts`, and the `packages/game` campaign modules and `apps/web` roster adapters that retain this field | Stage 8 (Compatibility retirement) |
+| `operativeState` | Compatibility per-character record table on the campaign snapshot; maps to `Character`, `Health`, `CharacterAbilities`, `ServiceContract`, and strategic location/assignment state. | Campaign snapshot field mapped by `CanonicalPersonnelMapper` (`packages/game/infrastructure/persistence/canonical-personnel-mapper.ts`) and `packages/game/infrastructure/personnel/campaign-recruitment-mapper.js`, and read by `packages/game/campaign.js`, `packages/game/recruitment.ts`, and the `packages/game` campaign modules and `apps/web` personnel adapters that retain this field | Stage 8 (Compatibility retirement) |
+| `sectorStates` / `sceneStates` | Retained physical sector and mission-scene snapshot maps on the campaign snapshot; mapped to `Sector`, `Inventory`, `WorldTimeline`, `ResidentRoutine`, and `Corpse` without duplicating character or inventory ownership. | Campaign snapshot fields mapped by `GameSnapshotMapper` (`packages/game/infrastructure/persistence/game-snapshot-mapper.js`) and `CanonicalWorldMapper` (`packages/game/infrastructure/persistence/canonical-world-mapper.js`), and read by `packages/game/campaign-scenario.js`, `packages/game/deployment-return.js`, `packages/game/sector-inventory.js`, `packages/game/save-terrain.js`, and the `packages/game` world and persistence modules that retain these maps | Stage 8 (Compatibility retirement) |
+| `suspendedSectorSessions` | Serialized list of `{ request, snapshot }` records for open `SectorSession` visits suspended while another squad resolves an arrival decision or visit. | Campaign snapshot field mapped by `GameSnapshotMapper` (`packages/game/infrastructure/persistence/game-snapshot-mapper.js`) and `packages/game/infrastructure/session/campaign-game-session-mapper.js`, and read by `packages/game/infrastructure/session/campaign-sector-session-coordinator.js`, `packages/game/infrastructure/session/campaign-resume-sector-session.repository.js`, `packages/game/infrastructure/session/validate-suspended-sector-sessions.js`, and `apps/web/app/page.tsx` | Stage 8 (Compatibility retirement) |
+| `recruitCivic` | Compatibility command alias for `recruitCombatant`, which executes `RecruitCombatantUseCase`. New callers use the canonical command. | `dispatchCampaign` (`packages/game/campaign.js`); typed in `packages/game/public/campaign-types.ts` | Stage 8 (Compatibility retirement) |
+| `civicStatus` | Compatibility eligibility query used by recruitment adapters. It does not define a second category of recruit. | `packages/game/recruitment.ts` and `packages/game/campaign.js`, called by `packages/game/infrastructure/personnel/campaign-recruit-combatant.repository.js`, `packages/game/infrastructure/personnel/campaign-get-recruitment-candidates.repository.js`, and `apps/web/app/Recruitment.tsx` | Stage 8 (Compatibility retirement) |
+| `beginAssault` | Compatibility resolution of the current hostile arrival decision. It cannot bypass the required decision or its identity. | `dispatchCampaign` (`packages/game/campaign.js`); typed in `packages/game/public/campaign-types.ts` | Stage 8 (Compatibility retirement) |
+| `hiringArrivals` | Prepaid claims in supported older snapshots. Restoration admits them immediately at a legal site or preserves a refundable claim when no site is safe. New recruitment does not create a travel delay. | Campaign snapshot field owned by `packages/game/hiring-arrivals.js` and read by `packages/game/campaign.js`, `packages/game/campaign-scenario.js`, `packages/game/service-equipment-return.js`, `packages/game/service-guarantees.js`, `packages/game/strategic-clock.ts`, `apps/web/app/Desk.tsx`, and `apps/web/app/Recruitment.tsx` | Stage 8 (Compatibility retirement) |
 
 These names remain at serialization and compatibility boundaries. Domain and
 application contracts use the canonical vocabulary. Tests cover the command
-aliases and save conversions.
+aliases and save conversions. Each retained name records its owner, the call
+sites it still serves, and the stage that removes it; the table only shrinks,
+and a new alias needs that record before it is added.
 
 ## Editor map ownership
 

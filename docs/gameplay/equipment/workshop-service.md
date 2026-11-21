@@ -1,6 +1,6 @@
 # Reposición y reparación en el taller
 
-[Equipo](README.md) · Verificación
+[Equipo](README.md)
 
 En la pantalla de campaña, dentro de **Sala de armas**, elegí la persona en **Hoja de equipo**. Debajo de su nombre
 aparece su ubicación real. Para reponer provisiones o reparar el arma, esa

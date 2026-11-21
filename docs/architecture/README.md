@@ -2,85 +2,62 @@
 
 [Documentation index](../README.md) · [Development setup](../development/getting-started.md)
 
-This guide describes the reviewed source. For the target architecture and naming
-contract, read the [accepted plan](../plans/accepted/domain-architecture.md)
-and [ubiquitous language](../plans/accepted/ubiquitous-language.md).
-The [28 October verification record](../verification/domain-architecture-2026-10-28.md)
-connects the accepted stages to executable tests and browser evidence.
+This index explains the reading order, shared vocabulary, and scope of the Granaderos architecture guide, connecting the high-level overview, C4 diagrams, and source map to the use-case catalogue and subsystem guides. It describes the current source code; for the target architecture and naming contract, read the [accepted plan](../plans/accepted/domain-architecture.md) and [ubiquitous language](../plans/accepted/ubiquitous-language.md).
 
-Start with the overview. Each subsequent level explains the same system at a
-smaller scale: first its boundaries, then its interactions, then its internals.
-You do not need to read every deep dive to understand a particular subsystem.
+Start with the [overview](overview.md). Each subsequent level explains the same system at a smaller scale: first its boundaries, then its interactions, then its internals. You can read any level-4 deep dive independently once you know the terms below.
 
-The [repository map](../development/repository-layout.md) explains the `apps`,
-`packages`, `content`, `docs`, `tools`, and `reference` directories and where to
-start in the IDE.
+The [repository map](../development/repository-layout.md) explains the `apps`, `packages`, `content`, `docs`, `tools`, and `reference` directories and where to start in the IDE.
 
 ## Reading ladder
 
+The table below lists each guide in the reading ladder by `Level`, links to the `Document`, and states `What you should understand afterward`.
+
 | Level | Document | What you should understand afterward |
 | --- | --- | --- |
-| 1 | [Overview](overview.md) | What runs where, who owns state, and how campaign and combat connect |
-| 2 | [C4 levels 1–3](c4.md) | People, running applications, stores and components, with source links |
-| 2 | [System map](system-map.md) | Directory responsibilities, actual dependencies, and integration boundaries |
-| 3 | [Use-case catalogue](use-cases/README.md) | Player and author intentions, current availability, and their rule boundaries |
-| 3 | [Runtime flows](runtime-flows.md) | The concrete call sequences behind loading, orders, battles, and saving |
-| 4 | [Strategic engine](strategic-engine.md) | Campaign commands, time, travel, personnel, and battle settlement |
-| 4 | [Tactical engine](tactical-engine.md) | Battle state, orders, perception, geometry, AI, and turn transitions |
-| 4 | [Content and campaigns](content-and-campaigns.md) | Packages, trusted scenarios, authoring, and editor playtests |
-| 4 | [Rendering](rendering.md) | Simulation-to-visual projection, Three.js, animation, and input overlays |
-| 4 | [Persistence](persistence.md) | Save identity, validation, compaction, storage, and asynchronous serialization |
-| 4 | [Build and tooling](build-and-tooling.md) | Source-to-static-site deployment, verification, assets, and native history |
+| 1 | [Overview](overview.md) | What runs where, who owns each fact, and how campaign and sector play connect |
+| 2 | [C4 levels 1–3](c4.md) | People, running applications, data stores, and internal components, with source links |
+| 2 | [System map](system-map.md) | Directory responsibilities, dependency rules, and fact-ownership boundaries |
+| 3 | [Use-case catalogue](use-cases/README.md) | Player and author intentions, interface exposure, and rule boundaries |
+| 3 | [Runtime flows](runtime-flows.md) | The concrete call sequences behind loading, orders, sector visits, and saving |
+| 4 | [Strategic engine](strategic-engine.md) | Campaign commands, time, travel, personnel, and sector-visit settlement |
+| 4 | [Tactical engine](tactical-engine.md) | Sector visits, combat episodes, orders, perception, geometry, AI, and turn flow |
+| 4 | [Content and campaigns](content-and-campaigns.md) | Campaign packages, trusted scenarios, authoring projects, and editor playtests |
+| 4 | [Rendering](rendering.md) | Simulation-to-visual projection, Three.js scenes, animation cues, and input overlays |
+| 4 | [Persistence](persistence.md) | Save identity, validation, terrain compaction, browser storage, and worker encoding |
+| 4 | [Build and tooling](build-and-tooling.md) | Static-site staging, architecture and boundary checks, assets, and native history |
 
 ## Choose a route
 
-- **Understand the whole application:** overview → C4 views → system map → runtime flows.
-- **Understand everything you can do:** overview → use-case catalogue → domain capabilities and worked contracts.
-- **Change a game rule:** the first three → strategic or tactical engine → persistence.
-- **Create or extend a campaign:** overview → content and campaigns → runtime flows.
-- **Work on graphics:** overview → rendering → tactical engine's space and visibility model.
-- **Investigate a deployment:** system map → build and tooling → persistence for origin-specific saves.
+- **Understand the whole application:** [overview](overview.md) -> [C4 views](c4.md) -> [system map](system-map.md) -> [runtime flows](runtime-flows.md).
+- **Understand everything you can do:** [overview](overview.md) -> [use-case catalogue](use-cases/README.md) -> domain capability pages and [application contracts](use-cases/application-contracts.md).
+- **Change a game rule:** [overview](overview.md) -> [C4 views](c4.md) -> [system map](system-map.md) -> [strategic engine](strategic-engine.md) or [tactical engine](tactical-engine.md) -> [persistence](persistence.md).
+- **Create or extend a campaign:** [overview](overview.md) -> [content and campaigns](content-and-campaigns.md) -> [runtime flows](runtime-flows.md).
+- **Work on graphics:** [overview](overview.md) -> [rendering](rendering.md) -> [tactical engine](tactical-engine.md).
+- **Investigate a deployment:** [system map](system-map.md) -> [build and tooling](build-and-tooling.md) -> [persistence](persistence.md) for origin-specific saves.
 
-The diagrams are Mermaid blocks, rendered by GitHub and other Mermaid-capable
-Markdown readers. Source links are relative to this directory. A diagram shows
-logical ownership or a particular path, not necessarily every module import.
+The diagrams are Mermaid blocks rendered by GitHub and other Mermaid-capable Markdown readers. Source links are relative to this directory. Each diagram shows logical ownership or one specific execution path rather than every module import.
 
 ## Terms used throughout
 
+The table below defines each core `Term` and its `Meaning here` across all architecture pages.
+
 | Term | Meaning here |
 | --- | --- |
-| Campaign definitions / package | Authored world, cast, equipment, maps, presentation, and supported rules |
-| Campaign state | Mutable strategic progress represented as serializable data |
-| Scenario | A trusted, compiled-in rule implementation selected by a supported identifier |
-| `SectorEntryRequest` | Campaign-owned entry input; the compatibility field remains `pendingBattle` |
-| `SectorSession` | One sector visit, including exploration, deployment and combat; compatibility snapshots still use `battle` |
-| `CombatSession` | One bounded combat episode within a sector visit |
-| Retained scene | Saved sector/mission state used to preserve changes across later visits |
-| Committed state | The accepted campaign/battle pair owned by the root application |
-| Presentation frame | Temporary animation snapshot derived during simulation; not an independent save checkpoint |
-| Worker | A browser thread adapter running shared logic on message-transferred snapshots |
+| Campaign definitions / package | Authored world, cast, equipment, maps, presentation, and supported rule identifiers admitted by `CampaignDefinition` |
+| Campaign state | Mutable strategic progress serialized as a campaign snapshot |
+| Scenario | A trusted, compiled-in rule module selected by an allowlisted scenario identifier (`generic-v1` or `granaderos-historical-v1`) |
+| `SectorEntryRequest` | Campaign-owned input to `EnterSector`; the compatibility snapshot field remains `pendingBattle` |
+| `SectorSession` | One active or suspended sector visit, including deployment, exploration, and combat; compatibility snapshots still use `battle` or `sectorState` |
+| `CombatSession` | One bounded combat episode within a `SectorSession`, owning turn authority, action-point budgets, reactions, and the combat outcome |
+| Retained scene | Saved sector or mission state (`sectorStates` / `sceneStates`) used to preserve physical world changes across later visits without duplicating character or inventory ownership |
+| Committed state | The accepted campaign and active sector snapshot pair owned by the root browser application at one `gameRevision` |
+| Presentation frame | Temporary visual or animation data projected from accepted simulation state; never an owner of game rules or a save checkpoint |
+| Worker | A browser Web Worker running shared simulation, save-encoding, or contact-fitting logic on message-transferred snapshots |
 
 ## Source and limits
 
-The overview, source map, C4 views, editor boundary, and persistence contracts
-reflect the working source on **28 October 2026**. Detailed compatibility-engine
-traces identify the older modules that remain in use. The package version alone
-does not identify which local architecture changes have been published.
+The overview, system map, C4 views, editor boundary, and persistence guides describe the current source in `apps/`, `packages/`, `content/`, and `tools/`. Detailed traces in the strategic and tactical engine guides identify where migrated domain classes and use cases connect to procedural compatibility modules (`packages/game/campaign.js`, `packages/game/tactical.js`, `packages/game/world.js`, `packages/game/time.js`, and `packages/game/save.ts`).
 
-The locally modified native `reference/native/engine/` submodule is outside this browser work.
-Evidence is source tracing of the named entry points and their collaborators,
-not a full campaign playthrough, a performance certification, or proof that every
-historical feature is available. The architecture is not a strict dependency DAG:
-the engine imports trusted campaign defaults/scenarios, and some rule modules
-import one another. Disabled commands can remain present in source.
+The native `reference/native/` tree is separate from the browser applications. Each architectural claim traces the named entry points and their collaborators; disabled commands can remain in compatibility switch blocks behind preflight guards. While `packages/game/domain` and `packages/game/application` have strict inward dependency rules enforced by `npm run check:architecture` and `.dependency-cruiser.json`, the compatibility simulation modules at the `packages/game/` root still import trusted campaign defaults and scenario modules in `content/campaigns/`.
 
-The [JA2 reference series](../web-port/README.md) describes upstream behavior and
-adaptation history. [Browser campaign systems](../development/WEB-SYSTEMS.md)
-contains successive historical checkpoints. Neither should replace current
-source when it disagrees with this guide. For release status and dated gameplay
-evidence, use the [documentation index](../README.md), not architecture diagrams.
-
-When updating these documents, follow a changed operation across its UI, rule,
-worker, content, and save boundaries. Update the relevant sequence diagram as
-well as the subsystem description; preserve the difference between code
-availability, accepted commands, and verified user behavior.
+The [JA2 reference series](../web-port/README.md) describes upstream behavior and adaptation history. [Browser campaign systems](../development/WEB-SYSTEMS.md) contains historical design notes. Neither overrides current source code or the [accepted architecture plan](../plans/accepted/domain-architecture.md). For the repository documentation index, see [docs/README.md](../README.md).

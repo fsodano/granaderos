@@ -1,10 +1,6 @@
 # Weapon readiness
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
-
-During turn-based combat (and action-duration checks in tactical exploration), the cost of raising a firearm into firing position is separate from the cost of discharging it (implemented 12 September 2026; parity row [I09](../../verification/ja2-parity-audit.md)). The same-facing first-shot total retains the existing Granaderos balance. Keeping a weapon in its firing position avoids paying the raising portion again.
+During turn-based combat (and action-duration checks in tactical exploration), the cost of raising a firearm into firing position is separate from the cost of discharging it (parity row [I09](../../requirements/ja2-parity.md)). The same-facing first-shot total retains the existing Granaderos balance. Keeping a weapon in its firing position avoids paying the raising portion again.
 
 ## Source and adaptation
 
@@ -38,10 +34,8 @@ Readiness survives turn boundaries and saved reaction queues. It belongs to the 
 
 The existing reticle total includes all costs. The target preview and held-item help show **Preparar** and **disparar** separately, or **Arma en posición de tiro**. There is no additional action button, and entering aim mode remains free. The [L look control](look-readiness.md) can also prepare a firearm before firing: face a direction, then confirm that direction again for the preparation cost. Enemy choices, militia actions, point shots, ordinary shots and aim limits use the shared cost calculation. Public state exposes a hired soldier's readiness but does not expose enemy readiness.
 
-## Verification and remaining scope
+## Limits
 
-Seventeen focused tests cover every firearm's baseline, two real shots, cursor costs, free targeting, actual turn advancement, lowering actions, failures, misfires, transfers, invalid states, AI, named/location fire, a full campaign save and an actual interrupted enemy continuation. The existing projectile-cover test now checks preparation text as well as the unchanged range warning.
-
-Live verification passed in the separate `?qa=1` San Lorenzo skirmish. With Dorrego's personal firing modifier, the first ground shot used 6 AP (120→114); the next used 4 AP (114→110). Two loaded charges were consumed and all 12 reserve cartridges remained. R loaded both barrels for 55 AP, leaving 55 AP and 10 reserve cartridges. The help text again showed **Preparar: 2 PA · disparar: 4 PA**. After centering the camera, a physical mouse click fired one barrel for 6 AP (55→49); the next-shot preview showed 4 AP and **Arma en posición de tiro**. The tab remains on that prepared soldier. The skirmish did not write to the campaign save.
-
-All 1,285 tests, the type check and the production build pass in the isolated gameplay checkout. Live save/reload and prone turning remain automated-test evidence. The existing L cursor now provides paid preparation; see [look readiness](look-readiness.md). Dedicated lower-weapon input, held-weapon stamina costs, target-switch AP, and persistent firing-posture sprite dispatch remain separate work. Artillery is unchanged.
+Dedicated lower-weapon input, held-weapon stamina costs, target-switch AP and
+persistent firing-posture sprite dispatch remain separate work. Artillery is
+unchanged.
