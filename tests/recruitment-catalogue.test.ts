@@ -6,6 +6,8 @@ import { initialCampaign, dispatchCampaign, rosterFor } from '../packages/game/c
 import { defaultContentPackage } from '../packages/game/content-package.js';
 import { GetRecruitmentCandidatesUseCase } from '../packages/game/application/personnel/get-recruitment-candidates/get-recruitment-candidates.use-case.ts';
 import { CampaignGetRecruitmentCandidatesRepository } from '../packages/game/infrastructure/personnel/campaign-get-recruitment-candidates.repository.js';
+import { getRecruitmentCandidates } from '../apps/web/lib/recruitment-catalogue.ts';
+import type { GetRecruitmentCandidatesRequest } from '../packages/game/application/personnel/get-recruitment-candidates/get-recruitment-candidates.request.ts';
 
 function candidates(campaign: CampaignSnapshot, availability: string) {
   const repository = new CampaignGetRecruitmentCandidatesRepository(campaign, rosterFor(campaign));
@@ -42,4 +44,27 @@ void test('an equipment return obligation excludes a candidate from available re
   };
   assert.equal(candidates(campaign, 'available').includes('110'), false);
   assert.ok(candidates(campaign, 'unavailable').includes('110'));
+});
+
+void test('the browser composition returns the catalogue the recruitment screen resolves', () => {
+  const campaign = initialCampaign();
+  const roster = rosterFor(campaign);
+  const request: GetRecruitmentCandidatesRequest = {
+    query: '',
+    specialty: 'all',
+    availability: 'available',
+    sort: 'name',
+  };
+  const catalogue = getRecruitmentCandidates(campaign, roster, request);
+  assert.deepEqual(catalogue.characterIds, candidates(campaign, 'available'));
+  const visible = catalogue.characterIds.flatMap((id) => {
+    const candidate = roster.find((character) => String(character.id) === id);
+    return candidate ? [candidate] : [];
+  });
+  assert.deepEqual(
+    visible.map((character) => String(character.id)),
+    [...catalogue.characterIds],
+  );
+  present(roster.find((character) => String(character.id) === '110'));
+  assert.ok(visible.some((character) => String(character.id) === '110'));
 });

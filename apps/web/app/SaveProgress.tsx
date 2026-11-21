@@ -1,7 +1,4 @@
-import type {
-  SaveState,
-  SaveStatus,
-} from '../../../packages/game/application/get-save-status/get-save-status.repository.ts';
+import type { SaveState, SaveStatus } from '../../../packages/game/public/save-types.ts';
 import './save-progress.css';
 
 const SAVE_LABELS: Record<SaveState, string> = {
