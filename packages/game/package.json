@@ -12,6 +12,6 @@
     "typecheck": "npm --prefix ../../apps/web run typecheck:game"
   },
   "engines": {
-    "node": "22.23.4"
+    "node": "26.13.1"
   }
 }
