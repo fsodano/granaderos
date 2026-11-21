@@ -2,7 +2,7 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
 The armory's **Intercambiar equipo** control accepts an offer from both sides and settles one cash difference. A player can exchange goods even when neither participant can afford the two separate purchases. JA2's `PerformTransaction` compares the player's offered value against dealer goods and checks the dealer's available cash against the change owed; see [ShopKeeper_Interface.cc](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/master/src/game/Tactical/ShopKeeper_Interface.cc). The period workshop inventory, prices and limits remain Granaderos adaptations.
 

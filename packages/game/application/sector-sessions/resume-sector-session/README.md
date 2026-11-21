@@ -1,6 +1,11 @@
 # ResumeSectorSession
 
-Resume one suspended sector visit at the accepted campaign time. The request
+This use case activates one suspended sector visit at the accepted campaign time
+while saving the currently active visit, and refuses requests when an arrival
+decision is unresolved or when the visit is missing, has duplicate participation,
+has unsynchronized progress, or has a stale revision.
+
+The request
 contains its `sectorSessionId`. The response identifies the active visit.
 
 The use case loads `GameSession` through `ResumeSectorSessionRepository` and

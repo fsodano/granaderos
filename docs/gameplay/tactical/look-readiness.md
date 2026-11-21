@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Implemented 12 September 2026. The existing L control can prepare an equipped firearm before its first shot. No separate action button is added.
+During tactical exploration and turn-based combat, confirming the **L** look cursor in the soldier's current facing direction raises and prepares an equipped firearm before its first shot. Implemented 12 September 2026. No separate action button is added.
 
 ## Source distinction
 

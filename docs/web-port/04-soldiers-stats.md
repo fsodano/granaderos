@@ -1,16 +1,18 @@
 # Web Port Series 04 — Soldiers, Mercs & Character Stats
 
-> **Audience:** an agent with zero prior JA2 knowledge who must port engine behavior into the
-> browser clone (`game/` + `web/`). This document is the exact data model for the soldier/merc/
-> character systems: the `SOLDIERTYPE` runtime struct, the `MERCPROFILESTRUCT` persistent
+[Series index](README.md) · Previous: [03 — Tactical Combat Core](03-tactical-combat.md) · Next: [05 — Weapons, Items & Economy](05-weapons-items.md)
+
+> **Reference notice:** This document is a source and design analysis of the original Jagged Alliance 2 v1.13 (`1dot13/source`) soldier, mercenary profile, attribute, skill, trait, and inventory slot systems (`Tactical/` and `Strategic/Assignments.*`) kept as reference material for Granaderos' browser adaptation. It is **not** a description of Granaderos' current browser implementation. See the [series index](README.md) for the full reference set. In the current repository layout, the C++ engine submodule lives at `reference/native/engine/` (citations below are relative to that directory), and the browser modules live under `packages/game/` and `apps/web/` (referred to below by their earlier paths `game/` and `web/`).
+
+> **Scope:** Read-only reference analysis of the soldier/merc/character systems: the `SOLDIERTYPE` runtime struct, the `MERCPROFILESTRUCT` persistent
 > profile, attributes/skills/traits, health/energy/breath, stances, inventory slots, faces/
 > animations/speech hooks, skill checks + training, AI-vs-player flags, enemy/civilian/creature
 > variants, and the assignment/contract hooks into the Strategic layer. It ends with a
 > TypeScript interface proposal for the web save schema and a reproduction checklist.
-> Nothing here modifies engine code — read-only analysis with `file:line` citations.
+> Every claim carries `file:line` citations against the analyzed engine revision.
 >
 > **Scope boundary:** weapons ballistics, AP costs of firing, and the black-powder misfire
-> model are covered in `05-tactical-combat.md` (and `00-overview.md` §6). This doc covers the
+> model are covered in [03 — Tactical Combat Core](03-tactical-combat.md), [05 — Weapons, Items & Economy](05-weapons-items.md), and [00 — Engine Overview](00-overview.md) §6. This doc covers the
 > *soldier as a data record*, not the projectile math.
 
 ---

@@ -1,6 +1,11 @@
 # TransferItem
 
-Transfer an exact quantity from one item custodian to another. The request
+This use case transfers an exact quantity of an item from one item custodian to
+another within one transaction, and refuses stale selections, duplicate item
+identities, insufficient quantities, or capacity violations without changing
+either inventory.
+
+The request
 identifies the two custodians, the source selection, the quantity, and an optional
 source fingerprint. The narrow repository loads both inventories within the
 current game transaction.

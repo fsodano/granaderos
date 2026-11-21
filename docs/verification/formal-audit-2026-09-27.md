@@ -1,5 +1,7 @@
 # Formal implementation audit — 27 September 2026
 
+This dated cross-branch implementation audit (27 September 2026) evaluates four source trees: published `main` (`490d5dde4914f7d1050f1901ddf783aa88bc95ed`, [PR #28](https://github.com/fsodano/granaderos/pull/28) merge), the advanced original development checkout (`eb39ef7e903fa33f1d463b2af0db2de3c66cf93c` plus 290 dirty paths), the editor prototype (`390028896a4e95a325337763cb82d6e9114a5045`), and the prepared presence delivery (`e2dff9662476cc5b7435a63c381840108beea5f9`). All test counts, baseline comparisons, and failure points below are a snapshot for those exact sources.
+
 ## Conclusion
 
 **The complete game and story editor are not accepted.** The published baseline
@@ -8,8 +10,9 @@ There is useful working code in each version, but no single verified release
 contains the complete design. Test totals are not completion percentages.
 
 The active contract is [DESIGN.md](../specification/game-design.md). The active requirement
-register is [requirements.json](requirements.json), rendered in
-[PROGRESS.md](published-progress.md). This dated audit records evidence and does not
+register at that date was requirements.json, rendered in
+PROGRESS.md; that register and its generated view were removed in November 2026, and the
+[parity audit](ja2-parity-audit.md) now retains the requirement rows. This dated audit records evidence and does not
 silently change when a later PR fixes a requirement.
 
 ## Method and scope
@@ -35,7 +38,7 @@ not a fresh human playthrough, exhaustive visual inspection, historical research
 performance certification or mathematical proof. No new browser acceptance was
 performed. The local parity file contains prior live checks; those remain
 historical evidence. Passing a whole suite does not certify every sentence in an
-old status row. Sources for the original G/M page references are identified in
+old status row. Sources for the original [G/M page references](ja2-parity-audit.md#scope-and-evidence) are identified in
 [the preserved parity source](../evidence/formal-audit-2026-09-27/parity-source.json).
 
 ## Sources and results
@@ -133,8 +136,8 @@ not waived. This does not certify period accuracy or combat balance.
 
 | Policy | Published main | Advanced local | Prototype | Consolidation rule |
 |---|---|---|---|---|
-| Strategic resources | `economyVersion: 2`, treasury only, 3,200 pesos | No version 2, 29 resource keys | Same older material model | Preserve pesos-only PR #12; retain tactical finite item custody |
-| Funded elite terms | Day/week/month available; 1,600/11,200/48,000 | Same available terms/prices | Day 50; week/month refused | Preserve all three terms and the approved paid roster rules (PR #17) |
+| Strategic resources | `economyVersion: 2`, treasury only, 3,200 pesos | No version 2, 29 resource keys | Same older material model | Preserve pesos-only [PR #12](https://github.com/fsodano/granaderos/pull/12); retain tactical finite item custody |
+| Funded elite terms | Day/week/month available; 1,600/11,200/48,000 | Same available terms/prices | Day 50; week/month refused | Preserve all three terms and the approved paid roster rules ([PR #17](https://github.com/fsodano/granaderos/pull/17)) |
 | Starting control | Buenos Aires, Retiro, Ensenada | Retiro only | Retiro only | Publish the later Retiro-only opening as its own accepted delivery |
 | First character | Empty roster; custom/hire options; academy charge remains | Free first person, no extra academy charge | Older opening behavior requires consolidation | Publish the later free opening; do not import unrelated economy code |
 | Contract candidates | Off-map until paid safe arrival | Different older integration surface | Preview/editor is not publication | Preserve separate hire-only and world-resident policies |
@@ -174,8 +177,10 @@ Import one functional slice with its state model, controls, migrations and tests
 then update the affected register rows and evidence. Keep approved policy changes
 explicit. Run relevant checks and exact-head CI before each authorized merge.
 
-`npm run audit:docs` checks requirement coverage, evidence references, stored log
-integrity and the generated progress view. `npm run docs:progress` regenerates
+`npm run audit:docs` (retired in November 2026 together with the register) checked
+requirement coverage, evidence references, stored log
+integrity and the generated progress view; `npm run docs:progress` (also retired)
+regenerated
 that view. `npm run audit:baseline` rechecks declared numerical defaults; any
 intentional adaptation needs explicit design and test evidence. The checker was also exercised with seven negative cases: duplicate ID, removed
 original requirement, removed parity requirement, unknown evidence, incomplete

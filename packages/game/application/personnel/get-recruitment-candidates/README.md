@@ -1,7 +1,10 @@
 # GetRecruitmentCandidates
 
-Read the recruitment catalogue by name, nickname, role, specialty, availability,
-and order. The repository exposes only `loadCatalogue`; it has no commit method.
+This read-only use case queries the filtered and ordered recruitment catalogue
+by name, nickname, role, specialty, availability, and order without modifying
+campaign time, funds, service, or revision.
+
+The repository exposes only `loadCatalogue`; it has no commit method.
 `RecruitmentCandidate` applies text and specialty rules. `RecruitmentCatalogue`
 filters and orders the result. The response contains canonical character IDs.
 Each candidate references its restored `CharacterAbilities` value. Rating

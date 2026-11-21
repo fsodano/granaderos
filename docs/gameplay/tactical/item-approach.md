@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-The JA2 manual, printed page 33, describes selecting a patient with a medical kit in the main hand: the medic moves next to the patient and applies aid. Granaderos now uses that interaction for held dressings, blades and empty hands. The user does not need a separate Charge or Heal command.
+During tactical exploration and turn-based combat, selecting a patient or visible opponent while holding medical dressings, a blade, or empty hands moves the acting soldier into contact range and applies the treatment or melee strike in one order. The [classic JA2 manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf), printed page 33 ([M33](../../verification/ja2-parity-audit.md#scope-and-evidence)), describes selecting a patient with a medical kit in the main hand: the medic moves next to the patient and applies aid. Granaderos now uses that interaction for held dressings, blades and empty hands. The player does not need a separate Charge or Heal command.
 
 ## Rules
 

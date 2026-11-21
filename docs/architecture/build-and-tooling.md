@@ -76,7 +76,6 @@ Current root commands include:
 | `npm test` | Run the repository's domain, application, persistence, editor, format, and gameplay test inventory through [`tools/test-runner.mjs`](../../tools/test-runner.mjs). |
 | `npm run typecheck` | Type-check the game, web UI, and independent editor through their configured TypeScript projects. |
 | `npm run build` | Build, stage, and verify both static applications. |
-| `npm run audit:docs` | Check design/progress documentation records against the docs audit's expected baseline; it is not a semantic architecture-doc coverage test. |
 | `npm run audit:baseline` | Check reference gameplay values against the source baseline; it is not an overall quality or runtime test. |
 
 The web workflow in [`.github/workflows/web.yml`](../../.github/workflows/web.yml)

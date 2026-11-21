@@ -1,5 +1,7 @@
 # Sector builder implementation plan
 
+This plan defines the web sector map editor, its JSON map document format, and its shared command and compilation pipeline.
+
 The original wall-cell constraint in this design is superseded by the
 [wall-edge implementation plan](wall-edges.md) and
 [version 2 map format](../development/sector-editor.md#format-and-runtime-boundary).

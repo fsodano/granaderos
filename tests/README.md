@@ -1,5 +1,8 @@
 # Automated tests
 
+This test suite guide documents the automated TypeScript test runner, test
+discovery rules, focused loader commands, and historical manual-tool recovery
+for `tests/`.
 Use the Node.js version in [`.node-version`](../.node-version) and run
 `npm run setup` from the repository root. Run `npm test` or its alias
 `npm run test:quick` to execute the complete automated suite with two workers.

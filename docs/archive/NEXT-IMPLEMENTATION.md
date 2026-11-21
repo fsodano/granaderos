@@ -1,11 +1,10 @@
-# Remaining implementation queue after 0.3.0-dev.1
+# Remaining implementation queue after 0.3.0-dev.1 (archived 2026-09-05)
 
-> **Archived snapshot.** This record describes an earlier project state. Read
-> [published progress](../verification/published-progress.md) for current scope.
+> **Archived historical ledger.** This superseded record preserves the 2026-09-05 implementation queue recorded after the `0.3.0-dev.1` checkpoint (209 tests). Read
+> published progress for current scope and [ja2-parity-audit.md](../verification/ja2-parity-audit.md) for current requirement status.
 
-The full user goal remains active. Check REQUIREMENT-AUDIT.md and original
-specification before declaring completion. The latest goal turn made real
-implementation progress; it was not blocked by the earlier screen lock.
+The full game implementation objective remained active at this checkpoint (limits: 209 passing tests did not satisfy full period equipment, naval missions, tactical formations, long-range fields or full browser acceptance). Check [REQUIREMENT-AUDIT.md](REQUIREMENT-AUDIT.md) and [`docs/specification/original.txt`](../specification/original.txt) before declaring completion. The `0.3.0-dev.1` checkpoint made real
+implementation progress; it was not blocked by the earlier macOS screen lock that prevented automated screenshot capture.
 
 ## Tactical/strategic clock bridge
 

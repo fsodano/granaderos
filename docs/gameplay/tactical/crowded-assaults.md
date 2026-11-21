@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-An assault now checks the actual tactical arrival layout before the campaign commits its request. If the entrance cannot fit the force or its guns, the order returns the existing entry error and retains the previous campaign state. Ready squads stay staged; resources, cannon stock, personnel and the clock remain unchanged.
+When a player launches a tactical sector assault from the strategic campaign map, the entry check verifies that the destination sector's tactical arrival edge has enough free boundary cells for every participating soldier and cannon before opening the tactical session. If the entrance cannot fit the force or its guns, the order returns the existing entry error and retains the previous campaign state. Ready squads stay staged; resources, cannon stock, personnel and the clock remain unchanged.
 
 The player can save that staging state, withdraw one squad through normal travel controls, and start a smaller assault. The remaining force enters through its actual edge. A purchased cannon stays in reserve after rejection and is issued only when entry succeeds. No interior positions or extra boundary cells are granted.
 

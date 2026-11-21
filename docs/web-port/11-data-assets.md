@@ -1,12 +1,16 @@
-# 11. Engine Data Formats, Asset Pipeline & i18n
+# 11 — Engine Data Formats, Asset Pipeline & i18n
 
-Scope: how the JA2 v1.13 engine (`engine/`) stores its data, how the Granaderos
-mod overlay (`mod/`) and the asset pipeline (`assets/`, `tools/`) feed it, and
+[Series index](README.md) · Previous: [10 — Save / Load & Persistence](10-save-load.md) · Next: [12 — Audio, UI & Input](12-audio-ui-input.md)
+
+> **Reference notice:** This document is a source and design analysis of the original Jagged Alliance 2 v1.13 (`1dot13/source`) runtime data directory (`gamedir/`), `TableData` XML loaders, STCI/ETRLE sprite formats, sound hooks (`sgp/soundman.h` in the engine's Standard Gaming Platform layer), and runtime language selection (`i18n/`), kept as reference material for Granaderos' browser adaptation. It is **not** a description of Granaderos' current browser implementation. See the [series index](README.md) for the full reference set. In the current repository layout, the C++ engine submodule lives at `reference/native/engine/` (referred to below as `engine/`), the native mod overlay lives at `reference/native/mod/` (referred to below as `mod/`), authored art assets live under `content/assets/` (referred to below as `assets/`), and the browser modules live under `packages/game/` and `apps/web/` (referred to below by their earlier paths `game/` and `web/`).
+
+**Scope:** how the JA2 v1.13 engine (`engine/`) stores its data, how the Granaderos
+native mod overlay (`mod/`) and the asset pipeline (`assets/`, `tools/`) feed it, and
 what each format converts to for the browser game (`web/`, `game/`). This is a
-reference for the web port; it does not re-derive binary layouts that are
+reference for the browser adaptation; it does not re-derive binary layouts that are
 already documented in [02-tile-engine.md](02-tile-engine.md).
 
-All paths are relative to the repository root unless noted.
+All paths are relative to the repository root unless noted (using the earlier top-level aliases `engine/`, `mod/`, `assets/`, `game/`, and `web/`).
 
 ---
 
@@ -100,9 +104,9 @@ English default (e.g. `Init.cpp:203–219`, `243–250`, `315–322`, `360–367
 
 ## 3. STI / sprite formats
 
-STI (STCI) is the engine's sprite container. Two header contracts matter:
+STI (STCI — Sir-Tech's Compressed Image format) is the engine's sprite container. Two header contracts matter:
 
-- `engine/sgp/STCI.h` — reader API:
+- `engine/sgp/STCI.h` (Standard Gaming Platform, `sgp/`) — reader API:
   `LoadSTCIFileToImage(HIMAGE, UINT16 fContents)` and
   `IsSTCIETRLEFile(CHAR8*)`. The `HIMAGE`/`STCISubImage` machinery lives in
   `engine/export/src/ja2/himage.h` / `imgfmt.h`.

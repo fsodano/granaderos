@@ -1,6 +1,10 @@
 # Finite physical shot loads
 
-An equipped firearm's effective `loadPattern` determines its flight. A `single` load keeps the existing lead-ball rules. A `cone` load now discharges nine finite pellet rays around one resolved direction. This applies to native shot loads, authored primary shot ammunition, alternative musket loads and either held pistol. One successful discharge consumes one actual loaded charge.
+> **Development-workspace record.** This note describes a separate development
+> checkout. Its implementation and test results are not published-main acceptance.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
+
+During tactical exploration and turn-based combat, an equipped firearm's effective `loadPattern` determines its projectile flight: a `single` load keeps the existing lead-ball rules, while a `cone` shot load discharges nine finite pellet rays around one resolved aiming direction. This applies to native shot loads, authored primary shot ammunition, alternative musket loads and either held pistol. One successful discharge consumes one actual loaded charge.
 
 The released [classic JA2 source at revision 876ccf5d](https://github.com/dariusk/ja2/blob/876ccf5dfdad7e6821c5b26d6d783132ea1ab7a2/ja2/Build/Tactical/LOS.c#L3267) and [official Stracciatella source at revision 04869c8e](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/04869c8e339ead1de9fefb25b7ad206b9b786825/src/game/Tactical/LOS.cc#L3094) create nine buckshot bullets around a shared adjusted firing direction. Their finite-projectile structure is the behavior evidence. Granaderos does not copy their damage adjustment, spread table, bullet dimensions or historical ammunition specification.
 

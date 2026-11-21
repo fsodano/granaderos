@@ -1,9 +1,13 @@
 # Money and equipment
 
-The browser campaign uses pesos as its only strategic resource. The Tesorería
-shows the balance, daily income, time until the next payment, and an optional
-breakdown by locality. There are no material stocks, production recipes,
-resource convoys, horse purchases, breeding, or feed.
+On the strategic campaign layer (with cash pickups on the tactical battlefield),
+the browser campaign uses pesos as its only strategic resource. This note
+describes the economy version 2 treasury, income, and purchasing rules; in
+published [version 0.1](../../verification/version-0.1.md), equipment commerce is
+disabled (see commerce deferral).
+The Tesorería shows the balance, daily income, time until the next payment, and
+an optional breakdown by locality. There are no material stocks, production
+recipes, resource convoys, horse purchases, breeding, or feed.
 
 Controlled localities pay at midnight. Coastal income represents trade and
 customs; inland income represents local contributions. Occupied sites pay zero.

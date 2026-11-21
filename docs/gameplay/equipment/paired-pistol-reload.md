@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-R and an empty-gun firing click now use the same automatic reload plan. It fills the main pistol first. If reserve cartridges and enough AP remain to finish the second pistol, it loads that gun too. The cursor shows the combined cost and the cartridges loaded into each hand. Confirmation only reloads; firing is a separate order.
+In tactical exploration and turn-based combat, pressing R or clicking to fire with an empty gun uses the same automatic reload plan for two held pistols. It fills the main pistol first. If reserve cartridges and enough AP remain to finish the second pistol, it loads that gun too. The cursor shows the combined cost and the cartridges loaded into each hand. Confirmation only reloads; firing is a separate order.
 
 If the second operation does not fit, the second gun stays unchanged and the soldier keeps the AP left after the first. A pair costing 32 + 28 AP uses 60 AP when available. With 59 AP, it spends 32 and keeps 27. The preview and combat log explain the pending second load.
 

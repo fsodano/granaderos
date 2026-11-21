@@ -1,9 +1,12 @@
 # 01 — Platform Layer: SGP + Utils + ext (Web Port Reference)
 
-**Consumer:** web-port agent building the Next.js/Canvas/WebAudio clone.
-**Source root:** `/Users/fsodano/fibradev/games/granaderos/engine/`
+[Series index](README.md) · Previous: [00 — Engine Overview](00-overview.md) · Next: [02 — Tile Engine](02-tile-engine.md)
+
+> **Reference notice:** This document is a source and design analysis of the original Jagged Alliance 2 v1.13 (`1dot13/source`) platform layer (`sgp/` — the engine's Standard Gaming Platform hardware abstraction layer, also referred to in project documentation as the Strategic Gameplay Platform), `Utils/` helpers, and `ext/` vendored libraries, kept as reference material for Granaderos' browser adaptation. It is **not** a description of Granaderos' current browser implementation. See the [series index](README.md) for the full reference set. In the current repository layout, the C++ engine submodule lives at `reference/native/engine/` (referred to below as `engine/`), and the browser modules live under `packages/game/` and `apps/web/`.
+
+**Source root:** `reference/native/engine/` (submodule `1dot13/source`; citations below are relative to this root)
 **Scope:** `sgp/` (Standard Gaming Platform), `Utils/` (game-side helpers), `ext/` (vendored libs: VFS, lua-5.1.5, libsmacker, libpng, zlib), plus the main loop in `Ja2/gameloop.cpp` and `sgp/sgp.cpp`.
-**Rule:** every subsystem below lists key structs/functions with `file:line` anchors, a Web API mapping table, and port notes. Do not touch engine code; this document is read-only reference.
+**Rule:** every subsystem below lists key structs/functions with `file:line` anchors, a Web API mapping table, and port notes. This document is read-only reference analysis of the original engine.
 
 ---
 

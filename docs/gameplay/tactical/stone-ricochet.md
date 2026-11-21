@@ -3,9 +3,7 @@
 > **Development-workspace record.** Current candidate rules and bounded scope;
 > acceptance evidence is recorded in the [video review](../../verification/ja2-video-review-2026-10-03.md).
 
-A continued firearm ray can change horizontal direction at a glancing contact
-with an exposed vertical face of explicit stone cover. The same shared rule
-serves single balls and each finite physical pellet. The existing aiming intent,
+During tactical exploration and turn-based combat, a continued firearm ray—whether a single lead ball or one of the nine finite pellets in a shot load—can ricochet once in the horizontal plane when it strikes an exposed vertical face of explicit stone cover at a glancing angle. The existing aiming intent,
 loaded charge, ignition, shot variation, AP, wear, time and body-passage rules
 remain authoritative. Cannon flight and 3D assets have separate ownership.
 

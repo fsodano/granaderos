@@ -1,5 +1,6 @@
 # Editor experience evidence, 11 October 2026
 
+This is a dated evidence workspace record for the editor UX/DX verification on branch `codex/editor-experience` (final runtime source `829d61f333a8b3a935e3e74bd6c2e5180448aa56`, follow-up tests commit `4a62a441`, build ID `9c8fc8c4bb92`).
 Scope: Studio, embedded content/map editors, standalone story/map tools,
 structured fields, staged text, hierarchy, keyboard and narrow layouts.
 The [acceptance plan](../../plans/editor-experience.md),
@@ -10,7 +11,7 @@ Status: the bounded editor UX/DX work is delivered on `codex/editor-experience`.
 Affected checks, post-review regression checks, typecheck, nested export and
 production browser review are completed below. Delivery is tracked in
 [PR #340](https://github.com/fsodano/granaderos/pull/340).
-This is an editor UX/DX record, not full game or historical campaign acceptance.
+Limits: this is an editor UX/DX record, not full game or historical campaign acceptance; it does not run CI, the full game suite, balance review or sustained performance measurements.
 The historical `0.1` tag is unchanged.
 
 ## Final source and build

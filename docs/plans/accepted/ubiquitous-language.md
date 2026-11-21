@@ -1,8 +1,6 @@
 # Ubiquitous language
 
-Status: accepted naming contract for the target architecture.
-
-Decision date: 27 October 2026.
+This accepted glossary defines the canonical domain terminology, ownership, Spanish UI translations, and naming rules across Granaderos code, tests, and documentation. Status: accepted naming contract for the target architecture (decision date: 27 October 2026).
 
 [Architecture plan](domain-architecture.md) · [Plan index](../README.md)
 

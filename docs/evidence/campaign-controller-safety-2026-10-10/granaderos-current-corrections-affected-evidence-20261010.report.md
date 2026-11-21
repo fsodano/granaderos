@@ -1,5 +1,6 @@
 # Closed affected gate evidence, 10 October 2026
 
+This is a dated evidence workspace record from 10 October 2026 for `granaderos-current-corrections-affected-evidence-20261010.tar.gz` against base `462abba277a47dafbfed1f60fc4529c8a4721cdc` (source snapshot SHA-256 `bd08d4d6fdd9b87fcad1b770308f1dcf28c0d1b154e1867521f6b6134ce4af28`; see [verification.md](verification.md)).
 This archive contains every regular file from `/tmp/granaderos-current-corrections-affected-2026-10-10T091133583Z`, with the original bytes preserved. The gate ran once and closed with exit 1: nine tests, four passed, five failed, none skipped/cancelled. All original assertions were retained. The before/after source maps are byte-identical and the final receipt records zero source drift. Source freeze was released by the parent only after terminal verification. This archive creation ran no tests, gameplay orders, routes or source changes.
 
 ## Recorded failures

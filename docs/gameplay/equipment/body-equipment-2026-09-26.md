@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-The shared outfit system now has head, torso and leg slots. `outfit` remains the
+Across the campaign equipment screen and tactical play (exploration and combat), the shared outfit system now has head, torso and leg slots. `outfit` remains the
 saved torso field, so old ponchos retain their existing meaning. `headwear` and
 `legwear` contain separate exact garment records. Missing fields in older saves
 mean empty slots, not free replacement equipment.

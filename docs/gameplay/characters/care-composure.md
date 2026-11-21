@@ -1,6 +1,6 @@
 # Serenidad al cuidar
 
-Ángela Cejas is a fictional caregiver. Her profile says that caring for others
+This guide describes published behavior on the tactical battlefield. Ángela Cejas is a fictional caregiver. Her profile says that caring for others
 helps her recover her calm. The new default content package gives her the explicit
 `care_composure` capability. Campaign authors can select this capability for
 another character in the existing ability editor.

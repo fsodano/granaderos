@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../verification/version-0.1.md) for the published-main checkpoint.
 
-Status: proposed design for review. No editor or runtime conversion is implemented by this document.
+Status: proposed design for review. This plan proposes separating the gameplay engine, tunable rulesets, and authored campaign content, and adding a web game editor for characters, weapons, placements, routines, dialogue, and quests. No editor or runtime conversion is implemented by this document.
 Date: 2026-09-27.
 
 ## 1. Goal and design decision
@@ -50,7 +50,7 @@ These findings describe the working files inspected on the design date, includin
 
 | Current location | Current dependency | Required design change |
 | --- | --- | --- |
-| [data.js](../../packages/game/data.js), [recruitment.js](../../packages/game/recruitment.js), [mercenaries.js](../../packages/game/mercenaries.js) | Character definitions are spread across modules; growth depends on roster membership | One character catalogue with explicit service and progression profiles |
+| [data.js](../../packages/game/data.js), [recruitment.ts](../../packages/game/recruitment.ts), [mercenaries.js](../../packages/game/mercenaries.js) | Character definitions are spread across modules; growth depends on roster membership | One character catalogue with explicit service and progression profiles |
 | [contracts.js](../../packages/game/contracts.js) | Character numbers below 100, number 1000, and zero pay affect permanent service | Explicit contract policy; identity does not select service rules |
 | [tactical.js](../../packages/game/tactical.js) | Certain character numbers select combat bonuses and bodyguard behavior | Named abilities and explicit relationships, with the same existing outcomes during migration |
 | [data.js](../../packages/game/data.js), [tactical.js](../../packages/game/tactical.js), `game/weapon-readiness.js` | Weapon definitions and ready costs are split across tables | One resolved weapon catalogue; record and resolve differences against observed behavior during migration |
@@ -304,7 +304,7 @@ Provide three behavior presets. A sector range defines the allowed locations; it
 | **Aleatorio y fijo** | Choose one allowed sector and save it | Remain in that selected sector; this is the Skyrider-style pattern |
 | **Itinerante** | Assign an initial sector and register the daily movement rule | At each eligible daily update, make a new stay/move/location decision within the allowed area; use NPC-specific conditions as in Walker, Hamous, and Carmen |
 
-The fixed preset covers people with an established home or meeting location, such as the rebel contacts in the user's examples. Story actions such as escorting Fatima are separate from ordinary roaming. Finding a person does not itself freeze their routine unless that stop condition is authored.
+The fixed preset covers people with an established home or meeting location, such as rebel contacts. Story actions such as escorting Fatima are separate from ordinary roaming. Finding a person does not itself freeze their routine unless that stop condition is authored.
 
 ### Conditional appearances and successors
 

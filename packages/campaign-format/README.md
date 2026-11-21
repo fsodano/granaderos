@@ -1,6 +1,7 @@
 # Campaign format
 
-This package owns the portable campaign-file contract. It imports neither the
+This package README describes `@granaderos/campaign-format` (`packages/campaign-format`),
+which owns the portable campaign-file contract. It imports neither the
 game nor the campaign editor. Use direct module imports. Package exports expose
 each module by its name.
 

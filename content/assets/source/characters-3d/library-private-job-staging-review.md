@@ -1,4 +1,10 @@
-# Character source jobs: private outputs before release
+# Character source jobs: private outputs before release — 2026-10-08
+
+This dated review record (2026-10-08) documents private job staging and
+pre-install validation for selected 3D character source workers. Results are a
+snapshot validated against main `c96ed32bd3f3f20250a491959343fec2891553f7` and
+integrated on main `a4fe7335799feea325acae7eb8dff4606454c92e` (implementation
+commit `0b31125a08736869d80afc8c0a3f09bde9de6cc0`).
 
 Selected source workers now write to one fresh private job directory. The builder
 waits for every worker, validates the requested receipts and referenced textures,
@@ -10,7 +16,7 @@ record-preservation change.
 ## Source scope
 
 The basis is main `c96ed32bd3f3f20250a491959343fec2891553f7`, which contains
-PR #272. This separate source-only change modifies the library builder, its
+[PR #272](https://github.com/fsodano/granaderos/pull/272). This separate source-only change modifies the library builder, its
 manifest helper and the Blender worker. It adds a private job install helper,
 focused tests and this review. It retains the preceding validation document.
 No released GLB, atlas, manifest, profile, runtime, cue, cost or gameplay state
@@ -81,7 +87,7 @@ Run from the repository root:
 
 ```sh
 node --test tests/characters-library-job-staging.test.mjs tests/characters-library-pipeline.test.mjs tests/three-woman-shawl-palette.test.mjs tests/three-woman-shawl-hem.test.mjs tests/three-coarse-long-cloth-boot-clearance.test.mjs
-python3 -m py_compile tools/characters-3d/library_jobs.py tools/characters-3d/library_manifest.py tools/characters-3d/build-library.py assets/source/characters-3d/authoring/build.py
+python3 -m py_compile tools/characters-3d/library_jobs.py tools/characters-3d/library_manifest.py tools/characters-3d/build-library.py content/assets/source/characters-3d/authoring/build.py
 python3 tools/characters-3d/build-library.py --manifest-only
 python3 tools/characters-3d/verify-library.py
 node tools/characters-3d/compile-locomotion-profile.mjs --check

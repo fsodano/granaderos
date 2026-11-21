@@ -1,6 +1,6 @@
 # Changelog
 
-> **Release history.** Entries describe their recorded checkpoints. Read
+> **Release history.** This chronological changelog records tagged releases and development checkpoints for Granaderos. Entries describe their recorded checkpoints. Read
 > [shipping campaign plan](plans/core-campaign-v0.1.md) for current scope. Earlier development
 > numbers are internal checkpoints; their features and results are dated history.
 

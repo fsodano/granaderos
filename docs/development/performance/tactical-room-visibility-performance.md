@@ -2,11 +2,15 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Measured on 12 September 2026 with Node 25.9.0, macOS arm64 and production
-React. These are local server-render CPU timings, not browser frame rates.
-They do not establish that all action stalls or memory problems are fixed.
+This dated performance record (measured on 12 September 2026 with Node 25.9.0,
+macOS arm64 and production React) documents a snapshot of controlled server-render
+benchmarks and development-browser observations comparing baseline commit
+`74cb625` against an indexed cell-to-room lookup starting from `5df4e86` on the
+3,072-cell Buenos Aires map. These are local server-render CPU timings, not
+browser frame rates. They do not establish that all action stalls or memory
+problems are fixed.
 
 The full Buenos Aires minimap asks whether each of its 3,072 ground cells is
 inside a revealed room. The previous lookup scanned all room cells and created

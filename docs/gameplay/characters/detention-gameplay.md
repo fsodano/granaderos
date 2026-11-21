@@ -1,11 +1,12 @@
 # Detention and physical rescue work
 
 > **Dated implementation and acceptance records.** Earlier checkpoints below
-> retain their original source, failures and controlled fixtures. FIX-03 and the
-> [PR139 publication receipt](../../evidence/pr139-published-2026-10-01.json) accept
-> the bounded cleared-field rescue. See [published progress](../../verification/published-progress.md).
+> retain their original source, failures and controlled fixtures. `FIX-03`
+> (physical prisoner rescue) and the
+> [PR139 publication receipt](../../evidence/pr139-published-2026-10-01.json) ([PR #139](https://github.com/fsodano/granaderos/pull/139)) accept
+> the bounded cleared-field rescue. See [version 0.1 status](../../verification/version-0.1.md).
 
-Status on main `916049df7346a5b655564fafdea37c93be76045c` (8 October 2026): physical custody, finite care, paid release/following and joint safe-exit settlement are implemented in the bounded paths recorded below. The actual Jujuy relief route clears its guards before evacuation and retains deaths, finite supplies, contracts, replay and saves. Unaided/stealth rescue, self-directed escape, carrying incapacitated prisoners and wider detention choices remain open. The earlier paragraphs are dated checkpoints; their original unimplemented/failure statements are superseded only by the later named accepted paths.
+Across strategic prisoner custody and the tactical battlefield, status on main `916049df7346a5b655564fafdea37c93be76045c` (8 October 2026): physical custody, finite care, paid release/following and joint safe-exit settlement are implemented in the bounded paths recorded below. The actual Jujuy relief route clears its guards before evacuation and retains deaths, finite supplies, contracts, replay and saves. Unaided/stealth rescue, self-directed escape, carrying incapacitated prisoners and wider detention choices remain open. The earlier paragraphs are dated checkpoints; their original unimplemented/failure statements are superseded only by the later named accepted paths.
 
 ## Prisoner construction
 
@@ -30,7 +31,7 @@ The integration run reported 2,584 passes, three failures (including a failed pa
 3. Add an adjacent, paid release action and visible controls. A freed prisoner must still reach an authorized safe exit through actual movement.
 4. Settle each physical escape/rescue independently from sector victory. Restore only the saved unused contract time. Keep unrecovered equipment in hostile custody.
 5. Support failed attempts, recapture, permanent deaths and remaining detainees. Before physical escape can return a soldier to service within the same hour, replace the current soldier-plus-capture-hour identity with a distinct capture-cycle identity. Reject duplicate or missing settlement receipts.
-6. Verify complete capture-to-rescue and escape paths, live controls, full saves and campaign continuation. Update W08 only for the paths actually completed.
+6. Verify complete capture-to-rescue and escape paths, live controls, full saves and campaign continuation. Update W08 (surrender, capture, imprisonment and rescue in the [JA2 parity audit](../../verification/ja2-parity-audit.md)) only for the paths actually completed.
 
 ## Finite care in custody
 

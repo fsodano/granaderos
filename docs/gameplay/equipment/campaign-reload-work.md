@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Unfinished loading now survives a campaign return for an ordinary issued gun as well as a map-equipped gun. A soldier must finish the remaining work through the normal reload action. Returning to the map, saving, loading, or entering another sector cannot finish or erase that work.
+Unfinished firearm loading started during tactical exploration or combat now survives returning to the campaign map for an ordinary issued gun as well as a map-equipped gun. A soldier must finish the remaining work through the normal reload action. Returning to the map, saving, loading, or entering another sector cannot finish or erase that work.
 
 The ammunition return plan retains the completed barrel charges with the gun and returns only the reserve cartridges to general stock. The retained amount is deducted from the existing issue/loot allowance. Captured soldiers keep the load and unfinished work in custody; a returning or escaping soldier keeps it in their own carried weapon record. No cartridge is consumed for unfinished work. A charge consumes one reserve cartridge only when it is completed.
 

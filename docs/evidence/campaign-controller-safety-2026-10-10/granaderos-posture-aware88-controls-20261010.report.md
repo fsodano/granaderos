@@ -1,3 +1,6 @@
+# Posture-aware 88 focused controls archive report, 10 October 2026
+
+This is a dated evidence workspace record from 10 October 2026 for `granaderos-posture-aware88-controls-20261010.tar.gz` (see [verification.md](verification.md)).
 This is a new archive of every original file from the closed posture-aware focused control run at /tmp/granaderos-current-corrections-v2-focused-2026-10-10T101046964Z. It preserves all original run files and all older control archives. It includes both source hash snapshots, the executed wrapper, runtime and argument metadata, the full run log, terminal receipt, process IDs, and both nested passive controller-decision files.
 
 The retained terminal receipt confirms one invocation of 18 selected test files. All 88 tests passed. No tests failed or were skipped, cancelled, or left pending. The process exited with code 0 and no signal. The run is complete and successful. Parent 88577 and child 88601 are absent.

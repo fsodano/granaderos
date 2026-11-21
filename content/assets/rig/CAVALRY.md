@@ -1,5 +1,7 @@
 # Original cavalry locomotion
 
+This asset source guide documents the Blender mounted cavalry rig, rendering and
+packing scripts, and browser sprite atlas contract in `content/assets/rig`.
 `cavalry-model.blend` contains the original infantry rider adapted to a seated
 pose and an original horse assembled from simple meshes. Four articulated
 hip/knee/ankle chains produce a four-beat walking sequence. Horse neck, tail,

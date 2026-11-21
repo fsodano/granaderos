@@ -1,7 +1,11 @@
 # CollectResidentSupply
 
-A free, living resident can collect one nearby unattended supply at each game
-hour. The default policy selects a supply that the resident does not carry.
+This use case transfers one nearby unattended ground supply to an eligible free,
+living resident at each game hour, and refuses scavenging by serving, captured,
+unconscious, departed, detained, or escorted characters, or from ineligible item
+sources.
+
+The default policy selects a supply that the resident does not carry.
 Eligible supplies are rations, dressings, torches, and boleadoras. The maximum
 distance is one tile on each axis. Source identity orders simultaneous choices.
 

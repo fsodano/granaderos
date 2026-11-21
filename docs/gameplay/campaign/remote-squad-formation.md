@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Implemented 12 September 2026. The real Yatasto checkpoint left Petrona Lagos in reserve in San Nicolás while the selected squad was in Tucumán. The previous formation form listed only soldiers in the selected squad's town. It could not organize Petrona for travel without first sending another squad to her town.
+Implemented 12 September 2026 on the strategic campaign screen. The real Yatasto checkpoint left Petrona Lagos in reserve in San Nicolás while the selected squad was in Tucumán. The previous formation form listed only soldiers in the selected squad's town. It could not organize Petrona for travel without first sending another squad to her town.
 
 The squad screen now has a **Localidad de formación** selector. It lists towns with hired, living soldiers who have no pending squad route. The player chooses a town, selects up to six people already there, and names the new squad. Creating it selects the new squad at that town; other squads and reserve personnel keep their physical positions, equipment, assignments, contracts and journeys. It costs no time or money. Travel remains a separate paid action.
 
@@ -26,9 +26,9 @@ The four Salta survivors queue their return to Córdoba. Petrona forms a squad i
 
 The workshop sells twenty dressings to Isabel and two to Petrona, costing 660 pesos and reducing its actual finite stock. Petrona had no dressings left before this purchase. Petrona and Nicolás drop their two and six dressings locally, and Isabel collects them. Normal care consumes all twenty-eight dressings to heal the three wounded patients; six further hours of rest follow. Including the initial Salta treatment, twenty-nine dressings are consumed: seven recovered and twenty-two purchased.
 
-At hour 274, second 526, all six survivors are in Córdoba with full health and no bleeding. Five have 100 energy; Isabel has 88 and still needs further rest for full energy. Treasury is 1,557 pesos. All fifteen prior operative deaths remain permanent. This recovery extension stops before the Cuyo battle. The following [Mendoza verification](../../verification/mendoza-route.md) covers the retreat, rescue and foundry; the ending remains unverified. The [persistent-load update](../equipment/campaign-gun-loads.md) adds thirty seconds before this checkpoint and preserves these health and treasury results.
+At hour 274, second 526, all six survivors are in Córdoba with full health and no bleeding. Five have 100 energy; Isabel has 88 and still needs further rest for full energy. Treasury is 1,557 pesos. All fifteen prior operative deaths remain permanent. This recovery extension stops before the Cuyo battle. The following Mendoza verification covers the retreat, rescue and foundry; the ending remains unverified. The [persistent-load update](../equipment/campaign-gun-loads.md) adds thirty seconds before this checkpoint and preserves these health and treasury results.
 
-Reproduce with the Yatasto save from the [northern route verifier](../../verification/northern-route.md):
+Reproduce with the Yatasto save from the northern route verifier:
 
 ```sh
 node tools/verify-cuyo-recovery.mjs --input /tmp/granaderos-northern-route-check/yatasto.save.json --output /tmp/granaderos-cuyo-recovery-check

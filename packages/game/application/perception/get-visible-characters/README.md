@@ -1,7 +1,10 @@
 # GetVisibleCharacters
 
-This read-only use case returns the identities that the observer or observing
-force can currently see. Its repository supplies visibility decisions from the
+This read-only use case returns the character identities that an observer or
+observing force can currently see in a sector, without exposing hidden character
+records or modifying game state.
+
+Its repository supplies visibility decisions from the
 domain perception model. The result contains no hidden character records,
 ammunition, action points, or private contact history.
 

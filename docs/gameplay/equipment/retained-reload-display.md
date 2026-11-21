@@ -1,6 +1,6 @@
 # Visible loading progress
 
-Unfinished loading belongs to the physical firearm. The hands and tactical
+In tactical exploration and turn-based combat, unfinished loading belongs to the physical firearm. The hands and tactical
 roster show that retained work separately from ready charges. For example,
 **0 cargas · Recarga en curso: 71%** means that the next charge is unfinished;
 it does not mean that the gun can fire.

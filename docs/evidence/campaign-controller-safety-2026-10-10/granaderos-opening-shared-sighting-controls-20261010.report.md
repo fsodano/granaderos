@@ -1,3 +1,6 @@
+# Opening shared-sighting controls archive report, 10 October 2026
+
+This is a dated evidence workspace record from 10 October 2026 for `granaderos-opening-shared-sighting-controls-20261010.tar.gz` (see [verification.md](verification.md)).
 The archive preserves one actual original Cordoba post-prone shared-contact native-null witness and two closed focused control invocations. It preserves every original file. Archive generation made zero native actions, selectors, previews, or controller calls. It made no source changes, staging, tests, PRs, or pushes.
 
 The first invocation passed the original native-null control. Its corrected controller produced a native accepted move from (63, 27, 0) to (62, 27, 0). The new test then failed because it expected a positive exported actionDurationSeconds. Native tactical.js removes that transient field and actionTimeAppliedSeconds before returning a combat action. This was a test-expectation error. Its failed receipt and complete raw before/action/path/after remain unchanged.

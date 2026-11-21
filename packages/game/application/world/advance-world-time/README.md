@@ -1,6 +1,10 @@
 # AdvanceWorldTime
 
-Advance scheduled world consequences to an absolute game second. A repository
+This use case advances scheduled world consequences to an absolute game second
+in one transaction, and refuses backwards time, conflicting event identities,
+repeated event completion, or invalid sector admission states.
+
+A repository
 loads the timeline, corpses, and current item custody as one transaction. The use
 case advances the timeline and commits the changed objects together.
 

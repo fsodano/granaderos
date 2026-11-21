@@ -2,6 +2,9 @@
 
 [Documentation index](../README.md)
 
+This index links historical equipment research and the separate native Windows
+engine build guide.
+
 - [Period equipment evidence](period-equipment-evidence.md) supports equipment *(workspace)*
   choices and distinguishes historical sources from game adaptations.
 - [Earlier native build and installation](native-build.md) covers the Windows

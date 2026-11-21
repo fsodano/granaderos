@@ -1,7 +1,10 @@
 # Granadero authoring sources
 
+This asset source guide documents the mesh, texture, skeleton, and motion-capture
+sources, licenses, and Blender build scripts for the standalone Granadero 3D
+model in `tools/playgrounds/granadero-3d/authoring`.
 The uniform, boots, shako, weapons, fabric maps and weapon actions are original
-Granaderos work based on the supplied photographs. This is not the Sketchfab model.
+Granaderos work based on historical reference photographs. This is not the Sketchfab model.
 
 The complete adult body, joint positions and skin weights come from the MakeHuman
 hm08 base, adult male morph and MPFB game-engine rig. The source bundle is pinned

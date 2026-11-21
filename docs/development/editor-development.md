@@ -200,13 +200,12 @@ claims that the current working changes passed.
 | Editor types | `npm --prefix apps/campaign-editor run typecheck` |
 | Independent editor bundle and boundaries | `npm --prefix apps/campaign-editor run build` |
 | Complete nested-path export | `GRANADEROS_BASE_PATH=/granaderos npm run build` |
-| Documentation | `npm run audit:docs` |
 
 Use an actual browser for field behavior, focus, narrow layouts, file pickers,
 and WebGL previews. Model tests and a successful build do not establish these
 visible behaviors.
 
-The general [development setup](getting-started.md#checks) describes the
+The general [development setup](getting-started.md#local-checks) describes the
 repository suites. Use affected editor checks and record their exact results. A
 complete campaign run is a separate verification scope. Do not call a selected file list a full game gate.
 

@@ -186,6 +186,6 @@ remain separate.
 
 Source entry points: [browser composition](../../apps/web/app/page.tsx),
 [campaign adapter](../../packages/game/campaign.js), [sector adapter](../../packages/game/tactical.js),
-[time synchronization](../../packages/game/time.js), [worker jobs](../../packages/game/battle-job.js),
+[time synchronization](../../packages/game/time.js), [worker jobs](../../packages/game/battle-job.ts),
 [snapshot mapping](../../packages/game/infrastructure/persistence/game-snapshot-mapper.js),
 and [editor package](../../apps/campaign-editor/README.md).

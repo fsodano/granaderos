@@ -1,6 +1,6 @@
 # DESIGN.md — Tactical HUD: JA2 Bottom-Strip Disposition
 
-**Scope:** Restructure the tactical battle HUD (`apps/web/app/Battlefield.tsx` + `apps/web/app/tactical-hud.css`) into Jagged Alliance 2's bottom-strip disposition. This document is the **implementation contract**: a later CSS task styles the classes below verbatim, and later components use them verbatim. **Class names are FROZEN — exact spelling matters.** No new visual tokens are introduced; everything reuses the existing Granaderos palette, fonts, and primitives.
+**Scope:** Restructure the tactical battle HUD (`apps/web/app/Battlefield.tsx` + `apps/web/app/tactical-hud.css`) into Jagged Alliance 2's bottom-strip disposition. This document is the **implementation contract**: a later CSS task styles the classes below verbatim, and later components use them verbatim. **Class names are FROZEN — exact spelling matters.** No new visual tokens are introduced; everything reuses the existing Granaderos palette, fonts, and primitives. (Historical note: this contract was written for the initial JA2 bottom-strip HUD implementation; some inspected components and styles were later split across `JA2*` modules in `apps/web/app/`.)
 
 **Out of scope:** field rendering (`TacticalScene`), game rules (`packages/game/tactical.js`), campaign screens, save/menu chrome. The field (`svg.tactical-field`), `battle-error`, and `battle-result` overlays remain as-is above the strip.
 

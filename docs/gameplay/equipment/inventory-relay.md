@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-The JA2 manual, printed page 23, describes inventory transfers through a chain of adjacent mercenaries. [Primary reference](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf).
+In tactical exploration and turn-based combat, a soldier can transfer inventory items to a non-adjacent ally through an unbroken chain of adjacent squad members. The JA2 manual, printed page 23, describes inventory transfers through a chain of adjacent mercenaries. [Primary reference](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf).
 
 ## Player controls
 

@@ -2,41 +2,27 @@
 
 [Documentation index](../README.md)
 
-Start with [asset sources and build instructions](../../content/assets/README.md) for
-provenance and reproducible exports. The notes below describe the browser art
-systems and their recorded scope.
+This folder holds the art production guides for Granaderos' tactical visuals:
+asset sources, sprite families and compilation, building materials, portraits
+and skin tones. Start with
+[asset sources and build instructions](../../content/assets/README.md) for
+source files and reproducible exports.
 
 - [Tactical visual assets and compilation](TACTICAL-VISUALS.md)
-- [Character cloth depth reference pilot](character-cloth-depth-review-2026-10-08.md) *(workspace)*
-- [Cloth depth across six more character families](character-family-cloth-depth-review-2026-10-08.md) *(workspace)*
-- [Character cloth, leather and metal surfaces](character-apparel-surfaces-review-2026-10-08.md) *(workspace)*
-- [Coarse poncho surface directions](character-poncho-normals-review-2026-10-08.md) *(workspace)*
-- [Coarse outer garment fit trial](character-outer-garment-fit-review-2026-10-08.md) *(workspace)*
-- [Relaxed free arm at standing rest](character-standing-free-arm-review-2026-10-08.md) *(workspace)*
-- [Irregular soil and grass edges](terrain-boundaries-review-2026-10-08.md) *(workspace)*
-- [Sparse soil fragments](soil-fragments-review-2026-10-08.md) *(workspace)*
-- [Thin dry weeds](dry-weeds-review-2026-10-08.md) *(workspace)*
-- [Uneven terrain rocks](rock-forms-review-2026-10-08.md) *(workspace)*
-- [Broken leaf silhouettes](leaf-sprays-review-2026-10-08.md) *(workspace)*
-- [Timber furniture construction](timber-furniture-review-2026-10-08.md) *(workspace)*
-- [Soft bedding](soft-bedding-review-2026-10-08.md) *(workspace)*
-- [Complete washstand](washstand-review-2026-10-08.md) *(workspace)*
-- [Complete cooking hearth](hearth-review-2026-10-08.md) *(workspace)*
-- [Varied shelf vessels](shelf-vessels-review-2026-10-08.md) *(workspace)*
-- [Gathered sacks and woven rugs](storage-cloth-review-2026-10-08.md) *(workspace)*
-- [Room floor character](room-floors-review-2026-10-08.md) *(workspace)*
-- [Tactical graphics phone gallery](tactical-reference-gallery-2026-10-08.md)
-- [Building exterior pictures](building-exterior-pictures-2026-10-09.md)
-- [Colonial buildings, 1810–1820](buildings.md)
-- [Illustrated character sprites](character-sprites.md)
-- [Custom-character portraits](custom-character-portraits.md)
-- [Equipped sprite variants](equipped-sprite-variants.md) *(workspace)*
-- [Skin tones](skin-tones.md) *(workspace)*
-- [Seven sprite families](sprite-families.md)
-- [Tactical sprite rendering quality](sprite-render-quality.md) *(workspace)*
-- [Historical shared-action recovery record](archive/action-completion.md) *(archive)*
+- [Buildings](buildings.md) — colonial building art and the served material
+  manifest (`architecture-materials-v2.json`)
+- [Character sprites](character-sprites.md)
+- [Sprite families](sprite-families.md)
+- [Custom character portraits](custom-character-portraits.md)
+- [Skin tones](skin-tones.md)
+- [Equipped sprite variants](equipped-sprite-variants.md)
+- [Sprite render quality](sprite-render-quality.md)
+- [Tactical reference gallery, 8 October 2026](tactical-reference-gallery-2026-10-08.md)
+  with the image set under `tactical-reference-2026-10-08/`
+- [Archived notes](archive/) — earlier action and building-style records
 
-See [visual decision records](../adr/README.md) for accepted direction and
-[portrait references](../../content/assets/portrait-references.md) for historical limits.
-Sprite coverage counts describe the specific sequence set that was checked;
-current runtime coverage does not prove every required animation is complete.
+The dated 3D art review records and their before/after captures that this
+folder previously held were removed in November 2026. The accepted geometry,
+materials and palettes live in the source exports and the guides above; the
+review history remains in Git history. Raw art receipts remain under
+`docs/evidence/artifacts/` where kept records link them.

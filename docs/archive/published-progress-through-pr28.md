@@ -1,6 +1,6 @@
-> Historical published checkpoint through PR #28. Use [current progress](../verification/published-progress.md).
+# Granaderos implementation and verification ledger (archived 2026-09-27)
 
-# Granaderos implementation and verification ledger
+> **Archived historical ledger.** Historical published checkpoint through [PR #28](https://github.com/fsodano/granaderos/pull/28) (2026-09-27; `main` at `5f1deab1ef35143ef3c2ba1af421528467e23510`, [PR #27](https://github.com/fsodano/granaderos/pull/27) source commit `b70877f3fb3bce59f7f367b7ff0749b440ff254e`). Use current progress for current verification status and `docs/verification/requirements.json` for the requirement register.
 
 ## Objective and completion rule
 
@@ -10,7 +10,7 @@ Implement the entire supplied specification as a WEB GAME, using the supplied JA
 
 **The full game and story editor are not complete.** This is the primary progress
 ledger. It was not updated alongside recent PRs; its previous latest checkpoint
-was 2026-09-05. This update reconciles published work through PR #27. Earlier
+was 2026-09-05. This update reconciles published work through [PR #27](https://github.com/fsodano/granaderos/pull/27). Earlier
 work-log entries below are historical snapshots, not current verification.
 
 Published baseline: `main` at `5f1deab1ef35143ef3c2ba1af421528467e23510`.
@@ -21,14 +21,14 @@ This establishes that delivery's checks. It does not establish a complete
 campaign playthrough or compatibility with unpublished branches.
 
 The published game has `/story` for content and `/editor` for sector construction.
-The local editor on port 3107 is a separate prototype. Its larger gameplay
+The local editor on port 3107 is a separate prototype (a separate development-workspace checkout, not published `main`). Its larger gameplay
 implementation and the original working checkout still require consolidation.
 A feature in that prototype is not automatically a feature on GitHub `main`.
 
 ### Delivered and verified scopes
 
 `VERIFIED` below applies only to the stated, bounded capability. The requirement
-IDs connect it to the broader acceptance table; they do not close that whole row.
+IDs (`ART-02`, `ENG-03`, etc., from `docs/verification/requirements.json`) connect it to the broader acceptance table; they do not close that whole row.
 See [story-editor.md](../development/story-editor.md) for behavior and test details.
 
 | Capability | Status | Published evidence | Remaining boundary |
@@ -160,7 +160,7 @@ The broad rows below remain open unless their complete acceptance evidence is av
 
 ## Additional gameplay requirements
 
-The user supplied twelve detailed JA2-style gameplay comments and six reference screenshots. The expanded requirements and separate acceptance ledger are preserved in `specification/gameplay-expansion.md`. Persistent sector exploration, multiple squads, NPC dialogue, full dossiers, individual inventories/loot, energy/unconsciousness, night play, horses and true movement animation are required for completion. Current battle-only encounter generation does not satisfy this scope.
+Twelve detailed JA2-style gameplay requirements and six reference screenshots were added to the specification. The expanded requirements and separate acceptance ledger are preserved in [`docs/specification/gameplay-expansion.md`](../specification/gameplay-expansion.md). Persistent sector exploration, multiple squads, NPC dialogue, full dossiers, individual inventories/loot, energy/unconsciousness, night play, horses and true movement animation are required for completion. Current battle-only encounter generation does not satisfy this scope.
 
 ### Recruitment desk and encounter integration checkpoint
 
@@ -168,7 +168,7 @@ Implemented a separate Spanish Escritorio screen with service dossiers and a ret
 
 ### dev.4 evidence checkpoint
 
-166 tests pass, TypeScript passes, static build verifies 155 files and 73 asset references. Original infantry walk/crouch/crawl and cavalry walk rigs are preserved with render and verification scripts. Browser checks cover the separate desk, adjacent Retiro greeting and horse buy/assign/feed. The legal opening playthrough wins both opening battles without injected victories; this does not establish full campaign balance. See REQUIREMENT-AUDIT.md for remaining requirements.
+166 tests pass, TypeScript passes, static build verifies 155 files and 73 asset references. Original infantry walk/crouch/crawl and cavalry walk rigs are preserved with render and verification scripts. Browser checks cover the separate desk, adjacent Retiro greeting and horse buy/assign/feed. The legal opening playthrough wins both opening battles without injected victories; this does not establish full campaign balance. See [REQUIREMENT-AUDIT.md](REQUIREMENT-AUDIT.md) for remaining requirements.
 
 
 ## 2026-09-05 — 0.2.0-dev.1 personal campaign start
@@ -178,18 +178,18 @@ manual attributes, original portrait, class and an effective trait questionnaire
 Seven fictional paid volunteers use finite day/week/month contracts with XP pay
 growth and elite daily limits; historical figures remain tactical encounters.
 The strategic map now focuses on personnel, sectors, time and city militia.
-NPC supply quests award city loyalty once. See NEW-START-AUDIT.md for browser
+NPC supply quests award city loyalty once. See [NEW-START-AUDIT.md](NEW-START-AUDIT.md) for browser
 acceptance and scope limits. All 192 tests, typecheck and static build pass.
-Previous milestone PR #1 merged as e8cc25d92352cd02b1d44f3e41c8065c9dcb1615.
+Previous milestone [PR #1](https://github.com/fsodano/granaderos/pull/1) merged as e8cc25d92352cd02b1d44f3e41c8065c9dcb1615.
 Current branch: feat/0.2.0-personal-campaign-start. Native engine submodule edits
 are pre-existing and excluded from this web milestone.
 
 
 ## Full implementation continuation — active
 
-The user resumed the complete game objective after the campaign-start milestone.
-Do not treat PR #2 or its 192 tests as complete-game acceptance. The broader
-REQUIREMENT-AUDIT.md remains the gap ledger and has stale entries that must be
+Work resumed on the complete game objective after the campaign-start milestone.
+Do not treat [PR #2](https://github.com/fsodano/granaderos/pull/2) or its 192 tests as complete-game acceptance. The broader
+[REQUIREMENT-AUDIT.md](REQUIREMENT-AUDIT.md) remains the gap ledger and has stale entries that must be
 rechecked against current code. Root is adding actual faction policy consequences;
 campaign_data owns live tactical militia and casualty conservation; engine_build
 owns practiced riding/sneaking persistence and UI; graphics owns adapted keyboard
@@ -202,11 +202,11 @@ Z on a focused command button correctly selected Agachado y sigiloso. Spanish
 help opens, save/resume preserves the sector, and console error list is empty.
 Two requested screenshots were displayed inline (recruitment desk and map).
 Local dev server session36459 was started on port3000.
-Next work is detailed in NEXT-IMPLEMENTATION.md; full goal remains active.
+Next work is detailed in [NEXT-IMPLEMENTATION.md](NEXT-IMPLEMENTATION.md); full goal remains active.
 
 
 ## 0.4.0-dev.1 — tactical visuals and campaign continuity
 
-The tactical renderer now uses original generated material textures and transparent vegetation, proportional eight-direction soldiers with stance and action atlases, depth sorting, textured building cutaways, and a compact bottom squad HUD. Camera zoom and panning make the field inspectable at playing scale. See TACTICAL-VISUALS.md for provenance and remaining visual gaps; this is an intermediate art pass, not final JA2-level scenery density.
+The tactical renderer now uses original generated material textures and transparent vegetation, proportional eight-direction soldiers with stance and action atlases, depth sorting, textured building cutaways, and a compact bottom squad HUD. Camera zoom and panning make the field inspectable at playing scale. See [`docs/art/TACTICAL-VISUALS.md`](../art/TACTICAL-VISUALS.md) for source and remaining visual gaps; this is an intermediate art pass, not final JA2-level scenery density.
 
 This checkpoint also integrates shared tactical/campaign time, authored historical encounters, finite industry inputs and delayed equipment imports. All 228 automated tests, TypeScript checks, and the static build passed before the version-only checkpoint update. Browser review verified the daylight San Lorenzo scene and camera controls.

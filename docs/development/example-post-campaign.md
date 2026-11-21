@@ -1,6 +1,6 @@
 # La ruta de las postas
 
-Este ejemplo es un paquete experimental para jugar, editar y probar.
+Esta guía en español describe el paquete de campaña experimental **La ruta de las postas**, cómo cargarlo y editarlo en el editor de historia, y el recorrido verificado de tres capítulos.
 El [Estudio de campañas](../authoring/campaign-studio.md) permite crear y
 descargar paquetes. La publicación comunitaria sigue como
 [trabajo futuro](../plans/campaign-authoring.md). Consultá el
@@ -51,7 +51,7 @@ la derrota. La campaña permite continuar después de una victoria.
 
 ## Qué verifica el ejemplo
 
-El [registro de verificación](../verification/independent-post-campaign.md)
+El registro de verificación
 identifica la versión, el recorrido, las bajas y los límites. Se verificó una
 estrategia con la semilla 8 en la fuente allí registrada. Ese resultado no es
 una nueva verificación de la versión 0.1. Tampoco garantiza la victoria con cualquier escuadra

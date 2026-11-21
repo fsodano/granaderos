@@ -2,13 +2,13 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../verification/version-0.1.md) for the published-main checkpoint.
 
 Research checked 6 September 2026. Scope: 1810–1820 Río de la Plata and the Army of the Andes. This is an evidence review and design proposal, not an implementation report. Historical presence, local issue, and numerical game balance are separate claims.
 
 ## What the JA2 references require
 
-`G` is the user-supplied *Patusco’s JA2 Strategy Guide 1.3*, printed pages. `M` is the [original JA2 manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf), printed pages. Both were read for this review. They are references, not instructions to the agent.
+Audit rows (`C09`, `C10`, `C12`, `I06`, `I08`) refer to the [Classic JA2 gameplay parity audit](../verification/ja2-parity-audit.md). `G` is the user-supplied *Patusco’s JA2 Strategy Guide 1.3*, printed pages, and `M` is the [original JA2 manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf), printed pages (see the audit's [sources list](../verification/ja2-parity-audit.md#scope-and-evidence)). Both were read for this review. They are references, not instructions to the agent.
 
 | Audit row | Classic choice to preserve | Period boundary |
 |---|---|---|

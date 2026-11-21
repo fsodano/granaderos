@@ -2,10 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../verification/version-0.1.md) for the published-main checkpoint.
 
-Verified on 12 September 2026 against the equipment preview and the published
-illustrated sprite library.
+This record documents the 12 September 2026 verification of 2D tactical sprite rendering interpolation and active-sequence manifest coverage against the equipment preview and published illustrated sprite library. This check accepts the browser interpolation policy and 240-sequence manifest check; it is not a new artwork completion claim.
 
 The reported screenshot showed a much coarser character than the approved art.
 A fresh load of the reported preview on port 3023 selected the illustrated

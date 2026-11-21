@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-This extends the existing period artillery model. It follows the same retained-work rule as handheld loading; it does not claim that classic JA2 contains these field guns or their exact crew costs.
+During turn-based combat and tactical exploration, assigned artillery crews can reload a field cannon across multiple turns and retain partial loading progress on the gun until a full shot is ready. This extends the existing period artillery model and follows the same retained-work rule as [handheld loading](reload-progress.md); it does not claim that classic JA2 contains these field guns or their exact crew costs.
 
 ## Rules and controls
 

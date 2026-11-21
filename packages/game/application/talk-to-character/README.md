@@ -1,7 +1,11 @@
 # TalkToCharacter
 
-Resolve a controlled participant's conversation with a resident in the active
-sector session. The request identifies the resident, speaker, approach, service
+This use case resolves a controlled participant's conversation with a resident
+in the active sector session and projects accepted participant, dialogue, and
+campaign changes in one transaction, refusing stale revisions, unavailable
+conversations, or failed participant projections.
+
+The request identifies the resident, speaker, approach, service
 term, and any selected dialogue or quest outcome.
 
 The use case resolves the conversation, projects admitted participant changes,

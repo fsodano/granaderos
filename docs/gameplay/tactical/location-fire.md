@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-The [classic JA2 manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf), printed page 29, describes selecting the targeting cursor independently of an enemy and firing at an item or person. Granaderos now allows the existing **F** firearm cursor to target a map cell, including a location behind cover or outside current observation. This restores the choice to fire toward a sound or remembered position without requiring the simulation to disclose an enemy.
+During tactical exploration and turn-based combat, the **F** firearm cursor can target any map cell—including a location behind cover or outside current observation—to fire at a fixed standing-torso height without revealing hidden occupants. The [classic JA2 manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf), printed page 29 ([M29](../../verification/ja2-parity-audit.md#scope-and-evidence)), describes selecting the targeting cursor independently of an enemy and firing at an item or person. This restores the choice to fire toward a sound or remembered position without requiring the simulation to disclose an enemy.
 
 ## Player controls
 

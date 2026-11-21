@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Implemented for the current assignments. This covers the assignment part of parity requirement A07. The wider travel, contract-warning and production-event requirements remain partial.
+Implemented for the current assignments on the strategic campaign screen, where explicit time advancement pauses when a soldier's assignment finishes or becomes blocked. This covers the assignment part of parity requirement A07 (time compression and event-driven pause triggers in the [JA2 parity audit](../../verification/ja2-parity-audit.md)). The wider travel, contract-warning and production-event requirements remain partial.
 
 The original [JA2 manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf), printed pages 39–42, describes assignments that cannot make progress and important events stopping time compression. The stopping conditions below are Granaderos adaptations of those choices.
 

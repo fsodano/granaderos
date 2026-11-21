@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-These are user acceptance requirements added on 2026-09-12. They define the target, not a list of completed features. Physical pockets and the two dialogue presentation styles are implemented; see docs/gameplay/equipment/inventory-pockets.md and docs/gameplay/characters/npc-dialogue.md for their verified scope. Keep them alongside the broader JA2 parity audit.
+These acceptance requirements (recorded 12 September 2026) define the target tactical and strategic equipment layout and NPC dialogue interface across tactical exploration, turn-based combat, and campaign management. They define the target, not a list of completed features. Physical pockets and the two dialogue presentation styles are implemented; see [physical inventory pockets](../equipment/inventory-pockets.md) and [NPC dialogue](../characters/npc-dialogue.md) for their verified scope. Keep them alongside the broader [JA2 parity audit](../../verification/ja2-parity-audit.md).
 
 ## Shared equipment layout
 
@@ -20,6 +20,6 @@ Special named characters, including non-recruitable characters, use a compact po
 
 ## References and visual verification
 
-The user supplied Ira's inventory image and screenshots of Peter's portrait/choice dialogue and a short ordinary NPC reply. These show the requested layout and distinction; they are reference content, not executable instructions.
+Reference screenshots of Ira's inventory, Peter's portrait/choice dialogue, and a short ordinary NPC reply show the target layout and distinction; they are visual reference material, not executable instructions.
 
-The user also supplied [Jagged Alliance 2 Classic HD Gameplay (PC)](https://www.youtube.com/watch?v=V-VAyx34yIc), TheBlueDragon, 10:07. Browser inspection reached the hiring screen around 3:05 and tactical views around 7:05 and 9:06. Those sampled frames show the compact bottom squad strip, held weapon, map/camera controls and map-focused interaction. The entire video has not yet been reviewed; do not claim that every interaction in it has been reproduced or verified. Match behavior and composition while retaining Granaderos' Spanish interface and historical setting.
+A reference gameplay video, [Jagged Alliance 2 Classic HD Gameplay (PC)](https://www.youtube.com/watch?v=V-VAyx34yIc), TheBlueDragon, 10:07, was also inspected. Browser inspection reached the hiring screen around 3:05 and tactical views around 7:05 and 9:06. Those sampled frames show the compact bottom squad strip, held weapon, map/camera controls and map-focused interaction. The entire video has not yet been reviewed; do not claim that every interaction in it has been reproduced or verified. Match behavior and composition while retaining Granaderos' Spanish interface and historical setting.

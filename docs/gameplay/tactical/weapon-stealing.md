@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Patusco's guide, printed pages 64–66, describes a risky adjacent grab with empty hands, Ctrl-targeting and a cost that consumes the remaining AP. It also warns that the victim can still fight. The guide's duplication bugs and claims of guaranteed success for particular characters are not implemented.
+During tactical exploration and turn-based combat, a standing or crouched soldier with empty hands (**Manos libres**) or the **Recoger equipo** cursor can attempt a contested grab to take the primary firearm or blade currently held by an adjacent conscious enemy (parity row [I10](../../verification/ja2-parity-audit.md)). Patusco's guide, printed pages 64–66 ([G64–66](../../verification/ja2-parity-audit.md#scope-and-evidence)), describes a risky adjacent grab with empty hands, Ctrl-targeting and a cost that consumes the remaining AP. It also warns that the victim can still fight. The guide's duplication bugs and claims of guaranteed success for particular characters are not implemented.
 
 ## Controls and consequences
 

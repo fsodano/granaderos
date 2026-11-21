@@ -1,6 +1,6 @@
 # Gameplay clarification — 2026-09-05
 
-This document preserves the user's additional requirements and reference material. These extend the original specification; they do not replace the Spanish web-game requirement or reduce the original completion criteria. Screenshots supplied by the user illustrate the AIM portrait grid/detail dossier, tactical inventory, NPC dialogue, strategic sector grid/squad assignments, and animated tactical combat.
+This dated specification record (5 September 2026) preserves the additional Jagged Alliance 2 gameplay, lighting, building, and recruitment requirements together with an initial acceptance snapshot from that date. These extend the [original specification](original.txt); they do not replace the Spanish web-game requirement or reduce the original completion criteria. For current product scope and later design overrides, read [current game design](game-design.md) and [version 0.1 status](../verification/version-0.1.md). Screenshots supplied during that review illustrate the AIM portrait grid/detail dossier, tactical inventory, NPC dialogue, strategic sector grid/squad assignments, and animated tactical combat.
 
 ## Required player experience
 

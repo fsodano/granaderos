@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-The gun in hand has two explicit modes, Disparo and Combate cercano, available beside its controls in the squad strip and inventory. This is the period replacement for a burst selector. It does not introduce automatic fire.
+In tactical exploration and turn-based combat, the gun in hand has two explicit modes, Disparo and Combate cercano, available beside its controls in the squad strip and inventory. This is the period replacement for a burst selector. It does not introduce automatic fire.
 
 Firing is the default. Distance never silently changes a shot into a bayonet thrust. Close-combat mode uses the equipped gun: a compatible, serviceable fitted bayonet provides its existing thrust profile; otherwise the gun uses its existing stock-strike profile. A distant target uses the same paid approach and interruption rules as other contextual melee equipment. It never changes to firing while approaching. Existing blades and dressings keep their own contextual behavior.
 

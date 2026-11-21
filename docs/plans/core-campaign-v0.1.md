@@ -2,9 +2,8 @@
 
 Updated: 17 October 2026.
 
-PR #426 is being delivered for the user's manual testing. The user requested
-that the remaining local test run stop and that the committed work merge to
-main. This handoff does not claim a complete campaign test pass.
+This dated handoff record summarizes the core campaign integration, local validation results, and known automated failures delivered in [PR #426](https://github.com/fsodano/granaderos/pull/426) for manual testing. The remaining local test run was stopped early so the committed work could merge to
+`main`. This handoff does not claim a complete campaign test pass.
 
 ## Delivered scope
 
@@ -26,8 +25,8 @@ Documentation and baseline audits, production build, TypeScript and diff checks
 passed. All eight build preservation comparisons and HOME passed. The build
 processes were collected and reaped.
 
-The subsequent unfiltered 1,115-file local run was stopped at the user's
-request. Its partial report has 12 of 1,115 files finished: seven pass and five
+The subsequent unfiltered 1,115-file local run was stopped before completion.
+Its partial report has 12 of 1,115 files finished: seven pass and five
 fail, with 1,103 unfinished. No final case totals are available. All five
 before/after preservation comparisons pass. This is not a complete passing
 receipt. Separate

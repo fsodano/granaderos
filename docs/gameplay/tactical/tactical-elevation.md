@@ -2,10 +2,10 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Fresh campaign maps now include accessible terraces on 36 existing single-storey
-houses in nine sectors. The full-size maps contain 1,085 upper cells, of which
+During tactical exploration and turn-based combat, fresh campaign maps include accessible roof terraces on 36 existing single-storey
+houses across nine sectors, supporting paid climbing, floor-aware movement, and 3D line-of-sight and projectile trajectories (parity row [V09](../../verification/ja2-parity-audit.md)). The full-size maps contain 1,085 upper cells, of which
 688 are walkable, joined to the ground by 71 access links. Existing saved maps keep
 their stored topology. This remains partial JA2 parity: tall roofs, arbitrary
 terrain heights and multi-storey interiors need further work.
@@ -129,7 +129,7 @@ build (960 exported files, 856 verified asset references). The earned opening
 and northern route preserve actual losses, captivity, finite equipment, paid
 replacements and medical supplies through Yatasto. Those acceptance controllers
 now use legal physical-floor routes and living available soldiers; they do not
-force the earlier casualty counts. See [current route evidence](../../verification/northern-route.md).
+force the earlier casualty counts. See current route evidence.
 
 The [room visibility index](../../development/performance/tactical-room-visibility-performance.md) reduces a
 measured minimap cost while retaining exact tested render output. Browser checks

@@ -1,8 +1,10 @@
 # Approved building material sources
 
-Generated with the built-in image-generation tool on 2026-09-12. The user
-approved the plaster and clay images as the intended realistic material style,
-then requested more era-appropriate materials and a cart beside the Pulpería.
+This asset source guide documents the original generated building-material
+textures and wooden ox cart sprite in `content/assets/source/building-materials`,
+generated with the built-in image-generation tool on 2026-09-12.
+The plaster and clay images define the realistic material style, supplemented by
+brick, timber, thatch, and a cart beside the Pulpería.
 These original PNGs are retained unchanged. Runtime WebP files are prepared by
 `node tools/prepare-building-materials.mjs`; it preserves material detail while
 resizing, makes colour variants of the plaster, and retains the cart alpha.

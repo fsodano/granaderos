@@ -1,8 +1,14 @@
-# Selected fresh garment material-role repeat
+# Selected fresh garment material-role repeat — 2026-10-08
+
+This dated review record (2026-10-08) documents the material-role resolution and
+coarse UV1 composition fix for selected fresh `woman-shawl` Blender builds,
+validated on main `3879a828c201264d6ab45f1ffad2a23527bc55c3` (committed as
+`7d5bb452fa79ff7b96020e977efc66431b9855d8` in [PR #273](https://github.com/fsodano/granaderos/pull/273)).
+All test counts and file hashes are a snapshot of that source cut.
 
 A real selected woman-shawl LOD0 Blender job exposed a repeat failure after the reviewed source pipeline completed. The fresh donor supplied updated normal and roughness atlas resources. The coarse bodies correctly retained their old inactive donor materials, so each could contain two materials named `Apparel_Atlas_Charcoal_Legwear`. The palette and coarse helpers used name uniqueness as identity. A subsequent manifest-only repeat therefore failed. A separate palette assertion also assumed every old source tile was burgundy, although the current authored skirt is charcoal.
 
-This source-only increment resolves the retained UV0 charcoal material from the active sewn-skirt hem primitive and its complete non-colour surface bindings. Texture links resolve to their image and sampler resources, so equivalent index aliases are accepted. Different colour resources with the same surface remain an error. Old inactive donor provenance is retained; no material, image or texture is renamed or removed.
+This source-only increment resolves the retained UV0 charcoal material from the active sewn-skirt hem primitive and its complete non-colour surface bindings. Texture links resolve to their image and sampler resources, so equivalent index aliases are accepted. Different colour resources with the same surface remain an error. Old inactive donor source history is retained; no material, image or texture is renamed or removed.
 
 The pipeline still runs native cloth support, close boot clearance, reviewed coarse topology, palette and sewn hem in that order. A final coarse composition copies the completed donor UV1 and packs the output once. This makes the first completed selected fresh output canonical, so a subsequent full repeat does not change its coarse binary packing. Current released completed outputs remain byte for byte exact.
 

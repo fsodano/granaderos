@@ -1,6 +1,6 @@
 # Paid mercenary roster
 
-The hiring desk contains 48 paid fictional volunteers, in addition to the 13 historical operatives. IDs 100–106 are retained; IDs 107–147 are new. The custom officer remains separate.
+This guide describes published behavior on the strategic hiring desk and tactical battlefield. The hiring desk contains 48 paid fictional volunteers, in addition to the 13 historical operatives. IDs 100–106 are retained; IDs 107–147 are new. The custom officer remains separate.
 
 Each new volunteer has ten attributes, working tactical traits, personal equipment, a biography, a personality, seven event lines, and an individual portrait. These are fictional dramatic characters, not historical claims.
 

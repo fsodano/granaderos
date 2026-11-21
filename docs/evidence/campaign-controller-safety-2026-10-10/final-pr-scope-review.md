@@ -1,3 +1,6 @@
+# Final PR scope review, 10 October 2026
+
+This is a dated evidence workspace record from 10 October 2026 auditing the file scope of [PR #330](https://github.com/fsodano/granaderos/pull/330) against `main` `462abba2` (see [verification.md](verification.md)).
 The PR changes 140 files against main 462abba2. Production changes are limited to a 14-line optional export in game/tactical-ai.js. Removing that insertion yields main byte-for-byte; chooseEnemyAction remains exact. The export has one caller, in tests/opening-driver.mjs. Existing gameplay AI, simulation, visibility, save format, economy, UI, packages and build tools are unchanged.
 
 The other changes are test controllers/helpers, passive recorders, earned fixtures, focused controls and documentation/evidence. The original five route test files remain byte-for-byte equal to main. The historical-loss test adds stronger pre-injury and commander-preservation assertions. Both comparison gates retain default seeds, all original assertions and zero source drift.

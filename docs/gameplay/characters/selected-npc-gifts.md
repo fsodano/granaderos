@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Open a soldier's inventory and select a pocket, hand or outfit item. Click a visible NPC to approach and offer the selected quantity. The soldier keeps the item during movement. At same-floor cardinal contact, the receiver decides whether to accept it. The NPC's current position, the exact source slot and its contents are checked again before the handover.
+On the tactical battlefield and strategic campaign ledger, open a soldier's inventory and select a pocket, hand or outfit item. Click a visible NPC to approach and offer the selected quantity. The soldier keeps the item during movement. At same-floor cardinal contact, the receiver decides whether to accept it. The NPC's current position, the exact source slot and its contents are checked again before the handover.
 
 The preview shows a walking route and destination mark. It does not reveal whether the NPC wants the object. Exploration spends energy and time for movement, then one second for handling, with no AP expenditure. This interaction is restricted to exploration. Enemy contact, exhaustion, physical blockage or a recipient moving away can stop the walk. Paid movement remains spent, the item stays with the soldier, and no NPC acceptance reply is shown.
 

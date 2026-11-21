@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Picking up an item now removes it from its physical slot. The exact item lives in a saved `equipmentCursor` record on its owner until it is placed, passed, thrown, given or returned. The pointer display does not own another copy.
+Picking up an item in the tactical inventory (exploration or combat) or the campaign equipment panel now removes it from its physical slot. The exact item lives in a saved `equipmentCursor` record on its owner until it is placed, passed, thrown, given or returned. The pointer display does not own another copy.
 
 ## Controls and placement
 

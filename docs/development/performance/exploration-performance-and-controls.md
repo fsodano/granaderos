@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Updated 2026-09-22. These changes do not complete the campaign or equipped art.
+Updated 2026-09-22. This dated performance and gameplay record documents firearm melee-mode switching (`B`), exploration energy and rest tuning, and terrain SVG caching, together with a snapshot of local browser frame-rate measurements and test results. These changes do not complete the campaign or equipped art.
 
 ## Playable changes
 

@@ -1,13 +1,15 @@
 # Fictional paid volunteer portraits
 
+This asset source guide documents the five original generated portraits for paid
+volunteer characters under `content/assets` and their rebuild script.
 The built-in image generator produced five separate original portraits for
 Rafael Sosa (100), Tomasa Ríos (101), Mateo Ferreyra (102), Lucien Arnaud (105)
 and Manuel Leiva (106). Prompts follow their campaign biographies and dramatic
-personalities in recruitment.js and characters.js. No historical portrait or
+personalities in `packages/game/recruitment.ts` and `packages/game/characters.js`. No historical portrait or
 other face was supplied as an input. These depict fictional characters in
 period-inspired clothing and do not claim authenticated historical likenesses.
 
-Exact prompts and generator cache provenance: `prompts/paid-portraits.json`.
+Exact prompts and generator cache source paths: `prompts/paid-portraits.json`.
 Originals: `source/paid-portrait-{id}-v1.png`. Browser versions:
 `web/portrait-{id}.webp`, installed in `content/campaigns/granaderos/assets`, 384px square, 11–22KB.
 Rebuild with `python3 content/assets/build_paid_portraits.py`. Existing portraits 103

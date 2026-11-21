@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Local militia now fight under AI control. Hired soldiers and temporary mission allies retain player control. Militia remain on the friendly combat side, share friendly visibility, and keep their own identity, equipment, wounds, supplies and combat experience.
+During turn-based combat and reaction interrupts, local militia fight automatically under AI control while hired soldiers and temporary mission allies remain under player control (during peaceful tactical exploration, militia hold their posts or run autonomous patrols). Militia remain on the friendly combat side, share friendly visibility, and keep their own identity, equipment, wounds, supplies and combat experience.
 
 ## Source and adaptation
 

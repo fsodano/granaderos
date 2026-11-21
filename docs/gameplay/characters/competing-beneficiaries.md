@@ -1,6 +1,6 @@
 # Competing physical delivery beneficiaries
 
-Fresh Retiro campaigns offer a fictional allocation of two usable wool ponchos. The player can give both to the sargento at Retiro for the recruits, or to the port foreman at Ensenada for the port watch. The first accepted garment fixes the recipient. This is authored period game content, not a claim about a documented historical errand.
+This guide describes published behavior across tactical battlefield deliveries and strategic town support. Fresh Retiro campaigns offer a fictional allocation of two usable wool ponchos. The player can give both to the sargento at Retiro for the recruits, or to the port foreman at Ensenada for the port watch. The first accepted garment fixes the recipient. This is authored period game content, not a claim about a documented historical errand.
 
 The player gives actual owned garments through the ordinary held-item or selected-item order. The offer discloses the two destinations and the first-delivery commitment before custody changes. The selected contact keeps each garment's exact identity and condition. A refusal from the other contact takes no garment. Partial deliveries, departure, reentry and saves retain the commitment and the physical objects.
 
@@ -16,4 +16,4 @@ The saved quest records its `beneficiaryId`. The issued request and tactical sta
 
 ## Verification scope
 
-The [video requirement review](../../verification/ja2-video-review-2026-10-03.md) tracks V14 and the current delivery evidence. The paid fresh Retiro route and the declared two-town militia boundary fixture are separate acceptance claims. A prepared territorial fixture does not prove an earned conquest or full campaign completion. Broader authored quest outcomes remain open.
+The [video requirement review](../../verification/ja2-video-review-2026-10-03.md) tracks V14 (competing quest resolutions with persistent rewards and civic consequences) and the current delivery evidence. The paid fresh Retiro route and the declared two-town militia boundary fixture are separate acceptance claims. A prepared territorial fixture does not prove an earned conquest or full campaign completion. Broader authored quest outcomes remain open.

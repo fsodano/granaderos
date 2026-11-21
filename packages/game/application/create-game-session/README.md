@@ -1,6 +1,8 @@
 # CreateGameSession
 
-The player starts a fresh campaign from a definition and seed.
+This use case starts a fresh campaign session from a campaign definition and seed,
+and refuses an invalid seed before creating a session.
+
 `CreateGameSessionUseCase` validates the seed and asks its repository to create
 the campaign. The infrastructure adapter assigns a new `GameSession` identity
 once. The deterministic campaign factory remains the compatibility engine.

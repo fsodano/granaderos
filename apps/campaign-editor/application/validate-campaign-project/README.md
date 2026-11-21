@@ -1,6 +1,10 @@
 # ValidateCampaignProject
 
-Inspect a campaign project for publication. `ValidateCampaignProjectRepository`
+This read-only use case inspects an editable campaign project for publication
+validity and reports located structural and playability issues without modifying
+project state or advancing game time.
+
+`ValidateCampaignProjectRepository`
 loads one project revision. `CampaignProjectValidator` checks published file
 contracts, references, resources, and game playability.
 

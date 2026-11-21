@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Two loaded, usable pistols in the two physical hands now fire through the ordinary targeting cursor. Right-click to aim, right-click again over the target to add aim, and left-click to fire. There is no extra paired-fire mode. The existing red star still means close combat. That mode uses the selected gun for a strike.
+In tactical exploration and turn-based combat, two loaded, usable pistols in the two physical hands fire together through the ordinary targeting cursor. Right-click to aim, right-click again over the target to add aim, and left-click to fire. There is no extra paired-fire mode. The existing red star still means close combat. That mode uses the selected gun for a strike.
 
 Each gun fires one charge. A double-barrel pistol retains its other charge. The pair uses the larger discharge cost and aim increment of the two guns, with one shared turn/preparation cost. The cursor shows the total AP and both hit chances. Paired aiming applies a 20-point accuracy deduction before range scaling and the final chance bounds. A custom recruit can choose ambidexterity instead of riding, night or teaching specialty; this removes only that deduction. No historical character has been assigned this trait.
 

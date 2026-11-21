@@ -1,11 +1,14 @@
 # 12 — Audio, UI, and Input Systems (Web Port Reference)
 
-**Consumer:** web-port agent building the Next.js/Canvas/WebAudio clone.
-**Source root:** `/Users/fsodano/fibradev/games/granaderos/engine/`
-**Scope:** `sgp/Button System.h`, `sgp/Button Sound Control.h`, `Utils/Music Control.h`, `TileEngine/Ambient Control.h`, `TileEngine/Radar Screen.h`, `Tactical/Interface Panels.h`, `Ja2/Fade Screen.h`, `Ja2/Loading Screen.h`, `Ja2/HelpScreen.h`, `Ja2/Credits.h`, `sgp/Font.h`, `Utils/Font Control.h`, plus the hotkey tables.
-**Rule:** every subsystem lists key structs/functions with `file:line` anchors, a DOM/Canvas/WebAudio recipe, keyboard/a11y notes, and a mapping to `web/components`, `web/hooks`, `docs/art/TACTICAL-VISUALS.md`, and `docs/gameplay/tactical/TACTICAL-HOTKEYS.md`. Do not touch engine code; this document is read-only reference.
+[Series index](README.md) · Previous: [11 — Data Formats & Asset Pipeline](11-data-assets.md) · Next: [13 — Multiplayer & Editor](13-multiplayer-editor.md)
 
-> **SGP core is not re-derived here.** The button/mouse-region/input-atom/font-rasterizer plumbing that lives in `sgp/` (video surfaces, `mousesystem`, `input.cpp`, `soundman`, `Cursor Control`) is covered by `docs/web-port/01-platform-sgp.md`. This document covers the **game-facing UI/audio/input subsystems** built on top of that core, and how each maps to the browser.
+> **Reference notice:** This document is a source and design analysis of the original Jagged Alliance 2 v1.13 (`1dot13/source`) game-facing audio, UI, and input subsystems (`sgp/Button System.h`, `Utils/Music Control.h`, `TileEngine/Ambient Control.h`, `Tactical/Interface Panels.h`, `Ja2/` shell screens, and fonts) kept as reference material for Granaderos' browser adaptation. It is **not** a description of Granaderos' current browser implementation. See the [series index](README.md) for the full reference set. In the current repository layout, the C++ engine submodule lives at `reference/native/engine/` (citations below are relative to that directory), and the browser modules live under `packages/game/` and `apps/web/` (referred to below by their earlier paths `game/` and `web/`).
+
+**Source root:** `reference/native/engine/` (submodule `1dot13/source`; citations below are relative to this root)
+**Scope:** `sgp/Button System.h`, `sgp/Button Sound Control.h`, `Utils/Music Control.h`, `TileEngine/Ambient Control.h`, `TileEngine/Radar Screen.h`, `Tactical/Interface Panels.h`, `Ja2/Fade Screen.h`, `Ja2/Loading Screen.h`, `Ja2/HelpScreen.h`, `Ja2/Credits.h`, `sgp/Font.h`, `Utils/Font Control.h`, plus the hotkey tables.
+**Rule:** every subsystem lists key structs/functions with `file:line` anchors, a DOM/Canvas/WebAudio recipe, keyboard/a11y notes, and a mapping to `web/components`, `web/hooks`, `docs/art/TACTICAL-VISUALS.md`, and `docs/gameplay/tactical/TACTICAL-HOTKEYS.md`. This document is read-only reference analysis of the original engine.
+
+> **SGP core is not re-derived here.** The button/mouse-region/input-atom/font-rasterizer plumbing that lives in `sgp/` (Standard Gaming Platform, the original engine's hardware abstraction layer — also referred to in project documentation as the Strategic Gameplay Platform: video surfaces, `mousesystem`, `input.cpp`, `soundman`, `Cursor Control`) is covered by [01 — Platform Layer: SGP + Utils + ext](01-platform-sgp.md). This document covers the **game-facing UI/audio/input subsystems** built on top of that core, and how each maps to the browser.
 
 ---
 

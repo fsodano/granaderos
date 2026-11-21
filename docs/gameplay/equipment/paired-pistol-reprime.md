@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-The existing R key and weapon order control can now service a failed second
+In tactical exploration and turn-based combat, the existing R key and weapon order control can service a failed second
 pistol without a hand swap. Only pistols physically held in both hands join the
 order. A pocketed, broken or non-pistol second weapon is excluded.
 

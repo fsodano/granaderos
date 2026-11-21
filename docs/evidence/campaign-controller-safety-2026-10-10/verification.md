@@ -1,13 +1,13 @@
 # Campaign controller safety, 10 October 2026
 
-This batch corrects acceptance controllers and failure diagnostics. The final
+This is a dated evidence workspace record from 10 October 2026 for acceptance controller safety corrections and failure diagnostics tracked in [PR #330](https://github.com/fsodano/granaderos/pull/330) against base `main` `462abba277a47dafbfed1f60fc4529c8a4721cdc` (final committed revision `7f0ce1ee83c98914148f24ced70b7f3c59b01a3e`). The final
 production source identity is `c132c162f02420175ffd65eae404efcd221cf53c994e3bf7930810d5c4748026`.
 Existing gameplay costs, finite ammunition, wounds, deaths and victory requirements
 remain the authority.
 
 Final validation is closed: 92 focused controls pass. The full Node suite completed
 all 955 files: 7,045 tests pass, five fail and four skip. Four campaign route file
-families remain incomplete. The [final results](#final-closed-validation-and-delivery-scope)
+families remain incomplete. Limits: this record does not establish original route acceptance, a complete campaign, native C++ engine checks, or bug-free gameplay. The [final results](#final-closed-validation-and-delivery-scope)
 supersede the pending statuses in the historical observations below.
 
 ## Original Mendoza evidence
@@ -434,6 +434,6 @@ unchanged canonical source above, including 1,377 static exports and 1,045 asset
 references. The engine submodule remains uninitialized at its recorded gitlink;
 native C++ checks were not run. Final evidence changes are documentation only.
 
-The user-defined delivery scope is to finish and merge PR #330, synchronize main,
+The delivery scope for [PR #330](https://github.com/fsodano/granaderos/pull/330) on 10 October 2026 was to finish and merge PR #330, synchronize `main`,
 preserve needed ignored files, archive its merged worktree, and stop. The known
 route failures are retained as limits of this completed PR.

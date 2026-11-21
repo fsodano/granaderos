@@ -1,5 +1,9 @@
 # EnterSector
 
+This use case opens a new or resumed sector visit from an admitted
+`SectorEntryRequest`, and refuses duplicate participants, wrong-sector snapshots,
+invalid scene context, or stale commits.
+
 `EnterSectorUseCase` opens an admitted sector visit. `SectorEntryRequest` identifies
 the visit, sector, participants, and deployment requirement. The repository checks
 the supplied campaign entry authority and physical scene before admission.

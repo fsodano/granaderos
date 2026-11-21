@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-The enemy now compares torso, head and leg shots before it fires. Each candidate uses the same accuracy, projectile cover, body-region effects and AP costs as a player order. This implements the choices described by Patusco's guide on pages 13 and 47; the scoring below is Granaderos tuning, not a reconstruction of JA2's AI.
+During turn-based combat and reaction interrupts, computer-controlled combatants compare torso, head, and leg shots before firing. Each candidate uses the same accuracy, projectile cover, body-region effects, and AP costs as a player order. This implements the choices described by Patusco's guide on pages 13 and 47 ([G13, G47](../../verification/ja2-parity-audit.md#scope-and-evidence)); the scoring below is Granaderos tuning, not a reconstruction of JA2's AI.
 
 ## Decisions
 

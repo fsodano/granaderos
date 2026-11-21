@@ -2,7 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
+
+This dated rendering and verification record (26 September 2026) documents the `TacticalLight` SVG artwork for lanterns, thrown torches, and campfires in `TacticalScene` and records a snapshot of 12 focused tests and browser visual checks.
 
 `TacticalScene` now renders `TacticalLight` for the existing source records in
 both campaign and standalone battles. Lanterns have an enclosure, candle and

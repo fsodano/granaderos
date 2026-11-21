@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-The inventory action **Vendar heridos** now covers the squad and visible wounded civilians in a safe sector. Its explanation states that both groups use the medics' existing dressings, time and energy.
+On the tactical battlefield, the inventory action **Vendar heridos** now covers the squad and visible wounded civilians in a safe sector. Its explanation states that both groups use the medics' existing dressings, time and energy.
 
 The planner uses ordinary stand, equip, movement and typed civilian `useItem` orders. Civilian health and bandaging use their existing health scale. Critical care can repeat until the living patient reaches the first-aid limit, bleeding stops or dressings run out. It grants no energy or full recovery. A bleeding medic still receives self-care priority.
 

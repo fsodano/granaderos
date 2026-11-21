@@ -1,10 +1,12 @@
 # Create and install a local campaign
 
-This guide describes the campaign implementation published in `main` through
-[PR #334](https://github.com/fsodano/granaderos/pull/334). The historical `0.1` tag
-retains its original checkpoint. Only `content/campaigns/granaderos/` is
-installed in this repository. The engine can discover and select additional
-campaign folders without adding a title or character to engine code.
+This authoring guide explains how to scaffold, configure, validate, and install
+a local campaign package folder. It describes the campaign implementation
+published in `main` through [PR #334](https://github.com/fsodano/granaderos/pull/334).
+The historical `0.1` tag retains its original checkpoint. Only
+`content/campaigns/granaderos/` is installed in this repository. The engine can
+discover and select additional campaign folders without adding a title or
+character to engine code.
 
 The [verification record](../verification/campaign-engine-separation-2026-10-10.md)
 records completed focused checks, the type check and the one-package static

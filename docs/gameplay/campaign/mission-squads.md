@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-The desk overview now provides **Fuerza para San Lorenzo**. The active squad participates, and the player can explicitly select other eligible squads in San Nicolás. Nothing automatically pulls in reserves. The selection shows each squad's size and any availability problem before launch.
+On the strategic campaign screen, the desk overview now provides **Fuerza para San Lorenzo** to assemble multiple co-located squads for the tactical San Lorenzo mission. The active squad participates, and the player can explicitly select other eligible squads in San Nicolás. Nothing automatically pulls in reserves. The selection shows each squad's size and any availability problem before launch.
 
 Up to eight squads and 48 hired soldiers can participate. San Martín remains one local mission ally. Squads in transit, unavailable soldiers, expired contracts, sleeping soldiers, other assignments, exhausted soldiers and an occupied assembly sector prevent participation. Existing single-squad orders still work.
 

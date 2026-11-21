@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-The JA2 manual, printed page 43, describes squads approaching one target from different adjacent sectors. The first arrival can wait for other squads before attacking. Granaderos now implements this choice with its existing campaign geography and hourly travel.
+The [original JA2 manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf), printed page 43, describes squads approaching one target from different adjacent sectors. The first arrival can wait for other squads before attacking. Granaderos now implements this choice on the strategic campaign screen—staging multiple approaching squads at a hostile boundary before entering one shared tactical battle—with its existing campaign geography and hourly travel.
 
 ## Player flow
 

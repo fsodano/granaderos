@@ -2,6 +2,10 @@
 
 [Documentation index](../README.md)
 
+This index collects the user guides, plans, and verification evidence for
+creating, editing, validating, and packaging campaigns in the browser studio and
+through the local folder workflow.
+
 - [Campaign studio](campaign-studio.md) — the website workflow, portable project and installable ZIP format, with exact current limits.
 - [Campaign folder format](../development/campaign-authoring.md) — manifest, content, world, maps, presentation, resources and local installation.
 - [Studio acceptance plan](../plans/campaign-studio.md) — required website result and evidence.

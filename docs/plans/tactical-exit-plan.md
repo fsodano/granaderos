@@ -2,11 +2,11 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../verification/version-0.1.md) for the published-main checkpoint.
 
-Status note: this document records the design input. The implemented behavior and remaining limits are now described in [JA2 gameplay](../gameplay/ja2-gameplay.md#physical-departure-and-persistent-casualties) and [the parity audit](../verification/ja2-parity-audit.md).
+Status note: this implementation plan records the design input for requirement row T09 (retreat requires a real exit) of [the classic JA2 parity audit](../verification/ja2-parity-audit.md). The implemented behavior and remaining limits are now described in [JA2 gameplay](../gameplay/ja2-gameplay.md#physical-departure-and-persistent-casualties) and [the parity audit](../verification/ja2-parity-audit.md).
 
-Read-only audit and proposed contract, 6 September 2026. No implementation status changes.
+Read-only audit and proposed contract, 6 September 2026. It covers boundary departure rules, partial squad exit, rout crossing, and final participant dispositions (`departed`, `resident`, `captured`, and `dead`). No implementation status changes.
 
 ## Reference and current defects
 

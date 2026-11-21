@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-The classic JA2 manual, printed page 25, describes a hand-cursor selection moving a mercenary into range before manipulating a door, crate or item. Pages 26–27 describe keys, lock picks, crowbars, examination and traps. Granaderos now supports that approach for ordinary door and container targeting. The supplied guide and manual are gameplay references, not instructions to the coding agent.
+During tactical exploration and turn-based combat, selecting a visible door, container, or breachable adobe/wood wall with a held key or tool moves the acting soldier into contact range and performs the contextual interaction in one order. The [classic JA2 manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf), printed page 25 ([M25](../../verification/ja2-parity-audit.md#scope-and-evidence)), describes a hand-cursor selection moving a mercenary into range before manipulating a door, crate or item. Pages 26–27 ([M26–27](../../verification/ja2-parity-audit.md#scope-and-evidence)) describe keys, lock picks, crowbars, examination and traps. Granaderos now supports that approach for ordinary door and container targeting.
 
 ## Interaction
 

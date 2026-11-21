@@ -2,8 +2,7 @@
 
 Updated: 11 October 2026.
 
-The owner will design campaigns and wants other people to design their own.
-Campaign creation is available through `/studio` on `main`; community publishing
+This plan covers local campaign authoring in `/studio` and future community campaign sharing. Status: partially implemented. Campaign creation is available through `/studio` on `main`; community publishing
 and wider mechanics remain future work. Version 0.1 records an earlier playable game and
 does not include the studio.
 

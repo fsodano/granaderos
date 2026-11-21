@@ -1,10 +1,13 @@
 # Web Port Series 09 — Dialogue, Quests, and NPC Systems
 
-> **Audience:** an agent with zero prior JA2 knowledge who must port engine behavior into the
-> browser clone (`game/` + `web/`). This document maps the engine's **dialogue**, **quest**,
-> **fact**, **NPC scripting**, and **email/briefing** systems onto the existing Granaderos web
-> implementation, and proposes a JSON dialogue-runner schema plus a trigger graph for the port.
-> Read-only analysis with `file:line` citations. No engine/game/web code is modified.
+[Series index](README.md) · Previous: [08 — Laptop](08-laptop.md) · Next: [10 — Save / Load & Persistence](10-save-load.md)
+
+> **Reference notice:** This document is a source and design analysis of the original Jagged Alliance 2 v1.13 (`1dot13/source`) dialogue queue, quest/fact state machine, NPC quote records, and Lua scripting hooks (`Tactical/Dialogue Control.*`, `Strategic/Quests.*`, `TacticalAI/NPC.*`, and `lua/`) kept as reference material for Granaderos' browser adaptation. It is **not** a description of Granaderos' current browser implementation. See the [series index](README.md) for the full reference set. In the current repository layout, the C++ engine submodule lives at `reference/native/engine/` (referred to below as `engine/`), and the browser modules live under `packages/game/` and `apps/web/` (referred to below by their earlier paths `game/` and `web/`).
+
+> **Scope:** Maps the original engine's **dialogue**, **quest**,
+> **fact**, **NPC scripting**, and **email/briefing** systems onto the earlier Granaderos browser
+> implementation (`game/` + `web/`), and proposes a JSON dialogue-runner schema plus a trigger graph for adaptation.
+> Read-only analysis with `file:line` citations against the analyzed engine revision.
 
 ---
 
@@ -429,7 +432,7 @@ become action types `triggerNpc`, `grantItem`, `startBattle`, `openShop`, `dismi
 
 ---
 
-## 13. Reproduction checklist (for the web-port agent)
+## 13. Reproduction checklist (reference for browser adaptation)
 
 1. **Facts store** — add a `facts` map to campaign state (or reuse `flags` + `quests` +
    `reputation` + `sectors[*].loyalty`). Provide `setFact(id, value)` / `checkFact(id)` helpers

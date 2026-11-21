@@ -1,6 +1,6 @@
 # Retirar una entrega incompleta
 
-Un encargo físico puede permitir retirar el compromiso después de una entrega
+Esta nota describe el comportamiento publicado en el campo táctico y el apoyo de campaña. Un encargo físico puede permitir retirar el compromiso después de una entrega
 parcial real. La primera entrega conserva el destinatario elegido. Para retirar
 el compromiso, un combatiente capaz debe hablar junto a ese contacto vivo y
 visible. Ofrecer un encargo sin entregar objetos no habilita esta opción.
@@ -25,7 +25,7 @@ La carga, el reloj y el regreso rechazan un sello eliminado o alterado. La muert
 posterior del contacto, la ocupación o los cambios posteriores de apoyo no
 reescriben el resultado histórico.
 
-La [verificación acotada](../../verification/errand-withdrawal-2026-10-04.md)
+La verificación acotada
 separa la ruta nativa pagada de los controles declarados de recorte y ocupación.
-No demuestra una conquista ni la campaña completa. V14 conserva otros resultados
+No demuestra una conquista ni la campaña completa. V14 (resoluciones de misión en competencia con recompensas y consecuencias cívicas persistentes) conserva otros resultados
 de misión abiertos en la [revisión del video](../../verification/ja2-video-review-2026-10-03.md).

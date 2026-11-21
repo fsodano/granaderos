@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Selecting **Nueva campaña** opens a four-scene introduction before the desk.
+On the strategic campaign layer, selecting **Nueva campaña** opens a four-scene introduction before the desk.
 It sets the campaign in Buenos Aires in 1812, introduces San Martín, explains
 the independence objective, and offers **Contratar combatientes** or
 **Crear mi granadero**. Each choice opens that desk section directly.
@@ -28,7 +28,7 @@ manifest. See [campaign authoring](../../development/campaign-authoring.md).
 ## Historical basis
 
 The San Martín passage is newly written dramatic dialogue, not a quotation.
-Per the user's direction, source notes remain in project documentation and do
+Source notes remain in project documentation and do
 not interrupt the game. The chart is an illustrative campaign graphic, not an
 archival map. The portrait is the game's existing San Martín illustration.
 
@@ -50,4 +50,4 @@ prior-save preservation and autosave failure recovery. The combined intro,
 Home and Retiro desk group passes 22 tests.
 
 The production build and typecheck pass. Browser checks are recorded in the
-[current gameplay follow-up](../../verification/gameplay-follow-up-2026-09-27.md).
+current gameplay follow-up.

@@ -1,5 +1,9 @@
 # ExecuteSectorOrder
 
+This use case applies a player order inside the active sector visit within the
+current time budget, and refuses invalid orders or exhausted revisions without
+changing gameplay state or local revision.
+
 `ExecuteSectorOrderUseCase` loads the current visit and revision through
 `ExecuteSectorOrderRepository`, applies the requested order through the shared
 sector runner, and commits the accepted result once. Domain combat classes own

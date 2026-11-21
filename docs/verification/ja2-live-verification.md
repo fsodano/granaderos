@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](published-progress.md) for the main branch baseline.
+> See [version 0.1 status](version-0.1.md) for the published-main checkpoint.
 
-This record covers the live checks completed on 6 September 2026 and reported by the primary gameplay agent. It separates observed browser behavior from automated coverage. The observations below were not repeated by the agent that wrote this record. The equipment section below was added by the primary agent after later live checks.
+This dated verification record covers the live browser and automated checks completed in the development workspace from 6 September through 21 September 2026 (including isolated commit `86b6ac8` on 11 September 2026) and reported by the primary gameplay agent. Each section below is a snapshot for its stated source and fixture; it separates observed browser behavior from automated coverage. Requirement codes such as `T09` refer to rows of the [classic JA2 gameplay parity audit](ja2-parity-audit.md). The observations below were not repeated by the agent that wrote this record. The equipment section below was added by the primary agent after later live checks.
 
 ## Exploration movement
 

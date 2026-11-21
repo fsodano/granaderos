@@ -1,5 +1,6 @@
 # Current corrections evidence, 10 October 2026
 
+This is a dated evidence workspace record from 10 October 2026 for `granaderos-current-corrections-evidence-20261010.tar.gz` against base `main` `462abba277a47dafbfed1f60fc4529c8a4721cdc` (see [verification.md](verification.md)).
 This archive contains bounded, closed evidence for care admission, finite ammunition preparation, coastal field care and opening posture correction. It contains complete selected artifact directories, not reduced state projections. Creating this archive ran no tests, campaign routes, battles, native orders or settlement. No candidate source or original diagnostic directory was changed.
 
 ## Closed results

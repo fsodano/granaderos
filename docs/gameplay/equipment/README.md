@@ -3,14 +3,13 @@
 Current scope: [version 0.1](../../verification/version-0.1.md). Equipment commerce is disabled;
 older purchase, supplier and refill notes describe earlier rules. Use actual
 recruitment allocations and physical sector objects for finite supplies.
-See [commerce deferral](../../verification/finite-campaign-editor-2026-10-05.md).
+See commerce deferral.
 
 [Gameplay index](../README.md) · [Documentation index](../../README.md)
 
 These notes combine feature guides and dated workspace records. Read
 [version 0.1](../../verification/version-0.1.md) for current scope.
-The [requirement ledger](../../verification/published-progress.md) and
-[parity audit](../../verification/ja2-parity-audit.md) retain row evidence and
+The [parity audit](../../verification/ja2-parity-audit.md) retains row evidence and
 comparison requirements. A historical *workspace* label does not establish the
 current merge state; use the named source, date and acceptance limits.
 
@@ -46,6 +45,7 @@ current merge state; use the named source, date and acceptance limits.
 - [Typed handheld ammunition](typed-ammunition.md) *(workspace)*
 - [Load a gun with selected ammunition](inventory-ammunition-loading.md) *(workspace)*
 - [Loading across turns](reload-progress.md) *(workspace)*
+- [Visible loading progress](retained-reload-display.md)
 - [Artillery loading across turns](artillery-reload-progress.md) *(workspace)*
 - [Firing and close-combat modes](weapon-modes.md) *(workspace)*
 - [Paired pistol fire](paired-pistol-fire.md) *(workspace)*

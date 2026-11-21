@@ -1,6 +1,10 @@
 # Movement and hidden occupants
 
-Route planning must not consult an unseen person's current position. This rule applies to both the displayed route preview and native movement orders.
+> **Development-workspace record.** This note describes a separate development
+> checkout. Its implementation and test results are not published-main acceptance.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
+
+During tactical exploration and turn-based combat, route planning and the displayed route preview consult only known friendly units and currently observed occupants—never an unseen person's position—and stop a moving soldier immediately before any physical obstruction encountered along the path. See [parity audit rows T07 and V01](../../verification/ja2-parity-audit.md) for the broader AI movement and player-knowledge requirements.
 
 Ordinary movement now plans with friendly units and observed occupants. Player troops share their side's sight; enemy planning uses the acting soldier's sight. Civilian occupancy follows the same observation rule. Terrain, props, movement costs and elevation rules are unchanged. This is not a new map-discovery or building-geometry implementation.
 

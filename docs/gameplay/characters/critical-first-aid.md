@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Equip bandages and click a living wounded ally or visible civilian. The medic approaches and uses one dressing. The cursor previews the treatment and combined movement cost. Exploration spends time and movement energy; combat also spends AP. If the treatment is partial, the preview and result say that more first aid is needed.
+On the tactical battlefield and strategic campaign ledger, equip bandages and click a living wounded ally or visible civilian. The medic approaches and uses one dressing. The cursor previews the treatment and combined movement cost. Exploration spends time and movement energy; combat also spends AP. If the treatment is partial, the preview and result say that more first aid is needed.
 
 Below 15 HP, treatment first restores critical health toward `min(15,maxHp)`. Each restored HP uses two work points and reduces bleeding by one; remaining work reduces bleeding one point at a time. The medic's medical skill, dexterity and experience determine work per stroke. Dead patients cannot be treated. Normal wounds at or above 15 HP receive the existing bandage treatment without further HP restoration. Full recovery still needs strategic medical care or eligible rest.
 
@@ -42,4 +42,4 @@ The general suite passed 2,510 checks with no skips. A later 92-check health, tr
 
 Final TypeScript and production build checks passed; the static export verified 960 files and 856 asset references. The complete artillery suite passed 12 checks, including the paid rescue with its original squad and finite equipment. A repeated general run after the final save fixes was interrupted by agent process cleanup before completion; it is not counted as a pass. The focused groups above cover those final fixes.
 
-The complete campaign route passed all eight checks with no skips. Its controller uses critical care, actual targeted shots, a paid medical supply trip, a coastal rescue and a paid Córdoba reserve. It reaches Yatasto at phase 3, hour 306, second 2677, with 2,085 pesos, 15 permanent deaths and no remaining captives. Every accepted battle replays deterministically and passes save/return validation. This verifies the established southern scenario in the isolated gameplay checkout, not a complete Retiro-only campaign or overall balance. See [the current route record](../../verification/northern-route.md).
+The complete campaign route passed all eight checks with no skips. Its controller uses critical care, actual targeted shots, a paid medical supply trip, a coastal rescue and a paid Córdoba reserve. It reaches Yatasto at phase 3, hour 306, second 2677, with 2,085 pesos, 15 permanent deaths and no remaining captives. Every accepted battle replays deterministically and passes save/return validation. This verifies the established southern scenario in the isolated gameplay checkout, not a complete Retiro-only campaign or overall balance. See the current route record.

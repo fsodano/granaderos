@@ -1,6 +1,10 @@
 # Handheld ammunition
 
-The combined game uses four ammunition families. A weapon has one primary family and can accept up to three configured alternatives. The story editor, tactical inventory and campaign armory share the same definitions. An implicit ignition kit replaces separate priming powder and flints.
+> **Development-workspace record.** This note describes a separate development
+> checkout. Its implementation and test results are not published-main acceptance.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
+
+Across the story editor, tactical inventory (exploration and combat), and the campaign armory, the combined game uses four ammunition families. A weapon has one primary family and can accept up to three configured alternatives. An implicit ignition kit replaces separate priming powder and flints.
 
 | Family | Default primary users |
 | --- | --- |
@@ -9,11 +13,11 @@ The combined game uses four ammunition families. A weapon has one primary family
 | Pistol cartridges | Arzón, duel and double-barrel pistols |
 | Shot loads | Escopeta and trabuco |
 
-Smoothbores can use the configured shot alternative. Select a load only after unloading the gun. The selected family sets damage, range and shot pattern. Unloading returns the actual rounds to pockets and requires space; tactical unloading also spends AP. Partial loading, chosen family and loaded rounds stay with the physical weapon through hand changes, storage, drops, recovery and saves. See [alternative loads](../../verification/alternate-firearm-loads.md).
+Smoothbores can use the configured shot alternative. Select a load only after unloading the gun. The selected family sets damage, range and shot pattern. Unloading returns the actual rounds to pockets and requires space; tactical unloading also spends AP. Partial loading, chosen family and loaded rounds stay with the physical weapon through hand changes, storage, drops, recovery and saves. See alternative loads.
 
 Loose rounds have one owner: physical inventory stacks. A cursor stack, chamber, stored gun, body or ground cache owns its own contents. Display totals cannot create another reserve. Pocket stacks hold up to 20 rounds at 0.04 weight per round. Transfers, splitting and collection retain their family. Artillery uses its own finite ammunition.
 
-Campaign purchases spend pesos and reduce finite local supplier stock. The authored market sets price, initial stock, capacity, restock interval and automatic preparation. Automatic preparation can use carried rounds and local stores before buying missing rounds at an eligible supplied town. No production recipe or global material stock supplies cartridges. Returning from a sector retains owned rounds instead of refunding or issuing them again. See [persistent custody](../../verification/strategic-ammunition-custody.md) and [supplier rules](../../verification/authored-ammunition-markets.md).
+Campaign purchases spend pesos and reduce finite local supplier stock. The authored market sets price, initial stock, capacity, restock interval and automatic preparation. Automatic preparation can use carried rounds and local stores before buying missing rounds at an eligible supplied town. No production recipe or global material stock supplies cartridges. Returning from a sector retains owned rounds instead of refunding or issuing them again. See [persistent custody](../../verification/strategic-ammunition-custody.md) and supplier rules.
 
 Historical caliber keys remain save identifiers and map to these four families. Known legacy schemas migrate once. Invalid or mixed ownership records are rejected. The consolidation also migrates the published personal reserve into physical pockets. Its combined save and UI checks remain in progress; [the integration record](../../verification/latest-build-consolidation.md) is the current working-branch status.
 
@@ -69,4 +73,4 @@ The established northern route now orders a real batch of Baker cartridges durin
 
 Dragging cartridges directly onto a gun to load it is still absent. There is one supported prepared load per firearm; alternate ball/shot choices and unloading are not claimed here. Artillery cartridges remain separate. Full JA2 parity remains open in the main audit.
 
-Reference: the user-supplied Patusco guide, pages 49–50, describes compatibility and ammunition availability. The implemented costs, pocket quantities and period adaptation are Granaderos rules.
+Reference: Patusco's JA2 Strategy Guide 1.3 (cited as **G** in [the JA2 parity audit](../../verification/ja2-parity-audit.md#scope-and-evidence)), pages 49–50, describes compatibility and ammunition availability. The implemented costs, pocket quantities and period adaptation are Granaderos rules.

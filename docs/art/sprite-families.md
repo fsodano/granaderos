@@ -1,5 +1,7 @@
 # Seven sprite families
 
+This guide documents the consolidated 2D character sprite family baseline (seven authoring families, eight exported variants, and 27 base action sequences), its retired-appearance mapping, and validation from 2026-09-11. Code paths under `assets/` refer to `content/assets/` in the current repository layout.
+
 Implemented base scope: seven authoring families, eight exported variants, and 27 sequences. All 216 sets are present and published locally, with 5,568 directional frames.
 
 | Family | Existing base art | Consolidated appearances |

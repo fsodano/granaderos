@@ -1,6 +1,7 @@
 # Campaign editor
 
-`campaign-editor` owns editable campaign projects and the editor browser application.
+This package README describes `campaign-editor` (`apps/campaign-editor`), which
+owns editable campaign projects and the editor browser application.
 It provides project identity changes, resource editing, undo/redo, browser project
 storage, package validation, archive import/export, and isolated playtests.
 

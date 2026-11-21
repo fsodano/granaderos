@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Patusco's guide, printed pages 59–60, distinguishes trained regulars from veterans. It states that veterans reach their rank through battle experience. New Granaderos courses now recruit cívicos or train them to the middle rank; they cannot purchase veteran rank.
+Across tactical combat and strategic militia training courses, *Patusco's JA2 Strategy Guide 1.3* (source `G` in [the parity audit](../../verification/ja2-parity-audit.md#scope-and-evidence)), printed pages 59–60, distinguishes trained regulars from veterans. It states that veterans reach their rank through battle experience. New Granaderos courses now recruit cívicos or train them to the middle rank; they cannot purchase veteran rank.
 
 ## Combat credit
 
@@ -34,4 +34,4 @@ Two component-render tests check the map's rank counts, the disabled training co
 
 The two-kill test uses declared controlled encounter fixtures. It does not fabricate the kills or promotion credit, but it is not a naturally occurring campaign defense. Live UI evidence is in [the verification record](../../verification/ja2-live-verification.md).
 
-Militia remain directly controllable in tactical play. Autonomous militia commands are still an open requirement (S05). This increment does not implement that command model, militia medical assignments or a general strategic reinforcement economy.
+Militia remain directly controllable in tactical play. Autonomous militia commands are still an open requirement (S05, local militia combat, persistent casualties and control distinct from hired soldiers in the [JA2 parity audit](../../verification/ja2-parity-audit.md)). This increment does not implement that command model, militia medical assignments or a general strategic reinforcement economy.

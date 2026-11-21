@@ -2,11 +2,15 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Measured on 12 September 2026 with Node 25.9.0, macOS arm64 and explicit garbage
-collection. These are simulation query timings, not browser frame rates. They do
-not establish that the reported browser slowdown or out-of-memory error is fixed.
+This dated performance record (measured on 12 September 2026 with Node 25.9.0,
+macOS arm64 and explicit garbage collection) documents a snapshot of simulation
+query timings and memory checks comparing baseline commit `2ffd1c5` against
+indexed surface and sight optimizations at `2edf376` on flat and elevated Retiro
+and Tucumán maps. These are simulation query timings, not browser frame rates.
+They do not establish that the reported browser slowdown or out-of-memory error
+is fixed.
 
 ## Controlled comparison
 

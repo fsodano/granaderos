@@ -1,8 +1,7 @@
 # JA2 gameplay overview: documentation review
 
 Reviewed 30 September 2026 against published-main source
-`f5b6290f` and the existing development-workspace parity audit. Documentation review
-only: no game code, new gameplay verification or change to implementation status.
+`f5b6290f` and the existing development-workspace [parity audit](ja2-parity-audit.md) (which defines row codes `T01`–`T10`, `C01`–`C12`, `I01`–`I10`, `V01`–`V09`, `P01`–`P05`, `A01`–`A07`, `R01`–`R08`, `S01`–`S09`, `W01`–`W10`). This dated documentation review is a snapshot for that source: no game code, new gameplay verification or change to implementation status.
 
 ## Reference and scope
 
@@ -20,9 +19,10 @@ neither Granaderos implementation nor a requirement to reproduce modern equipmen
 ## Existing coverage to retain
 
 The [parity audit](ja2-parity-audit.md) already covers most of these systems. Its
-row IDs below are documentation references, not new acceptance results. Published
-status remains in [the requirement register](published-progress.md); the audit's
-historical workspace tests cannot establish the other agent's current integration.
+row IDs below are documentation references, not new acceptance results. At this
+review's date, published status remained in the requirement register (removed
+in November 2026); the audit's historical workspace tests cannot establish the
+other agent's current integration.
 
 | Reader question | Existing audit rows |
 | --- | --- |
@@ -67,7 +67,7 @@ Keep the Retiro-only opening, historical setting, treasury economy and desktop-o
 scope. Keep compatible ammunition and implicit ignition kit: do not restore flint
 or priming-charge inventory from an older parity note. Keep separate requirements
 for finite medical and specialist equipment; an implicit ignition kit is not a
-blanket exemption from item ownership. See [ammunition verification](typed-ammunition.md)
+blanket exemption from item ownership. See ammunition verification
 and the [current game design](../specification/game-design.md).
 
 No new implementation acceptance is inferred from this review. Before closing any

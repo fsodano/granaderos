@@ -2,8 +2,9 @@
 
 [Documentation index](../README.md)
 
-Use [development setup](getting-started.md) to install dependencies, start the
-browser game and run the available checks.
+This index lists the setup, architecture, authoring, and performance guides for
+the browser game and campaign editor. Use [development setup](getting-started.md)
+to install dependencies, start the browser game, and run the available checks.
 Read the [campaign separation record](../verification/campaign-engine-separation-2026-10-10.md)
 for current scope and limits. The [version 0.1 status](../verification/version-0.1.md)
 retains its tagged checkpoint. The [campaign studio](../authoring/campaign-studio.md)

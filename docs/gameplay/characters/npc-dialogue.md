@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Special dialogue is independent of recruitment. Authored recruits, mission speakers, quest contacts (including completed quests), and explicitly marked special characters receive a compact portrait and choice panel over the tactical field. Existing appropriate portraits are reused; the sargento, posta contact and Belgrano currently use generic period portraits until dedicated art is provided. No art files were changed.
+On the tactical battlefield and strategic campaign ledger, special dialogue is independent of recruitment. Authored recruits, mission speakers, quest contacts (including completed quests), and explicitly marked special characters receive a compact portrait and choice panel over the tactical field. Existing appropriate portraits are reused; the sargento, posta contact and Belgrano currently use generic period portraits until dedicated art is provided. No art files were changed.
 
 Ordinary civilians and enemies receive one short speech box, without conversation choices. Civilian work, danger and enemy surrender select suitable reply groups. Repeated requests vary the line without consuming the battle random generator. The box closes after ten seconds or with its close control. These lines are presentation only; they do not alter AP, ammunition, quests or enemy allegiance. No generative multi-turn conversation is added.
 
@@ -20,7 +20,7 @@ A separate browser demonstration uses the production Battlefield and campaign re
 
 ## Reply replay and local recruitment
 
-The special character panel includes **Repetir respuesta**, matching the replay control in the user's reference. It repeats that character's last authored reply. Before any exchange, it repeats the greeting. Each character keeps a separate last reply in the campaign save. Speaking to another character does not replace it. The control is subject to the same range, visibility, consciousness and peaceful-conversation checks as other approaches. Ordinary civilians and enemies retain their single speech box and do not gain conversation choices.
+The special character panel includes **Repetir respuesta**, matching the classic JA2 dialogue replay control. It repeats that character's last authored reply. Before any exchange, it repeats the greeting. Each character keeps a separate last reply in the campaign save. Speaking to another character does not replace it. The control is subject to the same range, visibility, consciousness and peaceful-conversation checks as other approaches. Ordinary civilians and enemies retain their single speech box and do not gain conversation choices.
 
 Replay changes no quest, recruitment, mission, goods, loyalty, time or combat state. It returns the text only, with current choices; a completed delivery or recruitment stays unavailable. Save validation bounds remembered text and rejects conversation dates later than the campaign clock.
 

@@ -1,8 +1,6 @@
 # Tactical simulation verification
 
-This file retains earlier verification records. The [JA2 gameplay update](../gameplay/ja2-gameplay.md) supersedes the older healing, AP reset, and separate-action controls described below. Its opening test starts a fresh campaign and uses paid recruitment, finite medical supplies, and recovery between battles.
-
-Verified on 2026-09-05 against the JavaScript engine used by the browser.
+This dated verification record captures headless tactical simulation and campaign-bridge checks completed on 2026-09-05 against the browser JavaScript engine (`game/tactical.js`, `game/skill-training.js`, and `game/time.js`). All transcripts, operative profiles, and test counts below are a snapshot for that 5 September 2026 baseline. The later [JA2 gameplay update](../gameplay/ja2-gameplay.md) supersedes the older healing, AP reset, and separate-action controls described below; its opening test starts a fresh campaign and uses paid recruitment, finite medical supplies, and recovery between battles.
 
 ```sh
 node --test tests/tactical-web.test.mjs tests/battle-integration.test.mjs

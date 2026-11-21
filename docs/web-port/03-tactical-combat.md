@@ -1,16 +1,20 @@
 # 03 — Tactical Combat Core (engine/Tactical → game/tactical.js)
 
-Reference for porting the JA2 v1.13-derived turn-based combat core to the browser
+[Series index](README.md) · Previous: [02 — Tile Engine](02-tile-engine.md) · Next: [04 — Soldiers, Mercs & Stats](04-soldiers-stats.md)
+
+> **Reference notice:** This document is a source and design analysis of the original Jagged Alliance 2 v1.13 (`1dot13/source`) tactical combat core (`Tactical/` and related `TileEngine/` files) kept as reference material for Granaderos' browser adaptation. It is **not** a description of Granaderos' current browser implementation. See the [series index](README.md) for the full reference set. In the current repository layout, the C++ engine submodule lives at `reference/native/engine/` (referred to below as `engine/`), and the browser modules live under `packages/game/` and `apps/web/` (referred to below by their earlier paths `game/` and `web/`).
+
+Reference for adapting the JA2 v1.13-derived turn-based combat core to the browser
 simulation. Every formula below is extracted from the C++ engine under
-`engine/Tactical/` (and `engine/TileEngine/` where noted) and mapped to the
-JavaScript implementation in `game/tactical.js`. Line numbers cite the current
-working tree; treat them as anchors, not a contract.
+`engine/Tactical/` (and `engine/TileEngine/` where noted) and compared against the
+JavaScript implementation in `game/tactical.js`. Line numbers cite the analyzed
+engine revision; treat them as anchors, not a contract.
 
 Scope: turn/initiative/interrupt, Action Points, movement, shooting, hit
 chance/damage/armor, explosions, suppression/morale, fatigue/disease/drugs,
 bleeding/bandage/doctor, animation state machine, overwatch, AI turn
-orchestration, and sound/animation hooks. **Out of scope:** Strategic AI and
-soldier stat definitions (separate docs).
+orchestration, and sound/animation hooks. **Out of scope:** Strategic AI ([07 — Strategic Layer](07-strategic-layer.md)), tactical AI decision trees ([06 — Tactical AI](06-tactical-ai.md)), and
+soldier stat definitions ([04 — Soldiers, Mercs & Stats](04-soldiers-stats.md)).
 
 ---
 

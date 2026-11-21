@@ -2,7 +2,7 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
 Current behavior: [durable cursor exchanges](equipment-cursor-exchanges.md) supersede the source-reservation, cancellation and rearrangement-cost behavior recorded below. The checks below describe the earlier milestone.
 

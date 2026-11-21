@@ -1,6 +1,6 @@
 # Diario de combate
 
-The tactical toolbar contains a collapsed **Diario de combate** panel. It shows
+The tactical toolbar contains a collapsed **Diario de combate** (combat journal) panel during tactical exploration and turn-based combat in the published game. It shows
 up to 80 recent observations, newest first, with their turn numbers. The panel
 remains available during enemy playback, a player interruption, and defeat.
 

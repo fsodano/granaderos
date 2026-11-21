@@ -1,5 +1,8 @@
 # Granaderos campaign
 
+This campaign package README documents the installed `granaderos` campaign in
+`content/campaigns/granaderos`, its authored JSON documents, its served image
+resources in `assets/`, and its custom UI panels.
 This is the only installed campaign. Its manifest selects the historical
 scenario and its JSON files define the world, tactical maps, cast, inventory,
 presentation and local image resources. The build creates the campaign registry

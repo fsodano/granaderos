@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Implemented 12 September 2026. A shot now includes the AP needed to face its selected position. Named targets, ground shots, contextual firearm use, aim limits and autonomous shot selection use the same target-specific calculation. Cursor movement does not turn a soldier or spend AP.
+During turn-based combat (and action-duration checks in tactical exploration), a firearm shot includes the action points needed to turn toward the selected target position and raise the weapon according to the shooter's stance and turn angle (implemented 12 September 2026; parity row [I09](../../verification/ja2-parity-audit.md)). Named targets, ground shots, contextual firearm use, aim limits and autonomous shot selection use the same target-specific calculation. Cursor movement does not turn a soldier or spend AP.
 
 ## Source and period adaptation
 
@@ -32,4 +32,4 @@ The first full-suite run passed 1,305 of 1,306 tests. The fixed-seed opening cam
 
 Live keyboard verification passed in the separate `?qa=1` San Lorenzo skirmish. Dorrego started facing south with 11 AP, two prepared charges and nine reserve cartridges. A westward shot previewed 8 AP (4 to turn and 4 to discharge). A northward reversal previewed 12 AP and was rejected; AP, facing and ammunition remained unchanged. Confirming the westward shot then left 3 AP, west facing, one prepared charge and all nine reserve cartridges. The same-direction follow-up preview dropped to 4 AP. The test did not use the normal campaign save.
 
-The later [opening-control checkpoint](../../verification/opening-control.md) resolves the failing reference playthrough through coordinated legal orders and corrected commander support/search logic. It wins both opening battles with the same seed, resources and turning rules. The original failed checkpoint above is retained as history; general campaign balance remains unproven.
+The later opening-control checkpoint resolves the failing reference playthrough through coordinated legal orders and corrected commander support/search logic. It wins both opening battles with the same seed, resources and turning rules. The original failed checkpoint above is retained as history; general campaign balance remains unproven.

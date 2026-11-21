@@ -1,7 +1,12 @@
-# Granadero motion review
+# Granadero motion review — 2026-10-06
 
-Review date: 2026-10-06. Scope: the standalone preview at localhost:3147.
-Status: **Accepted as the reusable visual reference on 2026-10-06.** The user accepted asset `4921a38b` as sufficient for now and requested the same work on the other characters. Earlier rejected candidates remain below as history. This is approval to reuse the current direction, not a claim of final naturalness.
+This dated review record (2026-10-06) documents the 30-action motion inventory,
+weapon-strike trajectories, and visual review history for the standalone
+Granadero 3D character reference in `tools/playgrounds/granadero-3d` (served at
+`localhost:3147`). All test counts, measurements, and asset hashes are a
+snapshot at the recorded export revisions.
+
+Status: **Accepted as the reusable visual reference on 2026-10-06.** Asset `4921a38b` was accepted as the reference for the other seven character presets. Earlier rejected candidates remain below as history. This is approval to reuse the current direction, not a claim of final naturalness.
 The production character library now transfers the reference to all eight appearances. Its [review inventory](../../../content/assets/source/characters-3d/REVIEW.md) separates the 34 mapped standing clips from the retained production posture/action bank.
 
 ## Current action inventory
@@ -20,11 +25,11 @@ The action selector permits separate inspection or alternating actions. Attacks 
 
 ## Current appearance direction
 
-The user requests a small believable human with the feel of digitized game actors. The figure keeps native adult anatomy and a fixed isometric camera. Material variation, facial planes, fabric folds and seams should survive at game scale. Smooth antialiased rendering is the default; the old pixel filter remains only as a comparison option. This is a 3D character designed toward that visual direction, not digitized photography or a finished sprite atlas.
+The target visual direction is a small believable human with the feel of digitized game actors. The figure keeps native adult anatomy and a fixed isometric camera. Material variation, facial planes, fabric folds and seams should survive at game scale. Smooth antialiased rendering is the default; the old pixel filter remains only as a comparison option. This is a 3D character designed toward that visual direction, not digitized photography or a finished sprite atlas.
 
 ## All-weapon pass — 2026-10-06
 
-The user approved the latest punch and requested the same attention across the other weapon actions. The punch function is preserved. Exported punch samples differ by less than 0.000003 from the approved asset because of floating-point rounding; measured motion is unchanged.
+Following approval of the latest punch, this pass applies the same body drive and weight-transfer attention across the other weapon actions. The punch function is preserved. Exported punch samples differ by less than 0.000003 from the approved asset because of floating-point rounding; measured motion is unchanged.
 
 - Each thrust and blunt strike now has its own preparation, hand path, body lean, forward weight transfer and recovery. The previous common strike profile did not create enough upper-body movement.
 - Horizontal sabre and knife cuts add body compression and forward lean. The accepted descending sabre trajectory is preserved. Gaze remains directed toward the target.
@@ -50,7 +55,7 @@ Measured from the revised weapon clips (metres, rounded):
 
 These measurements establish body contribution and foot support. They do not establish impact force or historical technique. The reviewed appearance has more readable braid, plaque and fringe. A final plume revision removes the periodic rope-like ridges in favour of fine irregular surface detail.
 
-The user subsequently accepted these revised weapon motions and this appearance as the reusable reference. The other presets still require their own fit, export and in-game checks; their different anatomy and clothing do not inherit visual approval automatically.
+These revised weapon motions and this appearance were subsequently accepted as the reusable reference. The other presets still require their own fit, export and in-game checks; their different anatomy and clothing do not inherit visual approval without separate review.
 
 Validation for asset `4921a38b`: 21 tests passed and the standalone build passed. The 116 phase images and generated inventory identify the same asset. Inspected the final appearance, all weapon families, armed carry, the repaired rifle-butt path, and the loaded browser preview. The browser displays the same model ID at the approved 1× speed with the pixel comparison filter off. The production transfer adds three geometry LODs and separate male/female banks. Its validation and review scope are recorded in the production review inventory; the standalone test count above describes the accepted reference export.
 
@@ -89,8 +94,8 @@ Editable source: `authoring/human_motion.py`. Reproducible export: `authoring/bu
 
 ## Open review items
 
-- Overall naturalness still needs user review; previous feedback rejected rigid free hands.
-- One-handed pistol posture remains a provisional art choice. The supplied modern percussion-pistol video shows a two-hand grip, but does not establish period military doctrine.
+- Overall naturalness still needs visual review; earlier review rejected rigid free hands.
+- One-handed pistol posture remains a provisional art choice. A modern percussion-pistol reference video shows a two-hand grip, but does not establish period military doctrine.
 - No reload cycle, locomotion-to-attack step, defense, impact response or paired combat exists in this prototype.
 - The current camera is fixed isometric. Other-view review requires the native scene or an expanded viewer.
 - The reference hat has been simplified for the accepted pixel presentation. It is not a documented reconstruction for a specific campaign year.
@@ -103,7 +108,7 @@ The granadero now staggers hip and chest rotation and pivots the rear foot aroun
 
 ## Visual acceptance criteria
 
-The user supplied a secondary AI description of animation principles. Treat it as a review checklist, not historical or biomechanical evidence:
+Use these animation principles as a review checklist, not historical or biomechanical evidence:
 
 - Support and weight transfer precede hip rotation; chest, shoulder, arm and weapon follow with overlap.
 - Preparation is visible but compact. Knife preparation is smaller than sabre preparation.
@@ -112,7 +117,7 @@ The user supplied a secondary AI description of animation principles. Treat it a
 - Hips, chest, free arm and weapon settle at different times; avoid a whole-body stop on one frame.
 - Do not add large preparatory swings or secondary motion merely to make an action more visible.
 
-Historical checkpoint: this candidate introduced staggered hip/chest timings, bounded continuous trajectories, rear-toe pivot, delayed free-arm response and slower recovery. User approval was pending at this point. The acceptance record at the top supersedes that status; the isometric game view remains the acceptance view. Numerical motion checks are not approval.
+Historical checkpoint: this candidate introduced staggered hip/chest timings, bounded continuous trajectories, rear-toe pivot, delayed free-arm response and slower recovery. Visual approval was pending at this point. The acceptance record at the top supersedes that status; the isometric game view remains the acceptance view. Numerical motion checks are not approval.
 
 At this historical checkpoint, the machine-readable inventory recorded visual approval as pending. The current [motion-inventory.json](motion-inventory.json) records the subsequent reference acceptance, all exported actions and the exact current asset SHA. Refresh it with `node tools/report-motion.mjs` after rebuilding the asset.
 
@@ -120,11 +125,11 @@ Validation at this historical checkpoint: 16 tests passed; standalone build pass
 
 ### Review rejection — 2026-10-06
 
-The user reports the same poor movement after the latest pass. The server and refreshed browser were verified against asset `9807cea17686f7df4738c0295ec938ebe4baf7d7900c3d22a3e452677d981fe3`. There is no evidence that a stale model explains the quality issue. Incremental pose adjustments did not meet the requested standard. Technical test passes do not establish natural movement. The viewer now requests the manifest without cache and loads the model with its SHA in the URL; its status displays the model ID.
+Visual review reported the same poor movement after the latest pass. The server and refreshed browser were verified against asset `9807cea17686f7df4738c0295ec938ebe4baf7d7900c3d22a3e452677d981fe3`. There is no evidence that a stale model explains the quality issue. Incremental pose adjustments did not meet the required standard. Technical test passes do not establish natural movement. The viewer now requests the manifest without cache and loads the model with its SHA in the URL; its status displays the model ID.
 
 ### Candidate after rejection — short advance
 
-A new, unapproved candidate introduces a 14 cm front-foot advance for sabre and 7.5 cm for knife. The foot lifts before planting, remains planted through the strike, and lifts again on recovery. The root shifts forward and the hand trajectory follows that shift. The rear toe supports the movement. These are authored distances, not historical measurements. Front and side camera buttons now permit additional visual checks. The prior rejection remains part of the history; this candidate is not approved by the user.
+A new, unapproved candidate introduces a 14 cm front-foot advance for sabre and 7.5 cm for knife. The foot lifts before planting, remains planted through the strike, and lifts again on recovery. The root shifts forward and the hand trajectory follows that shift. The rear toe supports the movement. These are authored distances, not historical measurements. Front and side camera buttons now permit additional visual checks. The prior rejection remains part of the history; this candidate is not approved.
 
 ### Approved playback pace — 2026-10-06
 
@@ -132,25 +137,25 @@ The former 1.25× is the new displayed 1×. Exported times stay unchanged; playb
 
 ### Free-arm revision — lower and backward swing
 
-User feedback: the left hand remained at nearly the same height. The candidate now starts with a lower, relaxed free hand and moves the whole arm backward and downward through the cut. Targets follow the moving shoulder. The elbow is closer to the torso, the wrist follows the forearm, and the fingers remain softly curled. The knife uses a smaller swing. A sampled height-range check detects a return to the fixed-height behavior. This is a new candidate, not user-approved movement quality.
+Review finding: the left hand remained at nearly the same height. The candidate now starts with a lower, relaxed free hand and moves the whole arm backward and downward through the cut. Targets follow the moving shoulder. The elbow is closer to the torso, the wrist follows the forearm, and the fingers remain softly curled. The knife uses a smaller swing. A sampled height-range check detects a return to the fixed-height behavior. This is a new candidate, not approved movement quality.
 
 ### Sideways cut and locomotion review — 2026-10-06
 
-The user accepted the downward sabre cut and the direction of the free-arm change. Preserve that cut. The backhand now uses a chest-height sweep, with blade yaw and edge orientation following the sideways arc. This revised backhand is pending visual approval.
+The downward sabre cut and the direction of the free-arm change were accepted. Preserve that cut. The backhand now uses a chest-height sweep, with blade yaw and edge orientation following the sideways arc. This revised backhand is pending visual approval.
 
-The user supplied two running poses and reported claw-like walking hands and careless running. Walking finger curl is reduced from .73 to .28 radians at the shared curl control. Running curl is reduced from 1.03 to .55. Running keeps the recorded opposing arm timing and leg motion; new arm targets contain the elbows beside the ribs, with bent elbows and a smaller forward/backward hand path. These clips remain unarmed; the reference does not establish an armed running grip. Review the result at the approved 1× pace in the isometric view.
+Two running reference poses were inspected after review reported claw-like walking hands and careless running. Walking finger curl is reduced from .73 to .28 radians at the shared curl control. Running curl is reduced from 1.03 to .55. Running keeps the recorded opposing arm timing and leg motion; new arm targets contain the elbows beside the ribs, with bent elbows and a smaller forward/backward hand path. These clips remain unarmed; the reference does not establish an armed running grip. Review the result at the approved 1× pace in the isometric view.
 
 ### Follow-up — stronger backhand and level gaze
 
-User feedback: the sideways cut lacks power; locomotion remains odd and the running head tilts too far backward. The new backhand increases hip/chest rotation and compresses the acceleration phase before contact, with a longer recovery. The downward cut is preserved. Walking now uses a narrower arm path with reduced swing. Walking and running neck/head orientations retain 20% of source rotation around a forward-facing pose to reduce the retargeted upward gaze. These are candidates pending visual review, not accepted final motions.
+Review finding: the sideways cut lacks power; locomotion remains odd and the running head tilts too far backward. The new backhand increases hip/chest rotation and compresses the acceleration phase before contact, with a longer recovery. The downward cut is preserved. Walking now uses a narrower arm path with reduced swing. Walking and running neck/head orientations retain 20% of source rotation around a forward-facing pose to reduce the retargeted upward gaze. These are candidates pending visual review, not accepted final motions.
 
 ### Combat locomotion
 
-Added eight carry clips: walk and run with rifle, pistol, sabre and knife. Weapon selection and locomotion now remain independent. Rifle carry uses both hands; other weapons retain the free-arm running movement. Carry targets follow the chest rise/fall. The corrected forward gaze remains in all carry clips. Attack stops locomotion and transitions to the existing attack. Dedicated braking steps, weapon-specific leg timing and moving attacks remain unfinished. New carries require user visual review before reuse.
+Added eight carry clips: walk and run with rifle, pistol, sabre and knife. Weapon selection and locomotion now remain independent. Rifle carry uses both hands; other weapons retain the free-arm running movement. Carry targets follow the chest rise/fall. The corrected forward gaze remains in all carry clips. Attack stops locomotion and transitions to the existing attack. Dedicated braking steps, weapon-specific leg timing and moving attacks remain unfinished. New carries require visual review before reuse.
 
 ### Weapon arm during locomotion
 
-The user rejected the rigid sword arm. Its fixed chest-relative grip erased the gait swing. Sabre and knife carry now use the opposing right-leg phase to move the grip forward/backward and up/down, with a smaller blade rotation. Walking uses 75% of running amplitude; knife uses a further 80%. Combat attacks and firearm carries are unchanged. Visual acceptance is pending.
+Visual review rejected the rigid sword arm. Its fixed chest-relative grip erased the gait swing. Sabre and knife carry now use the opposing right-leg phase to move the grip forward/backward and up/down, with a smaller blade rotation. Walking uses 75% of running amplitude; knife uses a further 80%. Combat attacks and firearm carries are unchanged. Visual acceptance is pending.
 
 The sideways-cut follow-up increases torso rotation further and takes the left hand behind the hip through contact and follow-through. It does not place the hand against the back. The descending cut remains unchanged.
 
@@ -158,18 +163,18 @@ The sideways-cut follow-up increases torso rotation further and takes the left h
 
 Added a directly selectable horizontal forehand, sword and knife thrusts, bayonet thrust, sword-hilt strike, pistol strike, rifle-butt strike and punch. A fixed socket bayonet is now modeled on the rifle. These authored candidates use preparation, a short advance, extension and recovery; paired contact, damage and opponent reactions are not implemented. The viewer exposes each action separately and can alternate them. Blunt strikes and thrusts do not emit firearm effects.
 
-User identified an inverted horizontal sword grip. Local blade roll is reversed so the palm faces down and knuckles face up through both sideways cuts. Free walking/running hands now use a closed finger curl instead of a partially open claw shape. Weapon grips are preserved. All new motions remain subject to user review.
+Visual review identified an inverted horizontal sword grip. Local blade roll is reversed so the palm faces down and knuckles face up through both sideways cuts. Free walking/running hands now use a closed finger curl instead of a partially open claw shape. Weapon grips are preserved. All new motions remain subject to visual review.
 
-### User correction: horizontal grip sequence
+### Horizontal grip sequence correction
 
-The final requested sequence supersedes the earlier instruction to keep knuckles up in both cuts: right-to-left forehand has knuckles down; left-to-right backhand has knuckles up and the stronger torso turn. Forehand rotation uses 75% of the backhand amplitude. SabreCombination links the forehand follow-through to backhand preparation with a short wrist-turn transition, then returns to guard. Separate cuts remain selectable.
+The final grip sequence supersedes the earlier knuckles-up-in-both-cuts pass: right-to-left forehand has knuckles down; left-to-right backhand has knuckles up and the stronger torso turn. Forehand rotation uses 75% of the backhand amplitude. SabreCombination links the forehand follow-through to backhand preparation with a short wrist-turn transition, then returns to guard. Separate cuts remain selectable.
 
 ### Force and punch revision
 
-User rejected the weak punch and robotic pistol/knife running. Punch now separates hip, chest and fist timing; adds a 16 cm advance, 12 cm forward root drive and rear-foot pivot; keeps the left fist near the face; and retracts the punching hand promptly. Close-range thrusts and blunt strikes have sharper drive and more body rotation. Pistol and knife carry targets now inherit recorded shoulder-relative arm travel rather than fixed chest offsets, with changing wrist angles. Measurements check body travel and fist acceleration, but do not establish visual acceptance.
+Visual review rejected the weak punch and robotic pistol/knife running. Punch now separates hip, chest and fist timing; adds a 16 cm advance, 12 cm forward root drive and rear-foot pivot; keeps the left fist near the face; and retracts the punching hand promptly. Close-range thrusts and blunt strikes have sharper drive and more body rotation. Pistol and knife carry targets now inherit recorded shoulder-relative arm travel rather than fixed chest offsets, with changing wrist angles. Measurements check body travel and fist acceleration, but do not establish visual acceptance.
 
 ### JA2 still-frame revision — 2026-10-06
 
-Five supplied reference frames make the earlier limitation clear: the game punch leans the chest over the front leg and lifts the rear foot, then returns to guard. Prior punch had only about 8° total spine pitch and no rear-foot lift. Replaced it with a dedicated punch pose: left lead foot plants, right foot pushes then lifts; pelvis leads the torso turn; the fist remains back during loading before extension; chest leans forward and head stays directed at the target. Maximum authored lean is approximately 48° and rear ankle lift 14 cm. These are animation settings chosen for the visible pose, not measurements of the reference. Other actions remain unchanged. Added sampled checks for forward body travel, chest lean, support-foot stability and rear-foot lift. Visual review remains pending.
+Five reference frames make the earlier limitation clear: the game punch leans the chest over the front leg and lifts the rear foot, then returns to guard. Prior punch had only about 8° total spine pitch and no rear-foot lift. Replaced it with a dedicated punch pose: left lead foot plants, right foot pushes then lifts; pelvis leads the torso turn; the fist remains back during loading before extension; chest leans forward and head stays directed at the target. Maximum authored lean is approximately 48° and rear ankle lift 14 cm. These are animation settings chosen for the visible pose, not measurements of the reference. Other actions remain unchanged. Added sampled checks for forward body travel, chest lean, support-foot stability and rear-foot lift. Visual review remains pending.
 
-Verified export `be98c572`: 18 tests and standalone build pass. Sampled forward root travel 22 cm; upper-chest forward offset relative to pelvis increases 32.3 cm; lead-foot drift through contact 0.5 mm; rear ankle lift 14 cm. Chest uses the neck base as the upper-thorax landmark; `spine_03` starts lower in this rig. Inspected the loaded, extended and recovery poses and the live isometric preview. These checks confirm the intended pose changes, not user approval.
+Verified export `be98c572`: 18 tests and standalone build pass. Sampled forward root travel 22 cm; upper-chest forward offset relative to pelvis increases 32.3 cm; lead-foot drift through contact 0.5 mm; rear ankle lift 14 cm. Chest uses the neck base as the upper-thorax landmark; `spine_03` starts lower in this rig. Inspected the loaded, extended and recovery poses and the live isometric preview. These checks confirm the intended pose changes, not visual approval.

@@ -1,9 +1,9 @@
-# Revised new-start completion audit
+# Revised new-start completion audit (archived 2026-09-05)
 
-> **Archived snapshot.** This record describes an earlier project state. Read
-> [published progress](../verification/published-progress.md) for current scope.
+> **Archived historical audit.** This superseded record preserves the 2026-09-05 completion audit for the `0.2.0-dev.1` personal campaign-start milestone on branch `feat/0.2.0-personal-campaign-start`. Read
+> published progress for current scope.
 
-Audit scope: the seven numbered requirements in REVISED-CAMPAIGN-DESIGN.md.
+Audit scope: the seven numbered requirements in [REVISED-CAMPAIGN-DESIGN.md](REVISED-CAMPAIGN-DESIGN.md).
 Source, backend and desktop browser acceptance completed on 2026-09-05.
 This covers the revised campaign-start milestone, not complete-game QA or public deployment.
 
@@ -60,7 +60,7 @@ This covers the revised campaign-start milestone, not complete-game QA or public
    travel/tactical entry and contextual militia orders. Production, diplomacy
    and journal remain in CampaignOffice through desk folders. No claim is made
    that all 256 grid cells are playable. Current city boundaries are gameplay
-   operational groupings documented in CITIES_AND_MILITIA.md; the Buenos Aires
+   operational groupings documented in [`docs/gameplay/campaign/CITIES_AND_MILITIA.md`](../gameplay/campaign/CITIES_AND_MILITIA.md); the Buenos Aires
    region includes Retiro and the separate Ensenada port, not a historical
    municipal boundary. The desktop map layout was inspected in the browser; mobile acceptance remains outside this milestone.
 
@@ -76,8 +76,8 @@ This covers the revised campaign-start milestone, not complete-game QA or public
    then instructor, price and duration. Paused courses also display the eligibility or supply reason.
 
 7. **Persistent decisions and evidence — implemented.** Revised design,
-   CITIES_AND_MILITIA.md, PROGRESS.md, CHANGELOG.md, original-avatar
-   documentation in assets/CUSTOM_AVATARS.md and this audit retain decisions and checks.
+   [`docs/gameplay/campaign/CITIES_AND_MILITIA.md`](../gameplay/campaign/CITIES_AND_MILITIA.md), [PROGRESS.md](PROGRESS.md), `CHANGELOG.md`, original-avatar
+   documentation in [`content/assets/CUSTOM_AVATARS.md`](../../content/assets/CUSTOM_AVATARS.md) and this audit retain decisions and checks.
    Full browser acceptance and final milestone status remain the root task's
    responsibility; these documents do not replace that verification.
 
@@ -128,7 +128,7 @@ actual empty initialization.
 2. Personal character: allocation, classes, questionnaire effects and once-only
    creation covered by backend tests and browser creation/save/resume.
 3. Patusco reference: inspected the accessible guide; adapted creation, training,
-   loyalty and contracts. Sources and departures are in REVISED-CAMPAIGN-DESIGN.md.
+   loyalty and contracts. Sources and departures are in [REVISED-CAMPAIGN-DESIGN.md](REVISED-CAMPAIGN-DESIGN.md).
 4. Simpler map, initial desk, paid complete characters and term/pay rules: tested
    as above, with backend XP price and elite renewal enforcement tests.
 5. City-wide control/loyalty eligibility, NPC quests and victory rewards: city,
@@ -136,4 +136,4 @@ actual empty initialization.
 6. JA2-inspired mechanics with era classes: implemented adaptations, not a claim
    of complete engine parity. Only 13 authored sectors are playable.
 7. Persistent decisions and evidence: this audit, revised design, city rules,
-   WEB-SYSTEMS.md, CHANGELOG.md and PROGRESS.md preserve implementation state.
+   [`docs/development/WEB-SYSTEMS.md`](../development/WEB-SYSTEMS.md), `CHANGELOG.md` and [PROGRESS.md](PROGRESS.md) preserve implementation state.

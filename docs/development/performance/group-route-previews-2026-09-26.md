@@ -2,7 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
+
+This dated performance and verification record (26 September 2026) documents offloading squad formation route previews to a background worker and records a snapshot of 38 focused tests and a browser check on a Retiro sector visit.
 
 The main battlefield no longer calculates formation previews during React
 rendering. Opening **Ruta del grupo** enables a separate preview worker. Closing

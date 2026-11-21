@@ -1,6 +1,10 @@
 # 10 — Save / Load & Persistence
 
-**Scope:** How the JA2 v1.13 engine persists a campaign (saved-game file, per-sector temp files, INI settings) and how the web port (`game/save.js`, `web/app/page.tsx`) maps that model to `localStorage` + a portable JSON export ("Guardar"). Ends with a proposed versioned web JSON save schema, migration strategy, parity tests, and a reproduction checklist.
+[Series index](README.md) · Previous: [09 — Dialogue, Quests & NPCs](09-dialogue-quests.md) · Next: [11 — Data Formats & Asset Pipeline](11-data-assets.md)
+
+> **Reference notice:** This document is a source and design analysis of the original Jagged Alliance 2 v1.13 (`1dot13/source`) save/load and persistence architecture (`Ja2/SaveLoadGame.*`, `Tactical/Tactical Save.h`, `TileEngine/SaveLoadMap.h`, and `i18n/language.cpp`) kept as reference material for Granaderos' browser adaptation. It is **not** a description of Granaderos' current browser implementation. See the [series index](README.md) for the full reference set. In the current repository layout, the C++ engine submodule lives at `reference/native/engine/` (referred to below as `engine/`), and the browser modules live under `packages/game/` and `apps/web/` (referred to below by their earlier paths `game/` and `web/`).
+
+**Scope:** How the JA2 v1.13 engine persists a campaign (saved-game file, per-sector temp files, INI settings) and how the earlier browser implementation (`game/save.js`, `web/app/page.tsx`) mapped that model to `localStorage` + a portable JSON export ("Guardar"). Ends with a proposed versioned web JSON save schema, migration strategy, parity tests, and a reproduction checklist.
 
 **Companion docs:** [00-overview](00-overview.md), [02-tile-engine](02-tile-engine.md), [04-soldiers-stats](04-soldiers-stats.md), [05-weapons-items](05-weapons-items.md).
 

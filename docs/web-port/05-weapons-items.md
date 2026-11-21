@@ -1,23 +1,24 @@
 # 05 — Weapons, Items, Attachments, Ammo, and Economy
 
+[Series index](README.md) · Previous: [04 — Soldiers, Mercs & Stats](04-soldiers-stats.md) · Next: [06 — Tactical AI](06-tactical-ai.md)
+
+> **Reference notice:** This document is a source and design analysis of the original Jagged Alliance 2 v1.13 (`1dot13/source`) item, weapon, attachment, ammunition, and arms-dealer systems (`Tactical/`, `Laptop/`, `Strategic/`, and `TableData/Items/*.xml`) kept as reference material for Granaderos' browser adaptation. It is **not** a description of Granaderos' current browser implementation. See the [series index](README.md) for the full reference set. In the current repository layout, the C++ engine submodule lives at `reference/native/engine/` (referred to below as `engine/`), and the browser modules live under `packages/game/` and `apps/web/` (referred to below by their earlier paths `game/` and `web/`).
+
 > Economy update: the browser game now uses pesos only. The material, convoy, and horse-management mappings below describe the earlier implementation. See [the current economy rules](../gameplay/campaign/INDUSTRY-AND-IMPORTS.md).
 
-**Audience:** an agent with zero prior JA2 knowledge who must port the engine's item/weapon
-systems into the browser clone (`game/` + `web/`). This document is the translation guide from
+**Purpose:** Translation guide from
 the C++ engine (`engine/Tactical/`, `engine/Laptop/`, `engine/Strategic/`) and the JA2 v1.13
-TableData XML to the web modules `game/equipment.js`, `game/ammunition.js`, `game/industry.js`,
+TableData XML to the earlier browser modules `game/equipment.js`, `game/ammunition.js`, `game/industry.js`,
 and `game/logistics.js`, plus the shop/inventory UI in `web/app/Armory.tsx` and
 `web/app/Logistics.tsx`.
 
 **Source of truth:** the engine headers declare the data structures and constants; the `.cpp`
 files implement them; the `gamedir/Data-1.13/TableData/Items/*.xml` files are the authored data
-schema. The web game already has a working armory/equipment surface; this document maps the
-engine onto that existing surface so the web clone can be pushed toward fidelity.
+schema. This document maps the C++ engine structures onto the browser surface as reference material.
 
 **Scope:** items, weapons, attachments, ammunition, explosives/heavy weapons, armour/LBE,
 food/medical, arms-dealer inventory/pricing/repairs, and strategic supply/production hooks.
-**Out of scope:** soldier statistics (owned by `04-tactical-core.md`), rendering, and any code
-edits — this is read-only analysis with `file:line` citations.
+**Out of scope:** soldier statistics ([04 — Soldiers, Mercs & Stats](04-soldiers-stats.md)), tactical rendering ([02 — Tile Engine](02-tile-engine.md)), and combat action resolution ([03 — Tactical Combat Core](03-tactical-combat.md)) — this is read-only analysis with `file:line` citations.
 
 ---
 

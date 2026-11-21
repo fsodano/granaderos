@@ -1,8 +1,8 @@
 # Atención médica en campaña
 
-[Personajes](README.md) · [Verificación](../../verification/strategic-medical-care.md)
+[Personajes](README.md) · Verificación
 
-Los [primeros auxilios en el campo](field-first-aid.md) detienen la hemorragia y
+Esta guía describe el comportamiento publicado en el mapa estratégico de campaña. Los [primeros auxilios en el campo](field-first-aid.md) detienen la hemorragia y
 estabilizan. La atención en campaña recupera la salud restante.
 
 En el mapa, abrí **Organizar escuadras** y buscá **Atención médica y descanso**.
@@ -46,7 +46,7 @@ salud por hora. El médico trabaja antes de aplicar esa pérdida. Descansar no
 detiene la hemorragia, y la recuperación diaria no cura heridas abiertas ni
 estados críticos. La campaña conserva las bajas; una escuadra sin sobrevivientes
 no alcanza el destino. El editor permite cambiar este porcentaje.
-[Verificación y límites](../../verification/strategic-military-wounds.md).
+Verificación y límites.
 
 Para atender a una guarnición, elegí **Médico de milicias**. No hace falta
 asignar cada miliciano: se atiende primero la hemorragia y luego a los más
@@ -58,4 +58,4 @@ La pantalla muestra la salud de los milicianos de tu ubicación actual. Sus
 heridas tratadas y sus cantidades de equipo se conservan al volver al sector.
 Las bajas siguen siendo bajas. Volvé a poner al médico **En servicio** antes de
 marchar, entrar al campo o asignarlo como instructor.
-[Verificación y límites de la atención a milicias](../../verification/strategic-militia-care.md).
+Verificación y límites de la atención a milicias.

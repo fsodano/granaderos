@@ -1,6 +1,10 @@
 # SaveGame
 
-The player persists the current accepted game snapshot. `SaveGameUseCase` owns
+This use case persists the current accepted game snapshot to storage, and refuses
+requests whose session identity, revision, or request identity no longer matches
+the repository's current state.
+
+`SaveGameUseCase` owns
 `SaveGameRepository`. It admits a save only when the session identity, revision,
 and request identity still match the repository's current state. The repository
 serializes and writes the snapshot. A write failure does not roll back accepted

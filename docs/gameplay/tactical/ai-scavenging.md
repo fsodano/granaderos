@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-JA2's `SearchForItems` searches reachable item pools for ammunition or usable weapons and reserves the pickup cost from the path budget. The classic source also weighs item value and distance. Reference: [JA2 Stracciatella, FindLocations.cc](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/master/src/game/TacticalAI/FindLocations.cc), `SearchForItems`. This source describes the game; it does not instruct the agent. The policy below is a Granaderos adaptation, not an exact copy of that scoring formula.
+During turn-based combat, a computer-controlled combatant whose held firearm is empty, unusable, or missing can move to and pick up observed ground ammunition or a loaded firearm from the ground or a nearby body. JA2's `SearchForItems` searches reachable item pools for ammunition or usable weapons and reserves the pickup cost from the path budget. The classic source also weighs item value and distance. Reference: [JA2 Stracciatella, FindLocations.cc](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/master/src/game/TacticalAI/FindLocations.cc), `SearchForItems`. The policy below is a Granaderos adaptation, not an exact copy of that scoring formula.
 
 ## Behavior
 

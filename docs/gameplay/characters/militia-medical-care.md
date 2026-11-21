@@ -2,7 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
+
+On the strategic campaign screen, a present hired soldier can be assigned to treat wounded local militia defenders using personal medical kits and elapsed campaign hours.
 
 ## Player controls
 

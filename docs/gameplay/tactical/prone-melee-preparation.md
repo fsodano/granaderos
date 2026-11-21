@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-A conscious fighter who is prone now stands before using a sabre, loose blade, fists, a fitted bayonet or a gun stock. Crouched and mounted melee keep their established posture. Prone firearm shooting does not change.
+During tactical exploration and turn-based combat, a conscious fighter who is prone stands up as a paid preparation step before delivering a melee attack with a sabre, loose blade, fists, fitted bayonet, or gun stock. Crouched and mounted melee keep their established posture. Prone firearm shooting does not change.
 
 The target preview includes the complete cost before confirmation: crawl approach, 6 AP to stand and the actual weapon's strike cost. For example, a Sable Corvo attack beside its target costs 18 AP (6 + 12), while a bayonet thrust or gun strike costs 22 AP (6 + 16). An unaffordable order preserves position, stance, AP, items, time and random state.
 

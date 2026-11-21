@@ -1,8 +1,8 @@
 # Tactical graphics references
 
-[Implementation plan](../../plans/tactical-reference-graphics.md)
-
-User-provided screenshots from 8 October 2026:
+Dated reference archive for the [tactical reference graphics](../../plans/tactical-reference-graphics.md)
+improvement plan: screenshots supplied on 8 October 2026 as visual references
+for that plan's characters, terrain and furniture work.
 
 - [House and interior](house-interior.jpg): room composition, household objects,
   worn surfaces, fine vegetation and the compact tactical interface.

@@ -1,5 +1,8 @@
 # Authored mission interface
 
+This guide describes published mission-entry and mission-HUD behavior across the
+strategic campaign screen and the tactical battlefield; see
+[version 0.1](../../verification/version-0.1.md) for current published scope.
 The desk overview and Tucumán strategic orders show the Yatasto briefing after
 phase two begins. Entry requires the active squad at patriotic Tucumán and no
 pending tactical scene. The entry dispatch is `visitMission` with mission

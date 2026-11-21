@@ -1,7 +1,12 @@
 # Character library review — 2026-10-07
 
-The user accepted Granadero preview `4921a38b` as a sufficient reference for
-reuse and requested the other characters plus a merge to main. This accepts
+This dated review record (2026-10-07, with a 2026-10-08 clothing repair section)
+documents the appearance coverage, movement banks, and validation results for the
+production 3D character library in `content/assets/source/characters-3d`. Results
+are a snapshot at the recorded source revisions and assets.
+
+Granadero preview `4921a38b` was accepted as the reusable reference for the
+other seven character presets. This accepts
 the current direction; it does not establish final animation quality or
 historical reconstruction accuracy.
 
@@ -72,7 +77,7 @@ Published contact checks cover all three pistols, four postures and the second
 offset is 1.13 mm. Actual face and neck triangles clear a conservative 15 mm
 barrel capsule in 45 native poses per hand, posture and charge: minimum surface
 gaps are 34.50 mm male and 43.76 mm female. Source tool closeups and live four-bore
-orders were inspected. The [pistol review](../../../../docs/art/pistol-loading-3d-review-2026-10-07.md)
+orders were inspected. The pistol review
 records the finite ammunition and input checks separately from these contacts.
 
 Mounted boots now follow the actual moving stirrup irons. Checked sole contact
@@ -117,17 +122,17 @@ across the full posture bank, paired opponent contact, and broader individual
 face/age/body variation. The isometric game view is the acceptance view.
 
 The October 7 full-boot correction accepts the twelve native crouched idle/walk
-clips in each anatomy within the [crouched support review](../../../../docs/art/crouched-boot-support-3d-review-2026-10-07.md).
+clips in each anatomy within the crouched support review.
 Worst stored penetration is below 0.3 mm; idle rests at 2 mm, and swinging feet
 keep their recorded lift. All other clips and all upper/Root tracks remain exact.
 Standing walking keeps the measured lower sole at 2 mm. Running has an 8–9 cm
 flight phase. The twelve prone idle/crawl clips now keep the complete boot
 between 1 and 3 mm above the floor; all other clips and body/arm/Root tracks
-remain exact. The [prone support review](../../../../docs/art/prone-boot-support-3d-review-2026-10-07.md)
+remain exact. The prone support review
 records the retained weapon hold and measured surfaces. Exposed unarmed palms
 and cuffs, sideways and lance support remain under review. These
 published LOD0 surface measurements do not accept the remaining posture bank.
-The complete native climb and roof-edge transfer are accepted within the [measured climbing review](../../../../docs/art/native-climbing-3d-review-2026-10-07.md), including four clean playable same-cell hatch routes. The documented low-ceiling/headwear limit remains under review.
+The complete native climb and roof-edge transfer are accepted within the measured climbing review, including four clean playable same-cell hatch routes. The documented low-ceiling/headwear limit remains under review.
 
 ### Unarmed prone arm support increment
 
@@ -135,13 +140,13 @@ Only the six arm/wrist rotation channels in unarmed prone idle and crawl change
 per anatomy. Complete published palms, fingers and sleeves now clear the floor
 and alternate planted pulls. Native durations, dimensions, Root, torso, legs,
 fingers, all 332 other clips and every equipped pace remain exact. The
-[prone arm review](../../../../docs/art/prone-arm-support-3d-review-2026-10-07.md)
+prone arm review
 records the clean 63-check/native/profile/build gate, 28 normal browser captures,
 saved endpoints, source-sprite comparison and remaining contact roll.
 
 ### Standing unarmed sideways support increment
 
-Only the eight leg rotation channels in each standing unarmed sideways clip change per anatomy. Complete published boots clear the floor and retain a supporting contact through 241 sampled phases. The native rig, all 332 other clips, 302 non-leg selected channels, stored and nominal periods and pace profile remain exact. The [sideways support review](../../../../docs/art/standing-unarmed-sideways-support-3d-review-2026-10-07.md) records the clean 97-check/native/profile/build gate, 68 ordinary browser captures, saved destinations, sprite comparison and measured contact residuals. Equipped and crouched sideways variants remain separate work.
+Only the eight leg rotation channels in each standing unarmed sideways clip change per anatomy. Complete published boots clear the floor and retain a supporting contact through 241 sampled phases. The native rig, all 332 other clips, 302 non-leg selected channels, stored and nominal periods and pace profile remain exact. The sideways support review records the clean 97-check/native/profile/build gate, 68 ordinary browser captures, saved destinations, sprite comparison and measured contact residuals. Equipped and crouched sideways variants remain separate work.
 
 ### Accepted faces and hair, isolated from clothing and motion
 
@@ -174,7 +179,7 @@ neck/collar opening also occurs on unchanged main; this face extraction does
 not repair clothing.
 
 The four coarse friar/shawl bodies update their cloth donor hash to the new
-LOD0 file identity. This changes provenance metadata only; the cloth binary
+LOD0 file identity. This changes source-tracking metadata only; the cloth binary
 payloads and completed hem records remain exact. The existing palette pass
 remains byte-idempotent after the update.
 
@@ -190,8 +195,8 @@ The accepted detail costs more geometry and separate materials. Granadero
 LOD0/1/2 contain 73,670 / 46,650 / 16,995 triangles and 8 / 8 / 7 draw calls.
 The source package contains about 40.94 MB of head GLBs and 45.32 MB of exact
 texture content. No crowd-performance claim is made. Facial identities still
-share base shapes and, for Granadero/Worker, broad brows and stubble. The user
-accepted the faces for now; further clothing work remains separate.
+share base shapes and, for Granadero/Worker, broad brows and stubble. The faces
+are accepted for now; further clothing work remains separate.
 
 ## Separate military clothing repair — 2026-10-08
 
@@ -202,7 +207,7 @@ other body parts and the separately merged sabre-thrust banks. A 30 Hz gate
 finds no collar/neck edge crossings in 3,084 samples across ten native clips
 plus rest. This is a sampled crossing check, not full cloth acceptance.
 
-The [clothing review](../../../../docs/art/character-clothing-review-2026-10-08.md)
+The clothing review
 contains actual before/after images, preservation receipts, geometry costs,
 and open issues C1–C8. The Worker vest, long garments, coat tails and remaining
 shoulder-pad fit continue separately.

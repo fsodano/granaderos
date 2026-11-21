@@ -1,10 +1,11 @@
 # Campaign folders and shared engine
 
-Implemented on `feature/campaigns` and published in `main` through
+Date: 11 October 2026.
+
+This plan defines the boundary between the shared game engine and installed campaign folders. Status: implemented on `feature/campaigns` and published in `main` through
 [PR #334](https://github.com/fsodano/granaderos/pull/334). The engine/package boundary is
 implemented with the scope recorded below. Full campaign acceptance remains
-separate work; the final broad run and browser refresh were stopped at the
-user's instruction.
+separate work; the final broad run and browser refresh were stopped before completion.
 
 The engine owns mechanics, UI, strategy, tactical simulation, rendering and
 reusable dialogue, encounter, hiring and quest execution. Campaigns own their
@@ -33,10 +34,10 @@ references. The first version installs only the existing Granaderos campaign.
   Keep the second campaign as a fixture; ship only Granaderos.
 - [x] Complete authoring documentation and record existing affected checks,
   types, production export and bounded browser evidence. Record the incomplete
-  final checks and run no further campaign checks, as instructed by the user.
+  final checks and run no further campaign checks in this pass.
 - [x] Commit progress, merge work PRs into `feature/campaigns`, and open a draft
   PR to `main` with exact evidence and remaining limits. PR #334 was later
-  merged into `main` at the user's instruction.
+  merged into `main` on 11 October 2026.
 
 ## Current integration
 

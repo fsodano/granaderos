@@ -2,7 +2,7 @@
 
 Updated: 11 October 2026.
 
-Status: the bounded editor UX/DX implementation is delivered on
+This plan defines the author workflow and developer extension contracts for the web campaign editors. Status: the bounded editor UX/DX implementation is delivered on
 `codex/editor-experience`. The
 [11 October evidence record](../evidence/editor-experience-2026-10-11/README.md)
 records completed affected checks, final focused follow-ups and production

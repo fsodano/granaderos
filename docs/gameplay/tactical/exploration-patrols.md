@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Local militia now scout during exploration. Previously they only acted during the allied combat phase. If both sides lost contact, militia could stand still while hostile guards remained close to their own posts.
+During real-time tactical exploration, local militia patrol along map search waypoints at one step per six-second ambient tick, and when a tactical battle opens with immediate enemy sight, the campaign and tactical clocks synchronize before the initial state is published. Previously militia only acted during the allied turn-based combat phase. If both sides lost contact, militia could stand still while hostile guards remained close to their own posts.
 
 The existing map search waypoints now serve both combat autonomy and exploration. Each six-second ambient tick permits one legal movement step. Planning uses a bounded movement budget; the actual step spends energy and time, without spending AP. Movement lowers a prepared firearm. It does not reload, repair, change ammunition or give manual control of militia to the player. Hidden enemy coordinates do not select the waypoint. Incapacitated and bound militia cannot scout.
 

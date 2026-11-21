@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-A squad moving north from Tucumán to Salta can now intercept a real enemy column moving south from Salta to Tucumán. The two forces do not pass through each other. The enemy arrival is delayed, and contact occurs in Salta when the player enters it. The battle uses that column's existing soldiers, wounds, weapons and ammunition.
+On the strategic campaign map, a squad moving north from Tucumán to Salta can now intercept a real enemy column moving south from Salta to Tucumán. The two forces do not pass through each other. The enemy arrival is delayed, and contact occurs in Salta when the player enters it on the tactical battlefield. The battle uses that column's existing soldiers, wounds, weapons and ammunition.
 
 ## Classic behavior and adaptation
 

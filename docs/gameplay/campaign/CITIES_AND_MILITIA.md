@@ -1,12 +1,15 @@
 # Operational areas and militia eligibility
 
-`game/cities.js` is the shared source for strategic boundaries, loyalty and
-militia control checks. These are deliberately schematic operational areas,
-not surveyed historical municipal boundaries. Buenos Aires groups Plaza Mayor,
-Retiro and the Ensenada supply port. Ensenada is not represented as an actual
-neighborhood of the historical city. The campaign's other populated centers
-are separate one-sector areas. Uspallata, Los Patos and Humahuaca represent rural
-passes/posts in this map and do not host militia training.
+On the strategic campaign layer, `game/cities.js` is the shared source for
+strategic boundaries, loyalty, and militia control checks. This guide describes
+published campaign-area and loyalty helper rules; see
+[version 0.1](../../verification/version-0.1.md) for current published scope.
+These are deliberately schematic operational areas, not surveyed historical
+municipal boundaries. Buenos Aires groups Plaza Mayor, Retiro and the Ensenada
+supply port. Ensenada is not represented as an actual neighborhood of the
+historical city. The campaign's other populated centers are separate one-sector
+areas. Uspallata, Los Patos and Humahuaca represent rural passes/posts in this
+map and do not host militia training.
 
 `militiaEligibility(state, sectorId)` requires every sector in the selected
 area to belong to the patriots, plus area loyalty of at least 50. Area loyalty

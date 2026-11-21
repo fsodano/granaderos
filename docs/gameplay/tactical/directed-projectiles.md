@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-A single-bullet firearm shot at an observed enemy now follows a physical path on both a successful aiming roll and a miss. This extends parity row C04 and uses the same terrain and body traversal as location fire. It preserves ordinary equipped-gun targeting; no new command or action button is added.
+During tactical exploration and turn-based combat, a single-bullet firearm shot at an observed enemy follows a physical 3D trajectory on both a successful aiming roll and a miss, allowing intervening cover or bodies to intercept the ball and missed or penetrating shots to continue downrange. This extends parity row [C04](../../verification/ja2-parity-audit.md) (cover stops projectiles while concealment affects detection) and uses the same terrain and body traversal as location fire. It preserves ordinary equipped-gun targeting; no new command or action button is added.
 
 A successful aiming roll retains the selected target's head, torso or leg height. A failed roll offsets the destination cell using the existing seeded scatter rule and retains the original aiming height. The path can strike another living soldier, including an ally, surrendered soldier or unconscious casualty. A body can stop the ball or let it continue with less force. A failed accuracy roll excludes only the selected person's typed identity from incidental collision checks, preserving the existing miss result even if the coarse offset path crosses its cell. Other bodies and cover still apply. Dead and departed actors do not intercept it. Fallen and unconscious actors use prone height even when an older record still says standing.
 

@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Issued cannons now leave available depot stock once. Each piece remains in its destination sector with the same identity, model, position, loaded shot, reserve ammunition and unfinished loading. Returning or revisiting cannot create a fresh cannon or refill it. Deployment reports reject missing, duplicated, changed or refilled pieces. Saved pending deployments validate their issue registry.
+Across the strategic campaign armory and tactical battlefield deployments, issued cannons now leave available depot stock once. Each piece remains in its destination sector with the same identity, model, position, loaded shot, reserve ammunition and unfinished loading. Returning or revisiting cannot create a fresh cannon or refill it. Deployment reports reject missing, duplicated, changed or refilled pieces. Saved pending deployments validate their issue registry.
 
 Victory captures the pieces. Retreat or defeat leaves them with surviving enemies, and strategic enemy occupation controls resident guns on the next entry. Friendly stationed pieces count toward the army artillery requirement. Newly issued pieces can join resident guns without replacing their identity or overlapping their position.
 

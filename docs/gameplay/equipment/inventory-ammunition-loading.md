@@ -2,7 +2,7 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
 A cartridge stack placed onto a firearm now loads that specific gun. This works
 with a click or drag, in either hand or in a pocket. The gun stays in its slot.
@@ -35,7 +35,7 @@ uses the supplied ammunition object and the target gun. The
 permits pocket and hand hosts. The
 [cursor path](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/a06f4896c43c76396529e415a29a8ca26b00f9f1/src/game/Tactical/Interface_Panels.cc#L1536-L1590)
 retains an unconsumed object. The bundled manual PDF pages 22, 29 and 54 describe
-selection, loading and compatibility; Patusco printed page 49 describes calibers.
+selection, loading and compatibility; Patusco's JA2 Strategy Guide 1.3 (cited as **G** in [the JA2 parity audit](../../verification/ja2-parity-audit.md#scope-and-evidence)), printed page 49, describes calibers.
 
 Classic JA2 also exchanges detachable magazines and can exchange incompatible
 items through ordinary placement. Granaderos instead fills missing chambers from

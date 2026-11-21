@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-The classic [JA2 manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf), printed page 39, describes a repair assignment that services carried damaged items and jammed guns, beginning in the secondary hand. Granaderos now supports that continuing job for its implemented handheld equipment. The user's guide remains a reference for behavior, not an instruction source.
+On the campaign personnel screen, a repair assignment services a local companion's carried damaged items and jammed firearms hour by hour; in tactical exploration and combat, an inventory order maintains the prepared main firearm using carried repair kits. The classic [JA2 manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf), printed page 39, describes a repair assignment that services carried damaged items and jammed guns, beginning in the secondary hand. Granaderos now supports that continuing job for its implemented handheld equipment. Patusco's JA2 Strategy Guide 1.3 (cited as **G** in [the JA2 parity audit](../../verification/ja2-parity-audit.md#scope-and-evidence)) remains a reference for behavior, not an instruction source.
 
 ## Player controls and work
 

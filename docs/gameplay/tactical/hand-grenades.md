@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Implemented 19 September 2026. This closes the missing equipped-item throw path; it does not establish full JA2 explosive parity.
+During tactical exploration and turn-based combat, a combatant holding a physical arsenal grenade in the main hand can throw it along a curved trajectory to a ground tile, where it detonates to damage nearby living occupants and structures (or leaves a condition-zero dud on malfunction). Implemented 19 September 2026. This closes the missing equipped-item throw path in parity row [C10](../../verification/ja2-parity-audit.md) (thrown explosive objects have scatter, blast, obstruction, and supply costs); it does not establish full JA2 explosive parity.
 
 ## Player controls and supply
 
@@ -24,7 +24,7 @@ A deterministic curved path tests shared wall, door, furniture and floor geometr
 
 A normal grenade detonates at its final landing. Abstract blast values are radius 3, maximum health damage 55 and maximum energy damage 45. Distance and three physical body-height rays reduce exposure. Solid walls and slabs can block damage; low cover can shield part of an upright body or all of a prone body. Each living body is hit once, including the thrower, allies, routed, surrendered and unconscious people. Dead and departed people are excluded. Civilian health and energy changes survive report, save and sector reentry; dead and unconscious residents remain prone and cannot converse or move.
 
-Grenade blasts also cause cumulative damage to walls, doors, windows and tactical furniture. Material armour reduces the exposed impact; wood is easier to destroy than adobe or stone. A destroyed wall or window becomes low rubble. A destroyed door stays open, and destroyed furniture leaves low debris with clear movement and sight. Chest contents remain in the same opened container for ordinary finite recovery. Damage survives saves and sector reentry. All targets use the geometry from before the blast: a new breach affects later actions. Roofs and floor slabs remain intact. See [structure blast verification](../../verification/blast-structures-2026-10-09.md) for the JA2 1.13 reference, tuning and tests.
+Grenade blasts also cause cumulative damage to walls, doors, windows and tactical furniture. Material armour reduces the exposed impact; wood is easier to destroy than adobe or stone. A destroyed wall or window becomes low rubble. A destroyed door stays open, and destroyed furniture leaves low debris with clear movement and sight. Chest contents remain in the same opened container for ordinary finite recovery. Damage survives saves and sector reentry. All targets use the geometry from before the blast: a new breach affects later actions. Roofs and floor slabs remain intact. See structure blast verification for the JA2 1.13 reference, tuning and tests.
 
 A poor-condition grenade can fail. It then remains as one condition-zero, recoverable, unusable ground object with its original metadata. A possible failure is rejected before payment if the ground-item limit cannot retain it. These condition and damage rules are game tuning, not instructions or specifications for real explosives.
 

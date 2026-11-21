@@ -1,6 +1,6 @@
 # Granaderos — La independencia se conquista
 
-Tráiler histórico de 56 segundos con 44 segundos de grabación real del juego, textos en español y música original. La apertura muestra una ilustración de los preparativos de los Granaderos en Buenos Aires, en 1812. El video presenta el reclutamiento, el mapa de campaña, el equipo y el combate táctico de San Lorenzo. Muestra una versión en desarrollo.
+Esta guía de recursos documenta el tráiler de introducción en `content/assets/video/intro`, sus fuentes de captura, su música generada y los pasos para volver a renderizarlo o grabarlo. Es un tráiler histórico de 56 segundos con 44 segundos de grabación real del juego, textos en español y música original. La apertura muestra una ilustración de los preparativos de los Granaderos en Buenos Aires, en 1812. El video presenta el reclutamiento, el mapa de campaña, el equipo y el combate táctico de San Lorenzo. Muestra una versión en desarrollo.
 
 [![Ver el tráiler](poster.jpg)](granaderos-intro.mp4?raw=true)
 

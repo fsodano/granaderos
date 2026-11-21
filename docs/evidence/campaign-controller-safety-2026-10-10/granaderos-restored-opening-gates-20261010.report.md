@@ -1,5 +1,6 @@
 # Restored-opening validation gates, 10 October 2026
 
+This is a dated evidence workspace record from 10 October 2026 for `granaderos-restored-opening-gates-20261010.tar.gz` (see [verification.md](verification.md)).
 This archive preserves every regular file from both closed gate directories, with no omitted raw states or reduced projections:
 
 - Focused: `/tmp/granaderos-current-corrections-focused-2026-10-10T092914707Z`, nine original files. It selected 12 retained test files, ran once and closed exit 0: 52 tests passed; none failed, skipped or cancelled.

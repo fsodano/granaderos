@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Enemy names and personal actions enter the journal only when the squad can see the event. This uses the same facing, range, light, smoke and obstruction rules as current squad sight. It extends the player-knowledge contract in parity row V01; it does not change the simulation's AP, supplies, injuries or enemy decisions.
+During tactical exploration and turn-based combat, enemy names and personal actions enter the player-visible combat journal only when the player's squad can see the event at the moment it occurs. This uses the same facing, range, light, smoke and obstruction rules as current squad sight. It extends the player-knowledge contract in parity row [V01](../../verification/ja2-parity-audit.md) (the player sees current enemies only through squad observation); it does not change the simulation's AP, supplies, injuries or enemy decisions.
 
 Equipment selection, loading, medical aid, stance, fatigue, inventory, movement, rout and exit messages now identify their subjects explicitly. Every named enemy subject must be observed when the message is created. Later contact does not restore suppressed messages. The saved journal remains a list of strings, with no new save fields.
 

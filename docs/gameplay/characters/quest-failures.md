@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Accepted errands now end with a permanent `failed` result when the campaign acknowledges a new death receipt for their local contact. The log identifies the known errand and its failure once. An injury, temporary loss of the sector, flight or unconsciousness does not end the errand.
+Across tactical encounters and the strategic campaign ledger, accepted errands now end with a permanent `failed` result when the campaign acknowledges a new death receipt for their local contact. The log identifies the known errand and its failure once. An injury, temporary loss of the sector, flight or unconsciousness does not end the errand.
 
 A completed delivery remains completed if the recipient later dies. A death does not introduce an errand the player has never accepted. Failure adds no separate support penalty: the existing civilian responsibility rules apply once. No completion reward is issued for a failed errand.
 

@@ -2,16 +2,18 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
 ## Source and player choice
 
 The original [JA2 manual, printed page 44](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf)
 describes moving militia between a town's sectors, either manually or with an
-automatic equal distribution. The supplied Patusco guide, pages 59–60, describes
-training, ranks and field treatment. These references do not establish a classic
-tactical command menu. The separately listed tactical-command audit item remains
-open; this change implements the documented strategic distribution choice.
+automatic equal distribution. *Patusco's JA2 Strategy Guide 1.3* (source `G` in
+[the parity audit](../../verification/ja2-parity-audit.md#scope-and-evidence)),
+pages 59–60, describes training, ranks and field treatment. These references do
+not establish a classic tactical command menu. The separately listed
+tactical-command audit item remains open; this change implements the documented
+strategic distribution choice on the strategic campaign screen.
 
 Open **Sector → Distribuir milicias**. Choose the destination, rank and quantity,
 then use **Trasladar defensores**. The same panel shows every connected friendly

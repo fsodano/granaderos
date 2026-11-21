@@ -2,7 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../verification/version-0.1.md) for the published-main checkpoint.
+
+This guide covers the 2D character sprite skin-tone overlay system (light, brown, and dark palettes across 240 active animation atlases), its offline segmentation mask build pipeline, and runtime audit coverage. Code paths such as `game/`, `web/`, and `assets/` refer to the pre-monorepo layout (`packages/game/`, `apps/web/`, and `content/assets/` in the current repository).
 
 The same animation atlas now supports light, brown, and dark skin. Uniforms,
 equipment, and poses retain their original image. A grayscale skin overlay is

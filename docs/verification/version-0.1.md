@@ -28,7 +28,7 @@ Equipment commerce is disabled. Equipment and supplies come from actual
 recruitment allocations and physical objects in sectors. Renewal, return and
 save/load do not refill spent supplies. The economy uses pesos; removed raw
 material production and horse-care systems are not requirements for this version.
-See the [finite editor scope](finite-campaign-editor-2026-10-05.md).
+See the finite editor scope.
 
 ## Campaign creation at this checkpoint
 
@@ -69,7 +69,7 @@ continuations](wall-edges.md#campaign-recheck).
 Other open acceptance work includes manual player campaigns across seeds and
 forces, balance, all control and accessibility paths, sustained performance on
 recorded hardware, and complete visual, audio and historical review. The
-[accepted 3D record](latest-3d-gameplay-2026-10-08.md) establishes its named paths,
+accepted 3D record establishes its named paths,
 not every motion or sustained frame performance.
 
 The new wall format covers all shipped maps and templates. Compatibility with
@@ -81,11 +81,7 @@ Do not treat a successful import as proof of every later continuation.
 
 This page records the historical `0.1` checkpoint. Read the
 [shipping campaign plan](../plans/core-campaign-v0.1.md) for current work and
-acceptance limits. The
-[requirement register](requirements.json) and
-[generated ledger](published-progress.md) retain broad and bounded requirements
-with their recorded evidence. Their rows and old test totals overlap and are not
-a completion percentage. Dated audits, failed runs and earlier development
+acceptance limits. Dated audits, failed runs and earlier development
 versions remain historical records; inclusion in the repository does not make
 their claims current.
 
@@ -119,4 +115,4 @@ The requested publication is a source commit on `main` and the annotated `0.1`
 tag. At that checkpoint, Pages deployment required a separate manual action.
 Current `main` pushes build and publish the verified export automatically; tag
 pushes do not start a deployment. The live site serves the last successful build.
-See [the development guide](../development/getting-started.md#github-pages).
+See [the development guide](../development/getting-started.md#saves-and-browser-acceptance).

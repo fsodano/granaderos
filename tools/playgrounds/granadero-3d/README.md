@@ -1,6 +1,6 @@
 # Granadero · Laboratorio 3D
 
-Laboratorio independiente de personajes animados en Three.js, con cámara ortográfica isométrica y controles HTML. El ángulo queda fijo y el soldado se muestra a escala de juego. El acercamiento permite inspeccionar la figura y las armas sin cambiar la proyección.
+Este README de herramienta documenta el laboratorio interactivo `tools/playgrounds/granadero-3d` para inspeccionar el modelo de referencia del granadero y los ocho personajes 3D del juego. Es un laboratorio independiente de personajes animados en Three.js, con cámara ortográfica isométrica y controles HTML. El ángulo queda fijo y el soldado se muestra a escala de juego. El acercamiento permite inspeccionar la figura y las armas sin cambiar la proyección.
 
 ## Abrir
 
@@ -60,7 +60,7 @@ La fuente editable está en [granadero.blend](authoring/granadero.blend). El [sc
 blender --background --factory-startup --python authoring/build_human.py -- --publish
 ```
 
-El cuerpo completo conserva las proporciones, articulaciones y pesos de la anatomía adulta MakeHuman/MPFB, publicada bajo CC0. Mide 1,76 m sin el gorro. El uniforme y las armas se construyen para esta prueba a partir de las fotografías de referencia. Caminar, correr y permanecer quieto usan movimiento humano grabado por CMU, adaptado al esqueleto. Las manos y las acciones con armas son poses propias. La [procedencia](authoring/SOURCES.md) distingue las fuentes y sus condiciones de uso. La carpeta `authoring` conserva las fuentes y la información de procedencia. Las imágenes de referencia que proporcionó el usuario orientan la apariencia; no forman parte del modelo exportado.
+El cuerpo completo conserva las proporciones, articulaciones y pesos de la anatomía adulta MakeHuman/MPFB, publicada bajo CC0. Mide 1,76 m sin el gorro. El uniforme y las armas se construyen para esta prueba a partir de las fotografías de referencia. Caminar, correr y permanecer quieto usan movimiento humano grabado por CMU, adaptado al esqueleto. Las manos y las acciones con armas son poses propias. La [procedencia](authoring/SOURCES.md) distingue las fuentes y sus condiciones de uso. La carpeta `authoring` conserva las fuentes y la información de procedencia. Las imágenes de referencia orientan la apariencia; no forman parte del modelo exportado.
 
 Sin `--publish`, el constructor deja los resultados en `authoring/human-review/` para revisarlos antes de sustituir el modelo del navegador. El nombre anterior, `build_granadero.py`, es un acceso compatible al mismo constructor.
 

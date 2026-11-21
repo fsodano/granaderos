@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Implemented 11 September 2026 from the user request and supplied JA2 cursor screenshot. The screenshot is a visual reference; this change does not claim exact JA2 balance or sprite dimensions.
+Pointer aiming lets the player aim a firearm and select a target body region or ground cell directly with the mouse cursor on the tactical battlefield during exploration and turn-based combat. Implemented 11 September 2026 using a reference JA2 cursor screenshot. The screenshot is a visual reference; this change does not claim exact JA2 balance or sprite dimensions.
 
 ## Controls
 
@@ -24,7 +24,7 @@ Ground shots capture an absolute aiming height, use the existing physical flight
 
 `aim-cursor.test.mjs` checks free cursor changes, affordable aim limits, exact AP/ammunition use, frame fractions at different zooms, prone restrictions, hidden target admission, invalid-shot rollback and medical item use. `aim-cursor-render.test.mjs` checks SVG labels and aim marks, actual scene pointer/focus/key handlers and confirmed shots. The existing combat-strip render checks verify removal of panel aim/body buttons and the fixed person hit frame.
 
-A user-requested live demonstration in the local San Lorenzo skirmish confirmed right-click entry and an extra aim step: Barcala’s torso shot changed from 11 AP / 70% to 16 AP / 78%, while his current AP stayed at 100. The demonstration exposed a native mouse-focus outline and AP labels beneath the combat log; both were corrected. Prone restrictions and confirmed shot costs are covered by automated checks; live verification of prone targeting remains pending. The frame proportions and aim reset behavior are explicit Granaderos interface choices.
+A live demonstration in the local San Lorenzo skirmish confirmed right-click entry and an extra aim step: Barcala’s torso shot changed from 11 AP / 70% to 16 AP / 78%, while his current AP stayed at 100. The demonstration exposed a native mouse-focus outline and AP labels beneath the combat log; both were corrected. Prone restrictions and confirmed shot costs are covered by automated checks; live verification of prone targeting remains pending. The frame proportions and aim reset behavior are explicit Granaderos interface choices.
 
 ## Empty firearm clicks
 

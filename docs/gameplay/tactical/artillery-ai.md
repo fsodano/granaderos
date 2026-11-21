@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Enemy soldiers and local militia now operate nearby friendly cannon emplacements through the same actions as the player. The optional hired-squad auto-resolve uses the same chooser. This is a Granaderos period adaptation of autonomous weapon use; it does not claim that classic JA2 had these field cannons.
+During turn-based combat and tactical exploration patrols, computer-controlled enemy soldiers and local militia operate nearby friendly cannon emplacements through the same crew, loading, pivoting, and firing actions as the player. The optional hired-squad auto-resolve uses the same chooser. This is a Granaderos period adaptation of autonomous weapon use; it does not claim that classic JA2 had these field cannons.
 
 ## Decisions and costs
 
@@ -24,7 +24,7 @@ During an enemy reaction, only members of that active reaction frame can provide
 
 ## Verification
 
-The final complete suite passes **2,263/2,263 tests**, with no skips. It ran in two disjoint groups to avoid duplicating the campaign simulation: 2,255 general checks and all eight opening-route checks. Typecheck and the production build also pass. The campaign route uses paid prone setup, thirteen purchased dressings, sufficient paid replacements for two squads, and the existing coordinated-fire controller at Salta. Actual deaths and victory requirements are retained. See [the current northern route](../../verification/northern-route.md).
+The final complete suite passes **2,263/2,263 tests**, with no skips. It ran in two disjoint groups to avoid duplicating the campaign simulation: 2,255 general checks and all eight opening-route checks. Typecheck and the production build also pass. The campaign route uses paid prone setup, thirteen purchased dressings, sufficient paid replacements for two squads, and the existing coordinated-fire controller at Salta. Actual deaths and victory requirements are retained. See the current northern route.
 
 Thirteen chooser/execution tests cover all three cannon models, enemy and militia crews, finite shots, actual enemy/allied turns, denied direct militia control, partial work, pivot affordability, canister choice, line/cone safety, cover, upper-level and unseen targets, private-state independence, bounded approach, depleted posts, incapacitation and reaction authority. A hired scout leaving a loaded gun to find contact cannot be sent straight back to the same post on its next decision. Actual ambient ticks retain enemy and militia crews at loaded posts and release them when the gun is depleted.
 

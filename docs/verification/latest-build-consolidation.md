@@ -1,6 +1,6 @@
 # Latest build consolidation — PR #139 published
 
-Updated on 1 October 2026. [PR #139](https://github.com/fsodano/granaderos/pull/139) is merged on `main` at **`7ac3c9d612cc5d46c846617e0686ef5b6b450184`**. This record separates that accepted consolidation from earlier repair snapshots and subsequent local alpha work. The [published progress ledger](published-progress.md) remains the authority for accepted work on `main`.
+Updated on 1 October 2026. [PR #139](https://github.com/fsodano/granaderos/pull/139) is merged on `main` at **`7ac3c9d612cc5d46c846617e0686ef5b6b450184`**. This record separates that accepted consolidation from earlier repair snapshots and subsequent local alpha work. Accepted work on `main` is recorded in the [changelog](../CHANGELOG.md) and the [version 0.1 status](version-0.1.md).
 
 ## Current alpha candidate — accepted locally
 
@@ -24,7 +24,7 @@ The separate service-end equipment alpha candidate starts from this actual merge
 
 ## Validation and push policy
 
-From 30 September 2026, keep corrections local until the complete candidate passes all local tests, documentation and reference audits, TypeScript, the production build, and applicable browser checks. Follow the [before-push procedure](../development/getting-started.md#before-pushing). Push one completed batch, then wait for required CI before merging. Do not use repeated remote builds to find failures.
+From 30 September 2026, keep corrections local until the complete candidate passes all local tests, documentation and reference audits, TypeScript, the production build, and applicable browser checks. Follow the [before-push procedure](../development/getting-started.md#local-checks). Push one completed batch, then wait for required CI before merging. Do not use repeated remote builds to find failures.
 
 Earlier run `36776925051` had already finished when cancellation was attempted. It was not cancelled or restarted. The final accepted batch was pushed once and merged after its matching-head checks passed. Further alpha changes must complete their own local gates before delivery; a partial local pass does not authorize a new push.
 

@@ -6,7 +6,7 @@ These files preserve earlier requirements, audits and implementation checkpoints
 They contain superseded behavior, old test counts or completed work still shown
 as pending. Their headings and status labels describe the original snapshot.
 
-Use [published progress](../verification/published-progress.md) for
+Use published progress for
 current status and [the parity audit](../verification/ja2-parity-audit.md) for
 the active gameplay requirement baseline.
 

@@ -1,6 +1,6 @@
 # Larger tactical sectors
 
-New tactical sectors are **64 × 48 squares** (3,072 squares, 9.6 times the previous 20 × 16 area). The camera and minimap use the actual map dimensions. Grid labels continue from Z through AA to AV.
+In the published game, tactical battlefield maps for both exploration and turn-based combat are **64 × 48 squares** (3,072 squares, 9.6 times the previous 20 × 16 area). The camera and minimap use the actual map dimensions. Grid labels continue from Z through AA to AV.
 
 The ten settlement sectors each contain **20 enterable buildings**. New neighbourhood houses occupy 5 × 5 squares, including walkable interiors, a door, a window, and a chest. They leave at least two clear squares between footprints. One added building per town is a pulpería (`purpose: bar`) for civilian social routines when the original layout has no tavern. Existing landmarks, courtyards, furniture, and building IDs remain in a protected central area. The rural mission maps of San Lorenzo and Yatasto have six buildings each; Uspallata, Los Patos, and Humahuaca remain undeveloped passes.
 

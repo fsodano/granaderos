@@ -1,5 +1,6 @@
-# Closed posture-aware original five-file gate
+# Closed posture-aware original five-file gate, 10 October 2026
 
+This is a dated evidence workspace record from 10 October 2026 for `granaderos-posture-aware-original-five-evidence-20261010.tar.gz` (see [verification.md](verification.md)).
 One invocation of the five unchanged original affected test files closed on revision aa1cfe579e9156f6dfc4530520d87f78ef212db5, production build source c132c162f02420175ffd65eae404efcd221cf53c994e3bf7930810d5c4748026. Exit1: nine tests, five passed, four failed, zero cancelled and skipped. Source drift is empty; before and after source maps are byte-identical. The original fixture replay and deterministic checks remain part of the original tests. This observer ran no native calls, additional controllers, seeds or reruns.
 
 All five coastal assertions pass: funded created route, its finite toolkit/paid-repair subtest, funded hired route, paid casualty toolkit transfer, and fresh local recruit route. The actual hired San Lorenzo commander survives native victory, paid replay, field-aid boundary and saved settlement at HP11/bleed0, alive=true and campaign defeated=false. This remains partial critical care, with the tactical commander unconscious. Medic137 has no dressing after combat. Infantry113 and110 remain actual casualties; original failed hired combat had113 aliveHP23.

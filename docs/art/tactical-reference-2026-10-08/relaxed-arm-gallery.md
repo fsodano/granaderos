@@ -1,8 +1,8 @@
-# Standing arm review gallery
+# Standing arm review gallery — 2026-10-08
 
-[Review record](../character-standing-free-arm-review-2026-10-08.md)
+Review record
 
-Only after-final browser views use the final receipt files. Other after views use exact render-equivalent banks. Native paired sheets use fixed phase. Live browser phase is not synchronized. Contact sheets are bounded static pose evidence.
+This image index lists the 8 October 2026 before-and-after browser captures and fixed-phase 3D ("native" character pipeline) contact sheets for the standing free-arm rest posture review across all eight character families (pistol, sabre, knife, and paired pistols at nominal 44-pixel and 88-pixel scales, reviewed on candidate manifest `dae5b37b` and final manifest `4a58362a`). Only `after-final` browser views use the final receipt files; other `after` views use exact render-equivalent animation banks. Native paired sheets use fixed animation phase, whereas live browser phase is not synchronized. Contact sheets are bounded static pose evidence for the standing free-arm increment only.
 
 - [after final front 44](relaxed-arm-after-final-front-44.jpg)
 - [after final front 88](relaxed-arm-after-final-front-88.jpg)

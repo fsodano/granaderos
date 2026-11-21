@@ -2,9 +2,11 @@
 
 [Development guide](README.md) · [Architecture overview](../architecture/overview.md) · [Accepted architecture](../plans/accepted/domain-architecture.md)
 
-Open the **Granaderos repository root** in your IDE. It contains two browser
-applications, the game rules they share, campaign content, and development tools.
-The directory groups tell you which responsibility owns a file.
+This repository map explains the current directory layout, package boundaries,
+and starting files for common development tasks. Open the **Granaderos repository root**
+in your IDE. It contains two browser applications, the game rules they share,
+campaign content, and development tools. The directory groups tell you which
+responsibility owns a file.
 
 ```text
 apps/

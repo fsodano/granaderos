@@ -1,5 +1,7 @@
 # Illustrated character sprites
 
+This guide documents the initial 19-appearance illustrated 2D pixel-art character sprite library (328 atlases and 7,856 frames), its source packing pipeline, and its verification on `origin/main` at `6096229`. Code paths such as `game/` and `assets/` refer to the pre-monorepo layout (`packages/game/` and `content/assets/` in the current repository).
+
 The game uses a library of **19 shared appearances**. The library follows the
 approved illustrated pixel art style: adult proportions, defined faces, dark
 contours, and clear cloth shadows. Each appearance combines a gender, body type,

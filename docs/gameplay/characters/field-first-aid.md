@@ -2,6 +2,8 @@
 
 [Personajes](README.md) · [Atención médica en campaña](strategic-medical-care.md)
 
+Esta guía describe el tratamiento manual publicado en el campo táctico:
+
 1. Seleccioná a una persona consciente con medicina y vendas.
 2. Acercala al herido. Puede atenderse a sí misma o a alguien al lado.
 3. Seleccioná **Vendar** y hacé clic en el herido. También podés usar **Q**

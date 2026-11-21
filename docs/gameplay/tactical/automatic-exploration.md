@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Following the user's 2026-09-12 clarification, two complete combat rounds without visual contact on either side now return to exploration automatically. A sighting at any point in a round resets the delay, even if the target leaves sight before the round ends. The round containing the last sighting does not count as a quiet round. Anonymous sound keeps its existing investigation history but does not prolong turn-based combat by itself.
+When two complete turn-based combat rounds pass without visual contact on either side, the tactical session returns to real-time exploration (implemented 12 September 2026; parity row [T02](../../verification/ja2-parity-audit.md)). A sighting at any point in a round resets the delay, even if the target leaves sight before the round ends. The round containing the last sighting does not count as a quiet round. Anonymous sound keeps its existing investigation history but does not prolong turn-based combat by itself.
 
 The return waits for the complete enemy and local militia phases. It cannot occur inside an interrupt or unfinished autonomous queue, or while a routed unit still needs to leave. Enemy-first initiative counts complete rounds without accidentally triggering a ten-minute exploration rest at the transition. The saved `quietCombatTurns` and `contactThisRound` fields retain the delay and are validated.
 

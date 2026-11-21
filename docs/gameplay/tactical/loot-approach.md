@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-The classic JA2 manual, printed page 25, describes selecting an item with the hand cursor, moving into range and choosing from the available items. Granaderos now follows that sequence for visible ground equipment and bodies.
+During tactical exploration and turn-based combat, selecting a visible ground equipment marker or dead body walks the acting soldier into contact range and opens a quantity-and-checkbox item picker to collect selected items for a single 8 AP pickup cost. The [classic JA2 manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf), printed page 25 ([M25](../../verification/ja2-parity-audit.md#scope-and-evidence)), describes selecting an item with the hand cursor, moving into range and choosing from the available items. Granaderos now follows that sequence for visible ground equipment and bodies.
 
 ## Player flow
 

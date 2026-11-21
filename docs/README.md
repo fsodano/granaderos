@@ -1,6 +1,8 @@
 # Granaderos documentation
 
-Granaderos is a browser strategy and tactical game in active development. Read
+This index maps every documentation folder in the repository and states which
+document governs completion status. Granaderos is a browser strategy and
+tactical game in active development. Read
 the [shipping campaign status](plans/core-campaign-v0.1.md) for current checks
 and remaining acceptance work. The [campaign separation record](verification/campaign-engine-separation-2026-10-10.md)
 records the engine/content boundary. The [version 0.1 status](verification/version-0.1.md)
@@ -20,7 +22,7 @@ Player-facing text is Spanish. Code and documentation are English.
 | Check version 0.1 scope and remaining work | [Version 0.1 status](verification/version-0.1.md) |
 | Check current engine and campaign separation | [Campaign separation](verification/campaign-engine-separation-2026-10-10.md) |
 | Check the shipping campaign and remaining acceptance work | [Shipping campaign status](plans/core-campaign-v0.1.md) |
-| Find requirement history and feature evidence | [Published progress ledger](verification/published-progress.md) |
+| Find requirement history and feature evidence | [Classic JA2 parity audit](verification/ja2-parity-audit.md) |
 | Review the historical cross-branch verification | [27 September audit](verification/formal-audit-2026-09-27.md) |
 | Review ammunition ownership and current limits | [Persistent ammunition](verification/strategic-ammunition-custody.md) |
 | Create a campaign in the browser | [Campaign editor](authoring/campaign-studio.md) and [studio acceptance evidence](evidence/campaign-studio-2026-10-10/README.md) |
@@ -49,7 +51,7 @@ Studio; community hosting and sharing services are
 | [Gameplay](gameplay/README.md) | Campaign, combat, equipment, characters and controls |
 | [Authoring](authoring/README.md) | Campaign studio workflow, portable projects and installable packages |
 | [Development](development/README.md) | Browser setup, editors, system notes and performance work |
-| [Verification](verification/README.md) | Published progress, separate workspace audits and dated results |
+| [Verification](verification/README.md) | Status checkpoints, the classic JA2 parity audit, and dated acceptance records |
 | [Evidence](evidence/README.md) | Saved workspace route results and performance measurements |
 | [Art](art/README.md) | Buildings, portraits, sprite families and render quality |
 | [Architecture decisions](adr/README.md) | Visual decisions and reference images |
@@ -65,26 +67,27 @@ The [changelog](CHANGELOG.md) records release checkpoints.
 
 [Version 0.1 status](verification/version-0.1.md) records the historical 0.1
 checkpoint. [Game design](specification/game-design.md) records the product design.
-[Published progress](verification/published-progress.md) is generated from
-[the requirement register](verification/requirements.json). It separates published
-work, local-only code, failed acceptance, missing behavior and unverified claims.
 [The formal audit](verification/formal-audit-2026-09-27.md) preserves the evidence.
-These documents extend this topic structure; they do not replace the feature notes.
+[The changelog](CHANGELOG.md) records release checkpoints. These documents extend
+this topic structure; they do not replace the feature notes.
 
-Update the affected register rows in each feature PR, then run
-`npm run docs:progress` and `npm run audit:docs`. A dated audit remains a snapshot.
-The old [PROGRESS.md link](PROGRESS.md) leads to the same active ledger.
-Explicit user decisions override older design notes; record the resolution in
-the current design and register. Preserve all original and parity requirements.
+Explicit user decisions override older design notes; record the resolution in the
+current design. Preserve all original and parity requirements: the
+[parity audit](verification/ja2-parity-audit.md) keeps the full requirement rows
+and their sources.
+
+The dated per-feature verification receipts and the machine-readable requirement
+register that earlier versions of this documentation referenced were removed in
+November 2026. Their rows and evidence survive in the parity audit, in the
+records kept under [verification](verification/README.md), and in Git history.
 
 ## Which document governs status?
 
 1. The [version 0.1 status](verification/version-0.1.md) records the version's
    scope, current source evidence and known limits. A version tag does not prove
    game completion or publish a new GitHub Pages deployment.
-2. Published feature guides describe bounded behavior. Use the progress ledger
-   and each record's source, date and limits when assessing completion. The
-   generated ledger includes historical acceptance and can lag later changes.
+2. Published feature guides describe bounded behavior. Use each record's
+   source, date and limits when assessing completion.
 3. Notes marked **development-workspace record** describe the separate advanced
    gameplay checkout at their recorded date. Later work can be merged. The
    [workspace acceptance record](verification/gameplay-completion.md) preserves
@@ -108,6 +111,5 @@ its implementation or acceptance on a later source.
   such as `packages/game/tactical.js` start at the repository root.
 - State the checkout or source commit, date, tested scope, result and limits of
   verification. Keep raw measurements in `evidence/` and link their record.
-- Update the published progress ledger when an implementation is merged.
   Keep unpublished work clearly labelled and retain earlier results as history.
 - Keep player help in Spanish and contributor documentation in English.

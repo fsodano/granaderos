@@ -1,4 +1,10 @@
-# Character source pipeline: record preservation and ordered cloth passes
+# Character source pipeline: record preservation and ordered cloth passes — 2026-10-08
+
+This dated review record (2026-10-08) documents the character-library builder
+change that preserves untouched manifest records across partial builds and runs
+the cloth, palette, and hem postpasses in order. Results are a snapshot
+validated on main `4ec028f541272ee5579d5c7fa1d4259042b2fec7` (committed as
+`7cd093b9` in [PR #271](https://github.com/fsodano/granaderos/pull/271)).
 
 The source builder now keeps every current library record unless an explicit,
 checked worker job rebuilt that record. It then applies the reviewed cloth,

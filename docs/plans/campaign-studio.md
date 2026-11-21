@@ -1,13 +1,14 @@
 # Complete campaign authoring studio
 
-The user requests one website that authors a campaign from start to finish.
-This plan records the completed studio goal. The required result is one
+Date: 11 October 2026.
+
+This plan records the goal and acceptance scope for `/studio`, a single web workspace that authors a campaign from start to finish. The required result is one
 workspace that edits and exports every supported campaign
 definition, resource and tactical map through one project and one history.
 
-Implemented on `feature/campaigns` and published in `main` through
+Status: implemented on `feature/campaigns` and published in `main` through
 [PR #334](https://github.com/fsodano/granaderos/pull/334).
-Progress PR #336 and [studio PR #337](https://github.com/fsodano/granaderos/pull/337)
+[Progress PR #336](https://github.com/fsodano/granaderos/pull/336) and [studio PR #337](https://github.com/fsodano/granaderos/pull/337)
 are merged. PR #334 records the scope, evidence and test limits.
 
 ## Required result and evidence

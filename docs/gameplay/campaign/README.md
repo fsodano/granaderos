@@ -3,13 +3,13 @@
 Current scope: [version 0.1](../../verification/version-0.1.md). Equipment commerce is disabled;
 older purchase, supplier and refill notes describe earlier rules. Use actual
 recruitment allocations and physical sector objects for finite supplies.
-See [commerce deferral](../../verification/finite-campaign-editor-2026-10-05.md).
+See commerce deferral.
 
 [Gameplay index](../README.md) · [Documentation index](../../README.md)
 
 These notes combine feature guides and dated workspace records. Read
 [version 0.1](../../verification/version-0.1.md) for current scope.
-The [requirement ledger](../../verification/published-progress.md) and
+The requirement ledger and
 [parity audit](../../verification/ja2-parity-audit.md) retain row evidence and
 comparison requirements. A historical *workspace* label does not establish the
 current merge state; use the named source, date and acceptance limits.
@@ -49,10 +49,8 @@ current merge state; use the named source, date and acceptance limits.
 - [Faction policies](FACTION-POLICIES.md)
 - [Observed enemy movement](enemy-intelligence.md) *(workspace)*
 - [Finite enemy reserves](enemy-reserves.md) *(workspace)*
-- [Opposition progression — 26 September 2026](campaign-opposition-progression-2026-09-26.md) *(workspace)*
 
 ## Artillery on the campaign map
 
 - [Stationed artillery](stationed-artillery.md) *(workspace)*
 - [Transporting artillery](artillery-transport.md) *(workspace)*
-- [Stored artillery trading](artillery-trade.md) *(workspace)*

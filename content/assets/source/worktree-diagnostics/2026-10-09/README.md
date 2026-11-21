@@ -1,10 +1,13 @@
-# Historical worktree diagnostics archive
+# Historical worktree diagnostics archive — 2026-10-09
 
-This archive preserves 97 historical QA scripts, patches, review notes and source inputs recovered during the 2026-10-09 worktree cleanup. These files were previously ignored in completed worktrees. They are recovery material. They are not approved runtime code or current acceptance evidence.
+This dated archive guide (2026-10-09) documents the 97 historical QA scripts,
+patches, review notes, and source inputs preserved under
+`content/assets/source/worktree-diagnostics/2026-10-09` from the 2026-10-09
+worktree cleanup, along with their manual restoration procedure. These files were previously ignored in completed worktrees. They are recovery material. They are not approved runtime code or current acceptance evidence.
 
-All blob files are non-executable and have the `.blob` suffix. Local Git attributes preserve their raw bytes without line-ending conversion or textual patch display. No runtime, build or test entry point loads or executes this archive. The archive is outside the production source digest in `tools/build-identity.mjs`, which reads `package.json`, `game`, `web` and `tools`. It is also outside the source roots in `tools/audit-snapshot.py`.
+All blob files are non-executable and have the `.blob` suffix. Local Git attributes preserve their raw bytes without line-ending conversion or textual patch display. No runtime, build or test entry point loads or executes this archive. The archive is outside the production source digest in `tools/build-identity.mjs` (originally reading `package.json`, `game`, `web` and `tools`, and now `package.json`, `packages/game`, `apps/web`, `tools`, `content/campaigns`, `apps/campaign-editor` and `packages/campaign-format`). It is also outside the source roots in `tools/audit-snapshot.py`.
 
-The [manifest](manifest.json) maps every original worktree and path to an exact Git blob, SHA-256, byte count and archive path. Identical files share one stored blob. The original directory and filename are provenance; they are not restoration destinations. Absolute paths identify the source machine and do not need to exist.
+The [manifest](manifest.json) maps every original worktree and path to an exact Git blob, SHA-256, byte count and archive path. Identical files share one stored blob. The original directory and filename are source-origin metadata; they are not restoration destinations. Absolute paths identify the source machine and do not need to exist.
 
 To restore one file:
 

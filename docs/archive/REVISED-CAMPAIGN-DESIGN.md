@@ -1,9 +1,9 @@
-# Revised campaign start and recruitment
+# Revised campaign start and recruitment (archived 2026-09-05)
 
-> **Archived snapshot.** This record describes an earlier project state. Read
-> [published progress](../verification/published-progress.md) for current scope.
+> **Archived historical design ledger.** This superseded record preserves the 2026-09-05 `0.2.0-dev.1` campaign-start and recruitment design specification (audited in [NEW-START-AUDIT.md](NEW-START-AUDIT.md)). Read
+> published progress for current scope.
 
-The active user objective supersedes earlier decisions about a pre-hired squad and the map dashboard. Player-facing text remains Spanish; code and documents remain English.
+This 2026-09-05 design specification superseded earlier decisions about a pre-hired starter squad (Cabral, Dorrego, Paroissien) and the strategic map dashboard (checked against Patusco's JA2 Strategy Guide v1.3 and JA2 1.13 IMP documentation; limits: applies to new campaigns while preserving legacy saves). Player-facing text remains Spanish; code and documents remain English.
 
 ## Required end state
 
@@ -32,13 +32,13 @@ Existing saves are preserved as legacy campaigns; the new-start behavior applies
 
 ## Authorization and references update
 
-User explicitly authorizes opening and merging progress PRs at our discretion after verification. Preserve milestone notes and remaining-work audit.
+Progress PRs were authorized to be opened and merged after verification while preserving milestone notes and the remaining-work audit ([REQUIREMENT-AUDIT.md](REQUIREMENT-AUDIT.md)).
 
-Accessible reference: Patusco's JA2 Strategy Guide v1.3 (2000), https://draketungsten.org/arcade/pcmanuals/ja2_guide.pdf . IMP wiki search indexing also exposes its creation sequence; official 1.13 project documentation at https://1dot13.github.io/documentation/playing/features/imp/ provides the attribute-budget model. Adapt mechanics; do not transplant modern content or copyrighted prose.
+Accessible reference: [Patusco's JA2 Strategy Guide v1.3 (2000)](https://draketungsten.org/arcade/pcmanuals/ja2_guide.pdf). IMP wiki search indexing also exposes its creation sequence; [official 1.13 project documentation](https://1dot13.github.io/documentation/playing/features/imp/) provides the attribute-budget model. Adapt mechanics; do not transplant modern content or copyrighted prose.
 
 ## Reference-derived design notes
 
-Patusco v1.3 sections 1.8 and 3.2 inform the split between identity, questionnaire, attribute allocation and strategic instruction. Leadership and teaching should change training duration; loyalty affects local cooperation. Contract renewal is an explicit economic decision. These mechanics are adapted to a provincial military setting; modern weapons, equipment, agency websites and questionnaire jokes are excluded. The user's day/week/month periods and elite one-day restriction take precedence over the guide's original contract choices.
+Patusco v1.3 sections 1.8 and 3.2 inform the split between identity, questionnaire, attribute allocation and strategic instruction. Leadership and teaching should change training duration; loyalty affects local cooperation. Contract renewal is an explicit economic decision. These mechanics are adapted to a provincial military setting; modern weapons, equipment, agency websites and questionnaire jokes are excluded. The day/week/month periods and elite one-day restriction specified in Requirement 4 above take precedence over the guide's original contract choices.
 
 ## Current integration decisions
 

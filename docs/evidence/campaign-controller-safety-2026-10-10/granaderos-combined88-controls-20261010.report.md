@@ -1,3 +1,6 @@
+# Combined 88 focused controls archive report, 10 October 2026
+
+This is a dated evidence workspace record from 10 October 2026 for `granaderos-combined88-controls-20261010.tar.gz` (see [verification.md](verification.md)).
 The archive contains every file from the closed combined focused control run at /tmp/granaderos-current-corrections-v2-focused-2026-10-10T095929209Z. It preserves the original files without changes. It includes the execution wrapper, runtime and argument metadata, run log, terminal receipt, process IDs, both complete source hash snapshots, and all nested passive observer files.
 
 The retained receipt confirms one invocation of 18 selected test files. All 88 tests passed. There were no failed, skipped, cancelled, or pending tests. The process exited with code 0 and no signal. The receipt marks the run complete and successful. The parent and child processes are absent.

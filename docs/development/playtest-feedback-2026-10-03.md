@@ -1,6 +1,6 @@
 # Playtest implementation trace — 2026-10-03
 
-This trace maps the supplied 43 feedback items to the current implementation. It describes this working branch, not published progress or exact Jagged Alliance 2 parity. The local feedback archive and its original images remain unchanged and are excluded from this pull request.
+This dated implementation record maps the 43 feedback items from the [2026-10-03 playtest feedback log](../references/playtest-2026-10-03/feedback.md) to the working branch implementation and records a snapshot of verification results and follow-up clarifications. It describes this working branch, not published progress or exact Jagged Alliance 2 parity. The [local feedback archive](../references/playtest-2026-10-03/README.md) and its original images remain unchanged and are excluded from this pull request.
 
 **Implemented** means a requested change is present. **Preserved** identifies a mechanic already present. **Open** identifies a tentative choice or detail that has no defined requirement. Numerical balance settings and presentation durations are initial tuning choices; further playtests must assess them.
 

@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-New attack groups now draw from a saved reserve for their command. Northern forces start with 120 troops, the coastal command with 80, and interior partisans with 40. These are Granaderos campaign-scale balancing values, not historical army sizes or JA2 constants.
+On the strategic campaign layer, new attack groups now draw from a saved reserve for their command. Northern forces start with 120 troops, the coastal command with 80, and interior partisans with 40. These are Granaderos campaign-scale balancing values, not historical army sizes or JA2 constants.
 
 The existing time-based requested strength, routes, target priorities and launch schedule still apply. A group takes at most the troops remaining in its command's reserve. Fewer than three available troops cannot form a group. A refused launch does not consume troops or a group identity. Other commands keep their own reserves.
 

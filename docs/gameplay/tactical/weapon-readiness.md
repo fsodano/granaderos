@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Implemented 12 September 2026. The cost of raising a firearm is now separate from the cost of discharging it. The same-facing first-shot total retains the existing Granaderos balance. Keeping a weapon in its firing position avoids paying the raising portion again.
+During turn-based combat (and action-duration checks in tactical exploration), the cost of raising a firearm into firing position is separate from the cost of discharging it (implemented 12 September 2026; parity row [I09](../../verification/ja2-parity-audit.md)). The same-facing first-shot total retains the existing Granaderos balance. Keeping a weapon in its firing position avoids paying the raising portion again.
 
 ## Source and adaptation
 

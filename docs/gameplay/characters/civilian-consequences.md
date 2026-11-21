@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Implemented 19 September 2026. This advances S09 and civilian collision coverage. Civilian factions, morale and quest consequences are still partial.
+On the tactical battlefield and strategic campaign ledger, civilian residents can take physical damage from attacks, refuse cooperation when wounded by player soldiers, and change local town support when killed. Implemented 19 September 2026. This advances S09 (civilians and quests affecting civic support and territorial cooperation in the [JA2 parity audit](../../verification/ja2-parity-audit.md)) and civilian collision coverage. Civilian factions, morale and quest consequences are still partial.
 
 ## Controls and physical damage
 

@@ -1,5 +1,7 @@
 # Colonial buildings, 1810–1820
 
+This guide covers the 2D tactical building renderer, the fourteen-template architecture catalog, room revelation rules, and catalog verification. Code paths such as `web/`, `game/`, and `assets/` refer to the pre-monorepo layout (`apps/web/`, `packages/game/`, and `content/assets/` in the current repository).
+
 The tactical building renderer uses limewashed adobe, jointed stone footings,
 clay roof tiles, timber doors, iron window bars, and brick floor joints. These
 are interpretations for the campaign period, not measured reconstructions of
@@ -33,9 +35,9 @@ eaves close the shell. `web/app/TacticalBuildingVolumes.tsx` applies the same
 material treatment to tower, porch, chimney and buttress volumes.
 
 The six `web/public/art/architecture-*-v2.png` files are 512 × 512 PNG materials.
-Generation prompts and resize provenance are in
+Generation prompts and resize records are in
 `docs/art/architecture-materials-v2.json`. The served art manifest records each
-file's dimensions, byte count, SHA-256 and provenance reference. The build checks
+file's dimensions, byte count, SHA-256 and source reference. The build checks
 the six dynamic filenames, PNG dimensions and checksums with
 `tools/verify-tactical-assets.mjs`. Tests also render the wall and roof definitions
 to confirm that every emitted material URL belongs to that build contract.
@@ -70,7 +72,7 @@ visibility tests, TypeScript checks, and the production build.
 
 ## Catalog redesign review
 
-The user selected the **town parish (B)** as the direction for the church. The
+The **town parish (B)** was selected as the direction for the church. The
 retained reference attachment is labeled **rural parish (A)**. Its rough warm
 limewash, exposed stone base, dark timber and rounded clay tiles also establish
 the material treatment. The town church must keep its own square bell tower and

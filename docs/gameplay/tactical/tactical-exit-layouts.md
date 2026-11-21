@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Status note: this document records the design input. The implemented behavior and remaining limits are now described in [JA2 gameplay](../ja2-gameplay.md#physical-departure-and-persistent-casualties) and [the parity audit](../../verification/ja2-parity-audit.md).
+Status note: this document records the boundary-access and route-endpoint design input for tactical retreat and sector departure during tactical exploration and turn-based combat (parity row [T09](../../verification/ja2-parity-audit.md): retreat requires a real exit and leaves the sector state consistent). The implemented behavior and remaining limits are now described in [JA2 gameplay](../ja2-gameplay.md#physical-departure-and-persistent-casualties) and [the parity audit](../../verification/ja2-parity-audit.md).
 
 Checked on 2026-09-06 against all 15 outputs of [buildSectorMap](../../../packages/game/maps.js), the 13 [CAMPAIGN_SECTORS](../../../packages/game/data.js), and current [movementStepCost/getReachable](../../../packages/game/tactical.js). This is a proposed logical exit mapping. No terrain, building, prop, or exit implementation changed. See [the transaction plan](../../plans/tactical-exit-plan.md) for separated units, casualties, and campaign reporting.
 

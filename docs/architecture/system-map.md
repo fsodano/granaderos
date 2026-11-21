@@ -94,7 +94,7 @@ response must preserve paid time, resources, and any remaining continuation.
 
 | Question | Start here | Follow next |
 | --- | --- | --- |
-| How does a new game get its identity? | [Public persistence API](../../packages/game/public/game-persistence-api.js) | CreateGameSession repository, GameSession, campaign factory |
+| How does a new game get its identity? | [Public persistence API](../../packages/game/public/game-persistence-api.ts) | CreateGameSession repository, GameSession, campaign factory |
 | Why was recruitment refused? | [RecruitCombatant use case](../../packages/game/application/personnel/recruit-combatant/recruit-combatant.use-case.ts) | RecruitmentService and CampaignRecruitCombatantRepository |
 | What can a squad do at hostile arrival? | [Journey](../../packages/game/domain/journeys/journey.ts) | FightOnArrival, WithdrawOnArrival, RedirectJourney and their repositories |
 | How does an order spend action points? | [SectorParticipant](../../packages/game/domain/sector-sessions/sector-participant.ts) | ExecuteSectorOrder, sector operation runner, tactical rules |

@@ -1,10 +1,13 @@
 # 13 — Multiplayer & Editor: Native Inventory and Web Port Guidance
 
-**Audience:** a web engineer with **no Jagged Alliance 2 experience** who must decide what
-(if anything) of the native multiplayer stack and the map editor can be ported to the
-browser game. This document is a **translation guide and scoping document**, not a
-specification to implement verbatim. It inventories the native code, documents the
-compile-time flags that govern cooperative play, and gives a concrete recommendation on
+[Series index](README.md) · Previous: [12 — Audio, UI & Input](12-audio-ui-input.md)
+
+> **Reference notice:** This document is a source and design analysis of the original Jagged Alliance 2 v1.13 (`1dot13/source`) multiplayer networking layer (`Multiplayer/`, `Ja2/MP*Screen.*`), map editor (`Editor/`), export tools (`export/src/`, `tools/`), and crash telemetry (`crash-telemetry/`), kept as reference material for Granaderos' browser adaptation. It is **not** a description of Granaderos' current browser implementation. See the [series index](README.md) for the full reference set. In the current repository layout, the C++ engine submodule lives at `reference/native/engine/` (referred to below as `engine/`), and the browser modules live under `packages/game/` and `apps/web/` (referred to below by their earlier paths `game/` and `web/`).
+
+**Scope:** Translation guide and scoping inventory for deciding what
+(if anything) of the native multiplayer stack and the map editor applies to the
+browser game. It inventories the native code, documents the
+compile-time flags that govern cooperative play, and records recommendations on
 what to port, what to defer, and what to leave out of scope.
 
 **Source of truth:** `engine/Multiplayer/`, `engine/Ja2/MP*Screen.*`, `engine/Editor/`,
@@ -14,7 +17,7 @@ build configuration only** — it does not trace full `.cpp` bodies.
 
 **Companion docs:** [02 — Tile Engine](02-tile-engine.md) owns the isometric renderer and
 world data; [11 — Data Assets](11-data-assets.md) owns asset pipelines. This doc reuses
-02's map-format section for the browser map-editor MVP (§7).
+02's map-format section for the browser map-editor MVP (§6).
 
 ---
 
@@ -132,7 +135,7 @@ N/S/E/W/center/isolated points, place-item, select-brush, fill-area, undo, erase
 
 | Native feature | Web portability | Notes |
 |---|---|---|
-| Terrain draw/erase/fill | **High** | Maps to the tile grid in `game/maps.js`; see §7 MVP. |
+| Terrain draw/erase/fill | **High** | Maps to the tile grid in `game/maps.js`; see §6 MVP. |
 | Buildings (walls/doors/windows/roofs) | **Medium** | `game/maps.js` uses `blocked` footprints; needs a building primitive. |
 | Items placement | **Medium** | Reuses item stats from [05 — Weapons & Items](05-weapons-items.md). |
 | Merc/NPC placement | **Medium** | Reuses roster from [04 — Soldiers & Stats](04-soldiers-stats.md). |
@@ -171,7 +174,7 @@ is the bridge between native `.sti`/`.slf`/`.jsd` data and the browser. Relevant
 
 | File | Role |
 |---|---|
-| `symbolize_crash.cpp` | Reads a crash report written by `sgp::writeExceptionBacktrace` and resolves addresses against a build's PDB. C++23 (game is C++17). |
+| `symbolize_crash.cpp` | Reads a crash report written by `sgp::writeExceptionBacktrace` (in `sgp/`, the engine's Standard Gaming Platform layer) and resolves addresses against a build's PDB. C++23 (game is C++17). |
 | `CMakeLists.txt` | Builds `symbolize_crash`; links `dbghelp.lib`. |
 
 ### 4.4 `engine/crash-telemetry/` — Cloudflare Worker sink

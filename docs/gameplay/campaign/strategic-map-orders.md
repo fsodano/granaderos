@@ -3,13 +3,13 @@
 > **Implementation on main.** The road and squad-travel changes merged through [PR #326](https://github.com/fsodano/granaderos/pull/326)
 > at `b8b14e2d544cec16535edbb26624ef80ac502720` and are included in main `462abba277a47dafbfed1f60fc4529c8a4721cdc`.
 > The dated checks below retain their original scope. They do not establish a passing full campaign gate or full JA2 parity.
-> See [published progress](../../verification/published-progress.md) for the broader acceptance gaps.
+> See [version 0.1 status](../../verification/version-0.1.md) for published-main acceptance and its gaps.
 
-The original interface verification below is from 12 September 2026. The current controls and road costs were updated on 9 October 2026; see [sector road evidence](../../verification/sector-roads-2026-10-09.md). These checks do not establish full JA2 parity.
+On the strategic campaign screen, players preview, queue, cancel, and advance squad routes directly from the left roster and the geographic map. The original interface verification below is from 12 September 2026. The current controls and road costs were updated on 9 October 2026; see sector road evidence. These checks do not establish full JA2 parity.
 
 ## Reference and controls
 
-The user supplied [Traveling South](https://www.youtube.com/watch?v=D36iuSGsFdk). The opening minute shows the compact roster with location and destination columns, a map route with an ETA, and the clock on the same screen. The full [92-video gameplay playlist](https://www.youtube.com/playlist?list=PLvqxe4XbcSiHQibcWJweNuoDEUKHwlZuW) is reference material for subsequent work. Only the early movement sequence was sampled for this change; the entire playlist has not been reviewed.
+In the [Traveling South](https://www.youtube.com/watch?v=D36iuSGsFdk) JA2 gameplay video (source `V` in [the parity audit](../../verification/ja2-parity-audit.md#scope-and-evidence)), the opening minute shows the compact roster with location and destination columns, a map route with an ETA, and the clock on the same screen. The full [92-video gameplay playlist](https://www.youtube.com/playlist?list=PLvqxe4XbcSiHQibcWJweNuoDEUKHwlZuW) is reference material for subsequent work. Only the early movement sequence was sampled for this change; the entire playlist has not been reviewed.
 
 1. Open **Destino** for a person in the left roster. This selects that person's real squad. Map squad markers also select their existing squad.
 2. Point at a destination to preview a legal path. Click to choose it. The route controls show the path, travel hours and transport.

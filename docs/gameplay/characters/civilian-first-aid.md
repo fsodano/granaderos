@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Equip bandages in the main hand, then click a visible injured civilian. The soldier approaches and uses one dressing. Mouse and keyboard target activation use the same command. The talk cursor still opens dialogue. The cursor shows the combined movement and treatment cost; exploration spends time and movement energy, with no AP deduction.
+On the tactical battlefield and strategic campaign ledger, equip bandages in the main hand, then click a visible injured civilian. The soldier approaches and uses one dressing. Mouse and keyboard target activation use the same command. The talk cursor still opens dialogue. The cursor shows the combined movement and treatment cost; exploration spends time and movement energy, with no AP deduction.
 
 Ordinary field treatment stops bleeding and covers existing wounds without restoring normal health. Critical treatment can restore a living casualty toward 15 HP, using one finite dressing per stroke. Several strokes may be needed. Treatment grants no energy or AP, does not stand the patient up, and cannot revive a corpse or remove the record of a player attack. A treated character can still refuse conversation. No generic loyalty reward is added. See [critical first aid](critical-first-aid.md).
 

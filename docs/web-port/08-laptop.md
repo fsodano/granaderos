@@ -1,18 +1,17 @@
 # 08 — Laptop: The Campaign Desk, Recruiting, and the Arms Trade
 
-**Audience:** a web engineer with **no Jagged Alliance 2 experience** who must reproduce the
-laptop (the in-game computer) in the browser clone. This document is a translation guide from
-the C++ engine (`engine/Laptop/`, 190 files) to the existing React surface
+[Series index](README.md) · Previous: [07 — Strategic Layer](07-strategic-layer.md) · Next: [09 — Dialogue, Quests & NPCs](09-dialogue-quests.md)
+
+> **Reference notice:** This document is a source and design analysis of the original Jagged Alliance 2 v1.13 (`1dot13/source`) in-game laptop subsystem (`Laptop/`) kept as reference material for Granaderos' browser adaptation. It is **not** a description of Granaderos' current browser implementation. See the [series index](README.md) for the full reference set. In the current repository layout, the C++ engine submodule lives at `reference/native/engine/` (referred to below as `engine/`), and the browser modules live under `packages/game/` and `apps/web/` (referred to below by their earlier paths `game/` and `web/`).
+
+**Scope:** Translation guide from
+the C++ engine (`engine/Laptop/`, 190 files) to the browser UI surface
 (`web/app/Desk.tsx`, `Recruitment.tsx`, `Armory.tsx`, `CharacterCreator.tsx`) and the pure-JS
 rules modules (`game/recruitment.js`, `game/contracts.js`, `game/campaign.js`,
 `game/equipment.js`). It covers **page navigation, data sources, and money/transaction logic
-only** — the strategic map screen (`MAP_SCREEN`) and tactical combat are owned by other docs.
+only** — the strategic map screen (`MAP_SCREEN`) is covered in [07 — Strategic Layer](07-strategic-layer.md) and tactical combat in [03 — Tactical Combat Core](03-tactical-combat.md).
 
-**Source of truth:** `engine/Laptop/`. The web game already has a working desk
-(`web/app/Desk.tsx`), a contract catalogue (`web/app/Recruitment.tsx`), an armory
-(`web/app/Armory.tsx`), and a custom-officer wizard (`web/app/CharacterCreator.tsx`); this
-document maps the C++ engine onto that existing surface so the web clone can be pushed toward
-parity.
+**Source of truth:** `engine/Laptop/`. This document maps the C++ engine structures onto the browser desk (`web/app/Desk.tsx`), contract catalogue (`web/app/Recruitment.tsx`), armory (`web/app/Armory.tsx`), and custom-officer wizard (`web/app/CharacterCreator.tsx`) as reference material.
 
 ---
 

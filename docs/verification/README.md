@@ -2,241 +2,64 @@
 
 [Documentation index](../README.md)
 
-Read the [shipping campaign status](../plans/core-campaign-v0.1.md) for current
-checks and remaining acceptance work. The [campaign separation record](campaign-engine-separation-2026-10-10.md)
-records the engine/content boundary. The [version 0.1 status](version-0.1.md)
-records the earlier tagged checkpoint. A tag does not establish
-complete game acceptance or publish a new GitHub Pages deployment.
+This folder keeps the game's status checkpoints and its classic Jagged Alliance 2
+(JA2) parity baseline. Each record states its own date, source and limits; a
+passing record is a snapshot for that source, not proof about a later version.
+[Version 0.1 status](version-0.1.md) records the tagged checkpoint, and the
+[shipping campaign plan](../plans/core-campaign-v0.1.md) records the current
+acceptance work. Read [which document governs status](../README.md#which-document-governs-status)
+before drawing completion claims.
 
-The [published progress ledger](published-progress.md) and
-[requirement register](requirements.json) preserve feature evidence and design
-history. Some rows describe earlier sources. Use the source, date and limits
-of each check when assessing the current version.
+The dated per-feature verification receipts and the machine-readable requirement
+register that this folder previously held were removed in November 2026. The
+[parity audit](ja2-parity-audit.md) retains the full requirement rows, their
+sources and their acceptance conditions; earlier receipts and register rows
+remain available in Git history.
 
-## Current version and recent evidence
+## Status checkpoints
 
-- [Repository layout, 28 October](repository-layout-2026-10-28.md)
-  — source navigation, current directory responsibilities, and documentation link checks.
-- [Domain architecture, 28 October](domain-architecture-2026-10-28.md)
-  — implemented domain, use-case, editor, persistence, and browser checks with explicit limits.
-
-- [Shipping campaign status, 12 October](../plans/core-campaign-v0.1.md)
-  — merged fixes, scoped regression receipts, published 3D startup and open ending/release checks.
-- [Editor experience, 11 October](../evidence/editor-experience-2026-10-11/README.md)
-  — delivered bounded UX/DX checks and production route review, with preview and file-picker limits.
-- [Campaign studio checks, production export and browser limits](../evidence/campaign-studio-2026-10-10/README.md)
-  — portable projects, real resource bytes, ZIP/folder validation, IndexedDB and scoped production browser results; file-import and test-save reimport limits are explicit.
-
-- [Engine and campaign separation, 10 October](campaign-engine-separation-2026-10-10.md)
-  — local packages, isolated saves and editors, structural checks and bounded browser evidence.
-- [Version 0.1 scope and remaining work](version-0.1.md).
-- [Shared wall edges](wall-edges.md) — current map format, bounded checks and
-  later campaign limits; earlier campaign saves are not guaranteed compatible.
-- [Visible firearm projectiles, 10 October](visible-firearm-projectiles-2026-10-10.md).
-- [Campaign controller checks, 10 October](../evidence/campaign-controller-safety-2026-10-10/verification.md)
-  — dated complete run and its failed campaign gate; later checks stay separate.
-- [Pending work integration, 9 October](pending-work-integration-2026-10-09.md)
-  — merged source inventory and dated validation limits.
-- [Connected sector roads, 9 October](sector-roads-2026-10-09.md).
-- [Accepted 3D graphics delivery, 9 October](tactical-reference-delivery-2026-10-09.md).
-- [Integrated 3D gameplay check, 8 October](latest-3d-gameplay-2026-10-08.md).
-- [Campaign creation and sharing](../plans/campaign-authoring.md)
-  — the studio supports campaign authoring; community publishing remains future work.
-
-## Historical consolidation and alpha records
-
-- [Latest build consolidation](latest-build-consolidation.md) — PR #139
-  publication and local alpha evidence from 1 October; the title is historical.
-- [Finite service-equipment return](alpha-service-equipment-return-2026-10-01.md)
+- [Version 0.1 scope and validation](version-0.1.md) — the tagged version's
+  scope, checks and known limits.
+- [Latest build consolidation](latest-build-consolidation.md) — the PR #139
+  publication and its 1 October checks.
+- [Alpha service-equipment return](alpha-service-equipment-return-2026-10-01.md)
   — the dated candidate and its browser/save checks.
-- [Retiro walking and retained scenery](retained-scenery-movement-2026-09-29.md) — historical local checks.
-- [Local enemy presentation](local-enemy-playback-2026-09-29.md) — historical local checks.
-- [Local walking continuity](local-walking-continuity-2026-09-29.md) — historical local checks.
+- [Formal audit, 27 September](formal-audit-2026-09-27.md) — the historical
+  cross-branch audit and its evidence limits.
 
-## Feature verification records
+## Architecture and layout acceptance
 
-These records establish their stated source and scope. They include accepted
-features and historical checks. For example, older supplier and artillery
-commerce records do not enable commerce in version 0.1. A passing feature
-record does not prove complete acceptance of a later version.
+- [Domain architecture, 28 October](domain-architecture-2026-10-28.md) — the
+  implemented domain, use-case, editor, persistence and browser checks of the
+  0.2.0 reorganization, with explicit limits.
+- [Repository layout, 28 October](repository-layout-2026-10-28.md) — source
+  navigation and directory responsibilities of the same reorganization.
+- [Engine and campaign separation, 10 October](campaign-engine-separation-2026-10-10.md)
+  — the engine/content boundary record.
 
-- [Persistent campaign ammunition](strategic-ammunition-custody.md).
+## Classic JA2 parity baseline
 
-- [Shared four-family catalog and advanced local integration](four-ammunition-families.md).
+- [Classic JA2 gameplay parity audit](ja2-parity-audit.md) — the 87 requirement
+  rows with their G/M/W/V sources, status meanings, and per-row evidence and
+  remaining work.
+- [Live verification record](ja2-live-verification.md) — the dated live browser
+  checks cited by the audit rows.
+- [Complete video requirement map, 3 October](ja2-video-review-2026-10-03.md) —
+  the narrated-video requirements and their sampled footage evidence.
+- [Gameplay overview review, 30 September](ja2-gameplay-review-2026-09-30.md) —
+  the Wikipedia overview mapped to the audit rows, with open design questions.
+- [Tactical verification](tactical-verification.md) — project context for the
+  tactical checks cited by the audit's sources.
 
-- [Safe migration to an implicit ignition kit](implicit-ignition-integration.md).
+## Workspace and feature acceptance
 
-- [Weapon ammunition selection in the story editor](authored-ammunition-family.md).
+- [Development-workspace acceptance](gameplay-completion.md) — the dated
+  results of the separate advanced-gameplay checkout.
+- [Persistent campaign ammunition](strategic-ammunition-custody.md) —
+  ammunition ownership across sector visits and its limits.
+- [Shared wall edges](wall-edges.md) — the current cell-edge wall, door and
+  window format, its checks and later campaign limits.
 
-- [Compatible ammunition and implicit ignition kit](typed-ammunition.md) — merged PR #130.
-
-- [Shared desktop inventory pockets](shared-inventory-pockets.md) — merged PR #128.
-
-- [Observed enemy turns and retained scenery](visible-enemy-turns.md)
-
-- [Configure firearm stock attacks in the story editor](authored-firearm-melee.md)
-
-- [Actual held firearm stock attacks](held-firearm-buttstock.md)
-
-- [Collect loose equipment beneath residents](occupied-ground-collection.md)
-
-- [Choose ground supply bundles and exact quantities](partial-ground-supply-pickup.md)
-
-- [Shared loose cartridges and bounded settlement](adjacent-cartridge-transfer.md)
-
-- [Persistent personal supply bundles](drop-personal-supplies.md)
-
-- [Exact personal supply handover](adjacent-supply-transfer.md)
-
-- [Give a held weapon to a companion](held-weapon-transfer.md)
-
-- [Leave held weapons on the field](drop-held-weapons.md)
-
-- [Authored workshop funds and local artillery prices](authored-artillery-trading.md)
-
-- [Forwarding stored artillery to the front](depot-artillery-transport.md)
-
-- [Finite local artillery trading](finite-artillery-trading.md)
-
-- [Authored artillery transport rules](authored-artillery-transport.md)
-
-- [Finite artillery transport and local depots](finite-artillery-transport.md)
-
-- [Authored artillery models and images](authored-artillery-profiles.md)
-- [Autonomous local artillery crews](autonomous-artillery-crews.md)
-- [Authored finite artillery replenishment](authored-artillery-supply.md)
-- [Artillery loading by the actual crew](artillery-crew-loading.md)
-- [Stationed artillery and finite issue](stationed-artillery.md)
-- [Formal implementation audit — 27 September](formal-audit-2026-09-27.md)
-- [Machine-readable requirement register](requirements.json)
-
-- [Published implementation and verification ledger](published-progress.md)
-- [Authored world presence verification](character-presence.md)
-- [Retiro opening verification](retiro-opening.md)
-- [Civilian state verification](civilian-state.md)
-- [Civilian wounds outside the loaded sector](unloaded-civilian-bleeding.md)
-- [Wounds from actual world appearance](unseen-resident-wounds.md)
-- [Known residents returning from service](civilian-service-return.md)
-- [Military wounds during strategic hours](strategic-military-wounds.md)
-- [Local militia medical care](strategic-militia-care.md)
-- [Individual militia promotion courses](militia-training-identities.md)
-- [Militia wounds outside the loaded sector](unloaded-militia-wounds.md)
-- [Combat-earned militia promotion](militia-combat-progression.md)
-- [Authored militia promotion rules](authored-militia-progression.md)
-- [Choose militia instruction](militia-course-choice.md)
-- [Autonomous militia combat and controls](autonomous-militia-combat.md)
-- [Saved local militia patrols](militia-exploration-patrols.md)
-- [Authored militia patrol rules](authored-militia-patrols.md)
-- [City militia distribution and physical arrivals](city-militia-distribution.md)
-- [Finite civilian supplies](civilian-finite-supplies.md)
-- [Authored resident verification](authored-residents.md)
-- [Death successor verification](death-successors.md)
-- [Registered tactical order synchronization](tactical-order-sync.md)
-- [Authored local contracts](local-contracts.md)
-- [Authored dialogue choices](authored-dialogues.md)
-- [Dialogue choice conditions](dialogue-conditions.md)
-- [Personal supply conditions](story-supply-conditions.md)
-- [Authored health conditions for dialogue and story](story-health-conditions.md)
-- [Authored first-aid responses](authored-treatment-speech.md)
-- [Dialogue payments and rewards](dialogue-payments.md)
-- [Authored quest states and journal](authored-quests.md)
-- [Automatic quest deadlines](quest-deadlines.md)
-- [Required character survival](quest-survival.md)
-- [Dialogue-triggered local meetings](dialogue-movements.md)
-- [Arrival-gated dialogue and quest effects](meeting-arrivals.md)
-- [Ending a local meeting](meeting-release.md)
-- [Authored cartridge price](authored-cartridge-price.md) — pinned purchase costs; persistent custody supersedes return refunds.
-- [Authored firearm preparation](authored-weapon-readiness.md) — included first-shot cost, held firing position and saved controls.
-- [Partial firearm loading](partial-firearm-reloads.md)
-- [Authored melee weapons](authored-blades.md)
-- [Finite secondary weapon recovery](secondary-weapon-recovery.md)
-- [Primary and secondary troop blade loadouts](force-blades.md)
-- [Explicit artillery selection](explicit-artillery-selection.md)
-- [Initial funds and cartridge allotments](campaign-supply-rules.md)
-- [Starting territorial control and loyalty](starting-territory.md)
-- [Configurable campaign headquarters](campaign-headquarters.md)
-- [Import ports and saved delivery windows](import-supply-rules.md)
-- [Authored campaign chapters and endings](campaign-story.md)
-- [Empty hands and retained secondary weapons](empty-hand-melee.md)
-- [Adjacent recovered weapon handover](adjacent-weapon-transfer.md)
-- [Drop and recover carried weapons](drop-recovered-weapons.md)
-- [Independent campaign casts](campaign-cast.md)
-- [Assigned strategic campaign roles](campaign-roles.md)
-- [Authored foundry project and workshop](foundry-project.md)
-- [Project conditions in chapters and dialogue](project-conditions.md)
-- [Deceased contracts and saved continuation](contract-casualty-presence.md)
-- [Military bodies and finite equipment on reentry](military-remains.md)
-- [San Lorenzo settlement after exploration](post-victory-mission.md)
-- [Fresh mixed and hired coastal opening routes](fresh-coastal-opening.md)
-- [Fresh opening with a created officer and local recruits](local-recruit-opening.md)
-- [Fresh historical victory and saved continuation](fresh-historical-ending.md)
-- [Fresh Cuyo preparation and late commander recruitment](fresh-cuyo-preparation.md)
-- [Explicit loss of indispensable historical actors](historical-campaign-loss.md)
-- [Essential-character loss with a full diary](civilian-loss-log.md)
-- [Fresh northern continuation through Yatasto](fresh-northern-opening.md)
-- [Character starting supplies](character-starting-supplies.md)
-- [Character starting condition](character-starting-condition.md)
-- [Saving authored cartridge allocations](authored-cartridge-save.md)
-- [Independent post campaign](independent-post-campaign.md)
-- [Strategic medical care](strategic-medical-care.md)
-- [Local workshop service](local-workshop-service.md)
-- [Explicit strategic rest](strategic-rest.md)
-- [Authored care and rest rules](authored-care-rules.md)
-- [Finite field first aid and persistent wounds](finite-first-aid.md)
-- [Critical military condition and retained casualties](critical-military-condition.md)
-- [Loaded civilian breath recovery](civilian-breath-recovery.md)
-- [Story editor](../development/story-editor.md)
-- [Sector editor](../development/sector-editor.md)
-
-The records below retain their original checkout and date. Some implementations
-were merged later. Their test counts are not a fresh check of current `main`.
-[Workspace gameplay acceptance](gameplay-completion.md) records its dated
-failures. The [parity audit](ja2-parity-audit.md) combines the original assessment
-with named published receipts; full current parity remains open.
-
-## Dated workspace assessments and parity requirements
-
-- [Gameplay completion work](gameplay-completion.md) *(workspace)*
-- [Classic JA2 gameplay parity audit](ja2-parity-audit.md) — dated assessment and
-  named published receipts.
-- [Gameplay follow-up — 27 September 2026](gameplay-follow-up-2026-09-27.md) *(workspace)*
-- [Campaign start, movement and performance — 27 September 2026](gameplay-and-campaign-performance-2026-09-27.md) *(workspace)*
-- [Current worktree regression audit — 2026-09-26](current-worktree-regressions-2026-09-26.md) *(workspace)*
-- [Main campaign integration audit — 2026-09-26](main-campaign-integration-2026-09-26.md) *(workspace)*
-- [Equipment redesign acceptance and current progress](equipment-redesign-2026-09-26.md) *(workspace)*
-
-## Bounded route and tactical records
-
-These records describe their stated checkpoint. Later changes can alter their
-results. Read their limits before using them as acceptance evidence.
-
-- [Opening campaign with turning AP](opening-control.md) *(workspace)*
-- [Northern campaign route verification](northern-route.md) *(workspace)*
-- [Verified advance to the Mendoza foundry](mendoza-route.md) *(workspace)*
-- [JA2 gameplay: live verification record](ja2-live-verification.md) *(workspace)*
-- [Tactical simulation verification](tactical-verification.md)
-
-[Raw evidence](../evidence/README.md) holds machine-readable results. [Archived
-audits](../archive/README.md) retain earlier findings for traceability.
-
-A rules test, prepared scene, save continuation or isolated checkout verifies
-only that scope. A full campaign claim requires a complete route with real
-resources, casualties and campaign settlement. Documentation link checks do not
-establish gameplay correctness.
-
-[Complete parallel CI verification](parallel-verification.md) documents the full
-test partition and retained publication gates. It is infrastructure evidence.
-
-- [Enemy-turn worker export](enemy-worker-export.md): production URL correction and release guard.
-
-- [Walking frame continuity](walking-frame-continuity.md): cell waits, fractional positions and remaining artwork limits.
-
-- [Advanced local supply-art integration](local-supply-art-2026-09-29.md): bounded port 3000 checks, separate from published gameplay.
-
-- [Authored ammunition suppliers](authored-ammunition-markets.md): town stock, prices, replenishment and automatic preparation rules.
-
-- [Alternative firearm loads](alternate-firearm-loads.md): authored effects, selection, unloading and conserved family custody.
-
-- [Civilian weapon custody](civilian-weapon-custody.md): finite recovery of configured weapons, loaded state and service continuity.
-
-- [JA2 gameplay overview review, 30 September](ja2-gameplay-review-2026-09-30.md): existing coverage and proposed design clarifications; no new gameplay acceptance.
+Raw measurement archives linked from these records live under `evidence/`.
+Keep new verification notes with an explicit source, date, tested scope and
+limits; keep raw measurements in `evidence/` and link them from the record.

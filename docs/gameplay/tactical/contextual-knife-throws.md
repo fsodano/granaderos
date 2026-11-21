@@ -2,10 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-This implements the missing thrown-knife part of audit C09. The existing facón
-(1813) can be thrown when it is in the active hand. A facón in a pocket, a
+During tactical exploration and turn-based combat, a combatant holding the facón (1813) in the active hand can aim and throw it at a person or ground cell as a physical, recoverable projectile. This implements the missing thrown-knife part of parity audit row [C09](../../verification/ja2-parity-audit.md) (blades and thrown knives support quiet attacks and short-range tradeoffs). A facón in a pocket, a
 fixed bayonet, a sabre, a gun butt and empty hands do not qualify. Character
 identity does not grant a weapon or a spare.
 
@@ -62,7 +61,7 @@ a dedicated illustrated knife-throw pose remains an art task.
 
 ## Reference and period adaptation
 
-Patusco's JA2 Strategy Guide 1.3, pp. 28–29 and 63, describes knife attacks,
+Patusco's JA2 Strategy Guide 1.3, pp. 28–29 and 63 ([G28–29, G63](../../verification/ja2-parity-audit.md#scope-and-evidence)), describes knife attacks,
 aiming and stealth tradeoffs. The implementation also checked JA2 Stracciatella
 at pinned revision `a06f4896c43c76396529e415a29a8ca26b00f9f1`:
 

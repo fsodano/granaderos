@@ -2,10 +2,10 @@
 
 ## Published opening
 
-The published startup uses Retiro-only control and no extra academy payment.
+On the strategic campaign layer, the published startup uses Retiro-only control and no extra academy payment.
 Custom creation is optional and free through the current creator; a pending paid
 hire starts service on arrival. Retiro supplies the first squad. The new
-[acceptance record](../../verification/retiro-opening.md) covers startup, saves
+acceptance record covers startup, saves
 and a real first conquest on the pesos-only published runtime. Its results are
 separate from the development-workspace records below.
 
@@ -13,10 +13,10 @@ separate from the development-workspace records below.
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
 > **Opening-state reference.** The later [campaign introduction](campaign-intro.md)
-> runs before recruitment. The [27 September campaign record](../../verification/gameplay-and-campaign-performance-2026-09-27.md)
+> runs before recruitment. The 27 September campaign record
 > describes the free one-person start. Browser and route results below retain
 > their original checkpoint scope.
 

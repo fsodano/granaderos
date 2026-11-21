@@ -2,7 +2,7 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
 A conscious, awake soldier in a friendly, unoccupied town can equip a weapon from their own backpack through **Equipo del sector → Con el combatiente → Equipar principal/secundaria**. Scouting is required to collect or drop field items, but not to use a weapon already carried. Primary firearms and blades use the existing tactical inventory swap planner. The shared hand controls also support compatible physical firearms in the other hand.
 

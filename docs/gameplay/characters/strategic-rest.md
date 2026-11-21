@@ -1,8 +1,8 @@
 # Descanso entre combates
 
-[Personajes](README.md) · [Verificación](../../verification/strategic-rest.md)
+[Personajes](README.md) · Verificación
 
-En el mapa, abrí **Organizar escuadras**. En **Atención médica y descanso**,
+Esta guía describe el comportamiento publicado en el mapa estratégico de campaña. En el mapa, abrí **Organizar escuadras**. En **Atención médica y descanso**,
 seleccioná **Descanso** para la persona y avanzá el tiempo. La tabla muestra su
 energía, su fatiga y el resultado de cada hora.
 

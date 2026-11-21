@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-The sector equipment panel shows both hands, the general outfit slot and the same four large and eight small pockets used in tactical inventory. Click placement and pointer dragging connect all fifteen slots. Keyboard activation uses the same selection and destination controls. Right-click opens item details or cancels a pending selection. See [click placement](equipment-click-placement.md) for the shared controls and finite outfit exchanges.
+The sector equipment panel on the campaign map shows both hands, the general outfit slot and the same four large and eight small pockets used in tactical inventory. Click placement and pointer dragging connect all fifteen slots. Keyboard activation uses the same selection and destination controls. Right-click opens item details or cancels a pending selection. See [click placement](equipment-click-placement.md) for the shared controls and finite outfit exchanges.
 
 The campaign dispatcher uses the shared pocket and equipment-placement planners. It checks the soldier's presence and condition, sector control, pending encounters and both slot fingerprints before changing equipment. Personal equipment can be arranged before the first tactical visit; collecting items from the ground still requires a recognized, safe sector. Campaign arrangement consumes no AP, time, energy, money or supplies.
 

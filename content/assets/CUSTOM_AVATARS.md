@@ -1,5 +1,7 @@
 # Fictional player portraits
 
+This asset source guide documents the four original generated player-character
+portraits under `content/assets` and their rebuild script.
 Four original player identities were generated with the built-in image generator,
 using separate prompts and no reference face or historical portrait input.
 They are fictional depictions in clothing inspired by the Río de la Plata circa

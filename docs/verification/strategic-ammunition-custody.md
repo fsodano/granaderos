@@ -1,13 +1,13 @@
 # Persistent campaign ammunition
 
-This feature is verified locally on `codex/strategic-ammunition-custody`, based
-on published commit `b6b081c9e206d8dda5cec00a10b24c1ebe02c67c` (PR #134).
+This dated verification record (30 September 2026) captures automated, campaign-route, and browser checks for persistent strategic ammunition custody across sector visits, verified locally on `codex/strategic-ammunition-custody` based
+on published commit `b6b081c9e206d8dda5cec00a10b24c1ebe02c67c` ([PR #134](https://github.com/fsodano/granaderos/pull/134), 30 September 2026).
 It adds strategic ownership to the published four-family runtime. The larger
 advanced physical-inventory implementation remains separate.
 
 Runtime/test source: `e90895c5bb0eadeb168533be118097300fba034e`.
 [PR #135](https://github.com/fsodano/granaderos/pull/135) merged this delivery as `6772c1cb719d729ae2b6da27728ef88cfc60f5cc`.
-All five final-head checks passed in [run 36641090948](https://github.com/fsodano/granaderos/actions/runs/36641090948); this record does not claim completion of the wider game.
+All five final-head checks passed in [run 36641090948](https://github.com/fsodano/granaderos/actions/runs/36641090948); the results below are a snapshot for that source and do not claim completion of the wider game. (Note: equipment commerce and merchant stock described below reflect this 30 September 2026 delivery; commerce was later disabled before the [version 0.1 checkpoint](version-0.1.md).)
 
 ## Rules and controls
 
@@ -32,7 +32,7 @@ Merchants have finite stock. Initial capacities are 180 musket, 60 rifle,
 180 pistol and 120 shot rounds. Each 24 hours of controlled, supplied time adds
 18, 6, 18 and 12 rounds respectively, up to those caps. Stock and replenishment
 time survive saves. Each town has its own stock. Market tuning was fixed in this delivery. The following
-[authored supplier delivery](authored-ammunition-markets.md) adds its editor controls.
+authored supplier delivery adds its editor controls.
 
 Sector return keeps actual ammunition. It does not refund unspent rounds.
 Loaded charges and partial reload work stay with the primary firearm. Changing
@@ -100,7 +100,7 @@ Machine-readable results are in the
 
 ## Limits
 
-This does not close ITEM-01, JA2-I08, STORY-06 or INTEGRATION-01. Alternative loads
+This does not close [I08](ja2-parity-audit.md) (or the retired register rows `ITEM-01`, `JA2-I08`, `STORY-06`, and `INTEGRATION-01` from `requirements.json`, removed in November 2026). Alternative loads
 for the same gun, dealer authoring, civilian equipment custody and the advanced
 physical inventory adapter remain open. A scripted complete stock campaign does
 not establish full JA2 parity, all authored campaigns or loaded-browser speed.

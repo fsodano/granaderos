@@ -1,8 +1,10 @@
 # Gameplay completion work
 
 > **Dated development record.** The current section distinguishes published
-> evidence from the historical checkout notes below. See
-> [published progress](published-progress.md) for individual requirements.
+> evidence from the historical checkout notes below. See the
+> [parity audit](ja2-parity-audit.md) for individual requirement rows.
+
+This dated verification log tracks campaign route acceptance, tactical gameplay integration, and 3D presentation checkpoints from 21 September through 7 October 2026 across the development workspace and published `main`. Each section below is a snapshot for its stated date and source revision (including commit `2c121e3` and [PR #185](https://github.com/fsodano/granaderos/pull/185)–[PR #188](https://github.com/fsodano/granaderos/pull/188)). Requirement row codes (`T01`–`T10`, `C01`–`C12`, `I01`–`I10`, `V01`–`V09`, `P01`–`P05`, `A01`–`A07`, `R01`–`R08`, `S01`–`S09`, `W01`–`W10`, `E01`–`E05`) refer to rows of the [classic JA2 gameplay parity audit](ja2-parity-audit.md). Register IDs (`WIN-01`, `E-FRESH-ENDING`, `POST-01`, `FIX-01`–`FIX-04`, `REL-02`) refer to rows of the retired requirement register (`requirements.json`, removed in November 2026) and are summarized in row `W10` of the parity audit.
 
 ## Current acceptance — 7 October 2026
 
@@ -20,7 +22,7 @@ current state of the merged game.
   still apply, including cleared-field evacuation rather than an accepted
   stealth rescue through live hostile contact.
 - The normal battlefield uses the native 3D human library, held equipment and
-  colonial scenery. [The October review](three-gameplay-review-2026-10-07.md)
+  colonial scenery. The October review
   records the movement, rifle loading, clothing, roof and building corrections
   merged through PRs #185–#188, plus their browser evidence and remaining limits.
 - The last broad routine check ran 745 files and 5,216 tests in 8.44 minutes.
@@ -65,10 +67,10 @@ over the historical progress notes below.
 - Prisoner rescue, campaign recovery and remaining combat-route failures must
   still pass with real resources, actual casualties and physical evacuation.
 
-See [latest gameplay, intro and validation results](gameplay-follow-up-2026-09-27.md),
-[current changes, tests and performance evidence](gameplay-and-campaign-performance-2026-09-27.md),
-[previous regressions and route evidence](current-worktree-regressions-2026-09-26.md),
-[main-campaign integration](main-campaign-integration-2026-09-26.md), and
+See latest gameplay, intro and validation results,
+current changes, tests and performance evidence,
+previous regressions and route evidence,
+main-campaign integration, and
 [the full parity audit](ja2-parity-audit.md).
 
 ## Historical progress snapshot — 22 September 2026 (superseded)
@@ -157,7 +159,7 @@ The objective is complete Granaderos gameplay with classic JA2 parity where appr
 ## Integrated verification progress
 
 - The first full current-workspace run reported 2,530 passes, three failures (including the failed parent scenario) and three dependent skips. The causes were an old fixed hiring total and a rescue plan that could no longer afford the pending elite prices.
-- The revised opening check uses the actual quoted contracts. The established-area route now passes all eight checks with no skips at the current prices; see [northern route](northern-route.md).
+- The revised opening check uses the actual quoted contracts. The established-area route now passes all eight checks with no skips at the current prices; see northern route.
 - A fresh Retiro-only paid force captures Buenos Aires, retains four real deaths, pays for medical recovery and replacement contracts, and saves successfully. It does not grant sectors or restore casualties. The initial six-person continuation loses at San Nicolás. A paid, equipped second squad wins the coordinated assault; the expanded fresh-route test passes. An initial San Lorenzo attempt lost the commander; the later coordinated victory is recorded below. The full fresh campaign remains open.
 - Coastal capture/defense checks also retain the blockade while another coastal force is waiting or engaged. The 24 focused capture and enemy-group checks pass.
 
@@ -547,7 +549,7 @@ The first full run exposed four legacy compatibility failures and is not a passi
 
 The final-blockade experiments remain unsuccessful. A fresh inspection confirms that all 48 paid recruits are dead in the accepted Humahuaca checkpoint, so rehiring cannot strengthen that particular route. This does not establish that the campaign is unwinnable.
 
-Exact depot artillery now transfers to finite local merchant stock when sold and returns with its identity, ammunition and unfinished loading when repurchased. Guards reject remote, hostile, unavailable and unaffordable transactions. Save validation prevents duplicate merchant/depot/deployed/convoy custody. The armory exposes prices, retained load and refusal reasons. Twenty-one focused trade, transport, merchant and render checks pass. Type checking and production build pass. A live isolated QA sale/reload/repurchase also passes. The full suite passes 2,669/2,669 tests with no skips in 355.6 seconds, including the continuous route through Humahuaca. The subsequently added loaded-stock refresh/capacity case passes in the final 21-test focused run. All 51 pre-existing changed files retain their original contents. See [artillery trading](../gameplay/campaign/artillery-trade.md) for limits; broader trading and campaign completion remain open.
+Exact depot artillery now transfers to finite local merchant stock when sold and returns with its identity, ammunition and unfinished loading when repurchased. Guards reject remote, hostile, unavailable and unaffordable transactions. Save validation prevents duplicate merchant/depot/deployed/convoy custody. The armory exposes prices, retained load and refusal reasons. Twenty-one focused trade, transport, merchant and render checks pass. Type checking and production build pass. A live isolated QA sale/reload/repurchase also passes. The full suite passes 2,669/2,669 tests with no skips in 355.6 seconds, including the continuous route through Humahuaca. The subsequently added loaded-stock refresh/capacity case passes in the final 21-test focused run. All 51 pre-existing changed files retain their original contents. See artillery trading for limits; broader trading and campaign completion remain open.
 
 
 ### Undeployed and emplaced artillery resale

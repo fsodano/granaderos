@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-The original JA2 manual describes nearby inventory transfers and passing or throwing an item to a squad member on printed page 23 ([manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf)). Granaderos already provides those player actions. Computer-controlled enemies and militia now use the same paid handover to supply an ally. The selection policy below is Granaderos tuning, not a claim about classic JA2's internal AI.
+During turn-based combat, computer-controlled enemies and autonomous local militia can approach and hand over reserve cartridges or a medical dressing to a nearby ally who has run out. The original JA2 manual describes nearby inventory transfers and passing or throwing an item to a squad member on printed page 23 ([M23](../../verification/ja2-parity-audit.md#scope-and-evidence), [manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf)). Granaderos already provides those player actions. Computer-controlled enemies and militia now use the same paid handover to supply an ally. The selection policy below is Granaderos tuning, not a claim about classic JA2's internal AI.
 
 ## Decisions and costs
 

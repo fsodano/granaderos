@@ -1,21 +1,22 @@
 # Browser campaign systems
 
-> **Implementation history.** This guide contains successive campaign checkpoints.
+> **Implementation history.** This guide contains successive campaign checkpoints
+> and later sections may describe earlier checkpoints that were later superseded.
 > Current published scope and approved changes are in the
-> [progress ledger](../verification/published-progress.md).
+> progress ledger.
 
-The requested delivery target is now a browser game. `packages/game/campaign.js` is the strategic reducer; `packages/game/data.js` contains authored Spanish game content. Source code and these documents remain English. This implementation reuses the requested historical structure and JA2-inspired data/mechanics; it does not execute the Windows JA2 binary in a browser.
+This architectural history documents the browser strategic campaign systems across their initial implementation checkpoints—covering state management, tactical handoff, recruitment, Royalist AI, logistics, persistent squads, and the 2026-09-05 contract and city redesign. The delivery target is a browser game. `packages/game/campaign.js` is the strategic reducer; `packages/game/data.js` contains authored Spanish game content. Source code and these documents remain English. This implementation reuses the [original historical conversion specification](../specification/original.txt) and JA2-inspired data/mechanics; it does not execute the Windows JA2 binary in a browser.
 
 > The approved ammunition change removes separate priming and flint inventory.
 > References to finite ignition supplies below describe earlier checkpoints.
-> See [compatible ammunition and implicit kit](../verification/typed-ammunition.md)
+> See compatible ammunition and implicit kit
 > for the current inventory, reload and resupply rules.
 
 For current item controls, wounds and assignments, see [JA2 gameplay](../gameplay/ja2-gameplay.md). Earlier immediate-healing and automatic health-recovery descriptions are superseded.
 
 ## Source references
 
-- User-provided **GRANADEROS: Jagged Alliance 2 Engine Historical Conversion Specification**, sections 1 (five-phase San Martín arc and six factions), 2 (recruitment, stipends, transports, foundries, economy and militia), 4 (thirteen sector table, supply routes, biomes and strategic AI), 5 (thirteen operatives), and 6 (weapons and equipment). The original supplied attachment is the authoritative requested design. Map grid labels are the specification's campaign references, not real geographic coordinates.
+- [Original supplied design (**GRANADEROS: Jagged Alliance 2 Engine Historical Conversion Specification**)](../specification/original.txt), sections 1 (five-phase San Martín arc and six factions), 2 (recruitment, stipends, transports, foundries, economy and militia), 4 (thirteen sector table, supply routes, biomes and strategic AI), 5 (thirteen operatives), and 6 (weapons and equipment). That document is the authoritative initial design. Map grid labels are the specification's campaign references, not real geographic coordinates.
 - Pinned [JA2 v1.13 source](https://github.com/1dot13/source/tree/ddb691318eb3dd0cdc6eab42139739b6d498c645): `gamedir/Data-1.13/TableData/Items/Weapons.xml`, `Items.xml`, `Magazines.xml`, `MercProfiles.xml`, and `Inventory/MercStartingGear.xml` informed weapon/profile field separation and ammunition capacity semantics. The `EXP` specification attribute means explosives skill, not experience level.
 - The prior native data conversion and generator remain in `reference/native/mod/` and `tools/generate_campaign.py` as historical work. They are not required for the browser game. Native engine language tables lack Spanish; browser strings are authored directly in Spanish.
 

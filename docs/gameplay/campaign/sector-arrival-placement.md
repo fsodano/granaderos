@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Fresh hostile arrivals now open an overhead placement screen before the battlefield. Select a soldier or its squad, then select a highlighted cell on the actual approach edge. **Distribuir** spreads the arrivals automatically; **Quitar selección del mapa** and **Quitar todos** clear draft positions. **Entrar al sector** becomes available when all arrivals have positions.
+Between strategic campaign travel and the tactical battlefield, fresh hostile arrivals now open an overhead placement screen before the battlefield. Select a soldier or its squad, then select a highlighted cell on the actual approach edge. **Distribuir** spreads the arrivals automatically; **Quitar selección del mapa** and **Quitar todos** clear draft positions. **Entrar al sector** becomes available when all arrivals have positions.
 
 The reference is the [JA2 Stracciatella placement implementation at a06f4896](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/a06f4896c43c76396529e415a29a8ca26b00f9f1/src/game/TileEngine/Tactical_Placement_GUI.cc). It supplies clear, spread, group and done controls, limits placement to insertion sides, and requires every selected arrival to be placed. Granaderos retains these rules with its existing sector geometry and campaign squads. The overhead terrain display is functional UI; this change does not replace artwork.
 

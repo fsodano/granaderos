@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-The six tactical cards show the two physical hand slots beneath each portrait. A two-handed firearm blocks the second slot. Pack contents do not appear as held equipment.
+During tactical exploration and turn-based combat, the six tactical roster cards display both physical hand slots beneath each soldier's portrait, along with red and green star indicators for close-combat mode and fitted weapon attachments. A two-handed firearm blocks the second slot. Pack contents do not appear as held equipment.
 
 - Red `*`: the active hand is in close combat (blade, bayonet thrust or gun strike).
 - Green `*`: that held weapon has a fitted attachment. A loose bayonet does not count.

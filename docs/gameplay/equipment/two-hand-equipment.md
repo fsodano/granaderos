@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Every soldier has two visible hand slots. Muskets, rifles, carbines, shotguns and the blunderbuss occupy both hands. The three pistol types use one hand. A second one-handed weapon can share the hands with a pistol. Selecting medical supplies, a tool or a usable supply item puts that item in the active hand and stores any displaced long gun in a real pocket.
+Across tactical exploration, turn-based combat, and the campaign equipment screen, every soldier has two visible hand slots. Muskets, rifles, carbines, shotguns and the blunderbuss occupy both hands. The three pistol types use one hand. A second one-handed weapon can share the hands with a pistol. Selecting medical supplies, a tool or a usable supply item puts that item in the active hand and stores any displaced long gun in a real pocket.
 
 The old primary/blade fields now represent owned item records, not extra free storage. A spare blade beside a two-handed gun consumes a pocket. A long gun put away needs a large pocket. A held unit of medical supplies, tools or usable supplies is excluded from pocket contents; the remaining quantity stays in pockets. Explicitly freeing the hands checks the space needed to store all weapons. Selecting equipment fails before spending AP if the final layout cannot fit.
 

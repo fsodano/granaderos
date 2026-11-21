@@ -2,26 +2,33 @@
 
 [Documentation index](../README.md) · [Development](../development/README.md)
 
-This series explains the JA2 v1.13 source and its possible browser adaptations.
-Each document includes source references, mappings to `game/` and `web/`, and a
-reproduction checklist. Source paths and line numbers refer to the analyzed
-engine revision and can change.
+This series analyzes the original Jagged Alliance 2 v1.13 (`1dot13/source`)
+codebase and design as reference material for the Granaderos browser adaptation.
+It does **not** describe Granaderos' current browser implementation.
 
-The reference engine is the `engine/` submodule (`1dot13/source`), built with
-C++17 and CMake for Windows x86. The playable browser game uses JavaScript rules
-and React with vinext. See [browser setup](../development/getting-started.md).
+Each document includes C++ source citations, earlier or proposed mappings to
+browser modules (`game/` and `web/`, now organized under `packages/game/` and
+`apps/web/`), and a reproduction checklist. Source paths written as `engine/...`
+and `mod/...` refer to the native reference checkout under
+`reference/native/engine/` and `reference/native/mod/`; line numbers refer to
+the analyzed engine revision and can change.
 
-**Reference scope:** proposals, checklists and gap descriptions in this series
-are not current acceptance results. Use [published progress](../verification/published-progress.md)
+The reference engine is the `reference/native/engine/` submodule
+(`1dot13/source`), built with C++17 and CMake for 32-bit Windows x86. The
+playable browser game uses JavaScript/TypeScript rules and React with vinext.
+See [browser setup](../development/getting-started.md).
+
+**Reference scope:** proposals, checklists, and gap descriptions in this series
+are not current acceptance results. Use [version 0.1 status](../verification/version-0.1.md)
 for status and [the parity audit](../verification/ja2-parity-audit.md) for the
-active gameplay baseline.
+active gameplay requirements baseline.
 
 ## Reading order
 
 | # | Doc | Engine dirs | Web target |
 |---|-----|-------------|------------|
 | 00 | [Engine Overview](00-overview.md) | all (build graph, screen FSM, GRANADEROS flags) | `game/` + `web/` layering |
-| 01 | [Platform: SGP + Utils + ext](01-platform-sgp.md) | `sgp/`, `Utils/`, `ext/` | platform shims (Canvas/WebAudio/fetch/IndexedDB) |
+| 01 | [Platform: SGP + Utils + ext](01-platform-sgp.md) | `sgp/` (Standard Gaming Platform), `Utils/`, `ext/` | platform shims (Canvas/WebAudio/fetch/IndexedDB) |
 | 02 | [Tile Engine](02-tile-engine.md) | `TileEngine/` | `game/maps.js`, `web/app/TacticalScene.tsx` |
 | 03 | [Tactical Combat Core](03-tactical-combat.md) | `Tactical/` (AP, fire, LOS, morale) | `game/tactical.js`, `validate-battle.js` |
 | 04 | [Soldiers, Mercs & Stats](04-soldiers-stats.md) | `Tactical/` soldiers, `Strategic/` assignments | `characters.js`, `recruitment.js`, `squads.js` |

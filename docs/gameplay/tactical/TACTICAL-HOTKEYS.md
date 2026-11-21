@@ -1,10 +1,10 @@
 # Adapted tactical keyboard controls
 
-Reference read: the user-supplied JA2 1.13 hotkey document's tactical selection,
+Reference read: the JA2 1.13 hotkey reference document's tactical selection,
 movement and interface sections, accessed 2026-09-05:
 https://www.scribd.com/document/621229369/Ja2-113-Hotkeys-Alt-Mouse
 
-Retained recognizable mappings include Space to cycle soldiers, M for the map,
+These published keyboard and pointer controls apply on the tactical battlefield during both exploration and turn-based combat. Retained recognizable mappings include Space to cycle soldiers, M for the map,
 D to finish a turn, R/S/C/P movement/posture, PageUp/PageDown posture changes,
 Z stealth and Shift+R or Alt+R reload. Number keys select the six active squad members
 instead of browser-sensitive function keys. H opens the Spanish reference.

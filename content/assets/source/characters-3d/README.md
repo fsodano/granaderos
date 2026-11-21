@@ -1,9 +1,12 @@
 # Tactical character library
 
+This asset source guide documents the production 3D character, garment,
+equipment, horse, and animation authoring library in
+`content/assets/source/characters-3d` and its build pipeline.
 This production library uses real skinned human meshes. It does not use sprites,
 billboards, baked animation pictures, or primitive substitute bodies. The approved
 `tools/playgrounds/granadero-3d` demo is independent and is not changed by this builder.
-On 2026-10-06 the user accepted that Granadero as the reference for the other
+On 2026-10-06 that Granadero reference was accepted for the other
 characters. The production sources now apply its human proportions, surface
 detail and reviewed standing movement to all eight appearances. See
 [the review inventory](REVIEW.md) for the exact scope and remaining limits.
@@ -243,7 +246,7 @@ The library runs this pass after the native cloth-height pass. Repeat fitting
 changes no asset. Changed source-pose or compatible clip-set hashes require
 authored body regeneration. Runtime weights follow scheduled native actions,
 including paused paid phases, and exclude mirrored or moving lower-body clips.
-The [close garment review](../../../../docs/art/close-long-cloth-boot-clearance-review-2026-10-08.md)
+The close garment review
 records complete surface checks and remaining coarse-LOD and motion limits.
 
 The layered dispatcher verifies and removes any completed apparel layer in a
@@ -307,7 +310,7 @@ movement, before accepting a recipe change.
   `authoring/vendor/motion/SOURCES.md`, the upstream terms, and its source
   manifest. Recorded motion is not claimed to be an authored historical action.
 - **Uniforms, equipment, appearances, sockets and build code:** original
-  Granaderos work based on the user's visual references. No Sketchfab model,
+  Granaderos work based on historical visual references. No Sketchfab model,
   proprietary preview binary, or ripped model was used.
 
 The horse source is one horse build, and the base human library has two native

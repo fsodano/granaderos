@@ -1,5 +1,8 @@
 # Granaderos engine overlay
 
+This package README documents the native Jagged Alliance 2 1.13 data overlay in
+`reference/native/mod`, its XML table generator, and its implemented and
+remaining conversion scope.
 This is an initial, engine-readable data conversion, **not a completed historical campaign**. Copy this directory's contents over the pinned engine's `gamedir`, supply the retail JA2 `Data` assets, and launch `Granaderos.cmd`. `ja2.ini` selects `vfs_config.Granaderos.ini`; the mod mounts after Data-1.13 and before its separate writable user profile. Start a new game.
 
 Regenerate tables with `python3 tools/generate_campaign.py` from the repository root. Upstream table hashes and the exact source commit are recorded in `Data-Granaderos/campaign-manifest.json`. The generator uses the Python standard library and explicit UTF-8. Generated XMLs are complete tables because the engine VFS resolves a whole file and loaders such as `Utils/XML_Items.cpp` clear their destination arrays. They are not XML fragments merged with the baseline.

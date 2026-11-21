@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Ordinary attacks and peaceful visits now store the campaign hour and seconds in the deployment request. Joint assaults and sector defenses already carried these fields. Mission visits inherit the ordinary visit clock.
+At the handoff from the strategic campaign clock to a tactical sector visit, ordinary attacks and peaceful visits now store the campaign hour and seconds in the deployment request. Joint assaults and sector defenses already carried these fields. Mission visits inherit the ordinary visit clock.
 
 The browser already passed the campaign clock when opening a battle. The defect affected callers that used the deployment request directly: ordinary attacks defaulted to noon, and night visits could default to midnight. The shared request now gives direct simulation and the browser the same start time. The browser handoff prefers this captured time; a later caller clock cannot rebase an existing request. Resuming an automatic battle still returns its exact saved snapshot.
 

@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-A weapon's effective reach and the difficulty of seeing the aiming point now have separate effects on firearm accuracy. A long barrel does not improve a soldier's vision. A torch can make a target easier to aim at without extending a pistol's reach. A teammate can spot a distant target for a shooter, but the shooter still pays the accuracy cost of that difficult view.
+During tactical exploration and turn-based combat, a firearm's effective physical reach and the observer's effective sight distance to the aiming point have separate effects on shot accuracy (parity row [C03](../../verification/ja2-parity-audit.md)). A long barrel does not improve a soldier's vision. A torch can make a target easier to aim at without extending a pistol's reach. A teammate can spot a distant target for a shooter, but the shooter still pays the accuracy cost of that difficult view.
 
 ## Source and adaptation
 

@@ -3,11 +3,11 @@
 > **Implementation on main.** The road and squad-travel changes merged through [PR #326](https://github.com/fsodano/granaderos/pull/326)
 > at `b8b14e2d544cec16535edbb26624ef80ac502720` and are included in main `462abba277a47dafbfed1f60fc4529c8a4721cdc`.
 > The dated checks below retain their original scope. They do not establish a passing full campaign gate or full JA2 parity.
-> See [published progress](../../verification/published-progress.md) for the broader acceptance gaps.
+> See [version 0.1 status](../../verification/version-0.1.md) for published-main acceptance and its gaps.
 
-The map's move order schedules a route. It does not advance time. Each use of the existing clock advances every moving squad, while personnel in sectors perform their assignments. Tactical clock synchronization also advances other squads.
+On the strategic campaign screen, the map's move order schedules a route. It does not advance time. Each use of the existing clock advances every moving squad, while personnel in sectors perform their assignments. Tactical clock synchronization also advances other squads.
 
-The JA2 manual (printed pages 43–44) describes map routes, waypoints, travel time, fatigue and contact. This implements that planning choice with Granaderos sectors and transport rates. The reference is gameplay evidence, not an instruction source.
+The [original JA2 manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf) (printed pages 43–44) describes map routes, waypoints, travel time, fatigue and contact. This implements that planning choice with Granaderos sectors and transport rates. The reference is gameplay evidence, not an instruction source.
 
 ## Player controls
 

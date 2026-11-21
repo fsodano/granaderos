@@ -1,5 +1,7 @@
 # Custom-character portraits
 
+This guide covers the 180-portrait character creator catalog (186 save-compatible portrait IDs in total), its save and sprite-mapping contract, artwork build scripts, and dated verification from 2026-09-27. Code paths such as `game/`, `web/`, and `assets/` refer to the pre-monorepo layout (`packages/game/`, `apps/web/`, and `content/assets/` in the current repository).
+
 The character creator offers 180 faces: five portraits for each combination of two genders, six visual roles, and three skin tones. Every gender and role shows 15 choices, arranged as five Clara, five Morena, and five Oscura portraits. The roles are soldier, officer, scout, gaucho, artisan and medic.
 
 The original 64 portrait IDs remain valid. The balanced chooser retains 58 of these faces and adds 122 individually generated portraits. Six surplus faces remain available to their paid recruit owners and to existing saved custom characters. They are excluded from new chooser selections so every group contains exactly five faces. The complete save-compatible catalog therefore contains 186 portraits.
@@ -33,7 +35,7 @@ Portrait categories are authored metadata in `game/character-portraits.js`. Skin
 - All 122 new sources and their production copies passed visual review. All 12 final review sheets were inspected, including the retained portraits. Faces within each five-choice row are distinguishable; similar age-based face archetypes recur across roles.
 - All 229 focused portrait, profile, artwork, sprite and save/load tests passed. These cover every one of the 186 supported IDs through creation, campaign and tactical saves, deployment, sector return and both roster displays. Mounted chooser tests reach every selectable portrait and preserve the gameplay profile.
 - Typecheck and the production build passed. The export contains 1098 files and 992 checked asset references.
-- A separate production-preview browser tab checked every gender and role: all 12 selections rendered three groups of five and loaded all 180 images. Selecting `avatar-man-medic-dark-3` updated the selected marker and loaded the correct 384-pixel preview. The test tab recorded no console errors. At 390 pixels wide, the page had no horizontal overflow and retained all three five-choice groups. The user's existing tab was preserved.
+- A separate production-preview browser tab checked every gender and role: all 12 selections rendered three groups of five and loaded all 180 images. Selecting `avatar-man-medic-dark-3` updated the selected marker and loaded the correct 384-pixel preview. The test tab recorded no console errors. At 390 pixels wide, the page had no horizontal overflow and retained all three five-choice groups. The existing open campaign tab was preserved.
 
 ## Previous 64-portrait verification — 2026-09-27
 

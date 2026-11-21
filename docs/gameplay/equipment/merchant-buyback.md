@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Classic JA2 transfers sold player objects into the dealer's inventory and removes purchased objects from that dealer. See [JA2 Stracciatella, ShopKeeper_Interface.cc](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/master/src/game/Tactical/ShopKeeper_Interface.cc), `MovePlayerOfferedItemsOfValueToArmsDealersInventory` and `RemoveItemFromDealersInventory`. This is gameplay reference material. The pricing and workshop model below are Granaderos adaptations.
+In the campaign armory at a supplied friendly workshop, selling a stored handheld weapon transfers that exact item record to the local merchant's used stock so the player can buy it back later with its condition and fittings preserved. Classic JA2 transfers sold player objects into the dealer's inventory and removes purchased objects from that dealer. See [JA2 Stracciatella, ShopKeeper_Interface.cc](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/master/src/game/Tactical/ShopKeeper_Interface.cc), `MovePlayerOfferedItemsOfValueToArmsDealersInventory` and `RemoveItemFromDealersInventory`. This is gameplay reference material. The pricing and workshop model below are Granaderos adaptations.
 
 ## Ownership and purchase
 
@@ -19,7 +19,7 @@ New weapons and used weapons remain separate inventories. Used stock is not repl
 - The merchant's purchase from the player follows its [local buying preference](merchant-preferences.md), adjusted for each component's condition. Retiro retains the general 40% rate; Caroya can refuse badly damaged handhelds.
 - The player's used purchase costs 80% of new value, adjusted for each component's condition. Each component is rounded down separately. There is no profitable immediate sell/buy cycle.
 - Each merchant can retain at most 1,000 used weapons; a full merchant refuses further sales. The existing 10,000-item armory limit also applies to used purchases.
-- Used weapons remain available until the player buys them. Background sales to third parties are not implemented. [Workshop preferences](merchant-preferences.md) now supply local valuation and condition-based refusal. [Equipment exchange](merchant-exchange.md) now supports a combined net payment, and [artillery trading](../campaign/artillery-trade.md) retains exact gun custody.
+- Used weapons remain available until the player buys them. Background sales to third parties are not implemented. [Workshop preferences](merchant-preferences.md) now supply local valuation and condition-based refusal. [Equipment exchange](merchant-exchange.md) now supports a combined net payment, and artillery trading retains exact gun custody.
 
 ## Evidence
 

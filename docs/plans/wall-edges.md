@@ -1,5 +1,7 @@
 # Walls between cells
 
+This implementation plan replaces full-cell walls with shared cell-edge segments for walls, doors, and windows (implemented in the [version 2 map format](../development/sector-editor.md#format-and-runtime-boundary), superseding the wall-cell geometry in the [sector builder plan](sector-builder.md)).
+
 Walls, doors, and windows must occupy a shared cell edge. Both adjacent floor
 cells remain available for people and items. A wall blocks crossing its edge,
 not standing in either cell.
@@ -14,8 +16,7 @@ not standing in either cell.
   wall follows the footprint boundary. Room membership uses edge flood fill.
 - Doors retain their own state. Windows block walking and retain sill cover.
   Damage affects one edge and does not replace an adjacent floor cell.
-- Existing map content is converted. Old save compatibility is outside scope,
-  as requested by the user.
+- Existing map content is converted. Old save compatibility is outside scope.
 
 ## Implementation stages
 

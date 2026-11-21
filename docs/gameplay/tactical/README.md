@@ -3,12 +3,12 @@
 [Gameplay index](../README.md) · [Documentation index](../../README.md)
 
 Current geometry and presentation: [shared wall edges](../../verification/wall-edges.md)
-and [visible firearm projectiles](../../verification/visible-firearm-projectiles-2026-10-10.md).
+and visible firearm projectiles.
 Their dated checks retain the scope stated in each record.
 
-These notes combine feature guides and dated workspace records. Read
-[version 0.1](../../verification/version-0.1.md) for current scope.
-The [requirement ledger](../../verification/published-progress.md) and
+This folder indexes the tactical battlefield feature guides and development-workspace records for both real-time tactical exploration and turn-based combat. Read
+[version 0.1](../../verification/version-0.1.md) for current published scope.
+The requirement ledger and
 [parity audit](../../verification/ja2-parity-audit.md) retain row evidence and
 comparison requirements. A historical *workspace* label does not establish the
 current merge state; use the named source, date and acceptance limits.
@@ -87,6 +87,8 @@ cell is available.
 - [Firearm range and sight](shot-range.md) *(workspace)*
 - [Fire at a location](location-fire.md) *(workspace)*
 - [Named-target shot paths](directed-projectiles.md) *(workspace)*
+- [Single-ball body penetration](body-penetration.md) *(workspace)*
+- [Finite physical shot loads](physical-shot-loads.md) *(workspace)*
 - [Projectile cover and concealment](projectile-cover.md) *(workspace)*
 - [Glancing shots against stone](stone-ricochet.md) *(workspace)*
 

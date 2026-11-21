@@ -1,11 +1,9 @@
 # Domain architecture and implementation plan
 
-Status: implemented and locally verified on 28 October 2026.
+This accepted architecture document governs the domain model, application use cases, repository contracts, package boundaries, and world behavior of Granaderos. Status: accepted on 27 October 2026; implemented and locally verified on 28 October 2026.
 
 [Implementation evidence](../../verification/domain-architecture-2026-10-28.md)
 records the completed stages, checks, browser flows, and verification limits.
-
-Decision date: 27 October 2026.
 
 [Ubiquitous language](ubiquitous-language.md) · [Plan index](../README.md)
 

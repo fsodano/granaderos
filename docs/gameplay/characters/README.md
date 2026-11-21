@@ -3,7 +3,7 @@
 [Gameplay index](../README.md) · [Documentation index](../../README.md)
 
 These notes cover published systems and separate development-workspace work.
-Read [published progress](../../verification/published-progress.md) for accepted
+Read [version 0.1 status](../../verification/version-0.1.md) for accepted
 features on `main`. Notes marked *workspace* describe unpublished integration;
 the [workspace acceptance record](../../verification/gameplay-completion.md) and
 [parity audit](../../verification/ja2-parity-audit.md) record that separate scope.
@@ -13,6 +13,7 @@ the [workspace acceptance record](../../verification/gameplay-completion.md) and
 - [Paid mercenary roster](mercenary-roster.md)
 - [Authored service refusals and paid contracts](service-relationships.md) *(workspace)*
 - [Respeto a civiles y futuras contrataciones](service-objections.md)
+- [Renewal with poor morale](poor-morale-renewal.md)
 - [Nervios al quedar aislado](nervous-isolation.md)
 - [Descanso entre combates](strategic-rest.md)
 - [Attribute training and saved growth](attribute-training.md) *(workspace)*
@@ -24,7 +25,6 @@ the [workspace acceptance record](../../verification/gameplay-completion.md) and
 
 - [Primeros auxilios en el campo](field-first-aid.md)
 - [Serenidad al cuidar](care-composure.md)
-
 - [Atención médica en campaña](strategic-medical-care.md)
 - [Critical first aid](critical-first-aid.md) *(workspace)*
 - [Civilian first aid](civilian-first-aid.md) *(workspace)*
@@ -35,10 +35,12 @@ the [workspace acceptance record](../../verification/gameplay-completion.md) and
 ## NPCs, dialogue, and errands
 
 - [Tactical dialogue](npc-dialogue.md) *(workspace)*
+- [Brief combat reactions](combat-reactions.md)
 - [NPC routines and civilian turns](npc-routines.md)
 - [Selected inventory gifts](selected-npc-gifts.md) *(workspace)*
 - [Carried quest deliveries](carried-quest-deliveries.md) *(workspace)*
 - [Competing physical beneficiaries](competing-beneficiaries.md)
+- [Retirar una entrega incompleta](errand-withdrawal.md)
 - [Errand failure after contact death](quest-failures.md) *(workspace)*
 - [Local escort gameplay](escort-gameplay.md) *(workspace)*
 - [Civilian combat and campaign consequences](civilian-consequences.md) *(workspace)*

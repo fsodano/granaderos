@@ -1,13 +1,13 @@
-# Granaderos requirement audit
+# Granaderos requirement audit (archived 2026-09-05)
 
-> **Archived snapshot.** This record describes an earlier project state. Read
-> [published progress](../verification/published-progress.md) for current scope.
+> **Archived historical audit.** This superseded record preserves the 2026-09-05 source-code requirement audit through the `0.3.0` continuation checkpoint (209 passed tests). Read
+> published progress for current scope and [ja2-parity-audit.md](../verification/ja2-parity-audit.md) for the active gameplay requirement baseline.
 
-Audit date: 2026-09-05. Sources: `docs/specification/original.txt` and `docs/specification/gameplay-expansion.md`. This is a source-code audit of the current shared working tree, not a completion certificate or a substitute for browser acceptance testing. Other workers may change the implementation after this snapshot.
+Audit date: 2026-09-05. Sources: [`docs/specification/original.txt`](../specification/original.txt) and [`docs/specification/gameplay-expansion.md`](../specification/gameplay-expansion.md). This is a source-code audit of the shared working tree on 2026-09-05, not a completion certificate or a substitute for browser acceptance testing. Other workers may change the implementation after this snapshot.
 
 **Implemented** means the described bounded behavior has an authoritative implementation and a player entry point. **Partial** means a playable approximation exists, but the full requested behavior does not. **Missing** means no implementation was found. Data labels, character biographies, standalone helpers and passing isolated tests do not establish a complete player experience.
 
-The original native-engine conversion requirement has been superseded by the user's explicit Spanish browser-game direction. The original campaign, combat and later gameplay requirements remain relevant. `engine/` and `mod/` are reference/native conversion artifacts; the running browser game uses `game/` and `web/app/`, not the JA2 engine. The old TODO ledger in the expansion document is historical and should not be read as the current status.
+The original native-engine conversion requirement has been superseded by the Spanish browser-game direction. The original campaign, combat and later gameplay requirements remain relevant. `engine/` and `mod/` are reference/native conversion artifacts; the running browser game uses `game/` and `web/app/`, not the JA2 engine. The old TODO ledger in the expansion document is historical and should not be read as the current status.
 
 ## Campaign, politics and geography
 

@@ -1,16 +1,20 @@
 # 06 — Tactical AI (engine/TacticalAI + engine/ModularizedTacticalAI → game/tactical.js)
 
-Reference for porting the JA2 v1.13-derived per-soldier tactical decision loop to
+[Series index](README.md) · Previous: [05 — Weapons, Items & Economy](05-weapons-items.md) · Next: [07 — Strategic Layer](07-strategic-layer.md)
+
+> **Reference notice:** This document is a source and design analysis of the original Jagged Alliance 2 v1.13 (`1dot13/source`) tactical AI decision loop (`TacticalAI/` and `ModularizedTacticalAI/`) kept as reference material for Granaderos' browser adaptation. It is **not** a description of Granaderos' current browser implementation. See the [series index](README.md) for the full reference set. In the current repository layout, the C++ engine submodule lives at `reference/native/engine/` (referred to below as `engine/`), and the browser modules live under `packages/game/` and `apps/web/` (referred to below by their earlier paths `game/` and `web/`).
+
+Reference for adapting the JA2 v1.13-derived per-soldier tactical decision loop to
 the browser simulation. The C++ source lives in two places: the legacy monolithic
 `engine/TacticalAI/` (the actual decision code) and the refactor scaffold
 `engine/ModularizedTacticalAI/` (a Composite/Abstract-Factory wrapper that today
-only re-dispatches into the legacy functions). Line numbers cite the current
-working tree; treat them as anchors, not a contract.
+only re-dispatches into the legacy functions). Line numbers cite the analyzed
+engine revision; treat them as anchors, not a contract.
 
 Scope: the per-soldier think loop, alert-status state machine, knowledge /
 opponent tracking, cover / flank / retreat / stance / fire-vs-advance choices,
 difficulty scaling, interrupt hooks, and the modular plan wrapper. **Out of
-scope:** strategic AI and combat formulas (docs 07 and 03 own those).
+scope:** strategic AI ([07 — Strategic Layer](07-strategic-layer.md)) and combat formulas ([03 — Tactical Combat Core](03-tactical-combat.md)).
 
 ---
 
@@ -26,7 +30,7 @@ scope:** strategic AI and combat formulas (docs 07 and 03 own those).
 | Knowledge / opponent tracking | `engine/TacticalAI/AIUtils.cpp` `Knowledge` (:5689), `PrepareThreatlist` (:317 in ai.h); `AIInternals.h` `THREATTYPE` (:110) | `game/tactical.js` `knowledge`, `threats` |
 | Cover / flank / retreat / advance | `engine/TacticalAI/FindLocations.cpp` `FindFlankingSpot` (:2621), `FindAdvanceSpot` (:3096), `FindRetreatSpot` (:3373); `FindBestNearbyCover` (ai.h:202) | `game/tactical.js` `findCover`, `findFlank`, `findRetreat` |
 | Difficulty scaling | `engine/TacticalAI/ai.h` `gbDiff[MAX_DIFF_PARMS][5]` (:149-156); `AIUtils.cpp` `SoldierDifficultyLevel` (:3002) | `game/tactical.js` `difficulty` |
-| RNG (determinism) | `engine/sgp/Random.cpp` `Random`/`PreRandom`/`InitializeRandom`; `engine/Ja2/SaveLoadGame.cpp:8464` `srand(uiSeedNumber)` | `game/tactical.js` seeded PRNG |
+| RNG (determinism) | `engine/sgp/Random.cpp` (Standard Gaming Platform, `sgp/`) `Random`/`PreRandom`/`InitializeRandom`; `engine/Ja2/SaveLoadGame.cpp:8464` `srand(uiSeedNumber)` | `game/tactical.js` seeded PRNG |
 | Plan wrapper (modular) | `engine/ModularizedTacticalAI/include/*.h` (see §7) | (optional; port the dispatch directly) |
 
 ---

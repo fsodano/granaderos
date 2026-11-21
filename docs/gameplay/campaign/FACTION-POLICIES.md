@@ -1,6 +1,9 @@
 # Faction policy implementation
 
-Implemented 2026-09-05 as part of the continuing full-game objective. These are
+Implemented 2026-09-05 on the strategic campaign layer as part of the continuing
+full-game objective. This guide describes published strategic faction-reputation,
+tribute, and requisition rules; see [version 0.1](../../verification/version-0.1.md)
+for current published scope (including deferred equipment commerce). These are
 explicit game-balance rules, not claims about historical tariff percentages.
 
 - Foreign reputation changes actual imported cargo prices: 60+ grants 20% off,

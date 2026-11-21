@@ -2,7 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
+
+This dated performance record (12 September 2026) documents a snapshot of before-and-after route-query benchmarks comparing baseline commit `4c556cc` against early destination termination (`stopAt`) in `movementRoute` during tactical animation setup.
 
 The animation hook previously built the full reachable-cell overlay for every
 moving actor, then selected one destination. A normal full Buenos Aires ambient

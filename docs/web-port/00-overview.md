@@ -1,13 +1,12 @@
 # Web Port Series 00 — Engine Overview
 
+[Series index](README.md) · Next: [01 — Platform Layer: SGP + Utils + ext](01-platform-sgp.md)
+
+> **Reference notice:** This document is a source and design analysis of the original Jagged Alliance 2 v1.13 (`1dot13/source`) C++ engine (build graph, directory layout, screen-flow state machine, and `GRANADEROS` compile-time rules) kept as reference material for Granaderos' browser adaptation. It is **not** a description of Granaderos' current browser implementation. See the [series index](README.md) for the full 14-document reference set, [version 0.1 status](../verification/version-0.1.md) for current implementation status, and [the parity audit](../verification/ja2-parity-audit.md) for the active gameplay baseline. In the current repository layout, the C++ engine submodule lives at `reference/native/engine/` (referred to below as `engine/`), the native mod overlay lives at `reference/native/mod/`, and the browser game modules live under `packages/game/` and `apps/web/` (referred to below by their earlier root paths `game/` and `web/`).
+
 > Economy update: the browser game now uses pesos only. The material, convoy, and horse-management mappings below describe the earlier implementation. See [the current economy rules](../gameplay/campaign/INDUSTRY-AND-IMPORTS.md).
 
-> **Audience:** an agent with zero prior JA2 knowledge who must port engine behavior into the
-> browser clone (`game/` + `web/`). This is the index document for the `docs/web-port/` series.
-> It describes *what the engine is*, *how it is built*, *how it boots and flows between screens*,
-> *where the Granaderos-specific rules live*, and *how the 13 planned docs map onto the engine
-> directories*. Nothing here modifies engine code — it is read-only analysis with `file:line`
-> citations so every claim can be verified.
+> **Scope:** Read-only reference analysis for contributors adapting original JA2 v1.13 engine behavior into the browser game (`game/` + `web/`). It describes *what the original C++ engine is*, *how it is built*, *how it boots and flows between screens*, *where the Granaderos-specific C++ compile flags live*, and *how the series maps onto the engine directories*. Every claim carries `file:line` citations against the analyzed engine revision.
 
 ---
 
@@ -123,7 +122,7 @@ Counts = `.cpp/.c/.h/.hpp` files per top-level engine dir (measured 2026-09-06).
 
 | Engine dir | Files | System | Web-port relevance |
 |---|---|---|---|
-| `sgp/` | 82 | Platform: `WinMain`, video, input (MSYS), fonts, sound, timer, memory, random, VFS | Boot/message-pump model; PRNG (`BMP_RANDOM`); file I/O |
+| `sgp/` | 82 | Platform (Standard Gaming Platform, SGP): `WinMain`, video, input (MSYS), fonts, sound, timer, memory, random, VFS | Boot/message-pump model; PRNG (`BMP_RANDOM`); file I/O |
 | `Ja2/` | 72 | App shell: screens, `Init.cpp`, `gameloop.cpp`, main menu, options, save/load, MP screens | Screen-flow state machine (see §5) |
 | `Tactical/` | 259 | Soldiers, AP/points, weapons, LOS, firing, interface, explosives, vehicles | `game/tactical.js` combat rules; **GRANADEROS hits live here** |
 | `Strategic/` | 118 | Game clock, events, map screen, assignments, strategic AI, movement | `game/campaign.js` strategic reducer |
@@ -345,27 +344,27 @@ engine header is the authoritative source if the JS drifts.
 
 ---
 
-## 7. Parallelization map — the 13 planned docs
+## 7. Parallelization map — the series documents
 
-`docs/web-port/` will contain 13 documents. Each covers a slice of the engine and names the web
-target it feeds. Docs are independent enough to be written in parallel; `00` (this file) is the
-index.
+> **Numbering note:** The table below preserves the initial 13-document planning split. The published series in `docs/web-port/` uses the 14-document numbering (`00` through `13`) listed in the [series index](README.md): [01-platform-sgp.md](01-platform-sgp.md), [02-tile-engine.md](02-tile-engine.md), [03-tactical-combat.md](03-tactical-combat.md), [04-soldiers-stats.md](04-soldiers-stats.md), [05-weapons-items.md](05-weapons-items.md), [06-tactical-ai.md](06-tactical-ai.md), [07-strategic-layer.md](07-strategic-layer.md), [08-laptop.md](08-laptop.md), [09-dialogue-quests.md](09-dialogue-quests.md), [10-save-load.md](10-save-load.md), [11-data-assets.md](11-data-assets.md), [12-audio-ui-input.md](12-audio-ui-input.md), and [13-multiplayer-editor.md](13-multiplayer-editor.md).
 
-| # | Doc | Engine dirs covered | Web target |
-|---|---|---|---|
-| 00 | **overview** (this file) | all (top-level map) | `game/` + `web/` layering, reproduction checklist |
-| 01 | `01-sgp-platform.md` | `sgp/` | boot/message-pump model, PRNG, file I/O, timer |
-| 02 | `02-boot-init.md` | `Ja2/` (Init.cpp, gameloop.cpp, sgp.cpp WinMain, Screens.cpp) | `web/app/page.tsx` screen router |
-| 03 | `03-screens-ui.md` | `Ja2/` (MainMenu, GameInitOptions, Options, SaveLoad, MessageBox, Intro, Credits, Help, Features, MP screens) | `web/app/` dialogs + title screen |
-| 04 | `04-tactical-core.md` | `Tactical/` (Soldier Control, Overhead, Interface, points/AP) | `game/tactical.js` unit model + AP |
-| 05 | `05-tactical-combat.md` | `Tactical/` (Weapons.cpp, Points.cpp, LOS, Bullets, Explosives, Firing) | `game/tactical.js` fire/melee/charge/reload |
-| 06 | `06-strategic-layer.md` | `Strategic/` (Game Clock, Game Events, Map Screen, Assignments, Strategic AI, Movement) | `game/campaign.js` reducer + clock |
-| 07 | `07-laptop.md` | `Laptop/` (AIM, Bobby Ray, email, merc contracts, IMP, shopkeeper) | `web/app/Desk.tsx`, `Recruitment.tsx`, `Armory.tsx` |
-| 08 | `08-tileengine-world.md` | `TileEngine/` (world, tiles, structures, lighting, pathing, exit grids) | `game/maps.js`, `game/world.js`, `TacticalScene.tsx` |
-| 09 | `09-ai.md` | `TacticalAI/`, `ModularizedTacticalAI/` | enemy turn in `game/tactical.js` |
-| 10 | `10-multiplayer.md` | `Multiplayer/`, `wine/` | (reference only — not ported) |
-| 11 | `11-editor-tools.md` | `Editor/`, `export/`, `tools/` | `web/app/CharacterCreator.tsx`, map authoring |
-| 12 | `12-data-xml-i18n.md` | `i18n/`, `lua/`, `ext/`, `Ja2/` XML loaders (`Init.cpp:136` `LoadExternalGameplayData`) | `game/data.js`, `game/equipment.js`, Spanish strings |
+`docs/web-port/` covers the engine in independent slices and names the web target each slice feeds.
+
+| # | Initial planned doc | Published file in `docs/web-port/` | Engine dirs covered | Web target |
+|---|---|---|---|---|
+| 00 | **overview** (this file) | [00-overview.md](00-overview.md) | all (top-level map) | `game/` + `web/` layering, reproduction checklist |
+| 01 | `01-sgp-platform.md` | [01-platform-sgp.md](01-platform-sgp.md) | `sgp/` | boot/message-pump model, PRNG, file I/O, timer |
+| 02 | `02-boot-init.md` | [00-overview.md](00-overview.md) §5 + [01-platform-sgp.md](01-platform-sgp.md) §2 | `Ja2/` (Init.cpp, gameloop.cpp, sgp.cpp WinMain, Screens.cpp) | `web/app/page.tsx` screen router |
+| 03 | `03-screens-ui.md` | [12-audio-ui-input.md](12-audio-ui-input.md) | `Ja2/` (MainMenu, GameInitOptions, Options, SaveLoad, MessageBox, Intro, Credits, Help, Features, MP screens) | `web/app/` dialogs + title screen |
+| 04 | `04-tactical-core.md` | [04-soldiers-stats.md](04-soldiers-stats.md) | `Tactical/` (Soldier Control, Overhead, Interface, points/AP) | `game/tactical.js` unit model + AP |
+| 05 | `05-tactical-combat.md` | [03-tactical-combat.md](03-tactical-combat.md) + [05-weapons-items.md](05-weapons-items.md) | `Tactical/` (Weapons.cpp, Points.cpp, LOS, Bullets, Explosives, Firing) | `game/tactical.js` fire/melee/charge/reload |
+| 06 | `06-strategic-layer.md` | [07-strategic-layer.md](07-strategic-layer.md) | `Strategic/` (Game Clock, Game Events, Map Screen, Assignments, Strategic AI, Movement) | `game/campaign.js` reducer + clock |
+| 07 | `07-laptop.md` | [08-laptop.md](08-laptop.md) | `Laptop/` (AIM, Bobby Ray, email, merc contracts, IMP, shopkeeper) | `web/app/Desk.tsx`, `Recruitment.tsx`, `Armory.tsx` |
+| 08 | `08-tileengine-world.md` | [02-tile-engine.md](02-tile-engine.md) | `TileEngine/` (world, tiles, structures, lighting, pathing, exit grids) | `game/maps.js`, `game/world.js`, `TacticalScene.tsx` |
+| 09 | `09-ai.md` | [06-tactical-ai.md](06-tactical-ai.md) | `TacticalAI/`, `ModularizedTacticalAI/` | enemy turn in `game/tactical.js` |
+| 10 | `10-multiplayer.md` | [13-multiplayer-editor.md](13-multiplayer-editor.md) | `Multiplayer/`, `wine/` | (reference only — not ported) |
+| 11 | `11-editor-tools.md` | [13-multiplayer-editor.md](13-multiplayer-editor.md) | `Editor/`, `export/`, `tools/` | `web/app/CharacterCreator.tsx`, map authoring |
+| 12 | `12-data-xml-i18n.md` | [11-data-assets.md](11-data-assets.md) + [10-save-load.md](10-save-load.md) | `i18n/`, `lua/`, `ext/`, `Ja2/` XML loaders (`Init.cpp:136` `LoadExternalGameplayData`) | `game/data.js`, `game/equipment.js`, Spanish strings |
 
 ---
 
@@ -511,8 +510,8 @@ Use this to verify a ported system against the engine. Each item cites the engin
 
 ## 11. Next steps
 
-1. Read `01-sgp-platform.md` for the boot/message-pump model and PRNG.
-2. Read `02-boot-init.md` for the exact `InitializeJA2`/`InitializeGame` ordering.
-3. Read `04-tactical-core.md` + `05-tactical-combat.md` before touching `game/tactical.js`.
-4. Read `06-strategic-layer.md` before touching `game/campaign.js`.
-5. Use §9 as the acceptance checklist for each ported system.
+1. Read [01-platform-sgp.md](01-platform-sgp.md) for the boot/message-pump model and PRNG.
+2. Review §5 above and [01-platform-sgp.md](01-platform-sgp.md) §10 for the exact `InitializeJA2`/`InitializeGame` ordering.
+3. Read [03-tactical-combat.md](03-tactical-combat.md), [04-soldiers-stats.md](04-soldiers-stats.md), and [05-weapons-items.md](05-weapons-items.md) before touching tactical combat rules (`game/tactical.js`).
+4. Read [07-strategic-layer.md](07-strategic-layer.md) before touching strategic campaign rules (`game/campaign.js`).
+5. Use §9 as the reference checklist when comparing a subsystem against the original engine.

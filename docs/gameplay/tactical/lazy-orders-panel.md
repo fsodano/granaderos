@@ -2,13 +2,13 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
 > **Earlier component checkpoint.** The main campaign later removed this menu.
-> See [main-campaign integration](../../verification/main-campaign-integration-2026-09-26.md).
+> See main-campaign integration.
 > The measurements below describe the earlier optional panel, not current controls.
 
-The roster's native `Órdenes` details element now mounts its contents only when
+During tactical exploration and turn-based combat, the roster's native `Órdenes` details element mounts its order, medical, supply, equipment, and artillery controls only when
 its `toggle` event reports an open state. Closing it unmounts the contents.
 The browser still controls summary activation, keyboard access and focus.
 Selection and battle updates pass current values to the open panel. Entering

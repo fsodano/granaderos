@@ -1,16 +1,15 @@
 # 02 — Tile Engine: Pixel-Faithful Isometric Rendering Reference
 
-**Audience:** a web engineer with **no Jagged Alliance 2 experience** who must build a browser
-isometric renderer that reproduces the JA2 v1.13 tactical viewport. This document is a
-translation guide from the C++ engine (`engine/TileEngine/`) to Canvas/WebGL. It covers
-**rendering and world data only** — combat/tactical rules are owned by another agent and are
-out of scope.
+[Series index](README.md) · Previous: [01 — Platform Layer: SGP + Utils + ext](01-platform-sgp.md) · Next: [03 — Tactical Combat Core](03-tactical-combat.md)
+
+> **Reference notice:** This document is a source and design analysis of the original Jagged Alliance 2 v1.13 (`1dot13/source`) tile engine and isometric renderer (`TileEngine/`) kept as reference material for Granaderos' browser adaptation. It is **not** a description of Granaderos' current browser implementation. See the [series index](README.md) for the full reference set. In the current repository layout, the C++ engine submodule lives at `reference/native/engine/` (referred to below as `engine/`), and the browser modules live under `packages/game/` and `apps/web/` (referred to below by their earlier paths `game/` and `web/`).
+
+**Scope:** Translation guide from the C++ tile engine (`engine/TileEngine/`) to browser rendering. It covers **rendering and world data only** — combat and tactical rules are covered in [03 — Tactical Combat Core](03-tactical-combat.md).
 
 **Source of truth:** `engine/TileEngine/` (headers `.h` declare the data structures and
-constants; `.cpp` files implement them). The web game already has a working SVG isometric
+constants; `.cpp` files implement them). The browser game's earlier SVG isometric
 renderer (`web/app/Battlefield.tsx`, `web/app/TacticalScene.tsx`) and authored maps
-(`game/maps.js`); this document maps the C++ engine onto that existing surface so the web
-renderer can be pushed toward pixel fidelity.
+(`game/maps.js`) are referenced below as historical comparison targets for mapping the C++ tile engine to the browser.
 
 ---
 

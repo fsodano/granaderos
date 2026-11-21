@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Each controlled sector's daily contribution now equals its economic base multiplied by local loyalty / 100. Damage retains one quarter of that result; a coastal blockade retains one quarter; a cut supply route retains one half. These reductions multiply, and the final contribution is rounded down once. Royalist sectors contribute nothing.
+On the strategic campaign layer, each controlled sector's daily contribution now equals its economic base multiplied by local loyalty / 100. Damage retains one quarter of that result; a coastal blockade retains one quarter; a cut supply route retains one half. These reductions multiply, and the final contribution is rounded down once. Royalist sectors contribute nothing.
 
 At midnight, politics is resolved first. All contributions are then calculated from the same state and paid once. The existing one-point loyalty recovery in supplied patriotic sectors occurs after payment and affects later income. A damage expiry at that hour is already effective. Current map figures are current rates, not a guaranteed future payment.
 
@@ -12,7 +12,7 @@ The selected-sector panel shows its base, local loyalty, contribution and disrup
 
 ## Reference and adaptation
 
-[JA2 Stracciatella's Strategic_Mines.cc](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/master/src/game/Strategic/Strategic_Mines.cc) calculates the player's workforce from town loyalty and controlled town sectors, then scales mine extraction by that workforce. Patusco's guide, printed pages 59–60 and 69–70, links loyalty with mine revenue.
+[JA2 Stracciatella's Strategic_Mines.cc](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/master/src/game/Strategic/Strategic_Mines.cc) calculates the player's workforce from town loyalty and controlled town sectors, then scales mine extraction by that workforce. *Patusco's JA2 Strategy Guide 1.3* (source `G` in [the parity audit](../../verification/ja2-parity-audit.md#scope-and-evidence)), printed pages 59–60 and 69–70, links loyalty with mine revenue.
 
 Granaderos retains its thirteen existing local contribution sources, one daily payment, local rather than averaged city loyalty, and existing damage/blockade/supply factors. These are game rules for the period adaptation, not historical tariff estimates or a copy of JA2's mineral extraction, depletion, head-miner dialogue or production shifts. At the initial 65% loyalty, the three starting sectors contribute 286 pesos per day instead of 440. Their economic base values are unchanged.
 

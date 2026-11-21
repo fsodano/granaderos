@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-The personnel panel now offers the nine classic trainable attributes: health, strength, dexterity, agility, leadership, marksmanship, medicine, mechanics and explosives. Granaderos labels explosives as **Pólvora y artillería** and retains its existing stealth and riding practice. Wisdom affects learning speed but is not an available training subject.
+On the strategic campaign screen and the tactical battlefield, the personnel panel now offers the nine classic trainable attributes: health, strength, dexterity, agility, leadership, marksmanship, medicine, mechanics and explosives. Granaderos labels explosives as **Pólvora y artillería** and retains its existing stealth and riding practice. Wisdom affects learning speed but is not an available training subject.
 
 The reference is `GetTrainingStatValue` and `CanCharacterTrainStat` in the [JA2 Stracciatella assignment source at a06f4896](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/a06f4896c43c76396529e415a29a8ca26b00f9f1/src/game/Strategic/Assignments.cc). This source identifies those nine subjects, excludes wisdom, and checks nonzero aptitude. Granaderos keeps its existing study rates, integer fractional credit, forty-practice threshold, ten earned-point limit and maximum attribute of 100. These numbers and the one-student-per-instructor rule are adaptations, not an exact reproduction of classic JA2 growth.
 

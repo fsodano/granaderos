@@ -2,10 +2,13 @@
 
 [Documentation index](../README.md) · [Development index](README.md) · [Repository map](repository-layout.md)
 
-The game runs from `apps/web`. The independent campaign editor runs from
-`apps/campaign-editor`. Shared game code belongs in `packages/game`; campaign
-file contracts belong in `packages/campaign-format`. The game interface is
-Spanish. Source code and development documentation are English.
+This setup guide covers local installation, development servers, automated
+verification commands, compiler and lint rules, and save testing for the
+browser game and campaign editor. The game runs from `apps/web`. The
+independent campaign editor runs from `apps/campaign-editor`. Shared game code
+belongs in `packages/game`; campaign file contracts belong in
+`packages/campaign-format`. The game interface is Spanish. Source code and
+development documentation are English.
 
 ## Install and run
 

@@ -1,6 +1,9 @@
 # RestoreGame
 
-The player recovers a saved campaign and its open sector visits.
+This use case validates and restores a saved campaign and its open sector visits
+from serialized snapshot data, and refuses absent saves or malformed snapshot
+records.
+
 `RestoreGameUseCase` reads serialized data through `RestoreGameRepository`.
 `GameSnapshotMapper` retains the existing format, size, scenario, clock, identity,
 and custody validation. It restores domain behavior through the shared identity

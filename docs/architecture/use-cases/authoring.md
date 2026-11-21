@@ -31,7 +31,7 @@ Contract shorthand in each entry: **Actor** is the author/tool operator; **Input
 
 * **Actor:** Campaign author. **Input → result:** unique lower-case campaign ID and display name → scaffolded `granaderos-editor-project` with starter manifest, content/world/maps/presentation/assets, map index, and guide resource; project opens in Studio.
 * **Guards:** ID format/reserved name and duplicate local identity rejected. Starter scaffold is data; no custom executable code is generated.
-* **Surface/source:** Studio **Crear una campaña**; [`apps/campaign-editor/web/app/studio/page.tsx`](../../../apps/campaign-editor/web/app/studio/page.tsx), [`apps/campaign-editor/domain/campaign-project.ts`](../../../apps/campaign-editor/domain/campaign-project.ts), [`apps/campaign-editor/infrastructure/project-scaffold.js`](../../../apps/campaign-editor/infrastructure/project-scaffold.js).
+* **Surface/source:** Studio **Crear una campaña**; [`apps/campaign-editor/web/app/studio/page.tsx`](../../../apps/campaign-editor/web/app/studio/page.tsx), [`apps/campaign-editor/domain/campaign-project.ts`](../../../apps/campaign-editor/domain/campaign-project.ts), [`apps/campaign-editor/infrastructure/project-scaffold.ts`](../../../apps/campaign-editor/infrastructure/project-scaffold.ts).
 * **Availability:** Current authoring.
 
 #### AUT-002 — reopen-local-draft
@@ -207,21 +207,21 @@ Contract shorthand in each entry: **Actor** is the author/tool operator; **Input
 
 * **Actor:** Campaign author. **Input → result:** compiled project content, seed and optional supported setup → isolated strategic sandbox with campaign state, action history, sector entry, tactical battles and conversations/quests as exercised by controls.
 * **Guards:** Seed/setup bounded; invalid campaign content cannot initialize. Sandbox actions use real game campaign/tactical rules, but operate on sandbox state rather than project documents or player campaign save.
-* **Surface/source:** Studio **Pruebas → campaign**; [`apps/campaign-editor/web/app/studio/QuestSandbox.tsx`](../../../apps/campaign-editor/web/app/studio/QuestSandbox.tsx), [`packages/game/public/campaign-playtest-api.js`](../../../packages/game/public/campaign-playtest-api.js).
+* **Surface/source:** Studio **Pruebas → campaign**; [`apps/campaign-editor/web/app/studio/QuestSandbox.tsx`](../../../apps/campaign-editor/web/app/studio/QuestSandbox.tsx), [`packages/game/public/campaign-playtest-api.ts`](../../../packages/game/public/campaign-playtest-api.ts).
 * **Availability:** Current authoring; requires content that compiles/initializes.
 
 #### AUT-026 — persist-or-reopen-campaign-sandbox
 
 * **Actor:** Author saving a reproducible test state. **Input → result:** serialize the sandbox to `granaderos-editor-sandbox` JSON, validate by decoding against current project content, download or re-import it → recover isolated campaign/battle and recorded action history.
 * **Guards:** Content identity hash and sandbox format/version must match; history bounded to 2,000 entries; imported sandbox from changed content is refused and author must reset/replay.
-* **Surface/source:** QuestSandbox “Guardar prueba y comprobar” / “Recuperar prueba”; [`apps/campaign-editor/web/app/studio/QuestSandbox.tsx`](../../../apps/campaign-editor/web/app/studio/QuestSandbox.tsx), [`packages/game/public/campaign-playtest-api.js`](../../../packages/game/public/campaign-playtest-api.js).
+* **Surface/source:** QuestSandbox “Guardar prueba y comprobar” / “Recuperar prueba”; [`apps/campaign-editor/web/app/studio/QuestSandbox.tsx`](../../../apps/campaign-editor/web/app/studio/QuestSandbox.tsx), [`packages/game/public/campaign-playtest-api.ts`](../../../packages/game/public/campaign-playtest-api.ts).
 * **Availability:** Current authoring.
 
 #### AUT-027 — launch-story-draft-in-player-app
 
 * **Actor:** Author checking authored cast/story within normal player UI. **Input → result:** selected content draft → sessionStorage one-time save handoff and game route `content=1&launch=1`; player app loads handoff and shows its desk.
 * **Guards:** Requires content to initialize and resource hashes to verify; isolated session is not the installed registry campaign and its gameplay save is separate from Studio draft storage.
-* **Surface/source:** Story Editor campaign launch in [`apps/campaign-editor/web/app/story/ContentEditor.tsx`](../../../apps/campaign-editor/web/app/story/ContentEditor.tsx), handoff [`packages/game/content-launch.js`](../../../packages/game/content-launch.js), consumer [`apps/web/app/page.tsx`](../../../apps/web/app/page.tsx).
+* **Surface/source:** Story Editor campaign launch in [`apps/campaign-editor/web/app/story/ContentEditor.tsx`](../../../apps/campaign-editor/web/app/story/ContentEditor.tsx), handoff [`packages/game/content-launch.ts`](../../../packages/game/content-launch.ts), consumer [`apps/web/app/page.tsx`](../../../apps/web/app/page.tsx).
 * **Availability:** Current authoring integration.
 
 ### Standalone and developer tools

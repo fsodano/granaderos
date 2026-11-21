@@ -1,6 +1,10 @@
 # EditCampaignProject
 
-Edit an existing project at an expected revision. The request selects one domain
+This use case applies one editing operation to an existing campaign project at
+its expected revision, and refuses stale revisions or invalid project, identity,
+or envelope changes without modifying the accepted project.
+
+The request selects one domain
 operation: rename the project, replace its content, replace its draft, or remove
 a resource.
 

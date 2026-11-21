@@ -1,6 +1,11 @@
-# Campaign studio evidence
+# Campaign studio evidence, 10–11 October 2026
 
-Started: 10 October 2026. Updated: 11 October 2026. Scope: the active campaign authoring website work,
+This is a dated evidence workspace record for the active campaign authoring website (`/studio`).
+Started: 10 October 2026. Updated: 11 October 2026.
+Sources: foundation commit `e7c1e986`, combined studio gate commit `43decf73` (build identity `d020aa84e2c7`), and final static hosting export commit `26847f3faa7ee73d8fde398983143d6c4b9f37d9` (build identity `ee2f1aaf0cb1`), delivered via [PR #334](https://github.com/fsodano/granaderos/pull/334).
+What was checked: portable project and archive validation, IndexedDB storage, world/map/building workspaces (separate development-workspace records), content editor and sandbox checks, integrated JSDOM master workflow, 57-case combined studio/CLI gate, typecheck, `/granaderos` production export, and visible production browser review.
+Limits: no full historical campaign routes or full game test suite were run; native file-picker reimport and sandbox test-save continuation were not visually verified in the production browser because of browser-extension local-file and host file-picker restrictions.
+Scope: the active campaign authoring website work,
 starting from the engine/package separation implementation. The historical
 `0.1` tag remains unchanged.
 
@@ -275,7 +280,7 @@ files, but another workspace still had a concurrent type error. The later
 workspace typecheck copied above passed. Final website typecheck evidence is
 now recorded above against the combined source. Production export and the
 scoped visible browser acceptance are complete. Publication to `main` through
-PR #334 is recorded separately in the studio plan. The recorded build
+[PR #334](https://github.com/fsodano/granaderos/pull/334) is recorded separately in the studio plan. The recorded build
 identities and browser limits remain unchanged.
 
 ## Repository documentation and baseline audits

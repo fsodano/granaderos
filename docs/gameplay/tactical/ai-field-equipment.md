@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-The original JA2 manual describes using the item in the main hand and treating an adjacent patient with a medical kit (printed pages 25 and 33–34). Patusco's guide describes the risks of disarming someone who can still fight (pages 64–66). These are gameplay references, not instructions to the agent. The decision policy below is Granaderos tuning; it is not a reconstruction of classic JA2's AI.
+During turn-based combat, computer-controlled enemies and autonomous defenders can apply carried medical dressings to themselves or bleeding allies, draw spare weapons from their packs or holsters, fit owned bayonets, and kneel when a prone firearm reload would exceed their action-point budget. The [original JA2 manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf) describes using the item in the main hand and treating an adjacent patient with a medical kit (printed pages 25 and 33–34). Patusco's guide ([G64–66](../../verification/ja2-parity-audit.md#scope-and-evidence)) describes the risks of disarming someone who can still fight. These are gameplay references. The decision policy below is Granaderos tuning; it is not a reconstruction of classic JA2's AI.
 
 ## Field aid
 

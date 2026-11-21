@@ -1,7 +1,9 @@
 # RecruitCombatant
 
-Admit an eligible candidate into the player's force with immediate control.
-The contract, payment, membership, and placement are accepted together.
+This use case admits an eligible candidate into the player's force with immediate
+control, accepting the contract, payment, membership, and placement together,
+and refuses invalid eligibility, service quotes, payment, or placement sites
+without changing funds, membership, equipment, or service.
 
 `RecruitCombatantUseCase` loads its context through
 `RecruitCombatantRepository`. `RecruitmentService` applies the rules through

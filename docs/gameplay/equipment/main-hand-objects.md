@@ -2,7 +2,7 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
 Ordinary pocket objects, loose cartridges, priming powder and flints can occupy either hand. Dragging to the main hand or selecting **Poner en mano principal** spends four AP during combat. Exploration uses time without AP. One physical item leaves the pocket count; the rest of a stack stays packed. Names and condition appear in the hand display. An available compact weapon can stay in the other hand; long guns still require two hands.
 

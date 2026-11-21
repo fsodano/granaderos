@@ -1,6 +1,6 @@
 # Respeto a civiles
 
-Inés Aguirre is a fictional contract caregiver. Fresh default campaigns give her
+This guide describes published behavior across tactical combat and strategic contract hiring and renewal: a soldier with the `civilian_conscience` ability objects and refuses future hiring or contract renewal after witnessing player troops deliberately kill an authored noncombatant. Inés Aguirre is a fictional contract caregiver. Fresh default campaigns give her
 the explicit `civilian_conscience` ability. Its condition is disclosed before
 hiring. An older pinned package that omits it remains neutral.
 

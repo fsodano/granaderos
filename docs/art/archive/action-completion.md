@@ -1,8 +1,10 @@
-> Historical recovery record. Counts and completion statements below describe the source task, not the current combined build. See ../sprite-families.md and ../../verification/latest-build-consolidation.md for current scope.
-
 # Complete shared sprite actions
 
-Status: in progress. The 328 atlases from PR #14 do not complete this goal.
+> Historical recovery record. Counts and completion statements below describe the source task, not the current combined build. See [../sprite-families.md](../sprite-families.md) and [../../verification/latest-build-consolidation.md](../../verification/latest-build-consolidation.md) for current scope.
+
+This historical record documents the in-progress task to author and review the full tactical command action matrix across all 19 shared 2D sprite appearances in eight directions. Code paths such as `game/` and `assets/` refer to the pre-monorepo layout (`packages/game/` and `content/assets/` in the current repository).
+
+Status: in progress. The 328 atlases from [PR #14](https://github.com/fsodano/granaderos/pull/14) do not complete this goal.
 
 All 19 shared appearances must have every required action in all eight
 directions. Civilian is included without an exception. Existing approved art

@@ -2,10 +2,12 @@
 
 [Development](../README.md) · [Documentation index](../../README.md)
 
-These notes describe bounded measurements and changes to rendering, movement,
-lighting and background work. The scene, hardware, loading state and date limit
-each result. Published performance acceptance is recorded in
-[published progress](../../verification/published-progress.md).
+This index collects dated development-workspace performance records covering
+bounded measurements and changes to rendering, movement, lighting, and
+background worker execution. Each record is a dated snapshot from a separate
+development checkout (`*(workspace)*`); the scene, hardware, loading state, and
+date limit each result. Published performance acceptance is recorded in
+[version 0.1 status](../../verification/version-0.1.md).
 
 - [Exploration, rendering and firearm controls](exploration-performance-and-controls.md) *(workspace)*
 - [Background group route previews — 2026-09-26](group-route-previews-2026-09-26.md) *(workspace)*
@@ -18,4 +20,4 @@ each result. Published performance acceptance is recorded in
 - [Room visibility lookup performance](tactical-room-visibility-performance.md) *(workspace)*
 
 Raw results are kept in [evidence](../../evidence/README.md). The latest combined
-campaign record is [27 September campaign and performance work](../../verification/gameplay-and-campaign-performance-2026-09-27.md).
+campaign record is 27 September campaign and performance work.

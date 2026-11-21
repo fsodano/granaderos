@@ -1,8 +1,8 @@
 # Historical campaign building styles
 
-This source note predates the architecture catalog. It describes the compatibility renderer and is not current acceptance. See [the building guide](../buildings.md).
+This archived guide predates the 14-template architecture catalog. It documents the earlier nine-style compatibility 2D building renderer (`web/app/BuildingRoof.tsx` and `game/building-types.js`, corresponding to the pre-monorepo `apps/web/` and `packages/game/` paths) and is not current acceptance. See [the building guide](../buildings.md).
 
-# Colonial buildings, 1810–1820
+## Colonial buildings, 1810–1820
 
 The tactical building renderer uses limewashed adobe, jointed stone footings,
 clay roof tiles, timber doors, iron window bars, and brick floor joints. These
@@ -85,7 +85,7 @@ compositions in `web/app/BuildingRoof.tsx`:
 - Churches: a long nave, shaped entrance pediment and projected bell tower.
 - Blue-grey mansions: a roof terrace, balconies and an offset mirador.
 - Yellow Cabildo: eleven arcade bays on two levels, continuous balcony,
-  central entrance bay and a dark dome, following the user's supplied reference.
+  central entrance bay and a dark dome, following the supplied Cabildo reference.
 - Ochre pulperías: a shed roof, timber veranda and hanging sign.
 - Brick warehouses: paired gables, louvres and a loading hoist.
 - Sage barracks: a long low roof and two chimneys.

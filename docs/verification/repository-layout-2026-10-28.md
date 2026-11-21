@@ -4,8 +4,8 @@
 
 ## Scope
 
-This record covers the repository directory layout, documentation, build,
-automated checks, and bounded browser verification.
+This 28 October 2026 verification record covers the repository directory layout, documentation, build (`0.1.49 · cdc6ff4ef950`),
+automated checks, and bounded browser verification. The check results below are a snapshot for that build and do not establish a full campaign playthrough.
 The [repository map](../development/repository-layout.md) explains each directory
 and gives a reading path from a player intention to its domain model and storage
 adapter. The [accepted plan](../plans/accepted/domain-architecture.md) defines the

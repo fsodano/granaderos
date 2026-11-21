@@ -1,5 +1,7 @@
 # Shared wall edge verification
 
+This record defines the current cell-edge wall, door, and window map format (schema version 2) and captures its dated verification snapshot (10 October 2026) against base `main` `b5a4a114`, build identity `be9a567f1fdc`, and final production sources `74944df9`, `662f42a4`, and `f12c2d0f` (included in the [version 0.1 checkpoint](version-0.1.md)). The format rules under Result govern current shipped maps and templates; the test and campaign-route results below are a snapshot for those dated sources.
+
 ## Result
 
 Walls, doors, and windows occupy the shared edge between adjacent floor cells.

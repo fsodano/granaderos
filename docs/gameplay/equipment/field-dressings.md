@@ -1,7 +1,7 @@
 # Finite field dressings — 4 October 2026
 
 > **Development-workspace record.** This describes an isolated gameplay branch.
-> See [published progress](../../verification/published-progress.md) for `main`.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
 Select a packed **Camisa de lino** in the tactical inventory. **Preparar vendas**
 consumes exactly one shirt and adds three carried dressings. The shirt must have

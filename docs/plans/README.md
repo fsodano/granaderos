@@ -1,5 +1,7 @@
 # Implementation plans
 
+This index lists the accepted architecture contracts and feature implementation plans in `docs/plans/`.
+
 [Documentation index](../README.md)
 
 ## Accepted architecture
@@ -21,28 +23,31 @@ shows where its applications, packages, content, and tools live.
 
 These documents record proposals, implementation steps and delivered editor scope.
 Some steps have later implementation notes. A plan is not evidence that its
-requirements are complete. Check the [version 0.1 status](../verification/version-0.1.md),
+requirements are complete. Entries marked *(workspace)* are development-workspace
+records written against a separate development checkout rather than the published
+`main` branch (see [version 0.1 status](../verification/version-0.1.md)).
+Check the [version 0.1 status](../verification/version-0.1.md),
 [feature evidence](../verification/README.md) and each record's source and date
 before selecting work.
 
 - [Complete campaign authoring studio](campaign-studio.md) — supported package authoring acceptance, exact evidence and publication status.
-
 - [Editor experience](editor-experience.md) — delivered bounded UX/DX for Studio and standalone editors; current evidence and broader preview limits.
-
 - [Campaign creation and community sharing](campaign-authoring.md) — current studio
   package authoring, with community publishing and wider mechanics kept as future work.
-
-- [Required equipment implementation plan](EQUIPMENT-IMPLEMENTATION-PLAN.md)
-- [Removable bayonet fitting plan — I06](bayonet-fitting-plan.md) *(workspace)*
-- [Game content system and editor](game-content-system.md) *(workspace)*
-- [Sector builder implementation plan](sector-builder.md)
-- [Tactical reference graphics](tactical-reference-graphics.md) *(workspace)*
-- [T09 campaign transaction plan](tactical-exit-campaign-plan.md) *(workspace)*
-- [T09: physical retreat and sector exit](tactical-exit-plan.md) *(workspace)*
+- [Campaign folders and shared engine](campaign-engine-separation.md) — separation between the shared engine and installed campaign folders.
+- [Core campaign: manual testing handoff](core-campaign-v0.1.md) — dated handoff record for manual campaign testing, local validation, and known failures.
+- [Required equipment implementation plan](EQUIPMENT-IMPLEMENTATION-PLAN.md) — proposed stages for period equipment, containers, masses, and corpse loot.
+- [Removable bayonet fitting plan — I06](bayonet-fitting-plan.md) *(workspace)* — proposed equipment lifecycle for compatible bayonet fittings ([parity audit](../verification/ja2-parity-audit.md) row I06).
+- [Game content system and editor](game-content-system.md) *(workspace)* — proposed separation of engine rulesets, campaign content, and editor workflows.
+- [Sector builder implementation plan](sector-builder.md) — web sector editor design and command pipeline (wall-cell geometry superseded by [Walls between cells](wall-edges.md)).
+- [Walls between cells](wall-edges.md) — shared cell-edge walls, doors, and windows replacing full-cell walls.
+- [Tactical reference graphics](tactical-reference-graphics.md) *(workspace)* — 18-piece visual improvement plan and PR records for characters, terrain, and furniture.
+- [T09 campaign transaction plan](tactical-exit-campaign-plan.md) *(workspace)* — proposed campaign return transaction for physical retreat and sector exit ([parity audit](../verification/ja2-parity-audit.md) row T09).
+- [T09: physical retreat and sector exit](tactical-exit-plan.md) *(workspace)* — proposed tactical boundary departure and participant accounting ([parity audit](../verification/ja2-parity-audit.md) row T09).
 
 Related implementation notes: [weapon attachment slots](../gameplay/equipment/attachment-slots.md),
 [tactical exit layouts](../gameplay/tactical/tactical-exit-layouts.md), and
-[equipment acceptance](../verification/equipment-redesign-2026-09-26.md).
+equipment acceptance.
 
 The root [tactical HUD design contract](../../DESIGN.md) records the original
 bottom-strip layout and class names.

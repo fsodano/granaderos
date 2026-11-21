@@ -1,5 +1,8 @@
 # Original low-stance infantry animation
 
+This asset source guide documents the Blender crouch and prone infantry rigs,
+rendering and packing scripts, and browser sprite atlas contract in
+`content/assets/rig`.
 The four `granadero-{crouch|prone}.blend` and `royalist-{crouch|prone}.blend`
 files adapt the original articulated infantry models. Crouching lowers the
 pelvis and bends both knees; prone crawling rotates the torso horizontally,

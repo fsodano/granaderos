@@ -1,10 +1,10 @@
 # Tactical visual assets and compilation
 
-This document records the current original art pipeline. It does not assert visual parity with Jagged Alliance 2 or completion of the full Granaderos specification.
+This guide documents the original 2D tactical art pipeline: ground and building material textures, transparent scenery sprites, articulated unit motion atlases, and interior props. Code paths such as `assets/`, `web/`, and `game/` refer to the pre-monorepo layout (`content/assets/`, `apps/web/`, and `packages/game/` in the current repository). It does not assert visual parity with Jagged Alliance 2 or completion of the full Granaderos specification.
 
 ## Ground and building materials
 
-The original generated source is `assets/source/tactical-materials-v1.png`, an RGB image measuring 1254×1254. Its built-in imagegen prompt and source provenance are in `assets/prompts/tactical-materials-v1.json`. The supplied JA2 screenshot informed the intended muted tactical aesthetic; these textures were not cropped from that screenshot or extracted from the game.
+The original generated source is `assets/source/tactical-materials-v1.png`, an RGB image measuring 1254×1254. Its built-in imagegen prompt and source details are in `assets/prompts/tactical-materials-v1.json`. The supplied JA2 screenshot informed the intended muted tactical aesthetic; these textures were not cropped from that screenshot or extracted from the game.
 
 The atlas has nine 418×418 cells, in row-major order:
 

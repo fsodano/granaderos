@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Energy is the breath available now. Fatigue reduces the amount a soldier can recover: maximum energy is `max(10, 100 − fatigue)`. Taking a tactical breather cannot erase accumulated fatigue. Sleeping and strategic rest restore capacity as well as current energy. No separate saved maximum is needed: the existing fatigue record determines it.
+Across strategic travel, strategic assignments and the tactical battlefield, energy is the breath available now. Fatigue reduces the amount a soldier can recover: maximum energy is `max(10, 100 − fatigue)`. Taking a tactical breather cannot erase accumulated fatigue. Sleeping and strategic rest restore capacity as well as current energy. No separate saved maximum is needed: the existing fatigue record determines it.
 
 ## Reference and adaptation
 
@@ -26,7 +26,7 @@ The capacity relationship and the 10-point floor follow that model. Travel rates
 
 `fatigue-capacity.test.mjs` covers capped recovery, food, tactical entry, hourly timing, quiet rest, save continuation, battle return and information visibility. `march-fatigue.test.mjs` covers hourly effort, load, transport, terrain, actual route stops, remote squads, expiry and attack deployment. `fatigue-render.test.mjs` covers player-facing capacity and route-effort information. Existing journey test helpers use real sleep and travel orders; NPC approach helpers can spend real tactical rest time. The opening playthrough prepares the squad at its staging sector and selects a surviving supply bearer from the actual outcome.
 
-A02 and W02 remain partial. Individual sleep needs, a fuller collapse/recovery model, simultaneous queued travel and cancellation within a stage still need implementation and acceptance evidence.
+A02 (rest, sleep, energy restoration and fatigue limits on work and marching) and W02 (queued travel, route choice, arrival time, cancellation and encounters) in the [JA2 parity audit](../../verification/ja2-parity-audit.md) remain partial. Individual sleep needs, a fuller collapse/recovery model, simultaneous queued travel and cancellation within a stage still need implementation and acceptance evidence.
 
 ### Browser acceptance — 2026-09-11
 

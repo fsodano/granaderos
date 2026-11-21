@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-The Jujuy arriero now offers **Escolta hasta la salida de la Quebrada**. Accept through adjacent dialogue. The arriero follows that soldier through the actual tactical map. **Esperar aquí** stops routine following; **Seguir a este combatiente** resumes or changes the leader through another adjacent conversation. Remote orders are rejected.
+On the tactical battlefield and strategic campaign ledger, the Jujuy arriero now offers **Escolta hasta la salida de la Quebrada**. Accept through adjacent dialogue. The arriero follows that soldier through the actual tactical map. **Esperar aquí** stops routine following; **Seguir a este combatiente** resumes or changes the leader through another adjacent conversation. Remote orders are rejected.
 
 Lead the arriero to Jujuy's western boundary toward Humahuaca. Both people must be adjacent, on the ground level, with one on that boundary. Speak there and select **Confirmar llegada a la salida**. Jujuy and Humahuaca must be under patriot control. Completion records the actual arrival geometry and grants the existing local quest loyalty reward once. It does not pay cash or move either person into another sector. The arriero waits at the exit for the recua.
 

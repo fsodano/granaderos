@@ -1,5 +1,6 @@
-# Critical ally rescue evidence
+# Critical ally rescue evidence, 10 October 2026
 
+This is a dated evidence workspace record from 10 October 2026 for `granaderos-coastal-critical-ally-rescue-evidence-20261010.tar.gz` (see [verification.md](verification.md)).
 The exact original 166 hired San Lorenzo combat orders and six accepted postcombat actions were replayed once with the original campaign synchronization and both save points. All 172 orders were accepted. All recorded boundary projections and complete replay/pre-aid/post-aid pairs matched the original evidence. Native source was reconstructed from checkpoint 0b53d3fb35c67e6188926e71a221caf5ba1ed0f0 in an ordinary temporary directory. Every loaded native source matched the original gate source map.
 
 The first candidate source admission failed during import before any native order because another task changed tactical-ai.js. That zero-order log and baseline controller are included. A setup attempt used an unsupported Python tarfile filter argument, so syntax/entrypoint loading failed before native execution; the saved missing-entrypoint log is included. Its setup transcript existed only in tool output and is not fabricated here. Extraction then used tar, followed by the sole successful exact172 tape replay.

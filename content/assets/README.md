@@ -1,5 +1,7 @@
 # Granaderos original artwork
 
+This asset source guide documents the original generated 2D artwork, portraits,
+weapon icons, action keyframes, and Blender locomotion rigs under `content/assets`.
 Paths such as `web/`, `source/`, and `prompts/` are relative to this directory,
 `content/assets`. Run build commands from the repository root. The game serves
 prepared copies from `apps/web/public` and `content/campaigns/<id>/assets`.

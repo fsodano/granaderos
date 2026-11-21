@@ -1,5 +1,8 @@
 # Character source tools
 
+This tool README documents the Python and Node.js build, replay, and
+verification scripts in `tools/characters-3d` that compile and verify the 3D
+character library.
 Run these tools from the repository root. Authoring sources are in
 `content/assets/source/characters-3d/authoring`. Published models are in
 `apps/web/public/models/characters`. Generated review evidence belongs in
@@ -14,7 +17,7 @@ recipe parameter, or published receipt.
 
 Source changes that alter model construction require a new recipe and a new
 verified model build. Do not update the relocation table to admit such changes.
-Keep historical capture manifests and embedded GLB source references as provenance
+Keep historical capture manifests and embedded GLB source references as source-history
 records. Active authoring inputs and filesystem reads use the current layout.
 
 Run `python3 -m unittest tests.test_source_provenance` to check recipe identities

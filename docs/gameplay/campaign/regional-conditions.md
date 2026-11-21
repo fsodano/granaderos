@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Fresh sectors use regional surroundings instead of a common grass exterior.
+Across the strategic campaign map and tactical battlefield sectors, fresh sectors use regional surroundings instead of a common grass exterior.
 The authored landmark, streets, doors, deployment areas and boundary approaches
 retain their layout. Returning to a saved sector retains its terrain and damage.
 

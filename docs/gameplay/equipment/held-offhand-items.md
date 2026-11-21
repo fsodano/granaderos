@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Implemented 12 September 2026. This extends the existing two-hand weapon layout; it does not claim complete inventory parity.
+Implemented 12 September 2026. In tactical exploration, turn-based combat, and the campaign sector equipment panel, a soldier's second hand can hold tools, supplies, or non-weapon pocket items alongside a one-handed weapon or empty main hand. This extends the existing [two-hand weapon layout](two-hand-equipment.md); it does not claim complete inventory parity.
 
 The second hand can hold a dressing, torch, ration, cartridge, other carried supply, tool, or non-weapon pocket item. It uses the existing owned record. One held item is removed from the pocket count, while the rest of that quantity still needs pocket space. Item condition, identity, weight, and quantity remain unchanged. A displaced blade or second pistol needs a real pocket.
 

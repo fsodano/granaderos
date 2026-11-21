@@ -1,1 +1,4 @@
+# Initial coordination policy control archive report, 10 October 2026
+
+This is a dated evidence workspace record from 10 October 2026 for `granaderos-coordination-initial-policy-control-evidence-20261010.tar.gz` at source identity `c132c162f02420175ffd65eae404efcd221cf53c994e3bf7930810d5c4748026` (see [verification.md](verification.md) and [opening-coordination-initial-focused-gate-receipt.json](opening-coordination-initial-focused-gate-receipt.json)).
 The initial coordination focused gate recorded 91/92 tests, with one new stock-control policy mismatch, zero skips and zero source drift. Every one of the 22 original files is preserved unchanged; all 24 archive members were independently byte and hash verified. The recorded parent and runner PIDs are gone. Original campaign assertions, full health and route acceptance still require their separate gates. This observer dispatched zero native orders.

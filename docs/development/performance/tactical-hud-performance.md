@@ -2,7 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
+
+This dated performance and gameplay record (12 September 2026) documents the six-slot tactical HUD, inventory pocket controls, viewport culling, building geometry reuse, and exploration input during civilian movement, together with a snapshot of local browser render timings and test results.
 
 The default tactical strip displays six mercenary positions. Additional deployed
 mercenaries are available in pages of six. Right-click a portrait, double-click

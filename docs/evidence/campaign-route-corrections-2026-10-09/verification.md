@@ -1,14 +1,17 @@
-# Campaign route corrections, 9 October 2026
+# Campaign route corrections, 9–10 October 2026
 
-Earlier gate and pending-work statements are dated snapshots. The final section and cumulativeFull948 contain the current local results. Git and the pull request record later delivery.
+This is a dated evidence workspace record for campaign route helper corrections from 9–10 October 2026 against code commit `7448e2da612167ba183d85c82a9bb53d9d20321f` (base commit `2849279c5064e658a5106dc1f62c06ecab49e7f4`, production build identity `683a2829961b`).
+Earlier gate and pending-work statements are dated snapshots. The final section and cumulativeFull948 contain the final recorded local results in this workspace. Git and the pull request record later delivery.
 
 These changes correct campaign playthrough helpers and preserve their native
 order and save evidence. They cover physical meetings, lawful recapture,
 paid replacement troops and contracts, finite ammunition and medical supplies,
 real artillery custody, and combat preparation. Production gameplay, save and
-renderer rules are unchanged in this batch. The parity ledger now describes
+renderer rules are unchanged in this batch. The [parity ledger](../../verification/ja2-parity-audit.md) now describes
 the implemented Three.js, projectile and blast behavior accurately; its
-requirement statuses remain unchanged.
+requirement statuses in the requirement register (removed in November 2026)
+were unchanged at this batch's date.
+Limits: the final full948 gate in this record is a failed gate (7,021 passed, 6 failed, 5 skipped across 948 files); full campaign acceptance, complete JA2 parity, full visual acceptance and sustained 60 FPS rendering performance remain unproved.
 
 The first frozen cumulative gate selected all 935 test files. It completed with
 6,984 passed tests, five failed tests and two existing dependent-stage skips.

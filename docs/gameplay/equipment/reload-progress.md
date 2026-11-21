@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Implemented 12 September 2026. An injured soldier can now complete a muzzle-loader even when the full loading cost exceeds the soldier's maximum AP plus carryover.
+Implemented 12 September 2026. In turn-based combat and tactical exploration, a soldier can reload a muzzle-loader across multiple orders and turns, preserving unfinished work on the firearm even when the full loading cost exceeds the soldier's maximum AP plus carryover.
 
 ## Reference and period adaptation
 

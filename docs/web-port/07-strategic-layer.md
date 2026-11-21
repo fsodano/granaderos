@@ -1,24 +1,27 @@
 # 07 — Strategic Layer (engine/Strategic → game/campaign.js + clock/world)
 
+[Series index](README.md) · Previous: [06 — Tactical AI](06-tactical-ai.md) · Next: [08 — Laptop](08-laptop.md)
+
+> **Reference notice:** This document is a source and design analysis of the original Jagged Alliance 2 v1.13 (`1dot13/source`) strategic campaign layer (`Strategic/`) and how an earlier browser campaign checkpoint (`game/campaign.js` and its satellite modules) mapped onto it. It is **not** a description of Granaderos' current browser implementation. See the [series index](README.md) for the full reference set. In the current repository layout, the C++ engine submodule lives at `reference/native/engine/` (referred to below as `engine/`), and the browser modules live under `packages/game/` and `apps/web/` (referred to below by their earlier paths `game/` and `web/`).
+
 > Economy update: the browser game now uses pesos only. The material, convoy, and horse-management mappings below describe the earlier implementation. See [the current economy rules](../gameplay/campaign/INDUSTRY-AND-IMPORTS.md).
 
-Reference for porting the JA2 v1.13-derived strategic layer to the browser
+Reference for adapting the JA2 v1.13-derived strategic layer to the browser
 simulation. Every claim below is extracted from the C++ engine under
-`engine/Strategic/` and mapped to the JavaScript implementation in
+`engine/Strategic/` and compared against the earlier JavaScript implementation in
 `game/campaign.js` and its satellite modules (`time.js`, `world.js`,
 `cities.js`, `militia.js`, `garrison.js`, `missions.js`, `quests.js`,
 `industry.js`, `politics.js`, plus `data.js`, `narrative.js`, `logistics.js`,
 `equipment.js`, `contracts.js`, `recruitment.js`, `horses.js`, `squads.js`,
-`save.js`). Line numbers cite the current working tree; treat them as anchors,
+`save.js`). Line numbers cite the analyzed revision; treat them as anchors,
 not a contract.
 
 Scope: game clock and time compression, the strategic event system, the map
 screen (sectors, squad movement, transport), assignments (training, repair,
 doctors), militia/garrison, facilities, auto resolve, enemy strategic AI,
 mines/income economy, and the strategic→tactical handoff. **Out of scope:**
-tactical combat rules (see `03-tactical-combat.md`), soldier stat definitions
-(`04-soldiers-stats.md`), and the laptop/desk UI (`07-laptop.md` in the
-overview's numbering).
+tactical combat rules (see [03 — Tactical Combat Core](03-tactical-combat.md)), soldier stat definitions
+([04 — Soldiers, Mercs & Stats](04-soldiers-stats.md)), and the laptop/desk UI ([08 — Laptop](08-laptop.md)).
 
 ---
 

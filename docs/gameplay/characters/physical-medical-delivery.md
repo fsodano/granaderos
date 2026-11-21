@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-The Ciudadela officer offers **Vendas para la Ciudadela** after the player reaches the local contact. The errand requires three carried dressings. Select a dressing pocket, choose its quantity and offer it to the officer. The ordinary movement, visibility, availability and paid interaction rules apply. Using a dressing as treatment remains a separate action.
+On the tactical battlefield and strategic campaign ledger, the Ciudadela officer offers **Vendas para la Ciudadela** after the player reaches the local contact. The errand requires three carried dressings. Select a dressing pocket, choose its quantity and offer it to the officer. The ordinary movement, visibility, availability and paid interaction rules apply. Using a dressing as treatment remains a separate action.
 
 One delivery can contain several dressings, up to the remaining requirement. Excess quantities and wrong supplies are refused without transferring ownership. Accepted quantities leave the soldier's pack and remain in the officer's validated receipts. The first accepted dressing starts the errand. The third completes it when Tucumán is secured and applies the existing local quest loyalty reward once. This does not debit remote stock or pay a cash reward.
 

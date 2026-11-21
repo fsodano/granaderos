@@ -2,15 +2,15 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Implemented 12 September 2026. This closes the requested general outfit slot, not the full JA2 armor system.
+Implemented 12 September 2026. Across tactical exploration, turn-based combat, and the campaign sector inventory, soldiers equip, stow, transfer, or drop individual head, torso, and leg garments with persistent weight and condition. This closes the general outfit slot requirement, not the full JA2 armor system.
 
 Each soldier has separate head, torso and leg slots, apart from the two hands and twelve pockets. Supported garments are a felt hat (0.3 kg), wool poncho (2 kg), linen shirt (0.6 kg) and campaign trousers (0.7 kg). The saved `outfit` field is the torso slot. A spare occupies one large pocket. Equivalent garments may share a quantity record, but each member still needs a physical pocket.
 
 In the tactical inventory, select the worn outfit to give or drop it. **Guardar vestimenta** puts it in a large pocket. Select a pocket containing clothing and use **Ponerse vestimenta** to wear one garment. An exchange uses the vacated pocket for the previous outfit. The operation fails without changing either item when the destination cannot fit. Clothing changes cost 8 AP in combat; exploration advances time without spending AP. The selected hand, gun load, and attachments stay intact.
 
-The sector inventory also supports wear, stow, drop and pickup. Equipment changes need a conscious soldier present in a safe sector. Ground transfers additionally need a discovered, accessible, cleared field. Equipment shops are deferred by the user. Fresh Retiro has one identified linen shirt in its finite armory chest. An opened or looted saved chest keeps its actual contents; entry and save loading do not add that shirt to an older chest.
+The sector inventory also supports wear, stow, drop and pickup. Equipment changes need a conscious soldier present in a safe sector. Ground transfers additionally need a discovered, accessible, cleared field. Equipment shops are deferred in [version 0.1](../../verification/version-0.1.md). Fresh Retiro has one identified linen shirt in its finite armory chest. An opened or looted saved chest keeps its actual contents; entry and save loading do not add that shirt to an older chest.
 
 Initial personal clothing is issued once when the recruit first enters service. It includes one worn poncho, hat, and trousers. A saved empty body slot is deliberate and is not refilled. The former global poncho reserve no longer exists. Assaults, visits, return reports, rehires, and save loading do not recreate garments or grant protection from a pooled stock total. Clothing can be transferred, left in the sector, recovered from a body, or retained in captivity. Its condition and any instance identity follow its current owner. Historical return records do not become duplicate owners.
 

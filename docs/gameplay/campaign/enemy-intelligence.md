@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-The front panel and player-known state now use the same observations. Launching an enemy group off-map no longer publishes its count, destination or arrival schedule. A route crossing still changes the real encounter and arrival rules, but it does not by itself reveal the enemy's orders. The journal keeps historical commanders and general doctrine as reference information; it no longer predicts active commands, targets or dispatch times.
+On the strategic campaign screen, the front panel and player-known state now use the same observations. Launching an enemy group off-map no longer publishes its count, destination or arrival schedule. A route crossing still changes the real encounter and arrival rules, but it does not by itself reveal the enemy's orders. The journal keeps historical commanders and general doctrine as reference information; it no longer predicts active commands, targets or dispatch times.
 
 ## Observation rules
 

@@ -1,6 +1,6 @@
 # Alpha service-equipment return — local acceptance
 
-Updated 2026-10-02. Included in this alpha PR; accepted locally at **`67f6c7b5195d0cf946bf8c4c3134a84cabcf3702`**. This dated record does not assert alpha CI or merge. [PR #139 publication](../evidence/pr139-published-2026-10-01.json) remains an immutable published-baseline snapshot. The PR body and final delivery report record actual new publication after the single verified push.
+Updated 2026-10-02 (initial local acceptance: 1 October 2026). This dated verification record captures local full-suite, build, and bounded browser/save checks for finite service-equipment return on dismissal or contract expiry, accepted locally at **`67f6c7b5195d0cf946bf8c4c3134a84cabcf3702`** (shared game/editor build **`59bdba25a3bb`**). The results below are a snapshot for that local source and do not assert alpha CI or merge. [PR #139](https://github.com/fsodano/granaderos/pull/139) ([publication receipt](../evidence/pr139-published-2026-10-01.json)) remains an immutable published-baseline snapshot. The PR body and final delivery report record actual new publication after the single verified push.
 
 ## Accepted bounded behavior
 

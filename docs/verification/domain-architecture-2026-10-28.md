@@ -1,6 +1,6 @@
-# Domain architecture verification
+# Domain architecture verification — 28 October 2026
 
-Date: 28 October 2026.
+Date: 28 October 2026. This dated verification record captures local automated, boundary, persistence, and browser checks for the eight-stage domain architecture implementation against production artifact `e1a4cfbade87` (package version `0.1.49`). The results below are a snapshot for that local source.
 
 [Accepted plan](../plans/accepted/domain-architecture.md) ·
 [Architecture guide](../architecture/README.md) ·
@@ -37,31 +37,31 @@ and the documented saved-field and command aliases.
 
 - [Recruitment domain](../../packages/game/domain/personnel/recruitment-service.test.ts),
   [character abilities](../../packages/game/domain/personnel/character-abilities.test.ts),
-  [ability mapping](../../tests/character-abilities-mapping.test.mjs),
-  [immediate recruitment](../../tests/immediate-recruitment.test.mjs),
-  [authored equipment](../../tests/recruitment-equipment.test.mjs), and
-  [prepaid migration](../../tests/recruitment-save-migration.test.mjs).
-- [Journey domain](../../tests/journey-domain.test.mjs),
-  [campaign arrival behavior](../../tests/journey-campaign.test.mjs), and
-  [route fixture contracts](../../tests/route-contracts.test.mjs).
-- [Residents](../../tests/resident-world.test.mjs),
-  [corpse lifecycle](../../tests/world-lifecycle.test.mjs),
-  [suspended conditions](../../tests/suspended-sector-health.test.mjs), and
-  [inventory mapping](../../tests/inventory-domain-mapping.test.mjs).
-- [Sector runtime](../../tests/sector-session-runtime.test.mjs),
-  [visit coordination](../../tests/sector-session-coordination.test.mjs),
-  [persistent participation](../../tests/game-session-registration.test.mjs),
-  [combat](../../tests/combat-domain.test.mjs), and
-  [worker admission](../../tests/battle-worker.test.mjs).
-- [Canonical persistence](../../tests/game-persistence.test.mjs),
-  [retained-sector ownership](../../tests/retained-sector-ownership.test.mjs),
+  [ability mapping](../../tests/character-abilities-mapping.test.ts),
+  [immediate recruitment](../../tests/immediate-recruitment.test.ts),
+  [authored equipment](../../tests/recruitment-equipment.test.ts), and
+  [prepaid migration](../../tests/recruitment-save-migration.test.ts).
+- [Journey domain](../../tests/journey-domain.test.ts),
+  [campaign arrival behavior](../../tests/journey-campaign.test.ts), and
+  [route fixture contracts](../../tests/route-contracts.test.ts).
+- [Residents](../../tests/resident-world.test.ts),
+  [corpse lifecycle](../../tests/world-lifecycle.test.ts),
+  [suspended conditions](../../tests/suspended-sector-health.test.ts), and
+  [inventory mapping](../../tests/inventory-domain-mapping.test.ts).
+- [Sector runtime](../../tests/sector-session-runtime.test.ts),
+  [visit coordination](../../tests/sector-session-coordination.test.ts),
+  [persistent participation](../../tests/game-session-registration.test.ts),
+  [combat](../../tests/combat-domain.test.ts), and
+  [worker admission](../../tests/battle-worker.test.ts).
+- [Canonical persistence](../../tests/game-persistence.test.ts),
+  [retained-sector ownership](../../tests/retained-sector-ownership.test.ts),
   [transaction rules](../../packages/game/infrastructure/persistence/game-unit-of-work.test.ts),
-  [browser writer ownership](../../tests/browser-save-writer.test.mjs),
-  [autosave identity](../../tests/campaign-autosave-identity.test.mjs), and
-  [visible save status](../../tests/save-progress.test.mjs).
-- [Editor policy](../../apps/campaign-editor/tests/editor-policy.test.mjs),
-  [editor project](../../apps/campaign-editor/tests/campaign-project.test.mjs), and
-  [public integration](../../apps/campaign-editor/tests/public-integration.test.mjs).
+  [browser writer ownership](../../tests/browser-save-writer.test.ts),
+  [autosave identity](../../tests/campaign-autosave-identity.test.ts), and
+  [visible save status](../../tests/save-progress.test.ts).
+- [Editor policy](../../apps/campaign-editor/tests/editor-policy.test.ts),
+  [editor project](../../apps/campaign-editor/tests/campaign-project.test.ts), and
+  [public integration](../../apps/campaign-editor/tests/public-integration.test.ts).
 
 ## Browser checks
 

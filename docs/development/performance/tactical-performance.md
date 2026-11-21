@@ -2,7 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
+
+This dated performance and bug-fix record (September 2026) documents the removal of the floating exploration pause notice, integer endpoint rounding for night line-of-sight traces during fractional sprite movement, and tactical state memoization, together with a snapshot of verification checks.
 
 The floating exploration pause notice has been removed. Exploration still advances between orders and stops for conversations, inventory, loot and sector-exit panels, during movement, and when the browser tab is hidden.
 

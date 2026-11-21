@@ -2,7 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
+
+During tactical exploration and turn-based combat, players can pick up an item or partial stack from a soldier's inventory onto the cursor and click the tactical map to drop it on nearby ground, pass or relay it to squad members, toss it across distance, or offer it to a visible NPC in exploration.
 
 ## Controls
 

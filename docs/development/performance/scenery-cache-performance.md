@@ -2,7 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
+
+This dated performance record (22 September 2026; see [exact measurements](../../evidence/frame-rate-2026-09-22.json)) documents a snapshot of frame-time and memory measurements across successive iterations of static scenery PNG caching, ground-control element reuse, and route-search profiling in the tactical renderer.
 
 ## Current native-density cache
 

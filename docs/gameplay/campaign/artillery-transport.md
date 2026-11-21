@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-A friendly gun in a secured sector can travel to another friendly sector by an organized cart or flotilla route. Open Maestranza, find the stationed gun, choose a destination and transport, then use **Enviar pieza**. The preview shows weight, travel hours and any rejection reason. An available local squad must provide the gun's required crew for loading. Active encounters, hostile survivors and occupied guns prevent recovery.
+On the strategic campaign screen, a friendly gun in a secured sector can travel to another friendly sector by an organized cart or flotilla route. Open Maestranza, find the stationed gun, choose a destination and transport, then use **Enviar pieza**. The preview shows weight, travel hours and any rejection reason. An available local squad must provide the gun's required crew for loading. Active encounters, hostile survivors and occupied guns prevent recovery.
 
 The convoy removes the gun from the source once. It retains the same identity, model, loaded state, reserve rounds and partial reload. At arrival it enters a local artillery depot, separately from generic cannon stock. Select its model in the battery controls when the squad reaches that depot. Deployment consumes the local record once and preserves its load; it does not manufacture a replacement gun or issue six new rounds.
 
@@ -18,4 +18,4 @@ Four transport tests cover a purchased and deployed gun, exact arrival/redeploym
 
 A separate browser session imported the labelled subsystem save. Its gun displayed 40% reload progress and two rounds. Selecting Buenos Aires previewed 504 kg and eighteen hours; dispatch removed the original field entry and displayed one convoy. Reload/resume retained it. Advancing time stopped at the eighteen-hour delivery notice. After the squad's twelve-hour march, the destination panel displayed the same partial load and two rounds, and the gun could be selected for the next battery. Actual redeployment and duplicate rejection are verified by the automated custody test.
 
-The full integration suite passes 2,661/2,661 tests with no skips in 336.3 seconds, including the continuous fresh-start route through Jujuy. The campaign ending, transport of disassembled guns over high passes and broader parity audit remain open. Stored, undeployed and locally emplaced pieces now support workshop sale and repurchase; see [artillery trading](artillery-trade.md). Pieces outside a workshop still require transport before sale.
+The full integration suite passes 2,661/2,661 tests with no skips in 336.3 seconds, including the continuous fresh-start route through Jujuy. The campaign ending, transport of disassembled guns over high passes and broader parity audit remain open. Stored, undeployed and locally emplaced pieces now support workshop sale and repurchase; see artillery trading. Pieces outside a workshop still require transport before sale.

@@ -1,8 +1,11 @@
 # Web sector editor
 
-Open `/editor` from **Constructor de sectores** on the title screen. Run the app
-with `npm ci --prefix apps/web` and `npm run dev`. The editor runs in the browser;
-there is no desktop editor or account requirement.
+This authoring guide covers creating, editing, validating, playtesting, and
+exporting tactical sector maps in the browser sector editor (`/editor`) and
+through the CLI batch tool. Open `/editor` from **Constructor de sectores** on
+the title screen. Run the app with `npm ci --prefix apps/web` and `npm run dev`.
+The editor runs in the browser; there is no desktop editor or account
+requirement.
 
 ## Create a sector
 
@@ -122,7 +125,7 @@ Example `commands.json`:
 Other commands include `moveObject`, `rotateObject`, `transformSelection`,
 `duplicateObject`, `deleteObject`, `setObject`, `setMetadata`, `resizeBuilding`,
 `setWall`, `setDoor`, `setOpeningStyle` and `stampTemplate`. See `apps/campaign-editor/domain/sector-map.js` and
-[editor policy tests](../../apps/campaign-editor/tests/editor-policy.test.mjs) for
+[editor policy tests](../../apps/campaign-editor/tests/editor-policy.test.ts) for
 argument examples. `seededTerrainCommands` in the
 [map brush tools](../../apps/campaign-editor/domain/map-editor-tools.js) provides
 deterministic generation.

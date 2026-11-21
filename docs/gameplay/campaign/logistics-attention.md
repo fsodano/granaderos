@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Explicit time advancement now stops when a workshop job, imported weapon order, cargo shipment or convoy actually completes. The operations map shows a saved receipt with the completion hour, requested and elapsed hours, quantities and destination. This extends the existing assignment and contract attention flow; it is a period campaign adaptation of JA2's map-time control, not a reconstruction of its modern shops or laptop interface.
+On the strategic campaign screen, explicit time advancement now stops when a workshop job, imported weapon order, cargo shipment or convoy actually completes. The operations map shows a saved receipt with the completion hour, requested and elapsed hours, quantities and destination. This extends the existing assignment and contract attention flow; it is a period campaign adaptation of JA2's map-time control, not a reconstruction of its modern shops or laptop interface.
 
 As of 27 September, explicit waits also stop once when a due job cannot deliver under its existing rules. The notice explains the obstruction. This covers occupied or unsupplied workshops, blocked or occupied Ensenada imports, an imported weapon order that cannot fit in the armory, and convoys held by their existing route, transport or snow conditions. Paid inputs and reserved cargo remain in their queues. No new shortage, production cost or transport rule is introduced.
 
@@ -42,4 +42,4 @@ The live production-component demonstration paid 30 pesos and the ordinary input
 
 The separate demonstration is `http://127.0.0.1:3008/` while its preview server runs. It uses the production Campaign component, reducer and save functions. Its introduction and reset/save buttons are test controls; the time selector, **Avanzar** button and receipt are the game UI. The player's campaign is unchanged. Live convoy and import cases remain automated-test evidence.
 
-This covers completion and existing due-delivery interruptions under A07's explicit-wait policy. Full JA2 parity and a complete campaign through the ending remain unverified.
+This covers completion and existing due-delivery interruptions under A07's explicit-wait policy (time compression and event-driven pause triggers in the [JA2 parity audit](../../verification/ja2-parity-audit.md)). Full JA2 parity and a complete campaign through the ending remain unverified.

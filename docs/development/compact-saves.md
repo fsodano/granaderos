@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../verification/version-0.1.md) for the published-main checkpoint.
 
-Large campaigns retain every visited battlefield. The verified northern route exposed a full save of 5,035,492 UTF-8 bytes when it entered the final Buenos Aires battle. That exceeded the 5,000,000-byte file limit even though the campaign alone still fitted.
+This dated record documents the schema 2 terrain-compaction save format, its validation checks, and a snapshot of test results from the development checkout. Large campaigns retain every visited battlefield. The verified northern route exposed a full save of 5,035,492 UTF-8 bytes when it entered the final Buenos Aires battle. That exceeded the 5,000,000-byte file limit even though the campaign alone still fitted.
 
 Exports and browser saves now use schema 2 when terrain compaction helps a save of at least 1,000,000 bytes. Smaller files retain readable schema 1. Each regular terrain grid stores a palette of complete tile properties and an index per position. Coordinates are reconstructed from the grid. Unordered grids stay explicit. Units, bodies, inventories, doors, tile metadata, buildings, encounters, artillery and clocks retain their data. The encoder does not change the live state.
 

@@ -1,6 +1,6 @@
 # Engine and campaign separation
 
-Date: 10 October 2026. Scope: local development work in `feature/campaigns`.
+Date: 10 October 2026 (publication update: 11 October 2026). This dated verification record captures local automated, static-export, and bounded browser checks for the engine/campaign separation boundary on `feature/campaigns` (base commit `12ac2d9b0576a56f8499b70782d581b78f5fd373`, tested build `a5ad3a5621c6`, merged via [PR #333](https://github.com/fsodano/granaderos/pull/333) and published to `main` via [PR #334](https://github.com/fsodano/granaderos/pull/334) as `0a04f72c1c0a1b0ec56a8db84668f2e3b12a722e`). Each check below is a snapshot for its stated source and scope.
 This record does not replace the earlier [`0.1` checkpoint](version-0.1.md),
 retag it, or establish full historical campaign acceptance.
 

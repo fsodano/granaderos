@@ -1,5 +1,9 @@
 # Original articulated infantry animation
 
+This asset source guide documents the Blender 3D infantry models, articulated
+gait and combat cycles, rendering scripts, and atlas packers in
+`content/assets/rig`.
+
 > Current runtime: [ground-state extension](../../../docs/adr/002-prone-and-incapacitated-sprites.md) and [ADR 001](../../../docs/adr/001-realistic-tactical-sprites.md)
 > defines the native pixel sprite pipeline. Run the renderers below, then
 > `python3 content/assets/rig/pack_pixel_sprites.py` to install all native atlases.
@@ -61,8 +65,8 @@ separately. Per-direction hashes also prove eight distinct rendered images.
 
 ## JA2 reference
 
-The user-provided [Anatomy of a sprite](http://ja2v113.pbworks.com/w/page/28015925/Anatomy%20of%20a%20sprite)
-was successfully fetched with curl and read on 2026-09-05. Its orthographic
+The [Anatomy of a sprite](http://ja2v113.pbworks.com/w/page/28015925/Anatomy%20of%20a%20sprite)
+reference was fetched with curl and read on 2026-09-05. Its orthographic
 30° elevation/45° azimuth camera convention and frame-reference-offset discussion
 inform this implementation. The article leaves animation-speed handling as a
 TODO; our gait and timing are original implementation decisions. Its linked
@@ -88,5 +92,5 @@ silhouette is unclipped and writes `combat-animation.json`. Run uses the normal
 camera scale; firearm actions expand the camera from 2.6 to 3.5 while preserving
 the normalized ground reference. Multiply the action draw size by 3.5/2.6 to
 keep body size consistent and leave room for the horizontal musket. The browser
-`SpriteFigure.tsx` implements that contract, including a compact contact shadow.
+`apps/web/app/SpriteFigure.tsx` implements that contract, including a compact contact shadow.
 These are original geometry/animations; no JA2 sprite art was copied.

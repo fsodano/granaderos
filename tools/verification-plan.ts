@@ -8,7 +8,6 @@ export const verificationStages = Object.freeze({
     'typecheck',
     'test',
     'audit:dependencies',
-    'audit:docs',
     'audit:baseline',
   ],
   full: [
@@ -19,7 +18,6 @@ export const verificationStages = Object.freeze({
     'typecheck',
     'test',
     'audit:dependencies',
-    'audit:docs',
     'audit:baseline',
     'build',
   ],

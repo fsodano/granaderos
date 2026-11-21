@@ -1,5 +1,9 @@
 # EndSectorTurn
 
+This use case advances combat turn authority or spends a bounded rest interval
+during sector exploration, and refuses requests with an exhausted revision or no
+remaining time budget without publishing gameplay changes.
+
 `EndSectorTurnUseCase` loads and commits through its own `EndSectorTurnRepository`.
 In combat, `CombatSession` owns phase authority and round-time charging.
 `CombatTurn` grants each automatic actor a budget once and retains its action

@@ -1,4 +1,10 @@
-# Native character review source archive
+# Native character review source archive — 2026-10-09
+
+This dated archive guide (2026-10-09) documents the preserved source, art, test,
+and receipt blobs in
+`content/assets/source/characters-3d/review-variants/2026-10-09-native-library`
+and their verification and recovery scripts. The recorded inventory and statuses
+are a snapshot from the 2026-10-09 branch and worktree consolidation.
 
 This archive preserves all unique source, art, test and receipt blobs from the
 four local human-library checkpoint branches, including available temporary
@@ -16,9 +22,9 @@ clothing asset, gameplay rule or test limit is replaced by this archive.
   and content already preserved in main history.
 - `external-files.json`: 18,724 available temporary and worktree source/art paths, receipt
   references and exact identities. Where a study recorded no Git branch, that
-  missing provenance is stated explicitly.
+  missing source history is stated explicitly.
 - `worktree-source-overlaps.json`: all-worktree ignored authored-source audit,
-  exact checkout provenance, and content already reachable from integration.
+  exact checkout source history, and content already reachable from integration.
 - `blobs/`: exact bytes, deduplicated by their Git blob identity.
 - `squash-overlaps.json`: exact complete patch-id matches for 23 local source
   branches and their existing main squash commits.

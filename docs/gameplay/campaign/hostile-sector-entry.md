@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-An attack order now deploys the squad in exploration. The presence of enemies elsewhere in the sector does not by itself start a turn. Sight is checked after terrain restoration, retained enemies, residents and boundary arrivals have their final positions.
+When entering a hostile sector from the strategic campaign screen onto the tactical battlefield, an attack order now deploys the squad in exploration. The presence of enemies elsewhere in the sector does not by itself start a turn. Sight is checked after terrain restoration, retained enemies, residents and boundary arrivals have their final positions.
 
 A player sighting starts the player phase. If only the enemy sees the squad, the enemy receives first initiative. Movement stops at the step that establishes contact. Its earlier exploration steps use energy and time, with no AP charge. The movement log now also reports zero AP when the final step changes the mode to combat. The new combat budget reflects the soldier's current condition.
 

@@ -1,5 +1,8 @@
 # GetSaveStatus
 
+This read-only use case reports the current save-storage progress for the active
+game session without modifying campaign time or game state.
+
 `GetSaveStatusUseCase` reads storage progress through `GetSaveStatusRepository`.
 It reports the latest accepted identity, the last persisted identity, and one
 state: unsaved, saving, saved, blocked, or failed. A blocked or failed save has a

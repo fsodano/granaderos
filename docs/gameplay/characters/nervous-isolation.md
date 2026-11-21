@@ -1,6 +1,6 @@
 # Nervios al quedar aislado
 
-Fresh default Ángela Cejas content declares the explicit `nervous_isolation`
+This guide describes published behavior across tactical combat and strategic campaign hours: a low-morale soldier with the `nervous_isolation` condition gains tactical shock when isolated from friendly companions in combat and loses personal morale during isolated strategic hours. Fresh default Ángela Cejas content declares the explicit `nervous_isolation`
 condition. Hiring and authoring controls disclose it. Older pinned content that
 omits the ability remains neutral. Personality prose alone never activates it.
 
@@ -35,7 +35,7 @@ morale recovery from rest; medical and energy recovery continue. Real capable
 regrouping clears the budget without refunding morale. Sleep, incapacity,
 expiry and deployment pause charges without resetting that budget. The first
 positive loss creates one named campaign-log entry. Loads create no event.
-See the [strategic isolation evidence](../../verification/strategic-isolation-2026-10-05.md)
+See the strategic isolation evidence
 for exact saved receipts, location rules and declared acceptance limits.
 
 The [classic Stracciatella source](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/04869c8e339ead1de9fefb25b7ad206b9b786825/src/game/Tactical/Morale.cc#L154-L195)

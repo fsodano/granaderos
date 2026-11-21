@@ -1,5 +1,8 @@
 # Operative portrait art direction and evidence
 
+This asset source guide records the art direction, historical references consulted
+on 2026-09-05, and interpretive limits for the thirteen named operative portraits
+under `content/assets`.
 All thirteen portraits are original AI-generated paintings, made for the game's
 1810–1820 setting. They are interpretive depictions, not historical photographs,
 scans of museum objects, or authenticated reconstructions. No reference image

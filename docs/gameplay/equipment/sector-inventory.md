@@ -2,7 +2,7 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
 The strategic map's **Objetos** view now lists discovered field equipment beside supplies in depots. Select a sector and a local soldier, then use **Recoger** or **Dejar** with an exact quantity. The map marker counts discovered items separately from depot supplies.
 

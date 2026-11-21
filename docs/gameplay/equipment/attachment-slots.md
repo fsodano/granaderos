@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Right-click a held or pocket firearm to inspect that exact physical slot. Its details now contain the available bayonet socket. Pick up an identified India-pattern bayonet, then click the socket to install it. A rifle can stay in its pocket during this work. Clicking the ordinary hand or pocket remains an equipment exchange, so the player chooses whether to replace the held object or modify its weapon assembly.
+In tactical exploration, turn-based combat, and the campaign equipment screen, right-click a held or pocket firearm to inspect that exact physical slot. Its details now contain the available bayonet socket. Pick up an identified India-pattern bayonet, then click the socket to install it. A rifle can stay in its pocket during this work. Clicking the ordinary hand or pocket remains an equipment exchange, so the player chooses whether to replace the held object or modify its weapon assembly.
 
 Click a fitted socket with an empty cursor to remove its bayonet. The exact bayonet becomes a saved cursor item even when every pocket is full. Place it in a chosen pocket, hand, or existing map transfer destination. Escape tries compatible pockets, then the owner's ground location. It does not refit the bayonet for free or replace the host rifle. If the ground cannot accept the item, cursor custody remains intact.
 

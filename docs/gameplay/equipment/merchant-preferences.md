@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Workshop choice now changes the price paid for player equipment and can change whether a damaged weapon is accepted. The shop profile is visible in the armory. Direct weapon sales, all artillery sale sources and combined exchanges use the same local buying rules. New catalog prices and the 80% used-purchase fraction remain unchanged.
+In the campaign armory, workshop choice changes the price paid for player equipment and can change whether a damaged weapon is accepted. The shop profile is visible in the armory. Direct weapon sales, all artillery sale sources and combined exchanges use the same local buying rules. New catalog prices and the 80% used-purchase fraction remain unchanged.
 
 | Workshop | Preferred equipment | Buying fraction of new value | Refusal |
 | --- | --- | --- | --- |

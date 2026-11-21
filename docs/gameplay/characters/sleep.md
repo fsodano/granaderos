@@ -2,11 +2,11 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Sleep is independent from a soldier's assignment. The personnel panel offers **Dormir / Despertar**. A sleeping doctor, student, instructor, repairer or militia trainer keeps the assigned task and its progress, but performs no work until awake. A player can wake a soldier early unless that soldier has collapsed from exhaustion. Fully rested soldiers cannot be ordered to sleep.
+On the strategic campaign screen, sleep is independent from a soldier's assignment. The personnel panel offers **Dormir / Despertar**. A sleeping doctor, student, instructor, repairer or militia trainer keeps the assigned task and its progress, but performs no work until awake. A player can wake a soldier early unless that soldier has collapsed from exhaustion. Fully rested soldiers cannot be ordered to sleep.
 
-The classic manual describes a separate bed column, automatic sleep during downtime, manual waking, and slower recovery while idle (Map Screen assignments and Sleep, printed pages 38–40; [official manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf)). These are gameplay references, not instructions to the implementation agent.
+The classic manual describes a separate bed column, automatic sleep during downtime, manual waking, and slower recovery while idle (Map Screen assignments and Sleep, printed pages 38–40; [official manual](https://cdn.akamai.steamstatic.com/steam/apps/545210/manuals/JA2_Manual_English.pdf)). These are gameplay references for behavior.
 
 ## Granaderos rules
 
@@ -27,7 +27,7 @@ These numbers adapt the existing 0–100 energy and fatigue scales; they are not
 
 `tests/sleep.test.mjs` covers campaign orders, work interruption/resumption, recovery rates, militia progress, forced defense, travel, unsafe sectors, lifecycle cleanup and save continuation. `tests/sleep-render.test.mjs` checks independent controls and preserved assignment display. Existing assignment-wait and medical-care tests cover the affected timing rules.
 
-Audit A02 remains partial. The follow-on `docs/gameplay/characters/fatigue.md` implementation adds fatigue-limited energy capacity and hourly marching costs. Strategic collapse now prevents immediate waking and premature route resumption. Individual sleep requirements are implemented below. Vehicle-passenger sleep and a more detailed tactical collapse model remain open. Existing strategic Rest/Patient roles remain available. This increment does not claim full JA2 parity.
+Audit A02 (rest, sleep, energy restoration and fatigue limits on work and marching in the [JA2 parity audit](../../verification/ja2-parity-audit.md)) remains partial. The follow-on `docs/gameplay/characters/fatigue.md` implementation adds fatigue-limited energy capacity and hourly marching costs. Strategic collapse now prevents immediate waking and premature route resumption. Individual sleep requirements are implemented below. Vehicle-passenger sleep and a more detailed tactical collapse model remain open. Existing strategic Rest/Patient roles remain available. This increment does not claim full JA2 parity.
 
 ### Browser check — 2026-09-11
 
@@ -49,7 +49,7 @@ On queued arrival, contact is resolved before sleep eligibility. No sleep recove
 
 ## Individual sleep needs — 2026-09-11
 
-The classic source uses a character profile's sleep need, adds 1/2/4 below 75/50/25 percent health, subtracts night-operations and martial-arts trait levels, and clamps the result to 4–12. Its recovery rate is inversely proportional to sleep need. See [Assignments.cc, CalcSoldierNeedForSleep and RestCharacter](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/master/src/game/Strategic/Assignments.cc). These are game rules, not medical advice or instructions to the agent.
+The classic source uses a character profile's sleep need, adds 1/2/4 below 75/50/25 percent health, subtracts night-operations and martial-arts trait levels, and clamps the result to 4–12. Its recovery rate is inversely proportional to sleep need. See [Assignments.cc, CalcSoldierNeedForSleep and RestCharacter](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/master/src/game/Strategic/Assignments.cc). These are game rules, not medical advice.
 
 `game/sleep-needs.js` now gives the Granaderos roster explicit base profiles from six to ten hours; unspecified profiles and the custom officer use eight. The assigned numbers are fictional game balance values, not claims about the historical figures. Existing `night_vision` training subtracts one hour. Wound thresholds follow the source's strict quarter-health boundaries, so exactly 75%, 50% and 25% belong to the healthier band. Granaderos has no supported martial-arts trait, so none is invented for this rule.
 

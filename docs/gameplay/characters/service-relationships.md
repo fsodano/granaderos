@@ -1,9 +1,13 @@
 # Service relationships *(workspace)*
 
-An authored disagreement can block a person's next hire or renewal. The player
+> **Development-workspace record.** This note describes a separate development
+> checkout. Its implementation and test results are not published-main acceptance.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
+
+Across strategic hiring and contract renewals and tactical battlefield deployments, an authored disagreement can block a person's next hire or renewal. The player
 can retain the other person or use the existing dismissal action. This implements
-one personnel choice described at 5:37–6:32 in the user's
-[JA2 reference video](https://www.youtube.com/watch?v=6WtKA16osqE).
+one personnel choice described at 5:37–6:32 in the
+[JA2 reference video](https://www.youtube.com/watch?v=6WtKA16osqE) (*Why Jagged Alliance 2 CRUSHES Modern RPGs*, source `V2` in [the parity audit](../../verification/ja2-parity-audit.md#scope-and-evidence)).
 
 The default rule is directed: Inés Aguirre (`person-107`) refuses to hire or renew
 while Gaspar Villalba (`person-112`) is in service. The stated reason is a dispute
@@ -142,7 +146,7 @@ the validated return. Actual dismissal, expiry, death or capture cancels it,
 while an accepted renewal during continuous service retains it. Later rehiring
 cannot revive a cancelled notice. Older pinned packages without preferences
 remain neutral; loading a save creates neither letters nor notices for past
-deaths. See [confirmed-loss recovery evidence](../../verification/confirmed-companion-loss-recovery-2026-10-05.md).
+deaths. See confirmed-loss recovery evidence.
 
 The existing received correspondence stores the named reaction at actual
 delivery. Its stable ID uses the sender and deceased identities. Reading it

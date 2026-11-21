@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-B or the firearm mode control selects close combat and its attack cursor. Click an enemy to use normal targeted melee, or an empty cell to swing toward that location. F and right-click preserve the selected firearm mode. G or Escape restores walking and contextual use.
+During tactical exploration and turn-based combat, pressing **B** or using the firearm mode control switches a held firearm to close-combat mode (bayonet thrust or stock strike) and selects its melee attack cursor, allowing the soldier to strike either an enemy or an empty map cell. Click an enemy to use normal targeted melee, or an empty cell to swing toward that location. F and right-click preserve the selected firearm mode. G or Escape restores walking and contextual use.
 
 `meleePoint` accepts `unitId`, `x`, `y`, and optional `tacticalLevel`. `meleePointPreview` includes the legal approach, its movement cost, prone preparation, and strike cost. A distant order stops within the actual held weapon reach, then swings. Contact or an enemy reaction during preparation cancels the remaining strike. The sprite completes its walk before playing the strike animation.
 

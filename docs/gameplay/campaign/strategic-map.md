@@ -1,6 +1,6 @@
 # Geographic campaign map
 
-The campaign chart uses approximate longitude and latitude anchors for the thirteen existing operational sectors. North is up; longitude is scaled at 30° south. Roads follow connected physical sectors on the shared grid. The displayed road network is the same network used by foot and horse travel. See [squad travel](squad-travel.md) for costs and waypoint detours.
+On the strategic campaign screen, the campaign chart uses approximate longitude and latitude anchors for the thirteen existing operational sectors. This guide describes the published geographic campaign chart, city-district tiles, and bottom map views; see [version 0.1](../../verification/version-0.1.md) for current published scope. North is up; longitude is scaled at 30° south. Roads follow connected physical sectors on the shared grid. The displayed road network is the same network used by foot and horse travel. See [squad travel](squad-travel.md) for costs and waypoint detours.
 
 ## Historical scope
 

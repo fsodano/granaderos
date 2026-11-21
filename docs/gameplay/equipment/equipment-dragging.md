@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../../verification/version-0.1.md) for the published-main checkpoint.
 
-Click placement now shares the same physical slots and placement rules, including the general outfit slot. Right-click opens item details or cancels a pending selection. See [click placement](equipment-click-placement.md) for the current controls, outfit exchanges and later verification.
+In the tactical inventory during exploration and combat, players can drag equipment between both hands, the twelve pockets and the general outfit slot. Click placement now shares the same physical slots and placement rules, including the general outfit slot. Right-click opens item details or cancels a pending selection. See [click placement](equipment-click-placement.md) for the current controls, outfit exchanges and later verification.
 
 Drag an item from a pocket to a compatible hand. Drag a held item into a pocket to stow it. Dropping onto an occupied pocket exchanges its item with the held item if both fit and the pocket item can occupy that hand. Dropping onto a hand uses the existing equipment selection and displacement rules. Pocket-to-pocket moves retain the existing whole-pocket arrangement behavior.
 

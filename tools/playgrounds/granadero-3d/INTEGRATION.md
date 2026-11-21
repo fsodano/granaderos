@@ -1,6 +1,13 @@
-# Integrated tactical-sector 3D renderer
+# Integrated tactical-sector 3D renderer — 2026-10-05
 
-The renderer is delivered through [PR #156](https://github.com/fsodano/granaderos/pull/156). Its integration includes `origin/main` through `e4215f4a`, including the later ballistic energy, near-miss feedback, campaign and editor changes. The user approved the merge on 5 October 2026. The validation records below distinguish renderer checks from existing campaign failures. Deployment is separate from this pull request.
+This dated review and integration record (2026-10-05) documents the Three.js
+tactical-sector 3D renderer delivered in [PR #156](https://github.com/fsodano/granaderos/pull/156),
+its gameplay and visibility boundaries, character-library budgets, test validation
+against `origin/main` through `e4215f4a` (and `64a919bc` on 2026-10-04), and local
+performance samples. All test counts, file sizes, and frame-rate measurements
+are a snapshot at those recorded commits.
+
+The merge was approved on 5 October 2026. The validation records below distinguish renderer checks from existing campaign failures. Deployment is separate from this pull request.
 
 The combat sector uses Three.js geometry under a fixed isometric orthographic camera. Pan, zoom and keyboard controls remain. Portraits, inventory, statistics and orders remain in HTML. SVG supplies semantic input targets and annotations; it does not draw a second sprite world. The original one-character playground remains separate from the production library.
 

@@ -1,8 +1,8 @@
 # Required equipment implementation plan
 
-Read-only code/specification audit, 2026-09-05. This plan does not implement the
+Status: proposed implementation plan and read-only code/specification audit, 2026-09-05. It covers period equipment items, canonical weights, finite consumable containers, bayonet compatibility, pack-animal saddles, and corpse loot transfer. This plan does not implement the
 items below and does not claim the full equipment requirement is complete.
-Primary requirement source: docs/specification/original.txt, especially the
+Primary requirement source: [docs/specification/original.txt](../specification/original.txt), especially the
 weapon tables and “Munitions, Field Consumables, and Accoutrements” table.
 
 ## Exact current gaps

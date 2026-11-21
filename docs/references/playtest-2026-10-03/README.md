@@ -1,6 +1,6 @@
 # Playtest visual references — 2026-10-03
 
-Archived 22 unique original image(s) from 29 attachment occurrence(s) in the parent playtest session. Originals are byte-preserved and deduplicated by SHA-256. See [`images.json`](images.json) for dimensions, hashes, and the complete message/part-to-file mapping.
+This dated archive index catalogs 22 unique original reference screenshots from 29 attachment occurrences in the 3 October 2026 playtest session. Originals are byte-preserved and deduplicated by SHA-256. See [`images.json`](images.json) for dimensions, hashes, and the complete message/part-to-file mapping.
 
 These are visual references only—not game assets and not evidence of completed game changes. Feedback notes are maintained separately in [`feedback.md`](feedback.md).
 

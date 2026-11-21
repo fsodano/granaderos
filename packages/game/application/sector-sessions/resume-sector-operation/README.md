@@ -1,5 +1,9 @@
 # ResumeSectorOperation
 
+This use case continues unfinished work inside the active sector visit from its
+accepted checkpoint under the current time budget, and refuses requests with an
+exhausted revision without changing the source snapshot or pending work.
+
 `ResumeSectorOperationUseCase` continues the current visit through its own
 `ResumeSectorOperationRepository`. It reads the accepted checkpoint and applies
 the unfinished intention under the current time budget.

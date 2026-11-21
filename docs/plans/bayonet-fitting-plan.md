@@ -2,9 +2,9 @@
 
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../verification/published-progress.md) for the main branch baseline.
+> See [version 0.1 status](../verification/version-0.1.md) for the published-main checkpoint.
 
-This records the implementation plan. The implemented subset, its tests and live checks are tracked in [the parity audit](../verification/ja2-parity-audit.md#inventory-transfers-and-equipment) and [live verification](../verification/ja2-live-verification.md); this plan is not itself a completion report. Code was inspected on 6 September 2026. It covers owned, compatible bayonet fittings and their complete equipment lifecycle. It does not add a Charge command, a combined fit-and-attack order, firearm readiness, or new art.
+This implementation plan proposes the equipment lifecycle for removable, compatible bayonet fittings, addressing requirement row I06 (compatible weapon attachments and condition retention) of [the classic JA2 parity audit](../verification/ja2-parity-audit.md#inventory-transfers-and-equipment). The implemented subset, its tests and live checks are tracked in [the parity audit](../verification/ja2-parity-audit.md#inventory-transfers-and-equipment) and [live verification](../verification/ja2-live-verification.md); this plan is not itself a completion report. Code was inspected on 6 September 2026. It covers owned, compatible bayonet fittings and their complete equipment lifecycle. It does not add a Charge command, a combined fit-and-attack order, firearm readiness, or new art.
 
 ## Evidence and first compatible host
 

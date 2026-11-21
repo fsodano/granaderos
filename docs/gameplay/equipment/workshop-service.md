@@ -1,8 +1,8 @@
 # Reposición y reparación en el taller
 
-[Equipo](README.md) · [Verificación](../../verification/local-workshop-service.md)
+[Equipo](README.md) · Verificación
 
-En **Sala de armas**, elegí la persona en **Hoja de equipo**. Debajo de su nombre
+En la pantalla de campaña, dentro de **Sala de armas**, elegí la persona en **Hoja de equipo**. Debajo de su nombre
 aparece su ubicación real. Para reponer provisiones o reparar el arma, esa
 persona debe estar en el mismo taller que la escuadra seleccionada.
 
