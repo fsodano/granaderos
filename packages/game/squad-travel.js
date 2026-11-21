@@ -1,4 +1,4 @@
-import { nextRevision } from './infrastructure/shared/revision.js';
+import { advanceRevision } from './infrastructure/shared/revision-policy.ts';
 import {
   Journey,
   JourneyPurpose,
@@ -54,7 +54,7 @@ const restoreJourney = (campaign, squad) => journeyMapper.restore(squad, campaig
 const retainJourney = (
   squad,
   journey,
-  acceptedRevision = nextRevision(squad.journeyRevision ?? 0),
+  acceptedRevision = advanceRevision(squad.journeyRevision ?? 0),
 ) => {
   squad.journey = journeyMapper.serialize(journey);
   squad.journeyRevision = acceptedRevision;
@@ -433,7 +433,7 @@ export function cancelSquadTravel(squad, choice = 'stop') {
     squad.journey.startedAt * SecondsPerTravelHour + progressSeconds(squad.journey),
   );
   if (journey.positionSeconds === 0) {
-    squad.journeyRevision = nextRevision(squad.journeyRevision ?? 0);
+    squad.journeyRevision = advanceRevision(squad.journeyRevision ?? 0);
     delete squad.journey;
     return;
   }
@@ -524,7 +524,7 @@ export function advanceSquadTravel(
       .filter(
         (squad) => squad.journey && (!squad.members.length || squad.journey.status === 'moving'),
       )
-      .map((squad) => [squad.id, nextRevision(squad.journeyRevision ?? 0)]),
+      .map((squad) => [squad.id, advanceRevision(squad.journeyRevision ?? 0)]),
   );
   const events = [];
   const announce = (squad, message) => {

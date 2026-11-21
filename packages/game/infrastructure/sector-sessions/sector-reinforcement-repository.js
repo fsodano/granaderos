@@ -1,6 +1,6 @@
 import { DomainRefusal, DomainRefusalCode } from '../../domain/shared/domain-refusal.ts';
 import { residentPositionPoints } from '../world/campaign-resident-positions.js';
-import { nextRevision } from '../shared/revision.js';
+import { advanceRevision } from '../shared/revision-policy.ts';
 import { createSectorParticipant, initializeBattlePerception } from '../../tactical.js';
 import { SectorDeployment } from '../../domain/sector-sessions/sector-deployment.ts';
 import { readSectorSession, writeSectorSession } from './sector-session-mapper.js';
@@ -24,7 +24,7 @@ export class SnapshotAdmitSectorReinforcementsRepository {
     this.#placements = structuredClone(placements);
   }
   loadReinforcementAdmission() {
-    nextRevision(this.#revision);
+    advanceRevision(this.#revision);
     const state = this.#snapshot,
       request = this.#request;
     if (request.sector !== state.sectorId) {
@@ -83,7 +83,7 @@ export class SnapshotAdmitSectorReinforcementsRepository {
     if (expectedRevision !== this.#revision) {
       throw new DomainRefusal(DomainRefusalCode.RevisionConflict);
     }
-    const acceptedRevision = nextRevision(this.#revision);
+    const acceptedRevision = advanceRevision(this.#revision);
     const next = structuredClone(this.#snapshot);
     for (const unit of this.#incoming) {
       Object.assign(unit, placements[unit.id], {

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { GameUnitOfWork } from './game-unit-of-work.ts';
 import { Character } from '../../domain/personnel/character.ts';
 import { DomainRefusalCode } from '../../domain/shared/domain-refusal.ts';
+import { sectorRevisionDomain } from '../shared/revision-policy.ts';
 
 void test('a transaction publishes its owned draft once and keeps source state unchanged', () => {
   const source = { gameRevision: 4, funds: 100, members: ['ana'] };
@@ -67,4 +68,25 @@ void test('revision exhaustion refuses before validation or publication and clos
   assert.equal(validated, false);
   assert.deepEqual(source, { gameRevision: Number.MAX_SAFE_INTEGER, funds: 100 });
   assert.throws(() => transaction.commit(), { code: DomainRefusalCode.TransactionClosed });
+});
+
+void test('a transaction names the revision field it guards', () => {
+  const source = { gameRevision: 1, sectorRevision: 6, funds: 100 };
+  const transaction = new GameUnitOfWork(source, structuredClone, {
+    domain: sectorRevisionDomain,
+  });
+  assert.equal(transaction.revision, 6);
+  transaction.draft.funds -= 10;
+  const result = transaction.commit();
+  assert.equal(result.sectorRevision, 7);
+  assert.equal(result.gameRevision, 1);
+  assert.equal(source.sectorRevision, 6);
+});
+
+void test('a transaction refuses an expectation that does not match the loaded revision', () => {
+  const source = { gameRevision: 4, funds: 100 };
+  assert.throws(() => new GameUnitOfWork(source, structuredClone, { expectedRevision: 3 }), {
+    code: DomainRefusalCode.RevisionConflict,
+  });
+  assert.doesNotThrow(() => new GameUnitOfWork(source, structuredClone, { expectedRevision: 4 }));
 });
