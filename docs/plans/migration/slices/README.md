@@ -1,6 +1,6 @@
 # Migration slice notes
 
-This index links to the 32 migration slice notes. Each note records its
+This index links to the 33 migration slice notes. Each note records its
 rationale, scope, and behavior tests. Its rationale describes the source at
 that slice's start; the [overview](../overview.md) describes current source.
 
@@ -40,6 +40,7 @@ that slice's start; the [overview](../overview.md) describes current source.
 | [30. Care composure](30-care-composure.md) |
 | [31. Game import boundary](31-game-import-boundary.md) |
 | [32. Perception consolidation](32-perception-consolidation.md) |
+| [33. Session random source](33-session-random-source.md) |
 
 ## What the series changed
 
@@ -59,9 +60,12 @@ that slice's start; the [overview](../overview.md) describes current source.
   `civicStatus` are not accepted; `candidateAdmission` is the canonical
   eligibility query. `beginAssault` remains a compatibility command for
   resolving a hostile arrival.
-- `RandomSource` is the seeded random sequence in the domain. Its state
-  remains on the campaign snapshot; `GameSession` (the runtime consistency
-  boundary) does not own it or `WorldTimeline` (the game-time event scheduler).
+- `GameSession` (the runtime consistency boundary) owns `RandomSource` (the
+  seeded random sequence). Creation and restoration build it; the session
+  snapshot preserves it, and the `randomSource` accessor exposes it.
+- `drawCampaignRandom(session, draft)` draws through `session.randomSource` and
+  writes the advanced seed back to `draft.seed`, the campaign draft's seed
+  field. The save format and drawn values do not change.
 - `apps/web` imports several declared entries from `packages/game/public`,
   including `game-runtime-api.ts`, `campaign-types.ts`,
   `compatibility-types.ts`, `inventory-types.ts`, `battle-job-types.ts`,
@@ -114,8 +118,8 @@ that slice's start; the [overview](../overview.md) describes current source.
 ## What remains
 
 - Retained simulation modules still carry most game rules procedurally.
-- `GameSession` does not own `RandomSource` or `WorldTimeline`, and
-  `packages/game/campaign.js` still changes campaign time directly.
+- `GameSession` does not own `WorldTimeline` (the game-time event scheduler),
+  and `packages/game/campaign.js` still changes campaign time directly.
 - Persisted compatibility names still need explicit save conversion.
   `hiringArrivals` is a legacy prepaid recruitment claim with a travel delay,
   so changing its conversion changes gameplay.

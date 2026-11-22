@@ -1,6 +1,5 @@
 # Slice 33: the game session owns the random source
 
-**Branch:** `migration/session-random-source`
 **Intent:** Give `GameSession` ownership of the `RandomSource`, and make the
 campaign's random draws go through it.
 
@@ -33,10 +32,12 @@ a zero seed.
 - `packages/game/infrastructure/persistence/create-game-session.repository.js`
   and `packages/game/infrastructure/session/campaign-game-session-mapper.js`
   pass the campaign's seed into the session.
+- `drawCampaignRandom(session, draft)` takes a `GameSession` and a campaign
+  draft, draws through `session.randomSource`, and writes the advanced state
+  back to `draft.seed`.
 - `packages/game/campaign.js` builds the session at the start of a command and
-  takes its two random draws from `session.randomSource`, writing the advanced
-  state back to the campaign's `seed` field. The retained helper delegates to
-  the session's source instead of implementing the sequence itself.
+  uses `drawCampaignRandom` for both random draws. The retained helper
+  delegates to the session's source instead of implementing the sequence.
 
 ## What it does not change
 
@@ -50,14 +51,5 @@ exactly the numbers they produced before.
   that its snapshot carries the source's state.
 - A test of the campaign's random path proves the sequence drawn through the
   session is identical to the sequence the old helper produced.
-- The existing save and restoration tests keep passing.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.37` to `0.2.38`.
+- Existing save and restoration tests cover the unchanged save format and
+  restored sequence.
