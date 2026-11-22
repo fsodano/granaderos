@@ -11,7 +11,7 @@ export class CampaignCreateGameSessionRepository {
 
   create({ seed, definition }) {
     const campaign = initialCampaign(seed, definition);
-    const session = GameSession.create(this.#newSessionId());
+    const session = GameSession.create(this.#newSessionId(), campaign.seed);
     campaign.gameSessionId = session.id;
     campaign.gameRevision = session.revision;
     return campaign;
