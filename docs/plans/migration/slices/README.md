@@ -16,6 +16,8 @@ the diff.
 | [5. Compatibility aliases](05-compatibility-aliases.md) | `migration/compatibility-aliases` | landed | 0.2.10 |
 | [6. Random source](06-random-source.md) | `migration/random-source` | landed | 0.2.11 |
 | [7. Interface public entry](07-interface-public-entry.md) | `migration/interface-public-entry` | landed | 0.2.12 |
+| [8. Campaign compiler](08-campaign-compiler.md) | `migration/campaign-compiler` | landed | 0.2.13 |
+| [9. Game snapshot](09-game-snapshot.md) | `migration/game-snapshot` | landed | 0.2.14 |
 
 A slice moves from planned to in progress when its branch is created, and to
 landed when it is merged into `feature/clean-architecture-migration` and its
@@ -40,3 +42,8 @@ branch is deleted.
 - The player application reaches the game through
   `packages/game/public/game-runtime-api.ts`, and the checker refuses any
   other way in.
+- `CampaignCompiler` is the application service that turns a validated campaign
+  definition into runtime-playable definitions, and it is the only path the
+  game and the editor use.
+- The save envelope and the content it carries have the names
+  `GameSnapshot` and `GameSnapshotContent`.

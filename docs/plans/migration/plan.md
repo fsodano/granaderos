@@ -52,8 +52,10 @@ Out of scope for this series:
 | 5 | `migration/compatibility-aliases` | The first compatibility names leave the source | 0.2.10 |
 | 6 | `migration/random-source` | The seeded random sequence becomes a domain object | 0.2.11 |
 | 7 | `migration/interface-public-entry` | The player application reaches the game through a declared public entry | 0.2.12 |
+| 8 | `migration/campaign-compiler` | The application service that is the only path from the shared file contract into the game | 0.2.13 |
+| 9 | `migration/game-snapshot` | The versioned representation of the game model has the name the glossary gives it | 0.2.14 |
 
-The first five slices landed in [pull request #505](https://github.com/fsodano/granaderos/pull/505). The last two are the second batch.
+The first five slices landed in [pull request #505](https://github.com/fsodano/granaderos/pull/505), and the next two in [pull request #506](https://github.com/fsodano/granaderos/pull/506). The last two are the third batch.
 
 Each slice has its own note under [slices](slices/README.md) with the intent, the
 files it touches, the tests it adds, and how it is verified. Read the note
@@ -146,6 +148,21 @@ campaign editor already uses. The 465 import statements that reach the
 retained compatibility modules by relative path become imports of that entry,
 and the architecture checker refuses an application file that reaches the
 package any other way.
+
+### Slice 8: campaign compiler
+
+The game gains the application service the ubiquitous language names as the
+only path from the shared file contract into the game: `CampaignCompiler` in
+`packages/game/application/campaign-compiler`. The compilation rules and the
+refusal messages stay exactly as they are, so the editor shows the author the
+same words.
+
+### Slice 9: game snapshot
+
+The versioned representation of the game model takes the name the glossary
+gives it. `GameSnapshot` and the content it carries become named types that
+`packages/game/save.ts` and the worker transport use, instead of anonymous
+literals. No save format change.
 
 ## Branch and merge flow
 
