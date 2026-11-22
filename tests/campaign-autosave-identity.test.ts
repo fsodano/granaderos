@@ -1,7 +1,7 @@
 import { initialCampaign } from '../packages/game/campaign.js';
 import type { CampaignSaveWorker, QueuedCampaignSave } from '../apps/web/lib/campaign-autosave.ts';
-import type { SaveStatus } from '../packages/game/application/get-save-status/get-save-status.repository.ts';
-import type { GameSaveIdentity } from '../packages/game/application/save-game/save-game.repository.ts';
+import type { SaveStatus } from '../packages/game/application/get-save-status/get-save-status.response.ts';
+import type { GameSaveIdentity } from '../packages/game/application/save-game/save-game.response.ts';
 import type { CampaignSnapshot } from '../packages/game/public/campaign-types.ts';
 import { present } from './assert-present.ts';
 import test from 'node:test';

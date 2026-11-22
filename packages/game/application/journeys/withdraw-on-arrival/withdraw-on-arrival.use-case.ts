@@ -1,11 +1,6 @@
 import type { WithdrawOnArrivalRepository } from './withdraw-on-arrival.repository.ts';
-
-export type WithdrawOnArrivalRequest = Readonly<{ squadId: string; decisionId: string }>;
-export type WithdrawOnArrivalResponse = Readonly<{
-  squadId: string;
-  destination: string;
-  decisionId: string;
-}>;
+import type { WithdrawOnArrivalRequest } from './withdraw-on-arrival.request.ts';
+import type { WithdrawOnArrivalResponse } from './withdraw-on-arrival.response.ts';
 
 export class WithdrawOnArrivalUseCase {
   readonly #repository: WithdrawOnArrivalRepository;

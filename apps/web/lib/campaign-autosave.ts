@@ -9,11 +9,9 @@ import { SaveStatusRepository } from '../../../packages/game/infrastructure/pers
 import { createGameSessionId } from '../../../packages/game/infrastructure/persistence/game-session-id.js';
 import type { CampaignSnapshot } from '../../../packages/game/public/campaign-types.ts';
 import type { BattleSnapshot } from '../../../packages/game/public/compatibility-types.ts';
-import type {
-  GameSaveIdentity,
-  SaveGameRepository,
-} from '../../../packages/game/application/save-game/save-game.repository.ts';
-import type { SaveStatus } from '../../../packages/game/application/get-save-status/get-save-status.repository.ts';
+import type { GameSaveIdentity } from '../../../packages/game/application/save-game/save-game.response.ts';
+import type { SaveGameRepository } from '../../../packages/game/application/save-game/save-game.repository.ts';
+import type { SaveStatus } from '../../../packages/game/application/get-save-status/get-save-status.response.ts';
 import type { CampaignSaveRequest } from './campaign-save-values.ts';
 import type { BrowserSaveWriter } from './browser-save-writer.ts';
 

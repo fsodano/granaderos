@@ -1,11 +1,6 @@
 import type { FightOnArrivalRepository } from './fight-on-arrival.repository.ts';
-
-export type FightOnArrivalRequest = Readonly<{ squadId: string; decisionId: string }>;
-export type FightOnArrivalResponse = Readonly<{
-  squadId: string;
-  sectorId: string;
-  decisionId: string;
-}>;
+import type { FightOnArrivalRequest } from './fight-on-arrival.request.ts';
+import type { FightOnArrivalResponse } from './fight-on-arrival.response.ts';
 
 export class FightOnArrivalUseCase {
   readonly #repository: FightOnArrivalRepository;

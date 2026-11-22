@@ -8,7 +8,7 @@ import { useEffect, useLayoutEffect, useRef } from 'react';
 import { encodeSave } from '../../../packages/game/save.ts';
 import { createCampaignAutosave } from './campaign-autosave.ts';
 import { BrowserSaveWriter } from './browser-save-writer.ts';
-import type { SaveStatus } from '../../../packages/game/application/get-save-status/get-save-status.repository.ts';
+import type { SaveStatus } from '../../../packages/game/application/get-save-status/get-save-status.response.ts';
 
 export function useCampaignAutosave(
   campaign: CampaignSnapshot | null,

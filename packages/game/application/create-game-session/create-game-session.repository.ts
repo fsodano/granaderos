@@ -1,7 +1,4 @@
-export type CreateGameSessionRequest<TDefinition> = Readonly<{
-  seed: number;
-  definition: TDefinition;
-}>;
+import type { CreateGameSessionRequest } from './create-game-session.request.ts';
 
 export interface CreateGameSessionRepository<TDefinition, TGame> {
   create(request: CreateGameSessionRequest<TDefinition>): TGame;
