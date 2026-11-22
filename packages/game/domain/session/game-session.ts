@@ -1,4 +1,6 @@
 import { DomainRefusal, DomainRefusalCode } from '../shared/domain-refusal.ts';
+import { RandomSource } from '../shared/random-source.ts';
+import type { RandomSourceSnapshot } from '../shared/random-source.ts';
 
 export type SectorSessionRegistration = Readonly<{
   id: string;
@@ -12,6 +14,7 @@ export type GameSessionSnapshot = Readonly<{
   activeSectorSessionId: string | null;
   suspendedSectorSessionIds: readonly string[];
   sectorSessions: readonly SectorSessionRegistration[];
+  randomSource?: RandomSourceSnapshot;
 }>;
 
 export class GameSession {
@@ -20,6 +23,7 @@ export class GameSession {
   #activeSectorSessionId: string | null;
   readonly #suspendedSectorSessionIds: Set<string>;
   readonly #sectorSessions: Map<string, SectorSessionRegistration>;
+  readonly #randomSource: RandomSource;
 
   private constructor(snapshot: GameSessionSnapshot) {
     if (!snapshot.id || !Number.isSafeInteger(snapshot.revision) || snapshot.revision < 0) {
@@ -28,6 +32,7 @@ export class GameSession {
     this.#id = snapshot.id;
     this.#revision = snapshot.revision;
     this.#activeSectorSessionId = snapshot.activeSectorSessionId;
+    this.#randomSource = RandomSource.restore(snapshot.randomSource ?? { seed: 0 });
     this.#suspendedSectorSessionIds = new Set(snapshot.suspendedSectorSessionIds);
     this.#sectorSessions = new Map();
     if (
@@ -53,13 +58,14 @@ export class GameSession {
     }
   }
 
-  static create(id: string): GameSession {
+  static create(id: string, seed = 0): GameSession {
     return new GameSession({
       id,
       revision: 0,
       activeSectorSessionId: null,
       suspendedSectorSessionIds: [],
       sectorSessions: [],
+      randomSource: { seed },
     });
   }
 
@@ -78,6 +84,9 @@ export class GameSession {
   }
   get suspendedSectorSessionIds(): readonly string[] {
     return [...this.#suspendedSectorSessionIds];
+  }
+  get randomSource(): RandomSource {
+    return this.#randomSource;
   }
 
   activateSectorSession(registration: SectorSessionRegistration): void {
@@ -130,6 +139,7 @@ export class GameSession {
         ...registration,
         characterIds: [...registration.characterIds],
       })),
+      randomSource: this.#randomSource.snapshot(),
     };
   }
 

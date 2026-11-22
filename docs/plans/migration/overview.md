@@ -209,7 +209,11 @@ point), shot-range calculation, `directionTo` (NPC facing),
 and campaign notices moved to the browser interface. The Spanish shot-range
 sentence remains in `packages/game/shot-range.js` beside its caller in
 `packages/game/ja2-hud.ts`; moving it to the player application would invert
-the dependency direction.
+the dependency direction. `GameSession` owns `RandomSource`, the seeded random
+sequence. Campaign code calls `drawCampaignRandom(session, draft)`, where
+`session` is the `GameSession` and `draft` is the campaign snapshot. The helper
+draws through `session.randomSource` and writes the advanced seed back to
+`draft.seed`.
 
 Slice 26 moved the game's tactical-level rules into
 `packages/game/domain/sector-sessions/tactical-space.ts`. Slice 27 removed the
@@ -228,9 +232,10 @@ re-export these functions so callers keep their import paths and behavior.
 - The retained simulation modules, including `tactical.js` and `campaign.js`,
   still carry most game rules procedurally. Moving twenty rules did not move
   the simulation as a whole.
-- `GameSession` is the runtime consistency boundary for a game. It does not
-  own `RandomSource` (the seeded random sequence) or `WorldTimeline` (the
-  game-time event scheduler), as the accepted architecture requires.
+- `GameSession` (the runtime consistency boundary) owns `RandomSource` (the
+  seeded random sequence). Campaign draws use the session's source and write
+  its advanced seed back to the campaign snapshot. The session does not own
+  `WorldTimeline` (the game-time event scheduler).
 - `packages/game/campaign.js` also mutates campaign time directly, so
   `WorldTimeline.advanceTo` is not the only current time-mutation path.
 - Persisted compatibility names still require an explicit save conversion
@@ -266,7 +271,7 @@ accepted architecture.
 | Public entries used by `apps/web` | The app imports `game-runtime-api.ts`, `campaign-types.ts`, `compatibility-types.ts`, `inventory-types.ts`, `battle-job-types.ts`, `game-snapshot-types.ts`, and `campaign-compiler-api.ts` from `packages/game/public`. | Treat the declared entries as a set of APIs, not as one runtime entry. |
 | Campaign compilation and saves | `CampaignCompiler` compiles a validated `CampaignDefinition`; the retained `compileCampaignPackage` adapter in `packages/game/campaign-library.js` delegates to it. `GameSnapshot` names the versioned save and worker representation. | Keep supported save decoding behind the conversion policy. |
 | Domain rule ownership | Twenty rules live in `packages/game/domain`, including `CARE_COMPOSURE_RELIEF` & `careComposureRelief` in `packages/game/domain/personnel/care-composure.ts` and the richer `directionTo` & `approximateHeardPosition` rules in `packages/game/domain/perception/npc-perception.ts`. Both retained modules re-export the perception rules. Retained modules still carry most simulation rules procedurally. The game uses `packages/game/domain/sector-sessions/tactical-space.ts`; `packages/campaign-format` keeps an independent map-validation copy. | Move remaining procedural rules behind the domain or a declared public entry. |
-| Time and randomness | `RandomSource` is a domain object, but the campaign snapshot's `seed` still advances. `GameSession` does not own `RandomSource` or `WorldTimeline`, and `packages/game/campaign.js` changes the clock directly. | Make `GameSession` own both objects and route time changes through `WorldTimeline.advanceTo`. |
+| Time and randomness | `GameSession` owns `RandomSource`, and its snapshot carries the source state. `drawCampaignRandom(session, draft)` draws through `session.randomSource` and writes its advanced seed to `draft.seed`; the save format and drawn values stay the same. `GameSession` does not own `WorldTimeline`, and `packages/game/campaign.js` changes the clock directly. | Make `GameSession` own `WorldTimeline` and route every clock change through `WorldTimeline.advanceTo`. |
 | Compatibility table | The glossary table maps retained API/save names to canonical terms. `recruitCivic` and `civicStatus` are not accepted; `candidateAdmission` is canonical. `beginAssault` remains a compatibility command for resolving a hostile arrival. Persisted names, including `hiringArrivals`, still need conversion; `hiringArrivals` carries a recruitment travel delay. | Convert persisted compatibility names. Treat `hiringArrivals` as a gameplay migration, not a field rename. |
 | Resident position | `ResidentPositionReference` names the saved reference to a character identity and local position. | Keep the saved projection separate from character health and inventory ownership. |
 | Player-facing messages | The domain owns the sleep-need rule; the browser interface owns its sentence and campaign notices. | Keep player-facing copy outside domain and application code. |
