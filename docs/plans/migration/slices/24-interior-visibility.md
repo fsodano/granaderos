@@ -1,6 +1,5 @@
 # Slice 24: the interior visibility rule into the domain
 
-**Branch:** `migration/interior-visibility`
 **Intent:** Move the rule that decides whether a point inside a building is
 visible into the domain, next to the other perception rules.
 
@@ -43,13 +42,3 @@ The rule does not change: the same rooms, the same visibility answer.
   rule: a point outside any building has no room, a point inside a room
   belongs to that room, a room is visible from the cell that contains it, and
   it is not visible from a cell that the building separates from it.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.28` to `0.2.29`.

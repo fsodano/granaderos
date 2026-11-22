@@ -1,17 +1,15 @@
 # Slice 20: the kinetic impact rule into the domain
 
-**Branch:** `migration/kinetic-impact`
 **Intent:** Move the rule that turns a projectile's launch into the impact it
 lands with into the domain, where the projectile rules already are.
 
 ## Why this slice exists
 
-`packages/game/projectile-energy.js` still holds one rule after
-[slice 15](15-projectile-energy.md) moved the rest: `kineticNominalImpact`
-decides how much of a launch reaches the target once cover, a body and a
-ricochet have taken their share, and how much of it the weapon's damage can
-absorb. The launch itself is a domain rule now; the impact it lands with was
-left behind only because the module could not be split in one step.
+After [slice 15](15-projectile-energy.md), `packages/game/projectile-energy.js`
+still held one rule outside the domain: `kineticNominalImpact` decides how much
+of a launch reaches the target after cover, a body, and a ricochet take their
+share, and how much of it the weapon's damage can absorb. Slice 15 had moved
+the launch-energy calculation; this slice moves the remaining impact rule.
 
 It belongs beside the launch. The root module keeps the format check
 `validProjectileEnergy`, because it reads the shared file contract and the
@@ -41,13 +39,3 @@ same floor at zero.
   shot with no cover lands with its whole launch, cover takes its share, a
   body and a ricochet take theirs, the result never exceeds the weapon's
   damage, and it never falls below zero.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.24` to `0.2.25`.

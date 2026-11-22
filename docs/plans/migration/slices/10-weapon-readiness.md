@@ -1,6 +1,5 @@
 # Slice 10: the weapon readiness rule into the domain
 
-**Branch:** `migration/weapon-readiness`
 **Intent:** Move the rule that decides how much work a firearm is to bring
 into firing position into the domain, where the firearm lives.
 
@@ -48,13 +47,3 @@ between raising and discharging, the same refusal message.
   turning work, a turn lowers the weapon in the cases it did before, the free
   orders leave a raised weapon alone, and a raised weapon is refused for a
   combatant that cannot hold it, with the same Spanish message.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.14` to `0.2.15`.

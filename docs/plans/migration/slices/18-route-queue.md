@@ -1,6 +1,5 @@
 # Slice 18: the route queue into the domain
 
-**Branch:** `migration/route-queue`
 **Intent:** Move the queue that finds the cheapest route into the domain, next
 to the journey route planner that uses it.
 
@@ -40,13 +39,3 @@ queue over the cells it holds.
   cheapest cell comes out first, two cells of equal cost keep the order they
   were pushed in, a cell pushed later with a lower cost comes out first, the
   queue reports its length, and emptying it yields nothing.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.22` to `0.2.23`.

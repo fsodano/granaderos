@@ -1,6 +1,5 @@
 # Slice 7: the interface reaches the game through a public entry
 
-**Branch:** `migration/interface-public-entry`
 **Intent:** Give the player application the declared door into the game that
 the campaign editor already has.
 
@@ -9,9 +8,8 @@ the campaign editor already has.
 `packages/game/package.json` declares public entries, and the campaign editor
 reaches the game only through them: `apps/campaign-editor/tools/check-boundaries.mjs`
 fails when an editor file imports anything else. The player application has no
-such door. `apps/web` imports 465 statements from the retained compatibility
-modules at the root of `packages/game`, across about 150 files, by relative
-path.
+such door. `apps/web` imports retained compatibility modules from the root of
+`packages/game` by relative path across many files.
 
 The accepted architecture puts the browser composition in `apps/web` and the
 game rules behind declared public entries. A reader of the interface cannot
@@ -36,18 +34,22 @@ The entry exports each of them once, from the module that defines it.
 
 ## What it changes
 
-- `apps/web/app` and `apps/web/lib` import those symbols from the public entry
-  instead of from the game package's root modules.
-- `tools/architecture-rules.ts` and `tools/check-architecture.mjs` extend the
-  rule that already forbids an interface file from importing a game layer: no
-  file under `apps/web` may import a retained compatibility module from the
-  root of `packages/game` either.
-- `apps/web/lib` keeps its access to the game layers. It is the browser
-  composition: constructing the object graph is its job. The rule that keeps
-  the interface out of the layers still applies to `apps/web/app`.
+- This slice added `game-runtime-api.ts` for symbols previously imported from
+  retained modules. `apps/web` also imports other public entries, including:
+  `campaign-types.ts`, `compatibility-types.ts`, `inventory-types.ts`,
+  `battle-job-types.ts`, `game-snapshot-types.ts`, and
+  `campaign-compiler-api.ts`.
+- `tools/architecture-rules.ts` blocks every file under `apps/web` from
+  importing a retained module directly from the `packages/game` root. It also
+  blocks files under `apps/web/app` from importing game domain, application,
+  or infrastructure modules.
+- `apps/web/lib` is the browser-composition layer and may import game domain,
+  application, and infrastructure modules. This permits it to construct
+  use-case/repository pairs without allowing React screens to depend on those
+  layers.
 
-The rule is what keeps the slice from being undone: the application may
-import the game's public entries and nothing else from the package.
+The boundary is therefore narrower for React screens than for browser
+composition code.
 
 ## Tests
 
@@ -58,13 +60,3 @@ import the game's public entries and nothing else from the package.
   application imports: it reads the application's import statements, collects
   the symbols it takes from the retained modules, and fails when the entry
   does not export one of them, or exports a name the entry defines twice.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.11` to `0.2.12`.

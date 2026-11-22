@@ -1,6 +1,5 @@
 # Slice 26: the tactical space helpers into the domain
 
-**Branch:** `migration/tactical-space`
 **Intent:** Move the rules that read a point's tactical level into the domain,
 so the game has one implementation of them.
 
@@ -41,13 +40,13 @@ because it validates authored maps and cannot import the game.
   defines. The files that import the module keep importing it from the same
   path.
 
-## The importer edits this slice needed
+## Importers affected by the type changes
 
 The helpers were untyped JavaScript before, so a point that might be missing
-passed silently. Typed, they surfaced four places that relied on that
-silence: `packages/game/group-movement.ts` and `packages/game/movement-step.ts`,
-`apps/web/app/useUnitMotion.ts`, and three test fixtures. Each was narrowed
-without changing what it computes, and the full suite covers them.
+passed silently. Adding types exposed missing-value assumptions in
+`packages/game/group-movement.ts`, `packages/game/movement-step.ts`,
+`apps/web/app/useUnitMotion.ts`, and three test fixtures. Each caller was
+narrowed without changing what it computes; tests cover the affected inputs.
 
 ## Tests
 
@@ -57,13 +56,3 @@ without changing what it computes, and the full suite covers them.
   its level and its coordinates, two points on the same level and coordinates
   are the same cell, points on different levels are not, and the space point
   of a record keeps its coordinates and its level.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.30` to `0.2.31`.

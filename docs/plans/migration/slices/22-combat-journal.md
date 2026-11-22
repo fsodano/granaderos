@@ -1,6 +1,5 @@
 # Slice 22: the combat journal rules into the domain
 
-**Branch:** `migration/combat-journal`
 **Intent:** Move the rules that decide what the public combat journal may
 contain into the domain, where the records that feed it are decided.
 
@@ -45,13 +44,3 @@ behavior when a stored journal is invalid.
   refused, a journal with too many entries is refused, an invalid stored
   journal reads as empty, and the false bleeding report stays hidden while
   the stored entries remain intact.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.26` to `0.2.27`.

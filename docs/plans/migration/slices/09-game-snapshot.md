@@ -1,6 +1,5 @@
 # Slice 9: GameSnapshot
 
-**Branch:** `migration/game-snapshot`
 **Intent:** Give the versioned representation of the game model the name the
 ubiquitous language gives it, and use it in the persistence and worker
 contracts.
@@ -43,15 +42,4 @@ keeps its `format: 'granaderos'` value and its `schema` values.
 - A new test proves the named types describe the envelope the save produces:
   the decoded save carries the campaign and the sector snapshot, and its
   `schema` is one of the supported values.
-- The existing save and restoration tests keep passing, which proves the
-  supported saves still decode.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.13` to `0.2.14`.
+- Existing save and restoration tests cover decoding supported saves.

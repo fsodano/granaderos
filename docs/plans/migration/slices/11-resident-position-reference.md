@@ -1,6 +1,5 @@
 # Slice 11: ResidentPositionReference
 
-**Branch:** `migration/resident-position-reference`
 **Intent:** Give the saved resident-post projection the name the ubiquitous
 language gives it.
 
@@ -49,15 +48,5 @@ the save. A restored sector still places its residents on the same cells.
 - A new test proves the projection holds only what the glossary says it holds:
   the canonical character identity and the physical position, and no health,
   inventory or participant record.
-- The existing resident placement tests keep passing, which proves the saved
-  values did not change.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.15` to `0.2.16`.
+- Existing resident-placement tests cover restoring residents to their saved
+  cells.

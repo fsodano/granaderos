@@ -1,6 +1,5 @@
 # Slice 17: the study rate rule into the domain
 
-**Branch:** `migration/study-rate`
 **Intent:** Move the rule that decides how fast a combatant learns a skill into
 the domain, where the character's abilities live.
 
@@ -45,13 +44,3 @@ the same teaching bonus, the same integer credit.
   combatant with no instructor learns at the base rate, practice slows as the
   skill improves, a better teacher teaches faster, the teaching trait adds its
   bonus, and the credit is never below one.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.21` to `0.2.22`.

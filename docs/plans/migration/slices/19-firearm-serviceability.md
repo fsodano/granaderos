@@ -1,6 +1,5 @@
 # Slice 19: the firearm serviceability rule into the domain
 
-**Branch:** `migration/firearm-serviceability`
 **Intent:** Move the rule that decides whether a firearm is still usable into
 the domain, where the firearm's condition lives.
 
@@ -44,13 +43,3 @@ a condition of zero is not, and the refusal sentence stays the same.
   a firearm with a good condition is serviceable, one with no recorded
   condition is serviceable, one with a condition of zero is not, a missing
   firearm is not, and the refusal sentence is the same one as today.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.23` to `0.2.24`.

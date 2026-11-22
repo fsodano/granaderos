@@ -1,6 +1,5 @@
 # Slice 2: canonical revision policy
 
-**Branch:** `migration/canonical-transaction`
 **Intent:** Give the infrastructure one implementation of the revision policy
 that every transaction adapter uses, and let `GameUnitOfWork` name the
 revision field it guards instead of assuming one.
@@ -81,13 +80,3 @@ The accepted behavior of each path does not change:
   stale sector revision is refused, a refused order leaves the revision
   untouched, an unchanged sector state leaves the revision untouched, and a
   changed one advances it.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.6` to `0.2.7`.

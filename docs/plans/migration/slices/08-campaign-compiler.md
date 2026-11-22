@@ -1,6 +1,5 @@
 # Slice 8: CampaignCompiler
 
-**Branch:** `migration/campaign-compiler`
 **Intent:** Give the game the application service the ubiquitous language names
 as the only path from the shared file contract into the game.
 
@@ -18,11 +17,11 @@ domain objects; it is the only path from the shared file contract into the
 game. Editor publication can invoke the public game validation API when
 needed."
 
-No `CampaignCompiler` exists. The path is a function in a retained root
-module, `compileCampaignPackage` in `packages/game/campaign-library.js`, which
-admits the authored documents, applies the runtime rules, and resolves the
-content into runtime-playable definitions. The game application and the
-campaign editor both call it, the editor through
+Before Slice 8, no `CampaignCompiler` existed. The path was a function in a
+retained root module, `compileCampaignPackage` in
+`packages/game/campaign-library.js`, which admitted the authored documents,
+applied runtime rules, and resolved content into runtime-playable definitions.
+The game application and campaign editor both called it, the editor through
 `packages/game/public/campaign-editor-api.ts`.
 
 ## What it adds
@@ -41,10 +40,11 @@ campaign editor both call it, the editor through
   the shared file contract, and the compilation itself moves to the
   application layer.
 - The game's and the editor's public entries expose the compiler.
-- The six call sites call the compiler: `apps/web/lib/campaign-library.ts`,
-  `apps/campaign-editor/web/lib/campaign-library.ts`,
-  `apps/campaign-editor/infrastructure/project-validation.js`, and the two
-  tests that build a compiled campaign.
+- Player and editor call sites use the compiler in
+  `apps/web/lib/campaign-library.ts`,
+  `apps/campaign-editor/web/lib/campaign-library.ts`, and
+  `apps/campaign-editor/infrastructure/project-validation.js`, as do the
+  campaign-compilation tests.
 
 ## What it does not change
 
@@ -56,18 +56,8 @@ author.
 
 ## Tests
 
-- The existing tests that compile a campaign keep passing unchanged.
+- Existing campaign-compilation tests cover the compiler's accepted inputs.
 - A new test in `packages/game/application/campaign-compiler/` proves the
   compiler admits a valid package, refuses a package whose map is not 20 by 16,
   refuses a generic campaign without an adversary spawn, and refuses a package
   whose assets do not match the catalog.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.12` to `0.2.13`.

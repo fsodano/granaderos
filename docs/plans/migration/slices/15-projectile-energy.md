@@ -1,6 +1,5 @@
 # Slice 15: the projectile energy rule into the domain
 
-**Branch:** `migration/projectile-energy`
 **Intent:** Move the rule that turns a projectile's mass and velocity into
 impact into the domain, where the shot rules live.
 
@@ -47,13 +46,3 @@ still falls back to its authored damage.
   divides that energy by the joules per impact, a weapon with no energy record
   falls back to its authored damage and never below one, and the damage
   factor falls to zero as the weapon's damage is spent.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.19` to `0.2.20`.

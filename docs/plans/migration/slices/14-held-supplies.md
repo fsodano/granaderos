@@ -1,6 +1,5 @@
 # Slice 14: the held supply rule into the domain
 
-**Branch:** `migration/held-supplies`
 **Intent:** Move the rule that decides which consumable a combatant holds and
 what it costs to use into the domain, where the inventory lives.
 
@@ -42,13 +41,3 @@ change, and a combatant's held consumable is chosen the same way.
   three consumables keep their costs and ranges, a combatant holding a
   consumable in the supply slot is found, a combatant holding nothing in that
   slot is not, and an unknown consumable is refused.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.18` to `0.2.19`.

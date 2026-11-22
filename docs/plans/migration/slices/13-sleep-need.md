@@ -1,6 +1,5 @@
 # Slice 13: the sleep need rule into the domain, its wording into the interface
 
-**Branch:** `migration/sleep-need`
 **Intent:** Move the rule that decides how much rest a combatant needs into
 the domain, and move the sentence that describes it into the interface.
 
@@ -46,15 +45,4 @@ the domain; the sentence belongs in `apps/web`.
   healthy combatant rests the profile hours, wounds add to the need, night
   training shortens it, the total stays inside its bounds, and each hour of
   rest returns the same fatigue and energy as before.
-- The existing rest and sleep tests keep passing, which proves the numbers did
-  not change.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.17` to `0.2.18`.
+- Existing rest and sleep tests cover the preserved recovery values.
