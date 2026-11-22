@@ -47,6 +47,19 @@ function pathWithin(path, directory) {
   return path === directory || path.startsWith(`${directory}/`);
 }
 
+const campaignCompilerDirectory = 'packages/game/application/campaign-compiler';
+const retainedGameModule = /^packages\/game\/[^/]+\.(?:js|ts)$/;
+
+// The compiler is the declared bridge from the shared campaign-file contract into
+// the game: it reads that contract and the retained runtime rule modules it
+// resolves, and nothing else.
+function isCampaignCompilerBridge(file, target) {
+  return (
+    pathWithin(file, campaignCompilerDirectory) &&
+    (pathWithin(target, 'packages/campaign-format') || retainedGameModule.test(target))
+  );
+}
+
 function fail(file, dependency, rule) {
   failures.push(`${file}: ${dependency} — ${rule}`);
 }
@@ -92,7 +105,8 @@ for (const directory of sourceDirectories) {
         file.startsWith('packages/game/application/') &&
         !isTest &&
         !pathWithin(target, 'packages/game/application') &&
-        !pathWithin(target, 'packages/game/domain')
+        !pathWithin(target, 'packages/game/domain') &&
+        !isCampaignCompilerBridge(file, target)
       ) {
         fail(file, dependency, 'Application code depends on its contracts and the domain.');
       }

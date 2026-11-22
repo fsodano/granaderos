@@ -3,7 +3,7 @@ import { CampaignProject } from '../domain/campaign-project.ts';
 import { InMemoryCampaignProjectRepository } from './in-memory-campaign-project-repository.ts';
 import { ValidateCampaignProjectUseCase } from '../application/validate-campaign-project/validate-campaign-project.use-case.ts';
 import {
-  compileCampaignPackage,
+  createCampaignCompiler,
   validateContentPackage,
   validateCampaignWorld,
   validateCampaignPresentation,
@@ -133,12 +133,15 @@ async function validateProjectDocuments(project) {
   }
   let content;
   try {
-    content = compileCampaignPackage(project.manifest, {
-      content: project.content,
-      world: project.world,
-      maps: project.maps,
-      presentation: project.presentation,
-      assets: project.assets,
+    content = createCampaignCompiler().execute({
+      manifest: project.manifest,
+      documents: {
+        content: project.content,
+        world: project.world,
+        maps: project.maps,
+        presentation: project.presentation,
+        assets: project.assets,
+      },
     });
     const report = campaignContentReport(content);
     for (const message of report.blocked) {
