@@ -103,7 +103,9 @@ export function equipOpeningRifles(
       const before = spacePoint(receiver);
       order({ type: 'move', unitId: present(receiver).id, ...spacePoint(point) });
       assert.notDeepEqual(
-        spacePoint(next.units.find((unit: BattleUnit) => unit.id === present(receiver).id)),
+        spacePoint(
+          present(next.units.find((unit: BattleUnit) => unit.id === present(receiver).id)),
+        ),
         before,
         'each ordinary recovery walk must make actual progress',
       );

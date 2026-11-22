@@ -130,6 +130,7 @@ export function movementStep(
     : unit;
   let route: TacticalRoutePoint[] | undefined;
   if (continuation !== undefined && continuation !== null) {
+    const lastPoint = Array.isArray(continuation) ? continuation.at(-1) : undefined;
     if (
       !Array.isArray(continuation) ||
       !continuation.length ||
@@ -137,7 +138,8 @@ export function movementStep(
       !continuation.every(
         (p) => p && Number.isInteger(p.x) && Number.isInteger(p.y) && surfaceAt(state, p),
       ) ||
-      !sameCell(continuation.at(-1), destination)
+      !lastPoint ||
+      !sameCell(lastPoint, destination)
     ) {
       return reject(state, 'La ruta de marcha ya no corresponde al destino.');
     }
