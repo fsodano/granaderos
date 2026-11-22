@@ -198,13 +198,13 @@ versioned save and worker representation). The player-app import rules remain
 intentionally different for React screens and browser composition, as section
 8 describes.
 
-Nineteen game rules moved into `packages/game/domain`: firearm readiness,
+Twenty game rules moved into `packages/game/domain`: firearm readiness,
 unarmed combat, sleep need, held supplies, projectile energy, firearm loads,
 study rate, the route queue, firearm serviceability, kinetic impact, combat
 balance, combat journal, fatigue and energy, interior visibility, campaign
 clock conversion, tactical-level rules (the vertical map layer assigned to a
-point), shot-range calculation, NPC perception (`directionTo` &
-`approximateHeardPosition`), and care-composure relief
+point), shot-range calculation, `directionTo` (NPC facing),
+`approximateHeardPosition` (anonymous sound location), and care-composure relief
 (`CARE_COMPOSURE_RELIEF` & `careComposureRelief`). The sleep-need sentence
 and campaign notices moved to the browser interface. The Spanish shot-range
 sentence remains in `packages/game/shot-range.js` beside its caller in
@@ -217,20 +217,22 @@ duplicate tactical-level rules from interior visibility. The independent
 `packages/campaign-format` copy remains because that package validates authored
 maps and cannot import the game.
 
+Slice 32 consolidated the richer NPC perception rules used by the game in
+`packages/game/domain/perception/npc-perception.ts`: `directionTo` and
+`approximateHeardPosition`. Both retained modules,
+`packages/game/tactical-awareness.js` and `packages/game/npc-perception.js`,
+re-export these functions so callers keep their import paths and behavior.
+
 ## 5. What remains
 
 - The retained simulation modules, including `tactical.js` and `campaign.js`,
-  still carry most game rules procedurally. Moving nineteen rules did not move
+  still carry most game rules procedurally. Moving twenty rules did not move
   the simulation as a whole.
 - `GameSession` is the runtime consistency boundary for a game. It does not
   own `RandomSource` (the seeded random sequence) or `WorldTimeline` (the
   game-time event scheduler), as the accepted architecture requires.
 - `packages/game/campaign.js` also mutates campaign time directly, so
   `WorldTimeline.advanceTo` is not the only current time-mutation path.
-- `packages/game/tactical-awareness.js` retains richer copies of
-  `directionTo` and `approximateHeardPosition`. The simpler domain rules are
-  not the versions imported by `packages/game/npc-ai.js` and
-  `packages/game/tactical.js`; consolidating these copies remains required.
 - Persisted compatibility names still require an explicit save conversion
   (a migration that translates supported saved fields) before retirement.
   `hiringArrivals` is a prepaid recruitment claim with a travel delay, so
@@ -263,7 +265,7 @@ accepted architecture.
 | Game-to-player dependency | `tools/architecture-rules.ts`, `tools/check-architecture.mjs`, and `.dependency-cruiser.json` prohibit imports from `packages/game` into `apps/web`. | Keep the game package independent of player-interface modules. |
 | Public entries used by `apps/web` | The app imports `game-runtime-api.ts`, `campaign-types.ts`, `compatibility-types.ts`, `inventory-types.ts`, `battle-job-types.ts`, `game-snapshot-types.ts`, and `campaign-compiler-api.ts` from `packages/game/public`. | Treat the declared entries as a set of APIs, not as one runtime entry. |
 | Campaign compilation and saves | `CampaignCompiler` compiles a validated `CampaignDefinition`; the retained `compileCampaignPackage` adapter in `packages/game/campaign-library.js` delegates to it. `GameSnapshot` names the versioned save and worker representation. | Keep supported save decoding behind the conversion policy. |
-| Domain rule ownership | Nineteen rules live in `packages/game/domain`, including `CARE_COMPOSURE_RELIEF` & `careComposureRelief` in `packages/game/domain/personnel/care-composure.ts` and `directionTo` & `approximateHeardPosition` in `packages/game/domain/perception/npc-perception.ts`. Retained modules still carry most simulation rules procedurally. The game uses `packages/game/domain/sector-sessions/tactical-space.ts`; `packages/campaign-format` keeps an independent map-validation copy. | Move retained rules behind the domain or a declared public entry, and consolidate the richer `directionTo` & `approximateHeardPosition` copies in `packages/game/tactical-awareness.js`. |
+| Domain rule ownership | Twenty rules live in `packages/game/domain`, including `CARE_COMPOSURE_RELIEF` & `careComposureRelief` in `packages/game/domain/personnel/care-composure.ts` and the richer `directionTo` & `approximateHeardPosition` rules in `packages/game/domain/perception/npc-perception.ts`. Both retained modules re-export the perception rules. Retained modules still carry most simulation rules procedurally. The game uses `packages/game/domain/sector-sessions/tactical-space.ts`; `packages/campaign-format` keeps an independent map-validation copy. | Move remaining procedural rules behind the domain or a declared public entry. |
 | Time and randomness | `RandomSource` is a domain object, but the campaign snapshot's `seed` still advances. `GameSession` does not own `RandomSource` or `WorldTimeline`, and `packages/game/campaign.js` changes the clock directly. | Make `GameSession` own both objects and route time changes through `WorldTimeline.advanceTo`. |
 | Compatibility table | The glossary table maps retained API/save names to canonical terms. `recruitCivic` and `civicStatus` are not accepted; `candidateAdmission` is canonical. `beginAssault` remains a compatibility command for resolving a hostile arrival. Persisted names, including `hiringArrivals`, still need conversion; `hiringArrivals` carries a recruitment travel delay. | Convert persisted compatibility names. Treat `hiringArrivals` as a gameplay migration, not a field rename. |
 | Resident position | `ResidentPositionReference` names the saved reference to a character identity and local position. | Keep the saved projection separate from character health and inventory ownership. |

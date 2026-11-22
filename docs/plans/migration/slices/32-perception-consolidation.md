@@ -1,6 +1,5 @@
 # Slice 32: consolidate the richer perception rules into the domain
 
-**Branch:** `migration/perception-consolidation`
 **Intent:** Make the domain's perception rules the single implementation of
 direction and heard-position, and have both retained modules read them.
 
@@ -42,15 +41,5 @@ ran.
   fallback for coincident points, the eight compass steps, the night vision
   and running bonuses, the obstruction penalty, the map-bound clamp, an
   unconscious listener, and the exact keys of the report.
-- The retained modules' existing consumer tests keep passing, which proves
-  the callers' behavior did not change.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.36` to `0.2.37`.
+- Consumer tests exercise calls through both retained modules and assert that
+  their behavior remains unchanged.
