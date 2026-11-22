@@ -2,9 +2,33 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { approximateHeardPosition, directionTo } from './npc-perception.ts';
 
-void test('a listener looking at its own cell keeps its current facing', () => {
+function refuses(message: string, run: () => unknown): void {
+  assert.throws(run, { name: 'RangeError', message });
+}
+
+void test('a point with a non-finite coordinate is refused', () => {
+  refuses('X coordinate is invalid.', () => directionTo({ x: Number.NaN, y: 0 }, { x: 0, y: 0 }));
+  refuses('Y coordinate is invalid.', () => directionTo({ x: 0, y: 0 }, { x: 0, y: Infinity }));
+  refuses('X coordinate is invalid.', () =>
+    approximateHeardPosition({ x: Number.NaN, y: 0 }, { x: 1, y: 0 }, { radius: 8 }),
+  );
+});
+
+void test('a facing outside the eight compass steps is refused', () => {
+  refuses('Facing must be an integer from 0 to 7.', () =>
+    directionTo({ x: 0, y: 0 }, { x: 1, y: 0 }, 8),
+  );
+  refuses('Facing must be an integer from 0 to 7.', () =>
+    directionTo({ x: 0, y: 0, facing: 1.5 }, { x: 1, y: 0 }),
+  );
+});
+
+void test('a listener on its own cell keeps the supplied or current facing', () => {
   assert.equal(directionTo({ x: 3, y: 3, facing: 5 }, { x: 3, y: 3 }), 5);
   assert.equal(directionTo({ x: 3, y: 3 }, { x: 3, y: 3 }), 0);
+  assert.equal(directionTo({ x: 3, y: 3, side: 'player' }, { x: 3, y: 3 }), 2);
+  assert.equal(directionTo({ x: 3, y: 3, side: 'enemy' }, { x: 3, y: 3 }), 6);
+  assert.equal(directionTo({ x: 3, y: 3, facing: 1 }, { x: 3, y: 3 }, 6), 6);
 });
 
 void test('the direction to a point follows the eight compass steps', () => {
@@ -24,33 +48,76 @@ void test('the direction to a point follows the eight compass steps', () => {
   }
 });
 
-void test('a sound inside the radius produces an approximate position', () => {
-  assert.deepEqual(
-    approximateHeardPosition(
-      { x: 10, y: 10 },
-      { x: 14, y: 14 },
-      { kind: 'fire', radius: 8, turn: 4, width: 30, height: 30 },
-    ),
-    { x: 13, y: 13, turn: 4, kind: 'fire', uncertainty: 2 },
+void test('invalid sound report options are refused', () => {
+  const listener = { x: 0, y: 0 };
+  const source = { x: 1, y: 0 };
+  refuses('Unknown noise kind: sparkle', () =>
+    approximateHeardPosition(listener, source, { kind: 'sparkle', radius: 8 }),
+  );
+  refuses('Noise radius is invalid.', () =>
+    approximateHeardPosition(listener, source, { radius: -1 }),
+  );
+  refuses('Sound obstructions is invalid.', () =>
+    approximateHeardPosition(listener, source, { radius: 8, obstructions: -1 }),
+  );
+  refuses('Sound turn must be a nonnegative integer.', () =>
+    approximateHeardPosition(listener, source, { radius: 8, turn: 1.5 }),
+  );
+  refuses('Map dimensions must be positive integers.', () =>
+    approximateHeardPosition(listener, source, { radius: 8, width: 0 }),
+  );
+  refuses('Map dimensions must be positive integers.', () =>
+    approximateHeardPosition(listener, source, { radius: 8, height: 2.5 }),
   );
 });
 
-void test('a sound beyond the radius produces no report', () => {
+void test('a dead or unconscious listener is not told about the sound', () => {
+  const source = { x: 1, y: 0 };
+  assert.equal(approximateHeardPosition({ x: 0, y: 0, hp: 0 }, source, { radius: 8 }), null);
+  assert.equal(approximateHeardPosition({ x: 0, y: 0, hp: -5 }, source, { radius: 8 }), null);
   assert.equal(
-    approximateHeardPosition(
-      { x: 0, y: 0 },
-      { x: 9, y: 0 },
-      { kind: 'fire', radius: 8, turn: 4, width: 30, height: 30 },
-    ),
+    approximateHeardPosition({ x: 0, y: 0, unconscious: true }, source, { radius: 8 }),
     null,
   );
+  assert.deepEqual(approximateHeardPosition({ x: 0, y: 0, hp: 1 }, source, { radius: 8 }), {
+    x: 1,
+    y: 1,
+    turn: 0,
+    kind: 'move',
+    uncertainty: 2,
+  });
+});
+
+void test('night vision and running change the radius that reaches the sound', () => {
+  const source = { x: 9, y: 0 };
   assert.equal(
-    approximateHeardPosition(
-      { x: 0, y: 0 },
-      { x: 0, y: 0 },
-      { kind: 'fire', radius: 0, turn: 4, width: 30, height: 30 },
-    ),
+    approximateHeardPosition({ x: 0, y: 0, traits: ['night_vision'] }, source, {
+      radius: 8,
+      night: false,
+    }),
     null,
+  );
+  assert.deepEqual(
+    approximateHeardPosition({ x: 0, y: 0, traits: ['night_vision'] }, source, {
+      radius: 8,
+      night: true,
+    }),
+    { x: 10, y: 1, turn: 0, kind: 'move', uncertainty: 2 },
+  );
+  assert.deepEqual(
+    approximateHeardPosition({ x: 0, y: 0, traits: ['night_vision_basic'] }, source, {
+      radius: 8,
+      night: true,
+    }),
+    { x: 10, y: 1, turn: 0, kind: 'move', uncertainty: 2 },
+  );
+  assert.equal(
+    approximateHeardPosition({ x: 0, y: 0, movementMode: 'run' }, source, { radius: 10 }),
+    null,
+  );
+  assert.deepEqual(
+    approximateHeardPosition({ x: 0, y: 0, movementMode: 'walk' }, source, { radius: 10 }),
+    { x: 7, y: 2, turn: 0, kind: 'move', uncertainty: 3 },
   );
 });
 
@@ -68,15 +135,38 @@ void test('obstructions shrink the radius so a previously heard sound is lost', 
   assert.equal(approximateHeardPosition(listener, source, { ...options, obstructions: 1 }), null);
 });
 
-void test('the approximate position stays inside the map bounds', () => {
-  const report = approximateHeardPosition(
-    { x: 1, y: 1 },
-    { x: 1, y: 1 },
-    { kind: 'alarm', radius: 12, turn: 0, width: 2, height: 2 },
+void test('the reported position is clamped to the map bounds when they are given', () => {
+  const listener = { x: 14, y: 14 };
+  assert.deepEqual(
+    approximateHeardPosition(listener, listener, {
+      kind: 'alarm',
+      radius: 8,
+      turn: 3,
+      width: 5,
+      height: 5,
+    }),
+    { x: 4, y: 4, turn: 3, kind: 'alarm', uncertainty: 2 },
   );
-  assert.deepEqual(report, { x: 1, y: 1, turn: 0, kind: 'alarm', uncertainty: 3 });
-  assert.ok(report);
-  assert.ok(report.x >= 0 && report.x < 2 && report.y >= 0 && report.y < 2);
+  assert.deepEqual(
+    approximateHeardPosition(listener, listener, { kind: 'alarm', radius: 8, turn: 3 }),
+    {
+      x: 13,
+      y: 13,
+      turn: 3,
+      kind: 'alarm',
+      uncertainty: 2,
+    },
+  );
+});
+
+void test('sound report options default to a move at turn zero with no bounds', () => {
+  assert.deepEqual(approximateHeardPosition({ x: 10, y: 10 }, { x: 10, y: 10 }, { radius: 8 }), {
+    x: 10,
+    y: 10,
+    turn: 0,
+    kind: 'move',
+    uncertainty: 2,
+  });
 });
 
 void test('the report carries no shooter identity', () => {

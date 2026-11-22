@@ -1,6 +1,7 @@
 import { FieldOfView } from './domain/perception/field-of-view.ts';
 import { fittingWeight, weaponItemWeight } from './weapon-fittings.js';
 import { SUPPLY_ITEMS } from './tactical-inventory.js';
+export { approximateHeardPosition, directionTo } from './domain/perception/npc-perception.ts';
 // Source rules: JA2 manual pp. 18–20 describes movement, facing, and an
 // independent stealth toggle; p. 35 describes limited sight and mutual hearing.
 // Patusco's guide 1.3 pp. 13, 26 describes sound lures and stealth/night skills.
@@ -25,10 +26,6 @@ function finite(value, label, minimum = -Infinity) {
   }
   return value;
 }
-function point(value) {
-  finite(value?.x, 'X coordinate');
-  finite(value?.y, 'Y coordinate');
-}
 function facing(value) {
   if (!Number.isInteger(value) || value < 0 || value > 7) {
     throw new RangeError('Facing must be an integer from 0 to 7.');
@@ -42,19 +39,6 @@ function noiseKind(kind) {
     throw new RangeError(`Unknown noise kind: ${String(kind)}`);
   }
   return kind;
-}
-
-// Grid Y increases southward. Coincident points retain the supplied/current
-// facing. Legacy units without facing look toward the opposite deployment edge.
-/** @returns {number} */
-export function directionTo(from, to, fallback = facingOf(from)) {
-  point(from);
-  point(to);
-  facing(fallback);
-  if (from.x === to.x && from.y === to.y) {
-    return fallback;
-  }
-  return (Math.round(Math.atan2(to.x - from.x, from.y - to.y) / (Math.PI / 4)) + 8) % 8;
 }
 
 // This is only the facing gate. The caller must still check range, walls,
@@ -130,60 +114,5 @@ export function noiseRadius(kind, unit = {}, tile = {}) {
   return Math.max(1, Math.ceil(base * quiet));
 }
 
-// Return an anonymous sound report, never the source object, its ID, side, HP,
-// or exact-position flag. Coarse cells stay stable across repeated reports so
-// repeated clicks/listeners cannot average deterministic offsets into a fix.
-// uncertainty is a radius in tiles, including clamped cells at map boundaries.
-// Obstructions are supplied by the caller and muffle three tiles each; hearing
-// can cross a wall, unlike sight. Facing does not gate hearing.
-export function approximateHeardPosition(
-  listener,
-  source,
-  { kind = 'move', radius, turn = 0, width, height, obstructions = 0, night = false } = {},
-) {
-  point(listener);
-  point(source);
-  noiseKind(kind);
-  finite(radius, 'Noise radius', 0);
-  finite(obstructions, 'Sound obstructions', 0);
-  if (!Number.isInteger(turn) || turn < 0) {
-    throw new RangeError('Sound turn must be a nonnegative integer.');
-  }
-  for (const bound of [width, height]) {
-    if (bound !== undefined && (!Number.isInteger(bound) || bound < 1)) {
-      throw new RangeError('Map dimensions must be positive integers.');
-    }
-  }
-  if ((listener.hp !== undefined && listener.hp <= 0) || listener.unconscious) {
-    return null;
-  }
-  const nightBonus = night
-    ? listener.traits?.includes('night_vision')
-      ? 2
-      : listener.traits?.includes('night_vision_basic')
-        ? 1
-        : 0
-    : 0;
-  const effectiveRadius = Math.max(
-    0,
-    radius + nightBonus - obstructions * 3 - (listener.movementMode === 'run' ? 2 : 0),
-  );
-  const distance = Math.hypot(source.x - listener.x, source.y - listener.y);
-  if (radius === 0 || effectiveRadius === 0 || distance > effectiveRadius) {
-    return null;
-  }
-  // Loud sounds carry farther but do not pinpoint an unseen shooter. Every
-  // listener uses the same grid for this sound kind/radius, preventing a more
-  // precise fix simply by requesting the same report from several soldiers.
-  const cellSize = radius <= 8 ? 3 : 5,
-    half = (cellSize - 1) / 2;
-  const x = Math.floor(source.x / cellSize) * cellSize + half;
-  const y = Math.floor(source.y / cellSize) * cellSize + half;
-  return {
-    x: width === undefined ? x : clamp(x, 0, width - 1),
-    y: height === undefined ? y : clamp(y, 0, height - 1),
-    turn,
-    kind,
-    uncertainty: Math.ceil(Math.SQRT2 * half),
-  };
-}
+// The heard-position and direction rules live in the domain module and are
+// re-exported above; the sight, movement, and noise-radius rules stay here.
