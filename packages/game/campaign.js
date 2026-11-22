@@ -3,6 +3,7 @@ import { FormSquadUseCase } from './application/personnel/form-squad/form-squad.
 import { CampaignFormSquadRepository } from './infrastructure/personnel/campaign-form-squad.repository.js';
 import { ServiceContract } from './domain/personnel/service-contract.ts';
 import { GameTime, TimeUnits } from './domain/shared/game-time.ts';
+import { RandomSource } from './domain/shared/random-source.ts';
 import { Money } from './domain/finance/money.ts';
 import { DomainIdentityMap } from './infrastructure/persistence/domain-identity-map.ts';
 import { CanonicalPersonnelMapper } from './infrastructure/persistence/canonical-personnel-mapper.ts';
@@ -729,8 +730,10 @@ export function campaignDate(s) {
 }
 const sector = (id, state) => campaignSectors(state).find((s) => s.id === id);
 const random = (s) => {
-  s.seed = (Math.imul(1664525, s.seed) + 1013904223) >>> 0;
-  return s.seed / 4294967296;
+  const source = RandomSource.restore({ seed: s.seed });
+  const value = source.next();
+  s.seed = source.snapshot().seed;
+  return value;
 };
 const note = (s, text) => {
   s.log.unshift({
