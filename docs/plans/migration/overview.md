@@ -297,7 +297,7 @@ tests that cover the behavior it moves.
 
 ## 8. What the series closed and what remains
 
-The twenty-three slices of [the plan](plan.md) have landed on the
+The twenty-five slices of [the plan](plan.md) have landed on the
 `feature/clean-architecture-migration` branch. The gap status is:
 
 | Gap | State | Where |
@@ -324,6 +324,8 @@ The twenty-three slices of [the plan](plan.md) have landed on the
 | The combat tuning outside the domain | Closed. The tuning table and the cover and penetration damage rules live in `packages/game/domain/combat/combat-balance.ts`, beside the other tuning the domain holds, and the action point policy is now given its penalties from the domain's own table. | Slice 21 |
 | The combat journal rules outside the domain | Closed. The rules that decide what the public combat journal may contain, how many entries it keeps and which false report stays hidden live in `packages/game/domain/combat/combat-journal.ts`, and the root module is a thin re-export. | Slice 22 |
 | The fatigue and energy rules outside the domain | Closed. The rules of a combatant's stamina live in `packages/game/domain/personnel/fatigue.ts`, next to the character's condition. The domain holds the pure part, and the functions that change a combatant stayed in the root module and call it, so the domain stays a pure function of its inputs. | Slice 23 |
+| The interior visibility rule outside the domain | Closed. The rule that decides whether a point inside a building is visible lives in `packages/game/domain/perception/interior-visibility.ts`, next to the other perception rules, and the root module is a thin re-export. The domain module carries its own copies of the small tactical-space helpers it needs, because those still live in a module that reads the shared file contract; moving them is the next step. | Slice 24 |
+| The campaign clock rule and its notices outside their owners | Closed for both. The conversion of the campaign clock into accepted game seconds lives in the domain's `GameTime`, and the choice of what the player is told after a campaign command lives in `apps/web/lib/campaign-notices.ts`, where a player-facing sentence belongs. | Slice 25 |
 
 What the series did not do:
 
@@ -335,9 +337,13 @@ What the series did not do:
   unarmed combat rule, the sleep need rule, the held consumable rule, the
   projectile energy rule, the firearm loads rule, the study rate rule, the
   route queue, the firearm serviceability rule, the kinetic impact rule, the
-  combat tuning, the combat journal rules and the fatigue and energy rules;
-  each of them keeps its root module as a thin re-export, and each has a
-  parity test that pins the numbers it produced before the move.
+  combat tuning, the combat journal rules, the fatigue and energy rules, the
+  interior visibility rule and the campaign clock rule; each of them keeps its
+  root module as a thin re-export, and each has a parity test that pins the
+  numbers it produced before the move. Two player-facing sentences also
+  left the game for the interface: the one that describes how much rest a
+  combatant needs, and the one that says what happened after a campaign
+  command.
 - The game session does not own the `RandomSource` or the `WorldTimeline`, and
   the campaign snapshot's `seed` and revision fields are still the state the
   rules advance.
