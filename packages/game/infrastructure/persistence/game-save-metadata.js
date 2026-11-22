@@ -1,5 +1,6 @@
 export const GameMappingVersion = 1;
 
+/** @returns {import('../../public/game-snapshot-types.ts').GameSnapshotMapping | undefined} */
 export function gameSaveMetadata(campaign) {
   if (campaign.gameSessionId === undefined) {
     return undefined;

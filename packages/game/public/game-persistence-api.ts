@@ -1,6 +1,6 @@
 import type { CampaignContent } from '../../campaign-format/types.ts';
 import type { CampaignSnapshot } from './campaign-types.ts';
-import type { BattleSnapshot } from './compatibility-types.ts';
+import type { GameSnapshotContent } from './game-snapshot-types.ts';
 import type { RestoredGame } from '../infrastructure/persistence/game-snapshot-mapper.js';
 import { CreateGameSessionUseCase } from '../application/create-game-session/create-game-session.use-case.ts';
 import { RestoreGameUseCase } from '../application/restore-game/restore-game.use-case.ts';
@@ -22,9 +22,6 @@ export function restoreGameSession(text: string): RestoredGame {
   return new RestoreGameUseCase<RestoredGame>(repository).execute();
 }
 
-export function restoreGameSnapshot(text: string): {
-  campaign: CampaignSnapshot;
-  battle: BattleSnapshot | null;
-} {
+export function restoreGameSnapshot(text: string): GameSnapshotContent {
   return restoreGameSession(text).snapshot();
 }

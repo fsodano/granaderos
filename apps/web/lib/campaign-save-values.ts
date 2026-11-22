@@ -2,8 +2,7 @@ import {
   restoreCampaignValue,
   validateBattleSnapshot,
 } from '../../../packages/game/public/game-runtime-api.ts';
-import type { CampaignSnapshot } from '../../../packages/game/public/campaign-types.ts';
-import type { BattleSnapshot } from '../../../packages/game/public/compatibility-types.ts';
+import type { GameSnapshotContent } from '../../../packages/game/public/game-snapshot-types.ts';
 
 export interface SaveRequestIdentity {
   id: number;
@@ -11,10 +10,7 @@ export interface SaveRequestIdentity {
   revision: number;
   requestId: string;
 }
-export interface CampaignSaveRequest extends SaveRequestIdentity {
-  campaign: CampaignSnapshot;
-  battle: BattleSnapshot | null;
-}
+export interface CampaignSaveRequest extends SaveRequestIdentity, GameSnapshotContent {}
 function record(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
