@@ -1,6 +1,6 @@
 import { initialCampaign } from '../packages/game/campaign.js';
 import type { CampaignSaveWorker } from '../apps/web/lib/campaign-autosave.ts';
-import type { SaveStatus } from '../packages/game/application/get-save-status/get-save-status.repository.ts';
+import type { SaveStatus } from '../packages/game/application/get-save-status/get-save-status.response.ts';
 import { present } from './assert-present.ts';
 import { register } from 'node:module';
 register('../tools/test-render-loader.ts', import.meta.url);

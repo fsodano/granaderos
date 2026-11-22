@@ -1,4 +1,4 @@
-export type GameSaveIdentity = Readonly<{ sessionId: string; revision: number; requestId: string }>;
+import type { GameSaveIdentity } from './save-game.response.ts';
 
 export interface SaveGameRepository {
   current(): GameSaveIdentity;

@@ -1,5 +1,6 @@
 import { DomainRefusal, DomainRefusalCode } from '../../domain/shared/domain-refusal.ts';
 import type { RestoreGameRepository } from './restore-game.repository.ts';
+import type { RestoreGameResponse } from './restore-game.response.ts';
 
 export class RestoreGameUseCase<TGame> {
   readonly #repository: RestoreGameRepository<TGame>;
@@ -8,7 +9,7 @@ export class RestoreGameUseCase<TGame> {
     this.#repository = repository;
   }
 
-  execute(): TGame {
+  execute(): RestoreGameResponse<TGame> {
     const text = this.#repository.read();
     if (!text) {
       throw new DomainRefusal(DomainRefusalCode.SavedGameUnavailable);

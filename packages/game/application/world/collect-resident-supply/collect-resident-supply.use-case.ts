@@ -1,11 +1,7 @@
 import { ScavengingPolicy } from '../../../domain/world/resident-supplies.ts';
-import type { ResidentSupplyKind } from '../../../domain/world/resident-supplies.ts';
 import type { CollectResidentSupplyRepository } from './collect-resident-supply.repository.ts';
-
-export type CollectResidentSupplyRequest = Readonly<{ characterId: string }>;
-export type CollectResidentSupplyResult = Readonly<{
-  collected: null | { itemId: string; groundId: string; kind: ResidentSupplyKind };
-}>;
+import type { CollectResidentSupplyRequest } from './collect-resident-supply.request.ts';
+import type { CollectResidentSupplyResult } from './collect-resident-supply.response.ts';
 
 export class CollectResidentSupplyUseCase {
   #repository: CollectResidentSupplyRepository;

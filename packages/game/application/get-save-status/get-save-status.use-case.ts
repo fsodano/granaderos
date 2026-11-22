@@ -1,4 +1,5 @@
-import type { GetSaveStatusRepository, SaveStatus } from './get-save-status.repository.ts';
+import type { GetSaveStatusRepository } from './get-save-status.repository.ts';
+import type { SaveStatus } from './get-save-status.response.ts';
 
 export class GetSaveStatusUseCase {
   readonly #repository: GetSaveStatusRepository;

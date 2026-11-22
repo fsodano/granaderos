@@ -1,12 +1,15 @@
 import type { SectorOrder } from '../../../domain/sector-sessions/sector-operation.ts';
 import type { SectorOperationState, SectorOperationRunner } from '../sector-operation-runner.ts';
 import type { ExecuteSectorOrderRepository } from './execute-sector-order.repository.ts';
-export type ExecuteSectorOrderRequest = Readonly<{ order: SectorOrder }>;
+import type { ExecuteSectorOrderRequest } from './execute-sector-order.request.ts';
+import type { ExecuteSectorOrderResponse } from './execute-sector-order.response.ts';
+
 export class ExecuteSectorOrderUseCase<Snapshot extends SectorOperationState> {
   readonly #repository: ExecuteSectorOrderRepository<Snapshot>;
   readonly #createRunner: (snapshot: Snapshot) => SectorOperationRunner<Snapshot>;
   readonly #executeOrder: (snapshot: Snapshot, order: SectorOrder) => Snapshot;
   readonly #advanceIdleTime: (snapshot: Snapshot, seconds: number) => void;
+
   constructor(
     repository: ExecuteSectorOrderRepository<Snapshot>,
     createRunner: (snapshot: Snapshot) => SectorOperationRunner<Snapshot>,
@@ -18,7 +21,8 @@ export class ExecuteSectorOrderUseCase<Snapshot extends SectorOperationState> {
     this.#executeOrder = executeOrder;
     this.#advanceIdleTime = advanceIdleTime;
   }
-  execute(request: ExecuteSectorOrderRequest): Snapshot {
+
+  execute(request: ExecuteSectorOrderRequest): ExecuteSectorOrderResponse<Snapshot> {
     const loaded = this.#repository.loadSectorOrder();
     const result = this.#createRunner(loaded.snapshot).execute(
       (snapshot) => this.#executeOrder(snapshot, request.order),

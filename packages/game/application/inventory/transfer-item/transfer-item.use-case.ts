@@ -1,14 +1,7 @@
 import { ItemTransferService } from '../../../domain/inventory/item-transfer-service.ts';
 import type { TransferItemRepository } from './transfer-item.repository.ts';
-import type { ItemSnapshot } from '../../../domain/inventory/item.ts';
-
-export type TransferItemRequest = Readonly<{
-  sourceId: string;
-  destinationId: string;
-  selectionId: string;
-  quantity: number;
-  expectedSource?: string;
-}>;
+import type { TransferItemRequest } from './transfer-item.request.ts';
+import type { TransferItemResponse } from './transfer-item.response.ts';
 
 export class TransferItemUseCase {
   #repository: TransferItemRepository;
@@ -19,7 +12,7 @@ export class TransferItemUseCase {
     this.#transfers = transfers;
   }
 
-  execute(request: TransferItemRequest): Readonly<{ item: ItemSnapshot }> {
+  execute(request: TransferItemRequest): TransferItemResponse {
     const context = this.#repository.load(
       request.sourceId,
       request.destinationId,
