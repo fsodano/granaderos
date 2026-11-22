@@ -53,7 +53,7 @@ void test('recruitment eligibility and service quote refusals retain typed codes
 
 void test('renewal and conversation expected refusals retain their player explanations and publish no state', () => {
   const campaign = dispatchCampaign(initialCampaign(), {
-    type: 'recruitCivic',
+    type: 'recruitCombatant',
     id: 110,
     term: 'day',
   });

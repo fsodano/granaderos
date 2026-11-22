@@ -241,7 +241,11 @@ void test('hostile districts explain their existing main-sector restriction whil
     if (liberated) {
       present(present(content.startingTerritory)['buenos_aires']).owner = 'patriot';
     }
-    const s = order(freshCampaign(42, content), { type: 'recruitCivic', id: 110, term: 'week' }),
+    const s = order(freshCampaign(42, content), {
+        type: 'recruitCombatant',
+        id: 110,
+        term: 'week',
+      }),
       before = structuredClone(s),
       district = worldCells(s).find(
         (cell) => cell.locality === 'buenos_aires' && cell.location !== cell.locality,

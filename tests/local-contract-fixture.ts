@@ -137,7 +137,7 @@ export function tactical(p: ActiveGame, action: TacticalOrder) {
   return sync({ campaign: p.campaign, battle });
 }
 export function readyLocal(options: LocalPackageOptions = {}, content = localPackage(options)) {
-  let s = order(initialCampaign(42, content), { type: 'recruitCivic', id: 110, term: 'month' });
+  let s = order(initialCampaign(42, content), { type: 'recruitCombatant', id: 110, term: 'month' });
   // Schedule daily residents after their first real relocation, so the rural
   // approach finishes before the next daily decision.
   if (present(content.placements.find((p) => p.character === 'alma-contract')).mode === 'daily') {

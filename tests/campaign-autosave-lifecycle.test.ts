@@ -18,7 +18,7 @@ const { useCampaignAutosave } = await import('../apps/web/lib/useCampaignAutosav
 
 function deployed(seed: number): SavedPair {
   let campaign = dispatchCampaign(initialCampaign(seed), {
-    type: 'recruitCivic',
+    type: 'recruitCombatant',
     id: 110,
     term: 'week',
   });

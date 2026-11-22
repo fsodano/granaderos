@@ -35,7 +35,7 @@ export function supplyCareField({ criticalResident = false } = {}) {
   };
   let s = initialCampaign(42, d);
   for (const id of [110, 111, 112]) {
-    s = order(s, { type: 'recruitCivic', id, term: 'week' });
+    s = order(s, { type: 'recruitCombatant', id, term: 'week' });
   }
   return visit(s);
 }
