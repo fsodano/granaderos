@@ -26,6 +26,7 @@ export function restoreGameSession(campaign) {
     activeSectorSessionId: campaign.pendingBattle?.id ?? null,
     suspendedSectorSessionIds: suspended.map((session) => session.request.id),
     sectorSessions: requests.map(sectorSessionRegistration),
+    randomSource: { seed: campaign.seed ?? 0 },
   });
 }
 

@@ -3,7 +3,6 @@ import { FormSquadUseCase } from './application/personnel/form-squad/form-squad.
 import { CampaignFormSquadRepository } from './infrastructure/personnel/campaign-form-squad.repository.js';
 import { ServiceContract } from './domain/personnel/service-contract.ts';
 import { GameTime, TimeUnits } from './domain/shared/game-time.ts';
-import { RandomSource } from './domain/shared/random-source.ts';
 import { Money } from './domain/finance/money.ts';
 import { DomainIdentityMap } from './infrastructure/persistence/domain-identity-map.ts';
 import { CanonicalPersonnelMapper } from './infrastructure/persistence/canonical-personnel-mapper.ts';
@@ -729,12 +728,12 @@ export function campaignDate(s) {
   return scenarioFor(s).calendar(s);
 }
 const sector = (id, state) => campaignSectors(state).find((s) => s.id === id);
-const random = (s) => {
-  const source = RandomSource.restore({ seed: s.seed });
-  const value = source.next();
-  s.seed = source.snapshot().seed;
+/** @param {import('./domain/session/game-session.ts').GameSession} session @param {import('./public/campaign-types.ts').CampaignSnapshot} draft */
+export function drawCampaignRandom(session, draft) {
+  const value = session.randomSource.next();
+  draft.seed = session.randomSource.snapshot().seed;
   return value;
-};
+}
 const note = (s, text) => {
   s.log.unshift({
     hour: s.hour,
@@ -2376,7 +2375,7 @@ function tick(s, hours, options = {}) {
   advanceCampaignSeconds(s, hours * 3600, { ...options, requestedHours: hours });
 }
 
-function prepareAttack(s, at, origin, ids, assaultSquads = null) {
+function prepareAttack(session, s, at, origin, ids, assaultSquads = null) {
   const def = scenarioFor(s).attackDefinition(s, at, scenarioContext(s)),
     mission = Boolean(def.mission);
   if (!mission) {
@@ -2405,7 +2404,7 @@ function prepareAttack(s, at, origin, ids, assaultSquads = null) {
     name: def.name,
     biome: def.biome,
     theater: def.theater,
-    seed: Math.floor(random(s) * 4294967296),
+    seed: Math.floor(drawCampaignRandom(session, s) * 4294967296),
     issuedCartridges: Object.values(allocated).reduce((sum, u) => sum + u.loaded + u.ammo, 0),
     wasRoyalist: !mission && s.sectors[at].owner === 'royalist',
     npcs: encountersFor(s, at),
@@ -2465,6 +2464,7 @@ export function dispatchCampaign(previous, action) {
   s.quests ??= {};
   migrateContracts(s);
   try {
+    const session = restoreGameSession(s);
     initializeCampaignSystems(s);
     validateCampaignEventState(s);
     forfeitDeadServiceGuarantees(s, rosterFor(s));
@@ -3112,7 +3112,9 @@ export function dispatchCampaign(previous, action) {
           pay(s, { treasury: tradeQuote(s, item.price) * quantity });
           merchant.stock[item.item] -= quantity;
           const rules = importRulesFor(s),
-            delay = rules.minHours + Math.floor(random(s) * (rules.maxHours - rules.minHours + 1));
+            delay =
+              rules.minHours +
+              Math.floor(drawCampaignRandom(session, s) * (rules.maxHours - rules.minHours + 1));
           s.equipmentShipments.push({ item: item.item, quantity, due: s.hour + delay });
           note(
             s,
@@ -4175,7 +4177,7 @@ export function dispatchCampaign(previous, action) {
           s.activeSquadId = groups[0].id;
           s.squad = [...groups[0].members];
           s.location = at;
-          prepareAttack(s, at, origin, ids, manifest);
+          prepareAttack(session, s, at, origin, ids, manifest);
         }
         restoreGameSession(s);
         break;
@@ -4241,6 +4243,7 @@ export function dispatchCampaign(previous, action) {
         const manifest =
           action.squadIds === undefined ? null : missionAssaultManifest(s, action.squadIds);
         prepareAttack(
+          session,
           s,
           at,
           origin,
