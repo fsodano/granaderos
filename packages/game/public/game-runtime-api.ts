@@ -330,7 +330,7 @@ export {
 export { absoluteBodyHeight, relativeBodyHeight } from '../sight-geometry.js';
 export { TRAINING_LABELS, trainingProgress } from '../skill-training.js';
 export { applySkinPalette } from '../skin-palette.js';
-export { sleepNeedStatus } from '../sleep-needs.js';
+export { sleepRecovery } from '../sleep-needs.js';
 export { sleepOrderReason } from '../sleep.js';
 export { SPRITE_APPEARANCES, spriteAppearance } from '../sprite-appearances.ts';
 export { spriteEquipment } from '../sprite-equipment.js';

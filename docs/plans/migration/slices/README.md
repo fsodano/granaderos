@@ -20,6 +20,8 @@ the diff.
 | [9. Game snapshot](09-game-snapshot.md) | `migration/game-snapshot` | landed | 0.2.14 |
 | [10. Weapon readiness](10-weapon-readiness.md) | `migration/weapon-readiness` | landed | 0.2.15 |
 | [11. Resident position reference](11-resident-position-reference.md) | `migration/resident-position-reference` | landed | 0.2.16 |
+| [12. Unarmed combat](12-unarmed-combat.md) | `migration/unarmed-combat` | landed | 0.2.17 |
+| [13. Sleep need](13-sleep-need.md) | `migration/sleep-need` | landed | 0.2.18 |
 
 A slice moves from planned to in progress when its branch is created, and to
 landed when it is merged into `feature/clean-architecture-migration` and its
@@ -52,3 +54,7 @@ branch is deleted.
 - The rule that prepares a firearm for firing lives in the domain, and the
   root module is a thin re-export of it.
 - The saved resident post has the name `ResidentPositionReference`.
+- Three game rules have moved into the domain: the firearm preparation rule,
+  the unarmed combat rule, and the sleep need rule. Their root modules are
+  thin re-exports, and the sentence that describes the rest need moved into
+  the interface.

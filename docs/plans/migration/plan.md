@@ -56,8 +56,10 @@ Out of scope for this series:
 | 9 | `migration/game-snapshot` | The versioned representation of the game model has the name the glossary gives it | 0.2.14 |
 | 10 | `migration/weapon-readiness` | The rule that prepares a firearm moves into the domain | 0.2.15 |
 | 11 | `migration/resident-position-reference` | The saved resident-post projection takes the name the glossary gives it | 0.2.16 |
+| 12 | `migration/unarmed-combat` | The unarmed combat rule moves into the domain | 0.2.17 |
+| 13 | `migration/sleep-need` | The sleep need rule moves into the domain and its wording into the interface | 0.2.18 |
 
-The first five slices landed in [pull request #505](https://github.com/fsodano/granaderos/pull/505), the next two in [pull request #506](https://github.com/fsodano/granaderos/pull/506), and the two after them in [pull request #507](https://github.com/fsodano/granaderos/pull/507). The last two are the fourth batch.
+The first five slices landed in [pull request #505](https://github.com/fsodano/granaderos/pull/505), the next two in [pull request #506](https://github.com/fsodano/granaderos/pull/506), the two after them in [pull request #507](https://github.com/fsodano/granaderos/pull/507), and the two after those in [pull request #508](https://github.com/fsodano/granaderos/pull/508). The last two are the fifth batch.
 
 Each slice has its own note under [slices](slices/README.md) with the intent, the
 files it touches, the tests it adds, and how it is verified. Read the note
@@ -179,6 +181,20 @@ rule and its numbers do not change, and no caller changes.
 The saved resident-post projection takes the name the glossary gives it,
 `ResidentPositionReference`, and the saved field states that type instead of
 an inline shape. No saved value changes.
+
+### Slice 12: unarmed combat
+
+The rule that decides whether an unarmed strike lands, what it costs, and how
+likely a weapon is to be taken moves from `packages/game/unarmed-combat.js`
+into `packages/game/domain/combat/unarmed-combat.ts`, and the root module
+becomes a thin re-export. The numbers do not change and no caller changes.
+
+### Slice 13: sleep need
+
+The rule that decides how much rest a combatant needs moves into
+`packages/game/domain/personnel/sleep-need.ts`, and the Spanish sentence that
+describes it moves out of the game and into the interface's own label module,
+where the plan says a player-facing sentence belongs.
 
 ## Branch and merge flow
 

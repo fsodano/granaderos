@@ -21,7 +21,6 @@ import {
   workAssignmentReason,
   workStatus,
   repairEquipmentQueue,
-  sleepNeedStatus,
   sleepOrderReason,
   moraleStatus,
   equipmentInventoryUsage,
@@ -29,6 +28,7 @@ import {
   weaponSpecification,
   campaignPlace,
 } from '../../../packages/game/public/game-runtime-api.ts';
+import { sleepNeedStatus } from '../lib/care-labels';
 import { useState } from 'react';
 import './medical-care.css';
 import StudyForecast from './StudyForecast';
