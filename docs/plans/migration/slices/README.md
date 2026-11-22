@@ -32,6 +32,8 @@ the diff.
 | [21. Combat balance](21-combat-balance.md) | `migration/combat-balance` | landed | 0.2.26 |
 | [22. Combat journal](22-combat-journal.md) | `migration/combat-journal` | landed | 0.2.27 |
 | [23. Fatigue and energy](23-fatigue.md) | `migration/fatigue` | landed | 0.2.28 |
+| [24. Interior visibility](24-interior-visibility.md) | `migration/interior-visibility` | landed | 0.2.29 |
+| [25. Strategic clock](25-strategic-clock.md) | `migration/strategic-clock` | landed | 0.2.30 |
 
 A slice moves from planned to in progress when its branch is created, and to
 landed when it is merged into `feature/clean-architecture-migration` and its
@@ -64,10 +66,11 @@ branch is deleted.
 - The rule that prepares a firearm for firing lives in the domain, and the
   root module is a thin re-export of it.
 - The saved resident post has the name `ResidentPositionReference`.
-- Thirteen game rules have moved into the domain: the firearm preparation
+- Fifteen game rules have moved into the domain: the firearm preparation
   rule, the unarmed combat rule, the sleep need rule, the held consumable
   rule, the projectile energy rule, the firearm loads rule, the study rate
   rule, the route queue, the firearm serviceability rule, the kinetic impact
-  rule, the combat tuning, the combat journal rules and the fatigue and
-  energy rules. Their root modules are thin re-exports, and the sentence that
-  describes the rest need moved into the interface.
+  rule, the combat tuning, the combat journal rules, the fatigue and energy
+  rules, the interior visibility rule and the campaign clock rule. Their root
+  modules are thin re-exports, and two player-facing sentences moved from the
+  game into the interface.

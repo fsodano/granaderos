@@ -1,6 +1,6 @@
 {
   "name": "granaderos-web",
-  "version": "0.2.28",
+  "version": "0.2.30",
   "private": true,
   "engines": {
     "node": "26.13.1"

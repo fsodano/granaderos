@@ -68,6 +68,8 @@ Out of scope for this series:
 | 21 | `migration/combat-balance` | The combat tuning table and the cover and penetration damage rules move into the domain | 0.2.26 |
 | 22 | `migration/combat-journal` | The rules that decide what the public combat journal may contain move into the domain | 0.2.27 |
 | 23 | `migration/fatigue` | The fatigue and energy rules move into the domain, next to the character's condition | 0.2.28 |
+| 24 | `migration/interior-visibility` | The interior visibility rule moves into the domain, next to the other perception rules | 0.2.29 |
+| 25 | `migration/strategic-clock` | The campaign clock rule moves into the domain and the campaign notices into the interface | 0.2.30 |
 
 The first five slices landed in [pull request #505](https://github.com/fsodano/granaderos/pull/505), the next two in [pull request #506](https://github.com/fsodano/granaderos/pull/506), the two after them in [pull request #507](https://github.com/fsodano/granaderos/pull/507), and the two after those in [pull request #508](https://github.com/fsodano/granaderos/pull/508). The last two are the fifth batch.
 
@@ -274,6 +276,19 @@ The rules of a combatant's stamina move into
 condition. The domain holds the pure part, and the four functions that change
 a combatant stay in the root module and call it, so the domain stays a pure
 function of its inputs.
+
+### Slice 24: interior visibility
+
+The rule that decides whether a point inside a building is visible moves into
+`packages/game/domain/perception/interior-visibility.ts`, next to the other
+perception rules. The root module becomes a thin re-export.
+
+### Slice 25: strategic clock
+
+The conversion of the campaign clock into accepted game seconds moves into the
+domain's `GameTime`, and the choice of what the player is told after a
+campaign command moves into the interface's own module, where a player-facing
+sentence belongs.
 
 ## Branch and merge flow
 
