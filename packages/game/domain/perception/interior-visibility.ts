@@ -1,3 +1,10 @@
+import {
+  sameCell,
+  spaceKey,
+  tacticalLevel,
+  validTacticalLevel,
+} from '../sector-sessions/tactical-space.ts';
+
 // Interior contents follow room discovery, independently of neighbouring rooms.
 // Resolve cells as well as IDs so legacy props cannot leak through an absent tag.
 export type InteriorPoint = Readonly<{
@@ -59,20 +66,6 @@ type RoomIndex = Readonly<{
   byCell: ReadonlyMap<string, InteriorRoom>;
   byId: ReadonlyMap<string, RoomEntry>;
 }>;
-
-// Matches the tactical-space schema: physical levels are whole numbers up to 8.
-const MaximumTacticalLevel = 8;
-
-const tacticalLevel = (point: InteriorPoint | null | undefined): number =>
-  point?.tacticalLevel === undefined ? 0 : point.tacticalLevel;
-
-const validTacticalLevel = (level: number): boolean =>
-  Number.isInteger(level) && level >= 0 && level <= MaximumTacticalLevel;
-
-const spaceKey = (point: InteriorPoint): string => `${tacticalLevel(point)}:${point.x},${point.y}`;
-
-const sameCell = (left: InteriorPoint, right: InteriorPoint): boolean =>
-  tacticalLevel(left) === tacticalLevel(right) && left.x === right.x && left.y === right.y;
 
 const upperSurfaceIndexes = new WeakMap<readonly InteriorSurface[], Map<string, InteriorSurface>>();
 
