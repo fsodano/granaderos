@@ -58,6 +58,8 @@ Out of scope for this series:
 | 11 | `migration/resident-position-reference` | The saved resident-post projection takes the name the glossary gives it | 0.2.16 |
 | 12 | `migration/unarmed-combat` | The unarmed combat rule moves into the domain | 0.2.17 |
 | 13 | `migration/sleep-need` | The sleep need rule moves into the domain and its wording into the interface | 0.2.18 |
+| 14 | `migration/held-supplies` | The held consumable rule moves into the domain | 0.2.19 |
+| 15 | `migration/projectile-energy` | The projectile energy rule moves into the domain | 0.2.20 |
 
 The first five slices landed in [pull request #505](https://github.com/fsodano/granaderos/pull/505), the next two in [pull request #506](https://github.com/fsodano/granaderos/pull/506), the two after them in [pull request #507](https://github.com/fsodano/granaderos/pull/507), and the two after those in [pull request #508](https://github.com/fsodano/granaderos/pull/508). The last two are the fifth batch.
 
@@ -195,6 +197,20 @@ The rule that decides how much rest a combatant needs moves into
 `packages/game/domain/personnel/sleep-need.ts`, and the Spanish sentence that
 describes it moves out of the game and into the interface's own label module,
 where the plan says a player-facing sentence belongs.
+
+### Slice 14: held supplies
+
+The rule that decides which consumable a combatant holds in hand, what it
+costs to use and how far it reaches moves into
+`packages/game/domain/inventory/held-supplies.ts`, next to the inventory that
+owns what a combatant carries. The root module becomes a thin re-export.
+
+### Slice 15: projectile energy
+
+The rule that turns a projectile's mass and velocity into impact moves into
+`packages/game/domain/combat/projectile-energy.ts`, next to the shot rules.
+The format check stays in the root module, because the shared file contract
+cannot be read from the domain.
 
 ## Branch and merge flow
 

@@ -1,10 +1,19 @@
 import { isProjectileEnergyRecord } from '../campaign-format/projectile-profile-schema.js';
 import { AMMUNITION_WEIGHT } from './ammunition-types.js';
+import {
+  PROJECTILE_ENERGY_MODEL,
+  projectileLaunchImpact,
+} from './domain/combat/projectile-energy.ts';
 
-// Versioned Granaderos balance: energy is measured in joules, but these impact
-// points, body/material costs and injury caps are game tuning, not SI forces.
-export const PROJECTILE_ENERGY_MODEL = 'kinetic-energy-v1';
-export const PROJECTILE_ENERGY_JOULES_PER_IMPACT = 20;
+export {
+  PROJECTILE_ENERGY_MODEL,
+  PROJECTILE_ENERGY_JOULES_PER_IMPACT,
+  projectileEnergyJ,
+  hasProjectileEnergy,
+  projectileLaunchImpact,
+  projectileDamageFactor,
+} from './domain/combat/projectile-energy.ts';
+
 export function validProjectileEnergy(value) {
   return Boolean(
     isProjectileEnergyRecord(value) &&
@@ -15,19 +24,6 @@ export function validProjectileEnergy(value) {
     value.muzzleVelocityMps >= 25 &&
     value.muzzleVelocityMps <= 600,
   );
-}
-export const projectileEnergyJ = (profile) =>
-  0.5 * (profile.massGrams / 1000) * profile.muzzleVelocityMps ** 2;
-export const hasProjectileEnergy = (weapon) => weapon?.projectileEnergy !== undefined;
-export function projectileLaunchImpact(weapon) {
-  return hasProjectileEnergy(weapon)
-    ? projectileEnergyJ(weapon.projectileEnergy) / PROJECTILE_ENERGY_JOULES_PER_IMPACT
-    : Math.max(1, weapon.damage ?? 1);
-}
-export function projectileDamageFactor(remaining, weapon, power) {
-  return hasProjectileEnergy(weapon)
-    ? Math.max(0, Math.min(1, remaining / weapon.damage))
-    : remaining / power;
 }
 // The injury denominator remains authored damage. An energetic ball may carry
 // more penetration, while a weak contact cannot receive a full damage draw.
