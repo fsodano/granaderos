@@ -9,7 +9,7 @@ import {
   Object3D,
 } from 'three';
 import type { Scene } from 'three';
-import { corpseBloodShape } from '../../../../packages/game/scene-readability.js';
+import { corpseBloodShape } from '../../../../packages/game/public/game-runtime-api.ts';
 import type { ActorVisual } from './presentation';
 type BloodActor = Pick<ActorVisual, 'key' | 'position' | 'action' | 'cue'>;
 type Corpse = {

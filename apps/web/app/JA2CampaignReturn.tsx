@@ -1,6 +1,6 @@
 'use client';
 
-import { campaignReturnModel } from '../../../packages/game/ja2-hud.ts';
+import { campaignReturnModel } from '../../../packages/game/public/game-runtime-api.ts';
 import type { BattleSnapshot } from '../../../packages/game/public/compatibility-types.ts';
 
 type Props = {

@@ -13,25 +13,33 @@ import {
 } from 'react';
 import type { CampaignPresentation } from '../../../packages/campaign-format/types.ts';
 import type { SaveStatus } from '../../../packages/game/public/save-types.ts';
-import { battleFromRequest, prepareCampaignBattle } from '../../../packages/game/battle-handoff.js';
-import { runBattleJob } from '../../../packages/game/battle-job.ts';
-import { dispatchCampaign, questForNPC, rosterFor } from '../../../packages/game/campaign.js';
-import { withCharacterSpeech } from '../../../packages/game/character-events.js';
-import { dialogueForNPC } from '../../../packages/game/content-dialogue.js';
 import {
+  battleFromRequest,
+  prepareCampaignBattle,
+  runBattleJob,
+  dispatchCampaign,
+  questForNPC,
+  rosterFor,
+  withCharacterSpeech,
+  dialogueForNPC,
   campaignLaunchSearch,
   campaignStorageCandidates,
   campaignStorageKey,
   CONTENT_LAUNCH_KEY,
-} from '../../../packages/game/content-launch.ts';
-import { encounterHireTerms } from '../../../packages/game/encounters.js';
-import { removedSectorCharacters } from '../../../packages/game/military-remains.js';
-import { missionStatus } from '../../../packages/game/missions.js';
-import {
+  encounterHireTerms,
+  removedSectorCharacters,
+  missionStatus,
   playerKnownBattle,
   playerKnownError,
   playerKnownState,
-} from '../../../packages/game/player-known-state.ts';
+  MAX_SAVE_BYTES,
+  encodeSave,
+  pendingArrivalDecisions,
+  actBattle,
+  endTurn,
+  syncBattleTime,
+  withCampaignTimeBoundary,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import type {
   CampaignAction,
   CampaignSnapshot,
@@ -42,11 +50,6 @@ import {
   restoreGameSnapshot,
 } from '../../../packages/game/public/game-persistence-api.ts';
 import { domainRefusalMessage } from '../../../packages/game/public/refusal-api.ts';
-import { MAX_SAVE_BYTES } from '../../../packages/game/save-limits.js';
-import { encodeSave } from '../../../packages/game/save.ts';
-import { pendingArrivalDecisions } from '../../../packages/game/squad-travel.js';
-import { actBattle, endTurn } from '../../../packages/game/tactical.js';
-import { syncBattleTime, withCampaignTimeBoundary } from '../../../packages/game/time.js';
 import { BattleAudio } from '../lib/battle-audio';
 import { readBattleWorkerAction } from '../lib/battle-worker-values';
 import {

@@ -1,7 +1,9 @@
 import type { BattleSnapshot } from '../../../packages/game/public/compatibility-types.ts';
 import type { KnifeThrowReceipt as KnifeVisual } from '../../../packages/game/public/hud-types.ts';
-import { absoluteBodyHeight } from '../../../packages/game/sight-geometry.js';
-import { tacticalLevel } from '../../../packages/game/tactical-space.js';
+import {
+  absoluteBodyHeight,
+  tacticalLevel,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import { projectSurface } from '../lib/tactical-elevation';
 
 export const KNIFE_EFFECT_DURATION = 600;

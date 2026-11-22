@@ -4,8 +4,10 @@ import type {
   BattleSnapshot,
   BattleUnit,
 } from '../../../packages/game/public/compatibility-types.ts';
-import { contextActionCursorModel } from '../../../packages/game/context-action-cursor.ts';
-import { formatAP } from '../../../packages/game/action-points.js';
+import {
+  contextActionCursorModel,
+  formatAP,
+} from '../../../packages/game/public/game-runtime-api.ts';
 
 type Props = {
   state: BattleSnapshot;

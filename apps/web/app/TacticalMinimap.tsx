@@ -5,11 +5,14 @@ import type {
   BattleSnapshot,
   BattleUnit,
 } from '../../../packages/game/public/compatibility-types.ts';
-import { sceneWallEdges } from '../../../packages/game/scene-wall-edges.js';
-import { tacticalMinimapLabel } from '../../../packages/game/tactical-minimap-label.js';
-import { tacticalLevel } from '../../../packages/game/tactical-space.js';
-import { isInteriorVisible } from '../../../packages/game/tactical-visibility.ts';
-import { canSee, visibleRooms } from '../../../packages/game/tactical.js';
+import {
+  sceneWallEdges,
+  tacticalMinimapLabel,
+  tacticalLevel,
+  isInteriorVisible,
+  canSee,
+  visibleRooms,
+} from '../../../packages/game/public/game-runtime-api.ts';
 type Props = {
   state: BattleSnapshot;
   units: BattleUnit[];

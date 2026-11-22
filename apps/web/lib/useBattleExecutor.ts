@@ -17,7 +17,7 @@ import type {
 } from '../../../packages/game/public/compatibility-types.ts';
 import { readBattleWorkerResult } from './battle-worker-values.ts';
 type MutationKind = Exclude<BattleJobKind, 'reachable-preview' | 'group-preview'>;
-import { runBattleJob } from '../../../packages/game/battle-job.ts';
+import { runBattleJob } from '../../../packages/game/public/game-runtime-api.ts';
 import { sectorOperationContextFor } from '../../../packages/game/infrastructure/sector-sessions/sector-operation-context.js';
 
 export function useBattleExecutor(battle: BattleSnapshot) {

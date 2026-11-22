@@ -1,10 +1,12 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { propSize } from '../../../packages/game/props.js';
+import {
+  propSize,
+  roomDressings,
+  isInteriorVisible,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import type { SceneTerrain } from '../../../packages/game/public/terrain-types.ts';
-import { roomDressings } from '../../../packages/game/room-dressing.js';
-import { isInteriorVisible } from '../../../packages/game/tactical-visibility.ts';
 import { sitePath } from '../lib/site-path.js';
 type Props = {
   state: SceneTerrain;

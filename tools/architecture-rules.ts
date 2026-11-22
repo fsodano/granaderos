@@ -8,17 +8,28 @@ const gameImplementationLayers = [
   'packages/game/infrastructure',
 ];
 
+/** A retained compatibility module sits directly inside `packages/game`. */
+const retainedGameModule = /^packages\/game\/[^/]+$/;
+
 function pathWithin(path: string, directory: string): boolean {
   return path === directory || path.startsWith(`${directory}/`);
 }
 
 /**
  * Decide whether a repository-relative file may import a repository-relative
- * target. Files outside the player interface may import anything; files under
- * `apps/web/app` may not import a game domain, application, or infrastructure
- * module.
+ * target. Files outside the player interface may import anything. No file under
+ * `apps/web` may import a retained compatibility module from the root of
+ * `packages/game`. Files under `apps/web/app` may not import a game domain,
+ * application, or infrastructure module either; `apps/web/lib` is the browser
+ * composition and may.
  */
 export function interfaceFileMayImport(file: string, target: string): boolean {
+  if (!pathWithin(file, 'apps/web')) {
+    return true;
+  }
+  if (retainedGameModule.test(target)) {
+    return false;
+  }
   if (!pathWithin(file, 'apps/web/app')) {
     return true;
   }

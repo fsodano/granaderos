@@ -7,8 +7,7 @@ import type {
 import { useState } from 'react';
 import Horses from './Horses';
 import OwnedArtillery, { hasOwnedArtillery } from './OwnedArtillery';
-import { foundryFor } from '../../../packages/game/campaign-foundry.js';
-import { foundryReason } from '../../../packages/game/campaign-roles.js';
+import { foundryFor, foundryReason } from '../../../packages/game/public/game-runtime-api.ts';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { campaignUI, type PreparationOrder } from '../lib/campaign-ui';
 export default function SectorPreparation({

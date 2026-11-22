@@ -1,7 +1,6 @@
 'use client';
 
-import { isSupplied } from '../../../packages/game/campaign.js';
-import { grenadeOffer } from '../../../packages/game/equipment.js';
+import { isSupplied, grenadeOffer } from '../../../packages/game/public/game-runtime-api.ts';
 import type {
   CampaignAction,
   CampaignOperative,

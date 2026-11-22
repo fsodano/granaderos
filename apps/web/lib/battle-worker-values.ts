@@ -1,5 +1,5 @@
 import { TacticalActionKind } from '../../../packages/game/public/compatibility-types.ts';
-import { validateBattleSnapshot } from '../../../packages/game/validate-battle.js';
+import { validateBattleSnapshot } from '../../../packages/game/public/game-runtime-api.ts';
 import type {
   BattleSnapshot,
   TacticalAction,

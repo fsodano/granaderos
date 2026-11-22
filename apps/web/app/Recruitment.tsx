@@ -12,34 +12,30 @@ import {
   contractQuote,
   contractStatus,
   candidateAdmission,
-} from '../../../packages/game/campaign.js';
-import {
   hiringArrivalOptions,
   hiringArrivalReason,
   pendingHire,
   hireCancellationReason,
-} from '../../../packages/game/hiring-arrivals.js';
-import {
   guaranteeRecord,
   serviceGuaranteeRefund,
   guaranteeDepartureReason,
-} from '../../../packages/game/service-guarantees.js';
-import { operativeInTransit, squadReorganizationReason } from '../../../packages/game/squads.js';
-import { contractTermsFor, contractRenewalQuote } from '../../../packages/game/contracts.js';
-import { getRecruitmentCandidates } from '../lib/recruitment-catalogue';
-import { isContractOperative } from '../../../packages/game/content-character-ids.ts';
-import {
+  operativeInTransit,
+  squadReorganizationReason,
+  contractTermsFor,
+  contractRenewalQuote,
+  isContractOperative,
   characterProfile,
   characterAbilityDescriptions,
-} from '../../../packages/game/characters.js';
+  serviceObjectionReason,
+  lowMoraleRenewalStatus,
+} from '../../../packages/game/public/game-runtime-api.ts';
+import { getRecruitmentCandidates } from '../lib/recruitment-catalogue';
 import { portraitFor } from '../lib/portraits';
 import { travelTime } from '../lib/travel-time';
 import CharacterDossier from './CharacterDossier';
 import ServiceRefusalNotice from './ServiceRefusalNotice';
 import PreferredCompanionsSummary from './PreferredCompanionsSummary';
-import { serviceObjectionReason } from '../../../packages/game/service-objections.js';
 import ServiceObjectionNotice from './ServiceObjectionNotice';
-import { lowMoraleRenewalStatus } from '../../../packages/game/morale-renewal.js';
 import ContractMoraleNotice from './ContractMoraleNotice';
 import './recruitment.css';
 type Props = { state: CampaignSnapshot; dispatch: (a: CampaignAction) => void };

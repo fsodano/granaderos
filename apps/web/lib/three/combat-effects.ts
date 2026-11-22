@@ -14,7 +14,7 @@ import {
   Vector3,
 } from 'three';
 import type { BufferGeometry, Material, Object3D, Scene } from 'three';
-import { firearmFlightDuration } from '../../../../packages/game/battle-playback.js';
+import { firearmFlightDuration } from '../../../../packages/game/public/game-runtime-api.ts';
 /** Positions use grid X/Y and an absolute metric height. No battle state crosses this boundary. */
 export type EffectPoint = {
   x: number;

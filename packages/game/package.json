@@ -1,12 +1,13 @@
 {
   "name": "@granaderos/game",
-  "version": "0.2.10",
+  "version": "0.2.12",
   "private": true,
   "type": "module",
   "exports": {
     "./campaign-editor-api": "./public/campaign-editor-api.ts",
     "./campaign-playtest-api": "./public/campaign-playtest-api.ts",
     "./game-persistence-api": "./public/game-persistence-api.ts",
+    "./game-runtime-api": "./public/game-runtime-api.ts",
     "./journey-types": "./public/journey-types.ts",
     "./refusal-api": "./public/refusal-api.ts",
     "./save-types": "./public/save-types.ts"

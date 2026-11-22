@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { beneficiaryDeliveryNotice } from '../../../packages/game/ja2-hud.ts';
-import { dialogueOptions } from '../../../packages/game/npc-dialogue.ts';
+import {
+  beneficiaryDeliveryNotice,
+  dialogueOptions,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import type { CampaignConversation } from '../../../packages/game/public/campaign-types.ts';
 import type {
   BattleNpc,

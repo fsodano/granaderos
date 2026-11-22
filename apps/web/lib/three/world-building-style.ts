@@ -1,5 +1,7 @@
-import { buildingAppearance } from '../../../../packages/game/building-appearance.ts';
-import { getBuildingProfile } from '../../../../packages/game/building-profile.ts';
+import {
+  buildingAppearance,
+  getBuildingProfile,
+} from '../../../../packages/game/public/game-runtime-api.ts';
 import type { WorldBuilding } from './world-types';
 import type { WorldMaterialSource } from './world-materials';
 

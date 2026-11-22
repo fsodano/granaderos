@@ -9,12 +9,25 @@ import type { ArrivalDecisionSnapshot } from '../../../packages/game/public/jour
 import SectorPreparation from './SectorPreparation';
 import MilitiaDistribution from './MilitiaDistribution';
 import MilitiaTraining from './MilitiaTraining';
-import { careAssignmentBusy } from '../../../packages/game/medical-care.js';
-import { historicalLossReason } from '../../../packages/game/historical-loss.js';
+import {
+  careAssignmentBusy,
+  historicalLossReason,
+  campaignPresentation,
+  campaignStory,
+  STRATEGIC_CLOCK_SPEEDS,
+  pendingArrivalDecisions,
+  squadHasHorses,
+  rosterFor,
+  campaignObjectives,
+  getCityStatus,
+  campaignPlace,
+  worldCell,
+  worldOwner,
+  activeSquad,
+  previewStrategicRoute,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import { campaignUI } from '../lib/campaign-ui';
 import { campaignFactionName, campaignTransportName } from '../lib/campaign-labels';
-import { campaignPresentation } from '../../../packages/game/campaign-definition.js';
-import { campaignStory } from '../../../packages/game/campaign-story.js';
 
 import StrategicMap from './StrategicMap';
 import StrategicPanel from './StrategicPanel';
@@ -23,21 +36,14 @@ import SectorIncome from './SectorIncome';
 import SectorEnvironment from './SectorEnvironment';
 import { useEffect, useId, useRef, useState } from 'react';
 import { useStrategicClock } from '../lib/useStrategicClock';
-import { STRATEGIC_CLOCK_SPEEDS } from '../../../packages/game/strategic-clock.ts';
-import { pendingArrivalDecisions, squadHasHorses } from '../../../packages/game/squad-travel.js';
 import StrategicPersonnelMenu from './StrategicPersonnelMenu';
-import { rosterFor, campaignObjectives } from '../../../packages/game/campaign.js';
-import { getCityStatus } from '../../../packages/game/cities.js';
-import { campaignPlace, worldCell, worldOwner } from '../../../packages/game/world-cells.ts';
 import CharacterDossier from './CharacterDossier';
-import { activeSquad } from '../../../packages/game/squads.js';
 import MedicalCare from './MedicalCare';
 import EnemyEncounters from './EnemyEncounters';
 import AssignmentAttention from './AssignmentAttention';
 import ContractAttention from './ContractAttention';
 import './strategy.css';
 import StrategicRoster from './StrategicRoster';
-import { previewStrategicRoute } from '../../../packages/game/strategic-route.js';
 import { JourneyMode, type JourneyModeValue } from '../../../packages/game/public/journey-types.ts';
 import TransientNotice from './TransientNotice';
 export default function Campaign({

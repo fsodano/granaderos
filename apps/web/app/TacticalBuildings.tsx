@@ -1,16 +1,19 @@
 import type { ReactNode } from 'react';
-import { buildingAppearance } from '../../../packages/game/building-appearance.ts';
-import { getBuildingRenderProfile } from '../../../packages/game/building-profile.ts';
-import { BUILDING_OPENINGS } from '../../../packages/game/building-scale.js';
-import { buildingStyle } from '../../../packages/game/building-types.ts';
+import {
+  buildingAppearance,
+  getBuildingRenderProfile,
+  BUILDING_OPENINGS,
+  buildingStyle,
+  roomDecorProfile,
+  tacticalLevel,
+  buildingInViewport,
+  pointInViewport,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import type {
   BattleBuilding,
   BattleTile,
 } from '../../../packages/game/public/compatibility-types.ts';
 import type { SceneTerrain } from '../../../packages/game/public/terrain-types.ts';
-import { roomDecorProfile } from '../../../packages/game/room-dressing.js';
-import { tacticalLevel } from '../../../packages/game/tactical-space.js';
-import { buildingInViewport, pointInViewport } from '../../../packages/game/tactical-viewport.js';
 import { sitePath } from '../lib/site-path.js';
 import { WallDetails } from './BuildingDetails';
 import { BuildingMaterials } from './BuildingMaterials';

@@ -1,5 +1,5 @@
 import { Quaternion, Vector3 } from 'three';
-import { terrainMaterial } from '../../../../packages/game/regional-terrain.js';
+import { terrainMaterial } from '../../../../packages/game/public/game-runtime-api.ts';
 import { WorldBatch, cellTop, seeded } from './world-geometry';
 import { illuminationAt, worldKey } from './world-materials';
 import { climbOpenings, surfaceRectangles } from './world-climb-openings';

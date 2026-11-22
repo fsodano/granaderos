@@ -1,4 +1,4 @@
-import { encodeSave } from '../../../packages/game/save.ts';
+import { encodeSave } from '../../../packages/game/public/game-runtime-api.ts';
 import { readCampaignSaveRequest, readSaveRequestIdentity } from './campaign-save-values';
 
 self.onmessage = (event: MessageEvent<unknown>) => {

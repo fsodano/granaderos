@@ -5,11 +5,13 @@ import type {
   BattleArtillery,
   BattlePresentationFrame,
 } from '../../../../packages/game/public/compatibility-types.ts';
-import { spriteAppearance } from '../../../../packages/game/sprite-appearances.ts';
-import { spriteEquipment } from '../../../../packages/game/sprite-equipment.js';
-import { resolveActorAction } from '../../../../packages/game/actor-action-contract.ts';
+import {
+  spriteAppearance,
+  spriteEquipment,
+  resolveActorAction,
+  canSee,
+} from '../../../../packages/game/public/game-runtime-api.ts';
 import { actorItems, actorPosture, semanticOrder } from './presentation';
-import { canSee } from '../../../../packages/game/tactical.js';
 import {
   animationPhaseRanges,
   usesNativeActionTiming,

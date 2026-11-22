@@ -1,5 +1,5 @@
 import type { BattleSnapshot } from '../../../packages/game/public/compatibility-types.ts';
-import { publicCombatJournal } from '../../../packages/game/combat-journal.js';
+import { publicCombatJournal } from '../../../packages/game/public/game-runtime-api.ts';
 import './combat-journal.css';
 
 export default function CombatJournal({ battle }: { battle: BattleSnapshot }) {

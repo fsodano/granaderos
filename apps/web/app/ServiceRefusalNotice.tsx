@@ -3,9 +3,11 @@ import type {
   CampaignSnapshot,
   CampaignAction,
 } from '../../../packages/game/public/campaign-types.ts';
-import { rosterFor } from '../../../packages/game/campaign.js';
-import { guaranteeDepartureReason } from '../../../packages/game/service-guarantees.js';
-import { operativeInTransit } from '../../../packages/game/squads.js';
+import {
+  rosterFor,
+  guaranteeDepartureReason,
+  operativeInTransit,
+} from '../../../packages/game/public/game-runtime-api.ts';
 
 export default function ServiceRefusalNotice({
   state,

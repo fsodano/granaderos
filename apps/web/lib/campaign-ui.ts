@@ -8,7 +8,7 @@ import type {
 } from '../../../packages/game/public/compatibility-types.ts';
 import type { MissionView } from '../../../packages/game/public/hud-types.ts';
 import type { ComponentType } from 'react';
-import { scenarioIdFor } from '../../../packages/game/campaign-scenario.js';
+import { scenarioIdFor } from '../../../packages/game/public/game-runtime-api.ts';
 import { granaderosUI } from '../../../content/campaigns/granaderos/ui/panels';
 export type StatePanelProps = {
   state: CampaignSnapshot;

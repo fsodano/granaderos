@@ -4,10 +4,8 @@ import type {
   CampaignSnapshot,
   CampaignOfficerProfile,
 } from '../../../packages/game/public/campaign-types.ts';
-import { campaignOfficerCreation } from '../../../packages/game/campaign-officer-creation.ts';
-import { sitePath } from '../lib/site-path.js';
-import { useId, useRef, useState } from 'react';
 import {
+  campaignOfficerCreation,
   PROFILE_ATTRIBUTES,
   PROFILE_POINTS,
   PORTRAIT_GENDERS,
@@ -15,13 +13,13 @@ import {
   PORTRAIT_SKIN_TONES,
   defaultProfile,
   createOfficerRecord,
-} from '../../../packages/game/recruitment.ts';
-import {
   MIN_OFFICER_HEALTH,
   validateOfficerCreationHealth,
-} from '../../../packages/game/character-profile.ts';
+  campaignCharacterPortraits,
+} from '../../../packages/game/public/game-runtime-api.ts';
+import { sitePath } from '../lib/site-path.js';
+import { useId, useRef, useState } from 'react';
 import './CharacterCreator.css';
-import { campaignCharacterPortraits } from '../../../packages/game/campaign-portraits.js';
 type Portrait = {
   id: string;
   name: string;

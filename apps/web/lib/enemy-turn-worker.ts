@@ -1,4 +1,4 @@
-import { presentedEndTurn } from '../../../packages/game/tactical.js';
+import { presentedEndTurn } from '../../../packages/game/public/game-runtime-api.ts';
 import { readBattleSnapshot } from './battle-worker-values.ts';
 
 self.onmessage = ({ data }: MessageEvent<unknown>) => {

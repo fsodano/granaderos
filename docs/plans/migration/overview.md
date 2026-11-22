@@ -297,7 +297,7 @@ tests that cover the behavior it moves.
 
 ## 8. What the series closed and what remains
 
-The five slices of [the plan](plan.md) have landed on the
+The seven slices of [the plan](plan.md) have landed on the
 `feature/clean-architecture-migration` branch. The gap status is:
 
 | Gap | State | Where |
@@ -306,6 +306,19 @@ The five slices of [the plan](plan.md) have landed on the
 | Browser composition inside React components | Closed. The two components that built a game object graph now call composition modules under `apps/web/lib`, and `tools/check-architecture.mjs` refuses an interface file that imports a game domain, application, or infrastructure module. | Slice 3 |
 | Uneven use-case contracts | Closed. Every use-case folder has a request module, a response module, a repository interface, a use-case class, and a README, and `packages/game/application/use-case-contracts.test.ts` fails when a future use case skips one. | Slice 4 |
 | The compatibility list not shrinking | Partly closed. The command alias `recruitCivic` and the eligibility query `civicStatus` are gone from the source, and the glossary records `candidateAdmission` as the canonical name. The persisted field names and the legacy prepaid claim `hiringArrivals` remain, because retiring them needs an explicit save conversion. | Slice 5 |
-| The public surface not constraining the player application | Open. `apps/web` still reaches the game by relative path, and the retained compatibility modules at the root of `packages/game` are still reachable from the interface. The interface no longer reaches past the public entries into the game layers, which is the part that a boundary rule could enforce without a build change. | Later slice |
+| The seeded random sequence outside the domain | Closed for the rule. `RandomSource` in `packages/game/domain/shared/random-source.ts` owns the sequence and produces exactly what the campaign produced before. The game session does not own it yet: the campaign snapshot's `seed` field is the state the running rules advance, and a session-held copy would be a second owner of the same sequence. | Slice 6 |
+| The public surface not constraining the player application | Closed. `packages/game/public/game-runtime-api.ts` is the surface the player application reads the game through, and `tools/check-architecture.mjs` refuses any file under `apps/web` that reaches the game package any other way. | Slice 7 |
 
-The remaining work is recorded as the open row above and in the slice notes.
+What the series did not do:
+
+- The retained compatibility modules still carry the simulation. The public
+  entry gives them one declared door, and the interface uses it, but the rules
+  themselves still live in `packages/game/tactical.js` and
+  `packages/game/campaign.js`.
+- The game session does not own the `RandomSource` or the `WorldTimeline`, and
+  the campaign snapshot's `seed` and revision fields are still the state the
+  rules advance.
+- The persisted compatibility names are still in the save format. Retiring
+  them needs an explicit conversion and its own slice.
+
+The remaining work is recorded in the slice notes.

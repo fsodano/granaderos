@@ -1,4 +1,4 @@
-import { entranceFrame } from '../../../../packages/game/building-profile.ts';
+import { entranceFrame } from '../../../../packages/game/public/game-runtime-api.ts';
 import { surfaceRectangles, subtractRectangle } from './world-climb-openings';
 import type { ClimbOpening, SurfaceRectangle } from './world-climb-openings';
 import type { WorldBuilding, WorldInput, WorldPoint } from './world-types';

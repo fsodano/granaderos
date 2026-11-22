@@ -6,16 +6,17 @@ import type {
   CampaignArtillery,
 } from '../../../packages/game/public/campaign-types.ts';
 import { useState } from 'react';
-import { stationedArtillery } from '../../../packages/game/campaign-artillery.js';
 import {
+  stationedArtillery,
   artilleryDeploymentChoices,
   artillerySelectionReason,
-} from '../../../packages/game/equipment.js';
-import { artilleryProfile } from '../../../packages/game/artillery-definitions.ts';
-import { localArtilleryDepot, depotSelection } from '../../../packages/game/artillery-depots.ts';
+  artilleryProfile,
+  localArtilleryDepot,
+  depotSelection,
+  finiteArsenalHint,
+  artilleryStorageQuote,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import { ArtilleryStorage, SendArtillery } from './ArtilleryTransport';
-import { finiteArsenalHint } from '../../../packages/game/finite-artillery-arsenals.js';
-import { artilleryStorageQuote } from '../../../packages/game/artillery-transport.js';
 import './owned-artillery.css';
 
 export function hasOwnedArtillery(state: CampaignSnapshot) {

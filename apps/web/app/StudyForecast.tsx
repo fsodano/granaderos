@@ -2,8 +2,7 @@ import type {
   CampaignOperative,
   CampaignOperativeState,
 } from '../../../packages/game/public/campaign-types.ts';
-import { studyForecast } from '../../../packages/game/study-training.js';
-import { TRAINING_LABELS } from '../../../packages/game/skill-training.js';
+import { studyForecast, TRAINING_LABELS } from '../../../packages/game/public/game-runtime-api.ts';
 export default function StudyForecast({
   record,
   op,

@@ -5,7 +5,7 @@ import saveWorkerUrl from './campaign-save-worker.ts?worker&url';
 import type { CampaignSnapshot } from '../../../packages/game/public/campaign-types.ts';
 import type { BattleSnapshot } from '../../../packages/game/public/compatibility-types.ts';
 import { useEffect, useLayoutEffect, useRef } from 'react';
-import { encodeSave } from '../../../packages/game/save.ts';
+import { encodeSave } from '../../../packages/game/public/game-runtime-api.ts';
 import { createCampaignAutosave } from './campaign-autosave.ts';
 import { BrowserSaveWriter } from './browser-save-writer.ts';
 import type { SaveStatus } from '../../../packages/game/application/get-save-status/get-save-status.response.ts';

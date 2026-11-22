@@ -2,13 +2,12 @@
 
 import type { TacticalOrder } from '../../../packages/game/public/hud-types.ts';
 
-import { formatAP } from '../../../packages/game/action-points.js';
+import { formatAP, handSlots, unitCanAct } from '../../../packages/game/public/game-runtime-api.ts';
 import type {
   BattleSnapshot,
   BattleUnit,
 } from '../../../packages/game/public/compatibility-types.ts';
 
-import { handSlots, unitCanAct } from '../../../packages/game/ja2-hud.ts';
 import { useEquipmentDrag } from '../lib/equipment-drag';
 import { sitePath } from '../lib/site-path.js';
 import './ja2-hands.css';

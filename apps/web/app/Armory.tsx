@@ -7,27 +7,25 @@ import type {
 import { sitePath } from '../lib/site-path.js';
 import { campaignFactionName } from '../lib/campaign-labels';
 import CampaignAmmunition from './CampaignAmmunition';
-import { ammunitionForWeapon } from '../../../packages/game/ammo-types.js';
-import { SendArtillery, ArtilleryStorage } from './ArtilleryTransport';
-import ArtilleryTrading from './ArtilleryTrading';
-import { localArtilleryDepot, depotSelection } from '../../../packages/game/artillery-transport.js';
-import { artilleryProfile } from '../../../packages/game/artillery-definitions.ts';
-import { artillerySupplyQuote } from '../../../packages/game/artillery-supply.js';
-import { stationedArtillery } from '../../../packages/game/campaign-artillery.js';
-import { cartridgePrice } from '../../../packages/game/campaign-rules.js';
 import {
+  ammunitionForWeapon,
+  localArtilleryDepot,
+  depotSelection,
+  artilleryProfile,
+  artillerySupplyQuote,
+  stationedArtillery,
+  cartridgePrice,
   importRulesFor,
   importPortName,
   importOrderReason,
   importDelayReason,
-} from '../../../packages/game/campaign-imports.js';
-import { weaponSpecification } from '../../../packages/game/weapon-definition.ts';
-import { tradeQuote } from '../../../packages/game/politics.js';
-import { useState } from 'react';
-import { rosterFor, isSupplied, operativeLocation } from '../../../packages/game/campaign.js';
-import { workshopServiceQuote } from '../../../packages/game/workshop-service.js';
-import { campaignPlace } from '../../../packages/game/world-cells.ts';
-import {
+  weaponSpecification,
+  tradeQuote,
+  rosterFor,
+  isSupplied,
+  operativeLocation,
+  workshopServiceQuote,
+  campaignPlace,
   artilleryDeploymentChoices,
   artillerySelectionReason,
   isImportedEquipment,
@@ -39,13 +37,16 @@ import {
   equipmentLabel,
   resaleBreakdown,
   USED_EQUIPMENT_LIMIT,
-} from '../../../packages/game/equipment.js';
+  merchantProfile,
+  operativeInTransit,
+} from '../../../packages/game/public/game-runtime-api.ts';
+import { SendArtillery, ArtilleryStorage } from './ArtilleryTransport';
+import ArtilleryTrading from './ArtilleryTrading';
+import { useState } from 'react';
 import UsedEquipment from './UsedEquipment';
 import MerchantExchange from './MerchantExchange';
 import GrenadeSupplies from './GrenadeSupplies';
-import { merchantProfile } from '../../../packages/game/merchant-preferences.ts';
 import { FittingReadout } from './JA2Bayonet';
-import { operativeInTransit } from '../../../packages/game/squads.js';
 import './armory.css';
 type Props = {
   state: CampaignSnapshot;

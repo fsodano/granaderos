@@ -1,6 +1,5 @@
 import type { ActionPreview, TacticalPointer } from './tactical-ui-types';
-import { formatAP } from '../../../packages/game/action-points.js';
-import { canChooseShotLocation } from '../../../packages/game/targeted-combat.js';
+import { formatAP, canChooseShotLocation } from '../../../packages/game/public/game-runtime-api.ts';
 import './aim-cursor.css';
 export default function AimCursor({
   point,

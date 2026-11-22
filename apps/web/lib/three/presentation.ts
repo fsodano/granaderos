@@ -9,29 +9,30 @@ import type {
 } from '../../../../packages/game/public/compatibility-types.ts';
 import type { SceneTerrain } from '../../../../packages/game/public/terrain-types.ts';
 import { required } from './required';
-import { regionalLandscape } from '../../../../packages/game/regional-terrain.js';
-import { ACTOR_ACTION_CAPABILITIES } from '../../../../packages/game/actor-action-contract.ts';
-import { spriteAppearance } from '../../../../packages/game/sprite-appearances.ts';
-import { spriteSkinTone } from '../../../../packages/game/sprite-skin.js';
-import { spriteEquipment } from '../../../../packages/game/sprite-equipment.js';
-import { handLayout } from '../../../../packages/game/hand-layout.ts';
-import { fixedBayonetFor } from '../../../../packages/game/weapon-fittings.js';
-import { wornOutfit } from '../../../../packages/game/outfits.ts';
-import { canSee, tileIllumination } from '../../../../packages/game/tactical.js';
-import { sceneWallEdges } from '../../../../packages/game/scene-wall-edges.js';
-import { relativeBodyHeight } from '../../../../packages/game/sight-geometry.js';
 import {
+  regionalLandscape,
+  ACTOR_ACTION_CAPABILITIES,
+  spriteAppearance,
+  spriteSkinTone,
+  spriteEquipment,
+  handLayout,
+  fixedBayonetFor,
+  wornOutfit,
+  canSee,
+  tileIllumination,
+  sceneWallEdges,
+  relativeBodyHeight,
   tacticalLevel,
   spaceKey,
   surfaceHeight,
   surfaceAt,
-} from '../../../../packages/game/tactical-space.js';
-import { propBlocksAt } from '../../../../packages/game/props.js';
-import { isInteriorVisible } from '../../../../packages/game/tactical-visibility.ts';
-import { actorInteriorReadable } from '../../../../packages/game/scene-readability.js';
-import { roomDressings } from '../../../../packages/game/room-dressing.js';
-import { artilleryProfile } from '../../../../packages/game/artillery-definitions.ts';
-import { groundLootPiles } from '../../../../packages/game/ja2-hud.ts';
+  propBlocksAt,
+  isInteriorVisible,
+  actorInteriorReadable,
+  roomDressings,
+  artilleryProfile,
+  groundLootPiles,
+} from '../../../../packages/game/public/game-runtime-api.ts';
 import { renderedSurfaceHeight } from '../tactical-elevation';
 import type { Motion } from '../../app/useUnitMotion';
 import { TILE_METRES, actorYaw } from './projection';

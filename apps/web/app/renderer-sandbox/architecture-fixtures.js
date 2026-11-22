@@ -2,15 +2,16 @@ import {
   wallMovementBlocked,
   wallEdgesBetween,
   wallEdgeCells,
-} from '../../../../packages/game/wall-geometry.js';
-import { BUILDING_TEMPLATES } from '../../../../packages/game/map-templates.js';
+  BUILDING_TEMPLATES,
+  compileMap,
+  entranceFrame,
+  createBattle,
+  actBattle,
+  directionTo,
+  propBlocksAt,
+  buildTerrace,
+} from '../../../../packages/game/public/game-runtime-api.ts';
 import fixtureDocuments from './generated-architecture-documents.json' with { type: 'json' };
-import { compileMap } from '../../../../packages/game/compile-map.js';
-import { entranceFrame } from '../../../../packages/game/building-profile.ts';
-import { createBattle, actBattle } from '../../../../packages/game/tactical.js';
-import { directionTo } from '../../../../packages/game/tactical-awareness.js';
-import { propBlocksAt } from '../../../../packages/game/props.js';
-import { buildTerrace } from '../../../../packages/game/buildings.js';
 
 export const ARCHITECTURE_REVIEW_TEMPLATES = Object.freeze(
   Object.entries(BUILDING_TEMPLATES).map(([id, template]) =>

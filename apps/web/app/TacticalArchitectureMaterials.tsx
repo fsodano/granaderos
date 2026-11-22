@@ -1,4 +1,4 @@
-import { BUILDING_VERTICAL_SCALE } from '../../../packages/game/building-scale.js';
+import { BUILDING_VERTICAL_SCALE } from '../../../packages/game/public/game-runtime-api.ts';
 import { sitePath } from '../lib/site-path.js';
 export const WALL_COLOURS = {
   adobe: { base: '#b49a71', trim: '#cab48e', shadow: '#776448' },

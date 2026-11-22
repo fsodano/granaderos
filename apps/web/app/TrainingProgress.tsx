@@ -1,6 +1,9 @@
 import type { CampaignOperative } from '../../../packages/game/public/campaign-types.ts';
 import type { BattleUnit } from '../../../packages/game/public/compatibility-types.ts';
-import { trainingProgress, TRAINING_LABELS } from '../../../packages/game/skill-training.js';
+import {
+  trainingProgress,
+  TRAINING_LABELS,
+} from '../../../packages/game/public/game-runtime-api.ts';
 const labels: Record<string, string> = TRAINING_LABELS;
 export default function TrainingProgress({ unit }: { unit: BattleUnit | CampaignOperative }) {
   return (

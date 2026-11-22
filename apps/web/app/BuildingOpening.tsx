@@ -1,4 +1,4 @@
-import { BUILDING_OPENINGS as O } from '../../../packages/game/building-scale.js';
+import { BUILDING_OPENINGS as O } from '../../../packages/game/public/game-runtime-api.ts';
 import type { BattleTile } from '../../../packages/game/public/compatibility-types.ts';
 
 /** Openings stay on their collision wall plane and clear a standing soldier. */

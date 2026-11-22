@@ -3,9 +3,12 @@ import type {
   NpcGiftReceipt,
 } from '../../../packages/game/public/compatibility-types.ts';
 import type { CampaignConversation } from '../../../packages/game/public/campaign-types.ts';
-import { hasAuthoredDialogue } from '../../../packages/game/npc-dialogue.ts';
-import { canSee } from '../../../packages/game/tactical.js';
-import { sameCell, tacticalLevel } from '../../../packages/game/tactical-space.js';
+import {
+  hasAuthoredDialogue,
+  canSee,
+  sameCell,
+  tacticalLevel,
+} from '../../../packages/game/public/game-runtime-api.ts';
 
 // The reducer receipt is transient. Save data owns accepted items and quest
 // progress; this model only chooses the visible response after movement ends.

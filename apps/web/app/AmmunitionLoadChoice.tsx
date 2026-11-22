@@ -5,8 +5,8 @@ import {
   ammoTypeFor,
   ammunitionChoiceReason,
   ammunitionLoadsFor,
-} from '../../../packages/game/ammo-types.js';
-import { projectileEnergyJ } from '../../../packages/game/projectile-energy.js';
+  projectileEnergyJ,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import type { CampaignOperative } from '../../../packages/game/public/campaign-types.ts';
 import type { BattleUnit } from '../../../packages/game/public/compatibility-types.ts';
 export default function AmmunitionLoadChoice({

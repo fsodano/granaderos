@@ -4,7 +4,7 @@ import {
   regionalWeatherAt,
   regionalWeatherLabel,
   campaignSeason,
-} from '../../../packages/game/regional-weather.js';
+} from '../../../packages/game/public/game-runtime-api.ts';
 import './sector-environment.css';
 
 export default function SectorEnvironment({

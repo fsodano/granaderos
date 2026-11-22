@@ -2,13 +2,15 @@
 
 import type { TacticalOrder } from '../../../packages/game/public/hud-types.ts';
 
-import { unitCanAct } from '../../../packages/game/ja2-hud.ts';
+import {
+  unitCanAct,
+  hasFirearm,
+  fixedBayonetFor,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import type {
   BattleSnapshot,
   BattleUnit,
 } from '../../../packages/game/public/compatibility-types.ts';
-import { hasFirearm } from '../../../packages/game/tactical.js';
-import { fixedBayonetFor } from '../../../packages/game/weapon-fittings.js';
 import './ja2-weapon-mode.css';
 export default function JA2WeaponMode({
   battle,

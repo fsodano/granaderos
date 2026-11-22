@@ -1,6 +1,9 @@
 import type { ReactNode } from 'react';
-import { buildingAppearance } from '../../../packages/game/building-appearance.ts';
-import { entranceFrame, getBuildingProfile } from '../../../packages/game/building-profile.ts';
+import {
+  buildingAppearance,
+  entranceFrame,
+  getBuildingProfile,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import type { BattleBuilding } from '../../../packages/game/public/compatibility-types.ts';
 import { buildingWallAtPoint, worldWallRecords } from '../lib/three/world-wall-records';
 import { Opening, wallColours } from './TacticalArchitectureMaterials';
