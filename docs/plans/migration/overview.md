@@ -297,7 +297,7 @@ tests that cover the behavior it moves.
 
 ## 8. What the series closed and what remains
 
-The eleven slices of [the plan](plan.md) have landed on the
+The thirteen slices of [the plan](plan.md) have landed on the
 `feature/clean-architecture-migration` branch. The gap status is:
 
 | Gap | State | Where |
@@ -312,13 +312,16 @@ The eleven slices of [the plan](plan.md) have landed on the
 | The versioned game model without a name | Closed. `GameSnapshot` and the content it carries are named types in `packages/game/public/game-snapshot-types.ts`, and the save envelope, the save decoder, the persistence metadata and the worker request state them. | Slice 9 |
 | A game rule outside the domain | Closed for one rule. The work a firearm is to come into firing position lives in `packages/game/domain/combat/weapon-readiness.ts` now, and `packages/game/weapon-readiness.js` is a thin re-export, the way the action-point rule already was. The numbers and the refusal message do not change, and no caller changes. | Slice 10 |
 | The saved resident post without a name | Closed. `ResidentPositionReference` is a named type in `packages/game/public/resident-position-types.ts`, and the saved field states it instead of an inline shape. No saved value changes. | Slice 11 |
+| The unarmed combat rule outside the domain | Closed. The rule that decides whether an unarmed strike lands, what it costs and how likely a weapon is to be taken lives in `packages/game/domain/combat/unarmed-combat.ts`, and the root module is a thin re-export. The numbers do not change and no caller changes. | Slice 12 |
+| The sleep need rule and its wording together | Closed for both. The rule lives in `packages/game/domain/personnel/sleep-need.ts` and receives the authored profile hours as a parameter, because domain code does not read campaign content. The Spanish sentence the medical screen shows moved to `apps/web/lib/care-labels.ts`, where the plan says a player-facing sentence belongs. | Slice 13 |
 
 What the series did not do:
 
 - The retained compatibility modules still carry the simulation. The public
-  entry gives them one declared door, and the interface uses it, but the rules
-  themselves still live in `packages/game/tactical.js` and
-  `packages/game/campaign.js`.
+  entry gives them one declared door, and the interface uses it, and three
+  rules have moved into the domain so far, but the bulk of
+  `packages/game/tactical.js` and `packages/game/campaign.js` is still
+  procedural.
 - The game session does not own the `RandomSource` or the `WorldTimeline`, and
   the campaign snapshot's `seed` and revision fields are still the state the
   rules advance.
