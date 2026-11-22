@@ -297,7 +297,7 @@ tests that cover the behavior it moves.
 
 ## 8. What the series closed and what remains
 
-The nine slices of [the plan](plan.md) have landed on the
+The eleven slices of [the plan](plan.md) have landed on the
 `feature/clean-architecture-migration` branch. The gap status is:
 
 | Gap | State | Where |
@@ -310,6 +310,8 @@ The nine slices of [the plan](plan.md) have landed on the
 | The public surface not constraining the player application | Closed. `packages/game/public/game-runtime-api.ts` is the surface the player application reads the game through, and `tools/check-architecture.mjs` refuses any file under `apps/web` that reaches the game package any other way. | Slice 7 |
 | No named compiler for the shared file contract | Closed. `CampaignCompiler` in `packages/game/application/campaign-compiler` is the application service that turns a validated `CampaignDefinition` into runtime-playable definitions, and it is the only path the game and the editor use. The architecture checker gives it one narrow exception, because reading the shared contract and the retained runtime rules is what it is for. | Slice 8 |
 | The versioned game model without a name | Closed. `GameSnapshot` and the content it carries are named types in `packages/game/public/game-snapshot-types.ts`, and the save envelope, the save decoder, the persistence metadata and the worker request state them. | Slice 9 |
+| A game rule outside the domain | Closed for one rule. The work a firearm is to come into firing position lives in `packages/game/domain/combat/weapon-readiness.ts` now, and `packages/game/weapon-readiness.js` is a thin re-export, the way the action-point rule already was. The numbers and the refusal message do not change, and no caller changes. | Slice 10 |
+| The saved resident post without a name | Closed. `ResidentPositionReference` is a named type in `packages/game/public/resident-position-types.ts`, and the saved field states it instead of an inline shape. No saved value changes. | Slice 11 |
 
 What the series did not do:
 

@@ -54,8 +54,10 @@ Out of scope for this series:
 | 7 | `migration/interface-public-entry` | The player application reaches the game through a declared public entry | 0.2.12 |
 | 8 | `migration/campaign-compiler` | The application service that is the only path from the shared file contract into the game | 0.2.13 |
 | 9 | `migration/game-snapshot` | The versioned representation of the game model has the name the glossary gives it | 0.2.14 |
+| 10 | `migration/weapon-readiness` | The rule that prepares a firearm moves into the domain | 0.2.15 |
+| 11 | `migration/resident-position-reference` | The saved resident-post projection takes the name the glossary gives it | 0.2.16 |
 
-The first five slices landed in [pull request #505](https://github.com/fsodano/granaderos/pull/505), and the next two in [pull request #506](https://github.com/fsodano/granaderos/pull/506). The last two are the third batch.
+The first five slices landed in [pull request #505](https://github.com/fsodano/granaderos/pull/505), the next two in [pull request #506](https://github.com/fsodano/granaderos/pull/506), and the two after them in [pull request #507](https://github.com/fsodano/granaderos/pull/507). The last two are the fourth batch.
 
 Each slice has its own note under [slices](slices/README.md) with the intent, the
 files it touches, the tests it adds, and how it is verified. Read the note
@@ -163,6 +165,20 @@ The versioned representation of the game model takes the name the glossary
 gives it. `GameSnapshot` and the content it carries become named types that
 `packages/game/save.ts` and the worker transport use, instead of anonymous
 literals. No save format change.
+
+### Slice 10: weapon readiness
+
+The rule that decides how much work a firearm is to bring into firing position
+moves from `packages/game/weapon-readiness.js` into
+`packages/game/domain/combat/weapon-readiness.ts`, and the root module becomes
+a thin re-export, the way `packages/game/action-points.js` already does. The
+rule and its numbers do not change, and no caller changes.
+
+### Slice 11: resident position reference
+
+The saved resident-post projection takes the name the glossary gives it,
+`ResidentPositionReference`, and the saved field states that type instead of
+an inline shape. No saved value changes.
 
 ## Branch and merge flow
 

@@ -29,6 +29,7 @@ import {
 } from '../packages/game/tactical.js';
 import { sameCell, spacePoint } from '../packages/game/tactical-space.js';
 import { syncBattleTime } from '../packages/game/time.js';
+import { residentPositionsFor } from '../packages/game/infrastructure/world/campaign-resident-positions.js';
 import { encodeSave, decodeSave } from '../packages/game/save.ts';
 import { npcRoutes } from '../packages/game/npc-ai.js';
 import { createBattle } from '../packages/game/tactical.js';
@@ -484,21 +485,62 @@ void test('saved position references reject forged positions and upgrade an olde
     assert.match(present(refused.lastError), /Resident positions/);
     assert.deepEqual({ ...refused, lastError: null }, fixture.campaign);
   }
+  type ResidentPositionReference = NonNullable<BattleSnapshot['residentPositions']>[number];
   for (const alter of [
-    (reference: NonNullable<BattleSnapshot['residentPositions']>[number]) => reference.position.x++,
-    (reference: NonNullable<BattleSnapshot['residentPositions']>[number]) =>
-      (reference.position.level = 1),
-    (reference: NonNullable<BattleSnapshot['residentPositions']>[number]) =>
-      (reference.characterId = 'character:999'),
+    (reference: ResidentPositionReference): ResidentPositionReference => ({
+      ...reference,
+      position: { ...reference.position, x: reference.position.x + 1 },
+    }),
+    (reference: ResidentPositionReference): ResidentPositionReference => ({
+      ...reference,
+      position: { ...reference.position, level: 1 },
+    }),
+    (reference: ResidentPositionReference): ResidentPositionReference => ({
+      ...reference,
+      characterId: 'character:999',
+    }),
   ]) {
     const forged = parseJsonObject(encoded),
       forgedBattle = forged['battle'];
     assert.ok(isJsonObject(forgedBattle));
-    const reference = structuredClone(present(expected[0]));
-    alter(reference);
+    const reference = alter(structuredClone(present(expected[0])));
     forgedBattle['residentPositions'] = [reference, ...expected.slice(1)];
     assert.throws(() => decodeSave(JSON.stringify(forged)), /resident position|Resident position/);
   }
+  fixture.exit();
+});
+
+void test('the resident post projection holds canonical identity and physical position only', () => {
+  const fixture = paidResidentCrew(),
+    { ids } = fixture;
+  fixture.dispatch({ type: 'selectSquad', id: fixture.homeB });
+  fixture.enter();
+  const references = residentPositionsFor(fixture.campaign, fixture.battle);
+  assert.deepEqual(
+    references.map((reference) => reference.characterId).sort(),
+    ids
+      .slice(0, 2)
+      .map((id) => `character:${id}`)
+      .sort(),
+    'Only the non-participating paid residents reserve a post.',
+  );
+  for (const reference of references) {
+    assert.deepEqual(Object.keys(reference).sort(), ['characterId', 'position']);
+    assert.deepEqual(Object.keys(reference.position).sort(), ['level', 'x', 'y']);
+    assert.match(reference.characterId, /^character:\d+$/);
+    const characterId = Number(reference.characterId.slice('character:'.length)),
+      character = present(fixture.campaign.operativeState[characterId]),
+      post = present(character.residentPosition);
+    assert.deepEqual(reference.position, {
+      x: post.x,
+      y: post.y,
+      level: post.tacticalLevel ?? 0,
+    });
+    for (const key of ['hp', 'inventory', 'id', 'side', 'participant']) {
+      assert.equal(Object.hasOwn(reference, key), false, `The projection owns no ${key} record.`);
+    }
+  }
+  assert.deepEqual(fixture.battle.residentPositions, references);
   fixture.exit();
 });
 
