@@ -60,6 +60,8 @@ Out of scope for this series:
 | 13 | `migration/sleep-need` | The sleep need rule moves into the domain and its wording into the interface | 0.2.18 |
 | 14 | `migration/held-supplies` | The held consumable rule moves into the domain | 0.2.19 |
 | 15 | `migration/projectile-energy` | The projectile energy rule moves into the domain | 0.2.20 |
+| 16 | `migration/firearm-loads` | The rule that decides which loads a firearm can use moves into the domain | 0.2.21 |
+| 17 | `migration/study-rate` | The rule that decides how fast a combatant learns moves into the domain | 0.2.22 |
 
 The first five slices landed in [pull request #505](https://github.com/fsodano/granaderos/pull/505), the next two in [pull request #506](https://github.com/fsodano/granaderos/pull/506), the two after them in [pull request #507](https://github.com/fsodano/granaderos/pull/507), and the two after those in [pull request #508](https://github.com/fsodano/granaderos/pull/508). The last two are the fifth batch.
 
@@ -211,6 +213,20 @@ The rule that turns a projectile's mass and velocity into impact moves into
 `packages/game/domain/combat/projectile-energy.ts`, next to the shot rules.
 The format check stays in the root module, because the shared file contract
 cannot be read from the domain.
+
+### Slice 16: firearm loads
+
+The rule that decides which loads a firearm may use, and how an authored
+override replaces the default, moves into
+`packages/game/domain/combat/firearm-loads.ts`, next to the firearm that
+carries them. The root module becomes a thin re-export.
+
+### Slice 17: study rate
+
+The rule that decides how much training credit a combatant earns in an hour
+moves into `packages/game/domain/personnel/study-rate.ts`, next to the
+character's abilities. The forecast of how long the next gain takes stays in
+the root module, because it reads the campaign's training tables.
 
 ## Branch and merge flow
 

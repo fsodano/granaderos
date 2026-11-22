@@ -297,7 +297,7 @@ tests that cover the behavior it moves.
 
 ## 8. What the series closed and what remains
 
-The fifteen slices of [the plan](plan.md) have landed on the
+The seventeen slices of [the plan](plan.md) have landed on the
 `feature/clean-architecture-migration` branch. The gap status is:
 
 | Gap | State | Where |
@@ -316,6 +316,8 @@ The fifteen slices of [the plan](plan.md) have landed on the
 | The sleep need rule and its wording together | Closed for both. The rule lives in `packages/game/domain/personnel/sleep-need.ts` and receives the authored profile hours as a parameter, because domain code does not read campaign content. The Spanish sentence the medical screen shows moved to `apps/web/lib/care-labels.ts`, where the plan says a player-facing sentence belongs. | Slice 13 |
 | The held consumable rule outside the domain | Closed. The rule that decides which consumable a combatant holds in hand, what it costs and how far it reaches lives in `packages/game/domain/inventory/held-supplies.ts`, next to the inventory that owns what a combatant carries, and the root module is a thin re-export. | Slice 14 |
 | The projectile energy rule outside the domain | Closed. The rule that turns a projectile's mass and velocity into impact lives in `packages/game/domain/combat/projectile-energy.ts`, next to the shot rules. The format check stays in the root module, because the shared file contract cannot be read from the domain. | Slice 15 |
+| The firearm loads rule outside the domain | Closed. The rule that decides which loads a firearm may use, and how an authored override replaces the default, lives in `packages/game/domain/combat/firearm-loads.ts`, next to the firearm that carries them, and the root module is a thin re-export. | Slice 16 |
+| The study rate rule outside the domain | Closed. The rule that decides how much training credit a combatant earns in an hour lives in `packages/game/domain/personnel/study-rate.ts`, next to the character's abilities. The forecast of how long the next gain takes stays in the root module, because it reads the campaign's training tables. | Slice 17 |
 
 What the series did not do:
 
@@ -324,10 +326,10 @@ What the series did not do:
   rules have moved into the domain so far, but the bulk of
   `packages/game/tactical.js` and `packages/game/campaign.js` is still
   procedural. The rules that moved are the firearm preparation rule, the
-  unarmed combat rule, the sleep need rule, the held consumable rule and the
-  projectile energy rule; each of them keeps its root module as a thin
-  re-export, and each has a parity test that pins the numbers it produced
-  before the move.
+  unarmed combat rule, the sleep need rule, the held consumable rule, the
+  projectile energy rule, the firearm loads rule and the study rate rule;
+  each of them keeps its root module as a thin re-export, and each has a
+  parity test that pins the numbers it produced before the move.
 - The game session does not own the `RandomSource` or the `WorldTimeline`, and
   the campaign snapshot's `seed` and revision fields are still the state the
   rules advance.
