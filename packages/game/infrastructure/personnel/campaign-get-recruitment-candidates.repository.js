@@ -5,7 +5,7 @@ import {
 import { RecruitmentCatalogue } from '../../domain/personnel/recruitment-catalogue.ts';
 import { contractQuote } from '../../contracts.js';
 import { pendingHire } from '../../hiring-arrivals.js';
-import { civicStatus } from '../../recruitment.ts';
+import { candidateAdmission } from '../../recruitment.ts';
 import { CanonicalPersonnelMapper } from '../persistence/canonical-personnel-mapper.ts';
 import { DomainIdentityMap } from '../persistence/domain-identity-map.ts';
 export class CampaignGetRecruitmentCandidatesRepository {
@@ -57,7 +57,7 @@ export class CampaignGetRecruitmentCandidatesRepository {
     if (condition?.captured) {
       return RecruitmentAvailability.Captured;
     }
-    if (!quote.available || !civicStatus(this.#campaign, characterId).available) {
+    if (!quote.available || !candidateAdmission(this.#campaign, characterId).available) {
       return RecruitmentAvailability.Unavailable;
     }
     return RecruitmentAvailability.Available;

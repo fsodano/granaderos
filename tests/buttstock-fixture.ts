@@ -20,7 +20,7 @@ export function buttstockField({ stock = {} }: { stock?: Partial<WeaponDefinitio
     arrivalHours: 0,
     blade: 'blade-1809',
   });
-  let campaign = order(initialCampaign(45, d), { type: 'recruitCivic', id: 110, term: 'week' });
+  let campaign = order(initialCampaign(45, d), { type: 'recruitCombatant', id: 110, term: 'week' });
   campaign = fightOnArrival(order(campaign, { type: 'attack', sector: 'buenos_aires' }));
   const request = present(campaign.pendingBattle),
     enemies = enterSector(request).units.filter((u) => u.side === 'enemy');

@@ -6,7 +6,7 @@ import { createElement as h, act, useState, useEffect } from 'react';
 import { renderToStaticMarkup as render } from 'react-dom/server';
 import { JSDOM } from 'jsdom';
 import { initialCampaign } from './legacy-campaign-fixture.ts';
-import { dispatchCampaign, rosterFor, civicStatus } from '../packages/game/campaign.js';
+import { dispatchCampaign, rosterFor, candidateAdmission } from '../packages/game/campaign.js';
 import { encodeSave, decodeSave } from '../packages/game/save.ts';
 import {
   strategicSquadSlots,
@@ -76,7 +76,7 @@ void test('recruitment shows immediate availability only for eligible candidates
   const before = structuredClone(state),
     quote = contractQuote(state, present(rosterFor(state).find((op) => op.id === id)));
   assert.equal(quote.available, true);
-  assert.equal(civicStatus(state, id).available, false);
+  assert.equal(candidateAdmission(state, id).available, false);
   const doc = new JSDOM(render(h(Recruitment, { state, dispatch: noop }))).window.document,
     card = present(doc.querySelector<HTMLElement>(`[data-operative-id="${id}"]`)),
     button = present(card.querySelector<HTMLButtonElement>('.gold-button'));
@@ -84,7 +84,7 @@ void test('recruitment shows immediate availability only for eligible candidates
   assert.equal(button.textContent, 'En cautiverio');
   const reason = present(doc.getElementById(present(button.getAttribute('aria-describedby'))));
   assert.ok(card.contains(reason));
-  assert.equal(reason.textContent, civicStatus(state, id).reason);
+  assert.equal(reason.textContent, candidateAdmission(state, id).reason);
   assert.match(present(reason.textContent), /cautivo/);
   assert.doesNotMatch(card.textContent, /Disponible de inmediato/);
   assert.deepEqual(state, before);
@@ -96,7 +96,7 @@ void test('recruitment shows immediate availability only for eligible candidates
       .document,
     control = present(controlDoc.querySelector<HTMLElement>(`[data-operative-id="${id}"]`)),
     hire = present(control.querySelector<HTMLButtonElement>('.gold-button'));
-  assert.equal(civicStatus(available, id).available, true);
+  assert.equal(candidateAdmission(available, id).available, true);
   assert.equal(hire.disabled, false);
   assert.equal(hire.textContent, `Reclutar · ${quote.total} pesos`);
   assert.match(present(control.textContent), /Disponible de inmediato/);
@@ -111,7 +111,7 @@ void test('recruitment shows immediate availability only for eligible candidates
       .document,
     fallenCard = present(fallenDoc.querySelector<HTMLElement>(`[data-operative-id="${id}"]`)),
     fallenButton = present(fallenCard.querySelector<HTMLButtonElement>('.gold-button'));
-  assert.equal(civicStatus(fallen, id).available, false);
+  assert.equal(candidateAdmission(fallen, id).available, false);
   assert.equal(fallenButton.disabled, true);
   assert.equal(fallenButton.textContent, 'Caído en combate');
   assert.ok(
@@ -808,7 +808,7 @@ void test('assignment preserves saved squad labels and a vacant numbered slot fo
 
 void test('the contract menu renews with the displayed exact second deadline and charges the current quote', async (t) => {
   let state = order(initialCampaign(), { type: 'advanceStrategicTime', seconds: 121 });
-  state = order(state, { type: 'recruitCivic', id: 103, term: 'day' });
+  state = order(state, { type: 'recruitCombatant', id: 103, term: 'day' });
   state = decodeSave(encodeSave(state)).campaign;
   const quote = contractQuote(state, present(rosterFor(state).find((op) => op.id === 103)), 'day'),
     m = await mountMenu(t, state, 103, 'contract');

@@ -1,6 +1,6 @@
 import { CampaignRuleRefusal } from '../shared/campaign-rule-refusal.ts';
 import { DomainRefusal, DomainRefusalCode } from '../../domain/shared/domain-refusal.ts';
-import { rosterFor, civicStatus } from '../../recruitment.ts';
+import { rosterFor, candidateAdmission } from '../../recruitment.ts';
 import { hiringArrivalOptions } from '../../hiring-arrivals.js';
 import {
   CampaignRecruitmentMapper,
@@ -22,7 +22,7 @@ export class CampaignRecruitCombatantRepository {
   load(request) {
     const campaign = this.#transaction.draft;
     const candidateId = Number(request.characterId);
-    const eligibility = civicStatus(campaign, candidateId);
+    const eligibility = candidateAdmission(campaign, candidateId);
     if (!eligibility.available) {
       throw new CampaignRuleRefusal(DomainRefusalCode.CandidateIneligible, eligibility.reason);
     }

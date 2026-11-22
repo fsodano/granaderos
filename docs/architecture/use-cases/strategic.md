@@ -184,7 +184,6 @@ The table below accounts for every `Exact action type` recognized by `dispatchCa
 | `repairWeapon` | Preflight trade guard rejects paid weapon repair | `Refused` |
 | `createOfficer` | STR-002 (create player commander) | `Gated` |
 | `recruitCombatant` | STR-003 (`RecruitCombatantUseCase`) | `Gated` |
-| `recruitCivic` | STR-003 (compatibility alias routed to `RecruitCombatantUseCase`) | `Gated` |
 | `redirectHire` | STR-004 (redirect legacy prepaid arrival claim) | `Gated` |
 | `cancelHireArrival` | STR-004 (cancel legacy prepaid arrival claim) | `Gated` |
 | `recruit` | Legacy action rejected; local recruitment requires personal conversation (`TalkToCharacter`) | `Refused` |

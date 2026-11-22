@@ -11,7 +11,7 @@ import {
   rosterFor,
   contractQuote,
   contractStatus,
-  civicStatus,
+  candidateAdmission,
 } from '../../../packages/game/campaign.js';
 import {
   hiringArrivalOptions,
@@ -195,7 +195,7 @@ export default function Recruitment({ state: s, dispatch }: Props) {
           const cancellationReason = arrival ? hireCancellationReason(s, o.id) : null,
             departureReason = hired ? guaranteeDepartureReason(s, contract, o) : null;
           const hireReason = !hired ? hiringRouteReason : null;
-          const admission = !hired ? civicStatus(s, o.id) : null,
+          const admission = !hired ? candidateAdmission(s, o.id) : null,
             captive = !hired && record?.alive !== false && record?.captured;
           const captivityReason = captive ? admission?.reason : null,
             hireDescription =

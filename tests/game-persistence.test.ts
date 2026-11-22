@@ -20,7 +20,7 @@ import {
 
 function recruited() {
   const campaign = dispatchCampaign(initialCampaign(12), {
-    type: 'recruitCivic',
+    type: 'recruitCombatant',
     id: 110,
     term: 'week',
   });

@@ -438,12 +438,7 @@ import { FITTING_RULES_VERSION } from './weapon-fittings.js';
 import { hasWorkshop } from './campaign-headquarters.js';
 import { TRANSPORT_NETWORKS } from './transport-network.js';
 import { oppositionFor, campaignEnemyCount } from './narrative.js';
-import {
-  rosterFor as baseRosterFor,
-  CIVIC_RECRUITS,
-  civicStatus as baseCivicStatus,
-  createOfficerRecord,
-} from './recruitment.ts';
+import { rosterFor as baseRosterFor, CIVIC_RECRUITS, createOfficerRecord } from './recruitment.ts';
 import { campaignOfficerCreation, officerStartingFitting } from './campaign-officer-creation.ts';
 import { validateOfficerCreationHealth } from './character-profile.ts';
 import { OPERATIVES, WEAPONS, CAMPAIGN_SECTORS, FACTIONS, PHASES, RESOURCE_NAMES } from './data.js';
@@ -487,10 +482,7 @@ export { activeSquad, operativeLocation } from './squads.js';
 export { TRANSPORT_OPTIONS, transferOptions, inventoryAt, cargoWeight } from './logistics.js';
 export { EQUIPMENT_CATALOG, armoryInventory, refillCost, firearmRepairCost } from './equipment.js';
 export { ROYALIST_COMMANDS, royalistIntel, mentorDispatch } from './narrative.js';
-export { CIVIC_RECRUITS } from './recruitment.ts';
-export function civicStatus(s, id) {
-  return baseCivicStatus(s, id);
-}
+export { CIVIC_RECRUITS, candidateAdmission } from './recruitment.ts';
 export { OPERATIVES, WEAPONS, CAMPAIGN_SECTORS, FACTIONS, PHASES, RESOURCE_NAMES };
 /** @param {import('./public/campaign-types.ts').CampaignSnapshot} s @returns {import('./public/campaign-types.ts').CampaignOperative[]} */
 export function rosterFor(s) {
@@ -2656,7 +2648,7 @@ export function dispatchCampaign(previous, action) {
         'El combatiente está en camino. Esperá su llegada.',
       );
     }
-    if (['squad', 'recruitCombatant', 'recruitCivic', 'createOfficer'].includes(action.type)) {
+    if (['squad', 'recruitCombatant', 'createOfficer'].includes(action.type)) {
       const reason = squadReorganizationReason(s);
       requireThat(!reason, reason);
     }
@@ -3318,8 +3310,7 @@ export function dispatchCampaign(previous, action) {
         note(s, `${op.name} ${campaignOfficerCreation(s).commission.statusText}`);
         break;
       }
-      case 'recruitCombatant':
-      case 'recruitCivic': {
+      case 'recruitCombatant': {
         const request = {
           characterId: String(action.characterId ?? action.id),
           term: action.term ?? 'day',

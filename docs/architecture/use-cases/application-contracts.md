@@ -52,7 +52,7 @@ The table below breaks down each `Contract part` and its `Responsibility` for [`
 | Repository (`RecruitCombatantRepository`) | [`CampaignRecruitCombatantRepository`](../../../packages/game/infrastructure/personnel/campaign-recruit-combatant.repository.js) loads and commits over `GameUnitOfWork` and `CanonicalPersonnelMapper` |
 | Persistence | Accepted commit advances `gameRevision` once; `useCampaignAutosave` queues `SaveGame` and tracks storage status separately via `GetSaveStatus` |
 
-When recruitment happens inside a local conversation, [`TalkToCharacterUseCase`](../../../packages/game/application/talk-to-character/talk-to-character.use-case.ts) invokes the same `RecruitmentService` inside its own transaction (`TalkToCharacterRepository`), preserving the resident's existing `Health` and `Inventory` at the current sector without running a second independent commit. The compatibility command alias `recruitCivic` routes to `RecruitCombatantUseCase`.
+When recruitment happens inside a local conversation, [`TalkToCharacterUseCase`](../../../packages/game/application/talk-to-character/talk-to-character.use-case.ts) invokes the same `RecruitmentService` inside its own transaction (`TalkToCharacterRepository`), preserving the resident's existing `Health` and `Inventory` at the current sector without running a second independent commit.
 
 `Character` is the sole owner of `Health` and immutable `CharacterAbilities` (0–100 `CharacterRating` values, `CharacterTrait` specialties, and `CharacterCapability` rule identifiers). `CampaignCharacterAbilitiesMapper` derives `CharacterAbilities` from the pinned character definition and earned training progress without duplicating ownership in read models or recruitment candidate projections.
 
