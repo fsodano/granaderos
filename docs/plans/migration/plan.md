@@ -35,6 +35,10 @@ Out of scope for this series:
 - The retained compatibility modules themselves. `packages/game/tactical.js`
   and `packages/game/campaign.js` still carry the simulation; the migration
   moves the boundaries around them, and later slices move their rules.
+- The player application's package-level dependency on the game package. The
+  interface no longer reaches past the public entries into the game layers,
+  but making `apps/web` depend on `@granaderos/game` changes how the build
+  resolves the game and needs its own slice.
 - Editor and campaign format work. Both already meet the accepted plan.
 
 ## Slice sequence
@@ -42,14 +46,20 @@ Out of scope for this series:
 | Slice | Branch | Intent | Version after merge |
 | --- | --- | --- | --- |
 | 1 | `migration/plan-and-orientation` | Record the orientation, the gap analysis, and this plan | 0.2.6 |
-| 2 | `migration/canonical-transaction` | One transaction mechanism, with the revision domain named by its caller | 0.2.7 |
+| 2 | `migration/canonical-transaction` | One revision policy, with the revision domain named by its caller | 0.2.7 |
 | 3 | `migration/browser-composition` | Composition moves out of React components into `apps/web/lib`, and the checker keeps it there | 0.2.8 |
 | 4 | `migration/use-case-contracts` | Uniform use-case contracts across the application layer | 0.2.9 |
 | 5 | `migration/compatibility-aliases` | The first compatibility names leave the source | 0.2.10 |
 
-Each slice has its own note under [slices](slices/README.md) with the intent,
-the files it touches, the tests it adds, and how it is verified. Read the note
+All five slices have landed on `feature/clean-architecture-migration`. Each
+slice has its own note under [slices](slices/README.md) with the intent, the
+files it touches, the tests it adds, and how it is verified. Read the note
 before starting the slice.
+
+The survey that opened the series found that the use cases were already wired
+and that the domain layer was already clean, so the sequence spends its effort
+on the boundaries that were not: the revision policy, the composition layer,
+the contract shape, and the compatibility list.
 
 ### Slice 1: plan and orientation
 
@@ -59,15 +69,21 @@ session can resume the migration without re-deriving the survey.
 
 ### Slice 2: canonical transaction
 
-`GameUnitOfWork` becomes the only transaction mechanism. It gains a named
-revision accessor so a caller can state which revision field its transaction
-guards, instead of reimplementing the conflict rule. `CampaignJourneyTransaction`
-and `SectorOperationTransaction` are re-expressed on top of it and keep their
-existing revision domains, their existing commit semantics, and their existing
-refusal codes.
+The infrastructure ends up with one implementation of the revision policy:
+what a valid revision is, what a conflict is, and how a revision advances.
+`packages/game/infrastructure/shared/revision-policy.ts` holds it, and it names
+the revision domains the adapters protect. `GameUnitOfWork` takes the domain
+it guards instead of assuming `gameRevision`, and the journey, sector, and
+reinforcement adapters use the same policy instead of carrying their own copies
+of the rules.
 
-The slice adds tests for the shared revision policy and keeps the existing
-sector and journey behavior tests green.
+The three revision fields stay separate: `gameRevision`, `journeyRevision`,
+and `sectorRevision` are different fields in the persisted snapshot, and
+merging them would change the save format. The slice removes the duplication
+of the policy, not the fields.
+
+The slice adds tests for the shared policy and keeps the existing sector and
+journey behavior tests green.
 
 ### Slice 3: browser composition
 

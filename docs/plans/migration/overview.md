@@ -178,6 +178,9 @@ entry points reach editor code.
 
 ## 5. The gaps this migration closes
 
+Each gap below states the state the survey found. The closing status of each
+one is in [section 8](#8-what-the-series-closed-and-what-remains).
+
 ### Gap 1: three transaction mechanisms where the plan names one
 
 The accepted plan states that shared infrastructure handles identity,
@@ -291,3 +294,18 @@ audits), and `npm run verify` (the push profile plus the production build).
 
 Each slice in [the plan](plan.md) must leave that suite green and must add the
 tests that cover the behavior it moves.
+
+## 8. What the series closed and what remains
+
+The five slices of [the plan](plan.md) have landed on the
+`feature/clean-architecture-migration` branch. The gap status is:
+
+| Gap | State | Where |
+| --- | --- | --- |
+| Three transaction mechanisms | Closed for the revision policy. One policy in `packages/game/infrastructure/shared/revision-policy.ts` now decides what a valid revision is, what a conflict is, and how a revision advances. `GameUnitOfWork` names the revision field it guards. The three revision fields stay separate: `gameRevision`, `journeyRevision`, and `sectorRevision` are different fields in the persisted snapshot, and merging them would change the save format. | Slice 2 |
+| Browser composition inside React components | Closed. The two components that built a game object graph now call composition modules under `apps/web/lib`, and `tools/check-architecture.mjs` refuses an interface file that imports a game domain, application, or infrastructure module. | Slice 3 |
+| Uneven use-case contracts | Closed. Every use-case folder has a request module, a response module, a repository interface, a use-case class, and a README, and `packages/game/application/use-case-contracts.test.ts` fails when a future use case skips one. | Slice 4 |
+| The compatibility list not shrinking | Partly closed. The command alias `recruitCivic` and the eligibility query `civicStatus` are gone from the source, and the glossary records `candidateAdmission` as the canonical name. The persisted field names and the legacy prepaid claim `hiringArrivals` remain, because retiring them needs an explicit save conversion. | Slice 5 |
+| The public surface not constraining the player application | Open. `apps/web` still reaches the game by relative path, and the retained compatibility modules at the root of `packages/game` are still reachable from the interface. The interface no longer reaches past the public entries into the game layers, which is the part that a boundary rule could enforce without a build change. | Later slice |
+
+The remaining work is recorded as the open row above and in the slice notes.
