@@ -1,7 +1,7 @@
 import type { CampaignSnapshot, CampaignAction } from '../packages/game/public/campaign-types.ts';
 import { parseJsonObject, isJsonObject } from '../packages/campaign-format/json-value.ts';
 import type { CharacterDefinition } from '../packages/campaign-format/types.ts';
-import type { SavedGame } from '../packages/game/save.ts';
+import type { GameSnapshotContent } from '../packages/game/public/game-snapshot-types.ts';
 import type {
   BattleSnapshot,
   BattleUnit,
@@ -42,7 +42,7 @@ const campaignClock = (c: CampaignSnapshot) => c.hour * 3600 + (c.secondOfHour ?
 const pairedSave = (pair: {
   campaign: CampaignSnapshot;
   battle?: BattleSnapshot | null;
-}): SavedGame => decodeSave(encodeSave(pair.campaign, pair.battle ?? null));
+}): GameSnapshotContent => decodeSave(encodeSave(pair.campaign, pair.battle ?? null));
 const actor = (battle: BattleSnapshot | null | undefined, id: string | number) =>
   present(present(battle).units.find((unit) => unit.id === String(id)));
 const resident = (battle: BattleSnapshot | null | undefined) =>

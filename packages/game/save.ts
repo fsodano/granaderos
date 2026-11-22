@@ -1,11 +1,7 @@
 import type { CampaignSnapshot } from './public/campaign-types.ts';
 import type { BattleSnapshot } from './public/compatibility-types.ts';
+import type { GameSnapshot, GameSnapshotContent } from './public/game-snapshot-types.ts';
 import { isJsonObject, parseJsonObject } from '../campaign-format/json-value.ts';
-
-export interface SavedGame {
-  campaign: CampaignSnapshot;
-  battle: BattleSnapshot | null;
-}
 import { validateSuspendedSectorSessions } from './infrastructure/session/validate-suspended-sector-sessions.js';
 import {
   refreshResidentPositions,
@@ -66,17 +62,16 @@ export function encodeSave(
     campaign,
     cellSceneSaveReplacer(artillerySaveReplacer(campaign, weaponSaveReplacer(campaign)), campaign),
   );
-  const text = JSON.stringify(
-      {
-        format: 'granaderos',
-        schema: 1,
-        savedAt: new Date().toISOString(),
-        mapping: gameSaveMetadata(campaign),
-        campaign,
-        battle,
-      },
-      replacer,
-    ),
+  const mapping = gameSaveMetadata(campaign);
+  const snapshot: GameSnapshot = {
+    format: 'granaderos',
+    schema: 1,
+    savedAt: new Date().toISOString(),
+    ...(mapping === undefined ? {} : { mapping }),
+    campaign,
+    battle,
+  };
+  const text = JSON.stringify(snapshot, replacer),
     bytes = saveByteLength(text);
   if (bytes < 1_000_000) {
     return assertSaveSize(text);
@@ -90,10 +85,10 @@ export function encodeSave(
   }
   return assertSaveSize(JSON.stringify(value));
 }
-export function decodeSave(text: string): SavedGame {
+export function decodeSave(text: string): GameSnapshotContent {
   return decodeGameSave(text, true);
 }
-function decodeGameSave(text: string, validateOpenVisits: boolean): SavedGame {
+function decodeGameSave(text: string, validateOpenVisits: boolean): GameSnapshotContent {
   assertSaveSize(text);
   let value;
   try {

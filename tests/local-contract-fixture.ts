@@ -1,7 +1,7 @@
 import type { CampaignSnapshot, CampaignAction } from '../packages/game/public/campaign-types.ts';
 import type { BattleSnapshot } from '../packages/game/public/compatibility-types.ts';
 import type { TacticalOrder } from '../packages/game/public/hud-types.ts';
-import type { SavedGame } from '../packages/game/save.ts';
+import type { GameSnapshotContent } from '../packages/game/public/game-snapshot-types.ts';
 import type { CharacterDefinition } from '../packages/campaign-format/types.ts';
 export interface ActiveGame {
   campaign: CampaignSnapshot;
@@ -33,11 +33,14 @@ export const order = (s: CampaignSnapshot, a: CampaignAction) => {
 };
 let currentQAExportSequence = 0;
 export function saved(p: ActiveGame): ActiveGame;
-export function saved(p: { campaign: CampaignSnapshot; battle?: BattleSnapshot | null }): SavedGame;
 export function saved(p: {
   campaign: CampaignSnapshot;
   battle?: BattleSnapshot | null;
-}): SavedGame {
+}): GameSnapshotContent;
+export function saved(p: {
+  campaign: CampaignSnapshot;
+  battle?: BattleSnapshot | null;
+}): GameSnapshotContent {
   const encoded = encodeSave(p.campaign, p.battle ?? null),
     restored = decodeSave(encoded);
   const requested = process.env['GRANADEROS_CURRENT_QA_EXPORT_DIR'];
