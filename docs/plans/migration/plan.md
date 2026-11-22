@@ -66,6 +66,8 @@ Out of scope for this series:
 | 19 | `migration/firearm-serviceability` | The rule that decides whether a firearm is usable moves into the domain | 0.2.24 |
 | 20 | `migration/kinetic-impact` | The rule that turns a launch into the impact it lands with moves into the domain | 0.2.25 |
 | 21 | `migration/combat-balance` | The combat tuning table and the cover and penetration damage rules move into the domain | 0.2.26 |
+| 22 | `migration/combat-journal` | The rules that decide what the public combat journal may contain move into the domain | 0.2.27 |
+| 23 | `migration/fatigue` | The fatigue and energy rules move into the domain, next to the character's condition | 0.2.28 |
 
 The first five slices landed in [pull request #505](https://github.com/fsodano/granaderos/pull/505), the next two in [pull request #506](https://github.com/fsodano/granaderos/pull/506), the two after them in [pull request #507](https://github.com/fsodano/granaderos/pull/507), and the two after those in [pull request #508](https://github.com/fsodano/granaderos/pull/508). The last two are the fifth batch.
 
@@ -258,6 +260,20 @@ The combat tuning table and the cover and penetration damage rules move into
 this kind of tuning in `HealthRules`, `ActionPointRules` and `IgnitionRules`,
 and the action point policy is now given its penalties from the domain's own
 table.
+
+### Slice 22: combat journal
+
+The rules that decide what the public combat journal may contain move into
+`packages/game/domain/combat/combat-journal.ts`. The root module becomes a
+thin re-export.
+
+### Slice 23: fatigue and energy
+
+The rules of a combatant's stamina move into
+`packages/game/domain/personnel/fatigue.ts`, next to the character's
+condition. The domain holds the pure part, and the four functions that change
+a combatant stay in the root module and call it, so the domain stays a pure
+function of its inputs.
 
 ## Branch and merge flow
 
