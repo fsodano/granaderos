@@ -17,10 +17,21 @@
       "severity": "error",
       "from": {
         "path": "^packages/game/application/",
-        "pathNot": "\\.test\\.|/tests/"
+        "pathNot": "\\.test\\.|/tests/|^packages/game/application/campaign-compiler/"
       },
       "to": {
         "pathNot": "^packages/game/(domain|application)/"
+      }
+    },
+    {
+      "name": "campaign-compiler-bridges-the-shared-format",
+      "severity": "error",
+      "from": {
+        "path": "^packages/game/application/campaign-compiler/",
+        "pathNot": "\\.test\\.|/tests/"
+      },
+      "to": {
+        "pathNot": "^(packages/game/(domain|application)/|packages/game/[^/]+\\.(js|ts)|packages/campaign-format/)"
       }
     },
     {

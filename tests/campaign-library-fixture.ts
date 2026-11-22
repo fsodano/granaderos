@@ -15,8 +15,8 @@ import type {
   CampaignManifest,
   PhysicalMap,
 } from '../packages/campaign-format/types.ts';
-import type { CampaignEntry } from '../apps/web/lib/campaign-library.ts';
 
+type CampaignEntry = { id: string; name: string; revision: string; manifest: string };
 type Registry = { format: string; version: number; campaigns: CampaignEntry[] };
 export type CampaignFixtureDocuments = Map<string, unknown>;
 function assertRegistry(value: unknown): asserts value is Registry {

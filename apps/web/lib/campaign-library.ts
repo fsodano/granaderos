@@ -8,10 +8,10 @@ import { parseJsonObject } from '../../../packages/campaign-format/json-value.ts
 import type { CampaignContext } from '../../../packages/game/public/compatibility-types.ts';
 import {
   campaignRelativePath,
-  compileCampaignPackage,
   validateCampaignManifest,
   validateCampaignRegistry,
 } from '../../../packages/game/public/game-runtime-api.ts';
+import { createCampaignCompiler } from '../../../packages/game/public/campaign-compiler-api.ts';
 import { sitePath } from './site-path.js';
 
 export type CampaignEntry = {
@@ -167,12 +167,9 @@ export async function loadInstalledCampaign(
     }
     maps[id] = map;
   }
-  const resolved: CampaignContent = compileCampaignPackage(manifest, {
-    content,
-    world,
-    maps,
-    presentation,
-    assets,
+  const resolved: CampaignContent = createCampaignCompiler().execute({
+    manifest,
+    documents: { content, world, maps, presentation, assets },
   });
   if (!resolved.presentation) {
     throw Error('Falta la presentación de la campaña.');

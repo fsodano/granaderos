@@ -13,7 +13,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { initialCampaign, dispatchCampaign } from '../packages/game/campaign.js';
 import { scaffoldDocuments } from '../apps/campaign-editor/infrastructure/project-scaffold.ts';
-import { compileCampaignPackage } from '../packages/game/campaign-library.js';
+import { createCampaignCompiler } from '../packages/game/public/campaign-compiler-api.ts';
 import { operativeIdForCharacter } from '../packages/game/content-character-ids.ts';
 import { contractQuote, contractExpiresSeconds } from '../packages/game/contracts.js';
 import { rosterFor } from '../packages/game/campaign.js';
@@ -149,12 +149,15 @@ function occupancyContent() {
     pieces: [{ id: OCCUPANCY_GUN, type: 'bronze4', side: 'player', loaded: true, ammo: 2 }],
   };
   const declared = structuredClone(documents),
-    content = compileCampaignPackage(documents.manifest, {
-      content: documents.content,
-      world: documents.world,
-      maps: documents.maps,
-      presentation: documents.presentation,
-      assets: documents.assets,
+    content = createCampaignCompiler().execute({
+      manifest: documents.manifest,
+      documents: {
+        content: documents.content,
+        world: documents.world,
+        maps: documents.maps,
+        presentation: documents.presentation,
+        assets: documents.assets,
+      },
     });
   assert.deepEqual(documents, declared);
   return content;
