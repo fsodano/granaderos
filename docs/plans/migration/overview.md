@@ -297,7 +297,7 @@ tests that cover the behavior it moves.
 
 ## 8. What the series closed and what remains
 
-The nineteen slices of [the plan](plan.md) have landed on the
+The twenty-one slices of [the plan](plan.md) have landed on the
 `feature/clean-architecture-migration` branch. The gap status is:
 
 | Gap | State | Where |
@@ -320,6 +320,8 @@ The nineteen slices of [the plan](plan.md) have landed on the
 | The study rate rule outside the domain | Closed. The rule that decides how much training credit a combatant earns in an hour lives in `packages/game/domain/personnel/study-rate.ts`, next to the character's abilities. The forecast of how long the next gain takes stays in the root module, because it reads the campaign's training tables. | Slice 17 |
 | The route queue outside the domain | Closed. The stable minimum-cost queue that finds a route lives in `packages/game/domain/journeys/route-queue.ts`, next to the journey route planner that uses it, and the root module is a thin re-export. A test pushes equal-cost cells in the reverse of the order it expects them out, so a queue that lost the stable tie-break would fail. | Slice 18 |
 | The firearm serviceability rule outside the domain | Closed. The rule that decides whether a firearm is still usable lives in `packages/game/domain/combat/firearm-serviceability.ts`, next to the firearm that owns its condition, and the root module is a thin re-export. | Slice 19 |
+| The kinetic impact rule outside the domain | Closed. The rule that turns a launch into the impact it lands with lives in `packages/game/domain/combat/kinetic-impact.ts`, beside the launch it comes from. The root module keeps the format check, because the domain may not read the shared file contract. | Slice 20 |
+| The combat tuning outside the domain | Closed. The tuning table and the cover and penetration damage rules live in `packages/game/domain/combat/combat-balance.ts`, beside the other tuning the domain holds, and the action point policy is now given its penalties from the domain's own table. | Slice 21 |
 
 What the series did not do:
 
@@ -330,9 +332,10 @@ What the series did not do:
   procedural. The rules that moved are the firearm preparation rule, the
   unarmed combat rule, the sleep need rule, the held consumable rule, the
   projectile energy rule, the firearm loads rule, the study rate rule, the
-  route queue and the firearm serviceability rule; each of them keeps its
-  root module as a thin re-export, and each has a parity test that pins the
-  numbers it produced before the move.
+  route queue, the firearm serviceability rule, the kinetic impact rule and
+  the combat tuning; each of them keeps its root module as a thin re-export,
+  and each has a parity test that pins the numbers it produced before the
+  move.
 - The game session does not own the `RandomSource` or the `WorldTimeline`, and
   the campaign snapshot's `seed` and revision fields are still the state the
   rules advance.

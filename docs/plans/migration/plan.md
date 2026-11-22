@@ -64,6 +64,8 @@ Out of scope for this series:
 | 17 | `migration/study-rate` | The rule that decides how fast a combatant learns moves into the domain | 0.2.22 |
 | 18 | `migration/route-queue` | The queue that finds the cheapest route moves into the domain | 0.2.23 |
 | 19 | `migration/firearm-serviceability` | The rule that decides whether a firearm is usable moves into the domain | 0.2.24 |
+| 20 | `migration/kinetic-impact` | The rule that turns a launch into the impact it lands with moves into the domain | 0.2.25 |
+| 21 | `migration/combat-balance` | The combat tuning table and the cover and penetration damage rules move into the domain | 0.2.26 |
 
 The first five slices landed in [pull request #505](https://github.com/fsodano/granaderos/pull/505), the next two in [pull request #506](https://github.com/fsodano/granaderos/pull/506), the two after them in [pull request #507](https://github.com/fsodano/granaderos/pull/507), and the two after those in [pull request #508](https://github.com/fsodano/granaderos/pull/508). The last two are the fifth batch.
 
@@ -241,6 +243,21 @@ planner that uses it. The root module becomes a thin re-export.
 The rule that decides whether a firearm is still usable moves into
 `packages/game/domain/combat/firearm-serviceability.ts`, next to the firearm
 that owns its condition. The root module becomes a thin re-export.
+
+### Slice 20: kinetic impact
+
+The rule that turns a projectile's launch into the impact it lands with moves
+into `packages/game/domain/combat/kinetic-impact.ts`, beside the launch it
+comes from. The root module keeps the format check, because the domain may
+not read the shared file contract.
+
+### Slice 21: combat balance
+
+The combat tuning table and the cover and penetration damage rules move into
+`packages/game/domain/combat/combat-balance.ts`. The domain already holds
+this kind of tuning in `HealthRules`, `ActionPointRules` and `IgnitionRules`,
+and the action point policy is now given its penalties from the domain's own
+table.
 
 ## Branch and merge flow
 

@@ -28,6 +28,8 @@ the diff.
 | [17. Study rate](17-study-rate.md) | `migration/study-rate` | landed | 0.2.22 |
 | [18. Route queue](18-route-queue.md) | `migration/route-queue` | landed | 0.2.23 |
 | [19. Firearm serviceability](19-firearm-serviceability.md) | `migration/firearm-serviceability` | landed | 0.2.24 |
+| [20. Kinetic impact](20-kinetic-impact.md) | `migration/kinetic-impact` | landed | 0.2.25 |
+| [21. Combat balance](21-combat-balance.md) | `migration/combat-balance` | landed | 0.2.26 |
 
 A slice moves from planned to in progress when its branch is created, and to
 landed when it is merged into `feature/clean-architecture-migration` and its
@@ -60,9 +62,9 @@ branch is deleted.
 - The rule that prepares a firearm for firing lives in the domain, and the
   root module is a thin re-export of it.
 - The saved resident post has the name `ResidentPositionReference`.
-- Nine game rules have moved into the domain: the firearm preparation rule,
+- Eleven game rules have moved into the domain: the firearm preparation rule,
   the unarmed combat rule, the sleep need rule, the held consumable rule, the
   projectile energy rule, the firearm loads rule, the study rate rule, the
-  route queue and the firearm serviceability rule. Their root modules are thin
-  re-exports, and the sentence that describes the rest need moved into the
-  interface.
+  route queue, the firearm serviceability rule, the kinetic impact rule and
+  the combat tuning. Their root modules are thin re-exports, and the sentence
+  that describes the rest need moved into the interface.
