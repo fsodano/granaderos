@@ -6,9 +6,14 @@ import type {
 } from '../../../packages/game/public/inventory-types.ts';
 
 import type { ReactNode } from 'react';
-import { characterPortrait } from '../../../packages/game/character-portraits.js';
-import { BODY_SLOTS, OUTFITS, wornOutfit } from '../../../packages/game/outfits.ts';
-import { SPRITE_APPEARANCES, spriteAppearance } from '../../../packages/game/sprite-appearances.ts';
+import {
+  characterPortrait,
+  BODY_SLOTS,
+  OUTFITS,
+  wornOutfit,
+  SPRITE_APPEARANCES,
+  spriteAppearance,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import { useEquipmentDrag } from '../lib/equipment-drag';
 import './ja2-outfit.css';
 type Props = {

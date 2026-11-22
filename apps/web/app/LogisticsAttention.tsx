@@ -5,7 +5,7 @@ import type {
 import {
   publicLogisticsNotice,
   logisticsEventText,
-} from '../../../packages/game/logistics-attention.js';
+} from '../../../packages/game/public/game-runtime-api.ts';
 import './assignment-attention.css';
 
 // Existing owned artillery and already-paid cargo still retain their delivery

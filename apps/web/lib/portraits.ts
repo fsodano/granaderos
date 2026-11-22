@@ -2,11 +2,11 @@ import type { CampaignContext } from '../../../packages/game/public/compatibilit
 import {
   campaignCharacterPortrait,
   NEUTRAL_CHARACTER_PORTRAIT,
-} from '../../../packages/game/campaign-portraits.js';
-import { campaignDefinitions } from '../../../packages/game/campaign-definition.js';
+  campaignDefinitions,
+  isContentImageReference,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import { DEFAULT_CONTENT } from '../../../content/campaigns/default.js';
 import stockAssets from '../../../content/campaigns/granaderos/assets.json' with { type: 'json' };
-import { isContentImageReference } from '../../../packages/game/campaign-assets.js';
 
 export function portraitFor(id: number | string, context: CampaignContext = null): string | null {
   if (id === NEUTRAL_CHARACTER_PORTRAIT.src) {

@@ -7,12 +7,14 @@ import type {
 
 import type { EquipmentHostAction } from '../../../packages/game/public/tactical-preview-types.ts';
 
-import { formatAP } from '../../../packages/game/action-points.js';
+import {
+  formatAP,
+  inspectEquipmentItem,
+  equipmentFingerprint,
+  equipmentUnloadPreview,
+} from '../../../packages/game/public/game-runtime-api.ts';
 
 import { Package } from 'lucide-react';
-import { inspectEquipmentItem } from '../../../packages/game/item-inspection.ts';
-import { equipmentFingerprint } from '../../../packages/game/tactical-inventory.js';
-import { equipmentUnloadPreview } from '../../../packages/game/tactical.js';
 import { sitePath } from '../lib/site-path.js';
 import JA2AttachmentSlot from './JA2AttachmentSlot';
 import './ja2-item-card.css';

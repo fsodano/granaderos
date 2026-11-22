@@ -1,4 +1,4 @@
-import { createBattle, actBattle } from '../../../../packages/game/tactical.js';
+import { createBattle, actBattle } from '../../../../packages/game/public/game-runtime-api.ts';
 
 export const BAYONET_SCENARIO = Object.freeze({
   id: 'bayonets',

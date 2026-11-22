@@ -10,39 +10,40 @@ import {
   type ReactElement,
   type ReactNode,
 } from 'react';
-import { aimedBodyPart, targetHitFrame } from '../../../packages/game/aim-cursor.js';
-import { artilleryProfile } from '../../../packages/game/artillery-definitions.ts';
-import { pointerItemIntent } from '../../../packages/game/hotkeys.ts';
 import {
+  aimedBodyPart,
+  targetHitFrame,
+  artilleryProfile,
+  pointerItemIntent,
   aimedCursorMode,
   chancePercent,
   civilianMedicalInputAction,
   grenadeTargetingMode,
   groundLootPiles,
   heardNoiseModel,
-} from '../../../packages/game/ja2-hud.ts';
-import { NPC_ACTIVITY_LABELS } from '../../../packages/game/npc-ai.js';
-import { propCells } from '../../../packages/game/props.js';
+  NPC_ACTIVITY_LABELS,
+  propCells,
+  actorInteriorReadable,
+  createSceneTerrainCache,
+  spriteCondition,
+  tacticalGridLabel,
+  sameCell,
+  spaceKey,
+  tacticalLevel,
+  pointInViewport,
+  isInteriorVisible,
+  canSee,
+  contextualAttack,
+  hasFirearm,
+  shotChance,
+  canChooseShotLocation,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import type {
   BattleNpc,
   BattleSnapshot,
   BattleUnit,
   TacticalPoint,
 } from '../../../packages/game/public/compatibility-types.ts';
-import { actorInteriorReadable } from '../../../packages/game/scene-readability.js';
-import { createSceneTerrainCache } from '../../../packages/game/scene-terrain.js';
-import { spriteCondition } from '../../../packages/game/sprite-state.js';
-import { tacticalGridLabel } from '../../../packages/game/tactical-grid.js';
-import { sameCell, spaceKey, tacticalLevel } from '../../../packages/game/tactical-space.js';
-import { pointInViewport } from '../../../packages/game/tactical-viewport.js';
-import { isInteriorVisible } from '../../../packages/game/tactical-visibility.ts';
-import {
-  canSee,
-  contextualAttack,
-  hasFirearm,
-  shotChance,
-} from '../../../packages/game/tactical.js';
-import { canChooseShotLocation } from '../../../packages/game/targeted-combat.js';
 import { projectSurface, surfaceDrawDepth } from '../lib/tactical-elevation';
 import { ACTOR_VISUAL_SCALE } from '../lib/three/actor-visual-scale';
 import './tactical-readability.css';

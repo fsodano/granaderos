@@ -3,16 +3,16 @@ import type {
   CampaignSnapshot,
   CampaignAction,
 } from '../../../packages/game/public/campaign-types.ts';
-import { publicContractNotice } from '../../../packages/game/contract-attention.js';
 import {
+  publicContractNotice,
   contractTermsFor,
   contractRenewalQuote,
   contractExpiresSeconds,
-} from '../../../packages/game/contracts.js';
+  serviceObjectionReason,
+  lowMoraleRenewalStatus,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import ServiceRefusalNotice from './ServiceRefusalNotice';
-import { serviceObjectionReason } from '../../../packages/game/service-objections.js';
 import ServiceObjectionNotice from './ServiceObjectionNotice';
-import { lowMoraleRenewalStatus } from '../../../packages/game/morale-renewal.js';
 import ContractMoraleNotice from './ContractMoraleNotice';
 import './assignment-attention.css';
 

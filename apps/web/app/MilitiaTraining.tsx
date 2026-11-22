@@ -5,21 +5,19 @@ import type {
   CampaignAction,
 } from '../../../packages/game/public/campaign-types.ts';
 import { useState } from 'react';
-import { militiaProgression } from '../../../packages/game/militia-progression-rules.js';
-import { careAssignmentBusy } from '../../../packages/game/medical-care.js';
 import {
+  militiaProgression,
+  careAssignmentBusy,
   rosterFor,
   operativeLocation,
   isSupplied,
   militiaCourse,
   militiaAssignment,
-} from '../../../packages/game/campaign.js';
-import { militiaPromotionStatus } from '../../../packages/game/garrison.js';
-import {
+  militiaPromotionStatus,
   militiaEligibility,
   MILITIA_LIMIT,
   MILITIA_COHORT,
-} from '../../../packages/game/militia.js';
+} from '../../../packages/game/public/game-runtime-api.ts';
 export default function MilitiaTraining({
   state: s,
   sectorId,

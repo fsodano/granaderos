@@ -6,9 +6,10 @@ import {
   spriteMovementFrame,
   spriteRender,
   spriteViewport,
-} from '../../../packages/game/sprite-render.js';
-import { SPRITE_SKIN_MASKS } from '../../../packages/game/sprite-skin-masks.js';
-import { SKIN_PALETTES, spriteSkinTone } from '../../../packages/game/sprite-skin.js';
+  SPRITE_SKIN_MASKS,
+  SKIN_PALETTES,
+  spriteSkinTone,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import { sitePath } from '../lib/site-path.js';
 import { startSpriteAnimation } from '../lib/sprite-animation-clock.js';
 import { loadSpriteImage, spriteContinuity } from '../lib/sprite-image-cache.js';

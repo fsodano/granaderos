@@ -1,8 +1,11 @@
 import { required } from './required';
 import { worldWallRecords, buildingWallAtPoint, wallFrameRecords } from './world-wall-records';
 import { Group, Quaternion, Vector3 } from 'three';
-import { entranceFrame, getBuildingProfile } from '../../../../packages/game/building-profile.ts';
-import { buildingAppearance } from '../../../../packages/game/building-appearance.ts';
+import {
+  entranceFrame,
+  getBuildingProfile,
+  buildingAppearance,
+} from '../../../../packages/game/public/game-runtime-api.ts';
 import { architectureFinish, applyArchitectureFinish } from './world-architecture-finish';
 import { WorldBatch } from './world-geometry';
 import { illuminationAt } from './world-materials';

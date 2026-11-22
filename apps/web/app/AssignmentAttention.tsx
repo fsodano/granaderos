@@ -9,7 +9,7 @@ import { useState } from 'react';
 import {
   publicAssignmentNotice,
   assignmentAttentionText,
-} from '../../../packages/game/assignment-attention.js';
+} from '../../../packages/game/public/game-runtime-api.ts';
 import './assignment-attention.css';
 
 type Props = { state: CampaignSnapshot; roster: CampaignOperative[] };

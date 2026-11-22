@@ -1,4 +1,4 @@
-import { spriteAnimationFrame } from '../../../packages/game/sprite-state.js';
+import { spriteAnimationFrame } from '../../../packages/game/public/game-runtime-api.ts';
 
 // Wake only when an authored frame can change. Derive phase from elapsed time
 // so delayed background-tab timers skip old frames instead of replaying them.

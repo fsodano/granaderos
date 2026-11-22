@@ -5,7 +5,7 @@ import {
   ladderGeometry,
   sampleLadderClimb,
   referenceClimbFraction,
-} from '../../../../packages/game/climb-geometry.ts';
+} from '../../../../packages/game/public/game-runtime-api.ts';
 import type { ClipSpec } from './actor-assets';
 import { NativeClimbBodyPhase } from './climb-body-phase';
 export type ClimbGeometry = {

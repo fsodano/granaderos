@@ -12,14 +12,14 @@ import type {
 } from '../../../packages/game/public/sector-inventory-types.ts';
 import { useId, useState } from 'react';
 import CampaignPockets from './CampaignPockets';
-import { rosterFor } from '../../../packages/game/campaign.js';
 import {
+  rosterFor,
   sectorInventoryModel,
   sectorInventorySites,
   sectorPickupReason,
-} from '../../../packages/game/sector-inventory.js';
-import { tacticalGridLabel } from '../../../packages/game/tactical-grid.js';
-import { repairMaterialPoints } from '../../../packages/game/repair-materials.js';
+  tacticalGridLabel,
+  repairMaterialPoints,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import './sector-inventory.css';
 
 export default function SectorInventory({

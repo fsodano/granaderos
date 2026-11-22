@@ -1,9 +1,11 @@
-import { wallEdgeCells } from '../../../../packages/game/wall-geometry.js';
+import {
+  wallEdgeCells,
+  compileMap,
+  entranceFrame,
+  buildTerrace,
+  createBattle,
+} from '../../../../packages/game/public/game-runtime-api.ts';
 import fixtureDocuments from './generated-architecture-documents.json' with { type: 'json' };
-import { compileMap } from '../../../../packages/game/compile-map.js';
-import { entranceFrame } from '../../../../packages/game/building-profile.ts';
-import { buildTerrace } from '../../../../packages/game/buildings.js';
-import { createBattle } from '../../../../packages/game/tactical.js';
 export const VARIED_ROOF_CLIMB_SCENARIO = Object.freeze({
   id: 'varied-roof-climbs',
   label: 'Azoteas a distintas alturas',

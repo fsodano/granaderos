@@ -6,32 +6,32 @@ import type {
   CampaignAction,
 } from '../../../packages/game/public/campaign-types.ts';
 import { useEffect, useRef, useState } from 'react';
-import { contractRenewalQuote, contractStatus } from '../../../packages/game/contracts.js';
-import { CARE_ASSIGNMENTS, careAssignmentReason } from '../../../packages/game/medical-care.js';
 import {
+  contractRenewalQuote,
+  contractStatus,
+  CARE_ASSIGNMENTS,
+  careAssignmentReason,
   WORK_ASSIGNMENTS,
   STUDY_SKILLS,
   workAssignmentReason,
-} from '../../../packages/game/assignments.js';
-import {
   guaranteeRecord,
   serviceGuaranteeRefund,
   guaranteeDepartureReason,
-} from '../../../packages/game/service-guarantees.js';
-import { operativeInTransit, operativeLocation } from '../../../packages/game/squads.js';
-import { mountForOperative, MATURITY_HOURS } from '../../../packages/game/horses.js';
-import {
+  operativeInTransit,
+  operativeLocation,
+  mountForOperative,
+  MATURITY_HOURS,
   strategicSquadAssignments,
   strategicNewSquadAssignment,
-} from '../../../packages/game/strategic-squad-assignments.js';
-import { squadTravelStatus } from '../../../packages/game/squad-travel.js';
-import { campaignPlace } from '../../../packages/game/world-cells.ts';
+  squadTravelStatus,
+  campaignPlace,
+  serviceObjectionReason,
+  lowMoraleRenewalStatus,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import { travelTime } from '../lib/travel-time';
 import ServiceRefusalNotice from './ServiceRefusalNotice';
 import PreferredCompanionsSummary from './PreferredCompanionsSummary';
-import { serviceObjectionReason } from '../../../packages/game/service-objections.js';
 import ServiceObjectionNotice from './ServiceObjectionNotice';
-import { lowMoraleRenewalStatus } from '../../../packages/game/morale-renewal.js';
 import ContractMoraleNotice from './ContractMoraleNotice';
 
 function isStudySkill(value: string): value is keyof typeof STUDY_SKILLS {

@@ -3,9 +3,14 @@ type SurfaceTerrain = Pick<SceneTerrain, 'width' | 'height' | 'tiles' | 'buildin
   wallEdges?: SceneTerrain['wallEdges'];
   upperSurfaces?: SceneTerrain['upperSurfaces'];
 };
-import { BUILDING_TYPES, buildingStyle } from '../../../packages/game/building-types.ts';
-import { BUILDING_VERTICAL_SCALE } from '../../../packages/game/building-scale.js';
-import { surfaceAt, surfaceHeight, tacticalLevel } from '../../../packages/game/tactical-space.js';
+import {
+  BUILDING_TYPES,
+  buildingStyle,
+  BUILDING_VERTICAL_SCALE,
+  surfaceAt,
+  surfaceHeight,
+  tacticalLevel,
+} from '../../../packages/game/public/game-runtime-api.ts';
 
 // BuildingRoof draws the flat plane one architectural unit above its wall.
 // Keep raw ground projection and sprite size unchanged.

@@ -2,54 +2,16 @@
 
 import type { ActionPreview, TacticalOrder } from '../../../packages/game/public/hud-types.ts';
 
-import { formatAP } from '../../../packages/game/action-points.js';
-import type { CampaignConversation } from '../../../packages/game/public/campaign-types.ts';
-import type {
-  BattleBody,
-  BattleSnapshot,
-  CampaignContext,
-  GroupMovementReport,
-  MoveAction,
-  MovementIntent,
-  MovementMode,
-  NpcGiftReceipt,
-  TacticalAction,
-  TacticalPoint,
-  TacticalRoutePoint,
-} from '../../../packages/game/public/compatibility-types.ts';
-import type {
-  DialogueView,
-  EncounterHireQuote,
-  MissionView,
-  QuestView,
-  TacticalPointer,
-  TacticalSpeech,
-} from '../../../packages/game/public/hud-types.ts';
-import { campaignUI } from '../lib/campaign-ui';
-import type { BandageReport } from './tactical-ui-types';
-
 import {
-  ChevronDown,
-  ChevronRight,
-  ChevronUp,
-  Eye,
-  Hand,
-  MessageCircle,
-  RotateCcw,
-  RotateCw,
-} from 'lucide-react';
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { rightClickAim } from '../../../packages/game/aim-cursor.js';
-import { autoBandageBattle } from '../../../packages/game/auto-bandage.js';
-import { battleFramePose } from '../../../packages/game/battle-playback.js';
-import { heldGrenade } from '../../../packages/game/grenade-throw.js';
-import {
+  formatAP,
+  rightClickAim,
+  autoBandageBattle,
+  battleFramePose,
+  heldGrenade,
   TACTICAL_KEYS,
   pointerItemIntent,
   pointerMovementIntent,
   tacticalShortcut,
-} from '../../../packages/game/hotkeys.ts';
-import {
   STANCES,
   aimOptions,
   aimedCursorMode,
@@ -87,23 +49,22 @@ import {
   turnModel,
   unitCanAct,
   visibleHover,
-} from '../../../packages/game/ja2-hud.ts';
-import {
   ambientReply,
   dialogueApproach,
   dialogueAvailability,
   dialogueReason,
   hasAuthoredDialogue,
-} from '../../../packages/game/npc-dialogue.ts';
-import { createSceneTerrainCache } from '../../../packages/game/scene-terrain.js';
-import { spriteOrderPose } from '../../../packages/game/sprite-order-pose.js';
-import { tacticalCamera } from '../../../packages/game/tactical-camera.js';
-import { contextualBanter, tacticalFeedback } from '../../../packages/game/tactical-feedback.js';
-import { tacticalGridLabel } from '../../../packages/game/tactical-grid.js';
-import { sameCell, spaceKey, tacticalLevel } from '../../../packages/game/tactical-space.js';
-import { tacticalViewport } from '../../../packages/game/tactical-viewport.js';
-import { isInteriorVisible } from '../../../packages/game/tactical-visibility.ts';
-import {
+  createSceneTerrainCache,
+  spriteOrderPose,
+  tacticalCamera,
+  contextualBanter,
+  tacticalFeedback,
+  tacticalGridLabel,
+  sameCell,
+  spaceKey,
+  tacticalLevel,
+  tacticalViewport,
+  isInteriorVisible,
   actBattle,
   actionCosts,
   approachCompleted,
@@ -121,9 +82,45 @@ import {
   visibleEnemies,
   visibleRooms,
   visibleTiles,
-} from '../../../packages/game/tactical.js';
-import { canChooseShotLocation } from '../../../packages/game/targeted-combat.js';
-import { fixedBayonetFor } from '../../../packages/game/weapon-fittings.js';
+  canChooseShotLocation,
+  fixedBayonetFor,
+} from '../../../packages/game/public/game-runtime-api.ts';
+import type { CampaignConversation } from '../../../packages/game/public/campaign-types.ts';
+import type {
+  BattleBody,
+  BattleSnapshot,
+  CampaignContext,
+  GroupMovementReport,
+  MoveAction,
+  MovementIntent,
+  MovementMode,
+  NpcGiftReceipt,
+  TacticalAction,
+  TacticalPoint,
+  TacticalRoutePoint,
+} from '../../../packages/game/public/compatibility-types.ts';
+import type {
+  DialogueView,
+  EncounterHireQuote,
+  MissionView,
+  QuestView,
+  TacticalPointer,
+  TacticalSpeech,
+} from '../../../packages/game/public/hud-types.ts';
+import { campaignUI } from '../lib/campaign-ui';
+import type { BandageReport } from './tactical-ui-types';
+
+import {
+  ChevronDown,
+  ChevronRight,
+  ChevronUp,
+  Eye,
+  Hand,
+  MessageCircle,
+  RotateCcw,
+  RotateCw,
+} from 'lucide-react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { EquipmentInteractionProvider, useEquipmentInteraction } from '../lib/equipment-drag';
 import {
   inventoryIntentAt,

@@ -1,8 +1,11 @@
 import type { CampaignOperative } from '../../../packages/game/public/campaign-types.ts';
 import type { CampaignSnapshot } from '../../../packages/game/public/campaign-types.ts';
-import { operativeLocation, operativeInTransit } from '../../../packages/game/squads.js';
-import { careAssignmentReason } from '../../../packages/game/medical-care.js';
-import { militiaWoundLoss } from '../../../packages/game/garrison.js';
+import {
+  operativeLocation,
+  operativeInTransit,
+  careAssignmentReason,
+  militiaWoundLoss,
+} from '../../../packages/game/public/game-runtime-api.ts';
 export default function MilitiaCare({
   state,
   sectorId,

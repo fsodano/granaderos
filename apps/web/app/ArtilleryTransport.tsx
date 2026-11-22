@@ -6,13 +6,13 @@ import type {
   CampaignArtillery,
 } from '../../../packages/game/public/campaign-types.ts';
 import { useState } from 'react';
-import { campaignSectors } from '../../../packages/game/campaign-definition.js';
-import { artilleryProfile } from '../../../packages/game/artillery-definitions.ts';
 import {
+  campaignSectors,
+  artilleryProfile,
   artilleryTransportQuote,
   artilleryTransferDelay,
   localArtilleryDepot,
-} from '../../../packages/game/artillery-transport.js';
+} from '../../../packages/game/public/game-runtime-api.ts';
 
 const load = (gun: CampaignArtillery) =>
   `${gun.loaded ? 'Cargada' : gun.reloadProgress ? `Recarga ${Math.floor(gun.reloadProgress * 100)}%` : 'Descargada'} · ${gun.ammo} en reserva`;

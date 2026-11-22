@@ -1,6 +1,6 @@
 import { nativeAnimationClip } from './animation-profiles';
 import type { BattlePresentationFrame } from '../../../../packages/game/public/compatibility-types.ts';
-import { spriteAppearance } from '../../../../packages/game/sprite-appearances.ts';
+import { spriteAppearance } from '../../../../packages/game/public/game-runtime-api.ts';
 
 /** Admission must cover both sides of a successful mount-state change.
  * The helper cannot infer or disclose a hidden rider's preparation. */

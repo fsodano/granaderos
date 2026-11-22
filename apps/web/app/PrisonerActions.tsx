@@ -1,12 +1,15 @@
 'use client';
 
-import { formatAP } from '../../../packages/game/action-points.js';
+import {
+  formatAP,
+  prisonerReleasePreview,
+  teamCanSee,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import type {
   BattleSnapshot,
   BattleUnit,
 } from '../../../packages/game/public/compatibility-types.ts';
 
-import { prisonerReleasePreview, teamCanSee } from '../../../packages/game/tactical.js';
 export default function PrisonerActions({
   state,
   unit,

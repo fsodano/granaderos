@@ -7,12 +7,14 @@ import type {
 
 import type { EquipmentHostAction } from '../../../packages/game/public/tactical-preview-types.ts';
 
-import { formatAP } from '../../../packages/game/action-points.js';
+import {
+  formatAP,
+  equipmentAttachmentHost,
+  equipmentFingerprint,
+  equipmentAttachmentPreview,
+  fittingLabel,
+} from '../../../packages/game/public/game-runtime-api.ts';
 
-import { equipmentAttachmentHost } from '../../../packages/game/equipment-cursor.js';
-import { equipmentFingerprint } from '../../../packages/game/tactical-inventory.js';
-import { equipmentAttachmentPreview } from '../../../packages/game/tactical.js';
-import { fittingLabel } from '../../../packages/game/weapon-fittings.js';
 import { useEquipmentInteraction } from '../lib/equipment-drag';
 import { sitePath } from '../lib/site-path.js';
 import './ja2-attachment-slot.css';

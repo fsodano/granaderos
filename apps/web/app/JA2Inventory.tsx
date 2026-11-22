@@ -2,41 +2,21 @@
 
 import type { TacticalOrder } from '../../../packages/game/public/hud-types.ts';
 
-import { formatAP } from '../../../packages/game/action-points.js';
-import type {
-  BattleSnapshot,
-  BattleUnit,
-  CampaignContext,
-} from '../../../packages/game/public/compatibility-types.ts';
-import { campaignFactionName } from '../lib/campaign-labels';
-import type { BandageReport, Viewport } from './tactical-ui-types';
-
-import { Skull } from 'lucide-react';
-import { enclosedRoomFearStatus } from '../../../packages/game/enclosed-room-fear.js';
-import { maximumEnergy } from '../../../packages/game/fatigue.js';
 import {
+  formatAP,
+  enclosedRoomFearStatus,
+  maximumEnergy,
   FIELD_DRESSINGS_AP,
   fieldDressingsSource,
-} from '../../../packages/game/field-dressings.js';
-import { handsRequired } from '../../../packages/game/hand-layout.ts';
-import { nervousIsolationStatus } from '../../../packages/game/nervous-isolation.js';
-import { OUTFITS } from '../../../packages/game/outfits.ts';
-import { equipmentEndpoint } from '../../../packages/game/tactical-inventory.js';
-import { accessStepsFrom, tacticalLevel } from '../../../packages/game/tactical-space.js';
-import { climbPreview, fieldDressingsPreview } from '../../../packages/game/tactical.js';
-import { EquipmentInteractionProvider, useEquipmentInteraction } from '../lib/equipment-drag';
-import { sitePath } from '../lib/site-path.js';
-import AmmunitionLoadChoice from './AmmunitionLoadChoice';
-import './ja2-outfit.css';
-import JA2Hands from './JA2Hands';
-import JA2ItemCard from './JA2ItemCard';
-import JA2OutfitSlot from './JA2OutfitSlot';
-import JA2WeaponMode from './JA2WeaponMode';
-// MODE B: single-merc inventory panel (header / stats / stance grid / paper-doll / slot-grid / pertrechos / far-right cluster).
-// Pure read model (game/ja2-hud.ts inventoryModel/orderDescriptors); all mutations are caller-provided callbacks.
-import { useEffect, useId, useState } from 'react';
-import { autoBandageStatus } from '../../../packages/game/auto-bandage.js';
-import {
+  handsRequired,
+  nervousIsolationStatus,
+  OUTFITS,
+  equipmentEndpoint,
+  accessStepsFrom,
+  tacticalLevel,
+  climbPreview,
+  fieldDressingsPreview,
+  autoBandageStatus,
   backpackEquipAction,
   equipmentSlots,
   facingLabel,
@@ -52,9 +32,7 @@ import {
   targetingHelp,
   turnModel,
   unitCanAct,
-} from '../../../packages/game/ja2-hud.ts';
-import { tacticalMinimapLabel } from '../../../packages/game/tactical-minimap-label.js';
-import {
+  tacticalMinimapLabel,
   AP_CARRY_LIMIT,
   BLADES,
   containerLootPreview,
@@ -67,7 +45,27 @@ import {
   swapHandsPreview,
   visibleEnemies,
   WEAPONS,
-} from '../../../packages/game/tactical.js';
+} from '../../../packages/game/public/game-runtime-api.ts';
+import type {
+  BattleSnapshot,
+  BattleUnit,
+  CampaignContext,
+} from '../../../packages/game/public/compatibility-types.ts';
+import { campaignFactionName } from '../lib/campaign-labels';
+import type { BandageReport, Viewport } from './tactical-ui-types';
+
+import { Skull } from 'lucide-react';
+import { EquipmentInteractionProvider, useEquipmentInteraction } from '../lib/equipment-drag';
+import { sitePath } from '../lib/site-path.js';
+import AmmunitionLoadChoice from './AmmunitionLoadChoice';
+import './ja2-outfit.css';
+import JA2Hands from './JA2Hands';
+import JA2ItemCard from './JA2ItemCard';
+import JA2OutfitSlot from './JA2OutfitSlot';
+import JA2WeaponMode from './JA2WeaponMode';
+// MODE B: single-merc inventory panel (header / stats / stance grid / paper-doll / slot-grid / pertrechos / far-right cluster).
+// Pure read model (game/ja2-hud.ts inventoryModel/orderDescriptors); all mutations are caller-provided callbacks.
+import { useEffect, useId, useState } from 'react';
 import { portraitFor } from '../lib/portraits';
 import { AttachedBayonetControl, FittingReadout, LooseBayonetControl } from './JA2Bayonet';
 import JA2EnvironmentPanel from './JA2EnvironmentPanel';

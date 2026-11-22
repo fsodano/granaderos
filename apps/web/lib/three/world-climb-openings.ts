@@ -1,7 +1,7 @@
 import { Group } from 'three';
 import { WorldBatch, type WorldGeometry } from './world-geometry';
 import { illuminationAt, type WorldMaterialSource } from './world-materials';
-import { ladderGeometry } from '../../../../packages/game/climb-geometry.ts';
+import { ladderGeometry } from '../../../../packages/game/public/game-runtime-api.ts';
 import type { WorldInput, WorldPoint } from './world-types';
 
 export type SurfaceRectangle = {

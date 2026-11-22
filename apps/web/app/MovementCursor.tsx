@@ -3,7 +3,7 @@ import type {
   BattleSnapshot,
   BattleUnit,
 } from '../../../packages/game/public/compatibility-types.ts';
-import { formatAP } from '../../../packages/game/action-points.js';
+import { formatAP } from '../../../packages/game/public/game-runtime-api.ts';
 import { projectSurface } from '../lib/tactical-elevation';
 import './playtest-feedback.css';
 export default function MovementCursor({

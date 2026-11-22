@@ -8,24 +8,17 @@ import type { GeoGeometry } from '../../../packages/campaign-format/types.ts';
 import type { BattleSnapshot } from '../../../packages/game/public/compatibility-types.ts';
 import SectorInventory from './SectorInventory';
 import StrategicPanel from './StrategicPanel';
-import { knownCampaignSectorEquipment } from '../../../packages/game/sector-inventory.js';
-import { SectorIncomeTable } from './SectorIncome';
-import { operativeInTransit } from '../../../packages/game/squads.js';
-import { squadTravelStatus } from '../../../packages/game/squad-travel.js';
 import {
+  knownCampaignSectorEquipment,
+  operativeInTransit,
+  squadTravelStatus,
   strategicSectorPresence,
   strategicPresenceLabel,
   strategicTravelPresence,
-} from '../../../packages/game/strategic-presence.ts';
-import { useState } from 'react';
-import { Landmark, Pickaxe, Users, Shield, Package } from 'lucide-react';
-import {
   campaignWorld,
   campaignSectors,
   campaignCities,
   campaignPresentation,
-} from '../../../packages/game/campaign-definition.js';
-import {
   MAP_MODES,
   project,
   sectorPosition,
@@ -34,13 +27,14 @@ import {
   mapTilesForSector,
   mapTileBounds,
   mapTileOutline,
-} from '../../../packages/game/strategic-map.js';
-import {
   worldContext,
   worldCell,
   campaignPlace,
   worldOwner,
-} from '../../../packages/game/world-cells.ts';
+} from '../../../packages/game/public/game-runtime-api.ts';
+import { SectorIncomeTable } from './SectorIncome';
+import { useState } from 'react';
+import { Landmark, Pickaxe, Users, Shield, Package } from 'lucide-react';
 import Horses from './Horses';
 import './strategic-map.css';
 import './strategic-presence.css';

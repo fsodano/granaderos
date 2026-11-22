@@ -3,12 +3,12 @@
 import enemyWorkerUrl from './enemy-turn-worker.ts?worker&url';
 
 import { useEffect, useEffectEvent, useLayoutEffect, useRef, useState, useMemo } from 'react';
-import { presentedEndTurn } from '../../../packages/game/tactical.js';
 import {
+  presentedEndTurn,
   BATTLE_PLAYBACK,
   battleFrameDuration,
   battleFrameFocus,
-} from '../../../packages/game/battle-playback.js';
+} from '../../../packages/game/public/game-runtime-api.ts';
 import { movementStepDuration } from './three/movement-timing';
 import { surfaceMotionPoint } from './tactical-elevation';
 import {

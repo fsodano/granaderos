@@ -1,6 +1,6 @@
 'use client';
 
-import { formatAP } from '../../../packages/game/action-points.js';
+import { formatAP } from '../../../packages/game/public/game-runtime-api.ts';
 import type { ActionPreview, EnvironmentContent, EnvironmentTarget } from './tactical-ui-types';
 
 type Props = {

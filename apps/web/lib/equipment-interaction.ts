@@ -7,13 +7,14 @@ import type {
   InventoryOrderResult,
   SelectedEquipmentPreview,
 } from '../../../packages/game/public/inventory-types.ts';
-import { formatAP } from '../../../packages/game/action-points.js';
 import {
+  formatAP,
   equipmentEndpoint,
   equipmentFingerprint,
   itemDescriptor,
-} from '../../../packages/game/tactical-inventory.js';
-import { equipmentCursorPreview, interruptAvailable } from '../../../packages/game/tactical.js';
+  equipmentCursorPreview,
+  interruptAvailable,
+} from '../../../packages/game/public/game-runtime-api.ts';
 
 export type EquipmentSource = {
   owner: symbol;

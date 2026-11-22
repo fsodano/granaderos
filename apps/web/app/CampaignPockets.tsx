@@ -9,12 +9,12 @@ import { useState } from 'react';
 import JA2Pockets from './JA2Pockets';
 import JA2ItemCard from './JA2ItemCard';
 import JA2OutfitSlot from './JA2OutfitSlot';
-import { handLayout } from '../../../packages/game/hand-layout.ts';
 import {
+  handLayout,
   inventoryUsage,
   itemDescriptor,
   equipmentEndpoint,
-} from '../../../packages/game/tactical-inventory.js';
+} from '../../../packages/game/public/game-runtime-api.ts';
 import { EquipmentInteractionProvider, useEquipmentDrag } from '../lib/equipment-drag';
 import './ja2-hands.css';
 type Props = {

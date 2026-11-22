@@ -1,4 +1,4 @@
-import { sameCell } from '../../../packages/game/tactical-space.js';
+import { sameCell } from '../../../packages/game/public/game-runtime-api.ts';
 
 // Only the current paid step is committed. Goals and the unexecuted route can
 // change while its animation runs, without rolling back the battle or clock.

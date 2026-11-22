@@ -1,6 +1,12 @@
 'use client';
 
-import { formatAP } from '../../../packages/game/action-points.js';
+import {
+  formatAP,
+  maximumEnergy,
+  firearmLoadingProgress,
+  rosterCells,
+  rosterHands,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import type {
   BattleSnapshot,
   BattleUnit,
@@ -8,7 +14,6 @@ import type {
 
 import type { LucideIcon } from 'lucide-react';
 import { useState } from 'react';
-import { maximumEnergy } from '../../../packages/game/fatigue.js';
 import { sitePath } from '../lib/site-path.js';
 // Every deployed squad remains accessible in the portrait strip.
 // Pure read model (game/ja2-hud.ts rosterCells); all mutations are caller-provided callbacks.
@@ -28,8 +33,6 @@ import {
   Utensils,
   Wrench,
 } from 'lucide-react';
-import { firearmLoadingProgress, rosterCells } from '../../../packages/game/ja2-hud.ts';
-import { rosterHands } from '../../../packages/game/roster-hands.ts';
 import { portraitFor } from '../lib/portraits';
 
 type Props = {

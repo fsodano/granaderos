@@ -2,11 +2,9 @@
 
 import type { TacticalOrder } from '../../../packages/game/public/hud-types.ts';
 
-import { formatAP } from '../../../packages/game/action-points.js';
+import { formatAP, fittingLabel } from '../../../packages/game/public/game-runtime-api.ts';
 import type { WeaponFitting } from '../../../packages/game/public/compatibility-types.ts';
 import type { AttachedBayonet, BayonetSource } from './tactical-ui-types';
-
-import { fittingLabel } from '../../../packages/game/weapon-fittings.js';
 
 export function FittingReadout({ fitting }: { fitting: WeaponFitting | null | undefined }) {
   return fitting ? (

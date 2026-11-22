@@ -1,5 +1,5 @@
 import { Group, PointLight, Quaternion, Vector3 } from 'three';
-import { ladderGeometry } from '../../../../packages/game/climb-geometry.ts';
+import { ladderGeometry } from '../../../../packages/game/public/game-runtime-api.ts';
 import { WorldBatch, seeded } from './world-geometry';
 import { illuminationAt } from './world-materials';
 import type { WorldGeometry } from './world-geometry';

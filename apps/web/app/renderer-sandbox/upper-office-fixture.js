@@ -1,5 +1,8 @@
-import { createBattle } from '../../../../packages/game/tactical.js';
-import { placeBuilding, buildTerrace } from '../../../../packages/game/buildings.js';
+import {
+  createBattle,
+  placeBuilding,
+  buildTerrace,
+} from '../../../../packages/game/public/game-runtime-api.ts';
 
 export const UPPER_OFFICE_SCENARIO = Object.freeze({
   id: 'upper-office',

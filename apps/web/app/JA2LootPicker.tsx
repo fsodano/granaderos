@@ -2,15 +2,18 @@
 
 import type { TacticalOrder } from '../../../packages/game/public/hud-types.ts';
 
-import { formatAP } from '../../../packages/game/action-points.js';
+import {
+  formatAP,
+  lootBatchSelectionModel,
+  nearbyLootOptions,
+  tacticalGridLabel,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import type {
   BattleSnapshot,
   BattleUnit,
 } from '../../../packages/game/public/compatibility-types.ts';
 
 import { useEffect, useRef, useState } from 'react';
-import { lootBatchSelectionModel, nearbyLootOptions } from '../../../packages/game/ja2-hud.ts';
-import { tacticalGridLabel } from '../../../packages/game/tactical-grid.js';
 
 export default function JA2LootPicker({
   battle,

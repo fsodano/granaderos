@@ -5,10 +5,13 @@ import type {
   CampaignAction,
   CampaignHorseOrder,
 } from '../../../packages/game/public/campaign-types.ts';
-import { rosterFor, operativeLocation } from '../../../packages/game/campaign.js';
-import { campaignPlace } from '../../../packages/game/world-cells.ts';
-import { operativeInTransit } from '../../../packages/game/squads.js';
-import { MATURITY_HOURS } from '../../../packages/game/horses.js';
+import {
+  rosterFor,
+  operativeLocation,
+  campaignPlace,
+  operativeInTransit,
+  MATURITY_HOURS,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import './horses.css';
 type Props = {
   state: CampaignSnapshot;

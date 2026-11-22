@@ -1,6 +1,6 @@
 import type { CampaignOperativeState } from '../../../packages/game/public/campaign-types.ts';
 import type { CampaignOperative } from '../../../packages/game/public/campaign-types.ts';
-import { weaponSpecification } from '../../../packages/game/weapon-definition.ts';
+import { weaponSpecification } from '../../../packages/game/public/game-runtime-api.ts';
 import { sitePath } from '../lib/site-path.js';
 
 export default function CampaignWeaponSummary({

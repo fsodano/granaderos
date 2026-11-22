@@ -9,8 +9,11 @@ import {
   Shape,
   Vector3,
 } from 'three';
-import { entranceFrame, getBuildingProfile } from '../../../../packages/game/building-profile.ts';
-import { buildingStyle } from '../../../../packages/game/building-types.ts';
+import {
+  entranceFrame,
+  getBuildingProfile,
+  buildingStyle,
+} from '../../../../packages/game/public/game-runtime-api.ts';
 import { WorldBatch, roofTextureProjector } from './world-geometry';
 import { illuminationAt } from './world-materials';
 import { palaceFacade } from './world-palace-facade';

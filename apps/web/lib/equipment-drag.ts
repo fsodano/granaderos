@@ -17,7 +17,7 @@ import {
   type PointerEvent,
   type MouseEvent,
 } from 'react';
-import { equipmentEndpoint } from '../../../packages/game/tactical-inventory.js';
+import { equipmentEndpoint } from '../../../packages/game/public/game-runtime-api.ts';
 import { createEquipmentInteraction, type EquipmentInteraction } from './equipment-interaction';
 import EquipmentCursor from './EquipmentCursor';
 

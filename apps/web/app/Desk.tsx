@@ -9,17 +9,18 @@ import { campaignUI } from '../lib/campaign-ui';
 import {
   campaignPresentation,
   campaignSectors,
-} from '../../../packages/game/campaign-definition.js';
-import { campaignStory, campaignChapterIndex } from '../../../packages/game/campaign-story.js';
-import { startingTerritoryDescription } from '../../../packages/game/content-territory.js';
+  campaignStory,
+  campaignChapterIndex,
+  startingTerritoryDescription,
+  incomeSummary,
+  campaignChapters,
+  rosterFor,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import { useState } from 'react';
 import Recruitment from './Recruitment';
 import CharacterCreator from './CharacterCreator';
 import ReceivedCorrespondence from './ReceivedCorrespondence';
 import Logistics from './Logistics';
-import { incomeSummary } from '../../../packages/game/economy.js';
-import { campaignChapters } from '../../../packages/game/campaign-headquarters.js';
-import { rosterFor } from '../../../packages/game/campaign.js';
 import { portraitFor } from '../lib/portraits';
 import './desk.css';
 const tabs: readonly [string, string][] = [

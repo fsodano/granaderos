@@ -13,8 +13,7 @@ import type { BandageReport, Viewport } from './tactical-ui-types';
 // JA2 bottom-strip disposition (DESIGN.md MODE A / MODE B). Root switches content on inventoryId.
 // Pure read model (game/ja2-hud.ts orderDescriptors/orderAction); all mutations are caller-provided callbacks.
 import { useMemo } from 'react';
-import { turnModel, unitCanAct } from '../../../packages/game/ja2-hud.ts';
-import { canSee } from '../../../packages/game/tactical.js';
+import { turnModel, unitCanAct, canSee } from '../../../packages/game/public/game-runtime-api.ts';
 import JA2ArtilleryMenu from './JA2ArtilleryMenu';
 import JA2Inventory, { RadarCluster } from './JA2Inventory';
 import { StableJA2Roster as JA2Roster } from './JA2Roster';
