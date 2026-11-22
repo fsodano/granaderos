@@ -77,6 +77,16 @@
       }
     },
     {
+      "name": "game-does-not-depend-on-player-application",
+      "severity": "error",
+      "from": {
+        "path": "^packages/game/"
+      },
+      "to": {
+        "path": "^apps/web/"
+      }
+    },
+    {
       "name": "editor-uses-game-public-entries",
       "severity": "error",
       "from": {

@@ -2,6 +2,9 @@
 export const interfaceImportRule =
   'The player interface depends only on game public entries and browser compositions.';
 
+/** Reported when the game package reaches into the player application. */
+export const gameImportRule = 'The game package is independent of the player application.';
+
 const gameImplementationLayers = [
   'packages/game/domain',
   'packages/game/application',
@@ -34,4 +37,17 @@ export function interfaceFileMayImport(file: string, target: string): boolean {
     return true;
   }
   return !gameImplementationLayers.some((layer) => pathWithin(target, layer));
+}
+
+/**
+ * Decide whether a file under `packages/game` may import a repository-relative
+ * target. The game is independent of the player application, so it may not
+ * import anything under `apps/web`. Files outside `packages/game` are unaffected
+ * by this direction.
+ */
+export function gameFileMayImport(file: string, target: string): boolean {
+  if (!pathWithin(file, 'packages/game')) {
+    return true;
+  }
+  return !pathWithin(target, 'apps/web');
 }

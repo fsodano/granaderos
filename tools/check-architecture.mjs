@@ -2,7 +2,12 @@ import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { resolve, relative, dirname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ts from '../apps/web/node_modules/typescript/lib/typescript.js';
-import { interfaceFileMayImport, interfaceImportRule } from './architecture-rules.ts';
+import {
+  gameFileMayImport,
+  gameImportRule,
+  interfaceFileMayImport,
+  interfaceImportRule,
+} from './architecture-rules.ts';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const failures = [];
@@ -93,6 +98,9 @@ for (const directory of sourceDirectories) {
         : dependency;
       if (file.startsWith('packages/game/') && pathWithin(target, 'apps/campaign-editor')) {
         fail(file, dependency, 'Game runtime cannot import campaign-editor.');
+      }
+      if (!gameFileMayImport(file, target)) {
+        fail(file, dependency, gameImportRule);
       }
       if (
         file.startsWith('packages/game/domain/') &&
