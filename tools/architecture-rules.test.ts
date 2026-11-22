@@ -1,6 +1,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { interfaceFileMayImport, interfaceImportRule } from './architecture-rules.ts';
+import {
+  gameFileMayImport,
+  gameImportRule,
+  interfaceFileMayImport,
+  interfaceImportRule,
+} from './architecture-rules.ts';
 
 const interfaceFile = 'apps/web/app/Recruitment.tsx';
 const compositionFile = 'apps/web/lib/recruitment-catalogue.ts';
@@ -55,4 +60,36 @@ void test('files outside the interface may import a retained compatibility modul
     interfaceFileMayImport('tools/playgrounds/roster.ts', 'packages/game/campaign.js'),
     true,
   );
+});
+
+void test('the game may not import the player application', () => {
+  for (const file of [
+    'packages/game/ja2-hud.ts',
+    'packages/game/hud-types.ts',
+    'packages/game/domain/journeys/journey.ts',
+  ]) {
+    for (const target of ['apps/web/lib/campaign-labels.ts', 'apps/web/app/Recruitment.tsx']) {
+      assert.equal(gameFileMayImport(file, target), false, `${file} -> ${target}`);
+    }
+  }
+  assert.match(gameImportRule, /independent of the player application/);
+});
+
+void test('the game may import another game module', () => {
+  for (const target of [
+    'packages/game/hud-types.ts',
+    'packages/game/public/game-runtime-api.ts',
+    'packages/game/domain/journeys/journey.ts',
+  ]) {
+    assert.equal(gameFileMayImport('packages/game/ja2-hud.ts', target), true, target);
+  }
+});
+
+void test('the interface may import a game public entry', () => {
+  assert.equal(gameFileMayImport(interfaceFile, 'packages/game/public/game-runtime-api.ts'), true);
+});
+
+void test('the interface may import its own modules', () => {
+  assert.equal(gameFileMayImport(interfaceFile, compositionFile), true);
+  assert.equal(gameFileMayImport(compositionFile, 'apps/web/lib/campaign-labels.ts'), true);
 });
