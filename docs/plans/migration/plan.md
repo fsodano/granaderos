@@ -50,9 +50,12 @@ Out of scope for this series:
 | 3 | `migration/browser-composition` | Composition moves out of React components into `apps/web/lib`, and the checker keeps it there | 0.2.8 |
 | 4 | `migration/use-case-contracts` | Uniform use-case contracts across the application layer | 0.2.9 |
 | 5 | `migration/compatibility-aliases` | The first compatibility names leave the source | 0.2.10 |
+| 6 | `migration/random-source` | The seeded random sequence becomes a domain object | 0.2.11 |
+| 7 | `migration/interface-public-entry` | The player application reaches the game through a declared public entry | 0.2.12 |
 
-All five slices have landed on `feature/clean-architecture-migration`. Each
-slice has its own note under [slices](slices/README.md) with the intent, the
+The first five slices landed in [pull request #505](https://github.com/fsodano/granaderos/pull/505). The last two are the second batch.
+
+Each slice has its own note under [slices](slices/README.md) with the intent, the
 files it touches, the tests it adds, and how it is verified. Read the note
 before starting the slice.
 
@@ -121,6 +124,28 @@ resolution.
 The [ubiquitous language](../accepted/ubiquitous-language.md) compatibility
 table is updated in the same slice, because the table is the record of what the
 source still serves.
+
+### Slice 6: random source
+
+The seeded random sequence moves out of a procedural helper in
+`packages/game/campaign.js` and into a domain class,
+`packages/game/domain/shared/random-source.ts`. The class produces exactly the
+sequence the campaign produces today, so no rule changes, and the domain can
+finally state the sequence a game owns.
+
+The game session does not own the source yet. The campaign snapshot's `seed`
+field is the state the running rules advance, and a session-held copy would be
+a second owner of the same sequence. The slice note records what has to change
+before the session can own it.
+
+### Slice 7: interface public entry
+
+`packages/game/public/game-runtime-api.ts` becomes the declared surface the
+player application reads the game through, in the style of the entry the
+campaign editor already uses. The 465 import statements that reach the
+retained compatibility modules by relative path become imports of that entry,
+and the architecture checker refuses an application file that reaches the
+package any other way.
 
 ## Branch and merge flow
 

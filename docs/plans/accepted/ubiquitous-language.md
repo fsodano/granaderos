@@ -164,8 +164,8 @@ application step that turns published definitions into domain objects, so the
 domain can stay independent of the shared file contract.
 
 `candidateAdmission` names the eligibility query for a recruitment candidate.
-The former `civicStatus` name came from the retired civic-recruit category and
-did not describe what the query answered.
+The former `civicStatus` name came from the civic-recruit list the query
+consulted and did not describe what the query answered.
 
 ## Naming rules for implementation
 
