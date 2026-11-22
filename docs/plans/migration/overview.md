@@ -297,7 +297,7 @@ tests that cover the behavior it moves.
 
 ## 8. What the series closed and what remains
 
-The seventeen slices of [the plan](plan.md) have landed on the
+The nineteen slices of [the plan](plan.md) have landed on the
 `feature/clean-architecture-migration` branch. The gap status is:
 
 | Gap | State | Where |
@@ -318,6 +318,8 @@ The seventeen slices of [the plan](plan.md) have landed on the
 | The projectile energy rule outside the domain | Closed. The rule that turns a projectile's mass and velocity into impact lives in `packages/game/domain/combat/projectile-energy.ts`, next to the shot rules. The format check stays in the root module, because the shared file contract cannot be read from the domain. | Slice 15 |
 | The firearm loads rule outside the domain | Closed. The rule that decides which loads a firearm may use, and how an authored override replaces the default, lives in `packages/game/domain/combat/firearm-loads.ts`, next to the firearm that carries them, and the root module is a thin re-export. | Slice 16 |
 | The study rate rule outside the domain | Closed. The rule that decides how much training credit a combatant earns in an hour lives in `packages/game/domain/personnel/study-rate.ts`, next to the character's abilities. The forecast of how long the next gain takes stays in the root module, because it reads the campaign's training tables. | Slice 17 |
+| The route queue outside the domain | Closed. The stable minimum-cost queue that finds a route lives in `packages/game/domain/journeys/route-queue.ts`, next to the journey route planner that uses it, and the root module is a thin re-export. A test pushes equal-cost cells in the reverse of the order it expects them out, so a queue that lost the stable tie-break would fail. | Slice 18 |
+| The firearm serviceability rule outside the domain | Closed. The rule that decides whether a firearm is still usable lives in `packages/game/domain/combat/firearm-serviceability.ts`, next to the firearm that owns its condition, and the root module is a thin re-export. | Slice 19 |
 
 What the series did not do:
 
@@ -327,9 +329,10 @@ What the series did not do:
   `packages/game/tactical.js` and `packages/game/campaign.js` is still
   procedural. The rules that moved are the firearm preparation rule, the
   unarmed combat rule, the sleep need rule, the held consumable rule, the
-  projectile energy rule, the firearm loads rule and the study rate rule;
-  each of them keeps its root module as a thin re-export, and each has a
-  parity test that pins the numbers it produced before the move.
+  projectile energy rule, the firearm loads rule, the study rate rule, the
+  route queue and the firearm serviceability rule; each of them keeps its
+  root module as a thin re-export, and each has a parity test that pins the
+  numbers it produced before the move.
 - The game session does not own the `RandomSource` or the `WorldTimeline`, and
   the campaign snapshot's `seed` and revision fields are still the state the
   rules advance.
