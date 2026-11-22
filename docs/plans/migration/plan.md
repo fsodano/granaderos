@@ -62,6 +62,8 @@ Out of scope for this series:
 | 15 | `migration/projectile-energy` | The projectile energy rule moves into the domain | 0.2.20 |
 | 16 | `migration/firearm-loads` | The rule that decides which loads a firearm can use moves into the domain | 0.2.21 |
 | 17 | `migration/study-rate` | The rule that decides how fast a combatant learns moves into the domain | 0.2.22 |
+| 18 | `migration/route-queue` | The queue that finds the cheapest route moves into the domain | 0.2.23 |
+| 19 | `migration/firearm-serviceability` | The rule that decides whether a firearm is usable moves into the domain | 0.2.24 |
 
 The first five slices landed in [pull request #505](https://github.com/fsodano/granaderos/pull/505), the next two in [pull request #506](https://github.com/fsodano/granaderos/pull/506), the two after them in [pull request #507](https://github.com/fsodano/granaderos/pull/507), and the two after those in [pull request #508](https://github.com/fsodano/granaderos/pull/508). The last two are the fifth batch.
 
@@ -227,6 +229,18 @@ The rule that decides how much training credit a combatant earns in an hour
 moves into `packages/game/domain/personnel/study-rate.ts`, next to the
 character's abilities. The forecast of how long the next gain takes stays in
 the root module, because it reads the campaign's training tables.
+
+### Slice 18: route queue
+
+The stable minimum-cost queue that finds a route moves into
+`packages/game/domain/journeys/route-queue.ts`, next to the journey route
+planner that uses it. The root module becomes a thin re-export.
+
+### Slice 19: firearm serviceability
+
+The rule that decides whether a firearm is still usable moves into
+`packages/game/domain/combat/firearm-serviceability.ts`, next to the firearm
+that owns its condition. The root module becomes a thin re-export.
 
 ## Branch and merge flow
 
