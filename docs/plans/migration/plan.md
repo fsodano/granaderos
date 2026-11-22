@@ -70,6 +70,8 @@ Out of scope for this series:
 | 23 | `migration/fatigue` | The fatigue and energy rules move into the domain, next to the character's condition | 0.2.28 |
 | 24 | `migration/interior-visibility` | The interior visibility rule moves into the domain, next to the other perception rules | 0.2.29 |
 | 25 | `migration/strategic-clock` | The campaign clock rule moves into the domain and the campaign notices into the interface | 0.2.30 |
+| 26 | `migration/tactical-space` | The rules that read a point's tactical level move into the domain | 0.2.31 |
+| 27 | `migration/interior-visibility-helpers` | The interior visibility module drops its copies of the level rules | 0.2.32 |
 
 The first five slices landed in [pull request #505](https://github.com/fsodano/granaderos/pull/505), the next two in [pull request #506](https://github.com/fsodano/granaderos/pull/506), the two after them in [pull request #507](https://github.com/fsodano/granaderos/pull/507), and the two after those in [pull request #508](https://github.com/fsodano/granaderos/pull/508). The last two are the fifth batch.
 
@@ -289,6 +291,18 @@ The conversion of the campaign clock into accepted game seconds moves into the
 domain's `GameTime`, and the choice of what the player is told after a
 campaign command moves into the interface's own module, where a player-facing
 sentence belongs.
+
+### Slice 26: tactical space
+
+The rules that read a point's tactical level move into
+`packages/game/domain/sector-sessions/tactical-space.ts`, so the game has one
+implementation of them. The shared file contract keeps its own copy, because
+it validates authored maps and cannot import the game.
+
+### Slice 27: interior visibility helpers
+
+The interior visibility module drops the copies of the level rules it had to
+make, and a test fails if they come back.
 
 ## Branch and merge flow
 
