@@ -14,6 +14,8 @@ the diff.
 | [3. Browser composition](03-browser-composition.md) | `migration/browser-composition` | landed | 0.2.8 |
 | [4. Use-case contracts](04-use-case-contracts.md) | `migration/use-case-contracts` | landed | 0.2.9 |
 | [5. Compatibility aliases](05-compatibility-aliases.md) | `migration/compatibility-aliases` | landed | 0.2.10 |
+| [6. Random source](06-random-source.md) | `migration/random-source` | landed | 0.2.11 |
+| [7. Interface public entry](07-interface-public-entry.md) | `migration/interface-public-entry` | landed | 0.2.12 |
 
 A slice moves from planned to in progress when its branch is created, and to
 landed when it is merged into `feature/clean-architecture-migration` and its
@@ -33,3 +35,8 @@ branch is deleted.
 - The command alias `recruitCivic` and the eligibility query `civicStatus`
   are gone from the source. The glossary records `candidateAdmission` and the
   compatibility table shrank by two rows.
+- The seeded random sequence is a domain object, `RandomSource`, and the
+  campaign reads it from there.
+- The player application reaches the game through
+  `packages/game/public/game-runtime-api.ts`, and the checker refuses any
+  other way in.
