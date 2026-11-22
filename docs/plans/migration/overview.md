@@ -297,7 +297,7 @@ tests that cover the behavior it moves.
 
 ## 8. What the series closed and what remains
 
-The thirteen slices of [the plan](plan.md) have landed on the
+The fifteen slices of [the plan](plan.md) have landed on the
 `feature/clean-architecture-migration` branch. The gap status is:
 
 | Gap | State | Where |
@@ -314,6 +314,8 @@ The thirteen slices of [the plan](plan.md) have landed on the
 | The saved resident post without a name | Closed. `ResidentPositionReference` is a named type in `packages/game/public/resident-position-types.ts`, and the saved field states it instead of an inline shape. No saved value changes. | Slice 11 |
 | The unarmed combat rule outside the domain | Closed. The rule that decides whether an unarmed strike lands, what it costs and how likely a weapon is to be taken lives in `packages/game/domain/combat/unarmed-combat.ts`, and the root module is a thin re-export. The numbers do not change and no caller changes. | Slice 12 |
 | The sleep need rule and its wording together | Closed for both. The rule lives in `packages/game/domain/personnel/sleep-need.ts` and receives the authored profile hours as a parameter, because domain code does not read campaign content. The Spanish sentence the medical screen shows moved to `apps/web/lib/care-labels.ts`, where the plan says a player-facing sentence belongs. | Slice 13 |
+| The held consumable rule outside the domain | Closed. The rule that decides which consumable a combatant holds in hand, what it costs and how far it reaches lives in `packages/game/domain/inventory/held-supplies.ts`, next to the inventory that owns what a combatant carries, and the root module is a thin re-export. | Slice 14 |
+| The projectile energy rule outside the domain | Closed. The rule that turns a projectile's mass and velocity into impact lives in `packages/game/domain/combat/projectile-energy.ts`, next to the shot rules. The format check stays in the root module, because the shared file contract cannot be read from the domain. | Slice 15 |
 
 What the series did not do:
 
@@ -321,7 +323,11 @@ What the series did not do:
   entry gives them one declared door, and the interface uses it, and three
   rules have moved into the domain so far, but the bulk of
   `packages/game/tactical.js` and `packages/game/campaign.js` is still
-  procedural.
+  procedural. The rules that moved are the firearm preparation rule, the
+  unarmed combat rule, the sleep need rule, the held consumable rule and the
+  projectile energy rule; each of them keeps its root module as a thin
+  re-export, and each has a parity test that pins the numbers it produced
+  before the move.
 - The game session does not own the `RandomSource` or the `WorldTimeline`, and
   the campaign snapshot's `seed` and revision fields are still the state the
   rules advance.
