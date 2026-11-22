@@ -1,6 +1,6 @@
 # Clean architecture migration plan
 
-This plan defines a 31-slice sequence for moving Granaderos toward the
+This plan defines a 32-slice sequence for moving Granaderos toward the
 [accepted domain architecture](../accepted/domain-architecture.md). The
 [overview](overview.md) describes current source behavior and remaining
 requirements; the [slice index](slices/README.md) links each note.
@@ -31,7 +31,7 @@ In scope:
 - The verification tooling that keeps the new boundaries honest.
 - The documentation that records the new shape.
 
-This 31-slice sequence makes no gameplay changes. It preserves saved values and
+This 32-slice sequence makes no gameplay changes. It preserves saved values and
 does not retire persisted compatibility names. The broader migration requires
 explicit conversions before completion; the `hiringArrivals` conversion is a
 gameplay migration because it changes a recruitment travel delay.
@@ -76,6 +76,7 @@ outside this plan.
 | [29. NPC perception](slices/29-npc-perception.md) | Move simple NPC direction and heard-position rules into the domain |
 | [30. Care composure](slices/30-care-composure.md) | Move the caregiver composure-relief rule into the domain |
 | [31. Game import boundary](slices/31-game-import-boundary.md) | Block game-package imports from the player application in architecture checks |
+| [32. Perception consolidation](slices/32-perception-consolidation.md) | Move the richer NPC perception rules into the domain and re-export them from both retained modules |
 
 Each slice has a note under [slices](slices/README.md) that records its intent,
 scope, and behavior tests. Read the relevant note before changing that area.
@@ -85,9 +86,8 @@ scope, and behavior tests. Read the relevant note before changing that area.
 The migration is complete when:
 
 1. The remaining procedural game rules are moved behind the domain or a
-   declared public entry, the duplicate perception rules in
-   `packages/game/tactical-awareness.js` are consolidated, and architecture
-   checks reject imports from `packages/game` into `apps/web`.
+   declared public entry, and architecture checks reject imports from
+   `packages/game` into `apps/web`.
 2. `GameSession` (the runtime consistency boundary) owns `RandomSource` (the
    seeded random sequence) and `WorldTimeline` (the game-time event scheduler),
    and all game-time changes go through `WorldTimeline.advanceTo`.
@@ -127,6 +127,6 @@ boundaries it can express as import rules.
 
 Start with [overview.md](overview.md) for the current implementation and open
 gaps, then use this plan for the branch flow and the [slice index](slices/README.md)
-for the 31 slice notes. Read the accepted architecture and glossary before
+for the 32 slice notes. Read the accepted architecture and glossary before
 work that changes a domain contract or term. Each slice note records its
 intent, scope, and behavior tests.

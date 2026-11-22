@@ -1,6 +1,6 @@
 # Migration slice notes
 
-This index links to the 31 migration slice notes. Each note records its
+This index links to the 32 migration slice notes. Each note records its
 rationale, scope, and behavior tests. Its rationale describes the source at
 that slice's start; the [overview](../overview.md) describes current source.
 
@@ -39,6 +39,7 @@ that slice's start; the [overview](../overview.md) describes current source.
 | [29. NPC perception](29-npc-perception.md) |
 | [30. Care composure](30-care-composure.md) |
 | [31. Game import boundary](31-game-import-boundary.md) |
+| [32. Perception consolidation](32-perception-consolidation.md) |
 
 ## What the series changed
 
@@ -83,13 +84,13 @@ that slice's start; the [overview](../overview.md) describes current source.
   root module is a thin re-export of it.
 - `ResidentPositionReference` names the saved reference to a resident's
   character identity and local position.
-- Nineteen game rules have moved into the domain: firearm readiness, unarmed
+- Twenty game rules have moved into the domain: firearm readiness, unarmed
   combat, sleep need, held supplies, projectile energy, firearm loads, study
   rate, the route queue, firearm serviceability, kinetic impact, combat
   balance, combat journal, fatigue and energy, interior visibility, campaign
-clock conversion, tactical-level rules (the vertical map layer assigned to
-  a point), shot-range calculation, NPC perception (`directionTo` &
-  `approximateHeardPosition`), and care-composure relief
+  clock conversion, tactical-level rules (the vertical map layer assigned to
+  a point), shot-range calculation, NPC facing (`directionTo`), anonymous
+  sound-position approximation (`approximateHeardPosition`), and care-composure relief
   (`CARE_COMPOSURE_RELIEF` & `careComposureRelief`). The sleep-need sentence
   and campaign notices moved from game code to the browser interface.
   The shot-range sentence stays beside its HUD caller in
@@ -99,9 +100,11 @@ clock conversion, tactical-level rules (the vertical map layer assigned to
   their duplicates from interior visibility. `packages/campaign-format` keeps
   an independent copy for authored-map validation because it cannot import the
   game.
-- Slice 29 put the simple NPC perception rules in the domain. The richer
-  `directionTo` and `approximateHeardPosition` copies in
-  `packages/game/tactical-awareness.js` remain to be consolidated.
+- Slice 32 consolidated the richer `directionTo` and
+  `approximateHeardPosition` rules used by the game in the domain.
+  `packages/game/tactical-awareness.js` and
+  `packages/game/npc-perception.js` re-export them, so callers keep their paths
+  and behavior.
 - Slice 30 moved `CARE_COMPOSURE_RELIEF` and `careComposureRelief` into
   `packages/game/domain/personnel/care-composure.ts`; the root module
   re-exports them.
@@ -111,9 +114,6 @@ clock conversion, tactical-level rules (the vertical map layer assigned to
 ## What remains
 
 - Retained simulation modules still carry most game rules procedurally.
-- `packages/game/tactical-awareness.js` retains richer copies of
-  `directionTo` and `approximateHeardPosition`; consolidating them with the
-  domain rules remains required.
 - `GameSession` does not own `RandomSource` or `WorldTimeline`, and
   `packages/game/campaign.js` still changes campaign time directly.
 - Persisted compatibility names still need explicit save conversion.
