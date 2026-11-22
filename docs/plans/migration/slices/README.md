@@ -1,6 +1,6 @@
 # Migration slice notes
 
-This index links to the 27 migration slice notes. Each note records its
+This index links to the 29 migration slice notes. Each note records its
 rationale, scope, and behavior tests. Its rationale describes the source at
 that slice's start; the [overview](../overview.md) describes current source.
 
@@ -35,6 +35,8 @@ that slice's start; the [overview](../overview.md) describes current source.
 | [25. Strategic clock](25-strategic-clock.md) |
 | [26. Tactical space](26-tactical-space.md) |
 | [27. Interior visibility helpers](27-interior-visibility-helpers.md) |
+| [28. Shot range](28-shot-range.md) |
+| [29. NPC perception](29-npc-perception.md) |
 
 ## What the series changed
 
@@ -76,22 +78,31 @@ that slice's start; the [overview](../overview.md) describes current source.
   root module is a thin re-export of it.
 - `ResidentPositionReference` names the saved reference to a resident's
   character identity and local position.
-- Sixteen game rules have moved into the domain: firearm readiness, unarmed
+- Eighteen game rules have moved into the domain: firearm readiness, unarmed
   combat, sleep need, held supplies, projectile energy, firearm loads, study
   rate, the route queue, firearm serviceability, kinetic impact, combat
   balance, combat journal, fatigue and energy, interior visibility, campaign
-  clock conversion, and tactical-level rules (the vertical map layer assigned
-  to a point). The sleep-need sentence and campaign notices moved from game
-  code to the browser interface.
+  clock conversion, tactical-level rules (the vertical map layer assigned to
+  a point), shot-range calculation, and NPC perception (`directionTo` and
+  `approximateHeardPosition`). The sleep-need sentence and campaign notices
+  moved from game code to the browser interface. The shot-range sentence stays
+  beside its HUD caller in `packages/game/shot-range.js` to preserve dependency
+  direction.
 - Slice 26 moved the game's tactical-level rules into
   `packages/game/domain/sector-sessions/tactical-space.ts`. Slice 27 removed
   their duplicates from interior visibility. `packages/campaign-format` keeps
   an independent copy for authored-map validation because it cannot import the
   game.
+- Slice 29 put the simple NPC perception rules in the domain. The richer
+  `directionTo` and `approximateHeardPosition` copies in
+  `packages/game/tactical-awareness.js` remain to be consolidated.
 
 ## What remains
 
 - Retained simulation modules still carry most game rules procedurally.
+- `packages/game/tactical-awareness.js` retains richer copies of
+  `directionTo` and `approximateHeardPosition`; consolidating them with the
+  domain rules remains required.
 - `GameSession` does not own `RandomSource` or `WorldTimeline`, and
   `packages/game/campaign.js` still changes campaign time directly.
 - Persisted compatibility names still need explicit save conversion.

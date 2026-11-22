@@ -1,6 +1,6 @@
 # Clean architecture migration plan
 
-This plan defines a 27-slice sequence for moving Granaderos toward the
+This plan defines a 29-slice sequence for moving Granaderos toward the
 [accepted domain architecture](../accepted/domain-architecture.md). The
 [overview](overview.md) describes current source behavior and remaining
 requirements; the [slice index](slices/README.md) links each note.
@@ -31,7 +31,7 @@ In scope:
 - The verification tooling that keeps the new boundaries honest.
 - The documentation that records the new shape.
 
-This 27-slice sequence makes no gameplay changes. It preserves saved values and
+This 29-slice sequence makes no gameplay changes. It preserves saved values and
 does not retire persisted compatibility names. The broader migration requires
 explicit conversions before completion; the `hiringArrivals` conversion is a
 gameplay migration because it changes a recruitment travel delay.
@@ -72,6 +72,8 @@ outside this plan.
 | [25. Strategic clock](slices/25-strategic-clock.md) | Move clock conversion and notices to their owners |
 | [26. Tactical space](slices/26-tactical-space.md) | Move tactical-level rules (the vertical map layer assigned to a point) into the domain |
 | [27. Interior visibility helpers](slices/27-interior-visibility-helpers.md) | Reuse domain tactical-level rules in interior visibility |
+| [28. Shot range](slices/28-shot-range.md) | Move shot-range calculation into the domain and keep the HUD sentence with its caller |
+| [29. NPC perception](slices/29-npc-perception.md) | Move simple NPC direction and heard-position rules into the domain |
 
 Each slice has a note under [slices](slices/README.md) that records its intent,
 scope, and behavior tests. Read the relevant note before changing that area.
@@ -81,7 +83,8 @@ scope, and behavior tests. Read the relevant note before changing that area.
 The migration is complete when:
 
 1. The remaining procedural game rules are moved behind the domain or a
-   declared public entry.
+   declared public entry, and the duplicate perception rules in
+   `packages/game/tactical-awareness.js` are consolidated.
 2. `GameSession` (the runtime consistency boundary) owns `RandomSource` (the
    seeded random sequence) and `WorldTimeline` (the game-time event scheduler),
    and all game-time changes go through `WorldTimeline.advanceTo`.
@@ -121,6 +124,6 @@ boundaries it can express as import rules.
 
 Start with [overview.md](overview.md) for the current implementation and open
 gaps, then use this plan for the branch flow and the [slice index](slices/README.md)
-for the 27 slice notes. Read the accepted architecture and glossary before
+for the 29 slice notes. Read the accepted architecture and glossary before
 work that changes a domain contract or term. Each slice note records its
 intent, scope, and behavior tests.

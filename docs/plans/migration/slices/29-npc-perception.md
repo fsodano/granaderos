@@ -1,58 +1,52 @@
-# Slice 29: the NPC perception rules into the domain
+# Slice 29: NPC perception rules in the domain
 
-**Branch:** `migration/npc-perception`
-**Intent:** Move the rules that decide where a civilian looks and where they
-believe a sound came from into the domain, next to the other perception
-rules.
+**Intent:** Put the simple facing and heard-position rules for non-player
+characters in the domain.
 
 ## Why this slice exists
 
-`packages/game/npc-perception.js` holds two pure rules: `directionTo` decides
-which way a civilian faces when looking at a point, and
-`approximateHeardPosition` decides where a civilian believes a sound came
-from, given its radius, the obstructions, and the map bounds.
+`directionTo` calculates a facing direction between two points.
+`approximateHeardPosition` returns a coarse, anonymous position for a sound
+within hearing range, accounting for obstructions and map bounds.
 
-The file states the invariant that matters: a report never retains the live
-identity of the shooter. A civilian can know where a sound came from without
-knowing who made it.
+The domain owns these simple rules in
+`packages/game/domain/perception/npc-perception.ts`. The retained
+`packages/game/npc-perception.js` module re-exports them, but no source file
+imports that module.
 
-The domain already owns perception: `VisionObserver` holds the condition and
-posture that determine perception, `FieldOfView` holds facing and angular
-limits, `VisibilityPolicy` holds range and posture rules, and
-`KnownSectorPolicy` limits what the player may know. The civilian rules
-belong with them.
+The live NPC consumers, `packages/game/npc-ai.js` and
+`packages/game/tactical.js`, import both functions from
+`packages/game/tactical-awareness.js`, which keeps richer copies. Other
+tactical code also imports `directionTo` from that module. Consolidating the
+duplicate perception rules in `tactical-awareness.js` remains a requirement.
+
+A hearing report contains no shooter identity. A non-player character can know
+where a sound came from without knowing who made it.
 
 ## What it adds
 
 | File | Content |
 | --- | --- |
-| `packages/game/domain/perception/npc-perception.ts` | The rules |
+| `packages/game/domain/perception/npc-perception.ts` | The domain rules |
 | `packages/game/domain/perception/npc-perception.test.ts` | Their tests |
 
 ## What it changes
 
-`packages/game/npc-perception.js` keeps its module and its exports, and
-becomes a thin re-export of the domain module. The two files that import it
-keep importing it from the same path.
+- `packages/game/npc-perception.js` re-exports the domain functions. No source
+  module imports this compatibility module.
+- `packages/game/npc-ai.js` and `packages/game/tactical.js` continue to import
+  the richer copies from `packages/game/tactical-awareness.js`.
+- The duplicate perception implementations in `tactical-awareness.js` remain
+  to be consolidated.
 
-The rules do not change: the same facing, the same approximate position, the
-same uncertainty, and the same bounds on the map.
+The domain rules preserve their facing, approximate-position, uncertainty, and
+map-bound behavior.
 
 ## Tests
 
 - `packages/game/domain/perception/npc-perception.test.ts` covers the rules:
   a listener looking at its own cell keeps its facing, the direction to a
-  point follows the eight compass steps, a sound inside the radius produces
-  an approximate position with an uncertainty, a sound beyond the radius
-  produces none, obstructions shrink the radius, the position stays inside
-  the map, and the report carries no shooter identity.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.33` to `0.2.34`.
+  point follows the eight compass steps, a sound inside the radius produces an
+  approximate position with uncertainty, a sound beyond the radius produces
+  none, obstructions shrink the radius, the position stays inside the map,
+  and the report carries no shooter identity.
