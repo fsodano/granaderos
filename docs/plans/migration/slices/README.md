@@ -18,6 +18,8 @@ the diff.
 | [7. Interface public entry](07-interface-public-entry.md) | `migration/interface-public-entry` | landed | 0.2.12 |
 | [8. Campaign compiler](08-campaign-compiler.md) | `migration/campaign-compiler` | landed | 0.2.13 |
 | [9. Game snapshot](09-game-snapshot.md) | `migration/game-snapshot` | landed | 0.2.14 |
+| [10. Weapon readiness](10-weapon-readiness.md) | `migration/weapon-readiness` | landed | 0.2.15 |
+| [11. Resident position reference](11-resident-position-reference.md) | `migration/resident-position-reference` | landed | 0.2.16 |
 
 A slice moves from planned to in progress when its branch is created, and to
 landed when it is merged into `feature/clean-architecture-migration` and its
@@ -47,3 +49,6 @@ branch is deleted.
   game and the editor use.
 - The save envelope and the content it carries have the names
   `GameSnapshot` and `GameSnapshotContent`.
+- The rule that prepares a firearm for firing lives in the domain, and the
+  root module is a thin re-export of it.
+- The saved resident post has the name `ResidentPositionReference`.
