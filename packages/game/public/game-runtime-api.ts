@@ -351,7 +351,7 @@ export {
   operativeLocation,
   squadReorganizationReason,
 } from '../squads.js';
-export { STRATEGIC_CLOCK_SPEEDS, strategicClockInterrupt } from '../strategic-clock.ts';
+export { STRATEGIC_CLOCK_SPEEDS } from '../strategic-clock.ts';
 export {
   MAP_MODES,
   MAP_TILE_SIZE,

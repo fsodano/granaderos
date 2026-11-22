@@ -2,6 +2,16 @@ import { DomainRefusal, DomainRefusalCode } from './domain-refusal.ts';
 
 export const TimeUnits = Object.freeze({ secondsPerHour: 3600, hoursPerDay: 24 });
 
+export interface CampaignClock {
+  readonly hour: number;
+  readonly secondOfHour?: number;
+}
+
+/** The accepted game second for a campaign clock, without refusing an unusual clock. */
+export function gameSecondsFromCampaignClock(clock: CampaignClock): number {
+  return clock.hour * TimeUnits.secondsPerHour + (clock.secondOfHour ?? 0);
+}
+
 export class GameTime {
   readonly #seconds: number;
 
@@ -25,7 +35,7 @@ export class GameTime {
     ) {
       throw new DomainRefusal(DomainRefusalCode.InvalidValue);
     }
-    return new GameTime(hour * TimeUnits.secondsPerHour + secondOfHour);
+    return new GameTime(gameSecondsFromCampaignClock({ hour, secondOfHour }));
   }
 
   afterSeconds(duration: number): GameTime {
