@@ -1,64 +1,50 @@
-# Slice 28: the shot range rule into the domain, its wording into the interface
+# Slice 28: the shot-range rule and its HUD sentence
 
-**Branch:** `migration/shot-range`
-**Intent:** Move the rule that turns distance and visibility into a shot's
-modifiers into the domain, and move the sentence that describes it into the
-interface.
+**Intent:** Move shot-range calculations into the domain while keeping the
+player-facing sentence with its HUD caller.
 
 ## Why this slice exists
 
-`packages/game/shot-range.js` holds two different things.
+`packages/game/shot-range.js` contains two different responsibilities:
+`shotRangeModifiers` calculates range effects on a shot, while `shotRangeText`
+builds the Spanish sentence shown by the HUD.
 
-The rule: `shotRangeModifiers` decides how distance, weapon range and
-apparent distance combine: which range the weapon is beyond, which the sight
-is beyond, the effective sight range, the weapon and sight penalties, and the
-factor applied to the chance of hitting.
+The domain owns shot accuracy. `FirearmAccuracy` calculates shot accuracy from
+the actor, target, range, and environment, so `shotRangeModifiers` belongs
+beside it in `packages/game/domain/combat/shot-range.ts`.
 
-The wording: `shotRangeText` builds the Spanish sentence the player reads.
-
-The domain already owns shot accuracy: `FirearmAccuracy` in
-`packages/game/domain/combat/` calculates the accuracy of a shot from the
-actor, the target, the range and the environment. The range modifiers belong
-beside it. The sentence belongs in the interface, where a player-facing line
-is kept.
+The production caller for `shotRangeText` is
+`packages/game/ja2-hud.ts`, a presentation adapter inside the retained game
+module. The sentence stays in `packages/game/shot-range.js` beside that
+caller, preserving the dependency direction: the game package does not depend
+on the player application.
 
 ## What it adds
 
 | File | Content |
 | --- | --- |
-| `packages/game/domain/combat/shot-range.ts` | The rule |
-| `packages/game/domain/combat/shot-range.test.ts` | Its tests |
-| `apps/web/lib/shot-range-labels.ts` | The sentence the player reads |
+| `packages/game/domain/combat/shot-range.ts` | The shot-range calculation |
+| `packages/game/domain/combat/shot-range.test.ts` | Tests for the calculation |
 
 ## What it changes
 
-- The domain module holds `shotRangeModifiers`.
-- `packages/game/shot-range.js` keeps its module and its exports, re-exports
-  the rule from the domain, and no longer holds the sentence.
-- `apps/web/lib/shot-range-labels.ts` holds `shotRangeText`, with the same
-  sentence. Its caller reads it from the interface's own module.
-- `packages/game/public/game-runtime-api.ts` stops exporting the sentence.
+- `packages/game/domain/combat/shot-range.ts` owns `shotRangeModifiers`.
+- `packages/game/shot-range.js` re-exports the domain rule and retains
+  `shotRangeText`.
+- `packages/game/ja2-hud.ts` continues to call `shotRangeText` from
+  `packages/game/shot-range.js`.
+- `packages/game/shot-range.test.ts` guards the Spanish sentence with exact
+  string comparisons.
 
-The rule and the sentence do not change: a shot beyond the weapon's range
-still halves the chance, one beyond the sight still halves it, and the text
-still names the distance and the range in the same words.
+The rule and sentence keep their behavior: a shot beyond weapon range halves
+the chance, a shot beyond sight range halves it, both factors combine, and the
+sentence keeps the same distance and range wording.
 
 ## Tests
 
 - `packages/game/domain/combat/shot-range.test.ts` covers the rule: a shot
-  inside both ranges has no penalty, a shot beyond the weapon gets the weapon
-  factor, a shot beyond the sight gets the sight factor, the two factors
-  combine, an invalid distance is refused, and the penalties keep their
-  values.
-- A test of the interface module proves the sentence is the same one the game
-  showed before.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.32` to `0.2.33`.
+  inside both ranges has no penalty, a shot beyond weapon range gets the
+  weapon factor, a shot beyond sight range gets the sight factor, both factors
+  combine, invalid distance is refused, and the penalties retain their values.
+- `packages/game/shot-range.test.ts` checks the HUD sentence byte for byte for
+  in-range shots, shots beyond weapon range, and shots beyond both ranges.
