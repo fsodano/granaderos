@@ -1,6 +1,5 @@
 # Slice 3: browser composition
 
-**Branch:** `migration/browser-composition`
 **Intent:** Move the construction of game object graphs out of the React
 components and into the browser composition layer, and make the architecture
 checker keep it there.
@@ -75,13 +74,3 @@ a later slice.
 - `tests/recruitment-catalogue.test.ts` proves the composition module returns
   the same candidate identifiers the use case returns for the same campaign,
   and that the recruitment screen still finds a candidate by identifier.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.7` to `0.2.8`.

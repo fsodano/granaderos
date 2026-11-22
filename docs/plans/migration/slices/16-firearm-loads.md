@@ -1,6 +1,5 @@
 # Slice 16: the firearm loads rule into the domain
 
-**Branch:** `migration/firearm-loads`
 **Intent:** Move the rule that decides which loads a firearm can use into the
 domain, where the firearm lives.
 
@@ -41,13 +40,3 @@ change.
   alike, an authored definition is found inside a unit or an item, an authored
   override wins over the default, a weapon that declares its ammunition family
   inherits no default, and a weapon with no definition offers no loads.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.20` to `0.2.21`.

@@ -1,6 +1,5 @@
 # Slice 12: the unarmed combat rule into the domain
 
-**Branch:** `migration/unarmed-combat`
 **Intent:** Move the rule that decides whether an unarmed strike lands, and how
 much it costs, into the domain, where the other close-combat rules live.
 
@@ -45,13 +44,3 @@ the same weapon-take chance, the same fists and buttstock values.
   attacker improves the chance, an unaware defender is easier to hit, the
   chance stays inside its bounds, the impact damage and breath loss follow
   strength and energy, and the weapon-take chance behaves as before.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.16` to `0.2.17`.

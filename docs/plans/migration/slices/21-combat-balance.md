@@ -1,6 +1,5 @@
 # Slice 21: the combat balance rules into the domain
 
-**Branch:** `migration/combat-balance`
 **Intent:** Move the tuning table and the cover and penetration damage rules
 into the domain, where the shot rules live.
 
@@ -47,13 +46,3 @@ The tuning values do not change, and neither do the two damage rules.
   the reduction never passes below zero, a body and a ricochet take their
   share of a penetrating shot, and the result never exceeds the weapon's
   damage.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.25` to `0.2.26`.

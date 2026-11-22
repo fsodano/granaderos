@@ -1,6 +1,5 @@
 # Slice 4: uniform use-case contracts
 
-**Branch:** `migration/use-case-contracts`
 **Intent:** Give every use case in `packages/game/application` the same
 contract shape: a request file, a response file, a repository interface, a
 use-case class, and a README.
@@ -41,20 +40,10 @@ changes, and no domain name changes: the types keep their current names.
 
 ## Tests
 
-- The existing use-case tests keep passing unchanged, which proves the moved
-  types still describe the same contracts.
+- Existing use-case tests exercise the request and response contracts; moving
+  the types does not change their names.
 - A new test in `packages/game/application/` asserts the contract shape: every
   use-case folder has a README, a repository interface, a use-case class, a
   request module, and a response module, and each request and response module
   exports exactly one type. The test reads the folders from disk, so a future
   use case that skips a file fails the suite.
-
-## Verification
-
-- `npm test` passes, including the new shape test.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.8` to `0.2.9`.

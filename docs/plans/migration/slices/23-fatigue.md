@@ -1,6 +1,5 @@
 # Slice 23: the fatigue and energy rules into the domain
 
-**Branch:** `migration/fatigue`
 **Intent:** Move the rules that decide how much a combatant can still do into
 the domain, next to the character's condition.
 
@@ -47,13 +46,3 @@ the cap of one hundred on fatigue, and the rounding of gained fatigue.
   the smaller of the two, gaining fatigue rounds up and never leaves the
   range, and recovering energy and fatigue never raises energy above the
   maximum.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.27` to `0.2.28`.

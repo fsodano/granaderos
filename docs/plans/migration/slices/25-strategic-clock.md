@@ -1,6 +1,5 @@
 # Slice 25: the campaign clock rule into the domain, the campaign notices into the interface
 
-**Branch:** `migration/strategic-clock`
 **Intent:** Move the rule that turns the campaign clock into game seconds into
 the domain, and move the choice of what the player is told into the
 interface.
@@ -55,13 +54,3 @@ keeps the Spanish translation of a concept in the interface's hands.
   same campaign states and in the same order of preference: a pending arrival
   decision is reported before a pending battle, a refused command reports its
   error first, and a campaign with nothing to report says nothing.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.29` to `0.2.30`.

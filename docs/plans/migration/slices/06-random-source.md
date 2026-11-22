@@ -1,6 +1,5 @@
 # Slice 6: RandomSource in the domain
 
-**Branch:** `migration/random-source`
 **Intent:** Move the seeded random sequence out of a procedural helper and into
 the domain, where the ubiquitous language says it belongs.
 
@@ -12,8 +11,14 @@ The [ubiquitous language](../../accepted/ubiquitous-language.md) names
 criterion that "a `RandomSource` restored from the snapshot repeats the same
 sequence".
 
-No such class exists. The sequence lives as a bare `seed` field on the campaign
-snapshot, advanced by a closure in `packages/game/campaign.js`:
+Before Slice 6, no such class existed. The sequence lived as a bare `seed`
+field on the campaign snapshot. The production helper in
+`packages/game/campaign.js` at the start of the slice was:
+
+`s` is the campaign snapshot. The helper mutates `s.seed`, then divides the
+updated unsigned 32-bit state by `4294967296` to return a value below one.
+`Math.imul` multiplies as a 32-bit integer, and `>>> 0` interprets the result
+as unsigned.
 
 ```js
 const random = (s) => {
@@ -38,7 +43,7 @@ no domain service can ask for a draw.
 - `packages/game/campaign.js`: the procedural `random` helper delegates to the
   domain class. The sequence it produces does not change.
 
-## Why the game session does not own it yet
+## Why the game session does not own it
 
 The ubiquitous language says the game session owns the `RandomSource`. It
 cannot own it while the campaign snapshot's `seed` field is the state that the
@@ -46,23 +51,26 @@ running rules advance, because a session-held copy and the campaign's field
 would be two owners of the same sequence, and the two would disagree after the
 first draw. The accepted plan allows one declared owner per fact.
 
-For the session to own it, the campaign's `seed` has to become a projection of
-the session's source, which means every draw in the campaign rules has to go
-through the session rather than through the campaign snapshot. That is a
-plumbing change through the retained modules, and it belongs to a later slice
-that moves those rules. This slice moves the rule into the domain and leaves
-the ownership where it is.
+For the session to own it, the campaign's `seed` must become a projection of
+the session's source, and every draw in the campaign rules must go through the
+session rather than the campaign snapshot. The 27-slice plan leaves
+ownership with the campaign snapshot.
 
 ## The sequence does not change
 
-The domain class reproduces the generator the campaign uses today, exactly:
+The domain `RandomSource` uses the same generator step as the production helper
+it replaced:
+
+`seed` is the 32-bit generator state; each call updates it. `value` is the
+normalized draw returned by the generator.
 
 ```js
 seed = (Math.imul(1664525, seed) + 1013904223) >>> 0;
 value = seed / 4294967296;
 ```
 
-The first values for a seed of 1812 are:
+The domain test `random-source.test.ts` expects these first values for a seed
+of 1812:
 
 ```text
 0.9383129708003253, 0.6337893842719495, 0.5109232396353036, 0.7415219265967607
@@ -79,13 +87,3 @@ A test asserts those values, so the rule cannot drift.
 - `tests/random-source-persistence.test.ts`: a campaign that is saved and
   restored keeps its seed and continues the same sequence, so the accepted
   behavior "a restored game repeats the sequence it saved" holds end to end.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.10` to `0.2.11`.

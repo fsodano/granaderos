@@ -1,6 +1,5 @@
 # Slice 5: compatibility aliases
 
-**Branch:** `migration/compatibility-aliases`
 **Intent:** Retire the first compatibility names from the source, so the
 compatibility table in the [ubiquitous language](../../accepted/ubiquitous-language.md)
 starts to shrink.
@@ -9,8 +8,8 @@ starts to shrink.
 
 The accepted architecture keeps a table of retained compatibility names. Each
 row records the canonical meaning, the owner, the call sites it still serves,
-and the removal stage, and the plan states that the list only shrinks. Every
-row in that table is still present in the source.
+and the removal stage, and the plan states that the list only shrinks. At the
+start of Slice 5, every row in that table was still present in the source.
 
 This slice removes the two aliases that are not part of the persisted format
 and therefore need no save conversion:
@@ -58,18 +57,7 @@ format and need an explicit conversion, which is a later slice.
 
 ## Tests
 
-- The existing fixtures that hire a combatant keep passing with the canonical
-  command name.
+- Recruitment fixtures use the canonical command name.
 - A new test asserts that `dispatchCampaign` no longer accepts the retired
   command alias and that the canonical command still works, and that the
   canonical eligibility query is exported and the retired one is not.
-
-## Verification
-
-- `npm test` passes, including the new test.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.9` to `0.2.10`.

@@ -276,14 +276,14 @@ function paidResidentCrew() {
   assert.equal(activeBattle().buildings.length, 1);
   assert.ok(
     present(building.rooms).some(
-      (room) => room.cells.length === 1 && sameCell(room.cells[0], post),
+      (room) => room.cells.length === 1 && sameCell(present(room.cells[0]), post),
     ),
   );
   // The first actual soldier remains beside the NPC until the second soldier
   // has paid for the post. The ordinary conversation pause keeps setup calm.
   move(present(ids[0]), { x: building.x - 2, y: building.y + 2, tacticalLevel: 0 });
   move(present(ids[1]), { x: building.x, y: building.y + 4, tacticalLevel: 0 });
-  const chest = activeBattle().props.find((prop) => prop.id === OCCUPANCY_CHEST),
+  const chest = present(activeBattle().props.find((prop) => prop.id === OCCUPANCY_CHEST)),
     look: TacticalAction = { type: 'look', unitId: String(present(ids[1])), ...spacePoint(chest) },
     lookQuote = lookPreview(activeBattle(), actor(battle, present(ids[1])), look);
   assert.equal(lookQuote.valid, true);
@@ -322,7 +322,7 @@ function paidResidentCrew() {
   });
   exit();
   for (const [id, point] of posts) {
-    assert.ok(sameCell(present(campaign.operativeState[id]).residentPosition, point));
+    assert.ok(sameCell(present(present(campaign.operativeState[id]).residentPosition), point));
     assert.ok(
       present(contractExpiresSeconds(campaign.contracts[id])) > campaignClock(campaign) + 6 * 3600,
     );
