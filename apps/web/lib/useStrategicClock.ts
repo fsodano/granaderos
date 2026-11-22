@@ -4,10 +4,8 @@ import type {
   CampaignSnapshot,
   CampaignAction,
 } from '../../../packages/game/public/campaign-types.ts';
-import {
-  hasPendingArrivalDecision,
-  strategicClockInterrupt,
-} from '../../../packages/game/public/game-runtime-api.ts';
+import { hasPendingArrivalDecision } from '../../../packages/game/public/game-runtime-api.ts';
+import { strategicClockInterrupt } from './campaign-notices.ts';
 
 type ClockControl = {
   campaign: CampaignSnapshot;

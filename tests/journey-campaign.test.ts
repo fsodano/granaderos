@@ -9,7 +9,7 @@ import assert from 'node:assert/strict';
 import { initialCampaign } from './legacy-campaign-fixture.ts';
 import { dispatchCampaign } from '../packages/game/campaign.js';
 import { pendingArrivalDecisions, squadTravelStatus } from '../packages/game/squad-travel.js';
-import { strategicClockInterrupt } from '../packages/game/strategic-clock.ts';
+import { strategicClockInterrupt } from '../apps/web/lib/campaign-notices.ts';
 import { previewStrategicRoute } from '../packages/game/strategic-route.js';
 import { encodeSave, decodeSave } from '../packages/game/save.ts';
 
