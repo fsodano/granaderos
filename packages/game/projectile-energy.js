@@ -1,9 +1,6 @@
 import { isProjectileEnergyRecord } from '../campaign-format/projectile-profile-schema.js';
 import { AMMUNITION_WEIGHT } from './ammunition-types.js';
-import {
-  PROJECTILE_ENERGY_MODEL,
-  projectileLaunchImpact,
-} from './domain/combat/projectile-energy.ts';
+import { PROJECTILE_ENERGY_MODEL } from './domain/combat/projectile-energy.ts';
 
 export {
   PROJECTILE_ENERGY_MODEL,
@@ -13,6 +10,8 @@ export {
   projectileLaunchImpact,
   projectileDamageFactor,
 } from './domain/combat/projectile-energy.ts';
+
+export { kineticNominalImpact } from './domain/combat/kinetic-impact.ts';
 
 export function validProjectileEnergy(value) {
   return Boolean(
@@ -24,23 +23,4 @@ export function validProjectileEnergy(value) {
     value.muzzleVelocityMps >= 25 &&
     value.muzzleVelocityMps <= 600,
   );
-}
-// The injury denominator remains authored damage. An energetic ball may carry
-// more penetration, while a weak contact cannot receive a full damage draw.
-export function kineticNominalImpact(weapon, impact, share = 1, coverMultiplier = 1) {
-  const launch = projectileLaunchImpact(weapon) * share,
-    cap = weapon.damage * share;
-  const coverLoss = launch * (1 - (impact.coverDamageFactor ?? 1));
-  const incoming =
-    impact.incomingImpact ??
-    Math.max(
-      0,
-      launch -
-        coverLoss -
-        launch *
-          ((impact.bodyDamageReduction ?? 0) +
-            (impact.ricochetDamageReduction ?? 0) +
-            (impact.airDamageReduction ?? 0)),
-    );
-  return Math.max(0, Math.min(cap, incoming + (1 - coverMultiplier) * coverLoss));
 }
