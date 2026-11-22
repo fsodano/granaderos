@@ -1,4 +1,4 @@
-import { createBattle, weaponFor } from '../../../../packages/game/tactical.js';
+import { createBattle, weaponFor } from '../../../../packages/game/public/game-runtime-api.ts';
 
 export const PRONE_WORK_TASKS = Object.freeze([
   { id: 'rifle-prime', label: 'Cebar fusil', weapon: 1800, jammed: true },

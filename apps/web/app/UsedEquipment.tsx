@@ -2,8 +2,11 @@ import type {
   CampaignSnapshot,
   CampaignAction,
 } from '../../../packages/game/public/campaign-types.ts';
-import { isSupplied } from '../../../packages/game/campaign.js';
-import { usedEquipmentOffers, equipmentLabel } from '../../../packages/game/equipment.js';
+import {
+  isSupplied,
+  usedEquipmentOffers,
+  equipmentLabel,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import { FittingReadout } from './JA2Bayonet';
 export default function UsedEquipment({
   state,

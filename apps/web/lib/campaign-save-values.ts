@@ -1,5 +1,7 @@
-import { restoreCampaignValue } from '../../../packages/game/campaign.js';
-import { validateBattleSnapshot } from '../../../packages/game/validate-battle.js';
+import {
+  restoreCampaignValue,
+  validateBattleSnapshot,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import type { CampaignSnapshot } from '../../../packages/game/public/campaign-types.ts';
 import type { BattleSnapshot } from '../../../packages/game/public/compatibility-types.ts';
 

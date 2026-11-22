@@ -1,6 +1,10 @@
 import { required } from './required';
 import { isMesh, isSkinnedMesh } from './scene-node-types';
-import { applySkinPalette } from '../../../../packages/game/skin-palette.js';
+import {
+  applySkinPalette,
+  resolveActorAction,
+  selectActorClipVariant,
+} from '../../../../packages/game/public/game-runtime-api.ts';
 import {
   AnimationMixer,
   AnimationAction,
@@ -16,10 +20,6 @@ import {
   Object3D,
 } from 'three';
 import { clone } from 'three/addons/utils/SkeletonUtils.js';
-import {
-  resolveActorAction,
-  selectActorClipVariant,
-} from '../../../../packages/game/actor-action-contract.ts';
 import {
   boundClip,
   type LoadedActor,

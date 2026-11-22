@@ -5,13 +5,13 @@ import type {
   CampaignAction,
 } from '../../../packages/game/public/campaign-types.ts';
 import { useState } from 'react';
-import { campaignSectors } from '../../../packages/game/campaign-definition.js';
-import { MILITIA_NAMES } from '../../../packages/game/militia.js';
 import {
+  campaignSectors,
+  MILITIA_NAMES,
   militiaDistributionStatus,
   militiaTransferPreview,
   militiaDistributionPreview,
-} from '../../../packages/game/militia-distribution.js';
+} from '../../../packages/game/public/game-runtime-api.ts';
 import './militia-distribution.css';
 
 export default function MilitiaDistribution({

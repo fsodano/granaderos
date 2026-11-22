@@ -1,9 +1,11 @@
 import { required } from './required';
 import { worldWallRecords, buildingWallAtPoint, wallFrameRecords } from './world-wall-records';
 import { Group, Matrix4, Quaternion, Vector3 } from 'three';
-import { entranceFrame } from '../../../../packages/game/building-profile.ts';
-import { buildingAppearance } from '../../../../packages/game/building-appearance.ts';
-import { buildingStyle } from '../../../../packages/game/building-types.ts';
+import {
+  entranceFrame,
+  buildingAppearance,
+  buildingStyle,
+} from '../../../../packages/game/public/game-runtime-api.ts';
 import { WorldBatch, roofTextureProjector } from './world-geometry';
 import { addDoorLeaf } from './world-building-doors';
 import { illuminationAt } from './world-materials';

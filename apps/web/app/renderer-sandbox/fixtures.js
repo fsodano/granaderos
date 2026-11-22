@@ -3,12 +3,17 @@ import {
   VARIED_ROOF_CLIMB_SCENARIO,
   createVariedRoofClimbBattle,
 } from './varied-roof-climb-fixture.js';
-import { createBattle, actBattle } from '../../../../packages/game/tactical.js';
-import { buildSectorMap } from '../../../../packages/game/maps.js';
-import { OPERATIVES } from '../../../../packages/game/data.js';
-import { placeBuilding, buildTerrace } from '../../../../packages/game/buildings.js';
-import { makeGrenadeStack } from '../../../../packages/game/grenades.ts';
-import { BUILDING_TYPES, BUILDING_FOOTPRINTS } from '../../../../packages/game/building-types.ts';
+import {
+  createBattle,
+  actBattle,
+  buildSectorMap,
+  OPERATIVES,
+  placeBuilding,
+  buildTerrace,
+  makeGrenadeStack,
+  BUILDING_TYPES,
+  BUILDING_FOOTPRINTS,
+} from '../../../../packages/game/public/game-runtime-api.ts';
 import { CLIMB_HATCH_SCENARIO, createClimbHatchBattle } from './climb-hatch-fixture.js';
 import { createArchitectureReviewBattle } from './architecture-fixtures.js';
 import { BAYONET_SCENARIO, createBayonetReviewBattle } from './bayonet-fixture.js';

@@ -4,16 +4,17 @@ import type {
   CampaignSnapshot,
   CampaignAction,
 } from '../../../packages/game/public/campaign-types.ts';
-import { prisonerStatus } from '../../../packages/game/prisoner-custody.js';
-import { useState } from 'react';
-import { rosterFor } from '../../../packages/game/campaign.js';
-import { localDefenderIds, retreatDestinations } from '../../../packages/game/enemy-groups.js';
 import {
+  prisonerStatus,
+  rosterFor,
+  localDefenderIds,
+  retreatDestinations,
   enemyIntelligenceReports,
   INTELLIGENCE_LIFETIME,
-} from '../../../packages/game/enemy-intelligence.ts';
+  campaignSectors,
+} from '../../../packages/game/public/game-runtime-api.ts';
+import { useState } from 'react';
 import './enemy-encounters.css';
-import { campaignSectors } from '../../../packages/game/campaign-definition.js';
 import { campaignFactionName } from '../lib/campaign-labels';
 
 const duration = (hours: number) => {

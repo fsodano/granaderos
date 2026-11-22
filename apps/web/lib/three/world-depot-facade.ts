@@ -1,6 +1,9 @@
 import { worldWallRecords, buildingWallAtPoint, wallFrameRecords } from './world-wall-records';
 import { Group, Quaternion, Vector3 } from 'three';
-import { entranceFrame, getBuildingProfile } from '../../../../packages/game/building-profile.ts';
+import {
+  entranceFrame,
+  getBuildingProfile,
+} from '../../../../packages/game/public/game-runtime-api.ts';
 import { WorldBatch } from './world-geometry';
 import { illuminationAt } from './world-materials';
 import { buildingArtInset } from './world-building-placement';

@@ -7,23 +7,23 @@ import type {
   OfficerAttribute,
 } from '../../../packages/game/public/campaign-types.ts';
 import { sitePath } from '../lib/site-path.js';
-import { weaponSpecification } from '../../../packages/game/weapon-definition.ts';
-import TrainingProgress from './TrainingProgress';
-import { portraitFor } from '../lib/portraits';
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import {
+  weaponSpecification,
   ATTRIBUTE_LABELS,
   characterProfile,
   characterAbilityDescriptions,
-} from '../../../packages/game/characters.js';
-import { contractQuote } from '../../../packages/game/contracts.js';
-import { serviceRelationships } from '../../../packages/game/service-relationships.js';
+  contractQuote,
+  serviceRelationships,
+  serviceObjectionReason,
+  lowMoraleRenewalStatus,
+  campaignOfficerCreation,
+} from '../../../packages/game/public/game-runtime-api.ts';
+import TrainingProgress from './TrainingProgress';
+import { portraitFor } from '../lib/portraits';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import PreferredCompanionsSummary from './PreferredCompanionsSummary';
-import { serviceObjectionReason } from '../../../packages/game/service-objections.js';
 import ServiceObjectionNotice from './ServiceObjectionNotice';
-import { lowMoraleRenewalStatus } from '../../../packages/game/morale-renewal.js';
 import ContractMoraleNotice from './ContractMoraleNotice';
-import { campaignOfficerCreation } from '../../../packages/game/campaign-officer-creation.ts';
 import CampaignWeaponSummary from './CampaignWeaponSummary';
 export function DossierEquipment({
   operative: o,

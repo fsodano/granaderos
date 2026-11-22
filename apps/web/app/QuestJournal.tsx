@@ -1,15 +1,15 @@
 'use client';
 
 import type { CampaignSnapshot } from '../../../packages/game/public/campaign-types.ts';
-import { questWithdrawalText } from '../../../packages/game/quest-withdrawal.js';
 import {
+  questWithdrawalText,
   questJournal,
   questResolutionText,
   questBeneficiaryResolutionText,
-} from '../../../packages/game/quests.js';
-import { campaignSectors } from '../../../packages/game/campaign-definition.js';
-import { encounterDefinitions } from '../../../packages/game/encounters.js';
-import { beneficiaryDeliveryNotice } from '../../../packages/game/ja2-hud.ts';
+  campaignSectors,
+  encounterDefinitions,
+  beneficiaryDeliveryNotice,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import './quest-journal.css';
 
 const stamp = (hour: number) => `Día ${1 + Math.floor(hour / 24)} · ${hour % 24}:00`;

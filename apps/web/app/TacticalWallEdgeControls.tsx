@@ -2,9 +2,15 @@ import type { ReactNode } from 'react';
 import {
   getBuildingProfile,
   getBuildingRenderProfile,
-} from '../../../packages/game/building-profile.ts';
-import { BUILDING_OPENINGS } from '../../../packages/game/building-scale.js';
-import { buildingStyle } from '../../../packages/game/building-types.ts';
+  BUILDING_OPENINGS,
+  buildingStyle,
+  pointInViewport,
+  canSee,
+  wallEdgeCells,
+  wallEdgeCenter,
+  wallEdgeEndpoints,
+  wallEdgeId,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import type {
   BattleBuilding,
   BattleSnapshot,
@@ -12,14 +18,6 @@ import type {
   BattleUnit,
   TacticalPoint,
 } from '../../../packages/game/public/compatibility-types.ts';
-import { pointInViewport } from '../../../packages/game/tactical-viewport.js';
-import { canSee } from '../../../packages/game/tactical.js';
-import {
-  wallEdgeCells,
-  wallEdgeCenter,
-  wallEdgeEndpoints,
-  wallEdgeId,
-} from '../../../packages/game/wall-geometry.js';
 import {
   ELEVATION_PIXELS_PER_METRE,
   projectSurface,

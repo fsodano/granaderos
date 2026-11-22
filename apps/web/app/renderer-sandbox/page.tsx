@@ -2,7 +2,7 @@
 import type { BattleSnapshot } from '../../../../packages/game/public/compatibility-types.ts';
 
 import { useState } from 'react';
-import { BUILDING_TYPES } from '../../../../packages/game/building-types.ts';
+import { BUILDING_TYPES } from '../../../../packages/game/public/game-runtime-api.ts';
 import Battlefield from '../Battlefield';
 import {
   ARCHITECTURE_REVIEW_ROOFS,

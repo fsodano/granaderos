@@ -7,10 +7,16 @@ import type {
   InventoryMapAction,
   SelectedItemMapPreview,
 } from '../../../packages/game/public/inventory-types.ts';
-import { formatAP } from '../../../packages/game/action-points.js';
-import { inventoryMapPreview, canSee, visibleRooms } from '../../../packages/game/tactical.js';
-import { tacticalLevel, sameCell, spaceKey } from '../../../packages/game/tactical-space.js';
-import { isInteriorVisible } from '../../../packages/game/tactical-visibility.ts';
+import {
+  formatAP,
+  inventoryMapPreview,
+  canSee,
+  visibleRooms,
+  tacticalLevel,
+  sameCell,
+  spaceKey,
+  isInteriorVisible,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import type { EquipmentInteraction, EquipmentSource } from './equipment-interaction';
 
 export type InventoryMapIntent = 'auto' | 'ground';

@@ -1,4 +1,4 @@
-import { runBattleJob } from '../../../packages/game/battle-job.ts';
+import { runBattleJob } from '../../../packages/game/public/game-runtime-api.ts';
 import { executeBattleWorkerRequest } from './battle-worker-transport.ts';
 
 self.onmessage = (event: MessageEvent<unknown>) => {

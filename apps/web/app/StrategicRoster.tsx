@@ -4,15 +4,17 @@ import type {
   CampaignAction,
 } from '../../../packages/game/public/campaign-types.ts';
 import { sitePath } from '../lib/site-path.js';
-import { worldCell } from '../../../packages/game/world-cells.ts';
-import { squadTravelStatus } from '../../../packages/game/squad-travel.js';
-import { ALL_ASSIGNMENTS } from '../../../packages/game/medical-care.js';
-import { operativeLocation } from '../../../packages/game/squads.js';
-import { sleepOrderReason } from '../../../packages/game/sleep.js';
-import { contractStatus } from '../../../packages/game/contracts.js';
+import {
+  worldCell,
+  squadTravelStatus,
+  ALL_ASSIGNMENTS,
+  operativeLocation,
+  sleepOrderReason,
+  contractStatus,
+  strategicSquadLabel,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import { portraitFor } from '../lib/portraits';
 import { travelTime } from '../lib/travel-time';
-import { strategicSquadLabel } from '../../../packages/game/strategic-squad-assignments.js';
 
 type Props = {
   state: CampaignSnapshot;

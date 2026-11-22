@@ -4,8 +4,10 @@ import type {
   CampaignSnapshot,
   CampaignAction,
 } from '../../../packages/game/public/campaign-types.ts';
-import { hasPendingArrivalDecision } from '../../../packages/game/squad-travel.js';
-import { strategicClockInterrupt } from '../../../packages/game/strategic-clock.ts';
+import {
+  hasPendingArrivalDecision,
+  strategicClockInterrupt,
+} from '../../../packages/game/public/game-runtime-api.ts';
 
 type ClockControl = {
   campaign: CampaignSnapshot;

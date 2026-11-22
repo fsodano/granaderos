@@ -9,8 +9,8 @@ import { useState } from 'react';
 import {
   merchantExchangeOffers,
   merchantExchangePreview,
-} from '../../../packages/game/merchant-exchange.js';
-import { isSupplied } from '../../../packages/game/campaign.js';
+  isSupplied,
+} from '../../../packages/game/public/game-runtime-api.ts';
 type Line = {
   key: string;
   receipt: string;

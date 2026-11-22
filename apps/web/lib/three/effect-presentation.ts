@@ -7,8 +7,10 @@ import type {
   KnifePresentation,
   GrenadePresentation,
 } from '../../../../packages/game/public/compatibility-types.ts';
-import { absoluteBodyHeight } from '../../../../packages/game/sight-geometry.js';
-import { surfaceHeight } from '../../../../packages/game/tactical-space.js';
+import {
+  absoluteBodyHeight,
+  surfaceHeight,
+} from '../../../../packages/game/public/game-runtime-api.ts';
 import { actionPresentationDuration } from './action-pace';
 import type { CombatEffectEvent, EffectPoint } from './combat-effects';
 

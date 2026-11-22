@@ -7,33 +7,32 @@ import type {
   CampaignOperativeState,
   TrainableSkill,
 } from '../../../packages/game/public/campaign-types.ts';
-import { operativeInTransit } from '../../../packages/game/squads.js';
-import { maximumEnergy } from '../../../packages/game/fatigue.js';
-import { useState } from 'react';
-import { operativeLocation, rosterFor } from '../../../packages/game/campaign.js';
 import {
+  operativeInTransit,
+  maximumEnergy,
+  operativeLocation,
+  rosterFor,
   CARE_ASSIGNMENTS,
   ALL_ASSIGNMENTS,
   careAssignmentReason,
   careStatus,
-} from '../../../packages/game/medical-care.js';
-import {
   WORK_ASSIGNMENTS,
   STUDY_SKILLS,
   workAssignmentReason,
   workStatus,
   repairEquipmentQueue,
-} from '../../../packages/game/assignments.js';
-import { sleepNeedStatus } from '../../../packages/game/sleep-needs.js';
-import { sleepOrderReason } from '../../../packages/game/sleep.js';
-import { moraleStatus } from '../../../packages/game/morale.js';
-import { equipmentInventoryUsage } from '../../../packages/game/equipment.js';
-import { repairMaterialPoints } from '../../../packages/game/repair-materials.js';
+  sleepNeedStatus,
+  sleepOrderReason,
+  moraleStatus,
+  equipmentInventoryUsage,
+  repairMaterialPoints,
+  weaponSpecification,
+  campaignPlace,
+} from '../../../packages/game/public/game-runtime-api.ts';
+import { useState } from 'react';
 import './medical-care.css';
 import StudyForecast from './StudyForecast';
 import MilitiaCare from './MilitiaCare';
-import { weaponSpecification } from '../../../packages/game/weapon-definition.ts';
-import { campaignPlace } from '../../../packages/game/world-cells.ts';
 import CampaignWeaponSummary from './CampaignWeaponSummary';
 
 export function MedicalSupplyPurchase({ s, op }: { s: CampaignSnapshot; op: CampaignOperative }) {

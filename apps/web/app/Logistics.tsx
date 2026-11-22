@@ -4,10 +4,12 @@ import type {
   CampaignSnapshot,
   CampaignAction,
 } from '../../../packages/game/public/campaign-types.ts';
-import { TRANSPORT_NETWORKS } from '../../../packages/game/transport-network.js';
-import { artilleryTransferDelay } from '../../../packages/game/artillery-transport.js';
-import { artilleryProfile } from '../../../packages/game/artillery-definitions.ts';
-import { campaignPlace } from '../../../packages/game/world-cells.ts';
+import {
+  TRANSPORT_NETWORKS,
+  artilleryTransferDelay,
+  artilleryProfile,
+  campaignPlace,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import './logistics.css';
 type Props = {
   state: CampaignSnapshot;

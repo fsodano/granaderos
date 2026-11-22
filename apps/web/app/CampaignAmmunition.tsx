@@ -8,15 +8,17 @@ import type {
 import { sitePath } from '../lib/site-path.js';
 import AmmunitionLoadChoice from './AmmunitionLoadChoice';
 import { useState } from 'react';
-import { AMMO_KEYS, AMMO_TYPES, ammoTypeFor } from '../../../packages/game/ammo-types.js';
 import {
+  AMMO_KEYS,
+  AMMO_TYPES,
+  ammoTypeFor,
   ammunitionOrderQuote,
   AMMUNITION_ORDER_LIMIT,
   hasAmmunitionMarket,
   carriedAmmunition,
-} from '../../../packages/game/campaign-ammunition.js';
-import { isSupplied } from '../../../packages/game/campaign.js';
-import { campaignPlace } from '../../../packages/game/world-cells.ts';
+  isSupplied,
+  campaignPlace,
+} from '../../../packages/game/public/game-runtime-api.ts';
 
 export default function CampaignAmmunition({
   state: s,

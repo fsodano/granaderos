@@ -1,7 +1,10 @@
 import type { CampaignSnapshot } from '../../../packages/game/public/campaign-types.ts';
 import './sector-income.css';
-import { campaignSectors } from '../../../packages/game/campaign-definition.js';
-import { townIncomeSources, incomeSummary } from '../../../packages/game/town-income-query.ts';
+import {
+  campaignSectors,
+  townIncomeSources,
+  incomeSummary,
+} from '../../../packages/game/public/game-runtime-api.ts';
 
 const placeNameFor = (state: CampaignSnapshot) => (id: string) =>
   campaignSectors(state).find((sector) => sector.id === id)?.name ?? id;

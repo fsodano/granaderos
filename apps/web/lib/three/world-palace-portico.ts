@@ -1,5 +1,8 @@
 import { worldWallRecords, wallFrameRecords } from './world-wall-records';
-import { entranceFrame, getBuildingProfile } from '../../../../packages/game/building-profile.ts';
+import {
+  entranceFrame,
+  getBuildingProfile,
+} from '../../../../packages/game/public/game-runtime-api.ts';
 import { civicCorniceRoofJoin } from './world-civic-cornice';
 import type { WorldBuilding, WorldInput } from './world-types';
 

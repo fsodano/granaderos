@@ -4,12 +4,17 @@ import type {
   CampaignSnapshot,
   CampaignAction,
 } from '../../../packages/game/public/campaign-types.ts';
-import { rosterFor } from '../../../packages/game/campaign.js';
-import { pendingGuaranteeRefunds } from '../../../packages/game/service-guarantees.js';
+import {
+  rosterFor,
+  pendingGuaranteeRefunds,
+  foundryFor,
+  foundryLocationName,
+  campaignRole,
+  foundryReason,
+  incomeSources,
+  incomeSummary,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import { campaignUI } from '../lib/campaign-ui';
-import { foundryFor, foundryLocationName } from '../../../packages/game/campaign-foundry.js';
-import { campaignRole, foundryReason } from '../../../packages/game/campaign-roles.js';
-import { incomeSources, incomeSummary } from '../../../packages/game/economy.js';
 import Armory from './Armory';
 import './treasury.css';
 export default function Treasury({

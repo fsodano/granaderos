@@ -1,7 +1,11 @@
-import { wallMovementBlocked, wallEdgesBetween } from '../../../../packages/game/wall-geometry.js';
-import { createBattle, actBattle } from '../../../../packages/game/tactical.js';
-import { placeBuilding } from '../../../../packages/game/buildings.js';
-import { propBlocksAt } from '../../../../packages/game/props.js';
+import {
+  wallMovementBlocked,
+  wallEdgesBetween,
+  createBattle,
+  actBattle,
+  placeBuilding,
+  propBlocksAt,
+} from '../../../../packages/game/public/game-runtime-api.ts';
 
 export const FURNISHINGS_DETAIL_SCENARIO = Object.freeze({
   id: 'furnishings-detail',

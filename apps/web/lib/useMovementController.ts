@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useLayoutEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { unitCanAct, groupSelectionMode } from '../../../packages/game/ja2-hud.ts';
+import { unitCanAct, groupSelectionMode } from '../../../packages/game/public/game-runtime-api.ts';
 import { createMovementController } from './movement-controller.js';
 import { BattleJobKind } from './battle-worker-contracts.ts';
 import type {

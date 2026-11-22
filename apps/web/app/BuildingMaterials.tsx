@@ -1,5 +1,7 @@
-import { BUILDING_VERTICAL_SCALE } from '../../../packages/game/building-scale.js';
-import { BUILDING_TYPES } from '../../../packages/game/building-types.ts';
+import {
+  BUILDING_VERTICAL_SCALE,
+  BUILDING_TYPES,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import type { BattleBuilding } from '../../../packages/game/public/compatibility-types.ts';
 import { sitePath } from '../lib/site-path.js';
 export const wallMaterial = (b: BattleBuilding | undefined, facade = false) =>

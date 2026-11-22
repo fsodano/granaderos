@@ -20,9 +20,11 @@ type LocomotionProfile = {
   itemClips: Readonly<Record<string, Readonly<Record<string, string>>>>;
 };
 const profile: LocomotionProfile = authoredProfile;
-import { spriteAppearance } from '../../../../packages/game/sprite-appearances.ts';
-import { spriteEquipment } from '../../../../packages/game/sprite-equipment.js';
-import { resolveActorAction } from '../../../../packages/game/actor-action-contract.ts';
+import {
+  spriteAppearance,
+  spriteEquipment,
+  resolveActorAction,
+} from '../../../../packages/game/public/game-runtime-api.ts';
 import { actorItems, actorPosture } from './presentation';
 import { TILE_METRES, actorYaw } from './projection';
 import { locomotionReference, footMovementPace } from './locomotion-reference';

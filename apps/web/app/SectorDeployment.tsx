@@ -2,8 +2,10 @@
 
 import type { BattleSnapshot } from '../../../packages/game/public/compatibility-types.ts';
 import { useState } from 'react';
-import { actBattle } from '../../../packages/game/tactical.js';
-import { sectorDeploymentModel } from '../../../packages/game/sector-deployment.js';
+import {
+  actBattle,
+  sectorDeploymentModel,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import './sector-deployment.css';
 
 type Selection = { unitId: string; wholeSquad: boolean };

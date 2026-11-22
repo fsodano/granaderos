@@ -5,16 +5,16 @@ import type {
   CampaignAction,
   CampaignArtillery,
 } from '../../../packages/game/public/campaign-types.ts';
-import { artilleryTradingRules } from '../../../packages/game/artillery-trading-rules.js';
-import { artilleryProfile } from '../../../packages/game/artillery-definitions.ts';
-import { hasWorkshop } from '../../../packages/game/campaign-headquarters.js';
 import {
+  artilleryTradingRules,
+  artilleryProfile,
+  hasWorkshop,
   artilleryMerchant,
   artilleryBuyingRate,
   artillerySaleOffers,
   artillerySaleQuote,
   artilleryRepurchaseQuote,
-} from '../../../packages/game/artillery-trading.js';
+} from '../../../packages/game/public/game-runtime-api.ts';
 const condition = (gun: CampaignArtillery) =>
   `${gun.loaded ? 'Cargada' : gun.reloadProgress ? `Recarga ${Math.floor(gun.reloadProgress * 100)}%` : 'Descargada'} · ${gun.ammo} en reserva`;
 export default function ArtilleryTrading({

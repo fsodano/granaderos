@@ -1,4 +1,4 @@
-import { createBattle } from '../../../../packages/game/tactical.js';
+import { createBattle } from '../../../../packages/game/public/game-runtime-api.ts';
 
 export const CLIMB_HATCH_SCENARIO = Object.freeze({
   id: 'climb-hatches',

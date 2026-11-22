@@ -6,17 +6,19 @@ import type {
   TacticalRoutePoint,
 } from '../../../packages/game/public/compatibility-types.ts';
 import { useEffect, useRef, useState, useMemo } from 'react';
-import { getReachable, teamCanSee } from '../../../packages/game/tactical.js';
 import {
+  getReachable,
+  teamCanSee,
   sameCell,
   sameSurface,
   spaceKey,
   tacticalLevel,
   surfacesAtLevel,
-} from '../../../packages/game/tactical-space.js';
+  ladderGeometry,
+  sampleLadderClimb,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import { surfaceMotionPoint, type SurfaceRenderOffset } from '../lib/tactical-elevation';
 import { movementStepDuration } from '../lib/three/movement-timing';
-import { ladderGeometry, sampleLadderClimb } from '../../../packages/game/climb-geometry.ts';
 import { TILE_METRES } from '../lib/three/projection';
 import type { ClimbGeometry } from '../lib/three/climb-contact-fit';
 

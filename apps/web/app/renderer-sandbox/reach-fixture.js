@@ -1,4 +1,4 @@
-import { createBattle } from '../../../../packages/game/tactical.js';
+import { createBattle } from '../../../../packages/game/public/game-runtime-api.ts';
 
 export const REACH_SCENARIO = Object.freeze({
   id: 'reach-actions',

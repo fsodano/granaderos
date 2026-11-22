@@ -2,10 +2,12 @@ import { required } from './required';
 import { worldWallRecords, wallFrameRecords } from './world-wall-records';
 import { WallCutawayOutlines } from './world-wall-outlines';
 import { Group, Vector3 } from 'three';
-import { entranceFrame } from '../../../../packages/game/building-profile.ts';
-import { buildingStyle } from '../../../../packages/game/building-types.ts';
-import { BUILDING_OPENINGS } from '../../../../packages/game/building-scale.js';
-import { roomDecorProfile } from '../../../../packages/game/room-dressing.js';
+import {
+  entranceFrame,
+  buildingStyle,
+  BUILDING_OPENINGS,
+  roomDecorProfile,
+} from '../../../../packages/game/public/game-runtime-api.ts';
 import { WorldBatch, roofTextureProjector } from './world-geometry';
 import { roomFloorFinish, roomFloorPart } from './world-room-floors';
 import { illuminationAt } from './world-materials';

@@ -2,7 +2,14 @@
 
 import type { TacticalOrder } from '../../../packages/game/public/hud-types.ts';
 
-import { formatAP } from '../../../packages/game/action-points.js';
+import {
+  formatAP,
+  artilleryProfile,
+  unitCanAct,
+  artilleryCosts,
+  artilleryCrewPlan,
+  artilleryReloadPreview,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import type {
   BattleArtillery,
   BattleSnapshot,
@@ -10,13 +17,6 @@ import type {
 } from '../../../packages/game/public/compatibility-types.ts';
 
 import { useState } from 'react';
-import { artilleryProfile } from '../../../packages/game/artillery-definitions.ts';
-import { unitCanAct } from '../../../packages/game/ja2-hud.ts';
-import {
-  artilleryCosts,
-  artilleryCrewPlan,
-  artilleryReloadPreview,
-} from '../../../packages/game/tactical.js';
 
 type Props = {
   battle: BattleSnapshot;

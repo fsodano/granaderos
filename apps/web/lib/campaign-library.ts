@@ -11,7 +11,7 @@ import {
   compileCampaignPackage,
   validateCampaignManifest,
   validateCampaignRegistry,
-} from '../../../packages/game/campaign-library.js';
+} from '../../../packages/game/public/game-runtime-api.ts';
 import { sitePath } from './site-path.js';
 
 export type CampaignEntry = {

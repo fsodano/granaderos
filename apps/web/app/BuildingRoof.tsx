@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
-import { BUILDING_VERTICAL_SCALE as S } from '../../../packages/game/building-scale.js';
-import { buildingStyle } from '../../../packages/game/building-types.ts';
+import {
+  BUILDING_VERTICAL_SCALE as S,
+  buildingStyle,
+} from '../../../packages/game/public/game-runtime-api.ts';
 import type {
   BattleBuilding,
   BattleTile,
