@@ -307,9 +307,9 @@ export function executeGroupMove(
     // Earlier members may have changed access. Recheck only known occupancy and
     // preserve each other member's assigned destination.
     const reserved = new Set(
-      plan.members
-        .filter((m) => m.unitId !== entry.unitId && m.destination)
-        .map((m) => key(m.destination)),
+      plan.members.flatMap((m) =>
+        m.unitId !== entry.unitId && m.destination ? [key(m.destination)] : [],
+      ),
     );
     if (!entry.desired) {
       throw new Error('La formación necesita un destino para cada combatiente.');
@@ -553,9 +553,9 @@ export function groupMovementStep(
       continue;
     }
     const reserved = new Set(
-      progress.members
-        .filter((m) => m.unitId !== entry.unitId && m.destination)
-        .map((m) => key(m.destination)),
+      progress.members.flatMap((m) =>
+        m.unitId !== entry.unitId && m.destination ? [key(m.destination)] : [],
+      ),
     );
     const destination =
       progress.route && entry.destination

@@ -185,7 +185,7 @@ export function inspectCoastalRemains(start: BattleSnapshot, { execute = actBatt
     orders.push(structuredClone(action));
   };
   for (const id of bodies) {
-    const body = battle.units.find((unit: BattleUnit) => unit.id === id),
+    const body = present(battle.units.find((unit: BattleUnit) => unit.id === id)),
       choices = battle.units
         .filter(
           (unit: BattleUnit) =>
