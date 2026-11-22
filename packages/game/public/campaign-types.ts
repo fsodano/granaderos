@@ -770,7 +770,7 @@ type CampaignOrder =
       repairScope?: 'primary' | 'equipment';
     } & ({ operativeId: number; id?: never } | { id: number; operativeId?: never }))
   | {
-      type: 'recruitCombatant' | 'recruitCivic';
+      type: 'recruitCombatant';
       id?: number;
       characterId?: string;
       locationId?: string;

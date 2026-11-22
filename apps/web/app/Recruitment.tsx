@@ -5,13 +5,13 @@ import type {
   CampaignAction,
 } from '../../../packages/game/public/campaign-types.ts';
 import { sitePath } from '../lib/site-path.js';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   CAMPAIGN_SECTORS,
   rosterFor,
   contractQuote,
   contractStatus,
-  civicStatus,
+  candidateAdmission,
 } from '../../../packages/game/campaign.js';
 import {
   hiringArrivalOptions,
@@ -26,8 +26,7 @@ import {
 } from '../../../packages/game/service-guarantees.js';
 import { operativeInTransit, squadReorganizationReason } from '../../../packages/game/squads.js';
 import { contractTermsFor, contractRenewalQuote } from '../../../packages/game/contracts.js';
-import { GetRecruitmentCandidatesUseCase } from '../../../packages/game/application/personnel/get-recruitment-candidates/get-recruitment-candidates.use-case.ts';
-import { CampaignGetRecruitmentCandidatesRepository } from '../../../packages/game/infrastructure/personnel/campaign-get-recruitment-candidates.repository.js';
+import { getRecruitmentCandidates } from '../lib/recruitment-catalogue';
 import { isContractOperative } from '../../../packages/game/content-character-ids.ts';
 import {
   characterProfile,
@@ -55,7 +54,7 @@ export default function Recruitment({ state: s, dispatch }: Props) {
   const terms = Object.entries(contractTermsFor(s))
     .filter(([id]) => ['day', 'week', 'fortnight'].includes(id))
     .map(([id, period]) => [id, period.name]);
-  const roster = rosterFor(s).filter((o) => isContractOperative(s, o));
+  const roster = useMemo(() => rosterFor(s).filter((o) => isContractOperative(s, o)), [s]);
   const serving = roster.filter((o) => {
     const r = s.operativeState[o.id];
     return s.recruited.includes(o.id) && r?.alive && r.hp > 0 && !r.captured;
@@ -64,14 +63,10 @@ export default function Recruitment({ state: s, dispatch }: Props) {
   const destination = options.some((o) => o.id === chosenDestination)
     ? chosenDestination
     : (options.find((o) => o.id === s.location)?.id ?? options[0]?.id ?? '');
-  const candidates = new GetRecruitmentCandidatesUseCase(
-    new CampaignGetRecruitmentCandidatesRepository(s, roster),
-  ).execute({
-    query,
-    specialty,
-    availability,
-    sort,
-  });
+  const candidates = useMemo(
+    () => getRecruitmentCandidates(s, roster, { query, specialty, availability, sort }),
+    [s, roster, query, specialty, availability, sort],
+  );
   const visible = candidates.characterIds.flatMap((id) => {
     const candidate = roster.find((character) => String(character.id) === id);
     return candidate ? [candidate] : [];
@@ -200,7 +195,7 @@ export default function Recruitment({ state: s, dispatch }: Props) {
           const cancellationReason = arrival ? hireCancellationReason(s, o.id) : null,
             departureReason = hired ? guaranteeDepartureReason(s, contract, o) : null;
           const hireReason = !hired ? hiringRouteReason : null;
-          const admission = !hired ? civicStatus(s, o.id) : null,
+          const admission = !hired ? candidateAdmission(s, o.id) : null,
             captive = !hired && record?.alive !== false && record?.captured;
           const captivityReason = captive ? admission?.reason : null,
             hireDescription =

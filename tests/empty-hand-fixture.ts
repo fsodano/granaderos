@@ -16,7 +16,7 @@ export function disarmedArrival({ secondary = true } = {}) {
   blade.art = '/art/weapon-1810.png';
   let s = initialCampaign(45, d);
   for (const id of [110, 111]) {
-    s = order(s, { type: 'recruitCivic', id, term: 'week' });
+    s = order(s, { type: 'recruitCombatant', id, term: 'week' });
   }
   let p = visit(s);
   const doctor = present(p.battle.units.find((u) => u.id === '110'));

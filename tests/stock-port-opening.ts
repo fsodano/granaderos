@@ -159,7 +159,7 @@ export function stockPortOpening({ seed = 8, content = defaultContentPackage() }
     assert.ok(hiringArrivalOptions(state).some((site) => site.id === destination));
     const arrival = immediateRecruitmentExpectation(state, present(op), 'day', quote, destination);
     const money = state.resources.treasury;
-    state = order(state, { type: 'recruitCivic', id, term: 'day', destination });
+    state = order(state, { type: 'recruitCombatant', id, term: 'day', destination });
     assert.equal(state.resources.treasury, money - quote.total);
     hires.push({
       id,

@@ -23,7 +23,7 @@ export function separatedWorkshop() {
   }
   let s = initialCampaign(8, d);
   for (const id of [REMOTE, LOCAL]) {
-    s = order(s, { type: 'recruitCivic', id, term: 'month' });
+    s = order(s, { type: 'recruitCombatant', id, term: 'month' });
   }
   // Prepared wear isolates workshop eligibility; no claim of tactical wear here.
   for (const id of [REMOTE, LOCAL]) {

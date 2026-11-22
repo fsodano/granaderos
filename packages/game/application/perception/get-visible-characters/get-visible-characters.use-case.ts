@@ -1,6 +1,5 @@
 import type { GetVisibleCharactersRepository } from './get-visible-characters.repository.ts';
-
-export type GetVisibleCharactersResponse = Readonly<{ characterIds: readonly string[] }>;
+import type { GetVisibleCharactersResponse } from './get-visible-characters.response.ts';
 
 export class GetVisibleCharactersUseCase {
   readonly #repository: GetVisibleCharactersRepository;

@@ -1,9 +1,9 @@
 import type {
   SaveStatus,
   SaveState,
-  GetSaveStatusRepository,
-} from '../../application/get-save-status/get-save-status.repository.ts';
-import type { GameSaveIdentity } from '../../application/save-game/save-game.repository.ts';
+} from '../../application/get-save-status/get-save-status.response.ts';
+import type { GetSaveStatusRepository } from '../../application/get-save-status/get-save-status.repository.ts';
+import type { GameSaveIdentity } from '../../application/save-game/save-game.response.ts';
 
 export class SaveStatusRepository implements GetSaveStatusRepository {
   #state: SaveState = 'unsaved';

@@ -180,7 +180,7 @@ export function migrateLegacySkillLearning(state: CampaignSnapshot): CampaignSna
   state.skillLearningVersion = 1;
   return state;
 }
-export function civicStatus(state: CampaignSnapshot, id: number | string) {
+export function candidateAdmission(state: CampaignSnapshot, id: number | string) {
   id = Number(id);
   const op = rosterFor(state).find((o) => o.id === id && isContractOperative(state, o)),
     record = state.operativeState[id];

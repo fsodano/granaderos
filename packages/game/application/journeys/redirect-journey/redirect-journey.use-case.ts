@@ -1,16 +1,6 @@
 import type { RedirectJourneyRepository } from './redirect-journey.repository.ts';
-import type { ArrivalDecisionSnapshot } from '../../../domain/journeys/arrival-decision.ts';
-
-export type RedirectJourneyRequest = Readonly<{
-  squadId: string;
-  destination: string;
-  waypoints?: readonly string[];
-}>;
-export type RedirectJourneyResponse = Readonly<{
-  squadId: string;
-  destination: string;
-  arrivalDecision?: ArrivalDecisionSnapshot;
-}>;
+import type { RedirectJourneyRequest } from './redirect-journey.request.ts';
+import type { RedirectJourneyResponse } from './redirect-journey.response.ts';
 
 export class RedirectJourneyUseCase {
   readonly #repository: RedirectJourneyRepository;

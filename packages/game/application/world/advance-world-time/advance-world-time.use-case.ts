@@ -1,11 +1,7 @@
 import { CORPSE_REMOVAL_EVENT } from '../../../domain/world/corpse.ts';
 import type { AdvanceWorldTimeRepository } from './advance-world-time.repository.ts';
-
-export type AdvanceWorldTimeRequest = Readonly<{ targetSecond: number }>;
-export type AdvanceWorldTimeResult = Readonly<{
-  acceptedSecond: number;
-  removedCorpseIds: readonly string[];
-}>;
+import type { AdvanceWorldTimeRequest } from './advance-world-time.request.ts';
+import type { AdvanceWorldTimeResult } from './advance-world-time.response.ts';
 
 export class AdvanceWorldTimeUseCase {
   #repository: AdvanceWorldTimeRepository;

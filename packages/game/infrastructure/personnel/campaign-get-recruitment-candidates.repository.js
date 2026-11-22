@@ -5,16 +5,21 @@ import {
 import { RecruitmentCatalogue } from '../../domain/personnel/recruitment-catalogue.ts';
 import { contractQuote } from '../../contracts.js';
 import { pendingHire } from '../../hiring-arrivals.js';
-import { civicStatus } from '../../recruitment.ts';
+import { candidateAdmission } from '../../recruitment.ts';
 import { CanonicalPersonnelMapper } from '../persistence/canonical-personnel-mapper.ts';
 import { DomainIdentityMap } from '../persistence/domain-identity-map.ts';
 export class CampaignGetRecruitmentCandidatesRepository {
+  /** @type {import('../../public/campaign-types.ts').CampaignSnapshot} */
   #campaign;
+  /** @type {import('../../public/campaign-types.ts').CampaignOperative[]} */
   #roster;
+  /** @param {import('../../public/campaign-types.ts').CampaignSnapshot} campaign
+   * @param {import('../../public/campaign-types.ts').CampaignOperative[]} roster */
   constructor(campaign, roster) {
     this.#campaign = campaign;
     this.#roster = roster;
   }
+  /** @returns {import('../../domain/personnel/recruitment-catalogue.ts').RecruitmentCatalogue} */
   loadCatalogue() {
     const personnel = new CanonicalPersonnelMapper(this.#campaign, new DomainIdentityMap());
     return new RecruitmentCatalogue(
@@ -35,6 +40,10 @@ export class CampaignGetRecruitmentCandidatesRepository {
     );
   }
 
+  /** @param {number} characterId
+   * @param {import('../../public/campaign-types.ts').CampaignOperativeState | undefined} condition
+   * @param {import('../../public/personnel-query-types.ts').ContractQuote} quote
+   * @returns {import('../../domain/personnel/recruitment-candidate.ts').RecruitmentAvailabilityValue} */
   candidateAvailability(characterId, condition, quote) {
     if (condition?.alive === false) {
       return RecruitmentAvailability.Fallen;
@@ -48,7 +57,7 @@ export class CampaignGetRecruitmentCandidatesRepository {
     if (condition?.captured) {
       return RecruitmentAvailability.Captured;
     }
-    if (!quote.available || !civicStatus(this.#campaign, characterId).available) {
+    if (!quote.available || !candidateAdmission(this.#campaign, characterId).available) {
       return RecruitmentAvailability.Unavailable;
     }
     return RecruitmentAvailability.Available;

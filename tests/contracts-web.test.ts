@@ -43,7 +43,7 @@ void test('genuine new game creates exactly one custom officer then hires explor
   assert.equal(s.resources.treasury, startingTreasury);
   assert.deepEqual(s.recruited, [1000]);
   assert.equal(present(rosterFor(s).find((o) => o.id === 1000)).leadership, 55);
-  s = order(s, { type: 'recruitCivic', id: 101, term: 'week' });
+  s = order(s, { type: 'recruitCombatant', id: 101, term: 'week' });
   assert.deepEqual(s.recruited, [1000, 101]);
   assert.equal(present(s.contracts[101]).expiresAt, 168);
   s = order(s, { type: 'visitSector' });
@@ -60,7 +60,7 @@ void test('genuine new game creates exactly one custom officer then hires explor
 });
 void test('contracts pay upfront, renew at current experience price, expire safely without duplicating gear', () => {
   let s = order(initialCampaign(), create);
-  s = order(s, { type: 'recruitCivic', id: 100, term: 'day' });
+  s = order(s, { type: 'recruitCombatant', id: 100, term: 'day' });
   const op = rosterFor(s).find((o) => o.id === 100),
     cash = s.resources.treasury;
   present(s.operativeState[100]).xp = 200;
@@ -97,7 +97,7 @@ void test('contracts pay upfront, renew at current experience price, expire safe
       rosterFor(s).find((o) => o.id === 100),
       'day',
     );
-  s = order(s, { type: 'recruitCivic', id: 100, term: 'day' });
+  s = order(s, { type: 'recruitCombatant', id: 100, term: 'day' });
   assert.equal(s.resources.treasury, rehireCash - rehireQuote.price);
   assert.equal(present(s.operativeState[100]).rations, 0);
   assert.deepEqual(
@@ -110,7 +110,11 @@ void test('contracts pay upfront, renew at current experience price, expire safe
   assert.ok(!s.contracts[100]);
 });
 void test('a fallen soldier contract expires once without a departure claim or returned equipment', () => {
-  let s = order(order(initialCampaign(), create), { type: 'recruitCivic', id: 100, term: 'day' });
+  let s = order(order(initialCampaign(), create), {
+    type: 'recruitCombatant',
+    id: 100,
+    term: 'day',
+  });
   const name = present(rosterFor(s).find((o) => o.id === 100)).name;
   // Declare the casualty to isolate expiry wording; this does not simulate combat.
   Object.assign(present(s.operativeState[100]), {
@@ -146,9 +150,11 @@ void test('elite terms are limited only by funds and historical figures cannot b
   const elite = rosterFor(s).find((o) => o.tier === 'elite');
   assert.ok(elite);
   assert.ok(contractQuote(s, elite, 'month').price > s.resources.treasury);
-  assert.ok(dispatchCampaign(s, { type: 'recruitCivic', id: elite.id, term: 'month' }).lastError);
+  assert.ok(
+    dispatchCampaign(s, { type: 'recruitCombatant', id: elite.id, term: 'month' }).lastError,
+  );
   s.resources.treasury = contractQuote(s, elite, 'day').price;
-  s = order(s, { type: 'recruitCivic', id: elite.id, term: 'day' });
+  s = order(s, { type: 'recruitCombatant', id: elite.id, term: 'day' });
   assert.equal(present(s.contracts[elite.id]).expiresAt, 24);
   assert.ok(dispatchCampaign(s, { type: 'recruit', id: 3 }).lastError);
   s = order(s, { type: 'wait', hours: 24 });
@@ -179,7 +185,7 @@ void test('elite renewals bank days at the daily price and dead recruits cannot 
     'day',
   ).price;
   s.resources.treasury = daily;
-  s = order(s, { type: 'recruitCivic', id, term: 'day' });
+  s = order(s, { type: 'recruitCombatant', id, term: 'day' });
   assert.equal(present(s.contracts[id]).expiresAt, 24);
   s.resources.treasury = daily * 3;
   s = order(s, { type: 'renewContract', id, term: 'day' });
@@ -191,11 +197,11 @@ void test('elite renewals bank days at the daily price and dead recruits cannot 
   s = order(s, { type: 'dismiss', id });
   present(s.operativeState[id]).alive = false;
   present(s.operativeState[id]).hp = 0;
-  assert.ok(dispatchCampaign(s, { type: 'recruitCivic', id, term: 'day' }).lastError);
+  assert.ok(dispatchCampaign(s, { type: 'recruitCombatant', id, term: 'day' }).lastError);
 });
 
 void test('paid foreign renewals restore foreign standing once per soldier per day and survive saves', () => {
-  let s = order(initialCampaign(), { type: 'recruitCivic', id: 103, term: 'week' });
+  let s = order(initialCampaign(), { type: 'recruitCombatant', id: 103, term: 'week' });
   const op = rosterFor(s).find((o) => o.id === 103);
   assert.equal(present(op).foreign, true);
   const initialStanding = s.reputation['foreign'],
@@ -248,7 +254,7 @@ void test('paid foreign renewals restore foreign standing once per soldier per d
 
 void test('domestic renewals and rejected permanent renewals do not add foreign standing', () => {
   let s = order(initialCampaign(), create);
-  s = order(s, { type: 'recruitCivic', id: 100, term: 'week' });
+  s = order(s, { type: 'recruitCombatant', id: 100, term: 'week' });
   const standing = s.reputation['foreign'];
   assert.ok(!present(rosterFor(s).find((o) => o.id === 100)).foreign);
   s = order(s, {

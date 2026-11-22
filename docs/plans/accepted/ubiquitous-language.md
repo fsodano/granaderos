@@ -33,6 +33,7 @@ names to players.
 | `FormSquad` | Form or reorganize a squad from available combatants at the same location in one transaction. | Formar escuadra |
 | `SquadFormationService` | Validate shared membership and move selected combatants between squads without changing their physical location. | Reglas de formación |
 | `RecruitmentCatalogue` | A read-only collection of recruitment candidates with explicit availability, specialty, and ordering rules. | Lista de reclutamiento |
+| `candidateAdmission` | Read whether a recruitment candidate can be admitted to the force and why not. It answers from the candidate's condition, a pending claim, service terms, and relationship refusals. It does not define a second category of recruit. | Admisión del candidato |
 | `GetRecruitmentCandidates` | Read the filtered recruitment catalogue without changing time, funds, or service. | Consultar candidatos |
 | `Journey` | Strategic movement along a route, with actual position, elapsed progress, destination, and movement purpose. | Viaje |
 | `JourneyPurpose.Withdrawal` | A journey moving away from a hostile arrival. It remains eligible for redirection. | Retirada |
@@ -162,6 +163,10 @@ passing the draw explicitly keeps policies pure. `CampaignCompiler` names the
 application step that turns published definitions into domain objects, so the
 domain can stay independent of the shared file contract.
 
+`candidateAdmission` names the eligibility query for a recruitment candidate.
+The former `civicStatus` name came from the retired civic-recruit category and
+did not describe what the query answered.
+
 ## Naming rules for implementation
 
 - Name each use case after one domain intention. Use the same stem for its class,
@@ -223,9 +228,7 @@ meaning and owner without knowing the conversation or an earlier version.
 | `operativeState` | Compatibility per-character record table on the campaign snapshot; maps to `Character`, `Health`, `CharacterAbilities`, `ServiceContract`, and strategic location/assignment state. | Campaign snapshot field mapped by `CanonicalPersonnelMapper` (`packages/game/infrastructure/persistence/canonical-personnel-mapper.ts`) and `packages/game/infrastructure/personnel/campaign-recruitment-mapper.js`, and read by `packages/game/campaign.js`, `packages/game/recruitment.ts`, and the `packages/game` campaign modules and `apps/web` personnel adapters that retain this field | Stage 8 (Compatibility retirement) |
 | `sectorStates` / `sceneStates` | Retained physical sector and mission-scene snapshot maps on the campaign snapshot; mapped to `Sector`, `Inventory`, `WorldTimeline`, `ResidentRoutine`, and `Corpse` without duplicating character or inventory ownership. | Campaign snapshot fields mapped by `GameSnapshotMapper` (`packages/game/infrastructure/persistence/game-snapshot-mapper.js`) and `CanonicalWorldMapper` (`packages/game/infrastructure/persistence/canonical-world-mapper.js`), and read by `packages/game/campaign-scenario.js`, `packages/game/deployment-return.js`, `packages/game/sector-inventory.js`, `packages/game/save-terrain.js`, and the `packages/game` world and persistence modules that retain these maps | Stage 8 (Compatibility retirement) |
 | `suspendedSectorSessions` | Serialized list of `{ request, snapshot }` records for open `SectorSession` visits suspended while another squad resolves an arrival decision or visit. | Campaign snapshot field mapped by `GameSnapshotMapper` (`packages/game/infrastructure/persistence/game-snapshot-mapper.js`) and `packages/game/infrastructure/session/campaign-game-session-mapper.js`, and read by `packages/game/infrastructure/session/campaign-sector-session-coordinator.js`, `packages/game/infrastructure/session/campaign-resume-sector-session.repository.js`, `packages/game/infrastructure/session/validate-suspended-sector-sessions.js`, and `apps/web/app/page.tsx` | Stage 8 (Compatibility retirement) |
-| `recruitCivic` | Compatibility command alias for `recruitCombatant`, which executes `RecruitCombatantUseCase`. New callers use the canonical command. | `dispatchCampaign` (`packages/game/campaign.js`); typed in `packages/game/public/campaign-types.ts` | Stage 8 (Compatibility retirement) |
-| `civicStatus` | Compatibility eligibility query used by recruitment adapters. It does not define a second category of recruit. | `packages/game/recruitment.ts` and `packages/game/campaign.js`, called by `packages/game/infrastructure/personnel/campaign-recruit-combatant.repository.js`, `packages/game/infrastructure/personnel/campaign-get-recruitment-candidates.repository.js`, and `apps/web/app/Recruitment.tsx` | Stage 8 (Compatibility retirement) |
-| `beginAssault` | Compatibility resolution of the current hostile arrival decision. It cannot bypass the required decision or its identity. | `dispatchCampaign` (`packages/game/campaign.js`); typed in `packages/game/public/campaign-types.ts` | Stage 8 (Compatibility retirement) |
+| `beginAssault` | Compatibility resolution of the current hostile arrival decision for every squad already at the target sector's boundary. It cannot bypass the required decision or its identity. | `dispatchCampaign` (`packages/game/campaign.js`); typed in `packages/game/public/campaign-types.ts` | Stage 8 (Compatibility retirement) |
 | `hiringArrivals` | Prepaid claims in supported older snapshots. Restoration admits them immediately at a legal site or preserves a refundable claim when no site is safe. New recruitment does not create a travel delay. | Campaign snapshot field owned by `packages/game/hiring-arrivals.js` and read by `packages/game/campaign.js`, `packages/game/campaign-scenario.js`, `packages/game/service-equipment-return.js`, `packages/game/service-guarantees.js`, `packages/game/strategic-clock.ts`, `apps/web/app/Desk.tsx`, and `apps/web/app/Recruitment.tsx` | Stage 8 (Compatibility retirement) |
 
 These names remain at serialization and compatibility boundaries. Domain and

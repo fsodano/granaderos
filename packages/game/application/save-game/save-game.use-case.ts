@@ -1,5 +1,6 @@
 import { DomainRefusal, DomainRefusalCode } from '../../domain/shared/domain-refusal.ts';
-import type { GameSaveIdentity, SaveGameRepository } from './save-game.repository.ts';
+import type { GameSaveIdentity } from './save-game.response.ts';
+import type { SaveGameRepository } from './save-game.repository.ts';
 
 export class SaveGameUseCase {
   readonly #repository: SaveGameRepository;

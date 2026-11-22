@@ -46,7 +46,7 @@ UI adapters translate refusal codes into Spanish player-facing messages.
 - A refusal leaves `Treasury`, `ForceRoster`, `Squad` membership, equipment custody, and `ServiceContract` records unchanged.
 - An accepted recruitment charges `Treasury` once, starts `ServiceContract` at the current `GameTime`, admits the `Character` into `ForceRoster`, and places the combatant either in the active `Squad` (when at the same location with free capacity) or in the controllable reserve at `locationId` without any travel delay.
 - Initial equipment and starting cartridges (matched to the character's resolved weapon family via `CampaignCharacterEquipmentMapper`) are issued once on initial recruitment; snapshot restoration never invokes `RecruitCombatantUseCase`.
-- At the compatibility boundary, the legacy `recruitCivic` command alias and `civicStatus` eligibility helper route to this contract without defining a second category of recruit.
+- The `candidateAdmission` eligibility query answers whether a candidate can be admitted into this contract without defining a second category of recruit.
 
 ## Repository
 

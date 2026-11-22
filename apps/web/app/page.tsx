@@ -12,8 +12,7 @@ import {
   useSyncExternalStore,
 } from 'react';
 import type { CampaignPresentation } from '../../../packages/campaign-format/types.ts';
-import type { SaveStatus } from '../../../packages/game/application/get-save-status/get-save-status.repository.ts';
-import { TalkToCharacterUseCase } from '../../../packages/game/application/talk-to-character/talk-to-character.use-case.ts';
+import type { SaveStatus } from '../../../packages/game/public/save-types.ts';
 import { battleFromRequest, prepareCampaignBattle } from '../../../packages/game/battle-handoff.js';
 import { runBattleJob } from '../../../packages/game/battle-job.ts';
 import { dispatchCampaign, questForNPC, rosterFor } from '../../../packages/game/campaign.js';
@@ -26,8 +25,6 @@ import {
   CONTENT_LAUNCH_KEY,
 } from '../../../packages/game/content-launch.ts';
 import { encounterHireTerms } from '../../../packages/game/encounters.js';
-import { CampaignTalkToCharacterRepository } from '../../../packages/game/infrastructure/session/talk-to-character-repository.ts';
-import { domainRefusalMessage } from '../../../packages/game/infrastructure/shared/domain-refusal-message.js';
 import { removedSectorCharacters } from '../../../packages/game/military-remains.js';
 import { missionStatus } from '../../../packages/game/missions.js';
 import {
@@ -44,6 +41,7 @@ import {
   createNewGameSession,
   restoreGameSnapshot,
 } from '../../../packages/game/public/game-persistence-api.ts';
+import { domainRefusalMessage } from '../../../packages/game/public/refusal-api.ts';
 import { MAX_SAVE_BYTES } from '../../../packages/game/save-limits.js';
 import { encodeSave } from '../../../packages/game/save.ts';
 import { pendingArrivalDecisions } from '../../../packages/game/squad-travel.js';
@@ -59,6 +57,7 @@ import {
   type LoadedCampaign,
 } from '../lib/campaign-library';
 import { pagePath, sitePath } from '../lib/site-path.js';
+import { talkToCharacter } from '../lib/talk-to-character';
 import { useCampaignAutosave } from '../lib/useCampaignAutosave';
 import Battlefield from './Battlefield';
 import type { BrowserTool } from './browser-tools';
@@ -503,8 +502,7 @@ export default function Home() {
       return;
     }
     try {
-      const repository = new CampaignTalkToCharacterRepository(current.campaign, current.battle);
-      const result = new TalkToCharacterUseCase(repository).execute({
+      const result = talkToCharacter(current.campaign, current.battle, {
         characterId: npcId,
         speakerId: unitId,
         approach,
