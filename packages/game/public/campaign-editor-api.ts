@@ -38,6 +38,8 @@ export {
 export { DEFAULT_FOUNDRY, foundryLocations } from '../campaign-foundry.js';
 export { headquartersOptions } from '../campaign-headquarters.js';
 export { compileCampaignPackage } from '../campaign-library.js';
+export { createCampaignCompiler } from './campaign-compiler-api.ts';
+export type { CampaignCompilerRequest, CampaignCompilerResponse } from './campaign-compiler-api.ts';
 export { NEUTRAL_OFFICER_CREATION } from '../campaign-officer-creation.ts';
 export { campaignCharacterPortraits } from '../campaign-portraits.js';
 export { validateCampaignPresentation } from '../campaign-presentation-validation.js';

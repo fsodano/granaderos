@@ -297,7 +297,7 @@ tests that cover the behavior it moves.
 
 ## 8. What the series closed and what remains
 
-The seven slices of [the plan](plan.md) have landed on the
+The nine slices of [the plan](plan.md) have landed on the
 `feature/clean-architecture-migration` branch. The gap status is:
 
 | Gap | State | Where |
@@ -308,6 +308,8 @@ The seven slices of [the plan](plan.md) have landed on the
 | The compatibility list not shrinking | Partly closed. The command alias `recruitCivic` and the eligibility query `civicStatus` are gone from the source, and the glossary records `candidateAdmission` as the canonical name. The persisted field names and the legacy prepaid claim `hiringArrivals` remain, because retiring them needs an explicit save conversion. | Slice 5 |
 | The seeded random sequence outside the domain | Closed for the rule. `RandomSource` in `packages/game/domain/shared/random-source.ts` owns the sequence and produces exactly what the campaign produced before. The game session does not own it yet: the campaign snapshot's `seed` field is the state the running rules advance, and a session-held copy would be a second owner of the same sequence. | Slice 6 |
 | The public surface not constraining the player application | Closed. `packages/game/public/game-runtime-api.ts` is the surface the player application reads the game through, and `tools/check-architecture.mjs` refuses any file under `apps/web` that reaches the game package any other way. | Slice 7 |
+| No named compiler for the shared file contract | Closed. `CampaignCompiler` in `packages/game/application/campaign-compiler` is the application service that turns a validated `CampaignDefinition` into runtime-playable definitions, and it is the only path the game and the editor use. The architecture checker gives it one narrow exception, because reading the shared contract and the retained runtime rules is what it is for. | Slice 8 |
+| The versioned game model without a name | Closed. `GameSnapshot` and the content it carries are named types in `packages/game/public/game-snapshot-types.ts`, and the save envelope, the save decoder, the persistence metadata and the worker request state them. | Slice 9 |
 
 What the series did not do:
 
@@ -319,6 +321,9 @@ What the series did not do:
   the campaign snapshot's `seed` and revision fields are still the state the
   rules advance.
 - The persisted compatibility names are still in the save format. Retiring
-  them needs an explicit conversion and its own slice.
+  them needs an explicit conversion and its own slice. The one that is not
+  only a legacy artifact is `hiringArrivals`: it carries the travel delay of a
+  hiring, so retiring it is a gameplay change with a save migration, and the
+  accepted plan sequences it after the saved field names.
 
 The remaining work is recorded in the slice notes.

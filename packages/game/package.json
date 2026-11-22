@@ -1,9 +1,10 @@
 {
   "name": "@granaderos/game",
-  "version": "0.2.12",
+  "version": "0.2.14",
   "private": true,
   "type": "module",
   "exports": {
+    "./campaign-compiler-api": "./public/campaign-compiler-api.ts",
     "./campaign-editor-api": "./public/campaign-editor-api.ts",
     "./campaign-playtest-api": "./public/campaign-playtest-api.ts",
     "./game-persistence-api": "./public/game-persistence-api.ts",

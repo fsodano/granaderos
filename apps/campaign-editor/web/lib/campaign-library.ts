@@ -11,7 +11,7 @@ import type {
   CampaignPresentation,
   CampaignOrigin,
 } from '../../../../packages/campaign-format/types.ts';
-import { compileCampaignPackage } from '../../../../packages/game/public/campaign-editor-api.ts';
+import { createCampaignCompiler } from '../../../../packages/game/public/campaign-editor-api.ts';
 import { resourceSHA256 } from '../../../../packages/campaign-format/campaign-resources.js';
 import { sitePath } from '../../../web/game-preview-assets.js';
 
@@ -185,7 +185,10 @@ export async function loadInstalledCampaign(
     }
     maps[id] = map;
   }
-  const resolved = compileCampaignPackage(manifest, { content, world, maps, presentation, assets });
+  const resolved = createCampaignCompiler().execute({
+    manifest,
+    documents: { content, world, maps, presentation, assets },
+  });
   await verifyCampaignResources(resolved, signal ? { reader, signal } : { reader });
   return {
     entry,

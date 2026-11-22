@@ -7,7 +7,7 @@ import { validateCampaignPresentation as validatePresentationSchema } from '../p
 import { validateCampaignPresentation } from '../packages/game/campaign-presentation-validation.js';
 import { defaultContentPackage, validateContentPackage } from '../packages/game/content-package.js';
 import { DEFAULT_PRESENTATION, DEFAULT_WORLD, DEFAULT_MAPS } from '../content/campaigns/default.js';
-import { compileCampaignPackage } from '../packages/game/campaign-library.js';
+import { createCampaignCompiler } from '../packages/game/public/campaign-compiler-api.ts';
 import { campaignDocuments, alternateCampaignDocuments } from './campaign-library-fixture.ts';
 
 function compile(documents: CampaignFixtureDocuments, id: string) {
@@ -15,12 +15,17 @@ function compile(documents: CampaignFixtureDocuments, id: string) {
   const manifest = fixtureManifest(documents.get(`${root}manifest.json`));
   const index = fixtureMapIndex(documents.get(root + manifest.maps));
   const mapRoot = root + manifest.maps.slice(0, manifest.maps.lastIndexOf('/') + 1);
-  return compileCampaignPackage(manifest, {
-    content: documents.get(root + manifest.content),
-    world: documents.get(root + manifest.world),
-    maps: Object.fromEntries(index.maps.map((map) => [map.id, documents.get(mapRoot + map.path)])),
-    presentation: documents.get(root + manifest.presentation),
-    assets: documents.get(root + manifest.assets),
+  return createCampaignCompiler().execute({
+    manifest,
+    documents: {
+      content: documents.get(root + manifest.content),
+      world: documents.get(root + manifest.world),
+      maps: Object.fromEntries(
+        index.maps.map((map) => [map.id, documents.get(mapRoot + map.path)]),
+      ),
+      presentation: documents.get(root + manifest.presentation),
+      assets: documents.get(root + manifest.assets),
+    },
   });
 }
 
