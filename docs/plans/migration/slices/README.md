@@ -1,6 +1,6 @@
 # Migration slice notes
 
-This index links to the 29 migration slice notes. Each note records its
+This index links to the 31 migration slice notes. Each note records its
 rationale, scope, and behavior tests. Its rationale describes the source at
 that slice's start; the [overview](../overview.md) describes current source.
 
@@ -37,6 +37,8 @@ that slice's start; the [overview](../overview.md) describes current source.
 | [27. Interior visibility helpers](27-interior-visibility-helpers.md) |
 | [28. Shot range](28-shot-range.md) |
 | [29. NPC perception](29-npc-perception.md) |
+| [30. Care composure](30-care-composure.md) |
+| [31. Game import boundary](31-game-import-boundary.md) |
 
 ## What the series changed
 
@@ -67,6 +69,9 @@ that slice's start; the [overview](../overview.md) describes current source.
   importing retained root modules; it also blocks `apps/web/app` from
   importing game domain, application, and infrastructure modules.
   `apps/web/lib` may import those layers for browser composition.
+- The reverse direction is also blocked: the architecture checker and
+  `.dependency-cruiser.json` refuse imports from `packages/game` into
+  `apps/web`.
 - `CampaignCompiler` compiles validated campaign definitions into
   runtime-playable definitions. The retained `compileCampaignPackage` adapter
   delegates to it.
@@ -78,16 +83,17 @@ that slice's start; the [overview](../overview.md) describes current source.
   root module is a thin re-export of it.
 - `ResidentPositionReference` names the saved reference to a resident's
   character identity and local position.
-- Eighteen game rules have moved into the domain: firearm readiness, unarmed
+- Nineteen game rules have moved into the domain: firearm readiness, unarmed
   combat, sleep need, held supplies, projectile energy, firearm loads, study
   rate, the route queue, firearm serviceability, kinetic impact, combat
   balance, combat journal, fatigue and energy, interior visibility, campaign
-  clock conversion, tactical-level rules (the vertical map layer assigned to
-  a point), shot-range calculation, and NPC perception (`directionTo` and
-  `approximateHeardPosition`). The sleep-need sentence and campaign notices
-  moved from game code to the browser interface. The shot-range sentence stays
-  beside its HUD caller in `packages/game/shot-range.js` to preserve dependency
-  direction.
+clock conversion, tactical-level rules (the vertical map layer assigned to
+  a point), shot-range calculation, NPC perception (`directionTo` &
+  `approximateHeardPosition`), and care-composure relief
+  (`CARE_COMPOSURE_RELIEF` & `careComposureRelief`). The sleep-need sentence
+  and campaign notices moved from game code to the browser interface.
+  The shot-range sentence stays beside its HUD caller in
+  `packages/game/shot-range.js` to preserve dependency direction.
 - Slice 26 moved the game's tactical-level rules into
   `packages/game/domain/sector-sessions/tactical-space.ts`. Slice 27 removed
   their duplicates from interior visibility. `packages/campaign-format` keeps
@@ -96,6 +102,11 @@ that slice's start; the [overview](../overview.md) describes current source.
 - Slice 29 put the simple NPC perception rules in the domain. The richer
   `directionTo` and `approximateHeardPosition` copies in
   `packages/game/tactical-awareness.js` remain to be consolidated.
+- Slice 30 moved `CARE_COMPOSURE_RELIEF` and `careComposureRelief` into
+  `packages/game/domain/personnel/care-composure.ts`; the root module
+  re-exports them.
+- Slice 31 makes the architecture checker and dependency-cruiser reject
+  imports from `packages/game` into `apps/web`.
 
 ## What remains
 

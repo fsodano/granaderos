@@ -1,6 +1,5 @@
 # Slice 30: the care composure rule into the domain
 
-**Branch:** `migration/care-composure`
 **Intent:** Move the rule that steadies a caregiver after a successful care
 stroke into the domain, where the health rules live.
 
@@ -42,13 +41,3 @@ same cap at the caregiver's shock.
   treatment gives none, a caregiver without the ability gives none, a
   caregiver treating themselves gives none, and the relief never exceeds the
   caregiver's shock.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.34` to `0.2.35`.

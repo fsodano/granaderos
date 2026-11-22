@@ -77,6 +77,11 @@ Files under `apps/web/app` also may not import the game domain, application,
 or infrastructure layers. `apps/web/lib` is the browser-composition layer and
 may import those layers.
 
+The reverse direction is also prohibited: no file under `packages/game` may
+import from `apps/web`. `tools/architecture-rules.ts` defines this rule,
+`tools/check-architecture.mjs` applies it, and `.dependency-cruiser.json`
+enforces the same dependency boundary.
+
 ### The player application
 
 `apps/web/app/page.tsx` is the whole application shell: a client component that
@@ -185,21 +190,24 @@ campaign and sector snapshot pair through `SaveGameUseCase` and
 
 The slices established a shared revision policy, moved browser composition out
 of React components, standardized application use-case contracts, added a
-runtime public entry, added `CampaignCompiler` (the application service that
-turns a validated campaign definition into runtime-playable objects), and
-named `GameSnapshot` (the versioned save and worker representation). The
-player-app import rules remain intentionally different for React screens and
-browser composition, as section 8 describes.
+runtime public entry, and blocked game-package imports from the player app with
+the architecture checker and dependency-cruiser. They also added
+`CampaignCompiler` (the application service that turns a validated campaign
+definition into runtime-playable objects) and named `GameSnapshot` (the
+versioned save and worker representation). The player-app import rules remain
+intentionally different for React screens and browser composition, as section
+8 describes.
 
-Eighteen game rules moved into `packages/game/domain`: firearm readiness,
+Nineteen game rules moved into `packages/game/domain`: firearm readiness,
 unarmed combat, sleep need, held supplies, projectile energy, firearm loads,
 study rate, the route queue, firearm serviceability, kinetic impact, combat
 balance, combat journal, fatigue and energy, interior visibility, campaign
 clock conversion, tactical-level rules (the vertical map layer assigned to a
-point), shot-range calculation, and NPC perception (`directionTo` and
-`approximateHeardPosition`). The sleep-need sentence and campaign notices
-moved to the browser interface. The Spanish shot-range sentence remains in
-`packages/game/shot-range.js` beside its caller in
+point), shot-range calculation, NPC perception (`directionTo` &
+`approximateHeardPosition`), and care-composure relief
+(`CARE_COMPOSURE_RELIEF` & `careComposureRelief`). The sleep-need sentence
+and campaign notices moved to the browser interface. The Spanish shot-range
+sentence remains in `packages/game/shot-range.js` beside its caller in
 `packages/game/ja2-hud.ts`; moving it to the player application would invert
 the dependency direction.
 
@@ -212,7 +220,7 @@ maps and cannot import the game.
 ## 5. What remains
 
 - The retained simulation modules, including `tactical.js` and `campaign.js`,
-  still carry most game rules procedurally. Moving sixteen rules did not move
+  still carry most game rules procedurally. Moving nineteen rules did not move
   the simulation as a whole.
 - `GameSession` is the runtime consistency boundary for a game. It does not
   own `RandomSource` (the seeded random sequence) or `WorldTimeline` (the
@@ -252,9 +260,10 @@ accepted architecture.
 | Revision policy | `packages/game/infrastructure/shared/revision-policy.ts` validates and advances revisions for `GameUnitOfWork` (the shared game transaction) and journey/sector adapters. `gameRevision`, `journeyRevision`, and `sectorRevision` remain separate saved fields. | Preserve each revision's own snapshot boundary. |
 | Use-case contracts | Each application use case has request and response types, a repository interface, a use-case class, and a README. | Keep the contract shape enforced. |
 | Public game surface | `tools/architecture-rules.ts` blocks every `apps/web` file from importing retained modules directly from the `packages/game` root. It also blocks `apps/web/app` from importing domain, application, or infrastructure modules; `apps/web/lib` may import those layers for browser composition. | Keep both import rules enforced and use declared entries for package APIs. |
+| Game-to-player dependency | `tools/architecture-rules.ts`, `tools/check-architecture.mjs`, and `.dependency-cruiser.json` prohibit imports from `packages/game` into `apps/web`. | Keep the game package independent of player-interface modules. |
 | Public entries used by `apps/web` | The app imports `game-runtime-api.ts`, `campaign-types.ts`, `compatibility-types.ts`, `inventory-types.ts`, `battle-job-types.ts`, `game-snapshot-types.ts`, and `campaign-compiler-api.ts` from `packages/game/public`. | Treat the declared entries as a set of APIs, not as one runtime entry. |
 | Campaign compilation and saves | `CampaignCompiler` compiles a validated `CampaignDefinition`; the retained `compileCampaignPackage` adapter in `packages/game/campaign-library.js` delegates to it. `GameSnapshot` names the versioned save and worker representation. | Keep supported save decoding behind the conversion policy. |
-| Domain rule ownership | Eighteen rules live in `packages/game/domain`, including the simple `directionTo` and `approximateHeardPosition` rules in `packages/game/domain/perception/npc-perception.ts`. Retained modules still carry most simulation rules procedurally. The game uses `packages/game/domain/sector-sessions/tactical-space.ts`; `packages/campaign-format` keeps an independent map-validation copy. | Move retained rules behind the domain or a declared public entry, and consolidate the richer perception copies in `packages/game/tactical-awareness.js`. |
+| Domain rule ownership | Nineteen rules live in `packages/game/domain`, including `CARE_COMPOSURE_RELIEF` & `careComposureRelief` in `packages/game/domain/personnel/care-composure.ts` and `directionTo` & `approximateHeardPosition` in `packages/game/domain/perception/npc-perception.ts`. Retained modules still carry most simulation rules procedurally. The game uses `packages/game/domain/sector-sessions/tactical-space.ts`; `packages/campaign-format` keeps an independent map-validation copy. | Move retained rules behind the domain or a declared public entry, and consolidate the richer `directionTo` & `approximateHeardPosition` copies in `packages/game/tactical-awareness.js`. |
 | Time and randomness | `RandomSource` is a domain object, but the campaign snapshot's `seed` still advances. `GameSession` does not own `RandomSource` or `WorldTimeline`, and `packages/game/campaign.js` changes the clock directly. | Make `GameSession` own both objects and route time changes through `WorldTimeline.advanceTo`. |
 | Compatibility table | The glossary table maps retained API/save names to canonical terms. `recruitCivic` and `civicStatus` are not accepted; `candidateAdmission` is canonical. `beginAssault` remains a compatibility command for resolving a hostile arrival. Persisted names, including `hiringArrivals`, still need conversion; `hiringArrivals` carries a recruitment travel delay. | Convert persisted compatibility names. Treat `hiringArrivals` as a gameplay migration, not a field rename. |
 | Resident position | `ResidentPositionReference` names the saved reference to a character identity and local position. | Keep the saved projection separate from character health and inventory ownership. |
