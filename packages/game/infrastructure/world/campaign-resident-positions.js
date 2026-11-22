@@ -8,7 +8,7 @@ const characterPosition = (reference) => ({
   tacticalLevel: reference.position.level,
 });
 
-/** @typedef {{characterId: string, position: {x: number, y: number, level: number}}} ResidentPositionReference */
+/** @typedef {import('../../public/resident-position-types.ts').ResidentPositionReference} ResidentPositionReference */
 
 /** @returns {ResidentPositionReference[]} */
 export function residentPositionsFor(campaign, field) {

@@ -7,6 +7,7 @@ import type {
 import type { CampaignSnapshot } from './campaign-types.ts';
 import type { SectorSessionSnapshot } from '../domain/sector-sessions/sector-session.ts';
 import type { SectorOperationContextSnapshot } from '../domain/sector-sessions/sector-operation-context.ts';
+import type { ResidentPositionReference } from './resident-position-types.ts';
 
 /** Serialized compatibility projections. Domain entities remain authoritative. */
 export interface TacticalPoint {
@@ -453,7 +454,7 @@ export interface BattleSnapshot {
   roundTimeCharged?: boolean;
   savedHour?: number;
   savedSecond?: number;
-  residentPositions?: { characterId: string; position: { x: number; y: number; level: number } }[];
+  residentPositions?: ResidentPositionReference[];
   worldTimeline?: import('../domain/world/world-timeline.ts').WorldTimelineSnapshot;
   worldItemAvailability?: Record<string, number>;
   residentRoutine?: import('../domain/world/resident-routine.ts').ResidentRoutineSnapshot;
