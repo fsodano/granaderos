@@ -1,4 +1,5 @@
 import { GameSession } from '../../domain/session/game-session.ts';
+import { WorldTimeline } from '../../domain/world/world-timeline.ts';
 
 export function sectorSessionRegistration(request) {
   return {
@@ -27,7 +28,12 @@ export function restoreGameSession(campaign) {
     suspendedSectorSessionIds: suspended.map((session) => session.request.id),
     sectorSessions: requests.map(sectorSessionRegistration),
     randomSource: { seed: campaign.seed ?? 0 },
+    worldTimeline: WorldTimeline.startAt(acceptedCampaignSecond(campaign)).toSnapshot(),
   });
+}
+
+function acceptedCampaignSecond(campaign) {
+  return (campaign.hour ?? 0) * 3600 + (campaign.secondOfHour ?? 0);
 }
 
 export function projectGameSession(campaign, session) {
@@ -45,4 +51,12 @@ export function projectGameSession(campaign, session) {
     campaign.gameSessionId = snapshot.id;
   }
   campaign.gameRevision = snapshot.revision;
+  const acceptedSecond = session.timeline.currentSecond;
+  campaign.hour = Math.floor(acceptedSecond / 3600);
+  const secondOfHour = acceptedSecond % 3600;
+  if (secondOfHour) {
+    campaign.secondOfHour = secondOfHour;
+  } else {
+    delete campaign.secondOfHour;
+  }
 }
