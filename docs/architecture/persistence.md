@@ -11,10 +11,10 @@ Persistence separates two jobs:
 
 ## Portable save envelope and byte limits
 
-Calling [`encodeSave`](../../packages/game/save.ts) with `campaign` and an
-optional `battle` value produces a JSON string with this envelope structure.
-The following illustrative JSON shows the envelope keys; placeholder values
-stand in for serialized content:
+Calling [`encodeSave`](../../packages/game/save.ts) with a campaign snapshot and
+an optional in-memory sector view produces a JSON string with this envelope
+structure. The following illustrative JSON shows the envelope keys; placeholder
+values stand in for serialized content:
 
 ```json
 {
@@ -29,10 +29,10 @@ stand in for serialized content:
 
 In this envelope:
 
-- `format` (`"granaderos"`) and `schema` (`1` for raw tiles or `2` when palette terrain compaction is applied) identify the save codec version.
+- `format` (`"granaderos"`) and `schema` identify the save format. The encoder keeps `schema` at `1` unless palette terrain compaction shrinks at least one map, in which case it sets `schema` to `2`; cell scenes use their separate `cell-tiles-v1` encoding.
 - `savedAt` records the ISO-8601 encoding timestamp.
 - `mapping` records the domain snapshot mapping `version` (`1`), the `GameSession` `sessionId`, and the accepted `revision`. These values must match `campaign.gameSessionId` and `campaign.gameRevision`. Legacy saves without a session ID receive a fresh ID on restoration; mismatched IDs or revisions are rejected.
-- `campaign` holds the campaign snapshot. `sectorSession` holds the active sector snapshot. The decoded [`GameSnapshotContent`](../../packages/game/public/game-snapshot-types.ts) keeps its in-memory sector field named `battle`, and `encodeSave` receives that value as its `battle` argument. `decodeSave` selects `sectorSession` when that key is present and reads legacy top-level `battle` only when `sectorSession` is absent. If both keys are present, `sectorSession` wins, including when its value is `null`. Encoding writes only `sectorSession`. The snapshots use custom replacers for pinned campaign packages, cell scenes, artillery definitions, and weapons.
+- `campaign` holds the campaign snapshot. `sectorSession` holds the active sector snapshot. The decoded [`GameSnapshotContent`](../../packages/game/public/game-snapshot-types.ts) keeps its in-memory sector field named `battle`, and `encodeSave` receives that value as its `battle` argument. `decodeSave` selects `sectorSession` whenever the key is not `undefined` and reads legacy top-level `battle` only when `sectorSession` is `undefined`. If both keys are present, `sectorSession` wins, including when its value is `null`. Encoding writes only `sectorSession`. The snapshots use custom replacers for pinned campaign packages, cell scenes, artillery definitions, and weapons.
 
 ## Campaign snapshot fields and legacy reads
 
@@ -46,21 +46,40 @@ The envelope's `campaign` value is a [`CampaignSnapshot`](../../packages/game/pu
 | `sectorSnapshots` | Retained physical snapshots for sectors | `sectorStates` |
 | `sceneSnapshots` | Retained physical snapshots for mission scenes | `sceneStates` |
 
-For each pair, [`decodeSave`](../../packages/game/save.ts) reads the legacy field only when the current field is `undefined`, then removes the legacy field. If both are present, the current value wins, even when it is `null` or an empty collection. Re-encoding writes only the current field names. The separate `suspendedSectorSessions` field stores request-and-snapshot records for suspended visits. `sectorState` is a campaign-action request property in [`CampaignAction`](../../packages/game/public/campaign-types.ts), not a saved campaign field.
+For each legacy campaign field, [`decodeSave`](../../packages/game/save.ts)
+copies it only when the current field is `undefined`, then removes the legacy
+key. If both are present, the current value wins, including `null` or an empty
+collection. The game writes campaign fields under their current names.
+`suspendedSectorSessions` is a current field, not a legacy alias: each suspended
+visit stores a saved entry `request` and sector `snapshot`. The
+[`CampaignSectorSessionCoordinator`](../../packages/game/infrastructure/session/campaign-sector-session-coordinator.js)
+also saves `activeSquadId`, `location`, and `suspendedAtSeconds` for resumption;
+[`GameSnapshotMapper`](../../packages/game/infrastructure/persistence/game-snapshot-mapper.js)
+restores the domain `SectorSession` from the request and snapshot rather than
+serializing that domain object. An order that carries the active sector view
+uses the `sectorSession` property, matching the envelope key; that property is
+not a campaign snapshot field. The decoded `GameSnapshotContent` still calls
+its in-memory sector field `battle`.
 
-Three distinct byte thresholds in [`packages/game/save-limits.js`](../../packages/game/save-limits.js) govern encoding and decoding:
+The save path has three size limits. The file limit is implemented in
+[`packages/game/save-limits.js`](../../packages/game/save-limits.js); the
+expanded-save limit and terrain compaction are implemented in
+[`packages/game/save-terrain.js`](../../packages/game/save-terrain.js):
 
-- **1,000,000 bytes (compaction trigger):** If the initial encoded JSON is under 1 MB, it remains `schema: 1`. At or above 1 MB, eligible tile arrays across the active `sectorSession` snapshot (or legacy `battle` when `sectorSession` is absent), `campaign.sectorSnapshots`, `campaign.sceneSnapshots`, and `campaign.sectorEntryRequest.resumeSnapshot` are palette-compacted (`{ encoding: "palette-v1", palette: [...], indices: [...] }`), switching `schema` to `2` if at least one map shrinks. Cell scenes use their own `cell-tiles-v1` compaction in [`packages/game/cell-scene-storage.js`](../../packages/game/cell-scene-storage.js).
-- **20,000,000 UTF-8 bytes (`MAX_EXPANDED_SAVE_BYTES`):** Bounds the uncompacted or expanded JSON size before compaction or during `schema: 2` expansion to prevent decompression bombs.
-- **5,000,000 bytes / characters (`assertSaveSize`):** Bounds the final persisted or imported JSON string (both UTF-8 byte length and JavaScript string length).
+- **1,000,000 UTF-8 bytes (palette-compaction trigger):** Below this size, `encodeSave` skips `palette-v1` terrain compaction. At or above it, the encoder rejects a pre-palette JSON string over the expanded-save limit; otherwise it compacts eligible tile arrays in the active `sectorSession` snapshot (or legacy top-level `battle` only when `sectorSession` is absent), `campaign.sectorSnapshots`, `campaign.sceneSnapshots`, `campaign.sectorEntryRequest.resumeSnapshot`, and every `campaign.suspendedSectorSessions[*].snapshot`. It changes `schema` to `2` only if at least one map becomes smaller. Cell scenes use their separate `cell-tiles-v1` compaction in [`packages/game/cell-scene-storage.js`](../../packages/game/cell-scene-storage.js).
+- **20,000,000 UTF-8 bytes (`MAX_EXPANDED_SAVE_BYTES`):** The encoder rejects a pre-palette JSON string above this size. The decoder estimates the fully expanded save before allocating tile arrays and rejects it above the same limit; expansion of `cell-tiles-v1` scenes contributes to that estimate.
+- **5,000,000 bytes and JavaScript string code units (`assertSaveSize`):** The final persisted JSON and imported text must fit both limits.
 
-[`compactSaveTerrain`](../../packages/game/save-terrain.js) does not traverse
-`campaign.suspendedSectorSessions`. The JSON replacer still compacts eligible
+[`compactSaveTerrain`](../../packages/game/save-terrain.js) and
+[`expandSaveTerrain`](../../packages/game/save-terrain.js) walk the same list of
+snapshots: the active view, both retained map collections,
+`campaign.sectorEntryRequest.resumeSnapshot`, and every
+`campaign.suspendedSectorSessions[*].snapshot`. A suspended visit's eligible
+tile array is palette-compacted on encode and expanded to the same tile data on
+decode. Its compacted JSON contributes to the 5 MB file limit, and its expanded
+form contributes to the 20 MB limit. The JSON replacer also compacts eligible
 cell scenes as `cell-tiles-v1` through
-[`cellSceneSaveReplacer`](../../packages/game/cell-scene-storage.js), but
-ordinary sector tile arrays in suspended visits remain uncompressed. Large
-suspended visits can therefore push the final save over the 5 MB limit. No
-mitigation is proposed here.
+[`cellSceneSaveReplacer`](../../packages/game/cell-scene-storage.js).
 
 ## Decode, migrations, and validation sequence
 

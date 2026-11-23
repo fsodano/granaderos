@@ -300,7 +300,6 @@ import {
   advanceSquadTravel,
   nextSquadTravelBoundarySeconds,
   validateSquadTravel,
-  readyAssaultSquads,
   arriveForAssault,
   validateAssaultDeployment,
   hasPendingArrivalDecision,
@@ -1553,20 +1552,20 @@ function resolveDefenseAutomatically(session, s, request) {
     battleId: request.id,
     outcome: result.outcome,
     survivors: result.battle.units.filter((u) => u.side === 'player'),
-    sectorState: result.battle,
+    sectorSession: result.battle,
   });
   requireThat(!next.lastError, next.lastError);
   Object.assign(s, next);
 }
 function completeDeploymentReport(s, request, action) {
   requireThat(
-    action.sectorState && Array.isArray(action.survivors),
+    action.sectorSession && Array.isArray(action.survivors),
     'El despliegue necesita un estado táctico completo y un parte de todos los combatientes.',
   );
-  validateQuestContext(s, action.sectorState);
-  validateQuestBeneficiaryContext(s, action.sectorState, { request });
-  validateRoadsideDiscoveryContext(s, action.sectorState);
-  const raw = action.sectorState,
+  validateQuestContext(s, action.sectorSession);
+  validateQuestBeneficiaryContext(s, action.sectorSession, { request });
+  validateRoadsideDiscoveryContext(s, action.sectorSession);
+  const raw = action.sectorSession,
     snapshot = validateSectorSnapshot(raw, s),
     ids = request.squad.map((u) => String(u.id));
   validateResidentPositionContext(s, snapshot);
@@ -2578,17 +2577,15 @@ export function dispatchCampaign(previous, action) {
     );
     requireThat(
       !hasPendingArrivalDecision(s) ||
-        ['fightOnArrival', 'withdrawOnArrival', 'beginAssault', 'selectSquad'].includes(
-          action.type,
-        ) ||
+        ['fightOnArrival', 'withdrawOnArrival', 'selectSquad'].includes(action.type) ||
         (action.type === 'syncTacticalTime' &&
           action.elapsedSeconds === (s.sectorEntryRequest?.syncedSeconds ?? 0)),
       'La campaña está en pausa. Elegí combatir o retirarte al llegar.',
     );
-    if (action.sectorState) {
-      validateCampaignPatrol(s, action.sectorState);
-      validateCampaignArtilleryProfiles(s, action.sectorState);
-      validateArtilleryReport(s.sectorEntryRequest, action.sectorState);
+    if (action.sectorSession) {
+      validateCampaignPatrol(s, action.sectorSession);
+      validateCampaignArtilleryProfiles(s, action.sectorSession);
+      validateArtilleryReport(s.sectorEntryRequest, action.sectorSession);
     }
     requireThat(
       !s.defeated ||
@@ -2614,7 +2611,6 @@ export function dispatchCampaign(previous, action) {
           'travel',
           'cancelTravel',
           'resumeTravel',
-          'beginAssault',
           'fightOnArrival',
           'withdrawOnArrival',
           'redirectJourney',
@@ -2931,9 +2927,9 @@ export function dispatchCampaign(previous, action) {
           'El tiempo táctico es inválido.',
         );
         const snapshot =
-          action.sectorState === undefined
+          action.sectorSession === undefined
             ? null
-            : validatedInteractionSnapshot(s, action.sectorState);
+            : validatedInteractionSnapshot(s, action.sectorSession);
         if (snapshot) {
           requireThat(snapshot.elapsedSeconds === elapsed, 'El parte y el reloj no coinciden.');
         }
@@ -3552,10 +3548,10 @@ export function dispatchCampaign(previous, action) {
             'Registrá la entrega parcial antes de retirar el compromiso.',
           );
         }
-        validateQuestContext(s, action.sectorState);
-        validateRoadsideDiscoveryContext(s, action.sectorState);
+        validateQuestContext(s, action.sectorSession);
+        validateRoadsideDiscoveryContext(s, action.sectorSession);
         requireThat(s.sectorEntryRequest, 'Primero entrá al sector.');
-        const snapshot = validatedInteractionSnapshot(s, action.sectorState),
+        const snapshot = validatedInteractionSnapshot(s, action.sectorSession),
           npc = (
             scenarioFor(s).conversationContacts(s, s.sectorEntryRequest) ??
             encountersFor(s, s.sectorEntryRequest.sector)
@@ -3986,7 +3982,7 @@ export function dispatchCampaign(previous, action) {
       }
       case 'resumeSectorSession': {
         const snapshot = s.sectorEntryRequest
-          ? validatedInteractionSnapshot(s, action.sectorState)
+          ? validatedInteractionSnapshot(s, action.sectorSession)
           : null;
         const repository = new CampaignResumeSectorSessionRepository(transaction, snapshot);
         new ResumeSectorSessionUseCase(repository).execute({
@@ -4173,12 +4169,8 @@ export function dispatchCampaign(previous, action) {
         note(s, `Se refuerzan las defensas de ${sector(at, s).name}.`);
         break;
       }
-      case 'fightOnArrival':
-      case 'beginAssault': {
-        const groups =
-          action.type === 'fightOnArrival'
-            ? authorizeFightOnArrival(s, action)
-            : readyAssaultSquads(s, action.sector);
+      case 'fightOnArrival': {
+        const groups = authorizeFightOnArrival(s, action);
         const at = groups[0].journey.path[1];
         const origin = groups[0].location;
         const manifest = arriveForAssault(s, groups, at);
@@ -4204,10 +4196,10 @@ export function dispatchCampaign(previous, action) {
           (record) => record.request.sector === at && !record.request.sceneId,
         );
         let existingSnapshot = sameActiveSector
-          ? validatedInteractionSnapshot(s, action.sectorState)
+          ? validatedInteractionSnapshot(s, action.sectorSession)
           : null;
         if (s.sectorEntryRequest && !sameActiveSector) {
-          coordinator.suspendActive(validatedInteractionSnapshot(s, action.sectorState));
+          coordinator.suspendActive(validatedInteractionSnapshot(s, action.sectorSession));
         }
         if (suspendedTarget) {
           coordinator.resume(suspendedTarget.request.id);
@@ -4451,7 +4443,7 @@ export function dispatchCampaign(previous, action) {
     }
     // Check real arrival geometry before committing soldiers, ammunition or guns.
     if (
-      ['attack', 'beginAssault', 'fightOnArrival'].includes(action.type) &&
+      ['attack', 'fightOnArrival'].includes(action.type) &&
       s.sectorEntryRequest &&
       s.sectorEntryRequest.id !== previous.sectorEntryRequest?.id
     ) {

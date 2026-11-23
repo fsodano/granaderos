@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import { initialCampaign } from './legacy-campaign-fixture.ts';
 import { initialCampaign as freshCampaign, dispatchCampaign } from '../packages/game/campaign.js';
 import { previewStrategicRoute } from '../packages/game/strategic-route.js';
+import { pendingArrivalDecisions } from '../packages/game/squad-travel.js';
 import { defaultContentPackage } from '../packages/game/content-package.js';
 import { worldCells, cellTravelReason } from '../packages/game/world-cells.ts';
 import { encodeSave, decodeSave } from '../packages/game/save.ts';
@@ -227,12 +228,49 @@ void test('the map still prepares a counterattack against a stationed force in a
   assert.equal(attack.sectorEntryRequest, null);
   attack = order(attack, { type: 'wait', hours: preview.hours });
   assert.equal(present(present(attack.squads[0]).journey).status, 'ready');
-  attack = order(attack, { type: 'beginAssault', sector: 'buenos_aires' });
+  const ready = pendingArrivalDecisions(attack).filter(
+      (decision) => decision.sectorId === 'buenos_aires',
+    ),
+    notices = structuredClone(attack.log),
+    travelNotice = structuredClone(attack.travelNotice);
+  assert.deepEqual(
+    ready.map((decision) => decision.squadId),
+    [present(attack.squads[0]).id],
+  );
+  for (const decision of ready) {
+    attack = order(attack, {
+      type: 'fightOnArrival',
+      squadId: decision.squadId,
+      decisionId: decision.id,
+    });
+  }
+  assert.deepEqual(
+    present(attack.sectorEntryRequest).assaultSquads?.map((group) => group.id),
+    ready.map((decision) => decision.squadId),
+  );
+  assert.deepEqual(attack.log.slice(0, attack.log.length - notices.length), [
+    {
+      hour: 3,
+      text: 'El destacamento se despliega para Buenos Aires · Plaza Mayor. Mando enemigo: Jacinto de Romarate.',
+    },
+  ]);
+  assert.deepEqual(attack.travelNotice, travelNotice);
   assert.deepEqual(present(attack.sectorEntryRequest).occupationGroupIds, [
     present(s.enemyGroups[0]).id,
   ]);
   assert.deepEqual(present(attack.sectorEntryRequest).enemies, present(s.enemyGroups[0]).units);
   assert.equal(attack.blockade, true);
+});
+void test('the dispatcher refuses the retired beginAssault order like any unknown order', () => {
+  const s = initialCampaign(),
+    before = structuredClone(s);
+  // The retired alias is no longer part of CampaignAction, so the order starts
+  // as a canonical command and takes the old runtime name before it is dispatched.
+  const retiredCommand: CampaignAction = { type: 'wait' };
+  Object.assign(retiredCommand, { type: 'beginAssault', sector: 'buenos_aires' });
+  const refused = dispatchCampaign(s, retiredCommand);
+  assert.equal(refused.lastError, 'Orden desconocida.');
+  assert.deepEqual({ ...refused, lastError: null }, before);
 });
 
 void test('hostile districts explain their existing main-sector restriction while anchors still admit attacks and liberated districts admit travel', () => {

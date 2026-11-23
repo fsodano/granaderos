@@ -8,6 +8,34 @@ This page catalogues the player's tactical intentions during a sector visit (`Se
 
 Sector play lets the player position, protect, equip, treat, converse, or fight with a squad during an open `SectorSession`. `Battlefield.tsx` is the browser input surface. `EnterSectorUseCase`, `AdmitSectorReinforcementsUseCase`, `ExecuteSectorOrderUseCase`, `EndSectorTurnUseCase`, `ResumeSectorOperationUseCase`, `TransferItemUseCase`, and `GetVisibleCharactersUseCase` coordinate the visit through their narrow per-use-case repository interfaces. Domain objects (`SectorSession`, `CombatSession`, `CombatTurn`, `SectorParticipant`, `ActionPoints`, `Firearm`, `ReloadWork`, `ReprimeWork`, `CombatInjury`, `ReactionStack`, `Inventory`, `ItemCustody`, and `VisionObserver`) own the migrated rules, while `packages/game/tactical.js` connects them to spatial geometry and AI collaborators.
 
+Three cross-cutting rule modules also have domain ownership.
+[`actor-condition.ts`](../../../packages/game/domain/personnel/actor-condition.ts)
+owns `CRITICAL_HEALTH` (15), unconsciousness for a living combatant with fewer
+than 15 hit points or no energy, and `fieldCapable` (at least 15 hit points,
+not departed, fled, or surrendered; routed combatants still count as holding
+the field). Field capability decides whether a side still holds the field,
+not whether a combatant can take an action.
+`refreshMilitaryCondition` recomputes unconsciousness and lowers the weapon
+when the combatant is dead, unconscious, knocked down, routed, or has dropped
+their weapon. For a dead or unconscious combatant, it sets current and maximum
+action points to zero and clears mounted, braced, and overwatch state; for a
+dead combatant, it also clears bleeding.
+[`medical-patient.ts`](../../../packages/game/domain/personnel/medical-patient.ts)
+decides whether a living person is present for care and whether care is
+available. Departed, fled, surrendered, captured, captive, and detained people
+are not present; a conscious routed patient refuses care, while an unconscious
+routed patient can receive it.
+[`completed-victory.ts`](../../../packages/game/domain/combat/completed-victory.ts)
+decides whether the field has been won: the battle is in the player's phase
+without an enemy or allied turn, interruption, or reaction stack; it has victory
+status or is active exploration with the sector cleared; at least one player
+combatant can hold the field; and no enemy can.
+The retained root modules
+[`actor-condition.js`](../../../packages/game/actor-condition.js),
+[`medical-patient.js`](../../../packages/game/medical-patient.js), and
+[`battle-outcome.js`](../../../packages/game/battle-outcome.js) re-export these
+rules; they do not own their implementation.
+
 Every `Exposure` column below uses the canonical six-value vocabulary defined in the [use-case index](README.md#exposure-vocabulary): `Command`, `Gated`, `Query`, `Supporting`, `No interface route`, and `Refused`.
 
 ## Capability families and case index
@@ -71,7 +99,7 @@ The table below specifies each tactical use case by `ID`, `Request information`,
 | TAC-008 | Thrower `unitId`, held grenade or knife, target coordinate/actor, aim level | Removes thrown `Item` from `Inventory` custody, resolves 3D flight (`item-flight.js`), blast (`structure-blast.js`), and `CombatInjury` on affected characters' `Health` | Item not held in hand; invalid trajectory; insufficient `ActionPoints` | `GrenadeThrowEffect.tsx`, `KnifeThrowEffect.tsx`; `ExecuteSectorOrderUseCase`, `grenade-throw.js`, `thrown-knife.js`, `item-flight.js` |
 | TAC-009 | Crew `unitId`/`unitIds`, artillery ID, target coordinate/direction, ammunition | Updates artillery position, facing, reload progress, ammunition stock, and projectile blast/impact | Piece occupied or damaged; insufficient crew, `ActionPoints`, or artillery rounds | `JA2ArtilleryMenu.tsx`, `JA2EnvironmentPanel.tsx`; `ExecuteSectorOrderUseCase`, `tactical.js` artillery handlers |
 | TAC-010 | Participant `unitId`, facing direction, `brace` or `overwatch` | Reserves `ActionPoints` on `SectorParticipant` and sets defensive posture for `ReactionPolicy` checks during enemy movement | Insufficient `ActionPoints`; `brace` requires a bayoneted weapon | `Battlefield.tsx`; `ExecuteSectorOrderUseCase`, `tactical.js:brace/overwatch` |
-| TAC-011 | Medic `unitId`, patient ID/kind, medical dressing selection | Optional approach, `SectorParticipant` `ActionPoints` spend, consumes finite dressing in `Inventory`, and updates patient `Health` (bleeding and bandaged wounds) | Patient unreachable or dead; no medical supplies in `Inventory`; insufficient `ActionPoints` | `MedicalCare.tsx`, `Battlefield.tsx`; `ExecuteSectorOrderUseCase`, `first-aid.js`, `tactical.js:heal` |
+| TAC-011 | Medic `unitId`, patient ID/kind, medical dressing selection | Optional approach, `SectorParticipant` `ActionPoints` spend, consumes finite dressing in `Inventory`, and updates patient `Health` (bleeding and bandaged wounds) | Patient unreachable or not present/available for care; no medical supplies in `Inventory`; insufficient `ActionPoints` | `MedicalCare.tsx`, `Battlefield.tsx`; `ExecuteSectorOrderUseCase`, [`medical-patient.ts`](../../../packages/game/domain/personnel/medical-patient.ts), `first-aid.js`, `tactical.js:heal` |
 | TAC-012 | Participant `unitId`, carried supply (`ration`, `throwTorch`, `boleadoras`, `useItem`), optional target | Decrements supply quantity in `Inventory` and applies fatigue recovery, dynamic light, or entanglement effect | Supply absent from `Inventory` or hand; invalid target; insufficient `ActionPoints` | `JA2Inventory.tsx`, `TacticalLight.tsx`, `GrenadeSupplies.tsx`; `ExecuteSectorOrderUseCase`, `tactical.js` |
 | TAC-013 | Participant `unitId` and assigned mount | Toggles mounted posture, synchronizes horse position, and spends `ActionPoints` | No assigned horse adjacent or on same level; insufficient `ActionPoints` | `Battlefield.tsx`; `ExecuteSectorOrderUseCase`, `tactical.js:mount` |
 | TAC-014 | Participant `unitId`, `rest`, `free`, or `prisonerEscort` with target NPC | Rest recovers fatigue in exploration (`SectorTimeBudget`-bounded); `free` releases restraint/detention; `prisonerEscort` updates escort state | `rest` refused during active `CombatSession`; target not adjacent or eligible; insufficient `ActionPoints` | `PrisonerActions.tsx`, `Battlefield.tsx`; `ExecuteSectorOrderUseCase`, `prisoner-release.js`, `quest-escort.js` |
@@ -87,7 +115,7 @@ The table below specifies each tactical use case by `ID`, `Request information`,
 | TAC-024 | Participant `unitId`, container or scene object ID, `containerLoot`, `steal`, or `environment` | Opens or searches container, reveals contents, or applies local interaction effect | Container empty, out of reach, or blocked; insufficient `ActionPoints` | `JA2LootPicker.tsx`, `TacticalSceneControls.tsx`; `ExecuteSectorOrderUseCase`, `environment-interactions.ts` |
 | TAC-025 | `endTurn` command or `ResumeSectorOperation` continuation request | `EndSectorTurnUseCase` advances `CombatTurn`, pops `ReactionStack`, or runs enemy/allied phase; `ResumeSectorOperationUseCase` continues paused work from its accepted checkpoint | Refused if an item remains on `equipmentCursor`; stops at `SectorTimeBudget` if a campaign `ArrivalDecision` is reached | `Battlefield.tsx`, `useEnemyPlayback.ts`; `EndSectorTurnUseCase`, `ResumeSectorOperationUseCase`, `tactical.js:endTurn` |
 | TAC-026 | Exploration `explore` or `rest` command | Advances exploration time (`REST_SECONDS` or quiet step) within `SectorTimeBudget`, runs `ResidentRoutine` and `CollectResidentSupply`, or transitions to `CombatSession` on hostile contact | Refused during active combat (`CombatSession`); stops at campaign arrival boundary | `Battlefield.tsx`; `ExecuteSectorOrderUseCase`, `EndSectorTurnUseCase`, `time.js` |
-| TAC-027 | Pending `battleId`, final sector snapshot, outcome, and participant report | Dispatches strategic settlement (STR-010) to reconcile `Character` health, `Inventory` custody, and sector ownership, then closes `SectorSession` | Mismatched entry ID or invalid report leaves `SectorSession` open in `Battlefield` | `JA2CampaignReturn.tsx`, `page.tsx:finish`; `campaign.js:battleResult/leaveSector/finishMission` |
+| TAC-027 | Pending `battleId`, final sector snapshot, outcome, and participant report | Dispatches strategic settlement (STR-010) to reconcile `Character` health, `Inventory` custody, and sector ownership, then closes `SectorSession` | Mismatched entry ID or invalid report leaves `SectorSession` open in `Battlefield` | `JA2CampaignReturn.tsx`, `page.tsx:finish`; [`completed-victory.ts`](../../../packages/game/domain/combat/completed-victory.ts), `campaign.js:battleResult/leaveSector/finishMission` |
 
 ## End-to-end intent contracts
 

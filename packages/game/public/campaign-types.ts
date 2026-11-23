@@ -724,32 +724,31 @@ type CampaignOrder =
       type: 'fightOnArrival';
       squadId: string;
       decisionId?: string;
-      sectorState?: BattleSnapshot | null;
+      sectorSession?: BattleSnapshot | null;
     }
   | { type: 'withdrawOnArrival'; squadId: string; decisionId?: string }
   | { type: 'visitSector'; sector?: string }
-  | { type: 'resumeSectorSession'; sectorSessionId: string; sectorState?: BattleSnapshot | null }
+  | { type: 'resumeSectorSession'; sectorSessionId: string; sectorSession?: BattleSnapshot | null }
   | { type: 'visitMission'; id?: string; missionId?: string; mission?: string }
   | {
       type: 'battleResult';
       battleId: string;
       outcome: string;
-      sectorState: BattleSnapshot;
+      sectorSession: BattleSnapshot;
       survivors: Array<Omit<BattleUnit, 'id'> & { id: string | number }>;
     }
   | {
       type: 'leaveSector' | 'finishMission';
       battleId: string;
       outcome?: string;
-      sectorState: BattleSnapshot;
+      sectorSession: BattleSnapshot;
       survivors: Array<Omit<BattleUnit, 'id'> & { id: string | number }>;
     }
-  | { type: 'beginAssault'; sector?: string; squadId?: string }
   | {
       type: 'syncTacticalTime';
       battleId: string;
       elapsedSeconds: number;
-      sectorState?: BattleSnapshot;
+      sectorSession?: BattleSnapshot;
     }
   | { type: 'setSleep'; operativeId: number; asleep: boolean }
   | ({
@@ -799,7 +798,7 @@ type CampaignOrder =
       npcId: string;
       approach: string;
       unitId?: string | number;
-      sectorState?: BattleSnapshot;
+      sectorSession?: BattleSnapshot;
       term?: string;
       choice?: { id?: string; beneficiaryId?: string; targetId?: string };
     }

@@ -68,7 +68,7 @@ export class CampaignTalkToCharacterRepository implements TalkToCharacterReposit
           }
         : {}),
       ...(request.questWithdrawal ? { questWithdrawal: request.questWithdrawal } : {}),
-      sectorState: this.#sourceSession,
+      sectorSession: this.#sourceSession,
     });
     if (campaign.lastError) {
       this.#closed = true;

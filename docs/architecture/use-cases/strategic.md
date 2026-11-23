@@ -8,6 +8,10 @@ This page catalogues the player's strategic campaign intentions—building a for
 
 Strategic play lets the player command an evolving campaign across one continuing world. One player intention can span several low-level steps—for example, assaulting a sector involves plotting a `Journey`, advancing `WorldTimeline`, resolving a paused `ArrivalDecision` via `FightOnArrival`, and opening a `SectorSession` via `EnterSector`.
 
+An `ArrivalDecision` is the fight-or-withdraw choice required for one squad
+when its journey reaches a hostile sector boundary. One `fightOnArrival` or
+`withdrawOnArrival` order resolves that squad's decision.
+
 Every `Exposure` column below uses the canonical six-value vocabulary defined in the [use-case index](README.md#exposure-vocabulary): `Command`, `Gated`, `Query`, `Supporting`, `No interface route`, and `Refused`.
 
 ## Capability families and case index
@@ -34,7 +38,7 @@ The second table below lists each strategic use case by `ID / intention`, its `E
 | STR-005 `plan-and-march` (`RedirectJourney`) | `Command` | Start, queue, cancel, resume, or redirect (`RedirectJourney`) a squad `Journey` while preserving completed travel and costs |
 | STR-006 `advance-campaign-time` | `Command` | Wait or advance campaign time (`AdvanceWorldTime` is the `Supporting` background progression step) until a target time or the first paused `ArrivalDecision` / encounter |
 | STR-007 `visit-locality` (`EnterSector`) | `Gated` | Build a peaceful `SectorEntryRequest` and open or resume a `SectorSession` for local exploration |
-| STR-008 `launch-mission-or-assault` (`FightOnArrival` / `WithdrawOnArrival`) | `Gated` | Resolve a paused `ArrivalDecision` by committing to combat (`FightOnArrival`) or starting a redirectable withdrawal (`WithdrawOnArrival`), or deploy to an authored mission (`ResumeSectorSession` switches among open visits) |
+| STR-008 `launch-mission-or-assault` (`FightOnArrival` / `WithdrawOnArrival`) | `Gated` | Resolve one squad's paused `ArrivalDecision` by committing to combat (`FightOnArrival`) or starting a redirectable withdrawal (`WithdrawOnArrival`), or deploy to an authored mission (`ResumeSectorSession` switches among open visits) |
 | STR-009 `respond-to-enemy-contact` | `Gated` | Choose tactical defense, automatic resolution, or retreat when an enemy group intercepts a sector or squad |
 | STR-010 `settle-battle-and-return` | `Gated` | Submit a validated `SectorSession` report to reconcile `Character` health, `Inventory` custody, ammunition, and territory |
 | STR-011 `TalkToCharacter` | `Gated` | Converse with a present character (`TalkToCharacter`), executing local recruitment (`RecruitmentService`), gifts, or quest choices in one transaction |
@@ -61,6 +65,13 @@ is the narrow application input to `EnterSector`; the saved
 [`CampaignSnapshot.sectorEntryRequest`](../../../packages/game/public/campaign-types.ts)
 uses `CampaignSectorEntryRequest`, the richer public campaign projection.
 
+Campaign orders that carry the active sector view use the `sectorSession`
+property, matching the save-envelope key. The decoded
+[`GameSnapshotContent`](../../../packages/game/public/game-snapshot-types.ts)
+keeps the in-memory field named `battle`. `sectorState` is not part of the
+[`CampaignAction`](../../../packages/game/public/campaign-types.ts) contract;
+orders that require the view read `sectorSession`.
+
 | ID | Request information | Outcome / authoritative owner touched | Key refusals or alternatives | Browser surface and rule source |
 | --- | --- | --- | --- | --- |
 | STR-001 | Content identity, seed, intro completion | Initializes `GameSession` (revision `0`), campaign snapshot, `WorldTimeline`, and initial scenario events | Missing or invalid campaign content; intro replay mutates no state | `page.tsx`, `CampaignIntro.tsx`; `CreateGameSessionUseCase`, `campaign.js:initialCampaign` |
@@ -70,7 +81,7 @@ uses `CampaignSectorEntryRequest`, the richer public campaign projection.
 | STR-005 | `Squad` ID, destination/route, transport mode, queue or redirection request | Creates, advances, cancels, or redirects (`RedirectJourney`) a `Journey`, preserving actual segment position, elapsed time, paid fares, and fatigue | Squad empty, asleep, in care, or deployed; blocked route; unresolved `ArrivalDecision` or encounter | `StrategicMap.tsx`, `Campaign.tsx`; `RedirectJourneyUseCase`, `Journey`, `campaign.js:travel/cancelTravel/resumeTravel` |
 | STR-006 | Target duration or wait command | Player `wait` (`Command`) advances campaign time; `AdvanceWorldTime` and `CollectResidentSupply` run as `Supporting` world-progression steps along `WorldTimeline.advanceTo` and `ResidentRoutine` | Refused while an `ArrivalDecision` or `pendingEncounter` is unresolved; stops at the first paused event boundary | `Campaign.tsx`, `useStrategicClock.ts`; `AdvanceWorldTimeUseCase`, `CollectResidentSupplyUseCase`, `time.js` |
 | STR-007 | Target friendly/eligible sector and active `Squad` | Prepares the saved `CampaignSectorEntryRequest` under `sectorEntryRequest` and opens the visit through `EnterSectorUseCase`, whose repository supplies the narrower `SectorEntryRequest`. The campaign handoff uses participants, the authored map, retained `Sector` state, and the `residentPositions` projection | Sector hostile, invalid, or ineligible; squad empty or busy | `StrategicMap.tsx`; `EnterSectorUseCase`, `campaign.js:visitSector`, `battle-handoff.js` |
-| STR-008 | Pending `ArrivalDecision` ID (`FightOnArrival` / `WithdrawOnArrival`), target mission/sector, or suspended `SectorSession` ID (`ResumeSectorSession`) | `FightOnArrival` authorizes `SectorEntryRequest` (or `AdmitSectorReinforcements` if already open); `WithdrawOnArrival` starts a redirectable withdrawal `Journey`; `ResumeSectorSession` switches active visit | Decision ID already resolved or mismatched; no living squad or supply route; tired squad | `StrategicMap.tsx`, `SectorPreparation.tsx`; `FightOnArrivalUseCase`, `WithdrawOnArrivalUseCase`, `ResumeSectorSessionUseCase`, `campaign.js` |
+| STR-008 | Squad ID and its pending `ArrivalDecision` (`FightOnArrival` / `WithdrawOnArrival`), target mission/sector, or suspended `SectorSession` ID (`ResumeSectorSession`) | `FightOnArrival` authorizes `SectorEntryRequest` (or `AdmitSectorReinforcements` if already open); `WithdrawOnArrival` starts a redirectable withdrawal `Journey`; `ResumeSectorSession` switches active visit. Each squad's arrival decision needs its own order. | Decision ID already resolved or mismatched; no living squad or supply route; tired squad | `StrategicMap.tsx`, `SectorPreparation.tsx`; `FightOnArrivalUseCase`, `WithdrawOnArrivalUseCase`, `ResumeSectorSessionUseCase`, `campaign.js` |
 | STR-009 | Enemy group ID, response (`tactical`, `auto`, or `retreat`), optional retreat destination | Clears `pendingEncounter` via auto-resolve/retreat or emits a defensive `SectorEntryRequest` (`sectorEntryRequest`) | Encounter no longer pending; no valid retreat route or defenders | `EnemyEncounters.tsx`; `campaign.js:respondToEncounter`, `enemy-groups.js` |
 | STR-010 | Issued `sectorEntryRequest.id`, outcome, final sector snapshot, participant report | Reconciles `Character` (`Health`), `Inventory` and `ItemCustody`, ammunition, `Corpse` history, sector ownership, and closes `SectorSession` in `GameSession` | Stale or mismatched entry ID; incomplete or invalid report leaves `SectorSession` open | `page.tsx:finish`, `Battlefield.tsx`; `campaign.js:battleResult/leaveSector/finishMission`, `battle-outcome.js` |
 | STR-011 | Present NPC ID, approach, player speaker, dialogue option, optional sector snapshot | `TalkToCharacterUseCase` applies dialogue effects, local `RecruitmentService` admission, item transfers, escort orders, and quest updates in one transaction | Character absent, dead, or not adjacent; active combat unresolved; dialogue condition unmet | `JA2Conversation.tsx`, `Battlefield.tsx`; `TalkToCharacterUseCase`, `content-dialogue.js`, `quests.js` |
@@ -96,7 +107,7 @@ uses `CampaignSectorEntryRequest`, the richer public campaign projection.
 
 **Request:** Dispatch `{ type: 'travel', sector, ... }` to start/advance a `Journey`, or invoke `RedirectJourneyUseCase` (`cancelTravel` / `resumeTravel` / redirection) from the squad's current segment position.
 
-**Success:** `Journey` records physical segment progress, elapsed time, paid transport fare, and fatigue. If the squad reaches a hostile sector boundary, `ArrivalDecision` pauses `WorldTimeline` and requires `FightOnArrival` or `WithdrawOnArrival`. Choosing `WithdrawOnArrival` creates a journey with `JourneyPurpose.Withdrawal` at zero elapsed time; invoking `RedirectJourney` preserves exact segment position and costs (re-triggering a fresh `ArrivalDecision` immediately if reversed back into the hostile boundary at zero elapsed time).
+**Success:** `Journey` records physical segment progress, elapsed time, paid transport fare, and fatigue. If the squad reaches a hostile sector boundary, its `ArrivalDecision` pauses `WorldTimeline` and requires `FightOnArrival` or `WithdrawOnArrival`. Each order resolves one squad's decision. For two ready squads, the caller sends separate `fightOnArrival` orders, naming each squad and its own arrival decision; one order does not resolve both. Choosing `WithdrawOnArrival` creates a journey with `JourneyPurpose.Withdrawal` at zero elapsed time; invoking `RedirectJourney` preserves exact segment position and costs (re-triggering a fresh `ArrivalDecision` immediately if reversed back into the hostile boundary at zero elapsed time).
 
 The sequence diagram below shows how the `Commander`, `StrategicMap`, `Home dispatch`, `dispatchCampaign`, and `Journey and WorldTimeline rules` process a squad travel request.
 
@@ -121,7 +132,7 @@ sequenceDiagram
 
 **Actor:** Player (commander). **Trigger:** Finish combat or leave exploration from `Battlefield`. **Preconditions:** An active `SectorEntryRequest` (`sectorEntryRequest`) and matching `SectorSession` snapshot exist.
 
-**Request:** `apps/web/app/page.tsx` (`finish`) dispatches `battleResult`, `leaveSector`, or `finishMission` with the pending `battleId`, final `sectorState`, outcome, and participant report.
+**Request:** `apps/web/app/page.tsx` (`finish`) dispatches `battleResult`, `leaveSector`, or `finishMission` with the pending `battleId`, final `sectorSession`, outcome, and participant report.
 
 **Success:** Campaign settlement validates the entry ID and clocks, reconciles `Character` (`Health`), `Inventory` and `ItemCustody`, spent cartridges, `Corpse` records, quests, and sector ownership, closes the `SectorSession` in `GameSession`, and clears `sectorEntryRequest`. **Refusal:** A stale ID or invalid report aborts the transaction with `lastError` and leaves the `SectorSession` open.
 
@@ -136,7 +147,7 @@ sequenceDiagram
   participant S as report validators and settlement
   Commander->>BF: return to campaign
   BF->>H: onFinish(outcome)
-  H->>H: build action with pending battle ID and sectorState
+  H->>H: build action with pending battle ID and sectorSession
   H->>C: dispatchCampaign(campaign, report action)
   C->>S: validate participants and tactical snapshot
   S-->>C: settle Character health, Inventory custody, and consequences
@@ -220,7 +231,6 @@ The table below accounts for every `Exact action type` recognized by `dispatchCa
 | `cancelMilitia` | STR-021 (cancel active militia training course) | `Gated` |
 | `fortify` | STR-022 (fortify eligible sector) | `Gated` |
 | `fightOnArrival` | STR-008 (`FightOnArrivalUseCase` to resolve a paused `ArrivalDecision` by committing to sector entry) | `Gated` |
-| `beginAssault` | STR-008 (`FightOnArrivalUseCase` compatibility resolution of hostile arrival decision) | `Gated` |
 | `attack` | STR-008 (initiate assault or resolve hostile arrival) | `Gated` |
 | `battleResult` | STR-010 (settle completed combat `SectorSession`) | `Gated` |
 

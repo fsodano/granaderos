@@ -44,7 +44,7 @@ void test('fighting on another arrival preserves the current visit and allows ex
     type: 'fightOnArrival',
     squadId: present(decision).squadId,
     decisionId: present(decision).id,
-    sectorState: original.battle,
+    sectorSession: original.battle,
   });
   assert.equal(present(campaign.suspendedSectorSessions).length, 1);
   assert.deepEqual(present(present(campaign.suspendedSectorSessions)[0]).snapshot, original.battle);
@@ -55,7 +55,7 @@ void test('fighting on another arrival preserves the current visit and allows ex
   const resumed = order(restored.campaign, {
     type: 'resumeSectorSession',
     sectorSessionId: present(original.campaign.sectorEntryRequest).id,
-    sectorState: present(restored.battle),
+    sectorSession: present(restored.battle),
   });
   const pair = prepareCampaignBattle(resumed);
   assert.equal(pair.error, null);
@@ -111,7 +111,7 @@ void test('save restoration refuses duplicate participants and altered clocks in
     type: 'fightOnArrival',
     squadId: present(decision).squadId,
     decisionId: present(decision).id,
-    sectorState: pair.battle,
+    sectorSession: pair.battle,
   });
   const active = prepareCampaignBattle(campaign, { placement: true });
   const encoded = parseJsonObject(encodeSave(active.campaign, active.battle));
@@ -154,7 +154,7 @@ void test('simultaneous arrivals at the same sector join one visit without reset
     type: 'fightOnArrival',
     squadId: present(decisions[1]).squadId,
     decisionId: present(decisions[1]).id,
-    sectorState: first.battle,
+    sectorSession: first.battle,
   });
   assert.equal(
     present(reinforced.sectorEntryRequest).id,

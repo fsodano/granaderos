@@ -299,7 +299,7 @@ function recruitLocal(s: CampaignSnapshot, id = 3) {
     npcId: npc.id,
     unitId: Number(actor.id),
     approach: 'recruit',
-    sectorState: p.battle,
+    sectorSession: p.battle,
   });
   const record = present(s.sectorEntryRequest).squad.find((u) => u.id === id);
   assert.ok(record);
@@ -851,7 +851,7 @@ export function freshCoastalRoute(
       type: 'battleResult',
       battleId: request.id,
       outcome: 'victory',
-      sectorState: p.battle,
+      sectorSession: p.battle,
       survivors: p.battle.units.filter((u) => u.side === 'player'),
     };
     evidence?.capture('before-existing-settlement', { pair: p, resultReport });

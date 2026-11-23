@@ -316,7 +316,7 @@ void test('campaign reports and reentry retain dropped guns and the blade left i
   campaign = dispatchCampaign(pair.campaign, {
     type: 'leaveSector',
     battleId: present(pair.campaign.sectorEntryRequest).id,
-    sectorState: pair.battle,
+    sectorSession: pair.battle,
     survivors: pair.battle.units.filter((u) => u.side === 'player'),
   });
   assert.equal(campaign.lastError, null);
