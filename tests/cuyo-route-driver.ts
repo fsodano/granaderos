@@ -36,7 +36,7 @@ import {
   stanceCost,
 } from '../packages/game/tactical.js';
 import { spacePoint, spaceKey, sameSurface, surfaceAt } from '../packages/game/tactical-space.js';
-import { shotLocationEffects } from '../packages/game/targeted-combat.js';
+import { HIT_LOCATIONS, shotLocationEffects } from '../packages/game/targeted-combat.js';
 import { sectorSearchOrder } from './sector-search-driver.ts';
 import { fight as recordedFight } from './opening-driver.ts';
 import { cautiousCombatOrder } from './cautious-driver.ts';
@@ -256,8 +256,12 @@ export function fight(
                 if (safe && !safe(shot)) {
                   continue;
                 }
+                const hitLocation = HIT_LOCATIONS.find((id) => id === shot.hitLocation);
+                if (!hitLocation) {
+                  throw new RangeError('invalid-body-region');
+                }
                 const effect = shotLocationEffects(
-                  shot.hitLocation,
+                  hitLocation,
                   weaponFor(u).damage * shot.damageFactor,
                   t,
                 );
