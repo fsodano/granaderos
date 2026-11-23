@@ -1,6 +1,7 @@
 import type {
   CampaignSectorEntryRequest,
   CampaignSnapshot,
+  CampaignSuspendedSectorSession,
 } from '../packages/game/public/campaign-types.ts';
 import type { BattleSnapshot, BattleTile } from '../packages/game/public/compatibility-types.ts';
 import { isJsonObject, parseJsonObject } from '../packages/campaign-format/json-value.ts';
@@ -31,13 +32,7 @@ function suspendedOnLargeMap(): {
   campaign: CampaignSnapshot;
   request: CampaignSectorEntryRequest;
   snapshot: BattleSnapshot;
-  record: {
-    request: CampaignSectorEntryRequest;
-    snapshot: BattleSnapshot;
-    activeSquadId: string;
-    location: string;
-    suspendedAtSeconds: number;
-  };
+  record: CampaignSuspendedSectorSession;
 } {
   let campaign = dispatchCampaign(initialCampaign(12), {
     type: 'recruitCombatant',

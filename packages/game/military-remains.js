@@ -374,6 +374,7 @@ function advanceInactiveSectorWorld(campaign, snapshot, targetSecond, { suspende
   advanceResidentScavenging(campaign, snapshot, targetSecond);
 }
 
+/** @param {import('./public/campaign-types.ts').CampaignSuspendedSectorSession} session */
 export function advanceSuspendedSectorConditions(campaign, session, targetSecond) {
   requireGameSecond(targetSecond);
   const snapshot = session.snapshot;

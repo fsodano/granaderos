@@ -332,6 +332,9 @@ void test('resident wounds and death time are identical through loaded, retained
         npcs: suspended.scene.npcs,
       },
       snapshot: suspended.scene,
+      activeSquadId: suspended.campaign.activeSquadId,
+      location: suspended.scene.sectorId,
+      suspendedAtSeconds: suspended.campaign.hour * 3600 + (suspended.campaign.secondOfHour ?? 0),
     },
   ];
   suspended.campaign.hour = 0;
@@ -452,6 +455,9 @@ void test('collection before a fatal wound occurs in the same order for loaded, 
         npcs: suspended.scene.npcs,
       },
       snapshot: suspended.scene,
+      activeSquadId: suspended.campaign.activeSquadId,
+      location: suspended.scene.sectorId,
+      suspendedAtSeconds: suspended.campaign.hour * 3600 + (suspended.campaign.secondOfHour ?? 0),
     },
   ];
   for (const state of [retained, suspended]) {
@@ -508,6 +514,9 @@ void test('a corpse that expires at an hourly event releases supplies before col
         npcs: suspended.scene.npcs,
       },
       snapshot: suspended.scene,
+      activeSquadId: suspended.campaign.activeSquadId,
+      location: suspended.scene.sectorId,
+      suspendedAtSeconds: suspended.campaign.hour * 3600 + (suspended.campaign.secondOfHour ?? 0),
     },
   ];
   for (const state of [retained, suspended]) {
@@ -556,6 +565,9 @@ void test('military bleeding and resident movement share the same accepted event
         npcs: suspended.scene.npcs,
       },
       snapshot: suspended.scene,
+      activeSquadId: suspended.campaign.activeSquadId,
+      location: suspended.scene.sectorId,
+      suspendedAtSeconds: suspended.campaign.hour * 3600 + (suspended.campaign.secondOfHour ?? 0),
     },
   ];
   for (const state of [retained, suspended]) {
@@ -596,7 +608,15 @@ void test('daily movement reconciles suspended sector references while retaining
     squad: [],
     npcs: structuredClone(origin.npcs),
   };
-  campaign.suspendedSectorSessions = [{ request, snapshot: origin }];
+  campaign.suspendedSectorSessions = [
+    {
+      request,
+      snapshot: origin,
+      activeSquadId: campaign.activeSquadId,
+      location: origin.sectorId,
+      suspendedAtSeconds: campaign.hour * 3600 + (campaign.secondOfHour ?? 0),
+    },
+  ];
   campaign.sectorSnapshots[destinationId] = destination;
   present(campaign.characters[3]).rations = 1;
   campaign.hour = 28;

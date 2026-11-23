@@ -25,16 +25,15 @@ export class CampaignSectorSessionCoordinator {
     }
     const savedRequest = structuredClone(request);
     delete savedRequest.resumeSnapshot;
-    campaign.suspendedSectorSessions = [
-      ...suspended,
-      {
-        request: savedRequest,
-        snapshot: structuredClone(snapshot),
-        activeSquadId: campaign.activeSquadId,
-        location: campaign.location,
-        suspendedAtSeconds: campaign.hour * 3600 + (campaign.secondOfHour ?? 0),
-      },
-    ];
+    /** @type {import('../../public/campaign-types.ts').CampaignSuspendedSectorSession} */
+    const record = {
+      request: savedRequest,
+      snapshot: structuredClone(snapshot),
+      activeSquadId: campaign.activeSquadId,
+      location: campaign.location,
+      suspendedAtSeconds: campaign.hour * 3600 + (campaign.secondOfHour ?? 0),
+    };
+    campaign.suspendedSectorSessions = [...suspended, record];
     campaign.sectorEntryRequest = null;
   }
 

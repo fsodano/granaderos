@@ -26,6 +26,7 @@ export function validateSuspendedSectorSessions(campaign, activeSnapshot, restor
     }
   }
   restoreGameSession(campaign);
+  /** @type {import('../../public/campaign-types.ts').CampaignSuspendedSectorSession | null} */
   const current =
     campaign.sectorEntryRequest && activeSnapshot
       ? {

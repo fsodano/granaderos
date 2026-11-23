@@ -33,7 +33,9 @@ calls its sector field `battle`. The
 
 [`CampaignSectorSessionCoordinator`](../../packages/game/infrastructure/session/campaign-sector-session-coordinator.js)
 saves each `suspendedSectorSessions` record as `request`, `snapshot`,
-`activeSquadId`, `location`, and `suspendedAtSeconds`.
+`activeSquadId`, `location`, and `suspendedAtSeconds`. The public
+[`CampaignSuspendedSectorSession`](../../packages/game/public/campaign-types.ts)
+type declares those five fields.
 [`GameSnapshotMapper`](../../packages/game/infrastructure/persistence/game-snapshot-mapper.js)
 restores a domain `SectorSession` from the saved request and snapshot rather
 than writing the domain object as the record.
@@ -68,7 +70,7 @@ The table below lists representative top-level `Field` groups on the serialized 
 | `forceRoster`, `characters`, `squad`, `squads`, `activeSquadId` | `ForceRoster` membership, per-character `Character` / `Health` / location / assignment records, and `Squad` / `Journey` state |
 | `resources`, `reputation`, `log` | `Treasury` and campaign resource balances, faction standing, and bounded activity log |
 | `contracts`, `quests`, `missions` | Compatibility projection of `ServiceContract` terms, authored quest state, and mission progression |
-| `pendingEncounter`, `sectorEntryRequest`, `suspendedSectorSessions` | Active strategic enemy-group encounter, the saved `CampaignSectorEntryRequest`, and suspended visit records containing a request, sector snapshot, and resumption context |
+| `pendingEncounter`, `sectorEntryRequest`, `suspendedSectorSessions` | Active strategic enemy-group encounter, the saved `CampaignSectorEntryRequest`, and suspended `CampaignSuspendedSectorSession` records carrying a saved request, sector snapshot, active squad, location, and suspended second |
 | `lastError` | Localized Spanish explanation of the most recent refused command; cleared on the next accepted dispatch |
 
 When authored content is active, its frozen package definition is pinned under `contentCampaign.package`; campaign cloning reuses that immutable package reference while deep-cloning mutable gameplay state.
