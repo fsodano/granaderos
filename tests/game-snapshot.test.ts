@@ -31,7 +31,7 @@ function retained(): CampaignSnapshot {
   const campaign = dispatchCampaign(pair.campaign, {
     type: 'leaveSector',
     battleId: present(pair.campaign.sectorEntryRequest).id,
-    sectorState: pair.battle,
+    sectorSession: pair.battle,
     survivors: pair.battle.units.filter((unit) => unit.side === 'player'),
   });
   assert.equal(campaign.lastError, null);

@@ -73,7 +73,7 @@ export function completeQueuedAssault(
       type: 'syncTacticalTime',
       battleId: present(campaign.sectorEntryRequest).id,
       elapsedSeconds: snapshot.elapsedSeconds ?? 0,
-      sectorState: snapshot,
+      sectorSession: snapshot,
     });
     return synchronized.battle;
   };
@@ -99,7 +99,7 @@ export function completeQueuedAssault(
         type: 'fightOnArrival',
         squadId: decision.squadId,
         decisionId: decision.id,
-        ...(battle ? { sectorState: battle } : {}),
+        ...(battle ? { sectorSession: battle } : {}),
       });
       assert.equal(campaign.sectorEntryRequest?.sector, sector);
       sessionId ??= present(campaign.sectorEntryRequest).id;

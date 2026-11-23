@@ -223,7 +223,7 @@ void test('an active casualty can disappear, save, restore, and settle without l
   const returned = dispatchCampaign(campaign, {
     type: 'leaveSector',
     battleId: present(campaign.sectorEntryRequest).id,
-    sectorState: battle,
+    sectorSession: battle,
     survivors: [
       ...battle.units,
       ...present(battle.deathHistory)

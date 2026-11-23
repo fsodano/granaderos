@@ -449,7 +449,7 @@ export default function Home() {
       action.type === 'fightOnArrival' || action.type === 'resumeSectorSession';
     const next = dispatchCampaign(current.campaign, {
       ...action,
-      ...(needsCurrentVisit && current.battle ? { sectorState: current.battle } : {}),
+      ...(needsCurrentVisit && current.battle ? { sectorSession: current.battle } : {}),
     });
     if (next.lastError) {
       setNotice(next.lastError);
@@ -574,7 +574,7 @@ export default function Home() {
             : battle.sectorCleared
               ? 'victory'
               : battle.status),
-        sectorState: battle,
+        sectorSession: battle,
         survivors: [...battle.units, ...removedSectorCharacters(battle)]
           .filter(
             (u) =>

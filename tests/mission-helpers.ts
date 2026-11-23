@@ -26,13 +26,13 @@ export function attendYatasto(s: CampaignSnapshot) {
       npcId,
       approach: 'mission',
       unitId: Number(actor.id),
-      sectorState: b,
+      sectorSession: b,
     });
   }
   return step(s, {
     type: 'finishMission',
     battleId: present(s.sectorEntryRequest).id,
-    sectorState: b,
+    sectorSession: b,
     survivors: b.units.filter((u) => u.side === 'player').map((u) => ({ ...u, id: Number(u.id) })),
   });
 }

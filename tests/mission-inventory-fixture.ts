@@ -33,7 +33,7 @@ export function completedConferenceStock() {
     s = order(s, {
       type: 'leaveSector',
       battleId: present(s.sectorEntryRequest).id,
-      sectorState: b,
+      sectorSession: b,
       survivors: b.units.filter((u) => u.side === 'player'),
     });
   }

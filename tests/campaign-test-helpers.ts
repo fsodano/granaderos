@@ -148,7 +148,7 @@ export function meetLocalRecruit(
     npcId: npc.id,
     approach: 'recruit',
     unitId: actor.id,
-    sectorState: battle,
+    sectorSession: battle,
   });
   if (s.lastError) {
     return s;
@@ -167,7 +167,7 @@ export function meetLocalRecruit(
   return dispatchCampaign(s, {
     type: 'leaveSector',
     battleId: present(s.sectorEntryRequest).id,
-    sectorState: battle,
+    sectorSession: battle,
     survivors: battle.units.filter((u) => u.side === 'player'),
   });
 }

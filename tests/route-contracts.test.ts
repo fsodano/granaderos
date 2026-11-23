@@ -116,7 +116,7 @@ for (const staggerSeconds of [0, 10]) {
     assert.equal(snapshot.battleId, present(result.sectorEntryRequest).id);
     const incoming = acceptedOrders.filter((request) => request.type === 'fightOnArrival').at(-1);
     assert.ok(incoming && incoming.type === 'fightOnArrival');
-    for (const participant of present(incoming.sectorState).units) {
+    for (const participant of present(incoming.sectorSession).units) {
       assert.deepEqual(
         snapshot.units.find((unit: BattleUnit) => unit.id === participant.id),
         participant,

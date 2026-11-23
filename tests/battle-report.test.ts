@@ -26,7 +26,7 @@ const receipt = (s: CampaignSnapshot, b: BattleSnapshot, outcome = 'retreat'): B
   type: 'battleResult',
   battleId: present(s.sectorEntryRequest).id,
   outcome,
-  sectorState: b,
+  sectorSession: b,
   survivors: b.units.filter((u) => u.side === 'player'),
 });
 function rejected(s: CampaignSnapshot, a: CampaignAction) {
@@ -42,21 +42,22 @@ void test('ordinary battle reports require a full snapshot and all deployed part
     b = enterSector(s.sectorEntryRequest),
     base = receipt(s, b);
   for (const alter of [
-    (a: BattleReport) => Reflect.deleteProperty(a, 'sectorState'),
+    (a: BattleReport) => Reflect.deleteProperty(a, 'sectorSession'),
     (a: BattleReport) => Reflect.deleteProperty(a, 'survivors'),
     (a: BattleReport) => (a.survivors = []),
     (a: BattleReport) => a.survivors.pop(),
     (a: BattleReport) => a.survivors.push(present(a.survivors[0])),
     (a: BattleReport) => Reflect.set(a.survivors, 0, { id: 999 }),
-    (a: BattleReport) => (a.sectorState.units = a.sectorState.units.filter((u) => u.id !== '3')),
     (a: BattleReport) =>
-      (a.sectorState.units = a.sectorState.units.filter((u) => u.id !== 'enemy-0')),
+      (a.sectorSession.units = a.sectorSession.units.filter((u) => u.id !== '3')),
     (a: BattleReport) =>
-      Reflect.deleteProperty(present(a.sectorState.units.find((u) => u.id === '3')), 'weapon'),
+      (a.sectorSession.units = a.sectorSession.units.filter((u) => u.id !== 'enemy-0')),
     (a: BattleReport) =>
-      Reflect.deleteProperty(present(a.sectorState.units.find((u) => u.id === '3')), 'ammo'),
+      Reflect.deleteProperty(present(a.sectorSession.units.find((u) => u.id === '3')), 'weapon'),
     (a: BattleReport) =>
-      Reflect.deleteProperty(present(a.sectorState.units.find((u) => u.id === '3')), 'medkits'),
+      Reflect.deleteProperty(present(a.sectorSession.units.find((u) => u.id === '3')), 'ammo'),
+    (a: BattleReport) =>
+      Reflect.deleteProperty(present(a.sectorSession.units.find((u) => u.id === '3')), 'medkits'),
   ]) {
     const a = structuredClone(base);
     alter(a);
@@ -78,10 +79,10 @@ void test('snapshot battle and sector identities must match the pending deployme
     base = receipt(s, enterSector(s.sectorEntryRequest));
   for (const alter of [
     (a: BattleReport) => (a.battleId = 'old'),
-    (a: BattleReport) => (a.sectorState.battleId = 'old'),
-    (a: BattleReport) => Reflect.deleteProperty(a.sectorState, 'battleId'),
-    (a: BattleReport) => (a.sectorState.sectorId = 'retiro'),
-    (a: BattleReport) => (a.sectorState.sceneId = 'yatasto'),
+    (a: BattleReport) => (a.sectorSession.battleId = 'old'),
+    (a: BattleReport) => Reflect.deleteProperty(a.sectorSession, 'battleId'),
+    (a: BattleReport) => (a.sectorSession.sectorId = 'retiro'),
+    (a: BattleReport) => (a.sectorSession.sceneId = 'yatasto'),
   ]) {
     const a = structuredClone(base);
     alter(a);
@@ -95,11 +96,11 @@ void test('outcome labels cannot turn an active field into victory or a capable 
   rejected(s, { ...base, outcome: 'defeat' });
   const forged = structuredClone(base);
   forged.outcome = 'victory';
-  forged.sectorState.status = 'victory';
-  forged.sectorState.sectorCleared = true;
+  forged.sectorSession.status = 'victory';
+  forged.sectorSession.sectorCleared = true;
   rejected(s, forged);
   forged.outcome = 'defeat';
-  forged.sectorState.status = 'defeat';
+  forged.sectorSession.status = 'defeat';
   rejected(s, forged);
 });
 void test('real dropped equipment and snapshot supplies defeat contradictory caller overrides', () => {
@@ -166,7 +167,7 @@ void test('ordinary retreat retains authoritative injuries and cannot refill fin
   const next = order(s, a),
     u = next.characters[3];
   assert.equal(present(u).hp, 24);
-  assert.equal(present(u).energy, present(a.sectorState.units.find((u) => u.id === '3')).energy);
+  assert.equal(present(u).energy, present(a.sectorSession.units.find((u) => u.id === '3')).energy);
   assert.ok(present(u).energy < 22, 'The actual outward step spends energy.');
   assert.equal(present(u).medkits, 0);
   assert.equal(Object.hasOwn(present(u), 'priming'), false);
@@ -341,15 +342,15 @@ void test('a cleared flag cannot report active combat, an unfinished reaction or
     b = bandagedVictory(s),
     base = receipt(s, b, 'victory');
   for (const alter of [
-    (a: BattleReport) => (a.sectorState.sectorCleared = false),
-    (a: BattleReport) => (a.sectorState.mode = 'combat'),
-    (a: BattleReport) => (a.sectorState.phase = 'enemy'),
-    (a: BattleReport) => (a.sectorState.phase = 'interrupt'),
-    (a: BattleReport) => Reflect.set(a.sectorState, 'enemyTurn', {}),
-    (a: BattleReport) => Reflect.set(a.sectorState, 'interrupt', {}),
-    (a: BattleReport) => (a.sectorState.reactionStack = []),
+    (a: BattleReport) => (a.sectorSession.sectorCleared = false),
+    (a: BattleReport) => (a.sectorSession.mode = 'combat'),
+    (a: BattleReport) => (a.sectorSession.phase = 'enemy'),
+    (a: BattleReport) => (a.sectorSession.phase = 'interrupt'),
+    (a: BattleReport) => Reflect.set(a.sectorSession, 'enemyTurn', {}),
+    (a: BattleReport) => Reflect.set(a.sectorSession, 'interrupt', {}),
+    (a: BattleReport) => (a.sectorSession.reactionStack = []),
     (a: BattleReport) => {
-      const enemy = a.sectorState.units.find((u) => u.side === 'enemy');
+      const enemy = a.sectorSession.units.find((u) => u.side === 'enemy');
       Object.assign(present(enemy), {
         hp: 30,
         bleeding: 0,
@@ -361,7 +362,7 @@ void test('a cleared flag cannot report active combat, an unfinished reaction or
       });
     },
     (a: BattleReport) => {
-      for (const u of a.sectorState.units.filter((u) => u.side === 'player')) {
+      for (const u of a.sectorSession.units.filter((u) => u.side === 'player')) {
         Object.assign(u, { hp: 10, bandaged: u.maxHp - 10, unconscious: true });
       }
     },

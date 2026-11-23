@@ -26,8 +26,8 @@ records under `characters`, and retained maps under `sectorSnapshots` and
 application use case accepts the narrower
 [`SectorEntryRequest`](../../packages/game/application/sector-sessions/enter-sector/sector-entry.request.ts).
 The envelope's decoded in-memory pair still calls its sector field `battle`,
-and `sectorState` is a [`CampaignAction`](../../packages/game/public/campaign-types.ts)
-request property rather than a saved field.
+and campaign orders carry the same view under the `sectorSession` request
+property rather than a saved field.
 
 [`decodeSave`](../../packages/game/save.ts) accepts top-level legacy `battle`
 only when `sectorSession` is absent. It also maps `pendingBattle` to
