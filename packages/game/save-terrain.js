@@ -14,6 +14,9 @@ function maps(value) {
     ...Object.values(c?.sectorSnapshots ?? {}),
     ...Object.values(c?.sceneSnapshots ?? {}),
     c?.sectorEntryRequest?.resumeSnapshot,
+    ...(Array.isArray(c?.suspendedSectorSessions) ? c.suspendedSectorSessions : []).map(
+      (session) => session?.snapshot,
+    ),
   ].filter(object);
 }
 export function compactSaveTerrain(value) {

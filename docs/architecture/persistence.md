@@ -50,17 +50,20 @@ For each pair, [`decodeSave`](../../packages/game/save.ts) reads the legacy fiel
 
 Three distinct byte thresholds in [`packages/game/save-limits.js`](../../packages/game/save-limits.js) govern encoding and decoding:
 
-- **1,000,000 bytes (compaction trigger):** If the initial encoded JSON is under 1 MB, it remains `schema: 1`. At or above 1 MB, eligible tile arrays across the active `sectorSession` snapshot (or legacy `battle` when `sectorSession` is absent), `campaign.sectorSnapshots`, `campaign.sceneSnapshots`, and `campaign.sectorEntryRequest.resumeSnapshot` are palette-compacted (`{ encoding: "palette-v1", palette: [...], indices: [...] }`), switching `schema` to `2` if at least one map shrinks. Cell scenes use their own `cell-tiles-v1` compaction in [`packages/game/cell-scene-storage.js`](../../packages/game/cell-scene-storage.js).
+- **1,000,000 bytes (compaction trigger):** If the initial encoded JSON is under 1 MB, it remains `schema: 1`. At or above 1 MB, eligible tile arrays across the active `sectorSession` snapshot (or legacy `battle` when `sectorSession` is absent), `campaign.sectorSnapshots`, `campaign.sceneSnapshots`, `campaign.sectorEntryRequest.resumeSnapshot`, and `campaign.suspendedSectorSessions[*].snapshot` are palette-compacted (`{ encoding: "palette-v1", palette: [...], indices: [...] }`), switching `schema` to `2` if at least one map shrinks. Cell scenes use their own `cell-tiles-v1` compaction in [`packages/game/cell-scene-storage.js`](../../packages/game/cell-scene-storage.js).
 - **20,000,000 UTF-8 bytes (`MAX_EXPANDED_SAVE_BYTES`):** Bounds the uncompacted or expanded JSON size before compaction or during `schema: 2` expansion to prevent decompression bombs.
 - **5,000,000 bytes / characters (`assertSaveSize`):** Bounds the final persisted or imported JSON string (both UTF-8 byte length and JavaScript string length).
 
-[`compactSaveTerrain`](../../packages/game/save-terrain.js) does not traverse
-`campaign.suspendedSectorSessions`. The JSON replacer still compacts eligible
-cell scenes as `cell-tiles-v1` through
-[`cellSceneSaveReplacer`](../../packages/game/cell-scene-storage.js), but
-ordinary sector tile arrays in suspended visits remain uncompressed. Large
-suspended visits can therefore push the final save over the 5 MB limit. No
-mitigation is proposed here.
+[`compactSaveTerrain`](../../packages/game/save-terrain.js) and
+[`expandSaveTerrain`](../../packages/game/save-terrain.js) walk the same list of
+snapshots: the active view, both retained map collections,
+`campaign.sectorEntryRequest.resumeSnapshot`, and every
+`campaign.suspendedSectorSessions[*].snapshot`. A suspended visit's tile array
+is therefore compacted like a retained map's and expanded back to the same
+tiles when the save is decoded. Ordinary sector tile arrays in suspended visits
+count toward the 5 MB limit at their compacted size. The JSON replacer also
+compacts eligible cell scenes as `cell-tiles-v1` through
+[`cellSceneSaveReplacer`](../../packages/game/cell-scene-storage.js).
 
 ## Decode, migrations, and validation sequence
 
