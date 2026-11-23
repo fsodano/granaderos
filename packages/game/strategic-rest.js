@@ -1,9 +1,8 @@
 import { sleepNeed } from './sleep-needs.js';
 import { recoverFatigue } from './fatigue.js';
-import { careRules, DEFAULT_CARE_RULES } from './campaign-care-rules.js';
+import { careRules } from './campaign-care-rules.js';
 // Explicit strategic rest. Automatic sleep and the global fatigue/energy-capacity
 // model are separate integrations; the existing daily recovery is unchanged.
-export const REST_HEALING_HOURS = DEFAULT_CARE_RULES.restHealingHours;
 export function restRecovery(op, record, state) {
   const { hours } = sleepNeed({ ...op, ...record });
   return {

@@ -80,7 +80,7 @@ export function needsResupply(record) {
     ['medkits', 2],
   ].some(([key, target]) => (record[key] ?? target) < target);
 }
-export function refillCost(record, dressingPrice = 10) {
+export function refillCost(record, dressingPrice) {
   return Math.ceil(
     Math.max(0, 2 - (record.rations ?? 2)) * 10 +
       Math.max(0, 2 - (record.torches ?? 2)) * 8 +
