@@ -1,6 +1,6 @@
 # Migration slice notes
 
-This index links to the 60 migration slice notes. Each note records its
+This index links to all 62 migration slice notes. Each note records its
 rationale, scope, and compatibility contract. The
 [overview](../overview.md) describes current source and remaining requirements.
 
@@ -68,6 +68,8 @@ rationale, scope, and compatibility contract. The
 | [58. Projectile air drag](58-projectile-air-drag.md) |
 | [59. Patrol sight filter](59-patrol-sight-filter.md) |
 | [60. Material intervals](60-material-intervals.md) |
+| [61. Civilian patrol decisions](61-npc-patrol.md) |
+| [62. Inventory discovery](62-inventory-discovery.md) |
 
 ## What the series changed
 
@@ -140,13 +142,15 @@ rationale, scope, and compatibility contract. The
   root module is a thin re-export of it.
 - `ResidentPositionReference` names the saved reference to a resident's
   character identity and local position.
-- Thirty-four migrated game-rule groups have domain ownership. The 29 groups
-  in the list below plus five later groups make that total:
+- Thirty-six migrated game-rule groups have domain ownership. The 29 groups
+  detailed below plus these seven groups make that total:
   [tactical planning](55-tactical-planning.md),
   [militia patrol tuning and scene validation](56-militia-patrol-rules.md),
   [militia patrol movement](57-militia-patrol-order.md),
-  [projectile air drag](58-projectile-air-drag.md), and
-  [material intervals](60-material-intervals.md). Slice
+  [projectile air drag](58-projectile-air-drag.md),
+  [material intervals](60-material-intervals.md),
+  [civilian patrol decisions](61-npc-patrol.md), and
+  [inventory discovery](62-inventory-discovery.md). Slice
   [59](59-patrol-sight-filter.md) makes the retained sight filter use the
   domain-owned patrol eligibility check; it does not add a separate rule group.
   The 29 groups are firearm readiness,
@@ -212,6 +216,11 @@ rationale, scope, and compatibility contract. The
   retains the campaign-content lookup, while
   [`campaign-rules-schema.js`](../../../../packages/campaign-format/campaign-rules-schema.js)
   retains the authored-field contract and structural validation.
+- [`npc-patrol.ts`](../../../../packages/game/domain/personnel/npc-patrol.ts)
+  owns civilian patrol eligibility, turn direction and aim, and reachable-cell
+  choice. The retained
+  [`npc-patrol.js`](../../../../packages/game/npc-patrol.js) supplies map-derived
+  sight and reachability, then assembles the selected move order.
 - [`projectile-air-drag.ts`](../../../../packages/game/domain/combat/projectile-air-drag.ts)
   owns the runtime check for whether a weapon has a usable air-drag profile and
   the distance-based energy-retention rule. The retained
@@ -230,6 +239,12 @@ rationale, scope, and compatibility contract. The
   [`packages/game/tactical-awareness.js`](../../../../packages/game/tactical-awareness.js)
   and [`packages/game/npc-perception.js`](../../../../packages/game/npc-perception.js)
   re-export them.
+- [`inventory-discovery.ts`](../../../../packages/game/domain/perception/inventory-discovery.ts)
+  owns observer eligibility, point-seen checks, and the rules for finding loose
+  equipment, dropped weapons, bodies, and open chests. The retained
+  [`inventory-discovery.js`](../../../../packages/game/inventory-discovery.js)
+  supplies sight, interior-visibility, and prop-cell data, then sets
+  `knownToPlayer` for found records.
 - `CARE_COMPOSURE_RELIEF` and `careComposureRelief` live in
   [`packages/game/domain/personnel/care-composure.ts`](../../../../packages/game/domain/personnel/care-composure.ts);
   the root module re-exports them. Architecture checks prohibit imports from
@@ -237,13 +252,20 @@ rationale, scope, and compatibility contract. The
 
 ## What remains
 
-- Any retained simulation decision without a named domain owner or application
-  use case still needs one. Compatibility paths may preserve existing imports,
-  query map or content data, and assemble orders, but must delegate domain
-  decisions rather than duplicate them. `prisonerStatus` remains in
-  [`prisoner-custody.js`](../../../../packages/game/prisoner-custody.js) because
-  it reads campaign character and detention records; it is a query, not an
-  unowned custody rule.
+- Every retained simulation decision must have a named domain owner or
+  application use case. [`npc-patrol.js`](../../../../packages/game/npc-patrol.js)
+  supplies tactical sight and reachable cells, then assembles the move order;
+  [`inventory-discovery.js`](../../../../packages/game/inventory-discovery.js)
+  supplies sight, interior visibility, and prop cells, then marks found records
+  `knownToPlayer`. Those queries and updates are adapter responsibilities;
+  [`npc-patrol.ts`](../../../../packages/game/domain/personnel/npc-patrol.ts)
+  and
+  [`inventory-discovery.ts`](../../../../packages/game/domain/perception/inventory-discovery.ts)
+  own the decisions.
+  `prisonerStatus` remains in
+  [`prisoner-custody.js`](../../../../packages/game/prisoner-custody.js) as a
+  query over campaign character and detention records, not an unowned custody
+  rule.
 - Campaign-authored care lookup remains in
   [`campaign-care-rules.js`](../../../../packages/game/campaign-care-rules.js):
   it selects authored values and falls back to

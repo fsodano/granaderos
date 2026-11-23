@@ -74,6 +74,27 @@ domain check for sight-query observers and opponents, asks tactical map code
 for visibility and reachable cells, then assembles the move order. The patrol
 eligibility check therefore has one owner.
 
+[`npc-patrol.ts`](../../../packages/game/domain/personnel/npc-patrol.ts) owns
+civilian patrol eligibility, turn direction and aim, and reachable-cell choice.
+The civilian identifier and turn select one of four cardinal directions; the
+domain selects a reachable cell within its cost, path, and distance bounds that
+moves closer to the aim. The retained
+[`npc-patrol.js`](../../../packages/game/npc-patrol.js) obtains sight and
+reachability data from tactical map code, then assembles the move order. This
+rule mirrors the militia patrol's decision structure but uses civilian-specific
+conditions.
+
+[`inventory-discovery.ts`](../../../packages/game/domain/perception/inventory-discovery.ts)
+owns which observers count, whether a map-reported point counts as seen, and
+whether loose equipment, dropped weapons, bodies, or open chests are found.
+Observers must be player-side combatants with positive health who are
+conscious and neither departing, routed, nor surrendered. A body must also be
+at hand (on the same surface and within a default straight-line distance of
+1.5 cells); an open chest qualifies when any footprint cell is seen. The retained
+[`inventory-discovery.js`](../../../packages/game/inventory-discovery.js)
+supplies sight, interior-visibility, and prop-cell data, then sets
+`knownToPlayer` for found records. That flag remains set after sight is lost.
+
 [`projectile-air-drag.ts`](../../../packages/game/domain/combat/projectile-air-drag.ts)
 decides whether a weapon has a usable air-drag profile (the fraction retained
 at the weapon's range) and how much energy remains after each distance.

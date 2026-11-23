@@ -53,6 +53,12 @@ scene's stored `militiaPatrol` field, then the domain default. The shared
 still defines the authored field contract and structural validation.
 [`militia-patrol.js`](../../../packages/game/militia-patrol.js) asks tactical
 map code for visibility and reachable cells, then assembles the move order.
+Civilian patrol movement is a separate tactical rule:
+[`npc-patrol.ts`](../../../packages/game/domain/personnel/npc-patrol.ts) owns
+its turn decision, direction, aim, and reachable-cell choice. The retained
+[`npc-patrol.js`](../../../packages/game/npc-patrol.js) supplies map sight and
+reachability data and assembles the move order. See the
+[tactical rule boundary](tactical.md#mental-model-and-exposure).
 
 Every `Exposure` column below uses the canonical six-value vocabulary defined in the [use-case index](README.md#exposure-vocabulary): `Command`, `Gated`, `Query`, `Supporting`, `No interface route`, and `Refused`.
 

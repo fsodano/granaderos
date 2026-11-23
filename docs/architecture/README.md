@@ -104,6 +104,17 @@ retained [`militia-patrol.js`](../../packages/game/militia-patrol.js) uses
 [`militia-patrol.ts`](../../packages/game/domain/personnel/militia-patrol.ts) for
 sight-query observers and opponents, asks tactical map code for visibility and
 reachable cells, then assembles the domain-selected move order.
+[`npc-patrol.ts`](../../packages/game/domain/personnel/npc-patrol.ts) owns
+civilian patrol eligibility, turn direction and aim, and reachable-cell choice;
+the retained
+[`npc-patrol.js`](../../packages/game/npc-patrol.js) supplies tactical sight and
+reachability and assembles the move order.
+[`inventory-discovery.ts`](../../packages/game/domain/perception/inventory-discovery.ts)
+owns eligible observers, point-seen checks, and discovery rules for loose
+equipment, dropped weapons, bodies, and open chests. The retained
+[`inventory-discovery.js`](../../packages/game/inventory-discovery.js)
+supplies sight, interior-visibility, and prop-cell data, then marks found
+records known.
 [`projectile-air-drag.ts`](../../packages/game/domain/combat/projectile-air-drag.ts)
 decides whether a weapon has a usable air-drag profile (the fraction retained
 at the weapon's range) and how much energy remains after each distance. The

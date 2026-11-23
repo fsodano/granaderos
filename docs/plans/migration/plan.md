@@ -1,6 +1,6 @@
 # Clean architecture migration plan
 
-This plan defines a 60-slice sequence for moving Granaderos toward the
+This plan defines a 62-slice sequence for moving Granaderos toward the
 [accepted domain architecture](../accepted/domain-architecture.md). The
 [overview](overview.md) describes current source behavior and remaining
 requirements; the [slice index](slices/README.md) links each note.
@@ -108,6 +108,8 @@ outside this plan.
 | [58. Projectile air drag](slices/58-projectile-air-drag.md) | Move the check for whether a weapon has a usable air-drag profile and energy retention by distance into the domain; retain shared file-contract validation at the boundary |
 | [59. Patrol sight filter](slices/59-patrol-sight-filter.md) | Use the domain-owned patrol eligibility check for sight-query observers and opponents |
 | [60. Material intervals](slices/60-material-intervals.md) | Move material-interval ordering, merging, and entering/leaving event construction into the domain; keep trajectory tracing and interval collection in [`projectile-cover.js`](../../../packages/game/projectile-cover.js) |
+| [61. Civilian patrol decisions](slices/61-npc-patrol.md) | Move civilian patrol eligibility, turn direction and aim, and reachable-cell choice into the domain; retain tactical sight and reachability queries and move-order assembly |
+| [62. Inventory discovery](slices/62-inventory-discovery.md) | Move observer eligibility, seen-point checks, and discovery rules for ground equipment, dropped weapons, bodies, and open chests into the domain; retain map and sight queries |
 
 Each slice has a note under [slices](slices/README.md) that records its intent,
 scope, and behavior tests. Read the relevant note before changing that area.
@@ -127,10 +129,21 @@ The migration is complete when:
    and patrol tuning, saved-scene consistency, eligibility, waypoints, and
    reachable-cell choice in
    [`militia-patrol.ts`](../../../packages/game/domain/personnel/militia-patrol.ts).
-   `canAct` is the single patrol eligibility check; the retained
+   For militia patrols, `canAct` is the single eligibility check; the retained
    [`militia-patrol.js`](../../../packages/game/militia-patrol.js) uses it in the
    sight filter, queries map visibility and reachable cells, then assembles the
-   move order. [`material-intervals.ts`](../../../packages/game/domain/combat/material-intervals.ts)
+   move order.
+   [`npc-patrol.ts`](../../../packages/game/domain/personnel/npc-patrol.ts)
+   owns civilian patrol eligibility, turn direction and aim, and reachable-cell
+   choice; retained [`npc-patrol.js`](../../../packages/game/npc-patrol.js)
+   supplies tactical sight and reachability data and assembles the move order.
+   [`inventory-discovery.ts`](../../../packages/game/domain/perception/inventory-discovery.ts)
+   owns observer eligibility, point-seen checks, and discovery rules for loose
+   equipment, dropped weapons, bodies, and open chests. The retained
+   [`inventory-discovery.js`](../../../packages/game/inventory-discovery.js)
+   supplies sight, interior-visibility, and prop-cell data, then marks found
+   records `knownToPlayer`.
+   [`material-intervals.ts`](../../../packages/game/domain/combat/material-intervals.ts)
    orders and merges each object's material intervals and creates the entering
    and leaving events consumed by the flight. The retained
    [`projectile-cover.js`](../../../packages/game/projectile-cover.js) traces the
@@ -233,6 +246,6 @@ boundaries it can express as import rules.
 
 Start with [overview.md](overview.md) for the current implementation and open
 gaps, then use this plan for the branch flow and the [slice index](slices/README.md)
-for the 60 slice notes. Read the accepted architecture and glossary before
+for the 62 slice notes. Read the accepted architecture and glossary before
 work that changes a domain contract or term. Each slice note records its
 intent, scope, and behavior tests.
