@@ -18,7 +18,8 @@ result, and reachable cells.
   at least 25 action points, no enemy is in sight of its side, and it is more
   than three map cells from that turn's waypoint. An able unit has at least
   the 15-hit-point [critical-health threshold](../../../../packages/game/domain/personnel/actor-condition.ts),
-  positive energy, and is not routed, fled, surrendered, or departing.
+  positive energy when the field is present (missing energy defaults to 100),
+  and is not routed, fled, surrendered, or departing.
 - The waypoint cycles through six fixed map points at the configured
   `waypointTicks` interval, the number of turns spent at each point.
 - A destination must be reachable with a positive movement cost no greater than
