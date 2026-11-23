@@ -362,8 +362,8 @@ export function migrateStartingCartridges(s) {
     served.add(String(owner.operativeId));
   }
   const scenes = [
-    ...Object.values(s.sectorStates ?? {}),
-    ...Object.values(s.sceneStates ?? {}),
+    ...Object.values(s.sectorSnapshots ?? {}),
+    ...Object.values(s.sceneSnapshots ?? {}),
     s.sectorEntryRequest?.resumeSnapshot,
   ];
   for (const scene of scenes) {

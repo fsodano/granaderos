@@ -234,7 +234,7 @@ export function synchronizeCampaignPresence(state) {
   state.contentPresence = strip(runtime);
   resumeCivilianServiceReturns(state);
   synchronizeResidentWounds(state);
-  for (const scene of Object.values(state.sectorStates)) {
+  for (const scene of Object.values(state.sectorSnapshots)) {
     reconcileSectorResidents(state, scene);
   }
   if (state.sectorEntryRequest && !state.sectorEntryRequest.sceneId) {
@@ -468,7 +468,7 @@ export function validateCampaignPresence(state) {
     }
   }
   validateSuccessions(state);
-  for (const scene of Object.values(state.sectorStates)) {
+  for (const scene of Object.values(state.sectorSnapshots)) {
     validatePresenceScene(state, scene);
   }
   if (state.sectorEntryRequest) {

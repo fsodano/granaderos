@@ -416,7 +416,7 @@ void test('a resident keeps a paid gunner post clear while another squad visits,
 void test('a real departure releases saved posts for inactive resident movement despite archived guard bodies', () => {
   const fixture = paidResidentCrew(),
     { ids, post } = fixture;
-  const archived = fixture.campaign.sectorStates[OCCUPANCY_SECTOR];
+  const archived = fixture.campaign.sectorSnapshots[OCCUPANCY_SECTOR];
   assert.ok(
     ids.slice(0, 2).every((id) => present(archived).units.some((unit) => unit.id === String(id))),
   );
@@ -426,7 +426,7 @@ void test('a real departure releases saved posts for inactive resident movement 
   let crossed = false;
   for (let phase = 0; phase < 20 && !crossed; phase++) {
     fixture.dispatch({ type: 'advanceStrategicTime', seconds: 6 });
-    const scene = fixture.campaign.sectorStates[OCCUPANCY_SECTOR],
+    const scene = fixture.campaign.sectorSnapshots[OCCUPANCY_SECTOR],
       neighbor = resident(scene);
     crossed = [neighbor, ...(present(neighbor).lastMovePath ?? [])].some((point) =>
       sameCell(point, post),
@@ -438,7 +438,7 @@ void test('a real departure releases saved posts for inactive resident movement 
     ids
       .slice(0, 2)
       .every((id) =>
-        present(fixture.campaign.sectorStates[OCCUPANCY_SECTOR]).units.some(
+        present(fixture.campaign.sectorSnapshots[OCCUPANCY_SECTOR]).units.some(
           (unit) => unit.id === String(id),
         ),
       ),

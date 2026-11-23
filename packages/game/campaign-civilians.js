@@ -99,8 +99,8 @@ export function acknowledgeRemovedResidents(campaign, snapshot) {
 
 function residentScenes(campaign) {
   return [
-    ...Object.values(campaign.sectorStates ?? {}),
-    ...Object.values(campaign.sceneStates ?? {}),
+    ...Object.values(campaign.sectorSnapshots ?? {}),
+    ...Object.values(campaign.sceneSnapshots ?? {}),
     campaign.sectorEntryRequest,
     ...(campaign.suspendedSectorSessions ?? []).flatMap((session) => [
       session.request,
@@ -482,7 +482,10 @@ export function acknowledgeCivilians(s, snapshot) {
       record.inService = true;
     }
     if (ally.hp === 0) {
-      for (const scene of [...Object.values(s.sectorStates), ...Object.values(s.sceneStates)]) {
+      for (const scene of [
+        ...Object.values(s.sectorSnapshots),
+        ...Object.values(s.sceneSnapshots),
+      ]) {
         scene.npcs = (scene.npcs ?? []).filter((n) => operativeId(n, s) !== id);
       }
     }
@@ -846,8 +849,8 @@ export function validateCampaignCivilians(s) {
     }
   }
   for (const scene of [
-    ...Object.values(s.sectorStates),
-    ...Object.values(s.sceneStates),
+    ...Object.values(s.sectorSnapshots),
+    ...Object.values(s.sceneSnapshots),
     ...(s.sectorEntryRequest ? [s.sectorEntryRequest] : []),
   ]) {
     validateCivilianScene(s, scene);
@@ -861,8 +864,8 @@ export function migrateCampaignCivilians(s) {
   }
   s.civilianState = { version: 1, people: {} };
   const scenes = [
-    ...Object.values(s.sectorStates),
-    ...Object.values(s.sceneStates),
+    ...Object.values(s.sectorSnapshots),
+    ...Object.values(s.sceneSnapshots),
     ...(s.sectorEntryRequest ? [s.sectorEntryRequest] : []),
   ];
   for (const scene of scenes) {
@@ -922,8 +925,8 @@ export function migrateActiveCivilians(s, battle, { legacy = false } = {}) {
 }
 export function migrateCampaignCivilianSupplies(s) {
   for (const scene of [
-    ...Object.values(s.sectorStates),
-    ...Object.values(s.sceneStates),
+    ...Object.values(s.sectorSnapshots),
+    ...Object.values(s.sceneSnapshots),
     ...(s.sectorEntryRequest ? [s.sectorEntryRequest] : []),
   ]) {
     for (const n of scene.npcs ?? []) {

@@ -330,7 +330,7 @@ void test('campaign reports and reentry retain dropped guns and the blade left i
   assert.equal(campaign.lastError, null);
   const revisited = enterSector(
     campaign.sectorEntryRequest,
-    campaign.sectorStates[campaign.location],
+    campaign.sectorSnapshots[campaign.location],
   );
   const returned = troop(revisited, '4');
   assert.equal(returned.weaponDropped, true);

@@ -199,7 +199,7 @@ export function supplyRouteAmmunition(
         if (!row && !checkedCache) {
           checkedCache = true;
           const cacheId = finiteCachesFor(campaign)[campaign.location]?.chest;
-          const chest = campaign.sectorStates[campaign.location]?.props?.find(
+          const chest = campaign.sectorSnapshots[campaign.location]?.props?.find(
             (prop) => prop.id === cacheId,
           );
           if (cacheId && (!chest?.open || !chest.knownToPlayer)) {

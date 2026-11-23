@@ -66,7 +66,10 @@ export function finishReloadsBeforeMarch(
   report({ event: 'reloadDeployment', ammunitionCost: deploymentCost(start) });
   let campaign = dispatchCampaign(start, { type: 'visitSector' });
   assert.equal(campaign.lastError, null, campaign.lastError ?? undefined);
-  let battle = enterSector(campaign.sectorEntryRequest, campaign.sectorStates[campaign.location]);
+  let battle = enterSector(
+    campaign.sectorEntryRequest,
+    campaign.sectorSnapshots[campaign.location],
+  );
   const before = battle.elapsedSeconds,
     rounds = battle.units
       .filter((u) => u.side === 'player')

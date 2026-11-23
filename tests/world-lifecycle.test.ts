@@ -172,8 +172,8 @@ void test('loaded, unloaded, split-step, and combined-step removal produce the s
   const campaign = {
     hour: REMOVAL_SECOND / 3600,
     secondOfHour: 0,
-    sectorStates: { buenos_aires: unloaded },
-    sceneStates: {},
+    sectorSnapshots: { buenos_aires: unloaded },
+    sceneSnapshots: {},
   };
   advanceCampaignWorld(campaign);
   assert.deepEqual(unloaded, loaded);
@@ -235,11 +235,11 @@ void test('an active casualty can disappear, save, restore, and settle without l
   assert.equal(returned.sectorEntryRequest, null);
   assert.equal(present(returned.characters[Number(casualtyId)]).alive, false);
   assert.equal(returned.squad.includes(Number(casualtyId)), false);
-  assert.deepEqual(present(returned.sectorStates['retiro']).groundItems, ground);
+  assert.deepEqual(present(returned.sectorSnapshots['retiro']).groundItems, ground);
   const restored = decodeSave(encodeSave(returned));
   assert.deepEqual(
-    present(restored.campaign.sectorStates['retiro']).deathHistory,
+    present(restored.campaign.sectorSnapshots['retiro']).deathHistory,
     battle.deathHistory,
   );
-  assert.deepEqual(present(restored.campaign.sectorStates['retiro']).groundItems, ground);
+  assert.deepEqual(present(restored.campaign.sectorSnapshots['retiro']).groundItems, ground);
 });

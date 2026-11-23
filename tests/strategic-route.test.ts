@@ -23,7 +23,7 @@ void test('map preview is read-only, queues the real multi-sector route and wait
   assert.deepEqual(preview.path, ['retiro', 'cell-27-29', 'cell-27-30', 'ensenada']);
   assert.deepEqual(s, original);
   // Sector snapshots can be large; preview must never traverse or copy them.
-  Object.defineProperty(s, 'sectorStates', {
+  Object.defineProperty(s, 'sectorSnapshots', {
     get() {
       throw Error('Preview touched tactical snapshots');
     },

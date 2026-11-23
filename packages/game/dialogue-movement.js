@@ -138,8 +138,8 @@ export function atDialogueMeeting(s, characterId, battle) {
 }
 export function synchronizeDialogueMovements(s) {
   for (const scene of [
-    ...Object.values(s.sectorStates),
-    ...Object.values(s.sceneStates),
+    ...Object.values(s.sectorSnapshots),
+    ...Object.values(s.sceneSnapshots),
     ...(s.sectorEntryRequest ? [s.sectorEntryRequest] : []),
   ]) {
     applyDialogueMovements(s, scene);
@@ -223,8 +223,8 @@ export function validateDialogueMovements(s, npcs) {
     }
   }
   for (const scene of [
-    ...Object.values(s.sectorStates),
-    ...Object.values(s.sceneStates),
+    ...Object.values(s.sectorSnapshots),
+    ...Object.values(s.sceneSnapshots),
     ...(s.sectorEntryRequest ? [s.sectorEntryRequest] : []),
   ]) {
     validateMovementScene(s, scene);

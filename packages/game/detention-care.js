@@ -19,7 +19,7 @@ export function advanceDetentionCare(campaign, roster) {
     if (campaign.sectorEntryRequest?.sector === sector) {
       continue;
     }
-    const field = campaign.sectorStates[sector];
+    const field = campaign.sectorSnapshots[sector];
     const alreadyCared = Object.values(campaign.detentionRecords ?? {})
       .filter((entry) => entry.npc.detention.sector === sector)
       .flatMap((entry) => (entry.care ?? []).filter((care) => care.hour === campaign.hour));

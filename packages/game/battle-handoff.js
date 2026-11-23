@@ -23,8 +23,8 @@ export function battleFromRequest(request, campaign = null, options = {}) {
   }
   const previous =
     (request.sceneId
-      ? campaign?.sceneStates?.[request.sceneId]
-      : campaign?.sectorStates?.[request.sector]) ?? null;
+      ? campaign?.sceneSnapshots?.[request.sceneId]
+      : campaign?.sectorSnapshots?.[request.sector]) ?? null;
   const boundary = campaign ? withCampaignTimeBoundary(campaign, {}) : {};
   return enterSector(
     {

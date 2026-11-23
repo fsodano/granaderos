@@ -314,8 +314,8 @@ export function validateCampaignDetention(campaign) {
     }
   }
   for (const snapshot of [
-    ...Object.values(campaign.sectorStates ?? {}),
-    ...Object.values(campaign.sceneStates ?? {}),
+    ...Object.values(campaign.sectorSnapshots ?? {}),
+    ...Object.values(campaign.sceneSnapshots ?? {}),
   ]) {
     for (const npc of snapshot.npcs ?? []) {
       if (!npc.detention) {
@@ -335,8 +335,8 @@ export function validateCampaignDetention(campaign) {
 // follow a vanished rescuer on the next visit. Retain the failed attempt.
 export function settleDetentionReturn(campaign, request) {
   const snapshot = request.sceneId
-    ? campaign.sceneStates[request.sceneId]
-    : campaign.sectorStates[request.sector];
+    ? campaign.sceneSnapshots[request.sceneId]
+    : campaign.sectorSnapshots[request.sector];
   for (const npc of snapshot?.npcs ?? []) {
     if (
       !npc.detention?.freed ||

@@ -180,8 +180,8 @@ export function validateRegionalWeather(s, context = s) {
 }
 export function validateCampaignWeather(state) {
   for (const scene of [
-    ...Object.values(state.sectorStates ?? {}),
-    ...Object.values(state.sceneStates ?? {}),
+    ...Object.values(state.sectorSnapshots ?? {}),
+    ...Object.values(state.sceneSnapshots ?? {}),
     state.sectorEntryRequest,
     state.sectorEntryRequest?.resumeSnapshot,
   ].filter(Boolean)) {

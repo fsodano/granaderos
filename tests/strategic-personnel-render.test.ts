@@ -1045,7 +1045,7 @@ void test('returned equipment and repair reserves show their known former owner 
     rations: 4,
     toolkitPoints: 11,
   });
-  state.sectorStates['retiro'] = {
+  state.sectorSnapshots['retiro'] = {
     ...createBattle([], {
       id: 'retiro',
       width: 8,

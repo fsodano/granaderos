@@ -137,8 +137,8 @@ void test('campaign movement carries canonical wounds and supplies and updates b
     exploration: true,
     enemies: [],
   });
-  campaign.sectorStates[before] = origin;
-  campaign.sectorStates[destinationId] = destination;
+  campaign.sectorSnapshots[before] = origin;
+  campaign.sectorSnapshots[destinationId] = destination;
   present(campaign.characters[3]).hp = 81;
   present(campaign.characters[3]).rations = 1;
   campaign.hour = 28;
@@ -273,10 +273,10 @@ void test('local resident routines and collection share the same events in loade
     advanceSectorWorld(loaded.scene, second);
     advanceResidentScavenging(loaded.campaign, loaded.scene, second);
   }
-  inactive.campaign.sectorStates[inactive.scene.sectorId] = inactive.scene;
+  inactive.campaign.sectorSnapshots[inactive.scene.sectorId] = inactive.scene;
   inactive.campaign.hour = 2;
   advanceCampaignWorld(inactive.campaign);
-  split.campaign.sectorStates[split.scene.sectorId] = split.scene;
+  split.campaign.sectorSnapshots[split.scene.sectorId] = split.scene;
   for (let hour = 1; hour <= 2; hour++) {
     split.campaign.hour = hour;
     advanceCampaignWorld(split.campaign);
@@ -318,7 +318,7 @@ void test('resident wounds and death time are identical through loaded, retained
     advanceCivilianTime(loaded.scene, 6);
     acknowledgeResidentConditions(loaded.campaign, loaded.scene, second);
   }
-  retained.campaign.sectorStates[retained.scene.sectorId] = retained.scene;
+  retained.campaign.sectorSnapshots[retained.scene.sectorId] = retained.scene;
   retained.campaign.hour = 0;
   retained.campaign.secondOfHour = 120;
   advanceUnloadedCivilians(retained.campaign, 120);
@@ -363,7 +363,7 @@ void test('one long loaded interval and split inactive intervals collect the sam
   advanceCivilianTime(loaded.scene, 7200);
   advanceSectorWorld(loaded.scene, 7200);
   advanceResidentScavenging(loaded.campaign, loaded.scene, 7200);
-  inactive.campaign.sectorStates[inactive.scene.sectorId] = inactive.scene;
+  inactive.campaign.sectorSnapshots[inactive.scene.sectorId] = inactive.scene;
   for (let hour = 1; hour <= 2; hour++) {
     inactive.campaign.hour = hour;
     advanceCampaignWorld(inactive.campaign);
@@ -442,7 +442,7 @@ void test('collection before a fatal wound occurs in the same order for loaded, 
     acknowledgeResidentConditions(split.campaign, split.scene, 3590 + elapsed);
     advanceResidentScavenging(split.campaign, split.scene, 3590 + elapsed);
   }
-  retained.campaign.sectorStates[retained.scene.sectorId] = retained.scene;
+  retained.campaign.sectorSnapshots[retained.scene.sectorId] = retained.scene;
   suspended.campaign.suspendedSectorSessions = [
     {
       request: {
@@ -498,7 +498,7 @@ void test('a corpse that expires at an hourly event releases supplies before col
   advanceCivilianTime(loaded.scene, 20);
   advanceSectorWorld(loaded.scene, startsAt + 20);
   advanceResidentScavenging(loaded.campaign, loaded.scene, startsAt + 20);
-  retained.campaign.sectorStates[retained.scene.sectorId] = retained.scene;
+  retained.campaign.sectorSnapshots[retained.scene.sectorId] = retained.scene;
   suspended.campaign.suspendedSectorSessions = [
     {
       request: {
@@ -546,7 +546,7 @@ void test('military bleeding and resident movement share the same accepted event
       advanceMilitaryWoundClock(loaded.scene, atSecond, { initialSecond: 0 }),
   });
   advanceSectorWorld(loaded.scene, 120);
-  retained.campaign.sectorStates[retained.scene.sectorId] = retained.scene;
+  retained.campaign.sectorSnapshots[retained.scene.sectorId] = retained.scene;
   suspended.campaign.suspendedSectorSessions = [
     {
       request: {
@@ -597,7 +597,7 @@ void test('daily movement reconciles suspended sector references while retaining
     npcs: structuredClone(origin.npcs),
   };
   campaign.suspendedSectorSessions = [{ request, snapshot: origin }];
-  campaign.sectorStates[destinationId] = destination;
+  campaign.sectorSnapshots[destinationId] = destination;
   present(campaign.characters[3]).rations = 1;
   campaign.hour = 28;
   synchronizeCampaignPresence(campaign);

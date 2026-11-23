@@ -73,10 +73,10 @@ export class RestoredGame {
       ),
     );
     const fields = [
-      ...Object.entries(campaign.sectorStates ?? {})
+      ...Object.entries(campaign.sectorSnapshots ?? {})
         .filter(([id]) => !liveFields.has(`sector:${id}`))
         .map(([id, field]) => ({ id: `sector:${id}`, field })),
-      ...Object.entries(campaign.sceneStates ?? {})
+      ...Object.entries(campaign.sceneSnapshots ?? {})
         .filter(([id]) => !liveFields.has(`scene:${id}`))
         .map(([id, field]) => ({ id: `scene:${id}`, field })),
       ...(campaign.suspendedSectorSessions ?? []).map((entry) => ({

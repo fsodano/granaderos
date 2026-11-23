@@ -482,8 +482,8 @@ export function migrateEquipment(s) {
   }
   if (legacy) {
     for (const snapshot of [
-      ...Object.values(s.sectorStates ?? {}),
-      ...Object.values(s.sceneStates ?? {}),
+      ...Object.values(s.sectorSnapshots ?? {}),
+      ...Object.values(s.sceneSnapshots ?? {}),
       ...(s.sectorEntryRequest?.resumeSnapshot ? [s.sectorEntryRequest.resumeSnapshot] : []),
     ]) {
       snapshot.fittingRulesVersion ??= FITTING_RULES_VERSION;
@@ -919,7 +919,10 @@ export function validateEquipmentOwnership(s, roster = [], battle = null) {
   const activeEnemies = new Set(
     currentActors.filter((actor) => actor.side === 'enemy').map((actor) => String(actor.id)),
   );
-  const snapshots = [...Object.values(s.sectorStates ?? {}), ...Object.values(s.sceneStates ?? {})],
+  const snapshots = [
+      ...Object.values(s.sectorSnapshots ?? {}),
+      ...Object.values(s.sceneSnapshots ?? {}),
+    ],
     allies = new Set();
   const retainedOnField = (snapshot, u) => {
     const disposition = snapshot.returnLedger?.entries?.find((e) => e.unitId === u.id),

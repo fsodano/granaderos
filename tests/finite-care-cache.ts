@@ -22,7 +22,7 @@ export function collectPhysicalCacheItems(
   let s = state;
   const cacheId = FINITE_SECTOR_CACHES[s.location]?.chest;
   assert.ok(cacheId, 'this location has an actual finite authored cache');
-  const chest = s.sectorStates[s.location]?.props?.find((prop) => prop.id === cacheId);
+  const chest = s.sectorSnapshots[s.location]?.props?.find((prop) => prop.id === cacheId);
   if (!chest?.open || !chest.knownToPlayer) {
     const field = visit(s),
       carrier = present(field.battle)

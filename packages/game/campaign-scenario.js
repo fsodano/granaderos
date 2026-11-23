@@ -50,7 +50,7 @@ function genericInitialState(seed, definitions) {
     civilianState: { version: 2, people: {} },
     equipmentShipments: [],
     missions: {},
-    sceneStates: {},
+    sceneSnapshots: {},
     missionAllies: {},
     garrisons: {},
     nextMilitiaId: 20000,
@@ -68,7 +68,7 @@ function genericInitialState(seed, definitions) {
     location: hq,
     activeSquadId: 'squad-1',
     squads: [{ id: 'squad-1', name: 'Primera escuadra', members: [], location: hq }],
-    sectorStates: {},
+    sectorSnapshots: {},
     resources: {
       treasury: campaignRules({ contentCampaign: { package: definitions } }).startingTreasury,
     },
@@ -180,7 +180,7 @@ const generic = Object.freeze({
   id: 'generic-v1',
   maxPhase: 0,
   scenes: {},
-  sceneStateKey: () => 'sectorStates',
+  sceneStateKey: () => 'sectorSnapshots',
   workshopSectors: (s) => campaignWorld(s).workshopSectors ?? [headquartersFor(s)],
   missionNPCs: [],
   enemyReserveLimits: genericEnemyReserveLimits,
@@ -270,7 +270,8 @@ const generic = Object.freeze({
     }
   },
   validateReputation: () => true,
-  validateStoredScenes: (s) => empty(s.missions) && empty(s.sceneStates) && empty(s.missionAllies),
+  validateStoredScenes: (s) =>
+    empty(s.missions) && empty(s.sceneSnapshots) && empty(s.missionAllies),
   validatePendingScene: (s, b) => !b.sceneId && !b.missionId && !b.missionAllies,
   validateDailyState: (s) => {
     if (s.politics !== undefined) {

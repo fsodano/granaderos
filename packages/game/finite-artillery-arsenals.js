@@ -220,8 +220,8 @@ export function validateFiniteArtilleryArsenals(state) {
   initializeFiniteArtilleryArsenals(state);
   const sources = finiteArsenalsFor(state);
   const scenes = [
-    ...Object.values(state.sectorStates ?? {}),
-    ...Object.values(state.sceneStates ?? {}),
+    ...Object.values(state.sectorSnapshots ?? {}),
+    ...Object.values(state.sceneSnapshots ?? {}),
   ];
   const pieces = scenes.flatMap((scene) => scene.artillery ?? []);
   pieces.push(

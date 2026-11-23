@@ -72,7 +72,9 @@ const exactFields = (value, keys) =>
 const emptyLedger = () => ({ version: 2, records: {} });
 const ledgerOf = (campaign) => campaign.civilianHarm ?? emptyLedger();
 const previousScene = (campaign, sectorId, sceneId) => {
-  const previous = sceneId ? campaign.sceneStates?.[sceneId] : campaign.sectorStates?.[sectorId];
+  const previous = sceneId
+    ? campaign.sceneSnapshots?.[sceneId]
+    : campaign.sectorSnapshots?.[sectorId];
   return previous?.sectorId === sectorId && (previous.sceneId ?? null) === sceneId
     ? previous
     : null;
@@ -140,8 +142,8 @@ export function migrateCampaignCivilianHealth(campaign) {
     need(campaign.civilianHarm?.version === 1, 'La salud civil de campaña mezcla versiones.');
   }
   const owners = [
-    ...Object.values(campaign.sectorStates ?? {}),
-    ...Object.values(campaign.sceneStates ?? {}),
+    ...Object.values(campaign.sectorSnapshots ?? {}),
+    ...Object.values(campaign.sceneSnapshots ?? {}),
     campaign.sectorEntryRequest,
     campaign.sectorEntryRequest?.resumeSnapshot,
   ].filter(Boolean);
@@ -631,8 +633,8 @@ export function validateCampaignCivilianHarm(campaign) {
   }
   validateCampaignDetention(campaign);
   const snapshots = [
-    ...Object.values(campaign.sectorStates ?? {}),
-    ...Object.values(campaign.sceneStates ?? {}),
+    ...Object.values(campaign.sectorSnapshots ?? {}),
+    ...Object.values(campaign.sceneSnapshots ?? {}),
   ];
   const receiptOwners = [
     ...snapshots,

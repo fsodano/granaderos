@@ -10,7 +10,7 @@ export function migrateSquads(s) {
     ];
   }
   s.activeSquadId ??= s.squads[0]?.id ?? 'squad-1';
-  s.sectorStates ??= {};
+  s.sectorSnapshots ??= {};
   return s;
 }
 /** @param {import('./public/campaign-types.ts').CampaignSnapshot} s

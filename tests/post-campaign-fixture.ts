@@ -312,7 +312,7 @@ export function finishPostCampaign({
         hour: s.hour,
         secondOfHour: s.secondOfHour ?? 0,
       },
-      previous = s.sectorStates[sector];
+      previous = s.sectorSnapshots[sector];
     // Advance the firing line in short bounds. The medic supports wounded
     // allies through paid movement and finite dressings. A lone survivor
     // still has to search and finish the fight through actual orders.
@@ -442,7 +442,7 @@ export function finishPostCampaign({
         cost: 0,
       };
       const dressings = (state: CampaignSnapshot) => {
-        const scene = state.sectorStates[sector],
+        const scene = state.sectorSnapshots[sector],
           cache = present(
             present(present(present(state.contentCampaign).package.world).physical).caches[sector],
           );

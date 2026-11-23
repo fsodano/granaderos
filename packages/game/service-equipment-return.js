@@ -36,7 +36,7 @@ const copy = (v) => structuredClone(v);
 const idNumber = (id) =>
   typeof id === 'string' && /^service-return-[1-9][0-9]*$/.test(id) ? Number(id.slice(15)) : NaN;
 const siteSector = (s, id) => sceneAnchorFor(s, id);
-const snapshotAt = (s, id) => expandCellScene(s.sceneStates?.[id] ?? s.sectorStates?.[id], s);
+const snapshotAt = (s, id) => expandCellScene(s.sceneSnapshots?.[id] ?? s.sectorSnapshots?.[id], s);
 const sourceKey = (id, item) => JSON.stringify(['serviceReturn', id, item]);
 const recordFields = [
   'inventory',
@@ -619,8 +619,8 @@ export function validateServiceEquipmentReturns(s, roster) {
   }
   // Ground returns retain their immutable source prefix after cache collection.
   for (const snapshot of [
-    ...Object.values(s.sectorStates ?? {}),
-    ...Object.values(s.sceneStates ?? {}),
+    ...Object.values(s.sectorSnapshots ?? {}),
+    ...Object.values(s.sceneSnapshots ?? {}),
   ]) {
     for (const item of snapshot.groundItems ?? []) {
       const match =

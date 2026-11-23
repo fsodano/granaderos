@@ -68,7 +68,7 @@ export function collectSectorCash(state, snapshot) {
     ...Object.entries(state.characters)
       .filter(([id]) => ids.has(id))
       .map(([, unit]) => unit),
-    ...(state.sectorStates?.[sectorId]?.units ?? []).filter((u) => ids.has(String(u.id))),
+    ...(state.sectorSnapshots?.[sectorId]?.units ?? []).filter((u) => ids.has(String(u.id))),
   ];
   for (const unit of records) {
     const removed = new Set(
