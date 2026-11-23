@@ -41,7 +41,7 @@ export function migrateMorale(s, roster) {
     s.cohesion = {};
   }
   for (const op of roster) {
-    const r = s.operativeState[op.id];
+    const r = s.characters[op.id];
     if (!r) {
       continue;
     }
@@ -55,9 +55,9 @@ export function migrateMorale(s, roster) {
       r.lastMoralePayAt = null;
     }
   }
-  for (const unit of s.pendingBattle?.squad ?? []) {
+  for (const unit of s.sectorEntryRequest?.squad ?? []) {
     if (unit.personalMorale === undefined) {
-      unit.personalMorale = unit.morale ?? s.operativeState[Number(unit.id)]?.morale;
+      unit.personalMorale = unit.morale ?? s.characters[Number(unit.id)]?.morale;
     }
     if (unit.cohesionBonus === undefined) {
       unit.cohesionBonus = 0;
@@ -81,8 +81,7 @@ export function migrateMorale(s, roster) {
 export function cohesionBonus(s, id) {
   const squad = s.squads?.find((q) => q.members.includes(Number(id)));
   const partners = (squad?.members ?? []).filter(
-    (other) =>
-      other !== Number(id) && s.recruited.includes(other) && s.operativeState[other]?.alive,
+    (other) => other !== Number(id) && s.forceRoster.includes(other) && s.characters[other]?.alive,
   );
   return Math.min(
     5,
@@ -91,7 +90,7 @@ export function cohesionBonus(s, id) {
 }
 
 export function deploymentMorale(s, id, cohortIds = []) {
-  const personalMorale = s.operativeState[id].morale;
+  const personalMorale = s.characters[id].morale;
   const bonus = Math.min(cohesionBonus(s, id), 100 - personalMorale);
   const available = Math.min(PREFERRED_COMPANION_MORALE, 5 - bonus, 100 - personalMorale - bonus);
   const cohort = new Set(cohortIds.map(Number));
@@ -101,8 +100,8 @@ export function deploymentMorale(s, id, cohortIds = []) {
       (p) =>
         p.companionId !== Number(id) &&
         cohort.has(p.companionId) &&
-        s.recruited.includes(p.companionId) &&
-        ableCompanion(s.operativeState[p.companionId]),
+        s.forceRoster.includes(p.companionId) &&
+        ableCompanion(s.characters[p.companionId]),
     );
   // This receipt is fixed at issue. Later joins, wounds or contract expiry do
   // not refresh it or alter the personal morale returned from this deployment.
@@ -117,7 +116,7 @@ export function deploymentMorale(s, id, cohortIds = []) {
 }
 
 export function returnMorale(s, id, report, issued) {
-  const r = s.operativeState[id],
+  const r = s.characters[id],
     reported = report.morale ?? issued?.morale ?? r.morale;
   need(
     Number.isFinite(reported) && reported >= 0 && reported <= 100,
@@ -134,7 +133,7 @@ export function returnMorale(s, id, report, issued) {
 }
 
 export function payMoraleRewardEligible(s, id) {
-  const r = s.operativeState[id];
+  const r = s.characters[id];
   if (!r?.alive) {
     return false;
   }
@@ -147,7 +146,7 @@ export function payMoraleRewardEligible(s, id) {
 
 export function recordPayMorale(s, ids, paid) {
   for (const id of ids) {
-    const r = s.operativeState[id];
+    const r = s.characters[id];
     if (!r?.alive) {
       continue;
     }
@@ -169,8 +168,8 @@ export function recordPayMorale(s, ids, paid) {
 }
 
 export function recordCasualtyMorale(s, casualties, companions = null) {
-  for (const id of s.recruited) {
-    const r = s.operativeState[id];
+  for (const id of s.forceRoster) {
+    const r = s.characters[id];
     if (!r?.alive || casualties.includes(id)) {
       continue;
     }
@@ -196,11 +195,11 @@ function addCohesion(s, a, b, hours) {
 
 export function recordBattleMorale(s, request, outcome, snapshot) {
   const ids = request.squad.map((u) => Number(u.id)),
-    living = ids.filter((id) => s.operativeState[id]?.alive),
-    dead = ids.filter((id) => !s.operativeState[id]?.alive);
+    living = ids.filter((id) => s.characters[id]?.alive),
+    dead = ids.filter((id) => !s.characters[id]?.alive);
   for (const id of living) {
-    s.operativeState[id].morale = clamp(
-      s.operativeState[id].morale + ({ victory: 6, retreat: -5, defeat: -10 }[outcome] ?? 0),
+    s.characters[id].morale = clamp(
+      s.characters[id].morale + ({ victory: 6, retreat: -5, defeat: -10 }[outcome] ?? 0),
     );
   }
   recordCasualtyMorale(s, dead, ids);
@@ -218,14 +217,14 @@ export function advanceMorale(s, roster, options = {}) {
     { active, messages } = advanceStrategicIsolation(s, roster, options);
   const moving = new Set(traveling);
   const safe = (id) =>
-    s.recruited.includes(id) &&
-    s.operativeState[id]?.alive &&
+    s.forceRoster.includes(id) &&
+    s.characters[id]?.alive &&
     !deployed(s, id) &&
     !moving.has(id) &&
     s.sectors[operativeLocation(s, id)]?.owner === 'patriot' &&
-    s.pendingBattle?.sector !== operativeLocation(s, id);
+    s.sectorEntryRequest?.sector !== operativeLocation(s, id);
   for (const op of roster) {
-    const r = s.operativeState[op.id];
+    const r = s.characters[op.id];
     if (!r) {
       continue;
     }
@@ -259,7 +258,7 @@ export function advanceMorale(s, roster, options = {}) {
 }
 
 export function moraleStatus(s, id) {
-  const r = s.operativeState[id],
+  const r = s.characters[id],
     bonus = cohesionBonus(s, id);
   return `Moral ${Math.round(r.morale)} · ${r.morale < 30 ? 'ánimo bajo' : r.morale < 65 ? 'ánimo moderado' : 'ánimo firme'}${bonus ? ` · compañerismo +${bonus} al desplegar` : ''}`;
 }
@@ -290,7 +289,7 @@ export function validateMorale(s, roster) {
     );
   }
   for (const op of roster) {
-    const r = s.operativeState[op.id];
+    const r = s.characters[op.id];
     need(
       Number.isFinite(r.morale) && r.morale >= 0 && r.morale <= 100,
       'La moral guardada es inválida.',
@@ -317,7 +316,7 @@ export function validateMorale(s, roster) {
       );
     }
   }
-  for (const unit of s.pendingBattle?.squad ?? []) {
+  for (const unit of s.sectorEntryRequest?.squad ?? []) {
     if (unit.morale !== undefined) {
       need(
         Number.isFinite(unit.morale) && unit.morale >= 0 && unit.morale <= 100,
@@ -330,7 +329,7 @@ export function validateMorale(s, roster) {
       'El apoyo del compañero desplegado está incompleto.',
     );
     if (hasCompanion) {
-      const companion = s.pendingBattle.squad.find(
+      const companion = s.sectorEntryRequest.squad.find(
         (other) => Number(other.id) === unit.companionId,
       );
       need(

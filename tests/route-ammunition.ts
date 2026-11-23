@@ -138,12 +138,12 @@ export function supplyRouteAmmunition(
     const op = rosterFor(campaign).find((unit) => unit.id === id);
     assert.ok(
       op &&
-        campaign.recruited.includes(id) &&
-        campaign.operativeState[id]?.alive &&
-        !campaign.operativeState[id]?.captured,
+        campaign.forceRoster.includes(id) &&
+        campaign.characters[id]?.alive &&
+        !campaign.characters[id]?.captured,
       `El combatiente no está disponible: ${id}.`,
     );
-    const carried = () => carriedAmmunition(op, campaign.operativeState[id]);
+    const carried = () => carriedAmmunition(op, campaign.characters[id]);
     const unit = carried(),
       family = ammoTypeFor({ ...unit, activeSlot: 'primary' });
     if (!family || unit.weaponDropped) {
@@ -199,7 +199,7 @@ export function supplyRouteAmmunition(
         if (!row && !checkedCache) {
           checkedCache = true;
           const cacheId = finiteCachesFor(campaign)[campaign.location]?.chest;
-          const chest = campaign.sectorStates[campaign.location]?.props?.find(
+          const chest = campaign.sectorSnapshots[campaign.location]?.props?.find(
             (prop) => prop.id === cacheId,
           );
           if (cacheId && (!chest?.open || !chest.knownToPlayer)) {
@@ -233,10 +233,10 @@ export function supplyRouteAmmunition(
                 quantity: number;
               } | null => {
                 const person = rosterFor(campaign).find((person) => person.id === donorId),
-                  body = campaign.operativeState[donorId];
+                  body = campaign.characters[donorId];
                 if (
                   !person ||
-                  !campaign.recruited.includes(donorId) ||
+                  !campaign.forceRoster.includes(donorId) ||
                   !body?.alive ||
                   body.captured ||
                   operativeInTransit(campaign, donorId) ||
@@ -277,7 +277,7 @@ export function supplyRouteAmmunition(
             };
             campaign = dispatchCampaign(campaign, action);
             assert.equal(campaign.lastError, null, campaign.lastError ?? undefined);
-            const after = carriedAmmunition(person, campaign.operativeState[person.id]);
+            const after = carriedAmmunition(person, campaign.characters[person.id]);
             assert.equal(campaign.resources.treasury, cash);
             assert.equal(after.loaded, donor.carried.loaded);
             assert.equal(ammoCount(after, family), ammoCount(donor.carried, family) - quantity);
@@ -317,14 +317,14 @@ export function supplyRouteAmmunition(
             localCarriers: rosterFor(campaign)
               .filter(
                 (person) =>
-                  campaign.recruited.includes(person.id) &&
-                  present(campaign.operativeState[person.id]).alive &&
-                  !present(campaign.operativeState[person.id]).captured &&
+                  campaign.forceRoster.includes(person.id) &&
+                  present(campaign.characters[person.id]).alive &&
+                  !present(campaign.characters[person.id]).captured &&
                   !operativeInTransit(campaign, person.id) &&
                   operativeLocation(campaign, person.id) === campaign.location,
               )
               .map((person) => {
-                const unit = carriedAmmunition(person, campaign.operativeState[person.id]);
+                const unit = carriedAmmunition(person, campaign.characters[person.id]);
                 return {
                   id: person.id,
                   field: ids.includes(person.id),

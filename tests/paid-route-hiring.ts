@@ -3,8 +3,11 @@ import type { CampaignSnapshot } from '../packages/game/public/campaign-types.ts
 import assert from 'node:assert/strict';
 import { rosterFor } from '../packages/game/campaign.js';
 import { contractQuote, contractExpiresSeconds } from '../packages/game/contracts.js';
-import { hireArrivalDueSeconds } from '../packages/game/hiring-arrivals.js';
-import { immediateRecruitmentExpectation } from './immediate-recruitment-fixture.ts';
+import {
+  hasRecruitmentClaim,
+  immediateRecruitmentExpectation,
+  receiptSeconds,
+} from './immediate-recruitment-fixture.ts';
 import { order, saved } from './local-contract-fixture.ts';
 import { advanceCampaignHours } from './campaign-wait-fixture.ts';
 
@@ -31,17 +34,14 @@ const clock = (s: CampaignSnapshot) => s.hour * 3600 + (s.secondOfHour ?? 0);
 export function assertRouteHireArrived(s: CampaignSnapshot, hire: RouteHire) {
   const { id, quote, arrival } = hire,
     contract = s.contracts[id],
-    due = hireArrivalDueSeconds(arrival);
+    due = receiptSeconds(arrival);
   assert.equal(
-    s.recruited.filter((value) => value === id).length,
+    s.forceRoster.filter((value) => value === id).length,
     1,
     'A recruited combatant enters service once.',
   );
-  assert.equal(
-    s.hiringArrivals.some((value) => value.operativeId === id),
-    false,
-  );
-  assert.equal(present(s.operativeState[id]).location, arrival.destination);
+  assert.equal(hasRecruitmentClaim(s, id), false);
+  assert.equal(present(s.characters[id]).location, arrival.destination);
   assert.equal(present(contract).kind, quote.permanent ? 'patriot' : 'paid');
   assert.equal(present(contract).term, arrival.term);
   assert.equal(present(contract).paid, quote.price);
@@ -71,9 +71,7 @@ export function bookRouteHires(
     hires = [];
   let s = saved({ campaign: start }).campaign;
   for (const id of ids) {
-    assert.ok(
-      !s.recruited.includes(id) && !s.hiringArrivals.some((value) => value.operativeId === id),
-    );
+    assert.ok(!s.forceRoster.includes(id) && !hasRecruitmentClaim(s, id));
     const operative = rosterFor(s).find((person) => person.id === id);
     assert.ok(operative);
     const quote = contractQuote(s, operative, term);

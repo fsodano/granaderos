@@ -4,6 +4,12 @@
 
 This page explains how Granaderos builds, stages, and checks the static browser deployment (`.output/dist/`), how root npm scripts and CI workflows enforce architectural boundaries, formatting, types, and tests, and how the browser toolchain stays separate from the native C++ reference tree. It connects the package boundaries in the [system map](system-map.md) to the campaign staging pipeline in [content and campaigns](content-and-campaigns.md) and the runtime asset manifests in [rendering](rendering.md).
 
+Vinext is an open-source Vite plugin that reimplements the Next.js API surface,
+letting this app run its Next-style routes and rendering through Vite. The
+project registers the plugin in [`apps/web/vite.config.ts`](../../apps/web/vite.config.ts);
+see [Vinext's official overview](https://vinext.dev/) for the tool's own
+description.
+
 ## At a glance
 
 The flowchart below shows how local development (`vinext + Vite dev`) serves the `Browser app`, and how `npm run build` runs `vinext build / static export` and `Independent editor Vite build`, combines them in `Stage client files under .output/dist`, executes `Stage and validate campaign packages` and `Check URLs, workers, manifests, checksums`, passes `Check build identity`, and produces the `Static hosting / Pages artifact`.
@@ -72,7 +78,7 @@ The table below lists each root build, authoring, and verification `Command`, it
 | `npm run audit:dependencies` / `npm run audit:baseline` | Runs [`tools/audit-dependencies.ts`](../../tools/audit-dependencies.ts) and [`tools/audit-baseline.mjs`](../../tools/audit-baseline.mjs). | Checks dependency declarations and compares reference gameplay constants against the source baseline. |
 | `npm run verify` (`verify:commit`, `verify:quick`) | Runs [`tools/verify.mjs`](../../tools/verify.mjs) with the `full`, `commit`, or `push` profile from [`tools/verification-plan.ts`](../../tools/verification-plan.ts). | Executes the ordered verification pipeline (`check:format`, `lint`, `check:architecture`, `check:dependencies`, `typecheck`, `test`, `audit:dependencies`, `audit:baseline`, and `build` in `full`). |
 | `npm run campaign:new -- <id> <destination>` | Runs [`tools/campaign-authoring.mjs`](../../tools/campaign-authoring.mjs) `scaffold` and validates the created folder. | Creates a new campaign package directory with starter manifest, documents, maps, and assets. |
-| `npm run campaign:check -- <folder>` | Runs [`tools/campaign-authoring.mjs`](../../tools/campaign-authoring.mjs) `check` against `compileCampaignPackage` and asset digests. | Reports campaign package validity and revision metadata. |
+| `npm run campaign:check -- <folder>` | Runs `check` in [`tools/campaign-authoring.mjs`](../../tools/campaign-authoring.mjs), which uses `verifyCampaignFolder` in [`tools/campaign-export.mjs`](../../tools/campaign-export.mjs) to call [`createCampaignCompiler()`](../../packages/game/public/campaign-compiler-api.ts) and verify package asset digests. | Reports campaign package validity and revision metadata. |
 | `npm run campaign:assets -- <folder>` | Runs [`tools/campaign-authoring.mjs`](../../tools/campaign-authoring.mjs) `assets`. | Recomputes and updates SHA-256 asset entries in `<folder>/assets.json`. |
 
 GitHub Actions workflows in [`.github/workflows/web.yml`](../../.github/workflows/web.yml) (push to `main` and manual dispatch, publishing `.output/dist/` to GitHub Pages) and [`.github/workflows/tests.yml`](../../.github/workflows/tests.yml) (pull requests and manual dispatch) install `apps/web`, `apps/campaign-editor`, and `tools/playgrounds/granadero-3d` dependencies using the Node version in [`.node-version`](../../.node-version) and run `npm run verify`. A separate manual workflow in [`.github/workflows/build-windows.yml`](../../.github/workflows/build-windows.yml) builds the native Windows engine and campaign overlay package.

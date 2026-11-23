@@ -20,6 +20,6 @@ void test('assigning a combatant to a squad commits one revision and restores wi
     assigned.squads.flatMap((squad) => squad.members).filter((id) => id === 10).length,
     1,
   );
-  assert.equal(present(assigned.operativeState[10]).location, initial.location);
+  assert.equal(present(assigned.characters[10]).location, initial.location);
   assert.deepEqual(decodeSave(encodeSave(assigned)).campaign, assigned);
 });

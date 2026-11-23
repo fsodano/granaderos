@@ -225,7 +225,7 @@ function paidResidentCrew() {
   const exit = () => {
     dispatch({
       type: 'leaveSector',
-      battleId: present(campaign.pendingBattle).id,
+      battleId: present(campaign.sectorEntryRequest).id,
       sectorState: activeBattle(),
       survivors: activeBattle().units.filter((unit: BattleUnit) => unit.side === 'player'),
     });
@@ -248,9 +248,9 @@ function paidResidentCrew() {
       destination: OCCUPANCY_SECTOR,
     });
     assert.equal(campaign.resources.treasury, cash - quote.total);
-    assert.equal(present(campaign.operativeState[id]).location, OCCUPANCY_SECTOR);
+    assert.equal(present(campaign.characters[id]).location, OCCUPANCY_SECTOR);
   }
-  assert.equal(campaign.hiringArrivals.length, 0);
+  assert.equal((campaign.refundableRecruitmentClaims ?? []).length, 0);
   for (const members of [ids.slice(0, 2), ids.slice(2)]) {
     dispatch({
       type: 'createSquad',
@@ -322,7 +322,7 @@ function paidResidentCrew() {
   });
   exit();
   for (const [id, point] of posts) {
-    assert.ok(sameCell(present(present(campaign.operativeState[id]).residentPosition), point));
+    assert.ok(sameCell(present(present(campaign.characters[id]).residentPosition), point));
     assert.ok(
       present(contractExpiresSeconds(campaign.contracts[id])) > campaignClock(campaign) + 6 * 3600,
     );
@@ -416,7 +416,7 @@ void test('a resident keeps a paid gunner post clear while another squad visits,
 void test('a real departure releases saved posts for inactive resident movement despite archived guard bodies', () => {
   const fixture = paidResidentCrew(),
     { ids, post } = fixture;
-  const archived = fixture.campaign.sectorStates[OCCUPANCY_SECTOR];
+  const archived = fixture.campaign.sectorSnapshots[OCCUPANCY_SECTOR];
   assert.ok(
     ids.slice(0, 2).every((id) => present(archived).units.some((unit) => unit.id === String(id))),
   );
@@ -426,7 +426,7 @@ void test('a real departure releases saved posts for inactive resident movement 
   let crossed = false;
   for (let phase = 0; phase < 20 && !crossed; phase++) {
     fixture.dispatch({ type: 'advanceStrategicTime', seconds: 6 });
-    const scene = fixture.campaign.sectorStates[OCCUPANCY_SECTOR],
+    const scene = fixture.campaign.sectorSnapshots[OCCUPANCY_SECTOR],
       neighbor = resident(scene);
     crossed = [neighbor, ...(present(neighbor).lastMovePath ?? [])].some((point) =>
       sameCell(point, post),
@@ -438,7 +438,7 @@ void test('a real departure releases saved posts for inactive resident movement 
     ids
       .slice(0, 2)
       .every((id) =>
-        present(fixture.campaign.sectorStates[OCCUPANCY_SECTOR]).units.some(
+        present(fixture.campaign.sectorSnapshots[OCCUPANCY_SECTOR]).units.some(
           (unit) => unit.id === String(id),
         ),
       ),
@@ -458,7 +458,7 @@ void test('saved position references reject forged positions and upgrade an olde
     expected = structuredClone(present(fixture.battle.residentPositions));
   assert.equal(expected.length, 2);
   const legacy = parseJsonObject(encoded),
-    legacyBattle = legacy['battle'];
+    legacyBattle = legacy['sectorSession'];
   assert.ok(isJsonObject(legacyBattle));
   delete legacyBattle['residentPositions'];
   const restored = decodeSave(JSON.stringify(legacy));
@@ -479,7 +479,7 @@ void test('saved position references reject forged positions and upgrade an olde
   ]) {
     const refused = dispatchCampaign(fixture.campaign, {
       ...action,
-      battleId: present(fixture.campaign.pendingBattle).id,
+      battleId: present(fixture.campaign.sectorEntryRequest).id,
       sectorState: omitted,
     });
     assert.match(present(refused.lastError), /Resident positions/);
@@ -501,7 +501,7 @@ void test('saved position references reject forged positions and upgrade an olde
     }),
   ]) {
     const forged = parseJsonObject(encoded),
-      forgedBattle = forged['battle'];
+      forgedBattle = forged['sectorSession'];
     assert.ok(isJsonObject(forgedBattle));
     const reference = alter(structuredClone(present(expected[0])));
     forgedBattle['residentPositions'] = [reference, ...expected.slice(1)];
@@ -529,7 +529,7 @@ void test('the resident post projection holds canonical identity and physical po
     assert.deepEqual(Object.keys(reference.position).sort(), ['level', 'x', 'y']);
     assert.match(reference.characterId, /^character:\d+$/);
     const characterId = Number(reference.characterId.slice('character:'.length)),
-      character = present(fixture.campaign.operativeState[characterId]),
+      character = present(fixture.campaign.characters[characterId]),
       post = present(character.residentPosition);
     assert.deepEqual(reference.position, {
       x: post.x,

@@ -39,17 +39,17 @@ export default function StrategicRoster({
 }: Props) {
   const grid = (id: string) => worldCell(id, s)?.grid ?? '—';
   const selected = s.squads.find((q) => q.id === s.activeSquadId),
-    blocked = Boolean(s.pendingBattle || s.pendingEncounter || s.defeated);
+    blocked = Boolean(s.sectorEntryRequest || s.pendingEncounter || s.defeated);
   return (
     <aside className="strategy-personnel" aria-label="Nómina de combatientes">
       <div className="personnel-title">
         <h2>Nómina</h2>
         <span>
-          {s.recruited.length} {s.recruited.length === 1 ? 'soldado' : 'soldados'}
+          {s.forceRoster.length} {s.forceRoster.length === 1 ? 'soldado' : 'soldados'}
         </span>
       </div>
       <div className="strategy-roster-scroll">
-        {!s.recruited.length && (
+        {!s.forceRoster.length && (
           <p className="roster-hint">Creá tu oficial o contratá soldados en el escritorio.</p>
         )}
         <table className="merc-map-table dense-personnel-table">
@@ -72,9 +72,9 @@ export default function StrategicRoster({
             </tr>
           </thead>
           <tbody>
-            {s.recruited.map((id: number) => {
+            {s.forceRoster.map((id: number) => {
               const op = roster.find((o) => o.id === id),
-                r = s.operativeState[id],
+                r = s.characters[id],
                 q = s.squads.find((q) => q.members.includes(id)),
                 j = q ? squadTravelStatus(q, s) : null,
                 c = contractStatus(s, id);
@@ -190,7 +190,7 @@ export default function StrategicRoster({
           ))}
         </div>
       </section>
-      {!s.recruited.length && (
+      {!s.forceRoster.length && (
         <div className="roster-footer">
           <button className="line-button" onClick={onOpenDesk}>
             Crear o contratar

@@ -1,5 +1,4 @@
 import { CampaignDefinition } from '../campaign-format/campaign-definition.ts';
-import { CampaignCompiler } from './application/campaign-compiler/campaign-compiler.use-case.ts';
 
 export {
   validateCampaignManifest,
@@ -41,16 +40,4 @@ export class CampaignLibraryCompilerRepository {
   commit(context, outcome) {
     context.compiled = outcome;
   }
-}
-
-/**
- * Retained compatibility adapter. New callers use `CampaignCompiler` through the
- * declared public entry; this name stays for the build tools that still read it.
- * @param {unknown} manifest
- * @param {unknown} documents
- * @returns {import('../campaign-format/types.ts').CompiledCampaignContent}
- */
-export function compileCampaignPackage(manifest, documents) {
-  const repository = new CampaignLibraryCompilerRepository();
-  return new CampaignCompiler(repository).execute({ manifest, documents });
 }

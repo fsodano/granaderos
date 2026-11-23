@@ -46,10 +46,12 @@ The table below defines each core `Term` and its `Meaning here` across all archi
 | Campaign definitions / package | Authored world, cast, equipment, maps, presentation, and supported rule identifiers admitted by `CampaignDefinition` |
 | Campaign state | Mutable strategic progress serialized as a campaign snapshot |
 | Scenario | A trusted, compiled-in rule module selected by an allowlisted scenario identifier (`generic-v1` or `granaderos-historical-v1`) |
-| `SectorEntryRequest` | Campaign-owned input to `EnterSector`; the compatibility snapshot field remains `pendingBattle` |
-| `SectorSession` | One active or suspended sector visit, including deployment, exploration, and combat; compatibility snapshots still use `battle` or `sectorState` |
+| [`CampaignSectorEntryRequest`](../../packages/game/public/campaign-types.ts) | The campaign snapshot's saved projection of a sector-entry request, stored in `CampaignSnapshot.sectorEntryRequest` |
+| [`SectorEntryRequest`](../../packages/game/application/sector-sessions/enter-sector/sector-entry.request.ts) | The narrower application input to `EnterSector` |
+| `SectorSession` | One active or suspended sector visit, including deployment, exploration, and combat; the save envelope writes the active view under `sectorSession` and reads legacy `battle` saves |
+| [`sectorState`](../../packages/game/public/campaign-types.ts) | A campaign-action request property for a sector snapshot, not a saved envelope or campaign-snapshot field |
 | `CombatSession` | One bounded combat episode within a `SectorSession`, owning turn authority, action-point budgets, reactions, and the combat outcome |
-| Retained scene | Saved sector or mission state (`sectorStates` / `sceneStates`) used to preserve physical world changes across later visits without duplicating character or inventory ownership |
+| Retained scene | Saved sector or mission state (`sectorSnapshots` / `sceneSnapshots`) used to preserve physical world changes across later visits without duplicating character or inventory ownership |
 | Committed state | The accepted campaign and active sector snapshot pair owned by the root browser application at one `gameRevision` |
 | Presentation frame | Temporary visual or animation data projected from accepted simulation state; never an owner of game rules or a save checkpoint |
 | Worker | A browser Web Worker running shared simulation, save-encoding, or contact-fitting logic on message-transferred snapshots |

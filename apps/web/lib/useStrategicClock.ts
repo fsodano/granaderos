@@ -29,7 +29,7 @@ export function useStrategicClock(
   }));
   const arrivalPending = hasPendingArrivalDecision(state);
   const blocked = Boolean(
-    state.pendingBattle || state.pendingEncounter || state.defeated || arrivalPending,
+    state.sectorEntryRequest || state.pendingEncounter || state.defeated || arrivalPending,
   );
   let current = control;
   if (control.campaign !== state) {

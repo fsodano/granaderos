@@ -4,11 +4,11 @@ import { careAssignmentBusy } from './medical-care.js';
 import { sceneAnchorFor } from './campaign-scenario.js';
 export function artillerySupplyQuote(s, sector, gunId, supplied) {
   const rules = artillerySupplyRules(s),
-    scene = s.sectorStates?.[sector],
+    scene = s.sectorSnapshots?.[sector],
     gun = scene?.artillery?.find((g) => g.id === gunId),
     cost = gun ? rules[gun.type] : 0;
   const present = (s.squad ?? []).some((id) => {
-    const r = s.operativeState[id];
+    const r = s.characters[id];
     return (
       r?.alive &&
       r.hp >= 15 &&
@@ -35,7 +35,7 @@ export function artillerySupplyQuote(s, sector, gunId, supplied) {
   );
   const reason = s.defeated
     ? 'La campaña ha terminado.'
-    : s.pendingBattle || s.pendingEncounter
+    : s.sectorEntryRequest || s.pendingEncounter
       ? 'Salí de la escena táctica antes de comprar munición.'
       : !rules.enabled
         ? 'Esta campaña no permite reponer munición de artillería.'

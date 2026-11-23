@@ -42,7 +42,7 @@ export function discoverRouteCache(state: CampaignSnapshot, operativeId: number)
   if (!cacheId) {
     return s;
   }
-  const chest = s.sectorStates[sector]?.props?.find((prop) => prop.id === cacheId);
+  const chest = s.sectorSnapshots[sector]?.props?.find((prop) => prop.id === cacheId);
   if (chest?.open && chest.knownToPlayer) {
     return s;
   }
@@ -54,7 +54,7 @@ export function discoverRouteCache(state: CampaignSnapshot, operativeId: number)
   }
   const assignments = s.squad.map((id) => ({
     id,
-    assignment: present(s.operativeState[id]).assignment ?? 'active',
+    assignment: present(s.characters[id]).assignment ?? 'active',
   }));
   assert.ok(
     assignments.every((row) =>
@@ -82,8 +82,7 @@ export function discoverRouteCache(state: CampaignSnapshot, operativeId: number)
   for (const { id, assignment } of assignments) {
     if (
       assignment !== 'active' &&
-      (!['doctor', 'militia_doctor'].includes(assignment) ||
-        present(s.operativeState[id]).medkits > 0)
+      (!['doctor', 'militia_doctor'].includes(assignment) || present(s.characters[id]).medkits > 0)
     ) {
       s = order(s, { type: 'assignCare', id, assignment });
     }
@@ -238,7 +237,7 @@ export function authoredRouteMedicalDiscoveries(state: CampaignSnapshot, clinic:
       if (!path) {
         return [];
       }
-      const snapshot = state.sectorStates[at],
+      const snapshot = state.sectorSnapshots[at],
         chest = snapshot?.props?.find((prop) => prop.id === cache.chest);
       if (snapshot && (!chest || (chest.open && chest.knownToPlayer))) {
         return [];
@@ -255,7 +254,7 @@ export function authoredRouteMedicalDiscoveries(state: CampaignSnapshot, clinic:
 
 export function recoverRouteFirearm(state: CampaignSnapshot, operativeId: number) {
   let s = state;
-  if (!present(s.operativeState[operativeId]).weaponDropped) {
+  if (!present(s.characters[operativeId]).weaponDropped) {
     return s;
   }
   s = discoverRouteCache(s, operativeId);
@@ -314,9 +313,9 @@ export function repairRouteFirearms(
   const targets = () =>
     ids.filter(
       (id) =>
-        present(s.operativeState[id]).alive &&
-        !present(s.operativeState[id]).weaponDropped &&
-        present(s.operativeState[id]).condition < 100,
+        present(s.characters[id]).alive &&
+        !present(s.characters[id]).weaponDropped &&
+        present(s.characters[id]).condition < 100,
     );
   for (let hour = 0; targets().length && hour < maxHours; hour++) {
     let target = targets()[0];
@@ -325,24 +324,24 @@ export function repairRouteFirearms(
       mechanic = roster
         .filter(
           (op) =>
-            s.recruited.includes(op.id) &&
-            present(s.operativeState[op.id]).alive &&
-            !present(s.operativeState[op.id]).captured &&
+            s.forceRoster.includes(op.id) &&
+            present(s.characters[op.id]).alive &&
+            !present(s.characters[op.id]).captured &&
             operativeLocation(s, op.id) === site &&
             op.mechanical >= 20 &&
-            present(s.operativeState[op.id]).hp >= 15 &&
-            !present(s.operativeState[op.id]).bleeding &&
-            !present(s.operativeState[op.id]).asleep &&
-            present(s.operativeState[op.id]).energy > 10,
+            present(s.characters[op.id]).hp >= 15 &&
+            !present(s.characters[op.id]).bleeding &&
+            !present(s.characters[op.id]).asleep &&
+            present(s.characters[op.id]).energy > 10,
         )
         .sort(
           (a, b) =>
-            Number(repairMaterialPoints(present(s.operativeState[b.id])) > 0) -
-              Number(repairMaterialPoints(present(s.operativeState[a.id])) > 0) ||
+            Number(repairMaterialPoints(present(s.characters[b.id])) > 0) -
+              Number(repairMaterialPoints(present(s.characters[a.id])) > 0) ||
             b.mechanical - a.mechanical,
         )[0];
     assert.ok(mechanic, 'actual repair needs a qualified available local mechanic');
-    if (!repairMaterialPoints(present(s.operativeState[mechanic.id]))) {
+    if (!repairMaterialPoints(present(s.characters[mechanic.id]))) {
       s = collectRouteItems(s, mechanic.id, { kind: 'repair-kit' }, 1).campaign;
     }
     // Cache discovery spends real time. Other work may finish the target,
@@ -352,7 +351,7 @@ export function repairRouteFirearms(
       continue;
     }
     const assignedToTarget = (op: CampaignOperative) => {
-      const r = present(s.operativeState[op.id]);
+      const r = present(s.characters[op.id]);
       return (
         r.assignment === 'repair' && r.repairTargetId === target && r.repairScope !== 'equipment'
       );
@@ -385,10 +384,10 @@ export function repairRouteFirearms(
       targetId: target,
       repairScope: 'primary',
     });
-    const before = repairMaterialPoints(present(s.operativeState[mechanic.id]));
+    const before = repairMaterialPoints(present(s.characters[mechanic.id]));
     s = advanceCampaignHours(s, 1);
     assert.ok(
-      repairMaterialPoints(present(s.operativeState[mechanic.id])) < before,
+      repairMaterialPoints(present(s.characters[mechanic.id])) < before,
       'real repair must consume carried material',
     );
     s = order(s, { type: 'assignCare', id: mechanic.id, assignment: 'active' });
@@ -415,7 +414,7 @@ export function collectRouteMedicalSupplies(
   const clinic = operativeLocation(s, operativeId),
     previous = s.activeSquadId,
     home = s.squads.find((q) => q.members.includes(operativeId) && !q.journey),
-    assignment = present(s.operativeState[operativeId]).assignment;
+    assignment = present(s.characters[operativeId]).assignment;
   try {
     const clock = () => s.hour * 3600 + (s.secondOfHour ?? 0);
     let courierId: string | null = null;
@@ -443,14 +442,14 @@ export function collectRouteMedicalSupplies(
         'An actual encounter stops the deadline-bound medical courier.',
       );
       assert.equal(
-        s.pendingBattle,
+        s.sectorEntryRequest,
         null,
         'An actual battle stops the deadline-bound medical courier.',
       );
       assert.ok(
-        s.recruited.includes(operativeId) &&
-          present(s.operativeState[operativeId]).alive &&
-          !present(s.operativeState[operativeId]).captured,
+        s.forceRoster.includes(operativeId) &&
+          present(s.characters[operativeId]).alive &&
+          !present(s.characters[operativeId]).captured,
         'The actual deadline-bound courier must remain in living paid service.',
       );
     };
@@ -465,11 +464,11 @@ export function collectRouteMedicalSupplies(
     };
     admittedPrefix();
     const needsRest = () =>
-      present(s.operativeState[operativeId]).asleep ||
-      tooTiredToMarch(present(s.operativeState[operativeId]));
+      present(s.characters[operativeId]).asleep ||
+      tooTiredToMarch(present(s.characters[operativeId]));
     const retain = (seconds: number, phase: string) => {
-      for (const id of s.recruited.filter(
-        (id) => present(s.operativeState[id]).alive && !present(s.operativeState[id]).captured,
+      for (const id of s.forceRoster.filter(
+        (id) => present(s.characters[id]).alive && !present(s.characters[id]).captured,
       )) {
         let contract = s.contracts[id],
           expiry = contractExpiresSeconds(contract);
@@ -563,11 +562,11 @@ export function collectRouteMedicalSupplies(
         null,
         'the actual medical courier encounter must finish before continuing care',
       );
-      assert.equal(s.pendingBattle, null);
+      assert.equal(s.sectorEntryRequest, null);
       assert.ok(
-        s.recruited.includes(operativeId) &&
-          present(s.operativeState[operativeId]).alive &&
-          !present(s.operativeState[operativeId]).captured,
+        s.forceRoster.includes(operativeId) &&
+          present(s.characters[operativeId]).alive &&
+          !present(s.characters[operativeId]).captured,
         'the actual courier must survive and remain under paid service',
       );
       if (courierId !== null) {
@@ -593,11 +592,9 @@ export function collectRouteMedicalSupplies(
         'The courier must finish real local rest before departure.',
       );
       assert.ok(
-        s.recruited
-          .filter(
-            (id) => operativeLocation(s, id) === clinic && present(s.operativeState[id]).alive,
-          )
-          .every((id) => !present(s.operativeState[id]).bleeding),
+        s.forceRoster
+          .filter((id) => operativeLocation(s, id) === clinic && present(s.characters[id]).alive)
+          .every((id) => !present(s.characters[id]).bleeding),
         'stabilize local bleeding patients before their doctor rests for the journey',
       );
       const began = clock();
@@ -610,7 +607,7 @@ export function collectRouteMedicalSupplies(
           'The actual posta courier must recover within 48 ordinary rest hours.',
         );
         retain(3601, 'readiness');
-        if (!present(s.operativeState[operativeId]).asleep) {
+        if (!present(s.characters[operativeId]).asleep) {
           const action: CampaignAction = { type: 'setSleep', operativeId, asleep: true };
           s = issue(action);
           report({
@@ -698,13 +695,13 @@ export function collectRouteMedicalSupplies(
       return { campaign: saved({ campaign: s }).campaign, collected: local.collected };
     }
     assert.ok(
-      s.recruited.includes(operativeId) && present(s.operativeState[operativeId]).alive,
+      s.forceRoster.includes(operativeId) && present(s.characters[operativeId]).alive,
       'the actual courier must be serving',
     );
     assert.ok(
-      s.recruited
-        .filter((id) => operativeLocation(s, id) === clinic && present(s.operativeState[id]).alive)
-        .every((id) => !present(s.operativeState[id]).bleeding),
+      s.forceRoster
+        .filter((id) => operativeLocation(s, id) === clinic && present(s.characters[id]).alive)
+        .every((id) => !present(s.characters[id]).bleeding),
       'stabilize local bleeding patients before their doctor leaves for dressings',
     );
     selectCourier();
@@ -782,7 +779,7 @@ export function collectRouteMedicalSupplies(
           'The actual bounded medical courier must finish its admitted journey.',
         );
         assert.equal(operativeLocation(s, operativeId), at);
-        assert.equal(s.pendingBattle, null);
+        assert.equal(s.sectorEntryRequest, null);
         preparePostaCourier(at);
         return;
       }
@@ -792,10 +789,10 @@ export function collectRouteMedicalSupplies(
           encounter('journey', at);
           continue;
         }
-        assert.equal(s.pendingBattle, null);
+        assert.equal(s.sectorEntryRequest, null);
         assert.equal(s.location, at);
         assert.ok(
-          s.recruited.includes(operativeId),
+          s.forceRoster.includes(operativeId),
           'the real courier must remain under paid service',
         );
         return;

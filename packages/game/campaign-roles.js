@@ -40,13 +40,13 @@ export function campaignRole(state, key) {
 }
 export function campaignRoleActive(state, key) {
   const role = campaignRole(state, key),
-    record = role && state.operativeState[role.id],
+    record = role && state.characters[role.id],
     contract = role && state.contracts?.[role.id];
   const expiry = contractExpiresSeconds(contract),
     now = state.hour * 3600 + (state.secondOfHour ?? 0);
   return Boolean(
     role &&
-    state.recruited.includes(role.id) &&
+    state.forceRoster.includes(role.id) &&
     record?.alive &&
     record.hp > 0 &&
     !record.captured &&

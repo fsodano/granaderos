@@ -25,16 +25,16 @@ void test('an authored arrival delay does not postpone control or contract start
     term: 'day',
   });
   assert.equal(accepted.lastError, null);
-  assert.ok(accepted.recruited.includes(110));
+  assert.ok(accepted.forceRoster.includes(110));
   assert.ok(accepted.squad.includes(110));
-  assert.equal(present(accepted.operativeState[110]).location, campaign.location);
+  assert.equal(present(accepted.characters[110]).location, campaign.location);
   assert.equal(accepted.hour, campaign.hour);
   assert.equal(accepted.secondOfHour, 61);
   assert.equal(present(accepted.contracts[110]).started, campaign.hour);
   assert.equal(present(accepted.contracts[110]).startedSecond, 61);
   assert.equal(present(accepted.contracts[110]).expiresSecond, 61);
   assert.equal(accepted.resources.treasury, campaign.resources.treasury - quote.total);
-  assert.deepEqual(accepted.hiringArrivals ?? [], []);
+  assert.deepEqual(accepted.refundableRecruitmentClaims ?? [], []);
   const restored = decodeSave(encodeSave(accepted)).campaign;
   assert.deepEqual(restored, accepted);
   const repeated = dispatchCampaign(restored, {

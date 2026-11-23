@@ -20,8 +20,11 @@ import {
   contractRenewalQuote,
   contractExpiresSeconds,
 } from '../packages/game/contracts.js';
-import { hireArrivalDueSeconds, hiringArrivalOptions } from '../packages/game/hiring-arrivals.js';
-import { immediateRecruitmentExpectation } from './immediate-recruitment-fixture.ts';
+import { recruitmentSites } from '../packages/game/recruitment-claims.js';
+import {
+  immediateRecruitmentExpectation,
+  receiptSeconds,
+} from './immediate-recruitment-fixture.ts';
 import type { BattleOrder } from './opening-driver.ts';
 const clock = (s: CampaignSnapshot) => s.hour * 3600 + (s.secondOfHour ?? 0);
 function tactical(pair: ActiveGame, action: BattleOrder) {
@@ -43,13 +46,13 @@ export function retainStockOpeningService(
     renewals = [];
   let state = start;
   for (const id of ids) {
-    const record = state.operativeState[id];
+    const record = state.characters[id];
     assert.ok(record, `The opening survivor ${id} must exist.`);
     if (!record.alive || record.captured) {
       continue;
     }
     assert.ok(
-      state.recruited.includes(id) && state.contracts[id],
+      state.forceRoster.includes(id) && state.contracts[id],
       `The living opening survivor ${id} must still serve before renewal.`,
     );
     let expiry = contractExpiresSeconds(state.contracts[id]);
@@ -120,7 +123,7 @@ export function stockPortOpening({ seed = 8, content = defaultContentPackage() }
       .filter(([, sector]) => sector.owner === 'patriot')
       .map(([id]) => id)
       .sort(),
-    recruited: [...state.recruited],
+    forceRoster: [...state.forceRoster],
   });
   const profile = {
     ...defaultProfile(),
@@ -156,7 +159,7 @@ export function stockPortOpening({ seed = 8, content = defaultContentPackage() }
       op = rosterFor(state).find((op) => op.id === id),
       quote = contractQuote(state, op, 'day');
     assert.equal(quote.available, true, quote.reason ?? undefined);
-    assert.ok(hiringArrivalOptions(state).some((site) => site.id === destination));
+    assert.ok(recruitmentSites(state).some((site) => site.id === destination));
     const arrival = immediateRecruitmentExpectation(state, present(op), 'day', quote, destination);
     const money = state.resources.treasury;
     state = order(state, { type: 'recruitCombatant', id, term: 'day', destination });
@@ -177,8 +180,8 @@ export function stockPortOpening({ seed = 8, content = defaultContentPackage() }
   assert.ok(state.resources.treasury > 0);
   for (const hire of hires) {
     const contract = state.contracts[hire.id],
-      due = hireArrivalDueSeconds(hire.arrival);
-    assert.equal(state.recruited.filter((id) => id === hire.id).length, 1);
+      due = receiptSeconds(hire.arrival);
+    assert.equal(state.forceRoster.filter((id) => id === hire.id).length, 1);
     assert.equal(present(contract).kind, 'paid');
     assert.equal(present(contract).term, 'day');
     assert.equal(present(contract).paid, hire.quote.price);
@@ -220,7 +223,7 @@ export function stockPortOpening({ seed = 8, content = defaultContentPackage() }
   });
   state = leaveFiniteCache(p);
   state = fightOnArrival(order(state, { type: 'attack', sector: 'buenos_aires' }));
-  const request = structuredClone(present(state.pendingBattle)),
+  const request = structuredClone(present(state.sectorEntryRequest)),
     result = fight(request, null, {
       scoutCostWeight: 0.01,
       avoidCivilians: true,

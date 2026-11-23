@@ -64,7 +64,7 @@ export const enemyReserveLimits = Object.freeze({ north: 120, coast: 80, interio
 export const enemyReserveError = 'Las reservas realistas guardadas son inválidas.';
 export const enemyGroupLegHours = Object.freeze({ north: 12, coast: 8, interior: 6 });
 export const scenes = MISSION_SCENES;
-export const sceneStateKey = (id) => (id === 'yatasto' ? 'sceneStates' : 'sectorStates');
+export const sceneStateKey = (id) => (id === 'yatasto' ? 'sceneSnapshots' : 'sectorSnapshots');
 export const legacyCityReceipt = (event) =>
   event.sectorId === 'ensenada' && event.cityId === 'buenos_aires';
 export const recruitmentLocalityId = (state, id) => (id === 'retiro' ? 'buenos_aires' : id);
@@ -133,10 +133,9 @@ export function initialState(seed, _definitions) {
     artilleryCustodyVersion: 1,
     nextArtilleryId: 1,
     civilianState: { version: 2, people: {} },
-    hiringArrivals: [],
     equipmentShipments: [],
     missions: {},
-    sceneStates: {},
+    sceneSnapshots: {},
     missionAllies: {},
     garrisons: {},
     nextMilitiaId: 20000,
@@ -154,7 +153,7 @@ export function initialState(seed, _definitions) {
     location: 'retiro',
     activeSquadId: 'squad-1',
     squads: [{ id: 'squad-1', name: 'Primera escuadra', members: [], location: 'retiro' }],
-    sectorStates: {},
+    sectorSnapshots: {},
     resources: { treasury: 3200 },
     reputation: {
       directory: 35,
@@ -182,9 +181,9 @@ export function initialState(seed, _definitions) {
     lastConversation: null,
     conversations: {},
     officer: null,
-    recruited: [],
+    forceRoster: [],
     squad: [],
-    operativeState: Object.fromEntries(
+    characters: Object.fromEntries(
       [...OPERATIVES, ...CIVIC_RECRUITS].map((o) => [
         o.id,
         {
@@ -213,7 +212,7 @@ export function initialState(seed, _definitions) {
     },
     routes: { posta: false, flotilla: false, carts: false, mules: false },
     blockade: false,
-    pendingBattle: null,
+    sectorEntryRequest: null,
     completed: false,
     defeated: false,
     log: [
@@ -310,10 +309,10 @@ export function progress(
   if (
     !s.completed &&
     s.phase === 4 &&
-    s.recruited.includes(57) &&
+    s.forceRoster.includes(57) &&
     Object.values(s.sectors).every((x) => x.owner === 'patriot') &&
     !s.blockade &&
-    !s.pendingBattle &&
+    !s.sectorEntryRequest &&
     !s.pendingEncounter &&
     !s.enemyGroups.some((g) => ['marching', 'waiting', 'engaged', 'stationed'].includes(g.status))
   ) {
@@ -479,7 +478,7 @@ export function dispatchAction(s, action, ctx) {
       const entered = dispatchCampaign(s, { type: 'visitSector' });
       requireThat(!entered.lastError, entered.lastError);
       Object.assign(s, entered);
-      Object.assign(s.pendingBattle, {
+      Object.assign(s.sectorEntryRequest, {
         sceneId: 'yatasto',
         missionId: 'yatasto',
         name: MISSION_SCENES.yatasto.name,
@@ -487,13 +486,13 @@ export function dispatchAction(s, action, ctx) {
         garrison: [],
         artillery: [],
       });
-      delete s.pendingBattle.exits;
-      prepareDeploymentExits(s, s.pendingBattle);
+      delete s.sectorEntryRequest.exits;
+      prepareDeploymentExits(s, s.sectorEntryRequest);
       break;
     }
     case 'finishMission': {
       requireThat(
-        s.pendingBattle?.sceneId === 'yatasto' && s.pendingBattle.id === action.battleId,
+        s.sectorEntryRequest?.sceneId === 'yatasto' && s.sectorEntryRequest.id === action.battleId,
         'No hay una conferencia de Yatasto abierta.',
       );
       requireThat(
@@ -519,7 +518,7 @@ export function conversationContacts(s, request) {
   return request.sceneId === 'yatasto' ? missionContacts(s) : null;
 }
 export function missionConversation(s, npcId, { isSupplied }) {
-  need(s.pendingBattle.sceneId === 'yatasto', 'No hay una conferencia pendiente.');
+  need(s.sectorEntryRequest.sceneId === 'yatasto', 'No hay una conferencia pendiente.');
   return talkMission(s, npcId, isSupplied(s, 'salta'));
 }
 export const defaultAttackSector = 'san_lorenzo';
@@ -664,8 +663,8 @@ export function validateReputation(s) {
 export function validateStoredScenes(s, { validateSectorSnapshot }) {
   return (
     validateMissions(s) &&
-    object(s.sceneStates) &&
-    Object.entries(s.sceneStates).every(
+    object(s.sceneSnapshots) &&
+    Object.entries(s.sceneSnapshots).every(
       ([id, b]) => id === 'yatasto' && b.sceneId === id && validateSectorSnapshot(b),
     ) &&
     object(s.missionAllies) &&

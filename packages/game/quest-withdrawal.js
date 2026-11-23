@@ -68,7 +68,7 @@ export function validateQuestWithdrawals(map, state) {
 export function validateQuestWithdrawalContext(
   campaign,
   battle,
-  { request = campaign.pendingBattle, retained = false, issued = false } = {},
+  { request = campaign.sectorEntryRequest, retained = false, issued = false } = {},
 ) {
   need(battle, 'Falta el estado de la entrega retirada.');
   validateQuestWithdrawals(battle.questWithdrawals, campaign);
@@ -164,11 +164,11 @@ export function withdrawQuest(campaign, quest, npc, unit, expected) {
     withdrawal: receipt,
   };
   const map = initializeQuestWithdrawals(campaign);
-  campaign.pendingBattle.questWithdrawals = map;
-  if (campaign.pendingBattle.resumeSnapshot) {
-    campaign.pendingBattle.resumeSnapshot = applyQuestWithdrawalOrders(
+  campaign.sectorEntryRequest.questWithdrawals = map;
+  if (campaign.sectorEntryRequest.resumeSnapshot) {
+    campaign.sectorEntryRequest.resumeSnapshot = applyQuestWithdrawalOrders(
       campaign,
-      campaign.pendingBattle.resumeSnapshot,
+      campaign.sectorEntryRequest.resumeSnapshot,
     );
   }
   return questWithdrawalText(quest, campaign.quests[quest.id]);

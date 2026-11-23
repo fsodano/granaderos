@@ -29,7 +29,7 @@ export function migrateEnemyGroups(s) {
   s.nextEnemyGroupId ??= 1;
   s.pendingEncounter ??= null;
   s.encounterHistory ??= [];
-  for (const r of Object.values(s.operativeState ?? {})) {
+  for (const r of Object.values(s.characters ?? {})) {
     r.captured ??= false;
     r.capturedSector ??= null;
     r.capturedAt ??= null;
@@ -40,7 +40,7 @@ export function migrateEnemyGroups(s) {
         .filter(
           (entry) =>
             entry.npc?.detention?.operativeId !== undefined &&
-            s.operativeState[entry.npc.detention.operativeId] === r,
+            s.characters[entry.npc.detention.operativeId] === r,
         )
         .map((entry) => entry.npc.detention.captureSequence ?? 1),
     );
@@ -51,9 +51,9 @@ export function migrateEnemyGroups(s) {
 }
 /** @returns {number[]} */
 export function localDefenderIds(s, at, { exclude = [] } = {}) {
-  return s.recruited.filter(
+  return s.forceRoster.filter(
     (id) =>
-      s.operativeState[id]?.alive &&
+      s.characters[id]?.alive &&
       !operativeInTransit(s, id) &&
       operativeLocation(s, id) === at &&
       !exclude.includes(id),
@@ -75,7 +75,7 @@ export function retreatDestinations(s, at) {
       !s.enemyGroups.some(
         (g) => g.target === id && ['waiting', 'engaged', 'stationed'].includes(g.status),
       ) &&
-      s.pendingBattle?.sector !== id,
+      s.sectorEntryRequest?.sector !== id,
   );
 }
 
@@ -266,7 +266,7 @@ export function advanceEnemyGroups(s) {
 }
 
 export function queueEnemyEncounter(s) {
-  if (s.pendingBattle || s.pendingEncounter) {
+  if (s.sectorEntryRequest || s.pendingEncounter) {
     return null;
   }
   const group = s.enemyGroups
@@ -418,7 +418,7 @@ export function validateEnemyGroups(s, roster) {
   validateEnemyReserves(s);
   validateEnemyIntelligence(s);
   for (const op of roster) {
-    const r = s.operativeState[op.id];
+    const r = s.characters[op.id];
     need(
       integer(r.captureSequence, 0, 1e9) &&
         (!r.captured || r.captureSequence > 0) &&
@@ -430,7 +430,7 @@ export function validateEnemyGroups(s, roster) {
       need(
         r.alive &&
           r.hp > 0 &&
-          !s.recruited.includes(op.id) &&
+          !s.forceRoster.includes(op.id) &&
           !s.squads.some((q) => q.members.includes(op.id)) &&
           sector(r.capturedSector, s) &&
           integer(r.capturedAt, 0, s.hour) &&
@@ -462,7 +462,7 @@ export function validateEnemyGroups(s, roster) {
       );
     }
   }
-  const b = s.pendingBattle;
+  const b = s.sectorEntryRequest;
   if (b?.defenseGroupId) {
     const g = s.enemyGroups.find((g) => g.id === b.defenseGroupId);
     need(
@@ -499,7 +499,7 @@ export function validateEnemyGroups(s, roster) {
   );
   need(
     s.pendingEncounter === null ||
-      (!s.pendingBattle &&
+      (!s.sectorEntryRequest &&
         object(s.pendingEncounter) &&
         s.enemyGroups.some(
           (g) =>

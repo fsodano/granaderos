@@ -58,22 +58,20 @@ const summary = (s: CampaignSnapshot) => ({
   controlled: Object.keys(s.sectors).filter((k) => present(s.sectors[k]).owner === 'patriot'),
   chapters: present(s.campaignProgress).completed.map((c) => c.chapter),
   squad: [...s.squad],
-  wounds: s.recruited
+  wounds: s.forceRoster
     .filter(
       (id) =>
-        present(s.operativeState[id]).alive &&
-        (present(s.operativeState[id]).hp < present(s.operativeState[id]).maxHp ||
-          present(s.operativeState[id]).bleeding),
+        present(s.characters[id]).alive &&
+        (present(s.characters[id]).hp < present(s.characters[id]).maxHp ||
+          present(s.characters[id]).bleeding),
     )
     .map((id) => ({
       id,
-      hp: present(s.operativeState[id]).hp,
-      maxHp: present(s.operativeState[id]).maxHp,
-      bleeding: present(s.operativeState[id]).bleeding,
+      hp: present(s.characters[id]).hp,
+      maxHp: present(s.characters[id]).maxHp,
+      bleeding: present(s.characters[id]).bleeding,
     })),
-  deaths: Object.keys(s.operativeState).filter(
-    (id) => !present(s.operativeState[Number(id)]).alive,
-  ),
+  deaths: Object.keys(s.characters).filter((id) => !present(s.characters[Number(id)]).alive),
   completed: s.completed,
   defeated: s.defeated,
 });
@@ -246,7 +244,7 @@ export function readyPostCampaign() {
     Object.keys(s.sectors).filter((id) => present(s.sectors[id]).owner === 'patriot'),
     ['cordoba'],
   );
-  assert.deepEqual(s.recruited, []);
+  assert.deepEqual(s.forceRoster, []);
   // The 6,000-peso package pays for a medic and four strong riflemen,
   // leaving a real reserve for losses, dressings and the next contract.
   const hires = d.characters
@@ -265,8 +263,8 @@ export function readyPostCampaign() {
       destination: 'cordoba',
     });
   }
-  assert.equal(s.hiringArrivals.length, 0);
-  assert.equal(s.recruited.length, hires.length);
+  assert.equal((s.refundableRecruitmentClaims ?? []).length, 0);
+  assert.equal(s.forceRoster.length, hires.length);
   s = saved({ campaign: s }).campaign;
   let p = approachPost(s, 'ines');
   p = choosePost(choosePost(p, 'offer', 'ask'), 'directions', 'back');
@@ -310,11 +308,11 @@ export function finishPostCampaign({
   ] as const) {
     s = fightOnArrival(order(s, { type: 'attack', sector }));
     const request = {
-        ...present(s.pendingBattle),
+        ...present(s.sectorEntryRequest),
         hour: s.hour,
         secondOfHour: s.secondOfHour ?? 0,
       },
-      previous = s.sectorStates[sector];
+      previous = s.sectorSnapshots[sector];
     // Advance the firing line in short bounds. The medic supports wounded
     // allies through paid movement and finite dressings. A lone survivor
     // still has to search and finish the fight through actual orders.
@@ -408,7 +406,7 @@ export function finishPostCampaign({
         available = d.characters
           .filter((c) => c.recruitmentSource === 'contract')
           .map((c) => present(operativeIdForCharacter(d, c.id)))
-          .filter((id) => present(s.operativeState[Number(id)]).alive && !s.recruited.includes(id))
+          .filter((id) => present(s.characters[Number(id)]).alive && !s.forceRoster.includes(id))
           .slice(0, 6 - s.squad.length);
       // Reserve 400 pesos for actual treatment and supply before the next march.
       const arrivals = [];
@@ -429,7 +427,7 @@ export function finishPostCampaign({
         });
         arrivals.push(id);
       }
-      assert.ok(arrivals.every((id) => s.recruited.includes(id)));
+      assert.ok(arrivals.every((id) => s.forceRoster.includes(id)));
       // Treat actual battle wounds through paid, hourly campaign work. The best
       // surviving doctor is selected from this campaign, not a fixed identity.
       const care = {
@@ -444,7 +442,7 @@ export function finishPostCampaign({
         cost: 0,
       };
       const dressings = (state: CampaignSnapshot) => {
-        const scene = state.sectorStates[sector],
+        const scene = state.sectorSnapshots[sector],
           cache = present(
             present(present(present(state.contentCampaign).package.world).physical).caches[sector],
           );
@@ -463,9 +461,7 @@ export function finishPostCampaign({
         const roster = rosterFor(s).filter((o) => s.squad.includes(o.id));
         const patient = roster
           .filter(
-            (o) =>
-              present(s.operativeState[o.id]).hp < o.maxHp ||
-              present(s.operativeState[o.id]).bleeding,
+            (o) => present(s.characters[o.id]).hp < o.maxHp || present(s.characters[o.id]).bleeding,
           )
           .sort((a, b) => a.medical - b.medical)[0];
         if (!patient) {
@@ -477,24 +473,23 @@ export function finishPostCampaign({
             (o) =>
               o.id !== patient.id &&
               o.medical >= 20 &&
-              present(s.operativeState[o.id]).hp >= 15 &&
-              !present(s.operativeState[o.id]).bleeding &&
-              present(s.operativeState[o.id]).energy > 10,
+              present(s.characters[o.id]).hp >= 15 &&
+              !present(s.characters[o.id]).bleeding &&
+              present(s.characters[o.id]).energy > 10,
           )
           .sort((a, b) => b.medical - a.medical)[0];
         assert.ok(doctor, 'a living, available local doctor is required');
         for (const o of roster) {
           s = order(s, { type: 'assignCare', id: o.id, assignment: 'active' });
         }
-        if (!present(s.operativeState[doctor.id]).medkits) {
+        if (!present(s.characters[doctor.id]).medkits) {
           const quantity = Math.max(
               1,
               Math.min(
                 20,
                 Math.ceil(
-                  (patient.maxHp - present(s.operativeState[patient.id]).hp) /
-                    doctorRate(doctor, s),
-                ) + Number(present(s.operativeState[patient.id]).bleeding > 0),
+                  (patient.maxHp - present(s.characters[patient.id]).hp) / doctorRate(doctor, s),
+                ) + Number(present(s.characters[patient.id]).bleeding > 0),
               ),
             ),
             before = dressings(s),
@@ -516,9 +511,9 @@ export function finishPostCampaign({
         assert.equal(careAssignmentReason(s, doctor, 'doctor'), '');
         s = order(s, { type: 'assignCare', id: doctor.id, assignment: 'doctor' });
         s = order(s, { type: 'assignCare', id: patient.id, assignment: 'patient' });
-        const stock = present(s.operativeState[doctor.id]).medkits;
+        const stock = present(s.characters[doctor.id]).medkits;
         s = saved({ campaign: order(s, { type: 'wait', hours: 1 }) }).campaign;
-        assert.equal(present(s.operativeState[doctor.id]).medkits, stock - 1);
+        assert.equal(present(s.characters[doctor.id]).medkits, stock - 1);
         care.hours++;
         care.dressingsUsed++;
       }
@@ -530,8 +525,7 @@ export function finishPostCampaign({
           .filter((o) => s.squad.includes(o.id))
           .every(
             (o) =>
-              present(s.operativeState[o.id]).hp === o.maxHp &&
-              !present(s.operativeState[o.id]).bleeding,
+              present(s.characters[o.id]).hp === o.maxHp && !present(s.characters[o.id]).bleeding,
           ),
         'all actual survivors must be healthy before departure',
       );
@@ -542,35 +536,33 @@ export function finishPostCampaign({
       s = completeTestTravel(s, { sector: 'cordoba' });
       while (
         s.squad.some(
-          (id) =>
-            present(s.operativeState[id]).condition < 100 || present(s.operativeState[id]).jammed,
+          (id) => present(s.characters[id]).condition < 100 || present(s.characters[id]).jammed,
         )
       ) {
         assert.ok(care.repairHours < 48, 'actual weapon repair must finish with finite kits');
         const roster = rosterFor(s).filter((o) => s.squad.includes(o.id)),
           target = roster.find(
             (o) =>
-              present(s.operativeState[o.id]).condition < 100 ||
-              present(s.operativeState[o.id]).jammed,
+              present(s.characters[o.id]).condition < 100 || present(s.characters[o.id]).jammed,
           ),
           mechanic = roster
             .filter(
               (o) =>
                 o.mechanical >= 20 &&
-                present(s.operativeState[o.id]).hp >= 15 &&
-                (present(s.operativeState[o.id]).energy ?? 100) > 10 &&
-                !present(s.operativeState[o.id]).asleep,
+                present(s.characters[o.id]).hp >= 15 &&
+                (present(s.characters[o.id]).energy ?? 100) > 10 &&
+                !present(s.characters[o.id]).asleep,
             )
             .sort((a, b) => b.mechanical - a.mechanical)[0];
         assert.ok(mechanic, 'a living qualified mechanic is required');
-        if (!repairMaterialPoints(s.operativeState[mechanic.id])) {
+        if (!repairMaterialPoints(s.characters[mechanic.id])) {
           s = collectPhysicalCacheItems(s, mechanic.id, { kind: 'repair-kit' }, 1).campaign;
         }
         // Finding the finite kit advances real time and can finish earlier work.
         // Select the next actual damaged weapon instead of assigning stale work.
         if (
-          present(s.operativeState[present(target).id]).condition === 100 &&
-          !present(s.operativeState[present(target).id]).jammed
+          present(s.characters[present(target).id]).condition === 100 &&
+          !present(s.characters[present(target).id]).jammed
         ) {
           continue;
         }
@@ -581,13 +573,11 @@ export function finishPostCampaign({
           operativeId: mechanic.id,
           assignment: 'repair',
           targetId: present(target).id,
-          repairScope: present(s.operativeState[present(target).id]).jammed
-            ? 'equipment'
-            : 'primary',
+          repairScope: present(s.characters[present(target).id]).jammed ? 'equipment' : 'primary',
         });
-        const points = repairMaterialPoints(s.operativeState[mechanic.id]);
+        const points = repairMaterialPoints(s.characters[mechanic.id]);
         s = advanceCampaignHours(s, 1);
-        const spent = points - repairMaterialPoints(s.operativeState[mechanic.id]);
+        const spent = points - repairMaterialPoints(s.characters[mechanic.id]);
         assert.ok(spent > 0);
         care.repairPointsSpent += spent;
         care.repairHours++;
@@ -596,7 +586,7 @@ export function finishPostCampaign({
       // Keep actual survivors' and replacements' rifles after finite repair.
       // Collect compatible cartridges still present in the real Córdoba cache.
       for (const id of s.squad) {
-        const record = s.operativeState[id],
+        const record = s.characters[id],
           op = rosterFor(s).find((o) => o.id === id);
         const ammoType = weaponAmmoType({ ...op, ...record }),
           rounds = availableAmmunition(record, op);
@@ -615,23 +605,22 @@ export function finishPostCampaign({
       // A medical assignment or a travel notice can pause the previous wait.
       for (const id of s.squad) {
         if (
-          !present(s.operativeState[id]).asleep &&
-          (present(s.operativeState[id]).fatigue > 0 || present(s.operativeState[id]).energy < 100)
+          !present(s.characters[id]).asleep &&
+          (present(s.characters[id]).fatigue > 0 || present(s.characters[id]).energy < 100)
         ) {
           s = order(s, { type: 'setSleep', operativeId: id, asleep: true });
         }
       }
       for (
         let hour = 0;
-        s.squad.some((id) => present(s.operativeState[id]).asleep) && hour < 72;
+        s.squad.some((id) => present(s.characters[id]).asleep) && hour < 72;
         hour++
       ) {
         s = advanceCampaignHours(s, 1);
       }
       assert.ok(
         s.squad.every(
-          (id) =>
-            !present(s.operativeState[id]).asleep && present(s.operativeState[id]).energy === 100,
+          (id) => !present(s.characters[id]).asleep && present(s.characters[id]).energy === 100,
         ),
         'the actual column must finish recovery before Salta',
       );
@@ -660,10 +649,10 @@ export function finishPostCampaign({
     ['encargo', 'ruta', 'regreso'],
   );
   assert.equal(s.phase, 0);
-  assert.ok(Object.keys(s.operativeState).every((id) => Number(id) >= 2000));
+  assert.ok(Object.keys(s.characters).every((id) => Number(id) >= 2000));
   assert.equal(s.flags['sanLorenzo'], false);
   assert.equal(s.flags['armyFunded'], false);
-  assert.equal(s.pendingBattle, null);
+  assert.equal(s.sectorEntryRequest, null);
   notes.push({ stage: 'ending', ...summary(s) });
   onCheckpoint?.('ending', s, notes);
   return { campaign: s, notes };

@@ -1,5 +1,5 @@
 import type {
-  CampaignPendingBattle,
+  CampaignSectorEntryRequest,
   CampaignSnapshot,
 } from '../packages/game/public/campaign-types.ts';
 import type { BattleSnapshot } from '../packages/game/public/compatibility-types.ts';
@@ -18,7 +18,7 @@ interface EvidenceArtifact {
 }
 interface RouteBattleFailure {
   campaign: CampaignSnapshot;
-  request: CampaignPendingBattle;
+  request: CampaignSectorEntryRequest;
   previous: BattleSnapshot | null | undefined;
   result: FightResult & { pair?: { campaign: CampaignSnapshot; battle: BattleSnapshot } };
   expectedOutcome: BattleSnapshot['status'];
@@ -117,7 +117,7 @@ export function recordRouteBattleFailure({
         : syncBattleTime(structuredClone(campaign), structuredClone(result.battle));
       if (result.pair) {
         assert.deepEqual(pair.battle, result.battle);
-        assert.equal(pair.campaign.pendingBattle?.id, request.id);
+        assert.equal(pair.campaign.sectorEntryRequest?.id, request.id);
         assert.equal(pair.battle.syncedSeconds, pair.battle.elapsedSeconds);
       }
       assert.equal(pair.error, null);

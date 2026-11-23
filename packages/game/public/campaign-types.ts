@@ -318,7 +318,7 @@ export interface CampaignQuest {
   deadline?: number;
   acceptedAt?: number;
 }
-export interface CampaignPendingBattle {
+export interface CampaignSectorEntryRequest {
   enemies?: BattleUnit[];
   hour?: number;
   secondOfHour?: number;
@@ -375,16 +375,11 @@ export interface CampaignAttention {
   reported: Record<string, { binding: string; code: string | null }>;
   notice: CampaignAttentionNotice | null;
 }
-export interface CampaignHiringArrival {
+export interface CampaignRefundableRecruitmentClaim {
   operativeId: number;
   destination: string;
   bookedAt: number;
-  departedAt: number;
-  dueAt: number;
   bookedSecond?: number;
-  departedSecond?: number;
-  dueSecond?: number;
-  travelHours: number;
   term: string;
   priceScale?: number;
   paid: number;
@@ -560,8 +555,8 @@ export interface CampaignSnapshot {
   activeSquadId: string;
   squads: CampaignSquad[];
   squad: number[];
-  recruited: number[];
-  operativeState: Record<number, CampaignOperativeState>;
+  forceRoster: number[];
+  characters: Record<number, CampaignOperativeState>;
   officer: {
     name: string;
     answers: Record<string, string>;
@@ -573,7 +568,7 @@ export interface CampaignSnapshot {
   flags: Record<string, boolean>;
   routes: Record<string, boolean>;
   blockade: boolean;
-  pendingBattle: CampaignPendingBattle | null;
+  sectorEntryRequest: CampaignSectorEntryRequest | null;
   pendingEncounter: CampaignEncounter | null;
   completed: boolean;
   defeated: boolean;
@@ -595,7 +590,7 @@ export interface CampaignSnapshot {
   artillerySelection: string[];
   artillery?: CampaignArtillery[];
   stationedArtillery?: CampaignArtillery[];
-  hiringArrivals: CampaignHiringArrival[];
+  refundableRecruitmentClaims?: CampaignRefundableRecruitmentClaim[];
   equipmentShipments: CampaignShipment[];
   horseState: CampaignHorseState;
   assignmentAttention: CampaignAttention;
@@ -606,9 +601,9 @@ export interface CampaignSnapshot {
   };
   logisticsNotice: CampaignLogisticsNotice | null;
   logisticsAttention: { version: number; reported: Record<string, string> };
-  sceneStates: Record<string, BattleSnapshot>;
-  sectorStates: Record<string, BattleSnapshot>;
-  suspendedSectorSessions?: { request: CampaignPendingBattle; snapshot: BattleSnapshot }[];
+  sceneSnapshots: Record<string, BattleSnapshot>;
+  sectorSnapshots: Record<string, BattleSnapshot>;
+  suspendedSectorSessions?: { request: CampaignSectorEntryRequest; snapshot: BattleSnapshot }[];
   ammunitionStores: Record<string, Record<string, number>>;
   ammunitionShops: Record<string, Record<string, number>>;
   cohesion: Record<string, number>;
@@ -788,8 +783,7 @@ type CampaignOrder =
     }
   | { type: 'recruit'; id?: number }
   | { type: 'dismiss'; id: number }
-  | { type: 'redirectHire'; id: number; destination: string }
-  | { type: 'cancelHireArrival'; id: number; expectedGuaranteeId?: string }
+  | { type: 'cancelRecruitmentClaim'; id: number; expectedGuaranteeId?: string }
   | {
       type: 'createOfficer';
       name: string;

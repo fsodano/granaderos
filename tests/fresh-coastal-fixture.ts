@@ -13,7 +13,7 @@ import type { ActiveGame } from './local-contract-fixture.ts';
 import type {
   CampaignSnapshot,
   CampaignAction,
-  CampaignPendingBattle,
+  CampaignSectorEntryRequest,
 } from '../packages/game/public/campaign-types.ts';
 import type {
   BattleSnapshot,
@@ -47,8 +47,12 @@ import {
 } from '../packages/game/tactical.js';
 import { sameSurface, spacePoint } from '../packages/game/tactical-space.js';
 import { enterSector } from '../packages/game/world.js';
-import { hiringArrivalOptions, hireArrivalDueSeconds } from '../packages/game/hiring-arrivals.js';
-import { immediateRecruitmentExpectation } from './immediate-recruitment-fixture.ts';
+import { recruitmentSites } from '../packages/game/recruitment-claims.js';
+import {
+  hasRecruitmentClaim,
+  immediateRecruitmentExpectation,
+  receiptSeconds,
+} from './immediate-recruitment-fixture.ts';
 import { contractQuote, contractExpiresSeconds } from '../packages/game/contracts.js';
 import { operativeLocation } from '../packages/game/squads.js';
 import { cellTravelPlan } from '../packages/game/world-cells.ts';
@@ -93,7 +97,7 @@ const actorStates = (b: BattleSnapshot) =>
     .filter((u) => u.side === 'player')
     .map(({ id, hp, bleeding, medkits, routed }) => ({ id, hp, bleeding, medkits, routed }));
 const stockCoastalFight = (
-  request: CampaignPendingBattle,
+  request: CampaignSectorEntryRequest,
   previous: BattleSnapshot | null | undefined,
 ) =>
   recordedFight(request, previous, {
@@ -159,7 +163,7 @@ export function coastalMissionOrder(
   return approachesCare ? action : null;
 }
 const coastalFinalFight = (
-  request: CampaignPendingBattle,
+  request: CampaignSectorEntryRequest,
   previous: BattleSnapshot | null | undefined,
   options: CoastalFightOptions = {},
 ) =>
@@ -297,7 +301,7 @@ function recruitLocal(s: CampaignSnapshot, id = 3) {
     approach: 'recruit',
     sectorState: p.battle,
   });
-  const record = present(s.pendingBattle).squad.find((u) => u.id === id);
+  const record = present(s.sectorEntryRequest).squad.find((u) => u.id === id);
   assert.ok(record);
   // Same civilian-to-squad projection as the mounted game; the recruitment order
   // provides the complete actor and retains the resident's actual health/location.
@@ -356,17 +360,14 @@ export function prepareFreshCoastalHires(
   };
   const arrived = (hire: RouteHire) => {
     const contract = s.contracts[hire.id],
-      due = hireArrivalDueSeconds(hire.arrival);
+      due = receiptSeconds(hire.arrival);
     assert.equal(
-      s.recruited.filter((id) => id === hire.id).length,
+      s.forceRoster.filter((id) => id === hire.id).length,
       1,
       'Each actual hire arrives exactly once.',
     );
-    assert.equal(
-      s.hiringArrivals.some((a) => a.operativeId === hire.id),
-      false,
-    );
-    assert.equal(present(s.operativeState[hire.id]).location, hire.arrival.destination);
+    assert.equal(hasRecruitmentClaim(s, hire.id), false);
+    assert.equal(present(s.characters[hire.id]).location, hire.arrival.destination);
     assert.equal(present(contract).kind, hire.quote.permanent ? 'patriot' : 'paid');
     assert.equal(present(contract).term, term);
     assert.equal(present(contract).paid, hire.quote.price);
@@ -382,14 +383,14 @@ export function prepareFreshCoastalHires(
   };
   for (const id of ids) {
     assert.ok(
-      !s.recruited.includes(id) && !s.hiringArrivals.some((a) => a.operativeId === id),
+      !s.forceRoster.includes(id) && !hasRecruitmentClaim(s, id),
       'Opening hiring cannot duplicate serving or pending people.',
     );
     const op = rosterFor(s).find((op) => op.id === id);
     assert.ok(op, `Opening hire ${id} must exist.`);
     const destination = s.location;
     assert.ok(
-      hiringArrivalOptions(s).some((site) => site.id === destination),
+      recruitmentSites(s).some((site) => site.id === destination),
       'The opening destination must admit actual arrivals.',
     );
     const quote = contractQuote(s, op, term);
@@ -416,18 +417,18 @@ export function prepareFreshCoastalHires(
   for (let attempts = 0; clock(s) < until; attempts++) {
     assert.ok(attempts < 240, 'Opening readiness must finish through bounded real wait orders.');
     assert.ok(
-      !s.pendingBattle && !s.pendingEncounter,
+      !s.sectorEntryRequest && !s.pendingEncounter,
       'Resolve an actual encounter before the opening hiring wait.',
     );
     const future = hires
-        .map((hire) => hireArrivalDueSeconds(hire.arrival))
+        .map((hire) => receiptSeconds(hire.arrival))
         .filter((due) => due > clock(s)),
       next = Math.min(until, ...future);
     const hours = Math.min(24, Math.ceil((next - clock(s)) / 3600));
     execute({ type: 'wait', hours });
     s = saved({ campaign: s }).campaign;
     for (const hire of hires) {
-      if (hireArrivalDueSeconds(hire.arrival) <= clock(s)) {
+      if (receiptSeconds(hire.arrival) <= clock(s)) {
         arrived(hire);
       }
     }
@@ -463,7 +464,7 @@ export function freshCoastalRoute(
   const openingFunds = kind === 'local' ? 3200 : ROUTE_STARTING_TREASURY;
   const notes: CoastalRouteNote[] = prefix ? [...prefix.notes] : [],
     dead = new Set(
-      Object.entries(s.operativeState)
+      Object.entries(s.characters)
         .filter(([, record]) => !record.alive)
         .map(([id]) => Number(id)),
     );
@@ -498,7 +499,7 @@ export function freshCoastalRoute(
       ['retiro'],
     );
     assert.equal(s.resources.treasury, openingFunds);
-    assert.deepEqual(s.recruited, []);
+    assert.deepEqual(s.forceRoster, []);
     if (kind === 'created' || kind === 'local') {
       const chosen = profile();
       if (kind === 'local') {
@@ -540,8 +541,8 @@ export function freshCoastalRoute(
       s = leaveFiniteCache(p);
       assert.equal(s.resources.treasury, 3200);
       assert.equal(
-        present(present(s.operativeState[1000]).ammo) +
-          present(present(s.operativeState[1000]).carriedLoaded),
+        present(present(s.characters[1000]).ammo) +
+          present(present(s.characters[1000]).carriedLoaded),
         10,
       );
     }
@@ -591,9 +592,9 @@ export function freshCoastalRoute(
         assert.ok(
           field.every(
             (id) =>
-              present(s.operativeState[id]).alive &&
-              present(s.operativeState[id]).hp >= 15 &&
-              !present(s.operativeState[id]).bleeding,
+              present(s.characters[id]).alive &&
+              present(s.characters[id]).hp >= 15 &&
+              !present(s.characters[id]).bleeding,
           ),
           'native wound care must finish before a depot round trip',
         );
@@ -622,14 +623,14 @@ export function freshCoastalRoute(
         });
         s = completeTestTravel(s, { sector: 'buenos_aires' });
         assert.equal(s.pendingEncounter, null);
-        assert.equal(s.pendingBattle, null);
+        assert.equal(s.sectorEntryRequest, null);
         assert.equal(s.location, 'buenos_aires');
         assert.equal(present(s.squads.find((q) => q.id === s.activeSquadId)).journey, undefined);
         supplied = supplyRouteAmmunition(s, s.squad, { target: 10 });
         s = supplied.campaign;
         s = completeTestTravel(s, { sector: origin });
         assert.equal(s.pendingEncounter, null);
-        assert.equal(s.pendingBattle, null);
+        assert.equal(s.sectorEntryRequest, null);
         assert.equal(s.location, origin);
         assert.equal(present(s.squads.find((q) => q.id === s.activeSquadId)).journey, undefined);
         assert.deepEqual(s.squad, field);
@@ -674,9 +675,9 @@ export function freshCoastalRoute(
       s = finishReloadsBeforeMarch(s, { report });
     }
     s = fightOnArrival(order(s, { type: 'attack', sector }));
-    assert.ok(s.pendingBattle);
-    const request = { ...s.pendingBattle, hour: s.hour, secondOfHour: s.secondOfHour ?? 0 },
-      previous = s.sectorStates[sector];
+    assert.ok(s.sectorEntryRequest);
+    const request = { ...s.sectorEntryRequest, hour: s.hour, secondOfHour: s.secondOfHour ?? 0 },
+      previous = s.sectorSnapshots[sector];
     const engage =
       sector === 'buenos_aires'
         ? (fightOpening ??
@@ -861,8 +862,8 @@ export function freshCoastalRoute(
     assert.equal(s.defeated, false);
     assert.ok(dispatchCampaign(s, resultReport).lastError);
     for (const id of dead) {
-      assert.equal(present(s.operativeState[id]).alive, false);
-      assert.equal(present(s.operativeState[id]).hp, 0);
+      assert.equal(present(s.characters[id]).alive, false);
+      assert.equal(present(s.characters[id]).hp, 0);
       assert.ok(!s.squad.includes(id));
       assert.ok(dispatchCampaign(s, { type: 'recruitCombatant', id, term: 'week' }).lastError);
     }
@@ -920,30 +921,30 @@ export function freshCoastalRoute(
         fieldSquad = s.activeSquadId;
       const needsCare = s.squad.some(
         (id) =>
-          present(s.operativeState[id]).hp < present(s.operativeState[id]).maxHp ||
-          present(s.operativeState[id]).bleeding > 0,
+          present(s.characters[id]).hp < present(s.characters[id]).maxHp ||
+          present(s.characters[id]).bleeding > 0,
       );
       const physician = rosterFor(s).some(
         (op) =>
           s.squad.includes(op.id) &&
           op.medical >= 70 &&
-          present(s.operativeState[op.id]).hp >= 15 &&
-          !present(s.operativeState[op.id]).bleeding,
+          present(s.characters[op.id]).hp >= 15 &&
+          !present(s.characters[op.id]).bleeding,
       );
       const localPhysician = rosterFor(s).find(
         (op) =>
-          s.recruited.includes(op.id) &&
+          s.forceRoster.includes(op.id) &&
           !s.squad.includes(op.id) &&
           operativeLocation(s, op.id) === clinic &&
           op.medical >= 70 &&
-          present(s.operativeState[op.id]).alive &&
-          !present(s.operativeState[op.id]).captured &&
-          present(s.operativeState[op.id]).hp >= 15 &&
-          !present(s.operativeState[op.id]).bleeding,
+          present(s.characters[op.id]).alive &&
+          !present(s.characters[op.id]).captured &&
+          present(s.characters[op.id]).hp >= 15 &&
+          !present(s.characters[op.id]).bleeding,
       );
       const availableForHire = (id: number) =>
-        present(s.operativeState[id]).alive &&
-        !s.recruited.includes(id) &&
+        present(s.characters[id]).alive &&
+        !s.forceRoster.includes(id) &&
         contractQuote(
           s,
           rosterFor(s).find((op) => op.id === id),
@@ -978,7 +979,7 @@ export function freshCoastalRoute(
           ...(auxiliary === relief && relief !== undefined ? [relief] : []),
         ],
         cash = s.resources.treasury;
-      assert.ok(hiringArrivalOptions(s).some((o) => o.id === s.location));
+      assert.ok(recruitmentSites(s).some((o) => o.id === s.location));
       const location = s.location;
       const quotes = hires.map((id) => ({
         id,
@@ -1013,14 +1014,14 @@ export function freshCoastalRoute(
       }
       if (hires.length) {
         for (const arrival of arrivals) {
-          assert.equal(s.recruited.filter((id) => id === arrival.operativeId).length, 1);
-          assert.ok(!s.hiringArrivals.some((record) => record.operativeId === arrival.operativeId));
+          assert.equal(s.forceRoster.filter((id) => id === arrival.operativeId).length, 1);
+          assert.ok(!hasRecruitmentClaim(s, arrival.operativeId));
         }
-        const due = Math.max(...arrivals.map(hireArrivalDueSeconds));
+        const due = Math.max(...arrivals.map(receiptSeconds));
         if (auxiliary !== undefined && s.hour * 3600 + (s.secondOfHour ?? 0) < due) {
           for (const id of field) {
             assert.ok(
-              present(s.operativeState[id]).hp >= 15 && !present(s.operativeState[id]).bleeding,
+              present(s.characters[id]).hp >= 15 && !present(s.characters[id]).bleeding,
               'stabilize the actual clinic patients before waiting for a physician',
             );
             s = order(s, { type: 'assignCare', id, assignment: 'rest' });
@@ -1051,7 +1052,7 @@ export function freshCoastalRoute(
         });
         s = saved({ campaign: s }).campaign;
         assert.ok(
-          hires.every((id) => s.recruited.includes(id) && operativeLocation(s, id) === location),
+          hires.every((id) => s.forceRoster.includes(id) && operativeLocation(s, id) === location),
         );
         assert.equal(
           s.resources.treasury,
@@ -1059,7 +1060,7 @@ export function freshCoastalRoute(
         );
         for (const [index, arrival] of arrivals.entries()) {
           const contract = s.contracts[arrival.operativeId],
-            started = hireArrivalDueSeconds(arrival);
+            started = receiptSeconds(arrival);
           assert.equal(
             present(present(contract).started) * 3600 + (present(contract).startedSecond ?? 0),
             started,
@@ -1138,16 +1139,16 @@ export function freshCoastalRoute(
   assert.equal(s.flags['sanLorenzo'], true);
   assert.equal(present(s.missions['san_lorenzo']).completed, true);
   assert.equal(present(s.missionAllies['san_lorenzo']).hp > 0, true);
-  assert.equal(s.pendingBattle, null);
+  assert.equal(s.sectorEntryRequest, null);
   assert.ok(s.resources.treasury > 0);
   if (!['local', 'stock'].includes(kind)) {
     assert.ok(dead.size > 0);
   }
   assert.equal(s.completed, false);
   if (kind === 'local') {
-    assert.equal(s.hiringArrivals.length, 0);
+    assert.equal((s.refundableRecruitmentClaims ?? []).length, 0);
     assert.ok(Object.keys(s.contracts).every((id) => [1000, 3, 4, 10].includes(Number(id))));
-    assert.ok(s.recruited.every((id) => [1000, 3, 4, 10].includes(id)));
+    assert.ok(s.forceRoster.every((id) => [1000, 3, 4, 10].includes(id)));
   }
   return { campaign: s, notes };
 }

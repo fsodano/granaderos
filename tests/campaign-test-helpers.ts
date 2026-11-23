@@ -16,14 +16,14 @@ export function restForMarch(state: CampaignSnapshot) {
   }
   if (
     !state.squad.some(
-      (id) => tooTiredToMarch(state.operativeState[id]) || present(state.operativeState[id]).asleep,
+      (id) => tooTiredToMarch(state.characters[id]) || present(state.characters[id]).asleep,
     )
   ) {
     return state;
   }
   let s = state;
   for (const id of s.squad) {
-    const r = s.operativeState[id];
+    const r = s.characters[id];
     if (!present(r).asleep && (present(r).fatigue > 0 || present(r).energy < 100)) {
       s = dispatchCampaign(s, { type: 'setSleep', operativeId: id, asleep: true });
       if (s.lastError) {
@@ -31,7 +31,7 @@ export function restForMarch(state: CampaignSnapshot) {
       }
     }
   }
-  for (let i = 0; s.squad.some((id) => present(s.operativeState[id]).asleep) && i < 20; i++) {
+  for (let i = 0; s.squad.some((id) => present(s.characters[id]).asleep) && i < 20; i++) {
     s = dispatchCampaign(s, { type: 'wait', hours: 12 });
     if (s.lastError) {
       throw Error(s.lastError);
@@ -40,7 +40,7 @@ export function restForMarch(state: CampaignSnapshot) {
       return s;
     }
   }
-  if (s.squad.some((id) => present(s.operativeState[id]).asleep)) {
+  if (s.squad.some((id) => present(s.characters[id]).asleep)) {
     throw Error('The test squad did not finish its actual sleep.');
   }
   return s;
@@ -55,7 +55,7 @@ export function completeTestTravel(
 ) {
   let s = state;
   for (let attempt = 0; attempt < 240; attempt++) {
-    if (s.pendingEncounter || s.pendingBattle) {
+    if (s.pendingEncounter || s.sectorEntryRequest) {
       return s;
     }
     const q = s.squads.find((q) => q.id === s.activeSquadId),
@@ -122,11 +122,14 @@ export function meetLocalRecruit(
   if (s.lastError) {
     throw Error(s.lastError);
   }
-  let battle = enterSector(s.pendingBattle, s.sectorStates[present(s.pendingBattle).sector]);
+  let battle = enterSector(
+    s.sectorEntryRequest,
+    s.sectorSnapshots[present(s.sectorEntryRequest).sector],
+  );
   const actor = battle.units
     .filter(
       (u) =>
-        present(s.pendingBattle).squad.some((member) => String(member.id) === u.id) &&
+        present(s.sectorEntryRequest).squad.some((member) => String(member.id) === u.id) &&
         u.side === 'player' &&
         u.hp >= 15 &&
         !u.unconscious &&
@@ -150,7 +153,7 @@ export function meetLocalRecruit(
   if (s.lastError) {
     return s;
   }
-  const joined = present(s.pendingBattle).squad.find((u) => u.id === action.id);
+  const joined = present(s.sectorEntryRequest).squad.find((u) => u.id === action.id);
   if (joined && !battle.units.some((u) => Number(u.id) === action.id)) {
     const record = createBattle([joined], {
       width: battle.width,
@@ -163,7 +166,7 @@ export function meetLocalRecruit(
   }
   return dispatchCampaign(s, {
     type: 'leaveSector',
-    battleId: present(s.pendingBattle).id,
+    battleId: present(s.sectorEntryRequest).id,
     sectorState: battle,
     survivors: battle.units.filter((u) => u.side === 'player'),
   });

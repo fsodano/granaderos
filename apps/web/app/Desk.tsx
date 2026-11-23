@@ -45,25 +45,25 @@ export default function Desk({
     presentation = campaignPresentation(s),
     ui = campaignUI(s),
     { DeskBriefing, DeskObjective } = ui;
-  const serving = s.recruited.filter((id: number) => {
-    const r = s.operativeState[id];
+  const serving = s.forceRoster.filter((id: number) => {
+    const r = s.characters[id];
     return r?.alive && r.hp > 0 && !r.captured;
   }).length;
-  const fallen = Object.entries(s.operativeState).filter(
+  const fallen = Object.entries(s.characters).filter(
     ([id, r]) =>
-      (s.recruited.includes(Number(id)) || r.location !== undefined) && (!r.alive || r.hp <= 0),
+      (s.forceRoster.includes(Number(id)) || r.location !== undefined) && (!r.alive || r.hp <= 0),
   ).length;
   // Service locations remain after a contract ends, so an empty later roster
   // must not bring back the first-start guide (including in chapterless campaigns).
   const started = Boolean(
     s.officer ||
-    s.recruited.length ||
-    s.hiringArrivals?.length ||
+    s.forceRoster.length ||
+    s.refundableRecruitmentClaims?.length ||
     s.phase > 0 ||
     s.campaignProgress?.completed.length ||
     s.completed ||
     s.defeated ||
-    Object.values(s.operativeState).some((r) => r.location !== undefined),
+    Object.values(s.characters).some((r) => r.location !== undefined),
   );
   const sectors = campaignSectors(s),
     controlled = sectors.filter((sector) => s.sectors[sector.id]?.owner === 'patriot').length,

@@ -67,7 +67,7 @@ void test('campaign zero-time withdrawal reversal creates a fresh paused decisio
   let campaign = restore(hostileArrival());
   const firstDecision = currentDecision(campaign);
   const resources = structuredClone(campaign.resources);
-  const people = structuredClone(campaign.operativeState);
+  const people = structuredClone(campaign.characters);
   campaign = restore(withdraw(campaign));
   assert.equal(present(currentJourney(campaign)).returning, true);
   assert.equal(present(currentJourney(campaign)).purpose, 'withdrawal');
@@ -81,7 +81,7 @@ void test('campaign zero-time withdrawal reversal creates a fresh paused decisio
   assert.equal(present(currentJourney(campaign)).status, 'ready');
   assert.notEqual(present(currentDecision(campaign)).id, present(firstDecision).id);
   assert.deepEqual(campaign.resources, resources);
-  assert.deepEqual(campaign.operativeState, people);
+  assert.deepEqual(campaign.characters, people);
   const stale = dispatchCampaign(campaign, {
     type: 'fightOnArrival',
     squadId: present(firstDecision).squadId,
@@ -102,7 +102,7 @@ void test('one-minute campaign withdrawal returns in one minute and preserves co
   assert.equal(seconds(campaign), seconds(beforeRedirection));
   assert.equal(present(currentJourney(campaign)).elapsedSecond, 3540);
   assert.equal(present(currentJourney(campaign)).pendingSeconds, 60);
-  assert.deepEqual(campaign.operativeState, beforeRedirection.operativeState);
+  assert.deepEqual(campaign.characters, beforeRedirection.characters);
   assert.deepEqual(campaign.resources, beforeRedirection.resources);
   campaign = order(campaign, { type: 'advanceStrategicTime', seconds: 59 });
   assert.equal(present(currentJourney(campaign)).status, 'moving');
@@ -145,9 +145,9 @@ void test('fight resolves the selected decision and prepares the same squad at i
   });
   assert.equal(seconds(result), seconds(campaign));
   assert.equal(result.location, present(decision).sectorId);
-  assert.equal(present(result.pendingBattle).sector, present(decision).sectorId);
+  assert.equal(present(result.sectorEntryRequest).sector, present(decision).sectorId);
   assert.deepEqual(
-    present(result.pendingBattle).squad.map((person) => person.id),
+    present(result.sectorEntryRequest).squad.map((person) => person.id),
     present(decision).members,
   );
   assert.equal(currentJourney(result), undefined);
@@ -238,7 +238,7 @@ void test('a nonqueued attack also requires the arrival decision before deployme
   present(initial.sectors['buenos_aires']).owner = 'royalist';
   const campaign = order(initial, { type: 'attack', sector: 'buenos_aires' });
   assert.equal(seconds(campaign), 7200);
-  assert.equal(campaign.pendingBattle, null);
+  assert.equal(campaign.sectorEntryRequest, null);
   assert.equal(present(currentJourney(campaign)).status, 'ready');
   assert.equal(pendingArrivalDecisions(campaign).length, 1);
 });

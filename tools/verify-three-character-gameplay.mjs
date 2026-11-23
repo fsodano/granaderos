@@ -98,7 +98,7 @@ function ownAppearance(unit) {
 }
 const campaignOwn = (campaign) => ({
   ...rosterFor(campaign).find((u) => u.id === 1000),
-  ...campaign.operativeState?.[1000],
+  ...campaign.characters?.[1000],
 });
 const ownFields = (unit) =>
   Object.fromEntries(

@@ -220,15 +220,15 @@ export function validateFiniteArtilleryArsenals(state) {
   initializeFiniteArtilleryArsenals(state);
   const sources = finiteArsenalsFor(state);
   const scenes = [
-    ...Object.values(state.sectorStates ?? {}),
-    ...Object.values(state.sceneStates ?? {}),
+    ...Object.values(state.sectorSnapshots ?? {}),
+    ...Object.values(state.sceneSnapshots ?? {}),
   ];
   const pieces = scenes.flatMap((scene) => scene.artillery ?? []);
   pieces.push(
     ...Object.values(state.artilleryDepots ?? {}).flat(),
     ...(state.artilleryTransfers ?? []).map((transfer) => transfer.gun),
     ...Object.values(state.artilleryMerchants ?? {}).flatMap((merchant) => merchant.guns ?? []),
-    ...(state.pendingBattle?.artillery ?? []).filter((gun) => !gun.stationed),
+    ...(state.sectorEntryRequest?.artillery ?? []).filter((gun) => !gun.stationed),
   );
   for (const [sector, receipt] of Object.entries(state.artilleryArsenalRecoveries)) {
     const source = sources[sector];
@@ -287,7 +287,7 @@ export function validateFiniteArtilleryArsenals(state) {
       }
     }
   }
-  const request = state.pendingBattle;
+  const request = state.sectorEntryRequest;
   if (request) {
     validateSourceSnapshot(request, state);
   }
@@ -301,9 +301,9 @@ export function validateFiniteArtilleryArsenals(state) {
         request.squad?.length &&
         request.squad.every(
           (unit) =>
-            state.recruited.includes(unit.id) &&
-            state.operativeState[unit.id]?.alive &&
-            state.operativeState[unit.id]?.location === request.sector,
+            state.forceRoster.includes(unit.id) &&
+            state.characters[unit.id]?.alive &&
+            state.characters[unit.id]?.location === request.sector,
         ),
       'La recuperación del arsenal requiere una escuadra local en un sector conquistado.',
     );

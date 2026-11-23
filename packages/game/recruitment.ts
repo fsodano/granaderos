@@ -6,7 +6,7 @@ import type {
 import { campaignDefinitions } from './campaign-definition.js';
 import { PROFILE_ATTRIBUTES } from './character-profile.ts';
 import { authoredRoster } from './content-roster.ts';
-import { pendingHire } from './hiring-arrivals.js';
+import { pendingRecruitmentClaim } from './recruitment-claims.js';
 import { gainsExperience, isContractOperative } from './content-character-ids.ts';
 import { applyCharacterProfile } from './character-profile.ts';
 import { campaignOfficerCreation, officerCreationWeapon } from './campaign-officer-creation.ts';
@@ -114,7 +114,7 @@ export function rosterFor(
     );
   }
   return base.map((op) => {
-    const progress = state.operativeState?.[op.id],
+    const progress = state.characters?.[op.id],
       xp = progress?.xp ?? 0,
       level = 1 + Math.min(9, Math.floor(xp / 100));
     if (!gainsExperience(state, op)) {
@@ -162,7 +162,7 @@ export function migrateLegacySkillLearning(state: CampaignSnapshot): CampaignSna
     );
   }
   for (const op of base) {
-    const record = state.operativeState?.[op.id];
+    const record = state.characters?.[op.id];
     if (!record || !gainsExperience(state, op)) {
       continue;
     }
@@ -183,13 +183,13 @@ export function migrateLegacySkillLearning(state: CampaignSnapshot): CampaignSna
 export function candidateAdmission(state: CampaignSnapshot, id: number | string) {
   id = Number(id);
   const op = rosterFor(state).find((o) => o.id === id && isContractOperative(state, o)),
-    record = state.operativeState[id];
+    record = state.characters[id];
   const reason = !op
     ? 'No existe ese voluntario.'
-    : state.recruited.includes(id)
+    : state.forceRoster.includes(id)
       ? 'Ya se encuentra en tus filas.'
-      : pendingHire(state, id)
-        ? 'Este contratado ya está en camino.'
+      : pendingRecruitmentClaim(state, id)
+        ? 'Ya pagaste por reclutar a este candidato, pero todavía no hay un destino seguro para que empiece el servicio.'
         : !record?.alive
           ? 'Ha caído en combate.'
           : record.captured

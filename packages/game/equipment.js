@@ -91,7 +91,7 @@ export function firearmRepairCost(record) {
   return Math.ceil(Math.max(0, 100 - (record.condition ?? 100)) * 1.5);
 }
 export function equipmentInventoryUsage(s, op, changes = {}) {
-  const record = s.operativeState[op.id];
+  const record = s.characters[op.id];
   return inventoryUsage({
     ...op,
     ...record,
@@ -104,7 +104,7 @@ export function equipmentInventoryUsage(s, op, changes = {}) {
 // Deployment preparation buys one finite batch elsewhere. This adapter only
 // returns the operative's existing physical inventory and chamber contents.
 export function allocateEquipmentAmmo(s, op) {
-  const actor = carriedAmmunition(op, s.operativeState[op.id]);
+  const actor = carriedAmmunition(op, s.characters[op.id]);
   return {
     ammunitionVersion: 2,
     loaded: actor.loaded,
@@ -238,16 +238,16 @@ export const grenadeStock = (s, at = s.location) => s.merchants?.[at]?.grenades?
 export function grenadeOffer(s, op, isSupplied, quantity = 1) {
   const supply = grenadeSupplyFor(s),
     stock = grenadeStock(s),
-    record = op && s.operativeState[op.id],
+    record = op && s.characters[op.id],
     price = supply?.price ?? 0,
     capacity = supply?.capacity ?? 0;
   let reason = s.defeated
     ? 'La campaña terminó.'
-    : s.pendingBattle || s.pendingEncounter
+    : s.sectorEntryRequest || s.pendingEncounter
       ? 'Resolvé el encuentro antes de comprar granadas.'
       : (scenarioFor(s).grenadeSupplyReason(s, isSupplied) ??
         (!op ||
-        !s.recruited.includes(op.id) ||
+        !s.forceRoster.includes(op.id) ||
         !record?.alive ||
         record.captured ||
         record.hp < 15 ||
@@ -290,7 +290,7 @@ export function grenadeOffer(s, op, isSupplied, quantity = 1) {
 export function purchaseGrenades(s, op, isSupplied, quantity = 1) {
   const offer = grenadeOffer(s, op, isSupplied, quantity);
   need(offer.available, offer.reason);
-  const record = s.operativeState[op.id],
+  const record = s.characters[op.id],
     next = applyItemQuantity(
       { ...op, ...record, id: String(op.id), loaded: record.carriedLoaded ?? 0 },
       { item: 'inventory:grenade:arsenal', ...makeGrenadeStack('arsenal', quantity) },
@@ -372,7 +372,7 @@ export function validateStoredFittingFields(s) {
     return;
   }
   need(s.fittingRulesVersion === FITTING_RULES_VERSION, 'La versión de encastres no es válida.');
-  const units = Object.values(s.operativeState ?? {});
+  const units = Object.values(s.characters ?? {});
   for (const unit of units) {
     need(
       unit &&
@@ -394,7 +394,7 @@ export function migrateEquipment(s) {
     s.fittingRulesVersion = FITTING_RULES_VERSION;
   }
   s.armory ??= {};
-  for (const record of Object.values(s.operativeState ?? {})) {
+  for (const record of Object.values(s.characters ?? {})) {
     if (record.bladeCondition === undefined) {
       record.bladeCondition = 100;
     }
@@ -469,22 +469,22 @@ export function migrateEquipment(s) {
     ...(s.militiaTraining ?? []).map((course) => course.trainees ?? []),
     Object.values(s.missionAllies ?? {}),
     ...(s.enemyGroups ?? []).map((g) => g.units ?? []),
-    s.pendingBattle?.squad ?? [],
-    s.pendingBattle?.garrison ?? [],
-    s.pendingBattle?.missionAllies ?? [],
+    s.sectorEntryRequest?.squad ?? [],
+    s.sectorEntryRequest?.garrison ?? [],
+    s.sectorEntryRequest?.missionAllies ?? [],
   ]) {
     for (const unit of units) {
       normalizeUnitFittings(unit);
     }
   }
-  if (s.pendingBattle) {
-    s.pendingBattle.fittingRulesVersion ??= FITTING_RULES_VERSION;
+  if (s.sectorEntryRequest) {
+    s.sectorEntryRequest.fittingRulesVersion ??= FITTING_RULES_VERSION;
   }
   if (legacy) {
     for (const snapshot of [
-      ...Object.values(s.sectorStates ?? {}),
-      ...Object.values(s.sceneStates ?? {}),
-      ...(s.pendingBattle?.resumeSnapshot ? [s.pendingBattle.resumeSnapshot] : []),
+      ...Object.values(s.sectorSnapshots ?? {}),
+      ...Object.values(s.sceneSnapshots ?? {}),
+      ...(s.sectorEntryRequest?.resumeSnapshot ? [s.sectorEntryRequest.resumeSnapshot] : []),
     ]) {
       snapshot.fittingRulesVersion ??= FITTING_RULES_VERSION;
       for (const unit of snapshot.units ?? []) {
@@ -508,7 +508,7 @@ export function merchantStatus(s, item, isSupplied) {
     sector = imported ? importRulesFor(s).port : s.location,
     merchant = s.merchants?.[sector];
   const reason =
-    s.pendingBattle || s.pendingEncounter
+    s.sectorEntryRequest || s.pendingEncounter
       ? 'Terminá el encuentro antes de negociar.'
       : !hasWorkshop({ ...s, flags: s.flags ?? {} }, s.location) ||
           s.sectors[s.location]?.owner !== 'patriot' ||
@@ -535,7 +535,7 @@ export function advanceMerchants(s, isSupplied) {
     if (
       s.sectors[sector]?.owner !== 'patriot' ||
       !isSupplied(s, sector) ||
-      s.pendingBattle?.sector === sector ||
+      s.sectorEntryRequest?.sector === sector ||
       (sector === importRulesFor(s).port && s.blockade)
     ) {
       continue;
@@ -638,36 +638,36 @@ export function resaleQuote(instance, sector = headquartersFor(), context = null
 export function returnEquipment(s, id, report) {
   for (const slot of BODY_SLOTS) {
     if (report[slot] !== undefined || (slot === 'outfit' && report.poncho !== undefined)) {
-      s.operativeState[id][slot] = structuredClone(wornOutfit(report, slot));
+      s.characters[id][slot] = structuredClone(wornOutfit(report, slot));
     }
   }
   if (report.outfit !== undefined || report.poncho !== undefined) {
-    delete s.operativeState[id].poncho;
+    delete s.characters[id].poncho;
   }
   validateHands(report);
   validateUnitFittings(report);
   validateEquipmentCursor(report);
   if (report.equipmentCursor) {
-    s.operativeState[id].equipmentCursor = structuredClone(report.equipmentCursor);
+    s.characters[id].equipmentCursor = structuredClone(report.equipmentCursor);
   } else {
-    delete s.operativeState[id].equipmentCursor;
+    delete s.characters[id].equipmentCursor;
   }
   for (const key of ['weaponMetadata', 'bladeMetadata', 'ammunitionChoice']) {
     if (report[key] !== undefined) {
-      s.operativeState[id][key] = structuredClone(report[key]);
+      s.characters[id][key] = structuredClone(report[key]);
     } else {
-      delete s.operativeState[id][key];
+      delete s.characters[id][key];
     }
   }
   if (report.leftHandItem !== undefined) {
-    s.operativeState[id].leftHandItem = report.leftHandItem;
+    s.characters[id].leftHandItem = report.leftHandItem;
   } else {
-    delete s.operativeState[id].leftHandItem;
+    delete s.characters[id].leftHandItem;
   }
   if (report.offHand) {
-    s.operativeState[id].offHand = structuredClone(report.offHand);
+    s.characters[id].offHand = structuredClone(report.offHand);
   } else if (report.weapon !== undefined) {
-    delete s.operativeState[id].offHand;
+    delete s.characters[id].offHand;
   }
   s.loadouts[id] ??= {};
   if (report.weapon !== undefined) {
@@ -690,12 +690,12 @@ export function returnEquipment(s, id, report) {
   for (const key of ['jammed', 'weaponDropped']) {
     if (report[key] !== undefined) {
       need(typeof report[key] === 'boolean', 'El estado del arma es inválido.');
-      s.operativeState[id][key] = report[key];
+      s.characters[id][key] = report[key];
     }
   }
   if (report.weaponMode !== undefined) {
     need(['fire', 'melee'].includes(report.weaponMode), 'El modo del arma es inválido.');
-    s.operativeState[id].weaponMode = report.weaponMode;
+    s.characters[id].weaponMode = report.weaponMode;
   }
   if (report.activeSlot !== undefined) {
     need(
@@ -704,24 +704,24 @@ export function returnEquipment(s, id, report) {
       ),
       'El equipo activo es inválido.',
     );
-    s.operativeState[id].activeSlot = report.activeSlot;
+    s.characters[id].activeSlot = report.activeSlot;
     if (report.activeSlot === 'tool') {
       need(Boolean(heldTool(report)), 'La herramienta del parte es inválida.');
-      s.operativeState[id].activeTool = report.activeTool;
+      s.characters[id].activeTool = report.activeTool;
     } else {
-      delete s.operativeState[id].activeTool;
+      delete s.characters[id].activeTool;
     }
     if (report.activeSlot === 'supply') {
       need(Boolean(heldSupply(report)), 'El pertrecho del parte es inválido.');
-      s.operativeState[id].activeSupply = report.activeSupply;
+      s.characters[id].activeSupply = report.activeSupply;
     } else {
-      delete s.operativeState[id].activeSupply;
+      delete s.characters[id].activeSupply;
     }
     if (report.activeSlot === 'item') {
       need(Boolean(carriedObject(report)), 'El objeto del parte es inválido.');
-      s.operativeState[id].activeItem = report.activeItem;
+      s.characters[id].activeItem = report.activeItem;
     } else {
-      delete s.operativeState[id].activeItem;
+      delete s.characters[id].activeItem;
     }
   }
   if (report.bladeCondition !== undefined) {
@@ -731,7 +731,7 @@ export function returnEquipment(s, id, report) {
         report.bladeCondition <= 100,
       'El estado del arma blanca del parte es inválido.',
     );
-    s.operativeState[id].bladeCondition = report.bladeCondition;
+    s.characters[id].bladeCondition = report.bladeCondition;
   }
   for (const [slot, key] of [
     ['weapon', 'weaponInstanceId'],
@@ -744,14 +744,14 @@ export function returnEquipment(s, id, report) {
           (slot !== 'weapon' || !report.weaponDropped),
         'La identidad del arma del parte es inválida.',
       );
-      s.operativeState[id][key] = report[key];
+      s.characters[id][key] = report[key];
     } else if (report.weapon !== undefined) {
-      delete s.operativeState[id][key];
+      delete s.characters[id][key];
     }
   }
   if (report.weapon !== undefined) {
     for (const key of ['weaponFittings', 'weaponFittingPattern', 'bladeFittingPattern']) {
-      s.operativeState[id][key] = structuredClone(
+      s.characters[id][key] = structuredClone(
         report[key] ?? (key === 'weaponFittings' ? {} : null),
       );
     }
@@ -764,7 +764,7 @@ export function returnEquipment(s, id, report) {
 
 // Strategic records keep the same loose inventory and separate primary loading.
 function personalHandState(s, op, r) {
-  const deployed = s.pendingBattle?.squad?.find((u) => String(u.id) === String(op?.id));
+  const deployed = s.sectorEntryRequest?.squad?.find((u) => String(u.id) === String(op?.id));
   return syncUnitAmmunition({
     ...op,
     ...r,
@@ -818,7 +818,7 @@ export function validateEquipment(s, roster = []) {
     );
   }
   validateEquipmentStorage(s);
-  for (const unit of s.pendingBattle?.squad ?? []) {
+  for (const unit of s.sectorEntryRequest?.squad ?? []) {
     validateReloadProgress(
       unit.reloadProgress,
       weaponSpecification(unit)?.capacity ?? 0,
@@ -826,7 +826,7 @@ export function validateEquipment(s, roster = []) {
       unit.weaponDropped,
     );
   }
-  for (const [id, r] of Object.entries(s.operativeState)) {
+  for (const [id, r] of Object.entries(s.characters)) {
     const op = roster.find((op) => op.id === Number(id)),
       capacity = weaponSpecification({ ...op, ...r })?.capacity ?? 0;
     need(
@@ -901,7 +901,7 @@ export function validateEquipment(s, roster = []) {
 // item's current custodian once, including inaccessible captives and field gear.
 /** @param {import('./public/compatibility-types.ts').BattleSnapshot|null} [battle] */
 export function validateEquipmentOwnership(s, roster = [], battle = null) {
-  const active = battle ?? s.pendingBattle?.resumeSnapshot ?? null;
+  const active = battle ?? s.sectorEntryRequest?.resumeSnapshot ?? null;
   const currentFields = [
     ...(active ? [active] : []),
     ...(s.suspendedSectorSessions ?? []).map((session) => session.snapshot),
@@ -919,7 +919,10 @@ export function validateEquipmentOwnership(s, roster = [], battle = null) {
   const activeEnemies = new Set(
     currentActors.filter((actor) => actor.side === 'enemy').map((actor) => String(actor.id)),
   );
-  const snapshots = [...Object.values(s.sectorStates ?? {}), ...Object.values(s.sceneStates ?? {})],
+  const snapshots = [
+      ...Object.values(s.sectorSnapshots ?? {}),
+      ...Object.values(s.sceneSnapshots ?? {}),
+    ],
     allies = new Set();
   const retainedOnField = (snapshot, u) => {
     const disposition = snapshot.returnLedger?.entries?.find((e) => e.unitId === u.id),
@@ -970,7 +973,7 @@ export function validateEquipmentOwnership(s, roster = [], battle = null) {
   };
   const livingPlayers = new Set();
   for (const op of roster) {
-    const r = s.operativeState[op.id];
+    const r = s.characters[op.id];
     if (r?.alive && r.hp > 0) {
       livingPlayers.add(String(op.id));
       if (!r.serviceEquipmentReturn && !activePlayers.has(String(op.id))) {
@@ -981,7 +984,7 @@ export function validateEquipmentOwnership(s, roster = [], battle = null) {
   // A retired local return keeps its property even if its former carrier dies
   // or the civilian identity later moves to another sector.
   for (const op of roster) {
-    const r = s.operativeState[op.id];
+    const r = s.characters[op.id];
     if (r?.serviceEquipmentReturn) {
       unit(personalHandState(s, op, r));
     }
@@ -989,7 +992,7 @@ export function validateEquipmentOwnership(s, roster = [], battle = null) {
   // A strategic death can precede any physical corpse snapshot. Its cursor is
   // still finite property; once a body exists, that body supersedes this record.
   for (const op of roster) {
-    const r = s.operativeState[op.id];
+    const r = s.characters[op.id];
     if (
       !r?.equipmentCursor ||
       r.serviceEquipmentReturn ||
@@ -1092,7 +1095,7 @@ export function validateEquipmentOwnership(s, roster = [], battle = null) {
         u.hp > 0 &&
         (u.missionAlly
           ? allies.has(String(u.id))
-          : livingPlayers.has(String(u.id)) || s.operativeState[u.id])
+          : livingPlayers.has(String(u.id)) || s.characters[u.id])
       ) {
         continue;
       }

@@ -27,8 +27,8 @@ void test('canonical character abilities preserve authored ranges, earned progre
   present(authored).traits = ['expert_rider'];
   const id = present(operativeIdForCharacter(content, present(authored).id));
   const campaign = initialCampaign(8, content);
-  present(campaign.operativeState[id]).trainedStats = { medical: 10, marksmanship: 3 };
-  present(campaign.operativeState[id]).strength = 100;
+  present(campaign.characters[id]).trainedStats = { medical: 10, marksmanship: 3 };
+  present(campaign.characters[id]).strength = 100;
   const source = structuredClone(campaign);
   const mapper = new GameSnapshotMapper(() => 'ability-session');
   const game = mapper.restore(encodeSave(campaign));
@@ -63,7 +63,7 @@ void test('canonical character abilities preserve authored ranges, earned progre
     character.abilities.toSnapshot(),
   );
   const projected = decodeSave(exported).campaign;
-  assert.deepEqual(projected.operativeState, source.operativeState);
+  assert.deepEqual(projected.characters, source.characters);
   assert.deepEqual(projected.contentCampaign, source.contentCampaign);
   assert.equal(projected.resources.treasury, source.resources.treasury);
   assert.deepEqual(campaign, source);
@@ -84,7 +84,7 @@ void test('legacy capabilities restore by definition without adding mutable abil
     );
   }
   assert.ok(
-    Object.values(game.snapshot().campaign.operativeState).every(
+    Object.values(game.snapshot().campaign.characters).every(
       (record) => record.abilities === undefined,
     ),
   );

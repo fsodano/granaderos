@@ -131,10 +131,10 @@ export default function CampaignAmmunition({
       )}
       <AmmunitionLoadChoice
         unit={{
-          ...carriedAmmunition(operative, s.operativeState[operative?.id]),
+          ...carriedAmmunition(operative, s.characters[operative?.id]),
           activeSlot: 'primary',
         }}
-        disabled={!!s.pendingBattle}
+        disabled={!!s.sectorEntryRequest}
         onUnload={() => dispatch({ type: 'unloadAmmunition', operativeId: operative?.id })}
         onSelect={(family) => {
           dispatch({

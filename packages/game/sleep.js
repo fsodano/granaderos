@@ -15,9 +15,9 @@ export const SLEEP_ISSUE_TEXT = {
   sleep_disturbed: 'Se despertó porque el sector ya no permite descansar.',
 };
 const available = (s, id) =>
-  s.recruited.includes(id) &&
-  s.operativeState[id]?.alive &&
-  !s.operativeState[id].captured &&
+  s.forceRoster.includes(id) &&
+  s.characters[id]?.alive &&
+  !s.characters[id].captured &&
   !deployed(s, id) &&
   !operativeInTransit(s, id);
 const safe = (s, id, context = {}) =>
@@ -25,7 +25,7 @@ const safe = (s, id, context = {}) =>
   !(context.traveling ?? []).includes(id) &&
   !(context.unsafe ?? []).includes(id) &&
   ['patriot', 'neutral'].includes(worldOwner(s, operativeLocation(s, id))) &&
-  s.pendingBattle?.sector !== operativeLocation(s, id) &&
+  s.sectorEntryRequest?.sector !== operativeLocation(s, id) &&
   !s.enemyGroups?.some(
     (g) =>
       ['waiting', 'engaged', 'stationed'].includes(g.status) &&
@@ -33,7 +33,7 @@ const safe = (s, id, context = {}) =>
         g.target === worldCell(operativeLocation(s, id), s)?.locality),
   );
 export function sleepOrderReason(s, id, asleep) {
-  const r = s.operativeState[id];
+  const r = s.characters[id];
   if (typeof asleep !== 'boolean') {
     return 'Indicá si debe dormir o despertar.';
   }
@@ -70,7 +70,7 @@ export function setSleep(s, id, asleep) {
   if (reason) {
     throw Error(reason);
   }
-  const r = s.operativeState[id];
+  const r = s.characters[id];
   if (asleep) {
     r.asleep = true;
   } else {
@@ -84,7 +84,7 @@ export function setSleep(s, id, asleep) {
 export function prepareSleep(s, roster, context = {}) {
   const events = [];
   for (const op of roster) {
-    const r = s.operativeState[op.id];
+    const r = s.characters[op.id];
     if (!r) {
       continue;
     }
@@ -93,7 +93,7 @@ export function prepareSleep(s, roster, context = {}) {
     }
     if (!available(s, op.id)) {
       wake(r);
-      if (!s.recruited.includes(op.id) || !r.alive || r.captured) {
+      if (!s.forceRoster.includes(op.id) || !r.alive || r.captured) {
         r.sleepCollapsed = false;
       }
       continue;
@@ -137,7 +137,7 @@ export function prepareSleep(s, roster, context = {}) {
 export function finishSleepHour(s, roster, context = {}) {
   const events = [];
   for (const op of roster) {
-    const r = s.operativeState[op.id];
+    const r = s.characters[op.id];
     if (!r || !safe(s, op.id, context)) {
       continue;
     }

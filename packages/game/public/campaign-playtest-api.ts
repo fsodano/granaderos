@@ -89,14 +89,14 @@ function synchronize(pair: CampaignSandbox, battle: BattleSnapshot): CampaignSan
   return { ...pair, campaign: next.campaign, battle: next.battle };
 }
 function leave(pair: CampaignSandbox): CampaignSandbox {
-  need(pair.battle && pair.campaign.pendingBattle, 'Primero entrá en un sector.');
+  need(pair.battle && pair.campaign.sectorEntryRequest, 'Primero entrá en un sector.');
   need(
-    pair.campaign.pendingBattle.exploration,
+    pair.campaign.sectorEntryRequest.exploration,
     'Terminá el combate en la vista táctica antes de volver.',
   );
   const next = order(pair, {
     type: 'leaveSector',
-    battleId: pair.campaign.pendingBattle.id,
+    battleId: pair.campaign.sectorEntryRequest.id,
     sectorState: pair.battle,
     survivors: pair.battle.units.filter((u) => u.side === 'player'),
   });
@@ -197,14 +197,14 @@ export function dispatchCampaignSandbox(
       need(!pair.error, pair.error);
       next = { ...next, campaign: pair.campaign, battle: pair.battle };
     } else if (action.type === 'finish') {
-      if (next.campaign.pendingBattle?.exploration) {
+      if (next.campaign.sectorEntryRequest?.exploration) {
         next = leave(next);
       } else {
         const battle = next.battle;
-        need(battle && next.campaign.pendingBattle, 'No hay una batalla abierta.');
+        need(battle && next.campaign.sectorEntryRequest, 'No hay una batalla abierta.');
         next = order(next, {
           type: 'battleResult',
-          battleId: next.campaign.pendingBattle.id,
+          battleId: next.campaign.sectorEntryRequest.id,
           outcome:
             battle.status === 'retreat'
               ? 'retreat'
@@ -262,7 +262,7 @@ export function dispatchCampaignSandbox(
       );
     } else {
       next = order(next, action);
-      if (next.campaign.pendingBattle && !next.battle) {
+      if (next.campaign.sectorEntryRequest && !next.battle) {
         const pair = prepareCampaignBattle(next.campaign);
         need(!pair.error, pair.error);
         next = { ...next, campaign: pair.campaign, battle: pair.battle };

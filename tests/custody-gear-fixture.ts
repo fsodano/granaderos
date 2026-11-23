@@ -11,7 +11,7 @@ export function withCarriedPonchos(
   count = 1,
 ): CampaignSnapshot {
   const next = structuredClone(state),
-    record = present(next.operativeState[id]);
+    record = present(next.characters[id]);
   record.inventory ??= {};
   record.inventory['outfit'] = { ...makeOutfit('poncho'), count };
   return next;
@@ -22,7 +22,7 @@ export function withLegacyRepairReserve(
   points = 100,
 ): CampaignSnapshot {
   const next = structuredClone(state);
-  present(next.operativeState[id]).toolkitPoints = points;
+  present(next.characters[id]).toolkitPoints = points;
   return next;
 }
 export function withOwnedMount(

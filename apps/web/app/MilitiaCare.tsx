@@ -19,14 +19,14 @@ export default function MilitiaCare({
   const wounded = defenders.filter((u) => (u.bleeding ?? 0) > 0 || u.hp < u.maxHp);
   const doctors = roster.filter(
     (op) =>
-      state.recruited.includes(op.id) &&
-      state.operativeState[op.id]?.alive &&
+      state.forceRoster.includes(op.id) &&
+      state.characters[op.id]?.alive &&
       !operativeInTransit(state, op.id) &&
       operativeLocation(state, op.id) === sectorId &&
-      state.operativeState[op.id]?.assignment === 'militia_doctor',
+      state.characters[op.id]?.assignment === 'militia_doctor',
   );
   const available = doctors.filter((op) => !careAssignmentReason(state, op, 'militia_doctor'));
-  const fighting = state.pendingBattle?.sector === sectorId;
+  const fighting = state.sectorEntryRequest?.sector === sectorId;
   const reason = fighting
     ? 'La atención de campaña espera hasta el regreso del despliegue.'
     : state.sectors[sectorId]?.owner !== 'patriot'

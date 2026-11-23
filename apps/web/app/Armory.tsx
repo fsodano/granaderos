@@ -54,28 +54,28 @@ type Props = {
 };
 export default function Armory({ state: s, dispatch }: Props) {
   const enemyName = campaignFactionName(s, 'royalist');
-  const [selected, setSelected] = useState(String(s.recruited[0] ?? 3));
+  const [selected, setSelected] = useState(String(s.forceRoster[0] ?? 3));
   const roster = rosterFor(s),
     op =
       roster.find(
         (o) =>
           String(o.id) === selected &&
-          s.recruited.includes(o.id) &&
-          s.operativeState[o.id]?.alive &&
-          !s.operativeState[o.id]?.captured,
+          s.forceRoster.includes(o.id) &&
+          s.characters[o.id]?.alive &&
+          !s.characters[o.id]?.captured,
       ) ??
       roster.find(
         (o) =>
-          s.recruited.includes(o.id) &&
-          s.operativeState[o.id]?.alive &&
-          !s.operativeState[o.id]?.captured,
+          s.forceRoster.includes(o.id) &&
+          s.characters[o.id]?.alive &&
+          !s.characters[o.id]?.captured,
       );
   const [battery, setBattery] = useState<string[] | null>(null),
     batteryTypes = battery ?? artilleryDeploymentChoices(s),
     batteryReason = artillerySelectionReason(s, batteryTypes.filter(Boolean));
   const emplacements = stationedArtillery(s),
     inventory = armoryInventory(s),
-    record = op ? s.operativeState[op.id] : null;
+    record = op ? s.characters[op.id] : null;
   const resupply = workshopServiceQuote(s, op, 'resupply', isSupplied(s, s.location)),
     repair = workshopServiceQuote(s, op, 'repairWeapon', isSupplied(s, s.location));
   const catalog = equipmentCatalog(s),
@@ -89,7 +89,7 @@ export default function Armory({ state: s, dispatch }: Props) {
     op &&
     operativeLocation(s, op.id) === s.location &&
     !operativeInTransit(s, op.id) &&
-    !s.pendingBattle &&
+    !s.sectorEntryRequest &&
     !s.pendingEncounter &&
     !s.defeated,
   );
@@ -174,9 +174,9 @@ export default function Armory({ state: s, dispatch }: Props) {
               {roster
                 .filter(
                   (o) =>
-                    s.recruited.includes(o.id) &&
-                    s.operativeState[o.id]?.alive &&
-                    !s.operativeState[o.id]?.captured,
+                    s.forceRoster.includes(o.id) &&
+                    s.characters[o.id]?.alive &&
+                    !s.characters[o.id]?.captured,
                 )
                 .map((o) => (
                   <option key={o.id} value={o.id}>
@@ -354,7 +354,7 @@ export default function Armory({ state: s, dispatch }: Props) {
           ))}
           <button
             className="gold-button"
-            disabled={Boolean(batteryReason) || Boolean(s.pendingBattle)}
+            disabled={Boolean(batteryReason) || Boolean(s.sectorEntryRequest)}
             onClick={() => {
               dispatch({
                 type: 'configureArtillery',

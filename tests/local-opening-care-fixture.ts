@@ -57,7 +57,7 @@ export function prepareLocalOpening(
   }: OpeningOptions = {},
 ) {
   assert.ok(['doctor', 'rest'].includes(recovery), 'Choose actual doctor care or stable rest.');
-  const earlierDeaths = Object.entries(s.operativeState)
+  const earlierDeaths = Object.entries(s.characters)
     .filter(([, record]) => !record.alive)
     .map(([id]) => Number(id));
   const returnSector = s.location;
@@ -65,8 +65,8 @@ export function prepareLocalOpening(
     careIds = [...new Set([...field, ...caregiverIds])];
   for (const id of caregiverIds) {
     assert.ok(
-      s.recruited.includes(id) &&
-        present(s.operativeState[id]).alive &&
+      s.forceRoster.includes(id) &&
+        present(s.characters[id]).alive &&
         operativeLocation(s, id) === returnSector,
       'an auxiliary caregiver must actually serve at this clinic',
     );
@@ -75,14 +75,14 @@ export function prepareLocalOpening(
     s,
     s.location,
     rosterFor(s),
-    s.squad.find((id) => present(s.operativeState[id]).hp >= 15),
+    s.squad.find((id) => present(s.characters[id]).hp >= 15),
   )
     .entries.filter((row) => row.reachable && equipmentReceipt(row.expected).item === 'medkits')
     .reduce((sum, row) => sum + row.count, 0);
   const sources = Object.entries(FINITE_SECTOR_CACHES)
     .filter(([at]) => s.sectors[at]?.owner === 'patriot' && transportPath(s, s.location, at))
     .map(([at, source]) => {
-      const chest = s.sectorStates[at]?.props.find((prop) => prop.id === source.chest);
+      const chest = s.sectorSnapshots[at]?.props.find((prop) => prop.id === source.chest);
       return {
         at,
         available: chest
@@ -118,7 +118,7 @@ export function prepareLocalOpening(
     repairHours: 0,
   };
   const carriedDressings = () =>
-    careIds.reduce((sum, id) => sum + present(s.operativeState[id]).medkits, 0);
+    careIds.reduce((sum, id) => sum + present(s.characters[id]).medkits, 0);
   care.initialDressings = carriedDressings();
   const renewCareContracts = () => {
     for (const id of careIds) {
@@ -140,8 +140,7 @@ export function prepareLocalOpening(
     s = order(s, { type: 'assignCare', id, assignment: 'rest' });
     for (
       let hour = 0;
-      (present(s.operativeState[id]).asleep || present(s.operativeState[id]).energy <= 10) &&
-      hour < 72;
+      (present(s.characters[id]).asleep || present(s.characters[id]).energy <= 10) && hour < 72;
       hour++
     ) {
       renewCareContracts();
@@ -149,7 +148,7 @@ export function prepareLocalOpening(
       care.stockWaitHours++;
     }
     assert.ok(
-      !present(s.operativeState[id]).asleep && present(s.operativeState[id]).energy > 10,
+      !present(s.characters[id]).asleep && present(s.characters[id]).energy > 10,
       'The actual caregiver must finish sleep and rest before using finite stock.',
     );
   };
@@ -159,12 +158,12 @@ export function prepareLocalOpening(
   if (recovery === 'rest') {
     const resting = [...s.squad],
       wounded = resting.filter(
-        (id) => present(s.operativeState[id]).hp < present(s.operativeState[id]).maxHp,
+        (id) => present(s.characters[id]).hp < present(s.characters[id]).maxHp,
       ),
       restHealingHours = careRules(s).restHealingHours;
     const stable = () => {
       for (const id of resting) {
-        const r = present(s.operativeState[id]);
+        const r = present(s.characters[id]);
         assert.ok(
           r.alive && !r.captured && r.hp >= 15,
           'ordinary rest requires the actual conscious uncaptured survivor',
@@ -178,17 +177,14 @@ export function prepareLocalOpening(
         0,
         ...wounded.map(
           (id) =>
-            (present(s.operativeState[id]).maxHp - present(s.operativeState[id]).hp) *
-            restHealingHours,
+            (present(s.characters[id]).maxHp - present(s.characters[id]).hp) * restHealingHours,
         ),
       ) + 72;
     care.restStartedAt = { hour: s.hour, second: s.secondOfHour ?? 0 };
     for (const id of resting) {
       s = order(s, { type: 'assignCare', id, assignment: 'rest' });
     }
-    while (
-      wounded.some((id) => present(s.operativeState[id]).hp < present(s.operativeState[id]).maxHp)
-    ) {
+    while (wounded.some((id) => present(s.characters[id]).hp < present(s.characters[id]).maxHp)) {
       assert.ok(
         care.restHours < care.restBoundHours,
         'stable recovery must fit the actual wound deficit and ordinary sleep bound',
@@ -197,9 +193,9 @@ export function prepareLocalOpening(
       renewCareContracts();
       const before = resting.map((id) => ({
           id,
-          hp: present(s.operativeState[id]).hp,
-          maxHp: present(s.operativeState[id]).maxHp,
-          recoveryHours: present(s.operativeState[id]).recoveryHours,
+          hp: present(s.characters[id]).hp,
+          maxHp: present(s.characters[id]).maxHp,
+          recoveryHours: present(s.characters[id]).recoveryHours,
         })),
         time = s.hour * 3600 + (s.secondOfHour ?? 0);
       s = advanceCampaignHours(s, 1);
@@ -207,7 +203,7 @@ export function prepareLocalOpening(
       care.restHours++;
       stable();
       for (const r of before) {
-        const current = present(s.operativeState[r.id]);
+        const current = present(s.characters[r.id]);
         assert.ok(
           current.hp >= r.hp && current.hp <= Math.min(r.maxHp, r.hp + 1),
           'rest must earn health through ordinary hourly recovery',
@@ -229,13 +225,12 @@ export function prepareLocalOpening(
           .filter(
             (o) =>
               field.includes(o.id) &&
-              (present(s.operativeState[o.id]).hp < o.maxHp ||
-                present(s.operativeState[o.id]).bleeding),
+              (present(s.characters[o.id]).hp < o.maxHp || present(s.characters[o.id]).bleeding),
           )
           .sort(
             (a, b) =>
-              Number(present(s.operativeState[b.id]).bleeding > 0) -
-                Number(present(s.operativeState[a.id]).bleeding > 0) || a.medical - b.medical,
+              Number(present(s.characters[b.id]).bleeding > 0) -
+                Number(present(s.characters[a.id]).bleeding > 0) || a.medical - b.medical,
           )[0];
       if (!patient) {
         break;
@@ -246,16 +241,16 @@ export function prepareLocalOpening(
           (o) =>
             o.id !== patient.id &&
             o.medical >= 20 &&
-            present(s.operativeState[o.id]).hp >= 15 &&
-            !present(s.operativeState[o.id]).bleeding &&
-            (caregiverIds.length || present(s.operativeState[o.id]).energy > 10),
+            present(s.characters[o.id]).hp >= 15 &&
+            !present(s.characters[o.id]).bleeding &&
+            (caregiverIds.length || present(s.characters[o.id]).energy > 10),
         )
         .sort(
           (a, b) =>
             (caregiverIds.length
               ? 0
-              : Number(present(s.operativeState[a.id]).asleep) -
-                Number(present(s.operativeState[b.id]).asleep)) || b.medical - a.medical,
+              : Number(present(s.characters[a.id]).asleep) -
+                Number(present(s.characters[b.id]).asleep)) || b.medical - a.medical,
         )[0];
       assert.ok(doctor, 'a living local doctor is required');
       for (const o of roster) {
@@ -269,22 +264,21 @@ export function prepareLocalOpening(
       // actual recovery finish before assigning care; do not wake an exhausted actor.
       restUntilReady(doctor.id);
       s = order(s, { type: 'assignCare', id: doctor.id, assignment: 'active' });
-      if (!present(s.operativeState[doctor.id]).medkits) {
+      if (!present(s.characters[doctor.id]).medkits) {
         let donor = roster.find(
           (o) =>
             o.id !== doctor.id &&
-            present(s.operativeState[o.id]).medkits > 0 &&
+            present(s.characters[o.id]).medkits > 0 &&
             !sectorInventoryModel(s, s.location, rosterFor(s), o.id).reason,
         );
         if (!donor) {
           const stocked = roster.find(
             (o) =>
               o.id !== doctor.id &&
-              present(s.operativeState[o.id]).hp >= 15 &&
-              !present(s.operativeState[o.id]).bleeding &&
-              present(s.operativeState[o.id]).medkits > 0 &&
-              (present(s.operativeState[o.id]).asleep ||
-                present(s.operativeState[o.id]).energy <= 10),
+              present(s.characters[o.id]).hp >= 15 &&
+              !present(s.characters[o.id]).bleeding &&
+              present(s.characters[o.id]).medkits > 0 &&
+              (present(s.characters[o.id]).asleep || present(s.characters[o.id]).energy <= 10),
           );
           if (stocked) {
             restUntilReady(stocked.id);
@@ -293,7 +287,7 @@ export function prepareLocalOpening(
             donor = roster.find(
               (o) =>
                 o.id !== doctor.id &&
-                present(s.operativeState[o.id]).medkits > 0 &&
+                present(s.characters[o.id]).medkits > 0 &&
                 !sectorInventoryModel(s, s.location, rosterFor(s), o.id).reason,
             );
           }
@@ -323,14 +317,14 @@ export function prepareLocalOpening(
           care.donatedDressings++;
         }
       }
-      if (!present(s.operativeState[doctor.id]).medkits) {
+      if (!present(s.characters[doctor.id]).medkits) {
         const needed = Math.max(
             1,
             Math.min(
               20,
               Math.ceil(
-                (patient.maxHp - present(s.operativeState[patient.id]).hp) / doctorRate(doctor, s),
-              ) + Number(present(s.operativeState[patient.id]).bleeding > 0),
+                (patient.maxHp - present(s.characters[patient.id]).hp) / doctorRate(doctor, s),
+              ) + Number(present(s.characters[patient.id]).bleeding > 0),
             ),
           ),
           found = collectRouteMedicalSupplies(s, doctor.id, needed);
@@ -340,9 +334,9 @@ export function prepareLocalOpening(
       assert.equal(careAssignmentReason(s, doctor, 'doctor'), '');
       s = order(s, { type: 'assignCare', id: doctor.id, assignment: 'doctor' });
       s = order(s, { type: 'assignCare', id: patient.id, assignment: 'patient' });
-      const stock = present(s.operativeState[doctor.id]).medkits;
+      const stock = present(s.characters[doctor.id]).medkits;
       s = saved({ campaign: advanceCampaignHours(s, 1) }).campaign;
-      assert.equal(present(s.operativeState[doctor.id]).medkits, stock - 1);
+      assert.equal(present(s.characters[doctor.id]).medkits, stock - 1);
       care.hours++;
     }
   }
@@ -356,27 +350,23 @@ export function prepareLocalOpening(
   for (const id of careIds) {
     s = order(s, { type: 'assignCare', id, assignment: 'active' });
   }
-  for (
-    let hour = 0;
-    s.squad.some((id) => present(s.operativeState[id]).asleep) && hour < 72;
-    hour++
-  ) {
+  for (let hour = 0; s.squad.some((id) => present(s.characters[id]).asleep) && hour < 72; hour++) {
     renewCareContracts();
     s = advanceCampaignHours(s, 1);
   }
   assert.ok(
-    s.squad.every((id) => !present(s.operativeState[id]).asleep),
+    s.squad.every((id) => !present(s.characters[id]).asleep),
     'real sleep must finish before local equipment recovery',
   );
   if (
     s.squad.some(
-      (id) => present(s.operativeState[id]).condition < 100 || present(s.operativeState[id]).jammed,
+      (id) => present(s.characters[id]).condition < 100 || present(s.characters[id]).jammed,
     ) &&
     !rosterFor(s).some(
       (op) =>
         s.squad.includes(op.id) &&
         op.mechanical >= 20 &&
-        repairMaterialPoints(present(s.operativeState[op.id])) > 0,
+        repairMaterialPoints(present(s.characters[op.id])) > 0,
     )
   ) {
     const mechanic = rosterFor(s)
@@ -397,7 +387,7 @@ export function prepareLocalOpening(
       const toolSource = Object.entries(FINITE_SECTOR_CACHES)
         .filter(([at]) => s.sectors[at]?.owner === 'patriot' && transportPath(s, s.location, at))
         .map(([at, source]) => {
-          const chest = s.sectorStates[at]?.props.find((prop) => prop.id === source.chest);
+          const chest = s.sectorSnapshots[at]?.props.find((prop) => prop.id === source.chest);
           return {
             at,
             points: chest
@@ -423,7 +413,7 @@ export function prepareLocalOpening(
     null,
     'resolve the actual equipment recovery journey before visiting its depot',
   );
-  assert.equal(s.pendingBattle, null);
+  assert.equal(s.sectorEntryRequest, null);
   assert.equal(s.location, careSector);
   assert.equal(
     present(s.squads.find((q) => q.id === s.activeSquadId)).journey,
@@ -469,7 +459,7 @@ export function prepareLocalOpening(
   // carried-equipment queue admits a full-condition jam without a fake wound.
   while (
     s.squad.some(
-      (id) => present(s.operativeState[id]).condition < 100 || present(s.operativeState[id]).jammed,
+      (id) => present(s.characters[id]).condition < 100 || present(s.characters[id]).jammed,
     )
   ) {
     assert.ok(
@@ -479,39 +469,37 @@ export function prepareLocalOpening(
     renewCareContracts();
     let roster = rosterFor(s).filter((o) => s.squad.includes(o.id)),
       target = roster.find(
-        (o) =>
-          present(s.operativeState[o.id]).condition < 100 || present(s.operativeState[o.id]).jammed,
+        (o) => present(s.characters[o.id]).condition < 100 || present(s.characters[o.id]).jammed,
       ),
       mechanic = roster
         .filter(
           (o) =>
             o.mechanical >= 20 &&
-            present(s.operativeState[o.id]).hp >= 15 &&
-            !present(s.operativeState[o.id]).bleeding &&
-            (present(s.operativeState[o.id]).energy ?? 100) > 10 &&
-            !present(s.operativeState[o.id]).asleep,
+            present(s.characters[o.id]).hp >= 15 &&
+            !present(s.characters[o.id]).bleeding &&
+            (present(s.characters[o.id]).energy ?? 100) > 10 &&
+            !present(s.characters[o.id]).asleep,
         )
         .sort(
           (a, b) =>
-            Number(repairMaterialPoints(present(s.operativeState[b.id])) > 0) -
-              Number(repairMaterialPoints(present(s.operativeState[a.id])) > 0) ||
+            Number(repairMaterialPoints(present(s.characters[b.id])) > 0) -
+              Number(repairMaterialPoints(present(s.characters[a.id])) > 0) ||
             b.mechanical - a.mechanical,
         )[0];
     assert.ok(mechanic, 'a living qualified mechanic with actual energy is required');
-    if (!repairMaterialPoints(present(s.operativeState[mechanic.id]))) {
+    if (!repairMaterialPoints(present(s.characters[mechanic.id]))) {
       s = collectRouteItems(s, mechanic.id, { kind: 'repair-kit' }, 1).campaign;
     }
     // Collection can advance real time and complete work or put an actor to
     // sleep. Select the current target and validate the current worker again.
     roster = rosterFor(s).filter((o) => s.squad.includes(o.id));
     target = roster.find(
-      (o) =>
-        present(s.operativeState[o.id]).condition < 100 || present(s.operativeState[o.id]).jammed,
+      (o) => present(s.characters[o.id]).condition < 100 || present(s.characters[o.id]).jammed,
     );
     if (!target) {
       continue;
     }
-    const repairScope = present(s.operativeState[target.id]).jammed ? 'equipment' : 'primary';
+    const repairScope = present(s.characters[target.id]).jammed ? 'equipment' : 'primary';
     mechanic = roster
       .filter(
         (o) =>
@@ -530,9 +518,9 @@ export function prepareLocalOpening(
       targetId: target.id,
       repairScope,
     });
-    const points = repairMaterialPoints(present(s.operativeState[mechanic.id]));
+    const points = repairMaterialPoints(present(s.characters[mechanic.id]));
     s = advanceCampaignHours(s, 1);
-    const spent = points - repairMaterialPoints(present(s.operativeState[mechanic.id]));
+    const spent = points - repairMaterialPoints(present(s.characters[mechanic.id]));
     assert.ok(spent > 0, 'actual repair must spend finite materials');
     care.repairPointsSpent += spent;
     care.repairHours++;
@@ -546,16 +534,12 @@ export function prepareLocalOpening(
   for (const id of s.squad) {
     s = order(s, { type: 'assignCare', id, assignment: 'active' });
   }
-  for (
-    let hour = 0;
-    s.squad.some((id) => present(s.operativeState[id]).asleep) && hour < 72;
-    hour++
-  ) {
+  for (let hour = 0; s.squad.some((id) => present(s.characters[id]).asleep) && hour < 72; hour++) {
     renewCareContracts();
     s = advanceCampaignHours(s, 1);
   }
   assert.ok(
-    s.squad.every((id) => !present(s.operativeState[id]).asleep),
+    s.squad.every((id) => !present(s.characters[id]).asleep),
     'The squad must finish sleep before its return march.',
   );
   renewCareContracts();
@@ -567,7 +551,7 @@ export function prepareLocalOpening(
     null,
     'resolve the actual return journey before the next operation',
   );
-  assert.equal(s.pendingBattle, null);
+  assert.equal(s.sectorEntryRequest, null);
   assert.equal(s.location, returnSector);
   assert.equal(
     present(s.squads.find((q) => q.id === s.activeSquadId)).journey,
@@ -577,34 +561,30 @@ export function prepareLocalOpening(
   // Recover at the actual destination; the return march spends fatigue and energy.
   for (const id of s.squad) {
     if (
-      !present(s.operativeState[id]).asleep &&
-      (present(s.operativeState[id]).fatigue > 0 || present(s.operativeState[id]).energy < 100)
+      !present(s.characters[id]).asleep &&
+      (present(s.characters[id]).fatigue > 0 || present(s.characters[id]).energy < 100)
     ) {
       s = order(s, { type: 'setSleep', operativeId: id, asleep: true });
     }
   }
-  for (
-    let hour = 0;
-    s.squad.some((id) => present(s.operativeState[id]).asleep) && hour < 72;
-    hour++
-  ) {
+  for (let hour = 0; s.squad.some((id) => present(s.characters[id]).asleep) && hour < 72; hour++) {
     renewCareContracts();
     s = advanceCampaignHours(s, 1);
   }
   assert.ok(
-    s.squad.every((id) => !present(s.operativeState[id]).asleep),
+    s.squad.every((id) => !present(s.characters[id]).asleep),
     'The squad must complete actual sleep before the next operation.',
   );
   assert.equal(care.dressingCost, care.dressingsBought * 10);
   assert.equal(care.weaponCost, 0);
   assert.equal(care.workshopCost, 0);
   for (const o of rosterFor(s).filter((o) => s.squad.includes(o.id))) {
-    assert.equal(present(s.operativeState[o.id]).hp, o.maxHp);
-    assert.equal(present(s.operativeState[o.id]).energy, 100);
+    assert.equal(present(s.characters[o.id]).hp, o.maxHp);
+    assert.equal(present(s.characters[o.id]).energy, 100);
   }
   for (const id of earlierDeaths) {
     assert.equal(
-      present(s.operativeState[id]).alive,
+      present(s.characters[id]).alive,
       false,
       'rest or care cannot restore an actual casualty',
     );

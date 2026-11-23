@@ -10,16 +10,16 @@ export function advanceDetentionCare(campaign, roster) {
   const messages = [];
   const sectors = [
     ...new Set(
-      Object.values(campaign.operativeState)
+      Object.values(campaign.characters)
         .filter((r) => r.captured && r.alive)
         .map((r) => r.capturedSector),
     ),
   ];
   for (const sector of sectors) {
-    if (campaign.pendingBattle?.sector === sector) {
+    if (campaign.sectorEntryRequest?.sector === sector) {
       continue;
     }
-    const field = campaign.sectorStates[sector];
+    const field = campaign.sectorSnapshots[sector];
     const alreadyCared = Object.values(campaign.detentionRecords ?? {})
       .filter((entry) => entry.npc.detention.sector === sector)
       .flatMap((entry) => (entry.care ?? []).filter((care) => care.hour === campaign.hour));
@@ -59,19 +59,18 @@ export function advanceDetentionCare(campaign, roster) {
         break;
       }
       const source = captives
-        .map((n) => campaign.operativeState[n.detention.operativeId])
+        .map((n) => campaign.characters[n.detention.operativeId])
         .find((r) => r.medkits > 0);
       if (!source) {
         break;
       }
-      const sourceId = captives.find(
-        (n) => campaign.operativeState[n.detention.operativeId] === source,
-      ).detention.operativeId;
+      const sourceId = captives.find((n) => campaign.characters[n.detention.operativeId] === source)
+        .detention.operativeId;
       const plan = firstAidPlan({ ...guard, medkits: source.medkits }, npc, { targetKind: 'npc' });
       if (!plan.valid) {
         continue;
       }
-      const record = campaign.operativeState[npc.detention.operativeId],
+      const record = campaign.characters[npc.detention.operativeId],
         before = { hp: npc.hp, bleeding: npc.bleeding ?? 0 };
       source.medkits -= plan.dressingsUsed;
       guard.energy -= 3;

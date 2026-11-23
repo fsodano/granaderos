@@ -810,8 +810,8 @@ export function playerKnownCampaign(
     return null;
   }
   const knownIds = new Set([
-    ...(state.recruited ?? []),
-    ...Object.entries(state.operativeState ?? {})
+    ...(state.forceRoster ?? []),
+    ...Object.entries(state.characters ?? {})
       .filter(([, record]) => record.captured)
       .map(([id]) => Number(id)),
   ]);
@@ -860,7 +860,7 @@ export function playerKnownCampaign(
       journey: squadTravelStatus(squad),
     })),
     operatives: roster.map((unit): KnownOperative => {
-      const record = state.operativeState[unit.id];
+      const record = state.characters[unit.id];
       if (!record) {
         throw Error(`No existe el estado del combatiente ${unit.id}.`);
       }
@@ -955,10 +955,10 @@ export function playerKnownCampaign(
     pendingEncounter: state.pendingEncounter
       ? pick(state.pendingEncounter, ['groupId', 'sector', 'arrivedAt'])
       : null,
-    pendingBattle: state.pendingBattle
+    pendingBattle: state.sectorEntryRequest
       ? {
-          ...pick(state.pendingBattle, ['sector', 'sceneId', 'name', 'exploration']),
-          resumeAvailable: Boolean(state.pendingBattle.resumeSnapshot),
+          ...pick(state.sectorEntryRequest, ['sector', 'sceneId', 'name', 'exploration']),
+          resumeAvailable: Boolean(state.sectorEntryRequest.resumeSnapshot),
         }
       : null,
   };

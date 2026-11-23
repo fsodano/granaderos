@@ -24,15 +24,15 @@ export default function Horses({ state: s, dispatch }: Props) {
   const place = (id: string) => campaignPlace(id, s)?.name ?? id;
   const available =
     !s.defeated &&
-    !s.pendingBattle &&
+    !s.sectorEntryRequest &&
     !s.pendingEncounter &&
     s.sectors[s.location]?.owner === 'patriot';
   const order = (payload: CampaignHorseOrder) => dispatch({ type: 'horseAction', order: payload });
   const riders = roster.filter(
     (o) =>
-      s.recruited.includes(o.id) &&
-      s.operativeState[o.id]?.alive &&
-      !s.operativeState[o.id]?.captured &&
+      s.forceRoster.includes(o.id) &&
+      s.characters[o.id]?.alive &&
+      !s.characters[o.id]?.captured &&
       !operativeInTransit(s, o.id) &&
       operativeLocation(s, o.id) === s.location,
   );

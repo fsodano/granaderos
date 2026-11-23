@@ -20,7 +20,7 @@ const events = [],
 assert.equal(c.hour, 215);
 assert.equal(c.phase, 3);
 assert.equal(c.missions.yatasto.completed, true);
-assert.equal(c.pendingBattle, null);
+assert.equal(c.sectorEntryRequest, null);
 const order = (action) => {
   const n = dispatchCampaign(c, action);
   assert.equal(n.lastError, null, JSON.stringify(action) + ': ' + n.lastError);
@@ -28,8 +28,8 @@ const order = (action) => {
   events.push({ action, hour: c.hour, second: c.secondOfHour });
 };
 const renew = (buffer) => {
-  for (const id of c.recruited) {
-    const r = c.operativeState[id],
+  for (const id of c.forceRoster) {
+    const r = c.characters[id],
       t = c.contracts[id];
     if (r.alive && t?.expiresAt != null && t.expiresAt - c.hour <= buffer) {
       order({ type: 'renewContract', id, term: 'day', expectedExpiresAt: t.expiresAt });
@@ -64,7 +64,7 @@ assert.equal(gather(115, 'salta', 1), 1);
 order({ type: 'assignCare', operativeId: 115, assignment: 'doctor' });
 order({ type: 'assignCare', operativeId: 105, assignment: 'patient' });
 order({ type: 'wait', hours: 1 });
-assert.equal(c.operativeState[105].hp, 17);
+assert.equal(c.characters[105].hp, 17);
 assert.equal(gather(115, 'salta', 100), 6);
 renew(25);
 for (const operativeId of [105, 109, 115, 142]) {
@@ -78,7 +78,7 @@ order({ type: 'selectSquad', id: 'squad-3' });
 order({ type: 'travel', sector: 'cordoba' });
 assert.equal(c.hour, 228);
 assert.equal(c.location, 'cordoba');
-assert.equal(c.operativeState[116].location, 'cordoba');
+assert.equal(c.characters[116].location, 'cordoba');
 for (const quantity of [20]) {
   order({ type: 'purchaseMedicalSupplies', operativeId: 122, quantity });
 }
@@ -95,7 +95,7 @@ for (const operativeId of [105, 109, 142]) {
   order({ type: 'assignCare', operativeId, assignment: 'patient' });
 }
 for (const id of [115, 116]) {
-  const count = c.operativeState[id].medkits;
+  const count = c.characters[id].medkits;
   order({
     type: 'sectorInventory',
     sector: 'cordoba',
@@ -111,7 +111,7 @@ order({ type: 'assignCare', operativeId: 115, assignment: 'rest' });
 order({ type: 'assignCare', operativeId: 122, assignment: 'doctor' });
 for (
   let n = 0;
-  [105, 109, 142].some((id) => c.operativeState[id].hp < c.operativeState[id].maxHp) && n < 100;
+  [105, 109, 142].some((id) => c.characters[id].hp < c.characters[id].maxHp) && n < 100;
   n++
 ) {
   renew(2);
@@ -119,7 +119,7 @@ for (
   order({ type: 'wait', hours: 1 });
 }
 for (const id of [105, 109, 142]) {
-  assert.equal(c.operativeState[id].hp, c.operativeState[id].maxHp);
+  assert.equal(c.characters[id].hp, c.characters[id].maxHp);
 }
 for (const operativeId of [105, 109, 142, 122, 115]) {
   order({ type: 'assignCare', operativeId, assignment: 'rest' });
@@ -132,15 +132,15 @@ for (let n = 0; c.hour < until && n < 20; n++) {
 assert.equal(c.hour, 274);
 assert.equal(c.resources.treasury, 1557);
 assert.equal(c.pendingEncounter, null);
-for (const [id, r] of Object.entries(start.operativeState)) {
+for (const [id, r] of Object.entries(start.characters)) {
   if (!r.alive) {
-    assert.equal(c.operativeState[id].alive, false);
+    assert.equal(c.characters[id].alive, false);
   }
 }
 for (const id of [105, 109, 115, 116, 122, 142]) {
-  assert.equal(c.operativeState[id].location, 'cordoba');
-  assert.equal(c.operativeState[id].bleeding, 0);
-  assert.ok(c.recruited.includes(id));
+  assert.equal(c.characters[id].location, 'cordoba');
+  assert.equal(c.characters[id].bleeding, 0);
+  assert.ok(c.forceRoster.includes(id));
 }
 assert.deepEqual(decodeSave(encodeSave(c)).campaign, c);
 const finalSave = join(directory, 'cuyo-recovered.save.json');
@@ -159,13 +159,13 @@ const summary = {
   boughtDressings: 22,
   medicalCost: 660,
   personnel: rosterFor(c)
-    .filter((o) => c.recruited.includes(o.id) && c.operativeState[o.id].alive)
+    .filter((o) => c.forceRoster.includes(o.id) && c.characters[o.id].alive)
     .map((o) => ({
       id: o.id,
-      hp: c.operativeState[o.id].hp,
-      energy: c.operativeState[o.id].energy,
-      medkits: c.operativeState[o.id].medkits,
-      location: c.operativeState[o.id].location,
+      hp: c.characters[o.id].hp,
+      energy: c.characters[o.id].energy,
+      medkits: c.characters[o.id].medkits,
+      location: c.characters[o.id].location,
     })),
 };
 writeFileSync(join(directory, 'report.json'), JSON.stringify(summary, null, 2));

@@ -27,7 +27,7 @@ const need = (ok, message) => {
 const site = (r) => r.sceneId ?? r.sector;
 const parent = (s, id) => sceneAnchorFor(s, id);
 const previous = (s, r) =>
-  expandCellScene(r.sceneId ? s.sceneStates?.[r.sceneId] : s.sectorStates?.[r.sector], s);
+  expandCellScene(r.sceneId ? s.sceneSnapshots?.[r.sceneId] : s.sectorSnapshots?.[r.sector], s);
 const validGun = (g) =>
   g &&
   typeof g.id === 'string' &&
@@ -106,9 +106,9 @@ function migrateArtilleryStateValue(s) {
       'Las existencias antiguas de artillería son inválidas.',
     );
     const ids = [
-      ...Object.values(s.sectorStates ?? {}),
-      ...Object.values(s.sceneStates ?? {}),
-      s.pendingBattle,
+      ...Object.values(s.sectorSnapshots ?? {}),
+      ...Object.values(s.sceneSnapshots ?? {}),
+      s.sectorEntryRequest,
       ...(s.convoys ?? []),
     ]
       .filter(Boolean)
@@ -146,17 +146,17 @@ function migrateArtilleryStateValue(s) {
         delete depot.cannons;
       }
     }
-    if (s.pendingBattle) {
+    if (s.sectorEntryRequest) {
       need(
-        s.pendingBattle.artilleryDeployment || !(s.pendingBattle.artillery ?? []).length,
+        s.sectorEntryRequest.artilleryDeployment || !(s.sectorEntryRequest.artillery ?? []).length,
         'Falta el origen de la batería antigua.',
       );
-      s.pendingBattle.artilleryDeployment ??= {
+      s.sectorEntryRequest.artilleryDeployment ??= {
         version: 1,
-        site: site(s.pendingBattle),
+        site: site(s.sectorEntryRequest),
         issued: [],
       };
-      s.pendingBattle.cannons = (s.pendingBattle.artillery ?? []).length;
+      s.sectorEntryRequest.cannons = (s.sectorEntryRequest.artillery ?? []).length;
     }
     s.artilleryVersion = 1;
     migrateArtilleryCustody(s);
@@ -171,7 +171,7 @@ function migrateArtilleryStateValue(s) {
     available[gun.type]--;
     return true;
   };
-  const r = s.pendingBattle;
+  const r = s.sectorEntryRequest;
   if (r) {
     const guns = list(r.artillery ?? []);
     for (const gun of guns) {
@@ -182,8 +182,8 @@ function migrateArtilleryStateValue(s) {
     r.artilleryDeployment = { version: 1, site: site(r), issued: guns.map((g) => g.id) };
   }
   const scenes = [
-    ...Object.entries(s.sectorStates ?? {}),
-    ...Object.entries(s.sceneStates ?? {}),
+    ...Object.entries(s.sectorSnapshots ?? {}),
+    ...Object.entries(s.sceneSnapshots ?? {}),
   ].sort(
     (a, b) =>
       (b[1].savedHour ?? b[1].enteredHour ?? 0) - (a[1].savedHour ?? a[1].enteredHour ?? 0) ||
@@ -206,10 +206,10 @@ function migrateArtilleryStateValue(s) {
   migrateArtilleryCustody(s);
 }
 export function prepareSectorArtillery(s, request) {
-  const current = request === s.pendingBattle;
+  const current = request === s.sectorEntryRequest;
   migrateArtilleryState(s);
   if (current) {
-    request = s.pendingBattle;
+    request = s.sectorEntryRequest;
   }
   if (request.artilleryDeployment?.site === site(request)) {
     return request;
@@ -343,8 +343,8 @@ export function settleSectorArtillery(snapshot, outcome) {
 export function ownedArtilleryCount(s) {
   const owned = new Map();
   for (const [id, b] of [
-    ...Object.entries(s.sectorStates ?? {}),
-    ...Object.entries(s.sceneStates ?? {}),
+    ...Object.entries(s.sectorSnapshots ?? {}),
+    ...Object.entries(s.sceneSnapshots ?? {}),
   ]) {
     if (s.sectors[parent(s, b.sectorId ?? id)]?.owner === 'patriot') {
       for (const g of b.artillery ?? []) {
@@ -354,8 +354,8 @@ export function ownedArtilleryCount(s) {
       }
     }
   }
-  if (s.pendingBattle) {
-    for (const g of s.pendingBattle.artillery ?? []) {
+  if (s.sectorEntryRequest) {
+    for (const g of s.sectorEntryRequest.artillery ?? []) {
       if (g.side === 'player') {
         owned.set(g.id, g);
       } else {
@@ -395,8 +395,8 @@ export function validateCampaignArtillery(s) {
   );
   const ids = new Set();
   for (const b of [
-    ...Object.values(s.sectorStates ?? {}),
-    ...Object.values(s.sceneStates ?? {}),
+    ...Object.values(s.sectorSnapshots ?? {}),
+    ...Object.values(s.sceneSnapshots ?? {}),
     ...Object.values(s.artilleryDepots ?? {}).map((artillery) => ({ artillery })),
     ...(s.artilleryTransfers ?? []).map((t) => ({ artillery: [t.gun] })),
     ...Object.values(s.artilleryMerchants ?? {}).map((shop) => ({ artillery: shop.guns })),
@@ -409,8 +409,8 @@ export function validateCampaignArtillery(s) {
       ids.add(g.id);
     }
   }
-  if (s.pendingBattle) {
-    const r = s.pendingBattle;
+  if (s.sectorEntryRequest) {
+    const r = s.sectorEntryRequest;
     validateArtilleryDeployment(r);
     for (const id of r.artilleryDeployment.issued) {
       need(!ids.has(id), 'Una pieza desplegada ya existe en otro sector.');
@@ -443,7 +443,7 @@ export function validateCampaignArtillery(s) {
 }
 /** @returns {Array<{sector:string;gun:import('./public/campaign-types.ts').CampaignArtillery}>} */
 export function stationedArtillery(s) {
-  return Object.entries(s.sectorStates ?? {})
+  return Object.entries(s.sectorSnapshots ?? {})
     .filter(([id]) => parent(s, id) === s.location)
     .flatMap(([sector, b]) => (b.artillery ?? []).map((gun) => ({ sector, gun })));
 }
@@ -554,7 +554,7 @@ function migrateArtilleryCustody(s) {
 // price and reserve limit as the editor-backed single-round control.
 export function artillerySupplyPreview(s, sector, gunId, count = 1, isSupplied = () => false) {
   const q = artillerySupplyQuote(s, sector, gunId, isSupplied(s, s.location)),
-    gun = s.sectorStates?.[sector]?.artillery?.find((g) => g.id === gunId),
+    gun = s.sectorSnapshots?.[sector]?.artillery?.find((g) => g.id === gunId),
     cost = q.cost * count;
   const reason =
     q.reason ||

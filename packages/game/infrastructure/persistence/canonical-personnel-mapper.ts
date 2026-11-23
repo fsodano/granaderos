@@ -45,10 +45,10 @@ type ContractRecord = {
 };
 export type PersonnelDefinition = CharacterAbilityDefinition & Readonly<{ maxHp: number }>;
 export type CampaignPersonnelSnapshot = CampaignSessionAccessSnapshot & {
-  operativeState: Record<string, PersonnelRecord>;
+  characters: Record<string, PersonnelRecord>;
   contracts: Record<string, ContractRecord>;
   resources: { treasury: number };
-  recruited: number[];
+  forceRoster: number[];
   squad: number[];
   location: string;
   activeSquadId?: string;
@@ -107,7 +107,7 @@ export class CanonicalPersonnelMapper {
       'player',
       () =>
         new ForceRoster(
-          campaign.recruited.map(String),
+          campaign.forceRoster.map(String),
           campaign.squad.map(String),
           campaign.location,
           MaximumSquadSize,
@@ -123,7 +123,7 @@ export class CanonicalPersonnelMapper {
     >,
   ): Character {
     const id = String(definition.id);
-    const record = this.#campaign.operativeState[id];
+    const record = this.#campaign.characters[id];
     if (!record) {
       throw new Error(`Falta el estado del personaje ${id}.`);
     }
@@ -200,8 +200,8 @@ export class CanonicalPersonnelMapper {
         continue;
       }
       for (const id of [...record.members.map(String), ...squad.memberIds]) {
-        if (target.operativeState[id]) {
-          target.operativeState[id].location = squad.locationId;
+        if (target.characters[id]) {
+          target.characters[id].location = squad.locationId;
         }
       }
       record.members = squad.memberIds.map(Number);
@@ -210,7 +210,7 @@ export class CanonicalPersonnelMapper {
       }
     }
     target.resources.treasury = this.treasury.balance.pesos;
-    target.recruited = this.roster.members.map(Number);
+    target.forceRoster = this.roster.members.map(Number);
     target.squad = this.roster.squadMembers.map(Number);
     for (const [id, character] of this.#characters) {
       if (this.#characterState(character) === this.#originalCharacters.get(id)) {
@@ -218,7 +218,7 @@ export class CanonicalPersonnelMapper {
       }
       const snapshot = character.snapshot();
       const health = character.health.toSnapshot();
-      const record = target.operativeState[id];
+      const record = target.characters[id];
       if (!record) {
         throw new Error(`Falta el estado del personaje ${id}.`);
       }

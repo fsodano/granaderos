@@ -31,7 +31,7 @@ function returnedFromRetiro() {
 
 void test('restoration owns the current inventory once after a character leaves one sector and enters another', () => {
   const campaign = returnedFromRetiro();
-  const archivalUnits = structuredClone(present(campaign.sectorStates['retiro']).units);
+  const archivalUnits = structuredClone(present(campaign.sectorSnapshots['retiro']).units);
   const pair = prepareCampaignBattle(enterAssault(campaign, 'buenos_aires'));
   assert.equal(pair.error, null);
   const mapper = new GameSnapshotMapper(() => 'retained-ownership');
@@ -54,7 +54,7 @@ void test('restoration owns the current inventory once after a character leaves 
     0,
   );
   assert.deepEqual(
-    present(restored.snapshot().campaign.sectorStates['retiro']).units,
+    present(restored.snapshot().campaign.sectorSnapshots['retiro']).units,
     archivalUnits,
   );
   assert.equal(
@@ -63,7 +63,7 @@ void test('restoration owns the current inventory once after a character leaves 
     true,
   );
   assert.throws(() =>
-    restored.sectorSession(present(present(campaign.sectorStates['retiro']).sectorSession).id),
+    restored.sectorSession(present(present(campaign.sectorSnapshots['retiro']).sectorSession).id),
   );
 });
 
@@ -78,8 +78,8 @@ void test('a travelling character does not occupy the archived departure positio
   const game = new GameSnapshotMapper().restore(encodeSave(campaign));
   assert.equal(game.world.object('Sector', 'retiro').toSnapshot().participants.length, 0);
   assert.deepEqual(
-    game.snapshot().campaign.sectorStates['retiro'],
-    campaign.sectorStates['retiro'],
+    game.snapshot().campaign.sectorSnapshots['retiro'],
+    campaign.sectorSnapshots['retiro'],
   );
 });
 
@@ -88,7 +88,7 @@ void test('a transferred militia member owns inventory only at the current garri
   present(campaign.sectors['retiro']).militia = [1, 0, 0];
   campaign = leave(visit(campaign));
   const militiaId = present(present(campaign.garrisons['retiro'])[0]).id;
-  const archivalUnits = structuredClone(present(campaign.sectorStates['retiro']).units);
+  const archivalUnits = structuredClone(present(campaign.sectorSnapshots['retiro']).units);
   campaign = order(campaign, {
     type: 'transferMilitia',
     from: 'retiro',
@@ -149,7 +149,7 @@ void test('a transferred militia member owns inventory only at the current garri
   assert.equal(present(restoredMilitia).hp, previousHealth - 7);
   assert.equal(present(restoredMilitia).bleeding, 1);
   assert.deepEqual(
-    present(restored.snapshot().campaign.sectorStates['retiro']).units,
+    present(restored.snapshot().campaign.sectorSnapshots['retiro']).units,
     archivalUnits,
   );
   assert.deepEqual(pair, input);
@@ -163,11 +163,13 @@ void test('mission ally archives follow canonical location and retain their hist
   campaign = order(campaign, { type: 'travel', sector: 'san_nicolas' });
   campaign = order(campaign, { type: 'attack', sector: 'san_lorenzo' });
   campaign = order(campaign, scriptedBattleReport(campaign));
-  const ally = present(campaign.sectorStates['san_lorenzo']).units.find((unit) => unit.missionAlly);
+  const ally = present(campaign.sectorSnapshots['san_lorenzo']).units.find(
+    (unit) => unit.missionAlly,
+  );
   assert.equal(present(ally).id, '57');
   const beforeRelocation = new RetainedSectorPresence(campaign);
-  assert.equal(beforeRelocation.includes(ally, campaign.sectorStates['san_lorenzo']), true);
-  present(campaign.operativeState[57]).location = 'cordoba';
+  assert.equal(beforeRelocation.includes(ally, campaign.sectorSnapshots['san_lorenzo']), true);
+  present(campaign.characters[57]).location = 'cordoba';
   const input = structuredClone(campaign);
   const game = new GameSnapshotMapper().restore(encodeSave(campaign));
   assert.equal(
@@ -178,8 +180,8 @@ void test('mission ally archives follow canonical location and retain their hist
     false,
   );
   assert.deepEqual(
-    present(game.snapshot().campaign.sectorStates['san_lorenzo']).units,
-    present(input.sectorStates['san_lorenzo']).units,
+    present(game.snapshot().campaign.sectorSnapshots['san_lorenzo']).units,
+    present(input.sectorSnapshots['san_lorenzo']).units,
   );
   assert.deepEqual(campaign, input);
 });
@@ -195,11 +197,14 @@ void test('active and suspended auxiliary registrations exclude only living arch
     missionAllies: [ally],
     garrison: [militia],
   };
-  for (const visit of [{ pendingBattle: request }, { suspendedSectorSessions: [{ request }] }]) {
+  for (const visit of [
+    { sectorEntryRequest: request },
+    { suspendedSectorSessions: [{ request }] },
+  ]) {
     const presence = new RetainedSectorPresence({
       ...visit,
       squads: [],
-      operativeState: { 57: { alive: true, location: 'retiro' } },
+      characters: { 57: { alive: true, location: 'retiro' } },
       garrisons: { retiro: [militia] },
     });
     assert.equal(presence.includes(ally, field), false);

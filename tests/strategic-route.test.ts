@@ -23,7 +23,7 @@ void test('map preview is read-only, queues the real multi-sector route and wait
   assert.deepEqual(preview.path, ['retiro', 'cell-27-29', 'cell-27-30', 'ensenada']);
   assert.deepEqual(s, original);
   // Sector snapshots can be large; preview must never traverse or copy them.
-  Object.defineProperty(s, 'sectorStates', {
+  Object.defineProperty(s, 'sectorSnapshots', {
     get() {
       throw Error('Preview touched tactical snapshots');
     },
@@ -64,8 +64,8 @@ void test('blocked route previews explain refusals and valid redirection preview
   const refusals: [(campaign: CampaignSnapshot) => void, string, RegExp][] = [
     [
       (s) => {
-        s.pendingBattle = {
-          ...present(order(s, { type: 'visitSector' }).pendingBattle),
+        s.sectorEntryRequest = {
+          ...present(order(s, { type: 'visitSector' }).sectorEntryRequest),
           id: 'active',
         };
       },
@@ -81,14 +81,14 @@ void test('blocked route previews explain refusals and valid redirection preview
     ],
     [
       (s: CampaignSnapshot) => {
-        present(s.operativeState[3]).asleep = true;
+        present(s.characters[3]).asleep = true;
       },
       'buenos_aires',
       /durmiendo/,
     ],
     [
       (s: CampaignSnapshot) => {
-        present(s.operativeState[3]).assignment = 'doctor';
+        present(s.characters[3]).assignment = 'doctor';
       },
       'buenos_aires',
       /asignación/,
@@ -121,13 +121,13 @@ void test('an adjacent enemy destination previews an assault and arrives at the 
   assert.equal(present(p.action).type, 'attack');
   assert.equal(p.hours, 2);
   s = order(s, present(p.action));
-  assert.equal(s.pendingBattle, null);
+  assert.equal(s.sectorEntryRequest, null);
   assert.equal(s.location, 'retiro');
   s = order(s, { type: 'wait', hours: 12 });
   assert.equal(s.hour, 2);
   assert.equal(present(present(s.squads[0]).journey).status, 'ready');
   assert.equal(s.location, 'retiro');
-  assert.equal(s.pendingBattle, null);
+  assert.equal(s.sectorEntryRequest, null);
 });
 void test('transport preview uses the selected transport duration and rejects unavailable transport', () => {
   const s = initialCampaign();
@@ -156,7 +156,7 @@ for (const mode of ['march', 'posta', 'carts'] as const) {
       journey = present(queued.squads.find((q) => q.id === s.activeSquadId)).journey;
     assert.deepEqual(present(journey).path, preview.path);
     assert.equal(present(journey).intent, undefined);
-    assert.equal(queued.pendingBattle, null);
+    assert.equal(queued.sectorEntryRequest, null);
     assert.equal(queued.blockade, true);
     assert.equal(queued.hour, s.hour);
     assert.deepEqual(queued.resources, s.resources);
@@ -224,14 +224,14 @@ void test('the map still prepares a counterattack against a stationed force in a
   assert.deepEqual(s, before);
   let attack = order(s, present(preview.action));
   assert.equal(present(present(attack.squads[0]).journey).intent, 'attack');
-  assert.equal(attack.pendingBattle, null);
+  assert.equal(attack.sectorEntryRequest, null);
   attack = order(attack, { type: 'wait', hours: preview.hours });
   assert.equal(present(present(attack.squads[0]).journey).status, 'ready');
   attack = order(attack, { type: 'beginAssault', sector: 'buenos_aires' });
-  assert.deepEqual(present(attack.pendingBattle).occupationGroupIds, [
+  assert.deepEqual(present(attack.sectorEntryRequest).occupationGroupIds, [
     present(s.enemyGroups[0]).id,
   ]);
-  assert.deepEqual(present(attack.pendingBattle).enemies, present(s.enemyGroups[0]).units);
+  assert.deepEqual(present(attack.sectorEntryRequest).enemies, present(s.enemyGroups[0]).units);
   assert.equal(attack.blockade, true);
 });
 

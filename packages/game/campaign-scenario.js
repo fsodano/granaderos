@@ -48,10 +48,9 @@ function genericInitialState(seed, definitions) {
     artilleryCustodyVersion: 1,
     nextArtilleryId: 1,
     civilianState: { version: 2, people: {} },
-    hiringArrivals: [],
     equipmentShipments: [],
     missions: {},
-    sceneStates: {},
+    sceneSnapshots: {},
     missionAllies: {},
     garrisons: {},
     nextMilitiaId: 20000,
@@ -69,7 +68,7 @@ function genericInitialState(seed, definitions) {
     location: hq,
     activeSquadId: 'squad-1',
     squads: [{ id: 'squad-1', name: 'Primera escuadra', members: [], location: hq }],
-    sectorStates: {},
+    sectorSnapshots: {},
     resources: {
       treasury: campaignRules({ contentCampaign: { package: definitions } }).startingTreasury,
     },
@@ -92,9 +91,9 @@ function genericInitialState(seed, definitions) {
     lastConversation: null,
     conversations: {},
     officer: null,
-    recruited: [],
+    forceRoster: [],
     squad: [],
-    operativeState: {},
+    characters: {},
     flags:
       definitions?.scenario === 'generic-v1'
         ? { armyFunded: false, foundry: false }
@@ -103,7 +102,7 @@ function genericInitialState(seed, definitions) {
           ),
     routes: { posta: false, flotilla: false, carts: false, mules: false },
     blockade: false,
-    pendingBattle: null,
+    sectorEntryRequest: null,
     completed: false,
     defeated: false,
     log: [
@@ -181,7 +180,7 @@ const generic = Object.freeze({
   id: 'generic-v1',
   maxPhase: 0,
   scenes: {},
-  sceneStateKey: () => 'sectorStates',
+  sceneStateKey: () => 'sectorSnapshots',
   workshopSectors: (s) => campaignWorld(s).workshopSectors ?? [headquartersFor(s)],
   missionNPCs: [],
   enemyReserveLimits: genericEnemyReserveLimits,
@@ -271,7 +270,8 @@ const generic = Object.freeze({
     }
   },
   validateReputation: () => true,
-  validateStoredScenes: (s) => empty(s.missions) && empty(s.sceneStates) && empty(s.missionAllies),
+  validateStoredScenes: (s) =>
+    empty(s.missions) && empty(s.sceneSnapshots) && empty(s.missionAllies),
   validatePendingScene: (s, b) => !b.sceneId && !b.missionId && !b.missionAllies,
   validateDailyState: (s) => {
     if (s.politics !== undefined) {

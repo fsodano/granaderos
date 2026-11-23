@@ -59,7 +59,7 @@ export function recordStrategicArrival(s, ids, fromSector, toSector, sceneId = n
     return;
   }
   for (const id of ids) {
-    const r = s.operativeState[id];
+    const r = s.characters[id];
     r.location = sceneAnchorFor(s, toSector);
     r.arrival = {
       battleId: `travel-${s.hour}-${fromSector}-${sceneId ?? toSector}`,
@@ -113,8 +113,8 @@ export function prepareDeploymentExits(s, request) {
   request.exitRulesVersion = 1;
   request.remains = clone(s.sectorRemains?.[strategicSector(request, s)] ?? []);
   const previous = request.sceneId
-    ? s.sceneStates?.[request.sceneId]
-    : s.sectorStates?.[request.sector];
+    ? s.sceneSnapshots?.[request.sceneId]
+    : s.sectorSnapshots?.[request.sector];
   // An unfinished assault reuses the actual enemy equipment on that field.
   // Match enterSector: a new occupation or defense force has its own issue.
   if (
@@ -169,7 +169,7 @@ export function prepareDeploymentExits(s, request) {
     ).values(),
   ];
   for (const u of request.squad) {
-    const r = s.operativeState[Number(u.id)],
+    const r = s.characters[Number(u.id)],
       arrival = r?.arrival;
     delete u.entryEdge;
     delete u.entryAnchor;
@@ -392,7 +392,7 @@ export function planMountReturn(s, request, snapshot, entries) {
 
 export function migrateDeploymentReturns(s) {
   s.sectorRemains ??= {};
-  for (const r of Object.values(s.operativeState ?? {})) {
+  for (const r of Object.values(s.characters ?? {})) {
     r.capturedAmmunition ??= { loaded: 0, ammo: 0 };
   }
   return s;
@@ -419,7 +419,9 @@ function remainsGeometry(s, exit) {
   const source = exit.id.slice(0, exit.id.indexOf(':'));
   const saved = s[sceneStateKeyFor(s, source)]?.[source];
   const request =
-    (s.pendingBattle?.sceneId ?? s.pendingBattle?.sector) === source ? s.pendingBattle : null;
+    (s.sectorEntryRequest?.sceneId ?? s.sectorEntryRequest?.sector) === source
+      ? s.sectorEntryRequest
+      : null;
   const map = expandCellScene(saved ?? request?.resumeSnapshot ?? request, s);
   // The body still has source-map coordinates until its destination is entered.
   // Older records without a source map retain the compact-map validation bounds.
@@ -533,7 +535,7 @@ function validateReturnLedger(snapshot, s) {
 export function validateDeploymentReturnState(s) {
   const object = (v) => v && typeof v === 'object' && !Array.isArray(v),
     integer = (v, max) => Number.isSafeInteger(v) && v >= 0 && v <= max;
-  const request = s.pendingBattle;
+  const request = s.sectorEntryRequest;
   if (request) {
     // Legacy saves gain routes only. Do not reissue equipment, rebuild loot
     // allowances, or infer that a soldier has already crossed a boundary.
@@ -547,7 +549,7 @@ export function validateDeploymentReturnState(s) {
       'Las rutas del despliegue son inválidas.',
     );
     for (const unit of request.squad ?? []) {
-      const r = s.operativeState[Number(unit.id)],
+      const r = s.characters[Number(unit.id)],
         point = unit.residentPosition,
         actual = r?.residentPosition,
         matching =
@@ -573,14 +575,15 @@ export function validateDeploymentReturnState(s) {
   }
   for (const field of ['fieldCartridges', 'storedCartridges']) {
     need(
-      s.pendingBattle?.[field] === undefined || integer(s.pendingBattle[field], 1000000000000),
+      s.sectorEntryRequest?.[field] === undefined ||
+        integer(s.sectorEntryRequest[field], 1000000000000),
       'La munición previa del despliegue es inválida.',
     );
   }
   for (const source of [
-    ...(s.pendingBattle?.ammunitionSources ?? []),
-    ...(s.pendingBattle?.garrisonLootSources ?? []),
-    ...(s.pendingBattle?.casualtyLootSources ?? []),
+    ...(s.sectorEntryRequest?.ammunitionSources ?? []),
+    ...(s.sectorEntryRequest?.garrisonLootSources ?? []),
+    ...(s.sectorEntryRequest?.casualtyLootSources ?? []),
   ]) {
     need(
       source.cursorCartridges === undefined || integer(source.cursorCartridges, 1000000),
@@ -653,7 +656,7 @@ export function validateDeploymentReturnState(s) {
       });
     }
   }
-  for (const [id, r] of Object.entries(s.operativeState)) {
+  for (const [id, r] of Object.entries(s.characters)) {
     r.capturedAmmunition ??= { loaded: 0, ammo: 0 };
     need(
       object(r.capturedAmmunition) &&
@@ -714,7 +717,9 @@ export function validateDeploymentReturnState(s) {
     if (r.residentPosition !== undefined) {
       const point = r.residentPosition,
         field = expandCellScene(
-          r.residentScene ? s.sceneStates?.[r.residentScene] : s.sectorStates?.[r.residentSector],
+          r.residentScene
+            ? s.sceneSnapshots?.[r.residentScene]
+            : s.sectorSnapshots?.[r.residentSector],
           s,
         );
       need(
@@ -739,7 +744,7 @@ export function validateDeploymentReturnState(s) {
           sector(h.custody.sector, s) &&
           h.location === h.custody.sector &&
           Number.isInteger(h.custody.operativeId) &&
-          s.operativeState[h.custody.operativeId] &&
+          s.characters[h.custody.operativeId] &&
           h.assignedTo === null &&
           !h.returned,
         'La custodia de la montura es inválida.',
@@ -747,8 +752,8 @@ export function validateDeploymentReturnState(s) {
     }
   }
   for (const snapshot of [
-    ...Object.values(s.sectorStates ?? {}),
-    ...Object.values(s.sceneStates ?? {}),
+    ...Object.values(s.sectorSnapshots ?? {}),
+    ...Object.values(s.sceneSnapshots ?? {}),
   ]) {
     validateReturnLedger(snapshot, s);
   }

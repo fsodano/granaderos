@@ -205,13 +205,12 @@ import {
 } from './weapon-definition.ts';
 import { equipArmoryItem, validateArmoryItems } from './armory-items.js';
 import {
-  hiringArrivalOptions,
-  pendingHire,
-  nextHireArrivalSeconds,
-  redirectHire,
-  cancelHireArrival,
-  validateHireArrivals,
-} from './hiring-arrivals.js';
+  recruitmentSites,
+  pendingRecruitmentClaim,
+  cancelRecruitmentClaim,
+  validateLegacyHiringArrivals,
+  validateRecruitmentClaims,
+} from './recruitment-claims.js';
 import { attachCampaignContent, validateCampaignContent } from './campaign-content.js';
 import {
   scenarioFor,
@@ -489,7 +488,7 @@ export function rosterFor(s) {
   const equipment = new CampaignCharacterEquipmentMapper(s);
   const abilities = new CampaignCharacterAbilitiesMapper(s);
   return baseRosterFor(s).map((o) => {
-    const record = s.operativeState?.[o.id] ?? {},
+    const record = s.characters?.[o.id] ?? {},
       op = {
         ...equipment.project(o),
         ...abilities.read(o).toSnapshot().ratings,
@@ -508,7 +507,7 @@ function deploymentOperative(s, id) {
   const op = rosterFor(s).find((o) => o.id === id);
   // Stored strength is a legacy floor. New XP can raise the current value
   // above that floor; persistent wounds and supplies still use the record.
-  const record = clone(s.operativeState[id]);
+  const record = clone(s.characters[id]);
   delete record.strategicIsolation;
   delete record.pendingCompanionLoss;
   delete record.companionLossConfirmation;
@@ -536,7 +535,7 @@ function returnTraining(s, id, report) {
   validateTraining(report);
   for (const field of ['trainedStats', 'skillPractice', 'practiceSeed']) {
     if (report[field] !== undefined) {
-      s.operativeState[id][field] = clone(report[field]);
+      s.characters[id][field] = clone(report[field]);
     }
   }
 }
@@ -549,12 +548,12 @@ function removeFromService(s, id) {
   personnel.roster.release(String(id));
   personnel.apply(s);
   cancelPendingCompanionLoss(s, id);
-  s.operativeState[id].assignment = 'active';
-  s.operativeState[id].asleep = false;
-  s.operativeState[id].sleepCollapsed = false;
-  s.operativeState[id].recoveryHours = 0;
+  s.characters[id].assignment = 'active';
+  s.characters[id].asleep = false;
+  s.characters[id].sleepCollapsed = false;
+  s.characters[id].recoveryHours = 0;
   const location = operativeLocation(s, id);
-  s.operativeState[id].location = location;
+  s.characters[id].location = location;
   for (const squad of s.squads) {
     squad.members = squad.members.filter((x) => x !== id);
     if (!squad.members.length) {
@@ -594,7 +593,7 @@ function endOperativeService(s, id, fullCredit = false) {
 }
 function endExpiredService(s, id) {
   const name = rosterFor(s).find((o) => o.id === id)?.name ?? 'Un combatiente',
-    alive = s.operativeState[id].alive;
+    alive = s.characters[id].alive;
   endOperativeService(s, id);
   const text = alive
     ? `${name} concluye su contrato y deja el destacamento.`
@@ -616,20 +615,20 @@ function receiveHire(s, arrival, joinSquad = true) {
     Money.pesos(arrival.paid),
   );
   character.beginService(contract, arrival.destination);
-  personnel.roster.admit(character.id, arrival.destination, joinSquad && !s.pendingBattle);
+  personnel.roster.admit(character.id, arrival.destination, joinSquad && !s.sectorEntryRequest);
   personnel.apply(s);
   if (arrival.guaranteeId) {
     s.contracts[id].guaranteeId = arrival.guaranteeId;
   }
   issueStartingCartridges(s, op);
   issueInitialOutfit(s, id);
-  Object.assign(s.operativeState[id], {
+  Object.assign(s.characters[id], {
     location: arrival.destination,
     arrival: null,
     residentSector: null,
     residentScene: null,
   });
-  delete s.operativeState[id].residentPosition;
+  delete s.characters[id].residentPosition;
   note(s, `${op.name} llega a ${sector(arrival.destination, s).name} y comienza su servicio.`);
   receiveCorrespondence(s, {
     id: `arrival-${id}-${s.hour}`,
@@ -644,42 +643,77 @@ function receiveHire(s, arrival, joinSquad = true) {
     }
   }
 }
-function receiveDueHires(s, joinSquad = true) {
-  const availableSites = hiringArrivalOptions(s);
-  for (const booking of (s.hiringArrivals ?? []).slice()) {
+function recruitmentClaimFromArrival(booking) {
+  return {
+    operativeId: booking.operativeId,
+    destination: booking.destination,
+    bookedAt: booking.bookedAt,
+    ...(booking.bookedSecond !== undefined ? { bookedSecond: booking.bookedSecond } : {}),
+    term: booking.term,
+    ...(booking.priceScale !== undefined ? { priceScale: booking.priceScale } : {}),
+    paid: booking.paid,
+    permanent: booking.permanent,
+    serviceHours: booking.serviceHours,
+    ...(booking.guaranteeId !== undefined ? { guaranteeId: booking.guaranteeId } : {}),
+  };
+}
+function migrateLegacyHiringArrivals(s) {
+  if (s.hiringArrivals === undefined) {
+    return;
+  }
+  validateLegacyHiringArrivals(s, rosterFor(s));
+  const availableSites = recruitmentSites(s);
+  for (const booking of s.hiringArrivals) {
     const destination =
       availableSites.find((site) => site.id === booking.destination)?.id ??
+      availableSites.find((site) => site.id === s.location)?.id ??
+      availableSites[0]?.id;
+    if (destination) {
+      receiveHire(s, { ...booking, destination });
+    } else {
+      (s.refundableRecruitmentClaims ??= []).push(recruitmentClaimFromArrival(booking));
+    }
+  }
+  delete s.hiringArrivals;
+}
+function receiveDueRecruitmentClaims(s, joinSquad = true) {
+  const availableSites = recruitmentSites(s);
+  for (const claim of (s.refundableRecruitmentClaims ?? []).slice()) {
+    const destination =
+      availableSites.find((site) => site.id === claim.destination)?.id ??
       availableSites.find((site) => site.id === s.location)?.id ??
       availableSites[0]?.id;
     if (!destination) {
       continue;
     }
-    const record = s.operativeState[booking.operativeId];
+    const record = s.characters[claim.operativeId];
     if (
       !record?.alive ||
       record.captured ||
       record.serviceEquipmentReturn ||
-      s.recruited.includes(booking.operativeId) ||
-      s.contracts[booking.operativeId]
+      s.forceRoster.includes(claim.operativeId) ||
+      s.contracts[claim.operativeId]
     ) {
       continue;
     }
-    receiveHire(s, { ...booking, destination }, joinSquad);
-    s.hiringArrivals = s.hiringArrivals.filter((candidate) => candidate !== booking);
+    receiveHire(s, { ...claim, destination }, joinSquad);
+    s.refundableRecruitmentClaims = s.refundableRecruitmentClaims.filter(
+      (candidate) => candidate !== claim,
+    );
   }
   s.recruitmentVersion = 2;
 }
 function expireDueContracts(s) {
   const events = [],
     now = s.hour * 3600 + (s.secondOfHour ?? 0);
-  for (const id of s.recruited.slice()) {
+  for (const id of s.forceRoster.slice()) {
     const contract = s.contracts?.[id],
       expiry = contractExpiresSeconds(contract);
     if (expiry === null || expiry > now) {
       continue;
     }
     cancelPendingCompanionLoss(s, id);
-    if (s.operativeState[id]?.alive && !s.operativeState[id].captured) {
+    if (s.characters[id]?.alive && !s.characters[id].captured) {
       events.push({
         operativeId: id,
         expiresAt: contract.expiresAt,
@@ -711,15 +745,15 @@ const clone = (value) => {
   // including a new wrapper, and reuse its pinned package on each clock tick.
   const source = { ...value, contentCampaign: { ...value.contentCampaign } };
   delete source.contentCampaign.package;
-  const pinnedRequest = value.pendingBattle?.campaignPackage === definitions;
+  const pinnedRequest = value.sectorEntryRequest?.campaignPackage === definitions;
   if (pinnedRequest) {
-    source.pendingBattle = { ...value.pendingBattle };
-    delete source.pendingBattle.campaignPackage;
+    source.sectorEntryRequest = { ...value.sectorEntryRequest };
+    delete source.sectorEntryRequest.campaignPackage;
   }
   const result = JSON.parse(JSON.stringify(source));
   result.contentCampaign.package = definitions;
   if (pinnedRequest) {
-    result.pendingBattle.campaignPackage = definitions;
+    result.sectorEntryRequest.campaignPackage = definitions;
   }
   return result;
 };
@@ -837,13 +871,13 @@ export function initialCampaign(seed = 1812, content = null) {
 }
 export const isSupplied = isSectorSupplied;
 export function recruitmentStatus(s, id, local = false) {
-  if (s.recruited.includes(id)) {
+  if (s.forceRoster.includes(id)) {
     return { available: false, reason: 'Ya se encuentra en tus filas.' };
   }
-  if (!s.operativeState[id]?.alive) {
+  if (!s.characters[id]?.alive) {
     return { available: false, reason: 'Ha caído en combate.' };
   }
-  if (s.operativeState[id]?.captured) {
+  if (s.characters[id]?.captured) {
     return { available: false, reason: 'Está prisionero. Liberá el sector donde está detenido.' };
   }
   const returnReason = serviceEquipmentReturnReason(s, id);
@@ -854,7 +888,7 @@ export function recruitmentStatus(s, id, local = false) {
   if (character && isWorldCharacter(character)) {
     const reason = !character.encounter.recruitable
       ? 'Este habitante no es un recluta.'
-      : s.operativeState[id].captured
+      : s.characters[id].captured
         ? 'Este habitante está cautivo.'
         : !local
           ? 'Buscá a este habitante en el mapa y hablá con él o ella.'
@@ -891,14 +925,13 @@ export function availableActions(s) {
   };
 }
 function hasReadyCombatant(s) {
-  return s.recruited.some(
-    (id) =>
-      s.operativeState[id]?.alive && s.operativeState[id].hp > 0 && !s.operativeState[id].captured,
+  return s.forceRoster.some(
+    (id) => s.characters[id]?.alive && s.characters[id].hp > 0 && !s.characters[id].captured,
   );
 }
 function endingSpeech(s) {
   for (const op of rosterFor(s).filter(
-    (o) => s.recruited.includes(o.id) && s.operativeState[o.id]?.alive,
+    (o) => s.forceRoster.includes(o.id) && s.characters[o.id]?.alive,
   )) {
     const line = speechFor(op, 'ending');
     if (line?.trim()) {
@@ -935,7 +968,7 @@ function addDefenseHistory(s, group, outcome, casualties, text, extra = {}) {
   s.encounterHistory = s.encounterHistory.slice(0, 40);
 }
 function settleEnemyEncounters(s, options = {}) {
-  if (s.pendingBattle || s.pendingEncounter) {
+  if (s.sectorEntryRequest || s.pendingEncounter) {
     return;
   }
   for (const group of s.enemyGroups
@@ -970,7 +1003,7 @@ function settleEnemyEncounters(s, options = {}) {
 }
 function meetEnemyGroups(s, at) {
   // A battle already in progress owns its enemy roster until its report returns.
-  if (s.pendingBattle?.sector === at) {
+  if (s.sectorEntryRequest?.sector === at) {
     return;
   }
   haltEnemyGroupsAt(s, at);
@@ -982,7 +1015,7 @@ function meetEnemyGroups(s, at) {
 function relocateDefenders(s, ids, destination, moralePenalty = 5) {
   for (const id of ids) {
     recordStrategicArrival(s, [id], operativeLocation(s, id), destination);
-    const r = s.operativeState[id];
+    const r = s.characters[id];
     r.location = destination;
     r.assignment = 'active';
     r.asleep = false;
@@ -1010,19 +1043,18 @@ function relocateDefenders(s, ids, destination, moralePenalty = 5) {
 function reorganizeAfterLoss(s, previous) {
   if (
     s.defeated ||
-    s.pendingBattle ||
+    s.sectorEntryRequest ||
     s.pendingEncounter ||
     s.sectors[headquartersFor(s)].owner !== 'patriot' ||
-    s.recruited.some((id) => s.operativeState[id]?.alive)
+    s.forceRoster.some((id) => s.characters[id]?.alive)
   ) {
     return;
   }
   const loss =
-    (previous.pendingBattle && !s.pendingBattle) ||
-    Object.entries(previous.operativeState).some(
+    (previous.sectorEntryRequest && !s.sectorEntryRequest) ||
+    Object.entries(previous.characters).some(
       ([id, r]) =>
-        r.alive &&
-        (!s.operativeState[id]?.alive || (!r.captured && s.operativeState[id]?.captured)),
+        r.alive && (!s.characters[id]?.alive || (!r.captured && s.characters[id]?.captured)),
     );
   if (!loss) {
     return;
@@ -1036,14 +1068,14 @@ function reorganizeAfterLoss(s, previous) {
   command.location = s.location;
   note(
     s,
-    Object.values(s.operativeState).some((r) => r.alive && r.captured)
+    Object.values(s.characters).some((r) => r.alive && r.captured)
       ? `Quedan combatientes prisioneros. El cuartel de ${headquartersName(s)} puede contratar una fuerza de rescate.`
       : `No quedan combatientes en servicio. Podés contratar otra escuadra en ${headquartersName(s)}.`,
   );
 }
 function captureOperatives(s, ids, at, ammunition = {}) {
   for (const id of ids) {
-    const r = s.operativeState[id],
+    const r = s.characters[id],
       contract = clone(s.contracts[id]);
     removeFromService(s, id);
     Object.assign(r, {
@@ -1072,7 +1104,7 @@ function releaseCaptives(s, at) {
     }
   }
   for (const op of rosterFor(s)) {
-    const r = s.operativeState[op.id];
+    const r = s.characters[op.id];
     if (!r.captured || r.capturedSector !== at) {
       continue;
     }
@@ -1112,7 +1144,7 @@ function releaseCaptives(s, at) {
       continue;
     }
     s.contracts[op.id] = contract;
-    s.recruited.push(op.id);
+    s.forceRoster.push(op.id);
     if (s.location === at && s.squad.length < 6) {
       s.squad.push(op.id);
     }
@@ -1133,9 +1165,9 @@ function prepareDefense(s, group, { excludeMercs = false } = {}) {
     }
   }
   for (const id of ids) {
-    s.operativeState[id].assignment = 'active';
-    s.operativeState[id].asleep = false;
-    s.operativeState[id].recoveryHours = 0;
+    s.characters[id].assignment = 'active';
+    s.characters[id].asleep = false;
+    s.characters[id].recoveryHours = 0;
   }
   Object.assign(
     allocated,
@@ -1179,13 +1211,13 @@ function prepareDefense(s, group, { excludeMercs = false } = {}) {
   };
   group.status = 'engaged';
   s.pendingEncounter = null;
-  s.pendingBattle = prepareDeploymentExits(s, prepareSectorArtillery(s, request));
+  s.sectorEntryRequest = prepareDeploymentExits(s, prepareSectorArtillery(s, request));
   return request;
 }
 function finishDefense(s, request, outcome, snapshot, plan) {
   const group = recordEnemyGroupResult(s, request.defenseGroupId, snapshot, outcome),
     ids = request.squad.map((u) => Number(u.id)),
-    casualties = ids.filter((id) => !s.operativeState[id].alive);
+    casualties = ids.filter((id) => !s.characters[id].alive);
   const captured = plan.entries.filter((e) => e.kind === 'captured').map((e) => Number(e.unitId));
   if (outcome === 'victory') {
     if (
@@ -1209,10 +1241,10 @@ function finishDefense(s, request, outcome, snapshot, plan) {
   }
   for (const squad of s.squads) {
     squad.members = squad.members.filter(
-      (id) => s.operativeState[id].alive && !s.operativeState[id].captured,
+      (id) => s.characters[id].alive && !s.characters[id].captured,
     );
   }
-  s.squad = s.squad.filter((id) => s.operativeState[id].alive && !s.operativeState[id].captured);
+  s.squad = s.squad.filter((id) => s.characters[id].alive && !s.characters[id].captured);
   const militiaCasualties = (request.garrison ?? [])
       .filter(
         (u) =>
@@ -1230,29 +1262,33 @@ function finishDefense(s, request, outcome, snapshot, plan) {
     dispositions: clone(plan.entries),
   });
   note(s, text);
-  s.sectorStates[group.target] = clone(snapshot);
-  s.pendingBattle = null;
+  s.sectorSnapshots[group.target] = clone(snapshot);
+  s.sectorEntryRequest = null;
 }
-function applyTacticalTime(s, request, elapsed) {
+function applyTacticalTime(session, s, request, elapsed) {
   const previous = request.syncedSeconds ?? 0;
   requireThat(
     Number.isSafeInteger(elapsed) && elapsed >= previous && elapsed - previous <= 864000,
     'El tiempo táctico es inválido.',
   );
   for (let remaining = elapsed - previous; remaining > 0;) {
+    const now = session.timeline.currentSecond;
     const step = Math.min(
       remaining,
-      3600 - (s.secondOfHour ?? 0),
+      3600 - (now % 3600),
       nextSquadTravelBoundarySeconds(s) ?? Infinity,
     );
     remaining -= step;
-    s.secondOfHour = (s.secondOfHour ?? 0) + step;
-    if (s.secondOfHour === 3600) {
-      s.secondOfHour = 0;
-      advanceCampaignHour(s, { stopOnDefeat: false, civilianSeconds: step, travelSeconds: step });
-    } else {
-      advanceFractionalSystems(s, step);
-    }
+    advanceTimelineStep(session, step, 'tactical-step', (endSecond) => {
+      if (endSecond % 3600 === 0) {
+        s.secondOfHour = 0;
+        advanceCampaignHour(s, { stopOnDefeat: false, civilianSeconds: step, travelSeconds: step });
+      } else {
+        s.secondOfHour = endSecond % 3600;
+        advanceFractionalSystems(s, step);
+      }
+      return 'continue';
+    });
   }
   request.syncedSeconds = elapsed;
 }
@@ -1279,10 +1315,10 @@ export function hasPendingNpcGiftProgress(campaign, battle) {
   validateQuestContext(campaign, battle);
   validateRoadsideDiscoveryContext(campaign, battle);
   validateQuestBeneficiaryContext(campaign, battle);
-  if (campaign.pendingBattle && Array.isArray(battle.units)) {
+  if (campaign.sectorEntryRequest && Array.isArray(battle.units)) {
     validateCompanionGriefContext(campaign, battle, rosterFor(campaign));
   }
-  if (campaign.pendingBattle && Array.isArray(battle.units)) {
+  if (campaign.sectorEntryRequest && Array.isArray(battle.units)) {
     validateServiceObjectionContext(campaign, battle, rosterFor(campaign));
   }
   const npcs = battle.npcs ?? [];
@@ -1290,7 +1326,7 @@ export function hasPendingNpcGiftProgress(campaign, battle) {
     Array.isArray(npcs) && npcs.length <= 2000,
     'Los interlocutores del despliegue son inválidos.',
   );
-  validateAcknowledgedNpcGiftReceipts(campaign, npcs, campaign.pendingBattle?.sector);
+  validateAcknowledgedNpcGiftReceipts(campaign, npcs, campaign.sectorEntryRequest?.sector);
   let changed = false;
   for (const npc of npcs) {
     const quest = questForNPC(campaign, npc?.id);
@@ -1322,7 +1358,7 @@ function deploymentCharacters(snapshot, request) {
 }
 function validatedInteractionSnapshot(s, raw) {
   const snapshot = validateSectorSnapshot(raw, s),
-    request = s.pendingBattle;
+    request = s.sectorEntryRequest;
   validateResidentPositionContext(s, snapshot);
   validateCampaignSceneDefinitions(s, snapshot);
   validateQuestContext(s, snapshot);
@@ -1345,8 +1381,8 @@ function validatedInteractionSnapshot(s, raw) {
       ...(request.missionAllies ?? []).map((u) => String(u.id)),
     ]);
   const previous = request.sceneId
-      ? s.sceneStates[request.sceneId]
-      : s.sectorStates[request.sector],
+      ? s.sceneSnapshots[request.sceneId]
+      : s.sectorSnapshots[request.sector],
     corpses = new Set([
       ...(previous?.units ?? []).filter((u) => u.side === 'player' && u.hp <= 0).map((u) => u.id),
       ...(request.remains ?? []).map((r) => String(r.unitId)),
@@ -1359,7 +1395,7 @@ function validatedInteractionSnapshot(s, raw) {
     'La entrega no corresponde a la escuadra desplegada.',
   );
   requireThat(
-    request.squad.every((u) => s.recruited.includes(Number(u.id))),
+    request.squad.every((u) => s.forceRoster.includes(Number(u.id))),
     'La escuadra de la entrega no pertenece a la campaña.',
   );
   let retainedRoster = false;
@@ -1422,7 +1458,7 @@ function rewardQuest(s, quest, resolution = null) {
   }
 }
 function acknowledgeNpcGifts(s, snapshot) {
-  retainQuestBeneficiaries(s, s.pendingBattle, snapshot);
+  retainQuestBeneficiaries(s, s.sectorEntryRequest, snapshot);
   for (const local of snapshot.npcs) {
     let quest = questForNPC(s, local.id);
     if (!quest?.carried) {
@@ -1493,9 +1529,9 @@ function acknowledgeNpcGifts(s, snapshot) {
     };
   }
 }
-function resolveDefenseAutomatically(s, request) {
-  const result = autoResolve(request, s.sectorStates[request.sector] ?? null);
-  applyTacticalTime(s, request, result.battle.elapsedSeconds ?? 0);
+function resolveDefenseAutomatically(session, s, request) {
+  const result = autoResolve(request, s.sectorSnapshots[request.sector] ?? null);
+  applyTacticalTime(session, s, request, result.battle.elapsedSeconds ?? 0);
   result.battle.syncedSeconds = request.syncedSeconds;
   result.battle.savedHour = s.hour;
   result.battle.savedSecond = s.secondOfHour;
@@ -1552,8 +1588,8 @@ function completeDeploymentReport(s, request, action) {
   validateAcknowledgedNpcGiftReceipts(s, snapshot.npcs, request.sector);
   hasPendingCivilians(s, snapshot);
   const previous = request.sceneId
-    ? s.sceneStates[request.sceneId]
-    : s.sectorStates[request.sector];
+    ? s.sceneSnapshots[request.sceneId]
+    : s.sectorSnapshots[request.sector];
   const auxiliary = [...(request.garrison ?? []), ...(request.missionAllies ?? [])].map((u) =>
       String(u.id),
     ),
@@ -1734,7 +1770,7 @@ function applyReturnedOperative(s, request, report) {
   );
   returnCompanionGrief(s, id, report);
   returnServiceObjection(s, id, report);
-  s.operativeState[id].toolkitPoints = validateRepairReserve(report);
+  s.characters[id].toolkitPoints = validateRepairReserve(report);
   for (const [field, max] of Object.entries({
     energy: 100,
     weight: 1000,
@@ -1751,33 +1787,33 @@ function applyReturnedOperative(s, request, report) {
         Number.isFinite(report[field]) && report[field] >= 0 && report[field] <= max,
         'El estado del combatiente es inválido.',
       );
-      s.operativeState[id][field] = report[field];
+      s.characters[id][field] = report[field];
     }
   }
-  if (s.operativeState[id].sleepCollapsed && !needsCollapseRecovery(s.operativeState[id])) {
-    s.operativeState[id].sleepCollapsed = false;
+  if (s.characters[id].sleepCollapsed && !needsCollapseRecovery(s.characters[id])) {
+    s.characters[id].sleepCollapsed = false;
   }
-  s.operativeState[id].inventory = clone(validatePersonalInventory(report.inventory));
+  s.characters[id].inventory = clone(validatePersonalInventory(report.inventory));
   validatePocketOrder(report.pocketOrder);
   if (report.pocketOrder === undefined) {
-    delete s.operativeState[id].pocketOrder;
+    delete s.characters[id].pocketOrder;
   } else {
-    s.operativeState[id].pocketOrder = clone(report.pocketOrder);
+    s.characters[id].pocketOrder = clone(report.pocketOrder);
   }
 }
-function commitDeploymentReturn(s, request, snapshot, plan) {
-  applyTacticalTime(s, request, snapshot.elapsedSeconds ?? 0);
+function commitDeploymentReturn(session, s, request, snapshot, plan) {
+  applyTacticalTime(session, s, request, snapshot.elapsedSeconds ?? 0);
   snapshot.syncedSeconds = request.syncedSeconds;
   snapshot.savedHour = s.hour;
   snapshot.savedSecond = s.secondOfHour;
   // An older save may still carry another squad's last real position only in
   // the shared scene. Preserve that point before the new squad replaces it.
   const priorScene = request.sceneId
-      ? s.sceneStates[request.sceneId]
-      : s.sectorStates[request.sector],
+      ? s.sceneSnapshots[request.sceneId]
+      : s.sectorSnapshots[request.sector],
     issued = new Set(plan.entries.map((e) => e.unitId));
   for (const unit of priorScene?.units ?? []) {
-    const r = s.operativeState[Number(unit.id)];
+    const r = s.characters[Number(unit.id)];
     if (
       unit.side === 'player' &&
       unit.hp > 0 &&
@@ -1805,7 +1841,7 @@ function commitDeploymentReturn(s, request, snapshot, plan) {
         (u) => u.side === 'player' && u.id === entry.unitId,
       );
     applyReturnedOperative(s, request, unit);
-    const r = s.operativeState[id];
+    const r = s.characters[id];
     r.location = entry.sector;
     clearCarriedLoading(r);
     const loading = plan.ammunition.carried[id];
@@ -1902,7 +1938,7 @@ function commitDeploymentReturn(s, request, snapshot, plan) {
   };
   // A new report cannot invent or erase an earlier accepted unpaid reward.
   delete snapshot.pendingVictoryFunds;
-  const funds = s.sectorStates[request.sector]?.pendingVictoryFunds;
+  const funds = s.sectorSnapshots[request.sector]?.pendingVictoryFunds;
   if (!request.sceneId && funds) {
     snapshot.pendingVictoryFunds = clone(funds);
   }
@@ -1930,9 +1966,9 @@ function commitDeploymentReturn(s, request, snapshot, plan) {
     });
   }
   if (request.sceneId) {
-    s.sceneStates[request.sceneId] = clone(snapshot);
+    s.sceneSnapshots[request.sceneId] = clone(snapshot);
   } else {
-    s.sectorStates[request.sector] = clone(snapshot);
+    s.sectorSnapshots[request.sector] = clone(snapshot);
   }
 }
 function advanceCampaignHorses(s) {
@@ -1951,13 +1987,13 @@ function advanceCampaignHorses(s) {
   }
 }
 function releaseDeferred(s) {
-  if (s.pendingBattle) {
+  if (s.sectorEntryRequest) {
     return;
   }
   if (s.horseState.horses.some((h) => h.hired && !h.returned && h.hireUntil <= s.hour)) {
     advanceCampaignHorses(s);
   }
-  for (const id of s.recruited.slice()) {
+  for (const id of s.forceRoster.slice()) {
     if (s.contracts?.[id]?.departurePending && !operativeInTransit(s, id)) {
       endExpiredService(s, id);
     }
@@ -1970,7 +2006,7 @@ function releaseDeferred(s) {
   settleEnemyEncounters(s);
 }
 function assignmentContext(s, options = {}) {
-  const unsafe = s.recruited.filter((id) =>
+  const unsafe = s.forceRoster.filter((id) =>
     s.enemyGroups.some(
       (g) =>
         ['waiting', 'engaged', 'stationed'].includes(g.status) &&
@@ -2059,7 +2095,6 @@ function advanceOffscreenTime(s, seconds) {
       nextContentQuestDeadline(s),
       nextCampaignPresenceChange(s),
       nextCampaignEventTime(s),
-      at + (nextHireArrivalSeconds(s) ?? Infinity),
       at + (nextContractExpirySeconds(s) ?? Infinity),
     );
     requireThat(
@@ -2081,7 +2116,7 @@ function advanceOffscreenTime(s, seconds) {
     // crossed by an explicit wait that retains its fractional starting second.
     if (s.secondOfHour || at < end) {
       contractEvents.push(...expireDueContracts(s));
-      receiveDueHires(s);
+      receiveDueRecruitmentClaims(s);
       synchronizeSquad(s);
     }
     advanceCampaignEvents(s, scenarioContext(s));
@@ -2110,7 +2145,7 @@ function advanceQueuedTravel(s, seconds, stopAtEveryArrival = false) {
 }
 function advanceFractionalSystems(s, seconds, continuousClock = false) {
   const expired = [...advanceOffscreenTime(s, seconds), ...expireDueContracts(s)];
-  receiveDueHires(s);
+  receiveDueRecruitmentClaims(s);
   synchronizeSquad(s);
   advanceQueuedTravel(s, seconds, continuousClock);
   settleEnemyEncounters(s);
@@ -2140,7 +2175,7 @@ function advanceCampaignHour(s, options) {
     if (militiaAssignmentIssue(s, course, { isSupplied })) {
       continue;
     }
-    const trainer = s.operativeState[course.trainerId];
+    const trainer = s.characters[course.trainerId];
     if (trainer) {
       trainer.energy = Math.max(0, trainer.energy - 3);
       gainFatigue(trainer, 2);
@@ -2182,7 +2217,7 @@ function advanceCampaignHour(s, options) {
     note(s, message);
   }
   for (const id of deaths) {
-    s.operativeState[id].location = operativeLocation(s, id);
+    s.characters[id].location = operativeLocation(s, id);
     for (const squad of s.squads) {
       squad.members = squad.members.filter((member) => member !== id);
     }
@@ -2208,8 +2243,8 @@ function advanceCampaignHour(s, options) {
     }
   }
   if (s.hour % 720 === 0) {
-    const ids = s.recruited.filter(
-        (id) => s.operativeState[id].alive && s.contracts?.[id]?.kind === 'legacy',
+    const ids = s.forceRoster.filter(
+        (id) => s.characters[id].alive && s.contracts?.[id]?.kind === 'legacy',
       ),
       payroll = ids.reduce((sum, id) => sum + rosterFor(s).find((o) => o.id === id).monthlyPay, 0);
     if (payroll > 0) {
@@ -2262,7 +2297,7 @@ function advanceCampaignHour(s, options) {
   refreshEnemyIntelligence(s, options);
   // Occupation and blockade are resolved before delivery.
   logisticsEvents.push(...deliverEquipmentShipments(s), ...deliverArtilleryTransfers(s));
-  receiveDueHires(s, joinArrivals);
+  receiveDueRecruitmentClaims(s, joinArrivals);
   synchronizeSquad(s);
   synchronizeCampaignPresence(s);
   synchronizeDialogueMovements(s);
@@ -2294,7 +2329,7 @@ function advanceCampaignHour(s, options) {
     hasPendingArrivalDecision(s) ||
     (stopOnDefeat && s.defeated) ||
     (s.completed && s.squads.some((squad) => squad.journey)) ||
-    (s.pendingEncounter && !s.pendingBattle && !options.traveling) ||
+    (s.pendingEncounter && !s.sectorEntryRequest && !options.traveling) ||
     assignmentPause ||
     contractPause ||
     logisticsPause ||
@@ -2302,16 +2337,16 @@ function advanceCampaignHour(s, options) {
   );
 }
 
-function advanceCampaignSeconds(s, requestedSeconds, options = {}) {
-  const startedAt = s.hour * 3600 + (s.secondOfHour ?? 0);
+function advanceCampaignSeconds(session, s, requestedSeconds, options = {}) {
+  const timeline = session.timeline;
+  const startedAt = timeline.currentSecond;
   let remaining = requestedSeconds;
   while (remaining > 0 && !hasPendingArrivalDecision(s)) {
-    const now = s.hour * 3600 + (s.secondOfHour ?? 0);
+    const now = timeline.currentSecond;
     const seconds = Math.min(
       remaining,
-      3600 - (s.secondOfHour ?? 0),
+      3600 - (now % 3600),
       nextSquadTravelBoundarySeconds(s) ?? Infinity,
-      nextHireArrivalSeconds(s) ?? Infinity,
       nextContractExpirySeconds(s) ?? Infinity,
       nextContentQuestDeadline(s) - now,
     );
@@ -2319,36 +2354,63 @@ function advanceCampaignSeconds(s, requestedSeconds, options = {}) {
       Number.isSafeInteger(seconds) && seconds > 0,
       'El intervalo de campaña no es válido.',
     );
-    remaining -= seconds;
-    s.secondOfHour = (s.secondOfHour ?? 0) + seconds;
+    const endSecond = now + seconds;
+    const advancedHours = (requestedSeconds - (remaining - seconds)) / 3600;
+    timeline.schedule({
+      id: `campaign-step:${endSecond}`,
+      kind: 'campaign-step',
+      subjectId: 'campaign',
+      atSecond: endSecond,
+    });
     let interrupted = false;
-    if (s.secondOfHour === 3600) {
-      s.secondOfHour = 0;
-      interrupted = advanceCampaignHour(s, {
-        ...options,
-        civilianSeconds: seconds,
-        travelSeconds: seconds,
-        advancedHours: (requestedSeconds - remaining) / 3600,
-      });
-    } else {
-      const expired = advanceFractionalSystems(s, seconds, Boolean(options.continuousClock));
-      if (options.pauseOnAssignments) {
-        interrupted = pauseForContracts(
-          s,
-          options.requestedHours ?? 1,
-          (requestedSeconds - remaining) / 3600,
-          expired,
-        );
+    timeline.advanceTo(endSecond, () => {
+      if (endSecond % 3600 === 0) {
+        s.secondOfHour = 0;
+        interrupted = advanceCampaignHour(s, {
+          ...options,
+          civilianSeconds: seconds,
+          travelSeconds: seconds,
+          advancedHours,
+        });
+      } else {
+        s.secondOfHour = endSecond % 3600;
+        const expired = advanceFractionalSystems(s, seconds, Boolean(options.continuousClock));
+        if (options.pauseOnAssignments) {
+          interrupted = pauseForContracts(s, options.requestedHours ?? 1, advancedHours, expired);
+        }
       }
-    }
+      return interrupted || hasPendingArrivalDecision(s) ? 'pause' : 'continue';
+    });
+    remaining -= seconds;
     if (interrupted || hasPendingArrivalDecision(s)) {
       break;
     }
   }
-  return s.hour * 3600 + (s.secondOfHour ?? 0) - startedAt;
+  s.hour = Math.floor(timeline.currentSecond / 3600);
+  s.secondOfHour = timeline.currentSecond % 3600;
+  return timeline.currentSecond - startedAt;
 }
 
-function tick(s, hours, options = {}) {
+// One clock step on the session timeline. The scheduled event carries the step's
+// end, and the work runs at that second; 'pause' stops the timeline there too.
+function advanceTimelineStep(session, step, kind, work) {
+  const timeline = session.timeline;
+  const endSecond = timeline.currentSecond + step;
+  timeline.schedule({
+    id: `${kind}:${endSecond}`,
+    kind,
+    subjectId: 'campaign',
+    atSecond: endSecond,
+  });
+  let paused = false;
+  timeline.advanceTo(endSecond, () => {
+    paused = work(endSecond) === 'pause';
+    return paused ? 'pause' : 'continue';
+  });
+  return paused;
+}
+
+function tick(session, s, hours, options = {}) {
   requireThat(
     Number.isInteger(hours) && hours >= 1 && hours <= 240,
     'El avance debe ser de 1 a 240 horas.',
@@ -2372,7 +2434,7 @@ function tick(s, hours, options = {}) {
       return;
     }
   }
-  advanceCampaignSeconds(s, hours * 3600, { ...options, requestedHours: hours });
+  advanceCampaignSeconds(session, s, hours * 3600, { ...options, requestedHours: hours });
 }
 
 function prepareAttack(session, s, at, origin, ids, assaultSquads = null) {
@@ -2394,7 +2456,7 @@ function prepareAttack(session, s, at, origin, ids, assaultSquads = null) {
     );
   }
 
-  s.pendingBattle = {
+  s.sectorEntryRequest = {
     ...(s.contentCampaign ? { campaignPackage: s.contentCampaign.package } : {}),
     id: `${at}-${s.hour}-${s.seed}`,
     origin,
@@ -2419,15 +2481,15 @@ function prepareAttack(session, s, at, origin, ids, assaultSquads = null) {
     ...regionalConditions(at, s.hour, s),
     cannons: artilleryCount(s),
   };
-  s.pendingBattle.artillery = deployedArtillery({ ...s, location: origin });
+  s.sectorEntryRequest.artillery = deployedArtillery({ ...s, location: origin });
   Object.assign(
-    s.pendingBattle,
+    s.sectorEntryRequest,
     oppositionFor(
       {
-        ...s.pendingBattle,
+        ...s.sectorEntryRequest,
         ...(mission
           ? assaultSquads
-            ? { squad: s.pendingBattle.squad.slice(0, 6) }
+            ? { squad: s.sectorEntryRequest.squad.slice(0, 6) }
             : {}
           : { enemyCount: campaignEnemyCount(s) }),
       },
@@ -2436,20 +2498,20 @@ function prepareAttack(session, s, at, origin, ids, assaultSquads = null) {
   );
   const occupying = mission ? [] : occupyingGroups(s, at);
   if (occupying.length) {
-    s.pendingBattle.occupationGroupIds = occupying.map((g) => g.id);
-    s.pendingBattle.enemies = occupying.flatMap((g) => clone(g.units));
+    s.sectorEntryRequest.occupationGroupIds = occupying.map((g) => g.id);
+    s.sectorEntryRequest.enemies = occupying.flatMap((g) => clone(g.units));
   }
-  scenarioFor(s).prepareAttack(s, s.pendingBattle, ids, origin, scenarioContext(s));
-  s.pendingBattle.garrison = prepareGarrison(s, at);
-  s.pendingBattle.garrisonLootSources = (s.sectorStates[at]?.units ?? [])
+  scenarioFor(s).prepareAttack(s, s.sectorEntryRequest, ids, origin, scenarioContext(s));
+  s.sectorEntryRequest.garrison = prepareGarrison(s, at);
+  s.sectorEntryRequest.garrisonLootSources = (s.sectorSnapshots[at]?.units ?? [])
     .filter((u) => u.militia && u.hp <= 0)
     .map(ammunitionSource);
   note(
     s,
-    `El destacamento se despliega para ${def.name}. Mando enemigo: ${s.pendingBattle.enemyCommander}.`,
+    `El destacamento se despliega para ${def.name}. Mando enemigo: ${s.sectorEntryRequest.enemyCommander}.`,
   );
   if (assaultSquads) {
-    s.pendingBattle.assaultSquads = clone(assaultSquads);
+    s.sectorEntryRequest.assaultSquads = clone(assaultSquads);
   }
 }
 /** @param {import('./public/campaign-types.ts').CampaignSnapshot} previous @param {import('./public/campaign-types.ts').CampaignAction} action @returns {import('./public/campaign-types.ts').CampaignSnapshot} */
@@ -2459,7 +2521,7 @@ export function dispatchCampaign(previous, action) {
   s.lastError = null;
   s.militiaTraining ??= [];
   s.missions ??= {};
-  s.sceneStates ??= {};
+  s.sceneSnapshots ??= {};
   s.missionAllies ??= {};
   s.quests ??= {};
   migrateContracts(s);
@@ -2478,14 +2540,14 @@ export function dispatchCampaign(previous, action) {
     );
     validateCampaignServiceObjections(s, rosterFor(s));
     validatePendingCompanionLoss(s, rosterFor(s));
-    if (s.pendingBattle) {
-      validateQuestBeneficiaryContext(s, s.pendingBattle, { request: null, issued: true });
+    if (s.sectorEntryRequest) {
+      validateQuestBeneficiaryContext(s, s.sectorEntryRequest, { request: null, issued: true });
     }
-    if (s.pendingBattle?.resumeSnapshot) {
-      validateRepairReserveContext(s.pendingBattle, s.pendingBattle.resumeSnapshot);
-      validateAbilityReferences(s, s.pendingBattle.resumeSnapshot);
-      validateQuestBeneficiaryContext(s, s.pendingBattle.resumeSnapshot);
-      validateServiceObjectionContext(s, s.pendingBattle.resumeSnapshot, rosterFor(s));
+    if (s.sectorEntryRequest?.resumeSnapshot) {
+      validateRepairReserveContext(s.sectorEntryRequest, s.sectorEntryRequest.resumeSnapshot);
+      validateAbilityReferences(s, s.sectorEntryRequest.resumeSnapshot);
+      validateQuestBeneficiaryContext(s, s.sectorEntryRequest.resumeSnapshot);
+      validateServiceObjectionContext(s, s.sectorEntryRequest.resumeSnapshot, rosterFor(s));
     }
     const tradeOrders = [
       'purchaseToolkits',
@@ -2520,17 +2582,17 @@ export function dispatchCampaign(previous, action) {
           action.type,
         ) ||
         (action.type === 'syncTacticalTime' &&
-          action.elapsedSeconds === (s.pendingBattle?.syncedSeconds ?? 0)),
+          action.elapsedSeconds === (s.sectorEntryRequest?.syncedSeconds ?? 0)),
       'La campaña está en pausa. Elegí combatir o retirarte al llegar.',
     );
     if (action.sectorState) {
       validateCampaignPatrol(s, action.sectorState);
       validateCampaignArtilleryProfiles(s, action.sectorState);
-      validateArtilleryReport(s.pendingBattle, action.sectorState);
+      validateArtilleryReport(s.sectorEntryRequest, action.sectorState);
     }
     requireThat(
       !s.defeated ||
-        (s.pendingBattle &&
+        (s.sectorEntryRequest &&
           ['syncTacticalTime', 'leaveSector', 'battleResult'].includes(action.type)),
       'La campaña ha terminado. Inicia otra campaña para continuar.',
     );
@@ -2578,8 +2640,7 @@ export function dispatchCampaign(previous, action) {
           'configureArtillery',
           'repurchaseArtillery',
           'resupplyArtillery',
-          'redirectHire',
-          'cancelHireArrival',
+          'cancelRecruitmentClaim',
           'sectorInventory',
           'supplyArtillery',
           'storeArtillery',
@@ -2599,7 +2660,7 @@ export function dispatchCampaign(previous, action) {
       'Hay un encuentro pendiente. Elegí cómo responder antes de continuar.',
     );
     requireThat(
-      !s.pendingBattle ||
+      !s.sectorEntryRequest ||
         [
           'battleResult',
           'leaveSector',
@@ -2620,19 +2681,17 @@ export function dispatchCampaign(previous, action) {
     }
     if (['travel', 'attack', 'visitSector', 'visitMission'].includes(action.type)) {
       requireThat(
-        s.squad.every((id) => s.operativeState[id].assignment === 'active'),
+        s.squad.every((id) => s.characters[id].assignment === 'active'),
         'Hay combatientes en atención o descanso. Devolvelos al servicio o dejalos en otra escuadra antes de marchar.',
       );
     }
     if (['travel', 'attack', 'visitSector', 'visitMission'].includes(action.type)) {
       requireThat(
-        !s.squad.some(
-          (id) => s.operativeState[id].asleep && needsCollapseRecovery(s.operativeState[id]),
-        ),
+        !s.squad.some((id) => s.characters[id].asleep && needsCollapseRecovery(s.characters[id])),
         'La escuadra necesita descansar: hay combatientes que todavía no pueden despertar.',
       );
       requireThat(
-        s.squad.every((id) => !s.operativeState[id].asleep),
+        s.squad.every((id) => !s.characters[id].asleep),
         'Hay combatientes durmiendo. Despertalos o dejalos en otra escuadra antes de marchar.',
       );
     }
@@ -2680,7 +2739,11 @@ export function dispatchCampaign(previous, action) {
           relocateDefenders(s, ids, action.destination);
           s.pendingEncounter = null;
           if (s.sectors[group.target].militia.some((n) => n > 0)) {
-            resolveDefenseAutomatically(s, prepareDefense(s, group, { excludeMercs: true }));
+            resolveDefenseAutomatically(
+              session,
+              s,
+              prepareDefense(s, group, { excludeMercs: true }),
+            );
           } else {
             loseSectorToGroup(s, group);
             addDefenseHistory(
@@ -2695,7 +2758,7 @@ export function dispatchCampaign(previous, action) {
         } else {
           const request = prepareDefense(s, group);
           if (action.choice === 'auto') {
-            resolveDefenseAutomatically(s, request);
+            resolveDefenseAutomatically(session, s, request);
           } else {
             note(
               s,
@@ -2726,9 +2789,9 @@ export function dispatchCampaign(previous, action) {
       case 'purchaseToolkits': {
         const id = Number(action.operativeId),
           quantity = action.quantity ?? 1,
-          record = s.operativeState[id];
+          record = s.characters[id];
         requireThat(
-          s.recruited.includes(id) && record.alive && operativeLocation(s, id) === s.location,
+          s.forceRoster.includes(id) && record.alive && operativeLocation(s, id) === s.location,
           'El combatiente debe estar presente en esta localidad.',
         );
         requireThat(
@@ -2800,8 +2863,8 @@ export function dispatchCampaign(previous, action) {
         }
         if (order.type === 'assign') {
           requireThat(
-            s.recruited.includes(order.operativeId) &&
-              s.operativeState[order.operativeId].alive &&
+            s.forceRoster.includes(order.operativeId) &&
+              s.characters[order.operativeId].alive &&
               operativeLocation(s, order.operativeId) === s.location,
             'El jinete debe estar presente en la localidad.',
           );
@@ -2858,11 +2921,11 @@ export function dispatchCampaign(previous, action) {
       }
       case 'syncTacticalTime': {
         requireThat(
-          s.pendingBattle && s.pendingBattle.id === action.battleId,
+          s.sectorEntryRequest && s.sectorEntryRequest.id === action.battleId,
           'El reloj no corresponde al despliegue.',
         );
         const elapsed = action.elapsedSeconds,
-          previous = s.pendingBattle.syncedSeconds ?? 0;
+          previous = s.sectorEntryRequest.syncedSeconds ?? 0;
         requireThat(
           Number.isSafeInteger(elapsed) && elapsed >= previous && elapsed - previous <= 864000,
           'El tiempo táctico es inválido.',
@@ -2874,9 +2937,9 @@ export function dispatchCampaign(previous, action) {
         if (snapshot) {
           requireThat(snapshot.elapsedSeconds === elapsed, 'El parte y el reloj no coinciden.');
         }
-        const griefProgress = snapshot ?? s.pendingBattle.resumeSnapshot;
+        const griefProgress = snapshot ?? s.sectorEntryRequest.resumeSnapshot;
         if (griefProgress) {
-          retainRepairReserves(s.pendingBattle, griefProgress);
+          retainRepairReserves(s.sectorEntryRequest, griefProgress);
         }
         if (griefProgress && !snapshot) {
           validateCompanionGriefContext(s, griefProgress, rosterFor(s));
@@ -2890,8 +2953,8 @@ export function dispatchCampaign(previous, action) {
             'La objeción necesita un parte táctico completo antes de avanzar el reloj.',
           );
         }
-        if (!snapshot && s.pendingBattle.resumeSnapshot) {
-          const resume = s.pendingBattle.resumeSnapshot,
+        if (!snapshot && s.sectorEntryRequest.resumeSnapshot) {
+          const resume = s.sectorEntryRequest.resumeSnapshot,
             physicalDelivery = questsFor(s).some(
               (q) =>
                 q.beneficiaries &&
@@ -2911,27 +2974,31 @@ export function dispatchCampaign(previous, action) {
             !hasPendingArrivalDecision(s),
             'La acción debe detenerse en la decisión de llegada.',
           );
+          const now = session.timeline.currentSecond;
           const step = Math.min(
             remaining,
-            3600 - (s.secondOfHour ?? 0),
+            3600 - (now % 3600),
             nextSquadTravelBoundarySeconds(s) ?? Infinity,
           );
           remaining -= step;
-          s.secondOfHour = (s.secondOfHour ?? 0) + step;
-          if (s.secondOfHour === 3600) {
-            s.secondOfHour = 0;
-            advanceCampaignHour(s, {
-              stopOnDefeat: false,
-              civilianSeconds: step,
-              travelSeconds: step,
-            });
-          } else {
-            advanceFractionalSystems(s, step);
-          }
+          advanceTimelineStep(session, step, 'tactical-step', (endSecond) => {
+            if (endSecond % 3600 === 0) {
+              s.secondOfHour = 0;
+              advanceCampaignHour(s, {
+                stopOnDefeat: false,
+                civilianSeconds: step,
+                travelSeconds: step,
+              });
+            } else {
+              s.secondOfHour = endSecond % 3600;
+              advanceFractionalSystems(s, step);
+            }
+            return 'continue';
+          });
         }
         // A death is confirmed at this tactical checkpoint, after its time has elapsed.
         if (snapshot) {
-          retainQuestBeneficiaries(s, s.pendingBattle, snapshot);
+          retainQuestBeneficiaries(s, s.sectorEntryRequest, snapshot);
           acknowledgeCivilians(s, snapshot);
           acknowledgeNpcGifts(s, snapshot);
           acknowledgeSuccessionDeaths(s, snapshot);
@@ -2940,13 +3007,13 @@ export function dispatchCampaign(previous, action) {
           }
         }
         if (griefProgress) {
-          retainCompanionGrief(s.pendingBattle, griefProgress);
+          retainCompanionGrief(s.sectorEntryRequest, griefProgress);
         }
         if (snapshot) {
-          retainServiceObjections(s.pendingBattle, snapshot);
+          retainServiceObjections(s.sectorEntryRequest, snapshot);
         }
-        s.pendingBattle.syncedSeconds = elapsed;
-        delete s.pendingBattle.resumeSnapshot;
+        s.sectorEntryRequest.syncedSeconds = elapsed;
+        delete s.sectorEntryRequest.resumeSnapshot;
         break;
       }
       case 'repurchaseArtillery': {
@@ -2974,7 +3041,7 @@ export function dispatchCampaign(previous, action) {
         );
         requireThat(quote.available, quote.reason);
         pay(s, { treasury: quote.cost });
-        const gun = s.sectorStates[action.sector].artillery.find(
+        const gun = s.sectorSnapshots[action.sector].artillery.find(
           (g) => g.id === action.artilleryId,
         );
         gun.ammo++;
@@ -3003,62 +3070,67 @@ export function dispatchCampaign(previous, action) {
         if (assignmentPause || contractPause || logisticsPause) {
           break;
         }
-        const before = s.hour * 3600 + (s.secondOfHour ?? 0);
-        const arrivalsBefore = s.hiringArrivals?.length ?? 0;
+        const timeline = session.timeline;
+        const before = timeline.currentSecond;
+        const claimsBefore = s.refundableRecruitmentClaims?.length ?? 0;
         const wasCompleted = Boolean(s.completed);
         const questEventsBefore = s.contentQuestEvents?.length ?? 0;
         const stats = JSON.stringify(
-          s.recruited.map((id) => s.operativeState[id].trainedStats ?? {}),
+          s.forceRoster.map((id) => s.characters[id].trainedStats ?? {}),
         );
         for (let remaining = action.seconds; remaining > 0;) {
-          const now = s.hour * 3600 + (s.secondOfHour ?? 0);
+          const now = timeline.currentSecond;
           const step = Math.min(
             remaining,
-            3600 - (s.secondOfHour ?? 0),
-            nextHireArrivalSeconds(s) ?? Infinity,
+            3600 - (now % 3600),
             nextContractExpirySeconds(s) ?? Infinity,
             nextContractWarningSeconds(s) ?? Infinity,
             nextContentQuestDeadline(s) - now,
             nextSquadTravelBoundarySeconds(s) ?? Infinity,
           );
+          const paused = advanceTimelineStep(session, step, 'strategic-step', (endSecond) => {
+            if (endSecond % 3600 === 0) {
+              s.secondOfHour = 0;
+              advanceCampaignHour(s, {
+                pauseOnAssignments: true,
+                skipInitialAttention: true,
+                continuousClock: true,
+                civilianSeconds: step,
+                travelSeconds: step,
+              });
+            } else {
+              s.secondOfHour = endSecond % 3600;
+              const expired = advanceFractionalSystems(s, step, true);
+              pauseForContracts(s, 1, 0, expired);
+            }
+            synchronizeCampaignPresence(s);
+            updateContentQuests(s);
+            progress(s);
+            const gained =
+              JSON.stringify(s.forceRoster.map((id) => s.characters[id].trainedStats ?? {})) !==
+              stats;
+            const interrupted =
+              hasPendingArrivalDecision(s) ||
+              s.pendingEncounter ||
+              s.sectorEntryRequest ||
+              s.defeated ||
+              (s.completed && !wasCompleted) ||
+              s.assignmentAttention.notice ||
+              s.contractAttention.notice ||
+              s.logisticsNotice ||
+              s.travelNotice ||
+              gained ||
+              (s.refundableRecruitmentClaims?.length ?? 0) < claimsBefore ||
+              (s.contentQuestEvents?.length ?? 0) > questEventsBefore;
+            return interrupted ? 'pause' : 'continue';
+          });
           remaining -= step;
-          s.secondOfHour = (s.secondOfHour ?? 0) + step;
-          if (s.secondOfHour === 3600) {
-            s.secondOfHour = 0;
-            advanceCampaignHour(s, {
-              pauseOnAssignments: true,
-              skipInitialAttention: true,
-              continuousClock: true,
-              civilianSeconds: step,
-              travelSeconds: step,
-            });
-          } else {
-            const expired = advanceFractionalSystems(s, step, true);
-            pauseForContracts(s, 1, 0, expired);
-          }
-          synchronizeCampaignPresence(s);
-          updateContentQuests(s);
-          progress(s);
-          const gained =
-            JSON.stringify(s.recruited.map((id) => s.operativeState[id].trainedStats ?? {})) !==
-            stats;
-          if (
-            hasPendingArrivalDecision(s) ||
-            s.pendingEncounter ||
-            s.pendingBattle ||
-            s.defeated ||
-            (s.completed && !wasCompleted) ||
-            s.assignmentAttention.notice ||
-            s.contractAttention.notice ||
-            s.logisticsNotice ||
-            s.travelNotice ||
-            gained ||
-            (s.hiringArrivals?.length ?? 0) < arrivalsBefore ||
-            (s.contentQuestEvents?.length ?? 0) > questEventsBefore
-          ) {
+          if (paused) {
             break;
           }
         }
+        s.hour = Math.floor(timeline.currentSecond / 3600);
+        s.secondOfHour = timeline.currentSecond % 3600;
         requireThat(
           s.hour * 3600 + (s.secondOfHour ?? 0) >= before,
           'El reloj no puede retroceder.',
@@ -3066,7 +3138,7 @@ export function dispatchCampaign(previous, action) {
         break;
       }
       case 'wait':
-        tick(s, action.hours ?? 24, { pauseOnAssignments: true });
+        tick(session, s, action.hours ?? 24, { pauseOnAssignments: true });
         break;
       case 'assignCare': {
         const op = rosterFor(s).find((o) => o.id === Number(action.operativeId ?? action.id));
@@ -3086,7 +3158,7 @@ export function dispatchCampaign(previous, action) {
           'La maestranza no tiene suficientes vendas.',
         );
         pay(s, { treasury: quote.cost });
-        s.operativeState[op.id].medkits = (s.operativeState[op.id].medkits ?? 2) + quantity;
+        s.characters[op.id].medkits = (s.characters[op.id].medkits ?? 2) + quantity;
         s.merchants[s.location].supplies.medkits -= quantity;
         changeMerchantCash(s, s.location, quote.cost);
         note(s, `${op.name} compra ${quantity} vendas por ${quote.cost} pesos.`);
@@ -3235,7 +3307,7 @@ export function dispatchCampaign(previous, action) {
       case 'equip': {
         const op = rosterFor(s).find((o) => o.id === Number(action.operativeId));
         requireThat(
-          op && s.recruited.includes(op.id) && s.operativeState[op.id].alive,
+          op && s.forceRoster.includes(op.id) && s.characters[op.id].alive,
           'El combatiente no está disponible.',
         );
         requireThat(
@@ -3250,7 +3322,7 @@ export function dispatchCampaign(previous, action) {
       case 'repairWeapon': {
         const id = Number(action.operativeId),
           op = rosterFor(s).find((o) => o.id === id),
-          record = s.operativeState[id],
+          record = s.characters[id],
           quote = workshopServiceQuote(s, op, action.type, isSupplied(s, s.location));
         requireThat(quote.available, quote.reason);
         const cost = quote.cost;
@@ -3288,7 +3360,7 @@ export function dispatchCampaign(previous, action) {
           expiresAt: null,
           paid: creationCost,
         };
-        s.operativeState[op.id] = {
+        s.characters[op.id] = {
           hp: op.maxHp,
           fatigue: 0,
           alive: true,
@@ -3300,15 +3372,15 @@ export function dispatchCampaign(previous, action) {
         };
         const fittingPattern = officerStartingFitting(action.profile, s);
         if (fittingPattern) {
-          Object.assign(s.operativeState[op.id], {
+          Object.assign(s.characters[op.id], {
             bladeFittingPattern: fittingPattern,
             bladeInstanceId: `equipment-${s.nextEquipmentInstanceId++}`,
           });
         }
-        s.recruited.push(op.id);
+        s.forceRoster.push(op.id);
         issueStartingCartridges(s, op);
         issueInitialOutfit(s, op.id);
-        s.operativeState[op.id].location = s.location;
+        s.characters[op.id].location = s.location;
         if (s.squad.length < 6) {
           s.squad.push(op.id);
         }
@@ -3340,18 +3412,14 @@ export function dispatchCampaign(previous, action) {
         }
         break;
       }
-      case 'redirectHire':
-        redirectHire(s, action.id, action.destination);
-        note(s, 'Se cambia el destino de incorporación. El pago ya está registrado.');
-        break;
-      case 'cancelHireArrival':
+      case 'cancelRecruitmentClaim':
         requireThat(
           action.expectedGuaranteeId === undefined ||
-            pendingHire(s, action.id)?.guaranteeId === action.expectedGuaranteeId,
-          'La llegada cambió. Revisá el contrato antes de cancelar.',
+            pendingRecruitmentClaim(s, action.id)?.guaranteeId === action.expectedGuaranteeId,
+          'La solicitud cambió. Revisá los datos de reclutamiento antes de cancelarla.',
         );
-        cancelHireArrival(s, action.id);
-        note(s, 'Se cancela la llegada y se devuelve el anticipo.');
+        cancelRecruitmentClaim(s, action.id);
+        note(s, 'Cancelaste la solicitud y recuperaste todo el dinero pagado.');
         break;
       case 'recruit':
         throw Error('Los combatientes locales se incorporan mediante encuentros personales.');
@@ -3360,7 +3428,7 @@ export function dispatchCampaign(previous, action) {
           op = rosterFor(s).find((o) => o.id === id),
           current = s.contracts[id];
         requireThat(
-          op && s.recruited.includes(id) && current,
+          op && s.forceRoster.includes(id) && current,
           'El combatiente no tiene un contrato activo.',
         );
         requireThat(
@@ -3418,7 +3486,7 @@ export function dispatchCampaign(previous, action) {
             s.contracts[id]?.guaranteeId === action.expectedGuaranteeId,
           'El contrato cambió. Revisá la garantía antes de finalizar.',
         );
-        requireThat(s.recruited.includes(id), 'El combatiente no está contratado.');
+        requireThat(s.forceRoster.includes(id), 'El combatiente no está contratado.');
         requireThat(id !== 1000, 'Tu oficial dirige la campaña y no puede ser despedido.');
         const op = rosterFor(s).find((o) => o.id === id),
           refundReason = guaranteeDepartureReason(s, s.contracts[id], op);
@@ -3486,18 +3554,18 @@ export function dispatchCampaign(previous, action) {
         }
         validateQuestContext(s, action.sectorState);
         validateRoadsideDiscoveryContext(s, action.sectorState);
-        requireThat(s.pendingBattle, 'Primero entrá al sector.');
+        requireThat(s.sectorEntryRequest, 'Primero entrá al sector.');
         const snapshot = validatedInteractionSnapshot(s, action.sectorState),
           npc = (
-            scenarioFor(s).conversationContacts(s, s.pendingBattle) ??
-            encountersFor(s, s.pendingBattle.sector)
-          ).find((n) => n.id === action.npcId && n.sector === s.pendingBattle.sector),
+            scenarioFor(s).conversationContacts(s, s.sectorEntryRequest) ??
+            encountersFor(s, s.sectorEntryRequest.sector)
+          ).find((n) => n.id === action.npcId && n.sector === s.sectorEntryRequest.sector),
           id = Number(action.unitId),
           actor = rosterFor(s).find((o) => o.id === id),
           unit = snapshot.units.find((u) => u.side === 'player' && Number(u.id) === id),
           local = snapshot.npcs?.find((n) => n.id === action.npcId);
-        retainQuestBeneficiaries(s, s.pendingBattle, snapshot);
-        retainServiceObjections(s.pendingBattle, snapshot);
+        retainQuestBeneficiaries(s, s.sectorEntryRequest, snapshot);
+        retainServiceObjections(s.sectorEntryRequest, snapshot);
         acknowledgeCivilians(s, snapshot);
         acknowledgeNpcGifts(s, snapshot);
         requireThat(
@@ -3745,7 +3813,10 @@ export function dispatchCampaign(previous, action) {
         }
         if (action.approach === 'recruit') {
           requireThat(canRecruitEncounter(npc), 'Este habitante no es un recluta.');
-          requireThat(!s.recruited.includes(npc.operativeId), 'Este combatiente ya se incorporó.');
+          requireThat(
+            !s.forceRoster.includes(npc.operativeId),
+            'Este combatiente ya se incorporó.',
+          );
           const reason = encounterRequirements(s, npc, actor);
           requireThat(!reason, reason);
           const eligibility = recruitmentStatus(s, npc.operativeId, true);
@@ -3763,14 +3834,14 @@ export function dispatchCampaign(previous, action) {
             RecruitmentEquipmentSource.ResidentInventory,
           );
           transferCivilian(s, local);
-          Object.assign(s.operativeState[candidate.id], {
-            residentSector: s.pendingBattle.sector,
-            residentScene: s.pendingBattle.sceneId ?? null,
+          Object.assign(s.characters[candidate.id], {
+            residentSector: s.sectorEntryRequest.sector,
+            residentScene: s.sectorEntryRequest.sceneId ?? null,
           });
           if (recruitment.assignment === RecruitmentAssignment.Squad) {
             const participant = deploymentOperative(s, candidate.id);
-            s.pendingBattle.squad.push(
-              carriedAmmunition(participant, clone(s.operativeState[candidate.id])),
+            s.sectorEntryRequest.squad.push(
+              carriedAmmunition(participant, clone(s.characters[candidate.id])),
             );
           }
           const line = s.contentCampaign
@@ -3789,12 +3860,12 @@ export function dispatchCampaign(previous, action) {
           hour: s.hour,
           secondOfHour: s.secondOfHour ?? 0,
           text,
-          sector: s.pendingBattle.sector,
+          sector: s.sectorEntryRequest.sector,
         };
         if (townIncomeSourceForNPC(npc.id, s) && ['friendly', 'direct'].includes(action.approach)) {
           const agreement = activateTownIncome(s, {
             npcId: npc.id,
-            sectorId: s.pendingBattle.sector,
+            sectorId: s.sectorEntryRequest.sector,
             approach: action.approach,
           });
           text = agreement.applied
@@ -3827,7 +3898,7 @@ export function dispatchCampaign(previous, action) {
               .filter(
                 (option) =>
                   option !== 'recruit' ||
-                  (canRecruitEncounter(npc) && !s.recruited.includes(npc.operativeId)),
+                  (canRecruitEncounter(npc) && !s.forceRoster.includes(npc.operativeId)),
               ),
           ],
         };
@@ -3855,7 +3926,7 @@ export function dispatchCampaign(previous, action) {
             supplied: isSupplied(s, at),
             commit: true,
           });
-        s.pendingBattle = {
+        s.sectorEntryRequest = {
           ...(s.contentCampaign ? { campaignPackage: s.contentCampaign.package } : {}),
           id: `visit-${at}-${s.hour}-${s.seed}`,
           sector: at,
@@ -3868,7 +3939,7 @@ export function dispatchCampaign(previous, action) {
           exploration: true,
           night: s.hour % 24 < 6 || s.hour % 24 >= 20,
           issuedCartridges: issued,
-          ammunitionSources: (s.sectorStates[at]?.units ?? [])
+          ammunitionSources: (s.sectorSnapshots[at]?.units ?? [])
             .filter((u) => u.side === 'enemy')
             .map(ammunitionSource),
           wasRoyalist: false,
@@ -3884,8 +3955,8 @@ export function dispatchCampaign(previous, action) {
           artillery: [],
           ...regionalConditions(at, s.hour, s),
         };
-        s.pendingBattle.garrison = prepareGarrison(s, at);
-        s.pendingBattle.garrisonLootSources = (s.sectorStates[at]?.units ?? [])
+        s.sectorEntryRequest.garrison = prepareGarrison(s, at);
+        s.sectorEntryRequest.garrisonLootSources = (s.sectorSnapshots[at]?.units ?? [])
           .filter((u) => u.militia && u.hp <= 0)
           .map(ammunitionSource);
         note(
@@ -3896,10 +3967,10 @@ export function dispatchCampaign(previous, action) {
       }
       case 'leaveSector': {
         requireThat(
-          s.pendingBattle?.exploration && action.battleId === s.pendingBattle.id,
+          s.sectorEntryRequest?.exploration && action.battleId === s.sectorEntryRequest.id,
           'La visita no corresponde al sector abierto.',
         );
-        const visit = s.pendingBattle,
+        const visit = s.sectorEntryRequest,
           { snapshot } = completeDeploymentReport(s, visit, action),
           outcome =
             snapshot.status === 'retreat'
@@ -3908,20 +3979,20 @@ export function dispatchCampaign(previous, action) {
                 ? 'defeat'
                 : 'visit',
           plan = planDeploymentReturn(s, visit, snapshot, outcome);
-        commitDeploymentReturn(s, visit, snapshot, plan);
-        s.pendingBattle = null;
+        commitDeploymentReturn(session, s, visit, snapshot, plan);
+        s.sectorEntryRequest = null;
         note(s, 'La escuadra vuelve a la carta de operaciones.');
         break;
       }
       case 'resumeSectorSession': {
-        const snapshot = s.pendingBattle
+        const snapshot = s.sectorEntryRequest
           ? validatedInteractionSnapshot(s, action.sectorState)
           : null;
         const repository = new CampaignResumeSectorSessionRepository(transaction, snapshot);
         new ResumeSectorSessionUseCase(repository).execute({
           sectorSessionId: action.sectorSessionId,
         });
-        note(s, `La escuadra retoma la visita de ${s.pendingBattle.name}.`);
+        note(s, `La escuadra retoma la visita de ${s.sectorEntryRequest.name}.`);
         break;
       }
       case 'withdrawOnArrival': {
@@ -3958,7 +4029,7 @@ export function dispatchCampaign(previous, action) {
         }
 
         requireThat(
-          !s.squad.some((id) => tooTiredToMarch(s.operativeState[id])),
+          !s.squad.some((id) => tooTiredToMarch(s.characters[id])),
           'La escuadra necesita descansar antes de marchar.',
         );
         requireThat(s.squad.length > 0, 'No hay combatientes en esta escuadra.');
@@ -3978,7 +4049,7 @@ export function dispatchCampaign(previous, action) {
           hours < 240 && q.journey?.status === 'moving' && !s.defeated && !s.pendingEncounter;
           hours++
         ) {
-          tick(s, 1, { joinArrivals: false });
+          tick(session, s, 1, { joinArrivals: false });
         }
         note(s, `La escuadra queda en ${campaignPlace(s.location, s).name}.`);
         break;
@@ -4036,14 +4107,14 @@ export function dispatchCampaign(previous, action) {
         requireThat(eligibility.eligible, eligibility.reason);
         requireThat(
           trainer &&
-            s.recruited.includes(trainerId) &&
-            s.operativeState[trainerId]?.alive &&
+            s.forceRoster.includes(trainerId) &&
+            s.characters[trainerId]?.alive &&
             operativeLocation(s, trainerId) === at,
           'Elegí un instructor contratado y presente en el sector.',
         );
         requireThat(trainer.leadership >= 30, 'El instructor necesita al menos 30 de liderazgo.');
         requireThat(
-          !careAssignmentBusy(s.operativeState[trainerId]?.assignment),
+          !careAssignmentBusy(s.characters[trainerId]?.assignment),
           'Poné al combatiente en servicio antes de asignarlo a las milicias.',
         );
         requireThat(!militiaAssignment(s, trainerId), 'El instructor ya dirige otro curso.');
@@ -4127,22 +4198,23 @@ export function dispatchCampaign(previous, action) {
           break;
         }
         const coordinator = new CampaignSectorSessionCoordinator(s);
-        const sameActiveSector = s.pendingBattle?.sector === at && !s.pendingBattle.sceneId;
+        const sameActiveSector =
+          s.sectorEntryRequest?.sector === at && !s.sectorEntryRequest.sceneId;
         const suspendedTarget = s.suspendedSectorSessions?.find(
           (record) => record.request.sector === at && !record.request.sceneId,
         );
         let existingSnapshot = sameActiveSector
           ? validatedInteractionSnapshot(s, action.sectorState)
           : null;
-        if (s.pendingBattle && !sameActiveSector) {
+        if (s.sectorEntryRequest && !sameActiveSector) {
           coordinator.suspendActive(validatedInteractionSnapshot(s, action.sectorState));
         }
         if (suspendedTarget) {
           coordinator.resume(suspendedTarget.request.id);
-          existingSnapshot = s.pendingBattle.resumeSnapshot;
+          existingSnapshot = s.sectorEntryRequest.resumeSnapshot;
         }
         if (existingSnapshot) {
-          const existingRequest = s.pendingBattle;
+          const existingRequest = s.sectorEntryRequest;
           const incoming = {
             sector: at,
             origin,
@@ -4187,7 +4259,7 @@ export function dispatchCampaign(previous, action) {
           def = scenarioFor(s).attackDefinition(s, at, scenarioContext(s)),
           mission = Boolean(def?.mission);
         requireThat(
-          at === s.location || !s.squad.some((id) => tooTiredToMarch(s.operativeState[id])),
+          at === s.location || !s.squad.some((id) => tooTiredToMarch(s.characters[id])),
           'La escuadra necesita descansar antes de atacar.',
         );
         requireThat(def, 'No existe ese campo de batalla.');
@@ -4199,7 +4271,7 @@ export function dispatchCampaign(previous, action) {
         );
         scenarioFor(s).admitAttack(s, at, def, scenarioContext(s));
         requireThat(
-          s.squad.some((id) => s.operativeState[id].alive && s.operativeState[id].hp > 0),
+          s.squad.some((id) => s.characters[id].alive && s.characters[id].hp > 0),
           'No hay combatientes disponibles.',
         );
         if (!mission) {
@@ -4223,7 +4295,7 @@ export function dispatchCampaign(previous, action) {
           // Transport eligibility, remounts, fatigue and interruptions must agree.
           const squad = activeSquad(s);
           queueSquadTravel(s, squad, { ...action, sector: at, intent: 'attack' });
-          tick(s, squad.journey.legHours);
+          tick(session, s, squad.journey.legHours);
           if (s.completed || s.defeated) {
             delete squad.journey;
             note(s, 'El despliegue se cancela: la campaña ha terminado.');
@@ -4254,18 +4326,18 @@ export function dispatchCampaign(previous, action) {
       }
       case 'battleResult': {
         requireThat(
-          s.pendingBattle && !s.pendingBattle.exploration,
+          s.sectorEntryRequest && !s.sectorEntryRequest.exploration,
           'No hay batalla de conquista pendiente.',
         );
         requireThat(
-          action.battleId === s.pendingBattle.id,
+          action.battleId === s.sectorEntryRequest.id,
           'El resultado no corresponde a la batalla pendiente.',
         );
         requireThat(
           ['victory', 'defeat', 'retreat'].includes(action.outcome),
           'Resultado de batalla inválido.',
         );
-        const request = s.pendingBattle;
+        const request = s.sectorEntryRequest;
         const { snapshot: battleSnapshot } = completeDeploymentReport(s, request, action);
         action = scenarioFor(s).settleMissionResult(
           s,
@@ -4275,24 +4347,24 @@ export function dispatchCampaign(previous, action) {
           scenarioContext(s),
         );
         const plan = planDeploymentReturn(s, request, battleSnapshot, action.outcome);
-        commitDeploymentReturn(s, request, battleSnapshot, plan);
+        commitDeploymentReturn(session, s, request, battleSnapshot, plan);
         for (const id of request.squad.map((u) => Number(u.id))) {
           if (
             gainsExperience(
               s,
               rosterFor(s).find((o) => o.id === id),
             ) &&
-            s.operativeState[id].alive
+            s.characters[id].alive
           ) {
             const before = rosterFor(s).find((o) => o.id === id),
               xp = action.outcome === 'victory' ? 60 : action.outcome === 'defeat' ? 20 : 10;
-            s.operativeState[id].xp = (s.operativeState[id].xp ?? 0) + xp;
+            s.characters[id].xp = (s.characters[id].xp ?? 0) + xp;
             const after = rosterFor(s).find((o) => o.id === id);
             if (after.level > before.level) {
               const growth = after.maxHp - before.maxHp;
-              s.operativeState[id].maxHp += growth;
-              if (s.operativeState[id].hp === before.maxHp) {
-                s.operativeState[id].hp += growth;
+              s.characters[id].maxHp += growth;
+              if (s.characters[id].hp === before.maxHp) {
+                s.characters[id].hp += growth;
               }
               note(s, `${after.name} mejora su instrucción tras el combate: grado${after.level}.`);
             }
@@ -4327,9 +4399,9 @@ export function dispatchCampaign(previous, action) {
           scenarioFor(s).battleOutcome(s, request, action.outcome, scenarioContext(s));
           note(s, `El destacamento se retira de ${request.name}.`);
         }
-        s.sectorStates[request.sector] = clone(compactCellScene(battleSnapshot, s));
-        s.pendingBattle = null;
-        s.squad = s.squad.filter((id) => s.operativeState[id].alive);
+        s.sectorSnapshots[request.sector] = clone(compactCellScene(battleSnapshot, s));
+        s.sectorEntryRequest = null;
+        s.squad = s.squad.filter((id) => s.characters[id].alive);
         if (!s.squad.length) {
           // Select an existing local column without copying its members into the
           // empty command. Only unassigned reserves may fill that empty squad.
@@ -4340,9 +4412,9 @@ export function dispatchCampaign(previous, action) {
               !q.journey &&
               q.members.some(
                 (id) =>
-                  s.recruited.includes(id) &&
-                  s.operativeState[id]?.alive &&
-                  !s.operativeState[id]?.captured,
+                  s.forceRoster.includes(id) &&
+                  s.characters[id]?.alive &&
+                  !s.characters[id]?.captured,
               ),
           );
           if (local) {
@@ -4350,12 +4422,12 @@ export function dispatchCampaign(previous, action) {
             s.squad = [...local.members];
           } else {
             const assigned = new Set(s.squads.flatMap((q) => q.members));
-            s.squad = s.recruited
+            s.squad = s.forceRoster
               .filter(
                 (id) =>
                   !assigned.has(id) &&
-                  s.operativeState[id].alive &&
-                  !s.operativeState[id].captured &&
+                  s.characters[id].alive &&
+                  !s.characters[id].captured &&
                   operativeLocation(s, id) === s.location,
               )
               .slice(0, 6);
@@ -4366,49 +4438,51 @@ export function dispatchCampaign(previous, action) {
       default:
         throw Error('Orden desconocida.');
     }
-    if (previous.pendingBattle && !s.pendingBattle) {
-      settleDetentionReturn(s, previous.pendingBattle);
+    if (previous.sectorEntryRequest && !s.sectorEntryRequest) {
+      settleDetentionReturn(s, previous.sectorEntryRequest);
     }
     reorganizeAfterLoss(s, previous);
     delayCrossingEnemyGroups(s);
-    if (s.pendingBattle && !previous.pendingBattle) {
-      prepareSectorArtillery(s, s.pendingBattle);
+    if (s.sectorEntryRequest && !previous.sectorEntryRequest) {
+      prepareSectorArtillery(s, s.sectorEntryRequest);
     }
-    if (s.pendingBattle && !s.pendingBattle.exits) {
-      prepareDeploymentExits(s, s.pendingBattle);
+    if (s.sectorEntryRequest && !s.sectorEntryRequest.exits) {
+      prepareDeploymentExits(s, s.sectorEntryRequest);
     }
     // Check real arrival geometry before committing soldiers, ammunition or guns.
     if (
       ['attack', 'beginAssault', 'fightOnArrival'].includes(action.type) &&
-      s.pendingBattle &&
-      s.pendingBattle.id !== previous.pendingBattle?.id
+      s.sectorEntryRequest &&
+      s.sectorEntryRequest.id !== previous.sectorEntryRequest?.id
     ) {
       enterSector(
-        { ...s.pendingBattle, campaignPackage: s.contentCampaign?.package },
-        s.sectorStates[s.pendingBattle.sector],
+        { ...s.sectorEntryRequest, campaignPackage: s.contentCampaign?.package },
+        s.sectorSnapshots[s.sectorEntryRequest.sector],
         { placement: true },
       );
     }
-    if (s.pendingBattle && s.pendingBattle.id !== previous.pendingBattle?.id) {
-      prepareSectorArtillery(s, s.pendingBattle);
+    if (s.sectorEntryRequest && s.sectorEntryRequest.id !== previous.sectorEntryRequest?.id) {
+      prepareSectorArtillery(s, s.sectorEntryRequest);
     }
     if (
-      s.pendingBattle &&
-      s.pendingBattle.id !== previous.pendingBattle?.id &&
+      s.sectorEntryRequest &&
+      s.sectorEntryRequest.id !== previous.sectorEntryRequest?.id &&
       s.contentCampaign?.package.militiaPatrol !== undefined
     ) {
-      s.pendingBattle.militiaPatrol = clone(s.contentCampaign.package.militiaPatrol);
+      s.sectorEntryRequest.militiaPatrol = clone(s.contentCampaign.package.militiaPatrol);
     }
     if (
-      s.pendingBattle &&
-      s.pendingBattle.id !== previous.pendingBattle?.id &&
+      s.sectorEntryRequest &&
+      s.sectorEntryRequest.id !== previous.sectorEntryRequest?.id &&
       s.contentCampaign?.package.artilleryProfiles !== undefined
     ) {
-      s.pendingBattle.artilleryDefinitions = clone(s.contentCampaign.package.artilleryProfiles);
+      s.sectorEntryRequest.artilleryDefinitions = clone(
+        s.contentCampaign.package.artilleryProfiles,
+      );
     }
     updateContentQuests(s);
     releaseDeferred(s);
-    receiveDueHires(s);
+    receiveDueRecruitmentClaims(s);
     synchronizeSquad(s);
     synchronizeCampaignPresence(s);
     synchronizeDialogueMovements(s);
@@ -4421,17 +4495,17 @@ export function dispatchCampaign(previous, action) {
       for (const op of rosterFor(s)) {
         const before = carriedAmmunition(
             oldRoster.find((o) => o.id === op.id),
-            previous.operativeState[op.id],
+            previous.characters[op.id],
           ),
-          after = carriedAmmunition(op, s.operativeState[op.id]);
+          after = carriedAmmunition(op, s.characters[op.id]);
         requireThat(!pocketChangeReason(before, after), POCKET_FULL);
       }
     }
-    if (s.pendingBattle && s.pendingBattle.id !== previous.pendingBattle?.id) {
-      for (const unit of s.pendingBattle.squad) {
+    if (s.sectorEntryRequest && s.sectorEntryRequest.id !== previous.sectorEntryRequest?.id) {
+      for (const unit of s.sectorEntryRequest.squad) {
         const before = carriedAmmunition(
           rosterFor(previous).find((o) => o.id === unit.id),
-          previous.operativeState[unit.id],
+          previous.characters[unit.id],
         );
         requireThat(!pocketChangeReason(before, unit), `${unit.name}: ${POCKET_FULL}`);
       }
@@ -4501,20 +4575,20 @@ export function restoreCampaignValue(s) {
   );
   s.gameRevision ??= 0;
   validateCampaignContent(s);
-  restoreCampaignPackageReference(s, s.pendingBattle);
-  if (s.pendingBattle?.campaignPackage !== undefined) {
+  restoreCampaignPackageReference(s, s.sectorEntryRequest);
+  if (s.sectorEntryRequest?.campaignPackage !== undefined) {
     requireThat(
       s.contentCampaign &&
-        canonicalContent(s.pendingBattle.campaignPackage) ===
+        canonicalContent(s.sectorEntryRequest.campaignPackage) ===
           canonicalContent(s.contentCampaign.package),
       'El contenido del despliegue no coincide con la campaña guardada.',
     );
-    s.pendingBattle.campaignPackage = s.contentCampaign.package;
+    s.sectorEntryRequest.campaignPackage = s.contentCampaign.package;
   }
   for (const scene of [
-    ...Object.values(s.sectorStates ?? {}),
-    ...Object.values(s.sceneStates ?? {}),
-    s.pendingBattle?.resumeSnapshot,
+    ...Object.values(s.sectorSnapshots ?? {}),
+    ...Object.values(s.sceneSnapshots ?? {}),
+    s.sectorEntryRequest?.resumeSnapshot,
   ]) {
     validateCampaignSceneDefinitions(s, scene);
   }
@@ -4602,7 +4676,7 @@ export function restoreCampaignValue(s) {
           integer(t.rank, 0, 2) &&
           Number.isInteger(t.trainerId) &&
           baseRosterFor(s).some((o) => o.id === t.trainerId) &&
-          s.recruited?.includes(t.trainerId) &&
+          s.forceRoster?.includes(t.trainerId) &&
           t.count === 3 &&
           integer(t.duration, 1, 96) &&
           integer(t.remaining, 1, t.duration) &&
@@ -4622,9 +4696,9 @@ export function restoreCampaignValue(s) {
   if (s.officer) {
     createOfficerRecord(s.officer.name, s.officer.answers, s.officer.profile, s);
   }
-  requireThat(object(s.operativeState), 'Las hojas de servicio son inválidas.');
+  requireThat(object(s.characters), 'Las hojas de servicio son inválidas.');
   for (const op of s.contentCampaign ? [] : CIVIC_RECRUITS) {
-    s.operativeState[op.id] ??= {
+    s.characters[op.id] ??= {
       hp: op.maxHp,
       fatigue: 0,
       alive: true,
@@ -4634,7 +4708,7 @@ export function restoreCampaignValue(s) {
       condition: 100,
     };
   }
-  for (const op of Object.values(s.operativeState)) {
+  for (const op of Object.values(s.characters)) {
     requireThat(object(op), 'Las hojas de servicio son inválidas.');
     if (op.missionSuppliesVersion !== undefined) {
       requireThat(
@@ -4679,7 +4753,7 @@ export function restoreCampaignValue(s) {
     requireThat(integer(op.xp, 0, 1e7), 'La experiencia guardada es inválida.');
   }
   for (const op of rosterFor(s)) {
-    const unit = { ...op, ...s.operativeState[op.id] };
+    const unit = { ...op, ...s.characters[op.id] };
     validateWeaponCarrier(unit);
     personalPockets(unit);
     requireThat(
@@ -4691,7 +4765,7 @@ export function restoreCampaignValue(s) {
     );
   }
   s.missions ??= {};
-  s.sceneStates ??= {};
+  s.sceneSnapshots ??= {};
   s.missionAllies ??= {};
   const validatedScenes = new Map();
   requireThat(
@@ -4704,8 +4778,8 @@ export function restoreCampaignValue(s) {
     }),
     'Las escenas guardadas son inválidas.',
   );
-  for (const [id, snapshot] of Object.entries(s.sceneStates)) {
-    s.sceneStates[id] =
+  for (const [id, snapshot] of Object.entries(s.sceneSnapshots)) {
+    s.sceneSnapshots[id] =
       validatedScenes.get(snapshot) ?? validateSectorSnapshot(expandCellScene(snapshot, s), s);
   }
   s.garrisons ??= {};
@@ -4723,31 +4797,31 @@ export function restoreCampaignValue(s) {
     'Los milicianos en instrucción son inválidos.',
   );
   for (const snapshot of [
-    s.pendingBattle,
-    s.pendingBattle?.resumeSnapshot,
-    ...Object.values(s.sectorStates ?? {}),
-    ...Object.values(s.sceneStates ?? {}),
+    s.sectorEntryRequest,
+    s.sectorEntryRequest?.resumeSnapshot,
+    ...Object.values(s.sectorSnapshots ?? {}),
+    ...Object.values(s.sceneSnapshots ?? {}),
   ].filter(Boolean)) {
     validateQuestContext(s, snapshot);
     validateRoadsideDiscoveryContext(s, snapshot);
   }
   s.quests ??= {};
   requireThat(validateQuests(s.quests, s.hour, s), 'Los encargos guardados son inválidos.');
-  if (s.pendingBattle) {
-    validateQuestBeneficiaryContext(s, s.pendingBattle, { request: null, issued: true });
+  if (s.sectorEntryRequest) {
+    validateQuestBeneficiaryContext(s, s.sectorEntryRequest, { request: null, issued: true });
   }
-  if (s.pendingBattle?.resumeSnapshot) {
-    s.pendingBattle.resumeSnapshot = validateSectorSnapshot(
-      expandCellScene(s.pendingBattle.resumeSnapshot, s),
+  if (s.sectorEntryRequest?.resumeSnapshot) {
+    s.sectorEntryRequest.resumeSnapshot = validateSectorSnapshot(
+      expandCellScene(s.sectorEntryRequest.resumeSnapshot, s),
       s,
     );
-    validateRepairReserveContext(s.pendingBattle, s.pendingBattle.resumeSnapshot);
-    validateQuestBeneficiaryContext(s, s.pendingBattle.resumeSnapshot);
-    retainRepairReserves(s.pendingBattle, s.pendingBattle.resumeSnapshot);
+    validateRepairReserveContext(s.sectorEntryRequest, s.sectorEntryRequest.resumeSnapshot);
+    validateQuestBeneficiaryContext(s, s.sectorEntryRequest.resumeSnapshot);
+    retainRepairReserves(s.sectorEntryRequest, s.sectorEntryRequest.resumeSnapshot);
   }
   for (const snapshot of [
-    ...Object.values(s.sectorStates ?? {}),
-    ...Object.values(s.sceneStates ?? {}),
+    ...Object.values(s.sectorSnapshots ?? {}),
+    ...Object.values(s.sceneSnapshots ?? {}),
   ]) {
     validateQuestBeneficiaryContext(s, snapshot, { request: null, retained: true });
   }
@@ -4838,10 +4912,10 @@ export function restoreCampaignValue(s) {
       const at = questBeneficiaryForNPC(quest, npcId)?.sector ?? quest.sector;
       if (
         quest.carried &&
-        at !== s.pendingBattle?.sector &&
+        at !== s.sectorEntryRequest?.sector &&
         (s.conversations[npcId]?.giftCount ?? 0) > 0
       ) {
-        validateAcknowledgedNpcGiftReceipts(s, s.sectorStates[at]?.npcs ?? [], at);
+        validateAcknowledgedNpcGiftReceipts(s, s.sectorSnapshots[at]?.npcs ?? [], at);
       }
     }
   }
@@ -4948,7 +5022,7 @@ export function restoreCampaignValue(s) {
     object(s.contracts) &&
       Object.entries(s.contracts).every(
         ([id, c]) =>
-          s.recruited.includes(Number(id)) &&
+          s.forceRoster.includes(Number(id)) &&
           object(c) &&
           (c.departurePending === undefined || typeof c.departurePending === 'boolean') &&
           ['paid', 'patriot', 'legacy'].includes(c.kind) &&
@@ -4965,10 +5039,10 @@ export function restoreCampaignValue(s) {
                 contractExpiresSeconds(c) > s.hour * 3600 + (s.secondOfHour ?? 0))) &&
           integer(c.paid, 0, 1e9),
       ) &&
-      s.recruited.every((id) => s.contracts[id]),
+      s.forceRoster.every((id) => s.contracts[id]),
     'Los contratos guardados son inválidos.',
   );
-  for (const id of s.recruited) {
+  for (const id of s.forceRoster) {
     const c = characterForOperative(s, id);
     if (!c || !isWorldCharacter(c)) {
       continue;
@@ -4987,20 +5061,20 @@ export function restoreCampaignValue(s) {
       new Set(values).size === values.length &&
       values.every((id) => ids.includes(id));
   requireThat(
-    validIds(s.recruited) &&
+    validIds(s.forceRoster) &&
       validIds(s.squad) &&
       s.squad.length <= 6 &&
-      s.squad.every((id) => s.recruited.includes(id)),
+      s.squad.every((id) => s.forceRoster.includes(id)),
     'El destacamento del archivo es inválido.',
   );
   requireThat(
-    s.recruited.every((id) => characterForOperative(s, id)?.encounter?.recruitable !== false),
+    s.forceRoster.every((id) => characterForOperative(s, id)?.encounter?.recruitable !== false),
     'Un habitante no reclutable no puede estar en la escuadra.',
   );
   requireThat(
-    object(s.operativeState) &&
+    object(s.characters) &&
       rosterFor(s).every((o) => {
-        const r = s.operativeState[o.id];
+        const r = s.characters[o.id];
         return (
           object(r) &&
           integer(r.hp, 0, o.maxHp) &&
@@ -5014,15 +5088,16 @@ export function restoreCampaignValue(s) {
   );
   // Older authored saves retained the initial ceiling after gaining a level.
   for (const op of rosterFor(s)) {
-    if (s.operativeState[op.id].maxHp !== undefined) {
+    if (s.characters[op.id].maxHp !== undefined) {
       requireThat(
-        integer(s.operativeState[op.id].maxHp, 1, op.maxHp),
+        integer(s.characters[op.id].maxHp, 1, op.maxHp),
         'La salud máxima guardada es inválida.',
       );
-      s.operativeState[op.id].maxHp = op.maxHp;
+      s.characters[op.id].maxHp = op.maxHp;
     }
   }
-  validateHireArrivals(s, rosterFor(s));
+  validateLegacyHiringArrivals(s, rosterFor(s));
+  validateRecruitmentClaims(s, rosterFor(s));
   validateServiceGuarantees(s, rosterFor(s));
   validatePendingVictoryFunds(s);
   requireThat(
@@ -5036,7 +5111,7 @@ export function restoreCampaignValue(s) {
   validateCampaignProgress(s);
   validateMedicalCare(s, rosterFor(s));
   for (const o of rosterFor(s)) {
-    const r = s.operativeState[o.id];
+    const r = s.characters[o.id];
     if (r.bandaged !== undefined) {
       requireThat(
         Number.isFinite(r.bandaged) && r.bandaged >= 0 && r.bandaged <= o.maxHp - r.hp,
@@ -5058,8 +5133,8 @@ export function restoreCampaignValue(s) {
       ),
     'El registro del archivo es inválido.',
   );
-  if (s.pendingBattle !== null) {
-    const b = s.pendingBattle;
+  if (s.sectorEntryRequest !== null) {
+    const b = s.sectorEntryRequest;
     requireThat(scenarioFor(s).validatePendingScene(s, b), 'La escena pendiente es inválida.');
     requireThat(
       object(b) &&
@@ -5074,7 +5149,7 @@ export function restoreCampaignValue(s) {
           (o) =>
             object(o) &&
             (b.defenseGroupId || b.assaultSquads
-              ? s.recruited.includes(o.id) &&
+              ? s.forceRoster.includes(o.id) &&
                 operativeLocation(s, o.id) === sceneAnchorFor(s, b.sector)
               : s.squad.includes(o.id)) &&
             integer(o.loaded, 0, weaponSpecification(o)?.capacity ?? 0) &&
@@ -5095,22 +5170,25 @@ export function restoreCampaignValue(s) {
   }
 
   for (const unit of [
-    ...(s.pendingBattle?.squad ?? []),
-    ...(s.pendingBattle?.missionAllies ?? []),
+    ...(s.sectorEntryRequest?.squad ?? []),
+    ...(s.sectorEntryRequest?.missionAllies ?? []),
     ...Object.values(s.missionAllies ?? {}),
   ]) {
     validateWeaponCarrier(unit);
   }
-  for (const unit of [...(s.pendingBattle?.enemies ?? []), ...(s.pendingBattle?.garrison ?? [])]) {
+  for (const unit of [
+    ...(s.sectorEntryRequest?.enemies ?? []),
+    ...(s.sectorEntryRequest?.garrison ?? []),
+  ]) {
     validateForceWeapon(unit);
     requireThat(
-      validMilitiaArrival(unit, s.pendingBattle.sector, s),
+      validMilitiaArrival(unit, s.sectorEntryRequest.sector, s),
       'La llegada de la milicia es inválida.',
     );
     requireThat(validMilitiaExperience(unit), 'La experiencia de la tropa guardada es inválida.');
   }
-  if (s.pendingBattle) {
-    const request = s.pendingBattle;
+  if (s.sectorEntryRequest) {
+    const request = s.sectorEntryRequest;
     requireThat(
       (request.hour === undefined || integer(request.hour, 0, s.hour)) &&
         (request.secondOfHour === undefined || integer(request.secondOfHour, 0, 3599)),
@@ -5118,8 +5196,8 @@ export function restoreCampaignValue(s) {
     );
     validateRegionalWeather(request, s);
   }
-  if (s.pendingBattle) {
-    for (const unit of s.pendingBattle.squad) {
+  if (s.sectorEntryRequest) {
+    for (const unit of s.sectorEntryRequest.squad) {
       requireThat(
         unit.preserveLoading === undefined || typeof unit.preserveLoading === 'boolean',
         'El estado de carga del despliegue es inválido.',
@@ -5185,7 +5263,7 @@ export function restoreCampaignValue(s) {
         h.condition >= 0 &&
         h.condition <= 100 &&
         integer(h.feed, 0, 100000) &&
-        (h.assignedTo === null || s.recruited.includes(h.assignedTo)),
+        (h.assignedTo === null || s.forceRoster.includes(h.assignedTo)),
     ),
     'Los caballos guardados son inválidos.',
   );
@@ -5214,7 +5292,7 @@ export function restoreCampaignValue(s) {
           validWorldLocation(q.location, s) &&
           validIds(q.members) &&
           q.members.length <= 6 &&
-          q.members.every((id) => s.recruited.includes(id)),
+          q.members.every((id) => s.forceRoster.includes(id)),
       ),
     'Las escuadras guardadas son inválidas.',
   );
@@ -5230,8 +5308,8 @@ export function restoreCampaignValue(s) {
       JSON.stringify(selected.members) === JSON.stringify(s.squad),
     'La escuadra activa del archivo es inválida.',
   );
-  requireThat(object(s.sectorStates), 'Los sectores guardados son inválidos.');
-  for (const [id, snapshot] of Object.entries(s.sectorStates)) {
+  requireThat(object(s.sectorSnapshots), 'Los sectores guardados son inválidos.');
+  for (const [id, snapshot] of Object.entries(s.sectorSnapshots)) {
     requireThat(
       validWorldLocation(id, s) || isCampaignScene(s, id),
       'Los sectores guardados son inválidos.',
@@ -5243,7 +5321,7 @@ export function restoreCampaignValue(s) {
         (restored.sectorId === id && restored.sourceMapId === id),
       'Los sectores guardados son inválidos.',
     );
-    s.sectorStates[id] = restored;
+    s.sectorSnapshots[id] = restored;
   }
   validateAmmunitionCustody(s, rosterFor(s));
   migrateArtilleryState(s);
@@ -5251,20 +5329,21 @@ export function restoreCampaignValue(s) {
   validateArtilleryMerchants(s);
   validateCampaignArtillery(s);
   for (const scene of [
-    s.pendingBattle,
-    ...Object.values(s.sectorStates),
-    ...Object.values(s.sceneStates),
+    s.sectorEntryRequest,
+    ...Object.values(s.sectorSnapshots),
+    ...Object.values(s.sceneSnapshots),
   ]) {
     validateCampaignPatrol(s, scene);
     validateCampaignArtilleryProfiles(s, scene);
   }
-  for (const [id, snapshot] of Object.entries(s.sectorStates)) {
-    s.sectorStates[id] = compactCellScene(snapshot, s);
+  for (const [id, snapshot] of Object.entries(s.sectorSnapshots)) {
+    s.sectorSnapshots[id] = compactCellScene(snapshot, s);
   }
   requireThat(
-    !s.pendingBattle ||
-      s.pendingBattle.syncedSeconds === undefined ||
-      (Number.isSafeInteger(s.pendingBattle.syncedSeconds) && s.pendingBattle.syncedSeconds >= 0),
+    !s.sectorEntryRequest ||
+      s.sectorEntryRequest.syncedSeconds === undefined ||
+      (Number.isSafeInteger(s.sectorEntryRequest.syncedSeconds) &&
+        s.sectorEntryRequest.syncedSeconds >= 0),
     'El reloj del despliegue es inválido.',
   );
   requireThat(
@@ -5289,14 +5368,14 @@ export function restoreCampaignValue(s) {
   validateAssignments(s, rosterFor(s));
   validateAssignmentAttention(s, rosterFor(s));
   validateLogisticsNotice(s);
-  if (s.pendingBattle) {
-    validateArtilleryDeployment(s.pendingBattle);
+  if (s.sectorEntryRequest) {
+    validateArtilleryDeployment(s.sectorEntryRequest);
   }
   validateContractAttention(s, rosterFor(s));
   validateMorale(s, rosterFor(s));
   validateCampaignCompanionGrief(s, rosterFor(s));
-  if (s.pendingBattle?.resumeSnapshot) {
-    validateCompanionGriefContext(s, s.pendingBattle.resumeSnapshot, rosterFor(s));
+  if (s.sectorEntryRequest?.resumeSnapshot) {
+    validateCompanionGriefContext(s, s.sectorEntryRequest.resumeSnapshot, rosterFor(s));
   }
   validateEquipment(s, rosterFor(s));
   validateEnemyGroups(s, rosterFor(s));
@@ -5322,8 +5401,8 @@ export function restoreCampaignValue(s) {
   }
   validateDialogueMovements(s, encounterDefinitions(s));
   validateCampaignServiceObjections(s, rosterFor(s));
-  if (s.pendingBattle?.resumeSnapshot) {
-    validateServiceObjectionContext(s, s.pendingBattle.resumeSnapshot, rosterFor(s));
+  if (s.sectorEntryRequest?.resumeSnapshot) {
+    validateServiceObjectionContext(s, s.sectorEntryRequest.resumeSnapshot, rosterFor(s));
   }
   scenarioFor(s).validateHistoricalState(s);
   validatePendingCompanionLoss(s, rosterFor(s));
@@ -5331,13 +5410,14 @@ export function restoreCampaignValue(s) {
     s.recruitmentVersion === undefined || s.recruitmentVersion === 2,
     'La versión de reclutamiento no es compatible.',
   );
-  receiveDueHires(s);
+  migrateLegacyHiringArrivals(s);
+  receiveDueRecruitmentClaims(s);
   synchronizeSquad(s);
   synchronizeCampaignPresence(s);
   validateCampaignPresence(s);
   syncCampaignAmmunition(s, rosterFor(s));
   validateCampaignAmmunition(s);
-  validateHireArrivals(s, rosterFor(s));
+  validateRecruitmentClaims(s, rosterFor(s));
   validateServiceGuarantees(s, rosterFor(s));
   s.lastError = null;
   return removeIgnitionSupplies(s);

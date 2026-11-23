@@ -13,12 +13,12 @@ export function validateAbilityReferences(state, value = state) {
   };
   // Progress records are mutable and get overlaid on roster entries at deployment.
   // Capabilities belong only to the immutable character definition.
-  for (const record of Object.values(value.operativeState ?? {})) {
+  for (const record of Object.values(value.characters ?? {})) {
     need(record.abilities === undefined);
   }
   for (const actor of [
     ...campaignActors(value),
-    ...campaignActors(value.pendingBattle?.resumeSnapshot ?? {}),
+    ...campaignActors(value.sectorEntryRequest?.resumeSnapshot ?? {}),
   ]) {
     const definition = characterForActor(state, actor),
       generic = hasGenericCharacterDefinitions(state.contentCampaign?.package),
@@ -49,7 +49,7 @@ export function restoreGenericCharacterReferences(state, value = state) {
   }
   for (const actor of [
     ...campaignActors(value),
-    ...campaignActors(value.pendingBattle?.resumeSnapshot ?? {}),
+    ...campaignActors(value.sectorEntryRequest?.resumeSnapshot ?? {}),
   ]) {
     const definition = characterForActor(state, actor);
     if (!definition) {

@@ -13,7 +13,7 @@ const need = (ok, message) => {
 const equal = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const healthFields = ['hp', 'energy', 'bleeding', 'bandaged', 'alive', 'unconscious'];
 function plans(campaign, battle) {
-  const request = campaign.pendingBattle;
+  const request = campaign.sectorEntryRequest;
   need(
     request && battle.battleId === request.id && battle.sectorId === request.sector,
     'El parte de prisioneros no corresponde al despliegue.',
@@ -36,7 +36,7 @@ function plans(campaign, battle) {
       'El parte cambió la custodia de un prisionero.',
     );
     seen.add(npc.id);
-    const record = campaign.operativeState[d.operativeId],
+    const record = campaign.characters[d.operativeId],
       prior = campaign.detentionRecords?.[npc.id];
     if (prior?.npc.detentionRelease) {
       need(
@@ -162,7 +162,7 @@ export function validateCampaignDetention(campaign) {
     validateCivilianWounds(npc);
     need(npc.detention, 'La custodia guardada es inválida.');
     const d = npc.detention,
-      r = campaign.operativeState[d.operativeId];
+      r = campaign.characters[d.operativeId];
     need(
       r && captureSequence(d) <= captureSequence(r) && d.capturedAt <= campaign.hour,
       'Falta la hoja de servicio del prisionero.',
@@ -232,7 +232,7 @@ export function validateCampaignDetention(campaign) {
             typeof care.guardId === 'string' &&
             care.guardId.length > 0 &&
             Number.isInteger(care.sourceId) &&
-            campaign.operativeState[care.sourceId] &&
+            campaign.characters[care.sourceId] &&
             care.dressings === 1,
           'El recibo de atención en cautiverio es inválido.',
         );
@@ -283,14 +283,14 @@ export function validateCampaignDetention(campaign) {
       }
     }
   }
-  const request = campaign.pendingBattle,
+  const request = campaign.sectorEntryRequest,
     manifest = request?.detainedPrisoners ?? [],
     ids = new Set();
   need(Array.isArray(manifest), 'El manifiesto de prisioneros es inválido.');
   for (const npc of manifest) {
     validateDetainedPrisoner(npc, campaign);
     const d = npc.detention,
-      r = campaign.operativeState[d?.operativeId];
+      r = campaign.characters[d?.operativeId];
     need(
       d &&
         d.sector === request.sector &&
@@ -307,15 +307,15 @@ export function validateCampaignDetention(campaign) {
     );
   }
   if (request?.detainedPrisoners !== undefined) {
-    for (const [id, r] of Object.entries(campaign.operativeState)) {
+    for (const [id, r] of Object.entries(campaign.characters)) {
       if (r.captured && r.capturedSector === request.sector && !request.sceneId) {
         need(ids.has(detentionId(id, r)), 'El manifiesto omitió un prisionero local.');
       }
     }
   }
   for (const snapshot of [
-    ...Object.values(campaign.sectorStates ?? {}),
-    ...Object.values(campaign.sceneStates ?? {}),
+    ...Object.values(campaign.sectorSnapshots ?? {}),
+    ...Object.values(campaign.sceneSnapshots ?? {}),
   ]) {
     for (const npc of snapshot.npcs ?? []) {
       if (!npc.detention) {
@@ -335,13 +335,13 @@ export function validateCampaignDetention(campaign) {
 // follow a vanished rescuer on the next visit. Retain the failed attempt.
 export function settleDetentionReturn(campaign, request) {
   const snapshot = request.sceneId
-    ? campaign.sceneStates[request.sceneId]
-    : campaign.sectorStates[request.sector];
+    ? campaign.sceneSnapshots[request.sceneId]
+    : campaign.sectorSnapshots[request.sector];
   for (const npc of snapshot?.npcs ?? []) {
     if (
       !npc.detention?.freed ||
       npc.hp <= 0 ||
-      !sameCaptivity(campaign.operativeState[npc.detention.operativeId], npc.detention)
+      !sameCaptivity(campaign.characters[npc.detention.operativeId], npc.detention)
     ) {
       continue;
     }

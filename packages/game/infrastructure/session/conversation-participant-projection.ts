@@ -23,10 +23,10 @@ export class ConversationParticipantProjection {
 
     const combatantId = campaign.lastConversation.operativeId;
     const resident = sectorSession.npcs.find((person) => person.id === characterId);
-    const authorizedCharacter = campaign.pendingBattle?.squad.find(
+    const authorizedCharacter = campaign.sectorEntryRequest?.squad.find(
       (person) => person.id === combatantId,
     );
-    if (!resident || combatantId === undefined || !campaign.recruited.includes(combatantId)) {
+    if (!resident || combatantId === undefined || !campaign.forceRoster.includes(combatantId)) {
       throw new Error('El reclutamiento perdió al personaje presente.');
     }
 

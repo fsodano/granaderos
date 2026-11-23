@@ -31,7 +31,7 @@ export function historicalRequiredActors(s) {
 export function historicalLossReason(s) {
   return (
     historicalRequiredActors(s).find(
-      ({ id }) => s.operativeState[id]?.alive === false && s.operativeState[id].hp === 0,
+      ({ id }) => s.characters[id]?.alive === false && s.characters[id].hp === 0,
     )?.reason ?? null
   );
 }

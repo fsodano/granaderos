@@ -6,14 +6,14 @@ export function workshopAccessReason(s, op, supplied) {
   if (s.defeated) {
     return 'La campaña ha terminado.';
   }
-  if (s.pendingBattle) {
+  if (s.sectorEntryRequest) {
     return 'Resolvé la escena táctica antes de usar el taller.';
   }
   if (
     !op ||
-    !s.recruited.includes(op.id) ||
-    !s.operativeState[op.id]?.alive ||
-    s.operativeState[op.id].captured
+    !s.forceRoster.includes(op.id) ||
+    !s.characters[op.id]?.alive ||
+    s.characters[op.id].captured
   ) {
     return 'El combatiente no está disponible.';
   }

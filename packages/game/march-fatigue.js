@@ -20,9 +20,9 @@ export function advanceMarchFatigue(
   { traveling = [], mode = 'march', mountain = false } = {},
 ) {
   for (const id of traveling) {
-    const record = s.operativeState[id],
+    const record = s.characters[id],
       unit = roster.find((o) => o.id === id);
-    if (!unit || !s.recruited.includes(id) || !record?.alive || record.captured) {
+    if (!unit || !s.forceRoster.includes(id) || !record?.alive || record.captured) {
       continue;
     }
     const amount = campaignMarchFatigueRate(s, { ...unit, ...record }, { mode, mountain });

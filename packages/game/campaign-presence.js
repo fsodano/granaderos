@@ -146,7 +146,7 @@ function currentResident(state, npc, sector) {
   if (npc.detention !== undefined) {
     validateDetainedPrisoner(npc, state);
     const d = npc.detention,
-      request = state.pendingBattle;
+      request = state.sectorEntryRequest;
     if (d.sector !== sector) {
       return false;
     }
@@ -193,53 +193,52 @@ export function synchronizeCampaignPresence(state) {
   }
   let runtime = { ...state.contentPresence, content: state.contentCampaign.package, history: [] };
   const loaded =
-    state.pendingBattle && locationId(state.pendingBattle.sector, state)
-      ? contentCellIds([state.pendingBattle.sector], state)[0]
+    state.sectorEntryRequest && locationId(state.sectorEntryRequest.sector, state)
+      ? contentCellIds([state.sectorEntryRequest.sector], state)[0]
       : null;
   // Off-screen bleeding can confirm a death inside a batched interval.
   // Process those events in order before daily movement or successor deadlines.
   const deaths = runtime.content.characters
     .map((c) => ({ character: c, id: operativeIdForCharacter(runtime.content, c.id) }))
     .filter(
-      ({ character: c, id }) =>
-        state.operativeState[id].alive === false && runtime.people[c.id].alive,
+      ({ character: c, id }) => state.characters[id].alive === false && runtime.people[c.id].alive,
     )
-    .map((v) => ({ ...v, minute: state.operativeState[v.id].deathMinute ?? minuteOf(state) }))
+    .map((v) => ({ ...v, minute: state.characters[v.id].deathMinute ?? minuteOf(state) }))
     .sort((a, b) => a.minute - b.minute);
   for (const { character: c, id, minute } of deaths) {
     need(Number.isSafeInteger(minute) && minute >= runtime.minute && minute <= minuteOf(state));
     runtime = advancePlacementState(runtime, minute, loaded, 52560000);
-    state.operativeState[id].deathMinute = minute;
+    state.characters[id].deathMinute = minute;
     runtime = changePlacementStatus(runtime, c.id, 'dead', loaded);
   }
   runtime = advancePlacementState(runtime, minuteOf(state), loaded, 52560000);
   for (const c of runtime.content.characters) {
     const numeric = operativeIdForCharacter(runtime.content, c.id),
-      record = state.operativeState[numeric],
+      record = state.characters[numeric],
       person = runtime.people[c.id];
-    if (person.alive && person.recruited !== state.recruited.includes(numeric)) {
+    if (person.alive && person.recruited !== state.forceRoster.includes(numeric)) {
       runtime = changePlacementStatus(
         runtime,
         c.id,
-        state.recruited.includes(numeric) ? 'recruited' : 'released',
+        state.forceRoster.includes(numeric) ? 'recruited' : 'released',
         loaded,
       );
     }
     // A casualty can leave the service ledger when its contract ends. This is
     // not a living placement transition and must not release or revive an actor.
     if (!runtime.people[c.id].alive) {
-      runtime.people[c.id].recruited = state.recruited.includes(numeric);
+      runtime.people[c.id].recruited = state.forceRoster.includes(numeric);
     }
     runtime.people[c.id].hp = record.hp;
   }
   state.contentPresence = strip(runtime);
   resumeCivilianServiceReturns(state);
   synchronizeResidentWounds(state);
-  for (const scene of Object.values(state.sectorStates)) {
+  for (const scene of Object.values(state.sectorSnapshots)) {
     reconcileSectorResidents(state, scene);
   }
-  if (state.pendingBattle && !state.pendingBattle.sceneId) {
-    reconcileSectorResidents(state, state.pendingBattle);
+  if (state.sectorEntryRequest && !state.sectorEntryRequest.sceneId) {
+    reconcileSectorResidents(state, state.sectorEntryRequest);
   }
   for (const session of state.suspendedSectorSessions ?? []) {
     reconcileSectorResidents(state, session.snapshot);
@@ -282,12 +281,12 @@ function successionActors(state, snapshot) {
       u.side === 'player' &&
       !u.militia &&
       sources.has(Number(u.id)) &&
-      state.pendingBattle?.squad.some((o) => o.id === Number(u.id)),
+      state.sectorEntryRequest?.squad.some((o) => o.id === Number(u.id)),
   );
 }
 export function acknowledgeSuccessionDeaths(state, snapshot) {
   for (const unit of successionActors(state, snapshot)) {
-    const record = state.operativeState[Number(unit.id)];
+    const record = state.characters[Number(unit.id)];
     need(record.deathMinute === undefined || unit.hp === 0);
     if (unit.hp === 0) {
       record.hp = 0;
@@ -298,7 +297,7 @@ export function acknowledgeSuccessionDeaths(state, snapshot) {
 }
 export function validateActiveSuccessionDeaths(state, snapshot) {
   for (const unit of successionActors(state, snapshot)) {
-    need(state.operativeState[Number(unit.id)].alive === unit.hp > 0);
+    need(state.characters[Number(unit.id)].alive === unit.hp > 0);
   }
 }
 export function validatePresenceScene(state, scene) {
@@ -338,7 +337,7 @@ function validateSuccessions(state) {
     need(
       integer(receipt.minute, 0, r.minute) &&
         receipt.minute ===
-          state.operativeState[operativeIdForCharacter(state.contentCampaign.package, p.afterDeath)]
+          state.characters[operativeIdForCharacter(state.contentCampaign.package, p.afterDeath)]
             ?.deathMinute &&
         integer(receipt.at, receipt.minute + p.delayMin, receipt.minute + p.delayMax),
     );
@@ -362,8 +361,9 @@ function validateSuccessions(state) {
     if (event.at <= r.minute) {
       need(
         event.destination !== undefined &&
-          state.pendingBattle &&
-          locationId(event.destination, state) === locationId(state.pendingBattle.sector, state),
+          state.sectorEntryRequest &&
+          locationId(event.destination, state) ===
+            locationId(state.sectorEntryRequest.sector, state),
       );
     } else {
       need(event.destination === undefined);
@@ -420,7 +420,7 @@ export function validateCampaignPresence(state) {
     const id = operativeIdForCharacter(content, c.id),
       p = r.people[c.id],
       placement = content.placements.find((v) => v.character === c.id),
-      record = state.operativeState[id];
+      record = state.characters[id];
     need(
       object(p) &&
         ['alive', 'recruited', 'appeared', 'suspended'].every((k) => typeof p[k] === 'boolean') &&
@@ -446,7 +446,7 @@ export function validateCampaignPresence(state) {
       p.hp === 0 &&
       p.sector === null &&
       p.recruited &&
-      !state.recruited.includes(id) &&
+      !state.forceRoster.includes(id) &&
       !state.contracts[id]
     ) {
       p.recruited = false;
@@ -454,7 +454,7 @@ export function validateCampaignPresence(state) {
     need(
       p.hp === record.hp &&
         p.alive === record.alive &&
-        p.recruited === state.recruited.includes(id),
+        p.recruited === state.forceRoster.includes(id),
     );
     need(p.sector === null || placement?.sectors.includes(p.sector));
     need(!p.appeared || (Boolean(placement) && p.revision >= 1));
@@ -468,10 +468,10 @@ export function validateCampaignPresence(state) {
     }
   }
   validateSuccessions(state);
-  for (const scene of Object.values(state.sectorStates)) {
+  for (const scene of Object.values(state.sectorSnapshots)) {
     validatePresenceScene(state, scene);
   }
-  if (state.pendingBattle) {
-    validatePresenceScene(state, state.pendingBattle);
+  if (state.sectorEntryRequest) {
+    validatePresenceScene(state, state.sectorEntryRequest);
   }
 }

@@ -18,7 +18,7 @@ import { DEFAULT_CORPSE_LIFETIME_SECONDS } from '../packages/game/domain/world/c
 function suspendedVisit() {
   const campaign = dispatchCampaign(initialCampaign(), { type: 'visitSector' });
   assert.equal(campaign.lastError, null);
-  const request = structuredClone(present(campaign.pendingBattle));
+  const request = structuredClone(present(campaign.sectorEntryRequest));
   const snapshot = enterSector(request);
   snapshot.npcs = [];
   const wounded = snapshot.units.find((actor) => actor.side === 'player');
@@ -32,7 +32,7 @@ function suspendedVisit() {
     location: campaign.location,
     suspendedAtSeconds: 0,
   };
-  campaign.pendingBattle = null;
+  campaign.sectorEntryRequest = null;
   campaign.suspendedSectorSessions = [session];
   return { campaign, session, woundedId: present(wounded).id };
 }
@@ -72,7 +72,7 @@ void test('loaded and suspended military bleeding produce the same conditions wi
   }
   const casualty = session.snapshot.units.find((actor) => actor.id === woundedId);
   assert.equal(present(present(casualty).corpse).diedAtSecond, 42);
-  assert.equal(present(campaign.operativeState[Number(woundedId)]).alive, false);
+  assert.equal(present(campaign.characters[Number(woundedId)]).alive, false);
   assert.equal(session.snapshot.elapsedSeconds, 120);
   assert.equal(present(session.request).syncedSeconds, 120);
   assert.equal(validateEquipmentOwnership(campaign, rosterFor(campaign)), true);
@@ -90,10 +90,10 @@ void test('suspended death removal conserves custody through repeated progressio
   );
   assert.equal(present(death).corpse.diedAtSecond, 42);
   assert.equal(present(death).corpse.removedAtSecond, DEFAULT_CORPSE_LIFETIME_SECONDS + 42);
-  assert.equal(present(campaign.operativeState[Number(woundedId)]).hp, 0);
-  assert.equal(present(campaign.operativeState[Number(woundedId)]).medkits, 0);
+  assert.equal(present(campaign.characters[Number(woundedId)]).hp, 0);
+  assert.equal(present(campaign.characters[Number(woundedId)]).medkits, 0);
   assert.deepEqual(
-    present(campaign.operativeState[Number(woundedId)]).inventory,
+    present(campaign.characters[Number(woundedId)]).inventory,
     present(death).actor.inventory,
   );
   const ground = structuredClone(session.snapshot.groundItems);

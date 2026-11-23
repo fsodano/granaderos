@@ -4,7 +4,7 @@ import {
 } from '../../domain/personnel/recruitment-candidate.ts';
 import { RecruitmentCatalogue } from '../../domain/personnel/recruitment-catalogue.ts';
 import { contractQuote } from '../../contracts.js';
-import { pendingHire } from '../../hiring-arrivals.js';
+import { pendingRecruitmentClaim } from '../../recruitment-claims.js';
 import { candidateAdmission } from '../../recruitment.ts';
 import { CanonicalPersonnelMapper } from '../persistence/canonical-personnel-mapper.ts';
 import { DomainIdentityMap } from '../persistence/domain-identity-map.ts';
@@ -24,7 +24,7 @@ export class CampaignGetRecruitmentCandidatesRepository {
     const personnel = new CanonicalPersonnelMapper(this.#campaign, new DomainIdentityMap());
     return new RecruitmentCatalogue(
       this.#roster.map((character) => {
-        const condition = this.#campaign.operativeState[character.id];
+        const condition = this.#campaign.characters[character.id];
         const quote = contractQuote(this.#campaign, character, 'day');
         const availability = this.candidateAvailability(character.id, condition, quote);
         return new RecruitmentCandidate({
@@ -48,10 +48,10 @@ export class CampaignGetRecruitmentCandidatesRepository {
     if (condition?.alive === false) {
       return RecruitmentAvailability.Fallen;
     }
-    if (this.#campaign.recruited.includes(characterId)) {
+    if (this.#campaign.forceRoster.includes(characterId)) {
       return RecruitmentAvailability.Serving;
     }
-    if (pendingHire(this.#campaign, characterId)) {
+    if (pendingRecruitmentClaim(this.#campaign, characterId)) {
       return RecruitmentAvailability.Pending;
     }
     if (condition?.captured) {

@@ -21,7 +21,7 @@ for (const action of [
   campaign = dispatchCampaign(campaign, action);
   assert.equal(campaign.lastError, null);
 }
-const request = campaign.pendingBattle;
+const request = campaign.sectorEntryRequest;
 const battle = createBattle(
   [
     ...request.squad.map((unit, i) => ({ ...unit, x: 1, y: 6 + i })),

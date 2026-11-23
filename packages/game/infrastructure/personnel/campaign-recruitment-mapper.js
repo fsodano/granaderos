@@ -64,23 +64,23 @@ export class CampaignRecruitmentMapper {
         : {}),
       paid: contract.payment.pesos,
     };
-    campaign.recruited = context.roster.members.map(Number);
+    campaign.forceRoster = context.roster.members.map(Number);
     campaign.squad = context.roster.squadMembers.map(Number);
     if (equipmentSource === RecruitmentEquipmentSource.InitialIssue) {
       const equippedCandidate = new CampaignCharacterEquipmentMapper(campaign).project(candidate);
       issueStartingCartridges(campaign, equippedCandidate);
       issueInitialOutfit(campaign, candidate.id);
     } else if (equipmentSource === RecruitmentEquipmentSource.ResidentInventory) {
-      campaign.operativeState[candidate.id].startingCartridgesIssued = true;
+      campaign.characters[candidate.id].startingCartridgesIssued = true;
     } else {
       throw new DomainRefusal(DomainRefusalCode.InvalidValue);
     }
-    Object.assign(campaign.operativeState[candidate.id], {
+    Object.assign(campaign.characters[candidate.id], {
       location: outcome.locationId,
       arrival: null,
       residentSector: null,
       residentScene: null,
     });
-    delete campaign.operativeState[candidate.id].residentPosition;
+    delete campaign.characters[candidate.id].residentPosition;
   }
 }

@@ -27,7 +27,7 @@ export function separatedWorkshop() {
   }
   // Prepared wear isolates workshop eligibility; no claim of tactical wear here.
   for (const id of [REMOTE, LOCAL]) {
-    present(s.operativeState[id]).condition = 40;
+    present(s.characters[id]).condition = 40;
   }
   s = order(s, { type: 'createSquad', name: 'Avanzada', ids: [REMOTE] });
   s = order(s, { type: 'travel', sector: 'buenos_aires' });

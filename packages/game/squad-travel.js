@@ -175,7 +175,7 @@ export function redirectJourney(campaign, request) {
       recordStrategicArrival(campaign, squad.members, arrival.from, arrival.to);
       squad.location = arrival.to;
       for (const id of squad.members) {
-        campaign.operativeState[id].location = arrival.to;
+        campaign.characters[id].location = arrival.to;
       }
       for (const horse of campaign.horseState.horses) {
         if (!horse.returned && squad.members.includes(horse.assignedTo)) {
@@ -323,20 +323,19 @@ function legIssue(s, q) {
   }
   if (
     q.members.some(
-      (id) =>
-        !s.recruited.includes(id) || !s.operativeState[id]?.alive || s.operativeState[id].captured,
+      (id) => !s.forceRoster.includes(id) || !s.characters[id]?.alive || s.characters[id].captured,
     )
   ) {
     return 'unavailable';
   }
-  if (q.members.some((id) => tooTiredToMarch(s.operativeState[id]))) {
+  if (q.members.some((id) => tooTiredToMarch(s.characters[id]))) {
     return 'exhausted';
   }
   if (
     q.members.some(
       (id) =>
-        s.operativeState[id].asleep ||
-        s.operativeState[id].assignment !== 'active' ||
+        s.characters[id].asleep ||
+        s.characters[id].assignment !== 'active' ||
         s.militiaTraining?.some((t) => t.trainerId === id),
     )
   ) {
@@ -350,7 +349,7 @@ function legIssue(s, q) {
     return 'contact';
   }
   if (
-    (j.intent !== 'attack' && s.pendingBattle?.sector === to) ||
+    (j.intent !== 'attack' && s.sectorEntryRequest?.sector === to) ||
     (j.intent !== 'attack' &&
       (worldOwner(s, to) === 'royalist' ||
         s.enemyGroups?.some((g) => g.target === to && g.status === 'stationed')))
@@ -574,7 +573,7 @@ export function advanceSquadTravel(
       (blocked ||
         winter ||
         (snapshot.purpose !== JourneyPurpose.HostileApproach &&
-          campaign.pendingBattle?.sector === snapshot.route[1]))
+          campaign.sectorEntryRequest?.sector === snapshot.route[1]))
     ) {
       journey.reverseForBlockedRoute(winter ? 'winter' : 'blocked');
       announce(
@@ -630,7 +629,7 @@ export function advanceSquadTravel(
     }
     squad.location = arrival.to;
     for (const id of squad.members) {
-      campaign.operativeState[id].location = arrival.to;
+      campaign.characters[id].location = arrival.to;
     }
     for (const horse of campaign.horseState.horses) {
       if (!horse.returned && squad.members.includes(horse.assignedTo)) {
@@ -807,17 +806,17 @@ export function validateSquadTravel(s) {
       'Una ruta completada no puede seguir activa.',
     );
     need(
-      q.members.every((id) => !s.pendingBattle?.squad?.some((u) => Number(u.id) === id)),
+      q.members.every((id) => !s.sectorEntryRequest?.squad?.some((u) => Number(u.id) === id)),
       'Una escuadra en ruta no puede estar desplegada.',
     );
     if (['moving', 'ready'].includes(j.status)) {
       need(
         q.members.every(
           (id) =>
-            s.operativeState[id].alive &&
-            !s.operativeState[id].captured &&
-            !s.operativeState[id].asleep &&
-            s.operativeState[id].assignment === 'active' &&
+            s.characters[id].alive &&
+            !s.characters[id].captured &&
+            !s.characters[id].asleep &&
+            s.characters[id].assignment === 'active' &&
             !s.militiaTraining?.some((t) => t.trainerId === id),
         ),
         'Los viajeros guardados no están disponibles.',
@@ -899,7 +898,7 @@ export function arriveForAssault(s, groups, target) {
   return manifest;
 }
 export function validateAssaultDeployment(s) {
-  const b = s.pendingBattle;
+  const b = s.sectorEntryRequest;
   if (b?.assaultSquads === undefined) {
     return;
   }
@@ -956,8 +955,8 @@ export function validateAssaultDeployment(s) {
       group.members.every((id) => {
         const unit = b.squad.find((u) => u.id === id);
         return (
-          s.operativeState[id]?.arrival?.fromSector === group.origin &&
-          s.operativeState[id]?.location === location &&
+          s.characters[id]?.arrival?.fromSector === group.origin &&
+          s.characters[id]?.location === location &&
           unit.entryEdge === entry.entryEdge &&
           unit.entryAnchor?.x === entry.entryAnchor.x &&
           unit.entryAnchor?.y === entry.entryAnchor.y

@@ -45,7 +45,7 @@ export default function ContractAttention({
   if (!notice) {
     return null;
   }
-  const blocked = Boolean(s.pendingBattle || s.pendingEncounter || s.defeated);
+  const blocked = Boolean(s.sectorEntryRequest || s.pendingEncounter || s.defeated);
   return (
     <section className="assignment-attention" aria-label="Avisos de contratos">
       <div aria-live="polite" aria-atomic="true">
@@ -69,8 +69,8 @@ export default function ContractAttention({
           const op = roster.find((o) => o.id === event.operativeId),
             name = op?.nickname ?? op?.name ?? 'Combatiente',
             current = s.contracts[event.operativeId],
-            r = s.operativeState[event.operativeId];
-          const serving = s.recruited.includes(event.operativeId) && r?.alive && !r.captured;
+            r = s.characters[event.operativeId];
+          const serving = s.forceRoster.includes(event.operativeId) && r?.alive && !r.captured;
           const expiry = event.expiresAt * 3600 + (event.expiresSecond ?? 0),
             unchanged = current !== undefined && contractExpiresSeconds(current) === expiry;
           const remaining = Math.max(0, expiry - s.hour * 3600 - (s.secondOfHour ?? 0));

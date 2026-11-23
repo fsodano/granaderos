@@ -28,7 +28,7 @@ function withReadyArrival(campaign: CampaignSnapshot): CampaignSnapshot {
 }
 
 function withPendingBattle(campaign: CampaignSnapshot): CampaignSnapshot {
-  campaign.pendingBattle = { id: 'battle-1', sector: 'buenos_aires', squad: [] };
+  campaign.sectorEntryRequest = { id: 'battle-1', sector: 'buenos_aires', squad: [] };
   return campaign;
 }
 
@@ -59,7 +59,7 @@ void test('a defeated campaign is reported', () => {
 void test('a trained skill is reported', () => {
   const before = initialCampaign();
   const after = structuredClone(before);
-  present(after.operativeState[3]).trainedStats = { marksmanship: 1 };
+  present(after.characters[3]).trainedStats = { marksmanship: 1 };
   assert.equal(strategicClockInterrupt(before, after), 'Un combatiente mejoró una habilidad.');
 });
 

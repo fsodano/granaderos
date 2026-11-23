@@ -72,30 +72,31 @@ const sameService = (receipt, contract) =>
   receipt.serviceStarted === contract.started &&
   receipt.serviceStartedSecond === (contract.startedSecond ?? 0);
 const livingService = (state, id) =>
-  state.recruited?.includes(id) &&
-  state.operativeState?.[id]?.alive === true &&
-  state.operativeState[id].hp > 0 &&
-  !state.operativeState[id].captured &&
-  !state.operativeState[id].surrendered &&
+  state.forceRoster?.includes(id) &&
+  state.characters?.[id]?.alive === true &&
+  state.characters[id].hp > 0 &&
+  !state.characters[id].captured &&
+  !state.characters[id].surrendered &&
   servingContract(state, id);
 const canWrite = (state, id, settled) => {
-  const record = state.operativeState[id];
+  const record = state.characters[id];
   return (
     !record.unconscious &&
     !isUnconscious(record) &&
     !record.asleep &&
     !record.sleepCollapsed &&
-    (!(state.pendingBattle?.squad ?? []).some((unit) => Number(unit.id) === id) || settled.has(id))
+    (!(state.sectorEntryRequest?.squad ?? []).some((unit) => Number(unit.id) === id) ||
+      settled.has(id))
   );
 };
 
 // This is the time a new military casualty was confirmed for correspondence,
 // not its physical injury/death time. It survives later scene replacement.
 function confirmationFor(state, id, battleId) {
-  const record = state.operativeState[id],
+  const record = state.characters[id],
     at = { hour: state.hour, secondOfHour: state.secondOfHour ?? 0 };
   if (battleId !== undefined) {
-    const request = state.pendingBattle;
+    const request = state.sectorEntryRequest;
     return typeof battleId === 'string' &&
       battleId.length > 0 &&
       battleId.length < 100 &&
@@ -120,10 +121,10 @@ function writeLetter(state, operative, companion) {
 }
 
 export function cancelPendingCompanionLoss(state, id) {
-  delete state.operativeState[id].pendingCompanionLoss;
+  delete state.characters[id].pendingCompanionLoss;
 }
 export function renewPendingCompanionLossService(state, id) {
-  const record = state.operativeState[id];
+  const record = state.characters[id];
   if (record.pendingCompanionLoss) {
     record.pendingCompanionLoss = record.pendingCompanionLoss.map((receipt) => ({
       ...receipt,
@@ -135,7 +136,7 @@ export function renewPendingCompanionLossService(state, id) {
 // Validation is read-only. Loading never creates, delivers or cancels a notice.
 export function validatePendingCompanionLoss(state, roster) {
   const known = new Map(roster.map((operative) => [operative.id, operative]));
-  for (const [rawId, record] of Object.entries(state.operativeState ?? {})) {
+  for (const [rawId, record] of Object.entries(state.characters ?? {})) {
     if (!record || typeof record !== 'object') {
       continue;
     }
@@ -207,7 +208,7 @@ export function validatePendingCompanionLoss(state, roster) {
           receipt.serviceStarted >= 0 &&
           second(receipt.serviceStartedSecond),
       );
-      const companion = state.operativeState[receipt.companionId],
+      const companion = state.characters[receipt.companionId],
         source = companion?.companionLossConfirmation;
       need(
         companion?.alive === false &&
@@ -229,7 +230,7 @@ export function deliverPendingCompanionLossCorrespondence(state, roster, { settl
     settled = new Set(settledIds),
     received = [];
   for (const [id, operative] of known) {
-    const record = state.operativeState?.[id];
+    const record = state.characters?.[id];
     if (!record?.pendingCompanionLoss) {
       continue;
     }
@@ -281,9 +282,7 @@ export function receiveCompanionLossCorrespondence(
   const casualties = new Set(
     casualtyIds.filter(
       (id) =>
-        numericId(id) &&
-        state.operativeState?.[id]?.alive === false &&
-        state.operativeState[id].hp === 0,
+        numericId(id) && state.characters?.[id]?.alive === false && state.characters[id].hp === 0,
     ),
   );
   const settled = new Set(Array.isArray(settledIds) ? settledIds.filter(numericId) : []);
@@ -294,7 +293,7 @@ export function receiveCompanionLossCorrespondence(
   );
   const received = [];
   for (const [id, operative] of known) {
-    const record = state.operativeState?.[id];
+    const record = state.characters?.[id];
     if (!livingService(state, id)) {
       continue;
     }
@@ -318,7 +317,7 @@ export function receiveCompanionLossCorrespondence(
       if (!confirmation) {
         continue;
       }
-      const casualty = state.operativeState[deadId];
+      const casualty = state.characters[deadId];
       if (
         casualty.companionLossConfirmation &&
         JSON.stringify(casualty.companionLossConfirmation) !== JSON.stringify(confirmation)

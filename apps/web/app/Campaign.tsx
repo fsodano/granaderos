@@ -71,7 +71,7 @@ export default function Campaign({
     ui = campaignUI(s),
     { SectorBriefing } = ui;
   const roster = rosterFor(s),
-    hired = s.recruited
+    hired = s.forceRoster
       .map((id: number) => roster.find((o) => o.id === id))
       .filter((operative) => operative !== undefined),
     def = place(selected),
@@ -82,9 +82,7 @@ export default function Campaign({
   const hostileDistrict =
     owner === 'royalist' && physical?.locality && selected !== physical.locality;
   const objective = campaignStory(s) ? campaignObjectives(s).find((c) => c.active) : null;
-  const careBusy = s.squad.some((id: number) =>
-    careAssignmentBusy(s.operativeState[id]?.assignment),
-  );
+  const careBusy = s.squad.some((id: number) => careAssignmentBusy(s.characters[id]?.assignment));
   const [panel, setPanel] = useState<string | null>(null);
   const [plot, setPlot] = useState<{
     squadId: string;
@@ -104,7 +102,7 @@ export default function Campaign({
   const arrivalPending = arrivalDecisions.length > 0;
   const plotting =
     plot?.squadId === s.activeSquadId &&
-    !s.pendingBattle &&
+    !s.sectorEntryRequest &&
     !s.pendingEncounter &&
     !s.defeated &&
     !arrivalPending
@@ -171,7 +169,7 @@ export default function Campaign({
   };
   const selectSquad = (id: string, operativeId?: number) => {
     clock.pause();
-    if (s.pendingBattle || s.pendingEncounter || s.defeated) {
+    if (s.sectorEntryRequest || s.pendingEncounter || s.defeated) {
       return;
     }
     const q = s.squads.find((q) => q.id === id);
@@ -244,7 +242,7 @@ export default function Campaign({
     }
   };
   const moving = Boolean(activeSquad(s).journey);
-  const arrivalBlocked = Boolean(s.pendingBattle || s.pendingEncounter || s.defeated);
+  const arrivalBlocked = Boolean(s.sectorEntryRequest || s.pendingEncounter || s.defeated);
   const openPanel = (id: string) => {
     clock.pause();
     cancelPlot();
@@ -257,7 +255,7 @@ export default function Campaign({
     }
   };
   const dossierOperative = hired.find((operative) => operative.id === dossier);
-  const dossierRecord = dossier === null ? undefined : s.operativeState[dossier];
+  const dossierRecord = dossier === null ? undefined : s.characters[dossier];
   if (!def || !physical) {
     return null;
   }
@@ -293,7 +291,7 @@ export default function Campaign({
           <span>Fondos</span>
           <strong>{s.resources.treasury.toLocaleString('es-AR')} pesos</strong>
         </div>
-        {s.pendingBattle && (
+        {s.sectorEntryRequest && (
           <button
             className="line-button strategy-tactical-return"
             aria-label="Volver al sector táctico"
@@ -428,7 +426,7 @@ export default function Campaign({
             title={clock.cause || undefined}
             aria-describedby={clock.cause ? clockCauseId : undefined}
             disabled={
-              Boolean(s.pendingBattle || s.pendingEncounter) || s.defeated || arrivalPending
+              Boolean(s.sectorEntryRequest || s.pendingEncounter) || s.defeated || arrivalPending
             }
             onClick={clock.toggle}
           >
@@ -572,7 +570,7 @@ export default function Campaign({
                   ) : (
                     <p>{physical.land ? 'Zona rural' : 'Sin acceso terrestre'}</p>
                   )}
-                  {s.pendingBattle ? null : hostileDistrict ? (
+                  {s.sectorEntryRequest ? null : hostileDistrict ? (
                     <>
                       <p className="notice">
                         Liberá primero el sector principal de{' '}
@@ -690,7 +688,7 @@ export default function Campaign({
                           sector.owner !== 'patriot' ||
                           sector.fort >= 3 ||
                           s.resources.treasury < 150 ||
-                          Boolean(s.pendingBattle) ||
+                          Boolean(s.sectorEntryRequest) ||
                           s.defeated
                         }
                         onClick={() => dispatch({ type: 'fortify', sector: selected })}

@@ -20,7 +20,7 @@ export function collectSectorCash(state, snapshot) {
   if (!snapshot) {
     return;
   }
-  const sectorId = state.pendingBattle.sector,
+  const sectorId = state.sectorEntryRequest.sector,
     key = `cash:${sectorId}`,
     amount = sectorCash(sectorId, state);
   state.foundMoney ??= [];
@@ -65,10 +65,10 @@ export function collectSectorCash(state, snapshot) {
   const ids = new Set(carriers.map((u) => String(u.id)));
   const records = [
     ...carriers,
-    ...Object.entries(state.operativeState)
+    ...Object.entries(state.characters)
       .filter(([id]) => ids.has(id))
       .map(([, unit]) => unit),
-    ...(state.sectorStates?.[sectorId]?.units ?? []).filter((u) => ids.has(String(u.id))),
+    ...(state.sectorSnapshots?.[sectorId]?.units ?? []).filter((u) => ids.has(String(u.id))),
   ];
   for (const unit of records) {
     const removed = new Set(

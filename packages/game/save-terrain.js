@@ -10,10 +10,10 @@ const invalid = () => {
 function maps(value) {
   const c = value.campaign;
   return [
-    value.battle,
-    ...Object.values(c?.sectorStates ?? {}),
-    ...Object.values(c?.sceneStates ?? {}),
-    c?.pendingBattle?.resumeSnapshot,
+    value.sectorSession !== undefined ? value.sectorSession : value.battle,
+    ...Object.values(c?.sectorSnapshots ?? {}),
+    ...Object.values(c?.sceneSnapshots ?? {}),
+    c?.sectorEntryRequest?.resumeSnapshot,
   ].filter(object);
 }
 export function compactSaveTerrain(value) {

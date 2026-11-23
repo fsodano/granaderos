@@ -1,6 +1,6 @@
 # Clean architecture migration plan
 
-This plan defines a 33-slice sequence for moving Granaderos toward the
+This plan defines a 43-slice sequence for moving Granaderos toward the
 [accepted domain architecture](../accepted/domain-architecture.md). The
 [overview](overview.md) describes current source behavior and remaining
 requirements; the [slice index](slices/README.md) links each note.
@@ -31,10 +31,13 @@ In scope:
 - The verification tooling that keeps the new boundaries honest.
 - The documentation that records the new shape.
 
-This 33-slice sequence makes no gameplay changes. It preserves saved values and
-does not retire persisted compatibility names. The broader migration requires
-explicit conversions before completion; the `hiringArrivals` conversion is a
-gameplay migration because it changes a recruitment travel delay.
+Most slices preserve gameplay rules and saved values. The sequence includes an
+explicit conversion for legacy `hiringArrivals` entries: a valid booking starts
+service at a legal recruitment site at the saved campaign time, or becomes a
+`RefundableRecruitmentClaim` if no site is legal. The old travel schedule is not
+continued. Renamed save fields retain explicit legacy reads; any remaining
+persisted compatibility field needs a canonical representation and conversion
+before its old name can be retired.
 
 The migration does not require a wholesale rewrite of retained modules. Its
 completion criteria require their procedural rules to move behind the domain
@@ -78,6 +81,16 @@ outside this plan.
 | [31. Game import boundary](slices/31-game-import-boundary.md) | Block game-package imports from the player application in architecture checks |
 | [32. Perception consolidation](slices/32-perception-consolidation.md) | Move the richer NPC perception rules into the domain and re-export them from both retained modules |
 | [33. Session random source](slices/33-session-random-source.md) | Make `GameSession` own `RandomSource` and route campaign draws through it |
+| [34. Retire hiring arrivals](slices/34-retire-hiring-arrivals.md) | Convert valid legacy bookings to immediate service or refundable claims, then remove `hiringArrivals` |
+| [35. Session clock](slices/35-session-clock.md) | Put campaign time on the `GameSession`-owned `WorldTimeline` and project the accepted second |
+| [36. Strategic clock timeline](slices/36-strategic-clock-timeline.md) | Advance strategic time through the same session timeline |
+| [37. Sector session field](slices/37-sector-session-field.md) | Write the saved sector view as `sectorSession` and read legacy `battle` saves |
+| [38. Sector entry request field](slices/38-sector-entry-request.md) | Write the saved request as `sectorEntryRequest` and read legacy `pendingBattle` saves |
+| [39. Force roster field](slices/39-force-roster-field.md) | Write serving combatant membership as `forceRoster` and read legacy `recruited` saves |
+| [40. Characters field](slices/40-characters-field.md) | Write per-character records as `characters` and read legacy `operativeState` saves |
+| [41. Retained snapshot fields](slices/41-snapshot-fields.md) | Write retained maps as `sectorSnapshots` and `sceneSnapshots` and read their legacy names |
+| [42. Sector entry request type](slices/42-sector-entry-request-type.md) | Name the saved public projection `CampaignSectorEntryRequest` while retaining the application `SectorEntryRequest` |
+| [43. Retire the compile adapter](slices/43-retire-compile-adapter.md) | Remove `compileCampaignPackage` and use the declared compiler entry |
 
 Each slice has a note under [slices](slices/README.md) that records its intent,
 scope, and behavior tests. Read the relevant note before changing that area.
@@ -86,18 +99,32 @@ scope, and behavior tests. Read the relevant note before changing that area.
 
 The migration is complete when:
 
-1. The remaining procedural game rules are moved behind the domain or a
-   declared public entry, and architecture checks reject imports from
-   `packages/game` into `apps/web`.
+1. Every retained procedural simulation rule has a named domain owner or
+   application use case, and compatibility modules delegate to those
+   contracts. Architecture checks reject imports from `packages/game` into
+   `apps/web`.
 2. `GameSession` (the runtime consistency boundary) owns `RandomSource` (the
-   seeded random sequence); campaign draws use `session.randomSource` and write
-   its advanced seed back to the campaign snapshot. `GameSession` must own
-   `WorldTimeline` (the game-time event scheduler), and every game-time change
-   must go through `WorldTimeline.advanceTo`.
-3. Persisted compatibility names are converted to the canonical game model.
-   The `hiringArrivals` conversion follows the accepted save-migration policy
-   because its travel delay affects recruitment.
-4. The full verification profile, `npm run verify`, passes. It includes
+   seeded random sequence) and `WorldTimeline` (the accepted game-time clock).
+   Campaign draws use `session.randomSource` and write its advanced seed back
+   to the campaign snapshot. Campaign, strategic, and tactical time advances
+   use `WorldTimeline.advanceTo`; campaign `hour` and optional `secondOfHour`
+   project its accepted second.
+3. The save envelope writes `campaign` and the active sector view under
+   `sectorSession`. The campaign snapshot writes `sectorEntryRequest`,
+   `forceRoster`, `characters`, `sectorSnapshots`, and `sceneSnapshots`.
+   Decoding reads top-level `battle` only when `sectorSession` is absent. For
+   campaign fields, it maps `pendingBattle` -> `sectorEntryRequest`,
+   `recruited` -> `forceRoster`, `operativeState` -> `characters`,
+   `sectorStates` -> `sectorSnapshots`, and `sceneStates` -> `sceneSnapshots`
+   only when the current field is absent, then removes the legacy key.
+4. A canonical saved representation for suspended sector visits is defined.
+   The existing `suspendedSectorSessions` records convert without losing each
+   visit's request, identity, or progress.
+5. The `beginAssault` command alias is removed after callers use
+   `FightOnArrivalUseCase` and preserve arrival-decision identity.
+6. The `sectorState` campaign-action request property is replaced by a
+   glossary-backed canonical property across its contract and callers.
+7. The full verification profile, `npm run verify`, passes. It includes
    formatting, lint, architecture and dependency checks, type checking, tests,
    audits, and the production build.
 
@@ -130,6 +157,6 @@ boundaries it can express as import rules.
 
 Start with [overview.md](overview.md) for the current implementation and open
 gaps, then use this plan for the branch flow and the [slice index](slices/README.md)
-for the 33 slice notes. Read the accepted architecture and glossary before
+for the 43 slice notes. Read the accepted architecture and glossary before
 work that changes a domain contract or term. Each slice note records its
 intent, scope, and behavior tests.

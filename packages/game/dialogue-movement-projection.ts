@@ -11,7 +11,7 @@ export function orderFor(
 ): BattleNpc['scriptedMove'] {
   const characterId = characterForOperative(state, npc.operativeId)?.id;
   const sector = scene.sectorId ?? scene.sector;
-  if (scene.sceneId || state.recruited.includes(Number(npc.operativeId))) {
+  if (scene.sceneId || state.forceRoster.includes(Number(npc.operativeId))) {
     return undefined;
   }
   const orders = state.dialogueMovements ?? [];

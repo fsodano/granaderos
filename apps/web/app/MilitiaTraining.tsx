@@ -36,17 +36,17 @@ export default function MilitiaTraining({
     return null;
   }
   const roster = rosterFor(s),
-    hired = s.recruited
+    hired = s.forceRoster
       .map((id: number) => roster.find((o) => o.id === id))
       .filter((operative) => operative !== undefined);
   const trainers = hired
     .filter(
       (o) =>
-        s.operativeState[o.id]?.alive &&
+        s.characters[o.id]?.alive &&
         operativeLocation(s, o.id) === sectorId &&
         o.leadership >= 30 &&
         !militiaAssignment(s, o.id) &&
-        !careAssignmentBusy(s.operativeState[o.id]?.assignment),
+        !careAssignmentBusy(s.characters[o.id]?.assignment),
     )
     .sort((a, b) => militiaCourse(a, 0).hours - militiaCourse(b, 0).hours);
   const trainer = trainers.find((o) => String(o.id) === trainerId) ?? trainers[0],
@@ -59,7 +59,7 @@ export default function MilitiaTraining({
   const shortage = Math.max(0, (course?.cost.treasury ?? 0) - s.resources.treasury);
   const reason = s.defeated
     ? 'La campaña terminó.'
-    : s.pendingBattle
+    : s.sectorEntryRequest
       ? 'Volvé del despliegue antes de iniciar un curso.'
       : !trainer
         ? 'Necesitás un instructor disponible.'

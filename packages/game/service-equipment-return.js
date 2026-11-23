@@ -36,7 +36,7 @@ const copy = (v) => structuredClone(v);
 const idNumber = (id) =>
   typeof id === 'string' && /^service-return-[1-9][0-9]*$/.test(id) ? Number(id.slice(15)) : NaN;
 const siteSector = (s, id) => sceneAnchorFor(s, id);
-const snapshotAt = (s, id) => expandCellScene(s.sceneStates?.[id] ?? s.sectorStates?.[id], s);
+const snapshotAt = (s, id) => expandCellScene(s.sceneSnapshots?.[id] ?? s.sectorSnapshots?.[id], s);
 const sourceKey = (id, item) => JSON.stringify(['serviceReturn', id, item]);
 const recordFields = [
   'inventory',
@@ -61,7 +61,7 @@ export function serviceReturnCacheBytes(s, entries = s.serviceEquipmentReturns?.
   );
 }
 function carrier(s, id, roster) {
-  const r = s.operativeState[id],
+  const r = s.characters[id],
     op = roster.find((o) => Number(o.id) === Number(id));
   need(op && r);
   const loadout = s.loadouts?.[id] ?? {},
@@ -110,7 +110,7 @@ function extractAll(unit) {
   return { empty, items };
 }
 function commitCarrier(s, id, next, { empty = false } = {}) {
-  const r = s.operativeState[id];
+  const r = s.characters[id];
   if (empty) {
     next.weapon = 0;
     next.blade = 0;
@@ -169,7 +169,7 @@ function commitCarrier(s, id, next, { empty = false } = {}) {
   syncCarriedAmmunition(r, next.weapon);
 }
 function markerAt(s, id) {
-  const r = s.operativeState[id],
+  const r = s.characters[id],
     sectorId = operativeLocation(s, id);
   const resident = r.residentScene ?? r.residentSector;
   const siteId = resident && siteSector(s, resident) === sectorId ? resident : sectorId;
@@ -292,7 +292,7 @@ function saveFits(s, roster) {
 // The campaign calls this only for ordinary departures, after actual arrival or
 // the accepted return report. Capture and death keep their existing custodians.
 export function returnServiceEquipment(s, id, roster) {
-  const r = s.operativeState[id];
+  const r = s.characters[id];
   if (!r?.alive || r.hp <= 0 || r.captured) {
     return null;
   }
@@ -320,7 +320,7 @@ export function returnServiceEquipment(s, id, roster) {
     const planned = copy(s);
     planned.serviceEquipmentReturns.entries = copy(entries);
     commitCarrier(planned, id, empty, { empty: true });
-    planned.operativeState[id].toolkitPoints = 0;
+    planned.characters[id].toolkitPoints = 0;
     if (ground) {
       const placed = snapshotAt(planned, marker.siteId);
       retireSnapshotIdentities(placed);
@@ -339,7 +339,7 @@ export function returnServiceEquipment(s, id, roster) {
     }
     if (saveFits(planned, roster)) {
       s.serviceEquipmentReturns.entries = planned.serviceEquipmentReturns.entries;
-      s.operativeState[id] = planned.operativeState[id];
+      s.characters[id] = planned.characters[id];
       s.loadouts[id] = planned.loadouts[id];
       if (ground) {
         const key = sceneStateKeyFor(s, marker.siteId);
@@ -359,7 +359,7 @@ export function serviceReturnSites(s, sectorId) {
     ...new Set(
       [
         ...(s.serviceEquipmentReturns?.entries ?? []),
-        ...Object.values(s.operativeState ?? {})
+        ...Object.values(s.characters ?? {})
           .map((r) => r.serviceEquipmentReturn)
           .filter(Boolean),
       ]
@@ -403,7 +403,7 @@ export function serviceReturnSources(s, siteId, snapshot = null, roster = null) 
       }
     }
   }
-  for (const [id, r] of Object.entries(s.operativeState ?? {})) {
+  for (const [id, r] of Object.entries(s.characters ?? {})) {
     if (r.serviceEquipmentReturn?.siteId === siteId) {
       roster ??= equipmentRoster(s);
       const unit = carrier(s, Number(id), roster);
@@ -440,12 +440,12 @@ export function consumeServiceReturn(s, key, expected, count, roster = null) {
   );
   const [, returnId, selection] = parsed,
     entry = s.serviceEquipmentReturns?.entries.find((r) => r.id === returnId);
-  const owner = Object.entries(s.operativeState).find(
+  const owner = Object.entries(s.characters).find(
     ([, r]) => r.serviceEquipmentReturn?.id === returnId,
   );
   need(Boolean(entry) !== Boolean(owner), 'El equipo ya no está disponible.');
   const id = entry?.operativeId ?? Number(owner[0]),
-    r = s.operativeState[id];
+    r = s.characters[id];
   if (selection === 'repairPoints') {
     const available = entry ? entry.repairPoints : r.toolkitPoints;
     need(
@@ -594,7 +594,7 @@ export function validateServiceEquipmentReturns(s, roster) {
       need(item.stack.item !== 'ammo', 'La munición devuelta necesita un tipo explícito.');
     }
   }
-  for (const [id, r] of Object.entries(s.operativeState)) {
+  for (const [id, r] of Object.entries(s.characters)) {
     if (r.serviceEquipmentReturn !== undefined) {
       checkMarker(r.serviceEquipmentReturn);
       need(
@@ -603,9 +603,9 @@ export function validateServiceEquipmentReturns(s, roster) {
         ) &&
           saveByteLength(JSON.stringify(r.serviceEquipmentReturn)) <= 512 &&
           operativeIds.has(Number(id)) &&
-          !s.recruited.includes(Number(id)) &&
+          !s.forceRoster.includes(Number(id)) &&
           !s.contracts[id] &&
-          !s.hiringArrivals?.some((a) => a.operativeId === Number(id)),
+          !s.refundableRecruitmentClaims?.some((claim) => claim.operativeId === Number(id)),
         'El combatiente aún tiene equipo por recoger.',
       );
       const unit = carrier(s, Number(id), roster);
@@ -619,8 +619,8 @@ export function validateServiceEquipmentReturns(s, roster) {
   }
   // Ground returns retain their immutable source prefix after cache collection.
   for (const snapshot of [
-    ...Object.values(s.sectorStates ?? {}),
-    ...Object.values(s.sceneStates ?? {}),
+    ...Object.values(s.sectorSnapshots ?? {}),
+    ...Object.values(s.sceneSnapshots ?? {}),
   ]) {
     for (const item of snapshot.groundItems ?? []) {
       const match =

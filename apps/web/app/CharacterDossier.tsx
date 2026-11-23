@@ -77,11 +77,7 @@ export default function CharacterDossier({
   ];
   const profile = o ? characterProfile(o) : null;
   const quote = o
-    ? contractQuote(
-        state ?? { hour: 0, contracts: {}, operativeState: { [o.id]: record } },
-        o,
-        'day',
-      )
+    ? contractQuote(state ?? { hour: 0, contracts: {}, characters: { [o.id]: record } }, o, 'day')
     : null;
   const relationships = o ? serviceRelationships(state, o) : [];
   const moraleStatus = state && o ? lowMoraleRenewalStatus(state, o) : null;
@@ -169,7 +165,7 @@ export default function CharacterDossier({
               </>
             )}
             <ServiceObjectionNotice
-              reason={serviceObjectionReason(state ?? { operativeState: {} }, o)}
+              reason={serviceObjectionReason(state ?? { characters: {} }, o)}
             />
             <ContractMoraleNotice status={moraleStatus} />
             <PreferredCompanionsSummary {...(state ? { state } : {})} operative={o} details />

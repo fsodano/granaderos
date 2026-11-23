@@ -85,3 +85,44 @@ void test('the session snapshot carries the random source state', () => {
   assert.deepEqual(game.snapshot().randomSource, expected.snapshot());
   assert.deepEqual(game.snapshot().randomSource, game.randomSource.snapshot());
 });
+
+void test('a session created at an accepted second reports that second', () => {
+  const game = GameSession.create('game-1', 1812, 8 * 3600 + 90);
+  assert.equal(game.timeline.currentSecond, 8 * 3600 + 90);
+});
+
+void test('a restored session resumes at the accepted second it saved', () => {
+  const game = GameSession.create('game-1', 1812, 3600);
+  game.timeline.advanceTo(5400, () => 'continue');
+  const restored = GameSession.restore(game.snapshot());
+  assert.equal(restored.timeline.currentSecond, 5400);
+});
+
+void test('a snapshot without the world timeline is accepted and starts at second zero', () => {
+  const { worldTimeline: _omitted, ...snapshot } = GameSession.create(
+    'game-1',
+    1812,
+    3600,
+  ).snapshot();
+  const restored = GameSession.restore(snapshot);
+  assert.equal(restored.timeline.currentSecond, 0);
+});
+
+void test('the session snapshot carries the world timeline state', () => {
+  const game = GameSession.create('game-1', 1812, 3600);
+  game.timeline.schedule({
+    id: 'event-1',
+    kind: 'campaign-step',
+    subjectId: 'campaign',
+    atSecond: 7200,
+  });
+  game.timeline.advanceTo(5400, () => 'continue');
+  assert.deepEqual(game.snapshot().worldTimeline, game.timeline.toSnapshot());
+  assert.deepEqual(game.timeline.toSnapshot(), {
+    currentSecond: 5400,
+    pendingEvents: [
+      { id: 'event-1', kind: 'campaign-step', subjectId: 'campaign', atSecond: 7200 },
+    ],
+    completedEventIds: [],
+  });
+});

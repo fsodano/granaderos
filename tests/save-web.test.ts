@@ -15,7 +15,7 @@ function deployed() {
     dispatchCampaign(initialCampaign(), { type: 'travel', sector: 'buenos_aires' }),
     'san_nicolas',
   );
-  const map = buildSectorMap(present(campaign.pendingBattle));
+  const map = buildSectorMap(present(campaign.sectorEntryRequest));
   return { campaign, battle: createBattle(map.squad, map) };
 }
 
@@ -94,11 +94,11 @@ void test('save rejects malformed data before it can enter the renderer or tacti
   ];
   for (const mutate of mutations) {
     const altered = parseJsonObject(encodeSave(sample.campaign, sample.battle));
-    mutate(object(altered['battle']));
+    mutate(object(altered['sectorSession']));
     assert.throws(() => decodeSave(JSON.stringify(altered)));
   }
   const absent = parseJsonObject(encodeSave(sample.campaign, sample.battle));
-  absent['battle'] = null;
+  absent['sectorSession'] = null;
   assert.throws(() => decodeSave(JSON.stringify(absent)));
   for (const text of ['no JSON', '{}', 'x'.repeat(5000001)]) {
     assert.throws(() => decodeSave(text));

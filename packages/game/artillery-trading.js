@@ -26,7 +26,7 @@ const capable = (u) =>
   !u.unconscious;
 const actors = (s) =>
   (s.squad ?? []).filter((id) => {
-    const r = s.operativeState[id];
+    const r = s.characters[id];
     return (
       r?.alive &&
       capable(r) &&
@@ -47,7 +47,7 @@ function access(s, supplied) {
   if (s.defeated) {
     return 'La campaña ha terminado.';
   }
-  if (s.pendingBattle || s.pendingEncounter) {
+  if (s.sectorEntryRequest || s.pendingEncounter) {
     return 'Salí de la escena táctica antes de comerciar.';
   }
   if (!artilleryTradingRules(s).enabled) {
@@ -60,7 +60,7 @@ function access(s, supplied) {
     s.enemyGroups?.some(
       (g) => g.target === s.location && ['waiting', 'engaged', 'stationed'].includes(g.status),
     ) ||
-    Object.entries(s.sectorStates ?? {}).some(
+    Object.entries(s.sectorSnapshots ?? {}).some(
       ([id, b]) =>
         parent(s, id) === s.location && b.units?.some((u) => u.side === 'enemy' && capable(u)),
     )
@@ -163,7 +163,7 @@ export function sellArtillery(s, offer, supplied, options = {}) {
     const stock =
       offer.kind === 'depot'
         ? s.artilleryDepots[s.location]
-        : s.sectorStates[offer.sector].artillery;
+        : s.sectorSnapshots[offer.sector].artillery;
     const index = stock.findIndex((g) => g.id === offer.artilleryId);
     gun = stored(stock[index]);
     stock.splice(index, 1);

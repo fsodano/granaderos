@@ -47,7 +47,7 @@ export function migrateEnemyIntelligence(s: CampaignSnapshot) {
 }
 function observers(s: CampaignSnapshot, { traveling = [] }: ObservationOptions = {}) {
   const seen = new Map<string, 'scouts' | 'militia'>(),
-    deployedMilitia = new Set((s.pendingBattle?.garrison ?? []).map((u) => String(u.id)));
+    deployedMilitia = new Set((s.sectorEntryRequest?.garrison ?? []).map((u) => String(u.id)));
   for (const sector of campaignSectors(s)) {
     const militia = s.garrisons?.[sector.id] ?? [],
       counts = s.sectors[sector.id]?.militia ?? [];
@@ -64,10 +64,10 @@ function observers(s: CampaignSnapshot, { traveling = [] }: ObservationOptions =
       }
     }
   }
-  for (const id of s.recruited ?? []) {
+  for (const id of s.forceRoster ?? []) {
     if (
-      s.operativeState[id]?.alive &&
-      able(s.operativeState[id] ?? {}) &&
+      s.characters[id]?.alive &&
+      able(s.characters[id] ?? {}) &&
       !operativeInTransit(s, id) &&
       !traveling.includes(id) &&
       !isCharacterDeployed(s, id)
@@ -104,8 +104,8 @@ function currentReports(s: CampaignSnapshot, options?: ObservationOptions) {
       source = at && seen.get(at);
     const contact =
       s.pendingEncounter?.groupId === g.id ||
-      s.pendingBattle?.defenseGroupId === g.id ||
-      s.pendingBattle?.occupationGroupIds?.includes(g.id);
+      s.sectorEntryRequest?.defenseGroupId === g.id ||
+      s.sectorEntryRequest?.occupationGroupIds?.includes(g.id);
     if (source || contact) {
       reports[g.id] = observation(s, g, source || 'contact');
     }

@@ -29,7 +29,7 @@ function DeskBriefing({ state: s, dispatch }: StatePanelProps) {
       canEnter={
         s.location === 'tucuman' && s.sectors['tucuman']?.owner === 'patriot' && s.squad.length > 0
       }
-      blocked={Boolean(s.pendingBattle)}
+      blocked={Boolean(s.sectorEntryRequest)}
       onEnter={() => dispatch({ type: 'visitMission', mission: 'yatasto' })}
     />
   ) : null;
@@ -57,7 +57,7 @@ function SectorBriefing({
       unavailableText="La escuadra debe llegar a Tucumán, bajo control patriota, después de San Lorenzo."
       mission={mission}
       canEnter={s.location === 'tucuman' && owner === 'patriot' && s.squad.length > 0 && !careBusy}
-      blocked={moving || Boolean(s.pendingBattle) || careBusy}
+      blocked={moving || Boolean(s.sectorEntryRequest) || careBusy}
       onEnter={() => dispatch({ type: 'visitMission', mission: 'yatasto' })}
     />
   ) : null;

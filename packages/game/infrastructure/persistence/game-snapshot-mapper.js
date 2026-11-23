@@ -65,7 +65,7 @@ export class RestoredGame {
     this.#world = new CanonicalWorldMapper(identities);
     const liveRequests = [
       ...(campaign.suspendedSectorSessions ?? []).map((entry) => entry.request),
-      ...(campaign.pendingBattle ? [campaign.pendingBattle] : []),
+      ...(campaign.sectorEntryRequest ? [campaign.sectorEntryRequest] : []),
     ];
     const liveFields = new Set(
       liveRequests.map((request) =>
@@ -73,17 +73,17 @@ export class RestoredGame {
       ),
     );
     const fields = [
-      ...Object.entries(campaign.sectorStates ?? {})
+      ...Object.entries(campaign.sectorSnapshots ?? {})
         .filter(([id]) => !liveFields.has(`sector:${id}`))
         .map(([id, field]) => ({ id: `sector:${id}`, field })),
-      ...Object.entries(campaign.sceneStates ?? {})
+      ...Object.entries(campaign.sceneSnapshots ?? {})
         .filter(([id]) => !liveFields.has(`scene:${id}`))
         .map(([id, field]) => ({ id: `scene:${id}`, field })),
       ...(campaign.suspendedSectorSessions ?? []).map((entry) => ({
         id: entry.request.id,
         field: entry.snapshot,
       })),
-      ...(battle ? [{ id: campaign.pendingBattle.id, field: battle }] : []),
+      ...(battle ? [{ id: campaign.sectorEntryRequest.id, field: battle }] : []),
     ];
     const retainedPresence = new RetainedSectorPresence(campaign);
     const activeCharactersMapper = new ActiveSectorCharacterMapper(

@@ -11,7 +11,7 @@ export default function MissionAssault({ state, dispatch }: StatePanelProps) {
     state.location === 'san_nicolas' && choices.some((q) => q.id === state.activeSquadId);
   const blocked =
     !local ||
-    Boolean(state.pendingBattle || state.pendingEncounter) ||
+    Boolean(state.sectorEntryRequest || state.pendingEncounter) ||
     selected.some((q) => q.reason) ||
     selected.length === 0;
   return (

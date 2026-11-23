@@ -24,7 +24,7 @@ const deployed = () =>
 type BattleReport = Extract<CampaignAction, { type: 'finishMission' | 'battleResult' }>;
 const receipt = (s: CampaignSnapshot, b: BattleSnapshot, outcome = 'retreat'): BattleReport => ({
   type: 'battleResult',
-  battleId: present(s.pendingBattle).id,
+  battleId: present(s.sectorEntryRequest).id,
   outcome,
   sectorState: b,
   survivors: b.units.filter((u) => u.side === 'player'),
@@ -39,7 +39,7 @@ function rejected(s: CampaignSnapshot, a: CampaignAction) {
 
 void test('ordinary battle reports require a full snapshot and all deployed participants, including casualties', () => {
   const s = deployed(),
-    b = enterSector(s.pendingBattle),
+    b = enterSector(s.sectorEntryRequest),
     base = receipt(s, b);
   for (const alter of [
     (a: BattleReport) => Reflect.deleteProperty(a, 'sectorState'),
@@ -69,13 +69,13 @@ void test('ordinary battle reports require a full snapshot and all deployed part
     ],
   });
   const next = order(s, won);
-  assert.equal(present(next.operativeState[4]).alive, false);
-  assert.equal(present(next.operativeState[3]).hp, 30);
+  assert.equal(present(next.characters[4]).alive, false);
+  assert.equal(present(next.characters[3]).hp, 30);
   assert.ok(!next.squad.includes(4));
 });
 void test('snapshot battle and sector identities must match the pending deployment atomically', () => {
   const s = deployed(),
-    base = receipt(s, enterSector(s.pendingBattle));
+    base = receipt(s, enterSector(s.sectorEntryRequest));
   for (const alter of [
     (a: BattleReport) => (a.battleId = 'old'),
     (a: BattleReport) => (a.sectorState.battleId = 'old'),
@@ -90,7 +90,7 @@ void test('snapshot battle and sector identities must match the pending deployme
 });
 void test('outcome labels cannot turn an active field into victory or a capable squad into defeat', () => {
   const s = deployed(),
-    base = receipt(s, enterSector(s.pendingBattle));
+    base = receipt(s, enterSector(s.sectorEntryRequest));
   rejected(s, { ...base, outcome: 'victory' });
   rejected(s, { ...base, outcome: 'defeat' });
   const forged = structuredClone(base);
@@ -104,7 +104,7 @@ void test('outcome labels cannot turn an active field into victory or a capable 
 });
 void test('real dropped equipment and snapshot supplies defeat contradictory caller overrides', () => {
   const s = deployed();
-  let b = enterSector(s.pendingBattle);
+  let b = enterSector(s.sectorEntryRequest);
   b = actBattle(b, { type: 'drop', unitId: 4, item: 'primary' });
   assert.equal(b.lastError, null);
   b = scriptedWithdrawal(b);
@@ -124,10 +124,10 @@ void test('real dropped equipment and snapshot supplies defeat contradictory cal
     inventory: { invented: { count: 100, weight: 0 } },
   }));
   const next = order(s, a);
-  assert.equal(present(next.operativeState[4]).weaponDropped, true);
-  assert.equal(present(next.operativeState[4]).hp, present(actual).hp);
-  assert.deepEqual(present(next.operativeState[4]).inventory, present(actual).inventory);
-  assert.equal(present(next.operativeState[4]).medkits, present(actual).medkits);
+  assert.equal(present(next.characters[4]).weaponDropped, true);
+  assert.equal(present(next.characters[4]).hp, present(actual).hp);
+  assert.deepEqual(present(next.characters[4]).inventory, present(actual).inventory);
+  assert.equal(present(next.characters[4]).medkits, present(actual).medkits);
   assert.equal(stockAndCarriedAmmo(next), stockAmmo(s) + ammo);
   assert.deepEqual(restoreCampaign(serializeCampaign(next)), next);
   rejected(next, a);
@@ -164,7 +164,7 @@ void test('ordinary retreat retains authoritative injuries and cannot refill fin
     condition: 100,
   }));
   const next = order(s, a),
-    u = next.operativeState[3];
+    u = next.characters[3];
   assert.equal(present(u).hp, 24);
   assert.equal(present(u).energy, present(a.sectorState.units.find((u) => u.id === '3')).energy);
   assert.ok(present(u).energy < 22, 'The actual outward step spends energy.');
@@ -177,21 +177,21 @@ void test('ordinary retreat retains authoritative injuries and cannot refill fin
 });
 void test('validated legacy saves gain a missing battle identity without gaining movement or departure', () => {
   const s = deployed(),
-    b = enterSector(s.pendingBattle),
+    b = enterSector(s.sectorEntryRequest),
     raw = parseJsonObject(encodeSave(s, b));
-  const rawBattle = raw['battle'];
+  const rawBattle = raw['sectorSession'];
   assert.ok(isJsonObject(rawBattle));
   delete rawBattle['battleId'];
   const loaded = decodeSave(JSON.stringify(raw));
-  assert.equal(present(loaded.battle).battleId, present(s.pendingBattle).id);
+  assert.equal(present(loaded.battle).battleId, present(s.sectorEntryRequest).id);
   assert.equal(loaded.campaign.location, s.location);
   assert.deepEqual(present(loaded.battle).units, b.units);
   assert.equal(present(loaded.battle).elapsedSeconds, b.elapsedSeconds);
-  assert.equal(present(loaded.campaign.pendingBattle).id, present(s.pendingBattle).id);
+  assert.equal(present(loaded.campaign.sectorEntryRequest).id, present(s.sectorEntryRequest).id);
   rejected(loaded.campaign, receipt(loaded.campaign, present(loaded.battle)));
   assert.equal(loaded.campaign.location, s.location);
   const wrong = structuredClone(raw),
-    wrongBattle = wrong['battle'];
+    wrongBattle = wrong['sectorSession'];
   assert.ok(isJsonObject(wrongBattle));
   wrongBattle['sectorId'] = 'retiro';
   assert.throws(() => decodeSave(JSON.stringify(wrong)));
@@ -204,7 +204,7 @@ void test('validated legacy saves gain a missing battle identity without gaining
 
 void test('enemy breath collapse remains active and cannot award a fabricated sector victory', () => {
   const s = deployed(),
-    b = enterSector(s.pendingBattle);
+    b = enterSector(s.sectorEntryRequest);
   for (const u of b.units.filter((u) => u.side === 'enemy')) {
     Object.assign(u, { energy: 0, unconscious: true, ap: 0 });
   }
@@ -226,7 +226,7 @@ void test('enemy breath collapse remains active and cannot award a fabricated se
 });
 void test('player breath collapse remains active and preserves living exhausted troops', () => {
   const s = deployed(),
-    b = enterSector(s.pendingBattle);
+    b = enterSector(s.sectorEntryRequest);
   for (const u of b.units.filter((u) => u.side === 'player')) {
     Object.assign(u, { energy: 0, unconscious: true, ap: 0 });
   }
@@ -238,7 +238,7 @@ void test('player breath collapse remains active and preserves living exhausted 
   rejected(s, receipt(s, forged, 'defeat'));
   rejected(s, receipt(s, b));
   const saved = decodeSave(encodeSave(s, b));
-  assert.ok(saved.campaign.pendingBattle);
+  assert.ok(saved.campaign.sectorEntryRequest);
   for (const u of present(saved.battle).units.filter((u) => u.side === 'player')) {
     assert.ok(u.hp > 0);
     assert.equal(u.energy, 0);
@@ -250,7 +250,7 @@ void test('player breath collapse remains active and preserves living exhausted 
 // A prepared last-opponent fixture isolates post-battle treatment and campaign
 // reconciliation. The finishing blow, equipment switch and care all use orders.
 function bandagedVictory(s: CampaignSnapshot) {
-  const r = present(s.pendingBattle);
+  const r = present(s.sectorEntryRequest);
   let b = createBattle(
     [...r.squad, ...(r.missionAllies ?? [])].map((u, i) => ({
       ...u,
@@ -309,11 +309,11 @@ void test('an actual finishing blow and paid auto-bandage return an ordinary cle
     a = receipt(s, b, 'victory'),
     next = order(s, a),
     doctor = b.units.find((u) => u.id === '10');
-  assert.equal(next.pendingBattle, null);
+  assert.equal(next.sectorEntryRequest, null);
   assert.equal(present(next.sectors['san_nicolas']).owner, 'patriot');
-  assert.equal(present(next.operativeState[10]).bleeding, 0);
-  assert.equal(present(next.operativeState[10]).hp, present(doctor).hp);
-  assert.equal(present(next.operativeState[10]).medkits, present(doctor).medkits);
+  assert.equal(present(next.characters[10]).bleeding, 0);
+  assert.equal(present(next.characters[10]).hp, present(doctor).hp);
+  assert.equal(present(next.characters[10]).medkits, present(doctor).medkits);
   assert.equal(next.secondOfHour, b.elapsedSeconds);
   assert.deepEqual(restoreCampaign(serializeCampaign(next)), next);
   rejected(next, a);
@@ -331,7 +331,7 @@ void test('post-victory treatment also completes San Lorenzo with the living com
   assert.equal(present(s.missions['san_lorenzo']).completed, true);
   assert.ok(present(s.missionAllies['san_lorenzo']).hp > 0);
   assert.equal(
-    present(s.operativeState[10]).medkits,
+    present(s.characters[10]).medkits,
     present(b.units.find((u) => u.id === '10')).medkits,
   );
   assert.deepEqual(restoreCampaign(serializeCampaign(s)), s);

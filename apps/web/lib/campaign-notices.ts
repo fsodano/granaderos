@@ -17,15 +17,15 @@ export function strategicClockInterrupt(
   if (after.defeated) {
     return 'La campaña ha terminado.';
   }
-  if (after.pendingEncounter || after.pendingBattle) {
+  if (after.pendingEncounter || after.sectorEntryRequest) {
     return 'Un sector necesita órdenes de combate.';
   }
   if (after.travelNotice && changed(before.travelNotice, after.travelNotice)) {
     return after.travelNotice.events.map((e) => `${e.name}: ${e.text}`).join(' ');
   }
-  for (const id of after.recruited ?? []) {
-    const old = before.operativeState?.[id],
-      next = after.operativeState?.[id];
+  for (const id of after.forceRoster ?? []) {
+    const old = before.characters?.[id],
+      next = after.characters?.[id];
     for (const [skill, value] of Object.entries(next?.trainedStats ?? {})) {
       if (value > (old?.trainedStats?.[skill] ?? 0)) {
         return 'Un combatiente mejoró una habilidad.';
@@ -40,9 +40,6 @@ export function strategicClockInterrupt(
   }
   if (changed(before.logisticsNotice, after.logisticsNotice)) {
     return 'Hay novedades en suministros y entregas.';
-  }
-  if ((after.hiringArrivals?.length ?? 0) < (before.hiringArrivals?.length ?? 0)) {
-    return 'Llegó un combatiente contratado.';
   }
   const questEvent = (after.contentQuestEvents ?? [])
     .slice(before.contentQuestEvents?.length ?? 0)

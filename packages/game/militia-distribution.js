@@ -55,7 +55,7 @@ export function militiaDistributionStatus(s, sector) {
   if (s.defeated) {
     return blocked('La campaña ha terminado.');
   }
-  if (s.pendingBattle || s.pendingEncounter) {
+  if (s.sectorEntryRequest || s.pendingEncounter) {
     return blocked('Resolvé el despliegue o encuentro antes de redistribuir milicias.');
   }
   if (!safe(s, sector)) {

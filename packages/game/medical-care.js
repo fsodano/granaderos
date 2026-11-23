@@ -27,7 +27,8 @@ const requireThat = (value, message) => {
 const training = (s, id) => Boolean(s.militiaTraining?.some((t) => t.trainerId === id));
 const safe = (s, id) =>
   worldOwner(s, operativeLocation(s, id)) === 'patriot' &&
-  (s.pendingBattle?.sector !== operativeLocation(s, id) || Boolean(s.pendingBattle?.sceneId));
+  (s.sectorEntryRequest?.sector !== operativeLocation(s, id) ||
+    Boolean(s.sectorEntryRequest?.sceneId));
 export const doctorRate = (op, s) =>
   careRules(s).baseHealing + Math.floor((op.medical ?? 0) / careRules(s).skillStep);
 export const CARE_ISSUE_TEXT = {
@@ -55,7 +56,7 @@ const issue = (code) => ({ code, reason: CARE_ISSUE_TEXT[code] });
 // stable, but give every subsequent deployment the same finite personal supplies.
 export function migrateMedicalCare(s, roster) {
   for (const op of roster) {
-    const record = s.operativeState[op.id];
+    const record = s.characters[op.id];
     if (!record) {
       continue;
     }
@@ -96,14 +97,14 @@ export function migrateMedicalCare(s, roster) {
 
 /** @returns {{code: string; reason: string}|null} */
 export function careAssignmentIssue(s, op, assignment) {
-  const record = s.operativeState[op?.id];
+  const record = s.characters[op?.id];
   if (!op) {
     return issue('unavailable');
   }
   if (!Object.hasOwn(CARE_ASSIGNMENTS, assignment)) {
     return issue('invalid_assignment');
   }
-  if (!s.recruited.includes(op.id) || !record?.alive || record.hp <= 0 || record.captured) {
+  if (!s.forceRoster.includes(op.id) || !record?.alive || record.hp <= 0 || record.captured) {
     return issue('unavailable');
   }
   if (operativeInTransit(s, op.id)) {
@@ -147,21 +148,21 @@ export function careAssignmentReason(s, op, assignment) {
 
 function carePresent(s, op, context = {}) {
   return (
-    s.recruited.includes(op.id) &&
-    s.operativeState[op.id]?.alive &&
-    !s.operativeState[op.id].captured &&
+    s.forceRoster.includes(op.id) &&
+    s.characters[op.id]?.alive &&
+    !s.characters[op.id].captured &&
     !deployed(s, op.id) &&
     !operativeInTransit(s, op.id) &&
     !(context.traveling ?? []).includes(op.id) &&
     !(context.unsafe ?? []).includes(op.id) &&
-    (!training(s, op.id) || s.operativeState[op.id].asleep) &&
+    (!training(s, op.id) || s.characters[op.id].asleep) &&
     safe(s, op.id)
   );
 }
 const needsCare = (r) => r.bleeding > 0 || r.hp < r.maxHp;
 /** @returns {import('./public/personnel-query-types.ts').AssignmentProgress} */
 export function careAssignmentProgress(s, op, roster, context = {}) {
-  const r = s.operativeState[op.id],
+  const r = s.characters[op.id],
     status = (state, code = null) => ({ state, code });
   if ((context.unsafe ?? []).includes(op.id)) {
     return status('blocked', 'unsafe');
@@ -195,9 +196,9 @@ export function careAssignmentProgress(s, op, roster, context = {}) {
       (o) =>
         o.id !== op.id &&
         carePresent(s, o, context) &&
-        s.operativeState[o.id].assignment === 'patient' &&
+        s.characters[o.id].assignment === 'patient' &&
         operativeLocation(s, o.id) === operativeLocation(s, op.id) &&
-        needsCare(s.operativeState[o.id]),
+        needsCare(s.characters[o.id]),
     );
     if (!patients.length && (!problem || problem.code === 'no_medkits')) {
       return status('blocked', 'no_patients');
@@ -211,7 +212,7 @@ export function careAssignmentProgress(s, op, roster, context = {}) {
       (o) =>
         o.id !== op.id &&
         carePresent(s, o, context) &&
-        s.operativeState[o.id].assignment === 'doctor' &&
+        s.characters[o.id].assignment === 'doctor' &&
         !careAssignmentIssue(s, o, 'doctor') &&
         operativeLocation(s, o.id) === operativeLocation(s, op.id),
     );
@@ -231,7 +232,7 @@ export function careAssignmentProgress(s, op, roster, context = {}) {
 export function assignMedicalCare(s, op, assignment) {
   const reason = careAssignmentReason(s, op, assignment);
   requireThat(!reason, reason);
-  const record = s.operativeState[op.id];
+  const record = s.characters[op.id];
   if (record.assignment !== assignment) {
     record.recoveryHours = 0;
   }
@@ -240,7 +241,7 @@ export function assignMedicalCare(s, op, assignment) {
 
 /** @returns {string} */
 export function careStatus(s, op, roster) {
-  const record = s.operativeState[op.id],
+  const record = s.characters[op.id],
     assignment = record.assignment ?? 'active';
   if (!record.alive) {
     return 'Caído en servicio.';
@@ -284,12 +285,11 @@ export function careStatus(s, op, roster) {
       !roster.some(
         (o) =>
           o.id !== op.id &&
-          s.recruited.includes(o.id) &&
-          s.operativeState[o.id]?.alive &&
-          s.operativeState[o.id].assignment === 'patient' &&
+          s.forceRoster.includes(o.id) &&
+          s.characters[o.id]?.alive &&
+          s.characters[o.id].assignment === 'patient' &&
           operativeLocation(s, o.id) === operativeLocation(s, op.id) &&
-          (s.operativeState[o.id].hp < s.operativeState[o.id].maxHp ||
-            s.operativeState[o.id].bleeding > 0),
+          (s.characters[o.id].hp < s.characters[o.id].maxHp || s.characters[o.id].bleeding > 0),
       )
     ) {
       return 'Sin pacientes heridos asignados en este sector.';
@@ -303,7 +303,7 @@ export function careStatus(s, op, roster) {
     const doctor = roster.find(
       (o) =>
         o.id !== op.id &&
-        s.operativeState[o.id]?.assignment === 'doctor' &&
+        s.characters[o.id]?.assignment === 'doctor' &&
         !careAssignmentReason(s, o, 'doctor') &&
         operativeLocation(s, o.id) === operativeLocation(s, op.id),
     );
@@ -343,10 +343,10 @@ export function advanceMedicalCare(s, roster, context = {}) {
   const treated = new Set();
   const present = (op) => carePresent(s, op, context);
   const patients = roster
-    .filter((op) => present(op) && s.operativeState[op.id].assignment === 'patient')
+    .filter((op) => present(op) && s.characters[op.id].assignment === 'patient')
     .sort((a, b) => {
-      const left = s.operativeState[a.id],
-        right = s.operativeState[b.id];
+      const left = s.characters[a.id],
+        right = s.characters[b.id];
       return (
         Number(right.bleeding > 0) - Number(left.bleeding > 0) ||
         left.hp / left.maxHp - right.hp / right.maxHp ||
@@ -356,7 +356,7 @@ export function advanceMedicalCare(s, roster, context = {}) {
   for (const doctor of roster.filter(
     (op) =>
       present(op) &&
-      s.operativeState[op.id].assignment === 'doctor' &&
+      s.characters[op.id].assignment === 'doctor' &&
       !careAssignmentReason(s, op, 'doctor'),
   )) {
     const patient = patients.find(
@@ -364,14 +364,13 @@ export function advanceMedicalCare(s, roster, context = {}) {
         op.id !== doctor.id &&
         !treated.has(op.id) &&
         operativeLocation(s, op.id) === operativeLocation(s, doctor.id) &&
-        (s.operativeState[op.id].bleeding > 0 ||
-          s.operativeState[op.id].hp < s.operativeState[op.id].maxHp),
+        (s.characters[op.id].bleeding > 0 || s.characters[op.id].hp < s.characters[op.id].maxHp),
     );
     if (!patient) {
       continue;
     }
-    const medic = s.operativeState[doctor.id],
-      record = s.operativeState[patient.id];
+    const medic = s.characters[doctor.id],
+      record = s.characters[patient.id];
     medic.medkits--;
     medic.energy = Math.max(0, medic.energy - careRules(s).energyCost);
     gainFatigue(medic, careRules(s).fatigueCost);
@@ -388,7 +387,7 @@ export function advanceMedicalCare(s, roster, context = {}) {
   for (const doctor of roster.filter(
     (op) =>
       present(op) &&
-      s.operativeState[op.id].assignment === 'militia_doctor' &&
+      s.characters[op.id].assignment === 'militia_doctor' &&
       !careAssignmentReason(s, op, 'militia_doctor'),
   )) {
     const record = militiaCarePatients(s, operativeLocation(s, doctor.id)).find(
@@ -397,7 +396,7 @@ export function advanceMedicalCare(s, roster, context = {}) {
     if (!record) {
       continue;
     }
-    const medic = s.operativeState[doctor.id];
+    const medic = s.characters[doctor.id];
     medic.medkits--;
     medic.energy = Math.max(0, medic.energy - careRules(s).energyCost);
     gainFatigue(medic, careRules(s).fatigueCost);
@@ -417,8 +416,8 @@ export function advanceMedicalCare(s, roster, context = {}) {
     learnMedicine(medic, doctor);
   }
   for (const op of roster) {
-    const record = s.operativeState[op.id];
-    if (!s.recruited.includes(op.id) || !record?.alive || deployed(s, op.id)) {
+    const record = s.characters[op.id];
+    if (!s.forceRoster.includes(op.id) || !record?.alive || deployed(s, op.id)) {
       continue;
     }
     if (!present(op)) {
@@ -444,7 +443,7 @@ export function advanceMedicalCare(s, roster, context = {}) {
 }
 
 export function returnMedicalCare(s, id, report, op) {
-  const record = s.operativeState[id],
+  const record = s.characters[id],
     maxHp = report.maxHp ?? record.maxHp ?? op.maxHp;
   requireThat(
     Number.isInteger(maxHp) && maxHp > 0 && maxHp <= op.maxHp,
@@ -497,18 +496,21 @@ export function returnMedicalCare(s, id, report, op) {
 export function validateMedicalCare(s, roster) {
   migrateMedicalCare(s, roster);
   for (const op of roster) {
-    const r = s.operativeState[op.id];
+    const r = s.characters[op.id];
     requireThat(r, 'Falta una hoja de servicio.');
     requireThat(
       typeof r.sleepCollapsed === 'boolean' &&
         (!r.sleepCollapsed ||
-          (s.recruited.includes(op.id) && r.alive && !r.captured && !operativeInTransit(s, op.id))),
+          (s.forceRoster.includes(op.id) &&
+            r.alive &&
+            !r.captured &&
+            !operativeInTransit(s, op.id))),
       'El agotamiento guardado es inválido.',
     );
     requireThat(
       typeof r.asleep === 'boolean' &&
         (!r.asleep ||
-          (s.recruited.includes(op.id) && r.alive && !r.captured && !deployed(s, op.id))),
+          (s.forceRoster.includes(op.id) && r.alive && !r.captured && !deployed(s, op.id))),
       'El estado de sueño guardado es inválido.',
     );
     requireThat(
@@ -540,7 +542,7 @@ export function validateMedicalCare(s, roster) {
     );
     requireThat(
       r.assignment === 'active' ||
-        (s.recruited.includes(op.id) &&
+        (s.forceRoster.includes(op.id) &&
           r.alive &&
           !r.captured &&
           !deployed(s, op.id) &&
@@ -560,9 +562,9 @@ export function advanceMilitaryWounds(s, roster) {
   const deaths = [],
     percent = strategicBleedingPercent(s);
   for (const op of roster) {
-    const r = s.operativeState[op.id];
+    const r = s.characters[op.id];
     if (
-      !s.recruited.includes(op.id) ||
+      !s.forceRoster.includes(op.id) ||
       !r?.alive ||
       r.hp <= 0 ||
       r.captured ||
@@ -597,15 +599,15 @@ export function medicalSupplyQuote(s, op, quantity, supplied) {
   const cost = quantity * careRules(s).dressingPrice;
   const reason =
     !op ||
-    !s.recruited.includes(op.id) ||
-    !s.operativeState[op.id]?.alive ||
-    s.operativeState[op.id].captured ||
+    !s.forceRoster.includes(op.id) ||
+    !s.characters[op.id]?.alive ||
+    s.characters[op.id].captured ||
     deployed(s, op.id) ||
     operativeInTransit(s, op.id)
       ? 'El combatiente no está disponible.'
       : !Number.isInteger(quantity) || quantity < 1 || quantity > 20
         ? 'Elegí entre 1 y 20 vendas.'
-        : (s.operativeState[op.id].medkits ?? 2) + quantity > 1000
+        : (s.characters[op.id].medkits ?? 2) + quantity > 1000
           ? 'No puede llevar más de 1000 vendas.'
           : workshopAccessReason(s, op, supplied) ||
             (s.resources.treasury < cost ? 'No hay suficientes pesos.' : '');

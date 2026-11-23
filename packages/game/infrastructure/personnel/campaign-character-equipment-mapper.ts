@@ -11,8 +11,7 @@ export class CampaignCharacterEquipmentMapper {
   }
 
   project(character: CampaignOperative): CampaignOperative {
-    const record: Partial<CampaignOperativeState> =
-      this.#campaign.operativeState?.[character.id] ?? {};
+    const record: Partial<CampaignOperativeState> = this.#campaign.characters?.[character.id] ?? {};
     const loadout: Partial<CampaignOperative> = this.#campaign.loadouts?.[character.id] ?? {};
     const equipped: CampaignOperative = {
       ...character,

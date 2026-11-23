@@ -5,7 +5,7 @@ export {
   validStartingSupplies,
 } from '../campaign-format/character-start-schema.js';
 import { AMMO_TYPES } from './ammo-types.js';
-// Starting allocations are authoring data. Mutable amounts belong to operativeState.
+// Starting allocations are authoring data. Mutable amounts belong to characters.
 export const DEFAULT_CHARACTER_SUPPLIES = Object.freeze({
   rations: 2,
   torches: 2,

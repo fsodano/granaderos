@@ -210,7 +210,7 @@ function knownSiteEquipment(s, site) {
 }
 function inventorySite(s, id) {
   const mission = missionScenesFor(s)[id];
-  const snapshot = s.sceneStates?.[id] ?? s.sectorStates[id];
+  const snapshot = s.sceneSnapshots?.[id] ?? s.sectorSnapshots[id];
   return {
     id,
     sectorId: mission?.anchor ?? id,
@@ -271,7 +271,7 @@ export function knownCampaignRepairReserves(s, sectorId) {
   );
 }
 function carriedActor(s, op) {
-  const r = s.operativeState[op.id];
+  const r = s.characters[op.id];
   return syncUnitAmmunition({
     ...op,
     ...r,
@@ -287,7 +287,7 @@ function carriedActor(s, op) {
   });
 }
 function actorAt(s, sectorId, op) {
-  const r = s.operativeState[op.id],
+  const r = s.characters[op.id],
     snapshot = inventorySite(s, sectorId).snapshot;
   const old = snapshot?.units.find((u) => u.id === String(op.id) && !u.departure && u.hp > 0);
   const unit = carriedActor(s, op);
@@ -328,7 +328,7 @@ function unavailable(s, siteId, terrain = true) {
   if (s.defeated) {
     return 'La campaña terminó.';
   }
-  if (s.pendingBattle || s.pendingEncounter) {
+  if (s.sectorEntryRequest || s.pendingEncounter) {
     return 'Resolvé el encuentro pendiente antes de manejar el equipo desde la carta.';
   }
   if (
@@ -349,14 +349,14 @@ export function sectorInventoryModel(s, sectorId, roster, operativeId) {
   const { snapshot, sectorId: location } = inventorySite(s, sectorId),
     candidates = roster.filter(
       (op) =>
-        s.recruited.includes(op.id) &&
-        s.operativeState[op.id]?.alive &&
-        !s.operativeState[op.id]?.captured &&
+        s.forceRoster.includes(op.id) &&
+        s.characters[op.id]?.alive &&
+        !s.characters[op.id]?.captured &&
         !operativeInTransit(s, op.id) &&
         operativeLocation(s, op.id) === location,
     );
   const op = candidates.find((op) => op.id === Number(operativeId)) ?? candidates[0],
-    r = op && s.operativeState[op.id];
+    r = op && s.characters[op.id];
   let reason = unavailable(s, sectorId),
     carriedReason = unavailable(s, sectorId, false);
   if (!op || r.hp < 15 || r.asleep || r.energy <= 0 || r.unconscious || r.routed || r.surrendered) {
@@ -685,10 +685,10 @@ export function moveSectorItem(s, action, roster) {
           !roster.some(
             (other) =>
               other.id !== op.id &&
-              s.recruited.includes(other.id) &&
-              s.operativeState[other.id]?.alive &&
-              s.operativeState[other.id]?.equipmentCursor &&
-              !s.operativeState[other.id]?.captured,
+              s.forceRoster.includes(other.id) &&
+              s.characters[other.id]?.alive &&
+              s.characters[other.id]?.equipmentCursor &&
+              !s.characters[other.id]?.captured,
           ),
           'Colocá primero el objeto del otro combatiente.',
         );
@@ -751,10 +751,10 @@ export function moveSectorItem(s, action, roster) {
         !roster.some(
           (other) =>
             other.id !== op.id &&
-            s.recruited.includes(other.id) &&
-            s.operativeState[other.id]?.alive &&
-            s.operativeState[other.id]?.equipmentCursor &&
-            !s.operativeState[other.id]?.captured,
+            s.forceRoster.includes(other.id) &&
+            s.characters[other.id]?.alive &&
+            s.characters[other.id]?.equipmentCursor &&
+            !s.characters[other.id]?.captured,
         ),
         'Colocá primero el objeto del otro combatiente.',
       );
@@ -878,7 +878,7 @@ export function moveSectorItem(s, action, roster) {
       knownToPlayer: true,
     });
   }
-  const record = s.operativeState[op.id];
+  const record = s.characters[op.id];
   returnEquipment(s, op.id, next);
   for (const key of fields) {
     if (next[key] !== undefined) {

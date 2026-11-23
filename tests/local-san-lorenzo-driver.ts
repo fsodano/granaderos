@@ -6,7 +6,7 @@ import type {
   TacticalPoint,
   TacticalAction,
 } from '../packages/game/public/compatibility-types.ts';
-import type { CampaignPendingBattle } from '../packages/game/public/campaign-types.ts';
+import type { CampaignSectorEntryRequest } from '../packages/game/public/campaign-types.ts';
 import type { TacticalOrder } from '../packages/game/public/hud-types.ts';
 // Acceptance controller: ordinary orders from actual stock-route survivors.
 // This is one reproducible strategy, not the game AI or a balance guarantee.
@@ -435,7 +435,7 @@ export function localSanLorenzoOrder(
   return null;
 }
 export function fight(
-  request: CampaignPendingBattle,
+  request: CampaignSectorEntryRequest,
   previous: BattleSnapshot | null = null,
   { avoidCivilians = false } = {},
 ): FightResult {

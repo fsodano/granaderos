@@ -32,15 +32,15 @@ export function prepareCoastalFieldAid(
     selection = c.activeSquadId,
     target = 2,
     started = clock(c),
-    serving = c.recruited.filter(
-      (id) => present(c.operativeState[id]).alive && !present(c.operativeState[id]).captured,
+    serving = c.forceRoster.filter(
+      (id) => present(c.characters[id]).alive && !present(c.characters[id]).captured,
     ),
-    dead = Object.entries(c.operativeState)
+    dead = Object.entries(c.characters)
       .filter(([, r]) => !r.alive)
       .map(([id]) => Number(id));
   const safe = () => {
     assert.equal(
-      c.pendingBattle,
+      c.sectorEntryRequest,
       null,
       'finish the actual battle before collecting the field reserve',
     );
@@ -50,18 +50,18 @@ export function prepareCoastalFieldAid(
       'resolve the real medical courier contact before leaving the clinic',
     );
     for (const id of field) {
-      const r = present(c.operativeState[id]);
+      const r = present(c.characters[id]);
       assert.ok(
-        c.recruited.includes(id) && r.alive && !r.captured && r.hp >= 15 && !r.bleeding,
+        c.forceRoster.includes(id) && r.alive && !r.captured && r.hp >= 15 && !r.bleeding,
         'stabilize every actual field survivor before the dressing journey',
       );
     }
     for (const id of serving) {
       const expiry = contractExpiresSeconds(c.contracts[id]);
       assert.ok(
-        c.recruited.includes(id) &&
-          present(c.operativeState[id]).alive &&
-          !present(c.operativeState[id]).captured,
+        c.forceRoster.includes(id) &&
+          present(c.characters[id]).alive &&
+          !present(c.characters[id]).captured,
         'retain the actual serving cohort',
       );
       assert.ok(
@@ -71,7 +71,7 @@ export function prepareCoastalFieldAid(
     }
     for (const id of dead) {
       assert.equal(
-        present(c.operativeState[id]).alive,
+        present(c.characters[id]).alive,
         false,
         'finite medical collection cannot restore a casualty',
       );
@@ -79,9 +79,9 @@ export function prepareCoastalFieldAid(
   };
   safe();
   const admitted = (id: number) => {
-    const r = present(c.operativeState[id]);
+    const r = present(c.characters[id]);
     return (
-      c.recruited.includes(id) &&
+      c.forceRoster.includes(id) &&
       r.alive &&
       !r.captured &&
       r.hp >= 15 &&
@@ -98,7 +98,7 @@ export function prepareCoastalFieldAid(
     .filter((op) => field.includes(op.id) && op.medical > 0 && admitted(op.id))
     .sort((a, b) => b.medical - a.medical || a.id - b.id)[0];
   assert.ok(medic, 'a conscious local field medic must actually admit inventory before departure');
-  const initial = present(c.operativeState[medic.id]).medkits ?? 0,
+  const initial = present(c.characters[medic.id]).medkits ?? 0,
     proof: FieldAidReadiness = {
       medicId: medic.id,
       target,
@@ -121,8 +121,8 @@ export function prepareCoastalFieldAid(
     });
   };
   const take = (row: SectorInventoryEntry) => {
-    const count = Math.min(row.count, target - present(c.operativeState[medic.id]).medkits),
-      before = present(c.operativeState[medic.id]).medkits,
+    const count = Math.min(row.count, target - present(c.characters[medic.id]).medkits),
+      before = present(c.characters[medic.id]).medkits,
       pool = medicalRows(c, clinic, medic.id).reduce((sum, row) => sum + row.count, 0),
       cash = c.resources.treasury,
       time = clock(c);
@@ -135,7 +135,7 @@ export function prepareCoastalFieldAid(
       expected: row.expected,
       count,
     });
-    assert.equal(present(c.operativeState[medic.id]).medkits, before + count);
+    assert.equal(present(c.characters[medic.id]).medkits, before + count);
     assert.equal(
       medicalRows(c, clinic, medic.id).reduce((sum, row) => sum + row.count, 0),
       pool - count,
@@ -145,17 +145,17 @@ export function prepareCoastalFieldAid(
     assert.equal(clock(c), time);
     proof.collected += count;
   };
-  while (present(c.operativeState[medic.id]).medkits < target) {
+  while (present(c.characters[medic.id]).medkits < target) {
     const row = medicalRows(c, clinic, medic.id).find((row) => row.reachable && row.count > 0);
     if (!row) {
       break;
     }
     take(row);
   }
-  if (present(c.operativeState[medic.id]).medkits < target) {
-    const needed = target - present(c.operativeState[medic.id]).medkits,
+  if (present(c.characters[medic.id]).medkits < target) {
+    const needed = target - present(c.characters[medic.id]).medkits,
       courierId = caregiverIds.find(admitted) ?? medic.id,
-      carried = present(c.operativeState[courierId]).medkits;
+      carried = present(c.characters[courierId]).medkits;
     const found = collectRouteMedicalSupplies(c, courierId, needed, { report });
     c = found.campaign;
     safe();
@@ -164,7 +164,7 @@ export function prepareCoastalFieldAid(
       needed,
       'the finite source must supply the declared two-piece reserve',
     );
-    assert.equal(present(c.operativeState[courierId]).medkits, carried + needed);
+    assert.equal(present(c.characters[courierId]).medkits, carried + needed);
     assert.equal(
       operativeLocation(c, courierId),
       clinic,
@@ -190,7 +190,7 @@ export function prepareCoastalFieldAid(
         count: needed,
       });
       assert.equal(
-        present(c.operativeState[courierId]).medkits,
+        present(c.characters[courierId]).medkits,
         carried,
         'the courier retains every dressing carried before the collection',
       );
@@ -216,7 +216,7 @@ export function prepareCoastalFieldAid(
   }
   assert.deepEqual(c.squad, field);
   assert.equal(c.location, clinic);
-  assert.equal(present(c.operativeState[medic.id]).medkits, target);
+  assert.equal(present(c.characters[medic.id]).medkits, target);
   safe();
   proof.elapsedSeconds = clock(c) - started;
   report({ event: 'coastalFieldAidReady', ...proof, clinic });

@@ -4,7 +4,7 @@ import { missionScenesFor } from './campaign-scenario.js';
 // A return marker is the player's own departure receipt. Its fixed location
 // must not follow the former recruit or consult the current sector occupants.
 export function serviceEquipmentReturnReason(state, id) {
-  const record = state?.operativeState?.[id],
+  const record = state?.characters?.[id],
     marker = record?.serviceEquipmentReturn;
   if (!marker) {
     return null;

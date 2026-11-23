@@ -5,8 +5,8 @@ import {
   campaignRelativePath,
   validateCampaignManifest,
   validateCampaignRegistry,
-  compileCampaignPackage,
 } from '../packages/game/campaign-library.js';
+import { createCampaignCompiler } from '../packages/game/public/campaign-compiler-api.ts';
 import { campaignContentReport } from '../packages/game/campaign-content.js';
 function child(root, path) {
   if (!campaignRelativePath(path)) {
@@ -85,7 +85,10 @@ export async function verifyCampaignFolder(directory) {
     }
     maps[entry.id] = await json(child(dirname(child(directory, manifest.maps)), entry.path));
   }
-  const compiled = compileCampaignPackage(manifest, { content, world, maps, presentation, assets });
+  const compiled = createCampaignCompiler().execute({
+    manifest,
+    documents: { content, world, maps, presentation, assets },
+  });
   const report = campaignContentReport(compiled);
   if (report.blocked.length) {
     throw Error(report.blocked.join('\n'));

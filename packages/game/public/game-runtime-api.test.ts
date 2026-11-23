@@ -3,6 +3,8 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, resolve, sep } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
+import * as campaignEditorEntry from './campaign-editor-api.ts';
+import * as gameRuntimeEntry from './game-runtime-api.ts';
 
 interface ImportedSymbol {
   readonly name: string;
@@ -149,4 +151,18 @@ void test('the entry exports no name twice', () => {
   }
   const duplicates = [...seen].filter(([, count]) => count > 1).map(([name]) => name);
   assert.deepEqual(duplicates, []);
+});
+
+void test('the public entries no longer export the retained compile adapter', () => {
+  const retainedName = 'compileCampaignPackage';
+  for (const [entry, module] of [
+    ['packages/game/public/game-runtime-api.ts', gameRuntimeEntry],
+    ['packages/game/public/campaign-editor-api.ts', campaignEditorEntry],
+  ] as const) {
+    assert.equal(
+      Object.hasOwn(module, retainedName),
+      false,
+      `${entry} still exports the retained ${retainedName}.`,
+    );
+  }
 });

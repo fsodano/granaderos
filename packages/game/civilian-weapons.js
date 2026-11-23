@@ -17,7 +17,7 @@ const need = (ok) => {
 export const civilianWeaponSlots = ['primary', 'blade'];
 export function civilianWeaponsFor(s, id) {
   const base = authoredRoster(s, [...OPERATIVES, ...CIVIC_RECRUITS]).find((o) => o.id === id),
-    record = s.operativeState[id];
+    record = s.characters[id];
   if (!base || !record || record.serviceEquipmentReturn) {
     return { version: 1, primary: null, blade: null };
   }
@@ -92,8 +92,8 @@ export function acknowledgeCivilianWeapons(s, id, previous, n) {
       after = n.civilianWeapons[slot];
     need(after === null || canonicalContent(after) === canonicalContent(before));
     if (before && !after) {
-      need(id !== undefined && s.operativeState[id]);
-      const record = s.operativeState[id],
+      need(id !== undefined && s.characters[id]);
+      const record = s.characters[id],
         key = slot === 'primary' ? 'weapon' : 'blade';
       s.loadouts[id] = { ...s.loadouts[id], [key]: 0 };
       setWeaponDefinition(record, {}, slot);
@@ -103,8 +103,8 @@ export function acknowledgeCivilianWeapons(s, id, previous, n) {
         record.jammed = false;
       }
       // Each acknowledged source can leave this resident once during this scene.
-      s.pendingBattle.civilianWeaponRecoveries ??= [];
-      s.pendingBattle.civilianWeaponRecoveries.push({
+      s.sectorEntryRequest.civilianWeaponRecoveries ??= [];
+      s.sectorEntryRequest.civilianWeaponRecoveries.push({
         npcId: n.id,
         slot,
         gun: structuredClone(before),
@@ -113,7 +113,7 @@ export function acknowledgeCivilianWeapons(s, id, previous, n) {
   }
 }
 export function validateCivilianWeaponRecoveries(s) {
-  const records = s.pendingBattle?.civilianWeaponRecoveries;
+  const records = s.sectorEntryRequest?.civilianWeaponRecoveries;
   if (records === undefined) {
     return;
   }

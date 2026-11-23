@@ -72,7 +72,7 @@ void test('recruitment shows immediate availability only for eligible candidates
     id = 100;
   state.resources.treasury = 100000;
   // Declared captivity isolates the card from price, route and service refusals.
-  Object.assign(present(state.operativeState[id]), { captured: true, location: 'uspallata' });
+  Object.assign(present(state.characters[id]), { captured: true, location: 'uspallata' });
   const before = structuredClone(state),
     quote = contractQuote(state, present(rosterFor(state).find((op) => op.id === id)));
   assert.equal(quote.available, true);
@@ -90,7 +90,7 @@ void test('recruitment shows immediate availability only for eligible candidates
   assert.deepEqual(state, before);
   present(doc.defaultView).close();
   const available = structuredClone(state);
-  present(available.operativeState[id]).captured = false;
+  present(available.characters[id]).captured = false;
   const availableBefore = structuredClone(available),
     controlDoc = new JSDOM(render(h(Recruitment, { state: available, dispatch: noop }))).window
       .document,
@@ -105,7 +105,7 @@ void test('recruitment shows immediate availability only for eligible candidates
   assert.deepEqual(available, availableBefore);
   present(controlDoc.defaultView).close();
   const fallen = structuredClone(available);
-  Object.assign(present(fallen.operativeState[id]), { alive: false, hp: 0 });
+  Object.assign(present(fallen.characters[id]), { alive: false, hp: 0 });
   const fallenBefore = structuredClone(fallen),
     fallenDoc = new JSDOM(render(h(Recruitment, { state: fallen, dispatch: noop }))).window
       .document,
@@ -129,7 +129,7 @@ function existingArmy() {
     ids = rosterFor(s)
       .slice(0, 12)
       .map((op) => op.id);
-  s.recruited = ids;
+  s.forceRoster = ids;
   s.squad = ids.slice(0, 6);
   s.squads = [
     { id: 'squad-1', name: 'Primera escuadra', members: [...s.squad], location: 'retiro' },
@@ -179,7 +179,7 @@ void test('the dense roster renders twelve person rows with six columns and no s
     [...doc.querySelectorAll<HTMLElement>('[data-operative-id]')].map((row) =>
       Number(row.dataset['operativeId']),
     ),
-    state.recruited,
+    state.forceRoster,
   );
   assert.deepEqual(state, before);
 });
@@ -199,12 +199,12 @@ void test('forming numbered slot six first preserves named squads, duty, invento
     created = present(assigned.squads.find((q) => q.name === 'Escuadra 6'));
   assert.ok(created);
   assert.deepEqual(created.members, [3]);
-  assert.equal(present(assigned.operativeState[3]).assignment, 'active');
-  assert.equal(present(assigned.operativeState[10]).assignment, 'doctor');
+  assert.equal(present(assigned.characters[3]).assignment, 'active');
+  assert.equal(present(assigned.characters[10]).assignment, 'doctor');
   assert.deepEqual(present(assigned.squads[0]), { ...present(before.squads[0]), members: [4, 10] });
-  for (const id of state.recruited) {
-    const changed = present(assigned.operativeState[id]),
-      previous = present(before.operativeState[id]);
+  for (const id of state.forceRoster) {
+    const changed = present(assigned.characters[id]),
+      previous = present(before.characters[id]);
     assert.deepEqual(changed.inventory, previous.inventory);
     assert.equal(changed.hp, previous.hp);
     assert.equal(changed.medkits, previous.medkits);
@@ -220,7 +220,7 @@ void test('forming numbered slot six first preserves named squads, duty, invento
 void test('failed squad and duty changes preserve the complete campaign, and ordinary callers keep their previous duty', () => {
   let state = order(initialCampaign(), { type: 'assignCare', operativeId: 10, assignment: 'rest' });
   state = order(state, { type: 'createSquad', name: 'Reserva', ids: [10] });
-  assert.equal(present(state.operativeState[10]).assignment, 'rest');
+  assert.equal(present(state.characters[10]).assignment, 'rest');
   state = order(state, { type: 'selectSquad', id: 'squad-1' });
   state = order(state, { type: 'travel', sector: 'buenos_aires' });
   const before = structuredClone(state),
@@ -247,7 +247,7 @@ void test('failed squad and duty changes preserve the complete campaign, and ord
     ...action,
     squadId: present(state.squads.find((q) => q.members.includes(10))).id,
   });
-  assert.equal(present(own.operativeState[10]).assignment, 'active');
+  assert.equal(present(own.characters[10]).assignment, 'active');
 });
 
 void test('joining an existing named squad returns only the chosen person to duty, with no missing or duplicated members', () => {
@@ -265,8 +265,8 @@ void test('joining an existing named squad returns only the chosen person to dut
     [[4], [10, 3]],
   );
   assert.equal(present(assigned.squads[1]).name, 'Reserva médica');
-  assert.equal(present(assigned.operativeState[3]).assignment, 'active');
-  assert.equal(present(assigned.operativeState[10]).assignment, 'doctor');
+  assert.equal(present(assigned.characters[3]).assignment, 'active');
+  assert.equal(present(assigned.characters[10]).assignment, 'doctor');
   assert.deepEqual(
     assigned.squads.flatMap((q) => q.members).sort((a, b) => a - b),
     [3, 4, 10],
@@ -430,7 +430,7 @@ async function mountMenu(
 // menu after a retreat. The new local officer is not assigned to any squad.
 function sevenSquadArmy() {
   const state = existingArmy(),
-    ids = state.recruited;
+    ids = state.forceRoster;
   present(state.sectors['cordoba']).owner = 'patriot';
   state.squads = Array.from({ length: 6 }, (_, i) => ({
     id: `squad-${i + 1}`,
@@ -450,16 +450,16 @@ function sevenSquadArmy() {
   state.squad = [...present(state.squads[4]).members];
   state.location = 'cordoba';
   for (const id of ids) {
-    present(state.operativeState[id]).location =
+    present(state.characters[id]).location =
       state.squads.find((q) => q.members.includes(id))?.location ?? 'cordoba';
   }
-  present(state.operativeState[present(ids[11])]).assignment = 'rest';
+  present(state.characters[present(ids[11])]).assignment = 'rest';
   return state;
 }
 
 void test('the assignment menu forms an eighth local squad when all six numbered slots already exist', async (t) => {
   const state = sevenSquadArmy(),
-    id = present(state.recruited[11]),
+    id = present(state.forceRoster[11]),
     before = structuredClone(state),
     m = await mountMenu(t, state, id);
   await m.click('Escuadra ›');
@@ -479,7 +479,7 @@ void test('the assignment menu forms an eighth local squad when all six numbered
   assert.deepEqual(created.members, [id]);
   assert.equal(created.location, 'cordoba');
   assert.equal(after.activeSquadId, created.id);
-  assert.equal(present(after.operativeState[id]).assignment, 'active');
+  assert.equal(present(after.characters[id]).assignment, 'active');
   assert.equal(m.closed(), 1);
   assert.equal(m.actions.length, 1);
   for (const old of before.squads) {
@@ -492,9 +492,9 @@ void test('the assignment menu forms an eighth local squad when all six numbered
   assert.equal(after.hour, before.hour);
   assert.equal(after.secondOfHour, before.secondOfHour);
   assert.deepEqual(after.resources, before.resources);
-  for (const member of before.recruited) {
-    assert.deepEqual(present(after.operativeState[member]), {
-      ...present(before.operativeState[member]),
+  for (const member of before.forceRoster) {
+    assert.deepEqual(present(after.characters[member]), {
+      ...present(before.characters[member]),
       ...(member === id ? { assignment: 'active' } : {}),
     });
   }
@@ -504,7 +504,7 @@ void test('the assignment menu forms an eighth local squad when all six numbered
 
 function eightOccupiedSquads() {
   const state = sevenSquadArmy(),
-    ids = state.recruited;
+    ids = state.forceRoster;
   state.squads.push({ id: 'squad-8', name: 'Escuadra 7', members: [], location: 'cordoba' });
   for (const squad of state.squads) {
     squad.members = [];
@@ -512,7 +512,7 @@ function eightOccupiedSquads() {
   for (const [index, id] of ids.entries()) {
     const squad = present(state.squads[index % 8]);
     squad.members.push(id);
-    present(state.operativeState[id]).location = squad.location;
+    present(state.characters[id]).location = squad.location;
   }
   state.squad = [...present(state.squads.find((q) => q.id === state.activeSquadId)).members];
   return state;
@@ -520,7 +520,7 @@ function eightOccupiedSquads() {
 
 void test('the new-squad button explains the occupied eight-squad limit and cannot dispatch', async (t) => {
   const state = eightOccupiedSquads(),
-    id = present(state.recruited[11]),
+    id = present(state.forceRoster[11]),
     before = structuredClone(state),
     m = await mountMenu(t, state, id);
   await m.click('Escuadra ›');
@@ -557,12 +557,12 @@ void test('a new local squad can reuse an empty remote slot without moving the r
   present(state.squads[4]).members.push(patient, doctor);
   present(state.squads[2]).members = [];
   for (const member of [patient, doctor]) {
-    present(state.operativeState[member]).location = 'cordoba';
+    present(state.characters[member]).location = 'cordoba';
   }
   state.squad = [...present(state.squads[4]).members];
-  present(state.operativeState[patient]).assignment = 'patient';
-  present(state.operativeState[doctor]).assignment = 'doctor';
-  present(state.operativeState[id]).assignment = 'rest';
+  present(state.characters[patient]).assignment = 'patient';
+  present(state.characters[doctor]).assignment = 'doctor';
+  present(state.characters[id]).assignment = 'rest';
   const before = structuredClone(state),
     choice = present(
       strategicNewSquadAssignment(state, id, present(rosterFor(state).find((op) => op.id === id))),
@@ -589,9 +589,9 @@ void test('a new local squad can reuse an empty remote slot without moving the r
       members: old.members.filter((member) => member !== id),
     });
   }
-  for (const member of before.recruited) {
-    assert.deepEqual(present(after.operativeState[member]), {
-      ...present(before.operativeState[member]),
+  for (const member of before.forceRoster) {
+    assert.deepEqual(present(after.characters[member]), {
+      ...present(before.characters[member]),
       ...(member === id ? { assignment: 'active' } : {}),
     });
   }
@@ -600,7 +600,7 @@ void test('a new local squad can reuse an empty remote slot without moving the r
   assert.equal(after.secondOfHour, before.secondOfHour);
   assert.deepEqual(
     after.squads.flatMap((q) => q.members).sort((a, b) => a - b),
-    [...state.recruited].sort((a, b) => a - b),
+    [...state.forceRoster].sort((a, b) => a - b),
   );
   assert.deepEqual(decodeSave(encodeSave(after)).campaign, after);
   assert.deepEqual(state, before);
@@ -616,7 +616,7 @@ void test('new-squad creation shares encounter, service, travel and training eli
     [
       'battle',
       (s) => {
-        s.pendingBattle = { id: 'assignment-test', sector: s.location, squad: [] };
+        s.sectorEntryRequest = { id: 'assignment-test', sector: s.location, squad: [] };
       },
       /encuentro/,
     ],
@@ -637,29 +637,29 @@ void test('new-squad creation shares encounter, service, travel and training eli
     [
       'not hired',
       (s, id) => {
-        s.recruited = s.recruited.filter((member) => member !== id);
+        s.forceRoster = s.forceRoster.filter((member) => member !== id);
       },
       /disponible/,
     ],
     [
       'dead',
       (s, id) => {
-        present(s.operativeState[id]).alive = false;
-        present(s.operativeState[id]).hp = 0;
+        present(s.characters[id]).alive = false;
+        present(s.characters[id]).hp = 0;
       },
       /disponible/,
     ],
     [
       'captured',
       (s, id) => {
-        present(s.operativeState[id]).captured = true;
+        present(s.characters[id]).captured = true;
       },
       /disponible/,
     ],
     [
       'zero health',
       (s, id) => {
-        present(s.operativeState[id]).hp = 0;
+        present(s.characters[id]).hp = 0;
       },
       /disponible/,
     ],
@@ -693,7 +693,7 @@ void test('new-squad creation shares encounter, service, travel and training eli
   ];
   for (const [label, change, message] of cases) {
     const state = sevenSquadArmy(),
-      id = present(state.recruited[11]),
+      id = present(state.forceRoster[11]),
       op = present(rosterFor(state).find((op) => op.id === id));
     change(state, id);
     const before = structuredClone(state);
@@ -728,12 +728,12 @@ void test('assignment preserves saved squad labels and a vacant numbered slot fo
   assert.equal(action.returnToService, true);
   assert.equal(m.closed(), 1);
   assert.equal(m.state().lastError, null);
-  assert.equal(present(m.state().operativeState[3]).assignment, 'active');
+  assert.equal(present(m.state().characters[3]).assignment, 'active');
   const loaded = decodeSave(encodeSave(m.state())).campaign;
   assert.deepEqual(present(present(strategicSquadSlots(loaded)[5]).squad).members, [3]);
   // Vacant numbered names can disappear when an eight-squad army reuses a slot.
   const sparse = existingArmy(),
-    ids = sparse.recruited,
+    ids = sparse.forceRoster,
     group = (id: string, name: string, members: number[] = []): CampaignSquad => ({
       id,
       name,
@@ -929,9 +929,9 @@ void test('personnel, dossiers and public campaign state distinguish carried, ja
   // condition and jam flag; those fields alone do not mean it is still carried.
   for (const { id, ...flags } of cases) {
     state.loadouts[id] = { ...state.loadouts[id], weapon: 1801 };
-    Object.assign(present(state.operativeState[id]), flags, { condition: 98 });
+    Object.assign(present(state.characters[id]), flags, { condition: 98 });
     if (flags.weaponDropped) {
-      present(state.operativeState[id]).carriedLoaded = 0;
+      present(state.characters[id]).carriedLoaded = 0;
     }
   }
   const before = structuredClone(state),
@@ -940,7 +940,7 @@ void test('personnel, dossiers and public campaign state distinguish carried, ja
     care = new JSDOM(render(h(MedicalCare, { state, dispatch: noop }))).window.document;
   assert.deepEqual(
     publicState.operatives.map((op) => op.id),
-    state.recruited,
+    state.forceRoster,
   );
   for (const { id, weaponDropped, jammed } of cases) {
     const visible = present(publicState.operatives.find((op) => op.id === id)),
@@ -953,7 +953,7 @@ void test('personnel, dossiers and public campaign state distinguish carried, ja
         render(
           h(DossierEquipment, {
             operative: present(roster.find((op) => op.id === id)),
-            record: present(state.operativeState[id]),
+            record: present(state.characters[id]),
           }),
         ),
       ).window.document,
@@ -994,7 +994,7 @@ void test('personnel energy text and meter respect fatigue capacity without chan
   // Captive recovery can leave raw energy above the retained military fatigue
   // limit. Rendering must not rewrite that record or its public projection.
   for (const { id, energy, fatigue } of cases) {
-    Object.assign(present(state.operativeState[id]), { energy, fatigue });
+    Object.assign(present(state.characters[id]), { energy, fatigue });
   }
   const before = structuredClone(state),
     publicBefore = playerKnownCampaign(state),
@@ -1040,12 +1040,12 @@ void test('returned equipment and repair reserves show their known former owner 
       repairPoints: index ? 0 : 7,
     })),
   };
-  Object.assign(present(state.operativeState[101]), {
+  Object.assign(present(state.characters[101]), {
     serviceEquipmentReturn: marker(9),
     rations: 4,
     toolkitPoints: 11,
   });
-  state.sectorStates['retiro'] = {
+  state.sectorSnapshots['retiro'] = {
     ...createBattle([], {
       id: 'retiro',
       width: 8,

@@ -1,7 +1,7 @@
 import { CampaignRuleRefusal } from '../shared/campaign-rule-refusal.ts';
 import { DomainRefusal, DomainRefusalCode } from '../../domain/shared/domain-refusal.ts';
 import { rosterFor, candidateAdmission } from '../../recruitment.ts';
-import { hiringArrivalOptions } from '../../hiring-arrivals.js';
+import { recruitmentSites } from '../../recruitment-claims.js';
 import {
   CampaignRecruitmentMapper,
   RecruitmentEquipmentSource,
@@ -26,7 +26,7 @@ export class CampaignRecruitCombatantRepository {
     if (!eligibility.available) {
       throw new CampaignRuleRefusal(DomainRefusalCode.CandidateIneligible, eligibility.reason);
     }
-    const locations = hiringArrivalOptions(campaign).map((site) => site.id);
+    const locations = recruitmentSites(campaign).map((site) => site.id);
     const allowedLocations = locations.includes(campaign.location)
       ? [campaign.location, ...locations.filter((id) => id !== campaign.location)]
       : locations;

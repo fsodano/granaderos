@@ -23,8 +23,8 @@ export function battleFromRequest(request, campaign = null, options = {}) {
   }
   const previous =
     (request.sceneId
-      ? campaign?.sceneStates?.[request.sceneId]
-      : campaign?.sectorStates?.[request.sector]) ?? null;
+      ? campaign?.sceneSnapshots?.[request.sceneId]
+      : campaign?.sectorSnapshots?.[request.sector]) ?? null;
   const boundary = campaign ? withCampaignTimeBoundary(campaign, {}) : {};
   return enterSector(
     {
@@ -42,12 +42,12 @@ export function battleFromRequest(request, campaign = null, options = {}) {
 // Publish campaign and battle together so the first autosave is loadable.
 /** @param {import('./public/campaign-types.ts').CampaignSnapshot} campaign @returns {{campaign: import('./public/campaign-types.ts').CampaignSnapshot, battle: import('./public/compatibility-types.ts').BattleSnapshot | null, error: string | null}} */
 export function prepareCampaignBattle(campaign, options = {}) {
-  if (!campaign?.pendingBattle) {
+  if (!campaign?.sectorEntryRequest) {
     return { campaign, battle: null, error: 'No hay un despliegue pendiente.' };
   }
   const battle = applyQuestEscortOrders(
     campaign,
-    battleFromRequest(campaign.pendingBattle, campaign, options),
+    battleFromRequest(campaign.sectorEntryRequest, campaign, options),
   );
   return syncBattleTime(campaign, battle);
 }

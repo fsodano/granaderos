@@ -103,7 +103,7 @@ export function fundServiceGuarantee(state, operative, amount) {
 /** @returns {number} */
 export function serviceGuaranteeRefund(state, reference, operative) {
   const entry = guaranteeRecord(state, reference),
-    record = state.operativeState?.[operative?.id];
+    record = state.characters?.[operative?.id];
   if (!entry || entry.state !== 'held' || !record?.alive) {
     return 0;
   }
@@ -122,7 +122,7 @@ export function settleServiceGuarantee(
     return null;
   }
   need(entry.operativeId === operative.id && ['departed', 'cancelled', 'forfeited'].includes(kind));
-  const record = state.operativeState[operative.id],
+  const record = state.characters[operative.id],
     dead = !record.alive || record.hp === 0;
   if (dead) {
     kind = 'forfeited';
@@ -160,7 +160,7 @@ export function settleServiceGuarantee(
 // the dead contract until its ordinary departure, without ever paying twice.
 export function forfeitDeadServiceGuarantees(state, roster) {
   for (const [id, entry] of Object.entries(state.serviceGuarantees?.entries ?? {})) {
-    const record = state.operativeState[entry.operativeId];
+    const record = state.characters[entry.operativeId];
     if (entry.state === 'held' && record?.alive === false) {
       settleServiceGuarantee(
         state,
@@ -188,12 +188,22 @@ export function validateServiceGuarantees(state, roster) {
       refs.push({
         id: arrival.guaranteeId,
         owner: arrival.operativeId,
-        kind: 'arrival',
+        kind: 'claim',
         record: arrival,
       });
     }
   }
-  for (const [id, record] of Object.entries(state.operativeState ?? {})) {
+  for (const claim of state.refundableRecruitmentClaims ?? []) {
+    if (claim.guaranteeId !== undefined) {
+      refs.push({
+        id: claim.guaranteeId,
+        owner: claim.operativeId,
+        kind: 'claim',
+        record: claim,
+      });
+    }
+  }
+  for (const [id, record] of Object.entries(state.characters ?? {})) {
     if (record.capturedContract?.guaranteeId !== undefined) {
       refs.push({
         id: record.capturedContract.guaranteeId,
@@ -210,7 +220,10 @@ export function validateServiceGuarantees(state, roster) {
     const references = [
       state.contracts?.[operative.id],
       ...(state.hiringArrivals ?? []).filter((a) => a.operativeId === operative.id),
-      state.operativeState?.[operative.id]?.capturedContract,
+      ...(state.refundableRecruitmentClaims ?? []).filter(
+        (claim) => claim.operativeId === operative.id,
+      ),
+      state.characters?.[operative.id]?.capturedContract,
     ].filter(Boolean);
     need(references.every((ref) => typeof ref.guaranteeId === 'string'));
   }
@@ -234,7 +247,7 @@ export function validateServiceGuarantees(state, roster) {
   for (const [id, entry] of entries) {
     need(object(entry));
     const operative = roster.find((o) => o.id === entry.operativeId),
-      record = state.operativeState[entry.operativeId],
+      record = state.characters[entry.operativeId],
       matching = refs.filter((r) => r.id === id),
       funded = entry.fundedAt * 3600 + entry.fundedSecond;
     need(
@@ -314,7 +327,7 @@ export function validateServiceGuarantees(state, roster) {
       }
     }
     for (const ref of matching) {
-      if (ref.kind === 'arrival') {
+      if (ref.kind === 'claim') {
         need(ref.record.bookedAt * 3600 + (ref.record.bookedSecond ?? 0) === funded);
       } else {
         need(

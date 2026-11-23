@@ -10,11 +10,11 @@ export function missionAssaultSquads(state) {
     .map((q) => {
       let reason = q.journey ? 'La escuadra está en marcha.' : null;
       for (const id of q.members) {
-        const r = state.operativeState[id],
+        const r = state.characters[id],
           contract = state.contracts[id],
           expiry = contractExpiresSeconds(contract);
         if (
-          !state.recruited.includes(id) ||
+          !state.forceRoster.includes(id) ||
           !r?.alive ||
           r.hp < 15 ||
           r.unconscious ||

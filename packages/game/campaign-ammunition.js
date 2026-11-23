@@ -197,7 +197,7 @@ export function validateAmmunitionCustody(s, roster) {
     );
   }
   for (const op of roster) {
-    const record = s.operativeState[op.id];
+    const record = s.characters[op.id];
     if (!record) {
       continue;
     }
@@ -241,14 +241,14 @@ export function restockAmmunitionShops(s, isSupplied) {
   }
 }
 function accessReason(s, op) {
-  return s.pendingBattle
+  return s.sectorEntryRequest
     ? 'Terminá la escena táctica antes de mover munición.'
     : s.defeated
       ? 'La campaña ha terminado.'
       : !op ||
-          !s.recruited.includes(op.id) ||
-          !s.operativeState[op.id]?.alive ||
-          s.operativeState[op.id].captured
+          !s.forceRoster.includes(op.id) ||
+          !s.characters[op.id]?.alive ||
+          s.characters[op.id].captured
         ? 'El combatiente no está disponible.'
         : operativeLocation(s, op.id) !== s.location
           ? 'El combatiente debe estar en este sector.'
@@ -257,7 +257,7 @@ function accessReason(s, op) {
             : null;
 }
 export function ammunitionOrderQuote(s, op, key, quantity, direction, supplied) {
-  const record = s.operativeState[op?.id],
+  const record = s.characters[op?.id],
     unit = carriedAmmunition(op, record),
     validKey = Object.hasOwn(AMMO_TYPES, key),
     store = s.ammunitionStores?.[s.location]?.[key] ?? 0,
@@ -311,24 +311,24 @@ export function ammunitionOrderQuote(s, op, key, quantity, direction, supplied) 
 export function unloadOwnedCampaignAmmunition(s, op) {
   const reason = accessReason(s, op);
   need(!reason, reason);
-  need(loaded(s.operativeState[op.id]) > 0, 'El arma está vacía.');
+  need(loaded(s.characters[op.id]) > 0, 'El arma está vacía.');
   unloadCampaignWeapon(s, op);
-  s.operativeState[op.id].jammed = false;
+  s.characters[op.id].jammed = false;
 }
 export function selectCampaignAmmunitionLoad(s, op, family) {
   const reason = accessReason(s, op);
   need(!reason, reason);
-  const unit = { ...carriedAmmunition(op, s.operativeState[op.id]), activeSlot: 'primary' },
+  const unit = { ...carriedAmmunition(op, s.characters[op.id]), activeSlot: 'primary' },
     choice = ammunitionChoiceReason(unit, family);
   need(!choice, choice);
   unit.ammunitionChoice = family;
   syncUnitAmmunition(unit);
-  keep(s.operativeState[op.id], unit);
+  keep(s.characters[op.id], unit);
 }
 export function moveCampaignAmmunition(s, op, key, quantity, direction, supplied) {
   const quote = ammunitionOrderQuote(s, op, key, quantity, direction, supplied);
   need(quote.available, quote.reason);
-  const record = s.operativeState[op.id],
+  const record = s.characters[op.id],
     unit = carriedAmmunition(op, record),
     unissued = record.carriedLoaded === undefined;
   if (direction === 'buy') {
@@ -354,7 +354,7 @@ export function moveCampaignAmmunition(s, op, key, quantity, direction, supplied
 // any actual equipment/deployment history makes an empty reserve ambiguous;
 // it must not be refilled on load, renewal, rehire or another sector entry.
 export function migrateStartingCartridges(s) {
-  const served = new Set((s.recruited ?? []).map(String));
+  const served = new Set((s.forceRoster ?? []).map(String));
   for (const id of Object.keys(s.contracts ?? {})) {
     served.add(id);
   }
@@ -362,9 +362,9 @@ export function migrateStartingCartridges(s) {
     served.add(String(owner.operativeId));
   }
   const scenes = [
-    ...Object.values(s.sectorStates ?? {}),
-    ...Object.values(s.sceneStates ?? {}),
-    s.pendingBattle?.resumeSnapshot,
+    ...Object.values(s.sectorSnapshots ?? {}),
+    ...Object.values(s.sceneSnapshots ?? {}),
+    s.sectorEntryRequest?.resumeSnapshot,
   ];
   for (const scene of scenes) {
     for (const unit of scene?.units ?? []) {
@@ -373,7 +373,7 @@ export function migrateStartingCartridges(s) {
       }
     }
   }
-  for (const unit of s.pendingBattle?.squad ?? []) {
+  for (const unit of s.sectorEntryRequest?.squad ?? []) {
     served.add(String(unit.id));
   }
   for (const remains of Object.values(s.sectorRemains ?? {})) {
@@ -383,7 +383,7 @@ export function migrateStartingCartridges(s) {
       }
     }
   }
-  for (const [id, record] of Object.entries(s.operativeState ?? {})) {
+  for (const [id, record] of Object.entries(s.characters ?? {})) {
     need(
       record.startingCartridgesIssued === undefined ||
         typeof record.startingCartridgesIssued === 'boolean',
@@ -437,7 +437,7 @@ export function migrateStartingCartridges(s) {
 // A first hire owns a finite initial allowance with their service equipment.
 // The campaign marks this issue once; renewal, rehire and sector entry do not refill it.
 export function issueStartingCartridges(s, op) {
-  const record = s.operativeState[op.id];
+  const record = s.characters[op.id];
   if (record.startingCartridgesIssued !== false) {
     return;
   }
@@ -469,7 +469,7 @@ export function prepareCampaignAmmunition(s, roster, ids, { commit = false } = {
   let issued = 0;
   for (const id of ids) {
     const op = roster.find((o) => o.id === id),
-      record = state.operativeState[id],
+      record = state.characters[id],
       unit = carriedAmmunition(op, record),
       key = ammoTypeFor(unit),
       capacity = weaponSpecification({ ...op, ...record })?.capacity ?? 0,
@@ -496,7 +496,7 @@ export function prepareCampaignAmmunition(s, roster, ids, { commit = false } = {
 // Changing a firearm does not convert or sell its charges. Unload its actual
 // family into the owner's pockets before the weapon moves to the armory.
 export function unloadCampaignWeapon(s, op) {
-  const record = s.operativeState[op.id],
+  const record = s.characters[op.id],
     before = carriedAmmunition(op, record),
     after = structuredClone(before),
     key = ammoTypeFor(before);
@@ -586,7 +586,7 @@ export function retainReturnedAmmunition(s, request, reports, snapshot, previous
         (u) => u.side === 'player' && Number(u.id) === Number(issued.id),
       );
       if (actual.hp <= 0) {
-        keep(s.operativeState[issued.id], { ammunition: {}, loaded: 0 });
+        keep(s.characters[issued.id], { ammunition: {}, loaded: 0 });
       } else {
         need(
           reports.some((r) => Number(r.id) === Number(issued.id)),
@@ -636,7 +636,7 @@ export function retainReturnedAmmunition(s, request, reports, snapshot, previous
         );
       }
     }
-    const record = s.operativeState[id];
+    const record = s.characters[id];
     if ((report.hp ?? unit.hp) <= 0) {
       keep(record, { ammunition: {}, loaded: 0 });
     } else {

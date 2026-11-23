@@ -334,21 +334,21 @@ export function migrateCampaignAmmunition(state, roster = [], { fresh = false } 
     );
   }
   const snapshots = [
-    ...Object.values(state.sectorStates ?? {}),
-    ...Object.values(state.sceneStates ?? {}),
-    ...(state.pendingBattle?.resumeSnapshot ? [state.pendingBattle.resumeSnapshot] : []),
+    ...Object.values(state.sectorSnapshots ?? {}),
+    ...Object.values(state.sceneSnapshots ?? {}),
+    ...(state.sectorEntryRequest?.resumeSnapshot ? [state.sectorEntryRequest.resumeSnapshot] : []),
   ];
   const looseLegacy =
     !fresh &&
     ((state.resources?.cartridges ?? 0) > 0 ||
       Object.values(state.depots ?? {}).some((d) => d.cartridges > 0) ||
       [...(state.shipments ?? []), ...(state.convoys ?? [])].some((s) => s.goods?.cartridges > 0) ||
-      Object.values(state.operativeState ?? {}).some(
+      Object.values(state.characters ?? {}).some(
         (r) =>
           r.ammunitionVersion === undefined &&
           ((r.carriedAmmo ?? 0) - (r.carriedLoaded ?? 0) > 0 || r.capturedAmmunition?.ammo > 0),
       ) ||
-      (state.pendingBattle?.squad ?? []).some(
+      (state.sectorEntryRequest?.squad ?? []).some(
         (u) => u.ammunitionVersion === undefined && u.ammo > 0,
       ) ||
       snapshots.some(
@@ -374,14 +374,14 @@ export function migrateCampaignAmmunition(state, roster = [], { fresh = false } 
       }
     }
   }
-  for (const [id, record] of Object.entries(state.operativeState ?? {})) {
+  for (const [id, record] of Object.entries(state.characters ?? {})) {
     initializeStrategicRecord(
       record,
       roster.find((op) => String(op.id) === id)?.weapon ?? state.loadouts?.[id]?.weapon ?? 0,
       true,
     );
   }
-  const requests = state.pendingBattle ? [state.pendingBattle] : [];
+  const requests = state.sectorEntryRequest ? [state.sectorEntryRequest] : [];
   for (const request of requests) {
     for (const enemy of request.enemies ?? []) {
       enemy.weapon ??= 1800;
@@ -399,8 +399,8 @@ export function migrateCampaignAmmunition(state, roster = [], { fresh = false } 
       migrateStack(stack);
     }
     const prior = request.sceneId
-      ? state.sceneStates?.[request.sceneId]
-      : state.sectorStates?.[request.sector];
+      ? state.sceneSnapshots?.[request.sceneId]
+      : state.sectorSnapshots?.[request.sector];
     for (const source of [
       ...(request.ammunitionSources ?? []),
       ...(request.garrisonLootSources ?? []),
@@ -441,8 +441,8 @@ export function migrateCampaignAmmunition(state, roster = [], { fresh = false } 
     request.ammunitionVersion = 2;
   }
   for (const snapshot of [
-    ...Object.values(state.sectorStates ?? {}),
-    ...Object.values(state.sceneStates ?? {}),
+    ...Object.values(state.sectorSnapshots ?? {}),
+    ...Object.values(state.sceneSnapshots ?? {}),
   ]) {
     migrateBattleAmmunition(snapshot, { legacy: true });
   }
@@ -472,7 +472,7 @@ export function migrateCampaignAmmunition(state, roster = [], { fresh = false } 
   return state;
 }
 export function syncCampaignAmmunition(state, roster = []) {
-  for (const [id, record] of Object.entries(state.operativeState ?? {})) {
+  for (const [id, record] of Object.entries(state.characters ?? {})) {
     const weapon = roster.find((op) => String(op.id) === id)?.weapon ?? 0;
     if (record.ammunitionVersion === undefined) {
       initializeStrategicRecord(record, weapon, false);
@@ -517,17 +517,17 @@ export function validateCampaignAmmunition(state) {
     unit(u);
   }
   for (const snapshot of [
-    ...Object.values(state.sectorStates ?? {}),
-    ...Object.values(state.sceneStates ?? {}),
-    ...(state.pendingBattle?.resumeSnapshot ? [state.pendingBattle.resumeSnapshot] : []),
+    ...Object.values(state.sectorSnapshots ?? {}),
+    ...Object.values(state.sceneSnapshots ?? {}),
+    ...(state.sectorEntryRequest?.resumeSnapshot ? [state.sectorEntryRequest.resumeSnapshot] : []),
   ]) {
     rejectLegacyStacks(fieldStacks(snapshot));
     for (const u of snapshot.units ?? []) {
       rejectLegacyStacks(Object.values(u.inventory ?? {}));
     }
   }
-  if (state.pendingBattle) {
-    const request = state.pendingBattle;
+  if (state.sectorEntryRequest) {
+    const request = state.sectorEntryRequest;
     rejectLegacyStacks(fieldStacks(request));
     need(request.ammunitionVersion === 2, 'El despliegue no tiene versión de munición.');
     for (const u of [
@@ -553,7 +553,7 @@ export function validateCampaignAmmunition(state) {
       'La reserva del campo no coincide con sus tipos.',
     );
   }
-  for (const record of Object.values(state.operativeState ?? {})) {
+  for (const record of Object.values(state.characters ?? {})) {
     rejectLegacyStacks(Object.values(record.inventory ?? {}));
     need(record.ammunitionVersion === 2, 'La munición del combatiente no tiene versión.');
     const expected =
@@ -609,7 +609,7 @@ function migrateCampaignFamilies(state, roster) {
     merchant.ammunition = groupAmmunitionCounts(counts);
   }
   groupAmmunitionNotices(state);
-  for (const [id, record] of Object.entries(state.operativeState ?? {})) {
+  for (const [id, record] of Object.entries(state.characters ?? {})) {
     need(record?.ammunitionVersion === 1, 'La munición personal antigua no tiene versión.');
     initializeStrategicRecord(
       record,
@@ -626,8 +626,8 @@ function migrateCampaignFamilies(state, roster) {
     tactical(unit);
   }
   for (const snapshot of [
-    ...Object.values(state.sectorStates ?? {}),
-    ...Object.values(state.sceneStates ?? {}),
+    ...Object.values(state.sectorSnapshots ?? {}),
+    ...Object.values(state.sceneSnapshots ?? {}),
   ]) {
     need(snapshot.ammunitionVersion === 1, 'La escena antigua no tiene versión de munición.');
     migrateBattleAmmunition(snapshot);
@@ -637,7 +637,7 @@ function migrateCampaignFamilies(state, roster) {
       tactical(entry.unit);
     }
   }
-  const request = state.pendingBattle;
+  const request = state.sectorEntryRequest;
   if (request) {
     need(request.ammunitionVersion === 1, 'El despliegue antiguo no tiene versión de munición.');
     for (const key of ['squad', 'garrison', 'missionAllies', 'enemies']) {

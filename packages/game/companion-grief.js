@@ -192,7 +192,7 @@ function pinnedActor(state, operative, actor) {
 
 export function validateCampaignCompanionGrief(state, roster) {
   for (const operative of roster) {
-    const record = state.operativeState[operative.id];
+    const record = state.characters[operative.id];
     validateCompanionGrief(record);
     need(record.griefCompanionIds === undefined);
     const preferences = griefPreferenceIds(state, operative);
@@ -200,17 +200,17 @@ export function validateCampaignCompanionGrief(state, roster) {
       entries(record).every(
         (receipt) =>
           preferences.includes(receipt.companionId) &&
-          state.operativeState[receipt.companionId]?.alive === false &&
-          state.operativeState[receipt.companionId]?.hp === 0,
+          state.characters[receipt.companionId]?.alive === false &&
+          state.characters[receipt.companionId]?.hp === 0,
       ),
     );
   }
-  const request = state.pendingBattle;
+  const request = state.sectorEntryRequest;
   for (const issued of request?.squad ?? []) {
     const operative = roster.find((op) => op.id === Number(issued.id));
     need(operative);
     pinnedActor(state, operative, issued);
-    const personal = state.operativeState[operative.id];
+    const personal = state.characters[operative.id];
     retainsReceipts(personal, issued);
     for (const receipt of entries(issued).filter(
       (receipt) => !receiptFor(personal, receipt.companionId),
@@ -224,8 +224,8 @@ export function validateCampaignCompanionGrief(state, roster) {
     }
   }
   for (const scene of [
-    ...Object.values(state.sectorStates ?? {}),
-    ...Object.values(state.sceneStates ?? {}),
+    ...Object.values(state.sectorSnapshots ?? {}),
+    ...Object.values(state.sceneSnapshots ?? {}),
   ]) {
     for (const actor of scene.units ?? []) {
       if (actor.side !== 'player' || actor.militia) {
@@ -239,8 +239,7 @@ export function validateCampaignCompanionGrief(state, roster) {
       need(
         entries(actor).every(
           (receipt) =>
-            receiptFor(state.operativeState[operative.id], receipt.companionId)?.loss ===
-            receipt.loss,
+            receiptFor(state.characters[operative.id], receipt.companionId)?.loss === receipt.loss,
         ),
       );
     }
@@ -251,7 +250,7 @@ export function validateCompanionGriefContext(
   state,
   snapshot,
   roster,
-  request = state.pendingBattle,
+  request = state.sectorEntryRequest,
 ) {
   need(request && Array.isArray(snapshot.units));
   const participants = [
@@ -295,7 +294,7 @@ export function validateCompanionGriefContext(
     // Synced receipts are already retained on the issue, but their confirmed
     // dead bodies must still be present until this deployment's actual return.
     for (const receipt of entries(actor).filter(
-      (receipt) => !receiptFor(state.operativeState[operative.id], receipt.companionId),
+      (receipt) => !receiptFor(state.characters[operative.id], receipt.companionId),
     )) {
       need(
         issued.griefCompanionIds?.includes(receipt.companionId) &&
@@ -321,8 +320,7 @@ export function validateCompanionGriefContext(
     need(
       entries(actor).every(
         (receipt) =>
-          receiptFor(state.operativeState[operative.id], receipt.companionId)?.loss ===
-          receipt.loss,
+          receiptFor(state.characters[operative.id], receipt.companionId)?.loss === receipt.loss,
       ),
     );
   }
@@ -338,7 +336,7 @@ export function retainCompanionGrief(request, snapshot) {
   }
 }
 export function returnCompanionGrief(state, id, report) {
-  const personal = state.operativeState[id];
+  const personal = state.characters[id];
   retainsReceipts(personal, report);
   if (report.companionGrief !== undefined) {
     personal.companionGrief = structuredClone(report.companionGrief);

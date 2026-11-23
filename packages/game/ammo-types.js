@@ -192,9 +192,9 @@ export { removeIgnitionSupplies } from './ignition-kit.js';
 export function validateStoredAmmo(state) {
   const values = (value) => (value && typeof value === 'object' ? Object.values(value) : []);
   const list = (value) => (Array.isArray(value) ? value : []);
-  const request = state.pendingBattle;
+  const request = state.sectorEntryRequest;
   const records = [
-    ...values(state.operativeState),
+    ...values(state.characters),
     ...values(state.missionAllies),
     ...values(state.garrisons).flatMap(list),
     ...list(state.militiaTraining).flatMap((course) => list(course?.trainees)),

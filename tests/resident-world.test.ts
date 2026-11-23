@@ -55,7 +55,7 @@ function residentScene() {
   const resident = encountersFor(campaign, 'buenos_aires').find(
     (resident) => resident.operativeId === 4,
   );
-  present(campaign.operativeState[4]).rations = 0;
+  present(campaign.characters[4]).rations = 0;
   present(present(resident).civilianSupplies).rations = 0;
   const scene = createBattle([], {
     id: 'resident-test',
@@ -137,10 +137,10 @@ void test('campaign movement carries canonical wounds and supplies and updates b
     exploration: true,
     enemies: [],
   });
-  campaign.sectorStates[before] = origin;
-  campaign.sectorStates[destinationId] = destination;
-  present(campaign.operativeState[3]).hp = 81;
-  present(campaign.operativeState[3]).rations = 1;
+  campaign.sectorSnapshots[before] = origin;
+  campaign.sectorSnapshots[destinationId] = destination;
+  present(campaign.characters[3]).hp = 81;
+  present(campaign.characters[3]).rations = 1;
   campaign.hour = 28;
   synchronizeCampaignPresence(campaign);
   assert.equal(
@@ -190,9 +190,9 @@ void test('resident scavenging conserves one finite unit and refuses empty, dist
 void test('hourly scavenging updates canonical supplies and cannot repeat after saved restoration', () => {
   const { campaign, scene } = residentScene();
   advanceResidentScavenging(campaign, scene, 3599);
-  assert.equal(present(campaign.operativeState[4]).rations, 0);
+  assert.equal(present(campaign.characters[4]).rations, 0);
   advanceResidentScavenging(campaign, scene, 3600);
-  assert.equal(present(campaign.operativeState[4]).rations, 1);
+  assert.equal(present(campaign.characters[4]).rations, 1);
   assert.equal(present(present(scene.npcs[0]).civilianSupplies).rations, 1);
   assert.equal(present(scene.groundItems[0]).count, 2);
   assert.equal(present(scene.residentScavengingReceipts).length, 1);
@@ -226,8 +226,8 @@ void test('resident corpse removal retains death facts and finite civilian suppl
   const resident = scene.npcs[0];
   present(resident).hp = 0;
   present(resident).unconscious = false;
-  present(campaign.operativeState[4]).alive = false;
-  present(campaign.operativeState[4]).hp = 0;
+  present(campaign.characters[4]).alive = false;
+  present(campaign.characters[4]).hp = 0;
   campaign.civilianState = {
     version: 2,
     people: {
@@ -250,7 +250,7 @@ void test('resident corpse removal retains death facts and finite civilian suppl
   assert.equal(present(present(scene.deathHistory)[0]).kind, 'resident');
   assert.equal(scene.groundItems.filter((item) => item.item === 'weapon').length, weapons);
   assert.equal(present(scene.groundItems.find((item) => item.item === 'medkits')).count, medkits);
-  assert.equal(present(campaign.operativeState[4]).medkits, 0);
+  assert.equal(present(campaign.characters[4]).medkits, 0);
   assert.equal(present(campaign.civilianState.people['person-4']).health.hp, 0);
   assert.equal(
     present(campaign.civilianState.people['person-4']).corpseRemovedAtSecond,
@@ -273,10 +273,10 @@ void test('local resident routines and collection share the same events in loade
     advanceSectorWorld(loaded.scene, second);
     advanceResidentScavenging(loaded.campaign, loaded.scene, second);
   }
-  inactive.campaign.sectorStates[inactive.scene.sectorId] = inactive.scene;
+  inactive.campaign.sectorSnapshots[inactive.scene.sectorId] = inactive.scene;
   inactive.campaign.hour = 2;
   advanceCampaignWorld(inactive.campaign);
-  split.campaign.sectorStates[split.scene.sectorId] = split.scene;
+  split.campaign.sectorSnapshots[split.scene.sectorId] = split.scene;
   for (let hour = 1; hour <= 2; hour++) {
     split.campaign.hour = hour;
     advanceCampaignWorld(split.campaign);
@@ -293,8 +293,8 @@ void test('local resident routines and collection share the same events in loade
     originalPosition,
   );
   assert.equal(
-    present(inactive.campaign.operativeState[4]).rations,
-    present(loaded.campaign.operativeState[4]).rations,
+    present(inactive.campaign.characters[4]).rations,
+    present(loaded.campaign.characters[4]).rations,
   );
 });
 
@@ -318,7 +318,7 @@ void test('resident wounds and death time are identical through loaded, retained
     advanceCivilianTime(loaded.scene, 6);
     acknowledgeResidentConditions(loaded.campaign, loaded.scene, second);
   }
-  retained.campaign.sectorStates[retained.scene.sectorId] = retained.scene;
+  retained.campaign.sectorSnapshots[retained.scene.sectorId] = retained.scene;
   retained.campaign.hour = 0;
   retained.campaign.secondOfHour = 120;
   advanceUnloadedCivilians(retained.campaign, 120);
@@ -342,7 +342,7 @@ void test('resident wounds and death time are identical through loaded, retained
     assert.deepEqual(value.scene.npcs, loaded.scene.npcs);
     assert.deepEqual(value.campaign.civilianState, loaded.campaign.civilianState);
     assert.equal(present(present(value.scene.npcs[0]).corpse).diedAtSecond, 60);
-    assert.equal(present(value.campaign.operativeState[4]).alive, false);
+    assert.equal(present(value.campaign.characters[4]).alive, false);
   }
 });
 
@@ -350,7 +350,7 @@ void test('one long loaded interval and split inactive intervals collect the sam
   const loaded = residentScene();
   present(loaded.scene.npcs[0]).ai = { cycle: 0, homeId: null, activity: 'roaming', wait: 10000 };
   present(present(loaded.scene.npcs[0]).civilianSupplies).medkits = 0;
-  present(loaded.campaign.operativeState[4]).medkits = 0;
+  present(loaded.campaign.characters[4]).medkits = 0;
   loaded.scene.groundItems.push({
     id: 'z-dressings',
     type: 'medkits',
@@ -363,7 +363,7 @@ void test('one long loaded interval and split inactive intervals collect the sam
   advanceCivilianTime(loaded.scene, 7200);
   advanceSectorWorld(loaded.scene, 7200);
   advanceResidentScavenging(loaded.campaign, loaded.scene, 7200);
-  inactive.campaign.sectorStates[inactive.scene.sectorId] = inactive.scene;
+  inactive.campaign.sectorSnapshots[inactive.scene.sectorId] = inactive.scene;
   for (let hour = 1; hour <= 2; hour++) {
     inactive.campaign.hour = hour;
     advanceCampaignWorld(inactive.campaign);
@@ -384,15 +384,15 @@ void test('one long loaded interval and split inactive intervals collect the sam
       [7200, 'medkits'],
     ],
   );
-  assert.equal(present(loaded.campaign.operativeState[4]).rations, 1);
-  assert.equal(present(loaded.campaign.operativeState[4]).medkits, 1);
+  assert.equal(present(loaded.campaign.characters[4]).rations, 1);
+  assert.equal(present(loaded.campaign.characters[4]).medkits, 1);
   assert.deepEqual(loaded.campaign.civilianState, inactive.campaign.civilianState);
 });
 
 void test('a loaded collection receipt is acknowledged once by the civilian report', () => {
   const { campaign, scene } = residentScene();
   present(scene.npcs[0]).ai = { cycle: 0, homeId: null, activity: 'roaming', wait: 10000 };
-  campaign.pendingBattle = {
+  campaign.sectorEntryRequest = {
     id: present(scene.battleId),
     sector: scene.sectorId,
     npcs: structuredClone(scene.npcs),
@@ -401,16 +401,16 @@ void test('a loaded collection receipt is acknowledged once by the civilian repo
   scene.elapsedSeconds = 3600;
   advanceCivilianTime(scene, 3600);
   assert.equal(present(present(scene.npcs[0]).civilianSupplies).rations, 1);
-  assert.equal(present(campaign.operativeState[4]).rations, 0);
+  assert.equal(present(campaign.characters[4]).rations, 0);
   acknowledgeCivilians(campaign, scene);
-  assert.equal(present(campaign.operativeState[4]).rations, 1);
+  assert.equal(present(campaign.characters[4]).rations, 1);
   assert.equal(
     present(present(present(campaign.civilianState).people['person-4']).scavengingReceiptIds)
       .length,
     1,
   );
   acknowledgeCivilians(campaign, scene);
-  assert.equal(present(campaign.operativeState[4]).rations, 1);
+  assert.equal(present(campaign.characters[4]).rations, 1);
   assert.equal(present(scene.groundItems[0]).count, 2);
 });
 
@@ -442,7 +442,7 @@ void test('collection before a fatal wound occurs in the same order for loaded, 
     acknowledgeResidentConditions(split.campaign, split.scene, 3590 + elapsed);
     advanceResidentScavenging(split.campaign, split.scene, 3590 + elapsed);
   }
-  retained.campaign.sectorStates[retained.scene.sectorId] = retained.scene;
+  retained.campaign.sectorSnapshots[retained.scene.sectorId] = retained.scene;
   suspended.campaign.suspendedSectorSessions = [
     {
       request: {
@@ -498,7 +498,7 @@ void test('a corpse that expires at an hourly event releases supplies before col
   advanceCivilianTime(loaded.scene, 20);
   advanceSectorWorld(loaded.scene, startsAt + 20);
   advanceResidentScavenging(loaded.campaign, loaded.scene, startsAt + 20);
-  retained.campaign.sectorStates[retained.scene.sectorId] = retained.scene;
+  retained.campaign.sectorSnapshots[retained.scene.sectorId] = retained.scene;
   suspended.campaign.suspendedSectorSessions = [
     {
       request: {
@@ -546,7 +546,7 @@ void test('military bleeding and resident movement share the same accepted event
       advanceMilitaryWoundClock(loaded.scene, atSecond, { initialSecond: 0 }),
   });
   advanceSectorWorld(loaded.scene, 120);
-  retained.campaign.sectorStates[retained.scene.sectorId] = retained.scene;
+  retained.campaign.sectorSnapshots[retained.scene.sectorId] = retained.scene;
   suspended.campaign.suspendedSectorSessions = [
     {
       request: {
@@ -597,8 +597,8 @@ void test('daily movement reconciles suspended sector references while retaining
     npcs: structuredClone(origin.npcs),
   };
   campaign.suspendedSectorSessions = [{ request, snapshot: origin }];
-  campaign.sectorStates[destinationId] = destination;
-  present(campaign.operativeState[3]).rations = 1;
+  campaign.sectorSnapshots[destinationId] = destination;
+  present(campaign.characters[3]).rations = 1;
   campaign.hour = 28;
   synchronizeCampaignPresence(campaign);
   assert.equal(

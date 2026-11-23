@@ -264,7 +264,7 @@ void test('a full campaign save preserves a dropped weapon and permits exactly o
   let campaign = dispatchCampaign(initialCampaign(), { type: 'travel', sector: 'buenos_aires' });
   campaign = enterAssault(campaign, 'san_nicolas');
   assert.equal(campaign.lastError, null);
-  const request = campaign.pendingBattle;
+  const request = campaign.sectorEntryRequest;
   let battle = createBattle(
     present(request).squad.map((unit, index) => ({ ...unit, x: 1 + index, y: 1 })),
     {
@@ -303,7 +303,7 @@ void test('a full campaign save preserves a dropped weapon and permits exactly o
 void test('campaign reports and reentry retain dropped guns and the blade left in the other hand', () => {
   let campaign = dispatchCampaign(initialCampaign(), { type: 'visitSector' });
   assert.equal(campaign.lastError, null);
-  let battle = enterSector(campaign.pendingBattle);
+  let battle = enterSector(campaign.sectorEntryRequest);
   const giver = troop(battle, '4');
   giver.condition = 26;
   giver.jammed = true;
@@ -315,20 +315,23 @@ void test('campaign reports and reentry retain dropped guns and the blade left i
   assert.equal(pair.error, null);
   campaign = dispatchCampaign(pair.campaign, {
     type: 'leaveSector',
-    battleId: present(pair.campaign.pendingBattle).id,
+    battleId: present(pair.campaign.sectorEntryRequest).id,
     sectorState: pair.battle,
     survivors: pair.battle.units.filter((u) => u.side === 'player'),
   });
   assert.equal(campaign.lastError, null);
-  assert.equal(present(campaign.operativeState[4]).weaponDropped, true);
-  assert.equal(present(campaign.operativeState[4]).activeSlot, 'blade');
-  const legacy = present(present(present(campaign.operativeState[4]).inventory)['legacy']);
+  assert.equal(present(campaign.characters[4]).weaponDropped, true);
+  assert.equal(present(campaign.characters[4]).activeSlot, 'blade');
+  const legacy = present(present(present(campaign.characters[4]).inventory)['legacy']);
   assert.ok(typeof legacy !== 'number');
   assert.equal(legacy.count, 3);
   campaign = decodeSave(encodeSave(campaign)).campaign;
   campaign = dispatchCampaign(campaign, { type: 'visitSector' });
   assert.equal(campaign.lastError, null);
-  const revisited = enterSector(campaign.pendingBattle, campaign.sectorStates[campaign.location]);
+  const revisited = enterSector(
+    campaign.sectorEntryRequest,
+    campaign.sectorSnapshots[campaign.location],
+  );
   const returned = troop(revisited, '4');
   assert.equal(returned.weaponDropped, true);
   assert.equal(returned.loaded, 0);

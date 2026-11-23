@@ -65,10 +65,10 @@ export function serviceRelationshipRefusal(state, operative) {
   const now = (state?.hour ?? 0) * 3600 + (state?.secondOfHour ?? 0);
   for (const relationship of serviceRelationships(state, operative)) {
     const id = relationship.rivalId,
-      record = state?.operativeState?.[id],
+      record = state?.characters?.[id],
       contract = state?.contracts?.[id];
     if (
-      !state?.recruited?.includes(id) ||
+      !state?.forceRoster?.includes(id) ||
       !record?.alive ||
       record.hp <= 0 ||
       record.captured ||

@@ -12,11 +12,11 @@ export function initialCampaign(seed?: number) {
   for (const id of ['buenos_aires', 'ensenada']) {
     Object.assign(present(s.sectors[id]), { owner: 'patriot', loyalty: 65 });
   }
-  s.recruited = [3, 4, 10];
+  s.forceRoster = [3, 4, 10];
   s.squad = [3, 4, 10];
   present(s.squads[0]).members = [3, 4, 10];
   s.contracts = Object.fromEntries(
-    s.recruited.map((id) => [
+    s.forceRoster.map((id) => [
       id,
       {
         kind: 'legacy',
@@ -27,8 +27,8 @@ export function initialCampaign(seed?: number) {
       } satisfies CampaignServiceContract,
     ]),
   ); // Declared preexisting service equipment isolates subsystem behavior.
-  for (const id of s.recruited) {
-    const record = s.operativeState[id],
+  for (const id of s.forceRoster) {
+    const record = s.characters[id],
       op = rosterFor(s).find((o) => o.id === id),
       type = weaponAmmoType(op);
     present(record).startingCartridgesIssued = true;

@@ -252,11 +252,11 @@ export function advanceSectorWorldEvents(snapshot, targetSecond) {
 
 export function advanceCampaignWorld(campaign) {
   const targetSecond = campaign.hour * 3600 + (campaign.secondOfHour ?? 0);
-  const active = campaign.pendingBattle;
+  const active = campaign.sectorEntryRequest;
   const suspended = campaign.suspendedSectorSessions ?? [];
   for (const snapshot of [
-    ...Object.values(campaign.sectorStates ?? {}),
-    ...Object.values(campaign.sceneStates ?? {}),
+    ...Object.values(campaign.sectorSnapshots ?? {}),
+    ...Object.values(campaign.sceneSnapshots ?? {}),
   ]) {
     if (
       active &&
@@ -397,7 +397,7 @@ export function advanceSuspendedSectorConditions(campaign, session, targetSecond
       continue;
     }
     const character = roster.find((character) => String(character.id) === String(actor.id));
-    const record = campaign.operativeState?.[actor.id];
+    const record = campaign.characters?.[actor.id];
     if (!character || !record) {
       continue;
     }
@@ -531,7 +531,9 @@ export function validateSectorWorld(snapshot) {
 
 export function previousDeploymentScene(campaign, request) {
   return expandCellScene(
-    request.sceneId ? campaign.sceneStates[request.sceneId] : campaign.sectorStates[request.sector],
+    request.sceneId
+      ? campaign.sceneSnapshots[request.sceneId]
+      : campaign.sectorSnapshots[request.sector],
     campaign,
   );
 }

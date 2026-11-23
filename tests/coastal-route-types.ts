@@ -1,9 +1,9 @@
 import type {
   CampaignAction,
-  CampaignHiringArrival,
-  CampaignPendingBattle,
+  CampaignSectorEntryRequest,
   CampaignSnapshot,
 } from '../packages/game/public/campaign-types.ts';
+import type { ImmediateRecruitmentReceipt } from './immediate-recruitment-fixture.ts';
 import type {
   BattleSnapshot,
   BattleUnit,
@@ -28,7 +28,7 @@ export type CoastalFightOptions = FightOptions & {
   controller?: BattleController;
 };
 export type CoastalFight = (
-  request: CampaignPendingBattle,
+  request: CampaignSectorEntryRequest,
   previous: BattleSnapshot | null | undefined,
   options?: CoastalFightOptions,
 ) => FightResult;
@@ -94,7 +94,7 @@ export type CoastalRouteNote =
       field: number[];
       caregiverIds: number[];
       hires: number[];
-      arrivals: CampaignHiringArrival[];
+      arrivals: ImmediateRecruitmentReceipt[];
       hireCost: number;
       fieldAid?: FieldAidReadiness;
     } & OpeningCare);
@@ -143,7 +143,7 @@ export type FreshCoastalOptions = {
   onBeforeBattle?: (event: {
     sector: string;
     campaign: CampaignSnapshot;
-    request: CampaignPendingBattle;
+    request: CampaignSectorEntryRequest;
     previous: BattleSnapshot | undefined;
   }) => void;
   onBattleFinished?: (event: { sector: string } & FightResult) => void;

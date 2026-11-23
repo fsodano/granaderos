@@ -78,7 +78,7 @@ export default function StrategicPersonnelMenu({
   dispatch: (a: CampaignAction) => void;
 }) {
   const op = roster.find((o) => o.id === id),
-    record = s.operativeState[id];
+    record = s.characters[id];
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -116,7 +116,7 @@ export default function StrategicPersonnelMenu({
   if (!op || !record) {
     return null;
   }
-  const blocked = Boolean(s.pendingBattle || s.pendingEncounter || s.defeated),
+  const blocked = Boolean(s.sectorEntryRequest || s.pendingEncounter || s.defeated),
     contract = contractStatus(s, id),
     departureReason = guaranteeDepartureReason(s, contract, op);
   const contractDays = Math.ceil((contract?.remaining ?? 0) / 24);
@@ -124,8 +124,8 @@ export default function StrategicPersonnelMenu({
     kind === 'contract' ? contractRenewalQuote(s, op, 'day').serviceRefusal : null;
   const local = roster.filter(
     (o) =>
-      s.recruited.includes(o.id) &&
-      s.operativeState[o.id]?.alive &&
+      s.forceRoster.includes(o.id) &&
+      s.characters[o.id]?.alive &&
       operativeLocation(s, o.id) === operativeLocation(s, id),
   );
   const order = (action: CampaignAction) => {

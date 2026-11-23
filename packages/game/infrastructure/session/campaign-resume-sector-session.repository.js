@@ -40,7 +40,7 @@ export class CampaignResumeSectorSessionRepository {
     }
     const campaign = this.#transaction.draft;
     const coordinator = new CampaignSectorSessionCoordinator(campaign);
-    if (campaign.pendingBattle) {
+    if (campaign.sectorEntryRequest) {
       coordinator.suspendActive(this.#activeSnapshot);
     }
     coordinator.resume(this.#targetId);

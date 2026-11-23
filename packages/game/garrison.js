@@ -206,7 +206,7 @@ export function returnGarrison(s, request, snapshot, dispositions = []) {
 export function militiaCarePatients(s, sector) {
   if (
     s.sectors[sector]?.owner !== 'patriot' ||
-    (s.pendingBattle?.sector === sector && !s.pendingBattle.sceneId)
+    (s.sectorEntryRequest?.sector === sector && !s.sectorEntryRequest.sceneId)
   ) {
     return [];
   }
@@ -296,7 +296,7 @@ export function validGarrisons(s) {
 // A paid promotion reserves actual stable soldiers. Their equipment and wounds
 // belong to them throughout the course, not to a replacement rank template.
 function availableTrainees(s, sector, rank) {
-  const deployed = new Set((s.pendingBattle?.garrison ?? []).map((u) => String(u.id)));
+  const deployed = new Set((s.sectorEntryRequest?.garrison ?? []).map((u) => String(u.id)));
   return (s.garrisons?.[sector] ?? []).filter(
     (u) =>
       u.militiaRank === rank - 1 &&
@@ -359,7 +359,7 @@ export function validMilitiaTrainees(s, course) {
     course.trainees.every(
       (u) =>
         !Object.values(s.garrisons ?? {}).some((units) => units.some((v) => v.id === u.id)) &&
-        !s.pendingBattle?.garrison?.some((v) => String(v.id) === String(u.id)),
+        !s.sectorEntryRequest?.garrison?.some((v) => String(v.id) === String(u.id)),
     )
   );
 }
@@ -370,7 +370,7 @@ export const militiaWoundLoss = (s, unit) =>
   Math.ceil(((unit.bleeding ?? 0) * strategicBleedingPercent(s)) / 100);
 export function advanceMilitiaWounds(s) {
   const deaths = [],
-    deployed = new Set((s.pendingBattle?.garrison ?? []).map((u) => String(u.id)));
+    deployed = new Set((s.sectorEntryRequest?.garrison ?? []).map((u) => String(u.id)));
   for (const [sector, units] of Object.entries(s.garrisons ?? {})) {
     if (s.sectors[sector]?.owner !== 'patriot') {
       continue;
@@ -386,7 +386,7 @@ export function advanceMilitiaWounds(s) {
       }
       unit.energy = 0;
       unit.deathMinute = s.hour * 60 + Math.floor((s.secondOfHour ?? 0) / 60);
-      const prior = s.sectorStates?.[sector]?.units?.find(
+      const prior = s.sectorSnapshots?.[sector]?.units?.find(
         (u) => u.militia && String(u.id) === String(unit.id),
       );
       // Real wounds came from a saved visit. Old records without a scene do not
@@ -396,7 +396,7 @@ export function advanceMilitiaWounds(s) {
         Object.assign(prior, structuredClone(unit), { id, x, y });
         // The retained scene records a living resident on return. A later wound
         // death changes that disposition together with the physical corpse.
-        const entry = s.sectorStates[sector].returnLedger?.entries.find(
+        const entry = s.sectorSnapshots[sector].returnLedger?.entries.find(
           (e) => e.unitId === String(id),
         );
         if (entry) {

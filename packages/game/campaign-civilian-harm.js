@@ -72,7 +72,9 @@ const exactFields = (value, keys) =>
 const emptyLedger = () => ({ version: 2, records: {} });
 const ledgerOf = (campaign) => campaign.civilianHarm ?? emptyLedger();
 const previousScene = (campaign, sectorId, sceneId) => {
-  const previous = sceneId ? campaign.sceneStates?.[sceneId] : campaign.sectorStates?.[sectorId];
+  const previous = sceneId
+    ? campaign.sceneSnapshots?.[sceneId]
+    : campaign.sectorSnapshots?.[sectorId];
   return previous?.sectorId === sectorId && (previous.sceneId ?? null) === sceneId
     ? previous
     : null;
@@ -86,7 +88,7 @@ const serviceFor = (campaign, sectorId, sceneId, npc) => {
   if (id === undefined) {
     return null;
   }
-  const record = campaign.operativeState?.[id],
+  const record = campaign.characters?.[id],
     base = rosterFor(campaign).find((op) => op.id === id);
   need(record && base, 'Falta la hoja de servicio del habitante.');
   return { ...record, maxHp: record.maxHp ?? base.maxHp };
@@ -106,7 +108,7 @@ export function migrateCivilianSnapshotHealth(campaign, snapshot, { legacy = fal
     const id = authoredNpc(campaign, sectorId, sceneId, npc.id)?.operativeId,
       retained = ledgerOf(campaign).records[identity(sectorId, sceneId, npc.id)];
     const currentContact =
-      id === undefined || (!campaign.recruited?.includes(id) && retained?.transferredTo !== id);
+      id === undefined || (!campaign.forceRoster?.includes(id) && retained?.transferredTo !== id);
     if (legacy) {
       migrateCivilianHealth(npc, service, { currentContact });
     }
@@ -140,10 +142,10 @@ export function migrateCampaignCivilianHealth(campaign) {
     need(campaign.civilianHarm?.version === 1, 'La salud civil de campaña mezcla versiones.');
   }
   const owners = [
-    ...Object.values(campaign.sectorStates ?? {}),
-    ...Object.values(campaign.sceneStates ?? {}),
-    campaign.pendingBattle,
-    campaign.pendingBattle?.resumeSnapshot,
+    ...Object.values(campaign.sectorSnapshots ?? {}),
+    ...Object.values(campaign.sceneSnapshots ?? {}),
+    campaign.sectorEntryRequest,
+    campaign.sectorEntryRequest?.resumeSnapshot,
   ].filter(Boolean);
   if (legacy) {
     need(
@@ -188,7 +190,7 @@ export function migrateCampaignCivilianHealth(campaign) {
           npcId: npc.id,
           incidents: [],
           effects: [],
-          transferredTo: campaign.recruited?.includes(id) ? id : null,
+          transferredTo: campaign.forceRoster?.includes(id) ? id : null,
           hpRestored: 0,
         };
       }
@@ -208,7 +210,7 @@ const recruitedSurvivor = (campaign, record) => {
     ![...record.incidents, ...(retained?.incidents ?? [])].some(
       (event) => event.kind === 'death',
     ) &&
-    (retained?.transferredTo === id || campaign.recruited?.includes(id))
+    (retained?.transferredTo === id || campaign.forceRoster?.includes(id))
   );
 };
 
@@ -228,7 +230,7 @@ export function markCivilianServiceTransfer(campaign, id) {
     return;
   }
   need(
-    campaign.operativeState?.[id]?.alive && campaign.contracts?.[id],
+    campaign.characters?.[id]?.alive && campaign.contracts?.[id],
     'El traslado civil requiere una incorporación válida.',
   );
   need(
@@ -247,12 +249,12 @@ function serviceHealth(campaign, sectorId, sceneId, npc) {
   const id = authoredNpc(campaign, sectorId, sceneId, npc.id)?.operativeId;
   if (
     id === undefined ||
-    campaign.recruited?.includes(id) ||
+    campaign.forceRoster?.includes(id) ||
     ledgerOf(campaign).records[identity(sectorId, sceneId, npc.id)]?.transferredTo === id
   ) {
     return null;
   }
-  const operative = campaign.operativeState?.[id];
+  const operative = campaign.characters?.[id];
   need(
     operative && Number.isFinite(operative.hp) && Number.isFinite(operative.maxHp),
     'Falta la hoja de servicio del habitante.',
@@ -346,7 +348,7 @@ function validatePrefix(acknowledged, current) {
 }
 
 function context(campaign, battle) {
-  const request = campaign.pendingBattle,
+  const request = campaign.sectorEntryRequest,
     sceneId = request?.sceneId ?? null;
   need(
     request &&
@@ -426,7 +428,7 @@ function context(campaign, battle) {
       }
       need(
         authored?.operativeId === undefined ||
-          (!campaign.recruited?.includes(authored.operativeId) &&
+          (!campaign.forceRoster?.includes(authored.operativeId) &&
             ledger.records[key]?.transferredTo !== authored.operativeId),
         'Un combatiente incorporado no puede figurar como una nueva víctima civil.',
       );
@@ -547,9 +549,9 @@ export function acknowledgeCivilianHarm(campaign, battle) {
   );
   for (const entry of planned) {
     const id = authoredNpc(campaign, request.sector, sceneId, entry.npc.id)?.operativeId;
-    if (id !== undefined && !campaign.recruited?.includes(id)) {
+    if (id !== undefined && !campaign.forceRoster?.includes(id)) {
       need(
-        campaign.operativeState?.[id] && Number.isFinite(campaign.operativeState[id].hp),
+        campaign.characters?.[id] && Number.isFinite(campaign.characters[id].hp),
         'Falta la hoja de servicio del habitante.',
       );
     }
@@ -602,7 +604,7 @@ export function acknowledgeCivilianHarm(campaign, battle) {
     }
   }
   for (const { id, hp, energy, bleeding, bandaged, unconscious } of healthUpdates) {
-    const operative = campaign.operativeState[id];
+    const operative = campaign.characters[id];
     // Service records require integral HP. Preserve a living fractional legacy
     // civilian as living; only an actual zero-HP receipt can make a corpse.
     Object.assign(operative, {
@@ -631,13 +633,13 @@ export function validateCampaignCivilianHarm(campaign) {
   }
   validateCampaignDetention(campaign);
   const snapshots = [
-    ...Object.values(campaign.sectorStates ?? {}),
-    ...Object.values(campaign.sceneStates ?? {}),
+    ...Object.values(campaign.sectorSnapshots ?? {}),
+    ...Object.values(campaign.sceneSnapshots ?? {}),
   ];
   const receiptOwners = [
     ...snapshots,
-    ...(campaign.pendingBattle
-      ? [campaign.pendingBattle, campaign.pendingBattle.resumeSnapshot].filter(Boolean)
+    ...(campaign.sectorEntryRequest
+      ? [campaign.sectorEntryRequest, campaign.sectorEntryRequest.resumeSnapshot].filter(Boolean)
       : []),
   ];
   for (const snapshot of receiptOwners) {
@@ -734,7 +736,7 @@ export function validateCampaignCivilianHarm(campaign) {
         effects.set(`${city.id}:${effect.kind}:${effect.eventId}`, effect);
       }
     }
-    const pending = campaign.pendingBattle;
+    const pending = campaign.sectorEntryRequest;
     const operativeId = authoredNpc(
       campaign,
       record.sectorId,
@@ -743,8 +745,8 @@ export function validateCampaignCivilianHarm(campaign) {
     )?.operativeId;
     if (operativeId !== undefined && incidents.some((event) => event.kind === 'death')) {
       need(
-        campaign.operativeState?.[operativeId]?.hp === 0 &&
-          campaign.operativeState[operativeId].alive === false,
+        campaign.characters?.[operativeId]?.hp === 0 &&
+          campaign.characters[operativeId].alive === false,
         'Un habitante fallecido figura vivo en su hoja de servicio.',
       );
     }
@@ -780,8 +782,8 @@ export function validateCampaignCivilianHarm(campaign) {
   );
   for (const snapshot of snapshots) {
     if (
-      campaign.pendingBattle?.sector === snapshot.sectorId &&
-      (campaign.pendingBattle.sceneId ?? null) === (snapshot.sceneId ?? null)
+      campaign.sectorEntryRequest?.sector === snapshot.sectorId &&
+      (campaign.sectorEntryRequest.sceneId ?? null) === (snapshot.sceneId ?? null)
     ) {
       continue;
     }
