@@ -1,6 +1,6 @@
 # Clean architecture migration plan
 
-This plan defines a 58-slice sequence for moving Granaderos toward the
+This plan defines a 60-slice sequence for moving Granaderos toward the
 [accepted domain architecture](../accepted/domain-architecture.md). The
 [overview](overview.md) describes current source behavior and remaining
 requirements; the [slice index](slices/README.md) links each note.
@@ -106,6 +106,8 @@ outside this plan.
 | [56. Militia patrol tuning and scene validation](slices/56-militia-patrol-rules.md) | Move default patrol tuning and saved-scene consistency validation into the domain; retain campaign-content lookup and authored-field validation at their boundaries |
 | [57. Militia patrol movement](slices/57-militia-patrol-order.md) | Move patrol eligibility, waypoint selection, and reachable-cell choice into the domain; retain map queries and move-order assembly in [`militia-patrol.js`](../../../packages/game/militia-patrol.js) |
 | [58. Projectile air drag](slices/58-projectile-air-drag.md) | Move the check for whether a weapon has a usable air-drag profile and energy retention by distance into the domain; retain shared file-contract validation at the boundary |
+| [59. Patrol sight filter](slices/59-patrol-sight-filter.md) | Use the domain-owned patrol eligibility check for sight-query observers and opponents |
+| [60. Material intervals](slices/60-material-intervals.md) | Move material-interval ordering, merging, and entering/leaving event construction into the domain; keep trajectory tracing and interval collection in [`projectile-cover.js`](../../../packages/game/projectile-cover.js) |
 
 Each slice has a note under [slices](slices/README.md) that records its intent,
 scope, and behavior tests. Read the relevant note before changing that area.
@@ -115,19 +117,24 @@ scope, and behavior tests. Read the relevant note before changing that area.
 The migration is complete when:
 
 1. Every procedural simulation rule must have a named domain owner or application
-   use case, and retained compatibility modules must delegate rather than duplicate
-   rules. The domain owns aimed-shot rules in
+   use case, and retained compatibility modules must delegate rather than
+   duplicate decisions. The domain owns aimed-shot rules in
    [`targeted-combat.ts`](../../../packages/game/domain/combat/targeted-combat.ts),
    tactical cell labels in
    [`tactical-grid.ts`](../../../packages/game/domain/sector-sessions/tactical-grid.ts),
    planning-point and movement-order rules in
    [`tactical-planning-space.ts`](../../../packages/game/domain/sector-sessions/tactical-planning-space.ts),
-   and patrol tuning, saved-scene consistency, patrol eligibility, target
-   waypoints (the map positions for each patrol turn), and reachable-cell
-   choice in
+   and patrol tuning, saved-scene consistency, eligibility, waypoints, and
+   reachable-cell choice in
    [`militia-patrol.ts`](../../../packages/game/domain/personnel/militia-patrol.ts).
-   The retained [`militia-patrol.js`](../../../packages/game/militia-patrol.js)
-   queries map visibility and reachable cells, then assembles the move order.
+   `canAct` is the single patrol eligibility check; the retained
+   [`militia-patrol.js`](../../../packages/game/militia-patrol.js) uses it in the
+   sight filter, queries map visibility and reachable cells, then assembles the
+   move order. [`material-intervals.ts`](../../../packages/game/domain/combat/material-intervals.ts)
+   orders and merges each object's material intervals and creates the entering
+   and leaving events consumed by the flight. The retained
+   [`projectile-cover.js`](../../../packages/game/projectile-cover.js) traces the
+   shot and collects those intervals.
    [`projectile-air-drag.ts`](../../../packages/game/domain/combat/projectile-air-drag.ts)
    decides whether a weapon has a usable air-drag profile (its fraction retained
    at the weapon's range) and calculates energy retention by distance. The
@@ -146,11 +153,7 @@ The migration is complete when:
    owns authored care and militia patrol field contracts and structural
    validation; [`militia-patrol-rules.js`](../../../packages/game/militia-patrol-rules.js)
    reads campaign patrol settings. `prisonerStatus` remains a query over
-   campaign character and detention records. Completion also requires
-   [`militia-patrol.js`](../../../packages/game/militia-patrol.js) to stop
-   duplicating the domain's private `canAct` check in its `able` sight filter and
-   requires a domain owner for the open-air versus material interval decision
-   in [`projectile-cover.js`](../../../packages/game/projectile-cover.js).
+   campaign character and detention records.
    Architecture checks reject imports from `packages/game` into `apps/web`.
 2. `GameSession` (the runtime consistency boundary) owns `RandomSource` (the
    seeded random sequence) and `WorldTimeline` (the accepted game-time clock).
@@ -230,6 +233,6 @@ boundaries it can express as import rules.
 
 Start with [overview.md](overview.md) for the current implementation and open
 gaps, then use this plan for the branch flow and the [slice index](slices/README.md)
-for the 58 slice notes. Read the accepted architecture and glossary before
+for the 60 slice notes. Read the accepted architecture and glossary before
 work that changes a domain contract or term. Each slice note records its
 intent, scope, and behavior tests.

@@ -32,12 +32,12 @@ weapon's range.
 This is range-normalized game tuning, not a measured aerodynamic coefficient.
 The profile range and the projectile path use abstract tactical distance units.
 [`projectile-cover.js`](../../../../packages/game/projectile-cover.js) applies
-the domain rule only on path segments outside material. Material resistance
-applies inside material instead, so one segment does not pay both types of
-energy loss. That module still owns the geometric decision about which path
-segments are in open air; the domain air-drag module owns the profile predicate
-and retention calculation, not interval selection. The interval-selection
-decision remains a migration requirement.
+the domain air-drag rule only outside active material spans. Material resistance
+applies inside a span instead, so one segment does not pay both types of energy
+loss. [`material-intervals.ts`](../../../../packages/game/domain/combat/material-intervals.ts)
+owns interval ordering, overlap/touch merging, and entering/leaving events;
+`projectile-cover.js` still traces the trajectory and collects the intervals.
+See the [material-interval note](60-material-intervals.md) for that rule.
 
 ## Example
 

@@ -35,13 +35,11 @@ visibility and reachability queries, passes their results to the domain, and
 formats a `move` order for the selected cell. Without the reachable-cell query,
 the domain could select a blocked destination; without map-derived visibility,
 it could not apply the rule that a side stops patrolling when it sees an enemy.
-The retained module's `able` filter also chooses which visible observers and
-opponents count in that sight query. It repeats the private `canAct` conditions
-in [`militia-patrol.ts`](../../../../packages/game/domain/personnel/militia-patrol.ts)
-and hard-codes `15` instead of
-[`CRITICAL_HEALTH`](../../../../packages/game/domain/personnel/actor-condition.ts).
-That duplicated eligibility check remains a migration item, separate from the
-domain-owned patrol movement decision.
+The retained module uses `canAct` from
+[`militia-patrol.ts`](../../../../packages/game/domain/personnel/militia-patrol.ts)
+for both friendly observers and opponents in the sight query. The domain
+eligibility check therefore governs the movement decision and the units that
+can establish or reveal sight; see the [patrol sight-filter note](59-patrol-sight-filter.md).
 
 ## Example
 

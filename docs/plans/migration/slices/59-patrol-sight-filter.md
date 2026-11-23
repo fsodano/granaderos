@@ -1,43 +1,28 @@
-# Slice 59: the patrol sight filter uses the domain's eligibility check
+# Slice 59: one owner for patrol eligibility
 
-**Branch:** `migration/patrol-sight-filter`
-**Intent:** Remove the second copy of the eligibility rule, so the domain holds
-one and the retained module asks it.
+A patrol's movement decision and sight filter depend on the same eligibility
+rule: whether a unit can act. Using one domain check for both prevents the
+sight query from admitting observers or opponents the patrol decision would
+reject.
 
-## Why this slice exists
+## Rule ownership
 
-`packages/game/militia-patrol.js` declares a local `able` that decides
-whether a combatant can still act: at least the critical health, not
-unconscious, not routed, fled, surrendered or departing.
+[`militia-patrol.ts`](../../../../packages/game/domain/personnel/militia-patrol.ts)
+exports `canAct`, the eligibility check used by the patrol decision.
+[`militia-patrol.js`](../../../../packages/game/militia-patrol.js) uses that
+same check for friendly observers and opposing units in its sight query. The
+retained module still asks tactical code for visibility and reachable cells,
+then assembles the move order.
 
-The domain now holds that same rule. The previous slice moved the patrol
-decision into `packages/game/domain/personnel/militia-patrol.ts`, and with it
-the eligibility check the decision depends on.
+`canAct` requires at least [`CRITICAL_HEALTH`](../../../../packages/game/domain/personnel/actor-condition.ts)
+(15 hit points), a conscious unit, and no routed, fled, surrendered, or
+departure state. A living unit with zero energy is unconscious; if energy is
+absent, [`isUnconscious`](../../../../packages/game/domain/personnel/actor-condition.ts)
+treats it as 100. For example, a unit at 15 hit points with energy 1 qualifies,
+while the same unit at zero energy does not.
 
-Two copies of the same condition are how they drift apart, and the retained
-copy is the one that decides who the patrol can see.
+## Behavior covered
 
-## What it changes
-
-- The retained module asks the domain for the eligibility check instead of
-  declaring its own.
-- Nothing else changes: the same units are treated as able, and the patrol
-  sees and moves exactly as before.
-
-## Tests
-
-- The existing patrol tests keep passing, which proves the same units are
-  eligible.
-- A test proves the domain's check and the retained module's answer agree for
-  the conditions that matter: below the critical health, without energy,
-  routed, fled, surrendered and departing.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.63` to `0.2.64`.
+[`militia-patrol.test.ts`](../../../../packages/game/domain/personnel/militia-patrol.test.ts)
+covers the critical-health boundary, absent and zero energy, the disqualifying
+statuses, and patrol eligibility.

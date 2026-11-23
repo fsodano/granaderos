@@ -52,8 +52,10 @@ keeps the campaign-content lookup and re-exports the domain defaults and scene
 consistency rule. The shared
 [`campaign-rules-schema.js`](../../packages/campaign-format/campaign-rules-schema.js)
 continues to own the authored field contract and structural validation.
-[`militia-patrol.js`](../../packages/game/militia-patrol.js) asks tactical map
-code for visibility and reachable cells, then assembles the move order.
+The domain's `canAct` check owns patrol eligibility for movement and the
+retained sight filter. [`militia-patrol.js`](../../packages/game/militia-patrol.js)
+uses that check for sight-query observers and opponents, asks tactical map code
+for visibility and reachable cells, then assembles the move order.
 
 [`targeted-combat.ts`](../../packages/game/domain/combat/targeted-combat.ts)
 owns aimed-shot eligibility, available body regions, region profiles and
@@ -90,8 +92,13 @@ shared
 [`projectile-profile-schema.js`](../../packages/campaign-format/projectile-profile-schema.js)
 to validate profile records, validates the associated energy profile, and
 re-exports the domain API.
-[`projectile-cover.js`](../../packages/game/projectile-cover.js) selects
-open-air versus material intervals and applies retention only outside material.
+[`material-intervals.ts`](../../packages/game/domain/combat/material-intervals.ts)
+owns the ordering and merging of geometry-derived intervals for each material
+object, including overlapping or touching intervals, and creates the entering
+and leaving events read by the flight.
+[`projectile-cover.js`](../../packages/game/projectile-cover.js) traces the shot
+through map geometry, collects those intervals, and consumes the domain events;
+air retention applies only outside active material.
 
 ## 2. Follow one player intention
 
@@ -147,14 +154,14 @@ The table below maps each architectural `Role` to its `Source` path in the repos
 | Domain entities, value objects, state machines, policies, and services | [`packages/game/domain`](../../packages/game/domain/) |
 | Personnel condition, care eligibility, captive service, and tactical field-victory rules | [`actor-condition.ts`](../../packages/game/domain/personnel/actor-condition.ts), [`medical-patient.ts`](../../packages/game/domain/personnel/medical-patient.ts), [`captive-service.ts`](../../packages/game/domain/personnel/captive-service.ts), [`completed-victory.ts`](../../packages/game/domain/combat/completed-victory.ts) |
 | Care defaults and campaign-authored values | [`care-rules.ts`](../../packages/game/domain/personnel/care-rules.ts) owns default treatment/rest tuning, including `restHealingHours`, and the default strategic bleeding percentage; [`campaign-care-rules.js`](../../packages/game/campaign-care-rules.js) reads authored campaign values and uses those defaults; [`campaign-rules-schema.js`](../../packages/campaign-format/campaign-rules-schema.js) owns authored-field validation |
-| Militia patrol rules and content lookup | [`militia-patrol.ts`](../../packages/game/domain/personnel/militia-patrol.ts) owns default tuning, saved-scene consistency, patrol eligibility, waypoint selection, and reachable-cell choice. [`militia-patrol-rules.js`](../../packages/game/militia-patrol-rules.js) reads authored settings; [`militia-patrol.js`](../../packages/game/militia-patrol.js) asks tactical map code for visibility and reachable cells, then assembles the move order; [`campaign-rules-schema.js`](../../packages/campaign-format/campaign-rules-schema.js) owns the authored-field contract and structural validation |
-| Projectile air-drag rules | [`projectile-air-drag.ts`](../../packages/game/domain/combat/projectile-air-drag.ts) decides whether a weapon has a usable profile and calculates energy retention by distance; [`projectile-air-drag.js`](../../packages/game/projectile-air-drag.js) validates profile/energy records with [`projectile-profile-schema.js`](../../packages/campaign-format/projectile-profile-schema.js) and re-exports the domain API; [`projectile-cover.js`](../../packages/game/projectile-cover.js) selects open-air/material intervals and applies retention only outside material |
+| Militia patrol rules and content lookup | [`militia-patrol.ts`](../../packages/game/domain/personnel/militia-patrol.ts) owns default tuning, saved-scene consistency, patrol eligibility, waypoint selection, and reachable-cell choice. [`militia-patrol-rules.js`](../../packages/game/militia-patrol-rules.js) reads authored settings; [`militia-patrol.js`](../../packages/game/militia-patrol.js) uses the domain `canAct` check in its sight filter, asks tactical map code for visibility and reachable cells, then assembles the move order; [`campaign-rules-schema.js`](../../packages/campaign-format/campaign-rules-schema.js) owns the authored-field contract and structural validation |
+| Projectile and material interval rules | [`projectile-air-drag.ts`](../../packages/game/domain/combat/projectile-air-drag.ts) decides whether a weapon has a usable profile and calculates energy retention by distance. [`material-intervals.ts`](../../packages/game/domain/combat/material-intervals.ts) orders and merges geometry-derived intervals and creates entering/leaving events. [`projectile-air-drag.js`](../../packages/game/projectile-air-drag.js) validates profile/energy records with [`projectile-profile-schema.js`](../../packages/campaign-format/projectile-profile-schema.js) and re-exports the domain API; [`projectile-cover.js`](../../packages/game/projectile-cover.js) traces shots, collects intervals, and consumes the domain events |
 | Refill price input | [`workshopServiceQuote`](../../packages/game/workshop-service.js) passes the effective campaign `dressingPrice` to [`refillCost`](../../packages/game/equipment.js); the helper has no default price |
 | Aimed-shot, reload, tactical cell, and movement-order rules | [`targeted-combat.ts`](../../packages/game/domain/combat/targeted-combat.ts), [`weapon-reload.ts`](../../packages/game/domain/combat/weapon-reload.ts), [`tactical-grid.ts`](../../packages/game/domain/sector-sessions/tactical-grid.ts), and [`tactical-planning-space.ts`](../../packages/game/domain/sector-sessions/tactical-planning-space.ts); [`targeted-combat.js`](../../packages/game/targeted-combat.js), [`weapon-reload.js`](../../packages/game/weapon-reload.js), [`tactical-grid.js`](../../packages/game/tactical-grid.js), and [`tactical-planning-space.ts`](../../packages/game/tactical-planning-space.ts) re-export these domain rules |
 | Application use cases and narrow repository contracts | [`packages/game/application`](../../packages/game/application/) |
 | Repository adapters, unit of work, identity map, and snapshot mappers | [`packages/game/infrastructure`](../../packages/game/infrastructure/) |
 | Declared public composition entry points for game, editor, and persistence | [`packages/game/public`](../../packages/game/public/) |
-| Compatibility orchestration, retained queries, and procedural adapters | [`packages/game/`](../../packages/game/) (`campaign.js`, `tactical.js`, `world.js`, `time.js`, `save.ts`); [`prisoner-custody.js`](../../packages/game/prisoner-custody.js) keeps the campaign-record `prisonerStatus` query and re-exports captive-service rules; `militia-patrol-rules.js` keeps campaign-content lookup, while `militia-patrol.js` supplies map data and assembles move orders; `projectile-air-drag.js` keeps shared profile validation and re-exports domain rules; `actor-condition.js`, `medical-patient.js`, `battle-outcome.js`, `targeted-combat.js`, `tactical-grid.js`, `tactical-planning-space.ts`, and `weapon-reload.js` re-export domain-owned rules |
+| Compatibility orchestration, retained queries, and procedural adapters | [`packages/game/`](../../packages/game/) (`campaign.js`, `tactical.js`, `world.js`, `time.js`, `save.ts`); [`prisoner-custody.js`](../../packages/game/prisoner-custody.js) keeps the campaign-record `prisonerStatus` query and re-exports captive-service rules; `militia-patrol-rules.js` keeps campaign-content lookup, while `militia-patrol.js` uses the domain eligibility check, supplies map data, and assembles move orders; `projectile-air-drag.js` keeps shared profile validation and re-exports domain rules; `projectile-cover.js` traces shots, collects geometry-derived material intervals, and consumes events from `material-intervals.ts`; `actor-condition.js`, `medical-patient.js`, `battle-outcome.js`, `targeted-combat.js`, `tactical-grid.js`, `tactical-planning-space.ts`, and `weapon-reload.js` re-export domain-owned rules |
 | Player UI, Three.js tactical renderer, and browser composition | [`apps/web/app/page.tsx`](../../apps/web/app/page.tsx), [`apps/web/lib`](../../apps/web/lib/) |
 | Independent campaign editor application, domain, and storage adapters | [`apps/campaign-editor`](../../apps/campaign-editor/README.md) |
 | Shared published campaign-file schemas and `CampaignDefinition` | [`packages/campaign-format`](../../packages/campaign-format/README.md) |
@@ -168,8 +175,13 @@ internal game callers. `prisoner-custody.js` keeps the campaign-record
 `weapon-reload.js`, and `projectile-air-drag.js` re-export their domain-owned
 rules. `militia-patrol-rules.js` keeps campaign-content lookup and re-exports
 domain patrol defaults and scene validation; `militia-patrol.js` supplies
-tactical visibility and reachability data and assembles the domain-selected
-move order. `projectile-air-drag.js` also validates shared profile records.
+tactical visibility and reachability data, uses the domain `canAct` eligibility
+check in its sight filter, and assembles the domain-selected move order.
+`projectile-air-drag.js` also validates shared profile records.
+[`material-intervals.ts`](../../packages/game/domain/combat/material-intervals.ts)
+owns material-interval ordering, merging, and event construction;
+[`projectile-cover.js`](../../packages/game/projectile-cover.js) supplies
+intervals from its geometry trace and consumes those events.
 `care-rules.ts` owns care defaults, including
 `restHealingHours`; `campaign-care-rules.js` selects authored care values or
 those defaults. [`workshopServiceQuote`](../../packages/game/workshop-service.js)
