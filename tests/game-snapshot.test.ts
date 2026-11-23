@@ -26,6 +26,19 @@ function deployed(): { campaign: CampaignSnapshot; battle: BattleSnapshot } {
   return { campaign: result.campaign, battle: present(result.battle) };
 }
 
+function retained(): CampaignSnapshot {
+  const pair = deployed();
+  const campaign = dispatchCampaign(pair.campaign, {
+    type: 'leaveSector',
+    battleId: present(pair.campaign.sectorEntryRequest).id,
+    sectorState: pair.battle,
+    survivors: pair.battle.units.filter((unit) => unit.side === 'player'),
+  });
+  assert.equal(campaign.lastError, null);
+  assert.ok(Object.keys(campaign.sectorSnapshots).length > 0);
+  return campaign;
+}
+
 function evenTerrain(size: number): BattleTile[] {
   return Array.from({ length: size * size }, (_, index) => ({
     x: index % size,
@@ -180,6 +193,49 @@ void test('a save written with the legacy operativeState key loads identically a
   assert.deepEqual(rewrittenCampaign['characters'], currentCampaign['characters']);
 });
 
+void test('a save writes the retained world maps under sectorSnapshots and sceneSnapshots', () => {
+  const campaign = retained();
+  const envelope = parseJsonObject(encodeSave(campaign));
+  const savedCampaign = envelope['campaign'];
+  assert.ok(isJsonObject(savedCampaign));
+  assert.ok(isJsonObject(savedCampaign['sectorSnapshots']));
+  assert.deepEqual(
+    Object.keys(savedCampaign['sectorSnapshots']),
+    Object.keys(campaign.sectorSnapshots),
+  );
+  assert.ok(isJsonObject(savedCampaign['sceneSnapshots']));
+  assert.equal(Object.hasOwn(savedCampaign, 'sectorStates'), false);
+  assert.equal(Object.hasOwn(savedCampaign, 'sceneStates'), false);
+});
+
+void test('a save written with the legacy world map keys loads identically and is rewritten under the new names', () => {
+  const campaign = retained();
+  const current = parseJsonObject(encodeSave(campaign));
+  const currentCampaign = current['campaign'];
+  assert.ok(isJsonObject(currentCampaign));
+  assert.ok(isJsonObject(currentCampaign['sectorSnapshots']));
+  assert.ok(isJsonObject(currentCampaign['sceneSnapshots']));
+  const legacy = structuredClone(current);
+  const legacyCampaign = legacy['campaign'];
+  assert.ok(isJsonObject(legacyCampaign));
+  assert.ok(isJsonObject(legacyCampaign['sectorSnapshots']));
+  assert.ok(isJsonObject(legacyCampaign['sceneSnapshots']));
+  legacyCampaign['sectorStates'] = legacyCampaign['sectorSnapshots'];
+  legacyCampaign['sceneStates'] = legacyCampaign['sceneSnapshots'];
+  delete legacyCampaign['sectorSnapshots'];
+  delete legacyCampaign['sceneSnapshots'];
+  const fromCurrent = decodeSave(JSON.stringify(current));
+  const fromLegacy = decodeSave(JSON.stringify(legacy));
+  assert.deepEqual(fromLegacy, fromCurrent);
+  const rewritten = parseJsonObject(encodeSave(fromLegacy.campaign, fromLegacy.battle));
+  const rewrittenCampaign = rewritten['campaign'];
+  assert.ok(isJsonObject(rewrittenCampaign));
+  assert.equal(Object.hasOwn(rewrittenCampaign, 'sectorStates'), false);
+  assert.equal(Object.hasOwn(rewrittenCampaign, 'sceneStates'), false);
+  assert.deepEqual(rewrittenCampaign['sectorSnapshots'], currentCampaign['sectorSnapshots']);
+  assert.deepEqual(rewrittenCampaign['sceneSnapshots'], currentCampaign['sceneSnapshots']);
+});
+
 void test('a save whose terrain is compacted carries schema 2', () => {
   const pair = deployed();
   const campaign = structuredClone(pair.campaign);
@@ -187,7 +243,7 @@ void test('a save whose terrain is compacted carries schema 2', () => {
   const tiles = evenTerrain(COMPACTED_MAP_SIZE);
   for (let index = 0; index < COMPACTED_MAP_COUNT; index++) {
     const sectorId = `compacted-terrain-${index}`;
-    campaign.sectorStates[sectorId] = {
+    campaign.sectorSnapshots[sectorId] = {
       ...template,
       sectorId,
       sourceMapId: sectorId,

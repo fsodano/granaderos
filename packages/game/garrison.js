@@ -386,7 +386,7 @@ export function advanceMilitiaWounds(s) {
       }
       unit.energy = 0;
       unit.deathMinute = s.hour * 60 + Math.floor((s.secondOfHour ?? 0) / 60);
-      const prior = s.sectorStates?.[sector]?.units?.find(
+      const prior = s.sectorSnapshots?.[sector]?.units?.find(
         (u) => u.militia && String(u.id) === String(unit.id),
       );
       // Real wounds came from a saved visit. Old records without a scene do not
@@ -396,7 +396,7 @@ export function advanceMilitiaWounds(s) {
         Object.assign(prior, structuredClone(unit), { id, x, y });
         // The retained scene records a living resident on return. A later wound
         // death changes that disposition together with the physical corpse.
-        const entry = s.sectorStates[sector].returnLedger?.entries.find(
+        const entry = s.sectorSnapshots[sector].returnLedger?.entries.find(
           (e) => e.unitId === String(id),
         );
         if (entry) {

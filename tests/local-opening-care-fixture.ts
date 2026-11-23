@@ -82,7 +82,7 @@ export function prepareLocalOpening(
   const sources = Object.entries(FINITE_SECTOR_CACHES)
     .filter(([at]) => s.sectors[at]?.owner === 'patriot' && transportPath(s, s.location, at))
     .map(([at, source]) => {
-      const chest = s.sectorStates[at]?.props.find((prop) => prop.id === source.chest);
+      const chest = s.sectorSnapshots[at]?.props.find((prop) => prop.id === source.chest);
       return {
         at,
         available: chest
@@ -387,7 +387,7 @@ export function prepareLocalOpening(
       const toolSource = Object.entries(FINITE_SECTOR_CACHES)
         .filter(([at]) => s.sectors[at]?.owner === 'patriot' && transportPath(s, s.location, at))
         .map(([at, source]) => {
-          const chest = s.sectorStates[at]?.props.find((prop) => prop.id === source.chest);
+          const chest = s.sectorSnapshots[at]?.props.find((prop) => prop.id === source.chest);
           return {
             at,
             points: chest

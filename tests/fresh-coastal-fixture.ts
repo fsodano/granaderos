@@ -677,7 +677,7 @@ export function freshCoastalRoute(
     s = fightOnArrival(order(s, { type: 'attack', sector }));
     assert.ok(s.sectorEntryRequest);
     const request = { ...s.sectorEntryRequest, hour: s.hour, secondOfHour: s.secondOfHour ?? 0 },
-      previous = s.sectorStates[sector];
+      previous = s.sectorSnapshots[sector];
     const engage =
       sector === 'buenos_aires'
         ? (fightOpening ??

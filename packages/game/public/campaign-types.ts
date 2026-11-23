@@ -601,8 +601,8 @@ export interface CampaignSnapshot {
   };
   logisticsNotice: CampaignLogisticsNotice | null;
   logisticsAttention: { version: number; reported: Record<string, string> };
-  sceneStates: Record<string, BattleSnapshot>;
-  sectorStates: Record<string, BattleSnapshot>;
+  sceneSnapshots: Record<string, BattleSnapshot>;
+  sectorSnapshots: Record<string, BattleSnapshot>;
   suspendedSectorSessions?: { request: CampaignPendingBattle; snapshot: BattleSnapshot }[];
   ammunitionStores: Record<string, Record<string, number>>;
   ammunitionShops: Record<string, Record<string, number>>;

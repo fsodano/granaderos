@@ -17,7 +17,7 @@ export function attendYatasto(s: CampaignSnapshot) {
     s = completeTestTravel(s, { sector: 'tucuman' });
   }
   s = step(s, { type: 'visitMission', mission: 'yatasto' });
-  let b = enterSector(s.sectorEntryRequest, s.sceneStates['yatasto']);
+  let b = enterSector(s.sectorEntryRequest, s.sceneSnapshots['yatasto']);
   const actor = present(b.units.find((u) => u.side === 'player' && !u.militia));
   for (const npcId of ['yatasto-belgrano', 'yatasto-san-martin', 'yatasto-san-martin']) {
     b = approachNPC(b, actor.id, npcId);

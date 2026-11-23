@@ -42,7 +42,7 @@ export function discoverRouteCache(state: CampaignSnapshot, operativeId: number)
   if (!cacheId) {
     return s;
   }
-  const chest = s.sectorStates[sector]?.props?.find((prop) => prop.id === cacheId);
+  const chest = s.sectorSnapshots[sector]?.props?.find((prop) => prop.id === cacheId);
   if (chest?.open && chest.knownToPlayer) {
     return s;
   }
@@ -237,7 +237,7 @@ export function authoredRouteMedicalDiscoveries(state: CampaignSnapshot, clinic:
       if (!path) {
         return [];
       }
-      const snapshot = state.sectorStates[at],
+      const snapshot = state.sectorSnapshots[at],
         chest = snapshot?.props?.find((prop) => prop.id === cache.chest);
       if (snapshot && (!chest || (chest.open && chest.knownToPlayer))) {
         return [];

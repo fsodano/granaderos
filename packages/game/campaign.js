@@ -1262,7 +1262,7 @@ function finishDefense(s, request, outcome, snapshot, plan) {
     dispositions: clone(plan.entries),
   });
   note(s, text);
-  s.sectorStates[group.target] = clone(snapshot);
+  s.sectorSnapshots[group.target] = clone(snapshot);
   s.sectorEntryRequest = null;
 }
 function applyTacticalTime(session, s, request, elapsed) {
@@ -1381,8 +1381,8 @@ function validatedInteractionSnapshot(s, raw) {
       ...(request.missionAllies ?? []).map((u) => String(u.id)),
     ]);
   const previous = request.sceneId
-      ? s.sceneStates[request.sceneId]
-      : s.sectorStates[request.sector],
+      ? s.sceneSnapshots[request.sceneId]
+      : s.sectorSnapshots[request.sector],
     corpses = new Set([
       ...(previous?.units ?? []).filter((u) => u.side === 'player' && u.hp <= 0).map((u) => u.id),
       ...(request.remains ?? []).map((r) => String(r.unitId)),
@@ -1530,7 +1530,7 @@ function acknowledgeNpcGifts(s, snapshot) {
   }
 }
 function resolveDefenseAutomatically(session, s, request) {
-  const result = autoResolve(request, s.sectorStates[request.sector] ?? null);
+  const result = autoResolve(request, s.sectorSnapshots[request.sector] ?? null);
   applyTacticalTime(session, s, request, result.battle.elapsedSeconds ?? 0);
   result.battle.syncedSeconds = request.syncedSeconds;
   result.battle.savedHour = s.hour;
@@ -1588,8 +1588,8 @@ function completeDeploymentReport(s, request, action) {
   validateAcknowledgedNpcGiftReceipts(s, snapshot.npcs, request.sector);
   hasPendingCivilians(s, snapshot);
   const previous = request.sceneId
-    ? s.sceneStates[request.sceneId]
-    : s.sectorStates[request.sector];
+    ? s.sceneSnapshots[request.sceneId]
+    : s.sectorSnapshots[request.sector];
   const auxiliary = [...(request.garrison ?? []), ...(request.missionAllies ?? [])].map((u) =>
       String(u.id),
     ),
@@ -1809,8 +1809,8 @@ function commitDeploymentReturn(session, s, request, snapshot, plan) {
   // An older save may still carry another squad's last real position only in
   // the shared scene. Preserve that point before the new squad replaces it.
   const priorScene = request.sceneId
-      ? s.sceneStates[request.sceneId]
-      : s.sectorStates[request.sector],
+      ? s.sceneSnapshots[request.sceneId]
+      : s.sectorSnapshots[request.sector],
     issued = new Set(plan.entries.map((e) => e.unitId));
   for (const unit of priorScene?.units ?? []) {
     const r = s.characters[Number(unit.id)];
@@ -1938,7 +1938,7 @@ function commitDeploymentReturn(session, s, request, snapshot, plan) {
   };
   // A new report cannot invent or erase an earlier accepted unpaid reward.
   delete snapshot.pendingVictoryFunds;
-  const funds = s.sectorStates[request.sector]?.pendingVictoryFunds;
+  const funds = s.sectorSnapshots[request.sector]?.pendingVictoryFunds;
   if (!request.sceneId && funds) {
     snapshot.pendingVictoryFunds = clone(funds);
   }
@@ -1966,9 +1966,9 @@ function commitDeploymentReturn(session, s, request, snapshot, plan) {
     });
   }
   if (request.sceneId) {
-    s.sceneStates[request.sceneId] = clone(snapshot);
+    s.sceneSnapshots[request.sceneId] = clone(snapshot);
   } else {
-    s.sectorStates[request.sector] = clone(snapshot);
+    s.sectorSnapshots[request.sector] = clone(snapshot);
   }
 }
 function advanceCampaignHorses(s) {
@@ -2503,7 +2503,7 @@ function prepareAttack(session, s, at, origin, ids, assaultSquads = null) {
   }
   scenarioFor(s).prepareAttack(s, s.sectorEntryRequest, ids, origin, scenarioContext(s));
   s.sectorEntryRequest.garrison = prepareGarrison(s, at);
-  s.sectorEntryRequest.garrisonLootSources = (s.sectorStates[at]?.units ?? [])
+  s.sectorEntryRequest.garrisonLootSources = (s.sectorSnapshots[at]?.units ?? [])
     .filter((u) => u.militia && u.hp <= 0)
     .map(ammunitionSource);
   note(
@@ -2521,7 +2521,7 @@ export function dispatchCampaign(previous, action) {
   s.lastError = null;
   s.militiaTraining ??= [];
   s.missions ??= {};
-  s.sceneStates ??= {};
+  s.sceneSnapshots ??= {};
   s.missionAllies ??= {};
   s.quests ??= {};
   migrateContracts(s);
@@ -3041,7 +3041,7 @@ export function dispatchCampaign(previous, action) {
         );
         requireThat(quote.available, quote.reason);
         pay(s, { treasury: quote.cost });
-        const gun = s.sectorStates[action.sector].artillery.find(
+        const gun = s.sectorSnapshots[action.sector].artillery.find(
           (g) => g.id === action.artilleryId,
         );
         gun.ammo++;
@@ -3939,7 +3939,7 @@ export function dispatchCampaign(previous, action) {
           exploration: true,
           night: s.hour % 24 < 6 || s.hour % 24 >= 20,
           issuedCartridges: issued,
-          ammunitionSources: (s.sectorStates[at]?.units ?? [])
+          ammunitionSources: (s.sectorSnapshots[at]?.units ?? [])
             .filter((u) => u.side === 'enemy')
             .map(ammunitionSource),
           wasRoyalist: false,
@@ -3956,7 +3956,7 @@ export function dispatchCampaign(previous, action) {
           ...regionalConditions(at, s.hour, s),
         };
         s.sectorEntryRequest.garrison = prepareGarrison(s, at);
-        s.sectorEntryRequest.garrisonLootSources = (s.sectorStates[at]?.units ?? [])
+        s.sectorEntryRequest.garrisonLootSources = (s.sectorSnapshots[at]?.units ?? [])
           .filter((u) => u.militia && u.hp <= 0)
           .map(ammunitionSource);
         note(
@@ -4399,7 +4399,7 @@ export function dispatchCampaign(previous, action) {
           scenarioFor(s).battleOutcome(s, request, action.outcome, scenarioContext(s));
           note(s, `El destacamento se retira de ${request.name}.`);
         }
-        s.sectorStates[request.sector] = clone(compactCellScene(battleSnapshot, s));
+        s.sectorSnapshots[request.sector] = clone(compactCellScene(battleSnapshot, s));
         s.sectorEntryRequest = null;
         s.squad = s.squad.filter((id) => s.characters[id].alive);
         if (!s.squad.length) {
@@ -4457,7 +4457,7 @@ export function dispatchCampaign(previous, action) {
     ) {
       enterSector(
         { ...s.sectorEntryRequest, campaignPackage: s.contentCampaign?.package },
-        s.sectorStates[s.sectorEntryRequest.sector],
+        s.sectorSnapshots[s.sectorEntryRequest.sector],
         { placement: true },
       );
     }
@@ -4586,8 +4586,8 @@ export function restoreCampaignValue(s) {
     s.sectorEntryRequest.campaignPackage = s.contentCampaign.package;
   }
   for (const scene of [
-    ...Object.values(s.sectorStates ?? {}),
-    ...Object.values(s.sceneStates ?? {}),
+    ...Object.values(s.sectorSnapshots ?? {}),
+    ...Object.values(s.sceneSnapshots ?? {}),
     s.sectorEntryRequest?.resumeSnapshot,
   ]) {
     validateCampaignSceneDefinitions(s, scene);
@@ -4765,7 +4765,7 @@ export function restoreCampaignValue(s) {
     );
   }
   s.missions ??= {};
-  s.sceneStates ??= {};
+  s.sceneSnapshots ??= {};
   s.missionAllies ??= {};
   const validatedScenes = new Map();
   requireThat(
@@ -4778,8 +4778,8 @@ export function restoreCampaignValue(s) {
     }),
     'Las escenas guardadas son inválidas.',
   );
-  for (const [id, snapshot] of Object.entries(s.sceneStates)) {
-    s.sceneStates[id] =
+  for (const [id, snapshot] of Object.entries(s.sceneSnapshots)) {
+    s.sceneSnapshots[id] =
       validatedScenes.get(snapshot) ?? validateSectorSnapshot(expandCellScene(snapshot, s), s);
   }
   s.garrisons ??= {};
@@ -4799,8 +4799,8 @@ export function restoreCampaignValue(s) {
   for (const snapshot of [
     s.sectorEntryRequest,
     s.sectorEntryRequest?.resumeSnapshot,
-    ...Object.values(s.sectorStates ?? {}),
-    ...Object.values(s.sceneStates ?? {}),
+    ...Object.values(s.sectorSnapshots ?? {}),
+    ...Object.values(s.sceneSnapshots ?? {}),
   ].filter(Boolean)) {
     validateQuestContext(s, snapshot);
     validateRoadsideDiscoveryContext(s, snapshot);
@@ -4820,8 +4820,8 @@ export function restoreCampaignValue(s) {
     retainRepairReserves(s.sectorEntryRequest, s.sectorEntryRequest.resumeSnapshot);
   }
   for (const snapshot of [
-    ...Object.values(s.sectorStates ?? {}),
-    ...Object.values(s.sceneStates ?? {}),
+    ...Object.values(s.sectorSnapshots ?? {}),
+    ...Object.values(s.sceneSnapshots ?? {}),
   ]) {
     validateQuestBeneficiaryContext(s, snapshot, { request: null, retained: true });
   }
@@ -4915,7 +4915,7 @@ export function restoreCampaignValue(s) {
         at !== s.sectorEntryRequest?.sector &&
         (s.conversations[npcId]?.giftCount ?? 0) > 0
       ) {
-        validateAcknowledgedNpcGiftReceipts(s, s.sectorStates[at]?.npcs ?? [], at);
+        validateAcknowledgedNpcGiftReceipts(s, s.sectorSnapshots[at]?.npcs ?? [], at);
       }
     }
   }
@@ -5308,8 +5308,8 @@ export function restoreCampaignValue(s) {
       JSON.stringify(selected.members) === JSON.stringify(s.squad),
     'La escuadra activa del archivo es inválida.',
   );
-  requireThat(object(s.sectorStates), 'Los sectores guardados son inválidos.');
-  for (const [id, snapshot] of Object.entries(s.sectorStates)) {
+  requireThat(object(s.sectorSnapshots), 'Los sectores guardados son inválidos.');
+  for (const [id, snapshot] of Object.entries(s.sectorSnapshots)) {
     requireThat(
       validWorldLocation(id, s) || isCampaignScene(s, id),
       'Los sectores guardados son inválidos.',
@@ -5321,7 +5321,7 @@ export function restoreCampaignValue(s) {
         (restored.sectorId === id && restored.sourceMapId === id),
       'Los sectores guardados son inválidos.',
     );
-    s.sectorStates[id] = restored;
+    s.sectorSnapshots[id] = restored;
   }
   validateAmmunitionCustody(s, rosterFor(s));
   migrateArtilleryState(s);
@@ -5330,14 +5330,14 @@ export function restoreCampaignValue(s) {
   validateCampaignArtillery(s);
   for (const scene of [
     s.sectorEntryRequest,
-    ...Object.values(s.sectorStates),
-    ...Object.values(s.sceneStates),
+    ...Object.values(s.sectorSnapshots),
+    ...Object.values(s.sceneSnapshots),
   ]) {
     validateCampaignPatrol(s, scene);
     validateCampaignArtilleryProfiles(s, scene);
   }
-  for (const [id, snapshot] of Object.entries(s.sectorStates)) {
-    s.sectorStates[id] = compactCellScene(snapshot, s);
+  for (const [id, snapshot] of Object.entries(s.sectorSnapshots)) {
+    s.sectorSnapshots[id] = compactCellScene(snapshot, s);
   }
   requireThat(
     !s.sectorEntryRequest ||

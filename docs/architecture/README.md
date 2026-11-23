@@ -49,7 +49,7 @@ The table below defines each core `Term` and its `Meaning here` across all archi
 | `SectorEntryRequest` | Campaign-owned input to `EnterSector`; the campaign snapshot field is `sectorEntryRequest` |
 | `SectorSession` | One active or suspended sector visit, including deployment, exploration, and combat; compatibility snapshots still use `battle` or `sectorState` |
 | `CombatSession` | One bounded combat episode within a `SectorSession`, owning turn authority, action-point budgets, reactions, and the combat outcome |
-| Retained scene | Saved sector or mission state (`sectorStates` / `sceneStates`) used to preserve physical world changes across later visits without duplicating character or inventory ownership |
+| Retained scene | Saved sector or mission state (`sectorSnapshots` / `sceneSnapshots`) used to preserve physical world changes across later visits without duplicating character or inventory ownership |
 | Committed state | The accepted campaign and active sector snapshot pair owned by the root browser application at one `gameRevision` |
 | Presentation frame | Temporary visual or animation data projected from accepted simulation state; never an owner of game rules or a save checkpoint |
 | Worker | A browser Web Worker running shared simulation, save-encoding, or contact-fitting logic on message-transferred snapshots |

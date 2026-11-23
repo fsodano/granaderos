@@ -64,7 +64,7 @@ export const enemyReserveLimits = Object.freeze({ north: 120, coast: 80, interio
 export const enemyReserveError = 'Las reservas realistas guardadas son inválidas.';
 export const enemyGroupLegHours = Object.freeze({ north: 12, coast: 8, interior: 6 });
 export const scenes = MISSION_SCENES;
-export const sceneStateKey = (id) => (id === 'yatasto' ? 'sceneStates' : 'sectorStates');
+export const sceneStateKey = (id) => (id === 'yatasto' ? 'sceneSnapshots' : 'sectorSnapshots');
 export const legacyCityReceipt = (event) =>
   event.sectorId === 'ensenada' && event.cityId === 'buenos_aires';
 export const recruitmentLocalityId = (state, id) => (id === 'retiro' ? 'buenos_aires' : id);
@@ -135,7 +135,7 @@ export function initialState(seed, _definitions) {
     civilianState: { version: 2, people: {} },
     equipmentShipments: [],
     missions: {},
-    sceneStates: {},
+    sceneSnapshots: {},
     missionAllies: {},
     garrisons: {},
     nextMilitiaId: 20000,
@@ -153,7 +153,7 @@ export function initialState(seed, _definitions) {
     location: 'retiro',
     activeSquadId: 'squad-1',
     squads: [{ id: 'squad-1', name: 'Primera escuadra', members: [], location: 'retiro' }],
-    sectorStates: {},
+    sectorSnapshots: {},
     resources: { treasury: 3200 },
     reputation: {
       directory: 35,
@@ -663,8 +663,8 @@ export function validateReputation(s) {
 export function validateStoredScenes(s, { validateSectorSnapshot }) {
   return (
     validateMissions(s) &&
-    object(s.sceneStates) &&
-    Object.entries(s.sceneStates).every(
+    object(s.sceneSnapshots) &&
+    Object.entries(s.sceneSnapshots).every(
       ([id, b]) => id === 'yatasto' && b.sceneId === id && validateSectorSnapshot(b),
     ) &&
     object(s.missionAllies) &&

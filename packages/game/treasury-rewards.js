@@ -53,7 +53,7 @@ export function creditPendingVictoryFunds(s) {
       pending: entry.amount - entry.creditedAmount,
     });
     if (entry.creditedAmount === entry.amount) {
-      const source = s.sectorStates[entry.sector];
+      const source = s.sectorSnapshots[entry.sector];
       source.pendingVictoryFunds = source.pendingVictoryFunds.filter(
         (e) => e.battleId !== entry.battleId,
       );
@@ -84,7 +84,7 @@ export function validatePendingVictoryFunds(s) {
       (Array.isArray(entries) && entries.length > 0 && entries.length <= 1000000),
   );
   const witnesses = new Map();
-  for (const [sector, scene] of Object.entries(s.sectorStates ?? {})) {
+  for (const [sector, scene] of Object.entries(s.sectorSnapshots ?? {})) {
     if (scene.pendingVictoryFunds === undefined) {
       continue;
     }

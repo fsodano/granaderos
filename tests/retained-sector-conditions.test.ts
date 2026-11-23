@@ -11,7 +11,7 @@ void test('a transferred auxiliary does not suffer condition changes in its arch
   present(campaign.sectors['retiro']).militia = [1, 0, 0];
   campaign = leave(visit(campaign));
   const militiaId = present(present(campaign.garrisons['retiro'])[0]).id;
-  const field = campaign.sectorStates['retiro'];
+  const field = campaign.sectorSnapshots['retiro'];
   const archive = present(field).units.find((unit) => String(unit.id) === String(militiaId));
   present(archive).hp = 5;
   present(archive).bleeding = 1;
@@ -25,7 +25,7 @@ void test('a transferred auxiliary does not suffer condition changes in its arch
   });
   assert.equal(campaign.lastError, null);
   const beforeArchive = structuredClone(
-    present(campaign.sectorStates['retiro']).units.find(
+    present(campaign.sectorSnapshots['retiro']).units.find(
       (unit) => String(unit.id) === String(militiaId),
     ),
   );
@@ -33,14 +33,14 @@ void test('a transferred auxiliary does not suffer condition changes in its arch
   campaign.hour += 1;
   advanceCampaignWorld(campaign);
   assert.deepEqual(
-    present(campaign.sectorStates['retiro']).units.find(
+    present(campaign.sectorSnapshots['retiro']).units.find(
       (unit) => String(unit.id) === String(militiaId),
     ),
     beforeArchive,
   );
   assert.deepEqual(present(campaign.garrisons['buenos_aires'])[0], beforeCurrent);
   assert.equal(
-    (present(campaign.sectorStates['retiro']).deathHistory ?? []).some(
+    (present(campaign.sectorSnapshots['retiro']).deathHistory ?? []).some(
       (death) => String(death.actor.id) === String(militiaId),
     ),
     false,

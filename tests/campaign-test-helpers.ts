@@ -124,7 +124,7 @@ export function meetLocalRecruit(
   }
   let battle = enterSector(
     s.sectorEntryRequest,
-    s.sectorStates[present(s.sectorEntryRequest).sector],
+    s.sectorSnapshots[present(s.sectorEntryRequest).sector],
   );
   const actor = battle.units
     .filter(

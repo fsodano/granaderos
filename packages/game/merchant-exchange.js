@@ -124,7 +124,8 @@ export function merchantExchangePreview(s, action, isSupplied) {
     need(
       !s.enemyGroups?.some(
         (g) => g.target === s.location && ['waiting', 'engaged', 'stationed'].includes(g.status),
-      ) && !s.sectorStates?.[s.location]?.units?.some((u) => u.side === 'enemy' && fieldCapable(u)),
+      ) &&
+        !s.sectorSnapshots?.[s.location]?.units?.some((u) => u.side === 'enemy' && fieldCapable(u)),
       'Asegurá el sector antes de negociar.',
     );
     need(
@@ -235,8 +236,8 @@ export function exchangeMerchantEquipment(s, action, isSupplied) {
     resources: { ...s.resources },
     artilleryMerchants: structuredClone(s.artilleryMerchants ?? {}),
     artilleryDepots: structuredClone(s.artilleryDepots ?? {}),
-    sectorStates: Object.fromEntries(
-      Object.entries(s.sectorStates ?? {}).map(([id, scene]) => [
+    sectorSnapshots: Object.fromEntries(
+      Object.entries(s.sectorSnapshots ?? {}).map(([id, scene]) => [
         id,
         { ...scene, ...(scene.artillery ? { artillery: structuredClone(scene.artillery) } : {}) },
       ]),
@@ -250,7 +251,7 @@ export function exchangeMerchantEquipment(s, action, isSupplied) {
     'resources',
     'artilleryMerchants',
     'artilleryDepots',
-    'sectorStates',
+    'sectorSnapshots',
     'nextArtilleryId',
     'nextArmoryItemId',
     'nextEquipmentInstanceId',

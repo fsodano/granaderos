@@ -37,7 +37,7 @@ The table below lists representative top-level `Field` groups on the serialized 
 | --- | --- |
 | `gameSessionId`, `gameRevision` | Session identity and monotonic transaction revision managed by `GameSession` and `GameUnitOfWork` |
 | `seed`, `hour`, optional `secondOfHour` | Deterministic campaign RNG seed and accepted strategic clock (`GameTime`) |
-| `location`, `sectors`, `sectorStates`, `sceneStates` | Active strategic location, regional sector ownership/conditions, and retained physical sector snapshots (`Sector`, `WorldTimeline`, `ResidentRoutine`, `Corpse`) |
+| `location`, `sectors`, `sectorSnapshots`, `sceneSnapshots` | Active strategic location, regional sector ownership/conditions, and retained physical sector snapshots (`Sector`, `WorldTimeline`, `ResidentRoutine`, `Corpse`) |
 | `forceRoster`, `characters`, `squad`, `squads`, `activeSquadId` | `ForceRoster` membership, per-character `Character` / `Health` / location / assignment records, and `Squad` / `Journey` state |
 | `resources`, `reputation`, `log` | `Treasury` and campaign resource balances, faction standing, and bounded activity log |
 | `contracts`, `quests`, `missions` | Compatibility projection of `ServiceContract` terms, authored quest state, and mission progression |

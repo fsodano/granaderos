@@ -144,8 +144,8 @@ export function campaignActors(
     ...(pending?.missionAllies ?? []),
     ...(pending?.npcs ?? []),
     ...Object.values(value.missionAllies ?? {}),
-    ...Object.values(value.sectorStates ?? {}).flatMap(actors),
-    ...Object.values(value.sceneStates ?? {}).flatMap(actors),
+    ...Object.values(value.sectorSnapshots ?? {}).flatMap(actors),
+    ...Object.values(value.sceneSnapshots ?? {}).flatMap(actors),
   ];
 }
 export function characterForActor(

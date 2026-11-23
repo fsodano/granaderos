@@ -412,8 +412,8 @@ export function validateCampaignServiceObjections(state, roster) {
     }
   }
   for (const scene of [
-    ...Object.values(state.sectorStates ?? {}),
-    ...Object.values(state.sceneStates ?? {}),
+    ...Object.values(state.sectorSnapshots ?? {}),
+    ...Object.values(state.sceneSnapshots ?? {}),
   ]) {
     for (const actor of scene.units ?? []) {
       validateServiceObjection(actor);

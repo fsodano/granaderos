@@ -117,6 +117,20 @@ function decodeGameSave(text: string, validateOpenVisits: boolean): GameSnapshot
     savedCampaign['forceRoster'] = savedCampaign['recruited'];
   }
   delete savedCampaign['recruited'];
+  // Saves written before the retained world maps took their canonical names
+  // still carry them under `sectorStates` and `sceneStates`. Read those keys
+  // once, then write only the new ones.
+  if (
+    savedCampaign['sectorSnapshots'] === undefined &&
+    savedCampaign['sectorStates'] !== undefined
+  ) {
+    savedCampaign['sectorSnapshots'] = savedCampaign['sectorStates'];
+  }
+  delete savedCampaign['sectorStates'];
+  if (savedCampaign['sceneSnapshots'] === undefined && savedCampaign['sceneStates'] !== undefined) {
+    savedCampaign['sceneSnapshots'] = savedCampaign['sceneStates'];
+  }
+  delete savedCampaign['sceneStates'];
   validateGameSaveMetadata(value['mapping'], savedCampaign);
   // Saves written before the request took its canonical name still carry it
   // under `pendingBattle`. Read that key once, then write only the new one.

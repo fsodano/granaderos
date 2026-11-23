@@ -255,8 +255,8 @@ export function advanceCampaignWorld(campaign) {
   const active = campaign.sectorEntryRequest;
   const suspended = campaign.suspendedSectorSessions ?? [];
   for (const snapshot of [
-    ...Object.values(campaign.sectorStates ?? {}),
-    ...Object.values(campaign.sceneStates ?? {}),
+    ...Object.values(campaign.sectorSnapshots ?? {}),
+    ...Object.values(campaign.sceneSnapshots ?? {}),
   ]) {
     if (
       active &&
@@ -531,7 +531,9 @@ export function validateSectorWorld(snapshot) {
 
 export function previousDeploymentScene(campaign, request) {
   return expandCellScene(
-    request.sceneId ? campaign.sceneStates[request.sceneId] : campaign.sectorStates[request.sector],
+    request.sceneId
+      ? campaign.sceneSnapshots[request.sceneId]
+      : campaign.sectorSnapshots[request.sector],
     campaign,
   );
 }

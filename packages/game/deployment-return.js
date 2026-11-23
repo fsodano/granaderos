@@ -113,8 +113,8 @@ export function prepareDeploymentExits(s, request) {
   request.exitRulesVersion = 1;
   request.remains = clone(s.sectorRemains?.[strategicSector(request, s)] ?? []);
   const previous = request.sceneId
-    ? s.sceneStates?.[request.sceneId]
-    : s.sectorStates?.[request.sector];
+    ? s.sceneSnapshots?.[request.sceneId]
+    : s.sectorSnapshots?.[request.sector];
   // An unfinished assault reuses the actual enemy equipment on that field.
   // Match enterSector: a new occupation or defense force has its own issue.
   if (
@@ -717,7 +717,9 @@ export function validateDeploymentReturnState(s) {
     if (r.residentPosition !== undefined) {
       const point = r.residentPosition,
         field = expandCellScene(
-          r.residentScene ? s.sceneStates?.[r.residentScene] : s.sectorStates?.[r.residentSector],
+          r.residentScene
+            ? s.sceneSnapshots?.[r.residentScene]
+            : s.sectorSnapshots?.[r.residentSector],
           s,
         );
       need(
@@ -750,8 +752,8 @@ export function validateDeploymentReturnState(s) {
     }
   }
   for (const snapshot of [
-    ...Object.values(s.sectorStates ?? {}),
-    ...Object.values(s.sceneStates ?? {}),
+    ...Object.values(s.sectorSnapshots ?? {}),
+    ...Object.values(s.sceneSnapshots ?? {}),
   ]) {
     validateReturnLedger(snapshot, s);
   }

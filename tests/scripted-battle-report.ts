@@ -69,7 +69,7 @@ export function scriptedBattleReport(
   const request = present(campaign.sectorEntryRequest);
   let battle = enterSector(
     { ...request, hour: campaign.hour, secondOfHour: campaign.secondOfHour ?? 0 },
-    campaign.sectorStates[present(request).sector],
+    campaign.sectorSnapshots[present(request).sector],
   );
   for (const patch of units) {
     const u = battle.units.find((u) => String(u.id) === String(patch.id));

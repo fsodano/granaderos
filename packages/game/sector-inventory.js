@@ -210,7 +210,7 @@ function knownSiteEquipment(s, site) {
 }
 function inventorySite(s, id) {
   const mission = missionScenesFor(s)[id];
-  const snapshot = s.sceneStates?.[id] ?? s.sectorStates[id];
+  const snapshot = s.sceneSnapshots?.[id] ?? s.sectorSnapshots[id];
   return {
     id,
     sectorId: mission?.anchor ?? id,

@@ -334,8 +334,8 @@ export function migrateCampaignAmmunition(state, roster = [], { fresh = false } 
     );
   }
   const snapshots = [
-    ...Object.values(state.sectorStates ?? {}),
-    ...Object.values(state.sceneStates ?? {}),
+    ...Object.values(state.sectorSnapshots ?? {}),
+    ...Object.values(state.sceneSnapshots ?? {}),
     ...(state.sectorEntryRequest?.resumeSnapshot ? [state.sectorEntryRequest.resumeSnapshot] : []),
   ];
   const looseLegacy =
@@ -399,8 +399,8 @@ export function migrateCampaignAmmunition(state, roster = [], { fresh = false } 
       migrateStack(stack);
     }
     const prior = request.sceneId
-      ? state.sceneStates?.[request.sceneId]
-      : state.sectorStates?.[request.sector];
+      ? state.sceneSnapshots?.[request.sceneId]
+      : state.sectorSnapshots?.[request.sector];
     for (const source of [
       ...(request.ammunitionSources ?? []),
       ...(request.garrisonLootSources ?? []),
@@ -441,8 +441,8 @@ export function migrateCampaignAmmunition(state, roster = [], { fresh = false } 
     request.ammunitionVersion = 2;
   }
   for (const snapshot of [
-    ...Object.values(state.sectorStates ?? {}),
-    ...Object.values(state.sceneStates ?? {}),
+    ...Object.values(state.sectorSnapshots ?? {}),
+    ...Object.values(state.sceneSnapshots ?? {}),
   ]) {
     migrateBattleAmmunition(snapshot, { legacy: true });
   }
@@ -517,8 +517,8 @@ export function validateCampaignAmmunition(state) {
     unit(u);
   }
   for (const snapshot of [
-    ...Object.values(state.sectorStates ?? {}),
-    ...Object.values(state.sceneStates ?? {}),
+    ...Object.values(state.sectorSnapshots ?? {}),
+    ...Object.values(state.sceneSnapshots ?? {}),
     ...(state.sectorEntryRequest?.resumeSnapshot ? [state.sectorEntryRequest.resumeSnapshot] : []),
   ]) {
     rejectLegacyStacks(fieldStacks(snapshot));
@@ -626,8 +626,8 @@ function migrateCampaignFamilies(state, roster) {
     tactical(unit);
   }
   for (const snapshot of [
-    ...Object.values(state.sectorStates ?? {}),
-    ...Object.values(state.sceneStates ?? {}),
+    ...Object.values(state.sectorSnapshots ?? {}),
+    ...Object.values(state.sceneSnapshots ?? {}),
   ]) {
     need(snapshot.ammunitionVersion === 1, 'La escena antigua no tiene versión de munición.');
     migrateBattleAmmunition(snapshot);

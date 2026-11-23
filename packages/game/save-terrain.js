@@ -11,8 +11,8 @@ function maps(value) {
   const c = value.campaign;
   return [
     value.sectorSession !== undefined ? value.sectorSession : value.battle,
-    ...Object.values(c?.sectorStates ?? {}),
-    ...Object.values(c?.sceneStates ?? {}),
+    ...Object.values(c?.sectorSnapshots ?? {}),
+    ...Object.values(c?.sceneSnapshots ?? {}),
     c?.sectorEntryRequest?.resumeSnapshot,
   ].filter(object);
 }

@@ -224,8 +224,8 @@ export function validateCampaignCompanionGrief(state, roster) {
     }
   }
   for (const scene of [
-    ...Object.values(state.sectorStates ?? {}),
-    ...Object.values(state.sceneStates ?? {}),
+    ...Object.values(state.sectorSnapshots ?? {}),
+    ...Object.values(state.sceneSnapshots ?? {}),
   ]) {
     for (const actor of scene.units ?? []) {
       if (actor.side !== 'player' || actor.militia) {

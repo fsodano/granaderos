@@ -4,7 +4,7 @@ import { careAssignmentBusy } from './medical-care.js';
 import { sceneAnchorFor } from './campaign-scenario.js';
 export function artillerySupplyQuote(s, sector, gunId, supplied) {
   const rules = artillerySupplyRules(s),
-    scene = s.sectorStates?.[sector],
+    scene = s.sectorSnapshots?.[sector],
     gun = scene?.artillery?.find((g) => g.id === gunId),
     cost = gun ? rules[gun.type] : 0;
   const present = (s.squad ?? []).some((id) => {

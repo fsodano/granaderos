@@ -102,8 +102,8 @@ export function removeIgnitionSupplies(state) {
     }
   }
   for (const snapshot of [
-    ...values(state.sectorStates),
-    ...values(state.sceneStates),
+    ...values(state.sectorSnapshots),
+    ...values(state.sceneSnapshots),
     state.sectorEntryRequest,
   ]) {
     scene(snapshot);

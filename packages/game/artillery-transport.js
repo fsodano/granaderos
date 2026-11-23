@@ -42,7 +42,7 @@ const hostile = (s, at) =>
   s.enemyGroups?.some(
     (g) => g.target === at && ['waiting', 'engaged', 'stationed'].includes(g.status),
   ) ||
-  Object.entries(s.sectorStates ?? {}).some(
+  Object.entries(s.sectorSnapshots ?? {}).some(
     ([key, b]) => parent(s, key) === at && b.units?.some((u) => u.side === 'enemy' && capable(u)),
   );
 // Stationed occupations already appear on the strategic map. Other route
@@ -127,7 +127,7 @@ export function artilleryTransportQuote(s, sector, gunId, to, mode, source = 'fi
     cost = rules[`${mode}Fee`] ?? 0,
     from = parent(s, sector),
     gun = (
-      source === 'depot' ? s.artilleryDepots?.[sector] : s.sectorStates?.[sector]?.artillery
+      source === 'depot' ? s.artilleryDepots?.[sector] : s.sectorSnapshots?.[sector]?.artillery
     )?.find((g) => g.id === gunId),
     spec = gun && artilleryProfile(s, gun),
     path = artilleryTransportPath(s, from, to, mode);
@@ -198,7 +198,7 @@ const stored = storedArtilleryRecord;
 /** @returns {import('./public/artillery-query-types.ts').ArtilleryStorageQuote} */
 export function artilleryStorageQuote(s, sector, gunId) {
   const from = parent(s, sector),
-    gun = s.sectorStates?.[sector]?.artillery?.find((g) => g.id === gunId),
+    gun = s.sectorSnapshots?.[sector]?.artillery?.find((g) => g.id === gunId),
     spec = gun && artilleryProfile(s, gun);
   const reason = s.defeated
     ? 'La campaña ha terminado.'
@@ -220,7 +220,7 @@ export function artilleryStorageQuote(s, sector, gunId) {
 export function storeStationedArtillery(s, action) {
   const quote = artilleryStorageQuote(s, action.sector, action.artilleryId);
   need(quote.available, quote.reason);
-  const source = s.sectorStates[action.sector].artillery,
+  const source = s.sectorSnapshots[action.sector].artillery,
     index = source.findIndex((g) => g.id === action.artilleryId),
     gun = stored(source[index]);
   s.artilleryDepots ??= {};
@@ -243,7 +243,7 @@ export function dispatchArtilleryTransport(s, action) {
   const guns =
       action.source === 'depot'
         ? s.artilleryDepots[action.sector]
-        : s.sectorStates[action.sector].artillery,
+        : s.sectorSnapshots[action.sector].artillery,
     index = guns.findIndex((g) => g.id === action.artilleryId),
     gun = stored(guns[index]);
   guns.splice(index, 1);
@@ -367,7 +367,7 @@ export function artilleryTransportPreview(
 ) {
   const q = artilleryTransportQuote(s, sector, artilleryId, to, mode, source),
     gun = (
-      source === 'depot' ? s.artilleryDepots?.[sector] : s.sectorStates?.[sector]?.artillery
+      source === 'depot' ? s.artilleryDepots?.[sector] : s.sectorSnapshots?.[sector]?.artillery
     )?.find((g) => g.id === artilleryId);
   return {
     ...q,

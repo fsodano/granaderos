@@ -126,7 +126,7 @@ export const visit = (s: CampaignSnapshot) => {
         hour: campaign.hour,
         secondOfHour: campaign.secondOfHour ?? 0,
       },
-      campaign.sectorStates[campaign.location],
+      campaign.sectorSnapshots[campaign.location],
     ),
   });
 };
