@@ -1,6 +1,6 @@
 # Clean architecture migration plan
 
-This plan defines a 52-slice sequence for moving Granaderos toward the
+This plan defines a 54-slice sequence for moving Granaderos toward the
 [accepted domain architecture](../accepted/domain-architecture.md). The
 [overview](overview.md) describes current source behavior and remaining
 requirements; the [slice index](slices/README.md) links each note.
@@ -100,6 +100,8 @@ outside this plan.
 | [50. Tactical grid label](slices/50-tactical-grid-label.md) | Move tactical cell-label generation into the domain |
 | [51. Weapon reload rules](slices/51-weapon-reload.md) | Move reload-round cost, stored-progress validation, and planning into the domain |
 | [52. Care defaults](slices/52-care-rules.md) | Move default care/rest tuning and the default strategic bleeding percentage into the domain; keep campaign-authored rule lookup at the content boundary |
+| [53. Captive service contract rules](slices/53-captive-service.md) | Move remaining-service calculation and contract reconstruction on release into the domain; keep the record-backed status query in the retained module |
+| [54. Care tuning and refill price](slices/54-dead-defaults.md) | Use domain care tuning for rest healing and require callers to supply the refill dressing price |
 
 Each slice has a note under [slices](slices/README.md) that records its intent,
 scope, and behavior tests. Read the relevant note before changing that area.
@@ -163,7 +165,14 @@ The migration is complete when:
    [`CampaignAction`](../../../packages/game/public/campaign-types.ts) does not
    include `sectorState`, and handlers that require the view read
    `sectorSession`.
-7. The full verification profile, `npm run verify`, is a completion gate. It
+7. [`captive-service.ts`](../../../packages/game/domain/personnel/captive-service.ts)
+    owns remaining service hours and contract reconstruction at release. The
+    retained [`prisoner-custody.js`](../../../packages/game/prisoner-custody.js)
+    keeps `prisonerStatus`, a query over campaign records, and re-exports those
+    rules. The default rest-healing duration is `restHealingHours` in domain
+    care tuning; `careRules` selects authored values when present. `refillCost`
+    has no default price, and each caller supplies `dressingPrice`.
+8. The full verification profile, `npm run verify`, is a completion gate. It
    includes formatting, lint, architecture and dependency checks, type
    checking, tests, audits, and the production build.
 
@@ -196,6 +205,6 @@ boundaries it can express as import rules.
 
 Start with [overview.md](overview.md) for the current implementation and open
 gaps, then use this plan for the branch flow and the [slice index](slices/README.md)
-for the 52 slice notes. Read the accepted architecture and glossary before
+for the 54 slice notes. Read the accepted architecture and glossary before
 work that changes a domain contract or term. Each slice note records its
 intent, scope, and behavior tests.

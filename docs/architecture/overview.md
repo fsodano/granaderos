@@ -34,6 +34,14 @@ selects campaign-authored values and uses those domain defaults; the shared
 [`campaign-rules-schema.js`](../../packages/campaign-format/campaign-rules-schema.js)
 defines and validates the authored fields.
 
+[`captive-service.ts`](../../packages/game/domain/personnel/captive-service.ts)
+owns the remaining service time on a captured combatant's `ServiceContract` and
+the contract reconstruction at release. The retained
+[`prisoner-custody.js`](../../packages/game/prisoner-custody.js) re-exports
+those rules and keeps `prisonerStatus`, a query over campaign character and
+detention records. The query delegates its service-hours calculation to the
+domain rule.
+
 [`targeted-combat.ts`](../../packages/game/domain/combat/targeted-combat.ts)
 owns aimed-shot eligibility, available body regions, region profiles and
 labels, aiming penalties, and effects; it uses
@@ -104,26 +112,31 @@ The table below maps each architectural `Role` to its `Source` path in the repos
 | Role | Source |
 | --- | --- |
 | Domain entities, value objects, state machines, policies, and services | [`packages/game/domain`](../../packages/game/domain/) |
-| Personnel condition and care eligibility, and tactical field-victory rule | [`actor-condition.ts`](../../packages/game/domain/personnel/actor-condition.ts), [`medical-patient.ts`](../../packages/game/domain/personnel/medical-patient.ts), [`completed-victory.ts`](../../packages/game/domain/combat/completed-victory.ts) |
-| Care defaults and campaign-authored values | [`care-rules.ts`](../../packages/game/domain/personnel/care-rules.ts) owns default treatment/rest tuning and the default strategic bleeding percentage; [`campaign-care-rules.js`](../../packages/game/campaign-care-rules.js) reads authored campaign values and uses those defaults; [`campaign-rules-schema.js`](../../packages/campaign-format/campaign-rules-schema.js) owns authored-field validation |
+| Personnel condition, care eligibility, captive service, and tactical field-victory rules | [`actor-condition.ts`](../../packages/game/domain/personnel/actor-condition.ts), [`medical-patient.ts`](../../packages/game/domain/personnel/medical-patient.ts), [`captive-service.ts`](../../packages/game/domain/personnel/captive-service.ts), [`completed-victory.ts`](../../packages/game/domain/combat/completed-victory.ts) |
+| Care defaults and campaign-authored values | [`care-rules.ts`](../../packages/game/domain/personnel/care-rules.ts) owns default treatment/rest tuning, including `restHealingHours`, and the default strategic bleeding percentage; [`campaign-care-rules.js`](../../packages/game/campaign-care-rules.js) reads authored campaign values and uses those defaults; [`campaign-rules-schema.js`](../../packages/campaign-format/campaign-rules-schema.js) owns authored-field validation |
+| Refill price input | [`workshopServiceQuote`](../../packages/game/workshop-service.js) passes the effective campaign `dressingPrice` to [`refillCost`](../../packages/game/equipment.js); the helper has no default price |
 | Aimed-shot, reload, and tactical cell rules | [`targeted-combat.ts`](../../packages/game/domain/combat/targeted-combat.ts), [`weapon-reload.ts`](../../packages/game/domain/combat/weapon-reload.ts), [`tactical-grid.ts`](../../packages/game/domain/sector-sessions/tactical-grid.ts); [`targeted-combat.js`](../../packages/game/targeted-combat.js), [`weapon-reload.js`](../../packages/game/weapon-reload.js), and [`tactical-grid.js`](../../packages/game/tactical-grid.js) re-export these domain rules |
 | Application use cases and narrow repository contracts | [`packages/game/application`](../../packages/game/application/) |
 | Repository adapters, unit of work, identity map, and snapshot mappers | [`packages/game/infrastructure`](../../packages/game/infrastructure/) |
 | Declared public composition entry points for game, editor, and persistence | [`packages/game/public`](../../packages/game/public/) |
-| Compatibility orchestration and specialized procedural rules | [`packages/game/`](../../packages/game/) (`campaign.js`, `tactical.js`, `world.js`, `time.js`, `save.ts`); `actor-condition.js`, `medical-patient.js`, `battle-outcome.js`, `targeted-combat.js`, `tactical-grid.js`, and `weapon-reload.js` re-export domain-owned rules |
+| Compatibility orchestration, retained query, and procedural rules | [`packages/game/`](../../packages/game/) (`campaign.js`, `tactical.js`, `world.js`, `time.js`, `save.ts`); [`prisoner-custody.js`](../../packages/game/prisoner-custody.js) keeps the campaign-record `prisonerStatus` query and re-exports captive service rules; `actor-condition.js`, `medical-patient.js`, `battle-outcome.js`, `targeted-combat.js`, `tactical-grid.js`, and `weapon-reload.js` re-export domain-owned rules |
 | Player UI, Three.js tactical renderer, and browser composition | [`apps/web/app/page.tsx`](../../apps/web/app/page.tsx), [`apps/web/lib`](../../apps/web/lib/) |
 | Independent campaign editor application, domain, and storage adapters | [`apps/campaign-editor`](../../apps/campaign-editor/README.md) |
 | Shared published campaign-file schemas and `CampaignDefinition` | [`packages/campaign-format`](../../packages/campaign-format/README.md) |
 | Installed campaign packages, art sources, and trusted scenario implementations | [`content/campaigns`](../../content/campaigns/), [`content/assets`](../../content/assets/README.md) |
 
 The `packages/game/` root retains compatibility and procedural modules for
-internal game callers. `actor-condition.js`, `medical-patient.js`,
-`battle-outcome.js`, `targeted-combat.js`, `tactical-grid.js`, and
-`weapon-reload.js` are thin re-exports; condition, care eligibility, victory,
-aimed-shot, grid-label, and reload rules live in the domain modules above.
-`care-rules.ts` owns care defaults, while `campaign-care-rules.js` reads
-authored campaign settings and applies those defaults. See [C4 levels 1–3](c4.md)
-and the [system map](system-map.md) for how these modules interact.
+internal game callers. `prisoner-custody.js` keeps the campaign-record
+`prisonerStatus` query and re-exports the captive service rules.
+`actor-condition.js`, `medical-patient.js`, `battle-outcome.js`,
+`targeted-combat.js`, `tactical-grid.js`, and `weapon-reload.js` re-export their
+domain-owned rules. `care-rules.ts` owns care defaults, including
+`restHealingHours`; `campaign-care-rules.js` selects authored care values or
+those defaults. [`workshopServiceQuote`](../../packages/game/workshop-service.js)
+supplies the effective dressing price to
+[`refillCost`](../../packages/game/equipment.js), which has no default price.
+See [C4 levels 1–3](c4.md) and the
+[system map](system-map.md) for how these modules interact.
 
 ## 6. Know what saving guarantees
 

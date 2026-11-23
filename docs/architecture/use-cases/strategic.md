@@ -28,6 +28,16 @@ restored per treatment hour) to 4 while omitting `bleedingDamagePercent`;
 treatment then uses the authored healing value and strategic bleeding uses the
 domain default of 25 percent.
 
+A combatant's `ServiceContract` stores their paid service terms. Capture pauses
+its unused duration while the combatant is held.
+[`captive-service.ts`](../../../packages/game/domain/personnel/captive-service.ts)
+owns the remaining-hours calculation and contract reconstruction at release.
+The retained
+[`prisoner-custody.js`](../../../packages/game/prisoner-custody.js) re-exports
+those rules and keeps `prisonerStatus`, which reads campaign character and
+detention records. The query delegates its service-hours field to the domain
+rule; it does not own the contract-pause behavior.
+
 Every `Exposure` column below uses the canonical six-value vocabulary defined in the [use-case index](README.md#exposure-vocabulary): `Command`, `Gated`, `Query`, `Supporting`, `No interface route`, and `Refused`.
 
 ## Capability families and case index
