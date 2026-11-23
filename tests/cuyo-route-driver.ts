@@ -5,7 +5,7 @@ import type {
   TacticalPoint,
   TacticalAction,
 } from '../packages/game/public/compatibility-types.ts';
-import type { CampaignPendingBattle } from '../packages/game/public/campaign-types.ts';
+import type { CampaignSectorEntryRequest } from '../packages/game/public/campaign-types.ts';
 import type { TacticalOrder } from '../packages/game/public/hud-types.ts';
 import { present } from './assert-present.ts';
 // Acceptance controller: ordinary orders only, with visible targets and remembered
@@ -107,7 +107,7 @@ export function cuyoCrouchOrder(
   return null;
 }
 export function fight(
-  request: CampaignPendingBattle,
+  request: CampaignSectorEntryRequest,
   previous: BattleSnapshot | null = null,
   {
     scoutCostWeight = 0.1,

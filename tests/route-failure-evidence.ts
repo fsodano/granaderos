@@ -1,5 +1,5 @@
 import type {
-  CampaignPendingBattle,
+  CampaignSectorEntryRequest,
   CampaignSnapshot,
 } from '../packages/game/public/campaign-types.ts';
 import type { BattleSnapshot } from '../packages/game/public/compatibility-types.ts';
@@ -18,7 +18,7 @@ interface EvidenceArtifact {
 }
 interface RouteBattleFailure {
   campaign: CampaignSnapshot;
-  request: CampaignPendingBattle;
+  request: CampaignSectorEntryRequest;
   previous: BattleSnapshot | null | undefined;
   result: FightResult & { pair?: { campaign: CampaignSnapshot; battle: BattleSnapshot } };
   expectedOutcome: BattleSnapshot['status'];

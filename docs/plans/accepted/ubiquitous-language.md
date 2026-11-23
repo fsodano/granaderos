@@ -148,6 +148,16 @@ Ending a combat session therefore does not necessarily end the sector session.
 `SectorParticipant` names participation in the whole sector visit, including
 exploration. A combat session refers to those same participant identities.
 
+`SectorEntryRequest` names the application layer's narrow entry input: the
+session, sector, participating identities, and whether deployment is required.
+The campaign snapshot stores a richer projection of the same request, which is
+`CampaignSectorEntryRequest`: the entry ID, origin and target sector, campaign
+timestamp, seed, squad, opposing forces, and any retained session snapshot. The
+campaign prefix marks that wider saved projection, not a second concept, and the
+snapshot fields `sectorEntryRequest` and `suspendedSectorSessions` hold it. The
+retired name `CampaignPendingBattle` described a battle that had not started; the
+request describes entry and may ask for a peaceful visit.
+
 `Character`, `RecruitmentCandidate`, and `Combatant` describe identity and roles.
 They do not imply separate copies of a person or an inheritance chain that must
 replace the object whenever service changes. Use `RecruitCombatant` consistently

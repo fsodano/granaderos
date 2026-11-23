@@ -4,7 +4,7 @@ import type {
   TacticalPoint,
   TacticalAction,
 } from '../packages/game/public/compatibility-types.ts';
-import type { CampaignPendingBattle } from '../packages/game/public/campaign-types.ts';
+import type { CampaignSectorEntryRequest } from '../packages/game/public/campaign-types.ts';
 import assert from 'node:assert/strict';
 import { enterSector } from '../packages/game/world.js';
 import {
@@ -340,7 +340,7 @@ export function openingControlWindow(
 }
 
 export function fight(
-  request: CampaignPendingBattle,
+  request: CampaignSectorEntryRequest,
   sectorState: BattleSnapshot | null = null,
   { controller, sharedFallback, deploy, executeOrder, admitBattle }: FightOptions = {},
 ): FightResult {
