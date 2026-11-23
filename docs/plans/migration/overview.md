@@ -232,7 +232,7 @@ serializing that domain object.
 eligible tile arrays in every suspended `snapshot` along with active and
 retained maps.
 
-Twenty-nine migrated game-rule groups have domain ownership in
+Thirty-one migrated game-rule groups have domain ownership in
 `packages/game/domain`, as listed in the [slice index](slices/README.md).
 [`targeted-combat.ts`](../../../packages/game/domain/combat/targeted-combat.ts)
 owns aimed-shot eligibility, region choices and profiles, aiming penalties, and
@@ -261,7 +261,17 @@ defines and validates the authored fields.
 owns the service hours remaining during custody and the contract rebuilt at
 release. The retained [`prisoner-custody.js`](../../../packages/game/prisoner-custody.js)
 re-exports those rules and keeps `prisonerStatus`, which reads campaign character
-and detention records.
+and detention records. [`militia-patrol.ts`](../../../packages/game/domain/personnel/militia-patrol.ts)
+owns default patrol tuning and the rule that checks saved-scene settings against
+the campaign package or domain defaults. The retained
+[`militia-patrol-rules.js`](../../../packages/game/militia-patrol-rules.js)
+keeps `militiaPatrolRules`, which selects the campaign package setting, then the
+scene's stored patrol setting, then the domain default. It also re-exports the
+domain default and consistency check. The shared
+[`campaign-rules-schema.js`](../../../packages/campaign-format/campaign-rules-schema.js)
+keeps the authored field contract and structural validation.
+[`militia-patrol.js`](../../../packages/game/militia-patrol.js) still computes
+patrol movement orders.
 `GameSession` owns `RandomSource` and `WorldTimeline`.
 Campaign code calls `drawCampaignRandom(session, draft)`, where
 `session` is the `GameSession` and `draft` is the campaign snapshot. The helper
@@ -286,6 +296,11 @@ names.
 owns the game's tactical-level rules. `packages/campaign-format` keeps an
 independent implementation for authored-map validation because that package
 cannot import the game.
+[`tactical-planning-space.ts`](../../../packages/game/domain/sector-sessions/tactical-planning-space.ts)
+owns point normalization, movement-order construction, and same-surface hand
+reach. The retained
+[`tactical-planning-space.ts`](../../../packages/game/tactical-planning-space.ts)
+re-exports those domain rules.
 
 `directionTo` and `approximateHeardPosition` live in
 [`packages/game/domain/perception/npc-perception.ts`](../../../packages/game/domain/perception/npc-perception.ts).
@@ -296,17 +311,22 @@ re-export them so callers keep their import paths and behavior.
 
 ## 5. What remains
 
-- Each procedural simulation rule still implemented in a retained
-  [`packages/game`](../../../packages/game/) module needs one named domain
-  owner or application use case. Retained compatibility entry points may
-  preserve existing imports, but must delegate the rule rather than maintain a
-  duplicate implementation. The captive service rules now have a domain owner;
-  `prisonerStatus` remains a campaign-record query, not an outstanding rule move.
-- Campaign-authored care lookup and campaign-file validation remain outside the
-  domain: [`campaign-care-rules.js`](../../../packages/game/campaign-care-rules.js)
-  selects authored values and falls back to domain defaults, while
-  [`packages/campaign-format`](../../../packages/campaign-format/) owns the
-  authored-field schema and validation.
+- Procedural rules still in retained [`packages/game`](../../../packages/game/)
+  modules need one named domain owner or application use case. In particular,
+  `militiaPatrolOrder` in
+  [`militia-patrol.js`](../../../packages/game/militia-patrol.js) still computes
+  patrol movement. Retained compatibility entry points may preserve imports,
+  but must delegate rather than duplicate domain rules. `prisonerStatus` remains
+  a campaign-record query, not an outstanding rule move.
+- Campaign-authored care lookup remains in
+  [`campaign-care-rules.js`](../../../packages/game/campaign-care-rules.js),
+  which selects authored values and falls back to domain defaults. The retained
+  [`militia-patrol-rules.js`](../../../packages/game/militia-patrol-rules.js)
+  keeps the campaign-content lookup for patrol settings. The shared
+  [`campaign-rules-schema.js`](../../../packages/campaign-format/campaign-rules-schema.js)
+  owns authored-field contracts and structural validation; the domain's
+  `validateCampaignPatrol` checks saved-scene consistency against the campaign
+  package setting or domain defaults.
 
 ## 6. Current source and accepted target
 

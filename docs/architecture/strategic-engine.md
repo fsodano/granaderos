@@ -21,8 +21,20 @@ Strategic operations combine domain classes in `packages/game/domain`, use cases
     selects authored values from `contentCampaign.package.careRules`, falls
     back to the domain defaults when that record is absent, and uses the
     default bleeding percentage when `bleedingDamagePercent` is omitted.
-    [`campaign-rules-schema.js`](../../packages/campaign-format/campaign-rules-schema.js)
-    defines and validates the authored fields.
+     [`campaign-rules-schema.js`](../../packages/campaign-format/campaign-rules-schema.js)
+     defines and validates the authored fields.
+- **Militia patrol rules:** [`militia-patrol.ts`](../../packages/game/domain/personnel/militia-patrol.ts)
+  owns default tuning and `validateCampaignPatrol`, which refuses a saved scene
+  whose patrol settings are incomplete, out of range, or different from the
+  campaign package's setting (or the domain defaults when that setting is
+  absent). The retained
+  [`militia-patrol-rules.js`](../../packages/game/militia-patrol-rules.js)
+  keeps `militiaPatrolRules`, which reads the campaign package setting, then the
+  scene's stored patrol setting, then the domain default.
+  [`campaign-rules-schema.js`](../../packages/campaign-format/campaign-rules-schema.js)
+  still owns the authored field contract and structural validation. The
+  retained [`militia-patrol.js`](../../packages/game/militia-patrol.js) still
+  computes patrol movement orders.
 - **Journeys and hostile arrivals:** `Journey` owns strategic route progress, transport mode, physical segment position, and movement purpose (`JourneyPurpose`). `ArrivalDecision` owns the mutually exclusive fight-or-withdraw choice when a journey reaches a hostile sector boundary, pausing campaign time until resolved by `FightOnArrivalUseCase` or `WithdrawOnArrivalUseCase`. `RedirectJourneyUseCase` replaces a journey's route from its actual segment position while preserving elapsed time, paid segment fares, and fatigue, including immediate reversal at zero elapsed time.
 - **World evolution, sessions, and item custody:** `GameSession` owns session identity, `revision`, and active or suspended `SectorSession` registrations (`ResumeSectorSessionUseCase` switches active authority to a suspended visit). `Sector` owns environment bounds and references to current residents, participants, objects, and corpses without duplicating `Character` health or `Inventory` custody. `ResidentPositionReference` (`residentPositions`) is a read-only projection of a non-participating serving character's saved local post. `WorldTimeline` owns monotonic game time (`WorldTimeline.advanceTo` is the only domain clock mutation), ordering `Corpse` removal (72 game hours after death via `AdvanceWorldTimeUseCase`) and `ResidentRoutine` supply collection (`CollectResidentSupplyUseCase` and `ScavengingPolicy`).
 

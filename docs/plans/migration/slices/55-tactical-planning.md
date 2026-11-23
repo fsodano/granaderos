@@ -1,42 +1,36 @@
-# Slice 55: the tactical planning rules into the domain
+# Slice 55: tactical planning rules
 
-**Branch:** `migration/tactical-planning`
-**Intent:** Move the rules that shape a movement order into the domain, beside
-the space rules they name.
+This note describes the current ownership and compatibility boundary for the
+rules that shape tactical movement orders.
 
-## Why this slice exists
+## Domain ownership
 
-`packages/game/tactical-planning-space.ts` holds the rules that shape a
-movement order: the point a plan names, which must name its ground level when
-the order is elevated, and the order the plan produces for a combatant.
+[`tactical-space.ts`](../../../../packages/game/domain/sector-sessions/tactical-space.ts)
+owns tactical levels (vertical map layers) and whether two points share a
+surface. Its sibling
+[`tactical-planning-space.ts`](../../../../packages/game/domain/sector-sessions/tactical-planning-space.ts)
+owns the point a plan records and the `move` order it produces. The planning
+rules preserve a point's coordinates and any named level. When a plan runs in a
+map with upper surfaces, the order includes a level even for ground level 0;
+flat maps keep the level field omitted. `atHand` also requires points to share
+a surface and be within its default range of 1.5 coordinate units.
 
-The domain already owns the tactical space: `packages/game/domain/sector-sessions/tactical-space.ts`
-holds the rules that read a point's level and say whether two points share a
-surface. The rules that turn a plan into an order belong with them.
+The point `(3, 4)` in
+[`tactical-planning-space.test.ts`](../../../../packages/game/domain/sector-sessions/tactical-planning-space.test.ts)
+is fixture data: on a flat map, its move order omits `tacticalLevel`; with an
+upper surface present, the order includes `tacticalLevel: 0`. A level already
+named by the point is preserved.
 
-## What it changes
+## Compatibility boundary
 
-- `packages/game/domain/sector-sessions/tactical-planning-space.ts` holds the
-  rules.
-- `packages/game/tactical-planning-space.ts` becomes a thin re-export of it,
-  and the files that import it keep importing it from the same path.
+The retained
+[`tactical-planning-space.ts`](../../../../packages/game/tactical-planning-space.ts)
+re-exports `atHand`, `moveOrder`, and `planningPoint` from the domain module.
+Existing game callers keep their import path; the retained module has no second
+implementation.
 
-The orders do not change: an elevated order still names its level, and a flat
-report stays flat.
+## Behavior covered
 
-## Tests
-
-- `packages/game/domain/sector-sessions/tactical-planning-space.test.ts` covers
-  the rules: a flat point stays flat, an elevated point names its level, a
-  point that already carries a level keeps it, and the order a plan produces
-  names the destination and the combatant.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.59` to `0.2.60`.
+The domain tests cover flat and elevated points, preservation of an existing
+level, generated order identity and movement options, and hand reach on or
+across surfaces.

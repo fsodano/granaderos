@@ -1,52 +1,48 @@
-# Slice 56: the militia patrol rules into the domain
+# Slice 56: militia patrol tuning and scene validation
 
-**Branch:** `migration/militia-patrol-rules`
-**Intent:** Move the rules that decide how a militia patrols into the domain,
-and leave the lookup of a campaign's own patrol rules where the campaign
-content is.
+This note describes the current boundary for default patrol settings, checking
+a saved scene against its campaign, and looking up campaign-authored patrol
+settings.
 
-## Why this slice exists
+## Domain ownership
 
-`packages/game/militia-patrol-rules.js` holds three things.
+[`militia-patrol.ts`](../../../../packages/game/domain/personnel/militia-patrol.ts)
+owns `DEFAULT_MILITIA_PATROL` and `validateCampaignPatrol`. The frozen defaults
+are `enabled: true`, `waypointTicks: 8`, `energyReserve: 50`, and `restEnergy: 10`.
+These fields control whether patrols run, turns per waypoint, energy reserved
+while moving, and energy recovered while resting.
 
-The tuning: the default patrol rules, which say whether patrols are on, how
-many turns a waypoint takes, how much energy a patrol keeps and how much a
-rest returns.
+`validateCampaignPatrol` accepts a missing scene. Otherwise, it treats an
+omitted scene setting as the domain defaults and refuses an incomplete,
+out-of-range, or mismatched setting. It compares the saved scene with
+the patrol setting in the campaign's embedded content package, or with domain
+defaults when the package has no patrol setting. This is a saved-scene
+consistency rule, not authored campaign schema validation.
 
-The lookup: `militiaPatrolRules(campaign)`, which reads the patrol rules a
-campaign authored and falls back to the defaults.
+[`militia-patrol.test.ts`](../../../../packages/game/domain/personnel/militia-patrol.test.ts)
+uses fixture campaign settings `enabled: false`,
+`waypointTicks: 4`, `energyReserve: 40`, and `restEnergy: 12`. A scene with the
+same values is accepted; changing `restEnergy` to `11` is refused.
 
-The validation: `validateCampaignPatrol(campaign, scene)`, which refuses a
-scene whose patrol rules disagree with the campaign's.
+## Content and compatibility boundary
 
-The domain owns what a patrol does to the world: the residents, their
-movement, and the supplies they collect. The tuning and the validation belong
-with them. The lookup stays where the campaign content is, because the domain
-may not read campaign content.
+The retained
+[`militia-patrol-rules.js`](../../../../packages/game/militia-patrol-rules.js)
+keeps `militiaPatrolRules(state)`, where `state` is the scene state. It resolves
+rules in this order: the embedded campaign package, the scene's stored
+`militiaPatrol` field, then `DEFAULT_MILITIA_PATROL`. The retained module
+re-exports the domain default and consistency check.
 
-## What it changes
+[`campaign-rules-schema.js`](../../../../packages/campaign-format/campaign-rules-schema.js)
+continues to define `MILITIA_PATROL_FIELDS` and `validateMilitiaPatrol` for the
+authored field contract and its structural validation. That contract remains
+separate from the domain check that compares a saved scene with campaign rules.
+[`militia-patrol.js`](../../../../packages/game/militia-patrol.js) still
+calculates patrol movement in `militiaPatrolOrder`; that procedural rule still
+needs a domain owner.
 
-- `packages/game/domain/personnel/militia-patrol.ts` holds the default patrol
-  rules and the validation.
-- `packages/game/militia-patrol-rules.js` keeps the lookup and the re-exports
-  from the shared file contract, and reads the defaults from the domain.
-- The files that import it keep importing it from the same path.
+## Behavior covered
 
-The tuning and the refusals do not change.
-
-## Tests
-
-- `packages/game/domain/personnel/militia-patrol.test.ts` covers the tuning and
-  the validation: the default patrol rules keep their values and stay frozen,
-  a scene whose patrol rules match the campaign's is accepted, and a scene that
-  disagrees is refused with the same message.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.60` to `0.2.61`.
+The domain tests cover the default values and their immutability, acceptance of
+a scene whose rules match the campaign, and refusal of a scene whose rules
+differ.

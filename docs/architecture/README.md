@@ -69,17 +69,33 @@ The retained root modules
 [`medical-patient.js`](../../packages/game/medical-patient.js),
 [`battle-outcome.js`](../../packages/game/battle-outcome.js),
 [`targeted-combat.js`](../../packages/game/targeted-combat.js),
-[`tactical-grid.js`](../../packages/game/tactical-grid.js), and
-[`weapon-reload.js`](../../packages/game/weapon-reload.js) re-export rules
+[`tactical-grid.js`](../../packages/game/tactical-grid.js),
+[`tactical-planning-space.ts`](../../packages/game/tactical-planning-space.ts),
+and [`weapon-reload.js`](../../packages/game/weapon-reload.js) re-export rules
 owned by [`actor-condition.ts`](../../packages/game/domain/personnel/actor-condition.ts),
 [`medical-patient.ts`](../../packages/game/domain/personnel/medical-patient.ts),
 [`completed-victory.ts`](../../packages/game/domain/combat/completed-victory.ts),
 [`targeted-combat.ts`](../../packages/game/domain/combat/targeted-combat.ts),
 [`tactical-grid.ts`](../../packages/game/domain/sector-sessions/tactical-grid.ts),
+[`tactical-planning-space.ts`](../../packages/game/domain/sector-sessions/tactical-planning-space.ts),
 and [`weapon-reload.ts`](../../packages/game/domain/combat/weapon-reload.ts).
 [`tactical-space.ts`](../../packages/game/domain/sector-sessions/tactical-space.ts)
 owns the game's tactical-level and cell-space rules. The root modules are
 compatibility entry points; the domain modules own these rules.
+[`tactical-planning-space.ts`](../../packages/game/domain/sector-sessions/tactical-planning-space.ts)
+owns planning-point and movement-order behavior, and the retained
+[`tactical-planning-space.ts`](../../packages/game/tactical-planning-space.ts)
+re-exports it. The domain also owns default militia patrol tuning and saved-scene
+consistency validation in
+[`militia-patrol.ts`](../../packages/game/domain/personnel/militia-patrol.ts).
+The retained
+[`militia-patrol-rules.js`](../../packages/game/militia-patrol-rules.js) reads
+the campaign package's patrol setting or the scene's stored setting, then uses
+the domain default and re-exports the domain rules;
+[`campaign-rules-schema.js`](../../packages/campaign-format/campaign-rules-schema.js)
+continues to own the authored field contract and structural validation. Patrol
+movement-order generation remains in
+[`militia-patrol.js`](../../packages/game/militia-patrol.js).
 [`captive-service.ts`](../../packages/game/domain/personnel/captive-service.ts)
 owns remaining service hours during custody and contract reconstruction on
 release. The retained
