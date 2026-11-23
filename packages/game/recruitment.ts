@@ -189,7 +189,7 @@ export function candidateAdmission(state: CampaignSnapshot, id: number | string)
     : state.recruited.includes(id)
       ? 'Ya se encuentra en tus filas.'
       : pendingRecruitmentClaim(state, id)
-        ? 'Este contratado tiene un reclutamiento pagado sin destino seguro.'
+        ? 'Ya pagaste por reclutar a este candidato, pero todavía no hay un destino seguro para que empiece el servicio.'
         : !record?.alive
           ? 'Ha caído en combate.'
           : record.captured

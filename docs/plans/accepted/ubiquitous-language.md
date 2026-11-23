@@ -33,8 +33,8 @@ names to players.
 | `FormSquad` | Form or reorganize a squad from available combatants at the same location in one transaction. | Formar escuadra |
 | `SquadFormationService` | Validate shared membership and move selected combatants between squads without changing their physical location. | Reglas de formación |
 | `RecruitmentCatalogue` | A read-only collection of recruitment candidates with explicit availability, specialty, and ordering rules. | Lista de reclutamiento |
-| `candidateAdmission` | Read whether a recruitment candidate can be admitted to the force and why not. It answers from the candidate's condition, a pending claim, service terms, and relationship refusals. It does not define a second category of recruit. | Admisión del candidato |
-| `RefundableRecruitmentClaim` | A prepaid recruitment whose recruit cannot begin service until a legal recruitment site exists. It owns the planned destination, the booked service terms, the payment already made, and the guarantee receipt. Restoration creates it only when no site is legal; each campaign tick starts the service at the first legal site, and the player can cancel it at the desk to settle the guarantee and refund the treasury. It has no travel schedule and is not a `Journey`. | Solicitud de reclutamiento reembolsable |
+| `RefundableRecruitmentClaim` | A prepaid recruitment preserved from a supported older save when no legal recruitment site was available at restoration. The campaign record stores the candidate reference, planned destination, booked service terms, amount paid, and optional guarantee reference; the recruit remains outside the force until service begins and the claim has no travel schedule. When a site is legal and the candidate remains eligible, restoration or campaign progression starts service at the planned destination if legal, otherwise at the current location if legal, or at the first legal site. The player can cancel the claim at the recruitment desk; cancellation refunds the amount paid and any held guarantee only when the treasury can accept the full refund. | Solicitud de reclutamiento reembolsable |
+| `candidateAdmission` | Read whether a recruitment candidate can be admitted to the force and why not. It answers from the candidate's condition, any pending `RefundableRecruitmentClaim`, service terms, and relationship refusals. It does not define a second category of recruit. | Admisión del candidato |
 | `GetRecruitmentCandidates` | Read the filtered recruitment catalogue without changing time, funds, or service. | Consultar candidatos |
 | `Journey` | Strategic movement along a route, with actual position, elapsed progress, destination, and movement purpose. | Viaje |
 | `JourneyPurpose.Withdrawal` | A journey moving away from a hostile arrival. It remains eligible for redirection. | Retirada |
@@ -168,11 +168,14 @@ domain can stay independent of the shared file contract.
 The former `civicStatus` name came from the civic-recruit list the query
 consulted and did not describe what the query answered.
 
-`RefundableRecruitmentClaim` names money already paid for a recruit who cannot
-start service because no legal recruitment site exists. It is not a travelling
-recruit: it has no travel schedule and does not delay control. The snapshot
-field `refundableRecruitmentClaims` carries these claims, while a legacy
-snapshot's `hiringArrivals` record is converted on restoration.
+`RefundableRecruitmentClaim` names an unresolved prepaid booking, not a
+travelling recruit. A `Journey` tracks strategic movement along a route; a claim
+has no travel schedule, and its recruit remains outside the force until service
+begins. The optional snapshot field `refundableRecruitmentClaims` stores these
+claims. Restoration validates each legacy `hiringArrivals` entry, starts service
+when a legal site is available and the candidate remains eligible, and converts
+the booking to a claim only when no site is legal; the legacy field is then
+removed.
 
 ## Naming rules for implementation
 

@@ -1,69 +1,75 @@
-# Slice 34: retire the hiringArrivals saved field
+# Slice 34: retire the `hiringArrivals` saved field
 
-**Branch:** `migration/retire-hiring-arrivals`
-**Intent:** Remove the travelling-recruit mechanic from the saved state, and
-convert the campaigns that still carry a recruit on the way.
+Supported older campaign saves may contain a `hiringArrivals` array of prepaid
+recruitment bookings with travel timestamps. New campaigns do not create that
+field. This conversion does not change local recruitment or strategic travel
+for combatants already in service.
 
-## Why this slice exists
+## Legal recruitment site
 
-The ubiquitous language lists `hiringArrivals` as a compatibility name to
-retire, and the accepted architecture's save-migration policy says: "Validated
-prepaid recruitment becomes immediate service at the saved game instant, using
-the planned safe destination or another available safe recruitment site.
-Preserve the payment and guarantee receipt; issue equipment once. If every
-site is unsafe, preserve the refundable prepaid claim until a legal site
-becomes available."
+A legal recruitment site is a campaign-defined location with recruitment
+facilities: a posta, cuartel, puerto, or embarcadero. The player must control
+the site, and no enemy group may be waiting for a fight there, occupying it, or
+fighting there. During a blockade, the site must also have a posta or cuartel
+for land access.
 
-The code says the mechanic is already dormant. `hireArrivalOrder`, the
-function that booked a travelling recruit, has no caller, and every character
-in the shipped campaign has `arrivalHours: 0`. The field survives only in
-campaigns saved by an earlier version, and new campaigns still seed an empty
-`hiringArrivals` array that every save then carries.
+Desk recruitment starts service immediately at the selected legal site; local
+recruitment remains in the character's current sector. The conversion follows
+the accepted [save-migration policy](../../accepted/domain-architecture.md#implementation-policies)
+and uses the canonical [RefundableRecruitmentClaim](../../accepted/ubiquitous-language.md#canonical-terms)
+term for a prepaid booking that cannot begin service yet.
 
-The owner decided to retire it as the accepted plan states.
+## Restoring a legacy booking
 
-## What it changes
+Restoration validates each legacy entry against the candidate, booked service
+terms, payment, timestamps, and configured recruitment sites. The saved
+destination must identify a configured recruitment site; an unknown destination
+makes the entry invalid rather than eligible for fallback.
 
-- A new campaign no longer carries the field.
-- A restored campaign that still carries a pending arrival is converted: the
-  recruit joins the service immediately, at the planned destination when that
-  is a legal recruitment site and at another legal site otherwise. The payment
-  and the guarantee receipt are preserved, and the equipment is issued once.
-- When no legal site exists, the claim is kept as a refundable claim, which
-  the player can cancel at the desk for the money back.
-- The recruitment screen stops showing a count of pending incorporations and
-  the copy that says a recruit is on the way.
+For each valid entry:
 
-## What it does not change
+- If the planned destination is legal, service starts there at the saved
+  campaign time.
+- If that known destination is unsafe, restoration uses the current campaign
+  location if legal; otherwise, it uses the first legal recruitment site.
+- If no recruitment site is legal, restoration converts the booking to a
+  `RefundableRecruitmentClaim`.
 
-No rule of combat, no price, and no saved value other than the retired field.
-A campaign that has nothing pending restores exactly as before.
+The optional `refundableRecruitmentClaims` snapshot field stores unresolved
+claims. Restoration removes the legacy `hiringArrivals` field.
 
-## The name of the remaining claim
+## Claim lifecycle
 
-The surviving refundable claim is a different thing from a travelling
-recruit: it is money already paid for a recruit who cannot start yet. It
-therefore needs its own name, and the glossary records it as a canonical term
-with its scope, owner, lifecycle and Spanish translation.
+A `RefundableRecruitmentClaim` records the candidate, planned destination,
+booked service terms, amount paid, and an optional guarantee reference. It has
+no travel schedule, and the recruit remains outside the force until service
+begins. When campaign processing finds a legal site and the candidate remains
+eligible, it retries the claim using the same destination order. Service starts
+at that campaign time, the claim is removed, starting equipment is issued once,
+and no additional recruitment payment is taken.
 
-## Tests
+The player can cancel a claim from the recruitment screen at the desk.
+Cancellation refunds the paid amount and any held guarantee. If the treasury
+cannot accept the full refund, cancellation is refused until the player spends
+funds.
 
-- A test proves that a restored campaign with a pending arrival hires the
-  recruit immediately, keeps the payment and the guarantee, and issues the
-  equipment once.
-- A test proves that a pending arrival whose destination is not a legal
-  recruitment site is hired at another legal site.
-- A test proves that a pending arrival with no legal site anywhere becomes a
-  refundable claim that the desk can cancel for the money back.
-- A test proves that a campaign with nothing pending restores unchanged.
-- The existing save and restoration tests keep passing.
+## Test requirements
 
-## Verification
+Tests must cover:
 
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
+- A valid legacy booking at a legal destination starts service at the saved
+  campaign time, preserves its terms, payment, and guarantee, issues starting
+  equipment once, and removes the legacy field.
+- A known but unsafe destination falls back to the current location when legal,
+  or to the first legal recruitment site otherwise.
+- A booking with no legal site becomes a claim; when a site later becomes legal
+  and the candidate remains eligible, service starts without another charge.
+- Canceling a claim refunds the paid amount and any held guarantee only when
+  the treasury has room for the full refund.
+- A malformed legacy entry or unknown destination is rejected.
+- A save without a legacy booking or existing claim gains no recruit, charge,
+  or equipment during this conversion.
 
-## Version
-
-`0.2.38` to `0.2.39`.
+Source anchors: [campaign migration and claim processing](../../../../packages/game/campaign.js),
+[site selection and claim validation](../../../../packages/game/recruitment-claims.js),
+and the [campaign snapshot contract](../../../../packages/game/public/campaign-types.ts).

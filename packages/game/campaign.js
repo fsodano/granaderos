@@ -3374,10 +3374,10 @@ export function dispatchCampaign(previous, action) {
         requireThat(
           action.expectedGuaranteeId === undefined ||
             pendingRecruitmentClaim(s, action.id)?.guaranteeId === action.expectedGuaranteeId,
-          'La solicitud cambió. Revisá el contrato antes de cancelar.',
+          'La solicitud cambió. Revisá los datos de reclutamiento antes de cancelarla.',
         );
         cancelRecruitmentClaim(s, action.id);
-        note(s, 'Se cancela la solicitud y se devuelve el anticipo.');
+        note(s, 'Cancelaste la solicitud y recuperaste todo el dinero pagado.');
         break;
       case 'recruit':
         throw Error('Los combatientes locales se incorporan mediante encuentros personales.');

@@ -11,20 +11,20 @@ import { CONTRACT_TERMS, contractQuote } from './contracts.js';
 export function recruitmentSiteReason(state, destination) {
   const site = arrivalSitesFor(state).find((s) => s.sector === destination);
   if (!site) {
-    return 'Elegí una posta, un cuartel, un puerto o un embarcadero habilitado.';
+    return 'Elegí un destino habilitado para reclutar: una posta, un cuartel, un puerto o un embarcadero.';
   }
   if (state.sectors?.[destination]?.owner !== 'patriot') {
-    return 'El destino de llegada debe estar bajo tu control.';
+    return 'Elegí un destino de reclutamiento que esté bajo tu control.';
   }
   if (
     (state.enemyGroups ?? []).some(
       (g) => g.target === destination && ['waiting', 'stationed', 'engaged'].includes(g.status),
     )
   ) {
-    return 'El destino de llegada está ocupado o en combate.';
+    return 'No podés reclutar en ese destino: hay fuerzas enemigas o un combate en curso.';
   }
   if (state.blockade && !site.facilities.some((f) => ['post', 'barracks'].includes(f))) {
-    return 'El bloqueo impide llegar por agua. Elegí un destino con acceso terrestre.';
+    return 'El bloqueo impide reclutar en destinos sin acceso terrestre. Elegí uno con acceso terrestre.';
   }
   return null;
 }
@@ -46,7 +46,7 @@ export function pendingRecruitmentClaim(state, id) {
 export function cancelRecruitmentClaim(state, id) {
   const claim = pendingRecruitmentClaim(state, id);
   if (!claim) {
-    throw Error('No hay una solicitud de reclutamiento pendiente para cancelar.');
+    throw Error('No tenés ninguna solicitud de reclutamiento pendiente para cancelar.');
   }
   const reason = recruitmentClaimCancellationReason(state, id);
   if (reason) {
@@ -77,7 +77,9 @@ export function validateLegacyHiringArrivals(state, roster) {
   }
   const need = (ok) => {
     if (!ok) {
-      throw Error('Las llegadas de contratados guardadas son inválidas.');
+      throw Error(
+        'Los datos guardados de las solicitudes de reclutamiento anteriores no son válidos.',
+      );
     }
   };
   const integer = (n, min, max) => Number.isSafeInteger(n) && n >= min && n <= max;
@@ -164,7 +166,7 @@ export function validateRecruitmentClaims(state, roster) {
   }
   const need = (ok) => {
     if (!ok) {
-      throw Error('Las solicitudes de reclutamiento guardadas son inválidas.');
+      throw Error('Los datos guardados de las solicitudes de reclutamiento no son válidos.');
     }
   };
   const integer = (n, min, max) => Number.isSafeInteger(n) && n >= min && n <= max;
