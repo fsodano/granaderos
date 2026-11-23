@@ -1,6 +1,6 @@
 # Migration slice notes
 
-This index links to the 33 migration slice notes. Each note records its
+This index links to the 37 migration slice notes. Each note records its
 rationale, scope, and behavior tests. Its rationale describes the source at
 that slice's start; the [overview](../overview.md) describes current source.
 
@@ -41,6 +41,10 @@ that slice's start; the [overview](../overview.md) describes current source.
 | [31. Game import boundary](31-game-import-boundary.md) |
 | [32. Perception consolidation](32-perception-consolidation.md) |
 | [33. Session random source](33-session-random-source.md) |
+| [34. Retire hiring arrivals](34-retire-hiring-arrivals.md) |
+| [35. Session clock](35-session-clock.md) |
+| [36. Strategic clock timeline](36-strategic-clock-timeline.md) |
+| [37. Sector session field](37-sector-session-field.md) |
 
 ## What the series changed
 
@@ -60,12 +64,19 @@ that slice's start; the [overview](../overview.md) describes current source.
   `civicStatus` are not accepted; `candidateAdmission` is the canonical
   eligibility query. `beginAssault` remains a compatibility command for
   resolving a hostile arrival.
-- `GameSession` (the runtime consistency boundary) owns `RandomSource` (the
-  seeded random sequence). Creation and restoration build it; the session
-  snapshot preserves it, and the `randomSource` accessor exposes it.
-- `drawCampaignRandom(session, draft)` draws through `session.randomSource` and
-  writes the advanced seed back to `draft.seed`, the campaign draft's seed
-  field. The save format and drawn values do not change.
+- `GameSession` owns `RandomSource` (the seeded random sequence) and
+  `WorldTimeline` (the accepted game-time clock). `drawCampaignRandom(session,
+  draft)` draws through `session.randomSource` and writes the advanced seed to
+  `draft.seed`. Campaign, strategic, and tactical clock paths use
+  `session.timeline`, and campaign `hour` and optional `secondOfHour` project
+  its accepted second.
+- Restoration validates legacy `hiringArrivals` entries. Valid bookings start
+  service immediately at a legal recruitment site, or preserve a
+  `RefundableRecruitmentClaim` when no site is legal. It removes the old field;
+  new campaigns do not carry it.
+- Portable saves write the sector view under `sectorSession`. Decoding and
+  terrain compaction read legacy `battle` when `sectorSession` is absent, while
+  the in-memory `GameSnapshotContent.battle` field remains distinct.
 - `apps/web` imports several declared entries from `packages/game/public`,
   including `game-runtime-api.ts`, `campaign-types.ts`,
   `compatibility-types.ts`, `inventory-types.ts`, `battle-job-types.ts`,
@@ -88,16 +99,17 @@ that slice's start; the [overview](../overview.md) describes current source.
   root module is a thin re-export of it.
 - `ResidentPositionReference` names the saved reference to a resident's
   character identity and local position.
-- Twenty game rules have moved into the domain: firearm readiness, unarmed
+- Twenty-one game rules have domain ownership: firearm readiness, unarmed
   combat, sleep need, held supplies, projectile energy, firearm loads, study
   rate, the route queue, firearm serviceability, kinetic impact, combat
   balance, combat journal, fatigue and energy, interior visibility, campaign
-  clock conversion, tactical-level rules (the vertical map layer assigned to
-  a point), shot-range calculation, NPC facing (`directionTo`), anonymous
-  sound-position approximation (`approximateHeardPosition`), and care-composure relief
+  clock conversion, `WorldTimeline` clock advancement, tactical-level rules
+  (the vertical map layer assigned to a point), shot-range calculation, NPC
+  facing (`directionTo`), anonymous sound-position approximation
+  (`approximateHeardPosition`), and care-composure relief
   (`CARE_COMPOSURE_RELIEF` & `careComposureRelief`). The sleep-need sentence
-  and campaign notices moved from game code to the browser interface.
-  The shot-range sentence stays beside its HUD caller in
+  and campaign notices moved from game code to the browser interface. The
+  shot-range sentence stays beside its HUD caller in
   `packages/game/shot-range.js` to preserve dependency direction.
 - Slice 26 moved the game's tactical-level rules into
   `packages/game/domain/sector-sessions/tactical-space.ts`. Slice 27 removed
@@ -118,8 +130,6 @@ that slice's start; the [overview](../overview.md) describes current source.
 ## What remains
 
 - Retained simulation modules still carry most game rules procedurally.
-- `GameSession` does not own `WorldTimeline` (the game-time event scheduler),
-  and `packages/game/campaign.js` still changes campaign time directly.
-- Persisted compatibility names still need explicit save conversion.
-  `hiringArrivals` is a legacy prepaid recruitment claim with a travel delay,
-  so changing its conversion changes gameplay.
+- The saved campaign fields `pendingBattle`, `recruited`, `operativeState`,
+  `sectorStates`, and `sceneStates` still need explicit conversion to canonical
+  domain representations.

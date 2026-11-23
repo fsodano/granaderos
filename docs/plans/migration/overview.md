@@ -162,24 +162,19 @@ A reply is discarded when its session identity, revision, request identity, or
 `SectorOperationContext` (session, visit, both revisions, and request identity)
 no longer matches the active snapshot.
 
-**Target time model.** The accepted architecture assigns scheduled game-time
-advancement to `WorldTimeline.advanceTo`. It applies events in chronological
-order with a stable identifier tie-break and pauses before an event that
-requires a decision. During a `SectorSession`, `SectorTimeBudget` (the
-per-operation time limit) bounds each order at the next campaign-time boundary.
-
-**Current time behavior.** The retained `packages/game/campaign.js` also
-changes the campaign clock directly. This production code in
-`advanceCampaignHour` increments `hour` on `s`, the campaign snapshot:
-
-```js
-s.hour++;
-```
-
-Other campaign-clock loops directly assign
-`s.secondOfHour = (s.secondOfHour ?? 0) + step`, where `s` is the campaign
-snapshot and `step` is elapsed seconds in the loop. `WorldTimeline.advanceTo` is
-therefore not the only current time-mutation path.
+**Time ownership.** [`GameSession`](../../../packages/game/domain/session/game-session.ts),
+the per-game runtime consistency boundary, owns a
+[`WorldTimeline`](../../../packages/game/domain/world/world-timeline.ts), the
+authority for accepted game time. `WorldTimeline.advanceTo` processes scheduled
+events in chronological order with a stable identifier tie-break and stops at
+the accepted second of an event that requires a decision. Campaign advancement,
+tactical synchronization, and the strategic `advanceStrategicTime` order in
+[`campaign.js`](../../../packages/game/campaign.js) use the session timeline.
+On restoration, the [session mapper](../../../packages/game/infrastructure/session/campaign-game-session-mapper.js)
+starts it from `campaign.hour * 3600 + (campaign.secondOfHour ?? 0)`. After an
+accepted operation, `hour` and optional `secondOfHour` project the timeline's
+accepted second. During a `SectorSession`, `SectorTimeBudget` (the per-operation
+time limit) bounds each order at the next campaign-time boundary.
 
 **Persistence.** After an accepted commit, the autosave queue encodes the
 campaign and sector snapshot pair through `SaveGameUseCase` and
@@ -198,22 +193,33 @@ versioned save and worker representation). The player-app import rules remain
 intentionally different for React screens and browser composition, as section
 8 describes.
 
-Twenty game rules moved into `packages/game/domain`: firearm readiness,
-unarmed combat, sleep need, held supplies, projectile energy, firearm loads,
-study rate, the route queue, firearm serviceability, kinetic impact, combat
-balance, combat journal, fatigue and energy, interior visibility, campaign
-clock conversion, tactical-level rules (the vertical map layer assigned to a
-point), shot-range calculation, `directionTo` (NPC facing),
-`approximateHeardPosition` (anonymous sound location), and care-composure relief
+Twenty-one game rules have domain ownership in `packages/game/domain`: firearm
+readiness, unarmed combat, sleep need, held supplies, projectile energy,
+firearm loads, study rate, the route queue, firearm serviceability, kinetic
+impact, combat balance, combat journal, fatigue and energy, interior
+visibility, campaign clock conversion, `WorldTimeline` clock advancement,
+tactical-level rules (the vertical map layer assigned to a point), shot-range
+calculation, `directionTo` (NPC facing), `approximateHeardPosition` (anonymous
+sound location), and care-composure relief
 (`CARE_COMPOSURE_RELIEF` & `careComposureRelief`). The sleep-need sentence
 and campaign notices moved to the browser interface. The Spanish shot-range
 sentence remains in `packages/game/shot-range.js` beside its caller in
 `packages/game/ja2-hud.ts`; moving it to the player application would invert
-the dependency direction. `GameSession` owns `RandomSource`, the seeded random
-sequence. Campaign code calls `drawCampaignRandom(session, draft)`, where
+the dependency direction. `GameSession` owns `RandomSource` and `WorldTimeline`.
+Campaign code calls `drawCampaignRandom(session, draft)`, where
 `session` is the `GameSession` and `draft` is the campaign snapshot. The helper
-draws through `session.randomSource` and writes the advanced seed back to
-`draft.seed`.
+draws through `session.randomSource` and writes the advanced seed to
+`draft.seed`. Campaign, strategic, and tactical clock paths use
+`session.timeline`, and the campaign's `hour` and optional `secondOfHour`
+project its accepted second.
+
+The retired `hiringArrivals` field is accepted only as a legacy save input.
+Restoration validates each entry. A valid booking starts service immediately at
+a legal recruitment site at the saved campaign time; if no site is legal,
+restoration preserves a `RefundableRecruitmentClaim`. After conversion, the old
+field is removed. New saves write the sector view under
+`sectorSession`, and decoding accepts legacy `battle` only when that key is
+absent.
 
 Slice 26 moved the game's tactical-level rules into
 `packages/game/domain/sector-sessions/tactical-space.ts`. Slice 27 removed the
@@ -230,26 +236,20 @@ re-export these functions so callers keep their import paths and behavior.
 ## 5. What remains
 
 - The retained simulation modules, including `tactical.js` and `campaign.js`,
-  still carry most game rules procedurally. Moving twenty rules did not move
+  still carry most game rules procedurally. Moving twenty-one rules did not move
   the simulation as a whole.
-- `GameSession` (the runtime consistency boundary) owns `RandomSource` (the
-  seeded random sequence). Campaign draws use the session's source and write
-  its advanced seed back to the campaign snapshot. The session does not own
-  `WorldTimeline` (the game-time event scheduler).
-- `packages/game/campaign.js` also mutates campaign time directly, so
-  `WorldTimeline.advanceTo` is not the only current time-mutation path.
-- Persisted compatibility names still require an explicit save conversion
-  (a migration that translates supported saved fields) before retirement.
-  `hiringArrivals` is a prepaid recruitment claim with a travel delay, so
-  changing or removing it changes gameplay and requires a migration rather than
-  a field rename.
+- The saved campaign fields `pendingBattle`, `recruited`, `operativeState`,
+  `sectorStates`, and `sceneStates` still need explicit conversion to canonical
+  domain representations before their compatibility names can be retired.
 
 ## 6. Current source and accepted target
 
 The accepted architecture and glossary define the target. This overview
-describes current source behavior. In particular, `WorldTimeline.advanceTo` is
-the target clock boundary; `packages/game/campaign.js` still changes campaign
-time directly.
+describes current source behavior: `GameSession` owns `WorldTimeline`, campaign
+and strategic time paths advance through it, and the campaign clock fields
+project its accepted second. The saved campaign fields still awaiting conversion
+are `pendingBattle`, `recruited`, `operativeState`, `sectorStates`, and
+`sceneStates`.
 
 ## 7. Verification
 
@@ -269,9 +269,9 @@ accepted architecture.
 | Public game surface | `tools/architecture-rules.ts` blocks every `apps/web` file from importing retained modules directly from the `packages/game` root. It also blocks `apps/web/app` from importing domain, application, or infrastructure modules; `apps/web/lib` may import those layers for browser composition. | Keep both import rules enforced and use declared entries for package APIs. |
 | Game-to-player dependency | `tools/architecture-rules.ts`, `tools/check-architecture.mjs`, and `.dependency-cruiser.json` prohibit imports from `packages/game` into `apps/web`. | Keep the game package independent of player-interface modules. |
 | Public entries used by `apps/web` | The app imports `game-runtime-api.ts`, `campaign-types.ts`, `compatibility-types.ts`, `inventory-types.ts`, `battle-job-types.ts`, `game-snapshot-types.ts`, and `campaign-compiler-api.ts` from `packages/game/public`. | Treat the declared entries as a set of APIs, not as one runtime entry. |
-| Campaign compilation and saves | `CampaignCompiler` compiles a validated `CampaignDefinition`; the retained `compileCampaignPackage` adapter in `packages/game/campaign-library.js` delegates to it. `GameSnapshot` names the versioned save and worker representation. | Keep supported save decoding behind the conversion policy. |
-| Domain rule ownership | Twenty rules live in `packages/game/domain`, including `CARE_COMPOSURE_RELIEF` & `careComposureRelief` in `packages/game/domain/personnel/care-composure.ts` and the richer `directionTo` & `approximateHeardPosition` rules in `packages/game/domain/perception/npc-perception.ts`. Both retained modules re-export the perception rules. Retained modules still carry most simulation rules procedurally. The game uses `packages/game/domain/sector-sessions/tactical-space.ts`; `packages/campaign-format` keeps an independent map-validation copy. | Move remaining procedural rules behind the domain or a declared public entry. |
-| Time and randomness | `GameSession` owns `RandomSource`, and its snapshot carries the source state. `drawCampaignRandom(session, draft)` draws through `session.randomSource` and writes its advanced seed to `draft.seed`; the save format and drawn values stay the same. `GameSession` does not own `WorldTimeline`, and `packages/game/campaign.js` changes the clock directly. | Make `GameSession` own `WorldTimeline` and route every clock change through `WorldTimeline.advanceTo`. |
-| Compatibility table | The glossary table maps retained API/save names to canonical terms. `recruitCivic` and `civicStatus` are not accepted; `candidateAdmission` is canonical. `beginAssault` remains a compatibility command for resolving a hostile arrival. Persisted names, including `hiringArrivals`, still need conversion; `hiringArrivals` carries a recruitment travel delay. | Convert persisted compatibility names. Treat `hiringArrivals` as a gameplay migration, not a field rename. |
+| Campaign compilation and saves | `CampaignCompiler` compiles a validated `CampaignDefinition`; the retained `compileCampaignPackage` adapter in `packages/game/campaign-library.js` delegates to it. `GameSnapshot` names the versioned save and worker representation. New saves write the active sector view under `sectorSession`; decoding reads legacy `battle` only when `sectorSession` is absent. `GameSnapshotContent.battle` remains an in-memory field. | Keep supported save decoding behind the conversion policy. |
+| Domain rule ownership | Twenty-one game rules have domain ownership, including `WorldTimeline` clock advancement, `CARE_COMPOSURE_RELIEF` & `careComposureRelief` in `packages/game/domain/personnel/care-composure.ts`, and `directionTo` & `approximateHeardPosition` in `packages/game/domain/perception/npc-perception.ts`. Both retained modules re-export the perception rules. Retained modules still carry most simulation rules procedurally. The game uses `packages/game/domain/sector-sessions/tactical-space.ts`; `packages/campaign-format` keeps an independent map-validation copy. | Move remaining procedural rules behind the domain or a declared public entry. |
+| Time and randomness | `GameSession` owns `RandomSource` and `WorldTimeline`. `drawCampaignRandom(session, draft)` draws through `session.randomSource` and writes its advanced seed to `draft.seed`. Campaign, strategic, and tactical clock paths advance `session.timeline`; campaign `hour` and optional `secondOfHour` project its accepted second. | Preserve session ownership and keep campaign clock fields as projections of accepted time. |
+| Compatibility table | The glossary maps retained API and save names to canonical terms. `recruitCivic` and `civicStatus` are not accepted; `candidateAdmission` is canonical. `beginAssault` remains a compatibility command. Validated legacy `hiringArrivals` entries start service immediately at a legal site or become a `RefundableRecruitmentClaim` if none is legal; the old field is removed. The saved campaign fields still to convert are `pendingBattle`, `recruited`, `operativeState`, `sectorStates`, and `sceneStates`. | Convert the remaining saved campaign fields to canonical domain representations before retiring their compatibility names. |
 | Resident position | `ResidentPositionReference` names the saved reference to a character identity and local position. | Keep the saved projection separate from character health and inventory ownership. |
 | Player-facing messages | The domain owns the sleep-need rule; the browser interface owns its sentence and campaign notices. | Keep player-facing copy outside domain and application code. |

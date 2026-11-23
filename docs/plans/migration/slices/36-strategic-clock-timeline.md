@@ -1,47 +1,43 @@
-# Slice 36: the strategic clock on the session timeline
+# Slice 36: route strategic time through the session timeline
 
-**Branch:** `migration/strategic-clock-timeline`
-**Intent:** Move the last campaign clock path onto the domain's timeline, so
-every accepted second of game time comes from one owner.
+`GameSession` is the runtime consistency boundary for one game and owns its
+`WorldTimeline`, the authority for accepted game time. Campaign advancement
+already uses that timeline; the strategic clock must use the same source. The
+campaign's `hour` and optional `secondOfHour` are projections of the timeline's
+accepted second, not independent clock state.
 
-## Why this slice exists
+## Strategic advancement
 
-[Slice 35](35-session-clock.md) put the campaign's `advanceCampaignSeconds` on
-the `WorldTimeline` the game session owns, and made the campaign's `hour` and
-`secondOfHour` a projection of the timeline's accepted second.
+The `advanceStrategicTime` order advances a bounded number of seconds while
+campaign systems process the resulting time. It divides the request at hour,
+contract, quest, and journey boundaries, then schedules each step on
+`WorldTimeline`. The timeline callback runs campaign work for the step's target
+second; when the callback returns, the timeline records that accepted second.
+When an event requires the player to stop, the timeline and campaign clock
+projection remain at the same accepted second.
 
-One path was left behind. The `advanceStrategicTime` order, the one the
-strategic clock uses to move time while the player watches, has its own
-stepping loop that writes the campaign's clock fields directly. It computes
-the same kind of boundaries the other loop computes, and it interrupts the
-same way, but it does not go through the domain's clock.
+The strategic clock must not write a second authoritative time into the
+campaign snapshot. After an accepted operation, `hour` is the whole-hour count
+of `timeline.currentSecond`, and optional `secondOfHour` is the remainder
+within that hour.
 
-So the accepted second still has two writers: the timeline, and this loop.
+## Requirements
 
-## What it changes
+- `advanceStrategicTime` must advance the `GameSession` timeline rather than
+  maintain a separate clock.
+- Whole-hour and fractional-second requests must leave the campaign clock
+  projection equal to the timeline's accepted second.
+- Contract warnings, journey boundaries, and other interruptions must stop
+  progression at the same accepted second in both representations.
 
-The `advanceStrategicTime` order advances the session's timeline instead of
-writing the campaign's clock fields. Its step boundaries, the work it runs at
-each step, and the moments it interrupts at stay the same, and the campaign's
-clock fields remain a projection of the timeline's accepted second.
+## Test requirements
 
-After this slice, every path that moves campaign time goes through
-`WorldTimeline.advanceTo`, and no code writes the campaign's clock fields
-except the projection.
+- Whole-hour and fractional requests must leave the strategic clock projection
+  equal to the session timeline's accepted second.
+- Interruption tests must cover contract warnings, journey boundaries, and
+  other stop conditions, checking the projection at each accepted second.
 
-## Tests
-
-- A test of the strategic clock proves that advancing time produces the same
-  hours, seconds and interruptions as before, and that the campaign's clock
-  fields match the timeline's accepted second afterwards.
-- The existing strategic clock, rest and quest tests keep passing.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.40` to `0.2.41`.
+Source anchors: [`GameSession`](../../../../packages/game/domain/session/game-session.ts),
+[`WorldTimeline`](../../../../packages/game/domain/world/world-timeline.ts),
+[strategic clock advancement](../../../../packages/game/campaign.js), and the
+[session mapper](../../../../packages/game/infrastructure/session/campaign-game-session-mapper.js).
