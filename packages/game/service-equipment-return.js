@@ -605,7 +605,7 @@ export function validateServiceEquipmentReturns(s, roster) {
           operativeIds.has(Number(id)) &&
           !s.recruited.includes(Number(id)) &&
           !s.contracts[id] &&
-          !s.hiringArrivals?.some((a) => a.operativeId === Number(id)),
+          !s.refundableRecruitmentClaims?.some((claim) => claim.operativeId === Number(id)),
         'El combatiente aún tiene equipo por recoger.',
       );
       const unit = carrier(s, Number(id), roster);

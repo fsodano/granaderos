@@ -166,11 +166,11 @@ export { heldGrenade } from '../grenade-throw.js';
 export { makeGrenadeStack } from '../grenades.ts';
 export { handLayout, handsRequired } from '../hand-layout.ts';
 export {
-  hireCancellationReason,
-  hiringArrivalOptions,
-  hiringArrivalReason,
-  pendingHire,
-} from '../hiring-arrivals.js';
+  recruitmentClaimCancellationReason,
+  recruitmentSiteReason,
+  recruitmentSites,
+  pendingRecruitmentClaim,
+} from '../recruitment-claims.js';
 export { historicalLossReason } from '../historical-loss.js';
 export { MATURITY_HOURS, mountForOperative } from '../horses.js';
 export {

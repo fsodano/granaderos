@@ -47,8 +47,12 @@ import {
 } from '../packages/game/tactical.js';
 import { sameSurface, spacePoint } from '../packages/game/tactical-space.js';
 import { enterSector } from '../packages/game/world.js';
-import { hiringArrivalOptions, hireArrivalDueSeconds } from '../packages/game/hiring-arrivals.js';
-import { immediateRecruitmentExpectation } from './immediate-recruitment-fixture.ts';
+import { recruitmentSites } from '../packages/game/recruitment-claims.js';
+import {
+  hasRecruitmentClaim,
+  immediateRecruitmentExpectation,
+  receiptSeconds,
+} from './immediate-recruitment-fixture.ts';
 import { contractQuote, contractExpiresSeconds } from '../packages/game/contracts.js';
 import { operativeLocation } from '../packages/game/squads.js';
 import { cellTravelPlan } from '../packages/game/world-cells.ts';
@@ -356,16 +360,13 @@ export function prepareFreshCoastalHires(
   };
   const arrived = (hire: RouteHire) => {
     const contract = s.contracts[hire.id],
-      due = hireArrivalDueSeconds(hire.arrival);
+      due = receiptSeconds(hire.arrival);
     assert.equal(
       s.recruited.filter((id) => id === hire.id).length,
       1,
       'Each actual hire arrives exactly once.',
     );
-    assert.equal(
-      s.hiringArrivals.some((a) => a.operativeId === hire.id),
-      false,
-    );
+    assert.equal(hasRecruitmentClaim(s, hire.id), false);
     assert.equal(present(s.operativeState[hire.id]).location, hire.arrival.destination);
     assert.equal(present(contract).kind, hire.quote.permanent ? 'patriot' : 'paid');
     assert.equal(present(contract).term, term);
@@ -382,14 +383,14 @@ export function prepareFreshCoastalHires(
   };
   for (const id of ids) {
     assert.ok(
-      !s.recruited.includes(id) && !s.hiringArrivals.some((a) => a.operativeId === id),
+      !s.recruited.includes(id) && !hasRecruitmentClaim(s, id),
       'Opening hiring cannot duplicate serving or pending people.',
     );
     const op = rosterFor(s).find((op) => op.id === id);
     assert.ok(op, `Opening hire ${id} must exist.`);
     const destination = s.location;
     assert.ok(
-      hiringArrivalOptions(s).some((site) => site.id === destination),
+      recruitmentSites(s).some((site) => site.id === destination),
       'The opening destination must admit actual arrivals.',
     );
     const quote = contractQuote(s, op, term);
@@ -420,14 +421,14 @@ export function prepareFreshCoastalHires(
       'Resolve an actual encounter before the opening hiring wait.',
     );
     const future = hires
-        .map((hire) => hireArrivalDueSeconds(hire.arrival))
+        .map((hire) => receiptSeconds(hire.arrival))
         .filter((due) => due > clock(s)),
       next = Math.min(until, ...future);
     const hours = Math.min(24, Math.ceil((next - clock(s)) / 3600));
     execute({ type: 'wait', hours });
     s = saved({ campaign: s }).campaign;
     for (const hire of hires) {
-      if (hireArrivalDueSeconds(hire.arrival) <= clock(s)) {
+      if (receiptSeconds(hire.arrival) <= clock(s)) {
         arrived(hire);
       }
     }
@@ -978,7 +979,7 @@ export function freshCoastalRoute(
           ...(auxiliary === relief && relief !== undefined ? [relief] : []),
         ],
         cash = s.resources.treasury;
-      assert.ok(hiringArrivalOptions(s).some((o) => o.id === s.location));
+      assert.ok(recruitmentSites(s).some((o) => o.id === s.location));
       const location = s.location;
       const quotes = hires.map((id) => ({
         id,
@@ -1014,9 +1015,9 @@ export function freshCoastalRoute(
       if (hires.length) {
         for (const arrival of arrivals) {
           assert.equal(s.recruited.filter((id) => id === arrival.operativeId).length, 1);
-          assert.ok(!s.hiringArrivals.some((record) => record.operativeId === arrival.operativeId));
+          assert.ok(!hasRecruitmentClaim(s, arrival.operativeId));
         }
-        const due = Math.max(...arrivals.map(hireArrivalDueSeconds));
+        const due = Math.max(...arrivals.map(receiptSeconds));
         if (auxiliary !== undefined && s.hour * 3600 + (s.secondOfHour ?? 0) < due) {
           for (const id of field) {
             assert.ok(
@@ -1059,7 +1060,7 @@ export function freshCoastalRoute(
         );
         for (const [index, arrival] of arrivals.entries()) {
           const contract = s.contracts[arrival.operativeId],
-            started = hireArrivalDueSeconds(arrival);
+            started = receiptSeconds(arrival);
           assert.equal(
             present(present(contract).started) * 3600 + (present(contract).startedSecond ?? 0),
             started,
@@ -1145,7 +1146,7 @@ export function freshCoastalRoute(
   }
   assert.equal(s.completed, false);
   if (kind === 'local') {
-    assert.equal(s.hiringArrivals.length, 0);
+    assert.equal((s.refundableRecruitmentClaims ?? []).length, 0);
     assert.ok(Object.keys(s.contracts).every((id) => [1000, 3, 4, 10].includes(Number(id))));
     assert.ok(s.recruited.every((id) => [1000, 3, 4, 10].includes(id)));
   }

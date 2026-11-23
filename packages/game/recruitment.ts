@@ -6,7 +6,7 @@ import type {
 import { campaignDefinitions } from './campaign-definition.js';
 import { PROFILE_ATTRIBUTES } from './character-profile.ts';
 import { authoredRoster } from './content-roster.ts';
-import { pendingHire } from './hiring-arrivals.js';
+import { pendingRecruitmentClaim } from './recruitment-claims.js';
 import { gainsExperience, isContractOperative } from './content-character-ids.ts';
 import { applyCharacterProfile } from './character-profile.ts';
 import { campaignOfficerCreation, officerCreationWeapon } from './campaign-officer-creation.ts';
@@ -188,8 +188,8 @@ export function candidateAdmission(state: CampaignSnapshot, id: number | string)
     ? 'No existe ese voluntario.'
     : state.recruited.includes(id)
       ? 'Ya se encuentra en tus filas.'
-      : pendingHire(state, id)
-        ? 'Este contratado ya está en camino.'
+      : pendingRecruitmentClaim(state, id)
+        ? 'Este contratado tiene un reclutamiento pagado sin destino seguro.'
         : !record?.alive
           ? 'Ha caído en combate.'
           : record.captured

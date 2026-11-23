@@ -58,7 +58,7 @@ export default function Desk({
   const started = Boolean(
     s.officer ||
     s.recruited.length ||
-    s.hiringArrivals?.length ||
+    s.refundableRecruitmentClaims?.length ||
     s.phase > 0 ||
     s.campaignProgress?.completed.length ||
     s.completed ||

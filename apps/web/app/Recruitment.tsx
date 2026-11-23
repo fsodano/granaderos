@@ -12,10 +12,9 @@ import {
   contractQuote,
   contractStatus,
   candidateAdmission,
-  hiringArrivalOptions,
-  hiringArrivalReason,
-  pendingHire,
-  hireCancellationReason,
+  recruitmentSites,
+  pendingRecruitmentClaim,
+  recruitmentClaimCancellationReason,
   guaranteeRecord,
   serviceGuaranteeRefund,
   guaranteeDepartureReason,
@@ -55,7 +54,7 @@ export default function Recruitment({ state: s, dispatch }: Props) {
     const r = s.operativeState[o.id];
     return s.recruited.includes(o.id) && r?.alive && r.hp > 0 && !r.captured;
   }).length;
-  const options = hiringArrivalOptions(s);
+  const options = recruitmentSites(s);
   const destination = options.some((o) => o.id === chosenDestination)
     ? chosenDestination
     : (options.find((o) => o.id === s.location)?.id ?? options[0]?.id ?? '');
@@ -155,8 +154,7 @@ export default function Recruitment({ state: s, dispatch }: Props) {
       </div>
       <p className="catalogue-count">
         <output>
-          {visible.length} de {roster.length} combatientes · {serving} en tus filas ·{' '}
-          {(s.hiringArrivals ?? []).length} pendientes de incorporación
+          {visible.length} de {roster.length} combatientes · {serving} en tus filas
         </output>
       </p>
       {!visible.length && (
@@ -178,17 +176,17 @@ export default function Recruitment({ state: s, dispatch }: Props) {
         {visible.map((o) => {
           const portrait = portraitFor(o.portrait ?? o.portraitId ?? o.id, s);
           const hired = s.recruited.includes(o.id),
-            arrival = pendingHire(s, o.id),
+            claim = pendingRecruitmentClaim(s, o.id),
             term = periods[o.id] || 'day',
             quote = hired ? contractRenewalQuote(s, o, term) : contractQuote(s, o, term),
             contract = contractStatus(s, o.id),
             profile = characterProfile(o),
             record = s.operativeState[o.id],
-            guarantee = guaranteeRecord(s, arrival ?? contract),
+            guarantee = guaranteeRecord(s, claim ?? contract),
             inTransit = operativeInTransit(s, o.id);
           const objection = serviceObjectionReason(s, o),
             moraleStatus = lowMoraleRenewalStatus(s, o);
-          const cancellationReason = arrival ? hireCancellationReason(s, o.id) : null,
+          const cancellationReason = claim ? recruitmentClaimCancellationReason(s, o.id) : null,
             departureReason = hired ? guaranteeDepartureReason(s, contract, o) : null;
           const hireReason = !hired ? hiringRouteReason : null;
           const admission = !hired ? candidateAdmission(s, o.id) : null,
@@ -201,12 +199,6 @@ export default function Recruitment({ state: s, dispatch }: Props) {
               ]
                 .filter(Boolean)
                 .join(' ') || undefined;
-          const held =
-            arrival &&
-            (hiringArrivalReason(s, arrival.destination) ||
-              (s.pendingBattle?.sector === arrival.destination
-                ? 'La llegada espera a que salgas del sector.'
-                : null));
           return (
             <article key={o.id} className="contract-card" data-operative-id={o.id}>
               <button
@@ -245,56 +237,24 @@ export default function Recruitment({ state: s, dispatch }: Props) {
               </button>
               <PreferredCompanionsSummary state={s} operative={o} />
               {quote.topTier && <small className="elite-contract">Especialista de élite</small>}
-              {arrival ? (
+              {claim ? (
                 <>
                   <p className="contract-remaining">
                     Reclutamiento pagado · Falta un destino seguro ·{' '}
-                    {CAMPAIGN_SECTORS.find((d) => d.id === arrival.destination)?.name}
+                    {CAMPAIGN_SECTORS.find((d) => d.id === claim.destination)?.name}
                   </p>
                   <small>
-                    {arrival.serviceHours === null
+                    {claim.serviceHours === null
                       ? 'Servicio permanente'
-                      : `${arrival.serviceHours / 24} ${arrival.serviceHours === 24 ? 'día' : 'días'} de servicio desde la incorporación`}{' '}
-                    · Paga: {arrival.paid} pesos.{' '}
+                      : `${claim.serviceHours / 24} ${claim.serviceHours === 24 ? 'día' : 'días'} de servicio desde la incorporación`}{' '}
+                    · Paga: {claim.paid} pesos.{' '}
                     {guarantee && (
                       <>
                         Garantía financiada: {guarantee.amount} pesos. Total pagado:{' '}
-                        {arrival.paid + guarantee.amount} pesos.
+                        {claim.paid + guarantee.amount} pesos.
                       </>
                     )}
                   </small>
-                  {held && (
-                    <p>
-                      <output>{held}</output>
-                    </p>
-                  )}
-                  <label>
-                    Cambiar destino
-                    <select
-                      aria-label={`Cambiar destino de ${o.name}`}
-                      value={arrival.destination}
-                      disabled={busy}
-                      onChange={(e) =>
-                        dispatch({
-                          type: 'redirectHire',
-                          id: o.id,
-                          destination: e.target.value,
-                        })
-                      }
-                    >
-                      {!options.some((d) => d.id === arrival.destination) && (
-                        <option value={arrival.destination}>
-                          {CAMPAIGN_SECTORS.find((d) => d.id === arrival.destination)?.name} · No
-                          disponible
-                        </option>
-                      )}
-                      {options.map((d) => (
-                        <option key={d.id} value={d.id}>
-                          {d.name} · {d.infrastructure}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
                   <small>
                     La incorporación es inmediata cuando hay un destino seguro. El pago ya está
                     registrado.
@@ -306,16 +266,14 @@ export default function Recruitment({ state: s, dispatch }: Props) {
                     title={cancellationReason || undefined}
                     onClick={() =>
                       dispatch({
-                        type: 'cancelHireArrival',
+                        type: 'cancelRecruitmentClaim',
                         id: o.id,
-                        ...(arrival.guaranteeId
-                          ? { expectedGuaranteeId: arrival.guaranteeId }
-                          : {}),
+                        ...(claim.guaranteeId ? { expectedGuaranteeId: claim.guaranteeId } : {}),
                       })
                     }
                   >
                     Cancelar reclutamiento · recuperar{' '}
-                    {arrival.paid + (guarantee?.state === 'held' ? guarantee.amount : 0)} pesos
+                    {claim.paid + (guarantee?.state === 'held' ? guarantee.amount : 0)} pesos
                   </button>
                 </>
               ) : (

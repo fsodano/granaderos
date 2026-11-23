@@ -265,7 +265,7 @@ export function readyPostCampaign() {
       destination: 'cordoba',
     });
   }
-  assert.equal(s.hiringArrivals.length, 0);
+  assert.equal((s.refundableRecruitmentClaims ?? []).length, 0);
   assert.equal(s.recruited.length, hires.length);
   s = saved({ campaign: s }).campaign;
   let p = approachPost(s, 'ines');

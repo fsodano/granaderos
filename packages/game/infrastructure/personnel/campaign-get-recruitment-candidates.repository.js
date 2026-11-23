@@ -4,7 +4,7 @@ import {
 } from '../../domain/personnel/recruitment-candidate.ts';
 import { RecruitmentCatalogue } from '../../domain/personnel/recruitment-catalogue.ts';
 import { contractQuote } from '../../contracts.js';
-import { pendingHire } from '../../hiring-arrivals.js';
+import { pendingRecruitmentClaim } from '../../recruitment-claims.js';
 import { candidateAdmission } from '../../recruitment.ts';
 import { CanonicalPersonnelMapper } from '../persistence/canonical-personnel-mapper.ts';
 import { DomainIdentityMap } from '../persistence/domain-identity-map.ts';
@@ -51,7 +51,7 @@ export class CampaignGetRecruitmentCandidatesRepository {
     if (this.#campaign.recruited.includes(characterId)) {
       return RecruitmentAvailability.Serving;
     }
-    if (pendingHire(this.#campaign, characterId)) {
+    if (pendingRecruitmentClaim(this.#campaign, characterId)) {
       return RecruitmentAvailability.Pending;
     }
     if (condition?.captured) {

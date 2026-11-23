@@ -188,8 +188,18 @@ export function validateServiceGuarantees(state, roster) {
       refs.push({
         id: arrival.guaranteeId,
         owner: arrival.operativeId,
-        kind: 'arrival',
+        kind: 'claim',
         record: arrival,
+      });
+    }
+  }
+  for (const claim of state.refundableRecruitmentClaims ?? []) {
+    if (claim.guaranteeId !== undefined) {
+      refs.push({
+        id: claim.guaranteeId,
+        owner: claim.operativeId,
+        kind: 'claim',
+        record: claim,
       });
     }
   }
@@ -210,6 +220,9 @@ export function validateServiceGuarantees(state, roster) {
     const references = [
       state.contracts?.[operative.id],
       ...(state.hiringArrivals ?? []).filter((a) => a.operativeId === operative.id),
+      ...(state.refundableRecruitmentClaims ?? []).filter(
+        (claim) => claim.operativeId === operative.id,
+      ),
       state.operativeState?.[operative.id]?.capturedContract,
     ].filter(Boolean);
     need(references.every((ref) => typeof ref.guaranteeId === 'string'));
@@ -314,7 +327,7 @@ export function validateServiceGuarantees(state, roster) {
       }
     }
     for (const ref of matching) {
-      if (ref.kind === 'arrival') {
+      if (ref.kind === 'claim') {
         need(ref.record.bookedAt * 3600 + (ref.record.bookedSecond ?? 0) === funded);
       } else {
         need(
