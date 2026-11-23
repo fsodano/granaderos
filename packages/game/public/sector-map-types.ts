@@ -4,7 +4,7 @@ import type {
   MapClimbLink,
   MapObject,
 } from '../../campaign-format/types.ts';
-import type { CampaignOperative, CampaignPendingBattle } from './campaign-types.ts';
+import type { CampaignOperative, CampaignSectorEntryRequest } from './campaign-types.ts';
 import type {
   BattleSnapshot,
   BattleUnit,
@@ -12,7 +12,7 @@ import type {
   TacticalPoint,
 } from './compatibility-types.ts';
 
-export type SectorMapRequest = Partial<Omit<CampaignPendingBattle, 'squad' | 'enemies'>> & {
+export type SectorMapRequest = Partial<Omit<CampaignSectorEntryRequest, 'squad' | 'enemies'>> & {
   squad?: CampaignOperative[];
   campaignPackage?: CampaignContent;
   compactLayout?: boolean;

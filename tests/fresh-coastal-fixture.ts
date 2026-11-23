@@ -13,7 +13,7 @@ import type { ActiveGame } from './local-contract-fixture.ts';
 import type {
   CampaignSnapshot,
   CampaignAction,
-  CampaignPendingBattle,
+  CampaignSectorEntryRequest,
 } from '../packages/game/public/campaign-types.ts';
 import type {
   BattleSnapshot,
@@ -97,7 +97,7 @@ const actorStates = (b: BattleSnapshot) =>
     .filter((u) => u.side === 'player')
     .map(({ id, hp, bleeding, medkits, routed }) => ({ id, hp, bleeding, medkits, routed }));
 const stockCoastalFight = (
-  request: CampaignPendingBattle,
+  request: CampaignSectorEntryRequest,
   previous: BattleSnapshot | null | undefined,
 ) =>
   recordedFight(request, previous, {
@@ -163,7 +163,7 @@ export function coastalMissionOrder(
   return approachesCare ? action : null;
 }
 const coastalFinalFight = (
-  request: CampaignPendingBattle,
+  request: CampaignSectorEntryRequest,
   previous: BattleSnapshot | null | undefined,
   options: CoastalFightOptions = {},
 ) =>

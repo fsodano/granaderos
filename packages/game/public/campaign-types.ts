@@ -318,7 +318,7 @@ export interface CampaignQuest {
   deadline?: number;
   acceptedAt?: number;
 }
-export interface CampaignPendingBattle {
+export interface CampaignSectorEntryRequest {
   enemies?: BattleUnit[];
   hour?: number;
   secondOfHour?: number;
@@ -568,7 +568,7 @@ export interface CampaignSnapshot {
   flags: Record<string, boolean>;
   routes: Record<string, boolean>;
   blockade: boolean;
-  sectorEntryRequest: CampaignPendingBattle | null;
+  sectorEntryRequest: CampaignSectorEntryRequest | null;
   pendingEncounter: CampaignEncounter | null;
   completed: boolean;
   defeated: boolean;
@@ -603,7 +603,7 @@ export interface CampaignSnapshot {
   logisticsAttention: { version: number; reported: Record<string, string> };
   sceneSnapshots: Record<string, BattleSnapshot>;
   sectorSnapshots: Record<string, BattleSnapshot>;
-  suspendedSectorSessions?: { request: CampaignPendingBattle; snapshot: BattleSnapshot }[];
+  suspendedSectorSessions?: { request: CampaignSectorEntryRequest; snapshot: BattleSnapshot }[];
   ammunitionStores: Record<string, Record<string, number>>;
   ammunitionShops: Record<string, Record<string, number>>;
   cohesion: Record<string, number>;
