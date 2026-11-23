@@ -1,43 +1,26 @@
-# Slice 47: the sector state request property takes the canonical name
+# Slice 47: use `sectorSession` for the carried sector view
 
-**Branch:** `migration/sector-state-request`
-**Intent:** Rename the request property that carries the sector view, so the
-game stops calling the same thing by two names.
+The save envelope and campaign orders use `sectorSession` for the active sector
+view. The decoded
+[`GameSnapshotContent`](../../../../packages/game/public/game-snapshot-types.ts)
+keeps the in-memory field `battle`; that name is not the envelope key or the
+campaign-order property.
 
-## Why this slice exists
+## Order contract
 
-The campaign orders that return from a sector carry the sector view in a
-property called `sectorState`. The saved envelope calls the same thing
-`sectorSession` since the previous conversion, and the domain calls the
-concept `SectorSession`. The ubiquitous language's compatibility row for
-`battle` / `sectorState` lists this request property as the last name that
-still carries the old vocabulary.
+Orders that carry the active sector view use `sectorSession`, including
+`fightOnArrival`, `resumeSectorSession`, `battleResult`, `leaveSector`,
+`finishMission`, `syncTacticalTime`, and `talkNPC`. The public
+[`CampaignAction`](../../../../packages/game/public/campaign-types.ts) type does
+not declare `sectorState`, and handlers read the view from `sectorSession`.
+An order that requires a view is refused when it supplies the view only under
+`sectorState`.
 
-Two names for one thing is how a reader loses track of which is which, so the
-request property takes the canonical name.
+For example, `leaveSector` uses the snapshot in `sectorSession` to reconcile
+health and retained sector state. The same snapshot under `sectorState` does
+not supply the required field. This contract is covered by
+[`sector-session-request.test.ts`](../../../../tests/sector-session-request.test.ts).
 
-## What it changes
-
-- Every campaign order that carries the sector view names it `sectorSession`.
-- The playtest API's orders use the same name.
-- The files that build and read those orders keep working as they do.
-
-The property's type and meaning do not change: it is still the sector view
-that the order returns.
-
-## Tests
-
-- A test proves an order that carries the sector view under the new name is
-  accepted and behaves exactly as before.
-- The existing leave-sector, mission, conversation and playtest tests keep
-  passing.
-
-## Verification
-
-- `npm test` passes, including the new test.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.51` to `0.2.52`.
+The save envelope still reads legacy top-level `battle` only when
+`sectorSession` is `undefined`. That save conversion is separate from the
+campaign-order property; `sectorState` is not a saved-field alias.

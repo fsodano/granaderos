@@ -25,16 +25,25 @@ records under `characters`, and retained maps under `sectorSnapshots` and
 [`CampaignSectorEntryRequest`](../../packages/game/public/campaign-types.ts); the
 application use case accepts the narrower
 [`SectorEntryRequest`](../../packages/game/application/sector-sessions/enter-sector/sector-entry.request.ts).
-The envelope's decoded in-memory pair still calls its sector field `battle`,
-and campaign orders carry the same view under the `sectorSession` request
-property rather than a saved field.
+The envelope writes the active view under `sectorSession`, and campaign orders
+that carry the view use the same property. The decoded in-memory pair still
+calls its sector field `battle`. The
+`sectorSession` property is not a campaign snapshot field, and the retired
+`sectorState` property is not part of the campaign-order contract.
+
+[`CampaignSectorSessionCoordinator`](../../packages/game/infrastructure/session/campaign-sector-session-coordinator.js)
+saves each `suspendedSectorSessions` record as `request`, `snapshot`,
+`activeSquadId`, `location`, and `suspendedAtSeconds`.
+[`GameSnapshotMapper`](../../packages/game/infrastructure/persistence/game-snapshot-mapper.js)
+restores a domain `SectorSession` from the saved request and snapshot rather
+than writing the domain object as the record.
 
 [`decodeSave`](../../packages/game/save.ts) accepts top-level legacy `battle`
-only when `sectorSession` is absent. It also maps `pendingBattle` to
+only when `sectorSession` is `undefined`. It also maps `pendingBattle` to
 `sectorEntryRequest`, `recruited` to
 `forceRoster`, `operativeState` to `characters`, `sectorStates` to
 `sectorSnapshots`, and `sceneStates` to `sceneSnapshots` only when the
-corresponding current field is absent; the current field wins and the legacy
+corresponding current field is `undefined`; the current field wins and the legacy
 key is removed. These serialized projections map to canonical domain objects
 through `GameSnapshotMapper`, `CanonicalPersonnelMapper`,
 `JourneySnapshotMapper`, and `CanonicalWorldMapper`. During restoration, valid
@@ -59,7 +68,7 @@ The table below lists representative top-level `Field` groups on the serialized 
 | `forceRoster`, `characters`, `squad`, `squads`, `activeSquadId` | `ForceRoster` membership, per-character `Character` / `Health` / location / assignment records, and `Squad` / `Journey` state |
 | `resources`, `reputation`, `log` | `Treasury` and campaign resource balances, faction standing, and bounded activity log |
 | `contracts`, `quests`, `missions` | Compatibility projection of `ServiceContract` terms, authored quest state, and mission progression |
-| `pendingEncounter`, `sectorEntryRequest`, `suspendedSectorSessions` | Active strategic enemy-group encounter, the saved `CampaignSectorEntryRequest`, and suspended `SectorSession` request-and-snapshot records |
+| `pendingEncounter`, `sectorEntryRequest`, `suspendedSectorSessions` | Active strategic enemy-group encounter, the saved `CampaignSectorEntryRequest`, and suspended visit records containing a request, sector snapshot, and resumption context |
 | `lastError` | Localized Spanish explanation of the most recent refused command; cleared on the next accepted dispatch |
 
 When authored content is active, its frozen package definition is pinned under `contentCampaign.package`; campaign cloning reuses that immutable package reference while deep-cloning mutable gameplay state.
@@ -88,9 +97,9 @@ sequenceDiagram
 
 Global order guards enforce lifecycle precedence before individual action handlers run:
 
-- When an `ArrivalDecision` is pending on any squad's `Journey`, campaign time is paused and mutating commands that would advance time or bypass the decision are refused; only arrival resolution (`FightOnArrival` / `WithdrawOnArrival`) and permitted inspection or active-visit selection are admitted.
+- When an `ArrivalDecision` is pending on any squad's `Journey`, campaign time is paused and mutating commands that would advance time or bypass the decision are refused. Each `fightOnArrival` or `withdrawOnArrival` order resolves one squad's decision; a caller resolving several arrivals sends one order for each squad. Permitted inspection and active-visit selection remain available.
 - When `pendingEncounter` is present, only `respondToEncounter` and squad selection are admitted.
-- When a sector visit (`sectorEntryRequest`) is open, strategic mutations are restricted to battle reporting (`battleResult`, `leaveSector`, `finishMission`), local conversation (`talkNPC`), tactical clock synchronization (`syncTacticalTime`), and multi-squad arrival or visit-resumption commands (`ResumeSectorSession`).
+- When a sector visit (`sectorEntryRequest`) is open, strategic mutations are restricted to battle reporting (`battleResult`, `leaveSector`, `finishMission`), local conversation (`talkNPC`), tactical clock synchronization (`syncTacticalTime`), per-squad arrival resolution, and visit-resumption (`ResumeSectorSession`).
 - Completed or defeated campaigns reject further gameplay mutations.
 
 ## Action families and strategic semantics

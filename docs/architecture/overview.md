@@ -15,6 +15,19 @@ A sector visit can be peaceful exploration or include one or more combat episode
 - `Inventory` and `ItemCustody` own item quantities, pocket placement, and the single authoritative custodian (`character`, `container`, `ground`, or `corpse`) for every item.
 - `SectorParticipant` references a `Character` by `characterId` and owns only visit-local action points (`ActionPoints`). Read models, retained sector caches, and `ResidentPositionReference` projections never create a second owner of character health, inventory, position, or item custody.
 
+Domain rule ownership is separate from state ownership. The
+[`actor-condition.ts`](../../packages/game/domain/personnel/actor-condition.ts)
+module owns the critical-health threshold, unconsciousness, field capability,
+and condition-refresh effects.
+[`medical-patient.ts`](../../packages/game/domain/personnel/medical-patient.ts)
+owns care presence and acceptance, and
+[`completed-victory.ts`](../../packages/game/domain/combat/completed-victory.ts)
+owns the decision that the field has been won. The retained root modules
+[`actor-condition.js`](../../packages/game/actor-condition.js),
+[`medical-patient.js`](../../packages/game/medical-patient.js), and
+[`battle-outcome.js`](../../packages/game/battle-outcome.js) re-export those
+domain rules.
+
 ## 2. Follow one player intention
 
 Start a campaign. The game loads a published `CampaignDefinition` and runs `CreateGameSessionUseCase` to initialize a new `GameSession` with a stable session ID and revision `0`. At headquarters, recruit a combatant through `RecruitCombatantUseCase`. `RecruitmentService` checks the candidate, charges `Treasury` once, starts a `ServiceContract`, admits the character into `ForceRoster`, and places the combatant either into an eligible local `Squad` with a free slot or into the controllable reserve at that safe recruitment site.
@@ -67,16 +80,17 @@ The table below maps each architectural `Role` to its `Source` path in the repos
 | Role | Source |
 | --- | --- |
 | Domain entities, value objects, state machines, policies, and services | [`packages/game/domain`](../../packages/game/domain/) |
+| Personnel condition and care rules, and tactical field-victory rule | [`actor-condition.ts`](../../packages/game/domain/personnel/actor-condition.ts), [`medical-patient.ts`](../../packages/game/domain/personnel/medical-patient.ts), [`completed-victory.ts`](../../packages/game/domain/combat/completed-victory.ts) |
 | Application use cases and narrow repository contracts | [`packages/game/application`](../../packages/game/application/) |
 | Repository adapters, unit of work, identity map, and snapshot mappers | [`packages/game/infrastructure`](../../packages/game/infrastructure/) |
 | Declared public composition entry points for game, editor, and persistence | [`packages/game/public`](../../packages/game/public/) |
-| Compatibility simulation entry points and specialized procedural rules | [`packages/game/`](../../packages/game/) (`campaign.js`, `tactical.js`, `world.js`, `time.js`, `save.ts`) |
+| Compatibility orchestration and specialized procedural rules | [`packages/game/`](../../packages/game/) (`campaign.js`, `tactical.js`, `world.js`, `time.js`, `save.ts`); `actor-condition.js`, `medical-patient.js`, and `battle-outcome.js` re-export domain-owned rules |
 | Player UI, Three.js tactical renderer, and browser composition | [`apps/web/app/page.tsx`](../../apps/web/app/page.tsx), [`apps/web/lib`](../../apps/web/lib/) |
 | Independent campaign editor application, domain, and storage adapters | [`apps/campaign-editor`](../../apps/campaign-editor/README.md) |
 | Shared published campaign-file schemas and `CampaignDefinition` | [`packages/campaign-format`](../../packages/campaign-format/README.md) |
 | Installed campaign packages, art sources, and trusted scenario implementations | [`content/campaigns`](../../content/campaigns/), [`content/assets`](../../content/assets/README.md) |
 
-The compatibility modules at the `packages/game/` root bridge the browser UI to both migrated domain slices and retained procedural rules. See [C4 levels 1–3](c4.md) and the [system map](system-map.md) for how these modules interact.
+The `packages/game/` root retains compatibility and procedural modules for internal game callers. `actor-condition.js`, `medical-patient.js`, and `battle-outcome.js` are thin re-exports; the condition, care, and victory rules live in the domain modules above. See [C4 levels 1–3](c4.md) and the [system map](system-map.md) for how these modules interact.
 
 ## 6. Know what saving guarantees
 

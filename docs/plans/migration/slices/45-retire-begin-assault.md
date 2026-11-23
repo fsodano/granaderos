@@ -1,47 +1,29 @@
-# Slice 45: the beginAssault command alias goes away
+# Slice 45: resolve hostile arrivals per squad
 
-**Branch:** `migration/retire-begin-assault`
-**Intent:** Remove the last command alias from the campaign dispatcher, so a
-hostile arrival is resolved the one way the architecture names.
+`Journey` tracks one squad's route. When it reaches a hostile boundary, its
+`ArrivalDecision` is the squad's pending fight-or-withdraw choice.
+`fightOnArrival` resolves that choice for one squad. The campaign order
+identifies the squad;
+[`FightOnArrivalUseCase`](../../../../packages/game/application/journeys/fight-on-arrival/fight-on-arrival.use-case.ts)
+loads its `Journey`, resolves its `ArrivalDecision`, and commits that journey.
+The dispatcher does not accept a multi-squad fight order or a `beginAssault`
+alias.
 
-## Why this slice exists
+## Order contract
 
-The ubiquitous language lists `beginAssault` as a compatibility name to
-retire: "Compatibility resolution of the current hostile arrival decision. It
-cannot bypass the required decision or its identity."
+A caller that wants every ready squad at a boundary to fight sends one
+`fightOnArrival` order for each squad, with that squad's own arrival decision.
+For example, if squads A and B are both ready, the caller sends a fight order
+for A and then a separate fight order for B. Resolving A does not resolve B.
+`withdrawOnArrival` likewise resolves one squad's decision.
 
-The command resolves the arrival decision for every squad already at a
-sector's boundary, while `fightOnArrival` resolves the decision of one named
-squad. The alias is a convenience over the canonical command, not a second
-kind of resolution, and the dispatcher's own guard already treats the two as
-one family of orders.
+Each order preserves that squad's decision identity, arrival checks, campaign
+pause, and resulting notices. A command with `type: 'beginAssault'` is unknown
+to the dispatcher and is refused.
 
-## What it changes
+## Behavior covered
 
-- The campaign dispatcher handles `fightOnArrival` alone.
-- A caller that wants every squad at a sector's boundary to fight resolves
-  each squad's decision and sends `fightOnArrival` for it, which is what the
-  alias did.
-- The action type no longer offers `beginAssault`.
-
-## What it does not change
-
-Which squads fight, which decision is resolved, and the notices the player
-sees. The same squads arrive and the same decisions resolve.
-
-## Tests
-
-- The test that used the alias now sends the canonical command for each ready
-  squad, and proves the same squads arrive with the same notices.
-- A test proves the dispatcher no longer accepts the retired command.
-- The existing journey, arrival and route tests keep passing.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.49` to `0.2.50`.
+[`strategic-route.test.ts`](../../../../tests/strategic-route.test.ts) records
+the per-squad order shape and the dispatcher's refusal of `beginAssault`.
+[`CampaignAction`](../../../../packages/game/public/campaign-types.ts) exposes
+`fightOnArrival`, not `beginAssault`.

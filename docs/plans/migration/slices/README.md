@@ -1,6 +1,6 @@
 # Migration slice notes
 
-This index links to the 43 migration slice notes. Each note records its
+This index links to the 47 migration slice notes. Each note records its
 rationale, scope, and compatibility contract. The
 [overview](../overview.md) describes current source and remaining requirements.
 
@@ -51,6 +51,10 @@ rationale, scope, and compatibility contract. The
 | [41. Retained snapshot fields](41-snapshot-fields.md) |
 | [42. Sector entry request type](42-sector-entry-request-type.md) |
 | [43. Retire the compile adapter](43-retire-compile-adapter.md) |
+| [44. Suspended snapshot compaction](44-suspended-snapshot-compaction.md) |
+| [45. Retire `beginAssault`](45-retire-begin-assault.md) |
+| [46. Condition and outcome rules](46-condition-rules.md) |
+| [47. Sector view request property](47-sector-state-request.md) |
 
 ## What the series changed
 
@@ -82,14 +86,15 @@ rationale, scope, and compatibility contract. The
 - The [`GameSnapshot`](../../../../packages/game/public/game-snapshot-types.ts)
   envelope writes `campaign` and `sectorSession`. `campaign` carries
   `sectorEntryRequest`, `forceRoster`, `characters`, `sectorSnapshots`, and
-  `sceneSnapshots`. [`decodeSave`](../../../../packages/game/save.ts) reads
-  legacy top-level `battle` only when
-  `sectorSession` is absent; it maps campaign keys `pendingBattle`, `recruited`,
-  `operativeState`, `sectorStates`, and `sceneStates` only when each current
-  field is absent, then removes the old key. The current value wins if both
-  names are present. `GameSnapshotContent.battle` remains an in-memory field;
-  `sectorState` remains a campaign-action request property, not a saved field
-  ([`CampaignAction`](../../../../packages/game/public/campaign-types.ts)).
+  `sceneSnapshots`. Campaign orders that carry the sector view use
+  `sectorSession`, while decoded `GameSnapshotContent` keeps `battle` as its
+  in-memory field. [`decodeSave`](../../../../packages/game/save.ts) reads
+  legacy top-level `battle` only when `sectorSession` is `undefined`; it maps
+  campaign keys `pendingBattle`, `recruited`, `operativeState`, `sectorStates`, and
+  `sceneStates` only when each current field is `undefined`, then removes each
+  legacy key. The current value wins when both names are present.
+  [`CampaignAction`](../../../../packages/game/public/campaign-types.ts) no
+  longer declares `sectorState`.
 - `apps/web` imports several declared entries from `packages/game/public`,
   including `game-runtime-api.ts`, `campaign-types.ts`,
   `compatibility-types.ts`, `inventory-types.ts`, `battle-job-types.ts`,
@@ -122,7 +127,7 @@ rationale, scope, and compatibility contract. The
   root module is a thin re-export of it.
 - `ResidentPositionReference` names the saved reference to a resident's
   character identity and local position.
-- Twenty-one migrated game rules have domain ownership: firearm readiness,
+- Twenty-four migrated game rules have domain ownership: firearm readiness,
   unarmed combat, sleep need, held supplies, projectile energy, firearm loads,
   study rate, the route queue, firearm serviceability, kinetic impact, combat
   balance, combat journal, fatigue and energy, interior visibility, campaign
@@ -130,9 +135,19 @@ rationale, scope, and compatibility contract. The
   (the vertical map layer assigned to a point), shot-range calculation, NPC
   facing (`directionTo`), anonymous sound-position approximation
   (`approximateHeardPosition`), and care-composure relief
-  (`CARE_COMPOSURE_RELIEF` & `careComposureRelief`). The browser interface
-  owns the sleep-need sentence and campaign notices. The shot-range sentence
-  stays beside its HUD caller in
+  (`CARE_COMPOSURE_RELIEF` & `careComposureRelief`); actor condition
+  (critical health, unconsciousness, field capability, and condition refresh)
+  in [`actor-condition.ts`](../../../../packages/game/domain/personnel/actor-condition.ts);
+  medical-patient care eligibility in
+  [`medical-patient.ts`](../../../../packages/game/domain/personnel/medical-patient.ts);
+  and completed tactical victory in
+  [`completed-victory.ts`](../../../../packages/game/domain/combat/completed-victory.ts).
+  The retained root modules
+  [`actor-condition.js`](../../../../packages/game/actor-condition.js),
+  [`medical-patient.js`](../../../../packages/game/medical-patient.js), and
+  [`battle-outcome.js`](../../../../packages/game/battle-outcome.js) re-export
+  their domain implementations. The browser interface owns the sleep-need
+  sentence and campaign notices. The shot-range sentence stays beside its HUD caller in
   [`packages/game/shot-range.js`](../../../../packages/game/shot-range.js) to
   preserve dependency direction.
 - [`packages/game/domain/sector-sessions/tactical-space.ts`](../../../../packages/game/domain/sector-sessions/tactical-space.ts)
@@ -152,9 +167,15 @@ rationale, scope, and compatibility contract. The
 ## What remains
 
 - Retained simulation modules still carry procedural game rules.
-- The saved field
+- The saved-record contract for
   [`suspendedSectorSessions`](../../../../packages/game/public/campaign-types.ts)
-  needs a canonical representation and conversion that preserve each
-  suspended visit's request, identity, and progress.
-- The campaign-action request property `sectorState` needs a glossary-backed
-  canonical name; it is not a saved field.
+  needs to specify a saved
+  [`CampaignSectorEntryRequest`](../../../../packages/game/public/campaign-types.ts)
+  and sector
+  [`BattleSnapshot`](../../../../packages/game/public/compatibility-types.ts)
+  as `request` and `snapshot`, rather than a serialized
+  projection of the domain `SectorSession`.
+  [`CampaignSectorSessionCoordinator`](../../../../packages/game/infrastructure/session/campaign-sector-session-coordinator.js)
+  also saves `activeSquadId`, `location`, and `suspendedAtSeconds` for
+  resumption; define those fields in the same contract and preserve visit
+  identity and progress.

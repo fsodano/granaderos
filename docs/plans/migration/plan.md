@@ -1,6 +1,6 @@
 # Clean architecture migration plan
 
-This plan defines a 43-slice sequence for moving Granaderos toward the
+This plan defines a 47-slice sequence for moving Granaderos toward the
 [accepted domain architecture](../accepted/domain-architecture.md). The
 [overview](overview.md) describes current source behavior and remaining
 requirements; the [slice index](slices/README.md) links each note.
@@ -91,6 +91,10 @@ outside this plan.
 | [41. Retained snapshot fields](slices/41-snapshot-fields.md) | Write retained maps as `sectorSnapshots` and `sceneSnapshots` and read their legacy names |
 | [42. Sector entry request type](slices/42-sector-entry-request-type.md) | Name the saved public projection `CampaignSectorEntryRequest` while retaining the application `SectorEntryRequest` |
 | [43. Retire the compile adapter](slices/43-retire-compile-adapter.md) | Remove `compileCampaignPackage` and use the declared compiler entry |
+| [44. Suspended snapshot compaction](slices/44-suspended-snapshot-compaction.md) | Compact and expand eligible terrain arrays in suspended visit snapshots |
+| [45. Retire `beginAssault`](slices/45-retire-begin-assault.md) | Resolve hostile arrivals through one `fightOnArrival` order per squad decision |
+| [46. Condition and outcome rules](slices/46-condition-rules.md) | Move condition, care, and tactical-victory decisions into the domain |
+| [47. Sector view request property](slices/47-sector-state-request.md) | Use `sectorSession` for campaign orders that carry the sector view |
 
 Each slice has a note under [slices](slices/README.md) that records its intent,
 scope, and behavior tests. Read the relevant note before changing that area.
@@ -110,23 +114,34 @@ The migration is complete when:
    use `WorldTimeline.advanceTo`; campaign `hour` and optional `secondOfHour`
    project its accepted second.
 3. The save envelope writes `campaign` and the active sector view under
-   `sectorSession`. The campaign snapshot writes `sectorEntryRequest`,
-   `forceRoster`, `characters`, `sectorSnapshots`, and `sceneSnapshots`.
-   Decoding reads top-level `battle` only when `sectorSession` is absent. For
-   campaign fields, it maps `pendingBattle` -> `sectorEntryRequest`,
+   `sectorSession`; decoded `GameSnapshotContent` keeps `battle` in memory. The
+   campaign snapshot writes `sectorEntryRequest`, `forceRoster`, `characters`,
+   `sectorSnapshots`, and `sceneSnapshots`.
+   Decoding reads top-level `battle` only when `sectorSession` is `undefined`.
+   For campaign fields, it maps `pendingBattle` -> `sectorEntryRequest`,
    `recruited` -> `forceRoster`, `operativeState` -> `characters`,
    `sectorStates` -> `sectorSnapshots`, and `sceneStates` -> `sceneSnapshots`
-   only when the current field is absent, then removes the legacy key.
-4. A canonical saved representation for suspended sector visits is defined.
-   The existing `suspendedSectorSessions` records convert without losing each
-   visit's request, identity, or progress.
-5. The `beginAssault` command alias is removed after callers use
-   `FightOnArrivalUseCase` and preserve arrival-decision identity.
-6. The `sectorState` campaign-action request property is replaced by a
-   glossary-backed canonical property across its contract and callers.
-7. The full verification profile, `npm run verify`, passes. It includes
-   formatting, lint, architecture and dependency checks, type checking, tests,
-   audits, and the production build.
+   only when each current field is `undefined`, then removes the legacy key.
+4. Every suspended-visit saved record has an explicit contract: `request` is a
+   saved [`CampaignSectorEntryRequest`](../../../packages/game/public/campaign-types.ts),
+   `snapshot` is its saved [`BattleSnapshot`](../../../packages/game/public/compatibility-types.ts),
+   and resumption context is declared as `activeSquadId`, `location`, and
+   `suspendedAtSeconds`. A `SectorSession` is the domain object for one sector
+   visit; the saved record carries its request and view rather than a projection
+   of that domain object. Restore preserves visit identity and progress.
+5. Hostile arrivals resolve only through `fightOnArrival` or
+   `withdrawOnArrival`. Each order resolves one squad's `ArrivalDecision`, the
+   fight-or-withdraw choice created at its hostile boundary. A caller that
+   wants multiple squads to fight sends one `fightOnArrival` order for each
+   squad's own decision. `beginAssault` is not accepted.
+6. Campaign orders that carry an active sector view use `sectorSession`, the
+   order property that matches the save-envelope key.
+   [`CampaignAction`](../../../packages/game/public/campaign-types.ts) does not
+   include `sectorState`, and handlers that require the view read
+   `sectorSession`.
+7. The full verification profile, `npm run verify`, is a completion gate. It
+   includes formatting, lint, architecture and dependency checks, type
+   checking, tests, audits, and the production build.
 
 ## Branch and merge flow
 
@@ -157,6 +172,6 @@ boundaries it can express as import rules.
 
 Start with [overview.md](overview.md) for the current implementation and open
 gaps, then use this plan for the branch flow and the [slice index](slices/README.md)
-for the 43 slice notes. Read the accepted architecture and glossary before
+for the 47 slice notes. Read the accepted architecture and glossary before
 work that changes a domain contract or term. Each slice note records its
 intent, scope, and behavior tests.
