@@ -556,7 +556,7 @@ export interface CampaignSnapshot {
   squads: CampaignSquad[];
   squad: number[];
   forceRoster: number[];
-  operativeState: Record<number, CampaignOperativeState>;
+  characters: Record<number, CampaignOperativeState>;
   officer: {
     name: string;
     answers: Record<string, string>;

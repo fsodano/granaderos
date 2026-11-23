@@ -104,6 +104,13 @@ function decodeGameSave(text: string, validateOpenVisits: boolean): GameSnapshot
     throw Error('Esta versión de la partida no es compatible.');
   }
   const savedCampaign = value['campaign'];
+  // Saves written before the character table took its canonical name still
+  // carry it under `operativeState`. Read that key once, then write only the
+  // new one.
+  if (savedCampaign['characters'] === undefined && savedCampaign['operativeState'] !== undefined) {
+    savedCampaign['characters'] = savedCampaign['operativeState'];
+  }
+  delete savedCampaign['operativeState'];
   // Saves written before the serving list took its canonical name still carry
   // it under `recruited`. Read that key once, then write only the new one.
   if (savedCampaign['forceRoster'] === undefined && savedCampaign['recruited'] !== undefined) {

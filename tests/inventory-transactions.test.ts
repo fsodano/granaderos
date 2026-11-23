@@ -320,9 +320,9 @@ void test('campaign reports and reentry retain dropped guns and the blade left i
     survivors: pair.battle.units.filter((u) => u.side === 'player'),
   });
   assert.equal(campaign.lastError, null);
-  assert.equal(present(campaign.operativeState[4]).weaponDropped, true);
-  assert.equal(present(campaign.operativeState[4]).activeSlot, 'blade');
-  const legacy = present(present(present(campaign.operativeState[4]).inventory)['legacy']);
+  assert.equal(present(campaign.characters[4]).weaponDropped, true);
+  assert.equal(present(campaign.characters[4]).activeSlot, 'blade');
+  const legacy = present(present(present(campaign.characters[4]).inventory)['legacy']);
   assert.ok(typeof legacy !== 'number');
   assert.equal(legacy.count, 3);
   campaign = decodeSave(encodeSave(campaign)).campaign;

@@ -47,7 +47,7 @@ export class RetainedSectorPresence {
     if (unit.militia) {
       return this.#garrisonLocations.get(characterId) === field.sectorId;
     }
-    const character = this.#campaign.operativeState?.[characterId];
+    const character = this.#campaign.characters?.[characterId];
     const location =
       character?.location ??
       character?.residentSector ??

@@ -82,9 +82,7 @@ export default function Campaign({
   const hostileDistrict =
     owner === 'royalist' && physical?.locality && selected !== physical.locality;
   const objective = campaignStory(s) ? campaignObjectives(s).find((c) => c.active) : null;
-  const careBusy = s.squad.some((id: number) =>
-    careAssignmentBusy(s.operativeState[id]?.assignment),
-  );
+  const careBusy = s.squad.some((id: number) => careAssignmentBusy(s.characters[id]?.assignment));
   const [panel, setPanel] = useState<string | null>(null);
   const [plot, setPlot] = useState<{
     squadId: string;
@@ -257,7 +255,7 @@ export default function Campaign({
     }
   };
   const dossierOperative = hired.find((operative) => operative.id === dossier);
-  const dossierRecord = dossier === null ? undefined : s.operativeState[dossier];
+  const dossierRecord = dossier === null ? undefined : s.characters[dossier];
   if (!def || !physical) {
     return null;
   }

@@ -67,7 +67,7 @@ void test('campaign zero-time withdrawal reversal creates a fresh paused decisio
   let campaign = restore(hostileArrival());
   const firstDecision = currentDecision(campaign);
   const resources = structuredClone(campaign.resources);
-  const people = structuredClone(campaign.operativeState);
+  const people = structuredClone(campaign.characters);
   campaign = restore(withdraw(campaign));
   assert.equal(present(currentJourney(campaign)).returning, true);
   assert.equal(present(currentJourney(campaign)).purpose, 'withdrawal');
@@ -81,7 +81,7 @@ void test('campaign zero-time withdrawal reversal creates a fresh paused decisio
   assert.equal(present(currentJourney(campaign)).status, 'ready');
   assert.notEqual(present(currentDecision(campaign)).id, present(firstDecision).id);
   assert.deepEqual(campaign.resources, resources);
-  assert.deepEqual(campaign.operativeState, people);
+  assert.deepEqual(campaign.characters, people);
   const stale = dispatchCampaign(campaign, {
     type: 'fightOnArrival',
     squadId: present(firstDecision).squadId,
@@ -102,7 +102,7 @@ void test('one-minute campaign withdrawal returns in one minute and preserves co
   assert.equal(seconds(campaign), seconds(beforeRedirection));
   assert.equal(present(currentJourney(campaign)).elapsedSecond, 3540);
   assert.equal(present(currentJourney(campaign)).pendingSeconds, 60);
-  assert.deepEqual(campaign.operativeState, beforeRedirection.operativeState);
+  assert.deepEqual(campaign.characters, beforeRedirection.characters);
   assert.deepEqual(campaign.resources, beforeRedirection.resources);
   campaign = order(campaign, { type: 'advanceStrategicTime', seconds: 59 });
   assert.equal(present(currentJourney(campaign)).status, 'moving');

@@ -51,7 +51,7 @@ export default function Recruitment({ state: s, dispatch }: Props) {
     .map(([id, period]) => [id, period.name]);
   const roster = useMemo(() => rosterFor(s).filter((o) => isContractOperative(s, o)), [s]);
   const serving = roster.filter((o) => {
-    const r = s.operativeState[o.id];
+    const r = s.characters[o.id];
     return s.forceRoster.includes(o.id) && r?.alive && r.hp > 0 && !r.captured;
   }).length;
   const options = recruitmentSites(s);
@@ -67,7 +67,7 @@ export default function Recruitment({ state: s, dispatch }: Props) {
     return candidate ? [candidate] : [];
   });
   const selectedOperative = roster.find((o) => o.id === selected);
-  const selectedRecord = selected === null ? undefined : s.operativeState[selected];
+  const selectedRecord = selected === null ? undefined : s.characters[selected];
   const busy = Boolean(s.sectorEntryRequest || s.pendingEncounter) || s.defeated;
   const hiringRouteReason = squadReorganizationReason(s);
   return (
@@ -181,7 +181,7 @@ export default function Recruitment({ state: s, dispatch }: Props) {
             quote = hired ? contractRenewalQuote(s, o, term) : contractQuote(s, o, term),
             contract = contractStatus(s, o.id),
             profile = characterProfile(o),
-            record = s.operativeState[o.id],
+            record = s.characters[o.id],
             guarantee = guaranteeRecord(s, claim ?? contract),
             inTransit = operativeInTransit(s, o.id);
           const objection = serviceObjectionReason(s, o),

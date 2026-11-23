@@ -343,7 +343,7 @@ export function migrateCampaignAmmunition(state, roster = [], { fresh = false } 
     ((state.resources?.cartridges ?? 0) > 0 ||
       Object.values(state.depots ?? {}).some((d) => d.cartridges > 0) ||
       [...(state.shipments ?? []), ...(state.convoys ?? [])].some((s) => s.goods?.cartridges > 0) ||
-      Object.values(state.operativeState ?? {}).some(
+      Object.values(state.characters ?? {}).some(
         (r) =>
           r.ammunitionVersion === undefined &&
           ((r.carriedAmmo ?? 0) - (r.carriedLoaded ?? 0) > 0 || r.capturedAmmunition?.ammo > 0),
@@ -374,7 +374,7 @@ export function migrateCampaignAmmunition(state, roster = [], { fresh = false } 
       }
     }
   }
-  for (const [id, record] of Object.entries(state.operativeState ?? {})) {
+  for (const [id, record] of Object.entries(state.characters ?? {})) {
     initializeStrategicRecord(
       record,
       roster.find((op) => String(op.id) === id)?.weapon ?? state.loadouts?.[id]?.weapon ?? 0,
@@ -472,7 +472,7 @@ export function migrateCampaignAmmunition(state, roster = [], { fresh = false } 
   return state;
 }
 export function syncCampaignAmmunition(state, roster = []) {
-  for (const [id, record] of Object.entries(state.operativeState ?? {})) {
+  for (const [id, record] of Object.entries(state.characters ?? {})) {
     const weapon = roster.find((op) => String(op.id) === id)?.weapon ?? 0;
     if (record.ammunitionVersion === undefined) {
       initializeStrategicRecord(record, weapon, false);
@@ -553,7 +553,7 @@ export function validateCampaignAmmunition(state) {
       'La reserva del campo no coincide con sus tipos.',
     );
   }
-  for (const record of Object.values(state.operativeState ?? {})) {
+  for (const record of Object.values(state.characters ?? {})) {
     rejectLegacyStacks(Object.values(record.inventory ?? {}));
     need(record.ammunitionVersion === 2, 'La munición del combatiente no tiene versión.');
     const expected =
@@ -609,7 +609,7 @@ function migrateCampaignFamilies(state, roster) {
     merchant.ammunition = groupAmmunitionCounts(counts);
   }
   groupAmmunitionNotices(state);
-  for (const [id, record] of Object.entries(state.operativeState ?? {})) {
+  for (const [id, record] of Object.entries(state.characters ?? {})) {
     need(record?.ammunitionVersion === 1, 'La munición personal antigua no tiene versión.');
     initializeStrategicRecord(
       record,

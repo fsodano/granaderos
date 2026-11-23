@@ -175,7 +175,7 @@ export function redirectJourney(campaign, request) {
       recordStrategicArrival(campaign, squad.members, arrival.from, arrival.to);
       squad.location = arrival.to;
       for (const id of squad.members) {
-        campaign.operativeState[id].location = arrival.to;
+        campaign.characters[id].location = arrival.to;
       }
       for (const horse of campaign.horseState.horses) {
         if (!horse.returned && squad.members.includes(horse.assignedTo)) {
@@ -323,22 +323,19 @@ function legIssue(s, q) {
   }
   if (
     q.members.some(
-      (id) =>
-        !s.forceRoster.includes(id) ||
-        !s.operativeState[id]?.alive ||
-        s.operativeState[id].captured,
+      (id) => !s.forceRoster.includes(id) || !s.characters[id]?.alive || s.characters[id].captured,
     )
   ) {
     return 'unavailable';
   }
-  if (q.members.some((id) => tooTiredToMarch(s.operativeState[id]))) {
+  if (q.members.some((id) => tooTiredToMarch(s.characters[id]))) {
     return 'exhausted';
   }
   if (
     q.members.some(
       (id) =>
-        s.operativeState[id].asleep ||
-        s.operativeState[id].assignment !== 'active' ||
+        s.characters[id].asleep ||
+        s.characters[id].assignment !== 'active' ||
         s.militiaTraining?.some((t) => t.trainerId === id),
     )
   ) {
@@ -632,7 +629,7 @@ export function advanceSquadTravel(
     }
     squad.location = arrival.to;
     for (const id of squad.members) {
-      campaign.operativeState[id].location = arrival.to;
+      campaign.characters[id].location = arrival.to;
     }
     for (const horse of campaign.horseState.horses) {
       if (!horse.returned && squad.members.includes(horse.assignedTo)) {
@@ -816,10 +813,10 @@ export function validateSquadTravel(s) {
       need(
         q.members.every(
           (id) =>
-            s.operativeState[id].alive &&
-            !s.operativeState[id].captured &&
-            !s.operativeState[id].asleep &&
-            s.operativeState[id].assignment === 'active' &&
+            s.characters[id].alive &&
+            !s.characters[id].captured &&
+            !s.characters[id].asleep &&
+            s.characters[id].assignment === 'active' &&
             !s.militiaTraining?.some((t) => t.trainerId === id),
         ),
         'Los viajeros guardados no están disponibles.',
@@ -958,8 +955,8 @@ export function validateAssaultDeployment(s) {
       group.members.every((id) => {
         const unit = b.squad.find((u) => u.id === id);
         return (
-          s.operativeState[id]?.arrival?.fromSector === group.origin &&
-          s.operativeState[id]?.location === location &&
+          s.characters[id]?.arrival?.fromSector === group.origin &&
+          s.characters[id]?.location === location &&
           unit.entryEdge === entry.entryEdge &&
           unit.entryAnchor?.x === entry.entryAnchor.x &&
           unit.entryAnchor?.y === entry.entryAnchor.y

@@ -74,7 +74,7 @@ export default function StrategicRoster({
           <tbody>
             {s.forceRoster.map((id: number) => {
               const op = roster.find((o) => o.id === id),
-                r = s.operativeState[id],
+                r = s.characters[id],
                 q = s.squads.find((q) => q.members.includes(id)),
                 j = q ? squadTravelStatus(q, s) : null,
                 c = contractStatus(s, id);

@@ -83,7 +83,7 @@ export function removeIgnitionSupplies(state) {
     return state;
   }
   scene(state);
-  for (const key of ['operativeState', 'missionAllies']) {
+  for (const key of ['characters', 'missionAllies']) {
     for (const unit of values(state[key])) {
       removeUnitIgnitionSupplies(unit);
     }

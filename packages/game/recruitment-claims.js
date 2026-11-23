@@ -125,9 +125,9 @@ export function validateLegacyHiringArrivals(state, roster) {
     );
     ids.add(a.operativeId);
     need(
-      state.operativeState[a.operativeId]?.alive &&
-        !state.operativeState[a.operativeId]?.captured &&
-        !state.operativeState[a.operativeId]?.serviceEquipmentReturn &&
+      state.characters[a.operativeId]?.alive &&
+        !state.characters[a.operativeId]?.captured &&
+        !state.characters[a.operativeId]?.serviceEquipmentReturn &&
         arrivalSitesFor(state).some((site) => site.sector === a.destination),
     );
     need(
@@ -205,9 +205,9 @@ export function validateRecruitmentClaims(state, roster) {
     );
     ids.add(claim.operativeId);
     need(
-      state.operativeState[claim.operativeId]?.alive &&
-        !state.operativeState[claim.operativeId]?.captured &&
-        !state.operativeState[claim.operativeId]?.serviceEquipmentReturn &&
+      state.characters[claim.operativeId]?.alive &&
+        !state.characters[claim.operativeId]?.captured &&
+        !state.characters[claim.operativeId]?.serviceEquipmentReturn &&
         arrivalSitesFor(state).some((site) => site.sector === claim.destination),
     );
     need(integer(claim.bookedAt, 0, state.hour));

@@ -39,7 +39,7 @@ export function equipArmoryItem(s, op, action) {
   need(row, 'No quedan ejemplares de esa arma en la armería.');
   const incoming = storedEquipmentStack(row);
   need(slot !== 'blade' || incoming.weapon >= 1809, 'Esta arma no corresponde a ese espacio.');
-  const original = s.operativeState[op.id],
+  const original = s.characters[op.id],
     record = structuredClone(original),
     actor = {
       ...op,
@@ -121,7 +121,7 @@ export function equipArmoryItem(s, op, action) {
   s.armory = trial.armory;
   s.armoryItems = trial.armoryItems;
   s.nextArmoryItemId = trial.nextArmoryItemId;
-  s.operativeState[op.id] = record;
+  s.characters[op.id] = record;
   s.loadouts[op.id] = { ...s.loadouts[op.id], [slot]: incoming.weapon };
   return row;
 }

@@ -367,7 +367,7 @@ export function prepareFreshCoastalHires(
       'Each actual hire arrives exactly once.',
     );
     assert.equal(hasRecruitmentClaim(s, hire.id), false);
-    assert.equal(present(s.operativeState[hire.id]).location, hire.arrival.destination);
+    assert.equal(present(s.characters[hire.id]).location, hire.arrival.destination);
     assert.equal(present(contract).kind, hire.quote.permanent ? 'patriot' : 'paid');
     assert.equal(present(contract).term, term);
     assert.equal(present(contract).paid, hire.quote.price);
@@ -464,7 +464,7 @@ export function freshCoastalRoute(
   const openingFunds = kind === 'local' ? 3200 : ROUTE_STARTING_TREASURY;
   const notes: CoastalRouteNote[] = prefix ? [...prefix.notes] : [],
     dead = new Set(
-      Object.entries(s.operativeState)
+      Object.entries(s.characters)
         .filter(([, record]) => !record.alive)
         .map(([id]) => Number(id)),
     );
@@ -541,8 +541,8 @@ export function freshCoastalRoute(
       s = leaveFiniteCache(p);
       assert.equal(s.resources.treasury, 3200);
       assert.equal(
-        present(present(s.operativeState[1000]).ammo) +
-          present(present(s.operativeState[1000]).carriedLoaded),
+        present(present(s.characters[1000]).ammo) +
+          present(present(s.characters[1000]).carriedLoaded),
         10,
       );
     }
@@ -592,9 +592,9 @@ export function freshCoastalRoute(
         assert.ok(
           field.every(
             (id) =>
-              present(s.operativeState[id]).alive &&
-              present(s.operativeState[id]).hp >= 15 &&
-              !present(s.operativeState[id]).bleeding,
+              present(s.characters[id]).alive &&
+              present(s.characters[id]).hp >= 15 &&
+              !present(s.characters[id]).bleeding,
           ),
           'native wound care must finish before a depot round trip',
         );
@@ -862,8 +862,8 @@ export function freshCoastalRoute(
     assert.equal(s.defeated, false);
     assert.ok(dispatchCampaign(s, resultReport).lastError);
     for (const id of dead) {
-      assert.equal(present(s.operativeState[id]).alive, false);
-      assert.equal(present(s.operativeState[id]).hp, 0);
+      assert.equal(present(s.characters[id]).alive, false);
+      assert.equal(present(s.characters[id]).hp, 0);
       assert.ok(!s.squad.includes(id));
       assert.ok(dispatchCampaign(s, { type: 'recruitCombatant', id, term: 'week' }).lastError);
     }
@@ -921,15 +921,15 @@ export function freshCoastalRoute(
         fieldSquad = s.activeSquadId;
       const needsCare = s.squad.some(
         (id) =>
-          present(s.operativeState[id]).hp < present(s.operativeState[id]).maxHp ||
-          present(s.operativeState[id]).bleeding > 0,
+          present(s.characters[id]).hp < present(s.characters[id]).maxHp ||
+          present(s.characters[id]).bleeding > 0,
       );
       const physician = rosterFor(s).some(
         (op) =>
           s.squad.includes(op.id) &&
           op.medical >= 70 &&
-          present(s.operativeState[op.id]).hp >= 15 &&
-          !present(s.operativeState[op.id]).bleeding,
+          present(s.characters[op.id]).hp >= 15 &&
+          !present(s.characters[op.id]).bleeding,
       );
       const localPhysician = rosterFor(s).find(
         (op) =>
@@ -937,13 +937,13 @@ export function freshCoastalRoute(
           !s.squad.includes(op.id) &&
           operativeLocation(s, op.id) === clinic &&
           op.medical >= 70 &&
-          present(s.operativeState[op.id]).alive &&
-          !present(s.operativeState[op.id]).captured &&
-          present(s.operativeState[op.id]).hp >= 15 &&
-          !present(s.operativeState[op.id]).bleeding,
+          present(s.characters[op.id]).alive &&
+          !present(s.characters[op.id]).captured &&
+          present(s.characters[op.id]).hp >= 15 &&
+          !present(s.characters[op.id]).bleeding,
       );
       const availableForHire = (id: number) =>
-        present(s.operativeState[id]).alive &&
+        present(s.characters[id]).alive &&
         !s.forceRoster.includes(id) &&
         contractQuote(
           s,
@@ -1021,7 +1021,7 @@ export function freshCoastalRoute(
         if (auxiliary !== undefined && s.hour * 3600 + (s.secondOfHour ?? 0) < due) {
           for (const id of field) {
             assert.ok(
-              present(s.operativeState[id]).hp >= 15 && !present(s.operativeState[id]).bleeding,
+              present(s.characters[id]).hp >= 15 && !present(s.characters[id]).bleeding,
               'stabilize the actual clinic patients before waiting for a physician',
             );
             s = order(s, { type: 'assignCare', id, assignment: 'rest' });

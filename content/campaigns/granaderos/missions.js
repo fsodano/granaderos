@@ -125,10 +125,10 @@ export function talkMission(s, npcId, supplied) {
 export function sanLorenzoAlly(s) {
   const known = Boolean(
       s.civilianState?.people['person-57'] ||
-      s.operativeState[57]?.missionSuppliesVersion === 1 ||
+      s.characters[57]?.missionSuppliesVersion === 1 ||
       characterForOperative(s, 57)?.startingSupplies !== undefined,
     ),
-    stock = civilianSuppliesFor(s.operativeState[57]),
+    stock = civilianSuppliesFor(s.characters[57]),
     personal = known ? Object.fromEntries(CIVILIAN_SUPPLY_FIELDS.map((k) => [k, stock[k]])) : {};
   const retained = s.missionAllies?.san_lorenzo;
   if (retained) {
@@ -137,8 +137,8 @@ export function sanLorenzoAlly(s) {
       ...(s.civilianState?.people['person-57']
         ? Object.fromEntries(
             ['hp', 'energy', 'bleeding', 'rations', 'torches', 'medkits', 'boleadoras']
-              .filter((k) => s.operativeState[57]?.[k] !== undefined)
-              .map((k) => [k, s.operativeState[57][k]]),
+              .filter((k) => s.characters[57]?.[k] !== undefined)
+              .map((k) => [k, s.characters[57][k]]),
           )
         : {}),
       ...personal,
@@ -148,14 +148,14 @@ export function sanLorenzoAlly(s) {
   const officer = authoredOperative(s, structuredClone(OPERATIVES.find((o) => o.id === 57))),
     gear = {
       weapon: s.loadouts?.[57]?.weapon ?? 1803,
-      ...(s.operativeState[57]?.weaponMetadata
-        ? { weaponMetadata: s.operativeState[57].weaponMetadata }
+      ...(s.characters[57]?.weaponMetadata
+        ? { weaponMetadata: s.characters[57].weaponMetadata }
         : {}),
     },
     capacity = weaponSpecification(gear)?.capacity ?? 0;
   return initializeUnitAmmunition({
     ...officer,
-    ...s.operativeState[57],
+    ...s.characters[57],
     ...gear,
     id: 57,
     missionAlly: true,

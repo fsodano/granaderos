@@ -283,7 +283,7 @@ export function attachCampaignContent(state, content) {
   state.nextArmoryItemId = 1;
   for (const c of definitions.characters) {
     const id = operativeIdForCharacter(definitions, c.id);
-    const record = (state.operativeState[id] ??= {
+    const record = (state.characters[id] ??= {
       hp: c.attributes.maxHp,
       fatigue: 0,
       alive: true,
@@ -315,11 +315,11 @@ export function attachCampaignContent(state, content) {
       record.strength = c.attributes.strength;
     }
   }
-  for (const id of Object.keys(state.operativeState)) {
+  for (const id of Object.keys(state.characters)) {
     if (
       !definitions.characters.some((c) => operativeIdForCharacter(definitions, c.id) === Number(id))
     ) {
-      delete state.operativeState[id];
+      delete state.characters[id];
     }
   }
   initializeCampaignPresence(state);

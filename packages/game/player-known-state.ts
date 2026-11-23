@@ -811,7 +811,7 @@ export function playerKnownCampaign(
   }
   const knownIds = new Set([
     ...(state.forceRoster ?? []),
-    ...Object.entries(state.operativeState ?? {})
+    ...Object.entries(state.characters ?? {})
       .filter(([, record]) => record.captured)
       .map(([id]) => Number(id)),
   ]);
@@ -860,7 +860,7 @@ export function playerKnownCampaign(
       journey: squadTravelStatus(squad),
     })),
     operatives: roster.map((unit): KnownOperative => {
-      const record = state.operativeState[unit.id];
+      const record = state.characters[unit.id];
       if (!record) {
         throw Error(`No existe el estado del combatiente ${unit.id}.`);
       }

@@ -63,20 +63,20 @@ void test('contracts pay upfront, renew at current experience price, expire safe
   s = order(s, { type: 'recruitCombatant', id: 100, term: 'day' });
   const op = rosterFor(s).find((o) => o.id === 100),
     cash = s.resources.treasury;
-  present(s.operativeState[100]).xp = 200;
+  present(s.characters[100]).xp = 200;
   const q = contractQuote(s, op, 'week');
   assert.ok(q.price > Math.ceil(present(present(op).monthlyPay) / 30) * 7);
   s = order(s, { type: 'renewContract', id: 100, term: 'week' });
   assert.equal(s.resources.treasury, cash - q.price);
   assert.equal(present(s.contracts[100]).expiresAt, 192);
-  present(s.operativeState[100]).rations = 1;
+  present(s.characters[100]).rations = 1;
   s = order(s, { type: 'wait', hours: 192 });
   assert.equal(s.hour, 190);
   s = order(s, { type: 'wait', hours: 2 });
   assert.ok(!s.forceRoster.includes(100));
   assert.ok(!present(s.squads[0]).members.includes(100));
   assert.equal(s.defeated, false);
-  assert.equal(present(s.operativeState[100]).alive, true);
+  assert.equal(present(s.characters[100]).alive, true);
   assert.ok(
     s.log.some(
       (entry) =>
@@ -99,7 +99,7 @@ void test('contracts pay upfront, renew at current experience price, expire safe
     );
   s = order(s, { type: 'recruitCombatant', id: 100, term: 'day' });
   assert.equal(s.resources.treasury, rehireCash - rehireQuote.price);
-  assert.equal(present(s.operativeState[100]).rations, 0);
+  assert.equal(present(s.characters[100]).rations, 0);
   assert.deepEqual(
     serviceReturnSources(s, 'retiro').filter(
       (row) => row.operativeId === 100 && row.stack?.item === 'rations',
@@ -117,7 +117,7 @@ void test('a fallen soldier contract expires once without a departure claim or r
   });
   const name = present(rosterFor(s).find((o) => o.id === 100)).name;
   // Declare the casualty to isolate expiry wording; this does not simulate combat.
-  Object.assign(present(s.operativeState[100]), {
+  Object.assign(present(s.characters[100]), {
     alive: false,
     hp: 0,
     deathMinute: 0,
@@ -139,11 +139,11 @@ void test('a fallen soldier contract expires once without a departure claim or r
     serviceReturnSources(s, 'retiro').filter((row) => row.operativeId === 100),
     [],
   );
-  assert.equal(present(s.operativeState[100]).rations, 1);
+  assert.equal(present(s.characters[100]).rations, 1);
   s = decodeSave(encodeSave(s)).campaign;
-  assert.equal(present(s.operativeState[100]).alive, false);
-  assert.equal(present(s.operativeState[100]).hp, 0);
-  assert.equal(present(s.operativeState[100]).deathMinute, 0);
+  assert.equal(present(s.characters[100]).alive, false);
+  assert.equal(present(s.characters[100]).hp, 0);
+  assert.equal(present(s.characters[100]).deathMinute, 0);
 });
 void test('elite terms are limited only by funds and historical figures cannot be bought', () => {
   let s = initialCampaign();
@@ -195,8 +195,8 @@ void test('elite renewals bank days at the daily price and dead recruits cannot 
   assert.equal(present(s.contracts[id]).expiresAt, 72);
   assert.equal(s.resources.treasury, daily);
   s = order(s, { type: 'dismiss', id });
-  present(s.operativeState[id]).alive = false;
-  present(s.operativeState[id]).hp = 0;
+  present(s.characters[id]).alive = false;
+  present(s.characters[id]).hp = 0;
   assert.ok(dispatchCampaign(s, { type: 'recruitCombatant', id, term: 'day' }).lastError);
 });
 

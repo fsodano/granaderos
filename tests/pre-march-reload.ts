@@ -49,7 +49,7 @@ export function finishReloadsBeforeMarch(
   }
   const roster = rosterFor(start),
     ids = start.squad.filter((id) => {
-      const r = start.operativeState[id],
+      const r = start.characters[id],
         capacity = weaponSpecification(roster.find((u) => u.id === id))?.capacity ?? 0;
       return (
         !present(r).weaponDropped &&

@@ -186,6 +186,14 @@ export async function loadInstalledCampaign(
   };
 }
 
+function isCampaignContent(value: CampaignContext): value is Partial<CampaignContent> {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'characters' in value &&
+    Array.isArray(value.characters)
+  );
+}
 function contentFor(context: CampaignContext): Partial<CampaignContent> | null {
   if (!context) {
     return null;
@@ -196,7 +204,7 @@ function contentFor(context: CampaignContext): Partial<CampaignContent> | null {
   if ('campaignPackage' in context && context.campaignPackage) {
     return context.campaignPackage;
   }
-  return 'characters' in context ? context : null;
+  return isCampaignContent(context) ? context : null;
 }
 function assertRegistry(value: unknown): asserts value is { campaigns: CampaignEntry[] } {
   validateCampaignRegistry(value);

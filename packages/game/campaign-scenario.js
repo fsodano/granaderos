@@ -93,7 +93,7 @@ function genericInitialState(seed, definitions) {
     officer: null,
     forceRoster: [],
     squad: [],
-    operativeState: {},
+    characters: {},
     flags:
       definitions?.scenario === 'generic-v1'
         ? { armyFunded: false, foundry: false }

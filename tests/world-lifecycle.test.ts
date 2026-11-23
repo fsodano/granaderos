@@ -233,7 +233,7 @@ void test('an active casualty can disappear, save, restore, and settle without l
   });
   assert.equal(returned.lastError, null);
   assert.equal(returned.sectorEntryRequest, null);
-  assert.equal(present(returned.operativeState[Number(casualtyId)]).alive, false);
+  assert.equal(present(returned.characters[Number(casualtyId)]).alive, false);
   assert.equal(returned.squad.includes(Number(casualtyId)), false);
   assert.deepEqual(present(returned.sectorStates['retiro']).groundItems, ground);
   const restored = decodeSave(encodeSave(returned));

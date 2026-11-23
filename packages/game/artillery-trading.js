@@ -26,7 +26,7 @@ const capable = (u) =>
   !u.unconscious;
 const actors = (s) =>
   (s.squad ?? []).filter((id) => {
-    const r = s.operativeState[id];
+    const r = s.characters[id];
     return (
       r?.alive &&
       capable(r) &&

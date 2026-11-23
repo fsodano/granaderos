@@ -12,8 +12,8 @@ export function workshopAccessReason(s, op, supplied) {
   if (
     !op ||
     !s.forceRoster.includes(op.id) ||
-    !s.operativeState[op.id]?.alive ||
-    s.operativeState[op.id].captured
+    !s.characters[op.id]?.alive ||
+    s.characters[op.id].captured
   ) {
     return 'El combatiente no está disponible.';
   }

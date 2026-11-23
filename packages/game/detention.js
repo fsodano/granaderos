@@ -12,7 +12,7 @@ import { artillerySpaceKeys } from './artillery-occupancy.js';
 export function detentionManifest(campaign, roster, sector) {
   return roster
     .flatMap((op) => {
-      const r = campaign.operativeState[op.id];
+      const r = campaign.characters[op.id];
       if (!r?.captured || !r.alive || r.capturedSector !== sector) {
         return [];
       }

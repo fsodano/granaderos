@@ -32,7 +32,7 @@ export function residentPositionsFor(campaign, field) {
     (campaign.squads ?? []).filter((squad) => squad.journey).flatMap((squad) => squad.members),
   );
   return (campaign.forceRoster ?? []).flatMap((id) => {
-    const character = campaign.operativeState[id];
+    const character = campaign.characters[id];
     if (
       participating.has(String(id)) ||
       travelling.has(id) ||

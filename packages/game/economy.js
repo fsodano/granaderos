@@ -65,7 +65,7 @@ export function collectSectorCash(state, snapshot) {
   const ids = new Set(carriers.map((u) => String(u.id)));
   const records = [
     ...carriers,
-    ...Object.entries(state.operativeState)
+    ...Object.entries(state.characters)
       .filter(([id]) => ids.has(id))
       .map(([, unit]) => unit),
     ...(state.sectorStates?.[sectorId]?.units ?? []).filter((u) => ids.has(String(u.id))),

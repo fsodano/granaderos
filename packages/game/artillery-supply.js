@@ -8,7 +8,7 @@ export function artillerySupplyQuote(s, sector, gunId, supplied) {
     gun = scene?.artillery?.find((g) => g.id === gunId),
     cost = gun ? rules[gun.type] : 0;
   const present = (s.squad ?? []).some((id) => {
-    const r = s.operativeState[id];
+    const r = s.characters[id];
     return (
       r?.alive &&
       r.hp >= 15 &&

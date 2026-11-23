@@ -59,7 +59,7 @@ export function recordStrategicArrival(s, ids, fromSector, toSector, sceneId = n
     return;
   }
   for (const id of ids) {
-    const r = s.operativeState[id];
+    const r = s.characters[id];
     r.location = sceneAnchorFor(s, toSector);
     r.arrival = {
       battleId: `travel-${s.hour}-${fromSector}-${sceneId ?? toSector}`,
@@ -169,7 +169,7 @@ export function prepareDeploymentExits(s, request) {
     ).values(),
   ];
   for (const u of request.squad) {
-    const r = s.operativeState[Number(u.id)],
+    const r = s.characters[Number(u.id)],
       arrival = r?.arrival;
     delete u.entryEdge;
     delete u.entryAnchor;
@@ -392,7 +392,7 @@ export function planMountReturn(s, request, snapshot, entries) {
 
 export function migrateDeploymentReturns(s) {
   s.sectorRemains ??= {};
-  for (const r of Object.values(s.operativeState ?? {})) {
+  for (const r of Object.values(s.characters ?? {})) {
     r.capturedAmmunition ??= { loaded: 0, ammo: 0 };
   }
   return s;
@@ -549,7 +549,7 @@ export function validateDeploymentReturnState(s) {
       'Las rutas del despliegue son inválidas.',
     );
     for (const unit of request.squad ?? []) {
-      const r = s.operativeState[Number(unit.id)],
+      const r = s.characters[Number(unit.id)],
         point = unit.residentPosition,
         actual = r?.residentPosition,
         matching =
@@ -656,7 +656,7 @@ export function validateDeploymentReturnState(s) {
       });
     }
   }
-  for (const [id, r] of Object.entries(s.operativeState)) {
+  for (const [id, r] of Object.entries(s.characters)) {
     r.capturedAmmunition ??= { loaded: 0, ammo: 0 };
     need(
       object(r.capturedAmmunition) &&
@@ -742,7 +742,7 @@ export function validateDeploymentReturnState(s) {
           sector(h.custody.sector, s) &&
           h.location === h.custody.sector &&
           Number.isInteger(h.custody.operativeId) &&
-          s.operativeState[h.custody.operativeId] &&
+          s.characters[h.custody.operativeId] &&
           h.assignedTo === null &&
           !h.returned,
         'La custodia de la montura es inválida.',

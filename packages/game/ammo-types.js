@@ -194,7 +194,7 @@ export function validateStoredAmmo(state) {
   const list = (value) => (Array.isArray(value) ? value : []);
   const request = state.sectorEntryRequest;
   const records = [
-    ...values(state.operativeState),
+    ...values(state.characters),
     ...values(state.missionAllies),
     ...values(state.garrisons).flatMap(list),
     ...list(state.militiaTraining).flatMap((course) => list(course?.trainees)),

@@ -86,7 +86,7 @@ const serviceFor = (campaign, sectorId, sceneId, npc) => {
   if (id === undefined) {
     return null;
   }
-  const record = campaign.operativeState?.[id],
+  const record = campaign.characters?.[id],
     base = rosterFor(campaign).find((op) => op.id === id);
   need(record && base, 'Falta la hoja de servicio del habitante.');
   return { ...record, maxHp: record.maxHp ?? base.maxHp };
@@ -228,7 +228,7 @@ export function markCivilianServiceTransfer(campaign, id) {
     return;
   }
   need(
-    campaign.operativeState?.[id]?.alive && campaign.contracts?.[id],
+    campaign.characters?.[id]?.alive && campaign.contracts?.[id],
     'El traslado civil requiere una incorporación válida.',
   );
   need(
@@ -252,7 +252,7 @@ function serviceHealth(campaign, sectorId, sceneId, npc) {
   ) {
     return null;
   }
-  const operative = campaign.operativeState?.[id];
+  const operative = campaign.characters?.[id];
   need(
     operative && Number.isFinite(operative.hp) && Number.isFinite(operative.maxHp),
     'Falta la hoja de servicio del habitante.',
@@ -549,7 +549,7 @@ export function acknowledgeCivilianHarm(campaign, battle) {
     const id = authoredNpc(campaign, request.sector, sceneId, entry.npc.id)?.operativeId;
     if (id !== undefined && !campaign.forceRoster?.includes(id)) {
       need(
-        campaign.operativeState?.[id] && Number.isFinite(campaign.operativeState[id].hp),
+        campaign.characters?.[id] && Number.isFinite(campaign.characters[id].hp),
         'Falta la hoja de servicio del habitante.',
       );
     }
@@ -602,7 +602,7 @@ export function acknowledgeCivilianHarm(campaign, battle) {
     }
   }
   for (const { id, hp, energy, bleeding, bandaged, unconscious } of healthUpdates) {
-    const operative = campaign.operativeState[id];
+    const operative = campaign.characters[id];
     // Service records require integral HP. Preserve a living fractional legacy
     // civilian as living; only an actual zero-HP receipt can make a corpse.
     Object.assign(operative, {
@@ -743,8 +743,8 @@ export function validateCampaignCivilianHarm(campaign) {
     )?.operativeId;
     if (operativeId !== undefined && incidents.some((event) => event.kind === 'death')) {
       need(
-        campaign.operativeState?.[operativeId]?.hp === 0 &&
-          campaign.operativeState[operativeId].alive === false,
+        campaign.characters?.[operativeId]?.hp === 0 &&
+          campaign.characters[operativeId].alive === false,
         'Un habitante fallecido figura vivo en su hoja de servicio.',
       );
     }

@@ -26,7 +26,7 @@ const allowed = (from, to) =>
     ? to === 'active'
     : from === 'active' && ['completed', 'failed'].includes(to);
 const deathRecord = (s, character) =>
-  s.operativeState[operativeIdForCharacter(s.contentCampaign.package, character)];
+  s.characters[operativeIdForCharacter(s.contentCampaign.package, character)];
 const deadRequirement = (s, quest) =>
   quest.requiredAlive?.find((id) => deathRecord(s, id)?.alive === false);
 export function questTransitionQuote(s, effect) {

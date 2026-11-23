@@ -36,7 +36,7 @@ function plans(campaign, battle) {
       'El parte cambió la custodia de un prisionero.',
     );
     seen.add(npc.id);
-    const record = campaign.operativeState[d.operativeId],
+    const record = campaign.characters[d.operativeId],
       prior = campaign.detentionRecords?.[npc.id];
     if (prior?.npc.detentionRelease) {
       need(
@@ -162,7 +162,7 @@ export function validateCampaignDetention(campaign) {
     validateCivilianWounds(npc);
     need(npc.detention, 'La custodia guardada es inválida.');
     const d = npc.detention,
-      r = campaign.operativeState[d.operativeId];
+      r = campaign.characters[d.operativeId];
     need(
       r && captureSequence(d) <= captureSequence(r) && d.capturedAt <= campaign.hour,
       'Falta la hoja de servicio del prisionero.',
@@ -232,7 +232,7 @@ export function validateCampaignDetention(campaign) {
             typeof care.guardId === 'string' &&
             care.guardId.length > 0 &&
             Number.isInteger(care.sourceId) &&
-            campaign.operativeState[care.sourceId] &&
+            campaign.characters[care.sourceId] &&
             care.dressings === 1,
           'El recibo de atención en cautiverio es inválido.',
         );
@@ -290,7 +290,7 @@ export function validateCampaignDetention(campaign) {
   for (const npc of manifest) {
     validateDetainedPrisoner(npc, campaign);
     const d = npc.detention,
-      r = campaign.operativeState[d?.operativeId];
+      r = campaign.characters[d?.operativeId];
     need(
       d &&
         d.sector === request.sector &&
@@ -307,7 +307,7 @@ export function validateCampaignDetention(campaign) {
     );
   }
   if (request?.detainedPrisoners !== undefined) {
-    for (const [id, r] of Object.entries(campaign.operativeState)) {
+    for (const [id, r] of Object.entries(campaign.characters)) {
       if (r.captured && r.capturedSector === request.sector && !request.sceneId) {
         need(ids.has(detentionId(id, r)), 'El manifiesto omitió un prisionero local.');
       }
@@ -341,7 +341,7 @@ export function settleDetentionReturn(campaign, request) {
     if (
       !npc.detention?.freed ||
       npc.hp <= 0 ||
-      !sameCaptivity(campaign.operativeState[npc.detention.operativeId], npc.detention)
+      !sameCaptivity(campaign.characters[npc.detention.operativeId], npc.detention)
     ) {
       continue;
     }

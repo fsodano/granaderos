@@ -24,7 +24,7 @@ export class CampaignGetRecruitmentCandidatesRepository {
     const personnel = new CanonicalPersonnelMapper(this.#campaign, new DomainIdentityMap());
     return new RecruitmentCatalogue(
       this.#roster.map((character) => {
-        const condition = this.#campaign.operativeState[character.id];
+        const condition = this.#campaign.characters[character.id];
         const quote = contractQuote(this.#campaign, character, 'day');
         const availability = this.candidateAvailability(character.id, condition, quote);
         return new RecruitmentCandidate({

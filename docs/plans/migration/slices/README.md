@@ -130,5 +130,5 @@ that slice's start; the [overview](../overview.md) describes current source.
 ## What remains
 
 - Retained simulation modules still carry most game rules procedurally.
-- The saved campaign fields `operativeState`, `sectorStates`, and `sceneStates`
+- The saved campaign fields `sectorStates` and `sceneStates`
   still need explicit conversion to canonical domain representations.

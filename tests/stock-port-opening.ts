@@ -46,7 +46,7 @@ export function retainStockOpeningService(
     renewals = [];
   let state = start;
   for (const id of ids) {
-    const record = state.operativeState[id];
+    const record = state.characters[id];
     assert.ok(record, `The opening survivor ${id} must exist.`);
     if (!record.alive || record.captured) {
       continue;

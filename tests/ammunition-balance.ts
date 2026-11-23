@@ -14,7 +14,7 @@ export function stockAndCarriedAmmo(campaign: CampaignSnapshot) {
   return (
     stockAmmo(campaign) +
     campaign.forceRoster.reduce((sum, id) => {
-      const r = campaign.operativeState[id];
+      const r = campaign.characters[id];
       return (
         sum +
         (present(r).alive && !present(r).captured

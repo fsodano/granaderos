@@ -19,7 +19,7 @@ export function settlePrisonerEscapes(campaign, request, battle, roster) {
     }
     validatePrisonerEscape(npc, battle);
     const id = npc.detention.operativeId,
-      record = campaign.operativeState[id],
+      record = campaign.characters[id],
       receipt = campaign.detentionRecords[npc.id],
       exit = request.exits?.find((e) => e.id === npc.departure.exitId);
     need(

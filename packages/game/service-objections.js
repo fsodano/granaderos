@@ -343,7 +343,7 @@ function validateSnapshot(state, snapshot, roster, request, authority) {
       operative = roster.find((op) => op.id === Number(issued.id));
     need(actor && operative);
     pinned(operative, actor);
-    retains(state.operativeState?.[operative.id], actor);
+    retains(state.characters?.[operative.id], actor);
     retains(issued, actor);
     retains(
       authority?.units?.find(
@@ -353,7 +353,7 @@ function validateSnapshot(state, snapshot, roster, request, authority) {
     );
     if (
       actor.serviceObjection !== undefined &&
-      state.operativeState?.[operative.id]?.serviceObjection === undefined
+      state.characters?.[operative.id]?.serviceObjection === undefined
     ) {
       need(snapshot.conductObserverIds?.includes(operative.id));
       deathProof(state, snapshot, actor.serviceObjection, request, {
@@ -371,7 +371,7 @@ function validateSnapshot(state, snapshot, roster, request, authority) {
     const operative = roster.find((op) => op.id === idOf(actor));
     need(operative && actor.side === 'player' && !actor.militia);
     pinned(operative, actor);
-    need(same(actor.serviceObjection, state.operativeState?.[operative.id]?.serviceObjection));
+    need(same(actor.serviceObjection, state.characters?.[operative.id]?.serviceObjection));
   }
 }
 export function validateServiceObjectionContext(
@@ -390,7 +390,7 @@ export function validateServiceObjectionContext(
 }
 export function validateCampaignServiceObjections(state, roster) {
   for (const operative of roster) {
-    const record = state.operativeState?.[operative.id];
+    const record = state.characters?.[operative.id];
     need(record);
     pinned(operative, record);
     if (record.serviceObjection !== undefined) {
@@ -402,10 +402,10 @@ export function validateCampaignServiceObjections(state, roster) {
     const operative = roster.find((op) => op.id === Number(issued.id));
     need(operative);
     pinned(operative, issued);
-    retains(state.operativeState?.[operative.id], issued);
+    retains(state.characters?.[operative.id], issued);
     if (
       issued.serviceObjection !== undefined &&
-      state.operativeState?.[operative.id]?.serviceObjection === undefined
+      state.characters?.[operative.id]?.serviceObjection === undefined
     ) {
       need(issueConductObservers(request.squad).conductObserverIds?.includes(operative.id));
       need(acknowledgedDeath(state, issued.serviceObjection));
@@ -423,7 +423,7 @@ export function validateCampaignServiceObjections(state, roster) {
       const operative = roster.find((op) => op.id === idOf(actor));
       need(operative && actor.side === 'player' && !actor.militia);
       pinned(operative, actor);
-      const personal = state.operativeState?.[operative.id],
+      const personal = state.characters?.[operative.id],
         issued = request?.squad?.find((unit) => String(unit.id) === String(actor.id));
       need(
         same(actor.serviceObjection, personal?.serviceObjection) ||
@@ -446,7 +446,7 @@ export function retainServiceObjections(request, snapshot) {
   }
 }
 export function returnServiceObjection(state, id, report) {
-  const personal = state.operativeState[id];
+  const personal = state.characters[id];
   retains(personal, report);
   if (report.serviceObjection !== undefined) {
     personal.serviceObjection = structuredClone(report.serviceObjection);
@@ -462,7 +462,7 @@ export function hasPendingServiceObjections(state, snapshot) {
         state.sectorEntryRequest?.squad?.find((unit) => String(unit.id) === String(actor.id))
           ?.serviceObjection,
       ) ||
-        !same(actor.serviceObjection, state.operativeState?.[Number(actor.id)]?.serviceObjection)),
+        !same(actor.serviceObjection, state.characters?.[Number(actor.id)]?.serviceObjection)),
   );
 }
 export function serviceObjectionReason(state, operative) {
@@ -470,7 +470,7 @@ export function serviceObjectionReason(state, operative) {
     return null;
   }
   const receipt =
-    state?.operativeState?.[operative.id]?.serviceObjection ??
+    state?.characters?.[operative.id]?.serviceObjection ??
     state?.sectorEntryRequest?.squad?.find((unit) => String(unit.id) === String(operative.id))
       ?.serviceObjection;
   return receipt
@@ -478,7 +478,7 @@ export function serviceObjectionReason(state, operative) {
     : null;
 }
 export function receiveServiceObjectionCorrespondence(state, operative) {
-  const record = state.operativeState?.[operative?.id],
+  const record = state.characters?.[operative?.id],
     contract = state.contracts?.[operative?.id],
     now = state.hour * 3600 + (state.secondOfHour ?? 0),
     expiry =

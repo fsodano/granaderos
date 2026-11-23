@@ -44,7 +44,7 @@ export default function EnemyEncounters({
     exits = group ? retreatDestinations(s, group.target) : [],
     target = exits.includes(destination) ? destination : (exits[0] ?? '');
   const contactStrength = reports.find((r) => r.id === group?.id)?.strength;
-  const captives = rosterFor(s).filter((o) => s.operativeState[o.id]?.captured),
+  const captives = rosterFor(s).filter((o) => s.characters[o.id]?.captured),
     report = s.encounterHistory?.[0];
   return (
     <section className="enemy-encounters" aria-label="Movimientos y encuentros enemigos">

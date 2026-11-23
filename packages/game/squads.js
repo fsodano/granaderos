@@ -41,7 +41,7 @@ export function squadReorganizationReason(s) {
 export function operativeLocation(s, id) {
   return (
     s.squads?.find((q) => q.members.includes(id))?.location ??
-    s.operativeState[id]?.location ??
+    s.characters[id]?.location ??
     s.location
   );
 }
@@ -61,8 +61,8 @@ export function operativeInTransit(s, id) {
 export function canReassignOperative(s, id) {
   return (
     s.forceRoster.includes(id) &&
-    s.operativeState[id]?.alive &&
-    !s.operativeState[id]?.captured &&
+    s.characters[id]?.alive &&
+    !s.characters[id]?.captured &&
     !isCharacterDeployed(s, id) &&
     !s.squads?.some((q) => q.journey && q.members.includes(id))
   );

@@ -177,10 +177,10 @@ export function regionalGarmentWear(
   }
 }
 export function issueInitialOutfit(
-  campaign: { operativeState: Record<string, OutfitCarrier> },
+  campaign: { characters: Record<string, OutfitCarrier> },
   id: string | number,
 ) {
-  const record = campaign.operativeState[id];
+  const record = campaign.characters[id];
   if (!record) {
     throw Error('No existe el equipo del combatiente.');
   }

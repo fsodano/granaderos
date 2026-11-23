@@ -8,7 +8,7 @@ export const STRATEGIC_ISOLATION_LOSS = 1;
 export const STRATEGIC_ISOLATION_LIMIT = 20;
 const now = (s) => s.hour * 3600 + (s.secondOfHour ?? 0);
 const capable = (s, id) => {
-  const r = s.operativeState?.[id],
+  const r = s.characters?.[id],
     contract = s.contracts?.[id],
     expiry = contractExpiresSeconds(contract);
   return Boolean(
@@ -75,7 +75,7 @@ export function strategicIsolationStatus(s, op, { strategicTraveling = [] } = {}
   if (companion) {
     return { eligible: true, active: false, reason: 'companion' };
   }
-  if (s.operativeState[op.id].morale >= 50) {
+  if (s.characters[op.id].morale >= 50) {
     return { eligible: true, active: false, reason: 'morale' };
   }
   return { eligible: true, active: true, reason: 'isolated' };
@@ -87,7 +87,7 @@ export function advanceStrategicIsolation(s, roster, options = {}) {
   const active = new Set(),
     messages = [];
   for (const op of roster) {
-    const r = s.operativeState?.[op.id],
+    const r = s.characters?.[op.id],
       status = strategicIsolationStatus(s, op, options);
     if (status.reason === 'companion') {
       delete r.strategicIsolation;
@@ -126,7 +126,7 @@ export function advanceStrategicIsolation(s, roster, options = {}) {
 
 export function validateStrategicIsolation(s, roster) {
   for (const op of roster) {
-    const r = s.operativeState?.[op.id];
+    const r = s.characters?.[op.id];
     if (!r || !Object.hasOwn(r, 'strategicIsolation')) {
       continue;
     }

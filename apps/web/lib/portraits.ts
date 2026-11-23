@@ -25,8 +25,10 @@ export function portraitFor(id: number | string, context: CampaignContext = null
   }
   const content = campaignDefinitions(context),
     value = Number(id),
-    characters = content?.characters ?? DEFAULT_CONTENT.characters,
-    character = characters.find((character) => character.id === `person-${value}`);
+    definitions = Array.isArray(content?.characters)
+      ? content.characters
+      : DEFAULT_CONTENT.characters,
+    character = definitions.find((entry) => entry.id === `person-${value}`);
   if ((content?.scenario === 'generic-v1' || content?.campaignStory) && !character) {
     return null;
   }

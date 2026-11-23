@@ -101,7 +101,7 @@ The migration is complete when:
    to the campaign snapshot. Campaign, strategic, and tactical time advances
    use `WorldTimeline.advanceTo`; campaign `hour` and optional `secondOfHour`
    project its accepted second.
-3. The remaining saved campaign fields `operativeState`, `sectorStates`, and
+3. The remaining saved campaign fields `sectorStates` and
    `sceneStates` have explicit conversions to canonical domain representations
    before their compatibility names are retired.
 4. The full verification profile, `npm run verify`, passes. It includes

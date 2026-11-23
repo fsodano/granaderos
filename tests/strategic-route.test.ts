@@ -81,14 +81,14 @@ void test('blocked route previews explain refusals and valid redirection preview
     ],
     [
       (s: CampaignSnapshot) => {
-        present(s.operativeState[3]).asleep = true;
+        present(s.characters[3]).asleep = true;
       },
       'buenos_aires',
       /durmiendo/,
     ],
     [
       (s: CampaignSnapshot) => {
-        present(s.operativeState[3]).assignment = 'doctor';
+        present(s.characters[3]).assignment = 'doctor';
       },
       'buenos_aires',
       /asignación/,

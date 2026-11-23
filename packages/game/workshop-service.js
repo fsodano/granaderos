@@ -7,7 +7,7 @@ export function workshopServiceQuote(s, op, service, supplied) {
   if (!['resupply', 'repairWeapon'].includes(service)) {
     return { available: false, cost: 0, reason: 'El servicio de taller no existe.' };
   }
-  const r = s.operativeState[op?.id],
+  const r = s.characters[op?.id],
     cost = r
       ? service === 'resupply'
         ? refillCost(r, careRules(s).dressingPrice)
