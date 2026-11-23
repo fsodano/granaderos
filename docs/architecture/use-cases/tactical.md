@@ -54,6 +54,15 @@ the one-based numeric suffix. The retained
 [`tactical-grid.js`](../../../packages/game/tactical-grid.js) re-exports the
 domain function.
 
+[`tactical-planning-space.ts`](../../../packages/game/domain/sector-sessions/tactical-planning-space.ts)
+owns planning-point and movement-order rules. `planningPoint` preserves
+coordinates and any named tactical level (vertical map layer), and includes
+ground level when an elevated map needs an explicit level. `moveOrder` builds
+the order a plan produces, while `atHand` requires points to share a surface
+and be within a default Euclidean range of 1.5. The retained
+[`tactical-planning-space.ts`](../../../packages/game/tactical-planning-space.ts)
+re-exports these rules for existing callers.
+
 [`weapon-reload.ts`](../../../packages/game/domain/combat/weapon-reload.ts)
 owns reload-round cost, stored-progress validation, and reload planning beside
 `ReloadWork` (partial loading work) and `ReloadRules` (reload multipliers), both

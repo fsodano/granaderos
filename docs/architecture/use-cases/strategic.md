@@ -38,6 +38,20 @@ those rules and keeps `prisonerStatus`, which reads campaign character and
 detention records. The query delegates its service-hours field to the domain
 rule; it does not own the contract-pause behavior.
 
+Militia patrol settings have separate domain and content responsibilities.
+[`militia-patrol.ts`](../../../packages/game/domain/personnel/militia-patrol.ts)
+owns the frozen defaults and `validateCampaignPatrol`, which refuses a saved
+scene with incomplete, out-of-range, or mismatched patrol settings. It compares
+the scene with the setting in the campaign's embedded content package, or with
+domain defaults when that setting is absent. The retained
+[`militia-patrol-rules.js`](../../../packages/game/militia-patrol-rules.js)
+keeps `militiaPatrolRules(state)`, which reads the package setting, then the
+scene's stored `militiaPatrol` field, then the domain default. The shared
+[`campaign-rules-schema.js`](../../../packages/campaign-format/campaign-rules-schema.js)
+still defines the authored field contract and structural validation.
+[`militia-patrol.js`](../../../packages/game/militia-patrol.js) still computes
+patrol movement orders.
+
 Every `Exposure` column below uses the canonical six-value vocabulary defined in the [use-case index](README.md#exposure-vocabulary): `Command`, `Gated`, `Query`, `Supporting`, `No interface route`, and `Refused`.
 
 ## Capability families and case index
