@@ -43,14 +43,16 @@ Militia patrol settings have separate domain and content responsibilities.
 owns the frozen defaults and `validateCampaignPatrol`, which refuses a saved
 scene with incomplete, out-of-range, or mismatched patrol settings. It compares
 the scene with the setting in the campaign's embedded content package, or with
-domain defaults when that setting is absent. The retained
+domain defaults when that setting is absent. It also owns patrol-turn
+eligibility, waypoint selection (the map position a patrol moves toward), and
+reachable-cell choice. The retained
 [`militia-patrol-rules.js`](../../../packages/game/militia-patrol-rules.js)
 keeps `militiaPatrolRules(state)`, which reads the package setting, then the
 scene's stored `militiaPatrol` field, then the domain default. The shared
 [`campaign-rules-schema.js`](../../../packages/campaign-format/campaign-rules-schema.js)
 still defines the authored field contract and structural validation.
-[`militia-patrol.js`](../../../packages/game/militia-patrol.js) still computes
-patrol movement orders.
+[`militia-patrol.js`](../../../packages/game/militia-patrol.js) asks tactical
+map code for visibility and reachable cells, then assembles the move order.
 
 Every `Exposure` column below uses the canonical six-value vocabulary defined in the [use-case index](README.md#exposure-vocabulary): `Command`, `Gated`, `Query`, `Supporting`, `No interface route`, and `Refused`.
 

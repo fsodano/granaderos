@@ -1,6 +1,6 @@
 # Migration slice notes
 
-This index links to the 56 migration slice notes. Each note records its
+This index links to the 58 migration slice notes. Each note records its
 rationale, scope, and compatibility contract. The
 [overview](../overview.md) describes current source and remaining requirements.
 
@@ -64,6 +64,8 @@ rationale, scope, and compatibility contract. The
 | [54. Care tuning and refill price](54-dead-defaults.md) |
 | [55. Tactical planning rules](55-tactical-planning.md) |
 | [56. Militia patrol tuning and scene validation](56-militia-patrol-rules.md) |
+| [57. Militia patrol movement](57-militia-patrol-order.md) |
+| [58. Projectile air drag](58-projectile-air-drag.md) |
 
 ## What the series changed
 
@@ -136,7 +138,11 @@ rationale, scope, and compatibility contract. The
   root module is a thin re-export of it.
 - `ResidentPositionReference` names the saved reference to a resident's
   character identity and local position.
-- Thirty-one migrated game-rule groups have domain ownership: firearm readiness,
+- Thirty-three migrated game-rule groups have domain ownership. The 29 groups
+  in the list below plus four later groups make that total: [tactical planning](55-tactical-planning.md),
+  [militia patrol tuning and scene validation](56-militia-patrol-rules.md),
+  [militia patrol movement](57-militia-patrol-order.md), and
+  [projectile air drag](58-projectile-air-drag.md). The 29 groups are firearm readiness,
   unarmed combat, sleep need, held supplies, projectile energy, firearm loads,
   study rate, the route queue, firearm serviceability, kinetic impact, combat
   balance, combat journal, fatigue and energy, interior visibility, campaign
@@ -189,13 +195,23 @@ rationale, scope, and compatibility contract. The
   [`tactical-planning-space.ts`](../../../../packages/game/tactical-planning-space.ts)
   re-exports those rules.
 - [`militia-patrol.ts`](../../../../packages/game/domain/personnel/militia-patrol.ts)
-  owns default patrol tuning and saved-scene consistency validation.
+  owns default patrol tuning, saved-scene consistency validation, patrol
+  eligibility, waypoint selection (the map target for each turn), and
+  reachable-cell choice. The retained
+  [`militia-patrol.js`](../../../../packages/game/militia-patrol.js) asks
+  tactical map code for visibility and reachable cells, then assembles the move
+  order.
   [`militia-patrol-rules.js`](../../../../packages/game/militia-patrol-rules.js)
   retains the campaign-content lookup, while
   [`campaign-rules-schema.js`](../../../../packages/campaign-format/campaign-rules-schema.js)
-  retains the authored-field contract and structural validation. Patrol
-  movement-order generation remains in
-  [`militia-patrol.js`](../../../../packages/game/militia-patrol.js).
+  retains the authored-field contract and structural validation.
+- [`projectile-air-drag.ts`](../../../../packages/game/domain/combat/projectile-air-drag.ts)
+  owns the runtime check for whether a weapon has a usable air-drag profile and
+  the distance-based energy-retention rule. The retained
+  [`projectile-air-drag.js`](../../../../packages/game/projectile-air-drag.js)
+  validates records with the shared
+  [`projectile-profile-schema.js`](../../../../packages/campaign-format/projectile-profile-schema.js)
+  and re-exports the domain rules.
 - `directionTo` and `approximateHeardPosition` live in
   [`packages/game/domain/perception/npc-perception.ts`](../../../../packages/game/domain/perception/npc-perception.ts);
   the retained modules
@@ -209,17 +225,24 @@ rationale, scope, and compatibility contract. The
 
 ## What remains
 
-- Procedural simulation rules still implemented in retained
-  [`packages/game`](../../../../packages/game/) modules need one named owner in
-  [`packages/game/domain`](../../../../packages/game/domain/) or an application
-  use case. In particular, `militiaPatrolOrder` in
-  [`militia-patrol.js`](../../../../packages/game/militia-patrol.js) still
-  computes patrol movement. Retained compatibility paths may preserve existing
-  imports, but must delegate rule behavior rather than keep a second
-  implementation. `prisonerStatus` remains in
+- Any retained simulation decision without a named domain owner or application
+  use case still needs one. Compatibility paths may preserve existing imports,
+  query map or content data, and assemble orders, but must delegate domain
+  decisions rather than duplicate them. `prisonerStatus` remains in
   [`prisoner-custody.js`](../../../../packages/game/prisoner-custody.js) because
   it reads campaign character and detention records; it is a query, not an
   unowned custody rule.
+- Known rule-boundary issues remain. The `able` filter in
+  [`militia-patrol.js`](../../../../packages/game/militia-patrol.js) selects
+  eligible observers and opponents for the sight query, but duplicates the
+  domain's private `canAct` condition and uses a literal 15-hit-point threshold
+  instead of [`CRITICAL_HEALTH`](../../../../packages/game/domain/personnel/actor-condition.ts).
+  This is the sight-query filter, not the domain-owned patrol movement decision.
+  [`projectile-cover.js`](../../../../packages/game/projectile-cover.js)
+  decides whether a trajectory interval is in material or open air and applies
+  air retention only outside material; no domain module owns that interval
+  decision. Map queries and move-order assembly remain adapter responsibilities;
+  the patrol movement decision itself has domain ownership.
 - Campaign-authored care lookup remains in
   [`campaign-care-rules.js`](../../../../packages/game/campaign-care-rules.js):
   it selects authored values and falls back to

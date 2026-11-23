@@ -1,6 +1,6 @@
 # Clean architecture migration plan
 
-This plan defines a 56-slice sequence for moving Granaderos toward the
+This plan defines a 58-slice sequence for moving Granaderos toward the
 [accepted domain architecture](../accepted/domain-architecture.md). The
 [overview](overview.md) describes current source behavior and remaining
 requirements; the [slice index](slices/README.md) links each note.
@@ -104,6 +104,8 @@ outside this plan.
 | [54. Care tuning and refill price](slices/54-dead-defaults.md) | Use domain care tuning for rest healing and require callers to supply the refill dressing price |
 | [55. Tactical planning rules](slices/55-tactical-planning.md) | Move planning-point rules, movement-order construction, and same-surface hand reach into the domain while retaining the root re-export |
 | [56. Militia patrol tuning and scene validation](slices/56-militia-patrol-rules.md) | Move default patrol tuning and saved-scene consistency validation into the domain; retain campaign-content lookup and authored-field validation at their boundaries |
+| [57. Militia patrol movement](slices/57-militia-patrol-order.md) | Move patrol eligibility, waypoint selection, and reachable-cell choice into the domain; retain map queries and move-order assembly in [`militia-patrol.js`](../../../packages/game/militia-patrol.js) |
+| [58. Projectile air drag](slices/58-projectile-air-drag.md) | Move the check for whether a weapon has a usable air-drag profile and energy retention by distance into the domain; retain shared file-contract validation at the boundary |
 
 Each slice has a note under [slices](slices/README.md) that records its intent,
 scope, and behavior tests. Read the relevant note before changing that area.
@@ -112,33 +114,44 @@ scope, and behavior tests. Read the relevant note before changing that area.
 
 The migration is complete when:
 
-1. Every procedural simulation rule must have a named domain owner or
-   application use case, and retained compatibility modules must delegate
-   rather than duplicate those rules. The domain owns aimed-shot rules in
+1. Every procedural simulation rule must have a named domain owner or application
+   use case, and retained compatibility modules must delegate rather than duplicate
+   rules. The domain owns aimed-shot rules in
    [`targeted-combat.ts`](../../../packages/game/domain/combat/targeted-combat.ts),
    tactical cell labels in
    [`tactical-grid.ts`](../../../packages/game/domain/sector-sessions/tactical-grid.ts),
    planning-point and movement-order rules in
    [`tactical-planning-space.ts`](../../../packages/game/domain/sector-sessions/tactical-planning-space.ts),
-   and default militia patrol tuning plus saved-scene consistency in
+   and patrol tuning, saved-scene consistency, patrol eligibility, target
+   waypoints (the map positions for each patrol turn), and reachable-cell
+   choice in
    [`militia-patrol.ts`](../../../packages/game/domain/personnel/militia-patrol.ts).
-   Reload cost, stored-progress validation, and planning belong to
-   [`weapon-reload.ts`](../../../packages/game/domain/combat/weapon-reload.ts);
-   [`weapon-reload.js`](../../../packages/game/weapon-reload.js) remains a
-   re-export. [`care-rules.ts`](../../../packages/game/domain/personnel/care-rules.ts)
+   The retained [`militia-patrol.js`](../../../packages/game/militia-patrol.js)
+   queries map visibility and reachable cells, then assembles the move order.
+   [`projectile-air-drag.ts`](../../../packages/game/domain/combat/projectile-air-drag.ts)
+   decides whether a weapon has a usable air-drag profile (its fraction retained
+   at the weapon's range) and calculates energy retention by distance. The
+   retained [`projectile-air-drag.js`](../../../packages/game/projectile-air-drag.js)
+   validates records with the shared
+   [`projectile-profile-schema.js`](../../../packages/campaign-format/projectile-profile-schema.js)
+   and re-exports the domain rules.
+   [`weapon-reload.ts`](../../../packages/game/domain/combat/weapon-reload.ts)
+   owns reload cost, stored-progress validation, and planning; the retained
+   [`weapon-reload.js`](../../../packages/game/weapon-reload.js) re-exports it.
+   [`care-rules.ts`](../../../packages/game/domain/personnel/care-rules.ts)
    owns default care/rest tuning and the default strategic bleeding percentage.
    [`campaign-care-rules.js`](../../../packages/game/campaign-care-rules.js)
-   selects authored care values and uses those defaults. The shared
+   selects authored care values and uses those defaults.
    [`campaign-rules-schema.js`](../../../packages/campaign-format/campaign-rules-schema.js)
    owns authored care and militia patrol field contracts and structural
-   validation; the retained
-   [`militia-patrol-rules.js`](../../../packages/game/militia-patrol-rules.js)
-   reads campaign patrol settings. `militiaPatrolOrder` in
-   [`militia-patrol.js`](../../../packages/game/militia-patrol.js) still
-   computes patrol movement and remains to be migrated under this criterion.
-   `prisonerStatus` remains a query over campaign character and detention
-   records. Architecture checks reject imports from `packages/game` into
-   `apps/web`.
+   validation; [`militia-patrol-rules.js`](../../../packages/game/militia-patrol-rules.js)
+   reads campaign patrol settings. `prisonerStatus` remains a query over
+   campaign character and detention records. Completion also requires
+   [`militia-patrol.js`](../../../packages/game/militia-patrol.js) to stop
+   duplicating the domain's private `canAct` check in its `able` sight filter and
+   requires a domain owner for the open-air versus material interval decision
+   in [`projectile-cover.js`](../../../packages/game/projectile-cover.js).
+   Architecture checks reject imports from `packages/game` into `apps/web`.
 2. `GameSession` (the runtime consistency boundary) owns `RandomSource` (the
    seeded random sequence) and `WorldTimeline` (the accepted game-time clock).
    Campaign draws use `session.randomSource` and write its advanced seed back
@@ -217,6 +230,6 @@ boundaries it can express as import rules.
 
 Start with [overview.md](overview.md) for the current implementation and open
 gaps, then use this plan for the branch flow and the [slice index](slices/README.md)
-for the 56 slice notes. Read the accepted architecture and glossary before
+for the 58 slice notes. Read the accepted architecture and glossary before
 work that changes a domain contract or term. Each slice note records its
 intent, scope, and behavior tests.

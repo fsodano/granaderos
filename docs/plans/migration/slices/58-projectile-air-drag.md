@@ -1,50 +1,56 @@
-# Slice 58: the projectile air drag rule into the domain
+# Slice 58: projectile air-drag rules
 
-**Branch:** `migration/projectile-air-drag`
-**Intent:** Move the rule that decides how much of a projectile's energy
-survives the distance into the domain, beside the launch it comes from.
+The domain determines whether a weapon has a usable air-drag profile and
+calculates how much projectile energy remains after travel through air. The
+profile gives the fraction that should remain at the weapon's range. The retained
+[`projectile-air-drag.js`](../../../../packages/game/projectile-air-drag.js)
+validates the shared campaign-file record and re-exports the domain rules.
 
-## Why this slice exists
+## Input validation boundary
 
-`packages/game/projectile-air-drag.js` holds two things.
+The retained module keeps `validProjectileAirDrag`, the check for a weapon's
+campaign profile and energy record. It uses the shared
+[`projectile-profile-schema.js`](../../../../packages/campaign-format/projectile-profile-schema.js)
+to require the profile's exact fields, a syntactically valid model identifier,
+and a finite retention greater than `0` and at most `1`. The root check then
+requires the supported model identifier and validates the associated
+projectile-energy record. The domain does not import
+`campaign-format`; without this boundary check, malformed campaign data could
+reach a calculation that expects typed values.
 
-The rule: `projectileAirRetention`, which decides how much of a projectile's
-energy is left at a distance, and `hasProjectileAirDrag`, which says whether a
-weapon carries that profile at all.
+## Domain rule
 
-The check: `validProjectileAirDrag`, which admits an air drag record that the
-shared file contract defines.
+[`projectile-air-drag.ts`](../../../../packages/game/domain/combat/projectile-air-drag.ts)
+works with validated, typed weapon data. Its predicate treats a profile as
+usable when the profile is present, its retention is below `1`, the weapon's
+range is finite and positive, and projectile-energy data is present.
+`retentionAtRange` is the fraction of energy retained after traveling the
+weapon's range. With no active profile or a nonpositive distance, the retention
+factor is `1`; otherwise an exponential curve reaches `retentionAtRange` at the
+weapon's range.
 
-The domain already owns the launch: `packages/game/domain/combat/projectile-energy.ts`
-holds the energy of a projectile and the impact a launch costs, and
-`kinetic-impact.ts` holds the impact it lands with. The retention along the way
-belongs with them. The check stays where the shared file contract is, because
-the domain may not read it.
+This is range-normalized game tuning, not a measured aerodynamic coefficient.
+The profile range and the projectile path use abstract tactical distance units.
+[`projectile-cover.js`](../../../../packages/game/projectile-cover.js) applies
+the domain rule only on path segments outside material. Material resistance
+applies inside material instead, so one segment does not pay both types of
+energy loss. That module still owns the geometric decision about which path
+segments are in open air; the domain air-drag module owns the profile predicate
+and retention calculation, not interval selection. The interval-selection
+decision remains a migration requirement.
 
-## What it changes
+## Example
 
-- `packages/game/domain/combat/projectile-air-drag.ts` holds the retention
-  rule, with the comment that explains the modelling.
-- `packages/game/projectile-air-drag.js` keeps the check and re-exports the
-  rule from the domain, and the files that import it keep importing it from
-  the same path.
+The [domain test fixture](../../../../packages/game/domain/combat/projectile-air-drag.test.ts)
+uses a 12-gram projectile with a 0.5 retention fraction at range 30. It retains
+about 0.707 of its energy at distance 15, 0.5 at 30, and 0.25 at 60. A weapon
+without an air-drag profile retains all of its energy at any distance. These
+values come from test data, not an authored campaign weapon.
 
-The retention does not change: the same decay, the same distance at which a
-shot keeps its whole energy, and the same fallback to no loss.
+## Behavior checks
 
-## Tests
-
-- `packages/game/domain/combat/projectile-air-drag.test.ts` covers the rule:
-  a weapon with no air drag profile keeps all of its energy at any distance, a
-  weapon with one loses energy as the distance grows, the loss follows the
-  same exponential curve, and a distance of zero or less loses nothing.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.62` to `0.2.63`.
+[`projectile-air-drag.test.ts`](../../../../packages/game/domain/combat/projectile-air-drag.test.ts)
+covers missing profiles, decreasing retention with distance, the exponential
+curve at selected distances, and nonpositive distances. The domain tests
+exercise the typed runtime rule; the retained root module owns file-contract
+validation.

@@ -232,7 +232,7 @@ serializing that domain object.
 eligible tile arrays in every suspended `snapshot` along with active and
 retained maps.
 
-Thirty-one migrated game-rule groups have domain ownership in
+Thirty-three migrated game-rule groups have domain ownership in
 `packages/game/domain`, as listed in the [slice index](slices/README.md).
 [`targeted-combat.ts`](../../../packages/game/domain/combat/targeted-combat.ts)
 owns aimed-shot eligibility, region choices and profiles, aiming penalties, and
@@ -263,15 +263,29 @@ release. The retained [`prisoner-custody.js`](../../../packages/game/prisoner-cu
 re-exports those rules and keeps `prisonerStatus`, which reads campaign character
 and detention records. [`militia-patrol.ts`](../../../packages/game/domain/personnel/militia-patrol.ts)
 owns default patrol tuning and the rule that checks saved-scene settings against
-the campaign package or domain defaults. The retained
+the campaign package or domain defaults, plus patrol eligibility, turn waypoint
+selection (the map target for that turn), and reachable-cell choice. The retained
 [`militia-patrol-rules.js`](../../../packages/game/militia-patrol-rules.js)
 keeps `militiaPatrolRules`, which selects the campaign package setting, then the
 scene's stored patrol setting, then the domain default. It also re-exports the
 domain default and consistency check. The shared
 [`campaign-rules-schema.js`](../../../packages/campaign-format/campaign-rules-schema.js)
 keeps the authored field contract and structural validation.
-[`militia-patrol.js`](../../../packages/game/militia-patrol.js) still computes
-patrol movement orders.
+[`militia-patrol.js`](../../../packages/game/militia-patrol.js) asks tactical map
+code for enemy visibility and reachable cells, then assembles the move order
+from the domain decision.
+[`projectile-air-drag.ts`](../../../packages/game/domain/combat/projectile-air-drag.ts)
+owns the check for whether a weapon has a usable air-drag profile and the
+distance-based energy-retention rule. The profile's value is the fraction
+retained at the weapon's range. The retained
+[`projectile-air-drag.js`](../../../packages/game/projectile-air-drag.js)
+uses the shared
+[`projectile-profile-schema.js`](../../../packages/campaign-format/projectile-profile-schema.js)
+to validate profile records, validates the associated energy profile, and
+re-exports the domain rules.
+[`projectile-cover.js`](../../../packages/game/projectile-cover.js)
+selects open-air versus material intervals and applies retention only outside
+material.
 `GameSession` owns `RandomSource` and `WorldTimeline`.
 Campaign code calls `drawCampaignRandom(session, draft)`, where
 `session` is the `GameSession` and `draft` is the campaign snapshot. The helper
@@ -311,13 +325,11 @@ re-export them so callers keep their import paths and behavior.
 
 ## 5. What remains
 
-- Procedural rules still in retained [`packages/game`](../../../packages/game/)
-  modules need one named domain owner or application use case. In particular,
-  `militiaPatrolOrder` in
-  [`militia-patrol.js`](../../../packages/game/militia-patrol.js) still computes
-  patrol movement. Retained compatibility entry points may preserve imports,
-  but must delegate rather than duplicate domain rules. `prisonerStatus` remains
-  a campaign-record query, not an outstanding rule move.
+- Any retained simulation decision without a named domain owner or application
+  use case still needs one. Compatibility entry points may preserve imports,
+  query map or content data, and assemble orders, but must delegate domain
+  decisions rather than duplicate them. `prisonerStatus` remains a
+  campaign-record query, not an outstanding rule move.
 - Campaign-authored care lookup remains in
   [`campaign-care-rules.js`](../../../packages/game/campaign-care-rules.js),
   which selects authored values and falls back to domain defaults. The retained
@@ -327,6 +339,18 @@ re-export them so callers keep their import paths and behavior.
   owns authored-field contracts and structural validation; the domain's
   `validateCampaignPatrol` checks saved-scene consistency against the campaign
   package setting or domain defaults.
+- The `able` filter in
+  [`militia-patrol.js`](../../../packages/game/militia-patrol.js) selects
+  observers and opponents for the sight query, but duplicates the domain's
+  private `canAct` condition and uses a literal 15-hit-point threshold instead
+  of [`CRITICAL_HEALTH`](../../../packages/game/domain/personnel/actor-condition.ts).
+  This sight-query filter is separate from the domain-owned patrol movement
+  decision.
+- [`projectile-cover.js`](../../../packages/game/projectile-cover.js) selects
+  open-air versus material intervals and applies the domain retention factor
+  only outside material. No domain module owns this interval-selection
+  decision. Map queries and move-order assembly remain adapter responsibilities;
+  they do not need separate domain owners.
 
 ## 6. Current source and accepted target
 
@@ -364,7 +388,7 @@ accepted architecture.
 | Suspended snapshot compaction | [`compactSaveTerrain`](../../../packages/game/save-terrain.js) and [`expandSaveTerrain`](../../../packages/game/save-terrain.js) include eligible tile arrays in every `suspendedSectorSessions[*].snapshot`, along with active and retained maps. Suspended snapshots use the same palette-compaction trigger, 20 MB expanded-size guard, and 5 MB final-file cap. | Preserve the suspended snapshot's tile data through save and restore. |
 | Hostile-arrival orders | [`dispatchCampaign`](../../../packages/game/campaign.js) resolves a fight through `fightOnArrival` and a withdrawal through `withdrawOnArrival`; each order applies to one squad's `ArrivalDecision`. The dispatcher has no `beginAssault` order. | Keep each arrival resolution tied to the arriving squad's own decision and pause time until every pending decision resolves. |
 | Sector-entry types | [`CampaignSnapshot.sectorEntryRequest`](../../../packages/game/public/campaign-types.ts) uses `CampaignSectorEntryRequest`, the saved campaign projection; the application use case retains its narrower `SectorEntryRequest` input. | Keep the public campaign projection distinct from the application request. |
-| Domain rule ownership | Thirty-one migrated game-rule groups have domain owners, as listed in the [slice index](slices/README.md). [`tactical-planning-space.ts`](../../../packages/game/domain/sector-sessions/tactical-planning-space.ts) owns planning-point rules, explicit ground levels in elevated orders, movement-order construction, and same-surface hand reach; the retained [`tactical-planning-space.ts`](../../../packages/game/tactical-planning-space.ts) re-exports it. [`militia-patrol.ts`](../../../packages/game/domain/personnel/militia-patrol.ts) owns default patrol tuning and saved-scene consistency; the retained [`militia-patrol-rules.js`](../../../packages/game/militia-patrol-rules.js) keeps campaign-content lookup and re-exports the domain rules. [`campaign-rules-schema.js`](../../../packages/campaign-format/campaign-rules-schema.js) keeps authored-field validation. Other owners and wrappers are listed there. [`prisoner-custody.js`](../../../packages/game/prisoner-custody.js) re-exports captive service rules and keeps `prisonerStatus`, a campaign-record query. [`tactical-space.ts`](../../../packages/game/domain/sector-sessions/tactical-space.ts) owns tactical-level rules; `packages/campaign-format` keeps independent map validation. | Give every remaining retained procedural rule a named domain owner or application use case; compatibility entry points must delegate, not duplicate. `militiaPatrolOrder` in [`militia-patrol.js`](../../../packages/game/militia-patrol.js) still computes movement and needs a domain owner. `prisonerStatus` is a query, not a rule move. Keep campaign-authored care and patrol lookups plus authored-field validation outside the domain: [`campaign-care-rules.js`](../../../packages/game/campaign-care-rules.js) and [`militia-patrol-rules.js`](../../../packages/game/militia-patrol-rules.js) read campaign content, while [`campaign-rules-schema.js`](../../../packages/campaign-format/campaign-rules-schema.js) validates authored fields. |
+| Domain rule ownership | Thirty-three migrated groups have domain owners (see the [slice index](slices/README.md)). [`militia-patrol.ts`](../../../packages/game/domain/personnel/militia-patrol.ts) owns patrol defaults, saved-scene consistency, eligibility, target waypoints, and reachable-cell choice; [`militia-patrol.js`](../../../packages/game/militia-patrol.js) supplies map data and assembles orders. [`projectile-air-drag.ts`](../../../packages/game/domain/combat/projectile-air-drag.ts) owns profile eligibility and distance retention; [`projectile-air-drag.js`](../../../packages/game/projectile-air-drag.js) validates records. [`projectile-cover.js`](../../../packages/game/projectile-cover.js) selects material and open-air intervals. | Reconcile the patrol sight filter's duplicate `able`/`canAct` checks and assign a domain owner to projectile interval selection. Map queries, order assembly, authored-content lookup, and schema validation may remain at their boundaries; `prisonerStatus` is a query. |
 | Care and refill inputs | [`care-rules.ts`](../../../packages/game/domain/personnel/care-rules.ts) owns default care/rest tuning, including `restHealingHours`; [`campaign-care-rules.js`](../../../packages/game/campaign-care-rules.js) selects authored values or those defaults. [`workshopServiceQuote`](../../../packages/game/workshop-service.js) supplies `careRules(s).dressingPrice` to [`refillCost`](../../../packages/game/equipment.js), which has no default price. | Keep authored care lookup at the content boundary and pass the effective campaign dressing price to each refill quote. |
 | Time and randomness | `GameSession` owns `RandomSource` and `WorldTimeline`. `drawCampaignRandom(session, draft)` draws through `session.randomSource` and writes its advanced seed to `draft.seed`. Campaign, strategic, and tactical clock paths advance `session.timeline`; campaign `hour` and optional `secondOfHour` project its accepted second. | Preserve session ownership and keep campaign clock fields as projections of accepted time. |
 | Suspended-session record shape | The public [`CampaignSuspendedSectorSession`](../../../packages/game/public/campaign-types.ts) type declares `request` as a saved [`CampaignSectorEntryRequest`](../../../packages/game/public/campaign-types.ts), `snapshot` as a [`BattleSnapshot`](../../../packages/game/public/compatibility-types.ts), `activeSquadId` as `CampaignSquadId`, `location` as `CampaignSectorId`, and `suspendedAtSeconds` as `CampaignGameSecond`. The coordinator writes those fields; validation checks them against the squad, location, request identity, and campaign clock, while `GameSnapshotMapper` restores the domain `SectorSession` (the domain object for one sector visit) from the request and snapshot. | Preserve the declared five-field contract and visit identity/progress; keep the saved request and sector snapshot separate from the domain `SectorSession` object. |
