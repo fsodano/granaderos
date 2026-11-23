@@ -61,6 +61,17 @@ in [`reload-work.ts`](../../../packages/game/domain/combat/reload-work.ts). The
 retained [`weapon-reload.js`](../../../packages/game/weapon-reload.js)
 re-exports those functions for existing callers.
 
+A combatant's `ServiceContract` stores their paid service terms. Capture pauses
+its unused duration.
+[`captive-service.ts`](../../../packages/game/domain/personnel/captive-service.ts)
+owns the remaining-hours calculation and contract reconstruction at release.
+The retained [`prisoner-custody.js`](../../../packages/game/prisoner-custody.js)
+re-exports those rules and keeps `prisonerStatus`, a query over campaign
+character and detention records; its service-hours field delegates to the
+domain rule. Tactical release and escort receipts for detained NPCs remain in
+[`prisoner-release.js`](../../../packages/game/prisoner-release.js), a separate
+rule from resuming a combatant's service contract.
+
 Every `Exposure` column below uses the canonical six-value vocabulary defined in the [use-case index](README.md#exposure-vocabulary): `Command`, `Gated`, `Query`, `Supporting`, `No interface route`, and `Refused`.
 
 ## Capability families and case index
@@ -135,7 +146,7 @@ The table below specifies each tactical use case by `ID`, `Request information`,
 | TAC-019 | Participant `unitId`, firearm slot, ammunition family, `reload`, `reprime`, `unloadAmmunition`, or `repair` | Spends `ActionPoints`, advances `ReloadWork` or `ReprimeWork`, consumes physical cartridges only when a charge completes, or repairs weapon condition | Incompatible ammunition; no reserve cartridges or repair kit in `Inventory`; insufficient `ActionPoints`; stops at `SectorTimeBudget` boundary | `JA2WeaponMode.tsx`, `JA2Hands.tsx`; `ExecuteSectorOrderUseCase`, [`weapon-reload.ts`](../../../packages/game/domain/combat/weapon-reload.ts) via [`weapon-reload.js`](../../../packages/game/weapon-reload.js), `weapon-reprime.js`, `equipment-repair.js` |
 | TAC-020 | Participant `unitId`, door, wall edge, or environment prop ID, verb (`door`, `breach`, `environment`) | Spends `ActionPoints`, mutates door/wall/prop state, and recomputes sight and room readability | Target out of reach or locked/unbreachable with current tool; insufficient `ActionPoints` | `TacticalSceneControls.tsx`, `TacticalWallEdgeControls.tsx`, `JA2EnvironmentPanel.tsx`; `ExecuteSectorOrderUseCase`, `environment-interactions.ts` |
 | TAC-021 | Adjacent living NPC ID, player speaker `unitId`, dialogue approach and option | `TalkToCharacterUseCase` resolves dialogue, local recruitment (`RecruitmentService`), item gifts, and quest updates in one campaign/sector transaction | Active combat unresolved; NPC dead or not adjacent; dialogue condition unmet | `JA2Conversation.tsx`, `Battlefield.tsx`; `TalkToCharacterUseCase`, `talk-to-character-repository.ts`, `page.tsx:talkNPC` |
-| TAC-022 | Participant `unitId`, target civilian/prisoner ID, `giveItem`, `free`, or `prisonerEscort` | Transfers item custody, updates NPC health/restraint/following state, and records quest escort progress | Target not adjacent or wrong actor kind; required item not held | `PrisonerActions.tsx`, `JA2Conversation.tsx`; `ExecuteSectorOrderUseCase`, `prisoner-custody.js`, `quest-escort.js` |
+| TAC-022 | Participant `unitId`, target civilian/prisoner ID, `giveItem`, `free`, or `prisonerEscort` | Transfers item custody, updates NPC health/restraint/following state, and records quest escort progress | Target not adjacent or wrong actor kind; required item not held | `PrisonerActions.tsx`, `JA2Conversation.tsx`; `ExecuteSectorOrderUseCase`, `prisoner-release.js`, `quest-escort.js` |
 | TAC-023 | Participant `unitId`/`unitIds` and sector exit ID | Moves participants across exit zone (`tactical-exits.js`), records departure or `RetreatFromCombat`, and concludes `SectorSession` when all active player units depart | Participant not on exit cell, immobilized, or blocked from retreating | `JA2ExitPanel.tsx`, `Battlefield.tsx`; `ExecuteSectorOrderUseCase`, `tactical-exits.js` |
 | TAC-024 | Participant `unitId`, container or scene object ID, `containerLoot`, `steal`, or `environment` | Opens or searches container, reveals contents, or applies local interaction effect | Container empty, out of reach, or blocked; insufficient `ActionPoints` | `JA2LootPicker.tsx`, `TacticalSceneControls.tsx`; `ExecuteSectorOrderUseCase`, `environment-interactions.ts` |
 | TAC-025 | `endTurn` command or `ResumeSectorOperation` continuation request | `EndSectorTurnUseCase` advances `CombatTurn`, pops `ReactionStack`, or runs enemy/allied phase; `ResumeSectorOperationUseCase` continues paused work from its accepted checkpoint | Refused if an item remains on `equipmentCursor`; stops at `SectorTimeBudget` if a campaign `ArrivalDecision` is reached | `Battlefield.tsx`, `useEnemyPlayback.ts`; `EndSectorTurnUseCase`, `ResumeSectorOperationUseCase`, `tactical.js:endTurn` |

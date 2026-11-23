@@ -80,13 +80,22 @@ and [`weapon-reload.ts`](../../packages/game/domain/combat/weapon-reload.ts).
 [`tactical-space.ts`](../../packages/game/domain/sector-sessions/tactical-space.ts)
 owns the game's tactical-level and cell-space rules. The root modules are
 compatibility entry points; the domain modules own these rules.
+[`captive-service.ts`](../../packages/game/domain/personnel/captive-service.ts)
+owns remaining service hours during custody and contract reconstruction on
+release. The retained
+[`prisoner-custody.js`](../../packages/game/prisoner-custody.js) re-exports
+those rules and keeps `prisonerStatus`, which reads campaign character and
+detention records and delegates its service-hours field to the domain.
 For care, [`medical-patient.ts`](../../packages/game/domain/personnel/medical-patient.ts)
 owns care eligibility and [`care-rules.ts`](../../packages/game/domain/personnel/care-rules.ts)
-owns default treatment/rest tuning and the default strategic bleeding
-percentage. [`campaign-care-rules.js`](../../packages/game/campaign-care-rules.js)
+owns default treatment/rest tuning, including `restHealingHours`, and the
+default strategic bleeding percentage. [`campaign-care-rules.js`](../../packages/game/campaign-care-rules.js)
 reads campaign-authored care values and uses those domain defaults;
 [`campaign-rules-schema.js`](../../packages/campaign-format/campaign-rules-schema.js)
 defines and validates the authored fields.
+[`workshopServiceQuote`](../../packages/game/workshop-service.js) passes the
+effective campaign `dressingPrice` to [`refillCost`](../../packages/game/equipment.js);
+the equipment helper has no default price.
 
 The native `reference/native/` tree is separate from the browser applications. Each architectural claim traces the named entry points and their collaborators; disabled commands can remain in compatibility switch blocks behind preflight guards. While `packages/game/domain` and `packages/game/application` have strict inward dependency rules enforced by `npm run check:architecture` and `.dependency-cruiser.json`, the compatibility simulation modules at the `packages/game/` root still import trusted campaign defaults and scenario modules in `content/campaigns/`.
 

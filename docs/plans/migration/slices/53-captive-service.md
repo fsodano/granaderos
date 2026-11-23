@@ -1,48 +1,29 @@
-# Slice 53: the captive service rules into the domain
+# Slice 53: captive service contract rules
 
-**Branch:** `migration/captive-service`
-**Intent:** Move the rules that pause a contract while its holder is in custody
-into the domain, beside the service contract they pause.
+Capture pauses the unused part of a serving combatant's service contract. The
+domain owns the remaining-service calculation and the contract reconstruction
+that runs when the combatant returns to service.
 
-## Why this slice exists
+## Domain rules
 
-`packages/game/prisoner-custody.js` holds three things.
+[`captive-service.ts`](../../../../packages/game/domain/personnel/captive-service.ts)
+exports `captiveServiceHours` and `restoredCaptiveContract`.
+`captiveServiceHours` reports no value when the record is not captured or has no
+saved captive contract. It derives non-negative remaining hours from the saved
+contract expiry and capture time, including within-hour seconds; a contract
+without an expiry has unbounded remaining service. On release,
+`restoredCaptiveContract` requires a captured record with a saved captive
+contract, keeps a non-expiring contract open, or sets a finite expiry to
+release time plus the remaining hours. An exhausted contract is not restored.
 
-Two rules: how many hours of a contract a captive has left, and how the
-contract is rebuilt when the captive is released. The comment says why they
-exist: capture pauses the unused portion of a contract, and neither the status
-panel nor the release may charge for, or grant service during, detention.
+## Retained query
 
-One query: the status of a prisoner, which reads the campaign's records and
-the care given in detention.
+[`prisoner-custody.js`](../../../../packages/game/prisoner-custody.js)
+re-exports the domain functions for existing callers and retains
+`prisonerStatus`. That query reads campaign character and detention records to
+build the status view; it delegates the service-hours calculation to the
+domain rule rather than owning a second implementation.
 
-The domain already owns the service contract: `ServiceContract` holds its
-terms, its start and its expiry, and knows whether it is active at an instant.
-Pausing it belongs with the contract.
-
-## What it changes
-
-- `packages/game/domain/personnel/captive-service.ts` holds the two rules.
-- `packages/game/prisoner-custody.js` keeps the query and re-exports the two
-  rules from the domain, and the files that import them keep importing them
-  from the same path.
-
-The hours and the rebuilt contract do not change.
-
-## Tests
-
-- `packages/game/domain/personnel/captive-service.test.ts` covers the rules:
-  a combatant who was never captured has no remaining hours, a captive with a
-  contract that never expires has an unbounded remainder, a captive with an
-  expiry has the hours between the capture and the expiry, and a released
-  captive's contract expires at the release plus the hours that were left.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.57` to `0.2.58`.
+[`campaign.js`](../../../../packages/game/campaign.js) and
+[`prisoner-escape-return.js`](../../../../packages/game/prisoner-escape-return.js)
+continue to use the retained module path when rebuilding a contract.

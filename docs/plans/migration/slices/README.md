@@ -1,6 +1,6 @@
 # Migration slice notes
 
-This index links to the 52 migration slice notes. Each note records its
+This index links to the 54 migration slice notes. Each note records its
 rationale, scope, and compatibility contract. The
 [overview](../overview.md) describes current source and remaining requirements.
 
@@ -60,6 +60,8 @@ rationale, scope, and compatibility contract. The
 | [50. Tactical grid label](50-tactical-grid-label.md) |
 | [51. Weapon reload rules](51-weapon-reload.md) |
 | [52. Care defaults](52-care-rules.md) |
+| [53. Captive service contract rules](53-captive-service.md) |
+| [54. Care tuning and refill price](54-dead-defaults.md) |
 
 ## What the series changed
 
@@ -132,7 +134,7 @@ rationale, scope, and compatibility contract. The
   root module is a thin re-export of it.
 - `ResidentPositionReference` names the saved reference to a resident's
   character identity and local position.
-- Twenty-eight migrated game-rule groups have domain ownership: firearm readiness,
+- Twenty-nine migrated game-rule groups have domain ownership: firearm readiness,
   unarmed combat, sleep need, held supplies, projectile energy, firearm loads,
   study rate, the route queue, firearm serviceability, kinetic impact, combat
   balance, combat journal, fatigue and energy, interior visibility, campaign
@@ -155,7 +157,12 @@ rationale, scope, and compatibility contract. The
   weapon reload cost, stored-progress validation, and planning in
   [`weapon-reload.ts`](../../../../packages/game/domain/combat/weapon-reload.ts);
   and default care/rest tuning and default strategic bleeding percentage in
-  [`care-rules.ts`](../../../../packages/game/domain/personnel/care-rules.ts).
+  [`care-rules.ts`](../../../../packages/game/domain/personnel/care-rules.ts);
+  captive service-hour calculation and contract reconstruction on release in
+  [`captive-service.ts`](../../../../packages/game/domain/personnel/captive-service.ts).
+  The retained [`prisoner-custody.js`](../../../../packages/game/prisoner-custody.js)
+  re-exports those rules and keeps `prisonerStatus`, a query over campaign
+  character and detention records.
   The retained root modules [`actor-condition.js`](../../../../packages/game/actor-condition.js),
   [`medical-patient.js`](../../../../packages/game/medical-patient.js),
   [`battle-outcome.js`](../../../../packages/game/battle-outcome.js),
@@ -187,11 +194,13 @@ rationale, scope, and compatibility contract. The
 
 ## What remains
 
-- Remaining procedural simulation rules in retained
+- Procedural simulation rules still implemented in retained
   [`packages/game`](../../../../packages/game/) modules need one named owner in
   [`packages/game/domain`](../../../../packages/game/domain/) or an application
   use case. A retained compatibility path may preserve existing imports, but
   it must delegate rule behavior rather than keep a second implementation.
+  `prisonerStatus` remains in `prisoner-custody.js` because it reads campaign
+  character and detention records; it is a query, not an unowned custody rule.
 - Campaign-authored care lookup remains in
   [`campaign-care-rules.js`](../../../../packages/game/campaign-care-rules.js):
   it selects authored values and falls back to

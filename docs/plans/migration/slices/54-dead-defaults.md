@@ -1,46 +1,26 @@
-# Slice 54: the dead defaults go away
+# Slice 54: care tuning and refill price
 
-**Branch:** `migration/dead-defaults`
-**Intent:** Remove the two defaults that no caller reaches, so the repository
-has one place that says what they are.
+Care uses domain tuning for its default rest-healing duration. Resupply quotes
+take the active campaign's dressing price; the equipment helper does not assign
+one.
 
-## Why this slice exists
+## Care tuning
 
-The documentation pass found two defaults that nothing in the repository
-reaches:
+[`care-rules.ts`](../../../../packages/game/domain/personnel/care-rules.ts)
+owns `DEFAULT_CARE_RULES`, including its `restHealingHours` field.
+[`campaign-care-rules.js`](../../../../packages/game/campaign-care-rules.js)
+selects authored care values or those domain defaults. Medical care and
+strategic rest read the effective duration through that lookup; neither
+[`medical-care.js`](../../../../packages/game/medical-care.js) nor
+[`strategic-rest.js`](../../../../packages/game/strategic-rest.js) defines a
+separate rest-healing constant.
 
-- `REST_HEALING_HOURS`, declared twice, in `packages/game/medical-care.js` and
-  in `packages/game/strategic-rest.js`, both holding the same value as the care
-  tuning the domain now owns.
-- The default price of `refillCost` in `packages/game/equipment.js`, whose only
-  caller always supplies the campaign's care price.
+## Refill price
 
-A default nobody reaches is a second place that says what a rule is. The
-first one also duplicates a value the domain already owns, which is how the two
-drift apart.
-
-## What it changes
-
-- `packages/game/medical-care.js` and `packages/game/strategic-rest.js` drop
-  the unused constants. Any use of the value reads the care tuning in the
-  domain.
-- `packages/game/equipment.js` no longer offers a default price for a
-  refill, so a caller has to say what it pays.
-
-Nothing changes for a player: no call site reached either default.
-
-## Tests
-
-- The type checker proves the second change: a caller that does not supply a
-  price no longer compiles, so the default cannot be reached again.
-- The existing medical care and equipment tests keep passing.
-
-## Verification
-
-- `npm test` passes.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.58` to `0.2.59`.
+[`refillCost`](../../../../packages/game/equipment.js) takes a record of carried
+supplies and an explicit `dressingPrice` per dressing. Its calculation has no
+fallback price; omitting the argument returns `NaN` (not a valid price), even
+when no dressings are needed.
+[`workshopServiceQuote`](../../../../packages/game/workshop-service.js) supplies
+the effective campaign price from `careRules(s).dressingPrice`, where
+`careRules` selects authored care values or domain defaults.
