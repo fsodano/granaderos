@@ -1,47 +1,58 @@
-# Slice 61: the NPC patrol rule into the domain
+# Slice 61: civilian patrol decisions
 
-**Branch:** `migration/npc-patrol`
-**Intent:** Move the rule that decides where a patrolling civilian walks into
-the domain, beside the patrol rule it mirrors.
+Civilian and militia patrols share a decision pattern: decide whether the unit
+patrols, choose that turn's aim, and select among map-reported reachable cells.
+The civilian rule has its own conditions and movement bounds. Keeping those
+decisions in the domain makes the policy independently testable while leaving
+map-specific sight and reachability with the tactical adapter. It mirrors the
+militia rule's decision structure, not its eligibility predicates: civilian
+eligibility has no action-point threshold or no-enemy-in-sight condition.
 
-## Why this slice exists
+## Rule ownership
 
-`packages/game/npc-patrol.js` decides where a patrolling civilian walks. It
-holds three parts: whether the civilian patrols at all this turn, the
-direction it aims for, and the cell it moves to among the ones it can reach.
+[`npc-patrol.ts`](../../../../packages/game/domain/personnel/npc-patrol.ts)
+owns civilian patrol eligibility, turn direction and aim, and reachable-cell
+selection.
 
-The domain already owns the militia patrol rule from two slices ago: the
-decision, the waypoint, and the choice of the cell. A civilian patrol is the
-same kind of rule with a different set of conditions, and two copies of the
-shape are how they drift apart.
+- A civilian patrols only when it has a patrol origin, its patrol order is not
+  disabled, and it has not already patrolled this turn. It must have positive
+  health and must not be unconscious, routed, departing, knocked down, or
+  entangled.
+- The sum of the character codes in the civilian identifier's string form
+  offsets the turn modulo four, cycling through four cardinal directions. The
+  aim is four cells from the patrol origin in that direction.
+- A destination must be among the cells reported as reachable, have a positive
+  movement cost no greater than 24, use a path of at most three steps, remain
+  within a straight-line distance of six cells from the patrol origin, and
+  reduce its straight-line distance to that turn's aim.
+  The closest qualifying cell wins; ties go to lower movement cost, then lower
+  row, then lower column. If no cell qualifies, the rule returns no destination.
 
-What the domain cannot take is the question of which cells the civilian can
-reach and what it can see: that is the tactical simulation, so the retained
-module keeps asking the map and hands the answers to the domain.
+Existing callers use `choosePatrolAction` in the retained
+[`npc-patrol.js`](../../../../packages/game/npc-patrol.js). That entry point
+filters the scene to same-side units and opponents the civilian can see, obtains
+known artillery and reachable cells from tactical code, and formats the
+selected destination as a `move` order. The domain does not query map geometry
+or visibility: without map-reported reachability it could select a blocked
+cell, and without the sight filter the reachable-cell query would use the wrong
+perceived scene.
 
-## What it changes
+## Example
 
-- `packages/game/domain/personnel/npc-patrol.ts` holds the decision, the
-  direction and the choice of the cell.
-- `packages/game/npc-patrol.js` keeps asking the map for the reachable cells
-  and for what the civilian can see, and now calls the domain.
+The test fixture in
+[`npc-patrol.test.ts`](../../../../packages/game/domain/personnel/npc-patrol.test.ts)
+places civilian `c1` at `(10, 10)` with patrol origin `(10, 10)` on turn `1`. Its
+identifier and turn select the eastward aim `(14, 10)`. Of the reachable cells
+`(11, 10)` at cost 8 and one path step and `(13, 10)` at cost 12 and two path
+steps, the domain selects `(13, 10)` because it is closer to the aim. The
+retained module formats that selection as a move order to `(13, 10)`. The
+civilian and reachable-cell values are test data; the rule comes from the
+domain module and the order shape from the retained module.
 
-The civilian walks exactly as it did: the same direction on the same turn, the
-same cell chosen.
+## Behavior checks
 
-## Tests
-
-- `packages/game/domain/personnel/npc-patrol.test.ts` covers the rule: the
-  direction for a turn, the decision for a civilian that may patrol and one
-  that may not, and the cell chosen among the reachable ones, with the same
-  bounds and the same tie-breaking.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.65` to `0.2.66`.
+[`npc-patrol.test.ts`](../../../../packages/game/domain/personnel/npc-patrol.test.ts)
+covers direction and aim, identifier and turn variation, patrol eligibility,
+reachable-cell bounds, tie-breaking, and cases with no destination. These are
+domain tests; tactical map queries and move-order assembly remain in the
+retained module.
