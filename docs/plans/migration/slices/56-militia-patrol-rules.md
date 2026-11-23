@@ -37,10 +37,6 @@ re-exports the domain default and consistency check.
 continues to define `MILITIA_PATROL_FIELDS` and `validateMilitiaPatrol` for the
 authored field contract and its structural validation. That contract remains
 separate from the domain check that compares a saved scene with campaign rules.
-[`militia-patrol.js`](../../../../packages/game/militia-patrol.js) still
-calculates patrol movement in `militiaPatrolOrder`; that procedural rule still
-needs a domain owner.
-
 ## Behavior covered
 
 The domain tests cover the default values and their immutability, acceptance of
