@@ -45,7 +45,9 @@ export type PatrolReachableCell = PatrolPoint & Readonly<{ cost: number }>;
 
 const distance = (a: PatrolPoint, b: PatrolPoint): number => Math.hypot(a.x - b.x, a.y - b.y);
 
-const canAct = (unit: PatrolUnit): boolean =>
+// A unit can act while it keeps at least the critical health and is neither
+// unconscious, routed, fled, surrendered nor departing.
+export const canAct = (unit: PatrolUnit): boolean =>
   unit.hp >= CRITICAL_HEALTH &&
   !isUnconscious(unit) &&
   !unit.routed &&
