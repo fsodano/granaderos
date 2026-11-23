@@ -3,19 +3,11 @@ export {
   STRATEGIC_BLEEDING_FIELD,
   validateCareRules,
 } from '../campaign-format/campaign-rules-schema.js';
-export const DEFAULT_CARE_RULES = Object.freeze({
-  minimumSkill: 20,
-  baseHealing: 2,
-  skillStep: 20,
-  dressingPrice: 10,
-  energyCost: 3,
-  fatigueCost: 2,
-  restEnergy: 12,
-  restFatigue: 8,
-  restHealingHours: 6,
-});
-
-export const DEFAULT_STRATEGIC_BLEEDING_PERCENT = 25;
+import {
+  DEFAULT_CARE_RULES,
+  DEFAULT_STRATEGIC_BLEEDING_PERCENT,
+} from './domain/personnel/care-rules.ts';
+export { DEFAULT_CARE_RULES, DEFAULT_STRATEGIC_BLEEDING_PERCENT };
 
 export const strategicBleedingPercent = (s) =>
   careRules(s).bleedingDamagePercent ?? DEFAULT_STRATEGIC_BLEEDING_PERCENT;
