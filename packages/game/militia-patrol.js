@@ -1,7 +1,11 @@
 import { militiaPatrolRules } from './militia-patrol-rules.js';
 import { canSee, getReachable, knownArtillery } from './tactical.js';
 import { isUnconscious } from './actor-condition.js';
-const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+import {
+  militiaPatrolDestination,
+  militiaPatrolsThisTurn,
+  militiaPatrolWaypoint,
+} from './domain/personnel/militia-patrol.ts';
 const able = (u) =>
   u.hp >= 15 && !isUnconscious(u) && !u.routed && !u.fled && !u.surrendered && !u.departure;
 
@@ -9,58 +13,23 @@ const able = (u) =>
 // each actor's position already belong to the validated tactical snapshot.
 export function militiaPatrolOrder(state, unit) {
   const rules = militiaPatrolRules(state);
-  if (
-    !rules.enabled ||
-    !unit.militia ||
-    !able(unit) ||
-    unit.knockedDown ||
-    unit.entangled ||
-    unit.patrol === false ||
-    unit.ap < 25
-  ) {
+  const enemyInSight = state.units.some(
+    (v) =>
+      v.side !== unit.side &&
+      able(v) &&
+      state.units.some((p) => p.side === unit.side && able(p) && canSee(state, p, v)),
+  );
+  if (!militiaPatrolsThisTurn(rules, unit, state.turn, state, enemyInSight)) {
     return null;
   }
-  if (
-    state.units.some(
-      (v) =>
-        v.side !== unit.side &&
-        able(v) &&
-        state.units.some((p) => p.side === unit.side && able(p) && canSee(state, p, v)),
-    )
-  ) {
-    return null;
-  }
-  const points = [
-      [0.55, 0.5],
-      [0.75, 0.25],
-      [0.85, 0.5],
-      [0.75, 0.75],
-      [0.4, 0.75],
-      [0.4, 0.25],
-    ],
-    point = points[Math.floor((state.turn - 1) / rules.waypointTicks) % points.length];
-  const goal = {
-    x: Math.floor((state.width - 1) * point[0]),
-    y: Math.floor((state.height - 1) * point[1]),
-  };
-  if (distance(unit, goal) <= 3) {
-    return null;
-  }
+  const waypoint = militiaPatrolWaypoint(rules, state.turn, state);
   const perceived = {
     ...state,
     units: state.units.filter((v) => v.side === unit.side || canSee(state, unit, v)),
     artillery: knownArtillery(state, unit),
   };
-  const moves = getReachable(perceived, unit).filter(
-    (p) =>
-      p.cost > 0 &&
-      p.cost <= Math.min(32, unit.ap - 20) &&
-      distance(p, goal) < distance(unit, goal),
-  );
-  moves.sort(
-    (a, b) => distance(a, goal) - distance(b, goal) || a.cost - b.cost || a.y - b.y || a.x - b.x,
-  );
-  return moves[0]
-    ? { type: 'move', unitId: unit.id, x: moves[0].x, y: moves[0].y, patrol: true }
+  const destination = militiaPatrolDestination(unit, waypoint, getReachable(perceived, unit));
+  return destination
+    ? { type: 'move', unitId: unit.id, x: destination.x, y: destination.y, patrol: true }
     : null;
 }

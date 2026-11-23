@@ -1,3 +1,5 @@
+import { CRITICAL_HEALTH, isUnconscious } from './actor-condition.ts';
+
 // The tuning a militia patrol follows: whether patrols are on, how many turns a
 // waypoint takes, how much energy a patrol keeps, and how much a rest returns. A
 // campaign may author its own values; these are the defaults used when it
@@ -15,6 +17,121 @@ export const DEFAULT_MILITIA_PATROL: MilitiaPatrolRules = Object.freeze({
   energyReserve: 50,
   restEnergy: 10,
 });
+
+/** The only fields of a unit a patrol decision reads. */
+export type PatrolUnit = Readonly<{
+  hp: number;
+  energy?: number;
+  routed?: boolean | undefined;
+  fled?: boolean | undefined;
+  surrendered?: boolean | undefined;
+  departure?: unknown;
+  militia?: boolean | undefined;
+  knockedDown?: boolean | undefined;
+  entangled?: boolean | undefined;
+  patrol?: boolean | undefined;
+  ap: number;
+  x: number;
+  y: number;
+}>;
+
+/** The map extent a patrol waypoint is placed on. Only its size matters here. */
+export type PatrolMapSize = Readonly<{ width: number; height: number }>;
+
+export type PatrolPoint = Readonly<{ x: number; y: number }>;
+
+/** A reachable cell the tactical simulation reports, with its movement cost. */
+export type PatrolReachableCell = PatrolPoint & Readonly<{ cost: number }>;
+
+const distance = (a: PatrolPoint, b: PatrolPoint): number => Math.hypot(a.x - b.x, a.y - b.y);
+
+const canAct = (unit: PatrolUnit): boolean =>
+  unit.hp >= CRITICAL_HEALTH &&
+  !isUnconscious(unit) &&
+  !unit.routed &&
+  !unit.fled &&
+  !unit.surrendered &&
+  !unit.departure;
+
+// The six fixed map points a patrol cycles through, as fractions of the map.
+export const MILITIA_PATROL_WAYPOINTS = Object.freeze([
+  Object.freeze([0.55, 0.5] as const),
+  Object.freeze([0.75, 0.25] as const),
+  Object.freeze([0.85, 0.5] as const),
+  Object.freeze([0.75, 0.75] as const),
+  Object.freeze([0.4, 0.75] as const),
+  Object.freeze([0.4, 0.25] as const),
+]);
+
+export const militiaPatrolWaypointPoint = (
+  rules: MilitiaPatrolRules,
+  turn: number,
+): readonly [number, number] => {
+  const index = Math.floor((turn - 1) / rules.waypointTicks) % MILITIA_PATROL_WAYPOINTS.length;
+  const point = MILITIA_PATROL_WAYPOINTS[index];
+  if (!point) {
+    throw new RangeError('The militia patrol turn is invalid.');
+  }
+  return point;
+};
+
+export const militiaPatrolWaypoint = (
+  rules: MilitiaPatrolRules,
+  turn: number,
+  map: PatrolMapSize,
+): PatrolPoint => {
+  const [horizontal, vertical] = militiaPatrolWaypointPoint(rules, turn);
+  return {
+    x: Math.floor((map.width - 1) * horizontal),
+    y: Math.floor((map.height - 1) * vertical),
+  };
+};
+
+// A militia patrols only while it can still act, its rules and its own order
+// allow it, and no enemy is in sight of its side. It stops once it stands close
+// enough to the waypoint of the turn.
+export function militiaPatrolsThisTurn(
+  rules: MilitiaPatrolRules,
+  unit: PatrolUnit,
+  turn: number,
+  map: PatrolMapSize,
+  enemyInSight: boolean,
+): boolean {
+  if (
+    !rules.enabled ||
+    !unit.militia ||
+    !canAct(unit) ||
+    unit.knockedDown ||
+    unit.entangled ||
+    unit.patrol === false ||
+    unit.ap < 25
+  ) {
+    return false;
+  }
+  if (enemyInSight) {
+    return false;
+  }
+  return distance(unit, militiaPatrolWaypoint(rules, turn, map)) > 3;
+}
+
+// Among the cells the unit can reach, the patrol takes the one closest to its
+// waypoint and breaks ties by cost, then row, then column.
+export function militiaPatrolDestination<T extends PatrolReachableCell>(
+  unit: PatrolUnit,
+  waypoint: PatrolPoint,
+  reachable: readonly T[],
+): T | undefined {
+  const budget = Math.min(32, unit.ap - 20);
+  return reachable
+    .filter(
+      (cell) =>
+        cell.cost > 0 && cell.cost <= budget && distance(cell, waypoint) < distance(unit, waypoint),
+    )
+    .sort(
+      (a, b) =>
+        distance(a, waypoint) - distance(b, waypoint) || a.cost - b.cost || a.y - b.y || a.x - b.x,
+    )[0];
+}
 
 // A campaign states its automated patrols in the content package. Only the
 // patrol rules matter to this validation, so the domain declares that shape.
