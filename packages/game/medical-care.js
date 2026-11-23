@@ -18,7 +18,6 @@ export const MEDICAL_SUPPLY_PRICE = DEFAULT_CARE_RULES.dressingPrice;
 export const MEDICAL_KIT_PRICE = MEDICAL_SUPPLY_PRICE;
 export const careAssignmentBusy = (value) =>
   value !== 'active' && Object.hasOwn(ALL_ASSIGNMENTS, value);
-export const REST_HEALING_HOURS = 6;
 const requireThat = (value, message) => {
   if (!value) {
     throw Error(message);
