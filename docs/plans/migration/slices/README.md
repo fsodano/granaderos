@@ -1,6 +1,6 @@
 # Migration slice notes
 
-This index links to the 47 migration slice notes. Each note records its
+This index links to the 50 migration slice notes. Each note records its
 rationale, scope, and compatibility contract. The
 [overview](../overview.md) describes current source and remaining requirements.
 
@@ -55,6 +55,9 @@ rationale, scope, and compatibility contract. The
 | [45. Retire `beginAssault`](45-retire-begin-assault.md) |
 | [46. Condition and outcome rules](46-condition-rules.md) |
 | [47. Sector view request property](47-sector-state-request.md) |
+| [48. Suspended visit record contract](48-suspended-record-contract.md) |
+| [49. Aimed-shot rules](49-targeted-combat.md) |
+| [50. Tactical grid label](50-tactical-grid-label.md) |
 
 ## What the series changed
 
@@ -127,7 +130,7 @@ rationale, scope, and compatibility contract. The
   root module is a thin re-export of it.
 - `ResidentPositionReference` names the saved reference to a resident's
   character identity and local position.
-- Twenty-four migrated game rules have domain ownership: firearm readiness,
+- Twenty-six migrated game-rule groups have domain ownership: firearm readiness,
   unarmed combat, sleep need, held supplies, projectile energy, firearm loads,
   study rate, the route queue, firearm serviceability, kinetic impact, combat
   balance, combat journal, fatigue and energy, interior visibility, campaign
@@ -135,21 +138,27 @@ rationale, scope, and compatibility contract. The
   (the vertical map layer assigned to a point), shot-range calculation, NPC
   facing (`directionTo`), anonymous sound-position approximation
   (`approximateHeardPosition`), and care-composure relief
-  (`CARE_COMPOSURE_RELIEF` & `careComposureRelief`); actor condition
-  (critical health, unconsciousness, field capability, and condition refresh)
+  (`CARE_COMPOSURE_RELIEF` & `careComposureRelief`), aimed-shot eligibility,
+  region choices, profiles, penalties, and effects in
+  [`targeted-combat.ts`](../../../../packages/game/domain/combat/targeted-combat.ts),
+  tactical cell labels in
+  [`tactical-grid.ts`](../../../../packages/game/domain/sector-sessions/tactical-grid.ts),
+  actor condition (critical health, unconsciousness, field capability, and
+  condition refresh)
   in [`actor-condition.ts`](../../../../packages/game/domain/personnel/actor-condition.ts);
   medical-patient care eligibility in
   [`medical-patient.ts`](../../../../packages/game/domain/personnel/medical-patient.ts);
   and completed tactical victory in
   [`completed-victory.ts`](../../../../packages/game/domain/combat/completed-victory.ts).
-  The retained root modules
-  [`actor-condition.js`](../../../../packages/game/actor-condition.js),
-  [`medical-patient.js`](../../../../packages/game/medical-patient.js), and
-  [`battle-outcome.js`](../../../../packages/game/battle-outcome.js) re-export
+  The retained root modules [`actor-condition.js`](../../../../packages/game/actor-condition.js),
+  [`medical-patient.js`](../../../../packages/game/medical-patient.js),
+  [`battle-outcome.js`](../../../../packages/game/battle-outcome.js),
+  [`targeted-combat.js`](../../../../packages/game/targeted-combat.js), and
+  [`tactical-grid.js`](../../../../packages/game/tactical-grid.js) re-export
   their domain implementations. The browser interface owns the sleep-need
-  sentence and campaign notices. The shot-range sentence stays beside its HUD caller in
-  [`packages/game/shot-range.js`](../../../../packages/game/shot-range.js) to
-  preserve dependency direction.
+  sentence and campaign notices. The shot-range sentence stays beside its HUD
+  caller in [`packages/game/shot-range.js`](../../../../packages/game/shot-range.js)
+  to preserve dependency direction.
 - [`packages/game/domain/sector-sessions/tactical-space.ts`](../../../../packages/game/domain/sector-sessions/tactical-space.ts)
   owns the game's tactical-level rules; `packages/campaign-format` keeps an
   independent map-validation implementation because it cannot import the game.
@@ -166,16 +175,6 @@ rationale, scope, and compatibility contract. The
 
 ## What remains
 
-- Retained simulation modules still carry procedural game rules.
-- The saved-record contract for
-  [`suspendedSectorSessions`](../../../../packages/game/public/campaign-types.ts)
-  needs to specify a saved
-  [`CampaignSectorEntryRequest`](../../../../packages/game/public/campaign-types.ts)
-  and sector
-  [`BattleSnapshot`](../../../../packages/game/public/compatibility-types.ts)
-  as `request` and `snapshot`, rather than a serialized
-  projection of the domain `SectorSession`.
-  [`CampaignSectorSessionCoordinator`](../../../../packages/game/infrastructure/session/campaign-sector-session-coordinator.js)
-  also saves `activeSquadId`, `location`, and `suspendedAtSeconds` for
-  resumption; define those fields in the same contract and preserve visit
-  identity and progress.
+- Retained simulation modules still own procedural game rules. Move each
+  remaining rule behind a named domain owner or application use case; any
+  retained root entry point must delegate to that owner.

@@ -1,6 +1,10 @@
 import { parseJsonObject, isJsonObject } from '../packages/campaign-format/json-value.ts';
 import type { JsonObject, JsonValue } from '../packages/campaign-format/types.ts';
-import type { CampaignSnapshot, CampaignAction } from '../packages/game/public/campaign-types.ts';
+import type {
+  CampaignSnapshot,
+  CampaignAction,
+  CampaignSuspendedSectorSession,
+} from '../packages/game/public/campaign-types.ts';
 import { present } from './assert-present.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -11,6 +15,7 @@ import { prepareCampaignBattle } from '../packages/game/battle-handoff.js';
 import { endTurn } from '../packages/game/tactical.js';
 import { syncBattleTime } from '../packages/game/time.js';
 import { encodeSave, decodeSave } from '../packages/game/save.ts';
+import { validateSuspendedSectorSessions } from '../packages/game/infrastructure/session/validate-suspended-sector-sessions.js';
 
 function order(campaign: CampaignSnapshot, action: CampaignAction) {
   const result = dispatchCampaign(campaign, action);
@@ -71,6 +76,79 @@ void test('fighting on another arrival preserves the current visit and allows ex
     present(present(pair.campaign.suspendedSectorSessions)[0]).request.sector,
     present(decision).sectorId,
   );
+});
+
+void test('a suspended record carries the five fields the public contract declares', () => {
+  const suspendedFrom = visitingWhileOtherSquadArrives();
+  const decision = pendingArrivalDecisions(suspendedFrom.campaign)[0];
+  const campaign = order(suspendedFrom.campaign, {
+    type: 'fightOnArrival',
+    squadId: present(decision).squadId,
+    decisionId: present(decision).id,
+    sectorSession: suspendedFrom.battle,
+  });
+  const record: CampaignSuspendedSectorSession = present(
+    present(campaign.suspendedSectorSessions)[0],
+  );
+  assert.deepEqual(Object.keys(record).sort(), [
+    'activeSquadId',
+    'location',
+    'request',
+    'snapshot',
+    'suspendedAtSeconds',
+  ]);
+  assert.equal(record.request.id, present(suspendedFrom.campaign.sectorEntryRequest).id);
+  assert.deepEqual(record.snapshot, suspendedFrom.battle);
+  assert.equal(record.activeSquadId, suspendedFrom.campaign.activeSquadId);
+  assert.equal(record.location, suspendedFrom.campaign.location);
+  assert.equal(
+    record.suspendedAtSeconds,
+    suspendedFrom.campaign.hour * 3600 + (suspendedFrom.campaign.secondOfHour ?? 0),
+  );
+});
+
+void test('the suspended visit validation and save restoration refuse a record missing any declared field', () => {
+  const pair = visitingWhileOtherSquadArrives();
+  const decision = pendingArrivalDecisions(pair.campaign)[0];
+  const campaign = order(pair.campaign, {
+    type: 'fightOnArrival',
+    squadId: present(decision).squadId,
+    decisionId: present(decision).id,
+    sectorSession: pair.battle,
+  });
+  const active = prepareCampaignBattle(campaign, { placement: true });
+  assert.equal(active.error, null);
+  const encoded = encodeSave(active.campaign, active.battle);
+  const written = structuredClone(present(present(campaign.suspendedSectorSessions)[0]));
+  for (const missing of [
+    'request',
+    'snapshot',
+    'activeSquadId',
+    'location',
+    'suspendedAtSeconds',
+  ]) {
+    const broken: Record<string, unknown> = { ...structuredClone(written) };
+    delete broken[missing];
+    assert.throws(
+      () =>
+        validateSuspendedSectorSessions(
+          { ...campaign, suspendedSectorSessions: [broken] },
+          null,
+          () => {
+            throw new Error('La visita suspendida no debería restaurarse.');
+          },
+        ),
+      /corresponde/,
+      missing,
+    );
+    // The save path reads a request and snapshot before this validation, so only
+    // the resumption context can be removed and still reach it.
+    if (missing !== 'request' && missing !== 'snapshot') {
+      const document = parseJsonObject(encoded);
+      delete rawSaveRecord(document, 'campaign', 'suspendedSectorSessions', 0)[missing];
+      assert.throws(() => decodeSave(JSON.stringify(document)), /corresponde/, missing);
+    }
+  }
 });
 
 void test('an arrival choice preserves the active visit when the arriving squad withdraws', () => {

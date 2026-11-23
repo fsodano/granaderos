@@ -58,7 +58,26 @@ The table below defines each core `Term` and its `Meaning here` across all archi
 
 ## Source and limits
 
-The overview, system map, C4 views, editor boundary, and persistence guides describe the current source in `apps/`, `packages/`, `content/`, and `tools/`. Detailed traces in the strategic and tactical engine guides identify where migrated domain classes and use cases connect to procedural compatibility modules (`packages/game/campaign.js`, `packages/game/tactical.js`, `packages/game/world.js`, `packages/game/time.js`, and `packages/game/save.ts`). The root modules [`actor-condition.js`](../../packages/game/actor-condition.js), [`medical-patient.js`](../../packages/game/medical-patient.js), and [`battle-outcome.js`](../../packages/game/battle-outcome.js) re-export rules owned by [`actor-condition.ts`](../../packages/game/domain/personnel/actor-condition.ts), [`medical-patient.ts`](../../packages/game/domain/personnel/medical-patient.ts), and [`completed-victory.ts`](../../packages/game/domain/combat/completed-victory.ts); the root modules do not own those rules.
+The overview, system map, C4 views, editor boundary, and persistence guides
+describe the current source in `apps/`, `packages/`, `content/`, and `tools/`.
+Detailed traces in the strategic and tactical engine guides identify where
+migrated domain classes and use cases connect to procedural compatibility
+modules (`packages/game/campaign.js`, `packages/game/tactical.js`,
+`packages/game/world.js`, `packages/game/time.js`, and `packages/game/save.ts`).
+The retained root modules
+[`actor-condition.js`](../../packages/game/actor-condition.js),
+[`medical-patient.js`](../../packages/game/medical-patient.js),
+[`battle-outcome.js`](../../packages/game/battle-outcome.js),
+[`targeted-combat.js`](../../packages/game/targeted-combat.js), and
+[`tactical-grid.js`](../../packages/game/tactical-grid.js) re-export rules
+owned by [`actor-condition.ts`](../../packages/game/domain/personnel/actor-condition.ts),
+[`medical-patient.ts`](../../packages/game/domain/personnel/medical-patient.ts),
+[`completed-victory.ts`](../../packages/game/domain/combat/completed-victory.ts),
+[`targeted-combat.ts`](../../packages/game/domain/combat/targeted-combat.ts),
+and [`tactical-grid.ts`](../../packages/game/domain/sector-sessions/tactical-grid.ts).
+[`tactical-space.ts`](../../packages/game/domain/sector-sessions/tactical-space.ts)
+owns the game's tactical-level and cell-space rules. The root modules are
+compatibility entry points; the domain modules own these rules.
 
 The native `reference/native/` tree is separate from the browser applications. Each architectural claim traces the named entry points and their collaborators; disabled commands can remain in compatibility switch blocks behind preflight guards. While `packages/game/domain` and `packages/game/application` have strict inward dependency rules enforced by `npm run check:architecture` and `.dependency-cruiser.json`, the compatibility simulation modules at the `packages/game/` root still import trusted campaign defaults and scenario modules in `content/campaigns/`.
 
