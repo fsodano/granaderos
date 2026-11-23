@@ -10,6 +10,13 @@ import type {
   WeaponFitting,
 } from './compatibility-types.ts';
 
+/** Identifier of a `Squad` as the campaign snapshot writes it. */
+export type CampaignSquadId = string;
+/** Identifier of a `Sector` as the campaign snapshot writes it. */
+export type CampaignSectorId = string;
+/** An accepted game second, written as `hour * 3600 + secondOfHour`. */
+export type CampaignGameSecond = number;
+
 /** Campaign adapter projections use the persisted names until their save migration. */
 export type ServiceEquipmentReturnMarker = {
   id: string;
@@ -524,6 +531,19 @@ export interface DialogueMovementReceipt {
   hour: number;
   secondOfHour: number;
 }
+/**
+ * A sector visit suspended so its squad can fight elsewhere. The record keeps
+ * the saved entry request, the sector snapshot, and the resumption context the
+ * game reads back: the active squad, its location, and the second the visit
+ * was suspended.
+ */
+export interface CampaignSuspendedSectorSession {
+  request: CampaignSectorEntryRequest;
+  snapshot: BattleSnapshot;
+  activeSquadId: CampaignSquadId;
+  location: CampaignSectorId;
+  suspendedAtSeconds: CampaignGameSecond;
+}
 export interface CampaignSnapshot {
   nextArtilleryId?: number;
   dialogueMovements?: DialogueMovementReceipt[];
@@ -533,7 +553,7 @@ export interface CampaignSnapshot {
   hour: number;
   secondOfHour?: number;
   phase: number;
-  location: string;
+  location: CampaignSectorId;
   gameSessionId?: string;
   gameRevision: number;
   campaignId?: string;
@@ -552,7 +572,7 @@ export interface CampaignSnapshot {
     outcome: { type: 'victory' | 'defeat'; hour: number; secondOfHour: number } | null;
   };
   campaignEventState?: { version: 1; receipts: CampaignEventReceipt[] };
-  activeSquadId: string;
+  activeSquadId: CampaignSquadId;
   squads: CampaignSquad[];
   squad: number[];
   forceRoster: number[];
@@ -603,7 +623,7 @@ export interface CampaignSnapshot {
   logisticsAttention: { version: number; reported: Record<string, string> };
   sceneSnapshots: Record<string, BattleSnapshot>;
   sectorSnapshots: Record<string, BattleSnapshot>;
-  suspendedSectorSessions?: { request: CampaignSectorEntryRequest; snapshot: BattleSnapshot }[];
+  suspendedSectorSessions?: CampaignSuspendedSectorSession[];
   ammunitionStores: Record<string, Record<string, number>>;
   ammunitionShops: Record<string, Record<string, number>>;
   cohesion: Record<string, number>;

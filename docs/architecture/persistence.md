@@ -50,10 +50,13 @@ For each legacy campaign field, [`decodeSave`](../../packages/game/save.ts)
 copies it only when the current field is `undefined`, then removes the legacy
 key. If both are present, the current value wins, including `null` or an empty
 collection. The game writes campaign fields under their current names.
-`suspendedSectorSessions` is a current field, not a legacy alias: each suspended
-visit stores a saved entry `request` and sector `snapshot`. The
+`suspendedSectorSessions` is a current field, not a legacy alias: each
+[`CampaignSuspendedSectorSession`](../../packages/game/public/campaign-types.ts)
+record stores the saved entry `request`, the sector `snapshot`, and the
+`activeSquadId`, `location`, and `suspendedAtSeconds` needed to resume the
+visit. The
 [`CampaignSectorSessionCoordinator`](../../packages/game/infrastructure/session/campaign-sector-session-coordinator.js)
-also saves `activeSquadId`, `location`, and `suspendedAtSeconds` for resumption;
+writes those five fields;
 [`GameSnapshotMapper`](../../packages/game/infrastructure/persistence/game-snapshot-mapper.js)
 restores the domain `SectorSession` from the request and snapshot rather than
 serializing that domain object. An order that carries the active sector view

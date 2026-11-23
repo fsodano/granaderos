@@ -1,3 +1,5 @@
+import type { CampaignSuspendedSectorSession } from '../../public/campaign-types.ts';
+
 export type SectorEntryRecord = {
   id: string;
   sector: string;
@@ -5,10 +7,11 @@ export type SectorEntryRecord = {
   squad: ReadonlyArray<{ id: string | number }>;
 };
 
-export type SuspendedSectorSessionRecord = {
-  request: SectorEntryRecord;
-  snapshot: unknown;
-};
+/** The fields these accessors read from a suspended visit, derived from the saved record. */
+export type SuspendedSectorSessionRecord = Pick<
+  CampaignSuspendedSectorSession,
+  'request' | 'snapshot'
+>;
 
 export type CampaignSessionAccessSnapshot = {
   sectorEntryRequest?: SectorEntryRecord | null;
