@@ -47,7 +47,7 @@ function access(s, supplied) {
   if (s.defeated) {
     return 'La campaña ha terminado.';
   }
-  if (s.pendingBattle || s.pendingEncounter) {
+  if (s.sectorEntryRequest || s.pendingEncounter) {
     return 'Salí de la escena táctica antes de comerciar.';
   }
   if (!artilleryTradingRules(s).enabled) {

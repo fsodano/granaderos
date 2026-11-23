@@ -69,11 +69,11 @@ void test('assault fixture admits a sector only after a real journey and a match
   const arrived = order(travelling, { type: 'wait', hours: 24 });
   const [decision] = pendingArrivalDecisions(arrived);
   assert.ok(decision);
-  assert.equal(arrived.pendingBattle, null);
+  assert.equal(arrived.sectorEntryRequest, null);
   assert.ok(seconds(arrived) > seconds(recruited));
   const admitted = fightOnArrival(arrived);
   assert.equal(seconds(admitted), seconds(arrived));
-  assert.equal(present(admitted.pendingBattle).sector, decision.sectorId);
+  assert.equal(present(admitted.sectorEntryRequest).sector, decision.sectorId);
   assert.equal(pendingArrivalDecisions(admitted).length, 0);
 });
 
@@ -105,15 +105,15 @@ for (const staggerSeconds of [0, 10]) {
       report: (event) => acceptedOrders.push(event.request),
     });
     assert.equal(pendingArrivalDecisions(result).length, 0);
-    assert.equal(present(present(result.pendingBattle).assaultSquads).length, 2);
+    assert.equal(present(present(result.sectorEntryRequest).assaultSquads).length, 2);
     assert.deepEqual(
-      new Set(present(result.pendingBattle).squad.map((person) => person.id)),
+      new Set(present(result.sectorEntryRequest).squad.map((person) => person.id)),
       new Set([110, 107]),
     );
     assert.equal(acceptedOrders.filter((request) => request.type === 'fightOnArrival').length, 2);
-    const snapshot = present(result.pendingBattle).resumeSnapshot;
+    const snapshot = present(result.sectorEntryRequest).resumeSnapshot;
     assert.ok(snapshot);
-    assert.equal(snapshot.battleId, present(result.pendingBattle).id);
+    assert.equal(snapshot.battleId, present(result.sectorEntryRequest).id);
     const incoming = acceptedOrders.filter((request) => request.type === 'fightOnArrival').at(-1);
     assert.ok(incoming && incoming.type === 'fightOnArrival');
     for (const participant of present(incoming.sectorState).units) {

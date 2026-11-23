@@ -59,7 +59,7 @@ export default function MilitiaTraining({
   const shortage = Math.max(0, (course?.cost.treasury ?? 0) - s.resources.treasury);
   const reason = s.defeated
     ? 'La campaña terminó.'
-    : s.pendingBattle
+    : s.sectorEntryRequest
       ? 'Volvé del despliegue antes de iniciar un curso.'
       : !trainer
         ? 'Necesitás un instructor disponible.'

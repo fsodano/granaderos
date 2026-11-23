@@ -16,7 +16,7 @@ export function advanceDetentionCare(campaign, roster) {
     ),
   ];
   for (const sector of sectors) {
-    if (campaign.pendingBattle?.sector === sector) {
+    if (campaign.sectorEntryRequest?.sector === sector) {
       continue;
     }
     const field = campaign.sectorStates[sector];

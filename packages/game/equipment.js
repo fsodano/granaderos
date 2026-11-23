@@ -243,7 +243,7 @@ export function grenadeOffer(s, op, isSupplied, quantity = 1) {
     capacity = supply?.capacity ?? 0;
   let reason = s.defeated
     ? 'La campaña terminó.'
-    : s.pendingBattle || s.pendingEncounter
+    : s.sectorEntryRequest || s.pendingEncounter
       ? 'Resolvé el encuentro antes de comprar granadas.'
       : (scenarioFor(s).grenadeSupplyReason(s, isSupplied) ??
         (!op ||
@@ -469,22 +469,22 @@ export function migrateEquipment(s) {
     ...(s.militiaTraining ?? []).map((course) => course.trainees ?? []),
     Object.values(s.missionAllies ?? {}),
     ...(s.enemyGroups ?? []).map((g) => g.units ?? []),
-    s.pendingBattle?.squad ?? [],
-    s.pendingBattle?.garrison ?? [],
-    s.pendingBattle?.missionAllies ?? [],
+    s.sectorEntryRequest?.squad ?? [],
+    s.sectorEntryRequest?.garrison ?? [],
+    s.sectorEntryRequest?.missionAllies ?? [],
   ]) {
     for (const unit of units) {
       normalizeUnitFittings(unit);
     }
   }
-  if (s.pendingBattle) {
-    s.pendingBattle.fittingRulesVersion ??= FITTING_RULES_VERSION;
+  if (s.sectorEntryRequest) {
+    s.sectorEntryRequest.fittingRulesVersion ??= FITTING_RULES_VERSION;
   }
   if (legacy) {
     for (const snapshot of [
       ...Object.values(s.sectorStates ?? {}),
       ...Object.values(s.sceneStates ?? {}),
-      ...(s.pendingBattle?.resumeSnapshot ? [s.pendingBattle.resumeSnapshot] : []),
+      ...(s.sectorEntryRequest?.resumeSnapshot ? [s.sectorEntryRequest.resumeSnapshot] : []),
     ]) {
       snapshot.fittingRulesVersion ??= FITTING_RULES_VERSION;
       for (const unit of snapshot.units ?? []) {
@@ -508,7 +508,7 @@ export function merchantStatus(s, item, isSupplied) {
     sector = imported ? importRulesFor(s).port : s.location,
     merchant = s.merchants?.[sector];
   const reason =
-    s.pendingBattle || s.pendingEncounter
+    s.sectorEntryRequest || s.pendingEncounter
       ? 'Terminá el encuentro antes de negociar.'
       : !hasWorkshop({ ...s, flags: s.flags ?? {} }, s.location) ||
           s.sectors[s.location]?.owner !== 'patriot' ||
@@ -535,7 +535,7 @@ export function advanceMerchants(s, isSupplied) {
     if (
       s.sectors[sector]?.owner !== 'patriot' ||
       !isSupplied(s, sector) ||
-      s.pendingBattle?.sector === sector ||
+      s.sectorEntryRequest?.sector === sector ||
       (sector === importRulesFor(s).port && s.blockade)
     ) {
       continue;
@@ -764,7 +764,7 @@ export function returnEquipment(s, id, report) {
 
 // Strategic records keep the same loose inventory and separate primary loading.
 function personalHandState(s, op, r) {
-  const deployed = s.pendingBattle?.squad?.find((u) => String(u.id) === String(op?.id));
+  const deployed = s.sectorEntryRequest?.squad?.find((u) => String(u.id) === String(op?.id));
   return syncUnitAmmunition({
     ...op,
     ...r,
@@ -818,7 +818,7 @@ export function validateEquipment(s, roster = []) {
     );
   }
   validateEquipmentStorage(s);
-  for (const unit of s.pendingBattle?.squad ?? []) {
+  for (const unit of s.sectorEntryRequest?.squad ?? []) {
     validateReloadProgress(
       unit.reloadProgress,
       weaponSpecification(unit)?.capacity ?? 0,
@@ -901,7 +901,7 @@ export function validateEquipment(s, roster = []) {
 // item's current custodian once, including inaccessible captives and field gear.
 /** @param {import('./public/compatibility-types.ts').BattleSnapshot|null} [battle] */
 export function validateEquipmentOwnership(s, roster = [], battle = null) {
-  const active = battle ?? s.pendingBattle?.resumeSnapshot ?? null;
+  const active = battle ?? s.sectorEntryRequest?.resumeSnapshot ?? null;
   const currentFields = [
     ...(active ? [active] : []),
     ...(s.suspendedSectorSessions ?? []).map((session) => session.snapshot),

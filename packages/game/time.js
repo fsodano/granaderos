@@ -65,7 +65,7 @@ export function advanceBattleClock(s, seconds, { resting = false } = {}) {
  * @returns {State & Pick<import('./public/compatibility-types.ts').BattleSnapshot, 'gameRevision' | 'gameSessionId' | 'worldTimeLimitSecond' | 'residentPositions'>} */
 export function withCampaignTimeBoundary(campaign, battle) {
   const next = { ...battle, gameRevision: campaign.gameRevision ?? 0 };
-  const context = battle.sectorId ? battle : (campaign.pendingBattle ?? battle);
+  const context = battle.sectorId ? battle : (campaign.sectorEntryRequest ?? battle);
   const residentPositions = residentPositionsFor(campaign, context);
   if (residentPositions.length) {
     next.residentPositions = residentPositions;
@@ -93,35 +93,38 @@ export function withCampaignTimeBoundary(campaign, battle) {
 export function syncBattleTime(campaign, battle) {
   try {
     if (
-      !campaign.pendingBattle ||
-      (battle.battleId && battle.battleId !== campaign.pendingBattle.id)
+      !campaign.sectorEntryRequest ||
+      (battle.battleId && battle.battleId !== campaign.sectorEntryRequest.id)
     ) {
       return { campaign, battle, error: 'El reloj no corresponde al despliegue.' };
     }
     validateResidentPositionContext(campaign, battle);
-    validateRepairReserveContext(campaign.pendingBattle, battle);
-    if (campaign.pendingBattle.resumeSnapshot) {
-      validateRepairReserveContext(campaign.pendingBattle, campaign.pendingBattle.resumeSnapshot);
+    validateRepairReserveContext(campaign.sectorEntryRequest, battle);
+    if (campaign.sectorEntryRequest.resumeSnapshot) {
+      validateRepairReserveContext(
+        campaign.sectorEntryRequest,
+        campaign.sectorEntryRequest.resumeSnapshot,
+      );
     }
     validateCampaignServiceObjections(campaign, rosterFor(campaign));
     validatePendingCompanionLoss(campaign, rosterFor(campaign));
     validateServiceObjectionContext(campaign, battle, rosterFor(campaign));
-    validateQuestBeneficiaryContext(campaign, campaign.pendingBattle, {
+    validateQuestBeneficiaryContext(campaign, campaign.sectorEntryRequest, {
       request: null,
       issued: true,
     });
     validateAbilityReferences(campaign, battle);
     validateQuestBeneficiaryContext(campaign, battle);
-    if (campaign.pendingBattle.resumeSnapshot) {
-      validateAbilityReferences(campaign, campaign.pendingBattle.resumeSnapshot);
+    if (campaign.sectorEntryRequest.resumeSnapshot) {
+      validateAbilityReferences(campaign, campaign.sectorEntryRequest.resumeSnapshot);
     }
-    if (campaign.pendingBattle.resumeSnapshot) {
-      validateQuestBeneficiaryContext(campaign, campaign.pendingBattle.resumeSnapshot);
+    if (campaign.sectorEntryRequest.resumeSnapshot) {
+      validateQuestBeneficiaryContext(campaign, campaign.sectorEntryRequest.resumeSnapshot);
     }
     const elapsed = battle.elapsedSeconds ?? 0;
     const next = dispatchCampaign(campaign, {
       type: 'syncTacticalTime',
-      battleId: campaign.pendingBattle.id,
+      battleId: campaign.sectorEntryRequest.id,
       elapsedSeconds: elapsed,
       sectorState: battle,
     });

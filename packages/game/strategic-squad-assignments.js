@@ -40,7 +40,7 @@ export function strategicSquadLabel(state, squadId) {
 }
 
 const assignmentIssue = (state, operativeId, operative) =>
-  state.pendingBattle || state.pendingEncounter || state.defeated
+  state.sectorEntryRequest || state.pendingEncounter || state.defeated
     ? 'Terminá el encuentro antes de cambiar de escuadra.'
     : !canReassignOperative(state, operativeId)
       ? 'El combatiente debe estar disponible y sin una ruta pendiente.'

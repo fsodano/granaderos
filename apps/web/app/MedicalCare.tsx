@@ -338,7 +338,7 @@ export default function MedicalCare({
         !operativeInTransit(s, o.id) &&
         operativeLocation(s, o.id) === sectorId,
     );
-  const blocked = Boolean(s.pendingBattle || s.pendingEncounter) || s.defeated;
+  const blocked = Boolean(s.sectorEntryRequest || s.pendingEncounter) || s.defeated;
   const place = campaignPlace(sectorId, s);
   return (
     <section

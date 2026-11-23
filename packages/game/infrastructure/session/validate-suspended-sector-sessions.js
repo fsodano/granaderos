@@ -27,9 +27,9 @@ export function validateSuspendedSectorSessions(campaign, activeSnapshot, restor
   }
   restoreGameSession(campaign);
   const current =
-    campaign.pendingBattle && activeSnapshot
+    campaign.sectorEntryRequest && activeSnapshot
       ? {
-          request: campaign.pendingBattle,
+          request: campaign.sectorEntryRequest,
           snapshot: activeSnapshot,
           activeSquadId: campaign.activeSquadId,
           location: campaign.location,
@@ -40,7 +40,7 @@ export function validateSuspendedSectorSessions(campaign, activeSnapshot, restor
     const squad = campaign.squads.find((group) => group.id === record.activeSquadId);
     const view = {
       ...campaign,
-      pendingBattle: record.request,
+      sectorEntryRequest: record.request,
       activeSquadId: record.activeSquadId,
       squad: [...squad.members],
       location: record.location,
@@ -50,7 +50,7 @@ export function validateSuspendedSectorSessions(campaign, activeSnapshot, restor
       ],
     };
     const validated = restorePair(view, record.snapshot);
-    record.request = validated.campaign.pendingBattle;
+    record.request = validated.campaign.sectorEntryRequest;
     record.snapshot = validated.battle;
   }
 }

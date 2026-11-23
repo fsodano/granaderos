@@ -145,9 +145,9 @@ void test('fight resolves the selected decision and prepares the same squad at i
   });
   assert.equal(seconds(result), seconds(campaign));
   assert.equal(result.location, present(decision).sectorId);
-  assert.equal(present(result.pendingBattle).sector, present(decision).sectorId);
+  assert.equal(present(result.sectorEntryRequest).sector, present(decision).sectorId);
   assert.deepEqual(
-    present(result.pendingBattle).squad.map((person) => person.id),
+    present(result.sectorEntryRequest).squad.map((person) => person.id),
     present(decision).members,
   );
   assert.equal(currentJourney(result), undefined);
@@ -238,7 +238,7 @@ void test('a nonqueued attack also requires the arrival decision before deployme
   present(initial.sectors['buenos_aires']).owner = 'royalist';
   const campaign = order(initial, { type: 'attack', sector: 'buenos_aires' });
   assert.equal(seconds(campaign), 7200);
-  assert.equal(campaign.pendingBattle, null);
+  assert.equal(campaign.sectorEntryRequest, null);
   assert.equal(present(currentJourney(campaign)).status, 'ready');
   assert.equal(pendingArrivalDecisions(campaign).length, 1);
 });

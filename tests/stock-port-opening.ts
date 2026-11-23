@@ -223,7 +223,7 @@ export function stockPortOpening({ seed = 8, content = defaultContentPackage() }
   });
   state = leaveFiniteCache(p);
   state = fightOnArrival(order(state, { type: 'attack', sector: 'buenos_aires' }));
-  const request = structuredClone(present(state.pendingBattle)),
+  const request = structuredClone(present(state.sectorEntryRequest)),
     result = fight(request, null, {
       scoutCostWeight: 0.01,
       avoidCivilians: true,

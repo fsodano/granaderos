@@ -128,7 +128,7 @@ export function authoredForceEquipment(state, field, role, unit, cartridges) {
 }
 export function validateForceAppearanceReferences(state, value = state) {
   const content = state?.contentCampaign?.package;
-  const pending = value?.pendingBattle;
+  const pending = value?.sectorEntryRequest;
   const actors = [
     ...campaignActors(value),
     ...campaignActors(pending?.resumeSnapshot ?? {}),

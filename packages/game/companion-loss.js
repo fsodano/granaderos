@@ -85,7 +85,8 @@ const canWrite = (state, id, settled) => {
     !isUnconscious(record) &&
     !record.asleep &&
     !record.sleepCollapsed &&
-    (!(state.pendingBattle?.squad ?? []).some((unit) => Number(unit.id) === id) || settled.has(id))
+    (!(state.sectorEntryRequest?.squad ?? []).some((unit) => Number(unit.id) === id) ||
+      settled.has(id))
   );
 };
 
@@ -95,7 +96,7 @@ function confirmationFor(state, id, battleId) {
   const record = state.operativeState[id],
     at = { hour: state.hour, secondOfHour: state.secondOfHour ?? 0 };
   if (battleId !== undefined) {
-    const request = state.pendingBattle;
+    const request = state.sectorEntryRequest;
     return typeof battleId === 'string' &&
       battleId.length > 0 &&
       battleId.length < 100 &&

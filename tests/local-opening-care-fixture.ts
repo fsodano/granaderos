@@ -423,7 +423,7 @@ export function prepareLocalOpening(
     null,
     'resolve the actual equipment recovery journey before visiting its depot',
   );
-  assert.equal(s.pendingBattle, null);
+  assert.equal(s.sectorEntryRequest, null);
   assert.equal(s.location, careSector);
   assert.equal(
     present(s.squads.find((q) => q.id === s.activeSquadId)).journey,
@@ -567,7 +567,7 @@ export function prepareLocalOpening(
     null,
     'resolve the actual return journey before the next operation',
   );
-  assert.equal(s.pendingBattle, null);
+  assert.equal(s.sectorEntryRequest, null);
   assert.equal(s.location, returnSector);
   assert.equal(
     present(s.squads.find((q) => q.id === s.activeSquadId)).journey,

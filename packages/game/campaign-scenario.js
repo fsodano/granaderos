@@ -102,7 +102,7 @@ function genericInitialState(seed, definitions) {
           ),
     routes: { posta: false, flotilla: false, carts: false, mules: false },
     blockade: false,
-    pendingBattle: null,
+    sectorEntryRequest: null,
     completed: false,
     defeated: false,
     log: [

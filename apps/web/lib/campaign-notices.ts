@@ -17,7 +17,7 @@ export function strategicClockInterrupt(
   if (after.defeated) {
     return 'La campaña ha terminado.';
   }
-  if (after.pendingEncounter || after.pendingBattle) {
+  if (after.pendingEncounter || after.sectorEntryRequest) {
     return 'Un sector necesita órdenes de combate.';
   }
   if (after.travelNotice && changed(before.travelNotice, after.travelNotice)) {

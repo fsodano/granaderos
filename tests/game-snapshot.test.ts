@@ -72,6 +72,43 @@ void test('a save written with the legacy battle key loads identically and is re
   assert.equal(Object.hasOwn(rewritten, 'battle'), false);
 });
 
+void test('a save writes the sector entry request under sectorEntryRequest and never under pendingBattle', () => {
+  const pair = deployed();
+  const envelope = parseJsonObject(encodeSave(pair.campaign, pair.battle));
+  const campaign = envelope['campaign'];
+  assert.ok(isJsonObject(campaign));
+  assert.ok(isJsonObject(campaign['sectorEntryRequest']));
+  assert.equal(Object.hasOwn(campaign, 'pendingBattle'), false);
+  const empty = parseJsonObject(encodeSave(pair.campaign));
+  const emptyCampaign = empty['campaign'];
+  assert.ok(isJsonObject(emptyCampaign));
+  assert.ok(isJsonObject(emptyCampaign['sectorEntryRequest']));
+  assert.equal(Object.hasOwn(emptyCampaign, 'pendingBattle'), false);
+});
+
+void test('a save written with the legacy pendingBattle key loads identically and is rewritten under sectorEntryRequest', () => {
+  const pair = deployed();
+  const current = parseJsonObject(encodeSave(pair.campaign, pair.battle));
+  const legacy = structuredClone(current);
+  const legacyCampaign = legacy['campaign'];
+  assert.ok(isJsonObject(legacyCampaign));
+  assert.ok(isJsonObject(legacyCampaign['sectorEntryRequest']));
+  legacyCampaign['pendingBattle'] = legacyCampaign['sectorEntryRequest'];
+  delete legacyCampaign['sectorEntryRequest'];
+  const fromCurrent = decodeSave(JSON.stringify(current));
+  const fromLegacy = decodeSave(JSON.stringify(legacy));
+  assert.deepEqual(fromLegacy, fromCurrent);
+  assert.deepEqual(fromLegacy, pair);
+  const rewritten = parseJsonObject(encodeSave(fromLegacy.campaign, fromLegacy.battle));
+  const rewrittenCampaign = rewritten['campaign'];
+  assert.ok(isJsonObject(rewrittenCampaign));
+  assert.equal(Object.hasOwn(rewrittenCampaign, 'pendingBattle'), false);
+  assert.deepEqual(
+    rewrittenCampaign['sectorEntryRequest'],
+    fromCurrent.campaign.sectorEntryRequest,
+  );
+});
+
 void test('a save whose terrain is compacted carries schema 2', () => {
   const pair = deployed();
   const campaign = structuredClone(pair.campaign);

@@ -1,6 +1,6 @@
 export function openSectorEntryRequests(campaign) {
   return [
-    ...(campaign.pendingBattle ? [campaign.pendingBattle] : []),
+    ...(campaign.sectorEntryRequest ? [campaign.sectorEntryRequest] : []),
     ...(campaign.suspendedSectorSessions ?? []).map((session) => session.request),
   ];
 }

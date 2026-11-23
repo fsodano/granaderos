@@ -36,7 +36,7 @@ export function fightOnArrival(campaign: CampaignSnapshot) {
   assert.equal(campaign.lastError, null);
   const accepted = dispatchCampaign(campaign, fightOnArrivalOrder(campaign));
   assert.equal(accepted.lastError, null);
-  assert.ok(accepted.pendingBattle);
+  assert.ok(accepted.sectorEntryRequest);
   return accepted;
 }
 
@@ -63,7 +63,7 @@ export function completeQueuedAssault(
     options.report?.({ event: 'queuedAssaultOrder', request, campaign });
   };
   const admitted = () => {
-    const manifest = campaign.pendingBattle?.assaultSquads ?? [];
+    const manifest = campaign.sectorEntryRequest?.assaultSquads ?? [];
     return squadIds.every((id) => manifest.some((group) => group.id === id));
   };
   const synchronize = (snapshot: BattleSnapshot) => {
@@ -71,7 +71,7 @@ export function completeQueuedAssault(
     assert.equal(synchronized.error, null, synchronized.error ?? undefined);
     issue({
       type: 'syncTacticalTime',
-      battleId: present(campaign.pendingBattle).id,
+      battleId: present(campaign.sectorEntryRequest).id,
       elapsedSeconds: snapshot.elapsedSeconds ?? 0,
       sectorState: snapshot,
     });
@@ -101,17 +101,17 @@ export function completeQueuedAssault(
         decisionId: decision.id,
         ...(battle ? { sectorState: battle } : {}),
       });
-      assert.equal(campaign.pendingBattle?.sector, sector);
-      sessionId ??= present(campaign.pendingBattle).id;
+      assert.equal(campaign.sectorEntryRequest?.sector, sector);
+      sessionId ??= present(campaign.sectorEntryRequest).id;
       assert.equal(
-        present(campaign.pendingBattle).id,
+        present(campaign.sectorEntryRequest).id,
         sessionId,
         'Every reinforcement must join the same sector visit.',
       );
       if (admitted()) {
         return campaign;
       }
-      battle = synchronize(battleFromRequest(campaign.pendingBattle, campaign));
+      battle = synchronize(battleFromRequest(campaign.sectorEntryRequest, campaign));
       continue;
     }
     assert.equal(

@@ -47,12 +47,12 @@ void test('genuine new game creates exactly one custom officer then hires explor
   assert.deepEqual(s.recruited, [1000, 101]);
   assert.equal(present(s.contracts[101]).expiresAt, 168);
   s = order(s, { type: 'visitSector' });
-  const b = enterSector(s.pendingBattle);
+  const b = enterSector(s.sectorEntryRequest);
   const saved = decodeSave(encodeSave(s, b));
   assert.equal(present(saved.battle).units.filter((u) => u.side === 'player').length, 2);
   s = order(saved.campaign, {
     type: 'leaveSector',
-    battleId: present(s.pendingBattle).id,
+    battleId: present(s.sectorEntryRequest).id,
     sectorState: b,
     survivors: b.units.map((u) => ({ ...u, id: Number(u.id) })),
   });

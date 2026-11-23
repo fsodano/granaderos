@@ -17,7 +17,7 @@ export function attendYatasto(s: CampaignSnapshot) {
     s = completeTestTravel(s, { sector: 'tucuman' });
   }
   s = step(s, { type: 'visitMission', mission: 'yatasto' });
-  let b = enterSector(s.pendingBattle, s.sceneStates['yatasto']);
+  let b = enterSector(s.sectorEntryRequest, s.sceneStates['yatasto']);
   const actor = present(b.units.find((u) => u.side === 'player' && !u.militia));
   for (const npcId of ['yatasto-belgrano', 'yatasto-san-martin', 'yatasto-san-martin']) {
     b = approachNPC(b, actor.id, npcId);
@@ -31,7 +31,7 @@ export function attendYatasto(s: CampaignSnapshot) {
   }
   return step(s, {
     type: 'finishMission',
-    battleId: present(s.pendingBattle).id,
+    battleId: present(s.sectorEntryRequest).id,
     sectorState: b,
     survivors: b.units.filter((u) => u.side === 'player').map((u) => ({ ...u, id: Number(u.id) })),
   });

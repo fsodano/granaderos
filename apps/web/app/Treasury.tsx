@@ -118,7 +118,7 @@ export default function Treasury({
                 s.flags['foundry'] ||
                 s.resources.treasury < foundry.setupCost ||
                 Boolean(reason) ||
-                Boolean(s.pendingBattle)
+                Boolean(s.sectorEntryRequest)
               }
               onClick={() => dispatch({ type: 'foundry' })}
             >
@@ -132,7 +132,7 @@ export default function Treasury({
                 !s.flags['foundry'] ||
                 s.flags['armyFunded'] ||
                 s.resources.treasury < foundry.fundingCost ||
-                Boolean(s.pendingBattle)
+                Boolean(s.sectorEntryRequest)
               }
               onClick={() => dispatch({ type: 'fundArmy' })}
             >

@@ -142,8 +142,8 @@ export function migrateCampaignCivilianHealth(campaign) {
   const owners = [
     ...Object.values(campaign.sectorStates ?? {}),
     ...Object.values(campaign.sceneStates ?? {}),
-    campaign.pendingBattle,
-    campaign.pendingBattle?.resumeSnapshot,
+    campaign.sectorEntryRequest,
+    campaign.sectorEntryRequest?.resumeSnapshot,
   ].filter(Boolean);
   if (legacy) {
     need(
@@ -346,7 +346,7 @@ function validatePrefix(acknowledged, current) {
 }
 
 function context(campaign, battle) {
-  const request = campaign.pendingBattle,
+  const request = campaign.sectorEntryRequest,
     sceneId = request?.sceneId ?? null;
   need(
     request &&
@@ -636,8 +636,8 @@ export function validateCampaignCivilianHarm(campaign) {
   ];
   const receiptOwners = [
     ...snapshots,
-    ...(campaign.pendingBattle
-      ? [campaign.pendingBattle, campaign.pendingBattle.resumeSnapshot].filter(Boolean)
+    ...(campaign.sectorEntryRequest
+      ? [campaign.sectorEntryRequest, campaign.sectorEntryRequest.resumeSnapshot].filter(Boolean)
       : []),
   ];
   for (const snapshot of receiptOwners) {
@@ -734,7 +734,7 @@ export function validateCampaignCivilianHarm(campaign) {
         effects.set(`${city.id}:${effect.kind}:${effect.eventId}`, effect);
       }
     }
-    const pending = campaign.pendingBattle;
+    const pending = campaign.sectorEntryRequest;
     const operativeId = authoredNpc(
       campaign,
       record.sectorId,
@@ -780,8 +780,8 @@ export function validateCampaignCivilianHarm(campaign) {
   );
   for (const snapshot of snapshots) {
     if (
-      campaign.pendingBattle?.sector === snapshot.sectorId &&
-      (campaign.pendingBattle.sceneId ?? null) === (snapshot.sceneId ?? null)
+      campaign.sectorEntryRequest?.sector === snapshot.sectorId &&
+      (campaign.sectorEntryRequest.sceneId ?? null) === (snapshot.sceneId ?? null)
     ) {
       continue;
     }

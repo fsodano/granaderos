@@ -27,7 +27,8 @@ const requireThat = (value, message) => {
 const training = (s, id) => Boolean(s.militiaTraining?.some((t) => t.trainerId === id));
 const safe = (s, id) =>
   worldOwner(s, operativeLocation(s, id)) === 'patriot' &&
-  (s.pendingBattle?.sector !== operativeLocation(s, id) || Boolean(s.pendingBattle?.sceneId));
+  (s.sectorEntryRequest?.sector !== operativeLocation(s, id) ||
+    Boolean(s.sectorEntryRequest?.sceneId));
 export const doctorRate = (op, s) =>
   careRules(s).baseHealing + Math.floor((op.medical ?? 0) / careRules(s).skillStep);
 export const CARE_ISSUE_TEXT = {

@@ -225,7 +225,7 @@ function paidResidentCrew() {
   const exit = () => {
     dispatch({
       type: 'leaveSector',
-      battleId: present(campaign.pendingBattle).id,
+      battleId: present(campaign.sectorEntryRequest).id,
       sectorState: activeBattle(),
       survivors: activeBattle().units.filter((unit: BattleUnit) => unit.side === 'player'),
     });
@@ -479,7 +479,7 @@ void test('saved position references reject forged positions and upgrade an olde
   ]) {
     const refused = dispatchCampaign(fixture.campaign, {
       ...action,
-      battleId: present(fixture.campaign.pendingBattle).id,
+      battleId: present(fixture.campaign.sectorEntryRequest).id,
       sectorState: omitted,
     });
     assert.match(present(refused.lastError), /Resident positions/);

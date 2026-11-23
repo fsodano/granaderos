@@ -25,7 +25,7 @@ const safe = (s, id, context = {}) =>
   !(context.traveling ?? []).includes(id) &&
   !(context.unsafe ?? []).includes(id) &&
   ['patriot', 'neutral'].includes(worldOwner(s, operativeLocation(s, id))) &&
-  s.pendingBattle?.sector !== operativeLocation(s, id) &&
+  s.sectorEntryRequest?.sector !== operativeLocation(s, id) &&
   !s.enemyGroups?.some(
     (g) =>
       ['waiting', 'engaged', 'stationed'].includes(g.status) &&

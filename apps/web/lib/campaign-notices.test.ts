@@ -28,7 +28,7 @@ function withReadyArrival(campaign: CampaignSnapshot): CampaignSnapshot {
 }
 
 function withPendingBattle(campaign: CampaignSnapshot): CampaignSnapshot {
-  campaign.pendingBattle = { id: 'battle-1', sector: 'buenos_aires', squad: [] };
+  campaign.sectorEntryRequest = { id: 'battle-1', sector: 'buenos_aires', squad: [] };
   return campaign;
 }
 

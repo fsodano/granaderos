@@ -134,7 +134,7 @@ export function artilleryTransportQuote(s, sector, gunId, to, mode, source = 'fi
   const crew = availableCrew(s, from);
   const reason = s.defeated
     ? 'La campaña ha terminado.'
-    : s.pendingBattle || s.pendingEncounter
+    : s.sectorEntryRequest || s.pendingEncounter
       ? 'Salí de la escena táctica antes de enviar la pieza.'
       : !rules.enabled
         ? 'Esta campaña no permite trasladar piezas de artillería.'
@@ -202,7 +202,7 @@ export function artilleryStorageQuote(s, sector, gunId) {
     spec = gun && artilleryProfile(s, gun);
   const reason = s.defeated
     ? 'La campaña ha terminado.'
-    : s.pendingBattle || s.pendingEncounter
+    : s.sectorEntryRequest || s.pendingEncounter
       ? 'Salí de la escena táctica antes de guardar la pieza.'
       : !gun || from !== s.location || !place(s, from)
         ? 'La pieza debe estar emplazada en esta localidad.'

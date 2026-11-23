@@ -104,7 +104,7 @@ export function removeIgnitionSupplies(state) {
   for (const snapshot of [
     ...values(state.sectorStates),
     ...values(state.sceneStates),
-    state.pendingBattle,
+    state.sectorEntryRequest,
   ]) {
     scene(snapshot);
   }

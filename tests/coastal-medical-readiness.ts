@@ -40,7 +40,7 @@ export function prepareCoastalFieldAid(
       .map(([id]) => Number(id));
   const safe = () => {
     assert.equal(
-      c.pendingBattle,
+      c.sectorEntryRequest,
       null,
       'finish the actual battle before collecting the field reserve',
     );

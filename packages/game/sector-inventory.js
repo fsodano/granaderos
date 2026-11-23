@@ -328,7 +328,7 @@ function unavailable(s, siteId, terrain = true) {
   if (s.defeated) {
     return 'La campaña terminó.';
   }
-  if (s.pendingBattle || s.pendingEncounter) {
+  if (s.sectorEntryRequest || s.pendingEncounter) {
     return 'Resolvé el encuentro pendiente antes de manejar el equipo desde la carta.';
   }
   if (

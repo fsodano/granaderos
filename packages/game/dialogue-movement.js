@@ -106,7 +106,7 @@ export function recordDialogueMovement(s, npc, node, choice, quote) {
 }
 // This is current physical presence, not a timer or a historical completion flag.
 export function atDialogueMeeting(s, characterId, battle) {
-  const request = s.pendingBattle;
+  const request = s.sectorEntryRequest;
   if (
     !request ||
     !battle ||
@@ -140,7 +140,7 @@ export function synchronizeDialogueMovements(s) {
   for (const scene of [
     ...Object.values(s.sectorStates),
     ...Object.values(s.sceneStates),
-    ...(s.pendingBattle ? [s.pendingBattle] : []),
+    ...(s.sectorEntryRequest ? [s.sectorEntryRequest] : []),
   ]) {
     applyDialogueMovements(s, scene);
   }
@@ -225,7 +225,7 @@ export function validateDialogueMovements(s, npcs) {
   for (const scene of [
     ...Object.values(s.sectorStates),
     ...Object.values(s.sceneStates),
-    ...(s.pendingBattle ? [s.pendingBattle] : []),
+    ...(s.sectorEntryRequest ? [s.sectorEntryRequest] : []),
   ]) {
     validateMovementScene(s, scene);
   }

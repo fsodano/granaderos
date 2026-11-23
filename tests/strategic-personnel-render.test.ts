@@ -616,7 +616,7 @@ void test('new-squad creation shares encounter, service, travel and training eli
     [
       'battle',
       (s) => {
-        s.pendingBattle = { id: 'assignment-test', sector: s.location, squad: [] };
+        s.sectorEntryRequest = { id: 'assignment-test', sector: s.location, squad: [] };
       },
       /encuentro/,
     ],

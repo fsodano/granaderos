@@ -301,7 +301,7 @@ function recruitLocal(s: CampaignSnapshot, id = 3) {
     approach: 'recruit',
     sectorState: p.battle,
   });
-  const record = present(s.pendingBattle).squad.find((u) => u.id === id);
+  const record = present(s.sectorEntryRequest).squad.find((u) => u.id === id);
   assert.ok(record);
   // Same civilian-to-squad projection as the mounted game; the recruitment order
   // provides the complete actor and retains the resident's actual health/location.
@@ -417,7 +417,7 @@ export function prepareFreshCoastalHires(
   for (let attempts = 0; clock(s) < until; attempts++) {
     assert.ok(attempts < 240, 'Opening readiness must finish through bounded real wait orders.');
     assert.ok(
-      !s.pendingBattle && !s.pendingEncounter,
+      !s.sectorEntryRequest && !s.pendingEncounter,
       'Resolve an actual encounter before the opening hiring wait.',
     );
     const future = hires
@@ -623,14 +623,14 @@ export function freshCoastalRoute(
         });
         s = completeTestTravel(s, { sector: 'buenos_aires' });
         assert.equal(s.pendingEncounter, null);
-        assert.equal(s.pendingBattle, null);
+        assert.equal(s.sectorEntryRequest, null);
         assert.equal(s.location, 'buenos_aires');
         assert.equal(present(s.squads.find((q) => q.id === s.activeSquadId)).journey, undefined);
         supplied = supplyRouteAmmunition(s, s.squad, { target: 10 });
         s = supplied.campaign;
         s = completeTestTravel(s, { sector: origin });
         assert.equal(s.pendingEncounter, null);
-        assert.equal(s.pendingBattle, null);
+        assert.equal(s.sectorEntryRequest, null);
         assert.equal(s.location, origin);
         assert.equal(present(s.squads.find((q) => q.id === s.activeSquadId)).journey, undefined);
         assert.deepEqual(s.squad, field);
@@ -675,8 +675,8 @@ export function freshCoastalRoute(
       s = finishReloadsBeforeMarch(s, { report });
     }
     s = fightOnArrival(order(s, { type: 'attack', sector }));
-    assert.ok(s.pendingBattle);
-    const request = { ...s.pendingBattle, hour: s.hour, secondOfHour: s.secondOfHour ?? 0 },
+    assert.ok(s.sectorEntryRequest);
+    const request = { ...s.sectorEntryRequest, hour: s.hour, secondOfHour: s.secondOfHour ?? 0 },
       previous = s.sectorStates[sector];
     const engage =
       sector === 'buenos_aires'
@@ -1139,7 +1139,7 @@ export function freshCoastalRoute(
   assert.equal(s.flags['sanLorenzo'], true);
   assert.equal(present(s.missions['san_lorenzo']).completed, true);
   assert.equal(present(s.missionAllies['san_lorenzo']).hp > 0, true);
-  assert.equal(s.pendingBattle, null);
+  assert.equal(s.sectorEntryRequest, null);
   assert.ok(s.resources.treasury > 0);
   if (!['local', 'stock'].includes(kind)) {
     assert.ok(dead.size > 0);

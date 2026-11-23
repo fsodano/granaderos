@@ -17,7 +17,7 @@ type Props = {
 };
 export default function Logistics({ state: s, dispatch }: Props) {
   const title = (id: string) => campaignPlace(id, s)?.name ?? id;
-  const disabled = Boolean(s.defeated || s.pendingBattle || s.pendingEncounter);
+  const disabled = Boolean(s.defeated || s.sectorEntryRequest || s.pendingEncounter);
   return (
     <section className="logistics-section" aria-labelledby="logistics-title">
       <div className="section-intro">

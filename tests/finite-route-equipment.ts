@@ -443,7 +443,7 @@ export function collectRouteMedicalSupplies(
         'An actual encounter stops the deadline-bound medical courier.',
       );
       assert.equal(
-        s.pendingBattle,
+        s.sectorEntryRequest,
         null,
         'An actual battle stops the deadline-bound medical courier.',
       );
@@ -563,7 +563,7 @@ export function collectRouteMedicalSupplies(
         null,
         'the actual medical courier encounter must finish before continuing care',
       );
-      assert.equal(s.pendingBattle, null);
+      assert.equal(s.sectorEntryRequest, null);
       assert.ok(
         s.recruited.includes(operativeId) &&
           present(s.operativeState[operativeId]).alive &&
@@ -782,7 +782,7 @@ export function collectRouteMedicalSupplies(
           'The actual bounded medical courier must finish its admitted journey.',
         );
         assert.equal(operativeLocation(s, operativeId), at);
-        assert.equal(s.pendingBattle, null);
+        assert.equal(s.sectorEntryRequest, null);
         preparePostaCourier(at);
         return;
       }
@@ -792,7 +792,7 @@ export function collectRouteMedicalSupplies(
           encounter('journey', at);
           continue;
         }
-        assert.equal(s.pendingBattle, null);
+        assert.equal(s.sectorEntryRequest, null);
         assert.equal(s.location, at);
         assert.ok(
           s.recruited.includes(operativeId),

@@ -48,13 +48,13 @@ void test('fighting on another arrival preserves the current visit and allows ex
   });
   assert.equal(present(campaign.suspendedSectorSessions).length, 1);
   assert.deepEqual(present(present(campaign.suspendedSectorSessions)[0]).snapshot, original.battle);
-  assert.equal(present(campaign.pendingBattle).sector, present(decision).sectorId);
+  assert.equal(present(campaign.sectorEntryRequest).sector, present(decision).sectorId);
   const active = prepareCampaignBattle(campaign, { placement: true });
   assert.equal(active.error, null);
   const restored = decodeSave(encodeSave(active.campaign, active.battle));
   const resumed = order(restored.campaign, {
     type: 'resumeSectorSession',
-    sectorSessionId: present(original.campaign.pendingBattle).id,
+    sectorSessionId: present(original.campaign.sectorEntryRequest).id,
     sectorState: present(restored.battle),
   });
   const pair = prepareCampaignBattle(resumed);
@@ -81,7 +81,10 @@ void test('an arrival choice preserves the active visit when the arriving squad 
     squadId: present(decision).squadId,
     decisionId: present(decision).id,
   });
-  assert.equal(present(campaign.pendingBattle).id, present(pair.campaign.pendingBattle).id);
+  assert.equal(
+    present(campaign.sectorEntryRequest).id,
+    present(pair.campaign.sectorEntryRequest).id,
+  );
   assert.equal(campaign.suspendedSectorSessions, undefined);
   assert.equal(campaign.hour * 3600 + present(campaign.secondOfHour), 7200);
 });
@@ -114,7 +117,7 @@ void test('save restoration refuses duplicate participants and altered clocks in
   const encoded = parseJsonObject(encodeSave(active.campaign, active.battle));
   const duplicate = structuredClone(encoded);
   rawSaveRecord(duplicate, 'campaign', 'suspendedSectorSessions', 0, 'request', 'squad', 0)['id'] =
-    present(present(active.campaign.pendingBattle).squad[0]).id;
+    present(present(active.campaign.sectorEntryRequest).squad[0]).id;
   assert.throws(
     () => decodeSave(JSON.stringify(duplicate)),
     /duplicate-sector|inválid|corresponde/,
@@ -153,7 +156,10 @@ void test('simultaneous arrivals at the same sector join one visit without reset
     decisionId: present(decisions[1]).id,
     sectorState: first.battle,
   });
-  assert.equal(present(reinforced.pendingBattle).id, present(first.campaign.pendingBattle).id);
+  assert.equal(
+    present(reinforced.sectorEntryRequest).id,
+    present(first.campaign.sectorEntryRequest).id,
+  );
   assert.equal(reinforced.suspendedSectorSessions, undefined);
   const pair = prepareCampaignBattle(reinforced, { placement: true });
   assert.equal(pair.error, null);

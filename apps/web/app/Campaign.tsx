@@ -104,7 +104,7 @@ export default function Campaign({
   const arrivalPending = arrivalDecisions.length > 0;
   const plotting =
     plot?.squadId === s.activeSquadId &&
-    !s.pendingBattle &&
+    !s.sectorEntryRequest &&
     !s.pendingEncounter &&
     !s.defeated &&
     !arrivalPending
@@ -171,7 +171,7 @@ export default function Campaign({
   };
   const selectSquad = (id: string, operativeId?: number) => {
     clock.pause();
-    if (s.pendingBattle || s.pendingEncounter || s.defeated) {
+    if (s.sectorEntryRequest || s.pendingEncounter || s.defeated) {
       return;
     }
     const q = s.squads.find((q) => q.id === id);
@@ -244,7 +244,7 @@ export default function Campaign({
     }
   };
   const moving = Boolean(activeSquad(s).journey);
-  const arrivalBlocked = Boolean(s.pendingBattle || s.pendingEncounter || s.defeated);
+  const arrivalBlocked = Boolean(s.sectorEntryRequest || s.pendingEncounter || s.defeated);
   const openPanel = (id: string) => {
     clock.pause();
     cancelPlot();
@@ -293,7 +293,7 @@ export default function Campaign({
           <span>Fondos</span>
           <strong>{s.resources.treasury.toLocaleString('es-AR')} pesos</strong>
         </div>
-        {s.pendingBattle && (
+        {s.sectorEntryRequest && (
           <button
             className="line-button strategy-tactical-return"
             aria-label="Volver al sector táctico"
@@ -428,7 +428,7 @@ export default function Campaign({
             title={clock.cause || undefined}
             aria-describedby={clock.cause ? clockCauseId : undefined}
             disabled={
-              Boolean(s.pendingBattle || s.pendingEncounter) || s.defeated || arrivalPending
+              Boolean(s.sectorEntryRequest || s.pendingEncounter) || s.defeated || arrivalPending
             }
             onClick={clock.toggle}
           >
@@ -572,7 +572,7 @@ export default function Campaign({
                   ) : (
                     <p>{physical.land ? 'Zona rural' : 'Sin acceso terrestre'}</p>
                   )}
-                  {s.pendingBattle ? null : hostileDistrict ? (
+                  {s.sectorEntryRequest ? null : hostileDistrict ? (
                     <>
                       <p className="notice">
                         Liberá primero el sector principal de{' '}
@@ -690,7 +690,7 @@ export default function Campaign({
                           sector.owner !== 'patriot' ||
                           sector.fort >= 3 ||
                           s.resources.treasury < 150 ||
-                          Boolean(s.pendingBattle) ||
+                          Boolean(s.sectorEntryRequest) ||
                           s.defeated
                         }
                         onClick={() => dispatch({ type: 'fortify', sector: selected })}

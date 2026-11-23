@@ -75,7 +75,7 @@ export function retreatDestinations(s, at) {
       !s.enemyGroups.some(
         (g) => g.target === id && ['waiting', 'engaged', 'stationed'].includes(g.status),
       ) &&
-      s.pendingBattle?.sector !== id,
+      s.sectorEntryRequest?.sector !== id,
   );
 }
 
@@ -266,7 +266,7 @@ export function advanceEnemyGroups(s) {
 }
 
 export function queueEnemyEncounter(s) {
-  if (s.pendingBattle || s.pendingEncounter) {
+  if (s.sectorEntryRequest || s.pendingEncounter) {
     return null;
   }
   const group = s.enemyGroups
@@ -462,7 +462,7 @@ export function validateEnemyGroups(s, roster) {
       );
     }
   }
-  const b = s.pendingBattle;
+  const b = s.sectorEntryRequest;
   if (b?.defenseGroupId) {
     const g = s.enemyGroups.find((g) => g.id === b.defenseGroupId);
     need(
@@ -499,7 +499,7 @@ export function validateEnemyGroups(s, roster) {
   );
   need(
     s.pendingEncounter === null ||
-      (!s.pendingBattle &&
+      (!s.sectorEntryRequest &&
         object(s.pendingEncounter) &&
         s.enemyGroups.some(
           (g) =>

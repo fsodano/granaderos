@@ -46,7 +46,7 @@ export default function OwnedArtillery({
   );
   const reason = artillerySelectionReason(s, choices.filter(Boolean));
   const blocked =
-    Boolean(s.pendingBattle || s.pendingEncounter || s.defeated) ||
+    Boolean(s.sectorEntryRequest || s.pendingEncounter || s.defeated) ||
     s.sectors[s.location]?.owner !== 'patriot';
   const load = (gun: CampaignArtillery) =>
     `${gun.loaded ? 'Cargada' : gun.reloadProgress ? `Recarga ${Math.floor(gun.reloadProgress * 100)}%` : 'Descargada'} · ${gun.ammo} en reserva`;

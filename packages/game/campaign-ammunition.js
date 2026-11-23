@@ -241,7 +241,7 @@ export function restockAmmunitionShops(s, isSupplied) {
   }
 }
 function accessReason(s, op) {
-  return s.pendingBattle
+  return s.sectorEntryRequest
     ? 'Terminá la escena táctica antes de mover munición.'
     : s.defeated
       ? 'La campaña ha terminado.'
@@ -364,7 +364,7 @@ export function migrateStartingCartridges(s) {
   const scenes = [
     ...Object.values(s.sectorStates ?? {}),
     ...Object.values(s.sceneStates ?? {}),
-    s.pendingBattle?.resumeSnapshot,
+    s.sectorEntryRequest?.resumeSnapshot,
   ];
   for (const scene of scenes) {
     for (const unit of scene?.units ?? []) {
@@ -373,7 +373,7 @@ export function migrateStartingCartridges(s) {
       }
     }
   }
-  for (const unit of s.pendingBattle?.squad ?? []) {
+  for (const unit of s.sectorEntryRequest?.squad ?? []) {
     served.add(String(unit.id));
   }
   for (const remains of Object.values(s.sectorRemains ?? {})) {

@@ -29,7 +29,9 @@ export default function PreferredCompanionsSummary({
   if (!preferences.length) {
     return null;
   }
-  const issued = state?.pendingBattle?.squad?.find((u) => Number(u.id) === Number(operative.id));
+  const issued = state?.sectorEntryRequest?.squad?.find(
+    (u) => Number(u.id) === Number(operative.id),
+  );
   const source =
     issued && preferences.find((preference) => preference.companionId === issued.companionId);
   return (

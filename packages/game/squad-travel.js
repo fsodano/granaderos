@@ -350,7 +350,7 @@ function legIssue(s, q) {
     return 'contact';
   }
   if (
-    (j.intent !== 'attack' && s.pendingBattle?.sector === to) ||
+    (j.intent !== 'attack' && s.sectorEntryRequest?.sector === to) ||
     (j.intent !== 'attack' &&
       (worldOwner(s, to) === 'royalist' ||
         s.enemyGroups?.some((g) => g.target === to && g.status === 'stationed')))
@@ -574,7 +574,7 @@ export function advanceSquadTravel(
       (blocked ||
         winter ||
         (snapshot.purpose !== JourneyPurpose.HostileApproach &&
-          campaign.pendingBattle?.sector === snapshot.route[1]))
+          campaign.sectorEntryRequest?.sector === snapshot.route[1]))
     ) {
       journey.reverseForBlockedRoute(winter ? 'winter' : 'blocked');
       announce(
@@ -807,7 +807,7 @@ export function validateSquadTravel(s) {
       'Una ruta completada no puede seguir activa.',
     );
     need(
-      q.members.every((id) => !s.pendingBattle?.squad?.some((u) => Number(u.id) === id)),
+      q.members.every((id) => !s.sectorEntryRequest?.squad?.some((u) => Number(u.id) === id)),
       'Una escuadra en ruta no puede estar desplegada.',
     );
     if (['moving', 'ready'].includes(j.status)) {
@@ -899,7 +899,7 @@ export function arriveForAssault(s, groups, target) {
   return manifest;
 }
 export function validateAssaultDeployment(s) {
-  const b = s.pendingBattle;
+  const b = s.sectorEntryRequest;
   if (b?.assaultSquads === undefined) {
     return;
   }

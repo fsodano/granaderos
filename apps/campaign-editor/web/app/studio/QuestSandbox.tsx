@@ -380,7 +380,7 @@ export default function QuestSandbox({
                 }
                 return true;
               }}
-              peacefulVisit={Boolean(sandbox.campaign.pendingBattle?.exploration)}
+              peacefulVisit={Boolean(sandbox.campaign.sectorEntryRequest?.exploration)}
               onChange={(battle) => {
                 const next = adoptCampaignSandboxBattle(sandbox, battle);
                 setSandbox(next);

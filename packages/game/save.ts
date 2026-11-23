@@ -104,6 +104,16 @@ function decodeGameSave(text: string, validateOpenVisits: boolean): GameSnapshot
     throw Error('Esta versión de la partida no es compatible.');
   }
   validateGameSaveMetadata(value['mapping'], value['campaign']);
+  // Saves written before the request took its canonical name still carry it
+  // under `pendingBattle`. Read that key once, then write only the new one.
+  const savedCampaign = value['campaign'];
+  if (
+    savedCampaign['sectorEntryRequest'] === undefined &&
+    savedCampaign['pendingBattle'] !== undefined
+  ) {
+    savedCampaign['sectorEntryRequest'] = savedCampaign['pendingBattle'];
+  }
+  delete savedCampaign['pendingBattle'];
   if (value['schema'] === 2) {
     expandSaveTerrain(value);
   }
@@ -115,7 +125,7 @@ function decodeGameSave(text: string, validateOpenVisits: boolean): GameSnapshot
   if (b !== null && b !== undefined && !isJsonObject(b)) {
     throw Error('La batalla guardada no es válida.');
   }
-  if (Boolean(campaign.pendingBattle) !== Boolean(b)) {
+  if (Boolean(campaign.sectorEntryRequest) !== Boolean(b)) {
     throw Error('La batalla guardada no coincide con la campaña.');
   }
   if (b) {
@@ -146,8 +156,8 @@ function decodeGameSave(text: string, validateOpenVisits: boolean): GameSnapshot
   // Retain the validated clone, including one-time legacy cannon clearance.
   // Never rebuild an active save: its paid AP, clock and gun custody persist.
   const battle = b ? validateBattleSnapshot(b, campaign) : null;
-  const pendingBattle = campaign.pendingBattle;
-  if (battle && !pendingBattle) {
+  const sectorEntryRequest = campaign.sectorEntryRequest;
+  if (battle && !sectorEntryRequest) {
     throw Error('El despliegue guardado no corresponde al combate.');
   }
   if (battle) {
@@ -161,29 +171,34 @@ function decodeGameSave(text: string, validateOpenVisits: boolean): GameSnapshot
   }
   if (
     battle &&
-    pendingBattle &&
-    ((battle.sceneId ?? null) !== (pendingBattle.sceneId ?? null) ||
-      (battle.syncedSeconds ?? 0) !== (pendingBattle.syncedSeconds ?? 0) ||
+    sectorEntryRequest &&
+    ((battle.sceneId ?? null) !== (sectorEntryRequest.sceneId ?? null) ||
+      (battle.syncedSeconds ?? 0) !== (sectorEntryRequest.syncedSeconds ?? 0) ||
       (battle.elapsedSeconds ?? 0) !== (battle.syncedSeconds ?? 0))
   ) {
     throw Error('El reloj táctico guardado no coincide con la campaña.');
   }
   if (
     battle &&
-    pendingBattle &&
-    pendingBattle.hour !== undefined &&
-    battle.startSeconds !== pendingBattle.hour * 3600 + (pendingBattle.secondOfHour ?? 0)
+    sectorEntryRequest &&
+    sectorEntryRequest.hour !== undefined &&
+    battle.startSeconds !== sectorEntryRequest.hour * 3600 + (sectorEntryRequest.secondOfHour ?? 0)
   ) {
     throw Error('La hora inicial del combate no coincide con el despliegue.');
   }
-  if (battle && pendingBattle && battle.battleId != null && battle.battleId !== pendingBattle.id) {
+  if (
+    battle &&
+    sectorEntryRequest &&
+    battle.battleId != null &&
+    battle.battleId !== sectorEntryRequest.id
+  ) {
     throw Error('El reloj pertenece a otro despliegue.');
   }
   if (
     battle &&
-    pendingBattle &&
-    (battle.sectorId !== pendingBattle.sector ||
-      !pendingBattle.squad.every((u) =>
+    sectorEntryRequest &&
+    (battle.sectorId !== sectorEntryRequest.sector ||
+      !sectorEntryRequest.squad.every((u) =>
         [...battle.units, ...removedSectorCharacters(battle)].some(
           (t) => t.side === 'player' && String(t.id) === String(u.id),
         ),
@@ -193,7 +208,7 @@ function decodeGameSave(text: string, validateOpenVisits: boolean): GameSnapshot
   }
   if (
     battle &&
-    pendingBattle &&
+    sectorEntryRequest &&
     worldCell(battle.sectorId, campaign)?.anchor === false &&
     battle.sourceMapId !== battle.sectorId
   ) {
@@ -205,8 +220,8 @@ function decodeGameSave(text: string, validateOpenVisits: boolean): GameSnapshot
   if (battle) {
     validateCampaignSceneDefinitions(campaign, battle);
   }
-  if (battle && pendingBattle) {
-    validateArtilleryReport(campaign.pendingBattle, battle);
+  if (battle && sectorEntryRequest) {
+    validateArtilleryReport(campaign.sectorEntryRequest, battle);
     validateCampaignPatrol(campaign, battle);
     validateCampaignArtilleryProfiles(campaign, battle);
     migrateActiveCivilians(campaign, battle, { legacy: legacyCivilians });
@@ -223,30 +238,30 @@ function decodeGameSave(text: string, validateOpenVisits: boolean): GameSnapshot
   }
   // Older validated tactical saves did not carry a deployment identifier.
   // Bind them only after the sector and participant checks above succeed.
-  if (battle && pendingBattle && battle.battleId == null) {
-    battle.battleId = pendingBattle.id;
+  if (battle && sectorEntryRequest && battle.battleId == null) {
+    battle.battleId = sectorEntryRequest.id;
   }
   // Old saves gain authorized routes, never an inferred departure. The full
   // participant record remains present after a partial physical exit.
-  if (battle && pendingBattle && isJsonObject(b) && b['exits'] === undefined) {
-    if (!pendingBattle.exits) {
+  if (battle && sectorEntryRequest && isJsonObject(b) && b['exits'] === undefined) {
+    if (!sectorEntryRequest.exits) {
       throw Error('El despliegue no tiene salidas guardadas.');
     }
-    battle.exits = structuredClone(pendingBattle.exits);
+    battle.exits = structuredClone(sectorEntryRequest.exits);
     battle.exitRulesVersion = 1;
   }
   if (
     battle &&
-    pendingBattle &&
-    JSON.stringify(battle.exits) !== JSON.stringify(pendingBattle.exits)
+    sectorEntryRequest &&
+    JSON.stringify(battle.exits) !== JSON.stringify(sectorEntryRequest.exits)
   ) {
     throw Error('Las salidas guardadas no corresponden al despliegue.');
   }
   if (battle) {
-    validateSectorDeployment(battle, campaign.pendingBattle);
+    validateSectorDeployment(battle, campaign.sectorEntryRequest);
   }
   if (battle) {
-    validateRepairReserveContext(campaign.pendingBattle, battle);
+    validateRepairReserveContext(campaign.sectorEntryRequest, battle);
   }
   if (battle) {
     validateRoadsideDiscoveryContext(campaign, battle);
@@ -270,7 +285,7 @@ function decodeGameSave(text: string, validateOpenVisits: boolean): GameSnapshot
   }
   validateEquipmentOwnership(campaign, rosterFor(campaign), battle);
   if (battle) {
-    retainRepairReserves(campaign.pendingBattle, battle);
+    retainRepairReserves(campaign.sectorEntryRequest, battle);
   }
   if (validateOpenVisits) {
     validateSuspendedSectorSessions(

@@ -28,7 +28,7 @@ export default function SectorPreparation({
   };
   const foundry = foundryFor(s),
     blocked =
-      Boolean(s.pendingBattle || s.pendingEncounter || s.defeated) ||
+      Boolean(s.sectorEntryRequest || s.pendingEncounter || s.defeated) ||
       s.sectors[sector]?.owner !== 'patriot';
   const orders: Array<
     | PreparationOrder

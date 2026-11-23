@@ -121,7 +121,11 @@ export const visit = (s: CampaignSnapshot) => {
   return saved({
     campaign,
     battle: enterSector(
-      { ...campaign.pendingBattle, hour: campaign.hour, secondOfHour: campaign.secondOfHour ?? 0 },
+      {
+        ...campaign.sectorEntryRequest,
+        hour: campaign.hour,
+        secondOfHour: campaign.secondOfHour ?? 0,
+      },
       campaign.sectorStates[campaign.location],
     ),
   });
@@ -190,7 +194,7 @@ export function hireLocal(p: ActiveGame, term = 'day') {
   const npc = localNPC(p.battle),
     campaign = order(p.campaign, talk(p, term)),
     id = localId(campaign),
-    op = present(campaign.pendingBattle).squad.find((u) => u.id === id),
+    op = present(campaign.sectorEntryRequest).squad.find((u) => u.id === id),
     battle = structuredClone(p.battle);
   battle.npcs = battle.npcs.filter((n) => n.id !== npc.id);
   battle.units.push({
@@ -206,7 +210,7 @@ export const leave = (p: ActiveGame) => {
   p = sync(p);
   return order(p.campaign, {
     type: 'leaveSector',
-    battleId: present(p.campaign.pendingBattle).id,
+    battleId: present(p.campaign.sectorEntryRequest).id,
     sectorState: p.battle,
     survivors: p.battle.units.filter((u) => u.side === 'player'),
   });

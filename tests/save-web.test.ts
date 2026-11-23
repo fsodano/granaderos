@@ -15,7 +15,7 @@ function deployed() {
     dispatchCampaign(initialCampaign(), { type: 'travel', sector: 'buenos_aires' }),
     'san_nicolas',
   );
-  const map = buildSectorMap(present(campaign.pendingBattle));
+  const map = buildSectorMap(present(campaign.sectorEntryRequest));
   return { campaign, battle: createBattle(map.squad, map) };
 }
 

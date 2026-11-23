@@ -35,7 +35,7 @@ export function artillerySupplyQuote(s, sector, gunId, supplied) {
   );
   const reason = s.defeated
     ? 'La campaña ha terminado.'
-    : s.pendingBattle || s.pendingEncounter
+    : s.sectorEntryRequest || s.pendingEncounter
       ? 'Salí de la escena táctica antes de comprar munición.'
       : !rules.enabled
         ? 'Esta campaña no permite reponer munición de artillería.'

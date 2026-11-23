@@ -75,9 +75,10 @@ export function strategicSectorPresence(
   // Promotion reserves existing local soldiers outside the deployable totals.
   // New rank-zero courses have no soldiers to display before completion.
   const militiaIds = new Set(
-    [...Object.values(state.garrisons ?? {}).flat(), ...(state.pendingBattle?.garrison ?? [])].map(
-      (unit) => String(unit.id),
-    ),
+    [
+      ...Object.values(state.garrisons ?? {}).flat(),
+      ...(state.sectorEntryRequest?.garrison ?? []),
+    ].map((unit) => String(unit.id)),
   );
   for (const course of state.militiaTraining ?? []) {
     if (course.rank <= 0 || state.sectors[course.sector]?.owner !== 'patriot') {
@@ -102,13 +103,13 @@ export function strategicSectorPresence(
   }
   // The map can be opened before a tactical casualty/exit is settled. Read only
   // our live actors from that scene; its hostile actors are never map evidence.
-  if (battle && state.pendingBattle?.id === battle.battleId) {
+  if (battle && state.sectorEntryRequest?.id === battle.battleId) {
     const row = at(
-      sceneAnchorFor(state, state.pendingBattle.sceneId ?? state.pendingBattle.sector),
+      sceneAnchorFor(state, state.sectorEntryRequest.sceneId ?? state.sectorEntryRequest.sector),
     );
     if (row) {
       const own = (battle.units ?? []).filter((unit) => unit.side === 'player'),
-        issued = new Set((state.pendingBattle.squad ?? []).map((unit) => String(unit.id)));
+        issued = new Set((state.sectorEntryRequest.squad ?? []).map((unit) => String(unit.id)));
       for (const unit of own) {
         if (!unit.militia) {
           issued.add(String(unit.id));
@@ -121,7 +122,7 @@ export function strategicSectorPresence(
         ...own.filter((unit) => !unit.militia && present(unit)).map((unit) => unit.id),
       );
       const deployedMilitia = new Set(
-        (state.pendingBattle.garrison ?? []).map((unit) => String(unit.id)),
+        (state.sectorEntryRequest.garrison ?? []).map((unit) => String(unit.id)),
       );
       row.militia =
         Math.max(0, row.militia - deployedMilitia.size) +

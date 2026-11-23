@@ -252,7 +252,7 @@ export function advanceSectorWorldEvents(snapshot, targetSecond) {
 
 export function advanceCampaignWorld(campaign) {
   const targetSecond = campaign.hour * 3600 + (campaign.secondOfHour ?? 0);
-  const active = campaign.pendingBattle;
+  const active = campaign.sectorEntryRequest;
   const suspended = campaign.suspendedSectorSessions ?? [];
   for (const snapshot of [
     ...Object.values(campaign.sectorStates ?? {}),
