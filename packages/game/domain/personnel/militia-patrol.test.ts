@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   DEFAULT_MILITIA_PATROL,
   MILITIA_PATROL_WAYPOINTS,
+  canAct,
   militiaPatrolDestination,
   militiaPatrolsThisTurn,
   militiaPatrolWaypoint,
@@ -93,6 +94,21 @@ void test('a waypoint names the cell the fixed point falls on for the map size',
     x: 0,
     y: 0,
   });
+});
+
+void test('a unit can act above the critical health and only while it still fights', () => {
+  assert.equal(canAct(patrolUnit()), true);
+  // A unit the table never gave an energy figure counts as rested.
+  assert.equal(canAct({ hp: 100, ap: 100, x: 0, y: 0 }), true);
+  assert.equal(canAct(patrolUnit({ hp: 15 })), true);
+  assert.equal(canAct(patrolUnit({ energy: 1 })), true);
+  assert.equal(canAct(patrolUnit({ hp: 14 })), false);
+  assert.equal(canAct(patrolUnit({ hp: 0 })), false);
+  assert.equal(canAct(patrolUnit({ energy: 0 })), false);
+  assert.equal(canAct(patrolUnit({ routed: true })), false);
+  assert.equal(canAct(patrolUnit({ fled: true })), false);
+  assert.equal(canAct(patrolUnit({ surrendered: true })), false);
+  assert.equal(canAct(patrolUnit({ departure: {} })), false);
 });
 
 void test('a militia that can act and sees no enemy patrols its turn', () => {
