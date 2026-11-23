@@ -24,12 +24,6 @@ applications, packages, content, and tools live.
 These documents record an in-progress migration of the source onto the
 accepted architecture.
 
-| Document | Purpose |
-| --- | --- |
-| [Clean architecture migration](migration/overview.md) | Orientation survey of the source and the gaps it found |
-| [Clean architecture migration plan](migration/plan.md) | Slice sequence, branch flow, version policy, and verification strategy |
-| [Migration slice notes](migration/slices/README.md) | Per-slice intent, files, tests, and verification |
-
 ## Feature plans
 
 These documents record proposals and implementation steps. Some steps have later
