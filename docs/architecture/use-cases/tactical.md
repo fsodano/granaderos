@@ -8,7 +8,7 @@ This page catalogues the player's tactical intentions during a sector visit (`Se
 
 Sector play lets the player position, protect, equip, treat, converse, or fight with a squad during an open `SectorSession`. `Battlefield.tsx` is the browser input surface. `EnterSectorUseCase`, `AdmitSectorReinforcementsUseCase`, `ExecuteSectorOrderUseCase`, `EndSectorTurnUseCase`, `ResumeSectorOperationUseCase`, `TransferItemUseCase`, and `GetVisibleCharactersUseCase` coordinate the visit through their narrow per-use-case repository interfaces. Domain objects (`SectorSession`, `CombatSession`, `CombatTurn`, `SectorParticipant`, `ActionPoints`, `Firearm`, `ReloadWork`, `ReprimeWork`, `CombatInjury`, `ReactionStack`, `Inventory`, `ItemCustody`, and `VisionObserver`) own the migrated rules, while `packages/game/tactical.js` connects them to spatial geometry and AI collaborators.
 
-Three cross-cutting rule modules also have domain ownership.
+The following shared tactical rules also have domain ownership.
 [`actor-condition.ts`](../../../packages/game/domain/personnel/actor-condition.ts)
 owns `CRITICAL_HEALTH` (15), unconsciousness for a living combatant with fewer
 than 15 hit points or no energy, and `fieldCapable` (at least 15 hit points,
@@ -35,6 +35,24 @@ The retained root modules
 [`medical-patient.js`](../../../packages/game/medical-patient.js), and
 [`battle-outcome.js`](../../../packages/game/battle-outcome.js) re-export these
 rules; they do not own their implementation.
+
+[`targeted-combat.ts`](../../../packages/game/domain/combat/targeted-combat.ts)
+owns aimed-shot eligibility, available body regions, region profiles and labels,
+range-based aiming penalties, and region effects. It uses
+[`BodyRegion`](../../../packages/game/domain/combat/body-region.ts) for region
+modifiers and physical impact. The retained
+[`targeted-combat.js`](../../../packages/game/targeted-combat.js) re-exports
+these rules for existing callers.
+
+[`tactical-space.ts`](../../../packages/game/domain/sector-sessions/tactical-space.ts)
+owns tactical-level and cell-space rules.
+[`tactical-grid.ts`](../../../packages/game/domain/sector-sessions/tactical-grid.ts)
+owns `tacticalGridLabel`, which converts a cell's coordinates to a
+spreadsheet-style label. For example, `tacticalGridLabel(0, 26)` returns
+`AA1`: the second coordinate selects the `AA` prefix, and the first supplies
+the one-based numeric suffix. The retained
+[`tactical-grid.js`](../../../packages/game/tactical-grid.js) re-exports the
+domain function.
 
 Every `Exposure` column below uses the canonical six-value vocabulary defined in the [use-case index](README.md#exposure-vocabulary): `Command`, `Gated`, `Query`, `Supporting`, `No interface route`, and `Refused`.
 
@@ -93,9 +111,9 @@ The table below specifies each tactical use case by `ID`, `Request information`,
 | TAC-002 | Participant `unitId`, selected hand/slot, cursor mode | Updates UI selection and cursor targeting context without mutating domain state | Character dead, unconscious, routed, enemy-controlled, or autonomous militia | `JA2Roster.tsx`, `Battlefield.tsx`, `ContextActionCursor.tsx`; `ja2-hud.ts`, `tactical.js` |
 | TAC-003 | Participant `unitId` / `unitIds`, target cell and elevation level, movement gait | `SectorParticipant` spends `ActionPoints`; updates sector grid position, facing, fatigue, sight, and `SectorOperation` checkpoint continuation | Blocked geometry or climb link; insufficient `ActionPoints`; stops at `ReactionWindow` interrupt or `SectorTimeBudget` boundary | `MovementCursor.tsx`, `JA2GroupMovePanel.tsx`; `ExecuteSectorOrderUseCase`, `ResumeSectorOperationUseCase`, `useMovementController.ts`, `movement-step.ts`, `group-movement.ts` |
 | TAC-004 | Participant `unitId`, target facing, stance, gait, stealth, or weapon mode | `SectorParticipant` spends `ActionPoints`; updates posture, facing, weapon mode, and `VisionObserver` profile | Insufficient `ActionPoints`; participant knocked down or unable to change stance | `Battlefield.tsx`, `JA2WeaponMode.tsx`; `ExecuteSectorOrderUseCase`, `tactical.js`, `action-points.js` |
-| TAC-005 | Shooter `unitId`, target ID/kind, aim level, `BodyRegion` | `SectorParticipant` spends `ActionPoints`; `Firearm` and `IgnitionPolicy` consume charge or misfire; `FirearmAccuracy`, `BodyRegion`, and `CombatInjury` update target `Health` (owned by `Character`) | Target not visible; insufficient `ActionPoints`; `Firearm` unloaded, unprimed, or jammed | `AimCursor.tsx`, `Battlefield.tsx`; `ExecuteSectorOrderUseCase`, `tactical.js:fire`, `targeted-combat.js` |
-| TAC-006 | Actor `unitId`, target `(x, y, tacticalLevel)`, aim level | Resolves shot (`firePoint`) or strike (`meleePoint`) along trajectory against the target cell without requiring prior target visibility | Out of range, blocked line of fire, or insufficient `ActionPoints` | `AimCursor.tsx`, `ContextActionCursor.tsx`; `ExecuteSectorOrderUseCase`, `tactical.js:firePoint/meleePoint`, `targeted-combat.js` |
-| TAC-007 | Attacker `unitId`, target ID/kind or cell, melee or `charge` action | Optional approach steps, `SectorParticipant` `ActionPoints` spend, `MeleeExchange` parry/counterattack check, and `CombatInjury` impact on target `Health` | Target unreachable or on different elevation; no usable melee weapon; insufficient `ActionPoints` | `ContextActionCursor.tsx`, `AimCursor.tsx`; `ExecuteSectorOrderUseCase`, `tactical.js:melee/charge`, `targeted-combat.js` |
+| TAC-005 | Shooter `unitId`, target ID/kind, aim level, `BodyRegion` | `SectorParticipant` spends `ActionPoints`; `Firearm` and `IgnitionPolicy` consume charge or misfire; `FirearmAccuracy`, `BodyRegion`, and `CombatInjury` update target `Health` (owned by `Character`) | Target not visible; insufficient `ActionPoints`; `Firearm` unloaded, unprimed, or jammed | `AimCursor.tsx`, `Battlefield.tsx`; `ExecuteSectorOrderUseCase`, `tactical.js:fire`, [`targeted-combat.ts`](../../../packages/game/domain/combat/targeted-combat.ts) via [`targeted-combat.js`](../../../packages/game/targeted-combat.js) |
+| TAC-006 | Actor `unitId`, target `(x, y, tacticalLevel)`, aim level | Resolves shot (`firePoint`) or strike (`meleePoint`) along trajectory against the target cell without requiring prior target visibility | Out of range, blocked line of fire, or insufficient `ActionPoints` | `AimCursor.tsx`, `ContextActionCursor.tsx`; `ExecuteSectorOrderUseCase`, `tactical.js:firePoint/meleePoint`, [`targeted-combat.ts`](../../../packages/game/domain/combat/targeted-combat.ts) via [`targeted-combat.js`](../../../packages/game/targeted-combat.js) |
+| TAC-007 | Attacker `unitId`, target ID/kind or cell, melee or `charge` action | Optional approach steps, `SectorParticipant` `ActionPoints` spend, `MeleeExchange` parry/counterattack check, and `CombatInjury` impact on target `Health` | Target unreachable or on different elevation; no usable melee weapon; insufficient `ActionPoints` | `ContextActionCursor.tsx`, `AimCursor.tsx`; `ExecuteSectorOrderUseCase`, `tactical.js:melee/charge`, [`targeted-combat.ts`](../../../packages/game/domain/combat/targeted-combat.ts) via [`targeted-combat.js`](../../../packages/game/targeted-combat.js) |
 | TAC-008 | Thrower `unitId`, held grenade or knife, target coordinate/actor, aim level | Removes thrown `Item` from `Inventory` custody, resolves 3D flight (`item-flight.js`), blast (`structure-blast.js`), and `CombatInjury` on affected characters' `Health` | Item not held in hand; invalid trajectory; insufficient `ActionPoints` | `GrenadeThrowEffect.tsx`, `KnifeThrowEffect.tsx`; `ExecuteSectorOrderUseCase`, `grenade-throw.js`, `thrown-knife.js`, `item-flight.js` |
 | TAC-009 | Crew `unitId`/`unitIds`, artillery ID, target coordinate/direction, ammunition | Updates artillery position, facing, reload progress, ammunition stock, and projectile blast/impact | Piece occupied or damaged; insufficient crew, `ActionPoints`, or artillery rounds | `JA2ArtilleryMenu.tsx`, `JA2EnvironmentPanel.tsx`; `ExecuteSectorOrderUseCase`, `tactical.js` artillery handlers |
 | TAC-010 | Participant `unitId`, facing direction, `brace` or `overwatch` | Reserves `ActionPoints` on `SectorParticipant` and sets defensive posture for `ReactionPolicy` checks during enemy movement | Insufficient `ActionPoints`; `brace` requires a bayoneted weapon | `Battlefield.tsx`; `ExecuteSectorOrderUseCase`, `tactical.js:brace/overwatch` |

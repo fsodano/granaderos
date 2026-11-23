@@ -1,6 +1,6 @@
 # Clean architecture migration plan
 
-This plan defines a 47-slice sequence for moving Granaderos toward the
+This plan defines a 50-slice sequence for moving Granaderos toward the
 [accepted domain architecture](../accepted/domain-architecture.md). The
 [overview](overview.md) describes current source behavior and remaining
 requirements; the [slice index](slices/README.md) links each note.
@@ -95,6 +95,9 @@ outside this plan.
 | [45. Retire `beginAssault`](slices/45-retire-begin-assault.md) | Resolve hostile arrivals through one `fightOnArrival` order per squad decision |
 | [46. Condition and outcome rules](slices/46-condition-rules.md) | Move condition, care, and tactical-victory decisions into the domain |
 | [47. Sector view request property](slices/47-sector-state-request.md) | Use `sectorSession` for campaign orders that carry the sector view |
+| [48. Suspended visit record contract](slices/48-suspended-record-contract.md) | Declare every saved suspended-visit field in `CampaignSuspendedSectorSession` |
+| [49. Aimed-shot rules](slices/49-targeted-combat.md) | Move aimed-shot eligibility, region choices, profiles, penalties, and effects into the domain |
+| [50. Tactical grid label](slices/50-tactical-grid-label.md) | Move tactical cell-label generation into the domain |
 
 Each slice has a note under [slices](slices/README.md) that records its intent,
 scope, and behavior tests. Read the relevant note before changing that area.
@@ -104,9 +107,12 @@ scope, and behavior tests. Read the relevant note before changing that area.
 The migration is complete when:
 
 1. Every retained procedural simulation rule has a named domain owner or
-   application use case, and compatibility modules delegate to those
-   contracts. Architecture checks reject imports from `packages/game` into
-   `apps/web`.
+   application use case, and retained compatibility modules delegate to those
+   owners. Aimed-shot rules belong to
+   [`targeted-combat.ts`](../../../packages/game/domain/combat/targeted-combat.ts),
+   and tactical cell labels belong to
+   [`tactical-grid.ts`](../../../packages/game/domain/sector-sessions/tactical-grid.ts).
+   Architecture checks reject imports from `packages/game` into `apps/web`.
 2. `GameSession` (the runtime consistency boundary) owns `RandomSource` (the
    seeded random sequence) and `WorldTimeline` (the accepted game-time clock).
    Campaign draws use `session.randomSource` and write its advanced seed back
@@ -122,13 +128,19 @@ The migration is complete when:
    `recruited` -> `forceRoster`, `operativeState` -> `characters`,
    `sectorStates` -> `sectorSnapshots`, and `sceneStates` -> `sceneSnapshots`
    only when each current field is `undefined`, then removes the legacy key.
-4. Every suspended-visit saved record has an explicit contract: `request` is a
-   saved [`CampaignSectorEntryRequest`](../../../packages/game/public/campaign-types.ts),
-   `snapshot` is its saved [`BattleSnapshot`](../../../packages/game/public/compatibility-types.ts),
-   and resumption context is declared as `activeSquadId`, `location`, and
-   `suspendedAtSeconds`. A `SectorSession` is the domain object for one sector
-   visit; the saved record carries its request and view rather than a projection
-   of that domain object. Restore preserves visit identity and progress.
+4. Each entry in
+   [`CampaignSnapshot.suspendedSectorSessions`](../../../packages/game/public/campaign-types.ts)
+   uses the public
+   [`CampaignSuspendedSectorSession`](../../../packages/game/public/campaign-types.ts)
+   contract. `request` is the saved
+   [`CampaignSectorEntryRequest`](../../../packages/game/public/campaign-types.ts),
+   `snapshot` is the saved
+   [`BattleSnapshot`](../../../packages/game/public/compatibility-types.ts),
+   `activeSquadId` identifies the squad to reactivate, `location` gives its
+   sector, and `suspendedAtSeconds` is the game second when suspension
+   occurred. The saved record is a projection, not a serialized domain
+   `SectorSession` object for one sector visit; restoration preserves visit
+   identity and progress.
 5. Hostile arrivals resolve only through `fightOnArrival` or
    `withdrawOnArrival`. Each order resolves one squad's `ArrivalDecision`, the
    fight-or-withdraw choice created at its hostile boundary. A caller that
@@ -172,6 +184,6 @@ boundaries it can express as import rules.
 
 Start with [overview.md](overview.md) for the current implementation and open
 gaps, then use this plan for the branch flow and the [slice index](slices/README.md)
-for the 47 slice notes. Read the accepted architecture and glossary before
+for the 50 slice notes. Read the accepted architecture and glossary before
 work that changes a domain contract or term. Each slice note records its
 intent, scope, and behavior tests.

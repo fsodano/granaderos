@@ -1,40 +1,28 @@
-# Slice 50: the tactical grid label into the domain
+# Slice 50: tactical grid labels belong to the domain
 
-**Branch:** `migration/tactical-grid-label`
-**Intent:** Move the rule that names a tactical cell into the domain, beside the
-space rules that name its level.
+[`tacticalGridLabel`](../../../../packages/game/domain/sector-sessions/tactical-grid.ts)
+maps a tactical cell's coordinates to its display label. The `y` coordinate
+determines the spreadsheet-style letter prefix: `0` is `A`, `25` is `Z`, and
+`26` is `AA`. The `x` coordinate determines the numeric suffix starting at one.
+For example, `tacticalGridLabel(0, 26)` returns `AA1`.
 
-## Why this slice exists
+## Domain rule
 
-`packages/game/tactical-grid.js` holds one rule: the label a cell carries on
-the tactical map, where the rows are named the way a spreadsheet names them and
-the letters continue past Z on a large map.
+The label is part of the tactical grid's coordinate vocabulary. Its rule lives
+in `tactical-grid.ts` beside
+[`tactical-space.ts`](../../../../packages/game/domain/sector-sessions/tactical-space.ts),
+which owns tactical-level and cell-space rules. The read-only `TacticalCell`
+type names the `x` and `y` coordinates the label describes; the function keeps
+its positional `(x, y)` signature for callers.
 
-The domain already owns the tactical space: `packages/game/domain/sector-sessions/tactical-space.ts`
-holds the rules that read a point's level and name a cell on a level. The label
-of a cell is the same kind of fact.
+## Compatibility path
 
-## What it changes
+[`tactical-grid.js`](../../../../packages/game/tactical-grid.js) re-exports
+`tacticalGridLabel` so existing callers retain their import path. The root
+module delegates to the domain rule.
 
-- `packages/game/domain/sector-sessions/tactical-grid.ts` holds the rule.
-- `packages/game/tactical-grid.js` becomes a thin re-export of it, and the
-  files that import it keep importing it from the same path.
-
-The labels do not change: the first row is A, the twenty-sixth is Z, the
-twenty-seventh is AA, and the column number starts at one.
-
-## Tests
-
-- `packages/game/domain/sector-sessions/tactical-grid.test.ts` covers the rule:
-  the first row is A, the row after Z is AA, the row after AA is AB, and the
-  label carries the column number from one.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.54` to `0.2.55`.
+The tests in
+[`tactical-grid.test.ts`](../../../../packages/game/domain/sector-sessions/tactical-grid.test.ts)
+cover the first label, the transition from `Z` to `AA`, the next label `AB`,
+and the one-based numeric suffix. A single rule keeps the label used by the
+tactical interface consistent for each coordinate.

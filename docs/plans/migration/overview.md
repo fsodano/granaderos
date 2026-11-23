@@ -220,35 +220,33 @@ saved field
 uses the public `CampaignSectorEntryRequest` type; the application layer keeps
 the narrower `SectorEntryRequest` name.
 
-Each `suspendedSectorSessions` record stores a saved entry `request` and sector
-`snapshot`, rather than a projection of the domain `SectorSession`.
+Each `suspendedSectorSessions` entry conforms to the public
+[`CampaignSuspendedSectorSession`](../../../packages/game/public/campaign-types.ts)
+type and carries the saved entry `request`, sector `snapshot`, `activeSquadId`,
+`location`, and `suspendedAtSeconds`. The
 [`CampaignSectorSessionCoordinator`](../../../packages/game/infrastructure/session/campaign-sector-session-coordinator.js)
-also saves `activeSquadId`, `location`, and `suspendedAtSeconds` for resumption,
-but the public [`CampaignSnapshot`](../../../packages/game/public/campaign-types.ts)
-type currently declares only the request and snapshot.
+writes those five fields. [`GameSnapshotMapper`](../../../packages/game/infrastructure/persistence/game-snapshot-mapper.js)
+restores the domain `SectorSession` from the request and snapshot rather than
+serializing that domain object.
 [`save-terrain.js`](../../../packages/game/save-terrain.js) compacts and expands
 eligible tile arrays in every suspended `snapshot` along with active and
 retained maps.
 
-Twenty-four migrated game rules have domain ownership in
-`packages/game/domain`: firearm readiness, unarmed combat, sleep need, held
-supplies, projectile energy,
-firearm loads, study rate, the route queue, firearm serviceability, kinetic
-impact, combat balance, combat journal, fatigue and energy, interior
-visibility, campaign clock conversion, `WorldTimeline` clock advancement,
-tactical-level rules (the vertical map layer assigned to a point), shot-range
-calculation, `directionTo` (NPC facing), `approximateHeardPosition` (anonymous
-sound location), and care-composure relief
-(`CARE_COMPOSURE_RELIEF` & `careComposureRelief`); actor condition (critical
-health, unconsciousness, field capability, and condition refresh);
-medical-patient eligibility; and completed tactical victory. The root modules
+Twenty-six migrated game-rule groups have domain ownership in
+`packages/game/domain`, as listed in the [slice index](slices/README.md).
+[`targeted-combat.ts`](../../../packages/game/domain/combat/targeted-combat.ts)
+owns aimed-shot eligibility, region choices and profiles, aiming penalties, and
+effects. [`tactical-grid.ts`](../../../packages/game/domain/sector-sessions/tactical-grid.ts)
+owns tactical cell labels. The retained root modules
 [`actor-condition.js`](../../../packages/game/actor-condition.js),
-[`medical-patient.js`](../../../packages/game/medical-patient.js), and
-[`battle-outcome.js`](../../../packages/game/battle-outcome.js) re-export their
+[`medical-patient.js`](../../../packages/game/medical-patient.js),
+[`battle-outcome.js`](../../../packages/game/battle-outcome.js),
+[`targeted-combat.js`](../../../packages/game/targeted-combat.js), and
+[`tactical-grid.js`](../../../packages/game/tactical-grid.js) re-export their
 domain implementations. The browser interface owns the sleep-need sentence and
-campaign notices. The Spanish shot-range sentence
-remains in [`packages/game/shot-range.js`](../../../packages/game/shot-range.js)
-beside its caller in [`packages/game/ja2-hud.ts`](../../../packages/game/ja2-hud.ts);
+campaign notices. The Spanish shot-range sentence remains in
+[`packages/game/shot-range.js`](../../../packages/game/shot-range.js) beside its
+caller in [`packages/game/ja2-hud.ts`](../../../packages/game/ja2-hud.ts);
 moving it to the player application would invert the dependency direction.
 `GameSession` owns `RandomSource` and `WorldTimeline`.
 Campaign code calls `drawCampaignRandom(session, draft)`, where
@@ -284,17 +282,9 @@ re-export them so callers keep their import paths and behavior.
 
 ## 5. What remains
 
-- Retained simulation modules still carry procedural game rules that need
-  named domain or application owners.
-- The saved-record contract for `suspendedSectorSessions` needs to make the
-  current shape explicit: each record carries a saved
-  [`CampaignSectorEntryRequest`](../../../packages/game/public/campaign-types.ts)
-  as `request` and a sector
-  [`BattleSnapshot`](../../../packages/game/public/compatibility-types.ts) as
-  `snapshot`, plus the `activeSquadId`, `location`, and `suspendedAtSeconds`
-  values used to resume it. The saved visit content must not be a projection
-  of the domain `SectorSession`; restoration must preserve its identity and
-  progress.
+- Retained simulation modules still own procedural game rules. Move each
+  remaining rule behind a named domain owner or application use case; any
+  retained root entry point must delegate to that owner.
 
 ## 6. Current source and accepted target
 
@@ -303,10 +293,11 @@ The accepted architecture and glossary define the target. Current source gives
 time through that timeline, and projects its accepted second into the campaign
 clock fields. The active sector view is named `sectorSession` in both the save
 envelope and campaign orders; `GameSnapshotContent` keeps `battle` in memory.
-The remaining persistence requirement is the explicit saved-record contract
-for `suspendedSectorSessions`: save the entry request and sector snapshot with
-the context needed to resume them, not a serialized projection of
-`SectorSession`.
+The public
+[`CampaignSuspendedSectorSession`](../../../packages/game/public/campaign-types.ts)
+contract describes every saved field for a suspended visit. Restoration
+reconstructs the domain `SectorSession` object for that visit from its saved
+request and sector snapshot, rather than loading the domain object from the save.
 
 ## 7. Verification
 
@@ -331,9 +322,9 @@ accepted architecture.
 | Suspended snapshot compaction | [`compactSaveTerrain`](../../../packages/game/save-terrain.js) and [`expandSaveTerrain`](../../../packages/game/save-terrain.js) include eligible tile arrays in every `suspendedSectorSessions[*].snapshot`, along with active and retained maps. Suspended snapshots use the same palette-compaction trigger, 20 MB expanded-size guard, and 5 MB final-file cap. | Preserve the suspended snapshot's tile data through save and restore. |
 | Hostile-arrival orders | [`dispatchCampaign`](../../../packages/game/campaign.js) resolves a fight through `fightOnArrival` and a withdrawal through `withdrawOnArrival`; each order applies to one squad's `ArrivalDecision`. The dispatcher has no `beginAssault` order. | Keep each arrival resolution tied to the arriving squad's own decision and pause time until every pending decision resolves. |
 | Sector-entry types | [`CampaignSnapshot.sectorEntryRequest`](../../../packages/game/public/campaign-types.ts) uses `CampaignSectorEntryRequest`, the saved campaign projection; the application use case retains its narrower `SectorEntryRequest` input. | Keep the public campaign projection distinct from the application request. |
-| Domain rule ownership | Twenty-four game rules have domain ownership, including [`actor-condition.ts`](../../../packages/game/domain/personnel/actor-condition.ts) for condition and field-capability rules, [`medical-patient.ts`](../../../packages/game/domain/personnel/medical-patient.ts) for care presence and acceptance, and [`completed-victory.ts`](../../../packages/game/domain/combat/completed-victory.ts) for field victory. The retained root modules re-export these rules. Other retained modules still carry simulation rules procedurally. The game uses [`tactical-space.ts`](../../../packages/game/domain/sector-sessions/tactical-space.ts); `packages/campaign-format` keeps an independent map-validation copy. | Move remaining procedural rules behind the domain or a declared public entry. |
+| Domain rule ownership | Twenty-six migrated game-rule groups have domain ownership, as listed in the [slice index](slices/README.md). [`targeted-combat.ts`](../../../packages/game/domain/combat/targeted-combat.ts) owns aimed-shot eligibility, region choices and profiles, aiming penalties, and effects; [`tactical-grid.ts`](../../../packages/game/domain/sector-sessions/tactical-grid.ts) owns tactical cell labels. [`actor-condition.ts`](../../../packages/game/domain/personnel/actor-condition.ts), [`medical-patient.ts`](../../../packages/game/domain/personnel/medical-patient.ts), and [`completed-victory.ts`](../../../packages/game/domain/combat/completed-victory.ts) own condition, care, and field-victory rules. The retained root modules re-export these implementations. The game also uses [`tactical-space.ts`](../../../packages/game/domain/sector-sessions/tactical-space.ts); `packages/campaign-format` keeps an independent map-validation copy. Other retained modules still contain procedural simulation rules. | Give each remaining procedural simulation rule a named domain owner or application use case; retained compatibility entry points must delegate to those owners. |
 | Time and randomness | `GameSession` owns `RandomSource` and `WorldTimeline`. `drawCampaignRandom(session, draft)` draws through `session.randomSource` and writes its advanced seed to `draft.seed`. Campaign, strategic, and tactical clock paths advance `session.timeline`; campaign `hour` and optional `secondOfHour` project its accepted second. | Preserve session ownership and keep campaign clock fields as projections of accepted time. |
-| Suspended-session record shape | The runtime [`CampaignSectorSessionCoordinator`](../../../packages/game/infrastructure/session/campaign-sector-session-coordinator.js) stores a saved request, sector snapshot, `activeSquadId`, `location`, and `suspendedAtSeconds`; the public [`CampaignSnapshot`](../../../packages/game/public/campaign-types.ts) type declares only the `request` and `snapshot` payload. | Define one saved-record contract for the entry request, sector snapshot, and required resumption context; do not serialize a projection of the domain `SectorSession`. |
+| Suspended-session record shape | The public [`CampaignSuspendedSectorSession`](../../../packages/game/public/campaign-types.ts) type declares `request` as a saved [`CampaignSectorEntryRequest`](../../../packages/game/public/campaign-types.ts), `snapshot` as a [`BattleSnapshot`](../../../packages/game/public/compatibility-types.ts), `activeSquadId` as `CampaignSquadId`, `location` as `CampaignSectorId`, and `suspendedAtSeconds` as `CampaignGameSecond`. The coordinator writes those fields; validation checks them against the squad, location, request identity, and campaign clock, while `GameSnapshotMapper` restores the domain `SectorSession` (the domain object for one sector visit) from the request and snapshot. | Preserve the declared five-field contract and visit identity/progress; keep the saved request and sector snapshot separate from the domain `SectorSession` object. |
 | Compatibility table | The [glossary](../accepted/ubiquitous-language.md#compatibility-names) lists decoder-supported legacy save names. `suspendedSectorSessions` is the current domain-aligned name, not a compatibility alias; campaign orders use `sectorSession`, and `sectorState` is not part of the public order contract. `recruitCivic` and `civicStatus` are not accepted; `candidateAdmission` is canonical. Validated legacy `hiringArrivals` entries start service immediately at a legal site or become a `RefundableRecruitmentClaim` if none is legal; the old field is removed. | Keep legacy reads at the save boundary and do not add current domain names to the compatibility table. |
 | Resident position | `ResidentPositionReference` names the saved reference to a character identity and local position. | Keep the saved projection separate from character health and inventory ownership. |
 | Player-facing messages | The domain owns the sleep-need rule; the browser interface owns its sentence and campaign notices. | Keep player-facing copy outside domain and application code. |
