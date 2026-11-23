@@ -1,48 +1,35 @@
-# Slice 52: the care tuning into the domain
+# Slice 52: care defaults belong to the domain
 
-**Branch:** `migration/care-rules`
-**Intent:** Move the tuning of the care rules into the domain, beside the
-wounds they treat.
+Care settings have two sources: defaults shared by the game and values authored
+in a campaign package. The domain owns the defaults. The campaign-content
+lookup selects authored values and applies those defaults, keeping campaign
+content outside the domain.
 
-## Why this slice exists
+## Domain-owned defaults
 
-`packages/game/campaign-care-rules.js` holds two different things.
+[`care-rules.ts`](../../../../packages/game/domain/personnel/care-rules.ts)
+defines the frozen `DEFAULT_CARE_RULES` for medical skill, treatment healing,
+dressing price, care costs, and rest recovery and healing. It also defines
+`DEFAULT_STRATEGIC_BLEEDING_PERCENT` as 25. The domain does not read a campaign
+package.
 
-The tuning: the default care rules (the skill a treatment needs, how much it
-heals, what a dressing costs, what a rest returns) and the percentage of
-strategic bleeding a campaign applies by default.
+## Campaign-authored values
 
-The lookup: `careRules(campaign)`, which reads the care rules a campaign
-authored, falling back to the defaults.
+[`campaign-care-rules.js`](../../../../packages/game/campaign-care-rules.js)
+keeps the `careRules(campaign)` lookup. It selects the authored
+`campaign.contentCampaign.package.careRules`, or returns `DEFAULT_CARE_RULES`
+when a campaign has no care rules. `strategicBleedingPercent(campaign)` reads
+the optional `bleedingDamagePercent` from those rules and uses the domain's
+25-percent default when the campaign omits it.
+[`campaign-rules-schema.js`](../../../../packages/campaign-format/campaign-rules-schema.js)
+continues to define and validate the authored fields.
 
-The domain owns the wounds: `Health` holds the bleeding and the bandaged
-wounds, and `Corpse` owns what happens to a body. The tuning that decides how
-a wound is treated belongs with them. The lookup stays where the campaign
-content is, because the domain may not read campaign content.
+As an illustrative input, an otherwise valid authored care-rules record that
+sets `baseHealing` (base health restored per treatment hour) to 4 but omits
+`bleedingDamagePercent` uses the authored healing value and the domain's
+25-percent default for strategic bleeding.
 
-## What it changes
-
-- `packages/game/domain/personnel/care-rules.ts` holds the default care rules
-  and the default strategic bleeding percentage.
-- `packages/game/campaign-care-rules.js` keeps the lookup and the re-exports
-  from the shared file contract, and reads the defaults from the domain.
-- The files that import it keep importing it from the same path.
-
-The tuning does not change: the same values, and the same fallback for a
-campaign that authors no care rules.
-
-## Tests
-
-- `packages/game/domain/personnel/care-rules.test.ts` covers the tuning: the
-  default care rules keep their values and stay frozen, and the default
-  strategic bleeding percentage is the one it was.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.56` to `0.2.57`.
+The tests in
+[`care-rules.test.ts`](../../../../packages/game/domain/personnel/care-rules.test.ts)
+cover the default values, their frozen state, and the default bleeding
+percentage.

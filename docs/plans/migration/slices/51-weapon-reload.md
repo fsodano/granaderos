@@ -1,45 +1,35 @@
-# Slice 51: the reload rule into the domain
+# Slice 51: weapon reload rules belong to the domain
 
-**Branch:** `migration/weapon-reload`
-**Intent:** Move the rule that costs a reload and validates its progress into
-the domain, beside the reload work it plans.
+A firearm reload needs one owner for the action-point cost of each round, the
+validity of saved partial progress, and the plan for applying work to the
+weapon. [`ReloadWork`](../../../../packages/game/domain/combat/reload-work.ts)
+calculates completed rounds and the next partial progress; `ReloadRules` in the
+same module supplies the reload multipliers. Keeping the surrounding
+calculations beside them prevents callers from using different costs or
+accepting progress that reload work cannot apply.
 
-## Why this slice exists
+## Domain ownership
 
-`packages/game/weapon-reload.js` holds three rules: what a reload round costs
-for a given combatant, weapon and assistance, whether the stored progress of a
-reload is a valid one, and how the reload is planned across the hands that
-carry the guns.
+[`weapon-reload.ts`](../../../../packages/game/domain/combat/weapon-reload.ts)
+owns `reloadRoundCost`, `validateReloadProgress`, and `planReload`.
+`reloadRoundCost` combines the weapon's total reload work and capacity with the
+combat-balance multiplier, the combatant's stance, assistance, and gunsmith
+training. `validateReloadProgress` accepts no stored value or a finite fraction
+of one round strictly between zero and one, and rejects progress when the weapon
+has no remaining capacity or is dropped. `planReload` passes loaded rounds, reserve
+ammunition, capacity, saved progress, and round cost to `ReloadWork`. It limits
+work by available action points during combat and allows unbounded work during
+exploration; `ReloadWork` calculates completed rounds and remaining progress.
 
-The domain already owns the reload: `ReloadWork` in
-`packages/game/domain/combat/reload-work.ts` holds the reload progress and the
-rules that bound it, and `ReloadRules` holds the multipliers. The cost rule
-and the progress check belong beside them.
+Test data in
+[`weapon-reload.test.ts`](../../../../packages/game/domain/combat/weapon-reload.test.ts)
+uses `reloadAP: 10` (total reload work) and `capacity: 5` (round capacity). An
+unassisted standing round costs 2 action points; prone stance makes it cost 3.
+Without one shared cost rule, combat action-point budgets can disagree with the
+progress assigned to a reload.
 
-## What it changes
+[`weapon-reload.js`](../../../../packages/game/weapon-reload.js) re-exports the
+domain functions so existing callers keep their import path.
 
-- `packages/game/domain/combat/weapon-reload.ts` holds `reloadRoundCost`,
-  `validateReloadProgress` and `planReload`, with the comments that explain them. It imports the
-  reload rules and the combat balance from the domain, so the domain no longer
-  reaches into a retained module for them.
-- `packages/game/weapon-reload.js` becomes a thin re-export of it, and the
-  files that import it keep importing it from the same path.
-
-The costs and the validation do not change.
-
-## Tests
-
-- `packages/game/domain/combat/weapon-reload.test.ts` covers the rules: the
-  cost of a round for a standing and for a prone combatant, the effect of
-  assistance and of the gunsmith training, and the refusal of a progress value
-  that is not a valid one.
-
-## Verification
-
-- `npm test` passes, including the new tests.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.55` to `0.2.56`.
+That test file covers standing and prone costs, assistance and gunsmith
+modifiers, and valid or invalid stored progress.

@@ -232,7 +232,7 @@ serializing that domain object.
 eligible tile arrays in every suspended `snapshot` along with active and
 retained maps.
 
-Twenty-six migrated game-rule groups have domain ownership in
+Twenty-eight migrated game-rule groups have domain ownership in
 `packages/game/domain`, as listed in the [slice index](slices/README.md).
 [`targeted-combat.ts`](../../../packages/game/domain/combat/targeted-combat.ts)
 owns aimed-shot eligibility, region choices and profiles, aiming penalties, and
@@ -248,6 +248,15 @@ campaign notices. The Spanish shot-range sentence remains in
 [`packages/game/shot-range.js`](../../../packages/game/shot-range.js) beside its
 caller in [`packages/game/ja2-hud.ts`](../../../packages/game/ja2-hud.ts);
 moving it to the player application would invert the dependency direction.
+[`weapon-reload.ts`](../../../packages/game/domain/combat/weapon-reload.ts)
+owns reload-round cost, stored-progress validation, and planning; the retained
+[`weapon-reload.js`](../../../packages/game/weapon-reload.js) re-exports those
+rules. [`care-rules.ts`](../../../packages/game/domain/personnel/care-rules.ts)
+owns default care and rest tuning and the default strategic bleeding percentage.
+[`campaign-care-rules.js`](../../../packages/game/campaign-care-rules.js)
+selects campaign-authored care rules and uses those domain defaults, while
+[`campaign-rules-schema.js`](../../../packages/campaign-format/campaign-rules-schema.js)
+defines and validates the authored fields.
 `GameSession` owns `RandomSource` and `WorldTimeline`.
 Campaign code calls `drawCampaignRandom(session, draft)`, where
 `session` is the `GameSession` and `draft` is the campaign snapshot. The helper
@@ -282,9 +291,16 @@ re-export them so callers keep their import paths and behavior.
 
 ## 5. What remains
 
-- Retained simulation modules still own procedural game rules. Move each
-  remaining rule behind a named domain owner or application use case; any
-  retained root entry point must delegate to that owner.
+- Each procedural simulation rule still implemented in a retained
+  [`packages/game`](../../../packages/game/) module needs one named domain
+  owner or application use case.
+  Retained compatibility entry points may preserve existing imports, but must
+  delegate the rule rather than maintain a duplicate implementation.
+- Campaign-authored care lookup and campaign-file validation remain outside the
+  domain: [`campaign-care-rules.js`](../../../packages/game/campaign-care-rules.js)
+  selects authored values and falls back to domain defaults, while
+  [`packages/campaign-format`](../../../packages/campaign-format/) owns the
+  authored-field schema and validation.
 
 ## 6. Current source and accepted target
 
@@ -322,7 +338,7 @@ accepted architecture.
 | Suspended snapshot compaction | [`compactSaveTerrain`](../../../packages/game/save-terrain.js) and [`expandSaveTerrain`](../../../packages/game/save-terrain.js) include eligible tile arrays in every `suspendedSectorSessions[*].snapshot`, along with active and retained maps. Suspended snapshots use the same palette-compaction trigger, 20 MB expanded-size guard, and 5 MB final-file cap. | Preserve the suspended snapshot's tile data through save and restore. |
 | Hostile-arrival orders | [`dispatchCampaign`](../../../packages/game/campaign.js) resolves a fight through `fightOnArrival` and a withdrawal through `withdrawOnArrival`; each order applies to one squad's `ArrivalDecision`. The dispatcher has no `beginAssault` order. | Keep each arrival resolution tied to the arriving squad's own decision and pause time until every pending decision resolves. |
 | Sector-entry types | [`CampaignSnapshot.sectorEntryRequest`](../../../packages/game/public/campaign-types.ts) uses `CampaignSectorEntryRequest`, the saved campaign projection; the application use case retains its narrower `SectorEntryRequest` input. | Keep the public campaign projection distinct from the application request. |
-| Domain rule ownership | Twenty-six migrated game-rule groups have domain ownership, as listed in the [slice index](slices/README.md). [`targeted-combat.ts`](../../../packages/game/domain/combat/targeted-combat.ts) owns aimed-shot eligibility, region choices and profiles, aiming penalties, and effects; [`tactical-grid.ts`](../../../packages/game/domain/sector-sessions/tactical-grid.ts) owns tactical cell labels. [`actor-condition.ts`](../../../packages/game/domain/personnel/actor-condition.ts), [`medical-patient.ts`](../../../packages/game/domain/personnel/medical-patient.ts), and [`completed-victory.ts`](../../../packages/game/domain/combat/completed-victory.ts) own condition, care, and field-victory rules. The retained root modules re-export these implementations. The game also uses [`tactical-space.ts`](../../../packages/game/domain/sector-sessions/tactical-space.ts); `packages/campaign-format` keeps an independent map-validation copy. Other retained modules still contain procedural simulation rules. | Give each remaining procedural simulation rule a named domain owner or application use case; retained compatibility entry points must delegate to those owners. |
+| Domain rule ownership | Twenty-eight migrated game-rule groups have domain ownership, as listed in the [slice index](slices/README.md). [`targeted-combat.ts`](../../../packages/game/domain/combat/targeted-combat.ts) owns aimed-shot eligibility, region choices and profiles, aiming penalties, and effects; [`tactical-grid.ts`](../../../packages/game/domain/sector-sessions/tactical-grid.ts) owns tactical cell labels. [`actor-condition.ts`](../../../packages/game/domain/personnel/actor-condition.ts), [`medical-patient.ts`](../../../packages/game/domain/personnel/medical-patient.ts), and [`completed-victory.ts`](../../../packages/game/domain/combat/completed-victory.ts) own condition, care-eligibility, and field-victory rules. [`weapon-reload.ts`](../../../packages/game/domain/combat/weapon-reload.ts) owns reload-round cost, stored-progress validation, and planning; [`care-rules.ts`](../../../packages/game/domain/personnel/care-rules.ts) owns default care/rest tuning and the default strategic bleeding percentage. The retained root modules re-export domain implementations. The game also uses [`tactical-space.ts`](../../../packages/game/domain/sector-sessions/tactical-space.ts); `packages/campaign-format` keeps an independent map-validation copy. Other retained modules still contain procedural simulation rules. | Give every other procedural simulation rule in retained game modules one named domain owner or application use case. Retained compatibility entry points must delegate instead of maintaining duplicate rules. Keep campaign-authored care lookup in [`campaign-care-rules.js`](../../../packages/game/campaign-care-rules.js) and authored-field validation in [`campaign-rules-schema.js`](../../../packages/campaign-format/campaign-rules-schema.js), outside the domain. |
 | Time and randomness | `GameSession` owns `RandomSource` and `WorldTimeline`. `drawCampaignRandom(session, draft)` draws through `session.randomSource` and writes its advanced seed to `draft.seed`. Campaign, strategic, and tactical clock paths advance `session.timeline`; campaign `hour` and optional `secondOfHour` project its accepted second. | Preserve session ownership and keep campaign clock fields as projections of accepted time. |
 | Suspended-session record shape | The public [`CampaignSuspendedSectorSession`](../../../packages/game/public/campaign-types.ts) type declares `request` as a saved [`CampaignSectorEntryRequest`](../../../packages/game/public/campaign-types.ts), `snapshot` as a [`BattleSnapshot`](../../../packages/game/public/compatibility-types.ts), `activeSquadId` as `CampaignSquadId`, `location` as `CampaignSectorId`, and `suspendedAtSeconds` as `CampaignGameSecond`. The coordinator writes those fields; validation checks them against the squad, location, request identity, and campaign clock, while `GameSnapshotMapper` restores the domain `SectorSession` (the domain object for one sector visit) from the request and snapshot. | Preserve the declared five-field contract and visit identity/progress; keep the saved request and sector snapshot separate from the domain `SectorSession` object. |
 | Compatibility table | The [glossary](../accepted/ubiquitous-language.md#compatibility-names) lists decoder-supported legacy save names. `suspendedSectorSessions` is the current domain-aligned name, not a compatibility alias; campaign orders use `sectorSession`, and `sectorState` is not part of the public order contract. `recruitCivic` and `civicStatus` are not accepted; `candidateAdmission` is canonical. Validated legacy `hiringArrivals` entries start service immediately at a legal site or become a `RefundableRecruitmentClaim` if none is legal; the old field is removed. | Keep legacy reads at the save boundary and do not add current domain names to the compatibility table. |
