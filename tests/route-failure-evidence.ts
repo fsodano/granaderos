@@ -117,7 +117,7 @@ export function recordRouteBattleFailure({
         : syncBattleTime(structuredClone(campaign), structuredClone(result.battle));
       if (result.pair) {
         assert.deepEqual(pair.battle, result.battle);
-        assert.equal(pair.campaign.pendingBattle?.id, request.id);
+        assert.equal(pair.campaign.sectorEntryRequest?.id, request.id);
         assert.equal(pair.battle.syncedSeconds, pair.battle.elapsedSeconds);
       }
       assert.equal(pair.error, null);

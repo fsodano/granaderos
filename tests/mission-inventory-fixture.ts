@@ -27,12 +27,12 @@ export function completedConferenceStock() {
   ];
   for (const action of visits) {
     s = order(s, action);
-    let b = enterSector(s.pendingBattle);
+    let b = enterSector(s.sectorEntryRequest);
     b = actBattle(b, { type: 'drop', unitId: '4', item: 'medkits', count: 1 });
     assert.equal(b.lastError, null);
     s = order(s, {
       type: 'leaveSector',
-      battleId: present(s.pendingBattle).id,
+      battleId: present(s.sectorEntryRequest).id,
       sectorState: b,
       survivors: b.units.filter((u) => u.side === 'player'),
     });

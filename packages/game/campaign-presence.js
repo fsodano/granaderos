@@ -146,7 +146,7 @@ function currentResident(state, npc, sector) {
   if (npc.detention !== undefined) {
     validateDetainedPrisoner(npc, state);
     const d = npc.detention,
-      request = state.pendingBattle;
+      request = state.sectorEntryRequest;
     if (d.sector !== sector) {
       return false;
     }
@@ -193,8 +193,8 @@ export function synchronizeCampaignPresence(state) {
   }
   let runtime = { ...state.contentPresence, content: state.contentCampaign.package, history: [] };
   const loaded =
-    state.pendingBattle && locationId(state.pendingBattle.sector, state)
-      ? contentCellIds([state.pendingBattle.sector], state)[0]
+    state.sectorEntryRequest && locationId(state.sectorEntryRequest.sector, state)
+      ? contentCellIds([state.sectorEntryRequest.sector], state)[0]
       : null;
   // Off-screen bleeding can confirm a death inside a batched interval.
   // Process those events in order before daily movement or successor deadlines.
@@ -238,8 +238,8 @@ export function synchronizeCampaignPresence(state) {
   for (const scene of Object.values(state.sectorStates)) {
     reconcileSectorResidents(state, scene);
   }
-  if (state.pendingBattle && !state.pendingBattle.sceneId) {
-    reconcileSectorResidents(state, state.pendingBattle);
+  if (state.sectorEntryRequest && !state.sectorEntryRequest.sceneId) {
+    reconcileSectorResidents(state, state.sectorEntryRequest);
   }
   for (const session of state.suspendedSectorSessions ?? []) {
     reconcileSectorResidents(state, session.snapshot);
@@ -282,7 +282,7 @@ function successionActors(state, snapshot) {
       u.side === 'player' &&
       !u.militia &&
       sources.has(Number(u.id)) &&
-      state.pendingBattle?.squad.some((o) => o.id === Number(u.id)),
+      state.sectorEntryRequest?.squad.some((o) => o.id === Number(u.id)),
   );
 }
 export function acknowledgeSuccessionDeaths(state, snapshot) {
@@ -362,8 +362,9 @@ function validateSuccessions(state) {
     if (event.at <= r.minute) {
       need(
         event.destination !== undefined &&
-          state.pendingBattle &&
-          locationId(event.destination, state) === locationId(state.pendingBattle.sector, state),
+          state.sectorEntryRequest &&
+          locationId(event.destination, state) ===
+            locationId(state.sectorEntryRequest.sector, state),
       );
     } else {
       need(event.destination === undefined);
@@ -471,7 +472,7 @@ export function validateCampaignPresence(state) {
   for (const scene of Object.values(state.sectorStates)) {
     validatePresenceScene(state, scene);
   }
-  if (state.pendingBattle) {
-    validatePresenceScene(state, state.pendingBattle);
+  if (state.sectorEntryRequest) {
+    validatePresenceScene(state, state.sectorEntryRequest);
   }
 }

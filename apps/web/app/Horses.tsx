@@ -24,7 +24,7 @@ export default function Horses({ state: s, dispatch }: Props) {
   const place = (id: string) => campaignPlace(id, s)?.name ?? id;
   const available =
     !s.defeated &&
-    !s.pendingBattle &&
+    !s.sectorEntryRequest &&
     !s.pendingEncounter &&
     s.sectors[s.location]?.owner === 'patriot';
   const order = (payload: CampaignHorseOrder) => dispatch({ type: 'horseAction', order: payload });

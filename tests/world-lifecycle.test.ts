@@ -195,7 +195,7 @@ void test('older corpses begin their migration lifetime at the saved game time',
 void test('an active casualty can disappear, save, restore, and settle without losing equipment or death identity', () => {
   let campaign = dispatchCampaign(initialCampaign(), { type: 'visitSector' });
   assert.equal(campaign.lastError, null);
-  let battle = enterSector(campaign.pendingBattle);
+  let battle = enterSector(campaign.sectorEntryRequest);
   const casualty = present(battle.units.find((actor) => actor.side === 'player'));
   const casualtyId = present(casualty).id;
   Object.assign(casualty, { hp: 0, bleeding: 0, bandaged: 0 });
@@ -222,7 +222,7 @@ void test('an active casualty can disappear, save, restore, and settle without l
   const ground = structuredClone(battle.groundItems);
   const returned = dispatchCampaign(campaign, {
     type: 'leaveSector',
-    battleId: present(campaign.pendingBattle).id,
+    battleId: present(campaign.sectorEntryRequest).id,
     sectorState: battle,
     survivors: [
       ...battle.units,
@@ -232,7 +232,7 @@ void test('an active casualty can disappear, save, restore, and settle without l
     ].filter((actor) => actor.side === 'player'),
   });
   assert.equal(returned.lastError, null);
-  assert.equal(returned.pendingBattle, null);
+  assert.equal(returned.sectorEntryRequest, null);
   assert.equal(present(returned.operativeState[Number(casualtyId)]).alive, false);
   assert.equal(returned.squad.includes(Number(casualtyId)), false);
   assert.deepEqual(present(returned.sectorStates['retiro']).groundItems, ground);

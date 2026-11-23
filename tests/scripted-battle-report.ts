@@ -66,7 +66,7 @@ export function scriptedBattleReport(
     })[];
   } = {},
 ): Extract<CampaignAction, { type: 'finishMission' | 'battleResult' }> {
-  const request = present(campaign.pendingBattle);
+  const request = present(campaign.sectorEntryRequest);
   let battle = enterSector(
     { ...request, hour: campaign.hour, secondOfHour: campaign.secondOfHour ?? 0 },
     campaign.sectorStates[present(request).sector],

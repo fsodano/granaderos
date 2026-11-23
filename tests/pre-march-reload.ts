@@ -45,7 +45,7 @@ export function finishReloadsBeforeMarch(
   if (bounded) {
     assert.ok(Number.isSafeInteger(deadlineSeconds) && deadlineSeconds >= clock(start));
     assert.equal(start.pendingEncounter, null);
-    assert.equal(start.pendingBattle, null);
+    assert.equal(start.sectorEntryRequest, null);
   }
   const roster = rosterFor(start),
     ids = start.squad.filter((id) => {
@@ -66,7 +66,7 @@ export function finishReloadsBeforeMarch(
   report({ event: 'reloadDeployment', ammunitionCost: deploymentCost(start) });
   let campaign = dispatchCampaign(start, { type: 'visitSector' });
   assert.equal(campaign.lastError, null, campaign.lastError ?? undefined);
-  let battle = enterSector(campaign.pendingBattle, campaign.sectorStates[campaign.location]);
+  let battle = enterSector(campaign.sectorEntryRequest, campaign.sectorStates[campaign.location]);
   const before = battle.elapsedSeconds,
     rounds = battle.units
       .filter((u) => u.side === 'player')
@@ -179,7 +179,7 @@ export function finishReloadsBeforeMarch(
     battle = synced.battle;
     campaign = dispatchCampaign(campaign, {
       type: 'leaveSector',
-      battleId: present(campaign.pendingBattle).id,
+      battleId: present(campaign.sectorEntryRequest).id,
       sectorState: battle,
       survivors: battle.units.filter((u) => u.side === 'player'),
     });
@@ -190,7 +190,7 @@ export function finishReloadsBeforeMarch(
         null,
         'An actual arrival stops bounded reload preparation before another visit.',
       );
-      assert.equal(campaign.pendingBattle, null);
+      assert.equal(campaign.sectorEntryRequest, null);
       assert.ok(clock(campaign) <= deadlineSeconds);
       report({
         event: 'boundedPreMarchReload',

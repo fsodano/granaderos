@@ -182,8 +182,8 @@ export function validateCampaignWeather(state) {
   for (const scene of [
     ...Object.values(state.sectorStates ?? {}),
     ...Object.values(state.sceneStates ?? {}),
-    state.pendingBattle,
-    state.pendingBattle?.resumeSnapshot,
+    state.sectorEntryRequest,
+    state.sectorEntryRequest?.resumeSnapshot,
   ].filter(Boolean)) {
     validateRegionalWeather(scene, state);
   }

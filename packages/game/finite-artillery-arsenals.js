@@ -228,7 +228,7 @@ export function validateFiniteArtilleryArsenals(state) {
     ...Object.values(state.artilleryDepots ?? {}).flat(),
     ...(state.artilleryTransfers ?? []).map((transfer) => transfer.gun),
     ...Object.values(state.artilleryMerchants ?? {}).flatMap((merchant) => merchant.guns ?? []),
-    ...(state.pendingBattle?.artillery ?? []).filter((gun) => !gun.stationed),
+    ...(state.sectorEntryRequest?.artillery ?? []).filter((gun) => !gun.stationed),
   );
   for (const [sector, receipt] of Object.entries(state.artilleryArsenalRecoveries)) {
     const source = sources[sector];
@@ -287,7 +287,7 @@ export function validateFiniteArtilleryArsenals(state) {
       }
     }
   }
-  const request = state.pendingBattle;
+  const request = state.sectorEntryRequest;
   if (request) {
     validateSourceSnapshot(request, state);
   }

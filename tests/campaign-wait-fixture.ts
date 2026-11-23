@@ -14,7 +14,7 @@ export function advanceCampaignHours(state: CampaignSnapshot, hours: number) {
   let s = state;
   for (let attempt = 0; s.hour < until && attempt < 240; attempt++) {
     assert.ok(
-      !s.pendingBattle && !s.pendingEncounter,
+      !s.sectorEntryRequest && !s.pendingEncounter,
       'Resolve the actual encounter before strategic waiting.',
     );
     s = order(s, { type: 'wait', hours: Math.min(24, until - s.hour) });

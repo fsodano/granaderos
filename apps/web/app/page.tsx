@@ -456,10 +456,10 @@ export default function Home() {
       return;
     }
     if (
-      next.pendingBattle &&
+      next.sectorEntryRequest &&
       (!current.battle ||
-        next.pendingBattle.id !== current.campaign?.pendingBattle?.id ||
-        next.pendingBattle.resumeSnapshot)
+        next.sectorEntryRequest.id !== current.campaign?.sectorEntryRequest?.id ||
+        next.sectorEntryRequest.resumeSnapshot)
     ) {
       openCampaignBattle(next);
       return;
@@ -557,8 +557,8 @@ export default function Home() {
     setNotice('');
   }
   function finish(outcome?: string) {
-    if (campaign && battle && campaign.pendingBattle) {
-      const request = campaign.pendingBattle;
+    if (campaign && battle && campaign.sectorEntryRequest) {
+      const request = campaign.sectorEntryRequest;
       const next = dispatchCampaign(campaign, {
         type:
           outcome === 'mission'
@@ -1180,7 +1180,7 @@ export default function Home() {
                     audio.current?.play(before, after);
                   } catch {}
                 }}
-                peacefulVisit={Boolean(campaign?.pendingBattle?.exploration)}
+                peacefulVisit={Boolean(campaign?.sectorEntryRequest?.exploration)}
                 mission={
                   campaign ? missionStatus(campaign, battle.sceneId ?? battle.sectorId) : null
                 }
@@ -1236,7 +1236,7 @@ export default function Home() {
                 setScreen('desk');
               }}
               onBattle={() => {
-                if (!battle && campaign.pendingBattle) {
+                if (!battle && campaign.sectorEntryRequest) {
                   openCampaignBattle(campaign);
                 } else {
                   setScreen('battle');

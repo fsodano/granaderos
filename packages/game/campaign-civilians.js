@@ -101,7 +101,7 @@ function residentScenes(campaign) {
   return [
     ...Object.values(campaign.sectorStates ?? {}),
     ...Object.values(campaign.sceneStates ?? {}),
-    campaign.pendingBattle,
+    campaign.sectorEntryRequest,
     ...(campaign.suspendedSectorSessions ?? []).flatMap((session) => [
       session.request,
       session.snapshot,
@@ -367,7 +367,7 @@ function compareHistory(previous, n) {
   need(civilianMaxHp(n) === civilianMaxHp(previous), 'La salud máxima del habitante cambió.');
 }
 function civilianReport(s, snapshot) {
-  const request = s.pendingBattle;
+  const request = s.sectorEntryRequest;
   need(
     request &&
       snapshot.sectorId === request.sector &&
@@ -445,7 +445,7 @@ export function hasPendingCivilians(s, snapshot) {
 }
 export function acknowledgeCivilians(s, snapshot) {
   const plans = civilianReport(s, snapshot),
-    request = s.pendingBattle;
+    request = s.sectorEntryRequest;
   s.civilianState ??= { version: 1, people: {} };
   acknowledgeDetentionHealth(s, snapshot);
   for (const { n, previous, carried } of plans) {
@@ -543,7 +543,7 @@ function placedResidents(s) {
       s.recruited.includes(id) ||
       isContractOperative(s, { id }) ||
       s.operativeState[id]?.captured ||
-      s.pendingBattle?.missionAllies?.some((u) => Number(u.id) === id)
+      s.sectorEntryRequest?.missionAllies?.some((u) => Number(u.id) === id)
     ) {
       return [];
     }
@@ -581,7 +581,7 @@ export function migrateResidentWounds(s) {
 }
 function unloadedWounds(s) {
   const excluded = new Set([
-    ...(s.pendingBattle?.npcs ?? []).map(civilianKey),
+    ...(s.sectorEntryRequest?.npcs ?? []).map(civilianKey),
     ...s.recruited.map((id) => `person-${id}`),
   ]);
   return Object.entries(s.civilianState?.people ?? {}).filter(
@@ -617,7 +617,7 @@ export function advanceUnloadedCivilians(s, seconds) {
     if (
       residentScenes(s).some(
         (scene) =>
-          scene !== s.pendingBattle &&
+          scene !== s.sectorEntryRequest &&
           (scene.sectorId ?? scene.sector) === record.sector &&
           (scene.sceneId ?? null) === record.sceneId &&
           scene.npcs?.some((resident) => resident.id === record.npcId),
@@ -694,7 +694,7 @@ export function resumeCivilianServiceReturns(s) {
       id === undefined ||
       isContractOperative(s, { id }) ||
       s.recruited.includes(id) ||
-      s.pendingBattle?.missionAllies?.some((u) => Number(u.id) === id) ||
+      s.sectorEntryRequest?.missionAllies?.some((u) => Number(u.id) === id) ||
       !serviceRecord?.alive ||
       serviceRecord.hp <= 0 ||
       serviceRecord.captured
@@ -729,10 +729,10 @@ export function transferCivilian(s, n) {
 }
 export function validateCivilianScene(s, scene, { active = false } = {}) {
   if (active) {
-    const residents = reportedResidents(scene, s.pendingBattle.npcs ?? []);
+    const residents = reportedResidents(scene, s.sectorEntryRequest.npcs ?? []);
     need(
-      residents.length === (s.pendingBattle.npcs ?? []).length &&
-        (s.pendingBattle.npcs ?? []).every((n) => residents.some((v) => v.id === n.id)),
+      residents.length === (s.sectorEntryRequest.npcs ?? []).length &&
+        (s.sectorEntryRequest.npcs ?? []).every((n) => residents.some((v) => v.id === n.id)),
       'Faltan habitantes en el sector guardado.',
     );
   }
@@ -850,7 +850,7 @@ export function validateCampaignCivilians(s) {
   for (const scene of [
     ...Object.values(s.sectorStates),
     ...Object.values(s.sceneStates),
-    ...(s.pendingBattle ? [s.pendingBattle] : []),
+    ...(s.sectorEntryRequest ? [s.sectorEntryRequest] : []),
   ]) {
     validateCivilianScene(s, scene);
   }
@@ -865,7 +865,7 @@ export function migrateCampaignCivilians(s) {
   const scenes = [
     ...Object.values(s.sectorStates),
     ...Object.values(s.sceneStates),
-    ...(s.pendingBattle ? [s.pendingBattle] : []),
+    ...(s.sectorEntryRequest ? [s.sectorEntryRequest] : []),
   ];
   for (const scene of scenes) {
     scene.npcs = (scene.npcs ?? []).filter((n) => !s.recruited.includes(operativeId(n, s)));
@@ -926,7 +926,7 @@ export function migrateCampaignCivilianSupplies(s) {
   for (const scene of [
     ...Object.values(s.sectorStates),
     ...Object.values(s.sceneStates),
-    ...(s.pendingBattle ? [s.pendingBattle] : []),
+    ...(s.sectorEntryRequest ? [s.sectorEntryRequest] : []),
   ]) {
     for (const n of scene.npcs ?? []) {
       if (n.detention !== undefined) {

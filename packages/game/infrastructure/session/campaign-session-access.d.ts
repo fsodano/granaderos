@@ -11,7 +11,7 @@ export type SuspendedSectorSessionRecord = {
 };
 
 export type CampaignSessionAccessSnapshot = {
-  pendingBattle?: SectorEntryRecord | null;
+  sectorEntryRequest?: SectorEntryRecord | null;
   suspendedSectorSessions?: readonly SuspendedSectorSessionRecord[];
 };
 

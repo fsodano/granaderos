@@ -310,7 +310,7 @@ export function finishPostCampaign({
   ] as const) {
     s = fightOnArrival(order(s, { type: 'attack', sector }));
     const request = {
-        ...present(s.pendingBattle),
+        ...present(s.sectorEntryRequest),
         hour: s.hour,
         secondOfHour: s.secondOfHour ?? 0,
       },
@@ -663,7 +663,7 @@ export function finishPostCampaign({
   assert.ok(Object.keys(s.operativeState).every((id) => Number(id) >= 2000));
   assert.equal(s.flags['sanLorenzo'], false);
   assert.equal(s.flags['armyFunded'], false);
-  assert.equal(s.pendingBattle, null);
+  assert.equal(s.sectorEntryRequest, null);
   notes.push({ stage: 'ending', ...summary(s) });
   onCheckpoint?.('ending', s, notes);
   return { campaign: s, notes };

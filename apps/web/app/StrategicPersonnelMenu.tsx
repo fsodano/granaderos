@@ -116,7 +116,7 @@ export default function StrategicPersonnelMenu({
   if (!op || !record) {
     return null;
   }
-  const blocked = Boolean(s.pendingBattle || s.pendingEncounter || s.defeated),
+  const blocked = Boolean(s.sectorEntryRequest || s.pendingEncounter || s.defeated),
     contract = contractStatus(s, id),
     departureReason = guaranteeDepartureReason(s, contract, op);
   const contractDays = Math.ceil((contract?.remaining ?? 0) / 24);

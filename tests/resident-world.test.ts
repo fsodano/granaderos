@@ -392,7 +392,7 @@ void test('one long loaded interval and split inactive intervals collect the sam
 void test('a loaded collection receipt is acknowledged once by the civilian report', () => {
   const { campaign, scene } = residentScene();
   present(scene.npcs[0]).ai = { cycle: 0, homeId: null, activity: 'roaming', wait: 10000 };
-  campaign.pendingBattle = {
+  campaign.sectorEntryRequest = {
     id: present(scene.battleId),
     sector: scene.sectorId,
     npcs: structuredClone(scene.npcs),

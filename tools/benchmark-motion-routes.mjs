@@ -17,7 +17,7 @@ for (const id of [128, 142, 123, 115, 131, 110]) {
   campaign = dispatchCampaign(campaign, { type: 'recruitCombatant', id, term: 'day' });
 }
 campaign = dispatchCampaign(campaign, { type: 'attack', sector: 'buenos_aires' });
-let state = { ...enterSector(campaign.pendingBattle), night: true };
+let state = { ...enterSector(campaign.sectorEntryRequest), night: true };
 const ambient = [];
 for (let i = 0; i < 10; i++) {
   const next = actBattle(state, { type: 'ambient' });

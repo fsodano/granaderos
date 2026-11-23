@@ -20,7 +20,7 @@ export function collectSectorCash(state, snapshot) {
   if (!snapshot) {
     return;
   }
-  const sectorId = state.pendingBattle.sector,
+  const sectorId = state.sectorEntryRequest.sector,
     key = `cash:${sectorId}`,
     amount = sectorCash(sectorId, state);
   state.foundMoney ??= [];

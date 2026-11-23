@@ -955,10 +955,10 @@ export function playerKnownCampaign(
     pendingEncounter: state.pendingEncounter
       ? pick(state.pendingEncounter, ['groupId', 'sector', 'arrivedAt'])
       : null,
-    pendingBattle: state.pendingBattle
+    pendingBattle: state.sectorEntryRequest
       ? {
-          ...pick(state.pendingBattle, ['sector', 'sceneId', 'name', 'exploration']),
-          resumeAvailable: Boolean(state.pendingBattle.resumeSnapshot),
+          ...pick(state.sectorEntryRequest, ['sector', 'sceneId', 'name', 'exploration']),
+          resumeAvailable: Boolean(state.sectorEntryRequest.resumeSnapshot),
         }
       : null,
   };

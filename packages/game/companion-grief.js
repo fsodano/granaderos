@@ -205,7 +205,7 @@ export function validateCampaignCompanionGrief(state, roster) {
       ),
     );
   }
-  const request = state.pendingBattle;
+  const request = state.sectorEntryRequest;
   for (const issued of request?.squad ?? []) {
     const operative = roster.find((op) => op.id === Number(issued.id));
     need(operative);
@@ -251,7 +251,7 @@ export function validateCompanionGriefContext(
   state,
   snapshot,
   roster,
-  request = state.pendingBattle,
+  request = state.sectorEntryRequest,
 ) {
   need(request && Array.isArray(snapshot.units));
   const participants = [

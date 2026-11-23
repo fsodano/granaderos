@@ -26,7 +26,7 @@ export function previewStrategicRoute(s, squadId, destination, mode = 'march', w
   if (s.defeated) {
     return reject('La campaña ha terminado.');
   }
-  if (s.pendingBattle) {
+  if (s.sectorEntryRequest) {
     return reject('Resolvé el sector táctico antes de marchar.');
   }
   if (s.pendingEncounter) {

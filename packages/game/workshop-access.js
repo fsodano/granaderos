@@ -6,7 +6,7 @@ export function workshopAccessReason(s, op, supplied) {
   if (s.defeated) {
     return 'La campaña ha terminado.';
   }
-  if (s.pendingBattle) {
+  if (s.sectorEntryRequest) {
     return 'Resolvé la escena táctica antes de usar el taller.';
   }
   if (

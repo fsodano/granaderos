@@ -18,7 +18,7 @@ import { DEFAULT_CORPSE_LIFETIME_SECONDS } from '../packages/game/domain/world/c
 function suspendedVisit() {
   const campaign = dispatchCampaign(initialCampaign(), { type: 'visitSector' });
   assert.equal(campaign.lastError, null);
-  const request = structuredClone(present(campaign.pendingBattle));
+  const request = structuredClone(present(campaign.sectorEntryRequest));
   const snapshot = enterSector(request);
   snapshot.npcs = [];
   const wounded = snapshot.units.find((actor) => actor.side === 'player');
@@ -32,7 +32,7 @@ function suspendedVisit() {
     location: campaign.location,
     suspendedAtSeconds: 0,
   };
-  campaign.pendingBattle = null;
+  campaign.sectorEntryRequest = null;
   campaign.suspendedSectorSessions = [session];
   return { campaign, session, woundedId: present(wounded).id };
 }

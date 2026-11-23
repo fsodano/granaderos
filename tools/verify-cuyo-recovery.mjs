@@ -20,7 +20,7 @@ const events = [],
 assert.equal(c.hour, 215);
 assert.equal(c.phase, 3);
 assert.equal(c.missions.yatasto.completed, true);
-assert.equal(c.pendingBattle, null);
+assert.equal(c.sectorEntryRequest, null);
 const order = (action) => {
   const n = dispatchCampaign(c, action);
   assert.equal(n.lastError, null, JSON.stringify(action) + ': ' + n.lastError);

@@ -28,7 +28,7 @@ const request = (
 const campaign = (active: RegistrationRequest, suspended: RegistrationRequest) => ({
   gameSessionId: 'registrations',
   gameRevision: 0,
-  pendingBattle: active,
+  sectorEntryRequest: active,
   suspendedSectorSessions: [{ request: suspended }],
 });
 
@@ -75,7 +75,7 @@ void test('a request cannot issue one persistent character twice in different pa
       restoreGameSession({
         gameSessionId: 'duplicate-issue',
         gameRevision: 0,
-        pendingBattle: active,
+        sectorEntryRequest: active,
       }),
     /invalid-domain-value/,
   );

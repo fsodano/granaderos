@@ -13,7 +13,7 @@ function maps(value) {
     value.sectorSession !== undefined ? value.sectorSession : value.battle,
     ...Object.values(c?.sectorStates ?? {}),
     ...Object.values(c?.sceneStates ?? {}),
-    c?.pendingBattle?.resumeSnapshot,
+    c?.sectorEntryRequest?.resumeSnapshot,
   ].filter(object);
 }
 export function compactSaveTerrain(value) {

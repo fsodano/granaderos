@@ -9,7 +9,7 @@ export class CampaignSectorSessionCoordinator {
 
   suspendActive(snapshot) {
     const campaign = this.#campaign;
-    const request = campaign.pendingBattle;
+    const request = campaign.sectorEntryRequest;
     if (
       !request ||
       !snapshot ||
@@ -35,7 +35,7 @@ export class CampaignSectorSessionCoordinator {
         suspendedAtSeconds: campaign.hour * 3600 + (campaign.secondOfHour ?? 0),
       },
     ];
-    campaign.pendingBattle = null;
+    campaign.sectorEntryRequest = null;
   }
 
   assertCanActivate(request) {
@@ -61,7 +61,7 @@ export class CampaignSectorSessionCoordinator {
     snapshot.savedHour = campaign.hour;
     snapshot.savedSecond = campaign.secondOfHour ?? 0;
     delete snapshot.worldTimeLimitSecond;
-    campaign.pendingBattle = {
+    campaign.sectorEntryRequest = {
       ...record.request,
       syncedSeconds: elapsed,
       resumeSnapshot: snapshot,

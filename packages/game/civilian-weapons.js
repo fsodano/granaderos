@@ -103,8 +103,8 @@ export function acknowledgeCivilianWeapons(s, id, previous, n) {
         record.jammed = false;
       }
       // Each acknowledged source can leave this resident once during this scene.
-      s.pendingBattle.civilianWeaponRecoveries ??= [];
-      s.pendingBattle.civilianWeaponRecoveries.push({
+      s.sectorEntryRequest.civilianWeaponRecoveries ??= [];
+      s.sectorEntryRequest.civilianWeaponRecoveries.push({
         npcId: n.id,
         slot,
         gun: structuredClone(before),
@@ -113,7 +113,7 @@ export function acknowledgeCivilianWeapons(s, id, previous, n) {
   }
 }
 export function validateCivilianWeaponRecoveries(s) {
-  const records = s.pendingBattle?.civilianWeaponRecoveries;
+  const records = s.sectorEntryRequest?.civilianWeaponRecoveries;
   if (records === undefined) {
     return;
   }

@@ -18,7 +18,7 @@ export function validateAbilityReferences(state, value = state) {
   }
   for (const actor of [
     ...campaignActors(value),
-    ...campaignActors(value.pendingBattle?.resumeSnapshot ?? {}),
+    ...campaignActors(value.sectorEntryRequest?.resumeSnapshot ?? {}),
   ]) {
     const definition = characterForActor(state, actor),
       generic = hasGenericCharacterDefinitions(state.contentCampaign?.package),
@@ -49,7 +49,7 @@ export function restoreGenericCharacterReferences(state, value = state) {
   }
   for (const actor of [
     ...campaignActors(value),
-    ...campaignActors(value.pendingBattle?.resumeSnapshot ?? {}),
+    ...campaignActors(value.sectorEntryRequest?.resumeSnapshot ?? {}),
   ]) {
     const definition = characterForActor(state, actor);
     if (!definition) {

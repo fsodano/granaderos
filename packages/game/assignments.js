@@ -99,7 +99,7 @@ function availabilityIssue(s, op) {
   if (s.militiaTraining?.some((t) => t.trainerId === op.id)) {
     return issue('militia_busy');
   }
-  if (s.sectors[location]?.owner !== 'patriot' || s.pendingBattle?.sector === location) {
+  if (s.sectors[location]?.owner !== 'patriot' || s.sectorEntryRequest?.sector === location) {
     return issue('unsafe');
   }
   if (r.hp < 15 || r.bleeding > 0 || r.energy <= 10) {

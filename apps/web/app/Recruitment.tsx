@@ -68,7 +68,7 @@ export default function Recruitment({ state: s, dispatch }: Props) {
   });
   const selectedOperative = roster.find((o) => o.id === selected);
   const selectedRecord = selected === null ? undefined : s.operativeState[selected];
-  const busy = Boolean(s.pendingBattle || s.pendingEncounter) || s.defeated;
+  const busy = Boolean(s.sectorEntryRequest || s.pendingEncounter) || s.defeated;
   const hiringRouteReason = squadReorganizationReason(s);
   return (
     <section className="roster-section">

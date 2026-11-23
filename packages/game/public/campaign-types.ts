@@ -568,7 +568,7 @@ export interface CampaignSnapshot {
   flags: Record<string, boolean>;
   routes: Record<string, boolean>;
   blockade: boolean;
-  pendingBattle: CampaignPendingBattle | null;
+  sectorEntryRequest: CampaignPendingBattle | null;
   pendingEncounter: CampaignEncounter | null;
   completed: boolean;
   defeated: boolean;

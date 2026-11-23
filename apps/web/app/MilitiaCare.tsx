@@ -26,7 +26,7 @@ export default function MilitiaCare({
       state.operativeState[op.id]?.assignment === 'militia_doctor',
   );
   const available = doctors.filter((op) => !careAssignmentReason(state, op, 'militia_doctor'));
-  const fighting = state.pendingBattle?.sector === sectorId;
+  const fighting = state.sectorEntryRequest?.sector === sectorId;
   const reason = fighting
     ? 'La atención de campaña espera hasta el regreso del despliegue.'
     : state.sectors[sectorId]?.owner !== 'patriot'

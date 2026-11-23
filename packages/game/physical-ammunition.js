@@ -336,7 +336,7 @@ export function migrateCampaignAmmunition(state, roster = [], { fresh = false } 
   const snapshots = [
     ...Object.values(state.sectorStates ?? {}),
     ...Object.values(state.sceneStates ?? {}),
-    ...(state.pendingBattle?.resumeSnapshot ? [state.pendingBattle.resumeSnapshot] : []),
+    ...(state.sectorEntryRequest?.resumeSnapshot ? [state.sectorEntryRequest.resumeSnapshot] : []),
   ];
   const looseLegacy =
     !fresh &&
@@ -348,7 +348,7 @@ export function migrateCampaignAmmunition(state, roster = [], { fresh = false } 
           r.ammunitionVersion === undefined &&
           ((r.carriedAmmo ?? 0) - (r.carriedLoaded ?? 0) > 0 || r.capturedAmmunition?.ammo > 0),
       ) ||
-      (state.pendingBattle?.squad ?? []).some(
+      (state.sectorEntryRequest?.squad ?? []).some(
         (u) => u.ammunitionVersion === undefined && u.ammo > 0,
       ) ||
       snapshots.some(
@@ -381,7 +381,7 @@ export function migrateCampaignAmmunition(state, roster = [], { fresh = false } 
       true,
     );
   }
-  const requests = state.pendingBattle ? [state.pendingBattle] : [];
+  const requests = state.sectorEntryRequest ? [state.sectorEntryRequest] : [];
   for (const request of requests) {
     for (const enemy of request.enemies ?? []) {
       enemy.weapon ??= 1800;
@@ -519,15 +519,15 @@ export function validateCampaignAmmunition(state) {
   for (const snapshot of [
     ...Object.values(state.sectorStates ?? {}),
     ...Object.values(state.sceneStates ?? {}),
-    ...(state.pendingBattle?.resumeSnapshot ? [state.pendingBattle.resumeSnapshot] : []),
+    ...(state.sectorEntryRequest?.resumeSnapshot ? [state.sectorEntryRequest.resumeSnapshot] : []),
   ]) {
     rejectLegacyStacks(fieldStacks(snapshot));
     for (const u of snapshot.units ?? []) {
       rejectLegacyStacks(Object.values(u.inventory ?? {}));
     }
   }
-  if (state.pendingBattle) {
-    const request = state.pendingBattle;
+  if (state.sectorEntryRequest) {
+    const request = state.sectorEntryRequest;
     rejectLegacyStacks(fieldStacks(request));
     need(request.ammunitionVersion === 2, 'El despliegue no tiene versión de munición.');
     for (const u of [
@@ -637,7 +637,7 @@ function migrateCampaignFamilies(state, roster) {
       tactical(entry.unit);
     }
   }
-  const request = state.pendingBattle;
+  const request = state.sectorEntryRequest;
   if (request) {
     need(request.ammunitionVersion === 1, 'El despliegue antiguo no tiene versión de munición.');
     for (const key of ['squad', 'garrison', 'missionAllies', 'enemies']) {

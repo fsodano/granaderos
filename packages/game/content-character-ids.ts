@@ -138,7 +138,7 @@ export function campaignActors(
   if ('units' in value) {
     return actors(value);
   }
-  const pending = value.pendingBattle;
+  const pending = value.sectorEntryRequest;
   return [
     ...(pending?.squad ?? []),
     ...(pending?.missionAllies ?? []),

@@ -93,7 +93,7 @@ The table below specifies each tactical use case by `ID`, `Request information`,
 
 ### TAC-001 · Deploy the arriving squad
 
-**Actor:** Player (commander). **Trigger:** `EnterSectorUseCase` opens a `SectorSession` in `deployment` mode (or `AdmitSectorReinforcementsUseCase` admits arriving reinforcements). **Preconditions:** A valid `SectorEntryRequest` (`pendingBattle`) exists with authorized entry cells.
+**Actor:** Player (commander). **Trigger:** `EnterSectorUseCase` opens a `SectorSession` in `deployment` mode (or `AdmitSectorReinforcementsUseCase` admits arriving reinforcements). **Preconditions:** A valid `SectorEntryRequest` (`sectorEntryRequest`) exists with authorized entry cells.
 
 **Request:** Issue `placeDeployment`, `clearDeployment`, or `spreadDeployment` to position participants on authorized cells, then issue `confirmDeployment`.
 

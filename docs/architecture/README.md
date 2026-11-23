@@ -46,7 +46,7 @@ The table below defines each core `Term` and its `Meaning here` across all archi
 | Campaign definitions / package | Authored world, cast, equipment, maps, presentation, and supported rule identifiers admitted by `CampaignDefinition` |
 | Campaign state | Mutable strategic progress serialized as a campaign snapshot |
 | Scenario | A trusted, compiled-in rule module selected by an allowlisted scenario identifier (`generic-v1` or `granaderos-historical-v1`) |
-| `SectorEntryRequest` | Campaign-owned input to `EnterSector`; the compatibility snapshot field remains `pendingBattle` |
+| `SectorEntryRequest` | Campaign-owned input to `EnterSector`; the campaign snapshot field is `sectorEntryRequest` |
 | `SectorSession` | One active or suspended sector visit, including deployment, exploration, and combat; compatibility snapshots still use `battle` or `sectorState` |
 | `CombatSession` | One bounded combat episode within a `SectorSession`, owning turn authority, action-point budgets, reactions, and the combat outcome |
 | Retained scene | Saved sector or mission state (`sectorStates` / `sceneStates`) used to preserve physical world changes across later visits without duplicating character or inventory ownership |

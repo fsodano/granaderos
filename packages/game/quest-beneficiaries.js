@@ -77,7 +77,7 @@ export function validateQuestBeneficiaries(value, state) {
 export function validateQuestBeneficiaryContext(
   campaign,
   battle,
-  { request = campaign.pendingBattle, retained = false, issued = false } = {},
+  { request = campaign.sectorEntryRequest, retained = false, issued = false } = {},
 ) {
   validateQuestWithdrawalContext(campaign, battle, { request, retained, issued });
   need(battle, 'Falta el estado de la entrega.');

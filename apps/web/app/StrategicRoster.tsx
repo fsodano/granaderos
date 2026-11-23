@@ -39,7 +39,7 @@ export default function StrategicRoster({
 }: Props) {
   const grid = (id: string) => worldCell(id, s)?.grid ?? '—';
   const selected = s.squads.find((q) => q.id === s.activeSquadId),
-    blocked = Boolean(s.pendingBattle || s.pendingEncounter || s.defeated);
+    blocked = Boolean(s.sectorEntryRequest || s.pendingEncounter || s.defeated);
   return (
     <aside className="strategy-personnel" aria-label="Nómina de combatientes">
       <div className="personnel-title">

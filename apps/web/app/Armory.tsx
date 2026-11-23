@@ -89,7 +89,7 @@ export default function Armory({ state: s, dispatch }: Props) {
     op &&
     operativeLocation(s, op.id) === s.location &&
     !operativeInTransit(s, op.id) &&
-    !s.pendingBattle &&
+    !s.sectorEntryRequest &&
     !s.pendingEncounter &&
     !s.defeated,
   );
@@ -354,7 +354,7 @@ export default function Armory({ state: s, dispatch }: Props) {
           ))}
           <button
             className="gold-button"
-            disabled={Boolean(batteryReason) || Boolean(s.pendingBattle)}
+            disabled={Boolean(batteryReason) || Boolean(s.sectorEntryRequest)}
             onClick={() => {
               dispatch({
                 type: 'configureArtillery',

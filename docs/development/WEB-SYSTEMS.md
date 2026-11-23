@@ -39,7 +39,7 @@ Postas consume remounts and travel faster; the flotilla requires an unblocked co
 
 ## Tactical handoff and ammunition conservation
 
-`attack` creates `pendingBattle` with a unique ID, seed, biome, weather, squad records and available artillery. It issues at most ten cartridges per firearm user from the actual shared stock, including loaded rounds. Zero-stock deployments have zero loaded/reserve rounds and must use cold steel. Each troop carries weapon and blade references; horses and ponchos are assigned only if stock supports the squad.
+`attack` creates `sectorEntryRequest` with a unique ID, seed, biome, weather, squad records and available artillery. It issues at most ten cartridges per firearm user from the actual shared stock, including loaded rounds. Zero-stock deployments have zero loaded/reserve rounds and must use cold steel. Each troop carries weapon and blade references; horses and ponchos are assigned only if stock supports the squad.
 
 `battleResult` requires the matching pending ID and accepts `victory`, `defeat`, or `retreat`. Reports contain `id`, `hp`, `loaded`, and `ammo`. Returned ammunition is capped by each soldier's issued quantity and the total issued stock. Missing or dead soldiers return no ammunition. Combat losses persist and can end the campaign. Liberation of an enemy sector grants captured supplies; lifting a blockade in an already controlled sector does not grant another capture bounty.
 
@@ -133,7 +133,7 @@ An adjacent `talkNPC` with `approach:'quest'` first records an offer without con
 
 ### Tactical militia garrisons
 
-`garrison.js:prepareGarrison` reconciles trained regional militia with persistent local soldiers, using distinct rank statistics and stable numeric IDs starting at 20000. `pendingBattle.garrison` contains these allied units only when the destination is Patriot-controlled: friendly exploration and defense against a coastal blockade. Militia do not accompany an offensive squad to a different province. Up to 60 local soldiers can deploy; larger legacy counts remain strategic reserves.
+`garrison.js:prepareGarrison` reconciles trained regional militia with persistent local soldiers, using distinct rank statistics and stable numeric IDs starting at 20000. `sectorEntryRequest.garrison` contains these allied units only when the destination is Patriot-controlled: friendly exploration and defense against a coastal blockade. Militia do not accompany an offensive squad to a different province. Up to 60 local soldiers can deploy; larger legacy counts remain strategic reserves.
 
 `world.js:enterSector` places the garrison collision-free alongside the hired squad. These are actual player-side tactical combatants marked `militia:true`, with rank-specific morale and weapons, rather than map decorations. Initial cartridges are deducted from campaign stores; health, ammunition, condition and recovered inventory persist on return. `returnGarrison` requires a complete validated tactical snapshot, removes actual dead defenders from strategic counts and preserves surviving identities. Their corpses remain in persistent sectors for looting. Training promotions return unspent cartridges when replacing a rank; occupation disperses the local roster.
 

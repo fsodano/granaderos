@@ -19,12 +19,12 @@ export function restoreGameSession(campaign) {
   const suspended = campaign.suspendedSectorSessions ?? [];
   const requests = [
     ...suspended.map((session) => session.request),
-    ...(campaign.pendingBattle ? [campaign.pendingBattle] : []),
+    ...(campaign.sectorEntryRequest ? [campaign.sectorEntryRequest] : []),
   ];
   return GameSession.restore({
     id: campaign.gameSessionId ?? 'unidentified-compatibility-session',
     revision: campaign.gameRevision ?? 0,
-    activeSectorSessionId: campaign.pendingBattle?.id ?? null,
+    activeSectorSessionId: campaign.sectorEntryRequest?.id ?? null,
     suspendedSectorSessionIds: suspended.map((session) => session.request.id),
     sectorSessions: requests.map(sectorSessionRegistration),
     randomSource: { seed: campaign.seed ?? 0 },
@@ -39,7 +39,7 @@ function acceptedCampaignSecond(campaign) {
 export function projectGameSession(campaign, session) {
   const snapshot = session.snapshot();
   if (
-    snapshot.activeSectorSessionId !== (campaign.pendingBattle?.id ?? null) ||
+    snapshot.activeSectorSessionId !== (campaign.sectorEntryRequest?.id ?? null) ||
     snapshot.suspendedSectorSessionIds.length !== (campaign.suspendedSectorSessions?.length ?? 0) ||
     snapshot.suspendedSectorSessionIds.some(
       (id) => !campaign.suspendedSectorSessions.some((record) => record.request.id === id),

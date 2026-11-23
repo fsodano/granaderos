@@ -195,7 +195,10 @@ void test('active and suspended auxiliary registrations exclude only living arch
     missionAllies: [ally],
     garrison: [militia],
   };
-  for (const visit of [{ pendingBattle: request }, { suspendedSectorSessions: [{ request }] }]) {
+  for (const visit of [
+    { sectorEntryRequest: request },
+    { suspendedSectorSessions: [{ request }] },
+  ]) {
     const presence = new RetainedSectorPresence({
       ...visit,
       squads: [],

@@ -212,7 +212,7 @@ export function initialState(seed, _definitions) {
     },
     routes: { posta: false, flotilla: false, carts: false, mules: false },
     blockade: false,
-    pendingBattle: null,
+    sectorEntryRequest: null,
     completed: false,
     defeated: false,
     log: [
@@ -312,7 +312,7 @@ export function progress(
     s.recruited.includes(57) &&
     Object.values(s.sectors).every((x) => x.owner === 'patriot') &&
     !s.blockade &&
-    !s.pendingBattle &&
+    !s.sectorEntryRequest &&
     !s.pendingEncounter &&
     !s.enemyGroups.some((g) => ['marching', 'waiting', 'engaged', 'stationed'].includes(g.status))
   ) {
@@ -478,7 +478,7 @@ export function dispatchAction(s, action, ctx) {
       const entered = dispatchCampaign(s, { type: 'visitSector' });
       requireThat(!entered.lastError, entered.lastError);
       Object.assign(s, entered);
-      Object.assign(s.pendingBattle, {
+      Object.assign(s.sectorEntryRequest, {
         sceneId: 'yatasto',
         missionId: 'yatasto',
         name: MISSION_SCENES.yatasto.name,
@@ -486,13 +486,13 @@ export function dispatchAction(s, action, ctx) {
         garrison: [],
         artillery: [],
       });
-      delete s.pendingBattle.exits;
-      prepareDeploymentExits(s, s.pendingBattle);
+      delete s.sectorEntryRequest.exits;
+      prepareDeploymentExits(s, s.sectorEntryRequest);
       break;
     }
     case 'finishMission': {
       requireThat(
-        s.pendingBattle?.sceneId === 'yatasto' && s.pendingBattle.id === action.battleId,
+        s.sectorEntryRequest?.sceneId === 'yatasto' && s.sectorEntryRequest.id === action.battleId,
         'No hay una conferencia de Yatasto abierta.',
       );
       requireThat(
@@ -518,7 +518,7 @@ export function conversationContacts(s, request) {
   return request.sceneId === 'yatasto' ? missionContacts(s) : null;
 }
 export function missionConversation(s, npcId, { isSupplied }) {
-  need(s.pendingBattle.sceneId === 'yatasto', 'No hay una conferencia pendiente.');
+  need(s.sectorEntryRequest.sceneId === 'yatasto', 'No hay una conferencia pendiente.');
   return talkMission(s, npcId, isSupplied(s, 'salta'));
 }
 export const defaultAttackSector = 'san_lorenzo';

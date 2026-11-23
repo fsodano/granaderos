@@ -378,7 +378,7 @@ export function validateServiceObjectionContext(
   state,
   snapshot,
   roster,
-  request = state.pendingBattle,
+  request = state.sectorEntryRequest,
 ) {
   // A stored resume is itself admitted without using its own records as proof.
   // Only then may it require an ordinary successor to retain its receipt.
@@ -397,7 +397,7 @@ export function validateCampaignServiceObjections(state, roster) {
       need(acknowledgedDeath(state, record.serviceObjection));
     }
   }
-  const request = state.pendingBattle;
+  const request = state.sectorEntryRequest;
   for (const issued of request?.squad ?? []) {
     const operative = roster.find((op) => op.id === Number(issued.id));
     need(operative);
@@ -459,7 +459,7 @@ export function hasPendingServiceObjections(state, snapshot) {
       actor.serviceObjection !== undefined &&
       (!same(
         actor.serviceObjection,
-        state.pendingBattle?.squad?.find((unit) => String(unit.id) === String(actor.id))
+        state.sectorEntryRequest?.squad?.find((unit) => String(unit.id) === String(actor.id))
           ?.serviceObjection,
       ) ||
         !same(actor.serviceObjection, state.operativeState?.[Number(actor.id)]?.serviceObjection)),
@@ -471,7 +471,7 @@ export function serviceObjectionReason(state, operative) {
   }
   const receipt =
     state?.operativeState?.[operative.id]?.serviceObjection ??
-    state?.pendingBattle?.squad?.find((unit) => String(unit.id) === String(operative.id))
+    state?.sectorEntryRequest?.squad?.find((unit) => String(unit.id) === String(operative.id))
       ?.serviceObjection;
   return receipt
     ? `${operative.name} no acepta contratarse ni renovar después de presenciar la muerte intencional de un civil no combatiente. Cumplirá el plazo ya pagado.`

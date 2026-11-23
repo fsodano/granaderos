@@ -108,7 +108,7 @@ function migrateArtilleryStateValue(s) {
     const ids = [
       ...Object.values(s.sectorStates ?? {}),
       ...Object.values(s.sceneStates ?? {}),
-      s.pendingBattle,
+      s.sectorEntryRequest,
       ...(s.convoys ?? []),
     ]
       .filter(Boolean)
@@ -146,17 +146,17 @@ function migrateArtilleryStateValue(s) {
         delete depot.cannons;
       }
     }
-    if (s.pendingBattle) {
+    if (s.sectorEntryRequest) {
       need(
-        s.pendingBattle.artilleryDeployment || !(s.pendingBattle.artillery ?? []).length,
+        s.sectorEntryRequest.artilleryDeployment || !(s.sectorEntryRequest.artillery ?? []).length,
         'Falta el origen de la batería antigua.',
       );
-      s.pendingBattle.artilleryDeployment ??= {
+      s.sectorEntryRequest.artilleryDeployment ??= {
         version: 1,
-        site: site(s.pendingBattle),
+        site: site(s.sectorEntryRequest),
         issued: [],
       };
-      s.pendingBattle.cannons = (s.pendingBattle.artillery ?? []).length;
+      s.sectorEntryRequest.cannons = (s.sectorEntryRequest.artillery ?? []).length;
     }
     s.artilleryVersion = 1;
     migrateArtilleryCustody(s);
@@ -171,7 +171,7 @@ function migrateArtilleryStateValue(s) {
     available[gun.type]--;
     return true;
   };
-  const r = s.pendingBattle;
+  const r = s.sectorEntryRequest;
   if (r) {
     const guns = list(r.artillery ?? []);
     for (const gun of guns) {
@@ -206,10 +206,10 @@ function migrateArtilleryStateValue(s) {
   migrateArtilleryCustody(s);
 }
 export function prepareSectorArtillery(s, request) {
-  const current = request === s.pendingBattle;
+  const current = request === s.sectorEntryRequest;
   migrateArtilleryState(s);
   if (current) {
-    request = s.pendingBattle;
+    request = s.sectorEntryRequest;
   }
   if (request.artilleryDeployment?.site === site(request)) {
     return request;
@@ -354,8 +354,8 @@ export function ownedArtilleryCount(s) {
       }
     }
   }
-  if (s.pendingBattle) {
-    for (const g of s.pendingBattle.artillery ?? []) {
+  if (s.sectorEntryRequest) {
+    for (const g of s.sectorEntryRequest.artillery ?? []) {
       if (g.side === 'player') {
         owned.set(g.id, g);
       } else {
@@ -409,8 +409,8 @@ export function validateCampaignArtillery(s) {
       ids.add(g.id);
     }
   }
-  if (s.pendingBattle) {
-    const r = s.pendingBattle;
+  if (s.sectorEntryRequest) {
+    const r = s.sectorEntryRequest;
     validateArtilleryDeployment(r);
     for (const id of r.artilleryDeployment.issued) {
       need(!ids.has(id), 'Una pieza desplegada ya existe en otro sector.');

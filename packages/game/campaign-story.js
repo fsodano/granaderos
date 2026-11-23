@@ -80,7 +80,7 @@ export function advanceCampaignStory(s, battle = null) {
     log(story.defeat);
     return;
   }
-  if (s.pendingBattle) {
+  if (s.sectorEntryRequest) {
     return;
   }
   while (s.campaignProgress.completed.length < story.chapters.length) {

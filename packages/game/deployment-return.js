@@ -419,7 +419,9 @@ function remainsGeometry(s, exit) {
   const source = exit.id.slice(0, exit.id.indexOf(':'));
   const saved = s[sceneStateKeyFor(s, source)]?.[source];
   const request =
-    (s.pendingBattle?.sceneId ?? s.pendingBattle?.sector) === source ? s.pendingBattle : null;
+    (s.sectorEntryRequest?.sceneId ?? s.sectorEntryRequest?.sector) === source
+      ? s.sectorEntryRequest
+      : null;
   const map = expandCellScene(saved ?? request?.resumeSnapshot ?? request, s);
   // The body still has source-map coordinates until its destination is entered.
   // Older records without a source map retain the compact-map validation bounds.
@@ -533,7 +535,7 @@ function validateReturnLedger(snapshot, s) {
 export function validateDeploymentReturnState(s) {
   const object = (v) => v && typeof v === 'object' && !Array.isArray(v),
     integer = (v, max) => Number.isSafeInteger(v) && v >= 0 && v <= max;
-  const request = s.pendingBattle;
+  const request = s.sectorEntryRequest;
   if (request) {
     // Legacy saves gain routes only. Do not reissue equipment, rebuild loot
     // allowances, or infer that a soldier has already crossed a boundary.
@@ -573,14 +575,15 @@ export function validateDeploymentReturnState(s) {
   }
   for (const field of ['fieldCartridges', 'storedCartridges']) {
     need(
-      s.pendingBattle?.[field] === undefined || integer(s.pendingBattle[field], 1000000000000),
+      s.sectorEntryRequest?.[field] === undefined ||
+        integer(s.sectorEntryRequest[field], 1000000000000),
       'La munición previa del despliegue es inválida.',
     );
   }
   for (const source of [
-    ...(s.pendingBattle?.ammunitionSources ?? []),
-    ...(s.pendingBattle?.garrisonLootSources ?? []),
-    ...(s.pendingBattle?.casualtyLootSources ?? []),
+    ...(s.sectorEntryRequest?.ammunitionSources ?? []),
+    ...(s.sectorEntryRequest?.garrisonLootSources ?? []),
+    ...(s.sectorEntryRequest?.casualtyLootSources ?? []),
   ]) {
     need(
       source.cursorCartridges === undefined || integer(source.cursorCartridges, 1000000),

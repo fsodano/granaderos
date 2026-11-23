@@ -45,7 +45,7 @@ export default function ContractAttention({
   if (!notice) {
     return null;
   }
-  const blocked = Boolean(s.pendingBattle || s.pendingEncounter || s.defeated);
+  const blocked = Boolean(s.sectorEntryRequest || s.pendingEncounter || s.defeated);
   return (
     <section className="assignment-attention" aria-label="Avisos de contratos">
       <div aria-live="polite" aria-atomic="true">

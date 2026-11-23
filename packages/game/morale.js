@@ -55,7 +55,7 @@ export function migrateMorale(s, roster) {
       r.lastMoralePayAt = null;
     }
   }
-  for (const unit of s.pendingBattle?.squad ?? []) {
+  for (const unit of s.sectorEntryRequest?.squad ?? []) {
     if (unit.personalMorale === undefined) {
       unit.personalMorale = unit.morale ?? s.operativeState[Number(unit.id)]?.morale;
     }
@@ -223,7 +223,7 @@ export function advanceMorale(s, roster, options = {}) {
     !deployed(s, id) &&
     !moving.has(id) &&
     s.sectors[operativeLocation(s, id)]?.owner === 'patriot' &&
-    s.pendingBattle?.sector !== operativeLocation(s, id);
+    s.sectorEntryRequest?.sector !== operativeLocation(s, id);
   for (const op of roster) {
     const r = s.operativeState[op.id];
     if (!r) {
@@ -317,7 +317,7 @@ export function validateMorale(s, roster) {
       );
     }
   }
-  for (const unit of s.pendingBattle?.squad ?? []) {
+  for (const unit of s.sectorEntryRequest?.squad ?? []) {
     if (unit.morale !== undefined) {
       need(
         Number.isFinite(unit.morale) && unit.morale >= 0 && unit.morale <= 100,
@@ -330,7 +330,7 @@ export function validateMorale(s, roster) {
       'El apoyo del compañero desplegado está incompleto.',
     );
     if (hasCompanion) {
-      const companion = s.pendingBattle.squad.find(
+      const companion = s.sectorEntryRequest.squad.find(
         (other) => Number(other.id) === unit.companionId,
       );
       need(

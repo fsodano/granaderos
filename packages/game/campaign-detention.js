@@ -13,7 +13,7 @@ const need = (ok, message) => {
 const equal = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const healthFields = ['hp', 'energy', 'bleeding', 'bandaged', 'alive', 'unconscious'];
 function plans(campaign, battle) {
-  const request = campaign.pendingBattle;
+  const request = campaign.sectorEntryRequest;
   need(
     request && battle.battleId === request.id && battle.sectorId === request.sector,
     'El parte de prisioneros no corresponde al despliegue.',
@@ -283,7 +283,7 @@ export function validateCampaignDetention(campaign) {
       }
     }
   }
-  const request = campaign.pendingBattle,
+  const request = campaign.sectorEntryRequest,
     manifest = request?.detainedPrisoners ?? [],
     ids = new Set();
   need(Array.isArray(manifest), 'El manifiesto de prisioneros es inválido.');
