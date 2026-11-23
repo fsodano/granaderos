@@ -11,7 +11,10 @@ Persistence separates two jobs:
 
 ## Portable save envelope and byte limits
 
-`encodeSave(campaign, battle = null)` in `packages/game/save.ts` produces a JSON string with this envelope structure. The following illustrative JSON shows the envelope keys; placeholder values stand in for serialized content:
+Calling [`encodeSave`](../../packages/game/save.ts) with `campaign` and an
+optional `battle` value produces a JSON string with this envelope structure.
+The following illustrative JSON shows the envelope keys; placeholder values
+stand in for serialized content:
 
 ```json
 {
@@ -29,21 +32,43 @@ In this envelope:
 - `format` (`"granaderos"`) and `schema` (`1` for raw tiles or `2` when palette terrain compaction is applied) identify the save codec version.
 - `savedAt` records the ISO-8601 encoding timestamp.
 - `mapping` records the domain snapshot mapping `version` (`1`), the `GameSession` `sessionId`, and the accepted `revision`. These values must match `campaign.gameSessionId` and `campaign.gameRevision`. Legacy saves without a session ID receive a fresh ID on restoration; mismatched IDs or revisions are rejected.
-- `campaign` holds the campaign snapshot. `sectorSession` holds the active sector snapshot. The decoded [`GameSnapshotContent`](../../packages/game/public/game-snapshot-types.ts) still calls its in-memory sector field `battle`; `encodeSave` receives that value as its `battle` argument. `decodeSave` reads `sectorSession` and falls back to legacy `battle` only when the new key is absent, so an older save with only `battle` still loads. A later save writes the view under `sectorSession`. The snapshots use custom replacers for pinned campaign packages, cell scenes, artillery definitions, and weapons.
+- `campaign` holds the campaign snapshot. `sectorSession` holds the active sector snapshot. The decoded [`GameSnapshotContent`](../../packages/game/public/game-snapshot-types.ts) keeps its in-memory sector field named `battle`, and `encodeSave` receives that value as its `battle` argument. `decodeSave` selects `sectorSession` when that key is present and reads legacy top-level `battle` only when `sectorSession` is absent. If both keys are present, `sectorSession` wins, including when its value is `null`. Encoding writes only `sectorSession`. The snapshots use custom replacers for pinned campaign packages, cell scenes, artillery definitions, and weapons.
+
+## Campaign snapshot fields and legacy reads
+
+The envelope's `campaign` value is a [`CampaignSnapshot`](../../packages/game/public/campaign-types.ts). The public type [`CampaignSectorEntryRequest`](../../packages/game/public/campaign-types.ts) describes the saved sector-entry request; the application layer's `SectorEntryRequest` remains narrower. The campaign fields distinguish the request, force membership, per-character records, and retained physical snapshots:
+
+| Current campaign field | Meaning | Legacy campaign field read |
+| --- | --- | --- |
+| `sectorEntryRequest` | The campaign's sector-entry request, represented by `CampaignSectorEntryRequest`; the application input remains the narrower `SectorEntryRequest` | `pendingBattle` |
+| `forceRoster` | IDs of combatants serving in the player's force | `recruited` |
+| `characters` | Per-character campaign records | `operativeState` |
+| `sectorSnapshots` | Retained physical snapshots for sectors | `sectorStates` |
+| `sceneSnapshots` | Retained physical snapshots for mission scenes | `sceneStates` |
+
+For each pair, [`decodeSave`](../../packages/game/save.ts) reads the legacy field only when the current field is `undefined`, then removes the legacy field. If both are present, the current value wins, even when it is `null` or an empty collection. Re-encoding writes only the current field names. The separate `suspendedSectorSessions` field stores request-and-snapshot records for suspended visits. `sectorState` is a campaign-action request property in [`CampaignAction`](../../packages/game/public/campaign-types.ts), not a saved campaign field.
 
 Three distinct byte thresholds in [`packages/game/save-limits.js`](../../packages/game/save-limits.js) govern encoding and decoding:
 
-- **1,000,000 bytes (compaction trigger):** If the initial encoded JSON is under 1 MB, it remains `schema: 1`. At or above 1 MB, eligible tile arrays across the active `sectorSession` snapshot (or legacy `battle` when `sectorSession` is absent), `campaign.sectorSnapshots`, `campaign.sceneSnapshots`, and `sectorEntryRequest.resumeSnapshot` are palette-compacted (`{ encoding: "palette-v1", palette: [...], indices: [...] }`), switching `schema` to `2` if at least one map shrinks. Cell scenes use their own `cell-tiles-v1` compaction in [`packages/game/cell-scene-storage.js`](../../packages/game/cell-scene-storage.js).
+- **1,000,000 bytes (compaction trigger):** If the initial encoded JSON is under 1 MB, it remains `schema: 1`. At or above 1 MB, eligible tile arrays across the active `sectorSession` snapshot (or legacy `battle` when `sectorSession` is absent), `campaign.sectorSnapshots`, `campaign.sceneSnapshots`, and `campaign.sectorEntryRequest.resumeSnapshot` are palette-compacted (`{ encoding: "palette-v1", palette: [...], indices: [...] }`), switching `schema` to `2` if at least one map shrinks. Cell scenes use their own `cell-tiles-v1` compaction in [`packages/game/cell-scene-storage.js`](../../packages/game/cell-scene-storage.js).
 - **20,000,000 UTF-8 bytes (`MAX_EXPANDED_SAVE_BYTES`):** Bounds the uncompacted or expanded JSON size before compaction or during `schema: 2` expansion to prevent decompression bombs.
 - **5,000,000 bytes / characters (`assertSaveSize`):** Bounds the final persisted or imported JSON string (both UTF-8 byte length and JavaScript string length).
 
+[`compactSaveTerrain`](../../packages/game/save-terrain.js) does not traverse
+`campaign.suspendedSectorSessions`. The JSON replacer still compacts eligible
+cell scenes as `cell-tiles-v1` through
+[`cellSceneSaveReplacer`](../../packages/game/cell-scene-storage.js), but
+ordinary sector tile arrays in suspended visits remain uncompressed. Large
+suspended visits can therefore push the final save over the 5 MB limit. No
+mitigation is proposed here.
+
 ## Decode, migrations, and validation sequence
 
-`decodeSave(text)` in `packages/game/save.ts` validates and restores a portable save in six steps:
+[`decodeSave(text)`](../../packages/game/save.ts) validates and restores a portable save in six steps:
 
-1. Enforce the 5 MB input size cap, parse JSON, require `format === "granaderos"` with `schema` `1` or `2`, and validate the mapping metadata and campaign.
-2. For `schema: 2`, expand `palette-v1` terrain arrays subject to the 20 MB expanded cap. The active sector snapshot is read from `sectorSession`, falling back to legacy `battle` when `sectorSession` is absent.
-3. Clone and restore the campaign snapshot via `restoreCampaignValue`, select the active sector view from `sectorSession` or legacy `battle` when the new key is absent, and expand any compact `cell-tiles-v1` scene data against that campaign. A campaign that carries the legacy `pendingBattle` key and no `sectorEntryRequest` copies that request to the new key before restoration and drops the old key, so a later save writes `sectorEntryRequest`. Legacy `sectorStates` and `sceneStates` maps copy to `sectorSnapshots` and `sceneSnapshots` the same way before any terrain expansion, mapping, or snapshot validation reads them.
+1. Enforce the 5 MB input size cap, parse JSON, require `format === "granaderos"` with `schema` `1` or `2`, and require a campaign object.
+2. Normalize legacy campaign fields using the mappings above and validate mapping metadata. The current field wins when both current and legacy names are present. Select the top-level active sector view from `sectorSession`, falling back to legacy `battle` only when `sectorSession` is absent.
+3. For `schema: 2`, expand `palette-v1` terrain arrays subject to the 20 MB expanded cap. Restore the campaign through `restoreCampaignValue` and expand any compact `cell-tiles-v1` scene data against it.
 4. Require `Boolean(campaign.sectorEntryRequest)` to agree with the presence of the restored sector snapshot, restore weapon, artillery, and character references, and verify fitting, ammunition, and exit version compatibility.
 5. Validate tactical weather and the active sector snapshot (`packages/game/validate-battle.js`), requiring synchronized campaign and sector clocks (`syncedSeconds`), start times, entry identity, sector ID, deployed participants, and authored map identity to agree.
 6. Validate cross-system invariants across the arsenal, scene definitions, artillery, civilians, movement, weapons, presentation, abilities, deployment, repair reserves, discovery, companion grief, service objections, quest escorts/beneficiaries, and equipment custody. Validated legacy `hiringArrivals` entries start service at the saved game time when a recruitment site is legal, or become refundable claims when none is legal; missing legacy corpse death timestamps also convert at the saved game time.
@@ -69,19 +94,20 @@ The [`browser-save-writer.ts`](../../apps/web/lib/browser-save-writer.ts) adapte
 
 ## Browser autosave keys and URL identity
 
-`campaignStorageKey(campaign, search)` in [`packages/game/content-launch.ts`](../../packages/game/content-launch.ts) selects the `localStorage` key from the campaign's origin or content identity (appending `.qa` when the URL query includes `qa=1`).
+`campaignStorageKey(campaign, search)` in [`packages/game/content-launch.ts`](../../packages/game/content-launch.ts) selects the primary `localStorage` key from the campaign's origin or content identity (appending `.qa` when the URL query includes `qa=1`). [`campaignStorageCandidates`](../../packages/game/content-launch.ts) adds supported legacy keys after the primary key when resuming a save. [`campaignLaunchSearch`](../../packages/game/content-launch.ts) returns a normalized query string; [`apps/web/app/page.tsx`](../../apps/web/app/page.tsx) applies it to the URL and calls `history.replaceState`.
 
-The table below lists each runtime `Situation` and the resulting `localStorage key`.
+The table below lists the primary key or legacy resume candidate for each runtime situation.
 
-| Situation | localStorage key |
+| Situation | Primary key or resume candidate |
 | --- | --- |
-| Installed campaign with `campaignOrigin.id` | `granaderos.campaign.v2.<encoded-id>[.qa]` |
+| Installed campaign with `campaignOrigin.id`, or a `?campaign=<id>` URL before load (including `granaderos`) | Primary key `granaderos.campaign.v2.<encoded-id>[.qa]` |
 | Authored or editor content campaign with package ID and content hash | `granaderos.content-campaign.v2.<encoded-packageId>.<encoded-hash>[.qa]` |
 | Editor content URL with complete `contentId` and `contentHash` before campaign load | `granaderos.content-campaign.v2.<encoded-contentId>.<encoded-contentHash>[.qa]` |
 | Editor content URL without complete identity | Legacy fallback `granaderos.content-campaign.v1[.qa]` |
-| Unbound or legacy stock campaign | `granaderos.campaign.v1[.qa]` |
+| Unbound state with no selected campaign ID or content identity | `granaderos.campaign.v1[.qa]` |
+| Resume of an older stock-campaign save after selecting `granaderos` | Legacy candidate `granaderos.campaign.v1[.qa]`, checked after the `granaderos.campaign.v2.granaderos[.qa]` primary key |
 
-The Story Editor's one-time launch handoff uses `sessionStorage` key `granaderos.content-launch.v1` (`CONTENT_LAUNCH_KEY`), which is removed as soon as `apps/web/app/page.tsx` consumes it. `campaignLaunchSearch` normalizes the browser URL query parameters via `history.replaceState` without writing to `localStorage`.
+The Story Editor's one-time launch handoff uses `sessionStorage` key `granaderos.content-launch.v1` (`CONTENT_LAUNCH_KEY`), which is removed as soon as `apps/web/app/page.tsx` consumes it. `campaignLaunchSearch` returns the normalized query string; `apps/web/app/page.tsx` applies it with `history.replaceState` and does not write to `localStorage`.
 
 ## Autosave queue and worker behavior
 

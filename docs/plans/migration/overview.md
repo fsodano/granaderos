@@ -145,10 +145,14 @@ reaches `ResumeSectorSessionUseCase`; and arrival resolution reaches
 snapshot and advances its revision.
 
 **Sector entry.** A campaign snapshot carrying `sectorEntryRequest` (the saved
-sector-entry request field) is handed to `prepareCampaignBattle` in
-`packages/game/battle-handoff.js`, which produces the campaign and sector
-snapshot pair and switches the interface to the tactical screen.
-`EnterSectorUseCase` is reached from `packages/game/world.js`.
+sector-entry request field) is handed to
+[`prepareCampaignBattle`](../../../packages/game/battle-handoff.js), which
+returns the updated campaign and sector snapshot pair or a refusal. In
+[`apps/web/app/page.tsx`](../../../apps/web/app/page.tsx),
+`openCampaignBattle` checks that result, installs the pair, and then switches
+the interface to the tactical screen.
+[`EnterSectorUseCase`](../../../packages/game/application/sector-sessions/enter-sector/README.md)
+is reached from [`packages/game/world.js`](../../../packages/game/world.js).
 
 **Sector orders.** `Battlefield.tsx` builds a tactical order and hands it to
 `useBattleExecutor`, which posts a job to a Web Worker and falls back to the
@@ -181,31 +185,52 @@ campaign and sector snapshot pair through `SaveGameUseCase` and
 `packages/game/save.ts`, then writes it through
 `apps/web/lib/browser-save-writer.ts` under a Web Lock per campaign storage key.
 
-## 4. What the migration changed
+## 4. Current migrated architecture
 
-The slices established a shared revision policy, moved browser composition out
-of React components, standardized application use-case contracts, added a
-runtime public entry, and blocked game-package imports from the player app with
-the architecture checker and dependency-cruiser. They also added
-`CampaignCompiler` (the application service that turns a validated campaign
-definition into runtime-playable objects) and named `GameSnapshot` (the
-versioned save and worker representation). The player-app import rules remain
-intentionally different for React screens and browser composition, as section
-8 describes.
+The current source uses a shared revision policy, browser composition outside
+React screens, standard application use-case contracts, declared public
+entries, and import boundaries enforced by the architecture checker and
+dependency-cruiser. No `apps/web` file imports a retained module from the
+`packages/game` root; React screens cannot import game domain, application, or
+infrastructure modules, while `apps/web/lib` can compose those layers.
 
-Twenty-one game rules have domain ownership in `packages/game/domain`: firearm
-readiness, unarmed combat, sleep need, held supplies, projectile energy,
+[`CampaignCompiler`](../../../packages/game/application/campaign-compiler/)
+applies runtime rules and resolves published campaign definitions.
+[`createCampaignCompiler()`](../../../packages/game/public/campaign-compiler-api.ts)
+composes that service with `CampaignLibraryCompilerRepository` in
+[`packages/game/campaign-library.js`](../../../packages/game/campaign-library.js).
+[`apps/web/lib/campaign-library.ts`](../../../apps/web/lib/campaign-library.ts)
+reads campaign files for the browser and invokes the public compiler entry;
+[`tools/campaign-export.mjs`](../../../tools/campaign-export.mjs) uses the same
+entry for static staging. The root `campaign-library.js` module is the
+compiler's repository adapter, not the browser loader. Current source and
+public entries do not define `compileCampaignPackage`.
+
+`GameSnapshot` is the versioned save-envelope and worker representation. The
+portable envelope writes the campaign under `campaign` and the active sector
+view under `sectorSession`. The campaign snapshot writes its sector-entry
+request under `sectorEntryRequest`, force membership under `forceRoster`,
+per-character records under `characters`, and retained physical maps under
+`sectorSnapshots` and `sceneSnapshots`. The saved field
+[`CampaignSnapshot.sectorEntryRequest`](../../../packages/game/public/campaign-types.ts)
+uses the public `CampaignSectorEntryRequest` type; the application layer keeps
+the narrower `SectorEntryRequest` name.
+
+Twenty-one migrated game rules have domain ownership in
+`packages/game/domain`: firearm readiness, unarmed combat, sleep need, held
+supplies, projectile energy,
 firearm loads, study rate, the route queue, firearm serviceability, kinetic
 impact, combat balance, combat journal, fatigue and energy, interior
 visibility, campaign clock conversion, `WorldTimeline` clock advancement,
 tactical-level rules (the vertical map layer assigned to a point), shot-range
 calculation, `directionTo` (NPC facing), `approximateHeardPosition` (anonymous
 sound location), and care-composure relief
-(`CARE_COMPOSURE_RELIEF` & `careComposureRelief`). The sleep-need sentence
-and campaign notices moved to the browser interface. The Spanish shot-range
-sentence remains in `packages/game/shot-range.js` beside its caller in
-`packages/game/ja2-hud.ts`; moving it to the player application would invert
-the dependency direction. `GameSession` owns `RandomSource` and `WorldTimeline`.
+(`CARE_COMPOSURE_RELIEF` & `careComposureRelief`). The browser interface owns
+the sleep-need sentence and campaign notices. The Spanish shot-range sentence
+remains in [`packages/game/shot-range.js`](../../../packages/game/shot-range.js)
+beside its caller in [`packages/game/ja2-hud.ts`](../../../packages/game/ja2-hud.ts);
+moving it to the player application would invert the dependency direction.
+`GameSession` owns `RandomSource` and `WorldTimeline`.
 Campaign code calls `drawCampaignRandom(session, draft)`, where
 `session` is the `GameSession` and `draft` is the campaign snapshot. The helper
 draws through `session.randomSource` and writes the advanced seed to
@@ -217,38 +242,51 @@ The retired `hiringArrivals` field is accepted only as a legacy save input.
 Restoration validates each entry. A valid booking starts service immediately at
 a legal recruitment site at the saved campaign time; if no site is legal,
 restoration preserves a `RefundableRecruitmentClaim`. After conversion, the old
-field is removed. New saves write the sector view under
-`sectorSession`, and decoding accepts legacy `battle` only when that key is
-absent.
+field is removed. New saves write the active sector view under `sectorSession`;
+decoding reads legacy top-level `battle` only when `sectorSession` is absent.
+Legacy campaign fields `pendingBattle`, `recruited`, `operativeState`,
+`sectorStates`, and `sceneStates` map to the current campaign fields only when
+their corresponding current key is absent. The current key wins if both are
+present, and decoding removes the legacy key.
 
-Slice 26 moved the game's tactical-level rules into
-`packages/game/domain/sector-sessions/tactical-space.ts`. Slice 27 removed the
-duplicate tactical-level rules from interior visibility. The independent
-`packages/campaign-format` copy remains because that package validates authored
-maps and cannot import the game.
+[`packages/game/domain/sector-sessions/tactical-space.ts`](../../../packages/game/domain/sector-sessions/tactical-space.ts)
+owns the game's tactical-level rules. `packages/campaign-format` keeps an
+independent implementation for authored-map validation because that package
+cannot import the game.
 
-Slice 32 consolidated the richer NPC perception rules used by the game in
-`packages/game/domain/perception/npc-perception.ts`: `directionTo` and
-`approximateHeardPosition`. Both retained modules,
-`packages/game/tactical-awareness.js` and `packages/game/npc-perception.js`,
-re-export these functions so callers keep their import paths and behavior.
+`directionTo` and `approximateHeardPosition` live in
+[`packages/game/domain/perception/npc-perception.ts`](../../../packages/game/domain/perception/npc-perception.ts).
+The retained modules
+[`packages/game/tactical-awareness.js`](../../../packages/game/tactical-awareness.js)
+and [`packages/game/npc-perception.js`](../../../packages/game/npc-perception.js)
+re-export them so callers keep their import paths and behavior.
 
 ## 5. What remains
 
-- The retained simulation modules, including `tactical.js` and `campaign.js`,
-  still carry most game rules procedurally. Moving twenty-one rules did not move
-  the simulation as a whole.
-- The saved campaign fields `sectorStates` and `sceneStates`
-  still need explicit conversion to canonical domain representations before
-  their compatibility names can be retired.
+- Retained simulation modules still carry procedural game rules. Moving
+  twenty-one rules into domain ownership does not move the simulation as a
+  whole; the remaining rules need named domain or application owners.
+- `suspendedSectorSessions` remains a saved list of suspended-visit request and
+  snapshot records. Its replacement field and canonical saved shape are not
+  defined; choose them before converting supported saves, preserving each
+  visit's request, identity, and progress.
+- `beginAssault` remains a compatibility command. Move its callers to the
+  `FightOnArrivalUseCase` contract, preserve arrival-decision identity, then
+  remove the alias.
+- `sectorState` remains a campaign-action request property carrying a sector
+  snapshot. Its replacement property name is not defined; choose a
+  glossary-backed name and update the public action contract and all callers
+  together. It is not a saved field.
 
 ## 6. Current source and accepted target
 
-The accepted architecture and glossary define the target. This overview
-describes current source behavior: `GameSession` owns `WorldTimeline`, campaign
-and strategic time paths advance through it, and the campaign clock fields
-project its accepted second. The saved campaign fields still awaiting conversion
-are `sectorStates` and `sceneStates`.
+The accepted architecture and glossary define the target. Current source gives
+`GameSession` ownership of `WorldTimeline`, advances campaign and strategic
+time through that timeline, and projects its accepted second into the campaign
+clock fields. The remaining names are explicit boundaries:
+`suspendedSectorSessions` is the current saved representation, `beginAssault`
+is a command alias, and `sectorState` is a request property. The replacement
+names and mapping for the saved list and request property still need decisions.
 
 ## 7. Verification
 
@@ -267,10 +305,12 @@ accepted architecture.
 | Use-case contracts | Each application use case has request and response types, a repository interface, a use-case class, and a README. | Keep the contract shape enforced. |
 | Public game surface | `tools/architecture-rules.ts` blocks every `apps/web` file from importing retained modules directly from the `packages/game` root. It also blocks `apps/web/app` from importing domain, application, or infrastructure modules; `apps/web/lib` may import those layers for browser composition. | Keep both import rules enforced and use declared entries for package APIs. |
 | Game-to-player dependency | `tools/architecture-rules.ts`, `tools/check-architecture.mjs`, and `.dependency-cruiser.json` prohibit imports from `packages/game` into `apps/web`. | Keep the game package independent of player-interface modules. |
-| Public entries used by `apps/web` | The app imports `game-runtime-api.ts`, `campaign-types.ts`, `compatibility-types.ts`, `inventory-types.ts`, `battle-job-types.ts`, `game-snapshot-types.ts`, and `campaign-compiler-api.ts` from `packages/game/public`. | Treat the declared entries as a set of APIs, not as one runtime entry. |
-| Campaign compilation and saves | `CampaignCompiler` compiles a validated `CampaignDefinition`; the retained `compileCampaignPackage` adapter in `packages/game/campaign-library.js` delegates to it. `GameSnapshot` names the versioned save and worker representation. New saves write the active sector view under `sectorSession`, the sector entry request under `sectorEntryRequest`, the serving members under `forceRoster`, and the character records under `characters`; decoding reads legacy `battle` only when `sectorSession` is absent, legacy `pendingBattle` only when `sectorEntryRequest` is absent, legacy `recruited` only when `forceRoster` is absent, and legacy `operativeState` only when `characters` is absent. `GameSnapshotContent.battle` remains an in-memory field. | Keep supported save decoding behind the conversion policy. |
-| Domain rule ownership | Twenty-one game rules have domain ownership, including `WorldTimeline` clock advancement, `CARE_COMPOSURE_RELIEF` & `careComposureRelief` in `packages/game/domain/personnel/care-composure.ts`, and `directionTo` & `approximateHeardPosition` in `packages/game/domain/perception/npc-perception.ts`. Both retained modules re-export the perception rules. Retained modules still carry most simulation rules procedurally. The game uses `packages/game/domain/sector-sessions/tactical-space.ts`; `packages/campaign-format` keeps an independent map-validation copy. | Move remaining procedural rules behind the domain or a declared public entry. |
+| Public entries used by `apps/web` | Among the imports from [`packages/game/public`](../../../packages/game/public/) are `game-runtime-api.ts`, `campaign-types.ts`, `compatibility-types.ts`, `inventory-types.ts`, `battle-job-types.ts`, `game-snapshot-types.ts`, `campaign-compiler-api.ts`, `battle-preview-types.ts`, `hud-types.ts`, and `terrain-types.ts`; other modules expose save, persistence, refusal, journey, personnel, equipment, worker, and preview contracts. | Treat the declared entries as a set of APIs, not as one runtime entry. |
+| Campaign compilation | [`CampaignCompiler`](../../../packages/game/application/campaign-compiler/) is composed through [`createCampaignCompiler()`](../../../packages/game/public/campaign-compiler-api.ts). The browser loader is [`apps/web/lib/campaign-library.ts`](../../../apps/web/lib/campaign-library.ts); the static exporter uses the same public compiler entry. [`packages/game/campaign-library.js`](../../../packages/game/campaign-library.js) contains `CampaignLibraryCompilerRepository`, not the browser loader, and exports no `compileCampaignPackage` function. | Keep campaign compilation behind the declared public entry and keep browser file loading in `apps/web/lib`. |
+| Saved field names | The [`GameSnapshot`](../../../packages/game/public/game-snapshot-types.ts) envelope writes `campaign` and `sectorSession`. [`CampaignSnapshot`](../../../packages/game/public/campaign-types.ts) writes `sectorEntryRequest`, `forceRoster`, `characters`, `sectorSnapshots`, and `sceneSnapshots`. [`decodeSave`](../../../packages/game/save.ts) reads legacy top-level `battle` only when `sectorSession` is absent; it maps campaign keys `pendingBattle`, `recruited`, `operativeState`, `sectorStates`, and `sceneStates` to their corresponding current fields only when the current key is absent, then removes the old key. `GameSnapshotContent.battle` is an in-memory field. | Keep the current key authoritative when both names occur and preserve the legacy conversion contract. |
+| Sector-entry types | [`CampaignSnapshot.sectorEntryRequest`](../../../packages/game/public/campaign-types.ts) uses `CampaignSectorEntryRequest`, the saved campaign projection; the application use case retains its narrower `SectorEntryRequest` input. | Keep the public campaign projection distinct from the application request. |
+| Domain rule ownership | Twenty-one game rules have domain ownership, including `WorldTimeline` clock advancement, `CARE_COMPOSURE_RELIEF` & `careComposureRelief` in [`care-composure.ts`](../../../packages/game/domain/personnel/care-composure.ts), and `directionTo` & `approximateHeardPosition` in [`npc-perception.ts`](../../../packages/game/domain/perception/npc-perception.ts). Both retained modules re-export the perception rules. Retained modules still carry most simulation rules procedurally. The game uses [`tactical-space.ts`](../../../packages/game/domain/sector-sessions/tactical-space.ts); `packages/campaign-format` keeps an independent map-validation copy. | Move remaining procedural rules behind the domain or a declared public entry. |
 | Time and randomness | `GameSession` owns `RandomSource` and `WorldTimeline`. `drawCampaignRandom(session, draft)` draws through `session.randomSource` and writes its advanced seed to `draft.seed`. Campaign, strategic, and tactical clock paths advance `session.timeline`; campaign `hour` and optional `secondOfHour` project its accepted second. | Preserve session ownership and keep campaign clock fields as projections of accepted time. |
-| Compatibility table | The glossary maps retained API and save names to canonical terms. `recruitCivic` and `civicStatus` are not accepted; `candidateAdmission` is canonical. `beginAssault` remains a compatibility command. Validated legacy `hiringArrivals` entries start service immediately at a legal site or become a `RefundableRecruitmentClaim` if none is legal; the old field is removed. The saved campaign fields still to convert are `sectorStates` and `sceneStates`. | Convert the remaining saved campaign fields to canonical domain representations before retiring their compatibility names. |
+| Compatibility table | The glossary maps retained API and save names to canonical terms. `recruitCivic` and `civicStatus` are not accepted; `candidateAdmission` is canonical. Validated legacy `hiringArrivals` entries start service immediately at a legal site or become a `RefundableRecruitmentClaim` if none is legal; the old field is removed. The remaining compatibility items are `suspendedSectorSessions`, `beginAssault`, and the `sectorState` request property. | Define the suspended-visit saved shape and conversion, remove `beginAssault` after migrating callers, and replace `sectorState` with a glossary-backed request property. |
 | Resident position | `ResidentPositionReference` names the saved reference to a character identity and local position. | Keep the saved projection separate from character health and inventory ownership. |
 | Player-facing messages | The domain owns the sleep-need rule; the browser interface owns its sentence and campaign notices. | Keep player-facing copy outside domain and application code. |

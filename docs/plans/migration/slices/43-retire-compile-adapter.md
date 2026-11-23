@@ -1,47 +1,38 @@
-# Slice 43: the retained compile adapter goes away
+# Slice 43: use the public campaign compiler entry
 
-**Branch:** `migration/retire-compile-adapter`
-**Intent:** Remove the last retained adapter that stood in front of the
-campaign compiler, so the compiler is the only way to compile a campaign.
+## Compiler boundary
 
-## Why this slice exists
+`CampaignCompiler` in
+[`packages/game/application/campaign-compiler/`](../../../../packages/game/application/campaign-compiler/)
+applies runtime playability rules and resolves published campaign content.
+[`createCampaignCompiler()`](../../../../packages/game/public/campaign-compiler-api.ts)
+is the public composition entry; it constructs the compiler with
+`CampaignLibraryCompilerRepository`. The repository adapter in
+[`packages/game/campaign-library.js`](../../../../packages/game/campaign-library.js)
+admits parsed manifest and document data as
+[`CampaignDefinition`](../../../../packages/campaign-format/campaign-definition.ts),
+the immutable value defined by the shared file contract. It does not read
+browser files.
 
-[Slice 8](08-campaign-compiler.md) gave the game the `CampaignCompiler`
-application service and made it the path the game and the campaign editor use.
-One retained function was left standing in front of it:
-`compileCampaignPackage`, in `packages/game/campaign-library.js`, which the
-public entries still exported and `tools/campaign-export.mjs` still called.
+The browser loader is
+[`apps/web/lib/campaign-library.ts`](../../../../apps/web/lib/campaign-library.ts).
+It reads the registry, manifest, referenced documents, and maps, calls the
+public compiler entry, then verifies referenced asset bytes. The static
+exporter in [`tools/campaign-export.mjs`](../../../../tools/campaign-export.mjs)
+and editor project validation use the same compiler entry.
 
-The ubiquitous language lists that function as a compatibility name to retire.
-With this slice, the compiler is the only path to a compiled campaign.
+Current source and public entries do not define or export
+`compileCampaignPackage`. It is not the browser loader. The public compiler
+entry is the supported composition path from campaign-file data to
+runtime-playable content.
 
-## What it changes
+## Behavior to preserve
 
-- `tools/campaign-export.mjs` compiles through the campaign compiler's public
-  entry, the way the game and the editor already do.
-- The public entries stop exporting the retained function.
-- `packages/game/campaign-library.js` keeps the adapter that reads the shared
-  campaign-file contract, because the compiler needs it, and loses the
-  function that wrapped it.
-
-## What it does not change
-
-The compiled result, the rules the compiler applies, and the messages it
-refuses with. The campaign export tool produces the same package.
-
-## Tests
-
-- The existing campaign export and editor validation tests keep passing, which
-  proves the tool still compiles the same campaigns.
-- A test proves the retained function is no longer exported by the public
-  entries.
-
-## Verification
-
-- `npm test` passes, including the new test.
-- `npm run typecheck` passes.
-- `npm run check:architecture` passes.
-
-## Version
-
-`0.2.47` to `0.2.48`.
+- The compiler receives the manifest and parsed campaign documents and returns
+  resolved campaign content or throws a validation error.
+- Runtime playability rules, compiled content, and refusal messages remain
+  unchanged by the boundary.
+- Browser loading stays in `apps/web/lib`; the campaign repository adapter
+  stays in `packages/game`.
+- Public entries do not export `compileCampaignPackage`; callers use
+  `createCampaignCompiler()`.

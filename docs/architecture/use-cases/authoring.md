@@ -109,7 +109,7 @@ The second table below lists every authoring use case (`AUT-001` through `AUT-03
 - **AUT-028 (`edit-story-document-standalone`) and AUT-029 (`edit-map-json-standalone`):** Focused browser routes `/campaign-editor/?workspace=story` ([`apps/campaign-editor/web/app/story/page.tsx`](../../../apps/campaign-editor/web/app/story/page.tsx)) and `/campaign-editor/?workspace=sector` ([`apps/campaign-editor/web/app/editor/page.tsx`](../../../apps/campaign-editor/web/app/editor/page.tsx)).
 - **AUT-030 (`scaffold-check-or-refresh-package-from-cli`):** `No interface route` in the browser; developer CLI commands `npm run campaign:new`, `npm run campaign:check`, and `npm run campaign:assets` in [`tools/campaign-authoring.mjs`](../../../tools/campaign-authoring.mjs).
 - **AUT-031 (`publish-arbitrary-user-campaign-to-live-catalog`):** `No interface route`; static deployment has no backend upload server or shared live database.
-- **AUT-032 (`execute-imported-campaign-script`):** `Refused`; `CampaignDefinition` and `compileCampaignPackage` admit only structured data and allowlisted scenario IDs (`generic-v1` and `granaderos-historical-v1`).
+- **AUT-032 (`execute-imported-campaign-script`):** `Refused`; a campaign package contains structured data and must select an allowlisted scenario (`generic-v1` or `granaderos-historical-v1`). [`CampaignDefinition`](../../../packages/campaign-format/campaign-definition.ts) admits the file contract and [`CampaignCompiler`](../../../packages/game/application/campaign-compiler/README.md) validates and resolves it; imported scripts are not executed.
 
 ## Worked use case: import, edit, validate, and export a package
 

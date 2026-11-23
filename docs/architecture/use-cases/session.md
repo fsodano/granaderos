@@ -33,7 +33,7 @@ The table below lists each session use case by `ID`, its `Intent`, its `Exposure
 
 * **Actor / intent:** Player selects a campaign from the installed campaign registry before starting or resuming play.
 * **Request:** Choose an entry in the title-screen campaign selector or open the application with a `?campaign=<id>` query parameter.
-* **Result / state:** `loadCampaignRegistry` and `loadInstalledCampaign` resolve the registry entry, fetch `manifest.json` and the five referenced JSON documents plus map files, compile the `CampaignDefinition` via `compileCampaignPackage`, check referenced asset SHA-256 digests (`verifyCampaignResources`), update the URL, and apply the campaign's title presentation.
+* **Result / state:** `loadCampaignRegistry` and `loadInstalledCampaign` in [`apps/web/lib/campaign-library.ts`](../../../apps/web/lib/campaign-library.ts) resolve the registry entry and fetch the manifest, referenced JSON documents, and map files. `loadInstalledCampaign` calls [`createCampaignCompiler()`](../../../packages/game/public/campaign-compiler-api.ts) and invokes its `execute({ manifest, documents })` method with the parsed package, then `verifyCampaignResources` checks referenced asset SHA-256 digests before the UI updates the URL and applies the campaign title presentation.
 * **Guards / refusal:** Registry fetch errors, manifest identity mismatches, schema or playability errors, or SHA-256 asset mismatches refuse the selection and display an error notice; request-generation tracking discards stale concurrent loads.
 * **UI / source:** [`apps/web/app/page.tsx`](../../../apps/web/app/page.tsx) (`loadCampaignRegistry`, `chooseCampaign`, `selectCampaignURL`), [`apps/web/lib/campaign-library.ts`](../../../apps/web/lib/campaign-library.ts), and [content and campaigns](../content-and-campaigns.md).
 
@@ -75,7 +75,7 @@ The table below lists each session use case by `ID`, its `Intent`, its `Exposure
 
 * **Actor / intent:** Player downloads a portable JSON save file for backup or cross-device transfer.
 * **Request:** Activate the export button in the game header while a campaign is active.
-* **Result / state:** Calls `encodeSave(campaign, battle)` ([`packages/game/save.ts`](../../../packages/game/save.ts)) and downloads the versioned JSON envelope named after the campaign ID and campaign day.
+* **Result / state:** Calls `encodeSave(campaign, battle)` ([`packages/game/save.ts`](../../../packages/game/save.ts)) with the internal `GameSnapshotContent.battle` value; the encoder writes that sector view under the envelope key `sectorSession` and downloads the JSON save named after the campaign ID and campaign day.
 * **Guards / refusal:** Requires an active campaign snapshot and enforces the 5 MB encoded size limit (`packages/game/save-limits.js`).
 * **UI / source:** [`apps/web/app/page.tsx`](../../../apps/web/app/page.tsx) (`exportSave`) and [`packages/game/save.ts`](../../../packages/game/save.ts).
 

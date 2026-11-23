@@ -2,29 +2,23 @@
 
 [Architecture guide](README.md) · [Authoring use cases](use-cases/authoring.md) · [Rendering](rendering.md) · [Build and tooling](build-and-tooling.md)
 
-This page explains how published campaign packages (`packages/campaign-format`), runtime package compilation (`packages/game/campaign-library.js`), trusted scenario implementations (`content/campaigns/`), and the independent campaign editor (`apps/campaign-editor`) work together. It connects the component boundaries in [C4 views](c4.md) and the [system map](system-map.md) to the authoring intentions in [authoring use cases](use-cases/authoring.md), the save representations in [persistence](persistence.md), and the staging pipeline in [build and tooling](build-and-tooling.md).
+This page explains how published campaign packages (`packages/campaign-format`), `CampaignCompiler` (the application service that applies runtime playability rules and resolves campaign content), trusted scenario implementations (`content/campaigns/`), and the independent campaign editor (`apps/campaign-editor`) work together. The browser game loads package files through [`apps/web/lib/campaign-library.ts`](../../apps/web/lib/campaign-library.ts); the static exporter reads campaign folders through [`tools/campaign-export.mjs`](../../tools/campaign-export.mjs). Both compose the compiler through [`createCampaignCompiler()`](../../packages/game/public/campaign-compiler-api.ts). `CampaignLibraryCompilerRepository` in [`packages/game/campaign-library.js`](../../packages/game/campaign-library.js) admits parsed documents to the compiler; it is not the browser loader. This page connects the component boundaries in [C4 views](c4.md) and the [system map](system-map.md) to the authoring intentions in [authoring use cases](use-cases/authoring.md), the save representations in [persistence](persistence.md), and the staging pipeline in [build and tooling](build-and-tooling.md).
 
 Campaigns are authored data packages interpreted by the game rather than executable plug-ins. A campaign manifest selects one of the engine's allowlisted scenario contracts (`generic-v1` or `granaderos-historical-v1`); it never loads arbitrary JavaScript from an imported package.
 
 ## At a glance
 
-The flowchart below shows how `Campaign package files` and `manifest.json` pass through the `campaign registry`, `compileCampaignPackage`, and `Campaign library / install` into `Validate world, maps, data, assets` to produce `Resolved campaign definitions` for `Runtime campaign and battle` and `Static build campaign staging`.
+The flowchart shows how the browser loads an installed campaign. The static exporter reads package files through a separate path but uses the same public compiler entry.
 
 ```mermaid
 flowchart TB
-  Files[Campaign package files] --> Manifest[manifest.json]
-  Manifest --> Registry[campaign registry]
-  Files --> Compile[compileCampaignPackage]
-  Manifest --> Compile
-  Registry --> Load[Campaign library / install]
-  Compile --> Validate[Validate world, maps, data, assets]
-  Load --> Validate
-  Validate --> Package[Resolved campaign definitions]
-  Package --> Play[Runtime campaign and battle]
-  Package --> Export[Static build campaign staging]
+  Files["Published campaign files<br/>(manifest and referenced documents)"] --> Loader["Browser loader<br/>reads registry, manifest, documents, and maps"]
+  Loader --> Compiler["Public compiler entry<br/>createCampaignCompiler() -> CampaignCompiler"]
+  Compiler --> Resolved["Resolved campaign content<br/>runtime rules applied"]
+  Resolved --> Loaded["Loaded campaign<br/>referenced asset bytes verified"]
 ```
 
-Each campaign `manifest.json` identifies the campaign and references five JSON documents: `content`, `world`, `maps` (a map index), `presentation`, and `assets`. Both `Campaign library / install` ([`apps/web/lib/campaign-library.ts`](../../apps/web/lib/campaign-library.ts)) and `Static build campaign staging` ([`tools/campaign-export.mjs`](../../tools/campaign-export.mjs)) pass loaded documents to `compileCampaignPackage` in [`packages/game/campaign-library.js`](../../packages/game/campaign-library.js), which constructs an immutable [`CampaignDefinition`](../../packages/campaign-format/campaign-definition.ts) and resolves runtime playable definitions. (Under the [accepted architecture plan](../plans/accepted/domain-architecture.md), `CampaignCompiler` in `packages/game/application` is the target application service for turning a validated `CampaignDefinition` into domain objects.)
+Each campaign `manifest.json` identifies the campaign and references five JSON documents: `content`, `world`, `maps` (a map index), `presentation`, and `assets`. The browser loader and static exporter read those documents and the listed map files, then pass the manifest and parsed documents to [`createCampaignCompiler()`](../../packages/game/public/campaign-compiler-api.ts). The public factory composes [`CampaignCompiler`](../../packages/game/application/campaign-compiler/) with `CampaignLibraryCompilerRepository`. That repository constructs an immutable [`CampaignDefinition`](../../packages/campaign-format/campaign-definition.ts); the compiler applies runtime playability rules and resolves the content. `packages/game/campaign-library.js` is the repository adapter, not the browser loader. After compilation, the browser loader verifies referenced resource digests, while the static exporter checks package assets before staging.
 
 The JSON snippet below shows a minimal authored `manifest.json` structure (based on the starter scaffold in [`apps/campaign-editor/infrastructure/project-scaffold.ts`](../../apps/campaign-editor/infrastructure/project-scaffold.ts)):
 
@@ -48,23 +42,19 @@ Here `format` (`"granaderos-campaign"`) and `version` (`1`) identify the manifes
 
 ## Package layout and validation contract
 
-A published campaign package lives under `content/campaigns/<id>/` and contains `manifest.json`, the five referenced JSON documents, individual map JSON files, and packaged media files. The campaign registry (`index.json`) uses format `granaderos-campaign-registry` (version `1`) to map each installed campaign's `id`, `name`, and `revision` to `<id>/manifest.json`.
+A published campaign package lives under `content/campaigns/<id>/` and contains `manifest.json`, the five referenced JSON documents, individual map JSON files, and packaged media files. There is no authored `content/campaigns/index.json`. During development, [`apps/web/vite.config.ts`](../../apps/web/vite.config.ts) registers the campaign-file middleware from [`tools/campaign-export.mjs`](../../tools/campaign-export.mjs); the middleware generates the registry response by scanning campaign folders. During a static build, `stageCampaigns` writes the generated registry to `.output/dist/campaigns/index.json` after the campaign folders are staged. The registry uses format `granaderos-campaign-registry` (version `1`) and maps each campaign's `id`, `name`, and `revision` to `<id>/manifest.json`.
 
-The flowchart below shows the validation sequence inside `compileCampaignPackage`: from `Manifest` through `Manifest and data validation`, `Content + world + maps + presentation + assets`, `World and map checks`, `Selected asset and path checks`, `Resolve content definitions`, and `Campaign content report` to either a `Resolved package` or `Reject`.
+The flowchart shows how shared file admission leads to runtime compilation. `CampaignDefinition` admits the authored documents; `CampaignCompiler` checks runtime constraints, resolves content, and rejects blocked campaign reports.
 
 ```mermaid
 flowchart TB
-  M[Manifest] --> S[Manifest and data validation]
-  S --> D[Content + world + maps + presentation + assets]
-  D --> W[World and map checks]
-  W --> A[Selected asset and path checks]
-  A --> R[Resolve content definitions]
-  R --> C[Campaign content report]
-  C -->|no blocked findings| P[Resolved package]
-  C -->|blocked / invalid| X[Reject]
+  Input["Manifest and documents"] --> Definition["CampaignDefinition<br/>shared file contract"]
+  Definition --> Compiler["CampaignCompiler<br/>runtime checks and content resolution"]
+  Compiler --> Report["campaignContentReport"]
+  Report --> Result["Compiled response or refusal"]
 ```
 
-First, `new CampaignDefinition(manifest, documents)` in `packages/campaign-format/campaign-definition.ts` validates the `Manifest`, runs `CampaignContentSchema` (`packages/campaign-format/content-schema.js`), checks world and map schemas, validates presentation and asset catalog references, freezes the documents, and computes a deterministic content identity (`contentIdentity`). Next, `compileCampaignPackage` in `packages/game/campaign-library.js` enforces 20x16 map dimensions, scenario-specific playability rules (such as requiring an enemy spawn in `generic-v1`), building-architecture references, and world-to-map locality coverage, resolves defaults via `resolveContent`, and runs `campaignContentReport` ([`packages/game/campaign-content.js`](../../packages/game/campaign-content.js)) to `Reject` any package with blocked findings. The resulting `Resolved package` carries `campaignOrigin` (`{ version: 1, id, revision }`).
+`CampaignLibraryCompilerRepository.load()` in [`packages/game/campaign-library.js`](../../packages/game/campaign-library.js) constructs `CampaignDefinition`. `CampaignDefinition` validates the manifest, shared document schemas, and cross-references, computes content identity, then retains immutable documents. `CampaignCompiler` checks runtime data and world rules, requires 20-by-16 campaign maps, applies scenario-specific playability rules (such as an enemy spawn for `generic-v1`), validates building-architecture references and world-to-map coverage, and checks selected asset references. It then resolves defaults through `resolveContent` and runs `campaignContentReport` ([`packages/game/campaign-content.js`](../../packages/game/campaign-content.js)); blocked findings refuse compilation. The returned content includes `campaignOrigin` (`{ version: 1, id, revision }`).
 
 ## Authoring paths and persistence boundaries
 
@@ -94,57 +84,26 @@ The editor supports two isolated playtest paths that never touch player saves or
 
 ## Runtime loading and build-time staging paths
 
-The sequence diagram below shows how the browser's `Installed campaign loader` ([`apps/web/lib/campaign-library.ts`](../../apps/web/lib/campaign-library.ts)) fetches a campaign from the `Static asset host`, compiles it with `compileCampaignPackage`, and checks asset digests through the `Resource verifier` (`verifyCampaignResources`).
+The flowchart shows how the browser's installed-campaign loader reads package files, invokes the compiler, checks asset digests, and returns a `LoadedCampaign`.
 
 ```mermaid
-sequenceDiagram
-  participant Loader as Installed campaign loader
-  participant Host as Static asset host
-  participant Compiler as compileCampaignPackage
-  participant Hash as Resource verifier
-  Loader->>Host: GET campaigns/index.json
-  Host-->>Loader: Registry entries and manifest path
-  Loader->>Host: GET manifest.json
-  Host-->>Loader: Manifest with five document paths
-  par Fetch five documents
-    Loader->>Host: GET content, world, maps index
-    Host-->>Loader: JSON documents
-  and
-    Loader->>Host: GET presentation and assets
-    Host-->>Loader: JSON documents
-  end
-  loop Each listed map
-    Loader->>Host: GET map JSON file
-    Host-->>Loader: Map document
-  end
-  Loader->>Compiler: Pass manifest and loaded documents
-  Compiler-->>Loader: Resolved definitions or validation error
-  Loader->>Hash: Verify referenced resource bytes
-  Hash->>Host: GET campaign asset bytes
-  Host-->>Hash: Resource bytes
-  Hash-->>Loader: Hash checks complete or mismatch
+flowchart TB
+  Host["Static asset host<br/>registry and campaign files"] --> Loader["Browser loader<br/>loadCampaignRegistry / loadInstalledCampaign"]
+  Loader --> Compiler["createCampaignCompiler()<br/>CampaignCompiler and repository"]
+  Compiler --> Resolved["Resolved campaign content"]
+  Resolved --> Loaded["verifyCampaignResources checks asset bytes<br/>loader returns LoadedCampaign"]
 ```
 
-At build time, static staging follows a separate filesystem sequence. The sequence diagram below shows how `tools/build-web.mjs` invokes `tools/campaign-export.mjs` to read each `content/campaigns/<id> folder`, validate it through `compileCampaignPackage`, check SHA-256 asset digests, and write the staged files to `.output/dist/campaigns`.
+At build time, static staging reads campaign folders from the repository and uses the same compiler entry before verifying assets and copying package files.
 
 ```mermaid
-sequenceDiagram
-  participant Build as tools/build-web.mjs
-  participant Export as tools/campaign-export.mjs
-  participant Source as content/campaigns/<id> folder
-  participant Compiler as compileCampaignPackage
-  participant Dist as .output/dist/campaigns
-  Build->>Export: stageCampaigns(root, destination)
-  Export->>Source: discover manifest.json folders
-  Export->>Source: verifyCampaignFolder per registry entry
-  Source-->>Export: manifest, five documents, map JSON, resource bytes
-  Export->>Compiler: Compile package documents
-  Compiler-->>Export: Resolved definitions or validation error
-  Export->>Source: Compare resource bytes with SHA-256 catalog
-  Export->>Dist: Copy JSON and assets for each valid campaign
-  Export->>Dist: Write registry index.json last
+flowchart TB
+  Build["tools/build-web.mjs"] --> Export["tools/campaign-export.mjs<br/>reads campaign folders"]
+  Export --> Compiler["createCampaignCompiler().execute()"]
+  Compiler --> Verify["Verify package asset SHA-256 digests"]
+  Verify --> Stage["Stage files and registry<br/>.output/dist/campaigns"]
 ```
 
 Default historical campaign data is exported by [`content/campaigns/default.js`](../../content/campaigns/default.js), and historical scenario rules live under [`content/campaigns/granaderos/scenario.js`](../../content/campaigns/granaderos/scenario.js), invoked through [`packages/game/campaign-scenario.js`](../../packages/game/campaign-scenario.js).
 
-Source anchors: [`packages/campaign-format/campaign-definition.ts`](../../packages/campaign-format/campaign-definition.ts), [`packages/game/campaign-library.js`](../../packages/game/campaign-library.js), [`packages/game/campaign-assets.js`](../../packages/game/campaign-assets.js), [`packages/game/campaign-content.js`](../../packages/game/campaign-content.js), [`packages/game/campaign-package-storage.js`](../../packages/game/campaign-package-storage.js), [`apps/campaign-editor/domain/campaign-project.ts`](../../apps/campaign-editor/domain/campaign-project.ts), [`apps/campaign-editor/infrastructure/project-validation.js`](../../apps/campaign-editor/infrastructure/project-validation.js), [`tools/campaign-export.mjs`](../../tools/campaign-export.mjs), and [`tools/campaign-authoring.mjs`](../../tools/campaign-authoring.mjs).
+Source anchors: [`packages/campaign-format/campaign-definition.ts`](../../packages/campaign-format/campaign-definition.ts), [`packages/game/application/campaign-compiler/`](../../packages/game/application/campaign-compiler/), [`packages/game/public/campaign-compiler-api.ts`](../../packages/game/public/campaign-compiler-api.ts), [`packages/game/campaign-library.js`](../../packages/game/campaign-library.js), [`apps/web/lib/campaign-library.ts`](../../apps/web/lib/campaign-library.ts), [`packages/game/campaign-assets.js`](../../packages/game/campaign-assets.js), [`packages/game/campaign-content.js`](../../packages/game/campaign-content.js), [`packages/game/campaign-package-storage.js`](../../packages/game/campaign-package-storage.js), [`apps/campaign-editor/domain/campaign-project.ts`](../../apps/campaign-editor/domain/campaign-project.ts), [`apps/campaign-editor/infrastructure/project-validation.js`](../../apps/campaign-editor/infrastructure/project-validation.js), [`tools/campaign-export.mjs`](../../tools/campaign-export.mjs), and [`tools/campaign-authoring.mjs`](../../tools/campaign-authoring.mjs).

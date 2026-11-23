@@ -16,15 +16,33 @@ Strategic operations combine domain classes in `packages/game/domain`, use cases
 - **Journeys and hostile arrivals:** `Journey` owns strategic route progress, transport mode, physical segment position, and movement purpose (`JourneyPurpose`). `ArrivalDecision` owns the mutually exclusive fight-or-withdraw choice when a journey reaches a hostile sector boundary, pausing campaign time until resolved by `FightOnArrivalUseCase` or `WithdrawOnArrivalUseCase`. `RedirectJourneyUseCase` replaces a journey's route from its actual segment position while preserving elapsed time, paid segment fares, and fatigue, including immediate reversal at zero elapsed time.
 - **World evolution, sessions, and item custody:** `GameSession` owns session identity, `revision`, and active or suspended `SectorSession` registrations (`ResumeSectorSessionUseCase` switches active authority to a suspended visit). `Sector` owns environment bounds and references to current residents, participants, objects, and corpses without duplicating `Character` health or `Inventory` custody. `ResidentPositionReference` (`residentPositions`) is a read-only projection of a non-participating serving character's saved local post. `WorldTimeline` owns monotonic game time (`WorldTimeline.advanceTo` is the only domain clock mutation), ordering `Corpse` removal (72 game hours after death via `AdvanceWorldTimeUseCase`) and `ResidentRoutine` supply collection (`CollectResidentSupplyUseCase` and `ScavengingPolicy`).
 
-The serialized fields `sectorEntryRequest` and `characters` remain
-at the compatibility snapshot boundary and map to canonical domain objects
-through `GameSnapshotMapper`, `CanonicalPersonnelMapper`, `JourneySnapshotMapper`,
-and `CanonicalWorldMapper`. During restoration, valid entries in the legacy
-`hiringArrivals` array start service at a legal site at the saved campaign time;
-if no site is legal, they become `RefundableRecruitmentClaim` records.
-Restoration removes the legacy array, and the optional
-`refundableRecruitmentClaims` field stores unresolved claims. New domain and
-application modules use the canonical
+The [`GameSnapshot`](../../packages/game/public/game-snapshot-types.ts) envelope
+stores `campaign` and the active sector view under `sectorSession`.
+[`CampaignSnapshot`](../../packages/game/public/campaign-types.ts) stores the entry request under
+`sectorEntryRequest`, force membership under `forceRoster`, per-character
+records under `characters`, and retained maps under `sectorSnapshots` and
+`sceneSnapshots`. The saved request uses
+[`CampaignSectorEntryRequest`](../../packages/game/public/campaign-types.ts); the
+application use case accepts the narrower
+[`SectorEntryRequest`](../../packages/game/application/sector-sessions/enter-sector/sector-entry.request.ts).
+The envelope's decoded in-memory pair still calls its sector field `battle`,
+and `sectorState` is a [`CampaignAction`](../../packages/game/public/campaign-types.ts)
+request property rather than a saved field.
+
+[`decodeSave`](../../packages/game/save.ts) accepts top-level legacy `battle`
+only when `sectorSession` is absent. It also maps `pendingBattle` to
+`sectorEntryRequest`, `recruited` to
+`forceRoster`, `operativeState` to `characters`, `sectorStates` to
+`sectorSnapshots`, and `sceneStates` to `sceneSnapshots` only when the
+corresponding current field is absent; the current field wins and the legacy
+key is removed. These serialized projections map to canonical domain objects
+through `GameSnapshotMapper`, `CanonicalPersonnelMapper`,
+`JourneySnapshotMapper`, and `CanonicalWorldMapper`. During restoration, valid
+entries in the legacy `hiringArrivals` array start service at a legal site at
+the saved campaign time; if no site is legal, they become
+`RefundableRecruitmentClaim` records. Restoration removes that legacy array,
+and the optional `refundableRecruitmentClaims` field stores unresolved claims.
+New domain and application modules use the canonical
 [ubiquitous language](../plans/accepted/ubiquitous-language.md).
 
 ## Ownership and state boundary
@@ -41,7 +59,7 @@ The table below lists representative top-level `Field` groups on the serialized 
 | `forceRoster`, `characters`, `squad`, `squads`, `activeSquadId` | `ForceRoster` membership, per-character `Character` / `Health` / location / assignment records, and `Squad` / `Journey` state |
 | `resources`, `reputation`, `log` | `Treasury` and campaign resource balances, faction standing, and bounded activity log |
 | `contracts`, `quests`, `missions` | Compatibility projection of `ServiceContract` terms, authored quest state, and mission progression |
-| `pendingEncounter`, `sectorEntryRequest`, `suspendedSectorSessions` | Active strategic enemy-group encounter, `SectorEntryRequest` (`sectorEntryRequest`), and suspended `SectorSession` records |
+| `pendingEncounter`, `sectorEntryRequest`, `suspendedSectorSessions` | Active strategic enemy-group encounter, the saved `CampaignSectorEntryRequest`, and suspended `SectorSession` request-and-snapshot records |
 | `lastError` | Localized Spanish explanation of the most recent refused command; cleared on the next accepted dispatch |
 
 When authored content is active, its frozen package definition is pinned under `contentCampaign.package`; campaign cloning reuses that immutable package reference while deep-cloning mutable gameplay state.
