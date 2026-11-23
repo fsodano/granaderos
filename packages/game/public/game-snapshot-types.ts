@@ -12,9 +12,11 @@ export type GameSnapshotContent = Readonly<{
   battle: BattleSnapshot | null;
 }>;
 
-export interface GameSnapshot extends GameSnapshotContent {
+export interface GameSnapshot {
   readonly format: 'granaderos';
   readonly schema: 1 | 2;
   readonly savedAt: string;
   readonly mapping?: GameSnapshotMapping;
+  readonly campaign: CampaignSnapshot;
+  readonly sectorSession: BattleSnapshot | null;
 }

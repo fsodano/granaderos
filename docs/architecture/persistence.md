@@ -20,7 +20,7 @@ Persistence separates two jobs:
   "savedAt": "ISO-8601 timestamp",
   "mapping": { "version": 1, "sessionId": "unique game session", "revision": 4 },
   "campaign": "campaign snapshot",
-  "battle": "battle snapshot or null"
+  "sectorSession": "sector session snapshot or null"
 }
 ```
 
@@ -29,11 +29,11 @@ In this envelope:
 - `format` (`"granaderos"`) and `schema` (`1` for raw tiles or `2` when palette terrain compaction is applied) identify the save codec version.
 - `savedAt` records the ISO-8601 encoding timestamp.
 - `mapping` records the domain snapshot mapping `version` (`1`), the `GameSession` `sessionId`, and the accepted `revision`. These values must match `campaign.gameSessionId` and `campaign.gameRevision`. Legacy saves without a session ID receive a fresh ID on restoration; mismatched IDs or revisions are rejected.
-- `campaign` and `battle` hold the serialized strategic and active sector snapshots, encoded with custom replacers for pinned campaign packages, cell scenes, artillery definitions, and weapons.
+- `campaign` and `sectorSession` hold the serialized strategic and active sector snapshots, encoded with custom replacers for pinned campaign packages, cell scenes, artillery definitions, and weapons.
 
 Three distinct byte thresholds in [`packages/game/save-limits.js`](../../packages/game/save-limits.js) govern encoding and decoding:
 
-- **1,000,000 bytes (compaction trigger):** If the initial encoded JSON is under 1 MB, it remains `schema: 1`. At or above 1 MB, eligible tile arrays across the active `battle`, `campaign.sectorStates`, `campaign.sceneStates`, and `pendingBattle.resumeSnapshot` are palette-compacted (`{ encoding: "palette-v1", palette: [...], indices: [...] }`), switching `schema` to `2` if at least one map shrinks. Cell scenes use their own `cell-tiles-v1` compaction in [`packages/game/cell-scene-storage.js`](../../packages/game/cell-scene-storage.js).
+- **1,000,000 bytes (compaction trigger):** If the initial encoded JSON is under 1 MB, it remains `schema: 1`. At or above 1 MB, eligible tile arrays across the active `sectorSession`, `campaign.sectorStates`, `campaign.sceneStates`, and `pendingBattle.resumeSnapshot` are palette-compacted (`{ encoding: "palette-v1", palette: [...], indices: [...] }`), switching `schema` to `2` if at least one map shrinks. Cell scenes use their own `cell-tiles-v1` compaction in [`packages/game/cell-scene-storage.js`](../../packages/game/cell-scene-storage.js).
 - **20,000,000 UTF-8 bytes (`MAX_EXPANDED_SAVE_BYTES`):** Bounds the uncompacted or expanded JSON size before compaction or during `schema: 2` expansion to prevent decompression bombs.
 - **5,000,000 bytes / characters (`assertSaveSize`):** Bounds the final persisted or imported JSON string (both UTF-8 byte length and JavaScript string length).
 
@@ -41,7 +41,7 @@ Three distinct byte thresholds in [`packages/game/save-limits.js`](../../package
 
 `decodeSave(text)` in `packages/game/save.ts` validates and restores a portable save in six steps:
 
-1. Enforce the 5 MB input size cap, parse JSON, and require `format === "granaderos"` with `schema` `1` or `2`.
+1. Enforce the 5 MB input size cap, parse JSON, and require `format === "granaderos"` with `schema` `1` or `2`. Read the sector view from `sectorSession`, or from the legacy `battle` key that saves written before the rename still carry.
 2. For `schema: 2`, expand `palette-v1` terrain arrays subject to the 20 MB expanded cap.
 3. Clone and restore the campaign snapshot via `restoreCampaignValue` and expand any compact `cell-tiles-v1` scene data against that campaign.
 4. Require `Boolean(campaign.pendingBattle)` to agree with `Boolean(battle)`, restore weapon, artillery, and character references, and verify fitting, ammunition, and exit version compatibility.

@@ -69,7 +69,7 @@ export function encodeSave(
     savedAt: new Date().toISOString(),
     ...(mapping === undefined ? {} : { mapping }),
     campaign,
-    battle,
+    sectorSession: battle,
   };
   const text = JSON.stringify(snapshot, replacer),
     bytes = saveByteLength(text);
@@ -109,7 +109,9 @@ function decodeGameSave(text: string, validateOpenVisits: boolean): GameSnapshot
   }
   const legacyCivilians = value['campaign']['civilianState'] === undefined;
   const campaign = restoreCampaignValue(structuredClone(value['campaign']));
-  const b = expandCellScene(value['battle'], campaign);
+  const savedSectorView =
+    value['sectorSession'] !== undefined ? value['sectorSession'] : value['battle'];
+  const b = expandCellScene(savedSectorView, campaign);
   if (b !== null && b !== undefined && !isJsonObject(b)) {
     throw Error('La batalla guardada no es válida.');
   }

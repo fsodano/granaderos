@@ -179,7 +179,7 @@ void test('validated legacy saves gain a missing battle identity without gaining
   const s = deployed(),
     b = enterSector(s.pendingBattle),
     raw = parseJsonObject(encodeSave(s, b));
-  const rawBattle = raw['battle'];
+  const rawBattle = raw['sectorSession'];
   assert.ok(isJsonObject(rawBattle));
   delete rawBattle['battleId'];
   const loaded = decodeSave(JSON.stringify(raw));
@@ -191,7 +191,7 @@ void test('validated legacy saves gain a missing battle identity without gaining
   rejected(loaded.campaign, receipt(loaded.campaign, present(loaded.battle)));
   assert.equal(loaded.campaign.location, s.location);
   const wrong = structuredClone(raw),
-    wrongBattle = wrong['battle'];
+    wrongBattle = wrong['sectorSession'];
   assert.ok(isJsonObject(wrongBattle));
   wrongBattle['sectorId'] = 'retiro';
   assert.throws(() => decodeSave(JSON.stringify(wrong)));

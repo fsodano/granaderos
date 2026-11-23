@@ -458,7 +458,7 @@ void test('saved position references reject forged positions and upgrade an olde
     expected = structuredClone(present(fixture.battle.residentPositions));
   assert.equal(expected.length, 2);
   const legacy = parseJsonObject(encoded),
-    legacyBattle = legacy['battle'];
+    legacyBattle = legacy['sectorSession'];
   assert.ok(isJsonObject(legacyBattle));
   delete legacyBattle['residentPositions'];
   const restored = decodeSave(JSON.stringify(legacy));
@@ -501,7 +501,7 @@ void test('saved position references reject forged positions and upgrade an olde
     }),
   ]) {
     const forged = parseJsonObject(encoded),
-      forgedBattle = forged['battle'];
+      forgedBattle = forged['sectorSession'];
     assert.ok(isJsonObject(forgedBattle));
     const reference = alter(structuredClone(present(expected[0])));
     forgedBattle['residentPositions'] = [reference, ...expected.slice(1)];

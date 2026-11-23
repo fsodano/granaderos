@@ -1,7 +1,7 @@
 import type { CampaignSnapshot } from '../packages/game/public/campaign-types.ts';
 import type { BattleSnapshot, BattleTile } from '../packages/game/public/compatibility-types.ts';
 import type { GameSnapshotContent } from '../packages/game/public/game-snapshot-types.ts';
-import { parseJsonObject } from '../packages/campaign-format/json-value.ts';
+import { parseJsonObject, isJsonObject } from '../packages/campaign-format/json-value.ts';
 import { present } from './assert-present.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -43,6 +43,33 @@ void test('the game snapshot types describe the envelope the save produces', () 
   assert.equal(envelope['format'], 'granaderos');
   assert.ok(envelope['schema'] === 1 || envelope['schema'] === 2);
   assert.equal(typeof envelope['savedAt'], 'string');
+});
+
+void test('a save writes the sector view under sectorSession and never under battle', () => {
+  const pair = deployed();
+  const envelope = parseJsonObject(encodeSave(pair.campaign, pair.battle));
+  assert.ok(isJsonObject(envelope['sectorSession']));
+  assert.equal(Object.hasOwn(envelope, 'battle'), false);
+  const empty = parseJsonObject(encodeSave(pair.campaign));
+  assert.equal(empty['sectorSession'], null);
+  assert.equal(Object.hasOwn(empty, 'battle'), false);
+});
+
+void test('a save written with the legacy battle key loads identically and is rewritten under sectorSession', () => {
+  const pair = deployed();
+  const current = parseJsonObject(encodeSave(pair.campaign, pair.battle));
+  const legacy = structuredClone(current);
+  assert.ok(isJsonObject(legacy['sectorSession']));
+  legacy['battle'] = legacy['sectorSession'];
+  delete legacy['sectorSession'];
+  const fromCurrent = decodeSave(JSON.stringify(current));
+  const fromLegacy = decodeSave(JSON.stringify(legacy));
+  assert.deepEqual(fromLegacy, fromCurrent);
+  assert.deepEqual(fromLegacy, pair);
+  const rewritten = parseJsonObject(encodeSave(fromLegacy.campaign, fromLegacy.battle));
+  assert.ok(isJsonObject(rewritten['sectorSession']));
+  assert.deepEqual(rewritten['sectorSession'], current['sectorSession']);
+  assert.equal(Object.hasOwn(rewritten, 'battle'), false);
 });
 
 void test('a save whose terrain is compacted carries schema 2', () => {
