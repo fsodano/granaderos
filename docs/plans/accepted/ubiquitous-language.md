@@ -34,6 +34,7 @@ names to players.
 | `SquadFormationService` | Validate shared membership and move selected combatants between squads without changing their physical location. | Reglas de formación |
 | `RecruitmentCatalogue` | A read-only collection of recruitment candidates with explicit availability, specialty, and ordering rules. | Lista de reclutamiento |
 | `candidateAdmission` | Read whether a recruitment candidate can be admitted to the force and why not. It answers from the candidate's condition, a pending claim, service terms, and relationship refusals. It does not define a second category of recruit. | Admisión del candidato |
+| `RefundableRecruitmentClaim` | A prepaid recruitment whose recruit cannot begin service until a legal recruitment site exists. It owns the planned destination, the booked service terms, the payment already made, and the guarantee receipt. Restoration creates it only when no site is legal; each campaign tick starts the service at the first legal site, and the player can cancel it at the desk to settle the guarantee and refund the treasury. It has no travel schedule and is not a `Journey`. | Solicitud de reclutamiento reembolsable |
 | `GetRecruitmentCandidates` | Read the filtered recruitment catalogue without changing time, funds, or service. | Consultar candidatos |
 | `Journey` | Strategic movement along a route, with actual position, elapsed progress, destination, and movement purpose. | Viaje |
 | `JourneyPurpose.Withdrawal` | A journey moving away from a hostile arrival. It remains eligible for redirection. | Retirada |
@@ -167,6 +168,12 @@ domain can stay independent of the shared file contract.
 The former `civicStatus` name came from the civic-recruit list the query
 consulted and did not describe what the query answered.
 
+`RefundableRecruitmentClaim` names money already paid for a recruit who cannot
+start service because no legal recruitment site exists. It is not a travelling
+recruit: it has no travel schedule and does not delay control. The snapshot
+field `refundableRecruitmentClaims` carries these claims, while a legacy
+snapshot's `hiringArrivals` record is converted on restoration.
+
 ## Naming rules for implementation
 
 - Name each use case after one domain intention. Use the same stem for its class,
@@ -229,7 +236,6 @@ meaning and owner without knowing the conversation or an earlier version.
 | `sectorStates` / `sceneStates` | Retained physical sector and mission-scene snapshot maps on the campaign snapshot; mapped to `Sector`, `Inventory`, `WorldTimeline`, `ResidentRoutine`, and `Corpse` without duplicating character or inventory ownership. | Campaign snapshot fields mapped by `GameSnapshotMapper` (`packages/game/infrastructure/persistence/game-snapshot-mapper.js`) and `CanonicalWorldMapper` (`packages/game/infrastructure/persistence/canonical-world-mapper.js`), and read by `packages/game/campaign-scenario.js`, `packages/game/deployment-return.js`, `packages/game/sector-inventory.js`, `packages/game/save-terrain.js`, and the `packages/game` world and persistence modules that retain these maps | Stage 8 (Compatibility retirement) |
 | `suspendedSectorSessions` | Serialized list of `{ request, snapshot }` records for open `SectorSession` visits suspended while another squad resolves an arrival decision or visit. | Campaign snapshot field mapped by `GameSnapshotMapper` (`packages/game/infrastructure/persistence/game-snapshot-mapper.js`) and `packages/game/infrastructure/session/campaign-game-session-mapper.js`, and read by `packages/game/infrastructure/session/campaign-sector-session-coordinator.js`, `packages/game/infrastructure/session/campaign-resume-sector-session.repository.js`, `packages/game/infrastructure/session/validate-suspended-sector-sessions.js`, and `apps/web/app/page.tsx` | Stage 8 (Compatibility retirement) |
 | `beginAssault` | Compatibility resolution of the current hostile arrival decision for every squad already at the target sector's boundary. It cannot bypass the required decision or its identity. | `dispatchCampaign` (`packages/game/campaign.js`); typed in `packages/game/public/campaign-types.ts` | Stage 8 (Compatibility retirement) |
-| `hiringArrivals` | Prepaid claims in supported older snapshots. Restoration admits them immediately at a legal site or preserves a refundable claim when no site is safe. New recruitment does not create a travel delay. | Campaign snapshot field owned by `packages/game/hiring-arrivals.js` and read by `packages/game/campaign.js`, `packages/game/campaign-scenario.js`, `packages/game/service-equipment-return.js`, `packages/game/service-guarantees.js`, `packages/game/strategic-clock.ts`, `apps/web/app/Desk.tsx`, and `apps/web/app/Recruitment.tsx` | Stage 8 (Compatibility retirement) |
 | `compileCampaignPackage` | Retained adapter that delegates to `CampaignCompiler`. It admits the same documents and returns the same compiled content; new callers use `CampaignCompiler` through `packages/game/public/campaign-compiler-api.ts`. | `packages/game/campaign-library.js`; still served to `tools/campaign-export.mjs` and the `campaign-editor-api` and `game-runtime-api` re-exports | Stage 8 (Compatibility retirement) |
 
 These names remain at serialization and compatibility boundaries. Domain and

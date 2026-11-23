@@ -133,7 +133,6 @@ export function initialState(seed, _definitions) {
     artilleryCustodyVersion: 1,
     nextArtilleryId: 1,
     civilianState: { version: 2, people: {} },
-    hiringArrivals: [],
     equipmentShipments: [],
     missions: {},
     sceneStates: {},

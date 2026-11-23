@@ -41,9 +41,6 @@ export function strategicClockInterrupt(
   if (changed(before.logisticsNotice, after.logisticsNotice)) {
     return 'Hay novedades en suministros y entregas.';
   }
-  if ((after.hiringArrivals?.length ?? 0) < (before.hiringArrivals?.length ?? 0)) {
-    return 'Llegó un combatiente contratado.';
-  }
   const questEvent = (after.contentQuestEvents ?? [])
     .slice(before.contentQuestEvents?.length ?? 0)
     .at(-1);

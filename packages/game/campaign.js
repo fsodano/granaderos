@@ -205,13 +205,12 @@ import {
 } from './weapon-definition.ts';
 import { equipArmoryItem, validateArmoryItems } from './armory-items.js';
 import {
-  hiringArrivalOptions,
-  pendingHire,
-  nextHireArrivalSeconds,
-  redirectHire,
-  cancelHireArrival,
-  validateHireArrivals,
-} from './hiring-arrivals.js';
+  recruitmentSites,
+  pendingRecruitmentClaim,
+  cancelRecruitmentClaim,
+  validateLegacyHiringArrivals,
+  validateRecruitmentClaims,
+} from './recruitment-claims.js';
 import { attachCampaignContent, validateCampaignContent } from './campaign-content.js';
 import {
   scenarioFor,
@@ -644,28 +643,63 @@ function receiveHire(s, arrival, joinSquad = true) {
     }
   }
 }
-function receiveDueHires(s, joinSquad = true) {
-  const availableSites = hiringArrivalOptions(s);
-  for (const booking of (s.hiringArrivals ?? []).slice()) {
+function recruitmentClaimFromArrival(booking) {
+  return {
+    operativeId: booking.operativeId,
+    destination: booking.destination,
+    bookedAt: booking.bookedAt,
+    ...(booking.bookedSecond !== undefined ? { bookedSecond: booking.bookedSecond } : {}),
+    term: booking.term,
+    ...(booking.priceScale !== undefined ? { priceScale: booking.priceScale } : {}),
+    paid: booking.paid,
+    permanent: booking.permanent,
+    serviceHours: booking.serviceHours,
+    ...(booking.guaranteeId !== undefined ? { guaranteeId: booking.guaranteeId } : {}),
+  };
+}
+function migrateLegacyHiringArrivals(s) {
+  if (s.hiringArrivals === undefined) {
+    return;
+  }
+  validateLegacyHiringArrivals(s, rosterFor(s));
+  const availableSites = recruitmentSites(s);
+  for (const booking of s.hiringArrivals) {
     const destination =
       availableSites.find((site) => site.id === booking.destination)?.id ??
+      availableSites.find((site) => site.id === s.location)?.id ??
+      availableSites[0]?.id;
+    if (destination) {
+      receiveHire(s, { ...booking, destination });
+    } else {
+      (s.refundableRecruitmentClaims ??= []).push(recruitmentClaimFromArrival(booking));
+    }
+  }
+  delete s.hiringArrivals;
+}
+function receiveDueRecruitmentClaims(s, joinSquad = true) {
+  const availableSites = recruitmentSites(s);
+  for (const claim of (s.refundableRecruitmentClaims ?? []).slice()) {
+    const destination =
+      availableSites.find((site) => site.id === claim.destination)?.id ??
       availableSites.find((site) => site.id === s.location)?.id ??
       availableSites[0]?.id;
     if (!destination) {
       continue;
     }
-    const record = s.operativeState[booking.operativeId];
+    const record = s.operativeState[claim.operativeId];
     if (
       !record?.alive ||
       record.captured ||
       record.serviceEquipmentReturn ||
-      s.recruited.includes(booking.operativeId) ||
-      s.contracts[booking.operativeId]
+      s.recruited.includes(claim.operativeId) ||
+      s.contracts[claim.operativeId]
     ) {
       continue;
     }
-    receiveHire(s, { ...booking, destination }, joinSquad);
-    s.hiringArrivals = s.hiringArrivals.filter((candidate) => candidate !== booking);
+    receiveHire(s, { ...claim, destination }, joinSquad);
+    s.refundableRecruitmentClaims = s.refundableRecruitmentClaims.filter(
+      (candidate) => candidate !== claim,
+    );
   }
   s.recruitmentVersion = 2;
 }
@@ -2059,7 +2093,6 @@ function advanceOffscreenTime(s, seconds) {
       nextContentQuestDeadline(s),
       nextCampaignPresenceChange(s),
       nextCampaignEventTime(s),
-      at + (nextHireArrivalSeconds(s) ?? Infinity),
       at + (nextContractExpirySeconds(s) ?? Infinity),
     );
     requireThat(
@@ -2081,7 +2114,7 @@ function advanceOffscreenTime(s, seconds) {
     // crossed by an explicit wait that retains its fractional starting second.
     if (s.secondOfHour || at < end) {
       contractEvents.push(...expireDueContracts(s));
-      receiveDueHires(s);
+      receiveDueRecruitmentClaims(s);
       synchronizeSquad(s);
     }
     advanceCampaignEvents(s, scenarioContext(s));
@@ -2110,7 +2143,7 @@ function advanceQueuedTravel(s, seconds, stopAtEveryArrival = false) {
 }
 function advanceFractionalSystems(s, seconds, continuousClock = false) {
   const expired = [...advanceOffscreenTime(s, seconds), ...expireDueContracts(s)];
-  receiveDueHires(s);
+  receiveDueRecruitmentClaims(s);
   synchronizeSquad(s);
   advanceQueuedTravel(s, seconds, continuousClock);
   settleEnemyEncounters(s);
@@ -2262,7 +2295,7 @@ function advanceCampaignHour(s, options) {
   refreshEnemyIntelligence(s, options);
   // Occupation and blockade are resolved before delivery.
   logisticsEvents.push(...deliverEquipmentShipments(s), ...deliverArtilleryTransfers(s));
-  receiveDueHires(s, joinArrivals);
+  receiveDueRecruitmentClaims(s, joinArrivals);
   synchronizeSquad(s);
   synchronizeCampaignPresence(s);
   synchronizeDialogueMovements(s);
@@ -2311,7 +2344,6 @@ function advanceCampaignSeconds(s, requestedSeconds, options = {}) {
       remaining,
       3600 - (s.secondOfHour ?? 0),
       nextSquadTravelBoundarySeconds(s) ?? Infinity,
-      nextHireArrivalSeconds(s) ?? Infinity,
       nextContractExpirySeconds(s) ?? Infinity,
       nextContentQuestDeadline(s) - now,
     );
@@ -2578,8 +2610,7 @@ export function dispatchCampaign(previous, action) {
           'configureArtillery',
           'repurchaseArtillery',
           'resupplyArtillery',
-          'redirectHire',
-          'cancelHireArrival',
+          'cancelRecruitmentClaim',
           'sectorInventory',
           'supplyArtillery',
           'storeArtillery',
@@ -3004,7 +3035,7 @@ export function dispatchCampaign(previous, action) {
           break;
         }
         const before = s.hour * 3600 + (s.secondOfHour ?? 0);
-        const arrivalsBefore = s.hiringArrivals?.length ?? 0;
+        const claimsBefore = s.refundableRecruitmentClaims?.length ?? 0;
         const wasCompleted = Boolean(s.completed);
         const questEventsBefore = s.contentQuestEvents?.length ?? 0;
         const stats = JSON.stringify(
@@ -3015,7 +3046,6 @@ export function dispatchCampaign(previous, action) {
           const step = Math.min(
             remaining,
             3600 - (s.secondOfHour ?? 0),
-            nextHireArrivalSeconds(s) ?? Infinity,
             nextContractExpirySeconds(s) ?? Infinity,
             nextContractWarningSeconds(s) ?? Infinity,
             nextContentQuestDeadline(s) - now,
@@ -3053,7 +3083,7 @@ export function dispatchCampaign(previous, action) {
             s.logisticsNotice ||
             s.travelNotice ||
             gained ||
-            (s.hiringArrivals?.length ?? 0) < arrivalsBefore ||
+            (s.refundableRecruitmentClaims?.length ?? 0) < claimsBefore ||
             (s.contentQuestEvents?.length ?? 0) > questEventsBefore
           ) {
             break;
@@ -3340,18 +3370,14 @@ export function dispatchCampaign(previous, action) {
         }
         break;
       }
-      case 'redirectHire':
-        redirectHire(s, action.id, action.destination);
-        note(s, 'Se cambia el destino de incorporación. El pago ya está registrado.');
-        break;
-      case 'cancelHireArrival':
+      case 'cancelRecruitmentClaim':
         requireThat(
           action.expectedGuaranteeId === undefined ||
-            pendingHire(s, action.id)?.guaranteeId === action.expectedGuaranteeId,
-          'La llegada cambió. Revisá el contrato antes de cancelar.',
+            pendingRecruitmentClaim(s, action.id)?.guaranteeId === action.expectedGuaranteeId,
+          'La solicitud cambió. Revisá el contrato antes de cancelar.',
         );
-        cancelHireArrival(s, action.id);
-        note(s, 'Se cancela la llegada y se devuelve el anticipo.');
+        cancelRecruitmentClaim(s, action.id);
+        note(s, 'Se cancela la solicitud y se devuelve el anticipo.');
         break;
       case 'recruit':
         throw Error('Los combatientes locales se incorporan mediante encuentros personales.');
@@ -4408,7 +4434,7 @@ export function dispatchCampaign(previous, action) {
     }
     updateContentQuests(s);
     releaseDeferred(s);
-    receiveDueHires(s);
+    receiveDueRecruitmentClaims(s);
     synchronizeSquad(s);
     synchronizeCampaignPresence(s);
     synchronizeDialogueMovements(s);
@@ -5022,7 +5048,8 @@ export function restoreCampaignValue(s) {
       s.operativeState[op.id].maxHp = op.maxHp;
     }
   }
-  validateHireArrivals(s, rosterFor(s));
+  validateLegacyHiringArrivals(s, rosterFor(s));
+  validateRecruitmentClaims(s, rosterFor(s));
   validateServiceGuarantees(s, rosterFor(s));
   validatePendingVictoryFunds(s);
   requireThat(
@@ -5331,13 +5358,14 @@ export function restoreCampaignValue(s) {
     s.recruitmentVersion === undefined || s.recruitmentVersion === 2,
     'La versión de reclutamiento no es compatible.',
   );
-  receiveDueHires(s);
+  migrateLegacyHiringArrivals(s);
+  receiveDueRecruitmentClaims(s);
   synchronizeSquad(s);
   synchronizeCampaignPresence(s);
   validateCampaignPresence(s);
   syncCampaignAmmunition(s, rosterFor(s));
   validateCampaignAmmunition(s);
-  validateHireArrivals(s, rosterFor(s));
+  validateRecruitmentClaims(s, rosterFor(s));
   validateServiceGuarantees(s, rosterFor(s));
   s.lastError = null;
   return removeIgnitionSupplies(s);

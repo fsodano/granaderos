@@ -250,7 +250,7 @@ function paidResidentCrew() {
     assert.equal(campaign.resources.treasury, cash - quote.total);
     assert.equal(present(campaign.operativeState[id]).location, OCCUPANCY_SECTOR);
   }
-  assert.equal(campaign.hiringArrivals.length, 0);
+  assert.equal((campaign.refundableRecruitmentClaims ?? []).length, 0);
   for (const members of [ids.slice(0, 2), ids.slice(2)]) {
     dispatch({
       type: 'createSquad',

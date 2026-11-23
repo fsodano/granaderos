@@ -20,8 +20,11 @@ import {
   contractRenewalQuote,
   contractExpiresSeconds,
 } from '../packages/game/contracts.js';
-import { hireArrivalDueSeconds, hiringArrivalOptions } from '../packages/game/hiring-arrivals.js';
-import { immediateRecruitmentExpectation } from './immediate-recruitment-fixture.ts';
+import { recruitmentSites } from '../packages/game/recruitment-claims.js';
+import {
+  immediateRecruitmentExpectation,
+  receiptSeconds,
+} from './immediate-recruitment-fixture.ts';
 import type { BattleOrder } from './opening-driver.ts';
 const clock = (s: CampaignSnapshot) => s.hour * 3600 + (s.secondOfHour ?? 0);
 function tactical(pair: ActiveGame, action: BattleOrder) {
@@ -156,7 +159,7 @@ export function stockPortOpening({ seed = 8, content = defaultContentPackage() }
       op = rosterFor(state).find((op) => op.id === id),
       quote = contractQuote(state, op, 'day');
     assert.equal(quote.available, true, quote.reason ?? undefined);
-    assert.ok(hiringArrivalOptions(state).some((site) => site.id === destination));
+    assert.ok(recruitmentSites(state).some((site) => site.id === destination));
     const arrival = immediateRecruitmentExpectation(state, present(op), 'day', quote, destination);
     const money = state.resources.treasury;
     state = order(state, { type: 'recruitCombatant', id, term: 'day', destination });
@@ -177,7 +180,7 @@ export function stockPortOpening({ seed = 8, content = defaultContentPackage() }
   assert.ok(state.resources.treasury > 0);
   for (const hire of hires) {
     const contract = state.contracts[hire.id],
-      due = hireArrivalDueSeconds(hire.arrival);
+      due = receiptSeconds(hire.arrival);
     assert.equal(state.recruited.filter((id) => id === hire.id).length, 1);
     assert.equal(present(contract).kind, 'paid');
     assert.equal(present(contract).term, 'day');

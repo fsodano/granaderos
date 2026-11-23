@@ -1,9 +1,9 @@
 import type {
   CampaignAction,
-  CampaignHiringArrival,
   CampaignPendingBattle,
   CampaignSnapshot,
 } from '../packages/game/public/campaign-types.ts';
+import type { ImmediateRecruitmentReceipt } from './immediate-recruitment-fixture.ts';
 import type {
   BattleSnapshot,
   BattleUnit,
@@ -94,7 +94,7 @@ export type CoastalRouteNote =
       field: number[];
       caregiverIds: number[];
       hires: number[];
-      arrivals: CampaignHiringArrival[];
+      arrivals: ImmediateRecruitmentReceipt[];
       hireCost: number;
       fieldAid?: FieldAidReadiness;
     } & OpeningCare);

@@ -34,7 +34,7 @@ void test('an authored arrival delay does not postpone control or contract start
   assert.equal(present(accepted.contracts[110]).startedSecond, 61);
   assert.equal(present(accepted.contracts[110]).expiresSecond, 61);
   assert.equal(accepted.resources.treasury, campaign.resources.treasury - quote.total);
-  assert.deepEqual(accepted.hiringArrivals ?? [], []);
+  assert.deepEqual(accepted.refundableRecruitmentClaims ?? [], []);
   const restored = decodeSave(encodeSave(accepted)).campaign;
   assert.deepEqual(restored, accepted);
   const repeated = dispatchCampaign(restored, {

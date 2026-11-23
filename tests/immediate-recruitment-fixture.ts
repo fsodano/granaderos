@@ -2,16 +2,31 @@ import { present } from './assert-present.ts';
 import type {
   CampaignSnapshot,
   CampaignOperative,
-  CampaignHiringArrival,
 } from '../packages/game/public/campaign-types.ts';
 import assert from 'node:assert/strict';
 import type { ContractQuote } from '../packages/game/public/personnel-query-types.ts';
-export type ImmediateRecruitmentReceipt = CampaignHiringArrival & {
+export interface ImmediateRecruitmentReceipt {
+  operativeId: number;
+  destination: string;
+  bookedAt: number;
   bookedSecond: number;
+  departedAt: number;
   departedSecond: number;
+  dueAt: number;
   dueSecond: number;
-};
+  travelHours: number;
+  term: string;
+  paid: number;
+  permanent: boolean;
+  serviceHours: number | null;
+}
 import { contractExpiresSeconds } from '../packages/game/contracts.js';
+
+export const receiptSeconds = (receipt: ImmediateRecruitmentReceipt) =>
+  receipt.bookedAt * 3600 + receipt.bookedSecond;
+
+export const hasRecruitmentClaim = (campaign: CampaignSnapshot, id: number) =>
+  (campaign.refundableRecruitmentClaims ?? []).some((claim) => claim.operativeId === id);
 
 export function immediateRecruitmentExpectation(
   campaign: CampaignSnapshot,
@@ -45,12 +60,9 @@ export function assertImmediateRecruitment(
 ) {
   const id = expectation.operativeId;
   const contract = campaign.contracts[id];
-  const startedAtSecond = expectation.bookedAt * 3600 + expectation.bookedSecond;
+  const startedAtSecond = receiptSeconds(expectation);
   assert.equal(campaign.recruited.filter((value) => value === id).length, 1);
-  assert.equal(
-    campaign.hiringArrivals.some((value) => value.operativeId === id),
-    false,
-  );
+  assert.equal(hasRecruitmentClaim(campaign, id), false);
   assert.equal(present(campaign.operativeState[id]).location, expectation.destination);
   assert.equal(present(contract).kind, quote.permanent ? 'patriot' : 'paid');
   assert.equal(present(contract).term, expectation.term);

@@ -375,16 +375,11 @@ export interface CampaignAttention {
   reported: Record<string, { binding: string; code: string | null }>;
   notice: CampaignAttentionNotice | null;
 }
-export interface CampaignHiringArrival {
+export interface CampaignRefundableRecruitmentClaim {
   operativeId: number;
   destination: string;
   bookedAt: number;
-  departedAt: number;
-  dueAt: number;
   bookedSecond?: number;
-  departedSecond?: number;
-  dueSecond?: number;
-  travelHours: number;
   term: string;
   priceScale?: number;
   paid: number;
@@ -595,7 +590,7 @@ export interface CampaignSnapshot {
   artillerySelection: string[];
   artillery?: CampaignArtillery[];
   stationedArtillery?: CampaignArtillery[];
-  hiringArrivals: CampaignHiringArrival[];
+  refundableRecruitmentClaims?: CampaignRefundableRecruitmentClaim[];
   equipmentShipments: CampaignShipment[];
   horseState: CampaignHorseState;
   assignmentAttention: CampaignAttention;
@@ -788,8 +783,7 @@ type CampaignOrder =
     }
   | { type: 'recruit'; id?: number }
   | { type: 'dismiss'; id: number }
-  | { type: 'redirectHire'; id: number; destination: string }
-  | { type: 'cancelHireArrival'; id: number; expectedGuaranteeId?: string }
+  | { type: 'cancelRecruitmentClaim'; id: number; expectedGuaranteeId?: string }
   | {
       type: 'createOfficer';
       name: string;
