@@ -99,9 +99,11 @@ the domain default. It re-exports that default and the saved-scene consistency
 rule;
 [`campaign-rules-schema.js`](../../packages/campaign-format/campaign-rules-schema.js)
 continues to own the authored field contract and structural validation. The
-retained [`militia-patrol.js`](../../packages/game/militia-patrol.js) requests
-map visibility and reachable cells, then assembles the domain-selected move
-order.
+retained [`militia-patrol.js`](../../packages/game/militia-patrol.js) uses
+`canAct` from
+[`militia-patrol.ts`](../../packages/game/domain/personnel/militia-patrol.ts) for
+sight-query observers and opponents, asks tactical map code for visibility and
+reachable cells, then assembles the domain-selected move order.
 [`projectile-air-drag.ts`](../../packages/game/domain/combat/projectile-air-drag.ts)
 decides whether a weapon has a usable air-drag profile (the fraction retained
 at the weapon's range) and how much energy remains after each distance. The
@@ -111,9 +113,12 @@ uses the shared
 [`projectile-profile-schema.js`](../../packages/campaign-format/projectile-profile-schema.js)
 to validate profile records, validates the associated energy profile, and
 re-exports the domain API.
+[`material-intervals.ts`](../../packages/game/domain/combat/material-intervals.ts)
+owns ordering and merging of geometry-derived material intervals and creates
+the entering and leaving events used by projectile flight.
 [`projectile-cover.js`](../../packages/game/projectile-cover.js)
-selects open-air versus material intervals and applies retention only outside
-material.
+traces the shot through map geometry, collects the intervals, and consumes the
+domain events; air retention applies only outside active material.
 [`captive-service.ts`](../../packages/game/domain/personnel/captive-service.ts)
 owns remaining service hours during custody and contract reconstruction on
 release. The retained

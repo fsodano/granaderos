@@ -7,6 +7,7 @@ import {
 } from './projectile-energy.js';
 import { projectileAirRetention, hasProjectileAirDrag } from './projectile-air-drag.js';
 import { materialRangeResistanceFactor } from './material-range-penetration.js';
+import { mergeMaterialIntervals, materialSpanEvents } from './domain/combat/material-intervals.ts';
 import {
   absoluteBodyHeight,
   relativeBodyHeight as height,
@@ -408,20 +409,8 @@ function materialEvents(
     }
   }
   for (const [key, intervals] of objects) {
-    intervals.sort((a, b) => a.entry - b.entry || a.exit - b.exit);
-    const merged = [];
-    for (const interval of intervals) {
-      const previous = merged.at(-1);
-      if (previous && interval.entry <= previous.exit + 1e-10) {
-        previous.exit = Math.max(previous.exit, interval.exit);
-      } else {
-        merged.push({ ...interval });
-      }
-    }
-    for (const span of merged) {
-      events.push({ fraction: span.entry, priority: 2, key, type: 'enter', span });
-      events.push({ fraction: span.exit, priority: 4, key, type: 'exit', span });
-    }
+    // One object is swept once, whatever number of its cells the shot crosses.
+    events.push(...materialSpanEvents(key, mergeMaterialIntervals(intervals)));
   }
   return events;
 }

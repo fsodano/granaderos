@@ -64,13 +64,15 @@ and be within a default Euclidean range of 1.5. The retained
 re-exports these rules for existing callers.
 
 [`militia-patrol.ts`](../../../packages/game/domain/personnel/militia-patrol.ts)
-owns the patrol-turn decision, waypoint selection (the map position a patrol
-moves toward), and reachable-cell choice.
-The retained [`militia-patrol.js`](../../../packages/game/militia-patrol.js)
-asks tactical map code for visibility and reachable cells, then assembles the
-move order. Its `able` filter selects observers and opponents for the sight
-query but duplicates the domain's private `canAct` condition and hard-codes the
-critical-health threshold.
+owns patrol eligibility, the patrol-turn decision, waypoint selection (the map
+position a patrol moves toward), and reachable-cell choice. Its `canAct` check
+requires at least [`CRITICAL_HEALTH`](../../../packages/game/domain/personnel/actor-condition.ts)
+(15 hit points), a conscious unit, and no
+routed, fled, surrendered, or departure state. The retained
+[`militia-patrol.js`](../../../packages/game/militia-patrol.js) uses that same
+domain check for sight-query observers and opponents, asks tactical map code
+for visibility and reachable cells, then assembles the move order. The patrol
+eligibility check therefore has one owner.
 
 [`projectile-air-drag.ts`](../../../packages/game/domain/combat/projectile-air-drag.ts)
 decides whether a weapon has a usable air-drag profile (the fraction retained
@@ -84,9 +86,14 @@ uses the shared
 [`projectile-profile-schema.js`](../../../packages/campaign-format/projectile-profile-schema.js)
 to validate profile records, validates the associated energy profile, and
 re-exports the domain API.
+[`material-intervals.ts`](../../../packages/game/domain/combat/material-intervals.ts)
+owns the ordering and merging of geometry-derived intervals for each material
+object, including overlapping or touching intervals, and creates the entering
+and leaving events read by the flight. It sits beside the projectile energy,
+air-drag, and impact rules. The retained
 [`projectile-cover.js`](../../../packages/game/projectile-cover.js)
-selects open-air versus material segments and applies retention only outside
-material.
+traces the shot through map geometry, collects those intervals, and consumes
+the domain events; air retention applies only outside active material.
 
 [`weapon-reload.ts`](../../../packages/game/domain/combat/weapon-reload.ts)
 owns reload-round cost, stored-progress validation, and reload planning beside

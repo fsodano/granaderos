@@ -1,13 +1,11 @@
 import { militiaPatrolRules } from './militia-patrol-rules.js';
 import { canSee, getReachable, knownArtillery } from './tactical.js';
-import { isUnconscious } from './actor-condition.js';
 import {
+  canAct,
   militiaPatrolDestination,
   militiaPatrolsThisTurn,
   militiaPatrolWaypoint,
 } from './domain/personnel/militia-patrol.ts';
-const able = (u) =>
-  u.hp >= 15 && !isUnconscious(u) && !u.routed && !u.fled && !u.surrendered && !u.departure;
 
 // Fixed map waypoints do not expose or follow unseen opponents. The clock and
 // each actor's position already belong to the validated tactical snapshot.
@@ -16,8 +14,8 @@ export function militiaPatrolOrder(state, unit) {
   const enemyInSight = state.units.some(
     (v) =>
       v.side !== unit.side &&
-      able(v) &&
-      state.units.some((p) => p.side === unit.side && able(p) && canSee(state, p, v)),
+      canAct(v) &&
+      state.units.some((p) => p.side === unit.side && canAct(p) && canSee(state, p, v)),
   );
   if (!militiaPatrolsThisTurn(rules, unit, state.turn, state, enemyInSight)) {
     return null;
