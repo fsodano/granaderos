@@ -12,6 +12,22 @@ An `ArrivalDecision` is the fight-or-withdraw choice required for one squad
 when its journey reaches a hostile sector boundary. One `fightOnArrival` or
 `withdrawOnArrival` order resolves that squad's decision.
 
+Care eligibility and care tuning have separate owners.
+[`medical-patient.ts`](../../../packages/game/domain/personnel/medical-patient.ts)
+decides whether a person is present and available for care.
+[`care-rules.ts`](../../../packages/game/domain/personnel/care-rules.ts) owns
+the default treatment and rest tuning and the default strategic bleeding
+percentage. [`campaign-care-rules.js`](../../../packages/game/campaign-care-rules.js)
+selects a campaign's authored care rules, uses the domain defaults when none
+are authored, and uses the default bleeding percentage when the optional
+`bleedingDamagePercent` is absent. The shared
+[`campaign-rules-schema.js`](../../../packages/campaign-format/campaign-rules-schema.js)
+defines and validates the authored fields. As an illustrative example, an
+otherwise valid authored care-rules record can set `baseHealing` (base health
+restored per treatment hour) to 4 while omitting `bleedingDamagePercent`;
+treatment then uses the authored healing value and strategic bleeding uses the
+domain default of 25 percent.
+
 Every `Exposure` column below uses the canonical six-value vocabulary defined in the [use-case index](README.md#exposure-vocabulary): `Command`, `Gated`, `Query`, `Supporting`, `No interface route`, and `Refused`.
 
 ## Capability families and case index
@@ -43,7 +59,7 @@ The second table below lists each strategic use case by `ID / intention`, its `E
 | STR-010 `settle-battle-and-return` | `Gated` | Submit a validated `SectorSession` report to reconcile `Character` health, `Inventory` custody, ammunition, and territory |
 | STR-011 `TalkToCharacter` | `Gated` | Converse with a present character (`TalkToCharacter`), executing local recruitment (`RecruitmentService`), gifts, or quest choices in one transaction |
 | STR-012 `fulfil-campaign-obligation` | `Gated` | Progress an authored mission, quest, timed event, or diplomacy milestone |
-| STR-013 `assign-care-and-sleep` | `Command` | Assign medical care (`care.js`) or toggle sleep (`sleep.js`) for a combatant |
+| STR-013 `assign-care-and-sleep` | `Command` | Assign medical care (`medical-care.js`) or toggle sleep (`sleep.js`) for a combatant |
 | STR-014 `assign-work-and-training` | `Gated` | Assign strategic work, attribute training, or study courses where scenario rules permit |
 | STR-015 `manage-morale-and-recovery` | `Supporting` | Time-driven recovery, fatigue, and attention-notice processing during clock advancement |
 | STR-016 `RenewServiceContract` / `dismiss` | `Gated` | Extend a paid `ServiceContract` from the later of its existing expiry or current `GameTime` (`RenewServiceContract`), or dismiss a combatant |
@@ -86,7 +102,7 @@ orders that require the view read `sectorSession`.
 | STR-010 | Issued `sectorEntryRequest.id`, outcome, final sector snapshot, participant report | Reconciles `Character` (`Health`), `Inventory` and `ItemCustody`, ammunition, `Corpse` history, sector ownership, and closes `SectorSession` in `GameSession` | Stale or mismatched entry ID; incomplete or invalid report leaves `SectorSession` open | `page.tsx:finish`, `Battlefield.tsx`; `campaign.js:battleResult/leaveSector/finishMission`, `battle-outcome.js` |
 | STR-011 | Present NPC ID, approach, player speaker, dialogue option, optional sector snapshot | `TalkToCharacterUseCase` applies dialogue effects, local `RecruitmentService` admission, item transfers, escort orders, and quest updates in one transaction | Character absent, dead, or not adjacent; active combat unresolved; dialogue condition unmet | `JA2Conversation.tsx`, `Battlefield.tsx`; `TalkToCharacterUseCase`, `content-dialogue.js`, `quests.js` |
 | STR-012 | Quest, mission, or event choice payload | Updates scenario story flags, quest state, `Treasury`, faction standing, and sector ownership | Unmet scenario prerequisites, expired deadlines, or invalid option | `Campaign.tsx`, `StoryQuestJournal.tsx`; `campaign-scenario.js`, `campaign-events.js`, `content-quests.js` |
-| STR-013 | Character ID, medical care assignment or sleep flag | Updates character care assignment or sleep state and rest-interruption flags | Character absent, in transit, or unable to wake due to collapse/recovery | `MedicalCare.tsx`, `StrategicPersonnelMenu.tsx`; `campaign.js:assignCare/setSleep`, `medical-care.js`, `sleep.js` |
+| STR-013 | Character ID, medical care assignment or sleep flag | Updates character care assignment or sleep state and rest-interruption flags | Character absent, in transit, or unable to wake due to collapse/recovery | `MedicalCare.tsx`, `StrategicPersonnelMenu.tsx`; `campaign.js:assignCare/setSleep`, [`medical-care.js`](../../../packages/game/medical-care.js), [`campaign-care-rules.js`](../../../packages/game/campaign-care-rules.js), [`care-rules.ts`](../../../packages/game/domain/personnel/care-rules.ts), `strategic-rest.js`, `sleep.js` |
 | STR-014 | Character/trainer ID, work activity, skill, or study course | Updates strategic assignment, fatigue, training/study progress, and completion schedule | Skill or course unavailable; character in transit or busy | `StrategicPersonnelMenu.tsx`, `TrainingProgress.tsx`, `StudyForecast.tsx`; `skill-training.js`, `study-training.js` |
 | STR-015 | Elapsed time during clock advancement | Updates morale, fatigue recovery, and attention projections (`assignment-attention.js`, `contract-attention.js`, `logistics-attention.js`) | Supporting process; pauses clock when an attention prompt requires player resolution | `CampaignPerformance.tsx`, `AssignmentAttention.tsx`, `ContractAttention.tsx`, `LogisticsAttention.tsx`; `time.js` |
 | STR-016 | Character ID, renewal term or dismissal, expected contract state | `ServiceRenewalService` charges `Treasury` once and replaces `ServiceContract` from the later of existing expiry or current `GameTime`; dismissal ends service | Character dead or not serving; protected commander; insufficient `Treasury`; stale contract state | `StrategicRoster.tsx`, `ContractAttention.tsx`; `RenewServiceContractUseCase`, `ServiceRenewalService`, `campaign.js:dismiss` |

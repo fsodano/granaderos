@@ -1,6 +1,6 @@
 # Migration slice notes
 
-This index links to the 50 migration slice notes. Each note records its
+This index links to the 52 migration slice notes. Each note records its
 rationale, scope, and compatibility contract. The
 [overview](../overview.md) describes current source and remaining requirements.
 
@@ -58,6 +58,8 @@ rationale, scope, and compatibility contract. The
 | [48. Suspended visit record contract](48-suspended-record-contract.md) |
 | [49. Aimed-shot rules](49-targeted-combat.md) |
 | [50. Tactical grid label](50-tactical-grid-label.md) |
+| [51. Weapon reload rules](51-weapon-reload.md) |
+| [52. Care defaults](52-care-rules.md) |
 
 ## What the series changed
 
@@ -130,14 +132,14 @@ rationale, scope, and compatibility contract. The
   root module is a thin re-export of it.
 - `ResidentPositionReference` names the saved reference to a resident's
   character identity and local position.
-- Twenty-six migrated game-rule groups have domain ownership: firearm readiness,
+- Twenty-eight migrated game-rule groups have domain ownership: firearm readiness,
   unarmed combat, sleep need, held supplies, projectile energy, firearm loads,
   study rate, the route queue, firearm serviceability, kinetic impact, combat
   balance, combat journal, fatigue and energy, interior visibility, campaign
   clock conversion, `WorldTimeline` clock advancement, tactical-level rules
   (the vertical map layer assigned to a point), shot-range calculation, NPC
   facing (`directionTo`), anonymous sound-position approximation
-  (`approximateHeardPosition`), and care-composure relief
+  (`approximateHeardPosition`), care-composure relief
   (`CARE_COMPOSURE_RELIEF` & `careComposureRelief`), aimed-shot eligibility,
   region choices, profiles, penalties, and effects in
   [`targeted-combat.ts`](../../../../packages/game/domain/combat/targeted-combat.ts),
@@ -148,17 +150,27 @@ rationale, scope, and compatibility contract. The
   in [`actor-condition.ts`](../../../../packages/game/domain/personnel/actor-condition.ts);
   medical-patient care eligibility in
   [`medical-patient.ts`](../../../../packages/game/domain/personnel/medical-patient.ts);
-  and completed tactical victory in
-  [`completed-victory.ts`](../../../../packages/game/domain/combat/completed-victory.ts).
+  completed tactical victory in
+  [`completed-victory.ts`](../../../../packages/game/domain/combat/completed-victory.ts);
+  weapon reload cost, stored-progress validation, and planning in
+  [`weapon-reload.ts`](../../../../packages/game/domain/combat/weapon-reload.ts);
+  and default care/rest tuning and default strategic bleeding percentage in
+  [`care-rules.ts`](../../../../packages/game/domain/personnel/care-rules.ts).
   The retained root modules [`actor-condition.js`](../../../../packages/game/actor-condition.js),
   [`medical-patient.js`](../../../../packages/game/medical-patient.js),
   [`battle-outcome.js`](../../../../packages/game/battle-outcome.js),
-  [`targeted-combat.js`](../../../../packages/game/targeted-combat.js), and
-  [`tactical-grid.js`](../../../../packages/game/tactical-grid.js) re-export
-  their domain implementations. The browser interface owns the sleep-need
-  sentence and campaign notices. The shot-range sentence stays beside its HUD
-  caller in [`packages/game/shot-range.js`](../../../../packages/game/shot-range.js)
-  to preserve dependency direction.
+  [`targeted-combat.js`](../../../../packages/game/targeted-combat.js),
+  [`tactical-grid.js`](../../../../packages/game/tactical-grid.js),
+  and [`weapon-reload.js`](../../../../packages/game/weapon-reload.js)
+  re-export their domain implementations. The campaign-content lookup in
+  [`campaign-care-rules.js`](../../../../packages/game/campaign-care-rules.js)
+  reads authored values and uses the domain defaults; the authored field
+  contract and validation live in
+  [`campaign-rules-schema.js`](../../../../packages/campaign-format/campaign-rules-schema.js).
+  The browser interface owns the sleep-need sentence
+  and campaign notices. The shot-range sentence stays beside its HUD caller in
+  [`packages/game/shot-range.js`](../../../../packages/game/shot-range.js) to
+  preserve dependency direction.
 - [`packages/game/domain/sector-sessions/tactical-space.ts`](../../../../packages/game/domain/sector-sessions/tactical-space.ts)
   owns the game's tactical-level rules; `packages/campaign-format` keeps an
   independent map-validation implementation because it cannot import the game.
@@ -175,6 +187,14 @@ rationale, scope, and compatibility contract. The
 
 ## What remains
 
-- Retained simulation modules still own procedural game rules. Move each
-  remaining rule behind a named domain owner or application use case; any
-  retained root entry point must delegate to that owner.
+- Remaining procedural simulation rules in retained
+  [`packages/game`](../../../../packages/game/) modules need one named owner in
+  [`packages/game/domain`](../../../../packages/game/domain/) or an application
+  use case. A retained compatibility path may preserve existing imports, but
+  it must delegate rule behavior rather than keep a second implementation.
+- Campaign-authored care lookup remains in
+  [`campaign-care-rules.js`](../../../../packages/game/campaign-care-rules.js):
+  it selects authored values and falls back to
+  [`care-rules.ts`](../../../../packages/game/domain/personnel/care-rules.ts)
+  defaults. [`campaign-rules-schema.js`](../../../../packages/campaign-format/campaign-rules-schema.js)
+  owns the authored-field contract and validation.

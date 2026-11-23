@@ -1,6 +1,6 @@
 # Clean architecture migration plan
 
-This plan defines a 50-slice sequence for moving Granaderos toward the
+This plan defines a 52-slice sequence for moving Granaderos toward the
 [accepted domain architecture](../accepted/domain-architecture.md). The
 [overview](overview.md) describes current source behavior and remaining
 requirements; the [slice index](slices/README.md) links each note.
@@ -98,6 +98,8 @@ outside this plan.
 | [48. Suspended visit record contract](slices/48-suspended-record-contract.md) | Declare every saved suspended-visit field in `CampaignSuspendedSectorSession` |
 | [49. Aimed-shot rules](slices/49-targeted-combat.md) | Move aimed-shot eligibility, region choices, profiles, penalties, and effects into the domain |
 | [50. Tactical grid label](slices/50-tactical-grid-label.md) | Move tactical cell-label generation into the domain |
+| [51. Weapon reload rules](slices/51-weapon-reload.md) | Move reload-round cost, stored-progress validation, and planning into the domain |
+| [52. Care defaults](slices/52-care-rules.md) | Move default care/rest tuning and the default strategic bleeding percentage into the domain; keep campaign-authored rule lookup at the content boundary |
 
 Each slice has a note under [slices](slices/README.md) that records its intent,
 scope, and behavior tests. Read the relevant note before changing that area.
@@ -110,9 +112,19 @@ The migration is complete when:
    application use case, and retained compatibility modules delegate to those
    owners. Aimed-shot rules belong to
    [`targeted-combat.ts`](../../../packages/game/domain/combat/targeted-combat.ts),
-   and tactical cell labels belong to
-   [`tactical-grid.ts`](../../../packages/game/domain/sector-sessions/tactical-grid.ts).
-   Architecture checks reject imports from `packages/game` into `apps/web`.
+   tactical cell labels belong to
+   [`tactical-grid.ts`](../../../packages/game/domain/sector-sessions/tactical-grid.ts),
+   and reload cost, stored-progress validation, and planning belong to
+   [`weapon-reload.ts`](../../../packages/game/domain/combat/weapon-reload.ts).
+   [`weapon-reload.js`](../../../packages/game/weapon-reload.js) remains a
+   re-export for existing callers.
+   [`care-rules.ts`](../../../packages/game/domain/personnel/care-rules.ts) owns
+   default care/rest tuning and the default strategic bleeding percentage;
+   [`campaign-care-rules.js`](../../../packages/game/campaign-care-rules.js)
+   selects authored care rules and uses those defaults, while
+   [`campaign-rules-schema.js`](../../../packages/campaign-format/campaign-rules-schema.js)
+   owns the authored-field contract and validation. Architecture checks reject
+   imports from `packages/game` into `apps/web`.
 2. `GameSession` (the runtime consistency boundary) owns `RandomSource` (the
    seeded random sequence) and `WorldTimeline` (the accepted game-time clock).
    Campaign draws use `session.randomSource` and write its advanced seed back
@@ -184,6 +196,6 @@ boundaries it can express as import rules.
 
 Start with [overview.md](overview.md) for the current implementation and open
 gaps, then use this plan for the branch flow and the [slice index](slices/README.md)
-for the 50 slice notes. Read the accepted architecture and glossary before
+for the 52 slice notes. Read the accepted architecture and glossary before
 work that changes a domain contract or term. Each slice note records its
 intent, scope, and behavior tests.

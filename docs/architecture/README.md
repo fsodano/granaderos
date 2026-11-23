@@ -68,16 +68,25 @@ The retained root modules
 [`actor-condition.js`](../../packages/game/actor-condition.js),
 [`medical-patient.js`](../../packages/game/medical-patient.js),
 [`battle-outcome.js`](../../packages/game/battle-outcome.js),
-[`targeted-combat.js`](../../packages/game/targeted-combat.js), and
-[`tactical-grid.js`](../../packages/game/tactical-grid.js) re-export rules
+[`targeted-combat.js`](../../packages/game/targeted-combat.js),
+[`tactical-grid.js`](../../packages/game/tactical-grid.js), and
+[`weapon-reload.js`](../../packages/game/weapon-reload.js) re-export rules
 owned by [`actor-condition.ts`](../../packages/game/domain/personnel/actor-condition.ts),
 [`medical-patient.ts`](../../packages/game/domain/personnel/medical-patient.ts),
 [`completed-victory.ts`](../../packages/game/domain/combat/completed-victory.ts),
 [`targeted-combat.ts`](../../packages/game/domain/combat/targeted-combat.ts),
-and [`tactical-grid.ts`](../../packages/game/domain/sector-sessions/tactical-grid.ts).
+[`tactical-grid.ts`](../../packages/game/domain/sector-sessions/tactical-grid.ts),
+and [`weapon-reload.ts`](../../packages/game/domain/combat/weapon-reload.ts).
 [`tactical-space.ts`](../../packages/game/domain/sector-sessions/tactical-space.ts)
 owns the game's tactical-level and cell-space rules. The root modules are
 compatibility entry points; the domain modules own these rules.
+For care, [`medical-patient.ts`](../../packages/game/domain/personnel/medical-patient.ts)
+owns care eligibility and [`care-rules.ts`](../../packages/game/domain/personnel/care-rules.ts)
+owns default treatment/rest tuning and the default strategic bleeding
+percentage. [`campaign-care-rules.js`](../../packages/game/campaign-care-rules.js)
+reads campaign-authored care values and uses those domain defaults;
+[`campaign-rules-schema.js`](../../packages/campaign-format/campaign-rules-schema.js)
+defines and validates the authored fields.
 
 The native `reference/native/` tree is separate from the browser applications. Each architectural claim traces the named entry points and their collaborators; disabled commands can remain in compatibility switch blocks behind preflight guards. While `packages/game/domain` and `packages/game/application` have strict inward dependency rules enforced by `npm run check:architecture` and `.dependency-cruiser.json`, the compatibility simulation modules at the `packages/game/` root still import trusted campaign defaults and scenario modules in `content/campaigns/`.
 

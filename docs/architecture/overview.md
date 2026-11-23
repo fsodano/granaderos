@@ -27,6 +27,12 @@ owns the decision that the field has been won. The retained root modules
 [`medical-patient.js`](../../packages/game/medical-patient.js), and
 [`battle-outcome.js`](../../packages/game/battle-outcome.js) re-export those
 domain rules.
+[`care-rules.ts`](../../packages/game/domain/personnel/care-rules.ts) owns
+default treatment and rest tuning and the default strategic bleeding
+percentage. [`campaign-care-rules.js`](../../packages/game/campaign-care-rules.js)
+selects campaign-authored values and uses those domain defaults; the shared
+[`campaign-rules-schema.js`](../../packages/campaign-format/campaign-rules-schema.js)
+defines and validates the authored fields.
 
 [`targeted-combat.ts`](../../packages/game/domain/combat/targeted-combat.ts)
 owns aimed-shot eligibility, available body regions, region profiles and
@@ -39,6 +45,12 @@ owns the label for a tactical cell. The retained
 [`targeted-combat.js`](../../packages/game/targeted-combat.js) and
 [`tactical-grid.js`](../../packages/game/tactical-grid.js) modules re-export
 their domain rules.
+[`weapon-reload.ts`](../../packages/game/domain/combat/weapon-reload.ts) owns
+reload-round cost, stored-progress validation, and planning beside
+`ReloadWork` (partial loading work) and `ReloadRules` (reload multipliers) in
+[`reload-work.ts`](../../packages/game/domain/combat/reload-work.ts); the
+retained [`weapon-reload.js`](../../packages/game/weapon-reload.js) re-exports
+those domain functions.
 
 ## 2. Follow one player intention
 
@@ -92,18 +104,26 @@ The table below maps each architectural `Role` to its `Source` path in the repos
 | Role | Source |
 | --- | --- |
 | Domain entities, value objects, state machines, policies, and services | [`packages/game/domain`](../../packages/game/domain/) |
-| Personnel condition and care rules, and tactical field-victory rule | [`actor-condition.ts`](../../packages/game/domain/personnel/actor-condition.ts), [`medical-patient.ts`](../../packages/game/domain/personnel/medical-patient.ts), [`completed-victory.ts`](../../packages/game/domain/combat/completed-victory.ts) |
-| Aimed-shot rules and tactical cell labels | [`targeted-combat.ts`](../../packages/game/domain/combat/targeted-combat.ts), [`tactical-grid.ts`](../../packages/game/domain/sector-sessions/tactical-grid.ts); [`targeted-combat.js`](../../packages/game/targeted-combat.js) and [`tactical-grid.js`](../../packages/game/tactical-grid.js) re-export these domain rules |
+| Personnel condition and care eligibility, and tactical field-victory rule | [`actor-condition.ts`](../../packages/game/domain/personnel/actor-condition.ts), [`medical-patient.ts`](../../packages/game/domain/personnel/medical-patient.ts), [`completed-victory.ts`](../../packages/game/domain/combat/completed-victory.ts) |
+| Care defaults and campaign-authored values | [`care-rules.ts`](../../packages/game/domain/personnel/care-rules.ts) owns default treatment/rest tuning and the default strategic bleeding percentage; [`campaign-care-rules.js`](../../packages/game/campaign-care-rules.js) reads authored campaign values and uses those defaults; [`campaign-rules-schema.js`](../../packages/campaign-format/campaign-rules-schema.js) owns authored-field validation |
+| Aimed-shot, reload, and tactical cell rules | [`targeted-combat.ts`](../../packages/game/domain/combat/targeted-combat.ts), [`weapon-reload.ts`](../../packages/game/domain/combat/weapon-reload.ts), [`tactical-grid.ts`](../../packages/game/domain/sector-sessions/tactical-grid.ts); [`targeted-combat.js`](../../packages/game/targeted-combat.js), [`weapon-reload.js`](../../packages/game/weapon-reload.js), and [`tactical-grid.js`](../../packages/game/tactical-grid.js) re-export these domain rules |
 | Application use cases and narrow repository contracts | [`packages/game/application`](../../packages/game/application/) |
 | Repository adapters, unit of work, identity map, and snapshot mappers | [`packages/game/infrastructure`](../../packages/game/infrastructure/) |
 | Declared public composition entry points for game, editor, and persistence | [`packages/game/public`](../../packages/game/public/) |
-| Compatibility orchestration and specialized procedural rules | [`packages/game/`](../../packages/game/) (`campaign.js`, `tactical.js`, `world.js`, `time.js`, `save.ts`); `actor-condition.js`, `medical-patient.js`, `battle-outcome.js`, `targeted-combat.js`, and `tactical-grid.js` re-export domain-owned rules |
+| Compatibility orchestration and specialized procedural rules | [`packages/game/`](../../packages/game/) (`campaign.js`, `tactical.js`, `world.js`, `time.js`, `save.ts`); `actor-condition.js`, `medical-patient.js`, `battle-outcome.js`, `targeted-combat.js`, `tactical-grid.js`, and `weapon-reload.js` re-export domain-owned rules |
 | Player UI, Three.js tactical renderer, and browser composition | [`apps/web/app/page.tsx`](../../apps/web/app/page.tsx), [`apps/web/lib`](../../apps/web/lib/) |
 | Independent campaign editor application, domain, and storage adapters | [`apps/campaign-editor`](../../apps/campaign-editor/README.md) |
 | Shared published campaign-file schemas and `CampaignDefinition` | [`packages/campaign-format`](../../packages/campaign-format/README.md) |
 | Installed campaign packages, art sources, and trusted scenario implementations | [`content/campaigns`](../../content/campaigns/), [`content/assets`](../../content/assets/README.md) |
 
-The `packages/game/` root retains compatibility and procedural modules for internal game callers. `actor-condition.js`, `medical-patient.js`, `battle-outcome.js`, `targeted-combat.js`, and `tactical-grid.js` are thin re-exports; the condition, care, victory, aimed-shot, and grid-label rules live in the domain modules above. See [C4 levels 1–3](c4.md) and the [system map](system-map.md) for how these modules interact.
+The `packages/game/` root retains compatibility and procedural modules for
+internal game callers. `actor-condition.js`, `medical-patient.js`,
+`battle-outcome.js`, `targeted-combat.js`, `tactical-grid.js`, and
+`weapon-reload.js` are thin re-exports; condition, care eligibility, victory,
+aimed-shot, grid-label, and reload rules live in the domain modules above.
+`care-rules.ts` owns care defaults, while `campaign-care-rules.js` reads
+authored campaign settings and applies those defaults. See [C4 levels 1–3](c4.md)
+and the [system map](system-map.md) for how these modules interact.
 
 ## 6. Know what saving guarantees
 
