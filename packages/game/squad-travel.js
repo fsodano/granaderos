@@ -860,13 +860,6 @@ export function assaultGroups(s) {
       })),
   }));
 }
-export function readyAssaultSquads(s, target) {
-  const groups = s.squads.filter(
-    (q) => q.journey?.status === 'ready' && q.journey.path[1] === target,
-  );
-  need(groups.length > 0, 'No hay escuadras listas en ese límite.');
-  return groups;
-}
 export function arriveForAssault(s, groups, target) {
   const manifest = groups.map((q) => ({
     id: q.id,

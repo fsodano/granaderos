@@ -300,7 +300,6 @@ import {
   advanceSquadTravel,
   nextSquadTravelBoundarySeconds,
   validateSquadTravel,
-  readyAssaultSquads,
   arriveForAssault,
   validateAssaultDeployment,
   hasPendingArrivalDecision,
@@ -2578,9 +2577,7 @@ export function dispatchCampaign(previous, action) {
     );
     requireThat(
       !hasPendingArrivalDecision(s) ||
-        ['fightOnArrival', 'withdrawOnArrival', 'beginAssault', 'selectSquad'].includes(
-          action.type,
-        ) ||
+        ['fightOnArrival', 'withdrawOnArrival', 'selectSquad'].includes(action.type) ||
         (action.type === 'syncTacticalTime' &&
           action.elapsedSeconds === (s.sectorEntryRequest?.syncedSeconds ?? 0)),
       'La campaña está en pausa. Elegí combatir o retirarte al llegar.',
@@ -2614,7 +2611,6 @@ export function dispatchCampaign(previous, action) {
           'travel',
           'cancelTravel',
           'resumeTravel',
-          'beginAssault',
           'fightOnArrival',
           'withdrawOnArrival',
           'redirectJourney',
@@ -4173,12 +4169,8 @@ export function dispatchCampaign(previous, action) {
         note(s, `Se refuerzan las defensas de ${sector(at, s).name}.`);
         break;
       }
-      case 'fightOnArrival':
-      case 'beginAssault': {
-        const groups =
-          action.type === 'fightOnArrival'
-            ? authorizeFightOnArrival(s, action)
-            : readyAssaultSquads(s, action.sector);
+      case 'fightOnArrival': {
+        const groups = authorizeFightOnArrival(s, action);
         const at = groups[0].journey.path[1];
         const origin = groups[0].location;
         const manifest = arriveForAssault(s, groups, at);
@@ -4451,7 +4443,7 @@ export function dispatchCampaign(previous, action) {
     }
     // Check real arrival geometry before committing soldiers, ammunition or guns.
     if (
-      ['attack', 'beginAssault', 'fightOnArrival'].includes(action.type) &&
+      ['attack', 'fightOnArrival'].includes(action.type) &&
       s.sectorEntryRequest &&
       s.sectorEntryRequest.id !== previous.sectorEntryRequest?.id
     ) {
