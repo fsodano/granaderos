@@ -98,7 +98,7 @@ When authored content is active, its frozen package definition is pinned under `
 
 ## Order transaction contract
 
-`dispatchCampaign(previous, action)` in `packages/game/campaign.js` accepts an action object with a string `type` discriminant and returns the next campaign snapshot. It opens a `GameUnitOfWork`, clones and normalizes the snapshot, clears `lastError`, checks global campaign guards, and routes the command either to a migrated application use case or to a procedural subsystem helper. `dispatchCampaign` validates the draft itself, then `GameUnitOfWork.commit()` stores the snapshot and advances `gameRevision` by one. If a domain refusal or validation error occurs, `dispatchCampaign` aborts the unit of work and returns a clone of the prior snapshot with `lastError` populated.
+`dispatchCampaign(previous, action)` in `packages/game/campaign.js` accepts an action object with a string `type` discriminant and returns the next campaign snapshot. It opens a `GameUnitOfWork`, clones and normalizes the snapshot, clears `lastError`, checks global campaign guards, and routes the command either to an application use case or to a procedural subsystem helper. `dispatchCampaign` validates the draft itself, then `GameUnitOfWork.commit()` stores the snapshot and advances `gameRevision` by one. If a domain refusal or validation error occurs, `dispatchCampaign` aborts the unit of work and returns a clone of the prior snapshot with `lastError` populated.
 
 The sequence diagram below shows how `Strategic UI / caller`, `dispatchCampaign`, `Campaign policy + feature helpers`, and `Scenario/content hooks` process one strategic action.
 

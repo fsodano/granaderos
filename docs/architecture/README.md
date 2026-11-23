@@ -61,7 +61,7 @@ The table below defines each core `Term` and its `Meaning here` across all archi
 The overview, system map, C4 views, editor boundary, and persistence guides
 describe the current source in `apps/`, `packages/`, `content/`, and `tools/`.
 Detailed traces in the strategic and tactical engine guides identify where
-migrated domain classes and use cases connect to procedural compatibility
+domain classes and use cases connect to procedural compatibility
 modules (`packages/game/campaign.js`, `packages/game/tactical.js`,
 `packages/game/world.js`, `packages/game/time.js`, and `packages/game/save.ts`).
 The retained root modules

@@ -135,7 +135,7 @@ The campaign editor mutates `CampaignProject` drafts. Exporting a validated proj
 
 ## 4. Read an operation through its layers
 
-The flowchart below shows how a migrated player command moves from `Player input` through `Use-case class`, `Domain behavior and invariants`, `Use-case repository interface`, `Repository adapter`, and `Shared transaction and identity map` to produce an `Accepted game snapshot` for `UI and rendering` and the `Save queue and storage adapter`.
+The flowchart below shows how a player command moves from `Player input` through `Use-case class`, `Domain behavior and invariants`, `Use-case repository interface`, `Repository adapter`, and `Shared transaction and identity map` to produce an `Accepted game snapshot` for `UI and rendering` and the `Save queue and storage adapter`.
 
 ```mermaid
 flowchart TB
@@ -217,3 +217,55 @@ An accepted operation updates in-memory progress and advances `gameRevision`. Th
 The browser game (`apps/web`) and campaign editor (`apps/campaign-editor`) deploy as static browser files staged by `npm run build` (documented in [build and tooling](build-and-tooling.md)). All game rules execute locally in the browser main thread and Web Workers.
 
 Continue with [C4 levels 1–3](c4.md) for visual boundary diagrams, or jump to the [system map](system-map.md) and [runtime flows](runtime-flows.md) to trace a concrete operation end to end.
+
+## 7. Current rule and save boundaries
+
+[`projectile-air-drag.ts`](../../packages/game/domain/combat/projectile-air-drag.ts)
+owns projectile air-drag profile eligibility and distance-based energy
+retention, and
+[`material-intervals.ts`](../../packages/game/domain/combat/material-intervals.ts)
+owns ordering, merging, and event construction for material spans, the parts of
+a trajectory inside one material object. The retained
+[`projectile-cover.js`](../../packages/game/projectile-cover.js) still chooses
+which flight loss applies: material resistance while a material span is active,
+and air retention in open air, when no material span is active. No domain object
+owns that selection; the retained flight procedure applies it.
+
+Patrol eligibility has a domain owner. [`canAct`](../../packages/game/domain/personnel/militia-patrol.ts)
+(the rule for whether a unit can act) filters both friendly observers and
+opposing units in the sight query in
+[`militia-patrol.js`](../../packages/game/militia-patrol.js). That retained
+module still obtains tactical visibility and reachability data and assembles the
+move order. The patrol eligibility filter is domain behavior; visibility and
+reachability are map queries at the adapter boundary.
+
+The legacy saved `hiringArrivals` array contains prepaid bookings with departure
+and due times; it is not an alternate name for
+`refundableRecruitmentClaims`. Restoration validates each booking but does not
+preserve its travel schedule. If a legal recruitment site is available at the
+saved campaign time, service starts immediately at a legal site; if none is
+legal, the booking becomes a `RefundableRecruitmentClaim`, a prepaid booking
+with no travel schedule that leaves the recruit outside the force until service
+starts. This changes the recruitment lifecycle rather than renaming a field.
+Restoration removes the legacy key, so a later save does not re-emit
+`hiringArrivals`; an unresolved booking is stored under the current
+[`refundableRecruitmentClaims`](../../packages/game/public/campaign-types.ts)
+field. Retiring this legacy read requires a product decision about whether old
+bookings should continue to receive this conversion. The conversion is
+implemented in
+[`campaign.js`](../../packages/game/campaign.js), with record validation in
+[`recruitment-claims.js`](../../packages/game/recruitment-claims.js).
+
+[`decodeSave`](../../packages/game/save.ts) accepts the legacy top-level key
+`battle` only when the current `sectorSession` key for the active sector
+snapshot is `undefined`; [`encodeSave`](../../packages/game/save.ts) writes
+`sectorSession`. In the saved campaign, legacy keys are read only when their
+current fields are `undefined`:
+`pendingBattle` -> `sectorEntryRequest`, `recruited` -> `forceRoster`,
+`operativeState` -> `characters`, `sectorStates` -> `sectorSnapshots`, and
+`sceneStates` -> `sceneSnapshots`. A present current value wins, including
+`null` or an empty collection, and the decoder removes the old campaign keys.
+The in-memory
+[`GameSnapshotContent.battle`](../../packages/game/public/game-snapshot-types.ts)
+property is separate from the encoded envelope key. The normal save path writes
+current campaign names, not these legacy save aliases.
