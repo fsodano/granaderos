@@ -90,14 +90,15 @@ void test('a finishMission order applies the sector view carried as sectorSessio
 void test('a deployment report that carries the view only as sectorState is refused', () => {
   const pair = visiting();
   const view = pair.battle;
-  const retired = Object.assign(
-    {
-      type: 'leaveSector' as const,
-      battleId: present(pair.campaign.sectorEntryRequest).id,
-      survivors: view.units.filter((unit) => unit.side === 'player'),
-    },
-    { sectorState: view },
-  );
+  // The retired name is no longer part of the order, so the report starts as a
+  // canonical one and takes the old runtime name before it is dispatched.
+  const retired: CampaignAction = {
+    type: 'leaveSector',
+    battleId: present(pair.campaign.sectorEntryRequest).id,
+    sectorSession: view,
+    survivors: view.units.filter((unit) => unit.side === 'player'),
+  };
+  Object.assign(retired, { sectorSession: undefined, sectorState: view });
   const refused = dispatchCampaign(pair.campaign, retired);
   assert.match(present(refused.lastError), /estado táctico/);
   assert.equal(
