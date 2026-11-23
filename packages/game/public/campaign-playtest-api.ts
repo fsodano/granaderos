@@ -97,7 +97,7 @@ function leave(pair: CampaignSandbox): CampaignSandbox {
   const next = order(pair, {
     type: 'leaveSector',
     battleId: pair.campaign.sectorEntryRequest.id,
-    sectorState: pair.battle,
+    sectorSession: pair.battle,
     survivors: pair.battle.units.filter((u) => u.side === 'player'),
   });
   return { ...next, battle: null };
@@ -211,7 +211,7 @@ export function dispatchCampaignSandbox(
               : battle.sectorCleared
                 ? 'victory'
                 : battle.status,
-          sectorState: battle,
+          sectorSession: battle,
           survivors: battle.units
             .filter((u) => u.side === 'player')
             .map((u) => ({ ...u, id: Number(u.id) })),

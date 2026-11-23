@@ -183,7 +183,7 @@ export function finishReloadsBeforeMarch(
     campaign = dispatchCampaign(campaign, {
       type: 'leaveSector',
       battleId: present(campaign.sectorEntryRequest).id,
-      sectorState: battle,
+      sectorSession: battle,
       survivors: battle.units.filter((u) => u.side === 'player'),
     });
     assert.equal(campaign.lastError, null, campaign.lastError ?? undefined);

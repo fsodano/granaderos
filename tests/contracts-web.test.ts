@@ -53,7 +53,7 @@ void test('genuine new game creates exactly one custom officer then hires explor
   s = order(saved.campaign, {
     type: 'leaveSector',
     battleId: present(s.sectorEntryRequest).id,
-    sectorState: b,
+    sectorSession: b,
     survivors: b.units.map((u) => ({ ...u, id: Number(u.id) })),
   });
   assert.deepEqual(s.forceRoster, [1000, 101]);

@@ -46,7 +46,7 @@ The envelope's `campaign` value is a [`CampaignSnapshot`](../../packages/game/pu
 | `sectorSnapshots` | Retained physical snapshots for sectors | `sectorStates` |
 | `sceneSnapshots` | Retained physical snapshots for mission scenes | `sceneStates` |
 
-For each pair, [`decodeSave`](../../packages/game/save.ts) reads the legacy field only when the current field is `undefined`, then removes the legacy field. If both are present, the current value wins, even when it is `null` or an empty collection. Re-encoding writes only the current field names. The separate `suspendedSectorSessions` field stores request-and-snapshot records for suspended visits. `sectorState` is a campaign-action request property in [`CampaignAction`](../../packages/game/public/campaign-types.ts), not a saved campaign field.
+For each pair, [`decodeSave`](../../packages/game/save.ts) reads the legacy field only when the current field is `undefined`, then removes the legacy field. If both are present, the current value wins, even when it is `null` or an empty collection. Re-encoding writes only the current field names. The separate `suspendedSectorSessions` field stores request-and-snapshot records for suspended visits. `sectorSession` is a campaign-action request property in [`CampaignAction`](../../packages/game/public/campaign-types.ts), not a saved campaign field.
 
 Three distinct byte thresholds in [`packages/game/save-limits.js`](../../packages/game/save-limits.js) govern encoding and decoding:
 

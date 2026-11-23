@@ -126,7 +126,7 @@ export function scriptedBattleReport(
     type: 'battleResult',
     battleId: present(request).id,
     outcome,
-    sectorState: battle,
+    sectorSession: battle,
     survivors: battle.units.filter((u) => u.side === 'player'),
   };
 }

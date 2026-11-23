@@ -121,7 +121,7 @@ sequenceDiagram
 
 **Actor:** Player (commander). **Trigger:** Finish combat or leave exploration from `Battlefield`. **Preconditions:** An active `SectorEntryRequest` (`sectorEntryRequest`) and matching `SectorSession` snapshot exist.
 
-**Request:** `apps/web/app/page.tsx` (`finish`) dispatches `battleResult`, `leaveSector`, or `finishMission` with the pending `battleId`, final `sectorState`, outcome, and participant report.
+**Request:** `apps/web/app/page.tsx` (`finish`) dispatches `battleResult`, `leaveSector`, or `finishMission` with the pending `battleId`, final `sectorSession`, outcome, and participant report.
 
 **Success:** Campaign settlement validates the entry ID and clocks, reconciles `Character` (`Health`), `Inventory` and `ItemCustody`, spent cartridges, `Corpse` records, quests, and sector ownership, closes the `SectorSession` in `GameSession`, and clears `sectorEntryRequest`. **Refusal:** A stale ID or invalid report aborts the transaction with `lastError` and leaves the `SectorSession` open.
 
@@ -136,7 +136,7 @@ sequenceDiagram
   participant S as report validators and settlement
   Commander->>BF: return to campaign
   BF->>H: onFinish(outcome)
-  H->>H: build action with pending battle ID and sectorState
+  H->>H: build action with pending battle ID and sectorSession
   H->>C: dispatchCampaign(campaign, report action)
   C->>S: validate participants and tactical snapshot
   S-->>C: settle Character health, Inventory custody, and consequences

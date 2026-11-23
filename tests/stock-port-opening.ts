@@ -285,7 +285,7 @@ export function stockPortOpening({ seed = 8, content = defaultContentPackage() }
     type: 'battleResult',
     battleId: present(request).id,
     outcome: 'victory',
-    sectorState: p.battle,
+    sectorSession: p.battle,
     survivors: present(p.battle).units.filter((u) => u.side === 'player'),
   });
   assert.equal(present(state.sectors['buenos_aires']).owner, 'patriot');
@@ -305,7 +305,7 @@ export function stockPortOpening({ seed = 8, content = defaultContentPackage() }
     npcId: npc.id,
     unitId: Number(speaker.id),
     approach: 'direct',
-    sectorState: p.battle,
+    sectorSession: p.battle,
   });
   assert.equal(present(state.lastConversation).outcome, 'incomeActivated');
   assert.equal(dailyIncome(state), 8000);

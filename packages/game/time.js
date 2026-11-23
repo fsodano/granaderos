@@ -126,7 +126,7 @@ export function syncBattleTime(campaign, battle) {
       type: 'syncTacticalTime',
       battleId: campaign.sectorEntryRequest.id,
       elapsedSeconds: elapsed,
-      sectorState: battle,
+      sectorSession: battle,
     });
     if (next.lastError) {
       return { campaign, battle, error: next.lastError };

@@ -174,7 +174,7 @@ export const talk = (
   unitId: present(p.battle.units.find((u) => u.side === 'player')).id,
   term,
   approach,
-  sectorState: p.battle,
+  sectorSession: p.battle,
 });
 export function approachLocal(p: ActiveGame) {
   const actor = p.battle.units.find((u) => u.side === 'player'),
@@ -211,7 +211,7 @@ export const leave = (p: ActiveGame) => {
   return order(p.campaign, {
     type: 'leaveSector',
     battleId: present(p.campaign.sectorEntryRequest).id,
-    sectorState: p.battle,
+    sectorSession: p.battle,
     survivors: p.battle.units.filter((u) => u.side === 'player'),
   });
 };

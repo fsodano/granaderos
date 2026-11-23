@@ -232,7 +232,7 @@ export function choosePost(p: PostConversation, node: string, choice: string): P
       approach: 'dialogue',
       dialogueNode: node,
       dialogueChoice: choice,
-      sectorState: p.battle,
+      sectorSession: p.battle,
     }),
   };
 }
@@ -363,7 +363,7 @@ export function finishPostCampaign({
       type: 'battleResult',
       battleId: request.id,
       outcome: 'victory',
-      sectorState: p.battle,
+      sectorSession: p.battle,
       survivors: p.battle.units.filter((u) => u.side === 'player'),
     };
     s = saved({ campaign: order(p.campaign, report) }).campaign;
