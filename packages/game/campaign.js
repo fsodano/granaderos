@@ -1267,26 +1267,30 @@ function finishDefense(s, request, outcome, snapshot, plan) {
   s.sectorStates[group.target] = clone(snapshot);
   s.pendingBattle = null;
 }
-function applyTacticalTime(s, request, elapsed) {
+function applyTacticalTime(session, s, request, elapsed) {
   const previous = request.syncedSeconds ?? 0;
   requireThat(
     Number.isSafeInteger(elapsed) && elapsed >= previous && elapsed - previous <= 864000,
     'El tiempo táctico es inválido.',
   );
   for (let remaining = elapsed - previous; remaining > 0;) {
+    const now = session.timeline.currentSecond;
     const step = Math.min(
       remaining,
-      3600 - (s.secondOfHour ?? 0),
+      3600 - (now % 3600),
       nextSquadTravelBoundarySeconds(s) ?? Infinity,
     );
     remaining -= step;
-    s.secondOfHour = (s.secondOfHour ?? 0) + step;
-    if (s.secondOfHour === 3600) {
-      s.secondOfHour = 0;
-      advanceCampaignHour(s, { stopOnDefeat: false, civilianSeconds: step, travelSeconds: step });
-    } else {
-      advanceFractionalSystems(s, step);
-    }
+    advanceTimelineStep(session, step, 'tactical-step', (endSecond) => {
+      if (endSecond % 3600 === 0) {
+        s.secondOfHour = 0;
+        advanceCampaignHour(s, { stopOnDefeat: false, civilianSeconds: step, travelSeconds: step });
+      } else {
+        s.secondOfHour = endSecond % 3600;
+        advanceFractionalSystems(s, step);
+      }
+      return 'continue';
+    });
   }
   request.syncedSeconds = elapsed;
 }
@@ -1527,9 +1531,9 @@ function acknowledgeNpcGifts(s, snapshot) {
     };
   }
 }
-function resolveDefenseAutomatically(s, request) {
+function resolveDefenseAutomatically(session, s, request) {
   const result = autoResolve(request, s.sectorStates[request.sector] ?? null);
-  applyTacticalTime(s, request, result.battle.elapsedSeconds ?? 0);
+  applyTacticalTime(session, s, request, result.battle.elapsedSeconds ?? 0);
   result.battle.syncedSeconds = request.syncedSeconds;
   result.battle.savedHour = s.hour;
   result.battle.savedSecond = s.secondOfHour;
@@ -1799,8 +1803,8 @@ function applyReturnedOperative(s, request, report) {
     s.operativeState[id].pocketOrder = clone(report.pocketOrder);
   }
 }
-function commitDeploymentReturn(s, request, snapshot, plan) {
-  applyTacticalTime(s, request, snapshot.elapsedSeconds ?? 0);
+function commitDeploymentReturn(session, s, request, snapshot, plan) {
+  applyTacticalTime(session, s, request, snapshot.elapsedSeconds ?? 0);
   snapshot.syncedSeconds = request.syncedSeconds;
   snapshot.savedHour = s.hour;
   snapshot.savedSecond = s.secondOfHour;
@@ -2389,6 +2393,25 @@ function advanceCampaignSeconds(session, s, requestedSeconds, options = {}) {
   return timeline.currentSecond - startedAt;
 }
 
+// One clock step on the session timeline. The scheduled event carries the step's
+// end, and the work runs at that second; 'pause' stops the timeline there too.
+function advanceTimelineStep(session, step, kind, work) {
+  const timeline = session.timeline;
+  const endSecond = timeline.currentSecond + step;
+  timeline.schedule({
+    id: `${kind}:${endSecond}`,
+    kind,
+    subjectId: 'campaign',
+    atSecond: endSecond,
+  });
+  let paused = false;
+  timeline.advanceTo(endSecond, () => {
+    paused = work(endSecond) === 'pause';
+    return paused ? 'pause' : 'continue';
+  });
+  return paused;
+}
+
 function tick(session, s, hours, options = {}) {
   requireThat(
     Number.isInteger(hours) && hours >= 1 && hours <= 240,
@@ -2720,7 +2743,11 @@ export function dispatchCampaign(previous, action) {
           relocateDefenders(s, ids, action.destination);
           s.pendingEncounter = null;
           if (s.sectors[group.target].militia.some((n) => n > 0)) {
-            resolveDefenseAutomatically(s, prepareDefense(s, group, { excludeMercs: true }));
+            resolveDefenseAutomatically(
+              session,
+              s,
+              prepareDefense(s, group, { excludeMercs: true }),
+            );
           } else {
             loseSectorToGroup(s, group);
             addDefenseHistory(
@@ -2735,7 +2762,7 @@ export function dispatchCampaign(previous, action) {
         } else {
           const request = prepareDefense(s, group);
           if (action.choice === 'auto') {
-            resolveDefenseAutomatically(s, request);
+            resolveDefenseAutomatically(session, s, request);
           } else {
             note(
               s,
@@ -2951,23 +2978,27 @@ export function dispatchCampaign(previous, action) {
             !hasPendingArrivalDecision(s),
             'La acción debe detenerse en la decisión de llegada.',
           );
+          const now = session.timeline.currentSecond;
           const step = Math.min(
             remaining,
-            3600 - (s.secondOfHour ?? 0),
+            3600 - (now % 3600),
             nextSquadTravelBoundarySeconds(s) ?? Infinity,
           );
           remaining -= step;
-          s.secondOfHour = (s.secondOfHour ?? 0) + step;
-          if (s.secondOfHour === 3600) {
-            s.secondOfHour = 0;
-            advanceCampaignHour(s, {
-              stopOnDefeat: false,
-              civilianSeconds: step,
-              travelSeconds: step,
-            });
-          } else {
-            advanceFractionalSystems(s, step);
-          }
+          advanceTimelineStep(session, step, 'tactical-step', (endSecond) => {
+            if (endSecond % 3600 === 0) {
+              s.secondOfHour = 0;
+              advanceCampaignHour(s, {
+                stopOnDefeat: false,
+                civilianSeconds: step,
+                travelSeconds: step,
+              });
+            } else {
+              s.secondOfHour = endSecond % 3600;
+              advanceFractionalSystems(s, step);
+            }
+            return 'continue';
+          });
         }
         // A death is confirmed at this tactical checkpoint, after its time has elapsed.
         if (snapshot) {
@@ -3043,7 +3074,8 @@ export function dispatchCampaign(previous, action) {
         if (assignmentPause || contractPause || logisticsPause) {
           break;
         }
-        const before = s.hour * 3600 + (s.secondOfHour ?? 0);
+        const timeline = session.timeline;
+        const before = timeline.currentSecond;
         const claimsBefore = s.refundableRecruitmentClaims?.length ?? 0;
         const wasCompleted = Boolean(s.completed);
         const questEventsBefore = s.contentQuestEvents?.length ?? 0;
@@ -3051,53 +3083,58 @@ export function dispatchCampaign(previous, action) {
           s.recruited.map((id) => s.operativeState[id].trainedStats ?? {}),
         );
         for (let remaining = action.seconds; remaining > 0;) {
-          const now = s.hour * 3600 + (s.secondOfHour ?? 0);
+          const now = timeline.currentSecond;
           const step = Math.min(
             remaining,
-            3600 - (s.secondOfHour ?? 0),
+            3600 - (now % 3600),
             nextContractExpirySeconds(s) ?? Infinity,
             nextContractWarningSeconds(s) ?? Infinity,
             nextContentQuestDeadline(s) - now,
             nextSquadTravelBoundarySeconds(s) ?? Infinity,
           );
+          const paused = advanceTimelineStep(session, step, 'strategic-step', (endSecond) => {
+            if (endSecond % 3600 === 0) {
+              s.secondOfHour = 0;
+              advanceCampaignHour(s, {
+                pauseOnAssignments: true,
+                skipInitialAttention: true,
+                continuousClock: true,
+                civilianSeconds: step,
+                travelSeconds: step,
+              });
+            } else {
+              s.secondOfHour = endSecond % 3600;
+              const expired = advanceFractionalSystems(s, step, true);
+              pauseForContracts(s, 1, 0, expired);
+            }
+            synchronizeCampaignPresence(s);
+            updateContentQuests(s);
+            progress(s);
+            const gained =
+              JSON.stringify(s.recruited.map((id) => s.operativeState[id].trainedStats ?? {})) !==
+              stats;
+            const interrupted =
+              hasPendingArrivalDecision(s) ||
+              s.pendingEncounter ||
+              s.pendingBattle ||
+              s.defeated ||
+              (s.completed && !wasCompleted) ||
+              s.assignmentAttention.notice ||
+              s.contractAttention.notice ||
+              s.logisticsNotice ||
+              s.travelNotice ||
+              gained ||
+              (s.refundableRecruitmentClaims?.length ?? 0) < claimsBefore ||
+              (s.contentQuestEvents?.length ?? 0) > questEventsBefore;
+            return interrupted ? 'pause' : 'continue';
+          });
           remaining -= step;
-          s.secondOfHour = (s.secondOfHour ?? 0) + step;
-          if (s.secondOfHour === 3600) {
-            s.secondOfHour = 0;
-            advanceCampaignHour(s, {
-              pauseOnAssignments: true,
-              skipInitialAttention: true,
-              continuousClock: true,
-              civilianSeconds: step,
-              travelSeconds: step,
-            });
-          } else {
-            const expired = advanceFractionalSystems(s, step, true);
-            pauseForContracts(s, 1, 0, expired);
-          }
-          synchronizeCampaignPresence(s);
-          updateContentQuests(s);
-          progress(s);
-          const gained =
-            JSON.stringify(s.recruited.map((id) => s.operativeState[id].trainedStats ?? {})) !==
-            stats;
-          if (
-            hasPendingArrivalDecision(s) ||
-            s.pendingEncounter ||
-            s.pendingBattle ||
-            s.defeated ||
-            (s.completed && !wasCompleted) ||
-            s.assignmentAttention.notice ||
-            s.contractAttention.notice ||
-            s.logisticsNotice ||
-            s.travelNotice ||
-            gained ||
-            (s.refundableRecruitmentClaims?.length ?? 0) < claimsBefore ||
-            (s.contentQuestEvents?.length ?? 0) > questEventsBefore
-          ) {
+          if (paused) {
             break;
           }
         }
+        s.hour = Math.floor(timeline.currentSecond / 3600);
+        s.secondOfHour = timeline.currentSecond % 3600;
         requireThat(
           s.hour * 3600 + (s.secondOfHour ?? 0) >= before,
           'El reloj no puede retroceder.',
@@ -3943,7 +3980,7 @@ export function dispatchCampaign(previous, action) {
                 ? 'defeat'
                 : 'visit',
           plan = planDeploymentReturn(s, visit, snapshot, outcome);
-        commitDeploymentReturn(s, visit, snapshot, plan);
+        commitDeploymentReturn(session, s, visit, snapshot, plan);
         s.pendingBattle = null;
         note(s, 'La escuadra vuelve a la carta de operaciones.');
         break;
@@ -4310,7 +4347,7 @@ export function dispatchCampaign(previous, action) {
           scenarioContext(s),
         );
         const plan = planDeploymentReturn(s, request, battleSnapshot, action.outcome);
-        commitDeploymentReturn(s, request, battleSnapshot, plan);
+        commitDeploymentReturn(session, s, request, battleSnapshot, plan);
         for (const id of request.squad.map((u) => Number(u.id))) {
           if (
             gainsExperience(

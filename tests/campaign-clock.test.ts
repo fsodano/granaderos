@@ -67,3 +67,50 @@ void test('projecting the session keeps the campaign clock on the accepted secon
   assert.equal(seconds(campaign), 2 * 3600 + 75);
   assert.equal(restoreGameSession(campaign).timeline.currentSecond, session.timeline.currentSecond);
 });
+
+void test('the strategic clock advances the session timeline through a whole hour', () => {
+  let campaign = initialCampaign();
+  const startedAt = seconds(campaign);
+  campaign = order(campaign, { type: 'advanceStrategicTime', seconds: 3600 });
+  assert.equal(campaign.hour, 1);
+  assert.equal(campaign.secondOfHour ?? 0, 0);
+  assert.equal(seconds(campaign), startedAt + 3600);
+  assert.equal(timelineSecond(campaign), seconds(campaign));
+});
+
+void test('the strategic clock keeps a fractional second on the session timeline', () => {
+  const campaign = order(initialCampaign(), { type: 'advanceStrategicTime', seconds: 900 });
+  assert.equal(campaign.hour, 0);
+  assert.equal(campaign.secondOfHour, 900);
+  assert.equal(timelineSecond(campaign), 900);
+});
+
+void test('a contract warning stops the strategic clock at the same second it did before', () => {
+  const campaign = initialCampaign();
+  present(campaign.contracts[3]).expiresAt = 2;
+  present(campaign.contracts[3]).expiresSecond = 1800;
+  const next = order(campaign, { type: 'advanceStrategicTime', seconds: 3600 });
+  assert.equal(next.hour, 0);
+  assert.equal(next.secondOfHour, 1800);
+  assert.equal(timelineSecond(next), 1800);
+  const notice = present(next.contractAttention.notice);
+  assert.equal(notice.hour, 0);
+  assert.equal(notice.secondOfHour, 1800);
+  assert.equal(notice.advancedHours, 0);
+  assert.equal(present(notice.events[0]).code, 'expiring');
+});
+
+void test('the strategic clock stops at the travel boundary it stopped at before', () => {
+  let campaign = initialCampaign();
+  present(campaign.sectors['buenos_aires']).owner = 'royalist';
+  campaign = order(campaign, { type: 'attack', sector: 'buenos_aires', queue: true });
+  campaign = order(campaign, { type: 'advanceStrategicTime', seconds: 3600 });
+  campaign = order(campaign, { type: 'advanceStrategicTime', seconds: 3600 });
+  assert.equal(campaign.hour, 2);
+  assert.equal(campaign.secondOfHour ?? 0, 0);
+  assert.equal(timelineSecond(campaign), 7200);
+  assert.equal(present(present(campaign.squads[0]).journey).status, 'ready');
+  const travelNotice = present(campaign.travelNotice);
+  assert.equal(travelNotice.hour, 2);
+  assert.equal(present(travelNotice.events[0]).squadId, 'squad-1');
+});
