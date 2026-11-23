@@ -82,7 +82,6 @@ export {
 } from '../campaign-imports.js';
 export {
   campaignRelativePath,
-  compileCampaignPackage,
   validateCampaignManifest,
   validateCampaignRegistry,
 } from '../campaign-library.js';
