@@ -30,7 +30,7 @@ export default function Horses({ state: s, dispatch }: Props) {
   const order = (payload: CampaignHorseOrder) => dispatch({ type: 'horseAction', order: payload });
   const riders = roster.filter(
     (o) =>
-      s.recruited.includes(o.id) &&
+      s.forceRoster.includes(o.id) &&
       s.operativeState[o.id]?.alive &&
       !s.operativeState[o.id]?.captured &&
       !operativeInTransit(s, o.id) &&

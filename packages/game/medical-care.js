@@ -104,7 +104,7 @@ export function careAssignmentIssue(s, op, assignment) {
   if (!Object.hasOwn(CARE_ASSIGNMENTS, assignment)) {
     return issue('invalid_assignment');
   }
-  if (!s.recruited.includes(op.id) || !record?.alive || record.hp <= 0 || record.captured) {
+  if (!s.forceRoster.includes(op.id) || !record?.alive || record.hp <= 0 || record.captured) {
     return issue('unavailable');
   }
   if (operativeInTransit(s, op.id)) {
@@ -148,7 +148,7 @@ export function careAssignmentReason(s, op, assignment) {
 
 function carePresent(s, op, context = {}) {
   return (
-    s.recruited.includes(op.id) &&
+    s.forceRoster.includes(op.id) &&
     s.operativeState[op.id]?.alive &&
     !s.operativeState[op.id].captured &&
     !deployed(s, op.id) &&
@@ -285,7 +285,7 @@ export function careStatus(s, op, roster) {
       !roster.some(
         (o) =>
           o.id !== op.id &&
-          s.recruited.includes(o.id) &&
+          s.forceRoster.includes(o.id) &&
           s.operativeState[o.id]?.alive &&
           s.operativeState[o.id].assignment === 'patient' &&
           operativeLocation(s, o.id) === operativeLocation(s, op.id) &&
@@ -419,7 +419,7 @@ export function advanceMedicalCare(s, roster, context = {}) {
   }
   for (const op of roster) {
     const record = s.operativeState[op.id];
-    if (!s.recruited.includes(op.id) || !record?.alive || deployed(s, op.id)) {
+    if (!s.forceRoster.includes(op.id) || !record?.alive || deployed(s, op.id)) {
       continue;
     }
     if (!present(op)) {
@@ -503,13 +503,16 @@ export function validateMedicalCare(s, roster) {
     requireThat(
       typeof r.sleepCollapsed === 'boolean' &&
         (!r.sleepCollapsed ||
-          (s.recruited.includes(op.id) && r.alive && !r.captured && !operativeInTransit(s, op.id))),
+          (s.forceRoster.includes(op.id) &&
+            r.alive &&
+            !r.captured &&
+            !operativeInTransit(s, op.id))),
       'El agotamiento guardado es inválido.',
     );
     requireThat(
       typeof r.asleep === 'boolean' &&
         (!r.asleep ||
-          (s.recruited.includes(op.id) && r.alive && !r.captured && !deployed(s, op.id))),
+          (s.forceRoster.includes(op.id) && r.alive && !r.captured && !deployed(s, op.id))),
       'El estado de sueño guardado es inválido.',
     );
     requireThat(
@@ -541,7 +544,7 @@ export function validateMedicalCare(s, roster) {
     );
     requireThat(
       r.assignment === 'active' ||
-        (s.recruited.includes(op.id) &&
+        (s.forceRoster.includes(op.id) &&
           r.alive &&
           !r.captured &&
           !deployed(s, op.id) &&
@@ -563,7 +566,7 @@ export function advanceMilitaryWounds(s, roster) {
   for (const op of roster) {
     const r = s.operativeState[op.id];
     if (
-      !s.recruited.includes(op.id) ||
+      !s.forceRoster.includes(op.id) ||
       !r?.alive ||
       r.hp <= 0 ||
       r.captured ||
@@ -598,7 +601,7 @@ export function medicalSupplyQuote(s, op, quantity, supplied) {
   const cost = quantity * careRules(s).dressingPrice;
   const reason =
     !op ||
-    !s.recruited.includes(op.id) ||
+    !s.forceRoster.includes(op.id) ||
     !s.operativeState[op.id]?.alive ||
     s.operativeState[op.id].captured ||
     deployed(s, op.id) ||

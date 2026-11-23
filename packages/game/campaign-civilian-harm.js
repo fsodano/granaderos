@@ -106,7 +106,7 @@ export function migrateCivilianSnapshotHealth(campaign, snapshot, { legacy = fal
     const id = authoredNpc(campaign, sectorId, sceneId, npc.id)?.operativeId,
       retained = ledgerOf(campaign).records[identity(sectorId, sceneId, npc.id)];
     const currentContact =
-      id === undefined || (!campaign.recruited?.includes(id) && retained?.transferredTo !== id);
+      id === undefined || (!campaign.forceRoster?.includes(id) && retained?.transferredTo !== id);
     if (legacy) {
       migrateCivilianHealth(npc, service, { currentContact });
     }
@@ -188,7 +188,7 @@ export function migrateCampaignCivilianHealth(campaign) {
           npcId: npc.id,
           incidents: [],
           effects: [],
-          transferredTo: campaign.recruited?.includes(id) ? id : null,
+          transferredTo: campaign.forceRoster?.includes(id) ? id : null,
           hpRestored: 0,
         };
       }
@@ -208,7 +208,7 @@ const recruitedSurvivor = (campaign, record) => {
     ![...record.incidents, ...(retained?.incidents ?? [])].some(
       (event) => event.kind === 'death',
     ) &&
-    (retained?.transferredTo === id || campaign.recruited?.includes(id))
+    (retained?.transferredTo === id || campaign.forceRoster?.includes(id))
   );
 };
 
@@ -247,7 +247,7 @@ function serviceHealth(campaign, sectorId, sceneId, npc) {
   const id = authoredNpc(campaign, sectorId, sceneId, npc.id)?.operativeId;
   if (
     id === undefined ||
-    campaign.recruited?.includes(id) ||
+    campaign.forceRoster?.includes(id) ||
     ledgerOf(campaign).records[identity(sectorId, sceneId, npc.id)]?.transferredTo === id
   ) {
     return null;
@@ -426,7 +426,7 @@ function context(campaign, battle) {
       }
       need(
         authored?.operativeId === undefined ||
-          (!campaign.recruited?.includes(authored.operativeId) &&
+          (!campaign.forceRoster?.includes(authored.operativeId) &&
             ledger.records[key]?.transferredTo !== authored.operativeId),
         'Un combatiente incorporado no puede figurar como una nueva víctima civil.',
       );
@@ -547,7 +547,7 @@ export function acknowledgeCivilianHarm(campaign, battle) {
   );
   for (const entry of planned) {
     const id = authoredNpc(campaign, request.sector, sceneId, entry.npc.id)?.operativeId;
-    if (id !== undefined && !campaign.recruited?.includes(id)) {
+    if (id !== undefined && !campaign.forceRoster?.includes(id)) {
       need(
         campaign.operativeState?.[id] && Number.isFinite(campaign.operativeState[id].hp),
         'Falta la hoja de servicio del habitante.',

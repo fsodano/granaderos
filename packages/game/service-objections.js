@@ -489,7 +489,7 @@ export function receiveServiceObjectionCorrespondence(state, operative) {
     !operative ||
     !explicit(operative) ||
     !record?.serviceObjection ||
-    !state.recruited?.includes(operative.id) ||
+    !state.forceRoster?.includes(operative.id) ||
     record.alive !== true ||
     !capable({ ...record, side: 'player' }) ||
     !contract ||

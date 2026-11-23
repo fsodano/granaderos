@@ -133,7 +133,7 @@ export function settlePrisonerEscapes(campaign, request, battle, roster) {
     delete record.residentPosition;
     if (contract) {
       campaign.contracts[id] = contract;
-      campaign.recruited.push(id);
+      campaign.forceRoster.push(id);
       const squad = campaign.squads.find(
         (q) => q.location === exit.destination && !q.journey && q.members.length < 6,
       );

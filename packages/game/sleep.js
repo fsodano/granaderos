@@ -15,7 +15,7 @@ export const SLEEP_ISSUE_TEXT = {
   sleep_disturbed: 'Se despertó porque el sector ya no permite descansar.',
 };
 const available = (s, id) =>
-  s.recruited.includes(id) &&
+  s.forceRoster.includes(id) &&
   s.operativeState[id]?.alive &&
   !s.operativeState[id].captured &&
   !deployed(s, id) &&
@@ -93,7 +93,7 @@ export function prepareSleep(s, roster, context = {}) {
     }
     if (!available(s, op.id)) {
       wake(r);
-      if (!s.recruited.includes(op.id) || !r.alive || r.captured) {
+      if (!s.forceRoster.includes(op.id) || !r.alive || r.captured) {
         r.sleepCollapsed = false;
       }
       continue;

@@ -362,7 +362,7 @@ export function prepareFreshCoastalHires(
     const contract = s.contracts[hire.id],
       due = receiptSeconds(hire.arrival);
     assert.equal(
-      s.recruited.filter((id) => id === hire.id).length,
+      s.forceRoster.filter((id) => id === hire.id).length,
       1,
       'Each actual hire arrives exactly once.',
     );
@@ -383,7 +383,7 @@ export function prepareFreshCoastalHires(
   };
   for (const id of ids) {
     assert.ok(
-      !s.recruited.includes(id) && !hasRecruitmentClaim(s, id),
+      !s.forceRoster.includes(id) && !hasRecruitmentClaim(s, id),
       'Opening hiring cannot duplicate serving or pending people.',
     );
     const op = rosterFor(s).find((op) => op.id === id);
@@ -499,7 +499,7 @@ export function freshCoastalRoute(
       ['retiro'],
     );
     assert.equal(s.resources.treasury, openingFunds);
-    assert.deepEqual(s.recruited, []);
+    assert.deepEqual(s.forceRoster, []);
     if (kind === 'created' || kind === 'local') {
       const chosen = profile();
       if (kind === 'local') {
@@ -933,7 +933,7 @@ export function freshCoastalRoute(
       );
       const localPhysician = rosterFor(s).find(
         (op) =>
-          s.recruited.includes(op.id) &&
+          s.forceRoster.includes(op.id) &&
           !s.squad.includes(op.id) &&
           operativeLocation(s, op.id) === clinic &&
           op.medical >= 70 &&
@@ -944,7 +944,7 @@ export function freshCoastalRoute(
       );
       const availableForHire = (id: number) =>
         present(s.operativeState[id]).alive &&
-        !s.recruited.includes(id) &&
+        !s.forceRoster.includes(id) &&
         contractQuote(
           s,
           rosterFor(s).find((op) => op.id === id),
@@ -1014,7 +1014,7 @@ export function freshCoastalRoute(
       }
       if (hires.length) {
         for (const arrival of arrivals) {
-          assert.equal(s.recruited.filter((id) => id === arrival.operativeId).length, 1);
+          assert.equal(s.forceRoster.filter((id) => id === arrival.operativeId).length, 1);
           assert.ok(!hasRecruitmentClaim(s, arrival.operativeId));
         }
         const due = Math.max(...arrivals.map(receiptSeconds));
@@ -1052,7 +1052,7 @@ export function freshCoastalRoute(
         });
         s = saved({ campaign: s }).campaign;
         assert.ok(
-          hires.every((id) => s.recruited.includes(id) && operativeLocation(s, id) === location),
+          hires.every((id) => s.forceRoster.includes(id) && operativeLocation(s, id) === location),
         );
         assert.equal(
           s.resources.treasury,
@@ -1148,7 +1148,7 @@ export function freshCoastalRoute(
   if (kind === 'local') {
     assert.equal((s.refundableRecruitmentClaims ?? []).length, 0);
     assert.ok(Object.keys(s.contracts).every((id) => [1000, 3, 4, 10].includes(Number(id))));
-    assert.ok(s.recruited.every((id) => [1000, 3, 4, 10].includes(id)));
+    assert.ok(s.forceRoster.every((id) => [1000, 3, 4, 10].includes(id)));
   }
   return { campaign: s, notes };
 }

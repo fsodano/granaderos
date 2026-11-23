@@ -48,7 +48,7 @@ function characterPhysical(s, character, battle) {
       (missionId != null && Number(missionId) === id)
     );
   };
-  const resident = !s.recruited.includes(id)
+  const resident = !s.forceRoster.includes(id)
     ? scene?.npcs?.find(
         (n) =>
           identifies(n) &&
@@ -72,11 +72,11 @@ function characterState(s, character, battle, state) {
   return {
     alive,
     dead: Boolean(record) && !alive,
-    serving: alive && !record?.captured && s.recruited.includes(id),
+    serving: alive && !record?.captured && s.forceRoster.includes(id),
     present:
       alive &&
       !record?.captured &&
-      !s.recruited.includes(id) &&
+      !s.forceRoster.includes(id) &&
       Boolean(
         s.contentPresence?.people[character]?.appeared &&
         s.contentPresence.people[character].sector,

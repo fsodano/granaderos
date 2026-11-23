@@ -246,7 +246,7 @@ function accessReason(s, op) {
     : s.defeated
       ? 'La campaña ha terminado.'
       : !op ||
-          !s.recruited.includes(op.id) ||
+          !s.forceRoster.includes(op.id) ||
           !s.operativeState[op.id]?.alive ||
           s.operativeState[op.id].captured
         ? 'El combatiente no está disponible.'
@@ -354,7 +354,7 @@ export function moveCampaignAmmunition(s, op, key, quantity, direction, supplied
 // any actual equipment/deployment history makes an empty reserve ambiguous;
 // it must not be refilled on load, renewal, rehire or another sector entry.
 export function migrateStartingCartridges(s) {
-  const served = new Set((s.recruited ?? []).map(String));
+  const served = new Set((s.forceRoster ?? []).map(String));
   for (const id of Object.keys(s.contracts ?? {})) {
     served.add(id);
   }

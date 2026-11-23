@@ -413,7 +413,7 @@ export default function Home() {
       savedCampaignURL(saved.campaign);
       setCampaign(saved.campaign);
       setBattle(saved.battle);
-      setScreen(saved.battle ? 'battle' : saved.campaign.recruited.length ? 'campaign' : 'desk');
+      setScreen(saved.battle ? 'battle' : saved.campaign.forceRoster.length ? 'campaign' : 'desk');
       if (!campaign) {
         setNotice('');
       }
@@ -645,7 +645,9 @@ export default function Home() {
       setBattleSession((session) => session + 1);
       setDialog('');
       setDeskTab('overview');
-      setScreen(loaded.battle ? 'battle' : loaded.campaign.recruited.length ? 'campaign' : 'desk');
+      setScreen(
+        loaded.battle ? 'battle' : loaded.campaign.forceRoster.length ? 'campaign' : 'desk',
+      );
       setNotice('Partida recuperada.');
     } catch (error) {
       setNotice(domainRefusalMessage(error));

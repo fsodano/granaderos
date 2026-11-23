@@ -48,7 +48,7 @@ export function strategicSectorPresence(
     }
     return rows.get(cell.location);
   };
-  for (const id of new Set(state.recruited ?? [])) {
+  for (const id of new Set(state.forceRoster ?? [])) {
     const record = state.operativeState[id];
     if (
       !record?.alive ||
@@ -207,7 +207,7 @@ export function strategicTravelPresence(state: CampaignSnapshot, squad: Campaign
   return squad.members.filter((id) => {
     const record = state.operativeState[id];
     return (
-      state.recruited.includes(id) &&
+      state.forceRoster.includes(id) &&
       record?.alive &&
       record.hp > 0 &&
       !record.captured &&

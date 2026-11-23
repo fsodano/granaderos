@@ -301,7 +301,7 @@ export function validateFiniteArtilleryArsenals(state) {
         request.squad?.length &&
         request.squad.every(
           (unit) =>
-            state.recruited.includes(unit.id) &&
+            state.forceRoster.includes(unit.id) &&
             state.operativeState[unit.id]?.alive &&
             state.operativeState[unit.id]?.location === request.sector,
         ),

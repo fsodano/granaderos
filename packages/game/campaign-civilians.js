@@ -55,7 +55,7 @@ export function advanceResidentScavenging(campaign, scene, targetSecond) {
     const id = operativeId(resident, campaign);
     if (
       !campaign.operativeState?.[id] ||
-      campaign.recruited.includes(id) ||
+      campaign.forceRoster.includes(id) ||
       !unacknowledgedSupplyReceipts(campaign, scene, resident).length
     ) {
       continue;
@@ -249,7 +249,7 @@ export function campaignCivilian(s, n, { fromService = false } = {}) {
   for (const k of fields) {
     delete metadata[k];
   }
-  if (record && !fromService && !record.inService && !s.recruited.includes(id)) {
+  if (record && !fromService && !record.inService && !s.forceRoster.includes(id)) {
     return {
       ...metadata,
       ...structuredClone(record.health),
@@ -324,7 +324,7 @@ function remember(s, n, scene, deathSecond) {
   };
   s.civilianState.people[key] = record;
   const id = operativeId(n, s);
-  if (id !== undefined && !s.recruited.includes(id)) {
+  if (id !== undefined && !s.forceRoster.includes(id)) {
     Object.assign(s.operativeState[id], {
       hp: Math.ceil(n.hp),
       alive: n.hp > 0,
@@ -392,7 +392,7 @@ function civilianReport(s, snapshot) {
         prior.operativeId === n.operativeId &&
         prior.contentId === n.contentId &&
         prior.presenceRevision === n.presenceRevision &&
-        !s.recruited.includes(operativeId(n, s)),
+        !s.forceRoster.includes(operativeId(n, s)),
     );
     const previous = campaignCivilian(s, prior);
     compareHistory(previous, n);
@@ -501,7 +501,7 @@ function refreshCivilianScenes(s) {
       const record = s.civilianState.people[civilianKey(n)];
       if (
         (record || scenarioFor(s).missionNPCs.some((original) => original.id === n.id)) &&
-        !s.recruited.includes(operativeId(n, s))
+        !s.forceRoster.includes(operativeId(n, s))
       ) {
         const actor = campaignCivilian(s, n),
           current = physical(actor);
@@ -539,8 +539,8 @@ function placedResidents(s) {
       !person?.alive ||
       !person.appeared ||
       person.suspended ||
-      person.recruited ||
-      s.recruited.includes(id) ||
+      person.forceRoster ||
+      s.forceRoster.includes(id) ||
       isContractOperative(s, { id }) ||
       s.operativeState[id]?.captured ||
       s.sectorEntryRequest?.missionAllies?.some((u) => Number(u.id) === id)
@@ -582,7 +582,7 @@ export function migrateResidentWounds(s) {
 function unloadedWounds(s) {
   const excluded = new Set([
     ...(s.sectorEntryRequest?.npcs ?? []).map(civilianKey),
-    ...s.recruited.map((id) => `person-${id}`),
+    ...s.forceRoster.map((id) => `person-${id}`),
   ]);
   return Object.entries(s.civilianState?.people ?? {}).filter(
     ([key, r]) => !excluded.has(key) && !r.inService && r.health.hp > 0 && r.health.bleeding > 0,
@@ -611,7 +611,7 @@ export function advanceUnloadedCivilians(s, seconds) {
       encounterDefinitions(s).find((n) => n.id === record.npcId) ??
       scenarioFor(s).missionNPCs.find((n) => n.id === record.npcId);
     need(original, 'El habitante no pertenece a este mundo.');
-    if (s.recruited.includes(operativeId(original, s))) {
+    if (s.forceRoster.includes(operativeId(original, s))) {
       continue;
     }
     if (
@@ -648,7 +648,7 @@ export function acknowledgeResidentConditions(campaign, scene, atSecond) {
     return;
   }
   for (const resident of scene.npcs ?? []) {
-    if (resident.detention || campaign.recruited.includes(operativeId(resident, campaign))) {
+    if (resident.detention || campaign.forceRoster.includes(operativeId(resident, campaign))) {
       continue;
     }
     const canonical = campaignCivilian(campaign, resident);
@@ -693,7 +693,7 @@ export function resumeCivilianServiceReturns(s) {
     if (
       id === undefined ||
       isContractOperative(s, { id }) ||
-      s.recruited.includes(id) ||
+      s.forceRoster.includes(id) ||
       s.sectorEntryRequest?.missionAllies?.some((u) => Number(u.id) === id) ||
       !serviceRecord?.alive ||
       serviceRecord.hp <= 0 ||
@@ -704,7 +704,7 @@ export function resumeCivilianServiceReturns(s) {
     const character = characterForOperative(s, id),
       person = character && s.contentPresence.people[character.id],
       sector = person && locationId(person.sector, s);
-    if (!person?.alive || person.recruited || !person.appeared || !sector) {
+    if (!person?.alive || person.forceRoster || !person.appeared || !sector) {
       continue;
     }
     need(record.health.hp > 0, 'Un habitante muerto no puede volver del servicio.');
@@ -743,7 +743,7 @@ export function validateCivilianScene(s, scene, { active = false } = {}) {
     definition(s, n);
     validateCivilianWounds(n, scene);
     const record = s.civilianState?.people[civilianKey(n)];
-    need(!s.recruited.includes(operativeId(n, s)));
+    need(!s.forceRoster.includes(operativeId(n, s)));
     const expected = campaignCivilian(s, n);
     need(same(physical(n), physical(expected)));
     need(
@@ -826,7 +826,7 @@ export function validateCampaignCivilians(s) {
       );
     }
     need(!r.inService || r.health.hp > 0, 'Un habitante muerto no puede trasladarse al servicio.');
-    if (id !== undefined && !r.inService && !s.recruited.includes(id)) {
+    if (id !== undefined && !r.inService && !s.forceRoster.includes(id)) {
       need(
         s.operativeState[id].hp === r.health.hp && s.operativeState[id].alive === r.health.hp > 0,
       );
@@ -868,7 +868,7 @@ export function migrateCampaignCivilians(s) {
     ...(s.sectorEntryRequest ? [s.sectorEntryRequest] : []),
   ];
   for (const scene of scenes) {
-    scene.npcs = (scene.npcs ?? []).filter((n) => !s.recruited.includes(operativeId(n, s)));
+    scene.npcs = (scene.npcs ?? []).filter((n) => !s.forceRoster.includes(operativeId(n, s)));
   }
   for (const scene of scenes) {
     for (const n of scene.npcs ?? []) {

@@ -64,7 +64,7 @@ function observers(s: CampaignSnapshot, { traveling = [] }: ObservationOptions =
       }
     }
   }
-  for (const id of s.recruited ?? []) {
+  for (const id of s.forceRoster ?? []) {
     if (
       s.operativeState[id]?.alive &&
       able(s.operativeState[id] ?? {}) &&

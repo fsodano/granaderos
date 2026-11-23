@@ -71,7 +71,7 @@ export default function Campaign({
     ui = campaignUI(s),
     { SectorBriefing } = ui;
   const roster = rosterFor(s),
-    hired = s.recruited
+    hired = s.forceRoster
       .map((id: number) => roster.find((o) => o.id === id))
       .filter((operative) => operative !== undefined),
     def = place(selected),

@@ -60,7 +60,7 @@ export function operativeInTransit(s, id) {
  * @returns {boolean} */
 export function canReassignOperative(s, id) {
   return (
-    s.recruited.includes(id) &&
+    s.forceRoster.includes(id) &&
     s.operativeState[id]?.alive &&
     !s.operativeState[id]?.captured &&
     !isCharacterDeployed(s, id) &&

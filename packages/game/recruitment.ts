@@ -186,7 +186,7 @@ export function candidateAdmission(state: CampaignSnapshot, id: number | string)
     record = state.operativeState[id];
   const reason = !op
     ? 'No existe ese voluntario.'
-    : state.recruited.includes(id)
+    : state.forceRoster.includes(id)
       ? 'Ya se encuentra en tus filas.'
       : pendingRecruitmentClaim(state, id)
         ? 'Ya pagaste por reclutar a este candidato, pero todavía no hay un destino seguro para que empiece el servicio.'

@@ -25,7 +25,7 @@ export class CampaignRenewServiceContractRepository {
     const id = Number(request.characterId);
     const candidate = rosterFor(campaign).find((character) => character.id === id);
     const record = campaign.contracts[id];
-    if (!candidate || !record || !campaign.recruited.includes(id)) {
+    if (!candidate || !record || !campaign.forceRoster.includes(id)) {
       throw new DomainRefusal(DomainRefusalCode.NotServing);
     }
     if (

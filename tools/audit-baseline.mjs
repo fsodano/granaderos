@@ -156,7 +156,7 @@ const result = {
     controlled: Object.entries(state.sectors)
       .filter(([, s]) => s.owner === 'patriot')
       .map(([id]) => id),
-    recruited: state.recruited,
+    forceRoster: state.forceRoster,
     location: state.location,
   },
   eliteTerms: elite

@@ -349,7 +349,7 @@ export function sectorInventoryModel(s, sectorId, roster, operativeId) {
   const { snapshot, sectorId: location } = inventorySite(s, sectorId),
     candidates = roster.filter(
       (op) =>
-        s.recruited.includes(op.id) &&
+        s.forceRoster.includes(op.id) &&
         s.operativeState[op.id]?.alive &&
         !s.operativeState[op.id]?.captured &&
         !operativeInTransit(s, op.id) &&
@@ -685,7 +685,7 @@ export function moveSectorItem(s, action, roster) {
           !roster.some(
             (other) =>
               other.id !== op.id &&
-              s.recruited.includes(other.id) &&
+              s.forceRoster.includes(other.id) &&
               s.operativeState[other.id]?.alive &&
               s.operativeState[other.id]?.equipmentCursor &&
               !s.operativeState[other.id]?.captured,
@@ -751,7 +751,7 @@ export function moveSectorItem(s, action, roster) {
         !roster.some(
           (other) =>
             other.id !== op.id &&
-            s.recruited.includes(other.id) &&
+            s.forceRoster.includes(other.id) &&
             s.operativeState[other.id]?.alive &&
             s.operativeState[other.id]?.equipmentCursor &&
             !s.operativeState[other.id]?.captured,

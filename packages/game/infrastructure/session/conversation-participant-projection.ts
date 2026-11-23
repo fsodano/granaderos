@@ -26,7 +26,7 @@ export class ConversationParticipantProjection {
     const authorizedCharacter = campaign.sectorEntryRequest?.squad.find(
       (person) => person.id === combatantId,
     );
-    if (!resident || combatantId === undefined || !campaign.recruited.includes(combatantId)) {
+    if (!resident || combatantId === undefined || !campaign.forceRoster.includes(combatantId)) {
       throw new Error('El reclutamiento perdió al personaje presente.');
     }
 

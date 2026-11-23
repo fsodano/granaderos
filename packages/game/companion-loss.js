@@ -72,7 +72,7 @@ const sameService = (receipt, contract) =>
   receipt.serviceStarted === contract.started &&
   receipt.serviceStartedSecond === (contract.startedSecond ?? 0);
 const livingService = (state, id) =>
-  state.recruited?.includes(id) &&
+  state.forceRoster?.includes(id) &&
   state.operativeState?.[id]?.alive === true &&
   state.operativeState[id].hp > 0 &&
   !state.operativeState[id].captured &&

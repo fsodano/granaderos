@@ -54,19 +54,19 @@ type Props = {
 };
 export default function Armory({ state: s, dispatch }: Props) {
   const enemyName = campaignFactionName(s, 'royalist');
-  const [selected, setSelected] = useState(String(s.recruited[0] ?? 3));
+  const [selected, setSelected] = useState(String(s.forceRoster[0] ?? 3));
   const roster = rosterFor(s),
     op =
       roster.find(
         (o) =>
           String(o.id) === selected &&
-          s.recruited.includes(o.id) &&
+          s.forceRoster.includes(o.id) &&
           s.operativeState[o.id]?.alive &&
           !s.operativeState[o.id]?.captured,
       ) ??
       roster.find(
         (o) =>
-          s.recruited.includes(o.id) &&
+          s.forceRoster.includes(o.id) &&
           s.operativeState[o.id]?.alive &&
           !s.operativeState[o.id]?.captured,
       );
@@ -174,7 +174,7 @@ export default function Armory({ state: s, dispatch }: Props) {
               {roster
                 .filter(
                   (o) =>
-                    s.recruited.includes(o.id) &&
+                    s.forceRoster.includes(o.id) &&
                     s.operativeState[o.id]?.alive &&
                     !s.operativeState[o.id]?.captured,
                 )

@@ -247,7 +247,7 @@ export function grenadeOffer(s, op, isSupplied, quantity = 1) {
       ? 'Resolvé el encuentro antes de comprar granadas.'
       : (scenarioFor(s).grenadeSupplyReason(s, isSupplied) ??
         (!op ||
-        !s.recruited.includes(op.id) ||
+        !s.forceRoster.includes(op.id) ||
         !record?.alive ||
         record.captured ||
         record.hp < 15 ||

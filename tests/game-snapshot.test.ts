@@ -109,6 +109,40 @@ void test('a save written with the legacy pendingBattle key loads identically an
   );
 });
 
+void test('a save writes the serving members under forceRoster and never under recruited', () => {
+  const pair = deployed();
+  const envelope = parseJsonObject(encodeSave(pair.campaign, pair.battle));
+  const campaign = envelope['campaign'];
+  assert.ok(isJsonObject(campaign));
+  assert.deepEqual(campaign['forceRoster'], pair.campaign.forceRoster);
+  assert.equal(Object.hasOwn(campaign, 'recruited'), false);
+  const empty = parseJsonObject(encodeSave(pair.campaign));
+  const emptyCampaign = empty['campaign'];
+  assert.ok(isJsonObject(emptyCampaign));
+  assert.ok(Array.isArray(emptyCampaign['forceRoster']));
+  assert.equal(Object.hasOwn(emptyCampaign, 'recruited'), false);
+});
+
+void test('a save written with the legacy recruited key loads identically and is rewritten under forceRoster', () => {
+  const pair = deployed();
+  const current = parseJsonObject(encodeSave(pair.campaign, pair.battle));
+  const legacy = structuredClone(current);
+  const legacyCampaign = legacy['campaign'];
+  assert.ok(isJsonObject(legacyCampaign));
+  assert.ok(Array.isArray(legacyCampaign['forceRoster']));
+  legacyCampaign['recruited'] = legacyCampaign['forceRoster'];
+  delete legacyCampaign['forceRoster'];
+  const fromCurrent = decodeSave(JSON.stringify(current));
+  const fromLegacy = decodeSave(JSON.stringify(legacy));
+  assert.deepEqual(fromLegacy, fromCurrent);
+  assert.deepEqual(fromLegacy, pair);
+  const rewritten = parseJsonObject(encodeSave(fromLegacy.campaign, fromLegacy.battle));
+  const rewrittenCampaign = rewritten['campaign'];
+  assert.ok(isJsonObject(rewrittenCampaign));
+  assert.equal(Object.hasOwn(rewrittenCampaign, 'recruited'), false);
+  assert.deepEqual(rewrittenCampaign['forceRoster'], fromCurrent.campaign.forceRoster);
+});
+
 void test('a save whose terrain is compacted carries schema 2', () => {
   const pair = deployed();
   const campaign = structuredClone(pair.campaign);

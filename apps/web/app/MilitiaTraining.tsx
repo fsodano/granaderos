@@ -36,7 +36,7 @@ export default function MilitiaTraining({
     return null;
   }
   const roster = rosterFor(s),
-    hired = s.recruited
+    hired = s.forceRoster
       .map((id: number) => roster.find((o) => o.id === id))
       .filter((operative) => operative !== undefined);
   const trainers = hired

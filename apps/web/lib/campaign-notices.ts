@@ -23,7 +23,7 @@ export function strategicClockInterrupt(
   if (after.travelNotice && changed(before.travelNotice, after.travelNotice)) {
     return after.travelNotice.events.map((e) => `${e.name}: ${e.text}`).join(' ');
   }
-  for (const id of after.recruited ?? []) {
+  for (const id of after.forceRoster ?? []) {
     const old = before.operativeState?.[id],
       next = after.operativeState?.[id];
     for (const [skill, value] of Object.entries(next?.trainedStats ?? {})) {

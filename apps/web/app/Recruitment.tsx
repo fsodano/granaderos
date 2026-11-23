@@ -52,7 +52,7 @@ export default function Recruitment({ state: s, dispatch }: Props) {
   const roster = useMemo(() => rosterFor(s).filter((o) => isContractOperative(s, o)), [s]);
   const serving = roster.filter((o) => {
     const r = s.operativeState[o.id];
-    return s.recruited.includes(o.id) && r?.alive && r.hp > 0 && !r.captured;
+    return s.forceRoster.includes(o.id) && r?.alive && r.hp > 0 && !r.captured;
   }).length;
   const options = recruitmentSites(s);
   const destination = options.some((o) => o.id === chosenDestination)
@@ -175,7 +175,7 @@ export default function Recruitment({ state: s, dispatch }: Props) {
       <div className="recruit-catalogue">
         {visible.map((o) => {
           const portrait = portraitFor(o.portrait ?? o.portraitId ?? o.id, s);
-          const hired = s.recruited.includes(o.id),
+          const hired = s.forceRoster.includes(o.id),
             claim = pendingRecruitmentClaim(s, o.id),
             term = periods[o.id] || 'day',
             quote = hired ? contractRenewalQuote(s, o, term) : contractQuote(s, o, term),

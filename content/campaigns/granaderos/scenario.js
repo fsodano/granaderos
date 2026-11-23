@@ -181,7 +181,7 @@ export function initialState(seed, _definitions) {
     lastConversation: null,
     conversations: {},
     officer: null,
-    recruited: [],
+    forceRoster: [],
     squad: [],
     operativeState: Object.fromEntries(
       [...OPERATIVES, ...CIVIC_RECRUITS].map((o) => [
@@ -309,7 +309,7 @@ export function progress(
   if (
     !s.completed &&
     s.phase === 4 &&
-    s.recruited.includes(57) &&
+    s.forceRoster.includes(57) &&
     Object.values(s.sectors).every((x) => x.owner === 'patriot') &&
     !s.blockade &&
     !s.sectorEntryRequest &&

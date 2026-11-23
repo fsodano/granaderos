@@ -324,7 +324,9 @@ function legIssue(s, q) {
   if (
     q.members.some(
       (id) =>
-        !s.recruited.includes(id) || !s.operativeState[id]?.alive || s.operativeState[id].captured,
+        !s.forceRoster.includes(id) ||
+        !s.operativeState[id]?.alive ||
+        s.operativeState[id].captured,
     )
   ) {
     return 'unavailable';
