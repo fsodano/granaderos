@@ -68,8 +68,7 @@ rationale, scope, and compatibility contract. The
 - The glossary's [compatibility table](../../accepted/ubiquitous-language.md#compatibility-names)
   maps retained API and save names to canonical terms. `recruitCivic` and
   `civicStatus` are not accepted; `candidateAdmission` is the canonical
-  eligibility query. `beginAssault` remains a compatibility command for
-  resolving a hostile arrival.
+  eligibility query.
 - `GameSession` owns `RandomSource` (the seeded random sequence) and
   `WorldTimeline` (the accepted game-time clock). `drawCampaignRandom(session,
   draft)` draws through `session.randomSource` and writes the advanced seed to
@@ -157,7 +156,5 @@ rationale, scope, and compatibility contract. The
   [`suspendedSectorSessions`](../../../../packages/game/public/campaign-types.ts)
   needs a canonical representation and conversion that preserve each
   suspended visit's request, identity, and progress.
-- The compatibility command alias `beginAssault` needs to be retired after
-  callers use `FightOnArrivalUseCase`.
 - The campaign-action request property `sectorState` needs a glossary-backed
   canonical name; it is not a saved field.

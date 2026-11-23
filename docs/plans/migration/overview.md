@@ -270,9 +270,6 @@ re-export them so callers keep their import paths and behavior.
   snapshot records. Its replacement field and canonical saved shape are not
   defined; choose them before converting supported saves, preserving each
   visit's request, identity, and progress.
-- `beginAssault` remains a compatibility command. Move its callers to the
-  `FightOnArrivalUseCase` contract, preserve arrival-decision identity, then
-  remove the alias.
 - `sectorState` remains a campaign-action request property carrying a sector
   snapshot. Its replacement property name is not defined; choose a
   glossary-backed name and update the public action contract and all callers
@@ -284,9 +281,9 @@ The accepted architecture and glossary define the target. Current source gives
 `GameSession` ownership of `WorldTimeline`, advances campaign and strategic
 time through that timeline, and projects its accepted second into the campaign
 clock fields. The remaining names are explicit boundaries:
-`suspendedSectorSessions` is the current saved representation, `beginAssault`
-is a command alias, and `sectorState` is a request property. The replacement
-names and mapping for the saved list and request property still need decisions.
+`suspendedSectorSessions` is the current saved representation and `sectorState`
+is a request property. The replacement names and mapping for the saved list and
+request property still need decisions.
 
 ## 7. Verification
 
@@ -311,6 +308,6 @@ accepted architecture.
 | Sector-entry types | [`CampaignSnapshot.sectorEntryRequest`](../../../packages/game/public/campaign-types.ts) uses `CampaignSectorEntryRequest`, the saved campaign projection; the application use case retains its narrower `SectorEntryRequest` input. | Keep the public campaign projection distinct from the application request. |
 | Domain rule ownership | Twenty-one game rules have domain ownership, including `WorldTimeline` clock advancement, `CARE_COMPOSURE_RELIEF` & `careComposureRelief` in [`care-composure.ts`](../../../packages/game/domain/personnel/care-composure.ts), and `directionTo` & `approximateHeardPosition` in [`npc-perception.ts`](../../../packages/game/domain/perception/npc-perception.ts). Both retained modules re-export the perception rules. Retained modules still carry most simulation rules procedurally. The game uses [`tactical-space.ts`](../../../packages/game/domain/sector-sessions/tactical-space.ts); `packages/campaign-format` keeps an independent map-validation copy. | Move remaining procedural rules behind the domain or a declared public entry. |
 | Time and randomness | `GameSession` owns `RandomSource` and `WorldTimeline`. `drawCampaignRandom(session, draft)` draws through `session.randomSource` and writes its advanced seed to `draft.seed`. Campaign, strategic, and tactical clock paths advance `session.timeline`; campaign `hour` and optional `secondOfHour` project its accepted second. | Preserve session ownership and keep campaign clock fields as projections of accepted time. |
-| Compatibility table | The glossary maps retained API and save names to canonical terms. `recruitCivic` and `civicStatus` are not accepted; `candidateAdmission` is canonical. Validated legacy `hiringArrivals` entries start service immediately at a legal site or become a `RefundableRecruitmentClaim` if none is legal; the old field is removed. The remaining compatibility items are `suspendedSectorSessions`, `beginAssault`, and the `sectorState` request property. | Define the suspended-visit saved shape and conversion, remove `beginAssault` after migrating callers, and replace `sectorState` with a glossary-backed request property. |
+| Compatibility table | The glossary maps retained API and save names to canonical terms. `recruitCivic` and `civicStatus` are not accepted; `candidateAdmission` is canonical. Validated legacy `hiringArrivals` entries start service immediately at a legal site or become a `RefundableRecruitmentClaim` if none is legal; the old field is removed. The remaining compatibility items are `suspendedSectorSessions` and the `sectorState` request property. | Define the suspended-visit saved shape and conversion, and replace `sectorState` with a glossary-backed request property. |
 | Resident position | `ResidentPositionReference` names the saved reference to a character identity and local position. | Keep the saved projection separate from character health and inventory ownership. |
 | Player-facing messages | The domain owns the sleep-need rule; the browser interface owns its sentence and campaign notices. | Keep player-facing copy outside domain and application code. |

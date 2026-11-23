@@ -744,7 +744,6 @@ type CampaignOrder =
       sectorState: BattleSnapshot;
       survivors: Array<Omit<BattleUnit, 'id'> & { id: string | number }>;
     }
-  | { type: 'beginAssault'; sector?: string; squadId?: string }
   | {
       type: 'syncTacticalTime';
       battleId: string;

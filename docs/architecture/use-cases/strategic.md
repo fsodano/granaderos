@@ -220,7 +220,6 @@ The table below accounts for every `Exact action type` recognized by `dispatchCa
 | `cancelMilitia` | STR-021 (cancel active militia training course) | `Gated` |
 | `fortify` | STR-022 (fortify eligible sector) | `Gated` |
 | `fightOnArrival` | STR-008 (`FightOnArrivalUseCase` to resolve a paused `ArrivalDecision` by committing to sector entry) | `Gated` |
-| `beginAssault` | STR-008 (`FightOnArrivalUseCase` compatibility resolution of hostile arrival decision) | `Gated` |
 | `attack` | STR-008 (initiate assault or resolve hostile arrival) | `Gated` |
 | `battleResult` | STR-010 (settle completed combat `SectorSession`) | `Gated` |
 

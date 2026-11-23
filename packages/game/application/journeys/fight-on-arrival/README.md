@@ -6,7 +6,7 @@ Resolve a squad's pending `ArrivalDecision` at a hostile sector boundary by comm
 
 ## Actor and trigger
 
-The player invokes this use case when a travelling `Squad` reaches a hostile sector boundary (`JourneyStatus.AwaitingArrivalDecision`) and chooses to fight (or invokes the compatibility `beginAssault` command).
+The player invokes this use case when a travelling `Squad` reaches a hostile sector boundary (`JourneyStatus.AwaitingArrivalDecision`) and chooses to fight.
 
 ## Request
 
