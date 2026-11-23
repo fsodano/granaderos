@@ -74,7 +74,7 @@ export function encountersFor(s, sector) {
         (s.contentCampaign && !character) ||
         isContractOperative(s, { id: n.operativeId }) ||
         s.forceRoster.includes(n.operativeId) ||
-        s.operativeState?.[n.operativeId]?.alive === false
+        s.characters?.[n.operativeId]?.alive === false
       ) {
         return false;
       }
@@ -135,7 +135,7 @@ export function encounterContacts(s) {
         canRecruitEncounter(n) &&
         !isContractOperative(s, { id: n.operativeId }) &&
         !s.forceRoster.includes(n.operativeId) &&
-        s.operativeState?.[n.operativeId]?.alive !== false,
+        s.characters?.[n.operativeId]?.alive !== false,
     )
     .flatMap((n) => {
       const c = characterForOperative(s, n.operativeId),

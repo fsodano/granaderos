@@ -20,7 +20,7 @@ export function advanceMarchFatigue(
   { traveling = [], mode = 'march', mountain = false } = {},
 ) {
   for (const id of traveling) {
-    const record = s.operativeState[id],
+    const record = s.characters[id],
       unit = roster.find((o) => o.id === id);
     if (!unit || !s.forceRoster.includes(id) || !record?.alive || record.captured) {
       continue;

@@ -61,21 +61,21 @@ export default function Armory({ state: s, dispatch }: Props) {
         (o) =>
           String(o.id) === selected &&
           s.forceRoster.includes(o.id) &&
-          s.operativeState[o.id]?.alive &&
-          !s.operativeState[o.id]?.captured,
+          s.characters[o.id]?.alive &&
+          !s.characters[o.id]?.captured,
       ) ??
       roster.find(
         (o) =>
           s.forceRoster.includes(o.id) &&
-          s.operativeState[o.id]?.alive &&
-          !s.operativeState[o.id]?.captured,
+          s.characters[o.id]?.alive &&
+          !s.characters[o.id]?.captured,
       );
   const [battery, setBattery] = useState<string[] | null>(null),
     batteryTypes = battery ?? artilleryDeploymentChoices(s),
     batteryReason = artillerySelectionReason(s, batteryTypes.filter(Boolean));
   const emplacements = stationedArtillery(s),
     inventory = armoryInventory(s),
-    record = op ? s.operativeState[op.id] : null;
+    record = op ? s.characters[op.id] : null;
   const resupply = workshopServiceQuote(s, op, 'resupply', isSupplied(s, s.location)),
     repair = workshopServiceQuote(s, op, 'repairWeapon', isSupplied(s, s.location));
   const catalog = equipmentCatalog(s),
@@ -175,8 +175,8 @@ export default function Armory({ state: s, dispatch }: Props) {
                 .filter(
                   (o) =>
                     s.forceRoster.includes(o.id) &&
-                    s.operativeState[o.id]?.alive &&
-                    !s.operativeState[o.id]?.captured,
+                    s.characters[o.id]?.alive &&
+                    !s.characters[o.id]?.captured,
                 )
                 .map((o) => (
                   <option key={o.id} value={o.id}>

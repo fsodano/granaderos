@@ -28,7 +28,7 @@ export function initialCampaign(seed?: number) {
     ]),
   ); // Declared preexisting service equipment isolates subsystem behavior.
   for (const id of s.forceRoster) {
-    const record = s.operativeState[id],
+    const record = s.characters[id],
       op = rosterFor(s).find((o) => o.id === id),
       type = weaponAmmoType(op);
     present(record).startingCartridgesIssued = true;

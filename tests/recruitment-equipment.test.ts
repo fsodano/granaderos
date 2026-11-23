@@ -38,7 +38,7 @@ void test('custom campaign recruitment preserves authored equipment and its fini
       destination: 'cordoba',
     });
     assert.equal(campaign.lastError, null);
-    const record = campaign.operativeState[candidate.id];
+    const record = campaign.characters[candidate.id];
     const actual = rosterFor(campaign).find((character) => character.id === candidate.id);
     assert.equal(present(actual).weapon, candidate.weapon);
     assert.equal(present(actual).blade, candidate.blade);
@@ -50,9 +50,9 @@ void test('custom campaign recruitment preserves authored equipment and its fini
     });
   }
 
-  const acceptedRecords = structuredClone(campaign.operativeState);
+  const acceptedRecords = structuredClone(campaign.characters);
   campaign = decodeSave(encodeSave(campaign)).campaign;
-  assert.deepEqual(campaign.operativeState, acceptedRecords);
+  assert.deepEqual(campaign.characters, acceptedRecords);
   const pair = visit(campaign);
   for (const candidate of candidates) {
     const participant = present(pair.battle).units.find((unit) => unit.id === String(candidate.id));
@@ -69,7 +69,7 @@ void test('custom campaign recruitment preserves authored equipment and its fini
   }
   campaign = decodeSave(encodeSave(leave(pair))).campaign;
   for (const candidate of candidates) {
-    const returned = campaign.operativeState[candidate.id];
+    const returned = campaign.characters[candidate.id];
     assert.equal(
       present(returned).carriedLoaded,
       present(acceptedRecords[candidate.id]).carriedLoaded,
@@ -81,8 +81,8 @@ void test('custom campaign recruitment preserves authored equipment and its fini
 void test('an explicit returned weapon does not inherit a previous authored definition', () => {
   const campaign = initialCampaign(8, postContent());
   const candidate = rosterFor(campaign).find((character) => character.contentId === 'benicio');
-  delete present(campaign.operativeState[present(candidate).id]).weaponMetadata;
-  delete present(campaign.operativeState[present(candidate).id]).bladeMetadata;
+  delete present(campaign.characters[present(candidate).id]).weaponMetadata;
+  delete present(campaign.characters[present(candidate).id]).bladeMetadata;
   const actual = new CampaignCharacterEquipmentMapper(campaign).project(present(candidate));
   assert.equal(actual.weapon, present(campaign.loadouts[present(candidate).id]).weapon);
   assert.equal(actual.blade, present(campaign.loadouts[present(candidate).id]).blade);

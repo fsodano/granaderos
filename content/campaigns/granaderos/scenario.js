@@ -183,7 +183,7 @@ export function initialState(seed, _definitions) {
     officer: null,
     forceRoster: [],
     squad: [],
-    operativeState: Object.fromEntries(
+    characters: Object.fromEntries(
       [...OPERATIVES, ...CIVIC_RECRUITS].map((o) => [
         o.id,
         {

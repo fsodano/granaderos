@@ -58,7 +58,7 @@ const order = (a, b) =>
   String(a.code).localeCompare(String(b.code));
 
 function operativeState(s, op, roster, context) {
-  const r = s.operativeState[op.id],
+  const r = s.characters[op.id],
     assignment = r.assignment,
     sector = operativeLocation(s, op.id);
   const targetId =
@@ -137,9 +137,9 @@ export function assignmentStates(s, roster, context = {}) {
     .filter(
       (op) =>
         s.forceRoster.includes(op.id) &&
-        s.operativeState[op.id]?.alive &&
-        s.operativeState[op.id].assignment !== 'active' &&
-        Object.hasOwn(assignments, s.operativeState[op.id].assignment),
+        s.characters[op.id]?.alive &&
+        s.characters[op.id].assignment !== 'active' &&
+        Object.hasOwn(assignments, s.characters[op.id].assignment),
     )
     .map((op) => operativeState(s, op, roster, context));
   for (const course of s.militiaTraining ?? []) {

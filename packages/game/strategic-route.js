@@ -40,10 +40,7 @@ export function previewStrategicRoute(s, squadId, destination, mode = 'march', w
   }
   if (
     q.members.some(
-      (id) =>
-        !s.forceRoster.includes(id) ||
-        !s.operativeState[id]?.alive ||
-        s.operativeState[id].captured,
+      (id) => !s.forceRoster.includes(id) || !s.characters[id]?.alive || s.characters[id].captured,
     )
   ) {
     return reject('Hay combatientes que no pueden marchar.');
@@ -51,14 +48,14 @@ export function previewStrategicRoute(s, squadId, destination, mode = 'march', w
   if (
     q.members.some(
       (id) =>
-        s.operativeState[id].asleep ||
-        s.operativeState[id].assignment !== 'active' ||
+        s.characters[id].asleep ||
+        s.characters[id].assignment !== 'active' ||
         s.militiaTraining?.some((t) => t.trainerId === id),
     )
   ) {
     return reject('Hay combatientes durmiendo o con otra asignación.');
   }
-  if (q.members.some((id) => tooTiredToMarch(s.operativeState[id]))) {
+  if (q.members.some((id) => tooTiredToMarch(s.characters[id]))) {
     return reject('La escuadra necesita descansar.');
   }
   const cell = worldCell(destination, s);

@@ -53,7 +53,7 @@ export function contractQuote(state, operative, term = 'day') {
   const rules = contractRules(state),
     terms = contractTermsFor(state),
     period = Object.hasOwn(terms, term) ? terms[term] : undefined;
-  const xp = state.operativeState?.[operative.id]?.xp ?? 0;
+  const xp = state.characters?.[operative.id]?.xp ?? 0;
   const topTier =
     operative.tier === 'elite' || operative.marksmanship >= 90 || (operative.level ?? 1) >= 5;
   const permanent =
@@ -63,7 +63,7 @@ export function contractQuote(state, operative, term = 'day') {
   const refusal = serviceRelationshipRefusal(state, operative),
     objection = serviceObjectionReason(state, operative);
   const reason =
-    state.operativeState?.[operative.id]?.alive === false
+    state.characters?.[operative.id]?.alive === false
       ? 'Un combatiente fallecido no puede volver a contratarse.'
       : (serviceEquipmentReturnReason(state, operative.id) ??
         (!period

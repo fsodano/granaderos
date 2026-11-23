@@ -13,7 +13,7 @@ export class CampaignCharacterAbilitiesMapper {
 
   read(character, participant) {
     const definition = this.#definitions.get(character.id) ?? character;
-    const record = this.#campaign.operativeState?.[character.id] ?? {};
+    const record = this.#campaign.characters?.[character.id] ?? {};
     const ratings = Object.fromEntries(
       Object.values(CharacterRating).map((name) => [name, definition[name] ?? 0]),
     );

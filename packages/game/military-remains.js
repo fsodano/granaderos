@@ -397,7 +397,7 @@ export function advanceSuspendedSectorConditions(campaign, session, targetSecond
       continue;
     }
     const character = roster.find((character) => String(character.id) === String(actor.id));
-    const record = campaign.operativeState?.[actor.id];
+    const record = campaign.characters?.[actor.id];
     if (!character || !record) {
       continue;
     }

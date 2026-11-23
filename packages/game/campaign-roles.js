@@ -40,7 +40,7 @@ export function campaignRole(state, key) {
 }
 export function campaignRoleActive(state, key) {
   const role = campaignRole(state, key),
-    record = role && state.operativeState[role.id],
+    record = role && state.characters[role.id],
     contract = role && state.contracts?.[role.id];
   const expiry = contractExpiresSeconds(contract),
     now = state.hour * 3600 + (state.secondOfHour ?? 0);

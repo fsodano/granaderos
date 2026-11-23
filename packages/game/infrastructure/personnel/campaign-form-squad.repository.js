@@ -60,7 +60,7 @@ export class CampaignFormSquadRepository {
     const campaign = this.#campaign;
     for (const record of campaign.squads) {
       for (const id of record.members) {
-        campaign.operativeState[id].location = record.location;
+        campaign.characters[id].location = record.location;
       }
     }
     campaign.squads = formation.squads.map((squad) => {

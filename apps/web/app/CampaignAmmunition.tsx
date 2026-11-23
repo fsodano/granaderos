@@ -131,7 +131,7 @@ export default function CampaignAmmunition({
       )}
       <AmmunitionLoadChoice
         unit={{
-          ...carriedAmmunition(operative, s.operativeState[operative?.id]),
+          ...carriedAmmunition(operative, s.characters[operative?.id]),
           activeSlot: 'primary',
         }}
         disabled={!!s.sectorEntryRequest}

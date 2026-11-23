@@ -139,11 +139,11 @@ export function supplyRouteAmmunition(
     assert.ok(
       op &&
         campaign.forceRoster.includes(id) &&
-        campaign.operativeState[id]?.alive &&
-        !campaign.operativeState[id]?.captured,
+        campaign.characters[id]?.alive &&
+        !campaign.characters[id]?.captured,
       `El combatiente no está disponible: ${id}.`,
     );
-    const carried = () => carriedAmmunition(op, campaign.operativeState[id]);
+    const carried = () => carriedAmmunition(op, campaign.characters[id]);
     const unit = carried(),
       family = ammoTypeFor({ ...unit, activeSlot: 'primary' });
     if (!family || unit.weaponDropped) {
@@ -233,7 +233,7 @@ export function supplyRouteAmmunition(
                 quantity: number;
               } | null => {
                 const person = rosterFor(campaign).find((person) => person.id === donorId),
-                  body = campaign.operativeState[donorId];
+                  body = campaign.characters[donorId];
                 if (
                   !person ||
                   !campaign.forceRoster.includes(donorId) ||
@@ -277,7 +277,7 @@ export function supplyRouteAmmunition(
             };
             campaign = dispatchCampaign(campaign, action);
             assert.equal(campaign.lastError, null, campaign.lastError ?? undefined);
-            const after = carriedAmmunition(person, campaign.operativeState[person.id]);
+            const after = carriedAmmunition(person, campaign.characters[person.id]);
             assert.equal(campaign.resources.treasury, cash);
             assert.equal(after.loaded, donor.carried.loaded);
             assert.equal(ammoCount(after, family), ammoCount(donor.carried, family) - quantity);
@@ -318,13 +318,13 @@ export function supplyRouteAmmunition(
               .filter(
                 (person) =>
                   campaign.forceRoster.includes(person.id) &&
-                  present(campaign.operativeState[person.id]).alive &&
-                  !present(campaign.operativeState[person.id]).captured &&
+                  present(campaign.characters[person.id]).alive &&
+                  !present(campaign.characters[person.id]).captured &&
                   !operativeInTransit(campaign, person.id) &&
                   operativeLocation(campaign, person.id) === campaign.location,
               )
               .map((person) => {
-                const unit = carriedAmmunition(person, campaign.operativeState[person.id]);
+                const unit = carriedAmmunition(person, campaign.characters[person.id]);
                 return {
                   id: person.id,
                   field: ids.includes(person.id),

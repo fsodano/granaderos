@@ -9,7 +9,7 @@ export const LOW_MORALE_RENEWAL_THRESHOLD = 30;
 // and temporary tactical morale must never replace this value in a quotation.
 export function lowMoraleRenewalStatus(state, operative) {
   const id = Number(operative?.id),
-    record = state?.operativeState?.[id],
+    record = state?.characters?.[id],
     definition = state && operative && characterForOperative(state, id);
   const eligible = Boolean(
     operative &&

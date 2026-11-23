@@ -167,7 +167,7 @@ void test('mission ally archives follow canonical location and retain their hist
   assert.equal(present(ally).id, '57');
   const beforeRelocation = new RetainedSectorPresence(campaign);
   assert.equal(beforeRelocation.includes(ally, campaign.sectorStates['san_lorenzo']), true);
-  present(campaign.operativeState[57]).location = 'cordoba';
+  present(campaign.characters[57]).location = 'cordoba';
   const input = structuredClone(campaign);
   const game = new GameSnapshotMapper().restore(encodeSave(campaign));
   assert.equal(
@@ -202,7 +202,7 @@ void test('active and suspended auxiliary registrations exclude only living arch
     const presence = new RetainedSectorPresence({
       ...visit,
       squads: [],
-      operativeState: { 57: { alive: true, location: 'retiro' } },
+      characters: { 57: { alive: true, location: 'retiro' } },
       garrisons: { retiro: [militia] },
     });
     assert.equal(presence.includes(ally, field), false);

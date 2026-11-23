@@ -41,7 +41,7 @@ export function assertRouteHireArrived(s: CampaignSnapshot, hire: RouteHire) {
     'A recruited combatant enters service once.',
   );
   assert.equal(hasRecruitmentClaim(s, id), false);
-  assert.equal(present(s.operativeState[id]).location, arrival.destination);
+  assert.equal(present(s.characters[id]).location, arrival.destination);
   assert.equal(present(contract).kind, quote.permanent ? 'patriot' : 'paid');
   assert.equal(present(contract).term, arrival.term);
   assert.equal(present(contract).paid, quote.price);

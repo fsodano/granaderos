@@ -32,7 +32,7 @@ export function restoredCaptiveContract(record, hour, secondOfHour = 0) {
 }
 /** @returns {{id:number,name:string,sector:string,hp:number,maxHp:number,capturedAt:number,capturedAtSecond:number,heldHours:number,serviceHours:number|null|undefined,careDressings:number,lastCareHour:number|null,needsCare:boolean,critical:boolean}|null} */
 export function prisonerStatus(state, operative) {
-  const record = state.operativeState[operative.id];
+  const record = state.characters[operative.id];
   if (!record?.captured) {
     return null;
   }

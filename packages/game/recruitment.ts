@@ -114,7 +114,7 @@ export function rosterFor(
     );
   }
   return base.map((op) => {
-    const progress = state.operativeState?.[op.id],
+    const progress = state.characters?.[op.id],
       xp = progress?.xp ?? 0,
       level = 1 + Math.min(9, Math.floor(xp / 100));
     if (!gainsExperience(state, op)) {
@@ -162,7 +162,7 @@ export function migrateLegacySkillLearning(state: CampaignSnapshot): CampaignSna
     );
   }
   for (const op of base) {
-    const record = state.operativeState?.[op.id];
+    const record = state.characters?.[op.id];
     if (!record || !gainsExperience(state, op)) {
       continue;
     }
@@ -183,7 +183,7 @@ export function migrateLegacySkillLearning(state: CampaignSnapshot): CampaignSna
 export function candidateAdmission(state: CampaignSnapshot, id: number | string) {
   id = Number(id);
   const op = rosterFor(state).find((o) => o.id === id && isContractOperative(state, o)),
-    record = state.operativeState[id];
+    record = state.characters[id];
   const reason = !op
     ? 'No existe ese voluntario.'
     : state.forceRoster.includes(id)

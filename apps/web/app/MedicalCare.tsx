@@ -38,7 +38,7 @@ import CampaignWeaponSummary from './CampaignWeaponSummary';
 export function MedicalSupplyPurchase({ s, op }: { s: CampaignSnapshot; op: CampaignOperative }) {
   return (
     <div className="care-supplies">
-      <span>{s.operativeState[op.id]?.medkits ?? 0} vendas llevadas</span>
+      <span>{s.characters[op.id]?.medkits ?? 0} vendas llevadas</span>
     </div>
   );
 }
@@ -74,18 +74,18 @@ function PersonnelCard({
     (o) =>
       o.id !== op.id &&
       s.forceRoster.includes(o.id) &&
-      s.operativeState[o.id]?.alive &&
+      s.characters[o.id]?.alive &&
       !operativeInTransit(s, o.id) &&
       operativeLocation(s, o.id) === operativeLocation(s, op.id) &&
-      s.operativeState[o.id]?.assignment === 'instructor' &&
-      s.operativeState[o.id]?.trainingSkill === skill &&
+      s.characters[o.id]?.assignment === 'instructor' &&
+      s.characters[o.id]?.trainingSkill === skill &&
       (o[skill] ?? 0) > (op[skill] ?? 0),
   );
   const teacher = instructors.find((o) => String(o.id) === teacherId) ?? instructors[0];
   const targets = roster.filter(
     (o) =>
       s.forceRoster.includes(o.id) &&
-      s.operativeState[o.id]?.alive &&
+      s.characters[o.id]?.alive &&
       !operativeInTransit(s, o.id) &&
       operativeLocation(s, o.id) === operativeLocation(s, op.id) &&
       (repairScope === 'equipment' || (weaponSpecification(o)?.capacity ?? 0) > 0),
@@ -101,8 +101,8 @@ function PersonnelCard({
     repairScope,
   };
   const repairQueue =
-    target && s.operativeState[target.id] && repairScope === 'equipment'
-      ? repairEquipmentQueue(s.operativeState[target.id], target)
+    target && s.characters[target.id] && repairScope === 'equipment'
+      ? repairEquipmentQueue(s.characters[target.id], target)
       : [];
   const reason = (assignment: string) =>
     Object.hasOwn(CARE_ASSIGNMENTS, assignment)
@@ -249,7 +249,7 @@ function PersonnelCard({
               {targets.map((o) => (
                 <option key={o.id} value={o.id}>
                   {o.nickname}
-                  {repairScope === 'primary' ? ` · ${s.operativeState[o.id]?.condition}%` : ''}
+                  {repairScope === 'primary' ? ` · ${s.characters[o.id]?.condition}%` : ''}
                 </option>
               ))}
             </select>
@@ -334,7 +334,7 @@ export default function MedicalCare({
     personnel = roster.filter(
       (o) =>
         s.forceRoster.includes(o.id) &&
-        !s.operativeState[o.id]?.captured &&
+        !s.characters[o.id]?.captured &&
         !operativeInTransit(s, o.id) &&
         operativeLocation(s, o.id) === sectorId,
     );
@@ -361,7 +361,7 @@ export default function MedicalCare({
       ) : (
         <div className="care-personnel">
           {personnel.map((op) => {
-            const record = s.operativeState[op.id];
+            const record = s.characters[op.id];
             return record ? (
               <PersonnelCard
                 key={op.id}

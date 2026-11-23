@@ -84,12 +84,12 @@ void test('a prepaid recruit with a legal destination joins immediately, keeping
   assert.deepEqual(restored.refundableRecruitmentClaims ?? [], []);
   assert.equal('hiringArrivals' in restored, false);
   assert.equal(restored.forceRoster.filter((id) => id === 110).length, 1);
-  assert.equal(present(restored.operativeState[110]).location, 'buenos_aires');
+  assert.equal(present(restored.characters[110]).location, 'buenos_aires');
   assert.equal(present(restored.contracts[110]).started, campaign.hour);
   assert.equal(present(restored.contracts[110]).paid, quote.price);
   assert.equal(present(restored.contracts[110]).guaranteeId, guaranteeId);
   assert.equal(present(restored.serviceGuarantees?.entries?.[guaranteeId]).state, 'held');
-  assert.equal(present(restored.operativeState[110]).startingCartridgesIssued, true);
+  assert.equal(present(restored.characters[110]).startingCartridgesIssued, true);
   assert.equal(restored.resources.treasury, campaign.resources.treasury);
   assert.deepEqual(restore(restored), restored);
 });
@@ -101,7 +101,7 @@ void test('a prepaid recruit whose destination is unsafe joins at another legal 
   const restored = restore(campaign);
   assert.deepEqual(restored.refundableRecruitmentClaims ?? [], []);
   assert.equal(restored.forceRoster.filter((id) => id === 110).length, 1);
-  assert.equal(present(restored.operativeState[110]).location, 'retiro');
+  assert.equal(present(restored.characters[110]).location, 'retiro');
   assert.equal(present(restored.contracts[110]).paid, quote.price);
   assert.equal(present(restored.contracts[110]).guaranteeId, guaranteeId);
   assert.equal(present(restored.serviceGuarantees?.entries?.[guaranteeId]).state, 'held');

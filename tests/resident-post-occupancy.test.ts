@@ -248,7 +248,7 @@ function paidResidentCrew() {
       destination: OCCUPANCY_SECTOR,
     });
     assert.equal(campaign.resources.treasury, cash - quote.total);
-    assert.equal(present(campaign.operativeState[id]).location, OCCUPANCY_SECTOR);
+    assert.equal(present(campaign.characters[id]).location, OCCUPANCY_SECTOR);
   }
   assert.equal((campaign.refundableRecruitmentClaims ?? []).length, 0);
   for (const members of [ids.slice(0, 2), ids.slice(2)]) {
@@ -322,7 +322,7 @@ function paidResidentCrew() {
   });
   exit();
   for (const [id, point] of posts) {
-    assert.ok(sameCell(present(present(campaign.operativeState[id]).residentPosition), point));
+    assert.ok(sameCell(present(present(campaign.characters[id]).residentPosition), point));
     assert.ok(
       present(contractExpiresSeconds(campaign.contracts[id])) > campaignClock(campaign) + 6 * 3600,
     );
@@ -529,7 +529,7 @@ void test('the resident post projection holds canonical identity and physical po
     assert.deepEqual(Object.keys(reference.position).sort(), ['level', 'x', 'y']);
     assert.match(reference.characterId, /^character:\d+$/);
     const characterId = Number(reference.characterId.slice('character:'.length)),
-      character = present(fixture.campaign.operativeState[characterId]),
+      character = present(fixture.campaign.characters[characterId]),
       post = present(character.residentPosition);
     assert.deepEqual(reference.position, {
       x: post.x,

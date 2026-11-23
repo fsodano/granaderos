@@ -16,14 +16,14 @@ export function restForMarch(state: CampaignSnapshot) {
   }
   if (
     !state.squad.some(
-      (id) => tooTiredToMarch(state.operativeState[id]) || present(state.operativeState[id]).asleep,
+      (id) => tooTiredToMarch(state.characters[id]) || present(state.characters[id]).asleep,
     )
   ) {
     return state;
   }
   let s = state;
   for (const id of s.squad) {
-    const r = s.operativeState[id];
+    const r = s.characters[id];
     if (!present(r).asleep && (present(r).fatigue > 0 || present(r).energy < 100)) {
       s = dispatchCampaign(s, { type: 'setSleep', operativeId: id, asleep: true });
       if (s.lastError) {
@@ -31,7 +31,7 @@ export function restForMarch(state: CampaignSnapshot) {
       }
     }
   }
-  for (let i = 0; s.squad.some((id) => present(s.operativeState[id]).asleep) && i < 20; i++) {
+  for (let i = 0; s.squad.some((id) => present(s.characters[id]).asleep) && i < 20; i++) {
     s = dispatchCampaign(s, { type: 'wait', hours: 12 });
     if (s.lastError) {
       throw Error(s.lastError);
@@ -40,7 +40,7 @@ export function restForMarch(state: CampaignSnapshot) {
       return s;
     }
   }
-  if (s.squad.some((id) => present(s.operativeState[id]).asleep)) {
+  if (s.squad.some((id) => present(s.characters[id]).asleep)) {
     throw Error('The test squad did not finish its actual sleep.');
   }
   return s;

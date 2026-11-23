@@ -302,8 +302,8 @@ export function validateFiniteArtilleryArsenals(state) {
         request.squad.every(
           (unit) =>
             state.forceRoster.includes(unit.id) &&
-            state.operativeState[unit.id]?.alive &&
-            state.operativeState[unit.id]?.location === request.sector,
+            state.characters[unit.id]?.alive &&
+            state.characters[unit.id]?.location === request.sector,
         ),
       'La recuperación del arsenal requiere una escuadra local en un sector conquistado.',
     );

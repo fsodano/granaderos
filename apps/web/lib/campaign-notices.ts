@@ -24,8 +24,8 @@ export function strategicClockInterrupt(
     return after.travelNotice.events.map((e) => `${e.name}: ${e.text}`).join(' ');
   }
   for (const id of after.forceRoster ?? []) {
-    const old = before.operativeState?.[id],
-      next = after.operativeState?.[id];
+    const old = before.characters?.[id],
+      next = after.characters?.[id];
     for (const [skill, value] of Object.entries(next?.trainedStats ?? {})) {
       if (value > (old?.trainedStats?.[skill] ?? 0)) {
         return 'Un combatiente mejoró una habilidad.';

@@ -35,7 +35,7 @@ void test('available recruitment candidates obey service relationships and retai
 
 void test('an equipment return obligation excludes a candidate from available recruitment', () => {
   const campaign = initialCampaign();
-  present(campaign.operativeState[110]).serviceEquipmentReturn = {
+  present(campaign.characters[110]).serviceEquipmentReturn = {
     id: 'service-return-110',
     sectorId: 'retiro',
     siteId: 'retiro',

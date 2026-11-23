@@ -54,7 +54,7 @@ export function advanceResidentScavenging(campaign, scene, targetSecond) {
   for (const resident of scene.npcs ?? []) {
     const id = operativeId(resident, campaign);
     if (
-      !campaign.operativeState?.[id] ||
+      !campaign.characters?.[id] ||
       campaign.forceRoster.includes(id) ||
       !unacknowledgedSupplyReceipts(campaign, scene, resident).length
     ) {
@@ -84,15 +84,15 @@ export function acknowledgeRemovedResidents(campaign, snapshot) {
     need(record.health.hp === 0, 'No se puede retirar el cuerpo de un habitante vivo.');
     record.corpseRemovedAtSecond = death.corpse.removedAtSecond;
     const id = operativeId(actor, campaign);
-    if (campaign.operativeState?.[id]) {
+    if (campaign.characters?.[id]) {
       for (const field of CIVILIAN_SUPPLY_FIELDS) {
-        campaign.operativeState[id][field] = actor.civilianSupplies?.[field] ?? 0;
+        campaign.characters[id][field] = actor.civilianSupplies?.[field] ?? 0;
       }
       if (campaign.loadouts?.[id]) {
         campaign.loadouts[id] = { ...campaign.loadouts[id], weapon: 0, blade: 0 };
       }
-      campaign.operativeState[id].carriedLoaded = 0;
-      delete campaign.operativeState[id].carriedReloadProgress;
+      campaign.characters[id].carriedLoaded = 0;
+      delete campaign.characters[id].carriedReloadProgress;
     }
   }
 }
@@ -147,15 +147,15 @@ const physical = (n) =>
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const operativeId = (n, s = null) => scenarioFor(s).missionCivilianOperativeId(n);
 function supplies(s, n) {
-  if (s.operativeState[operativeId(n, s)]?.serviceEquipmentReturn) {
+  if (s.characters[operativeId(n, s)]?.serviceEquipmentReturn) {
     return civilianSuppliesFor(null);
   }
   const id = operativeId(n, s),
-    result = civilianSuppliesFor(s.operativeState[id]);
+    result = civilianSuppliesFor(s.characters[id]);
   const prior = Object.values(s.missionAllies ?? {}).find((ally) => Number(ally.id) === id);
   if (
     prior &&
-    s.operativeState[id]?.missionSuppliesVersion !== 1 &&
+    s.characters[id]?.missionSuppliesVersion !== 1 &&
     !s.civilianState?.people[`person-${id}`]
   ) {
     const carried = civilianSuppliesFor(prior);
@@ -231,7 +231,7 @@ function service(s, n) {
   if (!base) {
     return undefined;
   }
-  const current = { ...authoredOperative(s, base), ...s.operativeState[id] },
+  const current = { ...authoredOperative(s, base), ...s.characters[id] },
     prior = Object.values(s.missionAllies ?? {}).find((ally) => Number(ally.id) === id);
   // Old saves kept mission wounds only on the retained ally. Until a civilian
   // receipt exists, that earlier injury must not be replaced by a full roster HP.
@@ -325,7 +325,7 @@ function remember(s, n, scene, deathSecond) {
   s.civilianState.people[key] = record;
   const id = operativeId(n, s);
   if (id !== undefined && !s.forceRoster.includes(id)) {
-    Object.assign(s.operativeState[id], {
+    Object.assign(s.characters[id], {
       hp: Math.ceil(n.hp),
       alive: n.hp > 0,
       energy: n.energy,
@@ -337,16 +337,16 @@ function remember(s, n, scene, deathSecond) {
         validCivilianSupplies(n.civilianSupplies),
         'Los suministros del habitante no son válidos.',
       );
-      if (!s.operativeState[id].serviceEquipmentReturn) {
+      if (!s.characters[id].serviceEquipmentReturn) {
         for (const k of CIVILIAN_SUPPLY_FIELDS) {
-          s.operativeState[id][k] = n.civilianSupplies[k];
+          s.characters[id][k] = n.civilianSupplies[k];
         }
       }
     }
   }
   if (n.hp === 0 && before?.health.hp !== 0) {
     if (deathSecond !== undefined && id !== undefined) {
-      s.operativeState[id].deathMinute = Math.floor(deathSecond / 60);
+      s.characters[id].deathMinute = Math.floor(deathSecond / 60);
     }
     applyDeath(s, n, record, deathSecond === undefined ? s.hour : Math.floor(deathSecond / 3600));
   }
@@ -464,8 +464,8 @@ export function acknowledgeCivilians(s, snapshot) {
     if (!request.missionAllies?.some((u) => Number(u.id) === id)) {
       continue;
     }
-    need(s.operativeState[id], 'Falta la hoja de servicio del aliado.');
-    Object.assign(s.operativeState[id], {
+    need(s.characters[id], 'Falta la hoja de servicio del aliado.');
+    Object.assign(s.characters[id], {
       hp: Math.ceil(ally.hp),
       alive: ally.hp > 0,
       energy: ally.energy,
@@ -474,9 +474,9 @@ export function acknowledgeCivilians(s, snapshot) {
     });
     const carried = civilianSuppliesFor(ally);
     for (const k of CIVILIAN_SUPPLY_FIELDS) {
-      s.operativeState[id][k] = carried[k];
+      s.characters[id][k] = carried[k];
     }
-    s.operativeState[id].missionSuppliesVersion = 1;
+    s.characters[id].missionSuppliesVersion = 1;
     const record = s.civilianState.people[`person-${id}`];
     if (record) {
       record.inService = true;
@@ -542,7 +542,7 @@ function placedResidents(s) {
       person.forceRoster ||
       s.forceRoster.includes(id) ||
       isContractOperative(s, { id }) ||
-      s.operativeState[id]?.captured ||
+      s.characters[id]?.captured ||
       s.sectorEntryRequest?.missionAllies?.some((u) => Number(u.id) === id)
     ) {
       return [];
@@ -564,7 +564,7 @@ export function synchronizeResidentWounds(s) {
         record.sector = sector;
         record.sceneId = null;
       }
-    } else if (s.operativeState[id].bleeding > 0) {
+    } else if (s.characters[id].bleeding > 0) {
       remember(s, campaignCivilian(s, n), { sector, sceneId: null });
     }
   }
@@ -689,7 +689,7 @@ export function resumeCivilianServiceReturns(s) {
     }
     const original = encounterDefinitions(s).find((n) => civilianKey(n) === key),
       id = original && operativeId(original, s),
-      serviceRecord = s.operativeState[id];
+      serviceRecord = s.characters[id];
     if (
       id === undefined ||
       isContractOperative(s, { id }) ||
@@ -827,16 +827,14 @@ export function validateCampaignCivilians(s) {
     }
     need(!r.inService || r.health.hp > 0, 'Un habitante muerto no puede trasladarse al servicio.');
     if (id !== undefined && !r.inService && !s.forceRoster.includes(id)) {
-      need(
-        s.operativeState[id].hp === r.health.hp && s.operativeState[id].alive === r.health.hp > 0,
-      );
+      need(s.characters[id].hp === r.health.hp && s.characters[id].alive === r.health.hp > 0);
     }
   }
   validateDeathEffects(s);
   if (ledger.version === 2) {
     for (const { n, id, sector } of placedResidents(s)) {
       const record = ledger.people[civilianKey(n)];
-      if (s.operativeState[id].bleeding > 0) {
+      if (s.characters[id].bleeding > 0) {
         need(record, 'Falta el reloj de un habitante herido.');
       }
       if (record?.npcId === n.id && !record.inService && record.health.hp > 0) {

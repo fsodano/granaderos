@@ -66,8 +66,8 @@ function observers(s: CampaignSnapshot, { traveling = [] }: ObservationOptions =
   }
   for (const id of s.forceRoster ?? []) {
     if (
-      s.operativeState[id]?.alive &&
-      able(s.operativeState[id] ?? {}) &&
+      s.characters[id]?.alive &&
+      able(s.characters[id] ?? {}) &&
       !operativeInTransit(s, id) &&
       !traveling.includes(id) &&
       !isCharacterDeployed(s, id)

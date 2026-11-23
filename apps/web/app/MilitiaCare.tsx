@@ -20,10 +20,10 @@ export default function MilitiaCare({
   const doctors = roster.filter(
     (op) =>
       state.forceRoster.includes(op.id) &&
-      state.operativeState[op.id]?.alive &&
+      state.characters[op.id]?.alive &&
       !operativeInTransit(state, op.id) &&
       operativeLocation(state, op.id) === sectorId &&
-      state.operativeState[op.id]?.assignment === 'militia_doctor',
+      state.characters[op.id]?.assignment === 'militia_doctor',
   );
   const available = doctors.filter((op) => !careAssignmentReason(state, op, 'militia_doctor'));
   const fighting = state.sectorEntryRequest?.sector === sectorId;

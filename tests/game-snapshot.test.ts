@@ -143,6 +143,43 @@ void test('a save written with the legacy recruited key loads identically and is
   assert.deepEqual(rewrittenCampaign['forceRoster'], fromCurrent.campaign.forceRoster);
 });
 
+void test('a save writes the character records under characters and never under operativeState', () => {
+  const pair = deployed();
+  const envelope = parseJsonObject(encodeSave(pair.campaign, pair.battle));
+  const campaign = envelope['campaign'];
+  assert.ok(isJsonObject(campaign));
+  assert.ok(isJsonObject(campaign['characters']));
+  assert.deepEqual(Object.keys(campaign['characters']), Object.keys(pair.campaign.characters));
+  assert.equal(Object.hasOwn(campaign, 'operativeState'), false);
+  const empty = parseJsonObject(encodeSave(pair.campaign));
+  const emptyCampaign = empty['campaign'];
+  assert.ok(isJsonObject(emptyCampaign));
+  assert.ok(isJsonObject(emptyCampaign['characters']));
+  assert.equal(Object.hasOwn(emptyCampaign, 'operativeState'), false);
+});
+
+void test('a save written with the legacy operativeState key loads identically and is rewritten under characters', () => {
+  const pair = deployed();
+  const current = parseJsonObject(encodeSave(pair.campaign, pair.battle));
+  const currentCampaign = current['campaign'];
+  assert.ok(isJsonObject(currentCampaign));
+  const legacy = structuredClone(current);
+  const legacyCampaign = legacy['campaign'];
+  assert.ok(isJsonObject(legacyCampaign));
+  assert.ok(isJsonObject(legacyCampaign['characters']));
+  legacyCampaign['operativeState'] = legacyCampaign['characters'];
+  delete legacyCampaign['characters'];
+  const fromCurrent = decodeSave(JSON.stringify(current));
+  const fromLegacy = decodeSave(JSON.stringify(legacy));
+  assert.deepEqual(fromLegacy, fromCurrent);
+  assert.deepEqual(fromLegacy, pair);
+  const rewritten = parseJsonObject(encodeSave(fromLegacy.campaign, fromLegacy.battle));
+  const rewrittenCampaign = rewritten['campaign'];
+  assert.ok(isJsonObject(rewrittenCampaign));
+  assert.equal(Object.hasOwn(rewrittenCampaign, 'operativeState'), false);
+  assert.deepEqual(rewrittenCampaign['characters'], currentCampaign['characters']);
+});
+
 void test('a save whose terrain is compacted carries schema 2', () => {
   const pair = deployed();
   const campaign = structuredClone(pair.campaign);

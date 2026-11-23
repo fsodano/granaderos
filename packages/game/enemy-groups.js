@@ -29,7 +29,7 @@ export function migrateEnemyGroups(s) {
   s.nextEnemyGroupId ??= 1;
   s.pendingEncounter ??= null;
   s.encounterHistory ??= [];
-  for (const r of Object.values(s.operativeState ?? {})) {
+  for (const r of Object.values(s.characters ?? {})) {
     r.captured ??= false;
     r.capturedSector ??= null;
     r.capturedAt ??= null;
@@ -40,7 +40,7 @@ export function migrateEnemyGroups(s) {
         .filter(
           (entry) =>
             entry.npc?.detention?.operativeId !== undefined &&
-            s.operativeState[entry.npc.detention.operativeId] === r,
+            s.characters[entry.npc.detention.operativeId] === r,
         )
         .map((entry) => entry.npc.detention.captureSequence ?? 1),
     );
@@ -53,7 +53,7 @@ export function migrateEnemyGroups(s) {
 export function localDefenderIds(s, at, { exclude = [] } = {}) {
   return s.forceRoster.filter(
     (id) =>
-      s.operativeState[id]?.alive &&
+      s.characters[id]?.alive &&
       !operativeInTransit(s, id) &&
       operativeLocation(s, id) === at &&
       !exclude.includes(id),
@@ -418,7 +418,7 @@ export function validateEnemyGroups(s, roster) {
   validateEnemyReserves(s);
   validateEnemyIntelligence(s);
   for (const op of roster) {
-    const r = s.operativeState[op.id];
+    const r = s.characters[op.id];
     need(
       integer(r.captureSequence, 0, 1e9) &&
         (!r.captured || r.captureSequence > 0) &&

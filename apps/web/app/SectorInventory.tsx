@@ -35,7 +35,7 @@ export default function SectorInventory({
   const [selectedSite, setSelectedSite] = useState(sectorId);
   const sites = sectorInventorySites(state, sectorId),
     siteId = sites.some((site) => site.id === selectedSite) ? selectedSite : sectorId;
-  const cursorOwner = Object.entries(state.operativeState ?? {}).find(
+  const cursorOwner = Object.entries(state.characters ?? {}).find(
     ([, record]) => record.equipmentCursor,
   )?.[0];
   const model = sectorInventoryModel(

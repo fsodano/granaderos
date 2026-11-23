@@ -124,7 +124,7 @@
       }
     },
     "artillerySelection": [],
-    "recruited": [],
+    "forceRoster": [],
     "squad": [],
     "flags": {
       "armyFunded": false,
@@ -145,7 +145,7 @@
       "mules": false
     },
     "blockade": false,
-    "pendingBattle": null,
+    "sectorEntryRequest": null,
     "completed": false,
     "defeated": false
   },

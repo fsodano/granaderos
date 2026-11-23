@@ -78,7 +78,7 @@ export default function StrategicPersonnelMenu({
   dispatch: (a: CampaignAction) => void;
 }) {
   const op = roster.find((o) => o.id === id),
-    record = s.operativeState[id];
+    record = s.characters[id];
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -125,7 +125,7 @@ export default function StrategicPersonnelMenu({
   const local = roster.filter(
     (o) =>
       s.forceRoster.includes(o.id) &&
-      s.operativeState[o.id]?.alive &&
+      s.characters[o.id]?.alive &&
       operativeLocation(s, o.id) === operativeLocation(s, id),
   );
   const order = (action: CampaignAction) => {

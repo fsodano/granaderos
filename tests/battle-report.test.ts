@@ -69,8 +69,8 @@ void test('ordinary battle reports require a full snapshot and all deployed part
     ],
   });
   const next = order(s, won);
-  assert.equal(present(next.operativeState[4]).alive, false);
-  assert.equal(present(next.operativeState[3]).hp, 30);
+  assert.equal(present(next.characters[4]).alive, false);
+  assert.equal(present(next.characters[3]).hp, 30);
   assert.ok(!next.squad.includes(4));
 });
 void test('snapshot battle and sector identities must match the pending deployment atomically', () => {
@@ -124,10 +124,10 @@ void test('real dropped equipment and snapshot supplies defeat contradictory cal
     inventory: { invented: { count: 100, weight: 0 } },
   }));
   const next = order(s, a);
-  assert.equal(present(next.operativeState[4]).weaponDropped, true);
-  assert.equal(present(next.operativeState[4]).hp, present(actual).hp);
-  assert.deepEqual(present(next.operativeState[4]).inventory, present(actual).inventory);
-  assert.equal(present(next.operativeState[4]).medkits, present(actual).medkits);
+  assert.equal(present(next.characters[4]).weaponDropped, true);
+  assert.equal(present(next.characters[4]).hp, present(actual).hp);
+  assert.deepEqual(present(next.characters[4]).inventory, present(actual).inventory);
+  assert.equal(present(next.characters[4]).medkits, present(actual).medkits);
   assert.equal(stockAndCarriedAmmo(next), stockAmmo(s) + ammo);
   assert.deepEqual(restoreCampaign(serializeCampaign(next)), next);
   rejected(next, a);
@@ -164,7 +164,7 @@ void test('ordinary retreat retains authoritative injuries and cannot refill fin
     condition: 100,
   }));
   const next = order(s, a),
-    u = next.operativeState[3];
+    u = next.characters[3];
   assert.equal(present(u).hp, 24);
   assert.equal(present(u).energy, present(a.sectorState.units.find((u) => u.id === '3')).energy);
   assert.ok(present(u).energy < 22, 'The actual outward step spends energy.');
@@ -311,9 +311,9 @@ void test('an actual finishing blow and paid auto-bandage return an ordinary cle
     doctor = b.units.find((u) => u.id === '10');
   assert.equal(next.sectorEntryRequest, null);
   assert.equal(present(next.sectors['san_nicolas']).owner, 'patriot');
-  assert.equal(present(next.operativeState[10]).bleeding, 0);
-  assert.equal(present(next.operativeState[10]).hp, present(doctor).hp);
-  assert.equal(present(next.operativeState[10]).medkits, present(doctor).medkits);
+  assert.equal(present(next.characters[10]).bleeding, 0);
+  assert.equal(present(next.characters[10]).hp, present(doctor).hp);
+  assert.equal(present(next.characters[10]).medkits, present(doctor).medkits);
   assert.equal(next.secondOfHour, b.elapsedSeconds);
   assert.deepEqual(restoreCampaign(serializeCampaign(next)), next);
   rejected(next, a);
@@ -331,7 +331,7 @@ void test('post-victory treatment also completes San Lorenzo with the living com
   assert.equal(present(s.missions['san_lorenzo']).completed, true);
   assert.ok(present(s.missionAllies['san_lorenzo']).hp > 0);
   assert.equal(
-    present(s.operativeState[10]).medkits,
+    present(s.characters[10]).medkits,
     present(b.units.find((u) => u.id === '10')).medkits,
   );
   assert.deepEqual(restoreCampaign(serializeCampaign(s)), s);

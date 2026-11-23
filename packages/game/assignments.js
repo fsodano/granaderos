@@ -31,7 +31,7 @@ const trainingRoles = ['practice', 'instructor', 'student'];
 
 export function migrateAssignments(s, roster) {
   for (const op of roster) {
-    const r = s.operativeState[op.id];
+    const r = s.characters[op.id];
     if (!r) {
       continue;
     }
@@ -82,7 +82,7 @@ export const WORK_ISSUE_TEXT = {
 };
 const issue = (code) => ({ code, reason: WORK_ISSUE_TEXT[code] });
 function availabilityIssue(s, op) {
-  const r = s.operativeState[op.id],
+  const r = s.characters[op.id],
     location = operativeLocation(s, op.id);
   if (!s.forceRoster.includes(op.id) || !r?.alive || r.hp <= 0 || r.captured) {
     return issue('unavailable');
@@ -120,18 +120,18 @@ const savedOptions = (r) => ({
 });
 const repairComplete = (s, target, scope) =>
   scope === 'equipment'
-    ? repairEquipmentQueue(s.operativeState[target.id], target).length === 0
-    : (s.operativeState[target.id].condition ?? 100) >= 100;
+    ? repairEquipmentQueue(s.characters[target.id], target).length === 0
+    : (s.characters[target.id].condition ?? 100) >= 100;
 const trainingComplete = (r, op, skill) =>
   (r.trainedStats?.[skill] ?? 0) >= 10 || (op[skill] ?? 0) >= 100;
 function repairTargetIssue(s, op, options, roster) {
-  const r = s.operativeState[op.id],
+  const r = s.characters[op.id],
     target = roster.find((o) => o.id === Number(options.targetId ?? r.repairTargetId ?? op.id));
   if (
     !target ||
     !s.forceRoster.includes(target.id) ||
-    !s.operativeState[target.id]?.alive ||
-    s.operativeState[target.id]?.captured ||
+    !s.characters[target.id]?.alive ||
+    s.characters[target.id]?.captured ||
     deployed(s, target.id) ||
     operativeInTransit(s, target.id) ||
     operativeLocation(s, target.id) !== operativeLocation(s, op.id)
@@ -144,7 +144,7 @@ function repairTargetIssue(s, op, options, roster) {
   if (repairScope(r, options) === 'equipment') {
     return null;
   }
-  if (!firearm(target) || s.operativeState[target.id].weaponDropped) {
+  if (!firearm(target) || s.characters[target.id].weaponDropped) {
     return issue('target_not_firearm');
   }
   if (options.weaponId !== undefined && target.weapon !== options.weaponId) {
@@ -161,7 +161,7 @@ export function workAssignmentIssue(s, op, assignment, options = {}, roster = []
   if (unavailable) {
     return unavailable;
   }
-  const r = s.operativeState[op.id],
+  const r = s.characters[op.id],
     skill = options.skill ?? r.trainingSkill;
   if (trainingRoles.includes(assignment)) {
     if (!TRAINABLE_SKILLS.includes(skill)) {
@@ -184,7 +184,7 @@ export function workAssignmentIssue(s, op, assignment, options = {}, roster = []
       ) {
         return issue('instructor_unavailable');
       }
-      const teacherRecord = s.operativeState[teacher.id];
+      const teacherRecord = s.characters[teacher.id];
       if (teacherRecord.assignment !== 'instructor' || teacherRecord.trainingSkill !== skill) {
         return issue('instructor_assignment');
       }
@@ -196,9 +196,9 @@ export function workAssignmentIssue(s, op, assignment, options = {}, roster = []
           (o) =>
             o.id !== op.id &&
             s.forceRoster.includes(o.id) &&
-            s.operativeState[o.id]?.alive &&
-            s.operativeState[o.id].assignment === 'student' &&
-            s.operativeState[o.id].instructorId === teacher.id,
+            s.characters[o.id]?.alive &&
+            s.characters[o.id].assignment === 'student' &&
+            s.characters[o.id].instructorId === teacher.id,
         )
       ) {
         return issue('instructor_busy');
@@ -223,7 +223,7 @@ export function workAssignmentIssue(s, op, assignment, options = {}, roster = []
     }
     if (
       repairScope(r, options) === 'equipment' &&
-      repairEquipmentBlocked(s.operativeState[target.id], target)
+      repairEquipmentBlocked(s.characters[target.id], target)
     ) {
       return issue('repair_pack_full');
     }
@@ -239,7 +239,7 @@ export function workAssignmentReason(s, op, assignment, options = {}, roster = [
 // a resource exhausted by the final successful working hour.
 /** @returns {import('./public/personnel-query-types.ts').AssignmentProgress} */
 export function workAssignmentProgress(s, op, roster, context = {}) {
-  const r = s.operativeState[op.id],
+  const r = s.characters[op.id],
     options = savedOptions(r);
   const status = (state, code = null) => ({ state, code });
   if ((context.unsafe ?? []).includes(op.id)) {
@@ -286,9 +286,9 @@ export function workAssignmentProgress(s, op, roster, context = {}) {
     const students = roster.filter(
       (o) =>
         s.forceRoster.includes(o.id) &&
-        s.operativeState[o.id]?.alive &&
-        s.operativeState[o.id].assignment === 'student' &&
-        s.operativeState[o.id].instructorId === op.id,
+        s.characters[o.id]?.alive &&
+        s.characters[o.id].assignment === 'student' &&
+        s.characters[o.id].instructorId === op.id,
     );
     if (
       !students.some(
@@ -307,10 +307,10 @@ export function workAssignmentProgress(s, op, roster, context = {}) {
 }
 
 export function militiaAssignmentIssue(s, course) {
-  if (s.operativeState[course.trainerId]?.asleep) {
+  if (s.characters[course.trainerId]?.asleep) {
     return issue('sleeping');
   }
-  if ((s.operativeState[course.trainerId]?.energy ?? 100) <= 10) {
+  if ((s.characters[course.trainerId]?.energy ?? 100) <= 10) {
     return issue('unstable');
   }
   if (s.sectors[course.sector]?.owner !== 'patriot') {
@@ -319,7 +319,7 @@ export function militiaAssignmentIssue(s, course) {
   if (
     operativeInTransit(s, course.trainerId) ||
     deployed(s, course.trainerId) ||
-    !s.operativeState[course.trainerId]?.alive ||
+    !s.characters[course.trainerId]?.alive ||
     operativeLocation(s, course.trainerId) !== course.sector
   ) {
     return issue('militia_trainer_unavailable');
@@ -331,7 +331,7 @@ export function militiaAssignmentIssue(s, course) {
 export function assignWork(s, op, action, roster) {
   const reason = workAssignmentReason(s, op, action.assignment, action, roster);
   need(!reason, reason);
-  const r = s.operativeState[op.id];
+  const r = s.characters[op.id];
   r.assignment = action.assignment;
   r.recoveryHours = 0;
   if (trainingRoles.includes(action.assignment)) {
@@ -393,7 +393,7 @@ export function advanceAssignments(s, roster, { traveling = [] } = {}) {
   const moving = new Set(traveling),
     taught = new Set();
   for (const op of roster) {
-    const r = s.operativeState[op.id];
+    const r = s.characters[op.id];
     if (!r || !Object.hasOwn(WORK_ASSIGNMENTS, r.assignment) || moving.has(op.id)) {
       continue;
     }
@@ -408,7 +408,7 @@ export function advanceAssignments(s, roster, { traveling = [] } = {}) {
       if (moving.has(r.repairTargetId)) {
         continue;
       }
-      const target = s.operativeState[r.repairTargetId],
+      const target = s.characters[r.repairTargetId],
         budget = Math.min(repairRate(op), repairMaterialPoints(r));
       const points =
         repairScope(r) === 'equipment'
@@ -442,7 +442,7 @@ export function advanceAssignments(s, roster, { traveling = [] } = {}) {
     }
     workCost(r);
     if (instructor) {
-      workCost(s.operativeState[instructor.id]);
+      workCost(s.characters[instructor.id]);
       taught.add(instructor.id);
     }
   }
@@ -450,10 +450,10 @@ export function advanceAssignments(s, roster, { traveling = [] } = {}) {
 
 /** @returns {string} */
 export function workStatus(s, op, roster) {
-  if (s.operativeState[op.id].asleep) {
-    return sleepStatus({ ...op, ...s.operativeState[op.id] });
+  if (s.characters[op.id].asleep) {
+    return sleepStatus({ ...op, ...s.characters[op.id] });
   }
-  const r = s.operativeState[op.id],
+  const r = s.characters[op.id],
     reason = workAssignmentReason(s, op, r.assignment, savedOptions(r), roster);
   if (reason) {
     return `Asignación detenida: ${reason}`;
@@ -461,17 +461,15 @@ export function workStatus(s, op, roster) {
   if (r.assignment === 'repair') {
     const target = roster.find((o) => o.id === r.repairTargetId);
     const queue =
-      repairScope(r) === 'equipment'
-        ? repairEquipmentQueue(s.operativeState[target.id], target)
-        : null;
+      repairScope(r) === 'equipment' ? repairEquipmentQueue(s.characters[target.id], target) : null;
     return `${target.nickname}: ${queue ? `${queue[0].label} · ${queue.reduce((sum, item) => sum + item.count, 0)} objetos pendientes. ` : ''}Hasta ${repairRate(op)} puntos/h. Cada punto consume 1 de herramientas.`;
   }
   if (r.assignment === 'instructor') {
     return roster.some(
       (o) =>
         s.forceRoster.includes(o.id) &&
-        s.operativeState[o.id]?.assignment === 'student' &&
-        s.operativeState[o.id].instructorId === op.id,
+        s.characters[o.id]?.assignment === 'student' &&
+        s.characters[o.id].instructorId === op.id,
     )
       ? `Enseña ${STUDY_SKILLS[r.trainingSkill].toLowerCase()} a su alumno.`
       : 'Espera un alumno de esta habilidad en el mismo sector.';
@@ -482,7 +480,7 @@ export function workStatus(s, op, roster) {
 export function validateAssignments(s, roster) {
   migrateAssignments(s, roster);
   for (const op of roster) {
-    const r = s.operativeState[op.id];
+    const r = s.characters[op.id];
     need(
       Number.isInteger(r.toolkitPoints) && r.toolkitPoints >= 0 && r.toolkitPoints <= 100000,
       'Las herramientas guardadas son inválidas.',
@@ -545,10 +543,10 @@ export function validateAssignments(s, roster) {
     .filter(
       (o) =>
         s.forceRoster.includes(o.id) &&
-        s.operativeState[o.id]?.alive &&
-        s.operativeState[o.id].assignment === 'student',
+        s.characters[o.id]?.alive &&
+        s.characters[o.id].assignment === 'student',
     )
-    .map((o) => s.operativeState[o.id].instructorId);
+    .map((o) => s.characters[o.id].instructorId);
   need(
     new Set(teachers).size === teachers.length,
     'Un instructor no puede atender dos alumnos a la vez.',

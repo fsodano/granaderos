@@ -72,7 +72,7 @@ void test('loaded and suspended military bleeding produce the same conditions wi
   }
   const casualty = session.snapshot.units.find((actor) => actor.id === woundedId);
   assert.equal(present(present(casualty).corpse).diedAtSecond, 42);
-  assert.equal(present(campaign.operativeState[Number(woundedId)]).alive, false);
+  assert.equal(present(campaign.characters[Number(woundedId)]).alive, false);
   assert.equal(session.snapshot.elapsedSeconds, 120);
   assert.equal(present(session.request).syncedSeconds, 120);
   assert.equal(validateEquipmentOwnership(campaign, rosterFor(campaign)), true);
@@ -90,10 +90,10 @@ void test('suspended death removal conserves custody through repeated progressio
   );
   assert.equal(present(death).corpse.diedAtSecond, 42);
   assert.equal(present(death).corpse.removedAtSecond, DEFAULT_CORPSE_LIFETIME_SECONDS + 42);
-  assert.equal(present(campaign.operativeState[Number(woundedId)]).hp, 0);
-  assert.equal(present(campaign.operativeState[Number(woundedId)]).medkits, 0);
+  assert.equal(present(campaign.characters[Number(woundedId)]).hp, 0);
+  assert.equal(present(campaign.characters[Number(woundedId)]).medkits, 0);
   assert.deepEqual(
-    present(campaign.operativeState[Number(woundedId)]).inventory,
+    present(campaign.characters[Number(woundedId)]).inventory,
     present(death).actor.inventory,
   );
   const ground = structuredClone(session.snapshot.groundItems);

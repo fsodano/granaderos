@@ -46,10 +46,10 @@ export default function Desk({
     ui = campaignUI(s),
     { DeskBriefing, DeskObjective } = ui;
   const serving = s.forceRoster.filter((id: number) => {
-    const r = s.operativeState[id];
+    const r = s.characters[id];
     return r?.alive && r.hp > 0 && !r.captured;
   }).length;
-  const fallen = Object.entries(s.operativeState).filter(
+  const fallen = Object.entries(s.characters).filter(
     ([id, r]) =>
       (s.forceRoster.includes(Number(id)) || r.location !== undefined) && (!r.alive || r.hp <= 0),
   ).length;
@@ -63,7 +63,7 @@ export default function Desk({
     s.campaignProgress?.completed.length ||
     s.completed ||
     s.defeated ||
-    Object.values(s.operativeState).some((r) => r.location !== undefined),
+    Object.values(s.characters).some((r) => r.location !== undefined),
   );
   const sectors = campaignSectors(s),
     controlled = sectors.filter((sector) => s.sectors[sector.id]?.owner === 'patriot').length,

@@ -201,21 +201,20 @@ export function synchronizeCampaignPresence(state) {
   const deaths = runtime.content.characters
     .map((c) => ({ character: c, id: operativeIdForCharacter(runtime.content, c.id) }))
     .filter(
-      ({ character: c, id }) =>
-        state.operativeState[id].alive === false && runtime.people[c.id].alive,
+      ({ character: c, id }) => state.characters[id].alive === false && runtime.people[c.id].alive,
     )
-    .map((v) => ({ ...v, minute: state.operativeState[v.id].deathMinute ?? minuteOf(state) }))
+    .map((v) => ({ ...v, minute: state.characters[v.id].deathMinute ?? minuteOf(state) }))
     .sort((a, b) => a.minute - b.minute);
   for (const { character: c, id, minute } of deaths) {
     need(Number.isSafeInteger(minute) && minute >= runtime.minute && minute <= minuteOf(state));
     runtime = advancePlacementState(runtime, minute, loaded, 52560000);
-    state.operativeState[id].deathMinute = minute;
+    state.characters[id].deathMinute = minute;
     runtime = changePlacementStatus(runtime, c.id, 'dead', loaded);
   }
   runtime = advancePlacementState(runtime, minuteOf(state), loaded, 52560000);
   for (const c of runtime.content.characters) {
     const numeric = operativeIdForCharacter(runtime.content, c.id),
-      record = state.operativeState[numeric],
+      record = state.characters[numeric],
       person = runtime.people[c.id];
     if (person.alive && person.recruited !== state.forceRoster.includes(numeric)) {
       runtime = changePlacementStatus(
@@ -287,7 +286,7 @@ function successionActors(state, snapshot) {
 }
 export function acknowledgeSuccessionDeaths(state, snapshot) {
   for (const unit of successionActors(state, snapshot)) {
-    const record = state.operativeState[Number(unit.id)];
+    const record = state.characters[Number(unit.id)];
     need(record.deathMinute === undefined || unit.hp === 0);
     if (unit.hp === 0) {
       record.hp = 0;
@@ -298,7 +297,7 @@ export function acknowledgeSuccessionDeaths(state, snapshot) {
 }
 export function validateActiveSuccessionDeaths(state, snapshot) {
   for (const unit of successionActors(state, snapshot)) {
-    need(state.operativeState[Number(unit.id)].alive === unit.hp > 0);
+    need(state.characters[Number(unit.id)].alive === unit.hp > 0);
   }
 }
 export function validatePresenceScene(state, scene) {
@@ -338,7 +337,7 @@ function validateSuccessions(state) {
     need(
       integer(receipt.minute, 0, r.minute) &&
         receipt.minute ===
-          state.operativeState[operativeIdForCharacter(state.contentCampaign.package, p.afterDeath)]
+          state.characters[operativeIdForCharacter(state.contentCampaign.package, p.afterDeath)]
             ?.deathMinute &&
         integer(receipt.at, receipt.minute + p.delayMin, receipt.minute + p.delayMax),
     );
@@ -421,7 +420,7 @@ export function validateCampaignPresence(state) {
     const id = operativeIdForCharacter(content, c.id),
       p = r.people[c.id],
       placement = content.placements.find((v) => v.character === c.id),
-      record = state.operativeState[id];
+      record = state.characters[id];
     need(
       object(p) &&
         ['alive', 'recruited', 'appeared', 'suspended'].every((k) => typeof p[k] === 'boolean') &&

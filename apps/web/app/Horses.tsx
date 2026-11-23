@@ -31,8 +31,8 @@ export default function Horses({ state: s, dispatch }: Props) {
   const riders = roster.filter(
     (o) =>
       s.forceRoster.includes(o.id) &&
-      s.operativeState[o.id]?.alive &&
-      !s.operativeState[o.id]?.captured &&
+      s.characters[o.id]?.alive &&
+      !s.characters[o.id]?.captured &&
       !operativeInTransit(s, o.id) &&
       operativeLocation(s, o.id) === s.location,
   );

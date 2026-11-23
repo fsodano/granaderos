@@ -191,7 +191,7 @@ void test('restored character health projects to both campaign and active physic
   const restored = mapper.restore(mapper.serialize(game));
   const snapshot = restored.snapshot();
   assert.equal(restored.personnel.character('110').health.toSnapshot().current, before.current - 7);
-  assert.equal(present(snapshot.campaign.operativeState[110]).hp, before.current - 7);
+  assert.equal(present(snapshot.campaign.characters[110]).hp, before.current - 7);
   assert.equal(
     present(present(snapshot.battle).units.find((unit: BattleUnit) => String(unit.id) === '110'))
       .hp,

@@ -24,7 +24,7 @@ export const DIALOGUE_PERSON_STATE_LABELS = Object.freeze({
 
 function characterPhysical(s, character, battle) {
   const id = operativeIdForCharacter(s.contentCampaign.package, character),
-    record = s.operativeState[id],
+    record = s.characters[id],
     request = s.sectorEntryRequest,
     deployed = [...(request?.squad ?? []), ...(request?.missionAllies ?? [])].some(
       (u) => Number(u.id) === id,

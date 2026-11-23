@@ -27,7 +27,7 @@ export function withCarriedAmmo(
 ): CampaignSnapshot {
   assert.ok(Number.isSafeInteger(quantity) && quantity > 0);
   const next = structuredClone(state),
-    record = next.operativeState[operativeId],
+    record = next.characters[operativeId],
     operative = rosterFor(next).find((row) => row.id === operativeId);
   assert.ok(record && operative);
   changeAmmo(record, family, quantity);
@@ -81,7 +81,7 @@ export function withCarriedGrenades(
 ): CampaignSnapshot {
   assert.ok(Number.isSafeInteger(quantity) && quantity > 0 && quantity <= 6);
   const next = structuredClone(state),
-    record = next.operativeState[operativeId];
+    record = next.characters[operativeId];
   assert.ok(record);
   record.inventory ??= {};
   const old = record.inventory['grenade:arsenal'];
@@ -100,7 +100,7 @@ export function withCarriedRepairKit(
 ): CampaignSnapshot {
   assert.ok(Number.isSafeInteger(points) && points > 0 && points <= 100);
   const next = structuredClone(state),
-    record = next.operativeState[operativeId];
+    record = next.characters[operativeId];
   assert.ok(record);
   record.inventory ??= {};
   assert.equal(record.inventory['fixture:repair-kit'], undefined);
