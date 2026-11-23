@@ -2335,14 +2335,15 @@ function advanceCampaignHour(s, options) {
   );
 }
 
-function advanceCampaignSeconds(s, requestedSeconds, options = {}) {
-  const startedAt = s.hour * 3600 + (s.secondOfHour ?? 0);
+function advanceCampaignSeconds(session, s, requestedSeconds, options = {}) {
+  const timeline = session.timeline;
+  const startedAt = timeline.currentSecond;
   let remaining = requestedSeconds;
   while (remaining > 0 && !hasPendingArrivalDecision(s)) {
-    const now = s.hour * 3600 + (s.secondOfHour ?? 0);
+    const now = timeline.currentSecond;
     const seconds = Math.min(
       remaining,
-      3600 - (s.secondOfHour ?? 0),
+      3600 - (now % 3600),
       nextSquadTravelBoundarySeconds(s) ?? Infinity,
       nextContractExpirySeconds(s) ?? Infinity,
       nextContentQuestDeadline(s) - now,
@@ -2351,36 +2352,44 @@ function advanceCampaignSeconds(s, requestedSeconds, options = {}) {
       Number.isSafeInteger(seconds) && seconds > 0,
       'El intervalo de campaña no es válido.',
     );
-    remaining -= seconds;
-    s.secondOfHour = (s.secondOfHour ?? 0) + seconds;
+    const endSecond = now + seconds;
+    const advancedHours = (requestedSeconds - (remaining - seconds)) / 3600;
+    timeline.schedule({
+      id: `campaign-step:${endSecond}`,
+      kind: 'campaign-step',
+      subjectId: 'campaign',
+      atSecond: endSecond,
+    });
     let interrupted = false;
-    if (s.secondOfHour === 3600) {
-      s.secondOfHour = 0;
-      interrupted = advanceCampaignHour(s, {
-        ...options,
-        civilianSeconds: seconds,
-        travelSeconds: seconds,
-        advancedHours: (requestedSeconds - remaining) / 3600,
-      });
-    } else {
-      const expired = advanceFractionalSystems(s, seconds, Boolean(options.continuousClock));
-      if (options.pauseOnAssignments) {
-        interrupted = pauseForContracts(
-          s,
-          options.requestedHours ?? 1,
-          (requestedSeconds - remaining) / 3600,
-          expired,
-        );
+    timeline.advanceTo(endSecond, () => {
+      if (endSecond % 3600 === 0) {
+        s.secondOfHour = 0;
+        interrupted = advanceCampaignHour(s, {
+          ...options,
+          civilianSeconds: seconds,
+          travelSeconds: seconds,
+          advancedHours,
+        });
+      } else {
+        s.secondOfHour = endSecond % 3600;
+        const expired = advanceFractionalSystems(s, seconds, Boolean(options.continuousClock));
+        if (options.pauseOnAssignments) {
+          interrupted = pauseForContracts(s, options.requestedHours ?? 1, advancedHours, expired);
+        }
       }
-    }
+      return interrupted || hasPendingArrivalDecision(s) ? 'pause' : 'continue';
+    });
+    remaining -= seconds;
     if (interrupted || hasPendingArrivalDecision(s)) {
       break;
     }
   }
-  return s.hour * 3600 + (s.secondOfHour ?? 0) - startedAt;
+  s.hour = Math.floor(timeline.currentSecond / 3600);
+  s.secondOfHour = timeline.currentSecond % 3600;
+  return timeline.currentSecond - startedAt;
 }
 
-function tick(s, hours, options = {}) {
+function tick(session, s, hours, options = {}) {
   requireThat(
     Number.isInteger(hours) && hours >= 1 && hours <= 240,
     'El avance debe ser de 1 a 240 horas.',
@@ -2404,7 +2413,7 @@ function tick(s, hours, options = {}) {
       return;
     }
   }
-  advanceCampaignSeconds(s, hours * 3600, { ...options, requestedHours: hours });
+  advanceCampaignSeconds(session, s, hours * 3600, { ...options, requestedHours: hours });
 }
 
 function prepareAttack(session, s, at, origin, ids, assaultSquads = null) {
@@ -3096,7 +3105,7 @@ export function dispatchCampaign(previous, action) {
         break;
       }
       case 'wait':
-        tick(s, action.hours ?? 24, { pauseOnAssignments: true });
+        tick(session, s, action.hours ?? 24, { pauseOnAssignments: true });
         break;
       case 'assignCare': {
         const op = rosterFor(s).find((o) => o.id === Number(action.operativeId ?? action.id));
@@ -4004,7 +4013,7 @@ export function dispatchCampaign(previous, action) {
           hours < 240 && q.journey?.status === 'moving' && !s.defeated && !s.pendingEncounter;
           hours++
         ) {
-          tick(s, 1, { joinArrivals: false });
+          tick(session, s, 1, { joinArrivals: false });
         }
         note(s, `La escuadra queda en ${campaignPlace(s.location, s).name}.`);
         break;
@@ -4249,7 +4258,7 @@ export function dispatchCampaign(previous, action) {
           // Transport eligibility, remounts, fatigue and interruptions must agree.
           const squad = activeSquad(s);
           queueSquadTravel(s, squad, { ...action, sector: at, intent: 'attack' });
-          tick(s, squad.journey.legHours);
+          tick(session, s, squad.journey.legHours);
           if (s.completed || s.defeated) {
             delete squad.journey;
             note(s, 'El despliegue se cancela: la campaña ha terminado.');

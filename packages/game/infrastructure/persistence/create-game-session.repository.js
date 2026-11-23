@@ -11,7 +11,11 @@ export class CampaignCreateGameSessionRepository {
 
   create({ seed, definition }) {
     const campaign = initialCampaign(seed, definition);
-    const session = GameSession.create(this.#newSessionId(), campaign.seed);
+    const session = GameSession.create(
+      this.#newSessionId(),
+      campaign.seed,
+      campaign.hour * 3600 + (campaign.secondOfHour ?? 0),
+    );
     campaign.gameSessionId = session.id;
     campaign.gameRevision = session.revision;
     return campaign;

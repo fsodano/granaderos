@@ -1,6 +1,8 @@
 import { DomainRefusal, DomainRefusalCode } from '../shared/domain-refusal.ts';
 import { RandomSource } from '../shared/random-source.ts';
 import type { RandomSourceSnapshot } from '../shared/random-source.ts';
+import { WorldTimeline } from '../world/world-timeline.ts';
+import type { WorldTimelineSnapshot } from '../world/world-timeline.ts';
 
 export type SectorSessionRegistration = Readonly<{
   id: string;
@@ -15,6 +17,7 @@ export type GameSessionSnapshot = Readonly<{
   suspendedSectorSessionIds: readonly string[];
   sectorSessions: readonly SectorSessionRegistration[];
   randomSource?: RandomSourceSnapshot;
+  worldTimeline?: WorldTimelineSnapshot;
 }>;
 
 export class GameSession {
@@ -24,6 +27,7 @@ export class GameSession {
   readonly #suspendedSectorSessionIds: Set<string>;
   readonly #sectorSessions: Map<string, SectorSessionRegistration>;
   readonly #randomSource: RandomSource;
+  readonly #timeline: WorldTimeline;
 
   private constructor(snapshot: GameSessionSnapshot) {
     if (!snapshot.id || !Number.isSafeInteger(snapshot.revision) || snapshot.revision < 0) {
@@ -33,6 +37,9 @@ export class GameSession {
     this.#revision = snapshot.revision;
     this.#activeSectorSessionId = snapshot.activeSectorSessionId;
     this.#randomSource = RandomSource.restore(snapshot.randomSource ?? { seed: 0 });
+    this.#timeline = snapshot.worldTimeline
+      ? new WorldTimeline(snapshot.worldTimeline)
+      : WorldTimeline.startAt(0);
     this.#suspendedSectorSessionIds = new Set(snapshot.suspendedSectorSessionIds);
     this.#sectorSessions = new Map();
     if (
@@ -58,7 +65,7 @@ export class GameSession {
     }
   }
 
-  static create(id: string, seed = 0): GameSession {
+  static create(id: string, seed = 0, second = 0): GameSession {
     return new GameSession({
       id,
       revision: 0,
@@ -66,6 +73,7 @@ export class GameSession {
       suspendedSectorSessionIds: [],
       sectorSessions: [],
       randomSource: { seed },
+      worldTimeline: WorldTimeline.startAt(second).toSnapshot(),
     });
   }
 
@@ -87,6 +95,9 @@ export class GameSession {
   }
   get randomSource(): RandomSource {
     return this.#randomSource;
+  }
+  get timeline(): WorldTimeline {
+    return this.#timeline;
   }
 
   activateSectorSession(registration: SectorSessionRegistration): void {
@@ -140,6 +151,7 @@ export class GameSession {
         characterIds: [...registration.characterIds],
       })),
       randomSource: this.#randomSource.snapshot(),
+      worldTimeline: this.#timeline.toSnapshot(),
     };
   }
 
