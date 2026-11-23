@@ -82,7 +82,7 @@ export function cohesionBonus(s, id) {
   const squad = s.squads?.find((q) => q.members.includes(Number(id)));
   const partners = (squad?.members ?? []).filter(
     (other) =>
-      other !== Number(id) && s.recruited.includes(other) && s.operativeState[other]?.alive,
+      other !== Number(id) && s.forceRoster.includes(other) && s.operativeState[other]?.alive,
   );
   return Math.min(
     5,
@@ -101,7 +101,7 @@ export function deploymentMorale(s, id, cohortIds = []) {
       (p) =>
         p.companionId !== Number(id) &&
         cohort.has(p.companionId) &&
-        s.recruited.includes(p.companionId) &&
+        s.forceRoster.includes(p.companionId) &&
         ableCompanion(s.operativeState[p.companionId]),
     );
   // This receipt is fixed at issue. Later joins, wounds or contract expiry do
@@ -169,7 +169,7 @@ export function recordPayMorale(s, ids, paid) {
 }
 
 export function recordCasualtyMorale(s, casualties, companions = null) {
-  for (const id of s.recruited) {
+  for (const id of s.forceRoster) {
     const r = s.operativeState[id];
     if (!r?.alive || casualties.includes(id)) {
       continue;
@@ -218,7 +218,7 @@ export function advanceMorale(s, roster, options = {}) {
     { active, messages } = advanceStrategicIsolation(s, roster, options);
   const moving = new Set(traveling);
   const safe = (id) =>
-    s.recruited.includes(id) &&
+    s.forceRoster.includes(id) &&
     s.operativeState[id]?.alive &&
     !deployed(s, id) &&
     !moving.has(id) &&

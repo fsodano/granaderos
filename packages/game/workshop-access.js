@@ -11,7 +11,7 @@ export function workshopAccessReason(s, op, supplied) {
   }
   if (
     !op ||
-    !s.recruited.includes(op.id) ||
+    !s.forceRoster.includes(op.id) ||
     !s.operativeState[op.id]?.alive ||
     s.operativeState[op.id].captured
   ) {

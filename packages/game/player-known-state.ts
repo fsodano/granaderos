@@ -810,7 +810,7 @@ export function playerKnownCampaign(
     return null;
   }
   const knownIds = new Set([
-    ...(state.recruited ?? []),
+    ...(state.forceRoster ?? []),
     ...Object.entries(state.operativeState ?? {})
       .filter(([, record]) => record.captured)
       .map(([id]) => Number(id)),

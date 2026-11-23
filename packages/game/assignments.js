@@ -84,7 +84,7 @@ const issue = (code) => ({ code, reason: WORK_ISSUE_TEXT[code] });
 function availabilityIssue(s, op) {
   const r = s.operativeState[op.id],
     location = operativeLocation(s, op.id);
-  if (!s.recruited.includes(op.id) || !r?.alive || r.hp <= 0 || r.captured) {
+  if (!s.forceRoster.includes(op.id) || !r?.alive || r.hp <= 0 || r.captured) {
     return issue('unavailable');
   }
   if (operativeInTransit(s, op.id)) {
@@ -129,7 +129,7 @@ function repairTargetIssue(s, op, options, roster) {
     target = roster.find((o) => o.id === Number(options.targetId ?? r.repairTargetId ?? op.id));
   if (
     !target ||
-    !s.recruited.includes(target.id) ||
+    !s.forceRoster.includes(target.id) ||
     !s.operativeState[target.id]?.alive ||
     s.operativeState[target.id]?.captured ||
     deployed(s, target.id) ||
@@ -195,7 +195,7 @@ export function workAssignmentIssue(s, op, assignment, options = {}, roster = []
         roster.some(
           (o) =>
             o.id !== op.id &&
-            s.recruited.includes(o.id) &&
+            s.forceRoster.includes(o.id) &&
             s.operativeState[o.id]?.alive &&
             s.operativeState[o.id].assignment === 'student' &&
             s.operativeState[o.id].instructorId === teacher.id,
@@ -285,7 +285,7 @@ export function workAssignmentProgress(s, op, roster, context = {}) {
   if (r.assignment === 'instructor') {
     const students = roster.filter(
       (o) =>
-        s.recruited.includes(o.id) &&
+        s.forceRoster.includes(o.id) &&
         s.operativeState[o.id]?.alive &&
         s.operativeState[o.id].assignment === 'student' &&
         s.operativeState[o.id].instructorId === op.id,
@@ -469,7 +469,7 @@ export function workStatus(s, op, roster) {
   if (r.assignment === 'instructor') {
     return roster.some(
       (o) =>
-        s.recruited.includes(o.id) &&
+        s.forceRoster.includes(o.id) &&
         s.operativeState[o.id]?.assignment === 'student' &&
         s.operativeState[o.id].instructorId === op.id,
     )
@@ -544,7 +544,7 @@ export function validateAssignments(s, roster) {
   const teachers = roster
     .filter(
       (o) =>
-        s.recruited.includes(o.id) &&
+        s.forceRoster.includes(o.id) &&
         s.operativeState[o.id]?.alive &&
         s.operativeState[o.id].assignment === 'student',
     )

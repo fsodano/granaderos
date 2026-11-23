@@ -41,7 +41,9 @@ export function previewStrategicRoute(s, squadId, destination, mode = 'march', w
   if (
     q.members.some(
       (id) =>
-        !s.recruited.includes(id) || !s.operativeState[id]?.alive || s.operativeState[id].captured,
+        !s.forceRoster.includes(id) ||
+        !s.operativeState[id]?.alive ||
+        s.operativeState[id].captured,
     )
   ) {
     return reject('Hay combatientes que no pueden marchar.');

@@ -25,7 +25,7 @@ void test('an authored arrival delay does not postpone control or contract start
     term: 'day',
   });
   assert.equal(accepted.lastError, null);
-  assert.ok(accepted.recruited.includes(110));
+  assert.ok(accepted.forceRoster.includes(110));
   assert.ok(accepted.squad.includes(110));
   assert.equal(present(accepted.operativeState[110]).location, campaign.location);
   assert.equal(accepted.hour, campaign.hour);

@@ -51,7 +51,7 @@ export function migrateEnemyGroups(s) {
 }
 /** @returns {number[]} */
 export function localDefenderIds(s, at, { exclude = [] } = {}) {
-  return s.recruited.filter(
+  return s.forceRoster.filter(
     (id) =>
       s.operativeState[id]?.alive &&
       !operativeInTransit(s, id) &&
@@ -430,7 +430,7 @@ export function validateEnemyGroups(s, roster) {
       need(
         r.alive &&
           r.hp > 0 &&
-          !s.recruited.includes(op.id) &&
+          !s.forceRoster.includes(op.id) &&
           !s.squads.some((q) => q.members.includes(op.id)) &&
           sector(r.capturedSector, s) &&
           integer(r.capturedAt, 0, s.hour) &&

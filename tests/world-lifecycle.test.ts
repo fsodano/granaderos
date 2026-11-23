@@ -167,7 +167,7 @@ void test('loaded, unloaded, split-step, and combined-step removal produce the s
         advanceMilitaryWoundClock(loaded, atSecond, { initialSecond: START_SECOND }),
     });
     advanceSectorWorld(loaded, second);
-    advanceResidentScavenging({ recruited: [] }, loaded, second);
+    advanceResidentScavenging({ forceRoster: [] }, loaded, second);
   }
   const campaign = {
     hour: REMOVAL_SECOND / 3600,

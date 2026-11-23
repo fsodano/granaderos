@@ -12,7 +12,7 @@ const capable = (s, id) => {
     contract = s.contracts?.[id],
     expiry = contractExpiresSeconds(contract);
   return Boolean(
-    s.recruited?.includes(id) &&
+    s.forceRoster?.includes(id) &&
     contract &&
     (expiry === null || expiry > now(s)) &&
     r?.alive &&
@@ -63,7 +63,7 @@ export function strategicIsolationStatus(s, op, { strategicTraveling = [] } = {}
   }
   const traveling = new Set(strategicTraveling),
     at = presence(s, op.id, traveling);
-  const companion = (s.recruited ?? []).some((id) => {
+  const companion = (s.forceRoster ?? []).some((id) => {
     if (id === op.id || !capable(s, id)) {
       return false;
     }

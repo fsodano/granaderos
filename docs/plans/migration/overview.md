@@ -238,9 +238,9 @@ re-export these functions so callers keep their import paths and behavior.
 - The retained simulation modules, including `tactical.js` and `campaign.js`,
   still carry most game rules procedurally. Moving twenty-one rules did not move
   the simulation as a whole.
-- The saved campaign fields `recruited`, `operativeState`, `sectorStates`, and
-  `sceneStates` still need explicit conversion to canonical domain
-  representations before their compatibility names can be retired.
+- The saved campaign fields `operativeState`, `sectorStates`, and `sceneStates`
+  still need explicit conversion to canonical domain representations before
+  their compatibility names can be retired.
 
 ## 6. Current source and accepted target
 
@@ -248,7 +248,7 @@ The accepted architecture and glossary define the target. This overview
 describes current source behavior: `GameSession` owns `WorldTimeline`, campaign
 and strategic time paths advance through it, and the campaign clock fields
 project its accepted second. The saved campaign fields still awaiting conversion
-are `recruited`, `operativeState`, `sectorStates`, and `sceneStates`.
+are `operativeState`, `sectorStates`, and `sceneStates`.
 
 ## 7. Verification
 
@@ -268,9 +268,9 @@ accepted architecture.
 | Public game surface | `tools/architecture-rules.ts` blocks every `apps/web` file from importing retained modules directly from the `packages/game` root. It also blocks `apps/web/app` from importing domain, application, or infrastructure modules; `apps/web/lib` may import those layers for browser composition. | Keep both import rules enforced and use declared entries for package APIs. |
 | Game-to-player dependency | `tools/architecture-rules.ts`, `tools/check-architecture.mjs`, and `.dependency-cruiser.json` prohibit imports from `packages/game` into `apps/web`. | Keep the game package independent of player-interface modules. |
 | Public entries used by `apps/web` | The app imports `game-runtime-api.ts`, `campaign-types.ts`, `compatibility-types.ts`, `inventory-types.ts`, `battle-job-types.ts`, `game-snapshot-types.ts`, and `campaign-compiler-api.ts` from `packages/game/public`. | Treat the declared entries as a set of APIs, not as one runtime entry. |
-| Campaign compilation and saves | `CampaignCompiler` compiles a validated `CampaignDefinition`; the retained `compileCampaignPackage` adapter in `packages/game/campaign-library.js` delegates to it. `GameSnapshot` names the versioned save and worker representation. New saves write the active sector view under `sectorSession` and the sector entry request under `sectorEntryRequest`; decoding reads legacy `battle` only when `sectorSession` is absent and legacy `pendingBattle` only when `sectorEntryRequest` is absent. `GameSnapshotContent.battle` remains an in-memory field. | Keep supported save decoding behind the conversion policy. |
+| Campaign compilation and saves | `CampaignCompiler` compiles a validated `CampaignDefinition`; the retained `compileCampaignPackage` adapter in `packages/game/campaign-library.js` delegates to it. `GameSnapshot` names the versioned save and worker representation. New saves write the active sector view under `sectorSession`, the sector entry request under `sectorEntryRequest`, and the serving members under `forceRoster`; decoding reads legacy `battle` only when `sectorSession` is absent, legacy `pendingBattle` only when `sectorEntryRequest` is absent, and legacy `recruited` only when `forceRoster` is absent. `GameSnapshotContent.battle` remains an in-memory field. | Keep supported save decoding behind the conversion policy. |
 | Domain rule ownership | Twenty-one game rules have domain ownership, including `WorldTimeline` clock advancement, `CARE_COMPOSURE_RELIEF` & `careComposureRelief` in `packages/game/domain/personnel/care-composure.ts`, and `directionTo` & `approximateHeardPosition` in `packages/game/domain/perception/npc-perception.ts`. Both retained modules re-export the perception rules. Retained modules still carry most simulation rules procedurally. The game uses `packages/game/domain/sector-sessions/tactical-space.ts`; `packages/campaign-format` keeps an independent map-validation copy. | Move remaining procedural rules behind the domain or a declared public entry. |
 | Time and randomness | `GameSession` owns `RandomSource` and `WorldTimeline`. `drawCampaignRandom(session, draft)` draws through `session.randomSource` and writes its advanced seed to `draft.seed`. Campaign, strategic, and tactical clock paths advance `session.timeline`; campaign `hour` and optional `secondOfHour` project its accepted second. | Preserve session ownership and keep campaign clock fields as projections of accepted time. |
-| Compatibility table | The glossary maps retained API and save names to canonical terms. `recruitCivic` and `civicStatus` are not accepted; `candidateAdmission` is canonical. `beginAssault` remains a compatibility command. Validated legacy `hiringArrivals` entries start service immediately at a legal site or become a `RefundableRecruitmentClaim` if none is legal; the old field is removed. The saved campaign fields still to convert are `recruited`, `operativeState`, `sectorStates`, and `sceneStates`. | Convert the remaining saved campaign fields to canonical domain representations before retiring their compatibility names. |
+| Compatibility table | The glossary maps retained API and save names to canonical terms. `recruitCivic` and `civicStatus` are not accepted; `candidateAdmission` is canonical. `beginAssault` remains a compatibility command. Validated legacy `hiringArrivals` entries start service immediately at a legal site or become a `RefundableRecruitmentClaim` if none is legal; the old field is removed. The saved campaign fields still to convert are `operativeState`, `sectorStates`, and `sceneStates`. | Convert the remaining saved campaign fields to canonical domain representations before retiring their compatibility names. |
 | Resident position | `ResidentPositionReference` names the saved reference to a character identity and local position. | Keep the saved projection separate from character health and inventory ownership. |
 | Player-facing messages | The domain owns the sleep-need rule; the browser interface owns its sentence and campaign notices. | Keep player-facing copy outside domain and application code. |

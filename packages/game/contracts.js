@@ -129,7 +129,7 @@ export function contractStatus(state, id) {
 export function migrateContracts(state) {
   if (!state.contracts) {
     state.contracts = Object.fromEntries(
-      state.recruited.map((id) => [
+      state.forceRoster.map((id) => [
         id,
         {
           kind: id === 1000 ? 'patriot' : 'legacy',

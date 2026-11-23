@@ -83,7 +83,7 @@ void test('a prepaid recruit with a legal destination joins immediately, keeping
   const restored = restore(campaign);
   assert.deepEqual(restored.refundableRecruitmentClaims ?? [], []);
   assert.equal('hiringArrivals' in restored, false);
-  assert.equal(restored.recruited.filter((id) => id === 110).length, 1);
+  assert.equal(restored.forceRoster.filter((id) => id === 110).length, 1);
   assert.equal(present(restored.operativeState[110]).location, 'buenos_aires');
   assert.equal(present(restored.contracts[110]).started, campaign.hour);
   assert.equal(present(restored.contracts[110]).paid, quote.price);
@@ -100,7 +100,7 @@ void test('a prepaid recruit whose destination is unsafe joins at another legal 
   assert.equal(present(campaign.sectors['retiro']).owner, 'patriot');
   const restored = restore(campaign);
   assert.deepEqual(restored.refundableRecruitmentClaims ?? [], []);
-  assert.equal(restored.recruited.filter((id) => id === 110).length, 1);
+  assert.equal(restored.forceRoster.filter((id) => id === 110).length, 1);
   assert.equal(present(restored.operativeState[110]).location, 'retiro');
   assert.equal(present(restored.contracts[110]).paid, quote.price);
   assert.equal(present(restored.contracts[110]).guaranteeId, guaranteeId);
@@ -111,7 +111,7 @@ void test('a prepaid recruit with no legal site stays a refundable claim the des
   const { campaign, quote, guaranteeId } = prepaidCampaign('retiro');
   present(campaign.sectors['retiro']).owner = 'royalist';
   const restored = restore(campaign);
-  assert.ok(!restored.recruited.includes(110));
+  assert.ok(!restored.forceRoster.includes(110));
   assert.equal('hiringArrivals' in restored, false);
   const claim = present(restored.refundableRecruitmentClaims?.[0]);
   assert.equal(claim.operativeId, 110);
@@ -129,7 +129,7 @@ void test('a prepaid recruit with no legal site stays a refundable claim the des
   assert.equal(cancelled.resources.treasury, treasury + quote.total);
   assert.deepEqual(cancelled.refundableRecruitmentClaims ?? [], []);
   assert.equal(present(cancelled.serviceGuarantees?.entries?.[guaranteeId]).state, 'cancelled');
-  assert.ok(!cancelled.recruited.includes(110));
+  assert.ok(!cancelled.forceRoster.includes(110));
 });
 
 void test('a campaign with nothing pending restores unchanged', () => {

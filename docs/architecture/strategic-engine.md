@@ -16,7 +16,7 @@ Strategic operations combine domain classes in `packages/game/domain`, use cases
 - **Journeys and hostile arrivals:** `Journey` owns strategic route progress, transport mode, physical segment position, and movement purpose (`JourneyPurpose`). `ArrivalDecision` owns the mutually exclusive fight-or-withdraw choice when a journey reaches a hostile sector boundary, pausing campaign time until resolved by `FightOnArrivalUseCase` or `WithdrawOnArrivalUseCase`. `RedirectJourneyUseCase` replaces a journey's route from its actual segment position while preserving elapsed time, paid segment fares, and fatigue, including immediate reversal at zero elapsed time.
 - **World evolution, sessions, and item custody:** `GameSession` owns session identity, `revision`, and active or suspended `SectorSession` registrations (`ResumeSectorSessionUseCase` switches active authority to a suspended visit). `Sector` owns environment bounds and references to current residents, participants, objects, and corpses without duplicating `Character` health or `Inventory` custody. `ResidentPositionReference` (`residentPositions`) is a read-only projection of a non-participating serving character's saved local post. `WorldTimeline` owns monotonic game time (`WorldTimeline.advanceTo` is the only domain clock mutation), ordering `Corpse` removal (72 game hours after death via `AdvanceWorldTimeUseCase`) and `ResidentRoutine` supply collection (`CollectResidentSupplyUseCase` and `ScavengingPolicy`).
 
-The serialized fields `sectorEntryRequest`, `recruited`, and `operativeState` remain
+The serialized fields `sectorEntryRequest` and `operativeState` remain
 at the compatibility snapshot boundary and map to canonical domain objects
 through `GameSnapshotMapper`, `CanonicalPersonnelMapper`, `JourneySnapshotMapper`,
 and `CanonicalWorldMapper`. During restoration, valid entries in the legacy
@@ -38,7 +38,7 @@ The table below lists representative top-level `Field` groups on the serialized 
 | `gameSessionId`, `gameRevision` | Session identity and monotonic transaction revision managed by `GameSession` and `GameUnitOfWork` |
 | `seed`, `hour`, optional `secondOfHour` | Deterministic campaign RNG seed and accepted strategic clock (`GameTime`) |
 | `location`, `sectors`, `sectorStates`, `sceneStates` | Active strategic location, regional sector ownership/conditions, and retained physical sector snapshots (`Sector`, `WorldTimeline`, `ResidentRoutine`, `Corpse`) |
-| `recruited`, `operativeState`, `squad`, `squads`, `activeSquadId` | Compatibility projection of `ForceRoster`, per-character `Character` / `Health` / location / assignment records, and `Squad` / `Journey` state |
+| `forceRoster`, `operativeState`, `squad`, `squads`, `activeSquadId` | `ForceRoster` membership, compatibility per-character `Character` / `Health` / location / assignment records, and `Squad` / `Journey` state |
 | `resources`, `reputation`, `log` | `Treasury` and campaign resource balances, faction standing, and bounded activity log |
 | `contracts`, `quests`, `missions` | Compatibility projection of `ServiceContract` terms, authored quest state, and mission progression |
 | `pendingEncounter`, `sectorEntryRequest`, `suspendedSectorSessions` | Active strategic enemy-group encounter, `SectorEntryRequest` (`sectorEntryRequest`), and suspended `SectorSession` records |

@@ -28,7 +28,7 @@ const order = (action) => {
   events.push({ action, hour: c.hour, second: c.secondOfHour });
 };
 const renew = (buffer) => {
-  for (const id of c.recruited) {
+  for (const id of c.forceRoster) {
     const r = c.operativeState[id],
       t = c.contracts[id];
     if (r.alive && t?.expiresAt != null && t.expiresAt - c.hour <= buffer) {
@@ -140,7 +140,7 @@ for (const [id, r] of Object.entries(start.operativeState)) {
 for (const id of [105, 109, 115, 116, 122, 142]) {
   assert.equal(c.operativeState[id].location, 'cordoba');
   assert.equal(c.operativeState[id].bleeding, 0);
-  assert.ok(c.recruited.includes(id));
+  assert.ok(c.forceRoster.includes(id));
 }
 assert.deepEqual(decodeSave(encodeSave(c)).campaign, c);
 const finalSave = join(directory, 'cuyo-recovered.save.json');
@@ -159,7 +159,7 @@ const summary = {
   boughtDressings: 22,
   medicalCost: 660,
   personnel: rosterFor(c)
-    .filter((o) => c.recruited.includes(o.id) && c.operativeState[o.id].alive)
+    .filter((o) => c.forceRoster.includes(o.id) && c.operativeState[o.id].alive)
     .map((o) => ({
       id: o.id,
       hp: c.operativeState[o.id].hp,

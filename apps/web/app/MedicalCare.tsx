@@ -73,7 +73,7 @@ function PersonnelCard({
   const instructors = roster.filter(
     (o) =>
       o.id !== op.id &&
-      s.recruited.includes(o.id) &&
+      s.forceRoster.includes(o.id) &&
       s.operativeState[o.id]?.alive &&
       !operativeInTransit(s, o.id) &&
       operativeLocation(s, o.id) === operativeLocation(s, op.id) &&
@@ -84,7 +84,7 @@ function PersonnelCard({
   const teacher = instructors.find((o) => String(o.id) === teacherId) ?? instructors[0];
   const targets = roster.filter(
     (o) =>
-      s.recruited.includes(o.id) &&
+      s.forceRoster.includes(o.id) &&
       s.operativeState[o.id]?.alive &&
       !operativeInTransit(s, o.id) &&
       operativeLocation(s, o.id) === operativeLocation(s, op.id) &&
@@ -333,7 +333,7 @@ export default function MedicalCare({
   const roster = rosterFor(s),
     personnel = roster.filter(
       (o) =>
-        s.recruited.includes(o.id) &&
+        s.forceRoster.includes(o.id) &&
         !s.operativeState[o.id]?.captured &&
         !operativeInTransit(s, o.id) &&
         operativeLocation(s, o.id) === sectorId,

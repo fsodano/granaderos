@@ -19,7 +19,7 @@ export function reconcileContractAttention(s) {
   migrateContractAttention(s);
   for (const [id, marker] of Object.entries(s.contractAttention.reported)) {
     if (
-      !s.recruited.includes(Number(id)) ||
+      !s.forceRoster.includes(Number(id)) ||
       !s.operativeState[id]?.alive ||
       s.operativeState[id].captured ||
       contractExpiresSeconds(s.contracts[id]) !== contractExpiresSeconds(marker)
@@ -29,7 +29,7 @@ export function reconcileContractAttention(s) {
   }
 }
 function attentionContracts(s) {
-  return s.recruited.flatMap((id) => {
+  return s.forceRoster.flatMap((id) => {
     const r = s.operativeState[id],
       contract = s.contracts[id];
     return !r?.alive || r.captured || !Number.isInteger(contract?.expiresAt)

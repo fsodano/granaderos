@@ -124,7 +124,7 @@ export default function StrategicPersonnelMenu({
     kind === 'contract' ? contractRenewalQuote(s, op, 'day').serviceRefusal : null;
   const local = roster.filter(
     (o) =>
-      s.recruited.includes(o.id) &&
+      s.forceRoster.includes(o.id) &&
       s.operativeState[o.id]?.alive &&
       operativeLocation(s, o.id) === operativeLocation(s, id),
   );

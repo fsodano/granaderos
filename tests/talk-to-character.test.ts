@@ -48,7 +48,7 @@ void test('local recruitment publishes one character at the same position and su
       .length,
     1,
   );
-  assert.ok(restored.campaign.recruited.includes(identifier));
+  assert.ok(restored.campaign.forceRoster.includes(identifier));
 });
 
 void test('live and editor conversations resolve through the same projection and revision', () => {
@@ -101,5 +101,5 @@ void test('projection failure and stale source revisions cannot publish a partia
   pair.campaign.gameRevision = (pair.campaign.gameRevision ?? 0) + 1;
   assert.throws(() => repository.commit(), /revision-conflict/);
   assert.equal(pair.campaign.resources.treasury, before.campaign.resources.treasury);
-  assert.deepEqual(pair.campaign.recruited, before.campaign.recruited);
+  assert.deepEqual(pair.campaign.forceRoster, before.campaign.forceRoster);
 });

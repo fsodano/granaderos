@@ -58,7 +58,7 @@ const summary = (s: CampaignSnapshot) => ({
   controlled: Object.keys(s.sectors).filter((k) => present(s.sectors[k]).owner === 'patriot'),
   chapters: present(s.campaignProgress).completed.map((c) => c.chapter),
   squad: [...s.squad],
-  wounds: s.recruited
+  wounds: s.forceRoster
     .filter(
       (id) =>
         present(s.operativeState[id]).alive &&
@@ -246,7 +246,7 @@ export function readyPostCampaign() {
     Object.keys(s.sectors).filter((id) => present(s.sectors[id]).owner === 'patriot'),
     ['cordoba'],
   );
-  assert.deepEqual(s.recruited, []);
+  assert.deepEqual(s.forceRoster, []);
   // The 6,000-peso package pays for a medic and four strong riflemen,
   // leaving a real reserve for losses, dressings and the next contract.
   const hires = d.characters
@@ -266,7 +266,7 @@ export function readyPostCampaign() {
     });
   }
   assert.equal((s.refundableRecruitmentClaims ?? []).length, 0);
-  assert.equal(s.recruited.length, hires.length);
+  assert.equal(s.forceRoster.length, hires.length);
   s = saved({ campaign: s }).campaign;
   let p = approachPost(s, 'ines');
   p = choosePost(choosePost(p, 'offer', 'ask'), 'directions', 'back');
@@ -408,7 +408,9 @@ export function finishPostCampaign({
         available = d.characters
           .filter((c) => c.recruitmentSource === 'contract')
           .map((c) => present(operativeIdForCharacter(d, c.id)))
-          .filter((id) => present(s.operativeState[Number(id)]).alive && !s.recruited.includes(id))
+          .filter(
+            (id) => present(s.operativeState[Number(id)]).alive && !s.forceRoster.includes(id),
+          )
           .slice(0, 6 - s.squad.length);
       // Reserve 400 pesos for actual treatment and supply before the next march.
       const arrivals = [];
@@ -429,7 +431,7 @@ export function finishPostCampaign({
         });
         arrivals.push(id);
       }
-      assert.ok(arrivals.every((id) => s.recruited.includes(id)));
+      assert.ok(arrivals.every((id) => s.forceRoster.includes(id)));
       // Treat actual battle wounds through paid, hourly campaign work. The best
       // surviving doctor is selected from this campaign, not a fixed identity.
       const care = {

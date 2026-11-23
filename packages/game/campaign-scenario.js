@@ -91,7 +91,7 @@ function genericInitialState(seed, definitions) {
     lastConversation: null,
     conversations: {},
     officer: null,
-    recruited: [],
+    forceRoster: [],
     squad: [],
     operativeState: {},
     flags:

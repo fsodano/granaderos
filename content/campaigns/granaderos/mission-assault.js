@@ -14,7 +14,7 @@ export function missionAssaultSquads(state) {
           contract = state.contracts[id],
           expiry = contractExpiresSeconds(contract);
         if (
-          !state.recruited.includes(id) ||
+          !state.forceRoster.includes(id) ||
           !r?.alive ||
           r.hp < 15 ||
           r.unconscious ||

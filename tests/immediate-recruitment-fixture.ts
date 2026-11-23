@@ -61,7 +61,7 @@ export function assertImmediateRecruitment(
   const id = expectation.operativeId;
   const contract = campaign.contracts[id];
   const startedAtSecond = receiptSeconds(expectation);
-  assert.equal(campaign.recruited.filter((value) => value === id).length, 1);
+  assert.equal(campaign.forceRoster.filter((value) => value === id).length, 1);
   assert.equal(hasRecruitmentClaim(campaign, id), false);
   assert.equal(present(campaign.operativeState[id]).location, expectation.destination);
   assert.equal(present(contract).kind, quote.permanent ? 'patriot' : 'paid');

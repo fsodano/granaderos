@@ -691,7 +691,7 @@ function receiveDueRecruitmentClaims(s, joinSquad = true) {
       !record?.alive ||
       record.captured ||
       record.serviceEquipmentReturn ||
-      s.recruited.includes(claim.operativeId) ||
+      s.forceRoster.includes(claim.operativeId) ||
       s.contracts[claim.operativeId]
     ) {
       continue;
@@ -706,7 +706,7 @@ function receiveDueRecruitmentClaims(s, joinSquad = true) {
 function expireDueContracts(s) {
   const events = [],
     now = s.hour * 3600 + (s.secondOfHour ?? 0);
-  for (const id of s.recruited.slice()) {
+  for (const id of s.forceRoster.slice()) {
     const contract = s.contracts?.[id],
       expiry = contractExpiresSeconds(contract);
     if (expiry === null || expiry > now) {
@@ -871,7 +871,7 @@ export function initialCampaign(seed = 1812, content = null) {
 }
 export const isSupplied = isSectorSupplied;
 export function recruitmentStatus(s, id, local = false) {
-  if (s.recruited.includes(id)) {
+  if (s.forceRoster.includes(id)) {
     return { available: false, reason: 'Ya se encuentra en tus filas.' };
   }
   if (!s.operativeState[id]?.alive) {
@@ -925,14 +925,14 @@ export function availableActions(s) {
   };
 }
 function hasReadyCombatant(s) {
-  return s.recruited.some(
+  return s.forceRoster.some(
     (id) =>
       s.operativeState[id]?.alive && s.operativeState[id].hp > 0 && !s.operativeState[id].captured,
   );
 }
 function endingSpeech(s) {
   for (const op of rosterFor(s).filter(
-    (o) => s.recruited.includes(o.id) && s.operativeState[o.id]?.alive,
+    (o) => s.forceRoster.includes(o.id) && s.operativeState[o.id]?.alive,
   )) {
     const line = speechFor(op, 'ending');
     if (line?.trim()) {
@@ -1047,7 +1047,7 @@ function reorganizeAfterLoss(s, previous) {
     s.sectorEntryRequest ||
     s.pendingEncounter ||
     s.sectors[headquartersFor(s)].owner !== 'patriot' ||
-    s.recruited.some((id) => s.operativeState[id]?.alive)
+    s.forceRoster.some((id) => s.operativeState[id]?.alive)
   ) {
     return;
   }
@@ -1146,7 +1146,7 @@ function releaseCaptives(s, at) {
       continue;
     }
     s.contracts[op.id] = contract;
-    s.recruited.push(op.id);
+    s.forceRoster.push(op.id);
     if (s.location === at && s.squad.length < 6) {
       s.squad.push(op.id);
     }
@@ -1397,7 +1397,7 @@ function validatedInteractionSnapshot(s, raw) {
     'La entrega no corresponde a la escuadra desplegada.',
   );
   requireThat(
-    request.squad.every((u) => s.recruited.includes(Number(u.id))),
+    request.squad.every((u) => s.forceRoster.includes(Number(u.id))),
     'La escuadra de la entrega no pertenece a la campaña.',
   );
   let retainedRoster = false;
@@ -1995,7 +1995,7 @@ function releaseDeferred(s) {
   if (s.horseState.horses.some((h) => h.hired && !h.returned && h.hireUntil <= s.hour)) {
     advanceCampaignHorses(s);
   }
-  for (const id of s.recruited.slice()) {
+  for (const id of s.forceRoster.slice()) {
     if (s.contracts?.[id]?.departurePending && !operativeInTransit(s, id)) {
       endExpiredService(s, id);
     }
@@ -2008,7 +2008,7 @@ function releaseDeferred(s) {
   settleEnemyEncounters(s);
 }
 function assignmentContext(s, options = {}) {
-  const unsafe = s.recruited.filter((id) =>
+  const unsafe = s.forceRoster.filter((id) =>
     s.enemyGroups.some(
       (g) =>
         ['waiting', 'engaged', 'stationed'].includes(g.status) &&
@@ -2245,7 +2245,7 @@ function advanceCampaignHour(s, options) {
     }
   }
   if (s.hour % 720 === 0) {
-    const ids = s.recruited.filter(
+    const ids = s.forceRoster.filter(
         (id) => s.operativeState[id].alive && s.contracts?.[id]?.kind === 'legacy',
       ),
       payroll = ids.reduce((sum, id) => sum + rosterFor(s).find((o) => o.id === id).monthlyPay, 0);
@@ -2795,7 +2795,7 @@ export function dispatchCampaign(previous, action) {
           quantity = action.quantity ?? 1,
           record = s.operativeState[id];
         requireThat(
-          s.recruited.includes(id) && record.alive && operativeLocation(s, id) === s.location,
+          s.forceRoster.includes(id) && record.alive && operativeLocation(s, id) === s.location,
           'El combatiente debe estar presente en esta localidad.',
         );
         requireThat(
@@ -2867,7 +2867,7 @@ export function dispatchCampaign(previous, action) {
         }
         if (order.type === 'assign') {
           requireThat(
-            s.recruited.includes(order.operativeId) &&
+            s.forceRoster.includes(order.operativeId) &&
               s.operativeState[order.operativeId].alive &&
               operativeLocation(s, order.operativeId) === s.location,
             'El jinete debe estar presente en la localidad.',
@@ -3080,7 +3080,7 @@ export function dispatchCampaign(previous, action) {
         const wasCompleted = Boolean(s.completed);
         const questEventsBefore = s.contentQuestEvents?.length ?? 0;
         const stats = JSON.stringify(
-          s.recruited.map((id) => s.operativeState[id].trainedStats ?? {}),
+          s.forceRoster.map((id) => s.operativeState[id].trainedStats ?? {}),
         );
         for (let remaining = action.seconds; remaining > 0;) {
           const now = timeline.currentSecond;
@@ -3111,7 +3111,7 @@ export function dispatchCampaign(previous, action) {
             updateContentQuests(s);
             progress(s);
             const gained =
-              JSON.stringify(s.recruited.map((id) => s.operativeState[id].trainedStats ?? {})) !==
+              JSON.stringify(s.forceRoster.map((id) => s.operativeState[id].trainedStats ?? {})) !==
               stats;
             const interrupted =
               hasPendingArrivalDecision(s) ||
@@ -3311,7 +3311,7 @@ export function dispatchCampaign(previous, action) {
       case 'equip': {
         const op = rosterFor(s).find((o) => o.id === Number(action.operativeId));
         requireThat(
-          op && s.recruited.includes(op.id) && s.operativeState[op.id].alive,
+          op && s.forceRoster.includes(op.id) && s.operativeState[op.id].alive,
           'El combatiente no está disponible.',
         );
         requireThat(
@@ -3381,7 +3381,7 @@ export function dispatchCampaign(previous, action) {
             bladeInstanceId: `equipment-${s.nextEquipmentInstanceId++}`,
           });
         }
-        s.recruited.push(op.id);
+        s.forceRoster.push(op.id);
         issueStartingCartridges(s, op);
         issueInitialOutfit(s, op.id);
         s.operativeState[op.id].location = s.location;
@@ -3432,7 +3432,7 @@ export function dispatchCampaign(previous, action) {
           op = rosterFor(s).find((o) => o.id === id),
           current = s.contracts[id];
         requireThat(
-          op && s.recruited.includes(id) && current,
+          op && s.forceRoster.includes(id) && current,
           'El combatiente no tiene un contrato activo.',
         );
         requireThat(
@@ -3490,7 +3490,7 @@ export function dispatchCampaign(previous, action) {
             s.contracts[id]?.guaranteeId === action.expectedGuaranteeId,
           'El contrato cambió. Revisá la garantía antes de finalizar.',
         );
-        requireThat(s.recruited.includes(id), 'El combatiente no está contratado.');
+        requireThat(s.forceRoster.includes(id), 'El combatiente no está contratado.');
         requireThat(id !== 1000, 'Tu oficial dirige la campaña y no puede ser despedido.');
         const op = rosterFor(s).find((o) => o.id === id),
           refundReason = guaranteeDepartureReason(s, s.contracts[id], op);
@@ -3817,7 +3817,10 @@ export function dispatchCampaign(previous, action) {
         }
         if (action.approach === 'recruit') {
           requireThat(canRecruitEncounter(npc), 'Este habitante no es un recluta.');
-          requireThat(!s.recruited.includes(npc.operativeId), 'Este combatiente ya se incorporó.');
+          requireThat(
+            !s.forceRoster.includes(npc.operativeId),
+            'Este combatiente ya se incorporó.',
+          );
           const reason = encounterRequirements(s, npc, actor);
           requireThat(!reason, reason);
           const eligibility = recruitmentStatus(s, npc.operativeId, true);
@@ -3899,7 +3902,7 @@ export function dispatchCampaign(previous, action) {
               .filter(
                 (option) =>
                   option !== 'recruit' ||
-                  (canRecruitEncounter(npc) && !s.recruited.includes(npc.operativeId)),
+                  (canRecruitEncounter(npc) && !s.forceRoster.includes(npc.operativeId)),
               ),
           ],
         };
@@ -4108,7 +4111,7 @@ export function dispatchCampaign(previous, action) {
         requireThat(eligibility.eligible, eligibility.reason);
         requireThat(
           trainer &&
-            s.recruited.includes(trainerId) &&
+            s.forceRoster.includes(trainerId) &&
             s.operativeState[trainerId]?.alive &&
             operativeLocation(s, trainerId) === at,
           'Elegí un instructor contratado y presente en el sector.',
@@ -4413,7 +4416,7 @@ export function dispatchCampaign(previous, action) {
               !q.journey &&
               q.members.some(
                 (id) =>
-                  s.recruited.includes(id) &&
+                  s.forceRoster.includes(id) &&
                   s.operativeState[id]?.alive &&
                   !s.operativeState[id]?.captured,
               ),
@@ -4423,7 +4426,7 @@ export function dispatchCampaign(previous, action) {
             s.squad = [...local.members];
           } else {
             const assigned = new Set(s.squads.flatMap((q) => q.members));
-            s.squad = s.recruited
+            s.squad = s.forceRoster
               .filter(
                 (id) =>
                   !assigned.has(id) &&
@@ -4677,7 +4680,7 @@ export function restoreCampaignValue(s) {
           integer(t.rank, 0, 2) &&
           Number.isInteger(t.trainerId) &&
           baseRosterFor(s).some((o) => o.id === t.trainerId) &&
-          s.recruited?.includes(t.trainerId) &&
+          s.forceRoster?.includes(t.trainerId) &&
           t.count === 3 &&
           integer(t.duration, 1, 96) &&
           integer(t.remaining, 1, t.duration) &&
@@ -5023,7 +5026,7 @@ export function restoreCampaignValue(s) {
     object(s.contracts) &&
       Object.entries(s.contracts).every(
         ([id, c]) =>
-          s.recruited.includes(Number(id)) &&
+          s.forceRoster.includes(Number(id)) &&
           object(c) &&
           (c.departurePending === undefined || typeof c.departurePending === 'boolean') &&
           ['paid', 'patriot', 'legacy'].includes(c.kind) &&
@@ -5040,10 +5043,10 @@ export function restoreCampaignValue(s) {
                 contractExpiresSeconds(c) > s.hour * 3600 + (s.secondOfHour ?? 0))) &&
           integer(c.paid, 0, 1e9),
       ) &&
-      s.recruited.every((id) => s.contracts[id]),
+      s.forceRoster.every((id) => s.contracts[id]),
     'Los contratos guardados son inválidos.',
   );
-  for (const id of s.recruited) {
+  for (const id of s.forceRoster) {
     const c = characterForOperative(s, id);
     if (!c || !isWorldCharacter(c)) {
       continue;
@@ -5062,14 +5065,14 @@ export function restoreCampaignValue(s) {
       new Set(values).size === values.length &&
       values.every((id) => ids.includes(id));
   requireThat(
-    validIds(s.recruited) &&
+    validIds(s.forceRoster) &&
       validIds(s.squad) &&
       s.squad.length <= 6 &&
-      s.squad.every((id) => s.recruited.includes(id)),
+      s.squad.every((id) => s.forceRoster.includes(id)),
     'El destacamento del archivo es inválido.',
   );
   requireThat(
-    s.recruited.every((id) => characterForOperative(s, id)?.encounter?.recruitable !== false),
+    s.forceRoster.every((id) => characterForOperative(s, id)?.encounter?.recruitable !== false),
     'Un habitante no reclutable no puede estar en la escuadra.',
   );
   requireThat(
@@ -5150,7 +5153,7 @@ export function restoreCampaignValue(s) {
           (o) =>
             object(o) &&
             (b.defenseGroupId || b.assaultSquads
-              ? s.recruited.includes(o.id) &&
+              ? s.forceRoster.includes(o.id) &&
                 operativeLocation(s, o.id) === sceneAnchorFor(s, b.sector)
               : s.squad.includes(o.id)) &&
             integer(o.loaded, 0, weaponSpecification(o)?.capacity ?? 0) &&
@@ -5264,7 +5267,7 @@ export function restoreCampaignValue(s) {
         h.condition >= 0 &&
         h.condition <= 100 &&
         integer(h.feed, 0, 100000) &&
-        (h.assignedTo === null || s.recruited.includes(h.assignedTo)),
+        (h.assignedTo === null || s.forceRoster.includes(h.assignedTo)),
     ),
     'Los caballos guardados son inválidos.',
   );
@@ -5293,7 +5296,7 @@ export function restoreCampaignValue(s) {
           validWorldLocation(q.location, s) &&
           validIds(q.members) &&
           q.members.length <= 6 &&
-          q.members.every((id) => s.recruited.includes(id)),
+          q.members.every((id) => s.forceRoster.includes(id)),
       ),
     'Las escuadras guardadas son inválidas.',
   );

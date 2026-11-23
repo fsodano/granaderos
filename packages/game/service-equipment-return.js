@@ -603,7 +603,7 @@ export function validateServiceEquipmentReturns(s, roster) {
         ) &&
           saveByteLength(JSON.stringify(r.serviceEquipmentReturn)) <= 512 &&
           operativeIds.has(Number(id)) &&
-          !s.recruited.includes(Number(id)) &&
+          !s.forceRoster.includes(Number(id)) &&
           !s.contracts[id] &&
           !s.refundableRecruitmentClaims?.some((claim) => claim.operativeId === Number(id)),
         'El combatiente aún tiene equipo por recoger.',

@@ -45,11 +45,11 @@ export default function StrategicRoster({
       <div className="personnel-title">
         <h2>Nómina</h2>
         <span>
-          {s.recruited.length} {s.recruited.length === 1 ? 'soldado' : 'soldados'}
+          {s.forceRoster.length} {s.forceRoster.length === 1 ? 'soldado' : 'soldados'}
         </span>
       </div>
       <div className="strategy-roster-scroll">
-        {!s.recruited.length && (
+        {!s.forceRoster.length && (
           <p className="roster-hint">Creá tu oficial o contratá soldados en el escritorio.</p>
         )}
         <table className="merc-map-table dense-personnel-table">
@@ -72,7 +72,7 @@ export default function StrategicRoster({
             </tr>
           </thead>
           <tbody>
-            {s.recruited.map((id: number) => {
+            {s.forceRoster.map((id: number) => {
               const op = roster.find((o) => o.id === id),
                 r = s.operativeState[id],
                 q = s.squads.find((q) => q.members.includes(id)),
@@ -190,7 +190,7 @@ export default function StrategicRoster({
           ))}
         </div>
       </section>
-      {!s.recruited.length && (
+      {!s.forceRoster.length && (
         <div className="roster-footer">
           <button className="line-button" onClick={onOpenDesk}>
             Crear o contratar

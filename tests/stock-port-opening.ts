@@ -52,7 +52,7 @@ export function retainStockOpeningService(
       continue;
     }
     assert.ok(
-      state.recruited.includes(id) && state.contracts[id],
+      state.forceRoster.includes(id) && state.contracts[id],
       `The living opening survivor ${id} must still serve before renewal.`,
     );
     let expiry = contractExpiresSeconds(state.contracts[id]);
@@ -123,7 +123,7 @@ export function stockPortOpening({ seed = 8, content = defaultContentPackage() }
       .filter(([, sector]) => sector.owner === 'patriot')
       .map(([id]) => id)
       .sort(),
-    recruited: [...state.recruited],
+    forceRoster: [...state.forceRoster],
   });
   const profile = {
     ...defaultProfile(),
@@ -181,7 +181,7 @@ export function stockPortOpening({ seed = 8, content = defaultContentPackage() }
   for (const hire of hires) {
     const contract = state.contracts[hire.id],
       due = receiptSeconds(hire.arrival);
-    assert.equal(state.recruited.filter((id) => id === hire.id).length, 1);
+    assert.equal(state.forceRoster.filter((id) => id === hire.id).length, 1);
     assert.equal(present(contract).kind, 'paid');
     assert.equal(present(contract).term, 'day');
     assert.equal(present(contract).paid, hire.quote.price);

@@ -48,7 +48,7 @@ export type CampaignPersonnelSnapshot = CampaignSessionAccessSnapshot & {
   operativeState: Record<string, PersonnelRecord>;
   contracts: Record<string, ContractRecord>;
   resources: { treasury: number };
-  recruited: number[];
+  forceRoster: number[];
   squad: number[];
   location: string;
   activeSquadId?: string;
@@ -107,7 +107,7 @@ export class CanonicalPersonnelMapper {
       'player',
       () =>
         new ForceRoster(
-          campaign.recruited.map(String),
+          campaign.forceRoster.map(String),
           campaign.squad.map(String),
           campaign.location,
           MaximumSquadSize,
@@ -210,7 +210,7 @@ export class CanonicalPersonnelMapper {
       }
     }
     target.resources.treasury = this.treasury.balance.pesos;
-    target.recruited = this.roster.members.map(Number);
+    target.forceRoster = this.roster.members.map(Number);
     target.squad = this.roster.squadMembers.map(Number);
     for (const [id, character] of this.#characters) {
       if (this.#characterState(character) === this.#originalCharacters.get(id)) {

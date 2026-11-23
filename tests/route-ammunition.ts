@@ -138,7 +138,7 @@ export function supplyRouteAmmunition(
     const op = rosterFor(campaign).find((unit) => unit.id === id);
     assert.ok(
       op &&
-        campaign.recruited.includes(id) &&
+        campaign.forceRoster.includes(id) &&
         campaign.operativeState[id]?.alive &&
         !campaign.operativeState[id]?.captured,
       `El combatiente no está disponible: ${id}.`,
@@ -236,7 +236,7 @@ export function supplyRouteAmmunition(
                   body = campaign.operativeState[donorId];
                 if (
                   !person ||
-                  !campaign.recruited.includes(donorId) ||
+                  !campaign.forceRoster.includes(donorId) ||
                   !body?.alive ||
                   body.captured ||
                   operativeInTransit(campaign, donorId) ||
@@ -317,7 +317,7 @@ export function supplyRouteAmmunition(
             localCarriers: rosterFor(campaign)
               .filter(
                 (person) =>
-                  campaign.recruited.includes(person.id) &&
+                  campaign.forceRoster.includes(person.id) &&
                   present(campaign.operativeState[person.id]).alive &&
                   !present(campaign.operativeState[person.id]).captured &&
                   !operativeInTransit(campaign, person.id) &&

@@ -16,7 +16,7 @@ export function lowMoraleRenewalStatus(state, operative) {
     Array.isArray(definition?.abilities) &&
     definition.abilities.includes(LOW_MORALE_REFUSAL) &&
     conductObserverDefinition(definition) &&
-    state?.recruited?.includes(id) &&
+    state?.forceRoster?.includes(id) &&
     state?.contracts?.[id]?.kind === 'paid' &&
     record?.alive !== false,
   );

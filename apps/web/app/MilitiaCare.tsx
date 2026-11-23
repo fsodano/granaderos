@@ -19,7 +19,7 @@ export default function MilitiaCare({
   const wounded = defenders.filter((u) => (u.bleeding ?? 0) > 0 || u.hp < u.maxHp);
   const doctors = roster.filter(
     (op) =>
-      state.recruited.includes(op.id) &&
+      state.forceRoster.includes(op.id) &&
       state.operativeState[op.id]?.alive &&
       !operativeInTransit(state, op.id) &&
       operativeLocation(state, op.id) === sectorId &&

@@ -33,18 +33,18 @@ const create: CampaignAction = {
 };
 void test('genuine new game creates exactly one custom officer then hires explores Retiro and saves', () => {
   let s = initialCampaign();
-  assert.deepEqual(s.recruited, []);
+  assert.deepEqual(s.forceRoster, []);
   assert.deepEqual(s.squad, []);
   assert.equal(s.defeated, false);
-  assert.deepEqual(restoreCampaign(serializeCampaign(s)).recruited, []);
+  assert.deepEqual(restoreCampaign(serializeCampaign(s)).forceRoster, []);
   assert.ok(dispatchCampaign(s, { type: 'visitSector' }).lastError);
   const startingTreasury = s.resources.treasury;
   s = order(s, create);
   assert.equal(s.resources.treasury, startingTreasury);
-  assert.deepEqual(s.recruited, [1000]);
+  assert.deepEqual(s.forceRoster, [1000]);
   assert.equal(present(rosterFor(s).find((o) => o.id === 1000)).leadership, 55);
   s = order(s, { type: 'recruitCombatant', id: 101, term: 'week' });
-  assert.deepEqual(s.recruited, [1000, 101]);
+  assert.deepEqual(s.forceRoster, [1000, 101]);
   assert.equal(present(s.contracts[101]).expiresAt, 168);
   s = order(s, { type: 'visitSector' });
   const b = enterSector(s.sectorEntryRequest);
@@ -56,7 +56,7 @@ void test('genuine new game creates exactly one custom officer then hires explor
     sectorState: b,
     survivors: b.units.map((u) => ({ ...u, id: Number(u.id) })),
   });
-  assert.deepEqual(s.recruited, [1000, 101]);
+  assert.deepEqual(s.forceRoster, [1000, 101]);
 });
 void test('contracts pay upfront, renew at current experience price, expire safely without duplicating gear', () => {
   let s = order(initialCampaign(), create);
@@ -73,7 +73,7 @@ void test('contracts pay upfront, renew at current experience price, expire safe
   s = order(s, { type: 'wait', hours: 192 });
   assert.equal(s.hour, 190);
   s = order(s, { type: 'wait', hours: 2 });
-  assert.ok(!s.recruited.includes(100));
+  assert.ok(!s.forceRoster.includes(100));
   assert.ok(!present(s.squads[0]).members.includes(100));
   assert.equal(s.defeated, false);
   assert.equal(present(s.operativeState[100]).alive, true);
@@ -125,7 +125,7 @@ void test('a fallen soldier contract expires once without a departure claim or r
   });
   s = order(s, { type: 'wait', hours: 24 });
   assert.equal(s.contracts[100], undefined);
-  assert.ok(!s.recruited.includes(100));
+  assert.ok(!s.forceRoster.includes(100));
   assert.equal(
     s.log.filter(
       (entry) =>
@@ -160,12 +160,12 @@ void test('elite terms are limited only by funds and historical figures cannot b
   s = order(s, { type: 'wait', hours: 24 });
   assert.equal(s.hour, 22);
   s = order(s, { type: 'wait', hours: 2 });
-  assert.deepEqual(s.recruited, []);
+  assert.deepEqual(s.forceRoster, []);
   assert.equal(s.defeated, false);
 });
 void test('old saves retain explicit legacy service and malformed contracts reject', () => {
   const s = initialCampaign();
-  s.recruited = [3];
+  s.forceRoster = [3];
   s.squad = [3];
   present(s.squads[0]).members = [3];
   Reflect.deleteProperty(s, 'contracts');

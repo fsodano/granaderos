@@ -136,7 +136,7 @@ export function assignmentStates(s, roster, context = {}) {
   const states = roster
     .filter(
       (op) =>
-        s.recruited.includes(op.id) &&
+        s.forceRoster.includes(op.id) &&
         s.operativeState[op.id]?.alive &&
         s.operativeState[op.id].assignment !== 'active' &&
         Object.hasOwn(assignments, s.operativeState[op.id].assignment),

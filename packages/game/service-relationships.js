@@ -68,7 +68,7 @@ export function serviceRelationshipRefusal(state, operative) {
       record = state?.operativeState?.[id],
       contract = state?.contracts?.[id];
     if (
-      !state?.recruited?.includes(id) ||
+      !state?.forceRoster?.includes(id) ||
       !record?.alive ||
       record.hp <= 0 ||
       record.captured ||

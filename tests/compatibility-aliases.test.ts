@@ -13,7 +13,7 @@ void test('dispatchCampaign refuses the retired recruitCivic command alias', () 
   Object.assign(retiredCommand, { type: 'recruitCivic' });
   const refused = dispatchCampaign(campaign, retiredCommand);
   assert.equal(refused.lastError, 'Orden desconocida.');
-  assert.deepEqual(refused.recruited, campaign.recruited);
+  assert.deepEqual(refused.forceRoster, campaign.forceRoster);
   assert.deepEqual(refused.contracts, campaign.contracts);
 });
 
@@ -21,7 +21,7 @@ void test('dispatchCampaign still hires a combatant with the canonical recruitCo
   const campaign = initialCampaign();
   const hired = dispatchCampaign(campaign, { type: 'recruitCombatant', id: 101, term: 'week' });
   assert.equal(hired.lastError, null);
-  assert.ok(hired.recruited.includes(101));
+  assert.ok(hired.forceRoster.includes(101));
   assert.ok(hired.contracts[101]);
 });
 

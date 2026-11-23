@@ -217,18 +217,18 @@ export function synchronizeCampaignPresence(state) {
     const numeric = operativeIdForCharacter(runtime.content, c.id),
       record = state.operativeState[numeric],
       person = runtime.people[c.id];
-    if (person.alive && person.recruited !== state.recruited.includes(numeric)) {
+    if (person.alive && person.recruited !== state.forceRoster.includes(numeric)) {
       runtime = changePlacementStatus(
         runtime,
         c.id,
-        state.recruited.includes(numeric) ? 'recruited' : 'released',
+        state.forceRoster.includes(numeric) ? 'recruited' : 'released',
         loaded,
       );
     }
     // A casualty can leave the service ledger when its contract ends. This is
     // not a living placement transition and must not release or revive an actor.
     if (!runtime.people[c.id].alive) {
-      runtime.people[c.id].recruited = state.recruited.includes(numeric);
+      runtime.people[c.id].recruited = state.forceRoster.includes(numeric);
     }
     runtime.people[c.id].hp = record.hp;
   }
@@ -447,7 +447,7 @@ export function validateCampaignPresence(state) {
       p.hp === 0 &&
       p.sector === null &&
       p.recruited &&
-      !state.recruited.includes(id) &&
+      !state.forceRoster.includes(id) &&
       !state.contracts[id]
     ) {
       p.recruited = false;
@@ -455,7 +455,7 @@ export function validateCampaignPresence(state) {
     need(
       p.hp === record.hp &&
         p.alive === record.alive &&
-        p.recruited === state.recruited.includes(id),
+        p.recruited === state.forceRoster.includes(id),
     );
     need(p.sector === null || placement?.sectors.includes(p.sector));
     need(!p.appeared || (Boolean(placement) && p.revision >= 1));

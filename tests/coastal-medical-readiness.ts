@@ -32,7 +32,7 @@ export function prepareCoastalFieldAid(
     selection = c.activeSquadId,
     target = 2,
     started = clock(c),
-    serving = c.recruited.filter(
+    serving = c.forceRoster.filter(
       (id) => present(c.operativeState[id]).alive && !present(c.operativeState[id]).captured,
     ),
     dead = Object.entries(c.operativeState)
@@ -52,14 +52,14 @@ export function prepareCoastalFieldAid(
     for (const id of field) {
       const r = present(c.operativeState[id]);
       assert.ok(
-        c.recruited.includes(id) && r.alive && !r.captured && r.hp >= 15 && !r.bleeding,
+        c.forceRoster.includes(id) && r.alive && !r.captured && r.hp >= 15 && !r.bleeding,
         'stabilize every actual field survivor before the dressing journey',
       );
     }
     for (const id of serving) {
       const expiry = contractExpiresSeconds(c.contracts[id]);
       assert.ok(
-        c.recruited.includes(id) &&
+        c.forceRoster.includes(id) &&
           present(c.operativeState[id]).alive &&
           !present(c.operativeState[id]).captured,
         'retain the actual serving cohort',
@@ -81,7 +81,7 @@ export function prepareCoastalFieldAid(
   const admitted = (id: number) => {
     const r = present(c.operativeState[id]);
     return (
-      c.recruited.includes(id) &&
+      c.forceRoster.includes(id) &&
       r.alive &&
       !r.captured &&
       r.hp >= 15 &&

@@ -48,7 +48,7 @@ export class CampaignGetRecruitmentCandidatesRepository {
     if (condition?.alive === false) {
       return RecruitmentAvailability.Fallen;
     }
-    if (this.#campaign.recruited.includes(characterId)) {
+    if (this.#campaign.forceRoster.includes(characterId)) {
       return RecruitmentAvailability.Serving;
     }
     if (pendingRecruitmentClaim(this.#campaign, characterId)) {

@@ -36,7 +36,7 @@ export function assertRouteHireArrived(s: CampaignSnapshot, hire: RouteHire) {
     contract = s.contracts[id],
     due = receiptSeconds(arrival);
   assert.equal(
-    s.recruited.filter((value) => value === id).length,
+    s.forceRoster.filter((value) => value === id).length,
     1,
     'A recruited combatant enters service once.',
   );
@@ -71,7 +71,7 @@ export function bookRouteHires(
     hires = [];
   let s = saved({ campaign: start }).campaign;
   for (const id of ids) {
-    assert.ok(!s.recruited.includes(id) && !hasRecruitmentClaim(s, id));
+    assert.ok(!s.forceRoster.includes(id) && !hasRecruitmentClaim(s, id));
     const operative = rosterFor(s).find((person) => person.id === id);
     assert.ok(operative);
     const quote = contractQuote(s, operative, term);

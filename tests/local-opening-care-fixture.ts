@@ -65,7 +65,7 @@ export function prepareLocalOpening(
     careIds = [...new Set([...field, ...caregiverIds])];
   for (const id of caregiverIds) {
     assert.ok(
-      s.recruited.includes(id) &&
+      s.forceRoster.includes(id) &&
         present(s.operativeState[id]).alive &&
         operativeLocation(s, id) === returnSector,
       'an auxiliary caregiver must actually serve at this clinic',

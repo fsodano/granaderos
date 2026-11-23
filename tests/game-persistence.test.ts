@@ -145,7 +145,7 @@ void test('restored active squad and force roster share membership ownership', (
     present(snapshot.squads.find((record) => record.id === campaign.activeSquadId)).members,
     [],
   );
-  assert.ok(snapshot.recruited.includes(110));
+  assert.ok(snapshot.forceRoster.includes(110));
   assert.deepEqual(snapshot.contracts, campaign.contracts);
 });
 

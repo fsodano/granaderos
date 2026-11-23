@@ -120,7 +120,7 @@ export function validateLegacyHiringArrivals(state, roster) {
       operative &&
         isContractOperative(state, operative) &&
         !ids.has(a.operativeId) &&
-        !state.recruited.includes(a.operativeId) &&
+        !state.forceRoster.includes(a.operativeId) &&
         !state.contracts?.[a.operativeId],
     );
     ids.add(a.operativeId);
@@ -200,7 +200,7 @@ export function validateRecruitmentClaims(state, roster) {
       operative &&
         isContractOperative(state, operative) &&
         !ids.has(claim.operativeId) &&
-        !state.recruited.includes(claim.operativeId) &&
+        !state.forceRoster.includes(claim.operativeId) &&
         !state.contracts?.[claim.operativeId],
     );
     ids.add(claim.operativeId);

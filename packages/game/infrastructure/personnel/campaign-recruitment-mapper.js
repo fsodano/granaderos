@@ -64,7 +64,7 @@ export class CampaignRecruitmentMapper {
         : {}),
       paid: contract.payment.pesos,
     };
-    campaign.recruited = context.roster.members.map(Number);
+    campaign.forceRoster = context.roster.members.map(Number);
     campaign.squad = context.roster.squadMembers.map(Number);
     if (equipmentSource === RecruitmentEquipmentSource.InitialIssue) {
       const equippedCandidate = new CampaignCharacterEquipmentMapper(campaign).project(candidate);
