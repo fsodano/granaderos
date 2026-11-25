@@ -58,8 +58,10 @@ Seleccioná un retrato y señalá un destino: las huellas muestran el recorrido.
 | Alternar disparo y combate cercano | **B** |
 | Recargar o cebar | **Mayús + R** |
 | Caminar, agacharse o ponerse cuerpo a tierra | **S**, **C**, **P** |
-| Terminar el turno o descansar | **D** |
+| Correr | **R** |
+| Terminar el turno | **D** |
 | Consultar los atajos | **H** |
+| Abrir la carta de operaciones | **M** |
 | Cancelar la orden preparada | **Esc** |
 
 El **Manual de campaña** está disponible dentro del juego. La [guía de controles](docs/gameplay/tactical/TACTICAL-HOTKEYS.md) explica puntería, movimiento, equipo y órdenes de teclado y mouse.
@@ -90,16 +92,18 @@ La [guía de campañas](docs/development/campaign-authoring.md) explica cómo in
 
 ## Ejecutar en tu equipo
 
-Necesitás **Node.js 26 LTS actualizado (26.13.1 o posterior)** y npm.
+Necesitás **Node.js 26.13.1** (la versión exacta de `.node-version`), npm y Git.
 
 ```sh
 git clone https://github.com/fsodano/granaderos.git
 cd granaderos
-npm ci --prefix apps/web
+npm run setup
 npm run dev
 ```
 
-Abrí [localhost:3000](http://localhost:3000) o la dirección indicada por el servidor. El juego para navegador usa JavaScript y React; no requiere una instalación de Jagged Alliance 2.
+`npm run setup` instala las dependencias del juego, del editor y del laboratorio 3D desde sus lockfiles, y deja los hooks del repositorio listos para revisar y verificar cada cambio.
+
+Abrí [localhost:3000](http://localhost:3000) o la dirección indicada por el servidor. El juego para navegador usa TypeScript y React; no requiere una instalación de Jagged Alliance 2. El editor de campañas corre aparte, con `npm --prefix apps/campaign-editor run dev`, en [localhost:4178](http://localhost:4178).
 
 ## Dónde está cada parte
 
@@ -108,17 +112,17 @@ explica cómo seguir una acción desde la pantalla hasta sus reglas y su guardad
 
 | Carpeta | Contenido |
 | --- | --- |
-| `apps/` | El juego para navegador y el editor de campañas |
-| `packages/` | Reglas del juego, casos de uso y formato compartido de campañas |
+| `apps/` | El juego para navegador (`apps/web`) y el editor independiente de campañas (`apps/campaign-editor`) |
+| `packages/` | El motor del juego (`packages/game`), con sus capas `domain`, `application` e `infrastructure`, y el formato compartido de campañas (`packages/campaign-format`) |
 | `content/` | Campañas, recursos publicados y fuentes de arte |
-| `docs/` | Arquitectura, planes aceptados, guías y evidencias |
+| `docs/` | Arquitectura, planes aceptados, guías y referencias |
 | `tests/` y `tools/` | Pruebas, compilación, producción de recursos y laboratorios |
 | `reference/native/` | Motor y conversión nativa de Windows |
 | `.output/` | Archivos generados por compilación, caché y diagnósticos locales |
 
 ## Desarrollo y contribuciones
 
-La [guía de desarrollo](docs/development/getting-started.md) explica la instalación, la estructura y las dependencias de verificación. El motor está en `packages/game/`, la interfaz en `apps/web/` y las campañas en `content/campaigns/`.
+La [guía de desarrollo](docs/development/getting-started.md) explica la instalación, la estructura y las dependencias de verificación. El motor vive en `packages/game/`, con sus capas `domain`, `application` e `infrastructure`; la interfaz del juego, en `apps/web/`; el editor, en `apps/campaign-editor/`; y las campañas, en `content/campaigns/`.
 
 El [plan de arquitectura aceptado](docs/plans/accepted/domain-architecture.md) define
 la estructura y el comportamiento objetivo. El [lenguaje del dominio](docs/plans/accepted/ubiquitous-language.md)
@@ -128,13 +132,17 @@ La [guía progresiva de arquitectura](docs/architecture/README.md) explica la
 implementación, los casos de uso y los límites de cada paquete.
 
 ```sh
-npm ci --prefix apps/campaign-editor
-npm test                    # Pruebas de dominio e integración, dos procesos
-npm run test:quick          # Alias del mismo conjunto
-npm run check:architecture  # Límites de capas y paquetes
-npm run check:format        # Formato del código de arquitectura
-npm run typecheck           # Tipos del juego, interfaz y editor
-npm run build               # Juego y editor en .output/dist/
+npm run setup                 # Dependencias del juego, del editor y del laboratorio 3D
+npm test                      # Suite completa de pruebas, con dos procesos
+npm run test:quick            # Alias del mismo conjunto
+npm run typecheck             # Tipos del juego, las interfaces, las pruebas y las herramientas
+npm run lint                  # Lint del código mantenido
+npm run check:format          # Formato del código con Oxfmt
+npm run check:architecture    # Límites de capas, paquetes y entradas públicas
+npm run check:dependencies    # Límites de dependencias entre paquetes
+npm run build                 # Juego y editor en .output/dist/
 ```
+
+Los perfiles `npm run verify:commit`, `npm run verify:quick` y `npm run verify` encadenan esos comprobantes; la integración continua ejecuta `npm run verify` en cada pull request y antes de publicar el sitio.
 
 Para contribuir, proponé un cambio con alcance definido, verificá el comportamiento afectado y documentá sus controles. Los [documentos del juego](docs/gameplay/README.md), la [guía de arte](docs/art/README.md) y el [índice de documentación](docs/README.md) reúnen las referencias de cada sistema.
